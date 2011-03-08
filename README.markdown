@@ -1,10 +1,7 @@
 漢字標準格式
 ================
 
-*   前言(#qianyan)
-    *   [Philosophy](#philosophy)
-    *   [Inline HTML](#html)
-    *   [Automatic Escaping for Special Characters](#autoescape)
+*   [前言](#qianyan)
 *   [使用方式](#shiyong_fangshi)
     *   [Paragraphs and Line Breaks](#p)
 
@@ -26,26 +23,25 @@
 
 
 2. 在欲套用「Han: CSS Reset」的網頁中插入下列語法：
- *****
-  <link rel="stylesheet" media="all" href="./css/han.min.css">
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-  <script src="./js/han.min.js"></script>
- *****
+
+    <link rel="stylesheet" media="all" href="./css/han.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="./js/han.min.js"></script>
 
 
 3. 即可使用適用於漢字網頁的HTML格式，下方為範例：
 
-  * 專名號：<b class="pn"></b>／<span class="pn"></span>／<u class="pn"></u>；
-  * 書名號：<cite></cite>／篇名號：<cite class="piece"></cite>；
-  * 著重號：<em></em>；
-  * 文字的變音：<i></i>；
-  * 行內引言：<q><q></q></q>（預設最大可至六個層級）；
+  * 專名號：`<b class="pn"></b>`／`<span class="pn"></span>`／`<u class="pn"></u>`；
+  * 書名號：`<cite></cite>`／篇名號：`<cite class="piece"></cite>`；
+  * 著重號：`<em></em>`；
+  * 文字的變音：`<i></i>`；
+  * 行內引言：`<q><q></q></q>`（預設最大可至六個層級）；
   * 漢字註音：
     ** 羅馬拼音
-    <ruby class="romanization">流水<rt>liúshuĭ</rt></ruby>；
+    `<ruby class="romanization">流水<rt>liúshuĭ</rt></ruby>`；
 
     ** 注音符號
-    <ruby class="mps">欣<rt>ㄒㄧㄣ</rt>賞<rt>ㄕㄤˇ</rt></ruby>。
+    `<ruby class="mps">欣<rt>ㄒㄧㄣ</rt>賞<rt>ㄕㄤˇ</rt></ruby>`。
 
 
 
