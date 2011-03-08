@@ -3,8 +3,6 @@
 
 *   [前言](#qianyan)
 *   [使用方式](#shiyong_fangshi)
-    *   [Paragraphs and Line Breaks](#p)
-
 
 * * *
 
@@ -18,9 +16,7 @@
 港繁體、大陸簡體、日文）。希望可以藉此降低正式文書與網頁格式的差異。
 
 <h2 id="shiyong_fangshi">使用方式</h2>
-
 1. 開啟檔案「han.min.css」，更改「12及13行」的.eot字體路徑。
-
 
 2. 在欲套用「Han: CSS Reset」的網頁中插入下列語法：
 <pre><code>
@@ -29,20 +25,4 @@
     &lt;script src="./js/han.min.js"&gt;&lt;/script&gt;
 </code></pre>
 
-3. 即可使用適用於漢字網頁的HTML格式，下方為範例：
-
-  * 專名號：`<b class="pn"></b>`／`<span class="pn"></span>`／`<u class="pn"></u>`；
-  * 書名號：`<cite></cite>`／篇名號：`<cite class="piece"></cite>`；
-  * 著重號：`<em></em>`；
-  * 文字的變音：`<i></i>`；
-  * 行內引言：`<q><q></q></q>`（預設最大可至六個層級）；
-  * 漢字註音：
-    ** 羅馬拼音
-    `<ruby class="romanization">流水<rt>liúshuĭ</rt></ruby>`；
-
-    ** 注音符號
-    `<ruby class="mps">欣<rt>ㄒㄧㄣ</rt>賞<rt>ㄕㄤˇ</rt></ruby>`。
-
-
-
-
+3. 即可使用適用於漢字網頁的HTML格式，詳情請參考〈[漢字標準格式・CSS Reset](http://ethantw.net/projects/han/)〉。
