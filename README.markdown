@@ -24,9 +24,9 @@
 
 2. 在欲套用「Han: CSS Reset」的網頁中插入下列語法：
 <pre><code>
-    <link rel="stylesheet" media="all" href="./css/han.min.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-    <script src="./js/han.min.js"></script>
+    &lt;link rel="stylesheet" media="all" href="./css/han.min.css"&gt;
+    &lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"&gt;&lt;/script&gt;
+    &lt;script src="./js/han.min.js"&gt;&lt;/script&gt;
 </code></pre>
 
 3. 即可使用適用於漢字網頁的HTML格式，下方為範例：
