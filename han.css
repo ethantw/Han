@@ -1,3 +1,11 @@
+@charset "utf-8";
+/* 漢字標準格式
+ * Han, the CSS Reset
+ *
+ * Version: 1.0.0
+ * Lisence: MIT Lisence
+ * Last-Modified: 2011/03/08
+ */
 
 
 /* 目前已被廣泛使用的CSS reset */
@@ -518,14 +526,4 @@ pre > code {
     white-space: pre-wrap;
     word-wrap: break-word /* MsIE */;
 }
-
-
-
-
-
-
-
-
-
-
 

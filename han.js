@@ -1,3 +1,11 @@
+/* 漢字標準格式
+ * Han, the CSS Reset
+ *
+ * Version: 1.0.0
+ * Lisence: MIT Lisence
+ * Last-Modified: 2011/03/08
+ */
+
 (function ($) {
 
     // MSIE HTML5 elements fixer
@@ -83,8 +91,7 @@ function condtions ( q ) {
         ($.browser.msie && $.browser.version <= 7) ? "msie msie-old" :
         ($.browser.msie && $.browser.version >= 8) ? "msie" : "browser-unknown";
 
-    return ( q === "os" ) ?
-        os : ( q === "browser" ) ? browser : os + " " + browser;
+    return ( q === "os" ) ? os : ( q === "browser" ) ? browser : os + " " + browser;
 };
 
 
@@ -120,12 +127,12 @@ function cjk_spanify ( html, glyph ) {
             // CJK punctuation
             .replace(/<span class="cjk">([「『（〔【《〈“‘])/ig, '<span class="cjk punc open">$1')
             // CJK punctuation (open bracket/quote)
-            .replace(/<span class="cjk">([」』）〕】》〉’”])/ig, '<span class="cjk punc close">$1')
+            .replace(/<span class="cjk">([」』）〕】》〉’”])/ig, '<span class="cjk punc close">$1');
             // CJK punctuation (close bracket/quote)
 
     if ( glyph === "latin" || !glyph )
         html = html
-            .replace(/([\u0020-\u003B\u003D\u003F-\u007F\u0100-\u017F\u0180-\u024F\u0300-\u036F\u1E00-\u1EFF\u2000-\u206F\u2070-\u209F\u20A0-\u20CF\u2100-\u214F\u2150-\u218F]+)(?=[^>]*<)/ig, '<span class="latin">$1</span>')
+            .replace(/([\u0020-\u003B\u003D\u003F-\u007F\u0100-\u017F\u0180-\u024F\u0300-\u036F\u1E00-\u1EFF\u2000-\u206F\u2070-\u209F\u20A0-\u20CF\u2100-\u214F\u2150-\u218F]+)(?=[^>]*<)/ig, '<span class="latin">$1</span>');
             // Latin
 
     return html;
@@ -145,7 +152,7 @@ function type_smoothing () {
             // Create a 35x35 Canvas block.
             var canvasNode = document.createElement("canvas");
             canvasNode.width = "35";
-            canvasNode.height = "35"
+            canvasNode.height = "35";
 
             // We must put this node into the body, otherwise 
             // Safari Windows does not report correctly.
