@@ -24,5 +24,4 @@
     &lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"&gt;&lt;/script&gt;
     &lt;script src="./js/han.min.js"&gt;&lt;/script&gt;
 </code></pre>
-
-3. 即可使用適用於漢字網頁的HTML格式，詳情請參考〈[漢字標準格式・CSS Reset](http://ethantw.net/projects/han/)〉。
+即可使用適用於漢字網頁的HTML格式，詳情請參考〈[漢字標準格式・CSS Reset](http://ethantw.net/projects/han/)〉。
