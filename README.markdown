@@ -16,9 +16,8 @@
 1. 開啟檔案「`han.min.css`」，更改「12及15行」的`.eot`字體路徑。
 
 2. 在欲套用「漢字標準格式・CSS Reset」的網頁中插入下列語法：
-
-<pre><code>&lt;link rel="stylesheet" media="all" href="./han.min.css"&gt;
-&lt;script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"&gt;</script>
-&lt;script src="./han.min.js"&gt;</script></code></pre>
+        <link rel="stylesheet" media="all" href="./han.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js></script>
+        <script src="./han.min.js"></script>
 
 即可使用適用於漢字網頁的HTML格式，詳情請參考〈[漢字標準格式・CSS Reset](http://ethantw.net/projects/han/)〉。
