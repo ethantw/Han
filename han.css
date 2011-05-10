@@ -1,0 +1,651 @@
+@charset "utf-8";
+
+/* 漢字標準格式
+ * Han, the CSS Reset
+ *
+ * Version: 1.1
+ * Lisence: MIT Lisence
+ * Last-Modified: 2011/05/11
+ */
+
+
+/* 手動設定字體 */
+/* 漢字手寫體（cursive） */
+@font-face {
+    font-family: ff-cursive-han;
+    src: local(STFangsong), local(STKaiti), local(Kai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+}
+
+@font-face {
+    /* 襯線西文斜體字型 */
+    font-family: ff-latin-serif-italic;
+    src: local("Times New Roman Italic") /* for Gecko */, local("TimesNewRomanPS-ItalicMT") /* for Webkit */, local("Times-Italic");
+}
+
+@font-face {
+    /* 無襯線西文斜體字型 */
+    font-family: ff-latin-sans-italic;
+    src: local("Helvetica Oblique") /* for Gecko */, local("Helvetica-LightOblique") /* for Webkit, due to its bug */, local("Arial Italic") /* for Windows */, local("Arial-ItalicMT");
+}
+
+@font-face {
+    /* 出自教育部標準楷書之注音字符 */
+    font-family: ff-zhuyin;
+    src: url(../fonts/zhuyin.eot) /* for MsIE */; 
+}
+
+@font-face {
+    /* 出自教育部標準楷書之注音字符 */
+    font-family: ff-zhuyin;
+    src: url(../fonts/zhuyin.ttf); 
+}
+
+
+/* ---------------------------------------
+   目前已被廣泛使用的CSS reset
+   依據Eric Meyer所撰寫的CSS reset修改
+   ---------------------------------------
+   http://meyerweb.com/eric/tools/css/reset/index.html */
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strong, tt, var,
+b, u, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend {
+    background: transparent;
+    border: 0;
+    vertical-align: baseline;
+}
+
+html, body, div, span, object, iframe,
+blockquote, pre,
+a, abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strong, sub, sup, tt, var,
+b, u, i,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    line-height: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    clear: both;
+    font-weight: bold;
+}
+
+h1 {
+    margin: .67em 0;
+}
+
+h2 {
+    margin: .83em 0;
+}
+
+h3 {
+    margin: 1em 0;
+}
+
+h4 {
+    margin: 1.33em 0;
+}
+
+h5 {
+    margin: 1.67em 0;
+}
+
+h6 {
+    margin: 2.33em 0;
+}
+
+p {
+    margin: 1em 0;
+}
+
+ol, ul {
+    padding-left: 2em;
+}
+
+sup {
+    vertical-align: super;
+    font-size: smaller;
+}
+
+sub {
+    vertical-align: sub;
+    font-size: smaller;
+}
+
+blockquote {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after {
+    content: "";
+    content: none;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a img {
+    border: none;
+}
+
+/* 縮寫虛底線（abbr） */
+abbr[title], span[title] {
+    border-bottom: 1px dotted;
+}
+
+/* 删除線（del） */
+del {
+    text-decoration: line-through;
+}
+
+/* pre code */
+pre code {
+    display: block;
+    overflow: auto;
+}
+
+
+/* ---------------------------------------
+   專為漢字加入（或取消）的預設樣式
+   --------------------------------------- */
+
+/* 連結、插入標籤取消下劃線（non-underlined links and ins） */
+html:lang(zh) a:link,
+html:lang(zh) a:visited,
+html:lang(zh) a:hover,
+html:lang(zh) a:active,
+html:lang(zh) ins {
+    text-decoration: inherit;
+}
+
+html:lang(zh) ins {
+    border-bottom: 3px double lightgray;
+}
+
+
+/* 兩相鄰底線元素（u+u） */
+u:lang(zh) {
+    letter-spacing: 0;
+}
+
+u + u {
+    margin-left: .125em;
+}
+
+
+/* 舊版專名號（b.pn） */
+b.pn {
+    font-weight: inherit;
+}
+
+b.pn:lang(zh) {
+    border-bottom: 1px solid;
+    padding-bottom: -0.05em;
+    text-decoration: none;
+}
+
+b.pn:lang(zh-latn) {
+    border: inherit;
+}
+
+b.pn:lang(zh) + b.pn:lang(zh) {
+    margin-left: .1em;
+}
+
+
+/* 文章內段落（article p）、列表項目（article li） */
+article p, article li {
+    line-height: 2;
+}
+
+article:lang(zh) p:before,
+article:lang(ja) p:before {
+    content: "　　";
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+article:lang(ja) p:before {
+    content: "　";
+}
+
+article:lang(zh) p.poem-like:before,
+article:lang(zh).poem-like p:before,
+blockquote:lang(zh).poem-like p:before,
+article:lang(ja) p.poem-like:before,
+article:lang(ja).poem-like p:before,
+blockquote:lang(ja).poem-like p:before {
+    content: "";
+}
+
+article:lang(zh) p.poem-like,
+article:lang(zh).poem-like p,
+blockquote:lang(zh).poem-like p,
+article:lang(ja) p.poem-like,
+article:lang(ja).poem-like p,
+blockquote:lang(ja).poem-like p {
+    margin-left: 2em;
+}
+
+article:lang(zh) li p:before {
+    content: "";
+}
+
+/* 書名號（cite） */
+cite:lang(zh), cite:lang(ja),
+cite:lang(en).piece {
+    font-style: inherit;
+}
+
+cite:lang(zh):before,
+cite:lang(zh):after {
+    content: "《";
+    font-family: "Hiragino Mincho Pro", "LiSong Pro", STSong, "微軟正黑體", PMingLiU, serif;
+}
+
+cite:lang(zh):after {
+    content: "》";
+}
+
+cite:lang(zh).piece:before {
+    content: "〈";
+}
+
+cite:lang(zh).piece:after {
+    content: "〉";
+}
+
+cite:lang(ja):before {
+    content: "『";
+}
+
+cite:lang(ja):after {
+    content: "』";
+}
+
+cite:lang(ja).piece:before {
+    content: "「";
+}
+
+cite:lang(ja).piece:after {
+    content: "」";
+}
+
+cite:lang(en).piece:before {
+    content: "“";
+}
+
+cite:lang(en).piece:after {
+    content: "”";
+}
+
+.no-cite-mark cite:before,
+.no-cite-mark cite:after,
+cite.no-cite-mark:before,
+cite.no-cite-mark:after {
+    content: "" !important;
+}
+
+
+/* 著重號（em） */
+em:lang(zh),
+em:lang(ja) {
+    border-bottom: 2px dotted;
+    font-style: normal;
+    padding-bottom: .05em;
+}
+
+.han-js em:lang(zh),
+.han-js em:lang(ja) {
+    border-bottom: 0 none;
+    padding-bottom: auto;
+}
+
+.textemphasis em:lang(zh) {
+    text-emphasis:              dot;
+        -moz-text-emphasis:     dot;
+        -o-text-emphasis:       dot;
+        -webkit-text-emphasis:  dot;
+    text-emphasis-position:             under;
+        -moz-text-emphasis-position:    under;
+        -o-text-emphasis-position:      under;
+        -webkit-text-emphasis-position: under;
+}
+
+.textemphasis em:lang(ja) {
+    text-emphasis:              sesame;
+        -moz-text-emphasis:     sesame;
+        -o-text-emphasis:       sesame;
+        -webkit-text-emphasis:  sesame;
+}
+
+.textemphasis em span.cjk.punc {
+    text-emphasis:              none;
+        -moz-text-emphasis:     none;
+        -o-text-emphasis:       none;
+        -webkit-text-emphasis:  none;
+}
+
+.textemphasis em span.cjk:after,
+.textemphasis em span.latin:after {
+    content: "" !important;
+}
+
+.no-textemphasis em:lang(zh) span.cjk,
+.no-textemphasis em:lang(ja) span.cjk,
+.no-textemphasis em:lang(zh) span.latin,
+.no-textemphasis em:lang(ja) span.latin {
+    font-style: inherit;
+    position: relative;
+}
+
+.no-textemphasis em:lang(zh) span.cjk:after,
+.no-textemphasis em:lang(ja) span.cjk:after,
+.no-textemphasis em:lang(zh) span.latin:after,
+.no-textemphasis em:lang(ja) span.latin:after {
+    content: "・";
+    display: inline-block;
+    font-family: "Hiragino Mincho Pro", HiraMinPro-W3, "MS Mincho", MS-Mincho, serif !important;
+    font-style: normal;
+    font-weight: normal;
+    height: .9em; /* prevent from displaying underline inherited from parental elements. */
+    left: 0;
+    line-height: 1em;
+    margin: .8em 0 0 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+}
+
+.no-textemphasis em:lang(ja) span.cjk:after,
+.no-textemphasis em:lang(ja) span.latin:after {
+    content: "、";
+    margin: -1.2em 0 0 .35em;
+    overflow: inherit;
+}
+
+.no-textemphasis em:lang(zh) span.latin:after {
+    margin-left: -.25em;
+}
+
+.no-textemphasis em:lang(ja) span.latin:after {
+    margin-left: 0em;
+}
+
+.no-textemphasis em:lang(zh) span.space:after,
+.no-textemphasis em:lang(ja) span.space:after,
+.no-textemphasis em:lang(zh) span.cjk.punc:after,
+.no-textemphasis em:lang(ja) span.cjk.punc:after {
+    content: "";
+}
+
+
+/* 文字變音標籤（i） */
+i:lang(zh) {
+    font-family: ff-latin-serif-italic, "Times New Roman", ff-cursive-han, cursive, "標楷體", serif;
+    font-style: inherit;
+}
+
+i:lang(zh-TW), i:lang(zh-HK) {
+    font-family: ff-latin-serif-italic, "Times New Roman", ff-cursive-han, cursive, "標楷體", serif;
+}
+
+i:lang(ja) {
+    font-family: ff-latin-serif-italic, "Times New Roman", cursive, serif;
+    font-style: inherit;
+}
+
+article blockquote i:lang(zh),
+article blockquote i:lang(ja) {
+    font-family: ff-latin-sans-italic, Helvetica, Arial, sans-serif;
+    font-style: inherit;
+}
+
+.msie i:lang(zh) span.latin,
+.msie i:lang(ja) span.latin {
+    font-style: italic;
+}
+
+
+/* 文章內段落、清單重點（strong） */
+article p strong:lang(zh),
+article li strong:lang(zh) {
+    font-family: sans-serif;
+    font-weight: 600;
+}
+
+
+/* 行內引言（q） */
+q:lang(zh),
+q:lang(ja) {
+    quotes: '「' '」' '『' '』' '「' '」' '『' '』' '「' '」' '『' '』';
+}
+
+q:lang(zh-CN), q:lang(zh-hans), q:lang(en) {
+    quotes: '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’';
+}
+
+q:before {
+    content: open-quote;
+}
+
+q:after {
+    content: close-quote;
+}
+
+.no-quotes q:lang(zh):before,
+.no-quotes q:lang(ja):before {
+    content: "「";
+}
+
+.no-quotes q:lang(zh):after,
+.no-quotes q:lang(ja):after {
+    content: "」";
+}
+
+.no-quotes q.double:lang(zh):before,
+.no-quotes q.double:lang(ja):before {
+    content: "『";
+}
+
+.no-quotes q.double:lang(zh):after,
+.no-quotes q.double:lang(ja):after {
+    content: "』";
+}
+
+
+/* 文章內的區塊引用（blockquote） */
+:lang(zh) article blockquote,
+:lang(ja) article blockquote {
+    margin-left: 2em;
+    font-family: Times, "Times New Roman", ff-cursive-han, cursive, "標楷體", serif;
+    width: auto;
+}
+
+article blockquote:lang(ja) {
+    font-family: Times, "Times New Roman", cursive, serif;
+}
+
+
+/* 漢字註音（ruby） */
+ruby rp {
+    display: none;
+}
+
+ruby rt {
+    font-size: .5em;
+    line-height: normal;
+}
+
+ruby rt:before {
+    content: "（";
+}
+
+ruby rt:after {
+    content: "）";
+}
+
+rt:empty:before,
+rt:empty:after {
+    content: "";
+}
+
+.han-js ruby rt:before,
+.han-js ruby rt:after {
+    content: "";
+}
+
+ruby {
+    display: inline-block;
+    line-height: 2em;
+}
+
+.webkit ruby {
+    display: inline;
+}
+
+.han-js ruby,
+.han-js ruby .rt {
+    text-indent: 0;
+}
+
+.han-js ruby .rb {
+    display: inline-block;
+    padding-top: .5em;
+    position: relative;
+    text-align: center;
+}
+
+.han-js.msie ruby .rb {
+    display: block;
+    float: left;
+}
+
+.han-js ruby .rt {
+    font-size: .6em;
+    left: 0;
+    line-height: normal;
+    padding: 0 .05em;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    white-space: nowrap;
+}
+
+/* 國語注音符號（直式） */
+.han-js ruby.mps {
+    display: inline;
+    vertical-align: top;
+}
+
+.han-js.webkit ruby.mps,
+.han-js.msie ruby.mps {
+    display: inline-block;
+}
+
+.han-js ruby.mps span.rb {
+    padding-top: 0;
+}
+
+.han-js ruby.mps .rt {
+    display: inline-block;
+    font-family: ff-zhuyin, "標楷體", DFKaiShu-SB-Estd-BF, cursive, serif;
+    font-size: 1em;
+    line-height: .9 !important;
+    margin: -.5em -.2em 0 -.5em !important;
+    position: static !important;
+    transform:              scale(.6);
+        -moz-transform:     scale(.6);
+        -ms-transform:      scale(.6);
+        -o-transform:       scale(.6);
+        -webkit-transform:  scale(.6);
+    vertical-align: middle;
+    width: 1.5em;
+    white-space: pre-wrap;
+    word-break: break-all /* MsIE */;
+}
+
+.han-js.msie-old ruby.mps .rt,
+.han-js.ie-8 ruby.mps .rt {
+    font-size: .6em;
+}
+
+.han-js ruby.mps rt:empty,
+.han-js ruby.mps .rt:empty {
+    width: auto;
+}
+
+.han-js ruby.mps span.tone {
+    bottom: .6em;
+    display: inline-block;
+    position: absolute;
+    right: -.4em;
+}
+
+.han-js ruby.mps span.tone-0 {
+    bottom: auto;
+    margin-top: -.75em;
+    right: .5em;
+}
+
+.webkit ruby.mps span.tone-0 {
+    bottom: auto;
+    margin-top: -.7em;
+    right: .25em;
+}
+
+.msie ruby.mps span.tone {  bottom: 3em;  font-size: .6em;  }
+.msie ruby.mps span.tone-0 {  bottom: auto;  font-size: .6em;  }
+
+/* 橫式注音符號 */
+ruby.mps-ltr rt,
+ruby.mps-ltr .rt {
+    font-family: STKaiti, Kai, cursive, serif;
+}
+
+
+/* 代碼（code） */
+code:lang(zh),
+code:lang(ja) {
+    font-family: monospace, sans-serif;
+}
+
+
+
+/* ---------------------------------------
+   其它
+   --------------------------------------- */
+
+/* 舊版瀏覽器未實作的HTML 5標籤預設樣式 */
+[hidden], details {
+    display: none;
+}
+
+details[open], time {
+    display: inline;
+}
+
+header, hgroup, article, footer, nav, section {
+    display: block;
+}
+
+dfn {
+    font-style: normal;
+    font-weight: bolder;
+}
+
+
