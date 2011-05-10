@@ -15,7 +15,7 @@
 <h2 id="shiyong_fangshi">使用方式</h2>
 1. 解壓縮後開啟檔案「`han.min.css`」，更改「14及15行」的`.eot`與`.ttf`注音符號字體路徑。
 
-**請注意**：此處使用的注音符號字體係中華民國教育部研發的「[教育部標準楷書](http://www.edu.tw/mandr/content.aspx?site_content_sn=3591)」，並採**創用CC 「[姓名標示—禁止改作—3.0台灣版](http://creativecommons.org/licenses/by-nd/3.0/tw/)」授權**。若您有著作權的疑慮，或是沒有使用注音符號的需求，請直接刪除上述提及之二行代碼及檔案。
+    **請注意**：此處使用的注音符號字體係中華民國教育部研發的「[教育部標準楷書](http://www.edu.tw/mandr/content.aspx?site_content_sn=3591)」，並採**創用CC 「[姓名標示—禁止改作—3.0台灣版](http://creativecommons.org/licenses/by-nd/3.0/tw/)」授權**。若您有著作權的疑慮，或是沒有使用注音符號的需求，請直接刪除上述提及之二行代碼及檔案。
 
 2. 在欲套用「漢字標準格式・CSS Reset」的網頁`<head>`元素中插入下列語法：
 
