@@ -1,9 +1,9 @@
 /* 漢字標準格式
  * Han, the CSS Reset
  *
- * Version: 1.1
+ * Version: 1.1.1
  * Lisence: MIT Lisence
- * Last Modified: 2011/05/11
+ * Last Modified: 2011/06/07
  */
 
 
@@ -21,15 +21,19 @@ var han = {
             return;
 
         var hasFontSmoothing = han.support.font_smoothy,
+            hasColumnWidth = han.support.column_width,
             hasTextEm = han.support.text_em,
             hasQuotes = han.support.quotes,
+            hasWritingMode = han.support.writing_mode,
             dectector;
 
         if ( !range && dectect != false || range && dectect ) {
             dectector = "han-js " + han.conditions();
             dectector += " hasFontSmoothing-" + (( hasFontSmoothing ) ? "true" : ( hasFontSmoothing == false ) ? "false" : "unknown");
+            dectector += " " + (( !hasColumnWidth ) ? "no-" : "") + "columnwidth";
             dectector += " " + (( !hasTextEm ) ? "no-" : "") + "textemphasis";
             dectector += " " + (( !hasQuotes ) ? "no-" : "") + "quotes";
+            dectector += " " + (( !hasWritingMode ) ? "no-" : "") + "writingmode";
 
             $(( !range ) ? "html" : range).addClass(dectector);
         }
@@ -182,6 +186,7 @@ var han = {
 
 var a = $('<a href="/" style="display: none; text-emphasis: dot; -moz-text-emphasis: dot; -o-text-emphasis: dot; -webkit-text-emphasis: dot;">tester</a>'),
     q = $('<q style="display: none; quotes: \'“\' \'”\' \'‘\' \'’\'">tester</q>'),
+    wm = $('<div style="display: none; column-width: 200px; -moz-column-width: 200px; -webkit-column-width: 200px; writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; ">tester</div>')
     fs = function() {
     if ( han.conditions("os") === "mac" )  return true;
 
@@ -235,6 +240,10 @@ var a = $('<a href="/" style="display: none; text-emphasis: dot; -moz-text-empha
 };
 
 han.support = {
+    column_width: ( /^200px$/.test( wm.css("-webkit-column-width") ) ||
+      /^200px$/.test( wm.css("-moz-column-width") ) ||
+      /^200px$/.test( wm.css("column-width") ) ) ? true : false,
+
     font_smoothy: fs(),
 
     text_em: ( /^dot$/.test( a.css("-webkit-text-emphasis-style") ) ||
@@ -242,7 +251,9 @@ han.support = {
       /^dot$/.test( a.css("-moz-text-emphasis-style") ) ||
       /^dot$/.test( a.css("-o-text-emphasis-style") ) ) ? true : false,
 
-    quotes: /^"“" "”" "‘" "’"$/.test( q.css("quotes") )
+    quotes: /^"“" "”" "‘" "’"$/.test( q.css("quotes") ),
+
+    writing_mode: ( /^vertical-rl$/.test( wm.css("-webkit-writing-mode") )) ? true : false
 };
 
 
