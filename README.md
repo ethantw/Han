@@ -20,7 +20,7 @@
 2. 在欲套用「漢字標準格式」的網頁`<head>`元素中插入下列語法（並修改為正確的相對路徑）：
 
         <link rel="stylesheet" media="all" href="./han.min.css">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
         <script src="./han.min.js"></script>
 
 3. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
