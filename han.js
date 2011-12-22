@@ -1,13 +1,13 @@
 /* 漢字標準格式
  * Han, the CSS Reset
  *
- * Version: 1.1.1
+ * Version: 1.2
  * Lisence: MIT Lisence
- * Last Modified: 2011/06/07
+ * Last Modified: 2011/11/10
  */
 
 
-(function ($) {
+(function($){
 
 var han = {
     js: function() {
