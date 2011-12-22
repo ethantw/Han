@@ -1,9 +1,9 @@
 /* 漢字標準格式
- * Han, the CSS Reset
+ * Standard Han Format
  *
  * Version: 1.2
  * Lisence: MIT Lisence
- * Last Modified: 2011/11/10
+ * Last Modified: 2011/12/22
  */
 
 
