@@ -1,28 +1,61 @@
-# 漢字標準格式
 
-*   [前言][qianyan]
-*   [使用方式][shiyong_fangshi]
 
-[qianyan]: #qianyan
-[shiyong_fangshi]: #shiyong_fangshi
-* * *
+簡介 { #jianjie }
+===
 
-<h2 id="qianyan">前言</h2>
-現今的瀏覽器預設樣式都是以顯示西文為主，忽略了漢字排版方式與西文的差異。加上出版者、網頁設計師和文章作者對此技術的妥協，導致中文「螢幕文章」與學校所授予文章書寫規則有愈來愈大的出入。
 
-最近CSS reset的概念突然興起，目的是用來減少各瀏覽器對網頁排版解讀的分歧和差異。我沿用這個想法，設計了一套以漢字網頁為主的CSS reset（適用於台灣、香港繁體、大陸簡體、日文）。希望可以藉此降低正式文書與網頁格式的差異。
+「漢字標準格式」是基於樣式「重設」及「標準化」二個概念寫成的CSS3排版框架。由於現今的瀏覽器預設樣式皆以西文顯示為主，未能周詳地考慮到其與漢字排版間的差異，嚴重影響美觀度，造成網頁設計師的誤用，更使得內容編者無從依照語意正確使用字級元素。
 
-<h2 id="shiyong_fangshi">使用方式</h2>
-1. 開啟檔案「`han.min.css`」，更改「13及14行」的`.eot`與`.ttf`注音符號字體路徑。
+「樣式標準化」的想法源自網上諸多CSS reset及「normalize.css」專案，經漢字標準格式的沿用、加入特定語種的支援，並將漢字文化圈中常見的印刷品排印格式套用在各種HTML5元素中，從而提供標準合理而美觀的文章閱讀環境，迎合網頁讀者的閱讀習慣及設計師和編者的需求。
 
-    **請注意**：此處使用的注音符號字體係中華民國教育部研發的「[教育部標準楷書](http://www.edu.tw/mandr/content.aspx?site_content_sn=3591)」，並採**創用CC 「[姓名標示—禁止改作—3.0台灣版](http://creativecommons.org/licenses/by-nd/3.0/tw/)」授權**。若您有著作權的疑慮，或是沒有使用注音符號的需求，請直接刪除上述提及之二行代碼及檔案。
+漢字標準格式目前可完整支援繁體中文、簡體中文及日文等三種漢字形式的網頁。
 
-2. 在欲套用「漢字標準格式」的網頁`<head>`元素中插入下列語法（並修改為正確的相對路徑）：
 
-        <link rel="stylesheet" media="all" href="./han.min.css">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-        <script src="./han.min.js"></script>
+
+啓用設置步驟 { #qiyong_shezhi_buzhou }
+---
+
+1. 在欲套用「漢字標準格式」CSS框架的網頁中、所有樣式宣告*之前*導入下列外連樣式表：
+
+    	<link rel="stylesheet" media="all" href="./css/han.css">
+
+2. 同上，再加入以下JavaScript語法：
+
+    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js></script>
+    	<script src="./han.min.js"></script>
 
 3. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
 
-4. 在瀏覽器中開啓已套用本框架的網頁測試是否正確運作後，即可使用適用於漢字網頁的HTML格式，詳情請參考〈[漢字標準格式](http://hanzi.co/)〉。
+4. 在瀏覽器中開啓已套用本框架的網頁測試是否正確運作。
+
+
+***
+
+
+### 啓用注音符號支援 { #qiyong_zhuyin_fuhao_zhiyuan }
+
+由於使用頻率較低，「漢字標準格式」將`<ruby>`中的「直式注音符號支援」同主程式分離，需另行啓用方可正確顯示此功能之效果。
+
+1. 開啓`han.zhuyin.css`，將「188、189行」的`../fonts/zhuyin.eot`及`../fonts/zhuyin.ttf`重新定向至正確的檔案路徑。
+
+    **請注意：**此處使用的注音符號字體係由中華民國教育部所研發的「[教育部標準楷書][kai]」，並採[創用CC「姓名標示–禁止改作–3.0–台灣版」][cc]授權**。若你有著作權的疑慮，請直接刪除上述提及之二行代碼及檔案，「漢字標準格式」將自動fallback至使用者作業系統的漢字手寫字體。
+
+2. 開啓`han.css`，將「65行」的代碼由註解範圍*更改*為一般代碼格式。
+
+3. 在瀏覽器中開啓內含`<ruby class="zhuyin"> … </ruby>`元素的網頁進行測試。
+
+
+[kai]: http://www.edu.tw/treasure/filedown.aspx?Node=1123&Index=2&WID=c5ad5187-55ef-4811-8219-e946fe04f725
+[cc]: http://creativecommons.org/licenses/by-nd/3.0/tw/
+
+
+***
+
+
+「漢字標準格式」版本：v2.0.0
+最後修改於：2013年7月23日 18:07（GMT+8）
+
+
+
+
+
