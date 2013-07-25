@@ -1,6 +1,9 @@
 
-漢字標準格式 Hanzi Standardised Mode (Han.css)
+漢字標準格式 Han.css
 ===
+
+Hanzi-optimised CSS Mode
+---
 
 Copyright (c) 2013 Chen Yijun (陳奕鈞，http://ethantw.net)
 
