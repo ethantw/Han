@@ -27,7 +27,7 @@
    --------------------------------------- */
 
 dfn {
-    font-style: normal;
+    font-style: inherit;
     font-weight: bolder;
 }
 
