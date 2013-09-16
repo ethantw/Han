@@ -1,5 +1,5 @@
-@charset 'utf-8';
-
+@charset "utf-8";
+@import url("./normalize.css");
 /* 
  * 漢字標準格式 v2.0.0
  * ---
@@ -8,31 +8,578 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/06/15
+ * Last Modified: 2013/08/28
  *
  */
-
-
-
 /* 
-
+ *
  * 滙入所有需要的檔案
 
    ---------------------------------------
-   @font-face字體設定
-   --------------------------------------- */
-
-@import url('./han.ff.css') all;
-
-
-/* ---------------------------------------
    全域適用的CSS reset（normalize.css）
    ---------------------------------------
    * 原作者：Nicolas Gallagher
    --------------------------------------- */
+/* ---------------------------------------
+   @font-face字體設定
+   --------------------------------------- */
+/* 
+ * 漢字標準格式 v2.1.0
+ * @font-face字體設定
+ * ---
+ * @font-face settings,
+ * Hanzi-optimised CSS Mode
+ *
+ *
+ *
+ * Lisence: MIT Lisence
+ * Last Modified: 2013/09/11
+ *
+ */
+/* ---------------------------------------
+   四類漢字字體集
+   ---
+   The Four Typefaces
+   ---------------------------------------
+ *
+ * 1. On Mac OS X;
+ * 2. On Windows;
+ * 3. For Webkit;
+ * 4. For Gecko;
+ * 5. On Android;
+ * 6. IE hacks.
+ *
+ *
+   ---------------------------------------
+   黑體
+   Heiti (Gothic)
+   --------------------------------------- */
+@font-face {
+  font-family: 'Han Heiti';
+  src: local("Hiragino Sans GB"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+}
 
-@import url('./normalize.css') all;
+@font-face {
+  font-family: 'Han Heiti';
+  src: local("Microsoft Yahei"), local("Microsoft Jhenghei");
+  unicode-range: U+4E00;
+}
 
+/* 宋體（明朝體）
+   Songti (Mincho)
+   --------------------------------------- */
+@font-face {
+  font-family: 'Han Songti';
+  src: local(STSongti-SC-Regular), local("Songti SC"), local(PMingLiU), local(SimSun);
+}
+
+@font-face {
+  font-family: 'Han Songti';
+  src: local(PMingLiU), local(SimSun);
+  unicode-range: U+4E00;
+}
+
+/* 楷體
+   Kaiti (Cursive)
+   --------------------------------------- */
+@font-face {
+  font-family: 'Han Kaiti';
+  src: local(STKaiti), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
+}
+
+@font-face {
+  font-family: 'Han Kaiti';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
+  unicode-range: U+4E00;
+}
+
+/* 中華民國國家標準楷體 */
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+}
+
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  unicode-range: U+4E00;
+}
+
+/* 中國國家標準楷體 */
+@font-face {
+  font-family: 'Han Kaiti GB';
+  src: local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB);
+}
+
+@font-face {
+  font-family: 'Han Kaiti GB';
+  src: local(Kaiti), local(DFKai-SB);
+  unicode-range: U+4E00;
+}
+
+/* 仿宋體
+   Fangsong
+   --------------------------------------- */
+@font-face {
+  font-family: 'Han Fangsong';
+  src: local(STFangsong), local(FangSong);
+}
+
+@font-face {
+  font-family: 'Han Fangsong';
+  src: local(FangSong);
+  unicode-range: U+4E00;
+}
+
+/* 手寫體
+   Cursive
+   --------------------------------------- */
+@font-face {
+  font-family: cursive;
+  src: local(STKaiti), local(Kai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+}
+
+@font-face {
+  font-family: cursive;
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  unicode-range: U+4E00;
+}
+
+/* ---------------------------------------
+   襯線西文斜體
+   ---
+   Italic serif for Latin
+   --------------------------------------- */
+@font-face {
+  /* 襯線西文斜體字型 */
+  font-family: 'Latin Italic Serif';
+  src: local("Georgia-Italic"), local("Georgia Italic"), local("Times-Italic"), local("TimesNewRomanPS-ItalicMT"), local("Times New Roman Italic");
+}
+
+/* ---------------------------------------
+   無襯線西文斜體
+   ---
+   Italic sans-serif for Latin
+   --------------------------------------- */
+@font-face {
+  font-family: 'Latin Italic Sans';
+  src: local("HelveticaNeue-Italic"), local("Helvetica Neue Italic"), local("Helvetica-LightOblique"), local("Helvetica Oblique"), local("Arial Italic"), local("Arial-ItalicMT");
+}
+
+/* ---------------------------------------
+   注音符號
+   ---
+   Zhuyin
+   --------------------------------------- */
+@font-face {
+  font-family: 'Han Zhuyin Cursive';
+  src: local("☺"), url(../fonts/zhuyin.eot) format("embedded-opentype"), url(../fonts/zhuyin.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: 'Han Zhuyin Sans';
+  src: local("Hiragino Sans GB");
+}
+
+@font-face {
+  font-family: 'Han Zhuyin Sans';
+  src: local("Heiti TC");
+  unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9;
+}
+
+/* ---------------------------------------
+   漢字標點
+   ---
+   Hanzi puncuation,
+   ‘Biaodian’(zh) and ‘Yakumono’(ja)
+   --------------------------------------
+   **注意：**為Windows設定的字體*必須*置於
+   OS X字體設定後方。
+
+   **NOTE**: Font settings for Windows
+   should be *always* placed after tho-
+   se for OS X. Since there are quite a
+   few fonts from Windows existing on 
+   OS X as well.
+   ---------------------------------------
+ *
+ * 1. On Mac OS X and iOS;
+ * 2. On Windows;
+ * 3. On Ubuntu and Debian;
+ * 4. For other OSs, uses web font.
+ *
+ *
+   ---------------------------------------
+   單點全形句號（．）
+   Fullwidth full stop
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local("MS Gothic"), local(SimSun), local(WenQuanYiMicroHei), local(IPAexGothic), local("VL Gothic");
+  unicode-range: U+FF0E;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local(SimSun), local(IPAexMincho), local(IPAMincho), local(UMingCN);
+  unicode-range: U+FF0E;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local("MS Gothic"), local(SimSun), local(WenQuanYiMicroHei), local(IPAexGothic), local("VL Gothic");
+  unicode-range: U+FF0E;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local(SimSun), local(IPAexMincho), local(IPAMincho), local(UMingCN);
+  unicode-range: U+FF0E;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local("MS Gothic"), local(SimSun), local(WenQuanYiMicroHei), local(IPAexGothic), local("VL Gothic");
+  unicode-range: U+FF0E;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local(SimSun), local(IPAexMincho), local(IPAMincho), local(UMingCN);
+  unicode-range: U+FF0E;
+}
+
+/* 間隔號（·）
+   Middle dot
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local(STSongti-SC-Regular), local(STSong), local("Heiti SC"), local(SimSun), local("ARPLMingU20"), local("VL Gothic");
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local(STSongti-SC-Regular), local(STSong), local("Heiti SC"), local(SimSun), local("ARPLMingU20"), local("VL Gothic");
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+00B7;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local(STSongti-SC-Regular), local(STSong), local("Heiti SC"), local(SimSun), local("ARPLMingU20"), local("VL Gothic");
+  unicode-range: U+00B7;
+}
+
+/* 破折號（——）
+   Em dash
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local("Microsoft Yahei"), local(SimSun), local(IPAexMincho), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Yakumono Sans';
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Arial Unicode MS"), local("MS Gothic"), local("VL Gothic"), local("Droid Sans Fallback");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Yakumono Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"), local("Microsoft Yahei"), local("VL Gothic"), local("Droid Sans Fallback");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local("Microsoft Yahei"), local(SimSun), local(IPAexMincho), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(STSong), local("Microsoft Yahei"), local(SimSun), local(IPAexMincho), local(WenQuanYiZenHei), local("VL Gothic");
+  unicode-range: U+2014;
+}
+
+/* 省略號（……）
+   Ellipsis
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic"), local(SimSun), local(PMingLiU), local(WenQuanYiZenHei), local(WenQuanYiMicroHei), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local("MS Mincho"), local(SimSun), local(PMingLiU), local(IPAexMincho), local(IPAMincho), local("AR PL UMing"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Yakumono Sans';
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic"), local(IPAexGothic), local("VL Gothic");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Yakumono Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"), local(IPAexMincho), local(IPAMincho);
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU), local(WenQuanYiZenHei), local(WenQuanYiMicroHei), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(SimSun), local(PMingLiU), local(IPAexMincho), local(IPAMincho), local("AR PL UMing"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU), local(WenQuanYiZenHei), local(WenQuanYiMicroHei), local("VL Gothic"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(STSongti-SC-Regular), local(SimSun), local(PMingLiU), local(IPAexMincho), local(IPAMincho), local("AR PL UMing"), local("ARPLMingU20");
+  unicode-range: U+2026;
+}
+
+/* 彎引號（“‘’”）
+   Curve quotes
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Lisong Pro"), local(STSongti-SC-Regular), local(STSong), local(STHeiti), local("Heiti SC"), local(SimSun), local(PMingLiU), local("IPAexMincho"), local(IPAMincho), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Lisong Pro"), local(STSongti-SC-Regular), local(STSong), local(STHeiti), local("Heiti SC"), local(SimSun), local(PMingLiU), local("IPAexMincho"), local(IPAMincho), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Sans GB"), local(STHeiti), local("Heiti SC"), local(SimSun), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Lisong Pro"), local(STSongti-SC-Regular), local(STSong), local(SimSun), local(PMingLiU), local("IPAexMincho"), local(IPAMincho), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+/* 着重號（●）
+   Emphasis dots
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Times New Roman"), local("Droid Sans Fallback");
+  unicode-range: U+25CF;
+}
+
+/* ---------------------------------------
+   進階版標點樣式修正
+   ---
+   Advanced Correction to
+   Hanzi Punctuation
+   ---------------------------------------
+ *
+ * a. 句、逗、頓號（。，、）
+ *    Period, comma, paused comma
+ *
+ * b. 分、冒、問、嘆號（；：？！）
+ *    Colon, semicolon, question, exclam-
+ *    ation marks
+ *
+ */
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("MS Gothic"), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+3002, U+FF0C, U+3001, U+FF1B, U+FF1A, U+FF1F, U+FF01;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+3002, U+FF0C, U+3001, U+FF1B, U+FF1A, U+FF1F, U+FF01;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Heiti TC"), local("Lihei Pro"), local("Microsoft Jhenghei"), local(PMingLiU), local("ARPLMingU20");
+  unicode-range: U+3002, U+FF0C, U+3001;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local(STSongti-TC-Regular), local("Lisong Pro"), local(LiSungLight), local("Heiti TC"), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+3002, U+FF0C, U+3001, U+FF1B, U+FF1A, U+FF1F, U+FF01;
+}
+
+/*
+ * a. 引號（「『』」）
+ *    Quotes
+ *
+ * b. 括號、書名號（（）《》〈〉）
+ *    Brackets
+ *
+ */
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun), local(IPAexGothic), local("AR PL UMing TW"), local(ARPLMingU20);
+  unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU), local("IPAexGothic"), local("AR PL UMing TW"), local("ARPLMingU20");
+  unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun), local(IPAexGothic), local("AR PL UMing TW"), local(ARPLMingU20);
+  unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09;
+}
+
+/*
+ * 解決Firefox不支援`Unicode-range`的問題
+ * 
+ * Solution to Firefox's `Unicode-range`
+ * unspported issue
+   --------------------------------------- */
+@font-face {
+  font-family: 'Biaodian Sans';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Biaodian Serif';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C;
+}
 
 /* ---------------------------------------
    漢字標準格式
@@ -41,10 +588,743 @@
    * 僅含字體族（generic family）修正，標點及
      瀏覽器字體修正包含於下列「字體設定」檔案。
    --------------------------------------- */
+/* 
+ * 漢字標準格式 v2.1.0
+ * 以語言為基礎的元素樣式修正
+ * ---
+ * Language-based style correction, 
+ * Hanzi-optimised CSS Mode
+ *
+ *
+ *
+ * Lisence: MIT Lisence
+ * Last Modified: 2013/09/15
+ *
+ */
+/* 
+ * 漢字標準格式 v2.1.0
+ * 各家瀏覽器標頭的CSS3屬性
+ * ---
+ * CSS3 propertes in diff. browsers,
+ * Hanzi-optimised CSS Mode
+ *
+ *
+ *
+ * Lisence: MIT Lisence
+ * Last Modified: 2013/08/28
+ *
+ */
+/* ---------------------------------------
+   變數設定
+   ---
+   Variables
+   ---------------------------------------
+   顏色
+   Colours
+   --------------------------------------- */
+/* ---------------------------------------
+   針對normalize.css的改進
+   ---
+   Improvements aim to normalize.css
+   ---------------------------------------
+   詞彙定義元素`<dfn>`使用粗體
+   Term-defining elements `<dfn>` re-styled
+   `bolder` instead of `italic`.
+   --------------------------------------- */
+dfn {
+  font-style: inherit;
+  font-weight: bolder;
+}
 
-@import url('./han.main.css') all;
+/* 增進code區塊的可讀性
+   Enhances code blocks' readability
+   --------------------------------------- */
+pre code {
+  display: block;
+  overflow: auto;
+  white-space: pre;
+  word-wrap: normal;
+}
 
+/* ---------------------------------------
+   $(selector).charize()
+   --------------------------------------- 
+   避頭尾點
+   Prevents punctuation from stuck in the
+   start/end of a line.
+   --------------------------------------- */
+.han-js-charized span.char,
+.han-js-bitouwei-rendered span.bitouwei {
+  display: inline-block;
+  text-indent: 0;
+}
 
+.han-js-charized span.char.space,
+.han-js-charized span.char > span {
+  display: inline;
+}
+
+/* ---------------------------------------
+   底線
+   ---
+   Underlines
+   --------------------------------------- 
+   註記元素（u）及兩相鄰時的底線區別（u+u）
+   Annotations and adjacent ones
+   --------------------------------------- */
+:lang(zh) u,
+:lang(ja) u {
+  letter-spacing: 0;
+  border-bottom: 1px solid;
+  padding-bottom: 0.05em;
+  text-decoration: none;
+}
+
+u + u {
+  margin-left: .125em;
+}
+
+html.han-js-rendered u + u {
+  margin-left: 0;
+}
+
+html.han-js-rendered u.adjacent {
+  margin-left: .125em;
+}
+
+/* 實驗性功能 */
+u.han-js-charized {
+  border-bottom: 0 none;
+  text-decoration: none;
+  /* 若在注音符號`<ruby>`中 */
+}
+u.han-js-charized span.char:not(:first-of-type):not(:last-of-type) span,
+u.han-js-charized span.hanla,
+u.han-js-charized span.char:first-of-type span:after,
+u.han-js-charized span.char:last-of-type span:after {
+  border-bottom: 1px solid;
+  padding-bottom: .125em;
+}
+u.han-js-charized span.char:first-of-type span,
+u.han-js-charized span.char:last-of-type span {
+  position: relative;
+}
+u.han-js-charized span.char:first-of-type span:after,
+u.han-js-charized span.char:last-of-type span:after {
+  content: '';
+  display: inline-block;
+  left: 0;
+  margin-left: 1px;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: -moz-calc(100% - 1px );
+  width: -webkit-calc(100% - 1px );
+  width: calc(100% - 1px );
+}
+u.han-js-charized span.char:last-of-type span:after {
+  margin: 0 1px 0 0;
+}
+u.han-js-charized span.char:first-child:last-child span:after {
+  margin: 0 1px 0;
+  width: -moz-calc(100% - 2px );
+  width: -webkit-calc(100% - 2px );
+  width: calc(100% - 2px );
+}
+u.han-js-charized :not(:first-child) span.char:first-of-type span:after,
+u.han-js-charized :not(:last-child) span.char:last-of-type span:after,
+u.han-js-charized span.char:not(:first-child):first-of-type span:after,
+u.han-js-charized span.char:not(:last-child):last-of-type span:after {
+  border-bottom: 0;
+}
+u.han-js-charized :not(:first-child) span.char:first-of-type span,
+u.han-js-charized :not(:last-child) span.char:last-of-type span,
+u.han-js-charized span.char:not(:first-child):first-of-type span,
+u.han-js-charized span.char:not(:last-child):last-of-type span {
+  border-bottom: 1px solid;
+  padding-bottom: .125em;
+}
+u.han-js-charized span.hanla:first-child,
+u.han-js-charized span.hanla:last-child {
+  border: 0 none;
+}
+u.han-js-charized :not(:first-child) span.hanla:first-child,
+u.han-js-charized :not(:last-child) span.hanla:last-child {
+  border: 1px solid;
+}
+span.han-js-zhuyin-rendered u.han-js-charized {
+  border-bottom: 1px solid;
+  padding-bottom: .125em;
+}
+span.han-js-zhuyin-rendered u.han-js-charized span.char span {
+  border-bottom: 0 none !important;
+}
+span.han-js-zhuyin-rendered u.han-js-charized + u {
+  margin-left: .125em;
+}
+
+/* 重新定製「連結、插入元素」的樣式
+   Re-styles anchors and additions
+   --------------------------------------- */
+html:lang(zh) a:link,
+html:lang(zh) a:visited,
+html:lang(zh) a:hover,
+html:lang(zh) a:active,
+html:lang(zh) ins {
+  text-decoration: inherit;
+}
+html:lang(zh) ins {
+  border-bottom: 3px double lightgrey;
+  padding-bottom: .05em;
+}
+
+/* ---------------------------------------
+   文章內的「標題、一般及詩篇段落、清單等」
+   ---
+   Headings, paragraphs and lists
+   in article
+   --------------------------------------- 
+   四、五號標題
+   Headings of level 4 and 5
+   --------------------------------------- */
+article h4,
+article h5 {
+  margin: 1em 0;
+}
+
+article h4 + h5 {
+  margin-top: -.5em;
+}
+
+/* 段落及清單
+   Paragraphs and lists
+   --------------------------------------- */
+article p,
+article li {
+  line-height: 2;
+  text-align: justify;
+}
+
+article:lang(zh) p.poem-like,
+article:lang(zh).poem-like p,
+article:lang(zh) .poem-like p,
+article:lang(ja) p.poem-like,
+article:lang(ja).poem-like p,
+article:lang(ja) .poem-like p {
+  text-indent: 0;
+  margin-left: 2em;
+}
+
+article:lang(ja) p.poem-like,
+article:lang(ja).poem-like p,
+article:lang(ja) .poem-like p {
+  margin-left: 1em;
+}
+
+article:lang(zh) ol,
+article:lang(zh) ul,
+article:lang(ja) ol,
+article:lang(ja) ul {
+  margin: .5em 0 .5em 0;
+  padding: 0;
+}
+article:lang(zh) ol > li,
+article:lang(zh) ul > li,
+article:lang(ja) ol > li,
+article:lang(ja) ul > li {
+  margin-left: 2em;
+  padding: 0;
+}
+
+article h4 + ul,
+article h4 + ol,
+article h5 + ul,
+article h5 + ol,
+article h6 + ul,
+article h6 + ol {
+  margin-top: -.5em;
+}
+
+article:lang(ja) ol,
+article:lang(ja) ul {
+  margin-left: 1em;
+  padding-left: 1.5em;
+}
+article:lang(ja) ol > li,
+article:lang(ja) ul > li {
+  margin-left: 1em;
+}
+
+/* ---------------------------------------
+   漢拉間隙
+   ---
+   Gaps between Hanzi and Latin letter
+   --------------------------------------- */
+span.hanla,
+html:not(.han-la) span.hanla {
+  display: none;
+}
+
+html.han-la span:lang(zh).hanla,
+html.han-la span:lang(ja).hanla {
+  display: inline;
+  position: static;
+}
+
+html.han-la span.hanla:after {
+  content: ' ';
+  display: inline;
+  font-size: 1ch;
+  font-size: -webkit-calc(.25em );
+}
+
+html.han-la code span.hanla:after,
+html.han-la pre span.hanla:after,
+html.han-la kbd span.hanla:after,
+html.han-la samp span.hanla:after,
+html.han-la ol > span.hanla:after,
+html.han-la ul > span.hanla:after {
+  display: none;
+}
+
+/* ---------------------------------------
+   書名號
+   ---
+   Cites
+   ---------------------------------------
+ *
+ * 1. 修正Webkit下的字體fallback
+ *    Corrects font fallback on WebKit
+ *
+ */
+cite:lang(zh),
+cite:lang(ja),
+cite:lang(en).piece {
+  font-style: inherit;
+}
+
+cite:lang(zh):before,
+cite:lang(zh):after {
+  content: '《';
+  font-family: inherit;
+  /* 1 */
+  line-height: inherit;
+}
+
+cite:lang(zh):after {
+  content: '》';
+}
+
+cite:lang(zh).piece:before {
+  content: '〈';
+}
+
+cite:lang(zh).piece:after {
+  content: '〉';
+}
+
+cite:lang(ja):before {
+  content: '『';
+}
+
+cite:lang(ja):after {
+  content: '』';
+}
+
+cite:lang(ja).piece:before {
+  content: '「';
+}
+
+cite:lang(ja).piece:after {
+  content: '」';
+}
+
+cite:lang(en).piece:before,
+cite:lang(en).piece:after {
+  content: '“';
+  font-family: inherit;
+  /* 1 */
+}
+
+cite:lang(en).piece:after {
+  content: '”';
+}
+
+cite:lang(en-GB).piece:before {
+  content: '‘';
+}
+
+cite:lang(en-GB).piece:after {
+  content: '’';
+}
+
+.no-cite-mark cite:before,
+.no-cite-mark cite:after,
+cite.no-cite-mark:before,
+cite.no-cite-mark:after {
+  content: '' !important;
+}
+
+/* ---------------------------------------
+   着重號
+   ---
+   Emphases
+   ---------------------------------------
+ *
+ * 1. 避免繼承父元素的底線
+ *    Prevents from displaying underlines
+ *    inherited from parental elements.
+ *
+ */
+:lang(zh) em,
+:lang(ja) em {
+  font-style: inherit;
+}
+
+html:not(.han-js-rendered) :lang(zh) em,
+html:not(.han-js-rendered) :lang(ja) em {
+  border-bottom: 2px dotted;
+  padding-bottom: .05em;
+}
+
+.textemphasis :lang(zh) em {
+  text-emphasis: circle;
+  -moz-text-emphasis: circle;
+  -webkit-text-emphasis: circle;
+  text-emphasis-position: under;
+  -moz-text-emphasis-position: under;
+  -webkit-text-emphasis-position: under;
+}
+
+.textemphasis :lang(ja) em {
+  text-emphasis: sesame;
+  -moz-text-emphasis: sesame;
+  -webkit-text-emphasis: sesame;
+}
+
+.textemphasis :lang(zh) em span.cjk.biaodian,
+.textemphasis :lang(ja) em span.cjk.biaodian {
+  text-emphasis: none;
+  -moz-text-emphasis: none;
+  -webkit-text-emphasis: none;
+}
+
+.textemphasis :lang(zh) em span.cjk:after,
+.textemphasis :lang(zh) em span.latin:after
+.textemphasis :lang(ja) em span.cjk:after,
+.textemphasis :lang(ja) em span.latin:after {
+  content: none !important;
+}
+
+.no-textemphasis :lang(zh) em span.cjk,
+.no-textemphasis :lang(ja) em span.cjk,
+.no-textemphasis :lang(zh) em span.latin,
+.no-textemphasis :lang(ja) em span.latin {
+  font-style: inherit;
+  position: relative;
+}
+
+.no-textemphasis :lang(zh) em span.cjk:after,
+.no-textemphasis :lang(ja) em span.cjk:after,
+.no-textemphasis :lang(zh) em span.latin:after,
+.no-textemphasis :lang(ja) em span.latin:after {
+  content: '・';
+  /*●*/
+  display: inline-block;
+  font-style: normal;
+  font-weight: normal;
+  height: 1.9em;
+  /* 1 */
+  left: 0;
+  line-height: 1.9em;
+  margin: .925em 0 0 0;
+  overflow: hidden;
+  position: absolute;
+  text-decoration: none;
+  /* 1 */
+  text-indent: 0;
+  top: 0;
+}
+
+.no-textemphasis :lang(ja) em span.cjk:after,
+.no-textemphasis :lang(ja) em span.latin:after {
+  content: '、';
+  margin: -1.2em 0 0 .35em;
+  overflow: inherit;
+}
+
+.no-textemphasis :lang(zh) em span.latin:after {
+  margin: .775em 0 0 -.25em;
+}
+
+.no-textemphasis :lang(ja) em span.latin:after {
+  margin-left: 0em;
+}
+
+.no-textemphasis :lang(zh) em span.space:after,
+.no-textemphasis :lang(ja) em span.space:after,
+.no-textemphasis :lang(zh) em span.cjk.biaodian:after,
+.no-textemphasis :lang(ja) em span.cjk.biaodian:after {
+  content: none;
+}
+
+:not(:lang(zh)):not(:lang(ja)) em,
+.textemphasis :not(:lang(zh)):not(:lang(ja)) em {
+  font-style: italic;
+  text-emphasis: none;
+  -moz-text-emphasis: none;
+  -webkit-text-emphasis: none;
+}
+
+.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span:after {
+  content: none;
+}
+
+/* ---------------------------------------
+   變音文字
+   ---
+   Alternative voices
+   ---------------------------------------
+ *
+ * 1. 如果系統不支援楷體
+ *    If Kaiti is not supported
+ *
+ */
+i:lang(zh),
+i:lang(ja) {
+  font-family: cursive, serif;
+  font-style: inherit;
+}
+
+.no-fontface-kaiti i:lang(zh),
+.no-fontface-kaiti i:lang(ja) {
+  font-family: serif;
+  border-bottom: 3px double lightgrey;
+  padding-bottom: .05em;
+}
+
+/* ---------------------------------------
+   文章內重點
+   ---
+   Importance in article
+   --------------------------------------- */
+article strong:lang(zh),
+article strong:lang(ja) {
+  font-family: sans-serif;
+  font-weight: bolder;
+}
+
+/* ---------------------------------------
+   引用
+   ---
+   Quotes
+   --------------------------------------- 
+   行內引言
+   Inline quotation
+   --------------------------------------- */
+q:lang(zh),
+q:lang(ja) {
+  quotes: '「' '」' '『' '』' '「' '」' '『' '』' '「' '」' '『' '』';
+}
+
+q:lang(zh-CN),
+q:lang(zh-hans),
+q:lang(en) {
+  quotes: '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’';
+}
+
+q:lang(en-GB) {
+  quotes: '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”';
+}
+
+q:before {
+  content: open-quote;
+}
+
+q:after {
+  content: close-quote;
+}
+
+.no-quotes q:lang(zh):before,
+.no-quotes q:lang(ja):before {
+  content: '「';
+}
+
+.no-quotes q:lang(zh):after,
+.no-quotes q:lang(ja):after {
+  content: '」';
+}
+
+.no-quotes q.double:lang(zh):before,
+.no-quotes q.double:lang(ja):before {
+  content: '『';
+}
+
+.no-quotes q.double:lang(zh):after,
+.no-quotes q.double:lang(ja):after {
+  content: '』';
+}
+
+/* 區塊引用
+   Block quotes
+   ---------------------------------------
+   文章內的區塊引用
+   In articles
+   --------------------------------------- */
+article:lang(zh) blockquote,
+article:lang(ja) blockquote {
+  font-family: serif;
+  margin: 1.5em 0 1.5em 2em;
+  width: auto;
+}
+
+/* 引用中的引用
+   Blockquote hierarchies
+   --------------------------------------- */
+article:lang(zh) blockquote blockquote {
+  margin: 1em 0 1em 2em;
+  padding-left: 2em;
+}
+
+article:lang(ja) blockquote blockquote {
+  margin: 1em 0 1em 1em;
+  padding-left: 1em;
+}
+
+/* 描述元素內的區塊引用
+   In figures
+   --------------------------------------- */
+figure:lang(zh) blockquote,
+figure:lang(ja) blockquote,
+figure:lang(zh) blockquote blockquote
+figure:lang(ja) blockquote blockquote {
+  font-family: serif;
+  font-size: 1.25em;
+  margin: .5em 0 0;
+  padding: 7px;
+}
+
+figure:lang(zh) blockquote:before,
+figure:lang(ja) blockquote:before {
+  color: lightgrey;
+  content: '‘';
+  display: block;
+  float: left;
+  font: 3em bold serif;
+  margin: -.2em .1em -.25em -7px;
+}
+
+figure:lang(zh) blockquote p,
+figure:lang(ja) blockquote p,
+figure:lang(zh) blockquote blockquote p
+figure:lang(ja) blockquote blockquote p {
+  margin: .2em 0;
+}
+
+figure figcaption {
+  border-top: 1px solid lightgrey;
+  clear: both;
+  color: #666;
+  font: .85em normal sans-serif;
+  padding-top: .25em;
+  text-align: justify;
+}
+
+/* ---------------------------------------
+   漢字註音
+   ---
+   Hanzi Rubies
+   ---------------------------------------
+   羅馬拼音
+   Romanisation
+   --------------------------------------- */
+html.han-js-rendered ruby rt:before,
+html.han-js-rendered ruby rt:after {
+  content: '';
+}
+
+html.ruby ruby rt {
+  padding: 0 .2em;
+}
+
+html.no-ruby ruby {
+  display: inline-block;
+  line-height: 1.2;
+  text-indent: 0;
+  vertical-align: 1.15em;
+}
+
+html.no-ruby ruby,
+html.no-ruby ruby .rt {
+  text-indent: 0;
+}
+
+html.no-ruby ruby .rr {
+  display: inline-table;
+  text-align: center;
+}
+
+html.no-ruby ruby .rb {
+  display: table-row-group;
+}
+
+html.no-ruby ruby:not(.mps) .rt {
+  display: table-header-group;
+  font-size: .8em;
+  line-height: normal;
+  padding: 0 .05em;
+  white-space: nowrap;
+}
+
+html.no-ruby ruby .rt:empty:after {
+  content: ' ';
+  display: inherit;
+}
+
+/* 橫式注音符號
+   Zhuyin (left-to-right)
+   --------------------------------------- */
+ruby.mps-ltr rt,
+ruby.mps-ltr .rt {
+  font-family: cursive, serif;
+}
+
+/* ---------------------------------------
+   代碼元素
+   ---
+   Code
+   --------------------------------------- */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, sans-serif;
+}
+
+/* ---------------------------------------
+   在手持裝置上的微調
+   ---
+   Adjustments to mobile devices
+   --------------------------------------- */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px), only screen and (device-aspect-ratio: 2 / 3), only screen and (device-aspect-ratio: 40 / 71) {
+  article:lang(zh).poem-like p,
+  article:lang(zh) .poem-like p,
+  article:lang(zh) p.poem-like,
+  article:lang(zh) ol > li,
+  article:lang(zh) ul > li {
+    margin-left: 1em;
+    padding: 0;
+  }
+
+  article:lang(zh) blockquote {
+    margin-left: 1em;
+  }
+
+  article:lang(zh) blockquote blockquote {
+    margin-left: 1em;
+    padding-left: 1em;
+  }
+}
 /* ---------------------------------------
    字體設定
    ---------------------------------------
@@ -52,17 +1332,468 @@
    * 含標點符號修正
    * 需置於「主要元素樣式修正」後，方能正確顯示
    --------------------------------------- */
+/* 
+ * 漢字標準格式 v2.1.0
+ * 字體設定
+ * ---
+ * Font settings,
+ * Hanzi-optimised CSS Mode
+ *
+ *
+ *
+ * Lisence: MIT Lisence
+ * Last Modified: 2013/08/28
+ *
+ */
+/* ---------------------------------------
+   變數設定
+   ---
+   Variables
+   ---------------------------------------
+   預設字體fallback
+   Default font fallback
+   --------------------------------------- */
+/* 基本元素的標點樣式修正 */
+html:lang(zh),
+button:lang(zh),
+input:lang(zh),
+select:lang(zh),
+textarea:lang(zh) {
+  font-family: "Biaodian Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
 
-@import url('./han.fonts.css') all;
+html:lang(ja),
+button:lang(ja),
+input:lang(ja),
+select:lang(ja),
+textarea:lang(ja) {
+  font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 
+html.han-biaodian-pro,
+html.han-biaodian-pro button,
+html.han-biaodian-pro input,
+html.han-biaodian-pro select,
+html.han-biaodian-pro textarea {
+  font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro-cns,
+html.han-biaodian-pro-cns button,
+html.han-biaodian-pro-cns input,
+html.han-biaodian-pro-cns select,
+html.han-biaodian-pro-cns textarea {
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html:lang(zh) :not(:lang(zh)):not(:lang(ja)),
+html:lang(ja) :not(:lang(zh)):not(:lang(ja)),
+html.han-biaodian-pro :not(:lang(zh)):not(:lang(ja)),
+html.han-biaodian-pro-cns :not(:lang(zh)):not(:lang(ja)) {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+/* 書名號<cite> */
+/*
+ * 1. Corrects font fallback on WebKit
+ */
+cite:lang(en).piece:before,
+cite:lang(en).piece:after {
+  font-family: Georgia, Times, "Times New Roman", serif;
+  /* 1 */
+}
+
+/* 着重號<em> */
+/* 不支援CSS着重號`text-emphasis`的hack所使用的着重號字體 */
+.no-textemphasis :lang(zh) em span.cjk:after,
+.no-textemphasis :lang(ja) em span.cjk:after,
+.no-textemphasis :lang(zh) em span.latin:after,
+.no-textemphasis :lang(ja) em span.latin:after {
+  font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'MS Mincho', MS-Mincho, serif !important;
+}
+
+/* 變音文字 */
+i:lang(zh) {
+  font-family: 'Biaodian Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+}
+
+article blockquote i:lang(zh) {
+  font-family: 'Biaodian Sans', 'Latin Italic Sans', sans-serif;
+}
+
+html.han-biaodian-pro i:lang(zh) {
+  font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+}
+
+html.han-biaodian-pro-cns i:lang(zh) {
+  font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+}
+
+html.han-biaodian-pro article blockquote i:lang(zh) {
+  font-family: "Biaodian Pro Sans", "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro-cns article blockquote i:lang(zh) {
+  font-family: "Biaodian Pro Sans CNS", "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+i:lang(ja) {
+  font-family: 'Yakumono Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
+}
+
+article blockquote i:lang(ja),
+html.han-biaodian-pro i:lang(ja),
+html.han-biaodian-pro-cns i:lang(ja),
+html.han-biaodian-pro article blockquote i:lang(ja),
+html.han-biaodian-pro-cns article blockquote i:lang(ja) {
+  font-family: "Yakumono Sans", "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+:lang(zh) i:not(:lang(zh)):not(:lang(ja)),
+:lang(zh) i :not(:lang(zh)):not(:lang(ja)),
+:lang(ja) i:not(:lang(zh)):not(:lang(ja)),
+:lang(ja) i :not(:lang(zh)):not(:lang(ja)) {
+  font-family: "Latin Italic Serif", Georgia, Times, "Times New Roman", serif;
+}
+
+article:lang(zh) blockquote i:not(:lang(zh)):not(:lang(ja)),
+article:lang(zh) blockquote i :not(:lang(zh)):not(:lang(ja)),
+article:lang(ja) blockquote i:not(:lang(zh)):not(:lang(ja)),
+article:lang(ja) blockquote i :not(:lang(zh)):not(:lang(ja)) {
+  font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+:not(:lang(zh)):not(:lang(ja)) i:not(:lang(zh)):not(:lang(ja)),
+:not(:lang(zh)):not(:lang(ja)) i :not(:lang(zh)):not(:lang(ja)),
+:not(:lang(zh)):not(:lang(ja)) i:not(:lang(zh)):not(:lang(ja)),
+:not(:lang(zh)):not(:lang(ja)) i :not(:lang(zh)):not(:lang(ja)) {
+  font-family: inherit;
+  font-style: italic;
+}
+
+/* 如果系統不支援楷體 */
+/* If Kaiti is not supported in users' OS. */
+.no-fontface-kaiti i:lang(zh),
+.no-fontface-kaiti i:lang(ja) {
+  font-family: "Biaodian Serif", "Biaodian Sans", "Latin Italic Serif", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+.no-fontface-kaiti i:lang(ja) {
+  font-family: "Yakumono Serif", "Yakumono Sans", "Latin Italic Serif", Georgia, Times, "Times New Roman", serif;
+}
+
+html.han-biaodian-pro.no-fontface-kaiti i:lang(zh) {
+  font-family: "Biaodian Pro Serif", "Biaodian Pro Sans", "Latin Italic Serif", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+html.han-biaodian-pro-cns.no-fontface-kaiti i:lang(zh) {
+  font-family: "Biaodian Pro Serif CNS", "Biaodian Pro Sans CNS", "Latin Italic Serif", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+/* 文章內重點（article strong） */
+article strong:lang(zh),
+article strong:lang(ja) {
+  font-family: "Biaodian Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+article strong:lang(ja) {
+  font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html.han-biaodian-pro article strong:lang(zh) {
+  font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro-cns article strong:lang(zh) {
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+article strong:not(:lang(zh)):not(:lang(ja)),
+html.han-biaodian-pro article strong:not(:lang(zh)):not(:lang(ja)),
+html.han-biaodian-pro-cns article strong:not(:lang(zh)):not(:lang(ja)) {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* 文章內的區塊引用（blockquote） */
+article:lang(zh) blockquote,
+article:lang(ja) blockquote {
+  font-family: "Biaodian Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif;
+}
+
+html.han-biaodian-pro article blockquote {
+  font-family: "Biaodian Pro Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif;
+}
+
+html.han-biaodian-pro-cns article blockquote {
+  font-family: "Biaodian Pro Serif CNS", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif;
+}
+
+article blockquote:lang(ja),
+html.han-biaodian-pro article blockquote:lang(ja),
+html.han-biaodian-pro-cns article blockquote:lang(ja) {
+  font-family: "Yakumono Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif;
+}
+
+article:lang(zh) blockquote:not(:lang(zh)):not(:lang(ja)),
+article:lang(zh) blockquote :not(:lang(zh)):not(:lang(ja)),
+article:lang(ja) blockquote:not(:lang(zh)):not(:lang(ja)),
+article:lang(ja) blockquote :not(:lang(zh)):not(:lang(ja)) {
+  font-family: Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif;
+}
+
+/* 描述元素內的區塊引用 */
+figure:lang(zh) blockquote,
+figure:lang(ja) blockquote,
+figure:lang(zh) blockquote blockquote
+figure:lang(ja) blockquote blockquote {
+  font-family: "Biaodian Serif", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+html.han-biaodian-pro figure:lang(zh) blockquote {
+  font-family: "Biaodian Pro Serif", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+html.han-biaodian-pro-cns figure:lang(zh) blockquote {
+  font-family: "Biaodian Pro Serif CNS", Georgia, Times, "Times New Roman", "Han Songti", serif;
+}
+
+figure:lang(ja) blockquote,
+figure:lang(ja) blockquote blockquote,
+html.han-biaodian-pro figure:lang(ja) blockquote,
+html.han-biaodian-pro-cns figure:lang(ja) blockquote {
+  font-family: "Yakumono Serif", Georgia, Times, "Times New Roman", serif;
+}
+
+figure:lang(zh) blockquote:before,
+figure:lang(ja) blockquote:before {
+  font: 3em bold Georgia, Times, "Times New Roman", serif;
+}
+
+figure figcaption {
+  font: 0.85em normal "Biaodian Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro figure:lang(zh) figcaption {
+  font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro-cns figure:lang(zh) figcaption {
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+html.han-biaodian-pro figure:lang(ja) figcaption,
+html.han-biaodian-pro-cns figure:lang(ja) figcaption {
+  font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+}
+
+/* 橫式注音符號 */
+ruby.mps-ltr rt,
+ruby.mps-ltr .rt {
+  font-family: 'Han Kaiti', STKaiti, Kaiti, cursive, serif;
+}
+
+/* 代碼（code） */
+code,
+kbd,
+pre,
+samp {
+  font-family: Courier, monospace, sans-serif;
+}
+code:lang(zh),
+kbd:lang(zh),
+pre:lang(zh),
+samp:lang(zh) {
+  font-family: 'Biaodian Sans', Courier, 'Han Heiti', monospace, sans-serif;
+}
+code:lang(ja),
+kbd:lang(ja),
+pre:lang(ja),
+samp:lang(ja) {
+  font-family: 'Yakumono Sans', Courier, monospace, sans-serif;
+}
+html.han-biaodian-pro code, html.han-biaodian-pro
+kbd, html.han-biaodian-pro
+pre, html.han-biaodian-pro
+samp {
+  font-family: 'Biaodian Pro Sans', Courier, 'Han Heiti', monospace, sans-serif;
+}
+html.han-biaodian-pro-cns code, html.han-biaodian-pro-cns
+kbd, html.han-biaodian-pro-cns
+pre, html.han-biaodian-pro-cns
+samp {
+  font-family: 'Biaodian Pro Sans CNS', Courier, 'Han Heiti', monospace, sans-serif;
+}
+code:not(:lang(zh)):not(:lang(ja)),
+code :not(:lang(zh)):not(:lang(ja)),
+kbd:not(:lang(zh)):not(:lang(ja)),
+kbd :not(:lang(zh)):not(:lang(ja)),
+pre:not(:lang(zh)):not(:lang(ja)),
+pre :not(:lang(zh)):not(:lang(ja)),
+samp:not(:lang(zh)):not(:lang(ja)),
+samp :not(:lang(zh)):not(:lang(ja)) {
+  font-family: Courier, 'Han Heiti', monospace, sans-serif;
+}
 
 /* ---------------------------------------
    <ruby>的注音符號功能
    ---------------------------------------
    * 若要開啓，請將65行的註解格式去除
    --------------------------------------- */
+/* 
+ * 漢字標準格式 v2.1.0
+ * Ruby: 國語注音符號
+ * ---
+ * Ruby: Mandarin Phonetic Symbols (Zhuyin),
+ * Hanzi-optimised CSS Mode
+ *
+ *
+ *
+ * Lisence: MIT Lisence
+ * Last Modified: 2013/08/28
+ *
+ */
+span.han-js-zhuyin-rendered span.zy {
+  display: inline-block;
+  opacity: 0;
+  text-indent: -9999999px;
+  width: 0;
+}
 
-/* @import url('./han.zhuyin.css') all; */
+span.han-js-zhuyin-rendered span.zi[data-zy] {
+  display: inline-block;
+  height: 2em;
+  margin-right: .1em;
+  position: relative;
+  text-indent: 0;
+}
 
+span.han-js-zhuyin-rendered span.zi[data-zy]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+  display: inline-block;
+  font: 300 1em/.9 normal 'Han Zhuyin Cursive', cursive, serif;
+  text-decoration: none;
+  text-emphasis: none;
+  -moz-text-emphasis: none;
+  -o-text-emphasis: none;
+  -webkit-text-emphasis: none;
+  text-indent: 0;
+  vertical-align: middle;
+}
 
+span.han-js-zhuyin-rendered span.zi[data-zy]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+  font-family: 'Han Zhuyin Cursive', cursive, serif;
+  font-weight: normal;
+}
 
+span.han-js-zhuyin-rendered.zhuyin-sans-serif span.zi[data-zy]:after {
+  font-family: 'Han Zhuyin Sans', sans-serif;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy]:after {
+  content: attr(data-zy);
+  height: 2.7em;
+  line-height: .9;
+  margin-left: -.2em;
+  transform: scale(0.55);
+  -moz-transform: scale(0.55);
+  -ms-transform: scale(0.55);
+  -o-transform: scale(0.55);
+  -webkit-transform: scale(0.55);
+  white-space: pre-wrap;
+  word-break: break-all;
+  width: .8em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu"]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="jieyin"]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="yunmu"]:after {
+  margin-top: .65em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin"]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-yunmu"]:after,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="jieyin-yunmu"]:after {
+  margin-top: .35em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin-yunmu"]:after {
+  margin-top: -.25em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="0"]:before {
+  content: '˙';
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="2"]:before {
+  content: 'ˊ';
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="3"]:before {
+  content: 'ˇ';
+  /* 
+   * ˇ(CARON); 
+   * ˅(MODIFIER LETTER DOWN ARROWHEAD).
+   */
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="4"]:before {
+  content: 'ˋ';
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+  height: 2.7em;
+  position: absolute;
+  transform: scale(0.55);
+  -moz-transform: scale(0.55);
+  -ms-transform: scale(0.55);
+  -o-transform: scale(0.55);
+  -webkit-transform: scale(0.65);
+  vertical-align: middle;
+  width: 1em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="0"]:before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="2"]:before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="3"]:before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="4"]:before {
+  margin-right: -.6em;
+  right: 0;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="0"]:before {
+  margin-right: -.25em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="2"]:before {
+  margin-right: -.5em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu"][data-tone]:not([data-tone="0"]):before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="jieyin"][data-tone]:not([data-tone="0"]):before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="yunmu"][data-tone]:not([data-tone="0"]):before {
+  margdin-top: .45em;
+  padding-top: .35em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin"][data-tone]:not([data-tone="0"]):before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-yunmu"][data-tone]:not([data-tone="0"]):before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="jieyin-yunmu"][data-tone]:not([data-tone="0"]):before {
+  margin-top: .65em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin-yunmu"][data-tone]:not([data-tone="0"]):before {
+  margin-top: .55em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu"][data-tone][data-tone="0"]:before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="jieyin"][data-tone][data-tone="0"]:before,
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="yunmu"][data-tone][data-tone="0"]:before {
+  margin-top: .3em;
+}
+
+span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin-yunmu"][data-tone="0"]:before {
+  margin-top: -.5em;
+}
+
+/*  */
