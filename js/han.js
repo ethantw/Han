@@ -45,19 +45,14 @@ jQuery.noConflict();
             init();
         });
 
-
-        var had_spacing, // 是不是剛剛執行完 spacing
             last_spacing_time = 0; // 0 means there were never any requests sent
-
 
         $('body').bind('DOMNodeInserted', function() {
             var d = new Date(),
                 current_time = d.getTime(), // get the time of this change event
-                interval = current_time - last_spacing_time; // how many milliseconds since the last request
 
             if ( interval >= 1000 ) { // more than 1 second
                 last_spacing_time = current_time; // set last_spacing_time for next change event
-
                 if ( !had_spacing ) {
                     had_spacing = setTimeout(function() {
                         hanla();
@@ -165,9 +160,7 @@ jQuery.noConflict();
 
 
 
-        /* 強調元素`<em>`的着重號
          * ---
-         * punctuation: CJK emphasis dots
          * on `<em>` element
          *
          */
@@ -176,6 +169,8 @@ jQuery.noConflict();
             $(this).html( characterize($(this).html(), {
                 cjk: ( tests['textemphasis']() ) ? 'biaodian' : 'individual',
                 latin: ( tests['textemphasis']() ) ? 'none' : 'individual' })
+        $((range == document) ? 'body' : range).each(function(){
+            var hanzi = unicode_set('hanzi'),
             );
         });
 
@@ -195,31 +190,28 @@ jQuery.noConflict();
 
 
         /* 漢拉間隙 
+        /* 
          * ---
          * Gaps between Hanzi and Latin Letter
-         * 
          * 修改自：https://github.com/gibuloto/paranoid-auto-spacing/
          *
          */
 
-        hanla();
     },
 
 
-
-    characterize = function( content, glyph ) {
         var content = content + '<!---->',
             glyph = glyph || {};
+            });
 
-        glyph = {
             cjk: glyph.cjk || 'individual',
             latin: glyph.latin || 'group',
             space: glyph.space || 'individual'
         };
 
+                .html( html.replace(/<\/u>(<!--.*?-->|<wbr[ ]?[\/]?>)*?<u(\s.*?)*?>/ig, '</u>$1<u data-adjacent $2>') )
 
         // CJK Unified Ideographs
-        if ( glyph.cjk === 'individual' )
             content = content
             .replace( eval('/(' + unicode['hanzi'].join('') + ')(?=[^>]*<)/ig'), '<span class="cjk">$1</span>' )
             .replace( eval('/(' + unicode['biaodian'][0] + ')(?=[^>]*<)/ig'), '<span class="cjk biaodian">$1</span>' )
@@ -228,9 +220,13 @@ jQuery.noConflict();
 
 
         else if ( glyph.cjk === 'group' )
-            content = content
             .replace( eval('/(' + unicode['hanzi'].join('') + '+)(?=[^>]*<)/ig'), '<span class="cjk">$1</span>' );
+        /* 強調元素`<em>`的着重號
+         * ---
+         * on `<em>` element
+         *
 
+                });
 
         else if ( glyph.cjk === 'biaodian' )
             content = content
@@ -239,21 +235,20 @@ jQuery.noConflict();
             .replace( eval('/(' + unicode['biaodian']['close'] + ')(?=[^>]*<)/ig'), '<span class="cjk biaodian close">$1</span>' );
 
 
+         *
 
         // Latin letters
-        if ( glyph.latin === 'individual' )
             content = content
             .replace( eval('/(' + unicode['latin'].join('') + ')(?=[^>]*<)/ig'), '<span class="latin">$1</span>' );
 
 
         else if ( glyph.latin === 'group' )
-            content = content
             .replace( eval('/(' + unicode['latin'].join('') + '+)(?=[^>]*<)/ig'), '<span class="latin">$1</span>' );
 
+    },
 
 
         // spaces
-        if ( glyph.space === 'individual' )
             content = content
             .replace( /([\s])(?=[^>]*<)/ig, '<span class="space">$1</span>' );
 
@@ -490,6 +485,7 @@ jQuery.noConflict();
      * --------------------------------------------------------
      *
      ** 以下歸類為「拉丁字母」（unicode['latin']）**
+     ** 以下歸類為「拉丁字母」（unicode['latin'].join('|')）**
      *
      * 基本拉丁字母：a-z
      * 阿拉伯數字：0-9
@@ -674,6 +670,31 @@ jQuery.noConflict();
 
 
 
+        },
+
+        bitouwei: function() {
+                    wei = unicode['biaodian'][1],
+
+                // CJK characters
+                    _span( 'bitouwei bitouweidian' )
+                    eval( '/(' + unicode_set('hanzi') + ')(' + tou + ')/ig' ),
+                    this,
+                findAndReplaceDOMText(
+                    eval( '/(' + wei + ')(' + unicode_set('hanzi') + ')/ig' ),
+                    _span( 'bitouwei bitoudian' )
+                );
+
+        charize: function( glyph, charClass, innerSpan ){
+            glyph = {
+                latin: glyph.latin || 'group'
+                // CJK characters
+                if ( glyph.cjk === 'individual' || glyph.cjk === 'biaodian' )
+                        this,
+                    '/(' + unicode_set('latin', '+|') + '+)/ig' :
+                    eval( latin_regex ),
+                    this,
+
+                    /([\s]+)/ig,
     for ( var feature in tests ) {
         classes.push( ( tests[feature]() ? '' : 'no-' ) + feature );
 
@@ -693,7 +714,6 @@ jQuery.noConflict();
     han();
 
     window.han = {
-        characterize: characterize,
         unicode: unicode,
         support: tester
     }
