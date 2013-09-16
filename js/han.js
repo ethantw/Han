@@ -7,7 +7,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/09/15
+ * Last Modified: 2013/09/16
  *
  */
 
@@ -129,29 +129,30 @@ jQuery.noConflict();
          */
 
         if ( $('html').hasClass('han-la') )
-        $((range == document) ? 'body' : range).each(function(){
-            var hanzi = unicode_set('hanzi'),
-                latin = unicode_set('latin') + '|' + unicode['punc'][0],
-                lo = latin + '|' + unicode['punc'][1],
-                lc = latin + '|' + unicode['punc'][2],
-                
-                replacement,
-                replaced,
-                replacedMatch,
-                replaceFill,
-                c,
+            $((range == document) ? 'body' : range).each(function(){
+                var hanzi = unicode_set('hanzi'),
+                    latin = unicode_set('latin') + '|' + unicode['punc'][0],
+                    punc = unicode['punc'];
 
-                replaceFn = function() {
-                    return function( fill, i ){
-                        var span = _span( 'hanla' );
-                        span.setAttribute('data-text-before', fill);
+                    patterns = [
+                        '/(' + hanzi + ')(' + latin + '|' + punc[1] + ')/ig',
+                        '/(' + latin + '|' + punc[2] + ')(' + hanzi + ')/ig'
+                    ],
 
-                        return span;
+                    replaceFn = function() {
+                        return function( fill, i ){
+                            var span = _span( 'hanla' );
+                            span.setAttribute('data-text-before', fill);
+
+                            return span;
+                        };
                     };
-                },
 
-                callback = function( x ) {
-                    $(x).find('span.hanla[data-text-before]').each(function(){
+
+                patterns.forEach(function( exp ){
+                    findAndReplaceDOMText(eval( exp ), this, replaceFn(), 1);
+
+                    $(this).find('span.hanla[data-text-before]').each(function(){
                         var char = $(this).attr('data-text-before'),
                             parent = this.parentNode;
 
@@ -159,33 +160,16 @@ jQuery.noConflict();
                         $(this).removeAttr('data-text-before');
                         parent.normalize();
                     });
-                };
+                }, this);
 
 
-
-            findAndReplaceDOMText(
-                eval( '/(' + unicode_set('hanzi') + ')(' + lo + ')/ig' ),
-                this,
-                replaceFn(),
-                1
-            );
-            callback(this);
-
-            findAndReplaceDOMText(
-                eval( '/(' + lc + ')(' + unicode_set('hanzi') + ')/ig' ),
-                this,
-                replaceFn(),
-                1
-            );
-            callback(this);
-
-            $('* > span.hanla:last-child').parent().each(function(){
-                if ( this.lastChild.nodeType == 1 ) {
-                    $(this).after( $('<span class="hanla"></span>') );
-                    $(this).find('span.hanla:last-child').remove();
-                }
+                $('* > span.hanla:last-child').parent().each(function(){
+                    if ( this.lastChild.nodeType == 1 ) {
+                        $(this).after( $('<span class="hanla"></span>') );
+                        $(this).find('span.hanla:last-child').remove();
+                    }
+                });
             });
-        });
 
 
 
@@ -196,11 +180,8 @@ jQuery.noConflict();
          *
          */
 
-        if ( $('html').hasClass('han-lab-underline') )
-            $(range).find('u').each(function(){
-                if ( !$(this).hasClass('han-js-charized') )
-                  $(this).charize('', true, true);
-            });
+        if ( $( range ).hasClass('han-lab-underline') )
+            $(range).find('u:not(.han-js-charized)').charize('', true, true);
 
         else
             $( (range == document) ? 'body' : range ).each(function() {
@@ -220,11 +201,8 @@ jQuery.noConflict();
          *
          */
 
-        $(range).find('em').each(function(){
-            if ( !$(this).hasClass('han-js-charized') )
-                $(this).charize({
-                    latin: ( tests['textemphasis']() ) ? 'none' : 'individual'
-                });
+        $(range).find('em:not(.han-js-charized)').charize({
+            latin: ( tests['textemphasis']() ) ? 'none' : 'individual'
         });
 
 
