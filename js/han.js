@@ -533,7 +533,6 @@ jQuery.noConflict();
 
     unicode['latin']['punc'] = [];
     unicode['latin']['punc'][0] = '[&;=_\,\.\$\%\^\*\-\+\/]';
-    unicode['latin']['punc']['open'] = '[\(\[\'"<‘“]';
     unicode['latin']['punc']['close'] = '[\)\\]\'">”’]';
 
     unicode['hanzi'] = [];
