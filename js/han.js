@@ -7,7 +7,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/09/16
+ * Last Modified: 2013/09/17
  *
  */
 
@@ -51,8 +51,7 @@ jQuery.noConflict();
         if ( !range && $('html').hasClass('no-han-init') )
             return;
 
-        var range = ( !range  ) ? range : 'body';
-alert(range)
+        var range = range || 'body';
 
         if ( range !== 'body' && !$(range).hasClass(rendered) )
             $(range).addClass(rendered);

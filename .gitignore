@@ -25,9 +25,6 @@ lab/
 
 manual/
 
-
-
-
 css/css3.css
 
 css/han.css3.css
@@ -53,3 +50,5 @@ sass/style.scss
 sass/theme.scss
 
 *.scssc
+
+README.md
