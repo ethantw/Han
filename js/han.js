@@ -23,7 +23,8 @@ jQuery.noConflict();
 
     unicode = [],
 
-    classes = ['han-js-rendered'],
+    rendered = 'han-js-rendered',
+    classes = [rendered],
     fontfaces = [],
 
 
@@ -37,6 +38,8 @@ jQuery.noConflict();
                 for ( var font in fontfaces ) {
                     classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
                 }
+
+                $('html').addClass( classes.join(' ') );
             })();
 
             init();
@@ -48,9 +51,14 @@ jQuery.noConflict();
         if ( !range && $('html').hasClass('no-han-init') )
             return;
 
-        $(( !range ) ? 'html' : range).addClass( classes.join(' ') );
+        var range = ( !range  ) ? range : 'body';
+alert(range)
 
-        var range = range || document;
+        if ( range !== 'body' && !$(range).hasClass(rendered) )
+            $(range).addClass(rendered);
+        else if ( range === 'body' && !$('html').hasClass(rendered) )
+            $('html').addClass(rendered);
+
 
 
         /* 
@@ -122,14 +130,15 @@ jQuery.noConflict();
 
 
 
-        /* 漢拉間隙 
+        /* 
+         * 漢拉間隙 
          * ---
          * Gaps between Hanzi and Latin Letter
          *
          */
 
         if ( $('html').hasClass('han-la') )
-            $((range == document) ? 'body' : range).each(function(){
+            $(range).each(function(){
                 var hanzi = unicode_set('hanzi'),
                     latin = unicode_set('latin') + '|' + unicode['punc'][0],
                     punc = unicode['punc'];
@@ -180,11 +189,11 @@ jQuery.noConflict();
          *
          */
 
-        if ( $( range ).hasClass('han-lab-underline') )
+        if ( $('html').hasClass('han-lab-underline') )
             $(range).find('u:not(.han-js-charized)').charize('', true, true);
 
         else
-            $( (range == document) ? 'body' : range ).each(function() {
+            $(range).each(function() {
                 var html = $(this).html();
 
                 $(this)
@@ -232,7 +241,18 @@ jQuery.noConflict();
         span.className = className;
 
         return span;
-    };
+    },
+
+
+    findAndReplaceDOMText = function( exp, node, repNode, cG ) {
+        return window.findAndReplaceDOMText(
+            exp, node, repNode, cG || null, 
+            function( el ) {
+                var name = el.nodeName.toLowerCase();
+                return name !== 'style' && name !== 'script';
+            }
+        );
+    },
 
 
     inject_element_with_styles = function( rule, callback, nodes, testnames ) {
@@ -710,8 +730,9 @@ jQuery.noConflict();
 
 
 
+
 /**
- * findAndReplaceDOMText v 0.2
+ * findAndReplaceDOMText v 0.3.0
  * @author James Padolsey http://james.padolsey.com
  * @license http://unlicense.org/UNLICENSE
  *
@@ -741,12 +762,15 @@ window.findAndReplaceDOMText = (function() {
    * @param {String|Element|Function} replacementNode A NodeName,
    *  Node to clone, or a function which returns a node to use
    *  as the replacement node.
-   * @param {Number} captureGroup A number specifiying which capture
+   * @param {Number} [captureGroup] A number specifiying which capture
    *  group to use in the match. (optional)
+   * @param {Function} [elFilter] A Function to be called to check whether to
+   *  process an element. (returning true = process element,
+   *  returning false = avoid element)
    */
-  function findAndReplaceDOMText(regex, node, replacementNode, captureGroup) {
+  function findAndReplaceDOMText(regex, node, replacementNode, captureGroup, elFilter) {
 
-    var m, matches = [], text = _getText(node);
+    var m, matches = [], text = _getText(node, elFilter);
     var replaceFn = _genReplacer(replacementNode);
 
     if (!text) { return; }
@@ -761,7 +785,7 @@ window.findAndReplaceDOMText = (function() {
     }
 
     if (matches.length) {
-      _stepThroughMatches(node, matches, replaceFn);
+      _stepThroughMatches(node, matches, replaceFn, elFilter);
     }
   }
 
@@ -781,7 +805,7 @@ window.findAndReplaceDOMText = (function() {
       if (!cg) throw 'Invalid capture group';
       index += m[0].indexOf(cg);
       m[0] = cg;
-    } 
+    }
 
     return [ index, index + m[0].length, [ m[0] ] ];
   };
@@ -790,16 +814,20 @@ window.findAndReplaceDOMText = (function() {
    * Gets aggregate text of a node without resorting
    * to broken innerText/textContent
    */
-  function _getText(node) {
+  function _getText(node, elFilter) {
 
     if (node.nodeType === 3) {
       return node.data;
     }
 
+    if (elFilter && !elFilter(node)) {
+      return '';
+    }
+
     var txt = '';
 
     if (node = node.firstChild) do {
-      txt += _getText(node);
+      txt += _getText(node, elFilter);
     } while (node = node.nextSibling);
 
     return txt;
@@ -810,7 +838,7 @@ window.findAndReplaceDOMText = (function() {
    * Steps through the target node, looking for matches, and
    * calling replaceFn when a match is found.
    */
-  function _stepThroughMatches(node, matches, replaceFn) {
+  function _stepThroughMatches(node, matches, replaceFn, elFilter) {
 
     var after, before,
         startNode,
@@ -821,10 +849,13 @@ window.findAndReplaceDOMText = (function() {
         atIndex = 0,
         curNode = node,
         matchLocation = matches.shift(),
-        matchIndex = 0;
+        matchIndex = 0,
+        doAvoidNode;
 
     out: while (true) {
+
       if (curNode.nodeType === 3) {
+
         if (!endNode && curNode.length + atIndex >= matchLocation[1]) {
           // We've found the ending
           endNode = curNode;
@@ -833,14 +864,17 @@ window.findAndReplaceDOMText = (function() {
           // Intersecting node
           innerNodes.push(curNode);
         }
+
         if (!startNode && curNode.length + atIndex > matchLocation[0]) {
           // We've found the match start
           startNode = curNode;
           startNodeIndex = matchLocation[0] - atIndex;
         }
+
         atIndex += curNode.length;
-        
       }
+
+      doAvoidNode = curNode.nodeType === 1 && elFilter && !elFilter(curNode);
 
       if (startNode && endNode) {
         curNode = replaceFn({
@@ -864,7 +898,10 @@ window.findAndReplaceDOMText = (function() {
         if (!matchLocation) {
           break; // no more matches
         }
-      } else if (curNode.firstChild || curNode.nextSibling) {
+      } else if (
+        !doAvoidNode &&
+        (curNode.firstChild || curNode.nextSibling)
+      ) {
         // Move down or forward:
         curNode = curNode.firstChild || curNode.nextSibling;
         continue;
@@ -924,7 +961,6 @@ window.findAndReplaceDOMText = (function() {
     }
 
     return function replace(range) {
-      if ( range === '' )  return;
 
       var startNode = range.startNode,
           endNode = range.endNode,
@@ -932,7 +968,6 @@ window.findAndReplaceDOMText = (function() {
 
       if (startNode === endNode) {
         var node = startNode;
-
         if (range.startNodeIndex > 0) {
           // Add `before` text node (before the match)
           var before = document.createTextNode(node.data.substring(0, range.startNodeIndex));
@@ -942,50 +977,59 @@ window.findAndReplaceDOMText = (function() {
         // Create the replacement node:
         var el = makeReplacementNode(range.match[0], matchIndex, range.match[0]);
         node.parentNode.insertBefore(el, node);
+
         if (range.endNodeIndex < node.length) {
           // Add `after` text node (after the match)
           var after = document.createTextNode(node.data.substring(range.endNodeIndex));
           node.parentNode.insertBefore(after, node);
         }
+
         node.parentNode.removeChild(node);
+
         reverts.push(function() {
           var pnode = el.parentNode;
           pnode.insertBefore(el.firstChild, el);
           pnode.removeChild(el);
           pnode.normalize();
         });
+
         return el;
+
       } else {
         // Replace startNode -> [innerNodes...] -> endNode (in that order)
         var before = document.createTextNode(startNode.data.substring(0, range.startNodeIndex));
         var after = document.createTextNode(endNode.data.substring(range.endNodeIndex));
         var elA = makeReplacementNode(startNode.data.substring(range.startNodeIndex), matchIndex, range.match[0]);
         var innerEls = [];
+
         for (var i = 0, l = range.innerNodes.length; i < l; ++i) {
           var innerNode = range.innerNodes[i];
           var innerEl = makeReplacementNode(innerNode.data, matchIndex, range.match[0]);
           innerNode.parentNode.replaceChild(innerEl, innerNode);
           innerEls.push(innerEl);
         }
+
         var elB = makeReplacementNode(endNode.data.substring(0, range.endNodeIndex), matchIndex, range.match[0]);
+
         startNode.parentNode.insertBefore(before, startNode);
         startNode.parentNode.insertBefore(elA, startNode);
         startNode.parentNode.removeChild(startNode);
         endNode.parentNode.insertBefore(elB, endNode);
         endNode.parentNode.insertBefore(after, endNode);
         endNode.parentNode.removeChild(endNode);
+
         reverts.push(function() {
           innerEls.unshift(elA);
           innerEls.push(elB);
           for (var i = 0, l = innerEls.length; i < l; ++i) {
             var el = innerEls[i];
             var pnode = el.parentNode;
-            console.log( pnode.nodeName )
             pnode.insertBefore(el.firstChild, el);
             pnode.removeChild(el);
             pnode.normalize();
           }
         });
+
         return elB;
       }
     };
