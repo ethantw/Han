@@ -30,17 +30,15 @@ jQuery.noConflict();
 
     han = function() {
         $(document).on('ready', function(){
-            (function(){
-                fontfaces['songti'] = test_for_fontface( 'Han Songti' );
-                fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' );
-                fontfaces['fangsong'] = test_for_fontface( 'Han Fangsong' );
+            fontfaces['songti'] = test_for_fontface( 'Han Songti' );
+            fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' );
+            fontfaces['fangsong'] = test_for_fontface( 'Han Fangsong' );
 
-                for ( var font in fontfaces ) {
-                    classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
-                }
+            for ( var font in fontfaces ) {
+                classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
+            }
 
-                $('html').addClass( classes.join(' ') );
-            })();
+            $('html').addClass( classes.join(' ') );
 
             init();
         });
@@ -189,8 +187,7 @@ jQuery.noConflict();
          */
 
         if ( $('html').hasClass('han-lab-underline') )
-            $(range).find('u:not(.han-js-charized)').charize('', true, true);
-
+            $(range).find('u').charize('', true, true);
         else
             $(range).each(function() {
                 var html = $(this).html();
@@ -209,10 +206,9 @@ jQuery.noConflict();
          *
          */
 
-        $(range).find('em:not(.han-js-charized)').charize({
+        $(range).find('em').charize({
             latin: ( tests['textemphasis']() ) ? 'none' : 'individual'
         });
-
 
 
         /* 修正引言元素`<q>`不為WebKit引擎支援的問題
@@ -244,11 +240,15 @@ jQuery.noConflict();
 
 
     findAndReplaceDOMText = function( exp, node, repNode, cG ) {
+
         return window.findAndReplaceDOMText(
             exp, node, repNode, cG || null, 
             function( el ) {
-                var name = el.nodeName.toLowerCase();
-                return name !== 'style' && name !== 'script';
+                var name = el.nodeName.toLowerCase(),
+                classes = ( el.nodeType == 1 ) ? el.getAttribute('class') : '',
+                charized = ( classes && classes.match(/han-js-charized/) != null ) ? true : false;
+
+                return name !== 'style' && name !== 'script' && !charized;
             }
         );
     },
@@ -620,19 +620,15 @@ jQuery.noConflict();
 
         charize: function( glyph, charClass, innerSpan ){
             var glyph = glyph || {},
-            charClass = charClass || true;
+            charClass = (charClass == true) ? true : false;
 
             glyph = {
                 cjk: glyph.cjk || 'individual',
-                bitouwei: glyph.bitouwei || true,
+                bitouwei: (glyph.bitouwei == false) ? false : true,
                 latin: glyph.latin || 'group'
             };
 
             return this.each(function(){
-                if ( charClass ) 
-                    $(this).addClass('han-js-charized');
-
-
                 if ( glyph.bitouwei )
                     $(this).bitouwei();
 
@@ -692,6 +688,10 @@ jQuery.noConflict();
                             $('<span>').text( $(this).text() )
                         );
                     });
+
+
+                if ( charClass ) 
+                    $(this).addClass('han-js-charized');
             });
         }
     });
