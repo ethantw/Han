@@ -1088,10 +1088,16 @@ html:not(.han-js-rendered) :lang(ja) em {
  *    If Kaiti is not supported
  *
  */
+:lang(zh) i,
+:lang(ja) i,
+i:lang(zh),
+i:lang(ja) {
+  font-style: inherit;
+}
+
 i:lang(zh),
 i:lang(ja) {
   font-family: cursive, serif;
-  font-style: inherit;
 }
 
 .no-fontface-kaiti i:lang(zh),
@@ -1181,12 +1187,10 @@ article:lang(ja) blockquote {
    --------------------------------------- */
 article:lang(zh) blockquote blockquote {
   margin: 1em 0 1em 2em;
-  padding-left: 2em;
 }
 
 article:lang(ja) blockquote blockquote {
   margin: 1em 0 1em 1em;
-  padding-left: 1em;
 }
 
 /* 描述元素內的區塊引用

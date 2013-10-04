@@ -534,10 +534,16 @@ html:not(.han-js-rendered) :lang(ja) em {
  *
  */
 
+:lang(zh) i,
+:lang(ja) i,
+i:lang(zh),
+i:lang(ja) {
+    font-style: inherit;
+}
+
 i:lang(zh),
 i:lang(ja) {
     font-family: cursive, serif;
-    font-style: inherit;
 }
 
 .no-fontface-kaiti i:lang(zh),
