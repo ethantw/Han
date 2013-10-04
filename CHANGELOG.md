@@ -1,5 +1,4 @@
 
-
 更新紀錄　CHANGELOG
 ===
 
@@ -15,10 +14,9 @@
 2. 以「SCSS」重新改寫整個CSS專案
 
 3. 修正與更新`han/ff.scss`
-
-	* 原第551行的錯誤
-	* 新增「宋體-簡」的fallback（置於「華文宋體」前方）
-	* 新增「宋體-繁」為「Biaodian Pro Serif CNS」的句、讀、頓號fallback
+    * 原第551行的錯誤
+    * 新增「宋體-簡」的fallback（置於「華文宋體」前方）
+    * 新增「宋體-繁」為「Biaodian Pro Serif CNS」的句、讀、頓號fallback
 
 
 4. 更新`han/fonts.scss`，改以變數取代重覆的字體列表
@@ -28,34 +26,25 @@
 6. 停用文章內段落首行縮進的分段方式，改以適合捲軸式閱讀的段落間空行分段
 
 7. `han.js`中的更動
-
 	* 加入函式庫`findAndReplaceDOMText()`
-
 	* `$(selector).charize()`開放函式（原`han.characterize`）
-
 		* 更改此函式為jQuery Plugins，並更名為較簡短的`charize`
 		    `$(selector).charize()`
-
 		* 加入避頭尾點支援
-
 	* `han.js`檔案加載後置入`<html>`標籤的類別由
 		`han-js`
       改名為
         `han-js-rendered`
-
 	* 注音符號`<ruby class="mps">`完載後加入的類別由
 	  	`ruby-zhuyin-constructed`
 	  改名為
 	    `han-js-zhuyin-rendered`
-
 	* 「漢拉間隙」功能改用`findAndReplaceDOMText()`函式，以支援IE
 	  （並取消IE專用的`text-autospace`）
 
 
 8. 實驗性功能
-
 	* 底線相鄰問題改用CSS3偽類選擇器重製註記元素`<u>`的底線，需要
-
   		* 在`<html>`標籤上使用`han-lab-underline`類別
 
 
@@ -68,7 +57,6 @@
 ---
 
 1. 程式代碼依各章節分立於各檔案中
-
 	* 將`normalize.css`自`han.css`中獨立，以利未來更新
 	* 將「以『語言為基礎的元素樣式修正』的『漢字標準格式』」一節獨立（於檔案`han.main.css`中）
 	* 將「各元素字體及字體集設定」獨立於`han.font.css`方便參閱、除錯和修改
@@ -97,14 +85,10 @@
 11. 加入包含「黑、宋、楷、仿宋體」的「四大字體集」CSS3 API
 
 12. JavaScript API
-
 	* 加入「用戶端功能支援測試」`han.support.*function*`
 	* 加入「用戶端字體（集）支援測試」`han.support.font()`
-
 		* 加入`<ruby>`支援偵測
 		* 加入`@font-face`支援偵測
-
-
 	* 加入「萬國碼正則表達式」變數集`han.unicode[]`（所有CJK區段、拉丁字母區段、注音符號及擴充區段等）
 
 
