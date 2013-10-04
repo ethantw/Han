@@ -7,7 +7,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/09/17
+ * Last Modified: 2013/10/5
  *
  */
 
@@ -226,8 +226,11 @@ jQuery.noConflict();
 
 
 
-    unicode_set = function( set, sep ) {
-        return unicode[set].join( sep || '|' );
+    unicode_set = function( set ) {
+        var join = ( set.match(/[hanzi|latin]/) ) ? true : false,
+        result = ( join ) ? unicode[set].join('|') : unicode[set];
+
+        return result;
     },
 
 
@@ -361,7 +364,7 @@ jQuery.noConflict();
      * http://css.hanzi.co/manual/api/javascript_jiekou-han.unicode
      * --------------------------------------------------------
      *
-     ** 以下歸類為「拉丁字母」（unicode['latin'].join('|')）**
+     ** 以下歸類為「拉丁字母」（`unicode('latin')`）**
      *
      * 基本拉丁字母：a-z
      * 阿拉伯數字：0-9
@@ -369,11 +372,12 @@ jQuery.noConflict();
      * 拉丁字母擴展-A區：[\u0100-\u017F]
      * 拉丁字母擴展-B區：[\u0180-\u024F]
      * 拉丁字母附加區：[\u1E00-\u1EFF]
-     * 符號：[~!@#&;=_\$\%\^\*\-\+\,\.\/(\\)\?\:\'\"\[\]\(\)'"<>‘“”’]
+     *
+     ** 符號：[~!@#&;=_\$\%\^\*\-\+\,\.\/(\\)\?\:\'\"\[\]\(\)'"<>‘“”’]
      *
      * --------------------------------------------------------
      *
-     ** 以下歸類為「漢字」（unicode['hanzi']）**
+     ** 以下歸類為「漢字」（`unicode（'hanzi')`）**
      *
      * CJK一般：[\u4E00-\u9FFF]
      * CJK擴展-A區：[\u3400-\u4DB5]
@@ -391,25 +395,26 @@ jQuery.noConflict();
      * CJK相容表意文字：[\uF900-\uFAFF]（**註**：不使用）
      * --------------------------------------------------------
      *
+     ** 符號
+     * [·・︰、，。：；？！—⋯…．·「『（〔【《〈“‘」』）〕】》〉’”–ー—]
+     *
      ** 其他
      *
      * 漢語注音符號、擴充：[\u3105-\u312D][\u31A0-\u31BA]
      * 國語五聲調（三聲有二種符號）：[\u02D9\u02CA\u02C5\u02C7\u02CB]
      * 台灣漢語方言音擴充聲調：[\u02EA\u02EB]
-     * 符號：[·・︰、，。：；？！—⋯…．·「『（〔【《〈“‘」』）〕】》〉’”–ー—]
      *
      *
      */
 
     unicode['latin'] = [
-        '[a-z0-9]',
-        '[\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]'
+        '[A-Za-z0-9\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]'
     ];
 
 
     unicode['punc'] = [
         '[@&;=_\,\.\?\!\$\%\^\*\-\+\/]',
-        '[\(\[\'"<‘“]',
+        '[\(\\[\'"<‘“]',
         '[\)\\]\'">”’]'
     ];
 
@@ -423,7 +428,7 @@ jQuery.noConflict();
     ];
 
     unicode['biaodian'] = [
-        '[·・︰、，。：；？！—⋯…．·／]',
+        '[·・︰、，。：；？！—ー⋯…．·／]',
         '[「『（〔【《〈“‘]',
         '[」』）〕】》〉’”]'
     ];
@@ -598,19 +603,19 @@ jQuery.noConflict();
 
                 // Latin letters
                 findAndReplaceDOMText(
-                    eval( '/(' + end + ')(' + unicode_set('latin', '+|') + '+)(' + start + ')/ig' ),
+                    eval( '/(' + end + ')(' + unicode_set('latin') + '+)(' + start + ')/ig' ),
                     this,
                     _span( 'bitouwei bitouweidian' )
                 );
 
                 findAndReplaceDOMText(
-                    eval( '/(' + unicode_set('latin', '+|') + '+)(' + start + ')/ig' ),
+                    eval( '/(' + unicode_set('latin') + '+)(' + start + ')/ig' ),
                     this,
                     _span( 'bitouwei bitoudian' )
                 );
 
                 findAndReplaceDOMText(
-                    eval( '/(' + end + ')(' + unicode_set('latin', '+|') + '+)/ig' ),
+                    eval( '/(' + end + ')(' + unicode_set('latin') + '+)/ig' ),
                     this,
                     _span( 'bitouwei biweidian' )
                 );
@@ -652,14 +657,14 @@ jQuery.noConflict();
 
                 if ( glyph.cjk === 'group' )
                     findAndReplaceDOMText(
-                        eval( '/(' + unicode_set('hanzi') + '|' + unicode_set('biaodian') + '+)/ig' ),
+                        eval( '/(' + unicode_set('hanzi') + '+|' + unicode_set('biaodian') + '+)/ig' ),
                         this,
                         _span( 'char cjk' )
                     );
 
 
                 var latin_regex = ( glyph.latin === 'group' ) ?
-                    '/(' + unicode_set('latin', '+|') + '+)/ig' :
+                    '/(' + unicode_set('latin') + '+)/ig' :
                     '/(' + unicode_set('latin') + ')/ig';
 
                 findAndReplaceDOMText(

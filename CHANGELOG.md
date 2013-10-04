@@ -3,7 +3,7 @@
 更新紀錄　CHANGELOG
 ===
 
-2.1.0（2013-09-15）
+2.1.0（2013-10-5）
 ---
 1. 將原`css/han.main.css`中，
      `<dfn>`的`font-style`樣式
@@ -12,16 +12,16 @@
    改為
      `inherit`
 
-2. 以「SCSS」重新改寫各`han.*.css`
+2. 以「SCSS」重新改寫整個CSS專案
 
-3. 修正與更新`han.ff.scss`
+3. 修正與更新`han/ff.scss`
 
 	* 原第551行的錯誤
 	* 新增「宋體-簡」的fallback（置於「華文宋體」前方）
 	* 新增「宋體-繁」為「Biaodian Pro Serif CNS」的句、讀、頓號fallback
 
 
-4. 更新`han.fonts.scss`，改以變數取代重覆的字體列表
+4. 更新`han/fonts.scss`，改以變數取代重覆的字體列表
  
 5. 更新`normalize.css`至2.1.3版本
 
@@ -31,7 +31,7 @@
 
 	* 加入函式庫`findAndReplaceDOMText()`
 
-	* `han.characterize`
+	* `$(selector).charize()`開放函式（原`han.characterize`）
 
 		* 更改此函式為jQuery Plugins，並更名為較簡短的`charize`
 		    `$(selector).charize()`
@@ -49,7 +49,7 @@
 	    `han-js-zhuyin-rendered`
 
 	* 「漢拉間隙」功能改用`findAndReplaceDOMText()`函式，以支援IE
-	  （並取消CSS3中的`text-autospace`）
+	  （並取消IE專用的`text-autospace`）
 
 
 8. 實驗性功能

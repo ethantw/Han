@@ -185,18 +185,19 @@
 
 @font-face {
     font-family: 'Han Zhuyin Cursive';
-    src: local('☺'), url(../fonts/zhuyin.eot) format('embedded-opentype')  /* for IE10 */,
+    src: local('☺'),
+         url(../fonts/zhuyin.eot) format('embedded-opentype')  /* for IE10 */,
          url(../fonts/zhuyin.ttf) format('truetype'); 
 }
 
 @font-face {
     font-family: 'Han Zhuyin Sans';
-    src: local('Hiragino Sans GB'); 
+    src: local('Hiragino Sans GB'), local("Microsoft JhengHei"); 
 }
 
 @font-face {
     font-family: 'Han Zhuyin Sans';
-    src: local('Heiti TC'); 
+    src: local('Heiti TC'), local("Microsoft JhengHei"); 
     unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9;
 }
 
