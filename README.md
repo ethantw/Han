@@ -19,12 +19,12 @@
 
 1. 在欲套用「漢字標準格式」CSS框架的網頁中、所有樣式宣告<wbr>*之前*<wbr>導入下列外連樣式表：
 
-    	<link rel="stylesheet" media="all" href="./css/han.css">
+        <link rel="stylesheet" media="all" href="./css/han.css">
 
 2. 同上，再加入以下JavaScript語法：
 
-    	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    	<script src="./js/han.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="./js/han.js"></script>
 
 3. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
 
@@ -68,7 +68,7 @@
 
 
 「漢字標準格式」版本：v2.1.0  
-本頁最後修改於：2013年10月5日　05:08（GMT+8）
+本頁最後修改於：2013年10月5日　05:11（GMT+8）
 
 
 
