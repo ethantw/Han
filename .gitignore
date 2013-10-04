@@ -52,3 +52,13 @@ sass/theme.scss
 *.scssc
 
 README.md
+
+fonts/FontAwesome.otf
+
+fonts/fontawesome-webfont.eot
+
+fonts/fontawesome-webfont.ttf
+
+fonts/fontawesome-webfont.woff
+
+fonts/fontawesome-webfont.svg
