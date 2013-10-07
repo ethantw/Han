@@ -23,7 +23,7 @@
 
 2. 同上，再加入以下JavaScript語法：
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <script src="./js/han.js"></script>
 
 3. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
