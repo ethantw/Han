@@ -401,7 +401,7 @@ table {
    @font-face字體設定
    --------------------------------------- */
 /* 
- * 漢字標準格式 v2.1.0
+ * 漢字標準格式 v2.1.1
  * @font-face字體設定
  * ---
  * @font-face settings,
@@ -410,7 +410,7 @@ table {
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/5
+ * Last Modified: 2013/10/19
  *
  */
 /* ---------------------------------------
@@ -433,13 +433,19 @@ table {
    --------------------------------------- */
 @font-face {
   font-family: 'Han Heiti';
-  src: local("Hiragino Sans GB"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
 }
 
 @font-face {
   font-family: 'Han Heiti';
   src: local("Microsoft Yahei"), local("Microsoft Jhenghei");
   unicode-range: U+4E00;
+}
+
+@font-face {
+  font-family: 'Han Heiti';
+  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+  unicode-range: U+270C;
 }
 
 /* 宋體（明朝體）
@@ -456,6 +462,12 @@ table {
   unicode-range: U+4E00;
 }
 
+@font-face {
+  font-family: 'Han Songti';
+  src: local(STSongti-SC-Regular), local("Songti SC"), local(PMingLiU), local(SimSun);
+  unicode-range: U+270C;
+}
+
 /* 楷體
    Kaiti (Cursive)
    --------------------------------------- */
@@ -470,6 +482,12 @@ table {
   unicode-range: U+4E00;
 }
 
+@font-face {
+  font-family: 'Han Kaiti';
+  src: local(STKaiti), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
+  unicode-range: U+270C;
+}
+
 /* 中華民國國家標準楷體 */
 @font-face {
   font-family: 'Han Kaiti CNS';
@@ -480,6 +498,12 @@ table {
   font-family: 'Han Kaiti CNS';
   src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+4E00;
+}
+
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  unicode-range: U+270C;
 }
 
 /* 中國國家標準楷體 */
@@ -494,6 +518,12 @@ table {
   unicode-range: U+4E00;
 }
 
+@font-face {
+  font-family: 'Han Kaiti GB';
+  src: local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB);
+  unicode-range: U+270C;
+}
+
 /* 仿宋體
    Fangsong
    --------------------------------------- */
@@ -506,6 +536,12 @@ table {
   font-family: 'Han Fangsong';
   src: local(FangSong);
   unicode-range: U+4E00;
+}
+
+@font-face {
+  font-family: 'Han Fangsong';
+  src: local(STFangsong), local(FangSong);
+  unicode-range: U+270C;
 }
 
 /* 手寫體
@@ -966,7 +1002,7 @@ table {
      瀏覽器字體修正包含於下列「字體設定」檔案。
    --------------------------------------- */
 /* 
- * 漢字標準格式 v2.1.0
+ * 漢字標準格式 v2.1.1
  * 以語言為基礎的元素樣式修正
  * ---
  * Language-based style correction, 
@@ -975,7 +1011,7 @@ table {
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/5
+ * Last Modified: 2013/10/19
  *
  */
 /* 
@@ -2020,4 +2056,4 @@ samp :not(:lang(zh)):not(:lang(ja)) {
    ---------------------------------------
    * 若要開啓，請將65行的註解格式去除
    --------------------------------------- */
-/* @import 'han/zhuyin'; */
+/* @import 'han/zhuyin';  */
