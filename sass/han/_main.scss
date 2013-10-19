@@ -478,7 +478,7 @@ html:not(.han-js-rendered) :lang(ja) em {
     height: 1.9em; /* 1 */
     left: 0;
     line-height: 1.9em;
-    margin: .925em 0 0 0;
+    margin: .4em 0 0 0;
     overflow: hidden;
     position: absolute;
     text-decoration: none; /* 1 */
@@ -489,16 +489,16 @@ html:not(.han-js-rendered) :lang(ja) em {
 .no-textemphasis :lang(ja) em span.cjk:after,
 .no-textemphasis :lang(ja) em span.latin:after {
     content: '、';
-    margin: -1.2em 0 0 .35em;
+    margin: -1.55em 0 0 .32em;
     overflow: inherit;
 }
 
 .no-textemphasis :lang(zh) em span.latin:after {
-    margin: .775em 0 0 -.25em;
+    margin: .4em 0 0 -.25em;
 }
 
 .no-textemphasis :lang(ja) em span.latin:after {
-    margin-left: 0em;
+    margin: -1.5em 0 0 .1em;
 }
 
 .no-textemphasis :lang(zh) em span.space:after,
