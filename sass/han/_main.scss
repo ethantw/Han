@@ -431,16 +431,25 @@ html:not(.han-js-rendered) :lang(ja) em {
 }
 
 .textemphasis :lang(zh) em {
-    @include zhuozhonghao();
+    text-emphasis:              circle;
+        -moz-text-emphasis:     circle;
+        -webkit-text-emphasis:  circle;
+    text-emphasis-position:             under;
+        -moz-text-emphasis-position:    under;
+        -webkit-text-emphasis-position: under;
 }
 
 .textemphasis :lang(ja) em {
-    @include zhuozhonghao( sesame, above );
+    text-emphasis:              sesame;
+        -moz-text-emphasis:     sesame;
+        -webkit-text-emphasis:  sesame;
 }
 
 .textemphasis :lang(zh) em span.cjk.biaodian,
 .textemphasis :lang(ja) em span.cjk.biaodian {
-    @include zhuozhonghao( none );
+    text-emphasis:              none;
+        -moz-text-emphasis:     none;
+        -webkit-text-emphasis:  none;
 }
 
 .textemphasis :lang(zh) em span.cjk:after,
