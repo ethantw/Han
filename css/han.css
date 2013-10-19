@@ -1015,7 +1015,7 @@ table {
  *
  */
 /* 
- * 漢字標準格式 v2.1.0
+ * 漢字標準格式 v2.1.1
  * 各家瀏覽器標頭的CSS3屬性
  * ---
  * CSS3 propertes in diff. browsers,
@@ -1024,7 +1024,7 @@ table {
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/08/28
+ * Last Modified: 2013/10/19
  *
  */
 /* ---------------------------------------
@@ -1401,25 +1401,31 @@ html:not(.han-js-rendered) :lang(ja) em {
 }
 
 .textemphasis :lang(zh) em {
-  text-emphasis: circle;
   -moz-text-emphasis: circle;
   -webkit-text-emphasis: circle;
-  text-emphasis-position: under;
+  text-emphasis: circle;
   -moz-text-emphasis-position: under;
   -webkit-text-emphasis-position: under;
+  text-emphasis-position: under;
 }
 
 .textemphasis :lang(ja) em {
-  text-emphasis: sesame;
   -moz-text-emphasis: sesame;
   -webkit-text-emphasis: sesame;
+  text-emphasis: sesame;
+  -moz-text-emphasis-position: above;
+  -webkit-text-emphasis-position: above;
+  text-emphasis-position: above;
 }
 
 .textemphasis :lang(zh) em span.cjk.biaodian,
 .textemphasis :lang(ja) em span.cjk.biaodian {
-  text-emphasis: none;
   -moz-text-emphasis: none;
   -webkit-text-emphasis: none;
+  text-emphasis: none;
+  -moz-text-emphasis-position: under;
+  -webkit-text-emphasis-position: under;
+  text-emphasis-position: under;
 }
 
 .textemphasis :lang(zh) em span.cjk:after,
@@ -2056,18 +2062,5 @@ samp :not(:lang(zh)):not(:lang(ja)) {
    ---------------------------------------
    * 若要開啓，請將65行的註解格式去除
    --------------------------------------- */
-/* 
- * 漢字標準格式 v2.1.0
- * Ruby: 國語注音符號
- * ---
- * Ruby: Mandarin Phonetic Symbols (Zhuyin),
- * Hanzi-optimised CSS Mode
- *
- *
- *
- * Lisence: MIT Lisence
- * Last Modified: 2013/08/28
- *
- */
 
- /* @import 'han/zhuyin'; */
+/* @import 'han/zhuyin'; */
