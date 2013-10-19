@@ -431,25 +431,16 @@ html:not(.han-js-rendered) :lang(ja) em {
 }
 
 .textemphasis :lang(zh) em {
-    text-emphasis:              circle;
-        -moz-text-emphasis:     circle;
-        -webkit-text-emphasis:  circle;
-    text-emphasis-position:             under;
-        -moz-text-emphasis-position:    under;
-        -webkit-text-emphasis-position: under;
+    @include zhuozhonghao();
 }
 
 .textemphasis :lang(ja) em {
-    text-emphasis:              sesame;
-        -moz-text-emphasis:     sesame;
-        -webkit-text-emphasis:  sesame;
+    @include zhuozhonghao( sesame, above );
 }
 
 .textemphasis :lang(zh) em span.cjk.biaodian,
 .textemphasis :lang(ja) em span.cjk.biaodian {
-    text-emphasis:              none;
-        -moz-text-emphasis:     none;
-        -webkit-text-emphasis:  none;
+    @include zhuozhonghao( none );
 }
 
 .textemphasis :lang(zh) em span.cjk:after,
@@ -800,4 +791,22 @@ samp {
         padding-left: 1em;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
