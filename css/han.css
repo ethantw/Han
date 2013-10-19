@@ -448,6 +448,13 @@ table {
   unicode-range: U+270C;
 }
 
+@font-face {
+  font-family: 'Han Heiti';
+  font-weight: 600;
+  src: local("Hiragino Sans GB W6"), local("Heiti SC Medium"), local("Heiti TC Medium"), local("Microsoft Yahei Bold"), local("Microsoft Jhenghei Bold");
+  unicode-range: U+270C;
+}
+
 /* 宋體（明朝體）
    Songti (Mincho)
    --------------------------------------- */
@@ -465,6 +472,13 @@ table {
 @font-face {
   font-family: 'Han Songti';
   src: local(STSongti-SC-Regular), local("Songti SC"), local(PMingLiU), local(SimSun);
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src: local(STSongti-SC-Bold);
   unicode-range: U+270C;
 }
 
@@ -564,9 +578,14 @@ table {
    Italic serif for Latin
    --------------------------------------- */
 @font-face {
-  /* 襯線西文斜體字型 */
   font-family: 'Latin Italic Serif';
   src: local("Georgia-Italic"), local("Georgia Italic"), local("Times-Italic"), local("TimesNewRomanPS-ItalicMT"), local("Times New Roman Italic");
+}
+
+@font-face {
+  font-family: 'Latin Italic Serif';
+  font-weight: 700;
+  src: local(Georgia-BoldItalic), local("Georgia Bold Italic"), local(Times-Italic), local(TimesNewRomanPS-BoldItalicMT), local("Times New Roman Bold Italic");
 }
 
 /* ---------------------------------------
@@ -576,7 +595,13 @@ table {
    --------------------------------------- */
 @font-face {
   font-family: 'Latin Italic Sans';
-  src: local("HelveticaNeue-Italic"), local("Helvetica Neue Italic"), local("Helvetica-LightOblique"), local("Helvetica Oblique"), local("Arial Italic"), local("Arial-ItalicMT");
+  src: local(HelveticaNeue-Italic), local("Helvetica Neue Italic"), local(Helvetica-LightOblique), local("Helvetica Oblique"), local("Arial Italic"), local(Arial-ItalicMT);
+}
+
+@font-face {
+  font-family: 'Latin Italic Sans';
+  font-weight: 700;
+  src: local(HelveticaNeue-BoldItalic), local("Helvetica Neue Bold Italic"), local(Helvetica-BoldOblique), local("Helvetica Bold Oblique"), local("Arial Bold Italic"), local(Arial-BoldItalicMT);
 }
 
 /* ---------------------------------------
@@ -2063,5 +2088,5 @@ samp :not(:lang(zh)):not(:lang(ja)) {
    * 若要開啓，請將65行的註解格式去除
    --------------------------------------- */
 
- /* @import 'han/zhuyin'; */
+/* @import 'han/zhuyin'; */
 
