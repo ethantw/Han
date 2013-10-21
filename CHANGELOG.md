@@ -2,11 +2,21 @@
 更新紀錄　CHANGELOG
 ===
 
-2.1.1 beta1（2013-10-18）
+2.1.1 （2013-10-21）
 ---
-1. 將Normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（issue #7）
+1. 將normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（issue #7）
 
 2. 採用Sass Partials
+
+3. 修正四大字體集、西文斜體字體會在某些瀏覽器出現偽粗體的情況（issue #10）
+
+4. 更新`findAndReplaceDOMText()`函式至版本0.4.0（issue #8、#9）
+
+5. 着重號顯示位置修正（issue #6）
+
+
+〔更多資訊〕
+https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed
 
 
 
