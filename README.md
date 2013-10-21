@@ -17,58 +17,38 @@
 啓用設置步驟
 ---
 
-1. 在欲套用「漢字標準格式」CSS框架的網頁中、所有樣式宣告<wbr>*之前*<wbr>導入下列外連樣式表：
+1. 在欲套用「漢字標準格式」CSS框架的網頁中、所有樣式宣告<wbr>*之前*<wbr>導入下列外連樣式表及JavaScript檔案：
 
         <link rel="stylesheet" media="all" href="./css/han.css">
 
-2. 同上，再加入以下JavaScript語法：
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="./js/jquery-2.0.3.min.js"></script>
         <script src="./js/han.js"></script>
 
-3. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
-
-4. 在瀏覽器中開啓已套用本框架的網頁測試是否正確運作。
+2. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
 
 
-***
+* * *
 
+### 在Sass中啓用注音符號支援
 
-### 啓用注音符號支援
+由於使用頻率較低，在Sass編程環境下，「漢字標準格式」將`<ruby>`中的「直式注音符號支援」預設關閉，需另行啓用；若你直接使用`han.css`，則*毋須*另行啓用。
 
-由於使用頻率較低，「漢字標準格式」將`<ruby>`中的「直式注音符號支援」同主程式分離，需另行啓用方可正確顯示此功能之效果。
+1. 開啓`sass/han.scss`，將「65行」的代碼由註解範圍*更改*為一般代碼格式。
 
-1.   
-    #### 啓用
-    ##### 使用CSS
-    開啓`css/han.css`，將「30行」的代碼由註解範圍*更改*為一般代碼格式。
+2.  開啓`sass/han/ff.scss`，將「17、18行」的`$zhuyin_ttf`及`$zhuyin_eot`重新定向至正確的檔案路徑。
 
-    ##### 使用Sass
-    開啓`sass/han.scss`，將「65行」的代碼由註解範圍*更改*為一般代碼格式。
-
-
-2.  
-    #### 指定相應檔案路徑
-    ##### 使用CSS
-    開啓`han.css`，將「177行」的`../fonts/zhuyin.eot`及`../fonts/zhuyin.ttf`重新定向至正確的檔案路徑。
-
-    ##### 使用Sass
-    開啓`sass/han/ff.scss`，將「189、190行」的`../fonts/zhuyin.eot`及`../fonts/zhuyin.ttf`重新定向至正確的檔案路徑。
-
-    **請注意：**此處使用的注音符號字體係「中華民國教育部」所研發的「[教育部標準楷書][kai]」，並**採[創用CC「姓名標示–禁止改作–3.0台灣版」][cc]授權**。若你有著作權的疑慮，請直接刪除上述提及之二行代碼及檔案，「漢字標準格式」將自動fallback至使用者作業系統的漢字手寫字體。
+    **請注意：**此處使用的注音符號字體係「中華民國教育部」所研發的「[教育部標準楷書][kai]」，並**採[創用CC「姓名標示–禁止改作–3.0台灣版」][cc]授權**。
 
 3. 在瀏覽器中開啓內含`<ruby class="zhuyin"> … </ruby>`元素的網頁進行測試。
-
 
 [kai]: http://www.edu.tw/treasure/filedown.aspx?Node=1123&Index=2&WID=c5ad5187-55ef-4811-8219-e946fe04f725
 [cc]: http://creativecommons.org/licenses/by-nd/3.0/tw/
 
 
-***
+* * *
 
-
-「漢字標準格式」版本：v2.1.0  
-本頁最後修改於：2013年10月18日　13:09（GMT+8）
+「漢字標準格式」版本：v2.1.1  
+本頁最後修改於：2013年10月21日　12:51（GMT+8）
 
 
 
