@@ -10,9 +10,13 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/19
+ * Last Modified: 2013/10/21
  *
  */
+
+$zhuyin_ttf: '../fonts/zhuyin.ttf';
+$zhuyin_eot: '../fonts/zhuyin.eot';
+
 
 
 /* ---------------------------------------
@@ -275,8 +279,8 @@
 @font-face {
     font-family: 'Han Zhuyin Cursive';
     src: local('☺'),
-         url(../fonts/zhuyin.eot) format('embedded-opentype')  /* for IE10 */,
-         url(../fonts/zhuyin.ttf) format('truetype'); 
+         url($zhuyin_eot) format('embedded-opentype')  /* for IE10 */,
+         url($zhuyin_ttf) format('truetype'); 
 }
 
 @font-face {
