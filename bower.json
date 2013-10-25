@@ -5,7 +5,7 @@
   "authors": [
     "ethantw <ethantw@me.com>"
   ],
-  "description": "Normalize chinese character format for chinese website",
+  "description": "The CSS typography framework optimised for Hanzi.",
   "main": "css/han.css",
   "keywords": [
     "css",
