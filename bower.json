@@ -12,7 +12,7 @@
     "han",
     "normalize"
   ],
-  "license": "https://github.com/ethantw/Han/blob/master/license.md",
+  "license": "http://css.hanzi.co/license.md",
   "ignore": [
     "**/.*",
     "node_modules",
