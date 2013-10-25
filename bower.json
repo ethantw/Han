@@ -1,0 +1,23 @@
+{
+  "name": "Han",
+  "version": "2.1.1",
+  "homepage": "http://css.hanzi.co/",
+  "authors": [
+    "ethantw <ethantw@me.com>"
+  ],
+  "description": "Normalize chinese character format for chinese website",
+  "main": "css/han.css",
+  "keywords": [
+    "css",
+    "han",
+    "normalize"
+  ],
+  "license": "https://github.com/ethantw/Han/blob/master/license.md",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
