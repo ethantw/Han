@@ -1,0 +1,101 @@
+
+
+/* ---------------------------------------
+   四大字體集
+   ---
+   The Four Typefaces
+   ---------------------------------------
+   宋體（明朝體）
+   Songti (Mincho)
+   --------------------------------------- */
+
+@font-face {
+    font-family: 'Han Songti';
+    src: local('STSongti TC'),
+         local('STSongti SC'),
+
+         local('Songti SC'),
+         local('Lisong Pro'),
+
+         local(PMingLiU),
+         local(SimSun);
+}
+
+@font-face {
+    font-family: 'Han Songti CNS';
+    src: local('STSongti TC'),
+         local('Lisong Pro'),
+
+         local('STSongti SC'),
+         local('Songti SC'),
+
+         local(PMingLiU),
+         local(SimSun);
+}
+
+@font-face {
+    font-family: 'Han Songti GB';
+    src: local('STSongti SC'),
+
+         local('Songti SC'),
+
+         local(SimSun);
+}
+
+
+/* ----------------------------------------- 
+ * 解決IE的字體fallback問題
+ * Solution to IE font fallback issue
+ * ----------------------------------------- */
+
+@font-face {
+    font-family: 'Han Songti';
+    src: local(PMingLiU),
+         local(SimSun);
+    unicode-range: U+4E00;
+}
+
+
+/* ----------------------------------------- 
+ * 解決Firefox不支援`unicode-range`的問題
+ * Solution to Firefox's `unicode-range`
+ * issue
+ * ----------------------------------------- */
+
+@font-face {
+    font-family: 'Han Songti';
+    src: local('STSongti TC'),
+         local('STSongti SC'),
+         local('Songti SC'),
+         local(PMingLiU),
+         local(SimSun);
+    unicode-range: U+270C;
+}
+
+@font-face {
+    font-family: 'Han Songti';
+    font-weight: 600;
+
+    src: local(STSongti-TC-Bold),
+         local(STSongti-SC-Bold);
+    unicode-range: U+270C;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
