@@ -108,6 +108,16 @@ html.han-js-rendered u.adjacent {
 }
 
 /* 實驗性功能 */
+/* 避免`border-box` reset的問題 */
+.han-js-rendered.han-lab-underline u,
+.han-js-rendered.han-lab-underline u *,
+.han-js-rendered.han-lab-underline u *:before,
+.han-js-rendered.han-lab-underline u *:after {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
 u.han-js-charized {
     border-bottom: 0 none;
     text-decoration: none;
