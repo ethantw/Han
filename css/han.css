@@ -1,13 +1,13 @@
 @charset "utf-8";
 /* 
- * 漢字標準格式 v2.1.1
+ * 漢字標準格式 v2.2.0
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/18
+ * Last Modified: 2013/10/28
  *
  */
 /* 
@@ -1027,7 +1027,7 @@ table {
      瀏覽器字體修正包含於下列「字體設定」檔案。
    --------------------------------------- */
 /* 
- * 漢字標準格式 v2.1.1
+ * 漢字標準格式 v2.2.0
  * 以語言為基礎的元素樣式修正
  * ---
  * Language-based style correction, 
@@ -1036,7 +1036,7 @@ table {
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/19
+ * Last Modified: 2013/10/28
  *
  */
 /* 
@@ -1131,6 +1131,16 @@ html.han-js-rendered u.adjacent {
 }
 
 /* 實驗性功能 */
+/* 避免`border-box` reset的問題 */
+.han-js-rendered.han-lab-underline u,
+.han-js-rendered.han-lab-underline u *,
+.han-js-rendered.han-lab-underline u *:before,
+.han-js-rendered.han-lab-underline u *:after {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
 u.han-js-charized {
   border-bottom: 0 none;
   text-decoration: none;
@@ -1561,7 +1571,7 @@ i:lang(ja) {
 article strong:lang(zh),
 article strong:lang(ja) {
   font-family: sans-serif;
-  font-weight: bolder;
+  font-weight: bold;
 }
 
 /* ---------------------------------------
@@ -2082,3 +2092,8 @@ samp :not(:lang(zh)):not(:lang(ja)) {
   font-family: Courier, 'Han Heiti', monospace, sans-serif;
 }
 
+/* ---------------------------------------
+   <ruby>的注音符號功能
+   ---------------------------------------
+   * 若要開啓，請將65行的註解格式去除
+   --------------------------------------- */
