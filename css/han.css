@@ -401,7 +401,7 @@ table {
    @font-face字體設定
    --------------------------------------- */
 /* 
- * 漢字標準格式 v2.2。
+ * 漢字標準格式 v2.2.0
  * @font-face字體設定
  * ---
  * @font-face settings,
@@ -1661,21 +1661,22 @@ article:lang(ja) blockquote blockquote {
   margin: 1em 0 1em 1em;
 }
 
-/* 描述元素內的區塊引用
-   In figures
+/* 文章區塊下描述元素內的區塊引用
+   In article figures
    --------------------------------------- */
-figure:lang(zh) blockquote,
-figure:lang(ja) blockquote,
-figure:lang(zh) blockquote blockquote
-figure:lang(ja) blockquote blockquote {
+article:lang(zh) figure blockquote,
+article:lang(ja) figure blockquote,
+article:lang(zh) figure blockquote blockquote,
+article:lang(ja) figure blockquote blockquote {
   font-family: serif;
   font-size: 1.25em;
   margin: .5em 0 0;
   padding: 7px;
 }
-
-figure:lang(zh) blockquote:before,
-figure:lang(ja) blockquote:before {
+article:lang(zh) figure blockquote:before,
+article:lang(ja) figure blockquote:before,
+article:lang(zh) figure blockquote blockquote:before,
+article:lang(ja) figure blockquote blockquote:before {
   color: lightgrey;
   content: '‘';
   display: block;
@@ -1683,15 +1684,15 @@ figure:lang(ja) blockquote:before {
   font: 3em bold serif;
   margin: -.2em .1em -.25em -7px;
 }
-
-figure:lang(zh) blockquote p,
-figure:lang(ja) blockquote p,
-figure:lang(zh) blockquote blockquote p
-figure:lang(ja) blockquote blockquote p {
+article:lang(zh) figure blockquote p,
+article:lang(ja) figure blockquote p,
+article:lang(zh) figure blockquote blockquote p,
+article:lang(ja) figure blockquote blockquote p {
   margin: .2em 0;
 }
 
-figure figcaption {
+article:lang(zh) figure figcaption,
+article:lang(ja) figure figcaption {
   border-top: 1px solid lightgrey;
   clear: both;
   color: #666;
