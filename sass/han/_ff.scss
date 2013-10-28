@@ -1,7 +1,7 @@
 @charset 'utf-8';
 
 /* 
- * 漢字標準格式 v2.1.1
+ * 漢字標準格式 v2.2.0
  * @font-face字體設定
  * ---
  * @font-face settings,
@@ -10,7 +10,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/21
+ * Last Modified: 2013/10/28
  *
  */
 
@@ -703,12 +703,29 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
 }
 
 @font-face {
+    font-family: 'Biaodian Pro Sans CNS';
+    src: local('Hiragino Kaku Gothic ProN'), local('Hiragino Kaku Gothic Pro'), 
+        local('Heiti TC'), local('Lihei Pro'), /* 1 */
+        local('Microsoft Jhenghei'), local(PMingLiU), local('MS Gothic'), /* 2 */
+        local('IPAexGothic'), local('AR PL UMing TW'), local('ARPLMingU20') /* 3 */;
+    unicode-range: U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+}
+
+@font-face {
     font-family: 'Biaodian Pro Serif CNS';
     src: local(STSongti-TC-Regular), local('Lisong Pro'), local(LiSungLight), local('Heiti TC'), /* 1 */
         local(PMingLiU), /* 2 */
         local('IPAexGothic'), local('AR PL UMing TW'), local('ARPLMingU20') /* 3 */;
-    unicode-range: U+3002, U+FF0C, U+3001, /* a */
-        U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+    unicode-range: U+3002, U+FF0C, U+3001 /* a */;
+}
+
+
+@font-face {
+    font-family: 'Biaodian Pro Serif CNS';
+    src: local('Hiragino Mincho ProN'), local('Hiragino Mincho Pro'), /* 1 */
+        local(PMingLiU), local('MS Mincho'), /* 2 */
+        local('IPAexGothic'), local('AR PL UMing TW'), local('ARPLMingU20') /* 3 */;
+    unicode-range: U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
 }
 
 
@@ -801,5 +818,22 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
     src: local('Lying to Firefox');
     unicode-range: U+270C;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
