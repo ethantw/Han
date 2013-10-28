@@ -1665,18 +1665,18 @@ article:lang(ja) blockquote blockquote {
    In article figures
    --------------------------------------- */
 article:lang(zh) figure blockquote,
-article:lang(ja) figure blockquote,
-article:lang(zh) figure blockquote blockquote,
-article:lang(ja) figure blockquote blockquote {
+article:lang(ja) figure blockquote {
   font-family: serif;
   font-size: 1.25em;
   margin: .5em 0 0;
   padding: 7px;
 }
+article:lang(zh) figure blockquote blockquote,
+article:lang(ja) figure blockquote blockquote {
+  margin: inherit;
+}
 article:lang(zh) figure blockquote:before,
-article:lang(ja) figure blockquote:before,
-article:lang(zh) figure blockquote blockquote:before,
-article:lang(ja) figure blockquote blockquote:before {
+article:lang(ja) figure blockquote:before {
   color: lightgrey;
   content: '‘';
   display: block;
@@ -1685,9 +1685,7 @@ article:lang(ja) figure blockquote blockquote:before {
   margin: -.2em .1em -.25em -7px;
 }
 article:lang(zh) figure blockquote p,
-article:lang(ja) figure blockquote p,
-article:lang(zh) figure blockquote blockquote p,
-article:lang(ja) figure blockquote blockquote p {
+article:lang(ja) figure blockquote p {
   margin: .2em 0;
 }
 
