@@ -25,10 +25,10 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
    The Four Typefaces
    --------------------------------------- */
 
-@import 'ff.heiti';
-@import 'ff.songti';
-@import 'ff.kaiti';
-@import 'ff.fangsong';
+@import 'ff/heiti';
+@import 'ff/songti';
+@import 'ff/kaiti';
+@import 'ff/fangsong';
 
 /* 手寫體
    Cursive
