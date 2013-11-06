@@ -703,15 +703,6 @@ article:lang(ja) figure blockquote {
 		margin: inherit;
 	}
 
-	&:before {
-		color: $lightgrey;
-		content: '‘';
-		display: block;
-		float: left;
-		font: 3em bold serif;
-		margin: -.2em .1em -.25em -7px;
-	}
-
 	p {
 	   margin: .2em 0;
 	}
