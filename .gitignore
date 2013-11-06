@@ -1,10 +1,4 @@
 .DS_Store
-
-_TODO.md
-
-config.rb
-
-
-*.scssc
-
 manual/
+config.rb
+*.scssc
