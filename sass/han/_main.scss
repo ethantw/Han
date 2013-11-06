@@ -801,12 +801,13 @@ samp {
 
 
 /* ---------------------------------------
-   在手持裝置上的微調
+   在小視窗瀏覽器上（如手持裝置）的微調
    ---
-   Adjustments to mobile devices
+   Adjustments to small-width windows
+   (i.e., mobile devices)
    --------------------------------------- */
 
-@media only screen and (min-device-width: 320px) and (max-device-width: 480px),
+@media only screen and (max-width: 480px),
 	   only screen and (device-aspect-ratio: 2/3),
 	   only screen and (device-aspect-ratio: 40/71) {
 
