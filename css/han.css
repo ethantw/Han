@@ -410,52 +410,38 @@ table {
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/10/29
+ * Last Modified: 2013/10/28
  *
  */
 /* ---------------------------------------
-   四大字體集
+   四類漢字字體集
    ---
    The Four Typefaces
-   --------------------------------------- */
-/* ---------------------------------------
-   四大字體集
-   ---
-   The Four Typefaces
+   ---------------------------------------
+ *
+ * 1. On Mac OS X;
+ * 2. On Windows;
+ * 3. For Webkit;
+ * 4. For Gecko;
+ * 5. On Android;
+ * 6. IE hacks.
+ *
+ *
    ---------------------------------------
    黑體
    Heiti (Gothic)
    --------------------------------------- */
 @font-face {
   font-family: 'Han Heiti';
-  src: local(YuGothic), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
 }
 
-@font-face {
-  font-family: 'Han Heiti CNS';
-  src: local(YuGothic), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Hiragino Sans GB"), local("Lantinghei TC"), local("Heiti TC"), local("Microsoft Jhenghei"), local("Heiti SC"), local("Lantinghei SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
-}
-
-@font-face {
-  font-family: 'Han Heiti GB';
-  src: local("Hiragino Sans GB"), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
-}
-
-/* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Heiti';
   src: local("Microsoft Yahei"), local("Microsoft Jhenghei");
   unicode-range: U+4E00;
 }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Heiti';
   src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
@@ -469,63 +455,34 @@ table {
   unicode-range: U+270C;
 }
 
-/* ---------------------------------------
-   四大字體集
-   ---
-   The Four Typefaces
-   ---------------------------------------
-   宋體（明朝體）
+/* 宋體（明朝體）
    Songti (Mincho)
    --------------------------------------- */
 @font-face {
   font-family: 'Han Songti';
-  src: local("STSongti TC"), local("STSongti SC"), local("Songti SC"), local("Lisong Pro"), local(PMingLiU), local(SimSun);
+  src: local(STSongti-SC-Regular), local("Songti SC"), local(PMingLiU), local(SimSun);
 }
 
-@font-face {
-  font-family: 'Han Songti CNS';
-  src: local("STSongti TC"), local("Lisong Pro"), local("STSongti SC"), local("Songti SC"), local(PMingLiU), local(SimSun);
-}
-
-@font-face {
-  font-family: 'Han Songti GB';
-  src: local("STSongti SC"), local("Songti SC"), local(SimSun);
-}
-
-/* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Songti';
   src: local(PMingLiU), local(SimSun);
   unicode-range: U+4E00;
 }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Songti';
-  src: local("STSongti TC"), local("STSongti SC"), local("Songti SC"), local(PMingLiU), local(SimSun);
+  src: local(STSongti-SC-Regular), local("Songti SC"), local(PMingLiU), local(SimSun);
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: 'Han Songti';
   font-weight: 600;
-  src: local(STSongti-TC-Bold), local(STSongti-SC-Bold);
+  src: local(STSongti-SC-Bold);
   unicode-range: U+270C;
 }
 
-/* ---------------------------------------
-   四大字體集
-   ---
-   The Four Typefaces
-   ---------------------------------------
-   楷體
+/* 楷體
    Kaiti (Cursive)
    --------------------------------------- */
 @font-face {
@@ -534,31 +491,39 @@ table {
 }
 
 @font-face {
-  font-family: 'Han Kaiti CNS';
-  /* 中華民國國家標準楷體 */
-  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
-}
-
-@font-face {
-  font-family: 'Han Kaiti GB';
-  /* 中國國家標準楷體 */
-  src: local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB);
-}
-
-/* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
- * ----------------------------------------- */
-@font-face {
   font-family: 'Han Kaiti';
   src: local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
   unicode-range: U+4E00;
 }
 
 @font-face {
+  font-family: 'Han Kaiti';
+  src: local(STKaiti), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
+  unicode-range: U+270C;
+}
+
+/* 中華民國國家標準楷體 */
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+}
+
+@font-face {
   font-family: 'Han Kaiti CNS';
   src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+4E00;
+}
+
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  unicode-range: U+270C;
+}
+
+/* 中國國家標準楷體 */
+@font-face {
+  font-family: 'Han Kaiti GB';
+  src: local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB);
 }
 
 @font-face {
@@ -567,35 +532,13 @@ table {
   unicode-range: U+4E00;
 }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
-@font-face {
-  font-family: 'Han Kaiti';
-  src: local(STKaiti), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB);
-  unicode-range: U+270C;
-}
-
-@font-face {
-  font-family: 'Han Kaiti CNS';
-  src: local("標楷體"), local(DFKaiShu-SB-Estd-BF);
-  unicode-range: U+270C;
-}
-
 @font-face {
   font-family: 'Han Kaiti GB';
   src: local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB);
   unicode-range: U+270C;
 }
 
-/* ---------------------------------------
-   四大字體集
-   ---
-   The Four Typefaces
-   ---------------------------------------
-   仿宋體
+/* 仿宋體
    Fangsong
    --------------------------------------- */
 @font-face {
@@ -603,21 +546,12 @@ table {
   src: local(STFangsong), local(FangSong);
 }
 
-/* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Fangsong';
   src: local(FangSong);
   unicode-range: U+4E00;
 }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Fangsong';
   src: local(STFangsong), local(FangSong);
