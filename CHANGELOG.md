@@ -2,6 +2,24 @@
 更新紀錄　CHANGELOG
 ===
 
+2.1.2（2013-11-07）
+---
+1. 修正`article:lang(zh | ja) strong`的字重（issue #16）
+
+2. 修正標點字體「Biaodian Pro Sans CNS」之分號等符號無法正確顯示的問題（issue #15）
+
+3. 限定`figure > blockquote`的引號樣式在文章區塊下（issue #13）
+
+4. 實驗性底線在`border-box` reset網頁下的顯示問題
+（issue #11）
+
+
+〔更多資訊〕  
+[https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]()
+
+
+* * *
+
 2.1.1 （2013-10-21）
 ---
 1. 將normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（issue #7）
@@ -15,14 +33,14 @@
 5. 着重號顯示位置修正（issue #6）
 
 
-〔更多資訊〕
-https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed
+〔更多資訊〕  
+[https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]()
 
 
 
 * * *
 
-2.1.1（2013-10-5）
+2.1.0（2013-10-5）
 ---
 1. 將原`css/han.main.css`中，
      `<dfn>`的`font-style`樣式

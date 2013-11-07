@@ -1,6 +1,6 @@
 
 /* 
- * 漢字標準格式 v2.1.1
+ * 漢字標準格式 v2.1.2
  * ---
  * Hanzi-optimised CSS Mode
  *
@@ -16,7 +16,7 @@ jQuery.noConflict();
 
 (function($){
 
-    var version = '2.1.1',
+    var version = '2.1.2',
 
     tests = [],
     rubies,

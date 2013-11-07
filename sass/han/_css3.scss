@@ -1,17 +1,11 @@
 
 /* 
- * 漢字標準格式 v2.1.1
  * 各家瀏覽器標頭的CSS3屬性
  * ---
- * CSS3 propertes in diff. browsers,
- * Hanzi-optimised CSS Mode
- *
- *
- *
- * Lisence: MIT Lisence
- * Last Modified: 2013/10/19
+ * CSS3 propertes in diff. browsers
  *
  */
+
 
 @mixin scale( $size: .55 ) {
     -moz-transform:     scale( #{$size} );
