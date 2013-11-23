@@ -1,0 +1,103 @@
+
+
+/* ---------------------------------------
+   數字
+   ---
+   Numerals
+   --------------------------------------- 
+   文本數字
+   Text figures
+   --------------------------------------- */
+
+@font-face {
+	font-family: 'Numeral TF Sans';
+	src: local(Skia),
+		 local('Neutraface 2 Text');
+	unicode-range: U+0030-0039;
+}
+
+@font-face {
+	font-family: 'Numeral TF Serif';
+	src: local(Georgia),
+		 local('Hoefler Text'),
+		 local('Big Caslon');
+	unicode-range: U+0030-0039;
+}
+
+
+/* 等高數字
+   Modern figures
+   --------------------------------------- */
+
+@font-face {
+	font-family: 'Numeral MF Sans';
+	src: local('Helvetica Neue'),
+		 local(Helvetica),
+		 local(Arial);
+	unicode-range: U+0030-0039;
+}
+
+@font-face {
+	font-family: 'Numeral MF Serif';
+	src: local(Trajan Pro),
+		 local(Baskerville),
+		 local('Times New Roman');
+	unicode-range: U+0030-0039;
+}
+
+
+
+/* ----------------------------------------- 
+ * 解決Firefox不支援`unicode-range`的問題
+ * Solution to Firefox's `unicode-range`
+ * issues
+ * ----------------------------------------- */
+
+@font-face {
+	font-family: 'Numeral TF Sans';
+	src: local('Helvetica Neue'),
+		 local(Helvetica),
+		 local(Arial);
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Numeral TF Serif';
+	src: local(Georgia),
+		 local('Times New Roman');
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Numeral MF Sans';
+	src: local('Helvetica Neue'),
+		 local(Helvetica),
+		 local(Arial);
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Numeral MF Serif';
+	src: local(Georgia),
+		 local('Times New Roman');
+	unicode-range: U+270C;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

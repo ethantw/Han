@@ -1,0 +1,77 @@
+
+
+/* ---------------------------------------
+   襯線西文斜體
+   ---
+   Latin italic serif
+   --------------------------------------- */
+
+@font-face {
+    font-family: 'Latin Italic Serif';
+    src: local('Georgia-Italic'),
+        local('Georgia Italic'),
+        local('Times-Italic'),
+        local('TimesNewRomanPS-ItalicMT') /* 3 */,
+        local('Times New Roman Italic') /* 4 */;
+}
+
+
+@font-face {
+    font-family: 'Latin Italic Serif';
+    font-weight: 700;
+
+    src: local(Georgia-BoldItalic),
+        local('Georgia Bold Italic'),
+        local(Times-Italic),
+        local(TimesNewRomanPS-BoldItalicMT) /* 3 */,
+        local('Times New Roman Bold Italic') /* 4 */;
+}
+
+
+
+/* ---------------------------------------
+   無襯線西文斜體
+   ---
+   Latin italic sans-serif
+   --------------------------------------- */
+
+@font-face {
+    font-family: 'Latin Italic Sans';
+    src: local(HelveticaNeue-Italic),
+        local('Helvetica Neue Italic'),
+        local(Helvetica-LightOblique) /* 3 */,
+        local('Helvetica Oblique') /* 4 */,
+        local('Arial Italic') /* 2 */,
+        local(Arial-ItalicMT);
+}
+
+@font-face {
+    font-family: 'Latin Italic Sans';
+    font-weight: 700;
+
+    src: local(HelveticaNeue-BoldItalic),
+        local('Helvetica Neue Bold Italic'),
+        local(Helvetica-BoldOblique) /* 3 */,
+        local('Helvetica Bold Oblique') /* 4 */,
+        local('Arial Bold Italic') /* 2 */,
+        local(Arial-BoldItalicMT);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

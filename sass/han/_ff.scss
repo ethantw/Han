@@ -14,13 +14,20 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
 // Unicode CJK區段 
 @mixin unicode-range-CJK {
     unicode-range:
-         U+4E00-9FFF, // Unicode 1.0
-         U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, // 12個「相容表意文字」
-         U+3400-4DB5, // 擴展A區
-         U+9FBC-9FC2, U+9FC4-9FC5, // Unicode 4.1、5.1新增日語漢字
-         U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, // 擴展B、C、D（急用漢字）區
-         U+3040-309E, U+30A1-30FE, // 假名
-         U+3007; // 數字「〇」
+         // Unicode 1.0
+         U+4E00-9FFF,
+         // 12個「相容表意文字」
+         U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29,
+         // 擴展A區
+         U+3400-4DB5, 
+         // Unicode 4.1、5.1新增日語漢字
+         U+9FBC-9FC2, U+9FC4-9FC5, 
+         // 擴展B、C、D（急用漢字）區
+         U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, 
+         // 假名
+         U+3040-309E, U+30A1-30FE, 
+         // 數字「〇」
+         U+3007;
 }
 
 
@@ -34,67 +41,18 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
 @import 'ff/songti';
 @import 'ff/kaiti';
 @import 'ff/fangsong';
-
 @import 'ff/biaodian';
 
 
 
 /* ---------------------------------------
-   襯線西文斜體
+   特殊西文及數字字體
    ---
-   Italic serif for Latin
+   Latin Specialties & numerals
    --------------------------------------- */
 
-@font-face {
-    font-family: 'Latin Italic Serif';
-    src: local('Georgia-Italic'),
-        local('Georgia Italic'),
-        local('Times-Italic'),
-        local('TimesNewRomanPS-ItalicMT') /* 3 */,
-        local('Times New Roman Italic') /* 4 */;
-}
-
-
-@font-face {
-    font-family: 'Latin Italic Serif';
-    font-weight: 700;
-
-    src: local(Georgia-BoldItalic),
-        local('Georgia Bold Italic'),
-        local(Times-Italic),
-        local(TimesNewRomanPS-BoldItalicMT) /* 3 */,
-        local('Times New Roman Bold Italic') /* 4 */;
-}
-
-
-
-/* ---------------------------------------
-   無襯線西文斜體
-   ---
-   Italic sans-serif for Latin
-   --------------------------------------- */
-
-@font-face {
-    font-family: 'Latin Italic Sans';
-    src: local(HelveticaNeue-Italic),
-        local('Helvetica Neue Italic'),
-        local(Helvetica-LightOblique) /* 3 */,
-        local('Helvetica Oblique') /* 4 */,
-        local('Arial Italic') /* 2 */,
-        local(Arial-ItalicMT);
-}
-
-@font-face {
-    font-family: 'Latin Italic Sans';
-    font-weight: 700;
-
-    src: local(HelveticaNeue-BoldItalic),
-        local('Helvetica Neue Bold Italic'),
-        local(Helvetica-BoldOblique) /* 3 */,
-        local('Helvetica Bold Oblique') /* 4 */,
-        local('Arial Bold Italic') /* 2 */,
-        local(Arial-BoldItalicMT);
-}
+@import 'ff/italic';
+@import 'ff/numerals';
 
 
 
