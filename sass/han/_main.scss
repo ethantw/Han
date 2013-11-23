@@ -8,9 +8,6 @@
  */
 
 
-@import 'css3';
-
-
  /* ---------------------------------------
 	變數設定
 	---
@@ -56,8 +53,7 @@ pre code {
    $(selector).charize()
    --------------------------------------- 
    避頭尾點
-   Prevents punctuation from stuck in the
-   start/end of a line.
+   Line breaking rules on punctuation
    --------------------------------------- */
 
 .han-js-charized span.char,
@@ -81,6 +77,7 @@ pre code {
    註記元素（u）及兩相鄰時的底線區別（u+u）
    Annotations and adjacent ones
    --------------------------------------- */
+
 :lang(zh) u,
 :lang(ja) u {
 	letter-spacing: 0;
@@ -415,43 +412,41 @@ cite.no-cite-mark:after {
    着重號
    ---
    Emphases
-   ---------------------------------------
- *
- * 1. 避免繼承父元素的底線
- *	Prevents from displaying underlines
- *	inherited from parental elements.
- *
- */
+   --------------------------------------- */
 
-:lang(zh) em,
-:lang(ja) em {
-	font-style: inherit;
-}
-
-html:not(.han-js-rendered) :lang(zh) em,
-html:not(.han-js-rendered) :lang(ja) em {
+em {
 	border-bottom: 2px dotted;
 	padding-bottom: .05em;
-}
+	font-style: inherit;
 
-.textemphasis :lang(zh) em {
-	@include zhuozhonghao();
-}
 
-.textemphasis :lang(ja) em {
-	@include zhuozhonghao( sesame, above );
-}
+	/*:not(:lang(zh)):not(:lang(ja)) & {
+		border-bottom: inherit;
+		font-style: italic;
+	} */
 
-.textemphasis :lang(zh) em span.cjk.biaodian,
-.textemphasis :lang(ja) em span.cjk.biaodian {
-	@include zhuozhonghao( none );
-}
+ 	html.no-js :lang(zh) &,
+	html.no-js :lang(ja) &
+	html:not(.han-js-rendered) :lang(zh) &,
+	html:not(.han-js-rendered) :lang(ja) & {
+		border-bottom: 2px dotted;
+		padding-bottom: .05em;
+	}
 
-.textemphasis :lang(zh) em span.cjk:after,
-.textemphasis :lang(zh) em span.latin:after
-.textemphasis :lang(ja) em span.cjk:after,
-.textemphasis :lang(ja) em span.latin:after {
-	content: none !important;
+	:lang(zh) &,
+	:lang(ja) & {
+		@include zhuozhonghao();
+		border-bottom: inherit;
+	}
+
+	:lang(ja) & {
+		@include zhuozhonghao( sesame, above );
+	}
+
+	:lang(zh) & span.cjk.biaodian,
+	:lang(ja) & span.cjk.biaodian {
+		@include zhuozhonghao( none );
+	}
 }
 
 .no-textemphasis :lang(zh) em span.cjk,
@@ -470,13 +465,13 @@ html:not(.han-js-rendered) :lang(ja) em {
 	display: inline-block;
 	font-style: normal;
 	font-weight: normal;
-	height: 1.9em; /* 1 */
+	height: 1.9em;
 	left: 0;
 	line-height: 1.9em;
 	margin: .4em 0 0 0;
 	overflow: hidden;
 	position: absolute;
-	text-decoration: none; /* 1 */
+	text-decoration: none;
 	text-indent: 0;
 	top: 0;
 }
@@ -504,12 +499,9 @@ html:not(.han-js-rendered) :lang(ja) em {
 }
 
 :not(:lang(zh)):not(:lang(ja)) em,
-.textemphasis :not(:lang(zh)):not(:lang(ja)) em {
+:not(:lang(zh)):not(:lang(ja)) em {
+	@include zhuozhonghao( none );
 	font-style: italic;
-	text-emphasis:			  none;
-		-moz-text-emphasis:	 none;
-		-webkit-text-emphasis:  none;
-
 }
 
 .no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span:after {

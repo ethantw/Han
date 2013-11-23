@@ -21,9 +21,12 @@
 4. 實驗性底線在`border-box` reset網頁下的顯示問題
 （issue #11）
 
+5. 加入了Bower package的支援（@yhsiang，issue #12）
+
 
 〔更多資訊〕  
 [https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]()
+
 
 
 * * *
