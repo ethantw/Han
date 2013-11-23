@@ -7,34 +7,28 @@
    --------------------------------------- */
 
 @font-face {
+    @include unicode-range-CJK;
     font-family: 'Han Fangsong';
     src: local(STFangsong),
          local(FangSong);
 }
 
 
-/* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
- * ----------------------------------------- */
-
+// Han FangSong CNS
 @font-face {
-    font-family: 'Han Fangsong';
-    src: local(FangSong);
-    unicode-range: U+4E00;
+    @include unicode-range-CJK;
+    font-family: 'Han Fangsong CNS';
+    src: local(STFangsong),
+         local(FangSong);
 }
 
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
-
+// Han FangSong GB
 @font-face {
-    font-family: 'Han Fangsong';
-    src: local(STFangsong), local(FangSong);
-    unicode-range: U+270C;
+    @include unicode-range-CJK;
+    font-family: 'Han Fangsong GB';
+    src: local(STFangsong),
+         local(FangSong);
 }
 
 

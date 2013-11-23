@@ -7,90 +7,81 @@
    --------------------------------------- */
 
 @font-face {
-    font-family: 'Han Kaiti';
-    src: local(STKaiti),
+	font-family: cursive;
+	src: local('Kaiti SC'),
+		 local(STKaiti),
 
-         local('標楷體'),
-         local(DFKaiShu-SB-Estd-BF),
+		 local(BiauKai),
+		 local('標楷體'),
+		 local(DFKaiShu-SB-Estd-BF),
 
-         local(Kaiti),
-         local(DFKai-SB);
+		 local(Kaiti),
+		 local(DFKai-SB);
+}
+
+@font-face {
+	@include unicode-range-CJK;
+	font-family: 'Han Kaiti';
+	src: local('Kaiti SC'),
+		 local(STKaiti),
+
+		 local(BiauKai),
+		 local('標楷體'),
+		 local(DFKaiShu-SB-Estd-BF),
+
+		 local(Kaiti),
+		 local(DFKai-SB);
 }
 
 
-
+// Han Kaiti CNS
 @font-face {
-    font-family: 'Han Kaiti CNS'; 
-                 /* 中華民國國家標準楷體 */
-    src: local('標楷體'),
-         local(DFKaiShu-SB-Estd-BF);
+	@include unicode-range-CJK;
+	font-family: 'Han Kaiti CNS';
+	src: local(BiauKai),
+		 local('標楷體'),
+		 local(DFKaiShu-SB-Estd-BF);
 }
 
 
-
-
-
+// Han Kaiti GB
 @font-face {
-    font-family: 'Han Kaiti GB';
-                 /* 中國國家標準楷體 */
-    src: local(STKaiti), 
-         local(Kai),
-         local(Kaiti),
-         local(DFKai-SB);
+	@include unicode-range-CJK;
+	font-family: 'Han Kaiti GB';
+	src: local('Kaiti SC'),
+		 local(STKaiti), 
+		 local(Kai),
+		 local(Kaiti),
+		 local(DFKai-SB);
 }
 
 
 
 /* ----------------------------------------- 
- * 解決IE的字體fallback問題
- * Solution to IE font fallback issue
+ * 粗體
+ * Bold
  * ----------------------------------------- */
 
 @font-face {
-    font-family: 'Han Kaiti';
-    src: local('標楷體') /* 2, 4 */, local(DFKaiShu-SB-Estd-BF) /* 3 */,
-        local(Kaiti), local(DFKai-SB);
-    unicode-range: U+4E00 /* 6 */;
+	font-family: cursive;
+	font-weight: 600;
+	src: local('Kaiti SC Bold'),
+		 local(STKaiti-SC-Bold);
 }
 
 @font-face {
-    font-family: 'Han Kaiti CNS';
-    src: local('標楷體'), local(DFKaiShu-SB-Estd-BF);
-    unicode-range: U+4E00 /* 6 */;
+	font-family: 'Han Kaiti';
+	font-weight: 600;
+	src: local('Kaiti SC Bold'),
+		 local(STKaiti-SC-Bold);
 }
 
+// Han Kaiti GB
 @font-face {
-    font-family: 'Han Kaiti GB';
-    src: local(Kaiti), local(DFKai-SB) /* 2 */;
-    unicode-range: U+4E00 /* 6 */;
-}
-
-
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issue
- * ----------------------------------------- */
-
-@font-face {
-    font-family: 'Han Kaiti';
-    src: local(STKaiti) /* 1 */, local('標楷體') /* 2, 4 */, local(DFKaiShu-SB-Estd-BF) /* 3 */,
-        local(Kaiti), local(DFKai-SB);
-    unicode-range: U+270C /* 4 */;
-}
-
-
-@font-face {
-    font-family: 'Han Kaiti CNS';
-    src: local('標楷體'), local(DFKaiShu-SB-Estd-BF);
-    unicode-range: U+270C /* 4 */;
-}
-
-
-@font-face {
-    font-family: 'Han Kaiti GB';
-    src: local(STKaiti) /* 1 */, local(Kai) /* 3 */, local(Kaiti), local(DFKai-SB) /* 2 */;
-    unicode-range: U+270C /* 4 */;
+	font-family: 'Han Kaiti GB';
+	font-weight: 600;
+	src: local('Kaiti SC Bold'),
+		 local(STKaiti-SC-Bold);
 }
 
 
