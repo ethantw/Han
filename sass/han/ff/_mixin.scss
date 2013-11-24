@@ -1,0 +1,140 @@
+
+
+/* ---------------------------------------
+   @mixin: 四大字體集
+   ---
+   @mixin: The Four Typefaces
+   --------------------------------------- 
+   黑體
+   Heiti
+   --------------------------------------- */
+
+@mixin Han-Heiti {
+	font-family:
+		'Biaodian Pro Sans',
+		'Numeral MF Sans',
+		'Helvetica Neue', Helvetica, Arial,
+		'Han Heiti', sans-serif;
+}
+
+@mixin Han-Heiti-CNS {
+	font-family:
+		'Biaodian Pro Sans CNS',
+		'Numeral MF Sans',
+		'Helvetica Neue', Helvetica, Arial,
+		'Han Heiti CNS', sans-serif;
+}
+
+@mixin Han-Heiti-GB {
+	font-family:
+		'Biaodian Pro Sans GB',
+		'Numeral MF Sans',
+		'Helvetica Neue', Helvetica, Arial,
+		'Han Heiti GB', sans-serif;
+}
+
+
+/* 宋體
+   Songti
+   --------------------------------------- */
+
+@mixin Han-Songti {
+	font-family:
+		'Biaodian Pro Serif',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Songti', serif;
+}
+
+@mixin Han-Songti-CNS {
+	font-family:
+		'Biaodian Pro Serif CNS',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Songti CNS', serif;
+}
+
+@mixin Han-Songti-GB {
+	font-family:
+		'Biaodian Pro Serif GB',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Songti GB', serif;
+}
+
+
+/* 楷體
+   Kaiti
+   --------------------------------------- */
+
+@mixin Han-Kaiti {
+	font-family:
+		'Biaodian Pro Serif',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Kaiti', serif;
+}
+
+@mixin Han-Kaiti-CNS {
+	font-family:
+		'Biaodian Pro Serif CNS',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Kaiti CNS', serif;
+}
+
+@mixin Han-Kaiti-GB {
+	font-family:
+		'Biaodian Pro Serif GB',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Kaiti GB', serif;
+}
+
+
+/* 仿宋體
+   Fangsong
+   --------------------------------------- */
+
+@mixin Han-Kaiti {
+	font-family:
+		'Biaodian Pro Serif',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Fangsong', serif;
+}
+
+@mixin Han-Fangsong-CNS {
+	font-family:
+		'Biaodian Pro Serif CNS',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Fangsong CNS', serif;
+}
+
+@mixin Han-Fangsong-GB {
+	font-family:
+		'Biaodian Pro Serif GB',
+		'Numeral MF Serif',
+		Georgia, 'Times New Roman',
+		'Han Fangsong GB', serif;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
