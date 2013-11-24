@@ -488,11 +488,11 @@ table {
 @font-face {
   unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
   font-family: 'Han Songti CNS';
-  src: local(YuMincho), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"); }
+  src: local(YuMincho), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"); }
 
 @font-face {
   font-family: 'Han Songti GB';
-  src: local("Songti SC"), local("Songti SC"), local(PMingLiU); }
+  src: local("Songti SC"), local(STSong), local(SimSun), local(PMingLiU); }
 
 /* ----------------------------------------- 
  * 粗體
@@ -512,7 +512,7 @@ table {
   unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
   font-family: 'Han Songti CNS';
   font-weight: 600;
-  src: local("YuMincho Demibold"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(YuMin-Demibold), local(HiraMinProN-W6), local(HiraMinPro-W6); }
+  src: local("YuMincho Demibold"), local("Hiragino Mincho ProN W6"), local("Hiragino Mincho Pro W6"), local(YuMin-Demibold), local(HiraMinProN-W6), local(HiraMinPro-W6); }
 
 @font-face {
   font-family: 'Han Songti GB';
@@ -531,7 +531,7 @@ table {
 
 @font-face {
   font-family: 'Han Songti CNS';
-  src: local("Songti TC"), local("Lisong Pro"), local("Songti SC"), local(STSong), local(PMingLiU), local(SimSun);
+  src: local("Songti TC"), local("Lisong Pro"), local("Songti SC"), local(STSong), local("MS Mincho"), local(PMingLiU), local(SimSun);
   unicode-range: U+270C; }
 
 @font-face {
@@ -542,7 +542,7 @@ table {
 
 @font-face {
   font-family: 'Han Songti GB';
-  src: local("Songti SC"), local(STSong);
+  src: local("Songti SC"), local(STSong), local(SimSun);
   unicode-range: U+270C; }
 
 /* ---------------------------------------
@@ -1033,6 +1033,23 @@ table {
   unicode-range: U+270C; }
 
 /* ---------------------------------------
+   @mixin: 四大字體集
+   ---
+   @mixin: The Four Typefaces
+   --------------------------------------- 
+   黑體
+   Heiti
+   --------------------------------------- */
+/* 宋體
+   Songti
+   --------------------------------------- */
+/* 楷體
+   Kaiti
+   --------------------------------------- */
+/* 仿宋體
+   Fangsong
+   --------------------------------------- */
+/* ---------------------------------------
    特殊西文及數字字體
    ---
    Latin Specialties & numerals
@@ -1075,7 +1092,7 @@ table {
    --------------------------------------- */
 @font-face {
   font-family: 'Numeral TF Sans';
-  src: local(Skia), local("Neutraface 2 Text");
+  src: local(Skia), local("Neutraface 2 Text"), local(Candara), local(Corbel);
   unicode-range: U+0030-0039; }
 
 @font-face {
@@ -1093,7 +1110,7 @@ table {
 
 @font-face {
   font-family: 'Numeral MF Serif';
-  src: local(Trajan Pro), local(Baskerville), local("Times New Roman");
+  src: local(Palatino), local("Palatino Linotype"), local("Times New Roman");
   unicode-range: U+0030-0039; }
 
 /* ----------------------------------------- 
@@ -1772,14 +1789,14 @@ samp {
  * Font settings
  *
  */
-/* ---------------------------------------
-   變數設定
-   ---
-   Variables
-   ---------------------------------------
-   預設字體fallback
-   Default font fallback
-   --------------------------------------- */
+ /* ---------------------------------------
+	變數設定
+	---
+	Variables
+	---------------------------------------
+	預設字體fallback
+	Default font fallback
+	--------------------------------------- */
 /* 基本元素的標點樣式修正 */
 html:lang(zh),
 button:lang(zh),
