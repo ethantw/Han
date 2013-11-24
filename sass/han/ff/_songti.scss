@@ -37,7 +37,8 @@
 	font-family: 'Han Songti CNS';
 	src: local(YuMincho),
 		 local('Hiragino Mincho ProN'),
-		 local('Hiragino Mincho Pro');
+		 local('Hiragino Mincho Pro'),
+		 local('MS Mincho');
 }
 
 
@@ -45,7 +46,8 @@
 @font-face {
 	font-family: 'Han Songti GB';
 	src: local('Songti SC'),
-		 local('Songti SC'),
+		 local(STSong),
+		 local(SimSun),
 		 local(PMingLiU);
 }
 
@@ -81,8 +83,8 @@
 	font-family: 'Han Songti CNS';
 	font-weight: 600;
 	src: local('YuMincho Demibold'),
-		 local('Hiragino Mincho ProN'),
-		 local('Hiragino Mincho Pro'),
+		 local('Hiragino Mincho ProN W6'),
+		 local('Hiragino Mincho Pro W6'),
 		 local(YuMin-Demibold),
 		 local(HiraMinProN-W6),
 		 local(HiraMinPro-W6);
@@ -128,6 +130,7 @@
 		 local('Songti SC'),
 		 local(STSong),
 
+		 local('MS Mincho'),
 		 local(PMingLiU),
 		 local(SimSun);
 	unicode-range: U+270C;
@@ -148,7 +151,8 @@
 @font-face {
 	font-family: 'Han Songti GB';
 	src: local('Songti SC'),
-		 local(STSong);
+		 local(STSong),
+		 local(SimSun);
 	unicode-range: U+270C;
 }
 
