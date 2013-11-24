@@ -23,7 +23,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Heiti';
 	src: local(YuGothic),
 		 local('Hiragino Kaku Gothic ProN'),
@@ -48,7 +48,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Heiti CNS';
 	src: local(YuGothic),
 		 local('Hiragino Kaku Gothic ProN'),
@@ -98,7 +98,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Heiti';
 	font-weight: 600;
 	src: local('YuGothic Bold'),
@@ -133,7 +133,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Heiti CNS';
 	font-weight: 600;
 	src: local('YuGothic Bold'),

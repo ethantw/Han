@@ -7,7 +7,7 @@
    --------------------------------------- */
 
 @font-face {
-    @include unicode-range-CJK;
+    @include range-CJK;
     font-family: 'Han Fangsong';
     src: local(STFangsong),
          local(FangSong);
@@ -16,7 +16,7 @@
 
 // Han FangSong CNS
 @font-face {
-    @include unicode-range-CJK;
+    @include range-CJK;
     font-family: 'Han Fangsong CNS';
     src: local(STFangsong),
          local(FangSong);
@@ -25,7 +25,7 @@
 
 // Han FangSong GB
 @font-face {
-    @include unicode-range-CJK;
+    @include range-CJK;
     font-family: 'Han Fangsong GB';
     src: local(STFangsong),
          local(FangSong);

@@ -33,7 +33,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Songti CNS';
 	src: local(YuMincho),
 		 local('Hiragino Mincho ProN'),
@@ -79,7 +79,7 @@
 }
 
 @font-face {
-	@include unicode-range-CJK;
+	@include range-CJK;
 	font-family: 'Han Songti CNS';
 	font-weight: 600;
 	src: local('YuMincho Demibold'),

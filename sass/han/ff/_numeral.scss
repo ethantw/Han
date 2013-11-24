@@ -10,20 +10,20 @@
    --------------------------------------- */
 
 @font-face {
+	@include range-numeral;
 	font-family: 'Numeral TF Sans';
 	src: local(Skia),
 		 local('Neutraface 2 Text'),
 		 local(Candara),
 		 local(Corbel);
-	unicode-range: U+0030-0039;
 }
 
 @font-face {
+	@include range-numeral;
 	font-family: 'Numeral TF Serif';
 	src: local(Georgia),
 		 local('Hoefler Text'),
 		 local('Big Caslon');
-	unicode-range: U+0030-0039;
 }
 
 
@@ -32,19 +32,19 @@
    --------------------------------------- */
 
 @font-face {
+	@include range-numeral;
 	font-family: 'Numeral MF Sans';
 	src: local('Helvetica Neue'),
 		 local(Helvetica),
 		 local(Arial);
-	unicode-range: U+0030-0039;
 }
 
 @font-face {
+	@include range-numeral;
 	font-family: 'Numeral MF Serif';
 	src: local(Palatino),
 		 local('Palatino Linotype'),
 		 local('Times New Roman');
-	unicode-range: U+0030-0039;
 }
 
 
