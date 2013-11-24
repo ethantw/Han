@@ -7,12 +7,12 @@
  *
  */
 
-$zhuyin_ttf: '../fonts/zhuyin.ttf';
-$zhuyin_eot: '../fonts/zhuyin.eot';
+$zhuyin_ttf: '../fonts/moe.ttf';
+$zhuyin_eot: '../fonts/moe.eot';
 
 
 // Unicode CJK區段 
-@mixin unicode-range-CJK {
+@mixin range-CJK {
 	unicode-range:
 		// Unicode 1.0
 		U+4E00-9FFF,
@@ -36,6 +36,23 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
 		U+3007;
 }
 
+// Unicode 數字0-9
+@mixin range-numeral {
+	unicode-range: U+0030-0039;
+}
+
+
+// Unicode 注音及方言音擴充符號
+@mixin range-zhuyin {
+	unicode-range: 
+		// 注音符號及方言音擴充
+		U+3105-312D, U+31A0-31BA,
+
+		// 國語及方言音聲調
+		U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB;
+}
+
+
 
 /* ---------------------------------------
    四大字體集及標點
@@ -50,6 +67,7 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
 @import 'ff/biaodian';
 
 @import 'ff/mixin';
+
 
 
 /* ---------------------------------------
@@ -70,20 +88,25 @@ $zhuyin_eot: '../fonts/zhuyin.eot';
    --------------------------------------- */
 
 @font-face {
+	@include range-zhuyin;
 	font-family: 'Han Zhuyin Cursive';
-	src: local('☺'),
-		 url($zhuyin_eot) format('embedded-opentype')  /* for IE10 */,
-		 url($zhuyin_ttf) format('truetype'); 
+	src: url($zhuyin_eot) format('eot'),
+		 url($zhuyin_ttf) format('truetype'),
+		 local('標楷體');
+
+}
+
+@font-face {
+	@include range-zhuyin;
+	font-family: 'Han Zhuyin Sans';
+	src: local('Hiragino Sans GB'),
+		 local('Microsoft Jhenghei');
 }
 
 @font-face {
 	font-family: 'Han Zhuyin Sans';
-	src: local('Hiragino Sans GB'), local('Microsoft JhengHei'); 
-}
-
-@font-face {
-	font-family: 'Han Zhuyin Sans';
-	src: local('Heiti TC'), local('Microsoft JhengHei'); 
+	src: local('Heiti TC'),
+		 local('Microsoft Jhenghei'); 
 	unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9;
 }
 
