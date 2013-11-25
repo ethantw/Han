@@ -12,39 +12,43 @@
 @font-face {
 	@include range-numeral;
 	font-family: 'Numeral TF Sans';
-	src: local(Skia),
-		 local('Neutraface 2 Text'),
-		 local(Candara),
-		 local(Corbel);
+	src:
+		local(Skia),
+		local('Neutraface 2 Text'),
+		local(Candara),
+		local(Corbel);
 }
 
 @font-face {
 	@include range-numeral;
 	font-family: 'Numeral TF Serif';
-	src: local(Georgia),
-		 local('Hoefler Text'),
-		 local('Big Caslon');
+	src:
+		local(Georgia),
+		local('Hoefler Text'),
+		local('Big Caslon');
 }
 
 
 /* 等高數字
-   Modern figures
+   Lining figures
    --------------------------------------- */
 
 @font-face {
 	@include range-numeral;
-	font-family: 'Numeral MF Sans';
-	src: local('Helvetica Neue'),
-		 local(Helvetica),
-		 local(Arial);
+	font-family: 'Numeral LF Sans';
+	src:
+		local('Helvetica Neue'),
+		local(Helvetica),
+		local(Arial);
 }
 
 @font-face {
 	@include range-numeral;
-	font-family: 'Numeral MF Serif';
-	src: local(Palatino),
-		 local('Palatino Linotype'),
-		 local('Times New Roman');
+	font-family: 'Numeral LF Serif';
+	src:
+		local(Palatino),
+		local('Palatino Linotype'),
+		local('Times New Roman');
 }
 
 
@@ -57,31 +61,25 @@
 
 @font-face {
 	font-family: 'Numeral TF Sans';
-	src: local('Helvetica Neue'),
-		 local(Helvetica),
-		 local(Arial);
+	src: local('Lying to Firefox');
 	unicode-range: U+270C;
 }
 
 @font-face {
 	font-family: 'Numeral TF Serif';
-	src: local(Georgia),
-		 local('Times New Roman');
+	src: local('Lying to Firefox');
 	unicode-range: U+270C;
 }
 
 @font-face {
-	font-family: 'Numeral MF Sans';
-	src: local('Helvetica Neue'),
-		 local(Helvetica),
-		 local(Arial);
+	font-family: 'Numeral LF Sans';
+	src: local('Lying to Firefox');
 	unicode-range: U+270C;
 }
 
 @font-face {
-	font-family: 'Numeral MF Serif';
-	src: local(Georgia),
-		 local('Times New Roman');
+	font-family: 'Numeral LF Serif';
+	src: local('Lying to Firefox');
 	unicode-range: U+270C;
 }
 

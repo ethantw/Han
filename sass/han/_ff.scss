@@ -42,7 +42,7 @@ $zhuyin_eot: '../fonts/moe.eot';
 }
 
 
-// Unicode 注音及方言音擴充符號
+// Unicode 注音及方言音擴充符號區段
 @mixin range-zhuyin {
 	unicode-range: 
 		// 注音符號及方言音擴充
@@ -87,28 +87,7 @@ $zhuyin_eot: '../fonts/moe.eot';
    Zhuyin
    --------------------------------------- */
 
-@font-face {
-	@include range-zhuyin;
-	font-family: 'Han Zhuyin Cursive';
-	src: url($zhuyin_eot) format('eot'),
-		 url($zhuyin_ttf) format('truetype'),
-		 local('標楷體');
-
-}
-
-@font-face {
-	@include range-zhuyin;
-	font-family: 'Han Zhuyin Sans';
-	src: local('Hiragino Sans GB'),
-		 local('Microsoft Jhenghei');
-}
-
-@font-face {
-	font-family: 'Han Zhuyin Sans';
-	src: local('Heiti TC'),
-		 local('Microsoft Jhenghei'); 
-	unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9;
-}
+@import 'ff/zhuyin';
 
 
 
