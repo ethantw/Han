@@ -1,13 +1,13 @@
 
 /* 
- * 漢字標準格式 v2.2.0
+ * 漢字標準格式 v2.2.0-alpha
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/09
+ * Last Modified: 2013/11/26
  *
  */
 

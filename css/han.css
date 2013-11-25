@@ -7,7 +7,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/24
+ * Last Modified: 2013/11/26
  *
  */
 /* 
@@ -482,6 +482,11 @@ table {
   src: local("Songti SC"), local("Songti TC"), local(STSong), local("Lisong Pro"), local(SimSun), local(PMingLiU); }
 
 @font-face {
+  unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
+  font-family: 'Han Songti';
+  src: local(YuMincho), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"); }
+
+@font-face {
   font-family: 'Han Songti CNS';
   src: local("Songti TC"), local("Lisong Pro"), local("Songti SC"), local(STSong), local(PMingLiU), local(SimSun); }
 
@@ -502,6 +507,12 @@ table {
   font-family: 'Han Songti';
   font-weight: 600;
   src: local("STSongti SC Bold"), local("STSongti TC Bold"), local(STSongti-SC-Bold), local(STSongti-TC-Bold); }
+
+@font-face {
+  unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src: local("YuMincho Demibold"), local("Hiragino Mincho ProN W6"), local("Hiragino Mincho Pro W6"), local(YuMin-Demibold), local(HiraMinProN-W6), local(HiraMinPro-W6); }
 
 @font-face {
   font-family: 'Han Songti CNS';
@@ -526,7 +537,13 @@ table {
  * ----------------------------------------- */
 @font-face {
   font-family: 'Han Songti';
-  src: local("Songti SC"), local("Songti TC"), local(STSongti), local("Lisong Pro"), local(SimSun), local(PMingLiU);
+  src: local("Songti SC"), local("Songti TC"), local(STSongti), local("Lisong Pro"), local("MS Mincho"), local(SimSun), local(PMingLiU);
+  unicode-range: U+270C; }
+
+@font-face {
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src: local("STSongti TC Bold"), local("STSongti SC Bold"), local(STSongti-TC-Bold), local(STSongti-SC-Bold);
   unicode-range: U+270C; }
 
 @font-face {
@@ -1032,6 +1049,16 @@ table {
   src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
+@font-face {
+  font-family: 'Biaodian Pro Sans GB';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C; }
+
+@font-face {
+  font-family: 'Biaodian Pro Serif GB';
+  src: local("Lying to Firefox");
+  unicode-range: U+270C; }
+
 /* ---------------------------------------
    @mixin: 四大字體集
    ---
@@ -1055,32 +1082,32 @@ table {
    Latin Specialties & numerals
    --------------------------------------- */
 /* ---------------------------------------
-   襯線西文斜體
-   ---
-   Latin italic serif
-   --------------------------------------- */
+	 襯線西文斜體
+	 ---
+	 Latin italic serif
+	 --------------------------------------- */
 @font-face {
   font-family: 'Latin Italic Serif';
-  src: local("Georgia-Italic"), local("Georgia Italic"), local("Times-Italic"), local("TimesNewRomanPS-ItalicMT"), local("Times New Roman Italic"); }
+  src: local("Georgia Italic"), local("Times New Roman Italic"), local(Georgia-Italic), local(TimesNewRomanPS-ItalicMT), local(Times-Italic); }
 
 @font-face {
   font-family: 'Latin Italic Serif';
   font-weight: 700;
-  src: local(Georgia-BoldItalic), local("Georgia Bold Italic"), local(Times-Italic), local(TimesNewRomanPS-BoldItalicMT), local("Times New Roman Bold Italic"); }
+  src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic"), local(Georgia-BoldItalic), local(TimesNewRomanPS-BoldItalicMT), local(Times-Italic); }
 
 /* ---------------------------------------
-   無襯線西文斜體
-   ---
-   Latin italic sans-serif
-   --------------------------------------- */
+	 無襯線西文斜體
+	 ---
+	 Latin italic sans-serif
+	 --------------------------------------- */
 @font-face {
   font-family: 'Latin Italic Sans';
-  src: local(HelveticaNeue-Italic), local("Helvetica Neue Italic"), local(Helvetica-LightOblique), local("Helvetica Oblique"), local("Arial Italic"), local(Arial-ItalicMT); }
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic"), local(HelveticaNeue-Italic), local(Helvetica-LightOblique), local(Arial-ItalicMT); }
 
 @font-face {
   font-family: 'Latin Italic Sans';
   font-weight: 700;
-  src: local(HelveticaNeue-BoldItalic), local("Helvetica Neue Bold Italic"), local(Helvetica-BoldOblique), local("Helvetica Bold Oblique"), local("Arial Bold Italic"), local(Arial-BoldItalicMT); }
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic"), local(HelveticaNeue-BoldItalic), local(Helvetica-BoldOblique), local(Arial-BoldItalicMT); }
 
 /* ---------------------------------------
    數字
@@ -1091,27 +1118,27 @@ table {
    Text figures
    --------------------------------------- */
 @font-face {
+  unicode-range: U+0030-0039;
   font-family: 'Numeral TF Sans';
-  src: local(Skia), local("Neutraface 2 Text"), local(Candara), local(Corbel);
-  unicode-range: U+0030-0039; }
+  src: local(Skia), local("Neutraface 2 Text"), local(Candara), local(Corbel); }
 
 @font-face {
+  unicode-range: U+0030-0039;
   font-family: 'Numeral TF Serif';
-  src: local(Georgia), local("Hoefler Text"), local("Big Caslon");
-  unicode-range: U+0030-0039; }
+  src: local(Georgia), local("Hoefler Text"), local("Big Caslon"); }
 
 /* 等高數字
-   Modern figures
+   Lining figures
    --------------------------------------- */
 @font-face {
-  font-family: 'Numeral MF Sans';
-  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
-  unicode-range: U+0030-0039; }
+  unicode-range: U+0030-0039;
+  font-family: 'Numeral LF Sans';
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial); }
 
 @font-face {
-  font-family: 'Numeral MF Serif';
-  src: local(Palatino), local("Palatino Linotype"), local("Times New Roman");
-  unicode-range: U+0030-0039; }
+  unicode-range: U+0030-0039;
+  font-family: 'Numeral LF Serif';
+  src: local(Palatino), local("Palatino Linotype"), local("Times New Roman"); }
 
 /* ----------------------------------------- 
  * 解決Firefox不支援`unicode-range`的問題
@@ -1120,22 +1147,22 @@ table {
  * ----------------------------------------- */
 @font-face {
   font-family: 'Numeral TF Sans';
-  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
+  src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
 @font-face {
   font-family: 'Numeral TF Serif';
-  src: local(Georgia), local("Times New Roman");
+  src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
 @font-face {
-  font-family: 'Numeral MF Sans';
-  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
+  font-family: 'Numeral LF Sans';
+  src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
 @font-face {
-  font-family: 'Numeral MF Serif';
-  src: local(Georgia), local("Times New Roman");
+  font-family: 'Numeral LF Serif';
+  src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
 /* ---------------------------------------
@@ -1143,17 +1170,24 @@ table {
    ---
    Zhuyin
    --------------------------------------- */
+/* ---------------------------------------
+   注音符號
+   ---
+   Zhuyin
+   --------------------------------------- */
 @font-face {
-  font-family: 'Han Zhuyin Cursive';
-  src: local("☺"), url("../fonts/zhuyin.eot") format("embedded-opentype"), url("../fonts/zhuyin.ttf") format("truetype"); }
+  unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB;
+  font-family: 'Zhuyin Kaiti';
+  src: url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(PMingLiU); }
 
 @font-face {
-  font-family: 'Han Zhuyin Sans';
-  src: local("Hiragino Sans GB"), local("Microsoft JhengHei"); }
+  unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB;
+  font-family: 'Zhuyin Heiti';
+  src: local("Hiragino Sans GB"), local("Microsoft Jhenghei"), url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF); }
 
 @font-face {
-  font-family: 'Han Zhuyin Sans';
-  src: local("Heiti TC"), local("Microsoft JhengHei");
+  font-family: 'Zhuyin Heiti';
+  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9; }
 
 /* ---------------------------------------
