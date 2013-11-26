@@ -183,7 +183,7 @@ jQuery.noConflict();
 		/* 
 		 * 修正相鄰註記元素`<u>`的底線相連問題
 		 * ---
-		 * fixing the underline-adjacency issues on `<u>` element
+		 * fixing the underline-adjacency issue on `<u>` element
 		 *
 		 */
 
