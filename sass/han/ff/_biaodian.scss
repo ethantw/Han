@@ -636,7 +636,12 @@
  *	Colon, semicolon, question, exclam-
  *	ation marks
  *
+ * c. 連接號、正、反斜線（－／＼）
+ * En dash (fullwidth hyphen-minus),
+ * division slash, back slash
+ *
  */
+
 
 @font-face {
 	font-family: 'Biaodian Pro Sans';
@@ -644,8 +649,10 @@
         local('Hiragino Kaku Gothic ProN'),
 		local('Hiragino Kaku Gothic Pro'),
 		local('MS Gothic');
-	unicode-range: U+3002, U+FF0C, U+3001, /* a */
-		U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+	unicode-range:
+		U+3002, U+FF0C, U+3001, /* a */
+		U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 @font-face {
@@ -654,8 +661,10 @@
         local('Hiragino Mincho ProN'),
 		local('Hiragino Mincho Pro'),
 		local('MS Mincho');
-	unicode-range: U+3002, U+FF0C, U+3001, /* a */
-		U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+	unicode-range:
+		U+3002, U+FF0C, U+3001, /* a */
+		U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 
@@ -667,7 +676,8 @@
 		local('Lihei Pro'),
 		local('Microsoft Jhenghei'),
 		local(PMingLiU);
-	unicode-range: U+3002, U+FF0C, U+3001 /* a */;
+	unicode-range:
+		U+3002, U+FF0C, U+3001 /* a */;
 }
 
 @font-face {
@@ -679,7 +689,18 @@
 		local('Microsoft Jhenghei'),
 		local(PMingLiU),
 		local('MS Gothic');
-	unicode-range: U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+	unicode-range:
+		U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Sans CNS';
+	src:
+        local('Hiragino Mincho ProN'),
+		local('Hiragino Mincho Pro'),
+		local('MS Mincho');
+	unicode-range:
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 @font-face {
@@ -689,7 +710,8 @@
 		local('Lisong Pro'),
 		local('Heiti TC'),
 		local(PMingLiU);
-	unicode-range: U+3002, U+FF0C, U+3001 /* a */;
+	unicode-range:
+		U+3002, U+FF0C, U+3001 /* a */;
 }
 
 @font-face {
@@ -699,7 +721,9 @@
 		local('Hiragino Mincho Pro'),
 		local(PMingLiU),
 		local('MS Mincho');
-	unicode-range: U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+	unicode-range:
+		U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 
@@ -714,8 +738,10 @@
 		local('Hiragino Kaku Gothic Pro'),
 		local(SimSun),
 		local('MS Gothic');
-	unicode-range: U+3002, U+FF0C, U+3001, /* a */
-		U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+	unicode-range:
+		U+3002, U+FF0C, U+3001, /* a */
+		U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 @font-face {
@@ -730,8 +756,20 @@
 		local(STHeiti),
 		local(SimSun),
 		local('MS Mincho');
-	unicode-range: U+3002, U+FF0C, U+3001, /* a */
+	unicode-range:
+		U+3002, U+FF0C, U+3001, /* a */
 		U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif GB';
+	src:
+        local('Hiragino Mincho ProN'),
+		local('Hiragino Mincho Pro'),
+		local(PMingLiU),
+		local('MS Mincho');
+	unicode-range:
+		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
 
@@ -739,7 +777,7 @@
  * a. 引號（「『』」）
  *	Quotes
  *
- * b. 括號、書名號（（）《》〈〉）
+ * b. 括號、書名號（（）《》〈〉〔〕）
  *	Brackets
  *
  */
@@ -751,8 +789,9 @@
 		local('Hiragino Kaku Gothic Pro'),
 		local(SimSun),
 		local(PMingLiU);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 @font-face {
@@ -761,8 +800,9 @@
         local('Hiragino Mincho ProN'),
 		local('Hiragino Mincho Pro'),
 		local(SimSun);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 
@@ -774,8 +814,9 @@
 		local('Hiragino Kaku Gothic Pro'),
 		local(SimSun),
 		local(PMingLiU);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 @font-face {
@@ -784,8 +825,9 @@
         local('Hiragino Mincho ProN'),
 		local('Hiragino Mincho Pro'),
 		local(SimSun);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 
@@ -797,8 +839,9 @@
 		local('Hiragino Kaku Gothic Pro'),
 		local(SimSun),
 		local(PMingLiU);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 @font-face {
@@ -807,8 +850,9 @@
         local('Hiragino Mincho ProN'),
 		local('Hiragino Mincho Pro'),
 		local(SimSun);
-	unicode-range: U+300C-300F, /* a */
-		U+300A-300B, U+3008-3009, U+FF08-FF09 /* b */;
+	unicode-range:
+		U+300C-300F, /* a */
+		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
 

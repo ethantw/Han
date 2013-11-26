@@ -13,6 +13,7 @@
 
 jQuery.noConflict();
 
+
 (function($){
 
 	var version = '2.2.0',
