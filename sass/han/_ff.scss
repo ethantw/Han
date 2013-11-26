@@ -55,6 +55,32 @@ $zhuyin_eot: '../fonts/moe.eot';
 
 
 /* ---------------------------------------
+   `unicode-range`
+   ---------------------------------------
+   瀏覽器若支援，[A-Za-z]顯示為無襯線字體；
+   若不支援，顯示為襯線字體。
+   --------------------------------------- */
+
+@font-face {
+	font-family: han-unicode-range;
+	src:
+		local(Arial),
+		local('Droid Sans');
+	//unicode-range: U+0041-007A;
+}
+
+@font-face {
+	font-family: han-unicode-range;
+	src:
+		local('Times New Roman'),
+		local(Times),
+		local('Droid Serif');
+	unicode-range: U+270C; 
+}
+
+
+
+/* ---------------------------------------
    四大字體集及標點
    ---
    The Four Typefaces & Biaodian

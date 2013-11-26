@@ -30,6 +30,16 @@ jQuery.noConflict();
 
 	han = function() {
 		$(document).on('ready', function(){
+
+			// `unicode-range`
+			tests['unicoderange'] = function() {
+				return !test_for_fontface( 'han-unicode-range', 'Arial, "Droid Sans"', 'a' );
+			};
+
+			classes.push( ( tests['unicoderange']() ? '' : 'no-' ) + 'unicoderange' );
+
+
+			// The 4(-1) Typefaces
 			fontfaces['songti'] = test_for_fontface( 'Han Songti' );
 			fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' );
 			fontfaces['fangsong'] = test_for_fontface( 'Han Fangsong' );
@@ -38,6 +48,8 @@ jQuery.noConflict();
 				classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
 			}
 
+
+			// altogether
 			$('html').addClass( classes.join(' ') );
 
 			init();
@@ -305,13 +317,17 @@ jQuery.noConflict();
 	},
 
 
-	test_for_fontface = function( font ) {
+	test_for_fontface = function( test, compare, zi ) {
 		if ( !tests['fontface']() )
 			return false;
 
+		var test = test,
+			compare = compare || 'sans-serif',
+			zi = zi || '辭Q';
+
 		try {
-			var sans = write_on_canvas( '辭Q', 'sans-serif' ),
-				test = write_on_canvas( '辭Q', font ),
+			var sans = write_on_canvas( zi, compare ),
+				test = write_on_canvas( zi, test ),
 				support;
 
 
@@ -475,7 +491,7 @@ jQuery.noConflict();
 
 		return bool;
 	};
-
+			
 
 	tests['ruby'] = function() {
 		if ( rubies != null )
