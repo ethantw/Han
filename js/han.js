@@ -138,7 +138,7 @@ jQuery.noConflict();
 		/* 
 		 * 漢拉間隙 
 		 * ---
-		 * Gaps between Hanzi and Latin Letter
+		 * Kerning between Hanzi and Latin Letter
 		 *
 		 */
 
@@ -201,8 +201,7 @@ jQuery.noConflict();
 
 		/* 強調元素`<em>`的着重號
 		 * ---
-		 * punctuation: CJK emphasis dots
-		 * on `<em>` element
+		 * punctuation: CJK emphasis dots on `<em>` element
 		 *
 		 */
 
@@ -213,7 +212,7 @@ jQuery.noConflict();
 
 		/* 修正引言元素`<q>`不為WebKit引擎支援的問題
 		 * ---
-		 * punctuation: CJK quotes on `<q>` (WebKit)
+		 * punctuation: Quote issue on `<q>` element (WebKit)
 		 *
 		 */
 
