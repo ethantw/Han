@@ -190,12 +190,11 @@ jQuery.noConflict();
 		if ( $('html').hasClass('han-lab-underline') )
 			$(range).find('u').charize('', true, true);
 		else
-			$(range).each(function() {
-				var html = $(this).html();
+			$(range).find('u').each(function(){
+				var next =  this.nextSibling;
 
-				$(this)
-				.html( html.replace(/<\/u>(<!--.*?-->|<wbr[ ]?[\/]?>)*?<u(\s.*?)*?>/ig, '</u>$1<u data-adjacent $2>') )
-				.find('u[data-adjacent]').addClass('adjacent').removeAttr('data-adjacent');
+				if ( next.nodeName === "U" )
+					$(next).addClass('adjacent');
 			});
 
 
