@@ -508,7 +508,7 @@ table {
 @font-face {
   unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
   font-family: 'Han Songti CNS';
-  src: local(YuMincho), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"); }
+  src: local(YuMincho), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"); }
 
 @font-face {
   font-family: 'Han Songti GB';
