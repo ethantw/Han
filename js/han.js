@@ -403,7 +403,7 @@ jQuery.noConflict();
 	 *
 	 * CJK相容表意文字：
 	 * [\uF900-\uFAFF]（**註**：不使用）
-	 * [\uFA0E-F]、[\uFA11]、[\uFA13-4]、[\uFA1F]、[\uFA21]、[\uFA23-4]、[\uFA27-9]（**註**：12個例外）
+	 * [\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]（**註**：12個例外）
 	 * --------------------------------------------------------
 	 *
 	 ** 符號
@@ -431,7 +431,7 @@ jQuery.noConflict();
 
 	unicode['hanzi'] = [
 		'[\u4E00-\u9FFF]',
-		'[\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u3007\u3040-\u309E\u30A1-\u30FA\u30FD\u30FE]',
+		'[\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u3007\u3040-\u309E\u30A1-\u30FA\u30FD\u30FE\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]',
 		'[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]',
 		'\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]',
 		'\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
