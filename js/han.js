@@ -13,7 +13,6 @@
 
 jQuery.noConflict();
 
-
 (function($){
 
 	var version = '2.2.0',
@@ -32,11 +31,7 @@ jQuery.noConflict();
 		$(document).on('ready', function(){
 
 			// `unicode-range`
-			tests['unicoderange'] = function() {
-				return !test_for_fontface( 'han-unicode-range', 'Arial, "Droid Sans"', 'a' );
-			};
-
-			classes.push( ( tests['unicoderange']() ? '' : 'no-' ) + 'unicoderange' );
+			classes.push( ( test_for_unicoderange() ? '' : 'no-' ) + 'unicoderange' );
 
 
 			// The 4(-1) Typefaces
@@ -364,6 +359,10 @@ jQuery.noConflict();
 		}
 	};
 
+
+	test_for_unicoderange = function() {
+		return !test_for_fontface( 'han-unicode-range', 'Arial, "Droid Sans"', 'a' );
+	};
 
 
 	/* --------------------------------------------------------
@@ -702,13 +701,9 @@ jQuery.noConflict();
 
 
 
-
-
-
-
+	// tests
 	for ( var feature in tests ) {
 		classes.push( ( tests[feature]() ? '' : 'no-' ) + feature );
-
 
 		if ( !tester )
 			var tester = '';
@@ -717,7 +712,8 @@ jQuery.noConflict();
 	}
 
 	!function(window) {
-		eval("tester = ({\n" + tester.replace(/\n$/ig, '\nfont: test_for_fontface\n}') + ")");
+		eval("tester = ({\n" + tester.replace(/\n$/ig, 
+			'\nunicoderange: test_for_unicoderange, \nfont: test_for_fontface\n}') + ")");
 	}();
 
 
@@ -1241,3 +1237,22 @@ window.findAndReplaceDOMText = (function() {
 	return exposed;
 
 }());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
