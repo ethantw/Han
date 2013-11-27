@@ -2,15 +2,15 @@
 /* 
  * 各家瀏覽器標頭的CSS3屬性
  * ---
- * CSS3 propertes in diff. browsers
+ * CSS3 properties in diff. browsers
  *
  */
 
 
 @mixin scale( $size: .55 ) {
-    -moz-transform:     scale( #{$size} );
-    -webkit-transform:  scale( #{$size} );
-    transform:          scale( #{$size} );
+	-moz-transform:	 	scale( #{$size} );
+	-webkit-transform:  scale( #{$size} );
+	transform:		  	scale( #{$size} );
 }
 
 
@@ -22,12 +22,12 @@
 
 
 @mixin zhuozhonghao( $sym: circle, $posi: under ) {
-    -moz-text-emphasis:     $sym;
-    -webkit-text-emphasis:  $sym;
-	text-emphasis:          $sym;
-    -moz-text-emphasis-position:    $posi;
-    -webkit-text-emphasis-position: $posi;
-    text-emphasis-position:         $posi;
+	-moz-text-emphasis:	 	$sym;
+	-webkit-text-emphasis: 	$sym;
+	text-emphasis:		  	$sym;
+	-moz-text-emphasis-position:	$posi;
+	-webkit-text-emphasis-position: $posi;
+	text-emphasis-position:		 	$posi;
 }
 
 

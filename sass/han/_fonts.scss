@@ -9,13 +9,13 @@
 
 
  /* ---------------------------------------
-    變數設定
-    ---
-    Variables
-    ---------------------------------------
-    預設字體fallback
-    Default font fallback
-    --------------------------------------- */
+	變數設定
+	---
+	Variables
+	---------------------------------------
+	預設字體fallback
+	Default font fallback
+	--------------------------------------- */
 
 $sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $serif: Georgia, Times, 'Times New Roman', serif;
@@ -32,7 +32,7 @@ button:lang(zh),
 input:lang(zh),
 select:lang(zh),
 textarea:lang(zh) {
-    font-family: 'Biaodian Sans', $heiti;
+	font-family: 'Biaodian Sans', $heiti;
 }
 
 html:lang(ja),
@@ -40,7 +40,7 @@ button:lang(ja),
 input:lang(ja),
 select:lang(ja),
 textarea:lang(ja) {
-    font-family: 'Yakumono Sans', $sans;
+	@include Han-Gothic;
 }
 
 html.han-biaodian-pro,
@@ -48,7 +48,7 @@ html.han-biaodian-pro button,
 html.han-biaodian-pro input,
 html.han-biaodian-pro select,
 html.han-biaodian-pro textarea {
-    font-family: 'Biaodian Pro Sans', $heiti;
+	@include Han-Heiti;
 }
 
 html.han-biaodian-pro-cns,
@@ -56,14 +56,22 @@ html.han-biaodian-pro-cns button,
 html.han-biaodian-pro-cns input,
 html.han-biaodian-pro-cns select,
 html.han-biaodian-pro-cns textarea {
-    font-family: 'Biaodian Pro Sans CNS', $heiti;
+	@include Han-Heiti-CNS;
+}
+
+html.han-biaodian-pro-gb,
+html.han-biaodian-pro-gb button,
+html.han-biaodian-pro-gb input,
+html.han-biaodian-pro-gb select,
+html.han-biaodian-pro-gb textarea {
+	@include Han-Heiti-GB;
 }
 
 html:lang(zh) :not(:lang(zh)):not(:lang(ja)),
 html:lang(ja) :not(:lang(zh)):not(:lang(ja)),
 html.han-biaodian-pro :not(:lang(zh)):not(:lang(ja)),
 html.han-biaodian-pro-cns :not(:lang(zh)):not(:lang(ja)) {
-    font-family: $heiti;
+	font-family: $heiti;
 }
 
 
@@ -76,7 +84,7 @@ html.han-biaodian-pro-cns :not(:lang(zh)):not(:lang(ja)) {
 
 cite:lang(en).piece:before,
 cite:lang(en).piece:after {
-    font-family: $serif; /* 1 */
+	font-family: $serif; /* 1 */
 }
 
 
@@ -87,8 +95,8 @@ cite:lang(en).piece:after {
 .no-textemphasis :lang(ja) em span.cjk:after,
 .no-textemphasis :lang(zh) em span.latin:after,
 .no-textemphasis :lang(ja) em span.latin:after {
-    font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro',
-        'MS Mincho', MS-Mincho, serif !important;
+	font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro',
+		'MS Mincho', MS-Mincho, serif !important;
 }
 
 
@@ -96,32 +104,32 @@ cite:lang(en).piece:after {
 
 /* 變音文字 */
 i:lang(zh) {
-    font-family: 'Biaodian Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+	font-family: 'Biaodian Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
 }
 
 article blockquote i:lang(zh) {
-    font-family: 'Biaodian Sans', 'Latin Italic Sans', sans-serif;
+	font-family: 'Biaodian Sans', 'Latin Italic Sans', sans-serif;
 }
 
 html.han-biaodian-pro i:lang(zh) {
-    font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+	font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
 }
 
 html.han-biaodian-pro-cns i:lang(zh) {
-    font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif;
+	font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
 }
 
 html.han-biaodian-pro article blockquote i:lang(zh) {
-    font-family: 'Biaodian Pro Sans', 'Latin Italic Sans', $heiti;
+	font-family: 'Biaodian Pro Sans', 'Latin Italic Sans', $heiti;
 }
 
 html.han-biaodian-pro-cns article blockquote i:lang(zh) {
-    font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Sans', $heiti;
+	font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Sans', $heiti;
 }
 
 
 i:lang(ja) {
-    font-family: 'Yakumono Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
+	font-family: 'Yakumono Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif;
 }
 
 article blockquote i:lang(ja),
@@ -129,48 +137,48 @@ html.han-biaodian-pro i:lang(ja),
 html.han-biaodian-pro-cns i:lang(ja),
 html.han-biaodian-pro article blockquote i:lang(ja),
 html.han-biaodian-pro-cns article blockquote i:lang(ja) {
-    font-family: 'Yakumono Sans', 'Latin Italic Sans', $sans;
+	font-family: 'Yakumono Sans', 'Latin Italic Sans', $sans;
 }
 
 :lang(zh) i:not(:lang(zh)):not(:lang(ja)),
 :lang(zh) i :not(:lang(zh)):not(:lang(ja)),
 :lang(ja) i:not(:lang(zh)):not(:lang(ja)),
 :lang(ja) i :not(:lang(zh)):not(:lang(ja)) {
-    font-family: 'Latin Italic Serif', $serif;
+	font-family: 'Latin Italic Serif', $serif;
 }
 
 article:lang(zh) blockquote i:not(:lang(zh)):not(:lang(ja)),
 article:lang(zh) blockquote i :not(:lang(zh)):not(:lang(ja)),
 article:lang(ja) blockquote i:not(:lang(zh)):not(:lang(ja)),
 article:lang(ja) blockquote i :not(:lang(zh)):not(:lang(ja)) {
-    font-family: 'Latin Italic Sans', $sans;
+	font-family: 'Latin Italic Sans', $sans;
 }
 
 :not(:lang(zh)):not(:lang(ja)) i:not(:lang(zh)):not(:lang(ja)),
 :not(:lang(zh)):not(:lang(ja)) i :not(:lang(zh)):not(:lang(ja)),
 :not(:lang(zh)):not(:lang(ja)) i:not(:lang(zh)):not(:lang(ja)),
 :not(:lang(zh)):not(:lang(ja)) i :not(:lang(zh)):not(:lang(ja)) {
-    font-family: inherit;
-    font-style: italic;
+	font-family: inherit;
+	font-style: italic;
 }
 
 /* 如果系統不支援楷體 */
 /* If Kaiti is not supported in users' OS. */
 .no-fontface-kaiti i:lang(zh),
 .no-fontface-kaiti i:lang(ja) {
-    font-family: 'Biaodian Serif', 'Biaodian Sans', 'Latin Italic Serif', $songti;
+	font-family: 'Biaodian Serif', 'Biaodian Sans', 'Latin Italic Serif', $songti;
 }
 
 .no-fontface-kaiti i:lang(ja) {
-    font-family: 'Yakumono Serif', 'Yakumono Sans', 'Latin Italic Serif', $serif;
+	font-family: 'Yakumono Serif', 'Yakumono Sans', 'Latin Italic Serif', $serif;
 }
 
 html.han-biaodian-pro.no-fontface-kaiti i:lang(zh) {
-    font-family: 'Biaodian Pro Serif', 'Biaodian Pro Sans', 'Latin Italic Serif', $songti;
+	font-family: 'Biaodian Pro Serif', 'Biaodian Pro Sans', 'Latin Italic Serif', $songti;
 }
 
 html.han-biaodian-pro-cns.no-fontface-kaiti i:lang(zh) {
-    font-family: 'Biaodian Pro Serif CNS', 'Biaodian Pro Sans CNS', 'Latin Italic Serif', $songti;
+	font-family: 'Biaodian Pro Serif CNS', 'Biaodian Pro Sans CNS', 'Latin Italic Serif', $songti;
 }
 
 
@@ -178,25 +186,29 @@ html.han-biaodian-pro-cns.no-fontface-kaiti i:lang(zh) {
 /* 文章內重點（article strong） */
 article strong:lang(zh),
 article strong:lang(ja) {
-    font-family: 'Biaodian Sans', $heiti;
+	font-family: 'Biaodian Sans', $heiti;
 }
 
 article strong:lang(ja) {
-    font-family: 'Yakumono Sans', $sans;
+	font-family: 'Yakumono Sans', $sans;
 }
 
 html.han-biaodian-pro article strong:lang(zh) {
-    font-family: 'Biaodian Pro Sans', $heiti;
+	@include Han-Heiti;
 }
 
 html.han-biaodian-pro-cns article strong:lang(zh) {
-    font-family: 'Biaodian Pro Sans CNS', $heiti;
+	@include Han-Heiti-CNS;
+}
+
+html.han-biaodian-pro-gb article strong:lang(zh) {
+	@include Han-Heiti-GB;
 }
 
 article strong:not(:lang(zh)):not(:lang(ja)),
 html.han-biaodian-pro article strong:not(:lang(zh)):not(:lang(ja)),
 html.han-biaodian-pro-cns article strong:not(:lang(zh)):not(:lang(ja)) {
-    font-family: $sans;
+	font-family: $sans;
 }
 
 
@@ -205,21 +217,25 @@ html.han-biaodian-pro-cns article strong:not(:lang(zh)):not(:lang(ja)) {
 /* 文章內的區塊引用（blockquote） */
 article:lang(zh) blockquote,
 article:lang(ja) blockquote {
-    font-family: 'Biaodian Serif', $kaiti;
+	font-family: 'Biaodian Serif', $kaiti;
 }
 
 html.han-biaodian-pro article blockquote {
-    font-family: 'Biaodian Pro Serif', $kaiti;
+	@include Han-Kaiti;
 }
 
 html.han-biaodian-pro-cns article blockquote {
-    font-family: 'Biaodian Pro Serif CNS', $kaiti;
+	@include Han-Kaiti-CNS;
+}
+
+html.han-biaodian-pro-gb article blockquote {
+	@include Han-Kaiti-GB;
 }
 
 article blockquote:lang(ja),
 html.han-biaodian-pro article blockquote:lang(ja),
 html.han-biaodian-pro-cns article blockquote:lang(ja) {
-    font-family: 'Yakumono Serif', $kaiti;
+	font-family: 'Yakumono Serif', $kaiti;
 }
 
 
@@ -227,7 +243,7 @@ article:lang(zh) blockquote:not(:lang(zh)):not(:lang(ja)),
 article:lang(zh) blockquote :not(:lang(zh)):not(:lang(ja)),
 article:lang(ja) blockquote:not(:lang(zh)):not(:lang(ja)),
 article:lang(ja) blockquote :not(:lang(zh)):not(:lang(ja)) {
-    font-family: $kaiti;
+	font-family: $kaiti;
 }
 
 
@@ -236,53 +252,54 @@ figure:lang(zh) blockquote,
 figure:lang(ja) blockquote,
 figure:lang(zh) blockquote blockquote
 figure:lang(ja) blockquote blockquote {
-    font-family: 'Biaodian Serif', $songti;
+	font-family: 'Biaodian Serif', $songti;
 }
 
 html.han-biaodian-pro figure:lang(zh) blockquote {
-    font-family: 'Biaodian Pro Serif', $songti;
+	@include Han-Songti;
 }
 
 html.han-biaodian-pro-cns figure:lang(zh) blockquote {
-    font-family: 'Biaodian Pro Serif CNS', $songti;
+	@include Han-Songti-CNS;
+}
+
+html.han-biaodian-pro-gb figure:lang(zh) blockquote {
+	@include Han-Songti-GB;
 }
 
 figure:lang(ja) blockquote,
 figure:lang(ja) blockquote blockquote,
 html.han-biaodian-pro figure:lang(ja) blockquote,
 html.han-biaodian-pro-cns figure:lang(ja) blockquote {
-    font-family: 'Yakumono Serif', $serif;
+	@include Han-Mincho;
 }
 
 
 figure:lang(zh) blockquote:before,
 figure:lang(ja) blockquote:before {
-    font: 3em bold $serif;
+	font: 3em bold $serif;
 }
 
 figure figcaption {
-    font: .85em normal 'Biaodian Sans', $heiti;
+	font: .85em normal 'Biaodian Sans', $heiti;
 }
 
 html.han-biaodian-pro figure:lang(zh) figcaption {
-    font-family: 'Biaodian Pro Sans', $heiti;
+	@include Han-Heiti;
 }
 
 html.han-biaodian-pro-cns figure:lang(zh) figcaption {
-    font-family: 'Biaodian Pro Sans CNS', $heiti;
+	@include Han-Heiti-CNS;
 }
+
+html.han-biaodian-pro-gb figure:lang(zh) figcaption {
+	@include Han-Heiti-GB;
+}
+
 
 html.han-biaodian-pro figure:lang(ja) figcaption ,
 html.han-biaodian-pro-cns figure:lang(ja) figcaption {
-    font-family: 'Yakumono Sans', $heiti;
-}
-
-
-
-/* 橫式注音符號 */
-ruby.mps-ltr rt,
-ruby.mps-ltr .rt {
-    font-family: 'Han Kaiti', STKaiti, Kaiti, cursive, serif;
+	@include Han-Gothic;
 }
 
 
@@ -292,29 +309,47 @@ code,
 kbd,
 pre,
 samp {
-    font-family: Courier, monospace, sans-serif;
+	font-family: Courier, monospace, sans-serif;
 
-    &:lang(zh) {
-        font-family: 'Biaodian Sans', Courier, 'Han Heiti', monospace, sans-serif;
-    }
+	&:lang(zh) {
+		font-family: 'Biaodian Sans', Courier, 'Han Heiti', monospace, sans-serif;
+	}
 
-    &:lang(ja) {
-        font-family: 'Yakumono Sans', Courier, monospace, sans-serif;
-    }
+	&:lang(ja) {
+		font-family: 'Yakumono Sans', Courier, monospace, sans-serif;
+	}
 
-    html.han-biaodian-pro & {
-        font-family: 'Biaodian Pro Sans', Courier, 'Han Heiti', monospace, sans-serif;
-    }
+	html.han-biaodian-pro & {
+		font-family: 'Biaodian Pro Sans', Courier, 'Han Heiti', monospace, sans-serif;
+	}
 
-    html.han-biaodian-pro-cns & {
-        font-family: 'Biaodian Pro Sans CNS', Courier, 'Han Heiti', monospace, sans-serif;
-    }
+	html.han-biaodian-pro-cns & {
+		font-family: 'Biaodian Pro Sans CNS', Courier, 'Han Heiti CNS', monospace, sans-serif;
+	}
 
-    &:not(:lang(zh)):not(:lang(ja)),
-    :not(:lang(zh)):not(:lang(ja)) {
-        font-family: Courier, 'Han Heiti', monospace, sans-serif;
-    }
+	html.han-biaodian-pro-gb & {
+		font-family: 'Biaodian Pro Sans GB', Courier, 'Han Heiti GB', monospace, sans-serif;
+	}
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	:not(:lang(zh)):not(:lang(ja)) {
+		font-family: Courier, 'Han Heiti', monospace, sans-serif;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -2,23 +2,21 @@
 /* 
  * 以語言為基礎的元素樣式修正
  * ---
- * Language-based style correction
+ * Language-based style correction, 
+ * Hanzi-optimised CSS Mode
  *
  */
 
 
-@import 'css3';
-
-
  /* ---------------------------------------
-    變數設定
-    ---
-    Variables
-    ---------------------------------------
-    顏色
-    Colours
-    --------------------------------------- */
-$lightgrey: lightgrey;
+	變數設定
+	---
+	Variables
+	---------------------------------------
+	顏色
+	Colours
+	--------------------------------------- */
+$lightgrey: lightgrey; // 淺灰
 
 
 
@@ -26,27 +24,23 @@ $lightgrey: lightgrey;
    針對normalize.css的改進
    ---
    Improvements aim to normalize.css
-   ---------------------------------------
-   詞彙定義元素`<dfn>`使用粗體
-   Term-defining elements `<dfn>` re-styled
-   `bolder` instead of `italic`.
    --------------------------------------- */
 
 dfn {
-    font-style: inherit;
-    font-weight: bolder;
+	font-style: inherit;
+	font-weight: bold;
 }
 
 
 /* 增進code區塊的可讀性
-   Enhances code blocks' readability
+   Enhances the readability of code blocks
    --------------------------------------- */
 
 pre code {
-    display: block;
-    overflow: auto;
-    white-space: pre;
-    word-wrap: normal;
+	display: block;
+	overflow: auto;
+	white-space: pre;
+	word-wrap: normal;
 }
 
 
@@ -55,19 +49,18 @@ pre code {
    $(selector).charize()
    --------------------------------------- 
    避頭尾點
-   Prevents punctuation from stuck in the
-   start/end of a line.
+   Line breaking rules on punctuation
    --------------------------------------- */
 
 .han-js-charized span.char,
 .han-js-bitouwei-rendered span.bitouwei {
-    display: inline-block;
-    text-indent: 0;
+	display: inline-block;
+	text-indent: 0;
 }
 
 .han-js-charized span.char.space,
 .han-js-charized span.char > span {
-    display: inline;
+	display: inline;
 }
 
 
@@ -80,24 +73,25 @@ pre code {
    註記元素（u）及兩相鄰時的底線區別（u+u）
    Annotations and adjacent ones
    --------------------------------------- */
+
 :lang(zh) u,
 :lang(ja) u {
-    letter-spacing: 0;
-    border-bottom: 1px solid;
-    padding-bottom: 0.05em;
-    text-decoration: none;
+	letter-spacing: 0;
+	border-bottom: 1px solid;
+	padding-bottom: 0.05em;
+	text-decoration: none;
 }
 
 u + u {
-    margin-left: .125em;
+	margin-left: .125em;
 }
 
 html.han-js-rendered u + u {
-    margin-left: 0;
+	margin-left: 0;
 }
 
 html.han-js-rendered u.adjacent {
-    margin-left: .125em;
+	margin-left: .125em;
 }
 
 /* 實驗性功能 */
@@ -106,88 +100,88 @@ html.han-js-rendered u.adjacent {
 .han-js-rendered.han-lab-underline u *,
 .han-js-rendered.han-lab-underline u *:before,
 .han-js-rendered.han-lab-underline u *:after {
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
 }
 
 u.han-js-charized {
-    border-bottom: 0 none;
-    text-decoration: none;
+	border-bottom: 0 none;
+	text-decoration: none;
 
-    span.char:not(:first-of-type):not(:last-of-type) span,
-    span.hanla,
-    span.char:first-of-type span:after,
-    span.char:last-of-type span:after {
-        border-bottom: 1px solid;
-        padding-bottom: .125em;
-    }
+	span.char:not(:first-of-type):not(:last-of-type) span,
+	span.hanla,
+	span.char:first-of-type span:after,
+	span.char:last-of-type span:after {
+		border-bottom: 1px solid;
+		padding-bottom: .125em;
+	}
 
-    span.char:first-of-type span,
-    span.char:last-of-type span {
-        position: relative;
+	span.char:first-of-type span,
+	span.char:last-of-type span {
+		position: relative;
 
-        &:after {
-            content: '';
-            display: inline-block;
-            left: 0;
-            margin-left: 1px;
-            position: absolute;
-            top: 0;
-            height: 100%;
-            @include calc( width, "100% - 1px" );
-        }
-    }
+		&:after {
+			content: '';
+			display: inline-block;
+			left: 0;
+			margin-left: 1px;
+			position: absolute;
+			top: 0;
+			height: 100%;
+			@include calc( width, "100% - 1px" );
+		}
+	}
 
-    span.char:last-of-type span:after {
-        margin: 0 1px 0 0;
-    }
+	span.char:last-of-type span:after {
+		margin: 0 1px 0 0;
+	}
 
-    span.char:first-child:last-child span:after {
-        margin: 0 1px 0;
-        @include calc( width, "100% - 2px" );
-    }
+	span.char:first-child:last-child span:after {
+		margin: 0 1px 0;
+		@include calc( width, "100% - 2px" );
+	}
 
-    :not(:first-child) span.char:first-of-type span:after,
-    :not(:last-child) span.char:last-of-type span:after,
-    span.char:not(:first-child):first-of-type span:after,
-    span.char:not(:last-child):last-of-type span:after {
-        border-bottom: 0;
-    }
+	:not(:first-child) span.char:first-of-type span:after,
+	:not(:last-child) span.char:last-of-type span:after,
+	span.char:not(:first-child):first-of-type span:after,
+	span.char:not(:last-child):last-of-type span:after {
+		border-bottom: 0;
+	}
 
-    :not(:first-child) span.char:first-of-type span,
-    :not(:last-child) span.char:last-of-type span,
-    span.char:not(:first-child):first-of-type span,
-    span.char:not(:last-child):last-of-type span {
-        border-bottom: 1px solid;
-        padding-bottom: .125em;
-    }
+	:not(:first-child) span.char:first-of-type span,
+	:not(:last-child) span.char:last-of-type span,
+	span.char:not(:first-child):first-of-type span,
+	span.char:not(:last-child):last-of-type span {
+		border-bottom: 1px solid;
+		padding-bottom: .125em;
+	}
 
-    span.hanla:first-child,
-    span.hanla:last-child {
-        border: 0 none;
-    }
+	span.hanla:first-child,
+	span.hanla:last-child {
+		border: 0 none;
+	}
 
-    :not(:first-child) span.hanla:first-child,
-    :not(:last-child) span.hanla:last-child {
-        border: 1px solid;
-    }
+	:not(:first-child) span.hanla:first-child,
+	:not(:last-child) span.hanla:last-child {
+		border: 1px solid;
+	}
 
 
 
-    /* 若在注音符號`<ruby>`中 */
-    span.han-js-zhuyin-rendered & {
-        border-bottom: 1px solid;
-        padding-bottom: .125em;
+	/* 若在注音符號`<ruby>`中 */
+	span.han-js-zhuyin-rendered & {
+		border-bottom: 1px solid;
+		padding-bottom: .125em;
 
-        span.char span {
-            border-bottom: 0 none !important;
-        }
+		span.char span {
+			border-bottom: 0 none !important;
+		}
 
-        & + u {
-            margin-left: .125em;
-        }
-    }
+		& + u {
+			margin-left: .125em;
+		}
+	}
 }
 
 
@@ -199,18 +193,18 @@ u.han-js-charized {
    --------------------------------------- */
 
 html:lang(zh) {
-    a:link,
-    a:visited,
-    a:hover,
-    a:active,
-    ins {
-        text-decoration: inherit;
-    }
+	a:link,
+	a:visited,
+	a:hover,
+	a:active,
+	ins {
+		text-decoration: inherit;
+	}
 
-    ins {
-        border-bottom: 3px double $lightgrey;
-        padding-bottom: .05em;
-    }
+	ins {
+		border-bottom: 3px double $lightgrey;
+		padding-bottom: .05em;
+	}
 }
 
 
@@ -227,11 +221,11 @@ html:lang(zh) {
 
 article h4,
 article h5 {
-    margin: 1em 0;
+	margin: 1em 0;
 }
 
 article h4 + h5 {
-    margin-top: -.5em;
+	margin-top: -.5em;
 }
 
 
@@ -242,8 +236,8 @@ article h4 + h5 {
 
 article p,
 article li {
-    line-height: 2;
-    text-align: justify;
+	line-height: 2;
+	text-align: justify;
 }
 
 article:lang(zh) p.poem-like,
@@ -252,27 +246,27 @@ article:lang(zh) .poem-like p,
 article:lang(ja) p.poem-like,
 article:lang(ja).poem-like p,
 article:lang(ja) .poem-like p {
-    text-indent: 0;
-    margin-left: 2em;
+	text-indent: 0;
+	margin-left: 2em;
 }
 
 article:lang(ja) p.poem-like,
 article:lang(ja).poem-like p,
 article:lang(ja) .poem-like p {
-    margin-left: 1em;
+	margin-left: 1em;
 }
 
 article:lang(zh) ol,
 article:lang(zh) ul,
 article:lang(ja) ol,
 article:lang(ja) ul {
-    margin: .5em 0 .5em 0;
-    padding: 0;
+	margin: .5em 0 .5em 0;
+	padding: 0;
 
-    > li {
-        margin-left: 2em;
-        padding: 0;
-    }
+	> li {
+		margin-left: 2em;
+		padding: 0;
+	}
 }
 
 article h4 + ul,
@@ -281,16 +275,16 @@ article h5 + ul,
 article h5 + ol,
 article h6 + ul,
 article h6 + ol {
-    margin-top: -.5em;
+	margin-top: -.5em;
 }
 
 article:lang(ja) ol,
 article:lang(ja) ul {
-    margin-left: 1em;
-    padding-left: 1.5em;
+	margin-left: 1em;
+	padding-left: 1.5em;
 
   > li {
-      margin-left: 1em;
+	  margin-left: 1em;
   }
 }
 
@@ -299,25 +293,25 @@ article:lang(ja) ul {
 /* ---------------------------------------
    漢拉間隙
    ---
-   Gaps between Hanzi and Latin letter
+   Kerning between Hanzi and Latin letter
    --------------------------------------- */
 
 span.hanla,
 html:not(.han-la) span.hanla {
-    display: none;
+	display: none;
 }
 
 html.han-la span:lang(zh).hanla,
 html.han-la span:lang(ja).hanla {
-    display: inline;
-    position: static;
+	display: inline;
+	position: static;
 }
 
 html.han-la span.hanla:after {
-    content: ' ';
-    display: inline;
-    font-size: 1ch;
-    font-size: -webkit-calc( .25em );
+	content: ' ';
+	display: inline;
+	font-size: 1ch;
+	font-size: -webkit-calc( .25em );
 }
 
 html.han-la code span.hanla:after,
@@ -326,86 +320,86 @@ html.han-la kbd span.hanla:after,
 html.han-la samp span.hanla:after,
 html.han-la ol > span.hanla:after,
 html.han-la ul > span.hanla:after {
-    display: none;
+	display: none;
 }
 
 
 
 /* ---------------------------------------
-   書名號
+   書名號（*棄用）
    ---
-   Cites
+   Cites (*deprecated)
    ---------------------------------------
  *
  * 1. 修正Webkit下的字體fallback
- *    Corrects font fallback on WebKit
+ *	  Corrects font fallback on WebKit
  *
  */
 
 cite:lang(zh),
 cite:lang(ja),
 cite:lang(en).piece {
-    font-style: inherit;
+	font-style: inherit;
 }
 
 cite:lang(zh):before,
 cite:lang(zh):after {
-    content: '《';
-    font-family: inherit; /* 1 */
-    line-height: inherit;
+	content: '《';
+	font-family: inherit; /* 1 */
+	line-height: inherit;
 }
 
 cite:lang(zh):after {
-    content: '》';
+	content: '》';
 }
 
 cite:lang(zh).piece:before {
-    content: '〈';
+	content: '〈';
 }
 
 cite:lang(zh).piece:after {
-    content: '〉';
+	content: '〉';
 }
 
 cite:lang(ja):before {
-    content: '『';
+	content: '『';
 }
 
 cite:lang(ja):after {
-    content: '』';
+	content: '』';
 }
 
 cite:lang(ja).piece:before {
-    content: '「';
+	content: '「';
 }
 
 cite:lang(ja).piece:after {
-    content: '」';
+	content: '」';
 }
 
 cite:lang(en).piece:before,
 cite:lang(en).piece:after {
-    content: '“';
-    font-family: inherit; /* 1 */
+	content: '“';
+	font-family: inherit; /* 1 */
 }
 
 cite:lang(en).piece:after {
-    content: '”';
+	content: '”';
 }
 
 cite:lang(en-GB).piece:before {
-    content: '‘';
+	content: '‘';
 }
 
 cite:lang(en-GB).piece:after {
-    content: '’';
+	content: '’';
 }
 
 .no-cite-mark cite:before,
 .no-cite-mark cite:after,
 cite.no-cite-mark:before,
 cite.no-cite-mark:after {
-    content: '' !important;
+	content: '' !important;
 }
 
 
@@ -414,105 +408,95 @@ cite.no-cite-mark:after {
    着重號
    ---
    Emphases
-   ---------------------------------------
+   --------------------------------------- 
  *
- * 1. 避免繼承父元素的底線
- *    Prevents from displaying underlines
- *    inherited from parental elements.
+ * 1. Fallback
  *
  */
 
-:lang(zh) em,
-:lang(ja) em {
-    font-style: inherit;
+em:lang(zh),
+em:lang(ja) {
+	font-style: inherit;
+
+	// 1
+	border-bottom-style: dotted;
+	border-bottom-width: 2px;
+	padding-bottom: .05em;
+
+	@include zhuozhonghao;
+	border-bottom-width: -webkit-calc( 0px );
+
+
+	span.biaodian {
+		@include zhuozhonghao( none );
+	}
 }
 
-html:not(.han-js-rendered) :lang(zh) em,
-html:not(.han-js-rendered) :lang(ja) em {
-    border-bottom: 2px dotted;
-    padding-bottom: .05em;
+em:lang(ja) {
+	@include zhuozhonghao( sesame, over );
 }
 
-.textemphasis :lang(zh) em {
-    @include zhuozhonghao();
+.han-js-rendered em:lang(zh),
+.han-js-rendered em:lang(ja) {
+	border-bottom-width: 0;
+	padding-bottom: auto;
 }
 
-.textemphasis :lang(ja) em {
-    @include zhuozhonghao( sesame, above );
+.no-textemphasis em:lang(zh) span.char {
+	font-style: inherit;
+	position: relative;
 }
 
-.textemphasis :lang(zh) em span.cjk.biaodian,
-.textemphasis :lang(ja) em span.cjk.biaodian {
-    @include zhuozhonghao( none );
+.no-textemphasis em:lang(zh) span.char:after {
+	// posi
+	display: inline-block;
+	left: 0;
+	margin: .4em 0 0 0;
+	overflow: hidden;
+	position: absolute;
+	text-indent: 0;
+	top: 0;
+
+	// size
+	height: 1.9em;
+
+	// typo
+	content: '・'; // ●
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1.9em;
+	text-decoration: none;
 }
 
-.textemphasis :lang(zh) em span.cjk:after,
-.textemphasis :lang(zh) em span.latin:after
-.textemphasis :lang(ja) em span.cjk:after,
-.textemphasis :lang(ja) em span.latin:after {
-    content: none !important;
+.no-textemphasis em:lang(ja) span.char:after {
+	content: '、';
+	margin: -1.55em 0 0 .32em;
+	overflow: inherit;
 }
 
-.no-textemphasis :lang(zh) em span.cjk,
-.no-textemphasis :lang(ja) em span.cjk,
-.no-textemphasis :lang(zh) em span.latin,
-.no-textemphasis :lang(ja) em span.latin {
-    font-style: inherit;
-    position: relative;
+.no-textemphasis em:lang(zh) span.latin:after {
+	margin: .4em 0 0 -.25em;
 }
 
-.no-textemphasis :lang(zh) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(zh) em span.latin:after,
-.no-textemphasis :lang(ja) em span.latin:after {
-    content: '・'; /*●*/
-    display: inline-block;
-    font-style: normal;
-    font-weight: normal;
-    height: 1.9em; /* 1 */
-    left: 0;
-    line-height: 1.9em;
-    margin: .4em 0 0 0;
-    overflow: hidden;
-    position: absolute;
-    text-decoration: none; /* 1 */
-    text-indent: 0;
-    top: 0;
-}
-
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.latin:after {
-    content: '、';
-    margin: -1.55em 0 0 .32em;
-    overflow: inherit;
-}
-
-.no-textemphasis :lang(zh) em span.latin:after {
-    margin: .4em 0 0 -.25em;
-}
-
-.no-textemphasis :lang(ja) em span.latin:after {
-    margin: -1.5em 0 0 .1em;
+.no-textemphasis em:lang(ja) span.latin:after {
+	margin: -1.5em 0 0 .1em;
 }
 
 .no-textemphasis :lang(zh) em span.space:after,
 .no-textemphasis :lang(ja) em span.space:after,
-.no-textemphasis :lang(zh) em span.cjk.biaodian:after,
-.no-textemphasis :lang(ja) em span.cjk.biaodian:after {
-    content: none;
+.no-textemphasis :lang(zh) em span.biaodian:after,
+.no-textemphasis :lang(ja) em span.biaodian:after {
+	content: none;
 }
 
 :not(:lang(zh)):not(:lang(ja)) em,
-.textemphasis :not(:lang(zh)):not(:lang(ja)) em {
-    font-style: italic;
-    text-emphasis:              none;
-        -moz-text-emphasis:     none;
-        -webkit-text-emphasis:  none;
-
+:not(:lang(zh)):not(:lang(ja)) em {
+	@include zhuozhonghao( none );
+	font-style: italic;
 }
 
-.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span:after {
-    content: none;
+.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span.char:after {
+	content: none;
 }
 
 
@@ -524,7 +508,7 @@ html:not(.han-js-rendered) :lang(ja) em {
    ---------------------------------------
  *
  * 1. 如果系統不支援楷體
- *    If Kaiti is not supported
+ *	If Kaiti is not supported
  *
  */
 
@@ -532,19 +516,20 @@ html:not(.han-js-rendered) :lang(ja) em {
 :lang(ja) i,
 i:lang(zh),
 i:lang(ja) {
-    font-style: inherit;
+	font-style: inherit;
 }
 
 i:lang(zh),
 i:lang(ja) {
-    font-family: cursive, serif;
+	font-family: cursive, serif;
 }
 
 .no-fontface-kaiti i:lang(zh),
-.no-fontface-kaiti i:lang(ja) /* 1 */ {
-    font-family: serif;
-    border-bottom: 3px double $lightgrey;
-    padding-bottom: .05em;
+.no-fontface-kaiti i:lang(ja) {
+	// 1
+	font-family: serif;
+	border-bottom: 3px double $lightgrey;
+	padding-bottom: .05em;
 }
 
 
@@ -557,8 +542,8 @@ i:lang(ja) {
 
 article strong:lang(zh),
 article strong:lang(ja) {
-    font-family: sans-serif;
-    font-weight: bold;
+	font-family: sans-serif;
+	font-weight: bold;
 }
 
 
@@ -572,49 +557,85 @@ article strong:lang(ja) {
    Inline quotation
    --------------------------------------- */
 
-q:lang(zh),
-q:lang(ja) {
-    quotes: '「' '」' '『' '』' '「' '」' '『' '』' '「' '」' '『' '』';
-}
-
-q:lang(zh-CN),
-q:lang(zh-hans),
-q:lang(en) {
-    quotes: '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’';
-}
-
-q:lang(en-GB) {
-    quotes: '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”';
-}
+q {
+	quotes: '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’';
 
 
-q:before {
-    content: open-quote;
+	&:lang(zh),
+	&:lang(ja) {
+		quotes: '「' '」' '『' '』' '「' '」' '『' '』' '「' '」' '『' '』';
+	}
+
+	&:lang(zh-CN),
+	&:lang(zh-Hans),
+	&:lang(en) {
+		quotes: '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’';
+	}
+
+	&:lang(en-GB) {
+		quotes: '‘' '’' '“' '”' '‘' '’' '“' '”' '‘' '’' '“' '”';
+	}
+
+	&:before {
+		content: open-quote;
+	}
+
+	&:after {
+		content: close-quote;
+	}
+
+
+	// Browsers which doesn't support
+	// `quote` attribution. (i.e., WebKit)
+	.no-quotes &:lang(zh):before,
+	.no-quotes &:lang(ja):before {
+		content: '「';
+	}
+
+	.no-quotes &:lang(zh):after,
+	.no-quotes &:lang(ja):after {
+		content: '」';
+	}
+
+	.no-quotes &.double:lang(zh):before,
+	.no-quotes &.double:lang(ja):before {
+		content: '『';
+	}
+
+	.no-quotes &.double:lang(zh):after,
+	.no-quotes &.double:lang(ja):after {
+		content: '』';
+	}
+
+	.no-quotes &:lang(zh-CN):before,
+	.no-quotes &:lang(zh-Hans):before,
+	.no-quotes &:lang(en):before,
+	.no-quotes &.double:lang(en-GB):before {
+		content: '“';
+	}
+
+	.no-quotes &:lang(zh-CN):after,
+	.no-quotes &:lang(zh-Hans):after,
+	.no-quotes &:lang(en):after,
+	.no-quotes &.double:lang(en-GB):after {
+		content: '”';
+	}
+
+	.no-quotes &.double:lang(zh-CN):before,
+	.no-quotes &.double:lang(zh-Hans):before,
+	.no-quotes &.double:lang(en):before,
+	.no-quotes &:lang(en-GB):before {
+		content: '‘';
+	}
+
+	.no-quotes &.double:lang(zh-CN):after,
+	.no-quotes &.double:lang(zh-Hans):after,
+	.no-quotes &.double:lang(en):after,
+	.no-quotes &:lang(en-GB):after {
+		content: '’';
+	}
 }
 
-q:after {
-    content: close-quote;
-}
-
-.no-quotes q:lang(zh):before,
-.no-quotes q:lang(ja):before {
-    content: '「';
-}
-
-.no-quotes q:lang(zh):after,
-.no-quotes q:lang(ja):after {
-    content: '」';
-}
-
-.no-quotes q.double:lang(zh):before,
-.no-quotes q.double:lang(ja):before {
-    content: '『';
-}
-
-.no-quotes q.double:lang(zh):after,
-.no-quotes q.double:lang(ja):after {
-    content: '』';
-}
 
 
 /* 區塊引用
@@ -626,9 +647,9 @@ q:after {
 
 article:lang(zh) blockquote,
 article:lang(ja) blockquote {
-    font-family: serif;
-    margin: 1.5em 0 1.5em 2em;
-    width: auto;
+	font-family: serif;
+	margin: 1.5em 0 1.5em 2em;
+	width: auto;
 }
 
 /* 引用中的引用
@@ -636,11 +657,11 @@ article:lang(ja) blockquote {
    --------------------------------------- */
 
 article:lang(zh) blockquote blockquote {
-    margin: 1em 0 1em 2em;
+	margin: 1em 0 1em 2em;
 }
 
 article:lang(ja) blockquote blockquote {
-    margin: 1em 0 1em 1em;
+	margin: 1em 0 1em 1em;
 }
 
 
@@ -650,38 +671,29 @@ article:lang(ja) blockquote blockquote {
 
 article:lang(zh) figure blockquote,
 article:lang(ja) figure blockquote {
-    font-family: serif;
-    font-size: 1.25em;
-    margin: .5em 0 0;
-    padding: 7px;
+	font-family: serif;
+	font-size: 1.25em;
+	margin: .5em 0 0;
+	padding: 7px;
 
 
-    blockquote {
-        margin: inherit;
-    }
+	blockquote {
+		margin: inherit;
+	}
 
-    &:before {
-        color: $lightgrey;
-        content: '‘';
-        display: block;
-        float: left;
-        font: 3em bold serif;
-        margin: -.2em .1em -.25em -7px;
-    }
-
-    p {
-       margin: .2em 0;
-    }
+	p {
+	   margin: .2em 0;
+	}
 }
 
 article:lang(zh) figure figcaption,
 article:lang(ja) figure figcaption {
-    border-top: 1px solid $lightgrey;
-    clear: both;
-    color: #666;
-    font: .85em normal sans-serif;
-    padding-top: .25em;
-    text-align: justify;
+	border-top: 1px solid $lightgrey;
+	clear: both;
+	color: #666;
+	font: .85em normal sans-serif;
+	padding-top: .25em;
+	text-align: justify;
 }
 
 
@@ -698,45 +710,45 @@ article:lang(ja) figure figcaption {
 
 html.han-js-rendered ruby rt:before,
 html.han-js-rendered ruby rt:after {
-    content: '';
+	content: '';
 }
 
 html.ruby ruby rt {
-    padding: 0 .2em;
+	padding: 0 .2em;
 }
 
 html.no-ruby ruby {
-    display: inline-block;
-    line-height: 1.2;
-    text-indent: 0;
-    vertical-align: 1.15em;
+	display: inline-block;
+	line-height: 1.2;
+	text-indent: 0;
+	vertical-align: 1.15em;
 }
 
 html.no-ruby ruby,
 html.no-ruby ruby .rt {
-    text-indent: 0;
+	text-indent: 0;
 }
 
 html.no-ruby ruby .rr {
-    display: inline-table;
-    text-align: center;
+	display: inline-table;
+	text-align: center;
 }
 
 html.no-ruby ruby .rb {
-    display: table-row-group;
+	display: table-row-group;
 }
 
 html.no-ruby ruby:not(.mps) .rt {
-    display: table-header-group;
-    font-size: .8em;
-    line-height: normal;
-    padding: 0 .05em;
-    white-space: nowrap;
+	display: table-header-group;
+	font-size: .8em;
+	line-height: normal;
+	padding: 0 .05em;
+	white-space: nowrap;
 }
 
 html.no-ruby ruby .rt:empty:after {
-    content: ' ';
-    display: inherit;
+	content: ' ';
+	display: inherit;
 }
 
 
@@ -746,7 +758,7 @@ html.no-ruby ruby .rt:empty:after {
 
 ruby.mps-ltr rt,
 ruby.mps-ltr .rt {
-    font-family: cursive, serif;
+	font-family: cursive, serif;
 }
 
 
@@ -761,38 +773,39 @@ code,
 kbd,
 pre,
 samp {
-    font-family: monospace, sans-serif;
+	font-family: monospace, sans-serif;
 }
 
 
 
 /* ---------------------------------------
-   在手持裝置上的微調
+   在小視窗瀏覽器上（如手持裝置）的微調
    ---
-   Adjustments to mobile devices
+   Adjustments to small-width windows
+   (i.e., mobile devices)
    --------------------------------------- */
 
-@media only screen and (min-device-width: 320px) and (max-device-width: 480px),
-       only screen and (device-aspect-ratio: 2/3),
-       only screen and (device-aspect-ratio: 40/71) {
+@media only screen and (max-width: 480px),
+	   only screen and (device-aspect-ratio: 2/3),
+	   only screen and (device-aspect-ratio: 40/71) {
 
-    article:lang(zh).poem-like p,
-    article:lang(zh) .poem-like p,
-    article:lang(zh) p.poem-like,
-    article:lang(zh) ol > li,
-    article:lang(zh) ul > li {
-        margin-left: 1em;
-        padding: 0;
-    }
+	article:lang(zh).poem-like p,
+	article:lang(zh) .poem-like p,
+	article:lang(zh) p.poem-like,
+	article:lang(zh) ol > li,
+	article:lang(zh) ul > li {
+		margin-left: 1em;
+		padding: 0;
+	}
 
-    article:lang(zh) blockquote {
-        margin-left: 1em;
-    }
+	article:lang(zh) blockquote {
+		margin-left: 1em;
+	}
 
-    article:lang(zh) blockquote blockquote {
-        margin-left: 1em;
-        padding-left: 1em;
-    }
+	article:lang(zh) blockquote blockquote {
+		margin-left: 1em;
+		padding-left: 1em;
+	}
 }
 
 

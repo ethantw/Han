@@ -1,0 +1,222 @@
+
+
+/* ---------------------------------------
+   四大字體集・宋體（明朝體）
+   ---
+   The Four Typefaces: Songti (Mincho)
+   --------------------------------------- */
+
+@font-face {
+	font-family: 'Han Songti';
+	src:
+		local('Songti SC'),
+		local('Songti TC'),
+
+		local(STSong),
+		local('Lisong Pro'),
+
+		local(SimSun),
+		local(PMingLiU);
+}
+
+@font-face {
+	@include range-CJK;
+	font-family: 'Han Songti';
+	src:
+		local(YuMincho),
+		local('Hiragino Mincho ProN'),
+		local('Hiragino Mincho Pro'),
+		local('MS Mincho');
+}
+
+
+// Han Songti CNS
+@font-face {
+	font-family: 'Han Songti CNS';
+	src:
+		local('Songti TC'),
+		local('Lisong Pro'),
+
+		local('Songti SC'),
+		local(STSong),
+
+		local(PMingLiU),
+		local(SimSun);
+}
+
+@font-face {
+	@include range-CJK;
+	font-family: 'Han Songti CNS';
+	src:
+		local(YuMincho),
+		local('Hiragino Mincho ProN'),
+		local('Hiragino Mincho Pro');
+}
+
+
+// Han Songti GB
+@font-face {
+	font-family: 'Han Songti GB';
+	src:
+		local('Songti SC'),
+		local(STSong),
+		local(SimSun),
+		local(PMingLiU);
+}
+
+
+
+/* ----------------------------------------- 
+ * 粗體
+ * Bold
+ * ----------------------------------------- */
+
+@font-face {
+	font-family: 'Han Songti';
+	font-weight: 600;
+	src:
+		local('STSongti SC Bold'),
+		local('STSongti TC Bold'),
+		local(STSongti-SC-Bold),
+		local(STSongti-TC-Bold);
+}
+
+@font-face {
+	@include range-CJK;
+	font-family: 'Han Songti';
+	font-weight: 600;
+	src:
+		local('YuMincho Demibold'),
+		local('Hiragino Mincho ProN W6'),
+		local('Hiragino Mincho Pro W6'),
+		local(YuMin-Demibold),
+		local(HiraMinProN-W6),
+		local(HiraMinPro-W6);
+}
+
+
+// Han Songti CNS
+@font-face {
+	font-family: 'Han Songti CNS';
+	font-weight: 600;
+	src:
+		local('STSongti TC Bold'),
+		local('STSongti SC Bold'),
+		local(STSongti-TC-Bold),
+		local(STSongti-SC-Bold);
+}
+
+@font-face {
+	@include range-CJK;
+	font-family: 'Han Songti CNS';
+	font-weight: 600;
+	src:
+		local('YuMincho Demibold'),
+		local('Hiragino Mincho ProN W6'),
+		local('Hiragino Mincho Pro W6'),
+		local(YuMin-Demibold),
+		local(HiraMinProN-W6),
+		local(HiraMinPro-W6);
+}
+
+
+// Han Songti GB
+@font-face {
+	font-family: 'Han Songti GB';
+	font-weight: 600;
+	src:
+		local('STSongti SC Bold'),
+		local(STSongti-SC-Bold);
+}
+
+
+
+/* ----------------------------------------- 
+ * 解決Firefox不支援`unicode-range`及粗體調用問題
+ * Solution to Firefox's `unicode-range`
+ * and bold font issues
+ * ----------------------------------------- */
+
+@font-face {
+	font-family: 'Han Songti';
+	src:
+		local('Songti SC'),
+		local('Songti TC'),
+
+		local(STSongti),
+		local('Lisong Pro'),
+
+		local('MS Mincho'),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Han Songti';
+	font-weight: 600;
+	src:
+		local('STSongti TC Bold'),
+		local('STSongti SC Bold'),
+		local(STSongti-TC-Bold),
+		local(STSongti-SC-Bold);
+	unicode-range: U+270C;
+}
+
+
+// Han Songti CNS
+@font-face {
+	font-family: 'Han Songti CNS';
+	src:
+		local('Songti TC'),
+		local('Lisong Pro'),
+
+		local('Songti SC'),
+		local(STSong),
+
+		local('MS Mincho'),
+		local(PMingLiU),
+		local(SimSun);
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Han Songti CNS';
+	font-weight: 600;
+	src:
+		local('STSongti TC Bold'),
+		local('STSongti SC Bold'),
+		local(STSongti-TC-Bold),
+		local(STSongti-SC-Bold);
+	unicode-range: U+270C;
+}
+
+
+// Han Songti GB
+@font-face {
+	font-family: 'Han Songti GB';
+	src:
+		local('Songti SC'),
+		local(STSong),
+		local(SimSun);
+	unicode-range: U+270C;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
