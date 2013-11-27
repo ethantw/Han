@@ -2,9 +2,29 @@
 更新紀錄　CHANGELOG
 ===
 
-2.2.0-alpha（2013-11）
+2.2.0（2013-11－27）
 ---
-1.
+1. 修正四大字體集與地區分支，並新增相關`@mixin`供開發者選用（issue #17）
+
+2. 進階版標點字體加入中國國標分支；新增等高、文本數字字體（issue #17）
+
+3. *棄用*來源元素`<cite>`的書名號樣式（issue #19）
+
+4. 以節點改寫相鄰註記元素`<u>` hack，以避免replace method同AngularJS等程式衝突（issue #20）
+
+5. 進階版標點字體新增全形連接號（－）、全形正、反斜線（／ ＼）、全形內括號（〔〕）等五個字符的修正（issue #21）
+
+6. 加入CSS3屬性`unicode-range`的功能支援偵測（issue #22）
+
+7. `jQuery(selector).charize()`加入12個CJK相容表意漢字支援（issue #23）
+
+8. 注音符號字體補足方言音擴充字符（issue #26）
+
+9. 修正強調元素`<em>`的樣式回退（issue #27）
+
+
+〔更多資訊〕  
+[https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]()
 
 
 
