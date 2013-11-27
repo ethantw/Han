@@ -24,10 +24,6 @@ $lightgrey: lightgrey;
    針對normalize.css的改進
    ---
    Improvements aim to normalize.css
-   ---------------------------------------
-   詞彙定義元素`<dfn>`使用粗體
-   Term-defining elements `<dfn>` re-styled
-   `bold` instead of `italic`.
    --------------------------------------- */
 
 dfn {
@@ -37,7 +33,7 @@ dfn {
 
 
 /* 增進code區塊的可讀性
-   Enhances code blocks' readability
+   Enhances the readability of code blocks
    --------------------------------------- */
 
 pre code {
@@ -297,7 +293,7 @@ article:lang(ja) ul {
 /* ---------------------------------------
    漢拉間隙
    ---
-   Gaps between Hanzi and Latin letter
+   Kerning between Hanzi and Latin letter
    --------------------------------------- */
 
 span.hanla,
@@ -412,55 +408,46 @@ cite.no-cite-mark:after {
    着重號
    ---
    Emphases
-   --------------------------------------- */
+   --------------------------------------- 
+ *
+ * 1. Fallback
+ *
+ */
 
-em {
-	border-bottom: 2px dotted;
-	padding-bottom: .05em;
+em:lang(zh),
+em:lang(ja) {
 	font-style: inherit;
 
+	// 1
+	border-bottom-style: dotted;
+	border-bottom-width: 2px;
+	padding-bottom: .05em;
 
-	/*:not(:lang(zh)):not(:lang(ja)) & {
-		border-bottom: inherit;
-		font-style: italic;
-	} */
+	@include zhuozhonghao;
+	border-bottom-width: -webkit-calc( 0px );
 
- 	html.no-js :lang(zh) &,
-	html.no-js :lang(ja) &
-	html:not(.han-js-rendered) :lang(zh) &,
-	html:not(.han-js-rendered) :lang(ja) & {
-		border-bottom: 2px dotted;
-		padding-bottom: .05em;
-	}
 
-	:lang(zh) &,
-	:lang(ja) & {
-		@include zhuozhonghao();
-		border-bottom: inherit;
-	}
-
-	:lang(ja) & {
-		@include zhuozhonghao( sesame, above );
-	}
-
-	:lang(zh) & span.cjk.biaodian,
-	:lang(ja) & span.cjk.biaodian {
+	span.biaodian {
 		@include zhuozhonghao( none );
 	}
 }
 
-.no-textemphasis :lang(zh) em span.cjk,
-.no-textemphasis :lang(ja) em span.cjk,
-.no-textemphasis :lang(zh) em span.latin,
-.no-textemphasis :lang(ja) em span.latin {
+em:lang(ja) {
+	@include zhuozhonghao( sesame, over );
+}
+
+.han-js-rendered em:lang(zh),
+.han-js-rendered em:lang(ja) {
+	border-bottom-width: 0;
+	padding-bottom: auto;
+}
+
+.no-textemphasis em:lang(zh) span.char {
 	font-style: inherit;
 	position: relative;
 }
 
-.no-textemphasis :lang(zh) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(zh) em span.latin:after,
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(zh) span.char:after {
 	content: '・'; /*●*/
 	display: inline-block;
 	font-style: normal;
@@ -476,25 +463,24 @@ em {
 	top: 0;
 }
 
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(ja) span.char:after {
 	content: '、';
 	margin: -1.55em 0 0 .32em;
 	overflow: inherit;
 }
 
-.no-textemphasis :lang(zh) em span.latin:after {
+.no-textemphasis em:lang(zh) span.latin:after {
 	margin: .4em 0 0 -.25em;
 }
 
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(ja) span.latin:after {
 	margin: -1.5em 0 0 .1em;
 }
 
 .no-textemphasis :lang(zh) em span.space:after,
 .no-textemphasis :lang(ja) em span.space:after,
-.no-textemphasis :lang(zh) em span.cjk.biaodian:after,
-.no-textemphasis :lang(ja) em span.cjk.biaodian:after {
+.no-textemphasis :lang(zh) em span.biaodian:after,
+.no-textemphasis :lang(ja) em span.biaodian:after {
 	content: none;
 }
 
@@ -504,7 +490,7 @@ em {
 	font-style: italic;
 }
 
-.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span:after {
+.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span.char:after {
 	content: none;
 }
 
@@ -534,7 +520,8 @@ i:lang(ja) {
 }
 
 .no-fontface-kaiti i:lang(zh),
-.no-fontface-kaiti i:lang(ja) /* 1 */ {
+.no-fontface-kaiti i:lang(ja) {
+	// 1
 	font-family: serif;
 	border-bottom: 3px double $lightgrey;
 	padding-bottom: .05em;
