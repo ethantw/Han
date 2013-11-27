@@ -1,13 +1,13 @@
 @charset "UTF-8";
 /* 
- * 漢字標準格式 v2.2.0-alpha
+ * 漢字標準格式 v2.2.0
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/26
+ * Last Modified: 2013/11/27
  *
  */
 /* 
@@ -1245,17 +1245,13 @@ table {
    針對normalize.css的改進
    ---
    Improvements aim to normalize.css
-   ---------------------------------------
-   詞彙定義元素`<dfn>`使用粗體
-   Term-defining elements `<dfn>` re-styled
-   `bold` instead of `italic`.
    --------------------------------------- */
 dfn {
   font-style: inherit;
   font-weight: bold; }
 
 /* 增進code區塊的可讀性
-   Enhances code blocks' readability
+   Enhances the readability of code blocks
    --------------------------------------- */
 pre code {
   display: block;
@@ -1452,7 +1448,7 @@ article:lang(ja) ul {
 /* ---------------------------------------
    漢拉間隙
    ---
-   Gaps between Hanzi and Latin letter
+   Kerning between Hanzi and Latin letter
    --------------------------------------- */
 span.hanla,
 html:not(.han-la) span.hanla {
@@ -1545,35 +1541,26 @@ cite.no-cite-mark:after {
    着重號
    ---
    Emphases
-   --------------------------------------- */
-em {
-  border-bottom: 2px dotted;
-  padding-bottom: .05em;
+   --------------------------------------- 
+ *
+ * 1. Fallback
+ *
+ */
+em:lang(zh),
+em:lang(ja) {
   font-style: inherit;
-  /*:not(:lang(zh)):not(:lang(ja)) & {
-  	border-bottom: inherit;
-  	font-style: italic;
-  } */ }
-  html.no-js :lang(zh) em, html.no-js :lang(ja) em
-  html:not(.han-js-rendered) :lang(zh) em, html:not(.han-js-rendered) :lang(ja) em {
-    border-bottom: 2px dotted;
-    padding-bottom: .05em; }
-  :lang(zh) em, :lang(ja) em {
-    -moz-text-emphasis: circle;
-    -webkit-text-emphasis: circle;
-    text-emphasis: circle;
-    -moz-text-emphasis-position: under;
-    -webkit-text-emphasis-position: under;
-    text-emphasis-position: under;
-    border-bottom: inherit; }
-  :lang(ja) em {
-    -moz-text-emphasis: sesame;
-    -webkit-text-emphasis: sesame;
-    text-emphasis: sesame;
-    -moz-text-emphasis-position: above;
-    -webkit-text-emphasis-position: above;
-    text-emphasis-position: above; }
-  :lang(zh) em span.cjk.biaodian, :lang(ja) em span.cjk.biaodian {
+  border-bottom-style: dotted;
+  border-bottom-width: 2px;
+  padding-bottom: .05em;
+  -moz-text-emphasis: circle;
+  -webkit-text-emphasis: circle;
+  text-emphasis: circle;
+  -moz-text-emphasis-position: under;
+  -webkit-text-emphasis-position: under;
+  text-emphasis-position: under;
+  border-bottom-width: -webkit-calc(0px ); }
+  em:lang(zh) span.biaodian,
+  em:lang(ja) span.biaodian {
     -moz-text-emphasis: none;
     -webkit-text-emphasis: none;
     text-emphasis: none;
@@ -1581,17 +1568,24 @@ em {
     -webkit-text-emphasis-position: under;
     text-emphasis-position: under; }
 
-.no-textemphasis :lang(zh) em span.cjk,
-.no-textemphasis :lang(ja) em span.cjk,
-.no-textemphasis :lang(zh) em span.latin,
-.no-textemphasis :lang(ja) em span.latin {
+em:lang(ja) {
+  -moz-text-emphasis: sesame;
+  -webkit-text-emphasis: sesame;
+  text-emphasis: sesame;
+  -moz-text-emphasis-position: over;
+  -webkit-text-emphasis-position: over;
+  text-emphasis-position: over; }
+
+.han-js-rendered em:lang(zh),
+.han-js-rendered em:lang(ja) {
+  border-bottom-width: 0;
+  padding-bottom: auto; }
+
+.no-textemphasis em:lang(zh) span.char {
   font-style: inherit;
   position: relative; }
 
-.no-textemphasis :lang(zh) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(zh) em span.latin:after,
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(zh) span.char:after {
   content: '・';
   /*●*/
   display: inline-block;
@@ -1607,22 +1601,21 @@ em {
   text-indent: 0;
   top: 0; }
 
-.no-textemphasis :lang(ja) em span.cjk:after,
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(ja) span.char:after {
   content: '、';
   margin: -1.55em 0 0 .32em;
   overflow: inherit; }
 
-.no-textemphasis :lang(zh) em span.latin:after {
+.no-textemphasis em:lang(zh) span.latin:after {
   margin: .4em 0 0 -.25em; }
 
-.no-textemphasis :lang(ja) em span.latin:after {
+.no-textemphasis em:lang(ja) span.latin:after {
   margin: -1.5em 0 0 .1em; }
 
 .no-textemphasis :lang(zh) em span.space:after,
 .no-textemphasis :lang(ja) em span.space:after,
-.no-textemphasis :lang(zh) em span.cjk.biaodian:after,
-.no-textemphasis :lang(ja) em span.cjk.biaodian:after {
+.no-textemphasis :lang(zh) em span.biaodian:after,
+.no-textemphasis :lang(ja) em span.biaodian:after {
   content: none; }
 
 :not(:lang(zh)):not(:lang(ja)) em,
@@ -1635,7 +1628,7 @@ em {
   text-emphasis-position: under;
   font-style: italic; }
 
-.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span:after {
+.no-textemphasis :not(:lang(zh)):not(:lang(ja)) em span.char:after {
   content: none; }
 
 /* ---------------------------------------
@@ -1887,7 +1880,14 @@ html.han-biaodian-pro-cns button,
 html.han-biaodian-pro-cns input,
 html.han-biaodian-pro-cns select,
 html.han-biaodian-pro-cns textarea {
-  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti CNS", sans-serif; }
+
+html.han-biaodian-pro-gb,
+html.han-biaodian-pro-gb button,
+html.han-biaodian-pro-gb input,
+html.han-biaodian-pro-gb select,
+html.han-biaodian-pro-gb textarea {
+  font-family: "Biaodian Pro Sans GB", "Helvetica Neue", Helvetica, Arial, "Han Heiti GB", sans-serif; }
 
 html:lang(zh) :not(:lang(zh)):not(:lang(ja)),
 html:lang(ja) :not(:lang(zh)):not(:lang(ja)),
@@ -1914,16 +1914,16 @@ cite:lang(en).piece:after {
 
 /* 變音文字 */
 i:lang(zh) {
-  font-family: 'Biaodian Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif; }
+  font-family: 'Biaodian Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif; }
 
 article blockquote i:lang(zh) {
   font-family: 'Biaodian Sans', 'Latin Italic Sans', sans-serif; }
 
 html.han-biaodian-pro i:lang(zh) {
-  font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif; }
+  font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', 'Han Kaiti', cursive, serif; }
 
 html.han-biaodian-pro-cns i:lang(zh) {
-  font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', 'Han Kaiti', cursive, '標楷體', serif; }
+  font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', 'Han Kaiti', cursive, serif; }
 
 html.han-biaodian-pro article blockquote i:lang(zh) {
   font-family: "Biaodian Pro Sans", "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
@@ -1987,7 +1987,10 @@ html.han-biaodian-pro article strong:lang(zh) {
   font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
 
 html.han-biaodian-pro-cns article strong:lang(zh) {
-  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti CNS", sans-serif; }
+
+html.han-biaodian-pro-gb article strong:lang(zh) {
+  font-family: "Biaodian Pro Sans GB", "Helvetica Neue", Helvetica, Arial, "Han Heiti GB", sans-serif; }
 
 article strong:not(:lang(zh)):not(:lang(ja)),
 html.han-biaodian-pro article strong:not(:lang(zh)):not(:lang(ja)),
@@ -2000,10 +2003,13 @@ article:lang(ja) blockquote {
   font-family: "Biaodian Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif; }
 
 html.han-biaodian-pro article blockquote {
-  font-family: "Biaodian Pro Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif; }
+  font-family: 'Biaodian Pro Serif', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Kaiti', cursive, serif; }
 
 html.han-biaodian-pro-cns article blockquote {
-  font-family: "Biaodian Pro Serif CNS", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "標楷體", serif; }
+  font-family: 'Biaodian Pro Serif CNS', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Kaiti CNS', cursive, serif; }
+
+html.han-biaodian-pro-gb article blockquote {
+  font-family: 'Biaodian Pro Serif GB', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Kaiti GB', cursive, serif; }
 
 article blockquote:lang(ja),
 html.han-biaodian-pro article blockquote:lang(ja),
@@ -2024,16 +2030,19 @@ figure:lang(ja) blockquote blockquote {
   font-family: "Biaodian Serif", Georgia, Times, "Times New Roman", "Han Songti", serif; }
 
 html.han-biaodian-pro figure:lang(zh) blockquote {
-  font-family: "Biaodian Pro Serif", Georgia, Times, "Times New Roman", "Han Songti", serif; }
+  font-family: 'Biaodian Pro Serif', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti', serif; }
 
 html.han-biaodian-pro-cns figure:lang(zh) blockquote {
-  font-family: "Biaodian Pro Serif CNS", Georgia, Times, "Times New Roman", "Han Songti", serif; }
+  font-family: 'Biaodian Pro Serif CNS', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti CNS', serif; }
+
+html.han-biaodian-pro-gb figure:lang(zh) blockquote {
+  font-family: 'Biaodian Pro Serif GB', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti GB', serif; }
 
 figure:lang(ja) blockquote,
 figure:lang(ja) blockquote blockquote,
 html.han-biaodian-pro figure:lang(ja) blockquote,
 html.han-biaodian-pro-cns figure:lang(ja) blockquote {
-  font-family: "Yakumono Serif", Georgia, Times, "Times New Roman", serif; }
+  font-family: 'Yakumono Serif', 'Numeral LF Serif', Georgia, 'Times New Roman', serif; }
 
 figure:lang(zh) blockquote:before,
 figure:lang(ja) blockquote:before {
@@ -2046,16 +2055,14 @@ html.han-biaodian-pro figure:lang(zh) figcaption {
   font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
 
 html.han-biaodian-pro-cns figure:lang(zh) figcaption {
-  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
+  font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Han Heiti CNS", sans-serif; }
+
+html.han-biaodian-pro-gb figure:lang(zh) figcaption {
+  font-family: "Biaodian Pro Sans GB", "Helvetica Neue", Helvetica, Arial, "Han Heiti GB", sans-serif; }
 
 html.han-biaodian-pro figure:lang(ja) figcaption,
 html.han-biaodian-pro-cns figure:lang(ja) figcaption {
-  font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
-
-/* 橫式注音符號 */
-ruby.mps-ltr rt,
-ruby.mps-ltr .rt {
-  font-family: 'Han Kaiti', STKaiti, Kaiti, cursive, serif; }
+  font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* 代碼（code） */
 code,
@@ -2082,7 +2089,12 @@ samp {
   kbd, html.han-biaodian-pro-cns
   pre, html.han-biaodian-pro-cns
   samp {
-    font-family: 'Biaodian Pro Sans CNS', Courier, 'Han Heiti', monospace, sans-serif; }
+    font-family: 'Biaodian Pro Sans CNS', Courier, 'Han Heiti CNS', monospace, sans-serif; }
+  html.han-biaodian-pro-gb code, html.han-biaodian-pro-gb
+  kbd, html.han-biaodian-pro-gb
+  pre, html.han-biaodian-pro-gb
+  samp {
+    font-family: 'Biaodian Pro Sans GB', Courier, 'Han Heiti GB', monospace, sans-serif; }
   code:not(:lang(zh)):not(:lang(ja)),
   code :not(:lang(zh)):not(:lang(ja)),
   kbd:not(:lang(zh)):not(:lang(ja)),

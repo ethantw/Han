@@ -1,13 +1,13 @@
 
 /* 
- * 漢字標準格式 v2.2.0-alpha
+ * 漢字標準格式 v2.2.0
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/26
+ * Last Modified: 2013/11/27
  *
  */
 
@@ -34,7 +34,6 @@ jQuery.noConflict();
 			// `unicode-range`
 			classes.push( ( test_for_unicoderange() ? '' : 'no-' ) + 'unicoderange' );
 
-
 			// The 4(-1) Typefaces
 			fontfaces['songti'] = test_for_fontface( 'Han Songti' );
 			fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' );
@@ -43,7 +42,6 @@ jQuery.noConflict();
 			for ( var font in fontfaces ) {
 				classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
 			}
-
 
 			// altogether
 			$('html').addClass( classes.join(' ') );
