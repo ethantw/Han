@@ -1207,16 +1207,16 @@ table {
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB;
   font-family: 'Zhuyin Kaiti';
-  src: url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(PMingLiU); }
+  src: url("/fonts/zhuyin.eot") format("embedded-opentype"), url("/fonts/zhuyin.ttf") format("truetype"), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(PMingLiU); }
 
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB;
   font-family: 'Zhuyin Heiti';
-  src: local("Hiragino Sans GB"), local("Microsoft Jhenghei"), url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF); }
+  src: local("Hiragino Sans GB"), local("Microsoft Jhenghei"), url("/fonts/zhuyin.eot") format("embedded-opentype"), url("/fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF); }
 
 @font-face {
   font-family: 'Zhuyin Heiti';
-  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("../fonts/moe.eot") format("embedded-opentype"), url("../fonts/moe.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("/fonts/zhuyin.eot") format("embedded-opentype"), url("/fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9; }
 
 /* ---------------------------------------
@@ -2128,34 +2128,34 @@ span.han-js-zhuyin-rendered span.zi[data-zy] {
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after,
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
-  display: inline-block;
-  font: 300 1em/.9 normal 'Han Zhuyin Cursive', cursive, serif;
-  text-decoration: none;
-  text-emphasis: none;
   -moz-text-emphasis: none;
-  -o-text-emphasis: none;
   -webkit-text-emphasis: none;
+  text-emphasis: none;
+  -moz-text-emphasis-position: under;
+  -webkit-text-emphasis-position: under;
+  text-emphasis-position: under;
+  display: inline-block;
+  font: 300 1em/.9 normal 'Zhuyin Kaiti', cursive, serif;
+  text-decoration: none;
   text-indent: 0;
   vertical-align: middle; }
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after,
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
-  font-family: 'Han Zhuyin Cursive', cursive, serif;
+  font-family: 'Zhuyin Kaiti', cursive, serif;
   font-weight: normal; }
 
 span.han-js-zhuyin-rendered.zhuyin-sans-serif span.zi[data-zy]:after {
-  font-family: 'Han Zhuyin Sans', sans-serif; }
+  font-family: 'Zhuyin Heiti', sans-serif; }
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after {
+  -moz-transform: scale(0.55);
+  -webkit-transform: scale(0.55);
+  transform: scale(0.55);
   content: attr(data-zy);
   height: 2.7em;
   line-height: .9;
   margin-left: -.2em;
-  transform: scale(0.55);
-  -moz-transform: scale(0.55);
-  -ms-transform: scale(0.55);
-  -o-transform: scale(0.55);
-  -webkit-transform: scale(0.55);
   white-space: pre-wrap;
   word-break: break-all;
   width: .8em; }
@@ -2190,13 +2190,12 @@ span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="4"]:before {
   content: 'ˋ'; }
 
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+  -moz-transform: scale(0.55);
+  -webkit-transform: scale(0.55);
+  transform: scale(0.55);
+  -webkit-transform: scale(0.65);
   height: 2.7em;
   position: absolute;
-  transform: scale(0.55);
-  -moz-transform: scale(0.55);
-  -ms-transform: scale(0.55);
-  -o-transform: scale(0.55);
-  -webkit-transform: scale(0.65);
   vertical-align: middle;
   width: 1em; }
 

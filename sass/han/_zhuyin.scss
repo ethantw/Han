@@ -7,7 +7,6 @@
  */
 
 
-
 span.han-js-zhuyin-rendered span.zy {
 	display: inline-block;
 	opacity: 0;
@@ -25,39 +24,32 @@ span.han-js-zhuyin-rendered span.zi[data-zy] {
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after,
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+	@include zhuozhonghao(none);
 	display: inline-block;
-	font: 300 1em/.9 normal 'Han Zhuyin Cursive', cursive, serif;
+	font: 300 1em/.9 normal 'Zhuyin Kaiti', cursive, serif;
 	text-decoration: none;
-	text-emphasis:			  none;
-		-moz-text-emphasis:	 none;
-		-o-text-emphasis:	   none;
-		-webkit-text-emphasis:  none;
 	text-indent: 0;
 	vertical-align: middle;
 }
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after,
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
-	font-family: 'Han Zhuyin Cursive', cursive, serif;
+	font-family: 'Zhuyin Kaiti', cursive, serif;
 	font-weight: normal;
 }
 
 span.han-js-zhuyin-rendered.zhuyin-sans-serif span.zi[data-zy]:after {
-	font-family: 'Han Zhuyin Sans', sans-serif;
+	font-family: 'Zhuyin Heiti', sans-serif;
 }
 
 span.han-js-zhuyin-rendered span.zi[data-zy]:after {
+	@include scale(.55);
 	content: attr(data-zy);
 	height: 2.7em;
 	line-height: .9;
 	margin-left: -.2em;
-	transform:			  scale(.55);
-		-moz-transform:	 scale(.55);
-		-ms-transform:	  scale(.55);
-		-o-transform:	   scale(.55);
-		-webkit-transform:  scale(.55);
 	white-space: pre-wrap;
-		word-break: break-all;
+	word-break: break-all;
 	width: .8em;
 }
 
@@ -100,13 +92,10 @@ span.han-js-zhuyin-rendered span.zi[data-zy][data-tone="4"]:before {
 
 
 span.han-js-zhuyin-rendered span.zi[data-zy][data-tone]:before {
+	@include scale(.55);
+	-webkit-transform: scale(.65);
 	height: 2.7em;
 	position: absolute;
-	transform:			  scale(.55);
-		-moz-transform:	 scale(.55);
-		-ms-transform:	  scale(.55);
-		-o-transform:	   scale(.55);
-		-webkit-transform:  scale(.65);
 	vertical-align: middle;
 	width: 1em;
 }
@@ -154,6 +143,22 @@ span.han-js-zhuyin-rendered span.zi[data-zy][data-form="yunmu"][data-tone][data-
 span.han-js-zhuyin-rendered span.zi[data-zy][data-form="shengmu-jieyin-yunmu"][data-tone="0"]:before {
 	margin-top: -.5em;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

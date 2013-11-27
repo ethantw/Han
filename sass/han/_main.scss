@@ -16,7 +16,7 @@
 	顏色
 	Colours
 	--------------------------------------- */
-$lightgrey: lightgrey;
+$lightgrey: lightgrey; // 淺灰
 
 
 
@@ -100,9 +100,9 @@ html.han-js-rendered u.adjacent {
 .han-js-rendered.han-lab-underline u *,
 .han-js-rendered.han-lab-underline u *:before,
 .han-js-rendered.han-lab-underline u *:after {
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
-  box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
 }
 
 u.han-js-charized {
