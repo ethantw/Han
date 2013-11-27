@@ -33,6 +33,14 @@
 		'Han Heiti GB', sans-serif;
 }
 
+@mixin Han-Gothic {
+	font-family:
+		'Yakumono Sans',
+		//'Numeral LF Sans',
+		'Helvetica Neue', Helvetica, Arial,
+		sans-serif;
+}
+
 
 /* 宋體
    Songti
@@ -60,6 +68,14 @@
 		'Numeral LF Serif',
 		Georgia, 'Times New Roman',
 		'Han Songti GB', serif;
+}
+
+@mixin Han-Mincho {
+	font-family:
+		'Yakumono Serif',
+		'Numeral LF Serif',
+		Georgia, 'Times New Roman',
+		serif;
 }
 
 
