@@ -448,19 +448,24 @@ em:lang(ja) {
 }
 
 .no-textemphasis em:lang(zh) span.char:after {
-	content: '・'; /*●*/
+	// posi
 	display: inline-block;
-	font-style: normal;
-	font-weight: normal;
-	height: 1.9em;
 	left: 0;
-	line-height: 1.9em;
 	margin: .4em 0 0 0;
 	overflow: hidden;
 	position: absolute;
-	text-decoration: none;
 	text-indent: 0;
 	top: 0;
+
+	// size
+	height: 1.9em;
+
+	// typo
+	content: '・'; // ●
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1.9em;
+	text-decoration: none;
 }
 
 .no-textemphasis em:lang(ja) span.char:after {
