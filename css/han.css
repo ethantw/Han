@@ -2107,8 +2107,8 @@ span.zhuyin {
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
       content: attr(data-yin);
-      height: 2.7em;
-      line-height: 0.9;
+      height: 2.55em;
+      line-height: 0.85;
       margin-left: -0.2em;
       white-space: pre-wrap;
       word-break: break-all;
@@ -2118,7 +2118,7 @@ span.zhuyin {
     span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.zhuyin span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.zhuyin span.zi[data-yin][data-form="jieyin-yunmu"]:after {
       margin-top: 0.15em; }
     span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin-yunmu"]:after {
-      margin-top: -0.5em; }
+      margin-top: -0.4em; }
     span.zhuyin span.zi[data-yin][data-diao="0"]:before {
       content: "˙"; }
     span.zhuyin span.zi[data-yin][data-diao="2"]:before {
