@@ -135,6 +135,10 @@ jQuery.noConflict();
 					)
 					.replaceWith( $('<span>').addClass('yin').html( mps ) )
 				})
+
+				$(this).replaceWith(
+					$('<span class="zhuyin"></span>')
+				)
 			}
 		});
 

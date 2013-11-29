@@ -7,7 +7,9 @@
  *
  */
 
-ruby.zhuyin
+span.zhuyin
+	display: inline
+
 	html.no-ruby &
 		vertical-align: inherit
 
@@ -17,8 +19,15 @@ ruby.zhuyin
 		text-indent: -9999999px
 		width: 0
 
+
+	&[data-zhuyin-font=sans-serif] span.zi[data-yin]:after 
+		font-family: 'Zhuyin Heiti', sans-serif
+
+	&[data-zhuyin-font=serif] span.zi[data-yin]:after 
+		font-family: 'Zhuyin Kaiti', cursive, serif
+
 	span.zi
-		&[data-yin] 
+		&[data-yin]
 			display: inline-block
 			height: 2em
 			margin-right: .1em
@@ -29,7 +38,7 @@ ruby.zhuyin
 			&[data-diao]:before
 				@include zhuozhonghao(none)
 				display: inline-block
-				font: 300 1em/.9 normal 'Zhuyin Kaiti', cursive, serif
+				font: 300 normal 1em/.9 'Zhuyin Kaiti', cursive, serif
 				text-decoration: none
 				text-indent: 0
 				vertical-align: middle
@@ -37,7 +46,6 @@ ruby.zhuyin
 			&:after
 				@include scale(.55)
 				content: attr(data-yin)
-				font-family: 'Zhuyin Heiti', sans-serif
 				height: 2.7em
 				line-height: .9
 				margin-left: -.2em
@@ -45,19 +53,25 @@ ruby.zhuyin
 				word-break: break-all
 				width: .8em
 
+
+			// 預設（黑體）注音符號的注音、調號位置調整
+			// 單個注音字符
 			&[data-form="shengmu"]:after,
 			&[data-form="jieyin"]:after,
 			&[data-form="yunmu"]:after
 				margin-top: .65em
 
+			// 二個注音字符
 			&[data-form="shengmu-jieyin"]:after,
 			&[data-form="shengmu-yunmu"]:after,
 			&[data-form="jieyin-yunmu"]:after
-				margin-top: .35em
+				margin-top: .15em
 
+			// 三個注音字符
 			&[data-form="shengmu-jieyin-yunmu"]:after
-				margin-top: -.25em
+				margin-top: -.5em
 
+			// 調號
 			&[data-diao="0"]:before
 				content: '˙'
 
@@ -86,11 +100,10 @@ ruby.zhuyin
 				right: 0
 
 			&[data-diao="0"]:before
-				margin-right: -.25em
+				margin-right: -.35em
+				margin-top: .1em
 
-			&[data-diao="2"]:before
-				margin-right:  -.5em
-
+			// 依注音字符數量為調號定位
 			&[data-form="shengmu"][data-diao]:not([data-diao="0"]):before,
 			&[data-form="jieyin"][data-diao]:not([data-diao="0"]):before,
 			&[data-form="yunmu"][data-diao]:not([data-diao="0"]):before
@@ -100,21 +113,87 @@ ruby.zhuyin
 			&[data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before,
 			&[data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before,
 			&[data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
-				margin-top: .65em
+				margin-top: .45em
 
 			&[data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
-				margin-top: .55em
+				margin-top: .35em
 
 			&[data-form="shengmu"][data-diao][data-diao="0"]:before,
 			&[data-form="jieyin"][data-diao][data-diao="0"]:before,
 			&[data-form="yunmu"][data-diao][data-diao="0"]:before
-				margin-top: .3em
+				margin-top: .45em
 
 			&[data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before
-				margin-top: -.5em
+				margin-top: -.6em
 
 
+	// 楷體注音符號的注音、調號位置調整
+	&[data-zhuyin-font=serif] span.zi[data-yin]
+		// 單個注音字符
+		&[data-form="shengmu"]:after,
+		&[data-form="jieyin"]:after,
+		&[data-form="yunmu"]:after
+			margin-top: .65em
 
+		// 二個注音字符
+		&[data-form="shengmu-jieyin"]:after,
+		&[data-form="shengmu-yunmu"]:after,
+		&[data-form="jieyin-yunmu"]:after
+			margin-top: .35em
+
+		// 三個注音字符
+		&[data-form="shengmu-jieyin-yunmu"]:after
+			margin-top: -.25em
+
+		// 調號
+		&[data-diao="0"]:before,
+		&[data-diao="2"]:before,
+		&[data-diao="3"]:before,
+		&[data-diao="4"]:before
+			margin-right: -.6em
+			right: 0
+
+		&[data-diao="0"]:before
+			margin-right: -.275em
+			margin-top: .35em
+
+		&[data-diao="2"]:before
+			margin-right:  -.5em
+
+		// 依注音字符數量為調號定位
+		&[data-form="shengmu"][data-diao]:not([data-diao="0"]):before,
+		&[data-form="jieyin"][data-diao]:not([data-diao="0"]):before,
+		&[data-form="yunmu"][data-diao]:not([data-diao="0"]):before
+			margdin-top: .45em
+			padding-top: .35em
+
+		&[data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before,
+		&[data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before,
+		&[data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
+			margin-top: .65em
+
+		&[data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
+			margin-top: .55em
+
+		&[data-form="shengmu"][data-diao][data-diao="0"]:before,
+		&[data-form="jieyin"][data-diao][data-diao="0"]:before,
+		&[data-form="yunmu"][data-diao][data-diao="0"]:before
+			margin-top: .6em
+
+		&[data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before
+			margin-top: -.2em
+
+
+	// 若在實驗性底線中
+	u.han-js-charized
+		border-bottom: 1px solid
+		padding-bottom: .125em
+
+		span.char span
+			border-bottom: 0 none !important
+
+		& + u 
+			margin-left: .125em
 
 
 
