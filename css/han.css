@@ -2066,31 +2066,30 @@ samp {
   samp :not(:lang(zh)):not(:lang(ja)) {
     font-family: Courier, 'Han Heiti', monospace, sans-serif; }
 
-/* Ruby: 國語注音符號
+/* Ruby: 國語注音、台灣方言音符號
  * ---
- * Ruby: Mandarin Phonetic Symbols (Zhuyin)
+ * Ruby: Mandarin & Taiwanese Dialect
+ * Phonetic Symbols (Zhuyin)
  *
  */
-span.zhuyin {
+span.han-js-zhuyin-rendered {
   display: inline; }
-  html.no-ruby span.zhuyin {
-    vertical-align: inherit; }
-  span.zhuyin span.yin {
+  span.han-js-zhuyin-rendered span.yin {
     display: inline-block;
     opacity: 0;
-    text-indent: -9999999px;
+    text-indent: -9999999em;
     width: 0; }
-  span.zhuyin[data-zhuyin-font=sans-serif] span.zi[data-yin]:after {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=sans-serif] span.zi[data-yin]:after {
     font-family: "Zhuyin Heiti", sans-serif; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin]:after {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin]:after {
     font-family: "Zhuyin Kaiti", cursive, serif; }
-  span.zhuyin span.zi[data-yin] {
+  span.han-js-zhuyin-rendered span.zi[data-yin] {
     display: inline-block;
     height: 2em;
     margin-right: 0.1em;
     position: relative;
     text-indent: 0; }
-    span.zhuyin span.zi[data-yin]:after, span.zhuyin span.zi[data-yin][data-diao]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao]:before {
       -moz-text-emphasis: none;
       -webkit-text-emphasis: none;
       text-emphasis: none;
@@ -2102,7 +2101,7 @@ span.zhuyin {
       text-decoration: none;
       text-indent: 0;
       vertical-align: middle; }
-    span.zhuyin span.zi[data-yin]:after {
+    span.han-js-zhuyin-rendered span.zi[data-yin]:after {
       -moz-transform: scale(0.55);
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
@@ -2113,21 +2112,21 @@ span.zhuyin {
       white-space: pre-wrap;
       word-break: break-all;
       width: 0.8em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu"]:after, span.zhuyin span.zi[data-yin][data-form="jieyin"]:after, span.zhuyin span.zi[data-yin][data-form="yunmu"]:after {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="yunmu"]:after {
       margin-top: 0.65em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.zhuyin span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.zhuyin span.zi[data-yin][data-form="jieyin-yunmu"]:after {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin-yunmu"]:after {
       margin-top: 0.15em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin-yunmu"]:after {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin-yunmu"]:after {
       margin-top: -0.4em; }
-    span.zhuyin span.zi[data-yin][data-diao="0"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="0"]:before {
       content: "˙"; }
-    span.zhuyin span.zi[data-yin][data-diao="2"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="2"]:before {
       content: "ˊ"; }
-    span.zhuyin span.zi[data-yin][data-diao="3"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="3"]:before {
       content: "ˇ"; }
-    span.zhuyin span.zi[data-yin][data-diao="4"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="4"]:before {
       content: "ˋ"; }
-    span.zhuyin span.zi[data-yin][data-diao]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao]:before {
       -moz-transform: scale(0.55);
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
@@ -2136,52 +2135,52 @@ span.zhuyin {
       position: absolute;
       vertical-align: middle;
       width: 1em; }
-    span.zhuyin span.zi[data-yin][data-diao="0"]:before, span.zhuyin span.zi[data-yin][data-diao="2"]:before, span.zhuyin span.zi[data-yin][data-diao="3"]:before, span.zhuyin span.zi[data-yin][data-diao="4"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="0"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="2"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="3"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="4"]:before {
       margin-right: -0.6em;
       right: 0; }
-    span.zhuyin span.zi[data-yin][data-diao="0"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="0"]:before {
       margin-right: -0.35em;
-      margin-top: 0.1em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu"][data-diao]:not([data-diao="0"]):before, span.zhuyin span.zi[data-yin][data-form="jieyin"][data-diao]:not([data-diao="0"]):before, span.zhuyin span.zi[data-yin][data-form="yunmu"][data-diao]:not([data-diao="0"]):before {
+      margin-top: 0; }
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="yunmu"][data-diao]:not([data-diao="0"]):before {
       margdin-top: 0.45em;
       padding-top: 0.35em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before, span.zhuyin span.zi[data-yin][data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before, span.zhuyin span.zi[data-yin][data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
       margin-top: 0.45em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
       margin-top: 0.35em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu"][data-diao][data-diao="0"]:before, span.zhuyin span.zi[data-yin][data-form="jieyin"][data-diao][data-diao="0"]:before, span.zhuyin span.zi[data-yin][data-form="yunmu"][data-diao][data-diao="0"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu"][data-diao][data-diao="0"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin"][data-diao][data-diao="0"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="yunmu"][data-diao][data-diao="0"]:before {
       margin-top: 0.45em; }
-    span.zhuyin span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before {
+    span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before {
       margin-top: -0.6em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"]:after, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"]:after, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"]:after {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"]:after, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"]:after, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"]:after {
     margin-top: 0.65em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin-yunmu"]:after {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin-yunmu"]:after {
     margin-top: 0.35em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"]:after {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"]:after {
     margin-top: -0.25em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="0"]:before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="2"]:before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="3"]:before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="4"]:before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="0"]:before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="2"]:before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="3"]:before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="4"]:before {
     margin-right: -0.6em;
     right: 0; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="0"]:before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="0"]:before {
     margin-right: -0.275em;
     margin-top: 0.35em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-diao="2"]:before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-diao="2"]:before {
     margin-right: -0.5em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"][data-diao]:not([data-diao="0"]):before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"][data-diao]:not([data-diao="0"]):before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"][data-diao]:not([data-diao="0"]):before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"][data-diao]:not([data-diao="0"]):before {
     margdin-top: 0.45em;
     padding-top: 0.35em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
     margin-top: 0.65em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before {
     margin-top: 0.55em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"][data-diao][data-diao="0"]:before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"][data-diao][data-diao="0"]:before, span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"][data-diao][data-diao="0"]:before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu"][data-diao][data-diao="0"]:before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="jieyin"][data-diao][data-diao="0"]:before, span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="yunmu"][data-diao][data-diao="0"]:before {
     margin-top: 0.6em; }
-  span.zhuyin[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before {
+  span.han-js-zhuyin-rendered[data-zhuyin-font=serif] span.zi[data-yin][data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before {
     margin-top: -0.2em; }
-  span.zhuyin u.han-js-charized {
+  span.han-js-zhuyin-rendered u.han-js-charized {
     border-bottom: 1px solid;
     padding-bottom: 0.125em; }
-    span.zhuyin u.han-js-charized span.char span {
+    span.han-js-zhuyin-rendered u.han-js-charized span.char span {
       border-bottom: 0 none !important; }
-    span.zhuyin u.han-js-charized + u {
+    span.han-js-zhuyin-rendered u.han-js-charized + u {
       margin-left: 0.125em; }

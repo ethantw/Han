@@ -1,22 +1,20 @@
 
 
 /* 
- * Ruby: 國語注音符號
+ * Ruby: 國語注音、台灣方言音符號
  * ---
- * Ruby: Mandarin Phonetic Symbols (Zhuyin)
+ * Ruby: Mandarin & Taiwanese Dialect
+ * Phonetic Symbols (Zhuyin)
  *
  */
 
-span.zhuyin
+span.han-js-zhuyin-rendered
 	display: inline
-
-	html.no-ruby &
-		vertical-align: inherit
 
 	span.yin
 		display: inline-block
 		opacity: 0
-		text-indent: -9999999px
+		text-indent: -9999999em
 		width: 0
 
 
@@ -101,7 +99,7 @@ span.zhuyin
 
 			&[data-diao="0"]:before
 				margin-right: -.35em
-				margin-top: .1em
+				margin-top: 0
 
 			// 依注音字符數量為調號定位
 			&[data-form="shengmu"][data-diao]:not([data-diao="0"]):before,

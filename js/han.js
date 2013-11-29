@@ -126,6 +126,7 @@ jQuery.noConflict();
 
 					data = {
 						'class': 'zi',
+						'data-zhuyin': mps,
 						'data-yin': yin,
 						'data-diao': diao,
 						'data-form': form
