@@ -167,22 +167,6 @@ u.han-js-charized {
 	:not(:last-child) span.hanla:last-child {
 		border: 1px solid;
 	}
-
-
-
-	/* 若在注音符號`<ruby>`中 */
-	span.han-js-zhuyin-rendered & {
-		border-bottom: 1px solid;
-		padding-bottom: .125em;
-
-		span.char span {
-			border-bottom: 0 none !important;
-		}
-
-		& + u {
-			margin-left: .125em;
-		}
-	}
 }
 
 
