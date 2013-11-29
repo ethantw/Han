@@ -16,7 +16,7 @@ jQuery.noConflict();
 
 (function($){
 
-	var version = '2.2.0',
+	var version = '2.2.1',
 
 	tests = [],
 	rubies,
@@ -92,7 +92,11 @@ jQuery.noConflict();
 
 			// 注音符號
 			} else if ( $(this).hasClass('mps') ) {
-				var shengmu = unicode['bopomofo']['mps']['shengmu'],
+				var generic = $(this).css('font-family'),
+                	zhuyin_font = ( generic.match(/(sans-serif|monospace)$/) ) ?
+                		'sans-serif' : 'serif',
+
+					shengmu = unicode['bopomofo']['mps']['shengmu'],
 					jieyin = unicode['bopomofo']['mps']['jieyin'],
 					yunmu = unicode['bopomofo']['mps']['yunmu'],
 					tone = unicode['bopomofo']['tone']['five']
@@ -133,11 +137,23 @@ jQuery.noConflict();
 						.attr(data)
 						.text( zi )
 					)
+					.after( ' ' )
+					//.replaceWith( '' )
 					.replaceWith( $('<span>').addClass('yin').html( mps ) )
 				})
 
 				$(this).replaceWith(
 					$('<span class="zhuyin"></span>')
+					.attr('data-zhuyin-font', zhuyin_font)
+					.html( $(this).html() )
+				)
+
+			// 拼音、注音直角顯示
+			} else if ( $(this).hasClass('pinyin-zhuyin-complex') ) {
+				$(this).replaceWith(
+					$('<span class="pinyin-zhuyin-complex"></span>')
+
+					.html( $(this).html() )
 				)
 			}
 		});
