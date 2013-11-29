@@ -1,6 +1,5 @@
 @charset "UTF-8";
-/* 
- * 漢字標準格式 v2.2.1-alpha
+/* 漢字標準格式 v2.2.1-alpha
  * ---
  * Hanzi-optimised CSS Mode
  *
@@ -10,15 +9,6 @@
  * Last Modified: 2013/11/30
  *
  */
-/* 
- *
- * 滙入所有需要的檔案
-
-   ---------------------------------------
-   全域適用的CSS reset（normalize.css）
-   ---------------------------------------
-   * 原作者：Nicolas Gallagher
-   --------------------------------------- */
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
@@ -359,18 +349,12 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-/* ---------------------------------------
-   CSS3屬性
-   --------------------------------------- */
 /* 
  * 各家瀏覽器標頭的CSS3屬性
  * ---
  * CSS3 properties in diff. browsers
  *
  */
-/* ---------------------------------------
-   @font-face字體設定
-   --------------------------------------- */
 /* 
  * @font-face字體設定
  * ---
@@ -1219,13 +1203,6 @@ table {
   src: local("Heiti TC"), local("Microsoft Jhenghei"), url("/fonts/zhuyin.eot") format("embedded-opentype"), url("/fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9; }
 
-/* ---------------------------------------
-   漢字標準格式
-   ---------------------------------------
-   * 以語言為基礎的元素樣式修正
-   * 僅含字體族（generic family）修正，標點及
-     瀏覽器字體修正包含於下列「字體設定」檔案。
-   --------------------------------------- */
 /* 
  * 以語言為基礎的元素樣式修正
  * ---
@@ -1823,13 +1800,6 @@ samp {
   article:lang(zh) blockquote blockquote {
     margin-left: 1em;
     padding-left: 1em; } }
-/* ---------------------------------------
-   字體設定
-   ---------------------------------------
-   * 主要元素的字體及字體集改進
-   * 含標點符號修正
-   * 需置於「主要元素樣式修正」後，方能正確顯示
-   --------------------------------------- */
 /* 
  * 字體設定
  * ---
@@ -2096,9 +2066,6 @@ samp {
   samp :not(:lang(zh)):not(:lang(ja)) {
     font-family: Courier, 'Han Heiti', monospace, sans-serif; }
 
-/* ---------------------------------------
-   <ruby>的注音符號功能
-   --------------------------------------- */
 /* Ruby: 國語注音符號
  * ---
  * Ruby: Mandarin Phonetic Symbols (Zhuyin)
