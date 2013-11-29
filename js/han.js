@@ -1,13 +1,13 @@
 
 /* 
- * 漢字標準格式 v2.2.0
+ * 漢字標準格式 v2.2.1-alpha
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/27
+ * Last Modified: 2013/11/30
  *
  */
 
@@ -92,42 +92,49 @@ jQuery.noConflict();
 
 			// 注音符號
 			} else if ( $(this).hasClass('mps') ) {
-				var generic = $(this).css('font-family'),
-				zhuyin_font = ( generic.match(/(sans-serif|monospace)$/) ) ? 'sans-serif' : 'serif',
-
-				hanzi = unicode_set('hanzi'),
-
-				shengmu = unicode['bopomofo']['mps']['shengmu'],
-				jieyin = unicode['bopomofo']['mps']['jieyin'],
-				yunmu = unicode['bopomofo']['mps']['yunmu'],
-				tone = unicode['bopomofo']['tone']['five'],
-
-				reg = '/(' + hanzi + ')<rt>(.*)<\\/rt>/ig';
+				var shengmu = unicode['bopomofo']['mps']['shengmu'],
+					jieyin = unicode['bopomofo']['mps']['jieyin'],
+					yunmu = unicode['bopomofo']['mps']['yunmu'],
+					tone = unicode['bopomofo']['tone']['five']
 
 
-				html = html.replace(eval(reg), function(entire, character, mps){
-					var form, yin, diao, data, zi;
+				$(this).find('rt')
+				.each(function(){
+					var prev = this.previousSibling,
+						text = prev.nodeValue.split(''),
+						zi = text.pop(),
+						mps = $(this).html(),
+						yin, diao, form, data
 
-					form = ( mps.match(eval('/(' + shengmu + ')/')) ) ? 'shengmu' : '';
-					form += ( mps.match(eval('/(' + jieyin + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : '';
-					form += ( mps.match(eval('/(' + yunmu + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : '';
+					prev.nodeValue = text.join('')
 
-					yin = mps.replace(eval('/(' + tone + ')/g'), ''),
+					form = ( mps.match(eval('/(' + shengmu + ')/')) ) ? 'shengmu' : ''
+					form += ( mps.match(eval('/(' + jieyin + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
+					form += ( mps.match(eval('/(' + yunmu + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
+
+					yin = mps.replace(eval('/(' + tone + ')/g'), '')
+
 					diao = ( mps.match(/([\u02D9])/) ) ? '0' : 
 						( mps.match(/([\u02CA])/) ) ? '2' : 
 						( mps.match(/([\u02C5\u02C7])/) ) ? '3' :
-						( mps.match(/([\u02CB])/) ) ? '4' : '1';
-
-					data = 'data-zy="' + yin + '" data-tone="' + diao + '" data-form="' + form + '"';
-					zi = '<span class="zi" ' + data + '>' + character + '</span>';
-
-					return zi + '<span class="zy">' + mps + '</span>';
-				});
+						( mps.match(/([\u02CB])/) ) ? '4' : '1'
 
 
-				$(this).replaceWith(
-					$('<span class="han-js-zhuyin-rendered"></span>').addClass('zhuyin-' + zhuyin_font).html( html )
-				);
+					data = {
+						'class': 'zi',
+						'data-yin': yin,
+						'data-diao': diao,
+						'data-form': form
+					}
+
+					$(this)
+					.before( 
+						$('<span/>')
+						.attr(data)
+						.text( zi )
+					)
+					.replaceWith( $('<span>').addClass('yin').html( mps ) )
+				})
 			}
 		});
 
