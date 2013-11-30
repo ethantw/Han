@@ -12,9 +12,12 @@ span.han-js-zhuyin-rendered
 	display: inline
 
 	span.yin
+		// posi
 		display: inline-block
 		opacity: 0
 		text-indent: -9999999em
+
+		// size
 		width: 0
 
 
@@ -26,30 +29,43 @@ span.han-js-zhuyin-rendered
 
 	span.zi
 		&[data-yin]
+			// posi
 			display: inline-block
-			height: 2em
 			margin-right: .1em
 			position: relative
 			text-indent: 0
 
+			// size
+			height: 2em
+
+
 			&:after,
 			&[data-diao]:before
-				@include zhuozhonghao(none)
+				// posi
 				display: inline-block
-				font: 300 normal 1em/.9 'Zhuyin Kaiti', cursive, serif
-				text-decoration: none
 				text-indent: 0
 				vertical-align: middle
 
+				// typo & reset
+				@include zhuozhonghao(none)
+				font: 300 normal 1em/.9 'Zhuyin Kaiti', cursive, serif
+				text-decoration: none
+
+
 			&:after
-				@include scale(.55)
-				content: attr(data-yin)
-				height: 2.55em
-				line-height: .85
+				// posi
 				margin-left: -.2em
+
+				// size
+				@include scale(.55)
+				height: 2.7em
+				width: .8em
+
+				// typo
+				content: attr(data-yin)
+				line-height: .9
 				white-space: pre-wrap
 				word-break: break-all
-				width: .8em
 
 
 			// 預設（黑體）注音符號的注音、調號位置調整
@@ -83,12 +99,16 @@ span.han-js-zhuyin-rendered
 				content: 'ˋ'
 
 			&[data-diao]:before
+				// posi
+				position: absolute
+				vertical-align: middle
+
+				// size
 				@include scale(.55)
 				-webkit-transform: scale(.65)
 				height: 2.7em
-				position: absolute
-				vertical-align: middle
 				width: 1em
+
 
 			&[data-diao="0"]:before,
 			&[data-diao="2"]:before,

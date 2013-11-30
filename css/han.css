@@ -2085,33 +2085,33 @@ span.han-js-zhuyin-rendered {
     font-family: "Zhuyin Kaiti", cursive, serif; }
   span.han-js-zhuyin-rendered span.zi[data-yin] {
     display: inline-block;
-    height: 2em;
     margin-right: 0.1em;
     position: relative;
-    text-indent: 0; }
+    text-indent: 0;
+    height: 2em; }
     span.han-js-zhuyin-rendered span.zi[data-yin]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao]:before {
+      display: inline-block;
+      text-indent: 0;
+      vertical-align: middle;
       -moz-text-emphasis: none;
       -webkit-text-emphasis: none;
       text-emphasis: none;
       -moz-text-emphasis-position: under;
       -webkit-text-emphasis-position: under;
       text-emphasis-position: under;
-      display: inline-block;
       font: 300 normal 1em/0.9 "Zhuyin Kaiti", cursive, serif;
-      text-decoration: none;
-      text-indent: 0;
-      vertical-align: middle; }
+      text-decoration: none; }
     span.han-js-zhuyin-rendered span.zi[data-yin]:after {
+      margin-left: -0.2em;
       -moz-transform: scale(0.55);
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
+      height: 2.7em;
+      width: 0.8em;
       content: attr(data-yin);
-      height: 2.55em;
-      line-height: 0.85;
-      margin-left: -0.2em;
+      line-height: 0.9;
       white-space: pre-wrap;
-      word-break: break-all;
-      width: 0.8em; }
+      word-break: break-all; }
     span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="yunmu"]:after {
       margin-top: 0.65em; }
     span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-jieyin"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="shengmu-yunmu"]:after, span.han-js-zhuyin-rendered span.zi[data-yin][data-form="jieyin-yunmu"]:after {
@@ -2127,13 +2127,13 @@ span.han-js-zhuyin-rendered {
     span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="4"]:before {
       content: "ˋ"; }
     span.han-js-zhuyin-rendered span.zi[data-yin][data-diao]:before {
+      position: absolute;
+      vertical-align: middle;
       -moz-transform: scale(0.55);
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
       -webkit-transform: scale(0.65);
       height: 2.7em;
-      position: absolute;
-      vertical-align: middle;
       width: 1em; }
     span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="0"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="2"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="3"]:before, span.han-js-zhuyin-rendered span.zi[data-yin][data-diao="4"]:before {
       margin-right: -0.6em;
