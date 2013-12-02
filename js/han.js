@@ -77,13 +77,16 @@ jQuery.noConflict();
 		 */
 
 		$(range).find('ruby.pinyin').addClass('romanization');
-		$(range).find('ruby.zhuyin').addClass('mps');
+		$(range).find('ruby.mps').addClass('zhuyin');
 
 		$(range).find('ruby').each(function() {
-			var html = $(this).html();
+			var html = $(this).html(),
+				zhuyin_font = _get_zhuyin_font(this)
 
 			// 羅馬拼音（在不支援`<ruby>`的瀏覽器下）
-			if ( !$(this).hasClass('mps') && !tests['ruby']() ) {
+			if ( !$(this).hasClass('zhuyin') &&
+				 !$(this).hasClass('complex') &&
+				 !tests['ruby']() ) {
 				var result = html
 					  .replace(/<rt>/ig, '</span><span class="rt"><span class="rt inner">')
 					  .replace(/<\/rt>/ig, '</span></span></span><span class="rr"><span class="rb">');
@@ -91,11 +94,8 @@ jQuery.noConflict();
 				$(this).html('<span class="rr"><span class="rb">' + result + '</span>');
 
 			// 注音符號
-			} else if ( $(this).hasClass('mps') ) {
-				var generic = $(this).css('font-family'),
-                	zhuyin_font = ( generic.match(/(sans-serif|monospace)$/) ) ?
-                		'sans-serif' : 'serif'
-
+			} else if ( $(this).hasClass('zhuyin') ) {
+				// 將注音轉為元素屬性以便CSS產生偽類
 				$(this).find('rt')
 				.each(function(){
 					_apply_zhuyin(this)
@@ -104,12 +104,12 @@ jQuery.noConflict();
 				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
 				$(this).replaceWith(
 					$('<span class="zhuyin han-js-zhuyin-rendered"></span>')
-					.attr('data-zhuyin-font', zhuyin_font)
 					.html( $(this).html() )
+					.attr('data-zhuyin-font', zhuyin_font)
 				)
-
+				
 			// 拼音、注音直角顯示
-			} else if ( $(this).hasClass('pinyin-zhuyin-complex') ) {
+			} else if ( $(this).hasClass('complex') ) {
 				$(this).find('rtc')
 				.hide()
 				.each(function(){
@@ -166,6 +166,7 @@ jQuery.noConflict();
 				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
 				$(this).replaceWith(
 					$('<span class="pinyin-zhuyin-complex han-js-zhuyin-rendered"></span>')
+					.attr('data-zhuyin-font', zhuyin_font)
 					.html( $(this).html() )
 				)
 			}
@@ -290,6 +291,15 @@ jQuery.noConflict();
 		span.className = className;
 
 		return span;
+	},
+
+
+	_get_zhuyin_font = function( node ) {
+		var reg = /(sans-serif|monospace)$/,
+			generic = $(node).css('font-family'),
+        	font = generic.match(reg) ? 'sans-serif' : 'serif'
+		
+		return font
 	},
 
 
