@@ -76,16 +76,15 @@ jQuery.noConflict();
 		 * the `<em>` element is required.
 		 */
 
-		$(range).find('ruby.pinyin').addClass('romanization');
-		$(range).find('ruby.mps').addClass('zhuyin');
+		$(range).find('ruby.pinyin').addClass('romanization')
+		$(range).find('ruby.mps').addClass('zhuyin')
 
 		$(range).find('ruby').each(function() {
-			var html = $(this).html(),
-				zhuyin_font = _get_zhuyin_font(this)
+			var html = $(this).html()
 
 			// 羅馬拼音（在不支援`<ruby>`的瀏覽器下）
 			if ( !$(this).hasClass('zhuyin') &&
-				 !$(this).hasClass('complex') &&
+				 !$(this).hasClass('rightangle') &&
 				 !tests['ruby']() ) {
 				var result = html
 					  .replace(/<rt>/ig, '</span><span class="rt"><span class="rt inner">')
@@ -93,84 +92,91 @@ jQuery.noConflict();
 
 				$(this).html('<span class="rr"><span class="rb">' + result + '</span>');
 
-			// 注音符號
-			} else if ( $(this).hasClass('zhuyin') ) {
-				// 將注音轉為元素屬性以便CSS產生偽類
-				$(this).find('rt')
-				.each(function(){
-					_apply_zhuyin(this)
-				})
+			
+			} else {
+				var attr = {}
+
+				// 國語注音、台灣方言音符號
+				if ( $(this).hasClass('zhuyin') ) {
+					// 將注音轉為元素屬性以便CSS產生偽類
+					$(this).find('rt')
+					.each(function(){
+						_apply_zhuyin(this)
+					})
+
+				// 拼音、注音直角顯示
+				} else if ( $(this).hasClass('rightangle') ) {
+					attr.rightangle = 'rightangle'
+
+					$(this).find('rtc')
+					.hide()
+					.each(function(){
+						var t = $(this).prevAll('rbc'),
+							c, len, data
+
+						// 羅馬拼音
+						if ( $(this).hasClass('pinyin') ) {
+							c = 0,
+							len = $(this).filter('.pinyin').find('rt').length,
+							data = []
+
+							$(this).find('rt')
+							.each(function(h){
+								var ro = $(this).html(),
+									rbs = $(this).attr('rbspan') || 1,
+									i = c
+
+								c += Number(rbs)
+
+								data[h] = {
+									'romanization': ro
+								}
+
+								for ( var j = i; j < c; j++ ) {
+									t.find('rb').eq(j).attr('ro-set', h)
+								}
+							})
+
+							t.each(function(){
+								for ( var k=0; k<len; k++ ) {
+									$('rb')
+									.filter('[ro-set='+ k +']')
+									.removeAttr('ro-set')
+									.wrapAll(
+										$('<rb/>')
+										.attr( data[k] )
+									).parent('[romanization]').append(
+										$('<copy/>').html(data[k].romanization)
+									)
+								}
+							})
+
+
+						// 注音符號
+						} else if ( $(this).hasClass('zhuyin') )
+							$(this).find('rt')
+							.each(function(i){
+								var rb = t.find('rb').eq(i)
+
+								_apply_zhuyin(this, rb)
+							})
+
+						t.find('rb').after(' ')
+					})
+				}
 
 				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
-				$(this).replaceWith(
-					$('<span class="zhuyin han-js-zhuyin-rendered"></span>')
+				$(this).filter(function(){
+					return $(this).hasClass("zhuyin") ||
+						   $(this).hasClass("rightangle")
+				}).replaceWith(
+					$('<h-ruby/>')
 					.html( $(this).html() )
-					.attr('data-zhuyin-font', zhuyin_font)
-				)
-				
-			// 拼音、注音直角顯示
-			} else if ( $(this).hasClass('complex') ) {
-				$(this).find('rtc')
-				.hide()
-				.each(function(){
-					var t = $(this).prevAll('rbc'),
-						c, len, data
-
-					// 羅馬拼音
-					if ( $(this).hasClass('pinyin') ) {
-						c = 0,
-						len = $(this).filter('.pinyin').find('rt').length,
-						data = []
-
-						$(this).find('rt')
-						.each(function(h){
-							var ro = $(this).html(),
-								rbs = $(this).attr('rbspan') || 1,
-								i = c
-
-							c += Number(rbs)
-
-							data[h] = {
-								'class': 'romanization',
-								'data-romanization': ro
-							}
-
-							for ( var j = i; j < c; j++ ) {
-								t.find('rb').eq(j).attr('data-ro-set', h)
-							}
-						})
-
-						t.each(function(){
-							for ( var k=0; k<len; k++ ) {
-								$('rb')
-								.filter('[data-ro-set='+ k +']')
-								.removeAttr('data-ro-set')
-								.wrapAll(
-									$('<span/>').attr( data[k] )
-								)
-							}
-						})
-
-					// 注音符號
-					} else if ( $(this).hasClass('zhuyin') )
-						$(this).find('rt')
-						.each(function(i){
-							var rb = t.find('rb').eq(i)
-
-							_apply_zhuyin(this, rb)
-						})
-
-					t.find('rb').after(' ')
-				})
-
-				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
-				$(this).replaceWith(
-					$('<span class="pinyin-zhuyin-complex han-js-zhuyin-rendered"></span>')
-					.attr('data-zhuyin-font', zhuyin_font)
-					.html( $(this).html() )
+					.attr('generic', _get_zhuyin_font(this))
+					.attr(attr)
 				)
 			}
-		});
+		})
 
 
 
@@ -326,17 +332,17 @@ jQuery.noConflict();
 
 
 		data = {
-			'class': 'zi',
-			'data-zhuyin': mps,
-			'data-yin': yin,
-			'data-diao': diao,
-			'data-form': form
+			//'class': 'zi',
+			'zhuyin': mps,
+			'yin': yin,
+			'diao': diao,
+			'form': form
 		}
 
 		if ( rb )
 			rb
 			.attr(data)
-			.append( $('<span>').addClass('yin').html( mps ) )
+			.append( $('<copy>').html( mps ) )
 		else {
 			prev = node.previousSibling
 			text = prev.nodeValue.split('')
@@ -345,13 +351,13 @@ jQuery.noConflict();
 
 			$(node)
 			.before( 
-				$('<span/>')
+				$('<rb/>')
 				.attr(data)
 				.text( zi )
 			)
 			.after( ' ' )
 			//.replaceWith( '' )
-			.replaceWith( $('<span>').addClass('yin').html( mps ) )
+			.replaceWith( $('<copy>').html( mps ) )
 		}
 	},
 
