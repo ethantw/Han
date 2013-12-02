@@ -2138,15 +2138,9 @@ h-ruby {
       margin-top: 0.15em; }
     h-ruby rb[yin][form="shengmu-jieyin-yunmu"]:after {
       margin-top: -0.4em; }
-    h-ruby rb[yin][diao="0"]:before {
-      content: "˙"; }
-    h-ruby rb[yin][diao="2"]:before {
-      content: "ˊ"; }
-    h-ruby rb[yin][diao="3"]:before {
-      content: "ˇ"; }
-    h-ruby rb[yin][diao="4"]:before {
-      content: "ˋ"; }
     h-ruby rb[yin][diao]:before {
+      margin-right: -0.6em;
+      right: 0;
       position: absolute;
       vertical-align: middle;
       -moz-transform: scale(0.55);
@@ -2154,48 +2148,63 @@ h-ruby {
       transform: scale(0.55);
       -webkit-transform: scale(0.65);
       height: 2.7em;
-      width: 1em; }
-    h-ruby rb[yin][diao="0"]:before, h-ruby rb[yin][diao="2"]:before, h-ruby rb[yin][diao="3"]:before, h-ruby rb[yin][diao="4"]:before {
-      margin-right: -0.6em;
-      right: 0; }
-    h-ruby rb[yin][diao="0"]:before {
-      margin-right: -0.35em;
-      margin-top: 0; }
-    h-ruby rb[yin][form="shengmu"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="jieyin"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="yunmu"][diao]:not([diao="0"]):before {
-      margdin-top: 0.45em;
-      padding-top: 0.35em; }
-    h-ruby rb[yin][form="shengmu-jieyin"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="shengmu-yunmu"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="jieyin-yunmu"][diao]:not([diao="0"]):before {
+      width: 1em;
+      content: attr(diao); }
+    h-ruby rb[yin][form="shengmu"][diao]:before, h-ruby rb[yin][form="jieyin"][diao]:before, h-ruby rb[yin][form="yunmu"][diao]:before {
       margin-top: 0.45em; }
-    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao]:not([diao="0"]):before {
+    h-ruby rb[yin][form="shengmu-jieyin"][diao]:before, h-ruby rb[yin][form="shengmu-yunmu"][diao]:before, h-ruby rb[yin][form="jieyin-yunmu"][diao]:before {
+      margin-top: 0.45em; }
+    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao]:before {
       margin-top: 0.35em; }
-    h-ruby rb[yin][form="shengmu"][diao="0"]:before, h-ruby rb[yin][form="jieyin"][diao="0"]:before, h-ruby rb[yin][form="yunmu"][diao="0"]:before {
-      margin-top: 0.45em; }
-    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao="0"]:before {
-      margin-top: -0.6em; }
+    h-ruby rb[yin][diao="˙"]:before {
+      margin-right: -0.35em; }
+    h-ruby rb[yin][form="shengmu"][diao="˙"]:before, h-ruby rb[yin][form="jieyin"][diao="˙"]:before, h-ruby rb[yin][form="yunmu"][diao="˙"]:before {
+      margin-top: 0.55em; }
+    h-ruby rb[yin][form="shengmu-jieyin"][diao="˙"]:before, h-ruby rb[yin][form="shengmu-yunmu"][diao="˙"]:before, h-ruby rb[yin][form="jieyin-yunmu"][diao="˙"]:before {
+      margin-top: 0.1em; }
+    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao="˙"]:before {
+      margin-top: -0.45em; }
+    h-ruby rb[yin][form][diao="˪"]:before, h-ruby rb[yin][form][diao="˫"]:before {
+      -moz-transform: scale(0.6);
+      -webkit-transform: scale(0.6);
+      transform: scale(0.6);
+      margin-right: -0.7em; }
+    h-ruby rb[yin][form][diao^="ㆴ"]:before, h-ruby rb[yin][form][diao^="ㆵ"]:before, h-ruby rb[yin][form][diao^="ㆶ"]:before, h-ruby rb[yin][form][diao^="ㆷ"]:before {
+      margin-right: -0.7em;
+      margin-top: 0.5em; }
   h-ruby[generic="serif"] rb[yin][form="shengmu"]:after, h-ruby[generic="serif"] rb[yin][form="jieyin"]:after, h-ruby[generic="serif"] rb[yin][form="yunmu"]:after {
     margin-top: 0.65em; }
   h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"]:after, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"]:after, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"]:after {
     margin-top: 0.35em; }
   h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"]:after {
     margin-top: -0.25em; }
-  h-ruby[generic="serif"] rb[yin][diao="0"]:before, h-ruby[generic="serif"] rb[yin][diao="2"]:before, h-ruby[generic="serif"] rb[yin][diao="3"]:before, h-ruby[generic="serif"] rb[yin][diao="4"]:before {
+  h-ruby[generic="serif"] rb[yin][diao]:before {
     margin-right: -0.6em;
     right: 0; }
-  h-ruby[generic="serif"] rb[yin][diao="0"]:before {
-    margin-right: -0.275em;
-    margin-top: 0.35em; }
-  h-ruby[generic="serif"] rb[yin][diao="2"]:before {
+  h-ruby[generic="serif"] rb[yin][diao="ˊ"]:before {
     margin-right: -0.5em; }
-  h-ruby[generic="serif"] rb[yin][form="shengmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao]:not([diao="0"]):before {
+  h-ruby[generic="serif"] rb[yin][form="shengmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao]:before {
     margin-top: 0.35em; }
-  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao]:not([diao="0"]):before {
+  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao]:before {
     margin-top: 0.65em; }
-  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao]:not([diao="0"]):before {
+  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao]:before {
     margin-top: 0.55em; }
-  h-ruby[generic="serif"] rb[yin][form="shengmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao="0"]:before {
+  h-ruby[generic="serif"] rb[yin][diao="˙"]:before {
+    margin-right: -0.35em; }
+  h-ruby[generic="serif"] rb[yin][form="shengmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao="˙"]:before {
     margin-top: 0.6em; }
-  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao="0"]:before {
-    margin-top: -0.2em; }
+  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao="˙"]:before {
+    margin-top: 0.4em; }
+  h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao="˙"]:before {
+    margin-top: -0.3em; }
+  h-ruby[generic="serif"] rb[yin][form][diao="˪"]:before, h-ruby[generic="serif"] rb[yin][form][diao="˫"]:before {
+    -moz-transform: scale(0.6);
+    -webkit-transform: scale(0.6);
+    transform: scale(0.6);
+    margin-right: -0.7em; }
+  h-ruby[generic="serif"] rb[yin][form][diao^="ㆴ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆵ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆶ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆷ"]:before {
+    margin-right: -0.8em;
+    margin-top: 0.65em; }
   h-ruby u.han-js-charized {
     border-bottom: 1px solid;
     padding-bottom: 0.125em; }
@@ -2205,6 +2214,8 @@ h-ruby {
       margin-left: 0.125em; }
 
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
+  h-ruby[rightangle][generic="serif"] rb[romanization]:after {
+    bottom: -0.75em; }
   h-ruby rb[yin]:after, h-ruby[generic="serif"] rb[yin]:after {
     -moz-transform: scale(0.4);
     -webkit-transform: scale(0.4);
@@ -2220,19 +2231,27 @@ h-ruby {
     margin-top: 0.05em; }
   h-ruby rb[yin][form="shengmu-jieyin-yunmu"]:after, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"]:after {
     margin-top: -0.4em; }
-  h-ruby rb[yin][diao="0"]:before, h-ruby rb[yin][diao="2"]:before, h-ruby rb[yin][diao="3"]:before, h-ruby rb[yin][diao="4"]:before, h-ruby[generic="serif"] rb[yin][diao="0"]:before, h-ruby[generic="serif"] rb[yin][diao="2"]:before, h-ruby[generic="serif"] rb[yin][diao="3"]:before, h-ruby[generic="serif"] rb[yin][diao="4"]:before {
-    margin-right: -0.5em; }
-  h-ruby rb[yin][diao="0"]:before, h-ruby[generic="serif"] rb[yin][diao="0"]:before {
-    margin-right: -0.275em; }
-  h-ruby rb[yin][form="shengmu"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="jieyin"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="yunmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="shengmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao]:not([diao="0"]):before {
-    margin-top: -0.1em; }
-  h-ruby rb[yin][form="shengmu-jieyin"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="shengmu-yunmu"][diao]:not([diao="0"]):before, h-ruby rb[yin][form="jieyin-yunmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao]:not([diao="0"]):before {
+  h-ruby rb[yin][diao]:before, h-ruby[generic="serif"] rb[yin][diao]:before {
+    margin-right: -0.45em; }
+  h-ruby rb[yin][form="shengmu"][diao]:before, h-ruby rb[yin][form="jieyin"][diao]:before, h-ruby rb[yin][form="yunmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="shengmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao]:before {
     margin-top: 0.2em; }
-  h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao]:not([diao="0"]):before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao]:not([diao="0"]):before {
+  h-ruby rb[yin][form="shengmu-jieyin"][diao]:before, h-ruby rb[yin][form="shengmu-yunmu"][diao]:before, h-ruby rb[yin][form="jieyin-yunmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao]:before {
+    margin-top: 0.2em; }
+  h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao]:before {
     margin-top: 0.15em; }
-  h-ruby rb[yin][form="shengmu"][diao="0"]:before, h-ruby rb[yin][form="jieyin"][diao="0"]:before, h-ruby rb[yin][form="yunmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao="0"]:before {
+  h-ruby rb[yin][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][diao="˙"]:before {
+    margin-right: -0.275em; }
+  h-ruby rb[yin][form="shengmu"][diao="˙"]:before, h-ruby rb[yin][form="jieyin"][diao="˙"]:before, h-ruby rb[yin][form="yunmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="yunmu"][diao="˙"]:before {
     margin-top: 0.25em; }
-  h-ruby rb[yin][form="shengmu-jieyin"][diao="0"]:before, h-ruby rb[yin][form="shengmu-yunmu"][diao="0"]:before, h-ruby rb[yin][form="jieyin-yunmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao="0"]:before {
+  h-ruby rb[yin][form="shengmu-jieyin"][diao="˙"]:before, h-ruby rb[yin][form="shengmu-yunmu"][diao="˙"]:before, h-ruby rb[yin][form="jieyin-yunmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-yunmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="jieyin-yunmu"][diao="˙"]:before {
     margin-top: -0.1em; }
-  h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao="0"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao="0"]:before {
-    margin-top: -0.45em; } }
+  h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao="˙"]:before, h-ruby[generic="serif"] rb[yin][form="shengmu-jieyin-yunmu"][diao="˙"]:before {
+    margin-top: -0.45em; }
+  h-ruby rb[yin][form][diao="˪"]:before, h-ruby rb[yin][form][diao="˫"]:before, h-ruby[generic="serif"] rb[yin][form][diao="˪"]:before, h-ruby[generic="serif"] rb[yin][form][diao="˫"]:before {
+    -moz-transform: scale(0.6);
+    -webkit-transform: scale(0.6);
+    transform: scale(0.6);
+    margin-right: -0.65em; }
+  h-ruby rb[yin][form][diao^="ㆴ"]:before, h-ruby rb[yin][form][diao^="ㆵ"]:before, h-ruby rb[yin][form][diao^="ㆶ"]:before, h-ruby rb[yin][form][diao^="ㆷ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆴ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆵ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆶ"]:before, h-ruby[generic="serif"] rb[yin][form][diao^="ㆷ"]:before {
+    margin-right: -0.65em;
+    margin-top: 0.35em; } }

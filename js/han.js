@@ -76,8 +76,10 @@ jQuery.noConflict();
 		 * the `<em>` element is required.
 		 */
 
-		$(range).find('ruby.pinyin').addClass('romanization')
-		$(range).find('ruby.mps').addClass('zhuyin')
+		// 語義類別簡化
+		$(range).find('ruby, rtc').filter('.pinyin').addClass('romanization')
+		$(range).find('ruby, rtc').filter('.mps').addClass('zhuyin')
+
 
 		$(range).find('ruby').each(function() {
 			var html = $(this).html()
@@ -136,9 +138,9 @@ jQuery.noConflict();
 							c, len, data
 
 						// 羅馬拼音
-						if ( $(this).hasClass('pinyin') ) {
+						if ( $(this).hasClass('romanization') ) {
 							c = 0,
-							len = $(this).filter('.pinyin').find('rt').length,
+							len = $(this).find('rt').length,
 							data = []
 
 							$(this).find('rt')
@@ -331,30 +333,41 @@ jQuery.noConflict();
 
 
 	_apply_zhuyin = function( node, rb ) {
-		var sm 		= unicode['bopomofo']['mps']['shengmu'],
-			jy 		= unicode['bopomofo']['mps']['jieyin'],
-			ym 		= unicode['bopomofo']['mps']['yunmu'],
-			tone 	= unicode['bopomofo']['tone']['five'],
+		var sm 		= unicode['zhuyin']['shengmu'],
+			jy 		= unicode['zhuyin']['jieyin'],
+			ym 		= unicode['zhuyin']['yunmu'],
+			yj 		= unicode['zhuyin']['yunjiao'],
+			tone 	= unicode['zhuyin']['diao'],
 
 			prev, text, zi,
-			mps = $(node).html(),
+			zy = $(node).html(),
 			yin, diao, form, data
 
-		form = ( mps.match(eval('/(' + sm + ')/')) ) ? 'shengmu' : ''
-		form += ( mps.match(eval('/(' + jy + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
-		form += ( mps.match(eval('/(' + ym + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
+		form = 	( zy.match(eval('/(' + sm + ')/')) ) ? 'shengmu' : ''
+		form += ( zy.match(eval('/(' + jy + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
+		form += ( zy.match(eval('/(' + ym + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
 
-		yin = mps.replace(eval('/(' + tone + ')/g'), '')
+		yin = zy
+			.replace(eval('/(' + tone + ')/g'), '')
+			.replace(eval('/(' + yj + '̍)/g'), '')
 
-		diao = ( mps.match(/([\u02D9])/) ) ? '0' : 
-			( mps.match(/([\u02CA])/) ) ? '2' : 
-			( mps.match(/([\u02C5\u02C7])/) ) ? '3' :
-			( mps.match(/([\u02CB])/) ) ? '4' : '1'
-
+		diao = 	( zy.match(/(\u02D9)/) ) ? '\u02D9' : 
+				( zy.match(/(\u02CA)/) ) ? '\u02CA' : 
+				( zy.match(/([\u02C5\u02C7])/) ) ? '\u02C7' :
+				( zy.match(/(\u02CB)/) ) ? '\u02CB' : 
+				( zy.match(/(\u02EA)/) ) ? '\u02EA' : 
+				( zy.match(/(\u02EB)/) ) ? '\u02EB' : 
+				( zy.match(/(\u31B4̍)/) ) ? '\u31B4̍' : 
+				( zy.match(/(\u31B5̍)/) ) ? '\u31B5̍' :
+				( zy.match(/(\u31B6̍)/) ) ? '\u31B6̍' :
+				( zy.match(/(\u31B7̍)/) ) ? '\u31B7̍' :
+				( zy.match(/(\u31B4)/) ) ? '\u31B4' : 
+				( zy.match(/(\u31B5)/) ) ? '\u31B5' :
+				( zy.match(/(\u31B6)/) ) ? '\u31B6' :
+				( zy.match(/(\u31B7)/) ) ? '\u31B7' : ''
 
 		data = {
-			//'class': 'zi',
-			'zhuyin': mps,
+			'zhuyin': zy,
 			'yin': yin,
 			'diao': diao,
 			'form': form
@@ -363,7 +376,7 @@ jQuery.noConflict();
 		if ( rb )
 			rb
 			.attr(data)
-			.append( $('<copy>').html( mps ) )
+			.append( $('<copy>').html( zy ) )
 		else {
 			prev = node.previousSibling
 			text = prev.nodeValue.split('')
@@ -378,7 +391,7 @@ jQuery.noConflict();
 			)
 			.after( ' ' )
 			//.replaceWith( '' )
-			.replaceWith( $('<copy>').html( mps ) )
+			.replaceWith( $('<copy>').html( zy ) )
 		}
 	},
 
@@ -584,16 +597,13 @@ jQuery.noConflict();
 		'[」』）〕】》〉’”]'
 	];
 
-	unicode['bopomofo'] = [];
-	unicode['bopomofo']['mps'] = [];
-	unicode['bopomofo']['mps'][0] = '[\u3105-\u312D]';
-	unicode['bopomofo']['mps']['shengmu'] = '[\u3105-\u3119\u312A-\u312C]';
-	unicode['bopomofo']['mps']['jieyin'] = '[\u3127-\u3129]';
-	unicode['bopomofo']['mps']['yunmu'] = '[\u311A-\u3126\u312D]';
-	unicode['bopomofo']['extend'] = '[\u31A0-\u31BA]';
-	unicode['bopomofo']['tone'] = [];
-	unicode['bopomofo']['tone']['five'] = '[\u02D9\u02CA\u02C5\u02C7\u02CB]';
-	unicode['bopomofo']['tone']['extend'] = '[\u02EA\u02EB]';
+	unicode['zhuyin'] = [];
+	unicode['zhuyin'][0] = '[\u3105-\u312D\u31A0-\u31BA]';
+	unicode['zhuyin']['shengmu'] = '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]';
+	unicode['zhuyin']['jieyin'] = '[\u3127-\u3129]';
+	unicode['zhuyin']['yunmu'] = '[\u311A-\u3126\u312D\u31A4-\u31B3\u31B8-\u31BA]';
+	unicode['zhuyin']['yunjiao'] = '[\u31B4-\u31B7]';
+	unicode['zhuyin']['diao'] = '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]';
 
 
 
