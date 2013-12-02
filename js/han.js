@@ -94,66 +94,78 @@ jQuery.noConflict();
 			} else if ( $(this).hasClass('mps') ) {
 				var generic = $(this).css('font-family'),
                 	zhuyin_font = ( generic.match(/(sans-serif|monospace)$/) ) ?
-                		'sans-serif' : 'serif',
-
-					shengmu = unicode['bopomofo']['mps']['shengmu'],
-					jieyin = unicode['bopomofo']['mps']['jieyin'],
-					yunmu = unicode['bopomofo']['mps']['yunmu'],
-					tone = unicode['bopomofo']['tone']['five']
-
+                		'sans-serif' : 'serif'
 
 				$(this).find('rt')
 				.each(function(){
-					var prev = this.previousSibling,
-						text = prev.nodeValue.split(''),
-						zi = text.pop(),
-						mps = $(this).html(),
-						yin, diao, form, data
-
-					prev.nodeValue = text.join('')
-
-					form = ( mps.match(eval('/(' + shengmu + ')/')) ) ? 'shengmu' : ''
-					form += ( mps.match(eval('/(' + jieyin + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
-					form += ( mps.match(eval('/(' + yunmu + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
-
-					yin = mps.replace(eval('/(' + tone + ')/g'), '')
-
-					diao = ( mps.match(/([\u02D9])/) ) ? '0' : 
-						( mps.match(/([\u02CA])/) ) ? '2' : 
-						( mps.match(/([\u02C5\u02C7])/) ) ? '3' :
-						( mps.match(/([\u02CB])/) ) ? '4' : '1'
-
-
-					data = {
-						'class': 'zi',
-						'data-zhuyin': mps,
-						'data-yin': yin,
-						'data-diao': diao,
-						'data-form': form
-					}
-
-					$(this)
-					.before( 
-						$('<span/>')
-						.attr(data)
-						.text( zi )
-					)
-					.after( ' ' )
-					//.replaceWith( '' )
-					.replaceWith( $('<span>').addClass('yin').html( mps ) )
+					_apply_zhuyin(this)
 				})
 
+				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
 				$(this).replaceWith(
-					$('<span class="zhuyin"></span>')
+					$('<span class="zhuyin han-js-zhuyin-rendered"></span>')
 					.attr('data-zhuyin-font', zhuyin_font)
 					.html( $(this).html() )
 				)
 
 			// 拼音、注音直角顯示
 			} else if ( $(this).hasClass('pinyin-zhuyin-complex') ) {
-				$(this).replaceWith(
-					$('<span class="pinyin-zhuyin-complex"></span>')
+				$(this).find('rtc')
+				.hide()
+				.each(function(){
+					var t = $(this).prevAll('rbc'),
+						c, len, data
 
+					// 羅馬拼音
+					if ( $(this).hasClass('pinyin') ) {
+						c = 0,
+						len = $(this).filter('.pinyin').find('rt').length,
+						data = []
+
+						$(this).find('rt')
+						.each(function(h){
+							var ro = $(this).html(),
+								rbs = $(this).attr('rbspan') || 1,
+								i = c
+
+							c += Number(rbs)
+
+							data[h] = {
+								'class': 'romanization',
+								'data-romanization': ro
+							}
+
+							for ( var j = i; j < c; j++ ) {
+								t.find('rb').eq(j).attr('data-ro-set', h)
+							}
+						})
+
+						t.each(function(){
+							for ( var k=0; k<len; k++ ) {
+								$('rb')
+								.filter('[data-ro-set='+ k +']')
+								.removeAttr('data-ro-set')
+								.wrapAll(
+									$('<span/>').attr( data[k] )
+								)
+							}
+						})
+
+					// 注音符號
+					} else if ( $(this).hasClass('zhuyin') )
+						$(this).find('rt')
+						.each(function(i){
+							var rb = t.find('rb').eq(i)
+
+							_apply_zhuyin(this, rb)
+						})
+
+					t.find('rb').after(' ')
+				})
+
+				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
+				$(this).replaceWith(
+					$('<span class="pinyin-zhuyin-complex han-js-zhuyin-rendered"></span>')
 					.html( $(this).html() )
 				)
 			}
@@ -278,6 +290,59 @@ jQuery.noConflict();
 		span.className = className;
 
 		return span;
+	},
+
+
+	_apply_zhuyin = function( node, rb ) {
+		var sm 		= unicode['bopomofo']['mps']['shengmu'],
+			jy 		= unicode['bopomofo']['mps']['jieyin'],
+			ym 		= unicode['bopomofo']['mps']['yunmu'],
+			tone 	= unicode['bopomofo']['tone']['five'],
+
+			prev, text, zi,
+			mps = $(node).html(),
+			yin, diao, form, data
+
+		form = ( mps.match(eval('/(' + sm + ')/')) ) ? 'shengmu' : ''
+		form += ( mps.match(eval('/(' + jy + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
+		form += ( mps.match(eval('/(' + ym + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
+
+		yin = mps.replace(eval('/(' + tone + ')/g'), '')
+
+		diao = ( mps.match(/([\u02D9])/) ) ? '0' : 
+			( mps.match(/([\u02CA])/) ) ? '2' : 
+			( mps.match(/([\u02C5\u02C7])/) ) ? '3' :
+			( mps.match(/([\u02CB])/) ) ? '4' : '1'
+
+
+		data = {
+			'class': 'zi',
+			'data-zhuyin': mps,
+			'data-yin': yin,
+			'data-diao': diao,
+			'data-form': form
+		}
+
+		if ( rb )
+			rb
+			.attr(data)
+			.append( $('<span>').addClass('yin').html( mps ) )
+		else {
+			prev = node.previousSibling
+			text = prev.nodeValue.split('')
+			zi = text.pop()
+			prev.nodeValue = text.join('')
+
+			$(node)
+			.before( 
+				$('<span/>')
+				.attr(data)
+				.text( zi )
+			)
+			.after( ' ' )
+			//.replaceWith( '' )
+			.replaceWith( $('<span>').addClass('yin').html( mps ) )
+		}
 	},
 
 

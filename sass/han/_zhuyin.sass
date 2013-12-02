@@ -11,6 +11,29 @@
 span.han-js-zhuyin-rendered
 	display: inline
 
+	.romanization
+		display: inline-block
+		position: relative
+		text-indent: 0
+
+		&:after
+			+borderbox
+			//border: 1px solid red
+			display: inline-block
+			line-height: normal
+			text-indent: 0
+			vertical-align: middle
+
+			content: attr(data-romanization)
+			font-size: .55em
+			padding-left: .75em
+			position: absolute
+			bottom: -.5em
+			left: -1em
+			width: 100%
+			text-align: center
+
+
 	span.yin
 		// posi
 		display: inline-block
@@ -21,13 +44,13 @@ span.han-js-zhuyin-rendered
 		width: 0
 
 
-	&[data-zhuyin-font=sans-serif] span.zi[data-yin]:after 
+	&[data-zhuyin-font=sans-serif] .zi[data-yin]:after 
 		font-family: 'Zhuyin Heiti', sans-serif
 
-	&[data-zhuyin-font=serif] span.zi[data-yin]:after 
+	&[data-zhuyin-font="serif"] .zi[data-yin]:after 
 		font-family: 'Zhuyin Kaiti', cursive, serif
 
-	span.zi
+	.zi
 		&[data-yin]
 			// posi
 			display: inline-block
@@ -47,7 +70,7 @@ span.han-js-zhuyin-rendered
 				vertical-align: middle
 
 				// typo & reset
-				@include zhuozhonghao(none)
+				+zhuozhonghao(none)
 				font: 300 normal 1em/.9 'Zhuyin Kaiti', cursive, serif
 				text-decoration: none
 
@@ -57,13 +80,13 @@ span.han-js-zhuyin-rendered
 				margin-left: -.2em
 
 				// size
-				@include scale(.55)
+				+scale(.55)
 				height: 2.7em
 				width: .8em
 
 				// typo
 				content: attr(data-yin)
-				line-height: .9
+				line-height: .85
 				white-space: pre-wrap
 				word-break: break-all
 
@@ -104,7 +127,7 @@ span.han-js-zhuyin-rendered
 				vertical-align: middle
 
 				// size
-				@include scale(.55)
+				+scale(.55)
 				-webkit-transform: scale(.65)
 				height: 2.7em
 				width: 1em
@@ -136,9 +159,9 @@ span.han-js-zhuyin-rendered
 			&[data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
 				margin-top: .35em
 
-			&[data-form="shengmu"][data-diao][data-diao="0"]:before,
-			&[data-form="jieyin"][data-diao][data-diao="0"]:before,
-			&[data-form="yunmu"][data-diao][data-diao="0"]:before
+			&[data-form="shengmu"][data-diao="0"]:before,
+			&[data-form="jieyin"][data-diao="0"]:before,
+			&[data-form="yunmu"][data-diao="0"]:before
 				margin-top: .45em
 
 			&[data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before
@@ -146,7 +169,7 @@ span.han-js-zhuyin-rendered
 
 
 	// 楷體注音符號的注音、調號位置調整
-	&[data-zhuyin-font=serif] span.zi[data-yin]
+	&[data-zhuyin-font="serif"] .zi[data-yin]
 		// 單個注音字符
 		&[data-form="shengmu"]:after,
 		&[data-form="jieyin"]:after,
@@ -182,8 +205,7 @@ span.han-js-zhuyin-rendered
 		&[data-form="shengmu"][data-diao]:not([data-diao="0"]):before,
 		&[data-form="jieyin"][data-diao]:not([data-diao="0"]):before,
 		&[data-form="yunmu"][data-diao]:not([data-diao="0"]):before
-			margdin-top: .45em
-			padding-top: .35em
+			margin-top: .35em
 
 		&[data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before,
 		&[data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before,
@@ -193,9 +215,9 @@ span.han-js-zhuyin-rendered
 		&[data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
 			margin-top: .55em
 
-		&[data-form="shengmu"][data-diao][data-diao="0"]:before,
-		&[data-form="jieyin"][data-diao][data-diao="0"]:before,
-		&[data-form="yunmu"][data-diao][data-diao="0"]:before
+		&[data-form="shengmu"][data-diao="0"]:before,
+		&[data-form="jieyin"][data-diao="0"]:before,
+		&[data-form="yunmu"][data-diao="0"]:before
 			margin-top: .6em
 
 		&[data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before
@@ -212,6 +234,79 @@ span.han-js-zhuyin-rendered
 
 		& + u 
 			margin-left: .125em
+
+
+
+// 在Retina Display螢幕下，可使用更小的注音符號
+@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
+
+	span.han-js-zhuyin-rendered 
+		& .zi[data-yin],
+		&[data-zhuyin-font="serif"] .zi[data-yin]
+			// 注音
+			&:after
+				+scale(.4)
+				line-height: .9
+
+			// 調號
+			&[data-diao]:before
+				+scale(.45)
+
+			// 單個注音字符
+			&[data-form="shengmu"]:after,
+			&[data-form="jieyin"]:after,
+			&[data-form="yunmu"]:after
+				margin-top: .4em
+
+			// 二個注音字符
+			&[data-form="shengmu-jieyin"]:after,
+			&[data-form="shengmu-yunmu"]:after,
+			&[data-form="jieyin-yunmu"]:after
+				margin-top: .05em
+
+			// 三個注音字符
+			&[data-form="shengmu-jieyin-yunmu"]:after
+				margin-top: -.4em
+
+			// 調號
+			&[data-diao="0"]:before,
+			&[data-diao="2"]:before,
+			&[data-diao="3"]:before,
+			&[data-diao="4"]:before
+				margin-right: -.5em
+
+			&[data-diao="0"]:before
+				margin-right: -.275em
+
+			// 依注音字符數量為調號定位
+			&[data-form="shengmu"][data-diao]:not([data-diao="0"]):before,
+			&[data-form="jieyin"][data-diao]:not([data-diao="0"]):before,
+			&[data-form="yunmu"][data-diao]:not([data-diao="0"]):before
+				margin-top: -.1em
+
+			&[data-form="shengmu-jieyin"][data-diao]:not([data-diao="0"]):before,
+			&[data-form="shengmu-yunmu"][data-diao]:not([data-diao="0"]):before,
+			&[data-form="jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
+				margin-top: .2em
+
+			&[data-form="shengmu-jieyin-yunmu"][data-diao]:not([data-diao="0"]):before
+				margin-top: .15em
+
+			&[data-form="shengmu"][data-diao="0"]:before,
+			&[data-form="jieyin"][data-diao="0"]:before,
+			&[data-form="yunmu"][data-diao="0"]:before
+				margin-top: .25em
+
+			&[data-form="shengmu-jieyin"][data-diao="0"]:before,
+			&[data-form="shengmu-yunmu"][data-diao="0"]:before,
+			&[data-form="jieyin-yunmu"][data-diao="0"]:before
+				margin-top: -.1em
+
+			&[data-form="shengmu-jieyin-yunmu"][data-diao="0"]:before
+				margin-top: -.45em
+
+
+
 
 
 

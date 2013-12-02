@@ -1,13 +1,5 @@
 
 
-/* 
- * 各家瀏覽器標頭的CSS3屬性
- * ---
- * CSS3 properties in diff. browsers
- *
- */
-
-
 @mixin scale( $size: .55 ) {
 	-moz-transform:	 	scale( #{$size} );
 	-webkit-transform:  scale( #{$size} );
@@ -31,9 +23,17 @@
 	text-emphasis-position:		 	$posi;
 }
 
+@mixin borderbox {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
 
-
-
+@mixin contentbox {
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+}
 
 
 
