@@ -2,3 +2,7 @@
 manual/
 config.rb
 *.scssc
+
+CANDIDATES.md
+18.md
+sass/_semantics.sass
