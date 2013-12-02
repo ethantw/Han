@@ -7,7 +7,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/11/30
+ * Last Modified: 2013/12/3
  *
  */
 
@@ -83,15 +83,36 @@ jQuery.noConflict();
 			var html = $(this).html()
 
 			// 羅馬拼音（在不支援`<ruby>`的瀏覽器下）
-			if ( !$(this).hasClass('zhuyin') &&
-				 !$(this).hasClass('rightangle') &&
-				 !tests['ruby']() ) {
-				var result = html
-					  .replace(/<rt>/ig, '</span><span class="rt"><span class="rt inner">')
-					  .replace(/<\/rt>/ig, '</span></span></span><span class="rr"><span class="rb">');
+			if ( !tests['ruby']() && 
+				 $(this).hasClass('romanization') ) {
 
-				$(this).html('<span class="rr"><span class="rb">' + result + '</span>');
+				// 將拼音轉為元素屬性以便CSS產生偽類
+				$(this)
+				.find('rt')
+				.each(function(){
+					var ro = $(this).html(),
+						prev = this.previousSibling,
+						text = prev.nodeValue
 
+					prev.nodeValue = ''
+
+					$(prev).before(
+						 $('<rb/>')
+						.html( text )
+						.attr('romanization', ro)
+						.replaceWith('<copy/>')
+					)
+
+					$(this).replaceWith(
+						$('<copy/>').html(ro)
+					)
+				})
+
+				$(this)
+				.replaceWith(
+					$('<h-ruby/>')
+					.html( $(this).html() )
+				)
 			
 			} else {
 				var attr = {}

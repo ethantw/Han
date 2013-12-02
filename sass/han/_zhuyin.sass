@@ -11,30 +11,6 @@
 h-ruby
 	display: inline
 
-	&[rightangle]
-		rb[romanization]
-			display: inline-block
-			position: relative
-			text-indent: 0
-
-			&:after
-				+borderbox
-				//border: 1px solid red
-				display: inline-block
-				line-height: normal
-				text-indent: 0
-				vertical-align: middle
-
-				content: attr(romanization)
-				font-size: .55em
-				padding-left: .75em
-				position: absolute
-				bottom: -.5em
-				left: -1em
-				width: 100%
-				text-align: center
-
-
 	copy
 		// posi
 		display: inline-block
@@ -45,11 +21,43 @@ h-ruby
 		width: 0
 
 
+	rb[romanization]
+		display: inline-block
+		position: relative
+		text-indent: 0
+
+		&:after
+			// posi
+			+borderbox
+			display: inline-block
+			left: 0
+			position: absolute
+			top: -.5em
+			vertical-align: middle
+
+			// size
+			width: 100%
+
+			// typo
+			content: attr(romanization)
+			font-size: .55em
+			line-height: normal
+			text-align: center
+			text-indent: 0
+
+	&[rightangle] rb[romanization]:after
+		// posi
+		bottom: -.5em
+		left: -.75em
+		top: auto 
+
+
 	&[generic="sans-serif"] rb[yin]:after 
 		font-family: 'Zhuyin Heiti', sans-serif
 
 	&[generic="serif"] rb[yin]:after 
 		font-family: 'Zhuyin Kaiti', cursive, serif
+
 
 	rb
 		&[yin]
@@ -66,6 +74,7 @@ h-ruby
 			&:after,
 			&[diao]:before
 				// posi
+				+borderbox
 				display: inline-block
 				text-indent: 0
 				vertical-align: middle
