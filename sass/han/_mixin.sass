@@ -6,13 +6,11 @@
 	transform:		  	scale( $size )
 
 
-
-@mixin calc( $prop, $exp )  
-	$prop: -moz-calc( #$exp )
-	$prop: -webkit-calc( #$exp )
-	$prop: calc( #$exp ) 
+@mixin calc( $prop, $exp )
+	#{$prop}: -moz-calc( #{$exp} )
+	#{$prop}: -webkit-calc( #{$exp} )
+	#{$prop}: calc( #{$exp} ) 
  
-
 
 @mixin zhuozhonghao( $sym: circle, $posi: under ) 
 	-moz-text-emphasis:	 	$sym

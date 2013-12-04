@@ -1299,11 +1299,17 @@ u.han-js-charized {
       margin-left: 1px;
       position: absolute;
       top: 0;
-      height: 100%; }
+      height: 100%;
+      width: -moz-calc(100% - 1px );
+      width: -webkit-calc(100% - 1px );
+      width: calc(100% - 1px ); }
   u.han-js-charized span.char:last-of-type span:after {
     margin: 0 1px 0 0; }
   u.han-js-charized span.char:first-child:last-child span:after {
-    margin: 0 1px 0; }
+    margin: 0 1px 0;
+    width: -moz-calc(100% - 2px );
+    width: -webkit-calc(100% - 2px );
+    width: calc(100% - 2px ); }
   u.han-js-charized :not(:first-child) span.char:first-of-type span:after,
   u.han-js-charized :not(:last-child) span.char:last-of-type span:after,
   u.han-js-charized span.char:not(:first-child):first-of-type span:after,
@@ -2054,7 +2060,7 @@ samp {
   samp :not(:lang(zh)):not(:lang(ja)) {
     font-family: Courier, 'Han Heiti', monospace, sans-serif; }
 
-/* `<h-ruby>`
+/* `<hruby>`
  *
  */
 hruby {
