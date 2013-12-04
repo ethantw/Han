@@ -286,8 +286,8 @@ html:not(.han-la) hanla {
 	display: none;
 }
 
-html.han-la span:lang(zh).hanla,
-html.han-la span:lang(ja).hanla {
+html.han-la hanla:lang(zh),
+html.han-la hanla:lang(ja) {
 	display: inline;
 	position: static;
 }

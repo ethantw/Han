@@ -5,7 +5,8 @@
  *
  */
 
-h-ruby
+
+hruby
 	display: inline
 
 
@@ -37,9 +38,10 @@ h-ruby
 		// posi
 		display: inline-block
 		opacity: 0
-		text-indent: -9999999em
+		text-indent: -9999999px
 
 		// size
+		height: 0
 		width: 0
 
 	/** 
@@ -57,20 +59,23 @@ h-ruby
 			// posi
 			+borderbox
 			display: inline-block
-			left: 0
+			left: -50%
 			position: absolute
 			top: -.5em
 			vertical-align: middle
 
 			// size
-			width: 100%
+			+scale(.55)
+			height: 1em
+			width: 200%
 
 			// typo
 			content: attr(romanization)
-			font-size: .55em
+			//font-size: .55em
 			line-height: normal
 			text-align: center
 			text-indent: 0
+			//border: 1px red solid
 
 	/** 
 	 * 拼、注音直角共同顯示
@@ -82,9 +87,9 @@ h-ruby
 	&[rightangle]
 		rb[romanization]:before
 			// posi
-			bottom: -.5em
-			left: -.75em
+			bottom: -.25em
 			top: auto
+			margin-left: -.45em
 
 			// typo
 			line-height: 1
@@ -96,9 +101,9 @@ h-ruby
 	 * 
 	 */
 
-	 /* 依通用字體集選用注音字體
-	    Define Zhuyin font according to
-	    its parental generic family */
+	/* 依通用字體集選用注音字體
+	   Define Zhuyin font according to
+	   its parental generic family */
 
 	&[generic="sans-serif"] rb[yin]:before 
 		font-family: 'Zhuyin Heiti', sans-serif

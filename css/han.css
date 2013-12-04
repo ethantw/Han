@@ -1411,8 +1411,8 @@ hanla,
 html:not(.han-la) hanla {
   display: none; }
 
-html.han-la span:lang(zh).hanla,
-html.han-la span:lang(ja).hanla {
+html.han-la hanla:lang(zh),
+html.han-la hanla:lang(ja) {
   display: inline;
   position: static; }
 
@@ -2057,7 +2057,7 @@ samp {
 /* `<h-ruby>`
  *
  */
-h-ruby {
+hruby {
   display: inline;
   /*
    * 實驗性註記元素（底線）
@@ -2086,65 +2086,68 @@ h-ruby {
    * Zhuyin
    * 
    */
-   *
-   * /* 依通用字體集選用注音字體
-   *    Define Zhuyin font according to
-   *    its parental generic family */
+  /* 依通用字體集選用注音字體
+   * Define Zhuyin font according to
+   * its parental generic family */
   /* 注音及方言音符號
    * Zhuyin
    ***
    * a. 偽類`:before`為「注音符」
    * b. 偽類`:after`為「音調」 */ }
-  u.han-js-charized h-ruby,
-  h-ruby u.han-js-charized {
+  u.han-js-charized hruby,
+  hruby u.han-js-charized {
     border-bottom: 1px solid;
     padding-bottom: 0.125em; }
-    u.han-js-charized h-ruby span.char span,
-    h-ruby u.han-js-charized span.char span {
+    u.han-js-charized hruby span.char span,
+    hruby u.han-js-charized span.char span {
       border-bottom: 0 none !important; }
-  h-ruby u.han-js-charized + u {
+  hruby u.han-js-charized + u {
     margin-left: 0.125em; }
-  h-ruby copy {
+  hruby copy {
     display: inline-block;
     opacity: 0;
-    text-indent: -9999999em;
+    text-indent: -9999999px;
+    height: 0;
     width: 0; }
-  h-ruby rb[romanization] {
+  hruby rb[romanization] {
     display: inline-block;
     position: relative;
     text-indent: 0; }
-    h-ruby rb[romanization]:before {
+    hruby rb[romanization]:before {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
       display: inline-block;
-      left: 0;
+      left: -50%;
       position: absolute;
       top: -0.5em;
       vertical-align: middle;
-      width: 100%;
+      -moz-transform: scale(0.55);
+      -webkit-transform: scale(0.55);
+      transform: scale(0.55);
+      height: 1em;
+      width: 200%;
       content: attr(romanization);
-      font-size: 0.55em;
       line-height: normal;
       text-align: center;
       text-indent: 0; }
-  h-ruby[rightangle] rb[romanization]:before {
-    bottom: -0.5em;
-    left: -0.75em;
+  hruby[rightangle] rb[romanization]:before {
+    bottom: -0.25em;
     top: auto;
+    margin-left: -0.45em;
     line-height: 1; }
-  h-ruby[generic="sans-serif"] rb[yin]:before {
+  hruby[generic="sans-serif"] rb[yin]:before {
     font-family: "Zhuyin Heiti", sans-serif; }
-  h-ruby[generic="serif"] rb[yin]:before {
+  hruby[generic="serif"] rb[yin]:before {
     font-family: "Zhuyin Kaiti", cursive, serif; }
-  h-ruby rb[zhuyin] {
+  hruby rb[zhuyin] {
     display: inline-block;
     position: relative;
     text-indent: 0;
     width: 1.65em;
     /* 依注音字符數量為「注音」及「調號」定位
      */ }
-    h-ruby rb[zhuyin]:before, h-ruby rb[zhuyin][diao]:after {
+    hruby rb[zhuyin]:before, hruby rb[zhuyin][diao]:after {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
@@ -2168,42 +2171,42 @@ h-ruby {
       line-height: 0.9;
       text-indent: 0;
       text-decoration: none; }
-    h-ruby rb[zhuyin]:before {
+    hruby rb[zhuyin]:before {
       content: attr(yin);
       line-height: 0.9;
       white-space: pre-wrap;
       word-break: break-all; }
-    h-ruby rb[zhuyin][diao]:after {
+    hruby rb[zhuyin][diao]:after {
       right: -0.6em;
       width: 1em;
       content: attr(diao);
       font-family: "Zhuyin Kaiti", cursive, serif !important; }
-    h-ruby rb[zhuyin][length="1"]:before {
+    hruby rb[zhuyin][length="1"]:before {
       margin-top: 0.25em; }
-    h-ruby rb[zhuyin][length="1"]:after {
+    hruby rb[zhuyin][length="1"]:after {
       margin-top: -0.35em; }
-    h-ruby rb[zhuyin][length="2"]:before {
+    hruby rb[zhuyin][length="2"]:before {
       margin-top: -0.15em; }
-    h-ruby rb[zhuyin][length="2"]:after {
+    hruby rb[zhuyin][length="2"]:after {
       margin-top: 0.125em; }
-    h-ruby rb[zhuyin][length="3"]:before {
+    hruby rb[zhuyin][length="3"]:before {
       margin-top: -0.4em; }
-    h-ruby rb[zhuyin][length="3"]:after {
+    hruby rb[zhuyin][length="3"]:after {
       margin-top: 0.25em; }
-    h-ruby rb[zhuyin][diao="˙"]:after {
+    hruby rb[zhuyin][diao="˙"]:after {
       right: -0.275em; }
-    h-ruby rb[zhuyin][diao="˙"][length="1"]:after {
+    hruby rb[zhuyin][diao="˙"][length="1"]:after {
       margin-top: 0; }
-    h-ruby rb[zhuyin][diao="˙"][length="2"]:after {
+    hruby rb[zhuyin][diao="˙"][length="2"]:after {
       margin-top: -0.25em; }
-    h-ruby rb[zhuyin][diao="˙"][length="3"]:after {
+    hruby rb[zhuyin][diao="˙"][length="3"]:after {
       margin-top: -0.55em; }
-    h-ruby rb[zhuyin][diao="˪"]:after, h-ruby rb[zhuyin][diao="˫"]:after {
+    hruby rb[zhuyin][diao="˪"]:after, hruby rb[zhuyin][diao="˫"]:after {
       -moz-transform: scale(0.6);
       -webkit-transform: scale(0.6);
       transform: scale(0.6);
       margin-right: -0.15em; }
-    h-ruby rb[zhuyin][diao^="ㆴ"]:after, h-ruby rb[zhuyin][diao^="ㆵ"]:after, h-ruby rb[zhuyin][diao^="ㆶ"]:after, h-ruby rb[zhuyin][diao^="ㆷ"]:after {
+    hruby rb[zhuyin][diao^="ㆴ"]:after, hruby rb[zhuyin][diao^="ㆵ"]:after, hruby rb[zhuyin][diao^="ㆶ"]:after, hruby rb[zhuyin][diao^="ㆷ"]:after {
       margin-right: -0.2em;
       margin-top: 0.55em; }
 
@@ -2214,40 +2217,40 @@ h-ruby {
  *
  */
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
-  h-ruby rb[zhuyin] {
+  hruby rb[zhuyin] {
     width: 1.45em;
     /* 依注音字符數量為「音符」及「調號」定位
      */ }
-    h-ruby rb[zhuyin]:before, h-ruby rb[zhuyin][diao]:after {
+    hruby rb[zhuyin]:before, hruby rb[zhuyin][diao]:after {
       -moz-transform: scale(0.4);
       -webkit-transform: scale(0.4);
       transform: scale(0.4);
       line-height: 0.9; }
-    h-ruby rb[zhuyin]:before {
+    hruby rb[zhuyin]:before {
       right: -0.15em; }
-    h-ruby rb[zhuyin][length="1"]:before {
+    hruby rb[zhuyin][length="1"]:before {
       margin-top: 0; }
-    h-ruby rb[zhuyin][length="1"]:after {
+    hruby rb[zhuyin][length="1"]:after {
       margin-top: -0.125em; }
-    h-ruby rb[zhuyin][length="2"]:before {
+    hruby rb[zhuyin][length="2"]:before {
       margin-top: -0.2em; }
-    h-ruby rb[zhuyin][length="2"]:after {
+    hruby rb[zhuyin][length="2"]:after {
       margin-top: 0; }
-    h-ruby rb[zhuyin][length="3"]:after {
+    hruby rb[zhuyin][length="3"]:after {
       margin-top: 0.125em; }
-    h-ruby rb[zhuyin][diao="˙"]:after {
+    hruby rb[zhuyin][diao="˙"]:after {
       right: -0.375em; }
-    h-ruby rb[zhuyin][diao="˙"][length="1"]:after {
+    hruby rb[zhuyin][diao="˙"][length="1"]:after {
       margin-top: -0.125em; }
-    h-ruby rb[zhuyin][diao="˙"][length="2"]:after {
+    hruby rb[zhuyin][diao="˙"][length="2"]:after {
       margin-top: -0.25em; }
-    h-ruby rb[zhuyin][diao="˙"][length="3"]:after {
+    hruby rb[zhuyin][diao="˙"][length="3"]:after {
       margin-top: -0.5em; }
-    h-ruby rb[zhuyin][diao="˪"]:after, h-ruby rb[zhuyin][diao="˫"]:after {
+    hruby rb[zhuyin][diao="˪"]:after, hruby rb[zhuyin][diao="˫"]:after {
       -moz-transform: scale(0.55);
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
       margin-right: -0.15em; }
-    h-ruby rb[zhuyin][diao^="ㆴ"]:after, h-ruby rb[zhuyin][diao^="ㆵ"]:after, h-ruby rb[zhuyin][diao^="ㆶ"]:after, h-ruby rb[zhuyin][diao^="ㆷ"]:after {
+    hruby rb[zhuyin][diao^="ㆴ"]:after, hruby rb[zhuyin][diao^="ㆵ"]:after, hruby rb[zhuyin][diao^="ㆶ"]:after, hruby rb[zhuyin][diao^="ㆷ"]:after {
       margin-right: -0.15em;
       margin-top: 0.4em; } }
