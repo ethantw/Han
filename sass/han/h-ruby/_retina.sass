@@ -1,0 +1,46 @@
+
+
+/**
+ * 在Retina Display螢幕下，可使用更小的注音符號
+ *
+ */
+
+@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
+	h-ruby
+		& rb[yin]
+			
+
+			// 注音
+			&:before,
+			&[diao]:after
+				+scale(.4)
+				line-height: .9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
