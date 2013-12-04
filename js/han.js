@@ -16,7 +16,7 @@ jQuery.noConflict();
 
 (function($){
 
-	var version = '2.2.1',
+	var version = '2.2.1-alpha',
 
 	tests = [],
 	rubies,

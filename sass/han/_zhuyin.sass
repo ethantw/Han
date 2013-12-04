@@ -11,6 +11,7 @@
 h-ruby
 	display: inline
 
+
 	copy
 		// posi
 		display: inline-block
@@ -20,13 +21,12 @@ h-ruby
 		// size
 		width: 0
 
-
 	rb[romanization]
 		display: inline-block
 		position: relative
 		text-indent: 0
 
-		&:after
+		&:before
 			// posi
 			+borderbox
 			display: inline-block
@@ -45,49 +45,46 @@ h-ruby
 			text-align: center
 			text-indent: 0
 
-	&[rightangle] rb[romanization]:after
-		// posi
-		bottom: -.5em
-		left: -.75em
-		top: auto 
+	&[rightangle]
+		rb[romanization]:before
+			// posi
+			bottom: -.5em
+			left: -.75em
+			top: auto
+
+			// typo
+			line-height: 1
 
 
-	&[generic="sans-serif"] rb[yin]:after 
+	&[generic="sans-serif"] rb[yin]:before 
 		font-family: 'Zhuyin Heiti', sans-serif
 
-	&[generic="serif"] rb[yin]:after 
+	&[generic="serif"] rb[yin]:before 
 		font-family: 'Zhuyin Kaiti', cursive, serif
 
+	& rb[diao]:after 
+		font-family: 'Zhuyin Kaiti', cursive, serif !important
 
 	rb
 		&[yin]
 			// posi
 			display: inline-block
-			margin-right: .1em
 			position: relative
 			text-indent: 0
 
 			// size
-			height: 2em
+			//height: auto
+			width: 1.65em
 
 
-			&:after,
-			&[diao]:before
+			&:before,
+			&[diao]:after
 				// posi
 				+borderbox
 				display: inline-block
-				text-indent: 0
-				vertical-align: middle
-
-				// typo & reset
-				+zhuozhonghao(none)
-				font: 300 normal 1em/.9 'Zhuyin Kaiti', cursive, serif
-				text-decoration: none
-
-
-			&:after
-				// posi
-				margin-left: -.2em
+				position: absolute
+				right: 0
+				top: 0
 
 				// size
 				+scale(.55)
@@ -95,41 +92,41 @@ h-ruby
 				width: .8em
 
 				// typo
+				+reset-typo
+
+			// 音符
+			&:before
+				// typo
 				content: attr(yin)
-				line-height: .85
+				line-height: .9
 				white-space: pre-wrap
 				word-break: break-all
+				//+test-sb
 
 
-			// 預設（黑體）注音符號的注音、調號位置調整
+			// 注音、調號位置調整
 			// 單個注音字符
-			&[form="shengmu"]:after,
-			&[form="jieyin"]:after,
-			&[form="yunmu"]:after
-				margin-top: .65em
+			&[form="shengmu"]:before,
+			&[form="jieyin"]:before,
+			&[form="yunmu"]:before
+				margin-top: .25em
 
 			// 二個注音字符
-			&[form="shengmu-jieyin"]:after,
-			&[form="shengmu-yunmu"]:after,
-			&[form="jieyin-yunmu"]:after
-				margin-top: .15em
+			&[form="shengmu-jieyin"]:before,
+			&[form="shengmu-yunmu"]:before,
+			&[form="jieyin-yunmu"]:before
+				margin-top: -.15em
 
 			// 三個注音字符
-			&[form="shengmu-jieyin-yunmu"]:after
+			&[form="shengmu-jieyin-yunmu"]:before
 				margin-top: -.4em
 
 			// 調號
-			&[diao]:before
+			&[diao]:after
 				// posi
-				margin-right: -.6em
-				right: 0
-				position: absolute
-				vertical-align: middle
+				right: -.6em
 
 				// size
-				+scale(.55)
-				-webkit-transform: scale(.65)
-				height: 2.7em
 				width: 1em
 
 				// typo
@@ -137,121 +134,49 @@ h-ruby
 
 
 			// 依注音字符數量為調號定位
-			&[form="shengmu"][diao]:before,
-			&[form="jieyin"][diao]:before,
-			&[form="yunmu"][diao]:before
-				margin-top: .45em
+			&[diao][form="shengmu"]:after,
+			&[diao][form="jieyin"]:after,
+			&[diao][form="yunmu"]:after
+				margin-top: -.125em
 
-			&[form="shengmu-jieyin"][diao]:before,
-			&[form="shengmu-yunmu"][diao]:before,
-			&[form="jieyin-yunmu"][diao]:before
-				margin-top: .45em
+			&[form="shengmu-jieyin"][diao]:after,
+			&[form="shengmu-yunmu"][diao]:after,
+			&[form="jieyin-yunmu"][diao]:after
+				margin-top: .125em
 
-			&[form="shengmu-jieyin-yunmu"][diao]:before
-				margin-top: .35em
+			&[form="shengmu-jieyin-yunmu"][diao]:after
+				margin-top: .25em
 
 			// 親聲
-			&[diao="˙"]:before
-				margin-right: -.35em
+			&[diao="˙"]:after
+				right: -.275em
 
-			&[form="shengmu"][diao="˙"]:before,
-			&[form="jieyin"][diao="˙"]:before,
-			&[form="yunmu"][diao="˙"]:before
-				margin-top: .55em
+			&[form="shengmu"][diao="˙"]:after,
+			&[form="jieyin"][diao="˙"]:after,
+			&[form="yunmu"][diao="˙"]:after
+				margin-top: 0em
 
-			&[form="shengmu-jieyin"][diao="˙"]:before,
-			&[form="shengmu-yunmu"][diao="˙"]:before,
-			&[form="jieyin-yunmu"][diao="˙"]:before
-				margin-top: .1em
+			&[form="shengmu-jieyin"][diao="˙"]:after,
+			&[form="shengmu-yunmu"][diao="˙"]:after,
+			&[form="jieyin-yunmu"][diao="˙"]:after
+				margin-top: -.25em
 
-			&[form="shengmu-jieyin-yunmu"][diao="˙"]:before
-				margin-top: -.45em
+			&[form="shengmu-jieyin-yunmu"][diao="˙"]:after
+				margin-top: -.55em
 	
 			// 陰去、陽去
-			&[form][diao="˪"]:before,
-			&[form][diao="˫"]:before
+			&[form][diao="˪"]:after,
+			&[form][diao="˫"]:after
 				+scale(.6)
-				margin-right: -.7em
+				margin-right: -.15em
 
 			// 陰入、陽入
-			&[form][diao^="ㆴ"]:before,
-			&[form][diao^="ㆵ"]:before,
-			&[form][diao^="ㆶ"]:before,
-			&[form][diao^="ㆷ"]:before
-				margin-right: -.7em
-				margin-top: .5em
-
-
-	// 楷體注音符號的注音、調號位置調整
-	&[generic="serif"] rb[yin]
-		// 單個注音字符
-		&[form="shengmu"]:after,
-		&[form="jieyin"]:after,
-		&[form="yunmu"]:after
-			margin-top: .65em
-
-		// 二個注音字符
-		&[form="shengmu-jieyin"]:after,
-		&[form="shengmu-yunmu"]:after,
-		&[form="jieyin-yunmu"]:after
-			margin-top: .35em
-
-		// 三個注音字符
-		&[form="shengmu-jieyin-yunmu"]:after
-			margin-top: -.25em
-
-		// 調號
-		&[diao]:before
-			margin-right: -.6em
-			right: 0
-
-		&[diao="ˊ"]:before
-			margin-right:  -.5em
-
-		// 依注音字符數量為調號定位
-		&[form="shengmu"][diao]:before,
-		&[form="jieyin"][diao]:before,
-		&[form="yunmu"][diao]:before
-			margin-top: .35em
-
-		&[form="shengmu-jieyin"][diao]:before,
-		&[form="shengmu-yunmu"][diao]:before,
-		&[form="jieyin-yunmu"][diao]:before
-			margin-top: .65em
-
-		&[form="shengmu-jieyin-yunmu"][diao]:before
-			margin-top: .55em
-
-		// 輕聲
-		&[diao="˙"]:before
-			margin-right: -.35em
-
-		&[form="shengmu"][diao="˙"]:before,
-		&[form="jieyin"][diao="˙"]:before,
-		&[form="yunmu"][diao="˙"]:before
-			margin-top: .6em
-
-		&[form="shengmu-jieyin"][diao="˙"]:before,
-		&[form="shengmu-yunmu"][diao="˙"]:before,
-		&[form="jieyin-yunmu"][diao="˙"]:before
-			margin-top: .4em
-
-		&[form="shengmu-jieyin-yunmu"][diao="˙"]:before
-			margin-top: -.3em
-
-		// 陰去、陽去
-		&[form][diao="˪"]:before,
-		&[form][diao="˫"]:before
-			+scale(.6)
-			margin-right: -.7em
-
-		// 陰入、陽入
-		&[form][diao^="ㆴ"]:before,
-		&[form][diao^="ㆵ"]:before,
-		&[form][diao^="ㆶ"]:before,
-		&[form][diao^="ㆷ"]:before
-			margin-right: -.8em
-			margin-top: .65em
+			&[form][diao^="ㆴ"]:after,
+			&[form][diao^="ㆵ"]:after,
+			&[form][diao^="ㆶ"]:after,
+			&[form][diao^="ㆷ"]:after
+				margin-right: -.2em
+				margin-top: .55em
 
 
 	// 若在實驗性底線中
@@ -267,89 +192,9 @@ h-ruby
 
 
 
-// 在Retina Display螢幕下，可使用更小的注音符號
-@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
-	h-ruby
-		&[rightangle][generic="serif"]
-			rb[romanization]:after
-				bottom: -.75em
 
 
-		& rb[yin],
-		&[generic="serif"] rb[yin]
-			// 注音
-			&:after
-				+scale(.4)
-				line-height: .9
 
-			// 調號
-			&[diao]:before
-				+scale(.45)
-
-			// 單個注音字符
-			&[form="shengmu"]:after,
-			&[form="jieyin"]:after,
-			&[form="yunmu"]:after
-				margin-top: .4em
-
-			// 二個注音字符
-			&[form="shengmu-jieyin"]:after,
-			&[form="shengmu-yunmu"]:after,
-			&[form="jieyin-yunmu"]:after
-				margin-top: .05em
-
-			// 三個注音字符
-			&[form="shengmu-jieyin-yunmu"]:after
-				margin-top: -.4em
-
-			// 調號
-			&[diao]:before
-				margin-right: -.45em
-
-			// 依注音字符數量為調號定位
-			&[form="shengmu"][diao]:before,
-			&[form="jieyin"][diao]:before,
-			&[form="yunmu"][diao]:before
-				margin-top: .2em
-
-			&[form="shengmu-jieyin"][diao]:before,
-			&[form="shengmu-yunmu"][diao]:before,
-			&[form="jieyin-yunmu"][diao]:before
-				margin-top: .2em
-
-			&[form="shengmu-jieyin-yunmu"][diao]:before
-				margin-top: .15em
-
-			// 輕聲
-			&[diao="˙"]:before
-				margin-right: -.275em
-
-			&[form="shengmu"][diao="˙"]:before,
-			&[form="jieyin"][diao="˙"]:before,
-			&[form="yunmu"][diao="˙"]:before
-				margin-top: .25em
-
-			&[form="shengmu-jieyin"][diao="˙"]:before,
-			&[form="shengmu-yunmu"][diao="˙"]:before,
-			&[form="jieyin-yunmu"][diao="˙"]:before
-				margin-top: -.1em
-
-			&[form="shengmu-jieyin-yunmu"][diao="˙"]:before
-				margin-top: -.45em
-
-			// 陰去、陽去
-			&[form][diao="˪"]:before,
-			&[form][diao="˫"]:before
-				+scale(.6)
-				margin-right: -.65em
-
-			// 陰入、陽入
-			&[form][diao^="ㆴ"]:before,
-			&[form][diao^="ㆵ"]:before,
-			&[form][diao^="ㆶ"]:before,
-			&[form][diao^="ㆷ"]:before
-				margin-right: -.65em
-				margin-top: .35em
 
 
 
