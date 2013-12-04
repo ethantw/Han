@@ -1,0 +1,60 @@
+
+
+@mixin scale( $size: .55 ) 
+	-moz-transform:	 	scale( $size )
+	-webkit-transform:  scale( $size )
+	transform:		  	scale( $size )
+
+
+
+@mixin calc( $prop, $exp )  
+	$prop: -moz-calc( #$exp )
+	$prop: -webkit-calc( #$exp )
+	$prop: calc( #$exp ) 
+ 
+
+
+@mixin zhuozhonghao( $sym: circle, $posi: under ) 
+	-moz-text-emphasis:	 	$sym
+	-webkit-text-emphasis: 	$sym
+	text-emphasis:		  	$sym
+	-moz-text-emphasis-position:	$posi
+	-webkit-text-emphasis-position: $posi
+	text-emphasis-position:		 	$posi
+
+
+@mixin borderbox 
+	-moz-box-sizing: border-box
+	-webkit-box-sizing: border-box
+	box-sizing: border-box
+
+
+@mixin contentbox 
+	-moz-box-sizing: content-box
+	-webkit-box-sizing: content-box
+	box-sizing: content-box
+
+
+@mixin reset-typo 
+	+zhuozhonghao(none)
+	font-style: normal
+	font-weight: normal
+	line-height: .9
+	text-indent: 0
+	text-decoration: none
+
+@mixin test-sb( $color: red )
+	border: 1px solid $color
+
+
+
+
+
+
+
+
+
+
+
+
+
