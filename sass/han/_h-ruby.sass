@@ -10,11 +10,12 @@ h-ruby
 
 
 	/** 
-	 * 若在實驗性註記元素（底線）中
-	 * In laboratory annotation
+	 * 實驗性註記元素（底線）
+	 * Laboratory annotations
 	 * 
 	 */
 
+	u.han-js-charized &,
 	u.han-js-charized
 		border-bottom: 1px solid
 		padding-bottom: .125em
@@ -22,8 +23,8 @@ h-ruby
 		span.char span
 			border-bottom: 0 none !important
 
-		& + u 
-			margin-left: .125em
+	u.han-js-charized + u
+		margin-left: .125em
 
 	/** 
 	 * 隱藏的`<copy>`元素，利於複製貼上
@@ -111,6 +112,7 @@ h-ruby
 	   ***
 	   a. 偽類`:before`為「注音符」
 	   b. 偽類`:after`為「音調」 */
+
 	rb[zhuyin]
 		// posi
 		display: inline-block
