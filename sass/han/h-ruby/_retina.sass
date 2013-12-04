@@ -1,30 +1,72 @@
 
 
 /**
- * 在Retina Display螢幕下，可使用更小的注音符號
+ * 在Retina Display螢幕下，使用更小字體的注音符號
+ * Apply even littler font-size
+ * on Retina Display screen
  *
  */
 
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
 	h-ruby
-		& rb[yin]
-			
+		& rb[zhuyin]
+			width: 1.45em
 
-			// 注音
 			&:before,
 			&[diao]:after
 				+scale(.4)
 				line-height: .9
 
+			// 音符位置微調
+			&:before
+				right: -.15em
 
 
+			/*
+			 * 依注音字符數量為「音符」及「調號」定位
+			 */
 
+			&[length="1"]
+				&:before
+					margin-top: 0
+				&:after
+					margin-top: -.125em
+			&[length="2"]
+				&:before
+					margin-top: -.2em
+				&:after
+					margin-top: 0
+			&[length="3"]
+				&:after
+					margin-top: .125em
 
+			// 親聲
+			&[diao="˙"]
+				&:after
+					right: -.375em
 
+				&[length="1"]:after
+					margin-top: -.125em
+				&[length="2"]:after
+					margin-top: -.25em
+				&[length="3"]:after
+					margin-top: -.5em
+	
+			// 陰去、陽去
+			&[diao="˪"],
+			&[diao="˫"]
+				&:after
+					+scale(.55)
+					margin-right: -.15em
 
-
-
-
+			// 陰入、陽入
+			&[diao^="ㆴ"],
+			&[diao^="ㆵ"],
+			&[diao^="ㆶ"],
+			&[diao^="ㆷ"]
+				&:after
+					margin-right: -.15em
+					margin-top: .4em
 
 
 

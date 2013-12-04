@@ -341,11 +341,13 @@ jQuery.noConflict();
 
 			prev, text, zi,
 			zy = $(node).html(),
-			yin, diao, form, data
+			yin, diao, form, length, data
 
 		form = 	( zy.match(eval('/(' + sm + ')/')) ) ? 'shengmu' : ''
 		form += ( zy.match(eval('/(' + jy + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
 		form += ( zy.match(eval('/(' + ym + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
+
+		length = form.split('-').length
 
 		yin = zy
 			.replace(eval('/(' + tone + ')/g'), '')
@@ -370,6 +372,7 @@ jQuery.noConflict();
 			'zhuyin': zy,
 			'yin': yin,
 			'diao': diao,
+			'length': length,
 			'form': form
 		}
 

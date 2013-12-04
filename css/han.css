@@ -2060,6 +2060,11 @@ samp {
 h-ruby {
   display: inline;
   /*
+   * 若在實驗性註記元素（底線）中
+   * In laboratory annotation
+   * 
+   */
+  /*
    * 隱藏的`<copy>`元素，利於複製貼上
    * Hidden `<copy>` elements,
    * in order to copy and paste
@@ -2077,16 +2082,26 @@ h-ruby {
    * 
    */
   /*
-   * 依通用字體集選用注音字體
-   * Define Zhuyin font according to
-   * its parental generic family
-   * 
-   */
-  /*
    * 國語注音、台灣方言音符號
    * Zhuyin
    * 
-   */ }
+   */
+   *
+   * /* 依通用字體集選用注音字體
+   *    Define Zhuyin font according to
+   *    its parental generic family */
+  /* 注音及方言音符號
+   * Zhuyin
+   ***
+   * a. 偽類`:before`為「注音符」
+   * b. 偽類`:after`為「音調」 */ }
+  h-ruby u.han-js-charized {
+    border-bottom: 1px solid;
+    padding-bottom: 0.125em; }
+    h-ruby u.han-js-charized span.char span {
+      border-bottom: 0 none !important; }
+    h-ruby u.han-js-charized + u {
+      margin-left: 0.125em; }
   h-ruby copy {
     display: inline-block;
     opacity: 0;
@@ -2120,14 +2135,14 @@ h-ruby {
     font-family: "Zhuyin Heiti", sans-serif; }
   h-ruby[generic="serif"] rb[yin]:before {
     font-family: "Zhuyin Kaiti", cursive, serif; }
-  h-ruby rb[diao]:after {
-    font-family: "Zhuyin Kaiti", cursive, serif !important; }
-  h-ruby rb[yin] {
+  h-ruby rb[zhuyin] {
     display: inline-block;
     position: relative;
     text-indent: 0;
-    width: 1.65em; }
-    h-ruby rb[yin]:before, h-ruby rb[yin][diao]:after {
+    width: 1.65em;
+    /* 依注音字符數量為「注音」及「調號」定位
+     */ }
+    h-ruby rb[zhuyin]:before, h-ruby rb[zhuyin][diao]:after {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
@@ -2151,58 +2166,86 @@ h-ruby {
       line-height: 0.9;
       text-indent: 0;
       text-decoration: none; }
-    h-ruby rb[yin]:before {
+    h-ruby rb[zhuyin]:before {
       content: attr(yin);
       line-height: 0.9;
       white-space: pre-wrap;
       word-break: break-all; }
-    h-ruby rb[yin][form="shengmu"]:before, h-ruby rb[yin][form="jieyin"]:before, h-ruby rb[yin][form="yunmu"]:before {
-      margin-top: 0.25em; }
-    h-ruby rb[yin][form="shengmu-jieyin"]:before, h-ruby rb[yin][form="shengmu-yunmu"]:before, h-ruby rb[yin][form="jieyin-yunmu"]:before {
-      margin-top: -0.15em; }
-    h-ruby rb[yin][form="shengmu-jieyin-yunmu"]:before {
-      margin-top: -0.4em; }
-    h-ruby rb[yin][diao]:after {
+    h-ruby rb[zhuyin][diao]:after {
       right: -0.6em;
       width: 1em;
-      content: attr(diao); }
-    h-ruby rb[yin][diao][form="shengmu"]:after, h-ruby rb[yin][diao][form="jieyin"]:after, h-ruby rb[yin][diao][form="yunmu"]:after {
-      margin-top: -0.125em; }
-    h-ruby rb[yin][form="shengmu-jieyin"][diao]:after, h-ruby rb[yin][form="shengmu-yunmu"][diao]:after, h-ruby rb[yin][form="jieyin-yunmu"][diao]:after {
-      margin-top: 0.125em; }
-    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao]:after {
+      content: attr(diao);
+      font-family: "Zhuyin Kaiti", cursive, serif !important; }
+    h-ruby rb[zhuyin][length="1"]:before {
       margin-top: 0.25em; }
-    h-ruby rb[yin][diao="˙"]:after {
+    h-ruby rb[zhuyin][length="1"]:after {
+      margin-top: -0.35em; }
+    h-ruby rb[zhuyin][length="2"]:before {
+      margin-top: -0.15em; }
+    h-ruby rb[zhuyin][length="2"]:after {
+      margin-top: 0.125em; }
+    h-ruby rb[zhuyin][length="3"]:before {
+      margin-top: -0.4em; }
+    h-ruby rb[zhuyin][length="3"]:after {
+      margin-top: 0.25em; }
+    h-ruby rb[zhuyin][diao="˙"]:after {
       right: -0.275em; }
-    h-ruby rb[yin][form="shengmu"][diao="˙"]:after, h-ruby rb[yin][form="jieyin"][diao="˙"]:after, h-ruby rb[yin][form="yunmu"][diao="˙"]:after {
-      margin-top: 0em; }
-    h-ruby rb[yin][form="shengmu-jieyin"][diao="˙"]:after, h-ruby rb[yin][form="shengmu-yunmu"][diao="˙"]:after, h-ruby rb[yin][form="jieyin-yunmu"][diao="˙"]:after {
+    h-ruby rb[zhuyin][diao="˙"][length="1"]:after {
+      margin-top: 0; }
+    h-ruby rb[zhuyin][diao="˙"][length="2"]:after {
       margin-top: -0.25em; }
-    h-ruby rb[yin][form="shengmu-jieyin-yunmu"][diao="˙"]:after {
+    h-ruby rb[zhuyin][diao="˙"][length="3"]:after {
       margin-top: -0.55em; }
-    h-ruby rb[yin][form][diao="˪"]:after, h-ruby rb[yin][form][diao="˫"]:after {
+    h-ruby rb[zhuyin][diao="˪"]:after, h-ruby rb[zhuyin][diao="˫"]:after {
       -moz-transform: scale(0.6);
       -webkit-transform: scale(0.6);
       transform: scale(0.6);
       margin-right: -0.15em; }
-    h-ruby rb[yin][form][diao^="ㆴ"]:after, h-ruby rb[yin][form][diao^="ㆵ"]:after, h-ruby rb[yin][form][diao^="ㆶ"]:after, h-ruby rb[yin][form][diao^="ㆷ"]:after {
+    h-ruby rb[zhuyin][diao^="ㆴ"]:after, h-ruby rb[zhuyin][diao^="ㆵ"]:after, h-ruby rb[zhuyin][diao^="ㆶ"]:after, h-ruby rb[zhuyin][diao^="ㆷ"]:after {
       margin-right: -0.2em;
       margin-top: 0.55em; }
-  h-ruby u.han-js-charized {
-    border-bottom: 1px solid;
-    padding-bottom: 0.125em; }
-    h-ruby u.han-js-charized span.char span {
-      border-bottom: 0 none !important; }
-    h-ruby u.han-js-charized + u {
-      margin-left: 0.125em; }
 
 /*
- * 在Retina Display螢幕下，可使用更小的注音符號
+ * 在Retina Display螢幕下，使用更小字體的注音符號
+ * Apply even littler font-size
+ * on Retina Display screen
  *
  */
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
-  h-ruby rb[yin]:before, h-ruby rb[yin][diao]:after {
-    -moz-transform: scale(0.4);
-    -webkit-transform: scale(0.4);
-    transform: scale(0.4);
-    line-height: 0.9; } }
+  h-ruby rb[zhuyin] {
+    width: 1.45em;
+    /* 依注音字符數量為「音符」及「調號」定位
+     */ }
+    h-ruby rb[zhuyin]:before, h-ruby rb[zhuyin][diao]:after {
+      -moz-transform: scale(0.4);
+      -webkit-transform: scale(0.4);
+      transform: scale(0.4);
+      line-height: 0.9; }
+    h-ruby rb[zhuyin]:before {
+      right: -0.15em; }
+    h-ruby rb[zhuyin][length="1"]:before {
+      margin-top: 0; }
+    h-ruby rb[zhuyin][length="1"]:after {
+      margin-top: -0.125em; }
+    h-ruby rb[zhuyin][length="2"]:before {
+      margin-top: -0.2em; }
+    h-ruby rb[zhuyin][length="2"]:after {
+      margin-top: 0; }
+    h-ruby rb[zhuyin][length="3"]:after {
+      margin-top: 0.125em; }
+    h-ruby rb[zhuyin][diao="˙"]:after {
+      right: -0.375em; }
+    h-ruby rb[zhuyin][diao="˙"][length="1"]:after {
+      margin-top: -0.125em; }
+    h-ruby rb[zhuyin][diao="˙"][length="2"]:after {
+      margin-top: -0.25em; }
+    h-ruby rb[zhuyin][diao="˙"][length="3"]:after {
+      margin-top: -0.5em; }
+    h-ruby rb[zhuyin][diao="˪"]:after, h-ruby rb[zhuyin][diao="˫"]:after {
+      -moz-transform: scale(0.55);
+      -webkit-transform: scale(0.55);
+      transform: scale(0.55);
+      margin-right: -0.15em; }
+    h-ruby rb[zhuyin][diao^="ㆴ"]:after, h-ruby rb[zhuyin][diao^="ㆵ"]:after, h-ruby rb[zhuyin][diao^="ㆶ"]:after, h-ruby rb[zhuyin][diao^="ㆷ"]:after {
+      margin-right: -0.15em;
+      margin-top: 0.4em; } }

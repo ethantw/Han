@@ -1,23 +1,23 @@
 /*
 Syntax error: Undefined mixin 'borderbox'.
-        on line 41 of sass/han/h-ruby.sass, in `borderbox'
-        from line 41 of sass/han/h-ruby.sass
+        on line 57 of sass/han/h-ruby.sass, in `borderbox'
+        from line 57 of sass/han/h-ruby.sass
 
-36: 		position: relative
-37: 		text-indent: 0
-38: 
-39: 		&:before
-40: 			// posi
-41: 			+borderbox
-42: 			display: inline-block
-43: 			left: 0
-44: 			position: absolute
-45: 			top: -.5em
-46: 			vertical-align: middle
+52: 		position: relative
+53: 		text-indent: 0
+54: 
+55: 		&:before
+56: 			// posi
+57: 			+borderbox
+58: 			display: inline-block
+59: 			left: 0
+60: 			position: absolute
+61: 			top: -.5em
+62: 			vertical-align: middle
 
 Backtrace:
-sass/han/h-ruby.sass:41:in `borderbox'
-sass/han/h-ruby.sass:41
+sass/han/h-ruby.sass:57:in `borderbox'
+sass/han/h-ruby.sass:57
 /Library/Ruby/Gems/2.0.0/gems/sass-3.2.12/lib/sass/tree/visitors/perform.rb:253:in `visit_mixin'
 /Library/Ruby/Gems/2.0.0/gems/sass-3.2.12/lib/sass/tree/visitors/base.rb:37:in `visit'
 /Library/Ruby/Gems/2.0.0/gems/sass-3.2.12/lib/sass/tree/visitors/perform.rb:100:in `visit'
@@ -80,4 +80,4 @@ sass/han/h-ruby.sass:41
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined mixin 'borderbox'.\A         on line 41 of sass/han/h-ruby.sass, in `borderbox'\A         from line 41 of sass/han/h-ruby.sass\A \A 36: 		position: relative\A 37: 		text-indent: 0\A 38: \A 39: 		&:before\A 40: 			// posi\A 41: 			+borderbox\A 42: 			display: inline-block\A 43: 			left: 0\A 44: 			position: absolute\A 45: 			top: -.5em\A 46: 			vertical-align: middle"; }
+  content: "Syntax error: Undefined mixin 'borderbox'.\A         on line 57 of sass/han/h-ruby.sass, in `borderbox'\A         from line 57 of sass/han/h-ruby.sass\A \A 52: 		position: relative\A 53: 		text-indent: 0\A 54: \A 55: 		&:before\A 56: 			// posi\A 57: 			+borderbox\A 58: 			display: inline-block\A 59: 			left: 0\A 60: 			position: absolute\A 61: 			top: -.5em\A 62: 			vertical-align: middle"; }
