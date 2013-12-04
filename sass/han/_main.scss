@@ -111,7 +111,7 @@ u.han-js-charized {
 	text-decoration: none;
 
 	span.char:not(:first-of-type):not(:last-of-type) span,
-	span.hanla,
+	hanla,
 	span.char:first-of-type span:after,
 	span.char:last-of-type span:after {
 		border-bottom: 1px solid;
@@ -158,13 +158,13 @@ u.han-js-charized {
 		padding-bottom: .125em;
 	}
 
-	span.hanla:first-child,
-	span.hanla:last-child {
+	hanla:first-child,
+	hanla:last-child {
 		border: 0 none;
 	}
 
-	:not(:first-child) span.hanla:first-child,
-	:not(:last-child) span.hanla:last-child {
+	:not(:first-child) hanla:first-child,
+	:not(:last-child) hanla:last-child {
 		border: 1px solid;
 	}
 }
@@ -281,8 +281,8 @@ article:lang(ja) ul {
    Kerning between Hanzi and Latin letter
    --------------------------------------- */
 
-span.hanla,
-html:not(.han-la) span.hanla {
+hanla,
+html:not(.han-la) hanla {
 	display: none;
 }
 
@@ -292,19 +292,19 @@ html.han-la span:lang(ja).hanla {
 	position: static;
 }
 
-html.han-la span.hanla:after {
+html.han-la hanla:after {
 	content: ' ';
 	display: inline;
 	font-size: 1ch;
 	font-size: -webkit-calc( .25em );
 }
 
-html.han-la code span.hanla:after,
-html.han-la pre span.hanla:after,
-html.han-la kbd span.hanla:after,
-html.han-la samp span.hanla:after,
-html.han-la ol > span.hanla:after,
-html.han-la ul > span.hanla:after {
+html.han-la code hanla:after,
+html.han-la pre hanla:after,
+html.han-la kbd hanla:after,
+html.han-la samp hanla:after,
+html.han-la ol > hanla:after,
+html.han-la ul > hanla:after {
 	display: none;
 }
 

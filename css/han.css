@@ -1283,7 +1283,7 @@ u.han-js-charized {
   border-bottom: 0 none;
   text-decoration: none; }
   u.han-js-charized span.char:not(:first-of-type):not(:last-of-type) span,
-  u.han-js-charized span.hanla,
+  u.han-js-charized hanla,
   u.han-js-charized span.char:first-of-type span:after,
   u.han-js-charized span.char:last-of-type span:after {
     border-bottom: 1px solid;
@@ -1315,11 +1315,11 @@ u.han-js-charized {
   u.han-js-charized span.char:not(:last-child):last-of-type span {
     border-bottom: 1px solid;
     padding-bottom: .125em; }
-  u.han-js-charized span.hanla:first-child,
-  u.han-js-charized span.hanla:last-child {
+  u.han-js-charized hanla:first-child,
+  u.han-js-charized hanla:last-child {
     border: 0 none; }
-  u.han-js-charized :not(:first-child) span.hanla:first-child,
-  u.han-js-charized :not(:last-child) span.hanla:last-child {
+  u.han-js-charized :not(:first-child) hanla:first-child,
+  u.han-js-charized :not(:last-child) hanla:last-child {
     border: 1px solid; }
 
 /* 重新定製「連結、插入元素」的樣式
@@ -1407,8 +1407,8 @@ article:lang(ja) ul {
    ---
    Kerning between Hanzi and Latin letter
    --------------------------------------- */
-span.hanla,
-html:not(.han-la) span.hanla {
+hanla,
+html:not(.han-la) hanla {
   display: none; }
 
 html.han-la span:lang(zh).hanla,
@@ -1416,18 +1416,18 @@ html.han-la span:lang(ja).hanla {
   display: inline;
   position: static; }
 
-html.han-la span.hanla:after {
+html.han-la hanla:after {
   content: ' ';
   display: inline;
   font-size: 1ch;
   font-size: -webkit-calc(.25em ); }
 
-html.han-la code span.hanla:after,
-html.han-la pre span.hanla:after,
-html.han-la kbd span.hanla:after,
-html.han-la samp span.hanla:after,
-html.han-la ol > span.hanla:after,
-html.han-la ul > span.hanla:after {
+html.han-la code hanla:after,
+html.han-la pre hanla:after,
+html.han-la kbd hanla:after,
+html.han-la samp hanla:after,
+html.han-la ol > hanla:after,
+html.han-la ul > hanla:after {
   display: none; }
 
 /* ---------------------------------------
