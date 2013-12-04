@@ -7,14 +7,14 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/3
+ * Last Modified: 2013/12/4
  *
  */
 
-jQuery.noConflict();
+;jQuery.noConflict()
 
 
-(function($){
+;(function($){
 
 	var version = '2.2.1-alpha',
 
@@ -32,35 +32,35 @@ jQuery.noConflict();
 		$(document).on('ready', function(){
 
 			// `unicode-range`
-			classes.push( ( test_for_unicoderange() ? '' : 'no-' ) + 'unicoderange' );
+			classes.push( ( test_for_unicoderange() ? '' : 'no-' ) + 'unicoderange' )
 
 			// The 4(-1) Typefaces
-			fontfaces['songti'] = test_for_fontface( 'Han Songti' );
-			fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' );
-			fontfaces['fangsong'] = test_for_fontface( 'Han Fangsong' );
+			fontfaces['songti'] = test_for_fontface( 'Han Songti' )
+			fontfaces['kaiti'] = test_for_fontface( 'Han Kaiti' )
+			fontfaces['fangsong'] = test_for_fontface( 'Han Fangsong' )
 
 			for ( var font in fontfaces ) {
-				classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font );
+				classes.push( ( fontfaces[font] ? '' : 'no-' ) + 'fontface-' + font )
 			}
 
 			// altogether
-			$('html').addClass( classes.join(' ') );
+			$('html').addClass( classes.join(' ') )
 
-			init();
-		});
+			init()
+		})
 	},
 
 
 	init = function( range ) {
 		if ( !range && $('html').hasClass('no-han-init') )
-			return;
+			return
 
-		var range = range || 'body';
+		var range = range || 'body'
 
 		if ( range !== 'body' && !$(range).hasClass(rendered) )
-			$(range).addClass(rendered);
+			$(range).addClass(rendered)
 		else if ( range === 'body' && !$('html').hasClass(rendered) )
-			$('html').addClass(rendered);
+			$('html').addClass(rendered)
 
 
 
@@ -155,7 +155,7 @@ jQuery.noConflict();
 									'romanization': ro
 								}
 
-								for ( var j = i; j < c; j++ ) {
+								for ( var j=i; j<c; j++ ) {
 									t.find('rb').eq(j).attr('ro-set', h)
 								}
 							})
@@ -214,37 +214,37 @@ jQuery.noConflict();
 			$(range).each(function(){
 				var hanzi = unicode_set('hanzi'),
 					latin = unicode_set('latin') + '|' + unicode['punc'][0],
-					punc = unicode['punc'];
+					punc = unicode['punc']
 
 					patterns = [
 						'/(' + hanzi + ')(' + latin + '|' + punc[1] + ')/ig',
 						'/(' + latin + '|' + punc[2] + ')(' + hanzi + ')/ig'
-					];
+					]
 
 
 				patterns.forEach(function( exp ){
 					findAndReplaceDOMText(this, {
 						find: eval(exp),
 						replace: '$1<hanla>$2'
-					});
-				}, this);
+					})
+				}, this)
 
 			   findAndReplaceDOMText(this, {
 					find: '<hanla>',
 					replace: function(){
-						return _span( 'hanla' );
+						return document.createElement('hanla')
 					}
-				});
+				})
 
-			   this.normalize();
+			   this.normalize()
 
 				$('* > span.hanla:first-child').parent().each(function(){
 					if ( this.firstChild.nodeType == 1 ) {
-						$(this).before( $('<span class="hanla"></span>') );
-						$(this).find('span.hanla:first-child').remove();
+						$(this).before( $('<span class="hanla"></span>') )
+						$(this).find('span.hanla:first-child').remove()
 					}
-				});
-			});
+				})
+			})
 
 
 
@@ -256,28 +256,28 @@ jQuery.noConflict();
 		 */
 
 		if ( $('html').hasClass('han-lab-underline') )
-			$(range).find('u').charize('', true, true);
+			$(range).find('u').charize('', true, true)
 		else
 			$(range).find('u').each(function(){
-				var next = this.nextSibling;
+				var next = this.nextSibling
 
-				_ignore(next);
-				_adj(next);
+				_ignore(next)
+				_adj(next)
 
 
 				function _adj( next ) {
 					if ( next.nodeName === "U" )
-						$(next).addClass('adjacent');
+						$(next).addClass('adjacent')
 				}
 
 				function _ignore( next ) {
 					if ( next.nodeName === "WBR" || next.nodeType == 8 ) {
-						var next = next.nextSibling;
-						_ignore(next);
-						_adj(next);
+						var next = next.nextSibling
+						_ignore(next)
+						_adj(next)
 					}
 				}
-			});
+			})
 
 
 
@@ -289,7 +289,7 @@ jQuery.noConflict();
 
 		$(range).find('em').charize({
 			latin: ( tests['textemphasis']() ) ? 'none' : 'individual'
-		});
+		})
 
 
 		/* 修正引言元素`<q>`不為WebKit引擎支援的問題
@@ -301,25 +301,25 @@ jQuery.noConflict();
 		if ( !tests['quotes']() )
 			$(range).find('q q').each(function() {
 				if ( $(this).parents('q').length%2 != 0 )
-					$(this).addClass('double');
-			});
+					$(this).addClass('double')
+			})
 	},
 
 
 
 	unicode_set = function( set ) {
 		var join = ( set.match(/[hanzi|latin]/) ) ? true : false,
-		result = ( join ) ? unicode[set].join('|') : unicode[set];
+		result = ( join ) ? unicode[set].join('|') : unicode[set]
 
-		return result;
+		return result
 	},
 
 
 	_span = function( className ) {
-		var span = document.createElement('span');
-		span.className = className;
+		var span = document.createElement('span')
+		span.className = className
 
-		return span;
+		return span
 	},
 
 
@@ -400,17 +400,17 @@ jQuery.noConflict();
 
 
 	findAndReplaceDOMText = function( a, b ) {
-		var b = b;
+		var b = b
 
 		b.filterElements = function( el ) {
 			var name = el.nodeName.toLowerCase(),
 				classes = ( el.nodeType == 1 ) ? el.getAttribute('class') : '',
-				charized = ( classes && classes.match(/han-js-charized/) != null ) ? true : false;
+				charized = ( classes && classes.match(/han-js-charized/) != null ) ? true : false
 
-			return name !== 'style' && name !== 'script' && !charized;
-		};
+			return name !== 'style' && name !== 'script' && !charized
+		}
 
-		return window.findAndReplaceDOMText(a,b);
+		return window.findAndReplaceDOMText(a,b)
 	},
 
 
@@ -420,106 +420,106 @@ jQuery.noConflict();
 			docElement = document.documentElement,
 			div = document.createElement('div'),
 			body = document.body,
-			fakeBody = body || document.createElement('body');
+			fakeBody = body || document.createElement('body')
+
 	
+		style = ['<style id="han-support">', rule, '</style>'].join('')
 	
-		style = ['<style id="han-support">', rule, '</style>'].join('');
-	
-		(body ? div : fakeBody).innerHTML += style;
-		fakeBody.appendChild(div);
+		;(body ? div : fakeBody).innerHTML += style
+		fakeBody.appendChild(div)
 	
 		if ( !body ) {
-			fakeBody.style.background = '';
-			fakeBody.style.overflow = 'hidden';
-			docOverflow = docElement.style.overflow;
-			docElement.style.overflow = 'hidden';
-			docElement.appendChild(fakeBody);
+			fakeBody.style.background = ''
+			fakeBody.style.overflow = 'hidden'
+			docOverflow = docElement.style.overflow
+			docElement.style.overflow = 'hidden'
+			docElement.appendChild(fakeBody)
 		}
 	
-		ret = callback(div, rule);
+		ret = callback(div, rule)
 	
 		if ( !body ) {
-			fakeBody.parentNode.removeChild(fakeBody);
-			docElement.style.overflow = docOverflow;
+			fakeBody.parentNode.removeChild(fakeBody)
+			docElement.style.overflow = docOverflow
 		} else
-			div.parentNode.removeChild(div);
+			div.parentNode.removeChild(div)
 	
-		return !!ret;
+		return !!ret
 	},
 
 
 	write_on_canvas = function( text, font ) {
-		var canvasNode = document.createElement('canvas');
-		canvasNode.width = '50';
-		canvasNode.height = '20';
+		var canvasNode = document.createElement('canvas')
+		canvasNode.width = '50'
+		canvasNode.height = '20'
 
-		canvasNode.style.display = 'none';
-		canvasNode.className = 'han_support_tests';
-		document.body.appendChild(canvasNode);
-		var ctx = canvasNode.getContext('2d');
+		canvasNode.style.display = 'none'
+		canvasNode.className = 'han_support_tests'
+		document.body.appendChild(canvasNode)
+		var ctx = canvasNode.getContext('2d')
 
-		ctx.textBaseline = 'top';
-		ctx.font = '15px ' + font + ', sans-serif';
-		ctx.fillStyle = 'black';
-		ctx.strokeStyle = 'black';
+		ctx.textBaseline = 'top'
+		ctx.font = '15px ' + font + ', sans-serif'
+		ctx.fillStyle = 'black'
+		ctx.strokeStyle = 'black'
 
-		ctx.fillText( text, 0, 0 );
+		ctx.fillText( text, 0, 0 )
 
-		return ctx;
+		return ctx
 	},
 
 
 	test_for_fontface = function( test, compare, zi ) {
 		if ( !tests['fontface']() )
-			return false;
+			return false
 
 		var test = test,
 			compare = compare || 'sans-serif',
-			zi = zi || '辭Q';
+			zi = zi || '辭Q'
 
 		try {
 			var sans = write_on_canvas( zi, compare ),
 				test = write_on_canvas( zi, test ),
-				support;
+				support
 
 
-			for (var j = 1; j <= 20; j++) {
-				for (var i = 1; i <= 50; i++) {
+			for (var j=1; j<=20; j++) {
+				for (var i=1; i<=50; i++) {
 					var sansData = sans.getImageData(i, j, 1, 1).data,
 						testData = test.getImageData(i, j, 1, 1).data,
 
-						alpha = [];
+						alpha = []
 
-					alpha['sans'] = sansData[3];
-					alpha['test'] = testData[3];
+					alpha['sans'] = sansData[3]
+					alpha['test'] = testData[3]
 
 
 					if ( support !== 'undefined' && alpha['test'] != alpha['sans'] )
-						support = true;
+						support = true
 
 					else if ( support )
-						break;
+						break
 
 					if ( i == 20 && j == 20 )
 						if ( !support )
-							support = false;
+							support = false
 				}
 			}
 
 
-			$('canvas.han_support_tests').remove();
+			$('canvas.han_support_tests').remove()
 
-			return support;
+			return support
 
 		} catch ( err ) {
-			return false;
+			return false
 		}
-	};
+	}
 
 
 	test_for_unicoderange = function() {
-		return !test_for_fontface( 'han-unicode-range', 'Arial, "Droid Sans"', 'a' );
-	};
+		return !test_for_fontface( 'han-unicode-range', 'Arial, "Droid Sans"', 'a' )
+	}
 
 
 	/* --------------------------------------------------------
@@ -538,7 +538,7 @@ jQuery.noConflict();
 	 * 拉丁字母擴展-B區：[\u0180-\u024F]
 	 * 拉丁字母附加區：[\u1E00-\u1EFF]
 	 *
-	 ** 符號：[~!@#&;=_\$\%\^\*\-\+\,\.\/(\\)\?\:\'\"\[\]\(\)'"<>‘“”’]
+	 ** 符號：[~!@#&=_\$\%\^\*\-\+\,\.\/(\\)\?\:\'\"\[\]\(\)'"<>‘“”’]
 	 *
 	 * --------------------------------------------------------
 	 *
@@ -576,14 +576,14 @@ jQuery.noConflict();
 
 	unicode['latin'] = [
 		'[A-Za-z0-9\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]'
-	];
+	]
 
 
 	unicode['punc'] = [
-		'[@&;=_\,\.\?\!\$\%\^\*\-\+\/]',
+		'[@&=_\,\.\?\!\$\%\^\*\-\+\/]',
 		'[\(\\[\'"<‘“]',
 		'[\)\\]\'">”’]'
-	];
+	]
 
 	unicode['hanzi'] = [
 		'[\u4E00-\u9FFF]',
@@ -592,21 +592,21 @@ jQuery.noConflict();
 		'\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]',
 		'\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
 		'[\u31C0-\u31E3]'
-	];
+	]
 
 	unicode['biaodian'] = [
 		'[·・︰、，。：；？！—ー⋯…．·／]',
 		'[「『（〔【《〈“‘]',
 		'[」』）〕】》〉’”]'
-	];
+	]
 
-	unicode['zhuyin'] = [];
-	unicode['zhuyin'][0] = '[\u3105-\u312D\u31A0-\u31BA]';
-	unicode['zhuyin']['shengmu'] = '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]';
-	unicode['zhuyin']['jieyin'] = '[\u3127-\u3129]';
-	unicode['zhuyin']['yunmu'] = '[\u311A-\u3126\u312D\u31A4-\u31B3\u31B8-\u31BA]';
-	unicode['zhuyin']['yunjiao'] = '[\u31B4-\u31B7]';
-	unicode['zhuyin']['diao'] = '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]';
+	unicode['zhuyin'] = []
+	unicode['zhuyin'][0] = '[\u3105-\u312D\u31A0-\u31BA]'
+	unicode['zhuyin']['shengmu'] = '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]'
+	unicode['zhuyin']['jieyin'] = '[\u3127-\u3129]'
+	unicode['zhuyin']['yunmu'] = '[\u311A-\u3126\u312D\u31A4-\u31B3\u31B8-\u31BA]'
+	unicode['zhuyin']['yunjiao'] = '[\u31B4-\u31B7]'
+	unicode['zhuyin']['diao'] = '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]'
 
 
 
@@ -614,15 +614,15 @@ jQuery.noConflict();
 
 	/* CSS3 property: `column-width` */
 	tests['columnwidth'] = function() {
-		var cw = $('<div style="display: none; column-width: 200px; -webkit-column-width: 200px;">tester</div>'),
+		var cw = $('<div style="display: none; column-width: 200px; -webkit-column-width: 200px">tester</div>'),
 
 			bool = ( /^200px$/.test( cw.css("-webkit-column-width") ) ||
 				/^200px$/.test( cw.css("-moz-column-width") ) ||
 				/^200px$/.test( cw.css("-ms-column-width") ) ||
-				/^200px$/.test( cw.css("column-width") ) ) ? true : false;
+				/^200px$/.test( cw.css("column-width") ) ) ? true : false
 
-		return bool;
-	};
+		return bool
+	}
 
 
    /* --------------------------------------------------------
@@ -632,168 +632,166 @@ jQuery.noConflict();
 	*/
 
 	tests['fontface'] = function() {
-		var bool;
+		var bool
 
-		inject_element_with_styles('@font-face {font-family:"font";src:url("https://")}', function( node, rule ) {
+		inject_element_with_styles('@font-face {font-family:"font"; src:url("https://")}', function( node, rule ) {
 		  var style = document.getElementById('han-support'),
 			  sheet = style.sheet || style.styleSheet,
-			  cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
+			  cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : ''
 
-		  bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
-		});
+		  bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0
+		})
 
-		return bool;
-	};
+		return bool
+	}
 			
 
 	tests['ruby'] = function() {
 		if ( rubies != null )
-			return rubies;
+			return rubies
 
 
 		var ruby = document.createElement('ruby'),
 			rt = document.createElement('rt'),
 			rp = document.createElement('rp'),
 			docElement = document.documentElement,
-			displayStyleProperty = 'display';
+			displayStyleProperty = 'display'
 
-		ruby.appendChild(rp);
-		ruby.appendChild(rt);
-		docElement.appendChild(ruby);
+		ruby.appendChild(rp)
+		ruby.appendChild(rt)
+		docElement.appendChild(ruby)
 
 		  // browsers that support <ruby> hide the <rp> via "display:none"
 		rubies = ( getStyle(rp, displayStyleProperty) == 'none' ||
 		  // but in IE browsers <rp> has "display:inline" so, the test needs other conditions:
 		  getStyle(ruby, displayStyleProperty) == 'ruby'
-		  && getStyle(rt, displayStyleProperty) == 'ruby-text' ) ? true : false;
+		  && getStyle(rt, displayStyleProperty) == 'ruby-text' ) ? true : false
 
 
-		docElement.removeChild(ruby);
+		docElement.removeChild(ruby)
 		// the removed child node still exists in memory, so ...
-		ruby = null;
-		rt = null;
-		rp = null;
+		ruby = null
+		rt = null
+		rp = null
 
-		return rubies;
+		return rubies
 
 
 		function getStyle( element, styleProperty ) {
-			var result;
+			var result
 
 			if ( window.getComputedStyle )	 // for non-IE browsers
-				result = document.defaultView.getComputedStyle(element,null).getPropertyValue(styleProperty);
+				result = document.defaultView.getComputedStyle(element,null).getPropertyValue(styleProperty)
 			else if ( element.currentStyle )   // for IE
-				result = element.currentStyle[styleProperty];
+				result = element.currentStyle[styleProperty]
 
-			return result;
+			return result
 		}
-	};
+	}
 
 
 	tests['textemphasis'] = function() {
-		var em = $('<span style="display: none; text-emphasis: dot; -moz-text-emphasis: dot; -ms-text-emphasis: dot; -webkit-text-emphasis: dot;">tester</span>'),
+		var em = $('<span style="display: none; text-emphasis: dot; -moz-text-emphasis: dot; -ms-text-emphasis: dot; -webkit-text-emphasis: dot">tester</span>'),
 
 			bool = ( /^dot$/.test( em.css("-webkit-text-emphasis-style") ) ||
 				/^dot$/.test( em.css("text-emphasis-style") ) ||
 				/^dot$/.test( em.css("-moz-text-emphasis-style") ) ||
-				/^dot$/.test( em.css("-ms-text-emphasis-style") ) ) ? true : false;
+				/^dot$/.test( em.css("-ms-text-emphasis-style") ) ) ? true : false
 
-		return bool;
-	};
+		return bool
+	}
 
 
 	tests['quotes'] = function() {
 		var q = $('<q style="display: none; quotes: \'“\' \'”\' \'‘\' \'’\'">tester</q>'),
 
-			bool = /^"“" "”" "‘" "’"$/.test( q.css("quotes") );
+			bool = /^"“" "”" "‘" "’"$/.test( q.css("quotes") )
 
-		return bool;
-	};
+		return bool
+	}
 
 
 	tests['writingmode'] = function() {
-		var wm = $('<div style="display: none; writing-mode: tb-rl; -moz-writing-mode: tb-rl; -ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl;">tester</div>'),
+		var wm = $('<div style="display: none; writing-mode: tb-rl; -moz-writing-mode: tb-rl; -ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl">tester</div>'),
 
 			bool = ( /^tb-rl$/.test( wm.css("writing-mode") ) ||
 				  /^vertical-rl$/.test( wm.css("-webkit-writing-mode") ) || 
 				/^tb-rl$/.test( wm.css("-moz-writing-mode") ) ||
-				/^tb-rl$/.test( wm.css("-ms-writing-mode") ) ) ? true: false;
+				/^tb-rl$/.test( wm.css("-ms-writing-mode") ) ) ? true: false
 
-		return bool;
-	};
-
-
+		return bool
+	}
 
 
 
 	$.fn.extend({
 		hanInit: function() {
-			return init(this);
+			return init(this)
 		},
 
 
 		bitouwei: function() {
 			return this.each(function(){
-				$(this).addClass( 'han-js-bitouwei-rendered' );
+				$(this).addClass( 'han-js-bitouwei-rendered' )
 
 				var tou = unicode['biaodian'][0] + unicode['biaodian'][2],
 					wei = unicode['biaodian'][1],
 					start = unicode['punc'][0] + unicode['punc'][2],
-					end = unicode['punc'][1];
+					end = unicode['punc'][1]
 
-				tou = tou.replace(/\]\[/g, '' );
-				start = start.replace(/\]\[/g, '' );
+				tou = tou.replace(/\]\[/g, '' )
+				start = start.replace(/\]\[/g, '' )
 
 
 				// CJK characters
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + wei + ')(' + unicode_set('hanzi') + ')(' + tou + ')/ig' ),
 					wrap: _span( 'bitouwei bitouweidian' )
-				});
+				})
 
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + unicode_set('hanzi') + ')(' + tou + ')/ig' ),
 					wrap: _span( 'bitouwei bitoudian' )
-				});
+				})
 
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + wei + ')(' + unicode_set('hanzi') + ')/ig' ),
 					wrap: _span( 'bitouwei biweidian' )
-				});
+				})
 
 
 				// Latin letters
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + end + ')(' + unicode_set('latin') + '+)(' + start + ')/ig' ),
 					wrap: _span( 'bitouwei bitouweidian' )
-				});
+				})
 
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + unicode_set('latin') + '+)(' + start + ')/ig' ),
 					wrap: _span( 'bitouwei bitoudian' )
-				});
+				})
 
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + end + ')(' + unicode_set('latin') + '+)/ig' ),
 					wrap: _span( 'bitouwei biweidian' )
-				});
-			});
+				})
+			})
 		},
 
 
 		charize: function( glyph, charClass, innerSpan ){
 			var glyph = glyph || {},
-			charClass = (charClass == true) ? true : false;
+			charClass = (charClass == true) ? true : false
 
 			glyph = {
 				cjk: glyph.cjk || 'individual',
 				bitouwei: (glyph.bitouwei == false) ? false : true,
 				latin: glyph.latin || 'group'
-			};
+			}
 
 			return this.each(function(){
 				if ( glyph.bitouwei )
-					$(this).bitouwei();
+					$(this).bitouwei()
 
 
 				// CJK characters
@@ -801,85 +799,85 @@ jQuery.noConflict();
 					findAndReplaceDOMText(this, {
 						find: eval( '/(' + unicode_set('hanzi') + ')/ig' ),
 						wrap: _span( 'char cjk' )
-					});
+					})
 
 
 				if ( glyph.cjk === 'individual' || glyph.cjk === 'biaodian' )
 					findAndReplaceDOMText(this, {
 						find: eval( '/(' + unicode_set('biaodian') + ')/ig' ),
 						wrap: _span( 'char cjk biaodian' )
-					});
+					})
 
 
 				if ( glyph.cjk === 'group' )
 					findAndReplaceDOMText(this, {
 						find: eval( '/(' + unicode_set('hanzi') + '+|' + unicode_set('biaodian') + '+)/ig' ),
 						wrap: _span( 'char cjk' )
-					});
+					})
 
 
 				var latin_regex = ( glyph.latin === 'group' ) ?
 					'/(' + unicode_set('latin') + '+)/ig' :
-					'/(' + unicode_set('latin') + ')/ig';
+					'/(' + unicode_set('latin') + ')/ig'
 
 				findAndReplaceDOMText(this, {
 					find: eval( latin_regex ),
 					wrap: _span( 'char latin' )
-				});
+				})
 
 
 				findAndReplaceDOMText(this, {
 					find: eval( '/(' + unicode_set('punc') + '+)/ig' ),
 					wrap: _span( 'char latin punc' )
-				});
+				})
 
 				findAndReplaceDOMText(this, {
 					find: /([\s]+)/ig,
 					wrap: _span( 'char space' )
-				});
+				})
 
 
 				if ( innerSpan )
 					$(this).find('.char').each(function(){
 						$(this).html(
 							$('<span>').text( $(this).text() )
-						);
-					});
+						)
+					})
 
 
 				if ( charClass ) 
-					$(this).addClass('han-js-charized');
-			});
+					$(this).addClass('han-js-charized')
+			})
 		}
-	});
+	})
 
 
 
 	// tests
 	for ( var feature in tests ) {
-		classes.push( ( tests[feature]() ? '' : 'no-' ) + feature );
+		classes.push( ( tests[feature]() ? '' : 'no-' ) + feature )
 
 		if ( !tester )
-			var tester = '';
+			var tester = ''
  
-		tester += '	' + feature + ': tests[\'' + feature + '\'](),\n';
+		tester += '	' + feature + ': tests[\'' + feature + '\'](),\n'
 	}
 
 	!function(window) {
 		eval("tester = ({\n" + tester.replace(/\n$/ig, 
-			'\nunicoderange: test_for_unicoderange, \nfont: test_for_fontface\n}') + ")");
-	}();
+			'\nunicoderange: test_for_unicoderange, \nfont: test_for_fontface\n}') + ")")
+	}()
 
 
 
-	han();
+	han()
 
 	window.han = {
 		unicode: unicode_set,
 		support: tester
 	}
 
-})(jQuery);
+})(jQuery)
 
 
 /**
@@ -1391,22 +1389,3 @@ window.findAndReplaceDOMText = (function() {
 	return exposed;
 
 }());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
