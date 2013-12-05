@@ -6,7 +6,7 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/04
+ * Last Modified: 2013/12/05
  *
  */
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
@@ -2077,8 +2077,13 @@ hruby {
    * 
    */
   /*
-   * 羅馬拼音
-   * Romanization
+   * 羅馬拼音或文字註記
+   * Romanization & annotations
+   * 
+   */
+  /*
+   * 複合式文字註記
+   * Complex annotations
    * 
    */
   /*
@@ -2115,16 +2120,16 @@ hruby {
     text-indent: -9999999px;
     height: 0;
     width: 0; }
-  hruby rb[romanization] {
+  hruby rb[annotation] {
     display: inline-block;
     position: relative;
     text-indent: 0; }
-    hruby rb[romanization]:before {
+    hruby rb[annotation]:before {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
       display: inline-block;
-      left: -50%;
+      left: -200%;
       position: absolute;
       top: -0.5em;
       vertical-align: middle;
@@ -2132,15 +2137,20 @@ hruby {
       -webkit-transform: scale(0.55);
       transform: scale(0.55);
       height: 1em;
-      width: 200%;
-      content: attr(romanization);
-      line-height: normal;
+      width: 500%;
+      content: attr(annotation);
+      line-height: 1.5;
       text-align: center;
       text-indent: 0; }
-  hruby[rightangle] rb[romanization]:before {
+  hruby[complex] rb[annotation][order="1"]:before {
+    top: -0.5em; }
+  hruby[complex] rb[annotation][order="2"]:before {
+    bottom: -0.25em;
+    top: auto; }
+  hruby[rightangle] rb[annotation]:before {
     bottom: -0.25em;
     top: auto;
-    margin-left: -0.45em;
+    margin-left: -0.3em;
     line-height: 1; }
   hruby[generic="sans-serif"] rb[yin]:before {
     font-family: "Zhuyin Heiti", sans-serif; }
@@ -2260,3 +2270,18 @@ hruby {
     hruby rb[zhuyin][diao^="ㆴ"]:after, hruby rb[zhuyin][diao^="ㆵ"]:after, hruby rb[zhuyin][diao^="ㆶ"]:after, hruby rb[zhuyin][diao^="ㆷ"]:after {
       margin-right: -0.15em;
       margin-top: 0.4em; } }
+.writingmode .zhipai hruby rb[annotation]:before {
+  bottom: auto;
+  left: -0.1em;
+  top: -200%;
+  height: 500%;
+  width: 1em; }
+.writingmode .zhipai hruby rb[zhuyin] {
+  width: 1.65em; }
+  .writingmode .zhipai hruby rb[zhuyin]:before, .writingmode .zhipai hruby rb[zhuyin][diao]:after {
+    top: -0.45em;
+    -webkit-writing-mode: horizontal-tb; }
+  .writingmode .zhipai hruby rb[zhuyin]:before {
+    right: 0.1em; }
+  .writingmode .zhipai hruby rb[zhuyin][diao]:after {
+    right: -0.45em; }
