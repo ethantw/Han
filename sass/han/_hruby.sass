@@ -44,12 +44,12 @@ hruby
 		width: 0
 
 	/** 
-	 * 羅馬拼音
-	 * Romanization
+	 * 羅馬拼音或文字註記
+	 * Romanization & annotations
 	 * 
 	 */
 
-	rb[romanization]
+	rb[annotation]
 		display: inline-block
 		position: relative
 		text-indent: 0
@@ -58,7 +58,7 @@ hruby
 			// posi
 			+borderbox
 			display: inline-block
-			left: -50%
+			left: -200%
 			position: absolute
 			top: -.5em
 			vertical-align: middle
@@ -66,15 +66,30 @@ hruby
 			// size
 			+scale(.55)
 			height: 1em
-			width: 200%
+			width: 500%
 
 			// typo
-			content: attr(romanization)
-			//font-size: .55em
-			line-height: normal
+			content: attr(annotation)
+			line-height: 1.5
 			text-align: center
 			text-indent: 0
-			//border: 1px red solid
+
+
+	/** 
+	 * 複合式文字註記
+	 * Complex annotations
+	 * 
+	 */
+
+	&[complex]
+		rb[annotation]
+			&[order="1"]:before
+				top: -.5em
+
+			&[order="2"]:before
+				bottom: -.25em
+				top: auto
+
 
 	/** 
 	 * 拼、注音直角共同顯示
@@ -84,11 +99,11 @@ hruby
 	 */
 
 	&[rightangle]
-		rb[romanization]:before
+		rb[annotation]:before
 			// posi
 			bottom: -.25em
 			top: auto
-			margin-left: -.45em
+			margin-left: -.3em
 
 			// typo
 			line-height: 1
@@ -216,7 +231,7 @@ hruby
 
 // For Retina Display
 @import 'hruby/retina'
-
+@import 'hruby/zhipai'
 
 
 

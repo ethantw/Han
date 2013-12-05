@@ -1,4 +1,5 @@
 
+
 /* 
  * 漢字標準格式 v2.2.1-alpha
  * ---
@@ -7,15 +8,13 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/4
+ * Last Modified: 2013/12/5
  *
  */
 
-;jQuery.noConflict()
-
+;jQuery.noConflict
 
 ;(function($){
-
 	var version = '2.2.1-alpha',
 
 	tests = [],
@@ -79,20 +78,23 @@
 		// 語義類別簡化
 		$(range).find('ruby, rtc').filter('.pinyin').addClass('romanization')
 		$(range).find('ruby, rtc').filter('.mps').addClass('zhuyin')
-
+		$(range).find('ruby, rtc').filter('.romanization').addClass('annotation')
 
 		$(range).find('ruby').each(function() {
-			var html = $(this).html()
+			var html = $(this).html(),
+				hruby = document.createElement('hruby')
 
 			// 羅馬拼音（在不支援`<ruby>`的瀏覽器下）
 			if ( !tests['ruby']() && 
-				 $(this).hasClass('romanization') ) {
+				 !$(this).hasClass('complex') &&
+				 !$(this).hasClass('zhuyin') &&
+				 !$(this).hasClass('rightangle') ) {
 
 				// 將拼音轉為元素屬性以便CSS產生偽類
 				$(this)
 				.find('rt')
 				.each(function(){
-					var ro = $(this).html(),
+					var anno = $(this).html(),
 						prev = this.previousSibling,
 						text = prev.nodeValue
 
@@ -101,21 +103,21 @@
 					$(prev).before(
 						 $('<rb/>')
 						.html( text )
-						.attr('romanization', ro)
-						.replaceWith('<copy/>')
+						.attr('annotation', anno)
+						.replaceWith(_copy)
 					)
 
 					$(this).replaceWith(
-						$('<copy/>').html(ro)
+						_copy().html(anno)
 					)
 				})
 
 				$(this)
 				.replaceWith(
-					$('<h-ruby/>')
+					$(hruby)
 					.html( $(this).html() )
 				)
-			
+
 			} else {
 				var attr = {}
 
@@ -127,73 +129,43 @@
 						_apply_zhuyin(this)
 					})
 
+				// 雙行文字註記
+				} else if ( $(this).hasClass('complex') ) {
+					attr.complex = 'complex'
+
+					_apply_annotation(this)
+					
+
 				// 拼音、注音直角顯示
 				} else if ( $(this).hasClass('rightangle') ) {
 					attr.rightangle = 'rightangle'
 
-					$(this).find('rtc')
+
+					// 國語注音、台灣方言音符號
+					$(this).find('rtc.zhuyin')
 					.hide()
 					.each(function(){
 						var t = $(this).prevAll('rbc'),
 							c, len, data
-
-						// 羅馬拼音
-						if ( $(this).hasClass('romanization') ) {
-							c = 0,
-							len = $(this).find('rt').length,
-							data = []
-
-							$(this).find('rt')
-							.each(function(h){
-								var ro = $(this).html(),
-									rbs = $(this).attr('rbspan') || 1,
-									i = c
-
-								c += Number(rbs)
-
-								data[h] = {
-									'romanization': ro
-								}
-
-								for ( var j=i; j<c; j++ ) {
-									t.find('rb').eq(j).attr('ro-set', h)
-								}
-							})
-
-							t.each(function(){
-								for ( var k=0; k<len; k++ ) {
-									$('rb')
-									.filter('[ro-set='+ k +']')
-									.removeAttr('ro-set')
-									.wrapAll(
-										$('<rb/>')
-										.attr( data[k] )
-									).parent('[romanization]').append(
-										$('<copy/>').html(data[k].romanization)
-									)
-								}
-							})
-
-
-						// 注音符號
-						} else if ( $(this).hasClass('zhuyin') )
-							$(this).find('rt')
-							.each(function(i){
-								var rb = t.find('rb').eq(i)
-
-								_apply_zhuyin(this, rb)
-							})
-
-						t.find('rb').after(' ')
+						
+						$(this).find('rt')
+						.each(function(i){
+							var rb = t.find('rb:not([annotation])').eq(i)
+							_apply_zhuyin(this, rb)
+						})
 					})
+
+					// 羅馬拼音或文字註記
+					_apply_annotation(this)
 				}
 
-				// 以`<span>`元素替代`<ruby>`，避免UA原生樣式的干擾
+				// 以`<hruby>`元素替代`<ruby>`，避免UA原生樣式的干擾
 				$(this).filter(function(){
 					return $(this).hasClass("zhuyin") ||
+						   $(this).hasClass("complex") ||
 						   $(this).hasClass("rightangle")
 				}).replaceWith(
-					$('<h-ruby/>')
+					$(hruby)
 					.html( $(this).html() )
 					.attr('generic', _get_zhuyin_font(this))
 					.attr(attr)
@@ -238,10 +210,10 @@
 
 			   this.normalize()
 
-				$('* > span.hanla:first-child').parent().each(function(){
+				$('* > hanla:first-child').parent().each(function(){
 					if ( this.firstChild.nodeType == 1 ) {
-						$(this).before( $('<span class="hanla"></span>') )
-						$(this).find('span.hanla:first-child').remove()
+						$(this).before( $('<hanla/>') )
+						$(this).find('hanla:first-child').remove()
 					}
 				})
 			})
@@ -323,6 +295,78 @@
 	},
 
 
+	_copy = function() {
+		return $(document.createElement('copy'))
+	},
+
+
+	_apply_annotation = function( node ) {
+		$(node).find('rbc').find('rb')
+		.each(function(i){
+			$(this).attr('index', i)
+		})
+
+		$(node).find('rtc:not(.zhuyin)')
+		.hide()
+		.each(function(t){
+			var c = 0,
+				rtc = $(this),
+				rbc = $(this).prevAll('rbc'),
+				len = $(this).find('rt').length,
+				data = []
+
+			$(this).find('rt')
+			.each(function(h){
+				var anno 	= $(this).html(),
+					rbspan 	= $(this).attr('rbspan') || 1,
+					i		= c
+
+				c += Number(rbspan)
+
+				data[h] = {
+					'annotation': anno,
+					'order': (t==0) ? '1' : '2'
+				}
+
+				for ( var j=i; j<c; j++ ) {
+					rbc.find('rb[index]')
+					.eq(j).attr({ 'set': h })
+				}
+			})
+
+			rbc.find('rb[annotation]')
+			.each(function(){
+				var rb = $(this).find('rb[index]'),
+					first = rb.filter(':first-child').attr('set'),
+					last = rb.filter(':last-child').attr('set')
+
+				if ( first === last ) {
+					rb.removeAttr('set')
+					$(this).attr('set', first)
+				}
+			})
+
+			for ( var k=0; k<len; k++ ) {
+				rbc
+				.find('rb[set='+ k +']')
+				.wrapAll(
+					$('<rb/>')
+					.attr( data[k] )
+				)
+			}
+		})
+
+		$(node).find('rb')
+		.after(' ')
+		.removeAttr('set index')
+		.filter('rb[annotation]')
+		.each(function(){
+			var t = $(this).attr('annotation')
+			$(this).after( _copy().html( t ) )
+		})
+	},
+
+
 	_get_zhuyin_font = function( node ) {
 		var reg = /(sans-serif|monospace)$/,
 			generic = $(node).css('font-family'),
@@ -353,20 +397,20 @@
 			.replace(eval('/(' + tone + ')/g'), '')
 			.replace(eval('/(' + yj + '̍)/g'), '')
 
-		diao = 	( zy.match(/(\u02D9)/) ) ? '\u02D9' : 
-				( zy.match(/(\u02CA)/) ) ? '\u02CA' : 
-				( zy.match(/([\u02C5\u02C7])/) ) ? '\u02C7' :
-				( zy.match(/(\u02CB)/) ) ? '\u02CB' : 
-				( zy.match(/(\u02EA)/) ) ? '\u02EA' : 
-				( zy.match(/(\u02EB)/) ) ? '\u02EB' : 
-				( zy.match(/(\u31B4̍)/) ) ? '\u31B4̍' : 
-				( zy.match(/(\u31B5̍)/) ) ? '\u31B5̍' :
-				( zy.match(/(\u31B6̍)/) ) ? '\u31B6̍' :
-				( zy.match(/(\u31B7̍)/) ) ? '\u31B7̍' :
-				( zy.match(/(\u31B4)/) ) ? '\u31B4' : 
-				( zy.match(/(\u31B5)/) ) ? '\u31B5' :
-				( zy.match(/(\u31B6)/) ) ? '\u31B6' :
-				( zy.match(/(\u31B7)/) ) ? '\u31B7' : ''
+		diao = 	( zy.match(/(\u02D9)/) ) 			? '\u02D9' : 
+				( zy.match(/(\u02CA)/) ) 			? '\u02CA' : 
+				( zy.match(/([\u02C5\u02C7])/) ) 	? '\u02C7' :
+				( zy.match(/(\u02CB)/) ) 			? '\u02CB' : 
+				( zy.match(/(\u02EA)/) ) 			? '\u02EA' : 
+				( zy.match(/(\u02EB)/) ) 			? '\u02EB' : 
+				( zy.match(/(\u31B4̍)/) ) 			? '\u31B4̍' : 
+				( zy.match(/(\u31B5̍)/) ) 			? '\u31B5̍' :
+				( zy.match(/(\u31B6̍)/) ) 			? '\u31B6̍' :
+				( zy.match(/(\u31B7̍)/) ) 			? '\u31B7̍' :
+				( zy.match(/(\u31B4)/) ) 			? '\u31B4' : 
+				( zy.match(/(\u31B5)/) ) 			? '\u31B5' :
+				( zy.match(/(\u31B6)/) ) 			? '\u31B6' :
+				( zy.match(/(\u31B7)/) ) 			? '\u31B7' : ''
 
 		data = {
 			'zhuyin': zy,
@@ -379,7 +423,7 @@
 		if ( rb )
 			rb
 			.attr(data)
-			.append( $('<copy>').html( zy ) )
+			.append( _copy().html( zy ) )
 		else {
 			prev = node.previousSibling
 			text = prev.nodeValue.split('')
@@ -394,7 +438,7 @@
 			)
 			.after( ' ' )
 			//.replaceWith( '' )
-			.replaceWith( $('<copy>').html( zy ) )
+			.replaceWith( _copy().html( zy ) )
 		}
 	},
 
@@ -482,7 +526,6 @@
 				test = write_on_canvas( zi, test ),
 				support
 
-
 			for (var j=1; j<=20; j++) {
 				for (var i=1; i<=50; i++) {
 					var sansData = sans.getImageData(i, j, 1, 1).data,
@@ -493,24 +536,17 @@
 					alpha['sans'] = sansData[3]
 					alpha['test'] = testData[3]
 
-
 					if ( support !== 'undefined' && alpha['test'] != alpha['sans'] )
 						support = true
-
 					else if ( support )
 						break
-
-					if ( i == 20 && j == 20 )
-						if ( !support )
-							support = false
+					if ( i == 20 && j == 20 && !support )
+						support = false
 				}
 			}
 
-
 			$('canvas.han_support_tests').remove()
-
 			return support
-
 		} catch ( err ) {
 			return false
 		}
@@ -522,8 +558,10 @@
 	}
 
 
-	/* --------------------------------------------------------
-	 * Unicode區域說明（6.2.0）
+	/**
+	 * --------------------------------------------------------
+	 * Unicode區段說明（6.2.0）
+	 * Unicode blocks
 	 * --------------------------------------------------------
 	 * 或參考：
 	 * http://css.hanzi.co/manual/api/javascript_jiekou-han.unicode
@@ -571,13 +609,11 @@
 	 * 國語五聲調（三聲有二種符號）：[\u02D9\u02CA\u02C5\u02C7\u02CB]
 	 * 台灣漢語方言音擴充聲調：[\u02EA\u02EB]
 	 *
-	 *
 	 */
 
 	unicode['latin'] = [
 		'[A-Za-z0-9\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]'
 	]
-
 
 	unicode['punc'] = [
 		'[@&=_\,\.\?\!\$\%\^\*\-\+\/]',
@@ -610,7 +646,10 @@
 
 
 
-	/* tests for HTML5/CSS3 features */
+	/**
+	 * tests for HTML5/CSS3 features
+	 *
+	 */
 
 	/* CSS3 property: `column-width` */
 	tests['columnwidth'] = function() {
@@ -852,7 +891,6 @@
 	})
 
 
-
 	// tests
 	for ( var feature in tests ) {
 		classes.push( ( tests[feature]() ? '' : 'no-' ) + feature )
@@ -889,7 +927,7 @@
  * and replaces each match (or node-separated portions of the match)
  * in the specified element.
  */
-window.findAndReplaceDOMText = (function() {
+;window.findAndReplaceDOMText = (function() {
 
 	var PORTION_MODE_RETAIN = 'retain';
 	var PORTION_MODE_FIRST = 'first';
@@ -1389,3 +1427,4 @@ window.findAndReplaceDOMText = (function() {
 	return exposed;
 
 }());
+
