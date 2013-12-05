@@ -1,7 +1,7 @@
 
 
 /* 
- * 漢字標準格式 v2.2.1-alpha
+ * 漢字標準格式 v2.2.1
  * ---
  * Hanzi-optimised CSS Mode
  *
@@ -15,7 +15,7 @@
 ;jQuery.noConflict
 
 ;(function($){
-	var version = '2.2.1-alpha',
+	var version = '2.2.1',
 
 	tests = [],
 	rubies,
@@ -754,9 +754,9 @@
 		var wm = $('<div style="display: none; writing-mode: tb-rl; -moz-writing-mode: tb-rl; -ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl">tester</div>'),
 
 			bool = ( /^tb-rl$/.test( wm.css("writing-mode") ) ||
-				  /^vertical-rl$/.test( wm.css("-webkit-writing-mode") ) || 
-				/^tb-rl$/.test( wm.css("-moz-writing-mode") ) ||
-				/^tb-rl$/.test( wm.css("-ms-writing-mode") ) ) ? true: false
+					 /^vertical-rl$/.test( wm.css("-webkit-writing-mode") ) || 
+					 /^tb-rl$/.test( wm.css("-moz-writing-mode") ) ||
+					 /^tb-rl$/.test( wm.css("-ms-writing-mode") ) ) ? true: false
 
 		return bool
 	}
