@@ -2,6 +2,17 @@
 更新紀錄　CHANGELOG
 ===
 
+2.2.1（2013-12-05）
+---
+1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（issue #5）
+
+2. 漢拉間隙改用自訂元素`<hanla>`，避免元素樣式繼承衝突（issue #30）
+
+〔更多資訊〕   
+[https://github.com/ethantw/Han/issues?milestone=5&state=closed]
+
+
+
 2.2.0（2013-11－27）
 ---
 1. 修正四大字體集與地區分支，並新增相關`@mixin`供開發者選用（issue #17）
@@ -24,7 +35,7 @@
 
 
 〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]()
+[https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]
 
 
 
@@ -45,7 +56,7 @@
 
 
 〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]()
+[https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]
 
 
 
@@ -65,7 +76,7 @@
 
 
 〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]()
+[https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]
 
 
 
