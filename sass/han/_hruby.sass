@@ -1,0 +1,261 @@
+
+
+/* 
+ * `<hruby>`
+ *
+ */
+
+hruby
+	display: inline
+
+
+	/** 
+	 * 實驗性註記元素（底線）
+	 * Laboratory annotations
+	 * 
+	 */
+
+	u.han-js-charized &,
+	u.han-js-charized
+		border-bottom: 1px solid
+		padding-bottom: .125em
+
+		span.char span
+			border-bottom: 0 none !important
+
+	u.han-js-charized + u
+		margin-left: .125em
+
+	/** 
+	 * 隱藏的`<copy>`元素，利於複製貼上
+	 * Hidden `<copy>` elements,
+	 * in order to copy and paste
+	 * 
+	 */
+
+	copy
+		// posi
+		display: inline-block
+		opacity: 0
+		text-indent: -9999999px
+
+		// size
+		height: 0
+		width: 0
+
+	/** 
+	 * 羅馬拼音或文字註記
+	 * Romanization & annotations
+	 * 
+	 */
+
+	rb[annotation]
+		display: inline-block
+		position: relative
+		text-indent: 0
+
+		&:before
+			// posi
+			+borderbox
+			display: inline-block
+			left: -200%
+			position: absolute
+			top: -.5em
+			vertical-align: middle
+
+			// size
+			+scale(.55)
+			height: 1em
+			width: 500%
+
+			// typo
+			content: attr(annotation)
+			line-height: 1.5
+			text-align: center
+			text-indent: 0
+
+
+	/** 
+	 * 複合式文字註記
+	 * Complex annotations
+	 * 
+	 */
+
+	&[complex]
+		rb[annotation]
+			&[order="1"]:before
+				top: -.5em
+
+			&[order="2"]:before
+				bottom: -.25em
+				top: auto
+
+
+	/** 
+	 * 拼、注音直角共同顯示
+	 * Right-angle
+	 * Romanization & Zhuyin
+	 * 
+	 */
+
+	&[rightangle]
+		rb[annotation]:before
+			// posi
+			bottom: -.25em
+			top: auto
+			margin-left: -.3em
+
+			// typo
+			line-height: 1
+
+
+	/** 
+	 * 國語注音、台灣方言音符號
+	 * Zhuyin
+	 * 
+	 */
+
+	/* 依通用字體集選用注音字體
+	   Define Zhuyin font according to
+	   its parental generic family */
+
+	&[generic] 
+		rb[yin]:after
+			//// 非入聲韻調號強制使用「Zhuyin Kaiti」以利定位
+			font-family: 'Zhuyin Kaiti', cursive, serif
+
+	&[generic="sans-serif"]
+		rb[yin]:before, 
+		rb[diao^="ㆴ"]:after,
+		rb[diao^="ㆵ"]:after,
+		rb[diao^="ㆶ"]:after,
+		rb[diao^="ㆷ"]:after
+			font-family: 'Zhuyin Heiti', sans-serif
+
+	&[generic="serif"] rb[yin]:before 
+		font-family: 'Zhuyin Kaiti', cursive, serif
+
+
+	/* 注音及方言音符號
+	   Zhuyin
+	   ***
+	   a. 偽類`:before`為「注音符」
+	   b. 偽類`:after`為「音調」 */
+
+	rb[zhuyin]
+		// posi
+		display: inline-block
+		position: relative
+		text-indent: 0
+
+		// size
+		width: 1.65em
+
+		&:before,
+		&[diao]:after
+			// posi
+			+borderbox
+			display: inline-block
+			position: absolute
+			right: 0
+			top: 0
+
+			// size
+			+scale(.55)
+			height: 2.7em
+			width: .8em
+
+			// typo
+			+reset-typo
+
+		// 音符
+		&:before
+			content: attr(yin)
+			line-height: .9
+			white-space: pre-wrap
+			word-break: break-all
+
+		// 調號
+		&[diao]:after
+			// posi
+			right: -.6em
+
+			// size
+			width: 1em
+
+			// typo
+			content: attr(diao)
+
+
+		/*
+		 * 依注音字符數量為「注音」及「調號」定位
+		 */
+
+		&[length="1"]
+			&:before
+				margin-top: .25em
+			&:after
+				margin-top: -.35em
+		&[length="2"]
+			&:before
+				margin-top: -.15em
+			&:after
+				margin-top: .125em
+		&[length="3"]
+			&:before
+				margin-top: -.4em
+			&:after
+				margin-top: .25em
+
+
+		// 親聲
+		&[diao="˙"]
+			&:after
+				right: -.275em
+
+			&[length="1"]:after
+				margin-top: 0
+			&[length="2"]:after
+				margin-top: -.25em
+			&[length="3"]:after
+				margin-top: -.55em
+
+		// 陰去、陽去
+		&[diao="˪"],
+		&[diao="˫"]
+			&:after
+				+scale(.6)
+				margin-right: -.15em
+
+		// 陰入、陽入
+		&[diao^="ㆴ"],
+		&[diao^="ㆵ"],
+		&[diao^="ㆶ"],
+		&[diao^="ㆷ"]
+			&:after
+				margin-right: -.2em
+				margin-top: .55em
+
+
+// For Retina Display
+@import 'hruby/retina'
+@import 'hruby/zhipai'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

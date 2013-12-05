@@ -2,4 +2,5 @@
 manual/
 config.rb
 *.scssc
+
 sass/_semantics.sass
