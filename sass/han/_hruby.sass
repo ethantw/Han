@@ -119,8 +119,18 @@ hruby
 	   Define Zhuyin font according to
 	   its parental generic family */
 
-	&[generic="sans-serif"] rb[yin]:before 
-		font-family: 'Zhuyin Heiti', sans-serif
+	&[generic] 
+		rb[yin]:after
+			//// 非入聲韻調號強制使用「Zhuyin Kaiti」以利定位
+			font-family: 'Zhuyin Kaiti', cursive, serif
+
+	&[generic="sans-serif"]
+		rb[yin]:before, 
+		rb[diao^="ㆴ"]:after,
+		rb[diao^="ㆵ"]:after,
+		rb[diao^="ㆶ"]:after,
+		rb[diao^="ㆷ"]:after
+			font-family: 'Zhuyin Heiti', sans-serif
 
 	&[generic="serif"] rb[yin]:before 
 		font-family: 'Zhuyin Kaiti', cursive, serif
@@ -175,8 +185,6 @@ hruby
 
 			// typo
 			content: attr(diao)
-			//// 調號強制使用「Zhuyin Kaiti」以利定位
-			font-family: 'Zhuyin Kaiti', cursive, serif !important
 
 
 		/*
@@ -232,6 +240,7 @@ hruby
 // For Retina Display
 @import 'hruby/retina'
 @import 'hruby/zhipai'
+
 
 
 

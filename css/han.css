@@ -2152,7 +2152,13 @@ hruby {
     top: auto;
     margin-left: -0.3em;
     line-height: 1; }
-  hruby[generic="sans-serif"] rb[yin]:before {
+  hruby[generic] rb[yin]:after {
+    font-family: "Zhuyin Kaiti", cursive, serif; }
+  hruby[generic="sans-serif"] rb[yin]:before,
+  hruby[generic="sans-serif"] rb[diao^="ㆴ"]:after,
+  hruby[generic="sans-serif"] rb[diao^="ㆵ"]:after,
+  hruby[generic="sans-serif"] rb[diao^="ㆶ"]:after,
+  hruby[generic="sans-serif"] rb[diao^="ㆷ"]:after {
     font-family: "Zhuyin Heiti", sans-serif; }
   hruby[generic="serif"] rb[yin]:before {
     font-family: "Zhuyin Kaiti", cursive, serif; }
@@ -2195,8 +2201,7 @@ hruby {
     hruby rb[zhuyin][diao]:after {
       right: -0.6em;
       width: 1em;
-      content: attr(diao);
-      font-family: "Zhuyin Kaiti", cursive, serif !important; }
+      content: attr(diao); }
     hruby rb[zhuyin][length="1"]:before {
       margin-top: 0.25em; }
     hruby rb[zhuyin][length="1"]:after {
