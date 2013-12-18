@@ -2,6 +2,16 @@
 更新紀錄　CHANGELOG
 ===
 
+2.2.2（2013-12-18）
+---
+1. WebKit已經支援了CSS3的`quotes`屬性，故取消其支援偵測及瀏覽器hack。（issue #33）
+
+2. 修正註記元素`<u>`的改寫問題（issue #35）
+
+
+
+* * *
+
 2.2.1（2013-12-05）
 ---
 1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（issue #5）
@@ -12,6 +22,8 @@
 [https://github.com/ethantw/Han/issues?milestone=5&state=closed]
 
 
+
+* * *
 
 2.2.0（2013-11－27）
 ---
