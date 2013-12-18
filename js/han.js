@@ -231,23 +231,14 @@
 			$(range).find('u').charize('', true, true)
 		else
 			$(range).find('u').each(function(){
-				var next = this.nextSibling
+				_adjacent(this.nextSibling)
 
-				_ignore(next)
-				_adj(next)
+				function _adjacent( next ) {
+					$(next).filter('u').addClass('adjacent')
 
-
-				function _adj( next ) {
-					if ( next.nodeName === "U" )
-						$(next).addClass('adjacent')
-				}
-
-				function _ignore( next ) {
-					if ( next.nodeName === "WBR" || next.nodeType == 8 ) {
-						var next = next.nextSibling
-						_ignore(next)
-						_adj(next)
-					}
+					if ( next != null )
+						if ( next.nodeName === "WBR" || next.nodeType == 8 )
+							_adjacent(next.nextSibling)
 				}
 			})
 
