@@ -568,57 +568,6 @@ q {
 	&:after {
 		content: close-quote;
 	}
-
-
-	// Browsers which doesn't support
-	// `quote` attribution. (i.e., WebKit)
-	.no-quotes &:lang(zh):before,
-	.no-quotes &:lang(ja):before {
-		content: '「';
-	}
-
-	.no-quotes &:lang(zh):after,
-	.no-quotes &:lang(ja):after {
-		content: '」';
-	}
-
-	.no-quotes &.double:lang(zh):before,
-	.no-quotes &.double:lang(ja):before {
-		content: '『';
-	}
-
-	.no-quotes &.double:lang(zh):after,
-	.no-quotes &.double:lang(ja):after {
-		content: '』';
-	}
-
-	.no-quotes &:lang(zh-CN):before,
-	.no-quotes &:lang(zh-Hans):before,
-	.no-quotes &:lang(en):before,
-	.no-quotes &.double:lang(en-GB):before {
-		content: '“';
-	}
-
-	.no-quotes &:lang(zh-CN):after,
-	.no-quotes &:lang(zh-Hans):after,
-	.no-quotes &:lang(en):after,
-	.no-quotes &.double:lang(en-GB):after {
-		content: '”';
-	}
-
-	.no-quotes &.double:lang(zh-CN):before,
-	.no-quotes &.double:lang(zh-Hans):before,
-	.no-quotes &.double:lang(en):before,
-	.no-quotes &:lang(en-GB):before {
-		content: '‘';
-	}
-
-	.no-quotes &.double:lang(zh-CN):after,
-	.no-quotes &.double:lang(zh-Hans):after,
-	.no-quotes &.double:lang(en):after,
-	.no-quotes &:lang(en-GB):after {
-		content: '’';
-	}
 }
 
 

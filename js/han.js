@@ -8,14 +8,14 @@
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/5
+ * Last Modified: 2013/12/18
  *
  */
 
 ;jQuery.noConflict
 
 ;(function($){
-	var version = '2.2.1',
+	var version = '2.2.2',
 
 	tests = [],
 	rubies,
@@ -262,19 +262,6 @@
 		$(range).find('em').charize({
 			latin: ( tests['textemphasis']() ) ? 'none' : 'individual'
 		})
-
-
-		/* 修正引言元素`<q>`不為WebKit引擎支援的問題
-		 * ---
-		 * punctuation: Quote issue on `<q>` element (WebKit)
-		 *
-		 */
-
-		if ( !tests['quotes']() )
-			$(range).find('q q').each(function() {
-				if ( $(this).parents('q').length%2 != 0 )
-					$(this).addClass('double')
-			})
 	},
 
 
@@ -736,15 +723,6 @@
 				/^dot$/.test( em.css("text-emphasis-style") ) ||
 				/^dot$/.test( em.css("-moz-text-emphasis-style") ) ||
 				/^dot$/.test( em.css("-ms-text-emphasis-style") ) ) ? true : false
-
-		return bool
-	}
-
-
-	tests['quotes'] = function() {
-		var q = $('<q style="display: none; quotes: \'“\' \'”\' \'‘\' \'’\'">tester</q>'),
-
-			bool = /^"“" "”" "‘" "’"$/.test( q.css("quotes") )
 
 		return bool
 	}
