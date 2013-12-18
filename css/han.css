@@ -1,12 +1,12 @@
 @charset "UTF-8";
-/* 漢字標準格式 v2.2.1
+/* 漢字標準格式 v2.2.2
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/05
+ * Last Modified: 2013/12/18
  *
  */
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
@@ -1649,22 +1649,6 @@ q {
     content: open-quote; }
   q:after {
     content: close-quote; }
-  .no-quotes q:lang(zh):before, .no-quotes q:lang(ja):before {
-    content: '「'; }
-  .no-quotes q:lang(zh):after, .no-quotes q:lang(ja):after {
-    content: '」'; }
-  .no-quotes q.double:lang(zh):before, .no-quotes q.double:lang(ja):before {
-    content: '『'; }
-  .no-quotes q.double:lang(zh):after, .no-quotes q.double:lang(ja):after {
-    content: '』'; }
-  .no-quotes q:lang(zh-CN):before, .no-quotes q:lang(zh-Hans):before, .no-quotes q:lang(en):before, .no-quotes q.double:lang(en-GB):before {
-    content: '“'; }
-  .no-quotes q:lang(zh-CN):after, .no-quotes q:lang(zh-Hans):after, .no-quotes q:lang(en):after, .no-quotes q.double:lang(en-GB):after {
-    content: '”'; }
-  .no-quotes q.double:lang(zh-CN):before, .no-quotes q.double:lang(zh-Hans):before, .no-quotes q.double:lang(en):before, .no-quotes q:lang(en-GB):before {
-    content: '‘'; }
-  .no-quotes q.double:lang(zh-CN):after, .no-quotes q.double:lang(zh-Hans):after, .no-quotes q.double:lang(en):after, .no-quotes q:lang(en-GB):after {
-    content: '’'; }
 
 /* 區塊引用
    Block quotes
