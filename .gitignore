@@ -1,6 +1,8 @@
 .DS_Store
-manual/
+Makefile
 config.rb
 *.scssc
 
-sass/_semantics.sass
+_cores
+_public
+manual
