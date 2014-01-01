@@ -1,6 +1,5 @@
 
-
-/* 
+/*! 
  * 漢字標準格式 v2.2.3
  * ---
  * Hanzi-optimised CSS Mode
