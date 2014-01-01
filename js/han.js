@@ -15,7 +15,7 @@
 ;jQuery.noConflict
 
 ;(function($){
-	var version = '2.2.2',
+	var version = '2.2.3',
 
 	tests = [],
 	rubies,
@@ -231,15 +231,12 @@
 			$(range).find('u').charize('', true, true)
 		else
 			$(range).find('u').each(function(){
-				_adjacent(this.nextSibling)
+				var next = this.nextSibling
 
-				function _adjacent( next ) {
-					$(next).filter('u').addClass('adjacent')
+				while ( next != null && ( next.nodeName === "WBR" || next.nodeType == 8 ))
+					next = next.nextSibling
 
-					if ( next != null )
-						if ( next.nodeName === "WBR" || next.nodeType == 8 )
-							_adjacent(next.nextSibling)
-				}
+				$(next).filter('u').addClass('adjacent')
 			})
 
 
