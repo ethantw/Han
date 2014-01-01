@@ -1,14 +1,14 @@
 
 
 /* 
- * 漢字標準格式 v2.2.1
+ * 漢字標準格式 v2.2.3
  * ---
  * Hanzi-optimised CSS Mode
  *
  *
  *
  * Lisence: MIT Lisence
- * Last Modified: 2013/12/18
+ * Last Modified: 2014/1/1
  *
  */
 
@@ -369,26 +369,26 @@
 		form += ( zy.match(eval('/(' + jy + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'jieyin' : ''
 		form += ( zy.match(eval('/(' + ym + ')/')) ) ? (( form !== '' ) ? '-' : '') + 'yunmu' : ''
 
-		length = form.split('-').length
-
 		yin = zy
 			.replace(eval('/(' + tone + ')/g'), '')
 			.replace(eval('/(' + yj + '̍)/g'), '')
 
-		diao = 	( zy.match(/(\u02D9)/) ) 			? '\u02D9' : 
-				( zy.match(/(\u02CA)/) ) 			? '\u02CA' : 
-				( zy.match(/([\u02C5\u02C7])/) ) 	? '\u02C7' :
-				( zy.match(/(\u02CB)/) ) 			? '\u02CB' : 
-				( zy.match(/(\u02EA)/) ) 			? '\u02EA' : 
-				( zy.match(/(\u02EB)/) ) 			? '\u02EB' : 
-				( zy.match(/(\u31B4̍)/) ) 			? '\u31B4̍' : 
-				( zy.match(/(\u31B5̍)/) ) 			? '\u31B5̍' :
-				( zy.match(/(\u31B6̍)/) ) 			? '\u31B6̍' :
-				( zy.match(/(\u31B7̍)/) ) 			? '\u31B7̍' :
-				( zy.match(/(\u31B4)/) ) 			? '\u31B4' : 
-				( zy.match(/(\u31B5)/) ) 			? '\u31B5' :
-				( zy.match(/(\u31B6)/) ) 			? '\u31B6' :
-				( zy.match(/(\u31B7)/) ) 			? '\u31B7' : ''
+		length = (yin) ? yin.length : 0
+
+		diao = 	( zy.match(/(\u02D9)/) ) 					? '\u02D9' : 
+				( zy.match(/(\u02CA)/) ) 					? '\u02CA' : 
+				( zy.match(/([\u02C5\u02C7])/) ) 			? '\u02C7' :
+				( zy.match(/(\u02CB)/) ) 					? '\u02CB' : 
+				( zy.match(/(\u02EA)/) ) 					? '\u02EA' : 
+				( zy.match(/(\u02EB)/) ) 					? '\u02EB' : 
+				( zy.match(/(\u31B4[\u0358\u030d])/) ) 		? '\u31B4\u0358' : 
+				( zy.match(/(\u31B5[\u0358\u030d])/) ) 		? '\u31B5\u0358' :
+				( zy.match(/(\u31B6[\u0358\u030d])/) ) 		? '\u31B6\u0358' :
+				( zy.match(/(\u31B7[\u0358\u030d])/) ) 		? '\u31B7\u0358' :
+				( zy.match(/(\u31B4)/) ) 					? '\u31B4' : 
+				( zy.match(/(\u31B5)/) ) 					? '\u31B5' :
+				( zy.match(/(\u31B6)/) ) 					? '\u31B6' :
+				( zy.match(/(\u31B7)/) ) 					? '\u31B7' : ''
 
 		data = {
 			'zhuyin': zy,
