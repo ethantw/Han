@@ -4,106 +4,75 @@
 
 v2.2.3（2014-1-1）
 ---
-1. 改用相對路徑呼叫注音字體（issue #37）
-
-2. 改進方言音符號的陽入韻顯示方式
-
+1. 改用相對路徑呼叫注音字體（#37）
+2. 改進方言音符號的陽入韻顯示方式，`zhuyin.ttf`加入陽入韻連字（ligature）
+3. 改進相鄰註記元素的JS改寫
 
 
 * * *
-
 v2.2.2（2013-12-18）
 ---
-1. WebKit已經支援了CSS3的`quotes`屬性，故取消其支援偵測及瀏覽器hack。（issue #33）
-
-2. 修正註記元素`<u>`的改寫問題（issue #35）
-
+1. WebKit已經支援了CSS3的`quotes`屬性，故取消其支援偵測及瀏覽器hack。（#33）
+2. 修正註記元素`<u>`的改寫問題（#35）
 
 
 * * *
-
 v2.2.1（2013-12-05）
 ---
-1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（issue #5）
-
-2. 漢拉間隙改用自訂元素`<hanla>`，避免元素樣式繼承衝突（issue #30）
+1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（#5）
+2. 漢拉間隙改用自訂元素`<hanla>`，避免元素樣式繼承衝突（#30）
 
 〔更多資訊〕   
 [https://github.com/ethantw/Han/issues?milestone=5&state=closed]
 
 
-
 * * *
-
 v2.2.0（2013-11－27）
 ---
-1. 修正四大字體集與地區分支，並新增相關`@mixin`供開發者選用（issue #17）
-
-2. 進階版標點字體加入中國國標分支；新增等高、文本數字字體（issue #17）
-
-3. *棄用*來源元素`<cite>`的書名號樣式（issue #19）
-
-4. 以節點改寫相鄰註記元素`<u>` hack，以避免replace method同AngularJS等程式衝突（issue #20）
-
-5. 進階版標點字體新增全形連接號（－）、全形正、反斜線（／ ＼）、全形內括號（〔〕）等五個字符的修正（issue #21）
-
-6. 加入CSS3屬性`unicode-range`的功能支援偵測（issue #22）
-
-7. `jQuery(selector).charize()`加入12個CJK相容表意漢字支援（issue #23）
-
-8. 注音符號字體補足方言音擴充字符（issue #26）
-
-9. 修正強調元素`<em>`的樣式回退（issue #27）
+1. 修正四大字體集與地區分支，並新增相關`@mixin`供開發者選用（#17）
+2. 進階版標點字體加入中國國標分支；新增等高、文本數字字體（#17）
+3. *棄用*來源元素`<cite>`的書名號樣式（#19）
+4. 以節點改寫相鄰註記元素`<u>` hack，以避免replace method同AngularJS等程式衝突（#20）
+5. 進階版標點字體新增全形連接號（－）、全形正、反斜線（／ ＼）、全形內括號（〔〕）等五個字符的修正（#21）
+6. 加入CSS3屬性`unicode-range`的功能支援偵測（#22）
+7. `jQuery(selector).charize()`加入12個CJK相容表意漢字支援（#23）
+8. 注音符號字體補足方言音擴充字符（#26）
+9. 修正強調元素`<em>`的樣式回退（#27）
 
 
 〔更多資訊〕  
 [https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]
 
 
-
 * * *
-
 v2.1.2（2013-11-07）
 ---
-1. 修正`article:lang(zh | ja) strong`的字重（issue #16）
-
-2. 修正標點字體「Biaodian Pro Sans CNS」之分號等符號無法正確顯示的問題（issue #15）
-
-3. 限定`figure > blockquote`的引號樣式在文章區塊下（issue #13）
-
-4. 實驗性底線在`border-box` reset網頁下的顯示問題
-（issue #11）
-
-5. 加入了Bower package的支援（@yhsiang，issue #12）
+1. 修正`article:lang(zh | ja) strong`的字重（#16）
+2. 修正標點字體「Biaodian Pro Sans CNS」之分號等符號無法正確顯示的問題（#15）
+3. 限定`figure > blockquote`的引號樣式在文章區塊下（#13）
+4. 實驗性底線在`border-box` reset網頁下的顯示問題（#11）
+5. 加入了Bower package的支援（@yhsiang，#12）
 
 
 〔更多資訊〕  
 [https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]
 
 
-
 * * *
-
 v2.1.1 （2013-10-21）
 ---
-1. 將normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（issue #7）
-
+1. 將normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（#7）
 2. 採用Sass Partials
-
-3. 修正四大字體集、西文斜體字體會在某些瀏覽器出現偽粗體的情況（issue #10）
-
-4. 更新`findAndReplaceDOMText()`函式至版本0.4.0（issue #8、#9）
-
-5. 着重號顯示位置修正（issue #6）
+3. 修正四大字體集、西文斜體字體會在某些瀏覽器出現偽粗體的情況（#10）
+4. 更新`findAndReplaceDOMText()`函式至版本0.4.0（#8、#9）
+5. 着重號顯示位置修正（#6）
 
 
 〔更多資訊〕  
 [https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]
 
 
-
 * * *
-
 v2.1.0（2013-10-5）
 ---
 1. 將原`css/han.main.css`中，
@@ -150,9 +119,7 @@ v2.1.0（2013-10-5）
   		* 在`<html>`標籤上使用`han-lab-underline`類別
 
 
-
 * * *
-
 v2.0.0（2013-07-25)
 ---
 
@@ -162,28 +129,18 @@ v2.0.0（2013-07-25)
 	* 將「各元素字體及字體集設定」獨立於`han.font.css`方便參閱、除錯和修改
 	* 將「直式國語注音符號的`<ruby>`支援」獨立於`han.zhuyin.css`中，並預設關閉，以節省檔案大小
 
-
 2. 修正註記元素不相鄰時仍有向右位移的問題（需開啓JavaScript）
-
 3. 以`text-indent`取代原有的「文章內段落」首段縮進方式；
    加入「文章內清單」的縮進樣式。
 
 4. 加入「漢拉間隙」功能（需開啓JavaScript）
-
 5. 加入系統不支援「楷體」時，變音文字`<i>`的相應替代樣式（需開啓JavaScript）
-
 6. 加入描述元素`<figure>`內的區塊引用`<blockquote>`樣式
-
 7. 改進`<ruby>`的注音符號顯示效果
-
 8. 加入手持裝置上的樣式微調
-
 9. 加入「標點符號樣式修正」，並區分「預設修正」及「進階修正」二種（瀏覽器需支援`unicode-range`等CSS3屬性）
-
 10. 加入基本元素的指定字體修正（獨立於`han.fonts.css`），取代各瀏覽器或作業系統自動卻錯誤百出的字體集fallback
-
 11. 加入包含「黑、宋、楷、仿宋體」的「四大字體集」CSS3 API
-
 12. JavaScript API
 	* 加入「用戶端功能支援測試」`han.support.*function*`
 	* 加入「用戶端字體（集）支援測試」`han.support.font()`
@@ -191,8 +148,21 @@ v2.0.0（2013-07-25)
 		* 加入`@font-face`支援偵測
 	* 加入「萬國碼正則表達式」變數集`han.unicode[]`（所有CJK區段、拉丁字母區段、注音符號及擴充區段等）
 
-
 13. 取消「類詩篇」類別`.poem-like`的元素限制，現可適用於所有區塊元素
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
