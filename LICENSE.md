@@ -1,5 +1,4 @@
-漢字標準格式 Hanzi-optimised CSS Mode (Han.css)
-===
+
 
 Copyright (c) 2013 Chen Yijun (陳奕鈞，http://yijun.me/)
 

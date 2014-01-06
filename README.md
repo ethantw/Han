@@ -1,48 +1,44 @@
 漢字標準格式
-===
+==========
 
 
-「漢字標準格式」是基於樣式「重設」及「標準化」二個概念寫成的CSS3排版框架。由於現今的瀏覽器預設樣式皆以西文顯示為主，未能周詳地考慮到其與漢字排版間的差異，嚴重影響美觀度，造成網頁設計師的誤用，更使得內容編者無從依照語意正確使用字級元素。
+「漢字標準格式」是基於樣式「重設」及「標準化」二個概念寫成的CSS3排版框架。由於現今的瀏覽器預設樣式皆以西文顯示為主，未能周詳地考慮到其與漢字排版間的差異，多造成網頁設計師的誤用，而內容編者亦無從依照語意正確使用字級元素。
 
-「樣式標準化」的想法源自網上諸多CSS reset及「normalize.css」專案，經漢字標準格式的沿用、加入特定語種的支援，並將漢字文化圈中常見的印刷品排印格式套用在各種HTML5元素中，從而提供標準合理而美觀的文章閱讀環境，迎合網頁讀者的閱讀習慣及設計師和編者的需求。
+「樣式標準化」的想法源自各種CSS reset及「normalize.css」專案，經漢字標準格式的沿用、加入中日韓語種的支援，並將漢字文化圈中常見的印刷品排印格式套用在各種HTML5元素中，從而提供標準合理而美觀的文章閱讀環境，迎合網頁讀者的閱讀習慣及設計師和編者的需求。
 
 漢字標準格式目前可完整支援繁體中文、簡體中文及日文等三種漢字形式的網頁。
 
-自v2.1.0版本起，漢字標準格式始支援[Sass]格式，以便設計師簡化開發流程。
+自v2.1.0版本起，漢字標準格式始支援[Sass]，以便前端設計師簡化開發流程。
 
 [Sass]: http://sass-lang.com
 
 
 
-啓用設置步驟
+安裝
 ---
 
-1. 在欲套用「漢字標準格式」CSS框架的網頁中、所有樣式宣告<wbr>*之前*<wbr>導入下列外連樣式表及JavaScript檔案：
-
-        <link rel="stylesheet" media="all" href="./css/han.css">
-        <script src="./js/jquery-2.0.3.min.js"></script>
-        <script src="./js/han.js"></script>
-
-2. 留意`<html>`標籤上是否設置了正確的語言屬性`lang`。此框架多數功能僅支援中文`zh-*`及日語`ja`。
+直接自專案頁下載或使用Bower：  
+`bower install --save Han`
 
 
-* * *
+### CDN
 
-### 在Sass中啓用注音符號
+你也可以直接使用[cdnjs.com][cdn]服務提供的樣式表：
 
-由於使用頻率較低，在Sass編程環境下，「漢字標準格式」中的`<ruby>`「直式注音符號支援」預設關閉，需另行啓用。
+	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
 
-1. 開啓`sass/han.scss`，將「33行」的代碼由註解範圍*更改*為一般代碼格式。
 
-2.  開啓`sass/han/_ff.scss`，將「10、11行」的`$zhuyin_ttf`及`$zhuyin_eot`重新定向至正確的檔案路徑。
+JS檔：
 
-3. 在瀏覽器中開啓內含`<ruby class="zhuyin"> … </ruby>`元素的網頁進行測試。
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
 
+[cdn]: //cdnjs.com
 
 * * *
 
 「漢字標準格式」版本：v2.2.3  
-本頁最後修改於：2014年1月1日　20:00（GMT+8）
+本頁最後修改於：2014年1月6日　23:41（GMT+8）
 
 
 
