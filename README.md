@@ -14,8 +14,8 @@
 
 
 
-安裝
----
+安裝及使用
+--------
 
 直接自專案頁下載或使用Bower：  
 `bower install --save Han`
@@ -25,6 +25,8 @@
 
 你也可以直接使用[cdnjs.com][cdn]服務提供的樣式表：
 
+[cdn]: //cdnjs.com
+
 	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
 
 
@@ -33,12 +35,39 @@ JS檔：
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
 
-[cdn]: //cdnjs.com
+### 啓用漢拉間隙
+需配合`han.js`使用，在`<html>`標籤中加入類別`han-la`，
+	
+	<html class="han-la">
+
+
+### 啓用進階標點符號修正
+同上，毋需搭配`han.js`，在`<html>`標籤中加入下列相應的地區標準變體，
+
+* 推薦：  
+    `class="han-biaodian-pro"`
+* 台港式繁體標點：  
+	`class="han-biaodian-pro-cns"`
+* 中國國標標點：  
+	`class="han-biaodian-pro-gb"`
+
+### 樣式的覆蓋
+「漢字標準格式」不同於多數CSS框架，內含大量針對「語言屬性」的元素樣式修正，此作法可能導致這些元素樣式無法正確為後方的樣式覆蓋。為正確處理這些狀況，**請留意樣式的繼承規則，加入相應的語言屬性、選擇符或父元素等，避免過度使用「`!important`」宣告，以保持樣式表的可維護性。**
+
+必要時，請使用瀏覽器的元件檢閱器來瞭解各串流樣式間的繼承、覆蓋關係。
+
+使用手冊
+-------
+
+更多詳盡的功能說明，請參閱「[使用手冊][manual]」。
+
+[manual]: //css.hanzi.co/manual
+
 
 * * *
 
-「漢字標準格式」版本：v2.2.3  
-本頁最後修改於：2014年1月6日　23:41（GMT+8）
+「漢字標準格式」版本：v2.2.3   
+本頁最後修改於：2014年1月7日　0:05（GMT+8）
 
 
 
