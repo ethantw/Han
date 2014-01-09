@@ -1,32 +1,32 @@
 
 
 @mixin _scale( $size: .55 ) 
-	-moz-transform:	 	scale( $size )
-	-webkit-transform:  scale( $size )
-	transform:		  	scale( $size )
+	-moz-transform:		scale( $size )
+	-webkit-transform:	scale( $size )
+	transform:			scale( $size )
 
 @mixin _calc( $prop, $exp )
-	#{$prop}: -moz-calc( #{$exp} )
-	#{$prop}: -webkit-calc( #{$exp} )
-	#{$prop}: calc( #{$exp} ) 
+	#{$prop}:	-moz-calc( #{$exp} )
+	#{$prop}:	-webkit-calc( #{$exp} )
+	#{$prop}:	calc( #{$exp} ) 
 
 @mixin _text-emphasis( $sym: circle, $posi: under ) 
-	-moz-text-emphasis:	 	$sym
-	-webkit-text-emphasis: 	$sym
-	text-emphasis:		  	$sym
+	-moz-text-emphasis:		$sym
+	-webkit-text-emphasis:	$sym
+	text-emphasis:			$sym
 	-moz-text-emphasis-position:	$posi
-	-webkit-text-emphasis-position: $posi
-	text-emphasis-position:		 	$posi
+	-webkit-text-emphasis-position:	$posi
+	text-emphasis-position:			$posi
 
 @mixin _borderbox 
-	-moz-box-sizing: border-box
+	-moz-box-sizing:	border-box
 	-webkit-box-sizing: border-box
-	box-sizing: border-box
+	box-sizing:			border-box
 
 @mixin _contentbox 
-	-moz-box-sizing: content-box
-	-webkit-box-sizing: content-box
-	box-sizing: content-box
+	-moz-box-sizing:	content-box
+	-webkit-box-sizing:	content-box
+	box-sizing:			content-box
 
 @mixin _typo-reset 
 	+_text-emphasis(none)
