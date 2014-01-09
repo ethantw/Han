@@ -17,39 +17,6 @@ body {
 
 <body>
 <section>
-	<h1>特殊排版功能</h1>
-	<h2>漢字Latin字母間隙</h2>
-    <p lang="zh-Hans">然而在<span lang="de">Jan Tschichold</span>和他的著作<i class="cite" lang="en-GB">Asymmetric Typography</i>流行之前，直至追溯回<span lang="de">Gutenberg</span>时代，「对称」「齐整」两种古老的视觉审美习惯无处不在。左右并齐的纵栏——我也欣赏这样的传统，一如欣赏古典格律的稳定及优美。</p>
-    <p class="footer">——<a href="https://twitter.com/laerhsif">钱争予</a>〈<a href="//www.typeisbeautiful.com/2013/12/6983/">纵横对齐不是现代方法</a>〉</p>
-
-	<h2>標點符號樣式</h2>
-	<p>
-
-	<h2>入聲韻</h2>
-	<ruby class="rightangle">
-		<rbc>
-			   <rb>入</rb><rb>聲</rb>韻：
-		</rbc>
-		<rtc class="annotation" lang="nan-Latn">
-			<rt rbspan="2">ji̍p-siann</rt>
-		</rtc>
-		<rtc class="zhuyin">
-			<rt>ㆢㄧㆴ͘</rt>
-			<rt>ㄒㄧㆩ</rt>
-		</rtc>
-	</ruby>
-	<span style="
-		font-family: 'Zhuyin Kaiti', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-		-moz-font-feature-settings: 'liga, dlig';
-		-ms-font-feature-settings: 'liga', 'dlig';
-		-webkit-font-feature-settings: 'liga', 'dlig';
-		font-feature-settings: 'liga', 'dlig';
-	">
-		aeioua̍e̍i̍o̍u̍　ㆴㆵㆶㆷㆴ͘ㆵ͘ㆶ͘ㆷ͘
-	</span>
-</section>
-
-<section>
 	<h1 id="grouping-content">內容群組類</h1>
 
 	<h2 id="p-ol-ul">段落、清單</h2>
@@ -305,8 +272,75 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 </section>
 
 
+<section>
+	<h1 id="typography">特殊排版功能</h1>
+	<h2 id="han-la">漢字Latin字母間隙</h2>
+    <p lang="zh-Hans">然而在<span lang="de">Jan Tschichold</span>和他的著作<i class="cite" lang="en-GB">Asymmetric Typography</i>流行之前，直至追溯回<span lang="de">Gutenberg</span>时代，「对称」「齐整」两种古老的视觉审美习惯无处不在。左右并齐的纵栏——我也欣赏这样的传统，一如欣赏古典格律的稳定及优美。</p>
+    <p class="footer">——<a href="https://twitter.com/laerhsif">钱争予</a>〈<a href="//www.typeisbeautiful.com/2013/12/6983/">纵横对齐不是现代方法</a>〉</p>
+
+	<h2>實驗性底線（註記元素）</h2>
+	<p class="poem-like"><u class="pn">中國</u><u class="pn">北京</u>是<u class="pn">中華人民共和國</u>的首都。</p>
+
+	<h2 id="font-and-biaodian">地區變體字型及標點符號樣式</h2>
+	<p><strong>註：</strong>此處僅展示黑體。</p>
+	<h3 id="font-and-biaodian-recommended">舊字形及推薦標點樣式</h3>
+	<p class="poem-like">
+		字。字．字，字、字；字：字？字！<br>
+		「內『內容』容」‘內“內容”容’<br>
+		《書名》〈篇名〉（內容）<br>
+		啊——什么内容……丹·布朗<br>
+		1991－1999年　他／她
+	</p>
+
+	<h3 id="font-and-biaodian-cns">台港式</h3>
+	<p
+		class="poem-like"
+		style="font-family: 'Biaodian Pro Sans CNS', 'Helvetica Neue', Helvetica, Arial, 'Han Heiti CNS', sans-serif;">
+		字。字．字，字、字；字：字？字！<br>
+		「內『內容』容」‘內“內容”容’<br>
+		《書名》〈篇名〉（內容）<br>
+		啊——什么内容……丹·布朗<br>
+		1991－1999年　他／她
+	</p>
+
+	<h3 id="font-and-biaodian-gb">中國國標式</h3>
+	<p
+		class="poem-like"
+		style="font-family: 'Biaodian Pro Sans GB', 'Helvetica Neue', Helvetica, Arial, 'Han Heiti GB', sans-serif;">
+		字。字．字，字、字；字：字？字！<br>
+		「内『内容』容」‘内“内容”容’<br>
+		《书名》〈篇名〉（内容）<br>
+		啊——什么内容……丹·布朗<br>
+		1991－1999年　他／她
+	</p>
+
+	<h2 id="checked-tones">
+		<ruby class="rightangle">
+			<rbc>
+				   <rb>入</rb><rb>聲</rb>韻
+			</rbc>
+			<rtc class="annotation" lang="nan-Latn">
+				<rt rbspan="2">ji̍p-siann</rt>
+			</rtc>
+			<rtc class="zhuyin">
+				<rt>ㆢㄧㆴ͘</rt>
+				<rt>ㄒㄧㆩ</rt>
+			</rtc>
+		</ruby>
+	</h2>
+	<p class="poem-like"><span style="
+		font-family: 'Zhuyin Kaiti', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		-moz-font-feature-settings: 'liga, dlig';
+		-ms-font-feature-settings: 'liga', 'dlig';
+		-webkit-font-feature-settings: 'liga', 'dlig';
+		font-feature-settings: 'liga', 'dlig';
+	">
+		aeioua̍e̍i̍o̍u̍　ㆴㆵㆶㆷㆴ͘ㆵ͘ㆶ͘ㆷ͘
+	</span></p>
+</section>
+
 <script src="js/jquery-2.0.3.min.js"></script>
-<script src="js/han.js"></script> 
+<script src="js/han.js"></script>
 
 </body>
 </html>
