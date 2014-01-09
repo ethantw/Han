@@ -1,0 +1,229 @@
+
+
+$sans: 'Helvetica Neue', Helvetica, Arial
+$serif: Georgia, Times, 'Times New Roman'
+$mono: Menlo, Courier
+
+$heiti: $sans, 'Han Heiti', sans-serif
+$songti: $serif, 'Han Songti', serif
+$kaiti: $serif, 'Han Kaiti', cursive, 'Han Songti', serif
+$mono-zh: $mono, $heiti, sans-serif
+
+
+/* ========================================================================== 
+   基礎頁面
+   Base
+   ========================================================================== */
+
+html
+	&:lang(zh)
+		font-family: 'Biaodian Sans', $heiti
+	&:lang(ja)
+		+Han-Gothic
+
+	&.han-biaodian-pro
+		+Han-Heiti
+	&.han-biaodian-pro-cns
+		+Han-Heiti-CNS
+	&.han-biaodian-pro-gb
+		+Han-Heiti-GB
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	*:not(:lang(zh)):not(:lang(ja))
+		font-family: $heiti
+
+
+/* ========================================================================== 
+   引用區塊
+   Blockquotes
+   ========================================================================== */
+
+article blockquote
+	&:lang(zh)
+		font-family: 'Biaodian Serif', $kaiti
+	&:lang(ja)
+		+Han-Mincho
+
+	html.han-biaodian-pro &
+		+Han-Kaiti
+	html.han-biaodian-pro-cns &
+		+Han-Kaiti-CNS
+	html.han-biaodian-pro-gb &
+		+Han-Kaiti-GB
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	*:not(:lang(zh)):not(:lang(ja)) 
+		font-family: $kaiti
+
+article figure blockquote
+	&:lang(zh)
+		font-family: 'Biaodian Serif', $songti
+	&:lang(ja)
+		+Han-Mincho
+
+	html.han-biaodian-pro &
+		+Han-Songti
+	html.han-biaodian-pro-cns &
+		+Han-Songti-CNS
+	html.han-biaodian-pro-gb &
+		+Han-Songti-GB
+
+article figure figcaption
+	&:lang(zh),
+	&:lang(ja)
+		font-family: 'Biaodian Sans', $heiti
+		font-size: .85em 
+	&:lang(ja)
+		+Han-Gothic
+
+	html.han-biaodian-pro &
+		+Han-Heiti
+	html.han-biaodian-pro-cns &
+		+Han-Heiti-CNS
+	html.han-biaodian-pro-gb &
+		+Han-Heiti-GB
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	*:not(:lang(zh)):not(:lang(ja)) 
+		font-family: $kaiti
+
+
+/* ==========================================================================
+   強調
+   Emphases
+   ========================================================================== */
+
+.no-textemphasis em
+	&:lang(zh),
+	&:lang(ja)
+		span.cjk:after,
+		span.latin:after
+			font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', Meiryo, 'MS Gothic', 'MS Mincho' serif !important
+
+
+/* ========================================================================== 
+   來源
+   Cites 
+   ========================================================================== */
+
+// 1. 修正Webkit下的字體fallback
+//    Corrects font fallback on WebKit
+
+cite:lang(en).piece
+	&:before,
+	&:after
+		font-family: $serif, serif // 1
+
+
+/* ==========================================================================
+   文章內重點
+   Importance in article
+   ========================================================================== */
+
+article strong
+	&:lang(zh)
+		font-family: 'Biaodian Sans', $heiti
+	&:lang(ja)
+		font-family: 'Yakumono Sans', $sans, sans-serif
+
+	html.han-biaodian-pro &
+		+Han-Heiti
+	html.han-biaodian-pro-cns &
+		+Han-Heiti-CNS
+	html.han-biaodian-pro-gb &
+		+Han-Heiti-GB
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	*:not(:lang(zh)):not(:lang(ja))
+		font-family: $sans, sans-serif
+
+
+/* ==========================================================================
+   代碼、輸入鍵、計算機輸出示例、格式預處理文字
+   Code, user input, computer output, preformatted text
+   ========================================================================== */
+
+code,
+kbd,
+pre,
+samp
+	font-family: $mono-zh
+
+	&:lang(zh)
+		font-family: 'Biaodian Sans', $mono-zh
+	&:lang(ja)
+		font-family: 'Yakumono Sans', $mono
+
+	html.han-biaodian-pro &
+		font-family: 'Biaodian Pro Sans', $mono-zh
+	html.han-biaodian-pro-cns &
+		font-family: 'Biaodian Pro Sans CNS', $mono-zh
+	html.han-biaodian-pro-gb &
+		font-family: 'Biaodian Pro Sans GB', $mono-zh
+
+	&:not(:lang(zh)):not(:lang(ja)),
+	*:not(:lang(zh)):not(:lang(ja))
+		font-family: $mono-zh
+
+
+/* ==========================================================================
+   變音文字及變數
+   Alternative voices & Variables
+   ========================================================================== */
+
+i,
+var
+	&:lang(zh)
+		font-family: 'Biaodian Serif', 'Latin Italic Serif', $kaiti
+	&:lang(ja)
+		font-family: 'Yakumono Serif', 'Latin Italic Serif', cursive, serif
+
+	html.han-biaodian-pro &
+		font-family: 'Biaodian Pro Serif', 'Latin Italic Serif', $kaiti
+	html.han-biaodian-pro-cns &
+		font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Serif', $kaiti
+	html.han-biaodian-pro-gb &
+		font-family: 'Biaodian Pro Sans GB', 'Latin Italic Serif', $kaiti
+
+	&:not(:lang(zh)):not(:lang(ja))
+		font-family: 'Latin Italic Sans', $heiti
+	*:not(:lang(zh)):not(:lang(ja))
+		font-family: 'Latin Italic Serif', $songti
+
+article blockquote i,
+article blockquote var
+	&:lang(zh)
+		font-family: 'Biaodian Sans', 'Latin Italic Sans', $heiti
+	&:lang(ja)
+		font-family: 'Yakumono Sans', 'Latin Italic Sans', sans-serif
+
+	html.han-biaodian-pro &
+		font-family: 'Biaodian Pro Sans', 'Latin Italic Sans', $heiti
+	html.han-biaodian-pro-cns &
+		font-family: 'Biaodian Pro Sans CNS', 'Latin Italic Sans', $heiti
+	html.han-biaodian-pro-gb &
+		font-family: 'Biaodian Pro Sans GB', 'Latin Italic Sans', $heiti
+
+	&:not(:lang(zh)):not(:lang(ja))
+		font-family: 'Latin Italic Serif', $songti
+	*:not(:lang(zh)):not(:lang(ja))
+		font-family: 'Latin Italic Sans', $heiti
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
