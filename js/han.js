@@ -1,20 +1,14 @@
 
 /*! 
- * 漢字標準格式 v2.2.3
- * ---
+ * 漢字標準格式 v2.3-alpha
  * Hanzi-optimised CSS Mode
  *
- *
- *
  * Lisence: MIT Lisence
- * Last Modified: 2014/1/1
- *
+ * Last-Modified: 2014/1/9
  */
 
-;jQuery.noConflict
-
 ;(function($){
-	var version = '2.2.3',
+	var version = '2.3-alpha',
 
 	tests = [],
 	rubies,
