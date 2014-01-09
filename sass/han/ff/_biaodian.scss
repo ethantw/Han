@@ -1,26 +1,26 @@
 
 
-/* ---------------------------------------
-   漢字標點
-   ---
-   Hanzi puncuation,
-   ‘Biaodian’(zh) and ‘Yakumono’(ja)
-   --------------------------------------
-   **注意：**為Windows設定的字體*必須*置於
-   OS X字體設定後方。
+/* ========================================================================== 
+   簡易版漢字標點樣式修正
+   Hanzi puncuation, ‘Biaodian’(zh) and ‘Yakumono’(ja)
+   ========================================================================== */
 
-   **NOTE**: Font settings for Windows
-   should be *always* placed after tho-
-   se for OS X. Since there are quite a
-   few fonts from Windows existing on 
-   OS X as well.
-   ---------------------------------------
+// 1. 推薦
+//    Recommended
+//
+// 2. 適用台灣的舊字形或國字標準字形字體
+//    CNS
+//
+// 3. 中國國標
+//    GB
 
-   ---------------------------------------
-   單點全形句號（．）
-   Fullwidth full stop
-   --------------------------------------- */
+/**
+ * 單點全形句號（．）
+ * Fullwidth full stop
+ *
+ */
 
+// 1
 @font-face {
 	font-family: 'Biaodian Sans';
 	src:
@@ -65,8 +65,7 @@
 	unicode-range: U+FF0E;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -89,8 +88,7 @@
 	unicode-range: U+FF0E;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -114,10 +112,13 @@
 }
 
 
-/* 間隔號（·）
-   Middle dot
-   --------------------------------------- */
+/**
+ * 間隔號（·）
+ * Middle dot
+ *
+ */
 
+// 1
 @font-face {
 	font-family: 'Biaodian Sans';
 	src:
@@ -158,8 +159,7 @@
 	unicode-range: U+00B7;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -180,8 +180,7 @@
 	unicode-range: U+00B7;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -203,10 +202,13 @@
 }
 
 
-/* 破折號（——）
-   Em dash
-   --------------------------------------- */
+/**
+ * 破折號（——）
+ * Em dash
+ *
+ */
 
+// 1
 @font-face {
 	font-family: 'Biaodian Sans';
 	src:
@@ -272,8 +274,7 @@
 	unicode-range: U+2014;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -297,8 +298,7 @@
 	unicode-range: U+2014;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -323,10 +323,13 @@
 }
 
 
-/* 省略號（……）
-   Ellipsis
-   --------------------------------------- */
+/**
+ * 省略號（……）
+ * Ellipsis
+ *
+ */
 
+// 1
 @font-face {
 	font-family: 'Biaodian Sans';
 	src:
@@ -393,8 +396,7 @@
 	unicode-range: U+2026;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -418,8 +420,7 @@
 	unicode-range: U+2026;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -444,205 +445,208 @@
 }
 
 
-/* 彎引號（“‘’”）
-   Curve quotes
-   --------------------------------------- */
-
-@font-face {
-	font-family: 'Biaodian Sans';
-	src:
-        local('Hiragino Sans GB'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-@font-face {
-	font-family: 'Biaodian Serif';
-	src:
-        local('Lisong Pro'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Sans';
-	src:
-        local('Hiragino Sans GB'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Serif';
-	src:
-        local('Lisong Pro'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-// CNS
-@font-face {
-	font-family: 'Biaodian Pro Sans CNS';
-	src:
-        local('Hiragino Sans GB'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Serif CNS';
-	src:
-        local('Lisong Pro'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-
-// GB
-@font-face {
-	font-family: 'Biaodian Pro Sans GB';
-	src:
-        local('Hiragino Sans GB'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Serif GB';
-	src:
-        local('Lisong Pro'),
-		local('Heiti SC'),
-		local(STHeiti),
-		local(SimSun),
-		local(PMingLiU);
-	unicode-range: U+201C-201D, U+2018-2019;
-}
-
-
-/* 着重號（●）
-   Emphasis dots
-   --------------------------------------- */
-
-@font-face {
-	font-family: 'Biaodian Sans';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-@font-face {
-	font-family: 'Biaodian Serif';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Sans';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-
-@font-face {
-	font-family: 'Biaodian Pro Serif';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-
-// CNS
-@font-face {
-	font-family: 'Biaodian Pro Sans CNS';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Serif CNS';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-
-// GB
-@font-face {
-	font-family: 'Biaodian Pro Sans GB';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-@font-face {
-	font-family: 'Biaodian Pro Serif GB';
-	src:
-        local(Georgia),
-		local('Times New Roman'),
-		local('Droid Sans Fallback');
-	unicode-range: U+25CF;
-}
-
-
-/* ---------------------------------------
-   進階版標點樣式修正
-   ---
-   Advanced Correction to
-   Hanzi Punctuation
-   ---------------------------------------
- *
- * a. 句、逗、頓號（。，、）
- *	Period, comma, paused comma
- *
- * b. 分、冒、問、嘆號（；：？！）
- *	Colon, semicolon, question, exclam-
- *	ation marks
- *
- * c. 連接號、正、反斜線（－／＼）
- * En dash (fullwidth hyphen-minus),
- * division slash, back slash
+/**
+ * 彎引號（“‘’”）
+ * Curve quotes
  *
  */
 
+// 1
+@font-face {
+	font-family: 'Biaodian Sans';
+	src:
+        local('Hiragino Sans GB'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
 
+@font-face {
+	font-family: 'Biaodian Serif';
+	src:
+        local('Lisong Pro'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Sans';
+	src:
+        local('Hiragino Sans GB'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif';
+	src:
+        local('Lisong Pro'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+// 2
+@font-face {
+	font-family: 'Biaodian Pro Sans CNS';
+	src:
+        local('Hiragino Sans GB'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif CNS';
+	src:
+        local('Lisong Pro'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+// 3
+@font-face {
+	font-family: 'Biaodian Pro Sans GB';
+	src:
+        local('Hiragino Sans GB'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif GB';
+	src:
+        local('Lisong Pro'),
+		local('Heiti SC'),
+		local(STHeiti),
+		local(SimSun),
+		local(PMingLiU);
+	unicode-range: U+201C-201D, U+2018-2019;
+}
+
+
+/**
+ * 着重號（●）
+ * Emphasis dots
+ *
+ */
+
+// 1
+@font-face {
+	font-family: 'Biaodian Sans';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+@font-face {
+	font-family: 'Biaodian Serif';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Sans';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+
+@font-face {
+	font-family: 'Biaodian Pro Serif';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+// 2
+@font-face {
+	font-family: 'Biaodian Pro Sans CNS';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif CNS';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+// 3
+@font-face {
+	font-family: 'Biaodian Pro Sans GB';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+@font-face {
+	font-family: 'Biaodian Pro Serif GB';
+	src:
+        local(Georgia),
+		local('Times New Roman'),
+		local('Droid Sans Fallback');
+	unicode-range: U+25CF;
+}
+
+
+
+/* ========================================================================== 
+   進階版標點樣式修正
+   Advanced Correction to Hanzi Punctuation
+   ========================================================================== */
+
+/**
+ * a. 句、逗、頓號（。，、）
+ *	  Period, comma, paused comma
+ *
+ * b. 分、冒、問、嘆號（；：？！）
+ *	  Colon, semicolon, question, exclam-
+ *	  ation marks
+ *
+ * c. 連接號、正、反斜線（－／＼）
+ *    En dash (fullwidth hyphen-minus),
+ *    division slash, back slash
+ *
+ */
+
+// 1
 @font-face {
 	font-family: 'Biaodian Pro Sans';
 	src:
@@ -667,8 +671,7 @@
 		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -726,8 +729,7 @@
 		U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -773,12 +775,12 @@
 }
 
 
-/*
+/**
  * a. 引號（「『』」）
- *	Quotes
+ *	  Quotes
  *
  * b. 括號、書名號（（）《》〈〉〔〕）
- *	Brackets
+ *    Brackets
  *
  */
 
@@ -805,8 +807,7 @@
 		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
-
-// CNS
+// 2
 @font-face {
 	font-family: 'Biaodian Pro Sans CNS';
 	src:
@@ -830,8 +831,7 @@
 		U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
-
-// GB
+// 3
 @font-face {
 	font-family: 'Biaodian Pro Sans GB';
 	src:
@@ -856,13 +856,12 @@
 }
 
 
-
-/*
- * 解決Firefox不支援`Unicode-range`的問題
- * 
- * Solution to Firefox's `Unicode-range`
- * unspported issue
-   --------------------------------------- */
+/**
+ * 解決Firefox不支援`unicode-range`及粗體調用問題
+ * Solution to Firefox's `unicode-range`
+ * unsupported issues
+ *
+ */
 
 @font-face {
 	font-family: 'Biaodian Sans';

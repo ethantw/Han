@@ -20,7 +20,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Songti';
 	src:
 		local(YuMincho),
@@ -45,7 +45,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Songti CNS';
 	src:
 		local(YuMincho),
@@ -82,7 +82,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Songti';
 	font-weight: 600;
 	src:
@@ -107,7 +107,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Songti CNS';
 	font-weight: 600;
 	src:

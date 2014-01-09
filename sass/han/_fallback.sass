@@ -1,6 +1,21 @@
 
 
 /* ========================================================================== 
+   CSS3屬性`unicode-range`支援偵測
+   Test for CSS3 property `unicode-range`
+   ========================================================================== */
+
+@font-face
+	font-family: han-unicode-range
+	src: local(Arial), local('Droid Sans')
+
+@font-face
+	font-family: han-unicode-range
+	src: local('Times New Roman'), local(Times), local('Droid Serif')
+	unicode-range: U+270C
+
+
+/* ========================================================================== 
    着重號
    Text emphases
    ========================================================================== */
@@ -176,8 +191,6 @@ html.han-la
 	ul // 2
 		> hanla 
 			display: none
-		
-	
 
 
 

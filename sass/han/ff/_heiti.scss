@@ -24,7 +24,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Heiti';
 	src:
 		local(YuGothic),
@@ -51,7 +51,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Heiti CNS';
 	src:
 		local(YuGothic),
@@ -104,7 +104,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Heiti';
 	font-weight: 600;
 	src:
@@ -141,7 +141,7 @@
 }
 
 @font-face {
-	@include range-CJK;
+	@include _range-CJK;
 	font-family: 'Han Heiti CNS';
 	font-weight: 600;
 	src:

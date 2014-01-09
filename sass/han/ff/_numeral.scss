@@ -10,7 +10,7 @@
    --------------------------------------- */
 
 @font-face {
-	@include range-numeral;
+	@include _range-numeral;
 	font-family: 'Numeral TF Sans';
 	src:
 		local(Skia),
@@ -20,7 +20,7 @@
 }
 
 @font-face {
-	@include range-numeral;
+	@include _range-numeral;
 	font-family: 'Numeral TF Serif';
 	src:
 		local(Georgia),
@@ -34,7 +34,7 @@
    --------------------------------------- */
 
 @font-face {
-	@include range-numeral;
+	@include _range-numeral;
 	font-family: 'Numeral LF Sans';
 	src:
 		local('Helvetica Neue'),
@@ -43,7 +43,7 @@
 }
 
 @font-face {
-	@include range-numeral;
+	@include _range-numeral;
 	font-family: 'Numeral LF Serif';
 	src:
 		local(Palatino),

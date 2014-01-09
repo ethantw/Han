@@ -7,11 +7,11 @@
    --------------------------------------- */
 
 @font-face {
-	@include range-zhuyin;
+	@include _range-zhuyin;
 	font-family: 'Zhuyin Kaiti';
 	src:
-		url($zhuyin_eot) format('embedded-opentype'),
-		url($zhuyin_ttf) format('truetype'),
+		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-ttf) format('truetype'),
 		local(BiauKai),
 		local('標楷體'),
 		local(DFKaiShu-SB-Estd-BF),
@@ -20,13 +20,13 @@
 }
 
 @font-face {
-	@include range-zhuyin;
+	@include _range-zhuyin;
 	font-family: 'Zhuyin Heiti';
 	src:
 		local('Hiragino Sans GB'),
 		local('Microsoft Jhenghei'),
-		url($zhuyin_eot) format('embedded-opentype'),
-		url($zhuyin_ttf) format('truetype'),
+		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-ttf) format('truetype'),
 		local(PMingLiU),
 		local(SimSun),
 		local(BiauKai),
@@ -39,8 +39,8 @@
 	src: 
 		local('Heiti TC'),
 		local('Microsoft Jhenghei'),
-		url($zhuyin_eot) format('embedded-opentype'),
-		url($zhuyin_ttf) format('truetype'),
+		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-ttf) format('truetype'),
 		local(PMingLiU),
 		local(SimSun),
 		local(BiauKai),
