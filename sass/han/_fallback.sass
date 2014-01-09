@@ -1,20 +1,33 @@
 
 
-/* ==========================================================================
-   避頭尾禁則
-   Biaodian rules
+/* ========================================================================== 
+   着重號
+   Text emphases
    ========================================================================== */
 
-//.han-js-charized span.char,
-.han-js-bitouwei-rendered span.bitouwei
-	display: inline-block
-	text-indent: 0
+em
+	&:lang(zh)
+		+_zhuozhonghao-fallback
 
-.han-js-charized
-	span.char.space,
-	span.char > span
-		display: inline
+	&:lang(ja)
+		+_zhuozhonghao-fallback('、', over)
 
+
+/* ==========================================================================
+   變音文字及變數
+   Alternative voices & Variables
+   ========================================================================== */
+
+// 1. 如果系統不支援楷體
+//    If Kaiti is not supported
+
+// 1
+.no-fontface-kaiti 
+	i,
+	var
+		//font-family: serif
+		border-bottom: 3px double $lightgrey
+		padding-bottom: .05em
 
 /* ==========================================================================
    註記
@@ -98,17 +111,28 @@ u.han-js-charized
 		border: 1px solid
 
 
-/* ==========================================================================
-   變音文字及變數
-   Alternative voices & Variables
+/* ========================================================================== 
+   小字標注
+   Ruby annotations
    ========================================================================== */
 
-.no-fontface-kaiti 
-	i,
-	var
-		//font-family: serif
-		border-bottom: 3px double $lightgrey
-		padding-bottom: .05em
+@import hruby
+
+
+/* ==========================================================================
+   避頭尾禁則
+   Biaodian rules
+   ========================================================================== */
+
+//.han-js-charized span.char,
+.han-js-bitouwei-rendered span.bitouwei
+	display: inline-block
+	text-indent: 0
+
+.han-js-charized
+	span.char.space,
+	span.char > span
+		display: inline
 
 
 /* ==========================================================================
