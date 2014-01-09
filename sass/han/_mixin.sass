@@ -1,18 +1,16 @@
 
 
-@mixin scale( $size: .55 ) 
+@mixin _scale( $size: .55 ) 
 	-moz-transform:	 	scale( $size )
 	-webkit-transform:  scale( $size )
 	transform:		  	scale( $size )
 
-
-@mixin calc( $prop, $exp )
+@mixin _calc( $prop, $exp )
 	#{$prop}: -moz-calc( #{$exp} )
 	#{$prop}: -webkit-calc( #{$exp} )
 	#{$prop}: calc( #{$exp} ) 
- 
 
-@mixin zhuozhonghao( $sym: circle, $posi: under ) 
+@mixin _text-emphasis( $sym: circle, $posi: under ) 
 	-moz-text-emphasis:	 	$sym
 	-webkit-text-emphasis: 	$sym
 	text-emphasis:		  	$sym
@@ -20,21 +18,18 @@
 	-webkit-text-emphasis-position: $posi
 	text-emphasis-position:		 	$posi
 
-
-@mixin borderbox 
+@mixin _borderbox 
 	-moz-box-sizing: border-box
 	-webkit-box-sizing: border-box
 	box-sizing: border-box
 
-
-@mixin contentbox 
+@mixin _contentbox 
 	-moz-box-sizing: content-box
 	-webkit-box-sizing: content-box
 	box-sizing: content-box
 
-
-@mixin reset-typo 
-	+zhuozhonghao(none)
+@mixin _typo-reset 
+	+_text-emphasis(none)
 	font-style: normal
 	font-weight: normal
 	line-height: .9
