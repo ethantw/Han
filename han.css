@@ -1143,16 +1143,16 @@ table {
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
   font-family: 'Zhuyin Kaiti';
-  src: url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(PMingLiU); }
+  src: url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.otf") format("opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(PMingLiU); }
 
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
   font-family: 'Zhuyin Heiti';
-  src: local("Hiragino Sans GB"), local("Microsoft Jhenghei"), url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF); }
+  src: local("Hiragino Sans GB"), local("Microsoft Jhenghei"), url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.otf") format("opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF); }
 
 @font-face {
   font-family: 'Zhuyin Heiti';
-  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
+  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.otf") format("opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9; }
 
 /* ==========================================================================

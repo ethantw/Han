@@ -11,6 +11,7 @@
 	font-family: 'Zhuyin Kaiti';
 	src:
 		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-otf) format('opentype'),
 		url($zhuyin-ttf) format('truetype'),
 		local(BiauKai),
 		local('標楷體'),
@@ -26,6 +27,7 @@
 		local('Hiragino Sans GB'),
 		local('Microsoft Jhenghei'),
 		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-otf) format('opentype'),
 		url($zhuyin-ttf) format('truetype'),
 		local(PMingLiU),
 		local(SimSun),
@@ -40,6 +42,7 @@
 		local('Heiti TC'),
 		local('Microsoft Jhenghei'),
 		url($zhuyin-eot) format('embedded-opentype'),
+		url($zhuyin-otf) format('opentype'),
 		url($zhuyin-ttf) format('truetype'),
 		local(PMingLiU),
 		local(SimSun),
