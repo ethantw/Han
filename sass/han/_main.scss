@@ -20,7 +20,6 @@
 $lightgrey: lightgrey; // 淺灰
 
 
-
 /* ---------------------------------------
    針對normalize.css的改進
    ---
@@ -170,9 +169,6 @@ u.han-js-charized {
 }
 
 
-
-
-
 /* 重新定製「連結、插入元素」的樣式
    Re-styles anchors and additions
    --------------------------------------- */
@@ -279,35 +275,54 @@ article:lang(ja) ul {
    漢拉間隙
    ---
    Kerning between Hanzi and Latin letter
-   --------------------------------------- */
+   ---------------------------------------
+ *
+ * 1. More disscussion: 
+ *    https://github.com/ethantw/Han/issues/40
+ *
+ */
 
-hanla,
-html:not(.han-la) hanla {
-	display: none;
+hanla {
+	&,
+	html:not(.han-la) & {
+		display: none;
+	}
+
+	html.han-la & {
+		&:lang(zh),
+		&:lang(ja) {
+			display: inline;
+			position: static;
+		}
+
+		&:after {
+			content: ' ';
+			display: inline;
+			font-family: Arial;
+			font-size: .89em; // 1
+		}
+	}
 }
 
-html.han-la hanla:lang(zh),
-html.han-la hanla:lang(ja) {
-	display: inline;
-	position: static;
+html.han-la {
+	code,
+	pre,
+	kbd,
+	samp {
+		hanla {
+			display: none;
+		}
+	}
 }
 
-html.han-la hanla:after {
-	content: ' ';
-	display: inline;
-	font-size: 1ch;
-	font-size: -webkit-calc( .25em );
+html.han-la {
+	ol,
+	ul {
+		> hanla {
+			display: none;
+		}
+	}
 }
-
-html.han-la code hanla:after,
-html.han-la pre hanla:after,
-html.han-la kbd hanla:after,
-html.han-la samp hanla:after,
-html.han-la ol > hanla:after,
-html.han-la ul > hanla:after {
-	display: none;
-}
-
 
 
 /* ---------------------------------------
