@@ -5,7 +5,7 @@
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/1/9
+ * Last-Modified: 2014/1/19
  */
 
 ;(function(window, $){
@@ -339,7 +339,7 @@
 	_get_zhuyin_font = function( node ) {
 		var reg = /(sans-serif|monospace)$/,
 			generic = $(node).css('font-family'),
-        	font = generic.match(reg) ? 'sans-serif' : 'serif'
+        	font = generic.match(reg) ? 'sans' : 'serif'
 		
 		return font
 	},
@@ -362,7 +362,7 @@
 
 		yin = zy
 			.replace(eval('/(' + tone + ')/g'), '')
-			.replace(eval('/(' + yj + '̍)/g'), '')
+			.replace(eval('/(' + yj + '[\u0358\u030d]?)/g'), '')
 
 		length = (yin) ? yin.length : 0
 
