@@ -57,6 +57,22 @@
 
 
 // ========================================================================== 
+// 字體特性
+// Font feature
+// ========================================================================== 
+
+@mixin _font-feature( $set, $moz: false )
+	@if $moz != false
+		-moz-font-feature-settings:	$moz
+	@else
+		-moz-font-feature-settings:	#{$set}
+
+	-ms-font-feature-settings:		#{$set}
+	-webkit-font-feature-settings:	#{$set}
+	font-feature-settings:			#{$set}
+
+
+// ========================================================================== 
 // 着重號
 // Text emphases
 // ========================================================================== 
