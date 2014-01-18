@@ -1164,8 +1164,8 @@ html {
   -webkit-font-smoothing: subpixel-antialiased; }
 
 /* ==========================================================================
- * 段落、清單、引用區塊
- * Paragraphs, lists and blockquotes
+ * 段落、清單、圖表、引用區塊
+ * Paragraphs, lists, figures and blockquotes
  * ========================================================================== */
 html:lang(zh) .poem-like p,
 html:lang(zh) p.poem-like,
@@ -1176,12 +1176,16 @@ html:lang(zh) ol, html:lang(zh) ul,
 html:lang(jp) ol,
 html:lang(jp) ul {
   padding-left: 2em; }
+html:lang(zh) figure,
 html:lang(zh) blockquote,
+html:lang(jp) figure,
 html:lang(jp) blockquote {
   margin-left: 2em;
   margin-right: 2em;
   width: auto; }
+  html:lang(zh) figure blockquote,
   html:lang(zh) blockquote blockquote,
+  html:lang(jp) figure blockquote,
   html:lang(jp) blockquote blockquote {
     margin-left: 1em;
     margin-right: 1em; }
@@ -1970,3 +1974,31 @@ article blockquote var:not(:lang(zh)):not(:lang(ja)) {
 article blockquote i *:not(:lang(zh)):not(:lang(ja)),
 article blockquote var *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
+
+/* ==========================================================================
+ * 小字標注
+ * Ruby annotations
+ * ========================================================================== */
+hruby[generic] rb[zhuyin]:after {
+  font-family: "Zhuyin Kaiti", cursive, serif; }
+hruby[generic="sans"] rb[zhuyin]:before,
+hruby[generic="sans"] rb[diao^="ㆴ"]:after,
+hruby[generic="sans"] rb[diao^="ㆵ"]:after,
+hruby[generic="sans"] rb[diao^="ㆶ"]:after,
+hruby[generic="sans"] rb[diao^="ㆷ"]:after,
+hruby[generic="sans"] rb[diao="󳆴"]:after,
+hruby[generic="sans"] rb[diao="󳆵"]:after,
+hruby[generic="sans"] rb[diao="󳆶"]:after,
+hruby[generic="sans"] rb[diao="󳆷"]:after {
+  font-family: "Zhuyin Heiti", sans-serif; }
+hruby[generic] rb[diao^="ㆴ"]:after,
+hruby[generic] rb[diao^="ㆵ"]:after,
+hruby[generic] rb[diao^="ㆶ"]:after,
+hruby[generic] rb[diao^="ㆷ"]:after {
+  -moz-font-feature-settings: "liga, dlig";
+  -ms-font-feature-settings: "liga", "dlig";
+  -webkit-font-feature-settings: "liga", "dlig";
+  font-feature-settings: "liga", "dlig";
+  font-family: "Zhuyin Kaiti", cursive, serif; }
+hruby[generic="serif"] rb[zhuyin]:before {
+  font-family: "Zhuyin Kaiti", cursive, serif; }
