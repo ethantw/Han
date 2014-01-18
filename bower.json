@@ -1,6 +1,6 @@
 {
   "name": "Han",
-  "version": "2.2.3",
+  "version": "2.3",
   "homepage": "http://css.hanzi.co/",
   "authors": [
     "ethantw <ethantw@me.com>"
@@ -17,7 +17,6 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ]
 }

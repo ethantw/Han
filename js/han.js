@@ -1,4 +1,5 @@
 
+
 /*! 
  * 漢字標準格式 v2.3-alpha
  * Hanzi-optimised CSS Mode
@@ -7,7 +8,7 @@
  * Last-Modified: 2014/1/9
  */
 
-;(function($){
+;(function(window, $){
 	var version = '2.3-alpha',
 
 	tests = [],
@@ -874,7 +875,7 @@
 		support: tester
 	}
 
-})(jQuery)
+})(window, window.jQuery, undefined)
 
 
 /**

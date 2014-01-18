@@ -1,23 +1,5 @@
 
 
-@mixin _scale( $size: .55 ) 
-	-moz-transform:		scale( $size )
-	-webkit-transform:	scale( $size )
-	transform:			scale( $size )
-
-@mixin _calc( $prop, $exp )
-	#{$prop}:	-moz-calc( #{$exp} )
-	#{$prop}:	-webkit-calc( #{$exp} )
-	#{$prop}:	calc( #{$exp} ) 
-
-@mixin _text-emphasis( $sym: circle, $posi: under ) 
-	-moz-text-emphasis:		$sym
-	-webkit-text-emphasis:	$sym
-	text-emphasis:			$sym
-	-moz-text-emphasis-position:	$posi
-	-webkit-text-emphasis-position:	$posi
-	text-emphasis-position:			$posi
-
 @mixin _borderbox 
 	-moz-box-sizing:	border-box
 	-webkit-box-sizing: border-box
@@ -28,13 +10,50 @@
 	-webkit-box-sizing:	content-box
 	box-sizing:			content-box
 
+@mixin _calc( $prop, $exp )
+	#{$prop}:	-moz-calc( #{$exp} )
+	#{$prop}:	-webkit-calc( #{$exp} )
+	#{$prop}:	calc( #{$exp} ) 
+
+
+// ========================================================================== 
+// CSS3屬性：着重號
+// CSS3 property: text emphases
+// ========================================================================== 
+
+@mixin _text-emphasis( $sym: circle, $posi: under ) 
+	-moz-text-emphasis:		$sym
+	-webkit-text-emphasis:	$sym
+	text-emphasis:			$sym
+	-moz-text-emphasis-position:	$posi
+	-webkit-text-emphasis-position:	$posi
+	text-emphasis-position:			$posi
+
+
+// ========================================================================== 
+// 縮放
+// Scale
+// ========================================================================== 
+
+@mixin _scale( $size: .55 ) 
+	-moz-transform:		scale( $size )
+	-ms-transform:		scale( $size )
+	-webkit-transform:	scale( $size )
+	transform:			scale( $size )
+
+
+// ========================================================================== 
+// 重設所有字體排印相關屬性
+// Reset all typography-related properties
+// ========================================================================== 
+
 @mixin _typo-reset 
 	+_text-emphasis(none)
-	font-style: normal
-	font-weight: normal
-	line-height: .9
-	text-indent: 0
-	text-decoration: none
+	font-style:			normal
+	font-weight:		normal
+	line-height:		$line-height
+	text-decoration:	none
+	text-indent:		0
 
 
 // ========================================================================== 
