@@ -34,15 +34,15 @@
 JS檔：
 
 ~~~~html
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
 ~~~~
 
 ### 啓用漢拉間隙
 需配合`han.js`使用，在`<html>`標籤中加入類別`han-la`，
 
 ~~~~html
-	<html class="han-la">
+<html class="han-la">
 ~~~~
 
 ### 啓用進階標點符號修正
@@ -69,9 +69,8 @@ JS檔：
 
 
 * * *
-
 「漢字標準格式」版本：v2.2.3   
-本頁最後修改於：2014年1月7日　0:05（GMT+8）
+本頁最後修改於：2014年1月25日　13:06（GMT+8）
 
 
 
