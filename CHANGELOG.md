@@ -2,11 +2,11 @@
 更新紀錄　CHANGELOG
 ===
 
-v2.3.0（2014-2）
+v2.3-alpha（2014-2-5）
 ---
 1. 加入`figure`元素的邊界修正，以吻合新版Normalize CSS
 2. 加入`ins`元素的視覺底線區隔
-3. 注音符號web font加入拉丁字母的陽入韻元音連字（ligature）
+3. 注音符號web font加入拉丁字母的陽入韻元音連字（ligature），並加入`.otf`版本
 4. 修正複合式`<ruby>`在Cordova Android上的問題
 5. 加入文章區塊行高設定，並將預設値降至1.7倍
 
