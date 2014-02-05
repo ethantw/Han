@@ -5,7 +5,7 @@
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/1/19
+ * Last-Modified: 2014/2/5
  */
 
 ;(function(window, $){
@@ -70,9 +70,10 @@
 		 */
 
 		// 語義類別簡化
-		$(range).find('ruby, rtc').filter('.pinyin').addClass('romanization')
-		$(range).find('ruby, rtc').filter('.mps').addClass('zhuyin')
-		$(range).find('ruby, rtc').filter('.romanization').addClass('annotation')
+		var _ruby = $(range).find('ruby, rtc')
+		_ruby.filter('.pinyin').addClass('romanization')
+		_ruby.filter('.mps').addClass('zhuyin')
+		_ruby.filter('.romanization').addClass('annotation')
 
 		$(range).find('ruby').each(function() {
 			var html = $(this).html(),
@@ -223,15 +224,15 @@
 
 		if ( $('html').hasClass('han-lab-underline') )
 			$(range).find('u').charize('', true, true)
-		else
-			$(range).find('u').each(function(){
-				var next = this.nextSibling
 
-				while ( next != null && ( next.nodeName === "WBR" || next.nodeType == 8 ))
-					next = next.nextSibling
+		$(range).find('u, ins').each(function(){
+			var next = this.nextSibling
 
-				$(next).filter('u').addClass('adjacent')
-			})
+			while ( next != null && ( next.nodeName === "WBR" || next.nodeType == 8 ))
+				next = next.nextSibling
+
+			$(next).filter('u, ins').addClass('adjacent')
+		})
 
 
 

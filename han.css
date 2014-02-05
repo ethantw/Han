@@ -4,7 +4,7 @@
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/1/19
+ * Last-Modified: 2014/2/5
  */
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
@@ -1528,15 +1528,19 @@ html.han-js-rendered em:lang(ja) {
  * 註記
  * Annotations
  * ========================================================================== */
-html.han-js-rendered u + u {
-  margin-left: 0; }
-html.han-js-rendered u.adjacent {
+html.han-js-rendered u + u,
+html.han-js-rendered ins + ins {
+  margin-left: auto; }
+html.han-js-rendered u.adjacent,
+html.han-js-rendered ins.adjacent {
   margin-left: 0.125em; }
 
 /* -------------------------------------
  * 實驗性底線
  * Experimental underlines
  * ------------------------------------- */
+.han-js-rendered.han-lab-underline u.adjacent {
+  margin-left: auto; }
 .han-js-rendered.han-lab-underline u,
 .han-js-rendered.han-lab-underline u *,
 .han-js-rendered.han-lab-underline u *:before,
