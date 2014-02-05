@@ -27,19 +27,23 @@
 
 [cdn]: //cdnjs.com
 
-	<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
-
+~~~~html
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
+~~~~
 
 JS檔：
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
+~~~~html
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
+~~~~
 
 ### 啓用漢拉間隙
 需配合`han.js`使用，在`<html>`標籤中加入類別`han-la`，
-	
-	<html class="han-la">
 
+~~~~html
+<html class="han-la">
+~~~~
 
 ### 啓用進階標點符號修正
 同上，毋需搭配`han.js`，在`<html>`標籤中加入下列相應的地區標準變體，
@@ -47,9 +51,9 @@ JS檔：
 * 推薦：  
     `class="han-biaodian-pro"`
 * 台港式繁體標點：  
-	`class="han-biaodian-pro-cns"`
+    `class="han-biaodian-pro-cns"`
 * 中國國標標點：  
-	`class="han-biaodian-pro-gb"`
+    `class="han-biaodian-pro-gb"`
 
 ### 樣式的覆蓋
 「漢字標準格式」不同於多數CSS框架，內含大量針對「語言屬性」的元素樣式修正，此作法可能導致這些元素樣式無法正確為後方的樣式覆蓋。為正確處理這些狀況，**請留意樣式的繼承規則，加入相應的語言屬性、選擇符或父元素等，避免過度使用「`!important`」宣告，以保持樣式表的可維護性。**
@@ -65,9 +69,8 @@ JS檔：
 
 
 * * *
-
-「漢字標準格式」版本：v2.2.3   
-本頁最後修改於：2014年1月7日　0:05（GMT+8）
+「漢字標準格式」版本：v2.3   
+本頁最後修改於：2014年2月5日　16:52（GMT+8）
 
 
 
