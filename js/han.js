@@ -69,7 +69,7 @@
 		 * the `<em>` element is required.
 		 */
 
-		// 語義類別簡化
+		// 語意類別簡化
 		var _ruby = $(range).find('ruby, rtc')
 		_ruby.filter('.pinyin').addClass('romanization')
 		_ruby.filter('.mps').addClass('zhuyin')
@@ -147,7 +147,13 @@
 						$(this).find('rt')
 						.each(function(i){
 							var rb = t.find('rb:not([annotation])').eq(i)
-							_apply_zhuyin(this, rb)
+							if($(this).html()) _apply_zhuyin( this, rb )
+						})
+						
+						$(this).nextAll('rt')
+						.each(function(i){
+							var rb = t.find('rb:not([annotation])').eq(i)
+							if($(this).html()) _apply_zhuyin( this, rb )
 						})
 					})
 
@@ -162,7 +168,7 @@
 						   $(this).hasClass("rightangle")
 				}).replaceWith(
 					$(hruby)
-					.html( $(this).html() )
+					.html( $(this).html().replace(/(.*<\/rbc>).*/, '$1') )
 					.attr('generic', _get_zhuyin_font(this))
 					.attr(attr)
 				)
@@ -283,10 +289,29 @@
 			var c = 0,
 				rtc = $(this),
 				rbc = $(this).prevAll('rbc'),
-				len = $(this).find('rt').length,
+				len = $(this).find('rt').length || $(this).nextAll('rt').length,
 				data = []
 
 			$(this).find('rt')
+			.each(function(h){
+				var anno 	= $(this).html(),
+					rbspan 	= $(this).attr('rbspan') || 1,
+					i		= c
+
+				c += Number(rbspan)
+
+				data[h] = {
+					'annotation': anno,
+					'order': (t==0) ? '1' : '2'
+				}
+
+				for ( var j=i; j<c; j++ ) {
+					rbc.find('rb[index]')
+					.eq(j).attr({ 'set': h })
+				}
+			})
+
+			$(this).nextAll('rt')
 			.each(function(h){
 				var anno 	= $(this).html(),
 					rbspan 	= $(this).attr('rbspan') || 1,
@@ -326,6 +351,7 @@
 				)
 			}
 		})
+		.remove()
 
 		$(node).find('rb')
 		.after(' ')
