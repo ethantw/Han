@@ -1,19 +1,19 @@
 
 
 @mixin _borderbox 
-	-moz-box-sizing:	border-box
-	-webkit-box-sizing: border-box
-	box-sizing:			border-box
+    -moz-box-sizing:    border-box
+    -webkit-box-sizing: border-box
+    box-sizing:         border-box
 
 @mixin _contentbox 
-	-moz-box-sizing:	content-box
-	-webkit-box-sizing:	content-box
-	box-sizing:			content-box
+    -moz-box-sizing:    content-box
+    -webkit-box-sizing: content-box
+    box-sizing:         content-box
 
 @mixin _calc( $prop, $exp )
-	#{$prop}:	-moz-calc( #{$exp} )
-	#{$prop}:	-webkit-calc( #{$exp} )
-	#{$prop}:	calc( #{$exp} ) 
+    #{$prop}: -moz-calc( #{$exp} )
+    #{$prop}: -webkit-calc( #{$exp} )
+    #{$prop}: calc( #{$exp} ) 
 
 
 // ========================================================================== 
@@ -22,12 +22,12 @@
 // ========================================================================== 
 
 @mixin _text-emphasis( $sym: circle, $posi: under ) 
-	-moz-text-emphasis:		$sym
-	-webkit-text-emphasis:	$sym
-	text-emphasis:			$sym
-	-moz-text-emphasis-position:	$posi
-	-webkit-text-emphasis-position:	$posi
-	text-emphasis-position:			$posi
+    -moz-text-emphasis:    $sym
+    -webkit-text-emphasis: $sym
+    text-emphasis:         $sym
+    -moz-text-emphasis-position:    $posi
+    -webkit-text-emphasis-position: $posi
+    text-emphasis-position:         $posi
 
 
 // ========================================================================== 
@@ -36,10 +36,10 @@
 // ========================================================================== 
 
 @mixin _scale( $size: .55 ) 
-	-moz-transform:		scale( $size )
-	-ms-transform:		scale( $size )
-	-webkit-transform:	scale( $size )
-	transform:			scale( $size )
+    -moz-transform:    scale( $size )
+    -ms-transform:     scale( $size )
+    -webkit-transform: scale( $size )
+    transform:         scale( $size )
 
 
 // ========================================================================== 
@@ -48,12 +48,12 @@
 // ========================================================================== 
 
 @mixin _typo-reset 
-	+_text-emphasis(none)
-	font-style:			normal
-	font-weight:		normal
-	line-height:		$line-height
-	text-decoration:	none
-	text-indent:		0
+    +_text-emphasis(none)
+    font-style:      normal
+    font-weight:     normal
+    line-height:     $line-height
+    text-decoration: none
+    text-indent:     0
 
 
 // ========================================================================== 
@@ -62,14 +62,14 @@
 // ========================================================================== 
 
 @mixin _font-feature( $set, $moz: false )
-	@if $moz != false
-		-moz-font-feature-settings:	$moz
-	@else
-		-moz-font-feature-settings:	#{$set}
+    @if $moz != false
+        -moz-font-feature-settings: $moz
+    @else
+        -moz-font-feature-settings: #{$set}
 
-	-ms-font-feature-settings:		#{$set}
-	-webkit-font-feature-settings:	#{$set}
-	font-feature-settings:			#{$set}
+    -ms-font-feature-settings:      #{$set}
+    -webkit-font-feature-settings:  #{$set}
+    font-feature-settings:          #{$set}
 
 
 // ========================================================================== 
@@ -90,64 +90,64 @@
 //    Punctuation rules
 
 @mixin _zhuozhonghao-fallback( $dot: '・', $posi: under )
-	@if $posi == under
-		$posi: ('.4em 0 0 0', '.4em 0 0 -.2em')
-	@else if $posi == over
-		$posi: ('-1.45em 0 0 .32em', '-1.45em 0 0 .1em')
+    @if $posi == under
+        $posi: ('.4em 0 0 0', '.4em 0 0 -.2em')
+    @else if $posi == over
+        $posi: ('-1.45em 0 0 .32em', '-1.45em 0 0 .1em')
 
-	html.han-js-rendered &
-		border-bottom-width: 0
-		padding-bottom: 0
+    html.han-js-rendered &
+        border-bottom-width: 0
+        padding-bottom: 0
 
-		// 2
-		span.biaodian,
-		span.punct
-			+_text-emphasis( none )
+        // 2
+        span.biaodian,
+        span.punct
+            +_text-emphasis( none )
 
-	// 3
-	.no-textemphasis &
-		line-height: 2
+    // 3
+    .no-textemphasis &
+        line-height: 2
 
-		// 4
-		span.jinze,
-		span.latin.word
-			display: inline-block
+        // 4
+        span.jinze,
+        span.latin.word
+            display: inline-block
 
-		span.char
-			font-style: inherit
-			position: relative
+        span.char
+            font-style: inherit
+            position: relative
 
-			&:after
-				// posi
-				display: inline-block
-				left: 0
-				margin: unquote(nth($posi, 1))
-				overflow: hidden
-				position: absolute
-				text-indent: 0
-				top: 0
+            &:after
+                // posi
+                display: inline-block
+                left: 0
+                margin: unquote(nth($posi, 1))
+                overflow: hidden
+                position: absolute
+                text-indent: 0
+                top: 0
 
-				// size
-				height: 1.9em
+                // size
+                height: 1.9em
 
-				// typo
-				+_typo-reset
-				content: $dot
-				font-family: Meiryo, 'MS Gothic', 'MS Mincho' !important
-				line-height: 1.75em
+                // typo
+                +_typo-reset
+                content: $dot
+                font-family: Meiryo, 'MS Gothic', 'MS Mincho' !important
+                line-height: 1.75em
 
-		span.latin:after 
-			left: 50%
-			margin: unquote(nth($posi, 2))
-			text-indent: -.3em
-			width: .3em
+        span.latin:after 
+            left: 50%
+            margin: unquote(nth($posi, 2))
+            text-indent: -.3em
+            width: .3em
 
-		// 2
-		span.space,
-		span.biaodian,
-		span.punct
-			&:after
-				content: none !important
+        // 2
+        span.space,
+        span.biaodian,
+        span.punct
+            &:after
+                content: none !important
 
 
 

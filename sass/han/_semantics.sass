@@ -13,8 +13,8 @@
 //    Render texts with subpixel-antialiased on WebKit
 
 html
-	line-height: $line-height // 1
-	-webkit-font-smoothing: subpixel-antialiased // 2
+    line-height: $line-height // 1
+    -webkit-font-smoothing: subpixel-antialiased // 2
 
 
 /* ========================================================================== 
@@ -30,50 +30,50 @@ html
 
 html:lang(zh),
 html:lang(jp)
-	// 1
-	.poem-like p,
-	p.poem-like
-		margin-left: 2em
+    // 1
+    .poem-like p,
+    p.poem-like
+        margin-left: 2em
 
-	ol, ul
-		padding-left: 2em
+    ol, ul
+        padding-left: 2em
 
-	article
-		p,
-		li
-			line-height: $line-height-article
-			text-align: justify
+    article
+        p,
+        li
+            line-height: $line-height-article
+            text-align: justify
 
-	figure,
-	blockquote
-		margin-left: 2em
-		margin-right: 2em
-		width: auto
+    figure,
+    blockquote
+        margin-left: 2em
+        margin-right: 2em
+        width: auto
 
-		blockquote
-			margin-left: 1em
-			margin-right: 1em
+        blockquote
+            margin-left: 1em
+            margin-right: 1em
 
-	article blockquote
-		margin-right: 0
+    article blockquote
+        margin-right: 0
 
-	figure blockquote
-		margin: 0
+    figure blockquote
+        margin: 0
 
-	// 2
-	@media only screen and (max-width: $mobile-device-width)
-		.poem-like p,
-		p.poem-like,
-		blockquote
-			margin-left: 1em
-			margin-right: 1em
+    // 2
+    @media only screen and (max-width: $mobile-device-width)
+        .poem-like p,
+        p.poem-like,
+        blockquote
+            margin-left: 1em
+            margin-right: 1em
 
 html:lang(jp)
-	&.poem-like p,
-	.poem-like p,
-	p.poem-like,
-	blockquote
-		margin-left: 1em
+    &.poem-like p,
+    .poem-like p,
+    p.poem-like,
+    blockquote
+        margin-left: 1em
 
 
 /* ==========================================================================
@@ -82,10 +82,10 @@ html:lang(jp)
    ========================================================================== */
 
 pre code
-	display: block
-	overflow: auto
-	white-space: pre
-	word-wrap: normal
+    display: block
+    overflow: auto
+    white-space: pre
+    word-wrap: normal
 
 
 /* ==========================================================================
@@ -94,13 +94,13 @@ pre code
    ========================================================================== */
 
 html:lang(zh)
-	a,
-	ins
-		text-decoration: inherit
+    a,
+    ins
+        text-decoration: inherit
 
-	ins
-		border-bottom: 3px double $lightgrey
-		padding-bottom: .05em
+    ins
+        border-bottom: 3px double $lightgrey
+        padding-bottom: .05em
 
 
 /* ==========================================================================
@@ -112,18 +112,18 @@ html:lang(zh)
 
 em:lang(zh),
 em:lang(ja)
-	font-style: inherit
+    font-style: inherit
 
-	// 1
-	border-bottom-style: dotted
-	border-bottom-width: 2px
-	padding-bottom: .05em
+    // 1
+    border-bottom-style: dotted
+    border-bottom-width: 2px
+    padding-bottom: .05em
 
-	+_text-emphasis
-	border-bottom-width: -webkit-calc( 0px )
+    +_text-emphasis
+    border-bottom-width: -webkit-calc( 0px )
 
 em:lang(ja)
-	+_text-emphasis( sesame, over )
+    +_text-emphasis( sesame, over )
 
 
 /* ==========================================================================
@@ -132,9 +132,9 @@ em:lang(ja)
    ========================================================================== */
 
 article strong
-	*:lang(zh),
-	*:lang(ja)
-		font-family: sans-serif
+    *:lang(zh),
+    *:lang(ja)
+        font-family: sans-serif
 
 
 /* ========================================================================== 
@@ -150,61 +150,61 @@ article strong
 //    Corrects font fallback on WebKit
 
 cite
-	&:lang(zh),
-	&:lang(ja),
-	&:lang(en).piece
-		font-style: inherit
+    &:lang(zh),
+    &:lang(ja),
+    &:lang(en).piece
+        font-style: inherit
 
-	&:lang(zh)
-		&:before,
-		&:after
-			content: '\300a'
-			font-family: inherit // 1
-			line-height: inherit
+    &:lang(zh)
+        &:before,
+        &:after
+            content: '\300a'
+            font-family: inherit // 1
+            line-height: inherit
 
-		&:after
-			content: '\300b'
+        &:after
+            content: '\300b'
 
-		&.piece:before
-			content: '\3008'
+        &.piece:before
+            content: '\3008'
 
-		&.piece:after
-			content: '\3009'
+        &.piece:after
+            content: '\3009'
 
-	&:lang(ja)
-		&:before
-			content: '\300e'
+    &:lang(ja)
+        &:before
+            content: '\300e'
 
-		&:after
-			content: '\300f'
+        &:after
+            content: '\300f'
 
-		&.piece:before
-			content: '\300c'
+        &.piece:before
+            content: '\300c'
 
-		&.piece:after
-			content: '\300d'
+        &.piece:after
+            content: '\300d'
 
-	&:lang(en)
-		&.piece:before,
-		&.piece:after
-			content: '\201c'
-			font-family: inherit // 1
+    &:lang(en)
+        &.piece:before,
+        &.piece:after
+            content: '\201c'
+            font-family: inherit // 1
 
-		&:lang(en).piece:after
-			content: '\201d'
+        &:lang(en).piece:after
+            content: '\201d'
 
-	&:lang(en-GB)
-		&.piece:before
-			content: '\2018'
+    &:lang(en-GB)
+        &.piece:before
+            content: '\2018'
 
-		&.piece:after
-			content: '\2019'
+        &.piece:after
+            content: '\2019'
 
 .no-cite-mark cite,
 cite.no-cite-mark
-	&:before,
-	&:after
-		content: '' !important
+    &:before,
+    &:after
+        content: '' !important
 
 
 /* ==========================================================================
@@ -213,28 +213,28 @@ cite.no-cite-mark
    ========================================================================== */
 
 q
-	quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+    quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
 
-	&:lang(zh)
-		quotes: '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f'
+    &:lang(zh)
+        quotes: '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f'
 
-	&:lang(zh-CN),
-	&:lang(zh-Hans),
-	&:lang(en)
-		quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+    &:lang(zh-CN),
+    &:lang(zh-Hans),
+    &:lang(en)
+        quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
 
-	&:lang(en-GB)
-		quotes: '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d'
+    &:lang(en-GB)
+        quotes: '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d'
 
-	&:before
-		content: open-quote
+    &:before
+        content: open-quote
 
-	&:after
-		content: close-quote
+    &:after
+        content: close-quote
 
-	&:lang(ja):before,
-	&:lang(ja):after
-		content: none
+    &:lang(ja):before,
+    &:lang(ja):after
+        content: none
 
 
 /* ==========================================================================
@@ -243,10 +243,10 @@ q
    ========================================================================== */
 
 dfn
-	&:lang(zh),
-	&:lang(ja)
-		font-style: inherit
-		font-weight: bold
+    &:lang(zh),
+    &:lang(ja)
+        font-style: inherit
+        font-weight: bold
 
 
 /* ==========================================================================
@@ -258,7 +258,7 @@ code,
 kbd,
 samp,
 pre
-	font-family: monospace, sans-serif
+    font-family: monospace, sans-serif
 
 
 /* ==========================================================================
@@ -268,8 +268,8 @@ pre
 
 i,
 var
-	font-family: cursive, serif
-	font-style: inherit
+    font-family: cursive, serif
+    font-style: inherit
 
 
 /* ==========================================================================
@@ -282,17 +282,17 @@ var
 
 *:lang(zh),
 *:lang(ja)
-	u,
-	ins
-		//letter-spacing: 0
-		border-bottom: 1px solid
-		padding-bottom: 0.05em
-		text-decoration: none
+    u,
+    ins
+        //letter-spacing: 0
+        border-bottom: 1px solid
+        padding-bottom: 0.05em
+        text-decoration: none
 
-		// 1
-		+ u,
-		+ ins
-			margin-left: .125em
+        // 1
+        + u,
+        + ins
+            margin-left: .125em
 
 
 /* ========================================================================== 
@@ -307,41 +307,41 @@ var
 //    Hide the parentheses on WebKit & IE
 
 ruby
-	// 1
-	> rt
-		&:before
-			content: '\ff08'
+    // 1
+    > rt
+        &:before
+            content: '\ff08'
 
-		&:after
-			content: '\ff09'
+        &:after
+            content: '\ff09'
 
-	// 1
-	> rbc + rtc
-		&:before
-			content: '\ff08'
+    // 1
+    > rbc + rtc
+        &:before
+            content: '\ff08'
 
-	> rtc
-		&:after
-			content: '\ff0c'
+    > rtc
+        &:after
+            content: '\ff0c'
 
-		&:last-of-type:after
-			content: '\ff09'
+        &:last-of-type:after
+            content: '\ff09'
 
-	> rt
-		&:before,
-		&:after 
-			// posi
-			display: inline-block
-			overflow: hidden
-			vertical-align: middle
+    > rt
+        &:before,
+        &:after 
+            // posi
+            display: inline-block
+            overflow: hidden
+            vertical-align: middle
 
-			// size
-			// 2
-			height: 0
-			width: 	0
+            // size
+            // 2
+            height: 0
+            width:  0
 
-			height: -moz-calc( 1.3em )
-			width: 	-moz-calc( 1em )
+            height: -moz-calc( 1.3em )
+            width:  -moz-calc( 1em )
 
 
 

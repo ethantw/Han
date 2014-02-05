@@ -6,13 +6,13 @@
    ========================================================================== */
 
 @font-face
-	font-family: han-unicode-range
-	src: local(Arial), local('Droid Sans')
+    font-family: han-unicode-range
+    src: local(Arial), local('Droid Sans')
 
 @font-face
-	font-family: han-unicode-range
-	src: local('Times New Roman'), local(Times), local('Droid Serif')
-	unicode-range: U+270C
+    font-family: han-unicode-range
+    src: local('Times New Roman'), local(Times), local('Droid Serif')
+    unicode-range: U+270C
 
 
 /* ========================================================================== 
@@ -21,11 +21,11 @@
    ========================================================================== */
 
 em
-	&:lang(zh)
-		+_zhuozhonghao-fallback
+    &:lang(zh)
+        +_zhuozhonghao-fallback
 
-	&:lang(ja)
-		+_zhuozhonghao-fallback('、', over)
+    &:lang(ja)
+        +_zhuozhonghao-fallback('、', over)
 
 
 /* ==========================================================================
@@ -38,11 +38,11 @@ em
 
 // 1
 .no-fontface-kaiti 
-	i,
-	var
-		//font-family: serif
-		border-bottom: 3px double $lightgrey
-		padding-bottom: .05em
+    i,
+    var
+        //font-family: serif
+        border-bottom: 3px double $lightgrey
+        padding-bottom: .05em
 
 
 /* ==========================================================================
@@ -51,13 +51,13 @@ em
    ========================================================================== */
 
 html.han-js-rendered
-	u + u,
-	ins + ins
-		margin-left: auto
+    u + u,
+    ins + ins
+        margin-left: auto
 
-	u.adjacent,
-	ins.adjacent
-		margin-left: .125em
+    u.adjacent,
+    ins.adjacent
+        margin-left: .125em
 
 /* -------------------------------------
    實驗性底線
@@ -68,68 +68,68 @@ html.han-js-rendered
 //    Easier positioning
 
 .han-js-rendered.han-lab-underline
-	u.adjacent
-		margin-left: auto
+    u.adjacent
+        margin-left: auto
 
-	u,
-	u *,
-	u *:before,
-	u *:after
-		+_contentbox // 1
+    u,
+    u *,
+    u *:before,
+    u *:after
+        +_contentbox // 1
 
 
 u.han-js-charized 
-	border-bottom: 0 none
-	text-decoration: none
+    border-bottom: 0 none
+    text-decoration: none
 
-	span.char:not(:first-of-type):not(:last-of-type) span,
-	hanla,
-	span.char:first-of-type span:after,
-	span.char:last-of-type span:after 
-		border-bottom: 1px solid
-		padding-bottom: .05em
+    span.char:not(:first-of-type):not(:last-of-type) span,
+    hanla,
+    span.char:first-of-type span:after,
+    span.char:last-of-type span:after 
+        border-bottom: 1px solid
+        padding-bottom: .05em
 
-	span.char:first-of-type span,
-	span.char:last-of-type span 
-		position: relative
+    span.char:first-of-type span,
+    span.char:last-of-type span 
+        position: relative
 
-		&:after 
-			content: ''
-			display: inline-block
-			left: 0
-			margin-left: 1px
-			position: absolute
-			top: 0
-			height: 100%
-			+_calc( width, "100% - 1px" )
+        &:after 
+            content: ''
+            display: inline-block
+            left: 0
+            margin-left: 1px
+            position: absolute
+            top: 0
+            height: 100%
+            +_calc( width, "100% - 1px" )
 
-	span.char:last-of-type span:after 
-		margin: 0 1px 0 0
+    span.char:last-of-type span:after 
+        margin: 0 1px 0 0
 
-	span.char:first-child:last-child span:after 
-		margin: 0 1px 0
-		+_calc( width, "100% - 2px" )
+    span.char:first-child:last-child span:after 
+        margin: 0 1px 0
+        +_calc( width, "100% - 2px" )
 
-	*:not(:first-child) span.char:first-of-type span:after,
-	*:not(:last-child) span.char:last-of-type span:after,
-	span.char:not(:first-child):first-of-type span:after,
-	span.char:not(:last-child):last-of-type span:after 
-		border-bottom: 0
+    *:not(:first-child) span.char:first-of-type span:after,
+    *:not(:last-child) span.char:last-of-type span:after,
+    span.char:not(:first-child):first-of-type span:after,
+    span.char:not(:last-child):last-of-type span:after 
+        border-bottom: 0
 
-	*:not(:first-child) span.char:first-of-type span,
-	*:not(:last-child) span.char:last-of-type span,
-	span.char:not(:first-child):first-of-type span,
-	span.char:not(:last-child):last-of-type span 
-		border-bottom: 1px solid
-		padding-bottom: .125em
-	
-	hanla:first-child,
-	hanla:last-child 
-		border: 0 none
-	
-	*:not(:first-child) hanla:first-child,
-	*:not(:last-child) hanla:last-child 
-		border: 1px solid
+    *:not(:first-child) span.char:first-of-type span,
+    *:not(:last-child) span.char:last-of-type span,
+    span.char:not(:first-child):first-of-type span,
+    span.char:not(:last-child):last-of-type span 
+        border-bottom: 1px solid
+        padding-bottom: .125em
+    
+    hanla:first-child,
+    hanla:last-child 
+        border: 0 none
+    
+    *:not(:first-child) hanla:first-child,
+    *:not(:last-child) hanla:last-child 
+        border: 1px solid
 
 
 /* ========================================================================== 
@@ -147,13 +147,13 @@ u.han-js-charized
 
 //.han-js-charized span.char,
 .han-js-bitouwei-rendered span.bitouwei
-	display: inline-block
-	text-indent: 0
+    display: inline-block
+    text-indent: 0
 
 .han-js-charized
-	span.char.space,
-	span.char > span
-		display: inline
+    span.char.space,
+    span.char > span
+        display: inline
 
 
 /* ==========================================================================
@@ -168,35 +168,35 @@ u.han-js-charized
 //    Hidden in certain elements or situations
 
 hanla 
-	&,
-	html:not(.han-la) & 
-		display: none
-	
+    &,
+    html:not(.han-la) & 
+        display: none
+    
 
-	html.han-la & 
-		&:lang(zh),
-		&:lang(ja) 
-			display: inline
-			position: static
-		
+    html.han-la & 
+        &:lang(zh),
+        &:lang(ja) 
+            display: inline
+            position: static
+        
 
-		&:after 
-			content: ' '
-			display: inline
-			font-family: Arial
-			font-size: .89em // 1
+        &:after 
+            content: ' '
+            display: inline
+            font-family: Arial
+            font-size: .89em // 1
 
 html.han-la 
-	code,
-	pre,
-	kbd,
-	samp // 2
-		hanla 
-			display: none 
-	ol,
-	ul // 2
-		> hanla 
-			display: none
+    code,
+    pre,
+    kbd,
+    samp // 2
+        hanla 
+            display: none 
+    ol,
+    ul // 2
+        > hanla 
+            display: none
 
 
 

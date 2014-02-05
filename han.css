@@ -920,11 +920,11 @@ th {
    ========================================================================== */
 /**
  * a. 句、逗、頓號（。，、）
- *	  Period, comma, paused comma
+ *      Period, comma, paused comma
  *
  * b. 分、冒、問、嘆號（；：？！）
- *	  Colon, semicolon, question, exclam-
- *	  ation marks
+ *      Colon, semicolon, question, exclam-
+ *      ation marks
  *
  * c. 連接號、正、反斜線（－／＼）
  *    En dash (fullwidth hyphen-minus),
@@ -983,7 +983,7 @@ th {
 
 /**
  * a. 引號（「『』」）
- *	  Quotes
+ *      Quotes
  *
  * b. 括號、書名號（（）《》〈〉〔〕）
  *    Brackets
@@ -1066,10 +1066,10 @@ th {
   unicode-range: U+270C; }
 
 /* ---------------------------------------
-	 襯線西文斜體
-	 ---
-	 Latin italic serif
-	 --------------------------------------- */
+     襯線西文斜體
+     ---
+     Latin italic serif
+     --------------------------------------- */
 @font-face {
   font-family: 'Latin Italic Serif';
   src: local("Georgia Italic"), local("Times New Roman Italic"), local(Georgia-Italic), local(TimesNewRomanPS-ItalicMT), local(Times-Italic); }
@@ -1080,10 +1080,10 @@ th {
   src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic"), local(Georgia-BoldItalic), local(TimesNewRomanPS-BoldItalicMT), local(Times-Italic); }
 
 /* ---------------------------------------
-	 無襯線西文斜體
-	 ---
-	 Latin italic sans-serif
-	 --------------------------------------- */
+     無襯線西文斜體
+     ---
+     Latin italic sans-serif
+     --------------------------------------- */
 @font-face {
   font-family: 'Latin Italic Sans';
   src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic"), local(HelveticaNeue-Italic), local(Helvetica-LightOblique), local(Arial-ItalicMT); }

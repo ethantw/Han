@@ -7,53 +7,53 @@
    --------------------------------------- */
 
 @font-face {
-	@include _range-zhuyin;
-	font-family: 'Zhuyin Kaiti';
-	src:
-		url($zhuyin-eot) format('embedded-opentype'),
-		url($zhuyin-otf) format('opentype'),
-		url($zhuyin-ttf) format('truetype'),
-		local(BiauKai),
-		local('標楷體'),
-		local(DFKaiShu-SB-Estd-BF),
-		local(PMingLiU);
+    @include _range-zhuyin;
+    font-family: 'Zhuyin Kaiti';
+    src:
+        url($zhuyin-eot) format('embedded-opentype'),
+        url($zhuyin-otf) format('opentype'),
+        url($zhuyin-ttf) format('truetype'),
+        local(BiauKai),
+        local('標楷體'),
+        local(DFKaiShu-SB-Estd-BF),
+        local(PMingLiU);
 
 }
 
 @font-face {
-	@include _range-zhuyin;
-	font-family: 'Zhuyin Heiti';
-	src:
-		local('Hiragino Sans GB'),
-		local('Microsoft Jhenghei'),
-		url($zhuyin-eot) format('embedded-opentype'),
-		url($zhuyin-otf) format('opentype'),
-		url($zhuyin-ttf) format('truetype'),
-		local(PMingLiU),
-		local(SimSun),
-		local(BiauKai),
-		local('標楷體'),
-		local(DFKaiShu-SB-Estd-BF);
+    @include _range-zhuyin;
+    font-family: 'Zhuyin Heiti';
+    src:
+        local('Hiragino Sans GB'),
+        local('Microsoft Jhenghei'),
+        url($zhuyin-eot) format('embedded-opentype'),
+        url($zhuyin-otf) format('opentype'),
+        url($zhuyin-ttf) format('truetype'),
+        local(PMingLiU),
+        local(SimSun),
+        local(BiauKai),
+        local('標楷體'),
+        local(DFKaiShu-SB-Estd-BF);
 }
 
 @font-face {
-	font-family: 'Zhuyin Heiti';
-	src: 
-		local('Heiti TC'),
-		local('Microsoft Jhenghei'),
-		url($zhuyin-eot) format('embedded-opentype'),
-		url($zhuyin-otf) format('opentype'),
-		url($zhuyin-ttf) format('truetype'),
-		local(PMingLiU),
-		local(SimSun),
-		local(BiauKai),
-		local('標楷體'),
-		local(DFKaiShu-SB-Estd-BF); 
-	unicode-range: 
-		// yi
-		U+3127,
-		// tones
-		U+02C7, U+02CA-B, U+02D9;
+    font-family: 'Zhuyin Heiti';
+    src: 
+        local('Heiti TC'),
+        local('Microsoft Jhenghei'),
+        url($zhuyin-eot) format('embedded-opentype'),
+        url($zhuyin-otf) format('opentype'),
+        url($zhuyin-ttf) format('truetype'),
+        local(PMingLiU),
+        local(SimSun),
+        local(BiauKai),
+        local('標楷體'),
+        local(DFKaiShu-SB-Estd-BF); 
+    unicode-range: 
+        // yi
+        U+3127,
+        // tones
+        U+02C7, U+02CA-B, U+02D9;
 }
 
 
