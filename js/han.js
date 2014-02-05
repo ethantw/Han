@@ -77,16 +77,17 @@
 
 		$(range).find('ruby').each(function() {
 			var html = $(this).html(),
+				that = $(this),
 				hruby = document.createElement('hruby')
 
 			// 羅馬拼音（在不支援`<ruby>`的瀏覽器下）
 			if ( !tests['ruby']() && 
-				 !$(this).hasClass('complex') &&
-				 !$(this).hasClass('zhuyin') &&
-				 !$(this).hasClass('rightangle') ) {
+				 !that.hasClass('complex') &&
+				 !that.hasClass('zhuyin') &&
+				 !that.hasClass('rightangle') ) {
 
 				// 將拼音轉為元素屬性以便CSS產生偽類
-				$(this)
+				that
 				.find('rt')
 				.each(function(){
 					var anno = $(this).html(),
@@ -107,7 +108,7 @@
 					)
 				})
 
-				$(this)
+				that
 				.replaceWith(
 					$(hruby)
 					.html( $(this).html() )
@@ -117,27 +118,27 @@
 				var attr = {}
 
 				// 國語注音、台灣方言音符號
-				if ( $(this).hasClass('zhuyin') ) {
+				if ( that.hasClass('zhuyin') ) {
 					// 將注音轉為元素屬性以便CSS產生偽類
-					$(this).find('rt')
+					that.find('rt')
 					.each(function(){
 						_apply_zhuyin(this)
 					})
 
 				// 雙行文字註記
-				} else if ( $(this).hasClass('complex') ) {
+				} else if ( that.hasClass('complex') ) {
 					attr.complex = 'complex'
 
 					_apply_annotation(this)
 					
 
 				// 拼音、注音直角顯示
-				} else if ( $(this).hasClass('rightangle') ) {
+				} else if ( that.hasClass('rightangle') ) {
 					attr.rightangle = 'rightangle'
 
 
 					// 國語注音、台灣方言音符號
-					$(this).find('rtc.zhuyin')
+					that.find('rtc.zhuyin')
 					.hide()
 					.each(function(){
 						var t = $(this).prevAll('rbc'),
@@ -155,7 +156,7 @@
 				}
 
 				// 以`<hruby>`元素替代`<ruby>`，避免UA原生樣式的干擾
-				$(this).filter(function(){
+				that.filter(function(){
 					return $(this).hasClass("zhuyin") ||
 						   $(this).hasClass("complex") ||
 						   $(this).hasClass("rightangle")
