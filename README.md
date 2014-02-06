@@ -10,8 +10,10 @@
 
 自v2.1.0版本起，漢字標準格式始支援[Sass]，以便前端設計師簡化開發流程。
 
-[Sass]: http://sass-lang.com
+[檢視範例測試頁 →][test]
 
+[Sass]: http://sass-lang.com
+[test]: http://ethantw.github.io/Han/test.html
 
 
 安裝及使用
@@ -70,7 +72,7 @@ JS檔：
 
 * * *
 「漢字標準格式」版本：v2.3   
-本頁最後修改於：2014年2月5日　16:52（GMT+8）
+本頁最後修改於：2014年2月6日　18:42（GMT+8）
 
 
 
