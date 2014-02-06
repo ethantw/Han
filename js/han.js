@@ -5,7 +5,7 @@
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/2/5
+ * Last-Modified: 2014/2/6
  */
 
 ;(function(window, $){
@@ -354,7 +354,6 @@
         .remove()
 
         $(node).find('rb')
-        .after(' ')
         .removeAttr('set index')
         .filter('rb[annotation]')
         .each(function(){
@@ -433,8 +432,6 @@
                 .attr(data)
                 .text( zi )
             )
-            .after( ' ' )
-            //.replaceWith( '' )
             .replaceWith( _copy().html( zy ) )
         }
     },
