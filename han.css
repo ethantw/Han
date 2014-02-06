@@ -1197,7 +1197,7 @@ html:lang(zh) article p,
 html:lang(zh) article li,
 html:lang(jp) article p,
 html:lang(jp) article li {
-  line-height: 1.7;
+  line-height: 2;
   text-align: justify; }
 html:lang(zh) figure,
 html:lang(zh) blockquote,
@@ -1827,8 +1827,7 @@ html.han-la ol > hanla,
 html.han-la ul > hanla {
   display: none; }
 
-/* ==========================================================================
- * 基礎頁面
+/* 基礎頁面
  * Base
  * ========================================================================== */
 html:lang(zh) {
@@ -1845,10 +1844,13 @@ html:not(:lang(zh)):not(:lang(ja)),
 html *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
 
-/* ==========================================================================
+/* 內容群組元素
+ * Grouping content
+ * ========================================================================== */
+/*
  * 引用區塊
  * Blockquotes
- * ========================================================================== */
+ */
 article blockquote:lang(zh) {
   font-family: "Biaodian Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "Han Songti", serif; }
 article blockquote:lang(ja) {
@@ -1890,26 +1892,29 @@ article figure figcaption:not(:lang(zh)):not(:lang(ja)),
 article figure figcaption *:not(:lang(zh)):not(:lang(ja)) {
   font-family: Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "Han Songti", serif; }
 
-/* ==========================================================================
+/* 字級語意元素
+ * Text-level semantics
+ * ========================================================================== */
+/*
  * 強調
  * Emphases
- * ========================================================================== */
+ */
 .no-textemphasis em:lang(zh) span.cjk:after,
 .no-textemphasis em:lang(zh) span.latin:after, .no-textemphasis em:lang(ja) span.cjk:after,
 .no-textemphasis em:lang(ja) span.latin:after {
   font-family: "Hiragino Mincho ProN", "Hiragino Mincho Pro", Meiryo, "MS Gothic", "MS Mincho" serif !important; }
 
-/* ==========================================================================
+/*
  * 來源
- * Cites 
- * ========================================================================== */
+ * Cites
+ */
 cite:lang(en).piece:before, cite:lang(en).piece:after {
   font-family: Georgia, Times, "Times New Roman", serif; }
 
-/* ==========================================================================
+/*
  * 文章內重點
  * Importance in article
- * ========================================================================== */
+ */
 article strong:lang(zh) {
   font-family: "Biaodian Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
 article strong:lang(ja) {
@@ -1924,10 +1929,10 @@ article strong:not(:lang(zh)):not(:lang(ja)),
 article strong *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
-/* ==========================================================================
+/*
  * 代碼、輸入鍵、計算機輸出示例、格式預處理文字
  * Code, user input, computer output, preformatted text
- * ========================================================================== */
+ */
 code,
 kbd,
 pre,
@@ -1968,10 +1973,10 @@ samp {
   samp *:not(:lang(zh)):not(:lang(ja)) {
     font-family: Menlo, Courier, "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif, sans-serif; }
 
-/* ==========================================================================
+/*
  * 變音文字及變數
  * Alternative voices & Variables
- * ========================================================================== */
+ */
 i:lang(zh),
 var:lang(zh) {
   font-family: "Biaodian Serif", "Latin Italic Serif", Georgia, Times, "Times New Roman", "Han Kaiti", cursive, "Han Songti", serif; }
@@ -2016,10 +2021,10 @@ article blockquote i *:not(:lang(zh)):not(:lang(ja)),
 article blockquote var *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif; }
 
-/* ==========================================================================
+/*
  * 小字標注
  * Ruby annotations
- * ========================================================================== */
+ */
 hruby[generic] rb[zhuyin]:after {
   font-family: "Zhuyin Kaiti", cursive, serif; }
 hruby[generic="sans"] rb[zhuyin]:before,
