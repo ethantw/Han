@@ -1169,24 +1169,27 @@ th {
   src: local("Heiti TC"), local("Microsoft Jhenghei"), url("fonts/zhuyin.eot") format("embedded-opentype"), url("fonts/zhuyin.otf") format("opentype"), url("fonts/zhuyin.ttf") format("truetype"), local(PMingLiU), local(SimSun), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF);
   unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9; }
 
-/* ==========================================================================
- * 基礎頁面設定
+/* 基礎頁面設定
  * Base
  * ========================================================================== */
 html {
   line-height: 1.3;
   -webkit-font-smoothing: subpixel-antialiased; }
 
-/* ==========================================================================
+/* 章節元素及內容群組元素
+ * Sections & grouping content
+ * ========================================================================== */
+/*
  * 段落、清單、圖表、引用區塊
  * Paragraphs, lists, figures and blockquotes
- * ========================================================================== */
+ */
 html:lang(zh) .poem-like p,
 html:lang(zh) p.poem-like,
 html:lang(jp) .poem-like p,
 html:lang(jp) p.poem-like {
   margin-left: 2em; }
-html:lang(zh) ol, html:lang(zh) ul,
+html:lang(zh) ol,
+html:lang(zh) ul,
 html:lang(jp) ol,
 html:lang(jp) ul {
   padding-left: 2em; }
@@ -1231,27 +1234,30 @@ html:lang(jp) p.poem-like,
 html:lang(jp) blockquote {
   margin-left: 1em; }
 
-/* ==========================================================================
+/*
  * 聯絡資訊
  * Contact information
- * ========================================================================== */
+ */
 address:lang(zh), address:lang(ja) {
   font-style: inherit; }
 
-/* ==========================================================================
+/*
  * 增進代碼區塊的易讀性
  * Enhance the readability of code blocks
- * ========================================================================== */
+ */
 pre code {
   display: block;
   overflow: auto;
   white-space: pre;
   word-wrap: normal; }
 
-/* ==========================================================================
+/* 字級語意元素及修訂元素
+ * Text-level semantics & edits
+ * ========================================================================== */
+/*
  * 連結、增訂 
  * Hyperlinks and insertion
- * ========================================================================== */
+ */
 html:lang(zh) a,
 html:lang(zh) ins {
   text-decoration: inherit; }
@@ -1259,10 +1265,10 @@ html:lang(zh) ins {
   border-bottom: 3px double lightgrey;
   padding-bottom: 0.05em; }
 
-/* ==========================================================================
+/*
  * 強調
  * Emphases
- * ========================================================================== */
+ */
 em:lang(zh),
 em:lang(ja) {
   font-style: inherit;
@@ -1285,18 +1291,18 @@ em:lang(ja) {
   -webkit-text-emphasis-position: over;
   text-emphasis-position: over; }
 
-/* ==========================================================================
+/*
  * 文章內重點
  * Importance in article
- * ========================================================================== */
+ */
 article strong *:lang(zh),
 article strong *:lang(ja) {
   font-family: sans-serif; }
 
-/* ==========================================================================
+/*
  * 來源
  * Cites 
- * ========================================================================== */
+ */
 cite:lang(zh), cite:lang(ja), cite:lang(en).piece {
   font-style: inherit; }
 cite:lang(zh):before, cite:lang(zh):after {
@@ -1332,10 +1338,10 @@ cite.no-cite-mark:before,
 cite.no-cite-mark:after {
   content: "" !important; }
 
-/* ==========================================================================
+/*
  * 引用
  * Quotes
- * ========================================================================== */
+ */
 q {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019"; }
   q:lang(zh) {
@@ -1351,37 +1357,37 @@ q {
   q:lang(ja):before, q:lang(ja):after {
     content: none; }
 
-/* ==========================================================================
+/*
  * 術語
  * Definitions
- * ========================================================================== */
+ */
 dfn:lang(zh), dfn:lang(ja) {
   font-style: inherit;
   font-weight: bold; }
 
-/* ==========================================================================
+/*
  * 代碼、輸入鍵、計算機輸出示例、格式預處理文字
  * Code, user input, computer output, preformatted text
- * ========================================================================== */
+ */
 code,
 kbd,
 samp,
 pre {
   font-family: monospace, sans-serif; }
 
-/* ==========================================================================
+/*
  * 變音文字及變數
  * Alternative voices & Variables
- * ========================================================================== */
+ */
 i,
 var {
   font-family: cursive, serif;
   font-style: inherit; }
 
-/* ==========================================================================
+/*
  * 註記
  * Annotations
- * ========================================================================== */
+ */
 *:lang(zh) u,
 *:lang(zh) ins,
 *:lang(ja) u,
@@ -1399,10 +1405,10 @@ var {
   *:lang(ja) ins + ins {
     margin-left: 0.125em; }
 
-/* ==========================================================================
+/*
  * 小字標注
  * Ruby annotations
- * ========================================================================== */
+ */
 ruby > rt:before {
   content: "\ff08"; }
 ruby > rt:after {
@@ -1422,9 +1428,8 @@ ruby > rt:before, ruby > rt:after {
   height: -moz-calc(1.3em );
   width: -moz-calc(1em ); }
 
-/* ==========================================================================
- * CSS3屬性`unicode-range`支援偵測
- * Test for CSS3 property `unicode-range`
+/* 功能支援偵測
+ * Feature detection of browsers
  * ========================================================================== */
 @font-face {
   font-family: han-unicode-range;
@@ -1435,10 +1440,13 @@ ruby > rt:before, ruby > rt:after {
   src: local("Times New Roman"), local(Times), local("Droid Serif");
   unicode-range: U+270C; }
 
-/* ==========================================================================
+/* 元素樣式修正
+ * Style correction for elements
+ * ========================================================================== */
+/*
  * 着重號
  * Text emphases
- * ========================================================================== */
+ */
 html.han-js-rendered em:lang(zh) {
   border-bottom-width: 0;
   padding-bottom: 0; }
@@ -1542,19 +1550,19 @@ html.han-js-rendered em:lang(ja) {
   .no-textemphasis em:lang(ja) span.punct:after {
     content: none !important; }
 
-/* ==========================================================================
+/*
  * 變音文字及變數
  * Alternative voices & Variables
- * ========================================================================== */
+ */
 .no-fontface-kaiti i,
 .no-fontface-kaiti var {
   border-bottom: 3px double lightgrey;
   padding-bottom: 0.05em; }
 
-/* ==========================================================================
+/*
  * 註記
  * Annotations
- * ========================================================================== */
+ */
 html.han-js-rendered u + u,
 html.han-js-rendered ins + ins {
   margin-left: auto; }
@@ -1562,10 +1570,9 @@ html.han-js-rendered u.adjacent,
 html.han-js-rendered ins.adjacent {
   margin-left: 0.125em; }
 
-/* -------------------------------------
- * 實驗性底線
+/* 實驗性底線
  * Experimental underlines
- * ------------------------------------- */
+ */
 .han-js-rendered.han-lab-underline u.adjacent {
   margin-left: auto; }
 .han-js-rendered.han-lab-underline u,
@@ -1625,10 +1632,10 @@ u.han-js-charized {
   u.han-js-charized *:not(:last-child) hanla:last-child {
     border: 1px solid; }
 
-/* ==========================================================================
+/*
  * 小字標注
  * Ruby annotations
- * ========================================================================== */
+ */
 hruby {
   display: inline;
   line-height: 2; }
@@ -1781,10 +1788,13 @@ hruby {
         margin-right: -0.15em;
         margin-top: 0.4em; } }
 
-/* ==========================================================================
+/* 排版功能
+ * Typography
+ * ========================================================================== */
+/*
  * 避頭尾禁則
  * Biaodian rules
- * ========================================================================== */
+ */
 .han-js-bitouwei-rendered span.bitouwei {
   display: inline-block;
   text-indent: 0; }
@@ -1793,10 +1803,10 @@ hruby {
 .han-js-charized span.char > span {
   display: inline; }
 
-/* ==========================================================================
+/*
  * 漢拉間隙
  * Kerning between Hanzi and Latin letter
- * ========================================================================== */
+ */
 hanla, html:not(.han-la) hanla {
   display: none; }
 html.han-la hanla:lang(zh), html.han-la hanla:lang(ja) {

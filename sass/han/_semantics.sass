@@ -1,7 +1,6 @@
 
 
-/* ========================================================================== 
-   基礎頁面設定
+/* 基礎頁面設定
    Base
    ========================================================================== */
 
@@ -17,10 +16,14 @@ html
     -webkit-font-smoothing: subpixel-antialiased // 2
 
 
-/* ========================================================================== 
-   段落、清單、圖表、引用區塊
-   Paragraphs, lists, figures and blockquotes
+/* 章節元素及內容群組元素
+   Sections & grouping content
    ========================================================================== */
+
+/**
+ * 段落、清單、圖表、引用區塊
+ * Paragraphs, lists, figures and blockquotes
+ */
 
 // 1. 使用漢字寬度單位定位區塊，以求對齊
 //    Position with Hanzi width unit, in pursuit of alignments
@@ -35,7 +38,8 @@ html:lang(jp)
     p.poem-like
         margin-left: 2em
 
-    ol, ul
+    ol,
+    ul
         padding-left: 2em
 
     article
@@ -75,22 +79,20 @@ html:lang(jp)
     blockquote
         margin-left: 1em
 
-
-/* ==========================================================================
-   聯絡資訊
-   Contact information
-   ========================================================================== */
+/**
+ * 聯絡資訊
+ * Contact information
+ */
 
 address
     &:lang(zh),
     &:lang(ja)
         font-style: inherit
 
-
-/* ==========================================================================
-   增進代碼區塊的易讀性
-   Enhance the readability of code blocks
-   ========================================================================== */
+/**
+ * 增進代碼區塊的易讀性
+ * Enhance the readability of code blocks
+ */
 
 pre code
     display: block
@@ -99,10 +101,14 @@ pre code
     word-wrap: normal
 
 
-/* ==========================================================================
-   連結、增訂 
-   Hyperlinks and insertion
+/* 字級語意元素及修訂元素
+   Text-level semantics & edits
    ========================================================================== */
+
+/**
+ * 連結、增訂 
+ * Hyperlinks and insertion
+ */
 
 html:lang(zh)
     a,
@@ -113,11 +119,10 @@ html:lang(zh)
         border-bottom: 3px double $lightgrey
         padding-bottom: .05em
 
-
-/* ==========================================================================
-   強調
-   Emphases
-   ========================================================================== */
+/**
+ * 強調
+ * Emphases
+ */
 
 // 1. Fallback
 
@@ -136,22 +141,20 @@ em:lang(ja)
 em:lang(ja)
     +_text-emphasis( sesame, over )
 
-
-/* ==========================================================================
-   文章內重點
-   Importance in article
-   ========================================================================== */
+/**
+ * 文章內重點
+ * Importance in article
+ */
 
 article strong
     *:lang(zh),
     *:lang(ja)
         font-family: sans-serif
 
-
-/* ========================================================================== 
-   來源
-   Cites 
-   ========================================================================== */
+/**
+ * 來源
+ * Cites 
+ */
 
 // **注意：**原書名號已*棄用*。
 // **Attention:** Cite title marks are already *deprecated*.
@@ -217,11 +220,10 @@ cite.no-cite-mark
     &:after
         content: '' !important
 
-
-/* ==========================================================================
-   引用
-   Quotes
-   ========================================================================== */
+/** 
+ * 引用
+ * Quotes
+ */
 
 q
     quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
@@ -247,11 +249,10 @@ q
     &:lang(ja):after
         content: none
 
-
-/* ==========================================================================
-   術語
-   Definitions
-   ========================================================================== */
+/**
+ * 術語
+ * Definitions
+ */
 
 dfn
     &:lang(zh),
@@ -259,11 +260,10 @@ dfn
         font-style: inherit
         font-weight: bold
 
-
-/* ==========================================================================
-   代碼、輸入鍵、計算機輸出示例、格式預處理文字
-   Code, user input, computer output, preformatted text
-   ========================================================================== */
+/**
+ * 代碼、輸入鍵、計算機輸出示例、格式預處理文字
+ * Code, user input, computer output, preformatted text
+ */
 
 code,
 kbd,
@@ -271,25 +271,23 @@ samp,
 pre
     font-family: monospace, sans-serif
 
-
-/* ==========================================================================
-   變音文字及變數
-   Alternative voices & Variables
-   ========================================================================== */
+/**
+ * 變音文字及變數
+ * Alternative voices & Variables
+ */
 
 i,
 var
     font-family: cursive, serif
     font-style: inherit
 
-
-/* ==========================================================================
-   註記
-   Annotations
-   ========================================================================== */
+/**
+ * 註記
+ * Annotations
+ */
 
 // 1. 兩相鄰時的視覺語意區隔
-//    Visual semantic differentiation from adjacent annotations
+//    Presentational semantic differentiation from adjacent annotations
 
 *:lang(zh),
 *:lang(ja)
@@ -305,11 +303,10 @@ var
         + ins
             margin-left: .125em
 
-
-/* ========================================================================== 
-   小字標注
-   Ruby annotations
-   ========================================================================== */
+/**
+ * 小字標注
+ * Ruby annotations
+ */
 
 // 1. 對小字標注加入括弧等符號以利閱讀
 //    Parentheses attached for readability purposes

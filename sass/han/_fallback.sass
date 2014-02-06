@@ -1,9 +1,11 @@
 
 
-/* ========================================================================== 
-   CSS3屬性`unicode-range`支援偵測
-   Test for CSS3 property `unicode-range`
+/* 功能支援偵測
+   Feature detection of browsers
    ========================================================================== */
+
+// CSS3屬性`unicode-range`
+// CSS3 property `unicode-range`
 
 @font-face
     font-family: han-unicode-range
@@ -15,10 +17,14 @@
     unicode-range: U+270C
 
 
-/* ========================================================================== 
-   着重號
-   Text emphases
+/* 元素樣式修正
+   Style correction for elements
    ========================================================================== */
+
+/**
+ * 着重號
+ * Text emphases
+ */
 
 em
     &:lang(zh)
@@ -27,11 +33,10 @@ em
     &:lang(ja)
         +_zhuozhonghao-fallback('、', over)
 
-
-/* ==========================================================================
-   變音文字及變數
-   Alternative voices & Variables
-   ========================================================================== */
+/**
+ * 變音文字及變數
+ * Alternative voices & Variables
+ */
 
 // 1. 如果系統不支援楷體
 //    If Kaiti is not supported
@@ -44,11 +49,10 @@ em
         border-bottom: 3px double $lightgrey
         padding-bottom: .05em
 
-
-/* ==========================================================================
-   註記
-   Annotations
-   ========================================================================== */
+/**
+ * 註記
+ * Annotations
+ */
 
 html.han-js-rendered
     u + u,
@@ -59,10 +63,9 @@ html.han-js-rendered
     ins.adjacent
         margin-left: .125em
 
-/* -------------------------------------
-   實驗性底線
-   Experimental underlines
-   ------------------------------------- */
+/* 實驗性底線
+ * Experimental underlines
+ */
 
 // 1. 方便定位
 //    Easier positioning
@@ -76,7 +79,6 @@ html.han-js-rendered
     u *:before,
     u *:after
         +_contentbox // 1
-
 
 u.han-js-charized 
     border-bottom: 0 none
@@ -131,19 +133,22 @@ u.han-js-charized
     *:not(:last-child) hanla:last-child 
         border: 1px solid
 
-
-/* ========================================================================== 
-   小字標注
-   Ruby annotations
-   ========================================================================== */
+/**
+ * 小字標注
+ * Ruby annotations
+ */
 
 @import hruby
 
 
-/* ==========================================================================
-   避頭尾禁則
-   Biaodian rules
+/* 排版功能
+   Typography
    ========================================================================== */
+
+/**
+ * 避頭尾禁則
+ * Biaodian rules
+ */
 
 //.han-js-charized span.char,
 .han-js-bitouwei-rendered span.bitouwei
@@ -155,11 +160,10 @@ u.han-js-charized
     span.char > span
         display: inline
 
-
-/* ==========================================================================
-   漢拉間隙
-   Kerning between Hanzi and Latin letter
-   ========================================================================== */
+/**
+ * 漢拉間隙
+ * Kerning between Hanzi and Latin letter
+ */
 
 // 1. More discussion: 
 //    https://github.com/ethantw/Han/issues/40
