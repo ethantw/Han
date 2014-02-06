@@ -1,7 +1,6 @@
 
 
-/* ========================================================================== 
-   基礎頁面
+/* 基礎頁面
    Base
    ========================================================================== */
 
@@ -23,10 +22,14 @@ html
         font-family: $heiti
 
 
-/* ========================================================================== 
-   引用區塊
-   Blockquotes
+/* 內容群組元素
+   Grouping content
    ========================================================================== */
+
+/**
+ * 引用區塊
+ * Blockquotes
+ */
 
 article blockquote
     &:lang(zh)
@@ -78,10 +81,14 @@ article figure figcaption
         font-family: $kaiti
 
 
-/* ==========================================================================
-   強調
-   Emphases
+/* 字級語意元素
+   Text-level semantics
    ========================================================================== */
+
+/**
+ * 強調
+ * Emphases
+ */
 
 .no-textemphasis em
     &:lang(zh),
@@ -90,11 +97,10 @@ article figure figcaption
         span.latin:after
             font-family: 'Hiragino Mincho ProN', 'Hiragino Mincho Pro', Meiryo, 'MS Gothic', 'MS Mincho' serif !important
 
-
-/* ========================================================================== 
-   來源
-   Cites 
-   ========================================================================== */
+/**
+ * 來源
+ * Cites
+ */
 
 // 1. 修正Webkit下的字體fallback
 //    Corrects font fallback on WebKit
@@ -104,11 +110,10 @@ cite:lang(en).piece
     &:after
         font-family: $serif, serif // 1
 
-
-/* ==========================================================================
-   文章內重點
-   Importance in article
-   ========================================================================== */
+/**
+ * 文章內重點
+ * Importance in article
+ */
 
 article strong
     &:lang(zh)
@@ -127,11 +132,10 @@ article strong
     *:not(:lang(zh)):not(:lang(ja))
         font-family: $sans, sans-serif
 
-
-/* ==========================================================================
-   代碼、輸入鍵、計算機輸出示例、格式預處理文字
-   Code, user input, computer output, preformatted text
-   ========================================================================== */
+/**
+ * 代碼、輸入鍵、計算機輸出示例、格式預處理文字
+ * Code, user input, computer output, preformatted text
+ */
 
 code,
 kbd,
@@ -155,11 +159,10 @@ samp
     *:not(:lang(zh)):not(:lang(ja))
         font-family: $mono-zh
 
-
-/* ==========================================================================
-   變音文字及變數
-   Alternative voices & Variables
-   ========================================================================== */
+/**
+ * 變音文字及變數
+ * Alternative voices & Variables
+ */
 
 i,
 var
@@ -199,11 +202,10 @@ article blockquote var
     *:not(:lang(zh)):not(:lang(ja))
         font-family: 'Latin Italic Sans', $heiti
 
-
-/* ==========================================================================
-   小字標注
-   Ruby annotations
-   ========================================================================== */
+/**
+ * 小字標注
+ * Ruby annotations
+ */
 
 // 1. 非入聲韻調號強制使用「Zhuyin Kaiti」以利定位
 //    Use 'Zhuyin Kaiti' for non-checked tones
