@@ -1197,7 +1197,7 @@ html:lang(zh) article p,
 html:lang(zh) article li,
 html:lang(jp) article p,
 html:lang(jp) article li {
-  line-height: 1.7;
+  line-height: 2;
   text-align: justify; }
 html:lang(zh) figure,
 html:lang(zh) blockquote,
