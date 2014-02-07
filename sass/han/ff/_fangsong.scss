@@ -1,10 +1,9 @@
 
 
-/* ---------------------------------------
-   四大字體集・仿宋體
-   ---
-   The Four Typefaces: Fangsong
-   --------------------------------------- */
+/**
+ * 四大字體集・仿宋體
+ * The Four Typefaces: Fangsong
+ */
 
 @font-face {
     @include _range-CJK;
@@ -13,7 +12,6 @@
          local(FangSong);
 }
 
-
 // Han FangSong CNS
 @font-face {
     @include _range-CJK;
@@ -21,7 +19,6 @@
     src: local(STFangsong),
          local(FangSong);
 }
-
 
 // Han FangSong GB
 @font-face {

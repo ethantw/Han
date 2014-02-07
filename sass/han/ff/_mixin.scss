@@ -1,13 +1,9 @@
 
 
-/* ---------------------------------------
-   @mixin: 四大字體集
-   ---
-   @mixin: The Four Typefaces
-   --------------------------------------- 
-   黑體
-   Heiti
-   --------------------------------------- */
+// **
+// * 黑體
+// * Heiti
+// *
 
 @mixin Han-Heiti {
     font-family:
@@ -41,10 +37,10 @@
         sans-serif;
 }
 
-
-/* 宋體
-   Songti
-   --------------------------------------- */
+// **
+// * 宋體
+// * Songti
+// *
 
 @mixin Han-Songti {
     font-family:
@@ -78,10 +74,10 @@
         serif;
 }
 
-
-/* 楷體
-   Kaiti
-   --------------------------------------- */
+// **
+// * 楷體
+// * Kaiti
+// *
 
 @mixin Han-Kaiti {
     font-family:
@@ -107,10 +103,10 @@
         'Han Kaiti GB', cursive, serif;
 }
 
-
-/* 仿宋體
-   Fangsong
-   --------------------------------------- */
+// **
+// * 仿宋體
+// * Fangsong
+// *
 
 @mixin Han-Fangsong {
     font-family:

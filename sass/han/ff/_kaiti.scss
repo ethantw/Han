@@ -1,10 +1,9 @@
 
 
-/* ---------------------------------------
-   四大字體集・楷體
-   ---
-   The Four Typefaces: Kaiti (Cursive)
-   --------------------------------------- */
+/**
+ * 四大字體集・楷體
+ * The Four Typefaces: Kaiti (Cursive)
+ */
 
 @font-face {
     font-family: cursive;
@@ -35,7 +34,6 @@
         local(DFKai-SB);
 }
 
-
 // Han Kaiti CNS
 @font-face {
     @include _range-CJK;
@@ -45,7 +43,6 @@
         local('標楷體'),
         local(DFKaiShu-SB-Estd-BF);
 }
-
 
 // Han Kaiti GB
 @font-face {
@@ -58,12 +55,10 @@
         local(DFKai-SB);
 }
 
-
-
-/* ----------------------------------------- 
+/**
  * 粗體
  * Bold
- * ----------------------------------------- */
+ */
 
 @font-face {
     font-family: cursive;

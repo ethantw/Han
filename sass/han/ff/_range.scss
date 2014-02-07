@@ -1,7 +1,10 @@
 
 
-// Unicode CJK區段
-// All Unicode CJK blocks 
+// **
+// * Unicode CJK區段
+// * All Unicode CJK blocks 
+// *
+
 @mixin _range-CJK {
     unicode-range:
         // Unicode 1.0
@@ -32,16 +35,20 @@
         U+3007;
 }
 
+// **
+// * Unicode 數字（0-9）
+// * Unicode numerals (0-9)
+// *
 
-// Unicode 數字（0-9）
-// Unicode numerals (0-9)
 @mixin _range-numeral {
     unicode-range: U+0030-0039;
 }
 
+// **
+// * Unicode 注音及方言音擴充符號區段
+// * Unicode Bopomofo and Bopomofo extended (Zhuyin)
+// *
 
-// Unicode 注音及方言音擴充符號區段
-// Unicode Bopomofo and Bopomofo extended (Zhuyin)
 @mixin _range-zhuyin {
     unicode-range: 
         // 注音符號及方言音擴充

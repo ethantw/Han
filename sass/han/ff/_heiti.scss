@@ -1,10 +1,9 @@
 
 
-/* ---------------------------------------
-   四大字體集・黑體
-   ---
-   The Four Typefaces: Heiti (Gothic)
-   --------------------------------------- */
+/**
+ * 四大字體集・黑體
+ * The Four Typefaces: Heiti
+ */
 
 @font-face {
     font-family: 'Han Heiti';
@@ -32,7 +31,6 @@
         local('Hiragino Kaku Gothic Pro');
 }
 
-
 // Han Heiti CNS 
 @font-face {
     font-family: 'Han Heiti CNS';
@@ -59,7 +57,6 @@
         local('Hiragino Kaku Gothic Pro');
 }
 
-
 // Han Heiti GB
 @font-face {
     font-family: 'Han Heiti GB';
@@ -73,12 +70,9 @@
         local('Droid Sans Fallback');
 }
 
-
-
-/* ----------------------------------------- 
+/*
  * 粗體
- * Bold
- * ----------------------------------------- */
+ */
 
 @font-face {
     font-family: 'Han Heiti';
@@ -115,7 +109,6 @@
         local(HiraKakuProN-W6),
         local(HiraKakuPro-W6);
 }
-
 
 // Han Heiti CNS (600)
 @font-face {
@@ -170,13 +163,11 @@
         local(MicrosoftYaHei-Bold);
 }
 
-
-
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`及粗體調用問題
- * Solution to Firefox's `unicode-range`
- * and bold font issues
- * ----------------------------------------- */
+// **
+// * 解決Firefox不支援`unicode-range`及粗體調用問題
+// * Solution to Firefox's `unicode-range`
+// * and bold font issues
+// *
 
 @font-face {
     font-family: 'Han Heiti';
@@ -220,7 +211,6 @@
     unicode-range: U+270C;    
 }
 
-
 // Han Heiti CNS
 @font-face {
     font-family: 'Han Heiti CNS';
@@ -261,7 +251,6 @@
         local(MicrosoftYaHei-Bold);
     unicode-range: U+270C;    
 }
-
 
 // Han Heiti GB
 @font-face {

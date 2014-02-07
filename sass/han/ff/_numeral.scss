@@ -1,13 +1,9 @@
 
 
-/* ---------------------------------------
-   數字
-   ---
-   Numerals
-   --------------------------------------- 
-   文本數字
-   Text figures
-   --------------------------------------- */
+/**
+ * 文本數字
+ * Text figures
+ */
 
 @font-face {
     @include _range-numeral;
@@ -28,10 +24,10 @@
         local('Big Caslon');
 }
 
-
-/* 等高數字
-   Lining figures
-   --------------------------------------- */
+/**
+ * 等高數字
+ * Lining figures
+ */
 
 @font-face {
     @include _range-numeral;
@@ -51,13 +47,11 @@
         local('Times New Roman');
 }
 
-
-
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issues
- * ----------------------------------------- */
+// **
+// * 解決Firefox不支援`unicode-range`及粗體調用問題
+// * Solution to Firefox's `unicode-range`
+// * and bold font issues
+// *
 
 @font-face {
     font-family: 'Numeral TF Sans';

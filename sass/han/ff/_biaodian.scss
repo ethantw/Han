@@ -1,7 +1,6 @@
 
 
-/* ========================================================================== 
-   簡易版漢字標點樣式修正
+/* 簡易版漢字標點樣式修正
    Hanzi puncuation, ‘Biaodian’(zh) and ‘Yakumono’(ja)
    ========================================================================== */
 
@@ -17,7 +16,6 @@
 /**
  * 單點全形句號（．）
  * Fullwidth full stop
- *
  */
 
 // 1
@@ -111,11 +109,9 @@
     unicode-range: U+FF0E;
 }
 
-
 /**
  * 間隔號（·）
  * Middle dot
- *
  */
 
 // 1
@@ -201,11 +197,9 @@
     unicode-range: U+00B7;
 }
 
-
 /**
  * 破折號（——）
  * Em dash
- *
  */
 
 // 1
@@ -322,11 +316,9 @@
     unicode-range: U+2014;
 }
 
-
 /**
  * 省略號（……）
  * Ellipsis
- *
  */
 
 // 1
@@ -444,11 +436,9 @@
     unicode-range: U+2026;
 }
 
-
 /**
  * 彎引號（“‘’”）
  * Curve quotes
- *
  */
 
 // 1
@@ -541,12 +531,10 @@
         local(PMingLiU);
     unicode-range: U+201C-201D, U+2018-2019;
 }
-
 
 /**
  * 着重號（●）
  * Emphasis dots
- *
  */
 
 // 1
@@ -626,24 +614,19 @@
 }
 
 
-
-/* ========================================================================== 
-   進階版標點樣式修正
+/* 進階版標點樣式修正
    Advanced Correction to Hanzi Punctuation
    ========================================================================== */
 
 /**
  * a. 句、逗、頓號（。，、）
  *      Period, comma, paused comma
- *
  * b. 分、冒、問、嘆號（；：？！）
  *      Colon, semicolon, question, exclam-
  *      ation marks
- *
  * c. 連接號、正、反斜線（－／＼）
  *    En dash (fullwidth hyphen-minus),
  *    division slash, back slash
- *
  */
 
 // 1
@@ -774,14 +757,11 @@
         U+FF0D, U+FF0F, U+FF3C /* c */;
 }
 
-
 /**
  * a. 引號（「『』」）
  *      Quotes
- *
  * b. 括號、書名號（（）《》〈〉〔〕）
  *    Brackets
- *
  */
 
 @font-face {
@@ -855,13 +835,11 @@
         U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
 }
 
-
-/**
- * 解決Firefox不支援`unicode-range`及粗體調用問題
- * Solution to Firefox's `unicode-range`
- * unsupported issues
- *
- */
+// **
+// * 解決Firefox不支援`unicode-range`及粗體調用問題
+// * Solution to Firefox's `unicode-range`
+// * and bold font issues
+// *
 
 @font-face {
     font-family: 'Biaodian Sans';

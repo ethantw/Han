@@ -1,5 +1,10 @@
 
 
+// **
+// * CSS3屬性：box sizing
+// * CSS3 property: box sizing
+// *
+
 @mixin _borderbox 
     -moz-box-sizing:    border-box
     -webkit-box-sizing: border-box
@@ -10,15 +15,20 @@
     -webkit-box-sizing: content-box
     box-sizing:         content-box
 
+// **
+// * CSS3函式：計算
+// * CSS3 function: calculate
+// *
+
 @mixin _calc( $prop, $exp )
     #{$prop}: -moz-calc( #{$exp} )
     #{$prop}: -webkit-calc( #{$exp} )
     #{$prop}: calc( #{$exp} ) 
 
-
-// CSS3屬性：着重號
-// CSS3 property: text emphases
-// ========================================================================== 
+// **
+// * CSS3屬性：着重號
+// * CSS3 property: text emphases
+// *
 
 @mixin _text-emphasis( $sym: circle, $posi: under ) 
     -moz-text-emphasis:    $sym
@@ -28,10 +38,10 @@
     -webkit-text-emphasis-position: $posi
     text-emphasis-position:         $posi
 
-
-// 縮放
-// Scale
-// ========================================================================== 
+// **
+// * 縮放
+// * Scale
+// *
 
 @mixin _scale( $size: .55 ) 
     -moz-transform:    scale( $size )
@@ -39,10 +49,10 @@
     -webkit-transform: scale( $size )
     transform:         scale( $size )
 
-
-// 重設所有字體排印相關屬性
-// Reset all typography-related properties
-// ========================================================================== 
+// **
+// * 重設所有字體排印相關屬性
+// * Reset all typography-related properties
+// *
 
 @mixin _typo-reset 
     +_text-emphasis(none)
@@ -52,10 +62,10 @@
     text-decoration: none
     text-indent:     0
 
-
-// 字體特性
-// Font feature
-// ========================================================================== 
+// **
+// * 字體特性
+// * Font feature
+// *
 
 @mixin _font-feature( $set, $moz: false )
     @if $moz != false
@@ -67,10 +77,10 @@
     -webkit-font-feature-settings:  #{$set}
     font-feature-settings:          #{$set}
 
-
-// 着重號
-// Text emphases
-// ========================================================================== 
+// **
+// * 着重號
+// * Text emphases
+// *
 
 // 1. 回退
 //    Fallback
