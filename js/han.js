@@ -1,15 +1,15 @@
 
 
 /*! 
- * 漢字標準格式 v2.3-alpha
+ * 漢字標準格式 v2.3
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/2/6
+ * Last-Modified: 2014/2/7
  */
 
 ;(function(window, $){
-    var version = '2.3-alpha',
+    var version = '2.3',
 
     tests = [],
     rubies,
@@ -230,7 +230,7 @@
          */
 
         if ( $('html').hasClass('han-lab-underline') )
-            $(range).find('u').charize('', true, true)
+            $(range).find('u').charize({'bitouwei': false}, true, true)
 
         $(range).find('u, ins').each(function(){
             var next = this.nextSibling

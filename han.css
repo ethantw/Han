@@ -1,10 +1,10 @@
 @charset "UTF-8";
 /*!
- * 漢字標準格式 v2.3-alpha
+ * 漢字標準格式 v2.3
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/2/6
+ * Last-Modified: 2014/2/7
  */
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 /**
@@ -360,28 +360,10 @@ td,
 th {
   padding: 0; }
 
-/* ---------------------------------------
-   @mixin: 四大字體集
-   ---
-   @mixin: The Four Typefaces
-   --------------------------------------- 
-   黑體
-   Heiti
-   --------------------------------------- */
-/* 宋體
-   Songti
-   --------------------------------------- */
-/* 楷體
-   Kaiti
-   --------------------------------------- */
-/* 仿宋體
-   Fangsong
-   --------------------------------------- */
-/* ---------------------------------------
-   四大字體集・黑體
-   ---
-   The Four Typefaces: Heiti (Gothic)
-   --------------------------------------- */
+/**
+ * 四大字體集・黑體
+ * The Four Typefaces: Heiti
+ */
 @font-face {
   font-family: 'Han Heiti';
   src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback"); }
@@ -404,10 +386,9 @@ th {
   font-family: 'Han Heiti GB';
   src: local("Hiragino Sans GB"), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Droid Sans Fallback"); }
 
-/* ----------------------------------------- 
+/*
  * 粗體
- * Bold
- * ----------------------------------------- */
+ */
 @font-face {
   font-family: 'Han Heiti';
   font-weight: 600;
@@ -435,11 +416,6 @@ th {
   font-weight: 600;
   src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei SC Demibold"), local("Microsoft YaHei Bold"), local("Heiti SC Medium"), local(FZLTZHK--GBK1-0), local(STHeitiSC-Medium), local(MicrosoftYaHei-Bold); }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`及粗體調用問題
- * Solution to Firefox's `unicode-range`
- * and bold font issues
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Heiti';
   src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
@@ -467,11 +443,10 @@ th {
   src: local("Hiragino Sans GB"), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
   unicode-range: U+270C; }
 
-/* ---------------------------------------
-   四大字體集・宋體（明朝體）
-   ---
-   The Four Typefaces: Songti (Mincho)
-   --------------------------------------- */
+/**
+ * 四大字體集・宋體（明朝體）
+ * The Four Typefaces: Songti (Mincho)
+ */
 @font-face {
   font-family: 'Han Songti';
   src: local("Songti SC"), local("Songti TC"), local(STSong), local("Lisong Pro"), local(SimSun), local(PMingLiU); }
@@ -494,10 +469,10 @@ th {
   font-family: 'Han Songti GB';
   src: local("Songti SC"), local(STSong), local(SimSun), local(PMingLiU); }
 
-/* ----------------------------------------- 
+/**
  * 粗體
  * Bold
- * ----------------------------------------- */
+ */
 @font-face {
   font-family: 'Han Songti';
   font-weight: 600;
@@ -525,11 +500,6 @@ th {
   font-weight: 600;
   src: local("STSongti SC Bold"), local(STSongti-SC-Bold); }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`及粗體調用問題
- * Solution to Firefox's `unicode-range`
- * and bold font issues
- * ----------------------------------------- */
 @font-face {
   font-family: 'Han Songti';
   src: local("Songti SC"), local("Songti TC"), local(STSongti), local("Lisong Pro"), local("MS Mincho"), local(SimSun), local(PMingLiU);
@@ -557,11 +527,10 @@ th {
   src: local("Songti SC"), local(STSong), local(SimSun);
   unicode-range: U+270C; }
 
-/* ---------------------------------------
-   四大字體集・楷體
-   ---
-   The Four Typefaces: Kaiti (Cursive)
-   --------------------------------------- */
+/**
+ * 四大字體集・楷體
+ * The Four Typefaces: Kaiti (Cursive)
+ */
 @font-face {
   font-family: cursive;
   src: local("Kaiti SC"), local(STKaiti), local(BiauKai), local("標楷體"), local(DFKaiShu-SB-Estd-BF), local(Kaiti), local(DFKai-SB); }
@@ -581,10 +550,10 @@ th {
   font-family: 'Han Kaiti GB';
   src: local("Kaiti SC"), local(STKaiti), local(Kai), local(Kaiti), local(DFKai-SB); }
 
-/* ----------------------------------------- 
+/**
  * 粗體
  * Bold
- * ----------------------------------------- */
+ */
 @font-face {
   font-family: cursive;
   font-weight: 600;
@@ -600,11 +569,10 @@ th {
   font-weight: 600;
   src: local("Kaiti SC Bold"), local(STKaiti-SC-Bold); }
 
-/* ---------------------------------------
-   四大字體集・仿宋體
-   ---
-   The Four Typefaces: Fangsong
-   --------------------------------------- */
+/**
+ * 四大字體集・仿宋體
+ * The Four Typefaces: Fangsong
+ */
 @font-face {
   unicode-range: U+4E00-9FFF, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3400-4DB5, U+9FBC-9FC2, U+9FC4-9FC5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+3040-309E, U+30A1-30FE, U+3007;
   font-family: 'Han Fangsong';
@@ -620,14 +588,12 @@ th {
   font-family: 'Han Fangsong GB';
   src: local(STFangsong), local(FangSong); }
 
-/* ========================================================================== 
-   簡易版漢字標點樣式修正
+/* 簡易版漢字標點樣式修正
    Hanzi puncuation, ‘Biaodian’(zh) and ‘Yakumono’(ja)
    ========================================================================== */
 /**
  * 單點全形句號（．）
  * Fullwidth full stop
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -672,7 +638,6 @@ th {
 /**
  * 間隔號（·）
  * Middle dot
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -717,7 +682,6 @@ th {
 /**
  * 破折號（——）
  * Em dash
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -772,7 +736,6 @@ th {
 /**
  * 省略號（……）
  * Ellipsis
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -827,7 +790,6 @@ th {
 /**
  * 彎引號（“‘’”）
  * Curve quotes
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -872,7 +834,6 @@ th {
 /**
  * 着重號（●）
  * Emphasis dots
- *
  */
 @font-face {
   font-family: 'Biaodian Sans';
@@ -914,22 +875,18 @@ th {
   src: local(Georgia), local("Times New Roman"), local("Droid Sans Fallback");
   unicode-range: U+25CF; }
 
-/* ========================================================================== 
-   進階版標點樣式修正
+/* 進階版標點樣式修正
    Advanced Correction to Hanzi Punctuation
    ========================================================================== */
 /**
  * a. 句、逗、頓號（。，、）
  *      Period, comma, paused comma
- *
  * b. 分、冒、問、嘆號（；：？！）
  *      Colon, semicolon, question, exclam-
  *      ation marks
- *
  * c. 連接號、正、反斜線（－／＼）
  *    En dash (fullwidth hyphen-minus),
  *    division slash, back slash
- *
  */
 @font-face {
   font-family: 'Biaodian Pro Sans';
@@ -984,10 +941,8 @@ th {
 /**
  * a. 引號（「『』」）
  *      Quotes
- *
  * b. 括號、書名號（（）《》〈〉〔〕）
  *    Brackets
- *
  */
 @font-face {
   font-family: 'Biaodian Pro Sans';
@@ -1019,12 +974,6 @@ th {
   src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015; }
 
-/**
- * 解決Firefox不支援`unicode-range`及粗體調用問題
- * Solution to Firefox's `unicode-range`
- * unsupported issues
- *
- */
 @font-face {
   font-family: 'Biaodian Sans';
   src: local("Lying to Firefox");
@@ -1065,11 +1014,10 @@ th {
   src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
-/* ---------------------------------------
-     襯線西文斜體
-     ---
-     Latin italic serif
-     --------------------------------------- */
+/**
+ * 襯線西文斜體
+ * Latin italic serif
+ */
 @font-face {
   font-family: 'Latin Italic Serif';
   src: local("Georgia Italic"), local("Times New Roman Italic"), local(Georgia-Italic), local(TimesNewRomanPS-ItalicMT), local(Times-Italic); }
@@ -1079,11 +1027,10 @@ th {
   font-weight: 700;
   src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic"), local(Georgia-BoldItalic), local(TimesNewRomanPS-BoldItalicMT), local(Times-Italic); }
 
-/* ---------------------------------------
-     無襯線西文斜體
-     ---
-     Latin italic sans-serif
-     --------------------------------------- */
+/**
+ * 無襯線西文斜體
+ * Latin italic sans-serif
+ */
 @font-face {
   font-family: 'Latin Italic Sans';
   src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic"), local(HelveticaNeue-Italic), local(Helvetica-LightOblique), local(Arial-ItalicMT); }
@@ -1093,14 +1040,10 @@ th {
   font-weight: 700;
   src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic"), local(HelveticaNeue-BoldItalic), local(Helvetica-BoldOblique), local(Arial-BoldItalicMT); }
 
-/* ---------------------------------------
-   數字
-   ---
-   Numerals
-   --------------------------------------- 
-   文本數字
-   Text figures
-   --------------------------------------- */
+/**
+ * 文本數字
+ * Text figures
+ */
 @font-face {
   unicode-range: U+0030-0039;
   font-family: 'Numeral TF Sans';
@@ -1111,9 +1054,10 @@ th {
   font-family: 'Numeral TF Serif';
   src: local(Georgia), local("Hoefler Text"), local("Big Caslon"); }
 
-/* 等高數字
-   Lining figures
-   --------------------------------------- */
+/**
+ * 等高數字
+ * Lining figures
+ */
 @font-face {
   unicode-range: U+0030-0039;
   font-family: 'Numeral LF Sans';
@@ -1124,11 +1068,6 @@ th {
   font-family: 'Numeral LF Serif';
   src: local(Palatino), local("Palatino Linotype"), local("Times New Roman"); }
 
-/* ----------------------------------------- 
- * 解決Firefox不支援`unicode-range`的問題
- * Solution to Firefox's `unicode-range`
- * issues
- * ----------------------------------------- */
 @font-face {
   font-family: 'Numeral TF Sans';
   src: local("Lying to Firefox");
@@ -1149,11 +1088,10 @@ th {
   src: local("Lying to Firefox");
   unicode-range: U+270C; }
 
-/* ---------------------------------------
-   注音符號
-   ---
-   Zhuyin
-   --------------------------------------- */
+/**
+ * 注音符號
+ * Zhuyin
+ */
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
   font-family: 'Zhuyin Kaiti';
@@ -1197,8 +1135,7 @@ html:lang(zh) article p,
 html:lang(zh) article li,
 html:lang(jp) article p,
 html:lang(jp) article li {
-  line-height: 2;
-  text-align: justify; }
+  line-height: 2; }
 html:lang(zh) figure,
 html:lang(zh) blockquote,
 html:lang(jp) figure,
