@@ -1,139 +1,135 @@
 
 
-/* ---------------------------------------
-   @mixin: 四大字體集
-   ---
-   @mixin: The Four Typefaces
-   --------------------------------------- 
-   黑體
-   Heiti
-   --------------------------------------- */
+// **
+// * 黑體
+// * Heiti
+// *
 
 @mixin Han-Heiti {
-	font-family:
-		'Biaodian Pro Sans',
-		//'Numeral LF Sans',
-		'Helvetica Neue', Helvetica, Arial,
-		'Han Heiti', sans-serif;
+    font-family:
+        'Biaodian Pro Sans',
+        //'Numeral LF Sans',
+        'Helvetica Neue', Helvetica, Arial,
+        'Han Heiti', sans-serif;
 }
 
 @mixin Han-Heiti-CNS {
-	font-family:
-		'Biaodian Pro Sans CNS',
-		//'Numeral LF Sans',
-		'Helvetica Neue', Helvetica, Arial,
-		'Han Heiti CNS', sans-serif;
+    font-family:
+        'Biaodian Pro Sans CNS',
+        //'Numeral LF Sans',
+        'Helvetica Neue', Helvetica, Arial,
+        'Han Heiti CNS', sans-serif;
 }
 
 @mixin Han-Heiti-GB {
-	font-family:
-		'Biaodian Pro Sans GB',
-		//'Numeral LF Sans',
-		'Helvetica Neue', Helvetica, Arial,
-		'Han Heiti GB', sans-serif;
+    font-family:
+        'Biaodian Pro Sans GB',
+        //'Numeral LF Sans',
+        'Helvetica Neue', Helvetica, Arial,
+        'Han Heiti GB', sans-serif;
 }
 
 @mixin Han-Gothic {
-	font-family:
-		'Yakumono Sans',
-		//'Numeral LF Sans',
-		'Helvetica Neue', Helvetica, Arial,
-		sans-serif;
+    font-family:
+        'Yakumono Sans',
+        //'Numeral LF Sans',
+        'Helvetica Neue', Helvetica, Arial,
+        sans-serif;
 }
 
-
-/* 宋體
-   Songti
-   --------------------------------------- */
+// **
+// * 宋體
+// * Songti
+// *
 
 @mixin Han-Songti {
-	font-family:
-		'Biaodian Pro Serif',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Songti', serif;
+    font-family:
+        'Biaodian Pro Serif',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Songti', serif;
 }
 
 @mixin Han-Songti-CNS {
-	font-family:
-		'Biaodian Pro Serif CNS',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Songti CNS', serif;
+    font-family:
+        'Biaodian Pro Serif CNS',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Songti CNS', serif;
 }
 
 @mixin Han-Songti-GB {
-	font-family:
-		'Biaodian Pro Serif GB',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Songti GB', serif;
+    font-family:
+        'Biaodian Pro Serif GB',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Songti GB', serif;
 }
 
 @mixin Han-Mincho {
-	font-family:
-		'Yakumono Serif',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		serif;
+    font-family:
+        'Yakumono Serif',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        serif;
 }
 
-
-/* 楷體
-   Kaiti
-   --------------------------------------- */
+// **
+// * 楷體
+// * Kaiti
+// *
 
 @mixin Han-Kaiti {
-	font-family:
-		'Biaodian Pro Serif',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Kaiti', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Kaiti', cursive, serif;
 }
 
 @mixin Han-Kaiti-CNS {
-	font-family:
-		'Biaodian Pro Serif CNS',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Kaiti CNS', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif CNS',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Kaiti CNS', cursive, serif;
 }
 
 @mixin Han-Kaiti-GB {
-	font-family:
-		'Biaodian Pro Serif GB',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Kaiti GB', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif GB',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Kaiti GB', cursive, serif;
 }
 
-
-/* 仿宋體
-   Fangsong
-   --------------------------------------- */
+// **
+// * 仿宋體
+// * Fangsong
+// *
 
 @mixin Han-Fangsong {
-	font-family:
-		'Biaodian Pro Serif',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Fangsong', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Fangsong', cursive, serif;
 }
 
 @mixin Han-Fangsong-CNS {
-	font-family:
-		'Biaodian Pro Serif CNS',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Fangsong CNS', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif CNS',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Fangsong CNS', cursive, serif;
 }
 
 @mixin Han-Fangsong-GB {
-	font-family:
-		'Biaodian Pro Serif GB',
-		'Numeral LF Serif',
-		Georgia, 'Times New Roman',
-		'Han Fangsong GB', cursive, serif;
+    font-family:
+        'Biaodian Pro Serif GB',
+        'Numeral LF Serif',
+        Georgia, 'Times New Roman',
+        'Han Fangsong GB', cursive, serif;
 }
 
 

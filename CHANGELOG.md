@@ -2,6 +2,20 @@
 更新紀錄　CHANGELOG
 ===
 
+v2.3.0（2014-2-7）
+---
+1. 加入圖表元素`<figure>`的邊界修正，以相容於新版Normalize CSS
+2. 加入增訂元素`<ins>`的視覺底線區隔
+3. 新增OpenType格式注音符號web font，並加入拉丁字母的陽入韻元音連字（ligature）
+4. 修正複合式小字標註`<ruby>`在Cordova Android上的問題
+5. 加入文章區塊行高設定
+6. 取消表單元素的字體設置，使之繼承自父元素（#47）
+7. 加入聯絡資訊元素`<address>`的樣式修正（#49）
+8. 代碼改採空格縮進，取代跳格
+9. 修正漢拉間隙於各瀏覽器上顯示效果不一的問題（#40）
+10. 改進各Sass檔案的註解格式
+
+
 v2.2.3（2014-1-1）
 ---
 1. 改用相對路徑呼叫注音字體（#37）
@@ -9,14 +23,11 @@ v2.2.3（2014-1-1）
 3. 改進相鄰註記元素的JS改寫
 
 
-* * *
 v2.2.2（2013-12-18）
 ---
 1. WebKit已經支援了CSS3的`quotes`屬性，故取消其支援偵測及瀏覽器hack。（#33）
 2. 修正註記元素`<u>`的改寫問題（#35）
 
-
-* * *
 v2.2.1（2013-12-05）
 ---
 1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（#5）
@@ -26,8 +37,7 @@ v2.2.1（2013-12-05）
 [https://github.com/ethantw/Han/issues?milestone=5&state=closed]
 
 
-* * *
-v2.2.0（2013-11－27）
+v2.2.0（2013-11-27）
 ---
 1. 修正四大字體集與地區分支，並新增相關`@mixin`供開發者選用（#17）
 2. 進階版標點字體加入中國國標分支；新增等高、文本數字字體（#17）
@@ -44,7 +54,6 @@ v2.2.0（2013-11－27）
 [https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]
 
 
-* * *
 v2.1.2（2013-11-07）
 ---
 1. 修正`article:lang(zh | ja) strong`的字重（#16）
@@ -58,7 +67,6 @@ v2.1.2（2013-11-07）
 [https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]
 
 
-* * *
 v2.1.1 （2013-10-21）
 ---
 1. 將normalize.css加入至`han.css`中，使用Sass取代CSS的檔案調度（#7）
@@ -72,7 +80,6 @@ v2.1.1 （2013-10-21）
 [https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]
 
 
-* * *
 v2.1.0（2013-10-5）
 ---
 1. 將原`css/han.main.css`中，
@@ -119,7 +126,6 @@ v2.1.0（2013-10-5）
   		* 在`<html>`標籤上使用`han-lab-underline`類別
 
 
-* * *
 v2.0.0（2013-07-25)
 ---
 

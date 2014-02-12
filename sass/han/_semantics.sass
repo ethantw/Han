@@ -1,0 +1,370 @@
+
+
+/* 基礎頁面設定
+   Base
+   ========================================================================== */
+
+// 1. 避免漢字過於擁擠並修正各漢字字體行高不一導致的差別
+//    Prevent Hanzi from being congested and 
+//    assign one line height for different fonts
+//
+// 2. 在WebKit上使用亞像素文字渲染
+//    Render texts with subpixel-antialiased on WebKit
+
+html
+    line-height: $line-height // 1
+    -webkit-font-smoothing: subpixel-antialiased // 2
+
+
+/* 章節元素及內容群組元素
+   Sections & grouping content
+   ========================================================================== */
+
+/**
+ * 段落、清單、圖表、引用區塊
+ * Paragraphs, lists, figures and blockquotes
+ */
+
+// 1. 使用漢字寬度單位定位區塊，以求對齊
+//    Position with Hanzi width unit, in pursuit of alignments
+// 
+// 2. 可適性微調
+//    Responsive adjustments
+
+html:lang(zh),
+html:lang(jp)
+    // 1
+    .poem-like p,
+    p.poem-like
+        margin-left: 2em
+
+    ol,
+    ul
+        padding-left: 2em
+
+    article
+        p,
+        li
+            line-height: $line-height-article
+
+    figure,
+    blockquote
+        margin-left: 2em
+        margin-right: 2em
+        width: auto
+
+        blockquote
+            margin-left: 1em
+            margin-right: 1em
+
+    article blockquote
+        margin-right: 0
+
+    figure blockquote
+        margin: 0
+
+    // 2
+    @media only screen and (max-width: $mobile-device-width)
+        .poem-like p,
+        p.poem-like,
+        blockquote
+            margin-left: 1em
+            margin-right: 1em
+
+html:lang(jp)
+    &.poem-like p,
+    .poem-like p,
+    p.poem-like,
+    blockquote
+        margin-left: 1em
+
+/**
+ * 聯絡資訊
+ * Contact information
+ */
+
+address
+    &:lang(zh),
+    &:lang(ja)
+        font-style: inherit
+
+/**
+ * 增進代碼區塊的易讀性
+ * Enhance the readability of code blocks
+ */
+
+pre code
+    display: block
+    overflow: auto
+    white-space: pre
+    word-wrap: normal
+
+
+/* 字級語意元素及修訂元素
+   Text-level semantics & edits
+   ========================================================================== */
+
+/**
+ * 連結、增訂 
+ * Hyperlinks and insertion
+ */
+
+html:lang(zh)
+    a,
+    ins
+        text-decoration: inherit
+
+    ins
+        border-bottom: 3px double $lightgrey
+        padding-bottom: .05em
+
+/**
+ * 強調
+ * Emphases
+ */
+
+// 1. Fallback
+
+em:lang(zh),
+em:lang(ja)
+    font-style: inherit
+
+    // 1
+    border-bottom-style: dotted
+    border-bottom-width: 2px
+    padding-bottom: .05em
+
+    +_text-emphasis
+    border-bottom-width: -webkit-calc( 0px )
+
+em:lang(ja)
+    +_text-emphasis( sesame, over )
+
+/**
+ * 文章內重點
+ * Importance in article
+ */
+
+article strong
+    *:lang(zh),
+    *:lang(ja)
+        font-family: sans-serif
+
+/**
+ * 來源
+ * Cites 
+ */
+
+// **注意：**原書名號已*棄用*。
+// **Attention:** Cite title marks are already *deprecated*.
+//
+//
+// 1. 修正Webkit下的字體fallback
+//    Corrects font fallback on WebKit
+
+cite
+    &:lang(zh),
+    &:lang(ja),
+    &:lang(en).piece
+        font-style: inherit
+
+    &:lang(zh)
+        &:before,
+        &:after
+            content: '\300a'
+            font-family: inherit // 1
+            line-height: inherit
+
+        &:after
+            content: '\300b'
+
+        &.piece:before
+            content: '\3008'
+
+        &.piece:after
+            content: '\3009'
+
+    &:lang(ja)
+        &:before
+            content: '\300e'
+
+        &:after
+            content: '\300f'
+
+        &.piece:before
+            content: '\300c'
+
+        &.piece:after
+            content: '\300d'
+
+    &:lang(en)
+        &.piece:before,
+        &.piece:after
+            content: '\201c'
+            font-family: inherit // 1
+
+        &:lang(en).piece:after
+            content: '\201d'
+
+    &:lang(en-GB)
+        &.piece:before
+            content: '\2018'
+
+        &.piece:after
+            content: '\2019'
+
+.no-cite-mark cite,
+cite.no-cite-mark
+    &:before,
+    &:after
+        content: '' !important
+
+/** 
+ * 引用
+ * Quotes
+ */
+
+q
+    quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+
+    &:lang(zh)
+        quotes: '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f'
+
+    &:lang(zh-CN),
+    &:lang(zh-Hans),
+    &:lang(en)
+        quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+
+    &:lang(en-GB)
+        quotes: '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d'
+
+    &:before
+        content: open-quote
+
+    &:after
+        content: close-quote
+
+    &:lang(ja):before,
+    &:lang(ja):after
+        content: none
+
+/**
+ * 術語
+ * Definitions
+ */
+
+dfn
+    &:lang(zh),
+    &:lang(ja)
+        font-style: inherit
+        font-weight: bold
+
+/**
+ * 代碼、輸入鍵、計算機輸出示例、格式預處理文字
+ * Code, user input, computer output, preformatted text
+ */
+
+code,
+kbd,
+samp,
+pre
+    font-family: monospace, sans-serif
+
+/**
+ * 變音文字及變數
+ * Alternative voices & Variables
+ */
+
+i,
+var
+    font-family: cursive, serif
+    font-style: inherit
+
+/**
+ * 註記及增訂
+ * Annotations & insertion
+ */
+
+// 1. 兩相鄰時的視覺語意區隔
+//    Presentational semantic differentiation from adjacent elements
+
+*:lang(zh),
+*:lang(ja)
+    u,
+    ins
+        //letter-spacing: 0
+        border-bottom: 1px solid
+        padding-bottom: 0.05em
+        text-decoration: none
+
+        // 1
+        + u,
+        + ins
+            margin-left: .125em
+
+/**
+ * 小字標注
+ * Ruby annotations
+ */
+
+// 1. 對小字標注加入括弧等符號以利閱讀
+//    Address presentational parentheses for readability purposes
+// 
+// 2. WebKit及IE支援`<ruby>`元素，隱藏其括弧
+//    Hide the parentheses on WebKit & IE
+
+ruby
+    // 1
+    > rt
+        &:before
+            content: '\ff08'
+
+        &:after
+            content: '\ff09'
+
+    // 1
+    > rbc + rtc
+        &:before
+            content: '\ff08'
+
+    > rtc
+        &:after
+            content: '\ff0c'
+
+        &:last-of-type:after
+            content: '\ff09'
+
+    > rt
+        &:before,
+        &:after 
+            // posi
+            display: inline-block
+            overflow: hidden
+            vertical-align: middle
+
+            // size
+            // 2
+            height: 0
+            width:  0
+
+            height: -moz-calc( 1.3em )
+            width:  -moz-calc( 1em )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

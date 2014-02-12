@@ -1,0 +1,89 @@
+
+
+// **
+// * Unicode CJK區段
+// * All Unicode CJK blocks 
+// *
+
+@mixin _range-CJK {
+    unicode-range:
+        // Unicode 1.0
+        U+4E00-9FFF,
+
+        // 12個「相容表意文字」
+        // 12 Compatibility Ideograph characters
+        U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29,
+
+        // 擴展A區
+        // CJK ext-A
+        U+3400-4DB5,
+
+        // Unicode 4.1、5.1新增日語漢字
+        // Unicode 4.1, 5.1 (Japanese Kanji)
+        U+9FBC-9FC2, U+9FC4-9FC5, 
+
+        // 擴展B、C、D（急用漢字）區
+        // CJK Ext-B, C, D
+        U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, 
+
+        // 假名
+        // Kana
+        U+3040-309E, U+30A1-30FE, 
+
+        // 數字「〇」
+        // CJK numeral zero
+        U+3007;
+}
+
+// **
+// * Unicode 數字（0-9）
+// * Unicode numerals (0-9)
+// *
+
+@mixin _range-numeral {
+    unicode-range: U+0030-0039;
+}
+
+// **
+// * Unicode 注音及方言音擴充符號區段
+// * Unicode Bopomofo and Bopomofo extended (Zhuyin)
+// *
+
+@mixin _range-zhuyin {
+    unicode-range: 
+        // 注音符號及方言音擴充
+        // Bopomofo & extended (Zhuyin)
+        U+3105-312D, U+31A0-31BA,
+
+        // 國語及方言音聲調
+        // tones 
+        U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB,
+
+        // 陽入韻（拉丁字母及方言音符號）
+        // Yang checked tones (Latin vowels & Bopomofo)
+        U+030D, U+0358,
+
+        // 陽入韻（萌典PUA）
+        // Yang cheked tones (Moedict.org PUA)
+        U+F31B4-F31B7,
+        U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

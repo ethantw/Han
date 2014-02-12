@@ -1,45 +1,158 @@
 
 
-@mixin scale( $size: .55 ) 
-	-moz-transform:	 	scale( $size )
-	-webkit-transform:  scale( $size )
-	transform:		  	scale( $size )
+// **
+// * CSS3屬性：box sizing
+// * CSS3 property: box sizing
+// *
 
+@mixin _borderbox 
+    -moz-box-sizing:    border-box
+    -webkit-box-sizing: border-box
+    box-sizing:         border-box
 
-@mixin calc( $prop, $exp )
-	#{$prop}: -moz-calc( #{$exp} )
-	#{$prop}: -webkit-calc( #{$exp} )
-	#{$prop}: calc( #{$exp} ) 
- 
+@mixin _contentbox 
+    -moz-box-sizing:    content-box
+    -webkit-box-sizing: content-box
+    box-sizing:         content-box
 
-@mixin zhuozhonghao( $sym: circle, $posi: under ) 
-	-moz-text-emphasis:	 	$sym
-	-webkit-text-emphasis: 	$sym
-	text-emphasis:		  	$sym
-	-moz-text-emphasis-position:	$posi
-	-webkit-text-emphasis-position: $posi
-	text-emphasis-position:		 	$posi
+// **
+// * CSS3函式：計算
+// * CSS3 function: calculate
+// *
 
+@mixin _calc( $prop, $exp )
+    #{$prop}: -moz-calc( #{$exp} )
+    #{$prop}: -webkit-calc( #{$exp} )
+    #{$prop}: calc( #{$exp} ) 
 
-@mixin borderbox 
-	-moz-box-sizing: border-box
-	-webkit-box-sizing: border-box
-	box-sizing: border-box
+// **
+// * CSS3屬性：着重號
+// * CSS3 property: text emphases
+// *
 
+@mixin _text-emphasis( $sym: circle, $posi: under ) 
+    -moz-text-emphasis:    $sym
+    -webkit-text-emphasis: $sym
+    text-emphasis:         $sym
+    -moz-text-emphasis-position:    $posi
+    -webkit-text-emphasis-position: $posi
+    text-emphasis-position:         $posi
 
-@mixin contentbox 
-	-moz-box-sizing: content-box
-	-webkit-box-sizing: content-box
-	box-sizing: content-box
+// **
+// * CSS3屬性：縮放
+// * CSS3 property: Scale
+// *
 
+@mixin _scale( $size: .55 ) 
+    -moz-transform:    scale( $size )
+    -ms-transform:     scale( $size )
+    -webkit-transform: scale( $size )
+    transform:         scale( $size )
 
-@mixin reset-typo 
-	+zhuozhonghao(none)
-	font-style: normal
-	font-weight: normal
-	line-height: .9
-	text-indent: 0
-	text-decoration: none
+// **
+// * 重設所有字體排印相關屬性
+// * Reset all typography-related properties
+// *
+
+@mixin _typo-reset 
+    +_text-emphasis(none)
+    font-style:      normal
+    font-weight:     normal
+    line-height:     $line-height
+    text-decoration: none
+    text-indent:     0
+
+// **
+// * 字體特性
+// * Font feature
+// *
+
+@mixin _font-feature( $set, $moz: false )
+    @if $moz != false
+        -moz-font-feature-settings: $moz
+    @else
+        -moz-font-feature-settings: #{$set}
+
+    -ms-font-feature-settings:      #{$set}
+    -webkit-font-feature-settings:  #{$set}
+    font-feature-settings:          #{$set}
+
+// **
+// * 着重號
+// * Text emphases
+// *
+
+// 1. 回退
+//    Fallback
+//
+// 2. 標點符號不使用着重號
+//    No text-emphasis for punctuation
+//
+// 3. 不支援CSS3屬性`text－emphasis`瀏覽器的hack
+//    Hack for browsers that doesn't support `text－emphasis`
+//
+// 4. 避頭尾禁則
+//    Punctuation rules
+
+@mixin _zhuozhonghao-fallback( $dot: '・', $posi: under )
+    @if $posi == under
+        $posi: ('.4em 0 0 0', '.4em 0 0 -.2em')
+    @else if $posi == over
+        $posi: ('-1.45em 0 0 .32em', '-1.45em 0 0 .1em')
+
+    html.han-js-rendered &
+        border-bottom-width: 0
+        padding-bottom: 0
+
+        // 2
+        span.biaodian,
+        span.punct
+            +_text-emphasis( none )
+
+    // 3
+    .no-textemphasis &
+        line-height: 2
+
+        // 4
+        span.jinze,
+        span.latin.word
+            display: inline-block
+
+        span.char
+            font-style: inherit
+            position: relative
+
+            &:after
+                // posi
+                display: inline-block
+                left: 0
+                margin: unquote(nth($posi, 1))
+                overflow: hidden
+                position: absolute
+                text-indent: 0
+                top: 0
+
+                // size
+                height: 1.9em
+
+                // typo
+                +_typo-reset
+                content: $dot
+                font-family: Meiryo, 'MS Gothic', 'MS Mincho' !important
+                line-height: 1.75em
+
+        span.latin:after 
+            left: 50%
+            margin: unquote(nth($posi, 2))
+            text-indent: -.3em
+            width: .3em
+
+        // 2
+        span.space,
+        span.biaodian,
+        span.punct
+            &:after
+                content: none !important
 
 
 
