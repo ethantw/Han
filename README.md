@@ -65,7 +65,7 @@ JS檔：
 
 更多詳盡的功能說明，請參閱「[使用手冊][manual]」。
 
-[manual]: //css.hanzi.co/manual
+[manual]: http://css.hanzi.co/manual
 
 
 * * *
