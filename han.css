@@ -1263,7 +1263,7 @@ cite:lang(ja).piece:after {
 cite:lang(en).piece:before, cite:lang(en).piece:after {
   content: "\201c";
   font-family: inherit; }
-cite:lang(en):lang(en).piece:after {
+cite:lang(en).piece:after {
   content: "\201d"; }
 cite:lang(en-GB).piece:before {
   content: "\2018"; }
