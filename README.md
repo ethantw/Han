@@ -28,14 +28,14 @@
 [cdn]: //cdnjs.com
 
 ~~~~html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/han.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.css">
 ~~~~
 
 JS檔：
 
 ~~~~html
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.2.3/js/han.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.js"></script>
 ~~~~
 
 ### 啓用漢拉間隙
@@ -70,7 +70,7 @@ JS檔：
 
 * * *
 「漢字標準格式」版本：v2.3.0   
-本頁最後修改於：2014年2月12日　11:35（GMT+8）
+本頁最後修改於：2014年2月12日　19:35（GMT+8）
 
 
 
