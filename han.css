@@ -4,7 +4,7 @@
  * Hanzi-optimised CSS Mode
  *
  * Lisence: MIT Lisence
- * Last-Modified: 2014/2/7
+ * Last-Modified: 2014/2/12
  */
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 /**
@@ -1322,8 +1322,8 @@ var {
   font-style: inherit; }
 
 /*
- * 註記
- * Annotations
+ * 註記及增訂
+ * Annotations & insertion
  */
 *:lang(zh) u,
 *:lang(zh) ins,
