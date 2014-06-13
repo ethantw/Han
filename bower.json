@@ -1,17 +1,19 @@
 {
   "name": "Han",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "homepage": "http://css.hanzi.co/",
   "authors": [
-    "ethantw <ethantw@me.com>"
+    "Chen Yijun (@ethantw)"
   ],
   "description": "The CSS typography framework optimised for Hanzi.",
   "main": "han.css",
   "keywords": [
-    "css",
-    "han",
-    "normalize",
-    "typography"
+    "Han",
+    "Hanzi",
+    "CSS",
+    "typography",
+    "typesets",
+    "normalize"
   ],
   "license": "http://css.hanzi.co/license.md",
   "ignore": [
