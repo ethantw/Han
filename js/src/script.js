@@ -1,11 +1,15 @@
 define([
+  './var/root',
+  './var/body',
   './core',
-  //'./farr',
   './fn'
-], function( Han ) {
+], function( root, body, Han ) {
 
-    Han( document.body )
-    .wrap( /[大]/ig, 'strong' )
-    .replace( /[山]/ig, '〇' )
-    //.unfarr()
+    // Initialise the condition with feature-detecting
+    // classes (Modernizr-alike) on root elements,
+    // possibly `<html>`
+    Han( root ).initCond()
+
+    // Address JS-required style normalisation
+    Han( body ).renderAll()
 })
