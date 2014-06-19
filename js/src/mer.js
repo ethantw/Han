@@ -8,7 +8,7 @@ var
 ;
 
 Mer.prototype = {
-  constructor: Mei,
+  constructor: Mer,
 
   selector: '',
 
