@@ -105,7 +105,7 @@ function createZhuyinRb( rb, rt ) {
 }
 
 /**
- * Extend rendering mechanism onto Hyu
+ * Normalisation rendering mechanism 
  */
 $.extend( Hyu, {
 
@@ -119,8 +119,9 @@ $.extend( Hyu, {
     this.renderEm( context )
   },
 
-  // Traverse `<u>` and `<ins>` to see if we should address
-  // spacing between their underlines
+  // Traverse target elements (those with underlines)
+  // to see if we should address spacing in between
+  // for semantic presentation
   renderU: function( context, target ) {
     var
       target = target || 'u, ins',
@@ -149,7 +150,7 @@ $.extend( Hyu, {
     })
   },
 
-  // Traverse `<em>` to render Hanzi emphasis marks
+  // Traverse target elements to render Hanzi emphasis marks
   // and skip that in punctuation
   renderEm: function( context, target ) {
     var
@@ -180,7 +181,8 @@ $.extend( Hyu, {
     })
   },
 
-  // Address `<ruby>` normalisation
+  // Address normalisation for both simple and complex
+  // rubies
   renderRuby: function( context, target ) {
     var
       qs = target ? 'qsa' : 'tag',
@@ -421,8 +423,9 @@ $.extend( Hyu, {
 
   // ### TODO list ###
   //
-  // 1. Debug mode
-  // 2. Support syntax below,
+  // * Debug mode
+  // * Better fault-tolerance
+  // * Support syntax below,
   //
   // - <ruby>
   // -   <rb></rb>
