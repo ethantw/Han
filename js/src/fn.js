@@ -1,13 +1,26 @@
 define([
   './core',
   './method',
+  './regex/unicode-range',
+  './regex/typeset',
   './farr',
   './hyu'
-], function( Han, $, Farr, Hyu ) {
+], function( Han, $, UNICODE, TYPESET, Farr, Hyu ) {
 
 /**
- * Farr Methods
+ * Regular expression as usable API
  */
+$.extend( Han, {
+  UNICODE: UNICODE,
+  TYPESET: TYPESET
+})
+
+/**
+ * Modules and prototype methods
+ */
+
+// Farr Methods
+//
 Han.Farr = Farr
 
 ;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
@@ -23,9 +36,8 @@ Han.Farr = Farr
   }
 })
 
-/**
- * Extend Hyu normalisation rendering methods onto Han
- */
+// Hyu normalisation rendering mechanism
+//
 Han.Hyu = Hyu
 Han.support = Hyu.support
 Han.detectFont = Hyu.detectFont
