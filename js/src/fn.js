@@ -1,7 +1,9 @@
 define([
   './core',
-  './farr'
-], function( Han, Farr ) {
+  './method',
+  './farr',
+  './hyu'
+], function( Han, $, Farr, Hyu ) {
 
 /**
  * Farr Methods
@@ -9,7 +11,7 @@ define([
 Han.Farr = Farr
 
 // Bind the Farr methods onto Han constructor
-;['replace', 'wrap', 'unfarr', 'jinzify', 'charify']
+;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
 .forEach(function( method ) {
   Han.fn[ method ] = function() {
     if ( !this.Farr ) {
@@ -23,6 +25,21 @@ Han.Farr = Farr
 })
 
 /**
- *
+ * Extend Hyu normalisation rendering methods onto Han
  */
+Han.Hyu = Hyu
+
+Han.fn.initCond = function() {
+  Han.Hyu.initCond( this.selector )
+  return this
+}
+
+;[ 'renderAll', 'renderU', 'renderEm', 'renderRuby' ]
+.forEach(function( method ) {
+  Han.fn[ method ] = function( target ) {
+    Han.Hyu[ method ]( this.selector, target )
+    return this
+  }
+})
+
 })

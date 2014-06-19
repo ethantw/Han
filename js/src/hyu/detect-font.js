@@ -1,7 +1,7 @@
 define([
   '../var/root',
   '../var/body',
-  '../query',
+  '../method',
   './support'
 ], function( root, body, $, support ) {
   function writeOnCanvas( text, font ) {

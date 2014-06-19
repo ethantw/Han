@@ -13,7 +13,5 @@ define([
   './hyu/fn',
   './hyu/render'
 ], function( Hyu ) {
-  // Hyu.initCond()
-  // alert( Hyu.support.fontface )
   return Hyu
 })

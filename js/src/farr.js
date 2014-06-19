@@ -5,7 +5,7 @@
  */
 
 define([
-  './query',
+  './method',
   './regex/TYPESET',
   'findAndReplaceDOMText'
 ], function( $, TYPESET, findAndReplaceDOMText ) {

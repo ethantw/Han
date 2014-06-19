@@ -1,6 +1,6 @@
 define([
   '../var/root',
-  '../query',
+  '../method',
   './support',
   './detect-font'
 ], function( root, $, support ) {

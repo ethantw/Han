@@ -1,48 +1,167 @@
 define([
-  '../query',
+  '../method',
   '../farr',
+  '../regex/unicode-range',
+
   './core',
   './support'
-], function( $, Farr, Hyu, support ) {
+], function( $, Farr, UNICODE, Hyu, support ) {
 
+var
+  S = UNICODE.zhuyin.initial,
+  J = UNICODE.zhuyin.medial,
+  Y = UNICODE.zhuyin.final,
+
+  D = UNICODE.zhuyin.tone,
+  RY = UNICODE.zhuyin.ruyun,
+
+  rZyForm = new RegExp( '^(' + S + ')?' + '(' + J + ')?' + '(' + Y + ')?' + '(' + D + '|' + RY + ')?$' ),
+  rDiao = new RegExp( '(' + D + '|' + RY + ')', 'ig' )
+;
+
+/**
+ * Create and return a new `<rb>` element
+ * according to the given contents
+ */
+function createPlainRb( rb, rt ) {
+  var
+    rb = $.clone( rb ),
+    rt = $.clone( rt ),
+
+    $rb = $.create( 'rb' )
+  ;
+
+  $rb.appendChild( rb )
+  $rb.appendChild( rt )
+  return $rb
+}
+
+/**
+ * Create and return a new `<rb>` element
+ * in Zhuyin form
+ */
+function createZhuyinRb( rb, rt ) {
+  var
+    rb = $.clone( rb ),
+
+    // Create an element to return
+    $rb   = $.create( 'rb', 'zhuyin' ),
+    $rt   = $.create( 'zhuyin' ),
+    $yin  = $.create( 'yin' ),
+    $diao = $.create( 'diao' ),
+
+    // #### Explanation ####
+    // * `zhuyin`: the entire phonetic annotation
+    // * `yin`:    the plain pronunciation (w/out tone)
+    // * `diao`:   the tone
+    // * `form`:   the combination of the pronunciation
+    // * `len`:    the text length of `yin`
+    zhuyin = rt.textContent,
+    yin, diao, form, len
+  ;
+
+  yin  = zhuyin.replace( rDiao, '' )
+  len  = yin ? yin.length : 0
+  diao = zhuyin
+         .replace( yin, '' )
+         .replace( /[\u02C5]/g, '\u02C7' )
+         .replace( /[\u030D]/g, '\u0358' )
+
+  form = zhuyin.replace( rZyForm, function( s, j, y, d ) {
+    return [
+      s ? 'S' : null,
+      j ? 'J' : null,
+      y ? 'Y' : null
+    ].join('')
+  })
+
+  // - <rb>
+  // -   # ruby base text
+  // -   <zhuyin>
+  // -     <yin></yin>
+  // -     <diao></diao>
+  // -   </zhuyin>
+  // - </rb>
+  $diao.innerHTML = diao
+  $yin.innerHTML = yin
+  $rt.appendChild( $yin )
+  $rt.appendChild( $diao )
+
+  if ( rb.nodeName === 'RB' ) {
+    $rb.innerHTML = rb.innerHTML
+  } else {
+    $rb.appendChild( rb )
+  }
+
+  $rb.appendChild( $rt )
+
+  // Finally, set up the necessary attribute
+  // and return the new `<rb>`
+  $
+  .setAttr( $rb, {
+    diao: diao,
+    length: len,
+    form: form
+  })
+  return $rb
+}
+
+/**
+ * Extend rendering mechanism onto Hyu
+ */
 $.extend( Hyu, {
-  renderAnnotation: function( selector, target ) {
+
+  // Render and normalise the given context
+  // by the default routine:
+  //
+  // > ruby > u, ins > em
+  //
+  renderAll: function( context ) {
+    this.renderRuby( context )
+    this.renderU( context )
+    this.renderEm( context )
+  },
+
+  // renderU
+  // renderEm
+  // renderRuby
+  renderU: function( context, target ) {
     var
       target = target || 'u, ins',
-      $target = selector.querySelectorAll( target )
-      rTarget = new RegExp( '[' + target.replace(/\,[\s\n]?/g, '|') + ']', 'ig' )
+      $target = $.qsa( target, context ),
+      rTarget = new RegExp( '(' + target.replace(/\,[\s\n]?/g, '|') + ')', 'ig' )
     ;
 
-    $
-    .arraify( $target )
-    .forEach(function( elem, i ) {
+    $target
+    .forEach(function( elem ) {
       var
-        next = elem.nextSibling
+        next
       ;
 
-      if ( !next ) {
-        return
-      }
       // Ignore all `<wbr>` and comments in between
-      while ( next.nodeName === 'WBR' || next.nodeType == 8 ) {
-        next = next.nextSibling
-      }
+      do {
+        next = ( next || elem ).nextSibling
+
+        if ( !next ) {
+          return
+        }
+      } while ( next.nodeName === 'WBR' || next.nodeType == 8 )
 
       if ( next.nodeName.match( rTarget )) {
-        next.classList.add('adjacent')
+        next.classList.add( 'adjacent' )
       }
     })
   },
 
-  renderEmphasis: function( selector, target ) {
+  renderEm: function( context, target ) {
     var
+      qs = target ? 'qsa' : 'tag',
       target = target || 'em',
-      $target = selector.querySelectorAll( target )
+      $target = $[ qs ]( target, context )
     ;
 
-    $
-    .arraify( $target )
-    .forEach(function( elem, i ) {
+    $target
+    .forEach(function( elem ) {
       var
         $elem = Farr( elem )
       ;
@@ -63,20 +182,20 @@ $.extend( Hyu, {
     })
   },
 
-  renderRuby: function( selector, target ) {
+  renderRuby: function( context, target ) {
     var
+      qs = target ? 'qsa' : 'tag',
       target = target || 'ruby',
-      $target = selector.querySelectorAll( target ),
+      $target = $[ qs ]( target, context ),
 
       simpClaElem = target + ', rtc',
-      $simpClaElem = selector.querySelectorAll( simpClaElem )
+      $simpClaElem = $.qsa( simpClaElem, context )
     ;
 
     // First of all,
-    // simplify the semantic classes
-    $
-    .arraify( $simpClaElem )
-    .forEach(function( elem, i ) {
+    // simplify semantic classes
+    $simpClaElem
+    .forEach(function( elem ) {
       var
         clazz = elem.classList
       ;
@@ -92,59 +211,230 @@ $.extend( Hyu, {
       }
     })
 
-    $
-    .arraify( $target )
-    .forEach(function( elem, i ) {
+    // Deal with `<ruby>`
+    $target
+    .forEach(function( ruby ) {
       var
-        clazz = elem.classList,
-        html = elem.innerHTML,
-        hruby
+        clazz = ruby.classList,
+
+        condition = (
+          !support.ruby ||
+          clazz.contains( 'zhuyin') ||
+          clazz.contains( 'complex' ) ||
+          clazz.contains( 'rightangle' )
+        ),
+
+        frag, $d, $rb, hruby
       ;
 
-      // Simple ruby polyfill for, um, Firefox
-      if ( !support.ruby &&
-           !clazz.contains( 'complex' ) &&
-           !clazz.contains( 'zhuyin' ) &&
-           !clazz.contains( 'rightangle' )
+      if ( !condition ) {
+        return
+      }
+
+      // Apply document fragment here to avoid
+      // continuously pointless re-paint
+      frag = $.create( '!' )
+      frag.appendChild( $.clone( ruby ))
+      $cloned = $.qsa( target, frag )[0]
+
+      // 1. Simple ruby polyfill for, um, Firefox;
+      // 2. Zhuyin polyfill for all
+      if (
+        !support.ruby ||
+        clazz.contains( 'zhuyin' )
       ) {
+
         $
-        .arraify( elem.getElementsByTagName( 'rt' ))
-        .forEach(function( elem, i ) {
+        .tag( 'rt', $cloned )
+        .forEach(function( rt ) {
           var
-            html = elem.innerHTML,
-            prev = elem.previousSibling,
-            text = prev.nodeValue,
-            hruby = $.create( 'hruby' ),
-            rb = $.create( 'rb' )
+            $rb = $.create( '!' ),
+            airb = [],
+            irb
           ;
 
-          if ( !elem.parentNode ) {
+          // Consider the previous nodes the implied ruby base
+          do {
+            irb = ( irb || rt ).previousSibling
+
+            if ( !irb || irb.nodeName.match( /(rt|rb)/i ) ) {
+              break
+            }
+
+            $rb.insertBefore(
+              $.clone( irb ),
+              $rb.firstChild
+            )
+            airb.push( irb )
+          } while ( !irb.nodeName.match( /(rt|rb)/i ))
+
+          // Create a real `<rb>` to append
+          $rb = clazz.contains( 'zhuyin' ) ?
+            createZhuyinRb( $rb, rt ) :
+            createPlainRb( $rb, rt )
+
+          // Replace the ruby text with the new `<rb>`,
+          // and remove the original implied ruby base(s)
+          try {
+            rt.parentNode.replaceChild( $rb, rt )
+
+            airb
+            .forEach(function( irb ) {
+              $.remove( irb )
+            })
+          } catch (e) {}
+        })
+      }
+
+      // 3. Complex ruby polyfill
+      // - Double-lined annotation
+      // - Right-angled annotation
+      if (
+        clazz.contains( 'complex' ) ||
+        clazz.contains( 'rightangle' )
+      ) {
+        $rb = $.tag( 'rb', $cloned )
+
+        // First of all, deal with Zhuyin containers
+        // individually
+        //
+        // (We only support one single Zhuyin in
+        // each complex ruby)
+        !function( rtc ) {
+          if ( !rtc ) {
             return
           }
 
-          prev.nodeValue = ''
+          $
+          .tag( 'rt', rtc )
+          .forEach(function( rt, i ) {
+            var
+              $$rb = createZhuyinRb( $rb[ i ], rt )
+            ;
+            try {
+              $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
+            } catch (e) {}
+          })
 
-          rb.setAttribute( 'data-annotation', anno )
-          parentNode.insertBefore( rb )
+          // Remove the container once it's useless
+          $.remove( rtc )
+        }( $.qsa( 'rtc.zhuyin', $cloned )[0] )
+
+        // Then, other normal annotations
+        $
+        .qsa( 'rtc:not(.zhuyin)', $cloned )
+        .forEach(function( rtc, order ) {
+          var
+            start, end
+          ;
+
+          // init
+          start = end = 0
+
+          // Recache the ruby base
+          $rb = $.qsa(
+            order == 0 ? 'rb' : 'rb[span]',
+            $cloned
+          )
+
+          $
+          .tag( 'rt', rtc )
+          .forEach(function( rt, set ) {
+            var
+              $$rb = $.create( '!' ),
+
+              // #### Explanation ####
+              // * `rbspan`: the `<rb>` span assigned in the HTML
+              // * `span`:   the span number of the current `<rb>`
+              rbspan = parseInt( rt.getAttribute( 'rbspan' )) || 1,
+              span, _$rb
+            ;
+
+            start = end
+            end += parseInt( rbspan )
+
+            // Rearrange the effected `<rb>` array according
+            // to (rb)span, while working on the second container
+            if ( order > 0 ) {
+              for ( var i = end-1; i >= start; i-- ) {
+                if ( !$rb[ i ] ) {
+                  continue
+                }
+
+                span = parseInt( $rb[ i ].getAttribute( 'span' )) || 1
+
+                if ( span > rbspan ) {
+                  _$rb = $.tag( 'rb', $rb[ i ] )
+
+                  for ( var j = 0, len = _$rb.length; j < len; j++ ) {
+                    $rb.splice( i+j, 1, _$rb[ j ] )
+                  }
+                }
+              }
+            }
+
+            // Iterate from the last item, for we don't
+            // want to mess up with the original indices
+            for ( var i = end-1; i >= start; i-- ) {
+              if ( !$rb[ i ] ) {
+                continue
+              }
+
+              $$rb.insertBefore(
+                $.clone( $rb[ i ] ),
+                $$rb.firstChild
+              )
+
+              if ( rbspan > 1 && i != start ) {
+                $.remove( $rb[ i ] )
+                continue
+              }
+
+              $$rb = createPlainRb( $$rb, rt )
+              $.setAttr( $$rb, {
+                span: rbspan,
+                order: order
+              })
+              $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
+            }
+          })
+
+          // Remove the container once it's useless
+          $.remove( rtc )
         })
-
-        hruby.innerHTML = html
-        elem.parentNode( hruby, this )
-
-      // Complex ruby support
-      } else {
-
       }
+
+      // Create a new fake `<hruby>` element so the
+      // style sheets will render it as a polyfill,
+      // which also helps to avoid the UA style.
+      //
+      // (The ‘H’ stands for ‘Han’, by the way)
+      hruby = $.create( 'hruby' )
+      hruby.innerHTML = frag.firstChild.innerHTML
+
+      // Copy all attributes onto it
+      $.setAttr( hruby, ruby.attributes )
+
+      // Finally, replace it
+      ruby.parentNode.replaceChild( hruby, ruby )
     })
-  },
-
-  renderAll: function( selector ) {
-    this.renderRuby( selector )
-    this.renderEmphasis( selector )
-    this.renderAnnotation( selector )
   }
+
+  // ### TODO list ###
+  //
+  // 1. Debug mode
+  // 2. Support syntax below,
+  //
+  // - <ruby>
+  // -   <rb></rb>
+  // -   …
+  // -   <rtc></rtc>
+  // -   <rtc></rtc>
+  // -
+  // -   <rb></rb>
+  // -   …
+  // -   <rtc></rtc>
+  // -   <rtc></rtc>
+  // - </ruby>
 })
-
-Hyu.renderAll( document.body )
-
 })
