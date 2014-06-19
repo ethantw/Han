@@ -24,7 +24,7 @@ define([
   './src/core',
   './src/fn',
   './src/hyu',
-  './src/mei',
+  './src/mer',
   './src/script'
 ], function( Han ) {
   return Han
