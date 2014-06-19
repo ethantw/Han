@@ -10,7 +10,6 @@ define([
  */
 Han.Farr = Farr
 
-// Bind the Farr methods onto Han constructor
 ;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
 .forEach(function( method ) {
   Han.fn[ method ] = function() {
@@ -28,11 +27,15 @@ Han.Farr = Farr
  * Extend Hyu normalisation rendering methods onto Han
  */
 Han.Hyu = Hyu
+Han.support = Hyu.support
+Han.detectFont = Hyu.detectFont
 
-Han.fn.initCond = function() {
-  Han.Hyu.initCond( this.selector )
-  return this
-}
+$.extend( Han.fn, {
+  initCond: function() {
+    Han.Hyu.initCond( this.selector )
+    return this
+  }
+})
 
 ;[ 'renderAll', 'renderU', 'renderEm', 'renderRuby' ]
 .forEach(function( method ) {

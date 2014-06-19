@@ -11,12 +11,10 @@ var
   S = UNICODE.zhuyin.initial,
   J = UNICODE.zhuyin.medial,
   Y = UNICODE.zhuyin.final,
+  D = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
 
-  D = UNICODE.zhuyin.tone,
-  RY = UNICODE.zhuyin.ruyun,
-
-  rZyForm = new RegExp( '^(' + S + ')?' + '(' + J + ')?' + '(' + Y + ')?' + '(' + D + '|' + RY + ')?$' ),
-  rDiao = new RegExp( '(' + D + '|' + RY + ')', 'ig' )
+  rZyForm = new RegExp( '^(' + S + ')?' + '(' + J + ')?' + '(' + Y + ')?' + '(' + D + ')?$' ),
+  rDiao = new RegExp( '(' + D + ')', 'ig' )
 ;
 
 /**
@@ -111,8 +109,7 @@ function createZhuyinRb( rb, rt ) {
  */
 $.extend( Hyu, {
 
-  // Render and normalise the given context
-  // by the default routine:
+  // Render and normalise the given context by routine:
   //
   // > ruby > u, ins > em
   //
@@ -122,9 +119,8 @@ $.extend( Hyu, {
     this.renderEm( context )
   },
 
-  // renderU
-  // renderEm
-  // renderRuby
+  // Traverse `<u>` and `<ins>` to see if we should address
+  // spacing between their underlines
   renderU: function( context, target ) {
     var
       target = target || 'u, ins',
@@ -153,6 +149,8 @@ $.extend( Hyu, {
     })
   },
 
+  // Traverse `<em>` to render Hanzi emphasis marks
+  // and skip that in punctuation
   renderEm: function( context, target ) {
     var
       qs = target ? 'qsa' : 'tag',
@@ -182,6 +180,7 @@ $.extend( Hyu, {
     })
   },
 
+  // Address `<ruby>` normalisation
   renderRuby: function( context, target ) {
     var
       qs = target ? 'qsa' : 'tag',
@@ -318,7 +317,7 @@ $.extend( Hyu, {
 
           // Remove the container once it's useless
           $.remove( rtc )
-        }( $.qsa( 'rtc.zhuyin', $cloned )[0] )
+        }( $cloned.querySelector( 'rtc.zhuyin' ))
 
         // Then, other normal annotations
         $
