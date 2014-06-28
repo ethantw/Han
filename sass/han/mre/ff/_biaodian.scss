@@ -1,6 +1,6 @@
 
 /**
- * Basic correction to Hanzi punctuation
+ * Basic correction to CJK punctuation
  * ‘Biaodian’(zh) and ‘Yakumono’(ja)
  */
 
@@ -8,9 +8,7 @@
 // * 2. CNS (適用繁體的舊字形或國字標準字形字體)
 // * 3. GB (中國國標)
 
-/* Fullwidth full stop (．)
- */
-
+/* Fullwidth full stop (．) */
 // 1
 @font-face {
   font-family: 'Biaodian Sans';
@@ -110,9 +108,7 @@
   unicode-range: U+FF0E;
 }
 
-/* Middle dot (·)
- */
-
+/* Middle dot (·) */
 // 1
 @font-face {
   font-family: 'Biaodian Sans';
@@ -204,13 +200,12 @@
   unicode-range: U+00B7;
 }
 
-/* Em dash (——)
- */
-
+/* Em dash (——) */
 // 1
 @font-face {
   font-family: 'Biaodian Sans';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -223,6 +218,7 @@
 @font-face {
   font-family: 'Biaodian Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -236,6 +232,7 @@
 @font-face {
   font-family: 'Yakumono Sans';
   src:
+    $mre-webfont,
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
     local('Arial Unicode MS'),
@@ -247,6 +244,7 @@
 @font-face {
   font-family: 'Yakumono Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('MS Mincho'),
@@ -258,6 +256,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -270,6 +269,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'), local(STSong),
@@ -283,6 +283,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans CNS';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -295,6 +296,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif CNS';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -309,6 +311,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans GB';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -321,6 +324,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif GB';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -331,13 +335,12 @@
   unicode-range: U+2014;
 }
 
-/* Ellipsis (……)
- */
-
+/* Ellipsis (……) */
 // 1
 @font-face {
   font-family: 'Biaodian Sans';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -352,6 +355,7 @@
 @font-face {
   font-family: 'Biaodian Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -365,6 +369,7 @@
 @font-face {
   font-family: 'Yakumono Sans';
   src:
+    $mre-webfont,
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
     local(Meiryo),
@@ -376,6 +381,7 @@
 @font-face {
   font-family: 'Yakumono Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('MS Mincho')
@@ -386,6 +392,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -398,6 +405,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -411,6 +419,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans CNS';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -423,6 +432,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif CNS';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -437,6 +447,7 @@
 @font-face {
   font-family: 'Biaodian Pro Sans GB';
   src:
+    $mre-webfont,
     local('Hiragino Sans GB'),
     local('Hiragino Kaku Gothic ProN'),
     local('Hiragino Kaku Gothic Pro'),
@@ -449,6 +460,7 @@
 @font-face {
   font-family: 'Biaodian Pro Serif GB';
   src:
+    $mre-webfont,
     local('Hiragino Mincho ProN'),
     local('Hiragino Mincho Pro'),
     local('Songti SC'),
@@ -459,10 +471,7 @@
   unicode-range: U+2026;
 }
 
-/* Curve quotes (“‘’”)
- * (GB-only)
- */
-
+/* Curve quotes (“‘’”, GB-only) */
 // 3
 @font-face {
   font-family: 'Biaodian Pro Sans GB';
@@ -473,7 +482,9 @@
     local(SimSun),
     local(PMingLiU)
   ;
-  unicode-range: U+201C-201D, U+2018-2019;
+  unicode-range:
+    U+201C-201D, U+2018-2019
+  ;
 }
 
 @font-face {
@@ -485,17 +496,17 @@
     local(SimSun),
     local(PMingLiU)
   ;
-  unicode-range: U+201C-201D, U+2018-2019;
+  unicode-range:
+    U+201C-201D, U+2018-2019
+  ;
 }
 
-/* Default emphasis mark (•)
- */
-
+/* Default emphasis mark (•) */
 // 1
 @font-face {
   font-family: 'Biaodian Sans';
   src:
-    //local('Heiti SC'),
+    local(Georgia),
     local('Times New Roman'),
     local(Arial),
     local('Droid Sans Fallback')
@@ -583,7 +594,7 @@
 }
 
 /**
- * Advanced correction to Hanzi punctuation
+ * Advanced correction to Chinese Biaodian
  */
 
 // * a. Period, comma, paused comma (。，、)
@@ -604,7 +615,8 @@
   unicode-range:
     U+3002, U+FF0C, U+3001, /* a */
     U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 @font-face {
@@ -617,7 +629,8 @@
   unicode-range:
     U+3002, U+FF0C, U+3001, /* a */
     U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 // 2
@@ -630,7 +643,8 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001 /* a */;
+    U+3002, U+FF0C, U+3001 /* a */
+  ;
 }
 
 @font-face {
@@ -644,7 +658,8 @@
     local('MS Gothic')
   ;
   unicode-range:
-    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */
+  ;
 }
 
 @font-face {
@@ -655,7 +670,8 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 @font-face {
@@ -667,7 +683,8 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001 /* a */;
+    U+3002, U+FF0C, U+3001 /* a */
+  ;
 }
 
 @font-face {
@@ -680,7 +697,8 @@
   ;
   unicode-range:
     U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 // 3
@@ -698,7 +716,8 @@
   unicode-range:
     U+3002, U+FF0C, U+3001, /* a */
     U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 @font-face {
@@ -716,7 +735,8 @@
   ;
   unicode-range:
     U+3002, U+FF0C, U+3001, /* a */
-    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */;
+    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */
+  ;
 }
 
 @font-face {
@@ -728,7 +748,8 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+FF0D, U+FF0F, U+FF3C /* c */;
+    U+FF0D, U+FF0F, U+FF3C /* c */
+  ;
 }
 
 /* a. Quotes (「『』」)
@@ -745,7 +766,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 @font-face {
@@ -757,7 +779,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 // 2
@@ -771,7 +794,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 @font-face {
@@ -783,7 +807,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 // 3
@@ -797,7 +822,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 @font-face {
@@ -809,7 +835,8 @@
   ;
   unicode-range:
     U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */;
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+  ;
 }
 
 /* Address solution to `unicode-range` unsupported
