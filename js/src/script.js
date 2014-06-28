@@ -1,15 +1,14 @@
 define([
-  './var/root',
-  './var/body',
   './core',
   './fn'
-], function( root, body, Han ) {
+], function( Han ) {
 
-    // Initialise the condition with feature-detecting
-    // classes (Modernizr-alike) on root elements,
-    // possibly `<html>`
-    Han( root ).initCond()
-
-    // Address JS-required style normalisation
-    Han( body ).renderAll()
+  var
+    ready = setInterval( function() {
+      if ( document.readyState === 'complete' ) {
+        clearTimeout( ready )
+        Han.renderByRoutine()
+      }
+    }, 50 )
+  ;
 })
