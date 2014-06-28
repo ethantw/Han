@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="zh-Hant" class="han-la han-biaodian-pro han-lab-underline">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,6 @@ body {
 }
     </style>
 </head>
-
 
 <body>
 <section>
@@ -153,10 +152,10 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
         <li>清單項目子</li>
         <li>清單項目丑</li>
     </ul>
-    
+
     <h3 id="article-strong">文章區塊內的重點</h3>
     <p>不做則中心與的說很筆分士：<strong>校此訴平是裡春家善客總外公；做南多中。</strong>足酒臉理特指第常三緊資現工們家化民，公政我熱良，中以家是。</p>
-    
+
     <h3 id="article-figure">文章區塊內的圖表引用區塊</h3>
     <figure>
         <blockquote>
@@ -252,6 +251,7 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
     <h2 id="text-level-semantics-other">其他</h2>
 
     <s>訛訊元素s</s>示例<br>
+      <s>訛訊元素甲</s><s>訛訊元素乙</s>一般文字節點<s>訛訊元素丙</s>一般文字節點<s>訛訊元素丁</s>。<br>
     <abbr>縮寫元素abbr</abbr>及<abbr title="abbreviation">包含標題屬性的縮寫元素abbr</abbr>示例<br>
     <b>關鍵字元素b</b>示例<br>
     <mark>凸顯元素mark</mark>示例<br>
@@ -268,7 +268,8 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 
     <ins>增訂元素ins</ins>示例<br>
         <ins>增訂元素甲</ins><ins>增訂元素乙</ins>一般文字節點<ins>增訂元素丙</ins>一般文字節點<ins>增訂元素丁</ins>。<br>
-    <del>刪訂元素del</del>示例
+    <del>刪訂元素del</del>示例<br>
+      <del>刪訂元素甲</del><del>刪訂元素乙</del>一般文字節點<del>刪訂元素丙</del>一般文字節點<del>刪訂元素丁</del>。
 </section>
 
 
@@ -277,9 +278,6 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
     <h2 id="han-la">漢字Latin字母間隙</h2>
     <p lang="zh-Hans">然而在<span lang="de">Jan Tschichold</span>和他的著作<cite lang="en-GB">Asymmetric Typography</cite>流行之前，直至追溯回<span lang="de">Gutenberg</span>时代，「对称」「齐整」两种古老的视觉审美习惯无处不在。左右并齐的纵栏——我也欣赏这样的传统，一如欣赏古典格律的稳定及优美。</p>
     <p class="footer">——<a href="https://twitter.com/laerhsif">钱争予</a>〈<a href="//www.typeisbeautiful.com/2013/12/6983/">纵横对齐不是现代方法</a>〉</p>
-
-    <h2>實驗性底線（註記元素）</h2>
-    <p class="poem-like"><u class="pn">中國</u><u class="pn">北京</u>是<u class="pn">華北地區</u>的主要經濟中心之一。</p>
 
     <h2 id="font-and-biaodian">地區變體字型及標點符號樣式</h2>
     <p><strong>註：</strong>此處僅展示黑體，其餘字體樣式請參閱使用手冊。</p>
@@ -316,10 +314,9 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 
     <h2 id="checked-tones">
         <ruby class="rightangle">
-            <rbc>
-                   <rb>入</rb><rb>聲</rb>韻
-            </rbc>
-            <rtc class="annotation" lang="nan-Latn">
+            <rb>入</rb><rb>聲</rb>韻
+
+            <rtc class="romanization" lang="nan-Latn">
                 <rt rbspan="2">ji̍p-siann</rt>
             </rtc>
             <rtc class="zhuyin">
@@ -329,7 +326,13 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
         </ruby>
     </h2>
     <p class="poem-like"><span style="
-        font-family: 'Zhuyin Kaiti', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family:
+          'Zhuyin Kaiti',
+          'Helvetica Neue',
+          Helvetica,
+          Arial,
+          sans-serif
+        ;
         -moz-font-feature-settings: 'liga, dlig';
         -ms-font-feature-settings: 'liga', 'dlig';
         -webkit-font-feature-settings: 'liga', 'dlig';
@@ -339,9 +342,7 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
     </span></p>
 </section>
 
-<script src="js/jquery-2.1.0.min.js"></script>
-<script src="js/han.js"></script>
+<script src='js/lib/require.js' data-main='js/han'></script>
 
 </body>
 </html>
-
