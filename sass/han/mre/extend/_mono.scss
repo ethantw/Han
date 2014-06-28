@@ -1,0 +1,34 @@
+
+%mre-mono {
+  font-family:
+    $mre-mono,
+    mre-typeface( 'Han Heiti', $_default-variant ),
+    monospace, monospace, sans-serif
+  ;
+}
+
+%mre-mono-hant {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-set-hant ),
+    $mre-mono,
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hant ),
+    monospace, monospace, sans-serif
+  ;
+}
+
+%mre-mono-hans {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-set-hans ),
+    $mre-mono,
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hans ),
+    monospace, monospace, sans-serif
+  ;
+}
+
+%mre-mono-ja {
+  font-family:
+    'Yakumono Sans',
+    $mre-mono,
+    monospace, monospace, sans-serif
+  ;
+}
