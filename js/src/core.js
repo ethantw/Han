@@ -3,59 +3,66 @@ define([
   './var/body',
   './method'
 ], function( root, body, $ ) {
-var
-  VERSION = '3.0.0-alpha1',
 
-  // Define Han
-  Han = function( query ) {
-    return new Han.fn.init( query )
-  }
-;
+  var
+    VERSION = '3.0.0-alpha1',
 
-Han.fn = Han.prototype = {
-  version: VERSION,
-
-  constructor: Han,
-
-  // Default target selector
-  selector: body,
-
-  // Default target DOM object ready to use
-  //$this: $( this.selector ),
-
-  // Default root element
-  root: root,
-
-  // Default routine for rendering
-  routine: [
-    // Detect end user's browser and system condition
-    'condition',
-
-    // Render the HTML5 elements
-    'ruby',
-    'emphasis',
-    'annotation'
-  ],
-
-  // Init
-  init: function( query, option ) {
-    if ( query ) {
-      this.selector = query
-      //this.$this = query instanceof $ ? query : $( query )
+    // Define Han
+    Han = function( context, condition ) {
+      return new Han.fn.init( context, condition )
     }
+  ;
 
-    if ( typeof option === 'object' ) {
-      this.option = option
+  Han.fn = Han.prototype = {
+    version: VERSION,
+
+    constructor: Han,
+
+    // Default target context
+    context: body,
+
+    // Root element as the default condition
+    condition: root,
+
+    // Default routine for rendering
+    routine: [
+      // Initialise the condition with feature-detecting
+      // classes (Modernizr-alike) on root elements,
+      // possibly `<html>`.
+      'initCond',
+      // Address element normalisation
+      'renderElem',
+      // Address Hanzi and Western mixed spacing
+      'renderHWS'
+    ],
+
+    init: function( context, condition ) {
+      if ( context ) {
+        this.context = context
+      }
+      if ( condition ) {
+        this.condition = condition
+      }
+      return this
+    },
+
+    setOption: function( option ) {
+      return this
+    },
+
+    renderByRoutine: function() {
+      var
+        routine = this.routine
+      ;
+      for ( var i = 0, len = routine.length; i < len; i++ ) {
+        try {
+          this[ routine[ i ]]()
+        } catch (e) {}
+      }
+      return this
     }
-
-    /*if ( typeof option.routine !== 'undefined' ) {
-      this.routine = option.routine
-    }*/
-
-    return this
   }
-}
 
-Han.fn.init.prototype = Han.fn
-return Han
+  Han.fn.init.prototype = Han.fn
+  return Han
 })

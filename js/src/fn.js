@@ -1,60 +1,103 @@
 define([
-  './core',
   './method',
-  './regex/unicode-range',
+  './regex/unicode',
   './regex/typeset',
   './farr',
-  './hyu'
-], function( Han, $, UNICODE, TYPESET, Farr, Hyu ) {
+  './core',
+  './hyu',
+  './mre',
+  './guy'
+], function( $, UNICODE, TYPESET, Farr, Han, Hyu, Mre, Guy ) {
 
-/**
- * Regular expression as usable API
- */
-$.extend( Han, {
-  UNICODE: UNICODE,
-  TYPESET: TYPESET
-})
+  /**
+   * API: regular expression
+   */
+  $.extend( Han, {
+    UNICODE: UNICODE,
+    TYPESET: TYPESET
+  })
 
-/**
- * Modules and prototype methods
- */
+  // English aliases are easier dealing with
+  $.extend( Han.UNICODE, {
+    greek: Han.UNICODE.ellinika,
+    cyrillic: Han.UNICODE.kirillica
+  })
 
-// Farr Methods
-//
-Han.Farr = Farr
+  // Lock the regex objects preventing from furthur
+  // modification.
+  Object.freeze( Han.UNICODE )
+  Object.freeze( Han.TYPESET )
 
-;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
-.forEach(function( method ) {
-  Han.fn[ method ] = function() {
-    if ( !this.Farr ) {
-      // Share the same selector
-      this.Farr = Han.Farr( this.selector )
+  /**
+   * Shortcut for render by routine
+   */
+  Han.renderByRoutine = function() {
+    return Han().renderByRoutine()
+  }
+
+  /**
+   * Farr Methods
+   */
+  Han.Farr = Farr
+
+  ;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
+  .forEach(function( method ) {
+    Han.fn[ method ] = function() {
+      if ( !this.Farr ) {
+        // Share the same selector
+        this.Farr = Han.Farr( this.context )
+      }
+
+      this.Farr[ method ]( arguments[0], arguments[1] )
+      return this
     }
+  })
 
-    this.Farr[ method ]( arguments[0], arguments[1] )
-    return this
-  }
-})
+  /**
+   * Normalisation rendering mechanism via Hyu
+   */
+  Han.normalize = Hyu
+  Han.support = Hyu.support
+  Han.detectFont = Hyu.detectFont
 
-// Hyu normalisation rendering mechanism
-//
-Han.Hyu = Hyu
-Han.support = Hyu.support
-Han.detectFont = Hyu.detectFont
+  $.extend( Han.fn, {
+    initCond: function() {
+      this.condition.classList.add( 'han-js-rendered' )
+      Han.normalize.initCond( this.condition )
+      return this
+    }
+  })
 
-$.extend( Han.fn, {
-  initCond: function() {
-    Han.Hyu.initCond( this.selector )
-    return this
-  }
-})
+  ;[ 'Elem', 'Line', 'Em', 'Ruby' ]
+  .forEach(function( elem ) {
+    var
+      method = 'render' + elem
+    ;
+    Han.fn[ method ] = function( target ) {
+      Han.normalize[ method ]( this.context, target )
+      return this
+    }
+  })
 
-;[ 'renderAll', 'renderU', 'renderEm', 'renderRuby' ]
-.forEach(function( method ) {
-  Han.fn[ method ] = function( target ) {
-    Han.Hyu[ method ]( this.selector, target )
-    return this
-  }
-})
+  /**
+   * Typography improvement via Mre
+   */
+  Han.typeface = Mre
+  $.extend( Han.support, Mre.support )
 
+  /**
+   * Advanced typesetting features via Guy
+   */
+  Han.typeset = Guy
+
+  ;[ 'HWS' ]
+  .forEach(function ( feature ) {
+    var
+      method = 'render' + feature
+    ;
+    Han.fn[ method ] = function( option ) {
+      Han.typeset[ method ]( this.context, option )
+      return this
+    }
+  })
 })

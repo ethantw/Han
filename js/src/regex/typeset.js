@@ -1,6 +1,7 @@
 define([
-  './unicode-range'
+  './unicode'
 ], function( UNICODE ) {
+
   var
     TYPESET,
 
@@ -37,8 +38,7 @@ define([
   ;
 
   TYPESET = {
-    /* 字符選擇器 Character-based Selectors
-     *
+    /* Character-level selector (字級選擇器)
      */
     char: {
       biaodian: {
@@ -65,10 +65,7 @@ define([
       word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' )
     },
 
-    /* 禁則 Punctuation Rules
-     *
-     * 行頭、行尾
-     * 行間
+    /* Punctuation Rules (禁則)
      */
     jinze: {
       touwei:   new RegExp( '(' + rAllOpen + '+)(' + rChar + ')(' + rAllEnd + '+)', 'ig' ),
@@ -77,38 +74,21 @@ define([
       middle:   new RegExp( '(' + rChar + ')(' + rAllMid + ')(' + rChar + ')', 'ig' )
     },
 
-    /* 漢拉間隙 Han-La Spacing
-     *
-     * 基本模式
-     * 嚴格模式
+    /* Hanzi and Western mixed spacing (漢字西文混排間隙)
+     * - Basic mode
+     * - Strict mode
      */
-    hanla: {
+    hws: {
       base: [
-        new RegExp( '('+ rHan +')(' + rLatn + ')', 'ig' ),
-        new RegExp( '('+ rLatn +')(' + rHan + ')', 'ig' )
+        new RegExp( '('+ rHan +')(' + rAlph + ')', 'ig' ),
+        new RegExp( '('+ rAlph +')(' + rHan + ')', 'ig' )
       ],
-      strict: [
-        new RegExp( '('+ rHan +')' + rWhite + '*(' + rLatn + ')', 'ig' ),
-        new RegExp( '('+ rLatn +')' + rWhite + '*(' + rHan + ')', 'ig' )
-      ]
-    },
 
-    /* 漢希間隙 Han-El Spacing
-     *
-     * 基本模式
-     * 嚴格模式
-     */
-    hanel: {
-      base: [
-        new RegExp( '('+ rHan +')(' + rGk + ')', 'ig' ),
-        new RegExp( '('+ rGk +')(' + rHan + ')', 'ig' )
-      ],
       strict: [
-        new RegExp( '('+ rHan +')' + rWhite + '*(' + rGk + ')', 'ig' ),
-        new RegExp( '('+ rGk +')' + rWhite + '*(' + rHan + ')', 'ig' )
+        new RegExp( '('+ rHan +')' + rWhite + '*(' + rAlph + ')', 'ig' ),
+        new RegExp( '('+ rAlph +')' + rWhite + '*(' + rHan + ')', 'ig' )
       ]
     }
   }
-
   return TYPESET
 })

@@ -1,21 +1,19 @@
-define(function() {
+define([
+  '../method',
+  './support',
+  './detect-font',
+  './init-cond'
+], function( $, support, detectFont, initCond ) {
+
   var
-    Hyu = function( query ) {
-      return Hyu.fn.init( query )
-    }
+    Hyu = {}
   ;
 
-  Hyu.fn = Hyu.prototype = {
-    constructor: Hyu,
-
-    selector: '',
-
-    init: function( selector ) {
-      this.selector = selector
-
-      return this
-    }
-  }
+  $.extend( Hyu, {
+    support: support,
+    detectFont: detectFont,
+    initCond: initCond
+  })
 
   return Hyu
 })

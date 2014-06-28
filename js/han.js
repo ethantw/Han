@@ -1,5 +1,4 @@
 
-
 /**
  * Library Configuration
  */
@@ -24,7 +23,7 @@ define([
   './src/core',
   './src/fn',
   './src/hyu',
-  './src/mer',
+  './src/mre',
   './src/script'
 ], function( Han ) {
   return Han

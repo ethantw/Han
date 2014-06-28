@@ -1,9 +1,10 @@
 define([
+  '../method',
   '../var/root',
   '../var/body',
-  '../method',
   './support'
-], function( root, body, $, support ) {
+], function( $, root, body, support ) {
+
   function writeOnCanvas( text, font ) {
     var
       canvas = $.create('canvas'),
@@ -72,10 +73,10 @@ define([
   }
 
   support.unicoderange = (function() {
-    return detectFont(
-      'unicode-range',        // treatment group
-      'Arial, "Droid Sans"',  // control group
-      'Q'                     // ASCII characters only
+    return !detectFont(
+      'test-for-unicode-range',        // treatment group
+      'Arial, "Droid Sans"',           // control group
+      'Q'                              // ASCII characters only
     )
   })()
 

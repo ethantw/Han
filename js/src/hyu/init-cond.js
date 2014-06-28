@@ -1,17 +1,24 @@
 define([
   '../var/root',
-  '../method',
   './support',
   './detect-font'
-], function( root, $, support ) {
+], function( root, support ) {
   function initCond( target ) {
     var
-      target = target || root
+      target = target || root,
+      ret = '',
+      clazz
     ;
 
+    target.classList.add( 'hyu-js-rendered' )
+
     for ( feature in support ) {
-      target.classList.add( (support[feature] ? '' : 'no-') + feature )
+      clazz = (support[feature] ? '' : 'no-') + feature
+
+      target.classList.add( clazz )
+      ret += clazz + ' '
     }
+    return ret
   }
 
   return initCond

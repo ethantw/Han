@@ -1,8 +1,6 @@
 define({
-  /* 西文標點符號 Western punctuation
-   *
-   * 包含所有西文基本標點
-     Included with all Western basic punctuation
+  /**
+   * Western punctuation (西文標點符號)
    */
   punct: {
     base:   '[\u2010-\u2014\u2026,.;:!?\u203D_—]',
@@ -12,11 +10,8 @@ define({
     end:    '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F\u2010-\u2014\u2026,.;:!?\u203D_—…]',
   },
 
-  /* CJK標點符號 CJK biaodian
-   *
-   * 包含所有CJK基本標點及同西文標點共用者
-     Included with all CJK basic biaodian and
-     shared ones with Western languages
+  /**
+   * CJK biaodian (CJK標點符號)
    */
   biaodian: {
     base:   '[︰．、，。：；？！—ー…⋯]',
@@ -26,7 +21,8 @@ define({
     end:    '[」』》〉）〕］｝】〗︰．、，。：；？！ー…⋯]'
   },
 
-  /* 拉丁字母區段 Latin script blocks
+  /**
+   * Latin script blocks (拉丁字母區段)
    *
    * 1. 基本拉丁字母：A-Za-z
         Basic Latin
@@ -48,7 +44,8 @@ define({
     combine: '[\u0300-\u0341]'
   },
 
-  /* 希臘字母區段 elli̱niká (Greek) script blocks
+  /**
+   * Elli̱niká (Greek) script blocks (希臘字母區段)
    *
    * 1. 希臘字母及擴展：[\u0370–\u03FF\u1F00-\u1FFF]
         Basic Greek & Greek Extended
@@ -62,7 +59,8 @@ define({
     combine: '[\u0300-\u0345]'
   },
 
-  /* 西里爾字母區段 kirillica (Cyrillic) script blocks
+  /**
+   * Kirillica (Cyrillic) script blocks (西里爾字母區段)
    *
    * 1. 西里爾字母及補充：[\u0400-\u0482\u048A-\u04FF\u0500-\u052F]
         Basic Cyrillic and supplement
@@ -78,7 +76,8 @@ define({
     combine: '[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]'
   },
 
-  /* CJK相關字符區段 CJK-related blocks
+  /**
+   * CJK-related blocks (CJK相關字符區段)
    *
    *  1. 中日韓統一表意文字：[\u4E00-\u9FFF]
          Basic CJK unified ideographs
@@ -121,7 +120,8 @@ define({
     radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
   },
 
-  /* 注音符號 Zhuyin (Mandarin & [Taiwanese] Dialect Phonetic Symbols)
+  /**
+   * Zhuyin (注音符號, Mandarin & Dialect Phonetic Symbols)
    *
    * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
         Bopomofo phonetic symbols
