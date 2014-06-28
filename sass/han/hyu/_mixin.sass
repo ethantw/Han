@@ -1,0 +1,43 @@
+
+=hyu-calc( $prop, $exp )
+  #{$prop}: -moz-calc( #{$exp} )
+  #{$prop}: -webkit-calc( #{$exp} )
+  #{$prop}: calc( #{$exp} )
+
+=hyu-scale( $size )
+  -moz-transform:           scale( $size )
+  -ms-transform:            scale( $size )
+  -webkit-transform:        scale( $size )
+  transform:                scale( $size )
+
+=hyu-typo-reset
+  +hyu-text-emphasis( none )
+  font-style:      normal
+  font-weight:     normal
+  line-height:     1.5
+  text-decoration: none
+  text-indent:     0
+
+=hyu-text-emphasis( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: circle )
+  @if ( $posi == none )
+    $mark: none
+
+  -moz-text-emphasis:             $mark
+  -webkit-text-emphasis:          $mark
+  text-emphasis:                  $mark
+  -moz-text-emphasis-position:    $posi
+  -webkit-text-emphasis-position: $posi
+  text-emphasis-position:         $posi
+
+=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: '\25cf' )
+  $margin-top: 1em
+  @extend %hyu-text-emphasis-pf
+
+  @if ( $posi == over )
+    $margin-top: -.7em
+
+  .no-textemphasis & char:after
+    // position
+    margin-top: $margin-top
+    // typography
+    content: $mark

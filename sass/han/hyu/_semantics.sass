@@ -1,0 +1,228 @@
+
+/* Base
+   ========================================================================== */
+
+// * 1. Different CJK fonts have different line heights,
+// *    assign a unified value for consistency.
+// * 2. Force WebKit to render texts subpixel-antialiasedly.
+// *
+#{$HYU-ROOT}
+  // 1
+  line-height: $HYU-LINE-HEIGHT
+  // 2
+  -webkit-font-smoothing: subpixel-antialiased
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * Paragraphs, lists, figures and blockquotes
+ * (段落、清單、圖表、區塊引用)
+ */
+
+// * Position with `em`-unit (Hanzi), in pursuit of alignments.
+// *
+ol,
+ul
+  padding-left: $HYU-INDENT
+
+figure,
+blockquote
+  margin-left: $HYU-INDENT
+  margin-right: $HYU-INDENT
+
+/**
+ * Contact information
+ * (聯絡資訊)
+ */
+address
+  font-style: inherit
+
+/**
+ * Preformatted text
+ * (格式預處理文字)
+ */
+
+// * Improve the readability
+// *
+pre
+  overflow: auto
+  white-space: pre
+  word-wrap: normal
+
+/* Text-level semantics & edits
+   ========================================================================== */
+
+/**
+ * Hyperlinks
+ * (超連結)
+ */
+
+// * Remove the underlines on hyperlinks for presentational
+// * purpose.
+// *
+a
+  text-decoration: inherit
+
+/**
+ * Emphases
+ * (強調)
+ */
+
+// * 1. Pure CSS fallback.
+// * 2. Remove fallback on browsers that support `text-emphasis`,
+// *    so far, that's only WebKit.
+// *
+em
+  &:lang(zh),
+  &:lang(ja)
+    +hyu-text-emphasis
+    // typography
+    font-style: inherit
+    // 1
+    border-bottom: 2px dotted
+    padding-bottom: .05em
+    // 2
+    border-bottom-width: -webkit-calc( 0px )
+    padding-bottom: -webkit-calc( 0px )
+
+em:lang(ja)
+  +hyu-text-emphasis( over )
+
+/**
+ * Cites and quotes
+ * (來源、引用)
+ */
+cite
+  &:lang(zh),
+  &:lang(ja)
+    font-style: inherit
+
+q
+  quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+
+  &:lang(zh)
+    quotes: '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f' '\300c' '\300d' '\300e' '\300f'
+
+  &:lang(zh-CN),
+  &:lang(en)
+    quotes: '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019'
+
+  &:lang(en-GB)
+    quotes: '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d' '\2018' '\2019' '\201c' '\201d'
+
+  &:before
+    content: open-quote
+
+  &:after
+    content: close-quote
+
+  &:lang(ja):before,
+  &:lang(ja):after
+    content: none
+
+/**
+ * Definitions
+ * (術語)
+ */
+dfn
+  &:lang(zh),
+  &:lang(ja)
+    font-style: inherit
+    font-weight: bold
+
+/**
+ * Code, user input, computer output, preformatted text
+ * (代碼、輸入鍵、計算機輸出示例、格式預處理文字)
+ */
+
+// * Correct odd `em`-unit font size rendering in all browsers
+// * (still iffy for Chinese in WebKit).
+// *
+code,
+kbd,
+samp,
+pre
+  font-family: monospace, monospace, sans-serif
+
+/**
+ * Alternative voices & variables
+ * (變音文字、變數)
+ */
+i,
+var
+  &:lang(zh),
+  &:lang(ja)
+    font-family: cursive, serif
+    font-style: inherit
+
+/**
+ * Annotations & insertion
+ * (註記、增訂)
+ */
+
+// * Semantic presentation for two adjacent underlined
+// * text runs.
+// *
+%hyu-adjacent-line-decoration
+  margin-left: .125em
+
+u,
+ins
+  & + u,
+  & + ins
+    @extend %hyu-adjacent-line-decoration
+s,
+del
+  & + s,
+  & + del
+    @extend %hyu-adjacent-line-decoration
+
+u,
+ins
+  &:lang(zh),
+  &:lang(ja)
+    border-bottom: 1px solid
+    padding-bottom: 0.05em
+    text-decoration: none
+
+/**
+ * Ruby annotations
+ * (行間注)
+ */
+
+// * 1. Attach parentheses for readability purposes.
+// * 2. Hide the parentheses on WebKit & IE for they support
+// *    native `<ruby>`.
+// *
+ruby
+  // 1
+  > rt
+    &:before
+      content: '\ff08'
+    &:after
+      content: '\ff09'
+
+  // 1
+  > rb + rtc
+    &:before
+      content: '\ff08'
+  > rtc
+    &:after
+      content: '\ff0c'
+    &:last-of-type:after
+      content: '\ff09'
+
+  > rt
+    &:before,
+    &:after
+      // position
+      display: inline-block
+      overflow: hidden
+      vertical-align: middle
+      // box
+      // 2
+      height: 0
+      width:  0
+      height: -moz-calc( 1.3em )
+      width:  -moz-calc( 1em )

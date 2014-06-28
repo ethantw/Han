@@ -1,0 +1,185 @@
+hruby
+  // box
+  display: inline
+  // typography
+  line-height: 2
+
+
+  // * Hide the `<rt>` for we use pseudo elements
+  // * to display regular annotations.
+  // * -
+  // * - 1. We also need them to be copyable, so
+  // *      different approach is applied here.
+  // *
+  rb[annotation] > rt
+    // box
+    display: inline-block
+    height: 0
+    width: 0
+    // 1
+    font: 0/0 hidden-text
+
+  // * Hide the `<rp>`
+  // *
+  rp
+    display: none
+
+  // * Ruby base text
+  // *
+  rb
+    // position
+    position: relative
+    // box
+    display: inline-block
+    // typography
+    text-indent: 0
+
+  // * Real ruby annotations (pseudo elements)
+  // * and Zhuyin.
+  // *
+  rb:before,
+  zhuyin
+    +hyu-scale( .55 )
+    +hyu-typo-reset
+    // position
+    position: absolute
+    // box
+    display: inline-block
+
+  // * Regular annotations
+  // * -
+  // * - 1. Pseudo element is applied here to avoid
+  // * -    dirty box-modelling hacks.
+  // *
+  rb[annotation]
+    // typography
+    text-align: center
+
+    // 1
+    &:before
+      left: -200%
+      top: -.5em
+      vertical-align: top
+      // box
+      height: 1em
+      width: 500%
+      // typography
+      content: attr( annotation )
+      line-height: 1
+
+  // * Zhuyin annotations
+  // *
+  rb[zhuyin]
+    // posi
+    display: inline-block
+    position: relative
+    // box
+    width: 1.8em
+    // typography
+    text-align: left
+
+    // * a. `zhuyin` is the container for both `yin` and `diao`.
+    // * b. `diao` is used to contain the tone.
+    // * c. Position Zhuyin according to its length.
+    // *
+    // * - 1. Neutral tone (輕聲).
+    // * - 2. Falling tones (陰去、陽去).
+    // * - 3. Checked tones (陰入、陽入).
+    // *   3.1 Moedict.tw PUA as some browsers fail to
+    // *       display ligatures.
+    // *
+
+    // a
+    zhuyin
+      // posi
+      right: .2em
+      top: 0
+      // box
+      height: 2.7em
+      width: .8em
+      // typography
+      font-family: cursive, serif
+      line-height: .9
+      white-space: pre-wrap
+      word-break: break-all
+
+    // b
+    diao
+      // position
+      position: absolute
+      right: -.9em
+      top: 0
+      // box
+      display: inline-block
+      width: 1em
+
+    // c
+    &[length='0']
+      &
+        width: auto
+      zhuyin
+        display: none
+    &[length='1']
+      zhuyin
+        margin-top: .125em
+      diao
+        margin-top: -.35em
+    &[length='2']
+      zhuyin
+        margin-top: -.175em
+      diao
+        margin-top: .5em
+    &[length='3']
+      zhuyin
+        margin-top: -.45em
+      diao
+        margin-top: 1.3em
+
+    // 1
+    &[diao='˙']
+      diao
+        right: -.2em
+      &[length='1'] diao
+        margin-top: 0
+      &[length='2'] diao
+        margin-top: -.25em
+      &[length='3'] diao
+        margin-top: -.6em
+
+    // 2
+    &[diao='˪'],
+    &[diao='˫']
+      diao
+        +hyu-scale( 1.2 )
+        margin-right: -.15em
+
+    // 3, 3.1
+    &[diao^='ㆴ'],
+    &[diao^='ㆵ'],
+    &[diao^='ㆶ'],
+    &[diao^='ㆷ'],
+    &[diao='󳆴'],
+    &[diao='󳆵'],
+    &[diao='󳆶'],
+    &[diao='󳆷']
+      diao
+        margin-right: -.2em
+        margin-top: .55em
+
+  // * Position annotations above or below the ruby base
+  // * text according to the order or whether they are
+  // * in ‘right-angle’.
+  // *
+  rb[annotation]:before
+    top: -.5em
+  rb[order='1']:before,
+  &[rightangle] rb[annotation]:before
+    bottom: -.4em
+    top: auto
+  &[rightangle] rb[annotation]:before
+    margin-left: -.4em
+
+  // * We can use smaller Zhuyin font-size while in Retina
+  // * Display conditions.
+  // *
+  @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
