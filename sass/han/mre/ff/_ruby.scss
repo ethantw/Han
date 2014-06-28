@@ -1,0 +1,50 @@
+
+/**
+ * Zhuyin Kaiti
+ */
+
+@font-face {
+	@include mre-webfont;
+	@include mre-range-zhuyin;
+	font-family: 'Zhuyin Kaiti';
+}
+
+/**
+ * Zhuyin Heiti
+ */
+
+// * 1. Medial ‘yi’ (介音「ㄧ」)
+// * 2. Tones (五聲調號)
+// *
+@font-face {
+	@include mre-range-zhuyin;
+	font-family: 'Zhuyin Heiti';
+	src:
+		local('Hiragino Sans GB'),
+		local('Heiti TC'),
+		local('Microsoft Jhenghei'),
+		$mre-webfont
+	;
+}
+
+@font-face {
+	font-family: 'Zhuyin Heiti';
+	src:
+		local('Heiti TC'),
+		local('Microsoft Jhenghei'),
+		$mre-webfont
+	;
+	unicode-range:
+		U+3127,						        // 1
+		U+02C7, U+02CA-B, U+02D9 	// 2
+  ;
+}
+
+/**
+ * Romanisation (checked tone ligature [陽入韻連字])
+ */
+@font-face {
+	@include mre-webfont;
+	font-family: 'Romanization Sans';
+	unicode-range: U+030D, U+0358;
+}

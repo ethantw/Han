@@ -1,0 +1,39 @@
+
+/**
+ * The Four Typefaces: Fangsong
+ * 四大字體集・仿宋體
+ */
+
+// * 1. Recommended
+// * 2. CNS (適用台灣的舊字形或國字標準字形字體)
+// * 3. GB (中國國標)
+
+// 1
+@font-face {
+    @include mre-range-cjk;
+    font-family: 'Han Fangsong';
+    src:
+      local(STFangsong),
+      local(FangSong)
+    ;
+}
+
+// 2
+@font-face {
+    @include mre-range-cjk;
+    font-family: 'Han Fangsong CNS';
+    src:
+      local(STFangsong),
+      local(FangSong)
+    ;
+}
+
+// 3
+@font-face {
+    @include mre-range-cjk;
+    font-family: 'Han Fangsong GB';
+    src:
+      local(STFangsong),
+      local(FangSong)
+    ;
+}
