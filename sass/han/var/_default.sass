@@ -1,0 +1,121 @@
+
+// *!
+// * **WARNING**
+// * It is recommended to overwrite the variables before
+// * including the module, instead of modifying them here.
+// *
+
+// **
+// * The root selector
+// * `html` || `'*:root'`
+// *
+$han-root:                html    !default
+
+// **
+// * The article selector
+// * Possible values:
+// * `article` || `.article` || `.post` || `.entry`
+// *
+$han-article:             article !default
+
+// **
+// * Global line-height
+// * Recommended: `1.2-1.7em`
+// *
+$han-line-height:         1.3     !default
+
+// **
+// * Line-height in article
+// * Recommended: `1.5-2em`
+// *
+$han-article-line-height: 1.7     !default
+
+// **
+// * Indentation
+// * Recommended: `1em` || `2em`
+// *
+$han-indent:              2em     !default
+
+// **
+// * Indentation on mobile devices
+// * Recommended: `1em` || `2em`
+// *
+$han-indent-md:           1em     !default
+
+// **
+// * Max mobile-device width for RWD
+// * Recommended: `480px`
+// *
+$han-mobile-device-width: 480px   !default
+
+// **
+// * Emphasis mark
+// * See: http://w3.org/TR/css-text-decor-3/#emphasis-marks
+// *
+// * `none` || `biaodian`
+$han-text-emphasis-skip:     biaodian !default
+// * `none` || `filled` || `open`
+$han-text-emphasis-shape:    filled   !default
+// * `dot` || `circle` || `double-circle` || `triangle` || `sesame` || <string>
+$han-text-emphasis-mark:     dot      !default
+// * `over` || `under`
+$han-text-emphasis-posi:     under    !default
+// * `inherit` || <color>
+$han-text-emphasis-color:    inherit  !default
+
+// *
+// * Emphasis mark in Japanese
+// *
+$han-text-emphasis-shape-ja: filled   !default
+$han-text-emphasis-mark-ja:  sesame   !default
+$han-text-emphasis-posi-ja:  over     !default
+$han-text-emphasis-color-ja: inherit  !default
+
+// **
+// * Default Chinese locale variant
+// * (Traditional or simplified characters)
+// * `hant` || `hans`
+// *
+$han-default-variant:     hant    !default
+
+// **
+// * Chinese glyph set in general
+// * `default` || `CNS` || `GB`
+// *
+$han-glyph-set-hant:      default !default
+
+// **
+// * Simplified Chinese glyph set
+// * `default` || `GB`
+// *
+$han-glyph-set-hans:      GB      !default
+
+// **
+// * Chinese Biaodian set in general
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$han-biaodian-set-hant:   Pro     !default
+
+// **
+// * Biaodian set for Simplified Chinese
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$han-biaodian-set-hans:   GB      !default
+
+// **
+// * Generic typefaces for Western (Latin-based)
+// * characters
+// *
+$han-sans:    'Helvetica Neue', Helvetica, Arial  !default
+$han-serif:   Georgia, 'Times New Roman'          !default
+$han-cursive: 'Apple Chancery', 'Snell Roundhand' !default
+$han-mono:    Menlo, Courier                      !default
+
+// **
+// * Web font paths
+// * (Zhuyin, checked-toned romanisation and
+// * partial CJK biaodian correction)
+// *
+$han-font-woff: './fonts/han.woff'                !default
+$han-font-otf:  './fonts/han.otf'                 !default
+$han-font-ttf:  './fonts/han.ttf'                 !default
