@@ -2,6 +2,7 @@
 %mre-serif {
   font-family:
     $mre-serif,
+    $han-serif-zh,
     mre-typeface( 'Han Songti', $_default-variant ),
     cursive, serif
   ;
@@ -12,6 +13,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hant ),
     'Numeral LF Serif',
     $mre-serif,
+    $han-serif-zh,
     mre-typeface( 'Han Songti', $mre-glyph-set-hant ),
     serif
   ;
@@ -22,6 +24,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hans ),
     'Numeral LF Serif',
     $mre-serif,
+    $han-serif-zh,
     mre-typeface( 'Han Songti', $mre-glyph-set-hans ),
     serif
   ;

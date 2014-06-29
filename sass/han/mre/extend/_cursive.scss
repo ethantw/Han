@@ -2,6 +2,7 @@
 %mre-cursive {
   font-family:
     $mre-serif,
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $_default-variant ),
     cursive, serif
   ;
@@ -12,6 +13,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hant ),
     'Numeral LF Serif',
     $mre-serif,
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $mre-glyph-set-hant ),
     cursive, serif
   ;
@@ -22,6 +24,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hans ),
     'Numeral LF Serif',
     $mre-serif,
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $mre-glyph-set-hans ),
     cursive, serif
   ;
@@ -42,6 +45,7 @@
 %mre-cursive-italic {
   font-family:
     'Latin Italic Serif',
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $_default-variant ),
     cursive, serif
   ;
@@ -52,6 +56,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hant ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $mre-glyph-set-hant ),
     cursive, serif
   ;
@@ -62,6 +67,7 @@
     mre-biaodian( Serif, $mre-biaodian-set-hans ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
+    $han-cursive-zh,
     mre-typeface( 'Han Kaiti', $mre-glyph-set-hans ),
     cursive, serif
   ;
