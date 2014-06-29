@@ -1,6 +1,6 @@
 
 /**
- * Customised emphasis mark
+ * Customised emphasis mark (着重號)
  */
 em:lang(zh)
   $posi:  null
@@ -18,8 +18,7 @@ em:lang(zh)
   @if ( $han-text-emphasis-color != $HYU-TEXT-EMPHASIS-COLOR )
     $color: $han-text-emphasis-color
 
-  +hyu-text-emphasis( $posi, $mark, $shape, $color )
-  +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, false )
+  +han-text-emphasis( $posi, $mark, $shape, $color, false )
 
 em:lang(ja)
   $posi:  null
@@ -37,8 +36,7 @@ em:lang(ja)
   @if ( $han-text-emphasis-color-ja != $HYU-TEXT-EMPHASIS-COLOR-JA )
     $color: $han-text-emphasis-color-ja
 
-  +hyu-text-emphasis( $posi, $mark, $shape, $color )
-  +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, false )
+  +han-text-emphasis( $posi, $mark, $shape, $color, false )
 
 /**
  * Hanzi and Western mixed spacing (漢字西文混排間隙)
