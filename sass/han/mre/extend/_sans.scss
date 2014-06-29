@@ -10,7 +10,7 @@
 
 %mre-sans-hant {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-set-hant ),
+    mre-biaodian( Sans, $mre-biaodian-hant ),
     //'Numeral LF Sans',
     $mre-sans,
     $han-sans-zh,
@@ -21,7 +21,7 @@
 
 %mre-sans-hans {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-set-hans ),
+    mre-biaodian( Sans, $mre-biaodian-hans ),
     //'Numeral LF Sans',
     $mre-sans,
     $han-sans-zh,
