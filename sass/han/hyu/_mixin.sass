@@ -36,9 +36,16 @@
     -webkit-text-emphasis-color:    $color
     text-emphasis-color:            $color
 
-=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR, $extend: true )
+=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR, $skip: $HYU-TEXT-EMPHASIS-SKIP, $extend: true )
   @if ( $extend )
     @extend %hyu-text-emphasis-pf
+  @if ( $extend and $skip )
+    @extend %hyu-text-emphasis-skip
+
+  @if ( $posi == under )
+    $posi: 1em
+  @if ( $posi == over )
+    $posi: -.7em
 
   @if ( $mark == circle )
     $mark: '\25cf'
@@ -65,11 +72,6 @@
     @if ( $shape == open )
       $mark: '\25b3'
 
-  @if ( $posi == under )
-    $posi: 1em
-  @if ( $posi == over )
-    $posi: -.7em
-
   .no-textemphasis & char:after
     @if ( $posi != null )
       margin-top: $posi
@@ -77,3 +79,16 @@
       content: $mark
     @if ( $color != null or $color != inherit )
       color: $color
+
+  @if ( $extend == false and $skip == false )
+    char.punct,
+    char.biaodian
+      +hyu-text-emphasis( null, inherit, null, null )
+
+      .no-textemphasis &:after
+        @if ( $mark == null )
+          $mark: '\25cf'
+          @if ( $shape == open )
+            $mark: '\25cb'
+
+        content: $mark !important

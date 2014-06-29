@@ -40,14 +40,14 @@
 // * - Polyfill implementation for Firefox and IE;
 // * - Remove emphasis mark under punctuation.
 // *
+// * 1. Polyfill for browsers that support no `text-emphasis`.
+// * 2. Although Hyu is a project for normalisation and
+// *    fonts ain't supposed to be assigned specifically,
+// *    we need the emphasis marks to fallback properly;
+// *    hence, one exception is hereby made.
+// * 3. Skip emphasis mark while under punctuation.
+// *
 %hyu-text-emphasis-pf
-  // * 1. Polyfill for browsers that support no `text-emphasis`.
-  // * 2. Although Hyu is a project for normalisation and
-  // *    fonts ain't supposed to be assigned specifically,
-  // *    we need the emphasis marks to fallback properly;
-  // *    hence, one exception is hereby made.
-  // * 3. Skip emphasis mark while under punctuation.
-  // *
   .hyu-js-rendered &
     padding-bottom: auto
     border-bottom-width: 0
@@ -82,14 +82,14 @@
         // 2
         font-family: Georgia, 'Times New Roman', Arial, !important
 
-  // 3
-  @if ( $HYU-TEXT-EMPHASIS-SKIP == biaodian )
-    char.punct,
-    char.biaodian
-      +hyu-text-emphasis( none )
+// 3
+%hyu-text-emphasis-skip
+  char.punct,
+  char.biaodian
+    +hyu-text-emphasis( none )
 
-      &:after
-        content: none !important
+    .no-textemphasis &:after
+      content: none !important
 
 em
   &:lang(zh)

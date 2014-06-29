@@ -7,6 +7,7 @@ em:lang(zh)
   $mark:  null
   $shape: null
   $color: null
+  $skip: $han-text-emphasis-skip
 
   @if ( $han-text-emphasis-mark != $HYU-TEXT-EMPHASIS-MARK or $han-text-emphasis-shape != $HYU-TEXT-EMPHASIS-SHAPE )
     $mark:  $han-text-emphasis-mark
@@ -18,13 +19,14 @@ em:lang(zh)
   @if ( $han-text-emphasis-color != $HYU-TEXT-EMPHASIS-COLOR )
     $color: $han-text-emphasis-color
 
-  +han-text-emphasis( $posi, $mark, $shape, $color, false )
+  +han-text-emphasis( $posi, $mark, $shape, $color, $skip, false )
 
 em:lang(ja)
   $posi:  null
   $mark:  null
   $shape: null
   $color: null
+  $skip: $han-text-emphasis-skip
 
   @if ( $han-text-emphasis-mark-ja != $HYU-TEXT-EMPHASIS-MARK-JA or $han-text-emphasis-shape-ja != $HYU-TEXT-EMPHASIS-SHAPE-JA )
     $mark:  $han-text-emphasis-mark-ja
@@ -36,7 +38,7 @@ em:lang(ja)
   @if ( $han-text-emphasis-color-ja != $HYU-TEXT-EMPHASIS-COLOR-JA )
     $color: $han-text-emphasis-color-ja
 
-  +han-text-emphasis( $posi, $mark, $shape, $color, false )
+  +han-text-emphasis( $posi, $mark, $shape, $color, $skip, false )
 
 /**
  * Hanzi and Western mixed spacing (漢字西文混排間隙)
