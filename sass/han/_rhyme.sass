@@ -12,8 +12,10 @@
 #{$han-article}
   // typography
   line-height: $han-article-line-height
-  text-align: justify
-  text-justify: inter-ideograph
+
+  @if ( $han-article-justify )
+    text-align: justify
+    text-justify: inter-ideograph
 
   // * Address well-knit presentational sections
   // * in articles.
