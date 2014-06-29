@@ -14,30 +14,66 @@
   +hyu-text-emphasis( none )
   font-style:      normal
   font-weight:     normal
-  line-height:     1.5
+  line-height:     normal
   text-decoration: none
   text-indent:     0
 
-=hyu-text-emphasis( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: circle )
+=hyu-text-emphasis( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR )
   @if ( $posi == none )
     $mark: none
+    $shape: null
 
-  -moz-text-emphasis:             $mark
-  -webkit-text-emphasis:          $mark
-  text-emphasis:                  $mark
-  -moz-text-emphasis-position:    $posi
-  -webkit-text-emphasis-position: $posi
-  text-emphasis-position:         $posi
+  @if ( $mark != null or $shape != null )
+    -moz-text-emphasis:             $shape $mark
+    -webkit-text-emphasis:          $shape $mark
+    text-emphasis:                  $shape $mark
+  @if ( $posi != null )
+    -moz-text-emphasis-position:    $posi
+    -webkit-text-emphasis-position: $posi
+    text-emphasis-position:         $posi
+  @if ( $color != null )
+    -moz-text-emphasis-color:       $color
+    -webkit-text-emphasis-color:    $color
+    text-emphasis-color:            $color
 
-=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: '\25cf' )
-  $margin-top: 1em
-  @extend %hyu-text-emphasis-pf
+=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR, $extend: true )
+  @if ( $extend )
+    @extend %hyu-text-emphasis-pf
 
+  @if ( $mark == circle )
+    $mark: '\25cf'
+    @if ( $shape == open )
+      $mark: '\25cb'
+
+  @if ( $mark == sesame )
+    $mark: '\fe45'
+    @if ( $shape == open )
+      $mark: '\fe46'
+
+  @if ( $mark == dot )
+    $mark: '\2022'
+    @if ( $shape == open )
+      $mark: '\25e6'
+
+  @if ( $mark == double-circle )
+    $mark: '\25c9'
+    @if ( $shape == open )
+      $mark: '\25ce'
+
+  @if ( $mark == triangle )
+    $mark: '\25b2'
+    @if ( $shape == open )
+      $mark: '\25b3'
+
+  @if ( $posi == under )
+    $posi: 1em
   @if ( $posi == over )
-    $margin-top: -.7em
+    $posi: -.7em
 
   .no-textemphasis & char:after
-    // position
-    margin-top: $margin-top
-    // typography
-    content: $mark
+    @if ( $posi != null )
+      margin-top: $posi
+    @if ( $mark != null )
+      content: $mark
+    @if ( $color != null or $color != inherit )
+      color: $color

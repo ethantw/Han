@@ -1,5 +1,46 @@
 
 /**
+ * Customised emphasis mark
+ */
+em:lang(zh)
+  $posi:  null
+  $mark:  null
+  $shape: null
+  $color: null
+
+  @if ( $han-text-emphasis-mark != $HYU-TEXT-EMPHASIS-MARK or $han-text-emphasis-shape != $HYU-TEXT-EMPHASIS-SHAPE )
+    $mark:  $han-text-emphasis-mark
+    $shape: $han-text-emphasis-shape
+
+  @if ( $han-text-emphasis-posi != $HYU-TEXT-EMPHASIS-POSI )
+    $posi:  $han-text-emphasis-posi
+
+  @if ( $han-text-emphasis-color != $HYU-TEXT-EMPHASIS-COLOR )
+    $color: $han-text-emphasis-color
+
+  +hyu-text-emphasis( $posi, $mark, $shape, $color )
+  +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, false )
+
+em:lang(ja)
+  $posi:  null
+  $mark:  null
+  $shape: null
+  $color: null
+
+  @if ( $han-text-emphasis-mark-ja != $HYU-TEXT-EMPHASIS-MARK-JA or $han-text-emphasis-shape-ja != $HYU-TEXT-EMPHASIS-SHAPE-JA )
+    $mark:  $han-text-emphasis-mark-ja
+    $shape: $han-text-emphasis-shape-ja
+
+  @if ( $han-text-emphasis-posi-ja != $HYU-TEXT-EMPHASIS-POSI-JA )
+    $posi:  $han-text-emphasis-posi-ja
+
+  @if ( $han-text-emphasis-color-ja != $HYU-TEXT-EMPHASIS-COLOR-JA )
+    $color: $han-text-emphasis-color-ja
+
+  +hyu-text-emphasis( $posi, $mark, $shape, $color )
+  +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, false )
+
+/**
  * Hanzi and Western mixed spacing (漢字西文混排間隙)
  *
  * More discussion at:
