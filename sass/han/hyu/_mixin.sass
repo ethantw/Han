@@ -55,11 +55,11 @@
     -moz-text-emphasis:             $shape $mark
     -webkit-text-emphasis:          $shape $mark
     text-emphasis:                  $shape $mark
-  @if ( $posi != null )
+  @if ( $posi != null and $posi != none )
     -moz-text-emphasis-position:    $posi
     -webkit-text-emphasis-position: $posi
     text-emphasis-position:         $posi
-  @if ( $color != null )
+  @if ( $color != null and $color != inherit )
     -moz-text-emphasis-color:       $color
     -webkit-text-emphasis-color:    $color
     text-emphasis-color:            $color
