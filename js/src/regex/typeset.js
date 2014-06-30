@@ -27,11 +27,11 @@ define([
     rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical,
 
     rCbn = UNICODE.ellinika.combine,
-    rLatn = UNICODE.latin.base + rCbn + '?',
-    rGk = UNICODE.ellinika.base + rCbn + '?',
+    rLatn = UNICODE.latin.base + rCbn + '*',
+    rGk = UNICODE.ellinika.base + rCbn + '*',
 
     rCyCbn = UNICODE.kirillica.combine,
-    rCy = UNICODE.kirillica.base + rCyCbn + '?',
+    rCy = UNICODE.kirillica.base + rCyCbn + '*',
 
     rAlph = rLatn + '|' + rGk + '|' + rCy,
     rChar = rHan + '|' + rAlph
