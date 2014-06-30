@@ -14,12 +14,16 @@ $_default-variant: $mre-glyph-set-hant
     $set: $set + ' '
   @return 'Biaodian ' + $set + $generic
 
-@function mre-typeface( $typeface: sans, $set: default )
+@function mre-typeface( $typeface: sans, $set: default, $pre: null )
   @if ( $set == default )
     $set: ''
   @else
     $set: ' ' + $set
-  @return $typeface + $set
+
+  @if ( $pre == null or $pre == '' )
+    @return $typeface + $set
+
+  @return $pre + ', ' + $typeface + $set
 
 @import extend/sans
 @import extend/serif
