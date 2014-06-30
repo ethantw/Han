@@ -6,3 +6,10 @@ config.rb
 _cores
 _public
 manual
+
+package.json
+index.html
+index.jade
+sass/style (example).sass
+server.js
+
