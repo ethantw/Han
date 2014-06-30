@@ -423,6 +423,7 @@ define([
 
         // Copy all attributes onto it
         $.setAttr( hruby, ruby.attributes )
+        hruby.normalize()
 
         // Finally, replace it
         ruby.parentNode.replaceChild( hruby, ruby )

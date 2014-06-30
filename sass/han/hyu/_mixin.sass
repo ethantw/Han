@@ -1,6 +1,6 @@
 
 @function hyu-mark-to-code( $mark, $shape: filled )
-  $ret: ''
+  $ret: $mark
 
   @if ( $shape == filled )
     @if ( $mark == circle )
@@ -80,7 +80,7 @@
   .no-textemphasis & char:after
     @if ( $posi != null )
       margin-top: $posi
-    @if ( $mark != null )
+    @if ( $mark != null and $mark != '' )
       content: $mark
     @if ( $color != null and $color != inherit )
       color: $color
