@@ -23,37 +23,40 @@
 
 ### CDN
 
-你也可以直接使用[cdnjs.com][cdn]服務提供的樣式表：
+你也可以直接使用[cdnjs.com][cdn]服務提供的樣式表，
 
 [cdn]: //cdnjs.com
 
 ~~~~html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.css">
 ~~~~
 
-JS檔：
+並於頁面底部引用JavaScript，
 
 ~~~~html
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/2.3.0/han.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.js"></script>
 ~~~~
 
 ### 啓用漢拉間隙
 需配合`han.js`使用，在`<html>`標籤中加入類別`han-la`，
 
 ~~~~html
-<html class="han-la">
 ~~~~
 
-### 啓用進階標點符號修正
-同上，毋需搭配`han.js`，在`<html>`標籤中加入下列相應的地區標準變體，
+### 標點符號修正
+「漢字標準格式」自v3.0版本開始，預設使用進階版標點符號修正。若需要使用簡易修正，請在引用`_han.sass`模塊前，覆寫下列二個變數：
 
-* 推薦：  
-    `class="han-biaodian-pro"`
-* 台港式繁體標點：  
-    `class="han-biaodian-pro-cns"`
-* 中國國標標點：  
-    `class="han-biaodian-pro-gb"`
+~~~~sass
+// 覆寫Sass變數
+$han-biaodian-set-hant: default
+$han-biaodian-set-hans: default
+
+// 滙入Han模塊
+@import han
+~~~~
+
+使用CDN服務者，則須覆寫字體樣式屬性。
+
 
 ### 樣式的覆蓋
 「漢字標準格式」不同於多數CSS框架，內含大量針對「語言屬性」的元素樣式修正，此作法可能導致這些元素樣式無法正確為後方的樣式覆蓋。為正確處理這些狀況，**請留意樣式的繼承規則，加入相應的語言屬性、選擇符或父元素等，避免過度使用「`!important`」宣告，以保持樣式表的可維護性。**
@@ -65,28 +68,9 @@ JS檔：
 
 更多詳盡的功能說明，請參閱「[使用手冊][manual]」。
 
-[manual]: //css.hanzi.co/manual
+[manual]: http://css.hanzi.co/manual
 
 
 * * *
-「漢字標準格式」版本：v2.3.0   
-本頁最後修改於：2014年2月12日　19:35（GMT+8）
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+「漢字標準格式」版本：v3.0.0
+本頁最後修改於：2014年6月29日　5:50（GMT+8）
