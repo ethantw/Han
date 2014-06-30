@@ -219,13 +219,13 @@ define([
       if ( option.hanzi === 'group' ) {
         this.wrap(
           TYPESET.char.hanzi.group,
-          $.create( 'char_group', 'hanzi cjk' )
+          $.clone( $.create( 'char_group', 'hanzi cjk' ))
         )
       }
       if ( option.hanzi === 'individual' ) {
         this.wrap(
           TYPESET.char.hanzi.individual,
-          $.create( 'char', 'hanzi cjk' )
+          $.clone( $.create( 'char', 'hanzi cjk' ))
         )
       }
       if ( option.hanzi === 'individual' ||
@@ -259,7 +259,7 @@ define([
       if ( option.word !== 'none' ) {
         this.wrap(
           TYPESET.char.word,
-          $.create( 'word' )
+          $.clone( $.create( 'word' ))
         )
       }
 
@@ -270,25 +270,25 @@ define([
       ) {
         this.wrap(
           TYPESET.char.punct.all,
-          $.create( 'char', 'punct' )
+          $.clone( $.create( 'char', 'punct' ))
         )
       }
       if ( option.latin === 'individual' ) {
         this.wrap(
           TYPESET.char.alphabet.latin,
-          $.create( 'char', 'alphabet latin' )
+          $.clone( $.create( 'char', 'alphabet latin' ))
         )
       }
       if ( option.ellinika === 'individual' ) {
         this.wrap(
           TYPESET.char.alphabet.ellinika,
-          $.create( 'char', 'alphabet ellinika greek' )
+          $.clone( $.create( 'char', 'alphabet ellinika greek' ))
         )
       }
       if ( option.kirillica === 'individual' ) {
         this.wrap(
           TYPESET.char.alphabet.kirillica,
-          $.create( 'char', 'alphabet kirillica cyrillic' )
+          $.clone( $.create( 'char', 'alphabet kirillica cyrillic' ))
         )
       }
       return this

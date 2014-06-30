@@ -128,15 +128,15 @@ define([
     })(),
 
     columnwidth: (function() {
-      return testCSSProp( 'columnWidth' )
+      return testCSSProp( 'columnWidth' ) || false
     })(),
 
     textemphasis: (function() {
-      return testCSSProp( 'textEmphasis' )
+      return testCSSProp( 'textEmphasis' ) || false
     })(),
 
     writingmode: (function() {
-      return testCSSProp( 'writingMode' )
+      return testCSSProp( 'writingMode' ) || false
     })()
   }
 
