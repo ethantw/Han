@@ -613,9 +613,9 @@
     local('MS Gothic')
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001, /* a */
-    U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+3002, U+FF0C, U+3001, // a
+    U+FF1B, U+FF1A, U+FF1F, U+FF01, // b
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
@@ -627,9 +627,9 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001, /* a */
-    U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+3002, U+FF0C, U+3001, // a
+    U+FF1B, U+FF1A, U+FF1F, U+FF01, // b
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
@@ -643,7 +643,7 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001 /* a */
+    U+3002, U+FF0C, U+3001 // a
   ;
 }
 
@@ -658,7 +658,7 @@
     local('MS Gothic')
   ;
   unicode-range:
-    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */
+    U+FF1B, U+FF1A, U+FF1F, U+FF01 // b
   ;
 }
 
@@ -670,7 +670,7 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
@@ -683,7 +683,7 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001 /* a */
+    U+3002, U+FF0C, U+3001 // a
   ;
 }
 
@@ -696,8 +696,8 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+FF1B, U+FF1A, U+FF1F, U+FF01, // b
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
@@ -714,9 +714,9 @@
     local('MS Gothic')
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001, /* a */
-    U+FF1B, U+FF1A, U+FF1F, U+FF01, /* b */
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+3002, U+FF0C, U+3001, // a
+    U+FF1B, U+FF1A, U+FF1F, U+FF01, // b
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
@@ -734,8 +734,8 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+3002, U+FF0C, U+3001, /* a */
-    U+FF1B, U+FF1A, U+FF1F, U+FF01 /* b */
+    U+3002, U+FF0C, U+3001, // a
+    U+FF1B, U+FF1A, U+FF1F, U+FF01 // b
   ;
 }
 
@@ -748,13 +748,13 @@
     local('MS Mincho')
   ;
   unicode-range:
-    U+FF0D, U+FF0F, U+FF3C /* c */
+    U+FF0D, U+FF0F, U+FF3C // c
   ;
 }
 
-/* a. Quotes (「『』」)
- * b. Brackets (（）《》〈〉〔〕)
- */
+// * a. Quotes (「『』」)
+// * b. Brackets (（）《》〈〉〔〕)
+// *
 
 @font-face {
   font-family: 'Biaodian Pro Sans';
@@ -765,8 +765,8 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
@@ -778,8 +778,8 @@
     local(SimSun)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
@@ -793,8 +793,8 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
@@ -806,8 +806,8 @@
     local(SimSun)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
@@ -821,8 +821,8 @@
     local(PMingLiU)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
@@ -834,14 +834,20 @@
     local(SimSun)
   ;
   unicode-range:
-    U+300C-300F, /* a */
-    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 /* b */
+    U+300C-300F, // a
+    U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015 // b
   ;
 }
 
 /* Address solution to `unicode-range` unsupported
  * issues in Firefox.
  */
+@font-face {
+  font-family: 'Biaodian Basic';
+  src: $mre-webfont;
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
 @font-face {
   font-family: 'Biaodian Sans';
   src: local(lying-to-firefox);
