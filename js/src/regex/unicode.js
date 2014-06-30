@@ -107,7 +107,7 @@ define({
          [\uF900-\uFAFF]（**註**：不使用）
          [\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]（**註**：12個例外）
 
-   * 13. 日文假名：[\u3040-\u309E][\u30A1-\u30FA][\u30FD\u30FE]（**註**：排除片假名中點、長音符）
+   * 13. 日文假名：[\u3040-\u309F][\u30A1-\u30FA][\u30FD-\u30FF]（**註**：排除片假名中點、長音符）
          Japanese Kana (**note:** some symbols excluded)
    * 14. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
          Kangxi and supplement radicals
@@ -115,7 +115,7 @@ define({
          Ideographic description characters
    */
   hanzi: {
-    base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u31C0-\u31E3\u3007\u3040-\u309E\u30A1-\u30FA\u30FD\u30FE\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]|[\uD840-\uD869][\uDC00-\uDED6]|[\uD869-\uD86D]|[\uDF00\uDF34]|[\uD86D-\uD86E][\uDF40\uDC1D]',
+    base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u31C0-\u31E3\u3007\u3040-\u309F\u30A1-\u30FA\u30FD-\u30FF\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]|[\uD840-\uD869][\uDC00-\uDED6]|[\uD869-\uD86D]|[\uDF00\uDF34]|[\uD86D-\uD86E][\uDF40\uDC1D]',
     desc:    '[\u2FF0-\u2FFA]',
     radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
   },
