@@ -1,4 +1,32 @@
 
+@function hyu-mark-to-code( $mark, $shape: filled )
+  $ret: ''
+
+  @if ( $shape == filled )
+    @if ( $mark == circle )
+      $ret: '\25cf'
+    @if ( $mark == sesame )
+      $ret: '\fe45'
+    @if ( $mark == dot )
+      $ret: '\2022'
+    @if ( $mark == double-circle )
+      $ret: '\25c9'
+    @if ( $mark == triangle )
+      $ret: '\25b2'
+
+  @if ( $shape == open )
+    @if ( $mark == circle )
+      $ret: '\25cb'
+    @if ( $mark == sesame )
+      $ret: '\fe46'
+    @if ( $mark == dot )
+      $ret: '\25e6'
+    @if ( $mark == double-circle )
+      $ret: '\25ce'
+    @if ( $mark == triangle )
+      $ret: '\25b3'
+  @return $ret
+
 =hyu-calc( $prop, $exp )
   #{$prop}: -moz-calc( #{$exp} )
   #{$prop}: -webkit-calc( #{$exp} )
@@ -47,30 +75,7 @@
   @if ( $posi == over )
     $posi: -.7em
 
-  @if ( $mark == circle )
-    $mark: '\25cf'
-    @if ( $shape == open )
-      $mark: '\25cb'
-
-  @if ( $mark == sesame )
-    $mark: '\fe45'
-    @if ( $shape == open )
-      $mark: '\fe46'
-
-  @if ( $mark == dot )
-    $mark: '\2022'
-    @if ( $shape == open )
-      $mark: '\25e6'
-
-  @if ( $mark == double-circle )
-    $mark: '\25c9'
-    @if ( $shape == open )
-      $mark: '\25ce'
-
-  @if ( $mark == triangle )
-    $mark: '\25b2'
-    @if ( $shape == open )
-      $mark: '\25b3'
+  $mark: hyu-mark-to-code( $mark, $shape )
 
   .no-textemphasis & char:after
     @if ( $posi != null )
