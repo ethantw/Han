@@ -2,7 +2,7 @@
 %mre-sans {
   font-family:
     $mre-sans,
-    $han-sans-zh,
+    $mre-sans-zh,
     mre-typeface( 'Han Heiti', $_default-variant ),
     sans-serif
   ;
@@ -13,7 +13,7 @@
     mre-biaodian( Sans, $mre-biaodian-hant ),
     //'Numeral LF Sans',
     $mre-sans,
-    $han-sans-zh,
+    $mre-sans-zh,
     mre-typeface( 'Han Heiti', $mre-glyph-set-hant ),
     sans-serif
   ;
@@ -24,7 +24,7 @@
     mre-biaodian( Sans, $mre-biaodian-hans ),
     //'Numeral LF Sans',
     $mre-sans,
-    $han-sans-zh,
+    $mre-sans-zh,
     mre-typeface( 'Han Heiti', $mre-glyph-set-hans ),
     sans-serif
   ;

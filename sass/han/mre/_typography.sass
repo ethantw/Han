@@ -64,15 +64,15 @@ hruby
   rb[zhuyin] zhuyin diao
     // 1, 2
     @extend %mre-ligature
-    font-family: 'Zhuyin Kaiti', cursive, serif
+    font-family: 'Zhuyin Kaiti', $mre-cursive-zh, mre-typeface( 'Han Kaiti', $mre-glyph-set-hant ), cursive, serif
 
   &[sans],
   [sans]
     rb[zhuyin] zhuyin
-      font-family: 'Zhuyin Heiti', 'Zhuyin Kaiti', sans-serif
+      font-family: 'Zhuyin Heiti', 'Zhuyin Kaiti', $mre-sans-zh, mre-typeface( 'Han Heiti', $mre-glyph-set-hant ), sans-serif
 
   &.romanization rt,
   rb[annotation]:before
     // 3
     @extend %mre-ligature
-    font-family: 'Romanization Sans', $mre-sans, sans-serif
+    font-family: 'Romanization Sans', $mre-sans, $mre-sans-zh, mre-typeface( 'Han Heiti', $mre-glyph-set-hant ), sans-serif

@@ -2,7 +2,7 @@
 %mre-mono {
   font-family:
     $mre-mono,
-    $han-mono-zh,
+    $mre-mono-zh,
     mre-typeface( 'Han Heiti', $_default-variant ),
     monospace, monospace, sans-serif
   ;
@@ -12,7 +12,7 @@
   font-family:
     mre-biaodian( Sans, $mre-biaodian-hant ),
     $mre-mono,
-    $han-mono-zh,
+    $mre-mono-zh,
     mre-typeface( 'Han Heiti', $mre-glyph-set-hant ),
     monospace, monospace, sans-serif
   ;
@@ -22,7 +22,7 @@
   font-family:
     mre-biaodian( Sans, $mre-biaodian-hans ),
     $mre-mono,
-    $han-mono-zh,
+    $mre-mono-zh,
     mre-typeface( 'Han Heiti', $mre-glyph-set-hans ),
     monospace, monospace, sans-serif
   ;
