@@ -17,11 +17,11 @@ define([
   function testCSSProp( prop ) {
     var
       ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-      allProp = (prop + ' ' + PREFIX.join(ucProp + ' ') + ucProp).split(' '),
+      allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' '),
       ret
     ;
     allProp.forEach(function( prop ) {
-      if ( typeof elem.style[prop] === 'string' ) {
+      if ( typeof elem.style[ prop ] === 'string' ) {
         ret = true
       }
     })
@@ -30,13 +30,13 @@ define([
 
   function injectElementWithStyle( rule, callback ) {
     var
-      fakeBody = body || $.create('body'),
-      div = $.create('div'),
+      fakeBody = body || $.create( 'body' ),
+      div = $.create( 'div' ),
       style, ret, node, docOverflow
     ;
-    style = ['<style>', rule, '</style>'].join('')
+    style = [ '<style>', rule, '</style>' ].join('')
 
-    ;(body ? div : fakeBody).innerHTML += style
+    ;( body ? div : fakeBody ).innerHTML += style
     fakeBody.appendChild(div)
 
     if ( !body ) {
@@ -45,7 +45,7 @@ define([
       docOverflow = root.style.overflow
 
       root.style.overflow = 'hidden'
-      root.appendChild(fakeBody)
+      root.appendChild( fakeBody )
     }
 
     // Callback
@@ -53,10 +53,10 @@ define([
 
     // Remove the injected scope
     if ( !body ) {
-      fakeBody.parentNode.removeChild(fakeBody)
+      fakeBody.parentNode.removeChild( fakeBody )
       root.style.overflow = docOverflow
     } else {
-      div.parentNode.removeChild(div)
+      div.parentNode.removeChild( div )
     }
     return !!ret
   }
@@ -65,12 +65,11 @@ define([
     var
       ret
     ;
-
     if ( window.getComputedStyle ) {
-      ret = document.defaultView.getComputedStyle(elem, null).getPropertyValue( prop )
+      ret = document.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop )
     } else if ( elem.currentStyle ) {
       // for IE
-      ret = elem.currentStyle[prop]
+      ret = elem.currentStyle[ prop ]
     }
     return ret
   }
@@ -78,9 +77,9 @@ define([
   support = {
     ruby: (function() {
       var
-        ruby = $.create('ruby'),
-        rt = $.create('rt'),
-        rp = $.create('rp'),
+        ruby = $.create( 'ruby' ),
+        rt = $.create( 'rt' ),
+        rp = $.create( 'rp' ),
         ret
       ;
       ruby.appendChild( rp )
@@ -88,12 +87,13 @@ define([
       root.appendChild( ruby )
 
       // Browsers that support ruby hide the `<rp>` via `display: none`
-      ret = ( getStyle(rp, 'display') == 'none' ||
+      ret = (
+        getStyle( rp, 'display' ) === 'none' ||
         // but in IE, `<rp>` has `display: inline`
         // so, the test needs other conditions:
-        getStyle(ruby, 'display') == 'ruby'
-        && getStyle(rt, 'display') == 'ruby-text' ) ?
-        true : false
+        getStyle( ruby, 'display' ) === 'ruby' &&
+        getStyle( rt, 'display' ) === 'ruby-text'
+      ) ? true : false
 
       // Remove and clean from memory
       root.removeChild( ruby )
@@ -109,17 +109,16 @@ define([
         ret
       ;
       injectElementWithStyle(
-        '@font-face {font-family: font; src: url("http://")}',
+        '@font-face { font-family: font; src: url("http://"); }',
         function( node, rule ) {
           var
             style = $.qsa( 'style', node )[0],
             sheet = style.sheet || style.styleSheet,
             cssText = sheet ?
-              (sheet.cssRules && sheet.cssRules[0] ?
-                sheet.cssRules[0].cssText : sheet.cssText || '')
-                : ''
+              ( sheet.cssRules && sheet.cssRules[0] ?
+                sheet.cssRules[0].cssText : sheet.cssText || ''
+              ) : ''
           ;
-
           ret = /src/i.test( cssText ) &&
             cssText.indexOf( rule.split(' ')[0] ) === 0
         }
@@ -128,7 +127,7 @@ define([
     })(),
 
     columnwidth: (function() {
-      return testCSSProp( 'columnWidth' ) || false
+      return testCSSProp( 'columnWidth' )  || false
     })(),
 
     textemphasis: (function() {
@@ -136,7 +135,7 @@ define([
     })(),
 
     writingmode: (function() {
-      return testCSSProp( 'writingMode' ) || false
+      return testCSSProp( 'writingMode' )  || false
     })()
   }
 

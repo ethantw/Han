@@ -17,7 +17,7 @@
     "typefaces",
     "typesets"
   ],
-  "license": "http://css.hanzi.co/license.md",
+  "license": "http://css.hanzi.co/LICENSE.md",
   "ignore": [
     "**/.*",
     "node_modules",
