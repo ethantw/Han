@@ -25,7 +25,7 @@
       @if ( $i != $min )
         $ret: $ret + 'h' + $i + ', '
       @else
-        $ret: $ret
+        $ret: $ret + 'h' + $i
     @return $ret
 
   %han-well-knit-section
@@ -37,11 +37,11 @@
     + ol,
     + ul,
     + h6,
-    + section > blockquote:first-child,
+    + section > h6:first-child,
     + section > p:first-child,
     + section > ol:first-child,
     + section > ul:first-child,
-    + section > h6:first-child
+    + section > blockquote:first-child
       @extend %han-well-knit-section
 
   #{han-header-i( 1, 5 )}
