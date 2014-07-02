@@ -35,7 +35,7 @@
     <article>
       <h1>測試·文章與其章節</h1>
       <p><strong>提示：</strong>下方淺灰色區塊是文章章節的範例，建議使用瀏覽器的「元件檢閱器」<!--
-        -->來査閱各種群組元素在不同情境下的樣式，亦可伸縮視窗寬度來觀看<!--
+        -->來査閱各種群組元素在不同情境下的樣式。亦可伸縮視窗寬度來觀看<!--
         -->專為行動裝置提供的彈性設計<!--
         -->（<span lang='en'>responsive web design</span>）<!--
         -->，行動裝置預設為<em>480px以下</em>的視窗或設備。
@@ -51,7 +51,7 @@
           <p>這是一個段落，可以是對二級標題的內容詳述，上邊界對二級標題收緊。</p>
           <p>這是另一個段落，可見上邊界不收緊了。</p>
         </section>
-        <section>
+        <section id="grouping-content">
           <h2>段落、清單、引用區塊等群組元素對標題的收緊</h2>
           <section class="example">
             <h3>三級標題</h3>
@@ -79,7 +79,7 @@
             </ul>
           </section>
         </section>
-        <section>
+        <section id="poem-and-rule-for-well-knit">
           <h2>詩，與標題收緊規則</h2>
           <p>總結成<em>詩</em>，琅琅上口：</p>
           <div class="poem-like example">
@@ -110,11 +110,11 @@
             <p>一級標題不會互相收緊。</p>
           </div>
         </section>
-        <section>
+        <section id="descendant">
           <h3>後代章節元素不影響群組收緊</h3>
           <p>後代章節元素<code>section</code>不會影響各個群組元素對上級標題的收緊。</p>
           <h3>比如說……</h3>
-          <section class="example">
+          <div class="example">
             <h2>二級標題（在<code>section</code>下）</h2>
             <section>
               <h2>二級標題（在<code>section</code>下）</h2>
@@ -140,7 +140,9 @@
                 </section>
               </section>
             </section>
-          </section>
+          </div>
+        </section>
+        <section id="sibling">
           <h3>同輩章節元素則否</h3>
           <p>互為「同輩」的二個章節元素下的標題則不互相收緊。</p>
           <div class="example">

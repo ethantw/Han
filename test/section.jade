@@ -38,7 +38,7 @@ html(lang='zh-Hant')
       p
         strong 提示：
         | 下方淺灰色區塊是文章章節的範例，建議使用瀏覽器的「元件檢閱器」<!--
-        | -->來査閱各種群組元素在不同情境下的樣式，亦可伸縮視窗寬度來觀看<!--
+        | -->來査閱各種群組元素在不同情境下的樣式。亦可伸縮視窗寬度來觀看<!--
         | -->專為行動裝置提供的彈性設計<!--
         | -->（<span lang='en'>responsive web design</span>）<!--
         | -->，行動裝置預設為
@@ -55,7 +55,7 @@ html(lang='zh-Hant')
           p 這是一個段落，可以是對二級標題的內容詳述，上邊界對二級標題收緊。
           p 這是另一個段落，可見上邊界不收緊了。
 
-        section
+        section#grouping-content
           h2 段落、清單、引用區塊等群組元素對標題的收緊
           section.example
             h3 三級標題
@@ -76,7 +76,7 @@ html(lang='zh-Hant')
             ul
               li 這是一個無序清單，
               li 可見上邊界對標題收緊。
-        section
+        section#poem-and-rule-for-well-knit
           h2 詩，與標題收緊規則
           p
             | 總結成<em>詩</em>，琅琅上口：
@@ -113,11 +113,11 @@ html(lang='zh-Hant')
             h1 一級標題
             h1 一級標題
             p 一級標題不會互相收緊。
-        section
+        section#descendant
           h3 後代章節元素不影響群組收緊
           p 後代章節元素<code>section</code>不會影響各個群組元素對上級標題的收緊。
           h3 比如說……
-          section.example
+          div.example
             h2 二級標題（在<code>section</code>下）
             section
               h2 二級標題（在<code>section</code>下）
@@ -135,6 +135,7 @@ html(lang='zh-Hant')
                       h5 五級標題（在<code>section</code>下）
                       section
                         h6 六級標題（在<code>section</code>下）
+        section#sibling
           h3 同輩章節元素則否
           p 互為「同輩」的二個章節元素下的標題則不互相收緊。
           div.example
