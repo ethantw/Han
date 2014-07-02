@@ -115,7 +115,7 @@ define([
 
     // Render and normalise the given context by routine:
     //
-    // > ruby > u, ins > em
+    // > ruby > u, ins > s, del > em
     //
     renderElem: function( context ) {
       this.renderRuby( context )
@@ -131,7 +131,7 @@ define([
       var
         target = target || 'u, ins',
         $target = $.qsa( target, context ),
-        rTarget = new RegExp( '(' + target.replace(/\,[\s\n]?/g, '|') + ')', 'ig' )
+        rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
       ;
 
       $target
