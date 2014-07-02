@@ -125,8 +125,7 @@ define([
       var
         origFilteredElemList = this.filteredElemList
       ;
-
-      this.filteredElemList = 'style script jinze'
+      this.filteredElemList += ' jinze'
 
       this
       .replace(
@@ -137,11 +136,11 @@ define([
             text = document.createTextNode( mat ),
             elem = $.create( 'jinze', 'touwei' )
           ;
-
-          elem.setAttribute( 'data-portion', portion.index ),
           elem.appendChild( text )
-
-          return portion.index != 2 ? elem : 0
+          return (
+            ( portion.index == 0 && portion.isEnd ) ||
+            portion.index == 1
+          ) ? elem : ''
         }
       )
       .replace(
@@ -152,11 +151,8 @@ define([
             text = document.createTextNode( mat ),
             elem = $.create( 'jinze', 'wei' )
           ;
-
-          elem.setAttribute( 'data-portion', portion.index )
           elem.appendChild( text )
-
-          return elem
+          return portion.index == 0 ? elem : ''
         }
       )
       .replace(
@@ -167,11 +163,11 @@ define([
             text = document.createTextNode( mat ),
             elem = $.create( 'jinze', 'tou' )
           ;
-
-          elem.setAttribute( 'data-portion', portion.index )
           elem.appendChild( text )
-
-          return elem
+          return (
+            ( portion.index == 0 && portion.isEnd ) ||
+            portion.index == 1
+          ) ? elem : ''
         }
       )
       .replace(
@@ -182,23 +178,20 @@ define([
             text = document.createTextNode( mat ),
             elem = $.create( 'jinze', 'middle' )
           ;
-
-          elem.setAttribute( 'data-portion', portion.index )
           elem.appendChild( text )
-
-          return elem
+          return (
+            ( portion.index == 0 && portion.isEnd ) ||
+            portion.index == 1
+          ) ? elem : ''
         }
       )
-
-      // document.querySelectorAll('[data-portion=1]')
-      // ### TODO ###
-      // 位元素邊界的標點修正
 
       this.filteredElemList = origFilteredElemList
       return this
     },
 
-    // Implementation of character-level selector (字元級選擇器)
+    // Implementation of character-level selector
+    // (字元級選擇器)
     charify: function( option ) {
       var
         option = $.extend( {

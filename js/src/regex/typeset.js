@@ -34,7 +34,7 @@ define([
     rCy = UNICODE.kirillica.base + rCyCbn + '*',
 
     rAlph = rLatn + '|' + rGk + '|' + rCy,
-    rChar = rHan + '|' + rAlph
+    rChar = rHan + '|(' + rAlph + ')+'
   ;
 
   TYPESET = {
