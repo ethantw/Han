@@ -38,37 +38,34 @@
     + ol,
     + ul,
     + h6,
-    + section blockquote:first-child,
-    + section p:first-child,
-    + section ol:first-child,
-    + section ul:first-child,
-    + section h6:first-child
+    + section > blockquote:first-child,
+    + section > p:first-child,
+    + section > ol:first-child,
+    + section > ul:first-child,
+    + section > h6:first-child
       @extend %han-well-knit-section
 
   #{han-header-i( 1, 5 )}
     + h5,
-    + section h5:first-child
+    + section > h5:first-child
       @extend %han-well-knit-section
 
   #{han-header-i( 1, 4 )}
     + h4,
-    + section h4:first-child
+    + section > h4:first-child
       @extend %han-well-knit-section
 
   #{han-header-i( 1, 3 )}
     + h3,
-    + section h3:first-child
+    + section > h3:first-child
       @extend %han-well-knit-section
 
   #{han-header-i( 1, 2 )}
     + h2,
-    + section h2:first-child
+    + section > h2:first-child
       @extend %han-well-knit-section
 
-  h1
-    + h1,
-    + section h1:first-child
-      @extend %han-well-knit-section
+
 
 // * Overwrite Hyu's normalisation of indent alignment
 // *
