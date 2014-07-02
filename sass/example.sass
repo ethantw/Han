@@ -1,0 +1,136 @@
+
+// **
+// * 設定
+// * Config
+
+// **
+// * 根元素
+// * `html` || `'*:root'`
+// *
+$han-root: html
+
+// **
+// * 文章選擇器
+// * 可能的選項：
+// * `article` || `.article` || `.post` || `.entry`
+// *
+$han-article: article
+
+// **
+// * 全域行高
+// * 推薦値：`1.2-1.7(em)`
+// *
+$han-line-height: 1.3
+
+// **
+// * 文章區塊行高
+// * 推薦値：`1.5-2(em)`
+// *
+$han-article-line-height: 1.7
+
+// **
+// * 文章區塊頭尾對齊
+// * `true` || `false`
+// *
+$han-article-justify: true
+
+// **
+// * 縮進
+// * 推薦値：`1em` || `2em`
+// *
+$han-indent: 2em
+
+// **
+// * 行動裝置縮進
+// * 推薦値：`1em` || `2em`
+// *
+$han-indent-md: 1em
+
+// **
+// * 行動裝置最大寬度（響應式設計）
+// * 推薦値：`480px`
+// *
+$han-mobile-device-width: 480px
+
+// **
+// * 着重號
+// * 見：http://w3.org/TR/css-text-decor-3/#emphasis-marks
+// *
+// * `none` || `biaodian`
+$han-text-emphasis-skip:  biaodian
+// * `none` || `filled` || `open`
+$han-text-emphasis-shape: filled
+// * `dot` || `circle` || `double-circle` || `triangle` || `sesame` || <string>
+$han-text-emphasis-mark:  circle
+// * `over` || `under`
+$han-text-emphasis-posi:  under
+// * `inherit` || <color>
+$han-text-emphasis-color: inherit
+
+// *
+// * 着重號（日文）
+// *
+$han-text-emphasis-shape-ja: filled
+$han-text-emphasis-mark-ja:  sesame
+$han-text-emphasis-posi-ja:  over
+$han-text-emphasis-color-ja: inherit
+
+// **
+// * 中文地區變體預設値
+// *（繁體中文、簡體中文）
+// * `hant` || `hans`
+// *
+$han-default-variant: hant
+
+// **
+// * 繁體中文字形
+// * `default` || `CNS` || `GB`
+// *
+$han-glyph-set-hant: default
+
+// **
+// * 簡體中文字形
+// * `default` || `GB`
+// *
+$han-glyph-set-hans: GB
+
+// **
+// * 繁體中文標點
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$han-biaodian-hant: Pro
+
+// **
+// * 簡體中文標點
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$han-biaodian-hans: GB
+
+// **
+// * 西文（拉丁字母等）通用字體
+// *
+$han-sans:    'Helvetica Neue', Helvetica, Arial
+$han-serif:   Georgia, 'Times New Roman'
+$han-cursive: 'Apple Chancery', 'Snell Roundhand'
+$han-mono:    Menlo, Courier
+
+// **
+// * 中文通用字體
+// *
+$han-sans-zh:    ''
+$han-serif-zh:   ''
+$han-cursive-zh: ''
+$han-mono-zh:    $han-sans-zh
+
+// **
+// * Web font路徑
+// *（注音符號、羅馬拼音陽入韻連字、部分標點修正）
+// *
+$han-font-woff: './fonts/han.woff'
+$han-font-otf:  './fonts/han.otf'
+$han-font-ttf:  './fonts/han.ttf'
+
+// **
+// * 在所有樣式前滙入`_han.sass`
+// * Import `_han.sass` before anything else
+@import han

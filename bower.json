@@ -10,10 +10,12 @@
   "keywords": [
     "Han",
     "Hanzi",
+    "CJK",
     "CSS",
+    "normalize",
     "typography",
-    "typesets",
-    "normalize"
+    "typefaces",
+    "typesets"
   ],
   "license": "http://css.hanzi.co/license.md",
   "ignore": [

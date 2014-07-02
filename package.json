@@ -1,0 +1,25 @@
+{
+  "name": "Han",
+  "version": "3.0.0",
+  "description": "The CSS typography framework optimised for Hanzi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethantw/Han.git"
+  },
+  "keywords": [
+    "Han",
+    "Hanzi",
+    "CJK",
+    "CSS",
+    "normalize",
+    "typography",
+    "typefaces",
+    "typesets"
+  ],
+  "author": "Chen Yijun (@ethantw)",
+  "license": "MIT Lisence ",
+  "bugs": {
+    "url": "https://github.com/ethantw/Han/issues"
+  },
+  "devDependencies"
+}

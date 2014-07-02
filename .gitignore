@@ -1,15 +1,9 @@
 .DS_Store
+.sass-cache
+
+TODO
 Makefile
-config.rb
-*.scssc
 
-_cores
-_public
-manual
-
-package.json
 /index.html
 /index.jade
-sass/style (example).sass
-server.js
-TODO
+/server.js
