@@ -26,8 +26,12 @@ html(lang='zh-Hant')
 
     article
       h1 測試頁索引
+      ul
+        li: a(href='test.html')  測試頁（標準）
+        li: a(href='test-module.html') 測試頁（JavaScript模組）
+        li: a(href='test-nojs.html') 測試頁（無JavaScript）
       section(id='normalize')
-        h2 樣式正常化
+        h2 <span lang='en'>Normalisation</span>（樣式正常化）
         ul
           li: a(href='./line-deco.html') 字元裝飾線元素
           li: a(href='./em.html') 著重號（強調元素）
@@ -35,7 +39,7 @@ html(lang='zh-Hant')
       section(id='ziti')
         h2 字體
         section(id='ziti-hanzi')
-          h3 漢字
+          h3 漢字字體
           ul
             li: a(href='./biaodian.html') 標點符號
             li: a(href='./four.html') 四大字體集
@@ -46,13 +50,19 @@ html(lang='zh-Hant')
         section(id='ziti-qita')
           h3 其他
           ul
-            li: a(href='./numeral.html') 數字
             li: a(href='./italic.html') 意大利體（西文）
+            li: a(href='./numeral.html') 數字
             li: a(href='./ruby(ff).html') 標音（注音符號、羅馬拼音）
       section(id='paiban')
         h2 排版
-        ul
-          li: a(href='./section.html') 文章與其章節
+        section#paiban-wenzhang_de_yunlyu
+          h3 文章的韻律
+          ul
+            li: a(href='./section.html') 文章與其章節
+        section#paiban-hang_de_zucheng
+          h3 行的組成
+          ul
+            li: a(href='./hws.html') 漢字西文混排間隙
       section(id='api')
         h2 接口
         ul
