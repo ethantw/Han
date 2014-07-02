@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <title>測試頁索引 — 漢字標準格式</title>
+    <link rel="stylesheet" href="../han.css">
+    <style>
+      html {
+        overflow-x: hidden;
+      }
+      
+      article {
+        /* position */
+        margin: 0 auto;
+        
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="印刷品般的漢字網頁排版框架">
+    <meta name="keywords" content="漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography">
+  </head>
+  <body class="test">
+    <article>
+      <h1>測試頁索引</h1>
+      <section id="normalize">
+        <h2>樣式正常化</h2>
+        <ul>
+          <li><a href="./line-deco.html">字元裝飾線元素</a></li>
+          <li><a href="./em.html">著重號（強調元素）</a></li>
+          <li><a href="./ruby.html">行間注元素</a></li>
+        </ul>
+      </section>
+      <section id="ziti">
+        <h2>字體</h2>
+        <section id="ziti-hanzi">
+          <h3>漢字</h3>
+          <ul>
+            <li><a href="./biaodian.html">標點符號</a></li>
+            <li><a href="./four.html">四大字體集</a></li>
+            <li><a href="generics.html">字體基型（<span lang="en">typeface generics</span>）與<code>@extend</code></a></li>
+          </ul>
+        </section>
+        <section id="ziti-qita">
+          <h3>其他</h3>
+          <ul>
+            <li><a href="./numeral.html">數字</a></li>
+            <li><a href="./italic.html">意大利體（西文）</a></li>
+            <li><a href="./ruby(ff).html">標音（注音符號、羅馬拼音）</a></li>
+          </ul>
+        </section>
+      </section>
+      <section id="paiban">
+        <h2>排版</h2>
+        <ul>
+          <li><a href="./section.html">文章與其章節</a></li>
+        </ul>
+      </section>
+      <section id="api">
+        <h2>接口</h2>
+        <ul>
+          <li><a href="./api/jinzify.html">強制標點禁則</a></li>
+          <li><a href="./api/charify.html">字元級選擇器</a></li>
+          <li><a href="./api/line-deco.html">相鄰字元裝飾線</a></li>
+          <li><a href="./api/em.html">着重號</a></li>
+          <li><a href="./api/ruby.html">行間注元素</a></li>
+        </ul>
+      </section>
+    </article>
+    <!-- script goes below-->
+    <script src="../js/lib/require.js" data-main="../js/han"></script>
+  </body>
+</html>

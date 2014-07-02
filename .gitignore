@@ -8,8 +8,8 @@ _public
 manual
 
 package.json
-index.html
-index.jade
+/index.html
+/index.jade
 sass/style (example).sass
 server.js
 TODO

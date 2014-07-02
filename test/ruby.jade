@@ -7,13 +7,16 @@ html(lang='zh-Hant')
 
     style.
       html {
-        overflow-x: hidden
+        overflow-x: hidden;
       }
 
       article {
+        /* position */
         margin: 0 auto;
-        padding: 0 .5em 15em;
+
+        /* box */
         max-width: 35em;
+        padding: 0 .5em 15em;
       }
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     meta(name='description' content='印刷品般的漢字網頁排版框架')
@@ -98,11 +101,11 @@ html(lang='zh-Hant')
               rt yuē
               rt shì
           ruby.complex
-            | „
+            | &#x201E;
             rb 紐
             rb 約
             rb 市
-            | “
+            | &#x201F;
             rtc.reading.romanization(lang='cmn-Latn')
               rt niǔ
               rt yuē
