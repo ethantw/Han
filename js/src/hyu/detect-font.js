@@ -1,13 +1,10 @@
 define([
   '../method',
-  '../var/root',
-  '../var/body',
-  './support'
-], function( $, root, body, support ) {
-
+  '../var/body'
+], function( $, body ) {
   function writeOnCanvas( text, font ) {
     var
-      canvas = $.create('canvas'),
+      canvas = $.create( 'canvas' ),
       context
     ;
 
@@ -35,50 +32,39 @@ define([
       ret
     ;
 
-    if ( !support.fontface ) {
-      return false
-    }
-
     try {
       control = writeOnCanvas( text, control || 'sans-serif' )
       treat = writeOnCanvas( text, treat )
 
-      for (var j = 1; j <= 20; j++) {
-				for (var i = 1; i <= 50; i++) {
-					if ( ret !== 'undefined' &&
-            treat[1].getImageData(i, j, 1, 1).data[3] != control[1].getImageData(i, j, 1, 1).data[3]
+      for ( var j = 1; j <= 20; j++ ) {
+        for ( var i = 1; i <= 50; i++ ) {
+          if (
+            ret !== 'undefined' &&
+            treat[1].getImageData(i, j, 1, 1).data[3] !=
+              control[1].getImageData(i, j, 1, 1).data[3]
           ) {
-						ret = true
+            ret = true
             break
-					} else if ( ret ) {
-						break
+          } else if ( ret ) {
+            break
           }
 
-					if ( i == 50 && j == 20 && !ret ) {
-						ret = false
+          if ( i == 50 && j == 20 && !ret ) {
+            ret = false
           }
-				}
-			}
+        }
+      }
 
       // Remove and clean from memory
       control[0].parentNode.removeChild( control[0] )
       treat[0].parentNode.removeChild( treat[0] )
       control = null
       treat = null
-
       return ret
     } catch ( err ) {
       return false
     }
   }
-
-  support.unicoderange = (function() {
-    return !detectFont(
-      'test-for-unicode-range',        // treatment group
-      'Arial, "Droid Sans"',           // control group
-      'Q'                              // ASCII characters only
-    )
-  })()
 
   return detectFont
 })

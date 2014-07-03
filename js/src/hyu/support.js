@@ -1,8 +1,9 @@
 define([
   '../method',
   '../var/root',
-  '../var/body'
-], function( $, root, body ) {
+  '../var/body',
+  './detect-font'
+], function( $, root, body, detectFont ) {
 
   var
     PREFIX = 'Webkit Moz ms'.split(' '),
@@ -25,19 +26,21 @@ define([
         ret = true
       }
     })
-    return ret
+    return ret || false
   }
 
   function injectElementWithStyle( rule, callback ) {
     var
       fakeBody = body || $.create( 'body' ),
       div = $.create( 'div' ),
+      callback = typeof callback === 'function' ?
+        callback : function() {},
       style, ret, node, docOverflow
     ;
     style = [ '<style>', rule, '</style>' ].join('')
 
     ;( body ? div : fakeBody ).innerHTML += style
-    fakeBody.appendChild(div)
+    fakeBody.appendChild( div )
 
     if ( !body ) {
       fakeBody.style.background = ''
@@ -123,19 +126,40 @@ define([
             cssText.indexOf( rule.split(' ')[0] ) === 0
         }
       )
+
+      return ret
+    })(),
+
+    // Address feature support test for `unicode-range` via
+    // detecting whether it's Arial (supported) or
+    // Times New Roman (not supported).
+    unicoderange: (function() {
+      var
+        ret
+      ;
+      injectElementWithStyle(
+        '@font-face{font-family:test-for-unicode-range;src:local(Arial),local("Droid Sans")}@font-face{font-family:test-for-unicode-range;src:local("Times New Roman"),local(Times),local("Droid Serif");unicode-range:U+270C}',
+        function() {
+          ret = !detectFont(
+            'test-for-unicode-range', // treatment group
+            'Arial, "Droid Sans"',    // control group
+            'Q'                       // ASCII characters only
+          )
+        }
+      )
       return ret
     })(),
 
     columnwidth: (function() {
-      return testCSSProp( 'columnWidth' )  || false
+      return testCSSProp( 'columnWidth' )
     })(),
 
     textemphasis: (function() {
-      return testCSSProp( 'textEmphasis' ) || false
+      return testCSSProp( 'textEmphasis' )
     })(),
 
     writingmode: (function() {
-      return testCSSProp( 'writingMode' )  || false
+      return testCSSProp( 'writingMode' )
     })()
   }
 
