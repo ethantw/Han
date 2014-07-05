@@ -4,11 +4,14 @@ define([
 ], function( Han ) {
 
   var
-    ready = setInterval( function() {
-      if ( document.readyState === 'complete' ) {
-        clearTimeout( ready )
-        Han.renderByRoutine()
-      }
-    }, 50 )
+    ready
   ;
+
+  ready = setInterval( function() {
+    if ( document.readyState === 'complete' ) {
+      clearTimeout( ready )
+      Han.renderByRoutine()
+    }
+  }, 50 )
+
 })
