@@ -2146,7 +2146,8 @@ return exposed;
 
   if (
     typeof noGlobalNamespace === 'undefined' ||
-    noGlobalNamespace === false
+    noGlobalNamespace === false &&
+    ( typeof define !== 'function' && !define.amd )
   ) {
     window.Han = Han
   }
