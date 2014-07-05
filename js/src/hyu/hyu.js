@@ -8,8 +8,9 @@
  */
 
 define([
-  './hyu/core',
-  './hyu/normalize'
+  './core',
+  './normalize',
+  './fn'
 ], function( Hyu ) {
   return Hyu
 })

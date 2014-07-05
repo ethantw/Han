@@ -1,13 +1,10 @@
 define([
   '../method',
+  './core',
   './support',
   './detect-font',
   './init-cond'
-], function( $, support, detectFont, initCond ) {
-
-  var
-    Hyu = {}
-  ;
+], function( $, Hyu, support, detectFont, initCond ) {
 
   $.extend( Hyu, {
     support: support,

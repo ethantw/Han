@@ -6,9 +6,10 @@
 
 define([
   './method',
-  './regex/TYPESET',
+  './regex/unicode',
+  './regex/typeset',
   'findAndReplaceDOMText'
-], function( $, TYPESET, findAndReplaceDOMText ) {
+], function( $, UNICODE, TYPESET, findAndReplaceDOMText ) {
 
   var
     Farr = function( selector, filter, method, pattern, subst ) {
@@ -100,14 +101,14 @@ define([
 
     // Now that we support chaining syntax, it should
     // be able to revert the finder by level.
-    unfarr: function( level ) {
+    revert: function( level ) {
       var
         len = this.finder.length,
-        level = Number(level) || level == 0 ? Number(level) :
+        level = Number(level) || level === 0 ? Number(level) :
           level === 'all' ? len : 1
       ;
 
-      if ( typeof len === 'undefined' || len == 0 ) {
+      if ( typeof len === 'undefined' || len === 0 ) {
         return this
       } else if ( level > this.finder.length ) {
         level = len
@@ -138,8 +139,8 @@ define([
           ;
           elem.appendChild( text )
           return (
-            ( portion.index == 0 && portion.isEnd ) ||
-            portion.index == 1
+            ( portion.index === 0 && portion.isEnd ) ||
+            portion.index === 1
           ) ? elem : ''
         }
       )
@@ -152,7 +153,7 @@ define([
             elem = $.create( 'jinze', 'wei' )
           ;
           elem.appendChild( text )
-          return portion.index == 0 ? elem : ''
+          return portion.index === 0 ? elem : ''
         }
       )
       .replace(
@@ -165,8 +166,8 @@ define([
           ;
           elem.appendChild( text )
           return (
-            ( portion.index == 0 && portion.isEnd ) ||
-            portion.index == 1
+            ( portion.index === 0 && portion.isEnd ) ||
+            portion.index === 1
           ) ? elem : ''
         }
       )
@@ -180,8 +181,8 @@ define([
           ;
           elem.appendChild( text )
           return (
-            ( portion.index == 0 && portion.isEnd ) ||
-            portion.index == 1
+            ( portion.index === 0 && portion.isEnd ) ||
+            portion.index === 1
           ) ? elem : ''
         }
       )

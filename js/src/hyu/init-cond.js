@@ -11,7 +11,7 @@ define([
 
     target.classList.add( 'hyu-js-rendered' )
 
-    for ( feature in support ) {
+    for ( var feature in support ) {
       clazz = (support[ feature ] ? '' : 'no-') + feature
 
       target.classList.add( clazz )

@@ -1,8 +1,24 @@
+/*!
+ * Mre
+ * css.hanzi.co/mre
+ *
+ * This module is a subset project of Han,
+ * which aims to address proper typefaces with
+ * better readability.
+ *
+ * This module depends on Hyu for basic typeface
+ * detecting.
+ */
+
 define([
-  '../hyu'
+  '../hyu/hyu'
 ], function( Hyu ) {
 
-  return {
+  var
+    Mre = {}
+  ;
+
+  Mre.support = {
     // Assume that all devices support Heiti for we
     // use `sans-serif` to do the comparison.
     heiti: true,
@@ -19,4 +35,6 @@ define([
       return Hyu.detectFont( 'Han Fangsong' )
     })()
   }
+
+  return Mre
 })

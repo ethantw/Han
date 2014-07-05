@@ -12,7 +12,7 @@ define([
 
     // Create an element for feature detecting
     // (in `testCSSProp`)
-    elem = $.create('_')
+    elem = $.create( '_' )
   ;
 
   function testCSSProp( prop ) {
@@ -35,7 +35,7 @@ define([
       div = $.create( 'div' ),
       callback = typeof callback === 'function' ?
         callback : function() {},
-      style, ret, node, docOverflow
+      style, ret, docOverflow
     ;
     style = [ '<style>', rule, '</style>' ].join('')
 

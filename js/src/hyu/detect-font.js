@@ -2,6 +2,7 @@ define([
   '../method',
   '../var/body'
 ], function( $, body ) {
+
   function writeOnCanvas( text, font ) {
     var
       canvas = $.create( 'canvas' ),
@@ -40,7 +41,7 @@ define([
         for ( var i = 1; i <= 50; i++ ) {
           if (
             ret !== 'undefined' &&
-            treat[1].getImageData(i, j, 1, 1).data[3] !=
+            treat[1].getImageData(i, j, 1, 1).data[3] !==
               control[1].getImageData(i, j, 1, 1).data[3]
           ) {
             ret = true
@@ -49,7 +50,7 @@ define([
             break
           }
 
-          if ( i == 50 && j == 20 && !ret ) {
+          if ( i === 50 && j === 20 && !ret ) {
             ret = false
           }
         }
@@ -60,6 +61,7 @@ define([
       treat[0].parentNode.removeChild( treat[0] )
       control = null
       treat = null
+
       return ret
     } catch ( err ) {
       return false

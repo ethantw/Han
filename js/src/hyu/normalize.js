@@ -68,7 +68,7 @@ define([
            .replace( /[\u02C5]/g, '\u02C7' )
            .replace( /[\u030D]/g, '\u0358' )
 
-    form = zhuyin.replace( rZyForm, function( s, j, y, d ) {
+    form = zhuyin.replace( rZyForm, function( s, j, y ) {
       return [
         s ? 'S' : null,
         j ? 'J' : null,
@@ -147,7 +147,7 @@ define([
           if ( !next ) {
             return
           }
-        } while ( next.nodeName === 'WBR' || next.nodeType == 8 )
+        } while ( next.nodeName === 'WBR' || next.nodeType === 8 )
 
         if ( next.nodeName.match( rTarget )) {
           next.classList.add( 'adjacent' )
@@ -229,7 +229,7 @@ define([
             clazz.contains( 'rightangle' )
           ),
 
-          frag, $d, $rb, hruby
+          frag, $cloned, $rb, hruby
         ;
 
         if ( !condition ) {
@@ -341,13 +341,13 @@ define([
 
             // Recache the ruby base
             $rb = $.qsa(
-              order == 0 ? 'rb' : 'rb[span]',
+              order === 0 ? 'rb' : 'rb[span]',
               $cloned
             )
 
             $
             .tag( 'rt', rtc )
-            .forEach(function( rt, set ) {
+            .forEach(function( rt ) {
               var
                 $$rb = $.create( '!' ),
 
@@ -393,7 +393,7 @@ define([
                   $$rb.firstChild
                 )
 
-                if ( rbspan > 1 && i != start ) {
+                if ( rbspan > 1 && i !== start ) {
                   $.remove( $rb[ i ] )
                   continue
                 }

@@ -4,10 +4,9 @@ define([
   './regex/typeset',
   './farr',
   './core',
-  './hyu',
-  './mre',
-  './guy'
-], function( $, UNICODE, TYPESET, Farr, Han, Hyu, Mre, Guy ) {
+  './hyu/hyu',
+  './mre/mre'
+], function( $, UNICODE, TYPESET, Farr, Han, Hyu, Mre ) {
 
   /**
    * API: regular expression
@@ -40,7 +39,7 @@ define([
    */
   Han.Farr = Farr
 
-  ;[ 'replace', 'wrap', 'unfarr', 'jinzify', 'charify' ]
+  ;[ 'replace', 'wrap', 'revert', 'jinzify', 'charify' ]
   .forEach(function( method ) {
     Han.fn[ method ] = function() {
       if ( !this.Farr ) {
@@ -88,16 +87,16 @@ define([
   /**
    * Advanced typesetting features via Guy
    */
-  Han.typeset = Guy
-
-  ;[ 'HWS' ]
-  .forEach(function ( feature ) {
-    var
-      method = 'render' + feature
-    ;
-    Han.fn[ method ] = function( option ) {
-      Han.typeset[ method ]( this.context, option )
-      return this
-    }
-  })
+  // Han.typeset = Guy
+  //
+  // ;[ 'HWS' ]
+  // .forEach(function ( feature ) {
+  //   var
+  //     method = 'render' + feature
+  //   ;
+  //   Han.fn[ method ] = function( option ) {
+  //     Han.typeset[ method ]( this.context, option )
+  //     return this
+  //   }
+  // })
 })

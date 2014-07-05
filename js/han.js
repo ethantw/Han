@@ -5,14 +5,8 @@
 require.config({
   paths: {
     findAndReplaceDOMText: [
-      './lib/findAndReplaceDOMText'
+      './lib/findAndReplaceDOMText.module'
     ]
-  },
-
-  shim: {
-    'findAndReplaceDOMText': {
-      exports: 'findAndReplaceDOMText'
-    }
   }
 })
 
@@ -22,8 +16,10 @@ require.config({
 define([
   './src/core',
   './src/fn',
-  './src/hyu',
-  './src/mre',
+  './src/hyu/hyu',
+  './src/mre/mre',
+  './src/inline',
+  './src/global',
   './src/script'
 ], function( Han ) {
   return Han
