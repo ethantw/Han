@@ -16,7 +16,7 @@ define([
     TYPESET: TYPESET
   })
 
-  // English aliases are easier dealing with
+  // English aliases are easier to memorise
   $.extend( Han.UNICODE, {
     greek: Han.UNICODE.ellinika,
     cyrillic: Han.UNICODE.kirillica
@@ -28,9 +28,9 @@ define([
   Object.freeze( Han.TYPESET )
 
   /**
-   * Shortcut for render by routine
+   * Shortcut for `renderByRoutine` in default situation
    */
-  Han.renderByRoutine = function() {
+  Han.init = function() {
     return Han().renderByRoutine()
   }
 
