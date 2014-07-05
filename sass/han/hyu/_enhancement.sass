@@ -2,7 +2,7 @@
 // * Address a preciser adjancent underlined text run
 // * with JS rendered.
 // *
-%hyu-none-adjacent-line-decoration
+%hyu-reset-adjacent-line-deco
   margin-left: auto
 
 .hyu-js-rendered
@@ -10,19 +10,19 @@
   ins
     & + u,
     & + ins
-      @extend %hyu-none-adjacent-line-decoration
+      @extend %hyu-reset-adjacent-line-deco
 
     &.adjacent
-      @extend %hyu-adjacent-line-decoration
+      @extend %hyu-adjacent-line-deco
 
   s,
   del
     & + s,
     & + del
-      @extend %hyu-none-adjacent-line-decoration
+      @extend %hyu-reset-adjacent-line-deco
 
       &.adjacent
-        @extend %hyu-adjacent-line-decoration
+        @extend %hyu-adjacent-line-deco
 
 // * - Polyfill implementation for Firefox and IE;
 // * - Remove emphasis mark under punctuation.
