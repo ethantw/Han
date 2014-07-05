@@ -14,8 +14,9 @@
     "CSS",
     "normalize",
     "typography",
-    "typefaces",
-    "typesets"
+    "typeface",
+    "font",
+    "typesetting"
   ],
   "license": "http://css.hanzi.co/LICENSE.md",
   "ignore": [
