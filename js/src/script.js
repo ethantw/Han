@@ -1,17 +1,28 @@
 define([
+  './var/root',
   './core',
   './fn'
-], function( Han ) {
+], function( root, Han ) {
 
-  var
-    ready
-  ;
+  !function() {
+    var
+      DOMReady,
+      initContext
+    ;
 
-  ready = setInterval( function() {
-    if ( document.readyState === 'complete' ) {
-      clearTimeout( ready )
-      Han.renderByRoutine()
-    }
-  }, 50 )
+    DOMReady = setInterval( function() {
+      if ( document.readyState === 'complete' ) {
+        clearTimeout( DOMReady )
 
+        // Use shortcut for default situation
+        if ( root.classList.contains( 'han-init' )) {
+          Han.init()
+
+        // If a context is configured
+        } else if ( initContext = document.querySelector( '.han-init-context' )) {
+          Han( initContext ).renderByRoutine()
+        }
+      }
+    }, 50 )
+  }()
 })

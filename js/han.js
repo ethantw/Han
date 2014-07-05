@@ -19,8 +19,8 @@ define([
   './src/hyu/hyu',
   './src/mre/mre',
   './src/inline',
-  './src/global',
-  './src/script'
+  './src/script',
+  './src/global'
 ], function( Han ) {
   return Han
 })
