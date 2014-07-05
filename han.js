@@ -1345,13 +1345,17 @@ return exposed;
     var
       fakeBody = body || $.create( 'body' ),
       div = $.create( 'div' ),
+
+      container = body ? div : fakeBody,
+
       callback = typeof callback === 'function' ?
         callback : function() {},
+
       style, ret, docOverflow
     ;
     style = [ '<style>', rule, '</style>' ].join('')
 
-    ;( body ? div : fakeBody ).innerHTML += style
+    container.innerHTML += style
     fakeBody.appendChild( div )
 
     if ( !body ) {
@@ -1364,14 +1368,16 @@ return exposed;
     }
 
     // Callback
-    ret = callback( div, rule )
+    ret = callback( container, rule )
 
     // Remove the injected scope
+
+    container.parentNode.removeChild( container )
     if ( !body ) {
-      fakeBody.parentNode.removeChild( fakeBody )
+      //fakeBody.parentNode.removeChild( fakeBody )
       root.style.overflow = docOverflow
     } else {
-      div.parentNode.removeChild( div )
+      //div.parentNode.removeChild( div )
     }
     return !!ret
   }
