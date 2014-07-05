@@ -1,10 +1,9 @@
 doctype html
-html(lang='zh-Hant')
+html(lang='zh-Hant').han-init
   head
     meta(charset='utf-8')
     title 測試・強調元素（着重號）— 漢字標準格式
     link(rel='stylesheet', href='./em-han.css')
-
     style.
       html {
         overflow-x: hidden;
@@ -21,7 +20,6 @@ html(lang='zh-Hant')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     meta(name='description' content='印刷品般的漢字網頁排版框架')
     meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
-
   body.test
 
     article
@@ -124,5 +122,5 @@ html(lang='zh-Hant')
             a(href='#') 說明文件
             | 及<cite lang='en'><a href='//www.w3.org/TR/css-text-decor-3/#emphasis-marks'>CSS Text Decoration Module Level 3</a></cite>。
 
-    // script goes below
-    script(src='../js/lib/require.js' data-main='../js/han')
+    // Here goes scripts
+    script(src='../han.min.js')

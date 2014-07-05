@@ -1,5 +1,5 @@
 doctype html
-html(lang='zh-Hant')
+html(lang='zh-Hant').han-init
   head
     meta(charset='utf-8')
     title 測試頁索引 — 漢字標準格式
@@ -72,5 +72,5 @@ html(lang='zh-Hant')
           li: a(href='./api/em.html') 着重號
           li: a(href='./api/ruby.html') 行間注元素
 
-    // script goes below
-    script(src='../js/lib/require.js' data-main='../js/han')
+    // Here goes scripts
+    script(src='../han.min.js')
