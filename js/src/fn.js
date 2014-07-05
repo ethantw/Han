@@ -5,7 +5,8 @@ define([
   './farr',
   './core',
   './hyu/hyu',
-  './mre/mre'
+  './mre/mre',
+  './inline'
 ], function( $, UNICODE, TYPESET, Farr, Han, Hyu, Mre ) {
 
   /**
@@ -85,18 +86,15 @@ define([
   $.extend( Han.support, Mre.support )
 
   /**
-   * Advanced typesetting features via Guy
+   * Advanced typesettings
    */
-  // Han.typeset = Guy
-  //
-  // ;[ 'HWS' ]
-  // .forEach(function ( feature ) {
-  //   var
-  //     method = 'render' + feature
-  //   ;
-  //   Han.fn[ method ] = function( option ) {
-  //     Han.typeset[ method ]( this.context, option )
-  //     return this
-  //   }
-  // })
+  Han.fn.renderHWS = function( strict ) {
+    if ( !this.Farr ) {
+      // Share the same selector
+      this.Farr = Han.Farr( this.context )
+    }
+
+    this.Farr.finder = Han.renderHWS( this.context, strict )
+    return this
+  }
 })
