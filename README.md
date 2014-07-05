@@ -1,76 +1,69 @@
 漢字標準格式
 ==========
 
+「漢字標準格式」是一個集「語意樣式標準化」「字體排印」「高級排版功能」三大概念的Sass、JavaScript排版框架。其專為漢字網頁提供的美觀而標準化的環境，不僅符合傳統閱讀習慣、更為螢幕閱讀提供了既成標準，得以完整解決現今漢字網頁設計的排版需求。
 
-「漢字標準格式」是基於樣式「重設」及「標準化」二個概念寫成的CSS3排版框架。由於現今的瀏覽器預設樣式皆以西文顯示為主，未能周詳地考慮到其與漢字排版間的差異，多造成網頁設計師的誤用，而內容編者亦無從依照語意正確使用字級元素。
+「漢字標準格式」目前完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
 
-「樣式標準化」的想法源自各種CSS reset及「normalize.css」專案，經漢字標準格式的沿用、加入中日韓語種的支援，並將漢字文化圈中常見的印刷品排印格式套用在各種HTML5元素中，從而提供標準合理而美觀的文章閱讀環境，迎合網頁讀者的閱讀習慣及設計師和編者的需求。
-
-漢字標準格式目前可完整支援繁體中文、簡體中文及日文等三種漢字語種的網頁，亦提供便於校調的[Sass]版本。
-
-[檢視範例測試頁 →][test]
-
-[Sass]: http://sass-lang.com
-[test]: http://ethantw.github.io/Han/test.html
+[檢視範例測試頁 →]
+(http://ethantw.github.io/Han/test/)
 
 
-安裝及使用
---------
+## 安裝
+- Bower：`bower install --save Han`
+- NPM：`npm install Han`
 
-直接自專案頁下載或使用Bower：  
-`bower install --save Han`
-
-
-### CDN
-
-你也可以直接使用[cdnjs.com][cdn]服務提供的樣式表，
-
-[cdn]: //cdnjs.com
-
-~~~~html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.css">
-~~~~
-
-並於頁面底部引用JavaScript，
-
-~~~~html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.js"></script>
-~~~~
-
-### 啓用漢拉間隙
-需配合`han.js`使用，在`<html>`標籤中加入類別`han-la`，
-
-~~~~html
-~~~~
-
-### 標點符號修正
-「漢字標準格式」自v3.0版本開始，預設使用進階版標點符號修正。若需要使用簡易修正，請在引用`_han.sass`模塊前，覆寫下列二個變數：
-
-~~~~sass
-// 覆寫Sass變數
-$han-biaodian-set-hant: default
-$han-biaodian-set-hans: default
-
-// 滙入Han模塊
-@import han
-~~~~
-
-使用CDN服務者，則須覆寫字體樣式屬性。
-
-
-### 樣式的覆蓋
-「漢字標準格式」不同於多數CSS框架，內含大量針對「語言屬性」的元素樣式修正，此作法可能導致這些元素樣式無法正確為後方的樣式覆蓋。為正確處理這些狀況，**請留意樣式的繼承規則，加入相應的語言屬性、選擇符或父元素等，避免過度使用「`!important`」宣告，以保持樣式表的可維護性。**
-
-必要時，請使用瀏覽器的元件檢閱器來瞭解各串流樣式間的繼承、覆蓋關係。
-
-使用手冊
--------
-
-更多詳盡的功能說明，請參閱「[使用手冊][manual]」。
+### 定製
+「漢字標準格式」提供了多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][manual]。
 
 [manual]: http://css.hanzi.co/manual
 
+### 使用CDN文件
+若毋須特別定製，你也可以直接使用以預設値編譯的CDN外連樣式表、腳本及網頁字體，以求高速下載及快取。此服務由[cdnjs]提供。
+
+[cdnjs]: //cdnjs.com
+
+````html
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.css">
+````
+
+腳本，
+
+````html
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.js"></script>
+````
+
+Web字體，
+
+````
+//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff
+//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf
+//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.ttf
+````
+
+## 使用方式
+
+「漢字標準格式」具低耦合、高度語意化等特性，樣式表與腳本各司其職、相互依賴性極低，並有多級樣式回退（fallback），故可依需求選用腳本。
+
+1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass）。
+
+2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOMReady渲染。
+
+3. 或依需求定製渲染方式，詳見[使用手冊][manual]。
+
+### 樣式的覆蓋
+「漢字標準格式」不同於多數CSS框架，內含大量針對「語言屬性」的元素樣式修正，此作法可能導致後方樣式無法依預期覆蓋。
+
+#### 含語言屬性樣式修正的元素類型
+- 字級語意元素（text-level semantics）
+- 群組元素（grouping content）及同章節元素（sections）的組合情境**（僅含字體設定）**
+- 根元素**（僅含字體設定）**
+
+#### 處理方式
+為正確處理這些狀況，請留意樣式繼承規則，加入相應的語言屬性、選擇符等提高選擇器權重，避免過度使用`!important`宣告，以保持樣式表的可維護性。
+
+必要時，請使用瀏覽器的「元件檢閱器」來瞭解樣式表間的繼承、覆蓋關係。
 
 * * *
-「漢字標準格式」版本：v3.0.0
-本頁最後修改於：2014年6月29日　5:50（GMT+8）
+「漢字標準格式」版本：v3.0.0  
+本頁最後修改於：2014年7月5日 18:53（GMT+8）
