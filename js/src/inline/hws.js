@@ -4,6 +4,20 @@ define([
   '../regex/typeset'
 ], function( $, Farr, TYPESET ) {
 
+  var
+    isNodeNormalizeNormal = (function() {
+      var
+        div = $.create('div')
+      ;
+
+      div.appendChild( document.createTextNode( '0-' ))
+      div.appendChild( document.createTextNode( '2' ))
+      div.normalize()
+
+      return div.firstChild.length !== 2
+    })()
+  ;
+
   function renderHWS( context, strict ) {
     var
       context = context || document,
@@ -41,7 +55,11 @@ define([
     })
 
     // Normalise nodes we messed up with
-    context.normalize()
+    //// Disabled for temp due to the issue in IE11
+    //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+    if ( isNodeNormalizeNormal ) {
+      context.normalize()
+    }
     // Return the Farr instance for future usage
     return farr
   }
