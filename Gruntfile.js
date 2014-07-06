@@ -1,7 +1,7 @@
 
 module.exports = function( grunt ) {
 
-	'use strict'
+	'use strict';
 
 	var
 		gzip = require( 'gzip-js' ),

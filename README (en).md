@@ -36,9 +36,8 @@ Web fonts,
 
 ````scss
 src:
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.ttf')
+  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff') format("woff"),
+  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf')  format("opentype")
 ;
 ````
 

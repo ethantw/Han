@@ -37,9 +37,8 @@ Web字體，
 
 ````scss
 src:
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.ttf')
+  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff') format("woff"),
+  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf')  format("opentype")
 ;
 ````
 
@@ -55,7 +54,7 @@ src:
 ### 樣式覆蓋的問題
 「漢字標準格式」不同於多數CSS框架，內含大量針對語言屬性`:lang`的元素樣式修正，因而導致後方樣式無法依預期覆蓋。
 
-#### 含語言屬性樣式修正的元素類型： 
+#### 含語言屬性樣式修正的元素類型：
 - 字級語意元素（text-level semantics）
 - 群組元素（grouping content）及同章節元素（sections）的組合情境**（僅含字體設定）**
 - 根元素`html`**（僅含字體設定）**
