@@ -54,12 +54,12 @@ module.exports = function( grunt ) {
 		// findAndReplaceDOMText treatment
 		} else if ( /^findAndReplaceDOMText$/.test( name ) ) {
 			contents = "var findAndReplaceDOMText =\n" + contents
-				// Remove EXPOSE lines from Sizzle
+				// Remove EXPOSE lines from findAndReplaceDOMText
 				.replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return exposed;" );
 
 		} else {
 
-			// Ignore jQuery's exports (the only necessary one)
+			// Ignore Han's exports (the only necessary one)
 			if ( name !== 'han' ) {
 				contents = contents
 					.replace( /\s*return\s+[^\}]+(\}\);?[^\w\}]*)$/, '$1' )
@@ -258,21 +258,4 @@ module.exports = function( grunt ) {
   		}
     )
 	})
-
-	// Special 'alias' task to make custom build creation less grawlix-y
-	// Translation example
-	//
-	//   grunt custom:+ajax,-dimensions,-effects,-offset
-	//
-	// Becomes:
-	//
-	//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
-	// grunt.registerTask( 'custom', function() {
-	// 	var args = this.args,
-	// 		modules = args.length ? args[ 0 ].replace( /,/g, ':' ) : ''
-  //
-	// 	grunt.log.writeln( 'Creating custom build...\n' )
-  //
-	// 	grunt.task.run([ 'build:*:*' + (modules ? ':' + modules : ''), 'uglify', 'dist' ])
-	// })
 }

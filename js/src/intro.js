@@ -17,6 +17,6 @@
     factory( global )
   }
 
-})( this, function( window, noGlobalNamespace ) {
+})( this, function( window, noGlobalNS ) {
 
   'use strict';

@@ -3,8 +3,8 @@ define([
 ], function( Han ) {
 
   if (
-    typeof noGlobalNamespace === 'undefined' ||
-    noGlobalNamespace === false &&
+    typeof noGlobalNS === 'undefined' ||
+    noGlobalNS === false &&
     ( typeof define !== 'function' && !define.amd )
   ) {
     window.Han = Han

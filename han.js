@@ -17,7 +17,7 @@
     factory( global )
   }
 
-})( this, function( window, noGlobalNamespace ) {
+})( this, function( window, noGlobalNS ) {
 
   
 
@@ -169,7 +169,7 @@ var
       'initCond',
       // Address element normalisation
       'renderElem',
-      // Address Hanzi and Western mixed spacing
+      // Address Hanzi and Western script mixed spacing
       'renderHWS'
     ],
 
@@ -2145,8 +2145,8 @@ return exposed;
 
 
   if (
-    typeof noGlobalNamespace === 'undefined' ||
-    noGlobalNamespace === false &&
+    typeof noGlobalNS === 'undefined' ||
+    noGlobalNS === false &&
     ( typeof define !== 'function' && !define.amd )
   ) {
     window.Han = Han

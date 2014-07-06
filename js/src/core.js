@@ -32,7 +32,7 @@ define([
       'initCond',
       // Address element normalisation
       'renderElem',
-      // Address Hanzi and Western mixed spacing
+      // Address Hanzi and Western script mixed spacing
       'renderHWS'
     ],
 

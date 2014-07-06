@@ -23,6 +23,8 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test"
+    "test",
+    "package.json",
+    "CHANGELOG.md"
   ]
 }
