@@ -1,10 +1,12 @@
 define([
   './method',
   './core',
-  './inline/hws'
-], function( $, Han, renderHWS ) {
+  './inline/hws',
+  './inline/basic-bd',
+], function( $, Han, renderHWS, renderBasicBd ) {
 
   $.extend( Han, {
-    renderHWS: renderHWS
+    renderHWS: renderHWS,
+    renderBasicBd: renderBasicBd
   })
 })

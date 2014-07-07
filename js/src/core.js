@@ -33,7 +33,8 @@ define([
       // Address element normalisation
       'renderElem',
       // Address Hanzi and Western script mixed spacing
-      'renderHWS'
+      'renderHWS',
+      'renderBasicBd'
     ],
 
     init: function( context, condition ) {

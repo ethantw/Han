@@ -48,7 +48,7 @@ define([
         this.Farr = Han.Farr( this.context )
       }
 
-      this.Farr[ method ]( arguments[0], arguments[1] )
+      this.Farr[ method ]( arguments[ 0 ], arguments[ 1 ] )
       return this
     }
   })
@@ -88,13 +88,27 @@ define([
   /**
    * Advanced typesettings
    */
-  Han.fn.renderHWS = function( strict ) {
-    if ( !this.Farr ) {
-      // Share the same selector
-      this.Farr = Han.Farr( this.context )
-    }
+  ;[ 'HWS', 'BasicBd' ]
+  .forEach(function( feat ) {
+    var
+      method = 'render' + feat
+    ;
 
-    this.Farr.finder = Han.renderHWS( this.context, strict )
-    return this
-  }
+    Han.fn[ method ] = function() {
+      if ( !this.Farr ) {
+        // Share the same selector
+        this.Farr = Han.Farr( this.context )
+      }
+
+      $
+      .makeArray( arguments )
+      .unshift( this.context )
+
+      this.Farr.finder = Han[ method ].apply(
+        null,
+        arguments
+      )
+      return this
+    }
+  })
 })

@@ -16,6 +16,7 @@ define([
     rBdOpen = UNICODE.biaodian.open,
     rBdEnd = UNICODE.biaodian.end,
     rBdMid = UNICODE.biaodian.middle,
+    rBdLiga = UNICODE.biaodian.liga + '{2}',
     rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
     rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
@@ -39,7 +40,8 @@ define([
         biaodian: {
           all:   new RegExp( '(' + rBd + ')', 'g' ),
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-          end:   new RegExp( '(' + rBdEnd + ')', 'g' )
+          end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
+          liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
         },
 
         hanzi: {

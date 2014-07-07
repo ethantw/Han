@@ -198,7 +198,8 @@ define([
         option = $.extend( {
           hanzi:     'individual',
                       // individual || group || biaodian || none
-
+          liga:      'liga',
+                     // liga || none
           word:      'group',
                       // group || punctuation || none
 
@@ -223,22 +224,46 @@ define([
         )
       }
       if ( option.hanzi === 'individual' ||
-           option.hanzi === 'biaodian'
+           option.hanzi === 'biaodian' ||
+           option.liga === 'liga'
       ) {
+
+        if ( option.hanzi !== 'none' ) {
+          this.replace(
+            TYPESET.char.biaodian.all,
+            function( portion, match ) {
+              var
+                mat = match[0],
+                text = document.createTextNode( mat ),
+
+                clazz = 'biaodian cjk ' + (
+                  mat.match( TYPESET.char.biaodian.open ) ? 'open' :
+                  mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
+                ),
+
+                elem = $.create( 'char', clazz ),
+                unicode = mat.charCodeAt( 0 ).toString( 16 )
+              ;
+
+              elem.setAttribute( 'unicode', unicode )
+              elem.appendChild( text )
+
+              return elem
+            }
+          )
+        }
+
         this.replace(
-          TYPESET.char.biaodian.all,
+          option.liga === 'liga' ?
+            TYPESET.char.biaodian.liga :
+            new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
           function( portion, match ) {
             var
               mat = match[0],
               text = document.createTextNode( mat ),
 
-              clazz = 'biaodian cjk ' + (
-                mat.match( TYPESET.char.biaodian.open ) ? 'open' :
-                mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
-              ),
-
-              elem = $.create( 'char', clazz ),
-              unicode = mat.charCodeAt(0).toString(16)
+              elem = $.create( 'char', 'biaodian liga cjk' ),
+              unicode = mat.charCodeAt( 0 ).toString( 16 )
             ;
 
             elem.setAttribute( 'unicode', unicode )

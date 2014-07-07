@@ -78,3 +78,11 @@ hruby
     // 3
     @extend %mre-ligature
     font-family: 'Romanization Sans', $mre-sans, mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ), sans-serif
+
+// * Fix Basic Biaodian in Firefox
+// *
+char.biaodian.liga,
+char.biaodian[unicode='b7']
+  .no-unicoderange &
+    @extend %mre-ligature
+    font-family: 'Biaodian Basic', 'Han Heiti'

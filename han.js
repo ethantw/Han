@@ -170,7 +170,8 @@ var
       // Address element normalisation
       'renderElem',
       // Address Hanzi and Western script mixed spacing
-      'renderHWS'
+      'renderHWS',
+      'renderBasicBd'
     ],
 
     init: function( context, condition ) {
@@ -383,6 +384,7 @@ var
     rBdOpen = UNICODE.biaodian.open,
     rBdEnd = UNICODE.biaodian.end,
     rBdMid = UNICODE.biaodian.middle,
+    rBdLiga = UNICODE.biaodian.liga + '{2}',
     rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
     rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
@@ -406,7 +408,8 @@ var
         biaodian: {
           all:   new RegExp( '(' + rBd + ')', 'g' ),
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-          end:   new RegExp( '(' + rBdEnd + ')', 'g' )
+          end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
+          liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
         },
 
         hanzi: {
@@ -1171,7 +1174,8 @@ return exposed;
         option = $.extend( {
           hanzi:     'individual',
                       // individual || group || biaodian || none
-
+          liga:      'liga',
+                     // liga || none
           word:      'group',
                       // group || punctuation || none
 
@@ -1196,22 +1200,46 @@ return exposed;
         )
       }
       if ( option.hanzi === 'individual' ||
-           option.hanzi === 'biaodian'
+           option.hanzi === 'biaodian' ||
+           option.liga === 'liga'
       ) {
+
+        if ( option.hanzi !== 'none' ) {
+          this.replace(
+            TYPESET.char.biaodian.all,
+            function( portion, match ) {
+              var
+                mat = match[0],
+                text = document.createTextNode( mat ),
+
+                clazz = 'biaodian cjk ' + (
+                  mat.match( TYPESET.char.biaodian.open ) ? 'open' :
+                  mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
+                ),
+
+                elem = $.create( 'char', clazz ),
+                unicode = mat.charCodeAt( 0 ).toString( 16 )
+              ;
+
+              elem.setAttribute( 'unicode', unicode )
+              elem.appendChild( text )
+
+              return elem
+            }
+          )
+        }
+
         this.replace(
-          TYPESET.char.biaodian.all,
+          option.liga === 'liga' ?
+            TYPESET.char.biaodian.liga :
+            new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
           function( portion, match ) {
             var
               mat = match[0],
               text = document.createTextNode( mat ),
 
-              clazz = 'biaodian cjk ' + (
-                mat.match( TYPESET.char.biaodian.open ) ? 'open' :
-                mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
-              ),
-
-              elem = $.create( 'char', clazz ),
-              unicode = mat.charCodeAt(0).toString(16)
+              elem = $.create( 'char', 'biaodian liga cjk' ),
+              unicode = mat.charCodeAt( 0 ).toString( 16 )
             ;
 
             elem.setAttribute( 'unicode', unicode )
@@ -2094,8 +2122,38 @@ return exposed;
   }
 
 
+  function renderBasicBd( context ) {
+    var
+      context = context || document,
+      farr, mid
+    ;
+
+    if ( support.unicoderange ) {
+      return
+    }
+
+    farr = Farr( context )
+    farr.filteredElemList += ' em'
+
+    mid = $.create( 'char', 'biaodian cjk middle' )
+    mid.setAttribute( 'unicode', 'b7' )
+
+    farr
+    .wrap( /\u00B7/g, $.clone( mid ))
+    .charify({
+      liga:      'liga',
+      hanzi:     'none',
+      word:      'none',
+      latin:     'none',
+      ellinika:  'none',
+      kirillica: 'none'
+    })
+  }
+
+
   $.extend( Han, {
-    renderHWS: renderHWS
+    renderHWS: renderHWS,
+    renderBasicBd: renderBasicBd
   })
 
 
@@ -2139,7 +2197,7 @@ return exposed;
         this.Farr = Han.Farr( this.context )
       }
 
-      this.Farr[ method ]( arguments[0], arguments[1] )
+      this.Farr[ method ]( arguments[ 0 ], arguments[ 1 ] )
       return this
     }
   })
@@ -2179,15 +2237,29 @@ return exposed;
   /**
    * Advanced typesettings
    */
-  Han.fn.renderHWS = function( strict ) {
-    if ( !this.Farr ) {
-      // Share the same selector
-      this.Farr = Han.Farr( this.context )
-    }
+  ;[ 'HWS', 'BasicBd' ]
+  .forEach(function( feat ) {
+    var
+      method = 'render' + feat
+    ;
 
-    this.Farr.finder = Han.renderHWS( this.context, strict )
-    return this
-  }
+    Han.fn[ method ] = function() {
+      if ( !this.Farr ) {
+        // Share the same selector
+        this.Farr = Han.Farr( this.context )
+      }
+
+      $
+      .makeArray( arguments )
+      .unshift( this.context )
+
+      this.Farr.finder = Han[ method ].apply(
+        null,
+        arguments
+      )
+      return this
+    }
+  })
 
 
 
