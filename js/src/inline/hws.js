@@ -32,6 +32,7 @@ define([
     farr
     .replace( TYPESET.hws[ mode ][0], '$1<hws/>$2' )
     .replace( TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+    .replace( /(["']+)[<hws\/>|\s]*(.+?)[<hws\/>|\s]*(["']+)/ig, '$1$2$3')
     .replace( '<hws/>', function() {
       return $.clone( hws )
     })
@@ -47,8 +48,14 @@ define([
       // The ‘first-child’ of DOM is different from
       // the ones of QSA, could be either an element
       // or a text fragment, but the latter one is
-      // not what we want.
-      if ( parent.firstChild.nodeName === 'HWS' ) {
+      // not what we want. We don't want comments,
+      // either.
+      if (
+        parent.firstChild.nodeName === 'HWS' || (
+          parent.firstChild.nodeType === 8 &&
+          parent.firstChild.nextSibling.nodeName === 'HWS'
+        )
+      ) {
         parent.parentNode.insertBefore( $.clone( hws ), parent )
         parent.removeChild( firstChild )
       }

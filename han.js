@@ -209,22 +209,24 @@ var
      * Western punctuation (西文標點符號)
      */
     punct: {
-      base:   '[\u2010-\u2014\u2026,.;:!?\u203D_—]',
-      middle: '[\\\/~\\-&]',
+      base:   '[\u2026,.;:!?\u203D_]',
+      sing:   '[\u2010-\u2014\u2026]',
+      middle: '[\\\/~\\-&\u2010-\u2014]',
       open:   '[\'"‘“\\(\\[\u00A1\u00BF\u2E18\u00AB\u2039\u201A\u201C\u201E]',
       close:  '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F]',
-      end:    '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F\u2010-\u2014\u2026,.;:!?\u203D_—…]',
+      end:    '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F,.;:!?\u203D_]',
     },
 
     /**
      * CJK biaodian (CJK標點符號)
      */
     biaodian: {
-      base:   '[︰．、，。：；？！—ー…⋯]',
-      middle: '[·・＼／]',
+      base:   '[︰．、，。：；？！ー]',
+      liga:   '[—…⋯]',
+      middle: '[·・＼／－]',
       open:   '[「『《〈（〔［｛【〖]',
       close:  '[」』》〉）〕］｝】〗]',
-      end:    '[」』》〉）〕］｝】〗︰．、，。：；？！ー…⋯]'
+      end:    '[」』》〉）〕］｝】〗︰．、，。：；？！ー]'
     },
 
     /**
@@ -311,19 +313,36 @@ var
            http://zh.wikipedia.org/wiki/中日韓越統一表意文字#cite_note-1
 
            [\uF900-\uFAFF]（**註**：不使用）
-           [\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]（**註**：12個例外）
+           [\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]（**註**：12個例外）
 
-     * 13. 日文假名：[\u3040-\u309F][\u30A1-\u30FA][\u30FD-\u30FF]（**註**：排除片假名中點、長音符）
-           Japanese Kana (**note:** some symbols excluded)
-     * 14. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
+     * 13. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
            Kangxi and supplement radicals
-     * 15. 表意文字描述字元：[\u2FF0-\u2FFA]
+     * 14. 表意文字描述字元：[\u2FF0-\u2FFA]
            Ideographic description characters
      */
     hanzi: {
-      base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u31C0-\u31E3\u3007\u3040-\u309F\u30A1-\u30FA\u30FD-\u30FF\uFA0E-\uFA0F\uFA11\uFA13-\uFA14\uFA1F\uFA21\uFA23-\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]|\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]|\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
+      base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]|\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]|\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
       desc:    '[\u2FF0-\u2FFA]',
       radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
+    },
+
+    /**
+     * Kana
+     *
+     * 1. 日文假名：[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]
+          Japanese Kana
+     * 2. 日文假名小寫：[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]
+          Japanese small Kana
+     * 3. 假名組字符：[\u3099-\u309C]
+          Kana combining characters
+     * 4. 符號：[\u309D\u309E\u30FB-\u30FE]
+          Marks
+     */
+    kana: {
+      base: '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]',
+      combine: '[\u3099-\u309C]',
+      small: '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
+      mark: '[\u309D\u309E\u30FB-\u30FE]'
     },
 
     /**
@@ -356,6 +375,7 @@ var
     rWhite = '[\\x20\\t\\r\\n\\f]',
 
     rPtOpen = UNICODE.punct.open,
+    rPtClose = UNICODE.punct.close,
     rPtEnd = UNICODE.punct.end,
     rPtMid = UNICODE.punct.middle,
     rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
@@ -365,12 +385,9 @@ var
     rBdMid = UNICODE.biaodian.middle,
     rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
-    rAllOpen = UNICODE.biaodian.open,
-    rAllEnd = UNICODE.biaodian.end,
-    rAllMid = UNICODE.biaodian.middle,
-    rAll = rAllOpen + '|' + rAllEnd + '|' + rAllMid,
-
-    rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical,
+    rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
+    rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
+    rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
 
     rCbn = UNICODE.ellinika.combine,
     rLatn = UNICODE.latin.base + rCbn + '*',
@@ -394,7 +411,9 @@ var
 
         hanzi: {
           individual: new RegExp( '(' + rHan + ')', 'g' ),
-          group: new RegExp( '(' + rHan + ')+', 'g' )
+          kana:       new RegExp( '(' + rKana + ')', 'g' ),
+          smallkana:  new RegExp( '(' + rKanaS + ')', 'g' ),
+          group:      new RegExp( '(' + rHan + ')+', 'g' )
         },
 
         punct: {
@@ -413,10 +432,10 @@ var
       /* Punctuation Rules (禁則)
        */
       jinze: {
-        touwei:   new RegExp( '(' + rAllOpen + '+)(' + rChar + ')(' + rAllEnd + '+)', 'ig' ),
-        tou:      new RegExp( '(' + rAllOpen + '+)(' + rChar + ')', 'ig' ),
-        wei:      new RegExp( '(' + rChar + ')(' + rAllEnd + '+)', 'ig' ),
-        middle:   new RegExp( '(' + rChar + ')(' + rAllMid + ')(' + rChar + ')', 'ig' )
+        touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
+        wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
 
       /* Hanzi and Western mixed spacing (漢字西文混排間隙)
@@ -425,13 +444,13 @@ var
        */
       hws: {
         base: [
-          new RegExp( '('+ rHan +')(' + rAlph + ')', 'ig' ),
-          new RegExp( '('+ rAlph +')(' + rHan + ')', 'ig' )
+          new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
         ],
 
         strict: [
-          new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + ')', 'ig' ),
-          new RegExp( '('+ rAlph +')' + rWhite + '?(' + rHan + ')', 'ig' )
+          new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
         ]
       }
     }
@@ -2008,6 +2027,7 @@ return exposed;
     farr
     .replace( TYPESET.hws[ mode ][0], '$1<hws/>$2' )
     .replace( TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+    .replace( /(["']+)[<hws\/>|\s]*(.+?)[<hws\/>|\s]*(["']+)/ig, '$1$2$3')
     .replace( '<hws/>', function() {
       return $.clone( hws )
     })
@@ -2024,7 +2044,12 @@ return exposed;
       // the ones of QSA, could be either an element
       // or a text fragment, but the latter one is
       // not what we want.
-      if ( parent.firstChild.nodeName === 'HWS' ) {
+      if (
+        parent.firstChild.nodeName === 'HWS' || (
+          parent.firstChild.nodeType === 8 &&
+          parent.firstChild.nextSibling.nodeName === 'HWS'
+        )
+      ) {
         parent.parentNode.insertBefore( $.clone( hws ), parent )
         parent.removeChild( firstChild )
       }

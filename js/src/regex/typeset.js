@@ -8,6 +8,7 @@ define([
     rWhite = '[\\x20\\t\\r\\n\\f]',
 
     rPtOpen = UNICODE.punct.open,
+    rPtClose = UNICODE.punct.close,
     rPtEnd = UNICODE.punct.end,
     rPtMid = UNICODE.punct.middle,
     rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
@@ -17,12 +18,9 @@ define([
     rBdMid = UNICODE.biaodian.middle,
     rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
-    rAllOpen = UNICODE.biaodian.open,
-    rAllEnd = UNICODE.biaodian.end,
-    rAllMid = UNICODE.biaodian.middle,
-    rAll = rAllOpen + '|' + rAllEnd + '|' + rAllMid,
-
-    rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical,
+    rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
+    rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
+    rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
 
     rCbn = UNICODE.ellinika.combine,
     rLatn = UNICODE.latin.base + rCbn + '*',
@@ -46,7 +44,9 @@ define([
 
         hanzi: {
           individual: new RegExp( '(' + rHan + ')', 'g' ),
-          group: new RegExp( '(' + rHan + ')+', 'g' )
+          kana:       new RegExp( '(' + rKana + ')', 'g' ),
+          smallkana:  new RegExp( '(' + rKanaS + ')', 'g' ),
+          group:      new RegExp( '(' + rHan + ')+', 'g' )
         },
 
         punct: {
@@ -65,10 +65,10 @@ define([
       /* Punctuation Rules (禁則)
        */
       jinze: {
-        touwei:   new RegExp( '(' + rAllOpen + '+)(' + rChar + ')(' + rAllEnd + '+)', 'ig' ),
-        tou:      new RegExp( '(' + rAllOpen + '+)(' + rChar + ')', 'ig' ),
-        wei:      new RegExp( '(' + rChar + ')(' + rAllEnd + '+)', 'ig' ),
-        middle:   new RegExp( '(' + rChar + ')(' + rAllMid + ')(' + rChar + ')', 'ig' )
+        touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
+        wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
 
       /* Hanzi and Western mixed spacing (漢字西文混排間隙)
@@ -77,13 +77,13 @@ define([
        */
       hws: {
         base: [
-          new RegExp( '('+ rHan +')(' + rAlph + ')', 'ig' ),
-          new RegExp( '('+ rAlph +')(' + rHan + ')', 'ig' )
+          new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
         ],
 
         strict: [
-          new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + ')', 'ig' ),
-          new RegExp( '('+ rAlph +')' + rWhite + '?(' + rHan + ')', 'ig' )
+          new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
         ]
       }
     }
