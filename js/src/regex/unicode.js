@@ -75,7 +75,7 @@ var
           Cyrillic combining diacritical marks (in extended-A, B)
      */
     kirillica: {
-      base:    '[0-9\u0400-\u0482\u0500-\u052F\uA640-\uA66E\uA67E-\uA697]',
+      base:    '[0-9\u0400-\u0482\u048A-\u04FF\u0500-\u052F\uA640-\uA66E\uA67E-\uA697]',
       combine: '[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]'
     },
 
