@@ -75,6 +75,17 @@
           <h3>有註解及機會斷行元素的情況</h3>
           <p>不知道是不是<u lang='en'><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>
         </section>
+        <section id="list">
+          <h3>清單</h3>
+          <ol>
+            <li>Tissue</li>
+            <li>
+              <s>鴨蛋</s>
+            </li>
+            <li>Eggs</li>
+            <li><strong>垃圾袋XL</strong></li>
+          </ol>
+        </section>
       </section>
       <section id="atypical">
         <h2>非典型情況</h2>
@@ -99,6 +110,17 @@
           這是一段包含單'引'號和雙"引"號'單引號'和"雙引號"的文字.<br>
           單引號'大X中ZZ天'!<br>
           單引號'大X中ZZ天'和雙引號"大X中Y天"哦!
+        </p>
+      </section>
+      <section id="filtered">
+        <h2>不作用的元素</h2>
+        <h3>文字區塊表單</h3>
+        <textarea style="height: 7em; width: 50%;">漢字and仮名カkaナna。</textarea>
+        <h3>代碼等元素</h3>
+        <p><code>代code碼</code>、<kbd>輸key入board鍵</kbd>、<samp>計算機samp輸出示例</samp>。</p>
+        <pre>格式pre處理</pre>
+        <p><strong>注意：</strong>代碼、輸入鍵、計算機輸出示例等元素仍經<code>renderHWS()</code>處理，惟使用樣式表將其下之<code>hws</code><!--
+          -->元素隱藏。可以藉改寫樣式來顯示漢字西文混排間隙。
         </p>
       </section>
     </article>

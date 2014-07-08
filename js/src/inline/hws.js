@@ -33,6 +33,7 @@ define([
     hws = $.create( 'hws' )
     hws.innerHTML = ' '
     farr = Farr( context )
+    farr.filteredElemList += ' textarea'
 
     farr
     .replace( TYPESET.hws[ mode ][0], '$1<hws/>$2' )

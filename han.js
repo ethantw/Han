@@ -2056,6 +2056,7 @@ return exposed;
     hws = $.create( 'hws' )
     hws.innerHTML = ' '
     farr = Farr( context )
+    farr.filteredElemList += ' textarea'
 
     farr
     .replace( TYPESET.hws[ mode ][0], '$1<hws/>$2' )
@@ -2244,19 +2245,12 @@ return exposed;
     ;
 
     Han.fn[ method ] = function() {
-      if ( !this.Farr ) {
-        // Share the same selector
-        this.Farr = Han.Farr( this.context )
-      }
 
       $
       .makeArray( arguments )
       .unshift( this.context )
 
-      this.Farr.finder = Han[ method ].apply(
-        null,
-        arguments
-      )
+      Han[ method ].apply( null, arguments )
       return this
     }
   })
