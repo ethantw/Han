@@ -5,8 +5,8 @@ define([
   './inline/basic-bd',
 ], function( $, Han, renderHWS, renderBasicBd ) {
 
-  $.extend( Han, {
-    renderHWS: renderHWS,
-    renderBasicBd: renderBasicBd
-  })
+$.extend( Han, {
+  renderHWS: renderHWS,
+  renderBasicBd: renderBasicBd
+})
 })

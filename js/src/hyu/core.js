@@ -1,8 +1,8 @@
 define(function() {
 
-  var
-    Hyu = {}
-  ;
+var
+  Hyu = {}
+;
 
-  return Hyu
+return Hyu
 })

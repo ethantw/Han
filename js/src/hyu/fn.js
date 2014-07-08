@@ -6,11 +6,11 @@ define([
   './init-cond'
 ], function( $, Hyu, support, detectFont, initCond ) {
 
-  $.extend( Hyu, {
-    support: support,
-    detectFont: detectFont,
-    initCond: initCond
-  })
+$.extend( Hyu, {
+  support: support,
+  detectFont: detectFont,
+  initCond: initCond
+})
 
-  return Hyu
+return Hyu
 })

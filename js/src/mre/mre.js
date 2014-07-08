@@ -14,27 +14,27 @@ define([
   '../hyu/hyu'
 ], function( Hyu ) {
 
-  var
-    Mre = {}
-  ;
+var
+  Mre = {}
+;
 
-  Mre.support = {
-    // Assume that all devices support Heiti for we
-    // use `sans-serif` to do the comparison.
-    heiti: true,
+Mre.support = {
+  // Assume that all devices support Heiti for we
+  // use `sans-serif` to do the comparison.
+  heiti: true,
 
-    songti: (function() {
-      return Hyu.detectFont( 'Han Songti' )
-    })(),
+  songti: (function() {
+    return Hyu.detectFont( 'Han Songti' )
+  })(),
 
-    kaiti: (function() {
-      return Hyu.detectFont( 'Han Kaiti' )
-    })(),
+  kaiti: (function() {
+    return Hyu.detectFont( 'Han Kaiti' )
+  })(),
 
-    fangsong: (function() {
-      return Hyu.detectFont( 'Han Fangsong' )
-    })()
-  }
+  fangsong: (function() {
+    return Hyu.detectFont( 'Han Fangsong' )
+  })()
+}
 
-  return Mre
+return Mre
 })

@@ -96,10 +96,10 @@ var
     // Extend target's method with objects
     extend: function( target, object ) {
       var
-        bTarget = typeof target === 'object' || typeof target === 'function'
+        isExtensible = typeof target === 'object' || typeof target === 'function'
       ;
 
-      if ( !bTarget || typeof object !== 'object' ) {
+      if ( !isExtensible || typeof object !== 'object' ) {
         return
       }
 
