@@ -4,7 +4,7 @@ define([
 ], function( root, body ) {
 
   var
-    VERSION = '3.0.0-alpha1',
+    VERSION = '3.0.0',
 
     // Define Han
     Han = function( context, condition ) {
@@ -33,6 +33,7 @@ define([
       'renderElem',
       // Address Hanzi and Western script mixed spacing
       'renderHWS',
+      // Correct Basic Biaodian in Firefox
       'renderBasicBd'
     ],
 

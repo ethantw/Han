@@ -57,6 +57,7 @@ var body = document.body
       'renderElem',
       // Address Hanzi and Western script mixed spacing
       'renderHWS',
+      // Correct Basic Biaodian in Firefox
       'renderBasicBd'
     ],
 
@@ -1636,15 +1637,15 @@ return exposed;
     //
     renderElem: function( context ) {
       this.renderRuby( context )
-      this.renderLine( context )
-      this.renderLine( context, 's, del' )
+      this.renderLineDeco( context )
+      this.renderLineDeco( context, 's, del' )
       this.renderEm( context )
     },
 
     // Traverse target elements (those with text-decoration
     // -line) to see if we should address spacing in
     // between for semantic presentation.
-    renderLine: function( context, target ) {
+    renderLineDeco: function( context, target ) {
       var
         target = target || 'u, ins',
         $target = $.qsa( target, context ),
@@ -2216,7 +2217,7 @@ return exposed;
     }
   })
 
-  ;[ 'Elem', 'Line', 'Em', 'Ruby' ]
+  ;[ 'Elem', 'LineDeco', 'Em', 'Ruby' ]
   .forEach(function( elem ) {
     var
       method = 'render' + elem

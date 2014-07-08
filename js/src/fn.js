@@ -68,7 +68,7 @@ define([
     }
   })
 
-  ;[ 'Elem', 'Line', 'Em', 'Ruby' ]
+  ;[ 'Elem', 'LineDeco', 'Em', 'Ruby' ]
   .forEach(function( elem ) {
     var
       method = 'render' + elem
