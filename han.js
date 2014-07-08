@@ -28,7 +28,7 @@ var body = document.body
 
 
   var
-    VERSION = '3.0.0-alpha1',
+    VERSION = '3.0.0',
 
     // Define Han
     Han = function( context, condition ) {
@@ -2235,7 +2235,7 @@ return exposed;
   $.extend( Han.support, Mre.support )
 
   /**
-   * Advanced typesettings
+   * Advanced typesetting
    */
   ;[ 'HWS', 'BasicBd' ]
   .forEach(function( feat ) {
@@ -2275,7 +2275,7 @@ return exposed;
           Han( initContext ).renderByRoutine()
         }
       }
-    }, 50 )
+    }, 10 )
   }()
 
 

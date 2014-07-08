@@ -23,6 +23,6 @@ define([
           Han( initContext ).renderByRoutine()
         }
       }
-    }, 50 )
+    }, 10 )
   }()
 })

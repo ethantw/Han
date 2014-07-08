@@ -86,7 +86,7 @@ define([
   $.extend( Han.support, Mre.support )
 
   /**
-   * Advanced typesettings
+   * Advanced typesetting
    */
   ;[ 'HWS', 'BasicBd' ]
   .forEach(function( feat ) {
