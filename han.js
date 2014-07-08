@@ -180,35 +180,33 @@ var
            Extended-A
      *  3. 擴展-B區：[\u20000-\u2A6D6]（[\uD840-\uD869][\uDC00-\uDED6]）
            Extended-B
-     *  4. Unicode 4.1：[\u9FA6-\u9FBB]、[\uFA70-\uFAD9]
-     *  5. Unicode 5.1：[\u9FBC-\u9FC3]
-     *  6. 擴展-C區：[\u2A700-\u2B734]（\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]）
+     *  4. 擴展-C區：[\u2A700-\u2B734]（\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]）
            Extended-C
-     *  7. 擴展-D區：[\u2B740-\u2B81D]（急用漢字，\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]）
+     *  5. 擴展-D區：[\u2B740-\u2B81D]（急用漢字，\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]）
            Extended-D
-     *  8. 擴展-E區：[\u2B820-\u2F7FF]（**註**：暫未支援）
+     *  6. 擴展-E區：[\u2B820-\u2F7FF]（**註**：暫未支援）
            Extended-E (**note:** not supported yet)
-     *  9. 擴展-F區（**註**：暫未支援）
+     *  7. 擴展-F區（**註**：暫未支援）
            Extended-F (**note:** not supported yet)
-     * 10. 筆畫區：[\u31C0-\u31E3]
+     *  8. 筆畫區：[\u31C0-\u31E3]
            Strokes
-     * 11. 表意數字「〇」：[\u3007]
+     *  9. 表意數字「〇」：[\u3007]
            Ideographic number zero
 
-     * 12. 相容表意文字：
+     * 10. 相容表意文字：
            Compatibility ideograph
            http://zh.wikipedia.org/wiki/中日韓越統一表意文字#cite_note-1
 
            [\uF900-\uFAFF]（**註**：不使用）
            [\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]（**註**：12個例外）
 
-     * 13. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
+     * 11. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
            Kangxi and supplement radicals
-     * 14. 表意文字描述字元：[\u2FF0-\u2FFA]
+     * 12. 表意文字描述字元：[\u2FF0-\u2FFA]
            Ideographic description characters
      */
     hanzi: {
-      base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u9FA6-\u9FBB\uFA70-\uFAD9\u9FBC-\u9FC3\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]|\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]|\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
+      base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]|\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]|\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
       desc:    '[\u2FF0-\u2FFA]',
       radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
     },
@@ -226,10 +224,10 @@ var
           Marks
      */
     kana: {
-      base: '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]',
+      base:    '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]',
       combine: '[\u3099-\u309C]',
-      small: '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
-      mark: '[\u30A0\u309D\u309E\u30FB-\u30FE]'
+      small:   '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
+      mark:    '[\u30A0\u309D\u309E\u30FB-\u30FE]'
     },
 
     /**
