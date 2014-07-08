@@ -27,120 +27,6 @@ var body = document.body
 
 
 
-var
-  $ = {
-    // Simplified query selector
-    //
-    // - $.id
-    // - $.tag
-    // - $.qsa
-    id: function( selector, context ) {
-      return ( context || document ).getElementById( selector )
-    },
-
-    tag: function( selector, context ) {
-      return this.makeArray(
-        ( context || document ).getElementsByTagName( selector )
-      )
-    },
-
-    qsa: function( selector, context ) {
-      return this.makeArray(
-        ( context || document ).querySelectorAll( selector )
-      )
-    },
-
-    // Create a new document fragment or element with/without
-    // classes
-    create: function( elem, clazz ) {
-      var
-        elem = '!' === elem ?
-          document.createDocumentFragment() :
-          document.createElement( elem )
-      ;
-
-      try {
-        if ( clazz ) {
-          elem.className = clazz
-        }
-      } catch ( e ) {}
-
-      return elem
-    },
-
-    // Clone a node (text, element or fragment) deeply or
-    // childlessly
-    clone: function( node, deep ) {
-      return node.cloneNode( deep || true )
-    },
-
-    // Remove a node (text, element or fragment)
-    remove: function( node ) {
-      return node.parentNode.removeChild( node )
-    },
-
-    // Set attributes all in once with object
-    setAttr: function( target, attr ) {
-      var
-        len = attr.length
-      ;
-
-      if ( typeof attr !== 'object' ) {
-        return
-      }
-
-      // Native NamedNodeMap
-      if (
-        typeof attr[0] === 'object' &&
-        'name' in attr[0]
-      ) {
-        for ( var i = 0; i < len; i++ ) {
-          if ( attr[ i ].value !== undefined ) {
-            target.setAttribute( attr[ i ].name, attr[ i ].value )
-          }
-        }
-
-      // Plain object
-      } else {
-        for ( var name in attr ) {
-          if (
-            attr.hasOwnProperty( name ) &&
-            attr[ name ] !== undefined
-          ) {
-            target.setAttribute( name, attr[ name ] )
-          }
-        }
-      }
-      return target
-    },
-
-    // Convert array-like objects into real arrays
-    // for the native prototype methods
-    makeArray: function( obj ) {
-      return Array.prototype.slice.call( obj )
-    },
-
-    // Extend target's method with objects
-    extend: function( target, object ) {
-      var
-        bTarget = typeof target === 'object' || typeof target === 'function'
-      ;
-
-      if ( !bTarget || typeof object !== 'object' ) {
-        return
-      }
-
-      for ( var name in object ) {
-        if ( object.hasOwnProperty( name )) {
-          target[ name ] = object[ name ]
-        }
-      }
-      return target
-    }
-  }
-;
-
-
   var
     VERSION = '3.0.0-alpha1',
 
@@ -343,7 +229,7 @@ var
       base: '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]',
       combine: '[\u3099-\u309C]',
       small: '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
-      mark: '[\u309D\u309E\u30FB-\u30FE]'
+      mark: '[\u30A0\u309D\u309E\u30FB-\u30FE]'
     },
 
     /**
@@ -458,6 +344,120 @@ var
       }
     }
   ;
+
+
+var
+  $ = {
+    // Simplified query selector
+    //
+    // - $.id
+    // - $.tag
+    // - $.qsa
+    id: function( selector, context ) {
+      return ( context || document ).getElementById( selector )
+    },
+
+    tag: function( selector, context ) {
+      return this.makeArray(
+        ( context || document ).getElementsByTagName( selector )
+      )
+    },
+
+    qsa: function( selector, context ) {
+      return this.makeArray(
+        ( context || document ).querySelectorAll( selector )
+      )
+    },
+
+    // Create a new document fragment or element with/without
+    // classes
+    create: function( elem, clazz ) {
+      var
+        elem = '!' === elem ?
+          document.createDocumentFragment() :
+          document.createElement( elem )
+      ;
+
+      try {
+        if ( clazz ) {
+          elem.className = clazz
+        }
+      } catch ( e ) {}
+
+      return elem
+    },
+
+    // Clone a node (text, element or fragment) deeply or
+    // childlessly
+    clone: function( node, deep ) {
+      return node.cloneNode( deep || true )
+    },
+
+    // Remove a node (text, element or fragment)
+    remove: function( node ) {
+      return node.parentNode.removeChild( node )
+    },
+
+    // Set attributes all in once with object
+    setAttr: function( target, attr ) {
+      var
+        len = attr.length
+      ;
+
+      if ( typeof attr !== 'object' ) {
+        return
+      }
+
+      // Native NamedNodeMap
+      if (
+        typeof attr[0] === 'object' &&
+        'name' in attr[0]
+      ) {
+        for ( var i = 0; i < len; i++ ) {
+          if ( attr[ i ].value !== undefined ) {
+            target.setAttribute( attr[ i ].name, attr[ i ].value )
+          }
+        }
+
+      // Plain object
+      } else {
+        for ( var name in attr ) {
+          if (
+            attr.hasOwnProperty( name ) &&
+            attr[ name ] !== undefined
+          ) {
+            target.setAttribute( name, attr[ name ] )
+          }
+        }
+      }
+      return target
+    },
+
+    // Convert array-like objects into real arrays
+    // for the native prototype methods
+    makeArray: function( obj ) {
+      return Array.prototype.slice.call( obj )
+    },
+
+    // Extend target's method with objects
+    extend: function( target, object ) {
+      var
+        bTarget = typeof target === 'object' || typeof target === 'function'
+      ;
+
+      if ( !bTarget || typeof object !== 'object' ) {
+        return
+      }
+
+      for ( var name in object ) {
+        if ( object.hasOwnProperty( name )) {
+          target[ name ] = object[ name ]
+        }
+      }
+      return target
+    }
+  }
+;
 var findAndReplaceDOMText =
 /**
  * findAndReplaceDOMText v 0.4.2

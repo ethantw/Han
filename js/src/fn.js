@@ -1,13 +1,13 @@
 define([
-  './method',
   './regex/unicode',
   './regex/typeset',
+  './method',
   './farr',
   './core',
   './hyu/hyu',
   './mre/mre',
   './inline'
-], function( $, UNICODE, TYPESET, Farr, Han, Hyu, Mre ) {
+], function( UNICODE, TYPESET, $, Farr, Han, Hyu, Mre ) {
 
   /**
    * API: regular expression

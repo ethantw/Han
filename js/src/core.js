@@ -1,8 +1,7 @@
 define([
   './var/root',
-  './var/body',
-  './method'
-], function( root, body, $ ) {
+  './var/body'
+], function( root, body ) {
 
   var
     VERSION = '3.0.0-alpha1',
