@@ -1,7 +1,8 @@
 define([
+  './var/document',
   './var/root',
   './var/body'
-], function( root, body ) {
+], function( document, root, body ) {
 
   var
     VERSION = '3.0.0',

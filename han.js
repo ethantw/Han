@@ -21,6 +21,8 @@
 
   
 
+var document = window.document
+
 var root = document.documentElement
 
 var body = document.body
