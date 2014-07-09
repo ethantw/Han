@@ -2,11 +2,8 @@ define(function() {
 
 var
   $ = {
-    // Simplified query selector
-    //
-    // - $.id
-    // - $.tag
-    // - $.qsa
+    // Simplified query selectors which return the node list
+    // in an array
     id: function( selector, context ) {
       return ( context || document ).getElementById( selector )
     },
@@ -23,13 +20,15 @@ var
       )
     },
 
-    // Create a new document fragment or element with/without
-    // classes
+    // Create a document fragment, a text node with text
+    // or an element with/without classes
     create: function( elem, clazz ) {
       var
         elem = '!' === elem ?
           document.createDocumentFragment() :
-          document.createElement( elem )
+          '' === elem ?
+            document.createTextNode( clazz ) :
+            document.createElement( elem )
       ;
 
       try {
@@ -52,7 +51,7 @@ var
       return node.parentNode.removeChild( node )
     },
 
-    // Set attributes all in once with object
+    // Set attributes all in once with an object
     setAttr: function( target, attr ) {
       var
         len = attr.length
