@@ -32,6 +32,19 @@ var body = document.body
 var
   VERSION = '3.0.0',
 
+  ROUTINE = [
+    // Initialise the condition with feature-detecting
+    // classes (Modernizr-alike), binding onto the root
+    // element, possibly `<html>`.
+    'initCond',
+    // Address element normalisation
+    'renderElem',
+    // Address Hanzi and Western script mixed spacing
+    'renderHWS',
+    // Address Basic Biaodian correction in Firefox
+    'renderBasicBD'
+  ],
+
   // Define Han
   Han = function( context, condition ) {
     return new Han.fn.init( context, condition )
@@ -49,19 +62,8 @@ Han.fn = Han.prototype = {
   // Root element as the default condition
   condition: root,
 
-  // Default routine for rendering
-  routine: [
-    // Initialise the condition with feature-detecting
-    // classes (Modernizr-alike) on root elements,
-    // possibly `<html>`.
-    'initCond',
-    // Address element normalisation
-    'renderElem',
-    // Address Hanzi and Western script mixed spacing
-    'renderHWS',
-    // Correct Basic Biaodian in Firefox
-    'renderBasicBd'
-  ],
+  // Default rendering routine
+  routine: ROUTINE,
 
   init: function( context, condition ) {
     if ( context ) {
@@ -73,25 +75,49 @@ Han.fn = Han.prototype = {
     return this
   },
 
-  // TODO
-  setOption: function( option ) {
+  setRoutine: function( routine ) {
+    if ( !Array.isArray( routine )) {
+      return
+    }
+
+    this.routine = routine
     return this
   },
 
   renderByRoutine: function() {
     var
-      routine = this.routine
+      that = this
     ;
-    for ( var i = 0, len = routine.length; i < len; i++ ) {
-      try {
-        this[ routine[ i ]]()
-      } catch (e) {}
-    }
+
+    this
+      .routine
+      .forEach(function( method ) {
+        if ( typeof method === 'string' ){
+          try {
+            that[ method ]()
+          } catch ( e ) {}
+        } else if ( Array.isArray( method )) {
+          try {
+            that[ method.shift() ].apply( that, method )
+          } catch ( e ) {}
+        }
+      })
     return this
   }
 }
 
 Han.fn.init.prototype = Han.fn
+
+/**
+ * Shortcut for `renderByRoutine` under the default
+ * situation.
+ *
+ * Once initialised, replace `Han.init` with the
+ * instance for future usage.
+ */
+Han.init = function() {
+  return Han.init = Han().renderByRoutine()
+}
 
 
 var
@@ -259,102 +285,120 @@ var
 
 
 var
-  // Whitespace characters
-  // http://www.w3.org/TR/css3-selectors/#whitespace
-  rWhite = '[\\x20\\t\\r\\n\\f]',
+  TYPESET = (function() {
+    var
+      // Whitespace characters
+      // http://www.w3.org/TR/css3-selectors/#whitespace
+      rWhite = '[\\x20\\t\\r\\n\\f]',
 
-  rPtOpen = UNICODE.punct.open,
-  rPtClose = UNICODE.punct.close,
-  rPtEnd = UNICODE.punct.end,
-  rPtMid = UNICODE.punct.middle,
-  rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
+      rPtOpen = UNICODE.punct.open,
+      rPtClose = UNICODE.punct.close,
+      rPtEnd = UNICODE.punct.end,
+      rPtMid = UNICODE.punct.middle,
+      rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
 
-  rBdOpen = UNICODE.biaodian.open,
-  rBdEnd = UNICODE.biaodian.end,
-  rBdMid = UNICODE.biaodian.middle,
-  rBdLiga = UNICODE.biaodian.liga + '{2}',
-  rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
+      rBdOpen = UNICODE.biaodian.open,
+      rBdEnd = UNICODE.biaodian.end,
+      rBdMid = UNICODE.biaodian.middle,
+      rBdLiga = UNICODE.biaodian.liga + '{2}',
+      rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
-  rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
-  rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
-  rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
+      rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
+      rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
+      rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
 
-  rCbn = UNICODE.ellinika.combine,
-  rLatn = UNICODE.latin.base + rCbn + '*',
-  rGk = UNICODE.ellinika.base + rCbn + '*',
+      rCbn = UNICODE.ellinika.combine,
+      rLatn = UNICODE.latin.base + rCbn + '*',
+      rGk = UNICODE.ellinika.base + rCbn + '*',
 
-  rCyCbn = UNICODE.kirillica.combine,
-  rCy = UNICODE.kirillica.base + rCyCbn + '*',
+      rCyCbn = UNICODE.kirillica.combine,
+      rCy = UNICODE.kirillica.base + rCyCbn + '*',
 
-  rAlph = rLatn + '|' + rGk + '|' + rCy,
-  rChar = rHan + '|(' + rAlph + ')+',
+      rAlph = rLatn + '|' + rGk + '|' + rCy,
 
-  TYPESET = {
-    /* Character-level selector (字級選擇器)
-     */
-    char: {
-      biaodian: {
-        all:   new RegExp( '(' + rBd + ')', 'g' ),
-        open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-        end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-        liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
+      // For words like `it's`, `Jones’s` or `'99`
+      rApo = '[\u0027\u2019]',
+      rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
+    ;
+
+    return {
+      /* Character-level selector (字級選擇器)
+       */
+      char: {
+        biaodian: {
+          all:   new RegExp( '(' + rBd + ')', 'g' ),
+          open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
+          end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
+          liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
+        },
+
+        hanzi: {
+          individual: new RegExp( '(' + rHan + ')', 'g' ),
+          kana:       new RegExp( '(' + rKana + ')', 'g' ),
+          smallkana:  new RegExp( '(' + rKanaS + ')', 'g' ),
+          group:      new RegExp( '(' + rHan + ')+', 'g' )
+        },
+
+        punct: {
+          all: new RegExp( '(' + rPt + ')', 'g' )
+        },
+
+        alphabet: {
+          latin:     new RegExp( rLatn, 'ig' ),
+          ellinika:  new RegExp( rGk, 'ig' ),
+          kirillica: new RegExp( rCy, 'ig' )
+        },
+
+        word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' )
       },
 
-      hanzi: {
-        individual: new RegExp( '(' + rHan + ')', 'g' ),
-        kana:       new RegExp( '(' + rKana + ')', 'g' ),
-        smallkana:  new RegExp( '(' + rKanaS + ')', 'g' ),
-        group:      new RegExp( '(' + rHan + ')+', 'g' )
+      /* Punctuation Rules (禁則)
+       */
+      jinze: {
+        touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
+        wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+        middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
 
-      punct: {
-        all: new RegExp( '(' + rPt + ')', 'g' )
-      },
+      /* Hanzi and Western mixed spacing (漢字西文混排間隙)
+       * - Basic mode
+       * - Strict mode
+       */
+      hws: {
+        base: [
+          new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
+        ],
 
-      alphabet: {
-        latin:     new RegExp( rLatn, 'ig' ),
-        ellinika:  new RegExp( rGk, 'ig' ),
-        kirillica: new RegExp( rCy, 'ig' )
-      },
-
-      word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' )
-    },
-
-    /* Punctuation Rules (禁則)
-     */
-    jinze: {
-      touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-      tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
-      wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-      middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
-    },
-
-    /* Hanzi and Western mixed spacing (漢字西文混排間隙)
-     * - Basic mode
-     * - Strict mode
-     */
-    hws: {
-      base: [
-        new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-        new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
-      ],
-
-      strict: [
-        new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-        new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
-      ]
+        strict: [
+          new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+          new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
+        ]
+      }
     }
-  }
+  })()
 ;
+
+
+Han.UNICODE = UNICODE
+Han.TYPESET = TYPESET
+
+// English aliases
+Han.UNICODE.greek = Han.UNICODE.ellinika
+Han.UNICODE.cyrillic = Han.UNICODE.kirillica
+Han.UNICODE.cjk = Han.UNICODE.hanzi
+
+// Lock the regex objects to prevent from furthur
+// modification.
+Object.freeze( Han.UNICODE )
+Object.freeze( Han.TYPESET )
 
 
 var
   $ = {
-    // Simplified query selector
-    //
-    // - $.id
-    // - $.tag
-    // - $.qsa
+    // Simplified query selectors which return the node list
+    // in an array
     id: function( selector, context ) {
       return ( context || document ).getElementById( selector )
     },
@@ -371,13 +415,15 @@ var
       )
     },
 
-    // Create a new document fragment or element with/without
-    // classes
+    // Create a document fragment, a text node with text
+    // or an element with/without classes
     create: function( elem, clazz ) {
       var
         elem = '!' === elem ?
           document.createDocumentFragment() :
-          document.createElement( elem )
+          '' === elem ?
+            document.createTextNode( clazz ) :
+            document.createElement( elem )
       ;
 
       try {
@@ -400,7 +446,7 @@ var
       return node.parentNode.removeChild( node )
     },
 
-    // Set attributes all in once with object
+    // Set attributes all in once with an object
     setAttr: function( target, attr ) {
       var
         len = attr.length
@@ -1082,8 +1128,10 @@ Farr.prototype = {
   revert: function( level ) {
     var
       len = this.finder.length,
-      level = Number(level) || level === 0 ? Number(level) :
-        level === 'all' ? len : 1
+      level = Number(level) || level === 0 ?
+        Number(level) :
+        level === 'all' ?
+          len : 1
     ;
 
     if ( typeof len === 'undefined' || len === 0 ) {
@@ -1112,7 +1160,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'touwei' )
         ;
         elem.appendChild( text )
@@ -1127,7 +1175,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'wei' )
         ;
         elem.appendChild( text )
@@ -1139,7 +1187,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'tou' )
         ;
         elem.appendChild( text )
@@ -1154,7 +1202,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'middle' )
         ;
         elem.appendChild( text )
@@ -1212,7 +1260,7 @@ Farr.prototype = {
           function( portion, match ) {
             var
               mat = match[0],
-              text = document.createTextNode( mat ),
+              text = $.create( '', mat ),
 
               clazz = 'biaodian cjk ' + (
                 mat.match( TYPESET.char.biaodian.open ) ? 'open' :
@@ -1238,7 +1286,7 @@ Farr.prototype = {
         function( portion, match ) {
           var
             mat = match[0],
-            text = document.createTextNode( mat ),
+            text = $.create( '', mat ),
 
             elem = $.create( 'char', 'biaodian liga cjk' ),
             unicode = mat.charCodeAt( 0 ).toString( 16 )
@@ -1295,8 +1343,24 @@ Farr.prototype = {
 Farr.prototype.init.prototype = Farr.prototype
 
 
+Han.find = Farr
+
+;[ 'replace', 'wrap', 'revert', 'jinzify', 'charify' ]
+.forEach(function( method ) {
+  Han.fn[ method ] = function() {
+    if ( !this.finder ) {
+      // Share the same selector
+      this.finder = Han.find( this.context )
+    }
+    Han.find[ method ].apply( this, arguments )
+    return this
+  }
+})
+
 var
-  Hyu = {}
+  Hyu = {
+    JS_RENDERED_CLASS: 'hyu-js-rendered'
+  }
 ;
 
 
@@ -1312,7 +1376,7 @@ function writeOnCanvas( text, font ) {
 
   body.appendChild( canvas )
 
-  context = canvas.getContext('2d')
+  context = canvas.getContext( '2d' )
   context.textBaseline = 'top'
   context.font = '15px ' + font + ', sans-serif'
   context.fillStyle = 'black'
@@ -1360,170 +1424,188 @@ function detectFont( treat, control, text ) {
     treat = null
 
     return ret
-  } catch ( err ) {
+  } catch ( e ) {
     return false
   }
 }
 
+Hyu.detectFont = detectFont
 
-var
-  PREFIX = 'Webkit Moz ms'.split(' '),
 
-  support = {},
+Hyu.support = (function() {
 
-  // Create an element for feature detecting
-  // (in `testCSSProp`)
-  elem = $.create( '_' )
-;
-
-function testCSSProp( prop ) {
   var
-    ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-    allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' '),
-    ret
+    PREFIX = 'Webkit Moz ms'.split(' '),
+
+    // Create an element for feature detecting
+    // (in `testCSSProp`)
+    elem = $.create( '_' ),
+
+    exposed = {}
   ;
-  allProp.forEach(function( prop ) {
-    if ( typeof elem.style[ prop ] === 'string' ) {
-      ret = true
+
+  function testCSSProp( prop ) {
+    var
+      ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
+      allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' '),
+      ret
+    ;
+    allProp.forEach(function( prop ) {
+      if ( typeof elem.style[ prop ] === 'string' ) {
+        ret = true
+      }
+    })
+    return ret || false
+  }
+
+  function injectElementWithStyle( rule, callback ) {
+    var
+      fakeBody = body || $.create( 'body' ),
+      div = $.create( 'div' ),
+
+      container = body ? div : fakeBody,
+
+      callback = typeof callback === 'function' ?
+        callback : function() {},
+
+      style, ret, docOverflow
+    ;
+    style = [ '<style>', rule, '</style>' ].join('')
+
+    container.innerHTML += style
+    fakeBody.appendChild( div )
+
+    if ( !body ) {
+      fakeBody.style.background = ''
+      fakeBody.style.overflow = 'hidden'
+      docOverflow = root.style.overflow
+
+      root.style.overflow = 'hidden'
+      root.appendChild( fakeBody )
     }
-  })
-  return ret || false
-}
 
-function injectElementWithStyle( rule, callback ) {
-  var
-    fakeBody = body || $.create( 'body' ),
-    div = $.create( 'div' ),
+    // Callback
+    ret = callback( container, rule )
 
-    container = body ? div : fakeBody,
-
-    callback = typeof callback === 'function' ?
-      callback : function() {},
-
-    style, ret, docOverflow
-  ;
-  style = [ '<style>', rule, '</style>' ].join('')
-
-  container.innerHTML += style
-  fakeBody.appendChild( div )
-
-  if ( !body ) {
-    fakeBody.style.background = ''
-    fakeBody.style.overflow = 'hidden'
-    docOverflow = root.style.overflow
-
-    root.style.overflow = 'hidden'
-    root.appendChild( fakeBody )
+    // Remove the injected scope
+    container.parentNode.removeChild( container )
+    if ( !body ) {
+      root.style.overflow = docOverflow
+    }
+    return !!ret
   }
 
-  // Callback
-  ret = callback( container, rule )
-
-  // Remove the injected scope
-  container.parentNode.removeChild( container )
-  if ( !body ) {
-    root.style.overflow = docOverflow
+  function getStyle( elem, prop ) {
+    var
+      ret
+    ;
+    if ( window.getComputedStyle ) {
+      ret = document.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop )
+    } else if ( elem.currentStyle ) {
+      // for IE
+      ret = elem.currentStyle[ prop ]
+    }
+    return ret
   }
-  return !!ret
-}
 
-function getStyle( elem, prop ) {
+  return {
+    ruby: (function() {
+      var
+        ruby = $.create( 'ruby' ),
+        rt = $.create( 'rt' ),
+        rp = $.create( 'rp' ),
+        ret
+      ;
+      ruby.appendChild( rp )
+      ruby.appendChild( rt )
+      root.appendChild( ruby )
+
+      // Browsers that support ruby hide the `<rp>` via `display: none`
+      ret = (
+        getStyle( rp, 'display' ) === 'none' ||
+        // but in IE, `<rp>` has `display: inline`
+        // so, the test needs other conditions:
+        getStyle( ruby, 'display' ) === 'ruby' &&
+        getStyle( rt, 'display' ) === 'ruby-text'
+      ) ? true : false
+
+      // Remove and clean from memory
+      root.removeChild( ruby )
+      ruby = null
+      rt = null
+      rp = null
+
+      return ret
+    })(),
+
+    fontface: (function() {
+      var
+        ret
+      ;
+      injectElementWithStyle(
+        '@font-face { font-family: font; src: url("http://"); }',
+        function( node, rule ) {
+          var
+            style = $.qsa( 'style', node )[0],
+            sheet = style.sheet || style.styleSheet,
+            cssText = sheet ?
+              ( sheet.cssRules && sheet.cssRules[0] ?
+                sheet.cssRules[0].cssText : sheet.cssText || ''
+              ) : ''
+          ;
+          ret = /src/i.test( cssText ) &&
+            cssText.indexOf( rule.split(' ')[0] ) === 0
+        }
+      )
+
+      return ret
+    })(),
+
+    // Address feature support test for `unicode-range` via
+    // detecting whether it's Arial (supported) or
+    // Times New Roman (not supported).
+    unicoderange: (function() {
+      var
+        ret
+      ;
+      injectElementWithStyle(
+        '@font-face{font-family:test-for-unicode-range;src:local(Arial),local("Droid Sans")}@font-face{font-family:test-for-unicode-range;src:local("Times New Roman"),local(Times),local("Droid Serif");unicode-range:U+270C}',
+        function() {
+          ret = !Hyu.detectFont(
+            'test-for-unicode-range', // treatment group
+            'Arial, "Droid Sans"',    // control group
+            'Q'                       // ASCII characters only
+          )
+        }
+      )
+      return ret
+    })(),
+
+    columnwidth: testCSSProp( 'columnWidth' ),
+
+    textemphasis: testCSSProp( 'textEmphasis' ),
+
+    writingmode: testCSSProp( 'writingMode' )
+  }
+})()
+
+
+Hyu.initCond = function( target ) {
   var
-    ret
+    target = target || root,
+    ret = '',
+    clazz
   ;
-  if ( window.getComputedStyle ) {
-    ret = document.defaultView.getComputedStyle( elem, null ).getPropertyValue( prop )
-  } else if ( elem.currentStyle ) {
-    // for IE
-    ret = elem.currentStyle[ prop ]
+
+  target.classList.add( Hyu.JS_RENDERED_CLASS )
+
+  for ( var feature in Hyu.support ) {
+    clazz = ( Hyu.support[ feature ] ? '' : 'no-' ) + feature
+
+    target.classList.add( clazz )
+    ret += clazz + ' '
   }
   return ret
-}
-
-support = {
-  ruby: (function() {
-    var
-      ruby = $.create( 'ruby' ),
-      rt = $.create( 'rt' ),
-      rp = $.create( 'rp' ),
-      ret
-    ;
-    ruby.appendChild( rp )
-    ruby.appendChild( rt )
-    root.appendChild( ruby )
-
-    // Browsers that support ruby hide the `<rp>` via `display: none`
-    ret = (
-      getStyle( rp, 'display' ) === 'none' ||
-      // but in IE, `<rp>` has `display: inline`
-      // so, the test needs other conditions:
-      getStyle( ruby, 'display' ) === 'ruby' &&
-      getStyle( rt, 'display' ) === 'ruby-text'
-    ) ? true : false
-
-    // Remove and clean from memory
-    root.removeChild( ruby )
-    ruby = null
-    rt = null
-    rp = null
-
-    return ret
-  })(),
-
-  fontface: (function() {
-    var
-      ret
-    ;
-    injectElementWithStyle(
-      '@font-face { font-family: font; src: url("http://"); }',
-      function( node, rule ) {
-        var
-          style = $.qsa( 'style', node )[0],
-          sheet = style.sheet || style.styleSheet,
-          cssText = sheet ?
-            ( sheet.cssRules && sheet.cssRules[0] ?
-              sheet.cssRules[0].cssText : sheet.cssText || ''
-            ) : ''
-        ;
-        ret = /src/i.test( cssText ) &&
-          cssText.indexOf( rule.split(' ')[0] ) === 0
-      }
-    )
-
-    return ret
-  })(),
-
-  // Address feature support test for `unicode-range` via
-  // detecting whether it's Arial (supported) or
-  // Times New Roman (not supported).
-  unicoderange: (function() {
-    var
-      ret
-    ;
-    injectElementWithStyle(
-      '@font-face{font-family:test-for-unicode-range;src:local(Arial),local("Droid Sans")}@font-face{font-family:test-for-unicode-range;src:local("Times New Roman"),local(Times),local("Droid Serif");unicode-range:U+270C}',
-      function() {
-        ret = !detectFont(
-          'test-for-unicode-range', // treatment group
-          'Arial, "Droid Sans"',    // control group
-          'Q'                       // ASCII characters only
-        )
-      }
-    )
-    return ret
-  })(),
-
-  columnwidth: (function() {
-    return testCSSProp( 'columnWidth' )
-  })(),
-
-  textemphasis: (function() {
-    return testCSSProp( 'textEmphasis' )
-  })(),
-
-  writingmode: (function() {
-    return testCSSProp( 'writingMode' )
-  })()
 }
 
 
@@ -1691,12 +1773,12 @@ $.extend( Hyu, {
         $elem = Farr( elem )
       ;
 
-      if ( !support.textemphasis ) {
+      if ( !Hyu.support.textemphasis ) {
         $elem.jinzify()
       }
 
       $elem
-      .charify( support.textemphasis ? {
+      .charify( Hyu.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'
       } : {
@@ -1744,7 +1826,7 @@ $.extend( Hyu, {
         clazz = ruby.classList,
 
         condition = (
-          !support.ruby ||
+          !Hyu.support.ruby ||
           clazz.contains( 'zhuyin') ||
           clazz.contains( 'complex' ) ||
           clazz.contains( 'rightangle' )
@@ -1766,7 +1848,7 @@ $.extend( Hyu, {
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
       if (
-        !support.ruby ||
+        !Hyu.support.ruby ||
         clazz.contains( 'zhuyin' )
       ) {
 
@@ -1957,32 +2039,6 @@ $.extend( Hyu, {
   // * Better error-tolerance
 })
 
-
-
-function initCond( target ) {
-  var
-    target = target || root,
-    ret = '',
-    clazz
-  ;
-
-  target.classList.add( 'hyu-js-rendered' )
-
-  for ( var feature in support ) {
-    clazz = (support[ feature ] ? '' : 'no-') + feature
-
-    target.classList.add( clazz )
-    ret += clazz + ' '
-  }
-  return ret
-}
-
-
-$.extend( Hyu, {
-  support: support,
-  detectFont: detectFont,
-  initCond: initCond
-})
 /*!
  * Hyu
  * css.hanzi.co/hyu
@@ -1993,233 +2049,17 @@ $.extend( Hyu, {
  */
 
 
-/*!
- * Mre
- * css.hanzi.co/mre
- *
- * This module is a subset project of Han,
- * which aims to address proper typefaces with
- * better readability.
- *
- * This module depends on Hyu for basic typeface
- * detecting.
- */
 
 
-
-var
-  Mre = {}
-;
-
-Mre.support = {
-  // Assume that all devices support Heiti for we
-  // use `sans-serif` to do the comparison.
-  heiti: true,
-
-  songti: (function() {
-    return Hyu.detectFont( 'Han Songti' )
-  })(),
-
-  kaiti: (function() {
-    return Hyu.detectFont( 'Han Kaiti' )
-  })(),
-
-  fangsong: (function() {
-    return Hyu.detectFont( 'Han Fangsong' )
-  })()
-}
-
-
-var
-  HWS_AS_FIRST_CHILD_QUERY = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws',
-
-  //// Disabled `Node.normalize()` for temp due to
-  //// the issue in IE11.
-  //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
-  isNodeNormalizeNormal = (function() {
-    var
-      div = $.create('div')
-    ;
-
-    div.appendChild( document.createTextNode( '0-' ))
-    div.appendChild( document.createTextNode( '2' ))
-    div.normalize()
-
-    return div.firstChild.length !== 2
-  })()
-;
-
-function renderHWS( context, strict ) {
-  var
-    context = context || document,
-    mode = strict ? 'strict' : 'base',
-    hws, farr
-  ;
-
-  hws = $.create( 'hws' )
-  hws.innerHTML = ' '
-  farr = Farr( context )
-  farr.filteredElemList += ' textarea'
-
-  farr
-  .replace( TYPESET.hws[ mode ][0], '$1<hws/>$2' )
-  .replace( TYPESET.hws[ mode ][1], '$1<hws/>$2' )
-
-  // Deal with `' 字'` and `" 字"`
-  .replace( /(['"]+)[<hws\/>|\s]*(.+?)[<hws\/>|\s]*(['"]+)/ig, '$1$2$3' )
-
-  // Convert string `<hws/>` into real elements
-  .replace( '<hws/>', function() {
-    return $.clone( hws )
-  })
-
-  // Deal with situations like `漢<u>zi</u>`:
-  // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
-  $.qsa( HWS_AS_FIRST_CHILD_QUERY, context )
-  .forEach(function( firstChild ) {
-    var
-      parent = firstChild.parentNode,
-      target = parent.firstChild
-    ;
-
-    // Skip all `<wbr>` and comments
-    while (
-      target.nodeName === 'WBR' || target.nodeType === 8
-    ) {
-      target = target.nextSibling
-
-      if ( !target ) {
-        return
-      }
-    }
-
-    // The ‘first-child’ of DOM is different from
-    // the ones of QSA, could be either an element
-    // or a text fragment, but the latter one is
-    // not what we want. We don't want comments,
-    // either.
-    while ( target.nodeName === 'HWS' ) {
-      parent.removeChild( target )
-
-      target = parent.parentNode.insertBefore( $.clone( hws ), parent )
-      parent = parent.parentNode
-
-      if ( isNodeNormalizeNormal ) {
-        parent.normalize()
-      }
-
-      // This is for extreme circumstances, i.e.,
-      // `漢<a><b><c><hws/>zi</c></b></a>` =>
-      // `漢<hws/><a><b><c>zi</c></b></a>`
-      if ( target !== parent.firstChild ) {
-        break
-      }
-    }
-  })
-
-  // Normalise nodes we messed up with
-  if ( isNodeNormalizeNormal ) {
-    context.normalize()
-  }
-  // Return the Farr instance for future usage
-  return farr
-}
-
-
-function renderBasicBd( context ) {
-  var
-    context = context || document,
-    farr, mid
-  ;
-
-  if ( support.unicoderange ) {
-    return
-  }
-
-  farr = Farr( context )
-  farr.filteredElemList += ' em'
-
-  mid = $.create( 'char', 'biaodian cjk middle' )
-  mid.setAttribute( 'unicode', 'b7' )
-
-  farr
-  .wrap( /\u00B7/g, $.clone( mid ))
-  .charify({
-    liga:      'liga',
-    hanzi:     'none',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
-  })
-}
-
-
-$.extend( Han, {
-  renderHWS: renderHWS,
-  renderBasicBd: renderBasicBd
-})
-
-
-
-/**
- * API: regular expression
- */
-$.extend( Han, {
-  UNICODE: UNICODE,
-  TYPESET: TYPESET
-})
-
-// English aliases are easier to memorise
-$.extend( Han.UNICODE, {
-  greek: Han.UNICODE.ellinika,
-  cyrillic: Han.UNICODE.kirillica
-})
-
-// Lock the regex objects preventing from furthur
-// modification.
-Object.freeze( Han.UNICODE )
-Object.freeze( Han.TYPESET )
-
-/**
- * Shortcut for `renderByRoutine` in default situation
- */
-Han.init = function() {
-  return Han().renderByRoutine()
-}
-
-/**
- * Farr Methods
- */
-Han.Farr = Farr
-
-;[ 'replace', 'wrap', 'revert', 'jinzify', 'charify' ]
-.forEach(function( method ) {
-  Han.fn[ method ] = function() {
-    if ( !this.Farr ) {
-      // Share the same selector
-      this.Farr = Han.Farr( this.context )
-    }
-
-    this.Farr[ method ]( arguments[ 0 ], arguments[ 1 ] )
-    return this
-  }
-})
-
-/**
- * Normalisation rendering mechanism via Hyu
- */
 Han.normalize = Hyu
 Han.support = Hyu.support
 Han.detectFont = Hyu.detectFont
 
-$.extend( Han.fn, {
-  initCond: function() {
-    this.condition.classList.add( 'han-js-rendered' )
-    Han.normalize.initCond( this.condition )
-    return this
-  }
-})
+Han.fn.initCond = function() {
+  this.condition.classList.add( 'han-js-rendered' )
+  Han.normalize.initCond( this.condition )
+  return this
+}
 
 ;[ 'Elem', 'LineDeco', 'Em', 'Ruby' ]
 .forEach(function( elem ) {
@@ -2232,28 +2072,198 @@ $.extend( Han.fn, {
   }
 })
 
-/**
- * Typography improvement via Mre
- */
-Han.typeface = Mre
-$.extend( Han.support, Mre.support )
 
-/**
- * Advanced typesetting
- */
-;[ 'HWS', 'BasicBd' ]
-.forEach(function( feat ) {
+$.extend( Han.support, {
+  // Assume that all devices support Heiti for we
+  // use `sans-serif` to do the comparison.
+  heiti: true,
+  // 'heiti-gb': true,
+
+  songti: Han.detectFont( '"Han Songti"' ),
+  'songti-gb': Han.detectFont( '"Han Songti GB"' ),
+
+  kaiti: Han.detectFont( '"Han Kaiti"' ),
+  // 'kaiti-gb': Han.detectFont( '"Han Kaiti GB"' ),
+
+  fangsong: Han.detectFont( '"Han Fangsong"' )
+  // 'fangsong-gb': Han.detectFont( '"Han Fangsong GB"' )
+})
+
+
+
+var
+  HWS_AS_FIRST_CHILD_QUERY = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws',
+
+  //// Disabled `Node.normalize()` for temp due to
+  //// the issue in IE11.
+  //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+  isNodeNormalizeNormal = (function() {
+    var
+      div = $.create( 'div' )
+    ;
+
+    div.appendChild( $.create( '', '0-' ))
+    div.appendChild( $.create( '', '2' ))
+    div.normalize()
+
+    return div.firstChild.length !== 2
+  })(),
+
+  hws
+;
+
+hws = $.create( 'hws' )
+hws.innerHTML = ' '
+
+$.extend( Han, {
+  isNodeNormalizeNormal: isNodeNormalizeNormal,
+
+  renderHWS: function( context, strict ) {
+    var
+      context = context || document,
+      mode = strict ? 'strict' : 'base',
+      finder = Han.find( context )
+    ;
+
+    // Elements to be filtered according to the
+    // HWS rendering mode
+    if ( strict ) {
+      finder.filteredElemList += ' textarea code kbd samp pre'
+    } else {
+      finder.filteredElemList += ' textarea'
+    }
+
+    finder
+    .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
+    .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+
+    // Deal with `' 字'`, `" 字"` => `'字'`, `"字"`
+    .replace( /(['"]+)[<hws\/>|\s]*(.+?)[<hws\/>|\s]*(['"]+)/ig, '$1$2$3' )
+
+    // Convert text nodes `<hws/>` into real element nodes
+    .replace( '<hws/>', function() {
+      return $.clone( hws )
+    })
+
+    // Deal with:
+    // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
+    $
+    .qsa( HWS_AS_FIRST_CHILD_QUERY, context )
+    .forEach(function( firstChild ) {
+      var
+        parent = firstChild.parentNode,
+        target = parent.firstChild
+      ;
+
+      // Skip all `<wbr>` and comments
+      while (
+        target.nodeName === 'WBR' || target.nodeType === 8
+      ) {
+        target = target.nextSibling
+
+        if ( !target ) {
+          return
+        }
+      }
+
+      // The ‘first-child’ of DOM is different from
+      // the ones of QSA, could be either an element
+      // or a text fragment, but the latter one is
+      // not what we want. We don't want comments,
+      // either.
+      while ( target.nodeName === 'HWS' ) {
+        parent.removeChild( target )
+
+        target = parent.parentNode.insertBefore( $.clone( hws ), parent )
+        parent = parent.parentNode
+
+        if ( isNodeNormalizeNormal ) {
+          parent.normalize()
+        }
+
+        // This is for extreme circumstances, i.e.,
+        // `漢<a><b><c><hws/>zi</c></b></a>` =>
+        // `漢<hws/><a><b><c>zi</c></b></a>`
+        if ( target !== parent.firstChild ) {
+          break
+        }
+      }
+    })
+
+    // Normalise nodes we messed up with
+    if ( isNodeNormalizeNormal ) {
+      context.normalize()
+    }
+    // Return the finder instance for future usage
+    return finder
+  }
+})
+
+$.extend( Han.fn, {
+  HWS: null,
+
+  renderHWS: function( strict ) {
+    this.HWS = Han.renderHWS( this.context, strict )
+    return this
+  },
+
+  // TODO
+  //// We did too much after the finder replacement,
+  //// which makes it impossible to process revert
+  //// properly.
+  revertHWS: function() {
+    try {
+      this.HWS.revert()
+    } catch ( e ) {}
+    return this
+  }
+})
+
+
+var
+  mdot
+;
+
+mdot = $.create( 'char', 'biaodian cjk middle' )
+mdot.setAttribute( 'unicode', 'b7' )
+
+Han.renderBasicBD = function( context, all ) {
   var
-    method = 'render' + feat
+    context = context || document,
+    finder
   ;
 
-  Han.fn[ method ] = function() {
+  if ( !all && support.unicoderange ) {
+    return
+  }
 
-    $
-    .makeArray( arguments )
-    .unshift( this.context )
+  finder = Han.find( context )
+  finder.filteredElemList += ' em'
 
-    Han[ method ].apply( null, arguments )
+  finder
+  .wrap( /\u00B7/g, $.clone( mdot ))
+  .charify({
+    liga:      'liga',
+    hanzi:     'none',
+    word:      'none',
+    latin:     'none',
+    ellinika:  'none',
+    kirillica: 'none'
+  })
+}
+
+$.extend( Han.fn, {
+  basicBD: null,
+
+  renderBasicBD: function( all ) {
+    this.basicBD = Han.renderBasicBD( this.context, all )
+    return this
+  },
+
+  revertBasicBD: function() {
+    try {
+      this.basicBD.revert( 'all' )
+    } catch (e) {}
     return this
   }
 })
@@ -2270,13 +2280,16 @@ $.extend( Han.support, Mre.support )
     if ( document.readyState === 'complete' ) {
       clearTimeout( DOMReady )
 
-      // Use shortcut for default situation
+      // Use the shortcut under the default situation
       if ( root.classList.contains( 'han-init' )) {
         Han.init()
 
-      // If a context is configured
+      // Consider ‘a configured context’ the special
+      // case of the default situation. Will have to
+      // replace the `Han.init` with the instance as
+      // well (for future usage).
       } else if ( initContext = document.querySelector( '.han-init-context' )) {
-        Han( initContext ).renderByRoutine()
+        Han.init = Han( initContext ).renderByRoutine()
       }
     }
   }, 10 )

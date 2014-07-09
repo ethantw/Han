@@ -7,6 +7,19 @@ define([
 var
   VERSION = '3.0.0',
 
+  ROUTINE = [
+    // Initialise the condition with feature-detecting
+    // classes (Modernizr-alike), binding onto the root
+    // element, possibly `<html>`.
+    'initCond',
+    // Address element normalisation
+    'renderElem',
+    // Address Hanzi and Western script mixed spacing
+    'renderHWS',
+    // Address Basic Biaodian correction in Firefox
+    'renderBasicBD'
+  ],
+
   // Define Han
   Han = function( context, condition ) {
     return new Han.fn.init( context, condition )
@@ -24,19 +37,8 @@ Han.fn = Han.prototype = {
   // Root element as the default condition
   condition: root,
 
-  // Default routine for rendering
-  routine: [
-    // Initialise the condition with feature-detecting
-    // classes (Modernizr-alike) on root elements,
-    // possibly `<html>`.
-    'initCond',
-    // Address element normalisation
-    'renderElem',
-    // Address Hanzi and Western script mixed spacing
-    'renderHWS',
-    // Correct Basic Biaodian in Firefox
-    'renderBasicBd'
-  ],
+  // Default rendering routine
+  routine: ROUTINE,
 
   init: function( context, condition ) {
     if ( context ) {
@@ -48,24 +50,49 @@ Han.fn = Han.prototype = {
     return this
   },
 
-  // TODO
-  setOption: function( option ) {
+  setRoutine: function( routine ) {
+    if ( !Array.isArray( routine )) {
+      return
+    }
+
+    this.routine = routine
     return this
   },
 
   renderByRoutine: function() {
     var
-      routine = this.routine
+      that = this
     ;
-    for ( var i = 0, len = routine.length; i < len; i++ ) {
-      try {
-        this[ routine[ i ]]()
-      } catch (e) {}
-    }
+
+    this
+      .routine
+      .forEach(function( method ) {
+        if ( typeof method === 'string' ){
+          try {
+            that[ method ]()
+          } catch ( e ) {}
+        } else if ( Array.isArray( method )) {
+          try {
+            that[ method.shift() ].apply( that, method )
+          } catch ( e ) {}
+        }
+      })
     return this
   }
 }
 
 Han.fn.init.prototype = Han.fn
+
+/**
+ * Shortcut for `renderByRoutine` under the default
+ * situation.
+ *
+ * Once initialised, replace `Han.init` with the
+ * instance for future usage.
+ */
+Han.init = function() {
+  return Han.init = Han().renderByRoutine()
+}
+
 return Han
 })

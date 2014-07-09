@@ -1,10 +1,9 @@
 define([
   '../method',
-  '../farr',
+  '../farr/farr',
   '../regex/unicode',
-  './core',
-  './support'
-], function( $, Farr, UNICODE, Hyu, support ) {
+  './core'
+], function( $, Farr, UNICODE, Hyu ) {
 
 var
   S = UNICODE.zhuyin.initial,
@@ -170,12 +169,12 @@ $.extend( Hyu, {
         $elem = Farr( elem )
       ;
 
-      if ( !support.textemphasis ) {
+      if ( !Hyu.support.textemphasis ) {
         $elem.jinzify()
       }
 
       $elem
-      .charify( support.textemphasis ? {
+      .charify( Hyu.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'
       } : {
@@ -223,7 +222,7 @@ $.extend( Hyu, {
         clazz = ruby.classList,
 
         condition = (
-          !support.ruby ||
+          !Hyu.support.ruby ||
           clazz.contains( 'zhuyin') ||
           clazz.contains( 'complex' ) ||
           clazz.contains( 'rightangle' )
@@ -245,7 +244,7 @@ $.extend( Hyu, {
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
       if (
-        !support.ruby ||
+        !Hyu.support.ruby ||
         clazz.contains( 'zhuyin' )
       ) {
 

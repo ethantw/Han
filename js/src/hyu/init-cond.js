@@ -1,19 +1,19 @@
 define([
   '../var/root',
-  './support'
-], function( root, support ) {
+  './core'
+], function( root, Hyu ) {
 
-function initCond( target ) {
+Hyu.initCond = function( target ) {
   var
     target = target || root,
     ret = '',
     clazz
   ;
 
-  target.classList.add( 'hyu-js-rendered' )
+  target.classList.add( Hyu.JS_RENDERED_CLASS )
 
-  for ( var feature in support ) {
-    clazz = (support[ feature ] ? '' : 'no-') + feature
+  for ( var feature in Hyu.support ) {
+    clazz = ( Hyu.support[ feature ] ? '' : 'no-' ) + feature
 
     target.classList.add( clazz )
     ret += clazz + ' '
@@ -21,5 +21,5 @@ function initCond( target ) {
   return ret
 }
 
-return initCond
+return Hyu
 })

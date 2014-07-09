@@ -1,27 +1,31 @@
 define([
+  '../core',
   '../method',
-  '../farr',
-  '../regex/typeset'
-], function( $, Farr, TYPESET ) {
+  '../hyu/support'
+], function( Han, $, support ) {
 
-function renderBasicBd( context ) {
+var
+  mdot
+;
+
+mdot = $.create( 'char', 'biaodian cjk middle' )
+mdot.setAttribute( 'unicode', 'b7' )
+
+Han.renderBasicBD = function( context, all ) {
   var
     context = context || document,
-    farr, mid
+    finder
   ;
 
-  if ( support.unicoderange ) {
+  if ( !all && support.unicoderange ) {
     return
   }
 
-  farr = Farr( context )
-  farr.filteredElemList += ' em'
+  finder = Han.find( context )
+  finder.filteredElemList += ' em'
 
-  mid = $.create( 'char', 'biaodian cjk middle' )
-  mid.setAttribute( 'unicode', 'b7' )
-
-  farr
-  .wrap( /\u00B7/g, $.clone( mid ))
+  finder
+  .wrap( /\u00B7/g, $.clone( mdot ))
   .charify({
     liga:      'liga',
     hanzi:     'none',
@@ -32,5 +36,21 @@ function renderBasicBd( context ) {
   })
 }
 
-return renderBasicBd
+$.extend( Han.fn, {
+  basicBD: null,
+
+  renderBasicBD: function( all ) {
+    this.basicBD = Han.renderBasicBD( this.context, all )
+    return this
+  },
+
+  revertBasicBD: function() {
+    try {
+      this.basicBD.revert( 'all' )
+    } catch (e) {}
+    return this
+  }
+})
+
+return Han
 })

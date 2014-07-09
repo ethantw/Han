@@ -1,7 +1,7 @@
 define([
   './var/root',
   './core',
-  './fn'
+  './normalize'
 ], function( root, Han ) {
 
 !function() {
@@ -14,13 +14,16 @@ define([
     if ( document.readyState === 'complete' ) {
       clearTimeout( DOMReady )
 
-      // Use shortcut for default situation
+      // Use the shortcut under the default situation
       if ( root.classList.contains( 'han-init' )) {
         Han.init()
 
-      // If a context is configured
+      // Consider ‘a configured context’ the special
+      // case of the default situation. Will have to
+      // replace the `Han.init` with the instance as
+      // well (for future usage).
       } else if ( initContext = document.querySelector( '.han-init-context' )) {
-        Han( initContext ).renderByRoutine()
+        Han.init = Han( initContext ).renderByRoutine()
       }
     }
   }, 10 )

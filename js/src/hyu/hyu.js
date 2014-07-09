@@ -9,8 +9,10 @@
 
 define([
   './core',
-  './normalize',
-  './fn'
+  './detect-font',
+  './support',
+  './init-cond',
+  './normalize'
 ], function( Hyu ) {
   return Hyu
 })

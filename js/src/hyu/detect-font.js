@@ -1,7 +1,8 @@
 define([
+  '../var/body',
   '../method',
-  '../var/body'
-], function( $, body ) {
+  './core'
+], function( body, $, Hyu ) {
 
 function writeOnCanvas( text, font ) {
   var
@@ -15,7 +16,7 @@ function writeOnCanvas( text, font ) {
 
   body.appendChild( canvas )
 
-  context = canvas.getContext('2d')
+  context = canvas.getContext( '2d' )
   context.textBaseline = 'top'
   context.font = '15px ' + font + ', sans-serif'
   context.fillStyle = 'black'
@@ -63,10 +64,11 @@ function detectFont( treat, control, text ) {
     treat = null
 
     return ret
-  } catch ( err ) {
+  } catch ( e ) {
     return false
   }
 }
 
-return detectFont
+Hyu.detectFont = detectFont
+return Hyu
 })

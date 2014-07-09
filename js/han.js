@@ -15,11 +15,12 @@ require.config({
  */
 define([
   './src/core',
-  './src/fn',
-  './src/hyu/hyu',
-  './src/mre/mre',
+  './src/regex',
+  './src/find',
+  './src/normalize',
+  './src/typeface',
   './src/inline',
-  './src/script',
+  './src/dom-ready',
   './src/global'
 ], function( Han ) {
   return Han

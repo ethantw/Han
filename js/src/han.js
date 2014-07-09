@@ -1,10 +1,11 @@
 define([
   './core',
-  './fn',
-  './hyu/hyu',
-  './mre/mre',
+  './regex',
+  './find',
+  './normalize',
+  './typeface',
   './inline',
-  './script',
+  './dom-ready',
   './global'
 ], function( Han ) {
   return Han

@@ -5,9 +5,9 @@
  */
 
 define([
-  './method',
-  './regex/unicode',
-  './regex/typeset',
+  '../method',
+  '../regex/unicode',
+  '../regex/typeset',
   'findAndReplaceDOMText'
 ], function( $, UNICODE, TYPESET, findAndReplaceDOMText ) {
 
@@ -104,8 +104,10 @@ Farr.prototype = {
   revert: function( level ) {
     var
       len = this.finder.length,
-      level = Number(level) || level === 0 ? Number(level) :
-        level === 'all' ? len : 1
+      level = Number(level) || level === 0 ?
+        Number(level) :
+        level === 'all' ?
+          len : 1
     ;
 
     if ( typeof len === 'undefined' || len === 0 ) {
@@ -134,7 +136,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'touwei' )
         ;
         elem.appendChild( text )
@@ -149,7 +151,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'wei' )
         ;
         elem.appendChild( text )
@@ -161,7 +163,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'tou' )
         ;
         elem.appendChild( text )
@@ -176,7 +178,7 @@ Farr.prototype = {
       function( portion, match ) {
         var
           mat = match[0],
-          text = document.createTextNode( mat ),
+          text = $.create( '', mat ),
           elem = $.create( 'jinze', 'middle' )
         ;
         elem.appendChild( text )
@@ -234,7 +236,7 @@ Farr.prototype = {
           function( portion, match ) {
             var
               mat = match[0],
-              text = document.createTextNode( mat ),
+              text = $.create( '', mat ),
 
               clazz = 'biaodian cjk ' + (
                 mat.match( TYPESET.char.biaodian.open ) ? 'open' :
@@ -260,7 +262,7 @@ Farr.prototype = {
         function( portion, match ) {
           var
             mat = match[0],
-            text = document.createTextNode( mat ),
+            text = $.create( '', mat ),
 
             elem = $.create( 'char', 'biaodian liga cjk' ),
             unicode = mat.charCodeAt( 0 ).toString( 16 )

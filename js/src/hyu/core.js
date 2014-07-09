@@ -1,8 +1,8 @@
 define(function() {
-
 var
-  Hyu = {}
+  Hyu = {
+    JS_RENDERED_CLASS: 'hyu-js-rendered'
+  }
 ;
-
 return Hyu
 })
