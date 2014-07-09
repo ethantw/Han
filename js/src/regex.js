@@ -7,10 +7,11 @@ define([
 Han.UNICODE = UNICODE
 Han.TYPESET = TYPESET
 
-// English aliases
+// Aliases
 Han.UNICODE.greek = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.cjk = Han.UNICODE.hanzi
+Han.UNICODE.hangul = Han.UNICODE.eonmun
 
 // Lock the regex objects to prevent from furthur
 // modification.
