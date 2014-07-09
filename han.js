@@ -281,12 +281,12 @@ var
      *
      * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
           Bopomofo phonetic symbols
-     * 2. 陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
+     * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
           Tones for Mandarin
-     * 3. 方言音聲調號：[\u02EA\u02EB]
-          Tones for other dialects
-     * 4. 陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
-          Checked tones
+     * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
+          Departing tones in dialects
+     * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
+          Checked tones in dialects
      */
     zhuyin: {
       base:    '[\u3105-\u312D\u31A0-\u31BA]',
@@ -339,11 +339,7 @@ var
       rZyS = UNICODE.zhuyin.initial,
       rZyJ = UNICODE.zhuyin.medial,
       rZyY = UNICODE.zhuyin.final,
-      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
-
-      rZyForm = new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
-      rZyDiao = new RegExp( '(' + rZyD + ')', 'ig' )
-
+      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
     ;
 
     return {
@@ -384,6 +380,11 @@ var
         tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
+      },
+
+      zhuyin: {
+        form: new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+        diao: new RegExp( '(' + rZyD + ')', 'g' )
       },
 
       /* Hanzi and Western mixed spacing (漢字西文混排間隙)
@@ -1678,16 +1679,6 @@ Hyu.initCond = function( target ) {
 }
 
 
-var
-  S = UNICODE.zhuyin.initial,
-  J = UNICODE.zhuyin.medial,
-  Y = UNICODE.zhuyin.final,
-  D = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
-
-  rZyForm = new RegExp( '^(' + S + ')?' + '(' + J + ')?' + '(' + Y + ')?' + '(' + D + ')?$' ),
-  rDiao = new RegExp( '(' + D + ')', 'ig' )
-;
-
 /**
  * Create and return a new `<rb>` element
  * according to the given contents
@@ -1702,10 +1693,8 @@ function createPlainRb( rb, rt ) {
 
   $rb.appendChild( rb )
   $rb.appendChild( rt )
+  $rb.setAttribute( 'annotation', rt.textContent )
 
-  $.setAttr( $rb, {
-    'annotation': rt.textContent
-  })
   return $rb
 }
 
@@ -1733,14 +1722,14 @@ function createZhuyinRb( rb, rt ) {
     yin, diao, form, len
   ;
 
-  yin  = zhuyin.replace( rDiao, '' )
+  yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
   diao = zhuyin
          .replace( yin, '' )
          .replace( /[\u02C5]/g, '\u02C7' )
          .replace( /[\u030D]/g, '\u0358' )
 
-  form = zhuyin.replace( rZyForm, function( s, j, y ) {
+  form = zhuyin.replace( TYPESET.zhuyin.form, function( s, j, y ) {
     return [
       s ? 'S' : null,
       j ? 'J' : null,
@@ -1770,8 +1759,7 @@ function createZhuyinRb( rb, rt ) {
 
   // Finally, set up the necessary attribute
   // and return the new `<rb>`
-  $
-  .setAttr( $rb, {
+  $.setAttr( $rb, {
     zhuyin: '',
     diao: diao,
     length: len,
@@ -1976,8 +1964,8 @@ $.extend( Hyu, {
         // First of all, deal with Zhuyin containers
         // individually
         //
-        // (We only support one single Zhuyin in
-        // each complex ruby)
+        // Note that we only support one single Zhuyin
+        // container in each complex ruby
         !function( rtc ) {
           if ( !rtc ) {
             return

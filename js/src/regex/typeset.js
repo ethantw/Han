@@ -41,11 +41,7 @@ var
       rZyS = UNICODE.zhuyin.initial,
       rZyJ = UNICODE.zhuyin.medial,
       rZyY = UNICODE.zhuyin.final,
-      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
-
-      rZyForm = new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
-      rZyDiao = new RegExp( '(' + rZyD + ')', 'ig' )
-
+      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
     ;
 
     return {
@@ -86,6 +82,11 @@ var
         tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
+      },
+
+      zhuyin: {
+        form: new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+        diao: new RegExp( '(' + rZyD + ')', 'g' )
       },
 
       /* Hanzi and Western mixed spacing (漢字西文混排間隙)

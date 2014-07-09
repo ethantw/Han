@@ -161,12 +161,12 @@ var
      *
      * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
           Bopomofo phonetic symbols
-     * 2. 陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
+     * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
           Tones for Mandarin
-     * 3. 方言音聲調號：[\u02EA\u02EB]
-          Tones for other dialects
-     * 4. 陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
-          Checked tones
+     * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
+          Departing tones in dialects
+     * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
+          Checked tones in dialects
      */
     zhuyin: {
       base:    '[\u3105-\u312D\u31A0-\u31BA]',

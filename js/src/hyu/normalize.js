@@ -1,19 +1,9 @@
 define([
+  './core',
   '../method',
   '../farr/farr',
-  '../regex/unicode',
-  './core'
-], function( $, Farr, UNICODE, Hyu ) {
-
-var
-  S = UNICODE.zhuyin.initial,
-  J = UNICODE.zhuyin.medial,
-  Y = UNICODE.zhuyin.final,
-  D = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
-
-  rZyForm = new RegExp( '^(' + S + ')?' + '(' + J + ')?' + '(' + Y + ')?' + '(' + D + ')?$' ),
-  rDiao = new RegExp( '(' + D + ')', 'ig' )
-;
+  '../regex/typeset'
+], function( Hyu, $, Farr, TYPESET ) {
 
 /**
  * Create and return a new `<rb>` element
@@ -29,10 +19,8 @@ function createPlainRb( rb, rt ) {
 
   $rb.appendChild( rb )
   $rb.appendChild( rt )
+  $rb.setAttribute( 'annotation', rt.textContent )
 
-  $.setAttr( $rb, {
-    'annotation': rt.textContent
-  })
   return $rb
 }
 
@@ -60,14 +48,14 @@ function createZhuyinRb( rb, rt ) {
     yin, diao, form, len
   ;
 
-  yin  = zhuyin.replace( rDiao, '' )
+  yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
   diao = zhuyin
          .replace( yin, '' )
          .replace( /[\u02C5]/g, '\u02C7' )
          .replace( /[\u030D]/g, '\u0358' )
 
-  form = zhuyin.replace( rZyForm, function( s, j, y ) {
+  form = zhuyin.replace( TYPESET.zhuyin.form, function( s, j, y ) {
     return [
       s ? 'S' : null,
       j ? 'J' : null,
@@ -97,8 +85,7 @@ function createZhuyinRb( rb, rt ) {
 
   // Finally, set up the necessary attribute
   // and return the new `<rb>`
-  $
-  .setAttr( $rb, {
+  $.setAttr( $rb, {
     zhuyin: '',
     diao: diao,
     length: len,
@@ -303,8 +290,8 @@ $.extend( Hyu, {
         // First of all, deal with Zhuyin containers
         // individually
         //
-        // (We only support one single Zhuyin in
-        // each complex ruby)
+        // Note that we only support one single Zhuyin
+        // container in each complex ruby
         !function( rtc ) {
           if ( !rtc ) {
             return
