@@ -242,7 +242,7 @@ var
     },
 
     /**
-     * Kana
+     * Kana (假名)
      *
      * 1. 日文假名：[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]
           Japanese Kana
@@ -258,6 +258,22 @@ var
       combine: '[\u3099-\u309C]',
       small:   '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
       mark:    '[\u30A0\u309D\u309E\u30FB-\u30FE]'
+    },
+
+    /**
+     * Eonmun (Hangul, 諺文)
+     *
+     * 1. 諺文音節：[\uAC00-\uD7A3]
+          Eonmun (Hangul) syllables
+     * 2. 諺文字母：[\u1100-\u11FF\u314F-\u3163\u3131-\u318E]
+          Eonmun (Hangul) letters
+     * 3. 半形諺文字母：[\uFFA1-\uFFDC]
+          Halfwidth Eonmun (Hangul) letters
+     */
+    eonmun: {
+      base:    '[\uAC00-\uD7A3]',
+      letter:  '[\u1100-\u11FF\u314F-\u3163\u3131-\u318E]',
+      half:    '[\uFFA1-\uFFDC]'
     },
 
     /**
@@ -318,7 +334,16 @@ var
 
       // For words like `it's`, `Jones’s` or `'99`
       rApo = '[\u0027\u2019]',
-      rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
+      rChar = rHan + '|(' + rAlph + '|' + rApo + ')+',
+
+      rZyS = UNICODE.zhuyin.initial,
+      rZyJ = UNICODE.zhuyin.medial,
+      rZyY = UNICODE.zhuyin.final,
+      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
+
+      rZyForm = new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+      rZyDiao = new RegExp( '(' + rZyD + ')', 'ig' )
+
     ;
 
     return {
@@ -375,6 +400,49 @@ var
           new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
           new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
         ]
+      },
+
+      // The feature displays the following characters
+      // in its variant form for font consistency and
+      // presentational reason. Meanwhile, this won't
+      // alter the original character in the DOM.
+      'display-as': {
+        'ja-font-for-hant': [
+          '查 査',
+          '啟 啓',
+          '鄉 鄕',
+          '值 値',
+          '污 汚'
+        ],
+
+        pua: {
+          'checked-tone-vowel': [
+            '\u0061[\u030d\u0358] \uF0061',
+            '\u0065[\u030d\u0358] \uF0065',
+            '\u0069[\u030d\u0358] \uF0069',
+            '\u006F[\u030d\u0358] \uF006F',
+            '\u0075[\u030d\u0358] \uF0075'
+          ],
+
+          'checked-tone-zhuyin': [
+            '\u31B4[\u030d\u0358] \uF31B4',
+            '\u31B5[\u030d\u0358] \uF31B5',
+            '\u31B6[\u030d\u0358] \uF31B6',
+            '\u31B7[\u030d\u0358] \uF31B7'
+          ]
+        }
+      },
+
+      // The feature actually *converts* the character
+      // in the DOM for semantic reason.
+      //
+      // Note that this could be aggressive.
+      'convert-to': {
+          mark: [
+          '\u2022 \u00B7',
+          '\u22EF\u22EF \u2026\u2026',
+          '\u2500\u2500 \u2014\u2014'
+        ]
       }
     }
   })()
@@ -384,10 +452,11 @@ var
 Han.UNICODE = UNICODE
 Han.TYPESET = TYPESET
 
-// English aliases
+// Aliases
 Han.UNICODE.greek = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.cjk = Han.UNICODE.hanzi
+Han.UNICODE.hangul = Han.UNICODE.eonmun
 
 // Lock the regex objects to prevent from furthur
 // modification.

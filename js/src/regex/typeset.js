@@ -36,7 +36,16 @@ var
 
       // For words like `it's`, `Jones’s` or `'99`
       rApo = '[\u0027\u2019]',
-      rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
+      rChar = rHan + '|(' + rAlph + '|' + rApo + ')+',
+
+      rZyS = UNICODE.zhuyin.initial,
+      rZyJ = UNICODE.zhuyin.medial,
+      rZyY = UNICODE.zhuyin.final,
+      rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun,
+
+      rZyForm = new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+      rZyDiao = new RegExp( '(' + rZyD + ')', 'ig' )
+
     ;
 
     return {
@@ -95,47 +104,47 @@ var
         ]
       },
 
-      convert: {
-        'ja-font': [
-          '查|査',
-          '啟|啓',
-          '鄉|鄕',
-          '值|値',
-          '污|汚'
+      // The feature displays the following characters
+      // in its variant form for font consistency and
+      // presentational reason. Meanwhile, this won't
+      // alter the original character in the DOM.
+      'display-as': {
+        'ja-font-for-hant': [
+          '查 査',
+          '啟 啓',
+          '鄉 鄕',
+          '值 値',
+          '污 汚'
         ],
 
         pua: {
           'checked-tone-vowel': [
-            '\u0061\u030d|\uF0061',
-            '\u0061\u0358|\uF0061',
-
-            '\u0065\u030d|\uF0065',
-            '\u0065\u0358|\uF0065',
-
-            '\u0069\u030d|\uF0069',
-            '\u0069\u0358|\uF0069',
-
-            '\u006F\u030d|\uF006F',
-            '\u006F\u0358|\uF006F',
-
-            '\u0075\u030d|\uF0075',
-            '\u0075\u0358|\uF0075'
+            '\u0061[\u030d\u0358] \uF0061',
+            '\u0065[\u030d\u0358] \uF0065',
+            '\u0069[\u030d\u0358] \uF0069',
+            '\u006F[\u030d\u0358] \uF006F',
+            '\u0075[\u030d\u0358] \uF0075'
           ],
 
           'checked-tone-zhuyin': [
-            '\u31B4\u030d|\uF31B4',
-            '\u31B4\u0358|\uF31B4',
-
-            '\u31B5\u030d|\uF31B5',
-            '\u31B5\u0358|\uF31B5',
-
-            '\u31B6\u030d|\uF31B6',
-            '\u31B6\u0358|\uF31B6',
-
-            '\u31B7\u030d|\uF31B7',
-            '\u31B7\u0358|\uF31B7'
+            '\u31B4[\u030d\u0358] \uF31B4',
+            '\u31B5[\u030d\u0358] \uF31B5',
+            '\u31B6[\u030d\u0358] \uF31B6',
+            '\u31B7[\u030d\u0358] \uF31B7'
           ]
         }
+      },
+
+      // The feature actually *converts* the character
+      // in the DOM for semantic reason.
+      //
+      // Note that this could be aggressive.
+      'convert-to': {
+          mark: [
+          '\u2022 \u00B7',
+          '\u22EF\u22EF \u2026\u2026',
+          '\u2500\u2500 \u2014\u2014'
+        ]
       }
     }
   })()
