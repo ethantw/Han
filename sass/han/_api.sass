@@ -1,4 +1,18 @@
 
+// * Address well-knit sections in articles.
+// *
+@function han-header-i( $max: 1, $min: 6 )
+  $ret: ''
+  @for $i from $max through $min
+    @if ( $i != $min )
+      $ret: $ret + 'h' + $i + ', '
+    @else
+      $ret: $ret + 'h' + $i
+  @return $ret
+
 =han-text-emphasis( $posi: under, $mark: circle, $shape: filled, $color: inherit, $skip: true, $extend: true )
   +hyu-text-emphasis( $posi, $mark, $shape, $color )
   +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, $skip, $extend )
+
+=han-article-counter( $h2: h2, $h3: h3, $h4: h4 )
+  @extend %han-article-counter

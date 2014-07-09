@@ -1,14 +1,4 @@
 
-/* Root
-   ========================================================================== */
-
-@if ( $han-line-height != $HYU-LINE-HEIGHT )
-  #{$han-root}
-    line-height: $han-line-height
-
-/* Sections & grouping content
-   ========================================================================== */
-
 #{$han-article}
   // typography
   line-height: $han-article-line-height
@@ -16,17 +6,6 @@
   @if ( $han-article-justify )
     text-align: justify
     text-justify: inter-ideograph
-
-  // * Address well-knit sections in articles.
-  // *
-  @function han-header-i( $max: 1, $min: 6 )
-    $ret: ''
-    @for $i from $max through $min
-      @if ( $i != $min )
-        $ret: $ret + 'h' + $i + ', '
-      @else
-        $ret: $ret + 'h' + $i
-    @return $ret
 
   %han-well-knit-section
     margin-top: -1em
