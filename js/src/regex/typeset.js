@@ -93,6 +93,49 @@ var
           new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
           new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
         ]
+      },
+
+      convert: {
+        'ja-font': [
+          '查|査',
+          '啟|啓',
+          '鄉|鄕',
+          '值|値',
+          '污|汚'
+        ],
+
+        pua: {
+          'checked-tone-vowel': [
+            '\u0061\u030d|\uF0061',
+            '\u0061\u0358|\uF0061',
+
+            '\u0065\u030d|\uF0065',
+            '\u0065\u0358|\uF0065',
+
+            '\u0069\u030d|\uF0069',
+            '\u0069\u0358|\uF0069',
+
+            '\u006F\u030d|\uF006F',
+            '\u006F\u0358|\uF006F',
+
+            '\u0075\u030d|\uF0075',
+            '\u0075\u0358|\uF0075'
+          ],
+
+          'checked-tone-zhuyin': [
+            '\u31B4\u030d|\uF31B4',
+            '\u31B4\u0358|\uF31B4',
+
+            '\u31B5\u030d|\uF31B5',
+            '\u31B5\u0358|\uF31B5',
+
+            '\u31B6\u030d|\uF31B6',
+            '\u31B6\u0358|\uF31B6',
+
+            '\u31B7\u030d|\uF31B7',
+            '\u31B7\u0358|\uF31B7'
+          ]
+        }
       }
     }
   })()
