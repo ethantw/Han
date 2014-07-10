@@ -5,11 +5,11 @@
  - [測試頁（JavaScript模組）](test-module.html)
  - [測試頁（無JavaScript）](test-nojs.html)
 
-## Normalisation（樣式正常化）
+## Normalisation（樣式標準化）
 
-  - [文字裝飾線元素](./line-deco.html)
-  - [強調元素（着重號）](./em.html)
-  - [行間注元素](./ruby.html)
+ - [文字裝飾線元素](./line-deco.html)
+ - [強調元素（着重號）](./em.html)
+ - [行間注元素](./ruby.html)
 
 ## 字體
 ### 漢字
@@ -25,9 +25,10 @@
  - [標音（注音符號、羅馬拼音）](./ruby\(ff\).html)
 
 ## 排版
-### 文章的韻律
+### 章節的組成
 
- - [文章與其章節](./section.html)
+ - [文章、章節與內容的邊界調整](./well-knit.html)
+ - [章節與目錄的計數](./counter.html)
 
 ### 行的組成
 

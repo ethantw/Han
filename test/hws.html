@@ -76,6 +76,15 @@
           <h3>有註解及機會斷行元素的情況</h3>
           <p>不知道是不是<u lang='en'><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>
         </section>
+        <section id="multiple">
+          <h3>多層元素嵌套</h3>
+          <p lang="en">
+            Who do you<!--
+            --><em lang='zh-Hant'><s><b>自以為</b></s></em><!--
+            -->you are?
+          </p>
+          <p lang="zh-nan-Hant">你是咧com<u><i>啥物</i></u>plain啦！</p>
+        </section>
         <section id="list">
           <h3>清單</h3>
           <ol>
@@ -120,8 +129,10 @@
         <h3>代碼等元素</h3>
         <p><code>代code碼</code>、<kbd>輸key入board鍵</kbd>、<samp>計算機samp輸出示例</samp>。</p>
         <pre>格式pre處理</pre>
-        <p><strong>注意：</strong>代碼、輸入鍵、計算機輸出示例等元素仍經<code>renderHWS()</code>處理，惟使用樣式表將其下之<code>hws</code><!--
-          -->元素隱藏。可以藉改寫樣式來顯示漢字西文混排間隙。
+        <p><strong>注意：</strong>在漢字西文混排間隙「基本模式」下，<!--
+          --><strong>代碼、輸入鍵、計算機輸出示例等元素仍經<code>renderHWS()</code>處理，</strong>惟使用樣式表將其下之<code>hws</code><!--
+          -->元素隱藏，可藉樣式的改寫來顯示漢字西文混排間隙；<!--
+          -->「嚴格模式」下，則<em>不</em>渲染以上元素。
         </p>
       </section>
     </article>

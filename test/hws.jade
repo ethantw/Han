@@ -93,6 +93,14 @@ html(lang='zh-Hant').han-init
         section#comment
           h3 有註解及機會斷行元素的情況
           p 不知道是不是<u lang='en'><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。
+        section#multiple
+          h3 多層元素嵌套
+          p(lang='en')
+            | Who do you<!--
+            | --><em lang='zh-Hant'><s><b>自以為</b></s></em><!--
+            | -->you are?
+          p(lang='zh-nan-Hant')
+            | 你是咧com<u><i>啥物</i></u>plain啦！
         section#list
           h3 清單
           ol
@@ -137,10 +145,12 @@ html(lang='zh-Hant').han-init
           | 格式pre處理
         p
           strong 注意：
-          | 代碼、輸入鍵、計算機輸出示例等元素仍經
+          | 在漢字西文混排間隙「基本模式」下，<!--
+          | --><strong>代碼、輸入鍵、計算機輸出示例等元素仍經
           code renderHWS()
-          | 處理，惟使用樣式表將其下之<code>hws</code><!--
-          | -->元素隱藏。可以藉改寫樣式來顯示漢字西文混排間隙。
+          | 處理，</strong>惟使用樣式表將其下之<code>hws</code><!--
+          | -->元素隱藏，可藉樣式的改寫來顯示漢字西文混排間隙；<!--
+          | -->「嚴格模式」下，則<em>不</em>渲染以上元素。
 
     // Here goes scripts
     script(src='../han.min.js')
