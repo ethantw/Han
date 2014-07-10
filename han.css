@@ -1,8 +1,7 @@
 @charset "UTF-8";
-
 /*! 漢字標準格式 v3.0.0 | MIT License | css.hanzi.co */
 /*! Han: CSS typography framework optimised for Hanzi */
-
+/*! Hyu v1.0.0 | MIT License | css.hanzi.co/hyu */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -399,7 +398,6 @@ th {
   padding: 0;
 }
 
-/*! Hyu v1.0.0 | MIT License | css.hanzi.co/hyu */
 /* Base
  * ========================================================================== */
 html {
@@ -568,11 +566,10 @@ del + del, .hyu-js-rendered u.adjacent,
   margin-left: 0.125em;
 }
 
-u:lang(zh), u:lang(ja),
-ins:lang(zh),
-ins:lang(ja) {
-  border-bottom: 1px solid;
+u,
+ins {
   padding-bottom: 0.05em;
+  border-bottom: 1px solid;
   text-decoration: none;
 }
 
@@ -1717,7 +1714,8 @@ hruby rb[zhuyin] zhuyin,
 hruby rb[zhuyin] zhuyin diao, ruby.romanization rt,
 ruby rb[annotation]:before,
 hruby.romanization rt,
-hruby rb[annotation]:before {
+hruby rb[annotation]:before, .no-unicoderange char.biaodian.liga, .no-unicoderange
+char.biaodian[unicode='b7'] {
   -moz-font-feature-settings: "liga";
   -ms-font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
@@ -1755,8 +1753,14 @@ hruby rb[annotation]:before {
   font-family: "Romanization Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 
-/*! Exclusive */
-/* Sections & grouping content
+.no-unicoderange char.biaodian.liga, .no-unicoderange
+char.biaodian[unicode='b7'] {
+  font-family: "Biaodian Basic", "Han Heiti";
+}
+
+/* Global
+ * ========================================================================== */
+/* Sectional composition
  * ========================================================================== */
 article {
   line-height: 1.7;
@@ -1872,11 +1876,13 @@ article blockquote blockquote {
     margin-right: 1em;
   }
 }
+/* Line composition
+ * ========================================================================== */
 /*
  * Customised emphasis mark (着重號)
  */
 /*
- * Hanzi and Western mixed spacing (漢字西文混排間隙)
+ * Hanzi and Western script mixed spacing (漢字西文混排間隙)
  *
  * More discussion at:
  * https://github.com/ethantw/Han/issues/40
@@ -1884,7 +1890,7 @@ article blockquote blockquote {
 hws {
   display: inline;
   visibility: hidden;
-  font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif !important;
   font-size: 0.89em;
 }
 code hws, kbd hws, samp hws, pre hws, ol > hws, ul > hws {
