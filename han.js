@@ -518,7 +518,7 @@ var
         elem = '!' === elem ?
           document.createDocumentFragment() :
           '' === elem ?
-            document.createTextNode( clazz ) :
+            document.createTextNode( clazz || '' ) :
             document.createElement( elem )
       ;
 
@@ -538,8 +538,8 @@ var
     },
 
     // Remove a node (text, element or fragment)
-    remove: function( node ) {
-      return node.parentNode.removeChild( node )
+    remove: function( node, parent ) {
+      return ( parent || node.parentNode ).removeChild( node )
     },
 
     // Set attributes all in once with an object
@@ -2255,7 +2255,7 @@ $.extend( Han, {
       // not what we want. We don't want comments,
       // either.
       while ( target.nodeName === 'HWS' ) {
-        parent.removeChild( target )
+        $.remove( target, parent )
 
         target = parent.parentNode.insertBefore( $.clone( hws ), parent )
         parent = parent.parentNode

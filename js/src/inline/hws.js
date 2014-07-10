@@ -85,7 +85,7 @@ $.extend( Han, {
       // not what we want. We don't want comments,
       // either.
       while ( target.nodeName === 'HWS' ) {
-        parent.removeChild( target )
+        $.remove( target, parent )
 
         target = parent.parentNode.insertBefore( $.clone( hws ), parent )
         parent = parent.parentNode
