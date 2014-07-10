@@ -23,6 +23,16 @@ var
   // Define Han
   Han = function( context, condition ) {
     return new Han.fn.init( context, condition )
+  },
+
+  init = function() {
+    if ( arguments[ 0 ] ) {
+      this.context = arguments[ 0 ]
+    }
+    if ( arguments[ 1 ] ) {
+      this.condition = arguments[ 1 ]
+    }
+    return this
   }
 ;
 
@@ -31,7 +41,7 @@ Han.fn = Han.prototype = {
 
   constructor: Han,
 
-  // Default target context
+  // Body as the default target context
   context: body,
 
   // Root element as the default condition
@@ -40,43 +50,35 @@ Han.fn = Han.prototype = {
   // Default rendering routine
   routine: ROUTINE,
 
-  init: function( context, condition ) {
-    if ( context ) {
-      this.context = context
-    }
-    if ( condition ) {
-      this.condition = condition
-    }
-    return this
-  },
+  init: init,
 
   setRoutine: function( routine ) {
-    if ( !Array.isArray( routine )) {
-      return
+    if ( Array.isArray( routine )) {
+      this.routine = routine
     }
-
-    this.routine = routine
     return this
   },
 
-  renderByRoutine: function() {
+  // Note that the routine set up here will execute
+  // only once. The method won't alter the routine in
+  // the instance or in the prototype chain.
+  renderRoutine: function( routine ) {
     var
-      that = this
+      that = this,
+      routine = Array.isArray( routine ) ?
+        routine : this.routine
     ;
 
-    this
-      .routine
-      .forEach(function( method ) {
+    routine
+    .forEach(function( method ) {
+      try {
         if ( typeof method === 'string' ){
-          try {
-            that[ method ]()
-          } catch ( e ) {}
+          that[ method ]()
         } else if ( Array.isArray( method )) {
-          try {
-            that[ method.shift() ].apply( that, method )
-          } catch ( e ) {}
+          that[ method.shift() ].apply( that, method )
         }
-      })
+      } catch ( e ) {}
+    })
     return this
   }
 }
@@ -84,14 +86,14 @@ Han.fn = Han.prototype = {
 Han.fn.init.prototype = Han.fn
 
 /**
- * Shortcut for `renderByRoutine` under the default
+ * Shortcut for `renderRoutine()` under the default
  * situation.
  *
  * Once initialised, replace `Han.init` with the
  * instance for future usage.
  */
 Han.init = function() {
-  return Han.init = Han().renderByRoutine()
+  return Han.init = Han().renderRoutine()
 }
 
 return Han

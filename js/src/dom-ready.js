@@ -23,7 +23,7 @@ define([
       // replace the `Han.init` with the instance as
       // well (for future usage).
       } else if ( initContext = document.querySelector( '.han-init-context' )) {
-        Han.init = Han( initContext ).renderByRoutine()
+        Han.init = Han( initContext ).renderRoutine()
       }
     }
   }, 10 )
