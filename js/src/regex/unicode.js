@@ -172,7 +172,7 @@ var
       base:    '[\u3105-\u312D\u31A0-\u31BA]',
       initial: '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]',
       medial:  '[\u3127-\u3129]',
-      final:   '[\u311A-\u3126\u312D\u31A4-\u31B3\u31B8-\u31BA]',
+      final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
       tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
       ruyun:   '[\u31B4-\u31B7][\u0358\u030d]?'
     }
