@@ -13,6 +13,7 @@ var
       rPtClose = UNICODE.punct.close,
       rPtEnd = UNICODE.punct.end,
       rPtMid = UNICODE.punct.middle,
+      rPtSing = UNICODE.punct.sing,
       rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
 
       rBdOpen = UNICODE.biaodian.open,
@@ -23,6 +24,10 @@ var
 
       rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
       rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
+      rKanaH = UNICODE.kana.half,
+      rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter,
+      rEonH = UNICODE.eonmun.half,
+
       rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
 
       rCbn = UNICODE.ellinika.combine,
@@ -48,6 +53,13 @@ var
       /* Character-level selector (字級選擇器)
        */
       char: {
+        punct: {
+          all:   new RegExp( '(' + rPt + ')', 'g' ),
+          open:  new RegExp( '(' + rPtOpen + ')', 'g' ),
+          end:   new RegExp( '(' + rPtEnd + ')', 'g' ),
+          sing:  new RegExp( '(' + rPtSing + ')', 'g' )
+        },
+
         biaodian: {
           all:   new RegExp( '(' + rBd + ')', 'g' ),
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
@@ -57,22 +69,20 @@ var
 
         hanzi: {
           individual: new RegExp( '(' + rHan + ')', 'g' ),
-          kana:       new RegExp( '(' + rKana + ')', 'g' ),
-          smallkana:  new RegExp( '(' + rKanaS + ')', 'g' ),
           group:      new RegExp( '(' + rHan + ')+', 'g' )
         },
 
-        punct: {
-          all: new RegExp( '(' + rPt + ')', 'g' )
-        },
+        word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
 
         alphabet: {
-          latin:     new RegExp( rLatn, 'ig' ),
-          ellinika:  new RegExp( rGk, 'ig' ),
-          kirillica: new RegExp( rCy, 'ig' )
-        },
-
-        word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' )
+          latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
+          ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
+          kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+          kana:        new RegExp( '(' + rKana + ')', 'g' ),
+          smallkana:   new RegExp( '(' + rKanaS + ')', 'g' ),
+          eonmun:      new RegExp( '(' + rEon + ')', 'g' ),
+          halfeonmun:  new RegExp( '(' + rEonH + ')', 'g' )
+        }
       },
 
       /* Punctuation Rules (禁則)
@@ -111,6 +121,7 @@ var
       // alter the original character in the DOM.
       'display-as': {
         'ja-font-for-hant': [
+          // '夠 够',
           '查 査',
           '啟 啓',
           '鄉 鄕',
@@ -141,10 +152,14 @@ var
       //
       // Note that this could be aggressive.
       'convert-to': {
-          mark: [
-          '\u2022 \u00B7',
+        mark: [
+          '[\u2022\u2027] \u00B7',
           '\u22EF\u22EF \u2026\u2026',
-          '\u2500\u2500 \u2014\u2014'
+          '\u2500\u2500 \u2014\u2014',
+          '\u2035 \u2018',
+          '\u2032 \u2019',
+          '\u2036 \u201C',
+          '\u2033 \u201D'
         ]
       }
     }

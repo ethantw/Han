@@ -227,7 +227,7 @@ Farr.prototype = {
     }
     if ( option.hanzi === 'individual' ||
          option.hanzi === 'biaodian' ||
-         option.liga === 'liga'
+         option.liga  === 'liga'
     ) {
 
       if ( option.hanzi !== 'none' ) {
