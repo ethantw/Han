@@ -14,5 +14,10 @@
   +hyu-text-emphasis( $posi, $mark, $shape, $color )
   +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, $skip, $extend )
 
-=han-article-counter( $h2: h2, $h3: h3, $h4: h4 )
-  @extend %han-article-counter
+=han-section-counter( $toc: false )
+  &
+    @extend %han-section-counter
+
+  @if ( $toc )
+    ol.toc
+      @extend %han-toc-counter
