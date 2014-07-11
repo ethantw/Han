@@ -4,8 +4,10 @@
   line-height: $han-article-line-height
 
   @if ( $han-article-justify )
-    text-align: justify
-    text-justify: inter-ideograph
+    p,
+    li
+      text-align: justify
+      text-justify: inter-ideograph
 
   %han-well-knit-section
     margin-top: -1em
