@@ -33,6 +33,8 @@
 ### 行的組成
 
  - [漢字西文混排間隙](./hws.html)
+ - [標點擠壓](./multi-biaodian.html)
+ - [字元的替換](./subst.html)
 
 ## 接口
 
