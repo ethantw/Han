@@ -95,8 +95,8 @@ var
       },
 
       zhuyin: {
-        form: new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
-        diao: new RegExp( '(' + rZyD + ')', 'g' )
+        form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+        diao:     new RegExp( '(' + rZyD + ')', 'g' )
       },
 
       /* Hanzi and Western mixed spacing (漢字西文混排間隙)
