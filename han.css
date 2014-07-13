@@ -1760,7 +1760,7 @@ char.biaodian[unicode='b7'] {
 
 /* Global
  * ========================================================================== */
-/* Sectional composition
+/* Section-wise arrangement
  * ========================================================================== */
 article {
   line-height: 1.7;
@@ -1917,7 +1917,7 @@ char_group [unicode='b7'] + [unicode='300c'], char_group [unicode='b7'] + [unico
   margin-left: -0.5em;
 }
 
-char_group .biaodian.liga + [unicode='300c'], char_group .biaodian.liga +
+char_group .liga + [unicode='300c'], char_group .liga +
 [unicode='300e'] {
   margin-left: -0.25em;
 }
