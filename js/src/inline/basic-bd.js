@@ -17,7 +17,7 @@ Han.renderBasicBD = function( context, all ) {
     finder
   ;
 
-  if ( !all && Han.support.unicoderange ) {
+  if ( Han.support.unicoderange && !all ) {
     return
   }
 

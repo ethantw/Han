@@ -63,8 +63,8 @@ var
 
       // Native NamedNodeMap
       if (
-        typeof attr[0] === 'object' &&
-        'name' in attr[0]
+        typeof attr[ 0 ] === 'object' &&
+        'name' in attr[ 0 ]
       ) {
         for ( var i = 0; i < len; i++ ) {
           if ( attr[ i ].value !== undefined ) {
@@ -86,19 +86,27 @@ var
       return target
     },
 
+    // Return if the current node should be ignored,
+    // `<wbr>` or comments
+    isIgnorable: function( node ) {
+      return node.nodeName === 'WBR' || node.nodeType === 8
+    },
+
     // Convert array-like objects into real arrays
     // for the native prototype methods
     makeArray: function( obj ) {
       return Array.prototype.slice.call( obj )
     },
 
-    // Extend target's method with objects
+    // Extend target with an object
     extend: function( target, object ) {
       var
-        isExtensible = typeof target === 'object' || typeof target === 'function'
+        isExtensible = typeof target === 'object' ||
+          typeof target === 'function' ||
+          typeof object === 'object'
       ;
 
-      if ( !isExtensible || typeof object !== 'object' ) {
+      if ( !isExtensible ) {
         return
       }
 

@@ -69,9 +69,7 @@ $.extend( Han, {
       ;
 
       // Skip all `<wbr>` and comments
-      while (
-        target.nodeName === 'WBR' || target.nodeType === 8
-      ) {
+      while ( $.isIgnorable( target )) {
         target = target.nextSibling
 
         if ( !target ) {

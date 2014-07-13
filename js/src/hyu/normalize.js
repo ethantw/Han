@@ -133,7 +133,7 @@ $.extend( Hyu, {
         if ( !next ) {
           return
         }
-      } while ( next.nodeName === 'WBR' || next.nodeType === 8 )
+      } while ( $.isIgnorable( next ))
 
       if ( next.nodeName.match( rTarget )) {
         next.classList.add( 'adjacent' )
@@ -249,7 +249,7 @@ $.extend( Hyu, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(rt|rb)/i ) ) {
+            if ( !irb || irb.nodeName.match( /(rt|rb)/i )) {
               break
             }
 
@@ -274,7 +274,7 @@ $.extend( Hyu, {
             .forEach(function( irb ) {
               $.remove( irb )
             })
-          } catch (e) {}
+          } catch ( e ) {}
         })
       }
 
@@ -305,7 +305,7 @@ $.extend( Hyu, {
             ;
             try {
               $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
-            } catch (e) {}
+            } catch ( e ) {}
           })
 
           // Remove the container once it's useless

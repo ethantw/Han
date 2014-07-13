@@ -17,6 +17,7 @@ var
       rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
 
       rBdOpen = UNICODE.biaodian.open,
+      rBdClose = UNICODE.biaodian.close,
       rBdEnd = UNICODE.biaodian.end,
       rBdMid = UNICODE.biaodian.middle,
       rBdLiga = UNICODE.biaodian.liga + '{2}',
@@ -93,6 +94,11 @@ var
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
+
+      jiya: [
+        new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+      ],
 
       zhuyin: {
         form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),

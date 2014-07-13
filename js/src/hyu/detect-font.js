@@ -58,8 +58,8 @@ function detectFont( treat, control, text ) {
     }
 
     // Remove and clean from memory
-    control[0].parentNode.removeChild( control[0] )
-    treat[0].parentNode.removeChild( treat[0] )
+    $.remove( control[0] )
+    $.remove( treat[0] )
     control = null
     treat = null
 

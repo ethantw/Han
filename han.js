@@ -37,6 +37,8 @@ var
     // classes (Modernizr-alike), binding onto the root
     // element, possibly `<html>`.
     'initCond',
+    // Address Biaodian ‘jiya’
+    'renderJiya',
     // Address element normalisation
     'renderElem',
     // Address Hanzi and Western script mixed spacing
@@ -326,6 +328,7 @@ var
       rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
 
       rBdOpen = UNICODE.biaodian.open,
+      rBdClose = UNICODE.biaodian.close,
       rBdEnd = UNICODE.biaodian.end,
       rBdMid = UNICODE.biaodian.middle,
       rBdLiga = UNICODE.biaodian.liga + '{2}',
@@ -402,6 +405,11 @@ var
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
+
+      jiya: [
+        new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+      ],
 
       zhuyin: {
         form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
@@ -480,10 +488,15 @@ Han.UNICODE = UNICODE
 Han.TYPESET = TYPESET
 
 // Aliases
-Han.UNICODE.greek = Han.UNICODE.ellinika
+Han.UNICODE.cjk      = Han.UNICODE.hanzi
+Han.UNICODE.greek    = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
-Han.UNICODE.cjk = Han.UNICODE.hanzi
-Han.UNICODE.hangul = Han.UNICODE.eonmun
+Han.UNICODE.hangul   = Han.UNICODE.eonmun
+
+Han.TYPESET.char.cjk               = Han.TYPESET.char.hanzi
+Han.TYPESET.char.alphabet.greek    = Han.TYPESET.char.alphabet.ellinika
+Han.TYPESET.char.alphabet.cyrillic = Han.TYPESET.char.alphabet.kirillica
+Han.TYPESET.char.alphabet.hangul   = Han.TYPESET.char.alphabet.eonmun
 
 // Lock the regex objects to prevent from furthur
 // modification.
@@ -554,8 +567,8 @@ var
 
       // Native NamedNodeMap
       if (
-        typeof attr[0] === 'object' &&
-        'name' in attr[0]
+        typeof attr[ 0 ] === 'object' &&
+        'name' in attr[ 0 ]
       ) {
         for ( var i = 0; i < len; i++ ) {
           if ( attr[ i ].value !== undefined ) {
@@ -577,19 +590,27 @@ var
       return target
     },
 
+    // Return if the current node should be ignored,
+    // `<wbr>` or comments
+    isIgnorable: function( node ) {
+      return node.nodeName === 'WBR' || node.nodeType === 8
+    },
+
     // Convert array-like objects into real arrays
     // for the native prototype methods
     makeArray: function( obj ) {
       return Array.prototype.slice.call( obj )
     },
 
-    // Extend target's method with objects
+    // Extend target with an object
     extend: function( target, object ) {
       var
-        isExtensible = typeof target === 'object' || typeof target === 'function'
+        isExtensible = typeof target === 'object' ||
+          typeof target === 'function' ||
+          typeof object === 'object'
       ;
 
-      if ( !isExtensible || typeof object !== 'object' ) {
+      if ( !isExtensible ) {
         return
       }
 
@@ -1441,14 +1462,20 @@ Farr.prototype.init.prototype = Farr.prototype
 
 Han.find = Farr
 
-;[ 'replace', 'wrap', 'revert', 'jinzify', 'charify' ]
-.forEach(function( method ) {
+;[
+  'replace',
+  'wrap',
+  'revert',
+  'jinzify',
+  'charify'
+].forEach(function( method ) {
   Han.fn[ method ] = function() {
     if ( !this.finder ) {
       // Share the same selector
       this.finder = Han.find( this.context )
     }
-    Han.find[ method ].apply( this, arguments )
+
+    this.finder[ method ]( arguments[ 0 ], arguments[ 1 ] )
     return this
   }
 })
@@ -1514,8 +1541,8 @@ function detectFont( treat, control, text ) {
     }
 
     // Remove and clean from memory
-    control[0].parentNode.removeChild( control[0] )
-    treat[0].parentNode.removeChild( treat[0] )
+    $.remove( control[0] )
+    $.remove( treat[0] )
     control = null
     treat = null
 
@@ -1833,7 +1860,7 @@ $.extend( Hyu, {
         if ( !next ) {
           return
         }
-      } while ( next.nodeName === 'WBR' || next.nodeType === 8 )
+      } while ( $.isIgnorable( next ))
 
       if ( next.nodeName.match( rTarget )) {
         next.classList.add( 'adjacent' )
@@ -1949,7 +1976,7 @@ $.extend( Hyu, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(rt|rb)/i ) ) {
+            if ( !irb || irb.nodeName.match( /(rt|rb)/i )) {
               break
             }
 
@@ -1974,7 +2001,7 @@ $.extend( Hyu, {
             .forEach(function( irb ) {
               $.remove( irb )
             })
-          } catch (e) {}
+          } catch ( e ) {}
         })
       }
 
@@ -2005,7 +2032,7 @@ $.extend( Hyu, {
             ;
             try {
               $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
-            } catch (e) {}
+            } catch ( e ) {}
           })
 
           // Remove the container once it's useless
@@ -2144,11 +2171,16 @@ Han.fn.initCond = function() {
   return this
 }
 
-;[ 'Elem', 'LineDeco', 'Em', 'Ruby' ]
-.forEach(function( elem ) {
+;[
+  'Elem',
+  'LineDeco',
+  'Em',
+  'Ruby'
+].forEach(function( elem ) {
   var
     method = 'render' + elem
   ;
+
   Han.fn[ method ] = function( target ) {
     Han.normalize[ method ]( this.context, target )
     return this
@@ -2239,9 +2271,7 @@ $.extend( Han, {
       ;
 
       // Skip all `<wbr>` and comments
-      while (
-        target.nodeName === 'WBR' || target.nodeType === 8
-      ) {
+      while ( $.isIgnorable( target )) {
         target = target.nextSibling
 
         if ( !target ) {
@@ -2304,6 +2334,58 @@ $.extend( Han.fn, {
 
 
 var
+  bdgroup = $.create( 'char_group', 'biaodian cjk' )
+;
+
+Han.renderJiya = function( context ) {
+  var
+    context = context || document,
+    finder = [ Han.find( context ) ]
+  ;
+
+  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
+
+  finder[ 0 ]
+  .wrap( Han.TYPESET.jiya[ 0 ], $.clone( bdgroup ))
+  .wrap( Han.TYPESET.jiya[ 1 ], $.clone( bdgroup ))
+
+  $
+  .qsa( 'char_group.biaodian', context )
+  .forEach( function( elem ) {
+    finder.push( Han( elem )
+    .charify({
+      hanzi:     'biaodian',
+      liga:      'liga',
+      word:      'none',
+      latin:     'none',
+      ellinika:  'none',
+      kirillica: 'none'
+    }))
+  })
+
+  return finder
+}
+
+$.extend( Han.fn, {
+  jiya: null,
+
+  renderJiya: function() {
+    this.jiya = Han.renderJiya( this.context )
+    return this
+  },
+
+  revertJiya: function() {
+    try {
+      for ( var i = this.jiya.length-1; i >= 0; i-- ) {
+        this.jiya[ i ].pop().revert( 'all' )
+      }
+    } catch ( e ) {}
+    return this
+  }
+})
+
+
+var
   mdot
 ;
 
@@ -2316,7 +2398,7 @@ Han.renderBasicBD = function( context, all ) {
     finder
   ;
 
-  if ( !all && Han.support.unicoderange ) {
+  if ( Han.support.unicoderange && !all ) {
     return
   }
 
