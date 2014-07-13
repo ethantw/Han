@@ -1899,3 +1899,25 @@ hws {
 code hws, kbd hws, samp hws, pre hws, ol > hws, ul > hws {
   display: none;
 }
+
+char_group [unicode='ff0c']:not(:last-child), char_group
+[unicode='ff08']:not(:last-child), char_group
+[unicode='3001']:not(:last-child), char_group
+[unicode='3002']:not(:last-child), char_group
+[unicode='300c']:not(:last-child), char_group
+[unicode='300d']:not(:last-child), char_group
+[unicode='300e']:not(:last-child), char_group
+[unicode='300f']:not(:last-child) {
+  letter-spacing: -0.5em;
+}
+
+char_group [unicode='b7'] + [unicode='300c'], char_group [unicode='b7'] + [unicode='300e'], char_group
+[unicode='30fb'] + [unicode='300c'], char_group
+[unicode='30fb'] + [unicode='300e'] {
+  margin-left: -0.5em;
+}
+
+char_group .biaodian.liga + [unicode='300c'], char_group .biaodian.liga +
+[unicode='300e'] {
+  margin-left: -0.25em;
+}

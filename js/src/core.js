@@ -14,6 +14,9 @@ var
     'initCond',
     // Address element normalisation
     'renderElem',
+    // Handle Biaodian
+    //'jinzify',
+    'renderJiya',
     // Address Hanzi and Western script mixed spacing
     'renderHWS',
     // Address Basic Biaodian correction in Firefox

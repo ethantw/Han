@@ -1,7 +1,8 @@
 define([
   './core',
   './inline/hws',
-  './inline/basic-bd',
+  './inline/jiya',
+  './inline/basic-bd'
 ], function( Han ) {
   return Han
 })
