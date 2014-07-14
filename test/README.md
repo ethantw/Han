@@ -7,7 +7,7 @@
 
 ## Normalisation（樣式標準化）
 
- - [文字裝飾線元素](./line-deco.html)
+ - [文字裝飾線元素](./deco-line.html)
  - [強調元素（着重號）](./em.html)
  - [行間注元素](./ruby.html)
 
@@ -40,6 +40,6 @@
 
  - [強制標點禁則](./api/jinzify.html)
  - [字元級選擇器](./api/charify.html)
- - [相鄰文字裝飾線](./api/line-deco.html)
+ - [相鄰文字裝飾線](./api/deco-line.html)
  - [着重號](./api/em.html)
  - [行間注元素](./api/ruby.html)
