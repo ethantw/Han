@@ -37,9 +37,8 @@ samp,
 pre
   +mre-typeface-by-lang( mono )
 
-// * 1. Use Heiti in article blockquotes.
-// * 2. If Kaiti is not supported.
-// *
+// * Fonts for alternative voice and variable
+// * in different situations.
 i,
 var
   +mre-typeface-by-lang( cursive-italic )
@@ -47,13 +46,6 @@ var
   // 1
   #{$mre-article} blockquote &
     +mre-typeface-by-lang( sans )
-
-  // 2
-  .no-kaiti &
-    // box
-    padding-bottom: .05em
-    // style
-    border-bottom: 3px double lightgrey
 
 // * 1. Use `Zhuyin Kaiti` for non-checked tones.
 // * 2. Zhuyin: checked tone ligatures (方言音符號入聲連字).
@@ -74,11 +66,3 @@ hruby
     // 3
     @extend %mre-ligature
     font-family: 'Romanization Sans', $mre-sans, mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ), sans-serif
-
-// * Fix Basic Biaodian in Firefox
-// *
-char.biaodian.liga,
-char.biaodian[unicode='b7']
-  .no-unicoderange &
-    @extend %mre-ligature
-    font-family: 'Biaodian Basic', 'Han Heiti'
