@@ -1732,12 +1732,6 @@ char.biaodian[unicode='b7'] {
  * ========================================================================== */
 /* Text-level semantics
  * ========================================================================== */
-.no-kaiti i, .no-kaiti
-var {
-  padding-bottom: 0.05em;
-  border-bottom: 3px double lightgray;
-}
-
 ruby rb[zhuyin] zhuyin diao,
 hruby rb[zhuyin] zhuyin diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
@@ -1749,13 +1743,14 @@ hruby rb[annotation]:before {
   font-family: "Romanization Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 
-.no-unicoderange char.biaodian.liga, .no-unicoderange
-char.biaodian[unicode='b7'] {
-  font-family: "Biaodian Basic", "Han Heiti";
-}
-
 /* Global
  * ========================================================================== */
+.no-kaiti i, .no-kaiti
+var {
+  padding-bottom: 0.05em;
+  border-bottom: 3px double lightgray;
+}
+
 /* Section-wise arrangement
  * ========================================================================== */
 article {
@@ -1880,6 +1875,11 @@ article blockquote blockquote {
 /*
  * Customised emphasis mark (着重號)
  */
+.no-unicoderange char.biaodian.liga, .no-unicoderange
+char.biaodian[unicode='b7'] {
+  font-family: "Biaodian Basic", "Han Heiti";
+}
+
 /*
  * Hanzi and Western script mixed spacing (漢字西文混排間隙)
  *
