@@ -105,15 +105,15 @@ $.extend( Hyu, {
   //
   renderElem: function( context ) {
     this.renderRuby( context )
-    this.renderLineDeco( context )
-    this.renderLineDeco( context, 's, del' )
+    this.renderDecoLine( context )
+    this.renderDecoLine( context, 's, del' )
     this.renderEm( context )
   },
 
   // Traverse target elements (those with text-decoration
   // -line) to see if we should address spacing in
   // between for semantic presentation.
-  renderLineDeco: function( context, target ) {
+  renderDecoLine: function( context, target ) {
     var
       target = target || 'u, ins',
       $target = $.qsa( target, context ),
