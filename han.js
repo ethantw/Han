@@ -595,7 +595,7 @@ var
     // Return if the current node should be ignored,
     // `<wbr>` or comments
     isIgnorable: function( node ) {
-      return node.nodeName === 'WBR' || node.nodeType === 8
+      return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
     },
 
     // Convert array-like objects into real arrays
