@@ -12,6 +12,8 @@ define([
 ], function( $, UNICODE, TYPESET, findAndReplaceDOMText ) {
 
 var
+  filteredElemList = 'style script',
+
   Farr = function( selector, filter, method, pattern, subst ) {
     return new Farr.prototype.init( selector, filter, method, pattern, subst )
   }
@@ -42,7 +44,7 @@ Farr.prototype = {
 
   // Define the default element list to be
   // filtered out.
-  filteredElemList: 'style script',
+  filteredElemList: filteredElemList,
 
   // Define the default `filterElement` function
   filterElem: function( currentElem ) {
@@ -241,8 +243,12 @@ Farr.prototype = {
               text = $.create( '', mat ),
 
               clazz = 'biaodian cjk ' + (
-                mat.match( TYPESET.char.biaodian.open ) ? 'open' :
-                mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
+                mat.match( TYPESET.char.biaodian.open ) ?
+                  'open' :
+                  mat.match( TYPESET.char.biaodian.close ) ?
+                    'close end' :
+                    mat.match( TYPESET.char.biaodian.end ) ?
+                      'end' : ''
               ),
 
               elem = $.create( 'char', clazz ),

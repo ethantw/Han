@@ -64,6 +64,7 @@ var
         biaodian: {
           all:   new RegExp( '(' + rBd + ')', 'g' ),
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
+          close: new RegExp( '(' + rBdClose + ')', 'g' ),
           end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
           liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
         },
