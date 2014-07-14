@@ -207,7 +207,9 @@ Farr.prototype = {
 
         latin:     'group',
         ellinika:  'group',
-        kirillica: 'group'
+        kirillica: 'group',
+        kana:      'none',
+        eonmun:    'none'
                     // group || individual || none
       }, option || {} )
     ;

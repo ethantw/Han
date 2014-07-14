@@ -37,10 +37,11 @@ var
     // classes (Modernizr-alike), binding onto the root
     // element, possibly `<html>`.
     'initCond',
-    // Address Biaodian ‘jiya’
-    'renderJiya',
     // Address element normalisation
     'renderElem',
+    // Handle Biaodian
+    //'jinzify',
+    'renderJiya',
     // Address Hanzi and Western script mixed spacing
     'renderHWS',
     // Address Basic Biaodian correction in Firefox
@@ -1348,7 +1349,9 @@ Farr.prototype = {
 
         latin:     'group',
         ellinika:  'group',
-        kirillica: 'group'
+        kirillica: 'group',
+        kana:      'none',
+        eonmun:    'none'
                     // group || individual || none
       }, option || {} )
     ;
