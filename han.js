@@ -2330,14 +2330,12 @@ $.extend( Han.fn, {
     return this
   },
 
-  // TODO
-  //// We did too much after the finder replacement,
-  //// which makes it impossible to process revert
-  //// properly.
   revertHWS: function() {
-    try {
-      this.HWS.revert()
-    } catch ( e ) {}
+    $
+    .tag( 'hws', this.context )
+    .forEach(function( hws ) {
+      $.remove( hws )
+    })
     return this
   }
 })
