@@ -735,7 +735,6 @@ hruby rb[zhuyin] zhuyin {
   top: 0;
   height: 2.7em;
   width: 0.8em;
-  font-family: cursive, serif;
   line-height: 0.9;
   white-space: pre-wrap;
   word-break: break-all;
@@ -1533,7 +1532,12 @@ jinze {
 @font-face {
   font-family: 'Zhuyin Heiti';
   src: local("Heiti TC"), local("Microsoft Jhenghei"), url("./font/han.woff") format("woff"), url("./font/han.otf") format("opentype");
-  unicode-range: U+3127, U+02C7, U+02CA-B, U+02D9;
+  unicode-range: U+3127;
+}
+@font-face {
+  font-family: 'Zhuyin Heiti';
+  src: url("./font/han.woff") format("woff"), url("./font/han.otf") format("opentype");
+  unicode-range: U+02C7, U+02CA-B, U+02D9;
 }
 /**
  * Romanisation (checked tone ligature [陽入韻連字])
@@ -1568,7 +1572,7 @@ var *:not(:lang(zh)):not(:lang(ja)) {
 html:lang(zh), html:lang(zh-Hant), article strong:lang(zh), article strong:lang(zh-Hant), article blockquote i:lang(zh), article blockquote i:lang(zh-Hant), article blockquote
 var:lang(zh), article blockquote
 var:lang(zh-Hant) {
-  font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
+  font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Zhuyin Heiti", "Han Heiti", sans-serif;
 }
 
 html:lang(zh-Hans), html:lang(zh-CN), article strong:lang(zh-Hans), article strong:lang(zh-CN), article blockquote i:lang(zh-Hans), article blockquote i:lang(zh-CN), article blockquote
@@ -1593,7 +1597,7 @@ figure blockquote *:not(:lang(zh)):not(:lang(ja)) {
 }
 
 article figure blockquote:lang(zh), article figure blockquote:lang(zh-Hant), figure blockquote:lang(zh), figure blockquote:lang(zh-Hant) {
-  font-family: "Biaodian Pro Serif", "Numeral LF Serif", Georgia, "Times New Roman", "Han Songti", serif;
+  font-family: "Biaodian Pro Serif", "Numeral LF Serif", Georgia, "Times New Roman", "Zhuyin Kaiti", "Han Songti", serif;
 }
 
 article figure blockquote:lang(zh-Hans), article figure blockquote:lang(zh-CN), figure blockquote:lang(zh-Hans), figure blockquote:lang(zh-CN) {
@@ -1612,7 +1616,7 @@ article blockquote *:not(:lang(zh)):not(:lang(ja)) {
 }
 
 article blockquote:lang(zh), article blockquote:lang(zh-Hant) {
-  font-family: "Biaodian Pro Serif", "Numeral LF Serif", Georgia, "Times New Roman", "Han Kaiti", cursive, serif;
+  font-family: "Biaodian Pro Serif", "Numeral LF Serif", Georgia, "Times New Roman", "Zhuyin Kaiti", "Han Kaiti", cursive, serif;
 }
 
 article blockquote:lang(zh-Hans), article blockquote:lang(zh-CN) {
@@ -1688,7 +1692,7 @@ samp:lang(zh),
 samp:lang(zh-Hant),
 pre:lang(zh),
 pre:lang(zh-Hant) {
-  font-family: "Biaodian Pro Sans", Menlo, Courier, "Han Heiti", monospace, monospace, sans-serif;
+  font-family: "Biaodian Pro Sans", Menlo, Courier, "Zhuyin Heiti", "Han Heiti", monospace, monospace, sans-serif;
 }
 
 code:lang(zh-Hans), code:lang(zh-CN),
@@ -1734,17 +1738,9 @@ var {
   border-bottom: 3px double lightgray;
 }
 
-ruby rb[zhuyin] zhuyin,
 ruby rb[zhuyin] zhuyin diao,
-hruby rb[zhuyin] zhuyin,
 hruby rb[zhuyin] zhuyin diao {
-  font-family: "Zhuyin Kaiti", "Han Kaiti", cursive, serif;
-}
-ruby[sans] rb[zhuyin] zhuyin,
-ruby [sans] rb[zhuyin] zhuyin,
-hruby[sans] rb[zhuyin] zhuyin,
-hruby [sans] rb[zhuyin] zhuyin {
-  font-family: "Zhuyin Heiti", "Han Heiti", "Zhuyin Kaiti", sans-serif;
+  font-family: "Zhuyin Kaiti", cursive, serif;
 }
 ruby.romanization rt,
 ruby rb[annotation]:before,

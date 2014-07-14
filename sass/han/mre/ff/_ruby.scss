@@ -27,6 +27,7 @@
 	;
 }
 
+// 1
 @font-face {
 	font-family: 'Zhuyin Heiti';
 	src:
@@ -34,10 +35,14 @@
 		local('Microsoft Jhenghei'),
 		$mre-webfont
 	;
-	unicode-range:
-		U+3127,						        // 1
-		U+02C7, U+02CA-B, U+02D9 	// 2
-  ;
+	unicode-range: U+3127;
+}
+
+// 2
+@font-face {
+	font-family: 'Zhuyin Heiti';
+	src: $mre-webfont;
+	unicode-range: U+02C7, U+02CA-B, U+02D9;
 }
 
 /**
