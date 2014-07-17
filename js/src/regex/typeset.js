@@ -66,7 +66,12 @@ var
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
           close: new RegExp( '(' + rBdClose + ')', 'g' ),
           end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-          liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
+          liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
+
+          group: [
+            new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+            new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+          ]
         },
 
         hanzi: {
@@ -95,11 +100,6 @@ var
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
-
-      jiya: [
-        new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
-      ],
 
       zhuyin: {
         form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),

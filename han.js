@@ -378,7 +378,12 @@ var
           open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
           close: new RegExp( '(' + rBdClose + ')', 'g' ),
           end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-          liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
+          liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
+
+          group: [
+            new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+            new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+          ]
         },
 
         hanzi: {
@@ -407,11 +412,6 @@ var
         wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
         middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
       },
-
-      jiya: [
-        new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
-      ],
 
       zhuyin: {
         form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
@@ -1379,6 +1379,17 @@ Farr.prototype = {
     ) {
 
       if ( option.hanzi !== 'none' ) {
+
+        this
+        .wrap(
+          TYPESET.char.biaodian.group[ 0 ],
+          $.clone( $.create( 'char_group', 'biaodian cjk' ))
+        )
+        .wrap(
+          TYPESET.char.biaodian.group[ 1 ],
+          $.clone( $.create( 'char_group', 'biaodian cjk' ))
+        )
+
         this.replace(
           TYPESET.char.biaodian.all,
           function( portion, match ) {
@@ -2343,34 +2354,22 @@ $.extend( Han.fn, {
 })
 
 
-var
-  bdgroup = $.create( 'char_group', 'biaodian cjk' )
-;
-
 Han.renderJiya = function( context ) {
   var
     context = context || document,
-    finder = [ Han.find( context ) ]
+    finder = Han.find( context )
   ;
 
-  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
+  finder.filteredElemList += ' textarea code kbd samp pre jinze em'
 
-  finder[ 0 ]
-  .wrap( Han.TYPESET.jiya[ 0 ], $.clone( bdgroup ))
-  .wrap( Han.TYPESET.jiya[ 1 ], $.clone( bdgroup ))
-
-  $
-  .qsa( 'char_group.biaodian', context )
-  .forEach( function( elem ) {
-    finder.push( Han( elem )
-    .charify({
-      hanzi:     'biaodian',
-      liga:      'liga',
-      word:      'none',
-      latin:     'none',
-      ellinika:  'none',
-      kirillica: 'none'
-    }))
+  finder
+  .charify({
+    hanzi:     'biaodian',
+    liga:      'liga',
+    word:      'none',
+    latin:     'none',
+    ellinika:  'none',
+    kirillica: 'none'
   })
 
   return finder

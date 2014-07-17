@@ -235,6 +235,17 @@ Farr.prototype = {
     ) {
 
       if ( option.hanzi !== 'none' ) {
+
+        this
+        .wrap(
+          TYPESET.char.biaodian.group[ 0 ],
+          $.clone( $.create( 'char_group', 'biaodian cjk' ))
+        )
+        .wrap(
+          TYPESET.char.biaodian.group[ 1 ],
+          $.clone( $.create( 'char_group', 'biaodian cjk' ))
+        )
+
         this.replace(
           TYPESET.char.biaodian.all,
           function( portion, match ) {
