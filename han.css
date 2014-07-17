@@ -1561,7 +1561,7 @@ jinze {
 @font-face {
   src: url("./font/han.woff") format("woff"), url("./font/han.otf") format("opentype");
   font-family: 'Romanization Sans';
-  unicode-range: U+030D, U+0358;
+  unicode-range: U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
 }
 html:lang(zh-Latn), html:lang(ja-Latn), html:not(:lang(zh)):not(:lang(ja)),
 html *:lang(zh-Latn),

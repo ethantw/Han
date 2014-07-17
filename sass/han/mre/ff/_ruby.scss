@@ -57,5 +57,9 @@
 @font-face {
 	@include mre-webfont;
 	font-family: 'Romanization Sans';
-	unicode-range: U+030D, U+0358;
+	unicode-range:
+		U+030D, U+0358,
+		U+F31B4-F31B7,
+		U+F0061, U+F0065, U+F0069, U+F006F, U+F0075
+	;
 }
