@@ -20,7 +20,7 @@
 
 ### 其他
 
- - [意大利體（西文）](./italic.html)
+ - [西文意大利體](./italic.html)
  - [數字](./numeral.html)
  - [標音（注音符號、羅馬拼音）](./ruby\(ff\).html)
 

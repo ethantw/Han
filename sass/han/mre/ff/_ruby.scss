@@ -16,6 +16,7 @@
 // * 1. Medial ‘yi’ (介音「ㄧ」)
 // * 2. Tones (五聲調號)
 // *
+
 @font-face {
 	@include mre-range-zhuyin;
 	font-family: 'Zhuyin Heiti';
@@ -40,9 +41,14 @@
 
 // 2
 @font-face {
+	@include mre-webfont;
 	font-family: 'Zhuyin Heiti';
-	src: $mre-webfont;
-	unicode-range: U+02C7, U+02CA-B, U+02D9;
+	unicode-range:
+		U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB,
+		U+31B4, U+31B5, U+31B6, U+31B7, U+030D, U+0358,
+		U+F31B4-F31B7,
+		U+F0061, U+F0065, U+F0069, U+F006F, U+F0075
+	;
 }
 
 /**

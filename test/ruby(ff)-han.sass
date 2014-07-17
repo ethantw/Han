@@ -1,0 +1,22 @@
+
+// **
+// * Rewrite the paths of Han Correction webfont
+// *
+$han-font-woff: '../font/han.woff'
+$han-font-otf:  '../font/han.otf'
+$han-font-ttf:  '../font/han.ttf'
+
+// **
+// * Import Han module
+// *
+@import ../sass/han
+
+#zhuyin_fuhao-heiti p
+  +han-ligature
+  font-family: 'Zhuyin Heiti', 'Han Heiti', sans-serif
+#zhuyin_fuhao-kaiti p
+  +han-ligature
+  font-family: 'Zhuyin Kaiti', 'Han Kaiti', cursive, serif
+#luoma_pinyin p
+  +han-ligature
+  font-family: 'Romanization Sans', sans-serif
