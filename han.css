@@ -803,6 +803,22 @@ hruby rb[order='1']:before, hruby[rightangle] rb[annotation]:before {
 hruby[rightangle] rb[annotation]:before {
   margin-left: -0.4em;
 }
+@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
+  hruby yin {
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    display: inline-block;
+  }
+  hruby rb[zhuyin][diao='˪'] diao,
+  hruby rb[zhuyin][diao='˫'] diao {
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
 
 jinze {
   display: inline-block;
