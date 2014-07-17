@@ -102,7 +102,7 @@ var
       },
 
       zhuyin: {
-        form:     new RegExp( '^(' + rZyS + ')?' + '(' + rZyJ + ')?' + '(' + rZyY + ')?' + '(' + rZyD + ')?$' ),
+        form:     new RegExp( '^\u02D9?(' + rZyS + ')?(' + rZyJ + ')?(' + rZyY + ')?(' + rZyD + ')?$' ),
         diao:     new RegExp( '(' + rZyD + ')', 'g' )
       },
 
