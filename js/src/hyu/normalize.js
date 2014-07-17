@@ -161,6 +161,7 @@ $.extend( Hyu, {
       }
 
       $elem
+      .groupify()
       .charify( Hyu.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'

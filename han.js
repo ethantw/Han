@@ -1339,6 +1339,19 @@ Farr.prototype = {
     return this
   },
 
+  groupify: function() {
+    this
+    .wrap(
+      TYPESET.char.biaodian.group[ 0 ],
+      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+    )
+    .wrap(
+      TYPESET.char.biaodian.group[ 1 ],
+      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+    )
+    return this
+  },
+
   // Implementation of character-level selector
   // (字元級選擇器)
   charify: function( option ) {
@@ -1373,22 +1386,13 @@ Farr.prototype = {
         $.clone( $.create( 'char', 'hanzi cjk' ))
       )
     }
+
     if ( option.hanzi === 'individual' ||
          option.hanzi === 'biaodian' ||
          option.liga  === 'liga'
     ) {
 
       if ( option.hanzi !== 'none' ) {
-
-        this
-        .wrap(
-          TYPESET.char.biaodian.group[ 0 ],
-          $.clone( $.create( 'char_group', 'biaodian cjk' ))
-        )
-        .wrap(
-          TYPESET.char.biaodian.group[ 1 ],
-          $.clone( $.create( 'char_group', 'biaodian cjk' ))
-        )
 
         this.replace(
           TYPESET.char.biaodian.all,
@@ -1910,6 +1914,7 @@ $.extend( Hyu, {
       }
 
       $elem
+      .groupify()
       .charify( Hyu.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'
@@ -2357,21 +2362,29 @@ $.extend( Han.fn, {
 Han.renderJiya = function( context ) {
   var
     context = context || document,
-    finder = Han.find( context )
+    finder = [ Han.find( context ) ]
   ;
 
-  finder.filteredElemList += ' textarea code kbd samp pre jinze em'
+  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
 
-  finder
-  .charify({
-    hanzi:     'biaodian',
-    liga:      'liga',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
+  finder[ 0 ]
+  .groupify()
+
+  $
+  .qsa( 'char_group.biaodian', context )
+  .forEach(function( elem ) {
+    finder.push(
+      Han( elem )
+      .charify({
+        hanzi:     'biaodian',
+        liga:      'liga',
+        word:      'none',
+        latin:     'none',
+        ellinika:  'none',
+        kirillica: 'none'
+      })
+    )
   })
-
   return finder
 }
 
@@ -2385,9 +2398,7 @@ $.extend( Han.fn, {
 
   revertJiya: function() {
     try {
-      for ( var i = this.jiya.length-1; i >= 0; i-- ) {
-        this.jiya[ i ].pop().revert( 'all' )
-      }
+      this.jiya.revert( 'all' )
     } catch ( e ) {}
     return this
   }

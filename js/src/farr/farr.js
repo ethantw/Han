@@ -195,6 +195,19 @@ Farr.prototype = {
     return this
   },
 
+  groupify: function() {
+    this
+    .wrap(
+      TYPESET.char.biaodian.group[ 0 ],
+      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+    )
+    .wrap(
+      TYPESET.char.biaodian.group[ 1 ],
+      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+    )
+    return this
+  },
+
   // Implementation of character-level selector
   // (字元級選擇器)
   charify: function( option ) {
@@ -229,22 +242,13 @@ Farr.prototype = {
         $.clone( $.create( 'char', 'hanzi cjk' ))
       )
     }
+
     if ( option.hanzi === 'individual' ||
          option.hanzi === 'biaodian' ||
          option.liga  === 'liga'
     ) {
 
       if ( option.hanzi !== 'none' ) {
-
-        this
-        .wrap(
-          TYPESET.char.biaodian.group[ 0 ],
-          $.clone( $.create( 'char_group', 'biaodian cjk' ))
-        )
-        .wrap(
-          TYPESET.char.biaodian.group[ 1 ],
-          $.clone( $.create( 'char_group', 'biaodian cjk' ))
-        )
 
         this.replace(
           TYPESET.char.biaodian.all,

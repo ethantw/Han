@@ -8,21 +8,29 @@ function( Han, $ ) {
 Han.renderJiya = function( context ) {
   var
     context = context || document,
-    finder = Han.find( context )
+    finder = [ Han.find( context ) ]
   ;
 
-  finder.filteredElemList += ' textarea code kbd samp pre jinze em'
+  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
 
-  finder
-  .charify({
-    hanzi:     'biaodian',
-    liga:      'liga',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
+  finder[ 0 ]
+  .groupify()
+
+  $
+  .qsa( 'char_group.biaodian', context )
+  .forEach(function( elem ) {
+    finder.push(
+      Han( elem )
+      .charify({
+        hanzi:     'biaodian',
+        liga:      'liga',
+        word:      'none',
+        latin:     'none',
+        ellinika:  'none',
+        kirillica: 'none'
+      })
+    )
   })
-
   return finder
 }
 
