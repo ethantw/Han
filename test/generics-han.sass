@@ -29,14 +29,14 @@ $mre-mono-zh:    $mre-sans-zh                     !default
 @import ../sass/han
 
 .sans
-  @extend %mre-sans-hant
+  +han-typeface-by-lang( sans )
 .sans-italic
-  @extend %mre-sans-italic-hant
+  +han-typeface-by-lang( sans-italic )
 .mono
-  @extend %mre-mono-hant
+  +han-typeface-by-lang( mono )
 .serif
-  @extend %mre-serif-hant
+  +han-typeface-by-lang( serif )
 .cursive
-  @extend %mre-cursive-hant
+  +han-typeface-by-lang( cursive )
 .cursive-italic
-  @extend %mre-cursive-italic-hant
+  +han-typeface-by-lang( cursive-italic )
