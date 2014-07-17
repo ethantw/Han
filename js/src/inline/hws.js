@@ -5,7 +5,7 @@ define([
 ], function( Han, $ ) {
 
 var
-  HWS_AS_FIRST_CHILD_QUERY = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws',
+  QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws',
 
   //// Disabled `Node.normalize()` for temp due to
   //// the issue in IE11.
@@ -61,7 +61,7 @@ $.extend( Han, {
     // Deal with:
     // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
     $
-    .qsa( HWS_AS_FIRST_CHILD_QUERY, context )
+    .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
     .forEach(function( firstChild ) {
       var
         parent = firstChild.parentNode,
@@ -114,16 +114,17 @@ $.extend( Han.fn, {
   HWS: null,
 
   renderHWS: function( strict ) {
-    this.HWS = Han.renderHWS( this.context, strict )
+    Han.renderHWS( this.context, strict )
+
+    this.HWS = $.tag( 'hws', this.context )
     return this
   },
 
   revertHWS: function() {
-    $
-    .tag( 'hws', this.context )
-    .forEach(function( hws ) {
-      $.remove( hws )
-    })
+    this.HWS
+      .forEach(function( hws ) {
+        $.remove( hws )
+      })
     return this
   }
 })
