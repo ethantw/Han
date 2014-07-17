@@ -771,16 +771,16 @@ hruby rb[zhuyin][length='3'] diao {
   margin-top: 1.3em;
 }
 hruby rb[zhuyin][diao='˙'] diao {
-  right: -0.2em;
+  right: -0.45em;
 }
 hruby rb[zhuyin][diao='˙'][length='1'] diao {
-  margin-top: 0;
+  margin-top: -0.4em;
 }
 hruby rb[zhuyin][diao='˙'][length='2'] diao {
   margin-top: -0.25em;
 }
 hruby rb[zhuyin][diao='˙'][length='3'] diao {
-  margin-top: -0.6em;
+  margin-top: -0.4em;
 }
 hruby rb[zhuyin][diao='˪'] diao, hruby rb[zhuyin][diao='˫'] diao {
   -moz-transform: scale(1.2);
@@ -817,6 +817,13 @@ hruby[rightangle] rb[annotation]:before {
     -ms-transform: scale(1);
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+  hruby rb[zhuyin][diao='˙'] diao {
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    top: 0.125em;
   }
 }
 
