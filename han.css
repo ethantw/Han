@@ -1557,15 +1557,22 @@ article strong *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 
-html:lang(zh), html:lang(zh-Hant), article strong:lang(zh), article strong:lang(zh-Hant) {
+html:lang(zh), html:lang(zh-Hant), [lang^='zh'],
+[lang^='zh-Hant'],
+[lang='zh-Hant-TW'],
+[lang='zh-Hant-HK'],
+[lang='zh-TW'],
+[lang='zh-HK'], article strong:lang(zh), article strong:lang(zh-Hant) {
   font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Zhuyin Heiti", "Han Heiti", sans-serif;
 }
 
-html:lang(zh-Hans), html:lang(zh-CN), article strong:lang(zh-Hans), article strong:lang(zh-CN) {
+html:lang(zh-Hans), html:lang(zh-CN), [lang^='zh-Hans'],
+[lang='zh-Hans-CN'],
+[lang='zh-CN'], article strong:lang(zh-Hans), article strong:lang(zh-CN) {
   font-family: "Biaodian GB Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti GB", sans-serif;
 }
 
-html:lang(ja), article strong:lang(ja) {
+html:lang(ja), [lang^='ja'], article strong:lang(ja) {
   font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
