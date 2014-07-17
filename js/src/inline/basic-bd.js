@@ -11,7 +11,7 @@ var
 mdot = $.create( 'char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
-Han.renderBasicBD = function( context, all ) {
+Han.correctBasicBD = function( context, all ) {
   var
     context = context || document,
     finder
@@ -39,8 +39,8 @@ Han.renderBasicBD = function( context, all ) {
 $.extend( Han.fn, {
   basicBD: null,
 
-  renderBasicBD: function( all ) {
-    this.basicBD = Han.renderBasicBD( this.context, all )
+  correctBasicBD: function( all ) {
+    this.basicBD = Han.correctBasicBD( this.context, all )
     return this
   },
 

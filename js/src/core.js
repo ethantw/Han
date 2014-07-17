@@ -20,7 +20,7 @@ var
     // Address Hanzi and Western script mixed spacing
     'renderHWS',
     // Address Basic Biaodian correction in Firefox
-    'renderBasicBD'
+    'correctBasicBD'
   ],
 
   // Define Han

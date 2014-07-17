@@ -45,7 +45,7 @@ var
     // Address Hanzi and Western script mixed spacing
     'renderHWS',
     // Address Basic Biaodian correction in Firefox
-    'renderBasicBD'
+    'correctBasicBD'
   ],
 
   // Define Han
@@ -595,7 +595,8 @@ var
     // Return if the current node should be ignored,
     // `<wbr>` or comments
     isIgnorable: function( node ) {
-      return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
+      return node.nodeName === 'WBR' ||
+        node.nodeType === Node.COMMENT_NODE
     },
 
     // Convert array-like objects into real arrays
@@ -2400,7 +2401,7 @@ var
 mdot = $.create( 'char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
-Han.renderBasicBD = function( context, all ) {
+Han.correctBasicBD = function( context, all ) {
   var
     context = context || document,
     finder
@@ -2428,8 +2429,8 @@ Han.renderBasicBD = function( context, all ) {
 $.extend( Han.fn, {
   basicBD: null,
 
-  renderBasicBD: function( all ) {
-    this.basicBD = Han.renderBasicBD( this.context, all )
+  correctBasicBD: function( all ) {
+    this.basicBD = Han.correctBasicBD( this.context, all )
     return this
   },
 
