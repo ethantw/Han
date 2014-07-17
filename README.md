@@ -1,3 +1,7 @@
+
+ - <b>中文版</b>
+ - [English version](https://github.com/ethantw/Han/blob/master/README \(en\).md)
+
 漢字標準格式
 ==========
 
