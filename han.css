@@ -1498,6 +1498,12 @@ jinze {
   font-family: 'Numeral LF Italic Serif';
   src: local("Palatino Italic"), local("Palatino Italic Linotype"), local("Times New Roman Italic"), local(Palatino-Italic), local(Palatino-Italic-Linotype), local(TimesNewRomanPS-ItalicMT);
 }
+@font-face {
+  unicode-range: U+0030-0039;
+  font-family: 'Numeral LF Italic Serif';
+  font-weight: bold;
+  src: local("Palatino Bold Italic"), local("Palatino Bold Italic Linotype"), local("Times New Roman Bold Italic"), local(Palatino-BoldItalic), local(Palatino-BoldItalic-Linotype), local(TimesNewRomanPS-BoldItalicMT);
+}
 /* Address solution to `unicode-range` unsupported
  * issues in Firefox.
  */
