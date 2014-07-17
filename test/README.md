@@ -36,6 +36,7 @@
  - [標點擠壓](./jiya.html)
  - [字元的替換](./subst.html)
 
+<!--
 ## 接口
 
  - [強制標點禁則](./api/jinzify.html)
@@ -43,3 +44,4 @@
  - [相鄰文字裝飾線](./api/deco-line.html)
  - [着重號](./api/em.html)
  - [行間注元素](./api/ruby.html)
+-->
