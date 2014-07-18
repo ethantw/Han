@@ -7,24 +7,22 @@
 		// 中日韓統一表意文字
 		U+4E00-9FFF,
 
+		// CJK Ext-A, B, C, D
+		// 擴展A、B、C、D（急用漢字）區
+		U+3400-4DB5,
+		U+20000-2A6D6,
+		U+2A700-2B734,
+		U+2B740-2B81D,
+
 		// 12 Compatibility Ideograph characters
 		// 12個「相容表意文字」
 		U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29,
 
-		// CJK ext-A
-		// 擴展A區
-		U+3400-4DB5,
-
-		// Unicode 4.1, 5.1
-		U+9FBC-9FC2, U+9FC4-9FC5,
-
-		// CJK Ext-B, C, D
-		// 擴展B、C、D（急用漢字）區
-		U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D,
-
 		// Kana
 		// 假名
-		U+3040-309F, U+30A1-30FE, U+30FD-30FF,
+		U+3040-309F, U+30A0-30FF,
+		U+3099-309E,
+		U+FF66-FF9F,
 
 		// Ideographic number ‘zero’
 		// 數字「〇」

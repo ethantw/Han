@@ -62,6 +62,20 @@
 
 @font-face {
 	@include mre-range-numeral;
+	font-family: 'Numeral LF Italic Sans';
+	font-weight: bold;
+	src:
+		local('Helvetica Neue Bold Italic'),
+		local('Helvetica Bold Oblique'),
+		local('Arial Bold Italic'),
+		local(HelveticaNeue-BoldItalic),
+		local(Helvetica-BoldOblique),
+		local(Arial-BoldItalicMT)
+	;
+}
+
+@font-face {
+	@include mre-range-numeral;
 	font-family: 'Numeral LF Serif';
 	src:
 		local(Palatino),
@@ -131,6 +145,13 @@
 }
 
 @font-face {
+	font-family: 'Numeral LF Italic Sans';
+	font-weight: bold;
+	src: local(lying-to-firefox);
+	unicode-range: U+270C;
+}
+
+@font-face {
 	font-family: 'Numeral LF Serif';
 	src: local(lying-to-firefox);
 	unicode-range: U+270C;
@@ -138,6 +159,13 @@
 
 @font-face {
 	font-family: 'Numeral LF Italic Serif';
+	src: local(lying-to-firefox);
+	unicode-range: U+270C;
+}
+
+@font-face {
+	font-family: 'Numeral LF Italic Serif';
+	font-weight: bold;
 	src: local(lying-to-firefox);
 	unicode-range: U+270C;
 }
