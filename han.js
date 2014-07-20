@@ -451,16 +451,16 @@ var
         ],
 
         'comb-liga-pua': [
-          [ '\u0061[\u030d\u0358]', 'F0061' ],
-          [ '\u0065[\u030d\u0358]', 'F0065' ],
-          [ '\u0069[\u030d\u0358]', 'F0069' ],
-          [ '\u006F[\u030d\u0358]', 'F006F' ],
-          [ '\u0075[\u030d\u0358]', 'F0075' ],
+          [ '\u0061[\u030d\u0358]', '\uDB80\uDC61' ],
+          [ '\u0065[\u030d\u0358]', '\uDB80\uDC65' ],
+          [ '\u0069[\u030d\u0358]', '\uDB80\uDC69' ],
+          [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
+          [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ],
 
-          [ '\u31B4[\u030d\u0358]', 'F31B4' ],
-          [ '\u31B5[\u030d\u0358]', 'F31B5' ],
-          [ '\u31B6[\u030d\u0358]', 'F31B6' ],
-          [ '\u31B7[\u030d\u0358]', 'F31B7' ]
+          [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
+          [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
+          [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
+          [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
         ]
       },
 
@@ -2461,7 +2461,7 @@ var
       container = body ? div : fakeBody,
 
       control = $.create( 'span' ),
-      test,
+      treat,
       ret
     ;
 
@@ -2478,13 +2478,13 @@ var
     control.style.fontFamily = 'sans-serif'
     control.style.display = 'inline-block'
 
-    test = $.clone( control )
-    test.style.fontFamily = '"Romanization Sans"'
+    treat = $.clone( control )
+    treat.style.fontFamily = '"Romanization Sans"'
 
     container.appendChild( control )
-    container.appendChild( test )
+    container.appendChild( treat )
 
-    ret = control.clientWidth !== test.clientWidth
+    ret = control.clientWidth !== treat.clientWidth
     if ( !body ) {
       $.remove( container )
       root.style.overflow = docOverflow
@@ -2533,6 +2533,8 @@ $.extend( Han, {
         }
       )
     })
+
+    
     return finder
   }
 })

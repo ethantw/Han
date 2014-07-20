@@ -13,7 +13,7 @@ var
       container = body ? div : fakeBody,
 
       control = $.create( 'span' ),
-      test,
+      treat,
       ret
     ;
 
@@ -30,13 +30,13 @@ var
     control.style.fontFamily = 'sans-serif'
     control.style.display = 'inline-block'
 
-    test = $.clone( control )
-    test.style.fontFamily = '"Romanization Sans"'
+    treat = $.clone( control )
+    treat.style.fontFamily = '"Romanization Sans"'
 
     container.appendChild( control )
-    container.appendChild( test )
+    container.appendChild( treat )
 
-    ret = control.clientWidth !== test.clientWidth
+    ret = control.clientWidth !== treat.clientWidth
     if ( !body ) {
       $.remove( container )
       root.style.overflow = docOverflow
@@ -85,6 +85,8 @@ $.extend( Han, {
         }
       )
     })
+
+    
     return finder
   }
 })
