@@ -56,56 +56,52 @@ html(lang='zh-Hant')
           | 二種模式<em>皆未</em>在預設的渲染途徑中，需要另行啟用。
       section#zhuozhong_ziti_xiaoguo_de_yitizi_xianshi
         h2 着重字體效果的異體字顯示
-        section#riwen_ziti_zhiyuan_de_yitizi
-          h3 日文字體支援的異體字
-          p
-            strong 注意：
-            | 僅支援繁體中文網頁。
-          table
-            thead
-              th(style='width: 4em;') 異體字
-              th(style='width: 4em;')  替換為
-              th 測試結果
-            tbody
-              //- tr
-              //-   td <code>夠 → 够</code>
-              //-   td 夠
-              tr
-                td <code>查</code>
-                td 査
-                td 查
-              tr
-                td <code>啟</code>
-                td 啓
-                td 啟
-              tr
-                td <code>鄉</code>
-                td 鄕
-                td 鄉
-              tr
-                td <code>值</code>
-                td 値
-                td 值
-              tr
-                td <code>污</code>
-                td 汚
-                td 污
-          h4 黑體（Han Heiti）
-          p
-            | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。<!--
-            | -->而不要在大城市污染自己那顆純潔的心。
-          h4 宋體（Han Songti）
-          p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Songti", serif;')
-            | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。<!--
-            | -->而不要在大城市污染自己那顆純潔的心。
-          h4 楷體（Han Kaiti）
-          p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Kaiti", cursive, serif;')
-            | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。<!--
-            | -->而不要在大城市污染自己那顆純潔的心。
-          h4 仿宋體（Han Fangsong）
-          p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Fangsong", cursive, serif;')
-            | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。<!--
-            | -->而不要在大城市污染自己那顆純潔的心。
+        //
+          section#riwen_ziti_zhiyuan_de_yitizi
+            h3 日文字體支援的異體字
+            p
+              strong 注意：
+              | 僅支援繁體中文網頁。
+            table
+              thead
+                th(style='width: 4em;') 異體字
+                th(style='width: 4em;')  替換為
+                th 測試結果
+              tbody
+                //- tr
+                //-   td <code>夠 → 够</code>
+                //-   td 夠
+                tr
+                  td <code>查</code>
+                  td 査
+                  td 查
+                tr
+                  td <code>啟</code>
+                  td 啓
+                  td 啟
+                tr
+                  td <code>鄉</code>
+                  td 鄕
+                  td 鄉
+                tr
+                  td <code>值</code>
+                  td 値
+                  td 值
+                tr
+                  td <code>污</code>
+                  td 汚
+                  td 污
+            h4 黑體（Han Heiti）
+            p 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 宋體（Han Songti）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Songti", serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 楷體（Han Kaiti）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Kaiti", cursive, serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 仿宋體（Han Fangsong）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Fangsong", cursive, serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
         section#pua_ziyuan
           h3 PUA字元
           section#x
@@ -113,7 +109,7 @@ html(lang='zh-Hant')
             table
               thead
                 th(style='width: 4em;') 陽入韻
-                th(style='width: 4em;') 替換為
+                th(style='width: 4em;') 顯示為
                 th 測試結果
               tbody
                 tr
