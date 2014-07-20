@@ -2453,6 +2453,8 @@ $.extend( Han.fn, {
 
 
 var
+  QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',
+
   isCombLigaNormal = (function() {
     var
       fakeBody = body || $.create( 'body' ),
@@ -2461,8 +2463,8 @@ var
       container = body ? div : fakeBody,
 
       control = $.create( 'span' ),
-      treat,
-      ret
+
+      treat, docOverflow, ret
     ;
 
     if ( !body ) {
@@ -2472,6 +2474,8 @@ var
 
       root.style.overflow = 'hidden'
       root.appendChild( fakeBody )
+    } else {
+      body.appendChild( container )
     }
 
     control.innerHTML = '&#x0069;&#x030D;'
@@ -2485,8 +2489,9 @@ var
     container.appendChild( treat )
 
     ret = control.clientWidth !== treat.clientWidth
+    $.remove( container )
+
     if ( !body ) {
-      $.remove( container )
       root.style.overflow = docOverflow
     }
     return ret
@@ -2534,7 +2539,21 @@ $.extend( Han, {
       )
     })
 
-    
+    $
+    .qsa( QUERY_RB_W_ANNO, context )
+    .forEach(function( rb ) {
+      var annotation = rb.getAttribute( 'annotation' )
+
+      aCombLiga
+      // Latin vowels only
+      .slice( 0, 5 )
+      .forEach(function( pattern ) {
+        annotation = annotation.replace(
+          new RegExp( pattern[ 0 ], 'ig' ), pattern[ 1 ]
+        )
+      })
+      rb.setAttribute( 'annotation', annotation )
+    })
     return finder
   }
 })
