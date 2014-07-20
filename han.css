@@ -1826,6 +1826,9 @@ var {
 
 /* Section-wise arrangement
  * ========================================================================== */
+/*
+ * Well-knit sections for articles
+ */
 article {
   line-height: 1.7;
 }
@@ -1943,10 +1946,16 @@ article blockquote blockquote {
     margin-right: 1em;
   }
 }
+/*
+ * Sectional counter for articles
+ */
 /* Line composition
  * ========================================================================== */
 /*
  * Customised emphasis mark (着重號)
+ */
+/*
+ * Basic Biaodian correction for Firefox
  */
 .no-unicoderange char.biaodian.liga, .no-unicoderange
 char.biaodian[unicode='b7'] {
@@ -1969,6 +1978,9 @@ code hws, kbd hws, samp hws, pre hws, ol > hws, ul > hws {
   display: none;
 }
 
+/*
+ * Consecutive CJK Biaodian positioning (CJK標點擠壓)
+ */
 char_group .open:not(:last-child), char_group
 .close:not(:last-child), char_group
 [unicode='3001']:not(:last-child), char_group
@@ -1989,6 +2001,9 @@ char_group .liga + [unicode='300c'], char_group .liga +
   margin-left: -0.25em;
 }
 
+/*
+ * The ‘Display-As’ feature for presentational characters
+ */
 char[display-as] {
   position: relative;
   display: inline-block;
