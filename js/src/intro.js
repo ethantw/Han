@@ -5,13 +5,8 @@
 
 ;(function( global, factory ) {
 
-  // AMD
-  if ( typeof define === 'function' && define.amd ) {
-    define( 'Han', [], function() {
-      return factory
-    })
   // CommonJS
-  } else if ( typeof module === 'object' && typeof module.exports === 'object' ) {
+  if ( typeof module === 'object' && typeof module.exports === 'object' ) {
     module.exports = factory( global, true )
   } else {
     factory( global )

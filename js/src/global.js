@@ -1,11 +1,18 @@
 define([
-    './core'
+  './core'
 ], function( Han ) {
 
+// AMD
 if (
-  typeof noGlobalNS === 'undefined' ||
-  noGlobalNS === false &&
-  ( typeof define !== 'function' && !define.amd )
+  typeof define === 'function' && define.amd
+) {
+  define(function() {
+    return Han
+  })
+
+// Expose to global namespace
+} else if (
+  typeof noGlobalNS === 'undefined' || noGlobalNS === false
 ) {
   window.Han = Han
 }

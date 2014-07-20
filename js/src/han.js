@@ -8,5 +8,5 @@ define([
   './dom-ready',
   './global'
 ], function( Han ) {
-  return Han
+return Han
 })

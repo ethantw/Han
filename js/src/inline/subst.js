@@ -1,8 +1,9 @@
 define([
+  '../var/body',
   '../core',
   '../method',
   '../regex'
-], function( Han, $ ) {
+], function( body, Han, $ ) {
 
 var
   QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',

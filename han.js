@@ -5,13 +5,8 @@
 
 ;(function( global, factory ) {
 
-  // AMD
-  if ( typeof define === 'function' && define.amd ) {
-    define( 'Han', [], function() {
-      return factory
-    })
   // CommonJS
-  } else if ( typeof module === 'object' && typeof module.exports === 'object' ) {
+  if ( typeof module === 'object' && typeof module.exports === 'object' ) {
     module.exports = factory( global, true )
   } else {
     factory( global )
@@ -2635,14 +2630,21 @@ $.extend( Han.fn, {
 
 
 
+// AMD
 if (
-  typeof noGlobalNS === 'undefined' ||
-  noGlobalNS === false &&
-  ( typeof define !== 'function' && !define.amd )
+  typeof define === 'function' && define.amd
+) {
+  define(function() {
+    return Han
+  })
+
+// Expose to global namespace
+} else if (
+  typeof noGlobalNS === 'undefined' || noGlobalNS === false
 ) {
   window.Han = Han
 }
 
 
-  return Han
+return Han
 });

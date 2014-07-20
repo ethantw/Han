@@ -23,5 +23,5 @@ define([
   './src/dom-ready',
   './src/global'
 ], function( Han ) {
-  return Han
+return Han
 })
