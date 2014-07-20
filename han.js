@@ -1500,11 +1500,9 @@ Han.find = Farr
   }
 })
 
-var
-  Hyu = {
-    JS_RENDERED_CLASS: 'hyu-js-rendered'
-  }
-;
+var Hyu = {
+  JS_RENDERED_CLASS: 'hyu-js-rendered'
+}
 
 
 function writeOnCanvas( text, font ) {
