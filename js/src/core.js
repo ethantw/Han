@@ -21,8 +21,11 @@ var
     'renderHWS',
     // Address Basic Biaodian correction in Firefox
     'correctBasicBD',
-    // Address PUA correction to combining ligatures
+    // Address presentational correction to combining ligatures
     'substCombLigaWithPUA'
+    // Address semantic correction to inaccurate characters
+    // **Note:** inactivated by default
+    // 'substInaccurateChar'
   ],
 
   // Define Han

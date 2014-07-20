@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" class="han-init">
+<html lang="zh-Hant">
   <head>
     <meta charset="utf-8">
     <title>測試・字元的替換 — 漢字標準格式</title>
@@ -55,10 +55,17 @@
         <p>
           「漢字標準格式」腳本包含二種字元替換的模式——着重字體效果<!--
           -->的「異體字顯示」與着重語意的「訛字（符）修正」。前者不更動<!--
-          -->DOM的原始文字，僅在顯示時使用異體字或PUA字元，以避開字體<!--
-          -->回退；後者則直接替換原始字元，確保語意正確的字符被使用。
+          -->DOM的原始文字，僅在<em>顯示時</em>使用異體字或PUA字元<!-- ，以避開字體回退
+          -->；後者則<em>直接替換</em>原始字元，確保語意正確的字符被使用。
         </p>
-        <p>二種模式<em>皆未</em>在預設的渲染途徑中，需要另行啟用。</p>
+        <p>位以下元素中的字元在二種模式下，<em>皆不會</em>被替換：</p>
+        <ul>
+          <li>文字區塊表單<code>textarea</code></li>
+          <li>代碼<code>code</code></li>
+          <li>輸入鍵<code>kbd</code></li>
+          <li>計算機輸出示例<code>samp</code></li>
+          <li>格式預處理<code>pre</code></li>
+        </ul>
       </section>
       <section id="zhuozhong_ziti_xiaoguo_de_yitizi_xianshi">
         <h2>着重字體效果的異體字顯示</h2>
@@ -111,6 +118,7 @@
         -->
         <section id="pua_ziyuan">
           <h3>PUA字元</h3>
+          <p><strong>提示：</strong>此功能僅在瀏覽器（IE9-11）無法正確顯示網頁字體<code>han.woff</code>下的變音連字時啓用。你可以呼叫屬性<code>Han.isCombLigaNormal</code><small>（布林値）</small>來判斷使用者瀏覽器是否能正確顯示變音連字。</p>
           <section id="hanzibiaoyin_de_yangruyun_fuhao">
             <h4>漢字標音的陽入韻符號</h4>
             <table>
@@ -172,6 +180,7 @@
       </section>
       <section id="zhuozhong_yuyi_de_ezi_xiuzheng">
         <h2>着重語意的訛字修正</h2>
+        <p><strong>提示：</strong>此功能爭議性較大，因此預設<em>關閉</em>。藉由執行<code>Han( context )</code>實例中的<code>substInaccurateChar()</code>方法來修正指定範圍內的訛字。</p>
         <table>
           <thead>
             <th style="width: 5em;">訛字（符）</th>
@@ -224,5 +233,10 @@
       </section>
     </article>
     <script src="../han.min.js"></script>
+    <script>
+      Han.init()
+      // disabled by default
+      .substInaccurateChar()
+    </script>
   </body>
 </html>

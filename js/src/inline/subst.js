@@ -6,16 +6,15 @@ define([
 
 var
   QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',
+  ELEM_TO_IGNORE = ' textarea code kbd samp pre',
 
   isCombLigaNormal = (function() {
     var
       fakeBody = body || $.create( 'body' ),
       div = $.create( 'div' ),
-
-      container = body ? div : fakeBody,
-
       control = $.create( 'span' ),
 
+      container = body ? div : fakeBody,
       treat, docOverflow, ret
     ;
 
@@ -50,6 +49,7 @@ var
   })(),
 
   aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
+  aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ],
 
   charCombLiga = $.create( 'char', 'comb-liga' ),
   charCombLigaInner =  $.create( 'inner' )
@@ -68,7 +68,7 @@ $.extend( Han, {
       return
     }
 
-    finder.filteredElemList += ' textarea code kbd samp pre'
+    finder.filteredElemList += ELEM_TO_IGNORE
 
     aCombLiga
     .forEach(function( pattern ) {
@@ -107,20 +107,50 @@ $.extend( Han, {
       rb.setAttribute( 'annotation', annotation )
     })
     return finder
+  },
+
+  substInaccurateChar: function( context ) {
+    var
+      context = context || document,
+      finder = Han.find( context )
+    ;
+
+    finder.filteredElemList += ELEM_TO_IGNORE
+    aInaccurateChar
+    .forEach(function( pattern ) {
+      finder
+      .replace(
+        new RegExp( pattern[ 0 ], 'ig' ),
+        pattern[ 1 ]
+      )
+    })
   }
 })
 
 $.extend( Han.fn, {
-  combLiga: null,
+  'comb-liga': null,
+  'inaccurate-char': null,
 
   substCombLigaWithPUA: function() {
-    this.combLiga = Han.substCombLigaWithPUA( this.context )
+    this['comb-liga'] = Han.substCombLigaWithPUA( this.context )
     return this
   },
 
   revertCombLigaWithPUA: function() {
     try {
-      this.combLiga.revert( 'all' )
+      this['comb-liga'].revert( 'all' )
+    } catch ( e ) {}
+    return this
+  },
+
+  substInaccurateChar: function() {
+    this['inaccurate-char'] = Han.substInaccurateChar( this.context )
+    return this
+  },
+
+  revertInaccurateChar: function() {
+    try {
+      this['inaccurate-char'].revert( 'all' )
     } catch ( e ) {}
     return this
   }
