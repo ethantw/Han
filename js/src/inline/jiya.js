@@ -2,8 +2,7 @@ define([
   '../core',
   '../method',
   '../regex'
-],
-function( Han, $ ) {
+], function( Han, $ ) {
 
 Han.renderJiya = function( context ) {
   var
