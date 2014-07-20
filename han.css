@@ -1988,3 +1988,45 @@ char_group .liga + [unicode='300c'], char_group .liga +
 [unicode='300e'] {
   margin-left: -0.25em;
 }
+
+char[display-as] {
+  position: relative;
+  display: inline-block;
+}
+char[display-as] inner {
+  display: inline-block;
+  color: transparent;
+}
+char[display-as]:after {
+  position: absolute;
+  left: 0;
+  content: attr(display-as);
+  display: inline-block;
+}
+char[display-as][display-as='F0061']:after {
+  content: "\F0061";
+}
+char[display-as][display-as='F0065']:after {
+  content: "\F0065";
+}
+char[display-as][display-as='F0069']:after {
+  content: "\F0069";
+}
+char[display-as][display-as='F006F']:after {
+  content: "\F006F";
+}
+char[display-as][display-as='F0075']:after {
+  content: "\F0075";
+}
+char[display-as][display-as='F31B4']:after {
+  content: "\F31B4";
+}
+char[display-as][display-as='F31B5']:after {
+  content: "\F31B5";
+}
+char[display-as][display-as='F31B6']:after {
+  content: "\F31B6";
+}
+char[display-as][display-as='F31B7']:after {
+  content: "\F31B7";
+}

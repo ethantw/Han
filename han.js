@@ -45,7 +45,9 @@ var
     // Address Hanzi and Western script mixed spacing
     'renderHWS',
     // Address Basic Biaodian correction in Firefox
-    'correctBasicBD'
+    'correctBasicBD',
+    // Address PUA correction to combining ligatures
+    'substCombLigaWithPUA'
   ],
 
   // Define Han
@@ -448,22 +450,18 @@ var
           '污 汚'
         ],
 
-        pua: {
-          'checked-tone-vowel': [
-            '\u0061[\u030d\u0358] \uF0061',
-            '\u0065[\u030d\u0358] \uF0065',
-            '\u0069[\u030d\u0358] \uF0069',
-            '\u006F[\u030d\u0358] \uF006F',
-            '\u0075[\u030d\u0358] \uF0075'
-          ],
+        'comb-liga-pua': [
+          [ '\u0061[\u030d\u0358]', 'F0061' ],
+          [ '\u0065[\u030d\u0358]', 'F0065' ],
+          [ '\u0069[\u030d\u0358]', 'F0069' ],
+          [ '\u006F[\u030d\u0358]', 'F006F' ],
+          [ '\u0075[\u030d\u0358]', 'F0075' ],
 
-          'checked-tone-zhuyin': [
-            '\u31B4[\u030d\u0358] \uF31B4',
-            '\u31B5[\u030d\u0358] \uF31B5',
-            '\u31B6[\u030d\u0358] \uF31B6',
-            '\u31B7[\u030d\u0358] \uF31B7'
-          ]
-        }
+          [ '\u31B4[\u030d\u0358]', 'F31B4' ],
+          [ '\u31B5[\u030d\u0358]', 'F31B5' ],
+          [ '\u31B6[\u030d\u0358]', 'F31B6' ],
+          [ '\u31B7[\u030d\u0358]', 'F31B7' ]
+        ]
       },
 
       // The feature actually *converts* the character
@@ -2452,6 +2450,94 @@ $.extend( Han.fn, {
     return this
   }
 })
+
+
+var
+  isCombLigaNormal = (function (){
+    var
+      div = $.create( 'div' ),
+      control = $.create( 'span' ),
+      test
+    ;
+
+    control.innerHTML = '&#xF0069;'
+    control.style.fontFamily = '"Romanization Sans"'
+    control.style.display = 'inline-block'
+
+    test = $.clone( control )
+    test.innerHTML = '&#x0069;&#x030D;'
+
+    body.appendChild( control )
+    body.appendChild( test )
+    $.remove( control )
+    $.remove( test )
+    //return control.offsetWidth === test.offsetWidth
+    return false
+  })(),
+
+  aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
+
+  charCombLiga = $.create( 'char', 'comb-liga' ),
+  charCombLigaInner =  $.create( 'inner' )
+;
+
+$.extend( Han, {
+  isCombLigaNormal: isCombLigaNormal,
+
+  substCombLigaWithPUA: function( context ) {
+    var
+      context = context || document,
+      finder = Han.find( context )
+    ;
+
+    if ( isCombLigaNormal ) {
+      return
+    }
+
+    finder.filteredElemList += ' textarea code kbd samp pre'
+
+    aCombLiga
+    .forEach(function( pattern ) {
+      finder
+      .replace(
+        new RegExp( pattern[ 0 ], 'ig' ),
+        function( portion, match ) {
+          var
+            ret = $.clone( charCombLiga ),
+            inner = $.clone( charCombLigaInner )
+          ;
+
+          // Put the original content in an inner container
+          // for better result of hidden text
+          inner.innerHTML = match[ 0 ]
+          ret.appendChild( inner )
+          ret.setAttribute( 'display-as', pattern[ 1 ] )
+          return portion.index === 0 ? ret : ''
+        }
+      )
+    })
+    return finder
+  }
+})
+
+$.extend( Han.fn, {
+  combLiga: null,
+
+  substCombLigaWithPUA: function() {
+    this.combLiga = Han.substCombLigaWithPUA( this.context )
+    return this
+  },
+
+  revertCombLigaWithPUA: function() {
+    try {
+      this.combLiga.revert( 'all' )
+    } catch ( e ) {}
+    return this
+  }
+})
+
+
+
 
 
 
