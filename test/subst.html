@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" class="han-init">
   <head>
     <meta charset="utf-8">
     <title>測試・字元的替換 — 漢字標準格式</title>
@@ -37,6 +37,10 @@
       
       table tr:not(:last-child) td {
         border-bottom: 1px solid #eee;
+      }
+      
+      .pua {
+        font-family: 'Romanization Sans', 'Zhuyin Kaiti';
       }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -107,7 +111,7 @@
         -->
         <section id="pua_ziyuan">
           <h3>PUA字元</h3>
-          <section id="x">
+          <section id="hanzibiaoyin_de_yangruyun_fuhao">
             <h4>漢字標音的陽入韻符號</h4>
             <table>
               <thead>
@@ -119,47 +123,47 @@
                 <tr>
                   <td><code>a̍</code></td>
                   <td>&#xF0061;</td>
-                  <td>a̍</td>
+                  <td class="pua">&#x0061;&#x030D;</td>
                 </tr>
                 <tr>
                   <td><code>e̍</code></td>
                   <td>&#xF0065;</td>
-                  <td>e̍</td>
+                  <td class="pua">&#x0065;&#x030D;</td>
                 </tr>
                 <tr>
                   <td><code>i̍</code></td>
                   <td>&#xF0069;</td>
-                  <td>i̍</td>
+                  <td class="pua">&#x0069;&#x030D;</td>
                 </tr>
                 <tr>
                   <td><code>o̍</code></td>
                   <td>&#xF006F;</td>
-                  <td>o̍</td>
+                  <td class="pua">&#x006F;&#x030D;</td>
                 </tr>
                 <tr>
                   <td><code>u̍</code></td>
                   <td>&#xF0075;</td>
-                  <td>u̍</td>
+                  <td class="pua">&#x0075;&#x030D;</td>
                 </tr>
                 <tr>
                   <td><code>ㆴ͘</code></td>
                   <td>&#xF31B4;</td>
-                  <td>ㆴ͘</td>
+                  <td class="pua">&#x31B4;&#x0358;</td>
                 </tr>
                 <tr>
                   <td><code>ㆵ͘</code></td>
                   <td>&#xF31B5;</td>
-                  <td>ㆵ͘</td>
+                  <td class="pua">&#x31B5;&#x0358;</td>
                 </tr>
                 <tr>
                   <td><code>ㆶ͘</code></td>
                   <td>&#xF31B6;</td>
-                  <td>ㆶ͘</td>
+                  <td class="pua">&#x31B6;&#x0358;</td>
                 </tr>
                 <tr>
                   <td><code>ㆷ͘</code></td>
                   <td>&#xF31B7;</td>
-                  <td>ㆷ͘</td>
+                  <td class="pua">&#x31B7;&#x0358;</td>
                 </tr>
               </tbody>
             </table>
@@ -219,13 +223,6 @@
         </table>
       </section>
     </article>
-    <!-- Here goes scripts-->
     <script src="../han.min.js"></script>
-    <script>
-      Han.init()
-      //.substText()
-      //.displayAs()
-      //.convertSemanticChar()
-    </script>
   </body>
 </html>

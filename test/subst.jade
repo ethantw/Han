@@ -1,5 +1,5 @@
 doctype html
-html(lang='zh-Hant')
+html(lang='zh-Hant').han-init
   head
     meta(charset='utf-8')
     title 測試・字元的替換 — 漢字標準格式
@@ -37,6 +37,10 @@ html(lang='zh-Hant')
 
       table tr:not(:last-child) td {
         border-bottom: 1px solid #eee;
+      }
+
+      .pua {
+        font-family: 'Romanization Sans', 'Zhuyin Kaiti';
       }
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
     meta(name='description' content='印刷品般的漢字網頁排版框架')
@@ -104,7 +108,7 @@ html(lang='zh-Hant')
               | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
         section#pua_ziyuan
           h3 PUA字元
-          section#x
+          section#hanzibiaoyin_de_yangruyun_fuhao
             h4 漢字標音的陽入韻符號
             table
               thead
@@ -115,39 +119,39 @@ html(lang='zh-Hant')
                 tr
                   td <code>a̍</code>
                   td &#xF0061;
-                  td a̍
+                  td.pua &#x0061;&#x030D;
                 tr
                   td <code>e̍</code>
                   td &#xF0065;
-                  td e̍
+                  td.pua &#x0065;&#x030D;
                 tr
                   td <code>i̍</code>
                   td &#xF0069;
-                  td i̍
+                  td.pua &#x0069;&#x030D;
                 tr
                   td <code>o̍</code>
                   td &#xF006F;
-                  td o̍
+                  td.pua &#x006F;&#x030D;
                 tr
                   td <code>u̍</code>
                   td &#xF0075;
-                  td u̍
+                  td.pua &#x0075;&#x030D;
                 tr
                   td <code>ㆴ͘</code>
                   td &#xF31B4;
-                  td ㆴ͘
+                  td.pua &#x31B4;&#x0358;
                 tr
                   td <code>ㆵ͘</code>
                   td &#xF31B5;
-                  td ㆵ͘
+                  td.pua &#x31B5;&#x0358;
                 tr
                   td <code>ㆶ͘</code>
                   td &#xF31B6;
-                  td ㆶ͘
+                  td.pua &#x31B6;&#x0358;
                 tr
                   td <code>ㆷ͘</code>
                   td &#xF31B7;
-                  td ㆷ͘
+                  td.pua &#x31B7;&#x0358;
 
       section#zhuozhong_yuyi_de_ezi_xiuzheng
         h2 着重語意的訛字修正
@@ -189,11 +193,4 @@ html(lang='zh-Hant')
               td <code>&#x2033;</code>
               td ”
               td &#x2033;
-
-    // Here goes scripts
     script(src='../han.min.js')
-    script.
-      Han.init()
-      //.substText()
-      //.displayAs()
-      //.convertSemanticChar()

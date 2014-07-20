@@ -2003,6 +2003,9 @@ char[display-as]:after {
   content: attr(display-as);
   display: inline-block;
 }
+char[display-as][display-as^='F']:after {
+  font-family: "Romanization Sans", "Zhuyin Kaiti";
+}
 char[display-as][display-as='F0061']:after {
   content: "\F0061";
 }

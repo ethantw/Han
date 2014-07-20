@@ -5,26 +5,43 @@ define([
 ], function( Han, $ ) {
 
 var
-  isCombLigaNormal = (function (){
+  isCombLigaNormal = (function() {
     var
+      fakeBody = body || $.create( 'body' ),
       div = $.create( 'div' ),
+
+      container = body ? div : fakeBody,
+
       control = $.create( 'span' ),
-      test
+      test,
+      ret
     ;
 
-    control.innerHTML = '&#xF0069;'
-    control.style.fontFamily = '"Romanization Sans"'
+    if ( !body ) {
+      fakeBody.style.background = ''
+      fakeBody.style.overflow = 'hidden'
+      docOverflow = root.style.overflow
+
+      root.style.overflow = 'hidden'
+      root.appendChild( fakeBody )
+    }
+
+    control.innerHTML = '&#x0069;&#x030D;'
+    control.style.fontFamily = 'sans-serif'
     control.style.display = 'inline-block'
 
     test = $.clone( control )
-    test.innerHTML = '&#x0069;&#x030D;'
+    test.style.fontFamily = '"Romanization Sans"'
 
-    body.appendChild( control )
-    body.appendChild( test )
-    $.remove( control )
-    $.remove( test )
-    //return control.offsetWidth === test.offsetWidth
-    return false
+    container.appendChild( control )
+    container.appendChild( test )
+
+    ret = control.clientWidth !== test.clientWidth
+    if ( !body ) {
+      $.remove( container )
+      root.style.overflow = docOverflow
+    }
+    return ret
   })(),
 
   aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
@@ -87,6 +104,4 @@ $.extend( Han.fn, {
     return this
   }
 })
-
-
 })
