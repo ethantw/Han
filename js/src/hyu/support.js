@@ -62,7 +62,7 @@ Hyu.support = (function() {
     ret = callback( container, rule )
 
     // Remove the injected scope
-    container.parentNode.removeChild( container )
+    $.remove( container )
     if ( !body ) {
       root.style.overflow = docOverflow
     }
