@@ -1,8 +1,10 @@
 .DS_Store
-Makefile
-config.rb
-*.scssc
+.sass-cache
+node_modules
 
-_cores
-_public
-manual
+TODO
+Makefile
+
+/server.js
+/index.html
+/index.jade

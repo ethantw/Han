@@ -1,0 +1,30 @@
+
+/**
+ * Consecutive CJK Biaodian positioning (CJK標點擠壓)
+ */
+
+// * Handle normal biaodian jiya situation
+// *
+.open,
+.close,
+[unicode='3001'],
+[unicode='3002'],
+[unicode='ff0c'],
+[unicode='ff08']
+  char_group  &:not(:last-child)
+    letter-spacing: -.5em
+
+// * Handle ‘「漢」·「字」’ situation
+// *
+[unicode='b7'],
+[unicode='30fb']
+  char_group & + [unicode='300c'],
+  char_group & + [unicode='300e']
+    margin-left: -.5em
+
+// * Handle ‘……「漢字’ situation
+// *
+[unicode='300c'],
+[unicode='300e']
+  char_group .liga + &
+    margin-left: -.25em

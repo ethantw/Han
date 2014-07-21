@@ -1,0 +1,37 @@
+
+$_default-variant: $mre-glyph-set-hant
+
+@if ( $mre-default-variant == hans )
+  $_default-variant: $mre-glyph-set-hans
+
+// **
+// * Functions
+// *
+@function mre-biaodian( $generic: Sans, $set: default )
+  @if ( $set == default )
+    $set: ''
+  @else
+    $set: $set + ' '
+  @return 'Biaodian ' + $set + $generic
+
+@function mre-typeface( $typeface: sans, $set: default, $pre: null )
+  @if ( $set == default )
+    $set: ''
+  @else
+    $set: ' ' + $set
+
+  @if ( $pre == null or $pre == '' )
+    @return $typeface + $set
+
+  @return $pre + ', ' + $typeface + $set
+
+@import extend/sans
+@import extend/serif
+@import extend/cursive
+@import extend/mono
+
+%mre-ligature
+  -moz-font-feature-settings: 'liga'
+  -ms-font-feature-settings: 'liga'
+  -webkit-font-feature-settings: 'liga'
+  font-feature-settings: 'liga'

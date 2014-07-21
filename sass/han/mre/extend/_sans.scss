@@ -1,0 +1,80 @@
+
+%mre-sans {
+  font-family:
+    $mre-sans,
+    mre-typeface( 'Han Heiti', $_default-variant, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-hant {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-hant ),
+    //'Numeral LF Sans',
+    $mre-sans,
+    'Zhuyin Heiti',
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-hans {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-hans ),
+    //'Numeral LF Sans',
+    $mre-sans,
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hans, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-ja {
+  font-family:
+    'Yakumono Sans',
+    //'Numeral LF Sans',
+    $mre-sans,
+    sans-serif
+  ;
+}
+
+/**
+ * Sans Italic
+ */
+%mre-sans-italic {
+  font-family:
+    'Latin Italic Sans',
+    $mre-sans,
+    mre-typeface( 'Han Heiti', $_default-variant, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-italic-hant {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-hant ),
+    'Latin Italic Sans',
+    $mre-sans,
+    'Zhuyin Heiti',
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-italic-hans {
+  font-family:
+    mre-biaodian( Sans, $mre-biaodian-hans ),
+    'Latin Italic Sans',
+    $mre-sans,
+    mre-typeface( 'Han Heiti', $mre-glyph-set-hans, $mre-sans-zh ),
+    sans-serif
+  ;
+}
+
+%mre-sans-italic-ja {
+  font-family:
+    'Yakumono Sans',
+    'Latin Italic Sans',
+    $mre-sans,
+    sans-serif
+  ;
+}

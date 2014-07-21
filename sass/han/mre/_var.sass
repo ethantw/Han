@@ -1,0 +1,75 @@
+
+// *!
+// * **WARNING**
+// * It is recommended to overwrite the variables before
+// * including the module, instead of modifying them here.
+// *
+
+// **
+// * The root element
+// * `html` || `'*:root'`
+// *
+$mre-root:                html  !default
+
+// **
+// * The article selector
+// * Possible values: `article` || `.article` || `.post` || `.entry`
+// *
+$mre-article:             article !default
+
+// **
+// * Default Chinese locale variant
+// * (Traditional or simplified characters)
+// * `hant` || `hans`
+// *
+$mre-default-variant:     hant    !default
+
+// **
+// * Chinese glyph set in general
+// * `default` || `CNS` || `GB`
+// *
+$mre-glyph-set-hant:      default !default
+
+// **
+// * Simplified Chinese glyph set
+// * `default` || `GB`
+// *
+$mre-glyph-set-hans:      GB      !default
+
+// **
+// * Chinese Biaodian set in general
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$mre-biaodian-hant:       Pro     !default
+
+// **
+// * Biaodian set for Simplified Chinese
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$mre-biaodian-hans:       GB      !default
+
+// **
+// * Generic typefaces for Western (Latin-based)
+// * characters
+// *
+$mre-sans:    'Helvetica Neue', Helvetica, Arial  !default
+$mre-serif:   Georgia, 'Times New Roman'          !default
+$mre-cursive: 'Apple Chancery', 'Snell Roundhand' !default
+$mre-mono:    Menlo, Courier                      !default
+
+// **
+// * Generic typefaces for Chinese
+// *
+$mre-sans-zh:    ''                               !default
+$mre-serif-zh:   ''                               !default
+$mre-cursive-zh: ''                               !default
+$mre-mono-zh:    $mre-sans-zh                     !default
+
+// **
+// * Web font paths
+// * (Zhuyin, checked-toned romanisation and
+// * partial CJK biaodian correction)
+// *
+$mre-font-woff: './font/mre.woff'                 !default
+$mre-font-otf:  './font/mre.otf'                  !default
+$mre-font-ttf:  './font/mre.ttf'                  !default

@@ -1,0 +1,38 @@
+
+%mre-serif {
+  font-family:
+    $mre-serif,
+    mre-typeface( 'Han Songti', $_default-variant, $mre-serif-zh ),
+    cursive, serif
+  ;
+}
+
+%mre-serif-hant {
+  font-family:
+    mre-biaodian( Serif, $mre-biaodian-hant ),
+    'Numeral LF Serif',
+    $mre-serif,
+    'Zhuyin Kaiti', 
+    mre-typeface( 'Han Songti', $mre-glyph-set-hant, $mre-serif-zh ),
+    serif
+  ;
+}
+
+%mre-serif-hans {
+  font-family:
+    mre-biaodian( Serif, $mre-biaodian-hans ),
+    'Numeral LF Serif',
+    $mre-serif,
+    mre-typeface( 'Han Songti', $mre-glyph-set-hans, $mre-serif-zh ),
+    serif
+  ;
+}
+
+%mre-serif-ja {
+  font-family:
+    'Yakumono Serif',
+    'Numeral LF Serif',
+    $mre-serif,
+    serif
+  ;
+}
