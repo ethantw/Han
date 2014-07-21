@@ -1,5 +1,5 @@
 require([
-  '../han.min'
+  './han.min'
 ], function( Han ) {
   Han.init()
 })
