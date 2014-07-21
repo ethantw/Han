@@ -3,7 +3,7 @@ html(lang='zh-Hant').han-init
   head
     meta(charset='utf-8')
     title 測試・漢字西文混排間隙 — 漢字標準格式
-    link(rel='stylesheet', href='../han.min.css')
+    link(rel='stylesheet', href='./han.min.css')
     style.
       html {
         overflow-x: hidden;
@@ -143,7 +143,7 @@ html(lang='zh-Hant').han-init
           | 。
         pre
           | 格式pre處理
-        p
+        p.noti
           strong 注意：
           | 在漢字西文混排間隙「基本模式」下，<!--
           | --><strong>代碼、輸入鍵、計算機輸出示例等元素仍經
@@ -153,4 +153,4 @@ html(lang='zh-Hant').han-init
           | -->「嚴格模式」下，則<em>不</em>渲染以上元素。
 
     // Here goes scripts
-    script(src='../han.min.js')
+    script(src='./han.min.js')

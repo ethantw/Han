@@ -26,13 +26,13 @@ html(lang='zh-Hant').han-init
 
     article
       h1 測試·章節與目錄的計數
-      p
+      p.noti
         strong 提示：
         | 「章節計數」是「漢字標準格式」的高級排版功能，預設關閉。需要自行編譯<!--
         | --><code>han.sass</code>模組或混用<code>han-section-counter</code><!--
         | -->（@mixin）方可使用，<a href='//css.hanzi.co/manual'>閱讀使用手冊</a><!--
         | -->以瞭解詳情。CDN文件<em>不</em>支援此功能。
-      p
+      p.noti
         strong 提示二：
         | 此測試頁使用了《日文排版規範》（<!--
         | --><a lang='en' href='http://www.w3.org/TR/jlreq/'><cite>Requirements for Japanese Text Layout</cite></a><!--
@@ -190,4 +190,4 @@ html(lang='zh-Hant').han-init
 
 
     // Here goes scripts
-    script(src='../han.min.js')
+    script(src='./han.min.js')

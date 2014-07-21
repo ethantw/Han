@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>測試・字元的替換 — 漢字標準格式</title>
-    <link rel="stylesheet" href="../han.min.css">
+    <link rel="stylesheet" href="./han.min.css">
     <style>
       html {
         overflow-x: hidden;
@@ -118,7 +118,7 @@
         -->
         <section id="pua_ziyuan">
           <h3>PUA字元</h3>
-          <p><strong>提示：</strong>此功能僅在瀏覽器（IE9-11）無法正確顯示網頁字體<code>han.woff</code>下的變音連字時啓用。你可以呼叫屬性<code>Han.isCombLigaNormal</code><small>（布林値）</small>來判斷使用者瀏覽器是否能正確顯示變音連字。</p>
+          <p><strong>提示：</strong>此功能僅在瀏覽器（IE9-11）無法正確顯示網頁字體<code>han.woff</code>下的變音符連字時啓用。你可以呼叫屬性<code>Han.isCombLigaNormal</code><small>（布林値）</small>來判斷使用者瀏覽器是否能正確顯示變音連字。</p>
           <section id="hanzibiaoyin_de_yangruyun_fuhao">
             <h4>漢字標音的陽入韻符號</h4>
             <table>
@@ -180,7 +180,7 @@
       </section>
       <section id="zhuozhong_yuyi_de_ezi_xiuzheng">
         <h2>着重語意的訛字修正</h2>
-        <p><strong>提示：</strong>此功能爭議性較大，因此預設<em>關閉</em>。藉由執行<code>Han( context )</code>實例中的<code>substInaccurateChar()</code>方法來修正指定範圍內的訛字。</p>
+        <p class="noti"><strong>提示：</strong>此功能爭議性較大，因此預設<em>關閉</em>。藉由執行<code>Han( context )</code>實例中的<code>substInaccurateChar()</code>方法來修正指定範圍內的訛字。</p>
         <table>
           <thead>
             <th style="width: 5em;">訛字（符）</th>
@@ -232,7 +232,7 @@
         </table>
       </section>
     </article>
-    <script src="../han.min.js"></script>
+    <script src="./han.min.js"></script>
     <script>
       Han.init()
       // disabled by default
