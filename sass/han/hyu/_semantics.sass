@@ -46,7 +46,6 @@ address
 // * Improve the readability
 // *
 pre
-  overflow: auto
   white-space: pre
   word-wrap: normal
 
@@ -148,7 +147,7 @@ q
     content: none
 
 /**
- * Code, user input, computer output, preformatted text
+ * Code, user input, computer output and preformatted text
  * (代碼、輸入鍵、計算機輸出示例、格式預處理文字)
  */
 
@@ -162,7 +161,7 @@ pre
   font-family: monospace, monospace, sans-serif
 
 /**
- * Alternative voices & variables
+ * Alternative voices and variables
  * (變音文字、變數)
  */
 i,
@@ -173,26 +172,26 @@ var
     font-style: inherit
 
 /**
- * Annotations & insertion
- * (註記、增訂)
+ * Annotations, inaccurate text, insertion and deletion
+ * (註記、訛訊、增訂、刪訂)
  */
 
 // * Semantic presentation for two adjacent underlined
 // * text runs.
 // *
-%hyu-adjacent-line-deco
+%hyu-adjacent-deco-line
   margin-left: .125em
 
 u,
 ins
   & + u,
   & + ins
-    @extend %hyu-adjacent-line-deco
+    @extend %hyu-adjacent-deco-line
 s,
 del
   & + s,
   & + del
-    @extend %hyu-adjacent-line-deco
+    @extend %hyu-adjacent-deco-line
 
 u,
 ins
