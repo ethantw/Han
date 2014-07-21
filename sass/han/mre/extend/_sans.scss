@@ -38,7 +38,7 @@
 }
 
 /**
- * Cursive Italic
+ * Sans Italic
  */
 %mre-sans-italic {
   font-family:
@@ -51,7 +51,7 @@
 
 %mre-sans-italic-hant {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hant ),
+    mre-biaodian( Sans, $mre-biaodian-hant ),
     'Latin Italic Sans',
     $mre-sans,
     'Zhuyin Heiti',
@@ -62,7 +62,7 @@
 
 %mre-sans-italic-hans {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hans ),
+    mre-biaodian( Sans, $mre-biaodian-hans ),
     'Latin Italic Sans',
     $mre-sans,
     mre-typeface( 'Han Heiti', $mre-glyph-set-hans, $mre-sans-zh ),
@@ -72,7 +72,7 @@
 
 %mre-sans-italic-ja {
   font-family:
-    'Yakumono Serif',
+    'Yakumono Sans',
     'Latin Italic Sans',
     $mre-sans,
     sans-serif
