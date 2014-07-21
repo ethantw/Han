@@ -2002,14 +2002,13 @@ char[display-as] {
   display: inline-block;
 }
 char[display-as] inner {
-  display: inline-block;
   color: transparent;
 }
 char[display-as]:after {
   position: absolute;
   left: 0;
-  content: attr(display-as);
   display: inline-block;
+  content: attr(display-as);
 }
 char[display-as].comb-liga:after {
   font-family: "Romanization Sans", "Zhuyin Kaiti";
