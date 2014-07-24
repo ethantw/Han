@@ -12,6 +12,6 @@
     factory( global )
   }
 
-})( this, function( window, noGlobalNS ) {
+})( typeof window !== 'undefined' ? window : this, function( window, noGlobalNS ) {
 
   'use strict';
