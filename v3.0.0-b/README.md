@@ -2,7 +2,8 @@
 ========
 
  - [測試頁（標準）](test.html)
- - [測試頁（JavaScript模組）](test-module.html)
+ - [測試頁（AMD模組）](test-amd.html)
+ - [測試頁（CommonJS模組，browserify）](test-commonjs.html)
  - [測試頁（無JavaScript）](test-nojs.html)
 
 ## Normalisation（樣式標準化）
