@@ -15,7 +15,7 @@ Han.fn.initCond = function() {
 
 ;[
   'Elem',
-  'LineDeco',
+  'DecoLine',
   'Em',
   'Ruby'
 ].forEach(function( elem ) {
