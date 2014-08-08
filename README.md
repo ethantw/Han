@@ -11,7 +11,7 @@
 [檢視範例測試頁 →][test]
 
 [Sass]: http://sass-lang.com
-[test]: http://ethantw.github.io/Han/test.html
+[test]: http://ethantw.github.io/Han/v2.3.0/test.html
 
 
 安裝及使用
