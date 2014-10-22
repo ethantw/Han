@@ -12,12 +12,66 @@
   +hyu-text-emphasis( $posi, $mark, $shape, $color )
   +hyu-text-emphasis-pf( $posi, $mark, $shape, $color, $skip, $extend )
 
+%han-ligature
+  @extend %mre-ligature
+
 =han-typeface-by-lang( $typeface: sans )
   +mre-typeface-by-lang( $typeface )
 
-=han-ligature
-  &
-    @extend %mre-ligature
+%han-sans-hant
+  @extend %mre-sans-hant
+%han-sans-hans
+  @extend %mre-sans-hans
+%han-sans-ja
+  @extend %mre-sans-ja
+%han-sans
+  @extend %mre-sans
+%han-sans-italic-hant
+  @extend %mre-sans-italic-hant
+%han-sans-italic-hans
+  @extend %mre-sans-italic-hans
+%han-sans-italic-ja
+  @extend %mre-sans-italic-ja
+%han-sans-italic
+  @extend %mre-sans-italic
+%han-serif-hant
+  @extend %mre-serif-hant
+%han-serif-hans
+  @extend %mre-serif-hans
+%han-serif-ja
+  @extend %mre-serif-ja
+%han-serif
+  @extend %mre-serif
+%han-serif-italic-hant
+  @extend %mre-serif-italic-hant
+%han-serif-italic-hans
+  @extend %mre-serif-italic-hans
+%han-serif-italic-ja
+  @extend %mre-serif-italic-ja
+%han-serif-italic
+  @extend %mre-serif-italic
+%han-cursive-hant
+  @extend %mre-cursive-hant
+%han-cursive-hans
+  @extend %mre-cursive-hans
+%han-cursive-ja
+  @extend %mre-cursive-ja
+%han-cursive
+  @extend %mre-cursive
+%han-cursive-italic-hant
+  @extend %mre-cursive-italic-hant
+%han-cursive-italic-hans
+  @extend %mre-cursive-italic-hans
+%han-cursive-italic-ja
+  @extend %mre-cursive-italic-ja
+%han-cursive-italic
+  @extend %mre-cursive-italic
+%han-mono-hant
+  @extend %mre-mono-hant
+%han-mono-hans
+  @extend %mre-mono-hans
+%han-mono-ja
+  @extend %mre-mono-ja
 
 =han-section-counter( $toc: false )
   &

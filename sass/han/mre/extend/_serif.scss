@@ -12,7 +12,7 @@
     mre-biaodian( Serif, $mre-biaodian-hant ),
     'Numeral LF Serif',
     $mre-serif,
-    'Zhuyin Kaiti', 
+    'Zhuyin Kaiti',
     mre-typeface( 'Han Songti', $mre-glyph-set-hant, $mre-serif-zh ),
     serif
   ;
@@ -34,5 +34,49 @@
     'Numeral LF Serif',
     $mre-serif,
     serif
+  ;
+}
+/**
+ * Serif Italic
+ */
+%mre-serif-italic {
+  font-family:
+    'Latin Italic Serif',
+    $mre-serif,
+    mre-typeface( 'Han Songti', $_default-variant, $mre-serif-zh ),
+    cursive, serif
+  ;
+}
+
+%mre-serif-italic-hant {
+  font-family:
+    mre-biaodian( Serif, $mre-biaodian-hant ),
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $mre-serif,
+    'Zhuyin Kaiti',
+    mre-typeface( 'Han Songti', $mre-glyph-set-hant, $mre-serif-zh ),
+    cursive, serif
+  ;
+}
+
+%mre-serif-italic-hans {
+  font-family:
+    mre-biaodian( Serif, $mre-biaodian-hans ),
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $mre-serif,
+    mre-typeface( 'Han Songti', $mre-glyph-set-hans, $mre-serif-zh ),
+    cursive, serif
+  ;
+}
+
+%mre-serif-italic-ja {
+  font-family:
+    'Yakumono Serif',
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $mre-serif,
+    cursive, serif
   ;
 }
