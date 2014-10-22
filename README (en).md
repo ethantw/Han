@@ -18,7 +18,7 @@ Han.css currently supports Traditional Chinese, Simplified Chinese and Japanese.
 - NPM：`npm install --save Han`
 
 ### Customisation
-Han.css provides plenty of customisable features. By variable configuration or module import, it is easy to compile projects own style sheets. [Check out the manual][manual] for further information.
+Han.css provides plenty of customisable features. By variable configuration or module import, it is easy to compile projects own style sheets. [Check out the manual][manual] for more detailed information.
 
 [manual]: http://css.hanzi.co/manual/:en
 
