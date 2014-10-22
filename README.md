@@ -7,15 +7,16 @@
 
 「漢字標準格式」是一個集「語意樣式標準化」「字體排印」「高級排版功能」三大概念的Sass、JavaScript排版框架。其專為漢字網頁提供的美觀而標準化的環境，不僅符合傳統閱讀習慣、更為螢幕閱讀提供了既成標準，得以完整解決現今漢字網頁設計的排版需求。
 
-「漢字標準格式」目前完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
+「漢字標準格式」完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
 
 [檢視範例測試頁 →]
-(http://ethantw.github.io/Han/test/)
+(http://ethantw.github.io/Han/latest/)
 
 
 ## 安裝
-- Bower：`bower install --save Han`
-- NPM：`npm install --save Han`
+- NPM `npm install --save Han`
+- Bower `bower install --save Han`
+- Component `component install ethantw/Han`
 
 ### 定製
 「漢字標準格式」提供了多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][manual]。
@@ -39,17 +40,13 @@
 
 Web字體，
 
-````scss
-src:
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff') format('woff'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf')  format('opentype')
-;
-````
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf`
 
 ## 使用方式
 
 1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass）。
-2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOMReady渲染。
+2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOM-ready渲染。
 3. 或依需求定製渲染方式，詳見[使用手冊][manual]。
 
 ### 可選用的腳本
@@ -74,8 +71,8 @@ src:
 - Mozilla Firefox（最新版）
 - Opera Next（最新版）
 - Apple Safari 7+
-- Internet Explorer 9+
+- Internet Explorer 10+
 
 * * *
 「漢字標準格式」版本：v3.0.0  
-本頁最後修改於：2014年7月17日 10:20（GMT+8）
+本頁最後修改於：2014年10月23日 04:20（GMT+8）

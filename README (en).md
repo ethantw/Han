@@ -8,19 +8,20 @@ Han.css
 
 Han.css is a Sass/JavaScript typesetting framework, which features style normalisation to semantic elements, typography and advanced typesetting. Its elegant, standardised Hanzi (CJK) environment provides not only the legacy of reading convention but also the de facto specification in the digital. Han.css is the solution to Hanzi web design for the time being.
 
-Han.css currently supports Traditional Chinese, Simplified Chinese and Japanese.
+Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 
 [View the test pages (zh) →]
-(http://ethantw.github.io/Han/test/)
+(http://ethantw.github.io/Han/latest/)
 
 ## Installation
-- Bower：`bower install --save Han`
-- NPM：`npm install --save Han`
+- NPM `npm install --save Han`
+- Bower `bower install --save Han`
+- Component `component install ethantw/Han`
 
 ### Customisation
 Han.css provides plenty of customisable features. By variable configuration or module import, it is easy to compile projects own style sheets. [Check out the manual][manual] for more detailed information.
 
-[manual]: http://css.hanzi.co/manual/:en
+[manual]: http://css.hanzi.co/manual/
 
 ### Use of CDN
 For high-speed downloads and cache, in need of customisation otherwise, you can use the CDN style sheets, JavaScript files and web fonts compiled by default configuration. The service [is hosted on cdnjs.com][cdnjs].
@@ -39,17 +40,13 @@ JavaScript,
 
 Web fonts,
 
-````scss
-src:
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff') format('woff'),
-  url('//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf')  format('opentype')
-;
-````
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf`
 
 ## How to use
 
 1. Include `han.min.css` before all other styles (or import it in Sass).
-2. Include script file, `han.min.js`, according to own requirements. Then add the class name `han-init` onto `<html>` tag to activate DOMReady rendering.
+2. Include script file, `han.min.js`, according to own requirements. Then add the class name `han-init` onto `<html>` tag to activate DOM-ready rendering.
 3. Or, customise your own rendering routine. [Check out the manual][manual] for further information.
 
 ### JavaScript is optional
@@ -74,8 +71,8 @@ Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritt
 - Mozilla Firefox (latest)
 - Opera Next (latest)
 - Apple Safari 7+
-- Internet Explorer 9+
+- Internet Explorer 10+
 
 * * *
 Han.css v3.0.0  
-Last-modified: 2014-7-17 10:20 (GMT+8)
+Last-modified: 2014-10-23 04:20 (GMT+8)
