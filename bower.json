@@ -6,7 +6,7 @@
     "Chen Yijun (@ethantw)"
   ],
   "description": "The CSS typography framework optimised for Hanzi.",
-  "main": "han.css",
+  "main": [ "han.css", "han.js" ],
   "keywords": [
     "Han",
     "Hanzi",
@@ -21,10 +21,11 @@
   "license": "http://css.hanzi.co/LICENSE.md",
   "ignore": [
     "**/.*",
+    "build",
     "node_modules",
-    "bower_components",
     "test",
     "package.json",
+    "component.json",
     "CHANGELOG.md"
   ]
 }
