@@ -25,7 +25,9 @@
   "bugs": {
     "url": "https://github.com/ethantw/Han/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "normalize.css": "~3.0.2"
+  },
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-cli": "0.1.13",
