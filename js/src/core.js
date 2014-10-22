@@ -68,7 +68,7 @@ Han.fn = Han.prototype = {
   // Note that the routine set up here will execute
   // only once. The method won't alter the routine in
   // the instance or in the prototype chain.
-  renderRoutine: function( routine ) {
+  render: function( routine ) {
     var that = this,
         routine = Array.isArray( routine ) ?
           routine : this.routine
@@ -90,14 +90,14 @@ Han.fn = Han.prototype = {
 Han.fn.init.prototype = Han.fn
 
 /**
- * Shortcut for `renderRoutine()` under the default
+ * Shortcut for `render()` under the default
  * situation.
  *
  * Once initialised, replace `Han.init` with the
  * instance for future usage.
  */
 Han.init = function() {
-  return Han.init = Han().renderRoutine()
+  return Han.init = Han().render()
 }
 
 return Han
