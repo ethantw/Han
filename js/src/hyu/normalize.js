@@ -280,6 +280,10 @@ $.extend( Hyu, {
           $
           .tag( 'rt', rtc )
           .forEach(function( rt, i ) {
+            if ( !$rb[ i ] ) {
+              return
+            }
+
             var $$rb = createZhuyinRb( $rb[ i ], rt )
 
             try {
