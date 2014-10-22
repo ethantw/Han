@@ -3,51 +3,49 @@ define([
 ], function( UNICODE ) {
 
 var TYPESET = (function() {
-      var
-        // Whitespace characters
-        // http://www.w3.org/TR/css3-selectors/#whitespace
-        rWhite = '[\\x20\\t\\r\\n\\f]',
+      var rWhite = '[\\x20\\t\\r\\n\\f]',
+          // Whitespace characters
+          // http://www.w3.org/TR/css3-selectors/#whitespace
 
-        rPtOpen = UNICODE.punct.open,
-        rPtClose = UNICODE.punct.close,
-        rPtEnd = UNICODE.punct.end,
-        rPtMid = UNICODE.punct.middle,
-        rPtSing = UNICODE.punct.sing,
-        rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
+          rPtOpen = UNICODE.punct.open,
+          rPtClose = UNICODE.punct.close,
+          rPtEnd = UNICODE.punct.end,
+          rPtMid = UNICODE.punct.middle,
+          rPtSing = UNICODE.punct.sing,
+          rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
 
-        rBdOpen = UNICODE.biaodian.open,
-        rBdClose = UNICODE.biaodian.close,
-        rBdEnd = UNICODE.biaodian.end,
-        rBdMid = UNICODE.biaodian.middle,
-        rBdLiga = UNICODE.biaodian.liga + '{2}',
-        rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
+          rBdOpen = UNICODE.biaodian.open,
+          rBdClose = UNICODE.biaodian.close,
+          rBdEnd = UNICODE.biaodian.end,
+          rBdMid = UNICODE.biaodian.middle,
+          rBdLiga = UNICODE.biaodian.liga + '{2}',
+          rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
 
-        rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
-        rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
-        rKanaH = UNICODE.kana.half,
-        rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter,
-        rEonH = UNICODE.eonmun.half,
+          rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
+          rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
+          rKanaH = UNICODE.kana.half,
+          rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter,
+          rEonH = UNICODE.eonmun.half,
 
-        rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
+          rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
 
-        rCbn = UNICODE.ellinika.combine,
-        rLatn = UNICODE.latin.base + rCbn + '*',
-        rGk = UNICODE.ellinika.base + rCbn + '*',
+          rCbn = UNICODE.ellinika.combine,
+          rLatn = UNICODE.latin.base + rCbn + '*',
+          rGk = UNICODE.ellinika.base + rCbn + '*',
 
-        rCyCbn = UNICODE.kirillica.combine,
-        rCy = UNICODE.kirillica.base + rCyCbn + '*',
+          rCyCbn = UNICODE.kirillica.combine,
+          rCy = UNICODE.kirillica.base + rCyCbn + '*',
 
-        rAlph = rLatn + '|' + rGk + '|' + rCy,
+          rAlph = rLatn + '|' + rGk + '|' + rCy,
 
-        // For words like `it's`, `Jones’s` or `'99`
-        rApo = '[\u0027\u2019]',
-        rChar = rHan + '|(' + rAlph + '|' + rApo + ')+',
+          // For words like `it's`, `Jones’s` or `'99`
+          rApo = '[\u0027\u2019]',
+          rChar = rHan + '|(' + rAlph + '|' + rApo + ')+',
 
-        rZyS = UNICODE.zhuyin.initial,
-        rZyJ = UNICODE.zhuyin.medial,
-        rZyY = UNICODE.zhuyin.final,
-        rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
-      ;
+          rZyS = UNICODE.zhuyin.initial,
+          rZyJ = UNICODE.zhuyin.medial,
+          rZyY = UNICODE.zhuyin.final,
+          rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
 
       return {
         /* Character-level selector (字級選擇器)
