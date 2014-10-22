@@ -1,7 +1,6 @@
 @charset "UTF-8";
 /*! 漢字標準格式 v3.0.0 | MIT License | css.hanzi.co */
 /*! Han: CSS typography framework optimised for Hanzi */
-/*! Hyu v1.0.0 | MIT License | css.hanzi.co/hyu */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -400,6 +399,7 @@ th {
   padding: 0;
 }
 
+/*! Hyu v1.0.0 | MIT License | css.hanzi.co/hyu */
 /* Base
  * ========================================================================== */
 html {
