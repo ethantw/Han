@@ -1,17 +1,14 @@
 
 module.exports = function( grunt ) {
 
-	'use strict';
+	'use strict'
 
-	var
-		gzip = require( 'gzip-js' ),
-		srcHintOptions = readOptionalJSON( '/.jshintrc' )
-	;
+	var gzip = require( 'gzip-js' ),
+			srcHintOptions = readOptionalJSON( '/.jshintrc' )
 
 	function readOptionalJSON( filepath ) {
-		var
-			data = {}
-		;
+		var data = {}
+
 		try {
 			data = grunt.file.readJSON( filepath )
 		} catch ( e ) {}

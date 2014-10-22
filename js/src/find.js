@@ -5,7 +5,7 @@ define([
 
 Han.find = Farr
 
-;[
+void [
   'replace',
   'wrap',
   'revert',

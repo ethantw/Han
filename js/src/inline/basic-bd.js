@@ -4,18 +4,14 @@ define([
   '../hyu/support'
 ], function( Han, $, support ) {
 
-var
-  mdot
-;
+var mdot
 
 mdot = $.create( 'char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
-  var
-    context = context || document,
-    finder
-  ;
+  var context = context || document,
+      finder
 
   if ( Han.support.unicoderange && !all ) {
     return

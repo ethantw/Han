@@ -5,10 +5,8 @@ define([
 ], function( Han, $ ) {
 
 Han.renderJiya = function( context ) {
-  var
-    context = context || document,
-    finder = [ Han.find( context ) ]
-  ;
+  var context = context || document,
+      finder = [ Han.find( context ) ]
 
   finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
 

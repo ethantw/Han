@@ -4,28 +4,19 @@ define([
   './normalize'
 ], function( root, Han ) {
 
-!function() {
-  var
-    DOMReady,
-    initContext
-  ;
+window.addEventListener( 'DOMContentLoaded', function() {
+  var initContext
 
-  DOMReady = setInterval( function() {
-    if ( document.readyState === 'complete' ) {
-      clearTimeout( DOMReady )
+  // Use the shortcut under the default situation
+  if ( root.classList.contains( 'han-init' )) {
+    Han.init()
 
-      // Use the shortcut under the default situation
-      if ( root.classList.contains( 'han-init' )) {
-        Han.init()
-
-      // Consider ‘a configured context’ the special
-      // case of the default situation. Will have to
-      // replace the `Han.init` with the instance as
-      // well (for future usage).
-      } else if ( initContext = document.querySelector( '.han-init-context' )) {
-        Han.init = Han( initContext ).renderRoutine()
-      }
-    }
-  }, 10 )
-}()
+  // Consider ‘a configured context’ the special
+  // case of the default situation. Will have to
+  // replace the `Han.init` with the instance as
+  // well (for future usage).
+  } else if ( initContext = document.querySelector( '.han-init-context' )) {
+    Han.init = Han( initContext ).render()
+  }
+})
 })

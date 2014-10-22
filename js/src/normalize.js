@@ -13,15 +13,13 @@ Han.fn.initCond = function() {
   return this
 }
 
-;[
+void [
   'Elem',
   'DecoLine',
   'Em',
   'Ruby'
 ].forEach(function( elem ) {
-  var
-    method = 'render' + elem
-  ;
+  var method = 'render' + elem
 
   Han.fn[ method ] = function( target ) {
     Han.normalize[ method ]( this.context, target )

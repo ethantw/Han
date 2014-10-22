@@ -5,65 +5,59 @@ define([
   '../regex'
 ], function( body, Han, $ ) {
 
-var
-  QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',
-  ELEM_TO_IGNORE = ' textarea code kbd samp pre',
+var QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',
+    ELEM_TO_IGNORE = ' textarea code kbd samp pre'
 
-  isCombLigaNormal = (function() {
-    var
-      fakeBody = body || $.create( 'body' ),
-      div = $.create( 'div' ),
-      control = $.create( 'span' ),
+var isCombLigaNormal = (function() {
+      var fakeBody = body || $.create( 'body' ),
+          div = $.create( 'div' ),
+          control = $.create( 'span' ),
 
-      container = body ? div : fakeBody,
-      treat, docOverflow, ret
-    ;
+          container = body ? div : fakeBody,
+          treat, docOverflow, ret
 
-    if ( !body ) {
-      fakeBody.style.background = ''
-      fakeBody.style.overflow = 'hidden'
-      docOverflow = root.style.overflow
+      if ( !body ) {
+        fakeBody.style.background = ''
+        fakeBody.style.overflow = 'hidden'
+        docOverflow = root.style.overflow
 
-      root.style.overflow = 'hidden'
-      root.appendChild( fakeBody )
-    } else {
-      body.appendChild( container )
-    }
+        root.style.overflow = 'hidden'
+        root.appendChild( fakeBody )
+      } else {
+        body.appendChild( container )
+      }
 
-    control.innerHTML = '&#x0069;&#x030D;'
-    control.style.fontFamily = 'sans-serif'
-    control.style.display = 'inline-block'
+      control.innerHTML = '&#x0069;&#x030D;'
+      control.style.fontFamily = 'sans-serif'
+      control.style.display = 'inline-block'
 
-    treat = $.clone( control )
-    treat.style.fontFamily = '"Romanization Sans"'
+      treat = $.clone( control )
+      treat.style.fontFamily = '"Romanization Sans"'
 
-    container.appendChild( control )
-    container.appendChild( treat )
+      container.appendChild( control )
+      container.appendChild( treat )
 
-    ret = control.clientWidth !== treat.clientWidth
-    $.remove( container )
+      ret = control.clientWidth !== treat.clientWidth
+      $.remove( container )
 
-    if ( !body ) {
-      root.style.overflow = docOverflow
-    }
-    return ret
-  })(),
+      if ( !body ) {
+        root.style.overflow = docOverflow
+      }
+      return ret
+    })(),
 
-  aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
-  aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ],
+    aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
+    aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ],
 
-  charCombLiga = $.create( 'char', 'comb-liga' ),
-  charCombLigaInner =  $.create( 'inner' )
-;
+    charCombLiga = $.create( 'char', 'comb-liga' ),
+    charCombLigaInner =  $.create( 'inner' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
 
   substCombLigaWithPUA: function( context ) {
-    var
-      context = context || document,
-      finder = Han.find( context )
-    ;
+    var context = context || document,
+        finder = Han.find( context )
 
     if ( isCombLigaNormal ) {
       return
@@ -77,10 +71,8 @@ $.extend( Han, {
       .replace(
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
-          var
-            ret = $.clone( charCombLiga ),
-            inner = $.clone( charCombLigaInner )
-          ;
+          var ret = $.clone( charCombLiga ),
+              inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
@@ -111,10 +103,8 @@ $.extend( Han, {
   },
 
   substInaccurateChar: function( context ) {
-    var
-      context = context || document,
-      finder = Han.find( context )
-    ;
+    var context = context || document,
+        finder = Han.find( context )
 
     finder.filteredElemList += ELEM_TO_IGNORE
     aInaccurateChar

@@ -10,12 +10,9 @@ define([
  * according to the given contents
  */
 function createPlainRb( rb, rt ) {
-  var
-    rb = $.clone( rb ),
-    rt = $.clone( rt ),
-
-    $rb = $.create( 'rb' )
-  ;
+  var rb = $.clone( rb ),
+      rt = $.clone( rt ),
+      $rb = $.create( 'rb' )
 
   $rb.appendChild( rb )
   $rb.appendChild( rt )
@@ -29,24 +26,22 @@ function createPlainRb( rb, rt ) {
  * in Zhuyin form
  */
 function createZhuyinRb( rb, rt ) {
-  var
-    rb = $.clone( rb ),
+  var rb = $.clone( rb ),
 
-    // Create an element to return
-    $rb   = $.create( 'rb' ),
-    $rt   = $.create( 'zhuyin' ),
-    $yin  = $.create( 'yin' ),
-    $diao = $.create( 'diao' ),
+      // Create an element to return
+      $rb   = $.create( 'rb' ),
+      $rt   = $.create( 'zhuyin' ),
+      $yin  = $.create( 'yin' ),
+      $diao = $.create( 'diao' ),
 
-    // #### Explanation ####
-    // * `zhuyin`: the entire phonetic annotation
-    // * `yin`:    the plain pronunciation (w/out tone)
-    // * `diao`:   the tone
-    // * `form`:   the combination of the pronunciation
-    // * `len`:    the text length of `yin`
-    zhuyin = rt.textContent,
-    yin, diao, form, len
-  ;
+      // #### Explanation ####
+      // * `zhuyin`: the entire phonetic annotation
+      // * `yin`:    the plain pronunciation (w/out tone)
+      // * `diao`:   the tone
+      // * `form`:   the combination of the pronunciation
+      // * `len`:    the text length of `yin`
+      zhuyin = rt.textContent,
+      yin, diao, form, len
 
   yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
@@ -114,17 +109,13 @@ $.extend( Hyu, {
   // -line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
-    var
-      target = target || 'u, ins',
-      $target = $.qsa( target, context ),
-      rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
-    ;
+    var target = target || 'u, ins',
+        $target = $.qsa( target, context ),
+        rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
 
     $target
     .forEach(function( elem ) {
-      var
-        next
-      ;
+      var next
 
       // Ignore all `<wbr>` and comments in between
       do {
@@ -144,17 +135,13 @@ $.extend( Hyu, {
   // Traverse target elements to render Hanzi emphasis marks
   // and skip that in punctuation
   renderEm: function( context, target ) {
-    var
-      qs = target ? 'qsa' : 'tag',
-      target = target || 'em',
-      $target = $[ qs ]( target, context )
-    ;
+    var qs = target ? 'qsa' : 'tag',
+        target = target || 'em',
+        $target = $[ qs ]( target, context )
 
     $target
     .forEach(function( elem ) {
-      var
-        $elem = Farr( elem )
-      ;
+      var $elem = Farr( elem )
 
       if ( !Hyu.support.textemphasis ) {
         $elem.jinzify()
@@ -176,21 +163,17 @@ $.extend( Hyu, {
   // Address normalisation for both simple and complex
   // rubies
   renderRuby: function( context, target ) {
-    var
-      qs = target ? 'qsa' : 'tag',
-      target = target || 'ruby',
-      $target = $[ qs ]( target, context ),
+    var qs = target ? 'qsa' : 'tag',
+        target = target || 'ruby',
+        $target = $[ qs ]( target, context ),
 
-      simpClaElem = target + ', rtc',
-      $simpClaElem = $.qsa( simpClaElem, context )
-    ;
+        simpClaElem = target + ', rtc',
+        $simpClaElem = $.qsa( simpClaElem, context )
 
     // First of all, simplify semantic classes
     $simpClaElem
     .forEach(function( elem ) {
-      var
-        clazz = elem.classList
-      ;
+      var clazz = elem.classList
 
       if ( clazz.contains( 'pinyin' )) {
         clazz.add( 'romanization' )
@@ -206,18 +189,16 @@ $.extend( Hyu, {
     // Deal with `<ruby>`
     $target
     .forEach(function( ruby ) {
-      var
-        clazz = ruby.classList,
+      var clazz = ruby.classList,
 
-        condition = (
-          !Hyu.support.ruby ||
-          clazz.contains( 'zhuyin') ||
-          clazz.contains( 'complex' ) ||
-          clazz.contains( 'rightangle' )
-        ),
+          condition = (
+            !Hyu.support.ruby ||
+            clazz.contains( 'zhuyin') ||
+            clazz.contains( 'complex' ) ||
+            clazz.contains( 'rightangle' )
+          ),
 
-        frag, $cloned, $rb, hruby
-      ;
+          frag, $cloned, $rb, hruby
 
       if ( !condition ) {
         return
@@ -239,11 +220,9 @@ $.extend( Hyu, {
         $
         .tag( 'rt', $cloned )
         .forEach(function( rt ) {
-          var
-            $rb = $.create( '!' ),
-            airb = [],
-            irb
-          ;
+          var $rb = $.create( '!' ),
+              airb = [],
+              irb
 
           // Consider the previous nodes the implied
           // ruby base
@@ -301,9 +280,8 @@ $.extend( Hyu, {
           $
           .tag( 'rt', rtc )
           .forEach(function( rt, i ) {
-            var
-              $$rb = createZhuyinRb( $rb[ i ], rt )
-            ;
+            var $$rb = createZhuyinRb( $rb[ i ], rt )
+
             try {
               $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
             } catch ( e ) {}
@@ -318,10 +296,8 @@ $.extend( Hyu, {
         $
         .qsa( 'rtc:not(.zhuyin)', $cloned )
         .forEach(function( rtc, order ) {
-          var
-            clazz = rtc.classList,
-            start, end
-          ;
+          var clazz = rtc.classList,
+              start, end
 
           // Initialise
           start = end = 0
@@ -335,15 +311,13 @@ $.extend( Hyu, {
           $
           .tag( 'rt', rtc )
           .forEach(function( rt ) {
-            var
-              $$rb = $.create( '!' ),
+            var $$rb = $.create( '!' ),
 
-              // #### Explanation ####
-              // * `rbspan`: the `<rb>` span assigned in the HTML
-              // * `span`:   the span number of the current `<rb>`
-              rbspan = parseInt( rt.getAttribute( 'rbspan' )) || 1,
-              span, _$rb
-            ;
+                // #### Explanation ####
+                // * `rbspan`: the `<rb>` span assigned in the HTML
+                // * `span`:   the span number of the current `<rb>`
+                rbspan = parseInt( rt.getAttribute( 'rbspan' )) || 1,
+                span, _$rb
 
             start = end
             end += parseInt( rbspan )

@@ -3,7 +3,7 @@
  * Han: CSS typography framework optimised for Hanzi
  */
 
-;(function( global, factory ) {
+void (function( global, factory ) {
 
   // CommonJS
   if ( typeof module === 'object' && typeof module.exports === 'object' ) {
@@ -14,4 +14,4 @@
 
 })( typeof window !== 'undefined' ? window : this, function( window, noGlobalNS ) {
 
-  'use strict';
+  'use strict'

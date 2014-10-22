@@ -4,45 +4,43 @@ define([
   './var/body'
 ], function( document, root, body ) {
 
-var
-  VERSION = '3.0.0',
+var VERSION = '3.0.0',
 
-  ROUTINE = [
-    // Initialise the condition with feature-detecting
-    // classes (Modernizr-alike), binding onto the root
-    // element, possibly `<html>`.
-    'initCond',
-    // Address element normalisation
-    'renderElem',
-    // Handle Biaodian
-    //'jinzify',
-    'renderJiya',
-    // Address Hanzi and Western script mixed spacing
-    'renderHWS',
-    // Address Basic Biaodian correction in Firefox
-    'correctBasicBD',
-    // Address presentational correction to combining ligatures
-    'substCombLigaWithPUA'
-    // Address semantic correction to inaccurate characters
-    // **Note:** inactivated by default
-    // 'substInaccurateChar'
-  ],
+    ROUTINE = [
+      // Initialise the condition with feature-detecting
+      // classes (Modernizr-alike), binding onto the root
+      // element, possibly `<html>`.
+      'initCond',
+      // Address element normalisation
+      'renderElem',
+      // Handle Biaodian
+      //'jinzify',
+      'renderJiya',
+      // Address Hanzi and Western script mixed spacing
+      'renderHWS',
+      // Address Basic Biaodian correction in Firefox
+      'correctBasicBD',
+      // Address presentational correction to combining ligatures
+      'substCombLigaWithPUA'
+      // Address semantic correction to inaccurate characters
+      // **Note:** inactivated by default
+      // 'substInaccurateChar'
+    ],
 
-  // Define Han
-  Han = function( context, condition ) {
-    return new Han.fn.init( context, condition )
-  },
+    // Define Han
+    Han = function( context, condition ) {
+      return new Han.fn.init( context, condition )
+    },
 
-  init = function() {
-    if ( arguments[ 0 ] ) {
-      this.context = arguments[ 0 ]
+    init = function() {
+      if ( arguments[ 0 ] ) {
+        this.context = arguments[ 0 ]
+      }
+      if ( arguments[ 1 ] ) {
+        this.condition = arguments[ 1 ]
+      }
+      return this
     }
-    if ( arguments[ 1 ] ) {
-      this.condition = arguments[ 1 ]
-    }
-    return this
-  }
-;
 
 Han.fn = Han.prototype = {
   version: VERSION,
@@ -71,11 +69,9 @@ Han.fn = Han.prototype = {
   // only once. The method won't alter the routine in
   // the instance or in the prototype chain.
   renderRoutine: function( routine ) {
-    var
-      that = this,
-      routine = Array.isArray( routine ) ?
-        routine : this.routine
-    ;
+    var that = this,
+        routine = Array.isArray( routine ) ?
+          routine : this.routine
 
     routine
     .forEach(function( method ) {

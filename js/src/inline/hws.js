@@ -4,26 +4,22 @@ define([
   '../regex'
 ], function( Han, $ ) {
 
-var
-  QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws',
+var QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws'
 
-  //// Disabled `Node.normalize()` for temp due to
-  //// the issue in IE11.
-  //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
-  isNodeNormalizeNormal = (function() {
-    var
-      div = $.create( 'div' )
-    ;
+//// Disabled `Node.normalize()` for temp due to
+//// issue below in IE11.
+//// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+var isNodeNormalizeNormal = (function() {
+      var div = $.create( 'div' )
 
-    div.appendChild( $.create( '', '0-' ))
-    div.appendChild( $.create( '', '2' ))
-    div.normalize()
+      div.appendChild( $.create( '', '0-' ))
+      div.appendChild( $.create( '', '2' ))
+      div.normalize()
 
-    return div.firstChild.length !== 2
-  })(),
+      return div.firstChild.length !== 2
+    })(),
 
-  hws
-;
+    hws
 
 hws = $.create( 'hws' )
 hws.innerHTML = ' '
@@ -32,11 +28,9 @@ $.extend( Han, {
   isNodeNormalizeNormal: isNodeNormalizeNormal,
 
   renderHWS: function( context, strict ) {
-    var
-      context = context || document,
-      mode = strict ? 'strict' : 'base',
-      finder = Han.find( context )
-    ;
+    var context = context || document,
+        mode = strict ? 'strict' : 'base',
+        finder = Han.find( context )
 
     // Elements to be filtered according to the
     // HWS rendering mode
@@ -63,10 +57,8 @@ $.extend( Han, {
     $
     .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
     .forEach(function( firstChild ) {
-      var
-        parent = firstChild.parentNode,
-        target = parent.firstChild
-      ;
+      var parent = firstChild.parentNode,
+          target = parent.firstChild
 
       // Skip all `<wbr>` and comments
       while ( $.isIgnorable( target )) {

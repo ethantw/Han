@@ -11,13 +11,11 @@ define([
   'findAndReplaceDOMText'
 ], function( $, UNICODE, TYPESET, findAndReplaceDOMText ) {
 
-var
-  filteredElemList = 'style script',
+var filteredElemList = 'style script',
 
-  Farr = function( selector, filter, method, pattern, subst ) {
-    return new Farr.prototype.init( selector, filter, method, pattern, subst )
-  }
-;
+    Farr = function( selector, filter, method, pattern, subst ) {
+      return new Farr.prototype.init( selector, filter, method, pattern, subst )
+    }
 
 Farr.prototype = {
   constructor: Farr,
@@ -48,14 +46,12 @@ Farr.prototype = {
 
   // Define the default `filterElement` function
   filterElem: function( currentElem ) {
-    var
-      currentElem = currentElem.nodeName.toLowerCase(),
-      aFilterList = this.filteredElemList.split(' '),
+    var currentElem = currentElem.nodeName.toLowerCase(),
+        aFilterList = this.filteredElemList.split(' '),
 
-      // Return true by default unless it matches
-      // the element on the list.
-      ret = true
-    ;
+        // Return true by default unless it matches
+        // the element on the list.
+        ret = true
 
     aFilterList
     .forEach(function( filter ) {
@@ -68,9 +64,8 @@ Farr.prototype = {
   },
 
   replace: function( pattern, subst ) {
-    var
-      that = this
-    ;
+    var that = this
+
     this.finder.push( findAndReplaceDOMText(
       this.selector,
       {
@@ -85,9 +80,8 @@ Farr.prototype = {
   },
 
   wrap: function( pattern, subst ) {
-    var
-      that = this
-    ;
+    var that = this
+
     that.finder.push( findAndReplaceDOMText(
       that.selector,
       {
@@ -104,13 +98,11 @@ Farr.prototype = {
   // Now that we support chaining syntax, it should
   // be able to revert the finder by level.
   revert: function( level ) {
-    var
-      len = this.finder.length,
-      level = Number(level) || level === 0 ?
-        Number(level) :
-        level === 'all' ?
-          len : 1
-    ;
+    var len = this.finder.length,
+        level = Number(level) || level === 0 ?
+          Number(level) :
+          level === 'all' ?
+            len : 1
 
     if ( typeof len === 'undefined' || len === 0 ) {
       return this
@@ -127,20 +119,18 @@ Farr.prototype = {
   // Force punctuation & biaodian typesetting rules
   // to be applied.
   jinzify: function() {
-    var
-      origFilteredElemList = this.filteredElemList
-    ;
+    var origFilteredElemList = this.filteredElemList
+
     this.filteredElemList += ' jinze'
 
     this
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var
-          mat = match[0],
-          text = $.create( '', mat ),
-          elem = $.create( 'jinze', 'touwei' )
-        ;
+        var mat = match[0],
+            text = $.create( '', mat ),
+            elem = $.create( 'jinze', 'touwei' )
+
         elem.appendChild( text )
         return (
           ( portion.index === 0 && portion.isEnd ) ||
@@ -151,11 +141,10 @@ Farr.prototype = {
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var
-          mat = match[0],
-          text = $.create( '', mat ),
-          elem = $.create( 'jinze', 'wei' )
-        ;
+        var mat = match[0],
+            text = $.create( '', mat ),
+            elem = $.create( 'jinze', 'wei' )
+
         elem.appendChild( text )
         return portion.index === 0 ? elem : ''
       }
@@ -163,11 +152,10 @@ Farr.prototype = {
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var
-          mat = match[0],
-          text = $.create( '', mat ),
-          elem = $.create( 'jinze', 'tou' )
-        ;
+        var mat = match[0],
+            text = $.create( '', mat ),
+            elem = $.create( 'jinze', 'tou' )
+
         elem.appendChild( text )
         return (
           ( portion.index === 0 && portion.isEnd ) ||
@@ -178,11 +166,10 @@ Farr.prototype = {
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var
-          mat = match[0],
-          text = $.create( '', mat ),
-          elem = $.create( 'jinze', 'middle' )
-        ;
+        var mat = match[0],
+            text = $.create( '', mat ),
+            elem = $.create( 'jinze', 'middle' )
+
         elem.appendChild( text )
         return (
           ( portion.index === 0 && portion.isEnd ) ||
@@ -211,23 +198,21 @@ Farr.prototype = {
   // Implementation of character-level selector
   // (字元級選擇器)
   charify: function( option ) {
-    var
-      option = $.extend( {
-        hanzi:     'individual',
-                    // individual || group || biaodian || none
-        liga:      'liga',
-                   // liga || none
-        word:      'group',
-                    // group || punctuation || none
+    var option = $.extend( {
+          hanzi:     'individual',
+                      // individual || group || biaodian || none
+          liga:      'liga',
+                     // liga || none
+          word:      'group',
+                      // group || punctuation || none
 
-        latin:     'group',
-        ellinika:  'group',
-        kirillica: 'group',
-        kana:      'none',
-        eonmun:    'none'
-                    // group || individual || none
-      }, option || {} )
-    ;
+          latin:     'group',
+          ellinika:  'group',
+          kirillica: 'group',
+          kana:      'none',
+          eonmun:    'none'
+                      // group || individual || none
+        }, option || {} )
 
     // CJK and biaodian
     if ( option.hanzi === 'group' ) {
@@ -253,22 +238,20 @@ Farr.prototype = {
         this.replace(
           TYPESET.char.biaodian.all,
           function( portion, match ) {
-            var
-              mat = match[0],
-              text = $.create( '', mat ),
+            var mat = match[0],
+                text = $.create( '', mat ),
 
-              clazz = 'biaodian cjk ' + (
-                mat.match( TYPESET.char.biaodian.open ) ?
-                  'open' :
-                  mat.match( TYPESET.char.biaodian.close ) ?
-                    'close end' :
-                    mat.match( TYPESET.char.biaodian.end ) ?
-                      'end' : ''
-              ),
+                clazz = 'biaodian cjk ' + (
+                  mat.match( TYPESET.char.biaodian.open ) ?
+                    'open' :
+                    mat.match( TYPESET.char.biaodian.close ) ?
+                      'close end' :
+                      mat.match( TYPESET.char.biaodian.end ) ?
+                        'end' : ''
+                ),
 
-              elem = $.create( 'char', clazz ),
-              unicode = mat.charCodeAt( 0 ).toString( 16 )
-            ;
+                elem = $.create( 'char', clazz ),
+                unicode = mat.charCodeAt( 0 ).toString( 16 )
 
             elem.setAttribute( 'unicode', unicode )
             elem.appendChild( text )
@@ -283,13 +266,11 @@ Farr.prototype = {
           TYPESET.char.biaodian.liga :
           new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
         function( portion, match ) {
-          var
-            mat = match[0],
-            text = $.create( '', mat ),
+          var mat = match[0],
+              text = $.create( '', mat ),
 
-            elem = $.create( 'char', 'biaodian liga cjk' ),
-            unicode = mat.charCodeAt( 0 ).toString( 16 )
-          ;
+              elem = $.create( 'char', 'biaodian liga cjk' ),
+              unicode = mat.charCodeAt( 0 ).toString( 16 )
 
           elem.setAttribute( 'unicode', unicode )
           elem.appendChild( text )

@@ -18,10 +18,5 @@ Han.TYPESET.char.alphabet.greek    = Han.TYPESET.char.alphabet.ellinika
 Han.TYPESET.char.alphabet.cyrillic = Han.TYPESET.char.alphabet.kirillica
 Han.TYPESET.char.alphabet.hangul   = Han.TYPESET.char.alphabet.eonmun
 
-// Lock the regex objects to prevent from furthur
-// modification.
-Object.freeze( Han.UNICODE )
-Object.freeze( Han.TYPESET )
-
 return Han
 })
