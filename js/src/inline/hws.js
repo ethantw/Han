@@ -45,7 +45,7 @@ $.extend( Han, {
     .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
 
     // Deal with `' 字'`, `" 字"` => `'字'`, `"字"`
-    .replace( /(['"]+)[<hws\/>|\s]*(.+?)[<hws\/>|\s]*(['"]+)/ig, '$1$2$3' )
+    .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
 
     // Convert text nodes `<hws/>` into real element nodes
     .replace( '<hws/>', function() {
