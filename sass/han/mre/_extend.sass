@@ -7,12 +7,17 @@ $_default-variant: $mre-glyph-set-hant
 // **
 // * Functions
 // *
-@function mre-biaodian( $generic: Sans, $set: default )
-  @if ( $set == default )
+@function mre-biaodian( $generic: Sans, $set: Pro )
+  $which: 'Biaodian Pro'
+
+  @if ( $set == simp )
+    $which: 'Biaodian'
+    $set: ''
+  @else if ( $set == Pro )
     $set: ''
   @else
-    $set: $set + ' '
-  @return 'Biaodian ' + $set + $generic
+    $set: ' ' + $set
+  @return $which + ' ' + $generic + $set
 
 @function mre-typeface( $typeface: sans, $set: default, $pre: null )
   @if ( $set == default )
