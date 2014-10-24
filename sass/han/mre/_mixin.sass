@@ -1,0 +1,23 @@
+
+=mre-webfont
+  src: $mre-webfont
+
+=mre-typeface-by-lang( $typeface: sans )
+  &:lang(zh),
+  &:lang(zh-Hant)
+    @extend %mre-#{$typeface}-hant
+
+  &:lang(zh-Hans),
+  &:lang(zh-CN)
+    @extend %mre-#{$typeface}-hans
+
+  &:lang(ja)
+    @extend %mre-#{$typeface}-ja
+
+  &:lang(zh-Latn),
+  &:lang(ja-Latn),
+  &:not(:lang(zh)):not(:lang(ja)),
+  *:lang(zh-Latn),
+  *:lang(ja-Latn),
+  *:not(:lang(zh)):not(:lang(ja))
+    @extend %mre-#{$typeface}

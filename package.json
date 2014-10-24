@@ -1,0 +1,42 @@
+{
+  "name": "Han",
+  "version": "3.0.0",
+  "description": "The CSS typography framework optimised for Hanzi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethantw/Han.git"
+  },
+  "main": "han.js",
+  "keywords": [
+    "Han",
+    "Hanzi",
+    "CJK",
+    "CSS",
+    "normalize",
+    "typography",
+    "typeface",
+    "font",
+    "typesetting"
+  ],
+  "author": {
+    "name": "Chen Yijun (@ethantw)",
+    "url": "http://yijun.me/"
+  },
+  "license": "MIT Lisence",
+  "bugs": {
+    "url": "https://github.com/ethantw/Han/issues"
+  },
+  "dependencies": {
+    "normalize.css": "~3.0.2"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-jshint": "0.8.0",
+    "grunt-contrib-uglify": "0.3.2",
+    "grunt-jsonlint": "1.0.4",
+    "gzip-js": "0.3.2",
+    "load-grunt-tasks": "0.3.0",
+    "requirejs": "2.1.10"
+  }
+}
