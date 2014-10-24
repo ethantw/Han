@@ -13,7 +13,7 @@
 (http://ethantw.github.io/Han/latest/)
 
 ## 安裝
-- NPM `npm install --save Han`
+- NPM `npm install --save han-css`
 - Bower `bower install --save Han`
 - Component `component install ethantw/Han`
 

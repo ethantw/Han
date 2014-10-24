@@ -14,7 +14,7 @@ Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 (http://ethantw.github.io/Han/latest/)
 
 ## Installation
-- NPM `npm install --save Han`
+- NPM `npm install --save han-css`
 - Bower `bower install --save Han`
 - Component `component install ethantw/Han`
 
