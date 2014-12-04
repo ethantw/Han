@@ -1763,12 +1763,7 @@ function createZhuyinRu( $rb, $rt ) {
   $zhuyin.appendChild( $yin )
   $zhuyin.appendChild( $diao )
 
-  if ( $rb.nodeName === 'RB' ) {
-    $ru.innerHTML = $rb.outerHTML
-  } else {
-    $ru.appendChild( $rb )
-  }
-
+  $ru.appendChild( $rb )
   $ru.appendChild( $zhuyin )
 
   // Finally, set up the necessary attribute
