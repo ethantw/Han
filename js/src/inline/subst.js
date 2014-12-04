@@ -5,7 +5,7 @@ define([
   '../regex'
 ], function( body, Han, $ ) {
 
-var QUERY_RB_W_ANNO = 'rb.romanization[annotation], .romanization rb[annotation]',
+var QUERY_RU_W_ANNO = 'ru.romanization[annotation], .romanization ru[annotation]',
     ELEM_TO_IGNORE = ' textarea code kbd samp pre'
 
 var isCombLigaNormal = (function() {
@@ -85,9 +85,9 @@ $.extend( Han, {
     })
 
     $
-    .qsa( QUERY_RB_W_ANNO, context )
-    .forEach(function( rb ) {
-      var annotation = rb.getAttribute( 'annotation' )
+    .qsa( QUERY_RU_W_ANNO, context )
+    .forEach(function( ru ) {
+      var annotation = ru.getAttribute( 'annotation' )
 
       aCombLiga
       // Latin vowels only
@@ -97,7 +97,7 @@ $.extend( Han, {
           new RegExp( pattern[ 0 ], 'ig' ), pattern[ 1 ]
         )
       })
-      rb.setAttribute( 'annotation', annotation )
+      ru.setAttribute( 'annotation', annotation )
     })
     return finder
   },

@@ -682,18 +682,18 @@ hruby {
 hruby rp {
   display: none;
 }
-hruby rb[annotation] > rt {
+hruby ru[annotation] > rt {
   display: inline-block;
   height: 0;
   width: 0;
   font: 0/0 hidden-text;
 }
-hruby rb {
+hruby ru {
   position: relative;
   display: inline-block;
   text-indent: 0;
 }
-hruby rb:before,
+hruby ru:before,
 hruby zhuyin {
   -moz-transform: scale(0.55);
   -ms-transform: scale(0.55);
@@ -710,28 +710,28 @@ hruby zhuyin {
   position: absolute;
   display: inline-block;
 }
-hruby rb[annotation] {
+hruby ru[annotation] {
   text-align: center;
 }
-hruby rb[annotation]:before {
-  left: -200%;
+hruby ru[annotation]:before {
+  left: -260%;
   top: -0.5em;
   vertical-align: top;
   height: 1em;
-  width: 500%;
+  width: 600%;
   overflow: hidden;
   content: attr(annotation);
   line-height: 1;
   text-align: center;
   text-indent: 0;
 }
-hruby rb[zhuyin] {
+hruby ru[zhuyin] {
   display: inline-block;
   position: relative;
   width: 1.8em;
   text-align: left;
 }
-hruby rb[zhuyin] zhuyin {
+hruby ru[zhuyin] zhuyin {
   right: 0.2em;
   top: 0;
   height: 2.7em;
@@ -740,68 +740,68 @@ hruby rb[zhuyin] zhuyin {
   white-space: pre-wrap;
   word-break: break-all;
 }
-hruby rb[zhuyin] diao {
+hruby ru[zhuyin] diao {
   position: absolute;
   right: -0.9em;
   top: 0;
   display: inline-block;
   width: 1em;
 }
-hruby rb[zhuyin][length='0'], hruby rb[zhuyin]:empty {
+hruby ru[zhuyin][length='0'], hruby ru[zhuyin]:empty {
   width: auto;
 }
-hruby rb[zhuyin][length='0'] zhuyin, hruby rb[zhuyin]:empty zhuyin {
+hruby ru[zhuyin][length='0'] zhuyin, hruby ru[zhuyin]:empty zhuyin {
   display: none;
 }
-hruby rb[zhuyin][length='1'] zhuyin {
+hruby ru[zhuyin][length='1'] zhuyin {
   margin-top: 0.125em;
 }
-hruby rb[zhuyin][length='1'] diao {
+hruby ru[zhuyin][length='1'] diao {
   margin-top: -0.35em;
 }
-hruby rb[zhuyin][length='2'] zhuyin {
+hruby ru[zhuyin][length='2'] zhuyin {
   margin-top: -0.175em;
 }
-hruby rb[zhuyin][length='2'] diao {
+hruby ru[zhuyin][length='2'] diao {
   margin-top: 0.5em;
 }
-hruby rb[zhuyin][length='3'] zhuyin {
+hruby ru[zhuyin][length='3'] zhuyin {
   margin-top: -0.45em;
 }
-hruby rb[zhuyin][length='3'] diao {
+hruby ru[zhuyin][length='3'] diao {
   margin-top: 1.3em;
 }
-hruby rb[zhuyin][diao='˙'] diao {
+hruby ru[zhuyin][diao='˙'] diao {
   right: -0.45em;
 }
-hruby rb[zhuyin][diao='˙'][length='1'] diao {
+hruby ru[zhuyin][diao='˙'][length='1'] diao {
   margin-top: -0.4em;
 }
-hruby rb[zhuyin][diao='˙'][length='2'] diao {
+hruby ru[zhuyin][diao='˙'][length='2'] diao {
   margin-top: -0.25em;
 }
-hruby rb[zhuyin][diao='˙'][length='3'] diao {
+hruby ru[zhuyin][diao='˙'][length='3'] diao {
   margin-top: -0.4em;
 }
-hruby rb[zhuyin][diao='˪'] diao, hruby rb[zhuyin][diao='˫'] diao {
+hruby ru[zhuyin][diao='˪'] diao, hruby ru[zhuyin][diao='˫'] diao {
   -moz-transform: scale(1.2);
   -ms-transform: scale(1.2);
   -webkit-transform: scale(1.2);
   transform: scale(1.2);
   margin-right: -0.25em;
 }
-hruby rb[zhuyin][diao^='ㆴ'] diao, hruby rb[zhuyin][diao^='ㆵ'] diao, hruby rb[zhuyin][diao^='ㆶ'] diao, hruby rb[zhuyin][diao^='ㆷ'] diao, hruby rb[zhuyin][diao='󳆴'] diao, hruby rb[zhuyin][diao='󳆵'] diao, hruby rb[zhuyin][diao='󳆶'] diao, hruby rb[zhuyin][diao='󳆷'] diao {
+hruby ru[zhuyin][diao^='ㆴ'] diao, hruby ru[zhuyin][diao^='ㆵ'] diao, hruby ru[zhuyin][diao^='ㆶ'] diao, hruby ru[zhuyin][diao^='ㆷ'] diao, hruby ru[zhuyin][diao='󳆴'] diao, hruby ru[zhuyin][diao='󳆵'] diao, hruby ru[zhuyin][diao='󳆶'] diao, hruby ru[zhuyin][diao='󳆷'] diao {
   top: 20%;
   margin-right: -0.3em;
 }
-hruby rb[annotation]:before {
+hruby ru[annotation]:before {
   top: -0.5em;
 }
-hruby rb[order='1']:before, hruby[rightangle] rb[annotation]:before {
+hruby ru[order='1']:before, hruby[rightangle] ru[annotation]:before {
   bottom: -0.4em;
   top: auto;
 }
-hruby[rightangle] rb[annotation]:before {
+hruby[rightangle] ru[annotation]:before {
   margin-left: -0.4em;
 }
 @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
@@ -812,14 +812,14 @@ hruby[rightangle] rb[annotation]:before {
     transform: scale(0.8);
     display: inline-block;
   }
-  hruby rb[zhuyin][diao='˪'] diao,
-  hruby rb[zhuyin][diao='˫'] diao {
+  hruby ru[zhuyin][diao='˪'] diao,
+  hruby ru[zhuyin][diao='˫'] diao {
     -moz-transform: scale(1);
     -ms-transform: scale(1);
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-  hruby rb[zhuyin][diao='˙'] diao {
+  hruby ru[zhuyin][diao='˙'] diao {
     -moz-transform: scale(0.8);
     -ms-transform: scale(0.8);
     -webkit-transform: scale(0.8);
@@ -1786,13 +1786,13 @@ pre:lang(ja) {
   font-family: "Yakumono Sans", Menlo, Courier, monospace, monospace, sans-serif;
 }
 
-html, ruby rb[zhuyin] zhuyin,
-ruby rb[zhuyin] zhuyin diao,
-hruby rb[zhuyin] zhuyin,
-hruby rb[zhuyin] zhuyin diao, ruby.romanization rt,
-ruby rb[annotation]:before,
+html, ruby ru[zhuyin] zhuyin,
+ruby ru[zhuyin] zhuyin diao,
+hruby ru[zhuyin] zhuyin,
+hruby ru[zhuyin] zhuyin diao, ruby.romanization rt,
+ruby ru[annotation]:before,
 hruby.romanization rt,
-hruby rb[annotation]:before, .no-unicoderange char.biaodian.liga, .no-unicoderange
+hruby ru[annotation]:before, .no-unicoderange char.biaodian.liga, .no-unicoderange
 char.biaodian[unicode='b7'] {
   -moz-font-feature-settings: "liga";
   -ms-font-feature-settings: "liga";
@@ -1800,14 +1800,14 @@ char.biaodian[unicode='b7'] {
   font-feature-settings: "liga";
 }
 
-ruby rb[zhuyin] zhuyin diao,
-hruby rb[zhuyin] zhuyin diao {
+ruby ru[zhuyin] zhuyin diao,
+hruby ru[zhuyin] zhuyin diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
 }
 ruby.romanization rt,
-ruby rb[annotation]:before,
+ruby ru[annotation]:before,
 hruby.romanization rt,
-hruby rb[annotation]:before {
+hruby ru[annotation]:before {
   font-family: "Romanization Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 

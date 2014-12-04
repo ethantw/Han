@@ -15,7 +15,7 @@ hruby
   // * - 1. We also need them to be copyable, so a
   // *      different approach is hereby applied.
   // *
-  rb[annotation] > rt
+  ru[annotation] > rt
     // box
     display: inline-block
     height: 0
@@ -23,9 +23,9 @@ hruby
     // 1
     font: 0/0 hidden-text
 
-  // * Ruby base text
+  // * 
   // *
-  rb
+  ru
     // position
     position: relative
     // box
@@ -36,7 +36,7 @@ hruby
   // * Real ruby annotations (pseudo elements)
   // * and Zhuyin.
   // *
-  rb:before,
+  ru:before,
   zhuyin
     +hyu-scale( .55 )
     +hyu-typo-reset
@@ -50,18 +50,18 @@ hruby
   // * - 1. Pseudo element is applied here to avoid
   // * -    dirty box-modelling hacks.
   // *
-  rb[annotation]
+  ru[annotation]
     // typography
     text-align: center
 
     // 1
     &:before
-      left: -200%
+      left: -260%
       top: -.5em
       vertical-align: top
       // box
       height: 1em
-      width: 500%
+      width: 600%
       overflow: hidden
       // typography
       content: attr( annotation )
@@ -71,7 +71,7 @@ hruby
 
   // * Zhuyin annotations
   // *
-  rb[zhuyin]
+  ru[zhuyin]
     // posi
     display: inline-block
     position: relative
@@ -87,8 +87,7 @@ hruby
     // * - 1. Neutral tone (輕聲).
     // * - 2. Falling tones (陰去、陽去).
     // * - 3. Checked tones (陰入、陽入).
-    // *   3.1 Moedict.tw PUA as some browsers fail to
-    // *       display ligatures.
+    // *   3.1 Moedict.tw PUA as some browsers fail to display combining ligatures.
     // *
 
     // a
@@ -172,13 +171,13 @@ hruby
   // * text according to the order or whether they are
   // * in ‘right-angle’.
   // *
-  rb[annotation]:before
+  ru[annotation]:before
     top: -.5em
-  rb[order='1']:before,
-  &[rightangle] rb[annotation]:before
+  ru[order='1']:before,
+  &[rightangle] ru[annotation]:before
     bottom: -.4em
     top: auto
-  &[rightangle] rb[annotation]:before
+  &[rightangle] ru[annotation]:before
     margin-left: -.4em
 
   // * We can use even smaller Zhuyin font-size while in
@@ -190,12 +189,12 @@ hruby
       +hyu-scale( .8 )
       display: inline-block
 
-    rb[zhuyin][diao='˪'],
-    rb[zhuyin][diao='˫']
+    ru[zhuyin][diao='˪'],
+    ru[zhuyin][diao='˫']
       diao
         +hyu-scale( 1 )
 
-    rb[zhuyin][diao='˙']
+    ru[zhuyin][diao='˙']
       diao
         +hyu-scale( .8 )
         top: .125em

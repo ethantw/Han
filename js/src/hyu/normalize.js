@@ -6,33 +6,40 @@ define([
 ], function( Hyu, $, Farr, TYPESET ) {
 
 /**
- * Create and return a new `<rb>` element
+ * Create and return a new `<ru>` element
  * according to the given contents
  */
-function createPlainRb( rb, rt ) {
-  var rb = $.clone( rb ),
-      rt = $.clone( rt ),
-      $rb = $.create( 'rb' )
+function createNormalRu( $rb, $rt, attr ) {
+  var $ru = $.create( 'ru' ),
+      $rt = $.clone( $rt ),
+      attr = attr || {}
 
-  $rb.appendChild( rb )
-  $rb.appendChild( rt )
-  $rb.setAttribute( 'annotation', rt.textContent )
+  if ( Array.isArray( $rb )) {
+    $ru.innerHTML = $rb.map(function( rb ) {
+      return rb.outerHTML 
+    }).join('')
+  } else {
+    $ru.appendChild( $.clone( $rb ))
+  }
 
-  return $rb
+  $ru.appendChild( $rt )
+  attr.annotation = $rt.textContent
+  $.setAttr( $ru, attr )
+  return $ru
 }
 
 /**
- * Create and return a new `<rb>` element
+ * Create and return a new `<ru>` element
  * in Zhuyin form
  */
-function createZhuyinRb( rb, rt ) {
-  var rb = $.clone( rb ),
+function createZhuyinRu( $rb, $rt ) {
+  var $rb = $.clone( $rb ),
 
       // Create an element to return
-      $rb   = $.create( 'rb' ),
-      $rt   = $.create( 'zhuyin' ),
-      $yin  = $.create( 'yin' ),
-      $diao = $.create( 'diao' ),
+      $ru     = $.create( 'ru' ),
+      $zhuyin = $.create( 'zhuyin' ),
+      $yin    = $.create( 'yin' ),
+      $diao   = $.create( 'diao' ),
 
       // #### Explanation ####
       // * `zhuyin`: the entire phonetic annotation
@@ -40,7 +47,7 @@ function createZhuyinRb( rb, rt ) {
       // * `diao`:   the tone
       // * `form`:   the combination of the pronunciation
       // * `len`:    the text length of `yin`
-      zhuyin = rt.textContent,
+      zhuyin = $rt.textContent,
       yin, diao, form, len
 
   yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
@@ -57,36 +64,35 @@ function createZhuyinRb( rb, rt ) {
       y ? 'Y' : null
     ].join('')
   })
-
-  // - <rb>
-  // -   # ruby base text
+  // - <ru>
+  // -   <rb><rb/> 
   // -   <zhuyin>
   // -     <yin></yin>
   // -     <diao></diao>
   // -   </zhuyin>
-  // - </rb>
+  // - </ru>
   $diao.innerHTML = diao
   $yin.innerHTML = yin
-  $rt.appendChild( $yin )
-  $rt.appendChild( $diao )
+  $zhuyin.appendChild( $yin )
+  $zhuyin.appendChild( $diao )
 
-  if ( rb.nodeName === 'RB' ) {
-    $rb.innerHTML = rb.innerHTML
+  if ( $rb.nodeName === 'RB' ) {
+    $ru.innerHTML = $rb.outerHTML
   } else {
-    $rb.appendChild( rb )
+    $ru.appendChild( $rb )
   }
 
-  $rb.appendChild( $rt )
+  $ru.appendChild( $zhuyin )
 
   // Finally, set up the necessary attribute
-  // and return the new `<rb>`
-  $.setAttr( $rb, {
+  // and return the new `<ru>`
+  $.setAttr( $ru, {
     zhuyin: '',
     diao: diao,
     length: len,
     form: form
   })
-  return $rb
+  return $ru
 }
 
 /**
@@ -135,9 +141,9 @@ $.extend( Hyu, {
   // Traverse target elements to render Hanzi emphasis marks
   // and skip that in punctuation
   renderEm: function( context, target ) {
-    var qs = target ? 'qsa' : 'tag',
+    var method = target ? 'qsa' : 'tag',
         target = target || 'em',
-        $target = $[ qs ]( target, context )
+        $target = $[ method ]( target, context )
 
     $target
     .forEach(function( elem ) {
@@ -163,12 +169,10 @@ $.extend( Hyu, {
   // Address normalisation for both simple and complex
   // rubies
   renderRuby: function( context, target ) {
-    var qs = target ? 'qsa' : 'tag',
+    var method = target ? 'qsa' : 'tag',
         target = target || 'ruby',
-        $target = $[ qs ]( target, context ),
-
-        simpClaElem = target + ', rtc',
-        $simpClaElem = $.qsa( simpClaElem, context )
+        $target = $[ method ]( target, context ),
+        $simpClaElem = $.qsa( target + ', rtc', context )
 
     // First of all, simplify semantic classes
     $simpClaElem
@@ -198,7 +202,7 @@ $.extend( Hyu, {
             clazz.contains( 'rightangle' )
           ),
 
-          frag, $cloned, $rb, hruby
+          frag, $cloned, $rb, $ru, hruby
 
       if ( !condition ) {
         return
@@ -229,26 +233,19 @@ $.extend( Hyu, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(rt|rb)/i )) {
-              break
-            }
+            if ( !irb || irb.nodeName.match( /(r[ubt])/i ))  break 
 
-            $rb.insertBefore(
-              $.clone( irb ),
-              $rb.firstChild
-            )
+            $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
-          } while ( !irb.nodeName.match( /(rt|rb)/i ))
+          } while ( !irb.nodeName.match( /(r[ubt])/i ))
+          // Create a real `<ru>` to append.
+          $ru = clazz.contains( 'zhuyin' ) ?
+            createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
 
-          // Create a real `<rb>` to append.
-          $rb = clazz.contains( 'zhuyin' ) ?
-            createZhuyinRb( $rb, rt ) :
-            createPlainRb( $rb, rt )
-
-          // Replace the ruby text with the new `<rb>`,
+          // Replace the ruby text with the new `<ru>`,
           // and remove the original implied ruby base(s)
           try {
-            rt.parentNode.replaceChild( $rb, rt )
+            rt.parentNode.replaceChild( $ru, rt )
 
             airb
             .forEach(function( irb ) {
@@ -265,7 +262,7 @@ $.extend( Hyu, {
         clazz.contains( 'complex' ) ||
         clazz.contains( 'rightangle' )
       ) {
-        $rb = $.tag( 'rb', $cloned )
+        $rb = $ru = $.tag( 'rb', $cloned )
 
         // First of all, deal with Zhuyin containers
         // individually
@@ -273,111 +270,75 @@ $.extend( Hyu, {
         // Note that we only support one single Zhuyin
         // container in each complex ruby
         !function( rtc ) {
-          if ( !rtc ) {
-            return
-          }
+          if ( !rtc )  return
 
-          $
-          .tag( 'rt', rtc )
-          .forEach(function( rt, i ) {
-            if ( !$rb[ i ] ) {
-              return
-            }
+          $ru = $
+            .tag( 'rt', rtc )
+            .map(function( rt, i ) {
+              if ( !$rb[ i ] )  return
+              var ret = createZhuyinRu( $rb[ i ], rt )
 
-            var $$rb = createZhuyinRb( $rb[ i ], rt )
-
-            try {
-              $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
-            } catch ( e ) {}
-          })
+              try {
+                $rb[ i ].parentNode.replaceChild( ret, $rb[ i ] )
+              } catch ( e ) {}
+              return ret
+            })
 
           // Remove the container once it's useless
           $.remove( rtc )
           ruby.setAttribute( 'rightangle', '' )
         }( $cloned.querySelector( 'rtc.zhuyin' ))
 
-        // Then, other normal annotations
+        // Then, normal annotations other than Zhuyin
         $
         .qsa( 'rtc:not(.zhuyin)', $cloned )
         .forEach(function( rtc, order ) {
-          var clazz = rtc.classList,
-              start, end
+          var ret
+          ret = $
+            .tag( 'rt', rtc )
+            .map(function( rt, i ) {
+              var rbspan = Number( rt.getAttribute( 'rbspan' ) || 1 ),
+                  span = 0,
+                  aRb = [],
+                  rb, ret
 
-          // Initialise
-          start = end = 0
+              do {
+                rb = $ru.shift()
+                aRb.push( rb ) 
+                span += Number( rb.getAttribute( 'span' ) || 1 )
+              } while ( rbspan > span )
 
-          // Recache the ruby base
-          $rb = $.qsa(
-            order === 0 ? 'rb' : 'rb[span]',
-            $cloned
-          )
-
-          $
-          .tag( 'rt', rtc )
-          .forEach(function( rt ) {
-            var $$rb = $.create( '!' ),
-
-                // #### Explanation ####
-                // * `rbspan`: the `<rb>` span assigned in the HTML
-                // * `span`:   the span number of the current `<rb>`
-                rbspan = parseInt( rt.getAttribute( 'rbspan' )) || 1,
-                span, _$rb
-
-            start = end
-            end += parseInt( rbspan )
-
-            // Rearrange the effected `<rb>` array according
-            // to (rb)span, while working on the second container.
-            if ( order > 0 ) {
-              for ( var i = end-1; i >= start; i-- ) {
-                if ( !$rb[ i ] ) {
-                  continue
+              if ( rbspan < span ) {
+                if ( aRb.length > 1 ) {
+                  console.error( 'An impossible `rbspan` value detected.', ruby ) 
+                  return
                 }
-
-                span = parseInt( $rb[ i ].getAttribute( 'span' )) || 1
-
-                if ( span > rbspan ) {
-                  _$rb = $.tag( 'rb', $rb[ i ] )
-
-                  for ( var j = 0, len = _$rb.length; j < len; j++ ) {
-                    $rb.splice( i+j, 1, _$rb[ j ] )
-                  }
-                }
+                aRb = $.tag( 'rb', aRb[0] )
+                $ru = aRb.slice( rbspan ).concat( $ru ) 
+                aRb = aRb.slice( 0, rbspan )
+                span = rbspan
               }
-            }
-
-            // Iterate from the last item, for we don't
-            // want to mess up with the original indices.
-            for ( var i = end-1; i >= start; i-- ) {
-              if ( !$rb[ i ] ) {
-                continue
-              }
-
-              $$rb.insertBefore(
-                $.clone( $rb[ i ] ),
-                $$rb.firstChild
-              )
-
-              if ( rbspan > 1 && i !== start ) {
-                $.remove( $rb[ i ] )
-                continue
-              }
-
-              $$rb = createPlainRb( $$rb, rt )
-              $.setAttr( $$rb, {
-                'class': clazz,
-                span: rbspan,
-                order: order
+              
+              ret = createNormalRu( aRb, rt, {
+                'class': clazz, 
+                span: span,
+                order: order 
               })
-              $rb[ i ].parentNode.replaceChild( $$rb, $rb[ i ] )
-            }
-          })
 
+              try {
+                aRb[0].parentNode.replaceChild( ret, aRb.shift())
+                aRb.forEach(function( rb ) {
+                  $.remove( rb )
+                })
+              } catch (e) {}
+
+              return ret
+            })
+          $ru = ret
           // Remove the container once it's useless
           $.remove( rtc )
         })
       }
-
       // Create a new fake `<hruby>` element so the
       // style sheets will render it as a polyfill,
       // which also helps to avoid the UA style.
