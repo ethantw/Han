@@ -35,9 +35,9 @@ $.extend( Han, {
     // Elements to be filtered according to the
     // HWS rendering mode
     if ( strict ) {
-      finder.filteredElemList += ' textarea code kbd samp pre'
+      finder.filterOutSelector += ', textarea, code, kbd, samp, pre'
     } else {
-      finder.filteredElemList += ' textarea'
+      finder.filterOutSelector += ', textarea'
     }
 
     finder

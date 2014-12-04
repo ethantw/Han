@@ -197,11 +197,9 @@ $.extend( Hyu, {
             clazz.contains( 'rightangle' )
           ),
 
-          frag, $cloned, $rb, $ru, hruby
+          frag, $cloned, $rb, $ru, maxspan, hruby
 
-      if ( !condition ) {
-        return
-      }
+      if ( !condition )  return
 
       // Apply document fragment here to avoid
       // continuously pointless re-paint
@@ -258,6 +256,7 @@ $.extend( Hyu, {
         clazz.contains( 'rightangle' )
       ) {
         $rb = $ru = $.tag( 'rb', $cloned )
+        maxspan = $rb.length
 
         // First of all, deal with Zhuyin containers
         // individually
@@ -297,9 +296,13 @@ $.extend( Hyu, {
                   aRb = [],
                   rb, ret
 
+              if ( rbspan > maxspan ) rbspan = maxspan
+
               do {
-                rb = $ru.shift()
-                aRb.push( rb ) 
+                try {
+                  rb = $ru.shift()
+                  aRb.push( rb ) 
+                } catch (e) {}
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 

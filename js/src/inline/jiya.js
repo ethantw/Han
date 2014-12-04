@@ -8,10 +8,8 @@ Han.renderJiya = function( context ) {
   var context = context || document,
       finder = [ Han.find( context ) ]
 
-  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
-
-  finder[ 0 ]
-  .groupify()
+  finder[ 0 ].filterOutSelector += ', textarea, code, kbd, samp, pre, jinze, em'
+  finder[ 0 ].groupify()
 
   $
   .qsa( 'char_group.biaodian', context )

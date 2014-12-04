@@ -181,7 +181,7 @@ var UNICODE = {
              Ideographic description characters
        */
       hanzi: {
-        base: '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
+        base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
         desc:    '[\u2FF0-\u2FFA]',
         radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
       },
@@ -502,6 +502,17 @@ var $ = {
         return this.makeArray(
           ( context || document ).querySelectorAll( selector )
         )
+      },
+
+      matches: function( node, query ) {
+        var Efn = Element.prototype,
+            matches = Efn.matches || Efn.mozMatchesSelector || Efn.msMatchesSelector || Efn.webkitMatchesSelector
+
+        try {
+          return matches.call( node, query )
+        } catch (e) {
+          return false
+        }
       },
 
       // Create a document fragment, a text node with text
@@ -1126,7 +1137,7 @@ return exposed;
 
 
 
-var filteredElemList = 'style script',
+var filterOutSelector = 'style, script',
 
     Farr = function( selector, filter, method, pattern, subst ) {
       return new Farr.prototype.init( selector, filter, method, pattern, subst )
@@ -1135,59 +1146,48 @@ var filteredElemList = 'style script',
 Farr.prototype = {
   constructor: Farr,
 
-  selector: '',
+  context: '',
 
   // Store the findAndReplaceDOMText instance
   // for future action, i.e. revert.
   finder: [],
 
   // Adapt jQuery-way to do everything
-  init: function( selector, filter, method, pattern, subst ) {
-    this.selector = selector
+  init: function( context, filter, method, pattern, subst ) {
+    this.context = context
+    this.filterOut( filter )
 
-    if ( typeof filter === 'string' ) {
-      this.filteredElemList = filter
-    } else if ( typeof filter === 'function' ) {
-      this.filterElem = filter
-    }
-
-    return typeof method === 'string' && this[ method ] ?
-      this[ method ](pattern, subst) : this
+    return typeof method === 'string' && this[ method ]
+      ? this[ method ](pattern, subst) : this
   },
 
-  // Define the default element list to be
-  // filtered out.
-  filteredElemList: filteredElemList,
+  // Define the default selector to be filtered out.
+  filterOutSelector: filterOutSelector,
 
-  // Define the default `filterElement` function
-  filterElem: function( currentElem ) {
-    var currentElem = currentElem.nodeName.toLowerCase(),
-        aFilterList = this.filteredElemList.split(' '),
+  // Define the default function to the process of filtering out.
+  filterOutFn: function( currentNode ) {
+    return $.matches( currentNode, this.filterOutSelector ) ? false : true
+  },
 
-        // Return true by default unless it matches
-        // the element on the list.
-        ret = true
-
-    aFilterList
-    .forEach(function( filter ) {
-      if ( currentElem === filter ) {
-        ret = false
-        return
-      }
-    })
-    return ret
+  filterOut: function( selector ) {
+    if ( typeof selector === 'string' ) {
+      this.filterOutSelector = selector
+    } else if ( typeof selector === 'function' ) {
+      this.filterOutFn = selector
+    }
+    return this
   },
 
   replace: function( pattern, subst ) {
     var that = this
 
     this.finder.push( findAndReplaceDOMText(
-      this.selector,
+      this.context,
       {
         find: pattern,
         replace: subst,
-        filterElements: function( currentElem ) {
-          return that.filterElem( currentElem )
+        filterElements: function( currentNode ) {
+          return that.filterOutFn( currentNode )
         }
       }
     ))
@@ -1198,12 +1198,12 @@ Farr.prototype = {
     var that = this
 
     that.finder.push( findAndReplaceDOMText(
-      that.selector,
+      that.context,
       {
         find: pattern,
         wrap: subst,
-        filterElements: function( currentElem ) {
-          return that.filterElem( currentElem )
+        filterElements: function( currentNode ) {
+          return that.filterOutFn( currentNode )
         }
       }
     ))
@@ -1234,9 +1234,9 @@ Farr.prototype = {
   // Force punctuation & biaodian typesetting rules
   // to be applied.
   jinzify: function() {
-    var origFilteredElemList = this.filteredElemList
+    var origFilterOutSelector= this.filterOutSelector
 
-    this.filteredElemList += ' jinze'
+    this.filterOutSelector += ', jinze'
 
     this
     .replace(
@@ -1286,14 +1286,12 @@ Farr.prototype = {
             elem = $.create( 'jinze', 'middle' )
 
         elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
-        ) ? elem : ''
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
 
-    this.filteredElemList = origFilteredElemList
+    this.filterOutSelector = origFilterOutSelector
     return this
   },
 
@@ -1884,11 +1882,9 @@ $.extend( Hyu, {
             clazz.contains( 'rightangle' )
           ),
 
-          frag, $cloned, $rb, $ru, hruby
+          frag, $cloned, $rb, $ru, maxspan, hruby
 
-      if ( !condition ) {
-        return
-      }
+      if ( !condition )  return
 
       // Apply document fragment here to avoid
       // continuously pointless re-paint
@@ -1945,6 +1941,7 @@ $.extend( Hyu, {
         clazz.contains( 'rightangle' )
       ) {
         $rb = $ru = $.tag( 'rb', $cloned )
+        maxspan = $rb.length
 
         // First of all, deal with Zhuyin containers
         // individually
@@ -1984,9 +1981,13 @@ $.extend( Hyu, {
                   aRb = [],
                   rb, ret
 
+              if ( rbspan > maxspan ) rbspan = maxspan
+
               do {
-                rb = $ru.shift()
-                aRb.push( rb ) 
+                try {
+                  rb = $ru.shift()
+                  aRb.push( rb ) 
+                } catch (e) {}
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 
@@ -2130,9 +2131,9 @@ $.extend( Han, {
     // Elements to be filtered according to the
     // HWS rendering mode
     if ( strict ) {
-      finder.filteredElemList += ' textarea code kbd samp pre'
+      finder.filterOutSelector += ', textarea, code, kbd, samp, pre'
     } else {
-      finder.filteredElemList += ' textarea'
+      finder.filterOutSelector += ', textarea'
     }
 
     finder
@@ -2221,10 +2222,8 @@ Han.renderJiya = function( context ) {
   var context = context || document,
       finder = [ Han.find( context ) ]
 
-  finder[ 0 ].filteredElemList += ' textarea code kbd samp pre jinze em'
-
-  finder[ 0 ]
-  .groupify()
+  finder[ 0 ].filterOutSelector += ', textarea, code, kbd, samp, pre, jinze, em'
+  finder[ 0 ].groupify()
 
   $
   .qsa( 'char_group.biaodian', context )
@@ -2486,4 +2485,5 @@ if (
 
 
 return Han
-})
+});
+

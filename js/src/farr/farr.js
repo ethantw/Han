@@ -11,7 +11,7 @@ define([
   'findAndReplaceDOMText'
 ], function( $, UNICODE, TYPESET, findAndReplaceDOMText ) {
 
-var filteredElemList = 'style script',
+var filterOutSelector = 'style, script',
 
     Farr = function( selector, filter, method, pattern, subst ) {
       return new Farr.prototype.init( selector, filter, method, pattern, subst )
@@ -20,59 +20,48 @@ var filteredElemList = 'style script',
 Farr.prototype = {
   constructor: Farr,
 
-  selector: '',
+  context: '',
 
   // Store the findAndReplaceDOMText instance
   // for future action, i.e. revert.
   finder: [],
 
   // Adapt jQuery-way to do everything
-  init: function( selector, filter, method, pattern, subst ) {
-    this.selector = selector
+  init: function( context, filter, method, pattern, subst ) {
+    this.context = context
+    this.filterOut( filter )
 
-    if ( typeof filter === 'string' ) {
-      this.filteredElemList = filter
-    } else if ( typeof filter === 'function' ) {
-      this.filterElem = filter
-    }
-
-    return typeof method === 'string' && this[ method ] ?
-      this[ method ](pattern, subst) : this
+    return typeof method === 'string' && this[ method ]
+      ? this[ method ](pattern, subst) : this
   },
 
-  // Define the default element list to be
-  // filtered out.
-  filteredElemList: filteredElemList,
+  // Define the default selector to be filtered out.
+  filterOutSelector: filterOutSelector,
 
-  // Define the default `filterElement` function
-  filterElem: function( currentElem ) {
-    var currentElem = currentElem.nodeName.toLowerCase(),
-        aFilterList = this.filteredElemList.split(' '),
+  // Define the default function to the process of filtering out.
+  filterOutFn: function( currentNode ) {
+    return $.matches( currentNode, this.filterOutSelector ) ? false : true
+  },
 
-        // Return true by default unless it matches
-        // the element on the list.
-        ret = true
-
-    aFilterList
-    .forEach(function( filter ) {
-      if ( currentElem === filter ) {
-        ret = false
-        return
-      }
-    })
-    return ret
+  filterOut: function( selector ) {
+    if ( typeof selector === 'string' ) {
+      this.filterOutSelector = selector
+    } else if ( typeof selector === 'function' ) {
+      this.filterOutFn = selector
+    }
+    return this
   },
 
   replace: function( pattern, subst ) {
     var that = this
 
     this.finder.push( findAndReplaceDOMText(
-      this.selector,
+      this.context,
       {
         find: pattern,
         replace: subst,
-        filterElements: function( currentElem ) {
-          return that.filterElem( currentElem )
+        filterElements: function( currentNode ) {
+          return that.filterOutFn( currentNode )
         }
       }
     ))
@@ -83,12 +72,12 @@ Farr.prototype = {
     var that = this
 
     that.finder.push( findAndReplaceDOMText(
-      that.selector,
+      that.context,
       {
         find: pattern,
         wrap: subst,
-        filterElements: function( currentElem ) {
-          return that.filterElem( currentElem )
+        filterElements: function( currentNode ) {
+          return that.filterOutFn( currentNode )
         }
       }
     ))
@@ -119,9 +108,9 @@ Farr.prototype = {
   // Force punctuation & biaodian typesetting rules
   // to be applied.
   jinzify: function() {
-    var origFilteredElemList = this.filteredElemList
+    var origFilterOutSelector= this.filterOutSelector
 
-    this.filteredElemList += ' jinze'
+    this.filterOutSelector += ', jinze'
 
     this
     .replace(
@@ -171,14 +160,12 @@ Farr.prototype = {
             elem = $.create( 'jinze', 'middle' )
 
         elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
-        ) ? elem : ''
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
 
-    this.filteredElemList = origFilteredElemList
+    this.filterOutSelector = origFilterOutSelector
     return this
   },
 
