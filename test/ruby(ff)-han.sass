@@ -5,12 +5,12 @@
 @import ../sass/han
 
 #zhuyin_fuhao-heiti p
-  +han-ligature
-  font-family: 'Zhuyin Heiti', 'Han Heiti', sans-serif
+  @extend %han-ligature
+  font-family: 'Zhuyin Heiti', 'Biaodian Pro Sans', 'Helvetica Neue', Helvetica, Arial, 'Han Heiti', sans-serif
 #zhuyin_fuhao-kaiti p
-  +han-ligature
-  font-family: 'Zhuyin Kaiti', 'Han Kaiti', cursive, serif
+  @extend %han-ligature
+  font-family: 'Zhuyin Kaiti', 'Biaodian Pro Serif', Georgia, 'Times New Roman', 'Han Kaiti', cursive, serif
 #luoma_pinyin p,
 #pua p
-  +han-ligature
-  font-family: 'Romanization Sans', sans-serif
+  @extend %han-ligature
+  font-family: 'Romanization Sans', 'Biaodian Pro Sans', 'Helvetica Neue', Helvetica, Arial, 'Han Heiti', sans-serif
