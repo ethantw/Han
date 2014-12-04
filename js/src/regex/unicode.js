@@ -60,7 +60,7 @@ var UNICODE = {
              Ideographic description characters
        */
       hanzi: {
-        base: '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
+        base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
         desc:    '[\u2FF0-\u2FFA]',
         radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
       },
