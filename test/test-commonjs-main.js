@@ -1,2 +1,3 @@
 
-require('./han.min.js').init()
+require('./han.min.js')().render()
+
