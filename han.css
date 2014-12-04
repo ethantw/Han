@@ -714,7 +714,7 @@ hruby ru[annotation] {
   text-align: center;
 }
 hruby ru[annotation]:before {
-  left: -260%;
+  left: -265%;
   top: -0.5em;
   vertical-align: top;
   height: 1em;
@@ -724,6 +724,9 @@ hruby ru[annotation]:before {
   line-height: 1;
   text-align: center;
   text-indent: 0;
+}
+hruby[rightangle] ru[annotation]:before {
+  left: -250%;
 }
 hruby ru[zhuyin] {
   display: inline-block;
@@ -772,16 +775,16 @@ hruby ru[zhuyin][length='3'] diao {
   margin-top: 1.3em;
 }
 hruby ru[zhuyin][diao='˙'] diao {
-  right: -0.45em;
+  right: -0.35em;
 }
 hruby ru[zhuyin][diao='˙'][length='1'] diao {
-  margin-top: -0.4em;
+  margin-top: -0.5em;
 }
 hruby ru[zhuyin][diao='˙'][length='2'] diao {
-  margin-top: -0.25em;
+  margin-top: -0.3em;
 }
 hruby ru[zhuyin][diao='˙'][length='3'] diao {
-  margin-top: -0.4em;
+  margin-top: -0.25em;
 }
 hruby ru[zhuyin][diao='˪'] diao, hruby ru[zhuyin][diao='˫'] diao {
   -moz-transform: scale(1.2);
@@ -794,10 +797,10 @@ hruby ru[zhuyin][diao^='ㆴ'] diao, hruby ru[zhuyin][diao^='ㆵ'] diao, hruby ru
   top: 20%;
   margin-right: -0.3em;
 }
-hruby ru[annotation]:before {
+hruby ru[annotation]:before, hruby[rightangle] ru[annotation][order='1']:before {
   top: -0.5em;
 }
-hruby ru[order='1']:before, hruby[rightangle] ru[annotation]:before {
+hruby ru[order='1']:before, hruby[rightangle] ru[annotation][order='0']:before {
   bottom: -0.4em;
   top: auto;
 }
