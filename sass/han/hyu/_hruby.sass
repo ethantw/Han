@@ -171,10 +171,11 @@ hruby
   // * text according to the order or whether they are
   // * in ‘right-angle’.
   // *
-  ru[annotation]:before
+  ru[annotation]:before,
+  &[rightangle] ru[annotation][order='1']:before
     top: -.5em
   ru[order='1']:before,
-  &[rightangle] ru[annotation]:before
+  &[rightangle] ru[annotation][order='0']:before
     bottom: -.4em
     top: auto
   &[rightangle] ru[annotation]:before
