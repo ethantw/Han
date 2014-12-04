@@ -181,7 +181,7 @@ var UNICODE = {
              Ideographic description characters
        */
       hanzi: {
-        base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868][\uDC00-\uDFFF]|\uD869[\uDC00-\uDEDF]|\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]|\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]',
+        base: '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
         desc:    '[\u2FF0-\u2FFA]',
         radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
       },
@@ -1763,12 +1763,7 @@ function createZhuyinRu( $rb, $rt ) {
   $zhuyin.appendChild( $yin )
   $zhuyin.appendChild( $diao )
 
-  if ( $rb.nodeName === 'RB' ) {
-    $ru.innerHTML = $rb.outerHTML
-  } else {
-    $ru.appendChild( $rb )
-  }
-
+  $ru.appendChild( $rb )
   $ru.appendChild( $zhuyin )
 
   // Finally, set up the necessary attribute
