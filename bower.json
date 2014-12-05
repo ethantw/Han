@@ -8,14 +8,10 @@
   "description": "The CSS typography framework optimised for Hanzi.",
   "main": [ "han.css", "han.js" ],
   "keywords": [
-    "Han",
     "Hanzi",
     "CJK",
-    "CSS",
     "normalize",
     "typography",
-    "typeface",
-    "font",
     "typesetting"
   ],
   "license": "http://css.hanzi.co/LICENSE.md",

@@ -5,14 +5,10 @@
   "description": "The CSS typography framework optimised for Hanzi.",
   "author": "Chen Yijun",
   "keywords": [
-    "Han",
     "Hanzi",
     "CJK",
-    "CSS",
     "normalize",
     "typography",
-    "typeface",
-    "font",
     "typesetting"
   ],
   "scripts": [ "han.js" ],

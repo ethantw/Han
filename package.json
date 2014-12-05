@@ -8,14 +8,10 @@
   },
   "main": "han.js",
   "keywords": [
-    "Han",
     "Hanzi",
     "CJK",
-    "CSS",
     "normalize",
     "typography",
-    "typeface",
-    "font",
     "typesetting"
   ],
   "author": {
