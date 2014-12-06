@@ -1,5 +1,5 @@
 
-- [中文版](https://github.com/ethantw/Han)
+- [中文版](https://github.com/ethantw/Han/blob/master/README.md)
 - <b>English version</b>
 
 
@@ -29,19 +29,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.otf`
 
 ## How to use
 
@@ -74,5 +74,5 @@ Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritt
 - Internet Explorer 10+
 
 * * *
-Han.css v3.0.0  
-Last-modified: 2014-10-23 04:20 (GMT+8)
+Han.css v3.0.1  
+Last-modified: 2014-12-6 22:06 (GMT+8)

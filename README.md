@@ -1,6 +1,6 @@
 
  - <b>中文版</b>
- - [English version](https://github.com/ethantw/Han/blob/master/README \(en\).md)
+ - [English version](https://github.com/ethantw/Han/blob/master/README-en.md)
 
 漢字標準格式
 ==========
@@ -28,19 +28,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.css">
 ````
 
 腳本，
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.js"></script>
 ````
 
 Web字體，
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.0/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.otf`
 
 ## 使用方式
 
@@ -73,5 +73,5 @@ Web字體，
 - Internet Explorer 10+
 
 * * *
-「漢字標準格式」版本：v3.0.0  
-本頁最後修改於：2014年10月23日 04:20（GMT+8）
+「漢字標準格式」版本：v3.0.1  
+本頁最後修改於：2014年12月6日 22:07（GMT+8）
