@@ -718,7 +718,6 @@ hruby ru[annotation]:before {
   vertical-align: top;
   height: 1em;
   width: 600%;
-  overflow: hidden;
   content: attr(annotation);
   line-height: 1;
   text-align: center;
