@@ -1,5 +1,5 @@
 /*!
- * 漢字標準格式 v3.0.0 | MIT License | css.hanzi.co
+ * 漢字標準格式 v@VERSION | MIT License | css.hanzi.co
  * Han: CSS typography framework optimised for Hanzi
  */
 

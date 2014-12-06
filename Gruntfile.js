@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
 						ascii_only: true
 					},
 					banner: '/*!\n' +
-						' * 漢字標準格式 v3.0.0 | MIT License | css.hanzi.co\n' +
+						' * 漢字標準格式 v<%= pkg.version %> | MIT License | css.hanzi.co\n' +
 						' * Han: CSS typography framework optimised for Hanzi\n' +
 						' */\n',
 					compress: {
