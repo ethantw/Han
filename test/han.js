@@ -2305,7 +2305,7 @@ $.extend( Han.fn, {
 })
 
 
-var QUERY_RU_W_ANNO = 'ru.romanization[annotation], .romanization ru[annotation]',
+var QUERY_RU_W_ANNO = 'ru[annotation]',
     ELEM_TO_IGNORE = ' textarea code kbd samp pre'
 
 var isCombLigaNormal = (function() {
