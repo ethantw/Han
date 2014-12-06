@@ -27,4 +27,6 @@ $mre-font-woff:         $han-font-woff
 $mre-font-otf:          $han-font-otf
 $mre-version:           $han-version
 
-$mre-webfont: url(#{$mre-font-woff}?#{$mre-version}) format('woff'), url(#{$mre-font-otf}?#{$mre-version}) format('opentype')
+$han-webfont: url(#{$han-font-woff}?#{$han-version}) format('woff'), url(#{$han-font-otf}?#{$han-version}) format('opentype') !default
+$mre-webfont:           $han-webfont
+
