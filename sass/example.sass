@@ -35,20 +35,29 @@ $han-article-line-height: 1.7
 $han-article-justify: true
 
 // **
+// * [高級排版功能]
+// * 文章章節的計數
+// * `true` || `false`
+// * 
+$han-section-counter: false
+// * 開啓文章章節的目錄計數
+$han-section-counter-toc: false  
+
+// **
 // * 縮進
 // * 推薦値：`1em` || `2em`
 // *
 $han-indent: 2em
 
 // **
-// * 行動裝置縮進
+// * 行動裝置上的縮進
 // * 推薦値：`1em` || `2em`
 // *
 $han-indent-md: 1em
 
 // **
 // * 行動裝置最大寬度（彈性設計，responsive web design）
-// * 推薦値：`480px`
+// * 推薦値：`480px` || `30em`
 // *
 $han-mobile-device-width: 480px
 
@@ -96,13 +105,13 @@ $han-glyph-set-hans: GB
 
 // **
 // * 繁體中文標點
-// * `default` || `Pro` || `CNS` || `GB`
+// * `Pro` || `CNS` || `GB` || `simp` 
 // *
 $han-biaodian-hant: Pro
 
 // **
 // * 簡體中文標點
-// * `default` || `Pro` || `CNS` || `GB`
+// * `Pro` || `CNS` || `GB` || `simp`
 // *
 $han-biaodian-hans: GB
 
@@ -128,9 +137,9 @@ $han-mono-zh:    $han-sans-zh
 // *
 $han-font-woff: './fonts/han.woff'
 $han-font-otf:  './fonts/han.otf'
-$han-font-ttf:  './fonts/han.ttf'
 
 // **
 // * 在所有樣式前滙入`_han.sass`
 // * Import `_han.sass` before anything else
 @import han
+
