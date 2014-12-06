@@ -4,7 +4,7 @@ define([
   './var/body'
 ], function( document, root, body ) {
 
-var VERSION = '3.0.0',
+var VERSION = '@VERSION',
 
     ROUTINE = [
       // Initialise the condition with feature-detecting

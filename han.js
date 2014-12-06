@@ -24,7 +24,7 @@ var body = document.body
 
 
 
-var VERSION = '3.0.0',
+var VERSION = '3.0.1',
 
     ROUTINE = [
       // Initialise the condition with feature-detecting
