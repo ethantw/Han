@@ -20,17 +20,43 @@ module.exports = function( grunt ) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON( 'package.json' ),
+    sass: {
+      options: {
+        sourceMap: false,
+        outputStyle: 'expanded'
+      },
+      dist: {
+        files: {
+          'han.css': 'sass/han.sass'
+        }
+      }
+    },
+    cssmin: {
+      options: {
+        keepSpecialComments: 0
+      },
+      add_banner: {
+        options: {
+          banner: '/*! 漢字標準格式 v<%= pkg.version %> | MIT License | css.hanzi.co */\n' +
+                  '/*! Han: CSS typography framework optimised for Hanzi */\n' +
+                  '/*! normalize.css v<%= pkg.dependencies["normalize.css"].slice(1) %> | MIT License | git.io/normalize */\n'
+        },
+        files: {
+          'han.min.css': 'han.css'
+        }
+      }
+    },
     jshint: {
       all: {
         src: [
-          "js/src/**/*.js", "han.js"
+          'js/src/**/*.js', 'han.js'
         ],
         options: {
           jshintrc: true
         }
       },
       dist: {
-        src: "dist/jquery.js",
+        src: 'dist/jquery.js',
         options: srcHintOptions
       }
     },
@@ -68,5 +94,5 @@ module.exports = function( grunt ) {
   grunt.loadTasks( 'build' )
   grunt.registerTask( 'test', [ 'jshint' ] )
   grunt.registerTask( 'dev', [ 'build:*:*' ] )
-  grunt.registerTask( 'default', [ 'dev', 'uglify' ] )
+  grunt.registerTask( 'default', [ 'sass', 'cssmin', 'dev', 'uglify' ] )
 }
