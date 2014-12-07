@@ -3,8 +3,7 @@ module.exports = function( grunt ) {
 
   'use strict'
 
-  var gzip = require( 'gzip-js' ),
-      srcHintOptions = readOptionalJSON( '/.jshintrc' )
+  var srcHintOptions = readOptionalJSON( './.jshintrc' )
 
   function readOptionalJSON( filepath ) {
     var data = {}
@@ -21,6 +20,20 @@ module.exports = function( grunt ) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON( 'package.json' ),
+    jshint: {
+      all: {
+        src: [
+          "js/src/**/*.js", "han.js"
+        ],
+        options: {
+          jshintrc: true
+        }
+      },
+      dist: {
+        src: "dist/jquery.js",
+        options: srcHintOptions
+      }
+    },
     build: {
       all: {
         dest: './han.js'
@@ -51,17 +64,9 @@ module.exports = function( grunt ) {
     }
   })
 
-  // Load grunt tasks from NPM packages
   require( 'load-grunt-tasks' )( grunt )
-
-  // Integrate jQuery specific tasks
   grunt.loadTasks( 'build' )
-
-  grunt.registerTask( 'lint', [ 'jshint' ] )
-
-  // Short list as a high frequency watch task
+  grunt.registerTask( 'test', [ 'jshint' ] )
   grunt.registerTask( 'dev', [ 'build:*:*' ] )
-
-  // Default grunt
   grunt.registerTask( 'default', [ 'dev', 'uglify' ] )
 }
