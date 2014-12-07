@@ -581,10 +581,10 @@ ruby *:before,
 ruby *:after {
   line-height: normal;
 }
-ruby > rt:before {
+ruby > rt:not(:empty):before {
   content: "（";
 }
-ruby > rt:after {
+ruby > rt:not(:empty):after {
   content: "）";
 }
 ruby > rb + rtc:before {
@@ -602,6 +602,8 @@ ruby > rt:before, ruby > rt:after {
   vertical-align: middle;
   height: 0;
   width: 0;
+}
+ruby > rt:not(:empty):before, ruby > rt:not(:empty):after {
   height: -moz-calc( 1.3em );
   width: -moz-calc( 1em );
 }

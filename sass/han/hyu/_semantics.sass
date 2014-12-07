@@ -216,7 +216,7 @@ ruby
     line-height: normal
 
   // 1
-  > rt
+  > rt:not(:empty)
     &:before
       content: '\ff08'
     &:after
@@ -243,5 +243,8 @@ ruby
       // 2
       height: 0
       width:  0
+  > rt:not(:empty)
+    &:before,
+    &:after
       height: -moz-calc( 1.3em )
       width:  -moz-calc( 1em )
