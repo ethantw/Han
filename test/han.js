@@ -62,6 +62,8 @@ var VERSION = '3.0.2',
       return this
     }
 
+Han.version = VERSION
+
 Han.fn = Han.prototype = {
   version: VERSION,
 

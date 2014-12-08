@@ -42,6 +42,8 @@ var VERSION = '@VERSION',
       return this
     }
 
+Han.version = VERSION
+
 Han.fn = Han.prototype = {
   version: VERSION,
 
