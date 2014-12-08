@@ -1,5 +1,5 @@
 /*!
- * 漢字標準格式 v3.0.1 | MIT License | css.hanzi.co
+ * 漢字標準格式 v3.0.2 | MIT License | css.hanzi.co
  * Han: CSS typography framework optimised for Hanzi
  */
 
@@ -24,7 +24,7 @@ var body = document.body
 
 
 
-var VERSION = '3.0.1',
+var VERSION = '3.0.2',
 
     ROUTINE = [
       // Initialise the condition with feature-detecting
