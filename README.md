@@ -28,19 +28,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.css">
 ````
 
 腳本，
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.js"></script>
 ````
 
 Web字體，
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.otf`
 
 ## 使用方式
 
@@ -51,18 +51,10 @@ Web字體，
 ### 可選用的腳本
 「漢字標準格式」具低耦合、高度語意化等特性，樣式表與腳本各司其職、相互依賴性極低，並有多級樣式回退（fallback），故可依需求選用腳本。
 
-### 樣式覆蓋的問題
-「漢字標準格式」不同於多數CSS框架，內含大量針對語言屬性`:lang`的元素樣式修正，因而導致後方樣式無法依預期覆蓋。
+## 常見問題
 
-#### 含語言屬性樣式修正的元素類型：
-- 字級語意元素（text-level semantics）
-- 群組元素（grouping content）及同章節元素（sections）的組合情境**（僅含字體設定）**
-- 根元素`html`**（僅含字體設定）**
-
-#### 處理方式
-為正確處理這些狀況，請留意樣式繼承規則，加入相應的語言屬性、父輩元素或其他選擇器等，以提高樣式權重，避免過度使用`!important`宣告，以保持樣式表的可維護性。
-
-必要時，請使用瀏覽器的「元件檢閱器」來瞭解樣式表間的繼承、覆蓋關係。
+- [樣式的覆蓋](http://css.hanzi.co/manual/faq#yangshi_de_fugai)
+- [`han.js`腳本的運行環境](http://css.hanzi.co/manual/faq#han-js_de_yunxing_huanjing)
 
 ## 瀏覽器支援
 
@@ -73,5 +65,5 @@ Web字體，
 - Internet Explorer 10+
 
 * * *
-「漢字標準格式」版本：v3.0.1  
-本頁最後修改於：2014年12月6日 22:07（GMT+8）
+「漢字標準格式」版本：v3.0.2  
+本頁最後修改於：2014年12月8日 09:37（GMT+8）

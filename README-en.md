@@ -29,19 +29,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.1/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.otf`
 
 ## How to use
 
@@ -52,6 +52,7 @@ Web fonts,
 ### JavaScript is optional
 Han.css is of low coupling and high semantics. Style sheets and JavaScript depend *little* on each other. Multi-level fallback can be applied within the style sheets, hence the optional use of the scripts.
 
+## FAQ
 ### Issue of overwriting styles
 Different from most of the CSS frameworks, Han.css contains numerous style correction aiming at the language attribute `:lang`. It may cause unexpected results such as style overwritting not carried out.
 
@@ -74,5 +75,5 @@ Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritt
 - Internet Explorer 10+
 
 * * *
-Han.css v3.0.1  
-Last-modified: 2014-12-6 22:06 (GMT+8)
+Han.css v3.0.2  
+Last-modified: 2014-12-8 09:37 (GMT+8)
