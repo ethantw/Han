@@ -4,7 +4,7 @@
 
 v3.0.2（2014-12-08）
 ---
- 1. 修正無法為LibSass編譯的問題
+ 1. 修正無法為LibSass編譯的問題（感謝 @audreyt）
  2. 加入`npm test`
  3. 行間注元素的微調
 
@@ -74,8 +74,8 @@ v2.2.1（2013-12-05）
 1. 改進了`<ruby>`的JS改寫並加入拼、注音共同顯示等功能（#5）
 2. 漢拉間隙改用自訂元素`<hanla>`，避免元素樣式繼承衝突（#30）
 
-〔更多資訊〕
-[https://github.com/ethantw/Han/issues?milestone=5&state=closed]
+[〔更多資訊〕]
+(https://github.com/ethantw/Han/issues?milestone=5&state=closed)
 
 v2.2.0（2013-11-27）
 ---
@@ -89,8 +89,7 @@ v2.2.0（2013-11-27）
 8. 注音符號字體補足方言音擴充字符（#26）
 9. 修正強調元素`<em>`的樣式回退（#27）
 
-〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed]
+[〔更多資訊〕](https://github.com/ethantw/Han/issues?milestone=2&page=1&state=closed)
 
 v2.1.2（2013-11-07）
 ---
@@ -100,8 +99,7 @@ v2.1.2（2013-11-07）
 4. 實驗性底線在`border-box` reset網頁下的顯示問題（#11）
 5. 加入了Bower package的支援（@yhsiang，#12）
 
-〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed]
+[〔更多資訊〕](https://github.com/ethantw/Han/issues?milestone=3&page=1&state=closed)
 
 v2.1.1 （2013-10-21）
 ---
@@ -111,8 +109,7 @@ v2.1.1 （2013-10-21）
 4. 更新`findAndReplaceDOMText()`函式至版本0.4.0（#8、#9）
 5. 着重號顯示位置修正（#6）
 
-〔更多資訊〕  
-[https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed]
+[〔更多資訊〕](https://github.com/ethantw/Han/issues?milestone=1&page=1&state=closed)
 
 v2.1.0（2013-10-5）
 ---
