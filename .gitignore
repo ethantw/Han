@@ -3,10 +3,6 @@
 node_modules
 
 TODO
-Makefile
-
-/server.js
 /index.html
 /index.jade
-han.min.header.css
 /example.css
