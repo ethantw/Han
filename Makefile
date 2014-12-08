@@ -2,6 +2,14 @@
 run ::
 	npm start | npm run build:gemsass
 
+han.css ::
+	sass --sourcemap=none sass/han.sass han.css --style expanded
+	grunt cssmin
+
+han.js ::
+	grunt dev
+	grunt uglify
+
 normalize.scss ::
 	npm update normalize.css
 	rm -f sass/han/hyu/_normalize.scss
