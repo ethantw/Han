@@ -1,0 +1,35 @@
+
+// **
+// * Generic typefaces for Western (Latin-based)
+// * characters
+// *
+$mre-sans:    'Helvetica Neue', Helvetica, Arial  !default
+$mre-serif:   Georgia, 'Times New Roman'          !default
+$mre-cursive: 'Apple Chancery', 'Snell Roundhand' !default
+$mre-mono:    Menlo, Consolas, Courier            !default
+
+// **
+// * Generic typefaces for Chinese
+// *
+$mre-sans-zh:    ''                               !default
+$mre-serif-zh:   ''                               !default
+$mre-cursive-zh: ''                               !default
+$mre-mono-zh:    $mre-sans-zh                     !default
+
+// **
+// * Import Han module
+// *
+@import ../sass/han
+
+.sans
+  +han-typeface-by-lang( sans )
+.sans-italic
+  +han-typeface-by-lang( sans-italic )
+.mono
+  +han-typeface-by-lang( mono )
+.serif
+  +han-typeface-by-lang( serif )
+.cursive
+  +han-typeface-by-lang( cursive )
+.cursive-italic
+  +han-typeface-by-lang( cursive-italic )
