@@ -1,9 +1,9 @@
 
 run ::
-	npm start | npm run build:gemsass
+	npm start | npm run watch:gemsass
 
 han.css ::
-	sass --sourcemap=none sass/han.sass han.css --style expanded
+	npm run build:gemsass
 	grunt cssmin
 
 han.js ::

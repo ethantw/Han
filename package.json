@@ -25,7 +25,10 @@
   "scripts": {
     "test": "grunt",
     "build": "grunt",
-    "build:gemsass": "sass --watch --sourcemap=none sass/han.sass:han.css --style expanded"
+    "build:libsass": "grunt sass",
+    "build:gemsass": "sass --sourcemap=none sass/han.sass:han.css --style expanded",
+    "watch:gemsass": "sass --watch --sourcemap=none sass/han.sass:han.css --style expanded",
+    "build:js": "grunt dev"
   },
   "dependencies": {
     "normalize.css": "~3.0.2"
