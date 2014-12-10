@@ -1802,6 +1802,11 @@ char.biaodian[unicode='b7'] {
   font-feature-settings: "liga";
 }
 
+i,
+var {
+  font-style: inherit;
+}
+
 ruby ru[zhuyin] zhuyin diao,
 hruby ru[zhuyin] zhuyin diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
