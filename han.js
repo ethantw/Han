@@ -1630,7 +1630,7 @@ Hyu.support = (function() {
       var ret
 
       injectElementWithStyle(
-        '@font-face { font-family: font; src: url("http://"); }',
+        '@font-face { font-family: font; src: url("//"); }',
         function( node, rule ) {
           var style = $.qsa( 'style', node )[0],
               sheet = style.sheet || style.styleSheet,
