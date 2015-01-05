@@ -1,18 +1,4 @@
 
-/**
- * Library Configuration
- */
-require.config({
-  paths: {
-    findAndReplaceDOMText: [
-      './lib/findAndReplaceDOMText.module'
-    ]
-  }
-})
-
-/**
- * Core
- */
 define([
   './src/core',
   './src/regex',
