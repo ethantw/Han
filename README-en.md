@@ -75,5 +75,5 @@ Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritt
 - Internet Explorer 10+
 
 * * *
-Han.css v3.0.2  
-Last-modified: 2014-12-8 09:37 (GMT+8)
+Han.css v3.1.0  
+Last-modified: 2015-1-6 05:03 (GMT+8)

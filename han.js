@@ -1,5 +1,5 @@
 /*!
- * 漢字標準格式 v3.0.2 | MIT License | css.hanzi.co
+ * 漢字標準格式 v3.1.0 | MIT License | css.hanzi.co
  * Han: CSS typography framework optimised for Hanzi
  */
 
@@ -15,7 +15,6 @@ void (function( global, factory ) {
 })( typeof window !== 'undefined' ? window : this, function( window, noGlobalNS ) {
 
   'use strict'
-
 var document = window.document
 
 var root = document.documentElement
@@ -24,7 +23,7 @@ var body = document.body
 
 
 
-var VERSION = '3.0.2',
+var VERSION = '3.1.0',
 
     ROUTINE = [
       // Initialise the condition with feature-detecting
@@ -2486,6 +2485,6 @@ if (
 }
 
 
-return Han
+
 });
 
