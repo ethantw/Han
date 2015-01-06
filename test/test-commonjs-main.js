@@ -1,3 +1,3 @@
 
-require('./han.min.js')().render()
+require('./han.js')().render()
 
