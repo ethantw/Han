@@ -11,7 +11,7 @@ module.exports = {
     endFile: 'js/src/outro.js'
   },
   paths: {
-    findAndReplaceDOMText: './lib/findAndReplaceDOMText.module'
+    fibre: './lib/fibre.js/index'
   },
   rawText: {},
   onBuildWrite: function( name, path, src ) {
@@ -22,8 +22,11 @@ module.exports = {
       src = src
         .replace(/define\([\w\W]*?return/, 'var ' + /var\/([\w-]+)/.exec(name)[1] + ' =')
         .replace(rdefineEnd, '')
-    } else if ( /^findAndReplaceDOMText$/.exec( name )) {
-      src = 'var findAndReplaceDOMText =\n' + src.replace(/\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return exposed;")
+    } else if ( /^fibre$/.exec( name )) {
+      src = '\nvar Fibre =\n' + src
+        .replace( /void\s/, '' )
+        .replace( "var Finder = Finder || require( './finder.umd' )\n", '' )
+        .replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, 'return Fibre' )
     } else {
       if ( name !== 'han' ) {
         src = src.replace( /\s*return\s+[^\}]+(\}\);?[^\w\}]*)$/, '$1' )

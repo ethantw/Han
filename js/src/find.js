@@ -1,9 +1,9 @@
 define([
   './core',
-  './farr/farr'
-], function( Han, Farr ) {
+  './fibre-extend'
+], function( Han, Fibre ) {
 
-Han.find = Farr
+Han.find = Fibre
 
 void [
   'replace',

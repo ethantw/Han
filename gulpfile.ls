@@ -7,14 +7,14 @@ sass = require \gulp-sass
 csscomb = require \gulp-csscomb
 cssmin = require \gulp-cssmin
 
-#rjs = require \requirejs
 rjs = require \gulp-requirejs-optimize
 rjs-config = require \./rjs-option
-uglify = require \gulp-uglify
+uglify = require \gulp-uglifyjs
 
-lsc = require \gulp-livescript
 browserify = require \gulp-browserify
+lsc = require \gulp-livescript
 jade = require \gulp-jade
+
 watch = require \gulp-watch
 qunit = require \gulp-qunit
 pkg = require \./package.json
@@ -22,10 +22,12 @@ pkg = require \./package.json
 const VERSION = pkg.version
 const BANNER = """
   /*! 漢字標準格式 v#{VERSION} | MIT License | css.hanzi.co */
-  /*! Han.css: the CSS typography framework optimised for Hanzi */\n\n
+  /*! Han.css: the CSS typography framework optimised for Hanzi */
+  \n
 """
 const CSS-BANNER = """
   @charset "UTF-8";
+
   #{BANNER}
 """
 
@@ -37,6 +39,7 @@ gulp.task \server !->
     livereload: true
   }
 
+# Build for distribution
 gulp.task \dist:css ->
   gulp.src \./sass/han.scss
     .pipe sass!
@@ -60,22 +63,54 @@ gulp.task \dist:js ->
     .pipe rjs rjs-config
     .pipe concat \han.js, {
       process: ( src ) ->
-        src.replace /@VERSION/g, VERSION
+        src
+          .replace /@VERSION/g, VERSION
+          .replace /\n{3,}/g, '\n\n'
     }
     .pipe gulp.dest \./
 
 gulp.task \dist:uglify <[ dist:js ]> ->
   gulp.src \./han.js
-    .pipe uglify!
+    .pipe uglify \han.min.js {
+      output: {
+        ascii_only: true
+      }
+    }
     .pipe concat \han.min.js
     .pipe concat.header BANNER
     .pipe gulp.dest \./
 
+# Demo
+gulp.task \demo <[ dist ]> ->
+  gulp.src \./han.*
+    .pipe gulp.dest \./test
+
+  gulp.src \./test/*.scss
+    .pipe sass!
+    .pipe cssmin { keepSpecialComments: 0 }
+    .pipe gulp.dest \./test
+
+  gulp.src \./test/test-commonjs-main.js
+    .pipe browserify!
+    .pipe uglify \test-commonjs.js {
+      output: {
+        ascii_only: true
+      }
+    }
+    .pipe gulp.dest \./test
+
+# Dependencies
 gulp.task \normalize.css !->
   gulp.src \./node_modules/normalize.css/normalize.css
     .pipe concat \_normalize.scss
     .pipe gulp.dest \./sass/han/hyu
 
-gulp.task \default <[ dist server ]>
+gulp.task \fibre.js !->
+  gulp.src \./node_modules/fibre.js/dist/fibre.js
+    .pipe concat \index.js
+    .pipe gulp.dest \./js/lib/fibre.js
+
+gulp.task \default <[ dist demo ]>
+gulp.task \dev <[ default server ]>
 gulp.task \dist <[ dist:css dist:cssmin dist:js dist:uglify ]>
 

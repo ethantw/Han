@@ -1,9 +1,9 @@
 define([
   './core',
   '../method',
-  '../farr/farr',
-  '../regex/typeset'
-], function( Hyu, $, Farr, TYPESET ) {
+  '../regex/typeset',
+  '../fibre-extend'
+], function( Hyu, $, TYPESET, Fibre ) {
 
 /**
  * Create and return a new `<ru>` element
@@ -142,7 +142,7 @@ $.extend( Hyu, {
 
     $target
     .forEach(function( elem ) {
-      var $elem = Farr( elem )
+      var $elem = Fibre( elem )
 
       if ( !Hyu.support.textemphasis ) {
         $elem.jinzify()

@@ -113,10 +113,9 @@ $.extend( Han.fn, {
   },
 
   revertHWS: function() {
-    this.HWS
-      .forEach(function( hws ) {
-        $.remove( hws )
-      })
+    this.HWS.forEach(function( hws ) {
+      $.remove( hws )
+    })
     return this
   }
 })
