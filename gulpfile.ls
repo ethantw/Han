@@ -1,22 +1,12 @@
 
-require! <[ gulp ]>
-connect = require \gulp-connect
-concat = require \gulp-concat-util
+require! <[ gulp gulp-connect gulp-concat-util gulp-sass gulp-csscomb gulp-cssmin gulp-requirejs-optimize gulp-uglifyjs gulp-browserify gulp-livescript gulp-jade gulp-watch gulp-qunit ]>
 
-sass = require \gulp-sass
-csscomb = require \gulp-csscomb
-cssmin = require \gulp-cssmin
-
-rjs = require \gulp-requirejs-optimize
+concat = gulp-concat-util
+sass = gulp-sass
+rjs = gulp-requirejs-optimize
 rjs-config = require \./rjs-option
-uglify = require \gulp-uglifyjs
 
-browserify = require \gulp-browserify
-lsc = require \gulp-livescript
-jade = require \gulp-jade
-
-watch = require \gulp-watch
-qunit = require \gulp-qunit
+watch = gulp-watch
 pkg = require \./package.json
 
 const VERSION = pkg.version
@@ -31,26 +21,28 @@ const CSS-BANNER = """
   #{BANNER}
 """
 
-src = -> gulp.src( it ).pipe( watch( it ))
+gulp.task \default <[ build demo ]>
+gulp.task \dev <[ watch server ]>
+gulp.task \build <[ dist:sass dist:sassmin dist:js dist:uglify ]>
 
 gulp.task \server !->
-  connect.server {
+  gulp-connect.server {
     port: 7777
     livereload: true
   }
 
 # Build for distribution
-gulp.task \dist:css ->
+gulp.task \dist:sass ->
   gulp.src \./src/sass/han.scss
     .pipe sass!
     .pipe concat \han.css
     .pipe concat.header CSS-BANNER
-    .pipe csscomb!
+    .pipe gulp-csscomb!
     .pipe gulp.dest \./
 
-gulp.task \dist:cssmin <[ dist:css ]> ->
+gulp.task \dist:sassmin <[ dist:sass ]> ->
   gulp.src \./han.css
-    .pipe cssmin { keepSpecialComments: 0 }
+    .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {
       process: ( src ) ->
         src.replace /@charset\s(['"])UTF-8\1;/g, ''
@@ -71,7 +63,7 @@ gulp.task \dist:js ->
 
 gulp.task \dist:uglify <[ dist:js ]> ->
   gulp.src \./han.js
-    .pipe uglify \han.min.js {
+    .pipe gulp-uglifyjs \han.min.js {
       output: {
         ascii_only: true
       }
@@ -81,36 +73,49 @@ gulp.task \dist:uglify <[ dist:js ]> ->
     .pipe gulp.dest \./
 
 # Demo
-gulp.task \demo <[ dist ]> ->
+gulp.task \demo <[ build ]> ->
   gulp.src \./han.*
     .pipe gulp.dest \./test
+  gulp.start <[ demo:sass demo:jade demo:lsc ]>
 
+gulp.task \demo:sass ->
   gulp.src \./test/*.scss
     .pipe sass!
-    .pipe cssmin { keepSpecialComments: 0 }
+    .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe gulp.dest \./test
 
-  gulp.src \./test/test-commonjs-main.js
-    .pipe browserify!
-    .pipe uglify \test-commonjs.js {
+gulp.task \demo:jade ->
+  gulp.src \./test/*.jade
+    .pipe gulp-jade!
+    .pipe gulp.dest \./test
+
+gulp.task \demo:lsc ->
+  gulp.src \./test/test-commonjs.ls
+    .pipe gulp-livescript!
+    .pipe gulp-browserify!
+    .pipe gulp-uglifyjs \test-commonjs.js {
       output: {
         ascii_only: true
       }
     }
     .pipe gulp.dest \./test
 
+# Watch
+gulp.task \watch <[ build demo ]> ->
+  gulp.watch \./src/sass/* <[ dist:sass dist:sassmin demo ]>
+  gulp.watch \./src/js/* <[ dist:js dist:uglify demo ]>
+  gulp.watch \./test/*.scss <[ demo:sass ]>
+  gulp.watch \./test/*.jade <[ demo:jade ]>
+  gulp.watch \./test/*.ls <[ demo:lsc ]>
+
 # Dependencies
 gulp.task \normalize.css !->
   gulp.src \./node_modules/normalize.css/normalize.css
     .pipe concat \_normalize.scss
-    .pipe gulp.dest \./sass/han/hyu
+    .pipe gulp.dest \./src/sass/hyu
 
 gulp.task \fibre.js !->
   gulp.src \./node_modules/fibre.js/dist/fibre.js
     .pipe concat \index.js
-    .pipe gulp.dest \./js/lib/fibre.js
-
-gulp.task \default <[ dist demo ]>
-gulp.task \dev <[ default server ]>
-gulp.task \dist <[ dist:css dist:cssmin dist:js dist:uglify ]>
+    .pipe gulp.dest \./src/lib/fibre.js
 
