@@ -18,7 +18,7 @@ $mre-mono-zh: $mre-sans-zh !default;
 // **
 // * Import Han module
 // *
-@import "../sass/han";
+@import "../src/sass/han";
 
 .sans {
   @include han-typeface-by-lang(sans);

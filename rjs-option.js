@@ -1,17 +1,17 @@
 
 module.exports = {
-  baseUrl: 'js',
+  baseUrl: 'src/js',
   name: 'han',
   out: './han.js',
   optimize: 'none',
   findNestedDependencies: true,
   skipSemiColonInsertion: true,
   wrap: {
-    startFile: 'js/src/intro.js',
-    endFile: 'js/src/outro.js'
+    startFile: 'src/js/intro.js',
+    endFile: 'src/js/outro.js'
   },
   paths: {
-    fibre: './lib/fibre.js/index'
+    fibre: '../lib/fibre.js/index'
   },
   rawText: {},
   onBuildWrite: function( name, path, src ) {
@@ -28,11 +28,8 @@ module.exports = {
         .replace( "var Finder = Finder || require( './finder.umd' )\n", '' )
         .replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, 'return Fibre' )
     } else {
-      if ( name !== 'han' ) {
-        src = src.replace( /\s*return\s+[^\}]+(\}\);?[^\w\}]*)$/, '$1' )
-      }
-
       src = src
+        .replace( /\s*return\s+[^\}]+(\}\);?[^\w\}]*)$/, '$1' )
         .replace( /define\([^{]*?{/, '' )
         .replace( rdefineEnd, '' )
         .replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, '' )

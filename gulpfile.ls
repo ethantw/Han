@@ -41,7 +41,7 @@ gulp.task \server !->
 
 # Build for distribution
 gulp.task \dist:css ->
-  gulp.src \./sass/han.scss
+  gulp.src \./src/sass/han.scss
     .pipe sass!
     .pipe concat \han.css
     .pipe concat.header CSS-BANNER
@@ -59,7 +59,7 @@ gulp.task \dist:cssmin <[ dist:css ]> ->
     .pipe gulp.dest \./
 
 gulp.task \dist:js ->
-  gulp.src \./js/han.js
+  gulp.src \./src/js/han.js
     .pipe rjs rjs-config
     .pipe concat \han.js, {
       process: ( src ) ->

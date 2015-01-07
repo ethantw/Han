@@ -14,7 +14,8 @@ void function( global, factory ) {
 
 }( typeof window !== 'undefined' ? window : this, function( window, noGlobalNS ) {
 
-  'use strict'
+'use strict'
+
 var document = window.document
 
 var root = document.documentElement
