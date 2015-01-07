@@ -16,23 +16,22 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'touwei' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'touwei' )
 
         elem.appendChild( text )
         return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
+          ( portion.index === 0 && portion.isEnd ) || portion.index === 1
         ) ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'wei' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'wei' )
 
         elem.appendChild( text )
         return portion.index === 0 ? elem : ''
@@ -41,9 +40,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'tou' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'tou' )
 
         elem.appendChild( text )
         return (
@@ -55,9 +54,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'middle' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'middle' )
 
         elem.appendChild( text )
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
@@ -86,20 +85,20 @@ $.extend( Fibre.fn, {
   // (字元級選擇器)
   charify: function( option ) {
     var option = $.extend({
-          hanzi:     'individual',
-                      // individual || group || biaodian || none
-          liga:      'liga',
-                     // liga || none
-          word:      'group',
-                      // group || punctuation || none
+      hanzi:     'individual',
+                  // individual || group || biaodian || none
+      liga:      'liga',
+                 // liga || none
+      word:      'group',
+                  // group || punctuation || none
 
-          latin:     'group',
-          ellinika:  'group',
-          kirillica: 'group',
-          kana:      'none',
-          eonmun:    'none'
-                      // group || individual || none
-        }, option || {})
+      latin:     'group',
+      ellinika:  'group',
+      kirillica: 'group',
+      kana:      'none',
+      eonmun:    'none'
+                  // group || individual || none
+    }, option || {})
 
     // CJK and biaodian
     if ( option.hanzi === 'group' ) {

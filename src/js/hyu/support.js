@@ -8,17 +8,17 @@ define([
 
 Hyu.support = (function() {
 
-  var PREFIX = 'Webkit Moz ms'.split(' '),
+  var PREFIX = 'Webkit Moz ms'.split(' ')
 
-      // Create an element for feature detecting
-      // (in `testCSSProp`)
-      elem = $.create( '_' ),
-      exposed = {}
+  // Create an element for feature detecting
+  // (in `testCSSProp`)
+  var elem = $.create( '_' )
+  var exposed = {}
 
   function testCSSProp( prop ) {
-    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-        allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' '),
-        ret
+    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1)
+    var allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' ')
+    var ret
 
     allProp.forEach(function( prop ) {
       if ( typeof elem.style[ prop ] === 'string' ) {
@@ -29,15 +29,11 @@ Hyu.support = (function() {
   }
 
   function injectElementWithStyle( rule, callback ) {
-    var fakeBody = body || $.create( 'body' ),
-        div = $.create( 'div' ),
-
-        container = body ? div : fakeBody,
-
-        callback = typeof callback === 'function' ?
-          callback : function() {},
-
-        style, ret, docOverflow
+    var fakeBody = body || $.create( 'body' )
+    var div = $.create( 'div' )
+    var container = body ? div : fakeBody
+    var  callback = typeof callback === 'function' ? callback : function() {}
+    var style, ret, docOverflow
 
     style = [ '<style>', rule, '</style>' ].join('')
 
@@ -78,10 +74,10 @@ Hyu.support = (function() {
 
   return {
     ruby: (function() {
-      var ruby = $.create( 'ruby' ),
-          rt = $.create( 'rt' ),
-          rp = $.create( 'rp' ),
-          ret
+      var ruby = $.create( 'ruby' )
+      var rt = $.create( 'rt' )
+      var rp = $.create( 'rp' )
+      var ret
 
       ruby.appendChild( rp )
       ruby.appendChild( rt )
@@ -111,12 +107,12 @@ Hyu.support = (function() {
       injectElementWithStyle(
         '@font-face { font-family: font; src: url("//"); }',
         function( node, rule ) {
-          var style = $.qsa( 'style', node )[0],
-              sheet = style.sheet || style.styleSheet,
-              cssText = sheet ?
-                ( sheet.cssRules && sheet.cssRules[0] ?
-                  sheet.cssRules[0].cssText : sheet.cssText || ''
-                ) : ''
+          var style = $.qsa( 'style', node )[0]
+          var sheet = style.sheet || style.styleSheet
+          var cssText = sheet ?
+            ( sheet.cssRules && sheet.cssRules[0] ?
+              sheet.cssRules[0].cssText : sheet.cssText || ''
+            ) : ''
 
           ret = /src/i.test( cssText ) &&
             cssText.indexOf( rule.split(' ')[0] ) === 0

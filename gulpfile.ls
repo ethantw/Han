@@ -11,14 +11,14 @@ pkg = require \./package.json
 
 const VERSION = pkg.version
 const BANNER = """
-  /*! 漢字標準格式 v#{VERSION} | MIT License | css.hanzi.co */
-  /*! Han.css: the CSS typography framework optimised for Hanzi */
-  \n
+/*! 漢字標準格式 v#{VERSION} | MIT License | css.hanzi.co */
+/*! Han.css: the CSS typography framework optimised for Hanzi */
+\n
 """
 const CSS-BANNER = """
-  @charset "UTF-8";
+@charset "UTF-8";
 
-  #{BANNER}
+#{BANNER}
 """
 
 gulp.task \default <[ build demo ]>
@@ -73,8 +73,8 @@ gulp.task \dist:uglify <[ dist:js ]> ->
     .pipe gulp.dest \./
 
 # Demo
-gulp.task \demo <[ build ]> ->
-  gulp.src \./han.*
+gulp.task \demo ->
+  gulp.src <[ ./han*.css ./han*.js ]>
     .pipe gulp.dest \./test
   gulp.start <[ demo:sass demo:jade demo:lsc ]>
 
@@ -102,8 +102,8 @@ gulp.task \demo:lsc ->
 
 # Watch
 gulp.task \watch <[ build demo ]> ->
-  gulp.watch \./src/sass/* <[ dist:sass dist:sassmin demo ]>
-  gulp.watch \./src/js/* <[ dist:js dist:uglify demo ]>
+  gulp.watch \./src/sass/**/* <[ dist:sass dist:sassmin demo ]>
+  gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo ]>
   gulp.watch \./test/*.scss <[ demo:sass ]>
   gulp.watch \./test/*.jade <[ demo:jade ]>
   gulp.watch \./test/*.ls <[ demo:lsc ]>

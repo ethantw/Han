@@ -5,8 +5,8 @@ define([
 ], function( body, $, Hyu ) {
 
 function writeOnCanvas( text, font ) {
-  var canvas = $.create( 'canvas' ),
-      context
+  var canvas = $.create( 'canvas' )
+  var context
 
   canvas.width = '50'
   canvas.height = '20'
@@ -25,10 +25,10 @@ function writeOnCanvas( text, font ) {
 }
 
 function detectFont( treat, control, text ) {
-  var treat = treat,
-      control = control,
-      text = text || '辭Q',
-      ret
+  var treat = treat
+  var control = control
+  var text = text || '辭Q'
+  var ret
 
   try {
     control = writeOnCanvas( text, control || 'sans-serif' )
@@ -38,8 +38,7 @@ function detectFont( treat, control, text ) {
       for ( var i = 1; i <= 50; i++ ) {
         if (
           ret !== 'undefined' &&
-          treat[1].getImageData(i, j, 1, 1).data[3] !==
-            control[1].getImageData(i, j, 1, 1).data[3]
+          treat[1].getImageData(i, j, 1, 1).data[3] !== control[1].getImageData(i, j, 1, 1).data[3]
         ) {
           ret = true
           break

@@ -22,43 +22,43 @@ var root = document.documentElement
 
 var body = document.body
 
-var VERSION = '3.1.0',
+var VERSION = '3.1.0'
 
-    ROUTINE = [
-      // Initialise the condition with feature-detecting
-      // classes (Modernizr-alike), binding onto the root
-      // element, possibly `<html>`.
-      'initCond',
-      // Address element normalisation
-      'renderElem',
-      // Handle Biaodian
-      //'jinzify',
-      'renderJiya',
-      // Address Hanzi and Western script mixed spacing
-      'renderHWS',
-      // Address Basic Biaodian correction in Firefox
-      'correctBasicBD',
-      // Address presentational correction to combining ligatures
-      'substCombLigaWithPUA'
-      // Address semantic correction to inaccurate characters
-      // **Note:** inactivated by default
-      // 'substInaccurateChar'
-    ],
+var ROUTINE = [
+  // Initialise the condition with feature-detecting
+  // classes (Modernizr-alike), binding onto the root
+  // element, possibly `<html>`.
+  'initCond',
+  // Address element normalisation
+  'renderElem',
+  // Handle Biaodian
+  //'jinzify',
+  'renderJiya',
+  // Address Hanzi and Western script mixed spacing
+  'renderHWS',
+  // Address Basic Biaodian correction in Firefox
+  'correctBasicBD',
+  // Address presentational correction to combining ligatures
+  'substCombLigaWithPUA'
+  // Address semantic correction to inaccurate characters
+  // **Note:** inactivated by default
+  // 'substInaccurateChar'
+]
 
-    // Define Han
-    Han = function( context, condition ) {
-      return new Han.fn.init( context, condition )
-    },
+// Define Han
+var Han = function( context, condition ) {
+  return new Han.fn.init( context, condition )
+}
 
-    init = function() {
-      if ( arguments[ 0 ] ) {
-        this.context = arguments[ 0 ]
-      }
-      if ( arguments[ 1 ] ) {
-        this.condition = arguments[ 1 ]
-      }
-      return this
-    }
+var init = function() {
+  if ( arguments[ 0 ] ) {
+    this.context = arguments[ 0 ]
+  }
+  if ( arguments[ 1 ] ) {
+    this.condition = arguments[ 1 ]
+  }
+  return this
+}
 
 Han.version = VERSION
 
@@ -89,17 +89,16 @@ Han.fn = Han.prototype = {
   // only once. The method won't alter the routine in
   // the instance or in the prototype chain.
   render: function( routine ) {
-    var that = this,
-        routine = Array.isArray( routine ) ?
-          routine : this.routine
+    var it = this
+    var routine = Array.isArray( routine ) ? routine : this.routine
 
     routine
     .forEach(function( method ) {
       try {
         if ( typeof method === 'string' ){
-          that[ method ]()
+          it[ method ]()
         } else if ( Array.isArray( method )) {
-          that[ method.shift() ].apply( that, method )
+          it[ method.shift() ].apply( it, method )
         }
       } catch ( e ) {}
     })
@@ -121,351 +120,351 @@ Han.init = function() {
 }
 
 var UNICODE = {
-      /**
-       * Western punctuation (西文標點符號)
-       */
-      punct: {
-        base:   '[\u2026,.;:!?\u203D_]',
-        sing:   '[\u2010-\u2014\u2026]',
-        middle: '[\\\/~\\-&\u2010-\u2014_]',
-        open:   '[\'"‘“\\(\\[\u00A1\u00BF\u2E18\u00AB\u2039\u201A\u201C\u201E]',
-        close:  '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F]',
-        end:    '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F\u203C\u203D\u2047-\u2049,.;:!?]',
-      },
+  /**
+   * Western punctuation (西文標點符號)
+   */
+  punct: {
+    base:   '[\u2026,.;:!?\u203D_]',
+    sing:   '[\u2010-\u2014\u2026]',
+    middle: '[\\\/~\\-&\u2010-\u2014_]',
+    open:   '[\'"‘“\\(\\[\u00A1\u00BF\u2E18\u00AB\u2039\u201A\u201C\u201E]',
+    close:  '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F]',
+    end:    '[\'"”’\\)\\]\u00BB\u203A\u201B\u201D\u201F\u203C\u203D\u2047-\u2049,.;:!?]',
+  },
 
-      /**
-       * CJK biaodian (CJK標點符號)
-       */
-      biaodian: {
-        base:   '[︰．、，。：；？！ー]',
-        liga:   '[—…⋯]',
-        middle: '[·＼／－゠\uFF06\u30FB\uFF3F]',
-        open:   '[「『《〈（〔［｛【〖]',
-        close:  '[」』》〉）〕］｝】〗]',
-        end:    '[」』》〉）〕］｝】〗︰．、，。：；？！ー]'
-      },
+  /**
+   * CJK biaodian (CJK標點符號)
+   */
+  biaodian: {
+    base:   '[︰．、，。：；？！ー]',
+    liga:   '[—…⋯]',
+    middle: '[·＼／－゠\uFF06\u30FB\uFF3F]',
+    open:   '[「『《〈（〔［｛【〖]',
+    close:  '[」』》〉）〕］｝】〗]',
+    end:    '[」』》〉）〕］｝】〗︰．、，。：；？！ー]'
+  },
 
-      /**
-       * CJK-related blocks (CJK相關字符區段)
-       *
-       *  1. 中日韓統一表意文字：[\u4E00-\u9FFF]
-             Basic CJK unified ideographs
-       *  2. 擴展-A區：[\u3400-\u4DB5]
-             Extended-A
-       *  3. 擴展-B區：[\u20000-\u2A6D6]（[\uD840-\uD869][\uDC00-\uDED6]）
-             Extended-B
-       *  4. 擴展-C區：[\u2A700-\u2B734]（\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]）
-             Extended-C
-       *  5. 擴展-D區：[\u2B740-\u2B81D]（急用漢字，\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]）
-             Extended-D
-       *  6. 擴展-E區：[\u2B820-\u2F7FF]（暫未支援）
-             Extended-E (not supported yet)
-       *  7. 擴展-F區（暫未支援）
-             Extended-F (not supported yet)
-       *  8. 筆畫區：[\u31C0-\u31E3]
-             Strokes
-       *  9. 表意數字「〇」：[\u3007]
-             Ideographic number zero
-       * 10. 相容表意文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
-             Compatibility ideograph and supplement (not supported)
+  /**
+   * CJK-related blocks (CJK相關字符區段)
+   *
+   *  1. 中日韓統一表意文字：[\u4E00-\u9FFF]
+         Basic CJK unified ideographs
+   *  2. 擴展-A區：[\u3400-\u4DB5]
+         Extended-A
+   *  3. 擴展-B區：[\u20000-\u2A6D6]（[\uD840-\uD869][\uDC00-\uDED6]）
+         Extended-B
+   *  4. 擴展-C區：[\u2A700-\u2B734]（\uD86D[\uDC00-\uDF3F]|[\uD86A-\uD86C][\uDC00-\uDFFF]|\uD869[\uDF00-\uDFFF]）
+         Extended-C
+   *  5. 擴展-D區：[\u2B740-\u2B81D]（急用漢字，\uD86D[\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1F]）
+         Extended-D
+   *  6. 擴展-E區：[\u2B820-\u2F7FF]（暫未支援）
+         Extended-E (not supported yet)
+   *  7. 擴展-F區（暫未支援）
+         Extended-F (not supported yet)
+   *  8. 筆畫區：[\u31C0-\u31E3]
+         Strokes
+   *  9. 表意數字「〇」：[\u3007]
+         Ideographic number zero
+   * 10. 相容表意文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
+         Compatibility ideograph and supplement (not supported)
 
-             12 exceptions:
-             [\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]
+         12 exceptions:
+         [\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]
 
-             https://zh.wikipedia.org/wiki/中日韓統一表意文字#cite_note-1
+         https://zh.wikipedia.org/wiki/中日韓統一表意文字#cite_note-1
 
-       * 11. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
-             Kangxi and supplement radicals
-       * 12. 表意文字描述字元：[\u2FF0-\u2FFA]
-             Ideographic description characters
-       */
-      hanzi: {
-        base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
-        desc:    '[\u2FF0-\u2FFA]',
-        radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
-      },
+   * 11. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
+         Kangxi and supplement radicals
+   * 12. 表意文字描述字元：[\u2FF0-\u2FFA]
+         Ideographic description characters
+   */
+  hanzi: {
+    base:    '[\u4E00-\u9FFF\u3400-\u4DB5\u31C0-\u31E3\u3007\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD800-\uDBFF][\uDC00-\uDFFF]',
+    desc:    '[\u2FF0-\u2FFA]',
+    radical: '[\u2F00-\u2FD5\u2E80-\u2EF3]'
+  },
 
-      /**
-       * Latin script blocks (拉丁字母區段)
-       *
-       * 1. 基本拉丁字母：A-Za-z
-            Basic Latin
-       * 2. 阿拉伯數字：0-9
-            Digits
-       * 3. 補充-1：[\u00C0-\u00FF]
-            Latin-1 supplement
-       * 4. 擴展-A區：[\u0100-\u017F]
-            Extended-A
-       * 5. 擴展-B區：[\u0180-\u024F]
-            Extended-B
-       * 5. 擴展-C區：[\u2C60-\u2C7F]
-            Extended-C
-       * 5. 擴展-D區：[\uA720-\uA7FF]
-            Extended-D
-       * 6. 附加區：[\u1E00-\u1EFF]
-            Extended additional
-       * 7. 變音組字符：[\u0300-\u0341\u1DC0-\u1DFF]
-            Combining diacritical marks
-       */
-      latin: {
-        base:    '[A-Za-z0-9\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u2C60-\u2C7F\uA720-\uA7FF\u1E00-\u1EFF]',
-        combine: '[\u0300-\u0341\u1DC0-\u1DFF]'
-      },
+  /**
+   * Latin script blocks (拉丁字母區段)
+   *
+   * 1. 基本拉丁字母：A-Za-z
+        Basic Latin
+   * 2. 阿拉伯數字：0-9
+        Digits
+   * 3. 補充-1：[\u00C0-\u00FF]
+        Latin-1 supplement
+   * 4. 擴展-A區：[\u0100-\u017F]
+        Extended-A
+   * 5. 擴展-B區：[\u0180-\u024F]
+        Extended-B
+   * 5. 擴展-C區：[\u2C60-\u2C7F]
+        Extended-C
+   * 5. 擴展-D區：[\uA720-\uA7FF]
+        Extended-D
+   * 6. 附加區：[\u1E00-\u1EFF]
+        Extended additional
+   * 7. 變音組字符：[\u0300-\u0341\u1DC0-\u1DFF]
+        Combining diacritical marks
+   */
+  latin: {
+    base:    '[A-Za-z0-9\u00C0-\u00FF\u0100-\u017F\u0180-\u024F\u2C60-\u2C7F\uA720-\uA7FF\u1E00-\u1EFF]',
+    combine: '[\u0300-\u0341\u1DC0-\u1DFF]'
+  },
 
-      /**
-       * Elli̱niká (Greek) script blocks (希臘字母區段)
-       *
-       * 1. 希臘字母及擴展：[\u0370–\u03FF\u1F00-\u1FFF]
-            Basic Greek & Greek Extended
-       * 2. 阿拉伯數字：0-9
-            Digits
-       * 3. 希臘字母變音組字符：[\u0300-\u0345\u1DC0-\u1DFF]
-            Combining diacritical marks
-       */
-      ellinika: {
-        base:    '[0-9\u0370-\u03FF\u1F00-\u1FFF]',
-        combine: '[\u0300-\u0345\u1DC0-\u1DFF]'
-      },
+  /**
+   * Elli̱niká (Greek) script blocks (希臘字母區段)
+   *
+   * 1. 希臘字母及擴展：[\u0370–\u03FF\u1F00-\u1FFF]
+        Basic Greek & Greek Extended
+   * 2. 阿拉伯數字：0-9
+        Digits
+   * 3. 希臘字母變音組字符：[\u0300-\u0345\u1DC0-\u1DFF]
+        Combining diacritical marks
+   */
+  ellinika: {
+    base:    '[0-9\u0370-\u03FF\u1F00-\u1FFF]',
+    combine: '[\u0300-\u0345\u1DC0-\u1DFF]'
+  },
 
-      /**
-       * Kirillica (Cyrillic) script blocks (西里爾字母區段)
-       *
-       * 1. 西里爾字母及補充：[\u0400-\u0482\u048A-\u04FF\u0500-\u052F]
-            Basic Cyrillic and supplement
-       * 2. 擴展B區：[\uA640-\uA66E\uA67E-\uA697]
-            Extended-B
-       * 3. 阿拉伯數字：0-9
-            Digits
-       * 4. 西里爾字母組字符：[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]（位擴展A、B區）
-            Cyrillic combining diacritical marks (in extended-A, B)
-       */
-      kirillica: {
-        base:    '[0-9\u0400-\u0482\u048A-\u04FF\u0500-\u052F\uA640-\uA66E\uA67E-\uA697]',
-        combine: '[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]'
-      },
+  /**
+   * Kirillica (Cyrillic) script blocks (西里爾字母區段)
+   *
+   * 1. 西里爾字母及補充：[\u0400-\u0482\u048A-\u04FF\u0500-\u052F]
+        Basic Cyrillic and supplement
+   * 2. 擴展B區：[\uA640-\uA66E\uA67E-\uA697]
+        Extended-B
+   * 3. 阿拉伯數字：0-9
+        Digits
+   * 4. 西里爾字母組字符：[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]（位擴展A、B區）
+        Cyrillic combining diacritical marks (in extended-A, B)
+   */
+  kirillica: {
+    base:    '[0-9\u0400-\u0482\u048A-\u04FF\u0500-\u052F\uA640-\uA66E\uA67E-\uA697]',
+    combine: '[\u0483-\u0489\u2DE0-\u2DFF\uA66F-\uA67D\uA69F]'
+  },
 
-      /**
-       * Kana (假名)
-       *
-       * 1. 日文假名：[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]
-            Japanese Kana
-       * 2. 假名補充[\u1B000\u1B001]（\uD82C[\uDC00-\uDC01]）
-            Kana supplement
-       * 3. 日文假名小寫：[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]
-            Japanese small Kana
-       * 4. 假名組字符：[\u3099-\u309C]
-            Kana combining characters
-       * 5. 半形假名：[\uFF66-\uFF9F]
-            Halfwidth Kana
-       * 6. 符號：[\u309D\u309E\u30FB-\u30FE]
-            Marks
-       */
-      kana: {
-        base:    '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]|\uD82C[\uDC00-\uDC01]',
-        small:   '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
-        combine: '[\u3099-\u309C]',
-        half:    '[\uFF66-\uFF9F]',
-        mark:    '[\u30A0\u309D\u309E\u30FB-\u30FE]'
-      },
+  /**
+   * Kana (假名)
+   *
+   * 1. 日文假名：[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]
+        Japanese Kana
+   * 2. 假名補充[\u1B000\u1B001]（\uD82C[\uDC00-\uDC01]）
+        Kana supplement
+   * 3. 日文假名小寫：[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]
+        Japanese small Kana
+   * 4. 假名組字符：[\u3099-\u309C]
+        Kana combining characters
+   * 5. 半形假名：[\uFF66-\uFF9F]
+        Halfwidth Kana
+   * 6. 符號：[\u309D\u309E\u30FB-\u30FE]
+        Marks
+   */
+  kana: {
+    base:    '[\u30A2\u30A4\u30A6\u30A8\u30AA-\u30FA\u3042\u3044\u3046\u3048\u304A-\u3094\u309F\u30FF]|\uD82C[\uDC00-\uDC01]',
+    small:   '[\u3041\u3043\u3045\u3047\u3049\u30A1\u30A3\u30A5\u30A7\u30A9\u3063\u3083\u3085\u3087\u308E\u3095\u3096\u30C3\u30E3\u30E5\u30E7\u30EE\u30F5\u30F6\u31F0-\u31FF]',
+    combine: '[\u3099-\u309C]',
+    half:    '[\uFF66-\uFF9F]',
+    mark:    '[\u30A0\u309D\u309E\u30FB-\u30FE]'
+  },
 
-      /**
-       * Eonmun (Hangul, 諺文)
-       *
-       * 1. 諺文音節：[\uAC00-\uD7A3]
-            Eonmun (Hangul) syllables
-       * 2. 諺文字母：[\u1100-\u11FF\u314F-\u3163\u3131-\u318E\uA960-\uA97C\uD7B0-\uD7FB]
-            Eonmun (Hangul) letters
-       * 3. 半形諺文字母：[\uFFA1-\uFFDC]
-            Halfwidth Eonmun (Hangul) letters
-       */
-      eonmun: {
-        base:    '[\uAC00-\uD7A3]',
-        letter:  '[\u1100-\u11FF\u314F-\u3163\u3131-\u318E\uA960-\uA97C\uD7B0-\uD7FB]',
-        half:    '[\uFFA1-\uFFDC]'
-      },
+  /**
+   * Eonmun (Hangul, 諺文)
+   *
+   * 1. 諺文音節：[\uAC00-\uD7A3]
+        Eonmun (Hangul) syllables
+   * 2. 諺文字母：[\u1100-\u11FF\u314F-\u3163\u3131-\u318E\uA960-\uA97C\uD7B0-\uD7FB]
+        Eonmun (Hangul) letters
+   * 3. 半形諺文字母：[\uFFA1-\uFFDC]
+        Halfwidth Eonmun (Hangul) letters
+   */
+  eonmun: {
+    base:    '[\uAC00-\uD7A3]',
+    letter:  '[\u1100-\u11FF\u314F-\u3163\u3131-\u318E\uA960-\uA97C\uD7B0-\uD7FB]',
+    half:    '[\uFFA1-\uFFDC]'
+  },
 
-      /**
-       * Zhuyin (注音符號, Mandarin & Dialect Phonetic Symbols)
-       *
-       * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
-            Bopomofo phonetic symbols
-       * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
-            Tones for Mandarin
-       * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
-            Departing tones in dialects
-       * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
-            Checked tones in dialects
-       */
-      zhuyin: {
-        base:    '[\u3105-\u312D\u31A0-\u31BA]',
-        initial: '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]',
-        medial:  '[\u3127-\u3129]',
-        final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
-        tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
-        ruyun:   '[\u31B4-\u31B7][\u0358\u030d]?'
-      }
-    }
+  /**
+   * Zhuyin (注音符號, Mandarin & Dialect Phonetic Symbols)
+   *
+   * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
+        Bopomofo phonetic symbols
+   * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
+        Tones for Mandarin
+   * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
+        Departing tones in dialects
+   * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
+        Checked tones in dialects
+   */
+  zhuyin: {
+    base:    '[\u3105-\u312D\u31A0-\u31BA]',
+    initial: '[\u3105-\u3119\u312A-\u312C\u31A0-\u31A3]',
+    medial:  '[\u3127-\u3129]',
+    final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
+    tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
+    ruyun:   '[\u31B4-\u31B7][\u0358\u030d]?'
+  }
+}
 
 var TYPESET = (function() {
-      var rWhite = '[\\x20\\t\\r\\n\\f]',
-          // Whitespace characters
-          // http://www.w3.org/TR/css3-selectors/#whitespace
+  var rWhite = '[\\x20\\t\\r\\n\\f]'
+  // Whitespace characters
+  // http://www.w3.org/TR/css3-selectors/#whitespace
 
-          rPtOpen = UNICODE.punct.open,
-          rPtClose = UNICODE.punct.close,
-          rPtEnd = UNICODE.punct.end,
-          rPtMid = UNICODE.punct.middle,
-          rPtSing = UNICODE.punct.sing,
-          rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid,
+  var rPtOpen = UNICODE.punct.open
+  var rPtClose = UNICODE.punct.close
+  var rPtEnd = UNICODE.punct.end
+  var rPtMid = UNICODE.punct.middle
+  var rPtSing = UNICODE.punct.sing
+  var rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid
+   
+  var rBdOpen = UNICODE.biaodian.open
+  var rBdClose = UNICODE.biaodian.close
+  var rBdEnd = UNICODE.biaodian.end
+  var rBdMid = UNICODE.biaodian.middle
+  var rBdLiga = UNICODE.biaodian.liga + '{2}'
+  var rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid
+   
+  var rKana = UNICODE.kana.base + UNICODE.kana.combine + '?'
+  var rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?'
+  var rKanaH = UNICODE.kana.half
+  var rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter
+  var rEonH = UNICODE.eonmun.half
+   
+  var rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana
+   
+  var rCbn = UNICODE.ellinika.combine
+  var rLatn = UNICODE.latin.base + rCbn + '*'
+  var rGk = UNICODE.ellinika.base + rCbn + '*'
+   
+  var rCyCbn = UNICODE.kirillica.combine
+  var rCy = UNICODE.kirillica.base + rCyCbn + '*'
+   
+  var rAlph = rLatn + '|' + rGk + '|' + rCy
+   
+  // For words like `it's`, `Jones’s` or `'99`
+  var rApo = '[\u0027\u2019]'
+  var rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
 
-          rBdOpen = UNICODE.biaodian.open,
-          rBdClose = UNICODE.biaodian.close,
-          rBdEnd = UNICODE.biaodian.end,
-          rBdMid = UNICODE.biaodian.middle,
-          rBdLiga = UNICODE.biaodian.liga + '{2}',
-          rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid,
+  var rZyS = UNICODE.zhuyin.initial
+  var rZyJ = UNICODE.zhuyin.medial
+  var rZyY = UNICODE.zhuyin.final
+  var rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
 
-          rKana = UNICODE.kana.base + UNICODE.kana.combine + '?',
-          rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?',
-          rKanaH = UNICODE.kana.half,
-          rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter,
-          rEonH = UNICODE.eonmun.half,
+  return {
+    /* Character-level selector (字級選擇器)
+     */
+    char: {
+      punct: {
+        all:   new RegExp( '(' + rPt + ')', 'g' ),
+        open:  new RegExp( '(' + rPtOpen + ')', 'g' ),
+        end:   new RegExp( '(' + rPtEnd + ')', 'g' ),
+        sing:  new RegExp( '(' + rPtSing + ')', 'g' )
+      },
 
-          rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana,
+      biaodian: {
+        all:   new RegExp( '(' + rBd + ')', 'g' ),
+        open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
+        close: new RegExp( '(' + rBdClose + ')', 'g' ),
+        end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
+        liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
 
-          rCbn = UNICODE.ellinika.combine,
-          rLatn = UNICODE.latin.base + rCbn + '*',
-          rGk = UNICODE.ellinika.base + rCbn + '*',
-
-          rCyCbn = UNICODE.kirillica.combine,
-          rCy = UNICODE.kirillica.base + rCyCbn + '*',
-
-          rAlph = rLatn + '|' + rGk + '|' + rCy,
-
-          // For words like `it's`, `Jones’s` or `'99`
-          rApo = '[\u0027\u2019]',
-          rChar = rHan + '|(' + rAlph + '|' + rApo + ')+',
-
-          rZyS = UNICODE.zhuyin.initial,
-          rZyJ = UNICODE.zhuyin.medial,
-          rZyY = UNICODE.zhuyin.final,
-          rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
-
-      return {
-        /* Character-level selector (字級選擇器)
-         */
-        char: {
-          punct: {
-            all:   new RegExp( '(' + rPt + ')', 'g' ),
-            open:  new RegExp( '(' + rPtOpen + ')', 'g' ),
-            end:   new RegExp( '(' + rPtEnd + ')', 'g' ),
-            sing:  new RegExp( '(' + rPtSing + ')', 'g' )
-          },
-
-          biaodian: {
-            all:   new RegExp( '(' + rBd + ')', 'g' ),
-            open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-            close: new RegExp( '(' + rBdClose + ')', 'g' ),
-            end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-            liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
-
-            group: [
-              new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
-              new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
-            ]
-          },
-
-          hanzi: {
-            individual: new RegExp( '(' + rHan + ')', 'g' ),
-            group:      new RegExp( '(' + rHan + ')+', 'g' )
-          },
-
-          word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
-
-          alphabet: {
-            latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-            ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-            kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
-            kana:        new RegExp( '(' + rKana + ')', 'g' ),
-            smallkana:   new RegExp( '(' + rKanaS + ')', 'g' ),
-            eonmun:      new RegExp( '(' + rEon + ')', 'g' ),
-            halfeonmun:  new RegExp( '(' + rEonH + ')', 'g' )
-          }
-        },
-
-        /* Punctuation Rules (禁則)
-         */
-        jinze: {
-          touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-          tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
-          wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-          middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
-        },
-
-        zhuyin: {
-          form:     new RegExp( '^\u02D9?(' + rZyS + ')?(' + rZyJ + ')?(' + rZyY + ')?(' + rZyD + ')?$' ),
-          diao:     new RegExp( '(' + rZyD + ')', 'g' )
-        },
-
-        /* Hanzi and Western mixed spacing (漢字西文混排間隙)
-         * - Basic mode
-         * - Strict mode
-         */
-        hws: {
-          base: [
-            new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-            new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
-          ],
-
-          strict: [
-            new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-            new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
-          ]
-        },
-
-        // The feature displays the following characters
-        // in its variant form for font consistency and
-        // presentational reason. Meanwhile, this won't
-        // alter the original character in the DOM.
-        'display-as': {
-          'ja-font-for-hant': [
-            // '夠 够',
-            '查 査',
-            '啟 啓',
-            '鄉 鄕',
-            '值 値',
-            '污 汚'
-          ],
-
-          'comb-liga-pua': [
-            [ '\u0061[\u030d\u0358]', '\uDB80\uDC61' ],
-            [ '\u0065[\u030d\u0358]', '\uDB80\uDC65' ],
-            [ '\u0069[\u030d\u0358]', '\uDB80\uDC69' ],
-            [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
-            [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ],
-
-            [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
-            [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
-            [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
-            [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
-          ]
-        },
-
-        // The feature actually *converts* the character
-        // in the DOM for semantic reason.
-        //
-        // Note that this could be aggressive.
-        'inaccurate-char': [
-          [ '[\u2022\u2027]', '\u00B7' ],
-          [ '\u22EF\u22EF', '\u2026\u2026' ],
-          [ '\u2500\u2500', '\u2014\u2014' ],
-          [ '\u2035', '\u2018' ],
-          [ '\u2032', '\u2019' ],
-          [ '\u2036', '\u201C' ],
-          [ '\u2033', '\u201D' ]
+        group: [
+          new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+          new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
         ]
+      },
+
+      hanzi: {
+        individual: new RegExp( '(' + rHan + ')', 'g' ),
+        group:      new RegExp( '(' + rHan + ')+', 'g' )
+      },
+
+      word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
+
+      alphabet: {
+        latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
+        ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
+        kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+        kana:        new RegExp( '(' + rKana + ')', 'g' ),
+        smallkana:   new RegExp( '(' + rKanaS + ')', 'g' ),
+        eonmun:      new RegExp( '(' + rEon + ')', 'g' ),
+        halfeonmun:  new RegExp( '(' + rEonH + ')', 'g' )
       }
-    })()
+    },
+
+    /* Punctuation Rules (禁則)
+     */
+    jinze: {
+      touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+      tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
+      wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
+      middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
+    },
+
+    zhuyin: {
+      form:     new RegExp( '^\u02D9?(' + rZyS + ')?(' + rZyJ + ')?(' + rZyY + ')?(' + rZyD + ')?$' ),
+      diao:     new RegExp( '(' + rZyD + ')', 'g' )
+    },
+
+    /* Hanzi and Western mixed spacing (漢字西文混排間隙)
+     * - Basic mode
+     * - Strict mode
+     */
+    hws: {
+      base: [
+        new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+        new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
+      ],
+
+      strict: [
+        new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+        new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
+      ]
+    },
+
+    // The feature displays the following characters
+    // in its variant form for font consistency and
+    // presentational reason. Meanwhile, this won't
+    // alter the original character in the DOM.
+    'display-as': {
+      'ja-font-for-hant': [
+        // '夠 够',
+        '查 査',
+        '啟 啓',
+        '鄉 鄕',
+        '值 値',
+        '污 汚'
+      ],
+
+      'comb-liga-pua': [
+        [ '\u0061[\u030d\u0358]', '\uDB80\uDC61' ],
+        [ '\u0065[\u030d\u0358]', '\uDB80\uDC65' ],
+        [ '\u0069[\u030d\u0358]', '\uDB80\uDC69' ],
+        [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
+        [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ],
+
+        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+      ]
+    },
+
+    // The feature actually *converts* the character
+    // in the DOM for semantic reason.
+    //
+    // Note that this could be aggressive.
+    'inaccurate-char': [
+      [ '[\u2022\u2027]', '\u00B7' ],
+      [ '\u22EF\u22EF', '\u2026\u2026' ],
+      [ '\u2500\u2500', '\u2014\u2014' ],
+      [ '\u2035', '\u2018' ],
+      [ '\u2032', '\u2019' ],
+      [ '\u2036', '\u201C' ],
+      [ '\u2033', '\u201D' ]
+    ]
+  }
+})()
 
 Han.UNICODE = UNICODE
 Han.TYPESET = TYPESET
@@ -482,128 +481,115 @@ Han.TYPESET.char.alphabet.cyrillic = Han.TYPESET.char.alphabet.kirillica
 Han.TYPESET.char.alphabet.hangul   = Han.TYPESET.char.alphabet.eonmun
 
 var $ = {
-      // Simplified query selectors which return the node list
-      // in an array
-      id: function( selector, context ) {
-        return ( context || document ).getElementById( selector )
-      },
+  // Simplified query selectors which return the node list
+  // in an array
+  id: function( selector, context ) {
+    return ( context || document ).getElementById( selector )
+  },
 
-      tag: function( selector, context ) {
-        return this.makeArray(
-          ( context || document ).getElementsByTagName( selector )
-        )
-      },
+  tag: function( selector, context ) {
+    return this.makeArray(
+      ( context || document ).getElementsByTagName( selector )
+    )
+  },
 
-      qsa: function( selector, context ) {
-        return this.makeArray(
-          ( context || document ).querySelectorAll( selector )
-        )
-      },
+  qsa: function( selector, context ) {
+    return this.makeArray(
+      ( context || document ).querySelectorAll( selector )
+    )
+  },
 
-      matches: function( node, query ) {
-        var Efn = Element.prototype,
-            matches = Efn.matches || Efn.mozMatchesSelector || Efn.msMatchesSelector || Efn.webkitMatchesSelector
+  // Create a document fragment, a text node with text
+  // or an element with/without classes
+  create: function( elem, clazz ) {
+    var elem = '!' === elem ?
+      document.createDocumentFragment() :
+      '' === elem ?
+        document.createTextNode( clazz || '' ) :
+        document.createElement( elem )
 
-        try {
-          return matches.call( node, query )
-        } catch (e) {
-          return false
+    try {
+      if ( clazz ) {
+        elem.className = clazz
+      }
+    } catch ( e ) {}
+
+    return elem
+  },
+
+  // Clone a node (text, element or fragment) deeply or
+  // childlessly
+  clone: function( node, deep ) {
+    return node.cloneNode( deep || true )
+  },
+
+  // Remove a node (text, element or fragment)
+  remove: function( node, parent ) {
+    return ( parent || node.parentNode ).removeChild( node )
+  },
+
+  // Set attributes all in once with an object
+  setAttr: function( target, attr ) {
+    var len = attr.length
+
+    if ( typeof attr !== 'object' ) {
+      return
+    }
+
+    // Native NamedNodeMap
+    if (
+      typeof attr[ 0 ] === 'object' &&
+      'name' in attr[ 0 ]
+    ) {
+      for ( var i = 0; i < len; i++ ) {
+        if ( attr[ i ].value !== undefined ) {
+          target.setAttribute( attr[ i ].name, attr[ i ].value )
         }
-      },
+      }
 
-      // Create a document fragment, a text node with text
-      // or an element with/without classes
-      create: function( elem, clazz ) {
-        var elem = '!' === elem ?
-              document.createDocumentFragment() :
-              '' === elem ?
-                document.createTextNode( clazz || '' ) :
-                document.createElement( elem )
-
-        try {
-          if ( clazz ) {
-            elem.className = clazz
-          }
-        } catch ( e ) {}
-
-        return elem
-      },
-
-      // Clone a node (text, element or fragment) deeply or
-      // childlessly
-      clone: function( node, deep ) {
-        return node.cloneNode( deep || true )
-      },
-
-      // Remove a node (text, element or fragment)
-      remove: function( node, parent ) {
-        return ( parent || node.parentNode ).removeChild( node )
-      },
-
-      // Set attributes all in once with an object
-      setAttr: function( target, attr ) {
-        var len = attr.length
-
-        if ( typeof attr !== 'object' ) {
-          return
-        }
-
-        // Native NamedNodeMap
+    // Plain object
+    } else {
+      for ( var name in attr ) {
         if (
-          typeof attr[ 0 ] === 'object' &&
-          'name' in attr[ 0 ]
+          attr.hasOwnProperty( name ) &&
+          attr[ name ] !== undefined
         ) {
-          for ( var i = 0; i < len; i++ ) {
-            if ( attr[ i ].value !== undefined ) {
-              target.setAttribute( attr[ i ].name, attr[ i ].value )
-            }
-          }
-
-        // Plain object
-        } else {
-          for ( var name in attr ) {
-            if (
-              attr.hasOwnProperty( name ) &&
-              attr[ name ] !== undefined
-            ) {
-              target.setAttribute( name, attr[ name ] )
-            }
-          }
+          target.setAttribute( name, attr[ name ] )
         }
-        return target
-      },
-
-      // Return if the current node should be ignored,
-      // `<wbr>` or comments
-      isIgnorable: function( node ) {
-        return node.nodeName === 'WBR' ||
-          node.nodeType === Node.COMMENT_NODE
-      },
-
-      // Convert array-like objects into real arrays
-      // for the native prototype methods
-      makeArray: function( obj ) {
-        return Array.prototype.slice.call( obj )
-      },
-
-      // Extend target with an object
-      extend: function( target, object ) {
-        var isExtensible = typeof target === 'object' ||
-              typeof target === 'function' ||
-              typeof object === 'object'
-
-        if ( !isExtensible ) {
-          return
-        }
-
-        for ( var name in object ) {
-          if ( object.hasOwnProperty( name )) {
-            target[ name ] = object[ name ]
-          }
-        }
-        return target
       }
     }
+    return target
+  },
+
+  // Return if the current node should be ignored,
+  // `<wbr>` or comments
+  isIgnorable: function( node ) {
+    return node.nodeName === 'WBR' ||
+      node.nodeType === Node.COMMENT_NODE
+  },
+
+  // Convert array-like objects into real arrays
+  // for the native prototype methods
+  makeArray: function( obj ) {
+    return Array.prototype.slice.call( obj )
+  },
+
+  // Extend target with an object
+  extend: function( target, object ) {
+    var isExtensible = typeof target === 'object' ||
+      typeof target === 'function' ||
+      typeof object === 'object'
+
+    if ( !isExtensible ) return
+
+    for ( var name in object ) {
+      if ( object.hasOwnProperty( name )) {
+        target[ name ] = object[ name ]
+      }
+    }
+    return target
+  }
+}
 
 var Fibre =
 /*!
@@ -1231,23 +1217,22 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'touwei' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'touwei' )
 
         elem.appendChild( text )
         return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
+          ( portion.index === 0 && portion.isEnd ) || portion.index === 1
         ) ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'wei' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'wei' )
 
         elem.appendChild( text )
         return portion.index === 0 ? elem : ''
@@ -1256,9 +1241,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'tou' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'tou' )
 
         elem.appendChild( text )
         return (
@@ -1270,9 +1255,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var mat = match[0],
-            text = $.create( '', mat ),
-            elem = $.create( 'jinze', 'middle' )
+        var mat = match[0]
+        var text = $.create( '', mat )
+        var elem = $.create( 'jinze', 'middle' )
 
         elem.appendChild( text )
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
@@ -1301,20 +1286,20 @@ $.extend( Fibre.fn, {
   // (字元級選擇器)
   charify: function( option ) {
     var option = $.extend({
-          hanzi:     'individual',
-                      // individual || group || biaodian || none
-          liga:      'liga',
-                     // liga || none
-          word:      'group',
-                      // group || punctuation || none
+      hanzi:     'individual',
+                  // individual || group || biaodian || none
+      liga:      'liga',
+                 // liga || none
+      word:      'group',
+                  // group || punctuation || none
 
-          latin:     'group',
-          ellinika:  'group',
-          kirillica: 'group',
-          kana:      'none',
-          eonmun:    'none'
-                      // group || individual || none
-        }, option || {})
+      latin:     'group',
+      ellinika:  'group',
+      kirillica: 'group',
+      kana:      'none',
+      eonmun:    'none'
+                  // group || individual || none
+    }, option || {})
 
     // CJK and biaodian
     if ( option.hanzi === 'group' ) {
@@ -1411,12 +1396,12 @@ void [
 })
 
 var Hyu = {
-      JS_RENDERED_CLASS: 'hyu-js-rendered'
-    }
+  JS_RENDERED_CLASS: 'hyu-js-rendered'
+}
 
 function writeOnCanvas( text, font ) {
-  var canvas = $.create( 'canvas' ),
-      context
+  var canvas = $.create( 'canvas' )
+  var context
 
   canvas.width = '50'
   canvas.height = '20'
@@ -1435,10 +1420,10 @@ function writeOnCanvas( text, font ) {
 }
 
 function detectFont( treat, control, text ) {
-  var treat = treat,
-      control = control,
-      text = text || '辭Q',
-      ret
+  var treat = treat
+  var control = control
+  var text = text || '辭Q'
+  var ret
 
   try {
     control = writeOnCanvas( text, control || 'sans-serif' )
@@ -1448,8 +1433,7 @@ function detectFont( treat, control, text ) {
       for ( var i = 1; i <= 50; i++ ) {
         if (
           ret !== 'undefined' &&
-          treat[1].getImageData(i, j, 1, 1).data[3] !==
-            control[1].getImageData(i, j, 1, 1).data[3]
+          treat[1].getImageData(i, j, 1, 1).data[3] !== control[1].getImageData(i, j, 1, 1).data[3]
         ) {
           ret = true
           break
@@ -1479,17 +1463,17 @@ Hyu.detectFont = detectFont
 
 Hyu.support = (function() {
 
-  var PREFIX = 'Webkit Moz ms'.split(' '),
+  var PREFIX = 'Webkit Moz ms'.split(' ')
 
-      // Create an element for feature detecting
-      // (in `testCSSProp`)
-      elem = $.create( '_' ),
-      exposed = {}
+  // Create an element for feature detecting
+  // (in `testCSSProp`)
+  var elem = $.create( '_' )
+  var exposed = {}
 
   function testCSSProp( prop ) {
-    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-        allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' '),
-        ret
+    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1)
+    var allProp = ( prop + ' ' + PREFIX.join( ucProp + ' ' ) + ucProp ).split(' ')
+    var ret
 
     allProp.forEach(function( prop ) {
       if ( typeof elem.style[ prop ] === 'string' ) {
@@ -1500,15 +1484,11 @@ Hyu.support = (function() {
   }
 
   function injectElementWithStyle( rule, callback ) {
-    var fakeBody = body || $.create( 'body' ),
-        div = $.create( 'div' ),
-
-        container = body ? div : fakeBody,
-
-        callback = typeof callback === 'function' ?
-          callback : function() {},
-
-        style, ret, docOverflow
+    var fakeBody = body || $.create( 'body' )
+    var div = $.create( 'div' )
+    var container = body ? div : fakeBody
+    var  callback = typeof callback === 'function' ? callback : function() {}
+    var style, ret, docOverflow
 
     style = [ '<style>', rule, '</style>' ].join('')
 
@@ -1549,10 +1529,10 @@ Hyu.support = (function() {
 
   return {
     ruby: (function() {
-      var ruby = $.create( 'ruby' ),
-          rt = $.create( 'rt' ),
-          rp = $.create( 'rp' ),
-          ret
+      var ruby = $.create( 'ruby' )
+      var rt = $.create( 'rt' )
+      var rp = $.create( 'rp' )
+      var ret
 
       ruby.appendChild( rp )
       ruby.appendChild( rt )
@@ -1582,12 +1562,12 @@ Hyu.support = (function() {
       injectElementWithStyle(
         '@font-face { font-family: font; src: url("//"); }',
         function( node, rule ) {
-          var style = $.qsa( 'style', node )[0],
-              sheet = style.sheet || style.styleSheet,
-              cssText = sheet ?
-                ( sheet.cssRules && sheet.cssRules[0] ?
-                  sheet.cssRules[0].cssText : sheet.cssText || ''
-                ) : ''
+          var style = $.qsa( 'style', node )[0]
+          var sheet = style.sheet || style.styleSheet
+          var cssText = sheet ?
+            ( sheet.cssRules && sheet.cssRules[0] ?
+              sheet.cssRules[0].cssText : sheet.cssText || ''
+            ) : ''
 
           ret = /src/i.test( cssText ) &&
             cssText.indexOf( rule.split(' ')[0] ) === 0
@@ -1625,9 +1605,9 @@ Hyu.support = (function() {
 })()
 
 Hyu.initCond = function( target ) {
-  var target = target || root,
-      ret = '',
-      clazz
+  var target = target || root
+  var ret = ''
+  var clazz
 
   target.classList.add( Hyu.JS_RENDERED_CLASS )
 
@@ -1645,9 +1625,9 @@ Hyu.initCond = function( target ) {
  * according to the given contents
  */
 function createNormalRu( $rb, $rt, attr ) {
-  var $ru = $.create( 'ru' ),
-      $rt = $.clone( $rt ),
-      attr = attr || {}
+  var $ru = $.create( 'ru' )
+  var $rt = $.clone( $rt )
+  var attr = attr || {}
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
@@ -1668,29 +1648,29 @@ function createNormalRu( $rb, $rt, attr ) {
  * in Zhuyin form
  */
 function createZhuyinRu( $rb, $rt ) {
-  var $rb = $.clone( $rb ),
+  var $rb = $.clone( $rb )
 
-      // Create an element to return
-      $ru     = $.create( 'ru' ),
-      $zhuyin = $.create( 'zhuyin' ),
-      $yin    = $.create( 'yin' ),
-      $diao   = $.create( 'diao' ),
+  // Create an element to return
+  var $ru     = $.create( 'ru' )
+  var $zhuyin = $.create( 'zhuyin' )
+  var $yin    = $.create( 'yin' )
+  var $diao   = $.create( 'diao' )
 
-      // #### Explanation ####
-      // * `zhuyin`: the entire phonetic annotation
-      // * `yin`:    the plain pronunciation (w/out tone)
-      // * `diao`:   the tone
-      // * `form`:   the combination of the pronunciation
-      // * `len`:    the text length of `yin`
-      zhuyin = $rt.textContent,
-      yin, diao, form, len
+  // #### Explanation ####
+  // * `zhuyin`: the entire phonetic annotation
+  // * `yin`:    the plain pronunciation (w/out tone)
+  // * `diao`:   the tone
+  // * `form`:   the combination of the pronunciation
+  // * `len`:    the text length of `yin`
+  var zhuyin = $rt.textContent
+  var yin, diao, form, len
 
   yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
   diao = zhuyin
-         .replace( yin, '' )
-         .replace( /[\u02C5]/g, '\u02C7' )
-         .replace( /[\u030D]/g, '\u0358' )
+    .replace( yin, '' )
+    .replace( /[\u02C5]/g, '\u02C7' )
+    .replace( /[\u030D]/g, '\u0358' )
 
   form = zhuyin.replace( TYPESET.zhuyin.form, function( s, j, y ) {
     return [
@@ -1745,9 +1725,9 @@ $.extend( Hyu, {
   // -line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
-    var target = target || 'u, ins',
-        $target = $.qsa( target, context ),
-        rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
+    var target = target || 'u, ins'
+    var $target = $.qsa( target, context )
+    var rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
 
     $target
     .forEach(function( elem ) {
@@ -1756,10 +1736,7 @@ $.extend( Hyu, {
       // Ignore all `<wbr>` and comments in between
       do {
         next = ( next || elem ).nextSibling
-
-        if ( !next ) {
-          return
-        }
+        if ( !next ) return
       } while ( $.isIgnorable( next ))
 
       if ( next.nodeName.match( rTarget )) {
@@ -1771,9 +1748,9 @@ $.extend( Hyu, {
   // Traverse target elements to render Hanzi emphasis marks
   // and skip that in punctuation
   renderEm: function( context, target ) {
-    var method = target ? 'qsa' : 'tag',
-        target = target || 'em',
-        $target = $[ method ]( target, context )
+    var method = target ? 'qsa' : 'tag'
+    var target = target || 'em'
+    var $target = $[ method ]( target, context )
 
     $target
     .forEach(function( elem ) {
@@ -1799,10 +1776,10 @@ $.extend( Hyu, {
   // Address normalisation for both simple and complex
   // rubies
   renderRuby: function( context, target ) {
-    var method = target ? 'qsa' : 'tag',
-        target = target || 'ruby',
-        $target = $[ method ]( target, context ),
-        $simpClaElem = $.qsa( target + ', rtc', context )
+    var method = target ? 'qsa' : 'tag'
+    var target = target || 'ruby'
+    var $target = $[ method ]( target, context )
+    var $simpClaElem = $.qsa( target + ', rtc', context )
 
     // First of all, simplify semantic classes
     $simpClaElem
@@ -1823,18 +1800,18 @@ $.extend( Hyu, {
     // Deal with `<ruby>`
     $target
     .forEach(function( ruby ) {
-      var clazz = ruby.classList,
+      var clazz = ruby.classList
 
-          condition = (
-            !Hyu.support.ruby ||
-            clazz.contains( 'zhuyin') ||
-            clazz.contains( 'complex' ) ||
-            clazz.contains( 'rightangle' )
-          ),
+      var condition = (
+        !Hyu.support.ruby ||
+        clazz.contains( 'zhuyin') ||
+        clazz.contains( 'complex' ) ||
+        clazz.contains( 'rightangle' )
+      )
 
-          frag, $cloned, $rb, $ru, maxspan, hruby
+      var frag, $cloned, $rb, $ru, maxspan, hruby
 
-      if ( !condition )  return
+      if ( !condition ) return
 
       // Apply document fragment here to avoid
       // continuously pointless re-paint
@@ -1844,17 +1821,14 @@ $.extend( Hyu, {
 
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
-      if (
-        !Hyu.support.ruby ||
-        clazz.contains( 'zhuyin' )
-      ) {
+      if ( !Hyu.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )
         .forEach(function( rt ) {
-          var $rb = $.create( '!' ),
-              airb = [],
-              irb
+          var $rb = $.create( '!' )
+          var airb = []
+          var irb
 
           // Consider the previous nodes the implied
           // ruby base
@@ -1886,10 +1860,7 @@ $.extend( Hyu, {
       // 3. Complex ruby polyfill
       // - Double-lined annotation;
       // - Right-angled annotation.
-      if (
-        clazz.contains( 'complex' ) ||
-        clazz.contains( 'rightangle' )
-      ) {
+      if ( clazz.contains( 'complex' ) || clazz.contains( 'rightangle' )) {
         $rb = $ru = $.tag( 'rb', $cloned )
         maxspan = $rb.length
 
@@ -1926,12 +1897,14 @@ $.extend( Hyu, {
           ret = $
             .tag( 'rt', rtc )
             .map(function( rt, i ) {
-              var rbspan = Number( rt.getAttribute( 'rbspan' ) || 1 ),
-                  span = 0,
-                  aRb = [],
-                  rb, ret
+              var rbspan = Number( rt.getAttribute( 'rbspan' ) || 1 )
+              var span = 0
+              var aRb = []
+              var rb, ret
 
-              if ( rbspan > maxspan ) rbspan = maxspan
+              if ( rbspan > maxspan ) {
+                rbspan = maxspan
+              }
 
               do {
                 try {

@@ -4,9 +4,9 @@ define([
 ], function( root, Hyu ) {
 
 Hyu.initCond = function( target ) {
-  var target = target || root,
-      ret = '',
-      clazz
+  var target = target || root
+  var ret = ''
+  var clazz
 
   target.classList.add( Hyu.JS_RENDERED_CLASS )
 

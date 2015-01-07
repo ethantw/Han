@@ -10,9 +10,9 @@ define([
  * according to the given contents
  */
 function createNormalRu( $rb, $rt, attr ) {
-  var $ru = $.create( 'ru' ),
-      $rt = $.clone( $rt ),
-      attr = attr || {}
+  var $ru = $.create( 'ru' )
+  var $rt = $.clone( $rt )
+  var attr = attr || {}
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
@@ -33,29 +33,29 @@ function createNormalRu( $rb, $rt, attr ) {
  * in Zhuyin form
  */
 function createZhuyinRu( $rb, $rt ) {
-  var $rb = $.clone( $rb ),
+  var $rb = $.clone( $rb )
 
-      // Create an element to return
-      $ru     = $.create( 'ru' ),
-      $zhuyin = $.create( 'zhuyin' ),
-      $yin    = $.create( 'yin' ),
-      $diao   = $.create( 'diao' ),
+  // Create an element to return
+  var $ru     = $.create( 'ru' )
+  var $zhuyin = $.create( 'zhuyin' )
+  var $yin    = $.create( 'yin' )
+  var $diao   = $.create( 'diao' )
 
-      // #### Explanation ####
-      // * `zhuyin`: the entire phonetic annotation
-      // * `yin`:    the plain pronunciation (w/out tone)
-      // * `diao`:   the tone
-      // * `form`:   the combination of the pronunciation
-      // * `len`:    the text length of `yin`
-      zhuyin = $rt.textContent,
-      yin, diao, form, len
+  // #### Explanation ####
+  // * `zhuyin`: the entire phonetic annotation
+  // * `yin`:    the plain pronunciation (w/out tone)
+  // * `diao`:   the tone
+  // * `form`:   the combination of the pronunciation
+  // * `len`:    the text length of `yin`
+  var zhuyin = $rt.textContent
+  var yin, diao, form, len
 
   yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
   diao = zhuyin
-         .replace( yin, '' )
-         .replace( /[\u02C5]/g, '\u02C7' )
-         .replace( /[\u030D]/g, '\u0358' )
+    .replace( yin, '' )
+    .replace( /[\u02C5]/g, '\u02C7' )
+    .replace( /[\u030D]/g, '\u0358' )
 
   form = zhuyin.replace( TYPESET.zhuyin.form, function( s, j, y ) {
     return [
@@ -110,9 +110,9 @@ $.extend( Hyu, {
   // -line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
-    var target = target || 'u, ins',
-        $target = $.qsa( target, context ),
-        rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
+    var target = target || 'u, ins'
+    var $target = $.qsa( target, context )
+    var rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
 
     $target
     .forEach(function( elem ) {
@@ -121,10 +121,7 @@ $.extend( Hyu, {
       // Ignore all `<wbr>` and comments in between
       do {
         next = ( next || elem ).nextSibling
-
-        if ( !next ) {
-          return
-        }
+        if ( !next ) return
       } while ( $.isIgnorable( next ))
 
       if ( next.nodeName.match( rTarget )) {
@@ -136,9 +133,9 @@ $.extend( Hyu, {
   // Traverse target elements to render Hanzi emphasis marks
   // and skip that in punctuation
   renderEm: function( context, target ) {
-    var method = target ? 'qsa' : 'tag',
-        target = target || 'em',
-        $target = $[ method ]( target, context )
+    var method = target ? 'qsa' : 'tag'
+    var target = target || 'em'
+    var $target = $[ method ]( target, context )
 
     $target
     .forEach(function( elem ) {
@@ -164,10 +161,10 @@ $.extend( Hyu, {
   // Address normalisation for both simple and complex
   // rubies
   renderRuby: function( context, target ) {
-    var method = target ? 'qsa' : 'tag',
-        target = target || 'ruby',
-        $target = $[ method ]( target, context ),
-        $simpClaElem = $.qsa( target + ', rtc', context )
+    var method = target ? 'qsa' : 'tag'
+    var target = target || 'ruby'
+    var $target = $[ method ]( target, context )
+    var $simpClaElem = $.qsa( target + ', rtc', context )
 
     // First of all, simplify semantic classes
     $simpClaElem
@@ -188,18 +185,18 @@ $.extend( Hyu, {
     // Deal with `<ruby>`
     $target
     .forEach(function( ruby ) {
-      var clazz = ruby.classList,
+      var clazz = ruby.classList
 
-          condition = (
-            !Hyu.support.ruby ||
-            clazz.contains( 'zhuyin') ||
-            clazz.contains( 'complex' ) ||
-            clazz.contains( 'rightangle' )
-          ),
+      var condition = (
+        !Hyu.support.ruby ||
+        clazz.contains( 'zhuyin') ||
+        clazz.contains( 'complex' ) ||
+        clazz.contains( 'rightangle' )
+      )
 
-          frag, $cloned, $rb, $ru, maxspan, hruby
+      var frag, $cloned, $rb, $ru, maxspan, hruby
 
-      if ( !condition )  return
+      if ( !condition ) return
 
       // Apply document fragment here to avoid
       // continuously pointless re-paint
@@ -209,17 +206,14 @@ $.extend( Hyu, {
 
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
-      if (
-        !Hyu.support.ruby ||
-        clazz.contains( 'zhuyin' )
-      ) {
+      if ( !Hyu.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )
         .forEach(function( rt ) {
-          var $rb = $.create( '!' ),
-              airb = [],
-              irb
+          var $rb = $.create( '!' )
+          var airb = []
+          var irb
 
           // Consider the previous nodes the implied
           // ruby base
@@ -251,10 +245,7 @@ $.extend( Hyu, {
       // 3. Complex ruby polyfill
       // - Double-lined annotation;
       // - Right-angled annotation.
-      if (
-        clazz.contains( 'complex' ) ||
-        clazz.contains( 'rightangle' )
-      ) {
+      if ( clazz.contains( 'complex' ) || clazz.contains( 'rightangle' )) {
         $rb = $ru = $.tag( 'rb', $cloned )
         maxspan = $rb.length
 
@@ -291,12 +282,14 @@ $.extend( Hyu, {
           ret = $
             .tag( 'rt', rtc )
             .map(function( rt, i ) {
-              var rbspan = Number( rt.getAttribute( 'rbspan' ) || 1 ),
-                  span = 0,
-                  aRb = [],
-                  rb, ret
+              var rbspan = Number( rt.getAttribute( 'rbspan' ) || 1 )
+              var span = 0
+              var aRb = []
+              var rb, ret
 
-              if ( rbspan > maxspan ) rbspan = maxspan
+              if ( rbspan > maxspan ) {
+                rbspan = maxspan
+              }
 
               do {
                 try {
