@@ -6,7 +6,7 @@
     "Chen Yijun (@ethantw)"
   ],
   "description": "The CSS typography framework optimised for Hanzi.",
-  "main": [ "han.css", "han.js" ],
+  "main": [ "dist/han.css", "dist/han.js" ],
   "keywords": [
     "Hanzi",
     "CJK",

@@ -11,8 +11,8 @@
     "typography",
     "typesetting"
   ],
-  "scripts": [ "han.js" ],
-  "styles": [ "han.css" ],
-  "fonts": [ "font/han.woff", "font/han.otf" ],
+  "scripts": [ "dist/han.js" ],
+  "styles": [ "dist/han.css" ],
+  "fonts": [ "dist/font/han.woff", "dist/font/han.otf" ],
   "license": "MIT"
 }
