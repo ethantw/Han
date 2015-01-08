@@ -5,65 +5,62 @@ define([
   '../regex'
 ], function( body, Han, $ ) {
 
-var QUERY_RU_W_ANNO = 'ru[annotation]',
-    ELEM_TO_IGNORE = ' textarea code kbd samp pre'
+var QUERY_RU_W_ANNO = 'ru[annotation]'
+var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 var isCombLigaNormal = (function() {
-      var fakeBody = body || $.create( 'body' ),
-          div = $.create( 'div' ),
-          control = $.create( 'span' ),
+  var fakeBody = body || $.create( 'body' )
+  var div = $.create( 'div' )
+  var control = $.create( 'span' )
+  var container = body ? div : fakeBody
+  var treat, docOverflow, ret
 
-          container = body ? div : fakeBody,
-          treat, docOverflow, ret
+  if ( !body ) {
+    fakeBody.style.background = ''
+    fakeBody.style.overflow = 'hidden'
+    docOverflow = root.style.overflow
 
-      if ( !body ) {
-        fakeBody.style.background = ''
-        fakeBody.style.overflow = 'hidden'
-        docOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
+    root.appendChild( fakeBody )
+  } else {
+    body.appendChild( container )
+  }
 
-        root.style.overflow = 'hidden'
-        root.appendChild( fakeBody )
-      } else {
-        body.appendChild( container )
-      }
+  control.innerHTML = '&#x0069;&#x030D;'
+  control.style.fontFamily = 'sans-serif'
+  control.style.display = 'inline-block'
 
-      control.innerHTML = '&#x0069;&#x030D;'
-      control.style.fontFamily = 'sans-serif'
-      control.style.display = 'inline-block'
+  treat = $.clone( control )
+  treat.style.fontFamily = '"Romanization Sans"'
 
-      treat = $.clone( control )
-      treat.style.fontFamily = '"Romanization Sans"'
+  container.appendChild( control )
+  container.appendChild( treat )
 
-      container.appendChild( control )
-      container.appendChild( treat )
+  ret = control.clientWidth !== treat.clientWidth
+  $.remove( container )
 
-      ret = control.clientWidth !== treat.clientWidth
-      $.remove( container )
+  if ( !body ) {
+    root.style.overflow = docOverflow
+  }
+  return ret
+})()
 
-      if ( !body ) {
-        root.style.overflow = docOverflow
-      }
-      return ret
-    })(),
+var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
+var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
-    aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
-    aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ],
-
-    charCombLiga = $.create( 'char', 'comb-liga' ),
-    charCombLigaInner =  $.create( 'inner' )
+var charCombLiga = $.create( 'char', 'comb-liga' )
+var charCombLigaInner =  $.create( 'inner' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
 
   substCombLigaWithPUA: function( context ) {
-    var context = context || document,
-        finder = Han.find( context )
+    if ( isCombLigaNormal ) return
 
-    if ( isCombLigaNormal ) {
-      return
-    }
+    var context = context || document
+    var finder = Han.find( context )
 
-    finder.filteredElemList += ELEM_TO_IGNORE
+    finder.filterOut( SELECTOR_TO_IGNORE, true )
 
     aCombLiga
     .forEach(function( pattern ) {
@@ -71,8 +68,8 @@ $.extend( Han, {
       .replace(
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
-          var ret = $.clone( charCombLiga ),
-              inner = $.clone( charCombLigaInner )
+          var ret = $.clone( charCombLiga )
+          var inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
@@ -103,10 +100,10 @@ $.extend( Han, {
   },
 
   substInaccurateChar: function( context ) {
-    var context = context || document,
-        finder = Han.find( context )
+    var context = context || document
+    var finder = Han.find( context )
 
-    finder.filteredElemList += ELEM_TO_IGNORE
+    finder.filterOut( SELECTOR_TO_IGNORE, true )
     aInaccurateChar
     .forEach(function( pattern ) {
       finder
@@ -130,7 +127,7 @@ $.extend( Han.fn, {
   revertCombLigaWithPUA: function() {
     try {
       this['comb-liga'].revert( 'all' )
-    } catch ( e ) {}
+    } catch (e) {}
     return this
   },
 
@@ -142,7 +139,7 @@ $.extend( Han.fn, {
   revertInaccurateChar: function() {
     try {
       this['inaccurate-char'].revert( 'all' )
-    } catch ( e ) {}
+    } catch (e) {}
     return this
   }
 })

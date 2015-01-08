@@ -5,10 +5,10 @@ define([
 ], function( Han, $ ) {
 
 Han.renderJiya = function( context ) {
-  var context = context || document,
-      finder = [ Han.find( context ) ]
+  var context = context || document
+  var finder = [ Han.find( context ) ]
 
-  finder[ 0 ].filterOutSelector += ', textarea, code, kbd, samp, pre, jinze, em'
+  finder[ 0 ].filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
   finder[ 0 ].groupify()
 
   $

@@ -10,15 +10,12 @@ mdot = $.create( 'char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
-  var context = context || document,
-      finder
+  if ( Han.support.unicoderange && !all ) return
 
-  if ( Han.support.unicoderange && !all ) {
-    return
-  }
+  var context = context || document
+  var finder
 
   finder = Han.find( context )
-  finder.filteredElemList += ' em'
 
   finder
   .wrap( /\u00B7/g, $.clone( mdot ))

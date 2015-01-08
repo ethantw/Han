@@ -28,16 +28,16 @@ $.extend( Han, {
   isNodeNormalizeNormal: isNodeNormalizeNormal,
 
   renderHWS: function( context, strict ) {
-    var context = context || document,
-        mode = strict ? 'strict' : 'base',
-        finder = Han.find( context )
+    var context = context || document
+    var mode = strict ? 'strict' : 'base'
+    var finder = Han.find( context )
 
     // Elements to be filtered according to the
     // HWS rendering mode
     if ( strict ) {
-      finder.filterOutSelector += ', textarea, code, kbd, samp, pre'
+      finder.filterOut( 'textarea, code, kbd, samp, pre', true )
     } else {
-      finder.filterOutSelector += ', textarea'
+      finder.filterOut( 'textarea', true )
     }
 
     finder
@@ -57,16 +57,14 @@ $.extend( Han, {
     $
     .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
     .forEach(function( firstChild ) {
-      var parent = firstChild.parentNode,
-          target = parent.firstChild
+      var parent = firstChild.parentNode
+      var target = parent.firstChild
 
       // Skip all `<wbr>` and comments
       while ( $.isIgnorable( target )) {
         target = target.nextSibling
 
-        if ( !target ) {
-          return
-        }
+        if ( !target ) return
       }
 
       // The ‘first-child’ of DOM is different from
@@ -97,6 +95,7 @@ $.extend( Han, {
     if ( isNodeNormalizeNormal ) {
       context.normalize()
     }
+
     // Return the finder instance for future usage
     return finder
   }
