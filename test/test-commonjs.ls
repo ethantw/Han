@@ -1,5 +1,4 @@
 
-Han = require \./han.js
-
-Han! .render!
+Han = require \../index
+Han!.render!
 

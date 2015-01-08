@@ -62,7 +62,7 @@ rjs-config = {
 
 gulp.task \default <[ build demo ]>
 gulp.task \dev <[ watch server ]>
-gulp.task \build <[ dist:font dist:sass dist:sassmin dist:js dist:uglify ]>
+gulp.task \build <[ dist:font dist:sass dist:cssmin dist:js dist:uglify ]>
 gulp.task \dep <[ normalize.css fibre.js ]>
 
 gulp.task \server !->
@@ -86,7 +86,7 @@ gulp.task \dist:sass ->
     .pipe gulp-csscomb!
     .pipe gulp.dest \./dist
 
-gulp.task \dist:sassmin <[ dist:sass ]> ->
+gulp.task \dist:cssmin <[ dist:sass ]> ->
   gulp.src \./dist/han.css
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {
@@ -123,7 +123,7 @@ gulp.task \demo ->
   gulp.start <[ demo:dist demo:sass demo:jade demo:lsc ]>
 
 gulp.task \demo:dist ->
-  gulp.src <[ ./han*.css ./han*.js ]>
+  gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
 gulp.task \demo:sass ->
@@ -150,7 +150,7 @@ gulp.task \demo:lsc ->
 
 # Watch
 gulp.task \watch <[ build demo ]> ->
-  gulp.watch \./src/sass/**/* <[ dist:sass dist:sassmin demo:dist demo:sass ]>
+  gulp.watch \./src/sass/**/* <[ dist:sass dist:cssmin demo:dist demo:sass ]>
   gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo:dist demo:lsc ]>
   gulp.watch \./test/*.scss <[ demo:sass ]>
   gulp.watch \./test/*.jade <[ demo:jade ]>
