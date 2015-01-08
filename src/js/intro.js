@@ -1,6 +1,6 @@
 /*!
  * 漢字標準格式 v@VERSION | MIT License | css.hanzi.co
- * Han: CSS typography framework optimised for Hanzi
+ * Han.css: the CSS typography framework optimised for Hanzi
  */
 
 void function( global, factory ) {

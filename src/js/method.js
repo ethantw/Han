@@ -32,7 +32,7 @@ var $ = {
       if ( clazz ) {
         elem.className = clazz
       }
-    } catch ( e ) {}
+    } catch (e) {}
 
     return elem
   },
@@ -50,17 +50,11 @@ var $ = {
 
   // Set attributes all in once with an object
   setAttr: function( target, attr ) {
+    if ( typeof attr !== 'object' ) return
     var len = attr.length
 
-    if ( typeof attr !== 'object' ) {
-      return
-    }
-
     // Native NamedNodeMap
-    if (
-      typeof attr[ 0 ] === 'object' &&
-      'name' in attr[ 0 ]
-    ) {
+    if ( typeof attr[ 0 ] === 'object' && 'name' in attr[ 0 ] ) {
       for ( var i = 0; i < len; i++ ) {
         if ( attr[ i ].value !== undefined ) {
           target.setAttribute( attr[ i ].name, attr[ i ].value )
@@ -70,10 +64,7 @@ var $ = {
     // Plain object
     } else {
       for ( var name in attr ) {
-        if (
-          attr.hasOwnProperty( name ) &&
-          attr[ name ] !== undefined
-        ) {
+        if ( attr.hasOwnProperty( name ) && attr[ name ] !== undefined ) {
           target.setAttribute( name, attr[ name ] )
         }
       }
@@ -84,8 +75,7 @@ var $ = {
   // Return if the current node should be ignored,
   // `<wbr>` or comments
   isIgnorable: function( node ) {
-    return node.nodeName === 'WBR' ||
-      node.nodeType === Node.COMMENT_NODE
+    return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
   },
 
   // Convert array-like objects into real arrays

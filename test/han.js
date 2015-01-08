@@ -1,6 +1,6 @@
 /*!
  * 漢字標準格式 v3.1.0 | MIT License | css.hanzi.co
- * Han: CSS typography framework optimised for Hanzi
+ * Han.css: the CSS typography framework optimised for Hanzi
  */
 
 void function( global, factory ) {
@@ -95,7 +95,7 @@ Han.fn = Han.prototype = {
     routine
     .forEach(function( method ) {
       try {
-        if ( typeof method === 'string' ){
+        if ( typeof method === 'string' ) {
           it[ method ]()
         } else if ( Array.isArray( method )) {
           it[ method.shift() ].apply( it, method )
@@ -512,7 +512,7 @@ var $ = {
       if ( clazz ) {
         elem.className = clazz
       }
-    } catch ( e ) {}
+    } catch (e) {}
 
     return elem
   },
@@ -530,17 +530,11 @@ var $ = {
 
   // Set attributes all in once with an object
   setAttr: function( target, attr ) {
+    if ( typeof attr !== 'object' ) return
     var len = attr.length
 
-    if ( typeof attr !== 'object' ) {
-      return
-    }
-
     // Native NamedNodeMap
-    if (
-      typeof attr[ 0 ] === 'object' &&
-      'name' in attr[ 0 ]
-    ) {
+    if ( typeof attr[ 0 ] === 'object' && 'name' in attr[ 0 ] ) {
       for ( var i = 0; i < len; i++ ) {
         if ( attr[ i ].value !== undefined ) {
           target.setAttribute( attr[ i ].name, attr[ i ].value )
@@ -550,10 +544,7 @@ var $ = {
     // Plain object
     } else {
       for ( var name in attr ) {
-        if (
-          attr.hasOwnProperty( name ) &&
-          attr[ name ] !== undefined
-        ) {
+        if ( attr.hasOwnProperty( name ) && attr[ name ] !== undefined ) {
           target.setAttribute( name, attr[ name ] )
         }
       }
@@ -564,8 +555,7 @@ var $ = {
   // Return if the current node should be ignored,
   // `<wbr>` or comments
   isIgnorable: function( node ) {
-    return node.nodeName === 'WBR' ||
-      node.nodeType === Node.COMMENT_NODE
+    return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
   },
 
   // Convert array-like objects into real arrays
@@ -2041,16 +2031,16 @@ $.extend( Han, {
   isNodeNormalizeNormal: isNodeNormalizeNormal,
 
   renderHWS: function( context, strict ) {
-    var context = context || document,
-        mode = strict ? 'strict' : 'base',
-        finder = Han.find( context )
+    var context = context || document
+    var mode = strict ? 'strict' : 'base'
+    var finder = Han.find( context )
 
     // Elements to be filtered according to the
     // HWS rendering mode
     if ( strict ) {
-      finder.filterOutSelector += ', textarea, code, kbd, samp, pre'
+      finder.filterOut( 'textarea, code, kbd, samp, pre', true )
     } else {
-      finder.filterOutSelector += ', textarea'
+      finder.filterOut( 'textarea', true )
     }
 
     finder
@@ -2070,16 +2060,14 @@ $.extend( Han, {
     $
     .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
     .forEach(function( firstChild ) {
-      var parent = firstChild.parentNode,
-          target = parent.firstChild
+      var parent = firstChild.parentNode
+      var target = parent.firstChild
 
       // Skip all `<wbr>` and comments
       while ( $.isIgnorable( target )) {
         target = target.nextSibling
 
-        if ( !target ) {
-          return
-        }
+        if ( !target ) return
       }
 
       // The ‘first-child’ of DOM is different from
@@ -2110,6 +2098,7 @@ $.extend( Han, {
     if ( isNodeNormalizeNormal ) {
       context.normalize()
     }
+
     // Return the finder instance for future usage
     return finder
   }
@@ -2134,10 +2123,10 @@ $.extend( Han.fn, {
 })
 
 Han.renderJiya = function( context ) {
-  var context = context || document,
-      finder = [ Han.find( context ) ]
+  var context = context || document
+  var finder = [ Han.find( context ) ]
 
-  finder[ 0 ].filterOutSelector += ', textarea, code, kbd, samp, pre, jinze, em'
+  finder[ 0 ].filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
   finder[ 0 ].groupify()
 
   $
@@ -2180,15 +2169,12 @@ mdot = $.create( 'char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
-  var context = context || document,
-      finder
+  if ( Han.support.unicoderange && !all ) return
 
-  if ( Han.support.unicoderange && !all ) {
-    return
-  }
+  var context = context || document
+  var finder
 
   finder = Han.find( context )
-  finder.filteredElemList += ' em'
 
   finder
   .wrap( /\u00B7/g, $.clone( mdot ))
@@ -2218,65 +2204,62 @@ $.extend( Han.fn, {
   }
 })
 
-var QUERY_RU_W_ANNO = 'ru[annotation]',
-    ELEM_TO_IGNORE = ' textarea code kbd samp pre'
+var QUERY_RU_W_ANNO = 'ru[annotation]'
+var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 var isCombLigaNormal = (function() {
-      var fakeBody = body || $.create( 'body' ),
-          div = $.create( 'div' ),
-          control = $.create( 'span' ),
+  var fakeBody = body || $.create( 'body' )
+  var div = $.create( 'div' )
+  var control = $.create( 'span' )
+  var container = body ? div : fakeBody
+  var treat, docOverflow, ret
 
-          container = body ? div : fakeBody,
-          treat, docOverflow, ret
+  if ( !body ) {
+    fakeBody.style.background = ''
+    fakeBody.style.overflow = 'hidden'
+    docOverflow = root.style.overflow
 
-      if ( !body ) {
-        fakeBody.style.background = ''
-        fakeBody.style.overflow = 'hidden'
-        docOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
+    root.appendChild( fakeBody )
+  } else {
+    body.appendChild( container )
+  }
 
-        root.style.overflow = 'hidden'
-        root.appendChild( fakeBody )
-      } else {
-        body.appendChild( container )
-      }
+  control.innerHTML = '&#x0069;&#x030D;'
+  control.style.fontFamily = 'sans-serif'
+  control.style.display = 'inline-block'
 
-      control.innerHTML = '&#x0069;&#x030D;'
-      control.style.fontFamily = 'sans-serif'
-      control.style.display = 'inline-block'
+  treat = $.clone( control )
+  treat.style.fontFamily = '"Romanization Sans"'
 
-      treat = $.clone( control )
-      treat.style.fontFamily = '"Romanization Sans"'
+  container.appendChild( control )
+  container.appendChild( treat )
 
-      container.appendChild( control )
-      container.appendChild( treat )
+  ret = control.clientWidth !== treat.clientWidth
+  $.remove( container )
 
-      ret = control.clientWidth !== treat.clientWidth
-      $.remove( container )
+  if ( !body ) {
+    root.style.overflow = docOverflow
+  }
+  return ret
+})()
 
-      if ( !body ) {
-        root.style.overflow = docOverflow
-      }
-      return ret
-    })(),
+var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
+var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
-    aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ],
-    aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ],
-
-    charCombLiga = $.create( 'char', 'comb-liga' ),
-    charCombLigaInner =  $.create( 'inner' )
+var charCombLiga = $.create( 'char', 'comb-liga' )
+var charCombLigaInner =  $.create( 'inner' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
 
   substCombLigaWithPUA: function( context ) {
-    var context = context || document,
-        finder = Han.find( context )
+    if ( isCombLigaNormal ) return
 
-    if ( isCombLigaNormal ) {
-      return
-    }
+    var context = context || document
+    var finder = Han.find( context )
 
-    finder.filteredElemList += ELEM_TO_IGNORE
+    finder.filterOut( SELECTOR_TO_IGNORE, true )
 
     aCombLiga
     .forEach(function( pattern ) {
@@ -2284,8 +2267,8 @@ $.extend( Han, {
       .replace(
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
-          var ret = $.clone( charCombLiga ),
-              inner = $.clone( charCombLigaInner )
+          var ret = $.clone( charCombLiga )
+          var inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
@@ -2316,10 +2299,10 @@ $.extend( Han, {
   },
 
   substInaccurateChar: function( context ) {
-    var context = context || document,
-        finder = Han.find( context )
+    var context = context || document
+    var finder = Han.find( context )
 
-    finder.filteredElemList += ELEM_TO_IGNORE
+    finder.filterOut( SELECTOR_TO_IGNORE, true )
     aInaccurateChar
     .forEach(function( pattern ) {
       finder
@@ -2343,7 +2326,7 @@ $.extend( Han.fn, {
   revertCombLigaWithPUA: function() {
     try {
       this['comb-liga'].revert( 'all' )
-    } catch ( e ) {}
+    } catch (e) {}
     return this
   },
 
@@ -2355,7 +2338,7 @@ $.extend( Han.fn, {
   revertInaccurateChar: function() {
     try {
       this['inaccurate-char'].revert( 'all' )
-    } catch ( e ) {}
+    } catch (e) {}
     return this
   }
 })
@@ -2377,17 +2360,11 @@ window.addEventListener( 'DOMContentLoaded', function() {
 })
 
 // AMD
-if (
-  typeof define === 'function' && define.amd
-) {
-  define(function() {
-    return Han
-  })
+if ( typeof define === 'function' && define.amd ) {
+  define(function() { return Han })
 
 // Expose to global namespace
-} else if (
-  typeof noGlobalNS === 'undefined' || noGlobalNS === false
-) {
+} else if ( typeof noGlobalNS === 'undefined' || noGlobalNS === false ) {
   window.Han = Han
 }
 

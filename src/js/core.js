@@ -77,7 +77,7 @@ Han.fn = Han.prototype = {
     routine
     .forEach(function( method ) {
       try {
-        if ( typeof method === 'string' ){
+        if ( typeof method === 'string' ) {
           it[ method ]()
         } else if ( Array.isArray( method )) {
           it[ method.shift() ].apply( it, method )
