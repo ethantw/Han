@@ -2221,7 +2221,12 @@ kbd hws,
 samp hws,
 pre hws,
 ol > hws,
-ul > hws {
+ul > hws,
+table > hws,
+thead > hws,
+tbody > hws,
+tfoot > hws,
+tr > hws {
   display: none;
 }
 
