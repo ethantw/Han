@@ -28,19 +28,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/han.min.css">
 ````
 
 腳本，
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/han.min.js"></script>
 ````
 
 Web字體，
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/font/han.otf`
 
 ## 使用方式
 
@@ -64,6 +64,15 @@ Web字體，
 - Apple Safari 7+
 - Internet Explorer 10+
 
+## 開發環境
+歡迎參與「漢字標準格式」的開發。下列清單列出了部分常用的開發指令。
+
+- 安裝需要的開發模組：`sudo npm i`
+- 啓動開發環境：`npm start`或`gulp dev`（包含本機運行及自動編譯）
+- 編譯發布文件：`gulp build`
+- 測試`han.js`：`gulp test`
+- 更新依賴模組：`npm update && gulp dep`
+
 * * *
 「漢字標準格式」版本：v3.1.0  
-本頁最後修改於：2015年1月6日 05:03（GMT+8）
+本頁最後修改於：2015年1月8日 18:55（GMT+8）

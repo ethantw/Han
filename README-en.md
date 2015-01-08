@@ -29,19 +29,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.0.2/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.1.0/font/han.otf`
 
 ## How to use
 
@@ -66,6 +66,9 @@ In order to handle these circumstances properly, please be well-alarmed with rul
 
 Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritten relations of style sheets while in need.
 
+### Working environments
+Han.js runs in DOM environments only. Use with modules such as `jsdom` for server-side usage.
+
 ## Browser support
 
 - Google Chrome (latest)
@@ -74,6 +77,15 @@ Use the ‘DOM Inspector’ in browsers to observe the inheritance and overwritt
 - Apple Safari 7+
 - Internet Explorer 10+
 
+## Development
+Contributions are pretty much welcomed. Below goes the list with some useful developing commands:
+
+- Install dev-dependencies: `sudo npm i`
+- Start the dev-environment: `npm start` or `gulp dev` (including local server running and auto compiling)
+- Compile the distribution files: `gulp build`
+- Test `han.js`: `gulp test`
+- Update dependencies: `npm update && gulp dep`
+
 * * *
 Han.css v3.1.0  
-Last-modified: 2015-1-6 05:03 (GMT+8)
+Last-modified: 2015-1-8 18:55 (GMT+8)
