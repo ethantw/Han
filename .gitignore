@@ -1,8 +1,4 @@
 .DS_Store
 .sass-cache
 node_modules
-
 TODO
-/index.html
-/index.jade
-/example.css
