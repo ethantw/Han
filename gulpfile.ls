@@ -1,5 +1,5 @@
 
-require! <[ gulp gulp-connect gulp-concat-util gulp-sass gulp-csscomb gulp-cssmin gulp-requirejs-optimize gulp-uglifyjs gulp-browserify gulp-livescript gulp-jade gulp-watch gulp-qunit ]>
+require! <[ gulp gulp-connect gulp-concat-util gulp-sass gulp-csscomb gulp-cssmin gulp-requirejs-optimize gulp-uglifyjs gulp-symlink gulp-browserify gulp-livescript gulp-jade gulp-watch gulp-qunit ]>
 
 concat = gulp-concat-util
 sass = gulp-sass
@@ -62,7 +62,7 @@ rjs-config = {
 
 gulp.task \default <[ build demo ]>
 gulp.task \dev <[ watch server ]>
-gulp.task \build <[ dist:sass dist:sassmin dist:js dist:uglify ]>
+gulp.task \build <[ dist:font dist:sass dist:sassmin dist:js dist:uglify ]>
 gulp.task \dep <[ normalize.css fibre.js ]>
 
 gulp.task \server !->
@@ -72,23 +72,29 @@ gulp.task \server !->
   }
 
 # Build for distribution
+gulp.task \dist:font ->
+  gulp.src \./font/han.woff
+    .pipe gulp-symlink \./dist/font/han.woff, { force: yes }
+  gulp.src \./font/han.otf
+    .pipe gulp-symlink \./dist/font/han.otf, { force: yes }
+
 gulp.task \dist:sass ->
   gulp.src \./src/sass/han.scss
     .pipe sass!
     .pipe concat \han.css
     .pipe concat.header CSS-BANNER
     .pipe gulp-csscomb!
-    .pipe gulp.dest \./
+    .pipe gulp.dest \./dist
 
 gulp.task \dist:sassmin <[ dist:sass ]> ->
-  gulp.src \./han.css
+  gulp.src \./dist/han.css
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {
       process: ( src ) ->
         src.replace /@charset\s(['"])UTF-8\1;/g, ''
     }
     .pipe concat.header CSS-BANNER
-    .pipe gulp.dest \./
+    .pipe gulp.dest \./dist
 
 gulp.task \dist:js ->
   gulp.src \./src/js/han.js
@@ -99,10 +105,10 @@ gulp.task \dist:js ->
           .replace /@VERSION/g, VERSION
           .replace /\n{3,}/g, '\n\n'
     }
-    .pipe gulp.dest \./
+    .pipe gulp.dest \./dist
 
 gulp.task \dist:uglify <[ dist:js ]> ->
-  gulp.src \./han.js
+  gulp.src \./dist/han.js
     .pipe gulp-uglifyjs \han.min.js {
       output: {
         ascii_only: true
@@ -110,7 +116,7 @@ gulp.task \dist:uglify <[ dist:js ]> ->
     }
     .pipe concat \han.min.js
     .pipe concat.header BANNER
-    .pipe gulp.dest \./
+    .pipe gulp.dest \./dist
 
 # Demo
 gulp.task \demo ->
