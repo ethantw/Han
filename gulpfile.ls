@@ -4,7 +4,6 @@ require! <[ gulp gulp-connect gulp-concat-util gulp-sass gulp-csscomb gulp-cssmi
 concat = gulp-concat-util
 sass = gulp-sass
 rjs = gulp-requirejs-optimize
-rjs-config = require \./rjs-option
 
 watch = gulp-watch
 pkg = require \./package.json
@@ -21,9 +20,50 @@ const CSS-BANNER = """
 #{BANNER}
 """
 
+unwrap = ( name, path, src ) ->
+  rdefineEnd = /\}\);?[^}\w]*$/
+
+  if path is /.\/var\//
+    src = src
+      .replace( /define\([\w\W]*?return/, 'var ' + /var\/([\w-]+)/.exec(name)[1] + ' =' )
+      .replace( rdefineEnd, '')
+  else if name is /^fibre$/
+    src = '\nvar Fibre =\n' + src
+      .replace( /void\s/, '' )
+      .replace( "var Finder = Finder || require( './finder.umd' )\n", '' )
+      .replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, 'return Fibre' )
+  else
+    src = src
+      .replace( /\s*return\s+[^\}]+(\}\);?[^\w\}]*)$/, '$1' )
+      .replace( /define\([^{]*?{/, '' )
+      .replace( rdefineEnd, '' )
+      .replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, '' )
+      .replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, '' )
+      .replace( /define\(\[[^\]]+\]\)[\W\n]+$/, '' )
+  src
+
+rjs-config = {
+  baseUrl: \src/js
+  name: \han
+  out: \./han.js
+  optimize: \none
+  findNestedDependencies: yes
+  skipSemiColonInsertion: yes
+  wrap: {
+    startFile: \src/js/intro.js
+    endFile: \src/js/outro.js
+  }
+  paths: {
+    fibre: \../lib/fibre.js/index
+  }
+  rawText: {}
+  onBuildWrite: unwrap
+}
+
 gulp.task \default <[ build demo ]>
 gulp.task \dev <[ watch server ]>
 gulp.task \build <[ dist:sass dist:sassmin dist:js dist:uglify ]>
+gulp.task \dep <[ normalize.css fibre.js ]>
 
 gulp.task \server !->
   gulp-connect.server {
@@ -74,9 +114,11 @@ gulp.task \dist:uglify <[ dist:js ]> ->
 
 # Demo
 gulp.task \demo ->
+  gulp.start <[ demo:dist demo:sass demo:jade demo:lsc ]>
+
+gulp.task \demo:dist ->
   gulp.src <[ ./han*.css ./han*.js ]>
     .pipe gulp.dest \./test
-  gulp.start <[ demo:sass demo:jade demo:lsc ]>
 
 gulp.task \demo:sass ->
   gulp.src \./test/*.scss
@@ -102,8 +144,8 @@ gulp.task \demo:lsc ->
 
 # Watch
 gulp.task \watch <[ build demo ]> ->
-  gulp.watch \./src/sass/**/* <[ dist:sass dist:sassmin demo ]>
-  gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo ]>
+  gulp.watch \./src/sass/**/* <[ dist:sass dist:sassmin demo:dist demo:sass ]>
+  gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo:dist demo:lsc ]>
   gulp.watch \./test/*.scss <[ demo:sass ]>
   gulp.watch \./test/*.jade <[ demo:jade ]>
   gulp.watch \./test/*.ls <[ demo:lsc ]>
