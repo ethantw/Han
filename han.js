@@ -1701,6 +1701,7 @@ function createNormalRu( $rb, $rt, attr ) {
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
+      if (typeof rb == 'undefined') { return '' }
       return rb.outerHTML 
     }).join('')
   } else {
@@ -1988,6 +1989,7 @@ $.extend( Hyu, {
                   rb = $ru.shift()
                   aRb.push( rb ) 
                 } catch (e) {}
+                if (typeof rb == 'undefined') { break }
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 
