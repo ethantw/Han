@@ -18,9 +18,9 @@
 - Component `component install ethantw/Han`
 
 ### 定製
-「漢字標準格式」提供了多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][manual]。
+「漢字標準格式」提供多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][api]。
 
-[manual]: http://css.hanzi.co/manual
+[api]: http://css.hanzi.co/manual/sass-api
 
 ### 使用CDN文件
 若毋須特別定製，你也可以直接使用以預設値編譯的CDN外連樣式表、腳本及網頁字體，以求高速下載及快取。[此服務由cdnjs.com提供][cdnjs]。
@@ -46,7 +46,9 @@ Web字體，
 
 1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass）。
 2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOM-ready渲染。
-3. 或依需求定製渲染方式，詳見[使用手冊][manual]。
+3. 或依需求定製渲染方式，詳見[使用手冊][rendering]。
+
+[rendering]: http://css.hanzi.co/manual/js-api#rendering
 
 ### 可選用的腳本
 「漢字標準格式」具低耦合、高度語意化等特性，樣式表與腳本各司其職、相互依賴性極低，並有多級樣式回退（fallback），故可依需求選用腳本。
@@ -65,14 +67,14 @@ Web字體，
 - Internet Explorer 10+
 
 ## 開發環境
-歡迎參與「漢字標準格式」的開發。下列清單列出了部分常用的開發指令。
+歡迎參與「漢字標準格式」的開發。下列清單展示了部分常用的開發指令。
 
 - 安裝需要的開發模組：`sudo npm i`
 - 啓動開發環境：`npm start`或`gulp dev`（包含本機運行及自動編譯）
 - 編譯發布文件：`gulp build`
-- 測試`han.js`：`gulp test`
+- 測試`han.js`API：`gulp test`（PhantomJS）
 - 更新依賴模組：`npm update && gulp dep`
 
 * * *
 「漢字標準格式」版本：v3.1.0  
-本頁最後修改於：2015年1月8日 18:55（GMT+8）
+本頁最後修改於：2015年1月11日 14:06（GMT+8）
