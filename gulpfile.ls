@@ -118,6 +118,11 @@ gulp.task \dist:uglify <[ dist:js ]> ->
     .pipe concat.header BANNER
     .pipe gulp.dest \./dist
 
+# API test
+gulp.task \test ->
+  gulp.src \./test/api.html
+    .pipe gulp-qunit!
+
 # Demo
 gulp.task \demo ->
   gulp.start <[ demo:dist demo:sass demo:jade demo:lsc ]>
@@ -141,11 +146,14 @@ gulp.task \demo:lsc ->
   gulp.src \./test/test-commonjs.ls
     .pipe gulp-livescript!
     .pipe gulp-browserify!
-    .pipe gulp-uglifyjs \test-commonjs.js {
+    .pipe gulp-uglifyjs {
       output: {
         ascii_only: true
       }
     }
+    .pipe gulp.dest \./test
+  gulp.src \./test/api.ls
+    .pipe gulp-livescript!
     .pipe gulp.dest \./test
 
 # Watch
