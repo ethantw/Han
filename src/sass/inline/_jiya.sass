@@ -11,8 +11,17 @@
 [unicode='3002'],
 [unicode='ff0c'],
 [unicode='ff08']
-  char_group  &:not(:last-child)
+  char_group &:not(:last-child)
     letter-spacing: -.5em
+
+[unicode='3001']:lang(zh-Hant),
+[unicode='3002']:lang(zh-Hant),
+[unicode='ff0c']:lang(zh-Hant),
+[unicode='ff08']:lang(zh-Hant),
+  char_group &:not(:last-child)
+    letter-spacing: inherit
+  char_group & + .open
+    margin-left: -.5em 
 
 // * Handle ‘「漢」·「字」’ situation
 // *

@@ -2242,6 +2242,19 @@ char_group [unicode="ff08"]:not(:last-child) {
   letter-spacing: -.5em;
 }
 
+char_group [unicode="3001"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="3002"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="ff0c"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="ff08"]:lang(zh-Hant):not(:last-child) {
+  letter-spacing: inherit;
+}
+char_group [unicode="3001"]:lang(zh-Hant) + .open,
+char_group [unicode="3002"]:lang(zh-Hant) + .open,
+char_group [unicode="ff0c"]:lang(zh-Hant) + .open,
+char_group [unicode="ff08"]:lang(zh-Hant) + .open {
+  margin-left: -.5em;
+}
+
 char_group [unicode="b7"] + [unicode="300c"],
 char_group [unicode="b7"] + [unicode="300e"],
 char_group [unicode="30fb"] + [unicode="300c"],
