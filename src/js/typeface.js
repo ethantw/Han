@@ -1,7 +1,7 @@
 define([
   './method',
   './core',
-  './normalize'
+  './locale'
 ], function( $, Han ) {
 
 $.extend( Han.support, {

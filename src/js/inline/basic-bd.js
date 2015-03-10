@@ -1,7 +1,7 @@
 define([
   '../core',
   '../method',
-  '../hyu/support'
+  '../locale/support'
 ], function( Han, $, support ) {
 
 var mdot

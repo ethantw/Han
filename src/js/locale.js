@@ -1,6 +1,6 @@
 define([
   './core',
-  './hyu/hyu'
+  './locale/locale'
 ], function( Han, Hyu ) {
 
 Han.normalize = Hyu

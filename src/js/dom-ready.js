@@ -1,7 +1,7 @@
 define([
   './var/root',
   './core',
-  './normalize'
+  './locale'
 ], function( root, Han ) {
 
 window.addEventListener( 'DOMContentLoaded', function() {

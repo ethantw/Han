@@ -3,7 +3,7 @@ define([
   './core',
   './regex',
   './find',
-  './normalize',
+  './locale',
   './typeface',
   './inline',
   './dom-ready',
