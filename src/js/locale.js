@@ -1,11 +1,11 @@
 define([
   './core',
   './locale/locale'
-], function( Han, Hyu ) {
+], function( Han, Locale ) {
 
-Han.normalize = Hyu
-Han.support = Hyu.support
-Han.detectFont = Hyu.detectFont
+Han.normalize = Locale
+Han.support = Locale.support
+Han.detectFont = Locale.detectFont
 
 Han.fn.initCond = function() {
   this.condition.classList.add( 'han-js-rendered' )

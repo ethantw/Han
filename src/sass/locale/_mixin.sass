@@ -1,5 +1,5 @@
 
-@function hyu-mark-to-code( $mark, $shape: filled )
+@function han-mark-to-code( $mark, $shape: filled )
   $ret: $mark
 
   @if ( $shape == filled )
@@ -27,26 +27,26 @@
       $ret: '\25b3'
   @return $ret
 
-=hyu-calc( $prop, $exp )
+=han-calc( $prop, $exp )
   #{$prop}: -moz-calc( #{$exp} )
   #{$prop}: -webkit-calc( #{$exp} )
   #{$prop}: calc( #{$exp} )
 
-=hyu-scale( $size )
+=han-scale( $size )
   -moz-transform:           scale( $size )
   -ms-transform:            scale( $size )
   -webkit-transform:        scale( $size )
   transform:                scale( $size )
 
-=hyu-typo-reset
-  +hyu-text-emphasis( none )
+=han-typo-reset
+  +han-text-emphasis-internal( none )
   font-style:      normal
   font-weight:     normal
   line-height:     normal
   text-decoration: none
   text-indent:     0
 
-=hyu-text-emphasis( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR )
+=han-text-emphasis-internal( $posi: $HAN-TEXT-EMPHASIS-POSI, $mark: $HAN-TEXT-EMPHASIS-MARK, $shape: $HAN-TEXT-EMPHASIS-SHAPE, $color: $HAN-TEXT-EMPHASIS-COLOR )
   @if ( $posi == none )
     $mark: none
     $shape: null
@@ -64,18 +64,18 @@
     -webkit-text-emphasis-color:    $color
     text-emphasis-color:            $color
 
-=hyu-text-emphasis-pf( $posi: $HYU-TEXT-EMPHASIS-POSI, $mark: $HYU-TEXT-EMPHASIS-MARK, $shape: $HYU-TEXT-EMPHASIS-SHAPE, $color: $HYU-TEXT-EMPHASIS-COLOR, $skip: $HYU-TEXT-EMPHASIS-SKIP, $extend: true )
+=han-text-emphasis-pf( $posi: $HAN-TEXT-EMPHASIS-POSI, $mark: $HAN-TEXT-EMPHASIS-MARK, $shape: $HAN-TEXT-EMPHASIS-SHAPE, $color: $HAN-TEXT-EMPHASIS-COLOR, $skip: $HAN-TEXT-EMPHASIS-SKIP, $extend: true )
   @if ( $extend )
-    @extend %hyu-text-emphasis-pf
+    @extend %han-text-emphasis-pf
   @if ( $extend and $skip )
-    @extend %hyu-text-emphasis-skip
+    @extend %han-text-emphasis-skip
 
   @if ( $posi == under )
     $posi: 1em
   @if ( $posi == over )
     $posi: -.7em
 
-  $mark: hyu-mark-to-code( $mark, $shape )
+  $mark: han-mark-to-code( $mark, $shape )
 
   .no-textemphasis & char:after
     @if ( $posi != null )
@@ -88,7 +88,7 @@
   @if ( $extend == false and $skip == false )
     char.punct,
     char.biaodian
-      +hyu-text-emphasis( null, inherit, null, null )
+      +han-text-emphasis( null, inherit, null, null )
 
       .no-textemphasis &:after
         @if ( $mark == null )

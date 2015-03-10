@@ -38,8 +38,8 @@ hruby
   // *
   ru:before,
   zhuyin
-    +hyu-scale( .55 )
-    +hyu-typo-reset
+    +han-scale( .55 )
+    +han-typo-reset
     // position
     position: absolute
     // box
@@ -152,7 +152,7 @@ hruby
     &[diao='˪'],
     &[diao='˫']
       diao
-        +hyu-scale( 1.2 )
+        +han-scale( 1.2 )
         margin-right: -.25em
 
     // 3, 3.1
@@ -188,15 +188,15 @@ hruby
   @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
 
     yin
-      +hyu-scale( .8 )
+      +han-scale( .8 )
       display: inline-block
 
     ru[zhuyin][diao='˪'],
     ru[zhuyin][diao='˫']
       diao
-        +hyu-scale( 1 )
+        +han-scale( 1 )
 
     ru[zhuyin][diao='˙']
       diao
-        +hyu-scale( .8 )
+        +han-scale( .8 )
         top: .125em

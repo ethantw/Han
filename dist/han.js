@@ -1385,9 +1385,7 @@ void [
   }
 })
 
-var Hyu = {
-  JS_RENDERED_CLASS: 'hyu-js-rendered'
-}
+var Locale = {}
 
 function writeOnCanvas( text, font ) {
   var canvas = $.create( 'canvas' )
@@ -1449,9 +1447,9 @@ function detectFont( treat, control, text ) {
   }
 }
 
-Hyu.detectFont = detectFont
+Locale.detectFont = detectFont
 
-Hyu.support = (function() {
+Locale.support = (function() {
 
   var PREFIX = 'Webkit Moz ms'.split(' ')
 
@@ -1576,7 +1574,7 @@ Hyu.support = (function() {
       injectElementWithStyle(
         '@font-face{font-family:test-for-unicode-range;src:local(Arial),local("Droid Sans")}@font-face{font-family:test-for-unicode-range;src:local("Times New Roman"),local(Times),local("Droid Serif");unicode-range:U+270C}',
         function() {
-          ret = !Hyu.detectFont(
+          ret = !Locale.detectFont(
             'test-for-unicode-range', // treatment group
             'Arial, "Droid Sans"',    // control group
             'Q'                       // ASCII characters only
@@ -1594,15 +1592,13 @@ Hyu.support = (function() {
   }
 })()
 
-Hyu.initCond = function( target ) {
+Locale.initCond = function( target ) {
   var target = target || root
   var ret = ''
   var clazz
 
-  target.classList.add( Hyu.JS_RENDERED_CLASS )
-
-  for ( var feature in Hyu.support ) {
-    clazz = ( Hyu.support[ feature ] ? '' : 'no-' ) + feature
+  for ( var feature in Locale.support ) {
+    clazz = ( Locale.support[ feature ] ? '' : 'no-' ) + feature
 
     target.classList.add( clazz )
     ret += clazz + ' '
@@ -1699,7 +1695,7 @@ function createZhuyinRu( $rb, $rt ) {
 /**
  * Normalisation rendering mechanism
  */
-$.extend( Hyu, {
+$.extend( Locale, {
 
   // Render and normalise the given context by routine:
   //
@@ -1747,13 +1743,13 @@ $.extend( Hyu, {
     .forEach(function( elem ) {
       var $elem = Fibre( elem )
 
-      if ( !Hyu.support.textemphasis ) {
+      if ( !Locale.support.textemphasis ) {
         $elem.jinzify()
       }
 
       $elem
       .groupify()
-      .charify( Hyu.support.textemphasis ? {
+      .charify( Locale.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'
       } : {
@@ -1794,7 +1790,7 @@ $.extend( Hyu, {
       var clazz = ruby.classList
 
       var condition = (
-        !Hyu.support.ruby ||
+        !Locale.support.ruby ||
         clazz.contains( 'zhuyin') ||
         clazz.contains( 'complex' ) ||
         clazz.contains( 'rightangle' )
@@ -1812,7 +1808,7 @@ $.extend( Hyu, {
 
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
-      if ( !Hyu.support.ruby || clazz.contains( 'zhuyin' )) {
+      if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )
@@ -1960,9 +1956,9 @@ $.extend( Hyu, {
   // * Better error-tolerance
 })
 
-Han.normalize = Hyu
-Han.support = Hyu.support
-Han.detectFont = Hyu.detectFont
+Han.normalize = Locale
+Han.support = Locale.support
+Han.detectFont = Locale.detectFont
 
 Han.fn.initCond = function() {
   this.condition.classList.add( 'han-js-rendered' )

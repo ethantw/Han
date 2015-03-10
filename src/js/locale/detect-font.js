@@ -2,7 +2,7 @@ define([
   '../var/body',
   '../method',
   './core'
-], function( body, $, Hyu ) {
+], function( body, $, Locale ) {
 
 function writeOnCanvas( text, font ) {
   var canvas = $.create( 'canvas' )
@@ -64,6 +64,6 @@ function detectFont( treat, control, text ) {
   }
 }
 
-Hyu.detectFont = detectFont
-return Hyu
+Locale.detectFont = detectFont
+return Locale
 })

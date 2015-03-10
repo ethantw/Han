@@ -1,17 +1,15 @@
 define([
   '../var/root',
   './core'
-], function( root, Hyu ) {
+], function( root, Locale ) {
 
-Hyu.initCond = function( target ) {
+Locale.initCond = function( target ) {
   var target = target || root
   var ret = ''
   var clazz
 
-  target.classList.add( Hyu.JS_RENDERED_CLASS )
-
-  for ( var feature in Hyu.support ) {
-    clazz = ( Hyu.support[ feature ] ? '' : 'no-' ) + feature
+  for ( var feature in Locale.support ) {
+    clazz = ( Locale.support[ feature ] ? '' : 'no-' ) + feature
 
     target.classList.add( clazz )
     ret += clazz + ' '
@@ -19,5 +17,5 @@ Hyu.initCond = function( target ) {
   return ret
 }
 
-return Hyu
+return Locale
 })

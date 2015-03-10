@@ -6,9 +6,9 @@
 // *    assign a unified value for consistency.
 // * 2. Force WebKit to render texts subpixel-antialiasedly.
 // *
-#{$HYU-ROOT}
+#{$HAN-ROOT}
   // 1
-  line-height: $HYU-LINE-HEIGHT
+  line-height: $HAN-LINE-HEIGHT
   // 2
   -webkit-font-smoothing: subpixel-antialiased
 
@@ -24,12 +24,12 @@
 // *
 ol,
 ul
-  padding-left: $HYU-INDENT
+  padding-left: $HAN-INDENT
 
 figure,
 blockquote
-  margin-left: $HYU-INDENT
-  margin-right: $HYU-INDENT
+  margin-left: $HAN-INDENT
+  margin-right: $HAN-INDENT
 
 /**
  * Contact information
@@ -75,7 +75,7 @@ a
 em
   &:lang(zh),
   &:lang(ja)
-    +hyu-text-emphasis
+    +han-text-emphasis-internal
     // typography
     font-style: inherit
     // 1
@@ -86,7 +86,7 @@ em
     padding-bottom: -webkit-calc( 0px )
 
 em:lang(ja)
-  +hyu-text-emphasis( $HYU-TEXT-EMPHASIS-POSI-JA, $HYU-TEXT-EMPHASIS-MARK-JA )
+  +han-text-emphasis-internal( $HAN-TEXT-EMPHASIS-POSI-JA, $HAN-TEXT-EMPHASIS-MARK-JA )
 
 /**
  * Importance, definitions and Keywords
@@ -179,19 +179,19 @@ var
 // * Semantic presentation for two adjacent underlined
 // * text runs.
 // *
-%hyu-adjacent-deco-line
+%han-adjacent-deco-line
   margin-left: .125em
 
 u,
 ins
   & + u,
   & + ins
-    @extend %hyu-adjacent-deco-line
+    @extend %han-adjacent-deco-line
 s,
 del
   & + s,
   & + del
-    @extend %hyu-adjacent-deco-line
+    @extend %han-adjacent-deco-line
 
 u,
 ins

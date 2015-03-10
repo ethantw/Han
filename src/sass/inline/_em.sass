@@ -9,14 +9,14 @@ em:lang(zh)
   $color: null
   $skip: $han-text-emphasis-skip
 
-  @if ( $han-text-emphasis-mark != $HYU-TEXT-EMPHASIS-MARK or $han-text-emphasis-shape != $HYU-TEXT-EMPHASIS-SHAPE )
+  @if ( $han-text-emphasis-mark != $HAN-TEXT-EMPHASIS-MARK or $han-text-emphasis-shape != $HAN-TEXT-EMPHASIS-SHAPE )
     $mark:  $han-text-emphasis-mark
     $shape: $han-text-emphasis-shape
 
-  @if ( $han-text-emphasis-posi != $HYU-TEXT-EMPHASIS-POSI )
+  @if ( $han-text-emphasis-posi != $HAN-TEXT-EMPHASIS-POSI )
     $posi:  $han-text-emphasis-posi
 
-  @if ( $han-text-emphasis-color != $HYU-TEXT-EMPHASIS-COLOR )
+  @if ( $han-text-emphasis-color != $HAN-TEXT-EMPHASIS-COLOR )
     $color: $han-text-emphasis-color
 
   +han-text-emphasis( $posi, $mark, $shape, $color, $skip, false )
@@ -28,14 +28,14 @@ em:lang(ja)
   $color: null
   $skip: $han-text-emphasis-skip
 
-  @if ( $han-text-emphasis-mark-ja != $HYU-TEXT-EMPHASIS-MARK-JA or $han-text-emphasis-shape-ja != $HYU-TEXT-EMPHASIS-SHAPE-JA )
+  @if ( $han-text-emphasis-mark-ja != $HAN-TEXT-EMPHASIS-MARK-JA or $han-text-emphasis-shape-ja != $HAN-TEXT-EMPHASIS-SHAPE-JA )
     $mark:  $han-text-emphasis-mark-ja
     $shape: $han-text-emphasis-shape-ja
 
-  @if ( $han-text-emphasis-posi-ja != $HYU-TEXT-EMPHASIS-POSI-JA )
+  @if ( $han-text-emphasis-posi-ja != $HAN-TEXT-EMPHASIS-POSI-JA )
     $posi:  $han-text-emphasis-posi-ja
 
-  @if ( $han-text-emphasis-color-ja != $HYU-TEXT-EMPHASIS-COLOR-JA )
+  @if ( $han-text-emphasis-color-ja != $HAN-TEXT-EMPHASIS-COLOR-JA )
     $color: $han-text-emphasis-color-ja
 
   +han-text-emphasis( $posi, $mark, $shape, $color, $skip, false )

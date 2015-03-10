@@ -4,9 +4,9 @@ define([
   '../var/body',
   './core',
   './detect-font'
-], function( $, root, body, Hyu ) {
+], function( $, root, body, Locale ) {
 
-Hyu.support = (function() {
+Locale.support = (function() {
 
   var PREFIX = 'Webkit Moz ms'.split(' ')
 
@@ -131,7 +131,7 @@ Hyu.support = (function() {
       injectElementWithStyle(
         '@font-face{font-family:test-for-unicode-range;src:local(Arial),local("Droid Sans")}@font-face{font-family:test-for-unicode-range;src:local("Times New Roman"),local(Times),local("Droid Serif");unicode-range:U+270C}',
         function() {
-          ret = !Hyu.detectFont(
+          ret = !Locale.detectFont(
             'test-for-unicode-range', // treatment group
             'Arial, "Droid Sans"',    // control group
             'Q'                       // ASCII characters only
@@ -149,5 +149,5 @@ Hyu.support = (function() {
   }
 })()
 
-return Hyu
+return Locale
 })

@@ -3,7 +3,7 @@ define([
   '../method',
   '../regex/typeset',
   '../fibre-extend'
-], function( Hyu, $, TYPESET, Fibre ) {
+], function( Locale, $, TYPESET, Fibre ) {
 
 /**
  * Create and return a new `<ru>` element
@@ -94,7 +94,7 @@ function createZhuyinRu( $rb, $rt ) {
 /**
  * Normalisation rendering mechanism
  */
-$.extend( Hyu, {
+$.extend( Locale, {
 
   // Render and normalise the given context by routine:
   //
@@ -142,13 +142,13 @@ $.extend( Hyu, {
     .forEach(function( elem ) {
       var $elem = Fibre( elem )
 
-      if ( !Hyu.support.textemphasis ) {
+      if ( !Locale.support.textemphasis ) {
         $elem.jinzify()
       }
 
       $elem
       .groupify()
-      .charify( Hyu.support.textemphasis ? {
+      .charify( Locale.support.textemphasis ? {
         hanzi:     'biaodian',
         word:      'punctuation'
       } : {
@@ -189,7 +189,7 @@ $.extend( Hyu, {
       var clazz = ruby.classList
 
       var condition = (
-        !Hyu.support.ruby ||
+        !Locale.support.ruby ||
         clazz.contains( 'zhuyin') ||
         clazz.contains( 'complex' ) ||
         clazz.contains( 'rightangle' )
@@ -207,7 +207,7 @@ $.extend( Hyu, {
 
       // 1. Simple ruby polyfill for, um, Firefox;
       // 2. Zhuyin polyfill for all.
-      if ( !Hyu.support.ruby || clazz.contains( 'zhuyin' )) {
+      if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )

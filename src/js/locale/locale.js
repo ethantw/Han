@@ -4,6 +4,6 @@ define([
   './support',
   './init-cond',
   './normalize'
-], function( Hyu ) {
-  return Hyu
+], function( Locale ) {
+  return Locale
 })

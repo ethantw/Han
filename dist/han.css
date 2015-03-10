@@ -571,12 +571,12 @@ s + s,
 s + del,
 del + s,
 del + del,
-.hyu-js-rendered u.adjacent,
-.hyu-js-rendered ins.adjacent,
-.hyu-js-rendered s + s.adjacent,
-.hyu-js-rendered s + del.adjacent,
-.hyu-js-rendered del + s.adjacent,
-.hyu-js-rendered del + del.adjacent {
+.han-js-rendered u.adjacent,
+.han-js-rendered ins.adjacent,
+.han-js-rendered s + s.adjacent,
+.han-js-rendered s + del.adjacent,
+.han-js-rendered del + s.adjacent,
+.han-js-rendered del + del.adjacent {
   margin-left: .125em;
 }
 
@@ -624,19 +624,19 @@ ruby > rt:not(:empty):after {
   width: -moz-calc( 1em);
 }
 
-.hyu-js-rendered u + u,
-.hyu-js-rendered u + ins,
-.hyu-js-rendered ins + u,
-.hyu-js-rendered ins + ins,
-.hyu-js-rendered s + s,
-.hyu-js-rendered s + del,
-.hyu-js-rendered del + s,
-.hyu-js-rendered del + del {
+.han-js-rendered u + u,
+.han-js-rendered u + ins,
+.han-js-rendered ins + u,
+.han-js-rendered ins + ins,
+.han-js-rendered s + s,
+.han-js-rendered s + del,
+.han-js-rendered del + s,
+.han-js-rendered del + del {
   margin-left: auto;
 }
 
-.hyu-js-rendered em:lang(zh),
-.hyu-js-rendered em:lang(ja) {
+.han-js-rendered em:lang(zh),
+.han-js-rendered em:lang(ja) {
   padding-bottom: auto;
   border-bottom-width: 0;
 }

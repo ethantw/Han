@@ -2,40 +2,40 @@
 // * Address a preciser adjancent underlined text run
 // * with JS rendered.
 // *
-%hyu-reset-adjacent-deco-line
+%han-reset-adjacent-deco-line
   margin-left: auto
 
-#{$HYU-JS-RENDERED-CLASS}
+#{$HAN-JS-RENDERED-CLASS}
   u,
   ins
     & + u,
     & + ins
-      @extend %hyu-reset-adjacent-deco-line
+      @extend %han-reset-adjacent-deco-line
 
     &.adjacent
-      @extend %hyu-adjacent-deco-line
+      @extend %han-adjacent-deco-line
 
   s,
   del
     & + s,
     & + del
-      @extend %hyu-reset-adjacent-deco-line
+      @extend %han-reset-adjacent-deco-line
 
       &.adjacent
-        @extend %hyu-adjacent-deco-line
+        @extend %han-adjacent-deco-line
 
 // * - Polyfill implementation for Firefox and IE;
 // * - Remove emphasis mark under punctuation.
 // *
 // * 1. Polyfill for browsers that support no `text-emphasis`.
-// * 2. Although Hyu is a project for normalisation and
+// * 2. Although han is a project for normalisation and
 // *    fonts ain't supposed to be assigned specifically,
 // *    we need the emphasis marks to fallback properly;
 // *    hence, one exception is hereby made.
 // * 3. Skip emphasis mark while under punctuation.
 // *
-%hyu-text-emphasis-pf
-  #{$HYU-JS-RENDERED-CLASS} &
+%han-text-emphasis-pf
+  #{$HAN-JS-RENDERED-CLASS} &
     padding-bottom: auto
     border-bottom-width: 0
 
@@ -50,8 +50,8 @@
       font-style: inherit
 
       &:after
-        +hyu-typo-reset
-        +hyu-scale( .5 )
+        +han-typo-reset
+        +han-scale( .5 )
         // position
         position: absolute
         left: 50%
@@ -70,20 +70,20 @@
         font-family: Georgia, 'Times New Roman', Arial, !important
 
 // 3
-%hyu-text-emphasis-skip
+%han-text-emphasis-skip
   char.punct,
   char.biaodian
-    +hyu-text-emphasis( none )
+    +han-text-emphasis-internal( none )
 
     .no-textemphasis &:after
       content: none !important
 
 em
   &:lang(zh)
-    +hyu-text-emphasis-pf
+    +han-text-emphasis-pf
 
   &:lang(ja)
-    +hyu-text-emphasis-pf( $HYU-TEXT-EMPHASIS-POSI-JA, $HYU-TEXT-EMPHASIS-MARK-JA )
+    +han-text-emphasis-pf( $HAN-TEXT-EMPHASIS-POSI-JA, $HAN-TEXT-EMPHASIS-MARK-JA )
 
 // * Simple and complex ruby polyfill
 // *
