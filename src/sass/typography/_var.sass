@@ -9,70 +9,70 @@
 // * The root element
 // * `html` || `'*:root'`
 // *
-$mre-root:                html  !default
+$han-root:                html  !default
 
 // **
 // * The article selector
 // * Possible values: `article` || `.article` || `.post` || `.entry`
 // *
-$mre-article:             article !default
+$han-article:             article !default
 
 // **
 // * Default Chinese locale variant
 // * (Traditional or simplified characters)
 // * `hant` || `hans`
 // *
-$mre-default-variant:     hant    !default
+$han-default-variant:     hant    !default
 
 // **
 // * Chinese glyph set in general
 // * `default` || `CNS` || `GB`
 // *
-$mre-glyph-set-hant:      default !default
+$han-glyph-set-hant:      default !default
 
 // **
 // * Simplified Chinese glyph set
 // * `default` || `GB`
 // *
-$mre-glyph-set-hans:      GB      !default
+$han-glyph-set-hans:      GB      !default
 
 // **
 // * Chinese Biaodian set in general
 // * `Pro` || `CNS` || `GB` || `simp`
 // *
-$mre-biaodian-hant:       CNS     !default
+$han-biaodian-hant:       CNS     !default
 
 // **
 // * Biaodian set for Simplified Chinese
 // * `default` || `Pro` || `CNS` || `GB`
 // *
-$mre-biaodian-hans:       GB      !default
+$han-biaodian-hans:       GB      !default
 
 // **
 // * Generic typefaces for Western (Latin-based)
 // * characters
 // *
-$mre-sans:    'Helvetica Neue', Helvetica, Arial  !default
-$mre-serif:   Georgia, 'Times New Roman'          !default
-$mre-cursive: 'Apple Chancery', 'Snell Roundhand' !default
-$mre-mono:    Menlo, Consolas, Courier            !default
+$han-sans:    'Helvetica Neue', Helvetica, Arial  !default
+$han-serif:   Georgia, 'Times New Roman'          !default
+$han-cursive: 'Apple Chancery', 'Snell Roundhand' !default
+$han-mono:    Menlo, Consolas, Courier            !default
 
 // **
 // * Generic typefaces for Chinese
 // *
-$mre-sans-zh:    ''                               !default
-$mre-serif-zh:   ''                               !default
-$mre-cursive-zh: ''                               !default
-$mre-mono-zh:    $mre-sans-zh                     !default
+$han-sans-zh:    ''                               !default
+$han-serif-zh:   ''                               !default
+$han-cursive-zh: ''                               !default
+$han-mono-zh:    $han-sans-zh                     !default
 
 // **
 // * Web font paths
 // * (Zhuyin, checked-toned romanisation and
 // * partial CJK biaodian correction)
 // *
-$mre-font-woff: './font/mre.woff'                 !default
-$mre-font-otf:  './font/mre.otf'                  !default
-$mre-version:    'v1.0.0'                         !default
+$han-font-woff: './font/han.woff'                 !default
+$han-font-otf:  './font/han.otf'                  !default
+$han-version:    'v1.0.0'                         !default
 
-$mre-webfont: url(#{$mre-font-woff}?#{$mre-version}) format('woff'), url(#{$mre-font-otf}?#{$mre-version}) format('opentype') !default
+$han-webfont: url(#{$han-font-woff}?#{$han-version}) format('woff'), url(#{$han-font-otf}?#{$han-version}) format('opentype') !default
 

@@ -10,7 +10,7 @@
 
 // 1
 @font-face {
-    @include mre-range-cjk;
+    @include han-range-cjk;
     font-family: 'Han Fangsong';
     src:
       local(STFangsong),
@@ -20,7 +20,7 @@
 
 // 2
 @font-face {
-    @include mre-range-cjk;
+    @include han-range-cjk;
     font-family: 'Han Fangsong CNS';
     src:
       local(STFangsong),
@@ -30,7 +30,7 @@
 
 // 3
 @font-face {
-    @include mre-range-cjk;
+    @include han-range-cjk;
     font-family: 'Han Fangsong GB';
     src:
       local(STFangsong),

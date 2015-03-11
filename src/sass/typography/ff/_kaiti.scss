@@ -25,7 +25,7 @@
 }
 
 @font-face {
-  @include mre-range-cjk;
+  @include han-range-cjk;
   font-family: 'Han Kaiti';
   src:
     local('Kaiti SC'),
@@ -42,7 +42,7 @@
 
 // 2
 @font-face {
-  @include mre-range-cjk;
+  @include han-range-cjk;
   font-family: 'Han Kaiti CNS';
   src:
     local(BiauKai),
@@ -53,7 +53,7 @@
 
 // 3
 @font-face {
-  @include mre-range-cjk;
+  @include han-range-cjk;
   font-family: 'Han Kaiti GB';
   src: local('Kaiti SC'),
     local(STKaiti),

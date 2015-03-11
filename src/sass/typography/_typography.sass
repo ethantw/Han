@@ -2,22 +2,22 @@
 // Root
 // ==========================================================================
 
-#{$mre-root}
-  +mre-typeface-by-lang( sans )
-  @extend %mre-ligature
+#{$han-root}
+  +han-typeface-by-lang( sans )
+  @extend %han-ligature
 
 [lang^='zh'],
 [lang*='Hant'],
 [lang='zh-TW'],
 [lang='zh-HK']
-  @extend %mre-sans-hant
+  @extend %han-sans-hant
 
 [lang*='Hans'],
 [lang='zh-CN']
-  @extend %mre-sans-hans
+  @extend %han-sans-hans
 
 [lang^='ja']
-  @extend %mre-sans-ja
+  @extend %han-sans-ja
 
 // Sections & grouping content
 // ==========================================================================
@@ -25,13 +25,13 @@
 // * Different typefaces in different situations.
 // *
 blockquote
-  #{$mre-article} &
-    +mre-typeface-by-lang( cursive )
+  #{$han-article} &
+    +han-typeface-by-lang( cursive )
 
   figure &
-    #{$mre-article} &,
+    #{$han-article} &,
     &
-      +mre-typeface-by-lang( serif )
+      +han-typeface-by-lang( serif )
 
 // Text-level semantics
 // ==========================================================================
@@ -39,8 +39,8 @@ blockquote
 // * Importance in articles should be in sans-serif
 // * (opinionated).
 // *
-#{$mre-article} strong
-  +mre-typeface-by-lang( sans )
+#{$han-article} strong
+  +han-typeface-by-lang( sans )
 
 // * Correct Chinese monospace typeface issue in WebKit.
 // *
@@ -48,18 +48,18 @@ code,
 kbd,
 samp,
 pre
-  +mre-typeface-by-lang( mono )
+  +han-typeface-by-lang( mono )
 
 // * Fonts for alternative voice and variable
 // * in different situations.
 i,
 var
-  +mre-typeface-by-lang( cursive-italic )
+  +han-typeface-by-lang( cursive-italic )
   font-style: inherit
 
   // 1
-  #{$mre-article} blockquote &
-    +mre-typeface-by-lang( sans-italic )
+  #{$han-article} blockquote &
+    +han-typeface-by-lang( sans-italic )
 
 // * 1. Use `Zhuyin Kaiti` for non-checked tones.
 // * 2. Zhuyin: checked tone ligatures (方言音符號入聲連字).
@@ -70,7 +70,7 @@ hruby
   ru[zhuyin] zhuyin,
   ru[zhuyin] zhuyin diao
     // 1, 2
-    @extend %mre-ligature
+    @extend %han-ligature
 
   ru[zhuyin] zhuyin diao
     font-family: 'Zhuyin Kaiti', cursive, serif
@@ -78,5 +78,5 @@ hruby
   &.romanization rt,
   ru[annotation]:before
     // 3
-    @extend %mre-ligature
-    font-family: 'Romanization Sans', $mre-sans, mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ), sans-serif
+    @extend %han-ligature
+    font-family: 'Romanization Sans', $han-sans, han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ), sans-serif

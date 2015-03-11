@@ -1,18 +1,18 @@
 
-=mre-webfont
-  src: $mre-webfont
+=han-webfont
+  src: $han-webfont
 
-=mre-typeface-by-lang( $typeface: sans )
+=han-typeface-by-lang( $typeface: sans )
   &:lang(zh),
   &:lang(zh-Hant)
-    @extend %mre-#{$typeface}-hant
+    @extend %han-#{$typeface}-hant
 
   &:lang(zh-Hans),
   &:lang(zh-CN)
-    @extend %mre-#{$typeface}-hans
+    @extend %han-#{$typeface}-hans
 
   &:lang(ja)
-    @extend %mre-#{$typeface}-ja
+    @extend %han-#{$typeface}-ja
 
   &:lang(zh-Latn),
   &:lang(ja-Latn),
@@ -20,4 +20,4 @@
   *:lang(zh-Latn),
   *:lang(ja-Latn),
   *:not(:lang(zh)):not(:lang(ja))
-    @extend %mre-#{$typeface}
+    @extend %han-#{$typeface}

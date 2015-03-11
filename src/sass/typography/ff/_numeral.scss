@@ -3,7 +3,7 @@
  * Numerals: text figures
  */
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral TF Sans';
   src:
     local(Skia),
@@ -14,7 +14,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral TF Serif';
   src:
     local(Georgia),
@@ -24,7 +24,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral TF Italic Serif';
   src:
     local('Georgia Italic'),
@@ -38,7 +38,7 @@
  * Numerals: lining figures
  */
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Sans';
   src:
     local('Helvetica Neue'),
@@ -48,7 +48,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Italic Sans';
   src:
     local('Helvetica Neue Italic'),
@@ -61,7 +61,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Italic Sans';
   font-weight: bold;
   src:
@@ -75,7 +75,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Serif';
   src:
     local(Palatino),
@@ -85,7 +85,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Italic Serif';
   src:
     local('Palatino Italic'),
@@ -98,7 +98,7 @@
 }
 
 @font-face {
-  @include mre-range-numeral;
+  @include han-range-numeral;
   font-family: 'Numeral LF Italic Serif';
   font-weight: bold;
   src:

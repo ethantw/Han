@@ -1,15 +1,15 @@
 
-$_default-variant: if( $mre-default-variant == hans, $mre-glyph-set-hans, $mre-glyph-set-hant )
+$_default-variant: if( $han-default-variant == hans, $han-glyph-set-hans, $han-glyph-set-hant )
 
 // **
 // * Functions
 // *
-@function mre-biaodian( $generic: Sans, $set: Pro )
+@function han-biaodian( $generic: Sans, $set: Pro )
   @if ( $set == simp )
     @return 'Biaodian ' + $generic
   @return 'Biaodian Pro' + if( $set == Pro, null, ' ' + $generic + ' ' + $set )
 
-@function mre-typeface( $typeface: 'Han Heiti', $set: default, $pre: null )
+@function han-typeface( $typeface: 'Han Heiti', $set: default, $pre: null )
   $typeface: if( $set == default, $typeface, $typeface + ' ' + $set )
   @return if( $pre == null or $pre == '', $typeface, ($pre, $typeface))
 
@@ -18,7 +18,7 @@ $_default-variant: if( $mre-default-variant == hans, $mre-glyph-set-hans, $mre-g
 @import extend/cursive
 @import extend/mono
 
-%mre-ligature
+%han-ligature
   -moz-font-feature-settings: 'liga'
   -ms-font-feature-settings: 'liga'
   -webkit-font-feature-settings: 'liga'

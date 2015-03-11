@@ -1,38 +1,38 @@
 
-%mre-sans {
+%han-sans {
   font-family:
-    $mre-sans,
-    mre-typeface( 'Han Heiti', $_default-variant, $mre-sans-zh ),
+    $han-sans,
+    han-typeface( 'Han Heiti', $_default-variant, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-hant {
+%han-sans-hant {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-hant ),
+    han-biaodian( Sans, $han-biaodian-hant ),
     //'Numeral LF Sans',
-    $mre-sans,
+    $han-sans,
     'Zhuyin Heiti',
-    mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ),
+    han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-hans {
+%han-sans-hans {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-hans ),
+    han-biaodian( Sans, $han-biaodian-hans ),
     //'Numeral LF Sans',
-    $mre-sans,
-    mre-typeface( 'Han Heiti', $mre-glyph-set-hans, $mre-sans-zh ),
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-ja {
+%han-sans-ja {
   font-family:
     'Yakumono Sans',
     //'Numeral LF Sans',
-    $mre-sans,
+    $han-sans,
     sans-serif
   ;
 }
@@ -40,41 +40,41 @@
 /**
  * Sans Italic
  */
-%mre-sans-italic {
+%han-sans-italic {
   font-family:
     'Latin Italic Sans',
-    $mre-sans,
-    mre-typeface( 'Han Heiti', $_default-variant, $mre-sans-zh ),
+    $han-sans,
+    han-typeface( 'Han Heiti', $_default-variant, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-italic-hant {
+%han-sans-italic-hant {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-hant ),
+    han-biaodian( Sans, $han-biaodian-hant ),
     'Latin Italic Sans',
-    $mre-sans,
+    $han-sans,
     'Zhuyin Heiti',
-    mre-typeface( 'Han Heiti', $mre-glyph-set-hant, $mre-sans-zh ),
+    han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-italic-hans {
+%han-sans-italic-hans {
   font-family:
-    mre-biaodian( Sans, $mre-biaodian-hans ),
+    han-biaodian( Sans, $han-biaodian-hans ),
     'Latin Italic Sans',
-    $mre-sans,
-    mre-typeface( 'Han Heiti', $mre-glyph-set-hans, $mre-sans-zh ),
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
     sans-serif
   ;
 }
 
-%mre-sans-italic-ja {
+%han-sans-italic-ja {
   font-family:
     'Yakumono Sans',
     'Latin Italic Sans',
-    $mre-sans,
+    $han-sans,
     sans-serif
   ;
 }

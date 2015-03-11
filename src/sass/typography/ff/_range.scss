@@ -1,7 +1,7 @@
 
 // * CJK-related blocks
 // *
-@mixin mre-range-cjk {
+@mixin han-range-cjk {
   unicode-range:
     // Basic CJK unified ideographs
     // 中日韓統一表意文字
@@ -40,13 +40,13 @@
 
 // * Numerals (0-9)
 // *
-@mixin mre-range-numeral {
+@mixin han-range-numeral {
   unicode-range: U+"+0030-0039";
 }
 
 // * Zhuyin blocks
 // *
-@mixin mre-range-zhuyin {
+@mixin han-range-zhuyin {
   unicode-range:
     // Zhuyin
     U+"+3105-312D", U+"+31A0-31BA",

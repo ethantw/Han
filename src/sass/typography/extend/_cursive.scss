@@ -1,38 +1,38 @@
 
-%mre-cursive {
+%han-cursive {
   font-family:
-    $mre-serif,
-    mre-typeface( 'Han Kaiti', $_default-variant, $mre-cursive-zh ),
+    $han-serif,
+    han-typeface( 'Han Kaiti', $_default-variant, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-hant {
+%han-cursive-hant {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hant ),
+    han-biaodian( Serif, $han-biaodian-hant ),
     'Numeral LF Serif',
-    $mre-serif,
+    $han-serif,
     'Zhuyin Kaiti',
-    mre-typeface( 'Han Kaiti', $mre-glyph-set-hant, $mre-cursive-zh ),
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-hans {
+%han-cursive-hans {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hans ),
+    han-biaodian( Serif, $han-biaodian-hans ),
     'Numeral LF Serif',
-    $mre-serif,
-    mre-typeface( 'Han Kaiti', $mre-glyph-set-hans, $mre-cursive-zh ),
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-ja {
+%han-cursive-ja {
   font-family:
     'Yakumono Serif',
     'Numeral LF Serif',
-    $mre-serif,
+    $han-serif,
     cursive, serif
   ;
 }
@@ -40,44 +40,44 @@
 /**
  * Cursive Italic
  */
-%mre-cursive-italic {
+%han-cursive-italic {
   font-family:
     'Latin Italic Serif',
-    $mre-serif,
-    mre-typeface( 'Han Kaiti', $_default-variant, $mre-cursive-zh ),
+    $han-serif,
+    han-typeface( 'Han Kaiti', $_default-variant, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-italic-hant {
+%han-cursive-italic-hant {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hant ),
+    han-biaodian( Serif, $han-biaodian-hant ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
+    $han-serif,
     'Zhuyin Kaiti',
-    mre-typeface( 'Han Kaiti', $mre-glyph-set-hant, $mre-cursive-zh ),
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-italic-hans {
+%han-cursive-italic-hans {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hans ),
+    han-biaodian( Serif, $han-biaodian-hans ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
-    mre-typeface( 'Han Kaiti', $mre-glyph-set-hans, $mre-cursive-zh ),
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
     cursive, serif
   ;
 }
 
-%mre-cursive-italic-ja {
+%han-cursive-italic-ja {
   font-family:
     'Yakumono Serif',
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
+    $han-serif,
     cursive, serif
   ;
 }

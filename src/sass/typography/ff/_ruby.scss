@@ -4,8 +4,8 @@
  */
 
 @font-face {
-  @include mre-webfont;
-  @include mre-range-zhuyin;
+  @include han-webfont;
+  @include han-range-zhuyin;
   font-family: 'Zhuyin Kaiti';
 }
 
@@ -18,13 +18,13 @@
 // *
 
 @font-face {
-  @include mre-range-zhuyin;
+  @include han-range-zhuyin;
   font-family: 'Zhuyin Heiti';
   src:
     local('Hiragino Sans GB'),
     local('Heiti TC'),
     local('Microsoft Jhenghei'),
-    $mre-webfont
+    $han-webfont
   ;
 }
 
@@ -34,14 +34,14 @@
   src:
     local('Heiti TC'),
     local('Microsoft Jhenghei'),
-    $mre-webfont
+    $han-webfont
   ;
   unicode-range: U+"+3127";
 }
 
 // 2
 @font-face {
-  @include mre-webfont;
+  @include han-webfont;
   font-family: 'Zhuyin Heiti';
   unicode-range:
     U+"+02D9", U+"+02CA", U+"+02C5", U+"+02C7", U+"+02CB", U+"+02EA-02EB",
@@ -55,7 +55,7 @@
  * Romanisation (checked tone ligature [陽入韻連字])
  */
 @font-face {
-  @include mre-webfont;
+  @include han-webfont;
   font-family: 'Romanization Sans';
   unicode-range:
     U+"+030D", U+"+0358",

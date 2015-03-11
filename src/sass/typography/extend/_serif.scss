@@ -1,82 +1,82 @@
 
-%mre-serif {
+%han-serif {
   font-family:
-    $mre-serif,
-    mre-typeface( 'Han Songti', $_default-variant, $mre-serif-zh ),
+    $han-serif,
+    han-typeface( 'Han Songti', $_default-variant, $han-serif-zh ),
     cursive, serif
   ;
 }
 
-%mre-serif-hant {
+%han-serif-hant {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hant ),
+    han-biaodian( Serif, $han-biaodian-hant ),
     'Numeral LF Serif',
-    $mre-serif,
+    $han-serif,
     'Zhuyin Kaiti',
-    mre-typeface( 'Han Songti', $mre-glyph-set-hant, $mre-serif-zh ),
+    han-typeface( 'Han Songti', $han-glyph-set-hant, $han-serif-zh ),
     serif
   ;
 }
 
-%mre-serif-hans {
+%han-serif-hans {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hans ),
+    han-biaodian( Serif, $han-biaodian-hans ),
     'Numeral LF Serif',
-    $mre-serif,
-    mre-typeface( 'Han Songti', $mre-glyph-set-hans, $mre-serif-zh ),
+    $han-serif,
+    han-typeface( 'Han Songti', $han-glyph-set-hans, $han-serif-zh ),
     serif
   ;
 }
 
-%mre-serif-ja {
+%han-serif-ja {
   font-family:
     'Yakumono Serif',
     'Numeral LF Serif',
-    $mre-serif,
+    $han-serif,
     serif
   ;
 }
 /**
  * Serif Italic
  */
-%mre-serif-italic {
+%han-serif-italic {
   font-family:
     'Latin Italic Serif',
-    $mre-serif,
-    mre-typeface( 'Han Songti', $_default-variant, $mre-serif-zh ),
+    $han-serif,
+    han-typeface( 'Han Songti', $_default-variant, $han-serif-zh ),
     cursive, serif
   ;
 }
 
-%mre-serif-italic-hant {
+%han-serif-italic-hant {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hant ),
+    han-biaodian( Serif, $han-biaodian-hant ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
+    $han-serif,
     'Zhuyin Kaiti',
-    mre-typeface( 'Han Songti', $mre-glyph-set-hant, $mre-serif-zh ),
+    han-typeface( 'Han Songti', $han-glyph-set-hant, $han-serif-zh ),
     cursive, serif
   ;
 }
 
-%mre-serif-italic-hans {
+%han-serif-italic-hans {
   font-family:
-    mre-biaodian( Serif, $mre-biaodian-hans ),
+    han-biaodian( Serif, $han-biaodian-hans ),
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
-    mre-typeface( 'Han Songti', $mre-glyph-set-hans, $mre-serif-zh ),
+    $han-serif,
+    han-typeface( 'Han Songti', $han-glyph-set-hans, $han-serif-zh ),
     cursive, serif
   ;
 }
 
-%mre-serif-italic-ja {
+%han-serif-italic-ja {
   font-family:
     'Yakumono Serif',
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
-    $mre-serif,
+    $han-serif,
     cursive, serif
   ;
 }
