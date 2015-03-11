@@ -1957,6 +1957,7 @@ $.extend( Locale, {
 })
 
 Han.normalize = Locale
+Han.localize = Locale
 Han.support = Locale.support
 Han.detectFont = Locale.detectFont
 
