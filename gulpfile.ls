@@ -168,7 +168,7 @@ gulp.task \watch <[ build demo ]> ->
 gulp.task \normalize.css !->
   gulp.src \./node_modules/normalize.css/normalize.css
     .pipe concat \_normalize.scss
-    .pipe gulp.dest \./src/sass/hyu
+    .pipe gulp.dest \./src/sass/locale
 
 gulp.task \fibre.js !->
   gulp.src \./node_modules/fibre.js/dist/fibre.js
