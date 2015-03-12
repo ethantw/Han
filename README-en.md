@@ -17,6 +17,7 @@ Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 - NPM `npm install --save han-css`
 - Bower `bower install --save Han`
 - Component `component install ethantw/Han`
+- Rails `gem install 'hanzi-rails'` ([Check out the details here](https://github.com/billy3321/hanzi-rails))
 
 ### Customisation
 Han.css provides plenty of customisable features. By variable configuration or module import, it is easy to compile projects own style sheets. [Check out the manual (zh)][api] for detailed information.
@@ -92,4 +93,4 @@ Contributions are pretty much welcomed. Below goes the list with some useful dev
 
 * * *
 Han.css v3.1.0  
-Last-modified: 2015-1-11 14:06 (GMT+8)
+Last-modified: 2015-3-12 16:33 (GMT+8)

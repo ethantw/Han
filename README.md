@@ -16,6 +16,7 @@
 - NPM `npm install --save han-css`
 - Bower `bower install --save Han`
 - Component `component install ethantw/Han`
+- Rails `gem install 'hanzi-rails'`（[詳細說明](https://github.com/billy3321/hanzi-rails)）
 
 ### 定製
 「漢字標準格式」提供多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][api]。
@@ -77,4 +78,4 @@ Web字體，
 
 * * *
 「漢字標準格式」版本：v3.1.0  
-本頁最後修改於：2015年1月11日 14:06（GMT+8）
+本頁最後修改於：2015年3月12日 16:33（GMT+8）
