@@ -401,15 +401,15 @@ th {
   padding: 0;
 }
 
-/* Base
-   @mixin ========================================================================= */
+/*  Base
+   ------ */
 html {
   line-height: 1.3;
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
-/* Grouping content
-   @mixin ========================================================================= */
+/*  Grouping content
+   ------------------ */
 /**
  * Paragraphs, lists, figures and blockquotes
  * (段落、清單、圖表、區塊引用)
@@ -442,8 +442,8 @@ pre {
   word-wrap: normal;
 }
 
-/* Text-level semantics & edits
-   @mixin ========================================================================= */
+/*  Text-level semantics & edits
+   ------------------------------ */
 /**
  * Hyperlinks
  * (超連結)
@@ -2038,16 +2038,16 @@ hruby ru[annotation]:before {
   font-family: "Romanization Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 
-/* Global
-   @mixin ========================================================================= */
+/*  Global
+   -------- */
 .no-kaiti i,
 .no-kaiti var {
   padding-bottom: .05em;
   border-bottom: 3px double lightgrey;
 }
 
-/* Section-wise arrangement
-   @mixin ========================================================================= */
+/*  Section-wise arrangement
+   -------------------------- */
 /**
  * Well-knit sections for articles
  */
@@ -2191,8 +2191,8 @@ article blockquote blockquote {
 /**
  * Sectional counter for articles
  */
-/* Line composition
-   @mixin ========================================================================= */
+/*  Line composition
+   ------------------ */
 /**
  * Customised emphasis mark (着重號)
  */
