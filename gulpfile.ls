@@ -73,10 +73,8 @@ gulp.task \server !->
 
 # Build for distribution
 gulp.task \dist:font ->
-  gulp.src \./font/han.woff
-    .pipe gulp-symlink \./dist/font/han.woff, { force: yes }
-  gulp.src \./font/han.otf
-    .pipe gulp-symlink \./dist/font/han.otf, { force: yes }
+  gulp.src './font/han.{woff,otf}'
+    .pipe gulp.dest \./dist/font
 
 gulp.task \dist:sass ->
   gulp.src \./src/sass/han.scss
