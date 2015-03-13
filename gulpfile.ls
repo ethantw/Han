@@ -81,7 +81,10 @@ gulp.task \dist:font ->
 gulp.task \dist:sass ->
   gulp.src \./src/sass/han.scss
     .pipe sass!
-    .pipe concat \han.css
+    .pipe concat \han.css, {
+      process: ( src ) ->
+        src.replace /@charset\s(['"])UTF-8\1;\n/g, ''
+    }
     .pipe concat.header CSS-BANNER
     .pipe gulp-csscomb!
     .pipe gulp.dest \./dist
