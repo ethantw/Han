@@ -66,7 +66,7 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
 
         group: [
-          new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+          new RegExp( '(' + rBd + '){2,}', 'g' ),
           new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
         ]
       },
