@@ -369,7 +369,7 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
 
         group: [
-          new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+          new RegExp( '(' + rBd + '){2,}', 'g' ),
           new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
         ]
       },
@@ -2114,25 +2114,18 @@ $.extend( Han.fn, {
 
 Han.renderJiya = function( context ) {
   var context = context || document
-  var finder = [ Han.find( context ) ]
+  var finder = Han.find( context )
 
-  finder[ 0 ].filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
-  finder[ 0 ].groupify()
-
-  $
-  .qsa( 'char_group.biaodian', context )
-  .forEach(function( elem ) {
-    finder.push(
-      Han( elem )
-      .charify({
-        hanzi:     'biaodian',
-        liga:      'liga',
-        word:      'none',
-        latin:     'none',
-        ellinika:  'none',
-        kirillica: 'none'
-      })
-    )
+  finder
+  .filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
+  .groupify()
+  .charify({
+    hanzi:     'biaodian',
+    liga:      'liga',
+    word:      'none',
+    latin:     'none',
+    ellinika:  'none',
+    kirillica: 'none'
   })
   return finder
 }

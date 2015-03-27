@@ -2229,30 +2229,14 @@ tr > hws {
 }
 
 /**
- * Consecutive CJK Biaodian positioning (CJK標點擠壓)
+ * CJK Biaodian positioning (CJK標點擠壓)
  */
-char_group .open:not(:last-child),
-char_group .close:not(:last-child),
-char_group [unicode="3001"]:not(:last-child),
-char_group [unicode="3002"]:not(:last-child),
-char_group [unicode="ff0c"]:not(:last-child),
-char_group [unicode="ff08"]:not(:last-child) {
-  letter-spacing: -.5em;
-}
-
-char_group [unicode="3001"]:lang(zh-Hant):not(:last-child),
-char_group [unicode="3002"]:lang(zh-Hant):not(:last-child),
-char_group [unicode="ff0c"]:lang(zh-Hant):not(:last-child),
-char_group [unicode="ff08"]:lang(zh-Hant):not(:last-child) {
-  letter-spacing: inherit;
-}
+*:not(char_group) > char.biaodian.open,
+char_group .biaodian.open:first-child,
 char_group [unicode="3001"]:lang(zh-Hant) + .open,
 char_group [unicode="3002"]:lang(zh-Hant) + .open,
 char_group [unicode="ff0c"]:lang(zh-Hant) + .open,
-char_group [unicode="ff08"]:lang(zh-Hant) + .open {
-  margin-left: -.5em;
-}
-
+char_group [unicode="ff0e"]:lang(zh-Hant) + .open,
 char_group [unicode="b7"] + [unicode="300c"],
 char_group [unicode="b7"] + [unicode="300e"],
 char_group [unicode="30fb"] + [unicode="300c"],
@@ -2263,6 +2247,76 @@ char_group [unicode="30fb"] + [unicode="300e"] {
 char_group .liga + [unicode="300c"],
 char_group .liga + [unicode="300e"] {
   margin-left: -.25em;
+}
+
+*:not(char_group) > char.biaodian.close,
+*:not(char_group) > char.biaodian[unicode="3001"],
+*:not(char_group) > char.biaodian[unicode="3002"],
+*:not(char_group) > char.biaodian[unicode="ff0c"],
+*:not(char_group) > char.biaodian[unicode="ff0e"],
+char_group .biaodian.close:last-child,
+char_group .biaodian[unicode="3001"]:last-child,
+char_group .biaodian[unicode="3002"]:last-child,
+char_group .biaodian[unicode="ff0c"]:last-child,
+char_group .biaodian[unicode="ff0e"]:last-child,
+char_group .open:not(:last-child),
+char_group .close:not(:last-child),
+char_group [unicode="3001"]:not(:last-child),
+char_group [unicode="3002"]:not(:last-child),
+char_group [unicode="ff0c"]:not(:last-child),
+char_group [unicode="ff0e"]:not(:last-child) {
+  letter-spacing: -.5em;
+}
+
+*:not(char_group) > char.biaodian.open:before,
+*:not(char_group) > char.biaodian.close:after,
+*:not(char_group) > char.biaodian[unicode="3001"]:after,
+*:not(char_group) > char.biaodian[unicode="3002"]:after,
+*:not(char_group) > char.biaodian[unicode="ff0c"]:after,
+*:not(char_group) > char.biaodian[unicode="ff0e"]:after,
+char_group .biaodian.open:first-child:before,
+char_group .biaodian.close:last-child:after,
+char_group .biaodian[unicode="3001"]:last-child:after,
+char_group .biaodian[unicode="3002"]:last-child:after,
+char_group .biaodian[unicode="ff0c"]:last-child:after,
+char_group .biaodian[unicode="ff0e"]:last-child:after {
+  content: "\0020";
+  visibility: hidden;
+  letter-spacing: 0;
+  font: .825em Courier;
+}
+
+*:not(char_group) > char.biaodian[unicode="3001"]:lang(zh-Hant),
+*:not(char_group) > char.biaodian[unicode="3002"]:lang(zh-Hant),
+*:not(char_group) > char.biaodian[unicode="ff0c"]:lang(zh-Hant),
+*:not(char_group) > char.biaodian[unicode="ff0e"]:lang(zh-Hant) {
+  letter-spacing: inherit;
+}
+*:not(char_group) > char.biaodian[unicode="3001"]:lang(zh-Hant):after,
+*:not(char_group) > char.biaodian[unicode="3002"]:lang(zh-Hant):after,
+*:not(char_group) > char.biaodian[unicode="ff0c"]:lang(zh-Hant):after,
+*:not(char_group) > char.biaodian[unicode="ff0e"]:lang(zh-Hant):after {
+  content: none;
+}
+
+char_group .biaodian[unicode="3001"]:lang(zh-Hant):last-child,
+char_group .biaodian[unicode="3002"]:lang(zh-Hant):last-child,
+char_group .biaodian[unicode="ff0c"]:lang(zh-Hant):last-child,
+char_group .biaodian[unicode="ff0e"]:lang(zh-Hant):last-child {
+  letter-spacing: inherit;
+}
+char_group .biaodian[unicode="3001"]:lang(zh-Hant):last-child:after,
+char_group .biaodian[unicode="3002"]:lang(zh-Hant):last-child:after,
+char_group .biaodian[unicode="ff0c"]:lang(zh-Hant):last-child:after,
+char_group .biaodian[unicode="ff0e"]:lang(zh-Hant):last-child:after {
+  content: none;
+}
+
+char_group [unicode="3001"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="3002"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="ff0c"]:lang(zh-Hant):not(:last-child),
+char_group [unicode="ff0e"]:lang(zh-Hant):not(:last-child) {
+  letter-spacing: inherit;
 }
 
 /**
