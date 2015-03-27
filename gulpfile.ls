@@ -128,11 +128,11 @@ gulp.task \test ->
 gulp.task \demo ->
   gulp.start <[ demo:dist demo:sass demo:jade demo:lsc ]>
 
-gulp.task \demo:dist ->
+gulp.task \demo:dist <[ build ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
-gulp.task \demo:sass ->
+gulp.task \demo:sass <[ dist:cssmin ]> ->
   gulp.src \./test/*.scss
     .pipe sass!
     .pipe gulp-cssmin { keepSpecialComments: 0 }
