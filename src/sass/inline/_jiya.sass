@@ -1,16 +1,7 @@
 
 /**
- * CJK Biaodian positioning (CJK標點擠壓)
+ * CJK Biaodian compression (CJK標點擠壓)
  */
-
-%han-rm-start-half
-  margin-left: -.5em
-
-%han-rm-start-quarter
-  margin-left: -.25em
-
-%han-rm-end-half
-  letter-spacing: -.5em
 
 %han-collapsed-space-half-em
   content: '\0020'
@@ -20,16 +11,16 @@
 
 // * Handle line start/end Biaodian (行首行尾標點擠壓)
 // *
-*:not(char_group) > char.biaodian
+char.biaodian
   &.open
-    @extend %han-rm-start-half
+    margin-left: -.5em
 
   &.close,
   &[unicode='3001'],
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    @extend %han-rm-end-half
+    letter-spacing: -.5em
 
   &.open:before,
   &.close:after,
@@ -47,65 +38,29 @@
     &:after
       content: none
 
-char_group .biaodian
-  &.open:first-child
-    @extend %han-rm-start-half
-
-  &.close:last-child,
-  &[unicode='3001']:last-child,
-  &[unicode='3002']:last-child,
-  &[unicode='ff0c']:last-child,
-  &[unicode='ff0e']:last-child
-    @extend %han-rm-end-half
-
-  &.open:first-child:before,
-  &.close:last-child:after,
-  &[unicode='3001']:last-child:after,
-  &[unicode='3002']:last-child:after,
-  &[unicode='ff0c']:last-child:after,
-  &[unicode='ff0e']:last-child:after
-    @extend %han-collapsed-space-half-em
-
-  &[unicode='3001']:lang(zh-Hant):last-child,
-  &[unicode='3002']:lang(zh-Hant):last-child,
-  &[unicode='ff0c']:lang(zh-Hant):last-child,
-  &[unicode='ff0e']:lang(zh-Hant):last-child
-    letter-spacing: inherit
-    &:after
-      content: none
-
-// * Consecutive Biaodian positioning (連續標點擠壓)
+// * Handle consecutive Biaodian (連續標點擠壓)
 // *
-.open,
-.close,
-[unicode='3001'],
-[unicode='3002'],
-[unicode='ff0c'],
-[unicode='ff0e']
-  char_group &:not(:last-child)
-    @extend %han-rm-end-half
+char_group
+  .open + .open:before,
+  .end:not(:last-child):after
+    content: none
 
-[unicode='3001']:lang(zh-Hant),
-[unicode='3002']:lang(zh-Hant),
-[unicode='ff0c']:lang(zh-Hant),
-[unicode='ff0e']:lang(zh-Hant)
-  char_group &:not(:last-child)
-    letter-spacing: inherit
-  char_group & + .open
-    @extend %han-rm-start-half
+  [unicode='3001'],
+  [unicode='3002'],
+  [unicode='ff0c'],
+  [unicode='ff0e']
+    &:lang(zh-Hant) + .open
+      margin-left: -1em
 
-// * Handle ‘「漢」·「字」’ situation
-// *
-[unicode='b7'],
-[unicode='30fb']
-  char_group & + [unicode='300c'],
-  char_group & + [unicode='300e']
-    @extend %han-rm-start-half
+  // * Handle ‘「漢」·「字」’ situation
+  // *
+  [unicode='b7'],
+  [unicode='30fb']
+    &:not(:last-child)
+      letter-spacing: -.5em
 
-// * Handle ‘……「漢字’ situation
-// *
-[unicode='300c'],
-[unicode='300e']
-  char_group .liga + &
-    @extend %han-rm-start-quarter
+  // * Handle ‘……「漢字’ situation
+  // *
+  .liga:not(:last-child)
+    letter-spacing: -.25em
 
