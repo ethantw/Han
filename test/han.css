@@ -2231,57 +2231,60 @@ tr > hws {
 /**
  * CJK Biaodian compression (CJK標點擠壓)
  */
-char.biaodian.open:before,
-char.biaodian.close:after,
-char.biaodian[unicode="3001"]:after,
-char.biaodian[unicode="3002"]:after,
-char.biaodian[unicode="ff0c"]:after,
-char.biaodian[unicode="ff0e"]:after {
-  content: "\0020";
+hcs {
+  display: none;
   visibility: hidden;
-  letter-spacing: 0;
   font: .825em Courier;
+  letter-spacing: 0;
 }
 
-char.biaodian.open {
+char.biaodian.open inner {
   margin-left: -.5em;
 }
-char.biaodian.close,
-char.biaodian[unicode="3001"],
-char.biaodian[unicode="3002"],
-char.biaodian[unicode="ff0c"],
-char.biaodian[unicode="ff0e"] {
+char.biaodian.close inner,
+char.biaodian[unicode="3001"] inner,
+char.biaodian[unicode="3002"] inner,
+char.biaodian[unicode="ff0c"] inner,
+char.biaodian[unicode="ff0e"] inner {
   letter-spacing: -.5em;
 }
-char.biaodian[unicode="3001"]:lang(zh-Hant),
-char.biaodian[unicode="3002"]:lang(zh-Hant),
-char.biaodian[unicode="ff0c"]:lang(zh-Hant),
-char.biaodian[unicode="ff0e"]:lang(zh-Hant) {
+char.biaodian.open hcs,
+char.biaodian.close hcs,
+char.biaodian[unicode="3001"] hcs,
+char.biaodian[unicode="3002"] hcs,
+char.biaodian[unicode="ff0c"] hcs,
+char.biaodian[unicode="ff0e"] hcs {
+  display: inline;
+}
+char.biaodian[unicode="3001"]:lang(zh-Hant) inner,
+char.biaodian[unicode="3002"]:lang(zh-Hant) inner,
+char.biaodian[unicode="ff0c"]:lang(zh-Hant) inner,
+char.biaodian[unicode="ff0e"]:lang(zh-Hant) inner {
   letter-spacing: inherit;
 }
-char.biaodian[unicode="3001"]:lang(zh-Hant):after,
-char.biaodian[unicode="3002"]:lang(zh-Hant):after,
-char.biaodian[unicode="ff0c"]:lang(zh-Hant):after,
-char.biaodian[unicode="ff0e"]:lang(zh-Hant):after {
-  content: none;
+char.biaodian[unicode="3001"]:lang(zh-Hant) hcs,
+char.biaodian[unicode="3002"]:lang(zh-Hant) hcs,
+char.biaodian[unicode="ff0c"]:lang(zh-Hant) hcs,
+char.biaodian[unicode="ff0e"]:lang(zh-Hant) hcs {
+  display: none;
 }
 
-char_group .open + .open:before,
-char_group .end:not(:last-child):after {
-  content: none;
+char_group .open + .open hcs,
+char_group .end:not(:last-child) hcs {
+  display: none;
 }
-char_group [unicode="3001"]:lang(zh-Hant) + .open,
-char_group [unicode="3002"]:lang(zh-Hant) + .open,
-char_group [unicode="ff0c"]:lang(zh-Hant) + .open,
-char_group [unicode="ff0e"]:lang(zh-Hant) + .open {
-  margin-left: -1em;
+char_group [unicode="3001"]:lang(zh-Hant) + .open hcs,
+char_group [unicode="3002"]:lang(zh-Hant) + .open hcs,
+char_group [unicode="ff0c"]:lang(zh-Hant) + .open hcs,
+char_group [unicode="ff0e"]:lang(zh-Hant) + .open hcs {
+  display: none;
 }
 char_group [unicode="b7"]:not(:last-child),
 char_group [unicode="30fb"]:not(:last-child) {
   letter-spacing: -.5em;
 }
 char_group .liga:not(:last-child) {
-  letter-spacing: -.25em;
+  margin-right: -.25em;
 }
 
 /**
