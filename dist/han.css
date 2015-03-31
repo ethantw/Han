@@ -1772,18 +1772,18 @@ jinze {
   unicode-range: U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
 }
 
-html:lang(zh-Latn),
-html:lang(ja-Latn),
-html:not(:lang(zh)):not(:lang(ja)),
-html *:lang(zh-Latn),
-html *:lang(ja-Latn),
-html *:not(:lang(zh)):not(:lang(ja)),
-article strong:lang(zh-Latn),
-article strong:lang(ja-Latn),
-article strong:not(:lang(zh)):not(:lang(ja)),
-article strong *:lang(zh-Latn),
-article strong *:lang(ja-Latn),
-article strong *:not(:lang(zh)):not(:lang(ja)) {
+html:lang(zh-Latn):not(.fa),
+html:lang(ja-Latn):not(.fa),
+html:not(:lang(zh)):not(:lang(ja)):not(.fa),
+html *:lang(zh-Latn):not(.fa),
+html *:lang(ja-Latn):not(.fa),
+html *:not(:lang(zh)):not(:lang(ja)):not(.fa),
+article strong:lang(zh-Latn):not(.fa),
+article strong:lang(ja-Latn):not(.fa),
+article strong:not(:lang(zh)):not(:lang(ja)):not(.fa),
+article strong *:lang(zh-Latn):not(.fa),
+article strong *:lang(ja-Latn):not(.fa),
+article strong *:not(:lang(zh)):not(:lang(ja)):not(.fa) {
   font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 
