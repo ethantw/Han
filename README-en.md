@@ -1,5 +1,6 @@
 
 - [中文版](https://github.com/ethantw/Han/blob/master/README.md)
+- [日本語版](https://github.com/ethantw/Han/blob/master/README-ja.md)
 - <b>English version</b>
 
 
@@ -93,4 +94,4 @@ Contributions are pretty much welcomed. Below goes the list with some useful dev
 
 * * *
 Han.css v3.1.1  
-Last-modified: 2015-3-14 01:47 (GMT+8)
+Last-modified: 2015-4-12 23:23 (GMT+8)

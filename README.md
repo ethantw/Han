@@ -1,6 +1,7 @@
 
- - <b>中文版</b>
- - [English version](https://github.com/ethantw/Han/blob/master/README-en.md)
+- <b>中文版</b>
+- [日本語版](https://github.com/ethantw/Han/blob/master/README-ja.md)
+- [English version](https://github.com/ethantw/Han/blob/master/README-en.md)
 
 漢字標準格式
 ==========
@@ -78,4 +79,4 @@ Web字體，
 
 * * *
 「漢字標準格式」版本：v3.1.1  
-本頁最後修改於：2015年3月14日 01:47（GMT+8）
+本頁最後修改於：2015年4月12日 23:23（GMT+8）
