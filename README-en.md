@@ -1,7 +1,7 @@
 
-- [中文版](https://github.com/ethantw/Han/blob/master/README.md)
-- [日本語版](https://github.com/ethantw/Han/blob/master/README-ja.md)
-- <b>English version</b>
+- [中文](https://github.com/ethantw/Han/blob/master/README.md)
+- [日本語](https://github.com/ethantw/Han/blob/master/README-ja.md)
+- <b>English</b>
 
 
 Han.css

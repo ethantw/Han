@@ -1,7 +1,8 @@
 
-- [中文版](https://github.com/ethantw/Han/blob/master/README.md)
-- <b>日本語版</b>
-- [English version](https://github.com/ethantw/Han/blob/master/README-en.md)
+- [中文](https://github.com/ethantw/Han/blob/master/README.md)
+- <b>日本語</b>
+- [English](https://github.com/ethantw/Han/blob/master/README-en.md)
+
 
 漢字標準格式
 ==========
@@ -90,14 +91,15 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 漢字標準格式の開発に協力してくれる方を歓迎します。以下はプログラムの開発に有用なコマンドの一覧です。
 
 - 開発パッケージをインストール：`sudo npm i`
-- 開発環境の起動：`npm start or gulp dev` (ローカルサーバの実行と自動コンパイルを含む)
+- 開発環境の起動：`npm start`か`gulp dev`（ローカルサーバの実行と自動コンパイルを含む）
 - コンパイルしたファイルを公開: `gulp build`
-- `han.js`のAPIをテストする: `gulp test` (PhantomJS)
+- `han.js`のAPIをテストする: `gulp test`（PhantomJS）
 - モジュールを更新する: `npm update && gulp dep`
 
 * * *
 漢字標準格式 v3.1.1  
-Last-modified: 2015-4-12 23:41 (GMT+9)  
-Translator: [神場雅史][translator] (Jimba Masafumi)
+Last-modified: 2015-4-13 19:23 (GMT+9)  
+Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
-[translator]: https://twitter.com/westantenna
+[translator]: http://westantenna.com
+[trans-twr]: https://twitter.com/westantenna
