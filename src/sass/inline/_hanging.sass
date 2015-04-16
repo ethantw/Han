@@ -10,12 +10,8 @@ jinze.hangable
 
   char.end:last-child
     position: absolute
-    top: 0
-    right: 0
-    width: 0
-    height: 0
-    display: inline-block
     color: transparent
+    font: 0/0 hidden-text
 
   > hcs
     font: inherit
@@ -24,7 +20,7 @@ jinze.hangable
     position: relative
 
   > hcs inner
-    font: 1em 'Han Space' !important
+    font: 1em 'Han Space'
     visibility: hidden
 
   > hcs:after
@@ -32,6 +28,6 @@ jinze.hangable
     line-height: 1em
     left: 0
     top: 0
-    content: '。'
+    content: attr( biaodian )
     display: inline-block
 

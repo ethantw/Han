@@ -2240,12 +2240,8 @@ jinze.hangable {
 }
 jinze.hangable char.end:last-child {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  display: inline-block;
   color: transparent;
+  font: 0/0 hidden-text;
 }
 jinze.hangable > hcs {
   font: inherit;
@@ -2254,7 +2250,7 @@ jinze.hangable > hcs {
   position: relative;
 }
 jinze.hangable > hcs inner {
-  font: 1em "Han Space" !important;
+  font: 1em "Han Space";
   visibility: hidden;
 }
 jinze.hangable > hcs:after {
@@ -2262,7 +2258,7 @@ jinze.hangable > hcs:after {
   line-height: 1em;
   left: 0;
   top: 0;
-  content: "。";
+  content: attr(biaodian);
   display: inline-block;
 }
 

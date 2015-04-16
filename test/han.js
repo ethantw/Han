@@ -1206,7 +1206,7 @@ $.extend( Fibre.fn, {
       function( portion, match ) {
         var elem = $.create( 'jinze', 'wei hangable' )
 
-        elem.innerHTML = match[1] + '<hcs><inner> </inner></hcs>' + match[3]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[3] + '"><inner> </inner></hcs>' + match[3]
         return portion.index === 0 ? elem : ''
       }
     )
