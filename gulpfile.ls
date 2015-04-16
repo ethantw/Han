@@ -73,7 +73,7 @@ gulp.task \server !->
 
 # Build for distribution
 gulp.task \dist:font ->
-  gulp.src './font/han.{woff,otf}'
+  gulp.src './font/han*.{woff,otf}'
     .pipe gulp.dest \./dist/font
 
 gulp.task \dist:sass ->
@@ -126,11 +126,15 @@ gulp.task \test ->
 
 # Demo
 gulp.task \demo ->
-  gulp.start <[ demo:dist demo:sass demo:jade demo:lsc ]>
+  gulp.start <[ demo:font demo:dist demo:sass demo:jade demo:lsc ]>
 
 gulp.task \demo:dist <[ build ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
+
+gulp.task \demo:font ->
+  gulp.src './dist/font/*.{woff,otf}'
+    .pipe gulp.dest \./test/font
 
 gulp.task \demo:sass <[ dist:cssmin ]> ->
   gulp.src \./test/*.scss
