@@ -1,0 +1,37 @@
+
+@font-face
+  src: $han-space-webfont
+  font-family: 'Han Space'
+  unicode-range: U+0020
+
+jinze.hangable
+  position: relative
+  display: inline
+
+  char.end:last-child
+    position: absolute
+    top: 0
+    right: 0
+    width: 0
+    height: 0
+    display: inline-block
+    color: transparent
+
+  > hcs
+    font: inherit
+    display: inline !important
+    visibility: visible
+    position: relative
+
+  > hcs inner
+    font: 1em 'Han Space' !important
+    visibility: hidden
+
+  > hcs:after
+    position: absolute
+    line-height: 1em
+    left: 0
+    top: 0
+    content: '。'
+    display: inline-block
+

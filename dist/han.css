@@ -2228,6 +2228,44 @@ tr > hws {
   display: none;
 }
 
+@font-face {
+  src: url(./font/han-space.woff?v3.1.1) format("woff"), url(./font/han-space.otf?v3.1.1) format("opentype");
+  font-family: "Han Space";
+  unicode-range: U20;
+}
+
+jinze.hangable {
+  position: relative;
+  display: inline;
+}
+jinze.hangable char.end:last-child {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  display: inline-block;
+  color: transparent;
+}
+jinze.hangable > hcs {
+  font: inherit;
+  display: inline !important;
+  visibility: visible;
+  position: relative;
+}
+jinze.hangable > hcs inner {
+  font: 1em "Han Space" !important;
+  visibility: hidden;
+}
+jinze.hangable > hcs:after {
+  position: absolute;
+  line-height: 1em;
+  left: 0;
+  top: 0;
+  content: "。";
+  display: inline-block;
+}
+
 /**
  * CJK Biaodian compression (CJK標點擠壓)
  */

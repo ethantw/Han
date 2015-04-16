@@ -7,5 +7,9 @@
 
 $han-version:           'v3.1.1'
 
-$han-webfont: url(#{$han-font-woff}?#{$han-version}) format('woff'), url(#{$han-font-otf}?#{$han-version}) format('opentype') !default
+//$han-webfont: url(#{$han-font-woff}?#{$han-version}) format('woff'), url(#{$han-font-otf}?#{$han-version}) format('opentype') !default
+
+$han-webfont: url(#{$han-font-path}han.woff?#{$han-version}) format('woff'), url(#{$han-font-path}han.otf?#{$han-version}) format('opentype') !default
+
+$han-space-webfont: url(#{$han-font-path}han-space.woff?#{$han-version}) format('woff'), url(#{$han-font-path}han-space.otf?#{$han-version}) format('opentype') !default
 
