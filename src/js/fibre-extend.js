@@ -6,6 +6,19 @@ define([
 ], function( $, UNICODE, TYPESET, Fibre ) {
 
 $.extend( Fibre.fn, {
+  // Implement hanging biaodian
+  hangingify: function() {
+    this.replace(
+      TYPESET.jinze.hanging,
+      function( portion, match ) {
+        var elem = $.create( 'jinze', 'wei hangable' )
+
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[3] + '"><inner> </inner></hcs>' + match[3]
+        return portion.index === 0 ? elem : ''
+      }
+    )
+  },
+
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
     var origFilterOutSelector= this.filterOutSelector
@@ -29,11 +42,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
         var elem = $.create( 'jinze', 'wei' )
 
-        elem.appendChild( text )
+        elem.innerHTML = match[1] + match[3]
         return portion.index === 0 ? elem : ''
       }
     )

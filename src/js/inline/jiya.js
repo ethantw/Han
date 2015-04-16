@@ -1,31 +1,35 @@
 define([
   '../core',
-  '../method',
-  '../regex'
+  '../method'
 ], function( Han, $ ) {
 
 Han.renderJiya = function( context ) {
   var context = context || document
-  var finder = [ Han.find( context ) ]
+  var finder = Han.find( context )
 
-  finder[ 0 ].filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
-  finder[ 0 ].groupify()
-
-  $
-  .qsa( 'char_group.biaodian', context )
-  .forEach(function( elem ) {
-    finder.push(
-      Han( elem )
-      .charify({
-        hanzi:     'biaodian',
-        liga:      'liga',
-        word:      'none',
-        latin:     'none',
-        ellinika:  'none',
-        kirillica: 'none'
-      })
-    )
+  finder
+  .filterOut( 'textarea, code, kbd, samp, pre, em', true )
+  .groupify()
+  .charify({
+    hanzi:     'biaodian',
+    liga:      'liga',
+    word:      'none',
+    latin:     'none',
+    ellinika:  'none',
+    kirillica: 'none'
   })
+
+  // The reason we're doing this instead of using pseudo elements in CSS
+  // is because WebKit has problem rendering pseudo elements containing only 
+  // space.
+  $.qsa( 'char.biaodian.open, char.biaodian.end', context )
+  .forEach(function( elem ) {
+    var html = '<inner>' + elem.innerHTML + '</inner>'
+    var hcs = '<hcs> </hcs>'
+    var isOpen = elem.classList.contains( 'open' )
+    elem.innerHTML = isOpen ? hcs + html : html + hcs
+  })
+
   return finder
 }
 

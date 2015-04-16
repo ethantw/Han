@@ -33,6 +33,7 @@ var ROUTINE = [
   'renderElem',
   // Handle Biaodian
   //'jinzify',
+  'renderHanging',
   'renderJiya',
   // Address Hanzi and Western script mixed spacing
   'renderHWS',
@@ -369,7 +370,7 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
 
         group: [
-          new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+          new RegExp( '(' + rBd + '){2,}', 'g' ),
           new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
         ]
       },
@@ -395,6 +396,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
+      hanging:  new RegExp( '(' + rChar + ')([、，。．])', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
@@ -1197,6 +1199,19 @@ return Fibre
 );
 
 $.extend( Fibre.fn, {
+  // Implement hanging biaodian
+  hangingify: function() {
+    this.replace(
+      TYPESET.jinze.hanging,
+      function( portion, match ) {
+        var elem = $.create( 'jinze', 'wei hangable' )
+
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[3] + '"><inner> </inner></hcs>' + match[3]
+        return portion.index === 0 ? elem : ''
+      }
+    )
+  },
+
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
     var origFilterOutSelector= this.filterOutSelector
@@ -1220,11 +1235,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
         var elem = $.create( 'jinze', 'wei' )
 
-        elem.appendChild( text )
+        elem.innerHTML = match[1] + match[3]
         return portion.index === 0 ? elem : ''
       }
     )
@@ -2112,28 +2125,60 @@ $.extend( Han.fn, {
   }
 })
 
+Han.renderHanging = function( context ) {
+  var context = context || document
+  var finder = Han.find( context )
+
+  finder
+  .filterOut( 'textarea, code, kbd, samp, pre, jinze', true )
+  .hangingify()
+
+  return finder
+}
+
+$.extend( Han.fn, {
+  hanging: null,
+
+  renderHanging: function() {
+    this.hanging = Han.renderHanging( this.context )
+    return this
+  },
+
+  revertHanging: function() {
+    try {
+      this.hanging.revert( 'all' )
+    } catch ( e ) {}
+    return this
+  }
+})
+
 Han.renderJiya = function( context ) {
   var context = context || document
-  var finder = [ Han.find( context ) ]
+  var finder = Han.find( context )
 
-  finder[ 0 ].filterOut( 'textarea, code, kbd, samp, pre, jinze, em', true )
-  finder[ 0 ].groupify()
-
-  $
-  .qsa( 'char_group.biaodian', context )
-  .forEach(function( elem ) {
-    finder.push(
-      Han( elem )
-      .charify({
-        hanzi:     'biaodian',
-        liga:      'liga',
-        word:      'none',
-        latin:     'none',
-        ellinika:  'none',
-        kirillica: 'none'
-      })
-    )
+  finder
+  .filterOut( 'textarea, code, kbd, samp, pre, em', true )
+  .groupify()
+  .charify({
+    hanzi:     'biaodian',
+    liga:      'liga',
+    word:      'none',
+    latin:     'none',
+    ellinika:  'none',
+    kirillica: 'none'
   })
+
+  // The reason we're doing this instead of using pseudo elements in CSS
+  // is because WebKit has problem rendering pseudo elements containing only 
+  // space.
+  $.qsa( 'char.biaodian.open, char.biaodian.end', context )
+  .forEach(function( elem ) {
+    var html = '<inner>' + elem.innerHTML + '</inner>'
+    var hcs = '<hcs> </hcs>'
+    var isOpen = elem.classList.contains( 'open' )
+    elem.innerHTML = isOpen ? hcs + html : html + hcs
+  })
+
   return finder
 }
 

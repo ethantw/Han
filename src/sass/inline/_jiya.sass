@@ -1,39 +1,72 @@
 
 /**
- * Consecutive CJK Biaodian positioning (CJK標點擠壓)
+ * CJK Biaodian compression (CJK標點擠壓)
  */
 
-// * Handle normal biaodian jiya situation
-// *
-.open,
-.close,
-[unicode='3001'],
-[unicode='3002'],
-[unicode='ff0c'],
-[unicode='ff08']
-  char_group &:not(:last-child)
-    letter-spacing: -.5em
+hcs
+  // box
+  display: none
+  visibility: hidden
+  // typo
+  font: .825em Courier
+  letter-spacing: 0
 
-[unicode='3001']:lang(zh-Hant),
-[unicode='3002']:lang(zh-Hant),
-[unicode='ff0c']:lang(zh-Hant),
-[unicode='ff08']:lang(zh-Hant),
-  char_group &:not(:last-child)
-    letter-spacing: inherit
-  char_group & + .open
-    margin-left: -.5em 
-
-// * Handle ‘「漢」·「字」’ situation
+// * Handle line start/end Biaodian (行首行尾標點擠壓)
 // *
-[unicode='b7'],
-[unicode='30fb']
-  char_group & + [unicode='300c'],
-  char_group & + [unicode='300e']
+
+char.biaodian
+  &.open inner
     margin-left: -.5em
 
-// * Handle ‘……「漢字’ situation
+  &.close,
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    inner
+      letter-spacing: -.5em
+
+  &.open,
+  &.close,
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    hcs
+      display: inline
+
+  &[unicode='3001']:lang(zh-Hant),
+  &[unicode='3002']:lang(zh-Hant),
+  &[unicode='ff0c']:lang(zh-Hant),
+  &[unicode='ff0e']:lang(zh-Hant)
+    inner
+      letter-spacing: inherit
+    hcs
+      display: none
+
+// * Handle consecutive Biaodian (連續標點擠壓)
 // *
-[unicode='300c'],
-[unicode='300e']
-  char_group .liga + &
-    margin-left: -.25em
+char_group
+  .open + .open hcs,
+  .end:not(:last-child) hcs
+    display: none
+
+  [unicode='3001'],
+  [unicode='3002'],
+  [unicode='ff0c'],
+  [unicode='ff0e']
+    &:lang(zh-Hant) + .open hcs
+      display: none
+
+  // * Handle ‘「漢」·「字」’ situation
+  // *
+  [unicode='b7'],
+  [unicode='30fb']
+    &:not(:last-child)
+      letter-spacing: -.5em
+
+  // * Handle ‘……「漢字’ situation
+  // *
+  .liga:not(:last-child)
+    margin-right: -.25em
+

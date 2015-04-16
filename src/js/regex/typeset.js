@@ -66,7 +66,7 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
 
         group: [
-          new RegExp( '(' + rBdOpen + '|' + rBdMid + '|' + rBdEnd + '){2,}', 'g' ),
+          new RegExp( '(' + rBd + '){2,}', 'g' ),
           new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
         ]
       },
@@ -92,6 +92,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
+      hanging:  new RegExp( '(' + rChar + ')([、，。．])', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
