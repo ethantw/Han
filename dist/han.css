@@ -2231,7 +2231,7 @@ tr > hws {
 @font-face {
   src: url(./font/han-space.woff?v3.1.1) format("woff"), url(./font/han-space.otf?v3.1.1) format("opentype");
   font-family: "Han Space";
-  unicode-range: U20;
+  unicode-range: U+20;
 }
 
 jinze.hangable {
