@@ -8,12 +8,13 @@ define([
 $.extend( Fibre.fn, {
   // Implement hanging biaodian
   hangingify: function() {
-    this.replace(
+    this
+    .replace(
       TYPESET.jinze.hanging,
       function( portion, match ) {
         var elem = $.create( 'jinze', 'wei hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[3] + '"><inner> </inner></hcs>' + match[3]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[4] + '"><inner> </inner></hcs>' + match[4]
         return portion.index === 0 ? elem : ''
       }
     )

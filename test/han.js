@@ -396,7 +396,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging:  new RegExp( '(' + rChar + ')([、，。．])(?!' + rBdEnd + ')', 'ig' ),
+      hanging: new RegExp( '((' + rChar + ')' + rBdClose  + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
@@ -1201,12 +1201,13 @@ return Fibre
 $.extend( Fibre.fn, {
   // Implement hanging biaodian
   hangingify: function() {
-    this.replace(
+    this
+    .replace(
       TYPESET.jinze.hanging,
       function( portion, match ) {
         var elem = $.create( 'jinze', 'wei hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[3] + '"><inner> </inner></hcs>' + match[3]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[4] + '"><inner> </inner></hcs>' + match[4]
         return portion.index === 0 ? elem : ''
       }
     )

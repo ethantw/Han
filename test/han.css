@@ -2238,28 +2238,31 @@ jinze.hangable {
   position: relative;
   display: inline;
 }
-jinze.hangable char.end:last-child {
+jinze.hangable char.close hcs {
+  display: none;
+}
+jinze.hangable char.end:not(.close) {
   position: absolute;
   color: transparent;
   font: 0/0 hidden-text;
 }
 jinze.hangable > hcs {
-  font: inherit;
+  position: relative;
   display: inline !important;
   visibility: visible;
-  position: relative;
+  font: inherit;
 }
 jinze.hangable > hcs inner {
-  font: 1em "Han Space";
   visibility: hidden;
+  font: 1em "Han Space";
 }
 jinze.hangable > hcs:after {
   position: absolute;
-  line-height: 1em;
   left: 0;
   top: 0;
-  content: attr(biaodian);
   display: inline-block;
+  content: attr(biaodian);
+  line-height: 1.05;
 }
 
 /**
