@@ -2158,7 +2158,7 @@ Han.renderJiya = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, em', true )
+  .filterOut( 'textarea, code, kbd, samp, pre', true )
   .groupify()
   .charify({
     hanzi:     'biaodian',
