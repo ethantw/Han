@@ -12,8 +12,9 @@ hruby
   // * Hide the `<rt>` for we use pseudo elements
   // * to display regular annotations.
   // * -
-  // * - 1. We also need them to be copyable, so a
-  // *      different approach is hereby applied.
+  // * - 1. We also need them to work for clipboard
+  // *      actions, hence a different approach is 
+  // *      hereby applied.
   // *
   ru[annotation] > rt
     // box
@@ -22,6 +23,9 @@ hruby
     width: 0
     // 1
     font: 0/0 hidden-text
+
+    .pseudo-element-clipboard &
+      display: none
 
   // * 
   // *

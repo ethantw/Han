@@ -1606,6 +1606,11 @@ Locale.support = (function() {
   }
 })()
 
+var UA = window.navigator.userAgent || null
+var isIE = /Trident/i.test( UA )
+
+Locale.support['pseudo-element-clipboard'] = isIE ? true : false
+
 Locale.initCond = function( target ) {
   var target = target || root
   var ret = ''

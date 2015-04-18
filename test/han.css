@@ -714,6 +714,9 @@ hruby ru[annotation] > rt {
   width: 0;
   font: 0/0 hidden-text;
 }
+.pseudo-element-clipboard hruby ru[annotation] > rt {
+  display: none;
+}
 hruby ru {
   position: relative;
   display: inline-block;
@@ -2245,6 +2248,9 @@ jinze.hangable char.end:not(.close) {
   position: absolute;
   color: transparent;
   font: 0/0 hidden-text;
+}
+.pseudo-element-clipboard jinze.hangable char.end:not(.close) {
+  display: none;
 }
 jinze.hangable > hcs {
   position: relative;
