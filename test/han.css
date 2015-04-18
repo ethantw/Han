@@ -2212,11 +2212,10 @@ article blockquote blockquote {
  * https://github.com/ethantw/Han/issues/40
  */
 hws,
-[hidden] {
+hws[hidden] {
   display: inline;
   visibility: hidden;
-  font-family: Arial, sans-serif !important;
-  font-size: .89em;
+  font: .89em Arial;
 }
 code hws,
 kbd hws,
@@ -2229,17 +2228,17 @@ thead > hws,
 tbody > hws,
 tfoot > hws,
 tr > hws,
-code [hidden],
-kbd [hidden],
-samp [hidden],
-pre [hidden],
-ol > [hidden],
-ul > [hidden],
-table > [hidden],
-thead > [hidden],
-tbody > [hidden],
-tfoot > [hidden],
-tr > [hidden] {
+code hws[hidden],
+kbd hws[hidden],
+samp hws[hidden],
+pre hws[hidden],
+ol > hws[hidden],
+ul > hws[hidden],
+table > hws[hidden],
+thead > hws[hidden],
+tbody > hws[hidden],
+tfoot > hws[hidden],
+tr > hws[hidden] {
   display: none;
 }
 

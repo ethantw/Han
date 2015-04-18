@@ -7,18 +7,18 @@
  */
 
 // * 1. The value is calculated with Arial, which
-// *    lets the spacing display precisely in size 0.25em.
+// *    makes the spacing display precisely in size
+// *    of a quarter em.
 // * 2. Hidden in certain elements or situations.
 // *
 hws,
-&[hidden]
+hws[hidden]
   // box
   display: inline
   visibility: hidden
   // typography
-  font-family: Arial, sans-serif !important
   // 1
-  font-size: .89em
+  font: .89em Arial
 
   // 2
   code &,
@@ -33,3 +33,4 @@ hws,
   tfoot > &,
   tr > &
     display: none
+
