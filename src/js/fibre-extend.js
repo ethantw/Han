@@ -14,7 +14,7 @@ $.extend( Fibre.fn, {
       function( portion, match ) {
         var elem = $.create( 'hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner> </inner></hcs>' + match[2]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner hidden> </inner></hcs>' + match[2]
         return portion.index === 0 ? elem : ''
       }
     )

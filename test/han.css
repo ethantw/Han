@@ -2211,7 +2211,8 @@ article blockquote blockquote {
  * More discussion at:
  * https://github.com/ethantw/Han/issues/40
  */
-hws {
+hws,
+[hidden] {
   display: inline;
   visibility: hidden;
   font-family: Arial, sans-serif !important;
@@ -2227,7 +2228,18 @@ table > hws,
 thead > hws,
 tbody > hws,
 tfoot > hws,
-tr > hws {
+tr > hws,
+code [hidden],
+kbd [hidden],
+samp [hidden],
+pre [hidden],
+ol > [hidden],
+ul > [hidden],
+table > [hidden],
+thead > [hidden],
+tbody > [hidden],
+tfoot > [hidden],
+tr > [hidden] {
   display: none;
 }
 
@@ -2258,7 +2270,8 @@ hangable > hcs {
   visibility: visible;
   font: inherit;
 }
-hangable > hcs inner {
+hangable > hcs inner,
+hangable > hcs inner[hidden] {
   display: inline;
   visibility: hidden;
   font: 1em "Han Space";
@@ -2283,7 +2296,8 @@ hangable > hcs:after {
 /**
  * CJK Biaodian compression (CJK標點擠壓)
  */
-hcs {
+hcs,
+hcs[hidden] {
   display: none;
   visibility: hidden;
   font: .825em Courier;

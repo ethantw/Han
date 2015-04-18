@@ -25,7 +25,7 @@ Han.renderJiya = function( context ) {
   $.qsa( 'char.biaodian.open, char.biaodian.end', context )
   .forEach(function( elem ) {
     var html = '<inner>' + elem.innerHTML + '</inner>'
-    var hcs = '<hcs> </hcs>'
+    var hcs = '<hcs hidden> </hcs>'
     var isOpen = elem.classList.contains( 'open' )
     elem.innerHTML = isOpen ? hcs + html : html + hcs
   })

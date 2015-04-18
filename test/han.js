@@ -1207,7 +1207,7 @@ $.extend( Fibre.fn, {
       function( portion, match ) {
         var elem = $.create( 'hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner> </inner></hcs>' + match[2]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner hidden> </inner></hcs>' + match[2]
         return portion.index === 0 ? elem : ''
       }
     )
@@ -2004,18 +2004,17 @@ var QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, 
 //// issue below in IE11.
 //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
 var isNodeNormalizeNormal = (function() {
-      var div = $.create( 'div' )
+  var div = $.create( 'div' )
 
-      div.appendChild( $.create( '', '0-' ))
-      div.appendChild( $.create( '', '2' ))
-      div.normalize()
+  div.appendChild( $.create( '', '0-' ))
+  div.appendChild( $.create( '', '2' ))
+  div.normalize()
 
-      return div.firstChild.length !== 2
-    })(),
+  return div.firstChild.length !== 2
+})()
 
-    hws
-
-hws = $.create( 'hws' )
+var hws = $.create( 'hws' )
+hws.setAttribute( 'hidden', '' )
 hws.innerHTML = ' '
 
 $.extend( Han, {
@@ -2162,7 +2161,7 @@ Han.renderJiya = function( context ) {
   $.qsa( 'char.biaodian.open, char.biaodian.end', context )
   .forEach(function( elem ) {
     var html = '<inner>' + elem.innerHTML + '</inner>'
-    var hcs = '<hcs> </hcs>'
+    var hcs = '<hcs hidden> </hcs>'
     var isOpen = elem.classList.contains( 'open' )
     elem.innerHTML = isOpen ? hcs + html : html + hcs
   })
