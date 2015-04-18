@@ -43,8 +43,13 @@ $.extend( Han, {
     .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
     .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
 
-    // Deal with `' 字'`, `" 字"` => `'字'`, `"字"`
+    // Deal with [' 字'], [" 字"] => ['字'], ["字"]
     .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+
+    // Remove all `<hws/>` pre/post [“字”] and [‘字’]
+    // See: https://github.com/ethantw/Han/issues/59
+    .replace( /<hws\/>([‘“]+)/ig, '$1' )
+    .replace( /([’”]+)<hws\/>/ig, '$1' )
 
     // Convert text nodes `<hws/>` into real element nodes
     .replace( '<hws/>', function() {
