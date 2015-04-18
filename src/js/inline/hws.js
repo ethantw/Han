@@ -10,18 +10,17 @@ var QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, 
 //// issue below in IE11.
 //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
 var isNodeNormalizeNormal = (function() {
-      var div = $.create( 'div' )
+  var div = $.create( 'div' )
 
-      div.appendChild( $.create( '', '0-' ))
-      div.appendChild( $.create( '', '2' ))
-      div.normalize()
+  div.appendChild( $.create( '', '0-' ))
+  div.appendChild( $.create( '', '2' ))
+  div.normalize()
 
-      return div.firstChild.length !== 2
-    })(),
+  return div.firstChild.length !== 2
+})()
 
-    hws
-
-hws = $.create( 'hws' )
+var hws = $.create( 'hws' )
+hws.setAttribute( 'hidden', '' )
 hws.innerHTML = ' '
 
 $.extend( Han, {
