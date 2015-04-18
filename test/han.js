@@ -396,7 +396,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging:  new RegExp( '(' + rBdClose + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
+      hanging:  new RegExp( '(' + rWhite + '*)(' + rBdClose + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
@@ -1201,22 +1201,26 @@ return Fibre
 $.extend( Fibre.fn, {
   // Implement hanging biaodian
   hangingify: function() {
+    var origFilterOutSelector= this.filterOutSelector
+    this.filterOutSelector += ', hangable'
+
     this
     .replace(
       TYPESET.jinze.hanging,
       function( portion, match ) {
         var elem = $.create( 'hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner hidden> </inner></hcs>' + match[2]
+        elem.innerHTML = match[2] + '<hcs biaodian="' + match[3] + '"><inner hidden> </inner></hcs>' + match[3]
         return portion.index === 0 ? elem : ''
       }
     )
+    this.filterOutSelector = origFilterOutSelector
+    return this
   },
 
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
     var origFilterOutSelector= this.filterOutSelector
-
     this.filterOutSelector += ', jinze'
 
     this

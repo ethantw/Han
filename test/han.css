@@ -2291,6 +2291,10 @@ hangable > hcs:after {
   content: attr(biaodian);
   line-height: 1.05;
 }
+ruby hangable > hcs:after,
+ru hangable > hcs:after {
+  position: relative;
+}
 
 /**
  * CJK Biaodian compression (CJK標點擠壓)
