@@ -4,7 +4,7 @@
   font-family: 'Han Space'
   unicode-range: U+'+20'
 
-jinze.hangable
+hangable
   // position
   position: relative
   // box
@@ -12,12 +12,12 @@ jinze.hangable
 
   // Hide the collapsed spaces of closing brackets for we are sure
   // they ain't in use.
-  char.close hcs
+  char.biaodian.close hcs
     display: none
 
   // Hide the real Biaodian sice we have the pseudo hanging ones,
   // but not `display: none` for we still want their clipboard actions.
-  char.end:not(.close)
+  char.biaodian.end:not(.close)
     position: absolute
     color: transparent
     font: 0/0 hidden-text
@@ -36,6 +36,7 @@ jinze.hangable
 
   > hcs inner
     // box
+    display: inline
     visibility: hidden
     // typography
     font: 1em 'Han Space'

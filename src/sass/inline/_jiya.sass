@@ -15,7 +15,7 @@ hcs
 // *
 
 char.biaodian
-  &.open inner
+  &.open > inner
     margin-left: -.5em
 
   &.close,
@@ -23,7 +23,7 @@ char.biaodian
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    inner
+    > inner
       letter-spacing: -.5em
 
   &.open,
@@ -32,16 +32,16 @@ char.biaodian
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    hcs
+    > hcs
       display: inline
 
   &[unicode='3001']:lang(zh-Hant),
   &[unicode='3002']:lang(zh-Hant),
   &[unicode='ff0c']:lang(zh-Hant),
   &[unicode='ff0e']:lang(zh-Hant)
-    inner
+    > inner
       letter-spacing: inherit
-    hcs
+    > hcs
       display: none
 
 // * Handle consecutive Biaodian (連續標點擠壓)

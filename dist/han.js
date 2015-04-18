@@ -344,7 +344,7 @@ var TYPESET = (function() {
    
   // For words like `it's`, `Jones’s` or `'99`
   var rApo = '[\u0027\u2019]'
-  var rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
+  var rChar = rHan + '|(?:' + rAlph + '|' + rApo + ')+'
 
   var rZyS = UNICODE.zhuyin.initial
   var rZyJ = UNICODE.zhuyin.medial
@@ -396,7 +396,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging: new RegExp( '((' + rChar + ')' + rBdClose  + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
+      hanging:  new RegExp( '(' + rBdClose + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
@@ -1205,9 +1205,9 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.hanging,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'wei hangable' )
+        var elem = $.create( 'hangable' )
 
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[4] + '"><inner> </inner></hcs>' + match[4]
+        elem.innerHTML = match[1] + '<hcs biaodian="' + match[2] + '"><inner> </inner></hcs>' + match[2]
         return portion.index === 0 ? elem : ''
       }
     )
@@ -1223,14 +1223,11 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
         var elem = $.create( 'jinze', 'touwei' )
 
-        elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) || portion.index === 1
-        ) ? elem : ''
+        elem.innerHTML = match[0]
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
     .replace(
@@ -1238,32 +1235,26 @@ $.extend( Fibre.fn, {
       function( portion, match ) {
         var elem = $.create( 'jinze', 'wei' )
 
-        elem.innerHTML = match[1] + match[3]
+        elem.innerHTML = match[0]
         return portion.index === 0 ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
         var elem = $.create( 'jinze', 'tou' )
 
-        elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
-        ) ? elem : ''
+        elem.innerHTML = match[0]
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
         var elem = $.create( 'jinze', 'middle' )
 
-        elem.appendChild( text )
+        elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
           ? elem : ''
       }
