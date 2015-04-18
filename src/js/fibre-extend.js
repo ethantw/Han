@@ -120,7 +120,6 @@ $.extend( Fibre.fn, {
           TYPESET.char.biaodian.all,
           function( portion, match ) {
             var mat = match[0]
-            var text = $.create( '', mat )
             var  clazz = 'biaodian cjk ' + (
                   mat.match( TYPESET.char.biaodian.open ) ? 'open' :
                     mat.match( TYPESET.char.biaodian.close ) ? 'close end' :
@@ -130,7 +129,7 @@ $.extend( Fibre.fn, {
             var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
             elem.setAttribute( 'unicode', unicode )
-            elem.appendChild( text )
+            elem.innerHTML = mat
             return elem
           }
         )
@@ -141,12 +140,11 @@ $.extend( Fibre.fn, {
           new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
         function( portion, match ) {
           var mat = match[0]
-          var text = $.create( '', mat )
           var elem = $.create( 'char', 'biaodian liga cjk' )
           var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
           elem.setAttribute( 'unicode', unicode )
-          elem.appendChild( text )
+          elem.innerHTML = mat
           return elem
         }
       )

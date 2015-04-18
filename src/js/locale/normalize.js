@@ -13,18 +13,18 @@ function createNormalRu( $rb, $rt, attr ) {
   var $ru = $.create( 'ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
+  attr.annotation = $rt.textContent
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
-      if (typeof rb == 'undefined') { return '' }
+      if ( typeof rb === 'undefined' )  return ''
       return rb.outerHTML 
-    }).join('')
+    }).join('') + $rt.outerHTML
   } else {
     $ru.appendChild( $.clone( $rb ))
+    $ru.appendChild( $rt )
   }
 
-  $ru.appendChild( $rt )
-  attr.annotation = $rt.textContent
   $.setAttr( $ru, attr )
   return $ru
 }
@@ -37,10 +37,7 @@ function createZhuyinRu( $rb, $rt ) {
   var $rb = $.clone( $rb )
 
   // Create an element to return
-  var $ru     = $.create( 'ru' )
-  var $zhuyin = $.create( 'zhuyin' )
-  var $yin    = $.create( 'yin' )
-  var $diao   = $.create( 'diao' )
+  var $ru = $.create( 'ru' )
 
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
@@ -72,13 +69,8 @@ function createZhuyinRu( $rb, $rt ) {
   // -     <diao></diao>
   // -   </zhuyin>
   // - </ru>
-  $diao.innerHTML = diao
-  $yin.innerHTML = yin
-  $zhuyin.appendChild( $yin )
-  $zhuyin.appendChild( $diao )
-
   $ru.appendChild( $rb )
-  $ru.appendChild( $zhuyin )
+  $ru.innerHTML += '<zhuyin><yin>' + yin + '</yin><diao>' + diao + '</diao></zhuyin>'
 
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
@@ -107,8 +99,8 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration
-  // -line) to see if we should address spacing in
+  // Traverse target elements (those with text-decoration-
+  // line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
     var target = target || 'u, ins'
@@ -206,7 +198,7 @@ $.extend( Locale, {
       $cloned = $.qsa( target, frag )[0]
 
       // 1. Simple ruby polyfill for, um, Firefox;
-      // 2. Zhuyin polyfill for all.
+      // 2. Zhuyin polyfill for all browsers.
       if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
@@ -255,7 +247,7 @@ $.extend( Locale, {
         //
         // Note that we only support one single Zhuyin
         // container in each complex ruby
-        !function( rtc ) {
+        void function( rtc ) {
           if ( !rtc )  return
 
           $ru = $
@@ -297,7 +289,8 @@ $.extend( Locale, {
                   rb = $ru.shift()
                   aRb.push( rb ) 
                 } catch (e) {}
-                if (typeof rb == 'undefined') { break }
+
+                if ( typeof rb === 'undefined' )  break
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 

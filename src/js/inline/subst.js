@@ -49,7 +49,6 @@ var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
 var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
 var charCombLiga = $.create( 'char', 'comb-liga' )
-var charCombLigaInner =  $.create( 'inner' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
@@ -69,12 +68,10 @@ $.extend( Han, {
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
           var ret = $.clone( charCombLiga )
-          var inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
-          inner.innerHTML = match[ 0 ]
-          ret.appendChild( inner )
+          ret.innerHTML = '<inner>' + match[0] + '<inner>'
           ret.setAttribute( 'display-as', pattern[ 1 ] )
           return portion.index === 0 ? ret : ''
         }

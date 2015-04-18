@@ -1313,7 +1313,6 @@ $.extend( Fibre.fn, {
           TYPESET.char.biaodian.all,
           function( portion, match ) {
             var mat = match[0]
-            var text = $.create( '', mat )
             var  clazz = 'biaodian cjk ' + (
                   mat.match( TYPESET.char.biaodian.open ) ? 'open' :
                     mat.match( TYPESET.char.biaodian.close ) ? 'close end' :
@@ -1323,7 +1322,7 @@ $.extend( Fibre.fn, {
             var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
             elem.setAttribute( 'unicode', unicode )
-            elem.appendChild( text )
+            elem.innerHTML = mat
             return elem
           }
         )
@@ -1334,12 +1333,11 @@ $.extend( Fibre.fn, {
           new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
         function( portion, match ) {
           var mat = match[0]
-          var text = $.create( '', mat )
           var elem = $.create( 'char', 'biaodian liga cjk' )
           var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
           elem.setAttribute( 'unicode', unicode )
-          elem.appendChild( text )
+          elem.innerHTML = mat
           return elem
         }
       )
@@ -1624,18 +1622,18 @@ function createNormalRu( $rb, $rt, attr ) {
   var $ru = $.create( 'ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
+  attr.annotation = $rt.textContent
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
-      if (typeof rb == 'undefined') { return '' }
+      if ( typeof rb === 'undefined' )  return ''
       return rb.outerHTML 
-    }).join('')
+    }).join('') + $rt.outerHTML
   } else {
     $ru.appendChild( $.clone( $rb ))
+    $ru.appendChild( $rt )
   }
 
-  $ru.appendChild( $rt )
-  attr.annotation = $rt.textContent
   $.setAttr( $ru, attr )
   return $ru
 }
@@ -1648,10 +1646,7 @@ function createZhuyinRu( $rb, $rt ) {
   var $rb = $.clone( $rb )
 
   // Create an element to return
-  var $ru     = $.create( 'ru' )
-  var $zhuyin = $.create( 'zhuyin' )
-  var $yin    = $.create( 'yin' )
-  var $diao   = $.create( 'diao' )
+  var $ru = $.create( 'ru' )
 
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
@@ -1683,13 +1678,8 @@ function createZhuyinRu( $rb, $rt ) {
   // -     <diao></diao>
   // -   </zhuyin>
   // - </ru>
-  $diao.innerHTML = diao
-  $yin.innerHTML = yin
-  $zhuyin.appendChild( $yin )
-  $zhuyin.appendChild( $diao )
-
   $ru.appendChild( $rb )
-  $ru.appendChild( $zhuyin )
+  $ru.innerHTML += '<zhuyin><yin>' + yin + '</yin><diao>' + diao + '</diao></zhuyin>'
 
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
@@ -1718,8 +1708,8 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration
-  // -line) to see if we should address spacing in
+  // Traverse target elements (those with text-decoration-
+  // line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
     var target = target || 'u, ins'
@@ -1817,7 +1807,7 @@ $.extend( Locale, {
       $cloned = $.qsa( target, frag )[0]
 
       // 1. Simple ruby polyfill for, um, Firefox;
-      // 2. Zhuyin polyfill for all.
+      // 2. Zhuyin polyfill for all browsers.
       if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
@@ -1866,7 +1856,7 @@ $.extend( Locale, {
         //
         // Note that we only support one single Zhuyin
         // container in each complex ruby
-        !function( rtc ) {
+        void function( rtc ) {
           if ( !rtc )  return
 
           $ru = $
@@ -1908,7 +1898,8 @@ $.extend( Locale, {
                   rb = $ru.shift()
                   aRb.push( rb ) 
                 } catch (e) {}
-                if (typeof rb == 'undefined') { break }
+
+                if ( typeof rb === 'undefined' )  break
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 
@@ -2280,7 +2271,6 @@ var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
 var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
 var charCombLiga = $.create( 'char', 'comb-liga' )
-var charCombLigaInner =  $.create( 'inner' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
@@ -2300,12 +2290,10 @@ $.extend( Han, {
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
           var ret = $.clone( charCombLiga )
-          var inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
-          inner.innerHTML = match[ 0 ]
-          ret.appendChild( inner )
+          ret.innerHTML = '<inner>' + match[0] + '<inner>'
           ret.setAttribute( 'display-as', pattern[ 1 ] )
           return portion.index === 0 ? ret : ''
         }
