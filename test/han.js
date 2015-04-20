@@ -1199,25 +1199,6 @@ return Fibre
 );
 
 $.extend( Fibre.fn, {
-  // Implement hanging biaodian
-  hangingify: function() {
-    var origFilterOutSelector= this.filterOutSelector
-    this.filterOutSelector += ', hangable'
-
-    this
-    .replace(
-      TYPESET.jinze.hanging,
-      function( portion, match ) {
-        var elem = $.create( 'hangable' )
-
-        elem.innerHTML = match[2] + '<hcs biaodian="' + match[3] + '"><inner hidden> </inner></hcs>' + match[3]
-        return portion.index === 0 ? elem : ''
-      }
-    )
-    this.filterOutSelector = origFilterOutSelector
-    return this
-  },
-
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
     var origFilterOutSelector= this.filterOutSelector
@@ -2141,8 +2122,16 @@ Han.renderHanging = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, jinze', true )
-  .hangingify()
+  .filterOut( 'textarea, code, kbd, samp, pre, hangable', true )
+  .replace(
+    TYPESET.jinze.hanging,
+    function( portion, match ) {
+      var elem = $.create( 'hangable' )
+
+      elem.innerHTML = match[2] + '<hcs biaodian="' + match[3] + '"><inner hidden> </inner></hcs>' + match[3]
+      return portion.index === 0 ? elem : ''
+    }
+  )
 
   return finder
 }
