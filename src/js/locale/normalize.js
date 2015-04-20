@@ -134,10 +134,6 @@ $.extend( Locale, {
     .forEach(function( elem ) {
       var $elem = Fibre( elem )
 
-      if ( !Locale.support.textemphasis ) {
-        $elem.jinzify()
-      }
-
       $elem
       .groupify()
       .charify( Locale.support.textemphasis ? {
