@@ -90,7 +90,7 @@ $.extend( Locale, {
 
   // Render and normalise the given context by routine:
   //
-  // > ruby > u, ins > s, del > em
+  // ruby -> u, ins -> s, del -> em
   //
   renderElem: function( context ) {
     this.renderRuby( context )
