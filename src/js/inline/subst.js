@@ -71,7 +71,7 @@ $.extend( Han, {
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
-          ret.innerHTML = '<inner>' + match[0] + '<inner>'
+          ret.innerHTML = '<inner>' + match[0] + '</inner>'
           ret.setAttribute( 'display-as', pattern[ 1 ] )
           return portion.index === 0 ? ret : ''
         }
