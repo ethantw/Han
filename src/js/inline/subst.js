@@ -9,40 +9,10 @@ var QUERY_RU_W_ANNO = 'ru[annotation]'
 var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 var isCombLigaNormal = (function() {
-  var fakeBody = body || $.create( 'body' )
-  var div = $.create( 'div' )
-  var control = $.create( 'span' )
-  var container = body ? div : fakeBody
-  var treat, docOverflow, ret
+  var treat   = Han.localize.writeOnCanvas( '\u0069\u030D', '"Romanization Sans"' )
+  var control = Han.localize.writeOnCanvas( '\uDB80\uDC69', '"Romanization Sans"' )
 
-  if ( !body ) {
-    fakeBody.style.background = ''
-    fakeBody.style.overflow = 'hidden'
-    docOverflow = root.style.overflow
-
-    root.style.overflow = 'hidden'
-    root.appendChild( fakeBody )
-  } else {
-    body.appendChild( container )
-  }
-
-  control.innerHTML = '&#x0069;&#x030D;'
-  control.style.fontFamily = 'sans-serif'
-  control.style.display = 'inline-block'
-
-  treat = $.clone( control )
-  treat.style.fontFamily = '"Romanization Sans"'
-
-  container.appendChild( control )
-  container.appendChild( treat )
-
-  ret = control.clientWidth !== treat.clientWidth
-  $.remove( container )
-
-  if ( !body ) {
-    root.style.overflow = docOverflow
-  }
-  return ret
+  return Han.localize.compareCanvases( treat, control )
 })()
 
 var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]

@@ -21,49 +21,65 @@ function writeOnCanvas( text, font ) {
   context.strokeStyle = 'black'
   context.fillText( text, 0, 0 )
 
-  return [ canvas, context ]
+  return {
+    node: canvas,
+    context: context,
+    remove: function() {
+      $.remove( canvas, body )
+    }
+  }
 }
 
-function detectFont( treat, control, text ) {
-  var treat = treat
-  var control = control
-  var text = text || '辭Q'
+function compareCanvases( treat, control ) {
   var ret
+  var a = treat.context
+  var b = control.context
 
   try {
-    control = writeOnCanvas( text, control || 'sans-serif' )
-    treat = writeOnCanvas( text, treat )
-
     for ( var j = 1; j <= 20; j++ ) {
       for ( var i = 1; i <= 50; i++ ) {
         if (
-          ret !== 'undefined' &&
-          treat[1].getImageData(i, j, 1, 1).data[3] !== control[1].getImageData(i, j, 1, 1).data[3]
+          typeof ret === 'undefined' &&
+          a.getImageData(i, j, 1, 1).data[3] !== b.getImageData(i, j, 1, 1).data[3]
         ) {
-          ret = true
+          ret = false
           break
-        } else if ( ret ) {
+        } else if ( typeof ret === 'boolean' ) {
           break
         }
 
-        if ( i === 50 && j === 20 && !ret ) {
-          ret = false
+        if ( i === 50 && j === 20 && typeof ret === 'undefined' ) {
+          ret = true
         }
       }
     }
 
     // Remove and clean from memory
-    $.remove( control[0] )
-    $.remove( treat[0] )
-    control = null
+    treat.remove()
+    control.remove()
     treat = null
+    control = null
 
     return ret
-  } catch ( e ) {
-    return false
-  }
+  } catch (e) {}
+  return false
 }
 
+function detectFont( treat, control, text ) {
+  var treat = treat
+  var control = control || 'sans-serif'
+  var text = text || '辭Q'
+  var ret
+
+  control = writeOnCanvas( text, control )
+  treat = writeOnCanvas( text, treat )
+
+  return !compareCanvases( treat, control )
+}
+
+Locale.writeOnCanvas = writeOnCanvas
+Locale.compareCanvases = compareCanvases
 Locale.detectFont = detectFont
+
 return Locale
 })
