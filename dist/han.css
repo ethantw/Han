@@ -1541,49 +1541,225 @@ jinze {
 
 @font-face {
   font-family: "Biaodian Sans";
-  src: local(lying-to-firefox);
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
   unicode-range: U+270C;
 }
 
 @font-face {
-  font-family: "Biaodian Serif";
-  src: local(lying-to-firefox);
+  font-family: "Biaodian Sans";
+  font-weight: bold;
+  src: local("Helvetica Neue Bold"), local("Helvetica Bold"), local("Arial Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Sans";
+  font-style: italic;
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Sans";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic");
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: "Biaodian Pro Sans";
-  src: local(lying-to-firefox);
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
   unicode-range: U+270C;
 }
 
 @font-face {
-  font-family: "Biaodian Pro Serif";
-  src: local(lying-to-firefox);
+  font-family: "Biaodian Pro Sans";
+  font-weight: bold;
+  src: local("Helvetica Neue Bold"), local("Helvetica Bold"), local("Arial Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans";
+  font-style: italic;
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic");
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: "Biaodian Pro Sans CNS";
-  src: local(lying-to-firefox);
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
   unicode-range: U+270C;
 }
 
 @font-face {
-  font-family: "Biaodian Pro Serif CNS";
-  src: local(lying-to-firefox);
+  font-family: "Biaodian Pro Sans CNS";
+  font-weight: bold;
+  src: local("Helvetica Neue Bold"), local("Helvetica Bold"), local("Arial Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans CNS";
+  font-style: italic;
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans CNS";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic");
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: "Biaodian Pro Sans GB";
-  src: local(lying-to-firefox);
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans GB";
+  font-weight: bold;
+  src: local("Helvetica Neue Bold"), local("Helvetica Bold"), local("Arial Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans GB";
+  font-style: italic;
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans GB";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Serif";
+  src: local(Georgia), local("Times New Roman");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Serif";
+  font-weight: bold;
+  src: local("Georgia Bold"), local("Times New Roman Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Serif";
+  font-style: italic;
+  src: local("Georgia Italic"), local("Times New Roman Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Serif";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif";
+  src: local(Georgia), local("Times New Roman");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif";
+  font-weight: bold;
+  src: local("Georgia Bold"), local("Times New Roman Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif";
+  font-style: italic;
+  src: local("Georgia Italic"), local("Times New Roman Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif CNS";
+  src: local(Georgia), local("Times New Roman");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif CNS";
+  font-weight: bold;
+  src: local("Georgia Bold"), local("Times New Roman Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif CNS";
+  font-style: italic;
+  src: local("Georgia Italic"), local("Times New Roman Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif CNS";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic");
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: "Biaodian Pro Serif GB";
-  src: local(lying-to-firefox);
+  src: local(Georgia), local("Times New Roman");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif GB";
+  font-weight: bold;
+  src: local("Georgia Bold"), local("Times New Roman Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif GB";
+  font-style: italic;
+  src: local("Georgia Italic"), local("Times New Roman Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif GB";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Georgia Bold Italic"), local("Times New Roman Bold Italic");
   unicode-range: U+270C;
 }
 
@@ -1764,6 +1940,34 @@ jinze {
   src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
   font-family: "Zhuyin Heiti";
   unicode-range: U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+31B4, U+31B5, U+31B6, U+31B7, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
+}
+
+@font-face {
+  font-family: "Zhuyin Heiti";
+  src: local("Helvetica Neue"), local(Helvetica), local(Arial);
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Zhuyin Heiti";
+  font-weight: bold;
+  src: local("Helvetica Neue Bold"), local("Helvetica Bold"), local("Arial Bold");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Zhuyin Heiti";
+  font-style: italic;
+  src: local("Helvetica Neue Italic"), local("Helvetica Oblique"), local("Arial Italic");
+  unicode-range: U+270C;
+}
+
+@font-face {
+  font-family: "Zhuyin Heiti";
+  font-style: italic;
+  font-weight: bold;
+  src: local("Helvetica Neue Bold Italic"), local("Helvetica Bold Oblique"), local("Arial Bold Italic");
+  unicode-range: U+270C;
 }
 
 /**
