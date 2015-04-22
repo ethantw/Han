@@ -22,10 +22,10 @@ Han.renderJiya = function( context ) {
   // The reason we're doing this instead of using pseudo elements in CSS
   // is because WebKit has problem rendering pseudo elements containing only 
   // space.
-  $.qsa( 'char.biaodian.open, char.biaodian.end', context )
+  $.qsa( 'h-char.biaodian.open, h-char.biaodian.end', context )
   .forEach(function( elem ) {
-    var html = '<inner>' + elem.innerHTML + '</inner>'
-    var hcs = '<hcs hidden> </hcs>'
+    var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
+    var hcs = '<h-cs hidden> </h-cs>'
     var isOpen = elem.classList.contains( 'open' )
     elem.innerHTML = isOpen ? hcs + html : html + hcs
   })

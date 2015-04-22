@@ -8,14 +8,14 @@ define([
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
-    var origFilterOutSelector= this.filterOutSelector
-    this.filterOutSelector += ', jinze'
+    var origFilterOutSelector = this.filterOutSelector
+    this.filterOutSelector += ', h-jinze'
 
     this
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'touwei' )
+        var elem = $.create( 'h-jinze', 'touwei' )
 
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
@@ -25,7 +25,7 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'wei' )
+        var elem = $.create( 'h-jinze', 'wei' )
 
         elem.innerHTML = match[0]
         return portion.index === 0 ? elem : ''
@@ -34,7 +34,7 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'tou' )
+        var elem = $.create( 'h-jinze', 'tou' )
 
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
@@ -44,7 +44,7 @@ $.extend( Fibre.fn, {
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'middle' )
+        var elem = $.create( 'h-jinze', 'middle' )
 
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
@@ -57,21 +57,27 @@ $.extend( Fibre.fn, {
   },
 
   groupify: function() {
+    var origFilterOutSelector = this.filterOutSelector
+    this.filterOutSelector += ', h-char-group'
+
     this
     .wrap(
       TYPESET.char.biaodian.group[ 0 ],
-      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+      $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
     )
     .wrap(
       TYPESET.char.biaodian.group[ 1 ],
-      $.clone( $.create( 'char_group', 'biaodian cjk' ))
+      $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
     )
+    
+    this.filterOutSelector = origFilterOutSelector
     return this
   },
 
   // Implementation of character-level selector
   // (字元級選擇器)
   charify: function( option ) {
+    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
       hanzi:     'individual',
                   // individual || group || biaodian || none
@@ -88,12 +94,14 @@ $.extend( Fibre.fn, {
                   // group || individual || none
     }, option || {})
 
+    this.filterOutSelector += ', h-char'
+
     // CJK and biaodian
     if ( option.hanzi === 'group' ) {
-      this.wrap( TYPESET.char.hanzi.group, $.clone( $.create( 'char_group', 'hanzi cjk' )))
+      this.wrap( TYPESET.char.hanzi.group, $.clone( $.create( 'h-char-group', 'hanzi cjk' )))
     }
     if ( option.hanzi === 'individual' ) {
-      this.wrap( TYPESET.char.hanzi.individual, $.clone( $.create( 'char', 'hanzi cjk' )))
+      this.wrap( TYPESET.char.hanzi.individual, $.clone( $.create( 'h-char', 'hanzi cjk' )))
     }
 
     if ( option.hanzi === 'individual' ||
@@ -110,7 +118,7 @@ $.extend( Fibre.fn, {
                     mat.match( TYPESET.char.biaodian.close ) ? 'close end' :
                       mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
                 )
-            var elem = $.create( 'char', clazz )
+            var elem = $.create( 'h-char', clazz )
             var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
             elem.setAttribute( 'unicode', unicode )
@@ -125,7 +133,7 @@ $.extend( Fibre.fn, {
           new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
         function( portion, match ) {
           var mat = match[0]
-          var elem = $.create( 'char', 'biaodian liga cjk' )
+          var elem = $.create( 'h-char', 'biaodian liga cjk' )
           var unicode = mat.charCodeAt( 0 ).toString( 16 )
 
           elem.setAttribute( 'unicode', unicode )
@@ -137,7 +145,7 @@ $.extend( Fibre.fn, {
 
     // Western languages (word-level)
     if ( option.word !== 'none' ) {
-      this.wrap( TYPESET.char.word, $.clone( $.create( 'word' )))
+      this.wrap( TYPESET.char.word, $.clone( $.create( 'h-word' )))
     }
 
     // Western languages (alphabet-level)
@@ -145,17 +153,19 @@ $.extend( Fibre.fn, {
          option.ellinika !== 'none' ||
          option.kirillica !== 'none'
     ) {
-      this.wrap( TYPESET.char.punct.all, $.clone( $.create( 'char', 'punct' )))
+      this.wrap( TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' )))
     }
     if ( option.latin === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.latin, $.clone( $.create( 'char', 'alphabet latin' )))
+      this.wrap( TYPESET.char.alphabet.latin, $.clone( $.create( 'h-char', 'alphabet latin' )))
     }
     if ( option.ellinika === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.ellinika, $.clone( $.create( 'char', 'alphabet ellinika greek' )))
+      this.wrap( TYPESET.char.alphabet.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' )))
     }
     if ( option.kirillica === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.kirillica, $.clone( $.create( 'char', 'alphabet kirillica cyrillic' )))
+      this.wrap( TYPESET.char.alphabet.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' )))
     }
+
+    this.filterOutSelector = origFilterOutSelector
     return this
   }
 })

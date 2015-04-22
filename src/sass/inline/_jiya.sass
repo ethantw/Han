@@ -3,8 +3,8 @@
  * CJK Biaodian compression (CJK標點擠壓)
  */
 
-hcs,
-hcs[hidden]
+h-cs,
+h-cs[hidden]
   // box
   display: none
   visibility: hidden
@@ -15,8 +15,8 @@ hcs[hidden]
 // * Handle line start/end Biaodian (行首行尾標點擠壓)
 // *
 
-char.biaodian
-  &.open > inner
+h-char.biaodian
+  &.open > h-inner
     margin-left: -.5em
 
   &.close,
@@ -24,7 +24,7 @@ char.biaodian
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    > inner
+    > h-inner
       letter-spacing: -.5em
 
   &.open,
@@ -33,30 +33,30 @@ char.biaodian
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    > hcs
+    > h-cs
       display: inline
 
   &[unicode='3001']:lang(zh-Hant),
   &[unicode='3002']:lang(zh-Hant),
   &[unicode='ff0c']:lang(zh-Hant),
   &[unicode='ff0e']:lang(zh-Hant)
-    > inner
+    > h-inner
       letter-spacing: inherit
-    > hcs
+    > h-cs
       display: none
 
 // * Handle consecutive Biaodian (連續標點擠壓)
 // *
-char_group
-  .open + .open hcs,
-  .end:not(:last-child) hcs
+h-char-group
+  .open + .open h-cs,
+  .end:not(:last-child) h-cs
     display: none
 
   [unicode='3001'],
   [unicode='3002'],
   [unicode='ff0c'],
   [unicode='ff0e']
-    &:lang(zh-Hant) + .open hcs
+    &:lang(zh-Hant) + .open h-cs
       display: none
 
   // * Handle ‘「漢」·「字」’ situation

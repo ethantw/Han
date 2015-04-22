@@ -6,11 +6,11 @@ define([
 ], function( Locale, $, TYPESET, Fibre ) {
 
 /**
- * Create and return a new `<ru>` element
+ * Create and return a new `<h-ru>` element
  * according to the given contents
  */
 function createNormalRu( $rb, $rt, attr ) {
-  var $ru = $.create( 'ru' )
+  var $ru = $.create( 'h-ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
   attr.annotation = $rt.textContent
@@ -37,7 +37,7 @@ function createZhuyinRu( $rb, $rt ) {
   var $rb = $.clone( $rb )
 
   // Create an element to return
-  var $ru = $.create( 'ru' )
+  var $ru = $.create( 'h-ru' )
 
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
@@ -62,15 +62,15 @@ function createZhuyinRu( $rb, $rt ) {
       y ? 'Y' : null
     ].join('')
   })
-  // - <ru>
+  // - <h-ru>
   // -   <rb><rb/> 
-  // -   <zhuyin>
-  // -     <yin></yin>
-  // -     <diao></diao>
-  // -   </zhuyin>
-  // - </ru>
+  // -   <h-zhuyin>
+  // -     <h-yin></h-yin>
+  // -     <h-diao></h-diao>
+  // -   </h-zhuyin>
+  // - </h-ru>
   $ru.appendChild( $rb )
-  $ru.innerHTML += '<zhuyin><yin>' + yin + '</yin><diao>' + diao + '</diao></zhuyin>'
+  $ru.innerHTML += '<h-zhuyin><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
 
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
@@ -209,16 +209,16 @@ $.extend( Locale, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(r[ubt])/i ))  break 
+            if ( !irb || irb.nodeName.match( /(r\-?[ubt])/i ))  break 
 
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
-          } while ( !irb.nodeName.match( /(r[ubt])/i ))
-          // Create a real `<ru>` to append.
+          } while ( !irb.nodeName.match( /(r\-?[ubt])/i ))
+          // Create a real `<h-ru>` to append.
           $ru = clazz.contains( 'zhuyin' ) ?
             createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
 
-          // Replace the ruby text with the new `<ru>`,
+          // Replace the ruby text with the new `<h-ru>`,
           // and remove the original implied ruby base(s)
           try {
             rt.parentNode.replaceChild( $ru, rt )
@@ -295,7 +295,7 @@ $.extend( Locale, {
                   console.error( 'An impossible `rbspan` value detected.', ruby ) 
                   return
                 }
-                aRb = $.tag( 'rb', aRb[0] )
+                aRb = $.tag( 'h-rb', aRb[0] )
                 $ru = aRb.slice( rbspan ).concat( $ru ) 
                 aRb = aRb.slice( 0, rbspan )
                 span = rbspan
@@ -321,12 +321,10 @@ $.extend( Locale, {
           $.remove( rtc )
         })
       }
-      // Create a new fake `<hruby>` element so the
+      // Create a new fake `<h-ruby>` element so the
       // style sheets will render it as a polyfill,
       // which also helps to avoid the UA style.
-      //
-      // (The ‘H’ stands for ‘Han’, by the way)
-      hruby = $.create( 'hruby' )
+      hruby = $.create( 'h-ruby' )
       hruby.innerHTML = frag.firstChild.innerHTML
 
       // Copy all attributes onto it

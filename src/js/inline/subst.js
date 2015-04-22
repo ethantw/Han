@@ -5,7 +5,7 @@ define([
   '../regex'
 ], function( body, Han, $ ) {
 
-var QUERY_RU_W_ANNO = 'ru[annotation]'
+var QUERY_RU_W_ANNO = 'h-ru[annotation]'
 var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 var isCombLigaNormal = (function() {
@@ -18,7 +18,7 @@ var isCombLigaNormal = (function() {
 var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
 var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
-var charCombLiga = $.create( 'char', 'comb-liga' )
+var charCombLiga = $.create( 'h-char', 'comb-liga' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
@@ -41,7 +41,7 @@ $.extend( Han, {
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
-          ret.innerHTML = '<inner>' + match[0] + '</inner>'
+          ret.innerHTML = '<h-inner>' + match[0] + '</h-inner>'
           ret.setAttribute( 'display-as', pattern[ 1 ] )
           return portion.index === 0 ? ret : ''
         }

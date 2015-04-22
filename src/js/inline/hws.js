@@ -4,7 +4,7 @@ define([
   '../regex'
 ], function( Han, $ ) {
 
-var QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws'
+var QUERY_HWS_AS_FIRST_CHILD = '* > h-hws:first-child, * > wbr:first-child + h-hws, wbr:first-child + wbr + h-hws'
 
 //// Disabled `Node.normalize()` for temp due to
 //// issue below in IE11.
@@ -19,7 +19,7 @@ var isNodeNormalizeNormal = (function() {
   return div.firstChild.length !== 2
 })()
 
-var hws = $.create( 'hws' )
+var hws = $.create( 'h-hws' )
 hws.setAttribute( 'hidden', '' )
 hws.innerHTML = ' '
 
@@ -76,7 +76,7 @@ $.extend( Han, {
       // or a text fragment, but the latter one is
       // not what we want. We don't want comments,
       // either.
-      while ( target.nodeName === 'HWS' ) {
+      while ( target.nodeName === 'H-HWS' ) {
         $.remove( target, parent )
 
         target = parent.parentNode.insertBefore( $.clone( hws ), parent )
@@ -87,8 +87,8 @@ $.extend( Han, {
         }
 
         // This is for extreme circumstances, i.e.,
-        // `漢<a><b><c><hws/>zi</c></b></a>` =>
-        // `漢<hws/><a><b><c>zi</c></b></a>`
+        // `漢<a><b><c><h-hws/>zi</c></b></a>` =>
+        // `漢<h-hws/><a><b><c>zi</c></b></a>`
         if ( target !== parent.firstChild ) {
           break
         }
@@ -111,7 +111,7 @@ $.extend( Han.fn, {
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
 
-    this.HWS = $.tag( 'hws', this.context )
+    this.HWS = $.tag( 'h-hws', this.context )
     return this
   },
 

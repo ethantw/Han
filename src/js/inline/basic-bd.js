@@ -6,7 +6,7 @@ define([
 
 var mdot
 
-mdot = $.create( 'char', 'biaodian cjk middle' )
+mdot = $.create( 'h-char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {

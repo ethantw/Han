@@ -2,6 +2,30 @@
 更新紀錄　CHANGELOG
 ===
 
+v3.2.0（2015-4-21）
+---
+ 1. 改進標點擠壓的處理方式，現已支援行首／行尾標點擠壓（#73）
+ 2. 新增行尾點號懸掛功能
+ 3. 取消着重號polyfill的額外標點禁則修正，交由瀏覽器處理
+ 4. 去除彎引號的漢字–西文混排間隙（#59）
+ 5. 修正Blink下的`Han.isCombLigaNormal`判斷及PUA字元（陽入韻）替換
+ 6. 部分修正Firefox下的`@font-face`字體問題
+ 7. 改進`Han.detectFont()`方法的處理方式
+ 8. 改用符合custom elements規範的命名方式
+    - `h-cs`（新增）
+    - `h-hangable`（新增）
+    - `char` -> `h-char`
+    - `char_group` -> `h-char-group`
+    - `word` -> `h-word`
+    - `hws` -> `h-hws`
+    - `jinze` -> `h-jinze`
+    - `inner` -> `h-inner`
+    - `hruby` -> `h-ruby`
+    - `ru` -> `h-ru`
+    - `zhuyin` -> `h-zhuyin`
+    - `yin` -> `h-yin`
+    - `diao` -> `h-diao`
+
 v3.1.1（2015-3-14）
 ---
  1. 字體發布檔案不再使用符號連接方式搬移

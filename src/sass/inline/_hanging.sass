@@ -4,7 +4,7 @@
   font-family: 'Han Space'
   unicode-range: U+'+20'
 
-hangable
+h-hangable
   // position
   position: relative
   // box
@@ -12,12 +12,12 @@ hangable
 
   // Hide the collapsed spaces of closing brackets for we are sure
   // they ain't in use.
-  char.biaodian.close hcs
+  h-char.biaodian.close h-cs
     display: none
 
   // Hide the real Biaodian sice we have the pseudo hanging ones,
   // but not `display: none` for we still want their clipboard actions.
-  char.biaodian.end:not(.close)
+  h-char.biaodian.end:not(.close)
     position: absolute
     color: transparent
     font: 0/0 hidden-text
@@ -25,7 +25,7 @@ hangable
     .pseudo-element-clipboard &
       display: none
 
-  > hcs
+  > h-cs
     // position
     position: relative
     // box
@@ -34,15 +34,15 @@ hangable
     // typography
     font: inherit
 
-  > hcs inner,
-  > hcs inner[hidden]
+  > h-cs h-inner,
+  > h-cs h-inner[hidden]
     // box
     display: inline
     visibility: hidden
     // typography
     font: 1em 'Han Space'
 
-  > hcs:after
+  > h-cs:after
     +han-typo-reset
     // position
     position: absolute
@@ -55,6 +55,6 @@ hangable
     line-height: 1.05
   
     ruby &,
-    ru &
+    h-ru &
       position: relative
 

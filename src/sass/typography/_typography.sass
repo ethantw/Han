@@ -66,17 +66,18 @@ var
 // * 3. Romanisation: checked tone ligatures (拉丁字母入聲連字).
 // *
 ruby,
-hruby
-  ru[zhuyin] zhuyin,
-  ru[zhuyin] zhuyin diao
+h-ruby
+  h-ru[zhuyin] h-zhuyin,
+  h-ru[zhuyin] h-zhuyin h-diao
     // 1, 2
     @extend %han-ligature
 
-  ru[zhuyin] zhuyin diao
+  h-ru[zhuyin] h-zhuyin h-diao
     font-family: 'Zhuyin Kaiti', cursive, serif
 
   &.romanization rt,
-  ru[annotation]:before
+  h-ru[annotation]:before
     // 3
     @extend %han-ligature
     font-family: 'Romanization Sans', $han-sans, han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ), sans-serif
+

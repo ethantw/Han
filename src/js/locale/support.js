@@ -12,7 +12,7 @@ Locale.support = (function() {
 
   // Create an element for feature detecting
   // (in `testCSSProp`)
-  var elem = $.create( '_' )
+  var elem = $.create( 'h-test' )
   var exposed = {}
 
   function testCSSProp( prop ) {

@@ -43,7 +43,7 @@
   .no-textemphasis &
     line-height: 2
 
-    char
+    h-char
       // position
       position: relative
       // typography
@@ -71,8 +71,8 @@
 
 // 3
 %han-text-emphasis-skip
-  char.punct,
-  char.biaodian
+  h-char.punct,
+  h-char.biaodian
     +han-text-emphasis-internal( none )
 
     .no-textemphasis &:after
@@ -87,11 +87,11 @@ em
 
 // * Simple and complex ruby polyfill
 // *
-@import hruby
+@import h-ruby
 
 // * Punctuation rules (禁則)
 // *
-jinze
+h-jinze
   // box
   display: inline-block
   text-indent: 0

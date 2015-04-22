@@ -77,7 +77,7 @@
 
   $mark: han-mark-to-code( $mark, $shape )
 
-  .no-textemphasis & char:after
+  .no-textemphasis & h-char:after
     @if ( $posi != null )
       margin-top: $posi
     @if ( $mark != null and $mark != '' )
@@ -86,8 +86,8 @@
       color: $color
 
   @if ( $extend == false and $skip == false )
-    char.punct,
-    char.biaodian
+    h-char.punct,
+    h-char.biaodian
       +han-text-emphasis( null, inherit, null, null )
 
       .no-textemphasis &:after
@@ -97,3 +97,4 @@
             $mark: '\25cb'
 
         content: $mark !important
+
