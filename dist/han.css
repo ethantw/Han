@@ -2535,6 +2535,7 @@ h-cs[hidden] {
   visibility: hidden;
   font: .825em Courier;
   letter-spacing: 0;
+  white-space: normal;
 }
 
 h-char.biaodian.open > h-inner {
