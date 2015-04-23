@@ -8,6 +8,11 @@
   line-height: $han-article-line-height
 
   @if ( $han-article-justify )
+    &
+      -moz-hyphens: auto
+      -ms-hyphens: auto
+      -webkit-hyphens: auto
+      hyphens: auto
     p,
     li
       text-align: justify

@@ -2259,6 +2259,12 @@ h-ruby h-ru[annotation]:before {
 article {
   line-height: 1.7;
 }
+article {
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
 article p,
 article li {
   text-align: justify;
