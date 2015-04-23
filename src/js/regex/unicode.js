@@ -28,7 +28,7 @@ var UNICODE = {
   /**
    * CJK-related blocks (CJK相關字符區段)
    *
-   *  1. 中日韓統一表意文字：[\u4E00-\u9FFF]
+   *  1. 中日韓統一意音文字：[\u4E00-\u9FFF]
          Basic CJK unified ideographs
    *  2. 擴展-A區：[\u3400-\u4DB5]
          Extended-A
@@ -44,9 +44,9 @@ var UNICODE = {
          Extended-F (not supported yet)
    *  8. 筆畫區：[\u31C0-\u31E3]
          Strokes
-   *  9. 表意數字「〇」：[\u3007]
+   *  9. 意音數字「〇」：[\u3007]
          Ideographic number zero
-   * 10. 相容表意文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
+   * 10. 相容意音文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
          Compatibility ideograph and supplement (not supported)
 
          12 exceptions:
@@ -56,7 +56,7 @@ var UNICODE = {
 
    * 11. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
          Kangxi and supplement radicals
-   * 12. 表意文字描述字元：[\u2FF0-\u2FFA]
+   * 12. 意音文字描述字元：[\u2FF0-\u2FFA]
          Ideographic description characters
    */
   hanzi: {

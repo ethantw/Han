@@ -4,7 +4,7 @@
 @mixin han-range-cjk {
   unicode-range:
     // Basic CJK unified ideographs
-    // 中日韓統一表意文字
+    // 中日韓統一意音文字
     U+"+4E00-9FFF",
 
     // CJK Ext-A, B, C, D
@@ -15,7 +15,7 @@
     U+"+2B740-2B81D",
 
     // 12 Compatibility Ideograph characters
-    // 12個「相容表意文字」
+    // 12個「相容意音文字」
     U+"+FA0E-FA0F", U+"+FA11", U+"+FA13-FA14", U+"+FA1F", U+"+FA21", U+"+FA23", U+"+FA24", U+"+FA27-FA29",
 
     // Kana
@@ -62,3 +62,4 @@
     U+"+F0061", U+"+F0065", U+"+F0069", U+"+F006F", U+"+F0075"
   ;
 }
+
