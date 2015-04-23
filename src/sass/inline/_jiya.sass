@@ -36,14 +36,17 @@ h-char.biaodian
     > h-cs
       display: inline
 
-  &[unicode='3001']:lang(zh-Hant),
-  &[unicode='3002']:lang(zh-Hant),
-  &[unicode='ff0c']:lang(zh-Hant),
-  &[unicode='ff0e']:lang(zh-Hant)
-    > h-inner
-      letter-spacing: inherit
-    > h-cs
-      display: none
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      > h-inner
+        letter-spacing: inherit
+      > h-cs
+        display: none
 
 // * Handle consecutive Biaodian (連續標點擠壓)
 // *
@@ -56,8 +59,11 @@ h-char-group
   [unicode='3002'],
   [unicode='ff0c'],
   [unicode='ff0e']
-    &:lang(zh-Hant) + .open h-cs
-      display: none
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      & + .open h-cs
+        display: none
 
   // * Handle ‘「漢」·「字」’ situation
   // *
