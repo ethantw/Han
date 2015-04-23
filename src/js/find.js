@@ -6,6 +6,18 @@ define([
   './fibre'
 ], function( Han, $, UNICODE, TYPESET, Fibre ) {
 
+function createBdChar( char ) {
+  var div = $.create( 'div' )
+  var unicode = char.charCodeAt( 0 ).toString( 16 )
+  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'open' :
+    char.match( TYPESET.char.biaodian.close ) ? 'close end' :
+    char.match( TYPESET.char.biaodian.end ) ? 'end' : 
+    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'liga' : '' )
+
+  div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
+  return div.firstChild
+}
+
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
@@ -17,7 +29,6 @@ $.extend( Fibre.fn, {
       TYPESET.jinze.touwei,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'touwei' )
-
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
           ? elem : ''
@@ -27,7 +38,6 @@ $.extend( Fibre.fn, {
       TYPESET.jinze.wei,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'wei' )
-
         elem.innerHTML = match[0]
         return portion.index === 0 ? elem : ''
       }
@@ -36,7 +46,6 @@ $.extend( Fibre.fn, {
       TYPESET.jinze.tou,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'tou' )
-
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
           ? elem : ''
@@ -46,7 +55,6 @@ $.extend( Fibre.fn, {
       TYPESET.jinze.middle,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'middle' )
-
         elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
           ? elem : ''
@@ -59,7 +67,7 @@ $.extend( Fibre.fn, {
 
   groupify: function() {
     var origFilterOutSelector = this.filterOutSelector
-    this.filterOutSelector += ', h-char-group'
+    this.filterOutSelector += ', h-hangable, h-char-group'
 
     this
     .wrap(
@@ -113,18 +121,7 @@ $.extend( Fibre.fn, {
         this.replace(
           TYPESET.char.biaodian.all,
           function( portion, match ) {
-            var mat = match[0]
-            var  clazz = 'biaodian cjk ' + (
-                  mat.match( TYPESET.char.biaodian.open ) ? 'open' :
-                    mat.match( TYPESET.char.biaodian.close ) ? 'close end' :
-                      mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
-                )
-            var elem = $.create( 'h-char', clazz )
-            var unicode = mat.charCodeAt( 0 ).toString( 16 )
-
-            elem.setAttribute( 'unicode', unicode )
-            elem.innerHTML = mat
-            return elem
+            return createBdChar( match[0] )
           }
         )
       }
@@ -133,13 +130,7 @@ $.extend( Fibre.fn, {
         option.liga === 'liga' ? TYPESET.char.biaodian.liga :
           new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
         function( portion, match ) {
-          var mat = match[0]
-          var elem = $.create( 'h-char', 'biaodian liga cjk' )
-          var unicode = mat.charCodeAt( 0 ).toString( 16 )
-
-          elem.setAttribute( 'unicode', unicode )
-          elem.innerHTML = mat
-          return elem
+          return createBdChar( match[0] )
         }
       )
     }
