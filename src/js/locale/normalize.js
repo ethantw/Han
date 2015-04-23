@@ -1,9 +1,8 @@
 define([
   './core',
   '../method',
-  '../regex/typeset',
-  '../fibre-extend'
-], function( Locale, $, TYPESET, Fibre ) {
+  '../regex/typeset'
+], function( Locale, $, TYPESET ) {
 
 /**
  * Create and return a new `<h-ru>` element
@@ -132,7 +131,7 @@ $.extend( Locale, {
 
     $target
     .forEach(function( elem ) {
-      var $elem = Fibre( elem )
+      var $elem = Han( elem )
 
       $elem
       .groupify()

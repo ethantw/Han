@@ -1751,7 +1751,7 @@ $.extend( Locale, {
 
     $target
     .forEach(function( elem ) {
-      var $elem = Fibre( elem )
+      var $elem = Han( elem )
 
       $elem
       .groupify()
