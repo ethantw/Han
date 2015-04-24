@@ -64,16 +64,16 @@
     d.innerHTML = '<em>測試abc</em>';
     Han(d).renderEm();
     if (support) {
-      htmlEqual(d.innerHTML, '<em>測試<h-word>abc</h-word></em>');
+      htmlEqual(d.innerHTML, '<em>測試abc</em>');
     } else {
-      htmlEqual(d.innerHTML, '<em><h-char class="hanzi cjk">測</h-char><h-char class="hanzi cjk">試</h-char><h-word><h-char class="alphabet latin">a</h-char><h-char class="alphabet latin">b</h-char><h-char class="alphabet latin">c</h-char></h-word></em>');
+      htmlEqual(d.innerHTML, '<em><h-char class=hanzi cjk>測</h-char><h-char class=hanzi cjk>試</h-char><h-word class=western><h-char class=alphabet latin>a</h-char><h-char class=alphabet latin>b</h-char><h-char class=alphabet latin>c</h-char></h-word></em>');
     }
     d.innerHTML = '<em>「測『試』」，test ‘this!’。</em>';
     Han(d).renderEm();
     if (support) {
-      htmlEqual(d.innerHTML, '<em><h-char unicode=300c class=biaodian cjk open>「</h-char>測<h-char unicode=300e class=biaodian cjk open>『</h-char>試<h-char-group class=biaodian cjk><h-char unicode=300f class=biaodian cjk close end>』</h-char><h-char unicode=300d class=biaodian cjk close end>」</h-char><h-char unicode=ff0c class=biaodian cjk end>，</h-char></h-char-group><h-word>test</h-word> <h-word><h-char class=punct>‘</h-char>this<h-char class=punct>!</h-char><h-char class=punct>’</h-char></h-word><h-char unicode=3002 class=biaodian cjk end>。</h-char></em>');
+      htmlEqual(d.innerHTML, '<em><h-char unicode=300c class=biaodian cjk open>「</h-char>測<h-char unicode=300e class=biaodian cjk open>『</h-char>試<h-char-group class=biaodian cjk><h-char unicode=300f class=biaodian cjk close end>』</h-char><h-char unicode=300d class=biaodian cjk close end>」</h-char><h-char unicode=ff0c class=biaodian cjk end>，</h-char></h-char-group>test <h-char class=punct>‘</h-char>this<h-char class=punct>!</h-char><h-char class=punct>’</h-char><h-char unicode=3002 class=biaodian cjk end>。</h-char></em>');
     } else {
-      htmlEqual(d.innerHTML, '<em><h-char unicode=300c class=biaodian cjk open>「</h-char><h-char class=hanzi cjk>測</h-char><h-char unicode=300e class=biaodian cjk open>『</h-char><h-char class=hanzi cjk>試</h-char><h-char-group class=biaodian cjk><h-char unicode=300f class=biaodian cjk close end>』</h-char><h-char unicode=300d class=biaodian cjk close end>」</h-char><h-char unicode=ff0c class=biaodian cjk end>，</h-char></h-char-group><h-word><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>e</h-char><h-char class=alphabet latin>s</h-char><h-char class=alphabet latin>t</h-char></h-word> <h-word><h-char class=punct>‘</h-char><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>i</h-char><h-char class=alphabet latin>s</h-char><h-char class=punct>!</h-char><h-char class=punct>’</h-char></h-word><h-char unicode=3002 class=biaodian cjk end>。</h-char></em>');
+      htmlEqual(d.innerHTML, '<em><h-jinze class=tou><h-char unicode=300c class=biaodian cjk open>「</h-char><h-char class=hanzi cjk>測</h-char></h-jinze><h-jinze class=touwei><h-char unicode=300e class=biaodian cjk open>『</h-char><h-char class=hanzi cjk>試</h-char><h-char-group class=biaodian cjk><h-char unicode=300f class=biaodian cjk close end>』</h-char><h-char unicode=300d class=biaodian cjk close end>」</h-char><h-char unicode=ff0c class=biaodian cjk end>，</h-char></h-char-group></h-jinze><h-word class=western><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>e</h-char><h-char class=alphabet latin>s</h-char><h-char class=alphabet latin>t</h-char></h-word> <h-word class=western><h-char class=punct>‘</h-char><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>i</h-char><h-char class=alphabet latin>s</h-char><h-char class=punct>!</h-char></h-word><h-jinze class=wei><h-word class=western><h-char class=punct>’</h-char></h-word><h-char unicode=3002 class=biaodian cjk end>。</h-char></h-jinze></em>');
     }
     d.innerHTML = '<em>𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳</em>';
     Han(d).renderEm();
@@ -85,9 +85,9 @@
     d.innerHTML = '<em>¡Hola! Ὅμηρος Свети</em>';
     Han(d).renderEm();
     if (support) {
-      htmlEqual(d.innerHTML, '<em><h-word><h-char class=punct>¡</h-char>hola<h-char class=punct>!</h-char></h-word> <h-word>ὅμηρος</h-word> <h-word>свети</h-word></em>');
+      htmlEqual(d.innerHTML, '<em><h-char class=punct>¡</h-char>hola<h-char class=punct>!</h-char> ὅμηρος свети</em>');
     } else {
-      htmlEqual(d.innerHTML, '<em><h-word><h-char class=punct>¡</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>o</h-char><h-char class=alphabet latin>l</h-char><h-char class=alphabet latin>a</h-char><h-char class=punct>!</h-char></h-word> <h-word><h-char class=alphabet ellinika greek>ὅ</h-char><h-char class=alphabet ellinika greek>μ</h-char><h-char class=alphabet ellinika greek>η</h-char><h-char class=alphabet ellinika greek>ρ</h-char><h-char class=alphabet ellinika greek>ο</h-char><h-char class=alphabet ellinika greek>ς</h-char></h-word> <h-word><h-char class=alphabet kirillica cyrillic>с</h-char><h-char class=alphabet kirillica cyrillic>в</h-char><h-char class=alphabet kirillica cyrillic>е</h-char><h-char class=alphabet kirillica cyrillic>т</h-char><h-char class=alphabet kirillica cyrillic>и</h-char></h-word></em>');
+      htmlEqual(d.innerHTML, '<em><h-word class=western><h-char class=punct>¡</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>o</h-char><h-char class=alphabet latin>l</h-char><h-char class=alphabet latin>a</h-char><h-char class=punct>!</h-char></h-word> <h-word class=western><h-char class=alphabet ellinika greek>ὅ</h-char><h-char class=alphabet ellinika greek>μ</h-char><h-char class=alphabet ellinika greek>η</h-char><h-char class=alphabet ellinika greek>ρ</h-char><h-char class=alphabet ellinika greek>ο</h-char><h-char class=alphabet ellinika greek>ς</h-char></h-word> <h-word class=western><h-char class=alphabet kirillica cyrillic>с</h-char><h-char class=alphabet kirillica cyrillic>в</h-char><h-char class=alphabet kirillica cyrillic>е</h-char><h-char class=alphabet kirillica cyrillic>т</h-char><h-char class=alphabet kirillica cyrillic>и</h-char></h-word></em>');
     }
   });
   test('Interlinear annotations (Ruby)', function(){
