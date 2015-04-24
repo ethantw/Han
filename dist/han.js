@@ -1360,6 +1360,7 @@ void [
   'replace',
   'wrap',
   'revert',
+  'groupify',
   'jinzify',
   'charify'
 ].forEach(function( method ) {
