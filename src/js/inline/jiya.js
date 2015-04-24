@@ -9,15 +9,8 @@ Han.renderJiya = function( context ) {
 
   finder
   .filterOut( 'textarea, code, kbd, samp, pre', true )
-  .groupify()
-  .charify({
-    hanzi:     'biaodian',
-    liga:      'liga',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
-  })
+  .groupify({ biaodian:  true })
+  .charify({  biaodian:  true })
 
   // The reason we're doing this instead of using pseudo elements in CSS
   // is because WebKit has problem rendering pseudo elements containing only 

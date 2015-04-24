@@ -871,7 +871,8 @@ h-ruby[rightangle] h-ru[annotation]:before {
   }
 }
 
-h-jinze {
+h-jinze,
+h-word {
   display: inline-block;
   text-indent: 0;
 }

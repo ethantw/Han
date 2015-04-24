@@ -13,10 +13,10 @@ Han.UNICODE.greek    = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.hangul   = Han.UNICODE.eonmun
 
-Han.TYPESET.char.cjk               = Han.TYPESET.char.hanzi
-Han.TYPESET.char.alphabet.greek    = Han.TYPESET.char.alphabet.ellinika
-Han.TYPESET.char.alphabet.cyrillic = Han.TYPESET.char.alphabet.kirillica
-Han.TYPESET.char.alphabet.hangul   = Han.TYPESET.char.alphabet.eonmun
+Han.TYPESET.char.cjk      = Han.TYPESET.char.hanzi
+Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
+Han.TYPESET.char.cyrillic = Han.TYPESET.char.kirillica
+Han.TYPESET.char.hangul   = Han.TYPESET.char.eonmun
 
 return Han
 })

@@ -133,15 +133,24 @@ $.extend( Locale, {
     .forEach(function( elem ) {
       var $elem = Han( elem )
 
+      if ( !Locale.support.textemphasis ) {
+        $elem
+        .jinzify()
+        .groupify({ western: true })
+      }
+
       $elem
-      .groupify()
+      .groupify({ biaodian:  true })
       .charify( Locale.support.textemphasis ? {
-        hanzi:     'biaodian',
-        word:      'punctuation'
+        biaodian:  true,
+        punct:     true
       } : {
-        latin:     'individual',
-        ellinika:  'individual',
-        kirillica: 'individual'
+        hanzi:     true,
+        biaodian:  true,
+        punct:     true,
+        latin:     true,
+        ellinika:  true,
+        kirillica: true
       })
     })
   },

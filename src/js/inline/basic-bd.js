@@ -19,14 +19,7 @@ Han.correctBasicBD = function( context, all ) {
 
   finder
   .wrap( /\u00B7/g, $.clone( mdot ))
-  .charify({
-    liga:      'liga',
-    hanzi:     'none',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
-  })
+  .charify({ biaodian: true })
 }
 
 $.extend( Han.fn, {

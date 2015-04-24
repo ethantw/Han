@@ -65,20 +65,47 @@ $.extend( Fibre.fn, {
     return this
   },
 
-  groupify: function() {
+  groupify: function( option ) {
     var origFilterOutSelector = this.filterOutSelector
+    var option = $.extend({
+      biaodian: false,
+    //punct: false,
+      hanzi: false,   // Includes Kana
+      kana: false,
+      eonmun: false,
+      western: false  // Includes Latin, Greek and Cyrillic
+    }, option || {})
+
     this.filterOutSelector += ', h-hangable, h-char-group'
 
-    this
-    .wrap(
-      TYPESET.char.biaodian.group[ 0 ],
-      $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
-    )
-    .wrap(
-      TYPESET.char.biaodian.group[ 1 ],
-      $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
-    )
-    
+    if ( option.biaodian ) {
+      this.wrap(
+        TYPESET.group.biaodian[ 0 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      ).wrap(
+        TYPESET.group.biaodian[ 1 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      )
+    }
+    if ( option.hanzi ) {
+      this.wrap(
+        TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
+      )
+    }
+    if ( option.western ) {
+      this.wrap(
+        TYPESET.group.western, $.clone( $.create( 'h-word', 'western' ))
+      )
+    }
+    if ( option.kana ) {
+      this.wrap(
+        TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
+      )
+    }
+    if ( option.eonmun ) {
+      this.wrap(
+        TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
+      )
+    }
+
     this.filterOutSelector = origFilterOutSelector
     return this
   },
@@ -88,73 +115,61 @@ $.extend( Fibre.fn, {
   charify: function( option ) {
     var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
-      hanzi:     'individual',
-                  // individual || group || biaodian || none
-      liga:      'liga',
-                 // liga || none
-      word:      'group',
-                  // group || punctuation || none
-
-      latin:     'group',
-      ellinika:  'group',
-      kirillica: 'group',
-      kana:      'none',
-      eonmun:    'none'
-                  // group || individual || none
+      biaodian: false,
+      punct: false,
+      hanzi: false,     // Includes Kana
+      latin: false,
+      ellinika: false,
+      kirillica: false,
+      kana: false,
+      eonmun: false
     }, option || {})
 
     this.filterOutSelector += ', h-char'
 
-    // CJK and biaodian
-    if ( option.hanzi === 'group' ) {
-      this.wrap( TYPESET.char.hanzi.group, $.clone( $.create( 'h-char-group', 'hanzi cjk' )))
-    }
-    if ( option.hanzi === 'individual' ) {
-      this.wrap( TYPESET.char.hanzi.individual, $.clone( $.create( 'h-char', 'hanzi cjk' )))
-    }
-
-    if ( option.hanzi === 'individual' ||
-         option.hanzi === 'biaodian' ||
-         option.liga  === 'liga'
-    ) {
-      if ( option.hanzi !== 'none' ) {
-        this.replace(
-          TYPESET.char.biaodian.all,
-          function( portion, match ) {
-            return createBdChar( match[0] )
-          }
-        )
-      }
-
+    if ( option.biaodian ) {
       this.replace(
-        option.liga === 'liga' ? TYPESET.char.biaodian.liga :
-          new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
-        function( portion, match ) {
-          return createBdChar( match[0] )
-        }
+        TYPESET.char.biaodian.all,
+        function( portion, match ) {  return createBdChar( match[0] )  }
+      ).replace(
+        TYPESET.char.biaodian.liga,
+        function( portion, match ) {  return createBdChar( match[0] )  }
       )
     }
-
-    // Western languages (word-level)
-    if ( option.word !== 'none' ) {
-      this.wrap( TYPESET.char.word, $.clone( $.create( 'h-word' )))
+    if ( option.hanzi ) {
+      this.wrap(
+        TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
+      )
     }
-
-    // Western languages (alphabet-level)
-    if ( option.latin !== 'none' ||
-         option.ellinika !== 'none' ||
-         option.kirillica !== 'none'
-    ) {
-      this.wrap( TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' )))
+    if ( option.punct ) {
+      this.wrap(
+        TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' ))
+      )
     }
-    if ( option.latin === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.latin, $.clone( $.create( 'h-char', 'alphabet latin' )))
+    if ( option.latin ) {
+      this.wrap(
+        TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
+      )
     }
-    if ( option.ellinika === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' )))
+    if ( option.ellinika ) {
+      this.wrap(
+        TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
+      )
     }
-    if ( option.kirillica === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' )))
+    if ( option.kirillica ) {
+      this.wrap(
+        TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
+      )
+    }
+    if ( option.kana ) {
+      this.wrap(
+        TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
+      )
+    }
+    if ( option.eonmun ) {
+      this.wrap(
+        TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
+      )
     }
 
     this.filterOutSelector = origFilterOutSelector
@@ -168,8 +183,8 @@ void [
   'replace',
   'wrap',
   'revert',
-  'groupify',
   'jinzify',
+  'groupify',
   'charify'
 ].forEach(function( method ) {
   Han.fn[ method ] = function() {

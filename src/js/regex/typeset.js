@@ -63,30 +63,31 @@ var TYPESET = (function() {
         open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
         close: new RegExp( '(' + rBdClose + ')', 'g' ),
         end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-        liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
-
-        group: [
-          new RegExp( '(' + rBd + '){2,}', 'g' ),
-          new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
-        ]
+        liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
       },
 
-      hanzi: {
-        individual: new RegExp( '(' + rHan + ')', 'g' ),
-        group:      new RegExp( '(' + rHan + ')+', 'g' )
-      },
+      hanzi: new RegExp( '(' + rHan + ')', 'g' ),
 
-      word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
+      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
+      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
+      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
 
-      alphabet: {
-        latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-        ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-        kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
-        kana:        new RegExp( '(' + rKana + ')', 'g' ),
-        smallkana:   new RegExp( '(' + rKanaS + ')', 'g' ),
-        eonmun:      new RegExp( '(' + rEon + ')', 'g' ),
-        halfeonmun:  new RegExp( '(' + rEonH + ')', 'g' )
-      }
+      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
+    },
+
+    /* Word-level selectors (詞級選擇器)
+     */
+    group: {
+      biaodian: [
+        new RegExp( '(' + rBd + '){2,}', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+      ],
+      punct:       null,
+      hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
+      western:     new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
+      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')+', 'g' ),
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')+', 'g' )
     },
 
     /* Punctuation Rules (禁則)
