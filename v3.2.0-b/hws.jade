@@ -2,7 +2,7 @@ doctype html
 html(lang='zh-Hant').han-init
   head
     meta(charset='utf-8')
-    title 測試・漢字西文混排間隙 — 漢字標準格式
+    title 測試・漢字－西文混排間隙 — 漢字標準格式
     link(rel='stylesheet', href='./han.min.css')
     style.
       html {
@@ -23,9 +23,9 @@ html(lang='zh-Hant').han-init
   body.test
 
     article
-      h1 測試·漢字西文混排間隙
+      h1 測試·漢字－西文混排間隙
       section#jiben_hws
-        h2 基本漢字西文混排間隙
+        h2 基本漢字－西文混排間隙
         section#latn
           h3 拉丁字母及數字
           p
@@ -50,7 +50,7 @@ html(lang='zh-Hant').han-init
             span(lang='ru') русский язык
             | 我可以稍微看得懂。
       section#cjk
-        h2 完整中日韓表意文字區段支援
+        h2 完整中日韓意音文字區段支援
         p
           strong 注意：
           | 部分擴展區漢字可能不為多數作業系統支援，而顯示為空白方框。
@@ -61,9 +61,9 @@ html(lang='zh-Hant').han-init
           | <b>擴展B：</b>A𠀀b𠄉C𪛖d<br>
           | <b>擴展C：</b>E𪜀f𪶛G𪷼h𪜺I<br>
           | <b>擴展D：</b>j𫝀K𫠝L<br>
-          | <b>表意數字零：</b>Θ〇Ω<br>
+          | <b>意音數字零：</b>Θ〇Ω<br>
           | <b>康熙及簡體字部首：</b>⼌Т⿕Я⺃ж⻍ы⻰Ӓ⻳Ӂ<br>
-          | <b>表意文字描述字元：</b>⿸Ҕ⿷ẳ⿳
+          | <b>意音文字描述字元：</b>⿸Ҕ⿷ẳ⿳
         section#kana
           h3 假名
           p(lang='ja')
@@ -145,11 +145,11 @@ html(lang='zh-Hant').han-init
           | 格式pre處理
         p.noti
           strong 注意：
-          | 在漢字西文混排間隙「基本模式」下，<!--
+          | 在漢字–西文混排間隙「基本模式」下，<!--
           | --><strong>代碼、輸入鍵、計算機輸出示例等元素仍經
           code renderHWS()
           | 處理，</strong>惟使用樣式表將其下之<code>hws</code><!--
-          | -->元素隱藏，可藉樣式的改寫來顯示漢字西文混排間隙；<!--
+          | -->元素隱藏，可藉樣式的改寫來顯示漢字–西文混排間隙；<!--
           | -->「嚴格模式」下，則<em>不</em>渲染以上元素。
 
     // Here goes scripts

@@ -148,7 +148,7 @@ var UNICODE = {
   /**
    * CJK-related blocks (CJK相關字符區段)
    *
-   *  1. 中日韓統一表意文字：[\u4E00-\u9FFF]
+   *  1. 中日韓統一意音文字：[\u4E00-\u9FFF]
          Basic CJK unified ideographs
    *  2. 擴展-A區：[\u3400-\u4DB5]
          Extended-A
@@ -164,9 +164,9 @@ var UNICODE = {
          Extended-F (not supported yet)
    *  8. 筆畫區：[\u31C0-\u31E3]
          Strokes
-   *  9. 表意數字「〇」：[\u3007]
+   *  9. 意音數字「〇」：[\u3007]
          Ideographic number zero
-   * 10. 相容表意文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
+   * 10. 相容意音文字及補充：[\uF900-\uFAFF][\u2F800-\u2FA1D]（不使用）
          Compatibility ideograph and supplement (not supported)
 
          12 exceptions:
@@ -176,7 +176,7 @@ var UNICODE = {
 
    * 11. 康熙字典及簡化字部首：[\u2F00-\u2FD5\u2E80-\u2EF3]
          Kangxi and supplement radicals
-   * 12. 表意文字描述字元：[\u2FF0-\u2FFA]
+   * 12. 意音文字描述字元：[\u2FF0-\u2FFA]
          Ideographic description characters
    */
   hanzi: {
@@ -344,7 +344,7 @@ var TYPESET = (function() {
    
   // For words like `it's`, `Jones’s` or `'99`
   var rApo = '[\u0027\u2019]'
-  var rChar = rHan + '|(' + rAlph + '|' + rApo + ')+'
+  var rChar = rHan + '|(?:' + rAlph + '|' + rApo + ')+'
 
   var rZyS = UNICODE.zhuyin.initial
   var rZyJ = UNICODE.zhuyin.medial
@@ -367,36 +367,37 @@ var TYPESET = (function() {
         open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
         close: new RegExp( '(' + rBdClose + ')', 'g' ),
         end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-        liga:  new RegExp( '(' + rBdLiga + ')', 'g' ),
-
-        group: [
-          new RegExp( '(' + rBd + '){2,}', 'g' ),
-          new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
-        ]
+        liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
       },
 
-      hanzi: {
-        individual: new RegExp( '(' + rHan + ')', 'g' ),
-        group:      new RegExp( '(' + rHan + ')+', 'g' )
-      },
+      hanzi: new RegExp( '(' + rHan + ')', 'g' ),
 
-      word: new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
+      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
+      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
+      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
 
-      alphabet: {
-        latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-        ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-        kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
-        kana:        new RegExp( '(' + rKana + ')', 'g' ),
-        smallkana:   new RegExp( '(' + rKanaS + ')', 'g' ),
-        eonmun:      new RegExp( '(' + rEon + ')', 'g' ),
-        halfeonmun:  new RegExp( '(' + rEonH + ')', 'g' )
-      }
+      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
+    },
+
+    /* Word-level selectors (詞級選擇器)
+     */
+    group: {
+      biaodian: [
+        new RegExp( '(' + rBd + '){2,}', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+      ],
+      punct:       null,
+      hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
+      western:     new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
+      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')+', 'g' ),
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')+', 'g' )
     },
 
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging: new RegExp( '((' + rChar + ')' + rBdClose  + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
+      hanging:  new RegExp( '(' + rWhite + '*)(' + rBdClose + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
@@ -477,10 +478,10 @@ Han.UNICODE.greek    = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.hangul   = Han.UNICODE.eonmun
 
-Han.TYPESET.char.cjk               = Han.TYPESET.char.hanzi
-Han.TYPESET.char.alphabet.greek    = Han.TYPESET.char.alphabet.ellinika
-Han.TYPESET.char.alphabet.cyrillic = Han.TYPESET.char.alphabet.kirillica
-Han.TYPESET.char.alphabet.hangul   = Han.TYPESET.char.alphabet.eonmun
+Han.TYPESET.char.cjk      = Han.TYPESET.char.hanzi
+Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
+Han.TYPESET.char.cyrillic = Han.TYPESET.char.kirillica
+Han.TYPESET.char.hangul   = Han.TYPESET.char.eonmun
 
 var $ = {
   // Simplified query selectors which return the node list
@@ -1198,72 +1199,56 @@ return Fibre
 }())
 );
 
+function createBdChar( char ) {
+  var div = $.create( 'div' )
+  var unicode = char.charCodeAt( 0 ).toString( 16 )
+  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'open' :
+    char.match( TYPESET.char.biaodian.close ) ? 'close end' :
+    char.match( TYPESET.char.biaodian.end ) ? 'end' : 
+    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'liga' : '' )
+
+  div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
+  return div.firstChild
+}
+
 $.extend( Fibre.fn, {
-  // Implement hanging biaodian
-  hangingify: function() {
-    this
-    .replace(
-      TYPESET.jinze.hanging,
-      function( portion, match ) {
-        var elem = $.create( 'jinze', 'wei hangable' )
-
-        elem.innerHTML = match[1] + '<hcs biaodian="' + match[4] + '"><inner> </inner></hcs>' + match[4]
-        return portion.index === 0 ? elem : ''
-      }
-    )
-  },
-
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
-    var origFilterOutSelector= this.filterOutSelector
-
-    this.filterOutSelector += ', jinze'
+    var origFilterOutSelector = this.filterOutSelector
+    this.filterOutSelector += ', h-jinze'
 
     this
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
-        var elem = $.create( 'jinze', 'touwei' )
-
-        elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) || portion.index === 1
-        ) ? elem : ''
+        var elem = $.create( 'h-jinze', 'touwei' )
+        elem.innerHTML = match[0]
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.wei,
       function( portion, match ) {
-        var elem = $.create( 'jinze', 'wei' )
-
-        elem.innerHTML = match[1] + match[3]
+        var elem = $.create( 'h-jinze', 'wei' )
+        elem.innerHTML = match[0]
         return portion.index === 0 ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.tou,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
-        var elem = $.create( 'jinze', 'tou' )
-
-        elem.appendChild( text )
-        return (
-          ( portion.index === 0 && portion.isEnd ) ||
-          portion.index === 1
-        ) ? elem : ''
+        var elem = $.create( 'h-jinze', 'tou' )
+        elem.innerHTML = match[0]
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
+          ? elem : ''
       }
     )
     .replace(
       TYPESET.jinze.middle,
       function( portion, match ) {
-        var mat = match[0]
-        var text = $.create( '', mat )
-        var elem = $.create( 'jinze', 'middle' )
-
-        elem.appendChild( text )
+        var elem = $.create( 'h-jinze', 'middle' )
+        elem.innerHTML = match[0]
         return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
           ? elem : ''
       }
@@ -1273,108 +1258,114 @@ $.extend( Fibre.fn, {
     return this
   },
 
-  groupify: function() {
-    this
-    .wrap(
-      TYPESET.char.biaodian.group[ 0 ],
-      $.clone( $.create( 'char_group', 'biaodian cjk' ))
-    )
-    .wrap(
-      TYPESET.char.biaodian.group[ 1 ],
-      $.clone( $.create( 'char_group', 'biaodian cjk' ))
-    )
+  groupify: function( option ) {
+    var origFilterOutSelector = this.filterOutSelector
+    var option = $.extend({
+      biaodian: false,
+    //punct: false,
+      hanzi: false,   // Includes Kana
+      kana: false,
+      eonmun: false,
+      western: false  // Includes Latin, Greek and Cyrillic
+    }, option || {})
+
+    this.filterOutSelector += ', h-hangable, h-char-group'
+
+    if ( option.biaodian ) {
+      this.wrap(
+        TYPESET.group.biaodian[ 0 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      ).wrap(
+        TYPESET.group.biaodian[ 1 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      )
+    }
+    if ( option.hanzi ) {
+      this.wrap(
+        TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
+      )
+    }
+    if ( option.western ) {
+      this.wrap(
+        TYPESET.group.western, $.clone( $.create( 'h-word', 'western' ))
+      )
+    }
+    if ( option.kana ) {
+      this.wrap(
+        TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
+      )
+    }
+    if ( option.eonmun ) {
+      this.wrap(
+        TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
+      )
+    }
+
+    this.filterOutSelector = origFilterOutSelector
     return this
   },
 
   // Implementation of character-level selector
   // (字元級選擇器)
   charify: function( option ) {
+    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
-      hanzi:     'individual',
-                  // individual || group || biaodian || none
-      liga:      'liga',
-                 // liga || none
-      word:      'group',
-                  // group || punctuation || none
-
-      latin:     'group',
-      ellinika:  'group',
-      kirillica: 'group',
-      kana:      'none',
-      eonmun:    'none'
-                  // group || individual || none
+      biaodian: false,
+      punct: false,
+      hanzi: false,     // Includes Kana
+      latin: false,
+      ellinika: false,
+      kirillica: false,
+      kana: false,
+      eonmun: false
     }, option || {})
 
-    // CJK and biaodian
-    if ( option.hanzi === 'group' ) {
-      this.wrap( TYPESET.char.hanzi.group, $.clone( $.create( 'char_group', 'hanzi cjk' )))
-    }
-    if ( option.hanzi === 'individual' ) {
-      this.wrap( TYPESET.char.hanzi.individual, $.clone( $.create( 'char', 'hanzi cjk' )))
-    }
+    this.filterOutSelector += ', h-char'
 
-    if ( option.hanzi === 'individual' ||
-         option.hanzi === 'biaodian' ||
-         option.liga  === 'liga'
-    ) {
-      if ( option.hanzi !== 'none' ) {
-        this.replace(
-          TYPESET.char.biaodian.all,
-          function( portion, match ) {
-            var mat = match[0]
-            var text = $.create( '', mat )
-            var  clazz = 'biaodian cjk ' + (
-                  mat.match( TYPESET.char.biaodian.open ) ? 'open' :
-                    mat.match( TYPESET.char.biaodian.close ) ? 'close end' :
-                      mat.match( TYPESET.char.biaodian.end ) ? 'end' : ''
-                )
-            var elem = $.create( 'char', clazz )
-            var unicode = mat.charCodeAt( 0 ).toString( 16 )
-
-            elem.setAttribute( 'unicode', unicode )
-            elem.appendChild( text )
-            return elem
-          }
-        )
-      }
-
+    if ( option.biaodian ) {
       this.replace(
-        option.liga === 'liga' ? TYPESET.char.biaodian.liga :
-          new RegExp( '(' + UNICODE.biaodian.liga + ')', 'g' ),
-        function( portion, match ) {
-          var mat = match[0]
-          var text = $.create( '', mat )
-          var elem = $.create( 'char', 'biaodian liga cjk' )
-          var unicode = mat.charCodeAt( 0 ).toString( 16 )
-
-          elem.setAttribute( 'unicode', unicode )
-          elem.appendChild( text )
-          return elem
-        }
+        TYPESET.char.biaodian.all,
+        function( portion, match ) {  return createBdChar( match[0] )  }
+      ).replace(
+        TYPESET.char.biaodian.liga,
+        function( portion, match ) {  return createBdChar( match[0] )  }
+      )
+    }
+    if ( option.hanzi ) {
+      this.wrap(
+        TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
+      )
+    }
+    if ( option.punct ) {
+      this.wrap(
+        TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' ))
+      )
+    }
+    if ( option.latin ) {
+      this.wrap(
+        TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
+      )
+    }
+    if ( option.ellinika ) {
+      this.wrap(
+        TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
+      )
+    }
+    if ( option.kirillica ) {
+      this.wrap(
+        TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
+      )
+    }
+    if ( option.kana ) {
+      this.wrap(
+        TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
+      )
+    }
+    if ( option.eonmun ) {
+      this.wrap(
+        TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
       )
     }
 
-    // Western languages (word-level)
-    if ( option.word !== 'none' ) {
-      this.wrap( TYPESET.char.word, $.clone( $.create( 'word' )))
-    }
-
-    // Western languages (alphabet-level)
-    if ( option.latin !== 'none' ||
-         option.ellinika !== 'none' ||
-         option.kirillica !== 'none'
-    ) {
-      this.wrap( TYPESET.char.punct.all, $.clone( $.create( 'char', 'punct' )))
-    }
-    if ( option.latin === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.latin, $.clone( $.create( 'char', 'alphabet latin' )))
-    }
-    if ( option.ellinika === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.ellinika, $.clone( $.create( 'char', 'alphabet ellinika greek' )))
-    }
-    if ( option.kirillica === 'individual' ) {
-      this.wrap( TYPESET.char.alphabet.kirillica, $.clone( $.create( 'char', 'alphabet kirillica cyrillic' )))
-    }
+    this.filterOutSelector = origFilterOutSelector
     return this
   }
 })
@@ -1386,6 +1377,7 @@ void [
   'wrap',
   'revert',
   'jinzify',
+  'groupify',
   'charify'
 ].forEach(function( method ) {
   Han.fn[ method ] = function() {
@@ -1418,49 +1410,64 @@ function writeOnCanvas( text, font ) {
   context.strokeStyle = 'black'
   context.fillText( text, 0, 0 )
 
-  return [ canvas, context ]
+  return {
+    node: canvas,
+    context: context,
+    remove: function() {
+      $.remove( canvas, body )
+    }
+  }
 }
 
-function detectFont( treat, control, text ) {
-  var treat = treat
-  var control = control
-  var text = text || '辭Q'
+function compareCanvases( treat, control ) {
   var ret
+  var a = treat.context
+  var b = control.context
 
   try {
-    control = writeOnCanvas( text, control || 'sans-serif' )
-    treat = writeOnCanvas( text, treat )
-
     for ( var j = 1; j <= 20; j++ ) {
       for ( var i = 1; i <= 50; i++ ) {
         if (
-          ret !== 'undefined' &&
-          treat[1].getImageData(i, j, 1, 1).data[3] !== control[1].getImageData(i, j, 1, 1).data[3]
+          typeof ret === 'undefined' &&
+          a.getImageData(i, j, 1, 1).data[3] !== b.getImageData(i, j, 1, 1).data[3]
         ) {
-          ret = true
+          ret = false
           break
-        } else if ( ret ) {
+        } else if ( typeof ret === 'boolean' ) {
           break
         }
 
-        if ( i === 50 && j === 20 && !ret ) {
-          ret = false
+        if ( i === 50 && j === 20 && typeof ret === 'undefined' ) {
+          ret = true
         }
       }
     }
 
     // Remove and clean from memory
-    $.remove( control[0] )
-    $.remove( treat[0] )
-    control = null
+    treat.remove()
+    control.remove()
     treat = null
+    control = null
 
     return ret
-  } catch ( e ) {
-    return false
-  }
+  } catch (e) {}
+  return false
 }
 
+function detectFont( treat, control, text ) {
+  var treat = treat
+  var control = control || 'sans-serif'
+  var text = text || '辭Q'
+  var ret
+
+  control = writeOnCanvas( text, control )
+  treat = writeOnCanvas( text, treat )
+
+  return !compareCanvases( treat, control )
+}
+
+Locale.writeOnCanvas = writeOnCanvas
+Locale.compareCanvases = compareCanvases
 Locale.detectFont = detectFont
 
 Locale.support = (function() {
@@ -1469,7 +1476,7 @@ Locale.support = (function() {
 
   // Create an element for feature detecting
   // (in `testCSSProp`)
-  var elem = $.create( '_' )
+  var elem = $.create( 'h-test' )
   var exposed = {}
 
   function testCSSProp( prop ) {
@@ -1606,6 +1613,11 @@ Locale.support = (function() {
   }
 })()
 
+var UA = window.navigator.userAgent || null
+var isIE = /Trident/i.test( UA )
+
+Locale.support['pseudo-element-clipboard'] = isIE ? true : false
+
 Locale.initCond = function( target ) {
   var target = target || root
   var ret = ''
@@ -1621,25 +1633,25 @@ Locale.initCond = function( target ) {
 }
 
 /**
- * Create and return a new `<ru>` element
+ * Create and return a new `<h-ru>` element
  * according to the given contents
  */
 function createNormalRu( $rb, $rt, attr ) {
-  var $ru = $.create( 'ru' )
+  var $ru = $.create( 'h-ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
+  attr.annotation = $rt.textContent
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
-      if (typeof rb == 'undefined') { return '' }
+      if ( typeof rb === 'undefined' )  return ''
       return rb.outerHTML 
-    }).join('')
+    }).join('') + $rt.outerHTML
   } else {
     $ru.appendChild( $.clone( $rb ))
+    $ru.appendChild( $rt )
   }
 
-  $ru.appendChild( $rt )
-  attr.annotation = $rt.textContent
   $.setAttr( $ru, attr )
   return $ru
 }
@@ -1652,10 +1664,7 @@ function createZhuyinRu( $rb, $rt ) {
   var $rb = $.clone( $rb )
 
   // Create an element to return
-  var $ru     = $.create( 'ru' )
-  var $zhuyin = $.create( 'zhuyin' )
-  var $yin    = $.create( 'yin' )
-  var $diao   = $.create( 'diao' )
+  var $ru = $.create( 'h-ru' )
 
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
@@ -1680,20 +1689,15 @@ function createZhuyinRu( $rb, $rt ) {
       y ? 'Y' : null
     ].join('')
   })
-  // - <ru>
+  // - <h-ru>
   // -   <rb><rb/> 
-  // -   <zhuyin>
-  // -     <yin></yin>
-  // -     <diao></diao>
-  // -   </zhuyin>
-  // - </ru>
-  $diao.innerHTML = diao
-  $yin.innerHTML = yin
-  $zhuyin.appendChild( $yin )
-  $zhuyin.appendChild( $diao )
-
+  // -   <h-zhuyin>
+  // -     <h-yin></h-yin>
+  // -     <h-diao></h-diao>
+  // -   </h-zhuyin>
+  // - </h-ru>
   $ru.appendChild( $rb )
-  $ru.appendChild( $zhuyin )
+  $ru.innerHTML += '<h-zhuyin><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
 
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
@@ -1713,7 +1717,7 @@ $.extend( Locale, {
 
   // Render and normalise the given context by routine:
   //
-  // > ruby > u, ins > s, del > em
+  // ruby -> u, ins -> s, del -> em
   //
   renderElem: function( context ) {
     this.renderRuby( context )
@@ -1722,8 +1726,8 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration
-  // -line) to see if we should address spacing in
+  // Traverse target elements (those with text-decoration-
+  // line) to see if we should address spacing in
   // between for semantic presentation.
   renderDecoLine: function( context, target ) {
     var target = target || 'u, ins'
@@ -1755,21 +1759,26 @@ $.extend( Locale, {
 
     $target
     .forEach(function( elem ) {
-      var $elem = Fibre( elem )
+      var $elem = Han( elem )
 
       if ( !Locale.support.textemphasis ) {
-        $elem.jinzify()
+        $elem
+        .jinzify()
+        .groupify({ western: true })
       }
 
       $elem
-      .groupify()
+      .groupify({ biaodian:  true })
       .charify( Locale.support.textemphasis ? {
-        hanzi:     'biaodian',
-        word:      'punctuation'
+        biaodian:  true,
+        punct:     true
       } : {
-        latin:     'individual',
-        ellinika:  'individual',
-        kirillica: 'individual'
+        hanzi:     true,
+        biaodian:  true,
+        punct:     true,
+        latin:     true,
+        ellinika:  true,
+        kirillica: true
       })
     })
   },
@@ -1821,7 +1830,7 @@ $.extend( Locale, {
       $cloned = $.qsa( target, frag )[0]
 
       // 1. Simple ruby polyfill for, um, Firefox;
-      // 2. Zhuyin polyfill for all.
+      // 2. Zhuyin polyfill for all browsers.
       if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
         $
@@ -1836,16 +1845,16 @@ $.extend( Locale, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(r[ubt])/i ))  break 
+            if ( !irb || irb.nodeName.match( /(r\-?[ubt])/i ))  break 
 
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
-          } while ( !irb.nodeName.match( /(r[ubt])/i ))
-          // Create a real `<ru>` to append.
+          } while ( !irb.nodeName.match( /(r\-?[ubt])/i ))
+          // Create a real `<h-ru>` to append.
           $ru = clazz.contains( 'zhuyin' ) ?
             createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
 
-          // Replace the ruby text with the new `<ru>`,
+          // Replace the ruby text with the new `<h-ru>`,
           // and remove the original implied ruby base(s)
           try {
             rt.parentNode.replaceChild( $ru, rt )
@@ -1870,7 +1879,7 @@ $.extend( Locale, {
         //
         // Note that we only support one single Zhuyin
         // container in each complex ruby
-        !function( rtc ) {
+        void function( rtc ) {
           if ( !rtc )  return
 
           $ru = $
@@ -1912,7 +1921,8 @@ $.extend( Locale, {
                   rb = $ru.shift()
                   aRb.push( rb ) 
                 } catch (e) {}
-                if (typeof rb == 'undefined') { break }
+
+                if ( typeof rb === 'undefined' )  break
                 span += Number( rb.getAttribute( 'span' ) || 1 )
               } while ( rbspan > span )
 
@@ -1921,7 +1931,7 @@ $.extend( Locale, {
                   console.error( 'An impossible `rbspan` value detected.', ruby ) 
                   return
                 }
-                aRb = $.tag( 'rb', aRb[0] )
+                aRb = $.tag( 'h-rb', aRb[0] )
                 $ru = aRb.slice( rbspan ).concat( $ru ) 
                 aRb = aRb.slice( 0, rbspan )
                 span = rbspan
@@ -1947,12 +1957,10 @@ $.extend( Locale, {
           $.remove( rtc )
         })
       }
-      // Create a new fake `<hruby>` element so the
+      // Create a new fake `<h-ruby>` element so the
       // style sheets will render it as a polyfill,
       // which also helps to avoid the UA style.
-      //
-      // (The ‘H’ stands for ‘Han’, by the way)
-      hruby = $.create( 'hruby' )
+      hruby = $.create( 'h-ruby' )
       hruby.innerHTML = frag.firstChild.innerHTML
 
       // Copy all attributes onto it
@@ -2011,24 +2019,23 @@ $.extend( Han.support, {
   // 'fangsong-gb': Han.detectFont( '"Han Fangsong GB"' )
 })
 
-var QUERY_HWS_AS_FIRST_CHILD = '* > hws:first-child, * > wbr:first-child + hws, wbr:first-child + wbr + hws'
+var QUERY_HWS_AS_FIRST_CHILD = '* > h-hws:first-child, * > wbr:first-child + h-hws, wbr:first-child + wbr + h-hws'
 
 //// Disabled `Node.normalize()` for temp due to
 //// issue below in IE11.
 //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
 var isNodeNormalizeNormal = (function() {
-      var div = $.create( 'div' )
+  var div = $.create( 'div' )
 
-      div.appendChild( $.create( '', '0-' ))
-      div.appendChild( $.create( '', '2' ))
-      div.normalize()
+  div.appendChild( $.create( '', '0-' ))
+  div.appendChild( $.create( '', '2' ))
+  div.normalize()
 
-      return div.firstChild.length !== 2
-    })(),
+  return div.firstChild.length !== 2
+})()
 
-    hws
-
-hws = $.create( 'hws' )
+var hws = $.create( 'h-hws' )
+hws.setAttribute( 'hidden', '' )
 hws.innerHTML = ' '
 
 $.extend( Han, {
@@ -2051,8 +2058,13 @@ $.extend( Han, {
     .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
     .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
 
-    // Deal with `' 字'`, `" 字"` => `'字'`, `"字"`
+    // Deal with [' 字'], [" 字"] => ['字'], ["字"]
     .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+
+    // Remove all `<hws/>` pre/post [“字”] and [‘字’]
+    // See: https://github.com/ethantw/Han/issues/59
+    .replace( /<hws\/>([‘“]+)/ig, '$1' )
+    .replace( /([’”]+)<hws\/>/ig, '$1' )
 
     // Convert text nodes `<hws/>` into real element nodes
     .replace( '<hws/>', function() {
@@ -2079,7 +2091,7 @@ $.extend( Han, {
       // or a text fragment, but the latter one is
       // not what we want. We don't want comments,
       // either.
-      while ( target.nodeName === 'HWS' ) {
+      while ( target.nodeName === 'H-HWS' ) {
         $.remove( target, parent )
 
         target = parent.parentNode.insertBefore( $.clone( hws ), parent )
@@ -2090,8 +2102,8 @@ $.extend( Han, {
         }
 
         // This is for extreme circumstances, i.e.,
-        // `漢<a><b><c><hws/>zi</c></b></a>` =>
-        // `漢<hws/><a><b><c>zi</c></b></a>`
+        // `漢<a><b><c><h-hws/>zi</c></b></a>` =>
+        // `漢<h-hws/><a><b><c>zi</c></b></a>`
         if ( target !== parent.firstChild ) {
           break
         }
@@ -2114,7 +2126,7 @@ $.extend( Han.fn, {
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
 
-    this.HWS = $.tag( 'hws', this.context )
+    this.HWS = $.tag( 'h-hws', this.context )
     return this
   },
 
@@ -2131,8 +2143,17 @@ Han.renderHanging = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, jinze', true )
-  .hangingify()
+  .filterOut( 'textarea, code, kbd, samp, pre, hangable', true )
+  .replace(
+    TYPESET.jinze.hanging,
+    function( portion, match ) {
+      var elem = $.create( 'h-hangable' )
+      var unicode = match[3].charCodeAt( 0 ).toString( 16 )
+
+      elem.innerHTML = match[2] + '<h-cs biaodian="' + match[3] + '"><h-inner hidden> </h-inner></h-cs><h-char class="biaodian cjk end" unicode="' + unicode + '">' + match[3] + '</h-char>'
+      return portion.index === 0 ? elem : ''
+    }
+  )
 
   return finder
 }
@@ -2159,23 +2180,16 @@ Han.renderJiya = function( context ) {
 
   finder
   .filterOut( 'textarea, code, kbd, samp, pre', true )
-  .groupify()
-  .charify({
-    hanzi:     'biaodian',
-    liga:      'liga',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
-  })
+  .groupify({ biaodian:  true })
+  .charify({  biaodian:  true })
 
   // The reason we're doing this instead of using pseudo elements in CSS
   // is because WebKit has problem rendering pseudo elements containing only 
   // space.
-  $.qsa( 'char.biaodian.open, char.biaodian.end', context )
+  $.qsa( 'h-char.biaodian.open, h-char.biaodian.end', context )
   .forEach(function( elem ) {
-    var html = '<inner>' + elem.innerHTML + '</inner>'
-    var hcs = '<hcs> </hcs>'
+    var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
+    var hcs = '<h-cs hidden> </h-cs>'
     var isOpen = elem.classList.contains( 'open' )
     elem.innerHTML = isOpen ? hcs + html : html + hcs
   })
@@ -2201,7 +2215,7 @@ $.extend( Han.fn, {
 
 var mdot
 
-mdot = $.create( 'char', 'biaodian cjk middle' )
+mdot = $.create( 'h-char', 'biaodian cjk middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
@@ -2214,14 +2228,7 @@ Han.correctBasicBD = function( context, all ) {
 
   finder
   .wrap( /\u00B7/g, $.clone( mdot ))
-  .charify({
-    liga:      'liga',
-    hanzi:     'none',
-    word:      'none',
-    latin:     'none',
-    ellinika:  'none',
-    kirillica: 'none'
-  })
+  .charify({ biaodian: true })
 }
 
 $.extend( Han.fn, {
@@ -2240,51 +2247,20 @@ $.extend( Han.fn, {
   }
 })
 
-var QUERY_RU_W_ANNO = 'ru[annotation]'
+var QUERY_RU_W_ANNO = 'h-ru[annotation]'
 var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
 var isCombLigaNormal = (function() {
-  var fakeBody = body || $.create( 'body' )
-  var div = $.create( 'div' )
-  var control = $.create( 'span' )
-  var container = body ? div : fakeBody
-  var treat, docOverflow, ret
+  var treat   = Han.localize.writeOnCanvas( '\u0069\u030D', '"Romanization Sans"' )
+  var control = Han.localize.writeOnCanvas( '\uDB80\uDC69', '"Romanization Sans"' )
 
-  if ( !body ) {
-    fakeBody.style.background = ''
-    fakeBody.style.overflow = 'hidden'
-    docOverflow = root.style.overflow
-
-    root.style.overflow = 'hidden'
-    root.appendChild( fakeBody )
-  } else {
-    body.appendChild( container )
-  }
-
-  control.innerHTML = '&#x0069;&#x030D;'
-  control.style.fontFamily = 'sans-serif'
-  control.style.display = 'inline-block'
-
-  treat = $.clone( control )
-  treat.style.fontFamily = '"Romanization Sans"'
-
-  container.appendChild( control )
-  container.appendChild( treat )
-
-  ret = control.clientWidth !== treat.clientWidth
-  $.remove( container )
-
-  if ( !body ) {
-    root.style.overflow = docOverflow
-  }
-  return ret
+  return Han.localize.compareCanvases( treat, control )
 })()
 
 var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
 var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
 
-var charCombLiga = $.create( 'char', 'comb-liga' )
-var charCombLigaInner =  $.create( 'inner' )
+var charCombLiga = $.create( 'h-char', 'comb-liga' )
 
 $.extend( Han, {
   isCombLigaNormal: isCombLigaNormal,
@@ -2304,12 +2280,10 @@ $.extend( Han, {
         new RegExp( pattern[ 0 ], 'ig' ),
         function( portion, match ) {
           var ret = $.clone( charCombLiga )
-          var inner = $.clone( charCombLigaInner )
 
           // Put the original content in an inner container
           // for better presentational effect of hidden text
-          inner.innerHTML = match[ 0 ]
-          ret.appendChild( inner )
+          ret.innerHTML = '<h-inner>' + match[0] + '</h-inner>'
           ret.setAttribute( 'display-as', pattern[ 1 ] )
           return portion.index === 0 ? ret : ''
         }
