@@ -2138,6 +2138,19 @@ $.extend( Han.fn, {
   }
 })
 
+Han.isSpaceFontLoaded = (function() {
+  var div = $.create( 'div' )
+  var ret
+
+  div.innerHTML = '<span>a b</span><span style="font-family: \'Han Space\'">a b</span>'
+  body.appendChild( div )
+  ret = div.firstChild.offsetWidth !== div.lastChild.offsetWidth
+  $.remove( div, body )
+  return ret
+})()
+
+Han.support['han-space'] = Han.isSpaceFontLoaded
+
 Han.renderHanging = function( context ) {
   var context = context || document
   var finder = Han.find( context )

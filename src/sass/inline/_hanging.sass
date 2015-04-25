@@ -4,57 +4,63 @@
   font-family: 'Han Space'
   unicode-range: U+'+20'
 
-#{$han-hanging-selector}
-  // position
-  position: relative
-  // box
-  display: inline
-
-  // Hide the collapsed spaces of closing brackets for we are sure
-  // they ain't in use.
-  h-char.biaodian.close h-cs
-    display: none
-
-  // Hide the real Biaodian sice we have the pseudo hanging ones,
-  // but not `display: none` for we still want their clipboard actions.
-  h-char.biaodian.end:not(.close)
-    position: absolute
-    color: transparent
-    font: 0/0 hidden-text
-
-    .pseudo-element-clipboard &
-      display: none
-
-  > h-cs
+.han-space
+  #{$han-hanging-selector}
     // position
     position: relative
     // box
-    display: inline !important
-    visibility: visible
-    // typography
-    font: inherit
-
-  > h-cs h-inner,
-  > h-cs h-inner[hidden]
-    // box
     display: inline
-    visibility: hidden
-    // typography
-    font: 1em 'Han Space'
 
-  > h-cs:after
-    +han-typo-reset
-    // position
-    position: absolute
-    left: 0
-    top: 0
-    // box
-    display: inline-block
-    // typography
-    content: attr( biaodian )
-    line-height: 1.05
-  
-    ruby &,
-    h-ru &
+    // Hide the collapsed spaces of closing brackets for we are sure
+    // they ain't in use.
+    h-char.biaodian.close h-cs
+      display: none
+
+    > h-cs
+      // position
       position: relative
+      // box
+      display: inline !important
+      visibility: visible
+      // typography
+      font: inherit
+
+    > h-cs h-inner,
+    > h-cs h-inner[hidden]
+      // box
+      display: inline
+      visibility: hidden
+      // typography
+      font: 1em 'Han Space'
+
+    > h-cs:after
+      +han-typo-reset
+      // position
+      position: absolute
+      left: 0
+      top: 0
+      // box
+      display: inline-block
+      // typography
+      content: attr( biaodian )
+      line-height: 1.05
+    
+      ruby &,
+      h-ru &
+        position: relative
+
+// Hide the actual Biaodian sice we have the pseudo hanging ones,
+// but not `display: none` for we still want their clipboard actions.
+.han-space
+  #{$han-hanging-selector}
+    h-char.biaodian.end:not(.close)
+      position: absolute
+      color: transparent
+      font: 0/0 hidden-text
+
+// on IE pseudo elements have clipboard behaviours
+.han-space.pseudo-element-clipboard
+  #{$han-hanging-selector}
+    h-char.biaodian.end:not(.close)
+      display: none
 
