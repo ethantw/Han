@@ -1378,7 +1378,21 @@ h-word {
 }
 
 @font-face {
+  font-family: "Biaodian Pro Sans GB";
+  font-weight: bold;
+  src: local("Hiragino Sans GB"), local("Heiti SC"), local(STHeiti), local(SimSun), local(PMingLiU);
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
   font-family: "Biaodian Pro Serif GB";
+  src: local("Lisong Pro"), local("Heiti SC"), local(STHeiti), local(SimSun), local(PMingLiU);
+  unicode-range: U+201C-201D, U+2018-2019;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif GB";
+  font-weight: bold;
   src: local("Lisong Pro"), local("Heiti SC"), local(STHeiti), local(SimSun), local(PMingLiU);
   unicode-range: U+201C-201D, U+2018-2019;
 }
@@ -1536,6 +1550,69 @@ h-word {
  */
 @font-face {
   font-family: "Biaodian Basic";
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Basic";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Sans";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans CNS";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Sans GB";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif CNS";
+  font-weight: bold;
+  src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
+  unicode-range: U+2014, U+2026, U+00B7;
+}
+
+@font-face {
+  font-family: "Biaodian Pro Serif GB";
+  font-weight: bold;
   src: url(./font/han.woff?v3.1.1) format("woff"), url(./font/han.otf?v3.1.1) format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }

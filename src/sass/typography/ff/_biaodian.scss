@@ -482,9 +482,20 @@
     local(SimSun),
     local(PMingLiU)
   ;
-  unicode-range:
-    U+"+201C-201D", U+"+2018-2019"
+  unicode-range: U+"+201C-201D", U+"+2018-2019";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans GB';
+  font-weight: bold;
+  src:
+    local('Hiragino Sans GB'),
+    local('Heiti SC'),
+    local(STHeiti),
+    local(SimSun),
+    local(PMingLiU)
   ;
+  unicode-range: U+"+201C-201D", U+"+2018-2019";
 }
 
 @font-face {
@@ -496,9 +507,20 @@
     local(SimSun),
     local(PMingLiU)
   ;
-  unicode-range:
-    U+"+201C-201D", U+"+2018-2019"
+  unicode-range: U+"+201C-201D", U+"+2018-2019";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif GB';
+  font-weight: bold;
+  src:
+    local('Lisong Pro'),
+    local('Heiti SC'),
+    local(STHeiti),
+    local(SimSun),
+    local(PMingLiU)
   ;
+  unicode-range: U+"+201C-201D", U+"+2018-2019";
 }
 
 /* Default emphasis mark (•) */
@@ -844,6 +866,68 @@
  */
 @font-face {
   font-family: 'Biaodian Basic';
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+@font-face {
+  font-family: 'Biaodian Basic';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Sans';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans CNS';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Sans GB';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif CNS';
+  font-weight: bold;
+  src: $han-webfont;
+  unicode-range: U+"+2014", U+"+2026", U+"+00B7";
+}
+
+@font-face {
+  font-family: 'Biaodian Pro Serif GB';
+  font-weight: bold;
   src: $han-webfont;
   unicode-range: U+"+2014", U+"+2026", U+"+00B7";
 }
