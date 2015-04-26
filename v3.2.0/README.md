@@ -1,6 +1,7 @@
 測試頁索引
 ========
 
+ - [JavaScript APIs](api.html)
  - [測試頁（標準）](test.html)
  - [測試頁（AMD模組）](test-amd.html)
  - [測試頁（CommonJS模組，browserify）](test-commonjs.html)
