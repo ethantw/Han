@@ -1,6 +1,7 @@
 測試頁索引
 ========
 
+ - [JavaScript APIs](api.html)
  - [測試頁（標準）](test.html)
  - [測試頁（AMD模組）](test-amd.html)
  - [測試頁（CommonJS模組，browserify）](test-commonjs.html)
@@ -33,8 +34,8 @@
 
 ### 行的組成
 
- - [漢字西文混排間隙](./hws.html)
- - [標點擠壓](./jiya.html)
+ - [漢字－西文混排間隙](./hws.html)
+ - [標點擠壓及懸掛](./jiya.html)
  - [字元的替換](./subst.html)
 
 <!--
