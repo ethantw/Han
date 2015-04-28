@@ -35,7 +35,8 @@
 ### 行的組成
 
  - [漢字－西文混排間隙](./hws.html)
- - [標點擠壓及懸掛](./jiya.html)
+ - [標點擠壓](./jiya.html)
+ - [行尾點號懸掛](./hanging.html)
  - [字元的替換](./subst.html)
 
 <!--

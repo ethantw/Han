@@ -6,6 +6,23 @@ define([
 Han.renderJiya = function( context ) {
   var context = context || document
   var finder = Han.find( context )
+  var origFilterOutSelector = this.filterOutSelector
+
+  finder
+  .filterOut( 'textarea, code, kbd, samp, pre, h-char-group', true )
+  .replace(
+    // This is a safeguard against hanging rendering
+    TYPESET.group.biaodian[2],
+    function( portion, match ) {
+      if ( portion.index === 0 ) return portion.isEnd ? match[0] : match[1]
+
+      var elem = $.create( 'h-char-group', 'biaodian cjk half-open' )
+      elem.innerHTML = match[2]
+      return elem
+    }
+  )
+
+  finder.filterOutSelector = origFilterOutSelector
 
   finder
   .filterOut( 'textarea, code, kbd, samp, pre', true )

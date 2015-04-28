@@ -2662,8 +2662,12 @@ h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-cs {
   display: none;
 }
 
+h-char-group.half-open .open:first-child h-cs,
 h-char-group .open + .open h-cs,
-h-char-group .end:not(:last-child) h-cs {
+h-char-group .end:not(:last-child) h-cs,
+h-hangable.half-open .open:first-child h-cs,
+h-hangable .open + .open h-cs,
+h-hangable .end:not(:last-child) h-cs {
   display: none;
 }
 h-char-group [unicode="3001"]:lang(zh-Hant) + .open h-cs,
@@ -2677,9 +2681,22 @@ h-char-group [unicode="ff0c"]:lang(zh-TW) + .open h-cs,
 h-char-group [unicode="ff0c"]:lang(zh-HK) + .open h-cs,
 h-char-group [unicode="ff0e"]:lang(zh-Hant) + .open h-cs,
 h-char-group [unicode="ff0e"]:lang(zh-TW) + .open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-HK) + .open h-cs {
+h-char-group [unicode="ff0e"]:lang(zh-HK) + .open h-cs,
+h-hangable [unicode="3001"]:lang(zh-Hant) + .open h-cs,
+h-hangable [unicode="3001"]:lang(zh-TW) + .open h-cs,
+h-hangable [unicode="3001"]:lang(zh-HK) + .open h-cs,
+h-hangable [unicode="3002"]:lang(zh-Hant) + .open h-cs,
+h-hangable [unicode="3002"]:lang(zh-TW) + .open h-cs,
+h-hangable [unicode="3002"]:lang(zh-HK) + .open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-Hant) + .open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-TW) + .open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-HK) + .open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-Hant) + .open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-TW) + .open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-HK) + .open h-cs {
   display: none;
 }
+
 h-char-group [unicode="b7"]:not(:last-child),
 h-char-group [unicode="30fb"]:not(:last-child) {
   letter-spacing: -.5em;
