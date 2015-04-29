@@ -384,9 +384,8 @@ var TYPESET = (function() {
      */
     group: {
       biaodian: [
-        new RegExp( '(' + rBd + '){2,}', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' ),
-        new RegExp( '(' + rBdEnd + '+)(' + rBdOpen + '+)', 'g' )
+        new RegExp( '((' + rBd + '){2,})', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
       ],
       punct:       null,
       hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
@@ -1200,6 +1199,24 @@ return Fibre
 }())
 );
 
+function createBdGroup( portion, match ) {
+  var elem = $.create( 'h-char-group', 'biaodian cjk' )
+
+  if ( portion.index === 0 && portion.isEnd ) {
+    elem.innerHTML = match[0]
+  } else {
+    elem.innerHTML = portion.text
+    elem.classList.add( 'portion' ) 
+
+    if ( portion.index === 0 ) {
+      elem.classList.add( 'isFirst' ) 
+    } else if ( portion.isEnd ) {
+      elem.classList.add( 'isEnd' ) 
+    }
+  }
+  return elem
+}
+
 function createBdChar( char ) {
   var div = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
@@ -1270,13 +1287,13 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.filterOutSelector += ', h-hangable, h-char-group'
+    this.filterOutSelector += ', h-hangable, h-char-group, h-word'
 
     if ( option.biaodian ) {
-      this.wrap(
-        TYPESET.group.biaodian[ 0 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
-      ).wrap(
-        TYPESET.group.biaodian[ 1 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      this.replace(
+        TYPESET.group.biaodian[ 0 ], createBdGroup
+      ).replace(
+        TYPESET.group.biaodian[ 1 ], createBdGroup
       )
     }
     if ( option.hanzi ) {
@@ -1304,8 +1321,6 @@ $.extend( Fibre.fn, {
     return this
   },
 
-  // Implementation of character-level selector
-  // (字元級選擇器)
   charify: function( option ) {
     var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
@@ -2197,11 +2212,11 @@ Han.renderJiya = function( context ) {
   .filterOut( 'textarea, code, kbd, samp, pre, h-char-group', true )
   .replace(
     // This is a safeguard against hanging rendering
-    TYPESET.group.biaodian[2],
+    new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
     function( portion, match ) {
       if ( portion.index === 0 ) return portion.isEnd ? match[0] : match[1]
 
-      var elem = $.create( 'h-char-group', 'biaodian cjk half-open' )
+      var elem = $.create( 'h-char-group', 'biaodian cjk portion' )
       elem.innerHTML = match[2]
       return elem
     }

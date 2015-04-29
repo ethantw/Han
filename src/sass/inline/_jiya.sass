@@ -53,7 +53,8 @@ h-char.biaodian
 // *
 h-char-group,
 h-hangable
-  &.half-open .open:first-child h-cs,
+  &.portion .open:first-child h-cs,
+  &.portion .end:last-child h-cs,
   .open + .open h-cs,
   .end:not(:last-child) h-cs
     display: none

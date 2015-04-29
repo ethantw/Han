@@ -6,6 +6,24 @@ define([
   './fibre'
 ], function( Han, $, UNICODE, TYPESET, Fibre ) {
 
+function createBdGroup( portion, match ) {
+  var elem = $.create( 'h-char-group', 'biaodian cjk' )
+
+  if ( portion.index === 0 && portion.isEnd ) {
+    elem.innerHTML = match[0]
+  } else {
+    elem.innerHTML = portion.text
+    elem.classList.add( 'portion' ) 
+
+    if ( portion.index === 0 ) {
+      elem.classList.add( 'isFirst' ) 
+    } else if ( portion.isEnd ) {
+      elem.classList.add( 'isEnd' ) 
+    }
+  }
+  return elem
+}
+
 function createBdChar( char ) {
   var div = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
@@ -76,13 +94,13 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.filterOutSelector += ', h-hangable, h-char-group'
+    this.filterOutSelector += ', h-hangable, h-char-group, h-word'
 
     if ( option.biaodian ) {
-      this.wrap(
-        TYPESET.group.biaodian[ 0 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
-      ).wrap(
-        TYPESET.group.biaodian[ 1 ], $.clone( $.create( 'h-char-group', 'biaodian cjk' ))
+      this.replace(
+        TYPESET.group.biaodian[ 0 ], createBdGroup
+      ).replace(
+        TYPESET.group.biaodian[ 1 ], createBdGroup
       )
     }
     if ( option.hanzi ) {
@@ -110,8 +128,6 @@ $.extend( Fibre.fn, {
     return this
   },
 
-  // Implementation of character-level selector
-  // (字元級選擇器)
   charify: function( option ) {
     var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({

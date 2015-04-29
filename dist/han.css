@@ -2662,10 +2662,12 @@ h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-cs {
   display: none;
 }
 
-h-char-group.half-open .open:first-child h-cs,
+h-char-group.portion .open:first-child h-cs,
+h-char-group.portion .end:last-child h-cs,
 h-char-group .open + .open h-cs,
 h-char-group .end:not(:last-child) h-cs,
-h-hangable.half-open .open:first-child h-cs,
+h-hangable.portion .open:first-child h-cs,
+h-hangable.portion .end:last-child h-cs,
 h-hangable .open + .open h-cs,
 h-hangable .end:not(:last-child) h-cs {
   display: none;

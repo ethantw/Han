@@ -80,9 +80,8 @@ var TYPESET = (function() {
      */
     group: {
       biaodian: [
-        new RegExp( '(' + rBd + '){2,}', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' ),
-        new RegExp( '(' + rBdEnd + '+)(' + rBdOpen + '+)', 'g' )
+        new RegExp( '((' + rBd + '){2,})', 'g' ),
+        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
       ],
       punct:       null,
       hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),

@@ -1,7 +1,8 @@
 define([
   '../core',
-  '../method'
-], function( Han, $ ) {
+  '../method',
+  '../regex/unicode'
+], function( Han, $, UNICODE ) {
 
 Han.renderJiya = function( context ) {
   var context = context || document
@@ -12,11 +13,11 @@ Han.renderJiya = function( context ) {
   .filterOut( 'textarea, code, kbd, samp, pre, h-char-group', true )
   .replace(
     // This is a safeguard against hanging rendering
-    TYPESET.group.biaodian[2],
+    new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
     function( portion, match ) {
       if ( portion.index === 0 ) return portion.isEnd ? match[0] : match[1]
 
-      var elem = $.create( 'h-char-group', 'biaodian cjk half-open' )
+      var elem = $.create( 'h-char-group', 'biaodian cjk portion' )
       elem.innerHTML = match[2]
       return elem
     }
