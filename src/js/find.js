@@ -39,8 +39,7 @@ function createBdChar( char ) {
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
-    var origFilterOutSelector = this.filterOutSelector
-    this.filterOutSelector += ', h-jinze'
+    this.avoid( 'h-jinze' )
 
     this
     .replace(
@@ -79,12 +78,11 @@ $.extend( Fibre.fn, {
       }
     )
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   },
 
   groupify: function( option ) {
-    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
       biaodian: false,
     //punct: false,
@@ -94,7 +92,7 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.filterOutSelector += ', h-hangable, h-char-group, h-word'
+    this.avoid( 'h-hangable, h-char-group, h-word' )
 
     if ( option.biaodian ) {
       this.replace(
@@ -124,12 +122,11 @@ $.extend( Fibre.fn, {
       )
     }
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   },
 
   charify: function( option ) {
-    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
       biaodian: false,
       punct: false,
@@ -141,7 +138,7 @@ $.extend( Fibre.fn, {
       eonmun: false
     }, option || {})
 
-    this.filterOutSelector += ', h-char'
+    this.avoid( 'h-char' )
 
     if ( option.biaodian ) {
       this.replace(
@@ -188,7 +185,7 @@ $.extend( Fibre.fn, {
       )
     }
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   }
 })

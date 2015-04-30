@@ -21,7 +21,7 @@ Han.renderHanging = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, hangable', true )
+  .avoid( 'textarea, code, kbd, samp, pre, hangable' )
   .replace(
     TYPESET.jinze.hanging,
     function( portion, match ) {

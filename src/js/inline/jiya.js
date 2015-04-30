@@ -7,10 +7,9 @@ define([
 Han.renderJiya = function( context ) {
   var context = context || document
   var finder = Han.find( context )
-  var origFilterOutSelector = this.filterOutSelector
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, h-char-group', true )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
   .replace(
     // This is a safeguard against hanging rendering
     new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
@@ -22,11 +21,10 @@ Han.renderJiya = function( context ) {
       return elem
     }
   )
-
-  finder.filterOutSelector = origFilterOutSelector
+  .endAvoid()
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre', true )
+  .avoid( 'textarea, code, kbd, samp, pre' )
   .groupify({ biaodian:  true })
   .charify({  biaodian:  true })
 

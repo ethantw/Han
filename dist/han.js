@@ -586,7 +586,7 @@ var $ = {
 
 var Fibre =
 /*!
- * Fibre.js v0.1.2 | MIT License | github.com/ethantw/fibre.js
+ * Fibre.js v0.2.1 | MIT License | github.com/ethantw/fibre.js
  * Based on findAndReplaceDOMText
  */
 
@@ -594,8 +594,9 @@ function( Finder ) {
 
 'use strict'
 
-var VERSION = '0.1.2'
-var FILTER_OUT_SELECTOR = 'style, script, head title'
+var VERSION = '0.2.1'
+var NON_INLINE_PROSE = Finder.NON_INLINE_PROSE
+var AVOID_NON_PROSE = Finder.PRESETS.prose.filterElements
 
 var global = window || {}
 var document = global.document || undefined
@@ -614,8 +615,8 @@ function matches( node, selector, bypassNodeType39 ) {
 
 if ( typeof document === 'undefined' )  throw new Error( 'Fibre requires a DOM-supported environment.' )
 
-var Fibre = function( context ) {
-  return new Fibre.fn.init( context )
+var Fibre = function( context, preset ) {
+  return new Fibre.fn.init( context, preset )
 }
 
 Fibre.version = VERSION
@@ -626,87 +627,128 @@ Fibre.fn = Fibre.prototype = {
 
   version: VERSION,
 
-  context: undefined,
-
-  contextSelector: null,
-
   finder: [],
 
-  init: function( context ) {
-    if ( !context )  throw new Error( 'A context is required for Fibre to initialise.' ) 
+  context: undefined,
 
-    if ( context instanceof Node ) {
-      this.context = context
-    } else if ( typeof context === 'string' ) {
-      this.contextSelector = context
-      this.context = document.querySelector( context )
+  portionMode: 'retain',
+
+  selector: {},
+
+  preset: 'prose',
+
+  init: function( context, noPreset ) {
+    if ( !!noPreset )  this.preset = null
+
+    this.selector = {
+      context: null,
+      filter: [],
+      avoid: [],
+      boundary: []
     }
 
+    if ( !context ) {
+      throw new Error( 'A context is required for Fibre to initialise.' ) 
+    } else if ( context instanceof Node ) {
+      if ( context instanceof Document )  this.context = context.body || context
+      else  this.context = context
+    } else if ( typeof context === 'string' ) {
+      this.context = document.querySelector( context )
+      this.selector.context = context
+    }
     return this
   },
 
-  filterElemFn: function( currentNode ) {
-    return matches( currentNode, this.filterSelector, true ) &&
-      !matches( currentNode, this.filterOutSelector )
+  filterFn: function( node ) {
+    var filter = this.selector.filter.join( ', ' ) || '*'
+    var avoid  = this.selector.avoid.join( ', ' ) || null
+    var result = matches( node, filter, true ) && !matches( node, avoid )
+    return ( this.preset === 'prose' ) ? AVOID_NON_PROSE( node ) && result : result
   },
 
-  filterSelector: '*',
+  boundaryFn: function( node ) {
+    var boundary = this.selector.boundary.join( ', ' ) || null
+    var result = matches( node, boundary )
+    return ( this.preset === 'prose' ) ? NON_INLINE_PROSE( node ) || result : result
+  },
 
   filter: function( selector ) {
-    switch ( typeof selector ) {
-      case 'string':
-        this.filterSelector = selector
-        break
-      case 'function':
-        this.filterElemFn = selector
-        break
-      default:
-        return this
+    if ( typeof selector === 'string' ) {
+      this.selector.filter.push( selector )
     }
     return this
   },
 
-  filterOutSelector: FILTER_OUT_SELECTOR,
-
-  filterOut: function( selector, boolExtend ) {
-    switch( typeof selector ) {
-      case 'string':
-        if ( typeof boolExtend !== 'undefined' && boolExtend === true ) {
-          this.filterOutSelector += ', ' +  selector
-        } else {
-          this.filterOutSelector = selector
-        }
-        break
-      default:
-        return this
+  endFilter: function( all ) {
+    if ( all ) {
+      this.selector.filter = []
+    } else {
+      this.selector.filter.pop()
     }
     return this
   },
 
-  replace: function( regexp, newSubStr, portionMode ) {
+  avoid: function( selector ) {
+    if ( typeof selector === 'string' ) {
+      this.selector.avoid.push( selector )
+    }
+    return this
+  },
+
+  endAvoid: function( all ) {
+    if ( all ) {
+      this.selector.avoid = []
+    } else {
+      this.selector.avoid.pop()
+    }
+    return this
+  },
+
+  addBoundary: function( selector ) {
+    if ( typeof selector === 'string' ) {
+      this.selector.boundary.push( selector )
+    }
+    return this
+  },
+
+  removeBoundary: function() {
+    this.selector.boundary = []
+    return this
+  },
+
+  setMode: function( portionMode ) {
+    this.portionMode = portionMode === 'first' ? 'first' : 'retain'
+    return this
+  },
+
+  replace: function( regexp, newSubStr ) {
     var it = this
-    var portionMode = portionMode || 'retain'
     it.finder.push(Finder( it.context, {
       find: regexp, 
       replace: newSubStr,
       filterElements: function( currentNode ) {
-        return it.filterElemFn( currentNode )
+        return it.filterFn( currentNode )
       }, 
-      portionMode: portionMode
+      forceContext: function( currentNode ) {
+        return it.boundaryFn( currentNode )
+      },
+      portionMode: it.portionMode
     }))
     return it 
   },
 
-  wrap: function( regexp, strElemName, portionMode ) {
+  wrap: function( regexp, strElemName ) {
     var it = this
-    var portionMode = portionMode || 'retain'
     it.finder.push(Finder( it.context, {
       find: regexp, 
       wrap: strElemName,
       filterElements: function( currentNode ) {
-        return it.filterElemFn( currentNode )
+        return it.filterFn( currentNode )
       },
-      portionMode: portionMode
+      forceContext: function( currentNode ) {
+        return it.boundaryFn( currentNode )
+      },
+      portionMode: it.portionMode
     }))
     return it
   },
@@ -726,6 +768,10 @@ Fibre.fn = Fibre.prototype = {
   }
 }
 
+// Deprecated API(s)
+Fibre.fn.filterOut = Fibre.fn.avoid
+
+// Make sure init() inherit from Fibre()
 Fibre.fn.init.prototype = Fibre.fn
 
 return Fibre
@@ -733,7 +779,7 @@ return Fibre
 }(
 
 /**
- * findAndReplaceDOMText v 0.4.2
+ * findAndReplaceDOMText v 0.4.3
  * @author James Padolsey http://james.padolsey.com
  * @license http://unlicense.org/UNLICENSE
  *
@@ -747,6 +793,7 @@ return Fibre
   var PORTION_MODE_FIRST = 'first'
   var doc = document
   var toString = {}.toString
+  var hasOwn = {}.hasOwnProperty
   function isArray(a) {
     return toString.call(a) == '[object Array]'
   }
@@ -822,13 +869,61 @@ return Fibre
     return new Finder(node, options)
   }
 
+  exposed.NON_PROSE_ELEMENTS = {
+    br:1, hr:1,
+    // Media / Source elements:
+    script:1, style:1, img:1, video:1, audio:1, canvas:1, svg:1, map:1, object:1,
+    // Input elements
+    input:1, textarea:1, select:1, option:1, optgroup: 1, button:1
+  }
+  exposed.NON_CONTIGUOUS_PROSE_ELEMENTS = {
+
+    // Elements that will not contain prose or block elements where we don't
+    // want prose to be matches across element borders:
+
+    // Block Elements
+    address:1, article:1, aside:1, blockquote:1, dd:1, div:1,
+    dl:1, fieldset:1, figcaption:1, figure:1, footer:1, form:1, h1:1, h2:1, h3:1,
+    h4:1, h5:1, h6:1, header:1, hgroup:1, hr:1, main:1, nav:1, noscript:1, ol:1,
+    output:1, p:1, pre:1, section:1, ul:1,
+    // Other misc. elements that are not part of continuous inline prose:
+    br:1, li: 1, summary: 1, dt:1, details:1, rp:1, rt:1, rtc:1,
+    // Media / Source elements:
+    script:1, style:1, img:1, video:1, audio:1, canvas:1, svg:1, map:1, object:1,
+    // Input elements
+    input:1, textarea:1, select:1, option:1, optgroup: 1, button:1,
+    // Table related elements:
+    table:1, tbody:1, thead:1, th:1, tr:1, td:1, caption:1, col:1, tfoot:1, colgroup:1
+
+  }
+  exposed.NON_INLINE_PROSE = function(el) {
+    return hasOwn.call(exposed.NON_CONTIGUOUS_PROSE_ELEMENTS, el.nodeName.toLowerCase())
+  }
+  // Presets accessed via `options.preset` when calling findAndReplaceDOMText():
+  exposed.PRESETS = {
+    prose: {
+      forceContext: exposed.NON_INLINE_PROSE,
+      filterElements: function(el) {
+        return !hasOwn.call(exposed.NON_PROSE_ELEMENTS, el.nodeName.toLowerCase())
+      }
+    }
+  }
   exposed.Finder = Finder
   /**
    * Finder -- encapsulates logic to find and replace.
    */
   function Finder(node, options) {
 
+    var preset = options.preset && exposed.PRESETS[options.preset]
     options.portionMode = options.portionMode || PORTION_MODE_RETAIN
+    if (preset) {
+      for (var i in preset) {
+        if (hasOwn.call(preset, i) && !hasOwn.call(options, i)) {
+          options[i] = preset[i]
+        }
+      }
+    }
+
     this.node = node
     this.options = options
     // ENable match-preparation method to be passed as option:
@@ -850,17 +945,34 @@ return Fibre
 
       var match
       var matchIndex = 0
+      var offset = 0
       var regex = this.options.find
-      var text = this.getAggregateText()
+      var textAggregation = this.getAggregateText()
       var matches = []
+      var self = this
       regex = typeof regex === 'string' ? RegExp(escapeRegExp(regex), 'g') : regex
-      if (regex.global) {
-        while (match = regex.exec(text)) {
-          matches.push(this.prepMatch(match, matchIndex++))
-        }
-      } else {
-        if (match = text.match(regex)) {
-          matches.push(this.prepMatch(match, 0))
+      matchAggregation(textAggregation)
+      function matchAggregation(textAggregation) {
+        for (var i = 0, l = textAggregation.length; i < l; ++i) {
+
+          var text = textAggregation[i]
+          if (typeof text !== 'string') {
+            // Deal with nested contexts: (recursive)
+            matchAggregation(text)
+            continue
+          }
+
+          if (regex.global) {
+            while (match = regex.exec(text)) {
+              matches.push(self.prepMatch(match, matchIndex++, offset))
+            }
+          } else {
+            if (match = text.match(regex)) {
+              matches.push(self.prepMatch(match, 0, offset))
+            }
+          }
+
+          offset += text.length
         }
       }
 
@@ -870,14 +982,14 @@ return Fibre
     /**
      * Prepares a single match with useful meta info:
      */
-    prepMatch: function(match, matchIndex) {
+    prepMatch: function(match, matchIndex, characterOffset) {
 
       if (!match[0]) {
         throw new Error('findAndReplaceDOMText cannot handle zero-length matches')
       }
    
-      match.endIndex = match.index + match[0].length
-      match.startIndex = match.index
+      match.endIndex = characterOffset + match.index + match[0].length
+      match.startIndex = characterOffset + match.index
       match.index = matchIndex
       return match
     },
@@ -888,28 +1000,55 @@ return Fibre
     getAggregateText: function() {
 
       var elementFilter = this.options.filterElements
+      var forceContext = this.options.forceContext
       return getText(this.node)
       /**
        * Gets aggregate text of a node without resorting
        * to broken innerText/textContent
        */
-      function getText(node) {
+      function getText(node, txt) {
 
         if (node.nodeType === 3) {
-          return node.data
+          return [node.data]
         }
 
         if (elementFilter && !elementFilter(node)) {
-          return ''
+          return []
         }
 
-        var txt = ''
+        var txt = ['']
+        var i = 0
         if (node = node.firstChild) do {
-          txt += getText(node)
+
+          if (node.nodeType === 3) {
+            txt[i] += node.data
+            continue
+          }
+
+          var innerText = getText(node)
+          if (
+            forceContext &&
+            node.nodeType === 1 &&
+            (forceContext === true || forceContext(node))
+          ) {
+            txt[++i] = innerText
+            txt[++i] = ''
+          } else {
+            if (typeof innerText[0] === 'string') {
+              // Bridge nested text-node data so that they're
+              // not considered their own contexts:
+              // I.e. ['some', ['thing']] -> ['something']
+              txt[i] += innerText.shift()
+            }
+            if (innerText.length) {
+              txt[++i] = innerText
+              txt[++i] = ''
+            }
+          }
         } while (node = node.nextSibling)
         return txt
       }
-
+      
     },
 
     /** 
@@ -1197,6 +1336,7 @@ return Fibre
   }
   return exposed
 }())
+
 );
 
 function createBdGroup( portion, match ) {
@@ -1232,8 +1372,7 @@ function createBdChar( char ) {
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function() {
-    var origFilterOutSelector = this.filterOutSelector
-    this.filterOutSelector += ', h-jinze'
+    this.avoid( 'h-jinze' )
 
     this
     .replace(
@@ -1272,12 +1411,11 @@ $.extend( Fibre.fn, {
       }
     )
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   },
 
   groupify: function( option ) {
-    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
       biaodian: false,
     //punct: false,
@@ -1287,7 +1425,7 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.filterOutSelector += ', h-hangable, h-char-group, h-word'
+    this.avoid( 'h-hangable, h-char-group, h-word' )
 
     if ( option.biaodian ) {
       this.replace(
@@ -1317,12 +1455,11 @@ $.extend( Fibre.fn, {
       )
     }
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   },
 
   charify: function( option ) {
-    var origFilterOutSelector = this.filterOutSelector
     var option = $.extend({
       biaodian: false,
       punct: false,
@@ -1334,7 +1471,7 @@ $.extend( Fibre.fn, {
       eonmun: false
     }, option || {})
 
-    this.filterOutSelector += ', h-char'
+    this.avoid( 'h-char' )
 
     if ( option.biaodian ) {
       this.replace(
@@ -1381,7 +1518,7 @@ $.extend( Fibre.fn, {
       )
     }
 
-    this.filterOutSelector = origFilterOutSelector
+    this.endAvoid()
     return this
   }
 })
@@ -2065,9 +2202,9 @@ $.extend( Han, {
     // Elements to be filtered according to the
     // HWS rendering mode
     if ( strict ) {
-      finder.filterOut( 'textarea, code, kbd, samp, pre', true )
+      finder.avoid( 'textarea, code, kbd, samp, pre' )
     } else {
-      finder.filterOut( 'textarea', true )
+      finder.avoid( 'textarea' )
     }
 
     finder
@@ -2172,7 +2309,7 @@ Han.renderHanging = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, hangable', true )
+  .avoid( 'textarea, code, kbd, samp, pre, hangable' )
   .replace(
     TYPESET.jinze.hanging,
     function( portion, match ) {
@@ -2206,10 +2343,9 @@ $.extend( Han.fn, {
 Han.renderJiya = function( context ) {
   var context = context || document
   var finder = Han.find( context )
-  var origFilterOutSelector = this.filterOutSelector
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre, h-char-group', true )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
   .replace(
     // This is a safeguard against hanging rendering
     new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
@@ -2221,11 +2357,10 @@ Han.renderJiya = function( context ) {
       return elem
     }
   )
-
-  finder.filterOutSelector = origFilterOutSelector
+  .endAvoid()
 
   finder
-  .filterOut( 'textarea, code, kbd, samp, pre', true )
+  .avoid( 'textarea, code, kbd, samp, pre' )
   .groupify({ biaodian:  true })
   .charify({  biaodian:  true })
 
@@ -2317,7 +2452,7 @@ $.extend( Han, {
     var context = context || document
     var finder = Han.find( context )
 
-    finder.filterOut( SELECTOR_TO_IGNORE, true )
+    finder.avoid( SELECTOR_TO_IGNORE )
 
     aCombLiga
     .forEach(function( pattern ) {
@@ -2358,7 +2493,7 @@ $.extend( Han, {
     var context = context || document
     var finder = Han.find( context )
 
-    finder.filterOut( SELECTOR_TO_IGNORE, true )
+    finder.avoid( SELECTOR_TO_IGNORE )
     aInaccurateChar
     .forEach(function( pattern ) {
       finder

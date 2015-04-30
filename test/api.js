@@ -184,7 +184,7 @@
     Han(d).renderHWS();
     return htmlEqual(d.innerHTML, '單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號和單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號.');
   });
-  test('Consecutive punctuation (Jiya)', function(){
+  test('Biaodian jiya', function(){
     var d;
     d = div();
     d.innerHTML = '「字『字』？」字「字『字』」字？';

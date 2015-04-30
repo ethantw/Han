@@ -29,7 +29,7 @@ $.extend( Han, {
     var context = context || document
     var finder = Han.find( context )
 
-    finder.filterOut( SELECTOR_TO_IGNORE, true )
+    finder.avoid( SELECTOR_TO_IGNORE )
 
     aCombLiga
     .forEach(function( pattern ) {
@@ -70,7 +70,7 @@ $.extend( Han, {
     var context = context || document
     var finder = Han.find( context )
 
-    finder.filterOut( SELECTOR_TO_IGNORE, true )
+    finder.avoid( SELECTOR_TO_IGNORE )
     aInaccurateChar
     .forEach(function( pattern ) {
       finder

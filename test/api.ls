@@ -342,7 +342,7 @@ test 'Hanzi-Western script mixed spacing (HWS)' ->
   Han d .renderHWS!
   html-equal d.innerHTML, '單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號和單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號.'
 
-test 'Consecutive punctuation (Jiya)' ->
+test 'Biaodian jiya' ->
   d = div!
   d.innerHTML = '「字『字』？」字「字『字』」字？'
   Han d .renderJiya!
