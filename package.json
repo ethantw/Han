@@ -28,7 +28,7 @@
     "build": "gulp build"
   },
   "dependencies": {
-    "fibre.js": "^0.1.2",
+    "fibre.js": "^0.2.1",
     "normalize.css": "~3.0.3"
   },
   "devDependencies": {
