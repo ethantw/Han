@@ -1,7 +1,7 @@
 {
   "name": "Han",
   "repo": "ethantw/Han",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "The CSS typography framework optimised for Hanzi.",
   "author": "Chen Yijun",
   "keywords": [
@@ -13,6 +13,11 @@
   ],
   "scripts": [ "dist/han.js" ],
   "styles": [ "dist/han.css" ],
-  "fonts": [ "dist/font/han.woff", "dist/font/han.otf" ],
+  "fonts": [
+    "dist/font/han.woff",
+    "dist/font/han.otf",
+    "dist/font/han-space.woff",
+    "dist/font/han-space.otf"
+  ],
   "license": "MIT"
 }
