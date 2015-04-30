@@ -33,19 +33,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.0/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.css">
 ````
 
 JavaScript
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.0/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.js"></script>
 ````
 
 Webフォント
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.0/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.0/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.otf`
 
 ## 使用方式
 
@@ -92,14 +92,15 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 
 - 開発パッケージをインストール：`sudo npm i`
 - 開発環境の起動：`npm start`か`gulp dev`（ローカルサーバの実行と自動コンパイルを含む）
-- コンパイルしたファイルを公開: `gulp build`
-- `han.js`のAPIをテストする: `gulp test`（PhantomJS）
-- モジュールを更新する: `npm update && gulp dep`
+- コンパイルしたファイルを公開：`gulp build`
+- `han.js`のAPIをテストする：`gulp test`（PhantomJS）
+- モジュールを更新する：`npm update && gulp dep`
 
 * * *
-漢字標準格式 v3.2.0  
-Last-modified: 2015-4-26 1:24 (GMT+8)  
+漢字標準格式 v3.2.1  
+Last-modified: 2015-5-1 1:44 (GMT+8)  
 Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
 [translator]: http://westantenna.com
 [trans-twr]: https://twitter.com/westantenna
+
