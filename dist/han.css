@@ -2264,7 +2264,7 @@ samp:lang(zh),
 samp:lang(zh-Hant),
 pre:lang(zh),
 pre:lang(zh-Hant) {
-  font-family: "Biaodian Pro Sans CNS", Menlo, Consolas, Courier, "Zhuyin Heiti", "Han Heiti", monospace, monospace, sans-serif;
+  font-family: Menlo, Consolas, Courier, "Zhuyin Heiti", "Han Heiti", monospace, monospace, sans-serif;
 }
 
 code:lang(zh-Hans),
@@ -2275,14 +2275,14 @@ samp:lang(zh-Hans),
 samp:lang(zh-CN),
 pre:lang(zh-Hans),
 pre:lang(zh-CN) {
-  font-family: "Biaodian Pro Sans GB", Menlo, Consolas, Courier, "Han Heiti GB", monospace, monospace, sans-serif;
+  font-family: Menlo, Consolas, Courier, "Han Heiti GB", monospace, monospace, sans-serif;
 }
 
 code:lang(ja),
 kbd:lang(ja),
 samp:lang(ja),
 pre:lang(ja) {
-  font-family: "Yakumono Sans", Menlo, Consolas, Courier, monospace, monospace, sans-serif;
+  font-family: Menlo, Consolas, Courier, monospace, monospace, sans-serif;
 }
 
 html,
