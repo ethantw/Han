@@ -2506,24 +2506,10 @@ code h-hws,
 kbd h-hws,
 samp h-hws,
 pre h-hws,
-ol > h-hws,
-ul > h-hws,
-table > h-hws,
-thead > h-hws,
-tbody > h-hws,
-tfoot > h-hws,
-tr > h-hws,
 code h-hws[hidden],
 kbd h-hws[hidden],
 samp h-hws[hidden],
-pre h-hws[hidden],
-ol > h-hws[hidden],
-ul > h-hws[hidden],
-table > h-hws[hidden],
-thead > h-hws[hidden],
-tbody > h-hws[hidden],
-tfoot > h-hws[hidden],
-tr > h-hws[hidden] {
+pre h-hws[hidden] {
   display: none;
 }
 
