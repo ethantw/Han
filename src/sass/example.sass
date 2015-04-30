@@ -116,6 +116,13 @@ $han-biaodian-hant: Pro
 $han-biaodian-hans: GB
 
 // **
+// * 各語言文字的標點懸掛與否 
+// *
+$han-hanging-hant: false
+$han-hanging-hans: true
+$han-hanging-ja:   true
+
+// **
 // * 西文（拉丁字母等）通用字體
 // *
 $han-sans:    'Helvetica Neue', Helvetica, Arial
@@ -133,10 +140,9 @@ $han-mono-zh:    $han-sans-zh
 
 // **
 // * Web font路徑
-// *（注音符號、羅馬拼音陽入韻連字、部分標點修正）
+// *（注音符號、羅馬拼音陽入韻連字、部分標點修正、標點懸掛所需的空格）
 // *
-$han-font-woff: './font/han.woff'
-$han-font-otf:  './font/han.otf'
+$han-font-path:  './font/'
 
 // **
 // * 在所有樣式前滙入`_han.sass`
