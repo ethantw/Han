@@ -592,21 +592,27 @@ ruby *:before,
 ruby *:after {
   line-height: normal;
 }
+
 ruby > rt:not(:empty):before {
   content: "\ff08";
 }
+
 ruby > rt:not(:empty):after {
   content: "\ff09";
 }
+
 ruby > rb + rtc:before {
   content: "\ff08";
 }
+
 ruby > rtc:after {
   content: "\ff0c";
 }
+
 ruby > rtc:last-of-type:after {
   content: "\ff09";
 }
+
 ruby > rt:before,
 ruby > rt:after {
   display: inline-block;
@@ -615,6 +621,7 @@ ruby > rt:after {
   height: 0;
   width: 0;
 }
+
 ruby > rt:not(:empty):before,
 ruby > rt:not(:empty):after {
   height: -moz-calc( 1.3em);
@@ -637,6 +644,7 @@ ruby > rt:not(:empty):after {
   padding-bottom: auto;
   border-bottom-width: 0;
 }
+
 .no-textemphasis em:lang(zh),
 .no-textemphasis em:lang(ja) {
   line-height: 2;
@@ -691,11 +699,12 @@ em:lang(ja) h-char.biaodian {
 
 .no-textemphasis em:lang(zh) h-char:after {
   margin-top: 1em;
-  content: "\25cf";
+  content: "●";
 }
+
 .no-textemphasis em:lang(ja) h-char:after {
   margin-top: -.7em;
-  content: "\fe45";
+  content: "﹅";
 }
 
 h-ruby {
@@ -2311,6 +2320,7 @@ ruby h-ru[zhuyin] h-zhuyin h-diao,
 h-ruby h-ru[zhuyin] h-zhuyin h-diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
 }
+
 ruby.romanization rt,
 ruby h-ru[annotation]:before,
 h-ruby.romanization rt,
@@ -2455,9 +2465,11 @@ article blockquote {
     margin-left: 1em;
   }
 }
+
 figure blockquote {
   margin: 0;
 }
+
 blockquote blockquote {
   margin-left: 1em;
   margin-right: 1em;
@@ -2604,6 +2616,7 @@ h-cs[hidden] {
 h-char.biaodian.open > h-inner {
   margin-left: -.5em;
 }
+
 h-char.biaodian.close > h-inner,
 h-char.biaodian[unicode="3001"] > h-inner,
 h-char.biaodian[unicode="3002"] > h-inner,
@@ -2611,6 +2624,7 @@ h-char.biaodian[unicode="ff0c"] > h-inner,
 h-char.biaodian[unicode="ff0e"] > h-inner {
   letter-spacing: -.5em;
 }
+
 h-char.biaodian.open > h-cs,
 h-char.biaodian.close > h-cs,
 h-char.biaodian[unicode="3001"] > h-cs,
@@ -2619,6 +2633,7 @@ h-char.biaodian[unicode="ff0c"] > h-cs,
 h-char.biaodian[unicode="ff0e"] > h-cs {
   display: inline;
 }
+
 h-char.biaodian[unicode="3001"]:lang(zh-Hant) > h-inner,
 h-char.biaodian[unicode="3001"]:lang(zh-TW) > h-inner,
 h-char.biaodian[unicode="3001"]:lang(zh-HK) > h-inner,
@@ -2633,6 +2648,7 @@ h-char.biaodian[unicode="ff0e"]:lang(zh-TW) > h-inner,
 h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-inner {
   letter-spacing: inherit;
 }
+
 h-char.biaodian[unicode="3001"]:lang(zh-Hant) > h-cs,
 h-char.biaodian[unicode="3001"]:lang(zh-TW) > h-cs,
 h-char.biaodian[unicode="3001"]:lang(zh-HK) > h-cs,
@@ -2658,6 +2674,7 @@ h-hangable .open + .open h-cs,
 h-hangable .end:not(:last-child) h-cs {
   display: none;
 }
+
 h-char-group [unicode="3001"]:lang(zh-Hant) + .open h-cs,
 h-char-group [unicode="3001"]:lang(zh-TW) + .open h-cs,
 h-char-group [unicode="3001"]:lang(zh-HK) + .open h-cs,
@@ -2689,6 +2706,7 @@ h-char-group [unicode="b7"]:not(:last-child),
 h-char-group [unicode="30fb"]:not(:last-child) {
   letter-spacing: -.5em;
 }
+
 h-char-group .liga:not(:last-child) {
   margin-right: -.25em;
 }

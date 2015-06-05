@@ -27,6 +27,9 @@
     "start": "gulp dev",
     "build": "gulp build"
   },
+  "engines": {
+    "node": "0.12.x"
+  },
   "dependencies": {
     "fibre.js": "^0.2.1",
     "normalize.css": "~3.0.3"

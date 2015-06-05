@@ -217,11 +217,11 @@ $.extend( Locale, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /(r\-?[ubt])/i ))  break 
+            if ( !irb || irb.nodeName.match( /((^h\-)?r[ubt])/i ))  break
 
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
-          } while ( !irb.nodeName.match( /(r\-?[ubt])/i ))
+          } while ( !irb.nodeName.match( /((^h\-)?r[ubt])/i ))
           // Create a real `<h-ru>` to append.
           $ru = clazz.contains( 'zhuyin' ) ?
             createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
@@ -268,7 +268,7 @@ $.extend( Locale, {
 
           // Remove the container once it's useless
           $.remove( rtc )
-          ruby.setAttribute( 'rightangle', '' )
+          ruby.setAttribute( 'rightangle', 'rightangle' )
         }( $cloned.querySelector( 'rtc.zhuyin' ))
 
         // Then, normal annotations other than Zhuyin
@@ -303,7 +303,7 @@ $.extend( Locale, {
                   console.error( 'An impossible `rbspan` value detected.', ruby ) 
                   return
                 }
-                aRb = $.tag( 'h-rb', aRb[0] )
+                aRb = $.tag( 'rb', aRb[0] )
                 $ru = aRb.slice( rbspan ).concat( $ru ) 
                 aRb = aRb.slice( 0, rbspan )
                 span = rbspan
