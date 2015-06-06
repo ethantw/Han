@@ -45,7 +45,7 @@ var TYPESET = (function() {
   var rZyS = UNICODE.zhuyin.initial
   var rZyJ = UNICODE.zhuyin.medial
   var rZyY = UNICODE.zhuyin.final
-  var rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
+  var rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.checked
 
   return {
     /* Character-level selector (字級選擇器)
@@ -87,7 +87,7 @@ var TYPESET = (function() {
       hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
       western:     new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
       kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')+', 'g' ),
-      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')+', 'g' )
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + '|' + rPt + ')+', 'g' )
     },
 
     /* Punctuation Rules (禁則)
