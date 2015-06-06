@@ -12,6 +12,7 @@ Han.UNICODE.cjk      = Han.UNICODE.hanzi
 Han.UNICODE.greek    = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.hangul   = Han.UNICODE.eonmun
+Han.UNICODE.zhuyin.ruyun = Han.UNICODE.zhuyin.checked
 
 Han.TYPESET.char.cjk      = Han.TYPESET.char.hanzi
 Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika

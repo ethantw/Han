@@ -169,12 +169,10 @@ var UNICODE = {
    *
    * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
         Bopomofo phonetic symbols
-   * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
-        Tones for Mandarin
-   * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
-        Departing tones in dialects
-   * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
-        Checked tones in dialects
+   * 2. 平上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02EA\u02EB\u02CB] （**註：**國語三聲包含乙個不合規範的符號）
+        Level, rising, departing tones
+   * 3. 入聲調號：[\u31B4-\u31B7][\u0358\u030d]?
+        Checked (entering) tones
    */
   zhuyin: {
     base:    '[\u3105-\u312D\u31A0-\u31BA]',
@@ -182,7 +180,7 @@ var UNICODE = {
     medial:  '[\u3127-\u3129]',
     final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
     tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
-    ruyun:   '[\u31B4-\u31B7][\u0358\u030d]?'
+    checked: '[\u31B4-\u31B7][\u0358\u030d]?'
   }
 }
 
