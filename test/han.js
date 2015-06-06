@@ -289,12 +289,10 @@ var UNICODE = {
    *
    * 1. 國語注音、方言音符號：[\u3105-\u312D][\u31A0-\u31BA]
         Bopomofo phonetic symbols
-   * 2. 國語陰陽上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02CB] （**註：**三聲包含乙個不合規範的符號）
-        Tones for Mandarin
-   * 3. 方言音陰、陽去聲調號：[\u02EA\u02EB]
-        Departing tones in dialects
-   * 4. 方言音陰、陽入韻：[\u31B4-\u31B7][\u0358\u030d]?
-        Checked tones in dialects
+   * 2. 平上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02EA\u02EB\u02CB] （**註：**國語三聲包含乙個不合規範的符號）
+        Level, rising, departing tones
+   * 3. 入聲調號：[\u31B4-\u31B7][\u0358\u030d]?
+        Checked (entering) tones
    */
   zhuyin: {
     base:    '[\u3105-\u312D\u31A0-\u31BA]',
@@ -302,7 +300,7 @@ var UNICODE = {
     medial:  '[\u3127-\u3129]',
     final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
     tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
-    ruyun:   '[\u31B4-\u31B7][\u0358\u030d]?'
+    checked: '[\u31B4-\u31B7][\u0358\u030d]?'
   }
 }
 
@@ -349,7 +347,7 @@ var TYPESET = (function() {
   var rZyS = UNICODE.zhuyin.initial
   var rZyJ = UNICODE.zhuyin.medial
   var rZyY = UNICODE.zhuyin.final
-  var rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.ruyun
+  var rZyD = UNICODE.zhuyin.tone + '|' + UNICODE.zhuyin.checked
 
   return {
     /* Character-level selector (字級選擇器)
@@ -391,7 +389,7 @@ var TYPESET = (function() {
       hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
       western:     new RegExp( '(' + rLatn + '|' + rGk + '|' + rCy + '|' + rPt + ')+', 'ig' ),
       kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')+', 'g' ),
-      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')+', 'g' )
+      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + '|' + rPt + ')+', 'g' )
     },
 
     /* Punctuation Rules (禁則)
@@ -477,6 +475,7 @@ Han.UNICODE.cjk      = Han.UNICODE.hanzi
 Han.UNICODE.greek    = Han.UNICODE.ellinika
 Han.UNICODE.cyrillic = Han.UNICODE.kirillica
 Han.UNICODE.hangul   = Han.UNICODE.eonmun
+Han.UNICODE.zhuyin.ruyun = Han.UNICODE.zhuyin.checked
 
 Han.TYPESET.char.cjk      = Han.TYPESET.char.hanzi
 Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
@@ -1434,7 +1433,7 @@ $.extend( Fibre.fn, {
         TYPESET.group.biaodian[ 1 ], createBdGroup
       )
     }
-    if ( option.hanzi ) {
+    if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
       )
@@ -1449,7 +1448,7 @@ $.extend( Fibre.fn, {
         TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
       )
     }
-    if ( option.eonmun ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
       )
@@ -1482,7 +1481,7 @@ $.extend( Fibre.fn, {
         function( portion, match ) {  return createBdChar( match[0] )  }
       )
     }
-    if ( option.hanzi ) {
+    if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
       )
@@ -1497,12 +1496,12 @@ $.extend( Fibre.fn, {
         TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
       )
     }
-    if ( option.ellinika ) {
+    if ( option.ellinika || option.greek ) {
       this.wrap(
         TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
       )
     }
-    if ( option.kirillica ) {
+    if ( option.kirillica || option.cyrillic ) {
       this.wrap(
         TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
       )
@@ -1512,7 +1511,7 @@ $.extend( Fibre.fn, {
         TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
       )
     }
-    if ( option.eonmun ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
       )
@@ -1526,12 +1525,12 @@ $.extend( Fibre.fn, {
 Han.find = Fibre
 
 void [
-  'replace',
-  'wrap',
-  'revert',
-  'jinzify',
-  'groupify',
-  'charify'
+  'setMode',
+  'wrap', 'replace', 'revert',
+  'addBoundary', 'removeBoundary',
+  'avoid', 'endAvoid',
+  'filter', 'endFilter',
+  'jinzify', 'groupify', 'charify'
 ].forEach(function( method ) {
   Han.fn[ method ] = function() {
     if ( !this.finder ) {

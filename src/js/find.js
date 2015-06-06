@@ -101,7 +101,7 @@ $.extend( Fibre.fn, {
         TYPESET.group.biaodian[ 1 ], createBdGroup
       )
     }
-    if ( option.hanzi ) {
+    if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
       )
@@ -116,7 +116,7 @@ $.extend( Fibre.fn, {
         TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
       )
     }
-    if ( option.eonmun ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
       )
@@ -149,7 +149,7 @@ $.extend( Fibre.fn, {
         function( portion, match ) {  return createBdChar( match[0] )  }
       )
     }
-    if ( option.hanzi ) {
+    if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
       )
@@ -164,12 +164,12 @@ $.extend( Fibre.fn, {
         TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
       )
     }
-    if ( option.ellinika ) {
+    if ( option.ellinika || option.greek ) {
       this.wrap(
         TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
       )
     }
-    if ( option.kirillica ) {
+    if ( option.kirillica || option.cyrillic ) {
       this.wrap(
         TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
       )
@@ -179,7 +179,7 @@ $.extend( Fibre.fn, {
         TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
       )
     }
-    if ( option.eonmun ) {
+    if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
       )
@@ -193,12 +193,12 @@ $.extend( Fibre.fn, {
 Han.find = Fibre
 
 void [
-  'replace',
-  'wrap',
-  'revert',
-  'jinzify',
-  'groupify',
-  'charify'
+  'setMode',
+  'wrap', 'replace', 'revert',
+  'addBoundary', 'removeBoundary',
+  'avoid', 'endAvoid',
+  'filter', 'endFilter',
+  'jinzify', 'groupify', 'charify'
 ].forEach(function( method ) {
   Han.fn[ method ] = function() {
     if ( !this.finder ) {
