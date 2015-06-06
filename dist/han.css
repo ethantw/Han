@@ -588,17 +588,9 @@ ins {
  * Ruby annotations
  * (行間注)
  */
-ruby *:before,
-ruby *:after {
-  line-height: normal;
-}
-
-ruby > rt:not(:empty):before {
-  content: "\ff08";
-}
-
-ruby > rt:not(:empty):after {
-  content: "\ff09";
+ruby rtc rt {
+  display: inline;
+  font-size: inherit;
 }
 
 ruby > rb + rtc:before {
@@ -611,21 +603,6 @@ ruby > rtc:after {
 
 ruby > rtc:last-of-type:after {
   content: "\ff09";
-}
-
-ruby > rt:before,
-ruby > rt:after {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: middle;
-  height: 0;
-  width: 0;
-}
-
-ruby > rt:not(:empty):before,
-ruby > rt:not(:empty):after {
-  height: -moz-calc( 1.3em);
-  width: -moz-calc( 1em);
 }
 
 .han-js-rendered u + u,
