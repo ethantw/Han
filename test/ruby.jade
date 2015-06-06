@@ -4,6 +4,7 @@ html(lang='zh-Hant').han-init
     meta(charset='utf-8')
     title 測試・行間注元素 — 漢字標準格式
     link(rel='stylesheet', href='./han.min.css')
+    //link(rel='stylesheet', href='//az.hanzi.co/201505/han.ruby.css')
 
     style.
       html {
@@ -42,6 +43,8 @@ html(lang='zh-Hant').han-init
               | 人面<rt>rénmiàn</rt>
               | 逐<rt>zhú</rt>
               | 高低<rt>gāodī</rt>。<rt></rt>
+        p.
+          好好地來<ruby class="pinyin">安<rt>ān</rt>裝<rt>zhuāng</rt>窗<rt>chuāng</rt>戶<rt>hù</rt></ruby>。
         section#zhuyin_fuhao
           h3 注音符號
           p: ruby.zhuyin
@@ -62,6 +65,8 @@ html(lang='zh-Hant').han-init
               i 爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！
       section#fuheshi_hangjianzhu
         h2 複合式行間注
+        p.
+          好好地來<ruby class="complex"><rb>安</rb><rb>裝</rb><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby>
         p: ruby.complex
           | 辛亥革命發生在
           rb 1911-
@@ -241,36 +246,37 @@ html(lang='zh-Hant').han-init
                   rt ㆤˊ
                   rt ㄍㄨㄚ
               | 有無？
-          p: ruby.complex.
-            <rb>一</rb>
-            <rb>人</rb>
-            <rb>煩</rb>
-            <rb>惱</rb>
-            <rb>一</rb>
-            <rb>樣</rb>，
-            <rb>無</rb>
-            <rb>人</rb>
-            <rb>煩</rb>
-            <rb>惱</rb>
-            <rb>親</rb>
-            <rb>像</rb>。
+          p 俗語說，
+            ruby.complex.
+              <rb>一</rb>
+              <rb>人</rb>
+              <rb>煩</rb>
+              <rb>惱</rb>
+              <rb>一</rb>
+              <rb>樣</rb>，
+              <rb>無</rb>
+              <rb>人</rb>
+              <rb>煩</rb>
+              <rb>惱</rb>
+              <rb>親</rb>
+              <rb>像</rb>。
 
-            <rtc class="zhuyin">
-                <rt>ㄐㄧㆵ͘</rt>
-                <rt>ㄌㄤˊ</rt>
-                <rt>ㄏㄨㄢˊ</rt>
-                <rt>ㄌㄜˋ</rt>
-                <rt>ㄐㄧㆵ͘</rt>
-                <rt>ㄧㆫ˫</rt>
-                <rt>ㆠㄜˊ</rt>
-                <rt>ㄌㄤˊ</rt>
-                <rt>ㄏㄨㄢˊ</rt>
-                <rt>ㄌㄜˋ</rt>
-                <rt>ㄑㄧㄣ</rt>
-                <rt>ㄑㄧㆫ˫</rt>
-                <rt></rt>
-            </rtc>
-            <rtc class="romanization">
+              <rtc class="zhuyin">
+                  <rt>ㄐㄧㆵ͘</rt>
+                  <rt>ㄌㄤˊ</rt>
+                  <rt>ㄏㄨㄢˊ</rt>
+                  <rt>ㄌㄜˋ</rt>
+                  <rt>ㄐㄧㆵ͘</rt>
+                  <rt>ㄧㆫ˫</rt>
+                  <rt>ㆠㄜˊ</rt>
+                  <rt>ㄌㄤˊ</rt>
+                  <rt>ㄏㄨㄢˊ</rt>
+                  <rt>ㄌㄜˋ</rt>
+                  <rt>ㄑㄧㄣ</rt>
+                  <rt>ㄑㄧㆫ˫</rt>
+                  <rt></rt>
+              </rtc>
+              <rtc class="romanization">
                 <rt>Tsi̍t</rt>
                 <rt>lâng</rt>
                 <rt rbspan="2">hoân‑ló</rt>
@@ -279,7 +285,8 @@ html(lang='zh-Hant').han-init
                 <rt rbspan="2">bô‑lâng</rt>
                 <rt rbspan="2">hoân‑ló</rt>
                 <rt rbspan="2">chhin‑chhiūⁿ</rt>
-                </rtc><rtc class="romanization"><rt>Tsi̍t</rt>
+              </rtc>
+              <rtc class="romanization"><rt>Tsi̍t</rt>
                 <rt>lâng</rt>
                 <rt rbspan="2">huân-ló</rt>
                 <rt>tsi̍t</rt>
@@ -287,7 +294,7 @@ html(lang='zh-Hant').han-init
                 <rt rbspan="2">bô-lâng</rt>
                 <rt rbspan="2">huân-ló</rt>
                 <rt rbspan="2">tshin-tshiūnn</rt>
-            </rtc>
+              </rtc>
           p: ruby.rightangle.
             <rb>僥</rb>
             <rb>倖</rb>

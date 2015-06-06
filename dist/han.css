@@ -668,6 +668,10 @@ ruby > rt:not(:empty):after {
   -ms-transform: scale(.5);
   -webkit-transform: scale(.5);
   transform: scale(.5);
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
   position: absolute;
   left: 50%;
   top: 0;
@@ -707,174 +711,204 @@ em:lang(ja) h-char.biaodian {
   content: "﹅";
 }
 
-h-ruby {
-  display: inline;
-  line-height: 2;
-}
-h-ruby rp {
-  display: none;
-}
-h-ruby h-ru[annotation] > rt {
-  display: inline-block;
-  height: 0;
-  width: 0;
-  font: 0/0 hidden-text;
-}
-.pseudo-element-clipboard h-ruby h-ru[annotation] > rt {
-  display: none;
-}
-h-ruby h-ru {
+h-ru[annotation] {
   position: relative;
-  display: inline-block;
-  text-indent: 0;
-}
-h-ruby h-ru:before,
-h-ruby h-zhuyin {
-  -moz-transform: scale(.55);
-  -ms-transform: scale(.55);
-  -webkit-transform: scale(.55);
-  transform: scale(.55);
-  -moz-text-emphasis: none;
-  -webkit-text-emphasis: none;
-  text-emphasis: none;
-  font-style: normal;
-  font-weight: normal;
-  line-height: normal;
-  text-decoration: none;
-  text-indent: 0;
-  position: absolute;
-  display: inline-block;
-}
-h-ruby h-ru[annotation] {
+  display: inline-table;
   text-align: center;
+  vertical-align: 1.2em;
 }
-h-ruby h-ru[annotation]:before {
-  left: -265%;
-  top: -.5em;
-  vertical-align: top;
-  height: 1em;
-  width: 600%;
-  content: attr(annotation);
+h-ru[annotation] > h-ru[annotation] {
+  vertical-align: -.2em;
+}
+h-ruby[rightangle][doubleline] h-ru[annotation] {
+  vertical-align: 1em;
+}
+h-ru[annotation] > rb,
+h-ru[annotation] > h-ru,
+h-ru[annotation] > rt {
   line-height: 1;
   text-align: center;
-  text-indent: 0;
 }
-h-ruby[rightangle] h-ru[annotation]:before {
-  left: -250%;
+h-ru[annotation] > rt {
+  display: table-header-group;
+  font-size: .5em;
+  white-space: nowrap;
+  word-break: normal;
 }
-h-ruby h-ru[zhuyin] {
-  display: inline-block;
+h-ru[annotation] > rt:before,
+h-ru[annotation] > rt:after {
+  content: "\2006";
+}
+h-ru[annotation][order="0"] > rt,
+h-ruby[rightangle] h-ru[annotation][order="1"] > rt {
+  display: table-header-group;
+}
+h-ru[annotation][order="1"] > rt,
+h-ruby[rightangle] h-ru[annotation][order="0"] > rt {
+  display: table-footer-group;
+}
+h-ru[annotation][order="0"] > h-ru[order="1"] {
+  vertical-align: .15em;
+}
+h-ruby[rightangle][doubleline] h-ru[annotation][order="1"] rt {
+  line-height: 1.5;
+}
+
+h-ru[zhuyin] h-zhuyin {
   position: relative;
-  width: 1.8em;
-  text-align: left;
-}
-h-ruby h-ru[zhuyin] h-zhuyin {
-  right: .2em;
-  top: 0;
-  height: 2.7em;
-  width: .8em;
-  line-height: .9;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-h-ruby h-ru[zhuyin] h-diao {
-  position: absolute;
-  right: -.9em;
-  top: 0;
   display: inline-block;
-  width: 1em;
+  height: 1.2em;
+  width: .4em;
+  vertical-align: text-bottom;
+  font-style: none !important;
+  font-weight: normal !important;
+  text-decoration: none !important;
+  -webkit-text-emphasis: none !important;
+  text-emphasis: none !important;
 }
-h-ruby h-ru[zhuyin][length="0"],
-h-ruby h-ru[zhuyin]:empty {
-  width: auto;
+
+h-ru[zhuyin] h-zhuyin > * {
+  -moz-transform: scale(.4);
+  -ms-transform: scale(.4);
+  -webkit-transform: scale(.4);
+  transform: scale(.4);
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  display: inline-block;
 }
-h-ruby h-ru[zhuyin][length="0"] h-zhuyin,
-h-ruby h-ru[zhuyin]:empty h-zhuyin {
+
+h-ru[zhuyin] h-yin {
+  vertical-align: middle;
+  line-height: 1;
+}
+
+h-ru[zhuyin] h-diao {
+  position: absolute;
+  bottom: 0;
+  right: -.9em;
+  line-height: 1;
+}
+
+h-ru[zhuyin] h-yin:empty,
+h-ru[zhuyin] h-diao:empty {
   display: none;
 }
-h-ruby h-ru[zhuyin][length="1"] h-zhuyin {
-  margin-top: .125em;
+
+h-ru[length="0"][zhuyin] {
+  margin-right: -.4em;
 }
-h-ruby h-ru[zhuyin][length="1"] h-diao {
-  margin-top: -.35em;
+
+h-ru[length="1"][zhuyin] h-diao,
+h-ru[zhuyin] [length="1"] h-diao {
+  bottom: 0;
 }
-h-ruby h-ru[zhuyin][length="2"] h-zhuyin {
-  margin-top: -.175em;
+
+h-ru[length="2"][zhuyin] h-yin,
+h-ru[zhuyin] [length="2"] h-yin {
+  vertical-align: -.8em;
 }
-h-ruby h-ru[zhuyin][length="2"] h-diao {
-  margin-top: .5em;
+
+h-ru[length="2"][zhuyin] h-diao,
+h-ru[zhuyin] [length="2"] h-diao {
+  bottom: -.2em;
 }
-h-ruby h-ru[zhuyin][length="3"] h-zhuyin {
-  margin-top: -.45em;
+
+h-ru[length="3"][zhuyin] h-yin,
+h-ru[zhuyin] [length="3"] h-yin {
+  line-height: .9;
 }
-h-ruby h-ru[zhuyin][length="3"] h-diao {
-  margin-top: 1.3em;
+
+h-ru[length="3"][zhuyin] h-diao,
+h-ru[zhuyin] [length="3"] h-diao {
+  bottom: -.25em;
 }
-h-ruby h-ru[zhuyin][diao="˙"] h-diao {
-  right: -.35em;
+
+h-ru[diao="˙"][zhuyin] h-diao,
+h-ru[zhuyin] [diao="˙"] h-diao {
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: .08em;
 }
-h-ruby h-ru[zhuyin][diao="˙"][length="1"] h-diao {
-  margin-top: -.5em;
+
+h-ru[diao="˙"][length="1"][zhuyin] h-diao,
+h-ru[diao="˙"][zhuyin] [length="1"] h-diao,
+h-ru[zhuyin] [diao="˙"][length="1"] h-diao,
+h-ru[zhuyin] [diao="˙"] [length="1"] h-diao {
+  top: .25em;
 }
-h-ruby h-ru[zhuyin][diao="˙"][length="2"] h-diao {
-  margin-top: -.3em;
+
+h-ru[diao="˙"][length="2"][zhuyin] h-diao,
+h-ru[diao="˙"][zhuyin] [length="2"] h-diao,
+h-ru[zhuyin] [diao="˙"][length="2"] h-diao,
+h-ru[zhuyin] [diao="˙"] [length="2"] h-diao {
+  top: .1em;
 }
-h-ruby h-ru[zhuyin][diao="˙"][length="3"] h-diao {
-  margin-top: -.25em;
+
+h-ru[diao="˙"][length="3"][zhuyin] h-diao,
+h-ru[diao="˙"][zhuyin] [length="3"] h-diao,
+h-ru[zhuyin] [diao="˙"][length="3"] h-diao,
+h-ru[zhuyin] [diao="˙"] [length="3"] h-diao {
+  top: -.15em;
 }
-h-ruby h-ru[zhuyin][diao="˪"] h-diao,
-h-ruby h-ru[zhuyin][diao="˫"] h-diao {
-  -moz-transform: scale(1.2);
-  -ms-transform: scale(1.2);
-  -webkit-transform: scale(1.2);
-  transform: scale(1.2);
-  margin-right: -.25em;
+
+h-ru[diao="˪"][zhuyin] h-diao,
+h-ru[diao="˫"][zhuyin] h-diao,
+h-ru[zhuyin] [diao="˪"] h-diao,
+h-ru[zhuyin] [diao="˫"] h-diao {
+  -moz-transform: scale(.6);
+  -ms-transform: scale(.6);
+  -webkit-transform: scale(.6);
+  transform: scale(.6);
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
 }
-h-ruby h-ru[zhuyin][diao^="ㆴ"] h-diao,
-h-ruby h-ru[zhuyin][diao^="ㆵ"] h-diao,
-h-ruby h-ru[zhuyin][diao^="ㆶ"] h-diao,
-h-ruby h-ru[zhuyin][diao^="ㆷ"] h-diao,
-h-ruby h-ru[zhuyin][diao="󳆴"] h-diao,
-h-ruby h-ru[zhuyin][diao="󳆵"] h-diao,
-h-ruby h-ru[zhuyin][diao="󳆶"] h-diao,
-h-ruby h-ru[zhuyin][diao="󳆷"] h-diao {
-  top: 20%;
-  margin-right: -.3em;
+
+h-ru[diao^="ㆴ"][zhuyin] h-diao,
+h-ru[diao^="ㆵ"][zhuyin] h-diao,
+h-ru[diao^="ㆶ"][zhuyin] h-diao,
+h-ru[diao^="ㆷ"][zhuyin] h-diao,
+h-ru[diao="󳆴"][zhuyin] h-diao,
+h-ru[diao="󳆵"][zhuyin] h-diao,
+h-ru[diao="󳆶"][zhuyin] h-diao,
+h-ru[diao="󳆷"][zhuyin] h-diao,
+h-ru[zhuyin] [diao^="ㆴ"] h-diao,
+h-ru[zhuyin] [diao^="ㆵ"] h-diao,
+h-ru[zhuyin] [diao^="ㆶ"] h-diao,
+h-ru[zhuyin] [diao^="ㆷ"] h-diao,
+h-ru[zhuyin] [diao="󳆴"] h-diao,
+h-ru[zhuyin] [diao="󳆵"] h-diao,
+h-ru[zhuyin] [diao="󳆶"] h-diao,
+h-ru[zhuyin] [diao="󳆷"] h-diao {
+  bottom: -.5em;
+  margin-right: .3em;
 }
-h-ruby h-ru[annotation]:before,
-h-ruby[rightangle] h-ru[annotation][order="1"]:before {
-  top: -.5em;
+
+h-ru[zhuyin] {
+  margin-right: .2em;
+  display: inline-block;
+  line-height: 1.8;
 }
-h-ruby h-ru[order="1"]:before,
-h-ruby[rightangle] h-ru[annotation][order="0"]:before {
-  bottom: -.4em;
-  top: auto;
+
+[rightangle] h-ru[annotation] {
+  vertical-align: 0;
+  line-height: 1;
 }
-h-ruby[rightangle] h-ru[annotation]:before {
-  margin-left: -.4em;
+
+[rightangle] rt:after {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
 }
-@media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi) {
-  h-ruby h-yin {
-    -moz-transform: scale(.8);
-    -ms-transform: scale(.8);
-    -webkit-transform: scale(.8);
-    transform: scale(.8);
-    display: inline-block;
-  }
-  h-ruby h-ru[zhuyin][diao="˪"] h-diao,
-  h-ruby h-ru[zhuyin][diao="˫"] h-diao {
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-  h-ruby h-ru[zhuyin][diao="˙"] h-diao {
-    -moz-transform: scale(.8);
-    -ms-transform: scale(.8);
-    -webkit-transform: scale(.8);
-    transform: scale(.8);
-    top: .125em;
-  }
+
+h-ru h-ru[zhuyin] {
+  margin-top: -.4em;
+  margin-bottom: -.2em;
+  line-height: 1.8;
 }
 
 h-jinze,

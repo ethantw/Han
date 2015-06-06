@@ -1,207 +1,170 @@
-h-ruby
-  // box
-  display: inline
-  // typography
-  line-height: 2
 
-  // * Hide the `<rp>`
-  // *
-  rp
+h-ru[annotation]
+  // positioning
+  position: relative
+  //margin-top: -.5em
+  // box-model
+  display: inline-table
+  // typography
+  text-align: center
+  vertical-align: 1.2em
+
+  > h-ru[annotation]
+    vertical-align: -.2em
+  h-ruby[rightangle][doubleline] &
+    vertical-align: 1em
+
+  > rb,
+  > h-ru,
+  > rt
+    // typo
+    line-height: 1
+    text-align: center
+  > rt
+    // box-model
+    display: table-header-group
+    // typography
+    font-size: .5em
+    white-space: nowrap
+    word-break: normal
+
+    &:before,
+    &:after
+      content: '\2006'
+  &[order='0'] > rt,
+  h-ruby[rightangle] &[order='1'] > rt
+    display: table-header-group
+  &[order='1'] > rt,
+  h-ruby[rightangle] &[order='0'] > rt
+    display: table-footer-group
+  &[order='0'] > h-ru[order='1']
+    vertical-align: .15em
+  h-ruby[rightangle][doubleline] &[order='1'] rt
+    line-height: 1.5
+
+//  Zhuyin
+// --------
+%han-zhuyin
+  h-zhuyin
+    // posi
+    position: relative
+    // box
+    display: inline-block
+    height: .4*3em
+    width: .4em
+    vertical-align: text-bottom
+    //- reset all possible text styles
+    font-style: none !important
+    font-weight: normal !important
+    text-decoration: none !important
+    -webkit-text-emphasis: none !important
+    text-emphasis: none !important
+    // typography
+    //font-family: $zhuyin, 'Han Kaiti CNS', cursive, serif
+  h-zhuyin > *
+    // box-model
+    +han-scale( .4 )
+    display: inline-block
+    //width: 1em
+  h-yin
+    // box-model
+    vertical-align: middle
+    line-height: 1
+  h-diao
+    // positioning
+    position: absolute
+    bottom: 0
+    right: -.9em
+    // typography
+    line-height: 1
+  h-yin:empty,
+  h-diao:empty
     display: none
 
-  // * Hide the `<rt>` for we use pseudo elements
-  // * to display regular annotations.
-  // * -
-  // * - 1. We also need them to work for clipboard
-  // *      actions, hence a different approach is 
-  // *      hereby applied.
-  // *
-  h-ru[annotation] > rt
-    // box
-    display: inline-block
-    height: 0
-    width: 0
-    // 1
-    font: 0/0 hidden-text
-
-    .pseudo-element-clipboard &
-      display: none
-
-  // * 
-  // *
-  h-ru
-    // position
-    position: relative
-    // box
-    display: inline-block
-    // typography
-    text-indent: 0
-
-  // * Real ruby annotations (pseudo elements)
-  // * and Zhuyin.
-  // *
-  h-ru:before,
-  h-zhuyin
-    +han-scale( .55 )
-    +han-typo-reset
-    // position
-    position: absolute
-    // box
-    display: inline-block
-
-  // * Regular annotations
-  // * -
-  // * - 1. Pseudo element is applied here to avoid
-  // * -    dirty box-modelling hacks.
-  // *
-  h-ru[annotation]
-    // typography
-    text-align: center
-
-    // 1
-    &:before
-      left: -265%
-      top: -.5em
-      vertical-align: top
-      // box
-      height: 1em
-      width: 600%
-      // typography
-      content: attr( annotation )
-      line-height: 1
-      text-align: center
-      text-indent: 0
-  &[rightangle] h-ru[annotation]:before
-    left: -250%
-
-  // * Zhuyin annotations
-  // *
-  h-ru[zhuyin]
-    // posi
-    display: inline-block
-    position: relative
-    // box
-    width: 1.8em
-    // typography
-    text-align: left
-
-    // * a. `zhuyin` is the container for both `yin` and `diao`.
-    // * b. `diao` is used to contain the tone.
-    // * c. Position Zhuyin according to its length.
-    // *
-    // * - 1. Neutral tone (輕聲).
-    // * - 2. Falling tones (陰去、陽去).
-    // * - 3. Checked tones (陰入、陽入).
-    // *   3.1 Moedict.tw PUA as some browsers fail to display combining ligatures.
-    // *
-
-    // a
-    h-zhuyin
-      // posi
-      right: .2em
-      top: 0
-      // box
-      height: 2.7em
-      width: .8em
-      // typography
-      line-height: .9
-      white-space: pre-wrap
-      word-break: break-all
-
-    // b
+  &[length='0']
+    margin-right: -.4em
+  &[length='1'],
+  [length='1']
     h-diao
-      // position
-      position: absolute
-      right: -.9em
-      top: 0
-      // box
-      display: inline-block
-      width: 1em
-
-    // c
-    &[length='0'],
-    &:empty
-      &
-        width: auto
-      h-zhuyin
-        display: none
-    &[length='1']
-      h-zhuyin
-        margin-top: .125em
-      h-diao
-        margin-top: -.35em
-    &[length='2']
-      h-zhuyin
-        margin-top: -.175em
-      h-diao
-        margin-top: .5em
-    &[length='3']
-      h-zhuyin
-        margin-top: -.45em
-      h-diao
-        margin-top: 1.3em
-
-    // 1
-    &[diao='˙']
-      h-diao
-        right: -.35em
-      &[length='1'] h-diao
-        margin-top: -.5em
-      &[length='2'] h-diao
-        margin-top: -.3em
-      &[length='3'] h-diao
-        margin-top: -.25em
-
-    // 2
-    &[diao='˪'],
-    &[diao='˫']
-      h-diao
-        +han-scale( 1.2 )
-        margin-right: -.25em
-
-    // 3, 3.1
-    &[diao^='ㆴ'],
-    &[diao^='ㆵ'],
-    &[diao^='ㆶ'],
-    &[diao^='ㆷ'],
-    &[diao='󳆴'],
-    &[diao='󳆵'],
-    &[diao='󳆶'],
-    &[diao='󳆷']
-      h-diao
-        top: 20%
-        margin-right: -.3em
-
-  // * Position annotations above or below the ruby base
-  // * text according to the order or whether they are
-  // * in ‘right-angle’.
-  // *
-  h-ru[annotation]:before,
-  &[rightangle] h-ru[annotation][order='1']:before
-    top: -.5em
-  h-ru[order='1']:before,
-  &[rightangle] h-ru[annotation][order='0']:before
-    bottom: -.4em
-    top: auto
-  &[rightangle] h-ru[annotation]:before
-    margin-left: -.4em
-
-  // * We can use even smaller Zhuyin font-size while in
-  // * Retina Display conditions.
-  // *
-  @media screen and (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 192dpi)
-
+      bottom: 0
+  &[length='2'],
+  [length='2']
     h-yin
-      +han-scale( .8 )
-      display: inline-block
+      vertical-align: -.8em
+    h-diao
+      bottom: -.2em
+  &[length='3'],
+  [length='3']
+    h-yin
+      line-height: .9
+    h-diao
+      bottom: -.25em
+  &[diao='˙'],
+  [diao='˙']
+    h-diao
+      top: 0
+      right: auto
+      bottom: auto
+      left: .08em
+    &[length='1'] h-diao,
+    [length='1'] h-diao
+      top: .25em
+    &[length='2'] h-diao,
+    [length='2'] h-diao
+      top: .1em
+    &[length='3'] h-diao,
+    [length='3'] h-diao
+      top: -.15em
+  &[diao='˪'],
+  &[diao='˫'],
+  [diao='˪'],
+  [diao='˫']
+    h-diao
+      +han-scale( .6 )
+  &[diao^='ㆴ'],
+  &[diao^='ㆵ'],
+  &[diao^='ㆶ'],
+  &[diao^='ㆷ'],
+  &[diao='󳆴'],
+  &[diao='󳆵'],
+  &[diao='󳆶'],
+  &[diao='󳆷'],
+  [diao^='ㆴ'],
+  [diao^='ㆵ'],
+  [diao^='ㆶ'],
+  [diao^='ㆷ'],
+  [diao='󳆴'],
+  [diao='󳆵'],
+  [diao='󳆶'],
+  [diao='󳆷']
+    h-diao
+      bottom: -.5em
+      margin-right: .3em
 
-    h-ru[zhuyin][diao='˪'],
-    h-ru[zhuyin][diao='˫']
-      h-diao
-        +han-scale( 1 )
+h-ru[zhuyin]
+  @extend %han-zhuyin
+  // positioning
+  margin-right: .2em
+  // box-model
+  display: inline-block
+  // typo
+  line-height: 1.8
 
-    h-ru[zhuyin][diao='˙']
-      h-diao
-        +han-scale( .8 )
-        top: .125em
+//  Right-angle
+// -------------
+[rightangle]
+  h-ru[annotation]
+    vertical-align: 0
+    line-height: 1
+  rt:after
+    content: ''
+    display: inline-block
+    width: 1.2em
+
+h-ru h-ru[zhuyin]
+  // posi
+  margin-top: -.4em
+  margin-bottom: -.2em
+  // typo
+  line-height: 1.8
 

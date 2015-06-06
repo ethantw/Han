@@ -1793,7 +1793,7 @@ function createNormalRu( $rb, $rt, attr ) {
   var $ru = $.create( 'h-ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
-  attr.annotation = $rt.textContent
+  attr.annotation = 'annotation' //$rt.textContent
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
@@ -1826,7 +1826,7 @@ function createZhuyinRu( $rb, $rt ) {
   // * `form`:   the combination of the pronunciation
   // * `len`:    the text length of `yin`
   var zhuyin = $rt.textContent
-  var yin, diao, form, len
+  var yin, diao, len
 
   yin  = zhuyin.replace( TYPESET.zhuyin.diao, '' )
   len  = yin ? yin.length : 0
@@ -1835,13 +1835,6 @@ function createZhuyinRu( $rb, $rt ) {
     .replace( /[\u02C5]/g, '\u02C7' )
     .replace( /[\u030D]/g, '\u0358' )
 
-  form = zhuyin.replace( TYPESET.zhuyin.form, function( s, j, y ) {
-    return [
-      s ? 'S' : null,
-      j ? 'J' : null,
-      y ? 'Y' : null
-    ].join('')
-  })
   // - <h-ru>
   // -   <rb><rb/> 
   // -   <h-zhuyin>
@@ -1855,10 +1848,9 @@ function createZhuyinRu( $rb, $rt ) {
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
   $.setAttr( $ru, {
-    zhuyin: '',
+    zhuyin: 'zhuyin',
     diao: diao,
-    length: len,
-    form: form
+    length: len
   })
   return $ru
 }
@@ -1982,7 +1974,7 @@ $.extend( Locale, {
       frag.appendChild( $.clone( ruby ))
       $cloned = $.qsa( target, frag )[0]
 
-      // 1. Simple ruby polyfill for, um, Firefox;
+      // 1. Simple ruby polyfill;
       // 2. Zhuyin polyfill for all browsers.
       if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
 
@@ -1998,11 +1990,11 @@ $.extend( Locale, {
           do {
             irb = ( irb || rt ).previousSibling
 
-            if ( !irb || irb.nodeName.match( /((^h\-)?r[ubt])/i ))  break
+            if ( !irb || irb.nodeName.match( /((?:h\-)?r[ubt])/i ))  break
 
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
-          } while ( !irb.nodeName.match( /((^h\-)?r[ubt])/i ))
+          } while ( !irb.nodeName.match( /((?:h\-)?r[ubt])/i ))
           // Create a real `<h-ru>` to append.
           $ru = clazz.contains( 'zhuyin' ) ?
             createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
@@ -2106,6 +2098,11 @@ $.extend( Locale, {
               return ret
             })
           $ru = ret
+
+          if ( order === 1 ) {
+            ruby.setAttribute( 'doubleline', 'doubleline' )
+          }
+
           // Remove the container once it's useless
           $.remove( rtc )
         })
