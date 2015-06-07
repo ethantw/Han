@@ -8,6 +8,10 @@ void function( global, factory ) {
   // CommonJS
   if ( typeof module === 'object' && typeof module.exports === 'object' ) {
     module.exports = factory( global, true )
+  // AMD
+  } else if  ( typeof define === 'function' && define.amd ) {
+    define(function() {  return factory( global, true )  })
+  // Global namespace
   } else {
     factory( global )
   }

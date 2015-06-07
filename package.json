@@ -23,7 +23,7 @@
     "url": "https://github.com/ethantw/Han/issues"
   },
   "scripts": {
-    "test": "gulp",
+    "test": "gulp test",
     "start": "gulp dev",
     "build": "gulp build"
   },
