@@ -2,7 +2,6 @@
 h-ru[annotation]
   // positioning
   position: relative
-  //margin-top: -.5em
   // box-model
   display: inline-table
   // typography
@@ -12,7 +11,7 @@ h-ru[annotation]
   > h-ru[annotation]
     vertical-align: -.2em
   h-ruby[rightangle][doubleline] &
-    vertical-align: 1em
+    vertical-align: .8em
 
   > rb,
   > h-ru,
@@ -32,14 +31,15 @@ h-ru[annotation]
     &:after
       content: '\2006'
   &[order='0'] > rt,
-  h-ruby[rightangle] &[order='1'] > rt
+  h-ruby[rightangle][doubleline] &[order='0'] > rt
     display: table-header-group
   &[order='1'] > rt,
-  h-ruby[rightangle] &[order='0'] > rt
+  h-ruby[rightangle] &[order='0'] > rt,
+  h-ruby[rightangle][doubleline] &[order='1'] > rt
     display: table-footer-group
   &[order='0'] > h-ru[order='1']
     vertical-align: .15em
-  h-ruby[rightangle][doubleline] &[order='1'] rt
+  h-ruby[rightangle][doubleline] &[order='0'] rt
     line-height: 1.5
 
 //  Zhuyin

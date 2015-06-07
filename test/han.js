@@ -1792,7 +1792,7 @@ function createNormalRu( $rb, $rt, attr ) {
   var $ru = $.create( 'h-ru' )
   var $rt = $.clone( $rt )
   var attr = attr || {}
-  attr.annotation = 'annotation' //$rt.textContent
+  attr.annotation = 'true'
 
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
@@ -2040,7 +2040,7 @@ $.extend( Locale, {
 
           // Remove the container once it's useless
           $.remove( rtc )
-          ruby.setAttribute( 'rightangle', 'rightangle' )
+          ruby.setAttribute( 'rightangle', 'true' )
         }( $cloned.querySelector( 'rtc.zhuyin' ))
 
         // Then, normal annotations other than Zhuyin
@@ -2099,7 +2099,7 @@ $.extend( Locale, {
           $ru = ret
 
           if ( order === 1 ) {
-            ruby.setAttribute( 'doubleline', 'doubleline' )
+            ruby.setAttribute( 'doubleline', 'true' )
           }
 
           // Remove the container once it's useless

@@ -698,7 +698,7 @@ h-ru[annotation] > h-ru[annotation] {
   vertical-align: -.2em;
 }
 h-ruby[rightangle][doubleline] h-ru[annotation] {
-  vertical-align: 1em;
+  vertical-align: .8em;
 }
 h-ru[annotation] > rb,
 h-ru[annotation] > h-ru,
@@ -717,17 +717,18 @@ h-ru[annotation] > rt:after {
   content: "\2006";
 }
 h-ru[annotation][order="0"] > rt,
-h-ruby[rightangle] h-ru[annotation][order="1"] > rt {
+h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] > rt {
   display: table-header-group;
 }
 h-ru[annotation][order="1"] > rt,
-h-ruby[rightangle] h-ru[annotation][order="0"] > rt {
+h-ruby[rightangle] h-ru[annotation][order="0"] > rt,
+h-ruby[rightangle][doubleline] h-ru[annotation][order="1"] > rt {
   display: table-footer-group;
 }
 h-ru[annotation][order="0"] > h-ru[order="1"] {
   vertical-align: .15em;
 }
-h-ruby[rightangle][doubleline] h-ru[annotation][order="1"] rt {
+h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
   line-height: 1.5;
 }
 
