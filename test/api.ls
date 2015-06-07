@@ -142,6 +142,7 @@ test 'Interlinear annotations (Ruby)', !->
 </p>
 '''
   Han d .renderRuby!
+  d.querySelector \h-ruby .removeAttribute \doubleline
   qsa d, \h-ru
   .forEach !->
     it.removeAttribute \annotation
@@ -213,13 +214,15 @@ test 'Interlinear annotations (Ruby)', !->
   </ruby>
 '''
   Han d .renderRuby!
+  qsa d, \h-ruby .forEach !-> 
+    it.removeAttribute \doubleline
   qsa d, \h-ru
   .forEach !->
     it.removeAttribute \annotation
     it.removeAttribute \order
     it.removeAttribute \span
   html-equal d.innerHTML, '''
-<p><h-ruby class=complex>「<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rt rbspan=2>niǔyuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>」</h-ruby><h-ruby class=complex>『<h-ru class=complex><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan=3>new york city</rt></h-ru>』</h-ruby><h-ruby class=complex>‘<h-ru class=complex><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan=3>new york city</rt></h-ru>’</h-ruby><h-ruby class=complex>„<h-ru class=complex><h-ru class=complex><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru class=complex><rb>約</rb><rt>yuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>‟</h-ruby><h-ruby class=complex>⸘<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan=3>new york city</rt></h-ru><rt rbspan=3>世界之都</rt></h-ru>‽</h-ruby>。</p><p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><rb>三</rb><rt>san1</rt></h-ru><rt>sān</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>十</rb><rt>shih2</rt></h-ru><rt>shí</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>六</rb><rt>liu4</rt></h-ru><rt>liù</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>個</rb><rt>ko0</rt></h-ru><rt>ge</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>牙</rb><rt>ya2</rt></h-ru><rt>yá</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>齒</rb><rt>ch'ih3</rt></h-ru><rt>chǐ</rt></h-ru>，<h-ru class=complex><h-ru class=complex><rb>捉</rb><rt>cho1</rt></h-ru><rt>zhuō</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>對</rb><rb>兒</rb><rt rbspan=2>tuirh4</rt></h-ru><rt rbspan=2>duìr</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>廝</rb><rt>ssu1</rt></h-ru><rt>sī</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>打</rb><rt>ta3</rt></h-ru><rt>dǎ</rt></h-ru>！</h-ruby></p>
+<p><h-ruby class=complex>「<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rt rbspan=2>niǔyuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>」</h-ruby><h-ruby class=complex>『<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rt rbspan=2>niǔyuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>』</h-ruby><h-ruby class=complex>‘<h-ru class=complex><h-ru class=complex><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru class=complex><rb>約</rb><rt>yuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>’</h-ruby><h-ruby class=complex>„<h-ru class=complex><h-ru class=complex><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru class=complex><rb>約</rb><rt>yuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>‟</h-ruby><h-ruby class=complex>⸘<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan=3>new york city</rt></h-ru><rt rbspan=3>世界之都</rt></h-ru>‽</h-ruby>。</p><p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><rb>三</rb><rt>san1</rt></h-ru><rt>sān</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>十</rb><rt>shih2</rt></h-ru><rt>shí</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>六</rb><rt>liu4</rt></h-ru><rt>liù</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>個</rb><rt>ko0</rt></h-ru><rt>ge</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>牙</rb><rt>ya2</rt></h-ru><rt>yá</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>齒</rb><rt>ch'ih3</rt></h-ru><rt>chǐ</rt></h-ru>，<h-ru class=complex><h-ru class=complex><rb>捉</rb><rt>cho1</rt></h-ru><rt>zhuō</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>對</rb><rb>兒</rb><rt rbspan=2>tuirh4</rt></h-ru><rt rbspan=2>duìr</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>廝</rb><rt>ssu1</rt></h-ru><rt>sī</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>打</rb><rt>ta3</rt></h-ru><rt>dǎ</rt></h-ru>！</h-ruby></p>
 '''
 
   # Triaxial ruby
@@ -260,7 +263,9 @@ test 'Interlinear annotations (Ruby)', !->
 </p>
 '''
   Han d .renderRuby!
-  d.querySelector \h-ruby .removeAttribute \rightangle
+  ruby = d.querySelector \h-ruby
+  ruby.removeAttribute \rightangle
+  ruby.removeAttribute \doubleline
   qsa d, \h-ru
   .forEach !->
     it.removeAttribute \annotation
