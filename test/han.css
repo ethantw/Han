@@ -2542,38 +2542,38 @@ pre h-hws[hidden] {
   unicode-range: U+20;
 }
 
-.han-space h-hangable:lang(zh-Hans),
-.han-space h-hangable:lang(zh-CN),
-.han-space h-hangable:lang(ja) {
+h-hangable:lang(zh-Hans),
+h-hangable:lang(zh-CN),
+h-hangable:lang(ja) {
   position: relative;
   display: inline;
 }
-.han-space h-hangable:lang(zh-Hans) h-char.biaodian.close h-cs,
-.han-space h-hangable:lang(zh-CN) h-char.biaodian.close h-cs,
-.han-space h-hangable:lang(ja) h-char.biaodian.close h-cs {
+h-hangable:lang(zh-Hans) h-char.biaodian.close h-cs,
+h-hangable:lang(zh-CN) h-char.biaodian.close h-cs,
+h-hangable:lang(ja) h-char.biaodian.close h-cs {
   display: none;
 }
-.han-space h-hangable:lang(zh-Hans) > h-cs,
-.han-space h-hangable:lang(zh-CN) > h-cs,
-.han-space h-hangable:lang(ja) > h-cs {
+h-hangable:lang(zh-Hans) > h-cs,
+h-hangable:lang(zh-CN) > h-cs,
+h-hangable:lang(ja) > h-cs {
   position: relative;
   display: inline !important;
   visibility: visible;
   font: inherit;
 }
-.han-space h-hangable:lang(zh-Hans) > h-cs h-inner,
-.han-space h-hangable:lang(zh-Hans) > h-cs h-inner[hidden],
-.han-space h-hangable:lang(zh-CN) > h-cs h-inner,
-.han-space h-hangable:lang(zh-CN) > h-cs h-inner[hidden],
-.han-space h-hangable:lang(ja) > h-cs h-inner,
-.han-space h-hangable:lang(ja) > h-cs h-inner[hidden] {
+h-hangable:lang(zh-Hans) > h-cs h-inner,
+h-hangable:lang(zh-Hans) > h-cs h-inner[hidden],
+h-hangable:lang(zh-CN) > h-cs h-inner,
+h-hangable:lang(zh-CN) > h-cs h-inner[hidden],
+h-hangable:lang(ja) > h-cs h-inner,
+h-hangable:lang(ja) > h-cs h-inner[hidden] {
   display: inline;
   visibility: hidden;
-  font: 1em "Han Space";
+  font: 1em "Han Space", Menlo, Consolas, Courier;
 }
-.han-space h-hangable:lang(zh-Hans) > h-cs:after,
-.han-space h-hangable:lang(zh-CN) > h-cs:after,
-.han-space h-hangable:lang(ja) > h-cs:after {
+h-hangable:lang(zh-Hans) > h-cs:after,
+h-hangable:lang(zh-CN) > h-cs:after,
+h-hangable:lang(ja) > h-cs:after {
   -moz-text-emphasis: none;
   -webkit-text-emphasis: none;
   text-emphasis: none;
@@ -2589,26 +2589,26 @@ pre h-hws[hidden] {
   content: attr(biaodian);
   line-height: 1.05;
 }
-ruby .han-space h-hangable:lang(zh-Hans) > h-cs:after,
-h-ru .han-space h-hangable:lang(zh-Hans) > h-cs:after,
-ruby .han-space h-hangable:lang(zh-CN) > h-cs:after,
-h-ru .han-space h-hangable:lang(zh-CN) > h-cs:after,
-ruby .han-space h-hangable:lang(ja) > h-cs:after,
-h-ru .han-space h-hangable:lang(ja) > h-cs:after {
+ruby h-hangable:lang(zh-Hans) > h-cs:after,
+h-ru h-hangable:lang(zh-Hans) > h-cs:after,
+ruby h-hangable:lang(zh-CN) > h-cs:after,
+h-ru h-hangable:lang(zh-CN) > h-cs:after,
+ruby h-hangable:lang(ja) > h-cs:after,
+h-ru h-hangable:lang(ja) > h-cs:after {
   position: relative;
 }
 
-.han-space h-hangable:lang(zh-Hans) h-char.biaodian.end:not(.close),
-.han-space h-hangable:lang(zh-CN) h-char.biaodian.end:not(.close),
-.han-space h-hangable:lang(ja) h-char.biaodian.end:not(.close) {
+h-hangable:lang(zh-Hans) h-char.biaodian.end:not(.close),
+h-hangable:lang(zh-CN) h-char.biaodian.end:not(.close),
+h-hangable:lang(ja) h-char.biaodian.end:not(.close) {
   position: absolute;
   color: transparent;
   font: 0/0 hidden-text;
 }
 
-.han-space.pseudo-element-clipboard h-hangable:lang(zh-Hans) h-char.biaodian.end:not(.close),
-.han-space.pseudo-element-clipboard h-hangable:lang(zh-CN) h-char.biaodian.end:not(.close),
-.han-space.pseudo-element-clipboard h-hangable:lang(ja) h-char.biaodian.end:not(.close) {
+.pseudo-element-clipboard h-hangable:lang(zh-Hans) h-char.biaodian.end:not(.close),
+.pseudo-element-clipboard h-hangable:lang(zh-CN) h-char.biaodian.end:not(.close),
+.pseudo-element-clipboard h-hangable:lang(ja) h-char.biaodian.end:not(.close) {
   display: none;
 }
 

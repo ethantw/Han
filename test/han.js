@@ -2287,7 +2287,7 @@ $.extend( Han.fn, {
   }
 })
 
-Han.isSpaceFontLoaded = (function() {
+function detectSpaceFont() {
   var div = $.create( 'div' )
   var ret
 
@@ -2296,16 +2296,21 @@ Han.isSpaceFontLoaded = (function() {
   ret = div.firstChild.offsetWidth !== div.lastChild.offsetWidth
   $.remove( div, body )
   return ret
-})()
+}
 
-Han.support['han-space'] = Han.isSpaceFontLoaded
+$.extend( Han, {
+  detectSpaceFont:   detectSpaceFont,
+  isSpaceFontLoaded: detectSpaceFont()
+})
+
+Han.support['han-space'] = detectSpaceFont()
 
 Han.renderHanging = function( context ) {
   var context = context || document
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, hangable' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-hangable' )
   .replace(
     TYPESET.jinze.hanging,
     function( portion, match ) {
@@ -2324,6 +2329,14 @@ $.extend( Han.fn, {
   hanging: null,
 
   renderHanging: function() {
+    var condClazz = this.condition.classList
+    var isSpaceFontLoaded = detectSpaceFont()
+
+    if ( isSpaceFontLoaded && condClazz.contains( 'no-han-space' )) {
+      condClazz.remove( 'no-han-space' )
+      condClazz.add( 'han-space' )
+    }
+
     this.hanging = Han.renderHanging( this.context )
     return this
   },
