@@ -1,11 +1,21 @@
 
-require! <[ gulp gulp-connect gulp-concat-util gulp-sass gulp-csscomb gulp-cssmin gulp-requirejs-optimize gulp-uglifyjs gulp-symlink gulp-browserify gulp-livescript gulp-jade gulp-watch gulp-qunit ]>
+require! {
+  gulp
+  \gulp-connect
+  \gulp-concat-util : concat
+  \gulp-sass : sass
+  \gulp-csscomb
+  \gulp-cssmin
+  \gulp-requirejs-optimize : rjs
+  \gulp-uglifyjs
+  \gulp-symlink
+  \gulp-browserify
+  \gulp-livescript
+  \gulp-jade
+  \gulp-watch : watch
+  \gulp-qunit
+}
 
-concat = gulp-concat-util
-sass = gulp-sass
-rjs = gulp-requirejs-optimize
-
-watch = gulp-watch
 pkg = require \./package.json
 
 const VERSION = pkg.version
