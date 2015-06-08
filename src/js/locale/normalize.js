@@ -67,7 +67,7 @@ function createZhuyinRu( $rb, $rt ) {
   // Finally, set up the necessary attribute
   // and return the new `<ru>`
   $.setAttr( $ru, {
-    zhuyin: 'zhuyin',
+    zhuyin: 'true',
     diao: diao,
     length: len
   })
