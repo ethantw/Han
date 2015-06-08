@@ -2,7 +2,9 @@
 ========
 
  - [JavaScript APIs](api.html)
- - [測試頁（標準）](test.html)
+ - [測試頁（標準，繁體中文）](test.html)
+ - [测试页（标准，简体中文）](test-hans.html)
+ - [測試頁（標準，日本語）](test-ja.html)
  - [測試頁（AMD模組）](test-amd.html)
  - [測試頁（CommonJS模組，browserify）](test-commonjs.html)
  - [測試頁（無JavaScript）](test-nojs.html)
