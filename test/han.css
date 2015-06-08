@@ -775,7 +775,11 @@ h-ru[zhuyin] h-diao:empty {
 }
 
 h-ru[length="0"][zhuyin] {
-  margin-right: -.4em;
+  margin-right: 0;
+}
+
+h-ru[length="0"][zhuyin] h-zhuyin {
+  display: none;
 }
 
 h-ru[length="1"][zhuyin] h-diao,
