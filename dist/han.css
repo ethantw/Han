@@ -698,7 +698,7 @@ h-ru[annotation] > h-ru[annotation] {
   vertical-align: -.2em;
 }
 h-ruby[rightangle][doubleline] h-ru[annotation] {
-  vertical-align: .8em;
+  vertical-align: .5em;
 }
 h-ru[annotation] > rb,
 h-ru[annotation] > h-ru,
