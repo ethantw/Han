@@ -1826,8 +1826,7 @@ function createZhuyinRu( $rb, $rt ) {
   // * `zhuyin`: the entire phonetic annotation
   // * `yin`:    the plain pronunciation (w/out tone)
   // * `diao`:   the tone
-  // * `form`:   the combination of the pronunciation
-  // * `len`:    the text length of `yin`
+  // * `len`:    the length of the plain pronunciation (`yin`)
   var zhuyin = $rt.textContent
   var yin, diao, len
 
