@@ -18,10 +18,26 @@
   ;
 }
 
+%han-sans-hant-nu {
+  font-family:
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ),
+    sans-serif
+  ;
+}
+
 %han-sans-hans {
   font-family:
     han-biaodian( Sans, $han-biaodian-hans ),
     //'Numeral LF Sans',
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
+    sans-serif
+  ;
+}
+
+%han-sans-hans-nu {
+  font-family:
     $han-sans,
     han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
     sans-serif
@@ -35,6 +51,10 @@
     $han-sans,
     sans-serif
   ;
+}
+
+%han-sans-ja-nu {
+  font-family: $han-sans, sans-serif;
 }
 
 /**
@@ -60,9 +80,36 @@
   ;
 }
 
+%han-sans-italic-hant-nu {
+  font-family:
+    'Latin Italic Sans',
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ),
+    sans-serif
+  ;
+}
+
+%han-sans-italic-hant-nu {
+  font-family:
+    'Latin Italic Sans',
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ),
+    sans-serif
+  ;
+}
+
 %han-sans-italic-hans {
   font-family:
     han-biaodian( Sans, $han-biaodian-hans ),
+    'Latin Italic Sans',
+    $han-sans,
+    han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
+    sans-serif
+  ;
+}
+
+%han-sans-italic-hans-nu {
+  font-family:
     'Latin Italic Sans',
     $han-sans,
     han-typeface( 'Han Heiti', $han-glyph-set-hans, $han-sans-zh ),
@@ -78,3 +125,8 @@
     sans-serif
   ;
 }
+
+%han-sans-italic-ja-nu {
+  font-family: 'Latin Italic Sans', $han-sans, sans-serif;
+}
+

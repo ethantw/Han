@@ -3,7 +3,7 @@
 // ------
 
 #{$han-root}
-  +han-typeface-by-lang( sans )
+  +han-typeface-by-lang( sans, true )
   @extend %han-ligature, %han-no-locl
 
 [lang^='zh'],
@@ -12,12 +12,21 @@
 [lang='zh-HK']
   @extend %han-sans-hant, %han-no-locl
 
+  .no-unicoderange &
+    @extend %han-sans-hant-nu
+
 [lang*='Hans'],
 [lang='zh-CN']
   @extend %han-sans-hans, %han-no-locl
 
+  .no-unicoderange &
+    @extend %han-sans-hans-nu
+
 [lang^='ja']
   @extend %han-sans-ja
+
+  .no-unicoderange &
+    @extend %han-sans-ja-nu
 
 //  Sections & grouping content
 // -----------------------------
@@ -75,11 +84,14 @@ h-ruby
     // 1, 2
     @extend %han-ligature
 
+    .no-unicoderange &
+      font-family: 'Zhuyin Kaiti', cursive, serif
+
   h-ru[zhuyin] h-zhuyin h-diao
     font-family: 'Zhuyin Kaiti', cursive, serif
 
   &.romanization rt,
-  h-ru[annotation]:before
+  h-ru[annotation] rt
     // 3
     @extend %han-ligature
     font-family: 'Romanization Sans', $han-sans, han-typeface( 'Han Heiti', $han-glyph-set-hant, $han-sans-zh ), sans-serif

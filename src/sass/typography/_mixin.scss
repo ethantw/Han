@@ -3,17 +3,47 @@
   src: $han-webfont;
 }
 
-@mixin han-typeface-by-lang( $typeface: sans ) {
+@mixin han-typeface-by-lang( $typeface: sans, $is-root: false ) {
   &:lang(zh),
   &:lang(zh-Hant) {
     @extend %han-#{$typeface}-hant;
+
+    @if ( $is-root ) {
+      &.no-unicoderange {
+        @extend %han-#{$typeface}-hant-nu;
+      }
+    } @else {
+      .no-unicoderange & {
+        @extend %han-#{$typeface}-hant-nu;
+       }
+    }
   }
   &:lang(zh-Hans),
   &:lang(zh-CN) {
     @extend %han-#{$typeface}-hans;
+
+    @if ( $is-root ) {
+      &.no-unicoderange {
+        @extend %han-#{$typeface}-hans-nu;
+      }
+    } @else {
+      .no-unicoderange & {
+        @extend %han-#{$typeface}-hans-nu;
+       }
+    }
   }
   &:lang(ja) {
     @extend %han-#{$typeface}-ja;
+
+    @if ( $is-root ) {
+      &.no-unicoderange {
+        @extend %han-#{$typeface}-ja-nu;
+      }
+    } @else {
+      .no-unicoderange & {
+        @extend %han-#{$typeface}-ja-nu;
+       }
+    }
   }
   &:lang(zh-Latn),
   &:lang(ja-Latn),
@@ -22,49 +52,6 @@
   *:lang(ja-Latn),
   *:not(:lang(zh)):not(:lang(ja)) {
     @extend %han-#{$typeface};
-  }
-}
-
-@mixin han-ff-fx( $font, $generic: sans ) {
-  $sans: (
-    r: "local('Helvetica Neue'), local(Helvetica), local(Arial)",
-    b: "local('Helvetica Neue Bold'), local('Helvetica Bold'), local('Arial Bold')",
-    i: "local('Helvetica Neue Italic'), local('Helvetica Oblique'), local('Arial Italic')",
-    bi: "local('Helvetica Neue Bold Italic'), local('Helvetica Bold Oblique'), local('Arial Bold Italic')"
-  );
-
-  $serif: (
-    r: "local(Georgia), local('Times New Roman')",
-    b: "local('Georgia Bold'), local('Times New Roman Bold')",
-    i: "local('Georgia Italic'), local('Times New Roman Italic')",
-    bi: "local('Georgia Bold Italic'), local('Times New Roman Bold Italic')"
-  );
-
-  $map: if( $generic == serif, $serif, $sans );
-
-  @font-face {
-    font-family: $font;
-    src: #{map-get( $map, r )};
-    unicode-range: U+"+270C";
-  }
-  @font-face {
-    font-family: $font;
-    font-weight: bold;
-    src: #{map-get( $map, b )};
-    unicode-range: U+"+270C";
-  }
-  @font-face {
-    font-family: $font;
-    font-style: italic;
-    src: #{map-get( $map, i )};
-    unicode-range: U+"+270C";
-  }
-  @font-face {
-    font-family: $font;
-    font-style: italic;
-    font-weight: bold;
-    src: #{map-get( $map, bi )};
-    unicode-range: U+"+270C";
   }
 }
 

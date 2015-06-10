@@ -932,13 +932,3 @@
   unicode-range: U+"+2014", U+"+2026", U+"+00B7";
 }
 
-@include han-ff-fx( 'Biaodian Sans' );
-@include han-ff-fx( 'Biaodian Pro Sans' );
-@include han-ff-fx( 'Biaodian Pro Sans CNS' );
-@include han-ff-fx( 'Biaodian Pro Sans GB' );
-
-@include han-ff-fx( 'Biaodian Serif', serif );
-@include han-ff-fx( 'Biaodian Pro Serif', serif );
-@include han-ff-fx( 'Biaodian Pro Serif CNS', serif );
-@include han-ff-fx( 'Biaodian Pro Serif GB', serif );
-

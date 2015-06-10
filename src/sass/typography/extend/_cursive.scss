@@ -18,9 +18,27 @@
   ;
 }
 
+%han-cursive-hant-nu {
+  font-family:
+    'Numeral LF Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
 %han-cursive-hans {
   font-family:
     han-biaodian( Serif, $han-biaodian-hans ),
+    'Numeral LF Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-hans-nu {
+  font-family:
     'Numeral LF Serif',
     $han-serif,
     han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
@@ -35,6 +53,10 @@
     $han-serif,
     cursive, serif
   ;
+}
+
+%han-cursive-ja-nu {
+  font-family: 'Numeral LF Serif', $han-serif, cursive, serif;
 }
 
 /**
@@ -61,9 +83,29 @@
   ;
 }
 
+%han-cursive-italic-hant-nu {
+  font-family:
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
 %han-cursive-italic-hans {
   font-family:
     han-biaodian( Serif, $han-biaodian-hans ),
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-hans-nu {
+  font-family:
     'Numeral LF Italic Serif',
     'Latin Italic Serif',
     $han-serif,
@@ -81,3 +123,8 @@
     cursive, serif
   ;
 }
+
+%han-cursive-italic-ja-nu {
+  font-family: 'Numeral LF Italic Serif', 'Latin Italic Serif', $han-serif, cursive, serif;
+}
+
