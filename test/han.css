@@ -905,7 +905,7 @@ h-word {
  */
 @font-face {
   font-family: "Han Heiti";
-  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB"), local("Lantinghei TC Extralight"), local("Lantinghei SC Extralight"), local(FZLTXHB--B51-0), local(FZLTZHK--GBK1-0), local(".PingFang SC Light"), local(".PingFang TC Light"), local(".PingFang-SC-Light"), local(".PingFang-TC-Light"), local(".PingFang SC"), local(".PingFang TC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Source Han Sans K"), local("Noto Sans CJK KR"), local("Source Han Sans"), local("Noto Sans CJK JP"), local("Source Han Sans SC"), local("Noto Sans CJK SC"), local("Source Han Sans TC"), local("Noto Sans CJK TC"), local("Droid Sans Fallback");
 }
 
 @font-face {
@@ -916,18 +916,12 @@ h-word {
 
 @font-face {
   font-family: "Han Heiti CNS";
-  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Heiti TC"), local("Microsoft Jhenghei"), local("Heiti SC"), local("Lantinghei SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
-}
-
-@font-face {
-  unicode-range: U+4E00-9FFF, U+3400-4DB5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3040-309F, U+30A0-30FF, U+3099-309E, U+FF66-FF9F, U+3007, U+31C0-31E3, U+2F00-2FD5, U+2E80-2EF3;
-  font-family: "Han Heiti CNS";
-  src: local(YuGothic), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro");
+  src: local(".PingFang TC Light"), local(".PingFang-TC-Light"), local(".PingFang TC"), local("Heiti TC"), local("Lantinghei TC Extralight"), local(FZLTXHB--B51-0), local("Lantinghei TC"), local("Microsoft Jhenghei"), local("Microsoft Yahei"), local("Source Han Sans TC"), local("Noto Sans CJK TC"), local("Source Han Sans"), local("Noto Sans CJK"), local("Droid Sans Fallback");
 }
 
 @font-face {
   font-family: "Han Heiti GB";
-  src: local("Hiragino Sans GB"), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB"), local(".PingFang SC Light"), local(".PingFang-SC-Light"), local(".PingFang SC"), local("Lantinghei SC Extralight"), local(FZLTXHK--GBK1-0), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Source Han Sans SC"), local("Noto Sans CJK SC"), local("Source Han Sans"), local("Noto Sans CJK"), local("Droid Sans Fallback");
 }
 
 /* Bold
@@ -935,7 +929,7 @@ h-word {
 @font-face {
   font-family: "Han Heiti";
   font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Lantinghei SC Demibold"), local(FZLTXHB--B51-0), local(FZLTZHK--GBK1-0), local("Heiti SC Medium"), local("Heiti TC Medium"), local(STHeitiSC-Medium), local(STHeitiTC-Medium), local("Microsoft YaHei Bold"), local("Microsoft Jhenghei Bold"), local(MicrosoftYaHei-Bold), local(MicrosoftJhengHeiBold);
+  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Lantinghei SC Demibold"), local(FZLTZHB--B51-0), local(FZLTZHK--GBK1-0), local(".PingFang-SC-Semibold"), local(".PingFang-TC-Semibold"), local("Heiti SC Medium"), local("Heiti TC Medium"), local(STHeitiSC-Medium), local(STHeitiTC-Medium), local("Microsoft YaHei Bold"), local("Microsoft Jhenghei Bold"), local(MicrosoftYaHei-Bold), local(MicrosoftJhengHeiBold), local("Source Han Sans K Bold"), local("Noto Sans CJK KR Bold"), local("Source Han Sans Bold"), local("Noto Sans CJK JP Bold"), local("Source Han Sans SC Bold"), local("Noto Sans CJK SC Bold"), local("Source Han Sans TC Bold"), local("Noto Sans CJK TC Bold"), local(SourceHanSansK-Bold), local(NotoSansCJKkr-Bold), local(SourceHanSans-Bold), local(NotoSansCJKjp-Bold), local(SourceHanSansSC-Bold), local(NotoSansCJKsc-Bold), local(SourceHanSansTC-Bold) local(NotoSansCJKtc-Bold);
 }
 
 @font-face {
@@ -948,20 +942,13 @@ h-word {
 @font-face {
   font-family: "Han Heiti CNS";
   font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Heiti TC Medium"), local("Microsoft Jhenghei Bold"), local(FZLTXHB--B51-0), local(STHeitiTC-Medium), local(MicrosoftJhengHeiBold), local("Lantinghei SC Demibold"), local("Microsoft YaHei Bold"), local("Heiti SC Medium"), local(FZLTZHK--GBK1-0), local(STHeitiSC-Medium), local(MicrosoftYaHei-Bold);
-}
-
-@font-face {
-  unicode-range: U+4E00-9FFF, U+3400-4DB5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3040-309F, U+30A0-30FF, U+3099-309E, U+FF66-FF9F, U+3007, U+31C0-31E3, U+2F00-2FD5, U+2E80-2EF3;
-  font-family: "Han Heiti CNS";
-  font-weight: 600;
-  src: local("YuGothic Bold"), local(YuGo-Bold), local("Hiragino Kaku Gothic ProN W6"), local("Hiragino Kaku Gothic Pro W6"), local(HiraKakuProN-W6), local(HiraKakuPro-W6);
+  src: local(".PingFang TC Semibold"), local(".PingFang-TC-Semibold"), local("Heiti TC Medium"), local(STHeitiTC-Medium), local("Lantinghei TC Demibold"), local(FZLTXHB--B51-0), local("Microsoft Jhenghei Bold"), local(MicrosoftJhengHeiBold), local("Microsoft YaHei Bold"), local(MicrosoftYaHei-Bold), local("Source Han Sans TC Bold"), local("SourceHanSansTC-Bold"), local("Noto Sans CJK TC Bold"), local(NotoSansCJKtc-Bold), local("Source Han Sans Bold"), local("SourceHanSans-Bold");
 }
 
 @font-face {
   font-family: "Han Heiti GB";
   font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei SC Demibold"), local("Microsoft YaHei Bold"), local("Heiti SC Medium"), local(FZLTZHK--GBK1-0), local(STHeitiSC-Medium), local(MicrosoftYaHei-Bold);
+  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local(".PingFang SC Semibold"), local(".PingFang-SC-Semibold"), local("Lantinghei SC Demibold"), local(FZLTZHK--GBK1-0), local("Heiti SC Medium"), local(STHeitiSC-Medium), local("Microsoft YaHei Bold"), local(MicrosoftYaHei-Bold), local("Source Han Sans SC Bold"), local("SourceHanSansSC-Bold"), local("Noto Sans CJK TC Bold"), local(NotoSansCJKtc-Bold), local("Source Han Sans Bold"), local("SourceHanSans-Bold");
 }
 
 /* Address solution to `unicode-range` unsupported
@@ -969,33 +956,14 @@ h-word {
  */
 @font-face {
   font-family: "Han Heiti";
-  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Lantinghei SC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB"), local("Lantinghei TC Extralight"), local(FZLTXHB--B51-0), local("Lantinghei TC"), local("Lantinghei SC Extralight"), local(FZLTZHK--GBK1-0), local("Lantinghei SC"), local(".PingFang SC"), local(".PingFang TC"), local("Heiti SC"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Source Han Sans K"), local("Noto Sans CJK KR"), local("Source Han Sans"), local("Noto Sans CJK JP"), local("Source Han Sans SC"), local("Noto Sans CJK SC"), local("Source Han Sans TC"), local("Noto Sans CJK TC"), local("Droid Sans Fallback");
   unicode-range: U+270C;
 }
 
 @font-face {
   font-family: "Han Heiti";
   font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Lantinghei SC Demibold"), local(FZLTXHB--B51-0), local(FZLTZHK--GBK1-0), local("Heiti SC Medium"), local("Heiti TC Medium"), local(STHeitiSC-Medium), local(STHeitiTC-Medium), local("Microsoft YaHei Bold"), local("Microsoft Jhenghei Bold"), local(MicrosoftYaHei-Bold), local(MicrosoftJhengHeiBold);
-  unicode-range: U+270C;
-}
-
-@font-face {
-  font-family: "Han Heiti CNS";
-  src: local("Hiragino Sans GB"), local("Lantinghei TC"), local("Heiti TC"), local("Microsoft Jhenghei"), local("Heiti SC"), local("Lantinghei SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
-  unicode-range: U+270C;
-}
-
-@font-face {
-  font-family: "Han Heiti CNS";
-  font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Heiti TC Medium"), local("Microsoft Jhenghei Bold"), local(FZLTXHB--B51-0), local(STHeitiTC-Medium), local(MicrosoftJhengHeiBold), local("Lantinghei SC Demibold"), local("Heiti SC Medium"), local("Microsoft YaHei Bold"), local(FZLTZHK--GBK1-0), local(STHeitiSC-Medium), local(MicrosoftYaHei-Bold);
-  unicode-range: U+270C;
-}
-
-@font-face {
-  font-family: "Han Heiti GB";
-  src: local("Hiragino Sans GB"), local("Lantinghei SC"), local("Heiti SC"), local("Microsoft Yahei"), local("Droid Sans Fallback");
+  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Lantinghei SC Demibold"), local(FZLTXHB--B51-0), local(FZLTZHK--GBK1-0), local(".PingFang SC Semibold"), local(".PingFang TC Semibold"), local(".PingFang-SC-Semibold"), local(".PingFang-TC-Semibold"), local("Heiti SC Medium"), local("Heiti TC Medium"), local(STHeitiSC-Medium), local(STHeitiTC-Medium), local("Microsoft YaHei Bold"), local("Microsoft Jhenghei Bold"), local(MicrosoftYaHei-Bold), local(MicrosoftJhengHeiBold), local("Source Han Sans K Bold"), local("Noto Sans CJK KR Bold"), local("Source Han Sans Bold"), local("Noto Sans CJK JP Bold"), local("Source Han Sans SC Bold"), local("Noto Sans CJK SC Bold"), local("Source Han Sans TC Bold"), local("Noto Sans CJK TC Bold"), local(SourceHanSansK-Bold), local(NotoSansCJKkr-Bold), local(SourceHanSans-Bold), local(NotoSansCJKjp-Bold), local(SourceHanSansSC-Bold), local(NotoSansCJKsc-Bold), local(SourceHanSansTC-Bold) local(NotoSansCJKtc-Bold);
   unicode-range: U+270C;
 }
 
