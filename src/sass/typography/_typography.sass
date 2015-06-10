@@ -4,17 +4,17 @@
 
 #{$han-root}
   +han-typeface-by-lang( sans )
-  @extend %han-ligature
+  @extend %han-ligature, %han-no-locl
 
 [lang^='zh'],
 [lang*='Hant'],
 [lang='zh-TW'],
 [lang='zh-HK']
-  @extend %han-sans-hant
+  @extend %han-sans-hant, %han-no-locl
 
 [lang*='Hans'],
 [lang='zh-CN']
-  @extend %han-sans-hans
+  @extend %han-sans-hans, %han-no-locl
 
 [lang^='ja']
   @extend %han-sans-ja
@@ -41,6 +41,7 @@ blockquote
 // *
 #{$han-article} strong
   +han-typeface-by-lang( sans )
+  @extend %han-no-locl
 
 // * Correct Chinese monospace typeface issue in WebKit.
 // *
@@ -49,6 +50,7 @@ kbd,
 samp,
 pre
   +han-typeface-by-lang( mono )
+  @extend %han-no-locl
 
 // * Fonts for alternative voice and variable
 // * in different situations.
@@ -60,6 +62,7 @@ var
   // 1
   #{$han-article} blockquote &
     +han-typeface-by-lang( sans-italic )
+    @extend %han-no-locl
 
 // * 1. Use `Zhuyin Kaiti` for non-checked tones.
 // * 2. Zhuyin: checked tone ligatures (方言音符號入聲連字).
