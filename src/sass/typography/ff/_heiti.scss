@@ -32,14 +32,17 @@
     local('Microsoft Yahei'),
     local('Microsoft Jhenghei'),
 
-    local('Source Han Sans K'),
     local('Noto Sans CJK KR'),
-    local('Source Han Sans'),
     local('Noto Sans CJK JP'),
-    local('Source Han Sans SC'),
     local('Noto Sans CJK SC'),
-    local('Source Han Sans TC'),
     local('Noto Sans CJK TC'),
+    local('Source Han Sans K'),
+    local('Source Han Sans KR'),
+    local('Source Han Sans JP'),
+    local('Source Han Sans CN'),
+    local('Source Han Sans HK'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK'),
     local('Droid Sans Fallback')
   ;
 }
@@ -69,10 +72,11 @@
     local('Microsoft Jhenghei'),
     local('Microsoft Yahei'),
 
-    local('Source Han Sans TC'),
     local('Noto Sans CJK TC'),
-    local('Source Han Sans'),
-    local('Noto Sans CJK'),
+    local('Source Han Sans TC'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK'),
+    local('Source Han Sans HK'),
     local('Droid Sans Fallback')
   ;
 }
@@ -92,10 +96,9 @@
 
     local('Microsoft Yahei'),
 
-    local('Source Han Sans SC'),
     local('Noto Sans CJK SC'),
-    local('Source Han Sans'),
-    local('Noto Sans CJK'),
+    local('Source Han Sans SC'),
+    local('Source Han Sans CN'),
     local('Droid Sans Fallback')
   ;
 }
@@ -125,23 +128,37 @@
     local('Microsoft Jhenghei Bold'),
     local(MicrosoftYaHei-Bold),
     local(MicrosoftJhengHeiBold),
+    local('Microsoft YaHei'),
+    local('Microsoft Jhenghei'),
 
-    local('Source Han Sans K Bold'),
     local('Noto Sans CJK KR Bold'),
-    local('Source Han Sans Bold'),
     local('Noto Sans CJK JP Bold'),
-    local('Source Han Sans SC Bold'),
     local('Noto Sans CJK SC Bold'),
-    local('Source Han Sans TC Bold'),
     local('Noto Sans CJK TC Bold'),
-    local(SourceHanSansK-Bold),
     local(NotoSansCJKkr-Bold),
-    local(SourceHanSans-Bold),
     local(NotoSansCJKjp-Bold),
-    local(SourceHanSansSC-Bold),
     local(NotoSansCJKsc-Bold),
-    local(SourceHanSansTC-Bold)
     local(NotoSansCJKtc-Bold),
+    local('Source Han Sans K Bold'),
+    local(SourceHanSansK-Bold),
+    local('Source Han Sans K'),
+    local('Source Han Sans KR Bold'),
+    local('Source Han Sans JP Bold'),
+    local('Source Han Sans CN Bold'),
+    local('Source Han Sans HK Bold'),
+    local('Source Han Sans TW Bold'),
+    local('Source Han Sans TWHK Bold'),
+    local('SourceHanSansKR-Bold'),
+    local('SourceHanSansJP-Bold'),
+    local('SourceHanSansCN-Bold'),
+    local('SourceHanSansHK-Bold'),
+    local('SourceHanSansTW-Bold'),
+    local('SourceHanSansTWHK-Bold'),
+    local('Source Han Sans KR'),
+    local('Source Han Sans CN'),
+    local('Source Han Sans HK'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK')
   ;
 }
 
@@ -172,16 +189,26 @@
     local(FZLTXHB--B51-0),
     local('Microsoft Jhenghei Bold'),
     local(MicrosoftJhengHeiBold),
+    local('Microsoft Jhenghei'),
 
     local('Microsoft YaHei Bold'),
     local(MicrosoftYaHei-Bold),
 
-    local('Source Han Sans TC Bold'),
-    local('SourceHanSansTC-Bold'),
     local('Noto Sans CJK TC Bold'),
     local(NotoSansCJKtc-Bold),
-    local('Source Han Sans Bold'),
-    local('SourceHanSans-Bold')
+    local('Noto Sans CJK TC'),
+    local('Source Han Sans TC Bold'),
+    local('SourceHanSansTC-Bold'),
+    local('Source Han Sans TC'),
+    local('Source Han Sans TW Bold'),
+    local('SourceHanSans-TW'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK Bold'),
+    local('SourceHanSans-TWHK'),
+    local('Source Han Sans TWHK'),
+    local('Source Han Sans HK'),
+    local('SourceHanSans-HK'),
+    local('Source Han Sans HK')
   ;
 }
 
@@ -201,13 +228,17 @@
     local(STHeitiSC-Medium),
     local('Microsoft YaHei Bold'),
     local(MicrosoftYaHei-Bold),
+    local('Microsoft YaHei'),
 
+    local('Noto Sans CJK SC Bold'),
+    local(NotoSansCJKsc-Bold),
+    local('Noto Sans CJK SC'),
     local('Source Han Sans SC Bold'),
     local('SourceHanSansSC-Bold'),
-    local('Noto Sans CJK TC Bold'),
-    local(NotoSansCJKtc-Bold),
-    local('Source Han Sans Bold'),
-    local('SourceHanSans-Bold')
+    local('Source Han Sans CN Bold'),
+    local('SourceHanSansCN-Bold'),
+    local('Source Han Sans SC'),
+    local('Source Han Sans CN')
   ;
 }
 
@@ -220,12 +251,14 @@
     local('Hiragino Sans GB'),
 
     local('Lantinghei TC Extralight'),
-    local(FZLTXHB--B51-0),
-    local('Lantinghei TC'),
     local('Lantinghei SC Extralight'),
+    local(FZLTXHB--B51-0),
     local(FZLTZHK--GBK1-0),
-    local('Lantinghei SC'),
 
+    local('.PingFang SC Light'),
+    local('.PingFang TC Light'),
+    local('.PingFang-SC-Light'),
+    local('.PingFang-TC-Light'),
     local('.PingFang SC'),
     local('.PingFang TC'),
 
@@ -235,14 +268,17 @@
     local('Microsoft Yahei'),
     local('Microsoft Jhenghei'),
 
-    local('Source Han Sans K'),
     local('Noto Sans CJK KR'),
-    local('Source Han Sans'),
     local('Noto Sans CJK JP'),
-    local('Source Han Sans SC'),
     local('Noto Sans CJK SC'),
-    local('Source Han Sans TC'),
     local('Noto Sans CJK TC'),
+    local('Source Han Sans K'),
+    local('Source Han Sans KR'),
+    local('Source Han Sans JP'),
+    local('Source Han Sans CN'),
+    local('Source Han Sans HK'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK'),
     local('Droid Sans Fallback')
   ;
   unicode-range: U+"+270C";
@@ -257,11 +293,9 @@
 
     local('Lantinghei TC Demibold'),
     local('Lantinghei SC Demibold'),
-    local(FZLTXHB--B51-0),
+    local(FZLTZHB--B51-0),
     local(FZLTZHK--GBK1-0),
 
-    local('.PingFang SC Semibold'),
-    local('.PingFang TC Semibold'),
     local('.PingFang-SC-Semibold'),
     local('.PingFang-TC-Semibold'),
     local('Heiti SC Medium'),
@@ -273,23 +307,37 @@
     local('Microsoft Jhenghei Bold'),
     local(MicrosoftYaHei-Bold),
     local(MicrosoftJhengHeiBold),
+    local('Microsoft YaHei'),
+    local('Microsoft Jhenghei'),
 
-    local('Source Han Sans K Bold'),
     local('Noto Sans CJK KR Bold'),
-    local('Source Han Sans Bold'),
     local('Noto Sans CJK JP Bold'),
-    local('Source Han Sans SC Bold'),
     local('Noto Sans CJK SC Bold'),
-    local('Source Han Sans TC Bold'),
     local('Noto Sans CJK TC Bold'),
-    local(SourceHanSansK-Bold),
     local(NotoSansCJKkr-Bold),
-    local(SourceHanSans-Bold),
     local(NotoSansCJKjp-Bold),
-    local(SourceHanSansSC-Bold),
     local(NotoSansCJKsc-Bold),
-    local(SourceHanSansTC-Bold)
-    local(NotoSansCJKtc-Bold)
+    local(NotoSansCJKtc-Bold),
+    local('Source Han Sans K Bold'),
+    local(SourceHanSansK-Bold),
+    local('Source Han Sans K'),
+    local('Source Han Sans KR Bold'),
+    local('Source Han Sans JP Bold'),
+    local('Source Han Sans CN Bold'),
+    local('Source Han Sans HK Bold'),
+    local('Source Han Sans TW Bold'),
+    local('Source Han Sans TWHK Bold'),
+    local('SourceHanSansKR-Bold'),
+    local('SourceHanSansJP-Bold'),
+    local('SourceHanSansCN-Bold'),
+    local('SourceHanSansHK-Bold'),
+    local('SourceHanSansTW-Bold'),
+    local('SourceHanSansTWHK-Bold'),
+    local('Source Han Sans KR'),
+    local('Source Han Sans CN'),
+    local('Source Han Sans HK'),
+    local('Source Han Sans TW'),
+    local('Source Han Sans TWHK')
   ;
   unicode-range: U+"+270C";
 }
