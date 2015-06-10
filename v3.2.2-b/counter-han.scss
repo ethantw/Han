@@ -1,0 +1,12 @@
+
+// **
+// * Sectional counter in articles
+// * `true` || `false`
+// *
+$han-section-counter: true;
+$han-section-counter-toc: true;
+
+// **
+// * Import Han module
+// *
+@import "../src/sass/han";

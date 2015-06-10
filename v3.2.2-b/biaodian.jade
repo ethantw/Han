@@ -1,0 +1,153 @@
+doctype html
+html(lang='zh-Hant').han-init
+  head
+    meta(charset='utf-8')
+    title 測試・標點符號 — 漢字標準格式
+    link(rel='stylesheet', href='./han.min.css')
+    style.
+      html {
+        overflow-x: hidden;
+      }
+
+      article {
+        /* position */
+        margin: 0 auto;
+
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+
+      #tuijian p {
+        font-family: 'Biaodian Pro Sans', 'Helvetica Neue', Arial, 'Han Heiti', sans-serif;
+      }
+      p:lang(zh-Hant-TW) {
+        font-family: 'Biaodian Pro Sans CNS', 'Helvetica Neue', Arial, 'Han Heiti CNS', sans-serif;
+      }
+
+      p:lang(zh-Hans-CN) {
+        font-family: 'Biaodian Pro Sans GB', 'Helvetica Neue', Arial, 'Han Heiti GB', sans-serif;
+      }
+
+      #chenxian p {
+        font-family: 'Biaodian Pro Serif', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti', serif;
+      }
+
+      #chenxian p:lang(zh-Hant-TW) {
+        font-family: 'Biaodian Pro Serif CNS', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti CNS', serif;
+      }
+
+      #chenxian p:lang(zh-Hans-CN) {
+        font-family: 'Biaodian Pro Serif GB', 'Numeral LF Serif', Georgia, 'Times New Roman', 'Han Songti GB', serif;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+  body.test
+
+    article
+      h1 測試·標點符號
+      p.noti
+        strong 提示：
+        | 此測試頁需在支援CSS3 @font-face屬性<code>unicode-range</code><!--
+        | -->的瀏覽器下方可正常顯示。其餘瀏覽器僅支援基本符號（間隔號、刪節號、破折號）修正。
+      section#tuijian
+        h2 推薦
+        p
+          | 句號。點式全形句號．逗號，頓號、分號；冒號：問號？嘆號！
+          br
+          | 連接號〇－九　斜線／或＼
+          br
+          | 「『內容』内容」‘內“內容”容’《內容》〈內容〉（內〔內容〕容）
+          br
+          | 間隔號甲·乙
+          br
+          strong 連字時：
+          | 破折號——刪節號……
+          br
+          strong 單獨存在時：
+          | 破拆號—　刪節號…
+      section#taiwan_jiaoyubu_biaozhun(lang='zh-Hant-TW')
+        h2 台灣教育部式（CNS）
+        p
+          | 句號。點式全形句號．逗號，頓號、分號；冒號：問號？嘆號！
+          br
+          | 連接號〇－九　斜線／或＼
+          br
+          | 「『內容』内容」‘內“內容”容’《內容》〈內容〉（內〔內容〕容）
+          br
+          | 間隔號甲·乙
+          br
+          strong 連字時：
+          | 破折號——刪節號……
+          br
+          strong 單獨存在時：
+          | 破拆號—　刪節號…
+      section#zhongguo_guojia_biaozhun(lang='zh-Hans-CN')
+        h2 中國國家標準（GB）
+        p
+          | 句号。点式全形句号．逗号，顿号、分号；冒号：问号？叹号！
+          br
+          | 连接号〇－九　斜线／或＼
+          br
+          | 「『内容』内容」‘内“内容”容’《内容》〈内容〉（内〔内容〕容）
+          br
+          | 間隔號甲·乙
+          br
+          strong 連字時：
+          | 破折號——刪節號……
+          br
+          strong 單獨存在時：
+          | 破拆號—　刪節號…
+      section#chenxian
+        h2 襯線標點
+        section#chenxian-tuijian
+          h3 推薦
+          p
+            | 句號。點式全形句號．逗號，頓號、分號；冒號：問號？嘆號！
+            br
+            | 連接號〇－九　斜線／或＼
+            br
+            | 「『內容』内容」‘內“內容”容’《內容》〈內容〉（內〔內容〕容）
+            br
+            | 間隔號甲·乙
+            br
+            strong 連字時：
+            | 破折號——刪節號……
+            br
+            strong 單獨存在時：
+            | 破拆號—　刪節號…
+        section#chenxian-taiwan_jiaoyubu_biaozhun(lang='zh-Hant-TW')
+          h3 台灣教育部式（CNS）
+          p
+            | 句號。點式全形句號．逗號，頓號、分號；冒號：問號？嘆號！
+            br
+            | 連接號〇－九　斜線／或＼
+            br
+            | 「『內容』内容」‘內“內容”容’《內容》〈內容〉（內〔內容〕容）
+            br
+            | 間隔號甲·乙
+            br
+            strong 連字時：
+            | 破折號——刪節號……
+            br
+            strong 單獨存在時：
+            | 破拆號—　刪節號…
+        section#chenxian-zhongguo_guojia_biaozhun(lang='zh-Hans-CN')
+          h3 中國國家標準（GB）
+          p
+            | 句号。点式全形句号．逗号，顿号、分号；冒号：问号？叹号！
+            br
+            | 连接号〇－九　斜线／或＼
+            br
+            | 「『内容』内容」‘内“内容”容’《内容》〈内容〉（内〔内容〕容）
+            br
+            | 間隔號甲·乙
+            br
+            strong 連字時：
+            | 破折號——刪節號……
+            br
+            strong 單獨存在時：
+            | 破拆號—　刪節號…
+
+    script(src='./han.min.js')
