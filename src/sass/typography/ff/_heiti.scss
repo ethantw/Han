@@ -26,7 +26,11 @@
     local('.PingFang SC'),
     local('.PingFang TC'),
 
+    local('Heiti SC Light'),
+    local(STHeitiSC-Light),
     local('Heiti SC'),
+    local('Heiti TC Light'),
+    local(STHeitiTC-Light),
     local('Heiti TC'),
 
     local('Microsoft Yahei'),
@@ -49,7 +53,7 @@
 
 @font-face {
   @include han-range-cjk;
-  font-family: 'Han Heiti';
+  font-family: 'xHan Heiti';
   src:
     local(YuGothic),
     local('Hiragino Kaku Gothic ProN'),
@@ -64,6 +68,8 @@
     local('.PingFang TC Light'),
     local('.PingFang-TC-Light'),
     local('.PingFang TC'),
+    local('Heiti TC Light'),
+    local(STHeitiTC-Light),
     local('Heiti TC'),
     local('Lantinghei TC Extralight'),
     local(FZLTXHB--B51-0),
@@ -92,6 +98,8 @@
     local('Lantinghei SC Extralight'),
     local(FZLTXHK--GBK1-0),
     local('Lantinghei SC'),
+    local('Heiti SC Light'),
+    local(STHeitiSC-Light),
     local('Heiti SC'),
 
     local('Microsoft Yahei'),
@@ -103,7 +111,8 @@
   ;
 }
 
-/* Bold
+/*
+ * Bold
  */
 @font-face {
   font-family: 'Han Heiti';
@@ -120,9 +129,11 @@
     local('.PingFang-SC-Semibold'),
     local('.PingFang-TC-Semibold'),
     local('Heiti SC Medium'),
+    local('STHeitiSC-Medium'),
+    local('Heiti SC'),
     local('Heiti TC Medium'),
-    local(STHeitiSC-Medium),
-    local(STHeitiTC-Medium),
+    local('STHeitiTC-Medium'),
+    local('Heiti TC'),
 
     local('Microsoft YaHei Bold'),
     local('Microsoft Jhenghei Bold'),
@@ -184,7 +195,8 @@
     local('.PingFang TC Semibold'),
     local('.PingFang-TC-Semibold'),
     local('Heiti TC Medium'),
-    local(STHeitiTC-Medium),
+    local('STHeitiTC-Medium'),
+    local('Heiti TC'),
     local('Lantinghei TC Demibold'),
     local(FZLTXHB--B51-0),
     local('Microsoft Jhenghei Bold'),
@@ -225,7 +237,8 @@
     local('Lantinghei SC Demibold'),
     local(FZLTZHK--GBK1-0),
     local('Heiti SC Medium'),
-    local(STHeitiSC-Medium),
+    local('STHeitiSC-Medium'),
+    local('Heiti SC'),
     local('Microsoft YaHei Bold'),
     local(MicrosoftYaHei-Bold),
     local('Microsoft YaHei'),
@@ -262,7 +275,11 @@
     local('.PingFang SC'),
     local('.PingFang TC'),
 
+    local('Heiti SC Light'),
+    local('STHeitiSC-Light'),
     local('Heiti SC'),
+    local('Heiti TC Light'),
+    local('STHeitiTC-Light'),
     local('Heiti TC'),
 
     local('Microsoft Yahei'),
@@ -298,10 +315,13 @@
 
     local('.PingFang-SC-Semibold'),
     local('.PingFang-TC-Semibold'),
+
     local('Heiti SC Medium'),
+    local('STHeitiSC-Medium'),
+    local('Heiti SC'),
     local('Heiti TC Medium'),
-    local(STHeitiSC-Medium),
-    local(STHeitiTC-Medium),
+    local('STHeitiTC-Medium'),
+    local('Heiti TC'),
 
     local('Microsoft YaHei Bold'),
     local('Microsoft Jhenghei Bold'),
