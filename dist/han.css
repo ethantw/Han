@@ -645,10 +645,6 @@ ruby > rtc:last-of-type:after {
   -ms-transform: scale(.5);
   -webkit-transform: scale(.5);
   transform: scale(.5);
-  -moz-transform-origin: left top;
-  -ms-transform-origin: left top;
-  -webkit-transform-origin: left top;
-  transform-origin: left top;
   position: absolute;
   left: 50%;
   top: 0;
