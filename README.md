@@ -31,19 +31,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.css">
 ````
 
 腳本，
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.js"></script>
 ````
 
 Web字體，
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.otf`
 
 ## 使用方式
 
@@ -64,7 +64,7 @@ Web字體，
 ## 瀏覽器支援
 
 - Google Chrome（最新版）
-- Mozilla Firefox（最新版）
+- Mozilla Firefox ESR+
 - Opera Next（最新版）
 - Apple Safari 7+
 - Internet Explorer 10+
@@ -79,5 +79,6 @@ Web字體，
 - 更新依賴模組：`npm update && gulp dep`
 
 * * *
-「漢字標準格式」版本：v3.2.1  
-本頁最後修改於：2015年5月1日 1:44（GMT+8）
+「漢字標準格式」版本：v3.2.2  
+本頁最後修改於：2015年6月11日 15:30（UTC+8）
+

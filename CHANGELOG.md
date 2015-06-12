@@ -2,20 +2,21 @@
 更新紀錄　CHANGELOG
 ===
 
-v3.2.2（2015-6-11）
+v3.2.2（2015-6-12）
 ---
- 1. 修正複合式（雙行）行間注在部分情況下未能正確包裹基文的問題
- 2. 改進行間注`ruby`元素的顯示方式，不再使用偽元素顯示注文
- 3. 調整複合式行間注各單元的盒模型寬度取値，以注文或基文寬度較大者為主，更符合HTML5標準
- 4. 注音符號入聲調號區段更名：`Han.UNICODE.zhuyin.ruyun` -> `Han.UNICODE.zhuyin.checked`
- 5. Firefox 38已支援行間注`ruby`元素，調整相應的回退樣式
- 6. 詞組選擇器支援諺文的標點符號，更類似西文詞組
- 7. 支援`Fibre.fn.avoid()`等原型方法
- 8. 字元、詞組選擇器（`Han.fn.charify()`及`Han.fn.groupify()`）支援語言文字英文名（alias）
- 9. 改進行尾點號懸掛在空白字體未正確下載的回退樣式
-10. 加入對思源黑體（Source Han Sans/Noto Sans CJK）的支援
-11. 修正四大字體集在Windows上可能無法正確顯示的問題
-12. 改進Firefox的字體顯示問題（不支援`unicode-range`屬性的瀏覽器不使用標點修正字體）
+ 1.  修正複合式（雙行）行間注在部分情況下未能正確包裹基文的問題
+ 2.  改進行間注`ruby`元素的顯示方式，不再使用偽元素顯示注文
+ 3.  調整複合式行間注各單元的盒模型寬度取値，以注文或基文寬度較大者為主，更符合HTML5標準
+ 4.  注音符號入聲調號區段API更名：`Han.UNICODE.zhuyin.ruyun` -> `Han.UNICODE.zhuyin.checked`
+ 5.  Firefox 38已支援行間注`ruby`元素，調整相應的回退樣式
+ 6.  詞組選擇器支援諺文的標點符號，更類似西文詞組
+ 7.  支援`Fibre.fn.avoid()`等原型方法
+ 8.  字元、詞組選擇器（`Han.fn.charify()`及`Han.fn.groupify()`）支援語言文字英文名（alias）
+ 9.  改進行尾點號懸掛在空白字體未正確下載的回退樣式
+ 10. 加入對思源黑體（Source Han Sans/Noto Sans CJK）的支援
+ 11. 修正四大字體集在Windows上可能無法正確顯示的問題
+ 12. 改進Firefox的字體顯示問題（不支援`unicode-range`屬性的瀏覽器不使用標點修正字體）
+ 13. 支援Firefox ESR
 
 v3.2.1（2015-5-1）
 ---

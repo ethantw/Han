@@ -33,19 +33,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.css">
 ````
 
 JavaScript
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.js"></script>
 ````
 
 Webフォント
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.1/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.otf`
 
 ## 使用方式
 
@@ -82,7 +82,7 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 ## サポートするブラウザ
 
 - Google Chrome（最新版）
-- Mozilla Firefox（最新版）
+- Mozilla Firefox ESR+
 - Opera Next（最新版）
 - Apple Safari 7+
 - Internet Explorer 10+
@@ -97,8 +97,8 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 - モジュールを更新する：`npm update && gulp dep`
 
 * * *
-漢字標準格式 v3.2.1  
-Last-modified: 2015-5-1 1:44 (GMT+8)  
+漢字標準格式 v3.2.2  
+Last-modified: 2015-6-11 15:32 (UTC+8)  
 Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
 [translator]: http://westantenna.com

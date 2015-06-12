@@ -1,6 +1,6 @@
 {
   "name": "Han",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "homepage": "http://css.hanzi.co/",
   "authors": [
     "Chen Yijun (@ethantw)"
@@ -14,7 +14,7 @@
     "typography",
     "typesetting"
   ],
-  "license": "http://css.hanzi.co/LICENSE.md",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "build",

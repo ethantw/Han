@@ -1,6 +1,6 @@
 {
   "name": "han-css",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "The CSS typography framework optimised for Hanzi",
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "name": "Chen Yijun (@ethantw)",
     "url": "http://yijun.me/"
   },
-  "license": "MIT Lisence",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ethantw/Han/issues"
   },
