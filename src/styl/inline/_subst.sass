@@ -1,0 +1,29 @@
+
+/**
+ * The ‘Display-As’ feature for presentational characters
+ */
+
+// * 1. Hidden (but copyable) in `inner` containers for
+// *    pseudo elements to do the display.
+// *
+h-char[display-as]
+  // position
+  position: relative
+  // box
+  display: inline-block
+
+  // 1
+  h-inner
+    color: transparent
+
+  &:after
+    // position
+    position: absolute
+    left: 0
+    // box
+    display: inline-block
+    // typography
+    content: attr( display-as )
+
+  &.comb-liga:after
+    font-family: 'Romanization Sans', 'Zhuyin Kaiti'

@@ -1,0 +1,130 @@
+
+%han-cursive {
+  font-family:
+    $han-serif,
+    han-typeface( 'Han Kaiti', $_default-variant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-hant {
+  font-family:
+    han-biaodian( Serif, $han-biaodian-hant ),
+    'Numeral LF Serif',
+    $han-serif,
+    'Zhuyin Kaiti',
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-hant-nu {
+  font-family:
+    'Numeral LF Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-hans {
+  font-family:
+    han-biaodian( Serif, $han-biaodian-hans ),
+    'Numeral LF Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-hans-nu {
+  font-family:
+    'Numeral LF Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-ja {
+  font-family:
+    'Yakumono Serif',
+    'Numeral LF Serif',
+    $han-serif,
+    cursive, serif
+  ;
+}
+
+%han-cursive-ja-nu {
+  font-family: 'Numeral LF Serif', $han-serif, cursive, serif;
+}
+
+/**
+ * Cursive Italic
+ */
+%han-cursive-italic {
+  font-family:
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $_default-variant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-hant {
+  font-family:
+    han-biaodian( Serif, $han-biaodian-hant ),
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    'Zhuyin Kaiti',
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-hant-nu {
+  font-family:
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hant, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-hans {
+  font-family:
+    han-biaodian( Serif, $han-biaodian-hans ),
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-hans-nu {
+  font-family:
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    han-typeface( 'Han Kaiti', $han-glyph-set-hans, $han-cursive-zh ),
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-ja {
+  font-family:
+    'Yakumono Serif',
+    'Numeral LF Italic Serif',
+    'Latin Italic Serif',
+    $han-serif,
+    cursive, serif
+  ;
+}
+
+%han-cursive-italic-ja-nu {
+  font-family: 'Numeral LF Italic Serif', 'Latin Italic Serif', $han-serif, cursive, serif;
+}
+

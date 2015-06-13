@@ -1,0 +1,131 @@
+
+/**
+ * The Four Typefaces: Kaiti (Cursive)
+ * 四大字體集・楷體
+ */
+
+// * 1. Recommended (適用繁體漢字)
+// * 2. CNS (台灣教育部國字標準字體［字形］)
+// * 3. GB (中國國家標準)
+
+// 1
+@font-face {
+  font-family: cursive;
+  src:
+    local('Kaiti TC Regular'),
+    local(STKaiTi-TC-Regular),
+    local('Kaiti TC'),
+    local('Kaiti SC'),
+    local(STKaiti),
+
+    local(BiauKai),
+    local('標楷體'),
+    local(DFKaiShu-SB-Estd-BF),
+
+    local(Kaiti),
+    local(DFKai-SB)
+  ;
+}
+
+// 1
+@font-face {
+  @include han-range-cjk;
+  font-family: 'Han Kaiti';
+  src:
+    local('Kaiti TC Regular'),
+    local(STKaiTi-TC-Regular),
+    local('Kaiti TC'),
+    local('Kaiti SC'),
+    local(STKaiti),
+
+    local(BiauKai),
+    local('標楷體'),
+    local(DFKaiShu-SB-Estd-BF),
+
+    local(Kaiti),
+    local(DFKai-SB)
+  ;
+}
+
+// 2
+@font-face {
+  @include han-range-cjk;
+  font-family: 'Han Kaiti CNS';
+  src:
+    local(BiauKai),
+    local('標楷體'),
+    local(DFKaiShu-SB-Estd-BF),
+    local('Kaiti TC Regular'),
+    local(STKaiTi-TC-Regular),
+    local('Kaiti TC')
+  ;
+}
+
+// 3
+@font-face {
+  @include han-range-cjk;
+  font-family: 'Han Kaiti GB';
+  src:
+    local('Kaiti SC Regular'),
+    local(STKaiTi-SC-Regular),
+    local('Kaiti SC'),
+    local(STKaiti),
+    local(Kai),
+    local(Kaiti),
+    local(DFKai-SB)
+  ;
+}
+
+/*
+ * Bold
+ */
+
+// 1
+@font-face {
+  font-family: cursive;
+  font-weight: 600;
+  src:
+    local('Kaiti TC Bold'),
+    local(STKaiTi-TC-Bold),
+    local('Kaiti SC Bold'),
+    local(STKaiti-SC-Bold),
+    local('Kaiti TC'),
+    local('Kaiti SC')
+  ;
+}
+
+// 1
+@font-face {
+  font-family: 'Han Kaiti';
+  font-weight: 600;
+  src:
+    local('Kaiti TC Bold'),
+    local(STKaiTi-TC-Bold'),
+    local('Kaiti SC Bold'),
+    local(STKaiti-SC-Bold),
+    local('Kaiti TC'),
+    local('Kaiti SC')
+  ;
+}
+
+// 2
+@font-face {
+  font-family: 'Han Kaiti CNS';
+  font-weight: 600;
+  src:
+    local('Kaiti TC Bold'),
+    local(STKaiTi-TC-Bold'),
+    local('Kaiti TC')
+  ;
+}
+
+// 3
+@font-face {
+  font-family: 'Han Kaiti GB';
+  font-weight: 600;
+  src:
+    local('Kaiti SC Bold'),
+    local(STKaiti-SC-Bold)
+  ;
+}
+

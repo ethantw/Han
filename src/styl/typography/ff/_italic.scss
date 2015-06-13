@@ -1,0 +1,55 @@
+
+/**
+ * Western Italic Serif
+ */
+@font-face {
+  font-family: 'Latin Italic Serif';
+  src:
+    local('Georgia Italic'),
+    local('Times New Roman Italic'),
+    local(Georgia-Italic),
+    local(TimesNewRomanPS-ItalicMT),
+    local(Times-Italic)
+  ;
+}
+
+@font-face {
+  font-family: 'Latin Italic Serif';
+  font-weight: 700;
+  src:
+    local('Georgia Bold Italic'),
+    local('Times New Roman Bold Italic'),
+    local(Georgia-BoldItalic),
+    local(TimesNewRomanPS-BoldItalicMT),
+    local(Times-Italic)
+  ;
+}
+
+/**
+ * Western italic sans-serif
+ */
+@font-face {
+  font-family: 'Latin Italic Sans';
+  src:
+    local('Helvetica Neue Italic'),
+    local('Helvetica Oblique'),
+    local('Arial Italic'),
+    local(HelveticaNeue-Italic),
+    local(Helvetica-LightOblique),
+    local(Arial-ItalicMT)
+  ;
+}
+
+@font-face {
+  font-family: 'Latin Italic Sans';
+  font-weight: 700;
+  src:
+    local('Helvetica Neue Bold Italic'),
+    local('Helvetica Bold Oblique'),
+    local('Arial Bold Italic'),
+    local(HelveticaNeue-BoldItalic),
+    local(Helvetica-BoldOblique),
+    local(Arial-BoldItalicMT)
+  ;
+}
+

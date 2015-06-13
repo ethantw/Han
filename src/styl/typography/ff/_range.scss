@@ -1,0 +1,65 @@
+
+// * CJK-related blocks
+// *
+@mixin han-range-cjk {
+  unicode-range:
+    // Basic CJK unified ideographs
+    // 中日韓統一意音文字
+    U+"+4E00-9FFF",
+
+    // CJK Ext-A, B, C, D
+    // 擴展A、B、C、D（急用漢字）區
+    U+"+3400-4DB5",
+    U+"+20000-2A6D6",
+    U+"+2A700-2B734",
+    U+"+2B740-2B81D",
+
+    // 12 Compatibility Ideograph characters
+    // 12個「相容意音文字」
+    U+"+FA0E-FA0F", U+"+FA11", U+"+FA13-FA14", U+"+FA1F", U+"+FA21", U+"+FA23", U+"+FA24", U+"+FA27-FA29",
+
+    // Kana
+    // 假名
+    U+"+3040-309F", U+"+30A0-30FF",
+    U+"+3099-309E",
+    U+"+FF66-FF9F",
+
+    // Ideographic number ‘zero’
+    // 數字「〇」
+    U+"+3007",
+
+    // Strokes
+    // 筆畫
+    U+"+31C0-31E3",
+
+    // Kangxi and supplement radicals
+    // 康熙字典及簡化字部首
+    U+"+2F00-2FD5", U+"+2E80-2EF3"
+  ;
+}
+
+// * Numerals (0-9)
+// *
+@mixin han-range-numeral {
+  unicode-range: U+"+0030-0039";
+}
+
+// * Zhuyin blocks
+// *
+@mixin han-range-zhuyin {
+  unicode-range:
+    // Zhuyin
+    U+"+3105-312D", U+"+31A0-31BA",
+
+    // tones
+    U+"+02D9", U+"+02CA", U+"+02C5", U+"+02C7", U+"+02CB", U+"+02EA-02EB",
+
+    // Yang checked tones (Romanisation vowels & Zhuyin)
+    U+"+030D", U+"+0358",
+
+    // Yang cheked tones (Moedict.tw PUA)
+    U+"+F31B4-F31B7",
+    U+"+F0061", U+"+F0065", U+"+F0069", U+"+F006F", U+"+F0075"
+  ;
+}
+

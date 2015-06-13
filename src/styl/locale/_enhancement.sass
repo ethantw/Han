@@ -1,0 +1,98 @@
+
+// * Address a preciser adjancent underlined text run
+// * with JS rendered.
+// *
+%han-reset-adjacent-deco-line
+  margin-left: auto
+
+#{$HAN-JS-RENDERED-CLASS}
+  u,
+  ins
+    & + u,
+    & + ins
+      @extend %han-reset-adjacent-deco-line
+
+    &.adjacent
+      @extend %han-adjacent-deco-line
+
+  s,
+  del
+    & + s,
+    & + del
+      @extend %han-reset-adjacent-deco-line
+
+      &.adjacent
+        @extend %han-adjacent-deco-line
+
+// * - Polyfill implementation for Firefox and IE;
+// * - Remove emphasis mark under punctuation.
+// *
+// * 1. Polyfill for browsers that support no `text-emphasis`.
+// * 2. Although han is a project for normalisation and
+// *    fonts ain't supposed to be assigned specifically,
+// *    we need the emphasis marks to fallback properly;
+// *    hence, one exception is hereby made.
+// * 3. Skip emphasis mark while under punctuation.
+// *
+%han-text-emphasis-pf
+  #{$HAN-JS-RENDERED-CLASS} &
+    padding-bottom: auto
+    border-bottom-width: 0
+
+  // 1
+  .no-textemphasis &
+    line-height: 2
+
+    h-char
+      // position
+      position: relative
+      // typography
+      font-style: inherit
+
+      &:after
+        +han-typo-reset
+        +han-scale-center( .5 )
+        // position
+        position: absolute
+        left: 50%
+        top: 0
+        margin-left: -250%
+        overflow: hidden
+        // box
+        display: inline-block
+        height: 1em
+        width: 500%
+        // typography
+        line-height: 1
+        text-align: center
+        text-indent: 0
+        // 2
+        font-family: Georgia, 'Times New Roman', Arial, !important
+
+// 3
+%han-text-emphasis-skip
+  h-char.punct,
+  h-char.biaodian
+    +han-text-emphasis-internal( none )
+
+    .no-textemphasis &:after
+      content: none !important
+
+em
+  &:lang(zh)
+    +han-text-emphasis-pf
+
+  &:lang(ja)
+    +han-text-emphasis-pf( $HAN-TEXT-EMPHASIS-POSI-JA, $HAN-TEXT-EMPHASIS-MARK-JA )
+
+// * Simple and complex ruby polyfill
+// *
+@import h-ruby
+
+// * Punctuation rules (禁則)
+// *
+h-jinze,
+h-word
+  // box
+  display: inline-block
+  text-indent: 0

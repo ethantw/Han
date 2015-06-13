@@ -1,0 +1,78 @@
+
+// *!
+// * **WARNING**
+// * It is recommended to overwrite the variables before
+// * including the module, instead of modifying them here.
+// *
+
+// **
+// * The root element
+// * `html` || `'*:root'`
+// *
+$han-root:                html  !default
+
+// **
+// * The article selector
+// * Possible values: `article` || `.article` || `.post` || `.entry`
+// *
+$han-article:             article !default
+
+// **
+// * Default Chinese locale variant
+// * (Traditional or simplified characters)
+// * `hant` || `hans`
+// *
+$han-default-variant:     hant    !default
+
+// **
+// * Chinese glyph set in general
+// * `default` || `CNS` || `GB`
+// *
+$han-glyph-set-hant:      default !default
+
+// **
+// * Simplified Chinese glyph set
+// * `default` || `GB`
+// *
+$han-glyph-set-hans:      GB      !default
+
+// **
+// * Chinese Biaodian set in general
+// * `Pro` || `CNS` || `GB` || `simp`
+// *
+$han-biaodian-hant:       CNS     !default
+
+// **
+// * Biaodian set for Simplified Chinese
+// * `default` || `Pro` || `CNS` || `GB`
+// *
+$han-biaodian-hans:       GB      !default
+
+// **
+// * Generic typefaces for Western (Latin-based)
+// * characters
+// *
+$han-sans:    'Helvetica Neue', Helvetica, Arial  !default
+$han-serif:   Georgia, 'Times New Roman'          !default
+$han-cursive: 'Apple Chancery', 'Snell Roundhand' !default
+$han-mono:    Menlo, Consolas, Courier            !default
+
+// **
+// * Generic typefaces for Chinese
+// *
+$han-sans-zh:    ''                               !default
+$han-serif-zh:   ''                               !default
+$han-cursive-zh: ''                               !default
+$han-mono-zh:    $han-sans-zh                     !default
+
+// **
+// * Web font paths
+// * (Zhuyin, checked-toned romanisation and
+// * partial CJK biaodian correction)
+// *
+$han-font-woff: './font/han.woff'                 !default
+$han-font-otf:  './font/han.otf'                  !default
+$han-version:    'v1.0.0'                         !default
+
+$han-webfont: url(#{$han-font-woff}?#{$han-version}) format('woff'), url(#{$han-font-otf}?#{$han-version}) format('opentype') !default
+

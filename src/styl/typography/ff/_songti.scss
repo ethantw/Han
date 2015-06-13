@@ -1,0 +1,222 @@
+
+/**
+ * The Four Typefaces: Songti (serif)
+ * 四大字體集・宋體
+ */
+
+// * 1. Recommended (推薦傳統字形，適用繁體漢字)
+// * 2. CNS (台灣教育部國字標準字體［字形］)
+// * 3. GB (中國國家標準)
+
+// 1
+@font-face {
+  font-family: 'Han Songti';
+  src:
+    local('Songti SC Regular'),
+    local(STSongti-SC-Regular),
+    local('Songti SC'),
+    local('Songti TC Regular'),
+    local(STSongti-TC-Regular),
+    local('Songti TC'),
+
+    local(STSong),
+    local('Lisong Pro'),
+
+    local(SimSun),
+    local(PMingLiU)
+  ;
+}
+
+@font-face {
+  @include han-range-cjk;
+  font-family: 'Han Songti';
+  src:
+    local(YuMincho),
+    local('Hiragino Mincho ProN'),
+    local('Hiragino Mincho Pro'),
+    local('MS Mincho')
+  ;
+}
+
+// 2
+@font-face {
+  font-family: 'Han Songti CNS';
+  src:
+    local('Songti TC Regular'),
+    local(STSongti-TC-Regular),
+    local('Songti TC'),
+    local('Lisong Pro'),
+
+    local('Songti SC Regular'),
+    local(STSongti-SC-Regular),
+    local('Songti SC'),
+    local(STSong),
+
+    local(PMingLiU),
+    local(SimSun)
+  ;
+}
+
+// 3
+@font-face {
+  font-family: 'Han Songti GB';
+  src:
+    local('Songti SC Regular'),
+    local(STSongti-SC-Regular),
+    local('Songti SC'),
+    local(STSong),
+    local(SimSun),
+    local(PMingLiU)
+  ;
+}
+
+/* 
+ * Bold
+ */
+
+// 1
+@font-face {
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src:
+    local('STSongti SC Bold'),
+    local('STSongti TC Bold'),
+    local(STSongti-SC-Bold),
+    local(STSongti-TC-Bold),
+    local('STSongti SC'),
+    local('STSongti TC')
+  ;
+}
+
+@font-face {
+  @include han-range-cjk;
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src:
+    local('YuMincho Demibold'),
+    local('Hiragino Mincho ProN W6'),
+    local('Hiragino Mincho Pro W6'),
+    local(YuMin-Demibold),
+    local(HiraMinProN-W6),
+    local(HiraMinPro-W6),
+    local(YuMincho),
+    local('Hiragino Mincho ProN'),
+    local('Hiragino Mincho Pro')
+  ;
+}
+
+// 2
+@font-face {
+  font-family: 'Han Songti CNS';
+  font-weight: 600;
+  src:
+    local('STSongti TC Bold'),
+    local('STSongti SC Bold'),
+    local(STSongti-TC-Bold),
+    local(STSongti-SC-Bold),
+    local('STSongti TC'),
+    local('STSongti SC')
+  ;
+}
+
+// 3
+@font-face {
+  font-family: 'Han Songti GB';
+  font-weight: 600;
+  src:
+    local('STSongti SC Bold'),
+    local(STSongti-SC-Bold),
+    local('STSongti SC')
+  ;
+}
+
+/* Address solution to `unicode-range` unsupported
+ * issues in Firefox.
+ */
+@font-face {
+  font-family: 'Han Songti';
+  src:
+    local('Songti SC Regular'),
+    local(STSongti-SC-Regular),
+    local('Songti SC'),
+    local('Songti TC Regular'),
+    local(STSongti-TC-Regular),
+    local('Songti TC'),
+
+    local(STSongti),
+    local('Lisong Pro'),
+
+    local('MS Mincho'),
+    local(SimSun),
+    local(PMingLiU)
+  ;
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Han Songti';
+  font-weight: 600;
+  src:
+    local('Songti TC Bold'),
+    local('Songti SC Bold'),
+    local(STSongti-TC-Bold),
+    local(STSongti-SC-Bold),
+    local('Songti TC'),
+    local('Songti SC')
+  ;
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Han Songti CNS';
+  src:
+    local('Songti TC Regular'),
+    local('Lisong Pro'),
+    local('Songti TC'),
+
+    local('Songti SC Regular'),
+    local(STSong),
+    local('Songti SC'),
+
+    local('MS Mincho'),
+    local(PMingLiU),
+    local(SimSun)
+  ;
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Han Songti CNS';
+  font-weight: 600;
+  src:
+    local('Songti TC Bold'),
+    local('Songti SC Bold'),
+    local(STSongti-TC-Bold),
+    local(STSongti-SC-Bold),
+    local('Songti TC'),
+    local('Songti SC')
+  ;
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Han Songti GB';
+  src:
+    local('Songti SC'),
+    local(STSong),
+    local(SimSun)
+  ;
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Han Songti GB';
+  font-weight: 600;
+  src:
+    local('Songti SC Bold'),
+    local(STSongti-SC-Bold),
+    local('Songti SC')
+  ;
+  unicode-range: U+"+270C";
+}
+

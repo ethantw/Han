@@ -1,0 +1,172 @@
+
+/**
+ * Numerals: text figures
+ */
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral TF Sans';
+  src:
+    local(Skia),
+    local('Neutraface 2 Text'),
+    local(Candara),
+    local(Corbel)
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral TF Serif';
+  src:
+    local(Georgia),
+    local('Hoefler Text'),
+    local('Big Caslon')
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral TF Italic Serif';
+  src:
+    local('Georgia Italic'),
+    local('Hoefler Text Italic'),
+    local(Georgia-Italic),
+    local(HoeflerText-Italic)
+  ;
+}
+
+/**
+ * Numerals: lining figures
+ */
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Sans';
+  src:
+    local('Helvetica Neue'),
+    local(Helvetica),
+    local(Arial)
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Italic Sans';
+  src:
+    local('Helvetica Neue Italic'),
+    local('Helvetica Oblique'),
+    local('Arial Italic'),
+    local(HelveticaNeue-Italic),
+    local(Helvetica-LightOblique),
+    local(Arial-ItalicMT)
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Italic Sans';
+  font-weight: bold;
+  src:
+    local('Helvetica Neue Bold Italic'),
+    local('Helvetica Bold Oblique'),
+    local('Arial Bold Italic'),
+    local(HelveticaNeue-BoldItalic),
+    local(Helvetica-BoldOblique),
+    local(Arial-BoldItalicMT)
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Serif';
+  src:
+    local(Palatino),
+    local('Palatino Linotype'),
+    local('Times New Roman')
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Italic Serif';
+  src:
+    local('Palatino Italic'),
+    local('Palatino Italic Linotype'),
+    local('Times New Roman Italic'),
+    local(Palatino-Italic),
+    local(Palatino-Italic-Linotype),
+    local(TimesNewRomanPS-ItalicMT)
+  ;
+}
+
+@font-face {
+  @include han-range-numeral;
+  font-family: 'Numeral LF Italic Serif';
+  font-weight: bold;
+  src:
+    local('Palatino Bold Italic'),
+    local('Palatino Bold Italic Linotype'),
+    local('Times New Roman Bold Italic'),
+    local(Palatino-BoldItalic),
+    local(Palatino-BoldItalic-Linotype),
+    local(TimesNewRomanPS-BoldItalicMT)
+  ;
+}
+
+/* Address solution to `unicode-range` unsupported
+ * issues in Firefox.
+ */
+@font-face {
+  font-family: 'Numeral TF Sans';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral TF Serif';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral TF Italic Serif';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Sans';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Italic Sans';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Italic Sans';
+  font-weight: bold;
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Serif';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Italic Serif';
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
+@font-face {
+  font-family: 'Numeral LF Italic Serif';
+  font-weight: bold;
+  src: local(lying-to-firefox);
+  unicode-range: U+"+270C";
+}
+
