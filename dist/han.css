@@ -687,23 +687,27 @@ em:lang(ja) h-char.biaodian {
 h-ru[annotation] {
   position: relative;
   display: inline-table;
+  border-collapse: collapse;
+  border-spacing: 0;
+  line-height: 1.1;
   text-align: center;
-  vertical-align: 1.2em;
+  vertical-align: 1em;
 }
 h-ru[annotation] > h-ru[annotation] {
-  vertical-align: -.2em;
+  vertical-align: -.1em;
 }
 h-ruby[rightangle][doubleline] h-ru[annotation] {
   vertical-align: .5em;
 }
-h-ru[annotation] > rb,
 h-ru[annotation] > h-ru,
+h-ru[annotation] > rb,
 h-ru[annotation] > rt {
   line-height: 1;
   text-align: center;
 }
 h-ru[annotation] > rt {
   display: table-header-group;
+  height: 1em;
   font-size: .5em;
   white-space: nowrap;
   word-break: normal;
@@ -728,7 +732,7 @@ h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
   line-height: 1.5;
 }
 
-h-ru[zhuyin] h-zhuyin {
+[zhuyin] h-zhuyin {
   -moz-text-emphasis: none;
   -webkit-text-emphasis: none;
   text-emphasis: none;
@@ -740,16 +744,12 @@ h-ru[zhuyin] h-zhuyin {
   position: relative;
   display: inline-block;
   height: 1.2em;
+  height: 1em;
   width: .4em;
-  vertical-align: text-bottom;
-  font-style: none !important;
-  font-weight: normal !important;
-  text-decoration: none !important;
-  -webkit-text-emphasis: none !important;
-  text-emphasis: none !important;
+  vertical-align: text-top;
 }
 
-h-ru[zhuyin] h-zhuyin > * {
+[zhuyin] h-zhuyin > * {
   -moz-transform: scale(.4);
   -ms-transform: scale(.4);
   -webkit-transform: scale(.4);
@@ -761,89 +761,97 @@ h-ru[zhuyin] h-zhuyin > * {
   display: inline-block;
 }
 
-h-ru[zhuyin] h-yin {
-  vertical-align: middle;
+[zhuyin] h-yin {
+  position: absolute;
+  left: 0;
+  height: 1em;
+  vertical-align: top;
   line-height: 1;
 }
 
-h-ru[zhuyin] h-diao {
+[zhuyin] h-diao {
   position: absolute;
   bottom: 0;
   right: -.9em;
   line-height: 1;
 }
 
-h-ru[zhuyin] h-yin:empty,
-h-ru[zhuyin] h-diao:empty {
+[zhuyin] h-yin:empty,
+[zhuyin] h-diao:empty {
   display: none;
 }
 
-h-ru[length="0"][zhuyin] {
+[length="0"][zhuyin] {
   margin-right: 0;
 }
-
-h-ru[length="0"][zhuyin] h-zhuyin {
+[length="0"][zhuyin] h-zhuyin {
   display: none;
 }
 
-h-ru[length="1"][zhuyin] h-diao,
-h-ru[zhuyin] [length="1"] h-diao {
+[length="1"][zhuyin] h-yin,
+[zhuyin] [length="1"] h-yin {
+  top: .3em;
+}
+
+[length="1"][zhuyin] h-diao,
+[zhuyin] [length="1"] h-diao {
   bottom: 0;
 }
 
-h-ru[length="2"][zhuyin] h-yin,
-h-ru[zhuyin] [length="2"] h-yin {
-  vertical-align: -.8em;
+[length="2"][zhuyin] h-yin,
+[zhuyin] [length="2"] h-yin {
+  top: .05em;
 }
 
-h-ru[length="2"][zhuyin] h-diao,
-h-ru[zhuyin] [length="2"] h-diao {
-  bottom: -.2em;
+[length="2"][zhuyin] h-diao,
+[zhuyin] [length="2"] h-diao {
+  bottom: -.3em;
 }
 
-h-ru[length="3"][zhuyin] h-yin,
-h-ru[zhuyin] [length="3"] h-yin {
-  line-height: .9;
+[length="3"][zhuyin] h-yin,
+[zhuyin] [length="3"] h-yin {
+  top: -.05em;
+  line-height: .85;
 }
 
-h-ru[length="3"][zhuyin] h-diao,
-h-ru[zhuyin] [length="3"] h-diao {
-  bottom: -.25em;
+[length="3"][zhuyin] h-diao,
+[zhuyin] [length="3"] h-diao {
+  bottom: -.35em;
 }
 
-h-ru[diao="˙"][zhuyin] h-diao,
-h-ru[zhuyin] [diao="˙"] h-diao {
+[diao="˙"][zhuyin] h-diao,
+[zhuyin] [diao="˙"] h-diao {
   top: 0;
   right: auto;
   bottom: auto;
-  left: .08em;
+  left: .06em;
 }
 
-h-ru[diao="˙"][length="1"][zhuyin] h-diao,
-h-ru[diao="˙"][zhuyin] [length="1"] h-diao,
-h-ru[zhuyin] [diao="˙"][length="1"] h-diao,
-h-ru[zhuyin] [diao="˙"] [length="1"] h-diao {
-  top: .25em;
+[diao="˙"][length="1"][zhuyin] h-diao,
+[diao="˙"][zhuyin] [length="1"] h-diao,
+[zhuyin] [diao="˙"][length="1"] h-diao,
+[zhuyin] [diao="˙"] [length="1"] h-diao {
+  top: .15em;
 }
 
-h-ru[diao="˙"][length="2"][zhuyin] h-diao,
-h-ru[diao="˙"][zhuyin] [length="2"] h-diao,
-h-ru[zhuyin] [diao="˙"][length="2"] h-diao,
-h-ru[zhuyin] [diao="˙"] [length="2"] h-diao {
-  top: .1em;
+[diao="˙"][length="2"][zhuyin] h-diao,
+[diao="˙"][zhuyin] [length="2"] h-diao,
+[zhuyin] [diao="˙"][length="2"] h-diao,
+[zhuyin] [diao="˙"] [length="2"] h-diao {
+  top: -.05em;
 }
 
-h-ru[diao="˙"][length="3"][zhuyin] h-diao,
-h-ru[diao="˙"][zhuyin] [length="3"] h-diao,
-h-ru[zhuyin] [diao="˙"][length="3"] h-diao,
-h-ru[zhuyin] [diao="˙"] [length="3"] h-diao {
-  top: -.15em;
+[diao="˙"][length="3"][zhuyin] h-diao,
+[diao="˙"][zhuyin] [length="3"] h-diao,
+[zhuyin] [diao="˙"][length="3"] h-diao,
+[zhuyin] [diao="˙"] [length="3"] h-diao {
+  top: -.2em;
 }
 
-h-ru[diao="˪"][zhuyin] h-diao,
-h-ru[diao="˫"][zhuyin] h-diao,
-h-ru[zhuyin] [diao="˪"] h-diao,
-h-ru[zhuyin] [diao="˫"] h-diao {
+[diao="˪"][zhuyin] h-diao,
+[diao="˫"][zhuyin] h-diao,
+[zhuyin] [diao="˪"] h-diao,
+[zhuyin] [diao="˫"] h-diao {
   -moz-transform: scale(.6);
   -ms-transform: scale(.6);
   -webkit-transform: scale(.6);
@@ -854,27 +862,27 @@ h-ru[zhuyin] [diao="˫"] h-diao {
   transform-origin: left top;
 }
 
-h-ru[diao^="ㆴ"][zhuyin] h-diao,
-h-ru[diao^="ㆵ"][zhuyin] h-diao,
-h-ru[diao^="ㆶ"][zhuyin] h-diao,
-h-ru[diao^="ㆷ"][zhuyin] h-diao,
-h-ru[diao="󳆴"][zhuyin] h-diao,
-h-ru[diao="󳆵"][zhuyin] h-diao,
-h-ru[diao="󳆶"][zhuyin] h-diao,
-h-ru[diao="󳆷"][zhuyin] h-diao,
-h-ru[zhuyin] [diao^="ㆴ"] h-diao,
-h-ru[zhuyin] [diao^="ㆵ"] h-diao,
-h-ru[zhuyin] [diao^="ㆶ"] h-diao,
-h-ru[zhuyin] [diao^="ㆷ"] h-diao,
-h-ru[zhuyin] [diao="󳆴"] h-diao,
-h-ru[zhuyin] [diao="󳆵"] h-diao,
-h-ru[zhuyin] [diao="󳆶"] h-diao,
-h-ru[zhuyin] [diao="󳆷"] h-diao {
-  bottom: -.5em;
+[diao^="ㆴ"][zhuyin] h-diao,
+[diao^="ㆵ"][zhuyin] h-diao,
+[diao^="ㆶ"][zhuyin] h-diao,
+[diao^="ㆷ"][zhuyin] h-diao,
+[diao="󳆴"][zhuyin] h-diao,
+[diao="󳆵"][zhuyin] h-diao,
+[diao="󳆶"][zhuyin] h-diao,
+[diao="󳆷"][zhuyin] h-diao,
+[zhuyin] [diao^="ㆴ"] h-diao,
+[zhuyin] [diao^="ㆵ"] h-diao,
+[zhuyin] [diao^="ㆶ"] h-diao,
+[zhuyin] [diao^="ㆷ"] h-diao,
+[zhuyin] [diao="󳆴"] h-diao,
+[zhuyin] [diao="󳆵"] h-diao,
+[zhuyin] [diao="󳆶"] h-diao,
+[zhuyin] [diao="󳆷"] h-diao {
+  bottom: -.6em;
   margin-right: .3em;
 }
 
-h-ru[zhuyin] {
+[zhuyin] {
   margin-right: .2em;
   display: inline-block;
   line-height: 1.8;
@@ -914,7 +922,7 @@ h-word {
 
 @font-face {
   unicode-range: U+4E00-9FFF, U+3400-4DB5, U+20000-2A6D6, U+2A700-2B734, U+2B740-2B81D, U+FA0E-FA0F, U+FA11, U+FA13-FA14, U+FA1F, U+FA21, U+FA23, U+FA24, U+FA27-FA29, U+3040-309F, U+30A0-30FF, U+3099-309E, U+FF66-FF9F, U+3007, U+31C0-31E3, U+2F00-2FD5, U+2E80-2EF3;
-  font-family: "xHan Heiti";
+  font-family: "Han Heiti";
   src: local(YuGothic), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro");
 }
 

@@ -44,7 +44,7 @@ html(lang='zh-Hant').han-init
               | 逐<rt>zhú</rt>
               | 高低<rt>gāodī</rt>。<rt></rt>
         p.
-          好好地來<ruby class="pinyin">安<rt>ān</rt>裝<rt>zhuāng</rt>窗<rt>chuāng</rt>戶<rt>hù</rt></ruby>。
+          好好地來<em><ruby class="pinyin">安<rt>ān</rt>裝<rt>zhuāng</rt></ruby></em><ruby class="pinyin">窗<rt>chuāng</rt>戶<rt>hù</rt></ruby>。
         section#zhuyin_fuhao
           h3 注音符號
           p: ruby.zhuyin
@@ -58,15 +58,12 @@ html(lang='zh-Hant').han-init
           section#qingsheng
             h4 輕聲
             p: ruby.zhuyin
-              | 爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！
+              | 爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt></ruby><em><ruby class='zhuyin'>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt></ruby></em><ruby class='zhuyin'>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！
           section
-            h4 預設使用「楷體」的元素下
-            p: ruby.zhuyin
-              i 爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！
       section#fuheshi_hangjianzhu
         h2 複合式行間注
         p.
-          好好地來<ruby class="complex"><rb>安</rb><rb>裝</rb><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby>
+          好好地來<ruby class="complex"><em><rb>安</rb><rb>裝</rb></em><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby>
         p: ruby.complex
           | 辛亥革命發生在
           rb 1911-
@@ -79,7 +76,8 @@ html(lang='zh-Hant').han-init
           rtc: rt(rbspan='3') 清宣統三年
           | 那天革命先烈們一同推翻了帝制。
         p
-          ruby.complex
+          | 歡迎來到 
+          em: ruby.complex
             | 「
             rb 紐
             rb 約
@@ -136,6 +134,7 @@ html(lang='zh-Hant').han-init
             rtc.reading.annotation
               rt(rbspan='3') 世界之都
         p: ruby.complex.
+          俗語說
           <rb>三</rb>
           <rb>十</rb>
           <rb>六</rb>
@@ -176,9 +175,9 @@ html(lang='zh-Hant').han-init
         section#pinyin-zhuyin_gongtong_xianshi
           h3 拼音－注音共同顯示
           p(lang='zh-nan-Hant')
-            | 共我講，
+            u 共我講
             ruby.rightangle
-              | <rb>你</rb><!--
+              | <u><rb>你</rb></u><!--
               | --><rb>敢</rb><rb>有</rb><!--
               | --><rb>聽</rb><rb>著</rb><!--
               | --><rb>咱</rb><rb>的</rb><!--
@@ -340,14 +339,136 @@ html(lang='zh-Hant').han-init
                 <rt rbspan="2">pua̍h-su</rt>
                 <rt>kiáu</rt>
             </rtc>
-    //
-      section#biaodian_jinze
-        h2 標點禁則
-        p: ruby
-          | 我<rt>wo</rt>
-          | 「<rt></rt>不敢<rt>bugan</rt>」<rt></rt>
-          | 相信<rt>xiangxin</rt>
-          | ！<rt></rt>
+          section#kaiti
+            h3.
+              預設<ruby class="complex"><rb>使</rb><rb>用</rb>「<rb>楷</rb><rb>體</rb>」<rb>的</rb><rb>元</rb><rb>素</rb><rb>下</rb><rtc class="zhuyin"><rt>ㄕˇ</rt><rt>ㄩㄥˋ</rt><rt>ㄎㄞˇ</rt><rt>ㄊㄧˇ</rt><rt>˙ㄉㄜ</rt><rt>ㄩㄢˊ</rt><rt>ㄙㄨˋ</rt><rt>ㄒㄧㄚˋ</rt></rtc><rtc class="pinyin"><rt>shǐ</rt><rt>yòng</rt><rt>kǎi</rt><rt>tǐ</rt><rt>de</rt><rt>yuán</rt><rt>sù</rt><rt>xià</rt></rtc></ruby>
 
+            p: i.
+              好好地來<ruby class="complex"><em><rb>安</rb><rb>裝</rb></em><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby>
+
+            p: ruby.zhuyin
+              i 爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt></ruby><em><ruby class='zhuyin'>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt></ruby></em><ruby class='zhuyin'>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！
+
+            blockquote
+              p
+                u 共我講
+                ruby.rightangle
+                  | <u><rb>你</rb></u><!--
+                  | --><rb>敢</rb><rb>有</rb><!--
+                  | --><rb>聽</rb><rb>著</rb><!--
+                  | --><rb>咱</rb><rb>的</rb><!--
+                  | --><rb>歌</rb>？
+
+                  rtc.romanization(lang='nan-Latn')
+                      rt Lí
+                      rt(rbspan='2') kám-ū
+                      rt(rbspan='2') thiann-tio̍h
+                      rt(rbspan='2') lán-ê
+                      rt kua
+                  rtc.zhuyin
+                      rt ㄌㄧˋ
+                      rt ㄍㆰˋ
+                      rt ㄨ˫
+                      rt ㄊㄧㆩ
+                      rt ㄉㄧㄜㆷ̍
+                      rt ㄌㄢˋ
+                      rt ㆤˊ
+                      rt ㄍㄨㄚ
+                  | 有無？
+                ruby.rightangle
+                  | <rb>你</rb><!--
+                  | --><rb>敢</rb><rb>有</rb><!--
+                  | --><rb>聽</rb><rb>著</rb><!--
+                  | --><rb>咱</rb><rb>的</rb><!--
+                  | --><rb>歌</rb>？
+
+                  rtc.romanization(lang='nan-Latn')
+                      rt Lí
+                      rt(rbspan='2') kám-ū
+                      rt(rbspan='2') thiann-tio̍h
+                      rt(rbspan='2') lán-ê
+                      rt kua
+                  rtc.zhuyin
+                      rt ㄌㄧˋ
+                      rt ㄍㆰˋ
+                      rt ㄨ˫
+                      rt ㄊㄧㆩ
+                      rt ㄉㄧㄜㆷ̍
+                      rt ㄌㄢˋ
+                      rt ㆤˊ
+                      rt ㄍㄨㄚ
+                  | 有無？
+                ruby.rightangle
+                  | <rb>你</rb><!--
+                  | --><rb>敢</rb><rb>有</rb><!--
+                  | --><rb>聽</rb><rb>著</rb><!--
+                  | --><rb>咱</rb><rb>的</rb><!--
+                  | --><rb>歌</rb>？
+
+                  rtc.romanization(lang='nan-Latn')
+                      rt Lí
+                      rt(rbspan='2') kám-ū
+                      rt(rbspan='2') thiann-tio̍h
+                      rt(rbspan='2') lán-ê
+                      rt kua
+                  rtc.zhuyin
+                      rt ㄌㄧˋ
+                      rt ㄍㆰˋ
+                      rt ㄨ˫
+                      rt ㄊㄧㆩ
+                      rt ㄉㄧㄜㆷ̍
+                      rt ㄌㄢˋ
+                      rt ㆤˊ
+                      rt ㄍㄨㄚ
+                  | 有無？
+              p 俗語說，
+                ruby.complex.
+                  <rb>一</rb>
+                  <rb>人</rb>
+                  <rb>煩</rb>
+                  <rb>惱</rb>
+                  <rb>一</rb>
+                  <rb>樣</rb>，
+                  <rb>無</rb>
+                  <rb>人</rb>
+                  <rb>煩</rb>
+                  <rb>惱</rb>
+                  <rb>親</rb>
+                  <rb>像</rb>。
+
+                  <rtc class="zhuyin">
+                      <rt>ㄐㄧㆵ͘</rt>
+                      <rt>ㄌㄤˊ</rt>
+                      <rt>ㄏㄨㄢˊ</rt>
+                      <rt>ㄌㄜˋ</rt>
+                      <rt>ㄐㄧㆵ͘</rt>
+                      <rt>ㄧㆫ˫</rt>
+                      <rt>ㆠㄜˊ</rt>
+                      <rt>ㄌㄤˊ</rt>
+                      <rt>ㄏㄨㄢˊ</rt>
+                      <rt>ㄌㄜˋ</rt>
+                      <rt>ㄑㄧㄣ</rt>
+                      <rt>ㄑㄧㆫ˫</rt>
+                      <rt></rt>
+                  </rtc>
+                  <rtc class="romanization">
+                    <rt>Tsi̍t</rt>
+                    <rt>lâng</rt>
+                    <rt rbspan="2">hoân‑ló</rt>
+                    <rt>chi̍t</rt>
+                    <rt>iūⁿ</rt>
+                    <rt rbspan="2">bô‑lâng</rt>
+                    <rt rbspan="2">hoân‑ló</rt>
+                    <rt rbspan="2">chhin‑chhiūⁿ</rt>
+                  </rtc>
+                  <rtc class="romanization"><rt>Tsi̍t</rt>
+                    <rt>lâng</rt>
+                    <rt rbspan="2">huân-ló</rt>
+                    <rt>tsi̍t</rt>
+                    <rt>iūnn</rt>
+                    <rt rbspan="2">bô-lâng</rt>
+                    <rt rbspan="2">huân-ló</rt>
+                    <rt rbspan="2">tshin-tshiūnn</rt>
+                  </rtc>
     // Here goes scripts
     script(src='./han.min.js')

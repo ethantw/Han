@@ -4,24 +4,28 @@ h-ru[annotation]
   position: relative
   // box-model
   display: inline-table
+  border-collapse: collapse
+  border-spacing: 0
   // typography
+  line-height: 1.1
   text-align: center
-  vertical-align: 1.2em
+  vertical-align: 1em
 
   > h-ru[annotation]
-    vertical-align: -.2em
+    vertical-align: -.1em
   h-ruby[rightangle][doubleline] &
     vertical-align: .5em
 
-  > rb,
   > h-ru,
+  > rb,
   > rt
-    // typo
+    // typography
     line-height: 1
     text-align: center
   > rt
     // box-model
     display: table-header-group
+    height: 1em
     // typography
     font-size: .5em
     white-space: nowrap
@@ -47,29 +51,25 @@ h-ru[annotation]
 %han-zhuyin
   h-zhuyin
     +han-typo-reset
-    // posi
+    // positioning
     position: relative
-    // box
+    // box-model
     display: inline-block
     height: .4*3em
+    height: 1em
     width: .4em
-    vertical-align: text-bottom
-    //- reset all possible text styles
-    font-style: none !important
-    font-weight: normal !important
-    text-decoration: none !important
-    -webkit-text-emphasis: none !important
-    text-emphasis: none !important
-    // typography
-    //font-family: $zhuyin, 'Han Kaiti CNS', cursive, serif
+    vertical-align: text-top
   h-zhuyin > *
     // box-model
     +han-scale( .4 )
     display: inline-block
-    //width: 1em
   h-yin
+    // positioning
+    position: absolute
+    left: 0
     // box-model
-    vertical-align: middle
+    height: 1em
+    vertical-align: top
     line-height: 1
   h-diao
     // positioning
@@ -84,40 +84,43 @@ h-ru[annotation]
 
   &[length='0']
     margin-right: 0
-  &[length='0'] h-zhuyin
-    display: none
+    h-zhuyin
+      display: none
   &[length='1'],
   [length='1']
+    h-yin
+      top: .3em
     h-diao
       bottom: 0
   &[length='2'],
   [length='2']
     h-yin
-      vertical-align: -.8em
+      top: .05em
     h-diao
-      bottom: -.2em
+      bottom: -.3em
   &[length='3'],
   [length='3']
     h-yin
-      line-height: .9
+      top: -.05em
+      line-height: .85
     h-diao
-      bottom: -.25em
+      bottom: -.35em
   &[diao='˙'],
   [diao='˙']
     h-diao
       top: 0
       right: auto
       bottom: auto
-      left: .08em
+      left: .06em
     &[length='1'] h-diao,
     [length='1'] h-diao
-      top: .25em
+      top: .15em
     &[length='2'] h-diao,
     [length='2'] h-diao
-      top: .1em
+      top: -.05em
     &[length='3'] h-diao,
     [length='3'] h-diao
-      top: -.15em
+      top: -.2em
   &[diao='˪'],
   &[diao='˫'],
   [diao='˪'],
@@ -141,16 +144,16 @@ h-ru[annotation]
   [diao='󳆶'],
   [diao='󳆷']
     h-diao
-      bottom: -.5em
+      bottom: -.6em
       margin-right: .3em
 
-h-ru[zhuyin]
+[zhuyin]
   @extend %han-zhuyin
   // positioning
   margin-right: .2em
   // box-model
   display: inline-block
-  // typo
+  // typography
   line-height: 1.8
 
 //  Right-angle
@@ -165,9 +168,9 @@ h-ru[zhuyin]
     width: 1.2em
 
 h-ru h-ru[zhuyin]
-  // posi
+  // positioning
   margin-top: -.4em
   margin-bottom: -.2em
-  // typo
+  // typography
   line-height: 1.8
 

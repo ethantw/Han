@@ -1915,6 +1915,7 @@ $.extend( Locale, {
       }
 
       $elem
+      .avoid( 'rt' )
       .groupify({ biaodian:  true })
       .charify( Locale.support.textemphasis ? {
         biaodian:  true,
