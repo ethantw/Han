@@ -1,0 +1,38 @@
+
+han-webfont()
+  src: $han-webfont
+
+han-typeface-by-lang($typeface = sans, $is-root = false)
+  &:lang(zh),
+  &:lang(zh-Hant)
+    @extend $han-{$typeface}-hant
+    if $is-root
+      &.no-unicoderange
+        @extend $han-{$typeface}-hant-nu
+    else
+      .no-unicoderange &
+        @extend $han-{$typeface}-hant-nu
+  &:lang(zh-Hans),
+  &:lang(zh-CN)
+    @extend $han-{$typeface}-hans
+    if $is-root
+      &.no-unicoderange
+        @extend $han-{$typeface}-hans-nu
+    else
+      .no-unicoderange &
+        @extend $han-{$typeface}-hans-nu
+  &:lang(ja)
+    @extend $han-{$typeface}-ja
+    if $is-root
+      &.no-unicoderange
+        @extend $han-{$typeface}-ja-nu
+    else
+      .no-unicoderange &
+        @extend $han-{$typeface}-ja-nu
+  &:lang(zh-Latn),
+  &:lang(ja-Latn),
+  &:not(:lang(zh)):not(:lang(ja)),
+  *:lang(zh-Latn),
+  *:lang(ja-Latn),
+  *:not(:lang(zh)):not(:lang(ja))
+    @extend $han-{$typeface}

@@ -1,0 +1,19 @@
+
+han-header-i($max = 1, $min = 6)
+  $ret = ""
+  for $i in ($max)..($min)
+    if $i != $min
+      $ret = $ret + "h" + $i + ", "
+    else
+      $ret = $ret + "h" + $i
+  $ret
+han-text-emphasis($posi = under, $mark = circle, $shape = filled, $color = inherit, $skip = true, $extend = true)
+  han-text-emphasis-internal($posi, $mark, $shape, $color)
+  han-text-emphasis-pf($posi, $mark, $shape, $color, $skip, $extend)
+
+han-section-counter($toc = false)
+  &
+    @extend $han-section-counter
+  if $toc
+    ol.toc
+      @extend $han-toc-counter

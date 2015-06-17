@@ -1,0 +1,30 @@
+
+/*  Global
+ * -------- */
+if $han-line-height != $HAN-LINE-HEIGHT
+  {$han-root}
+    line-height: $han-line-height
+// * Styles for alternative voice and variables when
+// * Kaiti (cursive) isn't supported.
+// *
+i,
+var
+  .no-kaiti &
+    // box
+    padding-bottom: 0.05em
+    // style
+    border-bottom: 3px double lightgrey
+
+/*  Section-wise arrangement
+ * -------------------------- */
+@import 'section/well-knit'
+@import 'section/counter'
+
+/*  Line composition
+ * ------------------ */
+@import 'inline/em'
+@import 'inline/basic-bd'
+@import 'inline/hws'
+@import 'inline/hanging'
+@import 'inline/jiya'
+@import 'inline/subst'

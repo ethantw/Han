@@ -1,0 +1,97 @@
+
+/*
+ * Well-knit sections for articles
+ */
+
+// * Address well-knit sections in articles.
+// *
+$han-well-knit-section
+  margin-top: -1*1em
+
+{$han-article}
+  // typography
+  line-height: $han-article-line-height
+  if $han-article-justify
+    &
+      -moz-hyphens: auto
+      -ms-hyphens: auto
+      -webkit-hyphens: auto
+      hyphens: auto
+    p,
+    li
+      text-align: justify
+      text-justify: inter-ideograph
+
+  {han-header-i()}
+    + blockquote,
+    + p,
+    + ol,
+    + ul,
+    + h6,
+    + section > h6:first-child,
+    + section > p:first-child,
+    + section > ol:first-child,
+    + section > ul:first-child,
+    + section > blockquote:first-child
+      @extend $han-well-knit-section
+  {han-header-i(1, 5)}
+    + h5,
+    + section > h5:first-child
+      @extend $han-well-knit-section
+  {han-header-i(1, 4)}
+    + h4,
+    + section > h4:first-child
+      @extend $han-well-knit-section
+  {han-header-i(1, 3)}
+    + h3,
+    + section > h3:first-child
+      @extend $han-well-knit-section
+  {han-header-i(1, 2)}
+    + h2,
+    + section > h2:first-child
+      @extend $han-well-knit-section
+
+// * Overwrite the default normalisation of indent alignment
+// *
+if $han-indent != $HAN-INDENT
+  ol,
+  ul
+    padding-left: $han-indent
+  figure,
+  blockquote
+    margin-left: $han-indent
+    margin-right: $han-indent
+// * Position poem-like paragraphs with `em`-unit (Hanzi),
+// * in pursuit of alignments.
+// *
+p.poem-like,
+.poem-like p
+  margin-left: $han-indent
+
+  @media only screen and (max-width: $han-mobile-device-width)
+    margin-left: $han-indent-md
+
+// * 1. Different alignment in different situations.
+// * 2. Blockquotes in blockquotes (opinionated).
+// *
+blockquote
+  // 1
+  {$han-article} &
+    margin-right: 0
+    @media only screen and (max-width: $han-mobile-device-width)
+      margin-left: $han-indent-md
+  // 1
+  figure &
+    margin: 0
+  // 2
+  blockquote &
+    margin-left: ($han-indent / 2)
+    margin-right: ($han-indent / 2)
+    {$han-article} &
+      margin-right: 0
+
+@media only screen and (max-width: $han-mobile-device-width)
+  blockquote,
+  figure
+    margin-left: $han-indent-md
+    margin-right: $han-indent-md

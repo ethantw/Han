@@ -1,0 +1,82 @@
+
+/**
+ * CJK Biaodian compression (CJK標點擠壓)
+ */
+h-cs,
+h-cs[hidden]
+  // box
+  display: none
+  visibility: hidden
+  // typography
+  font: .825em Courier
+  letter-spacing: 0
+  white-space: normal
+
+// * Handle line start/end Biaodian (行首行尾標點擠壓)
+// *
+h-char.biaodian
+  &.open > h-inner
+    margin-left: -.5em
+
+  &.close,
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    > h-inner
+      letter-spacing: -.5em
+
+  &.open,
+  &.close,
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    > h-cs
+      display: inline
+
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      > h-inner
+        letter-spacing: inherit
+      > h-cs
+        display: none
+
+// * Handle consecutive Biaodian (連續標點擠壓)
+// *
+h-char-group,
+h-hangable
+  &.portion .open:first-child h-cs,
+  &.portion .end:last-child h-cs,
+  .open + .open h-cs,
+  .end:not(:last-child) h-cs
+    display: none
+
+  [unicode='3001'],
+  [unicode='3002'],
+  [unicode='ff0c'],
+  [unicode='ff0e']
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      & + .open h-cs
+        display: none
+
+h-char-group
+  // * Handle ‘「漢」·「字」’ situation
+  // *
+  [unicode='b7'],
+  [unicode='30fb']
+    &:not(:last-child)
+      letter-spacing: -.5em
+
+  // * Handle ‘……「漢字’ situation
+  // *
+  .liga:not(:last-child)
+    margin-right: -.25em
+

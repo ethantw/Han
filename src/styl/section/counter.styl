@@ -1,0 +1,51 @@
+
+/*
+ * Sectional counter for articles
+ */
+$han-section-counter
+  counter-reset: han-article-h2 han-article-h3 han-article-h4
+  h2:not(.toc)
+    counter-reset: han-article-h3 han-article-h4
+    &:before
+      content: counter(han-article-h2) "\3000"
+      content: counter(han-article-h2, cjk-ideographic) "\3001"
+      counter-increment: han-article-h2
+  h3:not(.toc)
+    counter-reset: han-article-h4
+    &:before
+      content: counter(han-article-h2) "." counter(han-article-h3) "\3000"
+      counter-increment: han-article-h3
+  h4:not(.toc)
+    &:before
+      content: counter(han-article-h2) "." counter(han-article-h3) "." counter(han-article-h4) "\3000"
+      counter-increment: han-article-h4
+
+$han-toc-counter
+  counter-reset: han-toc-h2 han-toc-h3 han-toc-h4
+  li
+    list-style: none
+  > li
+    counter-reset: han-toc-h3 han-toc-h4
+    &:before
+      // typography
+      content: counter(han-toc-h2) "\3000"
+      content: counter(han-toc-h2, cjk-ideographic) "\3001"
+      counter-increment: han-toc-h2
+  > li > ol > li
+    counter-reset: han-toc-h4
+    &:before
+      // position
+      margin-right: 0.5em
+      // typography
+      content: counter(han-toc-h2) "." counter(han-toc-h3)
+      counter-increment: han-toc-h3
+  ol ol > li
+    &:before
+      // position
+      margin-right: 0.5em
+      // typography
+      content: counter(han-toc-h2) "." counter(han-toc-h3) "." counter(han-toc-h4)
+      counter-increment: han-toc-h4
+if $han-section-counter
+  {$han-article}
+    han-section-counter($han-section-counter-toc)

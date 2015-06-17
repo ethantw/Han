@@ -1,0 +1,33 @@
+
+/*
+ * Customised emphasis mark (着重號)
+ */
+em:lang(zh)
+  $posi = null
+  $mark = null
+  $shape = null
+  $color = null
+  $skip = $han-text-emphasis-skip
+  if $han-text-emphasis-mark != $HAN-TEXT-EMPHASIS-MARK or $han-text-emphasis-shape != $HAN-TEXT-EMPHASIS-SHAPE
+    $mark = $han-text-emphasis-mark
+    $shape = $han-text-emphasis-shape
+  if $han-text-emphasis-posi != $HAN-TEXT-EMPHASIS-POSI
+    $posi = $han-text-emphasis-posi
+  if $han-text-emphasis-color != $HAN-TEXT-EMPHASIS-COLOR
+    $color = $han-text-emphasis-color
+  han-text-emphasis($posi, $mark, $shape, $color, $skip, false)
+
+em:lang(ja)
+  $posi = null
+  $mark = null
+  $shape = null
+  $color = null
+  $skip = $han-text-emphasis-skip
+  if $han-text-emphasis-mark-ja != $HAN-TEXT-EMPHASIS-MARK-JA or $han-text-emphasis-shape-ja != $HAN-TEXT-EMPHASIS-SHAPE-JA
+    $mark = $han-text-emphasis-mark-ja
+    $shape = $han-text-emphasis-shape-ja
+  if $han-text-emphasis-posi-ja != $HAN-TEXT-EMPHASIS-POSI-JA
+    $posi = $han-text-emphasis-posi-ja
+  if $han-text-emphasis-color-ja != $HAN-TEXT-EMPHASIS-COLOR-JA
+    $color = $han-text-emphasis-color-ja
+  han-text-emphasis($posi, $mark, $shape, $color, $skip, false)
