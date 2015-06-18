@@ -3,6 +3,7 @@ require! {
   gulp
   \gulp-connect
   \gulp-concat-util : concat
+  \gulp-stylus : styl
   \gulp-sass : sass
   \gulp-csscomb
   \gulp-cssmin
@@ -85,6 +86,17 @@ gulp.task \server !->
 gulp.task \dist:font ->
   gulp.src './font/han*.{woff,otf}'
     .pipe gulp.dest \./dist/font
+
+gulp.task \dist:styl ->
+  gulp.src \./index.styl
+    .pipe styl!
+    .pipe concat \han.css, {
+      process: ( src ) ->
+        src.replace /@charset\s(['"])UTF-8\1;\n/g, ''
+    }
+    .pipe concat.header CSS-BANNER
+    .pipe gulp-csscomb!
+    .pipe gulp.dest \./dist
 
 gulp.task \dist:sass ->
   gulp.src \./src/sass/han.scss
@@ -174,6 +186,7 @@ gulp.task \demo:lsc ->
 # Watch
 gulp.task \watch <[ build demo ]> ->
   gulp.watch \./src/sass/**/* <[ dist:sass dist:cssmin demo:dist demo:sass ]>
+  gulp.watch \./src/styl/**/* <[ dist:styl dist:cssmin demo:dist ]>
   gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo:dist demo:lsc ]>
   gulp.watch \./test/*.scss <[ demo:sass ]>
   gulp.watch \./test/*.jade <[ demo:jade ]>
