@@ -7,7 +7,7 @@
 Han.css
 =======
 
-Han.css is a Sass/JavaScript typesetting framework featuring style normalisation to semantic elements, typography and advanced typesetting. Its elegant, standardised Hanzi (CJK) environment provides not only the legacy of reading convention but also the de facto specification in the digital. Han.css is the solution to Hanzi web design for the time being.
+Han.css is a Sass/Stylus and JavaScript typesetting framework featuring style normalisation to semantic elements, typography and advanced typesetting. Its elegant, standardised Hanzi (CJK) environment provides not only the legacy of reading convention but also the de facto specification in the digital. Han.css is the solution to Hanzi web design for the time being.
 
 Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 
@@ -31,23 +31,23 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.otf`
 
 ## How to use
 
-1. Include `han.min.css` before all other styles (or import it in Sass).
+1. Include `han.min.css` before all other styles (or import it via Sass/Stylus).
 2. Include the script file, `han.min.js`, according to own requirements. Then add the class name `han-init` onto `<html>` tag to activate DOM-ready rendering.
 3. Or, customise your own rendering routine. [Check out the manual][rendering] for further information.
 
@@ -93,6 +93,6 @@ Contributions are pretty much welcomed. Below goes the list with some useful dev
 - Update dependencies: `npm update && gulp dep`
 
 * * *
-Han.css v3.2.2  
-Last-modified: 2015-6-11 15:32 (UTC+8)
+Han.css v3.2.3  
+Last-modified: 2015-6-19 18:39 (UTC+8)
 

@@ -7,7 +7,7 @@
 漢字標準格式
 ==========
 
-「漢字標準格式」是一個集「語意樣式標準化」「文字設計」「高階排版功能」三大概念的Sass、JavaScript排版框架。其專為漢字網頁提供的美觀而標準化的環境，不僅符合傳統閱讀習慣、更為螢幕閱讀提供了既成標準，得以完整解決現今漢字網頁設計的排版需求。
+「漢字標準格式」是一個集「語意樣式標準化」「文字設計」「高階排版功能」三大概念的Sass/Stylus、JavaScript排版框架。其專為漢字網頁提供的美觀而標準化的環境，不僅符合傳統閱讀習慣、更為螢幕閱讀提供了既成標準，得以完整解決現今漢字網頁設計的排版需求。
 
 「漢字標準格式」完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
 
@@ -31,23 +31,23 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.css">
 ````
 
 腳本，
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.js"></script>
 ````
 
 Web字體，
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.otf`
 
 ## 使用方式
 
-1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass）。
+1. 在網頁所有樣式表*前*引用經編譯的`han.min.css`（或使用Sass/Stylus匯入）。
 2. 依需求選用腳本`han.min.js`，並在`<html>`元素標籤上加入類別`han-init`以啓用DOM-ready渲染。
 3. 或依需求定製渲染方式，詳見[使用手冊][rendering]。
 
@@ -79,6 +79,6 @@ Web字體，
 - 更新依賴模組：`npm update && gulp dep`
 
 * * *
-「漢字標準格式」版本：v3.2.2  
-本頁最後修改於：2015年6月11日 15:30（UTC+8）
+「漢字標準格式」版本：v3.2.3  
+本頁最後修改於：2015年6月19日 18:39（UTC+8）
 

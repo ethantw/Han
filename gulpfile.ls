@@ -17,7 +17,7 @@ require! {
   \gulp-qunit
 }
 
-pkg = require \./package.json
+const pkg = require \./package.json
 
 const VERSION = pkg.version
 const BANNER = """
@@ -109,7 +109,7 @@ gulp.task \dist:sass ->
     .pipe gulp-csscomb!
     .pipe gulp.dest \./dist
 
-gulp.task \dist:cssmin <[ dist:sass ]> ->
+gulp.task \dist:cssmin ->
   gulp.src \./dist/han.css
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {

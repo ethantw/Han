@@ -7,7 +7,7 @@
 漢字標準格式
 ==========
 
-漢字標準格式（組版標準フォーマット）は、「セマンティック要素のスタイルの標準化」「タイポグラフィ」「ハイレベルな組版」を実現するためのSassとJavaScriptのフレームワークです。美しい見た目と標準化された環境を、漢字文化圏のウェブサイトへ提供するために設計されました。伝統的な読書環境をスクリーン上での事実上の標準仕様とすることで、漢字文化圏のウェブデザインの組版需要に当面の解決策となります。
+漢字標準格式（組版標準フォーマット）は、「セマンティック要素のスタイルの標準化」「タイポグラフィ」「ハイレベルな組版」を実現するためのSass/StylusとJavaScriptのフレームワークです。美しい見た目と標準化された環境を、漢字文化圏のウェブサイトへ提供するために設計されました。伝統的な読書環境をスクリーン上での事実上の標準仕様とすることで、漢字文化圏のウェブデザインの組版需要に当面の解決策となります。
 
 漢字標準格式は、中国語繁体字、中国語簡体字および日本語をサポートします。
 
@@ -33,23 +33,23 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.css">
 ````
 
 JavaScript
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/han.min.js"></script>
 ````
 
 Webフォント
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.2/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.3/font/han.otf`
 
 ## 使用方式
 
-1. 従来から使用しているスタイルより前に、`han.min.css`（もしくは漢字標準格式のSass）を組み込んでください。
+1. 従来から使用しているスタイルより前に、`han.min.css`（もしくは漢字標準格式のSass/Stylus）を組み込んでください。
 2. 必要に応じて、`han.min.js`を組み込んでください。DOM-readyのレンダリングを有効にするには、`<html>`タグのclassに、`han-init`を追加します。
 3. レンダリングをカスタマイズすることも可能です。詳細は[取扱説明書（中国語）][rendering]をお読みください。
 
@@ -97,8 +97,8 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 - モジュールを更新する：`npm update && gulp dep`
 
 * * *
-漢字標準格式 v3.2.2  
-Last-modified: 2015-6-11 15:32 (UTC+8)  
+漢字標準格式 v3.2.3  
+Last-modified: 2015-6-19 18:39 (UTC+8)  
 Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
 [translator]: http://westantenna.com
