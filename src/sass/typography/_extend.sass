@@ -7,7 +7,7 @@ $_default-variant: if( $han-default-variant == hans, $han-glyph-set-hans, $han-g
 @function han-biaodian( $generic: Sans, $set: Pro )
   @if ( $set == simp )
     @return 'Biaodian ' + $generic
-  @return 'Biaodian Pro' + if( $set == Pro, null, ' ' + $generic + ' ' + $set )
+  @return 'Biaodian Pro ' + if( $set == Pro, $generic, $generic + ' ' + $set )
 
 @function han-typeface( $typeface: 'Han Heiti', $set: default, $pre: null )
   $typeface: if( $set == default, $typeface, $typeface + ' ' + $set )
