@@ -1,0 +1,84 @@
+doctype html
+html(lang='zh-Hant').han-init
+  head
+    meta(charset='utf-8')
+    title 測試・標音（注音符號、羅馬拼音） — 漢字標準格式
+    link(rel='stylesheet', href='./ruby(ff)-han.css')
+    style.
+      html {
+        overflow-x: hidden;
+      }
+
+      article {
+        /* position */
+        margin: 0 auto;
+
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+  body.test
+
+    article
+      h1 測試·標音（注音符號、羅馬拼音）
+      section#zhuyin_fuhao
+        h2 注音符號
+        section#zhuyin_fuhao-heiti
+          h3 黑體
+          p
+            | ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙ
+            br
+            | ㆠㆣㆢㆡㆭ
+            br
+            | ㄧㄨㄩ
+            br
+            | ㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ
+            br
+            | ㆤㆥㆦㆧㆨㆩㆪㆫㆬㆮㆯㆰㆱㆲㆳ
+            br
+            | ㄪㄫㄬㄭ
+            br
+            | ˊˇˋ˪˫˙
+            br
+            | ㆴㆵㆶㆷㆴ͘ㆵ͘ㆶ͘ㆷ͘
+        section#zhuyin_fuhao-kaiti
+          h3 楷體
+          p
+            | ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙ
+            br
+            | ㆠㆣㆢㆡㆭ
+            br
+            | ㄧㄨㄩ
+            br
+            | ㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ
+            br
+            | ㆤㆥㆦㆧㆨㆩㆪㆫㆬㆮㆯㆰㆱㆲㆳ
+            br
+            | ㄪㄫㄬㄭ
+            br
+            | ˊˇˋ˪˫˙
+            br
+            | ㆴㆵㆶㆷㆴ͘ㆵ͘ㆶ͘ㆷ͘
+      section#luoma_pinyin
+        h2 羅馬拼音
+        section#yuanyin
+          h3 元音（陰、陽入韻）
+          p aeioua̍e̍i̍o̍u̍
+      section#pua
+        h2 萌典PUA
+        p.noti
+          | 以下是用於「
+          a(href='//moedict.tw') 萌典
+          | 」的PUA陽入韻字元，使用web字體「Romanization Sans」，可保證在<em>所有</em>瀏覽器下正常顯示。<!--
+          | -->搭配「
+          a(href='./subst.html') 字元的替換
+          | 」功能可提供對無障礙瀏覽器較友好、更加語意化的網頁。
+        p
+          | &#xF31B4;&#xF31B5;&#xF31B6;&#xF31B7;（<code>\uF31B4-7</code>）
+          br
+          | &#xF0061;&#xF0065;&#xF0069;&#xF006F;&#xF0075;（<code>\uF006x、\uF0075</code>）
+
+    script(src='./han.min.js')
