@@ -7,7 +7,8 @@
 $han-version = "v3.2.3"
 
 $han-webfont ?= url($han-font-path + 'han.woff?' + $han-version) format("woff"), url($han-font-path + 'han.otf?' + $han-version) format("opentype")
-$han-space-webfont ?= 'url({$han-font-path}han-space.woff?{$han-version}) format("woff"), url({$han-font-path}han-space.otf?{$han-version}) format("opentype")'
+
+$han-space-webfont ?= 'url($han-font-path + 'han-space.woff?' + $han-version) format("woff"), url($han-font-path + 'han-space.otf?' + $han-version) format("opentype")'
 
 $_hanging-hant = "h-hangable:lang(zh-Hant), h-hangable:lang(zh-TW), h-hangable:lang(zh-HK), "
 $_hanging-hans = "h-hangable:lang(zh-Hans), h-hangable:lang(zh-CN), "
