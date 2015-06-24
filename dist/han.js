@@ -1769,11 +1769,6 @@ Locale.support = (function() {
   }
 })()
 
-var UA = window.navigator.userAgent || null
-var isIE = /Trident/i.test( UA )
-
-Locale.support['pseudo-element-clipboard'] = isIE ? true : false
-
 Locale.initCond = function( target ) {
   var target = target || root
   var ret = ''
@@ -2321,7 +2316,7 @@ Han.renderHanging = function( context ) {
       var elem = $.create( 'h-hangable' )
       var unicode = match[3].charCodeAt( 0 ).toString( 16 )
 
-      elem.innerHTML = match[2] + '<h-cs biaodian="' + match[3] + '"><h-inner hidden> </h-inner></h-cs><h-char class="biaodian cjk end" unicode="' + unicode + '">' + match[3] + '</h-char>'
+      elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian close end cjk">' + match[3] + '</h-char></h-cs>'
       return portion.index === 0 ? elem : ''
     }
   )
@@ -2358,7 +2353,7 @@ Han.renderJiya = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char-group, h-cs' )
   .replace(
     // This is a safeguard against hanging rendering
     new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
@@ -2373,7 +2368,7 @@ Han.renderJiya = function( context ) {
   .endAvoid()
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char' )
   .groupify({ biaodian:  true })
   .charify({  biaodian:  true })
 
@@ -2382,6 +2377,7 @@ Han.renderJiya = function( context ) {
   // space.
   $.qsa( 'h-char.biaodian.open, h-char.biaodian.end', context )
   .forEach(function( elem ) {
+    if ( Han.find.matches( elem, 'h-cs *' ))  return
     var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
     var hcs = '<h-cs hidden> </h-cs>'
     var isOpen = elem.classList.contains( 'open' )

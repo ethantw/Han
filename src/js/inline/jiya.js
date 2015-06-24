@@ -9,7 +9,7 @@ Han.renderJiya = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char-group, h-cs' )
   .replace(
     // This is a safeguard against hanging rendering
     new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
@@ -24,7 +24,7 @@ Han.renderJiya = function( context ) {
   .endAvoid()
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char' )
   .groupify({ biaodian:  true })
   .charify({  biaodian:  true })
 
@@ -33,6 +33,7 @@ Han.renderJiya = function( context ) {
   // space.
   $.qsa( 'h-char.biaodian.open, h-char.biaodian.end', context )
   .forEach(function( elem ) {
+    if ( Han.find.matches( elem, 'h-cs *' ))  return
     var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
     var hcs = '<h-cs hidden> </h-cs>'
     var isOpen = elem.classList.contains( 'open' )

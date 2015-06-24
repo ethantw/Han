@@ -33,7 +33,7 @@ Han.renderHanging = function( context ) {
       var elem = $.create( 'h-hangable' )
       var unicode = match[3].charCodeAt( 0 ).toString( 16 )
 
-      elem.innerHTML = match[2] + '<h-cs biaodian="' + match[3] + '"><h-inner hidden> </h-inner></h-cs><h-char class="biaodian cjk end" unicode="' + unicode + '">' + match[3] + '</h-char>'
+      elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian close end cjk">' + match[3] + '</h-char></h-cs>'
       return portion.index === 0 ? elem : ''
     }
   )
