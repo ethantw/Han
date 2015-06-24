@@ -1,6 +1,7 @@
 
 require! {
-  gulp
+  \./package.json : pkg
+  \gulp
   \gulp-connect
   \gulp-concat-util : concat
   \gulp-stylus : styl
@@ -17,21 +18,20 @@ require! {
   \gulp-qunit
 }
 
-const pkg = require \./package.json
-
 const VERSION = pkg.version
 const BANNER = """
 /*! 漢字標準格式 v#{VERSION} | MIT License | css.hanzi.co */
 /*! Han.css: the CSS typography framework optimised for Hanzi */
 \n
 """
+
 const CSS-BANNER = """
 @charset "UTF-8";
 
 #{BANNER}
 """
 
-unwrap = ( name, path, src ) ->
+const unwrap = ( name, path, src ) ->
   rdefineEnd = /\}\);?[^}\w]*$/
 
   if path is /.\/var\//
@@ -71,10 +71,10 @@ rjs-config = {
   onBuildWrite: unwrap
 }
 
+gulp.task \dep     <[ normalize.css fibre.js ]>
+gulp.task \build   <[ dist:font dist:sass dist:cssmin dist:js dist:uglify ]>
+gulp.task \dev     <[ watch server ]>
 gulp.task \default <[ build demo ]>
-gulp.task \dev <[ watch server ]>
-gulp.task \build <[ dist:font dist:sass dist:cssmin dist:js dist:uglify ]>
-gulp.task \dep <[ normalize.css fibre.js ]>
 
 gulp.task \server !->
   gulp-connect.server {
@@ -150,7 +150,7 @@ gulp.task \test ->
 gulp.task \demo ->
   gulp.start <[ demo:font demo:dist demo:sass demo:jade demo:lsc ]>
 
-gulp.task \demo:dist <[ build ]> ->
+gulp.task \demo:dist ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
@@ -158,7 +158,7 @@ gulp.task \demo:font ->
   gulp.src './dist/font/*.{woff,otf}'
     .pipe gulp.dest \./test/font
 
-gulp.task \demo:sass <[ dist:cssmin ]> ->
+gulp.task \demo:sass ->
   gulp.src \./test/*.scss
     .pipe sass!
     .pipe gulp-cssmin { keepSpecialComments: 0 }
@@ -184,13 +184,13 @@ gulp.task \demo:lsc ->
     .pipe gulp.dest \./test
 
 # Watch
-gulp.task \watch <[ build demo ]> ->
+gulp.task \watch <[ default ]> ->
   gulp.watch \./src/sass/**/* <[ dist:sass dist:cssmin demo:dist demo:sass ]>
   gulp.watch \./src/styl/**/* <[ dist:styl dist:cssmin demo:dist ]>
-  gulp.watch \./src/js/**/* <[ dist:js dist:uglify demo:dist demo:lsc ]>
-  gulp.watch \./test/*.scss <[ demo:sass ]>
-  gulp.watch \./test/*.jade <[ demo:jade ]>
-  gulp.watch \./test/*.ls <[ demo:lsc ]>
+  gulp.watch \./src/js/**/*   <[ dist:js dist:uglify demo:dist demo:lsc ]>
+  gulp.watch \./test/*.scss   <[ demo:sass ]>
+  gulp.watch \./test/*.jade   <[ demo:jade ]>
+  gulp.watch \./test/*.ls     <[ demo:lsc ]>
 
 # Dependencies
 gulp.task \normalize.css !->
