@@ -124,26 +124,24 @@ $.extend( Locale, {
     .forEach(function( elem ) {
       var $elem = Han( elem )
 
-      if ( !Locale.support.textemphasis ) {
+      if ( Locale.support.textemphasis ) {
         $elem
+        .avoid( 'rt, h-char, h-char-group' )
+        .charify({ biaodian: true, punct: true })
+      } else {
+        $elem
+        .avoid( 'rt' )
         .jinzify()
-        .groupify({ western: true })
+        .groupify({ western: true, biaodian: true })
+        .charify({
+          hanzi:     true,
+          biaodian:  true,
+          punct:     true,
+          latin:     true,
+          ellinika:  true,
+          kirillica: true
+        })
       }
-
-      $elem
-      .avoid( 'rt' )
-      .groupify({ biaodian:  true })
-      .charify( Locale.support.textemphasis ? {
-        biaodian:  true,
-        punct:     true
-      } : {
-        hanzi:     true,
-        biaodian:  true,
-        punct:     true,
-        latin:     true,
-        ellinika:  true,
-        kirillica: true
-      })
     })
   },
 
