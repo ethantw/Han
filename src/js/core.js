@@ -11,21 +11,27 @@ var ROUTINE = [
   // classes (Modernizr-alike), binding onto the root
   // element, possibly `<html>`.
   'initCond',
-  // Address element normalisation
-  'renderElem',
+
   // Handle Biaodian
-  //'jinzify',
+  /* 'jinzify', */
   'renderHanging',
   'renderJiya',
+
   // Address Hanzi and Western script mixed spacing
   'renderHWS',
+
   // Address Basic Biaodian correction in Firefox
   'correctBasicBD',
+
   // Address presentational correction to combining ligatures
-  'substCombLigaWithPUA'
+  'substCombLigaWithPUA',
+
   // Address semantic correction to inaccurate characters
   // **Note:** inactivated by default
-  // 'substInaccurateChar'
+  /* 'substInaccurateChar', */
+
+  // Address element normalisation
+  'renderElem'
 ]
 
 // Define Han
