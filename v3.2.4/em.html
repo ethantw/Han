@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh-Hant" class="han-init"><head><meta charset="utf-8"><title>測試・強調元素（着重號）— 漢字標準格式</title><link rel="stylesheet" href="./em-han.css"><style>html {
+  overflow-x: hidden;
+}
+
+article {
+  /* position */
+  margin: 0 auto;
+
+  /* box */
+  max-width: 35em;
+  padding: 0 .5em 15em;
+}</style><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="印刷品般的漢字網頁排版框架"><meta name="keywords" content="漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography"></head><body class="test"><article><h1>測試·強調元素（着重號）</h1><section id="jiben_zhuozhonghao"><h2>基本着重號</h2><p><em>繁體中文的着重號</em>和簡體中文一樣。</p><p lang="zh-Hans"><em>简体中文的着重号</em>和繁体中文一样。</p><p lang="ja"><em>日本語の著重奌</em>独特の風味。</p></section><section id="wanzheng-cjk"><h2>完整中日韓意音文字區段支援</h2><p><strong>注意：</strong>部分擴展區漢字可能不為多數作業系統支援，而顯示為空白方框。<a href="http://fonts.jp/hanazono/">安裝花園明朝體</a>可以解決這個問題。</p><p>中日韓意音文字擴展區段：<em>𫞵𫞦𠁻𠁶</em><br>
+意音數字零：<em>〇</em><br>
+康熙字典及簡體字部首：<em>⼌⿕⺃⻍⻰⻳</em><br>
+意音文字描述字元：<em>⿸⿷⿳</em></p></section><section id="biaodian_guibi"><h2>標點規避</h2><p>唐朝是中國歷史上一個重要的朝代。唐王李淵於618年逼隋恭帝禪位，遂建唐朝取代隋朝，設首都於長安。在其鼎盛時的7世紀，遙遠的中亞綠洲地帶亦受唐支配。<em>唐朝在文化、政治、經濟、外交&#x2026;&#x2026;等方面都達到了很高的成就，</em>是中國歷史上的盛世之一，也是當時的世界強國。</p><section id="biaodian_guibi-riyu"><h3>日語着重號的標點規避</h3><p lang="ja">アンネリース・マリー・フランク（ドイツ語：<span lang="de">Annelies Marie Frank</span>、1929年6月12日－1945年3月上旬）は、<em><cite>『アンネの日記』</cite>の著者として知られるユダヤ系ドイツ人の少女である。</em></p></section></section><section id="xiwen"><h2>西文</h2><section id="xiwen-latin"><h3>拉丁字母</h3><p><em>我道，<span lang='es'>¡Hola!</span> 他問，<span lang='es'>¿Cómo estás?</span></em></p><p>德文中如何表達「羅曼式建築」這個概念？德國學者<em>最初在<span lang='de'>teutsch</span>、<span lang='de'>longobardisch</span>和<span lang='de'>romantische</span>三詞間猶豫</em>，最終在19世紀30年代偏向了「<span lang='de'>romantishce</span>」一詞。</p></section><section id="xiwen-greek"><h3>希臘字母</h3><p>至今<em>關於古希臘遊吟詩人<span lang='el'>Ὅμηρος</span>的資料很少</em>，所以對其生平有很多說法，但都無確鑿證據。</p></section><section id="xiwen-cyrillic"><h3>西里爾字母</h3><p><em><span lang='bg'>Храм-паметник „Свети Александър Невски‟</span>是一座位於保加利亞首都索菲亞的保加利亞東正教大教堂。</em>該教堂為新拜占庭式建築，是保加利亞主教的主座教堂，也是東正教在世界上最大的教堂之一，還是索菲亞的象徵之一以及主要的遊覽景點。</p></section><section id="xiwen-zuhezi"><h3>組合字（<span lang='en'>combining character</span>）</h3><p><em>對你吶喊一聲，<!--
+-->&#x0443;&#x0310;&#x0065;&#x0308;&#x0308;&#x0308;&#x0391;&#x032b;&#x0389;&#x0325;！</em></p></section><section id="xiwen-zichengyiti"><h3>自成一體的西文強調</h3><p lang="en">I will have to tell you —
+<em>The cat is cute.</em></p><p>我必須說——<em lang="el">Η γάτα είναι χαριτωμένο.</em></p><p lang="ja">言う必要があります、<em lang="ru">Кошка мило.</em></p></section></section><section id="yu_qita_zijiyuyi_yuansu_gongyong"><h2>與其他字級語意元素共用</h2><p><em><ruby class="pinyin">行間注<rt>hángjiānzhù</ruby>ruby<ruby lang="zh-nan-Hant" class="zhuyin">是<rt>ㄒㄧ˫</rt>按<rt>ㄢˋ</rt>怎<rt>ㄗㄨㆩˋ</rt></ruby>？<u>註記元素u</u>與<i>變音元素i</i>。</em></p></section><section id="dingzhi"><h2>定制</h2><p>無論你想要把<em class="above">着重號放在上邊</em>，或是想用<em class="sesame">空心「芝麻號」</em>都沒有問題！抑或是<em class="above-dc">這樣搞怪的圈圈</em>，也可以用<em class="rebecca">有紀念意義的顏色。</em></p><p><em class="no-skip">不想「規避標點」也行。</em></p><section id="dingzhi_fangshi"><h3>定制方式</h3><p>定制功能需要自行引用<code>han.sass</code>模塊<!--
+-->（而無法直接使用CDN文件），並依需求設定變數等，詳見<a href="https://css.hanzi.co/manual/sass-api#inline-emphasis-mark">說明文件</a>及<cite lang='en'><a href='//www.w3.org/TR/css-text-decor-3/#emphasis-marks'>CSS Text Decoration Module Level 3</a></cite>。</p></section></section></article><script src="./han.min.js"></script></body></html>
