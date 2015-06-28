@@ -36,7 +36,9 @@ var ROUTINE = [
 
   // Address element normalisation
   'renderElem',
+
   // Handle Biaodian
+  /* 'jinzify', */
   'renderHanging',
   'renderJiya',
 
