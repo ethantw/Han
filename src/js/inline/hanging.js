@@ -31,8 +31,6 @@ Han.renderHanging = function( context ) {
     TYPESET.jinze.hanging,
     function( portion, match ) {
       var elem = $.create( 'h-hangable' )
-      var unicode = match[3].charCodeAt( 0 ).toString( 16 )
-
       elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian close end cjk">' + match[3] + '</h-char></h-cs>'
       return portion.index === 0 ? elem : ''
     }

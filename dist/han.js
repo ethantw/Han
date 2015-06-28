@@ -34,8 +34,9 @@ var ROUTINE = [
   // element, possibly `<html>`.
   'initCond',
 
+  // Address element normalisation
+  'renderElem',
   // Handle Biaodian
-  /* 'jinzify', */
   'renderHanging',
   'renderJiya',
 
@@ -46,14 +47,11 @@ var ROUTINE = [
   'correctBasicBD',
 
   // Address presentational correction to combining ligatures
-  'substCombLigaWithPUA',
+  'substCombLigaWithPUA'
 
   // Address semantic correction to inaccurate characters
   // **Note:** inactivated by default
   /* 'substInaccurateChar', */
-
-  // Address element normalisation
-  'renderElem'
 ]
 
 // Define Han
@@ -1380,17 +1378,17 @@ function createBdChar( char ) {
 
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
-  jinzify: function() {
-    this.avoid( 'h-jinze' )
-
+  jinzify: function( selector ) {
+    return (
     this
+    .filter( selector || null )
+    .avoid( 'h-jinze' )
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'touwei' )
         elem.innerHTML = match[0]
-        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
-          ? elem : ''
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 ) ? elem : ''
       }
     )
     .replace(
@@ -1419,9 +1417,9 @@ $.extend( Fibre.fn, {
           ? elem : ''
       }
     )
-
-    this.endAvoid()
-    return this
+    .endAvoid()
+    .endFilter()
+    )
   },
 
   groupify: function( option ) {
@@ -1915,7 +1913,7 @@ $.extend( Locale, {
         .charify({ biaodian: true, punct: true })
       } else {
         $elem
-        .avoid( 'rt' )
+        .avoid( 'rt, h-char, h-char-group' )
         .jinzify()
         .groupify({ western: true, biaodian: true })
         .charify({
@@ -2318,8 +2316,6 @@ Han.renderHanging = function( context ) {
     TYPESET.jinze.hanging,
     function( portion, match ) {
       var elem = $.create( 'h-hangable' )
-      var unicode = match[3].charCodeAt( 0 ).toString( 16 )
-
       elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian close end cjk">' + match[3] + '</h-char></h-cs>'
       return portion.index === 0 ? elem : ''
     }

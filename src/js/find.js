@@ -38,17 +38,17 @@ function createBdChar( char ) {
 
 $.extend( Fibre.fn, {
   // Force punctuation & biaodian typesetting rules to be applied.
-  jinzify: function() {
-    this.avoid( 'h-jinze' )
-
+  jinzify: function( selector ) {
+    return (
     this
+    .filter( selector || null )
+    .avoid( 'h-jinze' )
     .replace(
       TYPESET.jinze.touwei,
       function( portion, match ) {
         var elem = $.create( 'h-jinze', 'touwei' )
         elem.innerHTML = match[0]
-        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 )
-          ? elem : ''
+        return (( portion.index === 0 && portion.isEnd ) || portion.index === 1 ) ? elem : ''
       }
     )
     .replace(
@@ -77,9 +77,9 @@ $.extend( Fibre.fn, {
           ? elem : ''
       }
     )
-
-    this.endAvoid()
-    return this
+    .endAvoid()
+    .endFilter()
+    )
   },
 
   groupify: function( option ) {

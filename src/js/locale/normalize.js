@@ -130,7 +130,7 @@ $.extend( Locale, {
         .charify({ biaodian: true, punct: true })
       } else {
         $elem
-        .avoid( 'rt' )
+        .avoid( 'rt, h-char, h-char-group' )
         .jinzify()
         .groupify({ western: true, biaodian: true })
         .charify({

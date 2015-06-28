@@ -12,8 +12,9 @@ var ROUTINE = [
   // element, possibly `<html>`.
   'initCond',
 
+  // Address element normalisation
+  'renderElem',
   // Handle Biaodian
-  /* 'jinzify', */
   'renderHanging',
   'renderJiya',
 
@@ -24,14 +25,11 @@ var ROUTINE = [
   'correctBasicBD',
 
   // Address presentational correction to combining ligatures
-  'substCombLigaWithPUA',
+  'substCombLigaWithPUA'
 
   // Address semantic correction to inaccurate characters
   // **Note:** inactivated by default
   /* 'substInaccurateChar', */
-
-  // Address element normalisation
-  'renderElem'
 ]
 
 // Define Han
