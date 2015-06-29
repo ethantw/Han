@@ -2355,7 +2355,7 @@ Han.renderJiya = function( context ) {
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char-group, h-cs' )
+  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
   .replace(
     // This is a safeguard against hanging rendering
     new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
