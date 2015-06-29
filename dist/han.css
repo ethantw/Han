@@ -1510,37 +1510,37 @@ h-word {
 
 @font-face {
   font-family: "Biaodian Pro Sans";
-  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Yu Gothic"), local(YuGothic), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
 @font-face {
   font-family: "Biaodian Pro Serif";
-  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun);
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Yu Mincho"), local(YuMincho), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
 @font-face {
   font-family: "Biaodian Pro Sans CNS";
-  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Yu Gothic"), local(YuGothic), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
 @font-face {
   font-family: "Biaodian Pro Serif CNS";
-  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun);
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Yu Mincho"), local(YuMincho), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
 @font-face {
   font-family: "Biaodian Pro Sans GB";
-  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Yu Gothic"), local(YuGothic), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
 @font-face {
   font-family: "Biaodian Pro Serif GB";
-  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local(SimSun);
+  src: local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Yu Mincho"), local(YuMincho), local(SimSun), local(PMingLiU);
   unicode-range: U+300C-300F, U+300A-300B, U+3008-3009, U+FF08-FF09, U+3014-3015;
 }
 
