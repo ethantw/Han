@@ -1,0 +1,213 @@
+doctype html
+html(lang='zh-Hant')
+  head
+    meta(charset='utf-8')
+    title 測試・字元的替換 — 漢字標準格式
+    link(rel='stylesheet', href='./han.min.css')
+    style.
+      html {
+        overflow-x: hidden;
+      }
+
+      article {
+        /* position */
+        margin: 0 auto;
+
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+
+      table {
+        font-size: .95em;
+      }
+
+      table th,
+      table td {
+        padding: .125em .25em;
+      }
+
+      table th {
+        /* typography */
+        font-weight: normal;
+        text-align: left;
+        /* style */
+        border-bottom: 2px solid #bbb;
+      }
+
+      table tr:not(:last-child) td {
+        border-bottom: 1px solid #eee;
+      }
+
+      .pua {
+        font-family: 'Romanization Sans', 'Zhuyin Kaiti';
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+  body.test
+
+    article
+      h1 測試·字元的替換
+      section#liangzhong_moshi
+        h2 二種模式
+        p
+          | 「漢字標準格式」腳本包含二種字元替換的模式——着重字體效果<!--
+          | -->的「異體字顯示」與着重語意的「訛字（符）修正」。前者不更動<!--
+          | -->DOM的原始文字，僅在<em>顯示時</em>使用異體字或PUA字元<!-- ，以避開字體回退
+          | -->；後者則<em>直接替換</em>原始字元，確保語意正確的字符被使用。
+        p
+          | 位以下元素中的字元在二種模式下，<em>皆不會</em>被替換：
+        ul
+          li 文字區塊表單<code>textarea</code>
+          li 代碼<code>code</code>
+          li 輸入鍵<code>kbd</code>
+          li 計算機輸出示例<code>samp</code>
+          li 格式預處理<code>pre</code>
+      section#zhuozhong_ziti_xiaoguo_de_yitizi_xianshi
+        h2 着重字體效果的異體字顯示
+        //
+          section#riwen_ziti_zhiyuan_de_yitizi
+            h3 日文字體支援的異體字
+            p
+              strong 注意：
+              | 僅支援繁體中文網頁。
+            table
+              thead
+                th(style='width: 4em;') 異體字
+                th(style='width: 4em;')  替換為
+                th 測試結果
+              tbody
+                //- tr
+                //-   td <code>夠 → 够</code>
+                //-   td 夠
+                tr
+                  td <code>查</code>
+                  td 査
+                  td 查
+                tr
+                  td <code>啟</code>
+                  td 啓
+                  td 啟
+                tr
+                  td <code>鄉</code>
+                  td 鄕
+                  td 鄉
+                tr
+                  td <code>值</code>
+                  td 値
+                  td 值
+                tr
+                  td <code>污</code>
+                  td 汚
+                  td 污
+            h4 黑體（Han Heiti）
+            p 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 宋體（Han Songti）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Songti", serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 楷體（Han Kaiti）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Kaiti", cursive, serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+            h4 仿宋體（Han Fangsong）
+            p(style='font-family: "Biaodian Pro Serif", Georgia, "Han Fangsong", cursive, serif;')
+              | 我查到一個資料，啟發了我回鄉發現自我價值的衝動。而不要在大城市污染自己那顆純潔的心。
+        section#pua_ziyuan
+          h3 PUA字元
+          p
+            strong 提示：
+            | 此功能僅在瀏覽器（IE9-11）無法正確顯示網頁字體<code>han.woff</code>下的變音符連字時啓用。你可以呼叫屬性<code>Han.isCombLigaNormal</code><small>（布林値）</small>來判斷使用者瀏覽器是否能正確顯示變音連字。
+          section#hanzibiaoyin_de_yangruyun_fuhao
+            h4 漢字標音的陽入韻符號
+            table
+              thead
+                th(style='width: 4em;') 陽入韻
+                th(style='width: 4em;') 顯示為
+                th 測試結果
+              tbody
+                tr
+                  td <code>a̍</code>
+                  td.pua &#xF0061;
+                  td.pua &#x0061;&#x030D;
+                tr
+                  td <code>e̍</code>
+                  td.pua &#xF0065;
+                  td.pua &#x0065;&#x030D;
+                tr
+                  td <code>i̍</code>
+                  td.pua &#xF0069;
+                  td.pua &#x0069;&#x030D;
+                tr
+                  td <code>o̍</code>
+                  td.pua &#xF006F;
+                  td.pua &#x006F;&#x030D;
+                tr
+                  td <code>u̍</code>
+                  td.pua &#xF0075;
+                  td.pua &#x0075;&#x030D;
+                tr
+                  td <code>ㆴ͘</code>
+                  td.pua &#xF31B4;
+                  td.pua &#x31B4;&#x0358;
+                tr
+                  td <code>ㆵ͘</code>
+                  td.pua &#xF31B5;
+                  td.pua &#x31B5;&#x0358;
+                tr
+                  td <code>ㆶ͘</code>
+                  td.pua &#xF31B6;
+                  td.pua &#x31B6;&#x0358;
+                tr
+                  td <code>ㆷ͘</code>
+                  td.pua &#xF31B7;
+                  td.pua &#x31B7;&#x0358;
+
+      section#zhuozhong_yuyi_de_ezi_xiuzheng
+        h2 着重語意的訛字修正
+        p.noti
+          strong 提示：
+          | 此功能爭議性較大，因此預設<em>關閉</em>。藉由執行<code>Han( context )</code>實例中的<code>substInaccurateChar()</code>方法來修正指定範圍內的訛字。
+
+        table
+          thead
+            th(style='width: 5em;') 訛字（符）
+            th(style='width: 4em;')  替換為
+            th 測試結果
+          tbody
+            tr
+              td <code>&#x2022;</code>
+              td &#xB7;
+              td &#x2022;
+            tr
+              td <code>&#x2027;</code>
+              td &#xB7;
+              td &#x2027;
+            tr
+              td <code>⋯⋯</code>
+              td &#x2026;&#x2026;
+              td ⋯⋯
+            tr
+              td <code>&#x2500;&#x2500;</code>
+              td &#x2014;&#x2014;
+              td &#x2500;&#x2500;
+            tr
+              td <code>&#x2035;</code>
+              td ‘
+              td &#x2035;
+            tr
+              td <code>&#x2032;</code>
+              td ’
+              td &#x2032;
+            tr
+              td <code>&#x2036;</code>
+              td “
+              td &#x2036;
+            tr
+              td <code>&#x2033;</code>
+              td ”
+              td &#x2033;
+    script(src='./han.min.js')
+    script.
+      Han.init()
+      // disabled by default
+      .substInaccurateChar()

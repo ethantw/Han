@@ -1,0 +1,193 @@
+doctype html
+html(lang='zh-Hant').han-init
+  head
+    meta(charset='utf-8')
+    title 測試・章節與目錄的計數 — 漢字標準格式
+    link(rel='stylesheet', href='./counter-han.css')
+
+    style.
+      html {
+        overflow-x: hidden;
+      }
+
+      article {
+        /* position */
+        margin: 0 auto;
+
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+
+  body.test
+
+    article
+      h1 測試·章節與目錄的計數
+      p.noti
+        strong 提示：
+        | 「章節計數」是「漢字標準格式」的高級排版功能，預設關閉。需要自行編譯<!--
+        | --><code>han.sass</code>模組或混用<code>han-section-counter</code><!--
+        | -->（@mixin）方可使用，<a href='//css.hanzi.co/manual'>閱讀使用手冊</a><!--
+        | -->以瞭解詳情。CDN文件<em>不</em>支援此功能。
+      p.noti
+        strong 提示二：
+        | 此測試頁使用了《日文排版規範》（<!--
+        | --><a lang='en' href='http://www.w3.org/TR/jlreq/'><cite>Requirements for Japanese Text Layout</cite></a><!--
+        | -->）中，1至3.3節的「中譯標題」作為示例。
+
+      h1 日文排版規範
+      h2.toc 目錄
+      p
+        strong 注意：
+        | 類別為<code>.toc</code>（<span lang='en'>table of contents</span>，目錄）的「二至四級標題」不會併入章節計數中。
+      ol.toc
+        li: a(href='#chapter1') 序論
+          ol
+            li: a(href='#chapter1-1') 此文件的目的
+            li: a(href='#chapter1-2') 此文件的產生方式
+            li: a(href='#chapter1-3') 此文件的基本方針
+            li: a(href='#chapter1-4') 此文件的構成
+            li: a(href='#chapter1-5') 術語的參照與其他
+        li: a(href='#chapter2') 日文排版的基本組成
+          ol
+            li: a(href='#chapter2-1') 日文排版對文字與其設置原則
+              ol
+                li: a(href='#chapter2-1-1') 日文排版所用的文字
+                li: a(href='#chapter2-1-2') 漢字、平假名與片假名
+                li: a(href='#chapter2-1-3') 漢字、假名字元的編排原則
+            li: a(href='#chapter2-2') 日文文檔的頁面格式
+              ol
+                li: a(href='#chapter2-2-1') 頁面格式規範
+                li: a(href='#chapter2-2-2') 頁面格式基本樣版
+                li: a(href='#chapter2-2-3') 頁面格式元素
+                li: a(href='#chapter2-2-4') 基本版面元素
+                li: a(href='#chapter2-2-5') 基本版面與頁面格式實例
+            li: a(href='#chapter2-3') 直書與橫書
+              ol
+                li: a(href='#chapter2-3-1') 日文排版的方向因素
+                li: a(href='#chapter2-3-2') 直書與橫書的主要差異
+            li: a(href='#chapter2-4') 基本版面的設置
+              ol
+                li: a(href='#chapter2-4-1') 基本版面的設置步驟
+                li: a(href='#chapter2-4-2') 基本版面設計的着重要點
+            li: a(href='#chapter2-5') 基本版面元素的頁面安排
+              ol
+                li: a(href='#chapter2-5-1') 可突出基本版面的項目範例
+                li: a(href='#chapter2-5-2') 基本版面設計對行的位置的處理
+                li: a(href='#chapter2-5-3') 基本版面設計對字元的位置的處理
+            li: a(href='#chapter2-6') 眉批與頁數
+              ol
+                li: a(href='#chapter2-6-1') 眉批與頁數的位置
+                li: a(href='#chapter2-6-2') 眉批與頁數的排版原則
+                li: a(href='#chapter2-6-3') 眉批與頁數的排版方式
+        li: a(href='#chapter3') 行的組成
+          ol
+            li: a(href='#chapter3-1') 標點符號與禁則
+              ol
+                li: a(href='#chapter3-1-1') 直書與橫書的標點符號排版差異
+                li: a(href='#chapter3-1-2') 標點符號的排版（句讀與括號）
+                li: a(href='#chapter3-1-3') 讀號、片假名中點排版的例外情況
+                li: a(href='#chapter3-1-4') 連續開閉括號、讀號、句號與片假名中點的排版
+                li: a(href='#chapter3-1-5') 開括號位行首時的排版
+                li: a(href='#chapter3-1-6') 分離標點（問號與嘆號）和連字符的排版
+                li: a(href='#chapter3-1-7') 不得位於行首的標點
+                li: a(href='#chapter3-1-8') 不得位於行尾的標點
+                li: a(href='#chapter3-1-9') 閉括號、句號、讀號與片假名中點位行尾時的排版
+                li: a(href='#chapter3-1-10') 不得分行的字元組合
+                li: a(href='#chapter3-1-11') 不得加入空白來調整行間對齊的字元組合
+                li: a(href='#chapter3-1-12') 行間對齊的範例
+            li: a(href='#chapter3-2') 日文與西文混排（包含縱中橫排版）
+              ol
+                li: a(href='#chapter3-2-1') 日文與西文混排的組成
+                li: a(href='#chapter3-2-2') 橫書的文字混排
+                li: a(href='#chapter3-2-3') 直書的文字混排
+                li: a(href='#chapter3-2-4') 全形拉丁字母與歐式數字的設置方式
+                li: a(href='#chapter3-2-5') 縱中橫的處理設置
+                li: a(href='#chapter3-2-6') 日文與非等寬西文字體文字的處理方式
+            li: a(href='#chapter3-3') 行間注與着重號
+              ol
+                li: a(href='#chapter3-3-1') 行間注的使用
+                li: a(href='#chapter3-3-2') 基文的選用
+                li: a(href='#chapter3-3-3') 行間注的文字大小
+                li: a(href='#chapter3-3-4') 注文側的選用
+                li: a(href='#chapter3-3-5') 單字基文的排版
+                li: a(href='#chapter3-3-6') 組合基文的排版
+                li: a(href='#chapter3-3-7') 詞基文的排版
+                li: a(href='#chapter3-3-8') 注文長度大於基文的調整方式
+                li: a(href='#chapter3-3-9') 着重號的排版
+      main
+        h2#chapter1 序論
+        h3#chapter1-1 此文件的目的
+        h5#h5 五級標題
+        p 一、五、六級標題不計數。
+        h5#h5-1 五級標題
+        h6#h6 六級標題
+        h3#chapter1-2 此文件的產生方式
+        h3#chapter1-3 此文件的基本方針
+        h3#chapter1-4 此文件的構成
+        h3#chapter1-5 術語的參照與其他
+
+        h2#chapter2 日文排版的基本組成
+        h3#chapter2-1 日文排版對文字與其設置原則
+        h4#chapter2-1-1 日文排版所用的文字
+        h4#chapter2-1-2 漢字、平假名與片假名
+        h4#chapter2-1-3 漢字、假名字元的編排原則
+        h3#chapter2-2 日文文檔的頁面格式
+        h4#chapter2-2-1 頁面格式規範
+        h4#chapter2-2-2 頁面格式基本樣版
+        h4#chapter2-2-3 頁面格式元素
+        h4#chapter2-2-4 基本版面元素
+        h4#chapter2-2-5 基本版面與頁面格式實例
+        h3#chapter2-3 直書與橫書
+        h4#chapter2-3-1 日文排版的方向因素
+        h4#chapter2-3-2 直書與橫書的主要差異
+        h3#chapter2-4 基本版面的設置
+        h4#chapter2-4-1 基本版面的設置步驟
+        h4#chapter2-4-2 基本版面設計的着重要點
+        h3#chapter2-5 基本版面元素的頁面安排
+        h4#chapter2-5-1 可突出基本版面的項目範例
+        h4#chapter2-5-2 基本版面設計對行的位置的處理
+        h4#chapter2-5-3 基本版面設計對字元的位置的處理
+        h3#chapter2-6 眉批與頁數
+        h4#chapter2-6-1 眉批與頁數的位置
+        h4#chapter2-6-2 眉批與頁數的排版原則
+        h4#chapter2-6-3 眉批與頁數的排版方式
+
+        h2#chapter3 行的組成
+        h3#chapter3-1 標點符號與禁則
+        h4#chapter3-1-1 直書與橫書的標點符號排版差異
+        h4#chapter3-1-2 標點符號的排版（句讀與括號）
+        h4#chapter3-1-3 讀號、片假名中點排版的例外情況
+        h4#chapter3-1-4 連續開閉括號、讀號、句號與片假名中點的排版
+        h4#chapter3-1-5 開括號位行首時的排版
+        h4#chapter3-1-6 分離標點（問號與嘆號）和連字符的排版
+        h4#chapter3-1-7 不得位於行首的標點
+        h4#chapter3-1-8 不得位於行尾的標點
+        h4#chapter3-1-9 閉括號、句號、讀號與片假名中點位行尾時的排版
+        h4#chapter3-1-10 不得分行的字元組合
+        h4#chapter3-1-11 不得加入空白來調整行間對齊的字元組合
+        h4#chapter3-1-12 行間對齊的範例
+        h3#chapter3-2 日文與西文混排（包含縱中橫排版）
+        h4#chapter3-2-1 日文與西文混排的組成
+        h4#chapter3-2-2 橫書的文字混排
+        h4#chapter3-2-3 直書的文字混排
+        h4#chapter3-2-4 全形拉丁字母與歐式數字的設置方式
+        h4#chapter3-2-5 縱中橫的處理設置
+        h4#chapter3-2-6 日文與非等寬西文字體文字的處理方式
+        h3#chapter3-3 行間注與着重號
+        h4#chapter3-3-1 行間注的使用
+        h4#chapter3-3-2 基文的選用
+        h4#chapter3-3-3 行間注的文字大小
+        h4#chapter3-3-4 注文側的選用
+        h4#chapter3-3-5 單字基文的排版
+        h4#chapter3-3-6 組合基文的排版
+        h4#chapter3-3-7 詞基文的排版
+        h4#chapter3-3-8 注文長度大於基文的調整方式
+        h4#chapter3-3-9 着重號的排版
+
+
+    // Here goes scripts
+    script(src='./han.min.js')

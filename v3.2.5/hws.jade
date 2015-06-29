@@ -1,0 +1,156 @@
+doctype html
+html(lang='zh-Hant').han-init
+  head
+    meta(charset='utf-8')
+    title 測試・漢字－西文混排間隙 — 漢字標準格式
+    link(rel='stylesheet', href='./han.min.css')
+    style.
+      html {
+        overflow-x: hidden;
+      }
+
+      article {
+        /* position */
+        margin: 0 auto;
+
+        /* box */
+        max-width: 35em;
+        padding: 0 .5em 15em;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+  body.test
+
+    article
+      h1 測試·漢字－西文混排間隙
+      section#jiben_hws
+        h2 基本漢字－西文混排間隙
+        section#latn
+          h3 拉丁字母及數字
+          p
+            | 研究發現，全球狂銷的蘋果
+            span(lang='en') iPad
+            | 超省電。根據非營利組織
+            abbr(lang='en' title='Electric Power Research Institute') EPRI
+            | （電力研究中心），
+            span(lang='en') iPad
+            | 一年電費只需1.36美刀（
+            span(lang='en') U.S. Dollar
+            | ）。
+        section#el
+          h3 希臘字母
+          p 游離輻射可以區分為高能粒子流與高能電磁波，其中高能粒子流包含α粒子、β粒子（+/−）與中子，高能電磁波包含γ射線、X射線與特定波長的紫外線。每一種粒子或射線的電離能力與穿透性均不同，例如α粒子的電離能力很強，但穿透力非常弱，只要一張紙就能阻隔；γ射線的特性就恰與α粒子相反，其穿透能力非常強，需要幾英呎厚的混凝土才能降低γ射線，但是γ射線的電離能力卻很弱，對生物的影響相對較小。
+        section#cyrl
+          h3 西里爾字母
+          p
+            | 我有學過
+            span(lang='uk') українська мова
+            | ，所以
+            span(lang='ru') русский язык
+            | 我可以稍微看得懂。
+      section#cjk
+        h2 完整中日韓意音文字區段支援
+        p
+          strong 注意：
+          | 部分擴展區漢字可能不為多數作業系統支援，而顯示為空白方框。
+          a(href='http://fonts.jp/hanazono/') 安裝花園明朝體
+          | 可以解決這個問題。
+        p
+          | <b>擴展A：</b>How㐀are㘻you䶵?<br>
+          | <b>擴展B：</b>A𠀀b𠄉C𪛖d<br>
+          | <b>擴展C：</b>E𪜀f𪶛G𪷼h𪜺I<br>
+          | <b>擴展D：</b>j𫝀K𫠝L<br>
+          | <b>意音數字零：</b>Θ〇Ω<br>
+          | <b>康熙及簡體字部首：</b>⼌Т⿕Я⺃ж⻍ы⻰Ӓ⻳Ӂ<br>
+          | <b>意音文字描述字元：</b>⿸Ҕ⿷ẳ⿳
+        section#kana
+          h3 假名
+          p(lang='ja')
+            | 歯のEnamelに復元不可能な損害をもたらす。
+      section#zuhezi
+        h2 組合字（<span lang='en'>combining character</span>）
+        p(lang='zh-nan-Hant')
+          | 天然ê上好！
+        p
+          | 荷
+          span(lang='el') Ὅ̴̊̌ηρος̃
+          | 馬。
+        p
+          | 貓
+          span(lang='ru') К҉о҈ш҉к҈а҈
+          | 咪。
+      section#yuansu_bianjie_de_tiaozheng
+        h2 元素邊界的調整
+        p
+          u.pn 美國
+          span(lang='en') Chicago
+          em 是
+          | 這架飛船的目的地。
+        p
+          | 去<u lang='en'>Europe</u>旅行帶上<s lang='en'>Dollars</s>
+          | <u lang='hu'>Euró</u>就夠了！
+        section#comment
+          h3 有註解及機會斷行元素的情況
+          p 不知道是不是<u lang='en'><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。
+        section#multiple
+          h3 多層元素嵌套
+          p(lang='en')
+            | Who do you<!--
+            | --><em lang='zh-Hant'><s><b>自以為</b></s></em><!--
+            | -->you are?
+          p(lang='zh-nan-Hant')
+            | 你是咧com<u><i>啥物</i></u>plain啦！
+        section#list
+          h3 清單
+          ol
+            li Tissue
+            li: s 鴨蛋
+            li Eggs
+            li: strong 垃圾袋XL
+      section#atypical
+        h2 非典型情況
+        p 雖然很非典型,但是¿你說不可能嗎?不對哦.
+        p
+          | 他罵了一聲¡逼!就走——了.<br>
+          | 他罵了一句¡逼、逼逼!就走……了.
+        p 為‘什’麼;為“什”麼?
+        p
+          | 這是一個句子[漢字123]然後就沒有然後了;<br>
+          | 這是一個句子[漢123字]然後就沒有然後了;<br>
+          | 這是一個句子(漢字123)然後就沒有然後了;<br>
+          | 這是一個句子(漢123字)然後就沒有然後了.
+        p
+          | 選項(必填) for example,<br>
+          | For example: (必填)選項<br>
+          | 問題: 這是,答案.
+        p
+          | 這是一段包含單'引'號和雙"引"號'單引號'和"雙引號"的文字.<br>
+          | 單引號'大X中ZZ天'!<br>
+          | 單引號'大X中ZZ天'和雙引號"大X中Y天"哦!
+      section#filtered
+        h2 不作用的元素
+        h3 文字區塊表單
+        textarea(style='height: 7em; width: 50%;')
+          | 漢字and仮名カkaナna。
+        h3 代碼等元素
+        p
+          code 代code碼
+          | 、
+          kbd 輸key入board鍵
+          | 、
+          samp 計算機samp輸出示例
+          | 。
+        pre
+          | 格式pre處理
+        p.noti
+          strong 注意：
+          | 在漢字–西文混排間隙「基本模式」下，<!--
+          | --><strong>代碼、輸入鍵、計算機輸出示例等元素仍經
+          code renderHWS()
+          | 處理，</strong>惟使用樣式表將其下之<code>hws</code><!--
+          | -->元素隱藏，可藉樣式的改寫來顯示漢字–西文混排間隙；<!--
+          | -->「嚴格模式」下，則<em>不</em>渲染以上元素。
+
+    // Here goes scripts
+    script(src='./han.min.js')
