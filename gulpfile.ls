@@ -92,7 +92,9 @@ gulp.task \dist:styl ->
     .pipe styl!
     .pipe concat \han.css, {
       process: ( src ) ->
-        src.replace /@charset\s(['"])UTF-8\1;\n/g, ''
+        src
+          .replace /@charset\s(['"])UTF-8\1;\n/g, ''
+          .replace /@VERSION/g, "v#{VERSION}"
     }
     .pipe concat.header CSS-BANNER
     .pipe gulp-csscomb!
@@ -103,7 +105,9 @@ gulp.task \dist:sass ->
     .pipe sass!
     .pipe concat \han.css, {
       process: ( src ) ->
-        src.replace /@charset\s(['"])UTF-8\1;\n/g, ''
+        src
+          .replace /@charset\s(['"])UTF-8\1;\n/g, ''
+          .replace /@VERSION/g, "v#{VERSION}"
     }
     .pipe concat.header CSS-BANNER
     .pipe gulp-csscomb!
