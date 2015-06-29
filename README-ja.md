@@ -33,19 +33,19 @@
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.4/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/han.min.css">
 ````
 
 JavaScript
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.4/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/han.min.js"></script>
 ````
 
 Webフォント
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.4/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.4/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/font/han.otf`
 
 ## 使用方式
 
@@ -97,8 +97,8 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 - モジュールを更新する：`npm update && gulp dep`
 
 * * *
-漢字標準格式 v3.2.4  
-Last-modified: 2015-6-28 15:53 (UTC+8)  
+漢字標準格式 v3.2.5  
+Last-modified: 2015-6-29 15:38 (UTC+8)  
 Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
 [translator]: http://westantenna.com
