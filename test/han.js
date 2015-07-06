@@ -423,13 +423,13 @@ var TYPESET = (function() {
      */
     hws: {
       base: [
-        new RegExp( '('+ rHan +')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-        new RegExp( '('+ rAlph+ '|' + rPtEnd +')(' + rHan + ')', 'ig' )
+        new RegExp( '('+ rHan + ')(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+        new RegExp( '('+ rAlph + '|' + rPtEnd + ')(' + rHan + ')', 'ig' )
       ],
 
       strict: [
-        new RegExp( '('+ rHan +')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
-        new RegExp( '('+ rAlph+ '|' + rPtEnd +')' + rWhite + '?(' + rHan + ')', 'ig' )
+        new RegExp( '('+ rHan + ')' + rWhite + '?(' + rAlph + '|' + rPtOpen + ')', 'ig' ),
+        new RegExp( '('+ rAlph + '|' + rPtEnd + ')' + rWhite + '?(' + rHan + ')', 'ig' )
       ]
     },
 
@@ -532,7 +532,7 @@ var $ = {
   // Clone a node (text, element or fragment) deeply or
   // childlessly
   clone: function( node, deep ) {
-    return node.cloneNode( deep || true )
+    return node.cloneNode( typeof deep === 'boolean' ? deep : true )
   },
 
   // Remove a node (text, element or fragment)

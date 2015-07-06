@@ -40,7 +40,7 @@ var $ = {
   // Clone a node (text, element or fragment) deeply or
   // childlessly
   clone: function( node, deep ) {
-    return node.cloneNode( deep || true )
+    return node.cloneNode( typeof deep === 'boolean' ? deep : true )
   },
 
   // Remove a node (text, element or fragment)
