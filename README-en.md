@@ -31,19 +31,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.5/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/font/han.otf`
 
 ## How to use
 
@@ -93,6 +93,6 @@ Contributions are pretty much welcomed. Below goes the list with some useful dev
 - Update dependencies: `npm update && gulp dep`
 
 * * *
-Han.css v3.2.5  
-Last-modified: 2015-6-29 15:38 (UTC+8)
+Han.css v3.2.6  
+Last-modified: 2015-8-20 20:54 (UTC+8)
 
