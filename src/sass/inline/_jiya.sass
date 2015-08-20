@@ -17,10 +17,10 @@ h-cs[hidden]
 // *
 
 h-char.biaodian
-  &.open > h-inner
+  &.bd-open > h-inner
     margin-left: -.5em
 
-  &.close,
+  &.bd-close,
   &[unicode='3001'],
   &[unicode='3002'],
   &[unicode='ff0c'],
@@ -28,8 +28,8 @@ h-char.biaodian
     > h-inner
       letter-spacing: -.5em
 
-  &.open,
-  &.close,
+  &.bd-open,
+  &.bd-close,
   &[unicode='3001'],
   &[unicode='3002'],
   &[unicode='ff0c'],
@@ -53,10 +53,10 @@ h-char.biaodian
 // *
 h-char-group,
 h-hangable
-  &.portion .open:first-child h-cs,
-  &.portion .end:last-child h-cs,
-  .open + .open h-cs,
-  .end:not(:last-child) h-cs
+  &.portion .bd-open:first-child h-cs,
+  &.portion .bd-end:last-child h-cs,
+  .bd-open + .bd-open h-cs,
+  .bd-end:not(:last-child) h-cs
     display: none
 
   [unicode='3001'],
@@ -66,7 +66,7 @@ h-hangable
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
-      & + .open h-cs
+      & + .bd-open h-cs
         display: none
 
 h-char-group
@@ -79,6 +79,6 @@ h-char-group
 
   // * Handle ‘……「漢字’ situation
   // *
-  .liga:not(:last-child)
+  .bd-liga:not(:last-child)
     margin-right: -.25em
 

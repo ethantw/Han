@@ -6,11 +6,11 @@ define([
 
 var mdot
 
-mdot = $.create( 'h-char', 'biaodian cjk middle' )
+mdot = $.create( 'h-char', 'biaodian cjk bd-middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
-  if ( Han.support.unicoderange && !all ) return
+  if ( Han.support.unicoderange && !all )  return
 
   var context = context || document
   var finder

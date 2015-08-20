@@ -27,10 +27,10 @@ function createBdGroup( portion, match ) {
 function createBdChar( char ) {
   var div = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'open' :
-    char.match( TYPESET.char.biaodian.close ) ? 'close end' :
-    char.match( TYPESET.char.biaodian.end ) ? 'end' : 
-    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'liga' : '' )
+  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'bd-open' :
+    char.match( TYPESET.char.biaodian.close ) ? 'bd-close bd-end' :
+    char.match( TYPESET.char.biaodian.end ) ? 'bd-end' :
+    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'bd-liga' : '' )
 
   div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
   return div.firstChild

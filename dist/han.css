@@ -2177,7 +2177,7 @@ ruby.romanization rt,
 ruby h-ru[annotation] rt,
 h-ruby.romanization rt,
 h-ruby h-ru[annotation] rt,
-.no-unicoderange h-char.biaodian.liga,
+.no-unicoderange h-char.bd-liga,
 .no-unicoderange h-char.biaodian[unicode="b7"] {
   -moz-font-feature-settings: "liga";
   -ms-font-feature-settings: "liga";
@@ -2398,7 +2398,7 @@ article blockquote blockquote {
 /**
  * Basic Biaodian correction for Firefox
  */
-.no-unicoderange h-char.biaodian.liga,
+.no-unicoderange h-char.bd-liga,
 .no-unicoderange h-char.biaodian[unicode="b7"] {
   font-family: "Biaodian Basic", "Han Heiti";
 }
@@ -2450,9 +2450,9 @@ h-hangable:lang(ja) {
   position: relative;
   display: inline;
 }
-h-hangable:lang(zh-Hans) h-char.biaodian.close h-cs,
-h-hangable:lang(zh-CN) h-char.biaodian.close h-cs,
-h-hangable:lang(ja) h-char.biaodian.close h-cs {
+h-hangable:lang(zh-Hans) h-char.bd-close h-cs,
+h-hangable:lang(zh-CN) h-char.bd-close h-cs,
+h-hangable:lang(ja) h-char.bd-close h-cs {
   display: none;
 }
 h-hangable:lang(zh-Hans) > h-cs,
@@ -2473,9 +2473,9 @@ h-hangable:lang(ja) > h-cs h-inner[hidden] {
   visibility: hidden;
   font: 1em "Han Space", Menlo, Consolas, Courier;
 }
-h-hangable:lang(zh-Hans) > h-cs h-char.end,
-h-hangable:lang(zh-CN) > h-cs h-char.end,
-h-hangable:lang(ja) > h-cs h-char.end {
+h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
+h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
+h-hangable:lang(ja) > h-cs h-char.bd-end {
   -moz-text-emphasis: none;
   -webkit-text-emphasis: none;
   text-emphasis: none;
@@ -2490,12 +2490,12 @@ h-hangable:lang(ja) > h-cs h-char.end {
   display: inline-block;
   line-height: 1.1;
 }
-ruby h-hangable:lang(zh-Hans) > h-cs h-char.end,
-h-ru h-hangable:lang(zh-Hans) > h-cs h-char.end,
-ruby h-hangable:lang(zh-CN) > h-cs h-char.end,
-h-ru h-hangable:lang(zh-CN) > h-cs h-char.end,
-ruby h-hangable:lang(ja) > h-cs h-char.end,
-h-ru h-hangable:lang(ja) > h-cs h-char.end {
+ruby h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
+h-ru h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
+ruby h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
+h-ru h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
+ruby h-hangable:lang(ja) > h-cs h-char.bd-end,
+h-ru h-hangable:lang(ja) > h-cs h-char.bd-end {
   position: relative;
 }
 
@@ -2511,11 +2511,11 @@ h-cs[hidden] {
   white-space: normal;
 }
 
-h-char.biaodian.open > h-inner {
+h-char.biaodian.bd-open > h-inner {
   margin-left: -.5em;
 }
 
-h-char.biaodian.close > h-inner,
+h-char.biaodian.bd-close > h-inner,
 h-char.biaodian[unicode="3001"] > h-inner,
 h-char.biaodian[unicode="3002"] > h-inner,
 h-char.biaodian[unicode="ff0c"] > h-inner,
@@ -2523,8 +2523,8 @@ h-char.biaodian[unicode="ff0e"] > h-inner {
   letter-spacing: -.5em;
 }
 
-h-char.biaodian.open > h-cs,
-h-char.biaodian.close > h-cs,
+h-char.biaodian.bd-open > h-cs,
+h-char.biaodian.bd-close > h-cs,
 h-char.biaodian[unicode="3001"] > h-cs,
 h-char.biaodian[unicode="3002"] > h-cs,
 h-char.biaodian[unicode="ff0c"] > h-cs,
@@ -2562,41 +2562,41 @@ h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-cs {
   display: none;
 }
 
-h-char-group.portion .open:first-child h-cs,
-h-char-group.portion .end:last-child h-cs,
-h-char-group .open + .open h-cs,
-h-char-group .end:not(:last-child) h-cs,
-h-hangable.portion .open:first-child h-cs,
-h-hangable.portion .end:last-child h-cs,
-h-hangable .open + .open h-cs,
-h-hangable .end:not(:last-child) h-cs {
+h-char-group.portion .bd-open:first-child h-cs,
+h-char-group.portion .bd-end:last-child h-cs,
+h-char-group .bd-open + .bd-open h-cs,
+h-char-group .bd-end:not(:last-child) h-cs,
+h-hangable.portion .bd-open:first-child h-cs,
+h-hangable.portion .bd-end:last-child h-cs,
+h-hangable .bd-open + .bd-open h-cs,
+h-hangable .bd-end:not(:last-child) h-cs {
   display: none;
 }
 
-h-char-group [unicode="3001"]:lang(zh-Hant) + .open h-cs,
-h-char-group [unicode="3001"]:lang(zh-TW) + .open h-cs,
-h-char-group [unicode="3001"]:lang(zh-HK) + .open h-cs,
-h-char-group [unicode="3002"]:lang(zh-Hant) + .open h-cs,
-h-char-group [unicode="3002"]:lang(zh-TW) + .open h-cs,
-h-char-group [unicode="3002"]:lang(zh-HK) + .open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-Hant) + .open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-TW) + .open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-HK) + .open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-Hant) + .open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-TW) + .open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-HK) + .open h-cs,
-h-hangable [unicode="3001"]:lang(zh-Hant) + .open h-cs,
-h-hangable [unicode="3001"]:lang(zh-TW) + .open h-cs,
-h-hangable [unicode="3001"]:lang(zh-HK) + .open h-cs,
-h-hangable [unicode="3002"]:lang(zh-Hant) + .open h-cs,
-h-hangable [unicode="3002"]:lang(zh-TW) + .open h-cs,
-h-hangable [unicode="3002"]:lang(zh-HK) + .open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-Hant) + .open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-TW) + .open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-HK) + .open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-Hant) + .open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-TW) + .open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-HK) + .open h-cs {
+h-char-group [unicode="3001"]:lang(zh-Hant) + .bd-open h-cs,
+h-char-group [unicode="3001"]:lang(zh-TW) + .bd-open h-cs,
+h-char-group [unicode="3001"]:lang(zh-HK) + .bd-open h-cs,
+h-char-group [unicode="3002"]:lang(zh-Hant) + .bd-open h-cs,
+h-char-group [unicode="3002"]:lang(zh-TW) + .bd-open h-cs,
+h-char-group [unicode="3002"]:lang(zh-HK) + .bd-open h-cs,
+h-char-group [unicode="ff0c"]:lang(zh-Hant) + .bd-open h-cs,
+h-char-group [unicode="ff0c"]:lang(zh-TW) + .bd-open h-cs,
+h-char-group [unicode="ff0c"]:lang(zh-HK) + .bd-open h-cs,
+h-char-group [unicode="ff0e"]:lang(zh-Hant) + .bd-open h-cs,
+h-char-group [unicode="ff0e"]:lang(zh-TW) + .bd-open h-cs,
+h-char-group [unicode="ff0e"]:lang(zh-HK) + .bd-open h-cs,
+h-hangable [unicode="3001"]:lang(zh-Hant) + .bd-open h-cs,
+h-hangable [unicode="3001"]:lang(zh-TW) + .bd-open h-cs,
+h-hangable [unicode="3001"]:lang(zh-HK) + .bd-open h-cs,
+h-hangable [unicode="3002"]:lang(zh-Hant) + .bd-open h-cs,
+h-hangable [unicode="3002"]:lang(zh-TW) + .bd-open h-cs,
+h-hangable [unicode="3002"]:lang(zh-HK) + .bd-open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-Hant) + .bd-open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-TW) + .bd-open h-cs,
+h-hangable [unicode="ff0c"]:lang(zh-HK) + .bd-open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-Hant) + .bd-open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-TW) + .bd-open h-cs,
+h-hangable [unicode="ff0e"]:lang(zh-HK) + .bd-open h-cs {
   display: none;
 }
 
@@ -2605,7 +2605,7 @@ h-char-group [unicode="30fb"]:not(:last-child) {
   letter-spacing: -.5em;
 }
 
-h-char-group .liga:not(:last-child) {
+h-char-group .bd-liga:not(:last-child) {
   margin-right: -.25em;
 }
 

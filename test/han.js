@@ -1369,10 +1369,10 @@ function createBdGroup( portion, match ) {
 function createBdChar( char ) {
   var div = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'open' :
-    char.match( TYPESET.char.biaodian.close ) ? 'close end' :
-    char.match( TYPESET.char.biaodian.end ) ? 'end' : 
-    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'liga' : '' )
+  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'bd-open' :
+    char.match( TYPESET.char.biaodian.close ) ? 'bd-close bd-end' :
+    char.match( TYPESET.char.biaodian.end ) ? 'bd-end' :
+    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'bd-liga' : '' )
 
   div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
   return div.firstChild
@@ -2318,7 +2318,7 @@ Han.renderHanging = function( context ) {
     TYPESET.jinze.hanging,
     function( portion, match ) {
       var elem = $.create( 'h-hangable' )
-      elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian close end cjk">' + match[3] + '</h-char></h-cs>'
+      elem.innerHTML = match[2] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">' + match[3] + '</h-char></h-cs>'
       return portion.index === 0 ? elem : ''
     }
   )
@@ -2377,12 +2377,12 @@ Han.renderJiya = function( context ) {
   // The reason we're doing this instead of using pseudo elements in CSS
   // is because WebKit has problem rendering pseudo elements containing only 
   // space.
-  $.qsa( 'h-char.biaodian.open, h-char.biaodian.end', context )
+  $.qsa( 'h-char.biaodian.bd-open, h-char.biaodian.bd-end', context )
   .forEach(function( elem ) {
     if ( Han.find.matches( elem, 'h-cs *' ))  return
     var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
     var hcs = '<h-cs hidden> </h-cs>'
-    var isOpen = elem.classList.contains( 'open' )
+    var isOpen = elem.classList.contains( 'bd-open' )
     elem.innerHTML = isOpen ? hcs + html : html + hcs
   })
 
@@ -2407,11 +2407,11 @@ $.extend( Han.fn, {
 
 var mdot
 
-mdot = $.create( 'h-char', 'biaodian cjk middle' )
+mdot = $.create( 'h-char', 'biaodian cjk bd-middle' )
 mdot.setAttribute( 'unicode', 'b7' )
 
 Han.correctBasicBD = function( context, all ) {
-  if ( Han.support.unicoderange && !all ) return
+  if ( Han.support.unicoderange && !all )  return
 
   var context = context || document
   var finder
