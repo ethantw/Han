@@ -1805,10 +1805,12 @@ pre h-hws[hidden] {
   font-family: "Han Space";
   unicode-range: U+20;
 }
+h-hangable:lang(zh) h-cs,
 h-hangable:lang(zh-Hant) h-cs,
 h-hangable:lang(zh-TW) h-cs,
 h-hangable:lang(zh-HK) h-cs,
 h-cs,
+h-hangable:lang(zh) h-cs[hidden],
 h-hangable:lang(zh-Hant) h-cs[hidden],
 h-hangable:lang(zh-TW) h-cs[hidden],
 h-hangable:lang(zh-HK) h-cs[hidden],

@@ -2432,6 +2432,8 @@ pre h-hws[hidden] {
   unicode-range: U+20;
 }
 
+h-hangable:lang(zh) h-cs,
+h-hangable:lang(zh) h-cs[hidden],
 h-hangable:lang(zh-Hant) h-cs,
 h-hangable:lang(zh-Hant) h-cs[hidden],
 h-hangable:lang(zh-TW) h-cs,
