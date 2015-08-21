@@ -1,0 +1,362 @@
+doctype html
+html(lang='zh-Hans').han-init
+  head
+    meta(charset='UTF-8')
+    title 测试・标准测试页（简体中文） — 汉字标准格式
+    link(rel='stylesheet', href='./han.min.css')
+    style.
+      html {
+        overflow-x: hidden;
+        padding-bottom: 7em;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的汉字网页排版框架')
+    meta(name='keywords' content='汉字标准格式, 中文, 排版, 排版规范, 日文, 字体排印, 文字设计, CLReq, CSS, Sass, typography')
+
+  body
+    section
+      h1#grouping-content 内容群组类
+      h2#p-ol-ul 段落、清单
+      p
+        | 好们论红，手却策下使住收否人人！大获及是告另子维持力本清长先阳不？社相此国学风中麽很解：治子上己施一见，有的是，用关快家所的字时情：品好居……朋里义四时，校叫洲；运细种！眼失妈母身古慢管用、上开家问不难成的装望麽年单代，操会人得？人人传在善美故全、推两少关心求，下看同目国往成气；一广机亲得飞先始们於观他使难以该因口发汽机人都领了过大广场不食收西物早社报子们看、卖像师对好情的神？在史评，来深放表观。还人的西路尽热程当人长质此中民龙证说念背生外，间今经气门此都！把相的公去底动！
+      p 头性空风後上他根；然任他在，社拉布会言了来石赛亲支……情拉术北然使来路请放数坐灯麽象成一画专雨，是我长无等爱五化客可杂有雨。
+      h3#p-poem-like 诗篇段落
+      p.poem-like
+        | 只领不致中此因和之术黑顾同後到，
+        br
+        | 血妈人山历操发一我利终心没文了事问艺来
+        br
+        | 生能唱起语在，树来课他——
+        br
+        | 小中观给告北戏树意，人消歌受，生会影……
+        br
+        | 动他脑它利离府头始也
+      h4 地址格式
+      p.poem-like
+        | 王小明　啓
+        br
+        | 台湾　新北市板桥路十九段555号
+        br
+        | 20245
+      h3#ol 有序清单
+      ol
+        li 一级清单项目
+        li
+          | 一级清单项目
+          ol
+            li 二级清单项目
+            li
+              | 二级清单项目
+              ol
+                li 三级清单项目
+                li 三级清单项目
+        li 一级清单项目
+        li 一级清单项目
+      h3#ul 无序清单
+      ul
+        li 一级清单项目
+        li
+          | 一级清单项目
+          ul
+            li 二级清单项目
+            li
+              | 二级清单项目
+              ul
+                li 三级清单项目
+                li 三级清单项目
+        li 一级清单项目
+        li 一级清单项目
+      h2#blockquote 引用区块
+      blockquote
+        p 如事时决行入同是我表统支乐了先年、人目也月老过人，断弟进石给了，服去孩没性就能。边年排不决广之例。长收满导无！
+        footer
+          | ——<u class='pn'>姜庆</u>《石人码头》
+      h3#blockquote-no-p 未使用段落元素的引用区块
+      blockquote
+        | 时来数期没道反先美别所金企感企妈失对谈。
+        footer
+          | ——<u class='pn'>新器急</u>
+      h3#blockquote-blockquote 引用区块中的引用区块
+      blockquote
+        p
+          | 洲此境眼……方空车形、四用厂出先作，管济所唱步取的成正候社取开取高，理景龙知子起配做心正道动。出令正或？家国前保严轻朋化下而府里、基之称失！等园华行……政生着曾，们然变不发甚故，些长小华从不代应头资？
+        blockquote
+          p
+            | 以满伤都片复利反，尔麽生任常弟但岸过年在；院投工变爱世总甚？天其有爸个：後轻取，在克的山知中识高於过叫行出面不大开受个说自经公目，学们湾。合好巴地尽性士面最产张子新容得实：眼不日野一，克节上人党到有没，她果以的是到影的请自人长、表本究政快的且造的推色究听场广人形！深了叫！
+      h3#figure-blockquote 图表内的引用区块
+      figure
+        blockquote
+          p 令会过作加身。管常虽：质湾人坐洋半以人问一文……上湾之会的面长东商实对了上修法或便纸界去定办紧现生影都合否陆一片子处用上很。
+        figcaption
+          | 这是图表解说元素
+          code &lt;figcaption&gt;
+          | 内的解说。
+      h2#pre 格式预处理文字区块
+      pre.
+        国写亲下二好湾整机生土、是看老排让和保艺车市。
+
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et me.
+
+        是除学图宝济候收。们性者位远另象内未院清外了以共……
+        长明期事生合了中文新等麽科出过能意等件教求加，
+        楼日里大下果个来。
+
+        球者们？方绿电後，果或错老际声可特少保期全动带东北建，似保助先走她合也的。神我兴治的保保学果车易麽连学水小西一！而视可些化。
+      h2#pre-code 代码区块
+      pre: code.
+        void (function(a,b){var c=b.documentElement,d,e;function D(a,d) {d=a*d/100+b.getElementById("main").textContent;return d;}return new D(20,5);})(window||this,window.document);
+    section
+      article
+        h1#sections 章节类
+        h2#article 文章区块元素
+        h3#article-p-ol-ul 文章区块内的段落、清单
+        p 务用界种设是自水教台保再计见所湾们民各、外超是人外每方後发他济中；义生了出这失究式回值气苦我花声位香还场、外国的医门！
+        h4#article-p-poem-like 诗篇段落
+        p.poem-like
+          | 只领不致中此因和之术黑顾同後到，
+          br
+          | 血妈人山历操发一我利终心没文了事问艺来
+          br
+          | 生能唱起语在，树来课他——
+          br
+          | 小中观给告北戏树意，人消歌受，生会影……
+          br
+          | 动他脑它利离府头始也
+        h4#article-ol-ul 清单
+        ul
+          li 清单项目子
+          li 清单项目丑
+        h3#article-strong 文章区块内的重点
+        p
+          | 不做则中心与的说很笔分士：
+          strong 校此诉平是里春家善客总外公；做南多中。
+          | 足酒脸理特指第常三紧资现工们家化民，公政我热良，中以家是。
+        h3#article-figure 文章区块内的图表引用区块
+        figure
+          blockquote
+            p 令会过作加身。管常虽：质湾人坐洋半以人问一文……上湾之会的面长东商实对了上修法或便纸界去定办紧现生影都合否陆一片子处用上很。
+          figcaption
+            | 这是文章内图表解说元素
+            code &lt;figcaption&gt;
+            | 的解说。
+        h3 文章区块内的变音文字
+        p
+          | 来化相据取爱统单商商半是否，
+          i 的妈没种试此助来精人是湾，价种下落有，
+          | 机信际，作假湾，心行程官这是运价车年都人强国农：特行解金产拉口……
+        h3#article-blockquote 文章内的引用区块
+        blockquote
+          p 火说定好就用树，表母微时艺出北亲双表人事为放爸车奇列长农时教产得地何高的举度们她李力内体古见业选一香音种。
+          p 务用界种设是自水教台保再计见所湾们民各、外超是人外每方後发他济中；义生了出这失究式回值气苦我花声位香还场、外国的医门！
+        h4#article-blockquote-blockquote 文章内引用区块中的引用区块
+        blockquote
+          p 洲此境眼……方空车形、四用厂出先作，管济所唱步取的成正候社取开取高，理景龙知子起配做心正道动。出令正或？家国前保严轻朋化下而府里、基之称失！等园华行……政生着曾，们然变不发甚故，些长小华从不代应头资？
+          blockquote
+            p 以满伤都片复利反，尔麽生任常弟但岸过年在；院投工变爱世总甚？天其有爸个：後轻取，在克的山知中识高於过叫行出面不大开受个说自经公目，学们湾。合好巴地尽性士面最产张子新容得实：眼不日野一，克节上人党到有没，她果以的是到影的请自人长、表本究政快的且造的推色究听场广人形！深了叫！
+        h4#article-blockquote-strong 文章引用区块内的重点
+        blockquote
+          p
+            | 不做则中心与的说很笔分士：
+            strong 校此诉平是里春家善客总外公；做南多中。
+            | 足酒脸理特指第常三紧资现工们家化民，公政我热良，中以家是。
+        h4#article-blockquote-i 文章引用区块内的变音文字
+        blockquote
+          p
+            | 来化相据取爱统单商商半是否，
+            i 的妈没种试此助来精人是湾，价种下落有，
+            | 机信际，作假湾，心行程官这是运价车年都人强国农：特行解金产拉口……
+    section
+      h1#text-level-semantics 字级语意类
+      a(href='#') 超连结元素a
+      | 示例
+      br
+      u 注记元素u
+      | 示例
+      br
+      | <u>注记元素甲</u><u>注记元素乙</u>一般文字节点<!--
+      | --><u>注记元素丙</u>一般文字节点<!--
+      | --><u>注记元素丁</u>。
+      br
+      cite 来源元素cite
+      | 示例
+      br
+      strong 重点元素strong
+      | 示例
+      br
+      dfn 术语元素dfn
+      | 示例
+      br
+      b 关键字元素b
+      | 示例
+      br
+      em 强调元素em
+      | 示例
+      br
+      i 变音文字元素i
+      | 示例
+      br
+      var 变数元素var
+      | 示例
+      br
+      q 引用元素q及<q>子引用q</q>元素示例
+      br
+      s 讹讯元素s
+      | 示例
+      br
+      | <s>讹讯元素甲</s><s>讹讯元素乙</s>一般文字节点<!--
+      | --><s>讹讯元素丙</s>一般文字节点<!--
+      | --><s>讹讯元素丁</s>。
+      br
+      code 代码元素code
+      | 示例
+      br
+      kbd 输入键元素kbd
+      | 示例
+      br
+      samp 计算机输出示例元素samp
+      | 示例
+      br
+      ruby
+        | 行间注元素
+        rt ruby annotation
+      | 示例
+      br
+      | 复合式
+      ruby.complex
+        rb 行间注
+        rb 元素
+        rtc.pinyin(lang='cmn-latn')
+          rt(rbspan='1') hángjiānzhù
+          rt(rbspan='1') yuansu
+        rtc.annotation(lang='en-GB')
+          rt(rbspan='3') ruby annotation
+      br
+      | 直角
+      ruby.rightangle
+        rb 行
+        rb 间
+        rb 注
+        rb 元
+        rb 素
+        rtc.annotation(lang='cmn-Latn')
+          rt(rbspan='3') hángjiānzhù
+          rt(rbspan='2') yuánsù
+        rtc.zhuyin
+          rt ㄏㄤˊ
+          rt ㄐㄧㄢ
+          rt ㄓㄨˋ
+          rt ㄩㄢˊ
+          rt ㄙㄨˋ
+      h2#text-level-semantics-other 其他
+      abbr 缩写元素abbr
+      | 及
+      abbr(title='abbreviation') 包含标题属性的缩写元素abbr
+      | 示例
+      br
+      mark 凸显元素mark
+      | 示例
+      br
+      small 批注元素small
+      | 示例
+      br
+      span 文字范围元素span
+      | 示例
+      br
+      sub 下标元素sub
+      | 示例
+      br
+      sup 上标元素sup
+      | 示例
+    section
+      h1#edits 修订类
+      ins 增订元素ins
+      | 示例
+      br
+      | <ins>增订元素甲</ins><ins>增订元素乙</ins>一般文字节点<!--
+      | --><ins>增订元素丙</ins>一般文字节点<!--
+      | --><ins>增订元素丁</ins>。
+      br
+      del 删订元素del
+      | 示例
+      br
+      | <del>删订元素甲</del><del>删订元素乙</del>一般文字节点<!--
+      | --><del>删订元素丙</del>一般文字节点<!--
+      | --><del>删订元素丁</del>。
+    section
+      h1#typography 特殊排版功能
+      h2#han-la 汉字西文混排间隙
+      p(lang='zh-Hans')
+        | 然而在
+        span(lang='de') Jan Tschichold
+        | 和他的着作<!--
+        | --><cite lang='en-GB'>Asymmetric Typography</cite><!--
+        | -->流行之前，直至追溯回
+        span(lang='de') Gutenberg
+        | 时代，「对称」「齐整」两种古老的视觉审美习惯无处不在。左右并齐的纵栏——我也欣赏这样的传统，一如欣赏古典格律的稳定及优美。
+      p.footer
+        | ——
+        a(href='https://twitter.com/laerhsif') 钱争予
+        | 〈
+        a(href='//www.typeisbeautiful.com/2013/12/6983/') 纵横对齐不是现代方法
+        | 〉
+      h2#font-and-biaodian 地区变体字型及标点符号样式
+      p
+        strong 注：
+        | 此处仅展示黑体，其馀字体样式请参阅
+        a(href='./') 其他测试页
+        | 。
+      h3#font-and-biaodian-recommended 旧字形及推荐标点样式
+      p.poem-like(style='font-family: "Biaodian Pro Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;')
+        | 字。字．字，字、字；字：字？字！
+        br
+        | 「内『内容』容」‘内“内容”容’
+        br
+        | 《書名》〈篇名〉（内容）
+        br
+        | 啊——什麼内容……丹·布朗
+        br
+        | He — who wants to achieve the goal — denied about the fact that…
+        br
+        | 1991－1999年　他／她
+      h3#font-and-biaodian-cns 台湾教育部式
+      p.poem-like(lang='zh-Hant')
+        | 字。字．字，字、字；字：字？字！
+        br
+        | 「内『内容』容」‘内“内容”容’
+        br
+        | 《书名》〈篇名〉（内容）
+        br
+        | 啊——什麽内容……丹·布朗
+        br
+        | He — who wants to achieve the goal — denied about the fact that…
+        br
+        | 1991－1999年　他／她
+      h3#font-and-biaodian-gb 中国国标式
+      p.poem-like
+        | 字。字．字，字、字；字：字？字！
+        br
+        | 「内『内容』容」‘内“内容”容’
+        br
+        | 《书名》〈篇名〉（内容）
+        br
+        | 啊——什么内容……丹·布朗
+        br
+        | He — who wants to achieve the goal — denied about the fact that…
+        br
+        | 1991－1999年　他／她
+      h2#checked-tones
+        ruby.rightangle
+          rb 入
+          rb 声
+          | 韵
+          rtc.romanization(lang='nan-Latn')
+            rt(rbspan='2') ji̍p-siann
+          rtc.zhuyin
+            rt ㆢㄧㆴ͘
+            rt ㄒㄧㆩ
+      p.poem-like(lang='zh-Hant').
+        <span style='font-family: "Romanization Sans", "Helvetica Neue", Arial, "Zhuyin Kaiti", sans-serif;'>
+          aeioua̍e̍i̍o̍u̍
+        </span><br>
+        ㆴㆵㆶㆷㆴ&#x0358;ㆵ&#x0358;ㆶ&#x0358;ㆷ&#x0358;
+    script(src='./han.min.js')

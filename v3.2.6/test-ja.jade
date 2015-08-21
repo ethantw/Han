@@ -1,0 +1,305 @@
+doctype html
+html(lang='ja').han-init
+  head
+    meta(charset='UTF-8')
+    title 測試・標準測試頁（日本語） — 漢字標準格式
+    link(rel='stylesheet', href='./han.min.css')
+    style.
+      html {
+        overflow-x: hidden;
+        padding-bottom: 7em;
+      }
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='印刷品般的漢字網頁排版框架')
+    meta(name='keywords' content='漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography')
+
+  body
+    section
+      h1#grouping-content 內容群組類
+      h2#p-ol-ul 段落、清單
+      p
+        | 好們論紅，手卻策下使住收否人人！大獲及是告另子維持力本清長先陽不？社相此國學風中麼很解：治子上己施一見，有的是，用關快家所的字時情：品好居……朋裡義四時，校叫洲；運細種！眼失媽母身古慢管用、上開家問不難成的裝望麼年單代，操會人得？人人傳在善美故全、推兩少關心求，下看同目國往成氣；一廣機親得飛先始們於觀他使難以該因口發汽機人都領了過大廣場不食收西物早社報子們看、賣像師對好情的神？在史評，來深放表觀。還人的西路盡熱程當人長質此中民龍證說念背生外，間今經氣門此都！把相的公去底動！
+      p 頭性空風後上他根；然任他在，社拉布會言了來石賽親支……情拉術北然使來路請放數坐燈麼象成一畫專雨，是我長無等愛五化客可雜有雨。
+      h3#p-poem-like 詩篇段落
+      p.poem-like
+        | 只領不致中此因和之術黑顧同後到，
+        br
+        | 血媽人山歷操發一我利終心沒文了事問藝來
+        br
+        | 生能唱起語在，樹來課他——
+        br
+        | 小中觀給告北戲樹意，人消歌受，生會影……
+        br
+        | 動他腦它利離府頭始也
+      h4 地址格式
+      p.poem-like
+        | 王小明　啓
+        br
+        | 台灣　新北市板橋路十九段555號
+        br
+        | 20245
+      h3#ol 有序清單
+      ol
+        li 一級清單項目
+        li
+          | 一級清單項目
+          ol
+            li 二級清單項目
+            li
+              | 二級清單項目
+              ol
+                li 三級清單項目
+                li 三級清單項目
+        li 一級清單項目
+        li 一級清單項目
+      h3#ul 無序清單
+      ul
+        li 一級清單項目
+        li
+          | 一級清單項目
+          ul
+            li 二級清單項目
+            li
+              | 二級清單項目
+              ul
+                li 三級清單項目
+                li 三級清單項目
+        li 一級清單項目
+        li 一級清單項目
+      h2#blockquote 引用區塊
+      blockquote
+        p 如事時決行入同是我表統支樂了先年、人目也月老過人，斷弟進石給了，服去孩沒性就能。邊年排不決廣之例。長收滿導無！
+        footer
+          | ——<u class='pn'>姜慶</u>《石人碼頭》
+      h3#blockquote-no-p 未使用段落元素的引用區塊
+      blockquote
+        | 時來數期沒道反先美別所金企感企媽失對談。
+        footer
+          | ——<u class='pn'>新器急</u>
+      h3#blockquote-blockquote 引用區塊中的引用區塊
+      blockquote
+        p
+          | 洲此境眼……方空車形、四用廠出先作，管濟所唱步取的成正候社取開取高，理景龍知子起配做心正道動。出令正或？家國前保嚴輕朋化下而府裡、基之稱失！等園華行……政生著曾，們然變不發甚故，些長小華從不代應頭資？
+        blockquote
+          p
+            | 以滿傷都片復利反，爾麼生任常弟但岸過年在；院投工變愛世總甚？天其有爸個：後輕取，在克的山知中識高於過叫行出面不大開受個說自經公目，學們灣。合好巴地盡性士面最產張子新容得實：眼不日野一，克節上人黨到有沒，她果以的是到影的請自人長、表本究政快的且造的推色究聽場廣人形！深了叫！
+      h3#figure-blockquote 圖表內的引用區塊
+      figure
+        blockquote
+          p 令會過作加身。管常雖：質灣人坐洋半以人問一文……上灣之會的面長東商實對了上修法或便紙界去定辦緊現生影都合否陸一片子處用上很。
+        figcaption
+          | 這是圖表解說元素
+          code &lt;figcaption&gt;
+          | 內的解說。
+      h2#pre 格式預處理文字區塊
+      pre.
+        國寫親下二好灣整機生土、是看老排讓和保藝車市。
+
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et me.
+
+        是除學圖寶濟候收。們性者位遠另象內未院清外了以共……
+        長明期事生合了中文新等麼科出過能意等件教求加，
+        樓日里大下果個來。
+
+        球者們？方綠電後，果或錯老際聲可特少保期全動帶東北建，似保助先走她合也的。神我興治的保保學果車易麼連學水小西一！而視可些化。
+      h2#pre-code 代碼區塊
+      pre: code.
+        void (function(a,b){var c=b.documentElement,d,e;function D(a,d) {d=a*d/100+b.getElementById("main").textContent;return d;}return new D(20,5);})(window||this,window.document);
+    section
+      article
+        h1#sections 章節類
+        h2#article 文章區塊元素
+        h3#article-p-ol-ul 文章區塊內的段落、清單
+        p 務用界種設是自水教臺保再計見所灣們民各、外超是人外每方後發他濟中；義生了出這失究式回值氣苦我花聲位香還場、外國的醫門！
+        h4#article-p-poem-like 詩篇段落
+        p.poem-like
+          | 只領不致中此因和之術黑顧同後到，
+          br
+          | 血媽人山歷操發一我利終心沒文了事問藝來
+          br
+          | 生能唱起語在，樹來課他——
+          br
+          | 小中觀給告北戲樹意，人消歌受，生會影……
+          br
+          | 動他腦它利離府頭始也
+        h4#article-ol-ul 清單
+        ul
+          li 清單項目子
+          li 清單項目丑
+        h3#article-strong 文章區塊內的重點
+        p
+          | 不做則中心與的說很筆分士：
+          strong 校此訴平是裡春家善客總外公；做南多中。
+          | 足酒臉理特指第常三緊資現工們家化民，公政我熱良，中以家是。
+        h3#article-figure 文章區塊內的圖表引用區塊
+        figure
+          blockquote
+            p 令會過作加身。管常雖：質灣人坐洋半以人問一文……上灣之會的面長東商實對了上修法或便紙界去定辦緊現生影都合否陸一片子處用上很。
+          figcaption
+            | 這是文章內圖表解說元素
+            code &lt;figcaption&gt;
+            | 的解說。
+        h3 文章區塊內的變音文字
+        p
+          | 來化相據取愛統單商商半是否，
+          i 的媽沒種試此助來精人是灣，價種下落有，
+          | 機信際，作假灣，心行程官這是運價車年都人強國農：特行解金產拉口……
+        h3#article-blockquote 文章內的引用區塊
+        blockquote
+          p 火說定好就用樹，表母微時藝出北親雙表人事為放爸車奇列長農時教產得地何高的舉度們她李力內體古見業選一香音種。
+          p 務用界種設是自水教臺保再計見所灣們民各、外超是人外每方後發他濟中；義生了出這失究式回值氣苦我花聲位香還場、外國的醫門！
+        h4#article-blockquote-blockquote 文章內引用區塊中的引用區塊
+        blockquote
+          p 洲此境眼……方空車形、四用廠出先作，管濟所唱步取的成正候社取開取高，理景龍知子起配做心正道動。出令正或？家國前保嚴輕朋化下而府裡、基之稱失！等園華行……政生著曾，們然變不發甚故，些長小華從不代應頭資？
+          blockquote
+            p 以滿傷都片復利反，爾麼生任常弟但岸過年在；院投工變愛世總甚？天其有爸個：後輕取，在克的山知中識高於過叫行出面不大開受個說自經公目，學們灣。合好巴地盡性士面最產張子新容得實：眼不日野一，克節上人黨到有沒，她果以的是到影的請自人長、表本究政快的且造的推色究聽場廣人形！深了叫！
+        h4#article-blockquote-strong 文章引用區塊內的重點
+        blockquote
+          p
+            | 不做則中心與的說很筆分士：
+            strong 校此訴平是裡春家善客總外公；做南多中。
+            | 足酒臉理特指第常三緊資現工們家化民，公政我熱良，中以家是。
+        h4#article-blockquote-i 文章引用區塊內的變音文字
+        blockquote
+          p
+            | 來化相據取愛統單商商半是否，
+            i 的媽沒種試此助來精人是灣，價種下落有，
+            | 機信際，作假灣，心行程官這是運價車年都人強國農：特行解金產拉口……
+    section
+      h1#text-level-semantics 字級語意類
+      a(href='#') 超連結元素a
+      | 示例
+      br
+      u 註記元素u
+      | 示例
+      br
+      | <u>註記元素甲</u><u>註記元素乙</u>一般文字節點<!--
+      | --><u>註記元素丙</u>一般文字節點<!--
+      | --><u>註記元素丁</u>。
+      br
+      cite 來源元素cite
+      | 示例
+      br
+      strong 重點元素strong
+      | 示例
+      br
+      dfn 術語元素dfn
+      | 示例
+      br
+      b 關鍵字元素b
+      | 示例
+      br
+      em 強調元素em
+      | 示例
+      br
+      i 變音文字元素i
+      | 示例
+      br
+      var 變數元素var
+      | 示例
+      br
+      q 引用元素q及<q>子引用q</q>元素示例
+      br
+      s 訛訊元素s
+      | 示例
+      br
+      | <s>訛訊元素甲</s><s>訛訊元素乙</s>一般文字節點<!--
+      | --><s>訛訊元素丙</s>一般文字節點<!--
+      | --><s>訛訊元素丁</s>。
+      br
+      code 代碼元素code
+      | 示例
+      br
+      kbd 輸入鍵元素kbd
+      | 示例
+      br
+      samp 計算機輸出示例元素samp
+      | 示例
+      br
+      ruby
+        | 行間注元素
+        rt ruby annotation
+      | 示例
+      br
+      | 複合式
+      ruby.complex
+        rb 行間注
+        rb 元素
+        rtc.pinyin(lang='cmn-latn')
+          rt(rbspan='1') hángjiānzhù
+          rt(rbspan='1') yuansu
+        rtc.annotation(lang='en-GB')
+          rt(rbspan='3') ruby annotation
+      h2#text-level-semantics-other 其他
+      abbr 縮寫元素abbr
+      | 及
+      abbr(title='abbreviation') 包含標題屬性的縮寫元素abbr
+      | 示例
+      br
+      mark 凸顯元素mark
+      | 示例
+      br
+      small 批注元素small
+      | 示例
+      br
+      span 文字範圍元素span
+      | 示例
+      br
+      sub 下標元素sub
+      | 示例
+      br
+      sup 上標元素sup
+      | 示例
+    section
+      h1#edits 修訂類
+      ins 增訂元素ins
+      | 示例
+      br
+      | <ins>增訂元素甲</ins><ins>增訂元素乙</ins>一般文字節點<!--
+      | --><ins>增訂元素丙</ins>一般文字節點<!--
+      | --><ins>增訂元素丁</ins>。
+      br
+      del 刪訂元素del
+      | 示例
+      br
+      | <del>刪訂元素甲</del><del>刪訂元素乙</del>一般文字節點<!--
+      | --><del>刪訂元素丙</del>一般文字節點<!--
+      | --><del>刪訂元素丁</del>。
+    section
+      h1#typography 特殊排版功能
+      h2#han-la 漢字西文混排間隙
+      p(lang='zh-Hans')
+        | 然而在
+        span(lang='de') Jan Tschichold
+        | 和他的著作<!--
+        | --><cite lang='en-GB'>Asymmetric Typography</cite><!--
+        | -->流行之前，直至追溯回
+        span(lang='de') Gutenberg
+        | 时代，「对称」「齐整」两种古老的视觉审美习惯无处不在。左右并齐的纵栏——我也欣赏这样的传统，一如欣赏古典格律的稳定及优美。
+      p.footer
+        | ——
+        a(href='https://twitter.com/laerhsif') 钱争予
+        | 〈
+        a(href='//www.typeisbeautiful.com/2013/12/6983/') 纵横对齐不是现代方法
+        | 〉
+      h2#font-and-biaodian 地區變體字型及標點符號樣式
+      p
+        strong 註：
+        | 此處僅展示黑體，其餘字體樣式請參閱
+        a(href='./') 其他測試頁
+        | 。
+      h3
+      p.poem-like
+        | 字。字．字，字、字；字：字？字！
+        br
+        | 「內『內容』容」‘內“內容”容’
+        br
+        | 《書名》〈篇名〉（內容）
+        br
+        | 啊——什麼内容……丹·布朗
+        br
+        | He — who wants to achieve the goal — denied about the fact that…
+        br
+        | 1991－1999年　他／她
+    script(src='./han.min.js')
+
