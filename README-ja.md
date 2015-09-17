@@ -88,17 +88,21 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 - Internet Explorer 10+
 
 ## 開発について
-漢字標準格式の開発に協力してくれる方を歓迎します。以下はプログラムの開発に有用なコマンドの一覧です。
 
-- 開発パッケージをインストール：`sudo npm i`
+- io.js/Node.js
+- LiveScript 1.4.0（`sudo npm install -g livescript`）
+
+以下はプログラムの開発に有用なコマンドの一覧です。
+
+- 開発パッケージをインストール：`sudo npm install`
 - 開発環境の起動：`npm start`か`gulp dev`（ローカルサーバの実行と自動コンパイルを含む）
 - コンパイルしたファイルを公開：`gulp build`
 - `han.js`のAPIをテストする：`gulp test`（PhantomJS）
-- モジュールを更新する：`npm update && gulp dep`
+- モジュールを更新する：`sudo npm update && gulp dep`
 
 * * *
 漢字標準格式 v3.2.6  
-Last-modified: 2015-8-20 20:54 (UTC+8)  
+Last-modified: 2015-9-17 17:00 (UTC+8)  
 Translator: [神場雅史][translator] (Jimba Masafumi, [@westantenna][trans-twr])
 
 [translator]: http://westantenna.com

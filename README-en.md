@@ -83,16 +83,20 @@ Han.js runs in DOM environments only. Introduce modules such as [jsdom] for serv
 - Apple Safari 7+
 - Internet Explorer 10+
 
-## Development
-Contributions are pretty much welcomed. Below goes the list with some useful developing commands:
+## Requirements and developing commands
 
-- Install dev-dependencies: `sudo npm i`
+- io.js/Node.js
+- LiveScript 1.4.0 (`sudo npm install -g livescript`)
+
+Below goes the list with some useful developing commands:
+
+- Install dev-dependencies: `sudo npm install`
 - Start the dev-environment: `npm start` or `gulp dev` (including local server running and auto compiling)
 - Compile the distribution files: `gulp build`
 - Test `han.js`‘s API: `gulp test` (PhantomJS)
-- Update dependencies: `npm update && gulp dep`
+- Update dependencies: `sudo npm update && gulp dep`
 
 * * *
 Han.css v3.2.6  
-Last-modified: 2015-8-20 20:54 (UTC+8)
+Last-modified: 2015-9-17 16:54 (UTC+8)
 

@@ -69,16 +69,20 @@ Web字體，
 - Apple Safari 7+
 - Internet Explorer 10+
 
-## 開發環境
-歡迎參與「漢字標準格式」的開發。下列清單展示了部分常用的開發指令。
+## 開發需求與指令
 
-- 安裝需要的開發模組：`sudo npm i`
+- io.js/Node.js
+- LiveScript 1.4.0（`sudo npm install -g livescript`）
+
+下列清單展示了部分常用的開發指令，
+
+- 安裝需要的開發模組：`sudo npm install`
 - 啓動開發環境：`npm start`或`gulp dev`（包含本機運行及自動編譯）
 - 編譯發布文件：`gulp build`
 - 測試`han.js`API：`gulp test`（PhantomJS）
-- 更新依賴模組：`npm update && gulp dep`
+- 更新依賴模組：`sudo npm update && gulp dep`
 
 * * *
 「漢字標準格式」版本：v3.2.6  
-本頁最後修改於：2015-8-20 20:54（UTC+8）
+本頁最後修改於：2015-9-17 16:52（UTC+8）
 
