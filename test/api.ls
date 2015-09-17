@@ -288,6 +288,15 @@ test 'Hanzi-Western script mixed spacing (HWS)' ->
   Han d .renderHWS!
   html-equal d.innerHTML, '測試<h-hws hidden=""> </h-hws>test<h-hws hidden=""> </h-hws>測試<h-hws hidden=""> </h-hws>123<h-hws hidden=""> </h-hws>測試'
 
+  # issue 79 (https://github.com/ethantw/Han/issues/79)
+  d.innerHTML = '中文加上 <code>some code</code>，中文加上 <code>some code</code> 放在中間，<code>some code</code> 加上中文，一般的 English。'
+  Han d .renderHWS!
+  html-equal d.innerHTML, '中文加上 <code>some code</code>，中文加上 <code>some code</code> 放在中間，<code>some code</code> 加上中文，一般的 English。'
+
+  d.innerHTML = '中文加上<code>some code</code>，中文加上<code>some code</code>放在中間，<code>some code</code>加上中文，一般的English。'
+  Han d .renderHWS!
+  html-equal d.innerHTML, '中文加上<h-hws hidden=\"\"> </h-hws><code>some code</code>，中文加上<h-hws hidden=\"\"> </h-hws><code>some code</code><h-hws hidden=\"\"> </h-hws>放在中間，<code>some code</code><h-hws hidden=\"\"> </h-hws>加上中文，一般的<h-hws hidden=\"\"> </h-hws>English。'
+
   # Strict mode
   d.innerHTML = '測試 test 測試 123 測試<code>測試 test測試。</code>'
   Han d .renderHWS true
