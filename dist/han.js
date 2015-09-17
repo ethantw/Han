@@ -1639,7 +1639,6 @@ Locale.support = (function() {
   // Create an element for feature detecting
   // (in `testCSSProp`)
   var elem = $.create( 'h-test' )
-  var exposed = {}
 
   function testCSSProp( prop ) {
     var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1)
@@ -1658,7 +1657,7 @@ Locale.support = (function() {
     var fakeBody = body || $.create( 'body' )
     var div = $.create( 'div' )
     var container = body ? div : fakeBody
-    var  callback = typeof callback === 'function' ? callback : function() {}
+    var callback = typeof callback === 'function' ? callback : function() {}
     var style, ret, docOverflow
 
     style = [ '<style>', rule, '</style>' ].join('')
@@ -1712,8 +1711,7 @@ Locale.support = (function() {
       // Browsers that support ruby hide the `<rp>` via `display: none`
       ret = (
         getStyle( rp, 'display' ) === 'none' ||
-        // but in IE, `<rp>` has `display: inline`
-        // so, the test needs other conditions:
+        // but in IE, `<rp>` has `display: inline`, so the test needs other conditions:
         getStyle( ruby, 'display' ) === 'ruby' &&
         getStyle( rt, 'display' ) === 'ruby-text'
       ) ? true : false
@@ -1746,6 +1744,16 @@ Locale.support = (function() {
       )
 
       return ret
+    })(),
+
+    intercharacter: (function() {
+      var IC = 'inter-character'
+      var div = $.create( 'div' )
+      var css
+
+      div.innerHTML = '<h-test style="-moz-ruby-position:' + IC + ';-ms-ruby-position:' + IC + ';-webkit-ruby-position:' + IC + ';ruby-position:' + IC + ';"></h-test>'
+      css = div.querySelector( 'h-test' ).style
+      return ( css.WebkitRubyPosition === IC || css.MozRubyPosition === IC || css.msRubyPosition === IC || css.rubyPosition === IC ) || false
     })(),
 
     // Address feature support test for `unicode-range` via
