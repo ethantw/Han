@@ -4,6 +4,9 @@ define([
   '../regex/typeset'
 ], function( Locale, $, TYPESET ) {
 
+var SUPPORT_RUBY = Locale.support.ruby
+var SUPPORT_IC   = Locale.support.ruby && Locale.support['ruby-interchar']
+
 /**
  * Create and return a new `<h-ru>` element
  * according to the given contents
@@ -29,15 +32,9 @@ function createNormalRu( $rb, $rt, attr ) {
 }
 
 /**
- * Create and return a new `<ru>` element
- * in Zhuyin form
+ * Create a Zhuyin-form HTML string
  */
-function createZhuyinRu( $rb, $rt ) {
-  var $rb = $.clone( $rb )
-
-  // Create an element to return
-  var $ru = $.create( 'h-ru' )
-
+function createZhuyinRt( $rt ) {
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
   // * `yin`:    the plain pronunciation (w/out tone)
@@ -52,24 +49,29 @@ function createZhuyinRu( $rb, $rt ) {
     .replace( yin, '' )
     .replace( /[\u02C5]/g, '\u02C7' )
     .replace( /[\u030D]/g, '\u0358' )
+  return len === 0 ? '' : '<h-zhuyin length="' + len + '" diao="' + diao + '"><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
+}
 
-  // - <h-ru>
-  // -   <rb><rb/> 
+/**
+ * Create and return a new `<h-ru>` element
+ * in Zhuyin form
+ */
+function createZhuyinRu( $rb, $rt ) {
+  var $rb = $.clone( $rb )
+
+  // Create an element to return
+  var $ru = $.create( 'h-ru' )
+  $ru.setAttribute( 'zhuyin', true )
+
+  // - <h-ru zhuyin>
+  // -   <rb><rb/>
   // -   <h-zhuyin>
   // -     <h-yin></h-yin>
   // -     <h-diao></h-diao>
   // -   </h-zhuyin>
   // - </h-ru>
   $ru.appendChild( $rb )
-  $ru.innerHTML += '<h-zhuyin><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
-
-  // Finally, set up the necessary attribute
-  // and return the new `<ru>`
-  $.setAttr( $ru, {
-    zhuyin: 'true',
-    diao: diao,
-    length: len
-  })
+  $ru.innerHTML += createZhuyinRt( $rt )
   return $ru
 }
 
@@ -175,13 +177,13 @@ $.extend( Locale, {
       var clazz = ruby.classList
 
       var condition = (
-        !Locale.support.ruby ||
+        !SUPPORT_RUBY ||
         clazz.contains( 'zhuyin') ||
         clazz.contains( 'complex' ) ||
         clazz.contains( 'rightangle' )
       )
 
-      var frag, $cloned, $rb, $ru, maxspan, hruby
+      var frag, $cloned, $rb, $ru, maxspan, hruby, isIC
 
       if ( !condition ) return
 
@@ -193,14 +195,14 @@ $.extend( Locale, {
 
       // 1. Simple ruby polyfill;
       // 2. Zhuyin polyfill for all browsers.
-      if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
+      if ( !SUPPORT_RUBY || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )
         .forEach(function( rt ) {
           var $rb = $.create( '!' )
           var airb = []
-          var irb
+          var irb, $zhuyin
 
           // Consider the previous nodes the implied
           // ruby base
@@ -212,20 +214,27 @@ $.extend( Locale, {
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
           } while ( !irb.nodeName.match( /((?:h\-)?r[ubt])/i ))
-          // Create a real `<h-ru>` to append.
-          $ru = clazz.contains( 'zhuyin' ) ?
-            createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
+
+          if ( SUPPORT_IC ) {
+            isIC = true
+            $zhuyin = $.create( 'rt' )
+            $zhuyin.innerHTML = createZhuyinRt( rt )
+            rt.parentNode.replaceChild( $zhuyin, rt )
+          } else {
+            // Create a real `<h-ru>` to append.
+            $ru = clazz.contains( 'zhuyin' ) ? createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
 
           // Replace the ruby text with the new `<h-ru>`,
           // and remove the original implied ruby base(s)
-          try {
-            rt.parentNode.replaceChild( $ru, rt )
+            try {
+              rt.parentNode.replaceChild( $ru, rt )
 
-            airb
-            .forEach(function( irb ) {
-              $.remove( irb )
-            })
-          } catch ( e ) {}
+              airb
+              .forEach(function( irb ) {
+                $.remove( irb )
+              })
+            } catch ( e ) {}
+          }
         })
       }
 
@@ -298,7 +307,7 @@ $.extend( Locale, {
                 aRb = aRb.slice( 0, rbspan )
                 span = rbspan
               }
-              
+
               ret = createNormalRu( aRb, rt, {
                 'class': clazz, 
                 span: span,
@@ -327,7 +336,7 @@ $.extend( Locale, {
       // Create a new fake `<h-ruby>` element so the
       // style sheets will render it as a polyfill,
       // which also helps to avoid the UA style.
-      hruby = $.create( 'h-ruby' )
+      hruby = $.create( isIC ? 'ruby' : 'h-ruby' )
       hruby.innerHTML = frag.firstChild.innerHTML
 
       // Copy all attributes onto it

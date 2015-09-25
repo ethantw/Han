@@ -1698,6 +1698,29 @@ Locale.support = (function() {
   }
 
   return {
+    columnwidth: testCSSProp( 'columnWidth' ),
+
+    fontface: (function() {
+      var ret
+
+      injectElementWithStyle(
+        '@font-face { font-family: font; src: url("//"); }',
+        function( node, rule ) {
+          var style = $.qsa( 'style', node )[0]
+          var sheet = style.sheet || style.styleSheet
+          var cssText = sheet ?
+            ( sheet.cssRules && sheet.cssRules[0] ?
+              sheet.cssRules[0].cssText : sheet.cssText || ''
+            ) : ''
+
+          ret = /src/i.test( cssText ) &&
+            cssText.indexOf( rule.split(' ')[0] ) === 0
+        }
+      )
+
+      return ret
+    })(),
+
     ruby: (function() {
       var ruby = $.create( 'ruby' )
       var rt = $.create( 'rt' )
@@ -1725,36 +1748,24 @@ Locale.support = (function() {
       return ret
     })(),
 
-    fontface: (function() {
-      var ret
+    'ruby-display': (function() {
+      var div = $.create( 'div' )
 
-      injectElementWithStyle(
-        '@font-face { font-family: font; src: url("//"); }',
-        function( node, rule ) {
-          var style = $.qsa( 'style', node )[0]
-          var sheet = style.sheet || style.styleSheet
-          var cssText = sheet ?
-            ( sheet.cssRules && sheet.cssRules[0] ?
-              sheet.cssRules[0].cssText : sheet.cssText || ''
-            ) : ''
-
-          ret = /src/i.test( cssText ) &&
-            cssText.indexOf( rule.split(' ')[0] ) === 0
-        }
-      )
-
-      return ret
+      div.innerHTML = '<h-test-a style="display: ruby;"></h-test-a><h-test-b style="display: ruby-text-container;"></h-test-b>'
+      return div.querySelector( 'h-test-a' ).style.display === 'ruby' && div.querySelector( 'h-test-b' ).style.display === 'ruby-text-container'
     })(),
 
-    intercharacter: (function() {
+    'ruby-interchar': (function() {
       var IC = 'inter-character'
       var div = $.create( 'div' )
       var css
 
       div.innerHTML = '<h-test style="-moz-ruby-position:' + IC + ';-ms-ruby-position:' + IC + ';-webkit-ruby-position:' + IC + ';ruby-position:' + IC + ';"></h-test>'
       css = div.querySelector( 'h-test' ).style
-      return ( css.WebkitRubyPosition === IC || css.MozRubyPosition === IC || css.msRubyPosition === IC || css.rubyPosition === IC ) || false
+      return css.rubyPosition === IC || css.WebkitRubyPosition === IC || css.MozRubyPosition === IC || css.msRubyPosition === IC
     })(),
+
+    textemphasis: testCSSProp( 'textEmphasis' ),
 
     // Address feature support test for `unicode-range` via
     // detecting whether it's Arial (supported) or
@@ -1775,10 +1786,6 @@ Locale.support = (function() {
       return ret
     })(),
 
-    columnwidth: testCSSProp( 'columnWidth' ),
-
-    textemphasis: testCSSProp( 'textEmphasis' ),
-
     writingmode: testCSSProp( 'writingMode' )
   }
 })()
@@ -1796,6 +1803,9 @@ Locale.initCond = function( target ) {
   }
   return ret
 }
+
+var SUPPORT_RUBY = Locale.support.ruby
+var SUPPORT_IC   = Locale.support.ruby && Locale.support['ruby-interchar']
 
 /**
  * Create and return a new `<h-ru>` element
@@ -1822,15 +1832,9 @@ function createNormalRu( $rb, $rt, attr ) {
 }
 
 /**
- * Create and return a new `<ru>` element
- * in Zhuyin form
+ * Create a Zhuyin-form HTML string
  */
-function createZhuyinRu( $rb, $rt ) {
-  var $rb = $.clone( $rb )
-
-  // Create an element to return
-  var $ru = $.create( 'h-ru' )
-
+function createZhuyinRt( $rt ) {
   // #### Explanation ####
   // * `zhuyin`: the entire phonetic annotation
   // * `yin`:    the plain pronunciation (w/out tone)
@@ -1845,24 +1849,29 @@ function createZhuyinRu( $rb, $rt ) {
     .replace( yin, '' )
     .replace( /[\u02C5]/g, '\u02C7' )
     .replace( /[\u030D]/g, '\u0358' )
+  return len === 0 ? '' : '<h-zhuyin length="' + len + '" diao="' + diao + '"><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
+}
 
-  // - <h-ru>
-  // -   <rb><rb/> 
+/**
+ * Create and return a new `<h-ru>` element
+ * in Zhuyin form
+ */
+function createZhuyinRu( $rb, $rt ) {
+  var $rb = $.clone( $rb )
+
+  // Create an element to return
+  var $ru = $.create( 'h-ru' )
+  $ru.setAttribute( 'zhuyin', true )
+
+  // - <h-ru zhuyin>
+  // -   <rb><rb/>
   // -   <h-zhuyin>
   // -     <h-yin></h-yin>
   // -     <h-diao></h-diao>
   // -   </h-zhuyin>
   // - </h-ru>
   $ru.appendChild( $rb )
-  $ru.innerHTML += '<h-zhuyin><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
-
-  // Finally, set up the necessary attribute
-  // and return the new `<ru>`
-  $.setAttr( $ru, {
-    zhuyin: 'true',
-    diao: diao,
-    length: len
-  })
+  $ru.innerHTML += createZhuyinRt( $rt )
   return $ru
 }
 
@@ -1968,13 +1977,13 @@ $.extend( Locale, {
       var clazz = ruby.classList
 
       var condition = (
-        !Locale.support.ruby ||
+        !SUPPORT_RUBY ||
         clazz.contains( 'zhuyin') ||
         clazz.contains( 'complex' ) ||
         clazz.contains( 'rightangle' )
       )
 
-      var frag, $cloned, $rb, $ru, maxspan, hruby
+      var frag, $cloned, $rb, $ru, maxspan, hruby, isIC
 
       if ( !condition ) return
 
@@ -1986,14 +1995,14 @@ $.extend( Locale, {
 
       // 1. Simple ruby polyfill;
       // 2. Zhuyin polyfill for all browsers.
-      if ( !Locale.support.ruby || clazz.contains( 'zhuyin' )) {
+      if ( !SUPPORT_RUBY || clazz.contains( 'zhuyin' )) {
 
         $
         .tag( 'rt', $cloned )
         .forEach(function( rt ) {
           var $rb = $.create( '!' )
           var airb = []
-          var irb
+          var irb, $zhuyin
 
           // Consider the previous nodes the implied
           // ruby base
@@ -2005,20 +2014,27 @@ $.extend( Locale, {
             $rb.insertBefore( $.clone( irb ), $rb.firstChild )
             airb.push( irb )
           } while ( !irb.nodeName.match( /((?:h\-)?r[ubt])/i ))
-          // Create a real `<h-ru>` to append.
-          $ru = clazz.contains( 'zhuyin' ) ?
-            createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
+
+          if ( SUPPORT_IC ) {
+            isIC = true
+            $zhuyin = $.create( 'rt' )
+            $zhuyin.innerHTML = createZhuyinRt( rt )
+            rt.parentNode.replaceChild( $zhuyin, rt )
+          } else {
+            // Create a real `<h-ru>` to append.
+            $ru = clazz.contains( 'zhuyin' ) ? createZhuyinRu( $rb, rt ) : createNormalRu( $rb, rt )
 
           // Replace the ruby text with the new `<h-ru>`,
           // and remove the original implied ruby base(s)
-          try {
-            rt.parentNode.replaceChild( $ru, rt )
+            try {
+              rt.parentNode.replaceChild( $ru, rt )
 
-            airb
-            .forEach(function( irb ) {
-              $.remove( irb )
-            })
-          } catch ( e ) {}
+              airb
+              .forEach(function( irb ) {
+                $.remove( irb )
+              })
+            } catch ( e ) {}
+          }
         })
       }
 
@@ -2091,7 +2107,7 @@ $.extend( Locale, {
                 aRb = aRb.slice( 0, rbspan )
                 span = rbspan
               }
-              
+
               ret = createNormalRu( aRb, rt, {
                 'class': clazz, 
                 span: span,
@@ -2120,7 +2136,7 @@ $.extend( Locale, {
       // Create a new fake `<h-ruby>` element so the
       // style sheets will render it as a polyfill,
       // which also helps to avoid the UA style.
-      hruby = $.create( 'h-ruby' )
+      hruby = $.create( isIC ? 'ruby' : 'h-ruby' )
       hruby.innerHTML = frag.firstChild.innerHTML
 
       // Copy all attributes onto it
