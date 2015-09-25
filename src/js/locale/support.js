@@ -72,6 +72,29 @@ Locale.support = (function() {
   }
 
   return {
+    columnwidth: testCSSProp( 'columnWidth' ),
+
+    fontface: (function() {
+      var ret
+
+      injectElementWithStyle(
+        '@font-face { font-family: font; src: url("//"); }',
+        function( node, rule ) {
+          var style = $.qsa( 'style', node )[0]
+          var sheet = style.sheet || style.styleSheet
+          var cssText = sheet ?
+            ( sheet.cssRules && sheet.cssRules[0] ?
+              sheet.cssRules[0].cssText : sheet.cssText || ''
+            ) : ''
+
+          ret = /src/i.test( cssText ) &&
+            cssText.indexOf( rule.split(' ')[0] ) === 0
+        }
+      )
+
+      return ret
+    })(),
+
     ruby: (function() {
       var ruby = $.create( 'ruby' )
       var rt = $.create( 'rt' )
@@ -99,36 +122,24 @@ Locale.support = (function() {
       return ret
     })(),
 
-    fontface: (function() {
-      var ret
+    'ruby-display': (function() {
+      var div = $.create( 'div' )
 
-      injectElementWithStyle(
-        '@font-face { font-family: font; src: url("//"); }',
-        function( node, rule ) {
-          var style = $.qsa( 'style', node )[0]
-          var sheet = style.sheet || style.styleSheet
-          var cssText = sheet ?
-            ( sheet.cssRules && sheet.cssRules[0] ?
-              sheet.cssRules[0].cssText : sheet.cssText || ''
-            ) : ''
-
-          ret = /src/i.test( cssText ) &&
-            cssText.indexOf( rule.split(' ')[0] ) === 0
-        }
-      )
-
-      return ret
+      div.innerHTML = '<h-test-a style="display: ruby;"></h-test-a><h-test-b style="display: ruby-text-container;"></h-test-b>'
+      return div.querySelector( 'h-test-a' ).style.display === 'ruby' && div.querySelector( 'h-test-b' ).style.display === 'ruby-text-container'
     })(),
 
-    intercharacter: (function() {
+    'ruby-interchar': (function() {
       var IC = 'inter-character'
       var div = $.create( 'div' )
       var css
 
       div.innerHTML = '<h-test style="-moz-ruby-position:' + IC + ';-ms-ruby-position:' + IC + ';-webkit-ruby-position:' + IC + ';ruby-position:' + IC + ';"></h-test>'
       css = div.querySelector( 'h-test' ).style
-      return ( css.WebkitRubyPosition === IC || css.MozRubyPosition === IC || css.msRubyPosition === IC || css.rubyPosition === IC ) || false
+      return css.rubyPosition === IC || css.WebkitRubyPosition === IC || css.MozRubyPosition === IC || css.msRubyPosition === IC
     })(),
+
+    textemphasis: testCSSProp( 'textEmphasis' ),
 
     // Address feature support test for `unicode-range` via
     // detecting whether it's Arial (supported) or
@@ -148,10 +159,6 @@ Locale.support = (function() {
       )
       return ret
     })(),
-
-    columnwidth: testCSSProp( 'columnWidth' ),
-
-    textemphasis: testCSSProp( 'textEmphasis' ),
 
     writingmode: testCSSProp( 'writingMode' )
   }
