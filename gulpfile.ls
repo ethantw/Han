@@ -72,7 +72,7 @@ rjs-config = {
 }
 
 gulp.task \dep     <[ normalize.css fibre.js ]>
-gulp.task \build   <[ dist:font dist:sass dist:cssmin dist:js dist:uglify ]>
+gulp.task \build   <[ dist:font dist:cssmin dist:uglify ]>
 gulp.task \dev     <[ watch server ]>
 gulp.task \default <[ build demo ]>
 
@@ -113,7 +113,7 @@ gulp.task \dist:sass ->
     .pipe gulp-csscomb!
     .pipe gulp.dest \./dist
 
-gulp.task \dist:cssmin ->
+gulp.task \dist:cssmin <[ dist:sass ]> ->
   gulp.src \./dist/han.css
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {
@@ -151,10 +151,10 @@ gulp.task \test ->
     .pipe gulp-qunit!
 
 # Demo
-gulp.task \demo ->
-  gulp.start <[ demo:font demo:dist demo:sass demo:jade demo:lsc ]>
+gulp.task \demo <[ build ]> ->
+  gulp.start <[ demo:font demo:js demo:sass demo:jade ]>
 
-gulp.task \demo:dist ->
+gulp.task \demo:dist <[ build ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
@@ -173,7 +173,7 @@ gulp.task \demo:jade ->
     .pipe gulp-jade!
     .pipe gulp.dest \./test
 
-gulp.task \demo:lsc ->
+gulp.task \demo:js <[ demo:dist ]> ->
   gulp.src \./test/test-commonjs.ls
     .pipe gulp-livescript!
     .pipe gulp-browserify!
@@ -189,12 +189,12 @@ gulp.task \demo:lsc ->
 
 # Watch
 gulp.task \watch <[ default ]> ->
-  gulp.watch \./src/sass/**/* <[ dist:sass dist:cssmin demo:dist demo:sass ]>
+  gulp.watch \./src/sass/**/* <[ demo:dist ]>
   gulp.watch \./src/styl/**/* <[ dist:styl dist:cssmin demo:dist ]>
-  gulp.watch \./src/js/**/*   <[ dist:js dist:uglify demo:dist demo:lsc ]>
+  gulp.watch \./src/js/**/*   <[ demo:js ]>
   gulp.watch \./test/*.scss   <[ demo:sass ]>
   gulp.watch \./test/*.jade   <[ demo:jade ]>
-  gulp.watch \./test/*.ls     <[ demo:lsc ]>
+  gulp.watch \./test/*.ls     <[ demo:js ]>
 
 # Dependencies
 gulp.task \normalize.css !->
