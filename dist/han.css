@@ -593,16 +593,27 @@ ruby rtc rt {
   font-size: inherit;
 }
 
-ruby > rb + rtc:before {
-  content: "\ff08";
+ruby.zhuyin,
+ruby.mps {
+  display: ruby;
+  -webkit-ruby-position: inter-character;
+  ruby-position: inter-character;
 }
-
-ruby > rtc:after {
-  content: "\ff0c";
+ruby.zhuyin > rt,
+ruby.mps > rt {
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  -moz-transform-origin: left center;
+  -ms-transform-origin: left center;
+  -webkit-transform-origin: left center;
+  transform-origin: left center;
+  font-size: .5em;
 }
-
-ruby > rtc:last-of-type:after {
-  content: "\ff09";
+ruby.zhuyin > rt:empty,
+ruby.mps > rt:empty {
+  display: none;
 }
 
 .han-js-rendered u + u,
@@ -684,7 +695,84 @@ em:lang(ja) h-char.biaodian {
   content: "﹅";
 }
 
-h-ru[annotation] {
+h-ru {
+  display: ruby;
+}
+h-ru[order="0"] {
+  -webkit-ruby-position: over;
+  ruby-position: over;
+}
+h-ru[order="1"],
+h-ru.rightangle {
+  -webkit-ruby-position: under;
+  ruby-position: under;
+}
+h-ru rt {
+  display: ruby-text;
+}
+
+ruby.zhuyin h-zhuyin,
+ruby.mps h-zhuyin,
+h-ruby.zhuyin h-zhuyin {
+  position: relative;
+}
+
+ruby.zhuyin h-diao,
+ruby.mps h-diao,
+h-ruby.zhuyin h-diao {
+  position: absolute;
+  right: -.9em;
+  bottom: .5em;
+  display: block;
+  font-size: 1.5em;
+}
+ruby.zhuyin h-diao h-char:after,
+ruby.mps h-diao h-char:after,
+h-ruby.zhuyin h-diao h-char:after {
+  -webkit-writing-mode: horizontal-tb;
+  writing-mode: lr-tb;
+}
+
+ruby.zhuyin [diao="˙"] h-diao,
+ruby.mps [diao="˙"] h-diao,
+h-ruby.zhuyin [diao="˙"] h-diao {
+  top: -.3em;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  font-size: 1em;
+}
+
+ruby.zhuyin [diao^="ㆴ"] h-diao,
+ruby.zhuyin [diao^="ㆵ"] h-diao,
+ruby.zhuyin [diao^="ㆶ"] h-diao,
+ruby.zhuyin [diao^="ㆷ"] h-diao,
+ruby.zhuyin [diao="󳆴"] h-diao,
+ruby.zhuyin [diao="󳆵"] h-diao,
+ruby.zhuyin [diao="󳆶"] h-diao,
+ruby.zhuyin [diao="󳆷"] h-diao,
+ruby.mps [diao^="ㆴ"] h-diao,
+ruby.mps [diao^="ㆵ"] h-diao,
+ruby.mps [diao^="ㆶ"] h-diao,
+ruby.mps [diao^="ㆷ"] h-diao,
+ruby.mps [diao="󳆴"] h-diao,
+ruby.mps [diao="󳆵"] h-diao,
+ruby.mps [diao="󳆶"] h-diao,
+ruby.mps [diao="󳆷"] h-diao,
+h-ruby.zhuyin [diao^="ㆴ"] h-diao,
+h-ruby.zhuyin [diao^="ㆵ"] h-diao,
+h-ruby.zhuyin [diao^="ㆶ"] h-diao,
+h-ruby.zhuyin [diao^="ㆷ"] h-diao,
+h-ruby.zhuyin [diao="󳆴"] h-diao,
+h-ruby.zhuyin [diao="󳆵"] h-diao,
+h-ruby.zhuyin [diao="󳆶"] h-diao,
+h-ruby.zhuyin [diao="󳆷"] h-diao {
+  right: -1.1em;
+  bottom: 0;
+  font-size: 1em;
+}
+
+.no-ruby-display h-ru[annotation] {
   position: relative;
   display: inline-table;
   border-collapse: collapse;
@@ -693,43 +781,48 @@ h-ru[annotation] {
   text-align: center;
   vertical-align: 1em;
 }
-h-ru[annotation] > h-ru[annotation] {
+.no-ruby-display h-ru[annotation] > h-ru[annotation] {
   vertical-align: -.1em;
 }
-h-ruby[rightangle][doubleline] h-ru[annotation] {
-  vertical-align: .5em;
-}
-h-ru[annotation] > h-ru,
-h-ru[annotation] > rb,
-h-ru[annotation] > rt {
+.no-ruby-display h-ru[annotation] > h-ru,
+.no-ruby-display h-ru[annotation] > rb,
+.no-ruby-display h-ru[annotation] > rt {
   line-height: 1;
   text-align: center;
 }
-h-ru[annotation] > rt {
+.no-ruby-display h-ru[annotation] > rt {
   display: table-header-group;
   height: 1em;
   font-size: .5em;
   white-space: nowrap;
   word-break: normal;
 }
-h-ru[annotation] > rt:before,
-h-ru[annotation] > rt:after {
+.no-ruby-display h-ru[annotation] > rt:before,
+.no-ruby-display h-ru[annotation] > rt:after {
   content: "\2006";
 }
-h-ru[annotation][order="0"] > rt,
-h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] > rt {
+
+.no-ruby-display h-ru[order="0"] > rt,
+.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="0"] > rt {
   display: table-header-group;
 }
-h-ru[annotation][order="1"] > rt,
-h-ruby[rightangle] h-ru[annotation][order="0"] > rt,
-h-ruby[rightangle][doubleline] h-ru[annotation][order="1"] > rt {
+
+.no-ruby-display h-ru[order="1"] > rt,
+.no-ruby-display h-ruby[rightangle] h-ru[order="0"] > rt,
+.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="1"] > rt {
   display: table-footer-group;
 }
-h-ru[annotation][order="0"] > h-ru[order="1"] {
+
+.no-ruby-display h-ru[order="0"] > h-ru[order="1"] {
   vertical-align: .15em;
 }
-h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
+
+.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="0"] rt {
   line-height: 1.5;
+}
+
+.no-ruby-display h-ruby[rightangle][doubleline] h-ru[annotation] {
+  vertical-align: .5em;
 }
 
 [zhuyin] h-zhuyin {
@@ -750,10 +843,10 @@ h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
 }
 
 [zhuyin] h-zhuyin > * {
-  -moz-transform: scale(.4);
-  -ms-transform: scale(.4);
-  -webkit-transform: scale(.4);
-  transform: scale(.4);
+  -moz-transform: scale(.5);
+  -ms-transform: scale(.5);
+  -webkit-transform: scale(.5);
+  transform: scale(.5);
   -moz-transform-origin: left top;
   -ms-transform-origin: left top;
   -webkit-transform-origin: left top;
@@ -781,45 +874,38 @@ h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
   display: none;
 }
 
-[length="0"][zhuyin] {
+[zhuyin] [length="0"] {
   margin-right: 0;
 }
-[length="0"][zhuyin] h-zhuyin {
+[zhuyin] [length="0"] h-zhuyin {
   display: none;
 }
 
-[length="1"][zhuyin] h-yin,
 [zhuyin] [length="1"] h-yin {
   top: .3em;
 }
 
-[length="1"][zhuyin] h-diao,
 [zhuyin] [length="1"] h-diao {
   bottom: 0;
 }
 
-[length="2"][zhuyin] h-yin,
 [zhuyin] [length="2"] h-yin {
   top: .05em;
 }
 
-[length="2"][zhuyin] h-diao,
 [zhuyin] [length="2"] h-diao {
   bottom: -.3em;
 }
 
-[length="3"][zhuyin] h-yin,
 [zhuyin] [length="3"] h-yin {
   top: -.05em;
   line-height: .85;
 }
 
-[length="3"][zhuyin] h-diao,
 [zhuyin] [length="3"] h-diao {
   bottom: -.35em;
 }
 
-[diao="˙"][zhuyin] h-diao,
 [zhuyin] [diao="˙"] h-diao {
   top: 0;
   right: auto;
@@ -827,29 +913,18 @@ h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
   left: .06em;
 }
 
-[diao="˙"][length="1"][zhuyin] h-diao,
-[diao="˙"][zhuyin] [length="1"] h-diao,
-[zhuyin] [diao="˙"][length="1"] h-diao,
 [zhuyin] [diao="˙"] [length="1"] h-diao {
   top: .15em;
 }
 
-[diao="˙"][length="2"][zhuyin] h-diao,
-[diao="˙"][zhuyin] [length="2"] h-diao,
-[zhuyin] [diao="˙"][length="2"] h-diao,
 [zhuyin] [diao="˙"] [length="2"] h-diao {
   top: -.05em;
 }
 
-[diao="˙"][length="3"][zhuyin] h-diao,
-[diao="˙"][zhuyin] [length="3"] h-diao,
-[zhuyin] [diao="˙"][length="3"] h-diao,
 [zhuyin] [diao="˙"] [length="3"] h-diao {
   top: -.2em;
 }
 
-[diao="˪"][zhuyin] h-diao,
-[diao="˫"][zhuyin] h-diao,
 [zhuyin] [diao="˪"] h-diao,
 [zhuyin] [diao="˫"] h-diao {
   -moz-transform: scale(.6);
@@ -862,14 +937,6 @@ h-ruby[rightangle][doubleline] h-ru[annotation][order="0"] rt {
   transform-origin: left top;
 }
 
-[diao^="ㆴ"][zhuyin] h-diao,
-[diao^="ㆵ"][zhuyin] h-diao,
-[diao^="ㆶ"][zhuyin] h-diao,
-[diao^="ㆷ"][zhuyin] h-diao,
-[diao="󳆴"][zhuyin] h-diao,
-[diao="󳆵"][zhuyin] h-diao,
-[diao="󳆶"][zhuyin] h-diao,
-[diao="󳆷"][zhuyin] h-diao,
 [zhuyin] [diao^="ㆴ"] h-diao,
 [zhuyin] [diao^="ㆵ"] h-diao,
 [zhuyin] [diao^="ㆶ"] h-diao,
@@ -2169,14 +2236,14 @@ pre:lang(ja) {
 }
 
 html,
-ruby h-ru[zhuyin] h-zhuyin,
-ruby h-ru[zhuyin] h-zhuyin h-diao,
-h-ruby h-ru[zhuyin] h-zhuyin,
-h-ruby h-ru[zhuyin] h-zhuyin h-diao,
+ruby h-zhuyin,
+ruby h-diao,
+h-ruby h-zhuyin,
+h-ruby h-diao,
 ruby.romanization rt,
-ruby h-ru[annotation] rt,
+ruby [annotation] rt,
 h-ruby.romanization rt,
-h-ruby h-ru[annotation] rt,
+h-ruby [annotation] rt,
 .no-unicoderange h-char.bd-liga,
 .no-unicoderange h-char.biaodian[unicode="b7"] {
   -moz-font-feature-settings: "liga";
@@ -2210,22 +2277,22 @@ var {
   font-style: inherit;
 }
 
-.no-unicoderange ruby h-ru[zhuyin] h-zhuyin,
-.no-unicoderange ruby h-ru[zhuyin] h-zhuyin h-diao,
-.no-unicoderange h-ruby h-ru[zhuyin] h-zhuyin,
-.no-unicoderange h-ruby h-ru[zhuyin] h-zhuyin h-diao {
+.no-unicoderange ruby h-zhuyin,
+.no-unicoderange ruby h-diao,
+.no-unicoderange h-ruby h-zhuyin,
+.no-unicoderange h-ruby h-diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
 }
 
-ruby h-ru[zhuyin] h-zhuyin h-diao,
-h-ruby h-ru[zhuyin] h-zhuyin h-diao {
+ruby h-diao,
+h-ruby h-diao {
   font-family: "Zhuyin Kaiti", cursive, serif;
 }
 
 ruby.romanization rt,
-ruby h-ru[annotation] rt,
+ruby [annotation] rt,
 h-ruby.romanization rt,
-h-ruby h-ru[annotation] rt {
+h-ruby [annotation] rt {
   font-family: "Romanization Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
 

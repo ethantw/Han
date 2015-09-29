@@ -205,22 +205,25 @@ ins
  * Ruby annotations
  * (行間注)
  */
-
-// * 1. Attach parentheses for readability purposes.
-// *
 ruby
   rtc rt
     // box-model
     display: inline
     // typography
     font-size: inherit
-  // 1
-  > rb + rtc
-    &:before
-      content: '\ff08'
-  > rtc
-    &:after
-      content: '\ff0c'
-    &:last-of-type:after
-      content: '\ff09'
+  &.zhuyin,
+  &.mps
+    // box-model
+    display: ruby
+    // typography
+    -webkit-ruby-position: inter-character
+    ruby-position:         inter-character
+
+    > rt
+      // box-model
+      +han-scale( $HAN-ZHUYIN-SIZE/.5, 'left center' )
+      // typography
+      font-size: .5em
+    > rt:empty
+      display: none
 

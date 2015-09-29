@@ -32,15 +32,15 @@
   #{$prop}: -webkit-calc( #{$exp} )
   #{$prop}: calc( #{$exp} )
 
-=han-scale( $size )
+=han-scale( $size, $origin: 'left top' )
   -moz-transform:           scale( $size )
   -ms-transform:            scale( $size )
   -webkit-transform:        scale( $size )
   transform:                scale( $size )
-  -moz-transform-origin:    left top
-  -ms-transform-origin:     left top
-  -webkit-transform-origin: left top
-  transform-origin:         left top
+  -moz-transform-origin:    #{$origin}
+  -ms-transform-origin:     #{$origin}
+  -webkit-transform-origin: #{$origin}
+  transform-origin:         #{$origin}
 
 =han-scale-center( $size )
   -moz-transform:           scale( $size )
