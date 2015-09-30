@@ -2,7 +2,7 @@ define([
   './core',
   '../method',
   '../regex/typeset',
-  './hruby'
+  './h-ruby'
 ], function( Locale, $, TYPESET ) {
 
 /**
