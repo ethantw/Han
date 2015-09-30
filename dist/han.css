@@ -730,7 +730,7 @@ ruby.zhuyin h-diao h-char:after,
 ruby.mps h-diao h-char:after,
 h-ruby.zhuyin h-diao h-char:after {
   -webkit-writing-mode: horizontal-tb;
-  writing-mode: lr-tb;
+  writing-mode: horizontal-tb;
 }
 
 ruby.zhuyin [diao="˙"] h-diao,
