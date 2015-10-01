@@ -44,8 +44,8 @@ var $ = {
   },
 
   // Remove a node (text, element or fragment)
-  remove: function( node, parent ) {
-    return ( parent || node.parentNode ).removeChild( node )
+  remove: function( node ) {
+    return node.parentNode.removeChild( node )
   },
 
   // Set attributes all in once with an object
