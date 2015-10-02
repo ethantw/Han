@@ -35,7 +35,7 @@
     "normalize.css": "~3.0.3"
   },
   "devDependencies": {
-    "LiveScript": "~1.4.0",
+    "livescript": "~1.4.0",
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.0",
     "gulp-concat-util": "^0.5.1",
