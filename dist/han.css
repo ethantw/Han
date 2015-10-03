@@ -767,8 +767,8 @@ h-ruby.zhuyin [diao="󳆴"] h-diao,
 h-ruby.zhuyin [diao="󳆵"] h-diao,
 h-ruby.zhuyin [diao="󳆶"] h-diao,
 h-ruby.zhuyin [diao="󳆷"] h-diao {
-  right: -1.1em;
-  bottom: 0;
+  right: -1em;
+  bottom: -.125em;
   font-size: 1em;
 }
 
