@@ -47,22 +47,6 @@ $.extend( Han, {
         }
       )
     })
-
-    $
-    .qsa( QUERY_RU_W_ANNO, context )
-    .forEach(function( ru ) {
-      var annotation = ru.getAttribute( 'annotation' )
-
-      aCombLiga
-      // Latin vowels only
-      .slice( 0, 5 )
-      .forEach(function( pattern ) {
-        annotation = annotation.replace(
-          new RegExp( pattern[ 0 ], 'ig' ), pattern[ 1 ]
-        )
-      })
-      ru.setAttribute( 'annotation', annotation )
-    })
     return finder
   },
 
