@@ -146,6 +146,21 @@ var TYPESET = (function() {
         [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
         [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
         [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+      ],
+
+      'comb-liga-vowel': [
+        [ '\u0061[\u030d\u0358]', '\uDB80\uDC61' ],
+        [ '\u0065[\u030d\u0358]', '\uDB80\uDC65' ],
+        [ '\u0069[\u030d\u0358]', '\uDB80\uDC69' ],
+        [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
+        [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ]
+      ],
+
+      'comb-liga-zhuyin': [
+        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
       ]
     },
 

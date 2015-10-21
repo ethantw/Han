@@ -458,6 +458,21 @@ var TYPESET = (function() {
         [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
         [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
         [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+      ],
+
+      'comb-liga-vowel': [
+        [ '\u0061[\u030d\u0358]', '\uDB80\uDC61' ],
+        [ '\u0065[\u030d\u0358]', '\uDB80\uDC65' ],
+        [ '\u0069[\u030d\u0358]', '\uDB80\uDC69' ],
+        [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
+        [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ]
+      ],
+
+      'comb-liga-zhuyin': [
+        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
       ]
     },
 
@@ -2482,33 +2497,35 @@ $.extend( Han.fn, {
   }
 })
 
-var QUERY_RU_W_ANNO = 'h-ru[annotation]'
+var QUERY_RU_W_ANNO    = 'h-ru[annotation]'
 var SELECTOR_TO_IGNORE = 'textarea, code, kbd, samp, pre'
 
-var isCombLigaNormal = (function() {
-  var treat   = Han.localize.writeOnCanvas( '\u0069\u030D', '"Romanization Sans"' )
-  var control = Han.localize.writeOnCanvas( '\uDB80\uDC69', '"Romanization Sans"' )
+function createCompareFactory( font, treat, control ) {
+  return function() {
+    var a = Han.localize.writeOnCanvas( treat, font )
+    var b = Han.localize.writeOnCanvas( control, font )
+    return Han.localize.compareCanvases( a, b )
+  }
+}
 
-  return Han.localize.compareCanvases( treat, control )
-})()
+function isVowelCombLigaNormal() {
+  return createCompareFactory( '"Romanization Sans"', '\u0061\u030D', '\uDB80\uDC61' )
+}
 
-var aCombLiga = Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ]
-var aInaccurateChar = Han.TYPESET[ 'inaccurate-char' ]
+function isVowelICombLigaNormal() {
+  return createCompareFactory( '"Romanization Sans"', '\u0069\u030D', '\uDB80\uDC69' )
+}
 
-var charCombLiga = $.create( 'h-char', 'comb-liga' )
+function isZhuyinCombLigaNormal() {
+  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0358', '\uDB8C\uDDB4' )
+}
 
-$.extend( Han, {
-  isCombLigaNormal: isCombLigaNormal,
-
-  substCombLigaWithPUA: function( context ) {
-    if ( isCombLigaNormal ) return
-
+function createSubstFactory( regexToSubst ) {
+  return function( context ) {
     var context = context || document
-    var finder = Han.find( context )
+    var finder  = Han.find( context ).avoid( SELECTOR_TO_IGNORE )
 
-    finder.avoid( SELECTOR_TO_IGNORE )
-
-    aCombLiga
+    regexToSubst
     .forEach(function( pattern ) {
       finder
       .replace(
@@ -2525,14 +2542,29 @@ $.extend( Han, {
       )
     })
     return finder
-  },
+  }
+}
+
+var charCombLiga = $.create( 'h-char', 'comb-liga' )
+
+$.extend( Han, {
+  isVowelCombLigaNormal:   isVowelCombLigaNormal(),
+  isVowelICombLigaNormal:  isVowelICombLigaNormal(),
+  isZhuyinCombLigaNormal:  isZhuyinCombLigaNormal(),
+
+  isCombLigaNormal:        isVowelICombLigaNormal()(),  // ### Deprecated
+
+  substVowelCombLiga:   createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-vowel' ] ),
+  substZhuyinCombLiga:  createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-zhuyin' ] ),
+  substCombLigaWithPUA: createSubstFactory( Han.TYPESET[ 'display-as' ][ 'comb-liga-pua' ] ),
 
   substInaccurateChar: function( context ) {
     var context = context || document
     var finder = Han.find( context )
 
     finder.avoid( SELECTOR_TO_IGNORE )
-    aInaccurateChar
+
+    Han.TYPESET[ 'inaccurate-char' ]
     .forEach(function( pattern ) {
       finder
       .replace(
@@ -2544,17 +2576,65 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  'comb-liga': null,
-  'inaccurate-char': null,
+  'comb-liga-vowel':   null,
+  'comb-liga-vowel-i': null,
+  'comb-liga-zhuyin':  null,
+  'inaccurate-char':   null,
+
+  substVowelCombLiga: function() {
+    this['comb-liga-vowel'] = Han.substVowelCombLiga( this.context )
+    return this
+  },
+
+  substVowelICombLiga: function() {
+    this['comb-liga-vowel-i'] = Han.substVowelICombLiga( this.context )
+    return this
+  },
+
+  substZhuyinCombLiga: function() {
+    this['comb-liga-zhuyin'] = Han.substZhuyinCombLiga( this.context )
+    return this
+  },
 
   substCombLigaWithPUA: function() {
-    this['comb-liga'] = Han.substCombLigaWithPUA( this.context )
+    if ( !Han.isVowelCombLigaNormal()) {
+      this['comb-liga-vowel'] = Han.substVowelCombLiga( this.context )
+    } else if ( !Han.isVowelICombLigaNormal()) {
+      this['comb-liga-vowel-i'] = Han.substVowelICombLiga( this.context )
+    }
+
+    if ( !Han.isZhuyinCombLigaNormal()) {
+      this['comb-liga-zhuyin'] = Han.substZhuyinCombLiga( this.context )
+    }
+    return this
+  },
+
+  revertVowelCombLiga: function() {
+    try {
+      this['comb-liga-vowel'].revert( 'all' )
+    } catch (e) {}
+    return this
+  },
+
+  revertVowelICombLiga: function() {
+    try {
+      this['comb-liga-vowel-i'].revert( 'all' )
+    } catch (e) {}
+    return this
+  },
+
+  revertZhuyinCombLiga: function() {
+    try {
+      this['comb-liga-zhuyin'].revert( 'all' )
+    } catch (e) {}
     return this
   },
 
   revertCombLigaWithPUA: function() {
     try {
-      this['comb-liga'].revert( 'all' )
+      this['comb-liga-vowel'].revert( 'all' )
+      this['comb-liga-vowel-i'].revert( 'all' )
+      this['comb-liga-zhuyin'].revert( 'all' )
     } catch (e) {}
     return this
   },
