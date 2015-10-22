@@ -17,6 +17,15 @@ var
     // style
     border-bottom: 3px double lightgrey
 
+// * Zhuyin ruby size
+// *
+@if ( $han-zhuyin-size != $HAN-ZHUYIN-SIZE )
+  ruby.zhuyin,
+  ruby.mps
+    +han-scale( $han-zhuyin-size/.5, 'left center' )
+
+  [zhuyin] h-zhuyin > *
+    +han-scale( $han-zhuyin-size )
 
 /*  Section-wise arrangement
    -------------------------- */
@@ -33,3 +42,4 @@ var
 @import inline/hanging
 @import inline/jiya
 @import inline/subst
+

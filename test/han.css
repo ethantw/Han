@@ -601,10 +601,10 @@ ruby.mps {
 }
 ruby.zhuyin > rt,
 ruby.mps > rt {
-  -moz-transform: scale(1);
-  -ms-transform: scale(1);
-  -webkit-transform: scale(1);
-  transform: scale(1);
+  -moz-transform: scale(.8);
+  -ms-transform: scale(.8);
+  -webkit-transform: scale(.8);
+  transform: scale(.8);
   -moz-transform-origin: left center;
   -ms-transform-origin: left center;
   -webkit-transform-origin: left center;
@@ -715,6 +715,7 @@ ruby.zhuyin h-zhuyin,
 ruby.mps h-zhuyin,
 h-ruby.zhuyin h-zhuyin {
   position: relative;
+  letter-spacing: 0;
 }
 
 ruby.zhuyin h-diao,
@@ -726,9 +727,9 @@ h-ruby.zhuyin h-diao {
   display: block;
   font-size: 1.5em;
 }
-ruby.zhuyin h-diao h-char:after,
-ruby.mps h-diao h-char:after,
-h-ruby.zhuyin h-diao h-char:after {
+ruby.zhuyin h-diao h-char,
+ruby.mps h-diao h-char,
+h-ruby.zhuyin h-diao h-char {
   -webkit-writing-mode: horizontal-tb;
   writing-mode: horizontal-tb;
 }
@@ -836,17 +837,16 @@ h-ruby.zhuyin [diao="󳆷"] h-diao {
   text-indent: 0;
   position: relative;
   display: inline-block;
-  height: 1.2em;
   height: 1em;
   width: .4em;
   vertical-align: text-top;
 }
 
 [zhuyin] h-zhuyin > * {
-  -moz-transform: scale(.5);
-  -ms-transform: scale(.5);
-  -webkit-transform: scale(.5);
-  transform: scale(.5);
+  -moz-transform: scale(.4);
+  -ms-transform: scale(.4);
+  -webkit-transform: scale(.4);
+  transform: scale(.4);
   -moz-transform-origin: left top;
   -ms-transform-origin: left top;
   -webkit-transform-origin: left top;

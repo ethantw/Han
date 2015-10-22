@@ -17,6 +17,7 @@ ruby.mps,
 h-ruby.zhuyin
   h-zhuyin
     position: relative
+    letter-spacing: 0
   h-diao
     // positioning
     position: absolute
@@ -25,9 +26,9 @@ h-ruby.zhuyin
     // box-model
     display: block
     // typography
-
     font-size: 1.5em
-    h-char:after
+
+    h-char
       -webkit-writing-mode: horizontal-tb
       writing-mode:         horizontal-tb
   [diao='˙'] h-diao
@@ -110,7 +111,6 @@ h-ruby.zhuyin
     position: relative
     // box-model
     display: inline-block
-    height: .4*3em
     height: 1em
     width: .4em
     vertical-align: text-top
