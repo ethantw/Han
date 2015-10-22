@@ -71,10 +71,11 @@ rjs-config = {
   onBuildWrite: unwrap
 }
 
-gulp.task \dep     <[ normalize.css fibre.js ]>
-gulp.task \build   <[ dist:font dist:cssmin dist:uglify ]>
-gulp.task \dev     <[ watch server ]>
-gulp.task \default <[ build demo ]>
+gulp.task \dep        <[ normalize.css fibre.js ]>
+gulp.task \build      <[ dist:font dist:cssmin dist:uglify ]>
+gulp.task \build:styl <[ dist:font dist:cssmin-styl dist:uglify ]>
+gulp.task \dev        <[ watch server ]>
+gulp.task \default    <[ build demo ]>
 
 gulp.task \server !->
   gulp-connect.server {
@@ -123,6 +124,16 @@ gulp.task \dist:cssmin <[ dist:sass ]> ->
     .pipe concat.header CSS-BANNER
     .pipe gulp.dest \./dist
 
+gulp.task \dist:cssmin-styl <[ dist:styl ]> ->
+  gulp.src \./dist/han.css
+    .pipe gulp-cssmin { keepSpecialComments: 0 }
+    .pipe concat \han.min.css, {
+      process: ( src ) ->
+        src.replace /@charset\s(['"])UTF-8\1;/g, ''
+    }
+    .pipe concat.header CSS-BANNER
+    .pipe gulp.dest \./dist
+
 gulp.task \dist:js ->
   gulp.src \./src/js/han.js
     .pipe rjs rjs-config
@@ -158,6 +169,10 @@ gulp.task \demo:dist <[ build ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
+gulp.task \demo:dist-styl <[ build:styl ]> ->
+  gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
+    .pipe gulp.dest \./test
+
 gulp.task \demo:font ->
   gulp.src './dist/font/*.{woff,otf}'
     .pipe gulp.dest \./test/font
@@ -190,7 +205,7 @@ gulp.task \demo:js <[ demo:dist ]> ->
 # Watch
 gulp.task \watch <[ default ]> ->
   gulp.watch \./src/sass/**/* <[ demo:dist ]>
-  gulp.watch \./src/styl/**/* <[ dist:styl dist:cssmin demo:dist ]>
+  gulp.watch \./src/styl/**/* <[ demo:dist-styl ]>
   gulp.watch \./src/js/**/*   <[ demo:js ]>
   gulp.watch \./test/*.scss   <[ demo:sass ]>
   gulp.watch \./test/*.jade   <[ demo:jade ]>
