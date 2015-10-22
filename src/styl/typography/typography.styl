@@ -68,16 +68,17 @@ var
 // *
 ruby,
 h-ruby
-  h-ru[zhuyin] h-zhuyin,
-h-ru[zhuyin] h-zhuyin h-diao
+  h-zhuyin,
+  h-zhuyin h-diao
     // 1, 2
     @extend $han-ligature
     .no-unicoderange &
       font-family: "Zhuyin Kaiti", cursive, serif
-  h-ru[zhuyin] h-zhuyin h-diao
+  h-diao
     font-family: "Zhuyin Kaiti", cursive, serif
   &.romanization rt,
-h-ru[annotation] rt
+  [annotation] rt
     // 3
     @extend $han-ligature
     font-family: "Romanization Sans", $han-sans, han-typeface("Han Heiti", $han-glyph-set-hant, $han-sans-zh), sans-serif
+

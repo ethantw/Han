@@ -1,48 +1,108 @@
 
-h-ru[annotation]
-  // positioning
-  position: relative
-  // box-model
-  display: inline-table
-  border-collapse: collapse
-  border-spacing: 0
-  // typography
-  line-height: 1.1
-  text-align: center
-  vertical-align: 1em
+h-ru
+  display: ruby
 
-  > h-ru[annotation]
-    vertical-align: -.1em
-  h-ruby[rightangle][doubleline] &
-    vertical-align: .5em
-  > h-ru,
-  > rb,
-  > rt
-    // typography
-    line-height: 1
-    text-align: center
-  > rt
+  &[order='0']
+    -webkit-ruby-position: over
+    ruby-position: over
+  &[order='1'],
+  &.rightangle
+    -webkit-ruby-position: under
+    ruby-position: under
+  rt
+    display: ruby-text
+
+ruby.zhuyin,
+ruby.mps,
+h-ruby.zhuyin
+  h-zhuyin
+    position: relative
+    letter-spacing: 0
+  h-diao
+    // positioning
+    position: absolute
+    right: -.9em
+    bottom: .5em
     // box-model
-    display: table-header-group
-    height: 1em
+    display: block
     // typography
-    font-size: 0.5em
-    white-space: nowrap
-    word-break: normal
-  >rt:before,
-  >rt:after
-    content: "\2006"
-  &[order='0'] > rt,
-  h-ruby[rightangle][doubleline] &[order='0'] > rt
+    font-size: 1.5em
+
+    h-char
+      -webkit-writing-mode: horizontal-tb
+      writing-mode:         horizontal-tb
+
+  [diao='˙'] h-diao
+    // positioning
+    top: -.3em
+    right: auto
+    bottom: auto
+    left: 0
+    // typography
+    font-size: 1em
+
+  [diao^='ㆴ'],
+  [diao^='ㆵ'],
+  [diao^='ㆶ'],
+  [diao^='ㆷ'],
+  [diao='󳆴'],
+  [diao='󳆵'],
+  [diao='󳆶'],
+  [diao='󳆷']
+    h-diao
+      // positioning
+      right: -1em
+      bottom: -.125em
+      // typography
+      font-size: 1em
+
+.no-ruby-display
+  h-ru[annotation]
+    // positioning
+    position: relative
+    // box-model
+    display: inline-table
+    border-collapse: collapse
+    border-spacing: 0
+    // typography
+    line-height: 1.1
+    text-align: center
+    vertical-align: 1em
+
+    > h-ru[annotation]
+      vertical-align: -.1em
+    > h-ru,
+    > rb,
+    > rt
+      // typography
+      line-height: 1
+      text-align: center
+    > rt
+      // box-model
+      display: table-header-group
+      height: 1em
+      // typography
+      font-size: .5em
+      white-space: nowrap
+      word-break: normal
+
+      &:before,
+      &:after
+        content: '\2006'
+
+  h-ru[order='0'] > rt,
+  h-ruby[rightangle][doubleline] h-ru[order='0'] > rt
     display: table-header-group
-  &[order='1'] > rt,
-  h-ruby[rightangle] &[order='0'] > rt,
-  h-ruby[rightangle][doubleline] &[order='1'] > rt
+  h-ru[order='1'] > rt,
+  h-ruby[rightangle] h-ru[order='0'] > rt,
+  h-ruby[rightangle][doubleline] h-ru[order='1'] > rt
     display: table-footer-group
-  &[order='0'] > h-ru[order='1']
+  h-ru[order='0'] > h-ru[order='1']
     vertical-align: .15em
-  h-ruby[rightangle][doubleline] &[order='0'] rt
+  h-ruby[rightangle][doubleline] h-ru[order='0'] rt
     line-height: 1.5
+  h-ruby[rightangle][doubleline] h-ru[annotation]
+    vertical-align: .5em
 
 //  Zhuyin
 // --------
@@ -53,13 +113,12 @@ $han-zhuyin
     position: relative
     // box-model
     display: inline-block
-    height: (0.4 * 3em)
     height: 1em
-    width: 0.4em
+    width: .4em
     vertical-align: text-top
   h-zhuyin > *
     // box-model
-    han-scale(0.4)
+    han-scale( $HAN-ZHUYIN-SIZE )
     display: inline-block
   h-yin
     // positioning
@@ -79,59 +138,43 @@ $han-zhuyin
   h-yin:empty,
   h-diao:empty
     display: none
-  &[length='0']
+
+  [length='0']
     margin-right: 0
     h-zhuyin
       display: none
-  &[length='1'],
   [length='1']
     h-yin
-      top: 0.3em
+      top: .3em
     h-diao
       bottom: 0
-  &[length='2'],
   [length='2']
     h-yin
-      top: 0.05em
+      top: .05em
     h-diao
       bottom: -.3em
-  &[length='3'],
   [length='3']
     h-yin
       top: -.05em
-      line-height: 0.85
+      line-height: .85
     h-diao
       bottom: -.35em
-  &[diao='˙'],
   [diao='˙']
     h-diao
       top: 0
       right: auto
       bottom: auto
-      left: 0.06em
-    &[length='1'] h-diao,
+      left: .06em
     [length='1'] h-diao
-        top: 0.15em
-    &[length='2'] h-diao,
+      top: .15em
     [length='2'] h-diao
-        top: -.05em
-    &[length='3'] h-diao,
+      top: -.05em
     [length='3'] h-diao
-        top: -.2em
-  &[diao='˪'],
-  &[diao='˫'],
+      top: -.2em
   [diao='˪'],
   [diao='˫']
     h-diao
-      han-scale(0.6)
-  &[diao^='ㆴ'],
-  &[diao^='ㆵ'],
-  &[diao^='ㆶ'],
-  &[diao^='ㆷ'],
-  &[diao='󳆴'],
-  &[diao='󳆵'],
-  &[diao='󳆶'],
-  &[diao='󳆷'],
+      han-scale( .6 )
   [diao^='ㆴ'],
   [diao^='ㆵ'],
   [diao^='ㆶ'],
@@ -142,12 +185,12 @@ $han-zhuyin
   [diao='󳆷']
     h-diao
       bottom: -.6em
-      margin-right: 0.3em
+      margin-right: .3em
 
 [zhuyin]
   @extend $han-zhuyin
   // positioning
-  margin-right: 0.2em
+  margin-right: .2em
   // box-model
   display: inline-block
   // typography
@@ -160,13 +203,13 @@ $han-zhuyin
     vertical-align: 0
     line-height: 1
   rt:after
-    content: ""
+    content: ''
     display: inline-block
     width: 1.2em
+
 h-ru h-ru[zhuyin]
   // positioning
   margin-top: -.4em
   margin-bottom: -.2em
   // typography
   line-height: 1.8
-

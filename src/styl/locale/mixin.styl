@@ -1,5 +1,5 @@
 
-han-mark-to-code($mark, $shape = filled)
+han-mark-to-code( $mark, $shape = filled )
   $ret = $mark
   if $shape == filled
     if $mark == circle
@@ -25,53 +25,53 @@ han-mark-to-code($mark, $shape = filled)
       $ret = "\25b3"
   $ret
 
-han-calc($prop, $exp)
-  $prop: -moz-calc($exp)
-  $prop: -webkit-calc($exp)
-  $prop: calc($exp)
+han-calc( $prop, $exp )
+  $prop: -moz-calc( $exp )
+  $prop: -webkit-calc( $exp )
+  $prop: calc( $exp )
 
-han-scale($size)
-  -moz-transform: scale($size)
-  -ms-transform: scale($size)
-  -webkit-transform: scale($size)
-  transform: scale($size)
-  -moz-transform-origin: left top
-  -ms-transform-origin: left top
-  -webkit-transform-origin: left top
-  transform-origin: left top
+han-scale( $size, $origin = 'left top' )
+  -moz-transform:    scale( $size )
+  -ms-transform:     scale( $size )
+  -webkit-transform: scale( $size )
+  transform:         scale( $size )
+  -moz-transform-origin:    unquote($origin)
+  -ms-transform-origin:     unquote($origin)
+  -webkit-transform-origin: unquote($origin)
+  transform-origin:         unquote($origin)
 
-han-scale-center($size)
-  -moz-transform: scale($size)
-  -ms-transform: scale($size)
-  -webkit-transform: scale($size)
-  transform: scale($size)
+han-scale-center( $size )
+  -moz-transform: scale( $size )
+  -ms-transform: scale( $size )
+  -webkit-transform: scale( $size )
+  transform: scale( $size )
 
 han-typo-reset()
-  han-text-emphasis-internal(none)
+  han-text-emphasis-internal( none )
   font-style: normal
   font-weight: normal
   line-height: normal
   text-decoration: none
   text-indent: 0
 
-han-text-emphasis-internal($posi = $HAN-TEXT-EMPHASIS-POSI, $mark = $HAN-TEXT-EMPHASIS-MARK, $shape = $HAN-TEXT-EMPHASIS-SHAPE, $color = $HAN-TEXT-EMPHASIS-COLOR)
+han-text-emphasis-internal( $posi = $HAN-TEXT-EMPHASIS-POSI, $mark = $HAN-TEXT-EMPHASIS-MARK, $shape = $HAN-TEXT-EMPHASIS-SHAPE, $color = $HAN-TEXT-EMPHASIS-COLOR )
   if $posi == none
     $mark = none
     $shape = null
   if $mark != null or $shape != null
-    -moz-text-emphasis: $shape $mark
+    -moz-text-emphasis:    $shape $mark
     -webkit-text-emphasis: $shape $mark
-    text-emphasis: $shape $mark
+    text-emphasis:         $shape $mark
   if $posi != null and $posi != none
-    -moz-text-emphasis-position: $posi
+    -moz-text-emphasis-position:    $posi
     -webkit-text-emphasis-position: $posi
-    text-emphasis-position: $posi
+    text-emphasis-position:         $posi
   if $color != null and $color != inherit
-    -moz-text-emphasis-color: $color
+    -moz-text-emphasis-color:    $color
     -webkit-text-emphasis-color: $color
-    text-emphasis-color: $color
+    text-emphasis-color:         $color
 
-han-text-emphasis-pf($posi = $HAN-TEXT-EMPHASIS-POSI, $mark = $HAN-TEXT-EMPHASIS-MARK, $shape = $HAN-TEXT-EMPHASIS-SHAPE, $color = $HAN-TEXT-EMPHASIS-COLOR, $skip = $HAN-TEXT-EMPHASIS-SKIP, $extend = true)
+han-text-emphasis-pf( $posi = $HAN-TEXT-EMPHASIS-POSI, $mark = $HAN-TEXT-EMPHASIS-MARK, $shape = $HAN-TEXT-EMPHASIS-SHAPE, $color = $HAN-TEXT-EMPHASIS-COLOR, $skip = $HAN-TEXT-EMPHASIS-SKIP, $extend = true )
   if $extend
     @extend $han-text-emphasis-pf
   if $extend and $skip
@@ -100,3 +100,4 @@ han-text-emphasis-pf($posi = $HAN-TEXT-EMPHASIS-POSI, $mark = $HAN-TEXT-EMPHASIS
           if $shape == open
             $mark = "\25cb"
         content: $mark !important
+
