@@ -31,19 +31,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.6/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/font/han.otf`
 
 ## How to use
 
@@ -78,6 +78,7 @@ Han.js runs in DOM environments only. Introduce modules such as [jsdom] for serv
 ## Browser support
 
 - Google Chrome (latest)
+- Mozilla Firefox (latest)
 - Mozilla Firefox ESR+
 - Opera Next (latest)
 - Apple Safari 7+
@@ -97,6 +98,6 @@ Below goes the list with some useful developing commands:
 - Update dependencies: `sudo npm update && gulp dep`
 
 * * *
-Han.css v3.2.6  
-Last-modified: 2015-9-17 16:54 (UTC+8)
+Han.css v3.2.7  
+Last-modified: 2015-10-17 23:19 (UTC+8)
 
