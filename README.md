@@ -68,6 +68,7 @@ Web字體，
 - Mozilla Firefox ESR+
 - Opera Next（最新版）
 - Apple Safari 7+
+- Microsoft Edge
 - Internet Explorer 10+
 
 ## 開發需求與指令

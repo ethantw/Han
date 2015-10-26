@@ -82,6 +82,7 @@ Han.js runs in DOM environments only. Introduce modules such as [jsdom] for serv
 - Mozilla Firefox ESR+
 - Opera Next (latest)
 - Apple Safari 7+
+- Microsoft Edge
 - Internet Explorer 10+
 
 ## Requirements and developing commands

@@ -86,6 +86,7 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 - Mozilla Firefox ESR+
 - Opera Next（最新版）
 - Apple Safari 7+
+- Microsoft Edge
 - Internet Explorer 10+
 
 ## 開発について
