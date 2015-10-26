@@ -91,8 +91,10 @@
     }
   });
   test('Interlinear annotations (Ruby)', function(){
-    var support, d, ruby;
+    var support, supportZhuyin, supportRubyDisplay, d, ruby;
     support = Han.support.ruby;
+    supportZhuyin = Han.support['ruby-interchar'];
+    supportRubyDisplay = Han.support['ruby-display'];
     d = div();
     d.innerHTML = '<ruby>字<rt>zi</ruby>';
     Han(d).renderRuby();
@@ -109,7 +111,11 @@
       it.removeAttribute('diao');
       it.removeAttribute('length');
     });
-    htmlEqual(d.innerHTML, '<h-ruby class=zhuyin><h-ru>事<h-zhuyin><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>情<h-zhuyin><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru>看<h-zhuyin><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>冷<h-zhuyin><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru><h-ru>暖<h-zhuyin><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru></h-ruby>');
+    if (supportZhuyin) {
+      htmlEqual(d.innerHTML, '<ruby class=zhuyin>事<rt><h-zhuyin length=1 diao=ˋ><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></rt>情<rt><h-zhuyin length=3 diao=ˊ><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></rt>看<rt><h-zhuyin length=2 diao=ˋ><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></rt>冷<rt><h-zhuyin length=2 diao=ˇ><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></rt>暖<rt><h-zhuyin length=3 diao=ˇ><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></rt></ruby>');
+    } else {
+      htmlEqual(d.innerHTML, '<h-ruby class=zhuyin><h-ru>事<h-zhuyin length=1 diao=ˋ><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>情<h-zhuyin length=3 diao=ˊ><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru>看<h-zhuyin length=2 diao=ˋ><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>冷<h-zhuyin length=2 diao=ˇ><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru><h-ru>暖<h-zhuyin length=3 diao=ˇ><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru></h-ruby>');
+    }
     d.innerHTML = '<p>\n  <ruby class="complex">\n    辛亥革命發生在<rb>1911-</rb><rb>10-</rb><rb>10，</rb>\n      <rtc><rt>年</rt><rt>月</rt><rt>日</rt></rtc>\n      <rtc><rt rbspan="3">清宣統三年</rt></rtc>\n    那天革命先烈們一同推翻了帝制。\n  </ruby>\n</p>';
     Han(d).renderRuby();
     d.querySelector('h-ruby').removeAttribute('doubleline');
@@ -144,7 +150,7 @@
       it.removeAttribute('diao');
       it.removeAttribute('length');
     });
-    htmlEqual(d.innerHTML, '<p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>tsi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>人</rb><h-zhuyin><h-yin>ㄌㄤ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><rt>lâng</rt></h-ru><rt>lâng</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>煩</rb><h-zhuyin><h-yin>ㄏㄨㄢ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru><rb>惱</rb><h-zhuyin><h-yin>ㄌㄜ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><rt rbspan=2>hoân‑ló</rt></h-ru><rt rbspan=2>huân-ló</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>chi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>樣</rb><h-zhuyin><h-yin>ㄧㆫ</h-yin><h-diao>˫</h-diao></h-zhuyin></h-ru><rt>iūⁿ</rt></h-ru><rt>iūnn</rt></h-ru>。</h-ruby></p>');
+    htmlEqual(d.innerHTML, '<p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin length=2 diao=ㆵ͘><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>tsi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>人</rb><h-zhuyin length=2 diao=ˊ><h-yin>ㄌㄤ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><rt>lâng</rt></h-ru><rt>lâng</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>煩</rb><h-zhuyin length=3 diao=ˊ><h-yin>ㄏㄨㄢ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru><rb>惱</rb><h-zhuyin length=2 diao=ˋ><h-yin>ㄌㄜ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><rt rbspan=2>hoân‑ló</rt></h-ru><rt rbspan=2>huân-ló</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin length=2 diao=ㆵ͘><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>chi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>樣</rb><h-zhuyin length=2 diao=˫><h-yin>ㄧㆫ</h-yin><h-diao>˫</h-diao></h-zhuyin></h-ru><rt>iūⁿ</rt></h-ru><rt>iūnn</rt></h-ru>。</h-ruby></p>');
   });
   module('Advanced typesetting features');
   test('Hanzi-Western script mixed spacing (HWS)', function(){
