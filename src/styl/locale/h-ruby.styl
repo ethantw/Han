@@ -1,4 +1,9 @@
 
+// ### TODO
+// Edge/IE currently has issue displaying with native ruby-position,
+// which will be fixed through the next Han.css version.
+
+/*
 h-ru
   display: ruby
 
@@ -11,6 +16,7 @@ h-ru
     ruby-position: under
   rt
     display: ruby-text
+*/
 
 ruby.zhuyin,
 ruby.mps,
@@ -56,53 +62,53 @@ h-ruby.zhuyin
       // typography
       font-size: 1em
 
-.no-ruby-display
-  h-ru[annotation]
-    // positioning
-    position: relative
-    // box-model
-    display: inline-table
-    border-collapse: collapse
-    border-spacing: 0
+//.no-ruby-display (L66-111)
+h-ru[annotation]
+  // positioning
+  position: relative
+  // box-model
+  display: inline-table
+  border-collapse: collapse
+  border-spacing: 0
+  // typography
+  line-height: 1.1
+  text-align: center
+  vertical-align: 1em
+
+  > h-ru[annotation]
+    vertical-align: -.1em
+  > h-ru,
+  > rb,
+  > rt
     // typography
-    line-height: 1.1
+    line-height: 1
     text-align: center
-    vertical-align: 1em
-
-    > h-ru[annotation]
-      vertical-align: -.1em
-    > h-ru,
-    > rb,
-    > rt
-      // typography
-      line-height: 1
-      text-align: center
-    > rt
-      // box-model
-      display: table-header-group
-      height: 1em
-      // typography
-      font-size: .5em
-      white-space: nowrap
-      word-break: normal
-
-      &:before,
-      &:after
-        content: '\2006'
-
-  h-ru[order='0'] > rt,
-  h-ruby[rightangle][doubleline] h-ru[order='0'] > rt
+  > rt
+    // box-model
     display: table-header-group
-  h-ru[order='1'] > rt,
-  h-ruby[rightangle] h-ru[order='0'] > rt,
-  h-ruby[rightangle][doubleline] h-ru[order='1'] > rt
-    display: table-footer-group
-  h-ru[order='0'] > h-ru[order='1']
-    vertical-align: .15em
-  h-ruby[rightangle][doubleline] h-ru[order='0'] rt
-    line-height: 1.5
-  h-ruby[rightangle][doubleline] h-ru[annotation]
-    vertical-align: .5em
+    height: 1em
+    // typography
+    font-size: .5em
+    white-space: nowrap
+    word-break: normal
+
+    &:before,
+    &:after
+      content: '\2006'
+
+h-ru[order='0'] > rt,
+h-ruby[rightangle][doubleline] h-ru[order='0'] > rt
+  display: table-header-group
+h-ru[order='1'] > rt,
+h-ruby[rightangle] h-ru[order='0'] > rt,
+h-ruby[rightangle][doubleline] h-ru[order='1'] > rt
+  display: table-footer-group
+h-ru[order='0'] > h-ru[order='1']
+  vertical-align: .15em
+h-ruby[rightangle][doubleline] h-ru[order='0'] rt
+  line-height: 1.5
+h-ruby[rightangle][doubleline] h-ru[annotation]
+  vertical-align: .5em
 
 //  Zhuyin
 // --------

@@ -695,22 +695,6 @@ em:lang(ja) h-char.biaodian {
   content: "﹅";
 }
 
-h-ru {
-  display: ruby;
-}
-h-ru[order="0"] {
-  -webkit-ruby-position: over;
-  ruby-position: over;
-}
-h-ru[order="1"],
-h-ru.rightangle {
-  -webkit-ruby-position: under;
-  ruby-position: under;
-}
-h-ru rt {
-  display: ruby-text;
-}
-
 ruby.zhuyin h-zhuyin,
 ruby.mps h-zhuyin,
 h-ruby.zhuyin h-zhuyin {
@@ -773,7 +757,7 @@ h-ruby.zhuyin [diao="󳆷"] h-diao {
   font-size: 1em;
 }
 
-.no-ruby-display h-ru[annotation] {
+h-ru[annotation] {
   position: relative;
   display: inline-table;
   border-collapse: collapse;
@@ -782,47 +766,47 @@ h-ruby.zhuyin [diao="󳆷"] h-diao {
   text-align: center;
   vertical-align: 1em;
 }
-.no-ruby-display h-ru[annotation] > h-ru[annotation] {
+h-ru[annotation] > h-ru[annotation] {
   vertical-align: -.1em;
 }
-.no-ruby-display h-ru[annotation] > h-ru,
-.no-ruby-display h-ru[annotation] > rb,
-.no-ruby-display h-ru[annotation] > rt {
+h-ru[annotation] > h-ru,
+h-ru[annotation] > rb,
+h-ru[annotation] > rt {
   line-height: 1;
   text-align: center;
 }
-.no-ruby-display h-ru[annotation] > rt {
+h-ru[annotation] > rt {
   display: table-header-group;
   height: 1em;
   font-size: .5em;
   white-space: nowrap;
   word-break: normal;
 }
-.no-ruby-display h-ru[annotation] > rt:before,
-.no-ruby-display h-ru[annotation] > rt:after {
+h-ru[annotation] > rt:before,
+h-ru[annotation] > rt:after {
   content: "\2006";
 }
 
-.no-ruby-display h-ru[order="0"] > rt,
-.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="0"] > rt {
+h-ru[order="0"] > rt,
+h-ruby[rightangle][doubleline] h-ru[order="0"] > rt {
   display: table-header-group;
 }
 
-.no-ruby-display h-ru[order="1"] > rt,
-.no-ruby-display h-ruby[rightangle] h-ru[order="0"] > rt,
-.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="1"] > rt {
+h-ru[order="1"] > rt,
+h-ruby[rightangle] h-ru[order="0"] > rt,
+h-ruby[rightangle][doubleline] h-ru[order="1"] > rt {
   display: table-footer-group;
 }
 
-.no-ruby-display h-ru[order="0"] > h-ru[order="1"] {
+h-ru[order="0"] > h-ru[order="1"] {
   vertical-align: .15em;
 }
 
-.no-ruby-display h-ruby[rightangle][doubleline] h-ru[order="0"] rt {
+h-ruby[rightangle][doubleline] h-ru[order="0"] rt {
   line-height: 1.5;
 }
 
-.no-ruby-display h-ruby[rightangle][doubleline] h-ru[annotation] {
+h-ruby[rightangle][doubleline] h-ru[annotation] {
   vertical-align: .5em;
 }
 
