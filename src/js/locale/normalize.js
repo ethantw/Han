@@ -21,28 +21,30 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration-
-  // line) to see if we should address spacing in
-  // between for semantic presentation.
+   // Traverse all target elements and address
+   // presentational corrections if any two of
+   // them are adjacent to each other.
   renderDecoLine: function( context, target ) {
-    var target = target || 'u, ins'
-    var $target = $.qsa( target, context )
-    var rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
+    var $$target = $.qsa( target || 'u, ins', context )
+    var i = $$target.length
 
-    $target
-    .forEach(function( elem ) {
-      var next
+    traverse: while ( i-- ) {
+      var $this = $$target[ i ]
+      var $prev = null
 
-      // Ignore all `<wbr>` and comments in between
-      do {
-        next = ( next || elem ).nextSibling
-        if ( !next ) return
-      } while ( $.isIgnorable( next ))
+      // Ignore all `<wbr>` and comments in between,
+      // and add class `.adjacent` once two targets
+      // are next to each other.
+      ignore: do {
+        $prev = ( $prev || $this ).previousSibling
 
-      if ( next.nodeName.match( rTarget )) {
-        next.classList.add( 'adjacent' )
-      }
-    })
+        if ( !$prev ) {
+          continue traverse
+        } else if ( $$target[ i-1 ] === $prev ) {
+          $this.classList.add( 'adjacent' )
+        }
+      } while ( $.isIgnorable( $prev ))
+    }
   },
 
   // Traverse target elements to render Hanzi emphasis marks
