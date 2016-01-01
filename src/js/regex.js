@@ -19,5 +19,8 @@ Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
 Han.TYPESET.char.cyrillic = Han.TYPESET.char.kirillica
 Han.TYPESET.char.hangul   = Han.TYPESET.char.eonmun
 
+Han.TYPESET.group.hangul  = Han.TYPESET.group.eonmun
+Han.TYPESET.group.cjk     = Han.TYPESET.group.hanzi
+
 return Han
 })
