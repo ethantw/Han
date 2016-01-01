@@ -7,32 +7,39 @@ define([
 ], function( Han, $, UNICODE, TYPESET, Fibre ) {
 
 function createBdGroup( portion, match ) {
-  var elem = $.create( 'h-char-group', 'biaodian cjk' )
-
-  if ( portion.index === 0 && portion.isEnd ) {
-    elem.innerHTML = match[0]
-  } else {
-    elem.innerHTML = portion.text
-    elem.classList.add( 'portion' ) 
-
-    if ( portion.index === 0 ) {
-      elem.classList.add( 'isFirst' ) 
-    } else if ( portion.isEnd ) {
-      elem.classList.add( 'isEnd' ) 
-    }
-  }
+  var clazz = portion.index === 0 && portion.isEnd
+    ? 'biaodian cjk'
+    : 'biaodian cjk portion ' + (
+      portion.index === 0
+      ? 'isFirst is-first'
+      : portion.isEnd
+      ? 'isEnd is-end'
+      : 'isInner is-inner'
+    )
+  var elem = $.create( 'h-char-group', clazz )
+  elem.innerHTML = portion.text
   return elem
 }
 
 function createBdChar( char ) {
-  var div = $.create( 'div' )
+  var div     = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'bd-open' :
-    char.match( TYPESET.char.biaodian.close ) ? 'bd-close bd-end' :
-    char.match( TYPESET.char.biaodian.end ) ? 'bd-end' :
-    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'bd-liga' : '' )
-
-  div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
+  var clazz   = 'biaodian cjk ' + (
+    char.match( TYPESET.char.biaodian.open )
+      ? 'bd-open'
+      : char.match( TYPESET.char.biaodian.close )
+      ? 'bd-close bd-end'
+      : char.match( TYPESET.char.biaodian.end )
+      ? 'bd-end'
+      : char.match(new RegExp( UNICODE.biaodian.liga ))
+      ? 'bd-liga'
+      : ''
+  )
+  div.innerHTML = (
+    '<h-char unicode="' + unicode +
+    '" class="' + clazz +
+    '">' + char + '</h-char>'
+  )
   return div.firstChild
 }
 
