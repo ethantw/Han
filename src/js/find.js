@@ -6,6 +6,19 @@ define([
   './fibre'
 ], function( Han, $, UNICODE, TYPESET, Fibre ) {
 
+var isNodeNormalizeNormal = (function() {
+    //// Disabled `Node.normalize()` for temp due to
+    //// issue below in IE11.
+    //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+    var div = $.create( 'div' )
+
+    div.appendChild( $.create( '', '0-' ))
+    div.appendChild( $.create( '', '2' ))
+    div.normalize()
+
+    return div.firstChild.length !== 2
+})()
+
 function createBdGroup( portion, match ) {
   var clazz = portion.index === 0 && portion.isEnd
     ? 'biaodian cjk'
@@ -44,6 +57,13 @@ function createBdChar( char ) {
 }
 
 $.extend( Fibre.fn, {
+  normalize: function() {
+    if ( isNodeNormalizeNormal ) {
+      this.context.normalize()
+    }
+    return this
+  },
+
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function( selector ) {
     return (
@@ -197,7 +217,10 @@ $.extend( Fibre.fn, {
   }
 })
 
-Han.find = Fibre
+$.extend( Han, {
+  isNodeNormalizeNormal: isNodeNormalizeNormal,
+  find: Fibre
+})
 
 void [
   'setMode',
