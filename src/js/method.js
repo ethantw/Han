@@ -75,6 +75,7 @@ var $ = {
   // Return if the current node should be ignored,
   // `<wbr>` or comments
   isIgnorable: function( node ) {
+    if ( !node )  return false
     return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
   },
 
