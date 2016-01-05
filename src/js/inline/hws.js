@@ -4,101 +4,85 @@ define([
   '../regex'
 ], function( Han, $ ) {
 
-var QUERY_HWS_AS_FIRST_CHILD = '* > h-hws:first-child, * > wbr:first-child + h-hws, wbr:first-child + wbr + h-hws'
+var $hws = $.create( 'h-hws' )
+$hws.setAttribute( 'hidden', '' )
+$hws.innerHTML = ' '
 
-//// Disabled `Node.normalize()` for temp due to
-//// issue below in IE11.
-//// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
-var isNodeNormalizeNormal = (function() {
-  var div = $.create( 'div' )
+function sharingSameParent( $a, $b ) {
+  return $a && $b && $a.parentNode === $b.parentNode
+}
 
-  div.appendChild( $.create( '', '0-' ))
-  div.appendChild( $.create( '', '2' ))
-  div.normalize()
+function putBehindElmt( $node, ret ) {
+  var $elmt
 
-  return div.firstChild.length !== 2
-})()
+  do {
+    $elmt = ( $elmt || $node ).parentNode
+  } while ( !$elmt.nextSibling )
 
-var hws = $.create( 'h-hws' )
-hws.setAttribute( 'hidden', '' )
-hws.innerHTML = ' '
+  $elmt.insertAdjacentText( 'afterend', '<hws/>' )
+  return ret || ''
+}
+
+function replacementFn( portion, mat ) {
+  return portion.isEnd && portion.index === 0
+    ? mat[1] + '<hws/>' + mat[2]
+    : portion.index === 0
+    ? (
+      $.isElmt( portion.node.nextSibling ) ||
+      sharingSameParent( portion.node, portion.node.nextSibling )
+      ? portion.text + '<hws/>'
+      : !portion.node.nextSibling
+      ? putBehindElmt( portion.node, portion.text )
+      : portion.text
+    )
+    : portion.index === 1
+    ? (
+      $.isElmt( portion.node.previousSibling ) ||
+      $.isIgnorable( portion.node.previousSibling )
+      ? '<hws/>' + portion.text
+      : portion.text
+    )
+    : ''
+}
 
 $.extend( Han, {
-  isNodeNormalizeNormal: isNodeNormalizeNormal,
-
   renderHWS: function( context, strict ) {
-    var context = context || document
+  // Elements to be filtered according to the
+  // HWS rendering mode.
+    var AVOID = strict
+    ? 'textarea, code, kbd, samp, pre'
+    : 'textarea'
+
     var mode = strict ? 'strict' : 'base'
+    var context = context || document
     var finder = Han.find( context )
 
-    // Elements to be filtered according to the
-    // HWS rendering mode
-    if ( strict ) {
-      finder.avoid( 'textarea, code, kbd, samp, pre' )
-    } else {
-      finder.avoid( 'textarea' )
-    }
-
     finder
-    .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
-    .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+    .avoid( AVOID )
 
-    // Deal with [' 字'], [" 字"] => ['字'], ["字"]
+    // Basic situations:
+    // - 字a => 字<hws/>a
+    // - A字 => A<hws/>字
+    .replace( Han.TYPESET.hws[ mode ][0], replacementFn )
+    .replace( Han.TYPESET.hws[ mode ][1], replacementFn )
+
+    // Deal with:
+    // - '<hws/>字' => '字'
+    // - "<hws/>字" => "字"
     .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
 
-    // Remove all `<hws/>` pre/post [“字”] and [‘字’]
+    // Omit `<hws/>` preceding/following [“字”] and [‘字’],
     // See: https://github.com/ethantw/Han/issues/59
     .replace( /<hws\/>([‘“]+)/ig, '$1' )
     .replace( /([’”]+)<hws\/>/ig, '$1' )
 
-    // Convert text nodes `<hws/>` into real element nodes
-    .replace( '<hws/>', function() {
-      return $.clone( hws )
+    // Convert text nodes `<hws/>` into real element nodes:
+   .replace( /(<hws\/>)+/g, function( portion ) {
+      return portion.index === 0
+        ? $.clone( $hws )
+        : ''
     })
-
-    // Deal with:
-    // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
-    $
-    .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
-    .forEach(function( firstChild ) {
-      var parent = firstChild.parentNode
-      var target = parent.firstChild
-
-      // Skip all `<wbr>` and comments
-      while ( $.isIgnorable( target )) {
-        target = target.nextSibling
-
-        if ( !target ) return
-      }
-
-      // The ‘first-child’ of DOM is different from
-      // the ones of QSA, could be either an element
-      // or a text fragment, but the latter one is
-      // not what we want. We don't want comments,
-      // either.
-      while ( target.nodeName === 'H-HWS' ) {
-        $.remove( target, parent )
-
-        target = parent.parentNode.insertBefore( $.clone( hws ), parent )
-        parent = parent.parentNode
-
-        if ( isNodeNormalizeNormal ) {
-          parent.normalize()
-        }
-
-        // This is for extreme circumstances, i.e.,
-        // `漢<a><b><c><h-hws/>zi</c></b></a>` =>
-        // `漢<h-hws/><a><b><c>zi</c></b></a>`
-        if ( target !== parent.firstChild ) {
-          break
-        }
-      }
-    })
-
-    // Normalise nodes we messed up with
-    if ( isNodeNormalizeNormal ) {
-      context.normalize()
-    }
+    .normalize()
 
     // Return the finder instance for future usage
     return finder
@@ -106,7 +90,7 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  HWS: null,
+  HWS: [],
 
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
@@ -116,9 +100,10 @@ $.extend( Han.fn, {
   },
 
   revertHWS: function() {
-    this.HWS.forEach(function( hws ) {
+    this.HWS.map(function( hws ) {
       $.remove( hws )
     })
+    this.HWS = []
     return this
   }
 })

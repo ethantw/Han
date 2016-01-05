@@ -188,7 +188,7 @@
     htmlEqual(d.innerHTML, '去<h-hws hidden=""> </h-hws><u>europe</u><h-hws hidden=""> </h-hws>旅行。');
     d.innerHTML = '去<!-- x -->Europe<wbr><!---->旅行。';
     Han(d).renderHWS();
-    htmlEqual(d.innerHTML, '去<!-- x --><h-hws hidden=""> </h-hws>europe<wbr><!----><h-hws hidden=""> </h-hws>旅行。');
+    htmlEqual(d.innerHTML, '去<h-hws hidden=""> </h-hws><!-- x -->europe<h-hws hidden=""> </h-hws><wbr><!---->旅行。');
     d.innerHTML = '測試¿測試?測試¡測試!為‘什’麼;為“什”麼?';
     Han(d).renderHWS();
     htmlEqual(d.innerHTML, '測試<h-hws hidden=""> </h-hws>¿測試?<h-hws hidden=""> </h-hws>測試<h-hws hidden=""> </h-hws>¡測試!<h-hws hidden=""> </h-hws>為‘什’麼;<h-hws hidden=""> </h-hws>為“什”麼?');
@@ -197,10 +197,19 @@
     htmlEqual(d.innerHTML, '單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號和單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號.');
     d.innerHTML = '\'單x引x號\'"雙x引x號".';
     Han(d).renderHWS();
-    htmlEqual(d.innerHTML, '\'單<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws><h-hws hidden=""> </h-hws>引<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws><h-hws hidden=""> </h-hws>號\'"雙<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws><h-hws hidden=""> </h-hws>引<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws><h-hws hidden=""> </h-hws>號".');
+    htmlEqual(d.innerHTML, '\'單<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws>引<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws>號\'"雙<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws>引<h-hws hidden=""> </h-hws>x<h-hws hidden=""> </h-hws>號".');
     d.innerHTML = '單\'引\'號和雙"引"號和單\'引\'號和雙"引"號.';
     Han(d).renderHWS();
-    return htmlEqual(d.innerHTML, '單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號和單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號.');
+    htmlEqual(d.innerHTML, '單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號和單<h-hws hidden=""> </h-hws>\'引\'<h-hws hidden=""> </h-hws>號和雙<h-hws hidden=""> </h-hws>"引"<h-hws hidden=""> </h-hws>號.');
+    d.innerHTML = '你是咧com<u><i>啥物</i></u>plain啦！';
+    Han(d).renderHWS();
+    htmlEqual(d.innerHTML, '你是咧<h-hws hidden=""> </h-hws>com<h-hws hidden=""> </h-hws><u><i>啥物</i></u><h-hws hidden=""> </h-hws>plain<h-hws hidden=""> </h-hws>啦！');
+    d.innerHTML = '<u class="pn">美國</u><span lang="en">Chicago</span><em>是</em>這架飛船的目的地。';
+    Han(d).renderHWS();
+    htmlEqual(d.innerHTML, '<u class=pn>美國</u><h-hws hidden=""> </h-hws><span lang=en>chicago</span><h-hws hidden=""> </h-hws><em>是</em>這架飛船的目的地。');
+    d.innerHTML = '<p>不知道是不是<u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>';
+    Han(d).renderHWS();
+    return htmlEqual(d.innerHTML, '<p>不知道是不是<h-hws hidden=""> </h-hws><u lang=en><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u><h-hws hidden=""> </h-hws>你用「元件檢閱器」看看。</p>');
   });
   test('Biaodian jiya', function(){
     var d;
