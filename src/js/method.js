@@ -93,7 +93,15 @@ var $ = {
   },
 
   /**
-   * Indicate whether or not the current node should
+   * Indicate whether or not the given node is an
+   * element.
+   */
+  isElmt: function( $node ) {
+    return $node && $node.nodeType === Node.ELEMENT_NODE
+  },
+
+  /**
+   * Indicate whether or not the given node should
    * be ignored (`<wbr>` or comments).
    */
   isIgnorable: function( $node ) {
