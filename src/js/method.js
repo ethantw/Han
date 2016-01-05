@@ -21,26 +21,30 @@ var $ = {
 
   // Create a document fragment, a text node with text
   // or an element with/without classes
-  create: function( elem, clazz ) {
-    var elem = '!' === elem ?
-      document.createDocumentFragment() :
-      '' === elem ?
-        document.createTextNode( clazz || '' ) :
-        document.createElement( elem )
+  create: function( name, clazz ) {
+    var $elmt = '!' === name
+      ? document.createDocumentFragment()
+      : '' === name
+      ? document.createTextNode( clazz || '' )
+      : document.createElement( name )
 
     try {
       if ( clazz ) {
-        elem.className = clazz
+        $elmt.className = clazz
       }
     } catch (e) {}
 
-    return elem
+    return $elmt
   },
 
   // Clone a node (text, element or fragment) deeply or
   // childlessly
   clone: function( node, deep ) {
-    return node.cloneNode( typeof deep === 'boolean' ? deep : true )
+    return node.cloneNode(
+      typeof deep === 'boolean'
+      ? deep
+      : true
+    )
   },
 
   // Remove a node (text, element or fragment)
@@ -50,11 +54,13 @@ var $ = {
 
   // Set attributes all in once with an object
   setAttr: function( target, attr ) {
-    if ( typeof attr !== 'object' ) return
+    if ( typeof attr !== 'object' )  return
     var len = attr.length
 
     // Native NamedNodeMap
-    if ( typeof attr[ 0 ] === 'object' && 'name' in attr[ 0 ] ) {
+    if (
+      typeof attr[ 0 ] === 'object' &&
+      'name' in attr[ 0 ] ) {
       for ( var i = 0; i < len; i++ ) {
         if ( attr[ i ].value !== undefined ) {
           target.setAttribute( attr[ i ].name, attr[ i ].value )
@@ -64,7 +70,10 @@ var $ = {
     // Plain object
     } else {
       for ( var name in attr ) {
-        if ( attr.hasOwnProperty( name ) && attr[ name ] !== undefined ) {
+        if (
+          attr.hasOwnProperty( name ) &&
+          attr[ name ] !== undefined
+        ) {
           target.setAttribute( name, attr[ name ] )
         }
       }
@@ -76,7 +85,10 @@ var $ = {
   // `<wbr>` or comments
   isIgnorable: function( node ) {
     if ( !node )  return false
-    return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
+    return (
+      node.nodeName === 'WBR' ||
+      node.nodeType === Node.COMMENT_NODE
+    )
   },
 
   // Convert array-like objects into real arrays
@@ -87,14 +99,16 @@ var $ = {
 
   // Extend target with an object
   extend: function( target, object ) {
-    var isExtensible = typeof target === 'object' ||
+    var isExtensible = (
+      typeof target === 'object' ||
       typeof target === 'function' ||
       typeof object === 'object'
+    )
 
-    if ( !isExtensible ) return
+    if ( !isExtensible )  return
 
     for ( var name in object ) {
-      if ( object.hasOwnProperty( name )) {
+      if (object.hasOwnProperty( name )) {
         target[ name ] = object[ name ]
       }
     }
@@ -104,3 +118,4 @@ var $ = {
 
 return $
 })
+

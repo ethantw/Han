@@ -13,31 +13,31 @@ var TYPESET = (function() {
   var rPtMid = UNICODE.punct.middle
   var rPtSing = UNICODE.punct.sing
   var rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid
-   
+
   var rBdOpen = UNICODE.biaodian.open
   var rBdClose = UNICODE.biaodian.close
   var rBdEnd = UNICODE.biaodian.end
   var rBdMid = UNICODE.biaodian.middle
   var rBdLiga = UNICODE.biaodian.liga + '{2}'
   var rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid
-   
+
   var rKana = UNICODE.kana.base + UNICODE.kana.combine + '?'
   var rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?'
   var rKanaH = UNICODE.kana.half
   var rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter
   var rEonH = UNICODE.eonmun.half
-   
+
   var rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana
-   
+
   var rCbn = UNICODE.ellinika.combine
   var rLatn = UNICODE.latin.base + rCbn + '*'
   var rGk = UNICODE.ellinika.base + rCbn + '*'
-   
+
   var rCyCbn = UNICODE.kirillica.combine
   var rCy = UNICODE.kirillica.base + rCyCbn + '*'
-   
+
   var rAlph = rLatn + '|' + rGk + '|' + rCy
-   
+
   // For words like `it's`, `Jones’s` or `'99`
   var rApo = '[\u0027\u2019]'
   var rChar = rHan + '|(?:' + rAlph + '|' + rApo + ')+'
@@ -66,14 +66,14 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
       },
 
-      hanzi: new RegExp( '(' + rHan + ')', 'g' ),
+      hanzi:     new RegExp( '(' + rHan + ')', 'g' ),
 
-      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+      latin:     new RegExp( '(' + rLatn + ')', 'ig' ),
+      ellinika:  new RegExp( '(' + rGk + ')', 'ig' ),
+      kirillica: new RegExp( '(' + rCy + ')', 'ig' ),
 
-      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
-      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
+      kana:      new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
+      eonmun:    new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
     },
 
     /* Word-level selectors (詞級選擇器)
