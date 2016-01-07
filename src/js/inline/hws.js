@@ -12,37 +12,32 @@ function sharingSameParent( $a, $b ) {
   return $a && $b && $a.parentNode === $b.parentNode
 }
 
-function putBehindElmt( $node, ret ) {
-  var $elmt
+function properlyPlaceHWSBehind( $node, text ) {
+  var $elmt = $node
+  var text  = text || ''
 
-  do {
-    $elmt = ( $elmt || $node ).parentNode
-  } while ( !$elmt.nextSibling )
-
-  $elmt.insertAdjacentText( 'afterend', '<hws/>' )
-  return ret || ''
+  if (
+    $.isElmt( $node.nextSibling ) ||
+    sharingSameParent( $node, $node.nextSibling )
+  ) {
+    return text + '<hws/>'
+  } else {
+    while ( !$elmt.nextSibling ) {
+      $elmt = $elmt.parentNode
+    }
+    if ( $node !== $elmt ) {
+      $elmt.insertAdjacentText( 'afterend', '<hws/>' )
+    }
+  }
+  return text
 }
 
 function replacementFn( portion, mat ) {
   return portion.isEnd && portion.index === 0
     ? mat[1] + '<hws/>' + mat[2]
     : portion.index === 0
-    ? (
-      $.isElmt( portion.node.nextSibling ) ||
-      sharingSameParent( portion.node, portion.node.nextSibling )
-      ? portion.text + '<hws/>'
-      : !portion.node.nextSibling
-      ? putBehindElmt( portion.node, portion.text )
-      : portion.text
-    )
-    : portion.index === 1
-    ? (
-      $.isElmt( portion.node.previousSibling ) ||
-      $.isIgnorable( portion.node.previousSibling )
-      ? '<hws/>' + portion.text
-      : portion.text
-    )
-    : ''
+    ? properlyPlaceHWSBehind( portion.node, portion.text )
+    : portion.text
 }
 
 $.extend( Han, {
@@ -77,7 +72,7 @@ $.extend( Han, {
     .replace( /([’”]+)<hws\/>/ig, '$1' )
 
     // Convert text nodes `<hws/>` into real element nodes:
-   .replace( /(<hws\/>)+/g, function( portion ) {
+    .replace( /(<hws\/>)+/g, function( portion ) {
       return portion.index === 0
         ? $.clone( $hws )
         : ''
