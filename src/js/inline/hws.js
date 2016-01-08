@@ -22,6 +22,9 @@ function properlyPlaceHWSBehind( $node, text ) {
   ) {
     return text + '<hws/>'
   } else {
+    // One of the parental elements of the current text
+    // node would definitely have a next sibling, since
+    // it is of the first portion and not `isEnd`.
     while ( !$elmt.nextSibling ) {
       $elmt = $elmt.parentNode
     }
@@ -42,8 +45,8 @@ function replacementFn( portion, mat ) {
 
 $.extend( Han, {
   renderHWS: function( context, strict ) {
-  // Elements to be filtered according to the
-  // HWS rendering mode.
+    // Elements to be filtered according to the
+    // HWS rendering mode.
     var AVOID = strict
     ? 'textarea, code, kbd, samp, pre'
     : 'textarea'
