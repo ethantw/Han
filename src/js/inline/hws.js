@@ -67,7 +67,7 @@ $.extend( Han, {
     // Deal with:
     // - '<hws/>字' => '字'
     // - "<hws/>字" => "字"
-    .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+    .replace( /(['"])<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
 
     // Omit `<hws/>` preceding/following [“字”] and [‘字’],
     // See: https://github.com/ethantw/Han/issues/59
