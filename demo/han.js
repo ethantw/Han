@@ -9,7 +9,7 @@ void function( global, factory ) {
   if ( typeof module === 'object' && typeof module.exports === 'object' ) {
     module.exports = factory( global, true )
   // AMD
-  } else if  ( typeof define === 'function' && define.amd ) {
+  } else if ( typeof define === 'function' && define.amd ) {
     define(function() {  return factory( global, true )  })
   // Global namespace
   } else {
@@ -325,31 +325,31 @@ var TYPESET = (function() {
   var rPtMid = UNICODE.punct.middle
   var rPtSing = UNICODE.punct.sing
   var rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid
-   
+
   var rBdOpen = UNICODE.biaodian.open
   var rBdClose = UNICODE.biaodian.close
   var rBdEnd = UNICODE.biaodian.end
   var rBdMid = UNICODE.biaodian.middle
   var rBdLiga = UNICODE.biaodian.liga + '{2}'
   var rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid
-   
+
   var rKana = UNICODE.kana.base + UNICODE.kana.combine + '?'
   var rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?'
   var rKanaH = UNICODE.kana.half
   var rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter
   var rEonH = UNICODE.eonmun.half
-   
+
   var rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana
-   
+
   var rCbn = UNICODE.ellinika.combine
   var rLatn = UNICODE.latin.base + rCbn + '*'
   var rGk = UNICODE.ellinika.base + rCbn + '*'
-   
+
   var rCyCbn = UNICODE.kirillica.combine
   var rCy = UNICODE.kirillica.base + rCyCbn + '*'
-   
+
   var rAlph = rLatn + '|' + rGk + '|' + rCy
-   
+
   // For words like `it's`, `Jones’s` or `'99`
   var rApo = '[\u0027\u2019]'
   var rChar = rHan + '|(?:' + rAlph + '|' + rApo + ')+'
@@ -378,14 +378,14 @@ var TYPESET = (function() {
         liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
       },
 
-      hanzi: new RegExp( '(' + rHan + ')', 'g' ),
+      hanzi:     new RegExp( '(' + rHan + ')', 'g' ),
 
-      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+      latin:     new RegExp( '(' + rLatn + ')', 'ig' ),
+      ellinika:  new RegExp( '(' + rGk + ')', 'ig' ),
+      kirillica: new RegExp( '(' + rCy + ')', 'ig' ),
 
-      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
-      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
+      kana:      new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
+      eonmun:    new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
     },
 
     /* Word-level selectors (詞級選擇器)
@@ -507,71 +507,94 @@ Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
 Han.TYPESET.char.cyrillic = Han.TYPESET.char.kirillica
 Han.TYPESET.char.hangul   = Han.TYPESET.char.eonmun
 
+Han.TYPESET.group.hangul  = Han.TYPESET.group.eonmun
+Han.TYPESET.group.cjk     = Han.TYPESET.group.hanzi
+
 var $ = {
-  // Simplified query selectors which return the node list
-  // in an array
-  id: function( selector, context ) {
-    return ( context || document ).getElementById( selector )
+  /**
+   * Query selectors which return arrays of the resulted
+   * node lists.
+   */
+  id: function( selector, $context ) {
+    return ( $context || document ).getElementById( selector )
   },
 
-  tag: function( selector, context ) {
+  tag: function( selector, $context ) {
     return this.makeArray(
-      ( context || document ).getElementsByTagName( selector )
+      ( $context || document ).getElementsByTagName( selector )
     )
   },
 
-  qsa: function( selector, context ) {
+  qsa: function( selector, $context ) {
     return this.makeArray(
-      ( context || document ).querySelectorAll( selector )
+      ( $context || document ).querySelectorAll( selector )
     )
   },
 
-  // Create a document fragment, a text node with text
-  // or an element with/without classes
-  create: function( elem, clazz ) {
-    var elem = '!' === elem ?
-      document.createDocumentFragment() :
-      '' === elem ?
-        document.createTextNode( clazz || '' ) :
-        document.createElement( elem )
+  /**
+   * Create a document fragment, a text node with text
+   * or an element with/without classes.
+   */
+  create: function( name, clazz ) {
+    var $elmt = '!' === name
+      ? document.createDocumentFragment()
+      : '' === name
+      ? document.createTextNode( clazz || '' )
+      : document.createElement( name )
 
     try {
       if ( clazz ) {
-        elem.className = clazz
+        $elmt.className = clazz
       }
     } catch (e) {}
 
-    return elem
+    return $elmt
   },
 
-  // Clone a node (text, element or fragment) deeply or
-  // childlessly
-  clone: function( node, deep ) {
-    return node.cloneNode( typeof deep === 'boolean' ? deep : true )
+  /**
+   * Clone a DOM node (text, element or fragment) deeply
+   * or childlessly.
+   */
+  clone: function( $node, deep ) {
+    return $node.cloneNode(
+      typeof deep === 'boolean'
+      ? deep
+      : true
+    )
   },
 
-  // Remove a node (text, element or fragment)
-  remove: function( node ) {
-    return node.parentNode.removeChild( node )
+  /**
+   * Remove a node (text, element or fragment).
+   */
+  remove: function( $node ) {
+    return $node.parentNode.removeChild( $node )
   },
 
-  // Set attributes all in once with an object
+  /**
+   * Set attributes all in once with an object.
+   */
   setAttr: function( target, attr ) {
-    if ( typeof attr !== 'object' ) return
+    if ( typeof attr !== 'object' )  return
     var len = attr.length
 
-    // Native NamedNodeMap
-    if ( typeof attr[ 0 ] === 'object' && 'name' in attr[ 0 ] ) {
+    // Native `NamedNodeMap``:
+    if (
+      typeof attr[0] === 'object' &&
+      'name' in attr[0]
+    ) {
       for ( var i = 0; i < len; i++ ) {
         if ( attr[ i ].value !== undefined ) {
           target.setAttribute( attr[ i ].name, attr[ i ].value )
         }
       }
 
-    // Plain object
+    // Plain object:
     } else {
       for ( var name in attr ) {
-        if ( attr.hasOwnProperty( name ) && attr[ name ] !== undefined ) {
+        if (
+          attr.hasOwnProperty( name ) &&
+          attr[ name ] !== undefined
+        ) {
           target.setAttribute( name, attr[ name ] )
         }
       }
@@ -579,29 +602,47 @@ var $ = {
     return target
   },
 
-  // Return if the current node should be ignored,
-  // `<wbr>` or comments
-  isIgnorable: function( node ) {
-    return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
+  /**
+   * Indicate whether or not the given node is an
+   * element.
+   */
+  isElmt: function( $node ) {
+    return $node && $node.nodeType === Node.ELEMENT_NODE
   },
 
-  // Convert array-like objects into real arrays
-  // for the native prototype methods
-  makeArray: function( obj ) {
-    return Array.prototype.slice.call( obj )
+  /**
+   * Indicate whether or not the given node should
+   * be ignored (`<wbr>` or comments).
+   */
+  isIgnorable: function( $node ) {
+    if ( !$node )  return false
+
+    return (
+      $node.nodeName === 'WBR' ||
+      $node.nodeType === Node.COMMENT_NODE
+    )
   },
 
-  // Extend target with an object
+  /**
+   * Convert array-like objects into real arrays.
+   */
+  makeArray: function( object ) {
+    return Array.prototype.slice.call( object )
+  },
+
+  /**
+   * Extend target with an object.
+   */
   extend: function( target, object ) {
-    var isExtensible = typeof target === 'object' ||
-      typeof target === 'function' ||
+    if ((
+      typeof target === 'object' ||
+      typeof target === 'function' ) &&
       typeof object === 'object'
-
-    if ( !isExtensible ) return
-
-    for ( var name in object ) {
-      if ( object.hasOwnProperty( name )) {
-        target[ name ] = object[ name ]
+    ) {
+      for ( var name in object ) {
+        if (object.hasOwnProperty( name )) {
+          target[ name ] = object[ name ]
+        }
       }
     }
     return target
@@ -1363,37 +1404,64 @@ return Fibre
 
 );
 
+var isNodeNormalizeNormal = (function() {
+    //// Disabled `Node.normalize()` for temp due to
+    //// issue below in IE11.
+    //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+    var div = $.create( 'div' )
+
+    div.appendChild( $.create( '', '0-' ))
+    div.appendChild( $.create( '', '2' ))
+    div.normalize()
+
+    return div.firstChild.length !== 2
+})()
+
 function createBdGroup( portion, match ) {
-  var elem = $.create( 'h-char-group', 'biaodian cjk' )
-
-  if ( portion.index === 0 && portion.isEnd ) {
-    elem.innerHTML = match[0]
-  } else {
-    elem.innerHTML = portion.text
-    elem.classList.add( 'portion' ) 
-
-    if ( portion.index === 0 ) {
-      elem.classList.add( 'isFirst' ) 
-    } else if ( portion.isEnd ) {
-      elem.classList.add( 'isEnd' ) 
-    }
-  }
+  var clazz = portion.index === 0 && portion.isEnd
+    ? 'biaodian cjk'
+    : 'biaodian cjk portion ' + (
+      portion.index === 0
+      ? 'isFirst is-first'
+      : portion.isEnd
+      ? 'isEnd is-end'
+      : 'isInner is-inner'
+    )
+  var elem = $.create( 'h-char-group', clazz )
+  elem.innerHTML = portion.text
   return elem
 }
 
 function createBdChar( char ) {
-  var div = $.create( 'div' )
+  var div     = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'bd-open' :
-    char.match( TYPESET.char.biaodian.close ) ? 'bd-close bd-end' :
-    char.match( TYPESET.char.biaodian.end ) ? 'bd-end' :
-    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'bd-liga' : '' )
-
-  div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
+  var clazz   = 'biaodian cjk ' + (
+    char.match( TYPESET.char.biaodian.open )
+      ? 'bd-open'
+      : char.match( TYPESET.char.biaodian.close )
+      ? 'bd-close bd-end'
+      : char.match( TYPESET.char.biaodian.end )
+      ? 'bd-end'
+      : char.match(new RegExp( UNICODE.biaodian.liga ))
+      ? 'bd-liga'
+      : ''
+  )
+  div.innerHTML = (
+    '<h-char unicode="' + unicode +
+    '" class="' + clazz +
+    '">' + char + '</h-char>'
+  )
   return div.firstChild
 }
 
 $.extend( Fibre.fn, {
+  normalize: function() {
+    if ( isNodeNormalizeNormal ) {
+      this.context.normalize()
+    }
+    return this
+  },
+
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function( selector ) {
     return (
@@ -1547,7 +1615,10 @@ $.extend( Fibre.fn, {
   }
 })
 
-Han.find = Fibre
+$.extend( Han, {
+  isNodeNormalizeNormal: isNodeNormalizeNormal,
+  find: Fibre
+})
 
 void [
   'setMode',
@@ -2131,28 +2202,30 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration-
-  // line) to see if we should address spacing in
-  // between for semantic presentation.
+   // Traverse all target elements and address
+   // presentational corrections if any two of
+   // them are adjacent to each other.
   renderDecoLine: function( context, target ) {
-    var target = target || 'u, ins'
-    var $target = $.qsa( target, context )
-    var rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
+    var $$target = $.qsa( target || 'u, ins', context )
+    var i = $$target.length
 
-    $target
-    .forEach(function( elem ) {
-      var next
+    traverse: while ( i-- ) {
+      var $this = $$target[ i ]
+      var $prev = null
 
-      // Ignore all `<wbr>` and comments in between
-      do {
-        next = ( next || elem ).nextSibling
-        if ( !next ) return
-      } while ( $.isIgnorable( next ))
+      // Ignore all `<wbr>` and comments in between,
+      // and add class `.adjacent` once two targets
+      // are next to each other.
+      ignore: do {
+        $prev = ( $prev || $this ).previousSibling
 
-      if ( next.nodeName.match( rTarget )) {
-        next.classList.add( 'adjacent' )
-      }
-    })
+        if ( !$prev ) {
+          continue traverse
+        } else if ( $$target[ i-1 ] === $prev ) {
+          $this.classList.add( 'adjacent' )
+        }
+      } while ( $.isIgnorable( $prev ))
+    }
   },
 
   // Traverse target elements to render Hanzi emphasis marks
@@ -2229,101 +2302,83 @@ $.extend( Han.support, {
   // 'fangsong-gb': Han.detectFont( '"Han Fangsong GB"' )
 })
 
-var QUERY_HWS_AS_FIRST_CHILD = '* > h-hws:first-child, * > wbr:first-child + h-hws, wbr:first-child + wbr + h-hws'
+var $hws = $.create( 'h-hws' )
+$hws.setAttribute( 'hidden', '' )
+$hws.innerHTML = ' '
 
-//// Disabled `Node.normalize()` for temp due to
-//// issue below in IE11.
-//// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
-var isNodeNormalizeNormal = (function() {
-  var div = $.create( 'div' )
+function sharingSameParent( $a, $b ) {
+  return $a && $b && $a.parentNode === $b.parentNode
+}
 
-  div.appendChild( $.create( '', '0-' ))
-  div.appendChild( $.create( '', '2' ))
-  div.normalize()
+function properlyPlaceHWSBehind( $node, text ) {
+  var $elmt = $node
+  var text  = text || ''
 
-  return div.firstChild.length !== 2
-})()
+  if (
+    $.isElmt( $node.nextSibling ) ||
+    sharingSameParent( $node, $node.nextSibling )
+  ) {
+    return text + '<hws/>'
+  } else {
+    // One of the parental elements of the current text
+    // node would definitely have a next sibling, since
+    // it is of the first portion and not `isEnd`.
+    while ( !$elmt.nextSibling ) {
+      $elmt = $elmt.parentNode
+    }
+    if ( $node !== $elmt ) {
+      $elmt.insertAdjacentText( 'afterend', '<hws/>' )
+    }
+  }
+  return text
+}
 
-var hws = $.create( 'h-hws' )
-hws.setAttribute( 'hidden', '' )
-hws.innerHTML = ' '
+function replacementFn( portion, mat ) {
+  return portion.isEnd && portion.index === 0
+    ? mat[1] + '<hws/>' + mat[2]
+    : portion.index === 0
+    ? properlyPlaceHWSBehind( portion.node, portion.text )
+    : portion.text
+}
 
 $.extend( Han, {
-  isNodeNormalizeNormal: isNodeNormalizeNormal,
-
   renderHWS: function( context, strict ) {
-    var context = context || document
+    // Elements to be filtered according to the
+    // HWS rendering mode.
+    var AVOID = strict
+    ? 'textarea, code, kbd, samp, pre'
+    : 'textarea'
+
     var mode = strict ? 'strict' : 'base'
+    var context = context || document
     var finder = Han.find( context )
 
-    // Elements to be filtered according to the
-    // HWS rendering mode
-    if ( strict ) {
-      finder.avoid( 'textarea, code, kbd, samp, pre' )
-    } else {
-      finder.avoid( 'textarea' )
-    }
-
     finder
-    .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
-    .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+    .avoid( AVOID )
 
-    // Deal with [' 字'], [" 字"] => ['字'], ["字"]
-    .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+    // Basic situations:
+    // - 字a => 字<hws/>a
+    // - A字 => A<hws/>字
+    .replace( Han.TYPESET.hws[ mode ][0], replacementFn )
+    .replace( Han.TYPESET.hws[ mode ][1], replacementFn )
 
-    // Remove all `<hws/>` pre/post [“字”] and [‘字’]
+    // Deal with:
+    // - '<hws/>字' => '字'
+    // - "<hws/>字" => "字"
+    .replace( /(['"])<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+
+    // Omit `<hws/>` preceding/following [“字”] and [‘字’],
     // See: https://github.com/ethantw/Han/issues/59
     .replace( /<hws\/>([‘“]+)/ig, '$1' )
     .replace( /([’”]+)<hws\/>/ig, '$1' )
 
-    // Convert text nodes `<hws/>` into real element nodes
-    .replace( '<hws/>', function() {
-      return $.clone( hws )
+    // Convert text nodes `<hws/>` into real element nodes:
+    .replace( /(<hws\/>)+/g, function( portion ) {
+      return portion.index === 0
+        ? $.clone( $hws )
+        : ''
     })
-
-    // Deal with:
-    // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
-    $
-    .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
-    .forEach(function( firstChild ) {
-      var parent = firstChild.parentNode
-      var target = parent.firstChild
-
-      // Skip all `<wbr>` and comments
-      while ( $.isIgnorable( target )) {
-        target = target.nextSibling
-
-        if ( !target ) return
-      }
-
-      // The ‘first-child’ of DOM is different from
-      // the ones of QSA, could be either an element
-      // or a text fragment, but the latter one is
-      // not what we want. We don't want comments,
-      // either.
-      while ( target.nodeName === 'H-HWS' ) {
-        $.remove( target, parent )
-
-        target = parent.parentNode.insertBefore( $.clone( hws ), parent )
-        parent = parent.parentNode
-
-        if ( isNodeNormalizeNormal ) {
-          parent.normalize()
-        }
-
-        // This is for extreme circumstances, i.e.,
-        // `漢<a><b><c><h-hws/>zi</c></b></a>` =>
-        // `漢<h-hws/><a><b><c>zi</c></b></a>`
-        if ( target !== parent.firstChild ) {
-          break
-        }
-      }
-    })
-
-    // Normalise nodes we messed up with
-    if ( isNodeNormalizeNormal ) {
-      context.normalize()
-    }
+    .normalize()
 
     // Return the finder instance for future usage
     return finder
@@ -2331,7 +2386,7 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  HWS: null,
+  HWS: [],
 
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
@@ -2341,9 +2396,10 @@ $.extend( Han.fn, {
   },
 
   revertHWS: function() {
-    this.HWS.forEach(function( hws ) {
+    this.HWS.map(function( hws ) {
       $.remove( hws )
     })
+    this.HWS = []
     return this
   }
 })
