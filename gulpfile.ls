@@ -38,7 +38,7 @@ const unwrap = ( name, path, src ) ->
   if path is /.\/var\//
     src = src
       .replace( /define\([\w\W]*?return/, 'var ' + /var\/([\w-]+)/.exec(name)[1] + ' =' )
-      .replace( rdefineEnd, '')
+      .replace( rdefineEnd, '' )
   else if name is /^fibre$/
     src = '\nvar Fibre =\n' + src
       .replace( /void\s/, '' )
@@ -75,18 +75,16 @@ rjs-config = {
 gulp-src = ->
   gulp.src.apply gulp, arguments
     .pipe gulp-plumber ( error ) ->
-      # Output an error message
       gulp-util.log gulp-util.colors.red(
         "Error (#{ error.plugin  }): #{ error.message }"
       )
-      # emit the end event, to properly end the task
       this.emit \end
 
 gulp.task \default <[ build demo ]>
 gulp.task \dev     <[ build watch server ]>
 gulp.task \build   <[ dist:css dist:js ]>
 gulp.task \demo    <[ build demo:lsc demo:styl demo:jade ]>
-gulp.task \asset   <[ dist:font demo:font ]>
+gulp.task \asset   <[ dist:font ]>
 gulp.task \dep     <[ normalize.css fibre.js ]>
 
 gulp.task \server !->
@@ -102,6 +100,7 @@ gulp.task \dist:js  <[ dist:amd dist:uglify ]>
 gulp.task \dist:font ->
   gulp-src './font/han*.{woff,otf}'
     .pipe gulp.dest \./dist/font
+    .pipe gulp.dest \./demo/font
 
 gulp.task \dist:styl ->
   gulp-src \./index.styl
@@ -160,10 +159,6 @@ gulp.task \test ->
     .pipe gulp-qunit!
 
 # Demo
-gulp.task \demo:font ->
-  gulp-src './dist/font/*.{woff,otf}'
-    .pipe gulp.dest \./demo/font
-
 gulp.task \demo:styl ->
   gulp-src \./demo/*.styl
     .pipe styl!
