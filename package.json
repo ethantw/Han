@@ -35,7 +35,6 @@
     "normalize.css": "~3.0.3"
   },
   "devDependencies": {
-    "livescript": "~1.4.0",
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.0",
     "gulp-concat-util": "^0.5.1",
@@ -46,11 +45,12 @@
     "gulp-livescript": "^2.3.0",
     "gulp-qunit": "^1.2.1",
     "gulp-requirejs-optimize": "^0.1.1",
-    "gulp-sass": "^1.2.4",
+    "gulp-sass": "^2.1.1",
     "gulp-stylus": "^2.0.4",
     "gulp-symlink": "^2.1.0",
     "gulp-uglifyjs": "^0.5.0",
     "gulp-watch": "^3.0.0",
+    "livescript": "~1.4.0",
     "qunitjs": "^1.16.0",
     "requirejs": "^2.1.15"
   }
