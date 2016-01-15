@@ -114,7 +114,7 @@ gulp.task \dist:sass ->
     .pipe gulp-csscomb!
     .pipe gulp.dest \./dist
 
-gulp.task \dist:cssmin <[ dist:sass ]> ->
+gulp.task \dist:cssmin <[ dist:styl ]> ->
   gulp.src \./dist/han.css
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe concat \han.min.css, {
@@ -163,13 +163,13 @@ gulp.task \test ->
 
 # Demo
 gulp.task \demo <[ build ]> ->
-  gulp.start <[ demo:font demo:js demo:sass demo:jade ]>
+  gulp.start <[ demo:font demo:js demo:styl demo:jade ]>
 
 gulp.task \demo:dist <[ build ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
-gulp.task \demo:dist-styl <[ build:styl ]> ->
+gulp.task \demo:dist-sass <[ build:styl ]> ->
   gulp.src <[ ./dist/han*.css ./dist/han*.js ]>
     .pipe gulp.dest \./test
 
@@ -180,6 +180,12 @@ gulp.task \demo:font ->
 gulp.task \demo:sass ->
   gulp.src \./test/*.scss
     .pipe sass!
+    .pipe gulp-cssmin { keepSpecialComments: 0 }
+    .pipe gulp.dest \./test
+
+gulp.task \demo:styl ->
+  gulp.src \./test/*.styl
+    .pipe styl!
     .pipe gulp-cssmin { keepSpecialComments: 0 }
     .pipe gulp.dest \./test
 
@@ -204,9 +210,10 @@ gulp.task \demo:js <[ demo:dist ]> ->
 
 # Watch
 gulp.task \watch <[ default ]> ->
-  gulp.watch \./src/sass/**/* <[ demo:dist ]>
-  gulp.watch \./src/styl/**/* <[ demo:dist-styl ]>
+  gulp.watch \./src/sass/**/* <[ demo:dist-sass ]>
+  gulp.watch \./src/styl/**/* <[ demo:dist ]>
   gulp.watch \./src/js/**/*   <[ demo:js ]>
+  gulp.watch \./test/*.styl   <[ demo:styl ]>
   gulp.watch \./test/*.scss   <[ demo:sass ]>
   gulp.watch \./test/*.jade   <[ demo:jade ]>
   gulp.watch \./test/*.ls     <[ demo:js ]>
@@ -216,6 +223,8 @@ gulp.task \normalize.css !->
   gulp.src \./node_modules/normalize.css/normalize.css
     .pipe concat \_normalize.scss
     .pipe gulp.dest \./src/sass/locale
+    .pipe concat \normalize.styl
+    .pipe gulp.dest \./src/styl/locale
 
 gulp.task \fibre.js !->
   gulp.src \./node_modules/fibre.js/dist/fibre.js
