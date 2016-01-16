@@ -1,7 +1,10 @@
 define([
   '../core',
-  '../method'
+  '../method',
+  '../find'
 ], function( Han, $ ) {
+
+var matches = Han.find.matches
 
 function detectSpaceFont() {
   var div = $.create( 'div' )
@@ -14,30 +17,47 @@ function detectSpaceFont() {
   return ret
 }
 
-$.extend( Han, {
-  detectSpaceFont:   detectSpaceFont,
-  isSpaceFontLoaded: detectSpaceFont()
-})
-
 Han.support['han-space'] = detectSpaceFont()
 
-Han.renderHanging = function( context ) {
-  var context = context || document
-  var finder = Han.find( context )
+$.extend( Han, {
+  detectSpaceFont:   detectSpaceFont,
+  isSpaceFontLoaded: detectSpaceFont(),
 
-  finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-hangable' )
-  .replace(
-    TYPESET.jinze.hanging,
-    function( portion, match ) {
-      var elem = $.create( 'h-hangable' )
-      elem.innerHTML = match[1] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">' + match[2] + '</h-char></h-cs>'
-      return portion.index === 0 ? elem : ''
-    }
-  )
+  renderHanging: function( context ) {
+    var context = context || document
+    var finder  = Han.find( context )
 
-  return finder
-}
+    finder
+    .avoid( 'textarea, code, kbd, samp, pre, h-cs, h-char.hangable' )
+    .replace(
+      TYPESET.jinze.hanging,
+      function( portion, mat ) {
+        var $node = portion.node
+        var $elmt = $node.parentNode
+
+        var biaodian = portion.text
+        var html = '<h-cs hidden> </h-cs><h-inner>' + biaodian + '</h-inner>'
+        var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
+
+        if ( beenWrapped ) {
+          while (!matches( $elmt, 'h-char[unicode]' )) {
+            $elmt = $elmt.parentNode
+          }
+        } else {
+          $elmt = Han.createBdChar( biaodian )
+        }
+
+        $elmt.classList.add( 'hangable' )
+        $elmt.innerHTML = html
+
+        return beenWrapped
+          ? null
+          : $elmt
+      }
+    )
+    return finder
+  }
+})
 
 $.extend( Han.fn, {
   hanging: null,

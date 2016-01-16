@@ -19,27 +19,19 @@ unless $han-hanging-hant
   // positioning
   position: relative
   // box-model
-  display: inline
-  // Hide the collapsable spaces of closing brackets for we are sure
-  // they ain't in use.
-  h-char.biaodian.bd-close h-cs
-    display: none
-  > h-cs
-    // positioning
-    position: relative
+  display: inline !important
+  visibility: visible
+  // typography
+  font: inherit
+
+  > h-cs,
+  > h-cs[hidden]
     // box-model
     display: inline !important
-    visibility: visible
-    // typography
-    font: inherit
-  > h-cs h-inner,
-  > h-cs h-inner[hidden]
-    // box-model
-    display: inline
     visibility: hidden
     // typography
     font: 1em "Han Space", $han-mono
-  > h-cs h-char.bd-end
+  > h-inner
     han-typo-reset()
     // positioning
     position: absolute

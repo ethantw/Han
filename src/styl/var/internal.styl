@@ -10,7 +10,7 @@ $han-webfont ?= url($han-font-path + 'han.woff?' + $han-version) format("woff"),
 
 $han-space-webfont ?= url($han-font-path + 'han-space.woff?' + $han-version) format("woff"), url($han-font-path + 'han-space.otf?' + $han-version) format("opentype")
 
-$_hanging-hant = "h-hangable:lang(zh), h-hangable:lang(zh-Hant), h-hangable:lang(zh-TW), h-hangable:lang(zh-HK), "
-$_hanging-hans = "h-hangable:lang(zh-Hans), h-hangable:lang(zh-CN), "
-$han-hanging-selector = ($han-hanging-hant ? $_hanging-hant : "") + ($han-hanging-hans ? $_hanging-hans : "") + ($han-hanging-ja ? "h-hangable:lang(ja)" : "")
+$_hanging-hant = "h-char.hangable:lang(zh), h-char.hangable:lang(zh-Hant), h-char.hangable:lang(zh-TW), h-char.hangable:lang(zh-HK), "
+$_hanging-hans = "h-char.hangable:lang(zh-Hans), h-char.hangable:lang(zh-CN), "
+$han-hanging-selector = ($han-hanging-hant ? $_hanging-hant : "") + ($han-hanging-hans ? $_hanging-hans : "") + ($han-hanging-ja ? "h-char.hangable:lang(ja)" : "")
 
