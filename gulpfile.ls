@@ -155,7 +155,7 @@ gulp.task \dist:uglify <[ dist:amd ]> ->
 
 # API test
 gulp.task \test ->
-  gulp-src \./test/api.html
+  gulp-src \./test/index.html
     .pipe gulp-qunit!
 
 # Demo
@@ -192,6 +192,7 @@ gulp.task \watch <[ default ]> ->
   gulp.watch \./demo/*.styl   <[ demo:styl ]>
   gulp.watch \./demo/*.jade   <[ demo:jade ]>
   gulp.watch \./demo/*.ls     <[ demo:lsc ]>
+  gulp.watch \./test/*.ls     <[ demo:lsc ]>
 
 # Dependencies
 gulp.task \normalize.css ->
