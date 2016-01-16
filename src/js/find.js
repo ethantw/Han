@@ -19,19 +19,20 @@ var isNodeNormalizeNormal = (function() {
     return div.firstChild.length !== 2
 })()
 
-function createBdGroup( portion, match ) {
+function createBdGroup( portion ) {
   var clazz = portion.index === 0 && portion.isEnd
     ? 'biaodian cjk'
     : 'biaodian cjk portion ' + (
       portion.index === 0
-      ? 'isFirst is-first'
+      ? 'is-first'
       : portion.isEnd
-      ? 'isEnd is-end'
-      : 'isInner is-inner'
+      ? 'is-end'
+      : 'is-inner'
     )
-  var elem = $.create( 'h-char-group', clazz )
-  elem.innerHTML = portion.text
-  return elem
+
+    var $elmt = $.create( 'h-char-group', clazz )
+    $elmt.innerHTML = portion.text
+    return $elmt
 }
 
 function createBdChar( char ) {
@@ -119,15 +120,16 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.avoid( 'h-hangable, h-char-group, h-word' )
+    this.avoid( 'h-word, h-char-group' )
 
     if ( option.biaodian ) {
       this.replace(
-        TYPESET.group.biaodian[ 0 ], createBdGroup
+        TYPESET.group.biaodian[0], createBdGroup
       ).replace(
-        TYPESET.group.biaodian[ 1 ], createBdGroup
+        TYPESET.group.biaodian[1], createBdGroup
       )
     }
+
     if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
@@ -219,7 +221,9 @@ $.extend( Fibre.fn, {
 
 $.extend( Han, {
   isNodeNormalizeNormal: isNodeNormalizeNormal,
-  find: Fibre
+  find: Fibre,
+  createBdGroup: createBdGroup,
+  createBdChar: createBdChar
 })
 
 void [
