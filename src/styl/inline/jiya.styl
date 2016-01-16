@@ -49,34 +49,68 @@ h-char.biaodian
 
 // * Handle consecutive Biaodian (連續標點擠壓)
 // *
-h-char-group,
-h-hangable
-  &.portion .bd-open:first-child h-cs,
-  &.portion .bd-end:last-child h-cs,
-  .bd-open + .bd-open h-cs,
-  .bd-end:not(:last-child) h-cs
+h-char.consecutive-bd
+  // * Basic situation
+  // *
+  &.bd-end:not(.is-end) h-cs,
+  &.bd-open.is-first + .bd-open.is-inner h-cs,
+  &.bd-open.is-first + .bd-open.is-end h-cs,
+  &.bd-open.is-inner + .bd-open.is-inner h-cs,
+  &.bd-open.is-inner + .bd-open.is-end h-cs
     display: none
 
-  [unicode='3001'],
-  [unicode='3002'],
-  [unicode='ff0c'],
-  [unicode='ff0e']
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c'],
+  &[unicode='ff0e']
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
-      & + .bd-open h-cs
+      &.is-first + .bd-open.is-inner h-cs
+      &.is-first + .bd-open.is-end h-cs
+      &.is-inner + .bd-open.is-inner h-cs
+      &.is-inner + .bd-open.is-end h-cs
         display: none
 
-h-char-group
+  &.bd-open:not(.is-first) h-cs
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      display: none
+
+  &.bd-close.is-first + .bd-open.is-inner h-cs
+  &.bd-close.is-first + .bd-open.is-end h-cs
+  &.bd-close.is-inner + .bd-open.is-inner h-cs
+  &.bd-close.is-inner + .bd-open.is-end h-cs
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      display: inline
+
   // * Handle ‘「漢」·「字」’ situation
   // *
-  [unicode='b7'],
-  [unicode='30fb']
-    &:not(:last-child)
+  &[unicode='b7'],
+  &[unicode='30fb']
+    &:not(.is-end)
       letter-spacing: -.5em
+
+    & + .bd-open h-cs
+      &:lang(zh-Hant),
+      &:lang(zh-TW),
+      &:lang(zh-HK)
+        display: inline
 
   // * Handle ‘……「漢字’ situation
   // *
-  .bd-liga:not(:last-child)
+  &.bd-liga:not(.is-end)
     margin-right: -.25em
+
+  &.bd-liga.is-first + .bd-open.is-inner h-cs
+  &.bd-liga.is-first + .bd-open.is-end h-cs
+  &.bd-liga.is-inner + .bd-open.is-inner h-cs
+  &.bd-liga.is-inner + .bd-open.is-end h-cs
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      display: inline
 

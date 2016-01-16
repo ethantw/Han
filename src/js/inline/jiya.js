@@ -1,43 +1,55 @@
 define([
   '../core',
   '../method',
-  '../regex/unicode'
+  '../regex/unicode',
+  '../find'
 ], function( Han, $, UNICODE ) {
+
+var matches = Han.find.matches
+
+function locateConsecutiveBd( portion ) {
+  var $elmt = portion.node.parentNode
+
+  while (!matches( $elmt, 'h-char.biaodian' )) {
+    $elmt = $elmt.parentNode
+  }
+
+  $elmt.classList.add(
+    'consecutive-bd',
+    portion.index === 0
+      ? 'is-first'
+      : portion.isEnd
+      ? 'is-end'
+      : 'is-inner'
+  )
+  return portion.text
+}
 
 Han.renderJiya = function( context ) {
   var context = context || document
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
-  .replace(
-    // This is a safeguard against hanging rendering
-    new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
-    function( portion, match ) {
-      if ( portion.index === 0 ) return portion.isEnd ? match[0] : match[1]
+  .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
 
-      var elem = $.create( 'h-char-group', 'biaodian cjk portion' )
-      elem.innerHTML = match[2]
-      return elem
-    }
-  )
-  .endAvoid()
+  //.groupify({ biaodian:  true })
+  .charify({ biaodian: true })
 
-  finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char' )
-  .groupify({ biaodian:  true })
-  .charify({  biaodian:  true })
+  .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
+  .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
 
-  // The reason we're doing this instead of using pseudo elements in CSS
-  // is because WebKit has problem rendering pseudo elements containing only 
-  // space.
-  $.qsa( 'h-char.biaodian.bd-open, h-char.biaodian.bd-end', context )
-  .forEach(function( elem ) {
-    if ( Han.find.matches( elem, 'h-cs *' ))  return
-    var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
+  // The reason we’re doing this instead of using
+  // pseudo elements in CSS is because WebKit has
+  // problem rendering pseudo elements containing
+  // only spaces.
+  $.qsa( 'h-char.bd-open, h-char.bd-end', context )
+  .forEach(function( $elmt ) {
+    var html = '<h-inner>' + $elmt.innerHTML + '</h-inner>'
     var hcs = '<h-cs hidden> </h-cs>'
-    var isOpen = elem.classList.contains( 'bd-open' )
-    elem.innerHTML = isOpen ? hcs + html : html + hcs
+
+    $elmt.innerHTML = $elmt.classList.contains( 'bd-open' )
+      ? hcs + html
+      : html + hcs
   })
 
   return finder
