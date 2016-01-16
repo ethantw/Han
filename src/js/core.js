@@ -17,8 +17,8 @@ var ROUTINE = [
 
   // Handle Biaodian
   /* 'jinzify', */
-  'renderHanging',
   'renderJiya',
+  'renderHanging',
 
   // Address Hanzi and Western script mixed spacing
   'renderHWS',
