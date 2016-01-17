@@ -47,8 +47,8 @@ $.extend( Locale, {
     }
   },
 
-  // Traverse target elements to render Hanzi emphasis marks
-  // and skip that in punctuation
+  // Traverse all target elements to render
+  // emphasis marks.
   renderEm: function( context, target ) {
     var method = target ? 'qsa' : 'tag'
     var target = target || 'em'
@@ -60,7 +60,7 @@ $.extend( Locale, {
 
       if ( Locale.support.textemphasis ) {
         $elem
-        .avoid( 'rt, h-char, h-char-group' )
+        .avoid( 'rt, h-char' )
         .charify({ biaodian: true, punct: true })
       } else {
         $elem
