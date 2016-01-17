@@ -4,6 +4,8 @@ define([
   '../regex'
 ], function( Han, $ ) {
 
+var hws = '<<hws>>'
+
 var $hws = $.create( 'h-hws' )
 $hws.setAttribute( 'hidden', '' )
 $hws.innerHTML = ' '
@@ -20,7 +22,7 @@ function properlyPlaceHWSBehind( $node, text ) {
     $.isElmt( $node.nextSibling ) ||
     sharingSameParent( $node, $node.nextSibling )
   ) {
-    return text + '<hws/>'
+    return text + hws
   } else {
     // One of the parental elements of the current text
     // node would definitely have a next sibling, since
@@ -29,7 +31,7 @@ function properlyPlaceHWSBehind( $node, text ) {
       $elmt = $elmt.parentNode
     }
     if ( $node !== $elmt ) {
-      $elmt.insertAdjacentText( 'afterend', '<hws/>' )
+      $elmt.insertAdjacentHTML( 'afterEnd', '<h-hws hidden> </h-hws>' )
     }
   }
   return text
@@ -37,7 +39,7 @@ function properlyPlaceHWSBehind( $node, text ) {
 
 function replacementFn( portion, mat ) {
   return portion.isEnd && portion.index === 0
-    ? mat[1] + '<hws/>' + mat[2]
+    ? mat[1] + hws + mat[2]
     : portion.index === 0
     ? properlyPlaceHWSBehind( portion.node, portion.text )
     : portion.text
@@ -64,22 +66,44 @@ $.extend( Han, {
     .replace( Han.TYPESET.hws[ mode ][0], replacementFn )
     .replace( Han.TYPESET.hws[ mode ][1], replacementFn )
 
-    // Deal with:
-    // - '<hws/>字' => '字'
-    // - "<hws/>字" => "字"
-    .replace( /(['"])<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
-
     // Omit `<hws/>` preceding/following [“字”] and [‘字’],
     // See: https://github.com/ethantw/Han/issues/59
-    .replace( /<hws\/>([‘“]+)/ig, '$1' )
-    .replace( /([’”]+)<hws\/>/ig, '$1' )
+    .replace(new RegExp( hws + '([‘“]+)', 'g' ), '$1' )
+    .replace(new RegExp( '([’”]+)' + hws, 'g' ), '$1' )
 
     // Convert text nodes `<hws/>` into real element nodes:
-    .replace( /(<hws\/>)+/g, function( portion ) {
-      return portion.index === 0
-        ? $.clone( $hws )
-        : ''
-    })
+    .replace(
+      new RegExp( '(' + hws + ')+', 'g' ),
+      function( portion ) {
+        return portion.index === 0
+          ? $.clone( $hws )
+          : ''
+      }
+    )
+
+    var lastIdx
+
+    // Deal with:
+    // - '<hws/>字<hws/>' => '字'
+    // - "<hws/>字<hws/>" => "字"
+    finder
+    .replace(
+      /([\'"])\s(.+?)\s\1/g,
+      function( portion ) {
+        var $elmt = portion.node.parentNode
+
+        if ( portion.index === 0 ) {
+          lastIdx = portion.endIndexInNode-2
+        }
+
+        return (
+          $elmt.nodeName.toLowerCase() === 'h-hws' && (
+          portion.index === 1 || portion.indexInMatch === lastIdx
+        ))
+          ? ''
+          : portion.text
+      }
+    )
     .normalize()
 
     // Return the finder instance for future usage
