@@ -20,11 +20,11 @@ var ROUTINE = [
   'renderJiya',
   'renderHanging',
 
+  // Address Biaodian correction
+  'correctBiaodian',
+
   // Address Hanzi and Western script mixed spacing
   'renderHWS',
-
-  // Address Basic Biaodian correction in Firefox
-  'correctBasicBD',
 
   // Address presentational correction to combining ligatures
   'substCombLigaWithPUA'
