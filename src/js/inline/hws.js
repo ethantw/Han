@@ -45,6 +45,39 @@ function replacementFn( portion, mat ) {
     : portion.text
 }
 
+function real$hwsElmt( portion ) {
+  return portion.index === 0
+    ? $.clone( $hws )
+    : ''
+}
+
+var last$hwsIdx
+
+function apostrophe( portion ) {
+  var $elmt = portion.node.parentNode
+
+  if ( portion.index === 0 ) {
+    last$hwsIdx = portion.endIndexInNode-2
+  }
+
+  if (
+    $elmt.nodeName.toLowerCase() === 'h-hws' && (
+    portion.index === 1 || portion.indexInMatch === last$hwsIdx
+  )) {
+    $elmt.classList.add( 'quote-inner' )
+  }
+  return portion.text
+}
+
+function curveQuote( portion ) {
+  var $elmt = portion.node.parentNode
+
+  if ( $elmt.nodeName.toLowerCase() === 'h-hws' ) {
+    $elmt.classList.add( 'quote-outer' )
+  }
+  return portion.text
+}
+
 $.extend( Han, {
   renderHWS: function( context, strict ) {
     // Elements to be filtered according to the
@@ -66,44 +99,19 @@ $.extend( Han, {
     .replace( Han.TYPESET.hws[ mode ][0], replacementFn )
     .replace( Han.TYPESET.hws[ mode ][1], replacementFn )
 
-    // Omit `<hws/>` preceding/following [“字”] and [‘字’],
-    // See: https://github.com/ethantw/Han/issues/59
-    .replace(new RegExp( hws + '([‘“]+)', 'g' ), '$1' )
-    .replace(new RegExp( '([’”]+)' + hws, 'g' ), '$1' )
-
     // Convert text nodes `<hws/>` into real element nodes:
-    .replace(
-      new RegExp( '(' + hws + ')+', 'g' ),
-      function( portion ) {
-        return portion.index === 0
-          ? $.clone( $hws )
-          : ''
-      }
-    )
-
-    var lastIdx
+    .replace( new RegExp( '(' + hws + ')+', 'g' ), real$hwsElmt )
 
     // Deal with:
     // - '<hws/>字<hws/>' => '字'
     // - "<hws/>字<hws/>" => "字"
-    finder
-    .replace(
-      /([\'"])\s(.+?)\s\1/g,
-      function( portion ) {
-        var $elmt = portion.node.parentNode
+    .replace( /([\'"])\s(.+?)\s\1/g, apostrophe )
 
-        if ( portion.index === 0 ) {
-          lastIdx = portion.endIndexInNode-2
-        }
-
-        return (
-          $elmt.nodeName.toLowerCase() === 'h-hws' && (
-          portion.index === 1 || portion.indexInMatch === lastIdx
-        ))
-          ? ''
-          : portion.text
-      }
-    )
+    // Deal with:
+    // - <hws/>“字”<hws/>
+    // - <hws/>‘字’<hws/>
+    .replace( /\s([‘“])/g, curveQuote )
+    .replace( /([’”])\s/g, curveQuote )
     .normalize()
 
     // Return the finder instance for future usage

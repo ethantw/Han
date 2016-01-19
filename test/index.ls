@@ -345,20 +345,38 @@ test 'Hanzi-Western script mixed spacing (HWS)' ->
   # Edge cases
   d.innerHTML = '測試¿測試?測試¡測試!為‘什’麼;為“什”麼?'
   Han d .renderHWS!
-  html-equal d.innerHTML, '測試<h-hws hidden=\"\"> </h-hws>¿測試?<h-hws hidden=\"\"> </h-hws>測試<h-hws hidden=\"\"> </h-hws>¡測試!<h-hws hidden=\"\"> </h-hws>為‘什’麼;<h-hws hidden=\"\"> </h-hws>為“什”麼?'
+  $$qo = jQuery( 'h-hws.quote-outer', d )
+  equal $$qo.length, 4
+  $$qo.removeAttr( 'class' )
+  html-equal d.innerHTML, "測試<h-hws hidden=\"\"> </h-hws>¿測試?<h-hws hidden=\"\"> </h-hws>測試<h-hws hidden=\"\"> </h-hws>¡測試!<h-hws hidden=\"\"> </h-hws>為<h-hws hidden=\"\"> </h-hws>‘什’<h-hws hidden=\"\"> </h-hws>麼;<h-hws hidden=\"\"> </h-hws>為<h-hws hidden=\"\"> </h-hws>“什”<h-hws hidden=\"\"> </h-hws>麼?"
 
   d.innerHTML = '單\'引\'號和雙"引"號和單\'引\'號和雙"引"號.'
   Han d .renderHWS!
-  html-equal d.innerHTML, "單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>\"<h-hws hidden=\"\"> </h-hws>號和單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>\"<h-hws hidden=\"\"> </h-hws>號."
-
+  $$qi = jQuery( 'h-hws.quote-inner', d )
+  equal $$qi.length, 8
+  $$qi.removeAttr( 'class' )
+  html-equal d.innerHTML, "單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>號和單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>號."
 
   d.innerHTML = '\'單x引x號\'"雙x引x號".'
   Han d .renderHWS!
-  html-equal d.innerHTML, "'<h-hws hidden=\"\"></h-hws>單<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"></h-hws>'\"<h-hws hidden=\"\"></h-hws>雙<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"></h-hws>\"."
+  $$qi = jQuery( 'h-hws.quote-inner', d )
+  equal $$qi.length, 4
+  $$qi.removeAttr( 'class' )
+  html-equal d.innerHTML, "'<h-hws hidden=\"\"> </h-hws>單<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"> </h-hws>'\"<h-hws hidden=\"\"> </h-hws>雙<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>x<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"> </h-hws>\"."
 
   d.innerHTML = '單\'引\'號和雙"引"號和單\'引\'號和雙"引"號.'
   Han d .renderHWS!
-  html-equal d.innerHTML, "單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>\"<h-hws hidden=\"\"> </h-hws>號和單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"></h-hws>引<h-hws hidden=\"\"></h-hws>\"<h-hws hidden=\"\"> </h-hws>號."
+  $$qi = jQuery( 'h-hws.quote-inner', d )
+  equal $$qi.length, 8
+  $$qi.removeAttr( 'class' )
+  html-equal d.innerHTML, "單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>號和單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>引<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>號."
+
+  d.innerHTML = """這是一段包含單'<u>引</u>'號和雙<u>"引</u>"號'<b>單引號</b>'和"<b>雙引號"</b>的文字."""
+  Han d .renderHWS!
+  $$qi = jQuery( 'h-hws.quote-inner', d )
+  equal $$qi.length, 8
+  $$qi.removeAttr( 'class' )
+  html-equal d.innerHTML, "這是一段包含單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws><u>引</u><h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws><u>\"<h-hws hidden=\"\"> </h-hws>引</u><h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws><b>單引號</b><h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"> </h-hws>和<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"> </h-hws><b>雙引號<h-hws hidden=\"\"> </h-hws>\"</b><h-hws hidden=\"\"> </h-hws>的文字."
 
   d.innerHTML = '你是咧com<u><i>啥物</i></u>plain啦！'
   Han d .renderHWS!
@@ -371,10 +389,6 @@ test 'Hanzi-Western script mixed spacing (HWS)' ->
   d.innerHTML = '<p>不知道是不是<u lang="en"><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u>你用「元件檢閱器」看看。</p>'
   Han d .renderHWS!
   html-equal d.innerHTML, '<p>不知道是不是<h-hws hidden=""> </h-hws><u lang=en><!-- comment --><wbr><!-- comment --><wbr><!-- comment -->like this</u><h-hws hidden=""> </h-hws>你用「元件檢閱器」看看。</p>'
-
-  d.innerHTML = """這是一段包含單'<u>引</u>'號和雙<u>"引</u>"號'<b>單引號</b>'和"<b>雙引號"</b>的文字."""
-  Han d .renderHWS!
-  html-equal d.innerHTML, "這是一段包含單<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws><u>引</u><h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>號和雙<h-hws hidden=\"\"> </h-hws><u>\"<h-hws hidden=\"\"></h-hws>引</u><h-hws hidden=\"\"></h-hws>\"<h-hws hidden=\"\"> </h-hws>號<h-hws hidden=\"\"> </h-hws>'<h-hws hidden=\"\"></h-hws><b>單引號</b><h-hws hidden=\"\"></h-hws>'<h-hws hidden=\"\"> </h-hws>和<h-hws hidden=\"\"> </h-hws>\"<h-hws hidden=\"\"></h-hws><b>雙引號<h-hws hidden=\"\"></h-hws>\"</b><h-hws hidden=\"\"> </h-hws>的文字."
 
 test 'Biaodian jiya' ->
   d = div!
