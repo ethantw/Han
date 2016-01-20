@@ -15,6 +15,10 @@ var $ = {
     )
   },
 
+  qs: function( selector, $context ) {
+    return ( $context || document ).querySelector( selector )
+  },
+
   qsa: function( selector, $context ) {
     return this.makeArray(
       ( $context || document ).querySelectorAll( selector )
