@@ -5,6 +5,9 @@ define([
   '../find'
 ], function( Han, $, UNICODE ) {
 
+var csHTML  = '<h-cs hidden> </h-cs>'
+var csoHTML = '<h-cs hidden class="jinze-outer"> </h-cs>'
+
 var matches = Han.find.matches
 
 function locateConsecutiveBd( portion ) {
@@ -32,9 +35,7 @@ Han.renderJiya = function( context ) {
   finder
   .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
 
-  //.groupify({ biaodian:  true })
   .charify({ biaodian: true })
-
   .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
   .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
 
@@ -45,11 +46,20 @@ Han.renderJiya = function( context ) {
   $.qsa( 'h-char.bd-open, h-char.bd-end', context )
   .forEach(function( $elmt ) {
     var html = '<h-inner>' + $elmt.innerHTML + '</h-inner>'
-    var hcs = '<h-cs hidden> </h-cs>'
 
     $elmt.innerHTML = $elmt.classList.contains( 'bd-open' )
-      ? hcs + html
-      : html + hcs
+      ? csHTML + html
+      : html + csHTML
+  })
+
+  $.qsa( 'h-jinze', context )
+  .forEach(function( $elmt ) {
+    if (matches( $elmt, '.tou, .touwei' )) {
+      $elmt.insertAdjacentHTML( 'beforebegin', csoHTML )
+    }
+    if (matches( $elmt, '.wei, .touwei' )) {
+      $elmt.insertAdjacentHTML( 'afterend', csoHTML )
+    }
   })
 
   return finder
