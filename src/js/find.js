@@ -47,6 +47,8 @@ function createBdChar( char ) {
       ? 'bd-end'
       : char.match(new RegExp( UNICODE.biaodian.liga ))
       ? 'bd-liga'
+      : char.match(new RegExp( UNICODE.biaodian.middle ))
+      ? 'bd-middle'
       : ''
   )
   div.innerHTML = (
