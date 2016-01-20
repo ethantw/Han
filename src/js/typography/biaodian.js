@@ -4,9 +4,6 @@ define([
   '../locale/support'
 ], function( Han, $, support ) {
 
-var $mdot  = $.create( 'h-char', 'biaodian cjk bd-middle' )
-$mdot.setAttribute( 'unicode', 'b7' )
-
 Han.correctBiaodian = function( context ) {
   var context = context || document
   var finder  = Han.find( context )
@@ -26,9 +23,7 @@ Han.correctBiaodian = function( context ) {
 
   return Han.support.unicoderange
     ? finder
-    : finder
-      .wrap( /\u00B7/g, $.clone( $mdot ))
-      .charify({ biaodian: true })
+    : finder.charify({ biaodian: true })
 }
 
 Han.correctBasicBD = Han.correctBiaodian
