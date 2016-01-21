@@ -15,14 +15,20 @@ unless $han-hanging-hant
       font-family: inherit
       font-size: inherit
 
+h-cs.hangable-outer,
+h-cs.hangable-outer[hidden]
+  display: inline
+  font: 1em 'Han Space'
+
+  unless $han-hanging-hant
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      display: none
+
 {$han-hanging-selector}
   // positioning
   position: relative
-  // box-model
-  display: inline !important
-  visibility: visible
-  // typography
-  font: inherit
 
   > h-cs,
   > h-cs[hidden]
@@ -30,7 +36,7 @@ unless $han-hanging-hant
     display: inline !important
     visibility: hidden
     // typography
-    font: 1em "Han Space", $han-mono
+    font: 1em 'Han Space', $han-mono
   > h-inner
     han-typo-reset()
     // positioning

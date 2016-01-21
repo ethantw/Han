@@ -12,6 +12,10 @@ h-cs[hidden]
   letter-spacing: 0
   white-space: normal
 
+h-cs.jinze-outer,
+h-cs.jinze-outer[hidden]
+  display: inline
+
 // * Handle line start/end Biaodian (行首行尾標點擠壓)
 // *
 h-char.biaodian
@@ -42,75 +46,38 @@ h-char.biaodian
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
-      > h-inner
-        letter-spacing: inherit
       > h-cs
         display: none
+      > h-inner
+        letter-spacing: inherit
 
 // * Handle consecutive Biaodian (連續標點擠壓)
 // *
 h-char.consecutive-bd
   // * Basic situation
   // *
-  &.bd-end:not(.is-end) h-cs,
-  &.bd-open.is-first + .bd-open.is-inner h-cs,
-  &.bd-open.is-first + .bd-open.is-end h-cs,
-  &.bd-open.is-inner + .bd-open.is-inner h-cs,
-  &.bd-open.is-inner + .bd-open.is-end h-cs
+  &.bd-end:not(.end-portion) h-cs,
+  &[prev='bd-open'].bd-open h-cs,
+  /h-cs.bd-end:not(.end-portion)
     display: none
 
-  &[unicode='3001'],
-  &[unicode='3002'],
-  &[unicode='ff0c'],
-  &[unicode='ff0e']
-    &:lang(zh-Hant),
-    &:lang(zh-TW),
-    &:lang(zh-HK)
-      &.is-first + .bd-open.is-inner h-cs
-      &.is-first + .bd-open.is-end h-cs
-      &.is-inner + .bd-open.is-inner h-cs
-      &.is-inner + .bd-open.is-end h-cs
-        display: none
-
-  &.bd-open:not(.is-first) h-cs
+  &[prev*='bd-cop'].bd-open h-cs,
+  /h-cs[prev*='bd-cop'].jiya-outer,
+  /h-cs.jiya-outer.bd-end
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
       display: none
 
-  &.bd-close.is-first + .bd-open.is-inner h-cs
-  &.bd-close.is-first + .bd-open.is-end h-cs
-  &.bd-close.is-inner + .bd-open.is-inner h-cs
-  &.bd-close.is-inner + .bd-open.is-end h-cs
-    &:lang(zh-Hant),
-    &:lang(zh-TW),
-    &:lang(zh-HK)
-      display: inline
-
   // * Handle ‘「漢」·「字」’ situation
   // *
   &[unicode='b7'],
   &[unicode='30fb']
-    &:not(.is-end)
+    &:not(.end-portion)
       letter-spacing: -.5em
-
-    & + .bd-open h-cs
-      &:lang(zh-Hant),
-      &:lang(zh-TW),
-      &:lang(zh-HK)
-        display: inline
 
   // * Handle ‘……「漢字’ situation
   // *
-  &.bd-liga:not(.is-end)
+  &.bd-liga:not(.end-portion)
     margin-right: -.25em
-
-  &.bd-liga.is-first + .bd-open.is-inner h-cs
-  &.bd-liga.is-first + .bd-open.is-end h-cs
-  &.bd-liga.is-inner + .bd-open.is-inner h-cs
-  &.bd-liga.is-inner + .bd-open.is-end h-cs
-    &:lang(zh-Hant),
-    &:lang(zh-TW),
-    &:lang(zh-HK)
-      display: inline
 

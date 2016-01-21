@@ -19,6 +19,10 @@ function detectSpaceFont() {
 
 Han.support['han-space'] = detectSpaceFont()
 
+var get$csoHTML = function( clazz ) {
+  return '<h-cs hidden class="jinze-outer ' + clazz + '"> </h-cs>'
+}
+
 $.extend( Han, {
   detectSpaceFont:   detectSpaceFont,
   isSpaceFontLoaded: detectSpaceFont(),
@@ -31,13 +35,34 @@ $.extend( Han, {
     .avoid( 'textarea, code, kbd, samp, pre, h-cs, h-char.hangable' )
     .replace(
       TYPESET.jinze.hanging,
-      function( portion, mat ) {
+      function( portion ) {
         var $node = portion.node
         var $elmt = $node.parentNode
 
         var biaodian = portion.text
         var html = '<h-cs hidden> </h-cs><h-inner>' + biaodian + '</h-inner>'
         var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
+
+        void function( $elmt ) {
+          if (matches( $elmt, 'h-jinze, h-jinze *' )) {
+            var $jinze = $elmt
+            var $cs
+
+            while (!matches( $jinze, 'h-jinze' )) {
+              $jinze = $jinze.parentNode
+            }
+
+            $cs = $jinze.nextSibling
+
+            if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+              $cs.classList.add( 'hangable-outer' )
+            } else {
+              $jinze.insertAdjacentHTML(
+                'afterend', get$csoHTML( 'hangable-outer' )
+              )
+            }
+          }
+        }( $elmt )
 
         if ( beenWrapped ) {
           while (!matches( $elmt, 'h-char[unicode]' )) {

@@ -6,25 +6,55 @@ define([
 ], function( Han, $, UNICODE ) {
 
 var csHTML  = '<h-cs hidden> </h-cs>'
-var csoHTML = '<h-cs hidden class="jinze-outer"> </h-cs>'
-
 var matches = Han.find.matches
+
+var get$csoHTML = function( prev, clazz ) {
+  return '<h-cs hidden prev="' + prev + '" class="jinze-outer ' + clazz + '"> </h-cs>'
+}
+
+function get$bdType( $char ) {
+  var clazz = $char.classList
+  return (
+    clazz.contains( 'bd-open' )
+    ? 'bd-open'
+    : clazz.contains( 'bd-close' )
+    ? 'bd-close'
+    : clazz.contains( 'bd-middle' )
+    ? 'bd-middle'
+    : clazz.contains( 'bd-liga' )
+    ? 'bd-liga'
+    : clazz.contains( 'bd-end' )
+    ? (
+      /(?:3001|3002|ff0c)/i.test($char.getAttribute( 'unicode' ))
+      ? 'bd-end bd-cop'
+      : 'bd-end'
+    )
+    : ''
+  )
+}
+
+var prevBiaodianType
 
 function locateConsecutiveBd( portion ) {
   var $elmt = portion.node.parentNode
+  var clazz = $elmt.classList
 
   while (!matches( $elmt, 'h-char.biaodian' )) {
     $elmt = $elmt.parentNode
   }
 
-  $elmt.classList.add(
-    'consecutive-bd',
-    portion.index === 0
-      ? 'is-first'
-      : portion.isEnd
-      ? 'is-end'
-      : 'is-inner'
-  )
+  if ( prevBiaodianType ) {
+    $elmt.setAttribute( 'prev', prevBiaodianType )
+  }
+
+  if ( portion.isEnd ) {
+    prevBiaodianType = undefined
+    clazz.add( 'consecutive-bd', 'end-portion' )
+  } else {
+    prevBiaodianType = get$bdType( $elmt )
+    clazz.add( 'consecutive-bd' )
+  }
+
   return portion.text
 }
 
@@ -35,7 +65,10 @@ Han.renderJiya = function( context ) {
   finder
   .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
 
+  .avoid( 'h-char.biaodian' )
   .charify({ biaodian: true })
+
+  .endAvoid() // End avoiding selector `h-char.biaodian`
   .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
   .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
 
@@ -53,12 +86,25 @@ Han.renderJiya = function( context ) {
   })
 
   $.qsa( 'h-jinze', context )
-  .forEach(function( $elmt ) {
-    if (matches( $elmt, '.tou, .touwei' )) {
-      $elmt.insertAdjacentHTML( 'beforebegin', csoHTML )
+  .forEach(function( $jinze ) {
+    var clazz = 'jiya-outer '
+    var $char, prev
+
+    if (matches( $jinze, '.tou, .touwei' )) {
+      $char = $.qs( '.biaodian:first-child', $jinze )
+      prev = $char.getAttribute( 'prev' ) || ''
+
+      $jinze.insertAdjacentHTML(
+        'beforebegin', get$csoHTML( prev, clazz )
+      )
     }
-    if (matches( $elmt, '.wei, .touwei' )) {
-      $elmt.insertAdjacentHTML( 'afterend', csoHTML )
+    if (matches( $jinze, '.wei, .touwei' )) {
+      $char = $.qs( '.biaodian:last-child', $jinze )
+      clazz += $char.getAttribute( 'class' )
+
+      $jinze.insertAdjacentHTML(
+        'afterend', get$csoHTML( '', clazz )
+      )
     }
   })
 
