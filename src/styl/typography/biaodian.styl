@@ -1,0 +1,26 @@
+
+/*
+ * Biaodian correction
+ */
+.no-unicoderange h-char.biaodian
+  &[unicode='3001'],
+  &[unicode='3002'],
+  &[unicode='ff0c']
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      font-family: -apple-system, 'Han Heiti CNS'
+  &[unicode='ff0c']
+    font-family: 'Han Heiti'
+  &.bd-liga,
+  &[unicode='b7']
+    @extend $han-ligature
+    font-family: 'Biaodian Basic', 'Han Heiti'
+  &[unicode='2018'],
+  &[unicode='2019'],
+  &[unicode='201c'],
+  &[unicode='201d']
+    &:lang(zh-Hans),
+    &:lang(zh-CN)
+      font-family: 'Han Heiti GB'
+
