@@ -13,15 +13,11 @@ function detectSpaceFont() {
   div.innerHTML = '<span>a b</span><span style="font-family: \'Han Space\'">a b</span>'
   body.appendChild( div )
   ret = div.firstChild.offsetWidth !== div.lastChild.offsetWidth
-  $.remove( div, body )
+  $.remove( div )
   return ret
 }
 
 Han.support['han-space'] = detectSpaceFont()
-
-var get$csoHTML = function( clazz ) {
-  return '<h-cs hidden class="jinze-outer ' + clazz + '"> </h-cs>'
-}
 
 $.extend( Han, {
   detectSpaceFont:   detectSpaceFont,
@@ -38,6 +34,7 @@ $.extend( Han, {
       function( portion ) {
         var $node = portion.node
         var $elmt = $node.parentNode
+        var $new
 
         var biaodian = portion.text
         var html = '<h-cs hidden> </h-cs><h-inner>' + biaodian + '</h-inner>'
@@ -58,28 +55,36 @@ $.extend( Han, {
               $cs.classList.add( 'hangable-outer' )
             } else {
               $jinze.insertAdjacentHTML(
-                'afterend', get$csoHTML( 'hangable-outer' )
+                'afterend',
+                '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
               )
             }
           }
         }( $elmt )
 
+        $new = Han.createBdChar( biaodian )
+        $new.classList.add( 'hangable' )
+        $new.innerHTML = html
+
         if ( beenWrapped ) {
-          while (!matches( $elmt, 'h-char[unicode]' )) {
+          while (!matches( $elmt, 'h-char.biaodian' )) {
             $elmt = $elmt.parentNode
           }
-        } else {
-          $elmt = Han.createBdChar( biaodian )
+
+          $elmt.classList.add( 'to-be-omitted' )
+          $elmt.parentNode.insertBefore( $new, $elmt )
         }
 
-        $elmt.classList.add( 'hangable' )
-        $elmt.innerHTML = html
-
         return beenWrapped
-          ? null
-          : $elmt
+          ? ''
+          : $new
       }
     )
+
+    $.qsa( 'h-char.to-be-omitted', context )
+    .forEach(function( $elmt ) {
+      $.remove( $elmt )
+    })
     return finder
   }
 })

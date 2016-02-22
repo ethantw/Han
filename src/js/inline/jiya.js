@@ -26,6 +26,7 @@ function get$bdType( $char ) {
     : clazz.contains( 'bd-end' )
     ? (
       /(?:3001|3002|ff0c)/i.test($char.getAttribute( 'unicode' ))
+      // `cop` stands for ‘comma or period’.
       ? 'bd-end bd-cop'
       : 'bd-end'
     )
@@ -67,8 +68,9 @@ Han.renderJiya = function( context ) {
 
   .avoid( 'h-char.biaodian' )
   .charify({ biaodian: true })
+  // End avoiding selector `h-char.biaodian`:
+  .endAvoid()
 
-  .endAvoid() // End avoiding selector `h-char.biaodian`
   .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
   .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
 
@@ -88,23 +90,34 @@ Han.renderJiya = function( context ) {
   $.qsa( 'h-jinze', context )
   .forEach(function( $jinze ) {
     var clazz = 'jiya-outer '
-    var $char, prev
+    var $char, $cs, prev
 
     if (matches( $jinze, '.tou, .touwei' )) {
       $char = $.qs( '.biaodian:first-child', $jinze )
-      prev = $char.getAttribute( 'prev' ) || ''
+      $cs   = $jinze.previousSibling
+      prev  = $char.getAttribute( 'prev' ) || ''
 
-      $jinze.insertAdjacentHTML(
-        'beforebegin', get$csoHTML( prev, clazz )
-      )
+      if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+        $cs.setAttribute( 'prev', prev )
+        $cs.setAttribute( 'class', 'jinze-outer jiya-outer' )
+      } else {
+        $jinze.insertAdjacentHTML(
+          'beforebegin', get$csoHTML( prev, clazz )
+        )
+      }
     }
     if (matches( $jinze, '.wei, .touwei' )) {
       $char = $.qs( '.biaodian:last-child', $jinze )
+      $cs   = $jinze.nextSibling
       clazz += $char.getAttribute( 'class' )
 
-      $jinze.insertAdjacentHTML(
-        'afterend', get$csoHTML( '', clazz )
-      )
+      if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+        $cs.setAttribute( 'class', clazz + ' ' + $cs.getAttribute( 'class' ))
+      } else {
+        $jinze.insertAdjacentHTML(
+          'afterend', get$csoHTML( '', clazz )
+        )
+      }
     }
   })
 
