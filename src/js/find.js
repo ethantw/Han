@@ -19,6 +19,15 @@ var isNodeNormalizeNormal = (function() {
     return div.firstChild.length !== 2
 })()
 
+function getFunctionOrElement( callback ) {
+  return (
+    typeof callback === 'function' ||
+    callback instanceof Element
+  )
+    ? callback
+    : undefined
+}
+
 function createBdGroup( portion ) {
   var clazz = portion.index === 0 && portion.isEnd
     ? 'biaodian cjk'
@@ -174,45 +183,70 @@ $.extend( Fibre.fn, {
     if ( option.biaodian ) {
       this.replace(
         TYPESET.char.biaodian.all,
-        function( portion, match ) {  return createBdChar( match[0] )  }
+        getFunctionOrElement( option.biaodian )
+          ||
+        function( _, match ) {  return createBdChar( match[0] )  }
       ).replace(
         TYPESET.char.biaodian.liga,
-        function( portion, match ) {  return createBdChar( match[0] )  }
+        getFunctionOrElement( option.biaodian )
+          ||
+        function( _, match ) {  return createBdChar( match[0] )  }
       )
     }
     if ( option.hanzi || option.cjk ) {
       this.wrap(
-        TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
+        TYPESET.char.hanzi,
+        getFunctionOrElement( option.hanzi || option.cjk )
+          ||
+        $.clone($.create( 'h-char', 'hanzi cjk' ))
       )
     }
     if ( option.punct ) {
       this.wrap(
-        TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' ))
+        TYPESET.char.punct.all,
+        getFunctionOrElement( option.punct )
+          ||
+        $.clone($.create( 'h-char', 'punct' ))
       )
     }
     if ( option.latin ) {
       this.wrap(
-        TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
+        TYPESET.char.latin,
+        getFunctionOrElement( option.latin )
+          ||
+        $.clone($.create( 'h-char', 'alphabet latin' ))
       )
     }
     if ( option.ellinika || option.greek ) {
       this.wrap(
-        TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
+        TYPESET.char.ellinika,
+        getFunctionOrElement( option.ellinika || option.greek )
+          ||
+        $.clone($.create( 'h-char', 'alphabet ellinika greek' ))
       )
     }
     if ( option.kirillica || option.cyrillic ) {
       this.wrap(
-        TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
+        TYPESET.char.kirillica,
+        getFunctionOrElement( option.kirillica || option.cyrillic )
+          ||
+        $.clone($.create( 'h-char', 'alphabet kirillica cyrillic' ))
       )
     }
     if ( option.kana ) {
       this.wrap(
-        TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
+        TYPESET.char.kana,
+        getFunctionOrElement( option.kana )
+          ||
+        $.clone($.create( 'h-char', 'kana' ))
       )
     }
     if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
+        TYPESET.char.eonmun,
+        getFunctionOrElement( option.eonmum || option.hangul )
+          ||
+        $.clone($.create( 'h-char', 'eonmun hangul' ))
       )
     }
 
