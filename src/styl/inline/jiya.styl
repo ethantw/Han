@@ -2,12 +2,15 @@
 /**
  * CJK Biaodian compression (CJK標點擠壓)
  */
+h-char.bd-jiya.bd-open:before,
+h-char.bd-jiya.bd-end:after,
 h-cs,
 h-cs[hidden]
   // box
   display: none
   visibility: hidden
   // typography
+  content: ' '
   font: .825em Courier
   letter-spacing: 0
   white-space: normal
@@ -18,7 +21,7 @@ h-cs.jinze-outer[hidden]
 
 // * Handle line start/end Biaodian (行首行尾標點擠壓)
 // *
-h-char.biaodian
+h-char.bd-jiya
   &.bd-open > h-inner
     margin-left: -.5em
 
@@ -30,13 +33,14 @@ h-char.biaodian
     > h-inner
       letter-spacing: -.5em
 
-  &.bd-open,
-  &.bd-close,
+  &.bd-open:before,
+  &.bd-close:after
+    display: inline
   &[unicode='3001'],
   &[unicode='3002'],
   &[unicode='ff0c'],
   &[unicode='ff0e']
-    > h-cs
+    &:after
       display: inline
 
   &[unicode='3001'],
@@ -46,22 +50,25 @@ h-char.biaodian
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
-      > h-cs
+      &:after
         display: none
       > h-inner
         letter-spacing: inherit
 
 // * Handle consecutive Biaodian (連續標點擠壓)
 // *
-h-char.consecutive-bd
+h-char.bd-consecutive
   // * Basic situation
   // *
-  &.bd-end:not(.end-portion) h-cs,
-  &[prev='bd-open'].bd-open h-cs,
+  &.bd-end:not(.end-portion):after,
+  &.bd-open[prev='bd-open']:before,
   /h-cs.bd-end:not(.end-portion)
     display: none
 
-  &[prev*='bd-cop'].bd-open h-cs,
+  &.bd-open[prev*='bd-cop']:lang(zh-Hant):before
+  &.bd-open[prev*='bd-cop']:lang(zh-TW):before
+  &.bd-open[prev*='bd-cop']:lang(zh-HK):before
+    display: none
   /h-cs[prev*='bd-cop'].jiya-outer,
   /h-cs.jiya-outer.bd-end
     &:lang(zh-Hant),
@@ -80,4 +87,3 @@ h-char.consecutive-bd
   // *
   &.bd-liga:not(.end-portion)
     margin-right: -.25em
-

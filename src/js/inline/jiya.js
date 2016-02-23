@@ -5,7 +5,10 @@ define([
   '../find'
 ], function( Han, $, UNICODE ) {
 
-var csHTML  = '<h-cs hidden> </h-cs>'
+var JIYA_CLASS = 'bd-jiya'
+var JIYA_AVOID = 'h-char.bd-jiya'
+var CONSECUTIVE_CLASS = 'bd-consecutive'
+
 var matches = Han.find.matches
 
 var get$csoHTML = function( prev, clazz ) {
@@ -13,17 +16,20 @@ var get$csoHTML = function( prev, clazz ) {
 }
 
 function get$bdType( $char ) {
-  var clazz = $char.classList
+  var hasClass = function( className ) {
+    return $char.classList.contains( className )
+  }
+
   return (
-    clazz.contains( 'bd-open' )
+    hasClass( 'bd-open' )
     ? 'bd-open'
-    : clazz.contains( 'bd-close' )
+    : hasClass( 'bd-close' )
     ? 'bd-close'
-    : clazz.contains( 'bd-middle' )
+    : hasClass( 'bd-middle' )
     ? 'bd-middle'
-    : clazz.contains( 'bd-liga' )
+    : hasClass( 'bd-liga' )
     ? 'bd-liga'
-    : clazz.contains( 'bd-end' )
+    : hasClass( 'bd-end' )
     ? (
       /(?:3001|3002|ff0c)/i.test($char.getAttribute( 'unicode' ))
       // `cop` stands for ‘comma or period’.
@@ -38,11 +44,13 @@ var prevBiaodianType
 
 function locateConsecutiveBd( portion ) {
   var $elmt = portion.node.parentNode
-  var clazz = $elmt.classList
+  var clazz
 
   while (!matches( $elmt, 'h-char.biaodian' )) {
     $elmt = $elmt.parentNode
   }
+
+  clazz = $elmt.classList
 
   if ( prevBiaodianType ) {
     $elmt.setAttribute( 'prev', prevBiaodianType )
@@ -50,12 +58,11 @@ function locateConsecutiveBd( portion ) {
 
   if ( portion.isEnd ) {
     prevBiaodianType = undefined
-    clazz.add( 'consecutive-bd', 'end-portion' )
+    clazz.add( CONSECUTIVE_CLASS, 'end-portion' )
   } else {
     prevBiaodianType = get$bdType( $elmt )
-    clazz.add( 'consecutive-bd' )
+    clazz.add( CONSECUTIVE_CLASS )
   }
-
   return portion.text
 }
 
@@ -66,26 +73,41 @@ Han.renderJiya = function( context ) {
   finder
   .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
 
-  .avoid( 'h-char.biaodian' )
-  .charify({ biaodian: true })
-  // End avoiding selector `h-char.biaodian`:
+  .avoid( JIYA_AVOID )
+  .charify({
+    avoid: false,
+
+    biaodian: function( portion ) {
+      var $elmt = portion.node.parentNode
+      var beenWrapped = matches( $elmt, 'h-char.biaodian, h-char.biaodian *' )
+
+      var biaodian = portion.text
+      var $new = Han.createBdChar( biaodian )
+
+      $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
+      $new.classList.add( JIYA_CLASS )
+
+      return !beenWrapped
+        ? $new
+        : (function() {
+          var $char = $elmt
+
+          while (!matches( $char, 'h-char.biaodian' )) {
+            $char = $char.parentNode
+          }
+          $char.classList.add( JIYA_CLASS )
+
+          return matches( $elmt, 'h-inner, h-inner *' )
+            ? biaodian
+            : $new.firstChild
+        })()
+    }
+  })
+  // End avoiding `JIYA_AVOID`:
   .endAvoid()
 
   .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
   .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
-
-  // The reason we’re doing this instead of using
-  // pseudo elements in CSS is because WebKit has
-  // problem rendering pseudo elements containing
-  // only spaces.
-  $.qsa( 'h-char.bd-open, h-char.bd-end', context )
-  .forEach(function( $elmt ) {
-    var html = '<h-inner>' + $elmt.innerHTML + '</h-inner>'
-
-    $elmt.innerHTML = $elmt.classList.contains( 'bd-open' )
-      ? csHTML + html
-      : html + csHTML
-  })
 
   $.qsa( 'h-jinze', context )
   .forEach(function( $jinze ) {

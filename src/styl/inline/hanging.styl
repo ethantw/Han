@@ -30,12 +30,13 @@ h-cs.hangable-outer[hidden]
   // positioning
   position: relative
 
-  > h-cs,
-  > h-cs[hidden]
+  &:after
+    display: none !important
+  &:before
     // box-model
     display: inline !important
-    visibility: hidden
     // typography
+    content: ' '
     font: 1em 'Han Space', $han-mono
   > h-inner
     han-typo-reset()

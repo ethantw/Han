@@ -4,6 +4,9 @@ define([
   '../find'
 ], function( Han, $ ) {
 
+var HANGABLE_CLASS = 'bd-hangable'
+var HANGABLE_AVOID = 'h-char.bd-hangable'
+
 var matches = Han.find.matches
 
 function detectSpaceFont() {
@@ -28,7 +31,8 @@ $.extend( Han, {
     var finder  = Han.find( context )
 
     finder
-    .avoid( 'textarea, code, kbd, samp, pre, h-cs, h-char.hangable' )
+    .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
+    .avoid( HANGABLE_AVOID )
     .replace(
       TYPESET.jinze.hanging,
       function( portion ) {
@@ -37,7 +41,7 @@ $.extend( Han, {
         var $new
 
         var biaodian = portion.text
-        var html = '<h-cs hidden> </h-cs><h-inner>' + biaodian + '</h-inner>'
+        var html = '<h-inner>' + biaodian + '</h-inner>'
         var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
 
         void function( $elmt ) {
@@ -63,28 +67,25 @@ $.extend( Han, {
         }( $elmt )
 
         $new = Han.createBdChar( biaodian )
-        $new.classList.add( 'hangable' )
         $new.innerHTML = html
+        $new.classList.add( HANGABLE_CLASS )
 
-        if ( beenWrapped ) {
-          while (!matches( $elmt, 'h-char.biaodian' )) {
-            $elmt = $elmt.parentNode
-          }
+        return !beenWrapped
+          ? $new
+          : (function() {
+            var $char = $elmt
 
-          $elmt.classList.add( 'to-be-omitted' )
-          $elmt.parentNode.insertBefore( $new, $elmt )
-        }
+            while (!matches( $char, 'h-char.biaodian' )) {
+              $char = $char.parentNode
+            }
+            $char.classList.add( HANGABLE_CLASS )
 
-        return beenWrapped
-          ? ''
-          : $new
+            return matches( $elmt, 'h-inner, h-inner *' )
+              ? biaodian
+              : $new.firstChild
+          })()
       }
     )
-
-    $.qsa( 'h-char.to-be-omitted', context )
-    .forEach(function( $elmt ) {
-      $.remove( $elmt )
-    })
     return finder
   }
 })
@@ -93,12 +94,12 @@ $.extend( Han.fn, {
   hanging: null,
 
   renderHanging: function() {
-    var condClazz = this.condition.classList
+    var classList = this.condition.classList
     var isSpaceFontLoaded = detectSpaceFont()
 
-    if ( isSpaceFontLoaded && condClazz.contains( 'no-han-space' )) {
-      condClazz.remove( 'no-han-space' )
-      condClazz.add( 'han-space' )
+    if ( isSpaceFontLoaded && classList.contains( 'no-han-space' )) {
+      classList.remove( 'no-han-space' )
+      classList.add( 'han-space' )
     }
 
     this.hanging = Han.renderHanging( this.context )
