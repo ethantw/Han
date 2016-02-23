@@ -168,6 +168,7 @@ $.extend( Fibre.fn, {
 
   charify: function( option ) {
     var option = $.extend({
+      avoid: true,
       biaodian: false,
       punct: false,
       hanzi: false,     // Includes Kana
@@ -178,7 +179,9 @@ $.extend( Fibre.fn, {
       eonmun: false
     }, option || {})
 
-    this.avoid( 'h-char' )
+    if ( option.avoid ) {
+      this.avoid( 'h-char' )
+    }
 
     if ( option.biaodian ) {
       this.replace(
