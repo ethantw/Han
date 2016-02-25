@@ -45,24 +45,24 @@ $.extend( Han, {
         var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
 
         void function( $elmt ) {
-          if (matches( $elmt, 'h-jinze, h-jinze *' )) {
-            var $jinze = $elmt
-            var $cs
+          if (!matches( $elmt, 'h-jinze, h-jinze *' ))  return
 
-            while (!matches( $jinze, 'h-jinze' )) {
-              $jinze = $jinze.parentNode
-            }
+          var $jinze = $elmt
+          var $cs
 
-            $cs = $jinze.nextSibling
+          while (!matches( $jinze, 'h-jinze' )) {
+            $jinze = $jinze.parentNode
+          }
 
-            if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
-              $cs.classList.add( 'hangable-outer' )
-            } else {
-              $jinze.insertAdjacentHTML(
-                'afterend',
-                '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
-              )
-            }
+          $cs = $jinze.nextSibling
+
+          if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+            $cs.classList.add( 'hangable-outer' )
+          } else {
+            $jinze.insertAdjacentHTML(
+              'afterend',
+              '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
+            )
           }
         }( $elmt )
 
