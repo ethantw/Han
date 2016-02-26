@@ -12,8 +12,8 @@ var isNodeNormalizeNormal = (function() {
     //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
     var div = $.create( 'div' )
 
-    div.appendChild( $.create( '', '0-' ))
-    div.appendChild( $.create( '', '2' ))
+    div.appendChild($.create( '', '0-' ))
+    div.appendChild($.create( '', '2' ))
     div.normalize()
 
     return div.firstChild.length !== 2
@@ -143,22 +143,22 @@ $.extend( Fibre.fn, {
 
     if ( option.hanzi || option.cjk ) {
       this.wrap(
-        TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
+        TYPESET.group.hanzi, $.clone($.create( 'h-char-group', 'hanzi cjk' ))
       )
     }
     if ( option.western ) {
       this.wrap(
-        TYPESET.group.western, $.clone( $.create( 'h-word', 'western' ))
+        TYPESET.group.western, $.clone($.create( 'h-word', 'western' ))
       )
     }
     if ( option.kana ) {
       this.wrap(
-        TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
+        TYPESET.group.kana, $.clone($.create( 'h-char-group', 'kana' ))
       )
     }
     if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
+        TYPESET.group.eonmun, $.clone($.create( 'h-word', 'eonmun hangul' ))
       )
     }
 
