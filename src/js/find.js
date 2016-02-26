@@ -265,6 +265,8 @@ $.extend( Han, {
   createBdChar: createBdChar
 })
 
+$.matches = Han.find.matches
+
 void [
   'setMode',
   'wrap', 'replace', 'revert',

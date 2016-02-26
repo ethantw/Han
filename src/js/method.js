@@ -25,6 +25,27 @@ var $ = {
     )
   },
 
+  parent: function( $node, selector ) {
+    return selector
+      ? (function() {
+        if ( typeof $.matches !== 'function' )  return
+
+        while (!$.matches( $node, selector )) {
+          if (
+            !$node ||
+            $node === document.documentElement
+          ) {
+            $node = undefined
+            break
+          }
+          $node = $node.parentNode
+        }
+        return $node
+      })()
+      : $node
+      ? $node.parentNode : undefined
+  },
+
   /**
    * Create a document fragment, a text node with text
    * or an element with/without classes.
