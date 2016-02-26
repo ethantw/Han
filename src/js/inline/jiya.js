@@ -135,7 +135,7 @@ function locateCS( $jinze, attr ) {
     $cs = $jinze.nextSibling
 
     if (matches( $cs, 'h-cs' )) {
-      $cs.className += attr[ 'class' ]
+      $cs.className += ' ' + attr[ 'class' ]
     }
   }
 }
