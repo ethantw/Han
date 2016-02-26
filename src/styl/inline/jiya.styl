@@ -61,15 +61,14 @@ h-char.bd-consecutive
   // * Basic situation
   // *
   &.bd-end:not(.end-portion):after,
-  &.bd-open[prev='bd-open']:before,
-  /h-cs.bd-end:not(.end-portion)
+  &.bd-open[prev='bd-open']:before
     display: none
 
   &.bd-open[prev*='bd-cop']:lang(zh-Hant):before
   &.bd-open[prev*='bd-cop']:lang(zh-TW):before
   &.bd-open[prev*='bd-cop']:lang(zh-HK):before
     display: none
-  /h-cs[prev*='bd-cop'].jiya-outer,
+  /h-cs.jiya-outer[prev*='bd-cop'],
   /h-cs.jiya-outer.bd-end
     &:lang(zh-Hant),
     &:lang(zh-TW),
