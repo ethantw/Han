@@ -66,6 +66,9 @@ html(lang='zh-Hant')
         p 「好·『不好』」「好、『不好』」
         p 《書名》〈篇名〉（內容）
         p: em 《書名》〈篇名〉（內容）「『好』、不好」
+        p: em 內容《書名》〈篇名〉（內容）「好、『不好』」
+        p 內容
+          em 《書名》〈篇名〉（內容）『好』、「不好」
         p <a href='#'>《書名》</a>、「文字」、<strong>『重點』</strong>。
         p <a href='#'>《書名》、</a><em>「強調」、</em><strong>『重點』</strong>。
         p <a href='#'>《書名》、</a><b>「關鍵字」、</b><strong>『重點』</strong>。
@@ -86,6 +89,9 @@ html(lang='zh-Hant')
         p 「好·『不好』」「好、『不好』」
         p 《书名》〈篇名〉（内容）
         p: em 《书名》〈篇名〉（内容）「『好』、不好」
+        p: em 內容《書名》〈篇名〉（內容）「好、『不好』」
+        p 內容
+          em 《書名》〈篇名〉（內容）『好』、「不好」
         p <a href='#'>《书名》</a>、「文字」、<strong>『重点』</strong>。
         p <a href='#'>《書名》、</a><em>「強調」、</em><strong>『重點』</strong>。
         p <a href='#'>《書名》、</a><b>「關鍵字」、</b><strong>『重點』</strong>。
@@ -108,18 +114,25 @@ html(lang='zh-Hant')
         p 「好·『不好』」「好、『不好』」
         p 《書名》〈篇名〉（內容）
         p: em 《書名》〈篇名〉（內容）「『好』、不好」
+        p: em 內容《書名》〈篇名〉（內容）「好、『不好』」
+        p 內容
+          em 《書名》〈篇名〉（內容）『好』、「不好」
         p <a href='#'>《書名》</a>、「文字」、<strong>『重點』</strong>。
         p <a href='#'>《書名》、</a><em>「強調」、</em><strong>『重點』</strong>。
         p <a href='#'>《書名》、</a><b>「關鍵字」、</b><strong>『重點』</strong>。
         p <a href='#'>書名</a><em>強調</em><strong>重點</strong>。
 
-    script(src='./han.min.js')
+    //script(src='./han.min.js')
+    script(src='./han.js')
     script.
       void function(){
         Han().setRoutine([
           'initCond',
-          /* 'renderHanging', */ 'renderJiya', 'renderHWS',
-          'correctBasicBD', 'substCombLigaWithPUA',
-          'renderElem'
+          'renderElem',
+          'renderJiya',
+        //'renderHanging',
+          'renderHWS',
+          'correctBasicBD',
+          'substCombLigaWithPUA'
         ]).render()
       }()

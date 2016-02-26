@@ -40,25 +40,20 @@ function get$bdType( $bd ) {
 function charifyBiaodian( portion ) {
   var biaodian = portion.text
   var $elmt = portion.node.parentNode
+  var $bd = $.parent( $elmt, 'h-char.biaodian' )
   var $new = Han.createBdChar( biaodian )
-  var beenWrapped = matches( $elmt, 'h-char.biaodian, h-char.biaodian *' )
+  var $jinze
 
   $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
   $new.classList.add( JIYA_CLASS )
 
-  if (matches( $elmt, 'h-jinze *' )) {
-    insertAdjacentCS( $elmt )
+  if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
+    insertJiyaCS( $jinze )
   }
 
-  return !beenWrapped
+  return !$bd
     ? $new
     : (function() {
-      var $bd = $elmt
-
-      while (!matches( $bd, 'h-char.biaodian' )) {
-        $bd = $bd.parentNode
-      }
-
       $bd.classList.add( JIYA_CLASS )
 
       return matches( $elmt, 'h-inner, h-inner *' )
@@ -71,13 +66,10 @@ var prevBdType
 
 function locateConsecutiveBd( portion ) {
   var prev = prevBdType
-  var $elmt, $bd, $jinze, classList
-
-  $elmt = $bd = portion.node.parentNode
-
-  while (!matches( $bd, 'h-char.biaodian' )) {
-    $bd = $bd.parentNode
-  }
+  var $elmt = portion.node.parentNode
+  var $bd = $.parent( $elmt, 'h-char.biaodian' )
+  var $jinze = $.parent( $bd, 'h-jinze' )
+  var classList
 
   classList = $bd.classList
 
@@ -93,11 +85,7 @@ function locateConsecutiveBd( portion ) {
     classList.add( CONSECUTIVE_CLASS )
   }
 
-  if (matches( $bd, 'h-jinze *' )) {
-    do {
-      $jinze = ( $jinze || $bd ).parentNode
-    } while (!matches( $jinze, 'h-jinze' ))
-
+  if ( $jinze ) {
     locateCS( $jinze, {
       prev: prev,
       'class': $bd.className
@@ -106,17 +94,17 @@ function locateConsecutiveBd( portion ) {
   return portion.text
 }
 
-function insertAdjacentCS( $node ) {
-  var $jinze, $cs
-
-  do {
-    $jinze = ( $jinze || $node ).parentNode
-  } while (!matches( $jinze, 'h-jinze' ))
-
-  if (matches( $node, 'h-jinze > .bd-open:first-child' )) {
+function insertJiyaCS( $jinze ) {
+  if (
+    matches( $jinze, '.tou, .touwei' ) &&
+    !matches( $jinze.previousSibling, 'h-cs.jiya-outer' )
+  ) {
     $jinze.insertAdjacentHTML( 'beforebegin', CS_HTML )
   }
-  if (matches( $node, 'h-jinze > .bd-end:last-child' )) {
+  if (
+    matches( $jinze, '.wei, .touwei' ) &&
+    !matches( $jinze.nextSibling, 'h-cs.jiya-outer' )
+  ) {
     $jinze.insertAdjacentHTML( 'afterend', CS_HTML )
   }
 }
@@ -128,6 +116,7 @@ function locateCS( $jinze, attr ) {
     $cs = $jinze.previousSibling
 
     if (matches( $cs, 'h-cs' )) {
+      $cs.className = 'jinze-outer jiya-outer'
       $cs.setAttribute( 'prev', attr.prev )
     }
   }
@@ -135,7 +124,8 @@ function locateCS( $jinze, attr ) {
     $cs = $jinze.nextSibling
 
     if (matches( $cs, 'h-cs' )) {
-      $cs.className += ' ' + attr[ 'class' ]
+      $cs.className = 'jinze-outer jiya-outer ' + attr[ 'class' ]
+      $cs.removeAttribute( 'prev' )
     }
   }
 }

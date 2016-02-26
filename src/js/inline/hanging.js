@@ -20,6 +20,19 @@ function detectSpaceFont() {
   return ret
 }
 
+function insertHangableCS( $jinze ) {
+  var $cs = $jinze.nextSibling
+
+  if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+    $cs.classList.add( 'hangable-outer' )
+  } else {
+    $jinze.insertAdjacentHTML(
+      'afterend',
+      '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
+    )
+  }
+}
+
 Han.support['han-space'] = detectSpaceFont()
 
 $.extend( Han, {
@@ -36,52 +49,29 @@ $.extend( Han, {
     .replace(
       TYPESET.jinze.hanging,
       function( portion ) {
-        var $node = portion.node
-        var $elmt = $node.parentNode
-        var $new
-
         if ( /^[\x20\t\r\n\f]+$/.test( portion.text )) {
           return ''
         }
 
-        var biaodian = portion.text.trim()
-        var html = '<h-inner>' + biaodian + '</h-inner>'
-        var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
+        var $elmt = portion.node.parentNode
+        var $jinze, $new, $char, biaodian
 
-        void function( $elmt ) {
-          if (!matches( $elmt, 'h-jinze, h-jinze *' ))  return
 
-          var $jinze = $elmt
-          var $cs
+        if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
+          insertHangableCS( $jinze )
+        }
 
-          while (!matches( $jinze, 'h-jinze' )) {
-            $jinze = $jinze.parentNode
-          }
-
-          $cs = $jinze.nextSibling
-
-          if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
-            $cs.classList.add( 'hangable-outer' )
-          } else {
-            $jinze.insertAdjacentHTML(
-              'afterend',
-              '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
-            )
-          }
-        }( $elmt )
+        biaodian = portion.text.trim()
 
         $new = Han.createBdChar( biaodian )
-        $new.innerHTML = html
+        $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
         $new.classList.add( HANGABLE_CLASS )
 
-        return !beenWrapped
+        $char = $.parent( $elmt, 'h-char.biaodian' )
+
+        return !$char
           ? $new
           : (function() {
-            var $char = $elmt
-
-            while (!matches( $char, 'h-char.biaodian' )) {
-              $char = $char.parentNode
-            }
             $char.classList.add( HANGABLE_CLASS )
 
             return matches( $elmt, 'h-inner, h-inner *' )
@@ -99,9 +89,12 @@ $.extend( Han.fn, {
 
   renderHanging: function() {
     var classList = this.condition.classList
-    var isSpaceFontLoaded = detectSpaceFont()
+    Han.isSpaceFontLoaded = detectSpaceFont()
 
-    if ( isSpaceFontLoaded && classList.contains( 'no-han-space' )) {
+    if (
+      Han.isSpaceFontLoaded &&
+      classList.contains( 'no-han-space' )
+    ) {
       classList.remove( 'no-han-space' )
       classList.add( 'han-space' )
     }
