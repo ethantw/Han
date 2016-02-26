@@ -93,7 +93,7 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging:  new RegExp( '([、，。．])(?!' + rBdEnd + ')', 'ig' ),
+      hanging:  new RegExp( rWhite + '*([、，。．])(?!' + rBdEnd + ')', 'ig' ),
       touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
       tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
       wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),

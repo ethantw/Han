@@ -31,7 +31,7 @@ $.extend( Han, {
     var finder  = Han.find( context )
 
     finder
-    .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
+    .avoid( 'textarea, code, kbd, samp, pre' )
     .avoid( HANGABLE_AVOID )
     .replace(
       TYPESET.jinze.hanging,
@@ -40,7 +40,11 @@ $.extend( Han, {
         var $elmt = $node.parentNode
         var $new
 
-        var biaodian = portion.text
+        if ( /^[\x20\t\r\n\f]+$/.test( portion.text )) {
+          return ''
+        }
+
+        var biaodian = portion.text.trim()
         var html = '<h-inner>' + biaodian + '</h-inner>'
         var beenWrapped = matches( $elmt, 'h-char[unicode], h-char[unicode] *' )
 
