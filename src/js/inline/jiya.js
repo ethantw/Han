@@ -74,7 +74,7 @@ function locateConsecutiveBd( portion ) {
   classList = $bd.classList
 
   if ( prev ) {
-    $bd.setAttribute( 'prev', prevBdType )
+    $bd.setAttribute( 'prev', prev )
   }
 
   if ( portion.isEnd ) {
