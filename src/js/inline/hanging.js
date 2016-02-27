@@ -54,7 +54,7 @@ $.extend( Han, {
         }
 
         var $elmt = portion.node.parentNode
-        var $jinze, $new, $char, biaodian
+        var $jinze, $new, $bd, biaodian
 
 
         if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
@@ -67,12 +67,12 @@ $.extend( Han, {
         $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
         $new.classList.add( HANGABLE_CLASS )
 
-        $char = $.parent( $elmt, 'h-char.biaodian' )
+        $bd = $.parent( $elmt, 'h-char.biaodian' )
 
-        return !$char
+        return !$bd
           ? $new
           : (function() {
-            $char.classList.add( HANGABLE_CLASS )
+            $bd.classList.add( HANGABLE_CLASS )
 
             return matches( $elmt, 'h-inner, h-inner *' )
               ? biaodian
