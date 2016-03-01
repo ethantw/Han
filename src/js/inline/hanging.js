@@ -85,8 +85,6 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  hanging: null,
-
   renderHanging: function() {
     var classList = this.condition.classList
     Han.isSpaceFontLoaded = detectSpaceFont()
@@ -99,14 +97,19 @@ $.extend( Han.fn, {
       classList.add( 'han-space' )
     }
 
-    this.hanging = Han.renderHanging( this.context )
+    Han.renderHanging( this.context )
     return this
   },
 
   revertHanging: function() {
-    try {
-      this.hanging.revert( 'all' )
-    } catch ( e ) {}
+    $.qsa(
+      'h-char.bd-hangable, h-cs.hangable-outer',
+      this.context
+    ).forEach(function( $elmt ) {
+      var classList = $elmt.classList
+      classList.remove( 'bd-hangable' )
+      classList.remove( 'hangable-outer' )
+    })
     return this
   }
 })

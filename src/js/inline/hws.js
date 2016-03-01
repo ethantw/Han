@@ -120,17 +120,14 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  HWS: [],
-
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
-
-    this.HWS = $.tag( 'h-hws', this.context )
     return this
   },
 
   revertHWS: function() {
-    this.HWS.map(function( hws ) {
+    $.tag( 'h-hws', this.context )
+    .forEach(function( hws ) {
       $.remove( hws )
     })
     this.HWS = []

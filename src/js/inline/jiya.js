@@ -153,17 +153,20 @@ Han.renderJiya = function( context ) {
 }
 
 $.extend( Han.fn, {
-  jiya: null,
-
   renderJiya: function() {
-    this.jiya = Han.renderJiya( this.context )
+    Han.renderJiya( this.context )
     return this
   },
 
   revertJiya: function() {
-    try {
-      this.jiya.revert( 'all' )
-    } catch ( e ) {}
+    $.qsa(
+      'h-char.bd-jiya, h-cs.jiya-outer',
+      this.context
+    ).forEach(function( $elmt ) {
+      var classList = $elmt.classList
+      classList.remove( 'bd-jiya' )
+      classList.remove( 'jiya-outer' )
+    })
     return this
   }
 })
