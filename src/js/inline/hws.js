@@ -37,7 +37,7 @@ function properlyPlaceHWSBehind( $node, text ) {
   return text
 }
 
-function replacementFn( portion, mat ) {
+function firstStepLabel( portion, mat ) {
   return portion.isEnd && portion.index === 0
     ? mat[1] + hws + mat[2]
     : portion.index === 0
@@ -96,8 +96,8 @@ $.extend( Han, {
     // Basic situations:
     // - 字a => 字<hws/>a
     // - A字 => A<hws/>字
-    .replace( Han.TYPESET.hws[ mode ][0], replacementFn )
-    .replace( Han.TYPESET.hws[ mode ][1], replacementFn )
+    .replace( Han.TYPESET.hws[ mode ][0], firstStepLabel )
+    .replace( Han.TYPESET.hws[ mode ][1], firstStepLabel )
 
     // Convert text nodes `<hws/>` into real element nodes:
     .replace( new RegExp( '(' + hws + ')+', 'g' ), real$hwsElmt )
@@ -110,8 +110,8 @@ $.extend( Han, {
     // Deal with:
     // - <hws/>“字”<hws/>
     // - <hws/>‘字’<hws/>
-    .replace( /\s([‘“])/g, curveQuote )
-    .replace( /([’”])\s/g, curveQuote )
+    .replace( /\s[‘“]/g, curveQuote )
+    .replace( /[’”]\s/g, curveQuote )
     .normalize()
 
     // Return the finder instance for future usage
