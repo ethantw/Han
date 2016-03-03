@@ -19,12 +19,12 @@ var isNodeNormalizeNormal = (function() {
     return div.firstChild.length !== 2
 })()
 
-function getFunctionOrElement( callback ) {
+function getFuncOrElmt( obj ) {
   return (
-    typeof callback === 'function' ||
-    callback instanceof Element
+    typeof obj === 'function' ||
+    obj instanceof Element
   )
-    ? callback
+    ? obj
     : undefined
 }
 
@@ -186,12 +186,12 @@ $.extend( Fibre.fn, {
     if ( option.biaodian ) {
       this.replace(
         TYPESET.char.biaodian.all,
-        getFunctionOrElement( option.biaodian )
+        getFuncOrElmt( option.biaodian )
           ||
         function( _, match ) {  return createBdChar( match[0] )  }
       ).replace(
         TYPESET.char.biaodian.liga,
-        getFunctionOrElement( option.biaodian )
+        getFuncOrElmt( option.biaodian )
           ||
         function( _, match ) {  return createBdChar( match[0] )  }
       )
@@ -199,7 +199,7 @@ $.extend( Fibre.fn, {
     if ( option.hanzi || option.cjk ) {
       this.wrap(
         TYPESET.char.hanzi,
-        getFunctionOrElement( option.hanzi || option.cjk )
+        getFuncOrElmt( option.hanzi || option.cjk )
           ||
         $.clone($.create( 'h-char', 'hanzi cjk' ))
       )
@@ -207,7 +207,7 @@ $.extend( Fibre.fn, {
     if ( option.punct ) {
       this.wrap(
         TYPESET.char.punct.all,
-        getFunctionOrElement( option.punct )
+        getFuncOrElmt( option.punct )
           ||
         $.clone($.create( 'h-char', 'punct' ))
       )
@@ -215,7 +215,7 @@ $.extend( Fibre.fn, {
     if ( option.latin ) {
       this.wrap(
         TYPESET.char.latin,
-        getFunctionOrElement( option.latin )
+        getFuncOrElmt( option.latin )
           ||
         $.clone($.create( 'h-char', 'alphabet latin' ))
       )
@@ -223,7 +223,7 @@ $.extend( Fibre.fn, {
     if ( option.ellinika || option.greek ) {
       this.wrap(
         TYPESET.char.ellinika,
-        getFunctionOrElement( option.ellinika || option.greek )
+        getFuncOrElmt( option.ellinika || option.greek )
           ||
         $.clone($.create( 'h-char', 'alphabet ellinika greek' ))
       )
@@ -231,7 +231,7 @@ $.extend( Fibre.fn, {
     if ( option.kirillica || option.cyrillic ) {
       this.wrap(
         TYPESET.char.kirillica,
-        getFunctionOrElement( option.kirillica || option.cyrillic )
+        getFuncOrElmt( option.kirillica || option.cyrillic )
           ||
         $.clone($.create( 'h-char', 'alphabet kirillica cyrillic' ))
       )
@@ -239,7 +239,7 @@ $.extend( Fibre.fn, {
     if ( option.kana ) {
       this.wrap(
         TYPESET.char.kana,
-        getFunctionOrElement( option.kana )
+        getFuncOrElmt( option.kana )
           ||
         $.clone($.create( 'h-char', 'kana' ))
       )
@@ -247,7 +247,7 @@ $.extend( Fibre.fn, {
     if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmun,
-        getFunctionOrElement( option.eonmum || option.hangul )
+        getFuncOrElmt( option.eonmum || option.hangul )
           ||
         $.clone($.create( 'h-char', 'eonmun hangul' ))
       )
