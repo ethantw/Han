@@ -188,12 +188,12 @@ $.extend( Fibre.fn, {
         TYPESET.char.biaodian.all,
         getFuncOrElmt( option.biaodian )
           ||
-        function( _, match ) {  return createBdChar( match[0] )  }
+        function( portion ) {  return createBdChar( portion.text )  }
       ).replace(
         TYPESET.char.biaodian.liga,
         getFuncOrElmt( option.biaodian )
           ||
-        function( _, match ) {  return createBdChar( match[0] )  }
+        function( portion ) {  return createBdChar( portion.text )  }
       )
     }
     if ( option.hanzi || option.cjk ) {
