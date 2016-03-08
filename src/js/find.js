@@ -28,7 +28,7 @@ function getFuncOrElmt( obj ) {
     : undefined
 }
 
-function createBdGroup( portion ) {
+function createBDGroup( portion ) {
   var clazz = portion.index === 0 && portion.isEnd
     ? 'biaodian cjk'
     : 'biaodian cjk portion ' + (
@@ -44,19 +44,19 @@ function createBdGroup( portion ) {
     return $elmt
 }
 
-function createBdChar( char ) {
+function createBDChar( char ) {
   var div     = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
 
   div.innerHTML = (
     '<h-char unicode="' + unicode +
-    '" class="biaodian cjk ' + getBdType( char ) +
+    '" class="biaodian cjk ' + getBDType( char ) +
     '">' + char + '</h-char>'
   )
   return div.firstChild
 }
 
-function getBdType( char ) {
+function getBDType( char ) {
   return char.match( TYPESET.char.biaodian.open )
     ? 'bd-open'
     : char.match( TYPESET.char.biaodian.close )
@@ -141,9 +141,9 @@ $.extend( Fibre.fn, {
 
     if ( option.biaodian ) {
       this.replace(
-        TYPESET.group.biaodian[0], createBdGroup
+        TYPESET.group.biaodian[0], createBDGroup
       ).replace(
-        TYPESET.group.biaodian[1], createBdGroup
+        TYPESET.group.biaodian[1], createBDGroup
       )
     }
 
@@ -194,12 +194,12 @@ $.extend( Fibre.fn, {
         TYPESET.char.biaodian.all,
         getFuncOrElmt( option.biaodian )
           ||
-        function( portion ) {  return createBdChar( portion.text )  }
+        function( portion ) {  return createBDChar( portion.text )  }
       ).replace(
         TYPESET.char.biaodian.liga,
         getFuncOrElmt( option.biaodian )
           ||
-        function( portion ) {  return createBdChar( portion.text )  }
+        function( portion ) {  return createBDChar( portion.text )  }
       )
     }
     if ( option.hanzi || option.cjk ) {
@@ -267,8 +267,8 @@ $.extend( Fibre.fn, {
 $.extend( Han, {
   isNodeNormalizeNormal: isNodeNormalizeNormal,
   find: Fibre,
-  createBdGroup: createBdGroup,
-  createBdChar: createBdChar
+  createBDGroup: createBDGroup,
+  createBDChar: createBDChar
 })
 
 $.matches = Han.find.matches

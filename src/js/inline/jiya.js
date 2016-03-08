@@ -47,7 +47,7 @@ function charifyBiaodian( portion ) {
   var biaodian = portion.text
   var $elmt = portion.node.parentNode
   var $bd = $.parent( $elmt, 'h-char.biaodian' )
-  var $new = Han.createBdChar( biaodian )
+  var $new = Han.createBDChar( biaodian )
   var $jinze
 
   $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
@@ -68,10 +68,10 @@ function charifyBiaodian( portion ) {
     })()
 }
 
-var prevBdType
+var prevBDType
 
-function locateConsecutiveBd( portion ) {
-  var prev = prevBdType
+function locateConsecutiveBD( portion ) {
+  var prev = prevBDType
   var $elmt = portion.node.parentNode
   var $bd = $.parent( $elmt, 'h-char.biaodian' )
   var $jinze = $.parent( $bd, 'h-jinze' )
@@ -84,10 +84,10 @@ function locateConsecutiveBd( portion ) {
   }
 
   if ( portion.isEnd ) {
-    prevBdType = undefined
+    prevBDType = undefined
     classList.add( CONSECUTIVE_CLASS, 'end-portion' )
   } else {
-    prevBdType = trimBDClass($bd.getAttribute( 'class' ))
+    prevBDType = trimBDClass($bd.getAttribute( 'class' ))
     classList.add( CONSECUTIVE_CLASS )
   }
 
@@ -152,8 +152,8 @@ Han.renderJiya = function( context ) {
   .endAvoid()
 
   .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
-  .replace( TYPESET.group.biaodian[0], locateConsecutiveBd )
-  .replace( TYPESET.group.biaodian[1], locateConsecutiveBd )
+  .replace( TYPESET.group.biaodian[0], locateConsecutiveBD )
+  .replace( TYPESET.group.biaodian[1], locateConsecutiveBD )
 
   return finder
 }

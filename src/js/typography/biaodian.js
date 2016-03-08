@@ -11,12 +11,12 @@ Han.correctBiaodian = function( context ) {
   finder
   .avoid( 'h-char' )
   .replace( /([‘“])/g, function( portion ) {
-    var $char = Han.createBdChar( portion.text )
+    var $char = Han.createBDChar( portion.text )
     $char.classList.add( 'bd-open', 'punct', 'western' )
     return $char
   })
   .replace( /([’”])/g, function( portion ) {
-    var $char = Han.createBdChar( portion.text )
+    var $char = Han.createBDChar( portion.text )
     $char.classList.add( 'bd-close', 'punct', 'western' )
     return $char
   })

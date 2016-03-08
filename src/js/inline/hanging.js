@@ -64,7 +64,7 @@ $.extend( Han, {
 
         biaodian = portion.text.trim()
 
-        $new = Han.createBdChar( biaodian )
+        $new = Han.createBDChar( biaodian )
         $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
         $new.classList.add( HANGABLE_CLASS )
 
