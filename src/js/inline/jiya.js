@@ -12,6 +12,12 @@ var JIYA_CS_HTML = '<h-cs hidden class="jinze-outer jiya-outer"> </h-cs>'
 
 var matches = Han.find.matches
 
+function trimBDClass( clazz ) {
+  return clazz.replace(
+    /(biaodian|cjk|bd-jiya|bd-consecutive|bd-hangable)/gi, ''
+  ).trim()
+}
+
 function get$bdType( $bd ) {
   return (
     hasClass( 'bd-open' )
@@ -81,14 +87,14 @@ function locateConsecutiveBd( portion ) {
     prevBdType = undefined
     classList.add( CONSECUTIVE_CLASS, 'end-portion' )
   } else {
-    prevBdType = get$bdType( $bd )
+    prevBdType = trimBDClass($bd.getAttribute( 'class' ))
     classList.add( CONSECUTIVE_CLASS )
   }
 
   if ( $jinze ) {
     locateCS( $jinze, {
       prev: prev,
-      'class': $bd.className
+      'class': trimBDClass($bd.getAttribute( 'class' ))
     })
   }
   return portion.text

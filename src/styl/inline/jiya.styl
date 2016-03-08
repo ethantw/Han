@@ -26,9 +26,7 @@ h-char.bd-jiya
     margin-left: -.5em
 
   &.bd-close,
-  &[unicode='3001'],
-  &[unicode='3002'],
-  &[unicode='ff0c'],
+  &.bd-cop,
   &[unicode='ff0e']
     > h-inner
       letter-spacing: -.5em
@@ -36,16 +34,13 @@ h-char.bd-jiya
   &.bd-open:before,
   &.bd-close:after
     display: inline
-  &[unicode='3001'],
-  &[unicode='3002'],
-  &[unicode='ff0c'],
+
+  &.bd-cop,
   &[unicode='ff0e']
     &:after
       display: inline
 
-  &[unicode='3001'],
-  &[unicode='3002'],
-  &[unicode='ff0c'],
+  &.bd-cop,
   &[unicode='ff0e']
     &:lang(zh-Hant),
     &:lang(zh-TW),
@@ -61,13 +56,16 @@ h-char.bd-consecutive
   // * Basic situation
   // *
   &.bd-end:not(.end-portion):after,
-  &.bd-open[prev='bd-open']:before
+  &.bd-open[prev='bd-open']:before,
+  /h-cs.jiya-outer.bd-end:not(.end-portion)
     display: none
 
-  &.bd-open[prev*='bd-cop']:lang(zh-Hant):before
-  &.bd-open[prev*='bd-cop']:lang(zh-TW):before
-  &.bd-open[prev*='bd-cop']:lang(zh-HK):before
-    display: none
+  &.bd-open[prev*='bd-cop']
+    &:lang(zh-Hant):before,
+    &:lang(zh-TW):before,
+    &:lang(zh-HK):before
+      display: none
+
   /h-cs.jiya-outer[prev*='bd-cop'],
   /h-cs.jiya-outer.bd-end
     &:lang(zh-Hant),
@@ -86,3 +84,4 @@ h-char.bd-consecutive
   // *
   &.bd-liga:not(.end-portion)
     margin-right: -.25em
+

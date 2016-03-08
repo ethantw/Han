@@ -47,25 +47,31 @@ function createBdGroup( portion ) {
 function createBdChar( char ) {
   var div     = $.create( 'div' )
   var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz   = 'biaodian cjk ' + (
-    char.match( TYPESET.char.biaodian.open )
-      ? 'bd-open'
-      : char.match( TYPESET.char.biaodian.close )
-      ? 'bd-close bd-end'
-      : char.match( TYPESET.char.biaodian.end )
-      ? 'bd-end'
-      : char.match(new RegExp( UNICODE.biaodian.liga ))
-      ? 'bd-liga'
-      : char.match(new RegExp( UNICODE.biaodian.middle ))
-      ? 'bd-middle'
-      : ''
-  )
+
   div.innerHTML = (
     '<h-char unicode="' + unicode +
-    '" class="' + clazz +
+    '" class="biaodian cjk ' + getBdType( char ) +
     '">' + char + '</h-char>'
   )
   return div.firstChild
+}
+
+function getBdType( char ) {
+  return char.match( TYPESET.char.biaodian.open )
+    ? 'bd-open'
+    : char.match( TYPESET.char.biaodian.close )
+    ? 'bd-close bd-end'
+    : char.match( TYPESET.char.biaodian.end )
+      ? (
+        /(?:\u3001|\u3002|\uff0c)/i.test( char )
+        ? 'bd-end bd-cop'
+        : 'bd-end'
+      )
+    : char.match(new RegExp( UNICODE.biaodian.liga ))
+    ? 'bd-liga'
+    : char.match(new RegExp( UNICODE.biaodian.middle ))
+    ? 'bd-middle'
+    : ''
 }
 
 $.extend( Fibre.fn, {
