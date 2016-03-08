@@ -6,6 +6,7 @@ define([
 
 var HANGABLE_CLASS = 'bd-hangable'
 var HANGABLE_AVOID = 'h-char.bd-hangable'
+var HANGABLE_CS_HTML = '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
 
 var matches = Han.find.matches
 
@@ -28,7 +29,7 @@ function insertHangableCS( $jinze ) {
   } else {
     $jinze.insertAdjacentHTML(
       'afterend',
-      '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
+      HANGABLE_CS_HTML
     )
   }
 }

@@ -8,7 +8,7 @@ define([
 var JIYA_CLASS = 'bd-jiya'
 var JIYA_AVOID = 'h-char.bd-jiya'
 var CONSECUTIVE_CLASS = 'bd-consecutive'
-var CS_HTML = '<h-cs hidden class="jinze-outer jiya-outer"> </h-cs>'
+var JIYA_CS_HTML = '<h-cs hidden class="jinze-outer jiya-outer"> </h-cs>'
 
 var matches = Han.find.matches
 
@@ -99,13 +99,13 @@ function insertJiyaCS( $jinze ) {
     matches( $jinze, '.tou, .touwei' ) &&
     !matches( $jinze.previousSibling, 'h-cs.jiya-outer' )
   ) {
-    $jinze.insertAdjacentHTML( 'beforebegin', CS_HTML )
+    $jinze.insertAdjacentHTML( 'beforebegin', JIYA_CS_HTML )
   }
   if (
     matches( $jinze, '.wei, .touwei' ) &&
     !matches( $jinze.nextSibling, 'h-cs.jiya-outer' )
   ) {
-    $jinze.insertAdjacentHTML( 'afterend', CS_HTML )
+    $jinze.insertAdjacentHTML( 'afterend', JIYA_CS_HTML )
   }
 }
 
