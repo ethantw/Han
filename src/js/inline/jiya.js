@@ -43,7 +43,7 @@ function charifyBiaodian( portion ) {
     })()
 }
 
-var prevBDType
+var prevBDType, $$prevCS
 
 function locateConsecutiveBD( portion ) {
   var prev = prevBDType
@@ -58,6 +58,12 @@ function locateConsecutiveBD( portion ) {
     $bd.setAttribute( 'prev', prev )
   }
 
+  if ( $$prevCS && classList.contains( 'bd-open' )) {
+    $$prevCS.pop().setAttribute( 'next', 'bd-open' )
+  }
+
+  $$prevCS = undefined
+
   if ( portion.isEnd ) {
     prevBDType = undefined
     classList.add( CONSECUTIVE_CLASS, 'end-portion' )
@@ -67,7 +73,7 @@ function locateConsecutiveBD( portion ) {
   }
 
   if ( $jinze ) {
-    locateCS( $jinze, {
+    $$prevCS = locateCS( $jinze, {
       prev: prev,
       'class': trimBDClass($bd.getAttribute( 'class' ))
     })
@@ -91,24 +97,25 @@ function insertJiyaCS( $jinze ) {
 }
 
 function locateCS( $jinze, attr ) {
-  var $cs
+  var $prev, $next
 
   if (matches( $jinze, '.tou, .touwei' )) {
-    $cs = $jinze.previousSibling
+    $prev = $jinze.previousSibling
 
-    if (matches( $cs, 'h-cs' )) {
-      $cs.className = 'jinze-outer jiya-outer'
-      $cs.setAttribute( 'prev', attr.prev )
+    if (matches( $prev, 'h-cs' )) {
+      $prev.className = 'jinze-outer jiya-outer'
+      $prev.setAttribute( 'prev', attr.prev )
     }
   }
   if (matches( $jinze, '.wei, .touwei' )) {
-    $cs = $jinze.nextSibling
+    $next = $jinze.nextSibling
 
-    if (matches( $cs, 'h-cs' )) {
-      $cs.className = 'jinze-outer jiya-outer ' + attr[ 'class' ]
-      $cs.removeAttribute( 'prev' )
+    if (matches( $next, 'h-cs' )) {
+      $next.className = 'jinze-outer jiya-outer ' + attr[ 'class' ]
+      $next.removeAttribute( 'prev' )
     }
   }
+  return [ $prev, $next ]
 }
 
 Han.renderJiya = function( context ) {

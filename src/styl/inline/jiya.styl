@@ -32,16 +32,12 @@ h-char.bd-jiya
       letter-spacing: -.5em
 
   &.bd-open:before,
-  &.bd-close:after
+  &.bd-close:after,
+  &.bd-cop:after,
+  &[unicode='ff0e']:after
     display: inline
 
-  &.bd-cop,
-  &[unicode='ff0e']
-    &:after
-      display: inline
-
-  &.bd-cop,
-  &[unicode='ff0e']
+  &.bd-cop
     &:lang(zh-Hant),
     &:lang(zh-TW),
     &:lang(zh-HK)
@@ -59,6 +55,9 @@ h-char.bd-consecutive
   &.bd-open[prev='bd-open']:before,
   /h-cs.jiya-outer.bd-end:not(.end-portion)
     display: none
+
+  /h-cs.jiya-outer.bd-end[next='bd-open']
+    display: inline
 
   &.bd-open[prev*='bd-cop']
     &:lang(zh-Hant):before,
