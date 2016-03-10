@@ -18,31 +18,6 @@ function trimBDClass( clazz ) {
   ).trim()
 }
 
-function get$bdType( $bd ) {
-  return (
-    hasClass( 'bd-open' )
-    ? 'bd-open'
-    : hasClass( 'bd-close' )
-    ? 'bd-close'
-    : hasClass( 'bd-middle' )
-    ? 'bd-middle'
-    : hasClass( 'bd-liga' )
-    ? 'bd-liga'
-    : hasClass( 'bd-end' )
-    ? (
-      /(?:3001|3002|ff0c)/i.test($bd.getAttribute( 'unicode' ))
-      // `cop` stands for ‘comma or period’.
-      ? 'bd-end bd-cop'
-      : 'bd-end'
-    )
-    : ''
-  )
-
-  function hasClass( className ) {
-    return $bd.classList.contains( className )
-  }
-}
-
 function charifyBiaodian( portion ) {
   var biaodian = portion.text
   var $elmt = portion.node.parentNode
