@@ -253,7 +253,7 @@ $.extend( Fibre.fn, {
     if ( option.eonmun || option.hangul ) {
       this.wrap(
         TYPESET.char.eonmun,
-        getFuncOrElmt( option.eonmum || option.hangul )
+        getFuncOrElmt( option.eonmun || option.hangul )
           ||
         $.clone($.create( 'h-char', 'eonmun hangul' ))
       )
