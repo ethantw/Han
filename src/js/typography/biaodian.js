@@ -12,12 +12,12 @@ Han.correctBiaodian = function( context ) {
   .avoid( 'h-char' )
   .replace( /([‘“])/g, function( portion ) {
     var $char = Han.createBDChar( portion.text )
-    $char.classList.add( 'bd-open', 'punct', 'western' )
+    $char.classList.add( 'bd-open', 'punct' )
     return $char
   })
   .replace( /([’”])/g, function( portion ) {
     var $char = Han.createBDChar( portion.text )
-    $char.classList.add( 'bd-close', 'punct', 'western' )
+    $char.classList.add( 'bd-close', 'bd-end', 'punct' )
     return $char
   })
 
@@ -27,6 +27,7 @@ Han.correctBiaodian = function( context ) {
 }
 
 Han.correctBasicBD = Han.correctBiaodian
+Han.correctBD = Han.correctBiaodian
 
 $.extend( Han.fn, {
   biaodian: null,
