@@ -2,7 +2,7 @@
 @font-face
   src: $han-space-webfont
   font-family: 'Han Space'
-  unicode-range: U+'+20'
+  unicode-range: U+20
 
 @if ( $han-hanging-hant == false )
   #{$_hanging-hant}
@@ -15,36 +15,31 @@
       font-family: inherit
       font-size: inherit
 
+h-cs.hangable-outer,
+h-cs.hangable-outer[hidden]
+  display: inline
+  font: 1em 'Han Space'
+
+  @if ( $han-hanging-hant == false )
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      display: none
+
 #{$han-hanging-selector}
   // positioning
   position: relative
-  // box-model
-  display: inline
 
-  // Hide the collapsable spaces of closing brackets for we are sure
-  // they ain't in use.
-  h-char.bd-close h-cs
-    display: none
-
-  > h-cs
-    // positioning
-    position: relative
+  &:after
+    display: none !important
+  &:before
     // box-model
     display: inline !important
-    visibility: visible
     // typography
-    font: inherit
-
-  > h-cs h-inner,
-  > h-cs h-inner[hidden]
-    // box-model
-    display: inline
-    visibility: hidden
-    // typography
+    content: ' '
     font: 1em 'Han Space', $han-mono
-
-  > h-cs h-char.bd-end
-    +han-typo-reset
+  > h-inner
+    +han-typo-reset()
     // positioning
     position: absolute
     left: 0
@@ -53,7 +48,7 @@
     display: inline-block
     // typography
     line-height: 1.1
-  
+
     ruby &,
     h-ru &
       position: relative

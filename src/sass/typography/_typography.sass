@@ -28,6 +28,26 @@
   .no-unicoderange &
     @extend %han-sans-ja-nu
 
+//  Biaodian correction (for Firefox)
+// ---------------------
+.no-unicoderange h-char
+  &.bd-cop
+    &:lang(zh-Hant),
+    &:lang(zh-TW),
+    &:lang(zh-HK)
+      font-family: -apple-system, 'Han Heiti CNS'
+  &.bd-liga,
+  &[unicode='b7']
+    @extend %han-ligature
+    font-family: 'Biaodian Basic', 'Han Heiti'
+  &[unicode='2018'],
+  &[unicode='2019'],
+  &[unicode='201c'],
+  &[unicode='201d']
+    &:lang(zh-Hans),
+    &:lang(zh-CN)
+      font-family: 'Han Heiti GB'
+
 //  Sections & grouping content
 // -----------------------------
 
