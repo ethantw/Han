@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/*! 漢字標準格式 v3.2.7 | MIT License | css.hanzi.co */
+/*! 漢字標準格式 v3.3.0 | MIT License | css.hanzi.co */
 /*! Han.css: the CSS typography framework optimised for Hanzi */
 
 /* normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -339,6 +339,11 @@ ruby.mps > rt:empty {
 .han-js-rendered s + del,
 .han-js-rendered del + del {
   margin-left: auto;
+}
+.textemphasis $han-text-emphasis-pf h-jinze,
+.textemphasis em:lang(zh) h-jinze,
+.textemphasis em:lang(ja) h-jinze {
+  display: inline;
 }
 .han-js-rendered em:lang(zh),
 .han-js-rendered em:lang(ja) {
@@ -893,102 +898,102 @@ h-word {
 }
 @font-face {
   font-family: "Biaodian Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Yakumono Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Arial Unicode MS"), local("MS Gothic");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Arial Unicode MS"), local("MS Gothic");
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Yakumono Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"), local("Microsoft Yahei");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho"), local("Microsoft Yahei");
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Sans CNS";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Serif CNS";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Sans GB";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Pro Serif GB";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSong), local("Microsoft Yahei"), local(SimSun);
   unicode-range: U+2014;
 }
 @font-face {
   font-family: "Biaodian Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local("MS Mincho"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local("MS Mincho"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Yakumono Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(Meiryo), local("MS Gothic");
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Yakumono Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("MS Mincho");
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Sans";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Serif";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Sans CNS";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Serif CNS";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSongti), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSongti), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Sans GB";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Sans GB"), local("Hiragino Kaku Gothic ProN"), local("Hiragino Kaku Gothic Pro"), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
   font-family: "Biaodian Pro Serif GB";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSongti), local(SimSun), local(PMingLiU);
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype"), local("Hiragino Mincho ProN"), local("Hiragino Mincho Pro"), local("Songti SC"), local(STSongti), local(SimSun), local(PMingLiU);
   unicode-range: U+2026;
 }
 @font-face {
@@ -1135,61 +1140,61 @@ h-word {
 }
 @font-face {
   font-family: "Biaodian Basic";
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Basic";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Sans";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Sans";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Sans";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Sans CNS";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Sans GB";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Serif";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Serif CNS";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
   font-family: "Biaodian Pro Serif GB";
   font-weight: bold;
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
@@ -1305,27 +1310,27 @@ h-word {
   unicode-range: U+270C;
 }
 @font-face {
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
   font-family: "Zhuyin Kaiti";
 }
 @font-face {
   unicode-range: U+3105-312D, U+31A0-31BA, U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
   font-family: "Zhuyin Heiti";
-  src: local("Hiragino Sans GB"), local("Heiti TC"), local("Microsoft Jhenghei"), url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: local("Hiragino Sans GB"), local("Heiti TC"), local("Microsoft Jhenghei"), url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
 }
 @font-face {
   font-family: "Zhuyin Heiti";
-  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: local("Heiti TC"), local("Microsoft Jhenghei"), url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   unicode-range: U+3127;
 }
 @font-face {
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   font-family: "Zhuyin Heiti";
   unicode-range: U+02D9, U+02CA, U+02C5, U+02C7, U+02CB, U+02EA-02EB, U+31B4, U+31B5, U+31B6, U+31B7, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
 }
 @font-face {
-  src: url("./font/han.woff?v3.2.7") format("woff"), url("./font/han.otf?v3.2.7") format("opentype");
+  src: url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   font-family: "Romanization Sans";
   unicode-range: U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
 }
@@ -1626,6 +1631,8 @@ pre:lang(ja) {
   font-family: Menlo, Consolas, Courier, monospace, monospace, sans-serif;
 }
 html,
+.no-unicoderange h-char.bd-liga,
+.no-unicoderange h-char[unicode="b7"],
 ruby h-zhuyin,
 h-ruby h-zhuyin,
 ruby h-zhuyin h-diao,
@@ -1633,9 +1640,7 @@ h-ruby h-zhuyin h-diao,
 ruby.romanization rt,
 h-ruby.romanization rt,
 ruby [annotation] rt,
-h-ruby [annotation] rt,
-.no-unicoderange h-char.biaodian.bd-liga,
-.no-unicoderange h-char.biaodian[unicode="b7"] {
+h-ruby [annotation] rt {
   -moz-font-feature-settings: "liga";
   -ms-font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
@@ -1659,6 +1664,25 @@ article blockquote var {
   -ms-font-feature-settings: "liga", "locl" 0;
   -webkit-font-feature-settings: "liga", "locl" 0;
   font-feature-settings: "liga", "locl" 0;
+}
+.no-unicoderange h-char.bd-cop:lang(zh-Hant),
+.no-unicoderange h-char.bd-cop:lang(zh-TW),
+.no-unicoderange h-char.bd-cop:lang(zh-HK) {
+  font-family: -apple-system, "Han Heiti CNS";
+}
+.no-unicoderange h-char.bd-liga,
+.no-unicoderange h-char[unicode="b7"] {
+  font-family: "Biaodian Basic", "Han Heiti";
+}
+.no-unicoderange h-char[unicode="2018"]:lang(zh-Hans),
+.no-unicoderange h-char[unicode="2019"]:lang(zh-Hans),
+.no-unicoderange h-char[unicode="201c"]:lang(zh-Hans),
+.no-unicoderange h-char[unicode="201d"]:lang(zh-Hans),
+.no-unicoderange h-char[unicode="2018"]:lang(zh-CN),
+.no-unicoderange h-char[unicode="2019"]:lang(zh-CN),
+.no-unicoderange h-char[unicode="201c"]:lang(zh-CN),
+.no-unicoderange h-char[unicode="201d"]:lang(zh-CN) {
+  font-family: "Han Heiti GB";
 }
 i,
 var {
@@ -1824,10 +1848,6 @@ article blockquote blockquote {
     margin-right: 1em;
   }
 }
-.no-unicoderange h-char.biaodian.bd-liga,
-.no-unicoderange h-char.biaodian[unicode="b7"] {
-  font-family: "Biaodian Basic", "Han Heiti";
-}
 h-hws,
 h-hws[hidden] {
   display: inline;
@@ -1841,61 +1861,68 @@ kbd h-hws[hidden],
 samp h-hws,
 samp h-hws[hidden],
 pre h-hws,
-pre h-hws[hidden] {
+pre h-hws[hidden],
+h-hws.quote-inner,
+h-hws[hidden].quote-inner,
+h-hws.quote-outer:lang(zh-Hans),
+h-hws[hidden].quote-outer:lang(zh-Hans),
+h-hws.quote-outer:lang(zh-CN),
+h-hws[hidden].quote-outer:lang(zh-CN) {
   display: none;
 }
 @font-face {
-  src: url("./font/han-space.woff?v3.2.7") format("woff"), url("./font/han-space.otf?v3.2.7") format("opentype");
+  src: url("./font/han-space.woff?v3.3.0") format("woff"), url("./font/han-space.otf?v3.3.0") format("opentype");
   font-family: "Han Space";
   unicode-range: U+20;
 }
-h-hangable:lang(zh) h-cs,
-h-hangable:lang(zh-Hant) h-cs,
-h-hangable:lang(zh-TW) h-cs,
-h-hangable:lang(zh-HK) h-cs,
+h-char.bd-hangable:lang(zh) h-cs,
+h-char.bd-hangable:lang(zh-Hant) h-cs,
+h-char.bd-hangable:lang(zh-TW) h-cs,
+h-char.bd-hangable:lang(zh-HK) h-cs,
 h-cs,
-h-hangable:lang(zh) h-cs[hidden],
-h-hangable:lang(zh-Hant) h-cs[hidden],
-h-hangable:lang(zh-TW) h-cs[hidden],
-h-hangable:lang(zh-HK) h-cs[hidden],
+h-char.bd-hangable:lang(zh) h-cs[hidden],
+h-char.bd-hangable:lang(zh-Hant) h-cs[hidden],
+h-char.bd-hangable:lang(zh-TW) h-cs[hidden],
+h-char.bd-hangable:lang(zh-HK) h-cs[hidden],
 h-cs[hidden] {
   display: inline;
   visibility: inherit;
   font-family: inherit;
   font-size: inherit;
 }
-h-hangable:lang(zh-Hans),
-h-hangable:lang(zh-CN),
-h-hangable:lang(ja) {
-  position: relative;
+h-cs.hangable-outer,
+h-cs.hangable-outer[hidden] {
   display: inline;
+  font: 1em "Han Space";
 }
-h-hangable:lang(zh-Hans) h-char.biaodian.bd-close h-cs,
-h-hangable:lang(zh-CN) h-char.biaodian.bd-close h-cs,
-h-hangable:lang(ja) h-char.biaodian.bd-close h-cs {
+h-cs.hangable-outer:lang(zh-Hant),
+h-cs.hangable-outer[hidden]:lang(zh-Hant),
+h-cs.hangable-outer:lang(zh-TW),
+h-cs.hangable-outer[hidden]:lang(zh-TW),
+h-cs.hangable-outer:lang(zh-HK),
+h-cs.hangable-outer[hidden]:lang(zh-HK) {
   display: none;
 }
-h-hangable:lang(zh-Hans) > h-cs,
-h-hangable:lang(zh-CN) > h-cs,
-h-hangable:lang(ja) > h-cs {
+h-char.bd-hangable:lang(zh-Hans),
+h-char.bd-hangable:lang(zh-CN),
+h-char.bd-hangable:lang(ja) {
   position: relative;
-  display: inline !important;
-  visibility: visible;
-  font: inherit;
 }
-h-hangable:lang(zh-Hans) > h-cs h-inner,
-h-hangable:lang(zh-CN) > h-cs h-inner,
-h-hangable:lang(ja) > h-cs h-inner,
-h-hangable:lang(zh-Hans) > h-cs h-inner[hidden],
-h-hangable:lang(zh-CN) > h-cs h-inner[hidden],
-h-hangable:lang(ja) > h-cs h-inner[hidden] {
-  display: inline;
-  visibility: hidden;
+h-char.bd-hangable:lang(zh-Hans):after,
+h-char.bd-hangable:lang(zh-CN):after,
+h-char.bd-hangable:lang(ja):after {
+  display: none !important;
+}
+h-char.bd-hangable:lang(zh-Hans):before,
+h-char.bd-hangable:lang(zh-CN):before,
+h-char.bd-hangable:lang(ja):before {
+  display: inline !important;
+  content: " ";
   font: 1em "Han Space", Menlo, Consolas, Courier;
 }
-h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
-h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
-h-hangable:lang(ja) > h-cs h-char.bd-end {
+h-char.bd-hangable:lang(zh-Hans) > h-inner,
+h-char.bd-hangable:lang(zh-CN) > h-inner,
+h-char.bd-hangable:lang(ja) > h-inner {
   -moz-text-emphasis: none;
   -webkit-text-emphasis: none;
   text-emphasis: none;
@@ -1910,109 +1937,79 @@ h-hangable:lang(ja) > h-cs h-char.bd-end {
   display: inline-block;
   line-height: 1.1;
 }
-ruby h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
-ruby h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
-ruby h-hangable:lang(ja) > h-cs h-char.bd-end,
-h-ru h-hangable:lang(zh-Hans) > h-cs h-char.bd-end,
-h-ru h-hangable:lang(zh-CN) > h-cs h-char.bd-end,
-h-ru h-hangable:lang(ja) > h-cs h-char.bd-end {
+ruby h-char.bd-hangable:lang(zh-Hans) > h-inner,
+ruby h-char.bd-hangable:lang(zh-CN) > h-inner,
+ruby h-char.bd-hangable:lang(ja) > h-inner,
+h-ru h-char.bd-hangable:lang(zh-Hans) > h-inner,
+h-ru h-char.bd-hangable:lang(zh-CN) > h-inner,
+h-ru h-char.bd-hangable:lang(ja) > h-inner {
   position: relative;
 }
+h-char.bd-jiya.bd-open:before,
+h-char.bd-jiya.bd-end:after,
 h-cs,
 h-cs[hidden] {
   display: none;
   visibility: hidden;
+  content: " ";
   font: .825em Courier;
   letter-spacing: 0;
   white-space: normal;
 }
-h-char.biaodian.bd-open > h-inner {
-  margin-left: -.5em;
-}
-h-char.biaodian.bd-close > h-inner,
-h-char.biaodian[unicode="3001"] > h-inner,
-h-char.biaodian[unicode="3002"] > h-inner,
-h-char.biaodian[unicode="ff0c"] > h-inner,
-h-char.biaodian[unicode="ff0e"] > h-inner {
-  letter-spacing: -.5em;
-}
-h-char.biaodian.bd-open > h-cs,
-h-char.biaodian.bd-close > h-cs,
-h-char.biaodian[unicode="3001"] > h-cs,
-h-char.biaodian[unicode="3002"] > h-cs,
-h-char.biaodian[unicode="ff0c"] > h-cs,
-h-char.biaodian[unicode="ff0e"] > h-cs {
+h-cs.jinze-outer,
+h-cs.jinze-outer[hidden] {
   display: inline;
 }
-h-char.biaodian[unicode="3001"]:lang(zh-Hant) > h-inner,
-h-char.biaodian[unicode="3002"]:lang(zh-Hant) > h-inner,
-h-char.biaodian[unicode="ff0c"]:lang(zh-Hant) > h-inner,
-h-char.biaodian[unicode="ff0e"]:lang(zh-Hant) > h-inner,
-h-char.biaodian[unicode="3001"]:lang(zh-TW) > h-inner,
-h-char.biaodian[unicode="3002"]:lang(zh-TW) > h-inner,
-h-char.biaodian[unicode="ff0c"]:lang(zh-TW) > h-inner,
-h-char.biaodian[unicode="ff0e"]:lang(zh-TW) > h-inner,
-h-char.biaodian[unicode="3001"]:lang(zh-HK) > h-inner,
-h-char.biaodian[unicode="3002"]:lang(zh-HK) > h-inner,
-h-char.biaodian[unicode="ff0c"]:lang(zh-HK) > h-inner,
-h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-inner {
-  letter-spacing: inherit;
+h-char.bd-jiya.bd-open > h-inner {
+  margin-left: -.5em;
 }
-h-char.biaodian[unicode="3001"]:lang(zh-Hant) > h-cs,
-h-char.biaodian[unicode="3002"]:lang(zh-Hant) > h-cs,
-h-char.biaodian[unicode="ff0c"]:lang(zh-Hant) > h-cs,
-h-char.biaodian[unicode="ff0e"]:lang(zh-Hant) > h-cs,
-h-char.biaodian[unicode="3001"]:lang(zh-TW) > h-cs,
-h-char.biaodian[unicode="3002"]:lang(zh-TW) > h-cs,
-h-char.biaodian[unicode="ff0c"]:lang(zh-TW) > h-cs,
-h-char.biaodian[unicode="ff0e"]:lang(zh-TW) > h-cs,
-h-char.biaodian[unicode="3001"]:lang(zh-HK) > h-cs,
-h-char.biaodian[unicode="3002"]:lang(zh-HK) > h-cs,
-h-char.biaodian[unicode="ff0c"]:lang(zh-HK) > h-cs,
-h-char.biaodian[unicode="ff0e"]:lang(zh-HK) > h-cs {
-  display: none;
-}
-h-char-group.portion .bd-open:first-child h-cs,
-h-hangable.portion .bd-open:first-child h-cs,
-h-char-group.portion .bd-end:last-child h-cs,
-h-hangable.portion .bd-end:last-child h-cs,
-h-char-group .bd-open + .bd-open h-cs,
-h-hangable .bd-open + .bd-open h-cs,
-h-char-group .bd-end:not(:last-child) h-cs,
-h-hangable .bd-end:not(:last-child) h-cs {
-  display: none;
-}
-h-char-group [unicode="3001"]:lang(zh-Hant) + .bd-open h-cs,
-h-hangable [unicode="3001"]:lang(zh-Hant) + .bd-open h-cs,
-h-char-group [unicode="3002"]:lang(zh-Hant) + .bd-open h-cs,
-h-hangable [unicode="3002"]:lang(zh-Hant) + .bd-open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-Hant) + .bd-open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-Hant) + .bd-open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-Hant) + .bd-open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-Hant) + .bd-open h-cs,
-h-char-group [unicode="3001"]:lang(zh-TW) + .bd-open h-cs,
-h-hangable [unicode="3001"]:lang(zh-TW) + .bd-open h-cs,
-h-char-group [unicode="3002"]:lang(zh-TW) + .bd-open h-cs,
-h-hangable [unicode="3002"]:lang(zh-TW) + .bd-open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-TW) + .bd-open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-TW) + .bd-open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-TW) + .bd-open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-TW) + .bd-open h-cs,
-h-char-group [unicode="3001"]:lang(zh-HK) + .bd-open h-cs,
-h-hangable [unicode="3001"]:lang(zh-HK) + .bd-open h-cs,
-h-char-group [unicode="3002"]:lang(zh-HK) + .bd-open h-cs,
-h-hangable [unicode="3002"]:lang(zh-HK) + .bd-open h-cs,
-h-char-group [unicode="ff0c"]:lang(zh-HK) + .bd-open h-cs,
-h-hangable [unicode="ff0c"]:lang(zh-HK) + .bd-open h-cs,
-h-char-group [unicode="ff0e"]:lang(zh-HK) + .bd-open h-cs,
-h-hangable [unicode="ff0e"]:lang(zh-HK) + .bd-open h-cs {
-  display: none;
-}
-h-char-group [unicode="b7"]:not(:last-child),
-h-char-group [unicode="30fb"]:not(:last-child) {
+h-char.bd-jiya.bd-close > h-inner,
+h-char.bd-jiya.bd-cop > h-inner,
+h-char.bd-jiya[unicode="ff0e"] > h-inner {
   letter-spacing: -.5em;
 }
-h-char-group .bd-liga:not(:last-child) {
+h-char.bd-jiya.bd-open:before,
+h-char.bd-jiya.bd-close:after,
+h-char.bd-jiya.bd-cop:after,
+h-char.bd-jiya[unicode="ff0e"]:after {
+  display: inline;
+}
+h-char.bd-jiya.bd-cop:lang(zh-Hant):after,
+h-char.bd-jiya.bd-cop:lang(zh-TW):after,
+h-char.bd-jiya.bd-cop:lang(zh-HK):after {
+  display: none;
+}
+h-char.bd-jiya.bd-cop:lang(zh-Hant) > h-inner,
+h-char.bd-jiya.bd-cop:lang(zh-TW) > h-inner,
+h-char.bd-jiya.bd-cop:lang(zh-HK) > h-inner {
+  letter-spacing: inherit;
+}
+h-char.bd-consecutive.bd-end:not(.end-portion):after,
+h-char.bd-consecutive.bd-open[prev="bd-open"]:before,
+h-cs.jiya-outer.bd-end:not(.end-portion) {
+  display: none;
+}
+h-cs.jiya-outer.bd-end[next="bd-open"] {
+  display: inline;
+}
+h-char.bd-consecutive.bd-open[prev*="bd-cop"]:lang(zh-Hant):before,
+h-char.bd-consecutive.bd-open[prev*="bd-cop"]:lang(zh-TW):before,
+h-char.bd-consecutive.bd-open[prev*="bd-cop"]:lang(zh-HK):before {
+  display: none;
+}
+h-cs.jiya-outer[prev*="bd-cop"]:lang(zh-Hant),
+h-cs.jiya-outer.bd-end:lang(zh-Hant),
+h-cs.jiya-outer[prev*="bd-cop"]:lang(zh-TW),
+h-cs.jiya-outer.bd-end:lang(zh-TW),
+h-cs.jiya-outer[prev*="bd-cop"]:lang(zh-HK),
+h-cs.jiya-outer.bd-end:lang(zh-HK) {
+  display: none;
+}
+h-char.bd-consecutive[unicode="b7"]:not(.end-portion),
+h-char.bd-consecutive[unicode="30fb"]:not(.end-portion) {
+  letter-spacing: -.5em;
+}
+h-char.bd-consecutive.bd-liga:not(.end-portion) {
   margin-right: -.25em;
 }
 h-char[display-as] {

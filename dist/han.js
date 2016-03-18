@@ -1,5 +1,5 @@
 /*!
- * 漢字標準格式 v3.2.7 | MIT License | css.hanzi.co
+ * 漢字標準格式 v3.3.0 | MIT License | css.hanzi.co
  * Han.css: the CSS typography framework optimised for Hanzi
  */
 
@@ -9,7 +9,7 @@ void function( global, factory ) {
   if ( typeof module === 'object' && typeof module.exports === 'object' ) {
     module.exports = factory( global, true )
   // AMD
-  } else if  ( typeof define === 'function' && define.amd ) {
+  } else if ( typeof define === 'function' && define.amd ) {
     define(function() {  return factory( global, true )  })
   // Global namespace
   } else {
@@ -26,7 +26,7 @@ var root = document.documentElement
 
 var body = document.body
 
-var VERSION = '3.2.7'
+var VERSION = '3.3.0'
 
 var ROUTINE = [
   // Initialise the condition with feature-detecting
@@ -39,14 +39,14 @@ var ROUTINE = [
 
   // Handle Biaodian
   /* 'jinzify', */
-  'renderHanging',
   'renderJiya',
+  'renderHanging',
+
+  // Address Biaodian correction
+  'correctBiaodian',
 
   // Address Hanzi and Western script mixed spacing
   'renderHWS',
-
-  // Address Basic Biaodian correction in Firefox
-  'correctBasicBD',
 
   // Address presentational correction to combining ligatures
   'substCombLigaWithPUA'
@@ -101,17 +101,23 @@ Han.fn = Han.prototype = {
   // the instance or in the prototype chain.
   render: function( routine ) {
     var it = this
-    var routine = Array.isArray( routine ) ? routine : this.routine
+    var routine = Array.isArray( routine )
+      ? routine
+      : this.routine
 
     routine
     .forEach(function( method ) {
-      try {
-        if ( typeof method === 'string' ) {
-          it[ method ]()
-        } else if ( Array.isArray( method )) {
-          it[ method.shift() ].apply( it, method )
-        }
-      } catch ( e ) {}
+      if (
+         typeof method === 'string' &&
+         typeof it[ method ] === 'function'
+      ) {
+        it[ method ]()
+      } else if (
+        Array.isArray( method ) &&
+        typeof it[ method[0] ] === 'function'
+      ) {
+        it[ method.shift() ].apply( it, method )
+      }
     })
     return this
   }
@@ -325,31 +331,31 @@ var TYPESET = (function() {
   var rPtMid = UNICODE.punct.middle
   var rPtSing = UNICODE.punct.sing
   var rPt = rPtOpen + '|' + rPtEnd + '|' + rPtMid
-   
-  var rBdOpen = UNICODE.biaodian.open
-  var rBdClose = UNICODE.biaodian.close
-  var rBdEnd = UNICODE.biaodian.end
-  var rBdMid = UNICODE.biaodian.middle
-  var rBdLiga = UNICODE.biaodian.liga + '{2}'
-  var rBd = rBdOpen + '|' + rBdEnd + '|' + rBdMid
-   
+
+  var rBDOpen = UNICODE.biaodian.open
+  var rBDClose = UNICODE.biaodian.close
+  var rBDEnd = UNICODE.biaodian.end
+  var rBDMid = UNICODE.biaodian.middle
+  var rBDLiga = UNICODE.biaodian.liga + '{2}'
+  var rBD = rBDOpen + '|' + rBDEnd + '|' + rBDMid
+
   var rKana = UNICODE.kana.base + UNICODE.kana.combine + '?'
   var rKanaS = UNICODE.kana.small + UNICODE.kana.combine + '?'
   var rKanaH = UNICODE.kana.half
   var rEon = UNICODE.eonmun.base + '|' + UNICODE.eonmun.letter
   var rEonH = UNICODE.eonmun.half
-   
+
   var rHan = UNICODE.hanzi.base + '|' + UNICODE.hanzi.desc + '|' + UNICODE.hanzi.radical + '|' + rKana
-   
+
   var rCbn = UNICODE.ellinika.combine
   var rLatn = UNICODE.latin.base + rCbn + '*'
   var rGk = UNICODE.ellinika.base + rCbn + '*'
-   
+
   var rCyCbn = UNICODE.kirillica.combine
   var rCy = UNICODE.kirillica.base + rCyCbn + '*'
-   
+
   var rAlph = rLatn + '|' + rGk + '|' + rCy
-   
+
   // For words like `it's`, `Jones’s` or `'99`
   var rApo = '[\u0027\u2019]'
   var rChar = rHan + '|(?:' + rAlph + '|' + rApo + ')+'
@@ -371,29 +377,29 @@ var TYPESET = (function() {
       },
 
       biaodian: {
-        all:   new RegExp( '(' + rBd + ')', 'g' ),
-        open:  new RegExp( '(' + rBdOpen + ')', 'g' ),
-        close: new RegExp( '(' + rBdClose + ')', 'g' ),
-        end:   new RegExp( '(' + rBdEnd + ')', 'g' ),
-        liga:  new RegExp( '(' + rBdLiga + ')', 'g' )
+        all:   new RegExp( '(' + rBD + ')', 'g' ),
+        open:  new RegExp( '(' + rBDOpen + ')', 'g' ),
+        close: new RegExp( '(' + rBDClose + ')', 'g' ),
+        end:   new RegExp( '(' + rBDEnd + ')', 'g' ),
+        liga:  new RegExp( '(' + rBDLiga + ')', 'g' )
       },
 
-      hanzi: new RegExp( '(' + rHan + ')', 'g' ),
+      hanzi:     new RegExp( '(' + rHan + ')', 'g' ),
 
-      latin:       new RegExp( '(' + rLatn + ')', 'ig' ),
-      ellinika:    new RegExp( '(' + rGk + ')', 'ig' ),
-      kirillica:   new RegExp( '(' + rCy + ')', 'ig' ),
+      latin:     new RegExp( '(' + rLatn + ')', 'ig' ),
+      ellinika:  new RegExp( '(' + rGk + ')', 'ig' ),
+      kirillica: new RegExp( '(' + rCy + ')', 'ig' ),
 
-      kana:        new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
-      eonmun:      new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
+      kana:      new RegExp( '(' + rKana + '|' + rKanaS + '|' + rKanaH + ')', 'g' ),
+      eonmun:    new RegExp( '(' + rEon + '|' + rEonH + ')', 'g' )
     },
 
     /* Word-level selectors (詞級選擇器)
      */
     group: {
       biaodian: [
-        new RegExp( '((' + rBd + '){2,})', 'g' ),
-        new RegExp( '(' + rBdLiga + rBdOpen + ')', 'g' )
+        new RegExp( '((' + rBD + '){2,})', 'g' ),
+        new RegExp( '(' + rBDLiga + rBDOpen + ')', 'g' )
       ],
       punct:       null,
       hanzi:       new RegExp( '(' + rHan + ')+', 'g' ),
@@ -405,11 +411,11 @@ var TYPESET = (function() {
     /* Punctuation Rules (禁則)
      */
     jinze: {
-      hanging:  new RegExp( '(' + rBdClose + '*|[…⋯]*)([、，。．])(?!' + rBdEnd + ')', 'ig' ),
-      touwei:   new RegExp( '(' + rBdOpen + '+)(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-      tou:      new RegExp( '(' + rBdOpen + '+)(' + rChar + ')', 'ig' ),
-      wei:      new RegExp( '(' + rChar + ')(' + rBdEnd + '+)', 'ig' ),
-      middle:   new RegExp( '(' + rChar + ')(' + rBdMid + ')(' + rChar + ')', 'ig' )
+      hanging:  new RegExp( rWhite + '*([、，。．])(?!' + rBDEnd + ')', 'ig' ),
+      touwei:   new RegExp( '(' + rBDOpen + '+)(' + rChar + ')(' + rBDEnd + '+)', 'ig' ),
+      tou:      new RegExp( '(' + rBDOpen + '+)(' + rChar + ')', 'ig' ),
+      wei:      new RegExp( '(' + rChar + ')(' + rBDEnd + '+)', 'ig' ),
+      middle:   new RegExp( '(' + rChar + ')(' + rBDMid + ')(' + rChar + ')', 'ig' )
     },
 
     zhuyin: {
@@ -507,71 +513,119 @@ Han.TYPESET.char.greek    = Han.TYPESET.char.ellinika
 Han.TYPESET.char.cyrillic = Han.TYPESET.char.kirillica
 Han.TYPESET.char.hangul   = Han.TYPESET.char.eonmun
 
+Han.TYPESET.group.hangul  = Han.TYPESET.group.eonmun
+Han.TYPESET.group.cjk     = Han.TYPESET.group.hanzi
+
 var $ = {
-  // Simplified query selectors which return the node list
-  // in an array
-  id: function( selector, context ) {
-    return ( context || document ).getElementById( selector )
+  /**
+   * Query selectors which return arrays of the resulted
+   * node lists.
+   */
+  id: function( selector, $context ) {
+    return ( $context || document ).getElementById( selector )
   },
 
-  tag: function( selector, context ) {
+  tag: function( selector, $context ) {
     return this.makeArray(
-      ( context || document ).getElementsByTagName( selector )
+      ( $context || document ).getElementsByTagName( selector )
     )
   },
 
-  qsa: function( selector, context ) {
+  qs: function( selector, $context ) {
+    return ( $context || document ).querySelector( selector )
+  },
+
+  qsa: function( selector, $context ) {
     return this.makeArray(
-      ( context || document ).querySelectorAll( selector )
+      ( $context || document ).querySelectorAll( selector )
     )
   },
 
-  // Create a document fragment, a text node with text
-  // or an element with/without classes
-  create: function( elem, clazz ) {
-    var elem = '!' === elem ?
-      document.createDocumentFragment() :
-      '' === elem ?
-        document.createTextNode( clazz || '' ) :
-        document.createElement( elem )
+  parent: function( $node, selector ) {
+    return selector
+      ? (function() {
+        if ( typeof $.matches !== 'function' )  return
+
+        while (!$.matches( $node, selector )) {
+          if (
+            !$node ||
+            $node === document.documentElement
+          ) {
+            $node = undefined
+            break
+          }
+          $node = $node.parentNode
+        }
+        return $node
+      })()
+      : $node
+      ? $node.parentNode : undefined
+  },
+
+  /**
+   * Create a document fragment, a text node with text
+   * or an element with/without classes.
+   */
+  create: function( name, clazz ) {
+    var $elmt = '!' === name
+      ? document.createDocumentFragment()
+      : '' === name
+      ? document.createTextNode( clazz || '' )
+      : document.createElement( name )
 
     try {
       if ( clazz ) {
-        elem.className = clazz
+        $elmt.className = clazz
       }
     } catch (e) {}
 
-    return elem
+    return $elmt
   },
 
-  // Clone a node (text, element or fragment) deeply or
-  // childlessly
-  clone: function( node, deep ) {
-    return node.cloneNode( typeof deep === 'boolean' ? deep : true )
+  /**
+   * Clone a DOM node (text, element or fragment) deeply
+   * or childlessly.
+   */
+  clone: function( $node, deep ) {
+    return $node.cloneNode(
+      typeof deep === 'boolean'
+      ? deep
+      : true
+    )
   },
 
-  // Remove a node (text, element or fragment)
-  remove: function( node ) {
-    return node.parentNode.removeChild( node )
+  /**
+   * Remove a node (text, element or fragment).
+   */
+  remove: function( $node ) {
+    return $node.parentNode.removeChild( $node )
   },
 
-  // Set attributes all in once with an object
+  /**
+   * Set attributes all in once with an object.
+   */
   setAttr: function( target, attr ) {
-    if ( typeof attr !== 'object' ) return
+    if ( typeof attr !== 'object' )  return
     var len = attr.length
 
-    // Native NamedNodeMap
-    if ( typeof attr[ 0 ] === 'object' && 'name' in attr[ 0 ] ) {
+    // Native `NamedNodeMap``:
+    if (
+      typeof attr[0] === 'object' &&
+      'name' in attr[0]
+    ) {
       for ( var i = 0; i < len; i++ ) {
         if ( attr[ i ].value !== undefined ) {
           target.setAttribute( attr[ i ].name, attr[ i ].value )
         }
       }
 
-    // Plain object
+    // Plain object:
     } else {
       for ( var name in attr ) {
-        if ( attr.hasOwnProperty( name ) && attr[ name ] !== undefined ) {
+        if (
+          attr.hasOwnProperty( name ) &&
+          attr[ name ] !== undefined
+        ) {
           target.setAttribute( name, attr[ name ] )
         }
       }
@@ -579,29 +633,47 @@ var $ = {
     return target
   },
 
-  // Return if the current node should be ignored,
-  // `<wbr>` or comments
-  isIgnorable: function( node ) {
-    return node.nodeName === 'WBR' || node.nodeType === Node.COMMENT_NODE
+  /**
+   * Indicate whether or not the given node is an
+   * element.
+   */
+  isElmt: function( $node ) {
+    return $node && $node.nodeType === Node.ELEMENT_NODE
   },
 
-  // Convert array-like objects into real arrays
-  // for the native prototype methods
-  makeArray: function( obj ) {
-    return Array.prototype.slice.call( obj )
+  /**
+   * Indicate whether or not the given node should
+   * be ignored (`<wbr>` or comments).
+   */
+  isIgnorable: function( $node ) {
+    if ( !$node )  return false
+
+    return (
+      $node.nodeName === 'WBR' ||
+      $node.nodeType === Node.COMMENT_NODE
+    )
   },
 
-  // Extend target with an object
+  /**
+   * Convert array-like objects into real arrays.
+   */
+  makeArray: function( object ) {
+    return Array.prototype.slice.call( object )
+  },
+
+  /**
+   * Extend target with an object.
+   */
   extend: function( target, object ) {
-    var isExtensible = typeof target === 'object' ||
-      typeof target === 'function' ||
+    if ((
+      typeof target === 'object' ||
+      typeof target === 'function' ) &&
       typeof object === 'object'
-
-    if ( !isExtensible ) return
-
-    for ( var name in object ) {
-      if ( object.hasOwnProperty( name )) {
-        target[ name ] = object[ name ]
+    ) {
+      for ( var name in object ) {
+        if (object.hasOwnProperty( name )) {
+          target[ name ] = object[ name ]
+        }
       }
     }
     return target
@@ -1363,37 +1435,82 @@ return Fibre
 
 );
 
-function createBdGroup( portion, match ) {
-  var elem = $.create( 'h-char-group', 'biaodian cjk' )
+var isNodeNormalizeNormal = (function() {
+    //// Disabled `Node.normalize()` for temp due to
+    //// issue below in IE11.
+    //// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
+    var div = $.create( 'div' )
 
-  if ( portion.index === 0 && portion.isEnd ) {
-    elem.innerHTML = match[0]
-  } else {
-    elem.innerHTML = portion.text
-    elem.classList.add( 'portion' ) 
+    div.appendChild($.create( '', '0-' ))
+    div.appendChild($.create( '', '2' ))
+    div.normalize()
 
-    if ( portion.index === 0 ) {
-      elem.classList.add( 'isFirst' ) 
-    } else if ( portion.isEnd ) {
-      elem.classList.add( 'isEnd' ) 
-    }
-  }
-  return elem
+    return div.firstChild.length !== 2
+})()
+
+function getFuncOrElmt( obj ) {
+  return (
+    typeof obj === 'function' ||
+    obj instanceof Element
+  )
+    ? obj
+    : undefined
 }
 
-function createBdChar( char ) {
-  var div = $.create( 'div' )
-  var unicode = char.charCodeAt( 0 ).toString( 16 )
-  var clazz = 'biaodian cjk ' + ( char.match( TYPESET.char.biaodian.open ) ? 'bd-open' :
-    char.match( TYPESET.char.biaodian.close ) ? 'bd-close bd-end' :
-    char.match( TYPESET.char.biaodian.end ) ? 'bd-end' :
-    char.match( new RegExp( '(' + UNICODE.biaodian.liga + ')' )) ? 'bd-liga' : '' )
+function createBDGroup( portion ) {
+  var clazz = portion.index === 0 && portion.isEnd
+    ? 'biaodian cjk'
+    : 'biaodian cjk portion ' + (
+      portion.index === 0
+      ? 'is-first'
+      : portion.isEnd
+      ? 'is-end'
+      : 'is-inner'
+    )
 
-  div.innerHTML = '<h-char unicode="' + unicode + '" class="' + clazz + '">' + char + '</h-char>'
+    var $elmt = $.create( 'h-char-group', clazz )
+    $elmt.innerHTML = portion.text
+    return $elmt
+}
+
+function createBDChar( char ) {
+  var div     = $.create( 'div' )
+  var unicode = char.charCodeAt( 0 ).toString( 16 )
+
+  div.innerHTML = (
+    '<h-char unicode="' + unicode +
+    '" class="biaodian cjk ' + getBDType( char ) +
+    '">' + char + '</h-char>'
+  )
   return div.firstChild
 }
 
+function getBDType( char ) {
+  return char.match( TYPESET.char.biaodian.open )
+    ? 'bd-open'
+    : char.match( TYPESET.char.biaodian.close )
+    ? 'bd-close bd-end'
+    : char.match( TYPESET.char.biaodian.end )
+      ? (
+        /(?:\u3001|\u3002|\uff0c)/i.test( char )
+        ? 'bd-end bd-cop'
+        : 'bd-end'
+      )
+    : char.match(new RegExp( UNICODE.biaodian.liga ))
+    ? 'bd-liga'
+    : char.match(new RegExp( UNICODE.biaodian.middle ))
+    ? 'bd-middle'
+    : ''
+}
+
 $.extend( Fibre.fn, {
+  normalize: function() {
+    if ( isNodeNormalizeNormal ) {
+      this.context.normalize()
+    }
+    return this
+  },
+
   // Force punctuation & biaodian typesetting rules to be applied.
   jinzify: function( selector ) {
     return (
@@ -1449,33 +1566,34 @@ $.extend( Fibre.fn, {
       western: false  // Includes Latin, Greek and Cyrillic
     }, option || {})
 
-    this.avoid( 'h-hangable, h-char-group, h-word' )
+    this.avoid( 'h-word, h-char-group' )
 
     if ( option.biaodian ) {
       this.replace(
-        TYPESET.group.biaodian[ 0 ], createBdGroup
+        TYPESET.group.biaodian[0], createBDGroup
       ).replace(
-        TYPESET.group.biaodian[ 1 ], createBdGroup
+        TYPESET.group.biaodian[1], createBDGroup
       )
     }
+
     if ( option.hanzi || option.cjk ) {
       this.wrap(
-        TYPESET.group.hanzi, $.clone( $.create( 'h-char-group', 'hanzi cjk' ))
+        TYPESET.group.hanzi, $.clone($.create( 'h-char-group', 'hanzi cjk' ))
       )
     }
     if ( option.western ) {
       this.wrap(
-        TYPESET.group.western, $.clone( $.create( 'h-word', 'western' ))
+        TYPESET.group.western, $.clone($.create( 'h-word', 'western' ))
       )
     }
     if ( option.kana ) {
       this.wrap(
-        TYPESET.group.kana, $.clone( $.create( 'h-char-group', 'kana' ))
+        TYPESET.group.kana, $.clone($.create( 'h-char-group', 'kana' ))
       )
     }
     if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.group.eonmun, $.clone( $.create( 'h-word', 'eonmun hangul' ))
+        TYPESET.group.eonmun, $.clone($.create( 'h-word', 'eonmun hangul' ))
       )
     }
 
@@ -1485,6 +1603,7 @@ $.extend( Fibre.fn, {
 
   charify: function( option ) {
     var option = $.extend({
+      avoid: true,
       biaodian: false,
       punct: false,
       hanzi: false,     // Includes Kana
@@ -1495,50 +1614,77 @@ $.extend( Fibre.fn, {
       eonmun: false
     }, option || {})
 
-    this.avoid( 'h-char' )
+    if ( option.avoid ) {
+      this.avoid( 'h-char' )
+    }
 
     if ( option.biaodian ) {
       this.replace(
         TYPESET.char.biaodian.all,
-        function( portion, match ) {  return createBdChar( match[0] )  }
+        getFuncOrElmt( option.biaodian )
+          ||
+        function( portion ) {  return createBDChar( portion.text )  }
       ).replace(
         TYPESET.char.biaodian.liga,
-        function( portion, match ) {  return createBdChar( match[0] )  }
+        getFuncOrElmt( option.biaodian )
+          ||
+        function( portion ) {  return createBDChar( portion.text )  }
       )
     }
     if ( option.hanzi || option.cjk ) {
       this.wrap(
-        TYPESET.char.hanzi, $.clone( $.create( 'h-char', 'hanzi cjk' ))
+        TYPESET.char.hanzi,
+        getFuncOrElmt( option.hanzi || option.cjk )
+          ||
+        $.clone($.create( 'h-char', 'hanzi cjk' ))
       )
     }
     if ( option.punct ) {
       this.wrap(
-        TYPESET.char.punct.all, $.clone( $.create( 'h-char', 'punct' ))
+        TYPESET.char.punct.all,
+        getFuncOrElmt( option.punct )
+          ||
+        $.clone($.create( 'h-char', 'punct' ))
       )
     }
     if ( option.latin ) {
       this.wrap(
-        TYPESET.char.latin, $.clone( $.create( 'h-char', 'alphabet latin' ))
+        TYPESET.char.latin,
+        getFuncOrElmt( option.latin )
+          ||
+        $.clone($.create( 'h-char', 'alphabet latin' ))
       )
     }
     if ( option.ellinika || option.greek ) {
       this.wrap(
-        TYPESET.char.ellinika, $.clone( $.create( 'h-char', 'alphabet ellinika greek' ))
+        TYPESET.char.ellinika,
+        getFuncOrElmt( option.ellinika || option.greek )
+          ||
+        $.clone($.create( 'h-char', 'alphabet ellinika greek' ))
       )
     }
     if ( option.kirillica || option.cyrillic ) {
       this.wrap(
-        TYPESET.char.kirillica, $.clone( $.create( 'h-char', 'alphabet kirillica cyrillic' ))
+        TYPESET.char.kirillica,
+        getFuncOrElmt( option.kirillica || option.cyrillic )
+          ||
+        $.clone($.create( 'h-char', 'alphabet kirillica cyrillic' ))
       )
     }
     if ( option.kana ) {
       this.wrap(
-        TYPESET.char.kana, $.clone( $.create( 'h-char', 'kana' ))
+        TYPESET.char.kana,
+        getFuncOrElmt( option.kana )
+          ||
+        $.clone($.create( 'h-char', 'kana' ))
       )
     }
     if ( option.eonmun || option.hangul ) {
       this.wrap(
-        TYPESET.char.eonmun, $.clone( $.create( 'h-char', 'eonmun hangul' ))
+        TYPESET.char.eonmun,
+        getFuncOrElmt( option.eonmun || option.hangul )
+          ||
+        $.clone($.create( 'h-char', 'eonmun hangul' ))
       )
     }
 
@@ -1547,7 +1693,14 @@ $.extend( Fibre.fn, {
   }
 })
 
-Han.find = Fibre
+$.extend( Han, {
+  isNodeNormalizeNormal: isNodeNormalizeNormal,
+  find: Fibre,
+  createBDGroup: createBDGroup,
+  createBDChar: createBDChar
+})
+
+$.matches = Han.find.matches
 
 void [
   'setMode',
@@ -2131,32 +2284,34 @@ $.extend( Locale, {
     this.renderEm( context )
   },
 
-  // Traverse target elements (those with text-decoration-
-  // line) to see if we should address spacing in
-  // between for semantic presentation.
+   // Traverse all target elements and address
+   // presentational corrections if any two of
+   // them are adjacent to each other.
   renderDecoLine: function( context, target ) {
-    var target = target || 'u, ins'
-    var $target = $.qsa( target, context )
-    var rTarget = new RegExp( '^(' + target.replace(/\,\s?/g, '|') + ')$', 'ig' )
+    var $$target = $.qsa( target || 'u, ins', context )
+    var i = $$target.length
 
-    $target
-    .forEach(function( elem ) {
-      var next
+    traverse: while ( i-- ) {
+      var $this = $$target[ i ]
+      var $prev = null
 
-      // Ignore all `<wbr>` and comments in between
-      do {
-        next = ( next || elem ).nextSibling
-        if ( !next ) return
-      } while ( $.isIgnorable( next ))
+      // Ignore all `<wbr>` and comments in between,
+      // and add class `.adjacent` once two targets
+      // are next to each other.
+      ignore: do {
+        $prev = ( $prev || $this ).previousSibling
 
-      if ( next.nodeName.match( rTarget )) {
-        next.classList.add( 'adjacent' )
-      }
-    })
+        if ( !$prev ) {
+          continue traverse
+        } else if ( $$target[ i-1 ] === $prev ) {
+          $this.classList.add( 'adjacent' )
+        }
+      } while ( $.isIgnorable( $prev ))
+    }
   },
 
-  // Traverse target elements to render Hanzi emphasis marks
-  // and skip that in punctuation
+  // Traverse all target elements to render
+  // emphasis marks.
   renderEm: function( context, target ) {
     var method = target ? 'qsa' : 'tag'
     var target = target || 'em'
@@ -2168,13 +2323,13 @@ $.extend( Locale, {
 
       if ( Locale.support.textemphasis ) {
         $elem
-        .avoid( 'rt, h-char, h-char-group' )
+        .avoid( 'rt, h-char' )
         .charify({ biaodian: true, punct: true })
       } else {
         $elem
         .avoid( 'rt, h-char, h-char-group' )
         .jinzify()
-        .groupify({ western: true, biaodian: true })
+        .groupify({ western: true })
         .charify({
           hanzi:     true,
           biaodian:  true,
@@ -2229,101 +2384,160 @@ $.extend( Han.support, {
   // 'fangsong-gb': Han.detectFont( '"Han Fangsong GB"' )
 })
 
-var QUERY_HWS_AS_FIRST_CHILD = '* > h-hws:first-child, * > wbr:first-child + h-hws, wbr:first-child + wbr + h-hws'
+Han.correctBiaodian = function( context ) {
+  var context = context || document
+  var finder  = Han.find( context )
 
-//// Disabled `Node.normalize()` for temp due to
-//// issue below in IE11.
-//// See: http://stackoverflow.com/questions/22337498/why-does-ie11-handle-node-normalize-incorrectly-for-the-minus-symbol
-var isNodeNormalizeNormal = (function() {
-  var div = $.create( 'div' )
+  finder
+  .avoid( 'h-char' )
+  .replace( /([‘“])/g, function( portion ) {
+    var $char = Han.createBDChar( portion.text )
+    $char.classList.add( 'bd-open', 'punct' )
+    return $char
+  })
+  .replace( /([’”])/g, function( portion ) {
+    var $char = Han.createBDChar( portion.text )
+    $char.classList.add( 'bd-close', 'bd-end', 'punct' )
+    return $char
+  })
 
-  div.appendChild( $.create( '', '0-' ))
-  div.appendChild( $.create( '', '2' ))
-  div.normalize()
+  return Han.support.unicoderange
+    ? finder
+    : finder.charify({ biaodian: true })
+}
 
-  return div.firstChild.length !== 2
-})()
+Han.correctBasicBD = Han.correctBiaodian
+Han.correctBD = Han.correctBiaodian
 
-var hws = $.create( 'h-hws' )
-hws.setAttribute( 'hidden', '' )
-hws.innerHTML = ' '
+$.extend( Han.fn, {
+  biaodian: null,
+
+  correctBiaodian: function() {
+    this.biaodian = Han.correctBiaodian( this.context )
+    return this
+  },
+
+  revertCorrectedBiaodian: function() {
+    try {
+      this.biaodian.revert( 'all' )
+    } catch (e) {}
+    return this
+  }
+})
+
+// Legacy support (deprecated):
+Han.fn.correctBasicBD = Han.fn.correctBiaodian
+Han.fn.revertBasicBD  = Han.fn.revertCorrectedBiaodian
+
+var hws = '<<hws>>'
+
+var $hws = $.create( 'h-hws' )
+$hws.setAttribute( 'hidden', '' )
+$hws.innerHTML = ' '
+
+function sharingSameParent( $a, $b ) {
+  return $a && $b && $a.parentNode === $b.parentNode
+}
+
+function properlyPlaceHWSBehind( $node, text ) {
+  var $elmt = $node
+  var text  = text || ''
+
+  if (
+    $.isElmt( $node.nextSibling ) ||
+    sharingSameParent( $node, $node.nextSibling )
+  ) {
+    return text + hws
+  } else {
+    // One of the parental elements of the current text
+    // node would definitely have a next sibling, since
+    // it is of the first portion and not `isEnd`.
+    while ( !$elmt.nextSibling ) {
+      $elmt = $elmt.parentNode
+    }
+    if ( $node !== $elmt ) {
+      $elmt.insertAdjacentHTML( 'afterEnd', '<h-hws hidden> </h-hws>' )
+    }
+  }
+  return text
+}
+
+function firstStepLabel( portion, mat ) {
+  return portion.isEnd && portion.index === 0
+    ? mat[1] + hws + mat[2]
+    : portion.index === 0
+    ? properlyPlaceHWSBehind( portion.node, portion.text )
+    : portion.text
+}
+
+function real$hwsElmt( portion ) {
+  return portion.index === 0
+    ? $.clone( $hws )
+    : ''
+}
+
+var last$hwsIdx
+
+function apostrophe( portion ) {
+  var $elmt = portion.node.parentNode
+
+  if ( portion.index === 0 ) {
+    last$hwsIdx = portion.endIndexInNode-2
+  }
+
+  if (
+    $elmt.nodeName.toLowerCase() === 'h-hws' && (
+    portion.index === 1 || portion.indexInMatch === last$hwsIdx
+  )) {
+    $elmt.classList.add( 'quote-inner' )
+  }
+  return portion.text
+}
+
+function curveQuote( portion ) {
+  var $elmt = portion.node.parentNode
+
+  if ( $elmt.nodeName.toLowerCase() === 'h-hws' ) {
+    $elmt.classList.add( 'quote-outer' )
+  }
+  return portion.text
+}
 
 $.extend( Han, {
-  isNodeNormalizeNormal: isNodeNormalizeNormal,
-
   renderHWS: function( context, strict ) {
-    var context = context || document
+    // Elements to be filtered according to the
+    // HWS rendering mode.
+    var AVOID = strict
+    ? 'textarea, code, kbd, samp, pre'
+    : 'textarea'
+
     var mode = strict ? 'strict' : 'base'
+    var context = context || document
     var finder = Han.find( context )
 
-    // Elements to be filtered according to the
-    // HWS rendering mode
-    if ( strict ) {
-      finder.avoid( 'textarea, code, kbd, samp, pre' )
-    } else {
-      finder.avoid( 'textarea' )
-    }
-
     finder
-    .replace( Han.TYPESET.hws[ mode ][0], '$1<hws/>$2' )
-    .replace( Han.TYPESET.hws[ mode ][1], '$1<hws/>$2' )
+    .avoid( AVOID )
 
-    // Deal with [' 字'], [" 字"] => ['字'], ["字"]
-    .replace( /(['"]+)<hws\/>(.+?)<hws\/>\1/ig, '$1$2$1' )
+    // Basic situations:
+    // - 字a => 字<hws/>a
+    // - A字 => A<hws/>字
+    .replace( Han.TYPESET.hws[ mode ][0], firstStepLabel )
+    .replace( Han.TYPESET.hws[ mode ][1], firstStepLabel )
 
-    // Remove all `<hws/>` pre/post [“字”] and [‘字’]
-    // See: https://github.com/ethantw/Han/issues/59
-    .replace( /<hws\/>([‘“]+)/ig, '$1' )
-    .replace( /([’”]+)<hws\/>/ig, '$1' )
-
-    // Convert text nodes `<hws/>` into real element nodes
-    .replace( '<hws/>', function() {
-      return $.clone( hws )
-    })
+    // Convert text nodes `<hws/>` into real element nodes:
+    .replace( new RegExp( '(' + hws + ')+', 'g' ), real$hwsElmt )
 
     // Deal with:
-    // `漢<u><hws/>zi</u>` => `漢<hws/><u>zi</u>`
-    $
-    .qsa( QUERY_HWS_AS_FIRST_CHILD, context )
-    .forEach(function( firstChild ) {
-      var parent = firstChild.parentNode
-      var target = parent.firstChild
+    // - '<hws/>字<hws/>' => '字'
+    // - "<hws/>字<hws/>" => "字"
+    .replace( /([\'"])\s(.+?)\s\1/g, apostrophe )
 
-      // Skip all `<wbr>` and comments
-      while ( $.isIgnorable( target )) {
-        target = target.nextSibling
-
-        if ( !target ) return
-      }
-
-      // The ‘first-child’ of DOM is different from
-      // the ones of QSA, could be either an element
-      // or a text fragment, but the latter one is
-      // not what we want. We don't want comments,
-      // either.
-      while ( target.nodeName === 'H-HWS' ) {
-        $.remove( target, parent )
-
-        target = parent.parentNode.insertBefore( $.clone( hws ), parent )
-        parent = parent.parentNode
-
-        if ( isNodeNormalizeNormal ) {
-          parent.normalize()
-        }
-
-        // This is for extreme circumstances, i.e.,
-        // `漢<a><b><c><h-hws/>zi</c></b></a>` =>
-        // `漢<h-hws/><a><b><c>zi</c></b></a>`
-        if ( target !== parent.firstChild ) {
-          break
-        }
-      }
-    })
-
-    // Normalise nodes we messed up with
-    if ( isNodeNormalizeNormal ) {
-      context.normalize()
-    }
+    // Deal with:
+    // - <hws/>“字”<hws/>
+    // - <hws/>‘字’<hws/>
+    .replace( /\s[‘“]/g, curveQuote )
+    .replace( /[’”]\s/g, curveQuote )
+    .normalize()
 
     // Return the finder instance for future usage
     return finder
@@ -2331,22 +2545,26 @@ $.extend( Han, {
 })
 
 $.extend( Han.fn, {
-  HWS: null,
-
   renderHWS: function( strict ) {
     Han.renderHWS( this.context, strict )
-
-    this.HWS = $.tag( 'h-hws', this.context )
     return this
   },
 
   revertHWS: function() {
-    this.HWS.forEach(function( hws ) {
+    $.tag( 'h-hws', this.context )
+    .forEach(function( hws ) {
       $.remove( hws )
     })
+    this.HWS = []
     return this
   }
 })
+
+var HANGABLE_CLASS = 'bd-hangable'
+var HANGABLE_AVOID = 'h-char.bd-hangable'
+var HANGABLE_CS_HTML = '<h-cs hidden class="jinze-outer hangable-outer"> </h-cs>'
+
+var matches = Han.find.matches
 
 function detectSpaceFont() {
   var div = $.create( 'div' )
@@ -2355,144 +2573,253 @@ function detectSpaceFont() {
   div.innerHTML = '<span>a b</span><span style="font-family: \'Han Space\'">a b</span>'
   body.appendChild( div )
   ret = div.firstChild.offsetWidth !== div.lastChild.offsetWidth
-  $.remove( div, body )
+  $.remove( div )
   return ret
 }
 
-$.extend( Han, {
-  detectSpaceFont:   detectSpaceFont,
-  isSpaceFontLoaded: detectSpaceFont()
-})
+function insertHangableCS( $jinze ) {
+  var $cs = $jinze.nextSibling
+
+  if ( $cs && matches( $cs, 'h-cs.jinze-outer' )) {
+    $cs.classList.add( 'hangable-outer' )
+  } else {
+    $jinze.insertAdjacentHTML(
+      'afterend',
+      HANGABLE_CS_HTML
+    )
+  }
+}
 
 Han.support['han-space'] = detectSpaceFont()
 
-Han.renderHanging = function( context ) {
-  var context = context || document
-  var finder = Han.find( context )
+$.extend( Han, {
+  detectSpaceFont:   detectSpaceFont,
+  isSpaceFontLoaded: detectSpaceFont(),
 
-  finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-hangable' )
-  .replace(
-    TYPESET.jinze.hanging,
-    function( portion, match ) {
-      var elem = $.create( 'h-hangable' )
-      elem.innerHTML = match[1] + '<h-cs><h-inner hidden> </h-inner><h-char class="biaodian bd-close bd-end cjk">' + match[2] + '</h-char></h-cs>'
-      return portion.index === 0 ? elem : ''
-    }
-  )
+  renderHanging: function( context ) {
+    var context = context || document
+    var finder  = Han.find( context )
 
-  return finder
-}
+    finder
+    .avoid( 'textarea, code, kbd, samp, pre' )
+    .avoid( HANGABLE_AVOID )
+    .replace(
+      TYPESET.jinze.hanging,
+      function( portion ) {
+        if ( /^[\x20\t\r\n\f]+$/.test( portion.text )) {
+          return ''
+        }
+
+        var $elmt = portion.node.parentNode
+        var $jinze, $new, $bd, biaodian
+
+        if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
+          insertHangableCS( $jinze )
+        }
+
+        biaodian = portion.text.trim()
+
+        $new = Han.createBDChar( biaodian )
+        $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
+        $new.classList.add( HANGABLE_CLASS )
+
+        $bd = $.parent( $elmt, 'h-char.biaodian' )
+
+        return !$bd
+          ? $new
+          : (function() {
+            $bd.classList.add( HANGABLE_CLASS )
+
+            return matches( $elmt, 'h-inner, h-inner *' )
+              ? biaodian
+              : $new.firstChild
+          })()
+      }
+    )
+    return finder
+  }
+})
 
 $.extend( Han.fn, {
-  hanging: null,
-
   renderHanging: function() {
-    var condClazz = this.condition.classList
-    var isSpaceFontLoaded = detectSpaceFont()
+    var classList = this.condition.classList
+    Han.isSpaceFontLoaded = detectSpaceFont()
 
-    if ( isSpaceFontLoaded && condClazz.contains( 'no-han-space' )) {
-      condClazz.remove( 'no-han-space' )
-      condClazz.add( 'han-space' )
+    if (
+      Han.isSpaceFontLoaded &&
+      classList.contains( 'no-han-space' )
+    ) {
+      classList.remove( 'no-han-space' )
+      classList.add( 'han-space' )
     }
 
-    this.hanging = Han.renderHanging( this.context )
+    Han.renderHanging( this.context )
     return this
   },
 
   revertHanging: function() {
-    try {
-      this.hanging.revert( 'all' )
-    } catch ( e ) {}
+    $.qsa(
+      'h-char.bd-hangable, h-cs.hangable-outer',
+      this.context
+    ).forEach(function( $elmt ) {
+      var classList = $elmt.classList
+      classList.remove( 'bd-hangable' )
+      classList.remove( 'hangable-outer' )
+    })
     return this
   }
 })
+
+var JIYA_CLASS = 'bd-jiya'
+var JIYA_AVOID = 'h-char.bd-jiya'
+var CONSECUTIVE_CLASS = 'bd-consecutive'
+var JIYA_CS_HTML = '<h-cs hidden class="jinze-outer jiya-outer"> </h-cs>'
+
+var matches = Han.find.matches
+
+function trimBDClass( clazz ) {
+  return clazz.replace(
+    /(biaodian|cjk|bd-jiya|bd-consecutive|bd-hangable)/gi, ''
+  ).trim()
+}
+
+function charifyBiaodian( portion ) {
+  var biaodian = portion.text
+  var $elmt = portion.node.parentNode
+  var $bd = $.parent( $elmt, 'h-char.biaodian' )
+  var $new = Han.createBDChar( biaodian )
+  var $jinze
+
+  $new.innerHTML = '<h-inner>' + biaodian + '</h-inner>'
+  $new.classList.add( JIYA_CLASS )
+
+  if ( $jinze = $.parent( $elmt, 'h-jinze' )) {
+    insertJiyaCS( $jinze )
+  }
+
+  return !$bd
+    ? $new
+    : (function() {
+      $bd.classList.add( JIYA_CLASS )
+
+      return matches( $elmt, 'h-inner, h-inner *' )
+        ? biaodian
+        : $new.firstChild
+    })()
+}
+
+var prevBDType, $$prevCS
+
+function locateConsecutiveBD( portion ) {
+  var prev = prevBDType
+  var $elmt = portion.node.parentNode
+  var $bd = $.parent( $elmt, 'h-char.biaodian' )
+  var $jinze = $.parent( $bd, 'h-jinze' )
+  var classList
+
+  classList = $bd.classList
+
+  if ( prev ) {
+    $bd.setAttribute( 'prev', prev )
+  }
+
+  if ( $$prevCS && classList.contains( 'bd-open' )) {
+    $$prevCS.pop().setAttribute( 'next', 'bd-open' )
+  }
+
+  $$prevCS = undefined
+
+  if ( portion.isEnd ) {
+    prevBDType = undefined
+    classList.add( CONSECUTIVE_CLASS, 'end-portion' )
+  } else {
+    prevBDType = trimBDClass($bd.getAttribute( 'class' ))
+    classList.add( CONSECUTIVE_CLASS )
+  }
+
+  if ( $jinze ) {
+    $$prevCS = locateCS( $jinze, {
+      prev: prev,
+      'class': trimBDClass($bd.getAttribute( 'class' ))
+    })
+  }
+  return portion.text
+}
+
+function insertJiyaCS( $jinze ) {
+  if (
+    matches( $jinze, '.tou, .touwei' ) &&
+    !matches( $jinze.previousSibling, 'h-cs.jiya-outer' )
+  ) {
+    $jinze.insertAdjacentHTML( 'beforebegin', JIYA_CS_HTML )
+  }
+  if (
+    matches( $jinze, '.wei, .touwei' ) &&
+    !matches( $jinze.nextSibling, 'h-cs.jiya-outer' )
+  ) {
+    $jinze.insertAdjacentHTML( 'afterend', JIYA_CS_HTML )
+  }
+}
+
+function locateCS( $jinze, attr ) {
+  var $prev, $next
+
+  if (matches( $jinze, '.tou, .touwei' )) {
+    $prev = $jinze.previousSibling
+
+    if (matches( $prev, 'h-cs' )) {
+      $prev.className = 'jinze-outer jiya-outer'
+      $prev.setAttribute( 'prev', attr.prev )
+    }
+  }
+  if (matches( $jinze, '.wei, .touwei' )) {
+    $next = $jinze.nextSibling
+
+    if (matches( $next, 'h-cs' )) {
+      $next.className = 'jinze-outer jiya-outer ' + attr[ 'class' ]
+      $next.removeAttribute( 'prev' )
+    }
+  }
+  return [ $prev, $next ]
+}
 
 Han.renderJiya = function( context ) {
   var context = context || document
   var finder = Han.find( context )
 
   finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char-group' )
-  .replace(
-    // This is a safeguard against hanging rendering
-    new RegExp( '(' + UNICODE.biaodian.end + '+)(' + UNICODE.biaodian.open + '+)', 'g' ),
-    function( portion, match ) {
-      if ( portion.index === 0 ) return portion.isEnd ? match[0] : match[1]
+  .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
 
-      var elem = $.create( 'h-char-group', 'biaodian cjk portion' )
-      elem.innerHTML = match[2]
-      return elem
-    }
-  )
+  .avoid( JIYA_AVOID )
+  .charify({
+    avoid: false,
+    biaodian: charifyBiaodian
+  })
+  // End avoiding `JIYA_AVOID`:
   .endAvoid()
 
-  finder
-  .avoid( 'textarea, code, kbd, samp, pre, h-char' )
-  .groupify({ biaodian:  true })
-  .charify({  biaodian:  true })
-
-  // The reason we're doing this instead of using pseudo elements in CSS
-  // is because WebKit has problem rendering pseudo elements containing only 
-  // space.
-  $.qsa( 'h-char.biaodian.bd-open, h-char.biaodian.bd-end', context )
-  .forEach(function( elem ) {
-    if ( Han.find.matches( elem, 'h-cs *' ))  return
-    var html = '<h-inner>' + elem.innerHTML + '</h-inner>'
-    var hcs = '<h-cs hidden> </h-cs>'
-    var isOpen = elem.classList.contains( 'bd-open' )
-    elem.innerHTML = isOpen ? hcs + html : html + hcs
-  })
+  .avoid( 'textarea, code, kbd, samp, pre, h-cs' )
+  .replace( TYPESET.group.biaodian[0], locateConsecutiveBD )
+  .replace( TYPESET.group.biaodian[1], locateConsecutiveBD )
 
   return finder
 }
 
 $.extend( Han.fn, {
-  jiya: null,
-
   renderJiya: function() {
-    this.jiya = Han.renderJiya( this.context )
+    Han.renderJiya( this.context )
     return this
   },
 
   revertJiya: function() {
-    try {
-      this.jiya.revert( 'all' )
-    } catch ( e ) {}
-    return this
-  }
-})
-
-var mdot
-
-mdot = $.create( 'h-char', 'biaodian cjk bd-middle' )
-mdot.setAttribute( 'unicode', 'b7' )
-
-Han.correctBasicBD = function( context, all ) {
-  if ( Han.support.unicoderange && !all )  return
-
-  var context = context || document
-  var finder
-
-  finder = Han.find( context )
-
-  finder
-  .wrap( /\u00B7/g, $.clone( mdot ))
-  .charify({ biaodian: true })
-}
-
-$.extend( Han.fn, {
-  basicBD: null,
-
-  correctBasicBD: function( all ) {
-    this.basicBD = Han.correctBasicBD( this.context, all )
-    return this
-  },
-
-  revertBasicBD: function() {
-    try {
-      this.basicBD.revert( 'all' )
-    } catch (e) {}
+    $.qsa(
+      'h-char.bd-jiya, h-cs.jiya-outer',
+      this.context
+    ).forEach(function( $elmt ) {
+      var classList = $elmt.classList
+      classList.remove( 'bd-jiya' )
+      classList.remove( 'jiya-outer' )
+    })
     return this
   }
 })
