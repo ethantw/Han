@@ -60,7 +60,7 @@ test 'Adjacent decoration lines', !->
   Han d .renderDecoLine!
   html-equal d.innerHTML, '<u>註記元素丁</u><s>訛訊元素丁</s><ins>增訂元素丁</ins><del>刪訂元素丁</del>。'
 
-test 'Emphasis marks' !->
+test 'Emphasis marks' ( a ) ->
   support = Han.support.textemphasis
   d = div!
 
@@ -80,7 +80,7 @@ test 'Emphasis marks' !->
   if support
     html-equal d.innerHTML, '<em><h-char unicode=300c class=biaodian cjk bd-open>「</h-char>測<h-char unicode=300e class=biaodian cjk bd-open>『</h-char>試<h-char unicode=300f class=biaodian cjk bd-close bd-end>』</h-char><h-char unicode=300d class=biaodian cjk bd-close bd-end>」</h-char><h-char unicode=ff0c class=biaodian cjk bd-end bd-cop>，</h-char>test <h-char class=punct>‘</h-char>this<h-char class=punct>!</h-char><h-char class=punct>’</h-char><h-char unicode=3002 class=biaodian cjk bd-end bd-cop>。</h-char></em>'
   else
-    html-equal d.innerHTML, '<em><h-jinze class=tou><h-char unicode=300c class=biaodian cjk bd-open>「</h-char><h-char class=hanzi cjk>測</h-char></h-jinze><h-jinze class=touwei><h-char unicode=300e class=biaodian cjk bd-open>『</h-char><h-char class=hanzi cjk>試</h-char><h-char unicode=300f class=biaodian cjk bd-close bd-end>』</h-char><h-char unicode=300d class=biaodian cjk bd-close bd-end>」</h-char><h-char unicode=ff0c class=biaodian cjk bd-end bd-cop>，</h-char></h-jinze><h-word class=western><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>e</h-char><h-char class=alphabet latin>s</h-char><h-char class=alphabet latin>t</h-char></h-word> <h-word class=western><h-char class=punct>‘</h-char><h-char class=alphabet latin>t</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>i</h-char><h-char class=alphabet latin>s</h-char><h-char class=punct>!</h-char></h-word><h-jinze class=wei><h-word class=western><h-char class=punct>’</h-char></h-word><h-char unicode=3002 class=biaodian cjk bd-end bd-cop>。</h-char></h-jinze></em>'
+    a.dom-equal d.firstChild, $( '<em><h-jinze class="tou"><h-char unicode="300c" class="biaodian cjk bd-open">「</h-char><h-char class="hanzi cjk">測</h-char></h-jinze><h-jinze class="touwei"><h-char unicode="300e" class="biaodian cjk bd-open">『</h-char><h-char class="hanzi cjk">試</h-char><h-char unicode="300f" class="biaodian cjk bd-close bd-end">』</h-char><h-char unicode="300d" class="biaodian cjk bd-close bd-end">」</h-char><h-char unicode="ff0c" class="biaodian cjk bd-end bd-cop">，</h-char></h-jinze><h-word class="western"><h-char class="alphabet latin">t</h-char><h-char class="alphabet latin">e</h-char><h-char class="alphabet latin">s</h-char><h-char class="alphabet latin">t</h-char></h-word> <h-word class="western"><h-char class="punct">‘</h-char><h-char class="alphabet latin">t</h-char><h-char class="alphabet latin">h</h-char><h-char class="alphabet latin">i</h-char><h-char class="alphabet latin">s</h-char><h-char class="punct">!</h-char></h-word><h-jinze class="wei"><h-word class="western"><h-char class="punct">’</h-char></h-word><h-char unicode="3002" class="biaodian cjk bd-end bd-cop">。</h-char></h-jinze></em>' )
 
   # All CJK-related blocks
   d.innerHTML = '<em>𫞵𫞦𠁻𠁶〇⼌⿕⺃⻍⻰⻳⿸⿷⿳</em>'
@@ -100,7 +100,7 @@ test 'Emphasis marks' !->
   else
     html-equal d.innerHTML, '<em><h-word class=western><h-char class=punct>¡</h-char><h-char class=alphabet latin>h</h-char><h-char class=alphabet latin>o</h-char><h-char class=alphabet latin>l</h-char><h-char class=alphabet latin>a</h-char><h-char class=punct>!</h-char></h-word> <h-word class=western><h-char class=alphabet ellinika greek>ὅ</h-char><h-char class=alphabet ellinika greek>μ</h-char><h-char class=alphabet ellinika greek>η</h-char><h-char class=alphabet ellinika greek>ρ</h-char><h-char class=alphabet ellinika greek>ο</h-char><h-char class=alphabet ellinika greek>ς</h-char></h-word> <h-word class=western><h-char class=alphabet kirillica cyrillic>с</h-char><h-char class=alphabet kirillica cyrillic>в</h-char><h-char class=alphabet kirillica cyrillic>е</h-char><h-char class=alphabet kirillica cyrillic>т</h-char><h-char class=alphabet kirillica cyrillic>и</h-char></h-word></em>'
 
-test 'Interlinear annotations (Ruby)', !->
+test 'Interlinear annotations (Ruby)', ( a ) ->
   support = Han.support.ruby
   support-zhuyin = Han.support['ruby-interchar']
   support-ruby-display = Han.support['ruby-display']
@@ -133,7 +133,15 @@ test 'Interlinear annotations (Ruby)', !->
   if support-zhuyin
     html-equal d.innerHTML, '<ruby class=zhuyin>事<rt><h-zhuyin length=1 diao=ˋ><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></rt>情<rt><h-zhuyin length=3 diao=ˊ><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></rt>看<rt><h-zhuyin length=2 diao=ˋ><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></rt>冷<rt><h-zhuyin length=2 diao=ˇ><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></rt>暖<rt><h-zhuyin length=3 diao=ˇ><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></rt></ruby>'
   else
-    html-equal d.innerHTML, '<h-ruby class=zhuyin><h-ru>事<h-zhuyin length=1 diao=ˋ><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>情<h-zhuyin length=3 diao=ˊ><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru>看<h-zhuyin length=2 diao=ˋ><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>冷<h-zhuyin length=2 diao=ˇ><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru><h-ru>暖<h-zhuyin length=3 diao=ˇ><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru></h-ruby>'
+    a.dom-equal d.firstChild, $(
+      '''
+      <h-ruby class="zhuyin"><h-ru>
+        事<h-zhuyin length="1" diao="ˋ"><h-yin>ㄕ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>情<h-zhuyin length="3" diao="ˊ"><h-yin>ㄑㄧㄥ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru>
+        看<h-zhuyin length="2" diao="ˋ"><h-yin>ㄎㄢ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><h-ru>
+        冷<h-zhuyin length="2" diao="ˇ"><h-yin>ㄌㄥ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru><h-ru>暖<h-zhuyin length="3" diao="ˇ"><h-yin>ㄋㄨㄢ</h-yin><h-diao>ˇ</h-diao></h-zhuyin></h-ru>
+      </h-ruby>
+      '''
+    )
 
   # Complex ruby
   d.innerHTML = '''
@@ -219,16 +227,48 @@ test 'Interlinear annotations (Ruby)', !->
   </ruby>
 '''
   Han d .renderRuby!
-  qsa d, \h-ruby .forEach !-> 
-    it.removeAttribute \doubleline
-  qsa d, \h-ru
-  .forEach !->
-    it.removeAttribute \annotation
-    it.removeAttribute \order
-    it.removeAttribute \span
-  html-equal d.innerHTML, '''
-<p><h-ruby class=complex>「<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rt rbspan=2>niǔyuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>」</h-ruby><h-ruby class=complex>『<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rt rbspan=2>niǔyuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>』</h-ruby><h-ruby class=complex>‘<h-ru class=complex><h-ru class=complex><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru class=complex><rb>約</rb><rt>yuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>’</h-ruby><h-ruby class=complex>„<h-ru class=complex><h-ru class=complex><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru class=complex><rb>約</rb><rt>yuē</rt></h-ru><h-ru class=complex><rb>市</rb><rt>shì</rt></h-ru><rt rbspan=3>new york city</rt></h-ru>‟</h-ruby><h-ruby class=complex>⸘<h-ru class=complex><h-ru class=complex><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan=3>new york city</rt></h-ru><rt rbspan=3>世界之都</rt></h-ru>‽</h-ruby>。</p><p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><rb>三</rb><rt>san1</rt></h-ru><rt>sān</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>十</rb><rt>shih2</rt></h-ru><rt>shí</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>六</rb><rt>liu4</rt></h-ru><rt>liù</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>個</rb><rt>ko0</rt></h-ru><rt>ge</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>牙</rb><rt>ya2</rt></h-ru><rt>yá</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>齒</rb><rt>ch'ih3</rt></h-ru><rt>chǐ</rt></h-ru>，<h-ru class=complex><h-ru class=complex><rb>捉</rb><rt>cho1</rt></h-ru><rt>zhuō</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>對</rb><rb>兒</rb><rt rbspan=2>tuirh4</rt></h-ru><rt rbspan=2>duìr</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>廝</rb><rt>ssu1</rt></h-ru><rt>sī</rt></h-ru><h-ru class=complex><h-ru class=complex><rb>打</rb><rt>ta3</rt></h-ru><rt>dǎ</rt></h-ru>！</h-ruby></p>
-'''
+  a.dom-equal d.firstChild, $(
+    '''
+<p>
+  <h-ruby doubleline="true" class="complex">
+    「<h-ru annotation="true" order="1" span="3" class="complex"><h-ru annotation="true" order="0" span="2" class="complex"><rb>紐</rb><rb>約</rb><rt rbspan="2">Niǔyuē</rt></h-ru><h-ru annotation="true" order="0" span="1" class="complex"><rb>市</rb><rt>Shì</rt></h-ru><rt rbspan="3">New York City</rt></h-ru>」
+    
+    
+  </h-ruby>
+
+  <h-ruby doubleline="true" class="complex">
+    『<h-ru annotation="true" order="0" span="3" class="complex"><h-ru annotation="true" order="1" span="2" class="complex"><rb>紐</rb><rb>約</rb><rt rbspan="2">Niǔyuē</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><rb>市</rb><rt>Shì</rt></h-ru><rt rbspan="3">New York City</rt></h-ru>』
+    
+    
+  </h-ruby>
+
+  <h-ruby doubleline="true" class="complex">
+    ‘<h-ru annotation="true" order="0" span="3" class="complex"><h-ru annotation="true" order="1" span="1" class="complex"><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><rb>約</rb><rt>yuē</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><rb>市</rb><rt>shì</rt></h-ru><rt rbspan="3">New York City</rt></h-ru>’
+    
+    
+  </h-ruby>
+
+  <h-ruby doubleline="true" class="complex">
+    „<h-ru annotation="true" order="1" span="3" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>紐</rb><rt>niǔ</rt></h-ru><h-ru annotation="true" order="0" span="1" class="complex"><rb>約</rb><rt>yuē</rt></h-ru><h-ru annotation="true" order="0" span="1" class="complex"><rb>市</rb><rt>shì</rt></h-ru><rt rbspan="3">New York City</rt></h-ru>‟
+    
+    
+  </h-ruby>
+
+  <h-ruby doubleline="true" class="complex">
+    ⸘<h-ru annotation="true" order="1" span="3" class="complex"><h-ru annotation="true" order="0" span="3" class="complex"><rb>紐</rb><rb>約</rb><rb>市</rb><rt rbspan="3">New York City</rt></h-ru><rt rbspan="3">世界之都</rt></h-ru>‽
+    
+    
+    </h-ruby>。
+</p><p>
+  <h-ruby doubleline="true" class="complex">
+    <h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>三</rb><rt>san1</rt></h-ru><rt>sān</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>十</rb><rt>shih2</rt></h-ru><rt>shí</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>六</rb><rt>liu4</rt></h-ru><rt>liù</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>個</rb><rt>ko0</rt></h-ru><rt>ge</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>牙</rb><rt>ya2</rt></h-ru><rt>yá</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>齒</rb><rt>ch'ih3</rt></h-ru><rt>chǐ</rt></h-ru>，
+    <h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>捉</rb><rt>cho1</rt></h-ru><rt>zhuō</rt></h-ru><h-ru annotation="true" order="1" span="2" class="complex"><h-ru annotation="true" order="0" span="2" class="complex"><rb>對</rb><rb>兒</rb><rt rbspan="2">tuirh4</rt></h-ru><rt rbspan="2">duìr</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>廝</rb><rt>ssu1</rt></h-ru><rt>sī</rt></h-ru><h-ru annotation="true" order="1" span="1" class="complex"><h-ru annotation="true" order="0" span="1" class="complex"><rb>打</rb><rt>ta3</rt></h-ru><rt>dǎ</rt></h-ru>！
+
+    
+    
+  </h-ruby></p>
+    '''
+  )
 
   # Triaxial ruby
   d.innerHTML = '''
@@ -268,21 +308,10 @@ test 'Interlinear annotations (Ruby)', !->
 </p>
 '''
   Han d .renderRuby!
-  ruby = d.querySelector \h-ruby
-  ruby.removeAttribute \rightangle
-  ruby.removeAttribute \doubleline
-  qsa d, \h-ru
-  .forEach !->
-    it.removeAttribute \annotation
-    it.removeAttribute \order
-    it.removeAttribute \span
-    it.removeAttribute \form
-    it.removeAttribute \zhuyin
-    it.removeAttribute \diao
-    it.removeAttribute \length
-  html-equal d.innerHTML, '''
-<p><h-ruby class=complex><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin length=2 diao=ㆵ͘><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>tsi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>人</rb><h-zhuyin length=2 diao=ˊ><h-yin>ㄌㄤ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><rt>lâng</rt></h-ru><rt>lâng</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>煩</rb><h-zhuyin length=3 diao=ˊ><h-yin>ㄏㄨㄢ</h-yin><h-diao>ˊ</h-diao></h-zhuyin></h-ru><h-ru><rb>惱</rb><h-zhuyin length=2 diao=ˋ><h-yin>ㄌㄜ</h-yin><h-diao>ˋ</h-diao></h-zhuyin></h-ru><rt rbspan=2>hoân‑ló</rt></h-ru><rt rbspan=2>huân-ló</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>一</rb><h-zhuyin length=2 diao=ㆵ͘><h-yin>ㄐㄧ</h-yin><h-diao>ㆵ͘</h-diao></h-zhuyin></h-ru><rt>chi̍t</rt></h-ru><rt>tsi̍t</rt></h-ru><h-ru class=complex><h-ru class=complex><h-ru><rb>樣</rb><h-zhuyin length=2 diao=˫><h-yin>ㄧㆫ</h-yin><h-diao>˫</h-diao></h-zhuyin></h-ru><rt>iūⁿ</rt></h-ru><rt>iūnn</rt></h-ru>。</h-ruby></p>
-'''
+  result = []
+  $( d ).find( 'rb, h-zhuyin' )
+  .each -> result.push $( this ).text!
+  equal( result.join( ',' ), '一,ㄐㄧㆵ͘,人,ㄌㄤˊ,煩,ㄏㄨㄢˊ,惱,ㄌㄜˋ,一,ㄐㄧㆵ͘,樣,ㄧㆫ˫' )
 
 module 'Advanced typesetting features'
 test 'Hanzi-Western script mixed spacing (HWS)' ->
