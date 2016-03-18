@@ -17,7 +17,6 @@ Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 ## Installation
 - NPM `npm install --save han-css`
 - Bower `bower install --save Han`
-- Component `component install ethantw/Han`
 - Rails `gem install 'hanzi-rails'` ([Check out the details here](https://github.com/billy3321/hanzi-rails))
 
 ### Customisation
@@ -31,19 +30,19 @@ For high-speed downloads and cache, in need of customisation otherwise, you can 
 [cdnjs]: http://cdnjs.com/libraries/han
 
 ````html
-<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/han.min.css">
+<link rel="stylesheet" media="all" href="//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/han.min.css">
 ````
 
 JavaScript,
 
 ````html
-<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/han.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/han.min.js"></script>
 ````
 
 Web fonts,
 
-- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/font/han.woff`
-- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.2.7/font/han.otf`
+- WOFF `//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/font/han.woff`
+- OTF `//cdnjs.cloudflare.com/ajax/libs/Han/3.3.0/font/han.otf`
 
 ## How to use
 
@@ -77,13 +76,13 @@ Han.js runs in DOM environments only. Introduce modules such as [jsdom] for serv
 
 ## Browser support
 
-- Google Chrome (latest)
-- Mozilla Firefox (latest)
-- Mozilla Firefox ESR+
-- Opera Next (latest)
-- Apple Safari 7+
-- Microsoft Edge
-- Internet Explorer 10+
+- Chrome (latest)
+- Edge (latest)
+- Firefox (latest)
+- Firefox ESR+
+- Internet Explorer 11
+- Opera (latest)
+- Safari 9
 
 ## Requirements and developing commands
 
@@ -99,6 +98,6 @@ Below goes the list with some useful developing commands:
 - Update dependencies: `sudo npm update && gulp dep`
 
 * * *
-Han.css v3.2.7  
-Last-modified: 2015-10-17 23:19 (UTC+8)
+Han.css v3.3.0  
+Last-modified: 2016-3-19 00:11 (UTC+8)
 
