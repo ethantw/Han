@@ -46,6 +46,9 @@ address
 // * Improve the readability
 // *
 pre
+  // box-model
+  overflow: auto
+  // typography
   white-space: pre
   word-wrap: normal
 
@@ -89,30 +92,22 @@ em:lang(ja)
   +han-text-emphasis-internal( $HAN-TEXT-EMPHASIS-POSI-JA, $HAN-TEXT-EMPHASIS-MARK-JA )
 
 /**
- * Importance, definitions and Keywords
- * (重點、術語、關鍵字)
+ * Definitions
+ * (術語)
  */
 
 // * Improvement for multiple weight fonts.
 // * See: https://github.com/necolas/normalize.css/pull/342
 // *
 
-strong,
 dfn:lang(zh),
-dfn:lang(ja),
-b
+dfn:lang(ja)
   font-weight: inherit
+  font-style: inherit
 
-strong,
 dfn:lang(zh),
-dfn:lang(ja),
-b
+dfn:lang(ja)
   font-weight: bolder
-
-dfn
-  &:lang(zh),
-  &:lang(ja)
-    font-style: inherit
 
 /**
  * Cites and quotes
