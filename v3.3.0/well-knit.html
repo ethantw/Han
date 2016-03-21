@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="zh-Hant" class="han-init"><head><meta charset="utf-8"><title>測試・文章、章節與內容的邊界調整 — 漢字標準格式</title><link rel="stylesheet" href="./han.min.css"><style>html {
+  overflow-x: hidden;
+}
+
+article {
+  /* position */
+  margin: 0 auto;
+
+  /* box */
+  max-width: 35em;
+  padding: 0 .5em 15em;
+}
+article#example-article {
+  /* box */
+  max-width: 30em;
+  padding-bottom: 3em;
+
+  /* style */
+  background-color: #f5f5f5;
+  border-radius: .5em;
+}
+article#example-article h1,
+article#example-article h2,
+article#example-article h3,
+article#example-article h4,
+article#example-article h5,
+article#example-article h6,
+article#example-article ul,
+article#example-article ol,
+article#example-article p {
+  border: 1px dotted #ccc;
+}</style><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="印刷品般的漢字網頁排版框架"><meta name="keywords" content="漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography"></head><body class="test"><article><h1>測試·文章、章節與內容的邊界調整</h1><p class="noti"><strong>提示：</strong>下方淺灰色區塊是文章章節的範例，建議使用瀏覽器的「元件檢閱器」<!--
+-->來査閱各種群組元素在不同情境下的樣式。亦可伸縮視窗寬度來觀看<!--
+-->專為行動裝置提供的彈性設計<!--
+-->（<span lang='en'>responsive web design</span>）<!--
+-->，行動裝置預設為<em>480px以下</em>的視窗或設備。</p><article id="example-article"><h1>文章標題（一級）</h1><p class="example">段落，也許是前言。上邊界對一級標題收緊。文章區塊的行高大於全域行高，<!--
+-->預設為1.7em。</p><section class="example"><h2>二級標題</h2><p>這是一個段落，可以是對二級標題的內容詳述，上邊界對二級標題收緊。</p><p>這是另一個段落，可見上邊界不收緊了。</p></section><section id="grouping-content"><h2>段落、清單、引用區塊等群組元素對標題的收緊</h2><section class="example"><h3>三級標題</h3><blockquote><p>這是一個引用區塊段落，可見上邊界對標題收緊；而三級標題則對二級標題收緊。</p><p>這是第二個引用區塊段落，可見上邊界不收緊了。</p><p>在文章中的引用區塊，會縮進二個字元<!--
+-->（行動裝置上縮進一字元），並使用楷體。</p></blockquote><h3>三級標題</h3><ol><li>這是一個有序清單，</li><li>可見上邊界對標題收緊。</li></ol><ol><li>這是另一個有序清單，</li><li>可見上邊界不收緊了。</li></ol><h3>三級標題</h3><ul><li>這是一個無序清單，</li><li>可見上邊界對標題收緊。</li></ul></section></section><section id="poem-and-rule-for-well-knit"><h2>詩，與標題收緊規則</h2><p>總結成<em>詩</em>，琅琅上口：</p><div class="poem-like example"><p>小級標題對大級標題收緊、<br>同級標題互相收緊；</p><p>大級標題<br>不對小級標題收緊、<br>一級標題<br>不對一級標題收緊。</p></div><p>上方描述規則的區塊是一個套用類詩篇類別<!--
+--><code>.poem-like</code>的分塊元素<code>div</code>。<!--
+-->在任意情境下，其後代段落元素<code>p</code>縮進二字元；<!--
+-->在行動裝置中，縮進一字元。</p><div class="example"><h6>六級標題</h6><h5>五級標題</h5><h4>四級標題</h4><h3>三級標題</h3><h2>二級標題</h2><h2>二級標題</h2><h3>三級標題</h3><h4>四級標題</h4><h5>五級標題</h5><h6>六級標題</h6></div><div class="example"><h1>一級標題</h1><h1>一級標題</h1><p>一級標題不會互相收緊。</p></div></section><section id="descendant"><h3>後代章節元素不影響群組收緊</h3><p>後代章節元素<code>section</code>不會影響各個群組元素對上級標題的收緊。</p><h3>比如說……</h3><div class="example"><h2>二級標題（在<code>section</code>下）</h2><section><h2>二級標題（在<code>section</code>下）</h2><section><h3>三級標題（在<code>section</code>下）</h3><section><h4>四級標題（在<code>section</code>下）</h4><section><p>這是一個放在後代章節元素<code>section</code>中的段落<!--
+-->，雖然和四級標題並非同輩，但仍然會對標題收緊。</p></section><section><h4>四級標題（在<code>section</code>下）</h4><section><h5>五級標題（在<code>section</code>下）</h5><section><h6>六級標題（在<code>section</code>下）</h6></section></section></section></section></section></section></div></section><section id="sibling"><h3>同輩章節元素則否</h3><p>互為「同輩」的二個章節元素下的標題則不互相收緊。</p><div class="example"><section id="section-jia"><h2>二級標題（<code>section</code>甲）</h2></section><section id="section-yi"><h2>二級標題（<code>section</code>乙，與甲同輩）</h2></section><section id="section-bing"><h3>三級標題（<code>section</code>丙，與甲乙同輩）</h3></section><section id="section-ding"><h4>四級標題（<code>section</code>丁，與甲乙丙同輩）</h4></section><section id="section-wu"><h5>五級標題（<code>section</code>戊，與甲乙丙丁同輩）</h5></section><section id="section-ji"><h6>六級標題（<code>section</code>己，與甲乙丙丁戊同輩）</h6></section><section id="section-geng"><p>這是一個段落，屬於<code>section</code>庚，與甲乙丙丁戊己同輩。</p></section></div></section></article></article><!-- Here goes scripts--><script src="./han.min.js"></script></body></html>

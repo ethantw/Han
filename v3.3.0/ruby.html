@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-Hant" class="han-init"><head><meta charset="utf-8"><title>測試・行間注元素 — 漢字標準格式</title><link rel="stylesheet" href="./han.min.css"><!--link(rel='stylesheet', href='//az.hanzi.co/201505/han.ruby.css')--><style>html {
+  overflow-x: hidden;
+}
+
+article {
+  /* position */
+  margin: 0 auto;
+
+  /* box */
+  max-width: 35em;
+  padding: 0 .5em 15em;
+}</style><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="印刷品般的漢字網頁排版框架"><meta name="keywords" content="漢字標準格式, 中文, 排版, 排版規範, 日文, 字體排印, 文字設計, CLReq, CSS, Sass, typography"></head><body class="test"><article><h1>測試·行間注元素</h1><section id="jiben_hangjianzhu"><h2>基本行間注</h2><p><ruby>WWW<rt>World Wide Web</ruby></p><p><ruby>安倍晋三<rt>日本內閣總理大臣</ruby></p><section id="pinyin"><h3>拼音</h3><p><ruby>世情<rt>shìqíng</rt>
+看<rt>kàn</rt>
+冷暖<rt>lěngnuǎn</rt>，<rt></rt>
+人面<rt>rénmiàn</rt>
+逐<rt>zhú</rt>
+高低<rt>gāodī</rt>。<rt></rt></ruby></p></section><p>好好地來<em><ruby class="pinyin">安<rt>ān</rt>裝<rt>zhuāng</rt></ruby></em><ruby class="pinyin">窗<rt>chuāng</rt>戶<rt>hù</rt></ruby>。</p><section id="zhuyin_fuhao"><h3>注音符號</h3><p><ruby class="zhuyin">事<rt>ㄕˋ</rt>情<rt>ㄑㄧㄥˊ</rt>
+看<rt>ㄎㄢˋ</rt>
+冷<rt>ㄌㄥˇ</rt>暖<rt>ㄋㄨㄢˇ</rt>，<rt></rt>
+人<rt>ㄖㄣˊ</rt>面<rt>ㄇㄧㄢˋ</rt>
+逐<rt>ㄓㄨˊ</rt>
+高<rt>ㄍㄠ</rt>
+低<rt>ㄉㄧ</rt>。</ruby></p><section id="qingsheng"><h4>輕聲</h4><p><ruby class="zhuyin">爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt></ruby><em><ruby class='zhuyin'>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt></ruby></em><ruby class='zhuyin'>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！</ruby></p><p><ruby class="zhuyin">你<rt>ㄌㄧˋ</rt>敢<rt>ㄍㆰˋ</rt>有<rt>ㄨ˫</rt>聽<rt>ㄊㄧㆩ</rt>著<rt>ㄉㄧㄜㆷ͘</rt>咱<rt>ㄌㄢˋ</rt>的<rt>ㆤˊ</rt>歌<rt>ㄍㄨㄚ</rt>？</ruby></p></section><section></section></section></section><section id="fuheshi_hangjianzhu"><h2>複合式行間注</h2><p>好好地來<ruby class="complex"><em><rb>安</rb><rb>裝</rb></em><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby></p><p><ruby class="complex">辛亥革命發生在<rb>1911-</rb><rb>10-</rb><rb>10，</rb><rtc><rt>年</rt><rt>月</rt><rt>日</rt></rtc><rtc><rt rbspan="3">清宣統三年</rt></rtc>那天革命先烈們一同推翻了帝制。</ruby></p><p>歡迎來到 <em><ruby class="complex">「<rb>紐</rb><rb>約</rb><rb>市</rb>」<rtc lang="cmn-Latn" class="reading romanization"><rt rbspan="2">Niǔyuē</rt><rt>Shì</rt></rtc><rtc class="reading annotation"><rt rbspan="3">New York City</rt></rtc></ruby></em><ruby class="complex">『<rb>紐</rb><rb>約</rb><rb>市</rb>』<rtc lang="en" class="reading annotation"><rt rbspan="3">New York City</rt></rtc><rtc lang="cmn-Latn" class="reading romanization"><rt rbspan="2">Niǔyuē</rt><rt>Shì</rt></rtc></ruby><ruby class="complex">‘<rb>紐</rb><rb>約</rb><rb>市</rb>’<rtc lang="en" class="reading annotation"><rt rbspan="3">New York City</rt></rtc><rtc lang="cmn-Latn" class="reading romanization"><rt>niǔ</rt><rt>yuē</rt><rt>shì</rt></rtc></ruby><ruby class="complex">&#x201E;<rb>紐</rb><rb>約</rb><rb>市</rb>&#x201F;<rtc lang="cmn-Latn" class="reading romanization"><rt>niǔ</rt><rt>yuē</rt><rt>shì</rt></rtc><rtc lang="en" class="reading annotation"><rt rbspan="3">New York City</rt></rtc></ruby><ruby class="complex">⸘<rb>紐</rb><rb>約</rb><rb>市</rb>‽<rtc lang="en" class="reading annotation"><rt lang="en" rbspan="3">New York City</rt></rtc><rtc class="reading annotation"><rt rbspan="3">世界之都</rt></rtc></ruby></p><p><ruby class="complex">俗語說
+<rb>三</rb>
+<rb>十</rb>
+<rb>六</rb>
+<rb>個</rb>
+<rb>牙</rb>
+<rb>齒</rb>，
+<rb>捉</rb>
+<rb>對</rb>
+<rb>兒</rb>
+<rb>廝</rb>
+<rb>打</rb>！
+
+<rtc class="romanization">
+<rt>san1</rt>
+<rt>shih2</rt>
+<rt>liu4</rt>
+<rt>ko0</rt>
+<rt>ya2</rt>
+<rt>ch'ih3</rt>
+<rt>cho1</rt>
+<rt rbspan="2">tuirh4</rt>
+<rt>ssu1</rt>
+<rt>ta3</rt>
+</rtc>
+
+<rtc class="romanization">
+<rt>sān</rt>
+<rt>shí</rt>
+<rt>liù</rt>
+<rt>ge</rt>
+<rt>yá</rt>
+<rt>chǐ</rt>
+<rt>zhuō</rt>
+<rt rbspan="2">duìr</rt>
+<rt>sī</rt>
+<rt>dǎ</rt>
+</rtc></ruby></p><section id="pinyin-zhuyin_gongtong_xianshi"><h3>拼音－注音共同顯示</h3><p lang="zh-nan-Hant"><u>共我講</u><ruby class="rightangle"><u><rb>你</rb></u><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby><ruby class="rightangle"><rb>你</rb><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby><ruby class="rightangle"><rb>你</rb><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby></p><p>俗語說，<ruby class="complex"><rb>一</rb>
+<rb>人</rb>
+<rb>煩</rb>
+<rb>惱</rb>
+<rb>一</rb>
+<rb>樣</rb>，
+<rb>無</rb>
+<rb>人</rb>
+<rb>煩</rb>
+<rb>惱</rb>
+<rb>親</rb>
+<rb>像</rb>。
+
+<rtc class="zhuyin">
+    <rt>ㄐㄧㆵ͘</rt>
+    <rt>ㄌㄤˊ</rt>
+    <rt>ㄏㄨㄢˊ</rt>
+    <rt>ㄌㄜˋ</rt>
+    <rt>ㄐㄧㆵ͘</rt>
+    <rt>ㄧㆫ˫</rt>
+    <rt>ㆠㄜˊ</rt>
+    <rt>ㄌㄤˊ</rt>
+    <rt>ㄏㄨㄢˊ</rt>
+    <rt>ㄌㄜˋ</rt>
+    <rt>ㄑㄧㄣ</rt>
+    <rt>ㄑㄧㆫ˫</rt>
+    <rt></rt>
+</rtc>
+<rtc class="romanization">
+  <rt>Tsi̍t</rt>
+  <rt>lâng</rt>
+  <rt rbspan="2">hoân‑ló</rt>
+  <rt>chi̍t</rt>
+  <rt>iūⁿ</rt>
+  <rt rbspan="2">bô‑lâng</rt>
+  <rt rbspan="2">hoân‑ló</rt>
+  <rt rbspan="2">chhin‑chhiūⁿ</rt>
+</rtc>
+<rtc class="romanization"><rt>Tsi̍t</rt>
+  <rt>lâng</rt>
+  <rt rbspan="2">huân-ló</rt>
+  <rt>tsi̍t</rt>
+  <rt>iūnn</rt>
+  <rt rbspan="2">bô-lâng</rt>
+  <rt rbspan="2">huân-ló</rt>
+  <rt rbspan="2">tshin-tshiūnn</rt>
+</rtc></ruby></p><p><ruby class="rightangle"><rb>僥</rb>
+<rb>倖</rb>
+<rb>錢</rb>，
+<rb>失</rb>
+<rb>德</rb>
+<rb>了</rb>；
+<rb>冤</rb>
+<rb>枉</rb>
+<rb>錢</rb>，
+<rb>跋</rb>
+<rb>輸</rb>
+<rb>筊</rb>。
+
+<rtc class="zhuyin"><rt>ㄏㄧㄠ</rt>
+    <rt>ㄏㄧㄥ˫</rt>
+    <rt>ㄐㆪˊ</rt>
+    <rt>ㄒㄧㆵ</rt>
+    <rt>ㄉㄧㆶ</rt>
+    <rt>ㄌㄧㄠˋ</rt>
+    <rt>ㄨㄢ</rt>
+    <rt>ㆲˋ</rt>
+    <rt>ㄐㆪˊ</rt>
+    <rt>ㄅㄨㄚㆷ͘</rt>
+    <rt>ㄙㄨ</rt>
+    <rt>ㄍㄧㄠˋ</rt>
+    <rt></rt>
+</rtc>
+<rtc class="romanization">
+    <rt rbspan="3">Hiau‑hēng‑chîⁿ</rt>
+    <rt rbspan="2">sit‑tek</rt>
+    <rt>liáu</rt>
+    <rt rbspan="2">oan‑óng</rt>
+    <rt>chîⁿ</rt>
+    <rt rbspan="2">poa̍h‑su</rt>
+    <rt>kiáu</rt>
+</rtc>
+<rtc class="romanization"><rt rbspan="3">Hiau-hīng-tsînn</rt>
+    <rt rbspan="2">sit-tik</rt>
+    <rt>liáu</rt>
+    <rt rbspan="2">uan-óng</rt>
+    <rt>tsînn</rt>
+    <rt rbspan="2">pua̍h-su</rt>
+    <rt>kiáu</rt>
+</rtc></ruby></p><section id="kaiti"><h3>預設<ruby class="complex"><rb>使</rb><rb>用</rb>「<rb>楷</rb><rb>體</rb>」<rb>的</rb><rb>元</rb><rb>素</rb><rb>下</rb><rtc class="zhuyin"><rt>ㄕˇ</rt><rt>ㄩㄥˋ</rt><rt>ㄎㄞˇ</rt><rt>ㄊㄧˇ</rt><rt>˙ㄉㄜ</rt><rt>ㄩㄢˊ</rt><rt>ㄙㄨˋ</rt><rt>ㄒㄧㄚˋ</rt></rtc><rtc class="pinyin"><rt>shǐ</rt><rt>yòng</rt><rt>kǎi</rt><rt>tǐ</rt><rt>de</rt><rt>yuán</rt><rt>sù</rt><rt>xià</rt></rtc></ruby>
+</h3><p><i>好好地來<ruby class="complex"><em><rb>安</rb><rb>裝</rb></em><rb>窗</rb><h-jinze class="wei"><rb>戶</rb>。</h-jinze><rtc class="pinyin"><rt>ān</rt><rt>zhuāng</rt><rt>chuāng</rt><rt>hù</rt></rtc></ruby>
+</i></p><p><i><ruby class="zhuyin">爸<rt>ㄅㄚˋ</rt>爸<rt>˙ㄅㄚ</rt></ruby><em><ruby class='zhuyin'>白<rt>ㄅㄞˊ</rt>天<rt>˙ㄊㄧㄢ</rt></ruby></em><ruby class='zhuyin'>的<rt>˙ㄉㄜ</rt>行程很滿<rt></rt>啊<rt>˙ㄚ</rt>！</ruby></i></p><p><i><ruby class="zhuyin">你<rt>ㄌㄧˋ</rt>敢<rt>ㄍㆰˋ</rt>有<rt>ㄨ˫</rt>聽<rt>ㄊㄧㆩ</rt>著<rt>ㄉㄧㄜㆷ͘</rt>咱<rt>ㄌㄢˋ</rt>的<rt>ㆤˊ</rt>歌<rt>ㄍㄨㄚ</rt>？</ruby></i></p><p><i><ruby class="complex"><rb>爸</rb><rb>爸</rb><rb>白</rb><rb>天</rb><rb>的</rb><rb>行</rb><rb>程</rb><rb>很</rb><rb>滿</rb><h-jinze class="wei"><rb>啊</rb>！</h-jinze>
+<rtc class="zhuyin"><rt>ㄅㄚˋ</rt><rt>˙ㄅㄚ</rt><rt>ㄅㄞˊ</rt><rt>˙ㄊㄧㄢ</rt><rt>˙ㄉㄜ</rt><rt>ㄒㄧㄥˊ</rt><rt>ㄔㄥˊ</rt><rt>ㄏㄣˇ</rt><rt>ㄇㄢˇ</rt><rt>˙ㄚ</rt></rtc></ruby></i></p><blockquote><p><u>共我講</u><ruby class="rightangle"><u><rb>你</rb></u><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby><ruby class="rightangle"><rb>你</rb><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby><ruby class="rightangle"><rb>你</rb><!--
+--><rb>敢</rb><rb>有</rb><!--
+--><rb>聽</rb><rb>著</rb><!--
+--><rb>咱</rb><rb>的</rb><!--
+--><rb>歌</rb>？<rtc lang="nan-Latn" class="romanization"><rt>Lí</rt><rt rbspan="2">kám-ū</rt><rt rbspan="2">thiann-tio̍h</rt><rt rbspan="2">lán-ê</rt><rt>kua</rt></rtc><rtc class="zhuyin"><rt>ㄌㄧˋ</rt><rt>ㄍㆰˋ</rt><rt>ㄨ˫</rt><rt>ㄊㄧㆩ</rt><rt>ㄉㄧㄜㆷ̍</rt><rt>ㄌㄢˋ</rt><rt>ㆤˊ</rt><rt>ㄍㄨㄚ</rt></rtc>有無？</ruby></p><p>俗語說，<ruby class="complex"><rb>一</rb>
+<rb>人</rb>
+<rb>煩</rb>
+<rb>惱</rb>
+<rb>一</rb>
+<rb>樣</rb>，
+<rb>無</rb>
+<rb>人</rb>
+<rb>煩</rb>
+<rb>惱</rb>
+<rb>親</rb>
+<rb>像</rb>。
+
+<rtc class="zhuyin">
+    <rt>ㄐㄧㆵ͘</rt>
+    <rt>ㄌㄤˊ</rt>
+    <rt>ㄏㄨㄢˊ</rt>
+    <rt>ㄌㄜˋ</rt>
+    <rt>ㄐㄧㆵ͘</rt>
+    <rt>ㄧㆫ˫</rt>
+    <rt>ㆠㄜˊ</rt>
+    <rt>ㄌㄤˊ</rt>
+    <rt>ㄏㄨㄢˊ</rt>
+    <rt>ㄌㄜˋ</rt>
+    <rt>ㄑㄧㄣ</rt>
+    <rt>ㄑㄧㆫ˫</rt>
+    <rt></rt>
+</rtc>
+<rtc class="romanization">
+  <rt>Tsi̍t</rt>
+  <rt>lâng</rt>
+  <rt rbspan="2">hoân‑ló</rt>
+  <rt>chi̍t</rt>
+  <rt>iūⁿ</rt>
+  <rt rbspan="2">bô‑lâng</rt>
+  <rt rbspan="2">hoân‑ló</rt>
+  <rt rbspan="2">chhin‑chhiūⁿ</rt>
+</rtc>
+<rtc class="romanization"><rt>Tsi̍t</rt>
+  <rt>lâng</rt>
+  <rt rbspan="2">huân-ló</rt>
+  <rt>tsi̍t</rt>
+  <rt>iūnn</rt>
+  <rt rbspan="2">bô-lâng</rt>
+  <rt rbspan="2">huân-ló</rt>
+  <rt rbspan="2">tshin-tshiūnn</rt>
+</rtc></ruby></p></blockquote></section></section></section></article><!-- Here goes scripts--><script src="./han.min.js"></script></body></html>
