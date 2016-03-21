@@ -3,7 +3,7 @@
 /*! 漢字標準格式 v3.3.0 | MIT License | css.hanzi.co */
 /*! Han.css: the CSS typography framework optimised for Hanzi */
 
-/* normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+/* normalize.css v4.0.0 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif; /* 1 */
   -ms-text-size-adjust: 100%; /* 2 */
@@ -19,27 +19,29 @@ figcaption,
 figure,
 footer,
 header,
-hgroup,
 main,
 menu,
 nav,
 section,
 summary {
+  /* 1 */
   display: block;
 }
 audio,
 canvas,
 progress,
 video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
+  display: inline-block;
 }
 audio:not([controls]) {
   display: none;
   height: 0;
 }
-[hidden],
-template {
+progress {
+  vertical-align: baseline;
+}
+template,
+[hidden] {
   display: none;
 }
 a {
@@ -47,14 +49,20 @@ a {
 }
 a:active,
 a:hover {
-  outline: 0;
+  outline-width: 0;
 }
 abbr[title] {
-  border-bottom: 1px dotted;
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
 }
 b,
 strong {
-  font-weight: bold;
+  font-weight: inherit;
+}
+b,
+strong {
+  font-weight: bolder;
 }
 dfn {
   font-style: italic;
@@ -64,7 +72,7 @@ h1 {
   margin: .67em 0;
 }
 mark {
-  background: #ff0;
+  background-color: #ff0;
   color: #000;
 }
 small {
@@ -77,86 +85,83 @@ sup {
   position: relative;
   vertical-align: baseline;
 }
-sup {
-  top: -.5em;
-}
 sub {
   bottom: -.25em;
 }
+sup {
+  top: -.5em;
+}
 img {
-  border: 0;
+  border-style: none;
 }
 svg:not(:root) {
   overflow: hidden;
-}
-figure {
-  margin: 1em 40px;
-}
-hr {
-  box-sizing: content-box;
-  height: 0;
-}
-pre {
-  overflow: auto;
 }
 code,
 kbd,
 pre,
 samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+figure {
+  margin: 1em 40px;
+}
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
 }
 button,
 input,
-optgroup,
 select,
 textarea {
-  color: inherit; /* 1 */
-  font: inherit; /* 2 */
-  margin: 0; /* 3 */
+  font: inherit;
 }
-button {
+optgroup {
+  font-weight: bold;
+}
+button,
+input,
+select {
+  /* 2 */
   overflow: visible;
 }
 button,
+input,
+select,
+textarea {
+  /* 1 */
+  margin: 0;
+}
+button,
 select {
+  /* 1 */
   text-transform: none;
 }
 button,
-html input[type="button"],
-input[type="reset"],
-input[type="submit"] {
-  -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  cursor: pointer;
 }
-button[disabled],
-html input[disabled] {
+[disabled] {
   cursor: default;
+}
+button,
+html [type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button; /* 2 */
 }
 button::-moz-focus-inner,
 input::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
-input {
-  line-height: normal;
-}
-input[type="checkbox"],
-input[type="radio"] {
-  box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
-}
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}
-input[type="search"] {
-  -webkit-appearance: textfield; /* 1 */
-  box-sizing: content-box; /* 2 */
-}
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
+button:-moz-focusring,
+input:-moz-focusring {
+  outline: 1px dotted ButtonText;
 }
 fieldset {
   border: 1px solid #c0c0c0;
@@ -164,22 +169,31 @@ fieldset {
   padding: .35em .625em .75em;
 }
 legend {
-  border: 0; /* 1 */
-  padding: 0; /* 2 */
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
 }
 textarea {
   overflow: auto;
 }
-optgroup {
-  font-weight: bold;
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
 }
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
 }
-td,
-th {
-  padding: 0;
+[type="search"] {
+  -webkit-appearance: textfield;
+}
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
 }
 html {
   line-height: 1.3;
@@ -198,6 +212,7 @@ address {
   font-style: inherit;
 }
 pre {
+  overflow: auto;
   white-space: pre;
   word-wrap: normal;
 }
@@ -226,21 +241,14 @@ em:lang(ja) {
   -webkit-text-emphasis-position: over;
   text-emphasis-position: over;
 }
-strong,
 dfn:lang(zh),
-dfn:lang(ja),
-b {
+dfn:lang(ja) {
   font-weight: inherit;
-}
-strong,
-dfn:lang(zh),
-dfn:lang(ja),
-b {
-  font-weight: bolder;
+  font-style: inherit;
 }
 dfn:lang(zh),
 dfn:lang(ja) {
-  font-style: inherit;
+  font-weight: bolder;
 }
 cite:lang(zh),
 cite:lang(ja) {

@@ -11,7 +11,7 @@
 
 「漢字標準格式」完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
 
-[檢視範例測試頁 →]
+[檢視範例測試頁]
 (http://ethantw.github.io/Han/latest/)
 
 ## 安裝
@@ -72,7 +72,7 @@ Web字體，
 
 ## 開發需求與指令
 
-- io.js/Node.js
+- Node.js
 - LiveScript 1.4.0（`sudo npm install -g livescript`）
 
 下列清單展示了部分常用的開發指令，

@@ -1,7 +1,6 @@
 測試頁索引
 ========
 
- - [JavaScript APIs](api.html)
  - [測試頁（標準，繁體中文）](test.html)
  - [测试页（标准，简体中文）](test-hans.html)
  - [測試頁（標準，日本語）](test-ja.html)

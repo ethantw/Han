@@ -86,7 +86,7 @@ Han.js runs in DOM environments only. Introduce modules such as [jsdom] for serv
 
 ## Requirements and developing commands
 
-- io.js/Node.js
+- Node.js
 - LiveScript 1.4.0 (`sudo npm install -g livescript`)
 
 Below goes the list with some useful developing commands:

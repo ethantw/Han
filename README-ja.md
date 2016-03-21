@@ -90,7 +90,7 @@ han.jsはDOM環境でのみ動作します。必要な場合は、サーバに[j
 
 ## 開発について
 
-- io.js/Node.js
+- Node.js
 - LiveScript 1.4.0（`sudo npm install -g livescript`）
 
 以下はプログラムの開発に有用なコマンドの一覧です。
