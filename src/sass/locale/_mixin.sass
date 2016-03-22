@@ -87,6 +87,9 @@
 
   $mark: han-mark-to-code( $mark, $shape )
 
+  .textemphasis &
+    @extend %han-need-no-jinze
+
   .no-textemphasis & h-char:after
     @if ( $posi != null )
       margin-top: $posi
