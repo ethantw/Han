@@ -98,7 +98,7 @@ gulp.task \dist:css <[ dist:styl dist:cssmin ]>
 gulp.task \dist:js  <[ dist:amd dist:uglify ]>
 
 gulp.task \dist:font ->
-  gulp-src './font/han*.{woff,otf}'
+  gulp-src './font/han*.{woff2,woff,otf}'
     .pipe gulp.dest \./dist/font
     .pipe gulp.dest \./demo/font
 
