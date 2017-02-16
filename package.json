@@ -25,7 +25,8 @@
   "scripts": {
     "test": "gulp test",
     "start": "gulp dev",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepublishOnly": "npm run build"
   },
   "engines": {
     "node": "0.12.x"
