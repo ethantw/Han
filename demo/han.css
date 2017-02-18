@@ -688,17 +688,6 @@ h-word {
   src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Pingfang SC Semibold"), local("Pingfang-SC-Semibold"), local("Lantinghei SC Demibold"), local(FZLTZHK--GBK1-0), local("Heiti SC Medium"), local("STHeitiSC-Medium"), local("Heiti SC"), local("Microsoft Yahei Bold"), local(MicrosoftYahei-Bold), local("Microsoft Yahei"), local("Noto Sans CJK SC Bold"), local(NotoSansCJKsc-Bold), local("Noto Sans CJK SC"), local("Source Han Sans SC Bold"), local("SourceHanSansSC-Bold"), local("Source Han Sans CN Bold"), local("SourceHanSansCN-Bold"), local("Source Han Sans SC"), local("Source Han Sans CN");
 }
 @font-face {
-  font-family: "Han Heiti";
-  src: local("Hiragino Sans GB"), local("Lantinghei TC Extralight"), local("Lantinghei SC Extralight"), local(FZLTXHB--B51-0), local(FZLTZHK--GBK1-0), local("Pingfang SC Light"), local("Pingfang TC Light"), local("Pingfang-SC-Light"), local("Pingfang-TC-Light"), local("Pingfang SC"), local("Pingfang TC"), local("Heiti SC Light"), local("STHeitiSC-Light"), local("Heiti SC"), local("Heiti TC Light"), local("STHeitiTC-Light"), local("Heiti TC"), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Noto Sans CJK KR"), local("Noto Sans CJK JP"), local("Noto Sans CJK SC"), local("Noto Sans CJK TC"), local("Source Han Sans K"), local("Source Han Sans KR"), local("Source Han Sans JP"), local("Source Han Sans CN"), local("Source Han Sans HK"), local("Source Han Sans TW"), local("Source Han Sans TWHK"), local("Droid Sans Fallback");
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Heiti";
-  font-weight: 600;
-  src: local("Hiragino Sans GB W6"), local(HiraginoSansGB-W6), local("Lantinghei TC Demibold"), local("Lantinghei SC Demibold"), local(FZLTZHB--B51-0), local(FZLTZHK--GBK1-0), local("Pingfang-SC-Semibold"), local("Pingfang-TC-Semibold"), local("Heiti SC Medium"), local("STHeitiSC-Medium"), local("Heiti SC"), local("Heiti TC Medium"), local("STHeitiTC-Medium"), local("Heiti TC"), local("Microsoft Yahei Bold"), local("Microsoft Jhenghei Bold"), local(MicrosoftYahei-Bold), local(MicrosoftJhengHeiBold), local("Microsoft Yahei"), local("Microsoft Jhenghei"), local("Noto Sans CJK KR Bold"), local("Noto Sans CJK JP Bold"), local("Noto Sans CJK SC Bold"), local("Noto Sans CJK TC Bold"), local(NotoSansCJKkr-Bold), local(NotoSansCJKjp-Bold), local(NotoSansCJKsc-Bold), local(NotoSansCJKtc-Bold), local("Source Han Sans K Bold"), local(SourceHanSansK-Bold), local("Source Han Sans K"), local("Source Han Sans KR Bold"), local("Source Han Sans JP Bold"), local("Source Han Sans CN Bold"), local("Source Han Sans HK Bold"), local("Source Han Sans TW Bold"), local("Source Han Sans TWHK Bold"), local("SourceHanSansKR-Bold"), local("SourceHanSansJP-Bold"), local("SourceHanSansCN-Bold"), local("SourceHanSansHK-Bold"), local("SourceHanSansTW-Bold"), local("SourceHanSansTWHK-Bold"), local("Source Han Sans KR"), local("Source Han Sans CN"), local("Source Han Sans HK"), local("Source Han Sans TW"), local("Source Han Sans TWHK");
-  unicode-range: U+270C;
-}
-@font-face {
   font-family: "Han Songti";
   src: local("Songti SC Regular"), local(STSongti-SC-Regular), local("Songti SC"), local("Songti TC Regular"), local(STSongti-TC-Regular), local("Songti TC"), local(STSong), local("Lisong Pro"), local(SimSun), local(PMingLiU);
 }
@@ -735,39 +724,6 @@ h-word {
   font-family: "Han Songti GB";
   font-weight: 600;
   src: local("STSongti SC Bold"), local(STSongti-SC-Bold), local("STSongti SC");
-}
-@font-face {
-  font-family: "Han Songti";
-  src: local("Songti SC Regular"), local(STSongti-SC-Regular), local("Songti SC"), local("Songti TC Regular"), local(STSongti-TC-Regular), local("Songti TC"), local(STSongti), local("Lisong Pro"), local("MS Mincho"), local(SimSun), local(PMingLiU);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Songti";
-  font-weight: 600;
-  src: local("Songti TC Bold"), local("Songti SC Bold"), local(STSongti-TC-Bold), local(STSongti-SC-Bold), local("Songti TC"), local("Songti SC");
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Songti CNS";
-  src: local("Songti TC Regular"), local("Lisong Pro"), local("Songti TC"), local("Songti SC Regular"), local(STSong), local("Songti SC"), local("MS Mincho"), local(PMingLiU), local(SimSun);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Songti CNS";
-  font-weight: 600;
-  src: local("Songti TC Bold"), local("Songti SC Bold"), local(STSongti-TC-Bold), local(STSongti-SC-Bold), local("Songti TC"), local("Songti SC");
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Songti GB";
-  src: local("Songti SC"), local(STSong), local(SimSun);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Han Songti GB";
-  font-weight: 600;
-  src: local("Songti SC Bold"), local(STSongti-SC-Bold), local("Songti SC");
-  unicode-range: U+270C;
 }
 @font-face {
   font-family: cursive;
@@ -1268,53 +1224,6 @@ h-word {
   font-family: "Numeral LF Italic Serif";
   font-weight: bold;
   src: local("Palatino Bold Italic"), local("Palatino Bold Italic Linotype"), local("Times New Roman Bold Italic"), local(Palatino-BoldItalic), local(Palatino-BoldItalic-Linotype), local(TimesNewRomanPS-BoldItalicMT);
-}
-@font-face {
-  font-family: "Numeral TF Sans";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral TF Serif";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral TF Italic Serif";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Sans";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Italic Sans";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Italic Sans";
-  font-weight: bold;
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Serif";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Italic Serif";
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
-}
-@font-face {
-  font-family: "Numeral LF Italic Serif";
-  font-weight: bold;
-  src: local(lying-to-firefox);
-  unicode-range: U+270C;
 }
 @font-face {
   src: url("./font/han.woff2?v3.3.0") format("woff2"), url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
