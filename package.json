@@ -25,10 +25,11 @@
   "scripts": {
     "test": "gulp test",
     "start": "gulp dev",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepublishOnly": "npm run build"
   },
   "engines": {
-    "node": "0.12.x"
+    "node": ">= 0.12"
   },
   "dependencies": {
     "fibre.js": "^0.2.1",
