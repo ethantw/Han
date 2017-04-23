@@ -1787,7 +1787,7 @@ h-hws[hidden].quote-outer:lang(zh-CN) {
   display: none;
 }
 @font-face {
-  src: url("./font/han-space.woff2?v3.3.0") format("woff2"), url("./font/han-space.woff?v3.3.0") format("woff"), url("./font/han-space.otf?v3.3.0") format("opentype");
+  src: url("./font/han.woff2?v3.3.0") format("woff2"), url("./font/han.woff?v3.3.0") format("woff"), url("./font/han.otf?v3.3.0") format("opentype");
   font-family: "Han Space";
   unicode-range: U+20;
 }
