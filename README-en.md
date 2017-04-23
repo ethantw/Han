@@ -11,8 +11,7 @@ Han.css is a Sass/Stylus and JavaScript typesetting framework featuring style no
 
 Han.css supports Traditional Chinese, Simplified Chinese and Japanese.
 
-[View the test pages (zh) →]
-(http://ethantw.github.io/Han/latest/)
+[View the test pages (zh)](http://ethantw.github.io/Han/latest/)
 
 ## Installation
 - NPM `npm install --save han-css`

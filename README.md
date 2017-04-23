@@ -11,8 +11,7 @@
 
 「漢字標準格式」完整支援繁體中文、簡體中文及日文等三個採用漢字的語言文字。
 
-[檢視範例測試頁]
-(http://ethantw.github.io/Han/latest/)
+[檢視範例測試頁](http://ethantw.github.io/Han/latest/)
 
 ## 安裝
 - NPM `npm install --save han-css`

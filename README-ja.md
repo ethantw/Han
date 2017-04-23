@@ -11,8 +11,7 @@
 
 漢字標準格式は、中国語繁体字、中国語簡体字および日本語をサポートします。
 
-[表示例のテストページ（中国語）→]
-(http://ethantw.github.io/Han/latest/)
+[表示例のテストページ（中国語）](http://ethantw.github.io/Han/latest/)
 
 ## インストール方法
 
