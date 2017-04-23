@@ -6,21 +6,17 @@
  * https://github.com/ethantw/Han/issues/40
  */
 
-// * 1. The value is calculated with Arial, which
-// *    makes the spacing display precisely in size
-// *    of a quarter em.
-// * 2. Hidden in certain elements or situations.
+// * 1. Hidden in certain elements or situations.
 // *
 h-hws,
 h-hws[hidden]
-  // box
-  display: inline
-  visibility: hidden
-  // typography
-  // 1
-  font: .89em Arial
+  &
+    // box
+    display: inline
+  &:before
+    content: ' '
 
-  // 2
+  // 1
   code &,
   kbd  &,
   samp &,
