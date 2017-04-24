@@ -1767,10 +1767,12 @@ article blockquote blockquote {
 h-hws,
 h-hws[hidden] {
   display: inline;
+  font-family: Arial;
 }
 h-hws:before,
 h-hws[hidden]:before {
   content: " ";
+  letter-spacing: -.04em;
 }
 code h-hws,
 code h-hws[hidden],

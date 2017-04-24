@@ -5,17 +5,24 @@
  * More discussion at:
  * https://github.com/ethantw/Han/issues/40
  */
-// * 1. Hidden in certain elements or situations.
+// * 1. The value is calculated with Arial, which
+// *    makes the spacing display precisely in size
+// *    of a quarter em.
+// * 2. Hidden in certain elements or situations.
 // *
 h-hws,
 h-hws[hidden]
   &
     // box
     display: inline
+    // typography
+    font-family: Arial
   &:before
     content: ' '
+    // 1
+    letter-spacing: -.04em
 
-  // 1
+  // 2
   code &,
   kbd  &,
   samp &,
@@ -24,4 +31,3 @@ h-hws[hidden]
   &.quote-outer:lang(zh-Hans),
   &.quote-outer:lang(zh-CN)
     display: none
-
