@@ -142,10 +142,10 @@ var TYPESET = (function() {
         [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
         [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ],
 
-        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
-        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
-        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
-        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+        [ '\u31B4[\u0307\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u0307\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u0307\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u0307\u030d\u0358]', '\uDB8C\uDDB7' ]
       ],
 
       'comb-liga-vowel': [
@@ -157,10 +157,10 @@ var TYPESET = (function() {
       ],
 
       'comb-liga-zhuyin': [
-        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
-        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
-        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
-        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+        [ '\u31B4[\u0307\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u0307\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u0307\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u0307\u030d\u0358]', '\uDB8C\uDDB7' ]
       ]
     },
 

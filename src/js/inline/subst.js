@@ -25,7 +25,7 @@ function isVowelICombLigaNormal() {
 }
 
 function isZhuyinCombLigaNormal() {
-  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0358', '\uDB8C\uDDB4' )
+  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0307', '\uDB8C\uDDB4' )
 }
 
 function createSubstFactory( regexToSubst ) {

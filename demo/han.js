@@ -307,7 +307,7 @@ var UNICODE = {
         Bopomofo phonetic symbols
    * 2. 平上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02EA\u02EB\u02CB] （**註：**國語三聲包含乙個不合規範的符號）
         Level, rising, departing tones
-   * 3. 入聲調號：[\u31B4-\u31B7][\u0358\u030d]?
+   * 3. 入聲調號：[\u31B4-\u31B7][\u0307\u0358\u030d]?
         Checked (entering) tones
    */
   zhuyin: {
@@ -316,7 +316,7 @@ var UNICODE = {
     medial:  '[\u3127-\u3129]',
     final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
     tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
-    checked: '[\u31B4-\u31B7][\u0358\u030d]?'
+    checked: '[\u31B4-\u31B7][\u0307\u0358\u030d]?'
   }
 }
 
@@ -460,10 +460,10 @@ var TYPESET = (function() {
         [ '\u006F[\u030d\u0358]', '\uDB80\uDC6F' ],
         [ '\u0075[\u030d\u0358]', '\uDB80\uDC75' ],
 
-        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
-        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
-        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
-        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+        [ '\u31B4[\u0307\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u0307\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u0307\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u0307\u030d\u0358]', '\uDB8C\uDDB7' ]
       ],
 
       'comb-liga-vowel': [
@@ -475,10 +475,10 @@ var TYPESET = (function() {
       ],
 
       'comb-liga-zhuyin': [
-        [ '\u31B4[\u030d\u0358]', '\uDB8C\uDDB4' ],
-        [ '\u31B5[\u030d\u0358]', '\uDB8C\uDDB5' ],
-        [ '\u31B6[\u030d\u0358]', '\uDB8C\uDDB6' ],
-        [ '\u31B7[\u030d\u0358]', '\uDB8C\uDDB7' ]
+        [ '\u31B4[\u0307\u030d\u0358]', '\uDB8C\uDDB4' ],
+        [ '\u31B5[\u0307\u030d\u0358]', '\uDB8C\uDDB5' ],
+        [ '\u31B6[\u0307\u030d\u0358]', '\uDB8C\uDDB6' ],
+        [ '\u31B7[\u0307\u030d\u0358]', '\uDB8C\uDDB7' ]
       ]
     },
 
@@ -2174,7 +2174,7 @@ function createNormalRu( $rb, $rt, attr ) {
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
       if ( typeof rb === 'undefined' )  return ''
-      return rb.outerHTML 
+      return rb.outerHTML
     }).join('') + $rt.outerHTML
   } else {
     $ru.appendChild( $.clone( $rb ))
@@ -2225,7 +2225,7 @@ function getZhuyinHTML( rt ) {
   diao = zhuyin
     .replace( yin, '' )
     .replace( /[\u02C5]/g, '\u02C7' )
-    .replace( /[\u030D]/g, '\u0358' )
+    .replace( /[\u030D\u0358]/g, '\u0307' )
   return len === 0 ? '' : '<h-zhuyin length="' + len + '" diao="' + diao + '"><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
 }
 
@@ -2844,7 +2844,7 @@ function isVowelICombLigaNormal() {
 }
 
 function isZhuyinCombLigaNormal() {
-  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0358', '\uDB8C\uDDB4' )
+  return createCompareFactory( '"Zhuyin Kaiti"', '\u31B4\u0307', '\uDB8C\uDDB4' )
 }
 
 function createSubstFactory( regexToSubst ) {

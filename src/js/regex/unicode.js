@@ -171,7 +171,7 @@ var UNICODE = {
         Bopomofo phonetic symbols
    * 2. 平上去聲調號：[\u02D9\u02CA\u02C5\u02C7\u02EA\u02EB\u02CB] （**註：**國語三聲包含乙個不合規範的符號）
         Level, rising, departing tones
-   * 3. 入聲調號：[\u31B4-\u31B7][\u0358\u030d]?
+   * 3. 入聲調號：[\u31B4-\u31B7][\u0307\u0358\u030d]?
         Checked (entering) tones
    */
   zhuyin: {
@@ -180,7 +180,7 @@ var UNICODE = {
     medial:  '[\u3127-\u3129]',
     final:   '[\u311A-\u3129\u312D\u31A4-\u31B3\u31B8-\u31BA]',
     tone:    '[\u02D9\u02CA\u02C5\u02C7\u02CB\u02EA\u02EB]',
-    checked: '[\u31B4-\u31B7][\u0358\u030d]?'
+    checked: '[\u31B4-\u31B7][\u0307\u0358\u030d]?'
   }
 }
 

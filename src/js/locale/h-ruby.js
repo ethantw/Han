@@ -206,7 +206,7 @@ function createNormalRu( $rb, $rt, attr ) {
   if ( Array.isArray( $rb )) {
     $ru.innerHTML = $rb.map(function( rb ) {
       if ( typeof rb === 'undefined' )  return ''
-      return rb.outerHTML 
+      return rb.outerHTML
     }).join('') + $rt.outerHTML
   } else {
     $ru.appendChild( $.clone( $rb ))
@@ -257,7 +257,7 @@ function getZhuyinHTML( rt ) {
   diao = zhuyin
     .replace( yin, '' )
     .replace( /[\u02C5]/g, '\u02C7' )
-    .replace( /[\u030D]/g, '\u0358' )
+    .replace( /[\u030D\u0358]/g, '\u0307' )
   return len === 0 ? '' : '<h-zhuyin length="' + len + '" diao="' + diao + '"><h-yin>' + yin + '</h-yin><h-diao>' + diao + '</h-diao></h-zhuyin>'
 }
 
