@@ -2,44 +2,18 @@
 //  Root
 // ------
 {$han-root}
-  han-typeface-by-lang($typeface = sans, $is-root = true)
+  han-typeface-by-lang($typeface = sans)
   @extend $han-ligature, $han-no-locl
 [lang^='zh'],
 [lang*='Hant'],
 [lang='zh-TW'],
 [lang='zh-HK']
   @extend $han-sans-hant, $han-no-locl
-  .no-unicoderange &
-    @extend $han-sans-hant-nu
 [lang*='Hans'],
 [lang='zh-CN']
   @extend $han-sans-hans, $han-no-locl
-  .no-unicoderange &
-    @extend $han-sans-hans-nu
 [lang^='ja']
   @extend $han-sans-ja
-  .no-unicoderange &
-    @extend $han-sans-ja-nu
-
-//  Biaodian correction (for non-unicode-range browsers)
-// ---------------------
-.no-unicoderange h-char
-  &.bd-cop
-    &:lang(zh-Hant),
-    &:lang(zh-TW),
-    &:lang(zh-HK)
-      font-family: -apple-system, 'Han Heiti CNS'
-  &.bd-liga,
-  &[unicode='b7']
-    @extend $han-ligature
-    font-family: 'Biaodian Basic', 'Han Heiti'
-  &[unicode='2018'],
-  &[unicode='2019'],
-  &[unicode='201c'],
-  &[unicode='201d']
-    &:lang(zh-Hans),
-    &:lang(zh-CN)
-      font-family: 'Han Heiti GB'
 
 //  Sections & grouping content
 // -----------------------------
@@ -92,8 +66,6 @@ h-ruby
   h-zhuyin h-diao
     // 1, 2
     @extend $han-ligature
-    .no-unicoderange &
-      font-family: "Zhuyin Kaiti", cursive, serif
   h-diao
     font-family: "Zhuyin Kaiti", cursive, serif
   &.romanization rt,
