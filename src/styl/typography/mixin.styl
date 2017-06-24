@@ -3,7 +3,8 @@ han-webfont()
   src: $han-webfont
 
 han-typeface-by-lang($typeface = sans, $is-root = false)
-  &:lang(zh),
+  &:lang(zh)
+    @extend $han-{$typeface}
   &:lang(zh-Hant)
     @extend $han-{$typeface}-hant
     if $is-root

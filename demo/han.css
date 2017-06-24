@@ -1048,7 +1048,7 @@ h-word {
 }
 @font-face {
   font-family: "Biaodian Pro Serif CNS";
-  src: local(STSongti-TC-Regular), local("Lisong Pro"), local("Heiti TC"), local(PMingLiU);
+  src: local("Songti TC"), local(STSongti-TC-Regular), local("Lisong Pro"), local("Heiti TC"), local(PMingLiU);
   unicode-range: U+3002, U+FF0C, U+3001;
 }
 @font-face {
@@ -1161,6 +1161,28 @@ h-word {
   unicode-range: U+2014, U+2026, U+00B7;
 }
 @font-face {
+  font-family: "Biaodian Hanging Sans";
+  src: local("Pingfang SC"), local("Heiti SC");
+  unicode-range: U+3001, U+3002, U+FF0C, U+FF0E;
+}
+@font-face {
+  font-family: "Biaodian Hanging Sans";
+  font-weight: 600;
+  src: local("Pingfang SC"), local("Heiti SC");
+  unicode-range: U+3001, U+3002, U+FF0C, U+FF0E;
+}
+@font-face {
+  font-family: "Biaodian Hanging Serif";
+  src: local("Source Han Serif SC"), local("Noto Serif CJK SC"), local("Songti SC");
+  unicode-range: U+3001, U+3002, U+FF0C, U+FF0E;
+}
+@font-face {
+  font-family: "Biaodian Hanging Serif";
+  font-weight: 600;
+  src: local("Source Han Serif SC"), local("Noto Serif CJK SC"), local("Songti SC");
+  unicode-range: U+3001, U+3002, U+FF0C, U+FF0E;
+}
+@font-face {
   font-family: "Latin Italic Serif";
   src: local("Georgia Italic"), local("Times New Roman Italic"), local(Georgia-Italic), local(TimesNewRomanPS-ItalicMT), local(Times-Italic);
 }
@@ -1250,12 +1272,43 @@ h-word {
   font-family: "Romanization Sans";
   unicode-range: U+0307, U+030D, U+0358, U+F31B4-F31B7, U+F0061, U+F0065, U+F0069, U+F006F, U+F0075;
 }
+html:lang(zh-Hans) h-char.bd-hangable,
+html:lang(zh-CN) h-char.bd-hangable,
+html:lang(ja) h-char.bd-hangable,
+[lang*="Hans"] h-char.bd-hangable,
+[lang="zh-CN"] h-char.bd-hangable,
+[lang^="ja"] h-char.bd-hangable,
+article strong:lang(zh-Hans) h-char.bd-hangable,
+article strong:lang(zh-CN) h-char.bd-hangable,
+article strong:lang(ja) h-char.bd-hangable,
+code:lang(zh-Hans) h-char.bd-hangable,
+kbd:lang(zh-Hans) h-char.bd-hangable,
+samp:lang(zh-Hans) h-char.bd-hangable,
+pre:lang(zh-Hans) h-char.bd-hangable,
+code:lang(zh-CN) h-char.bd-hangable,
+kbd:lang(zh-CN) h-char.bd-hangable,
+samp:lang(zh-CN) h-char.bd-hangable,
+pre:lang(zh-CN) h-char.bd-hangable,
+code:lang(ja) h-char.bd-hangable,
+kbd:lang(ja) h-char.bd-hangable,
+samp:lang(ja) h-char.bd-hangable,
+pre:lang(ja) h-char.bd-hangable,
+article blockquote i:lang(zh-Hans) h-char.bd-hangable,
+article blockquote var:lang(zh-Hans) h-char.bd-hangable,
+article blockquote i:lang(zh-CN) h-char.bd-hangable,
+article blockquote var:lang(zh-CN) h-char.bd-hangable,
+article blockquote i:lang(ja) h-char.bd-hangable,
+article blockquote var:lang(ja) h-char.bd-hangable {
+  font-family: "Biaodian Hanging Sans";
+}
+html:lang(zh),
 html:lang(zh-Latn),
 html:lang(ja-Latn),
 html:not(:lang(zh)):not(:lang(ja)),
 html *:lang(zh-Latn),
 html *:lang(ja-Latn),
 html *:not(:lang(zh)):not(:lang(ja)),
+article strong:lang(zh),
 article strong:lang(zh-Latn),
 article strong:lang(ja-Latn),
 article strong:not(:lang(zh)):not(:lang(ja)),
@@ -1264,23 +1317,19 @@ article strong *:lang(ja-Latn),
 article strong *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
-html:lang(zh),
 html:lang(zh-Hant),
 [lang^="zh"],
 [lang*="Hant"],
 [lang="zh-TW"],
 [lang="zh-HK"],
-article strong:lang(zh),
 article strong:lang(zh-Hant) {
   font-family: "Biaodian Pro Sans CNS", "Helvetica Neue", Helvetica, Arial, "Zhuyin Heiti", "Han Heiti", sans-serif;
 }
-html:lang(zh).no-unicoderange,
-html:lang(zh-Hant).no-unicoderange,
+.no-unicoderange html:lang(zh-Hant),
 .no-unicoderange [lang^="zh"],
 .no-unicoderange [lang*="Hant"],
 .no-unicoderange [lang="zh-TW"],
 .no-unicoderange [lang="zh-HK"],
-.no-unicoderange article strong:lang(zh),
 .no-unicoderange article strong:lang(zh-Hant) {
   font-family: "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
@@ -1292,8 +1341,8 @@ article strong:lang(zh-Hans),
 article strong:lang(zh-CN) {
   font-family: "Biaodian Pro Sans GB", "Helvetica Neue", Helvetica, Arial, "Han Heiti GB", sans-serif;
 }
-html:lang(zh-Hans).no-unicoderange,
-html:lang(zh-CN).no-unicoderange,
+.no-unicoderange html:lang(zh-Hans),
+.no-unicoderange html:lang(zh-CN),
 .no-unicoderange [lang*="Hans"],
 .no-unicoderange [lang="zh-CN"],
 .no-unicoderange article strong:lang(zh-Hans),
@@ -1305,11 +1354,13 @@ html:lang(ja),
 article strong:lang(ja) {
   font-family: "Yakumono Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-html:lang(ja).no-unicoderange,
+.no-unicoderange html:lang(ja),
 .no-unicoderange [lang^="ja"],
 .no-unicoderange article strong:lang(ja) {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+article blockquote i:lang(zh),
+article blockquote var:lang(zh),
 article blockquote i:lang(zh-Latn),
 article blockquote var:lang(zh-Latn),
 article blockquote i:lang(ja-Latn),
@@ -1324,20 +1375,14 @@ article blockquote i *:not(:lang(zh)):not(:lang(ja)),
 article blockquote var *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
-article blockquote i:lang(zh),
-article blockquote var:lang(zh),
 article blockquote i:lang(zh-Hant),
 article blockquote var:lang(zh-Hant) {
   font-family: "Biaodian Pro Sans CNS", "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Zhuyin Heiti", "Han Heiti", sans-serif;
 }
-.no-unicoderange article blockquote i:lang(zh),
-.no-unicoderange article blockquote var:lang(zh),
 .no-unicoderange article blockquote i:lang(zh-Hant),
 .no-unicoderange article blockquote var:lang(zh-Hant) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
 }
-.no-unicoderange article blockquote i:lang(zh),
-.no-unicoderange article blockquote var:lang(zh),
 .no-unicoderange article blockquote i:lang(zh-Hant),
 .no-unicoderange article blockquote var:lang(zh-Hant) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, "Han Heiti", sans-serif;
@@ -1362,6 +1407,21 @@ article blockquote var:lang(ja) {
 .no-unicoderange article blockquote var:lang(ja) {
   font-family: "Latin Italic Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+article blockquote:lang(zh-Hans) h-char.bd-hangable,
+article blockquote:lang(zh-CN) h-char.bd-hangable,
+article blockquote:lang(ja) h-char.bd-hangable,
+article figure blockquote:lang(zh-Hans) h-char.bd-hangable,
+article figure blockquote:lang(zh-CN) h-char.bd-hangable,
+article figure blockquote:lang(ja) h-char.bd-hangable,
+i:lang(zh-Hans) h-char.bd-hangable,
+var:lang(zh-Hans) h-char.bd-hangable,
+i:lang(zh-CN) h-char.bd-hangable,
+var:lang(zh-CN) h-char.bd-hangable,
+i:lang(ja) h-char.bd-hangable,
+var:lang(ja) h-char.bd-hangable {
+  font-family: "Biaodian Hanging Serif";
+}
+article figure blockquote:lang(zh),
 article figure blockquote:lang(zh-Latn),
 article figure blockquote:lang(ja-Latn),
 article figure blockquote:not(:lang(zh)):not(:lang(ja)),
@@ -1370,11 +1430,9 @@ article figure blockquote *:lang(ja-Latn),
 article figure blockquote *:not(:lang(zh)):not(:lang(ja)) {
   font-family: Georgia, "Times New Roman", "Han Songti", cursive, serif;
 }
-article figure blockquote:lang(zh),
 article figure blockquote:lang(zh-Hant) {
   font-family: "Biaodian Pro Serif CNS", "Numeral LF Serif", Georgia, "Times New Roman", "Zhuyin Kaiti", "Han Songti", serif;
 }
-.no-unicoderange article figure blockquote:lang(zh),
 .no-unicoderange article figure blockquote:lang(zh-Hant) {
   font-family: "Numeral LF Serif", Georgia, "Times New Roman", "Han Songti", serif;
 }
@@ -1392,6 +1450,7 @@ article figure blockquote:lang(ja) {
 .no-unicoderange article figure blockquote:lang(ja) {
   font-family: "Numeral LF Serif", Georgia, "Times New Roman", serif;
 }
+article blockquote:lang(zh),
 article blockquote:lang(zh-Latn),
 article blockquote:lang(ja-Latn),
 article blockquote:not(:lang(zh)):not(:lang(ja)),
@@ -1400,11 +1459,9 @@ article blockquote *:lang(ja-Latn),
 article blockquote *:not(:lang(zh)):not(:lang(ja)) {
   font-family: Georgia, "Times New Roman", "Han Kaiti", cursive, serif;
 }
-article blockquote:lang(zh),
 article blockquote:lang(zh-Hant) {
   font-family: "Biaodian Pro Serif CNS", "Numeral LF Serif", Georgia, "Times New Roman", "Zhuyin Kaiti", "Han Kaiti", cursive, serif;
 }
-.no-unicoderange article blockquote:lang(zh),
 .no-unicoderange article blockquote:lang(zh-Hant) {
   font-family: "Numeral LF Serif", Georgia, "Times New Roman", "Han Kaiti", cursive, serif;
 }
@@ -1422,6 +1479,8 @@ article blockquote:lang(ja) {
 .no-unicoderange article blockquote:lang(ja) {
   font-family: "Numeral LF Serif", Georgia, "Times New Roman", cursive, serif;
 }
+i:lang(zh),
+var:lang(zh),
 i:lang(zh-Latn),
 var:lang(zh-Latn),
 i:lang(ja-Latn),
@@ -1436,14 +1495,10 @@ i *:not(:lang(zh)):not(:lang(ja)),
 var *:not(:lang(zh)):not(:lang(ja)) {
   font-family: "Latin Italic Serif", Georgia, "Times New Roman", "Han Kaiti", cursive, serif;
 }
-i:lang(zh),
-var:lang(zh),
 i:lang(zh-Hant),
 var:lang(zh-Hant) {
   font-family: "Biaodian Pro Serif CNS", "Numeral LF Italic Serif", "Latin Italic Serif", Georgia, "Times New Roman", "Zhuyin Kaiti", "Han Kaiti", cursive, serif;
 }
-.no-unicoderange i:lang(zh),
-.no-unicoderange var:lang(zh),
 .no-unicoderange i:lang(zh-Hant),
 .no-unicoderange var:lang(zh-Hant) {
   font-family: "Numeral LF Italic Serif", "Latin Italic Serif", Georgia, "Times New Roman", "Han Kaiti", cursive, serif;
@@ -1468,6 +1523,10 @@ var:lang(ja) {
 .no-unicoderange var:lang(ja) {
   font-family: "Numeral LF Italic Serif", "Latin Italic Serif", Georgia, "Times New Roman", cursive, serif;
 }
+code:lang(zh),
+kbd:lang(zh),
+samp:lang(zh),
+pre:lang(zh),
 code:lang(zh-Latn),
 kbd:lang(zh-Latn),
 samp:lang(zh-Latn),
@@ -1494,20 +1553,12 @@ samp *:not(:lang(zh)):not(:lang(ja)),
 pre *:not(:lang(zh)):not(:lang(ja)) {
   font-family: Menlo, Consolas, Courier, "Han Heiti", monospace, monospace, sans-serif;
 }
-code:lang(zh),
-kbd:lang(zh),
-samp:lang(zh),
-pre:lang(zh),
 code:lang(zh-Hant),
 kbd:lang(zh-Hant),
 samp:lang(zh-Hant),
 pre:lang(zh-Hant) {
   font-family: "Biaodian Pro Sans CNS", Menlo, Consolas, Courier, "Zhuyin Heiti", "Han Heiti", monospace, monospace, sans-serif;
 }
-.no-unicoderange code:lang(zh),
-.no-unicoderange kbd:lang(zh),
-.no-unicoderange samp:lang(zh),
-.no-unicoderange pre:lang(zh),
 .no-unicoderange code:lang(zh-Hant),
 .no-unicoderange kbd:lang(zh-Hant),
 .no-unicoderange samp:lang(zh-Hant),
@@ -1827,6 +1878,7 @@ h-char.bd-hangable:lang(zh-Hans),
 h-char.bd-hangable:lang(zh-CN),
 h-char.bd-hangable:lang(ja) {
   position: relative;
+  line-height: normal;
 }
 h-char.bd-hangable:lang(zh-Hans):after,
 h-char.bd-hangable:lang(zh-CN):after,
@@ -1854,8 +1906,6 @@ h-char.bd-hangable:lang(ja) > h-inner {
   position: absolute;
   left: 0;
   top: 0;
-  display: inline-block;
-  line-height: 1.1;
 }
 ruby h-char.bd-hangable:lang(zh-Hans) > h-inner,
 ruby h-char.bd-hangable:lang(zh-CN) > h-inner,
