@@ -6,9 +6,9 @@ $_default-variant = ($han-default-variant == hans ? $han-glyph-set-hans : $han-g
 // *
 han-biaodian($generic = Sans, $set = Pro)
   if $set is simp
-    "Biaodian " + $generic 
+    "Biaodian " + $generic
   else
-    "Biaodian Pro " + ($set is Pro ? $generic : $generic + " " + $set)
+    unquote('"Biaodian Pro ' + ($set is Pro ? $generic : $generic + ' ' + $set) + '"')
 
 han-typeface($typeface = "Han Heiti", $set = default, $pre = null)
   $typeface = ($set == default ? $typeface : $typeface + " " + $set)
