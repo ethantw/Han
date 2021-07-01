@@ -21,7 +21,7 @@
 ### 定製
 「漢字標準格式」提供多項定製功能，可經由變數設定、模組引用等方式定製專屬的樣式表。詳情請見[使用手冊][api]。
 
-[api]: http://css.hanzi.co/manual/sass-api
+[api]: http://hanzi.pro/manual/sass-api
 
 ### 使用CDN文件
 若毋須特別定製，你也可以直接使用以預設値編譯的CDN外連樣式表、腳本及網頁字體，以求高速下載及快取。[此服務由cdnjs.com提供][cdnjs]。
