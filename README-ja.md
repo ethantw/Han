@@ -53,7 +53,7 @@ Webフォント
 
 [rendering]: http://css.hanzi.co/manual/js-api#rendering
 
-###JavaScriptのオプション
+### JavaScriptのオプション
 漢字標準格式は、低相互依存、高セマンティックです。スタイルシートとJavaScriptはほとんど依存し合いません。様々なレベルでスタイルシートのフォールバックができるので、JavaScriptの使用の可否を、必要に応じて選択できます。
 
 ## よくある質問
