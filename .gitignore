@@ -1,6 +1,11 @@
 .DS_Store
-.sass-cache
-node_modules
-TODO
-dist
-*.vfbak
+.sass-cache/
+.ideas/
+node_modules/
+dist/
+playwright-report/
+test-results/
+packages/fonts/
+.claude/settings.local.json
+/docs/
+.commit-script.sh
