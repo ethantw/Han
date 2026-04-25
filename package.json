@@ -1,0 +1,71 @@
+{
+  "name": "han-css",
+  "version": "4.0.0",
+  "description": "CSS typography sets optimised for CJK web pages.",
+  "type": "module",
+  "main": "./dist/han.js",
+  "types": "./dist/types/han.d.ts",
+  "style": "./dist/han.css",
+  "exports": {
+    ".": {
+      "types": "./dist/types/han.d.ts",
+      "import": "./dist/han.js",
+      "default": "./dist/han.js"
+    },
+    "./auto": {
+      "types": "./dist/types/han.auto.d.ts",
+      "import": "./dist/han.auto.js",
+      "default": "./dist/han.auto.js"
+    },
+    "./styles": "./dist/han.css",
+    "./basic-styles": "./dist/han.basic.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node ./build/library",
+    "dev": "node ./build/library --watch",
+    "start": "pnpm -r --parallel --include-workspace-root run dev",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test 'src/ts/**/*.test.ts'",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include='src/ts/**' --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 'src/ts/**/*.test.ts'",
+    "serve": "node build/serve.js",
+    "pretest:e2e": "node build/library && pnpm --filter han-manual build",
+    "test:e2e": "playwright test"
+  },
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=9"
+  },
+  "keywords": [
+    "han",
+    "css",
+    "typography",
+    "hanzi",
+    "kanji",
+    "hanja",
+    "normalize"
+  ],
+  "author": "Chen Yijun (ethantw@me.com)",
+  "homepage": "https://hanzi.pro",
+  "bugs": "https://github.com/ethantw/Han/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethantw/Han.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "hyperly": "0.2.0-rc.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "esbuild": "^0.28.0",
+    "happy-dom": "^20.9.0",
+    "typescript": "^6.0.3"
+  }
+}

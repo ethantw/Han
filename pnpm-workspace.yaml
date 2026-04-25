@@ -1,0 +1,6 @@
+packages:
+  - manual
+  - ssr-demo
+  - packages/fonts
+allowBuilds:
+  esbuild: true
