@@ -1,0 +1,51 @@
+name: Bug report
+description: Something is broken or behaving unexpectedly
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report. A minimal reproduction
+        is the single most useful thing you can include.
+  - type: input
+    id: version
+    attributes:
+      label: Han.css version
+      description: e.g. `4.0.0-alpha.5`, or commit SHA if installed from git.
+      placeholder: 4.0.0-alpha.5
+    validations:
+      required: true
+  - type: input
+    id: browser-os
+    attributes:
+      label: Browser + OS
+      description: e.g. Safari 17.4 / macOS 14.4, Chrome 124 / Windows 11.
+      placeholder: Safari 17.4 / macOS 14.4
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A CodePen, gist, repo, or paste. The smaller the better.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include error messages or screenshots if useful.
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Custom CSS overrides, related Han options, font stack, etc.

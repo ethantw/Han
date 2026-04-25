@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest a new capability or enhancement
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What typographic / publishing scenario is currently awkward or impossible?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: API shape, CSS var name, behaviour. Sketches welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you've already tried, or other approaches.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Prior art (other libs, papers, type-design references), screenshots, sample text.

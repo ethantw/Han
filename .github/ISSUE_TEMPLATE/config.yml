@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Manual / documentation
+    url: https://hanzi.pro
+    about: Read the manual first — most usage questions are covered there.
+  - name: Security disclosure
+    url: mailto:twyijun@gmail.com
+    about: Report security issues privately by email instead of opening a public issue.
