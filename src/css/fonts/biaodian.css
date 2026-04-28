@@ -1,0 +1,157 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Han Biaodian Sans
+ * ========================================================================== */
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 100;
+  src: local(Hiragino Sans W1);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 200;
+  src: local(Hiragino Sans W2);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 300;
+  src: local(Hiragino Sans W3);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 400;
+  src: local(Hiragino Sans W4);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 500;
+  src: local(Hiragino Sans W5);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 600;
+  src: local(Hiragino Sans W6);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 700;
+  src: local(Hiragino Sans W7);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 800;
+  src: local(Hiragino Sans W8);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 900;
+  src: local(Hiragino Sans W9);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+/**
+ * Middle dots should be presentationally fullwidth.
+ *
+ * [·, `U+B7`].
+ */
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 100 400;
+  src: local(Hiragino Sans GB W3), local(Heiti SC Light);
+  unicode-range: U+B7;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 500 900;
+  src: local(Hiragino Sans GB W6), local(Heiti SC Medium);
+  unicode-range: U+B7;
+}
+
+/* ========================================================================== *
+ * Han Biaodian Serif
+ * ========================================================================== */
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 100;
+  src: local(Songti TC Light), local(Hiragino Mincho ProN W3);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 300;
+  src: local(Hiragino Mincho ProN W3), local(Songti TC Regular);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 600;
+  src: local(Hiragino Mincho ProN W6), local(Songti TC Bold);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 900;
+  src: local(Songti SC Heavy), local(Hiragino Mincho ProN W6);
+  unicode-range: U+2010-2015, U+2026-2027, U+2E3A-2E3B, U+3000-3006, U+3008-303F, U+30FB-30FC, U+FF01-FF0F, U+FF1A-FF1F, U+FF3B-FF3F, U+FF5B-FF65;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif GB;
+  font-weight: 600;
+  src: local(Hiragino Sans GB W6);
+  unicode-range: U+2018-2019, U+201C-201D;
+}
+
+/**
+ * Middle dots should be presentationally fullwidth.
+ *
+ * [·, `U+B7`].
+ */
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 100 200;
+  src: local(Songti TC Light);
+  unicode-range: U+B7;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif;
+  font-weight: 300 400;
+  src: local(Songti TC Regular);
+  unicode-range: U+B7;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 500 700;
+  src: local(Songti TC Bold);
+  unicode-range: U+B7;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans;
+  font-weight: 800 900;
+  src: local(Sonti SC Heavy);
+  unicode-range: U+B7;
+}

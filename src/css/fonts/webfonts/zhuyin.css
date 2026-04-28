@@ -1,0 +1,41 @@
+/* HiDPI (≥ 1.5× device pixel ratio): unhinted, slightly smaller */
+@font-face {
+  font-family: Han Zhuyin Sans;
+  /* There is no sans version of Zhuyin font available yet. Use serif as
+     fallback for now. */
+  /* src: url('@han-css/fonts/webfonts/zhuyin.serif.woff2') format('woff2'); */
+  src: url('./zhuyin.serif.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Han Zhuyin Serif;
+  /* src: url('@han-css/fonts/webfonts/zhuyin.serif.woff2') format('woff2'); */
+  src: url('./zhuyin.serif.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Low-DPI (≤ 1× device pixel ratio, e.g. 1080p / 2K monitors at 96–110 PPI):
+ * serve the hinted version so TrueType hints improve legibility at ruby sizes
+ * (typically 6–8px), where each pixel counts. */
+/* @media (max-resolution: 1.5dppx) {
+  @font-face {
+    font-family: Han Zhuyin Sans;
+    src: url('@han-css/fonts/webfonts/zhuyin.serif.hinted.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: Han Zhuyin Serif;
+    src: url('@han-css/fonts/webfonts/zhuyin.serif.hinted.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+}*/

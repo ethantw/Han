@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+/**
+ * A curated list of local fonts with different writing systems.
+ *
+ */
+:where(:root) {
+  /* Local Latin */
+  --han-local-sans-latin: Avenir Next, Helvetica Neue, Arial;
+  --han-local-serif-latin: Baskerville, Georgia;
+  --han-local-cursive-latin: var(--han-local-serif-latin);
+
+  /* Local Hant */
+  --han-local-sans-hant:
+    var(--han-local-sans-ja),
+    var(--han-local-sans-sc),
+    'Pingfang TC'
+  ;
+  --han-local-serif-hant:
+    var(--han-local-serif-ja),
+    var(--han-local-serif-sc),
+    'Songti TC'
+  ;
+  --han-local-cursive-hant: Kaiti TC, BiauKai, 標楷體;
+
+  /* Local Hans */
+  --han-local-sans-hans: 'Hiragino Sans GB';
+  --han-local-serif-hant: 'Hiragino Mincho ProN';
+  --han-local-cursive-hant: Kaiti SC;
+
+  /* Local Japanese */
+  --han-local-sans-ja: 'Hiragino Sans', 'Yu Gothic', YuGothic;
+  --han-local-serif-ja: 'Hiragino Mincho ProN';
+  --han-local-cursive-ja: Klee One;
+
+  /* Local Korean */
+  /*
+  --han-local-sans-ko: ;
+  --han-local-serif-ko: ;
+  --han-local-cursive-ko: var(--han-local-serif-ko);
+  */
+}

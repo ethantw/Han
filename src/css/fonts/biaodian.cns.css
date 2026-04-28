@@ -1,0 +1,86 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Han Biaodian Sans CNS
+ * ========================================================================== */
+/**
+ * Fullwidth commas and periods that are positioned
+ * centered in Taiwanese CNS standard.
+ *
+ * - [、, `U+3001`]
+ * - [。, `U+3002`]
+ * - [，, `U+FF0C`]
+ */
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 100;
+  src: local(PingFang TC-Ultralight), local(Hiragino Sans CNS W3);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 200;
+  src: local(PingFang TC-Thin), local(Hiragino Sans CNS W3);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 300;
+  src: local(Hiragino Sans CNS W3), local(PingFang TC-Light);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 400;
+  src: local(PingFang TC-Regular), local(Hiragino Sans CNS W3);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 500;
+  src: local(PingFang TC-Medium), local(Hiragino Sans CNS W6);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Sans CNS;
+  font-weight: 600;
+  src: local(Hiragino Sans CNS W6), local(PingFang TC-Semibold);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+/* ========================================================================== *
+ * Han Biaodian Serif CNS
+ * ========================================================================== */
+/**
+ * Fullwidth commas and periods that are positioned
+ * centered by Taiwanese CNS standard.
+ *
+ * - [、, `U+3001`]
+ * - [。, `U+3002`]
+ * - [，, `U+FF0C`]
+ */
+@font-face {
+  font-family: Han Biaodian Serif CNS;
+  font-weight: 100;
+  src: local(Songti TC Light), local(Hiragino Sans CNS W3), local(PingFang TC-Ultralight);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif CNS;
+  font-weight: 300;
+  src: local(Songti TC Regular), local(Hiragino Sans CNS W3), local(PingFang TC-Light);
+  unicode-range: U+3001-3002, U+FF0C;
+}
+
+@font-face {
+  font-family: Han Biaodian Serif CNS;
+  font-weight: 600;
+  src: local(Songti TC Bold), local(Hiragino Sans CNS W6), local(PingFang TC-Semibold);
+  unicode-range: U+3001-3002, U+FF0C;
+}

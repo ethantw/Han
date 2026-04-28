@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+@property --han-font-priorities {
+  syntax: 'auto | local | webfonts';
+  initial-value: 'auto';
+  inherits: true;
+}
+
+:where(:root) {
+  --han-sans-latin: var(--han-local-sans-latin), var(--han-webfont-sans-latin);
+  --han-serif-latin: var(--han-local-serif-latin), var(--han-webfont-serif-latin);
+  --han-cursive-latin: var(--han-local-cursive-latin), var(--han-webfont-cursive-latin);
+
+  --han-sans-hant: var(--han-local-sans-hant), var(--han-webfont-sans-hant);
+  --han-serif-hant: var(--han-local-serif-hant), var(--han-webfont-serif-hant);
+  --han-cursive-hant: var(--han-local-cursive-hant), var(--han-webfont-cursive-hant);
+
+  --han-sans-hans: var(--han-local-sans-hans), var(--han-webfont-sans-hans);
+  --han-serif-hans: var(--han-local-serif-hans), var(--han-webfont-serif-hans);
+  --han-cursive-hans: var(--han-local-cursive-hans), var(--han-webfont-cursive-hans);
+
+  --han-sans-ja: var(--han-local-sans-ja), var(--han-webfont-sans-ja);
+  --han-serif-ja: var(--han-local-serif-ja), var(--han-webfont-serif-ja);
+  --han-cursive-ja: var(--han-local-cursive-ja), var(--han-webfont-cursive-ja);
+
+  --han-sans-ko: var(--han-local-sans-ko), var(--han-webfont-sans-ko);
+  --han-serif-ko: var(--han-local-serif-ko), var(--han-webfont-serif-ko);
+  --han-cursive-ko: var(--han-local-cursive-ko), var(--han-webfont-cursive-ko);
+}
+
+@container style(--han-font-priorities: webfonts) {
+  :where(> *) {
+    /* Web fonts */
+    --han-sans-hant: var(--han-webfont-sans-hant);
+    --han-serif-hant: var(--han-webfont-serif-hant);
+    --han-cursive-hant: var(--han-webfont-cursive-hant);
+
+    --han-sans-hans: var(--han-webfont-sans-hans);
+    --han-serif-hans: var(--han-webfont-serif-hans);
+    --han-cursive-hans: var(--han-webfont-cursive-hans);
+
+    --han-sans-ja: var(--han-webfont-sans-ja);
+    --han-serif-ja: var(--han-webfont-serif-ja);
+    --han-cursive-ja: var(--han-webfont-cursive-ja);
+
+    --han-sans-ko: var(--han-webfont-sans-ko);
+    --han-serif-ko: var(--han-webfont-serif-ko);
+    --han-cursive-ko: var(--han-webfont-cursive-ko);
+  }
+}
