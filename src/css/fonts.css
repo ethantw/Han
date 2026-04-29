@@ -1,0 +1,262 @@
+@charset "UTF-8";
+
+@property --han-generics {
+  syntax: "sans-serif | serif";
+  inherits: true;
+  initial-value: sans-serif;
+}
+
+/* ========================================================================== *
+ * Punctuation font mode・--han-punctuation-hant / --han-punctuation-hans
+ * ========================================================================== */
+
+/**
+ * Controls which punctuation glyph style is used for Traditional Chinese
+ * (hant) and Simplified Chinese (hans) respectively. Each property selects
+ * a different Han Biaodian font variant, changing how punctuation glyphs sit
+ * within their full-width cell.
+ *
+ * Values
+ * ──────
+ *   auto          Default. hant → centered; hans → all-anchored.
+ *   centered      All punctuation glyphs centred in the full-width cell
+ *                 (e.g. traditional Taiwanese / CNS style).
+ *   anchored      Recommended style: sentence-ending marks （，。、.） are
+ *                 anchored to the cell edge; other marks （？！：；） remain
+ *                 centred.
+ *   all-anchored  Mainland Chinese style: all eight of the above marks are
+ *                 anchored to the cell edge.
+ *
+ * ⚠️  Always set on an ANCESTOR, never on the targeted element itself.
+ *     `@container style()` queries the nearest ancestor — the element
+ *     cannot query its own custom properties.
+ *
+ * Note: these values describe *glyph position within the cell*, not
+ * half-em spacing or hanging punctuation. Compression is governed by
+ * `--han-punctuation-refinement`; hanging punctuation is wired up
+ * automatically based on this property's value.
+ *
+ * Browser support
+ * ───────────────
+ * Relies on `@container style()` queries. Firefox does not yet support them,
+ * so the mode switch has no effect in Firefox.
+ */
+@property --han-punctuation-hant {
+  syntax: "auto | centered | anchored | all-anchored";
+  inherits: true;
+  initial-value: auto;
+}
+
+@property --han-punctuation-hans {
+  syntax: "auto | centered | anchored | all-anchored";
+  inherits: true;
+  initial-value: auto;
+}
+
+/* ========================================================================== *
+ * Font configuration
+ * ========================================================================== */
+
+@container style(--han-use-webfonts: true) {
+  :where(body) {
+    --han-sans-hant: var(--han-webfont-sans-hant);
+    --han-serif-hant: var(--han-webfont-serif-hant);
+    --han-cursive-hant: var(--han-webfont-cursive-hant);
+
+    --han-sans-hans: var(--han-webfont-sans-hans);
+    --han-serif-hans: var(--han-webfont-serif-hans);
+    --han-cursive-hans: var(--han-webfont-cursive-hans);
+
+    --han-sans-ja: var(--han-webfont-sans-ja);
+    --han-serif-ja: var(--han-webfont-serif-ja);
+    --han-cursive-ja: var(--han-webfont-cursive-ja);
+
+    --han-sans-ko: var(--han-webfont-sans-ko);
+    --han-serif-ko: var(--han-webfont-serif-ko);
+    --han-cursive-ko: var(--han-webfont-cursive-ko);
+  }
+}
+
+:where(:root) {
+  --han-biaodian-sans-cns:
+    Han Biaodian Sans CNS, Han Biaodian Sans, Han Punctuation CJK
+  ;
+
+  --han-biaodian-sans:
+    Han Biaodian Sans, Han Punctuation CJK
+  ;
+
+  --han-biaodian-sans-gb:
+    Han Biaodian Sans GB, Han Biaodian Sans, Han Punctuation CJK
+  ;
+
+  --han-biaodian-serif-cns:
+    Han Biaodian Serif CNS, Han Biaodian Serif, Han Punctuation CJK
+  ;
+
+  --han-biaodian-serif:
+    Han Biaodian Serif, Han Punctuation CJK
+  ;
+
+  --han-biaodian-serif-gb:
+    Han Biaodian Serif GB, Han Biaodian Serif, Han Punctuation CJK
+  ;
+
+  --han-punctuation-sans-hant: var(--han-biaodian-sans-cns);
+  --han-punctuation-sans-hans: var(--han-biaodian-sans-gb);
+  --han-punctuation-serif-hant: var(--han-biaodian-serif-cns);
+  --han-punctuation-serif-hans: var(--han-biaodian-serif-gb);
+
+  /**
+   * Font families configuration for heiti, songti and kaiti in
+   * Traditional Chinese.
+   *
+   * Use CNS standard (Taiwanese) for CJK punctuation.
+   */
+  --han-font-family-heiti-hant:
+    var(--han-punctuation-sans-hant),
+    Avenir Next, Helvetica Neue, Arial,
+    var(--han-sans-hant),
+    var(--han-sans-latin)
+  ;
+
+  --han-font-family-songti-hant:
+    var(--han-punctuation-serif-hant),
+    var(--han-serif-latin)
+    var(--han-serif-hant),
+    serif
+  ;
+
+  --han-font-family-kaiti-hant:
+    var(--han-punctuation-serif-hant),
+    var(--han-serif-latin)
+    var(--han-cursive-hant),
+    cursive, serif
+  ;
+
+  /**
+   * Font families configuration for heiti, songti and kaiti
+   * in Simplified Chinese.
+   */
+  --han-font-family-heiti-hans:
+    var(--han-punctuation-sans-hans),
+    Avenir Next, Helvetica Neue, Arial,
+    var(--han-sans-latin)
+  ;
+
+  --han-font-family-songti-hans:
+    var(--han-punctuation-serif-hans),
+    var(--han-serif-latin)
+    serif
+  ;
+
+  --han-font-family-kaiti-hans:
+    var(--han-punctuation-serif-hans),
+    var(--han-serif-latin)
+    cursive, serif
+  ;
+
+  --han-font-family-zhuyin-sans: Han Zhuyin Sans, sans-serif;
+  --han-font-family-zhuyin-serif: Han Zhuyin Serif, serif;
+
+  --han-generics-sans: Han Punctuation CJK, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --han-generics-serif: Han Punctuation CJK, serif;
+  --han-generics-cursive: Han Punctuation CJK, cursive, serif;
+  --han-generics-system-ui: var(--han-generics-sans);
+}
+
+/**
+ * Sophisticated fonts configuration for CJK.
+ */
+:where([lang^='zh'], [lang^='ja'], [lang^='ko']) {
+  container-name: han-generics-sans-serif;
+  font-family: var(--han-font-default);
+  font-variant-ligatures: common-ligatures;
+}
+
+@container style(--han-generics: serif) {
+  :where(body, [lang^='zh'], [lang^='ja'], [lang^='ko']) {
+    container-name: han-generics-serif;
+  }
+}
+
+@container han-generics-sans-serif {
+  :where(body:lang(zh), [lang^='zh']) {
+    --han-font-default: var(--han-font-family-heiti-hant);
+    --han-font-accent: var(--han-font-family-kaiti-hant);
+    --han-font-alternative: var(--han-font-family-songti-hant);
+  }
+  :where(body:lang(zh-Hans), [lang^='zh-Hans']) {
+    --han-font-default: var(--han-font-family-heiti-hans);
+    --han-font-accent: var(--han-font-family-kaiti-hans);
+    --han-font-alternative: var(--han-font-family-songti-hans);
+  }
+  :where(body:lang(ja), [lang^='ja']) {
+    --han-font-default: var(--han-biaodian-sans), var(--han-generics-system-ui);
+    --han-font-accent: var(--han-biaodian-sans), var(--han-generics-cursive);
+    --han-font-alternative: var(--han-biaodian-sans), var(--han-generics-serif);
+  }
+  :where(body:lang(ko), [lang^='ko']) {
+    --han-font-default: var(--han-generics-system-ui);
+    --han-font-accent: var(--han-generics-serif);
+    --han-font-alternative: var(--han-generics-serif);
+  }
+}
+
+@container han-generics-serif {
+  :where(body:lang(zh), [lang^='zh']) {
+    --han-font-default: var(--han-font-family-songti-hant);
+    --han-font-accent: var(--han-font-family-kaiti-hant);
+    --han-font-alternative: var(--han-font-family-heiti-hant);
+  }
+  :where(body:lang(zh-Hans), [lang^='zh-Hans']) {
+    --han-font-default: var(--han-font-family-songti-hans);
+    --han-font-accent: var(--han-font-family-kaiti-hans);
+    --han-font-alternative: var(--han-font-family-heiti-hans);
+  }
+  :where(body:lang(ja), [lang^='ja']) {
+    --han-font-default: var(--han-biaodian-serif), var(--han-generics-serif);
+    --han-font-accent: var(--han-biaodian-serif), var(--han-generics-cursive);
+    --han-font-alternative: var(--han-biaodian-serif), var(--han-generics-sans);
+  }
+}
+
+/**
+ * Switch punctuation glyph mode for Traditional / Simplified Chinese.
+ *
+ * Set on any ancestor; `@container style()` propagates down the subtree.
+ *
+ * ```css
+ * :root {
+ *   --han-punctuation-hant: anchored;   /* Recommended style  *\/
+ *   --han-punctuation-hans: centered;   /* Regular Taiwanese style  *\/
+ * }
+ * ```
+ */
+@container style(--han-punctuation-hant: anchored) {
+  :where(body:lang(zh), [lang^='zh']) {
+    --han-punctuation-sans-hant: var(--han-biaodian-sans);
+    --han-punctuation-serif-hant: var(--han-biaodian-sans);
+  }
+}
+
+@container style(--han-punctuation-hant: all-anchored) {
+  :where(body:lang(zh), [lang^='zh']) {
+    --han-punctuation-sans-hant: var(--han-biaodian-sans-gb);
+    --han-punctuation-serif-hant: var(--hant-font-family-serif-punctuation-all-anchored);
+  }
+}
+
+@container style(--han-punctuation-hans: centered) {
+  :where(body:is(:lang(zh-Hans)), [lang^='zh-Hans']) {
+    --han-punctuation-sans-hans: var(--hans-font-family-sans-punctuation-centered);
+    --han-punctuation-serif-hans: var(--hans-font-family-serif-punctuation-centered);
+  }
+}
+
+@container style(--han-punctuation-hans: anchored) {
+  :where(body:is(:lang(zh-Hans)), [lang^='zh-Hans']) {
+    --han-punctuation-sans-hans: var(--hans-font-family-sans-punctuation-anchored);
+    --han-punctuation-serif-hans: var(--hans-font-family-serif-punctuation-anchored);
+  }
+}
