@@ -1,0 +1,357 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Feature Toggles・--han-semantics
+ * ========================================================================== */
+
+/**
+ * Controls whether Han.css semantic refinements are active in a subtree.
+ *
+ * Values
+ * ──────
+ *   auto  Semantic refinements are active (default). The `auto` keyword
+ *         will serve as an explicit opt-in once all major browsers support
+ *         container style queries; until then, refinements are always on.
+ *   none  Reverts all Han.css semantic overrides in the subtree.
+ *
+ * ⚠️  Always set on an ANCESTOR, never on the targeted element itself.
+ *     `@container style()` queries the nearest ancestor — the element
+ *     cannot query its own custom properties.
+ *
+ *   ✓  article { --han-semantics: none; }   → all descendants revert
+ *   ✗  address { --han-semantics: none; }   → no effect on <address> itself
+ *
+ * Current implementation
+ * ──────────────────────
+ * Semantic rules are applied unconditionally (always on). Only `none`
+ * opt-out is gated behind `@container style(--han-semantics: none)`.
+ * Firefox does not yet support container style queries, so wrapping the
+ * default rules in `@container style(--han-semantics: auto)` would silently
+ * disable all semantics in Firefox.
+ *
+ * Planned upgrade (once Firefox ships container style query support)
+ * ──────────────────────────────────────────────────────────────────
+ * Each rule will be wrapped in the `auto` query. The nested `none` opt-out
+ * block will be dropped — when the nearest ancestor has `none`, the outer
+ * `auto` query simply won't match, making explicit revert unnecessary:
+ *
+ *   :where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
+ *     @container style(--han-semantics: auto) {
+ *       font-style: inherit;
+ *     }
+ *   }
+ *
+ * `:root` will also receive `--han-semantics: auto` as an explicit default
+ * so existing users require no changes when upgrading.
+ */
+@property --han-semantics {
+  syntax: "auto | none";
+  inherits: true;
+  initial-value: auto;
+}
+
+@property --han-text-decoration-inset {
+  syntax: "<length> | auto";
+  inherits: true;
+  initial-value: auto;
+}
+
+/* ========================================================================== *
+ * Variables
+ * ========================================================================== */
+
+:where(:root) {
+  /* Decoration lines refinements */
+  --han-underline-offset: .125em;
+  --han-underline-position: auto;
+  --han-adjacent-lines-skip-gap-fallback: .125em;
+
+  /* Emphasis marks for `em` elements */
+  --han-em-symbol: circle;
+  --han-em-dot-position: under right;
+
+  /* Title marks for `cite` elements */
+  --han-cite-use-title-marks: false;
+  --han-title-marks: '\300A' '\300B' '\3008' '\3009';
+
+  /* Quotes for `q` elements */
+  --han-quotes: '\201C' '\201D' '\2018' '\2019';
+
+  /* Generic families */
+  --han-generics-sans: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --han-generics-serif: serif;
+  --han-generics-cursive: cursive, fangsong, serif;
+  --han-generics-system-ui: var(--han-generics-sans);
+
+  /* Default fonts for the document and varied elements */
+  --han-font-default: var(--han-generics-sans);
+  --han-font-alternative: var(--han-generics-serif);
+  --han-font-accent: var(--han-generics-cursive);
+}
+
+:where(:lang(en-GB)) {
+  --han-quotes: '\2018' '\2019' '\201C' '\201D';
+}
+
+:where(:lang(zh), :lang(ja), :lang(ko-Hant)) {
+  --han-quotes: '\300C' '\300D' '\300E' '\300F';
+}
+
+:where(:lang(zh-Hans)) {
+  --han-quotes: '\201C' '\201D' '\2018' '\2019';
+}
+
+:where(:lang(ja)) {
+  --han-title-marks: var(--han-quotes);
+  --han-em-dot-position: over right;
+}
+
+/* ========================================================================== *
+ * Document
+ * ========================================================================== */
+/**
+ * Set default fonts and refine styles of underlines on the root element.
+ *
+ * 1. Use `system-ui` font for the document.
+ * 2. Make sure the lines of two (or more) adjacent underlined or stuck-through
+ *    elements are visually distinguishable.
+ * 3. Make sure underlines are slightly apart from the annotated text.
+ */
+:where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
+  & {
+    font-family: var(--han-font-default); /* 1 */
+    text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
+    text-underline-offset: var(--han-underline-offset); /* 3 */
+    text-underline-position: var(--han-underline-position); /* 3 */
+  }
+  @container style(--han-semantics: none) {
+    font-family: revert-layer;
+    text-decoration-inset: revert-layer;
+    text-underline-offset: revert-layer;
+    text-underline-position: revert-layer;
+  }
+}
+
+/* ========================================================================== *
+ * Sections
+ * ========================================================================== */
+
+/**
+ * Pseudo-italic correction.
+ */
+:where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
+  & {
+    font-style: inherit;
+  }
+  @container style(--han-semantics: none) {
+    font-style: revert-layer;
+  }
+}
+
+/**
+ * Use cursive generic family for `blockquote` elements in articles.
+ */
+:where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
+  & {
+    font-family: var(--han-font-accent);
+  }
+  @container style(--han-semantics: none) {
+    font-family: revert-layer;
+  }
+}
+
+/* ========================================================================== *
+ * Text-level semantics
+ * ========================================================================== */
+
+/**
+ * Pseudo-italic correction.
+ */
+:where(cite, dfn, em, i, var):where(:lang(zh), :lang(ja), :lang(ko)) {
+  & {
+    font-style: inherit;
+  }
+  @container style(--han-semantics: none) {
+    font-style: revert-layer;
+  }
+}
+
+/**
+ * Add *bracket* title marks to `cite` elements if corresponding variable is
+ * set to true.
+ */
+:where(cite:is(:lang(zh), :lang(ja))) {
+  & {
+    quotes: var(--han-title-marks);
+  }
+
+  @container style(--han-cite-use-title-marks: bracket) {
+    &:where(::before) {
+      content: open-quote;
+    }
+    &:where(::after) {
+      content: close-quote;
+    }
+  }
+
+  /* 1. Remove previously-set bracket title marks.
+   */
+  @container style(--han-cite-use-title-marks: wavy) {
+    &:where(:lang(zh)) {
+      quotes: none; /* 1 */
+      text-decoration-line: underline;
+      text-decoration-style: wavy;
+    }
+  }
+
+  @container style(--han-cite-use-title-marks: revert) {
+    &:where(:lang(zh), :lang(ja)) {
+      quotes: none;
+    }
+    &:where(:lang(zh)) {
+      text-decoration: none;
+    }
+  }
+}
+
+/**
+ * Set font-weight of `dfn` elements to inherit first and then `bolder` to make
+ * sure the weight is bolder to their parental contexts.
+ */
+:where(dfn:is(:lang(zh), :lang(ja), :lang(ko))) {
+  & {
+    font-weight: inherit;
+  }
+  & {
+    font-weight: bolder;
+  }
+  @container style(--han-semantics: none) {
+    font-weight: revert-layer;
+  }
+}
+
+/**
+ * Use cursive generic family for `i` elements instead.
+ */
+:where(i:is(:lang(zh), :lang(ja), :lang(ko))) {
+  & {
+    font-family: var(--han-font-accent);
+  }
+  @container style(--han-semantics: none) {
+    font-family: revert-layer;
+  }
+}
+
+/**
+ * Use emphasis dots for `em` elements instead.
+ */
+:where(em:is(:lang(zh), :lang(ja), :lang(ko))) {
+  & {
+    text-emphasis: var(--han-em-symbol);
+    text-emphasis-position: var(--han-em-dot-position);
+  }
+  @container style(--han-semantics: none) {
+    text-emphasis: revert-layer;
+    text-emphasis-position: revert-layer;
+  }
+}
+
+/**
+ * Define a pure CSS fallback to make sure the lines between two (or more)
+ * adjacent underlined or struck-through elements are visually distinguishable
+ * if current UA does not support `text-decoration-inset: auto`.
+ */
+@supports not (text-decoration-inset: auto) {
+  :where(u, ins):has(+ u, + ins),
+  :where(s, del):has(+ s, + del) {
+    margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
+  }
+  @container han-cite-use-wavy-title-marks (inline-size >= 0) {
+    :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {
+      margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
+    }
+  }
+}
+
+/**
+ * Use cursive generic family for `var` elements instead.
+ */
+:where(var:is(:lang(zh), :lang(ja), :lang(ko))) {
+  & {
+    font-family: var(--han-font-accent);
+  }
+  @container style(--han-semantics: none) {
+    font-family: revert-layer;
+  }
+}
+
+/**
+ * Add quotes to `q` elements according to the given languages.
+ */
+:where(q) {
+  & {
+    quotes: var(--han-quotes);
+  }
+  &:where(:before) {
+    content: open-quote;
+  }
+  &:where(:after) {
+    content: close-quote;
+  }
+}
+
+/**
+ * Zhuyin (Mandarin Phonetic Symbols) inter-character ruby.
+ *
+ * Font GPOS handles tone-mark positioning within the annotation space.
+ * Safari 18.2+: native `ruby-position: inter-character` (annotation alongside char).
+ * Chrome / Firefox: `@supports not` fallback.
+ */
+:where(ruby:is(.zhuyin, .mps)) {
+  & {
+    ruby-position: inter-character;
+    font-family: var(--han-font-family-zhuyin-serif);
+  }
+  > rt {
+    font-family: var(--han-font-family-zhuyin-serif);
+    text-orientation: upright;
+  }
+  @supports not (ruby-position: inter-character) {
+    & {
+      position: relative;
+      letter-spacing: .6em;
+    }
+    > rt {
+      position: absolute;          /* out of annotation flow; display: ruby preserved */
+      inset-inline-start: 50%;
+      transform: translate(-133%, -40%);
+      transform-origin: center;
+      display: inline-flex;
+      justify-content: center;
+      block-size: 1em;
+      inline-size: 3em;
+      font-size: .4em;
+      letter-spacing: 0;
+      line-height: .95;
+      writing-mode: vertical-rl;
+      /* [TODO] top / inset-inline-start to position rt to the right of its base.
+      * containing block = nearest positioned ancestor (not the ruby itself).
+      * Alternative: use transform: translate() to avoid containing-block issues. */
+    }
+  }
+}
+
+/**
+ * Use sans-serif generic family for `dfn` `i` `var` elements in
+ * article blockquotes instead.
+ */
+:where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
+  :where(dfn, i, var) {
+    & {
+      font-family: var(--han-font-default);
+    }
+    @container style(--han-semantics: none) {
+      font-family: revert-layer;
+    }
+  }
+}
