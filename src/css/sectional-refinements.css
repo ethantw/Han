@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Variables
+ * ========================================================================== */
+
+:where(:root) {
+  --han-sr-indent: 2em;
+  --han-sr-alignment-for-article-p: justify;
+  --han-sr-consecutive-headings-a-block-end: 0;
+  --han-sr-consecutive-headings-b-block-start: 0;
+}
+
+/* ========================================================================== *
+ * Application
+ * ========================================================================== */
+
+/**
+ * Auto-apply inside `<article>` by default.
+ *
+ * To apply to other prose containers:
+ *
+ *   section.prose {
+ *     container-name: han-sectional-refinements;
+ *   }
+ *
+ * To opt out a subtree within an article and prose section:
+ *
+ *   :where(article, section.prose) .demo {
+ *     container-name: han-sectional-refinements-none;
+ *   }
+ */
+:where(article) {
+  container-name: han-sectional-refinements;
+}
+
+/* ========================================================================== *
+ * Sectional refinements
+ * ========================================================================== */
+
+/**
+ * Rules fire inside any element bearing
+ * `container-name: han-sectional-refinements`.
+ * `:where(article)` carries that name by default (see Application section).
+ */
+@container han-sectional-refinements {
+  :where(h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
+  :where(h2:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
+  :where(h3:has(+ h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
+  :where(h4:has(+ h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
+  :where(h5:has(+ h5, + h6, + blockquote, + p, + ol, + ul, + section)),
+  :where(h6:has(+ h6, + blockquote, + p, + ol, + ul, + section)) {
+    margin-block-end: var(--han-sr-consecutive-headings-a-block-end);
+  }
+
+  :where(h1, h2, h3, h4, h5, h6):is(:first-child),
+  :where(h1) + :where(h2, h3, h4, h5, h6, blockquote, p, ol, ul),
+  :where(h2) + :where(h2, h3, h4, h5, h6, blockquote, p, ol, ul),
+  :where(h3) + :where(h3, h4, h5, h6, blockquote, p, ol, ul),
+  :where(h4) + :where(h4, h5, h6, blockquote, p, ol, ul),
+  :where(h5) + :where(h5, h6, blockquote, p, ol, ul),
+  :where(h6) + :where(h6, blockquote, p, ol, ul) {
+    margin-block-start: var(--han-sr-consecutive-headings-b-block-start);
+  }
+
+  :where(p) {
+    text-align: var(--han-sr-alignment-for-article-p);
+  }
+
+  :where(blockquote) {
+    & {
+      margin-inline: var(--han-sr-indent);
+    }
+    :where(figure) {
+      margin-inline: initial;
+    }
+    :where(blockquote) {
+      margin-inline: calc(var(--han-sr-indent) / 2);
+    }
+  }
+
+  :where(figure) {
+    margin-inline: var(--han-sr-indent);
+  }
+
+  :where(ol, ul) {
+    margin-inline-start: var(--han-sr-indent);
+  }
+
+  :where(.poem-like) {
+    :where(p)&,
+    & :where(p) {
+      margin-inline-start: var(--han-sr-indent);
+    }
+  }
+}
+
+/* Subtree opt-out.
+ *
+ * Apply `container-name: han-sectional-refinements-none` to any element
+ * whose descendants should revert to browser defaults. The on-rules above
+ * still fire (the outer `han-sectional-refinements` container on `<article>`
+ * remains an ancestor), but this block — declared after them — wins by
+ * source order and reverts all affected margins. */
+@container han-sectional-refinements-none {
+  :where(h1, h2, h3, h4, h5, h6, blockquote, figure, ol, ul, p) {
+    margin: revert-layer;
+  }
+}
