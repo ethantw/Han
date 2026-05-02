@@ -1,0 +1,164 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Configuration
+ * ========================================================================== */
+
+/**
+ * Set these on `:root` or any ancestor to configure line adjustments.
+ * To disable a feature in a subtree, set the property to its "off" value
+ * directly on that ancestor — no separate toggle needed.
+ */
+
+/**
+ * --han-text-autospace
+ * Inter-script spacing (跨文種混排間隙) mode.
+ *   normal       Native browser autospace (default).
+ *   insert       Insert a synthesized ¼-em gap between CJK ↔ Western pairs
+ *                where no whitespace exists. The CSS-Text-4 `insert` semantic;
+ *                modern Chromium / WebKit / Gecko already do this under
+ *                `normal`, with `insertIss` (`src/ts/line-adjustments/iss.ts`)
+ *                covering long-tail UAs.
+ *   replace      Consume existing whitespace runs between CJK and Western and
+ *                drop a sized `<h-iss hidden data-mode="replace"> </h-iss>` in their
+ *                place (via `replaceIss` in `src/ts/line-adjustments/iss.ts`).
+ *                The CSS-Text-4 `replace` semantic; no engine ships this yet.
+ *   strict       Both insert and replace semantics handled by JS (`replaceIss`
+ *                in `src/ts/line-adjustments/iss.ts`). Native autospace is
+ *                suppressed. No browser currently supports either mode natively.
+ *   no-autospace Disable inter-script spacing entirely.
+ */
+@property --han-text-autospace {
+  syntax: "normal | insert | replace | strict | no-autospace";
+  inherits: true;
+  initial-value: normal;
+}
+
+/**
+ * --han-punctuation-refinement
+ * JS-side punctuation refinement mode (read by `installFallbacks`).
+ * Independent of the two native pass-throughs above — those tell the
+ * browser what to do; this tells the JS fallback which `<h-char>` /
+ * `<h-layer>` wrappers to emit so the companion CSS in
+ * `with-js/line-adjustments.css` can take over when native is missing.
+ *   auto      Browser: skip whatever the engine handles natively (per
+ *             `CSS.supports('text-spacing-trim'/'hanging-punctuation')`)
+ *             and JS-render only the missing pieces. Node SSR: render
+ *             both compress + hang wrappers in one pass.
+ *   compress  Force compress-only wrappers, regardless of native support.
+ *   hang      Force hang-only wrappers, regardless of native support.
+ *   emphasis  wraps only punctuation inside `<em>` in `<h-char data-punct="…">`,
+ *             leaving all other punctuation untouched. Lets CSS suppress
+ *             `text-emphasis` on punctuation without compress/hang effects.
+ *   none      Skip JS punctuation refinement entirely.
+ */
+@property --han-punctuation-refinement {
+  syntax: "auto | compress | hang | emphasis | none";
+  inherits: true;
+  initial-value: auto;
+}
+
+/* ========================================================================== *
+ * Variables
+ * ========================================================================== */
+
+:where(:root) {
+  --han-text-autospace: normal;
+  --han-punctuation-refinement: auto;
+}
+
+/* ========================================================================== *
+ * Line adjustments
+ * ========================================================================== */
+
+/**
+ * 1. Apply inter-script spacing (跨文種混排間隙). The value is passed through
+ *    directly to `text-autospace`; the `@container style(strict)` block
+ *    below overrides it to `no-autospace` to suppress native autospace
+ *    while JS handles spacing via `replaceIss`.
+ * 2. Apply CJK punctuation spacing adjustments (標點擠壓).
+ */
+:where(:root) {
+  text-autospace: var(--han-text-autospace); /* 1 */
+  text-spacing-trim: trim-start; /* 2 */
+}
+
+/**
+ * `strict` mode: native `text-autospace: normal` stays on so JS can
+ * build on top of it. The pass-through on `:root` above produces an
+ * invalid value (`text-autospace: strict` is not a legal keyword), so
+ * `:root` falls back to the UA default. `:where(> *)` restores `normal`
+ * explicitly on `<body>` — since `:root` is a style container but has
+ * no ancestor to query itself against, targeting its direct child is
+ * the only way to re-establish the value for all descendants.
+ */
+@container
+  style(--han-text-autospace: strict) or
+  style(--han-text-autospace: insert)
+{
+  :where(> *) {
+    text-autospace: normal;
+  }
+}
+
+@container style(--han-text-autospace: no-autospace) {
+  :where(> *) {
+    text-autospace: no-autospace;
+  }
+}
+
+@container
+  style(--han-punctuation-refinement: none) or
+  style(--han-punctuation-refinement: hang)
+{
+  :where(> *) {
+    text-spacing-trim: space-all;
+  }
+}
+
+/* TODO: uncomment once hanging-punctuation ships in browsers. */
+
+/*
+ * Apply hanging punctuation (標點懸掛) for Simplified Chinese and Japanese.
+ */
+/*
+:where([lang^='zh-Hans'], [lang^='ja']) {
+  hanging-punctuation: allow-end;
+}
+*/
+
+/*
+ * Apply hanging punctuation (標點懸掛) when the punctuation glyph mode
+ * uses edge-anchored glyphs. Anchored glyphs extend into the margin,
+ * making hanging effective; centered glyphs do not benefit from it.
+ *
+ * hans: centered explicitly resets hanging-punctuation because the
+ * default hans mode (all-anchored) enables it, and centered opts out.
+ */
+/*
+@container
+  style(--han-punctuation-hant: anchored) or
+  style(--han-punctuation-hant: all-anchored)
+{
+  :where(body:lang(zh), [lang^='zh']) {
+    hanging-punctuation: allow-end;
+  }
+}
+
+@container
+  style(--han-punctuation-hans: centered)
+{
+  :where(body:is(:lang(zh-Hans)), [lang^='zh-Hans']) {
+    hanging-punctuation: initial;
+  }
+}
+
+@container
+  style(--han-punctuation-refinement: none) or
+  style(--han-punctuation-refinement: compress)
+{
+  :where(> *) {
+    hanging-punctuation: none;
+  }
+}
+*/
