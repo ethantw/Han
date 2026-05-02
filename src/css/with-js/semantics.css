@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/**
+ * JavaScript-based styling fallback to make sure the lines between two (or
+ * more) adjacent underlined or struck-through elements are visually distin-
+ * guishable if current UA does not support `text-decoration-inset: auto`.
+ *
+ * The `[data-followed-by-adjacent-line]` attribute is set by `markAdjacentLines`
+ * in `src/ts/semantics/adjacent-lines.ts`; nothing else assigns it, so these
+ * rules are inert until JS has run.
+ */
+@supports not (text-decoration-inset: auto) {
+  :where(u, ins, s, del, cite) {
+    :where([data-adjacent-lines-refined] &:not([data-followed-by-adjacent-line])) {
+      margin-inline-end: initial;
+    }
+    &:where([data-followed-by-adjacent-line]) {
+      margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
+    }
+  }
+
+  @container style(--han-text-decoration-inset: 0) {
+    :where(u, ins, s, del, cite):where([data-followed-by-adjacent-line]) {
+      margin-inline-end: initial;
+    }
+  }
+}

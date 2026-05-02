@@ -1,0 +1,331 @@
+@charset "UTF-8";
+
+@import url(../fonts/webfonts/punctuation.css);
+
+/**
+ * JavaScript-rendered styling for line-adjustments — each block is
+ * a progressive-enhancement fallback for the matching native CSS
+ * feature, except `<h-iss>` which is JS-only (`strict` mode suppresses
+ * native autospace and uses JS-injected spacers instead).
+ *
+ * Companion JS in `src/ts/line-adjustments/`:
+ *   - punctuation.ts  →  標點擠壓   (`text-spacing-trim` fallback)
+ *   - hanging.ts      →  標點懸掛   (`hanging-punctuation` fallback)
+ *   - iss.ts          →  跨文種混排間隙
+ *
+ * The fallbacks use CSS pseudo-elements (`::before` / `::after`)
+ * for inline spacers rather than DOM elements, mirroring han.css
+ * v3.  An explicit spacer node would interfere with text-portion
+ * walks, copy/paste serialisation, and assistive-tech reading.
+ */
+
+
+/* ─── 跨文種混排間隙・`<h-iss>` ───────────────────────────
+ * The element exists in the DOM only when JS chose to insert it
+ * (`--han-text-autospace: strict`), so styling is
+ * unconditional — no `@supports` gate.
+ * `display: inline` overrides the `hidden` attribute's UA
+ * default `display: none`; the attribute stays so AT skips the
+ * spacer.
+ */
+/* The `font-size-adjust: ic-width <X>` numbers below (and in
+ * the 擠壓 placeholder) calibrate Han Em Space so its U+0020
+ * ' ' character renders at a known em-width.  Targets:
+ * ic-width 0.208375 → ¼-漢字寬 spacer here (h-iss);
+ * ic-width 0.5      → ½-漢字寬 spacer in 擠壓 below.
+ * If you swap the font, recalibrate X against the new font's
+ * space-glyph metric so the rendered spacer hits the same
+ * ¼ / ½ char-width target — the constants are font-specific. */
+:where(h-iss) {
+  &::before {
+    content: ' ';
+  }
+  & {
+    display: inline;
+    font-family: Arial, sans-serif;
+    font-size: .45em;
+    user-select: none;
+  }
+  @supports (font-size-adjust: ic-width 0.208375) {
+    font-family: Han Em Space, Han Em Space Fallback, monospace;
+    font-size: inherit;
+    font-size-adjust: ic-width 0.208375;
+  }
+  :where(code, kbd, samp, pre) & {
+    display: none;
+  }
+}
+
+@supports (text-autospace: normal) {
+  /* Safari (≤ WebKit 18.x) skips autospace at any Han ↔ Western seam
+   * where an inline element sits — including `display:none` h-iss.
+   * `detectAutospaceBoundaryBug` (src/ts/line-adjustments/_probe.ts)
+   * lays out a probe at install time and toggles
+   * `--han-probe-autospace: broken` on the root when the bug is observed.
+   * The matching JS branch upgrades `--han-text-autospace: normal` to
+   * the strict path (h-iss elements injected); this rule restores their
+   * box so the manual ¼-em spacer paints. Tracked:
+   * https://bugs.webkit.org/show_bug.cgi?id=299306#c6 */
+  @container not style(--han-probe-autospace: broken) {
+    :where(h-iss) {
+      display: none;
+    }
+  }
+}
+
+@supports (text-autospace: replace) {
+  :where(h-iss[data-mode="replace"]) {
+    & {
+      all: revert;
+    }
+    &::before {
+      content: none;
+    }
+  }
+}
+
+/* ─── 標點擠壓 (jiya) ────────────────────────────────────────
+ * `refinePunctuation('compress' | 'auto')` emits
+ *
+ *     <h-char data-punct="…">{P}</h-char>
+ *
+ * and this stylesheet attaches a half-em invisible spacer:
+ *
+ *     open               →  ::before   (placeholder before glyph)
+ *     close/-end/-mid    →  ::after    (placeholder after glyph)
+ *
+ * ── How the trim actually triggers ──
+ * CJK biaodian glyphs ship with ~½em of whitespace baked into
+ * the em-box on the script side (the side that *should* hug the
+ * next character in running text).  We don't want to see that
+ * ½em at line edges or between adjacent biaodian, but we DO want
+ * it preserved mid-line.  Two pieces collaborate:
+ *
+ *   1. `margin-inline-{start|end}: -.5em` pulls the glyph ½em
+ *      into the previous/next column unconditionally.
+ *   2. `::before` / `::after` is a hidden ½em-wide Han Em Space
+ *      placeholder (a real ' ' character) that pushes back ½em
+ *      of inline space.
+ *
+ * Net displacement *mid-line*: -.5em + .5em = 0 → invisible.
+ * At line *start* (for `data-punct="open"`) the `::before`'s ' ' is the
+ * line's leading whitespace and collapses per CSS-Text line-edge
+ * rules; only the -.5em margin survives, so the glyph pulls
+ * flush against the column edge.  Same trick mirrored at line
+ * end for closing / sentence-end / middle marks.  The visible
+ * "trim" is therefore paid for by CSS's whitespace-collapse-at-
+ * line-edge rule, not by the negative margin alone — without
+ * the placeholder the trim would also fire mid-line and the
+ * spacing would collapse everywhere.
+ *
+ * Within a `data-punct="…consecutive"` run, only the run's outermost trims
+ * survive — inner edges revert to a natural .5em gap so adjacent
+ * biaodian don't fuse together.
+ *
+ * Compose with hang: `refinePunctuation('auto')` emits the
+ * combined shape `<h-char data-punct="end hangable">…`
+ * for line-end-hangable marks. When `[data-punct~="hangable"]` is also
+ * present, the hang block below owns the visual treatment —
+ * `:not([data-punct~="hangable"])` here suppresses the compress trim
+ * spacer + negative margin that would otherwise stack.
+ */
+@supports not (text-spacing-trim: trim-start) {
+  h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not([data-punct~="hangable"]) {
+    &[data-punct~="open"] {
+      margin-inline-start: -.5em;
+      &::before {
+        content: ' ';
+        font-family: Han Em Space, Han Em Space Fallback, monospace;
+        font-size-adjust: ic-width 0.5;
+        visibility: hidden;
+      }
+    }
+
+    &:is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
+      margin-inline-end: -.5em;
+      &::after {
+        content: ' ';
+        font-family: Han Em Space, Han Em Space Fallback, monospace;
+        font-size-adjust: ic-width 0.5;
+        visibility: hidden;
+      }
+    }
+
+    /* Cancel inner edges of a consecutive run. */
+    &[data-punct~="consecutive"]:not([data-consecutive-pos='start'])[data-punct~="open"] {
+      margin-inline-start: 0;
+      &::before { content: none }
+    }
+    &[data-punct~="consecutive"]:not([data-consecutive-pos='end']):is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
+      margin-inline-end: 0;
+      &::after { content: none }
+    }
+  }
+}
+
+/* ─── 標點懸掛 (hanging punctuation) ─────────────────────────
+ * `refinePunctuation('hang')` emits
+ *
+ *     <h-char data-punct="hangable"><h-layer>{P}</h-layer></h-char>
+ *
+ * and `refinePunctuation('auto')` emits the combined shape
+ *
+ *     <h-char data-punct="end hangable"><h-layer>{P}</h-layer></h-char>
+ *
+ * The compress block above scopes its rules with
+ * `:not([data-punct~="hangable"])`, so this block's treatment wins on the
+ * combined element — same visual outcome whether `hang` or `auto`.
+ *
+ * Same line-edge-collapse trick as 擠壓 above, mirrored:
+ *
+ *   - `::before` is a 1em hidden Han Em Space ' ' on the h-char,
+ *     reserving 1em of inline space at the column tail.
+ *   - `<h-layer>` is `position: absolute; inset: 0` over the
+ *     same box, so the glyph paints on top of the placeholder.
+ *
+ * Mid-line: filler holds 1em, glyph paints over it → glyph sits
+ * at its natural inline position, visually unchanged.
+ * Line wraps exactly at this h-char: `::before`'s trailing ' '
+ * is the line's last whitespace and collapses per CSS-Text
+ * line-end rules, so the 1em vanishes from the inline-progression
+ * and the column tail tucks back; but `<h-layer>` is absolutely
+ * positioned, so its box keeps its previous visual position and
+ * the glyph appears to hang past the column edge.
+ *
+ * The fallback mirrors the native `hanging-punctuation` rule in
+ * `src/css/line-adjustments.css` and is gated by the same
+ * `--han-hanging-punctuation` cascade variable. To opt out, set
+ * `--han-hanging-punctuation` to `initial` or `none` on any ancestor —
+ * the `@container style(allow-end)` query will stop matching for
+ * its descendants.
+ */
+/* Default opt-in excludes `zh-Hant`: traditional Chinese
+ * punctuation glyphs are typically *centered* within their
+ * em-box, so hanging looks visually wrong (the dot floats
+ * mid-margin instead of tucking into the column edge).
+ * Curated fonts replace those biaodian with side-biased
+ * variants matching the Hans / ja / ko convention, at which
+ * point hanging becomes appropriate — the bottom block re-
+ * adds Hant via `@container style(--han-punctuation-hant: anchored)` (or
+ * `all-anchored`), since those modes select side-biased glyph variants. */
+h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
+  container-name: han-hanging-punctuation;
+}
+
+:where(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
+  container-name: han-hanging-punctuation;
+}
+
+@container
+  style(--han-punctuation-hant: anchored) or
+  style(--han-punctuation-hant: all-anchored)
+{
+  :where(:lang(zh)) {
+    container-name: han-hanging-punctuation;
+  }
+}
+
+@container
+  not
+    style(--han-punctuation-refinement: auto) and
+    style(--han-punctuation-refinement: hang)
+{
+  :where(*) {
+    container-name: han-hanging-punctuation-none;
+  }
+}
+
+/* To opt out a subtree from the JS hanging-punctuation fallback, set
+ * `--han-hanging-punctuation` to `initial` or `none` on an ancestor —
+ * the `@container style(--han-hanging-punctuation: allow-end)` block
+ * above will stop matching for descendants of that ancestor.
+ *
+ * Default opt-in: zh-Hans, ja, ko-Hant (see above). Hant is additionally
+ * opted in when `--han-punctuation-hant` is `anchored` or `all-anchored`,
+ * since those modes use side-biased glyph variants where hanging is effective. */
+@container han-hanging-punctuation {
+  h-char[data-punct~="hangable"] {
+    & {
+      position: relative;
+    }
+    /* `line-height: 1` here is load-bearing — NOT cosmetic.
+     *
+     * `font-family: Han Em Space` is declared in
+     * `src/css/fonts/webfonts/em-space.css` as
+     *   src: local(Courier New), local(Courier);
+     *   size-adjust: 166.667%;
+     * — i.e. Courier scaled up so its U+0020 glyph occupies 1em
+     * of advance width.  Per CSS Fonts 5 §6.5, `size-adjust`
+     * scales the font's *vertical* metrics too, so Courier's
+     * ascent / descent (~0.83 / 0.30em) become ~1.38 / 0.50em.
+     * Per CSS2.1 §10.8.1, an inline box contributes its computed
+     * `line-height` to the line-box — and `line-height: normal`
+     * resolves against the element's own font metrics.  Without
+     * a numeric override, this pseudo's inline box inherits
+     * `normal` and resolves it via the size-adjust-amplified
+     * Courier metrics (≈ 1.88em), which pushes <h-char>'s
+     * line-box well above the surrounding CJK text's strut,
+     * which inflates the absolute <h-layer>'s containing block,
+     * which makes the glyph drift vertically by a few px.
+     *
+     * `line-height: 1` pins this pseudo's inline-box height to
+     * 1em independent of the size-adjusted metrics, sealing the
+     * scaling weirdness inside its own box.  The line-box then
+     * sizes from the dominant CJK text font, the absolute CB is
+     * correct, and <h-layer> sits at baseline with no JS probe /
+     * no per-font correction needed.
+     *
+     * Lesson: any time a placeholder pseudo uses a font-family
+     * with `size-adjust`, `font-size-adjust`, or a custom webfont
+     * whose metrics may differ from surrounding text, lock its
+     * `line-height` numerically.  Don't trust `normal` — it
+     * leaks the (possibly amplified) metrics into the parent's
+     * line-box. */
+    &::after {
+      content: ' ';
+      font-family: Han Em Space, Han Em Space Fallback, monospace;
+      visibility: hidden;
+      line-height: 1;
+    }
+    h-layer {
+      position: absolute;
+    }
+  }
+}
+
+@container han-hanging-punctuation-none {
+  h-char[data-punct~="hangable"] {
+    & {
+      position: revert-layer;
+    }
+    &::before {
+      content: none;
+      font-family: revert-layer;
+      line-height: revert-layer;
+      visibility: revert-layer;
+    }
+    h-layer {
+      position: revert-layer;
+      display: revert-layer;
+    }
+  }
+}
+
+/**
+ * Remove emphasis dots for punctuation or symbols in `em` elements.
+ * `<h-layer>` only exists when `refinePunctuation` has run, so this
+ * selector is naturally scoped to the JS-rendered output.
+ */
+:where(em h-char[data-punct]) {
+  text-emphasis: none;
+}
+
+@container
+  not
+    style(--han-punctuation-refinement: auto) and
+    style(--han-punctuation-refinement: emphasis)
+{
+  :where(em h-char[data-punct]) {
+    text-emphasis: revert-layer;
+  }
+}
