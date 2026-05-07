@@ -47,13 +47,10 @@
  *             both compress + hang wrappers in one pass.
  *   compress  Force compress-only wrappers, regardless of native support.
  *   hang      Force hang-only wrappers, regardless of native support.
- *   emphasis  wraps only punctuation inside `<em>` in `<h-char data-punct="…">`,
- *             leaving all other punctuation untouched. Lets CSS suppress
- *             `text-emphasis` on punctuation without compress/hang effects.
  *   none      Skip JS punctuation refinement entirely.
  */
 @property --han-punctuation-refinement {
-  syntax: "auto | compress | hang | emphasis | none";
+  syntax: "auto | compress | hang | none";
   inherits: true;
   initial-value: auto;
 }

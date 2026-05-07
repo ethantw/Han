@@ -310,22 +310,3 @@ h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
     }
   }
 }
-
-/**
- * Remove emphasis dots for punctuation or symbols in `em` elements.
- * `<h-layer>` only exists when `refinePunctuation` has run, so this
- * selector is naturally scoped to the JS-rendered output.
- */
-:where(em h-char[data-punct]) {
-  text-emphasis: none;
-}
-
-@container
-  not
-    style(--han-punctuation-refinement: auto) and
-    style(--han-punctuation-refinement: emphasis)
-{
-  :where(em h-char[data-punct]) {
-    text-emphasis: revert-layer;
-  }
-}
