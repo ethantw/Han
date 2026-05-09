@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Semantics
+ * ========================================================================== */
+
+@import url(./css/semantics.css) layer(han-semantics);
+@import url(./css/with-js/semantics.css) layer(han-js-semantics);
+
+/* ========================================================================== *
+ * Line adjustments
+ * ========================================================================== */
+
+@import url(./css/line-adjustments.css) layer(han-line-adjustments);
+@import url(./css/with-js/line-adjustments.css) layer(han-js-line-adjustments);
+
+/* ========================================================================== *
+ * Sectional refinements
+ * ========================================================================== */
+
+@import url(./css/sectional-refinements.css) layer(han-sectional-refinements);
+
+/* ========================================================================== *
+ * Fonts
+ * ========================================================================== */
+
+/**
+ * Pre-defined font collections and font families.
+ *
+ * **[Note]**: Feel free to remove any font imports that are not necessary to
+ * you.
+ *
+ * 1. Sophisticatedly curated fonts for Latin & CJK.
+      a. Local fonts
+      b. With Noto Sans/Serif CJK via Google Fonts
+ * 2. Sophisticatedly curated local fonts for:
+ *    a. Chinese Anchored punctuation (倚⻆標點，Anchored Biaodian）
+ *    b. Taiwanese punctuation in CNS standard (台灣居中標點，Biaodian CNS）
+ *    c. Mainland China punctuation in GB standard (中國大陸標點，Biaodian GB）
+ * 3. Enhanced font for certain punctuation (i.e. emphatic mark dots).
+ * 4. Enhanced web fonts for CJK punctuation & Em-sized spaces.
+ * 5. Enhanced Zhuyin fonts.
+ *
+ */
+@import url(./css/fonts/local/generics.css); /* 1 */
+@import url(./css/fonts/webfonts/generics.css); /* 1 */
+
+@import url(./css/fonts/biaodian.css); /* 2-a */
+@import url(./css/fonts/biaodian.cns.css); /* 2-b */
+@import url(./css/fonts/biaodian.gb.css); /* 2-c */
+
+
+@import url(./css/fonts/punctuation.css); /* 3 */
+@import url(./css/fonts/webfonts/punctuation.css); /* 4 */
+@import url(./css/fonts/webfonts/zhuyin.css); /* 5 */
+
+/**
+ * Main fonts configuration
+ */
+@import url(./css/fonts.css) layer(han-fonts);
+@import url(./css/fonts/generics.css); /* 1 */
