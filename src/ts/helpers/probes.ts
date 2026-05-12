@@ -36,10 +36,15 @@ export function detectAutospaceBoundaryBug(force = false, doc = typeof document 
   if (!doc) return false
   if (probesCache.autospaceBoundaryBug !== undefined && !force) {
     const broken = probesCache.autospaceBoundaryBug
+    /* node:coverage disable */
+    // Cache-hit + broken: unreachable from unit tests — happy-dom can't lay
+    // out, so the bare/wrapped width delta is always 0 and `broken` never
+    // becomes true to begin with. Covered by e2e on real Safari.
     if (broken) {
       doc.documentElement.style.setProperty('--han-probe-autospace', 'broken')
       doc.documentElement.dataset.probeAutospace = 'broken'
     }
+    /* node:coverage enable */
     return broken
   }
 
@@ -73,10 +78,15 @@ export function detectAutospaceBoundaryBug(force = false, doc = typeof document 
   // around italic-switch hints).
   const broken = (bare - wrapped) > 6
 
+  /* node:coverage disable */
+  // Fresh-measurement broken branch: same reason as the cache-hit branch
+  // above — happy-dom yields a zero delta. Real-engine behaviour is
+  // exercised by the Safari e2e suite.
   if (broken) {
     doc.documentElement.style.setProperty('--han-probe-autospace', 'broken')
     doc.documentElement.dataset.probeAutospace = 'broken'
   }
+  /* node:coverage enable */
 
   return probesCache.autospaceBoundaryBug = broken
 }
