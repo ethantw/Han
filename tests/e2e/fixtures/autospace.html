@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css — text-autospace inline-boundary fixture</title>
+<link rel="stylesheet" href="/dist/han.css">
+<script type="module" src="/dist/han.js"></script>
+<style>
+  body { margin: 2rem; font: 18px serif; }
+  /* Each measurable run is an inline-block so getBoundingClientRect
+   * returns the rendered text width (not the block parent's). The
+   * reference runs set `--han-text-autospace: no-autospace` (the
+   * cascade var, not just the CSS property) so the JS pass skips
+   * them and they stay h-iss-free. */
+  .measure { display: inline-block; white-space: nowrap; line-height: 2; }
+  #bare-tight, #bare-spaced { --han-text-autospace: no-autospace; }
+  #bare-tight { text-autospace: no-autospace; }
+  #bare-spaced { text-autospace: normal; }
+</style>
+</head>
+<body>
+<p><span id="target" class="measure">学习CSS文档</span></p>
+<p><span id="bare-tight" class="measure">学习CSS文档</span></p>
+<p><span id="bare-spaced" class="measure">学习CSS文档</span></p>
+</body>
+</html>
