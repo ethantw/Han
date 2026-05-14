@@ -1,0 +1,24 @@
+{
+  "name": "han-manual",
+  "version": "4.0.0",
+  "description": "The manual & demo site for Han.css.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && pnpm run build:search",
+    "build:search": "pagefind --site dist --output-subdir pagefind",
+    "dev": "vite",
+    "preview": "vite preview",
+    "clean": "rm -rf dist src/*.html public/han"
+  },
+  "author": "Chen Yijun (ethantw@me.com)",
+  "license": "MIT",
+  "dependencies": {
+    "han-css": "workspace:*"
+  },
+  "devDependencies": {
+    "markdown-it": "^14.1.1",
+    "pagefind": "^1.5.2",
+    "vite": "^8.0.10"
+  }
+}
