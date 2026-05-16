@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>島嶼天光・傳承字形 demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --song-font: 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans TC', sans-serif;
+    font-feature-settings: "trad" 1;
+    font-variant-east-asian: traditional;   /* ← 應該用這個 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--song-font);
+    font-size: 18px;
+    line-height: 2;
+    background: #0a0a0a;
+    color: #e8e0d0;
+    padding: 4em 2em;
+  }
+
+  article {
+    max-width: 32em;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 3em;
+    border-bottom: 1px solid #333;
+    padding-bottom: 1.5em;
+  }
+
+  h1 {
+    font-size: 2em;
+    font-weight: 700;
+    letter-spacing: .05em;
+    /* trad：啟用傳承字形（台灣教育部標準字形） */
+    font-feature-settings: "trad" 1;
+  }
+
+  .artist {
+    font-size: .9em;
+    color: #888;
+    margin-top: .4em;
+  }
+
+  .note {
+    font-size: .8em;
+    color: #555;
+    margin-top: 1em;
+    font-feature-settings: normal;
+  }
+
+  /* 歌詞本體 */
+  .lyrics {
+    font-feature-settings: "trad" 1;
+    font-variant-east-asian: traditional;   /* ← 應該用這個 */
+  }
+
+  .verse {
+    margin-bottom: 2em;
+  }
+
+  .verse-label {
+    font-size: .75em;
+    color: #555;
+    letter-spacing: .1em;
+    margin-bottom: .5em;
+    font-feature-settings: normal;
+  }
+
+  p {
+    hanging-punctuation: allow-end;
+  }
+
+  /* trad 關閉的對照欄 */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+    margin-top: 4em;
+    padding-top: 2em;
+    border-top: 1px solid #222;
+    font-size: .85em;
+  }
+
+  .compare-col h2 {
+    font-size: .8em;
+    color: #666;
+    margin-bottom: 1em;
+    font-feature-settings: normal;
+  }
+
+  .trad-on  { font-feature-settings: "trad" 1; }
+  .trad-off { font-feature-settings: normal; }
+</style>
+</head>
+<body>
+<article>
+
+  <header>
+    <h1>島嶼天光</h1>
+    <p class="artist">滅火器 Fire EX．</p>
+    <p class="note">
+      font-family: Noto Sans JP → KR → TC（按序）<br>
+      font-feature-settings: "trad" 1（傳承字形）
+    </p>
+  </header>
+
+  <div class="lyrics">
+
+    <div class="verse">
+      <p class="verse-label">verse 1</p>
+      <p>親愛的媽媽 請你毋通煩惱我<br>
+      原諒我 行袂開跤 我欲去對抗袂當原諒的人<br>
+      歹勢啦 愛人啊 袂當陪你去看電影<br>
+      原諒我 行袂開跤 我欲去對抗欺負咱的人</p>
+    </div>
+
+    <div class="verse">
+      <p class="verse-label">verse 2</p>
+      <p>已經袂記得 是第幾工 請毋通煩惱我<br>
+      因為阮知影 無行過寒冬 袂有花開的彼一工<br>
+      天色漸漸光 天色漸漸光<br>
+      已經是更加勇敢的人</p>
+    </div>
+
+    <div class="verse">
+      <p class="verse-label">chorus</p>
+      <p>天色漸漸光 遮有一陣人<br>
+      為著守護咱的夢 成做更加勇敢的人<br>
+      天色漸漸光 已經不再驚惶<br>
+      現在就是彼一工 換阮做守護恁的人</p>
+      <p>天色漸漸光 咱就大聲來唱著歌<br>
+      一直到希望的光線 照著島嶼每一个人<br>
+      天色漸漸光 咱就大聲來唱著歌<br>
+      日頭一爬上山 就會使轉去啦<br>
+      天色漸漸光 咱就大聲來唱著歌<br>
+      一直到希望的光線 照著島嶼每一个人<br>
+      天色漸漸光 咱就大聲來唱著歌<br>
+      日頭一爬上山 就會使轉去啦</p>
+    </div>
+
+    <div class="verse">
+      <p class="verse-label">bridge</p>
+      <p>現在是彼一工 勇敢的台灣人</p>
+    </div>
+
+  </div>
+
+  <!-- trad on/off 對照 -->
+  <div class="compare">
+    <div class="compare-col">
+      <h2>trad on（傳承字形）</h2>
+      <div class="trad-on">
+        <p>親愛的媽媽 請你毋通煩惱我<br>
+        為著守護咱的夢 成做更加勇敢的人<br>
+        一直到希望的光線 照著島嶼每一个人</p>
+      </div>
+    </div>
+    <div class="compare-col">
+      <h2>trad off</h2>
+      <div class="trad-off">
+        <p>親愛的媽媽 請你毋通煩惱我<br>
+        為著守護咱的夢 成做更加勇敢的人<br>
+        一直到希望的光線 照著島嶼每一个人</p>
+      </div>
+    </div>
+  </div>
+
+</article>
+</body>
+</html>

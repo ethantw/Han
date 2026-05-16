@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>ruby 單容器多 base — 換行行為</title>
+<style>
+  body { font: 20px/2.5 sans-serif; margin: 2em; }
+  .case { margin: 2em 0; }
+  h2 { font-size: .9em; color: #555; margin: 0 0 .25em; }
+
+  /* 盒子寬度剛好讓「你」塞得下、「好」塞不下 */
+  .box {
+    border: 2px solid #888;
+    display: inline-block;
+    /* 用 ch 近似「xxxxxxxxxx你」≈ 11 字寬（含 rt 上方空間） */
+    /* 用 em 比較穩，11em 約等於 11 個全形字 */
+  }
+
+  /* 「xxxxxxxxxx你」= 11 字，以 11.5em 留一點餘裕讓「你」剛好塞進去 */
+  .w-11-5 { width: 7.5em; }
+  /* 或用更小，讓「你好」兩字都塞不進去 */
+  .w-10   { width: 6em; }
+  /* 讓「你好」整體剛好塞不進去但各別字可以 */
+  .w-5    { width: 5em; }
+</style>
+</head>
+<body>
+
+<p>每個盒子裡都有「xxxxxxxxxx」（10 個 x）加上一個 ruby 元素。<br>
+   拖動不了，但寬度已設計成讓換行剛好發生在關鍵處。</p>
+
+<div class="case">
+  <h2>情境 A：單容器多 base — <code>&lt;ruby&gt;你&lt;rt&gt;ni3&lt;/rt&gt;好&lt;rt&gt;hao3&lt;/rt&gt;&lt;/ruby&gt;</code></h2>
+  <h2>寬度 = 11.5em（「你」塞得下、「好」塞不下）</h2>
+  <div class="box w-11-5">xxxxxxxxxx<ruby>你<rt>ni3</rt>好<rt>hao3</rt></ruby>。</div>
+  <p>問題：「你」留在第一行、「好」換到第二行？<br>還是「你好」整體提前換行？</p>
+</div>
+
+<div class="case">
+  <h2>對照組 B：各自獨立 ruby — <code>&lt;ruby&gt;你&lt;rt&gt;ni3&lt;/rt&gt;&lt;/ruby&gt;&lt;ruby&gt;好&lt;rt&gt;hao3&lt;/rt&gt;&lt;/ruby&gt;</code></h2>
+  <h2>寬度 = 11.5em</h2>
+  <div class="box w-11-5">xxxxxxxxxx<ruby>你<rt>ni3</rt></ruby><ruby>好<rt>hao3</rt></ruby>。</div>
+  <p>對照：兩個獨立 ruby 容器的換行行為是否相同？</p>
+</div>
+
+<div class="case">
+  <h2>情境 C：單容器多 base — 寬度 = 5.5em（「你好」整體剛好塞不進去）</h2>
+  <div class="box w-5">xxx<ruby>你<rt>ni3</rt>好<rt>hao3</rt></ruby>。</div>
+  <p>「你好」整體換行 vs 「你」留在第一行？</p>
+</div>
+
+<div class="case">
+  <h2>情境 D：四字 ruby — <code>&lt;ruby&gt;你好嗎我&lt;rt&gt;...&lt;/rt&gt;...&lt;/ruby&gt;</code></h2>
+  <h2>寬度 = 11.5em（讓換行發生在中間）</h2>
+  <div class="box w-11-5">xxxxxxxxxx<ruby>你<rt>ni3</rt>好<rt>hao3</rt>嗎<rt>ma</rt>我<rt>wo3</rt></ruby>。</div>
+  <p>4 個 base：可以在中間任意拆？還是整體換行？</p>
+</div>
+
+</body>
+</html>

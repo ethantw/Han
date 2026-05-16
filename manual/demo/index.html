@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-Hant" style="--han-install: auto;">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css 示例</title>
+<link rel="stylesheet" href="/han/han.css">
+<link rel="stylesheet" href="/demo.css">
+<script type="module">
+const dynImport = new Function('s', 'return import(s)')
+const { convertLegacyRuby } = await dynImport('/han/han.auto.js')
+convertLegacyRuby(document.documentElement)
+</script>
+</head>
+<body>
+<header>
+  <h1>Han.css 示例</h1>
+  <p class="lede">各項排版功能在繁體中文・簡體中文・日本語・한국어 四種語言下的並排對照。左欄套用 Han.css，右欄將該功能變數重置為瀏覽器預設値。</p>
+</header>
+<main>
+<!--demos:
+  ruby
+  adjacent-lines
+  em-emphasis
+  cjk-non-italic
+
+  regional-variants
+
+  sectional
+  consecutive-headings
+  blockquote-indent
+  nested-lists
+  figure
+  poem
+
+  curated-biaodian
+  autospace
+  autospace-replace
+  spacing-trim
+  hanging
+-->
+</main>
+<footer>
+  <p>Han.css v4・<a href="/">回手冊首頁</a></p>
+</footer>
+</body>
+</html>
