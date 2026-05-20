@@ -1,0 +1,52 @@
+name: Release Please
+
+# Watches `main` for conventional-commit-style messages and opens a
+# rolling "Release PR" that bumps `package.json` + updates
+# `CHANGELOG.md`. Merging that PR creates a tagged GitHub release.
+#
+# This workflow is INFRASTRUCTURE-ONLY as of 2026-05-02 — it does NOT
+# publish to npm. To enable publishing later, uncomment the publish
+# steps below and add `NPM_TOKEN` to repo secrets.
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # ── npm publish step (currently disabled) ────────────────────
+      # When ready to ship, set `if:` to `${{ steps.release.outputs.release_created }}`
+      # on each step below and add `NPM_TOKEN` to the repo's Actions
+      # secrets. Uncomment the block.
+      #
+      # - uses: actions/checkout@v4
+      #   if: false  # ← change to: ${{ steps.release.outputs.release_created }}
+      # - uses: pnpm/action-setup@v4
+      #   if: false
+      # - uses: actions/setup-node@v4
+      #   if: false
+      #   with:
+      #     node-version: '22'
+      #     registry-url: 'https://registry.npmjs.org'
+      #     cache: 'pnpm'
+      # - run: pnpm install --frozen-lockfile
+      #   if: false
+      # - run: pnpm build
+      #   if: false
+      # - run: npm publish --access public
+      #   if: false
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
