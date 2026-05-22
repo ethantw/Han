@@ -1,55 +1,46 @@
 @charset "UTF-8";
 
 /* ========================================================================== *
- * Feature Toggles・--han-semantics
+ * Feature Toggles・han-revert-semantics
  * ========================================================================== */
 
 /**
- * Controls whether Han.css semantic refinements are active in a subtree.
+ * Semantic refinements are applied unconditionally — there is no `auto`
+ * opt-in switch. To OPT OUT in a subtree, mark an ancestor as a named
+ * container:
  *
- * Values
- * ──────
- *   auto  Semantic refinements are active (default). The `auto` keyword
- *         will serve as an explicit opt-in once all major browsers support
- *         container style queries; until then, refinements are always on.
- *   none  Reverts all Han.css semantic overrides in the subtree.
+ *   article { container-name: han-revert-semantics; }
  *
- * ⚠️  Always set on an ANCESTOR, never on the targeted element itself.
- *     `@container style()` queries the nearest ancestor — the element
- *     cannot query its own custom properties.
+ * Every Han.css semantic rule below pairs its defaults with a matching
+ * `@container han-revert-semantics { … revert-layer … }` block; once that
+ * ancestor is in scope, the cascade unwinds back to the styles outside
+ * the `han-semantics` layer.
  *
- *   ✓  article { --han-semantics: none; }   → all descendants revert
- *   ✗  address { --han-semantics: none; }   → no effect on <address> itself
+ * Mechanism
+ * ─────────
+ * Uses CSS name-only `@container` queries (no `<container-condition>`),
+ * supported in Chrome 137+ / Firefox 110+ / Safari 16+. Style queries
+ * (`@container style(--foo: bar)`) would be more ergonomic but Firefox
+ * doesn't ship them yet; named containers work everywhere today.
  *
- * Current implementation
- * ──────────────────────
- * Semantic rules are applied unconditionally (always on). Only `none`
- * opt-out is gated behind `@container style(--han-semantics: none)`.
- * Firefox does not yet support container style queries, so wrapping the
- * default rules in `@container style(--han-semantics: auto)` would silently
- * disable all semantics in Firefox.
+ * Caveats
+ * ───────
+ * ⚠️  Set on an ANCESTOR, never on the targeted element itself.
+ *     `@container` always queries an ancestor — the element cannot
+ *     query its own container name.
  *
- * Planned upgrade (once Firefox ships container style query support)
- * ──────────────────────────────────────────────────────────────────
- * Each rule will be wrapped in the `auto` query. The nested `none` opt-out
- * block will be dropped — when the nearest ancestor has `none`, the outer
- * `auto` query simply won't match, making explicit revert unnecessary:
+ *   ✓  article { container-name: han-revert-semantics; }  → descendants revert
+ *   ✗  address { container-name: han-revert-semantics; }  → no effect on <address>
  *
- *   :where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
- *     @container style(--han-semantics: auto) {
- *       font-style: inherit;
- *     }
- *   }
+ * ⚠️  `container-name` is a space-separated token list. If the element
+ *     already names another container, concatenate — do NOT overwrite:
  *
- * `:root` will also receive `--han-semantics: auto` as an explicit default
- * so existing users require no changes when upgrading.
+ *   ✓  .card { container-name: card han-revert-semantics; }
+ *   ✗  .card { container-name: han-revert-semantics; }    (overwrites `card`)
+ *
+ * ⚠️  `container-name` does NOT inherit. Each subtree root that needs to
+ *     revert must declare it directly.
  */
-@property --han-semantics {
-  syntax: "auto | none";
-  inherits: true;
-  initial-value: auto;
-}
-
 @property --han-text-decoration-inset {
   syntax: "<length> | auto";
   inherits: true;
@@ -119,12 +110,17 @@
  */
 :where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
   & {
-    font-family: var(--han-font-default); /* 1 */
-    text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
-    text-underline-offset: var(--han-underline-offset); /* 3 */
-    text-underline-position: var(--han-underline-position); /* 3 */
+    font-family: var(--han-font-default);
+    /* 1 */
+    text-decoration-inset: var(--han-text-decoration-inset);
+    /* 2 */
+    text-underline-offset: var(--han-underline-offset);
+    /* 3 */
+    text-underline-position: var(--han-underline-position);
+    /* 3 */
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-family: revert-layer;
     text-decoration-inset: revert-layer;
     text-underline-offset: revert-layer;
@@ -143,7 +139,8 @@
   & {
     font-style: inherit;
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-style: revert-layer;
   }
 }
@@ -155,7 +152,8 @@
   & {
     font-family: var(--han-font-accent);
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-family: revert-layer;
   }
 }
@@ -171,7 +169,8 @@
   & {
     font-style: inherit;
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-style: revert-layer;
   }
 }
@@ -189,6 +188,7 @@
     &:where(::before) {
       content: open-quote;
     }
+
     &:where(::after) {
       content: close-quote;
     }
@@ -198,7 +198,8 @@
    */
   @container style(--han-cite-use-title-marks: wavy) {
     &:where(:lang(zh)) {
-      quotes: none; /* 1 */
+      quotes: none;
+      /* 1 */
       text-decoration-line: underline;
       text-decoration-style: wavy;
     }
@@ -208,6 +209,7 @@
     &:where(:lang(zh), :lang(ja)) {
       quotes: none;
     }
+
     &:where(:lang(zh)) {
       text-decoration: none;
     }
@@ -222,10 +224,12 @@
   & {
     font-weight: inherit;
   }
+
   & {
     font-weight: bolder;
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-weight: revert-layer;
   }
 }
@@ -237,7 +241,8 @@
   & {
     font-family: var(--han-font-accent);
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-family: revert-layer;
   }
 }
@@ -250,7 +255,8 @@
     text-emphasis: var(--han-em-symbol);
     text-emphasis-position: var(--han-em-dot-position);
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     text-emphasis: revert-layer;
     text-emphasis-position: revert-layer;
   }
@@ -262,11 +268,13 @@
  * if current UA does not support `text-decoration-inset: auto`.
  */
 @supports not (text-decoration-inset: auto) {
+
   :where(u, ins):has(+ u, + ins),
   :where(s, del):has(+ s, + del) {
     margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
   }
-  @container han-cite-use-wavy-title-marks (inline-size >= 0) {
+
+  @container han-cite-use-wavy-title-marks (inline-size >=0) {
     :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {
       margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
     }
@@ -280,7 +288,8 @@
   & {
     font-family: var(--han-font-accent);
   }
-  @container style(--han-semantics: none) {
+
+  @container han-revert-semantics {
     font-family: revert-layer;
   }
 }
@@ -292,9 +301,11 @@
   & {
     quotes: var(--han-quotes);
   }
+
   &:where(:before) {
     content: open-quote;
   }
+
   &:where(:after) {
     content: close-quote;
   }
@@ -312,17 +323,21 @@
     ruby-position: inter-character;
     font-family: var(--han-font-family-zhuyin-serif);
   }
-  > rt {
+
+  >rt {
     font-family: var(--han-font-family-zhuyin-serif);
     text-orientation: upright;
   }
+
   @supports not (ruby-position: inter-character) {
     & {
       position: relative;
       letter-spacing: .6em;
     }
-    > rt {
-      position: absolute;          /* out of annotation flow; display: ruby preserved */
+
+    >rt {
+      position: absolute;
+      /* out of annotation flow; display: ruby preserved */
       inset-inline-start: 50%;
       transform: translate(-133%, -40%);
       transform-origin: center;
@@ -350,7 +365,8 @@
     & {
       font-family: var(--han-font-default);
     }
-    @container style(--han-semantics: none) {
+
+    @container han-revert-semantics {
       font-family: revert-layer;
     }
   }
