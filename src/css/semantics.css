@@ -41,6 +41,37 @@
  * ⚠️  `container-name` does NOT inherit. Each subtree root that needs to
  *     revert must declare it directly.
  */
+/* ========================================================================== *
+ * Registered custom properties・`@property`
+ * ========================================================================== */
+
+/**
+ * Heuristic for when a Han.css cascade variable gets an `@property` block
+ * versus a plain `:where(:root) { --foo: bar }` declaration:
+ *
+ * **REGISTER** (`@property { syntax; inherits; initial-value }`) when the
+ *   variable is an Han.css-owned enum we use as a *control signal* — i.e.
+ *   the value drives `@container style(--foo: bar)` branches and never
+ *   flows into a native CSS property unchanged. Browser won't validate it
+ *   for us, so we declare the syntax ourselves and let the parser reject
+ *   bad values up front. Doubles as machine-checked documentation.
+ *   Examples: `--han-cite-title-marks`, `--han-text-autospace`,
+ *   `--han-punctuation-refinement`.
+ *
+ * **DON'T REGISTER** when the variable is a *transparent proxy* — the
+ *   value goes through `var(--foo)` straight into a native CSS property
+ *   (`text-emphasis: var(--han-em-symbol)`, `text-underline-position:
+ *   var(--han-underline-position)`). The native property does its own
+ *   validation at the consumption site; bad values silently fail there,
+ *   same effective outcome as `@property` rejection. Registering would
+ *   add a maintenance burden (keeping our `syntax` in sync with native
+ *   spec evolution) without changing user-visible behaviour.
+ *   Examples: `--han-em-symbol`, `--han-em-dot-position`,
+ *   `--han-underline-position`, `--han-font-default`, `--han-quotes`.
+ *
+ * Short form: **own enum → register; transparent proxy → don't.**
+ */
+
 @property --han-text-decoration-inset {
   syntax: "<length> | auto";
   inherits: true;
