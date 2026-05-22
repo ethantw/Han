@@ -19,9 +19,11 @@
  * Mechanism
  * ─────────
  * Uses CSS name-only `@container` queries (no `<container-condition>`),
- * supported in Chrome 137+ / Firefox 110+ / Safari 16+. Style queries
- * (`@container style(--foo: bar)`) would be more ergonomic but Firefox
- * doesn't ship them yet; named containers work everywhere today.
+ * which work in all current Chrome / Firefox / Safari — Chrome was the
+ * last engine to ship, on 2026-05-05 (Safari has had it since 26.4).
+ * Style queries (`@container style(--foo: bar)`) would be more
+ * ergonomic but Firefox doesn't ship them yet; named containers work
+ * everywhere today.
  *
  * Caveats
  * ───────
@@ -155,23 +157,18 @@
 /**
  * Set default fonts and refine styles of underlines on the root element.
  *
- * 1. Use `system-ui` font for the document.
- * 2. Make sure the lines of two (or more) adjacent underlined or stuck-through
+ * 1. Use the default font stack for the document (starts with `system-ui`).
+ * 2. Make sure the lines of two (or more) adjacent underlined or struck-through
  *    elements are visually distinguishable.
  * 3. Make sure underlines are slightly apart from the annotated text.
  */
 :where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
   & {
-    font-family: var(--han-font-default);
-    /* 1 */
-    text-decoration-inset: var(--han-text-decoration-inset);
-    /* 2 */
-    text-underline-offset: var(--han-underline-offset);
-    /* 3 */
-    text-underline-position: var(--han-underline-position);
-    /* 3 */
+    font-family: var(--han-font-default); /* 1 */
+    text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
+    text-underline-offset: var(--han-underline-offset); /* 3 */
+    text-underline-position: var(--han-underline-position); /* 3 */
   }
-
   @container han-revert-semantics {
     font-family: revert-layer;
     text-decoration-inset: revert-layer;
@@ -191,7 +188,6 @@
   & {
     font-style: inherit;
   }
-
   @container han-revert-semantics {
     font-style: revert-layer;
   }
@@ -204,7 +200,6 @@
   & {
     font-family: var(--han-font-accent);
   }
-
   @container han-revert-semantics {
     font-family: revert-layer;
   }
@@ -221,15 +216,24 @@
   & {
     font-style: inherit;
   }
-
   @container han-revert-semantics {
     font-style: revert-layer;
   }
 }
 
 /**
- * Add *bracket* title marks to `cite` elements if corresponding variable is
- * set to true.
+ * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
+ *
+ *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content.
+ *   wavy     Underline with a wavy line (Simplified Chinese horizontal
+ *            convention); suppresses the bracket quotes since the two
+ *            style-query blocks are mutually exclusive — the variable
+ *            can only hold one value at a time.
+ *   none     Suppress both: no quotes, no underline.
+ *
+ * `quotes: var(--han-title-marks)` is always set so that the `bracket`
+ * block's `open-quote` / `close-quote` content has something to resolve
+ * against. The `wavy` and `none` blocks override it back to `none`.
  */
 :where(cite:is(:lang(zh), :lang(ja))) {
   & {
@@ -246,12 +250,9 @@
     }
   }
 
-  /* 1. Remove previously-set bracket title marks.
-   */
   @container style(--han-cite-title-marks: wavy) {
     &:where(:lang(zh)) {
       quotes: none;
-      /* 1 */
       text-decoration-line: underline;
       text-decoration-style: wavy;
     }
@@ -261,7 +262,6 @@
     &:where(:lang(zh), :lang(ja)) {
       quotes: none;
     }
-
     &:where(:lang(zh)) {
       text-decoration: none;
     }
@@ -269,18 +269,16 @@
 }
 
 /**
- * Set font-weight of `dfn` elements to inherit first and then `bolder` to make
- * sure the weight is bolder to their parental contexts.
+ * Make `<dfn>` bolder than its surrounding text. Modern UAs don't apply
+ * a default `font-weight` to `<dfn>` (italic only), so `bolder` against
+ * the inherited parent weight is enough — no `inherit`-then-`bolder`
+ * hedge needed (current `normalize.css` and `modern-normalize` both
+ * use the same single-rule approach for the analogous `<b>` / `<strong>`).
  */
 :where(dfn:is(:lang(zh), :lang(ja), :lang(ko))) {
   & {
-    font-weight: inherit;
-  }
-
-  & {
     font-weight: bolder;
   }
-
   @container han-revert-semantics {
     font-weight: revert-layer;
   }
@@ -293,7 +291,6 @@
   & {
     font-family: var(--han-font-accent);
   }
-
   @container han-revert-semantics {
     font-family: revert-layer;
   }
@@ -307,7 +304,6 @@
     text-emphasis: var(--han-em-symbol);
     text-emphasis-position: var(--han-em-dot-position);
   }
-
   @container han-revert-semantics {
     text-emphasis: revert-layer;
     text-emphasis-position: revert-layer;
@@ -352,7 +348,6 @@
   & {
     font-family: var(--han-font-accent);
   }
-
   @container han-revert-semantics {
     font-family: revert-layer;
   }
@@ -365,12 +360,10 @@
   & {
     quotes: var(--han-quotes);
   }
-
-  &:where(:before) {
+  &:where(::before) {
     content: open-quote;
   }
-
-  &:where(:after) {
+  &:where(::after) {
     content: close-quote;
   }
 }
@@ -387,19 +380,16 @@
     ruby-position: inter-character;
     font-family: var(--han-font-family-zhuyin-serif);
   }
-
   > rt {
     font-family: var(--han-font-family-zhuyin-serif);
     text-orientation: upright;
   }
-
   @supports not (ruby-position: inter-character) {
     & {
       position: relative;
       letter-spacing: .6em;
     }
-
-    >rt {
+    > rt {
       position: absolute;
       /* out of annotation flow; display: ruby preserved */
       inset-inline-start: 50%;
@@ -421,15 +411,17 @@
 }
 
 /**
- * Use sans-serif generic family for `dfn` `i` `var` elements in
- * article blockquotes instead.
+ * Inside article `<blockquote>`, restore `<dfn>` / `<i>` / `<var>` to
+ * the document's default font-family (whatever `--han-font-default`
+ * resolves to — `var(--han-generics-sans)` by default, user-overridable).
+ * Otherwise they'd inherit the cursive family applied to the blockquote
+ * itself and lose their distinct semantic.
  */
 :where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
   :where(dfn, i, var) {
     & {
       font-family: var(--han-font-default);
     }
-
     @container han-revert-semantics {
       font-family: revert-layer;
     }
