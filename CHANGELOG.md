@@ -75,6 +75,39 @@ not the engine.
 - Per-feature CSS classes (`.han-css--*`) — semantics now drive the
   styling.
 
+##### v3 JavaScript runtime features dropped
+
+These v3 features were JS workarounds for CSS / font limitations that
+no longer exist in 2026. None survive in v4 — each is covered
+(usually more correctly) by native browser or font behaviour:
+
+- **`renderRuby` (full Zhuyin ruby JS pipeline)** — replaced by native
+  CSS `ruby-position: inter-character` layered on top of standard
+  `<ruby>` markup, with Bopomofo tone-mark positioning handled by the
+  font's OpenType GPOS. Only the migration helper
+  `convertLegacyZhuyinRuby` is retained, and it does not run
+  automatically.
+- **`substCombLigaWithPUA` (Zhuyin tone PUA substitution)** —
+  combining-tone-mark positioning is now a font GPOS concern, not a JS
+  string-substitution one. Modern CJK fonts (Han Zhuyin Serif, Noto
+  Sans/Serif CJK, etc.) place U+02C9 / U+02CA / U+02C7 / U+02CB /
+  U+02D9 over base zhuyin syllables directly.
+- **`locale/normalize` (lang-aware glyph variant normalisation)** — the
+  雨/雨, 骨/骨, 直/直 etc. regional variants are now handled by the
+  OpenType `locl` feature on `lang`-aware fonts, with no JS pre-pass
+  required.
+- **`jinzify` (CJK even-character justification)** — disabled by
+  default in v3 anyway; the use case is now expressible directly as
+  `text-justify: inter-character` (or `text-align-last: justify` for
+  the "last line, too" variant).
+- **`charify` (wrap every Han glyph in `<h-char>`)** — was an internal
+  infrastructure helper, never an intentional public API. v4 only
+  emits `<h-char>` around CJK punctuation where compress / hang
+  wrappers need it.
+
+The JS-based font-availability probe from v3 (`locale/detect-font`) is
+under review and not yet decided; see the project's working notes.
+
 ---
 
 ## Pre-v4
