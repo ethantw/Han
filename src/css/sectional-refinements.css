@@ -27,7 +27,7 @@
  * To opt out a subtree within an article and prose section:
  *
  *   :where(article, section.prose) .demo {
- *     container-name: han-sectional-refinements-none;
+ *     container-name: han-revert-sectional-refinements;
  *   }
  */
 :where(article) {
@@ -97,12 +97,12 @@
 
 /* Subtree opt-out.
  *
- * Apply `container-name: han-sectional-refinements-none` to any element
+ * Apply `container-name: han-revert-sectional-refinements` to any element
  * whose descendants should revert to browser defaults. The on-rules above
  * still fire (the outer `han-sectional-refinements` container on `<article>`
  * remains an ancestor), but this block — declared after them — wins by
  * source order and reverts all affected margins. */
-@container han-sectional-refinements-none {
+@container han-revert-sectional-refinements {
   :where(h1, h2, h3, h4, h5, h6, blockquote, figure, ol, ul, p) {
     margin: revert-layer;
   }

@@ -209,7 +209,7 @@ body > footer a { color: inherit; }
   --han-text-autospace: auto;
   --han-text-spacing-trim: auto;
   --han-hanging-punctuation: none;
-  container-name: han-sectional-refinements-none;
+  container-name: han-revert-sectional-refinements;
   --han-use-curated-fonts: false;
 }
 

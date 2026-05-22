@@ -23,7 +23,7 @@ not the engine.
 - Cascade-variable-driven feature toggles (`--han-text-autospace`,
   `--han-hanging-punctuation`, the `--han-font-family-*` cascade).
 - Named-container-driven sectional refinements (`container-name:
-  han-sectional-refinements` / `han-sectional-refinements-none`).
+  han-sectional-refinements` / `han-revert-sectional-refinements`).
 - Zhuyin ruby — CSS-only via the `Han Zhuyin Serif` Bopomofo web font
   (OpenType GPOS) on top of native `<ruby>`. Safari 18.2+ uses native
   `ruby-position: inter-character`; other engines emulate inter-character
