@@ -24,7 +24,7 @@ const withBrowserGlobals = async () => {
   }
 }
 
-const refine = (mode: 'auto' | 'compress' | 'hang' | 'emphasis' | 'none') =>
+const refine = (mode: 'auto' | 'compress' | 'hang' | 'none') =>
   (src: string) => html(refinePunctuationWithMode(mode)(src))
 
 /* The unified `refinePunctuationWithMode(mode)(src)` curried API replaces the
@@ -194,7 +194,6 @@ test('auto: Latin-only paragraph emits no h-char', () => {
 /* ─── <em> interaction ──────────────────────────────────── */
 // auto / compress / hang treat <em> as transparent — biaodian inside <em>
 // gets the same wrappers as biaodian anywhere else.
-// `emphasis` is the mode for selectively targeting only the em-scoped subset.
 
 test('auto: biaodian inside <em> gets the same full treatment as outside', () => {
   assert.equal(
@@ -231,38 +230,6 @@ test('auto: ，(in <em>) + 。(outside) form a single consecutive run', () => {
       + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="end"><h-layer>。</h-layer></h-char>'
       + '</p>',
   )
-})
-
-/* ─── emphasis mode ──────────────────────────────────────── */
-
-test('emphasis: biaodian inside <em> is wrapped; outside is untouched', () => {
-  assert.equal(
-    refine('emphasis')('<p><em>字，</em>。</p>'),
-    '<p><em>字<h-char data-punct="end">，</h-char></em>。</p>',
-  )
-})
-
-test('emphasis: no <em> → all biaodian pass through unchanged', () => {
-  assert.equal(
-    refine('emphasis')('<p>字。</p>'),
-    '<p>字。</p>',
-  )
-})
-
-test('emphasis: run of biaodian inside <em> — each char wrapped, no consecutive', () => {
-  assert.equal(
-    refine('emphasis')('<em>字。」</em>'),
-    '<em>字'
-      + '<h-char data-punct="end">。</h-char>'
-      + '<h-char data-punct="close end">」</h-char>'
-      + '</em>',
-  )
-})
-
-test('emphasis mode is idempotent', () => {
-  const once = refine('emphasis')('<p><em>字，</em>。</p>')
-  const twice = html(refinePunctuationWithMode('emphasis')(once))
-  assert.equal(twice, once)
 })
 
 /* ─── cascade-write: browser path ────────────────────────── */

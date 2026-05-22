@@ -10,10 +10,10 @@ import { identity, pipe, tap } from '../helpers/fp.ts'
 /** Subtype tokens emitted into `data-punct`. Combine with `consecutive`
  *  and `hangable` (added by the wrapper logic) for the full value set. */
 export type PunctSubtype = 'open' | 'close' | 'end' | 'middle'
-export type RefineMode = 'auto' | 'compress' | 'hang' | 'emphasis' | 'none'
+export type RefineMode = 'auto' | 'compress' | 'hang' | 'none'
 
 export const isValidMode = (mode: any): mode is RefineMode =>
-  ['auto', 'compress', 'hang', 'emphasis', 'none'].includes(mode)
+  ['auto', 'compress', 'hang', 'none'].includes(mode)
 
 /* ─── Constants & Regex ──────────────────────────────────────────────────── */
 
@@ -101,50 +101,23 @@ export const classifyPunctuation = (ch: string): readonly PunctSubtype[] =>
 const isHCharWrapper = (n: Node): boolean =>
   n.nodeType === 1 && (n as Element).tagName === 'H-CHAR'
 
-export const optionsIgnoringHChar: Options = {
+const optionsIgnoringHChar: Options = {
   ignore: n => defaultOptions.ignore(n) || isHCharWrapper(n),
 }
 
 /* ─── Public API ─────────────────────────────────────────────────────────── */
 
 /**
- * Transforms CJK punctuation strictly within elements matching the given CSS
- * selector.
- *
- * Primarily used to wrap punctuation inside emphasis tags (e.g., `<em>`) with
- * `<h-char data-punct="…">`. This allows CSS to selectively suppress
- * `text-emphasis` marks on punctuation without triggering full line-adjustment
- * (compress/hang) logic.
- *
- * @param selector - A CSS selector string to match the emphasis container
- *                   (e.g., `'em'`, `'.dot'`, `'.warning'`).
- */
-export const wrapPunctuationWithin = (selector: string) =>
-  transform
-    (optionsIgnoringHChar)
-    (CJK_PUNCT_RUN)
-    (portion => _match =>
-      portion.node.parentElement?.closest(selector)
-      ? [...portion.text].map(ch =>
-          `<h-char data-punct="${classifyPunctuation(ch).join(' ')}">${ch}</h-char>`
-        ).join('')
-      : portion.text
-    )
-
-/**
- * Mode-explicit punctuation primitive. The five modes dispatch to their
+ * Mode-explicit punctuation primitive. The four modes dispatch to their
  * respective wrappers:
  *
- *   - `auto`     — compress + hang + emphasis in a single pass; hangable
+ *   - `auto`     — compress + hang in a single pass; hangable
  *                  punctuation get the combined shape
  *                  `<h-char data-punct="end hangable"><h-layer>…</h-layer></h-char>`.
- *                  Subsumes `compress`, `hang`, and `emphasis`.
+ *                  Subsumes `compress` and `hang`.
  *   - `compress` — only the 標點擠壓 wrappers (`<h-char data-punct="…">`).
  *   - `hang`     — only the 標點懸掛 wrappers
  *                  (`<h-char data-punct="hangable"><h-layer>…</h-layer></h-char>`).
- *   - `emphasis` — wraps only punctuation inside `<em>` in `<h-char data-punct="…">`,
- *                  leaving all other punctuation untouched. Lets CSS suppress
- *                  `text-emphasis` on punctuation without compress/hang effects.
  *   - `none`     — identity transform (`hype`). For SSR pipelines that
  *                  want to skip the punct stage explicitly.
  *
@@ -246,9 +219,6 @@ const dispatchByPunctMode = (mode: RefineMode): ((src: Hyperly) => Hype) =>
 
   : mode === 'hang'
   ? wrapHangable
-
-  : mode === 'emphasis'
-  ? wrapPunctuationWithin('em')
 
   : hype
 
