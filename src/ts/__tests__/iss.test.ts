@@ -1,7 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { html } from 'hyperly/fp'
-import { applyISSWithMode } from '../line-adjustments/iss.ts'
+import {
+  applyISS,
+  applyISSWithMode,
+  applyISSWithProbe,
+} from '../line-adjustments/iss.ts'
 
 const TAG = '<h-iss hidden=""> </h-iss>'
 // `replace` mode stamps `mode="replace"` on its output so callers /
@@ -266,4 +270,194 @@ test('SSR: applyISSWithMode does NOT write inline cascade var', async () => {
   applyISSWithMode('insert')(article as unknown as Element)
   assert.equal(article.style.getPropertyValue('--han-text-autospace'), '')
   assert.match(article.innerHTML, /h-iss/)
+})
+
+/* ────────────────────────────────────────────────────────── */
+/* cascade-dispatching entries — applyISS / applyISSWithProbe */
+/*                                                            */
+/* These read `--han-text-autospace` from the cascade,        */
+/* consult `CSS.supports`, and (for the probe variant)        */
+/* `detectAutospaceBoundaryBug` to decide whether to run JS   */
+/* at all. happy-dom resolves inline custom properties via    */
+/* `getComputedStyle`, so the cascade-resolution path is      */
+/* exercisable; `CSS.supports` is mocked per-test to drive    */
+/* the decision matrix in `needsJS`.                          */
+/* ────────────────────────────────────────────────────────── */
+
+const withCascadeGlobals = async (
+  supports: (prop: string, value: string) => boolean = () => false,
+) => {
+  const { Window } = await import('happy-dom')
+  const win = new Window()
+  const prev = {
+    document: (globalThis as any).document,
+    CSS: (globalThis as any).CSS,
+    getComputedStyle: (globalThis as any).getComputedStyle,
+  }
+  ;(globalThis as any).document = win.document
+  ;(globalThis as any).CSS = { supports }
+  ;(globalThis as any).getComputedStyle = win.getComputedStyle.bind(win)
+  return {
+    win,
+    teardown: () => {
+      ;(globalThis as any).document = prev.document
+      ;(globalThis as any).CSS = prev.CSS
+      ;(globalThis as any).getComputedStyle = prev.getComputedStyle
+    },
+  }
+}
+
+/** Build an <article> with a given `--han-text-autospace` inline cascade. */
+const seed = (win: any, mode: string, body = '<p>字A</p>') => {
+  win.document.body.innerHTML =
+    `<article style="--han-text-autospace: ${mode}">${body}</article>`
+  return win.document.querySelector('article') as unknown as Element
+}
+
+/* ─── applyISS — no probe ────────────────────────────────── */
+
+test('applyISS: mode="none" short-circuits — no h-iss, no cascade rewrite', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => true)
+  try {
+    const article = seed(win, 'none')
+    const before = (article as any as HTMLElement).innerHTML
+    applyISS(article)
+    assert.equal((article as any as HTMLElement).innerHTML, before)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: mode="normal" + native insert supported → no JS', async () => {
+  const { win, teardown } = await withCascadeGlobals(
+    (_p, v) => v === 'insert',
+  )
+  try {
+    const article = seed(win, 'normal')
+    applyISS(article)
+    assert.doesNotMatch((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: mode="normal" + no native support → runs insertISS', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => false)
+  try {
+    const article = seed(win, 'normal')
+    applyISS(article)
+    assert.match((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: mode="replace" + native replace supported → no JS', async () => {
+  const { win, teardown } = await withCascadeGlobals(
+    (_p, v) => v === 'replace',
+  )
+  try {
+    const article = seed(win, 'replace', '<p>字 A</p>')
+    applyISS(article)
+    assert.doesNotMatch((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: mode="replace" + no native support → runs replaceISS', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => false)
+  try {
+    const article = seed(win, 'replace', '<p>字 A</p>')
+    applyISS(article)
+    assert.match(
+      (article as any as HTMLElement).innerHTML,
+      /h-iss[^>]*data-mode="replace"/,
+    )
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: mode="strict" runs JS regardless of native support', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => true)
+  try {
+    const article = seed(win, 'strict', '<p>字 A・字B</p>')
+    applyISS(article)
+    const got = (article as any as HTMLElement).innerHTML
+    assert.match(got, /data-mode="replace"/, 'replace pass ran')
+    assert.match(got, /字<h-iss[^>]*hidden=""[^>]*> <\/h-iss>B/, 'insert pass ran')
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: unknown cascade token falls back to "normal"', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => false)
+  try {
+    const article = seed(win, 'garbage-mode')
+    applyISS(article)
+    // Falls back to "normal" → insertISS runs because supports() returns false.
+    assert.match((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISS: empty cascade falls back to "normal"', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => false)
+  try {
+    win.document.body.innerHTML = '<article><p>字A</p></article>'
+    const article = win.document.querySelector('article')! as unknown as Element
+    applyISS(article)
+    assert.match((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+/* ─── applyISSWithProbe — with the Safari inline-boundary probe ── */
+/* happy-dom doesn't lay out, so the probe always reports clean.   */
+/* The buggy-probe-forces-JS branch is exercised by Safari e2e.    */
+
+test('applyISSWithProbe: mode="none" short-circuits BEFORE the probe runs', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => true)
+  try {
+    const article = seed(win, 'none')
+    const before = (article as any as HTMLElement).innerHTML
+    applyISSWithProbe(article)
+    assert.equal((article as any as HTMLElement).innerHTML, before)
+    // Probe inserts + removes a measurement element on documentElement;
+    // a short-circuit should leave no debris on body either.
+    assert.equal(win.document.body.children.length, 1, 'no probe debris')
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISSWithProbe: mode="normal" + native + clean probe → no JS', async () => {
+  const { win, teardown } = await withCascadeGlobals(
+    (_p, v) => v === 'normal' || v === 'insert',
+  )
+  try {
+    const article = seed(win, 'normal')
+    applyISSWithProbe(article)
+    assert.doesNotMatch((article as any as HTMLElement).innerHTML, /h-iss/)
+  } finally {
+    teardown()
+  }
+})
+
+test('applyISSWithProbe: mode="strict" runs JS regardless of probe', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => true)
+  try {
+    const article = seed(win, 'strict', '<p>字 A</p>')
+    applyISSWithProbe(article)
+    assert.match(
+      (article as any as HTMLElement).innerHTML,
+      /h-iss[^>]*data-mode="replace"/,
+    )
+  } finally {
+    teardown()
+  }
 })
