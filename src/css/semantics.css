@@ -43,6 +43,36 @@
  * ⚠️  `container-name` does NOT inherit. Each subtree root that needs to
  *     revert must declare it directly.
  */
+
+/* ========================================================================== *
+ * Naming convention・`han-revert-*` opt-out family
+ * ========================================================================== */
+
+/**
+ * Opt-out container names across Han.css follow a single
+ * `han-revert-<feature>` pattern:
+ *
+ *   han-revert-semantics              (this file)
+ *   han-revert-sectional-refinements  (sectional-refinements.css)
+ *
+ * Verb-first, feature-second. Anyone grepping `han-revert-` lands on
+ * every "turn this off" mechanism in the project at once.
+ *
+ * Asymmetric on purpose: opt-IN container names stay feature-first
+ * (e.g. `han-sectional-refinements`, auto-applied to `<article>` in
+ * sectional-refinements.css). They read as "this region IS a
+ * sectional-refinements zone" — present tense, descriptive. Opt-OUTs
+ * read as "revert sectional refinements here" — imperative.
+ *
+ * Reason for the convention rather than per-file ad-hoc naming:
+ * cross-feature memorability. Users don't have to remember whether
+ * a given feature's opt-out lives at `-none`, `-revert`, `-off`, or
+ * `revert-`; it's always `han-revert-<feature>`.
+ *
+ * When adding a new always-on feature whose subtree opt-out needs a
+ * container marker, use `han-revert-<feature>`.
+ */
+
 /* ========================================================================== *
  * Registered custom properties・`@property`
  * ========================================================================== */
