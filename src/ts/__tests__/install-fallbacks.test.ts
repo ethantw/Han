@@ -1,7 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { html } from 'hyperly/fp'
-import { installFallbacks, uninstallFallbacks } from '../fallbacks.ts'
+import {
+  installFallbacks,
+  runProbes,
+  uninstallFallbacks,
+} from '../fallbacks.ts'
 
 /* `installFallbacks` has two execution modes; this file exercises the
  * Node SSR path (no `document` global) where it accepts a Hyperly
@@ -118,4 +122,90 @@ test('uninstallFallbacks: removes [data-followed-by-adjacent-line] attribute', a
 
   uninstallFallbacks(body)
   assert.equal(body.querySelector('[data-followed-by-adjacent-line]'), null)
+})
+
+test('uninstallFallbacks: SSR + no root throws (clear contract)', () => {
+  assert.throws(
+    () => (uninstallFallbacks as () => unknown)(),
+    /requires an explicit source/,
+  )
+})
+
+/* ────────────────────────────────────────────────────────── */
+/* Browser path — `document` + `CSS` globals defined.         */
+/*                                                            */
+/* Exercises the L106-108 branch: `runProbes()` is called,    */
+/* `root` defaults to `document.documentElement` when omitted */
+/* and `refinePunctuation` / `applyISSWithProbe` /            */
+/* `markAdjacentLines` run on a live DOM. Cleans up globals   */
+/* in `finally` so subsequent tests stay deterministic.       */
+/* ────────────────────────────────────────────────────────── */
+
+const withBrowserGlobals = async (
+  supports: (prop: string, value: string) => boolean = () => false,
+) => {
+  const { Window } = await import('happy-dom')
+  const win = new Window()
+  const prev = {
+    document: (globalThis as any).document,
+    CSS: (globalThis as any).CSS,
+    getComputedStyle: (globalThis as any).getComputedStyle,
+  }
+  ;(globalThis as any).document = win.document
+  ;(globalThis as any).CSS = { supports }
+  ;(globalThis as any).getComputedStyle = win.getComputedStyle.bind(win)
+  return {
+    win,
+    teardown: () => {
+      ;(globalThis as any).document = prev.document
+      ;(globalThis as any).CSS = prev.CSS
+      ;(globalThis as any).getComputedStyle = prev.getComputedStyle
+    },
+  }
+}
+
+test('Browser: installFallbacks(root) mutates in place and returns Hype', async () => {
+  const { win, teardown } = await withBrowserGlobals()
+  try {
+    win.document.body.innerHTML = '<p>句。</p>'
+    const p = win.document.body.querySelector('p')! as unknown as Element
+    const result = installFallbacks(p)
+    assert.match(
+      (p as any as HTMLElement).innerHTML,
+      /<h-char data-punct="end hangable">/,
+    )
+    // `installFallbacks` returns a Hype wrapping the live element.
+    assert.match(html(result), /<h-char data-punct="end hangable">/)
+  } finally {
+    teardown()
+  }
+})
+
+test('Browser: installFallbacks() with no arg defaults to documentElement', async () => {
+  const { win, teardown } = await withBrowserGlobals()
+  try {
+    win.document.body.innerHTML = '<p>句。</p>'
+    installFallbacks()
+    assert.match(
+      (win.document.body.querySelector('p') as any).innerHTML,
+      /<h-char data-punct="end hangable">/,
+    )
+  } finally {
+    teardown()
+  }
+})
+
+test('runProbes: stamps probe results onto documentElement', async () => {
+  const { win, teardown } = await withBrowserGlobals()
+  try {
+    runProbes()
+    // happy-dom can't lay out, so the autospace probe doesn't mark broken;
+    // style-query probe consistently reports unsupported (no real engine).
+    assert.equal(
+      win.document.documentElement.dataset.probeStyleQuery,
+      'unsupported',
+    )
+  } finally {
+    teardown()
+  }
 })
