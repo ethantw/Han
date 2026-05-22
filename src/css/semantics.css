@@ -47,6 +47,27 @@
   initial-value: auto;
 }
 
+/**
+ * Title-mark style for `<cite>` (書名號樣式).
+ *
+ *   none     No title marks. Default. `<cite>` renders with its native
+ *            font-style (already coerced via `font-style: inherit` for
+ *            CJK languages elsewhere in this file).
+ *   bracket  Wrap with `《》` / `〈〉` (Chinese book-title brackets) via
+ *            `quotes` + `::before` / `::after`. Selector depth dictates
+ *            whether outer 《》 or inner 〈〉 applies.
+ *   wavy     Underline with a wavy line — Simplified Chinese horizontal
+ *            convention for book titles. Suppresses the bracket quotes.
+ *
+ * Inherits, so authors can set it once on a section root and have all
+ * descendant `<cite>` follow.
+ */
+@property --han-cite-title-marks {
+  syntax: "none | bracket | wavy";
+  inherits: true;
+  initial-value: none;
+}
+
 /* ========================================================================== *
  * Variables
  * ========================================================================== */
@@ -61,8 +82,8 @@
   --han-em-symbol: circle;
   --han-em-dot-position: under right;
 
-  /* Title marks for `cite` elements */
-  --han-cite-title-marks: none;
+  /* Title marks for `cite` elements — enum value is `@property`-registered
+   * above; only the glyph escapes need a plain `:root` declaration. */
   --han-title-marks: '\300A' '\300B' '\3008' '\3009';
 
   /* Quotes for `q` elements */
@@ -336,7 +357,7 @@
     font-family: var(--han-font-family-zhuyin-serif);
   }
 
-  >rt {
+  > rt {
     font-family: var(--han-font-family-zhuyin-serif);
     text-orientation: upright;
   }
