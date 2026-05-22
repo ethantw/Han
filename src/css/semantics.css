@@ -205,7 +205,7 @@
     }
   }
 
-  @container style(--han-cite-use-title-marks: revert) {
+  @container style(--han-cite-use-title-marks: none) {
     &:where(:lang(zh), :lang(ja)) {
       quotes: none;
     }
