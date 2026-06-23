@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+/* ========================================================================== *
+ * Han Em Space — a calibrated, full-width U+0020 spacer
+ * ========================================================================== */
+
+/**
+ * Both faces below remap U+0020 SPACE to a glyph whose advance width is
+ * exactly 1em (full-width) — NOT the body font's usual ~¼em space. This is
+ * deliberate: `Han Em Space` is never read as a visible word-space. It is the
+ * invisible inline spacer used by the JS line-adjustment fallbacks in
+ * `src/css/with-js/line-adjustments.css` (擠壓 compress / 懸掛 hang /
+ * 跨文種間隙 iss) on engines lacking native `text-spacing-trim`,
+ * `hanging-punctuation`, or `text-autospace`.
+ *
+ * Why 1em instead of a normal space
+ * ─────────────────────────────────
+ * 1. A normal U+0020's advance is font-dependent and unpredictable (it varies
+ *    with whatever body font is active), so it can't reliably reserve a known
+ *    fraction of an em. Pinning U+0020 to a font-internal, em-proportional 1em
+ *    baseline makes the spacer width deterministic; callers then dial it down
+ *    to ½em / ¼em via `font-size-adjust: ic-width <n>` — independent of the
+ *    body font. (Those `<n>` constants are font-specific; see the calibration
+ *    note in `with-js/line-adjustments.css`.)
+ * 2. It must stay a real ' ' (U+0020) character, not a fixed-width box,
+ *    because the whole trim/hang trick rides on CSS's whitespace-collapse-at-
+ *    line-edge rule: mid-line the spacer holds its width while the glyph
+ *    paints over it (negative margin / absolutely-positioned layer); at a line
+ *    edge the ' ' collapses, and only the displacement survives — producing the
+ *    visible "trim" / "hang". A space is the only thing that collapses that
+ *    way; we just need its width controlled.
+ *
+ * The two faces are two ways to get the same 1em space:
+ */
+
+/**
+ * Preferred: a system monospace, zero download. Courier's space advance is
+ * 0.6em, so `size-adjust: 166.667%` (= 1 / 0.6) scales it up to exactly 1em.
+ */
+@font-face {
+  font-family: Han Em Space;
+  font-weight: 100 900;
+  size-adjust: 166.667%;
+  src: local(Courier New), local(Courier);
+  unicode-range: U+20;
+}
+
+/**
+ * Fallback for platforms without Courier (Android, some Linux): a tiny
+ * webfont (`em-space.woff2`) carrying only `.notdef` + a 1em-wide `space`
+ * glyph (advance == unitsPerEm), so no `size-adjust` is needed. Built by
+ * `build/em-space.py`.
+ */
+@font-face {
+  font-family: Han Em Space Fallback;
+  font-weight: 100 900;
+  src: url('./em-space.woff2') format('woff2');
+  unicode-range: U+20;
+}

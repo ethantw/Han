@@ -34,8 +34,8 @@
  * 2. Enhanced Zhuyin fonts.
  *
  */
-@import url(./css/fonts/webfonts/punctuation.css); /* 1 */
-@import url(./css/fonts/webfonts/zhuyin.css); /* 2 */
+@import url(./css/fonts/em-space.css); /* 1 */
+@import url(./css/fonts/zhuyin.css); /* 2 */
 
 /**
  * Main fonts configuration

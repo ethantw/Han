@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-@import url(../fonts/webfonts/punctuation.css);
+@import url(../fonts/em-space.css);
 
 /**
  * JavaScript-rendered styling for line-adjustments — each block is
@@ -244,7 +244,7 @@
     /* `line-height: 1` here is load-bearing — NOT cosmetic.
      *
      * `font-family: Han Em Space` is declared in
-     * `src/css/fonts/webfonts/em-space.css` as
+     * `src/css/fonts/em-space.css` as
      *   src: local(Courier New), local(Courier);
      *   size-adjust: 166.667%;
      * — i.e. Courier scaled up so its U+0020 glyph occupies 1em
