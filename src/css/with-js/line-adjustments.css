@@ -208,12 +208,8 @@
  * point hanging becomes appropriate — the bottom block re-
  * adds Hant via `@container style(--han-punctuation-hant: anchored)` (or
  * `all-anchored`), since those modes select side-biased glyph variants. */
-h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
-  container-name: han-hanging-punctuation;
-}
-
 :where(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
-  container-name: han-hanging-punctuation;
+  --han-hanging-punctuation-state: on;
 }
 
 @container
@@ -221,7 +217,7 @@ h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
   style(--han-punctuation-hant: all-anchored)
 {
   :where(:lang(zh)) {
-    container-name: han-hanging-punctuation;
+    --han-hanging-punctuation-state: on;
   }
 }
 
@@ -231,19 +227,16 @@ h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
     style(--han-punctuation-refinement: hang)
 {
   :where(*) {
-    container-name: han-hanging-punctuation-none;
+    --han-hanging-punctuation-state: off;
   }
 }
 
-/* To opt out a subtree from the JS hanging-punctuation fallback, set
- * `--han-hanging-punctuation` to `initial` or `none` on an ancestor —
- * the `@container style(--han-hanging-punctuation: allow-end)` block
- * above will stop matching for descendants of that ancestor.
- *
- * Default opt-in: zh-Hans, ja, ko-Hant (see above). Hant is additionally
+/* Default opt-in: zh-Hans, ja, ko-Hant (see above). Hant is additionally
  * opted in when `--han-punctuation-hant` is `anchored` or `all-anchored`,
- * since those modes use side-biased glyph variants where hanging is effective. */
-@container han-hanging-punctuation {
+ * since those modes use side-biased glyph variants where hanging is effective.
+ * `--han-punctuation-refinement: hang` sets state to `off` to suppress the
+ * fallback when the native property handles it. */
+@container style(--han-hanging-punctuation-state: on) {
   h-char[data-punct~="hangable"] {
     & {
       position: relative;
@@ -293,20 +286,3 @@ h-char[data-punct~="hangable"]:is(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
   }
 }
 
-@container han-hanging-punctuation-none {
-  h-char[data-punct~="hangable"] {
-    & {
-      position: revert-layer;
-    }
-    &::before {
-      content: none;
-      font-family: revert-layer;
-      line-height: revert-layer;
-      visibility: revert-layer;
-    }
-    h-layer {
-      position: revert-layer;
-      display: revert-layer;
-    }
-  }
-}

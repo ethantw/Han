@@ -113,6 +113,43 @@
 /* ========================================================================== *
  * Font configuration
  * ========================================================================== */
+
+/* TODO(css-if): Every `@container style()` block below maps one mode-property
+ * value to a set of font-var assignments — the textbook shape for CSS Values 5
+ * `if()`. Once `if()` ships in all major engines, collapse each per-locale
+ * family of blocks into ONE `:where(*:lang(…))` rule whose vars are assigned by
+ * a single multi-branch `if()`, dropping the `@container` wrappers entirely.
+ *
+ * Future form (e.g. the four --han-punctuation-hant blocks → one rule):
+ *   :where(*:lang(zh)) {
+ *     --han-font-diantenjeom-sans: if(
+ *       style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
+ *       style(--han-punctuation-hant: MOE): 'Diantenjeom Sans MOE';
+ *       style(--han-punctuation-hant: GB):  'Diantenjeom Sans GB';
+ *       else:                               initial            /* off *\/
+ *     );
+ *     /* …serif / cursive likewise… *\/
+ *   }
+ *
+ * Migration notes
+ * ───────────────
+ * • Scope: `@container style()` reads the nearest ANCESTOR container's value;
+ *   `if(style())` reads the element's OWN computed value (after inheritance).
+ *   All mode properties are `inherits: true` and registered via `@property`
+ *   with an initial-value, and are meant to be set on an ANCESTOR (`:root`),
+ *   so the two resolve identically here.
+ *
+ * • Unmatched branch: an `if()` with no matching condition and no `else:`
+ *   returns `<guaranteed-invalid>` — NOT an unset/`initial` value. Because each
+ *   property is registered with a closed enum (`@property` syntax), map the
+ *   final enum value (the `off` block, → `initial`) onto `else:` so every real
+ *   value is covered and the result is never guaranteed-invalid.
+ *
+ * • `revert` vs `initial`: the `off` blocks set the var to `initial` (empty),
+ *   letting the outer `var(--han-font-diantenjeom-sans), …` fallback chain take
+ *   over. Keep that exact value in the `else:` branch — do not substitute
+ *   `revert` / `unset`, which resolve differently for registered properties.
+ */
 :where(:root) {
   --han-font-latin-sans: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto;
   --han-font-latin-serif: Palatino, Cambria;

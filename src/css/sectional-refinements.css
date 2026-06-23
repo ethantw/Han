@@ -20,18 +20,14 @@
  *
  * To apply to other prose containers:
  *
- *   section.prose {
- *     container-name: han-sectional-refinements;
- *   }
+ *   section.prose { --han-sectional-refinements: on; }
  *
- * To opt out a subtree within an article and prose section:
+ * To opt out a subtree within an article or prose section:
  *
- *   :where(article, section.prose) .demo {
- *     container-name: han-revert-sectional-refinements;
- *   }
+ *   :where(article, section.prose) .demo { --han-sectional-refinements: off; }
  */
 :where(article) {
-  container-name: han-sectional-refinements;
+  --han-sectional-refinements: on;
 }
 
 /* ========================================================================== *
@@ -39,11 +35,10 @@
  * ========================================================================== */
 
 /**
- * Rules fire inside any element bearing
- * `container-name: han-sectional-refinements`.
- * `:where(article)` carries that name by default (see Application section).
+ * Rules fire inside any element with `--han-sectional-refinements: on`.
+ * `:where(article)` carries that value by default (see Application section).
  */
-@container han-sectional-refinements {
+@container style(--han-sectional-refinements: on) {
   :where(h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h2:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h3:has(+ h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
@@ -92,18 +87,5 @@
     & :where(p) {
       margin-inline-start: var(--han-sr-indent);
     }
-  }
-}
-
-/* Subtree opt-out.
- *
- * Apply `container-name: han-revert-sectional-refinements` to any element
- * whose descendants should revert to browser defaults. The on-rules above
- * still fire (the outer `han-sectional-refinements` container on `<article>`
- * remains an ancestor), but this block — declared after them — wins by
- * source order and reverts all affected margins. */
-@container han-revert-sectional-refinements {
-  :where(h1, h2, h3, h4, h5, h6, blockquote, figure, ol, ul, p) {
-    margin: revert-layer;
   }
 }

@@ -1,76 +1,54 @@
 @charset "UTF-8";
 
 /* ========================================================================== *
- * Feature Toggles・han-revert-semantics
+ * Feature Toggles・--han-semantics
  * ========================================================================== */
 
 /**
- * Semantic refinements are applied unconditionally — there is no `auto`
- * opt-in switch. To OPT OUT in a subtree, mark an ancestor as a named
- * container:
+ * Semantic refinements are on by default (`@property` registers
+ * `initial-value: on`). To OPT OUT in a subtree, set `--han-semantics`
+ * to `off` on any ancestor:
  *
- *   article { container-name: han-revert-semantics; }
+ *   article { --han-semantics: off; }
  *
- * Every Han.css semantic rule below pairs its defaults with a matching
- * `@container han-revert-semantics { … revert-layer … }` block; once that
- * ancestor is in scope, the cascade unwinds back to the styles outside
- * the `han-semantics` layer.
+ * Custom properties inherit, so one declaration covers the entire subtree.
+ * Any descendant can re-enable with `--han-semantics: on`.
  *
  * Mechanism
  * ─────────
- * Uses CSS name-only `@container` queries (no `<container-condition>`),
- * which work in all current Chrome / Firefox / Safari — Chrome was the
- * last engine to ship, on 2026-05-05 (Safari has had it since 26.4).
- * Style queries (`@container style(--foo: bar)`) would be more
- * ergonomic but Firefox doesn't ship them yet; named containers work
- * everywhere today.
+ * Every semantic rule below lives inside `@container style(--han-semantics: on)`.
+ * Since `@property` registers `initial-value: on`, the query matches by default.
+ * Setting `--han-semantics: off` on an ancestor makes that element the nearest
+ * style container; its value is `off`, the query stops matching, and the styles
+ * simply don't fire — nothing to revert.
  *
- * Caveats
- * ───────
+ * Caveat
+ * ──────
  * ⚠️  Set on an ANCESTOR, never on the targeted element itself.
- *     `@container` always queries an ancestor — the element cannot
- *     query its own container name.
+ *     Style queries always check an ancestor — the element cannot
+ *     query its own custom properties.
  *
- *   ✓  article { container-name: han-revert-semantics; }  → descendants revert
- *   ✗  address { container-name: han-revert-semantics; }  → no effect on <address>
- *
- * ⚠️  `container-name` is a space-separated token list. If the element
- *     already names another container, concatenate — do NOT overwrite:
- *
- *   ✓  .card { container-name: card han-revert-semantics; }
- *   ✗  .card { container-name: han-revert-semantics; }    (overwrites `card`)
- *
- * ⚠️  `container-name` does NOT inherit. Each subtree root that needs to
- *     revert must declare it directly.
+ *   ✓  article { --han-semantics: off; }  → all descendants opt out
+ *   ✗  address { --han-semantics: off; }  → no effect on <address> itself,
+ *                                           only on its descendants
  */
 
 /* ========================================================================== *
- * Naming convention・`han-revert-*` opt-out family
+ * Naming convention・`--han-*` opt-out variables
  * ========================================================================== */
 
 /**
- * Opt-out container names across Han.css follow a single
- * `han-revert-<feature>` pattern:
+ * Opt-out variables across Han.css use the feature's own property name
+ * with an `off` value:
  *
- *   han-revert-semantics              (this file)
- *   han-revert-sectional-refinements  (sectional-refinements.css)
+ *   --han-semantics: off              (this file)
+ *   --han-sectional-refinements: off  (sectional-refinements.css)
  *
- * Verb-first, feature-second. Anyone grepping `han-revert-` lands on
- * every "turn this off" mechanism in the project at once.
- *
- * Asymmetric on purpose: opt-IN container names stay feature-first
- * (e.g. `han-sectional-refinements`, auto-applied to `<article>` in
- * sectional-refinements.css). They read as "this region IS a
- * sectional-refinements zone" — present tense, descriptive. Opt-OUTs
- * read as "revert sectional refinements here" — imperative.
- *
- * Reason for the convention rather than per-file ad-hoc naming:
- * cross-feature memorability. Users don't have to remember whether
- * a given feature's opt-out lives at `-none`, `-revert`, `-off`, or
- * `revert-`; it's always `han-revert-<feature>`.
- *
- * When adding a new always-on feature whose subtree opt-out needs a
- * container marker, use `han-revert-<feature>`.
+ * Features that are on by default (`--han-semantics`) register
+ * `initial-value: on` via `@property`. Features that are off by default
+ * (`--han-sectional-refinements`) use a plain declaration on their default
+ * element (`article { --han-sectional-refinements: on; }`), and users
+ * extend it to other containers the same way.
  */
 
 /* ========================================================================== *
@@ -87,8 +65,8 @@
  *   flows into a native CSS property unchanged. Browser won't validate it
  *   for us, so we declare the syntax ourselves and let the parser reject
  *   bad values up front. Doubles as machine-checked documentation.
- *   Examples: `--han-cite-title-marks`, `--han-text-autospace`,
- *   `--han-punctuation-refinement`.
+ *   Examples: `--han-semantics`, `--han-cite-title-marks`,
+ *   `--han-text-autospace`, `--han-punctuation-refinement`.
  *
  * **DON'T REGISTER** when the variable is a *transparent proxy* — the
  *   value goes through `var(--foo)` straight into a native CSS property
@@ -103,6 +81,12 @@
  *
  * Short form: **own enum → register; transparent proxy → don't.**
  */
+
+@property --han-semantics {
+  syntax: "on | off";
+  inherits: true;
+  initial-value: on;
+}
 
 @property --han-text-decoration-inset {
   syntax: "<length> | auto";
@@ -152,16 +136,10 @@
   /* Quotes for `q` elements */
   --han-quotes: '\201C' '\201D' '\2018' '\2019';
 
-  /* Generic families */
-  --han-generics-sans: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --han-generics-serif: serif;
-  --han-generics-cursive: cursive, fangsong, serif;
-  --han-generics-system-ui: var(--han-generics-sans);
-
   /* Default fonts for the document and varied elements */
-  --han-font-default: var(--han-generics-sans);
-  --han-font-alternative: var(--han-generics-serif);
-  --han-font-accent: var(--han-generics-cursive);
+  --han-font-default: system-ui, sans-serif;
+  --han-font-alternative: serif;
+  --han-font-accent: cursive, serif;
 }
 
 :where(:lang(en-GB)) {
@@ -184,6 +162,7 @@
 /* ========================================================================== *
  * Document
  * ========================================================================== */
+
 /**
  * Set default fonts and refine styles of underlines on the root element.
  *
@@ -191,47 +170,40 @@
  * 2. Make sure the lines of two (or more) adjacent underlined or struck-through
  *    elements are visually distinguishable.
  * 3. Make sure underlines are slightly apart from the annotated text.
+ *
+ * `:root` has no ancestor; style queries cannot target it. These styles are
+ * unconditional and cannot be opted out via `--han-semantics`.
  */
 :where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
-  & {
-    font-family: var(--han-font-default); /* 1 */
-    text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
-    text-underline-offset: var(--han-underline-offset); /* 3 */
-    text-underline-position: var(--han-underline-position); /* 3 */
-  }
-  @container han-revert-semantics {
-    font-family: revert-layer;
-    text-decoration-inset: revert-layer;
-    text-underline-offset: revert-layer;
-    text-underline-position: revert-layer;
-  }
+  font-family: var(--han-font-default); /* 1 */
+  text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
+  text-underline-offset: var(--han-underline-offset); /* 3 */
+  text-underline-position: var(--han-underline-position); /* 3 */
 }
 
 /* ========================================================================== *
  * Sections
  * ========================================================================== */
 
-/**
- * Pseudo-italic correction.
- */
-:where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
-  & {
+@container style(--han-semantics: on) {
+  /**
+   * Pseudo-italic correction.
+   */
+  :where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
     font-style: inherit;
   }
-  @container han-revert-semantics {
-    font-style: revert-layer;
-  }
-}
 
-/**
- * Use cursive generic family for `blockquote` elements in articles.
- */
-:where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
-  & {
+  /**
+   * Use cursive generic family for `blockquote` elements in articles.
+   * Inside the blockquote, restore `<dfn>` / `<i>` / `<var>` to the default
+   * font-family so they don't inherit the cursive and lose their distinct semantic.
+   */
+  :where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
     font-family: var(--han-font-accent);
-  }
-  @container han-revert-semantics {
-    font-family: revert-layer;
+
+    :where(dfn, i, var) {
+      font-family: var(--han-font-default);
+    }
   }
 }
 
@@ -239,147 +211,89 @@
  * Text-level semantics
  * ========================================================================== */
 
-/**
- * Pseudo-italic correction.
- */
-:where(cite, dfn, em, i, var):where(:lang(zh), :lang(ja), :lang(ko)) {
-  & {
+@container style(--han-semantics: on) {
+  /**
+   * Pseudo-italic correction.
+   */
+  :where(cite, dfn, em, i, var):where(:lang(zh), :lang(ja), :lang(ko)) {
     font-style: inherit;
-  }
-  @container han-revert-semantics {
-    font-style: revert-layer;
-  }
-}
-
-/**
- * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
- *
- *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content.
- *   wavy     Underline with a wavy line (Simplified Chinese horizontal
- *            convention); suppresses the bracket quotes since the two
- *            style-query blocks are mutually exclusive — the variable
- *            can only hold one value at a time.
- *   none     Suppress both: no quotes, no underline.
- *
- * `quotes: var(--han-title-marks)` is always set so that the `bracket`
- * block's `open-quote` / `close-quote` content has something to resolve
- * against. The `wavy` and `none` blocks override it back to `none`.
- */
-:where(cite:is(:lang(zh), :lang(ja))) {
-  & {
-    quotes: var(--han-title-marks);
-  }
-
-  @container style(--han-cite-title-marks: bracket) {
-    &:where(::before) {
-      content: open-quote;
-    }
-
-    &:where(::after) {
-      content: close-quote;
-    }
-  }
-
-  @container style(--han-cite-title-marks: wavy) {
-    &:where(:lang(zh)) {
-      quotes: none;
-      text-decoration-line: underline;
-      text-decoration-style: wavy;
-    }
-  }
-
-  @container style(--han-cite-title-marks: none) {
-    &:where(:lang(zh), :lang(ja)) {
-      quotes: none;
-    }
-    &:where(:lang(zh)) {
-      text-decoration: none;
-    }
-  }
-}
-
-/**
- * Make `<dfn>` bolder than its surrounding text. Modern UAs don't apply
- * a default `font-weight` to `<dfn>` (italic only), so `bolder` against
- * the inherited parent weight is enough — no `inherit`-then-`bolder`
- * hedge needed (current `normalize.css` and `modern-normalize` both
- * use the same single-rule approach for the analogous `<b>` / `<strong>`).
- */
-:where(dfn:is(:lang(zh), :lang(ja), :lang(ko))) {
-  & {
-    font-weight: bolder;
-  }
-  @container han-revert-semantics {
-    font-weight: revert-layer;
-  }
-}
-
-/**
- * Use cursive generic family for `i` elements instead.
- */
-:where(i:is(:lang(zh), :lang(ja), :lang(ko))) {
-  & {
-    font-family: var(--han-font-accent);
-  }
-  @container han-revert-semantics {
-    font-family: revert-layer;
-  }
-}
-
-/**
- * Use emphasis dots for `em` elements instead.
- */
-:where(em:is(:lang(zh), :lang(ja), :lang(ko))) {
-  & {
-    text-emphasis: var(--han-em-symbol);
-    text-emphasis-position: var(--han-em-dot-position);
-  }
-  @container han-revert-semantics {
-    text-emphasis: revert-layer;
-    text-emphasis-position: revert-layer;
-  }
-}
-
-/**
- * Define a pure CSS fallback to make sure the lines between two (or more)
- * adjacent underlined or struck-through elements are visually distinguishable
- * if current UA does not support `text-decoration-inset: auto`.
- */
-@supports not (text-decoration-inset: auto) {
-  :where(u, ins):has(+ u, + ins),
-  :where(s, del):has(+ s, + del) {
-    margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
   }
 
   /**
-   * When `<cite>` uses the wavy underline style, its underline can merge
-   * with adjacent `<u>` / `<ins>` underlines. Add the same skip-gap that
-   * the `u`/`ins`/`s`/`del` chains above use so the lines stay visually
-   * distinguishable.
+   * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
    *
-   * Driven by `--han-cite-title-marks: wavy` directly — no separate
-   * `container-name` opt-in. Firefox doesn't support style queries yet,
-   * so the gap doesn't auto-apply on Firefox in this fallback path.
-   * Acceptable: `text-decoration-inset` is itself a recent feature, and
-   * any Firefox version hitting this `@supports not` fallback is already
-   * on the edge of the support matrix.
+   *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content.
+   *   wavy     Underline with a wavy line (Simplified Chinese horizontal
+   *            convention); suppresses the bracket quotes since the two
+   *            style-query blocks are mutually exclusive — the variable
+   *            can only hold one value at a time.
+   *   none     Suppress both: no quotes, no underline.
+   *
+   * `quotes: var(--han-title-marks)` is always set so that the `bracket`
+   * block's `open-quote` / `close-quote` content has something to resolve
+   * against. The `wavy` and `none` blocks override it back to `none`.
    */
-  @container style(--han-cite-title-marks: wavy) {
-    :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {
-      margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
+  :where(cite:is(:lang(zh), :lang(ja))) {
+    quotes: var(--han-title-marks);
+
+    @container style(--han-cite-title-marks: bracket) {
+      &:where(::before) {
+        content: open-quote;
+      }
+      &:where(::after) {
+        content: close-quote;
+      }
+    }
+
+    @container style(--han-cite-title-marks: wavy) {
+      &:where(:lang(zh)) {
+        quotes: none;
+        text-decoration-line: underline;
+        text-decoration-style: wavy;
+      }
+    }
+
+    @container style(--han-cite-title-marks: none) {
+      &:where(:lang(zh), :lang(ja)) {
+        quotes: none;
+      }
+      &:where(:lang(zh)) {
+        text-decoration: none;
+      }
     }
   }
-}
 
-/**
- * Use cursive generic family for `var` elements instead.
- */
-:where(var:is(:lang(zh), :lang(ja), :lang(ko))) {
-  & {
+  /**
+   * Make `<dfn>` bolder than its surrounding text. Modern UAs don't apply
+   * a default `font-weight` to `<dfn>` (italic only), so `bolder` against
+   * the inherited parent weight is enough — no `inherit`-then-`bolder`
+   * hedge needed (current `normalize.css` and `modern-normalize` both
+   * use the same single-rule approach for the analogous `<b>` / `<strong>`).
+   */
+  :where(dfn:is(:lang(zh), :lang(ja), :lang(ko))) {
+    font-weight: bolder;
+  }
+
+  /**
+   * Use cursive generic family for `i` elements instead.
+   */
+  :where(i:is(:lang(zh), :lang(ja), :lang(ko))) {
     font-family: var(--han-font-accent);
   }
-  @container han-revert-semantics {
-    font-family: revert-layer;
+
+  /**
+   * Use emphasis dots for `em` elements instead.
+   */
+  :where(em:is(:lang(zh), :lang(ja), :lang(ko))) {
+    text-emphasis: var(--han-em-symbol);
+    text-emphasis-position: var(--han-em-dot-position);
+  }
+
+  /**
+   * Use cursive generic family for `var` elements instead.
+   */
+  :where(var:is(:lang(zh), :lang(ja), :lang(ko))) {
+    font-family: var(--han-font-accent);
   }
 }
 
@@ -387,9 +301,7 @@
  * Add quotes to `q` elements according to the given languages.
  */
 :where(q) {
-  & {
-    quotes: var(--han-quotes);
-  }
+  quotes: var(--han-quotes);
   &:where(::before) {
     content: open-quote;
   }
@@ -441,19 +353,27 @@
 }
 
 /**
- * Inside article `<blockquote>`, restore `<dfn>` / `<i>` / `<var>` to
- * the document's default font-family (whatever `--han-font-default`
- * resolves to — `var(--han-generics-sans)` by default, user-overridable).
- * Otherwise they'd inherit the cursive family applied to the blockquote
- * itself and lose their distinct semantic.
+ * Define a pure CSS fallback to make sure the lines between two (or more)
+ * adjacent underlined or struck-through elements are visually distinguishable
+ * if current UA does not support `text-decoration-inset: auto`.
  */
-:where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
-  :where(dfn, i, var) {
-    & {
-      font-family: var(--han-font-default);
-    }
-    @container han-revert-semantics {
-      font-family: revert-layer;
+@supports not (text-decoration-inset: auto) {
+  :where(u, ins):has(+ u, + ins),
+  :where(s, del):has(+ s, + del) {
+    margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
+  }
+
+  /**
+   * When `<cite>` uses the wavy underline style, its underline can merge
+   * with adjacent `<u>` / `<ins>` underlines. Add the same skip-gap that
+   * the `u`/`ins`/`s`/`del` chains above use so the lines stay visually
+   * distinguishable.
+   *
+   * Driven by `--han-cite-title-marks: wavy` directly via style query.
+   */
+  @container style(--han-cite-title-marks: wavy) {
+    :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {
+      margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
     }
   }
 }
