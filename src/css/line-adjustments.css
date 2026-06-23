@@ -123,39 +123,3 @@
   hanging-punctuation: allow-end;
 }
 */
-
-/*
- * Apply hanging punctuation (標點懸掛) when the punctuation glyph mode
- * uses edge-anchored glyphs. Anchored glyphs extend into the margin,
- * making hanging effective; centered glyphs do not benefit from it.
- *
- * hans: centered explicitly resets hanging-punctuation because the
- * default hans mode (all-anchored) enables it, and centered opts out.
- */
-/*
-@container
-  style(--han-punctuation-hant: anchored) or
-  style(--han-punctuation-hant: all-anchored)
-{
-  :where(body:lang(zh), [lang^='zh']) {
-    hanging-punctuation: allow-end;
-  }
-}
-
-@container
-  style(--han-punctuation-hans: centered)
-{
-  :where(body:is(:lang(zh-Hans)), [lang^='zh-Hans']) {
-    hanging-punctuation: initial;
-  }
-}
-
-@container
-  style(--han-punctuation-refinement: none) or
-  style(--han-punctuation-refinement: compress)
-{
-  :where(> *) {
-    hanging-punctuation: none;
-  }
-}
-*/
