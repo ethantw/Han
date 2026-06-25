@@ -1,7 +1,5 @@
 @charset "UTF-8";
 
-@import url(../fonts/em-space.css);
-
 /**
  * JavaScript-rendered styling for line-adjustments — each block is
  * a progressive-enhancement fallback for the matching native CSS
@@ -9,8 +7,7 @@
  * native autospace and uses JS-injected spacers instead).
  *
  * Companion JS in `src/ts/line-adjustments/`:
- *   - punctuation.ts  →  標點擠壓   (`text-spacing-trim` fallback)
- *   - hanging.ts      →  標點懸掛   (`hanging-punctuation` fallback)
+ *   - punctuation.ts  →  標點擠壓 + 標點懸掛 (`text-spacing-trim` / `hanging-punctuation` fallbacks)
  *   - iss.ts          →  跨文種混排間隙
  *
  * The fallbacks use CSS pseudo-elements (`::before` / `::after`)
@@ -59,7 +56,7 @@
 @supports (text-autospace: normal) {
   /* Safari (≤ WebKit 18.x) skips autospace at any Han ↔ Western seam
    * where an inline element sits — including `display:none` h-iss.
-   * `detectAutospaceBoundaryBug` (src/ts/line-adjustments/_probe.ts)
+   * `detectAutospaceBoundaryBug` (src/ts/helpers/probes.ts)
    * lays out a probe at install time and toggles
    * `--han-probe-autospace: broken` on the root when the bug is observed.
    * The matching JS branch upgrades `--han-text-autospace: normal` to
@@ -192,12 +189,14 @@
  * positioned, so its box keeps its previous visual position and
  * the glyph appears to hang past the column edge.
  *
- * The fallback mirrors the native `hanging-punctuation` rule in
- * `src/css/line-adjustments.css` and is gated by the same
- * `--han-hanging-punctuation` cascade variable. To opt out, set
- * `--han-hanging-punctuation` to `initial` or `none` on any ancestor —
- * the `@container style(allow-end)` query will stop matching for
- * its descendants.
+ * Gated by the derived `--han-hanging-punctuation-state` flag (computed just
+ * below from language + `--han-punctuation-hant` + `--han-punctuation-refinement`)
+ * and applied via `@container style(--han-hanging-punctuation-state: on)`. There
+ * is no native `hanging-punctuation` rule yet — the property isn't broadly
+ * shipped; this JS-emitted-markup
+ * fallback stands in until then. To opt out, drive the inputs so the derived
+ * state resolves to `off` (e.g. set `--han-punctuation-refinement` to something
+ * other than `auto` / `hang` on an ancestor).
  */
 /* Default opt-in excludes `zh-Hant`: traditional Chinese
  * punctuation glyphs are typically *centered* within their
@@ -206,15 +205,15 @@
  * Curated fonts replace those biaodian with side-biased
  * variants matching the Hans / ja / ko convention, at which
  * point hanging becomes appropriate — the bottom block re-
- * adds Hant via `@container style(--han-punctuation-hant: anchored)` (or
- * `all-anchored`), since those modes select side-biased glyph variants. */
+ * adds Hant via `@container style(--han-punctuation-hant: JIS)` (or
+ * `GB`), since those modes select side-biased glyph variants. */
 :where(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
   --han-hanging-punctuation-state: on;
 }
 
 @container
-  style(--han-punctuation-hant: anchored) or
-  style(--han-punctuation-hant: all-anchored)
+  style(--han-punctuation-hant: JIS) or
+  style(--han-punctuation-hant: GB)
 {
   :where(:lang(zh)) {
     --han-hanging-punctuation-state: on;
@@ -232,7 +231,7 @@
 }
 
 /* Default opt-in: zh-Hans, ja, ko-Hant (see above). Hant is additionally
- * opted in when `--han-punctuation-hant` is `anchored` or `all-anchored`,
+ * opted in when `--han-punctuation-hant` is `JIS` or `GB`,
  * since those modes use side-biased glyph variants where hanging is effective.
  * `--han-punctuation-refinement: hang` sets state to `off` to suppress the
  * fallback when the native property handles it. */
@@ -285,4 +284,3 @@
     }
   }
 }
-

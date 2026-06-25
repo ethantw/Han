@@ -5,10 +5,10 @@
  * ========================================================================== */
 
 :where(:root) {
-  --han-sr-indent: 2em;
-  --han-sr-alignment-for-article-p: justify;
-  --han-sr-consecutive-headings-a-block-end: 0;
-  --han-sr-consecutive-headings-b-block-start: 0;
+  --han-prose-indent: 2em;
+  --han-prose-alignment-for-article-p: justify;
+  --han-prose-consecutive-headings-a-block-end: 0;
+  --han-prose-consecutive-headings-b-block-start: 0;
 }
 
 /* ========================================================================== *
@@ -20,14 +20,14 @@
  *
  * To apply to other prose containers:
  *
- *   section.prose { --han-sectional-refinements: on; }
+ *   section.prose { --han-prose: on; }
  *
  * To opt out a subtree within an article or prose section:
  *
- *   :where(article, section.prose) .demo { --han-sectional-refinements: off; }
+ *   :where(article, section.prose) .demo { --han-prose: off; }
  */
 :where(article) {
-  --han-sectional-refinements: on;
+  --han-prose: on;
 }
 
 /* ========================================================================== *
@@ -35,17 +35,17 @@
  * ========================================================================== */
 
 /**
- * Rules fire inside any element with `--han-sectional-refinements: on`.
+ * Rules fire inside any element with `--han-prose: on`.
  * `:where(article)` carries that value by default (see Application section).
  */
-@container style(--han-sectional-refinements: on) {
+@container style(--han-prose: on) {
   :where(h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h2:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h3:has(+ h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h4:has(+ h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h5:has(+ h5, + h6, + blockquote, + p, + ol, + ul, + section)),
   :where(h6:has(+ h6, + blockquote, + p, + ol, + ul, + section)) {
-    margin-block-end: var(--han-sr-consecutive-headings-a-block-end);
+    margin-block-end: var(--han-prose-consecutive-headings-a-block-end);
   }
 
   :where(h1, h2, h3, h4, h5, h6):is(:first-child),
@@ -55,37 +55,37 @@
   :where(h4) + :where(h4, h5, h6, blockquote, p, ol, ul),
   :where(h5) + :where(h5, h6, blockquote, p, ol, ul),
   :where(h6) + :where(h6, blockquote, p, ol, ul) {
-    margin-block-start: var(--han-sr-consecutive-headings-b-block-start);
+    margin-block-start: var(--han-prose-consecutive-headings-b-block-start);
   }
 
   :where(p) {
-    text-align: var(--han-sr-alignment-for-article-p);
+    text-align: var(--han-prose-alignment-for-article-p);
   }
 
   :where(blockquote) {
     & {
-      margin-inline: var(--han-sr-indent);
+      margin-inline: var(--han-prose-indent);
     }
     :where(figure) {
       margin-inline: initial;
     }
     :where(blockquote) {
-      margin-inline: calc(var(--han-sr-indent) / 2);
+      margin-inline: calc(var(--han-prose-indent) / 2);
     }
   }
 
   :where(figure) {
-    margin-inline: var(--han-sr-indent);
+    margin-inline: var(--han-prose-indent);
   }
 
   :where(ol, ul) {
-    margin-inline-start: var(--han-sr-indent);
+    margin-inline-start: var(--han-prose-indent);
   }
 
   :where(.poem-like) {
     :where(p)&,
     & :where(p) {
-      margin-inline-start: var(--han-sr-indent);
+      margin-inline-start: var(--han-prose-indent);
     }
   }
 }

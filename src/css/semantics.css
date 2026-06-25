@@ -30,7 +30,7 @@
  *
  *   ✓  article { --han-semantics: off; }  → all descendants opt out
  *   ✗  address { --han-semantics: off; }  → no effect on <address> itself,
- *                                           only on its descendants
+ *                                            only on its descendants
  */
 
 /* ========================================================================== *
@@ -41,13 +41,13 @@
  * Opt-out variables across Han.css use the feature's own property name
  * with an `off` value:
  *
- *   --han-semantics: off              (this file)
- *   --han-sectional-refinements: off  (sectional-refinements.css)
+ *   --han-semantics: off  (this file)
+ *   --han-prose: off      (prose.css)
  *
  * Features that are on by default (`--han-semantics`) register
  * `initial-value: on` via `@property`. Features that are off by default
- * (`--han-sectional-refinements`) use a plain declaration on their default
- * element (`article { --han-sectional-refinements: on; }`), and users
+ * (`--han-prose`) use a plain declaration on their default
+ * element (`article { --han-prose: on; }`), and users
  * extend it to other containers the same way.
  */
 
@@ -100,11 +100,15 @@
  *   none     No title marks. Default. `<cite>` renders with its native
  *            font-style (already coerced via `font-style: inherit` for
  *            CJK languages elsewhere in this file).
- *   bracket  Wrap with `《》` / `〈〉` (Chinese book-title brackets) via
- *            `quotes` + `::before` / `::after`. Selector depth dictates
- *            whether outer 《》 or inner 〈〉 applies.
- *   wavy     Underline with a wavy line — Simplified Chinese horizontal
- *            convention for book titles. Suppresses the bracket quotes.
+ *   bracket  Wrap with `《》` / `〈〉` (書名號乙式) via `quotes` +
+ *            `::before` / `::after`. Selector depth dictates whether
+ *            outer 《》 or inner 〈〉 applies. In ja, `「」` / `『』`
+ *            instead — the `:lang(ja)` rule re-points `--han-title-marks`
+ *            to `var(--han-quotes)`, as Japanese brackets titles with
+ *            「」, not 《》.
+ *   wavy     Underline with a wavy line (書名號甲式) — used in Taiwan
+ *            textbooks, and in Taiwan/Mainland China reprints of classical 
+ *            texts (古籍復刻本). Suppresses the bracket quotes.
  *
  * Inherits, so authors can set it once on a section root and have all
  * descendant `<cite>` follow.
@@ -140,6 +144,8 @@
   --han-font-default: system-ui, sans-serif;
   --han-font-alternative: serif;
   --han-font-accent: cursive, serif;
+
+  --han-font-zhuyin-serif: 'Han Zhuyin Serif', cursive, serif;
 }
 
 :where(:lang(en-GB)) {
@@ -187,20 +193,14 @@
 
 @container style(--han-semantics: on) {
   /**
-   * Pseudo-italic correction.
-   */
-  :where(address:is(:lang(zh), :lang(ja), :lang(ko))) {
-    font-style: inherit;
-  }
-
-  /**
    * Use cursive generic family for `blockquote` elements in articles.
    * Inside the blockquote, restore `<dfn>` / `<i>` / `<var>` to the default
    * font-family so they don't inherit the cursive and lose their distinct semantic.
    */
   :where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
-    font-family: var(--han-font-accent);
-
+    & {
+      font-family: var(--han-font-accent);
+    }
     :where(dfn, i, var) {
       font-family: var(--han-font-default);
     }
@@ -214,8 +214,18 @@
 @container style(--han-semantics: on) {
   /**
    * Pseudo-italic correction.
+   *
+   * Han typefaces have no italic, so `font-style: italic` (the UA default on
+   * <i>, <em>, <cite>, <var>, <dfn>, <address>) makes the browser synthesise
+   * a skew — bad typography for CJK. We cancel it across `:where(*)`, not just
+   * those known tags: a deliberately aggressive net (older versions patched the
+   * specific elements) that also catches anything else picking up italic.
+   *
+   * `inherit`, not `normal`, is load-bearing — it neutralises the per-element
+   * UA italic defaults yet still lets an author-set italic on an ancestor flow
+   * down, so intentional italics survive while only the synthetic ones die.
    */
-  :where(cite, dfn, em, i, var):where(:lang(zh), :lang(ja), :lang(ko)) {
+  :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
     font-style: inherit;
   }
 
@@ -223,18 +233,27 @@
    * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
    *
    *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content.
-   *   wavy     Underline with a wavy line (Simplified Chinese horizontal
-   *            convention); suppresses the bracket quotes since the two
-   *            style-query blocks are mutually exclusive — the variable
-   *            can only hold one value at a time.
+   *   wavy     Underline with a wavy line (書名號甲式; Taiwan textbooks +
+   *            classical-text reprints); suppresses the bracket quotes,
+   *            since the style-query blocks are mutually exclusive — the
+   *            variable can only hold one value at a time.
    *   none     Suppress both: no quotes, no underline.
    *
    * `quotes: var(--han-title-marks)` is always set so that the `bracket`
    * block's `open-quote` / `close-quote` content has something to resolve
    * against. The `wavy` and `none` blocks override it back to `none`.
+   *
+   * TODO(css-if): once `if()` ships, replace these three
+   * `@container style(--han-cite-title-marks: …)` blocks with per-property
+   * `if()`. `if()` reads the element's OWN value, so the title-mark mode could
+   * then be set directly on a `<cite>` — today `@container` queries an ancestor,
+   * so it only takes effect when set on an ancestor. The wavy skip-gap further
+   * down (under `@supports not (text-decoration-inset)`) migrates together.
    */
   :where(cite:is(:lang(zh), :lang(ja))) {
-    quotes: var(--han-title-marks);
+    & {
+      quotes: var(--han-title-marks);
+    }
 
     @container style(--han-cite-title-marks: bracket) {
       &:where(::before) {
@@ -301,7 +320,9 @@
  * Add quotes to `q` elements according to the given languages.
  */
 :where(q) {
-  quotes: var(--han-quotes);
+  & {
+    quotes: var(--han-quotes);
+  }
   &:where(::before) {
     content: open-quote;
   }
@@ -320,10 +341,9 @@
 :where(ruby:is(.zhuyin, .mps)) {
   & {
     ruby-position: inter-character;
-    font-family: var(--han-font-family-zhuyin-serif);
   }
   > rt {
-    font-family: var(--han-font-family-zhuyin-serif);
+    font-family: var(--han-font-zhuyin-serif);
     text-orientation: upright;
   }
   @supports not (ruby-position: inter-character) {
@@ -370,6 +390,8 @@
    * distinguishable.
    *
    * Driven by `--han-cite-title-marks: wavy` directly via style query.
+   *
+   * TODO(css-if): migrate to `if()` together with the cite title-marks block.
    */
   @container style(--han-cite-title-marks: wavy) {
     :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {

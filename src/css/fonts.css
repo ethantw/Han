@@ -117,12 +117,12 @@
 /* TODO(css-if): Every `@container style()` block below maps one mode-property
  * value to a set of font-var assignments — the textbook shape for CSS Values 5
  * `if()`. Once `if()` ships in all major engines, collapse each per-locale
- * family of blocks into ONE `:where(*:lang(…))` rule whose vars are assigned by
+ * family of blocks into ONE `:where(> *:lang(…))` rule whose vars are assigned by
  * a single multi-branch `if()`, dropping the `@container` wrappers entirely.
  *
  * Future form (e.g. the four --han-punctuation-hant blocks → one rule):
- *   :where(*:lang(zh)) {
- *     --han-font-diantenjeom-sans: if(
+ *   :where(> *:lang(zh)) {
+ *     --han-font-punctuation-sans: if(
  *       style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
  *       style(--han-punctuation-hant: MOE): 'Diantenjeom Sans MOE';
  *       style(--han-punctuation-hant: GB):  'Diantenjeom Sans GB';
@@ -146,7 +146,7 @@
  *   value is covered and the result is never guaranteed-invalid.
  *
  * • `revert` vs `initial`: the `off` blocks set the var to `initial` (empty),
- *   letting the outer `var(--han-font-diantenjeom-sans), …` fallback chain take
+ *   letting the outer `var(--han-font-punctuation-sans), …` fallback chain take
  *   over. Keep that exact value in the `else:` branch — do not substitute
  *   `revert` / `unset`, which resolve differently for registered properties.
  */
@@ -155,20 +155,23 @@
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
 
+  --han-webfont-heritage-glyghs-sans: 'Shangu Sans', 'Shangu Sans TC', 'Genyo Gothic TC', 'Genyo Gothic';
+  --han-webfont-heritage-glyghs-serif: 'Shangu Serif', 'Shangu Serif TC', 'Genyo Min TC', 'Genyo Min';
+
   --han-font-default:
-    var(--han-font-diantenjeom-sans),
+    var(--han-font-punctuation-sans),
     var(--han-font-latin-sans),
     var(--han-font-cjk-sans),
     system-ui, sans-serif
   ;
   --han-font-alternative:
-    var(--han-font-diantenjeom-serif),
+    var(--han-font-punctuation-serif),
     var(--han-font-latin-serif),
     var(--han-font-cjk-serif),
     serif
   ;
   --han-font-accent:
-    var(--han-font-diantenjeom-cursive),
+    var(--han-font-punctuation-cursive),
     var(--han-font-latin-cursive),
     var(--han-font-cjk-cursive),
     cursive, serif
@@ -176,27 +179,27 @@
 }
 
 @container style(--han-use-heritage-glyphs-for-hant: webfont) {
-  :where(*:lang(zh-Hant)) {
+  :where(> *:lang(zh-Hant)) {
     --han-font-cjk-sans:
-      'Shanggu Sans',
+      var(--han-webfont-heritage-glyghs-sans),
       'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic'
     ;
     --han-font-cjk-serif:
-      'Shanggu Serif',
+      var(--han-webfont-heritage-glyghs-serif),
       'Hiragino Mincho ProN', 'Yu Mincho'
     ;
   }
 }
 
 @container style(--han-use-heritage-glyphs-for-hant: system) {
-  :where(*:lang(zh-Hant)) {
+  :where(> *:lang(zh-Hant)) {
     --han-font-cjk-sans: 'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic';
     --han-font-cjk-serif: 'Hiragino Mincho ProN', 'Yu Mincho';
   }
 }
 
 @container style(--han-cursive: webfont) {
-  :where(*:lang(zh)) {
+  :where(> *:lang(zh)) {
     --han-font-cjk-cursive:
       'LXGW Wenkai TC',
       Klee, 'Klee One',
@@ -204,134 +207,134 @@
       'Hiragino Mincho ProN', 'Yu Mincho'
     ;
   }
-  :where(*:lang(zh-Hans)) {
+  :where(> *:lang(zh-Hans)) {
     --han-font-cjk-cursive: 'LXGW Wenkai', 'Kaiti SC';
   }
-  :where(*:lang(ja)) {
+  :where(> *:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
   }
 }
 
 @container style(--han-cursive: system) {
-  :where(*:lang(zh)) {
+  :where(> *:lang(zh)) {
     --han-font-cjk-cursive:
       Klee, 'Klee One',
       BiauKai, DFKai-SB, 'Kaiti TC',
       'Hiragino Mincho ProN', 'Yu Mincho'
     ;
   }
-  :where(*:lang(zh-Hans)) {
+  :where(> *:lang(zh-Hans)) {
     --han-font-cjk-cursive: 'Kaiti SC';
   }
-  :where(*:lang(ja)) {
+  :where(> *:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
   }
 }
 
 @container style(--han-cursive: off) {
-  :where(*:lang(zh)) {
+  :where(> *:lang(zh)) {
     --han-font-cjk-cursive: initial;
   }
-  :where(*:lang(ja)) {
+  :where(> *:lang(ja)) {
     --han-font-cjk-cursive: initial;
   }
 }
 
 @container style(--han-punctuation-hant: JIS) {
-  :where(*:lang(zh)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans JIS';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif JIS';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif JIS';
+  :where(> *:lang(zh)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
+    --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-hant: MOE) {
-  :where(*:lang(zh)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans MOE';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif MOE';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif MOE';
+  :where(> *:lang(zh)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-hant: GB) {
-  :where(*:lang(zh)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans GB';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif GB';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif GB';
+  :where(> *:lang(zh)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans GB';
+    --han-font-punctuation-serif: 'Diantenjeom Serif GB';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-hant: off) {
-  :where(*:lang(zh)) {
-    --han-font-diantenjeom-sans: initial;
-    --han-font-diantenjeom-serif: initial;
-    --han-font-diantenjeom-cursive: initial;
+  :where(> *:lang(zh)) {
+    --han-font-punctuation-sans: initial;
+    --han-font-punctuation-serif: initial;
+    --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-hans: JIS) {
-  :where(*:lang(zh-Hans)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans JIS';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif JIS';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif JIS';
+  :where(> *:lang(zh-Hans)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
+    --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-hans: MOE) {
-  :where(*:lang(zh-Hans)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans MOE';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif MOE';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif MOE';
+  :where(> *:lang(zh-Hans)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-hans: GB) {
-  :where(*:lang(zh-Hans)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans GB';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif GB';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif GB';
+  :where(> *:lang(zh-Hans)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans GB';
+    --han-font-punctuation-serif: 'Diantenjeom Serif GB';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-hans: off) {
-  :where(*:lang(zh-Hans)) {
-    --han-font-diantenjeom-sans: initial;
-    --han-font-diantenjeom-serif: initial;
-    --han-font-diantenjeom-cursive: initial;
+  :where(> *:lang(zh-Hans)) {
+    --han-font-punctuation-sans: initial;
+    --han-font-punctuation-serif: initial;
+    --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-ja: JIS) {
-  :where(*:lang(ja)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans JIS';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif JIS';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif JIS';
+  :where(> *:lang(ja)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
+    --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-ja: MOE) {
-  :where(*:lang(ja)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans MOE';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif MOE';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif MOE';
+  :where(> *:lang(ja)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-ja: GB) {
-  :where(*:lang(ja)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans GB';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif GB';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif GB';
+  :where(> *:lang(ja)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans GB';
+    --han-font-punctuation-serif: 'Diantenjeom Serif GB';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-ja: off) {
-  :where(*:lang(ja)) {
-    --han-font-diantenjeom-sans: initial;
-    --han-font-diantenjeom-serif: initial;
-    --han-font-diantenjeom-cursive: initial;
+  :where(> *:lang(ja)) {
+    --han-font-punctuation-sans: initial;
+    --han-font-punctuation-serif: initial;
+    --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-vertical-ko: KV) {
-  :where(*:lang(ko)) {
-    --han-font-diantenjeom-sans: 'Diantenjeom Sans KV';
-    --han-font-diantenjeom-serif: 'Diantenjeom Serif KV';
-    --han-font-diantenjeom-cursive: 'Diantenjeom Serif KV';
+  :where(> *:lang(ko)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans KV';
+    --han-font-punctuation-serif: 'Diantenjeom Serif KV';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif KV';
   }
 }
 @container style(--han-punctuation-vertical-ko: off) {
-  :where(*:lang(ko)) {
-    --han-font-diantenjeom-sans: initial;
-    --han-font-diantenjeom-serif: initial;
-    --han-font-diantenjeom-cursive: initial;
+  :where(> *:lang(ko)) {
+    --han-font-punctuation-sans: initial;
+    --han-font-punctuation-serif: initial;
+    --han-font-punctuation-cursive: initial;
   }
 }

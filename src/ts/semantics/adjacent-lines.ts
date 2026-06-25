@@ -2,7 +2,7 @@
  * Adjacent-line gap fallback — JS-class fallback for browsers that do not
  * support `text-decoration-inset: auto`.
  *
- * The companion CSS in `src/css/with-js/semantics.css` reads:
+ * The companion CSS in `src/css/semantics.with-js.css` reads:
  *
  *   :where(u, ins, s, del, cite) {
  *     &:where(:not([data-followed-by-adjacent-line])) { margin-inline-end: initial }
@@ -202,7 +202,7 @@ const resolveDecorationInsetMode = (src: Hyperly): DecorationInsetMode => {
  * Diverges from `refinePunctuation`'s downgrade-to-different-mode shape:
  * here, native support means "JS does nothing at all" (not "JS runs in a
  * smaller mode"). Calling `markAdjacentLinesWithMode('0')` would stomp the
- * cascade var to `'0'` on `src`, which `with-js/semantics.css`'s
+ * cascade var to `'0'` on `src`, which `semantics.with-js.css`'s
  * `@container style(--han-text-decoration-inset: 0)` would (wrongly) match —
  * suppressing styles author intended at the `:root` `auto` declaration. So
  * we short-circuit `hype(src)` instead, leaving the cascade authoritative.

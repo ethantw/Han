@@ -1,5 +1,15 @@
 # Style Query Opt-out Migration
 
+> **✅ COMPLETED (2026-06).** All steps below are done. Final names differ from
+> this plan (which predates the later renames): `sectional-refinements.css`→`prose.css`,
+> `--han-sectional-refinements`→`--han-prose`; `line-adjustments.css`→`lines.css` with
+> native + with-js sheets merged into one `han-lines` layer (no separate
+> `han-with-js-line-adjustments`); the `han-generics-*` intermediate containers were
+> removed by the `fonts.css` Diantenjeom rewrite (Step 3); the `han-hanging-punctuation`
+> JS container became the `--han-hanging-punctuation-state` style query (Step 4); the
+> throwaway `style-query-demo.html` was deleted (Step 6). Zero named-container opt-out
+> patterns remain in `src/`. Kept for history.
+
 Replace all `container-name: han-revert-*` / named `@container` opt-out patterns
 with CSS custom property style queries. Firefox now supports style queries (confirmed
 2026-06). Features remain on-by-default; opt-out API changes from adding a

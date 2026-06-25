@@ -94,9 +94,10 @@ export function detectAutospaceBoundaryBug(force = false, doc = typeof document 
 /**
  * Detect support for CSS Style Queries (`@container style(--var: value)`).
  *
- * `CSS.supports()` and CSSOM inspection are unreliable: Firefox 110+ parses
- * the rule into the CSSOM without applying it. The only trustworthy check
- * is creating a live DOM probe and reading `getComputedStyle`.
+ * `CSS.supports()` and CSSOM inspection are unreliable: older Firefox (110+)
+ * parsed the rule into the CSSOM without applying it (Firefox shipped real
+ * support in 2026-06). The only trustworthy check across versions is creating
+ * a live DOM probe and reading `getComputedStyle`.
  */
 export const detectStyleQuerySupport = (force = false, doc = typeof document !== 'undefined' ? document : null): boolean => {
   if (!doc) return false

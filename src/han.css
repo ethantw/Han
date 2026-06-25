@@ -5,39 +5,44 @@
  * ========================================================================== */
 
 @import url(./css/semantics.css) layer(han-semantics);
-@import url(./css/with-js/semantics.css) layer(han-js-semantics);
+@import url(./css/semantics.with-js.css) layer(han-semantics);
 
 /* ========================================================================== *
  * Line adjustments
  * ========================================================================== */
 
-@import url(./css/line-adjustments.css) layer(han-line-adjustments);
-@import url(./css/with-js/line-adjustments.css) layer(han-js-line-adjustments);
+@import url(./css/lines.css) layer(han-lines);
+@import url(./css/lines.with-js.css) layer(han-lines);
 
 /* ========================================================================== *
- * Sectional refinements
+ * Prose
  * ========================================================================== */
 
-@import url(./css/sectional-refinements.css) layer(han-sectional-refinements);
+@import url(./css/prose.css) layer(han-prose);
 
 /* ========================================================================== *
  * Fonts
  * ========================================================================== */
 
+/* -------------------------------------------------------------------------- *
+ * Main fonts configuration
+ * -------------------------------------------------------------------------- */
+
+@import url(./css/fonts.css) layer(han-fonts);
+
+/* -------------------------------------------------------------------------- *
+ * Web fonts
+ * -------------------------------------------------------------------------- */
+
 /**
- * Pre-defined font collections and font families.
+ * Pre-defined web font collections.
  *
  * **[Note]**: Feel free to remove any font imports that are not necessary to
  * you.
  *
  * 1. The Em Space font for typesetting usage.
- * 2. Enhanced Zhuyin fonts.
+ * 2. Enhanced Zhuyin fonts for <ruby>.
  *
  */
 @import url(./css/fonts/em-space.css); /* 1 */
 @import url(./css/fonts/zhuyin.css); /* 2 */
-
-/**
- * Main fonts configuration
- */
-@import url(./css/fonts.css) layer(han-fonts);

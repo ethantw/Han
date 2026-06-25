@@ -9,7 +9,7 @@
  * exactly 1em (full-width) — NOT the body font's usual ~¼em space. This is
  * deliberate: `Han Em Space` is never read as a visible word-space. It is the
  * invisible inline spacer used by the JS line-adjustment fallbacks in
- * `src/css/with-js/line-adjustments.css` (擠壓 compress / 懸掛 hang /
+ * `src/css/lines.with-js.css` (擠壓 compress / 懸掛 hang /
  * 跨文種間隙 iss) on engines lacking native `text-spacing-trim`,
  * `hanging-punctuation`, or `text-autospace`.
  *
@@ -21,7 +21,7 @@
  *    baseline makes the spacer width deterministic; callers then dial it down
  *    to ½em / ¼em via `font-size-adjust: ic-width <n>` — independent of the
  *    body font. (Those `<n>` constants are font-specific; see the calibration
- *    note in `with-js/line-adjustments.css`.)
+ *    note in `lines.with-js.css`.)
  * 2. It must stay a real ' ' (U+0020) character, not a fixed-width box,
  *    because the whole trim/hang trick rides on CSS's whitespace-collapse-at-
  *    line-edge rule: mid-line the spacer holds its width while the glyph
@@ -38,7 +38,7 @@
  * 0.6em, so `size-adjust: 166.667%` (= 1 / 0.6) scales it up to exactly 1em.
  */
 @font-face {
-  font-family: Han Em Space;
+  font-family: 'Han Em Space';
   font-weight: 100 900;
   size-adjust: 166.667%;
   src: local(Courier New), local(Courier);
@@ -52,7 +52,7 @@
  * `build/em-space.py`.
  */
 @font-face {
-  font-family: Han Em Space Fallback;
+  font-family: 'Han Em Space Fallback';
   font-weight: 100 900;
   src: url('./em-space.woff2') format('woff2');
   unicode-range: U+20;

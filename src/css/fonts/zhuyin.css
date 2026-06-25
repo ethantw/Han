@@ -1,6 +1,5 @@
 @font-face {
-  font-family: Han Zhuyin Serif;
-  /* src: url('@han-css/fonts/zhuyin.serif.woff2') format('woff2'); */
+  font-family: 'Han Zhuyin Serif';
   src: url('./zhuyin.serif.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;

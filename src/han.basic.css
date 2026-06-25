@@ -10,10 +10,10 @@
  * Line adjustments
  * ========================================================================== */
 
-@import url(./css/line-adjustments.css) layer(han-line-adjustments);
+@import url(./css/lines.css) layer(han-lines);
 
 /* ========================================================================== *
- * Sectional refinements
+ * Prose
  * ========================================================================== */
 
-@import url(./css/sectional-refinements.css) layer(han-sectional-refinements);
+@import url(./css/prose.css) layer(han-prose);

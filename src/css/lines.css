@@ -40,7 +40,7 @@
  * Independent of the two native pass-throughs above — those tell the
  * browser what to do; this tells the JS fallback which `<h-char>` /
  * `<h-layer>` wrappers to emit so the companion CSS in
- * `with-js/line-adjustments.css` can take over when native is missing.
+ * `lines.with-js.css` can take over when native is missing.
  *   auto      Browser: skip whatever the engine handles natively (per
  *             `CSS.supports('text-spacing-trim'/'hanging-punctuation')`)
  *             and JS-render only the missing pieces. Node SSR: render
@@ -88,6 +88,16 @@
  * explicitly on `<body>` — since `:root` is a style container but has
  * no ancestor to query itself against, targeting its direct child is
  * the only way to re-establish the value for all descendants.
+ *
+ * TODO(css-if): once `if()` ships, drop this `:where(> *)` workaround —
+ * `if()` reads the element's OWN value, so `:root` can set the native
+ * property directly from its own toggle, e.g.
+ *   text-autospace: if(
+ *     style(--han-text-autospace: strict) or style(--han-text-autospace: insert): normal;
+ *     style(--han-text-autospace: no-autospace): no-autospace;
+ *     else: var(--han-text-autospace)
+ *   );
+ * The `text-spacing-trim` block below folds in the same way.
  */
 @container
   style(--han-text-autospace: strict) or
@@ -112,14 +122,3 @@
     text-spacing-trim: space-all;
   }
 }
-
-/* TODO: uncomment once hanging-punctuation ships in browsers. */
-
-/*
- * Apply hanging punctuation (標點懸掛) for Simplified Chinese and Japanese.
- */
-/*
-:where([lang^='zh-Hans'], [lang^='ja']) {
-  hanging-punctuation: allow-end;
-}
-*/

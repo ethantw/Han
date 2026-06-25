@@ -42,7 +42,7 @@ import {
  * Greek ∪ Cyrillic + ASCII digits, both via `\p{sc=…}` so SMP / sur-
  * rogate-pair Han are handled without explicit `[\uD800-\uDBFF]…`.
  *
- * Companion CSS in `src/css/with-js/line-adjustments.css` sizes the
+ * Companion CSS in `src/css/lines.with-js.css` sizes the
  * inserted element to ¼-em (or `font-size-adjust: ic-width 0.208375`
  * on `Han Em Space`, when the UA supports it).
  */
@@ -267,7 +267,7 @@ export const applyISS = (src: Hyperly): Hype => {
  * The probe (`detectAutospaceBoundaryBug`) catches UAs that ship native
  * `text-autospace` but lose the gap across an inline-element boundary
  * (e.g. `<b>字</b>A`). On a positive probe we set `--han-probe-autospace:
- * broken` on `:root`, which `with-js/line-adjustments.css` keys off to
+ * broken` on `:root`, which `lines.with-js.css` keys off to
  * force the JS-side `<h-iss>` to render even when the engine claims
  * native support.
  *
