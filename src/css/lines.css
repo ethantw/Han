@@ -84,12 +84,12 @@
  * `strict` mode: native `text-autospace: normal` stays on so JS can
  * build on top of it. The pass-through on `:root` above produces an
  * invalid value (`text-autospace: strict` is not a legal keyword), so
- * `:root` falls back to the UA default. `:where(> *)` restores `normal`
+ * `:root` falls back to the UA default. `:where(*)` restores `normal`
  * explicitly on `<body>` — since `:root` is a style container but has
  * no ancestor to query itself against, targeting its direct child is
  * the only way to re-establish the value for all descendants.
  *
- * TODO(css-if): once `if()` ships, drop this `:where(> *)` workaround —
+ * TODO(css-if): once `if()` ships, drop this `:where(*)` workaround —
  * `if()` reads the element's OWN value, so `:root` can set the native
  * property directly from its own toggle, e.g.
  *   text-autospace: if(
@@ -103,13 +103,13 @@
   style(--han-text-autospace: strict) or
   style(--han-text-autospace: insert)
 {
-  :where(> *) {
+  :where(*) {
     text-autospace: normal;
   }
 }
 
 @container style(--han-text-autospace: no-autospace) {
-  :where(> *) {
+  :where(*) {
     text-autospace: no-autospace;
   }
 }
@@ -118,7 +118,7 @@
   style(--han-punctuation-refinement: none) or
   style(--han-punctuation-refinement: hang)
 {
-  :where(> *) {
+  :where(*) {
     text-spacing-trim: space-all;
   }
 }

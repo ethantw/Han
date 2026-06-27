@@ -328,6 +328,24 @@ test('applyISS: mode="none" short-circuits — no h-iss, no cascade rewrite', as
   }
 })
 
+test('applyISS: cascade "no-autospace"（CSS 枚舉的停用值）→ 映射 none：不插 h-iss、不覆寫宣告', async () => {
+  const { win, teardown } = await withCascadeGlobals(() => false)
+  try {
+    const article = seed(win, 'no-autospace')
+    const el = article as any as HTMLElement
+    const before = el.innerHTML
+    applyISS(article)
+    assert.equal(el.innerHTML, before)
+    // 不得被 write-back 改成 normal（那會把作者的停用悄悄轉成啟用）
+    assert.equal(
+      el.style.getPropertyValue('--han-text-autospace').trim(),
+      'no-autospace',
+    )
+  } finally {
+    teardown()
+  }
+})
+
 test('applyISS: mode="normal" + native insert supported → no JS', async () => {
   const { win, teardown } = await withCascadeGlobals(
     (_p, v) => v === 'insert',

@@ -204,10 +204,17 @@ export const applyISSWithMode = (mode: ISSMode) =>
 
 /** Resolve the cascade-declared ISS mode on `src` — walks `src → :root` on
  *  `--han-text-autospace`, falling back to `'normal'` when the cascade carries
- *  an unknown token. Pure read; does not mutate the DOM. */
+ *  an unknown token. Pure read; does not mutate the DOM.
+ *
+ *  The cascade enum's opt-out is `no-autospace` (see the `@property` in
+ *  `lines.css`); the JS enum's is `none`. Map it — treating it as unknown
+ *  would fall back to `normal`, silently CONVERTING an author's opt-out
+ *  into an opt-in (and `applyISSWithMode` would then write `normal` back
+ *  onto the element, clobbering the author's declaration). */
 const resolveISSMode = (src: Hyperly): ISSMode => {
   const raw = getComputedStyle(element(src))
     .getPropertyValue('--han-text-autospace').trim()
+  if (raw === 'no-autospace') return 'none'
   return isValidMode(raw) ? raw : 'normal'
 }
 

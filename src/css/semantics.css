@@ -255,11 +255,18 @@
       quotes: var(--han-title-marks);
     }
 
+    /* Pseudo-elements are NOT wrapped in `:where()` — they're invalid
+     * inside logical-combination pseudo-classes, and since `:where()`
+     * takes a FORGIVING list the invalid `::before` is silently ignored:
+     * `&:where(::before)` matches nothing, no error anywhere. (This is
+     * exactly how 書名號乙式 shipped broken.) `&::before` off a
+     * zero-specificity `&` is the correct idiom; the pseudo-element's
+     * own type-level specificity can't be zeroed regardless. */
     @container style(--han-cite-title-marks: bracket) {
-      &:where(::before) {
+      &::before {
         content: open-quote;
       }
-      &:where(::after) {
+      &::after {
         content: close-quote;
       }
     }
@@ -323,10 +330,10 @@
   & {
     quotes: var(--han-quotes);
   }
-  &:where(::before) {
+  &::before {
     content: open-quote;
   }
-  &:where(::after) {
+  &::after {
     content: close-quote;
   }
 }

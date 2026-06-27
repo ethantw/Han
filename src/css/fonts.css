@@ -91,7 +91,7 @@
  * `<i>`, `<var>`, article `<blockquote>`, and other elements that receive the
  * cursive generic family.
  *
- *   webfont  Default. LXGW Wenkai TC / LXGW Wenkai (霞鶩文楷) as the primary
+ *   webfont  Default. LXGW WenKai TC / LXGW WenKai (霞鶩文楷) as the primary
  *            cursive CJK font. Falls back to Klee / BiauKai / Kaiti TC for
  *            Traditional Chinese and Japanese (Klee only), or Kaiti SC for
  *            Simplified Chinese. Hiragino Mincho / Yu Mincho serve as the
@@ -110,6 +110,56 @@
   initial-value: webfont;
 }
 
+/**
+ * Slot registrations・the composite-stack contract
+ *
+ * `--han-font-default / -alternative / -accent` comma-join these six slot
+ * variables. CSS has no "an unset var() vanishes from the list" semantics —
+ * an unresolved `var()` makes the WHOLE composite guaranteed-invalid, which
+ * silently killed every `font-family: var(--han-font-default)` down the line.
+ *
+ * Registering each slot with a sentinel family name (`HanNone` — matches no
+ * real font, so font matching skips it) guarantees the composites always
+ * resolve. It also gives the `off` blocks below their intended semantics:
+ * `--…: initial` now resets to the harmless sentinel instead of poisoning
+ * the stack.
+ */
+@property --han-font-punctuation-sans {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
+@property --han-font-punctuation-serif {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
+@property --han-font-punctuation-cursive {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
+@property --han-font-cjk-sans {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
+@property --han-font-cjk-serif {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
+@property --han-font-cjk-cursive {
+  syntax: "*";
+  inherits: true;
+  initial-value: HanNone;
+}
+
 /* ========================================================================== *
  * Font configuration
  * ========================================================================== */
@@ -117,11 +167,11 @@
 /* TODO(css-if): Every `@container style()` block below maps one mode-property
  * value to a set of font-var assignments — the textbook shape for CSS Values 5
  * `if()`. Once `if()` ships in all major engines, collapse each per-locale
- * family of blocks into ONE `:where(> *:lang(…))` rule whose vars are assigned by
+ * family of blocks into ONE `:where(:lang(…))` rule whose vars are assigned by
  * a single multi-branch `if()`, dropping the `@container` wrappers entirely.
  *
  * Future form (e.g. the four --han-punctuation-hant blocks → one rule):
- *   :where(> *:lang(zh)) {
+ *   :where(:lang(zh)) {
  *     --han-font-punctuation-sans: if(
  *       style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
  *       style(--han-punctuation-hant: MOE): 'Diantenjeom Sans MOE';
@@ -155,9 +205,29 @@
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
 
-  --han-webfont-heritage-glyghs-sans: 'Shangu Sans', 'Shangu Sans TC', 'Genyo Gothic TC', 'Genyo Gothic';
-  --han-webfont-heritage-glyghs-serif: 'Shangu Serif', 'Shangu Serif TC', 'Genyo Min TC', 'Genyo Min';
+  --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans TC', 'Genki Gothic TC', 'Genki Gothic';
+  --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif TC', 'Genki Min TC', 'Genki Min';
 
+  /* 繁體楷體 webfont 的可換槽——同 heritage-glyphs 的 swap-var 模式；
+     下方 --han-cursive: webfont 的 zh 堆疊引用它。預設霞鶩文楷TC，
+     可覆寫為 'Iansui'（芫荽）等。 */
+  --han-webfont-cursive-hant: 'LXGW WenKai TC';
+}
+
+/**
+ * The three composites are declared on EVERY element, not on `:root`.
+ *
+ * A custom property's `var()`s substitute at computed-value time on the
+ * element that DECLARES it, and the resolved string is what inherits.
+ * Declared on `:root`, the composites would bake in the root's slot
+ * values (the HanNone sentinels — the per-lang @container blocks below
+ * can't apply to `:root`, which has no ancestor container) and every
+ * descendant would inherit that frozen string, ignoring its own slots.
+ * `:where(*)` makes each element re-substitute with the slot values in
+ * scope at that element. Zero specificity; custom-property computation
+ * is cheap.
+ */
+:where(*) {
   --han-font-default:
     var(--han-font-punctuation-sans),
     var(--han-font-latin-sans),
@@ -178,161 +248,168 @@
   ;
 }
 
+/* JP system fonts as the heritage-ish fallback, style-matched, Mac →
+ * Windows → Android. Android's system CJK is Noto CJK; its JP variant
+ * draws the closest-to-heritage forms (same trade-off as Hiragino/Yu,
+ * see the JP-only caveat in the workspace CLAUDE.md). The on-device
+ * family names are 'Noto (Sans|Serif) CJK JP' — 'Noto Sans JP' is the
+ * Google-Fonts webfont naming and does NOT exist on the device. Noto
+ * Serif CJK ships since Android 9. */
 @container style(--han-use-heritage-glyphs-for-hant: webfont) {
-  :where(> *:lang(zh-Hant)) {
+  :where(:lang(zh-Hant)) {
     --han-font-cjk-sans:
-      var(--han-webfont-heritage-glyghs-sans),
-      'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic'
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP'
     ;
     --han-font-cjk-serif:
-      var(--han-webfont-heritage-glyghs-serif),
-      'Hiragino Mincho ProN', 'Yu Mincho'
+      var(--han-webfont-heritage-glyphs-serif),
+      'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP'
     ;
   }
 }
 
 @container style(--han-use-heritage-glyphs-for-hant: system) {
-  :where(> *:lang(zh-Hant)) {
-    --han-font-cjk-sans: 'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic';
-    --han-font-cjk-serif: 'Hiragino Mincho ProN', 'Yu Mincho';
+  :where(:lang(zh-Hant)) {
+    --han-font-cjk-sans: 'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP';
+    --han-font-cjk-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
   }
 }
 
 @container style(--han-cursive: webfont) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-cjk-cursive:
-      'LXGW Wenkai TC',
+      var(--han-webfont-cursive-hant),
       Klee, 'Klee One',
       BiauKai, DFKai-SB, 'Kaiti TC',
       'Hiragino Mincho ProN', 'Yu Mincho'
     ;
   }
-  :where(> *:lang(zh-Hans)) {
-    --han-font-cjk-cursive: 'LXGW Wenkai', 'Kaiti SC';
+  :where(:lang(zh-Hans)) {
+    --han-font-cjk-cursive: 'LXGW WenKai', 'Kaiti SC';
   }
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
   }
 }
 
 @container style(--han-cursive: system) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-cjk-cursive:
       Klee, 'Klee One',
       BiauKai, DFKai-SB, 'Kaiti TC',
       'Hiragino Mincho ProN', 'Yu Mincho'
     ;
   }
-  :where(> *:lang(zh-Hans)) {
+  :where(:lang(zh-Hans)) {
     --han-font-cjk-cursive: 'Kaiti SC';
   }
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
   }
 }
 
 @container style(--han-cursive: off) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-cjk-cursive: initial;
   }
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-cjk-cursive: initial;
   }
 }
 
 @container style(--han-punctuation-hant: JIS) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
     --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
     --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-hant: MOE) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
     --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
     --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-hant: GB) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans GB';
     --han-font-punctuation-serif: 'Diantenjeom Serif GB';
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-hant: off) {
-  :where(> *:lang(zh)) {
+  :where(:lang(zh)) {
     --han-font-punctuation-sans: initial;
     --han-font-punctuation-serif: initial;
     --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-hans: JIS) {
-  :where(> *:lang(zh-Hans)) {
+  :where(:lang(zh-Hans)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
     --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
     --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-hans: MOE) {
-  :where(> *:lang(zh-Hans)) {
+  :where(:lang(zh-Hans)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
     --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
     --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-hans: GB) {
-  :where(> *:lang(zh-Hans)) {
+  :where(:lang(zh-Hans)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans GB';
     --han-font-punctuation-serif: 'Diantenjeom Serif GB';
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-hans: off) {
-  :where(> *:lang(zh-Hans)) {
+  :where(:lang(zh-Hans)) {
     --han-font-punctuation-sans: initial;
     --han-font-punctuation-serif: initial;
     --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-ja: JIS) {
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
     --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
     --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
 @container style(--han-punctuation-ja: MOE) {
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
     --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
     --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
   }
 }
 @container style(--han-punctuation-ja: GB) {
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans GB';
     --han-font-punctuation-serif: 'Diantenjeom Serif GB';
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
 @container style(--han-punctuation-ja: off) {
-  :where(> *:lang(ja)) {
+  :where(:lang(ja)) {
     --han-font-punctuation-sans: initial;
     --han-font-punctuation-serif: initial;
     --han-font-punctuation-cursive: initial;
   }
 }
 @container style(--han-punctuation-vertical-ko: KV) {
-  :where(> *:lang(ko)) {
+  :where(:lang(ko)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans KV';
     --han-font-punctuation-serif: 'Diantenjeom Serif KV';
     --han-font-punctuation-cursive: 'Diantenjeom Serif KV';
   }
 }
 @container style(--han-punctuation-vertical-ko: off) {
-  :where(> *:lang(ko)) {
+  :where(:lang(ko)) {
     --han-font-punctuation-sans: initial;
     --han-font-punctuation-serif: initial;
     --han-font-punctuation-cursive: initial;
