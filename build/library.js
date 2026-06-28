@@ -50,6 +50,21 @@ const CSS_FILES = [
   './src/han.basic.css',
 ]
 
+/**
+ * Per-module bundle entries (semantics/lines/prose/fonts). `han.fonts.css`
+ * emits the same `em-space.woff2` / `zhuyin.serif.woff2` assets as
+ * `han.css` — both use `assetNames: '[name]'`, so building them in the
+ * same esbuild call collides on those output paths. Kept as a separate
+ * `CSS_BUNDLE_CONFIG`-shaped build/context so each call's asset graph
+ * stays self-consistent; the duplicate files land identically either way.
+ */
+const MODULE_CSS_FILES = [
+  './src/han.semantics.css',
+  './src/han.lines.css',
+  './src/han.prose.css',
+  './src/han.fonts.css',
+]
+
 const CSS_BUNDLE_CONFIG = {
   entryPoints: CSS_FILES,
 
@@ -60,6 +75,11 @@ const CSS_BUNDLE_CONFIG = {
   assetNames: '[name]',
 
   sourcemap: 'external',
+}
+
+const MODULE_CSS_BUNDLE_CONFIG = {
+  ...CSS_BUNDLE_CONFIG,
+  entryPoints: MODULE_CSS_FILES,
 }
 
 const TS_BUNDLE_CONFIG = {
@@ -89,6 +109,7 @@ if (watch) {
   // covers the type-correctness loop separately.
   const ctxs = await Promise.all([
     esbuild.context({ ...CSS_BUNDLE_CONFIG, logLevel: 'info' }),
+    esbuild.context({ ...MODULE_CSS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...TS_BUNDLE_CONFIG, logLevel: 'info' }),
   ])
   await Promise.all(ctxs.map(ctx => ctx.watch()))
@@ -99,6 +120,12 @@ if (watch) {
     esbuild.build(CSS_BUNDLE_CONFIG),
     esbuild.build({
       ...CSS_BUNDLE_CONFIG,
+      minify: true,
+      outExtension: { '.css': '.min.css' },
+    }),
+    esbuild.build(MODULE_CSS_BUNDLE_CONFIG),
+    esbuild.build({
+      ...MODULE_CSS_BUNDLE_CONFIG,
       minify: true,
       outExtension: { '.css': '.min.css' },
     }),

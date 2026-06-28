@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+/**
+ * Standalone per-module bundle entry — Prose.
+ *
+ * One of four (semantics / lines / prose / fonts); their sum is
+ * identical to `han.css`. Import modules individually to opt out of
+ * the ones you don't need — consumers pulling in more than one get
+ * layer order from their own import order (recommended: semantics →
+ * lines → prose → fonts, matching `han.css`'s order).
+ */
+
+/* ========================================================================== *
+ * Prose
+ * ========================================================================== */
+
+@import url(./css/prose.css) layer(han-prose);

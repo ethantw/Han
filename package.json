@@ -18,6 +18,10 @@
       "default": "./dist/han.auto.js"
     },
     "./styles": "./dist/han.css",
+    "./styles/semantics": "./dist/han.semantics.css",
+    "./styles/lines": "./dist/han.lines.css",
+    "./styles/prose": "./dist/han.prose.css",
+    "./styles/fonts": "./dist/han.fonts.css",
     "./basic-styles": "./dist/han.basic.css",
     "./package.json": "./package.json"
   },
