@@ -479,3 +479,11 @@ test('applyISSWithProbe: mode="strict" runs JS regardless of probe', async () =>
     teardown()
   }
 })
+
+test('code-like elements are skipped — no <h-iss> inside code/pre/kbd/samp', () => {
+  // Literal-text containers must not get inter-script spacers; a space in
+  // code is meaningful, not a ¼-em gap (see helpers/skip.ts).
+  for (const tag of ['code', 'pre', 'kbd', 'samp']) {
+    assert.equal(iss(`<${tag}>字A</${tag}>`), `<${tag}>字A</${tag}>`)
+  }
+})

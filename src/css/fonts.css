@@ -88,8 +88,20 @@
 /**
  * Cursive / Kaiti (楷體) font mode for CJK text.
  * Controls the CJK layer of `--han-font-accent` — the cursive stack used for
- * `<i>`, `<var>`, article `<blockquote>`, and other elements that receive the
- * cursive generic family.
+ * `<i>`, `<var>`, prose `<blockquote>` (`--han-prose-fonts`, prose.css), and
+ * other elements that receive the cursive generic family.
+ *
+ * Named `--han-use-cursive`, not the shorter `--han-cursive` — semantics.css
+ * already owns `--han-cursive` as the actual font-STACK var
+ * (`--han-font-accent: var(--han-cursive)`). Registering a same-named
+ * `@property` here with a `webfont | system | off` syntax used to silently
+ * clobber that font-stack meaning everywhere `--han-cursive` was consumed
+ * (`@property` registration is global, not `@layer`-scoped, so this file's
+ * enum registration won regardless of module load order) — every consumer
+ * of `--han-font-accent` was quietly rendering the literal string
+ * `"webfont"` as a font-family whenever both modules were loaded together.
+ * `--han-use-*` matches this file's own naming for the sibling toggle,
+ * `--han-use-heritage-glyphs-for-hant`, just above.
  *
  *   webfont  Default. LXGW WenKai TC / LXGW WenKai (霞鶩文楷) as the primary
  *            cursive CJK font. Falls back to Klee / BiauKai / Kaiti TC for
@@ -104,7 +116,7 @@
  *   off      No cursive CJK font layer; `--han-font-accent` falls through to
  *            the generic `cursive` family.
  */
-@property --han-cursive {
+@property --han-use-cursive {
   syntax: "webfont | system | off";
   inherits: true;
   initial-value: webfont;
@@ -187,7 +199,23 @@
  *   `if(style())` reads the element's OWN computed value (after inheritance).
  *   All mode properties are `inherits: true` and registered via `@property`
  *   with an initial-value, and are meant to be set on an ANCESTOR (`:root`),
- *   so the two resolve identically here.
+ *   so the two resolve identically here — EXCEPT at `:root` itself, which
+ *   has no ancestor for `@container style()` to query, so these slot vars
+ *   (`--han-font-punctuation-sans` and friends) are stuck at their `HanNone`
+ *   `@property` fallback there today. `if(style())` reads `:root`'s own
+ *   (inherited) mode-property value instead of an ancestor's, so it doesn't
+ *   need one — this migration fixes that specific gap.
+ *
+ * • This does NOT let the composites below (`--han-sans` / `--han-serif` /
+ *   `--han-cursive`, and semantics.css's `--han-font-default` and friends)
+ *   move back to a `:root`-only declaration. That's a separate mechanism:
+ *   a custom property's value is computed once on the element that
+ *   declares it, and THAT resolved string is what inherits — regardless of
+ *   whether the slot it references was assigned via `@container` or
+ *   `if()`. A `:root`-only composite still freezes at `:root`'s own value
+ *   and every descendant inherits that frozen string, ignoring any nested
+ *   override (e.g. `.PunctCompare`'s `--han-punctuation-hant: GB` set on a
+ *   single `<li>`). The composites stay on `:where(*)` either way.
  *
  * • Unmatched branch: an `if()` with no matching condition and no `else:`
  *   returns `<guaranteed-invalid>` — NOT an unset/`initial` value. Because each
@@ -209,7 +237,7 @@
   --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif TC', 'Genki Min TC', 'Genki Min';
 
   /* 繁體楷體 webfont 的可換槽——同 heritage-glyphs 的 swap-var 模式；
-     下方 --han-cursive: webfont 的 zh 堆疊引用它。預設霞鶩文楷TC，
+     下方 --han-use-cursive: webfont 的 zh 堆疊引用它。預設霞鶩文楷TC，
      可覆寫為 'Iansui'（芫荽）等。 */
   --han-webfont-cursive-hant: 'LXGW WenKai TC';
 }
@@ -228,24 +256,35 @@
  * is cheap.
  */
 :where(*) {
-  --han-font-default:
+  --han-system-ui:
     var(--han-font-punctuation-sans),
     var(--han-font-latin-sans),
     var(--han-font-cjk-sans),
     system-ui, sans-serif
   ;
-  --han-font-alternative:
+  --han-sans:
+    var(--han-font-punctuation-sans),
+    var(--han-font-latin-sans),
+    var(--han-font-cjk-sans),
+    sans-serif
+  ;
+  --han-serif:
     var(--han-font-punctuation-serif),
     var(--han-font-latin-serif),
     var(--han-font-cjk-serif),
     serif
   ;
-  --han-font-accent:
+  --han-cursive:
     var(--han-font-punctuation-cursive),
     var(--han-font-latin-cursive),
     var(--han-font-cjk-cursive),
     cursive, serif
   ;
+
+  --han-font-default: var(--han-system-ui);
+  --han-font-alternative: var(--han-serif);
+  --han-font-accent: var(--han-cursive);
+  --han-font-zhuyin-serif: 'Han Zhuyin Serif', cursive, serif;
 }
 
 /* JP system fonts as the heritage-ish fallback, style-matched, Mac →
@@ -275,7 +314,7 @@
   }
 }
 
-@container style(--han-cursive: webfont) {
+@container style(--han-use-cursive: webfont) {
   :where(:lang(zh)) {
     --han-font-cjk-cursive:
       var(--han-webfont-cursive-hant),
@@ -292,7 +331,7 @@
   }
 }
 
-@container style(--han-cursive: system) {
+@container style(--han-use-cursive: system) {
   :where(:lang(zh)) {
     --han-font-cjk-cursive:
       Klee, 'Klee One',
@@ -308,7 +347,7 @@
   }
 }
 
-@container style(--han-cursive: off) {
+@container style(--han-use-cursive: off) {
   :where(:lang(zh)) {
     --han-font-cjk-cursive: initial;
   }

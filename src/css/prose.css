@@ -1,6 +1,29 @@
 @charset "UTF-8";
 
 /* ========================================================================== *
+ * Registered custom properties・`@property`
+ * ========================================================================== */
+
+/**
+ * `--han-prose-fonts` is a prose × fonts coupling point, on purpose — the name
+ * says so. It gates the blockquote font-swap below (Sectional refinements),
+ * nested under `--han-prose: on` so it's meaningless without prose already
+ * being active. Registered `on` by default (not the `--han-prose` off-by-
+ * default pattern) because this preserves prior behaviour: the blockquote
+ * swap used to be unconditional whenever `--han-semantics: on`, so flipping
+ * it to a new opt-in default would be a silent breaking change.
+ *
+ * It deliberately reads `--han-font-accent` / `--han-font-default` (owned by
+ * semantics.css / fonts.css) — intentional prose↔fonts coupling, not an
+ * accident.
+ */
+@property --han-prose-fonts {
+  syntax: "on | off";
+  inherits: true;
+  initial-value: on;
+}
+
+/* ========================================================================== *
  * Variables
  * ========================================================================== */
 
@@ -86,6 +109,26 @@
     :where(p)&,
     & :where(p) {
       margin-inline-start: var(--han-prose-indent);
+    }
+  }
+
+  /**
+   * Use cursive generic family for `blockquote` elements in CJK prose.
+   * Inside the blockquote, restore `<dfn>` / `<i>` / `<var>` to the default
+   * font-family so they don't inherit the cursive and lose their distinct
+   * semantic. Nested under `--han-prose-fonts: on` (registered above) —
+   * scoped to `:where(blockquote)` directly rather than a hardcoded
+   * `article blockquote`, so it follows `--han-prose`'s own extensibility
+   * (any `--han-prose: on` container, not just literal `<article>`).
+   */
+  @container style(--han-prose-fonts: on) {
+    :where(blockquote):is(:lang(zh), :lang(ja), :lang(ko)) {
+      & {
+        font-family: var(--han-font-accent);
+      }
+      :where(dfn, i, var) {
+        font-family: var(--han-font-default);
+      }
     }
   }
 }

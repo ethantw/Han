@@ -70,14 +70,13 @@
  *
  * **DON'T REGISTER** when the variable is a *transparent proxy* — the
  *   value goes through `var(--foo)` straight into a native CSS property
- *   (`text-emphasis: var(--han-em-symbol)`, `text-underline-position:
- *   var(--han-underline-position)`). The native property does its own
- *   validation at the consumption site; bad values silently fail there,
- *   same effective outcome as `@property` rejection. Registering would
- *   add a maintenance burden (keeping our `syntax` in sync with native
- *   spec evolution) without changing user-visible behaviour.
+ *   (`text-emphasis: var(--han-em-symbol)`). The native property does its
+ *   own validation at the consumption site; bad values silently fail
+ *   there, same effective outcome as `@property` rejection. Registering
+ *   would add a maintenance burden (keeping our `syntax` in sync with
+ *   native spec evolution) without changing user-visible behaviour.
  *   Examples: `--han-em-symbol`, `--han-em-dot-position`,
- *   `--han-underline-position`, `--han-font-default`, `--han-quotes`.
+ *   `--han-font-default`, `--han-quotes`.
  *
  * Short form: **own enum → register; transparent proxy → don't.**
  */
@@ -126,7 +125,6 @@
 :where(:root) {
   /* Decoration lines refinements */
   --han-underline-offset: .125em;
-  --han-underline-position: auto;
   --han-adjacent-lines-skip-gap-fallback: .125em;
 
   /* Emphasis marks for `em` elements */
@@ -140,12 +138,22 @@
   /* Quotes for `q` elements */
   --han-quotes: '\201C' '\201D' '\2018' '\2019';
 
-  /* Default fonts for the document and varied elements */
-  --han-font-default: system-ui, sans-serif;
-  --han-font-alternative: serif;
-  --han-font-accent: cursive, serif;
+  /* Default fonts for the document and varied elements — semantics.css's own
+   * fallback, correct only when fonts.css is NOT loaded (no per-lang webfont
+   * layer to vary, so a `:root`-only declaration is safe here — nothing to
+   * freeze). When fonts.css IS loaded, its own `:where(*)` rule declares
+   * these same four vars again, per-element, and wins on every element but
+   * `:root` itself (only `:where(*)` matches non-root elements at all) —
+   * that's the version that actually resolves the per-lang webfont slots. */
+  --han-system-ui: system-ui, sans-serif;
+  --han-sans: sans-serif;
+  --han-serif: serif;
+  --han-cursive: cursive, serif;
 
-  --han-font-zhuyin-serif: 'Han Zhuyin Serif', cursive, serif;
+  --han-font-default: var(--han-system-ui);
+  --han-font-alternative: var(--han-serif);
+  --han-font-accent: var(--han-cursive);
+  --han-font-zhuyin-serif: var(--han-cursive);
 }
 
 :where(:lang(en-GB)) {
@@ -163,6 +171,25 @@
 :where(:lang(ja)) {
   --han-title-marks: var(--han-quotes);
   --han-em-dot-position: over right;
+}
+
+/* ko-Hant (Hanja-mixed Korean) titles books with 「」／『』, same as ja —
+ * reuses its own --han-quotes (already 「」『』 from the rule above). Plain
+ * :lang(ko) deliberately stays out of this: no Hanja mixing, no CJK-bracket
+ * title marks, same split the quotes system already draws. */
+:where(:lang(ko-Hant)) {
+  --han-title-marks: var(--han-quotes);
+}
+
+/* Explicit Western quotes for plain :lang(ko) — functionally identical to
+ * falling through to :root's default, but spelled out so it doesn't rely on
+ * silent inheritance (and doesn't quietly break if :root's default ever
+ * changes for an unrelated reason). `:not(:lang(ko-Hant))` is load-bearing:
+ * bare `:lang(ko)` also matches `ko-Hant` (prefix match), and both rules
+ * are zero-specificity `:where()`, so without the exclusion this would win
+ * on source order and clobber the ko-Hant override above. */
+:where(:lang(ko)):where(:not(:lang(ko-Hant))) {
+  --han-quotes: '\201C' '\201D' '\2018' '\2019';
 }
 
 /* ========================================================================== *
@@ -184,27 +211,24 @@
   font-family: var(--han-font-default); /* 1 */
   text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
   text-underline-offset: var(--han-underline-offset); /* 3 */
-  text-underline-position: var(--han-underline-position); /* 3 */
 }
 
-/* ========================================================================== *
- * Sections
- * ========================================================================== */
-
-@container style(--han-semantics: on) {
-  /**
-   * Use cursive generic family for `blockquote` elements in articles.
-   * Inside the blockquote, restore `<dfn>` / `<i>` / `<var>` to the default
-   * font-family so they don't inherit the cursive and lose their distinct semantic.
-   */
-  :where(article:is(:lang(zh), :lang(ja), :lang(ko)) blockquote) {
-    & {
-      font-family: var(--han-font-accent);
-    }
-    :where(dfn, i, var) {
-      font-family: var(--han-font-default);
-    }
-  }
+/**
+ * Re-declare `text-underline-offset` on `:where(*)`, not an enumerated
+ * list of underline-bearing elements — same aggressive-net reasoning as
+ * the pseudo-italic correction below: a developer can underline literally
+ * anything, and enumerating known tags always misses the next one. It only
+ * inherits as the COMPUTED value, not the `var()` token stream, so a
+ * `:root`-only declaration resolves `.125em` once against `:root`'s own
+ * font-size (→ 2px) and every descendant inherits that fixed px regardless
+ * of its own size; redeclaring here re-resolves the `em` fresh per element.
+ *
+ * Kept OUTSIDE the `@container style(--han-semantics: on)` gate below —
+ * this is a correctness fix, not a semantic enhancement users should be
+ * able to opt out of.
+ */
+:where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
+  text-underline-offset: var(--han-underline-offset);
 }
 
 /* ========================================================================== *
@@ -232,12 +256,16 @@
   /**
    * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
    *
-   *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content.
+   *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content
+   *            — ja / ko-Hant instead get 「」 / 『』 (--han-title-marks
+   *            re-points to --han-quotes for those langs, see above).
    *   wavy     Underline with a wavy line (書名號甲式; Taiwan textbooks +
    *            classical-text reprints); suppresses the bracket quotes,
    *            since the style-query blocks are mutually exclusive — the
-   *            variable can only hold one value at a time.
-   *   none     Suppress both: no quotes, no underline.
+   *            variable can only hold one value at a time. zh only — not
+   *            a ja/ko-Hant convention.
+   *   none     Suppress both: no quotes, no underline (zh) / no quotes
+   *            (ja, ko-Hant).
    *
    * `quotes: var(--han-title-marks)` is always set so that the `bracket`
    * block's `open-quote` / `close-quote` content has something to resolve
@@ -250,7 +278,7 @@
    * so it only takes effect when set on an ancestor. The wavy skip-gap further
    * down (under `@supports not (text-decoration-inset)`) migrates together.
    */
-  :where(cite:is(:lang(zh), :lang(ja))) {
+  :where(cite:is(:lang(zh), :lang(ja), :lang(ko-Hant))) {
     & {
       quotes: var(--han-title-marks);
     }
@@ -280,7 +308,7 @@
     }
 
     @container style(--han-cite-title-marks: none) {
-      &:where(:lang(zh), :lang(ja)) {
+      &:where(:lang(zh), :lang(ja), :lang(ko-Hant)) {
         quotes: none;
       }
       &:where(:lang(zh)) {

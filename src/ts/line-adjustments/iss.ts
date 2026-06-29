@@ -1,11 +1,18 @@
 import { detectAutospaceBoundaryBug } from '../helpers/probes.ts'
 import { isBrowserSide } from '../helpers/env.ts'
 import { identity, pipe, tap } from '../helpers/fp.ts'
+import { isCodeLike } from '../helpers/skip.ts'
 
 import {
-  element, hype, insert, transform,
-  type Hyperly, type Hype,
+  defaultOptions, element, hype, insert, transform,
+  type Hyperly, type Hype, type Options,
 } from 'hyperly/fp'
+
+/** Skip code-like / form-field subtrees — literal text that must not get
+ *  `<h-iss>` spacers (same exclusion as 標點, see `helpers/skip.ts`). */
+const optionsSkippingCode: Options = {
+  ignore: n => defaultOptions.ignore(n) || isCodeLike(n),
+}
 
 /**
  * 跨文種混排間隙 (inter-script spacing, ISS) — JS-side companions for
@@ -87,6 +94,7 @@ const ISS_INSERT_BOUNDARY = new RegExp(
  */
 const insertISS = (src: Hyperly): Hype =>
   insert
+    (optionsSkippingCode)
     (ISS_INSERT_BOUNDARY)
     ({ end: ISS_HTML, outer: true })
     (src)
@@ -129,6 +137,7 @@ const ISS_REPLACE_WHITESPACE = new RegExp(
  */
 const replaceISS = (src: Hyperly): Hype =>
   transform
+    (optionsSkippingCode)
     (ISS_REPLACE_WHITESPACE)
     (_portion => _match => ISS_REPLACE_HTML)
     (src)

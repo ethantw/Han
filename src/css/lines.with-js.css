@@ -175,67 +175,151 @@
  *
  * Same line-edge-collapse trick as 擠壓 above, mirrored:
  *
- *   - `::before` is a 1em hidden Han Em Space ' ' on the h-char,
+ *   - `::after` is a 1em hidden Han Em Space ' ' on the h-char,
  *     reserving 1em of inline space at the column tail.
  *   - `<h-layer>` is `position: absolute; inset: 0` over the
  *     same box, so the glyph paints on top of the placeholder.
  *
  * Mid-line: filler holds 1em, glyph paints over it → glyph sits
  * at its natural inline position, visually unchanged.
- * Line wraps exactly at this h-char: `::before`'s trailing ' '
+ * Line wraps exactly at this h-char: `::after`'s trailing ' '
  * is the line's last whitespace and collapses per CSS-Text
  * line-end rules, so the 1em vanishes from the inline-progression
  * and the column tail tucks back; but `<h-layer>` is absolutely
  * positioned, so its box keeps its previous visual position and
  * the glyph appears to hang past the column edge.
  *
- * Gated by the derived `--han-hanging-punctuation-state` flag (computed just
- * below from language + `--han-punctuation-hant` + `--han-punctuation-refinement`)
- * and applied via `@container style(--han-hanging-punctuation-state: on)`. There
- * is no native `hanging-punctuation` rule yet — the property isn't broadly
- * shipped; this JS-emitted-markup
- * fallback stands in until then. To opt out, drive the inputs so the derived
- * state resolves to `off` (e.g. set `--han-punctuation-refinement` to something
- * other than `auto` / `hang` on an ancestor).
+ * `<h-layer>` being out-of-flow also detaches its glyph from any
+ * flow-dependent pseudo-element an ancestor might apply:
+ *   - `::first-line` won't colour/style it — out-of-flow content
+ *     isn't part of the block container's first formatted line.
+ *   - `::first-letter` is affected in principle too, but never in
+ *     practice: hangable-marked characters are always trailing/
+ *     closing punctuation (comma, period, closing bracket), which
+ *     structurally cannot open a paragraph — the true first letter
+ *     is always some preceding character, never the hangable one.
+ * DOM-structural selectors (`:first-child`, `:has()`, sibling
+ * combinators, `:lang()`, …) are unaffected — those query the DOM
+ * tree, not the render tree, and `position` doesn't touch the DOM.
+ *
+ * Gated by the derived `--han-state-hanging-punctuation` flag (computed just
+ * below from each language's own punctuation convention +
+ * `--han-punctuation-refinement`) and applied via `@container
+ * style(--han-state-hanging-punctuation: on)`. There is no native
+ * `hanging-punctuation` rule yet — the property isn't broadly shipped; this
+ * JS-emitted-markup fallback stands in until then. To opt out, drive the
+ * inputs so the derived state resolves to `off` (e.g. set
+ * `--han-punctuation-refinement` to something other than `auto` / `hang` on
+ * an ancestor).
+ *
+ * Not registered via `@property`. Unlike the rest of this file's derived
+ * flags, every branch below sets BOTH `on` and `off` explicitly — see the
+ * boundary-leak note below for why the usual "absence == off" shortcut
+ * doesn't hold here.
  */
-/* Default opt-in excludes `zh-Hant`: traditional Chinese
- * punctuation glyphs are typically *centered* within their
- * em-box, so hanging looks visually wrong (the dot floats
- * mid-margin instead of tucking into the column edge).
- * Curated fonts replace those biaodian with side-biased
- * variants matching the Hans / ja / ko convention, at which
- * point hanging becomes appropriate — the bottom block re-
- * adds Hant via `@container style(--han-punctuation-hant: JIS)` (or
- * `GB`), since those modes select side-biased glyph variants. */
-:where(:lang(zh-Hans), :lang(ja), :lang(ko-Hant)) {
-  --han-hanging-punctuation-state: on;
+
+/* Each language (except ko — see below) checks its OWN punctuation-
+ * convention var, and excludes exactly ONE value: `MOE`, the only
+ * convention *known* to be centered within its em-box (Taiwan MOE
+ * standard) — hanging looks visually wrong there (the dot floats mid-
+ * margin instead of tucking into the column edge). `off` (Diantenjeom
+ * disabled, glyphs fall through to the body font's own forms) is NOT
+ * excluded: the shape is merely unknown there, not known-centered, and
+ * most body fonts default to side-biased punctuation anyway — so `off`
+ * qualifies the same as `JIS` / `GB` — this generic "unknown, probably
+ * side-biased" assumption is what `hans` / `ja` still rely on. `hant` is
+ * the one exception: see the dedicated block right after its on/off pair
+ * below, where the body font is knowable via
+ * `--han-use-heritage-glyphs-for-hant` and the assumption is replaced with
+ * real per-value facts. `ko` has no `MOE`-equivalent
+ * (`--han-punctuation-vertical-ko` is just `KV | off`, no centered
+ * option at all), so it has nothing to exclude and is unconditionally
+ * on for `:lang(ko-Hant)`, gated only by the master refinement override
+ * below.
+ *
+ * `hant` / `hans` / `ja` set BOTH `on` and `off` explicitly, every
+ * branch — NOT just `on` with `off` left to fall out of "the var is
+ * simply absent". Reason: all three default to a QUALIFYING convention
+ * (MOE excluded, everything else — including each one's own default —
+ * qualifies). If a user overrides one to `MOE` on some wrapper element,
+ * that wrapper's OWN style-query evaluation checks ITS ancestor (never
+ * itself) — which still reports the old qualifying default — so the
+ * wrapper computes `on` for ITSELF despite declaring the very override
+ * that should turn it off. Its descendants query correctly (their
+ * ancestor is now the wrapper, which really does say `MOE`) and get NO
+ * declaration from an `on`-only rule — so they'd inherit the wrapper's
+ * wrong `on` instead of getting their own `off`. Making every branch
+ * explicit removes this dependency on which direction an override
+ * happens to go: a real declaration always wins over an inherited one,
+ * so the wrapper's own (unavoidably stale) verdict can never leak past
+ * it. */
+@container not style(--han-punctuation-hant: MOE) {
+  :where(:lang(zh)) { --han-state-hanging-punctuation: on; }
+}
+@container style(--han-punctuation-hant: MOE) {
+  :where(:lang(zh)) { --han-state-hanging-punctuation: off; }
 }
 
-@container
-  style(--han-punctuation-hant: JIS) or
-  style(--han-punctuation-hant: GB)
-{
-  :where(:lang(zh)) {
-    --han-hanging-punctuation-state: on;
-  }
+/* `hant`-only refinement of its own `off` branch above. `--han-punctuation-
+ * hant: off` means Diantenjeom isn't drawing the glyph, so it falls
+ * through to whatever CJK font is actually active — and for `hant`,
+ * that's exactly what `--han-use-heritage-glyphs-for-hant` controls, so
+ * "unknown" isn't the honest answer here, unlike `hans` / `ja`, which
+ * have no equivalent knob and keep the generic assumption above. Each of
+ * the three values is a known, fixed glyph fact rather than a guess:
+ *   webfont  Shanggu / Genki (尚古／源起) — centered. → off
+ *   system   JP system fonts (Hiragino/Yu) standing in for heritage
+ *            glyphs — side-biased (JP convention). → on
+ *   off      the ugly generic TC system font (MS JhengHei / PMingLiU
+ *            etc.) — centered. → off
+ * Both AND-operands query the ANCESTOR (never self), so this has the same
+ * self-reference gap as the on/off pair above: an element that sets both
+ * vars on itself won't see its own override reflected in its own state,
+ * only its descendants will. Harmless in practice — `h-char` is always a
+ * JS-inserted deep descendant of whatever element carries the language +
+ * override, never that element itself. */
+@container style(--han-punctuation-hant: off) and (style(--han-use-heritage-glyphs-for-hant: webfont) or style(--han-use-heritage-glyphs-for-hant: off)) {
+  :where(:lang(zh)) { --han-state-hanging-punctuation: off; }
+}
+@container style(--han-punctuation-hant: off) and style(--han-use-heritage-glyphs-for-hant: system) {
+  :where(:lang(zh)) { --han-state-hanging-punctuation: on; }
 }
 
-@container
-  not
-    style(--han-punctuation-refinement: auto) and
-    style(--han-punctuation-refinement: hang)
-{
+@container not style(--han-punctuation-hans: MOE) {
+  :where(:lang(zh-Hans)) { --han-state-hanging-punctuation: on; }
+}
+@container style(--han-punctuation-hans: MOE) {
+  :where(:lang(zh-Hans)) { --han-state-hanging-punctuation: off; }
+}
+
+@container not style(--han-punctuation-ja: MOE) {
+  :where(:lang(ja)) { --han-state-hanging-punctuation: on; }
+}
+@container style(--han-punctuation-ja: MOE) {
+  :where(:lang(ja)) { --han-state-hanging-punctuation: off; }
+}
+
+:where(:lang(ko-Hant)) {
+  --han-state-hanging-punctuation: on;
+}
+
+/* Master override — off whenever refinement isn't auto/hang, regardless of
+ * language/convention. `not (X or Y)`, not `not X and Y`: the latter is
+ * both syntactically ambiguous (mixing `not`/`and` without disambiguating
+ * parens) and logically backwards (`refinement` holds exactly one value,
+ * so `style(A) and style(B)` for two different literals is always false,
+ * making `not (A and B)` always true — a silent no-op gate). Comes after
+ * the per-language blocks in source order so it wins the tie (all
+ * `:where()`, zero specificity) when it fires. */
+@container not (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: hang)) {
   :where(*) {
-    --han-hanging-punctuation-state: off;
+    --han-state-hanging-punctuation: off;
   }
 }
 
-/* Default opt-in: zh-Hans, ja, ko-Hant (see above). Hant is additionally
- * opted in when `--han-punctuation-hant` is `JIS` or `GB`,
- * since those modes use side-biased glyph variants where hanging is effective.
- * `--han-punctuation-refinement: hang` sets state to `off` to suppress the
+/* `--han-punctuation-refinement: hang` sets state to `off` to suppress the
  * fallback when the native property handles it. */
-@container style(--han-hanging-punctuation-state: on) {
+@container style(--han-state-hanging-punctuation: on) {
   h-char[data-punct~="hangable"] {
     & {
       position: relative;

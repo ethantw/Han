@@ -111,12 +111,7 @@ export const detectStyleQuerySupport = (force = false, doc = typeof document !==
   }
 
   const style = doc.createElement('style')
-  style.textContent = `
-    #han-sq-parent { --han-probe: 1; }
-    @container style(--han-probe: 1) {
-      #han-sq-child { z-index: 99; }
-    }
-  `
+  style.textContent = '#han-sq-parent{--han-probe:1}@container style(--han-probe:1){#han-sq-child{z-index:99}}'
   doc.head.appendChild(style)
 
   const parent = doc.createElement('div')

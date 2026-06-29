@@ -354,3 +354,14 @@ test('SSR: refinePunctuationWithMode does NOT write inline cascade var', async (
   // markup transformation still happened
   assert.match(article.innerHTML, /<h-char data-punct="end hangable">/)
 })
+
+test('code-like elements are skipped — no <h-char> inside code/pre/kbd/samp', () => {
+  // Monospace / literal-text containers must not get punctuation wrappers:
+  // a comma must not hang in code, and splitting the text node breaks
+  // downstream single-text-node consumers (see helpers/skip.ts).
+  for (const tag of ['code', 'pre', 'kbd', 'samp']) {
+    const out = refine('auto')(`<${tag}>字，A</${tag}>`)
+    assert.doesNotMatch(out, /<h-char/, `${tag}: punctuation must be left untouched`)
+    assert.match(out, /，/, `${tag}: the comma survives verbatim`)
+  }
+})

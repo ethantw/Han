@@ -5,6 +5,7 @@ import {
 
 import { isBrowserSide } from '../helpers/env.ts'
 import { identity, pipe, tap } from '../helpers/fp.ts'
+import { isCodeLike } from '../helpers/skip.ts'
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 /** Subtype tokens emitted into `data-punct`. Combine with `consecutive`
@@ -102,7 +103,7 @@ const isHCharWrapper = (n: Node): boolean =>
   n.nodeType === 1 && (n as Element).tagName === 'H-CHAR'
 
 const optionsIgnoringHChar: Options = {
-  ignore: n => defaultOptions.ignore(n) || isHCharWrapper(n),
+  ignore: n => defaultOptions.ignore(n) || isHCharWrapper(n) || isCodeLike(n),
 }
 
 /* ─── Public API ─────────────────────────────────────────────────────────── */
