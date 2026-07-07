@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{ htmlLang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ siteTitle }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="icon" href="/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ siteTitle }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:image" content="https://hanzi.pro/img/typeset.png">
+<meta property="og:url" content="https://hanzi.pro{{ homeUrl }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ siteTitle }}">
+<meta name="twitter:description" content="{{ description }}">
+<meta name="twitter:image" content="https://hanzi.pro/img/typeset.png">
+<script>
+  (() => {
+    const saved = localStorage.getItem('theme')
+    if (saved === 'dark' || saved === 'light') {
+      document.documentElement.dataset.theme = saved
+    }
+  })()
+</script>
+<link rel="stylesheet" href="/han/han.css">
+<link rel="stylesheet" href="/home.css">
+<script type="module" src="/han/han.js"></script>
+<script type="module" src="/home.js"></script>
+</head>
+<body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
+{{ heroSection }}
+{{ featuresSection }}
+{{ playgroundSection }}
+{{ gettingStartedSection }}
+{{ footerSection }}
+</body>
+</html>

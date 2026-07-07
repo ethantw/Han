@@ -1,0 +1,19 @@
+# Cloudflare Pages / Netlify-style redirects.
+#
+# Each rule: <from>  <to>  <status>
+# `:placeholder` matches a single path segment.
+#
+# Mirrors the trailing-slash leniency middleware in
+# `manual/vite.config.js` so production behaviour matches dev.
+# (Cloudflare Pages' default static handler may auto-strip trailing
+# slashes for flat .html files; rules kept explicit for safety.)
+
+# Top-level flat demo entries
+/demo/   /demo    301
+/demo2/  /demo2   301
+
+# Docs pages under /manual/<slug>/ (default-locale)
+/manual/:slug/  /manual/:slug  301
+
+# Docs pages under /<locale>/manual/<slug>/ (en / ja / hans / ko)
+/:locale/manual/:slug/  /:locale/manual/:slug  301
