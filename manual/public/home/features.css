@@ -1,0 +1,463 @@
+/**
+ * Features section — three pillars (三大模組).
+ *
+ * Direct-angle, white/cream/white striped strip on `--paper-tint`,
+ * 漢數 numbered cells, three illustrations (HTML / Faces / Before-After).
+ *
+ * Tokens (`--paper`, `--ink-*`, `--accent-*`, `--rule*`, fonts, layout)
+ * are defined in `home.css`. This file only adds section-specific rules.
+ */
+
+.Features {
+  & {
+    background: var(--paper-tint);
+    padding: 6.25rem 0 0;
+  }
+
+  /* ─── section header (eyebrow + h2 + lede) ──────────────────── */
+
+  > header {
+    & {
+      text-align: center;
+      max-inline-size: 48.75rem;
+      margin: 0 auto 4rem;
+      padding: 0 var(--home-pad-x);
+    }
+
+    .Eyebrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.875rem;
+      margin-block-end: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+
+      [data-part="dot"] {
+        inline-size: 4px;
+        block-size: 4px;
+        background: var(--ink-faint);
+      }
+    }
+
+    h2 {
+      font-family: var(--font-serif-zh);
+      font-size: 3rem;
+      font-weight: 500;
+      line-height: 1.3;
+      margin: 0 0 1.5rem;
+      color: var(--ink);
+
+      em {
+        font-family: var(--font-serif-zh);
+        font-style: normal;
+        font-weight: 500;
+        color: var(--accent-deep);
+        margin: 0 0.1em;
+      }
+    }
+
+    > p {
+      font-family: var(--font-serif-zh);
+      font-size: 0.875rem;
+      line-height: 1.85;
+      color: var(--ink-mute);
+      max-inline-size: 33.75rem;
+      margin: 0 auto;
+    }
+  }
+
+  /* ─── Pillars (three-column strip) ──────────────────────────── */
+
+  .Pillars {
+    & {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      max-inline-size: var(--home-max);
+      margin: 0 auto;
+      border-block-start: 1px solid var(--rule);
+      border-block-end: 1px solid var(--rule);
+    }
+
+    > article {
+      & {
+        padding: 3.5rem 2.5rem 3rem;
+        border-inline-end: 1px solid var(--rule);
+        display: flex;
+        flex-direction: column;
+        min-block-size: 32.5rem;
+      }
+
+      &:last-child { border-inline-end: 0; }
+
+      /* Per design: section bg is `--paper-tint` (deeper cream), and the
+       * "cream" middle cell is `--paper-deep` (a touch lighter than the
+       * section), so the white outer cells stand out as distinct boxes
+       * while the middle cell sits subtly in the cream wash. */
+      &[data-tone="white"] { background: #fff; }
+      &[data-tone="cream"] { background: var(--paper-deep); }
+
+      /* head: numeral + rule + roman */
+      > header {
+        & {
+          display: flex;
+          align-items: center;
+          gap: 0.875rem;
+          margin-block-end: 1.75rem;
+        }
+
+        [data-part="numeral"] {
+          font-family: var(--font-serif-zh);
+          font-size: 1.375rem;
+          font-weight: 500;
+          color: var(--accent-deep);
+          line-height: 1;
+        }
+
+        [data-part="rule"] {
+          flex: 0 0 1.75rem;
+          block-size: 1px;
+          background: var(--accent-soft);
+        }
+
+        [data-part="roman"] {
+          font-family: var(--font-mono);
+          font-size: 0.625rem;
+          letter-spacing: 0.3em;
+          color: var(--ink-mute);
+          text-transform: uppercase;
+        }
+      }
+
+      h3 {
+        font-family: var(--font-serif-zh);
+        font-size: 1.625rem;
+        font-weight: 500;
+        color: var(--ink);
+        margin: 0 0 0.25rem;
+        line-height: 1.3;
+      }
+
+      p[data-part="en"] {
+        font-family: var(--font-serif-en);
+        font-size: 0.875rem;
+        color: var(--ink-mute);
+        margin: 0 0 1.125rem;
+      }
+
+      > p:not([data-part]) {
+        font-family: var(--font-serif-zh);
+        font-size: 0.875rem;
+        line-height: 1.85;
+        color: var(--ink-soft);
+        margin: 0 0 1.5rem;
+      }
+
+      > .Illust {
+        flex: 1;
+        margin: 0 0 1.25rem;
+      }
+
+      > a {
+        font-family: var(--font-sans-zh);
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: var(--accent-deep);
+        align-self: flex-start;
+        border-block-end: 1px solid var(--accent-soft);
+        padding-block-end: 1px;
+        text-decoration: none;
+
+        &:hover { border-block-end-color: var(--accent-deep); }
+      }
+    }
+  }
+
+  /* ─── responsive ───────────────────────────────────────────── */
+
+  @media (max-width: 980px) {
+    .Pillars {
+      grid-template-columns: 1fr;
+
+      > article {
+        border-inline-end: 0;
+        border-block-end: 1px solid var(--rule);
+        min-block-size: auto;
+
+        &:last-child { border-block-end: 0; }
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    & { padding-block-start: 4rem; }
+    > header { margin-block-end: 2.5rem; }
+    > header h2 { font-size: 2rem; }
+
+    .Pillars > article {
+      padding: 2.5rem 1.5rem 2.25rem;
+
+      h3 { font-size: 1.375rem; }
+    }
+  }
+}
+
+
+/* ─── Illust (the three feature illustrations) ─────────────────── */
+
+.Illust {
+  & {
+    font-family: var(--font-serif-zh);
+  }
+
+  /* ─── Illust [variant=html] — code → rendered output ───────── */
+
+  &[data-variant="html"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    [data-part="label"] {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+    }
+
+    [data-part="code"] {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin: 0;
+      padding: 0.75rem 0.875rem;
+      background: #fff;
+      border: 1px dashed var(--rule);
+      border-radius: 0;
+      white-space: pre-wrap;
+      overflow-x: auto;
+
+      code { font-family: inherit; font-size: inherit; color: inherit; }
+
+      [data-part="tag"] { color: var(--accent-deep); }
+    }
+
+    [data-part="arrow"] {
+      text-align: center;
+      color: var(--ink-faint);
+      font-size: 0.875rem;
+      font-family: var(--font-mono);
+    }
+
+    [data-part="out"] {
+      padding: 0.75rem 0.875rem;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-soft);
+    }
+
+    [data-part="out-h2"] {
+      font-family: var(--font-serif-zh);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-block-end: 0.375rem;
+    }
+
+    [data-part="out-p"] {
+      font-family: var(--font-serif-zh);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    [data-part="emph"] {
+      background: radial-gradient(circle at 50% 0.05em, var(--seal, #c43c2e) 1.2px, transparent 1.6px);
+      background-size: 1em 1.4em;
+      background-repeat: repeat-x;
+      background-position: top center;
+      padding-block-start: 0.25rem;
+    }
+
+    [data-part="book"] {
+      color: var(--accent-deep);
+      font-family: var(--font-serif-zh);
+    }
+  }
+
+  /* ─── Illust [variant=faces] — four CJK type styles ────────── */
+
+  &[data-variant="faces"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    > header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      span {
+        font-family: var(--font-sans-zh);
+        font-size: 0.625rem;
+        letter-spacing: 0.3em;
+        color: var(--ink-faint);
+      }
+    }
+
+    .Faces {
+      & {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border: 1px solid var(--accent-soft);
+        background: var(--accent-bg);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      > li {
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        background: #fff;
+        border-inline-end: 1px solid var(--accent-soft);
+
+        &:last-child { border-inline-end: 0; }
+      }
+
+      [data-part="ch"] {
+        font-family: var(--font-serif-zh);
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--ink);
+      }
+
+      [data-part="label"] {
+        font-family: var(--font-serif-en);
+        font-size: 0.625rem;
+        color: var(--accent-deep);
+      }
+    }
+  }
+
+  /* ─── Illust [variant=ba] — before/after sample ────────────── */
+
+  &[data-variant="ba"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    > [data-part="label"] {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+    }
+
+    > [data-row] {
+      & {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.625rem 0.75rem;
+        background: #fff;
+        border: 1px dashed var(--rule);
+      }
+
+      [data-part="tag"] {
+        inline-size: 1.375rem;
+        block-size: 1.375rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-serif-zh);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        line-height: 1;
+      }
+
+      [data-part="sample"] {
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      &[data-row="plain"] {
+        [data-part="tag"] {
+          border: 1px solid var(--rule);
+          color: var(--ink-mute);
+        }
+        [data-part="sample"] {
+          font-family: var(--font-sans-en), var(--font-sans-zh);
+          color: var(--ink-mute);
+        }
+      }
+
+      &[data-row="ok"] {
+        [data-part="tag"] {
+          background: var(--accent-bg);
+          border: 1px solid var(--accent);
+          color: var(--accent-deep);
+        }
+        [data-part="sample"] {
+          font-family: var(--font-serif-zh);
+          color: var(--ink);
+        }
+
+        [data-part="quote"] { color: var(--ink-mute); }
+        /* squeeze the comma between 世 and 您 — visually halves its advance */
+        [data-part="squeeze"] {
+          display: inline-block;
+          margin: 0 -0.4em 0 -0.18em;
+          color: var(--accent-deep);
+        }
+        [data-part="sep"] { color: var(--ink-mute); margin: 0 0.25em; }
+        [data-part="plus"] { color: var(--accent-deep); }
+      }
+    }
+  }
+}
+
+
+/* ─── Legend (the dot-leader key/value list, shared by faces+ba) ── */
+
+.Legend {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans-zh);
+    font-size: 0.75rem;
+  }
+
+  dt {
+    color: var(--accent-deep);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    min-inline-size: 5.625rem;
+  }
+
+  [data-part="dot"] {
+    flex: 1;
+    block-size: 0;
+    border-block-start: 1px dotted var(--rule);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+}

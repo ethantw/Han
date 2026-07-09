@@ -1,0 +1,538 @@
+@charset "UTF-8";
+
+/**
+ * Han.css v4 — homepage styles.
+ *
+ * Tokens follow Claude Design's 方向 B v2 (清爽風 / 青翠綠 accent).
+ * Base layer (this file) defines tokens, type ramp, base elements,
+ * common helpers (buttons, hover annotations, code blocks, selection).
+ * Section-specific styles live in `home/<section>.css` and are pulled
+ * in below.
+ */
+
+/* Heritage-glyph (傳承字形) Mincho via Noto Serif KR — its glyphs follow
+   the Kangxi tradition, unlike Noto Serif TC/SC. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+
+/* Section partials — kept in `public/home/` so they ship as static
+   assets without going through the build's module graph. */
+@import url('./home/hero.css');
+@import url('./home/features.css');
+@import url('./home/playground.css');
+@import url('./home/getting-started.css');
+
+/* ─── tokens (light) ──────────────────────────────────────────────── */
+
+:root {
+  /* type system */
+  /* --font-serif-zh: "Noto Serif KR", "Hiragino Mincho ProN", "Yu Mincho", "MS Mincho", "SimSun", serif;
+  --font-sans-zh:  "Noto Sans KR", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-serif-en: "Cormorant Garamond", "Iowan Old Style", "Palatino", "Georgia", serif;
+  --font-sans-en:  "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-mono:     "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; */
+  --font-display:  var(--font-serif-en), var(--font-serif-zh);
+  --font-body:     var(--font-sans-en), var(--font-sans-zh);
+  --font-reading:  var(--font-serif-en), var(--font-serif-zh);
+
+  /* paper / ink / accent */
+  --paper:        #ffffff;
+  --paper-deep:   #fafaf7;
+  --paper-tint:   #f5f3ee;
+  --paper-dim:    #f6f2e8;
+  --ink:          #0e0e10;
+  --ink-soft:     #1f1f22;
+  --ink-mute:     #666666;
+  --ink-faint:    #a0a09a;
+  --rule:         #ececea;
+  --rule-soft:    #f3f3f0;
+  --accent:       #0a8754;
+  --accent-deep:  #066b3f;
+  --accent-soft:  #7dc8a4;
+  --accent-bg:    #e8f5ec;
+  --accent-tint:  #d6ead9;
+  --seal:         #c43c2e;
+
+  /* radii (subtle, print-feel) */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 6px;
+  --r-4: 8px;
+
+  /* layout */
+  --home-max:     1280px;
+  --home-pad-x:   56px;
+}
+
+@media (max-width: 880px) {
+  :root { --home-pad-x: 24px; }
+}
+
+/* ─── reset & base ────────────────────────────────────────────────── */
+
+body.home {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+}
+body.home * { box-sizing: border-box; }
+body.home a { color: inherit; text-decoration: none; }
+body.home img, body.home svg { display: block; max-width: 100%; }
+
+/* ─── type ramp ──────────────────────────────────────────────────── */
+
+.t-display { font-family: var(--font-display); font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; }
+.t-h1      { font-family: var(--font-serif-zh); font-weight: 500; font-size: 64px; line-height: 1.2; letter-spacing: 0.02em; margin: 0; }
+.t-h2      { font-family: var(--font-serif-zh); font-weight: 500; font-size: 48px; line-height: 1.25; margin: 0; }
+.t-h3      { font-family: var(--font-serif-zh); font-weight: 500; font-size: 22px; line-height: 1.4; margin: 0; }
+.t-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ink-mute); }
+.t-mono    { font-family: var(--font-mono); font-size: 13px; }
+.t-en        { font-family: var(--font-serif-en); color: var(--accent-deep); }
+
+/* ─── helpers ───────────────────────────────────────────────────── */
+
+.muted   { color: var(--ink-mute); }
+.faint   { color: var(--ink-faint); }
+.accent  { color: var(--accent-deep); }
+.hairline { border-top: 1px solid var(--rule); }
+
+/* ─── Cta (shared call-to-action primitive) ─────────────────────────
+ * Variants: `accent` (top-nav), `primary` (page actions), `ghost`
+ * (secondary).  Used by Hero header, Hero pitch, Getting-started, etc.
+ * Markup: `<a class="Cta" data-variant="primary|accent|ghost">…</a>`. */
+
+.Cta {
+  & {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2rem;
+    gap: 0.625rem;
+    text-decoration: none;
+    font-family: var(--font-sans-zh);
+    font-weight: 500;
+    line-height: 1;
+    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+  }
+
+  &[data-variant="accent"] {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.5rem 0.875rem;
+    border-radius: 5px;
+    font-size: 0.75rem;
+
+    &:hover { background: var(--accent-deep); }
+  }
+
+  &[data-variant="primary"] {
+    background: var(--ink);
+    color: #fff;
+    padding: 0.75rem 1.375rem;
+    border-radius: var(--r-2);
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+
+    &:hover { background: var(--accent-deep); }
+  }
+
+  &[data-variant="ghost"] {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    padding: 0.6875rem 1.125rem;
+    border-radius: var(--r-2);
+    font-size: 0.875rem;
+
+    &:hover {
+      border-color: var(--ink);
+      background: var(--paper-deep);
+    }
+  }
+}
+
+/* ─── Brand (the 漢.css wordmark) ────────────────────────────────────
+ * Sizes: `lg` (hero masthead), `sm` (footer).  An `md` variant can
+ * be added when the docs masthead picks up this primitive.
+ * Markup: `<a class="Brand" data-size="lg|sm">
+ *   <span data-part="mark">漢</span><span data-part="dot">.</span>
+ *   <span data-part="ext">css</span>
+ *   <span data-part="sep"></span><span data-part="sub">…</span>
+ * </a>`. */
+
+.Brand {
+  & {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+    text-decoration: none;
+  }
+
+  [data-part="mark"] {
+    font-family: var(--font-serif-zh);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  [data-part="dot"] {
+    font-family: var(--font-serif-zh);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  [data-part="ext"] {
+    font-family: var(--font-serif-en);
+    color: var(--ink);
+  }
+  [data-part="sep"] {
+    display: inline-block;
+    inline-size: 1px;
+    background: var(--rule);
+    align-self: center;
+  }
+  [data-part="sub"] {
+    font-family: var(--font-sans-zh);
+    color: var(--ink-mute);
+    letter-spacing: 0.3em;
+  }
+
+  &[data-size="lg"] {
+    [data-part="mark"], [data-part="dot"] { font-size: 1.5rem; }
+    [data-part="ext"]                     { font-size: 1.125rem; }
+    [data-part="sep"]                     { block-size: 0.875rem; margin-inline: 0.875rem; }
+    [data-part="sub"]                     { font-size: 0.75rem; }
+  }
+
+  &[data-size="sm"] {
+    [data-part="mark"], [data-part="dot"] { font-size: 1.125rem; }
+    [data-part="ext"]                     { font-size: 0.875rem; }
+    [data-part="sep"]                     { block-size: 0.75rem; margin-inline: 0.625rem; }
+    [data-part="sub"]                     { font-size: 0.625rem; }
+  }
+}
+
+/* ─── Toggle (shared switch component) ─────────────────────────────
+ * `<label class="Toggle"><input type="checkbox"><span>…</span></label>`
+ * — a real checkbox with `appearance: none` so the input itself
+ * paints the track, plus `::before` for the thumb.  `:checked`
+ * drives the slide and colour shift entirely in CSS.  Used by
+ * the hero `.FeatureToggles` and the playground's rule list.
+ *
+ * Section-specific layout (vertical vs horizontal, gap, etc.)
+ * is set by the parent context (`.FeatureToggles`,
+ * `.PlaygroundRules`), not here. */
+.Toggle {
+  & {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans-zh);
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    cursor: pointer;
+    user-select: none;
+    transition: color 150ms ease;
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    flex-shrink: 0;
+    inline-size: 2rem;
+    block-size: 1.125rem;
+    margin: 0;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 1rem;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset-block: 0.0625rem;
+      inset-inline-start: 0.0625rem;
+      inline-size: 0.875rem;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+      transition: inset-inline-start 150ms ease, background-color 150ms ease;
+    }
+
+    &:checked {
+      background: var(--accent-bg);
+      border-color: var(--accent-soft);
+      &::before {
+        inset-inline-start: calc(100% - 1rem);
+        background: var(--accent);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-soft);
+      outline-offset: 2px;
+    }
+  }
+
+  &:has(input:checked) { color: var(--accent-deep); }
+}
+
+/* ─── hover annotation system (data-annot) ──────────────────────── */
+
+[data-annot] {
+  & {
+    position: relative;
+    cursor: help;
+    transition: background-color 220ms ease;
+    border-radius: var(--r-1);
+  }
+
+  &:hover { background-color: var(--accent-bg); }
+
+  &::after {
+    content: attr(data-annot);
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(0.25rem);
+    font-family: var(--font-sans-zh);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--r-1);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease, transform 220ms ease;
+    z-index: 20;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 0.25rem);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--ink);
+    opacity: 0;
+    transition: opacity 180ms ease;
+    z-index: 20;
+  }
+
+  &:hover::after  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  &:hover::before { opacity: 1; }
+}
+
+/* ─── code blocks ───────────────────────────────────────────────── */
+
+body.home pre, body.home code { font-family: var(--font-mono); font-size: 13px; }
+body.home pre {
+  background: var(--paper-deep);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2);
+  padding: 18px 22px;
+  overflow-x: auto;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+body.home code:not(pre code) {
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-soft);
+  padding: 1px 6px;
+  border-radius: var(--r-1);
+  font-size: 0.88em;
+  color: var(--accent-deep);
+}
+.code-dark {
+  background: #0e0e10 !important;
+  color: #e5e5e0 !important;
+  border-color: transparent !important;
+}
+
+/* token colours for inline code highlighting */
+.tok-key  { color: #aa6420; }
+.tok-fn   { color: var(--accent-deep); }
+.tok-str  { color: #7d6f33; }
+.tok-com  { color: var(--ink-faint); }
+.tok-num  { color: #aa6420; }
+.tok-tag  { color: #4a5a8a; }
+
+/* ─── selection ─────────────────────────────────────────────────── */
+
+::selection { background: var(--accent-bg); color: var(--accent-deep); }
+
+/* ─── LangSwitcher (rendered by the homepage Vite plugin) ──────────
+ * Markup: `<div class="LangSwitcher" data-lang-switcher>
+ *   <button>… trigger flag/label/caret …</button>
+ *   <ul hidden>
+ *     <li data-part="label">…</li>
+ *     <li><a><span data-part="flag">…</span>…</a></li> × N
+ *     <li data-part="foot">…</li>
+ *   </ul>
+ * </div>`.  JS toggles the `<ul>`'s `hidden` attribute. */
+
+.LangSwitcher {
+  & {
+    position: relative;
+  }
+
+  > button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    color: var(--ink-soft);
+    border-radius: 0.25rem;
+    transition: background-color 150ms ease;
+
+    &:hover                 { background: var(--paper-deep); }
+    &[aria-expanded="true"] { background: var(--paper-deep); }
+
+    /* 文A bilingual glyph — universal i18n icon (cf. Google Translate).
+       Two superimposed characters of equal visual weight in matching
+       ink color. Sans-en for A so its cap reads upright next to 文. */
+    [data-part="icon"] {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1rem;
+      line-height: 1;
+      letter-spacing: -0.22em;
+      padding-inline-end: 0.22em;
+      color: var(--ink);
+
+      [data-glyph="zh"] {
+        font-family: var(--font-serif-zh);
+        font-weight: 500;
+        transform: translateY(-3px);
+      }
+      [data-glyph="la"] {
+        font-family: var(--font-sans-en);
+        font-weight: 600;
+        font-size: 0.85em;
+        transform: translateY(3px);
+      }
+    }
+
+    [data-part="caret"] { font-size: 0.5rem; color: var(--ink-faint); }
+  }
+
+  > ul {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    right: 0;
+    inline-size: 15rem;
+    background: #fff;
+    border: 1px solid var(--ink);
+    box-shadow: 4px 4px 0 rgba(14, 14, 16, 0.08);
+    z-index: 50;
+    padding: 0.625rem 0;
+    margin: 0;
+    list-style: none;
+
+    &[hidden] { display: none; }
+
+    > li[data-part="label"] {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      letter-spacing: 0.3em;
+      color: var(--ink-faint);
+      padding: 0.125rem 0.875rem 0.5rem;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    > li[data-part="foot"] {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.375rem;
+      padding: 0.625rem 0.875rem 0.25rem;
+      margin-top: 0.375rem;
+      border-top: 1px solid var(--rule-soft);
+      font-family: var(--font-serif-zh);
+      font-size: 0.625rem;
+      color: var(--ink-mute);
+      line-height: 1.5;
+    }
+
+    > li > a {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      inline-size: 100%;
+      padding: 0.5rem 0.875rem;
+      text-align: left;
+      font-family: var(--font-sans-zh);
+      font-size: 0.8125rem;
+      color: var(--ink);
+
+      &:hover     { background: var(--paper-deep); }
+      &.is-active { background: var(--accent-bg); }
+
+      [data-part="flag"] {
+        font-family: var(--font-serif-zh);
+        font-size: 1.125rem;
+        color: var(--accent-deep);
+        inline-size: 1.375rem;
+        text-align: center;
+      }
+
+      [data-part="texts"] {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 1px;
+      }
+
+      [data-part="full"]  { color: var(--ink); font-size: 0.8125rem; }
+      [data-part="code"]  { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-faint); letter-spacing: 0.05em; }
+      [data-part="check"] { color: var(--accent-deep); font-size: 0.75rem; }
+    }
+  }
+}
+
+/* ─── Footer (homepage chrome) ────────────────────────────────────
+ * Markup: `<footer class="Footer"><div>
+ *   <a class="Brand" data-size="sm">…</a>
+ *   <small>…version & tagline…</small>
+ *   <a data-part="link" href="…">GitHub</a>
+ * </div></footer>`. */
+
+.Footer {
+  & {
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  > div {
+    max-inline-size: var(--home-max);
+    margin: 0 auto;
+    padding: 2rem var(--home-pad-x);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: var(--font-sans-zh);
+    font-size: 0.8125rem;
+    color: var(--ink-mute);
+  }
+
+  small { color: var(--ink-mute); }
+
+  [data-part="link"] {
+    margin-inline-start: auto;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+
+    &:hover {
+      color: var(--accent-deep);
+      border-bottom-color: var(--accent-soft);
+    }
+  }
+}

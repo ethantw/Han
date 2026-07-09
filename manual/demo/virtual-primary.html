@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Virtual Primary RT — 可行性示範</title>
+<style>
+  body { font-family: system-ui, sans-serif; padding: 2em; max-width: 900px; line-height: 1.8 }
+  h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: .3em }
+  pre { background: #f5f5f5; padding: 1em; border-radius: 6px; overflow-x: auto; font-size: .85em; white-space: pre-wrap }
+  .render { font-size: 2em; padding: 1.5em 0; }
+  .label { font-size: .75em; color: #888; text-transform: uppercase; letter-spacing: .05em }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0 }
+  th, td { border: 1px solid #ddd; padding: .5em 1em; text-align: left; vertical-align: top }
+  th { background: #f0f0f0 }
+  .ok  { color: #1a7f37 }
+  .err { color: #cf222e }
+
+  /* KEY: hide the virtual placeholder <rt> elements */
+  rt.han-vp { display: none }
+</style>
+</head>
+<body>
+
+<h1>Virtual Primary <code>&lt;rt&gt;</code> — 可行性示範</h1>
+<p>
+  驗證：在沒有 1:1 primary 層的多重非注音 <code>&lt;rtc&gt;</code> 情境下，
+  注入隱藏的「虛擬 primary」後，能否正確輸出 v4 canonical 巢狀 ruby，
+  且 CSS <code>rt.han-vp { display: none }</code> 是否能讓視覺完全正確。
+</p>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     Case 1 — 邊界相容（可處理）
+     輸入：2 個非注音 rtc，rbspan [2,2] + [4]
+     ════════════════════════════════════════════════════════════════════ -->
+
+<h2>Case 1 — 邊界相容 ✅</h2>
+
+<p class="label">輸入（legacy markup）</p>
+<pre>&lt;ruby&gt;
+  &lt;rb&gt;我&lt;/rb&gt;&lt;rb&gt;愛&lt;/rb&gt;&lt;rb&gt;台&lt;/rb&gt;&lt;rb&gt;灣&lt;/rb&gt;
+  &lt;rtc lang="en"&gt;&lt;rt rbspan="2"&gt;I love&lt;/rt&gt;&lt;rt rbspan="2"&gt;Taiwan&lt;/rt&gt;&lt;/rtc&gt;
+  &lt;rtc lang="ja"&gt;&lt;rt rbspan="4"&gt;台湾大好き&lt;/rt&gt;&lt;/rtc&gt;
+&lt;/ruby&gt;
+
+邊界集合：
+  en-rtc  {0, 2, 4}   ← finer（內層）
+  ja-rtc  {0, 4}      ← coarser（外層）
+  ja-rtc 邊界 ⊆ en-rtc 邊界 → 相容</pre>
+
+<p class="label">轉換後輸出（虛擬 primary 已注入）</p>
+<pre>&lt;!-- rt.han-vp 由 CSS display:none 隱藏 --&gt;
+&lt;ruby lang="ja"&gt;
+  &lt;ruby lang="en"&gt;
+    &lt;ruby&gt;我&lt;rt class="han-vp" aria-hidden="true"&gt;&lt;/rt&gt;&lt;/ruby&gt;
+    &lt;ruby&gt;愛&lt;rt class="han-vp" aria-hidden="true"&gt;&lt;/rt&gt;&lt;/ruby&gt;
+    &lt;rt lang="en"&gt;I love&lt;/rt&gt;
+  &lt;/ruby&gt;
+  &lt;ruby lang="en"&gt;
+    &lt;ruby&gt;台&lt;rt class="han-vp" aria-hidden="true"&gt;&lt;/rt&gt;&lt;/ruby&gt;
+    &lt;ruby&gt;灣&lt;rt class="han-vp" aria-hidden="true"&gt;&lt;/rt&gt;&lt;/ruby&gt;
+    &lt;rt lang="en"&gt;Taiwan&lt;/rt&gt;
+  &lt;/ruby&gt;
+  &lt;rt lang="ja"&gt;台湾大好き&lt;/rt&gt;
+&lt;/ruby&gt;</pre>
+
+<p class="label">渲染結果（此瀏覽器）</p>
+<div class="render">
+<ruby lang="ja">
+  <ruby lang="en">
+    <ruby>我<rt class="han-vp" aria-hidden="true"></rt></ruby>
+    <ruby>愛<rt class="han-vp" aria-hidden="true"></rt></ruby>
+    <rt lang="en">I love</rt>
+  </ruby>
+  <ruby lang="en">
+    <ruby>台<rt class="han-vp" aria-hidden="true"></rt></ruby>
+    <ruby>灣<rt class="han-vp" aria-hidden="true"></rt></ruby>
+    <rt lang="en">Taiwan</rt>
+  </ruby>
+  <rt lang="ja">台湾大好き</rt>
+</ruby>
+</div>
+<p>期望：我愛 上方顯示「I love」；台灣 上方顯示「Taiwan」；
+四字整體上方顯示「台湾大好き」。</p>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     Case 2 — 三層（外層再加一層）
+     ════════════════════════════════════════════════════════════════════ -->
+
+<h2>Case 2 — 三層巢狀「有 1:1 rtc」✅（現有算法即可，不需虛擬 primary）</h2>
+
+<p>
+  若作者加入一個 1:1 的 rtc（如拼音），現有 Phase 1 算法直接把它選為 primary，
+  rbspan 層自動成為 extra。<strong>這不是虛擬 primary 要解決的問題。</strong>
+  此 case 放在這裡純粹作為視覺對照——Case 1 的虛擬 primary 輸出
+  應接近此結果，差別只在最內層無拼音 annotation。
+</p>
+
+<p class="label">輸入（有 1:1 拼音 rtc）</p>
+<pre>&lt;ruby&gt;
+  &lt;rb&gt;我&lt;/rb&gt;&lt;rb&gt;愛&lt;/rb&gt;&lt;rb&gt;台&lt;/rb&gt;&lt;rb&gt;灣&lt;/rb&gt;
+  &lt;rtc&gt;&lt;rt&gt;wǒ&lt;/rt&gt;&lt;rt&gt;ài&lt;/rt&gt;&lt;rt&gt;tái&lt;/rt&gt;&lt;rt&gt;wān&lt;/rt&gt;&lt;/rtc&gt;  &lt;!-- 1:1 → primary --&gt;
+  &lt;rtc lang="en"&gt;&lt;rt rbspan="2"&gt;I love&lt;/rt&gt;&lt;rt rbspan="2"&gt;Taiwan&lt;/rt&gt;&lt;/rtc&gt;
+  &lt;rtc lang="ja"&gt;&lt;rt rbspan="4"&gt;台湾大好き&lt;/rt&gt;&lt;/rtc&gt;
+&lt;/ruby&gt;
+
+現有算法處理：拼音 rtc 為 primary；en/ja 為 extra（不動任何程式碼）。</pre>
+
+<p class="label">渲染結果</p>
+<div class="render">
+<ruby lang="ja">
+  <ruby lang="en">
+    <ruby>我<rt>wǒ</rt></ruby>
+    <ruby>愛<rt>ài</rt></ruby>
+    <rt lang="en">I love</rt>
+  </ruby>
+  <ruby lang="en">
+    <ruby>台<rt>tái</rt></ruby>
+    <ruby>灣<rt>wān</rt></ruby>
+    <rt lang="en">Taiwan</rt>
+  </ruby>
+  <rt lang="ja">台湾大好き</rt>
+</ruby>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     Case 3 — 邊界不相容（無法處理）
+     ════════════════════════════════════════════════════════════════════ -->
+
+<h2>Case 3 — 邊界不相容 ❌（仍需拋錯）</h2>
+<pre>&lt;ruby&gt;
+  &lt;rb&gt;A&lt;/rb&gt;&lt;rb&gt;B&lt;/rb&gt;&lt;rb&gt;C&lt;/rb&gt;&lt;rb&gt;D&lt;/rb&gt;
+  &lt;rtc&gt;&lt;rt rbspan="3"&gt;ABC&lt;/rt&gt;&lt;rt&gt;D&lt;/rt&gt;&lt;/rtc&gt;   &lt;!-- 邊界 {0,3,4} --&gt;
+  &lt;rtc&gt;&lt;rt rbspan="2"&gt;AB&lt;/rt&gt;&lt;rt rbspan="2"&gt;CD&lt;/rt&gt;&lt;/rtc&gt; &lt;!-- 邊界 {0,2,4} --&gt;
+&lt;/ruby&gt;
+
+邊界集合：
+  rtc1  {0, 3, 4}
+  rtc2  {0, 2, 4}
+
+{0,3,4} ⊄ {0,2,4}（3 不在後者）
+{0,2,4} ⊄ {0,3,4}（2 不在前者）
+→ 不相容，無法巢狀，拋錯仍是正確行為。</pre>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     可行性摘要
+     ════════════════════════════════════════════════════════════════════ -->
+
+<h2>可行性摘要</h2>
+<table>
+  <tr><th>問題</th><th>結論</th></tr>
+  <tr>
+    <td><code>rt.han-vp { display:none }</code> 是否能完全隱藏 annotation？</td>
+    <td class="ok">✅ 是。<code>display:none</code> 移除整個 annotation box，不佔空間，不影響 line-height。</td>
+  </tr>
+  <tr>
+    <td>外層 <code>&lt;ruby&gt;</code> 的 <code>&lt;rt&gt;</code> 是否能橫跨多個內層 ruby？</td>
+    <td>⚠️ 取決於瀏覽器。Chromium / Safari 支援；Firefox 對複雜巢狀 ruby 有 layout bug（參見 <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1823993">bug #1823993</a>）。</td>
+  </tr>
+  <tr>
+    <td>Accessibility：<code>rt.han-vp</code> 是否對 screen reader 無害？</td>
+    <td class="ok">✅ <code>display:none</code> + <code>aria-hidden="true"</code> 雙重保險，AT 不讀出。</td>
+  </tr>
+  <tr>
+    <td>邊界不相容的 case 是否仍需拋錯？</td>
+    <td class="ok">✅ 是。虛擬 primary 不能解決邊界衝突；此情況繼續拋錯。</td>
+  </tr>
+  <tr>
+    <td>han.css 需要加入什麼？</td>
+    <td><code>rt.han-vp { display: none }</code> 一行（或等效規則）。</td>
+  </tr>
+  <tr>
+    <td>整體評估</td>
+    <td>
+      <strong>技術上可行</strong>，前提是邊界相容且瀏覽器支援巢狀 ruby layout（Chromium / Safari OK）。
+      Firefox 的 ruby 巢狀 bug 是主要風險點，需進一步測試。
+    </td>
+  </tr>
+</table>
+
+<hr>
+<p style="font-size:.85em; color:#888">
+  此頁面為 <code>han-stock/next</code> 開發示範，CSS 中 <code>rt.han-vp { display: none }</code>
+  已直接內嵌於 <code>&lt;style&gt;</code>，模擬 han.css 提供該規則的效果。
+</p>
+</body>
+</html>
