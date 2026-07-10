@@ -10,4 +10,4 @@
   <article class="demo-on"  lang="ko"><figure><blockquote>나라말이 중국과 달라 문자가 서로 통하지 아니하므로.</blockquote><figcaption>——『훈민정음』 서문</figcaption></figure></article>
   <article class="demo-off" lang="ko"><figure><blockquote>나라말이 중국과 달라 문자가 서로 통하지 아니하므로.</blockquote><figcaption>——『훈민정음』 서문</figcaption></figure></article>
 </div>
-<p class="demo-meta">機制：<code>figure { margin-inline: var(--han-sr-indent) }</code></p>
+<p class="demo-meta">機制：<code>figure { margin-inline: var(--han-prose-indent) }</code></p>

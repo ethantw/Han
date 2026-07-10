@@ -10,4 +10,4 @@
   <article class="demo-on"  lang="ko"><ul><li>1단계<ul><li>2단계<ul><li>3단계<ul><li>4단계</li></ul></li></ul></li></ul></li></ul></article>
   <article class="demo-off" lang="ko"><ul><li>1단계<ul><li>2단계<ul><li>3단계<ul><li>4단계</li></ul></li></ul></li></ul></li></ul></article>
 </div>
-<p class="demo-meta">機制：<code>ol, ul { margin-inline-start: var(--han-sr-indent) }</code></p>
+<p class="demo-meta">機制：<code>ol, ul { margin-inline-start: var(--han-prose-indent) }</code></p>

@@ -10,4 +10,4 @@
   <article class="demo-on"  lang="ko"><blockquote>외부 인용.<blockquote>중첩 인용.</blockquote></blockquote></article>
   <article class="demo-off" lang="ko"><blockquote>외부 인용.<blockquote>중첩 인용.</blockquote></blockquote></article>
 </div>
-<p class="demo-meta">機制：<code>blockquote { margin-inline: var(--han-sr-indent) }</code>，巢狀為 <code>calc(var(--han-sr-indent) / 2)</code></p>
+<p class="demo-meta">機制：<code>blockquote { margin-inline: var(--han-prose-indent) }</code>，巢狀為 <code>calc(var(--han-prose-indent) / 2)</code></p>

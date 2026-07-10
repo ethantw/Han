@@ -10,4 +10,4 @@
   <article class="demo-on"  lang="ko"><div class="poem-like"><p>가시리 가시리잇고,</p><p>바리고 가시리잇고,</p><p>날러는 엇디 살라 하고,</p><p>바리고 가시리잇고.</p></div></article>
   <article class="demo-off" lang="ko"><div class="poem-like"><p>가시리 가시리잇고,</p><p>바리고 가시리잇고,</p><p>날러는 엇디 살라 하고,</p><p>바리고 가시리잇고.</p></div></article>
 </div>
-<p class="demo-meta">機制：<code>.poem-like p { margin-inline-start: var(--han-sr-indent) }</code></p>
+<p class="demo-meta">機制：<code>.poem-like p { margin-inline-start: var(--han-prose-indent) }</code></p>

@@ -10,4 +10,4 @@
   <article class="demo-on"  lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문.</p></article>
   <article class="demo-off" lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문.</p></article>
 </div>
-<p class="demo-meta">控制變數：<code>--han-sr-consecutive-headings-a-block-end</code>（預設 <code>0</code>）</p>
+<p class="demo-meta">控制變數：<code>--han-prose-consecutive-headings-a-block-end</code>（預設 <code>0</code>）</p>
