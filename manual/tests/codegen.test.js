@@ -94,9 +94,12 @@ test('bundler：pm 切換與最小安裝清單', () => {
   assert.ok(s.includes('@hanzi.pro/diantenjeom'))
 })
 
-test('@import：含等價 URL 序列；勾 JS 時附 script 提示註解', () => {
+test('@import：node_modules 裸 specifier（非 CDN url()）；勾 JS 時附 script 提示註解', () => {
   const s = renderImport(cfg({ fallbacks: true }))
-  assert.ok(s.includes('@import url('))
+  assert.ok(s.includes("@import '@hanzi.pro/han.css/styles';"))
+  assert.ok(s.includes("@import '@hanzi.pro/webfonts-shanggu-sans';"))
+  assert.ok(s.includes("@import '@hanzi.pro/diantenjeom';"))
+  assert.ok(!s.includes('url(') && !s.includes('cdn.jsdelivr'))
   assert.ok(s.includes('/*') && s.includes('<script'))
 })
 

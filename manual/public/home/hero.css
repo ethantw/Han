@@ -340,23 +340,11 @@
     letter-spacing: 0.1em;
   }
 
-  /* Feature gates */
-  &[data-feat-punct="on"] [data-feat="comma"] {
-    display: inline-block;
-    margin: 0 -0.4em 0 -0.18em;
-    color: var(--accent-deep);
-  }
-  &[data-feat-hang="on"] [data-feat="quote"][data-pos="open"] {
-    display: inline-block;
-    margin-inline-start: -1em;
-  }
-  &[data-feat-mix="on"]  [data-feat="en"]   { margin-inline: 0.22em; }
+  /* Feature gates — the effects are REAL Han.css (hero.js writes
+     --han-* cascade vars + reinstalls fallbacks on the .han block).
+     Only ruby's off-state is display-level: Han.css has no ruby-off
+     variable, so the demo hides the annotations to show the contrast. */
   &[data-feat-ruby="off"] [data-feat="ruby"] rt { font-size: 0; visibility: hidden; }
-  &[data-feat-emph="on"] [data-feat="emph"] {
-    background: radial-gradient(circle at 50% 1.05em, var(--seal) 1.2px, transparent 1.5px);
-    background-size: 1em 1.4em;
-    background-repeat: repeat-x;
-  }
 }
 
 

@@ -4,7 +4,7 @@
  * and per-span hint relay.
  */
 
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1)
+import { installFallbacks, uninstallFallbacks } from '/han/han.js'
 
 /* ─── language switcher ─────────────────────────────────────────── */
 
@@ -42,21 +42,40 @@ export function initLangSwitcher() {
 }
 
 /* ─── feature toggles (.Toggle input[data-feat]) ─────────────────
- * The `:checked` pseudo-class drives the switch's own visuals via
- * CSS; this handler only mirrors the boolean onto `data-feat-*`
- * attributes on `.Specimen`, where the specimen's CSS reads them. */
+ * The demo is REAL Han.css: each toggle writes the framework's own
+ * cascade variables onto the specimen's `.han` block and re-runs
+ * `installFallbacks` on it, so what renders is exactly what a page
+ * using Han.css gets — no simulated margins or painted-on marks.
+ * The one exception is ruby: Han.css has no "ruby off" variable, so
+ * its off-state stays a display-only `data-feat-ruby` attribute. */
 
 export function initFeatureToggles() {
   const spec = document.querySelector('.Specimen')
   if (!spec) return
+  const han = spec.querySelector('.han')
+
+  const state = { punct: true, mix: true, ruby: true, emph: true, hang: false }
+
+  const apply = () => {
+    const { punct, hang, mix, emph, ruby } = state
+    const refinement =
+      punct && hang ? 'auto' : punct ? 'compress' : hang ? 'hang' : 'none'
+    han.style.setProperty('--han-punctuation-refinement', refinement)
+    han.style.setProperty('--han-text-autospace', mix ? 'normal' : 'no-autospace')
+    han.style.setProperty('--han-em-symbol', emph ? 'circle' : 'none')
+    spec.dataset.featRuby = ruby ? 'on' : 'off'
+    uninstallFallbacks(han)
+    installFallbacks(han)
+  }
 
   document.querySelectorAll('.Toggle input[type="checkbox"][data-feat]').forEach(input => {
     const sync = () => {
-      spec.dataset[`feat${cap(input.dataset.feat)}`] = input.checked ? 'on' : 'off'
+      state[input.dataset.feat] = input.checked
+      apply()
     }
     input.addEventListener('change', sync)
-    sync()
   })
+  apply()
 }
 
 /* ─── magnifier lens (real magnification, always on) ─────────────

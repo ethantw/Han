@@ -10,7 +10,7 @@ import { test, expect, type Page } from '@playwright/test'
  *
  * Verifies the homepage builds + serves for every locale, hero
  * scaffolding renders, the language switcher opens / closes, and the
- * 5 hero toggles flip `data-feat-*` attrs on the Specimen article.
+ * 5 hero toggles drive real Han.css cascade vars on the Specimen (ruby = display-only attr).
  */
 
 const LOCALES = [
@@ -70,33 +70,37 @@ test('lang switcher menu lists all 5 locales (with the active one flagged)', asy
   await expect(switcher.locator('a[data-lang="hant"]')).toHaveClass(/is-active/)
 })
 
-const TOGGLES = [
-  { feat: 'punct', startsOn: true  },
-  { feat: 'mix',   startsOn: true  },
-  { feat: 'ruby',  startsOn: true  },
-  { feat: 'emph',  startsOn: true  },
-  { feat: 'hang',  startsOn: false },
-] as const
+/* Hero toggles drive REAL Han.css cascade vars on the specimen's .han
+ * block (punct + hang compose --han-punctuation-refinement). Ruby stays
+ * a display-only data-attr — Han.css has no ruby-off variable. */
+test('hero toggles drive Han.css vars on the specimen', async ({ page }) => {
+  await page.goto('/')
+  const box = (feat: string) =>
+    page.locator(`.Toggle input[type="checkbox"][data-feat="${feat}"]`)
+  const hanVar = (prop: string) =>
+    page
+      .locator('.Specimen:not(.is-magnified-clone) > .han')
+      .evaluate((el, p) => el.style.getPropertyValue(p), prop)
 
-for (const { feat, startsOn } of TOGGLES) {
-  test(`hero toggle "${feat}" flips data-feat-${feat} on the Specimen`, async ({ page }) => {
-    await page.goto('/')
-    const checkbox = page.locator(`.Toggle input[type="checkbox"][data-feat="${feat}"]`)
-    // The original Specimen (excludes the magnifier clone — it gets
-    // its own copy of the data-feat-* attrs from the toggle script).
-    const specimen = page.locator('.Specimen:not(.is-magnified-clone)')
+  // 預設：擠壓 on、懸掛 off → compress
+  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('compress')
+  await box('hang').click()   // 兩者皆開 → auto
+  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('auto')
+  await box('punct').click()  // 只剩懸掛 → hang
+  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('hang')
+  await box('hang').click()   // 全關 → none
+  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('none')
 
-    // Initial state mirrors the default attr.
-    const initial = await specimen.getAttribute(`data-feat-${feat}`)
-    expect(initial).toBe(startsOn ? 'on' : 'off')
+  await box('mix').click()
+  await expect.poll(() => hanVar('--han-text-autospace')).toBe('no-autospace')
+  await box('emph').click()
+  await expect.poll(() => hanVar('--han-em-symbol')).toBe('none')
 
-    await checkbox.click()
-    await expect(specimen).toHaveAttribute(`data-feat-${feat}`, startsOn ? 'off' : 'on')
-
-    await checkbox.click()
-    await expect(specimen).toHaveAttribute(`data-feat-${feat}`, startsOn ? 'on' : 'off')
-  })
-}
+  const specimen = page.locator('.Specimen:not(.is-magnified-clone)')
+  await expect(specimen).toHaveAttribute('data-feat-ruby', 'on')
+  await box('ruby').click()
+  await expect(specimen).toHaveAttribute('data-feat-ruby', 'off')
+})
 
 test('all 5 hero toggles render', async ({ page }) => {
   await page.goto('/')

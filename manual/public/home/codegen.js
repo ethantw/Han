@@ -148,7 +148,7 @@ export const renderBundler = (c, pm = 'pnpm') => {
   lines.push('// main.js')
   lines.push(`import '${SCOPE}han.css/styles'`)
   for (const id of ziano) lines.push(`import '${SCOPE}webfonts-${id}'`)
-  if (dtj) lines.push(`import '${SCOPE}diantenjeom/dist/diantenjeom.css'`)
+  if (dtj) lines.push(`import '${SCOPE}diantenjeom'`)
   if (c.fallbacks) lines.push(`import '${SCOPE}han.css/auto'`)
   if (c.legacyRuby)
     lines.push(
@@ -160,8 +160,15 @@ export const renderBundler = (c, pm = 'pnpm') => {
   return lines.join('\n')
 }
 
+// @import 走 node_modules 裸 specifier（vite／postcss 等打包器解析）：
+// CDN URL 進 @import 會 render-block，CDN 情境本就該用 <link>（見 CDN 分頁）。
 export const renderImport = (c) => {
-  const lines = styleUrls(c).map((u) => `@import url("${u}");`)
+  const { ziano, dtj } = packages(c)
+  const lines = [
+    `@import '${SCOPE}han.css/styles';`,
+    ...ziano.map((id) => `@import '${SCOPE}webfonts-${id}';`),
+    ...(dtj ? [`@import '${SCOPE}diantenjeom';`] : []),
+  ]
   const css = configCSS(c)
   if (css) lines.push('', css)
   if (c.fallbacks || c.legacyRuby)

@@ -59,55 +59,46 @@
         <span data-part="rule" aria-hidden="true"></span>
         <span data-part="roman">MODULE・II</span>
       </header>
-      <h3>文字設計</h3>
-      <p data-part="en">Type Design</p>
+      <h3>字體排印</h3>
+      <p data-part="en">Typography</p>
       <p>
         配合精細的字體回退機制——依漢字、西文、假名各自其族，套用最合適的字體。
-        並支援拼音、注音、四大印刷體裁與字級韻律。
+        並支援拼音、注音、三大印刷體裁與字級韻律。
       </p>
 
       <figure class="Illust" data-variant="faces">
         <header>
-          <span>四大印刷體</span>
+          <span>三大印刷體</span>
         </header>
         <ul class="Faces">
           <li>
-            <span data-part="ch" style="font-family: 'Heiti TC', 'Heiti SC', 'PingFang TC', sans-serif;">字</span>
+            <span data-part="ch" style="font-family: var(--han-font-default);">字</span>
             <span data-part="label">Hēi</span>
           </li>
           <li>
-            <span data-part="ch" style="font-family: 'Songti TC', 'Songti SC', 'SimSun', serif;">字</span>
+            <span data-part="ch" style="font-family: var(--han-font-alternative);">字</span>
             <span data-part="label">Sòng</span>
           </li>
           <li>
-            <span data-part="ch" style="font-family: 'Kaiti TC', 'Kaiti SC', 'STKaiti', cursive;">字</span>
+            <span data-part="ch" style="font-family: var(--han-font-accent);">字</span>
             <span data-part="label">Kǎi</span>
-          </li>
-          <li>
-            <span data-part="ch" style="font-family: 'STFangsong', 'FangSong', serif;">字</span>
-            <span data-part="label">Fǎng</span>
           </li>
         </ul>
         <dl class="Legend">
           <div>
             <dt>黑體</dt>
             <span data-part="dot" aria-hidden="true"></span>
-            <dd>Modern, sans-serif weight</dd>
+            <dd>sans-serif</dd>
           </div>
           <div>
             <dt>宋體</dt>
             <span data-part="dot" aria-hidden="true"></span>
-            <dd>Classical, woodblock serif</dd>
+            <dd>serif</dd>
           </div>
           <div>
             <dt>楷體</dt>
             <span data-part="dot" aria-hidden="true"></span>
-            <dd>Brush, italicised</dd>
-          </div>
-          <div>
-            <dt>仿宋</dt>
-            <span data-part="dot" aria-hidden="true"></span>
-            <dd>Slim modernist serif</dd>
+            <dd>cursive</dd>
           </div>
         </dl>
       </figure>
