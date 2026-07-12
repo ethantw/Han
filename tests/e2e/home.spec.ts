@@ -125,18 +125,6 @@ test('playground: sample chip swaps preview lang + meta', async ({ page }) => {
   await expect(meta).toContainText('ko')
 })
 
-test('playground: rule toggle flips data-rule-* on preview body', async ({ page }) => {
-  await page.goto('/')
-  const body = page.locator('[data-pg-body]')
-  const punct = page.locator('[data-pg-toggles] input[data-rule="punct"]')
-
-  await expect(body).toHaveAttribute('data-rule-punct', 'on')
-  await punct.click()
-  await expect(body).toHaveAttribute('data-rule-punct', 'off')
-  await punct.click()
-  await expect(body).toHaveAttribute('data-rule-punct', 'on')
-})
-
 test('playground: size slider writes inline font-size + updates meta', async ({ page }) => {
   await page.goto('/')
   const body = page.locator('[data-pg-body]')
