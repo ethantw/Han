@@ -91,8 +91,8 @@ export const HOME_I18N = {
 
     ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
-    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
-    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+    ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
@@ -177,8 +177,8 @@ export const HOME_I18N = {
 
     ssEyebrow: '壹・语意', ssH2: '语意，先于样式',
     ssP1: 'HTML5语意元素在汉字排版下自有其正确样式——<em>着重号</em>标记文中紧要之词，效果一如手写圈点。',
-    ssP2: '引用书名时可用<cite>《说文解字》</cite>标记；书名号默认关闭（<code>--han-cite-title-marks: none</code>），此处另加一行<code>--han-cite-title-marks: bracket</code>方得见《》。',
-    ssP3: '专有名词可用<u>专名号</u>标示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一类缩写，则交由<abbr>元素承载完整释义。',
+    ssP2: '引用书名时可用<cite>说文解字</cite>标记。书名号默认关闭（<code>--han-cite-title-marks: none</code>），此处另加一行<code>--han-cite-title-marks: bracket</code>方得见《》。',
+    ssP3: '专有名词可用<u>专名号</u>标示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一类缩写，则交由&lt;abbr&gt;元素承载完整释义。',
 
     stEyebrow: '贰・字体排印', stH2: '一字三面',
     stHeritageP: '传承字形（尚古／源起，可由面板切换）承载了铅字时代未经简化的结构——非「更古老」，而是「未曾漂移」。',
@@ -263,8 +263,8 @@ export const HOME_I18N = {
 
     ssEyebrow: 'I・Semantics', ssH2: 'Semantics before style',
     ssP1: 'HTML5 semantic elements have their own correct typographic treatment — <em>emphasis dots</em> mark the words that matter, the way a hand-drawn circle would.',
-    ssP2: 'Citing a title uses <cite>《Shuowen Jiezi》</cite>; title marks default to off (<code>--han-cite-title-marks: none</code>) — here one extra line, <code>--han-cite-title-marks: bracket</code>, turns the 《》 back on.',
-    ssP3: 'Proper nouns take <u>a proper-noun underline</u>, for names and places; abbreviations like <abbr title="Cascading Style Sheets">CSS</abbr> carry their full expansion in the <abbr> element itself.',
+    ssP2: 'Citing a title uses <cite>Shuowen Jiezi</cite>; title marks default to off (<code>--han-cite-title-marks: none</code>) — here one extra line, <code>--han-cite-title-marks: bracket</code>, turns the 《》 back on.',
+    ssP3: 'Proper nouns take <u>a proper-noun underline</u>, for names and places; abbreviations like <abbr title="Cascading Style Sheets">CSS</abbr> carry their full expansion in the &lt;abbr&gt; element itself.',
 
     stEyebrow: 'II・Typography', stH2: 'One glyph, three faces',
     stHeritageP: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
@@ -354,8 +354,8 @@ export const HOME_I18N = {
 
     ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
-    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
-    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+    ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
@@ -445,8 +445,8 @@ export const HOME_I18N = {
 
     ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
-    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
-    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+    ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
