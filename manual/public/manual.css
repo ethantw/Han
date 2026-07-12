@@ -33,8 +33,18 @@ h-placeholder { display: none }
 :root {
   /* type system — mirrors home.css so chrome and content speak the
      same vocabulary. */
-  --font-serif-zh: var(--han-font-family-songti-hant-curated);
-  --font-sans-zh:  var(--han-font-family-heiti-hant-curated);
+  /* Shanggu heritage webfonts lead (links in _layout.html head); the old
+     --han-font-family-*-curated vars were v3 API and don't exist in v4. */
+  --font-serif-zh:
+    'Shanggu Serif', 'Shanggu Serif TC',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    serif
+  ;
+  --font-sans-zh:
+    'Shanggu Sans', 'Shanggu Sans TC',
+    'Hiragino Sans', 'Yu Gothic',
+    sans-serif
+  ;
   --font-serif-en: "Cormorant Garamond", "Iowan Old Style", "Palatino", "Georgia", serif;
   --font-sans-en:  "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   --font-mono:     Han Biaodian Sans, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;

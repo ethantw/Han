@@ -24,12 +24,24 @@
 /* ─── tokens (light) ──────────────────────────────────────────────── */
 
 :root {
-  /* type system */
-  /* --font-serif-zh: "Noto Serif KR", "Hiragino Mincho ProN", "Yu Mincho", "MS Mincho", "SimSun", serif;
-  --font-sans-zh:  "Noto Sans KR", "Hiragino Sans", "Yu Gothic", sans-serif;
+  /* type system — Han glyphs lead with Ziano's Shanggu heritage webfonts
+     (links in _home.html head); Noto KR keeps its Kangxi-leaning coverage
+     as webfont fallback, then JP system fonts on whole-webfont failure. */
+  --font-serif-zh:
+    'Shanggu Serif', 'Shanggu Serif TC',
+    'Noto Serif KR',
+    'Hiragino Mincho ProN', 'Yu Mincho',
+    serif
+  ;
+  --font-sans-zh:
+    'Shanggu Sans', 'Shanggu Sans TC',
+    'Noto Sans KR',
+    'Hiragino Sans', 'Yu Gothic',
+    sans-serif
+  ;
   --font-serif-en: "Cormorant Garamond", "Iowan Old Style", "Palatino", "Georgia", serif;
   --font-sans-en:  "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  --font-mono:     "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; */
+  --font-mono:     "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
   --font-display:  var(--font-serif-en), var(--font-serif-zh);
   --font-body:     var(--font-sans-en), var(--font-sans-zh);
   --font-reading:  var(--font-serif-en), var(--font-serif-zh);
