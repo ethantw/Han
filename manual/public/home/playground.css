@@ -27,7 +27,7 @@
 
   /* Section header — design pattern: `叁 把玩・操場 ────────`,
    * left-aligned, with a thin rule that fills the remaining inline
-   * width.  Subtitle sits in upright Cormorant (no italic per the
+   * width.  Subtitle sits in the upright latin serif (no italic per the
    * no-cjk-pseudo-italics skill). */
   .SectionHead {
     & {
@@ -43,7 +43,7 @@
     }
 
     [data-part="numeral"] {
-      font-family: var(--font-serif-en);
+      font-family: var(--han-font-latin-serif), serif;
       font-size: 1.125rem;
       font-weight: 500;
       color: var(--accent-deep);
@@ -65,7 +65,7 @@
     }
 
     h2 {
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 3rem;
       line-height: 1.25;
       font-weight: 500;
@@ -77,7 +77,7 @@
     }
 
     p {
-      font-family: var(--font-serif-en), var(--font-serif-zh);
+      font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
       font-size: 1rem;
       line-height: 1.7;
       color: var(--ink-mute);
@@ -177,7 +177,7 @@
       background: #fff;
       border: 1px solid var(--rule);
       color: var(--ink-mute);
-      font-family: var(--font-sans-zh);
+      font-family: var(--han-font-default);
       font-size: 0.75rem;
       font-weight: 500;
       letter-spacing: 0.05em;
@@ -278,7 +278,7 @@
   }
 
   [data-part="label"] {
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.75rem;
     color: var(--ink);
     letter-spacing: 0.02em;
@@ -474,7 +474,7 @@
     & {
       flex: 1 1 auto;
       padding: 32px 40px;
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 1rem;
       line-height: 1.85;
       color: var(--ink);

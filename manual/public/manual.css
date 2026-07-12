@@ -20,35 +20,16 @@
  * avoids cross-imports that pull in unrelated tokens.
  */
 
-/* Heritage-glyph (傳承字形) Mincho via Noto Serif KR — its glyphs follow
-   the Kangxi tradition, unlike Noto Serif TC/SC. Cormorant Garamond
-   (upright only — Han.css disowns pseudo-italics) for English display;
-   JetBrains Mono for code; Inter/Noto Sans KR for chrome. */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
-
 h-placeholder { display: none }
 
 /* ─── design tokens (light) ────────────────────────────────────────── */
 
 :root {
-  /* type system — mirrors home.css so chrome and content speak the
-     same vocabulary. */
-  /* Shanggu heritage webfonts lead (links in _layout.html head); the old
-     --han-font-family-*-curated vars were v3 API and don't exist in v4. */
-  --font-serif-zh:
-    'Shanggu Serif', 'Shanggu Serif TC',
-    'Hiragino Mincho ProN', 'Yu Mincho',
-    serif
-  ;
-  --font-sans-zh:
-    'Shanggu Sans', 'Shanggu Sans TC',
-    'Hiragino Sans', 'Yu Gothic',
-    sans-serif
-  ;
-  --font-serif-en: "Cormorant Garamond", "Iowan Old Style", "Palatino", "Georgia", serif;
-  --font-sans-en:  "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  --font-mono:     Han Biaodian Sans, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
-  --font-reading:  var(--font-serif-zh);
+  /* Type comes from Han.css's own vars (--han-font-default /
+     -alternative / -latin-*) — the site dogfoods the framework;
+     Shanggu heritage webfont links live in _layout.html's head. Mono
+     is the one site-local token: the framework has no mono slot. */
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   /* paper / ink / accent — B v2 青翠綠 */
   --paper:         #ffffff;
@@ -160,7 +141,7 @@ button {
 
 body.ManualPage {
   & {
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
   }
 
   /* ≥50em — header / (sidebar | main) / footer */
@@ -206,7 +187,7 @@ body.ManualPage {
     display: flex;
     gap: 1.375rem;
     align-items: center;
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
 
     > a {
@@ -238,7 +219,7 @@ body.ManualPage {
   }
 
   [data-part="mark"] {
-    font-family: var(--font-serif-zh);
+    font-family: var(--han-font-alternative);
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--ink);
@@ -251,7 +232,7 @@ body.ManualPage {
   }
 
   [data-part="ext"] {
-    font-family: var(--font-serif-en);
+    font-family: var(--han-font-latin-serif), serif;
     font-size: 1.125rem;
     font-weight: 500;
     color: var(--ink);
@@ -284,7 +265,7 @@ body.ManualPage {
     border-radius: 6px;
     max-inline-size: 25rem;
     background: var(--paper-deep);
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
     transition: border-color 150ms ease, background-color 150ms ease;
 
@@ -333,7 +314,7 @@ body.ManualPage {
       border-radius: 8px;
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 22px 60px -22px rgba(40, 30, 10, 0.22);
       overflow: hidden;
-      font-family: var(--font-sans-zh);
+      font-family: var(--han-font-default);
       font-size: 0.875rem;
       min-inline-size: 22rem;
 
@@ -429,7 +410,7 @@ body.ManualPage {
     }
 
     [data-part="title"] {
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-weight: 500;
       font-size: 0.875rem;
       color: var(--ink);
@@ -486,7 +467,7 @@ body.ManualPage {
     /* 文A bilingual glyph — universal i18n icon (cf. Google Translate).
        Two superimposed characters of equal visual weight in matching
        ink color, with a slight diagonal offset so they read as one
-       mark. A uses sans-en — Cormorant's caps read italic-ish next to
+       mark. A uses sans-en — the latin serif's caps read italic-ish next to
        the upright 文, which the icon must not be. */
     [data-part="icon"] {
       display: inline-flex;
@@ -498,12 +479,12 @@ body.ManualPage {
       color: var(--ink);
 
       [data-glyph="zh"] {
-        font-family: var(--font-serif-zh);
+        font-family: var(--han-font-alternative);
         font-weight: 500;
         transform: translateY(-3px);
       }
       [data-glyph="la"] {
-        font-family: var(--font-sans-en);
+        font-family: var(--han-font-latin-sans), sans-serif;
         font-weight: 600;
         font-size: 0.85em;
         transform: translateY(3px);
@@ -544,7 +525,7 @@ body.ManualPage {
       padding: 0.625rem 0.875rem 0.25rem;
       margin-top: 0.375rem;
       border-top: 1px solid var(--rule-soft);
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 0.625rem;
       color: var(--ink-mute);
       line-height: 1.5;
@@ -557,7 +538,7 @@ body.ManualPage {
       inline-size: 100%;
       padding: 0.5rem 0.875rem;
       text-align: left;
-      font-family: var(--font-sans-zh);
+      font-family: var(--han-font-default);
       font-size: 0.8125rem;
       color: var(--ink);
       text-decoration: none;
@@ -566,7 +547,7 @@ body.ManualPage {
       &.is-active { background: var(--accent-bg); }
 
       [data-part="flag"] {
-        font-family: var(--font-serif-zh);
+        font-family: var(--han-font-alternative);
         font-size: 1.125rem;
         color: var(--accent-deep);
         inline-size: 1.375rem;
@@ -671,7 +652,7 @@ button[data-nav-toggle] {
   h2 {
     margin: 1.75em 0 0.5em;
     padding-inline-start: 8px;
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--ink);
@@ -691,7 +672,7 @@ button[data-nav-toggle] {
   a {
     display: block;
     padding: 5px 10px;
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
     color: var(--ink-mute);
     text-decoration: none;
@@ -751,14 +732,14 @@ main {
   > article {
     max-inline-size: var(--m-content-w);
     margin: 0 auto;
-    /* font-family: var(--font-serif-zh); */
+    /* font-family: var(--han-font-alternative); */
     font-size: 1rem;
     line-height: 1.95;
     color: var(--ink-soft);
 
     > h1 {
       margin: 0 0 8px;
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 3rem;
       font-weight: 500;
       line-height: 1.2;
@@ -766,11 +747,11 @@ main {
       color: var(--ink);
     }
 
-    /* Subtitle directly under the H1 (upright Cormorant — no
+    /* Subtitle directly under the H1 (upright latin serif — no
        pseudo-italics, per Han.css's mission). */
     > p.Tagline {
       margin: 0 0 32px;
-      font-family: var(--font-serif-en);
+      font-family: var(--han-font-latin-serif), serif;
       font-size: 0.875rem;
       color: var(--ink-mute);
     }
@@ -779,7 +760,7 @@ main {
       position: relative;
       margin: 56px 0 16px;
       padding-block-start: 24px;
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 1.75rem;
       font-weight: 500;
       line-height: 1.35;
@@ -789,7 +770,7 @@ main {
 
     h3 {
       margin: 32px 0 12px;
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 1.125rem;
       font-weight: 600;
       color: var(--ink);
@@ -797,7 +778,7 @@ main {
 
     h4 {
       margin: 24px 0 10px;
-      font-family: var(--font-serif-zh);
+      font-family: var(--han-font-alternative);
       font-size: 1rem;
       font-weight: 600;
       color: var(--ink);
@@ -891,7 +872,7 @@ main {
         display: flex;
         gap: 12px;
         color: var(--ink-soft);
-        font-family: var(--font-serif-zh);
+        font-family: var(--han-font-alternative);
         font-size: 0.875rem;
         line-height: 1.85;
       }
@@ -932,13 +913,13 @@ main {
       :last-child  { margin-block-end: 0 }
     }
 
-    /* English inline runs — mark with the Cormorant face (upright; Han.css
+    /* English inline runs — mark with the latin-serif face (upright; Han.css
        has no pseudo-italics). The framework already uses `<em>` for
        emphasis; only target English runs that opt in via `lang` or
        a descriptive `.en-run` flag (kebab — rule 12 — it's a state, not
        a component). */
     em[lang|='en'], .en-run {
-      font-family: var(--font-serif-en);
+      font-family: var(--han-font-latin-serif), serif;
       color: var(--accent-deep);
     }
 
@@ -956,7 +937,7 @@ main {
       th {
         color: var(--ink-mute);
         font-weight: 600;
-        font-family: var(--font-sans-zh);
+        font-family: var(--han-font-default);
       }
     }
   }
@@ -971,7 +952,7 @@ main {
     flex-wrap: wrap;
     gap: 10px;
     margin: 0 0 20px;
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.75rem;
     color: var(--ink-mute);
   }
@@ -999,7 +980,7 @@ main {
     margin-block-start: 56px;
     padding-block-start: 24px;
     border-block-start: 1px solid var(--rule);
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
   }
 
   a {
@@ -1030,7 +1011,7 @@ main {
   }
 
   [data-part="title"] {
-    font-family: var(--font-serif-zh);
+    font-family: var(--han-font-alternative);
     font-size: 0.875rem;
     color: var(--accent-deep);
     font-weight: 500;
@@ -1042,7 +1023,7 @@ main {
 
 .PageToc {
   & {
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
     line-height: 1.65;
     padding: 3em 1.5em 5em;
@@ -1096,7 +1077,7 @@ main {
     padding: 1.5em var(--m-gutter);
     border-block-start: 1px solid var(--rule);
     color: var(--ink-mute);
-    font-family: var(--font-sans-zh);
+    font-family: var(--han-font-default);
     font-size: 0.875rem;
     text-align: center;
 
@@ -1112,7 +1093,7 @@ main {
 /* ─── Not-found page (standalone, no docs chrome) ──────────────────── */
 
 body.NotFoundPage {
-  font-family: var(--font-sans-zh);
+  font-family: var(--han-font-default);
 }
 
 .NotFound {
@@ -1125,7 +1106,7 @@ body.NotFoundPage {
 
   [data-part="code"] {
     margin-block: 0;
-    font-family: var(--font-sans-en);
+    font-family: var(--han-font-latin-sans), sans-serif;
     font-size: 5rem;
     font-weight: 200;
     line-height: 1;
