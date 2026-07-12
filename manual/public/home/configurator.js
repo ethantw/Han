@@ -4,12 +4,9 @@
  * 生成邏輯全在 codegen.js（純函數）；本檔只碰 DOM。
  */
 import {
-  DEFAULTS, cssVars, packages,
+  DEFAULTS, cssVars, packages, zianoUrl,
   renderCDN, renderBundler, renderImport,
 } from '/home/codegen.js'
-
-const ZIANO_CDN = (id) =>
-  `https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-${id}@latest/swap.css`
 
 /* ── 按需字體載入（去重） ── */
 const loaded = new Set()
@@ -18,7 +15,7 @@ const ensureFont = (id) => {
   loaded.add(id)
   document.head.insertAdjacentHTML(
     'beforeend',
-    `<link rel="stylesheet" href="${ZIANO_CDN(id)}">`,
+    `<link rel="stylesheet" href="${zianoUrl(id)}">`,
   )
 }
 
@@ -45,6 +42,8 @@ const ALL_VARS = [
 ]
 
 /* ── apply：config → 預覽變數 ── */
+// 自訂 proseScope 對預覽刻意無效——預覽容器是單一恆開 prose 的 article；
+// 作用域規則只進生成碼。
 const applyPreview = (config, body) => {
   for (const prop of ALL_VARS) body.style.removeProperty(prop)
   for (const [prop, value] of cssVars(config)) body.style.setProperty(prop, value)
@@ -88,8 +87,9 @@ export const initConfigurator = (root) => {
 
   const sync = () => {
     // autospace 開關×進階模式 → config.autospace
-    const on = autospaceOn.checked
-    config.autospace = on ? autospaceMode.value : 'off'
+    // insert/replace/strict 是 JS 消費值——fallbacks off 時一律折回 normal
+    const jsMode = config.fallbacks ? autospaceMode.value : 'normal'
+    config.autospace = autospaceOn.checked ? jsMode : 'off'
 
     applyPreview(config, body)
     applyFallbacks(config, body)
@@ -103,7 +103,7 @@ export const initConfigurator = (root) => {
       el.toggleAttribute('hidden', !config.semantics)
     })
     root.querySelector('[data-cfg-advanced]')
-      .toggleAttribute('hidden', !on)
+      .toggleAttribute('hidden', !config.fallbacks)
   }
 
   for (const el of root.querySelectorAll('[data-cfg] [data-cfg-key]')) {

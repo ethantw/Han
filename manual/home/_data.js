@@ -53,7 +53,6 @@ export const HOME_I18N = {
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
     pgPreviewLabel: '即時預覽・LIVE',
     pgCustomPlaceholder: '在此貼上你的 Markdown 文字 ——\n標題、段落、**著重**、`code`、> 引文，皆可。',
-    pgCustomHint: '撰寫 Markdown・即時渲染於右',
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化', pgTogSemanticsEn: 'semantics',
     pgTogProse: '行文版式', pgTogProseEn: 'prose',
@@ -113,7 +112,6 @@ export const HOME_I18N = {
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
     pgPreviewLabel: '即时预览・LIVE',
     pgCustomPlaceholder: '在此粘贴你的 Markdown 文字 ——\n标题、段落、**着重**、`code`、> 引文，皆可。',
-    pgCustomHint: '撰写 Markdown・即时渲染于右',
     pgGrpLayers: '模块',
     pgTogSemantics: '语意强化', pgTogSemanticsEn: 'semantics',
     pgTogProse: '行文版式', pgTogProseEn: 'prose',
@@ -173,7 +171,6 @@ export const HOME_I18N = {
     pgSliderTracking: 'Tracking', pgSliderTrackingEn: 'letter-spacing',
     pgPreviewLabel: 'Live preview',
     pgCustomPlaceholder: 'Paste any Markdown here ——\nheadings, paragraphs, **emphasis**, `code`, > quotes.',
-    pgCustomHint: 'Type Markdown・rendered live on the right',
     pgGrpLayers: 'Modules',
     pgTogSemantics: 'Semantics', pgTogSemanticsEn: 'semantics',
     pgTogProse: 'Prose layout', pgTogProseEn: 'prose',
@@ -233,7 +230,6 @@ export const HOME_I18N = {
     pgSliderTracking: '字送り', pgSliderTrackingEn: 'letter-spacing',
     pgPreviewLabel: 'ライブプレビュー',
     pgCustomPlaceholder: 'お好きな Markdown をここに ——\n見出し、段落、**強調**、`コード`、> 引用、いずれも対応。',
-    pgCustomHint: 'Markdown を入力・右側にライブ描画',
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ja copy is written.
@@ -296,7 +292,6 @@ export const HOME_I18N = {
     pgSliderTracking: '자간', pgSliderTrackingEn: 'letter-spacing',
     pgPreviewLabel: '라이브 미리보기',
     pgCustomPlaceholder: '여기에 Markdown 붙여넣기 ——\n제목, 단락, **강조**, `코드`, > 인용 모두 지원한다.',
-    pgCustomHint: 'Markdown 입력・오른쪽에 실시간 렌더링',
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ko copy is written.

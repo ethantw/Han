@@ -105,7 +105,7 @@ export const packages = (c) => {
   return { ziano, dtj }
 }
 
-const zianoUrl = (id) => `${CDN}${SCOPE}webfonts-${id}@latest/swap.css`
+export const zianoUrl = (id) => `${CDN}${SCOPE}webfonts-${id}@latest/swap.css`
 const DTJ_URL = `${CDN}${SCOPE}diantenjeom@latest/dist/diantenjeom.css`
 const HAN_CSS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.css`
 const HAN_AUTO_URL = `${CDN}${SCOPE}han.css@latest/dist/han.auto.min.js`
