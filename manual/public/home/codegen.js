@@ -84,7 +84,7 @@ const configCSS = (c, indent = '  ') => {
   const rules = []
   if (vars.length)
     rules.push(`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`)
-  const scope = c.proseScope.replace(/[<>{};]/g, '').trim()
+  const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
   if (c.prose && scope && scope !== 'article')
     rules.push(`${scope} { --han-prose: on; }`)
   return rules.join('\n')

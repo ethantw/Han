@@ -332,8 +332,10 @@ const configCSS = (c, indent = '  ') => {
   const rules = []
   if (vars.length)
     rules.push(`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`)
-  if (c.prose && c.proseScope.trim() && c.proseScope.trim() !== 'article')
-    rules.push(`${c.proseScope.trim()} { --han-prose: on; }`)
+  // proseScope 是自由文本：剔除會破壞生成片段結構的字元（<>{};/）
+  const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
+  if (c.prose && scope && scope !== 'article')
+    rules.push(`${scope} { --han-prose: on; }`)
   return rules.join('\n')
 }
 
@@ -406,7 +408,7 @@ export const renderBundler = (c, pm = 'pnpm') => {
       `convertLegacyRuby(document.body)`,
     )
   const css = configCSS(c)
-  if (css) lines.push('', '/* 專案全域 CSS */', css)
+  if (css) lines.push('', '/* styles.css — 放進全域樣式表，勿貼進 main.js */', css)
   return lines.join('\n')
 }
 
@@ -433,8 +435,11 @@ Expected: 全 PASS。失敗就對照斷言修 codegen（不改測試——測試
 `manual/package.json` 的 `"scripts"` 內加：
 
 ```json
-    "test": "node --test tests/",
+    "test": "node --test",
 ```
+
+（Node 24 的 `node --test <dir>` 會把目錄參數當模組 require 而失敗；裸 `node --test`
+自動發現 `tests/*.test.js`，等效且可跑。）
 
 - [ ] **Step 7: Commit**
 
@@ -1011,6 +1016,15 @@ git commit -m "chore(manual): configurator final polish after full verification"
 ```
 
 ---
+
+## 執行修訂（Task 2 審查後，2026-07-12）
+
+- codegen 審查修正落在 commit `f80d43d`＋一字補充：bundler CSS 段落標籤明確化、
+  `proseScope` 消毒（`[<>{};/]`）、測試回填 4 條（heritage system／cursive off、
+  ko off、emPosition under、消毒 round-trip）→ 共 **18** 條。本文件上方代碼塊已同步，
+  但測試回填以 repo 內 `manual/tests/codegen.test.js` 為準。
+- 後續 task 凡 `cd manual && node --test tests/` 一律改跑 `cd manual && pnpm test`。
+- 工作分支為 `v4/main`（v4 開發線），非 `main`。
 
 ## Self-Review 紀錄
 
