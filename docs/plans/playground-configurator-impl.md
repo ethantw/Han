@@ -761,9 +761,9 @@ const applyPreview = (config, body) => {
     '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
   ]) body.style.removeProperty(prop)
   for (const [prop, value] of vars) body.style.setProperty(prop, value)
-  // 換家族 → 現載該家族 webfont 供預覽
-  if (config.heritage === 'webfont')
-    for (const id of packages(config).ziano) ensureFont(id)
+  // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重。
+  // （勿再以 heritage gate——那會在 heritage=system/off 時漏掉楷體 webfont）
+  for (const id of packages(config).ziano) ensureFont(id)
 }
 
 /* ── apply：JS 後備（作用於預覽容器） ── */
