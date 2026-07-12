@@ -9,7 +9,8 @@
     "build:search": "pagefind --site dist --output-subdir pagefind",
     "dev": "vite",
     "preview": "vite preview",
-    "clean": "rm -rf dist src/*.html public/han"
+    "clean": "rm -rf dist src/*.html public/han",
+    "test": "node --test"
   },
   "author": "Chen Yijun (ethantw@me.com)",
   "license": "MIT",
