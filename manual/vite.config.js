@@ -141,6 +141,11 @@ const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
   'station-snippet', 'closing',
 ]
+// The rail is chrome, not a station — it sits OUTSIDE <main class="han">
+// (mounted into `<aside data-rail-mount>`), so it stays out of
+// HOME_SECTIONS and gets its own `{{ railSection }}` token instead of a
+// `<name>Section` one derived from the HOME_SECTIONS list.
+const HOME_RAIL = path.resolve(HOME_DIR, 'rail.html')
 // Per-section demo sources. `index.html` carries the page shell + a
 // `<!--demos: slug1 slug2 …-->` declaration; each `<slug>.md` holds the
 // inner content of one demo. `renderDemoPage()` stitches them into
@@ -355,6 +360,7 @@ async function renderHomepage() {
       [name, await fs.readFile(path.join(HOME_DIR, `${name}.html`), 'utf-8')],
     )),
   )
+  const railSrc = await fs.readFile(HOME_RAIL, 'utf-8')
   const stats = await computeHeroStats()
 
   for (const locale of HOME_LOCALE_SLUGS) {
@@ -386,8 +392,9 @@ async function renderHomepage() {
     const sections = Object.fromEntries(
       Object.entries(partials).map(([name, src]) => [`${camel(name)}Section`, applySubs(src, ctx)]),
     )
+    const railSection = applySubs(railSrc, ctx)
 
-    let html = applySubs(layout, { ...ctx, ...sections })
+    let html = applySubs(layout, { ...ctx, ...sections, railSection })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
 
     const outPath = locale === HOME_DEFAULT_LOCALE

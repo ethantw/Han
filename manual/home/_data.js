@@ -109,6 +109,9 @@ export const HOME_I18N = {
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
     clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
+
+    railHeader: '配置面板——撥動即改寫全頁',
+    railReset: '回到預設',
   },
   hans: {
     siteTitle: '汉.css・印刷品般的汉字排版框架',
@@ -195,6 +198,9 @@ export const HOME_I18N = {
 
     clInstallLabel: '一行安装', clZianoLabel: 'ziano・传承字形webfont',
     clDiantenjeomLabel: 'diantenjeom・标点符号字型', clOldHomeLabel: '旧版首页',
+
+    railHeader: '配置面板——拨动即改写全页',
+    railReset: '回到默认',
   },
   en: {
     siteTitle: 'Han.css・Print-quality Hanzi typography for the web',
@@ -281,6 +287,9 @@ export const HOME_I18N = {
 
     clInstallLabel: 'One-line install', clZianoLabel: 'ziano・heritage webfont',
     clDiantenjeomLabel: 'diantenjeom・punctuation font', clOldHomeLabel: 'Previous homepage',
+
+    railHeader: 'Configurator — flip a switch, the whole page rewrites itself',
+    railReset: 'Reset to defaults',
   },
   ja: {
     siteTitle: '漢.css・印刷品質の漢字組版フレームワーク',
@@ -372,6 +381,12 @@ export const HOME_I18N = {
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
     clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
+
+    // NOTE: rail keys below are not yet localized for ja — falling back
+    // to the hant (Traditional Chinese) values per established
+    // convention. Revisit when ja copy is written.
+    railHeader: '配置面板——撥動即改寫全頁',
+    railReset: '回到預設',
   },
   ko: {
     siteTitle: '한.css・인쇄 품질의 한자 조판 프레임워크',
@@ -463,5 +478,11 @@ export const HOME_I18N = {
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
     clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
+
+    // NOTE: rail keys below are not yet localized for ko — falling back
+    // to the hant (Traditional Chinese) values per established
+    // convention. Revisit when ko copy is written.
+    railHeader: '配置面板——撥動即改寫全頁',
+    railReset: '回到預設',
   },
 }

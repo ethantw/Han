@@ -51,7 +51,17 @@
   </nav>
 </header>
 
-<aside class="Rail" data-rail-mount hidden></aside>
+<aside class="Rail" data-rail-mount>
+{{ railSection }}
+</aside>
+
+<!-- Rail-form chooser — 選型用，owner 定案後移除。 Floating pill, bottom-right,
+     picks between the two rail layouts (`data-rail="side"|"top"` on <body>)
+     and persists the choice in localStorage; boot logic in rail-chooser.js. -->
+<div class="RailChooser" data-rail-chooser>
+  <button type="button" data-rail-form="side">側欄</button>
+  <button type="button" data-rail-form="top">頂欄</button>
+</div>
 
 <main class="han" lang="{{ htmlLang }}">
 {{ manifestoSection }}

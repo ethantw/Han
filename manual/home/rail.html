@@ -1,0 +1,227 @@
+<!--
+  Rail — the whole-page configurator, HP-3. Lives OUTSIDE <main class="han">
+  (mounted into `<aside data-rail-mount>` in `_home.html`, substituted via
+  the `railSection` token in vite.config's renderHomepage — parallel to,
+  but not a member of, HOME_SECTIONS since it isn't part of the six
+  stations). Same `data-cfg-key` contract as the old playground.html
+  panel (configurator.js is scope-agnostic — it just queries
+  `[data-cfg] [data-cfg-key]` wherever they live). No sample chips, no
+  custom-Markdown mode, no preview ViewTab — the page itself is the
+  sample and station④ owns the output tabs.
+
+  Two-state shell (`data-rail="side"|"top"` on <body>, chosen by the
+  floating chooser in `_home.html`) and the <52rem bottom-sheet grip
+  are pure CSS in `rail.css`, driven by the checkbox-label `:has()`
+  pattern (no JS needed for the sheet itself).
+-->
+<div class="RailInner">
+  <input type="checkbox" id="rail-sheet" class="RailSheetToggle" data-rail-sheet-toggle hidden>
+  <label class="RailGrip" for="rail-sheet" data-rail-grip>
+    <span data-part="bar" aria-hidden="true"></span>
+    <span data-part="label">{{ railHeader }}</span>
+  </label>
+
+  <div class="RailScroll">
+    <!-- 模組（layer 級） -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpLayers }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Toggle">
+          <span>{{ pgTogSemantics }}</span>
+          <input type="checkbox" data-cfg-key="semantics" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgTogProse }}</span>
+          <input type="checkbox" data-cfg-key="prose" checked>
+        </label>
+        <label class="Field">
+          <span>{{ pgProseScope }}</span>
+          <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
+        </label>
+        <!-- 語意細項（semantics off 時整組隱藏） -->
+        <label class="Field" data-cfg-semantics-sub>
+          <span>{{ pgCiteMarks }} <small>cite</small></span>
+          <select data-cfg-key="citeTitleMarks">
+            <option value="none" selected>{{ pgModeOff }}</option>
+            <option value="bracket">{{ pgCiteBracket }}</option>
+            <option value="wavy">{{ pgCiteWavy }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-semantics-sub>
+          <span>{{ pgEmSymbol }} <small>em</small></span>
+          <select data-cfg-key="emSymbol">
+            <option value="circle" selected>{{ pgEmCircle }}</option>
+            <option value="dot">{{ pgEmDot }}</option>
+            <option value="sesame">{{ pgEmSesame }}</option>
+            <option value="triangle">{{ pgEmTriangle }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-semantics-sub>
+          <span>{{ pgEmPosition }}</span>
+          <select data-cfg-key="emPosition">
+            <option value="auto" selected>{{ pgEmPosAuto }}</option>
+            <option value="under">{{ pgEmPosUnder }}</option>
+            <option value="over">{{ pgEmPosOver }}</option>
+          </select>
+        </label>
+      </fieldset>
+    </details>
+
+    <!-- 行調整（友善開關 + 進階） -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpLines }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Toggle">
+          <span>{{ pgTogSqueeze }}</span>
+          <input type="checkbox" data-cfg-key="squeeze" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgTogHangNew }}</span>
+          <input type="checkbox" data-cfg-key="hang" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgTogAutospace }}</span>
+          <input type="checkbox" data-cfg-key="autospaceOn" checked>
+        </label>
+        <label class="Field" data-cfg-advanced hidden>
+          <span>{{ pgAutospaceMode }}</span>
+          <select data-cfg-key="autospaceMode">
+            <option value="normal" selected>normal</option>
+            <option value="insert">insert（需 JS）</option>
+            <option value="replace">replace（需 JS）</option>
+            <option value="strict">strict（需 JS）</option>
+          </select>
+        </label>
+      </fieldset>
+    </details>
+
+    <!-- 字體 -->
+    <details class="ControlGroup" open>
+      <summary>{{ pgGrpFonts }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Field">
+          <span>{{ pgHeritage }}</span>
+          <select data-cfg-key="heritage">
+            <option value="webfont" selected>{{ pgModeWebfont }}</option>
+            <option value="system">{{ pgModeSystem }}</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-heritage-family>
+          <span>{{ pgHeritageSans }}</span>
+          <select data-cfg-key="heritageSans">
+            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+            <option value="genki">{{ pgFamGenki }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-heritage-family>
+          <span>{{ pgHeritageSerif }}</span>
+          <select data-cfg-key="heritageSerif">
+            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+            <option value="genki">{{ pgFamGenki }}</option>
+          </select>
+        </label>
+        <label class="Field">
+          <span>{{ pgCursive }}</span>
+          <select data-cfg-key="cursive">
+            <option value="webfont" selected>{{ pgModeWebfont }}</option>
+            <option value="system">{{ pgModeSystem }}</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgTogZhuyin }}</span>
+          <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+        </label>
+      </fieldset>
+    </details>
+
+    <!-- 標點規範 -->
+    <details class="ControlGroup" open>
+      <summary>{{ pgGrpPunct }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Field"><span>{{ pgPunctHant }}</span>
+          <select data-cfg-key="punct.hant">
+            <option value="MOE" selected>MOE</option><option value="JIS">JIS</option>
+            <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
+          </select></label>
+        <label class="Field"><span>{{ pgPunctHans }}</span>
+          <select data-cfg-key="punct.hans">
+            <option value="GB" selected>GB</option><option value="JIS">JIS</option>
+            <option value="MOE">MOE</option><option value="off">{{ pgModeOff }}</option>
+          </select></label>
+        <label class="Field"><span>{{ pgPunctJa }}</span>
+          <select data-cfg-key="punct.ja">
+            <option value="JIS" selected>JIS</option><option value="MOE">MOE</option>
+            <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
+          </select></label>
+        <label class="Field"><span>{{ pgPunctKo }}</span>
+          <select data-cfg-key="punct.ko">
+            <option value="KV" selected>KV</option><option value="off">{{ pgModeOff }}</option>
+          </select></label>
+      </fieldset>
+    </details>
+
+    <!-- JavaScript -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpJs }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Toggle">
+          <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
+          <input type="checkbox" data-cfg-key="fallbacks">
+        </label>
+        <label class="Toggle">
+          <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>
+          <input type="checkbox" data-cfg-key="legacyRuby">
+        </label>
+      </fieldset>
+    </details>
+
+    <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
+    <section class="ControlGroup">
+      <header>{{ pgMetricsLabel }}</header>
+      <div class="MetricSliders" data-pg-sliders>
+        <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">
+          <header>
+            <span data-part="label">{{ pgSliderSize }}</span>
+            <span data-part="label-en">{{ pgSliderSizeEn }}</span>
+            <output data-part="val" data-pg-slider-val>17 px</output>
+          </header>
+          <div data-part="track">
+            <div data-part="fill" data-pg-slider-fill></div>
+            <input type="range" min="14" max="28" step="1" value="17"
+                   aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
+          </div>
+        </div>
+
+        <div class="MetricSlider" data-metric="leading" data-unit="" data-precision="2">
+          <header>
+            <span data-part="label">{{ pgSliderLeading }}</span>
+            <span data-part="label-en">{{ pgSliderLeadingEn }}</span>
+            <output data-part="val" data-pg-slider-val>1.85</output>
+          </header>
+          <div data-part="track">
+            <div data-part="fill" data-pg-slider-fill></div>
+            <input type="range" min="1.4" max="2.4" step="0.05" value="1.85"
+                   aria-label="{{ pgSliderLeading }} {{ pgSliderLeadingEn }}">
+          </div>
+        </div>
+
+        <div class="MetricSlider" data-metric="tracking" data-unit="em" data-precision="2">
+          <header>
+            <span data-part="label">{{ pgSliderTracking }}</span>
+            <span data-part="label-en">{{ pgSliderTrackingEn }}</span>
+            <output data-part="val" data-pg-slider-val>0.02 em</output>
+          </header>
+          <div data-part="track">
+            <div data-part="fill" data-pg-slider-fill></div>
+            <input type="range" min="-0.04" max="0.12" step="0.01" value="0.02"
+                   aria-label="{{ pgSliderTracking }} {{ pgSliderTrackingEn }}">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <button type="button" class="RailReset" data-rail-reset>{{ railReset }}</button>
+  </div>
+</div>
