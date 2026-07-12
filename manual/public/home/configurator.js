@@ -134,4 +134,8 @@ export const initConfigurator = (root) => {
   })
 
   sync()
+
+  // 把後備套用權交還呼叫端：換範文/重渲染 Markdown 後由 playground.js
+  // 以「當前 config」重套，而非無條件 installFallbacks。
+  return { reapplyFallbacks: (body) => applyFallbacks(config, body) }
 }

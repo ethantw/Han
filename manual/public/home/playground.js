@@ -9,14 +9,15 @@
  *
  *   1. Sliders            — pure inline style (font-size, line-height,
  *                           letter-spacing).  Free.
- *   2. Sample / Markdown  — replace the preview's innerHTML, then re-run
- *                           installFallbacks on the new subtree.
+ *   2. Sample / Markdown  — replace the preview's innerHTML, then ask
+ *                           the configurator to reapply JS fallbacks on
+ *                           the new subtree (a no-op while the fallbacks
+ *                           toggle is off — the configurator owns that).
  *
- * Custom-mode MD render is debounced so installFallbacks doesn't fire
- * on every keystroke.
+ * Custom-mode MD render is debounced so the fallback reapply doesn't
+ * fire on every keystroke.
  */
 
-import { installFallbacks } from '/han/han.js'
 import { initConfigurator } from '/home/configurator.js'
 
 export function initPlayground() {
@@ -38,6 +39,10 @@ export function initPlayground() {
 
   let mdRender = null  // lazy-loaded on first custom-mode entry
 
+  /* ── configurator — owns fallback application (config-aware) ── */
+
+  const configurator = initConfigurator(root)
+
   /* ── samples / custom mode ─────────────────────────────────── */
 
   const applySample = key => {
@@ -58,7 +63,7 @@ export function initPlayground() {
     if (!s) return
     body.innerHTML = s.html
     body.lang = s.lang
-    installFallbacks(body)
+    configurator.reapplyFallbacks(body)
     updateMeta(s.meta)
   }
 
@@ -73,7 +78,7 @@ export function initPlayground() {
     if (!mdRender) return
     body.innerHTML = mdRender(textarea.value)
     body.lang = samples['custom-default']?.lang ?? 'zh-Hant'
-    installFallbacks(body)
+    configurator.reapplyFallbacks(body)
     updateMeta(samples['custom-default']?.meta ?? 'custom・Markdown')
   }
 
@@ -139,7 +144,6 @@ export function initPlayground() {
 
   applyMetrics()
   applySample(state.sample)
-  initConfigurator(root)
 }
 
 /**

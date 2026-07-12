@@ -3,9 +3,10 @@
  *
  * The preview is a real Han.css article (`.han`) so the framework's
  * own CSS handles punctuation kerning, mixed-script spacing, hanging
- * punctuation, and ruby.  Each toggle flips a `data-rule-*` attr on
- * the preview body which overrides Han.css's cascade vars locally —
- * no DOM mutation, no re-install, just CSS.
+ * punctuation, and ruby.  The configurator (`configurator.js`) writes
+ * `--han-*` cascade-var deviations as inline style on the preview body
+ * — no DOM mutation, no re-install, just CSS; sliders write inline
+ * `font-size` / `line-height` / `letter-spacing` the same way.
  *
  * The preview stage hosts two children: the article itself and a
  * Markdown textarea that's hidden until the "✎ 自訂" chip is picked.
