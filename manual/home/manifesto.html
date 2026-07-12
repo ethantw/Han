@@ -1,0 +1,37 @@
+<!--
+  Manifesto section — opening statement + the page's first specimen.
+  The manifesto paragraph itself mixes Han, English, digits and rich
+  punctuation, so it doubles as a live demonstration of what the rail
+  (mounted in `_home.html`, wired in HP-3) will let readers tweak.
+-->
+<section class="Manifesto">
+  <h1>
+    <span data-part="line">{{ mfH1a }}</span><br>
+    <span data-part="line" data-accent>{{ mfH1b }}</span>
+  </h1>
+
+  <p class="Lede">{{ mfLede }}</p>
+
+  <p class="Dogfood">{{ mfDogfood }}</p>
+
+  <span class="InstallChip">
+    <span data-part="prompt">$</span>
+    <span data-part="cmd">pnpm add @hanzi.pro/han.css</span>
+    <button type="button" data-part="copy" aria-label="copy">⎘</button>
+  </span>
+
+  <dl class="Stats">
+    <div>
+      <dt>{{ statScriptsValue }}</dt>
+      <dd>{{ mfStatLocales }}</dd>
+    </div>
+    <div>
+      <dt>{{ statSizeValue }}</dt>
+      <dd>{{ mfStatSize }}</dd>
+    </div>
+    <div>
+      <dt>{{ statDepsValue }}</dt>
+      <dd>{{ mfStatDeps }}</dd>
+    </div>
+  </dl>
+</section>

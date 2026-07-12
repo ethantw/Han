@@ -1,0 +1,53 @@
+<!--
+  Station II・Typography — the three-face specimen (proven pattern,
+  reused from the old features.html) plus copy on heritage glyphs and
+  punctuation convention (feeds the DTJ per-locale demo in the rail).
+-->
+<section id="station-type" class="Station" data-station="type">
+  <header class="SectionHead">
+    <div data-part="meta">
+      <span data-part="label">{{ stEyebrow }}</span>
+      <span data-part="rule" aria-hidden="true"></span>
+    </div>
+    <h2>{{ stH2 }}</h2>
+  </header>
+
+  <figure class="Illust" data-variant="faces">
+    <ul class="Faces">
+      <li>
+        <span data-part="ch" style="font-family: var(--han-font-default);">字</span>
+        <span data-part="label">Hēi</span>
+      </li>
+      <li>
+        <span data-part="ch" style="font-family: var(--han-font-alternative);">字</span>
+        <span data-part="label">Sòng</span>
+      </li>
+      <li>
+        <span data-part="ch" style="font-family: var(--han-font-accent);">字</span>
+        <span data-part="label">Kǎi</span>
+      </li>
+    </ul>
+    <dl class="Legend">
+      <div>
+        <dt>黑體</dt>
+        <span data-part="dot" aria-hidden="true"></span>
+        <dd>sans-serif</dd>
+      </div>
+      <div>
+        <dt>宋體</dt>
+        <span data-part="dot" aria-hidden="true"></span>
+        <dd>serif</dd>
+      </div>
+      <div>
+        <dt>楷體</dt>
+        <span data-part="dot" aria-hidden="true"></span>
+        <dd>cursive</dd>
+      </div>
+    </dl>
+  </figure>
+
+  <div class="Prose">
+    <p>{{ stHeritageP }}</p>
+    <p>{{ stPunctP }}</p>
+  </div>
+</section>

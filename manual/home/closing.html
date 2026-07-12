@@ -1,0 +1,26 @@
+<!--
+  Closing section — install one-liner, GitHub, sibling-project links
+  (ziano / diantenjeom), version, and a small curiosity link to the
+  frozen old homepage.
+-->
+<section class="Closing">
+  <div class="InstallLine">
+    <span data-part="label">{{ clInstallLabel }}</span>
+    <span class="InstallChip">
+      <span data-part="prompt">$</span>
+      <span data-part="cmd">pnpm add @hanzi.pro/han.css</span>
+      <button type="button" data-part="copy" aria-label="copy">⎘</button>
+    </span>
+  </div>
+
+  <nav class="Siblings">
+    <a href="https://github.com/ethantw/Han">GitHub</a>
+    <a href="https://hanzipro.github.io/ziano/">{{ clZianoLabel }}</a>
+    <a href="https://hanzipro.github.io/diantenjeom/">{{ clDiantenjeomLabel }}</a>
+  </nav>
+
+  <div class="Foot">
+    <span class="VersionTag">肆・〇</span>
+    <a data-part="old-home" href="/old.html">{{ clOldHomeLabel }}</a>
+  </div>
+</section>

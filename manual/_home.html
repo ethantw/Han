@@ -35,11 +35,31 @@
 <script type="module" src="/han/han.js"></script>
 <script type="module" src="/home.js"></script>
 </head>
-<body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
-{{ heroSection }}
-{{ featuresSection }}
-{{ playgroundSection }}
-{{ gettingStartedSection }}
-{{ footerSection }}
+<body class="home" data-rail="side" data-locale="{{ locale }}" data-pagefind-ignore="all">
+<header class="Topbar">
+  <a class="Brand" data-size="lg" href="{{ homeUrl }}">
+    <span data-part="mark">漢</span><span data-part="dot">.</span><span data-part="ext">css</span>
+    <span data-part="sep"></span>
+    <span data-part="sub">漢字標準格式</span>
+  </a>
+  <nav>
+    <a href="{{ docsUrl }}">{{ docs }}</a>
+    <a href="https://github.com/ethantw/Han">GitHub</a>
+    <span data-part="sep"></span>
+    {{ langSwitcher }}
+    <span class="VersionTag">肆・〇</span>
+  </nav>
+</header>
+
+<aside class="Rail" data-rail-mount hidden></aside>
+
+<main class="han" lang="{{ htmlLang }}">
+{{ manifestoSection }}
+{{ stationSemanticsSection }}
+{{ stationTypeSection }}
+{{ stationLinesSection }}
+{{ stationSnippetSection }}
+{{ closingSection }}
+</main>
 </body>
 </html>

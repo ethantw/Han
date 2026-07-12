@@ -1,0 +1,41 @@
+<!--
+  Station IV・Snippet — the generator pane skeleton. Reuses the exact
+  data-out-* / ViewTabs contracts from the old playground panel, minus
+  the "preview" radio (the whole page is the preview now) and minus
+  `[data-pg]` (HP-3 wires this up under its own scope; until then this
+  stays inert markup — home.js's initPlayground() guards on
+  `[data-pg]` and no-ops here, per HP-2 instructions).
+-->
+<section id="station-snippet" class="Station Snippet" data-station="snippet">
+  <header class="SectionHead">
+    <div data-part="meta">
+      <span data-part="label">{{ snEyebrow }}</span>
+      <span data-part="rule" aria-hidden="true"></span>
+    </div>
+    <h2>{{ snH2 }}</h2>
+    <p>{{ snLede }}</p>
+  </header>
+
+  <div class="Preview">
+    <header>
+      <fieldset class="ViewTabs" data-pg-views>
+        <label><input type="radio" name="pg-view" value="bundler" checked>{{ pgOutBundler }}</label>
+        <label><input type="radio" name="pg-view" value="cdn">{{ pgOutCdn }}</label>
+        <label><input type="radio" name="pg-view" value="import">{{ pgOutImport }}</label>
+      </fieldset>
+      <select data-out-pm>
+        <option value="pnpm" selected>pnpm</option>
+        <option value="npm">npm</option>
+        <option value="yarn">yarn</option>
+      </select>
+      <button type="button" class="Copy" data-out-copy data-copied="{{ pgCopied }}">{{ pgCopy }}</button>
+    </header>
+
+    <div data-part="stage">
+      <pre data-out-code><code></code></pre>
+    </div>
+  </div>
+
+  <p class="Finish">{{ snFinishLine }}</p>
+  <p class="BrowserSupport">{{ snBrowserSupport }}</p>
+</section>

@@ -43,11 +43,16 @@ async function loadHomeData() {
  * priority is real data, the typographic numerals can come back via
  * a maintainer-curated formatter if desired).
  *
- *   - stars   GitHub stargazer count (gh api; falls back to "—")
- *   - scripts 4 — CJK script families covered (Han / Kana / Hangul /
- *             Latin run via mixed-script spacing). Hardcoded; the
- *             label across locales matches a small integer.
- *   - size    gzipped `dist/han.min.css` size in kb, one decimal
+ *   - stars   GitHub stargazer count (gh api; falls back to "—") —
+ *             unused on the new homepage (no stars stat there; the old
+ *             frozen `old.html` baked its own value at freeze time),
+ *             kept for callers that still want it.
+ *   - scripts locale count the homepage itself ships (`HOME_LOCALE_SLUGS`,
+ *             currently 5: hant/hans/en/ja/ko) — overwritten with the
+ *             live count in `renderHomepage()` so it can never drift.
+ *   - size    combined gzipped size of `dist/han.min.css` +
+ *             `dist/han.min.js` in kb, one decimal — the honest
+ *             "css+js" figure for the stats row (P0 baseline).
  *   - deps    count of runtime deps in root package.json
  */
 let _heroStatsCache = null
@@ -55,14 +60,17 @@ async function computeHeroStats() {
   if (_heroStatsCache) return _heroStatsCache
   const [stars, sizeKb, deps] = await Promise.all([
     fetchStars(),
-    gzippedSizeKb(path.join(HAN_DIST, 'han.min.css')),
+    gzippedSizeKbCombined([
+      path.join(HAN_DIST, 'han.min.css'),
+      path.join(HAN_DIST, 'han.min.js'),
+    ]),
     countRuntimeDeps(),
   ])
   const fmtStars = n => n == null ? '—' : n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k` : String(n)
   const fmtSize  = kb => kb == null ? '—' : `${kb}k`
   _heroStatsCache = {
     statStarsValue:   fmtStars(stars),
-    statScriptsValue: '4',
+    statScriptsValue: '5',
     statSizeValue:    fmtSize(sizeKb),
     statDepsValue:    String(deps),
   }
@@ -87,6 +95,18 @@ async function gzippedSizeKb(file) {
   if (!existsSync(file)) return null
   const buf = await fs.readFile(file)
   return +(gzipSync(buf).length / 1024).toFixed(1)
+}
+
+async function gzippedSizeKbCombined(files) {
+  let total = 0
+  let any = false
+  for (const file of files) {
+    if (!existsSync(file)) continue
+    any = true
+    const buf = await fs.readFile(file)
+    total += gzipSync(buf).length
+  }
+  return any ? +(total / 1024).toFixed(1) : null
 }
 
 async function countRuntimeDeps() {
@@ -117,7 +137,10 @@ const I18N_FILE = path.resolve(here, '_i18n.js')
 const HOME_DIR = path.resolve(here, 'home')
 const HOME_LAYOUT = path.resolve(here, '_home.html')
 const HOME_DATA = path.resolve(HOME_DIR, '_data.js')
-const HOME_SECTIONS = ['hero', 'features', 'playground', 'getting-started', 'footer']
+const HOME_SECTIONS = [
+  'manifesto', 'station-semantics', 'station-type', 'station-lines',
+  'station-snippet', 'closing',
+]
 // Per-section demo sources. `index.html` carries the page shell + a
 // `<!--demos: slug1 slug2 …-->` declaration; each `<slug>.md` holds the
 // inner content of one demo. `renderDemoPage()` stitches them into
@@ -348,6 +371,11 @@ async function renderHomepage() {
     const ctx = {
       ...t,
       ...stats,
+      // Overwrite the cached scripts stat with the live locale count —
+      // this is the site's own honest "支援語種" number (P0 baseline),
+      // not the CJK-script-family reading `computeHeroStats()` used to
+      // hardcode.
+      statScriptsValue: String(HOME_LOCALE_SLUGS.length),
       htmlLang: HOME_HTML_LANG[locale] ?? locale,
       locale,
       homeUrl,

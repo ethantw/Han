@@ -82,6 +82,33 @@ export const HOME_I18N = {
    
     pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
+
+    // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
+    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
+    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
+    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+
+    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+
+    slEyebrow: '叁・行的調整', slH2: '行的呼吸',
+    slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
+    slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+
+    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snBrowserSupport: '支援現代常青瀏覽器。',
+
+    clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
+    clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
   },
   hans: {
     siteTitle: '汉.css・印刷品般的汉字排版框架',
@@ -141,6 +168,33 @@ export const HOME_I18N = {
    
     pgViewPreview: '实时预览', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '复制', pgCopied: '已复制',
+
+    // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
+    mfH1a: '印刷品般的', mfH1b: '汉字排版',
+    mfLede: '这是一套以CSS custom properties与少量JavaScript撑起的汉字排版系统——标点悬挂、着重号、注音、跨文种混排，字距不假空格字符，间隙定量0.125em，一如铅字时代的讲究。',
+    mfDogfood: '本页即范文——面板随手拨，全页随你而变。',
+    mfStatLocales: '支持语种', mfStatSize: 'Gzip体积（css+js）', mfStatDeps: '外部依赖',
+
+    ssEyebrow: '壹・语意', ssH2: '语意，先于样式',
+    ssP1: 'HTML5语意元素在汉字排版下自有其正确样式——<em>着重号</em>标记文中紧要之词，效果一如手写圈点。',
+    ssP2: '引用书名时可用<cite>《说文解字》</cite>标记；书名号默认关闭（<code>--han-cite-title-marks: none</code>），此处另加一行<code>--han-cite-title-marks: bracket</code>方得见《》。',
+    ssP3: '专有名词可用<u>专名号</u>标示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一类缩写，则交由<abbr>元素承载完整释义。',
+
+    stEyebrow: '贰・字体排印', stH2: '一字三面',
+    stHeritageP: '传承字形（尚古／源起，可由面板切换）承载了铅字时代未经简化的结构——非「更古老」，而是「未曾漂移」。',
+    stPunctP: '标点断连亦有地域公约——「」『』（）之弧直、逗句之位置，MOE（台湾教育部）、JIS（日本工业规格）、GB（大陆国标）三制各异，一行CSS变量切换，「，。」之呼吸随之而变。',
+
+    slEyebrow: '叁・行的调整', slH2: '行的呼吸',
+    slP1: '「世界，你好。」「你好，世界！」相邻标点不再挤成一团——句尾若逢行末，标点悬而不入，版面仍齐。',
+    slP2: '汉字与English、与2011一类数字相遇，中西之间留隙0.125em——不多不少，恰是CSS text-autospace的量尺，无需手动空格。',
+    slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书。',
+
+    snEyebrow: '肆・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
+    snFinishLine: '选好了？三种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
+    snBrowserSupport: '支持现代常青浏览器。',
+
+    clInstallLabel: '一行安装', clZianoLabel: 'ziano・传承字形webfont',
+    clDiantenjeomLabel: 'diantenjeom・标点符号字型', clOldHomeLabel: '旧版首页',
   },
   en: {
     siteTitle: 'Han.css・Print-quality Hanzi typography for the web',
@@ -200,6 +254,33 @@ export const HOME_I18N = {
    
     pgViewPreview: 'Preview', pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: 'Copy', pgCopied: 'Copied',
+
+    // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
+    mfH1a: 'Print-quality', mfH1b: 'Hanzi typography',
+    mfLede: 'A Hanzi typography system built on CSS custom properties and a touch of JavaScript — hanging punctuation, emphasis dots, ruby, mixed-script spacing. No hand-typed spaces, a measured 0.125em gap, the rigor of hot metal.',
+    mfDogfood: 'This page is the specimen — tweak the panel, watch the whole page respond.',
+    mfStatLocales: 'locales', mfStatSize: 'gzip size (css+js)', mfStatDeps: 'dependency',
+
+    ssEyebrow: 'I・Semantics', ssH2: 'Semantics before style',
+    ssP1: 'HTML5 semantic elements have their own correct typographic treatment — <em>emphasis dots</em> mark the words that matter, the way a hand-drawn circle would.',
+    ssP2: 'Citing a title uses <cite>《Shuowen Jiezi》</cite>; title marks default to off (<code>--han-cite-title-marks: none</code>) — here one extra line, <code>--han-cite-title-marks: bracket</code>, turns the 《》 back on.',
+    ssP3: 'Proper nouns take <u>a proper-noun underline</u>, for names and places; abbreviations like <abbr title="Cascading Style Sheets">CSS</abbr> carry their full expansion in the <abbr> element itself.',
+
+    stEyebrow: 'II・Typography', stH2: 'One glyph, three faces',
+    stHeritageP: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
+    stPunctP: 'Even punctuation follows regional convention — the curve of「」『』（）, the position of commas and periods. MOE (Taiwan), JIS (Japan), GB (Mainland China) each differ; one CSS variable switches the whole page, and the rhythm of「，。」shifts with it.',
+
+    slEyebrow: 'III・Line adjustments', slH2: 'How a line breathes',
+    slP1: '"世界，你好。""你好，世界！" Adjacent punctuation no longer crowds together — when a full stop lands at line end, it hangs past the margin instead of pushing in.',
+    slP2: 'Where Hanzi meets English, or digits like 2011, a 0.125em gap opens between scripts — exactly what CSS text-autospace measures out, no manual space required.',
+    slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base.',
+
+    snEyebrow: 'IV・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
+    snFinishLine: 'Made your picks? Three ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
+    snBrowserSupport: 'Supports modern evergreen browsers.',
+
+    clInstallLabel: 'One-line install', clZianoLabel: 'ziano・heritage webfont',
+    clDiantenjeomLabel: 'diantenjeom・punctuation font', clOldHomeLabel: 'Previous homepage',
   },
   ja: {
     siteTitle: '漢.css・印刷品質の漢字組版フレームワーク',
@@ -262,6 +343,35 @@ export const HOME_I18N = {
    
     pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
+
+    // NOTE: HP-2 station keys below are not yet localized for ja —
+    // falling back to the hant (Traditional Chinese) values per
+    // established convention. Revisit when ja copy is written.
+    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
+    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
+    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+
+    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+
+    slEyebrow: '叁・行的調整', slH2: '行的呼吸',
+    slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
+    slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+
+    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snBrowserSupport: '支援現代常青瀏覽器。',
+
+    clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
+    clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
   },
   ko: {
     siteTitle: '한.css・인쇄 품질의 한자 조판 프레임워크',
@@ -324,5 +434,34 @@ export const HOME_I18N = {
    
     pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
+
+    // NOTE: HP-2 station keys below are not yet localized for ko —
+    // falling back to the hant (Traditional Chinese) values per
+    // established convention. Revisit when ko copy is written.
+    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
+    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
+    ssP2: '引用書名時可用<cite>《說文解字》</cite>標記；書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
+    ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名；<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由<abbr>元素承載完整釋義。',
+
+    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+
+    slEyebrow: '叁・行的調整', slH2: '行的呼吸',
+    slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
+    slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+
+    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snBrowserSupport: '支援現代常青瀏覽器。',
+
+    clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
+    clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
   },
 }
