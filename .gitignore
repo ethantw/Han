@@ -9,3 +9,4 @@ packages/fonts/
 .claude/settings.local.json
 /docs/
 .commit-script.sh
+.superpowers/
