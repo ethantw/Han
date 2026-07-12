@@ -99,3 +99,32 @@ test('@import：含等價 URL 序列；勾 JS 時附 script 提示註解', () =>
   assert.ok(s.includes('@import url('))
   assert.ok(s.includes('/*') && s.includes('<script'))
 })
+
+test('heritage/cursive 模式 system|off → 對應變數', () => {
+  assert.deepEqual(
+    cssVars(cfg({ heritage: 'system' })),
+    [['--han-use-heritage-glyphs-for-hant', 'system']],
+  )
+  assert.deepEqual(cssVars(cfg({ cursive: 'off' })), [['--han-cursive', 'off']])
+})
+
+test('ko 直排標點 off → 變數輸出', () => {
+  assert.deepEqual(
+    cssVars(cfg({ punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'off' } })),
+    [['--han-punctuation-vertical-ko', 'off']],
+  )
+})
+
+test('emPosition under → under right', () => {
+  assert.deepEqual(
+    cssVars(cfg({ emPosition: 'under' })),
+    [['--han-em-dot-position', 'under right']],
+  )
+})
+
+test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', () => {
+  const cdn = renderCDN(cfg({ proseScope: 'main.doc<{};>' }))
+  assert.ok(cdn.includes('main.doc { --han-prose: on; }'))
+  const none = renderCDN(cfg({ proseScope: '<>' }))
+  assert.ok(!none.includes('--han-prose'))
+})

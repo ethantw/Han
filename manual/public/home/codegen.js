@@ -84,8 +84,9 @@ const configCSS = (c, indent = '  ') => {
   const rules = []
   if (vars.length)
     rules.push(`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`)
-  if (c.prose && c.proseScope.trim() && c.proseScope.trim() !== 'article')
-    rules.push(`${c.proseScope.trim()} { --han-prose: on; }`)
+  const scope = c.proseScope.replace(/[<>{};]/g, '').trim()
+  if (c.prose && scope && scope !== 'article')
+    rules.push(`${scope} { --han-prose: on; }`)
   return rules.join('\n')
 }
 
@@ -158,7 +159,7 @@ export const renderBundler = (c, pm = 'pnpm') => {
       `convertLegacyRuby(document.body)`,
     )
   const css = configCSS(c)
-  if (css) lines.push('', '/* 專案全域 CSS */', css)
+  if (css) lines.push('', '/* styles.css — 放進全域樣式表，勿貼進 main.js */', css)
   return lines.join('\n')
 }
 
