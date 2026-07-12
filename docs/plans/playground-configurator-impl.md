@@ -1026,6 +1026,14 @@ git commit -m "chore(manual): configurator final polish after full verification"
   但測試回填以 repo 內 `manual/tests/codegen.test.js` 為準。
 - 後續 task 凡 `cd manual && node --test tests/` 一律改跑 `cd manual && pnpm test`。
 - 工作分支為 `v4/main`（v4 開發線），非 `main`。
+- Task 4 審查週期共四 commit：`9a79d63`（接線）→ `c001310`（預覽尊重 fallbacks 開關，
+  config-aware reapply）→ `dcc6d0e`（ensureFont 去 heritage gate，楷體 webfont 修復）→
+  `93ae82f`（最終審查：JS-only autospace 模式在 fallbacks off 時折回 normal——推導與
+  顯隱雙重把關；`zianoUrl` 由 codegen 匯出去重；刪死鍵 `pgCustomHint`）。
+- 最終審查升級給 owner 的兩項（本輪不動）：EN 範文 chip 註解狀態、zh-Hant 範文
+  meta 標籤「Noto Serif KR」是否為誤植。
+- 既有 e2e 債（先於本輪，記於 RC 計畫）：a11y 缺 `@axe-core/playwright`；docs.spec
+  404（`manual/src/docs` 內容從未進版控）；demo/hanging spec 失敗待 triage。
 
 ## Self-Review 紀錄
 
