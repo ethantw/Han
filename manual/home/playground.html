@@ -92,12 +92,12 @@
         <summary>{{ pgGrpLines }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Toggle">
-            <span>{{ pgTogHangNew }}</span>
-            <input type="checkbox" data-cfg-key="hang" checked>
-          </label>
-          <label class="Toggle">
             <span>{{ pgTogSqueeze }}</span>
             <input type="checkbox" data-cfg-key="squeeze" checked>
+          </label>
+          <label class="Toggle">
+            <span>{{ pgTogHangNew }}</span>
+            <input type="checkbox" data-cfg-key="hang" checked>
           </label>
           <label class="Toggle">
             <span>{{ pgTogAutospace }}</span>
@@ -246,7 +246,18 @@
     <!-- ─── Right: preview ─────────────────────────────────────── -->
     <div class="Preview">
       <header>
-        <span data-part="label">{{ pgPreviewLabel }}</span>
+        <fieldset class="ViewTabs" data-pg-views>
+          <label><input type="radio" name="pg-view" value="preview" checked>{{ pgViewPreview }}</label>
+          <label><input type="radio" name="pg-view" value="bundler">{{ pgOutBundler }}</label>
+          <label><input type="radio" name="pg-view" value="cdn">{{ pgOutCdn }}</label>
+          <label><input type="radio" name="pg-view" value="import">{{ pgOutImport }}</label>
+        </fieldset>
+        <select data-out-pm>
+          <option value="pnpm" selected>pnpm</option>
+          <option value="npm">npm</option>
+          <option value="yarn">yarn</option>
+        </select>
+        <button type="button" class="Copy" data-out-copy data-copied="{{ pgCopied }}">{{ pgCopy }}</button>
         <output data-part="meta" data-pg-meta>zh-Hant・17 px</output>
       </header>
 
@@ -262,28 +273,11 @@
           class="han"
           data-pg-body
           lang="zh-Hant"></article>
+
+        <pre data-out-code><code></code></pre>
       </div>
     </div>
   </div>
-
-  <!-- ─── 引用碼輸出 ───────────────────────────────────────── -->
-  <section class="Snippets" data-out>
-    <header class="SnippetsHead">
-      <h3>{{ pgOutTitle }}</h3>
-      <nav data-out-tabs>
-        <button type="button" class="Tab is-active" data-out-tab="bundler">{{ pgOutBundler }}</button>
-        <button type="button" class="Tab" data-out-tab="cdn">{{ pgOutCdn }}</button>
-        <button type="button" class="Tab" data-out-tab="import">{{ pgOutImport }}</button>
-      </nav>
-      <select data-out-pm>
-        <option value="pnpm" selected>pnpm</option>
-        <option value="npm">npm</option>
-        <option value="yarn">yarn</option>
-      </select>
-      <button type="button" class="Copy" data-out-copy data-copied="{{ pgCopied }}">{{ pgCopy }}</button>
-    </header>
-    <pre data-out-code><code></code></pre>
-  </section>
 
   <!-- ─── Sample sources (read by playground.js, never rendered) ─── -->
 

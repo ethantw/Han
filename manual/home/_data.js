@@ -51,7 +51,7 @@ export const HOME_I18N = {
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
-    pgPreviewLabel: '即時預覽・LIVE',
+   
     pgCustomPlaceholder: '在此貼上你的 Markdown 文字 ——\n標題、段落、**著重**、`code`、> 引文，皆可。',
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化',
@@ -62,10 +62,10 @@ export const HOME_I18N = {
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
     pgEmCircle: '圈', pgEmDot: '點', pgEmSesame: '芝麻點', pgEmTriangle: '三角',
     pgEmPosAuto: '自動', pgEmPosUnder: '字下', pgEmPosOver: '字上',
-    pgGrpLines: '行調整',
-    pgTogHangNew: '掛標點',
+    pgGrpLines: '行的調整',
+    pgTogHangNew: '標點懸掛',
     pgTogSqueeze: '標點擠壓',
-    pgTogAutospace: '混排間距',
+    pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
     pgHeritage: '傳承字形（僅繁體）',
@@ -79,8 +79,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-    pgOutTitle: '引用碼',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+   
+    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
   },
   hans: {
@@ -110,7 +110,7 @@ export const HOME_I18N = {
     pgSliderSize: '字级', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
-    pgPreviewLabel: '即时预览・LIVE',
+   
     pgCustomPlaceholder: '在此粘贴你的 Markdown 文字 ——\n标题、段落、**着重**、`code`、> 引文，皆可。',
     pgGrpLayers: '模块',
     pgTogSemantics: '语意强化',
@@ -121,10 +121,10 @@ export const HOME_I18N = {
     pgEmSymbol: '着重号', pgEmPosition: '着重号位置',
     pgEmCircle: '圈', pgEmDot: '点', pgEmSesame: '芝麻点', pgEmTriangle: '三角',
     pgEmPosAuto: '自动', pgEmPosUnder: '字下', pgEmPosOver: '字上',
-    pgGrpLines: '行调整',
-    pgTogHangNew: '挂标点',
+    pgGrpLines: '行的调整',
+    pgTogHangNew: '标点悬挂',
     pgTogSqueeze: '标点挤压',
-    pgTogAutospace: '混排间距',
+    pgTogAutospace: '跨文种混排间隙',
     pgAutospaceMode: '进阶模式',
     pgGrpFonts: '字体',
     pgHeritage: '传承字形（仅繁体）',
@@ -138,8 +138,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '旧浏览器后备', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '旧式 ruby 转换', pgTogLegacyRubyEn: 'convertLegacyRuby',
-    pgOutTitle: '引用码',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+   
+    pgViewPreview: '实时预览', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '复制', pgCopied: '已复制',
   },
   en: {
@@ -169,7 +169,7 @@ export const HOME_I18N = {
     pgSliderSize: 'Size', pgSliderSizeEn: 'font-size',
     pgSliderLeading: 'Leading', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: 'Tracking', pgSliderTrackingEn: 'letter-spacing',
-    pgPreviewLabel: 'Live preview',
+   
     pgCustomPlaceholder: 'Paste any Markdown here ——\nheadings, paragraphs, **emphasis**, `code`, > quotes.',
     pgGrpLayers: 'Modules',
     pgTogSemantics: 'Semantics',
@@ -197,8 +197,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: 'Legacy browser fallback', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: 'Legacy ruby conversion', pgTogLegacyRubyEn: 'convertLegacyRuby',
-    pgOutTitle: 'Snippet',
-    pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+   
+    pgViewPreview: 'Preview', pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: 'Copy', pgCopied: 'Copied',
   },
   ja: {
@@ -228,7 +228,7 @@ export const HOME_I18N = {
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行送り', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字送り', pgSliderTrackingEn: 'letter-spacing',
-    pgPreviewLabel: 'ライブプレビュー',
+   
     pgCustomPlaceholder: 'お好きな Markdown をここに ——\n見出し、段落、**強調**、`コード`、> 引用、いずれも対応。',
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
@@ -242,10 +242,10 @@ export const HOME_I18N = {
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
     pgEmCircle: '圈', pgEmDot: '點', pgEmSesame: '芝麻點', pgEmTriangle: '三角',
     pgEmPosAuto: '自動', pgEmPosUnder: '字下', pgEmPosOver: '字上',
-    pgGrpLines: '行調整',
-    pgTogHangNew: '掛標點',
+    pgGrpLines: '行的調整',
+    pgTogHangNew: '標點懸掛',
     pgTogSqueeze: '標點擠壓',
-    pgTogAutospace: '混排間距',
+    pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
     pgHeritage: '傳承字形（僅繁體）',
@@ -259,8 +259,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-    pgOutTitle: '引用碼',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+   
+    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
   },
   ko: {
@@ -290,7 +290,7 @@ export const HOME_I18N = {
     pgSliderSize: '글자 크기', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '행간', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '자간', pgSliderTrackingEn: 'letter-spacing',
-    pgPreviewLabel: '라이브 미리보기',
+   
     pgCustomPlaceholder: '여기에 Markdown 붙여넣기 ——\n제목, 단락, **강조**, `코드`, > 인용 모두 지원한다.',
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
@@ -304,10 +304,10 @@ export const HOME_I18N = {
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
     pgEmCircle: '圈', pgEmDot: '點', pgEmSesame: '芝麻點', pgEmTriangle: '三角',
     pgEmPosAuto: '自動', pgEmPosUnder: '字下', pgEmPosOver: '字上',
-    pgGrpLines: '行調整',
-    pgTogHangNew: '掛標點',
+    pgGrpLines: '行的調整',
+    pgTogHangNew: '標點懸掛',
     pgTogSqueeze: '標點擠壓',
-    pgTogAutospace: '混排間距',
+    pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
     pgHeritage: '傳承字形（僅繁體）',
@@ -321,8 +321,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-    pgOutTitle: '引用碼',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+   
+    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
   },
 }

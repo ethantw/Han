@@ -19,7 +19,7 @@ test.describe('playground configurator', () => {
       .poll(() => body.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
 
-    await page.locator('[data-out-tab="cdn"]').click()
+    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
     await expect(page.locator('[data-out-code]'))
       .toContainText('--han-punctuation-refinement: hang')
   })
@@ -42,7 +42,7 @@ test.describe('playground configurator', () => {
   test('勾後備 → CDN 頁出現 han.auto script 行', async ({ page }) => {
     await openGroupOf(page, 'fallbacks')
     await page.locator('[data-cfg-key="fallbacks"]').check()
-    await page.locator('[data-out-tab="cdn"]').click()
+    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
     await expect(page.locator('[data-out-code]')).toContainText('han.auto.min.js')
   })
 })

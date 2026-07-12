@@ -115,14 +115,14 @@ export const initConfigurator = (root) => {
     })
   }
 
-  for (const tab of root.querySelectorAll('[data-out-tab]'))
-    tab.addEventListener('click', () => {
-      ui.tab = tab.dataset.outTab
-      root.querySelectorAll('[data-out-tab]').forEach((t) =>
-        t.classList.toggle('is-active', t === tab))
-      ui.pm.hidden = ui.tab !== 'bundler'
-      renderOutput(config, ui)
-    })
+  // pg-view 分頁：radio + :has() 由 CSS 切換顯隱；JS 只追蹤 code pane
+  // 該渲染哪一版（「即時預覽」分頁不改寫選擇，切回程式碼分頁時內容仍在）。
+  const views = root.querySelector('[data-pg-views]')
+  views.addEventListener('input', () => {
+    const view = views.querySelector('input:checked').value
+    if (view !== 'preview') ui.tab = view
+    renderOutput(config, ui)
+  })
   ui.pm.addEventListener('input', () => renderOutput(config, ui))
 
   const copy = root.querySelector('[data-out-copy]')
