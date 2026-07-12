@@ -48,9 +48,8 @@ const ALL_VARS = [
 const applyPreview = (config, body) => {
   for (const prop of ALL_VARS) body.style.removeProperty(prop)
   for (const [prop, value] of cssVars(config)) body.style.setProperty(prop, value)
-  // 換家族 → 現載該家族 webfont 供預覽
-  if (config.heritage === 'webfont')
-    for (const id of packages(config).ziano) ensureFont(id)
+  // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重
+  for (const id of packages(config).ziano) ensureFont(id)
 }
 
 /* ── apply：JS 後備（作用於預覽容器） ── */
@@ -84,12 +83,13 @@ export const initConfigurator = (root) => {
     pm: root.querySelector('[data-out-pm]'),
     code: root.querySelector('[data-out-code] code'),
   }
+  const autospaceOn = root.querySelector('[data-cfg-key="autospaceOn"]')
+  const autospaceMode = root.querySelector('[data-cfg-key="autospaceMode"]')
 
   const sync = () => {
     // autospace 開關×進階模式 → config.autospace
-    const on = root.querySelector('[data-cfg-key="autospaceOn"]').checked
-    const mode = root.querySelector('[data-cfg-key="autospaceMode"]').value
-    config.autospace = on ? mode : 'off'
+    const on = autospaceOn.checked
+    config.autospace = on ? autospaceMode.value : 'off'
 
     applyPreview(config, body)
     applyFallbacks(config, body)
