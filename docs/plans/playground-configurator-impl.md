@@ -19,6 +19,9 @@
 | 變數 | 值域（預設加粗） | 出處 |
 |---|---|---|
 | `--han-semantics` | **on** / off | semantics.css:85 |
+| `--han-cite-title-marks` | **none** / bracket / wavy（書名號） | semantics.css:116 |
+| `--han-em-symbol` | **circle** / dot / sesame / triangle（著重號符號，text-emphasis 透明代理） | semantics.css:133 |
+| `--han-em-dot-position` | **under right**（ja 預設 over right；著重號位置） | semantics.css:134,165 |
 | `--han-prose` | **on**(article 內自動) / off；子樹啟用寫 `<sel> { --han-prose: on }` | prose.css:19-27 |
 | `--han-text-autospace` | **normal** / insert / replace / strict / no-autospace | lines.css:31 |
 | `--han-punctuation-refinement` | **auto** / compress / hang / none | lines.css:52 |
@@ -152,6 +155,21 @@ test('關語意 → --han-semantics: off', () => {
   assert.deepEqual(cssVars(cfg({ semantics: false })), [['--han-semantics', 'off']])
 })
 
+test('語意細項：書名號/著重號輸出；semantics off 時被 gate 掉', () => {
+  assert.deepEqual(
+    cssVars(cfg({ citeTitleMarks: 'bracket', emSymbol: 'sesame', emPosition: 'over' })),
+    [
+      ['--han-cite-title-marks', 'bracket'],
+      ['--han-em-symbol', 'sesame'],
+      ['--han-em-dot-position', 'over right'],
+    ],
+  )
+  assert.deepEqual(
+    cssVars(cfg({ semantics: false, citeTitleMarks: 'bracket' })),
+    [['--han-semantics', 'off']],
+  )
+})
+
 test('掛✓擠✗ → refinement: hang；掛✗擠✗ → none', () => {
   assert.deepEqual(cssVars(cfg({ squeeze: false })), [['--han-punctuation-refinement', 'hang']])
   assert.deepEqual(cssVars(cfg({ hang: false, squeeze: false })), [['--han-punctuation-refinement', 'none']])
@@ -256,6 +274,9 @@ const CURSIVE_PKGS = ['lxgw-wenkai-tc', 'lxgw-wenkai', 'klee-one']
 
 export const DEFAULTS = {
   semantics: true,
+  citeTitleMarks: 'none',        // none|bracket|wavy（僅 semantics on 時輸出）
+  emSymbol: 'circle',            // circle|dot|sesame|triangle（同上）
+  emPosition: 'auto',            // auto|under|over → '<v> right'（同上）
   prose: true,
   proseScope: 'article',
   hang: true,
@@ -280,6 +301,11 @@ const refinement = ({ hang, squeeze }) =>
 export const cssVars = (c) => {
   const out = []
   if (!c.semantics) out.push(['--han-semantics', 'off'])
+  if (c.semantics) {          // 語意細項：layer 關掉即失效，不輸出
+    if (c.citeTitleMarks !== 'none') out.push(['--han-cite-title-marks', c.citeTitleMarks])
+    if (c.emSymbol !== 'circle') out.push(['--han-em-symbol', c.emSymbol])
+    if (c.emPosition !== 'auto') out.push(['--han-em-dot-position', `${c.emPosition} right`])
+  }
   if (!c.prose) out.push(['--han-prose', 'off'])
   const refine = refinement(c)
   if (refine !== 'auto') out.push(['--han-punctuation-refinement', refine])
@@ -441,6 +467,11 @@ grep -B2 -A2 "genki\|genyo" /Users/yijun/Workspace/hanzi.pro/ziano/demo/index.ht
 | `pgTogSemantics` / En | 語意強化 / semantics |
 | `pgTogProse` / En | 行文版式 / prose |
 | `pgProseScope` | 作用選擇器 |
+| `pgCiteMarks` | 書名號 |
+| `pgCiteBracket` / `pgCiteWavy` | 《》乙式 / ﹏甲式 |
+| `pgEmSymbol` / `pgEmPosition` | 著重號 / 著重號位置 |
+| `pgEmCircle` / `pgEmDot` / `pgEmSesame` / `pgEmTriangle` | 圈 / 點 / 芝麻點 / 三角 |
+| `pgEmPosAuto` / `pgEmPosUnder` / `pgEmPosOver` | 自動 / 字下 / 字上 |
 | `pgGrpLines` | 行調整 |
 | `pgTogHangNew` / En | 掛標點 / hanging |
 | `pgTogSqueeze` / En | 標點擠壓 / squeeze |
@@ -482,6 +513,32 @@ grep -B2 -A2 "genki\|genyo" /Users/yijun/Workspace/hanzi.pro/ziano/demo/index.ht
           <label class="Field">
             <span>{{ pgProseScope }}</span>
             <input type="text" data-cfg-key="proseScope" value="article" spellcheck="false">
+          </label>
+          <!-- 語意細項（semantics off 時整組隱藏） -->
+          <label class="Field" data-cfg-semantics-sub>
+            <span>{{ pgCiteMarks }} <small>cite</small></span>
+            <select data-cfg-key="citeTitleMarks">
+              <option value="none" selected>{{ pgModeOff }}</option>
+              <option value="bracket">{{ pgCiteBracket }}</option>
+              <option value="wavy">{{ pgCiteWavy }}</option>
+            </select>
+          </label>
+          <label class="Field" data-cfg-semantics-sub>
+            <span>{{ pgEmSymbol }} <small>em</small></span>
+            <select data-cfg-key="emSymbol">
+              <option value="circle" selected>{{ pgEmCircle }}</option>
+              <option value="dot">{{ pgEmDot }}</option>
+              <option value="sesame">{{ pgEmSesame }}</option>
+              <option value="triangle">{{ pgEmTriangle }}</option>
+            </select>
+          </label>
+          <label class="Field" data-cfg-semantics-sub>
+            <span>{{ pgEmPosition }}</span>
+            <select data-cfg-key="emPosition">
+              <option value="auto" selected>{{ pgEmPosAuto }}</option>
+              <option value="under">{{ pgEmPosUnder }}</option>
+              <option value="over">{{ pgEmPosOver }}</option>
+            </select>
           </label>
         </fieldset>
       </section>
@@ -695,6 +752,7 @@ const applyPreview = (config, body) => {
     '--han-cursive', '--han-punctuation-hant', '--han-punctuation-hans',
     '--han-punctuation-ja', '--han-punctuation-vertical-ko',
     '--han-font-zhuyin-serif',
+    '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
   ]) body.style.removeProperty(prop)
   for (const [prop, value] of vars) body.style.setProperty(prop, value)
   // 換家族 → 現載該家族 webfont 供預覽
@@ -747,6 +805,9 @@ export const initConfigurator = (root) => {
     // 家族選單只在 heritage=webfont 時可用；進階 autospace 只在勾了後備時展示
     root.querySelectorAll('[data-cfg-heritage-family]').forEach((el) => {
       el.toggleAttribute('hidden', config.heritage !== 'webfont')
+    })
+    root.querySelectorAll('[data-cfg-semantics-sub]').forEach((el) => {
+      el.toggleAttribute('hidden', !config.semantics)
     })
     root.querySelector('[data-cfg-advanced]')
       .toggleAttribute('hidden', !config.fallbacks)
