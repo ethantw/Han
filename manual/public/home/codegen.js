@@ -12,10 +12,7 @@ export const HERITAGE = {
     sans:  { stack: "'Shanggu Sans', 'Shanggu Sans TC'",  pkgs: ['shanggu-sans', 'shanggu-sans-tc'] },
     serif: { stack: "'Shanggu Serif', 'Shanggu Serif TC'", pkgs: ['shanggu-serif', 'shanggu-serif-tc'] },
   },
-  genyo: {
-    sans:  { stack: "'GenYo Gothic', 'GenYo Gothic TC'", pkgs: ['genyo-gothic', 'genyo-gothic-tc'] },
-    serif: { stack: "'GenYo Min', 'GenYo Min TC'",       pkgs: ['genyo-min', 'genyo-min-tc'] },
-  },
+  // genyo（源樣）不提供：與源起同設計，源起的字型技術較新。
   genki: {
     sans:  { stack: "'Genki Gothic', 'Genki Gothic TC'", pkgs: ['genki-gothic', 'genki-gothic-tc'] },
     serif: { stack: "'Genki Min', 'Genki Min TC'",       pkgs: ['genki-min', 'genki-min-tc'] },

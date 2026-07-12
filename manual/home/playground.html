@@ -43,15 +43,15 @@
       </section>
 
       <!-- 模組（layer 級） -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpLayers }}</header>
+      <details class="ControlGroup">
+        <summary>{{ pgGrpLayers }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Toggle">
-            <span>{{ pgTogSemantics }} <small>{{ pgTogSemanticsEn }}</small></span>
+            <span>{{ pgTogSemantics }}</span>
             <input type="checkbox" data-cfg-key="semantics" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogProse }} <small>{{ pgTogProseEn }}</small></span>
+            <span>{{ pgTogProse }}</span>
             <input type="checkbox" data-cfg-key="prose" checked>
           </label>
           <label class="Field">
@@ -85,22 +85,22 @@
             </select>
           </label>
         </fieldset>
-      </section>
+      </details>
 
       <!-- 行調整（友善開關 + 進階） -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpLines }}</header>
+      <details class="ControlGroup">
+        <summary>{{ pgGrpLines }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Toggle">
-            <span>{{ pgTogHangNew }} <small>{{ pgTogHangNewEn }}</small></span>
+            <span>{{ pgTogHangNew }}</span>
             <input type="checkbox" data-cfg-key="hang" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogSqueeze }} <small>{{ pgTogSqueezeEn }}</small></span>
+            <span>{{ pgTogSqueeze }}</span>
             <input type="checkbox" data-cfg-key="squeeze" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogAutospace }} <small>{{ pgTogAutospaceEn }}</small></span>
+            <span>{{ pgTogAutospace }}</span>
             <input type="checkbox" data-cfg-key="autospaceOn" checked>
           </label>
           <label class="Field" data-cfg-advanced hidden>
@@ -113,14 +113,14 @@
             </select>
           </label>
         </fieldset>
-      </section>
+      </details>
 
       <!-- 字體 -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpFonts }}</header>
+      <details class="ControlGroup" open>
+        <summary>{{ pgGrpFonts }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Field">
-            <span>{{ pgHeritage }} <small>{{ pgHeritageEn }}</small></span>
+            <span>{{ pgHeritage }}</span>
             <select data-cfg-key="heritage">
               <option value="webfont" selected>{{ pgModeWebfont }}</option>
               <option value="system">{{ pgModeSystem }}</option>
@@ -131,7 +131,6 @@
             <span>{{ pgHeritageSans }}</span>
             <select data-cfg-key="heritageSans">
               <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-              <option value="genyo">{{ pgFamGenyo }}</option>
               <option value="genki">{{ pgFamGenki }}</option>
             </select>
           </label>
@@ -139,12 +138,11 @@
             <span>{{ pgHeritageSerif }}</span>
             <select data-cfg-key="heritageSerif">
               <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-              <option value="genyo">{{ pgFamGenyo }}</option>
               <option value="genki">{{ pgFamGenki }}</option>
             </select>
           </label>
           <label class="Field">
-            <span>{{ pgCursive }} <small>{{ pgCursiveEn }}</small></span>
+            <span>{{ pgCursive }}</span>
             <select data-cfg-key="cursive">
               <option value="webfont" selected>{{ pgModeWebfont }}</option>
               <option value="system">{{ pgModeSystem }}</option>
@@ -152,15 +150,15 @@
             </select>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogZhuyin }} <small>{{ pgTogZhuyinEn }}</small></span>
+            <span>{{ pgTogZhuyin }}</span>
             <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
           </label>
         </fieldset>
-      </section>
+      </details>
 
       <!-- 標點規範 -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpPunct }}</header>
+      <details class="ControlGroup" open>
+        <summary>{{ pgGrpPunct }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Field"><span>{{ pgPunctHant }}</span>
             <select data-cfg-key="punct.hant">
@@ -182,11 +180,11 @@
               <option value="KV" selected>KV</option><option value="off">{{ pgModeOff }}</option>
             </select></label>
         </fieldset>
-      </section>
+      </details>
 
       <!-- JavaScript -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpJs }}</header>
+      <details class="ControlGroup">
+        <summary>{{ pgGrpJs }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <label class="Toggle">
             <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
@@ -197,7 +195,7 @@
             <input type="checkbox" data-cfg-key="legacyRuby">
           </label>
         </fieldset>
-      </section>
+      </details>
 
       <!-- 度量 sliders (3) -->
       <section class="ControlGroup">

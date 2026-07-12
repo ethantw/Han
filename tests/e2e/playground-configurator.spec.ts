@@ -1,4 +1,10 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+/** 配置群組是 <details> 手風琴——收合組裡的控件要先展開才可見。 */
+const openGroupOf = (page: Page, cfgKey: string) =>
+  page
+    .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
+    .click()
 
 test.describe('playground configurator', () => {
   test.beforeEach(async ({ page }) => {
@@ -7,6 +13,7 @@ test.describe('playground configurator', () => {
 
   test('掛標點開關 → 預覽變數 + 生成碼同步', async ({ page }) => {
     const body = page.locator('[data-pg-body]')
+    await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect
       .poll(() => body.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
@@ -33,6 +40,7 @@ test.describe('playground configurator', () => {
   })
 
   test('勾後備 → CDN 頁出現 han.auto script 行', async ({ page }) => {
+    await openGroupOf(page, 'fallbacks')
     await page.locator('[data-cfg-key="fallbacks"]').check()
     await page.locator('[data-out-tab="cdn"]').click()
     await expect(page.locator('[data-out-code]')).toContainText('han.auto.min.js')

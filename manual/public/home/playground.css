@@ -129,7 +129,7 @@
 /* ─── ControlGroup (one labelled cluster of inputs) ────────────── */
 
 .ControlGroup {
-  > header {
+  > :is(header, summary) {
     display: block;
     font-family: var(--font-mono);
     font-size: 0.625rem;
@@ -139,6 +139,24 @@
     color: var(--ink-faint);
     margin-block-end: 14px;
   }
+
+  /* config groups fold as native <details>; a fullwidth ＋/－ signals state */
+  > summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker { display: none; }
+    &::after {
+      content: '＋';
+      letter-spacing: 0;
+      color: var(--ink-mute);
+    }
+  }
+  &[open] > summary::after { content: '－'; }
+  &:not([open]) > summary { margin-block-end: 0; }
 }
 
 
