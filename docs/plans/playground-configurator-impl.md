@@ -673,12 +673,13 @@ grep -B2 -A2 "genki\|genyo" /Users/yijun/Workspace/hanzi.pro/ziano/demo/index.ht
           <button type="button" class="Tab" data-out-tab="cdn">{{ pgOutCdn }}</button>
           <button type="button" class="Tab" data-out-tab="import">{{ pgOutImport }}</button>
         </nav>
-        <select data-out-pm hidden>
+        <!-- 預設分頁即 bundler，pm 選單初始可見；tab 切換的顯隱由接線任務管 -->
+        <select data-out-pm>
           <option value="pnpm" selected>pnpm</option>
           <option value="npm">npm</option>
           <option value="yarn">yarn</option>
         </select>
-        <button type="button" class="Copy" data-out-copy>{{ pgCopy }}</button>
+        <button type="button" class="Copy" data-out-copy data-copied="{{ pgCopied }}">{{ pgCopy }}</button>
       </header>
       <pre data-out-code><code></code></pre>
     </section>
