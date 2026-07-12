@@ -507,10 +507,150 @@
       }
     }
 
-    /* rule overrides — flip Han.css cascade vars locally */
-    &[data-rule-punct="off"] { --han-text-spacing-trim: space-all; }
-    &[data-rule-mix="off"]   { --han-text-autospace: no-autospace; }
-    &[data-rule-hang="off"]  { --han-hanging-punctuation: none; }
-    &[data-rule-ruby="off"] :is(rt, h-rt) { display: none; }
+  }
+}
+
+
+/* ─── Field — labelled select/text control (configurator groups) ── */
+
+[data-pg] .Field {
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    inline-size: 100%;
+    gap: 0.75rem;
+    padding: 0.375rem 0.25rem;
+  }
+
+  > span {
+    flex: none;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  & :is(select, input[type="text"]) {
+    inline-size: 9.5em;
+    font: inherit;
+    font-size: 0.8125rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-1);
+    padding-block: 0.2em;
+    padding-inline: 0.5em;
+  }
+
+  &[hidden] { display: none; }
+}
+
+
+/* ─── Snippets (bottom panel: bundler / CDN / import output) ──────── */
+
+.Snippets {
+  & {
+    max-inline-size: var(--home-max);
+    margin: 32px auto 0;
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-3);
+    padding: 20px 22px;
+  }
+
+  .SnippetsHead {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-block-end: 14px;
+    }
+
+    h3 {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin: 0;
+      margin-inline-end: auto;
+    }
+  }
+
+  [data-out-tabs] {
+    display: flex;
+    gap: 6px;
+  }
+
+  .Tab {
+    & {
+      display: inline-flex;
+      align-items: center;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      color: var(--ink-mute);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.03em;
+      padding: 4px 10px;
+      border-radius: var(--r-1);
+      cursor: pointer;
+      transition:
+        background-color 150ms ease,
+        border-color    150ms ease,
+        color           150ms ease;
+    }
+
+    &:hover { border-color: var(--ink); color: var(--ink); }
+
+    &.is-active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+  }
+
+  [data-out-pm] {
+    font: inherit;
+    font-size: 0.75rem;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-1);
+    padding-block: 4px;
+    padding-inline: 6px;
+  }
+
+  .Copy {
+    & {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-deep);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-soft);
+      border-radius: var(--r-1);
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    &:hover { border-color: var(--accent-deep); }
+  }
+
+  pre {
+    & {
+      margin: 0;
+      overflow-x: auto;
+      padding: 16px 18px;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-1);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    code { background: transparent; padding: 0; }
   }
 }

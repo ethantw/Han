@@ -1,15 +1,15 @@
 /**
- * Playground section — sample chips, rule toggles, metric sliders,
- * and the custom Markdown mode.
+ * Playground section — sample chips, metric sliders, and the custom
+ * Markdown mode. The configurator (`configurator.js`) owns the
+ * layer/font/punctuation controls and the snippet output panel;
+ * this module only handles what's specific to swapping the preview's
+ * source HTML and its live typographic metrics.
  *
- * The preview's three layers of state, ordered by re-install cost:
+ * The preview's two layers of state, ordered by re-install cost:
  *
  *   1. Sliders            — pure inline style (font-size, line-height,
  *                           letter-spacing).  Free.
- *   2. Rules (toggles)    — flip data-rule-* attrs on the preview body;
- *                           Han.css's cascade-var CSS handles the rest.
- *                           No DOM mutation, no installFallbacks.
- *   3. Sample / Markdown  — replace the preview's innerHTML, then re-run
+ *   2. Sample / Markdown  — replace the preview's innerHTML, then re-run
  *                           installFallbacks on the new subtree.
  *
  * Custom-mode MD render is debounced so installFallbacks doesn't fire
@@ -17,8 +17,7 @@
  */
 
 import { installFallbacks } from '/han/han.js'
-
-const cap = s => s.charAt(0).toUpperCase() + s.slice(1)
+import { initConfigurator } from '/home/configurator.js'
 
 export function initPlayground() {
   const root = document.querySelector('[data-pg]')
@@ -29,7 +28,6 @@ export function initPlayground() {
   const textarea  = root.querySelector('[data-pg-custom-input]')
   const meta      = root.querySelector('[data-pg-meta]')
   const chips     = [...root.querySelectorAll('[data-pg-chips] [data-sample]')]
-  const toggles   = [...root.querySelectorAll('[data-pg-toggles] input[data-rule]')]
   const sliders   = [...root.querySelectorAll('[data-pg-sliders] .MetricSlider')]
   const samples   = readSamples(root)
 
@@ -93,16 +91,6 @@ export function initPlayground() {
     })
   })
 
-  /* ── rules (toggles) — pure CSS via cascade vars ───────────── */
-
-  toggles.forEach(input => {
-    const sync = () => {
-      body.dataset[`rule${cap(input.dataset.rule)}`] = input.checked ? 'on' : 'off'
-    }
-    input.addEventListener('change', sync)
-    sync()
-  })
-
   /* ── sliders ──────────────────────────────────────────────── */
 
   sliders.forEach(slider => {
@@ -151,6 +139,7 @@ export function initPlayground() {
 
   applyMetrics()
   applySample(state.sample)
+  initConfigurator(root)
 }
 
 /**
