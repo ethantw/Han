@@ -1,7 +1,13 @@
 /**
  * 配置器 intents + apply。
- * config（單一事實源）→ ① 預覽容器變數 ② 按需字體 <link> ③ 輸出面板重繪。
- * 生成邏輯全在 codegen.js（純函數）；本檔只碰 DOM。
+ * config（單一事實源）→ ① 全頁 <main class="han"> 變數 ② 按需字體 <link>
+ * ③ 站④輸出面板重繪。生成邏輯全在 codegen.js（純函數）；本檔只碰 DOM。
+ *
+ * HP-3 scope change: 控制項活在 rail（`[data-cfg] [data-cfg-key]`，任何
+ * DOM 位置皆可——rail 本身在 main 之外），套用目標是整個
+ * `main.han`（不再是單一預覽 `<article>`），輸出面板是站④的
+ * `[data-out-code] code` / `[data-pg-views]`（不再有「即時預覽」分頁，
+ * 頁面本身就是預覽）。
  */
 import {
   DEFAULTS, cssVars, packages, zianoUrl,
@@ -26,6 +32,8 @@ const setPath = (obj, path, value) => {
   keys.reduce((o, k) => o[k], obj)[last] = value
 }
 
+const getPath = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj)
+
 const readControl = (el) =>
   el.type === 'checkbox' ? el.checked : el.value
 
@@ -41,29 +49,29 @@ const ALL_VARS = [
   '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
 ]
 
-/* ── apply：config → 預覽變數 ── */
-// 自訂 proseScope 對預覽刻意無效——預覽容器是單一恆開 prose 的 article；
-// 作用域規則只進生成碼。
-const applyPreview = (config, body) => {
-  for (const prop of ALL_VARS) body.style.removeProperty(prop)
-  for (const [prop, value] of cssVars(config)) body.style.setProperty(prop, value)
+/* ── apply：config → 全頁變數 ── */
+// 自訂 proseScope 對頁面刻意無效——<main> 是單一恆開 prose 的容器；
+// 作用域規則只進生成碼（讀者若把 <main> 換成別的選擇器才用得上）。
+const applyMain = (config, main) => {
+  for (const prop of ALL_VARS) main.style.removeProperty(prop)
+  for (const [prop, value] of cssVars(config)) main.style.setProperty(prop, value)
   // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重
   for (const id of packages(config).ziano) ensureFont(id)
 }
 
-/* ── apply：JS 後備（作用於預覽容器） ── */
+/* ── apply：JS 後備（作用於整個 main） ── */
 let hanMod = null
-const applyFallbacks = async (config, body) => {
+const applyFallbacks = async (config, main) => {
   if (!config.fallbacks) {
-    hanMod?.uninstallFallbacks(body)
+    hanMod?.uninstallFallbacks(main)
     return
   }
   hanMod ??= await import('/han/han.js')
-  hanMod.uninstallFallbacks(body)
-  hanMod.installFallbacks(body)
+  hanMod.uninstallFallbacks(main)
+  hanMod.installFallbacks(main)
 }
 
-/* ── apply：輸出面板 ── */
+/* ── apply：輸出面板（站④） ── */
 const renderOutput = (config, ui) => {
   const render = {
     bundler: () => renderBundler(config, ui.pm.value),
@@ -73,26 +81,33 @@ const renderOutput = (config, ui) => {
   ui.code.textContent = render()
 }
 
-/* ── 進場 ── */
-export const initConfigurator = (root) => {
-  const body = root.querySelector('[data-pg-body]')
-  const config = structuredClone(DEFAULTS)
+/* ── 進場 ──
+ * `root` defaults to `document` — controls live in the rail, the apply
+ * target is `main.han`, the output pane is station④'s markup; none of
+ * them share a common ancestor smaller than the document, so scoping
+ * queries to `root` (rather than hardcoding `document`) only matters
+ * for tests that pass an isolated fragment. */
+export const initConfigurator = (root = document) => {
+  const main = root.querySelector('main.han')
+  let config = structuredClone(DEFAULTS)
   const ui = {
     tab: 'bundler',
     pm: root.querySelector('[data-out-pm]'),
     code: root.querySelector('[data-out-code] code'),
   }
-  const autospaceOn = root.querySelector('[data-cfg-key="autospaceOn"]')
-  const autospaceMode = root.querySelector('[data-cfg-key="autospaceMode"]')
+
+  const controls = () => [...root.querySelectorAll('[data-cfg] [data-cfg-key]')]
+  const autospaceOn = () => root.querySelector('[data-cfg-key="autospaceOn"]')
+  const autospaceMode = () => root.querySelector('[data-cfg-key="autospaceMode"]')
 
   const sync = () => {
     // autospace 開關×進階模式 → config.autospace
     // insert/replace/strict 是 JS 消費值——fallbacks off 時一律折回 normal
-    const jsMode = config.fallbacks ? autospaceMode.value : 'normal'
-    config.autospace = autospaceOn.checked ? jsMode : 'off'
+    const jsMode = config.fallbacks ? autospaceMode().value : 'normal'
+    config.autospace = autospaceOn().checked ? jsMode : 'off'
 
-    applyPreview(config, body)
-    applyFallbacks(config, body)
+    applyMain(config, main)
+    applyFallbacks(config, main)
     renderOutput(config, ui)
 
     // 家族選單只在 heritage=webfont 時可用；進階 autospace 只在勾了後備時展示
@@ -103,10 +118,10 @@ export const initConfigurator = (root) => {
       el.toggleAttribute('hidden', !config.semantics)
     })
     root.querySelector('[data-cfg-advanced]')
-      .toggleAttribute('hidden', !config.fallbacks)
+      ?.toggleAttribute('hidden', !config.fallbacks)
   }
 
-  for (const el of root.querySelectorAll('[data-cfg] [data-cfg-key]')) {
+  for (const el of controls()) {
     const key = el.dataset.cfgKey
     el.addEventListener('input', () => {
       if (key !== 'autospaceOn' && key !== 'autospaceMode')
@@ -115,27 +130,41 @@ export const initConfigurator = (root) => {
     })
   }
 
-  // pg-view 分頁：radio + :has() 由 CSS 切換顯隱；JS 只追蹤 code pane
-  // 該渲染哪一版（「即時預覽」分頁不改寫選擇，切回程式碼分頁時內容仍在）。
+  // pg-view 分頁（站④）：三分頁全是輸出碼（無「即時預覽」——全頁即預覽），
+  // radio 值直接就是 ui.tab，不需 CSS pane-switch。
   const views = root.querySelector('[data-pg-views]')
-  views.addEventListener('input', () => {
-    const view = views.querySelector('input:checked').value
-    if (view !== 'preview') ui.tab = view
+  views?.addEventListener('input', () => {
+    ui.tab = views.querySelector('input:checked').value
     renderOutput(config, ui)
   })
-  ui.pm.addEventListener('input', () => renderOutput(config, ui))
+  ui.pm?.addEventListener('input', () => renderOutput(config, ui))
 
   const copy = root.querySelector('[data-out-copy]')
-  copy.addEventListener('click', async () => {
+  copy?.addEventListener('click', async () => {
     await navigator.clipboard.writeText(ui.code.textContent)
     const original = copy.textContent
     copy.textContent = copy.dataset.copied ?? '已複製'
     setTimeout(() => { copy.textContent = original }, 1500)
   })
 
+  // 「回到預設」— config 整個換回 DEFAULTS，控制項 DOM 狀態同步寫回，再 sync()。
+  const resetBtn = root.querySelector('[data-rail-reset]')
+  resetBtn?.addEventListener('click', () => {
+    config = structuredClone(DEFAULTS)
+    for (const el of controls()) {
+      const key = el.dataset.cfgKey
+      if (key === 'autospaceOn') { el.checked = DEFAULTS.autospace !== 'off'; continue }
+      if (key === 'autospaceMode') { el.value = 'normal'; continue }
+      const v = getPath(DEFAULTS, key)
+      if (el.type === 'checkbox') el.checked = v
+      else el.value = v
+    }
+    sync()
+  })
+
   sync()
 
-  // 把後備套用權交還呼叫端：換範文/重渲染 Markdown 後由 playground.js
-  // 以「當前 config」重套，而非無條件 installFallbacks。
-  return { reapplyFallbacks: (body) => applyFallbacks(config, body) }
+  // 把後備套用權交還呼叫端——沒有呼叫端會用到這個了（範文切換已不存在），
+  // 保留只為 API 穩定性（HP-4/HP-5 若要重套後備，介面已在）。
+  return { reapplyFallbacks: (target) => applyFallbacks(config, target ?? main) }
 }

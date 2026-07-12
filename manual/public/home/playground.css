@@ -513,9 +513,12 @@
 }
 
 
-/* ─── Field — labelled select/text control (configurator groups) ── */
+/* ─── Field — labelled select/text control (configurator groups) ──
+   Unscoped (was `[data-pg] .Field`): HP-3 moved these controls into
+   the rail, which has no shared `[data-pg]` ancestor with the old
+   preview — `.Field` now stands on its own. */
 
-[data-pg] .Field {
+.Field {
   & {
     display: flex;
     align-items: center;
@@ -546,12 +549,16 @@
 }
 
 
-/* ─── ViewTabs + snippet pane (merged into the preview) ───────────
-   ziano-style pure-CSS switching: radio fieldset + :has(:checked);
-   no JS classes. `pg-view=preview` shows the live stage; the three
-   code views share one <pre> that configurator.js keeps rendered. */
+/* ─── ViewTabs + snippet pane ───────────────────────────────────────
+   ziano-style pure-CSS switching: radio fieldset + :has(:checked).
+   HP-3: no more "preview" radio — the whole page IS the preview, so
+   station④'s `.Preview` always shows the `<pre data-out-code>`; the
+   only view-driven visibility left is the package-manager <select>,
+   which only makes sense on the "bundler" tab. Rescoped from the old
+   `[data-pg]` (removed) to `.Preview`, the class both the old
+   (frozen, unreferenced) playground panel and station④ share. */
 
-[data-pg] {
+.Preview {
   .ViewTabs {
     display: flex;
     gap: 6px;
@@ -632,15 +639,7 @@
     code { background: transparent; padding: 0; }
   }
 
-  /* pg-view 切換 */
-  &:has([name="pg-view"][value="preview"]:checked) {
-    :is([data-out-code], [data-out-pm], [data-out-copy]) { display: none; }
-  }
-
-  &:not(:has([name="pg-view"][value="preview"]:checked)) {
-    :is([data-pg-body], [data-pg-custom-input], [data-pg-meta]) { display: none; }
-  }
-
+  /* pg-view 切換：package-manager select 只在 bundler 分頁有意義 */
   &:not(:has([name="pg-view"][value="bundler"]:checked)) [data-out-pm] {
     display: none;
   }

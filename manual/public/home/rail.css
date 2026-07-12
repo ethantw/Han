@@ -1,0 +1,200 @@
+@charset "UTF-8";
+
+/**
+ * Rail — the whole-page configurator's two chrome states (side / top)
+ * plus the <52rem bottom-sheet collapse. Chosen by `body[data-rail]`
+ * (site owner picks live via the floating chooser in `_home.html` /
+ * `rail-chooser.js`; default 'side'). The rail lives OUTSIDE
+ * `<main class="han">` so it's never itself config-scoped — it can't
+ * inherit the page's own `--han-*` deviations.
+ *
+ * `.ControlGroup` / `.Field` / `.Toggle` / `.MetricSlider` internals
+ * are the primitives from `home/playground.css` (imported before this
+ * file in `home.css`) — this file only lays out the chrome: the two
+ * desktop forms, the mobile sheet, and the chooser pill.
+ *
+ * NOTE for HP-4: the homepage has no dark-mode token layer yet
+ * (`home.css`'s `:root` is light-only) — this file inherits whatever
+ * `--paper`/`--ink*` resolve to, same as every other homepage
+ * component. Wiring `prefers-color-scheme`/`color-scheme` for the
+ * whole page is out of this task's scope; flagged for whoever does
+ * the dark-mode pass.
+ */
+
+/* ─── Rail chrome (all forms/sizes) ─────────────────────────────── */
+
+.Rail {
+  & {
+    background: var(--paper-deep);
+    border-inline-end: 1px solid var(--rule);
+  }
+
+  .RailSheetToggle { display: none; }
+  .RailGrip { display: none; }
+}
+
+.RailInner {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.RailScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 18px;
+}
+
+.RailReset {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-mute);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+
+  &:hover { border-color: var(--ink); color: var(--ink); }
+}
+
+/* ─── Side form (≥64rem) — sticky left column ───────────────────── */
+
+@media (min-width: 64rem) {
+  body[data-rail="side"] {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    align-items: start;
+
+    > .Topbar  { grid-column: 1 / -1; }
+    > .Rail    { grid-column: 1; }
+    > main.han { grid-column: 2; }
+  }
+
+  body[data-rail="side"] .Rail {
+    /* The Topbar isn't fixed/sticky (yet) — it scrolls away with the
+       page, so the rail only needs to stick to the true viewport top.
+       If a later pass pins the Topbar, this needs an
+       `inset-block-start` offset matching its block-size. */
+    position: sticky;
+    inset-block-start: 0;
+    max-block-size: 100dvh;
+    overflow-y: auto;
+  }
+}
+
+/* ─── Top form (≥64rem) — sticky toolbar, groups scroll horizontally */
+
+@media (min-width: 64rem) {
+  body[data-rail="top"] .Rail {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 30;
+    inline-size: 100%;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  body[data-rail="top"] .RailScroll {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    overflow-x: auto;
+    padding-inline: var(--home-pad-x, 24px);
+
+    > .ControlGroup { min-inline-size: 220px; flex: none; }
+    > .RailReset    { flex: none; margin-inline-start: auto; }
+  }
+}
+
+/* ─── <52rem — bottom sheet ──────────────────────────────────────
+   Both forms collapse into the same sheet below 52rem: fixed to the
+   viewport bottom, peeking at the grip only. A hidden checkbox +
+   `:has()` expands it — dependency-free, matches the project's
+   checkbox/`:has()` toggle convention (cf. the dark-mode recipe). */
+
+@media (max-width: 52rem) {
+  .Rail {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 40;
+    max-block-size: 70dvh;
+    border-inline-end: 0;
+    border-block-start: 1px solid var(--rule);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .RailInner { max-block-size: inherit; }
+
+  /* `.Rail .RailGrip` (not bare `.RailGrip`) to match the specificity
+     of the always-off base rule above — same specificity, later in the
+     cascade, wins without needing !important. */
+  .Rail .RailGrip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    cursor: pointer;
+    user-select: none;
+
+    [data-part="bar"] {
+      inline-size: 2rem;
+      block-size: 3px;
+      border-radius: 2px;
+      background: var(--rule);
+    }
+  }
+
+  .RailScroll {
+    max-block-size: 0;
+    overflow-y: hidden;
+    padding-block: 0;
+    transition: max-block-size 200ms ease;
+  }
+
+  .RailInner:has(.RailSheetToggle:checked) .RailScroll {
+    max-block-size: calc(70dvh - 2.75rem);
+    overflow-y: auto;
+    padding-block: 16px;
+  }
+}
+
+/* ─── Chooser pill (owner tooling; see rail-chooser.js) ───────────
+   選型用，owner 定案後移除。 */
+
+.RailChooser {
+  position: fixed;
+  inset-inline-end: 1rem;
+  inset-block-end: 1rem;
+  z-index: 50;
+  display: flex;
+  gap: 2px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+
+  button {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--ink-mute);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+
+    &.is-active {
+      background: var(--accent-bg);
+      color: var(--accent-deep);
+    }
+  }
+}
