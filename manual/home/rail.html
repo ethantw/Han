@@ -19,7 +19,11 @@
 <input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
 <label class="Grip" for="rail-sheet" data-rail-grip>{{ railHeader }}</label>
 
-<div class="Controls">
+<!-- data-label-default: aria-label/title for the JS-injected per-GROUP
+     「使用預設値」 buttons (one per ControlGroup head; rail-config.js /
+     rail-metrics.js read it back — the DOM carries the locale string,
+     JS stays copy-free). -->
+<div class="Controls" data-label-default="{{ pgUseDefault }}">
     <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
     <section class="ControlGroup">
       <header>{{ pgMetricsLabel }}</header>
@@ -271,6 +275,4 @@
         </label>
       </fieldset>
     </details>
-
-    <button type="button" class="Reset" data-rail-reset>{{ railReset }}</button>
 </div>

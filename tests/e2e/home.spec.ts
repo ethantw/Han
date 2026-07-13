@@ -16,7 +16,7 @@ import { test, expect, type Page } from '@playwright/test'
  * (模組／字體／標點規範 groups open by default, 繁體專項／行調整／
  * JavaScript closed), three metric sliders (the 直排/橫排 switch is
  * page chrome now — a floating pill, writing-switch.js)
- * (`[data-pg-sliders]`), and `[data-rail-reset]`. A separate
+ * (`[data-pg-sliders]`), each control row with its own ↺ default button. A separate
  * `[data-demo-lang]` chip row (top-right of `<main>`) switches which
  * language the specimen copy demonstrates, independent of the page's
  * own UI locale.
@@ -145,29 +145,58 @@ test.describe('whole-page configuration', () => {
   })
 })
 
-test.describe('rail reset', () => {
-  test('reset clears inline vars and restores metric sliders + main font-size', async ({ page }) => {
+test.describe('per-group 使用預設値 buttons', () => {
+  // The global reset button is gone (owner call) — every ControlGroup
+  // head carries its own ↺ default button (每個 details 群組，不是每個
+  // 細項), visible only while any control in the group deviates.
+  test('deviating shows the group button; clicking restores that group only', async ({ page }) => {
     await page.goto('/')
     const main = page.locator('main.han')
+    const linesDefault = page.locator(
+      'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary .Default',
+    )
 
     await openGroupOf(page, 'squeeze')
+    await expect(linesDefault).toBeHidden()
+
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect
       .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
+    await expect(linesDefault).toBeVisible()
 
+    // an unrelated deviation in another group so we can prove the
+    // restore is group-scoped
     const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
     await sizeSlider.fill('22')
     await sizeSlider.dispatchEvent('input')
     await expect(main).toHaveCSS('font-size', '22px')
 
-    await page.locator('[data-rail-reset]').click()
-
+    await linesDefault.click()
     await expect
       .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('')
+    await expect(linesDefault).toBeHidden()
+    // the accordion must not have been toggled shut by the click
+    await expect(page.locator('[data-cfg-key="squeeze"]')).toBeVisible()
+    await expect(main).toHaveCSS('font-size', '22px') // other group untouched
+  })
+
+  test('metrics group button restores all three sliders', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
+    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header .Default')
+    const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
+
+    await expect(metricsDefault).toBeHidden()
+    await sizeSlider.fill('22')
+    await sizeSlider.dispatchEvent('input')
+    await expect(metricsDefault).toBeVisible()
+
+    await metricsDefault.click()
     await expect(sizeSlider).toHaveValue('16')
     await expect(main).toHaveCSS('font-size', '16px')
+    await expect(metricsDefault).toBeHidden()
   })
 })
 

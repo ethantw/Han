@@ -153,14 +153,12 @@ class HanRail extends HTMLElement {
         target: this.#target,
       },
     )
-    this.shadowRoot
-      .querySelector('[data-rail-reset]')
-      ?.addEventListener('click', () => this.reset())
-
     this.#ready = true
   }
 
   // ── public API ──
+  // No UI button anymore (per-control 「使用預設値」 buttons replaced the
+  // global reset — owner call); the method stays public API.
   reset() {
     this.#config?.reset()
     this.#metrics?.reset()

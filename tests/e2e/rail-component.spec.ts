@@ -94,7 +94,10 @@ test.describe('han-config-change event contract', () => {
       .poll(async () => ((await events(page)).at(-1) as { source: string }).source)
       .toBe('punct.hant')
 
-    await page.locator('[data-rail-reset]').click()
+    // the global reset BUTTON is gone (per-control ↺ defaults replaced
+    // it), but reset() stays public component API — the source:'reset'
+    // broadcast is part of the event contract.
+    await page.locator('han-rail').evaluate((el: HTMLElement & { reset(): void }) => el.reset())
     await expect
       .poll(async () => ((await events(page)).at(-1) as { source: string }).source)
       .toBe('reset')

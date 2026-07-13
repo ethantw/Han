@@ -99,6 +99,67 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
   const $autospaceOn = () => root.querySelector('[data-cfg-key="autospaceOn"]')
   const $autospaceMode = () => root.querySelector('[data-cfg-key="autospaceMode"]')
 
+  /* ── per-control 「使用預設値」 ──
+   * The composite autospace pair maps onto config.autospace, so its two
+   * controls carry their own default values; everything else reads
+   * straight out of DEFAULTS by path. */
+  const defaultFor = (key) =>
+    key === 'autospaceOn' ? DEFAULTS.autospace !== 'off'
+    : key === 'autospaceMode' ? 'normal'
+    : getPath(DEFAULTS, key)
+
+  /* Injected at mount — uniform behaviour chrome, not domain data; the
+   * locale string comes from the template's data-label-default (the DOM
+   * carries the copy, this module stays copy-free). ONE button per
+   * ControlGroup head (owner call: 每個 details 群組，不是每個細項),
+   * visible only while any control in the group deviates. A nested
+   * group (標點字體／繁體專項) gets its own narrower button; the parent
+   * group's covers all descendants, so both light up together — the
+   * parent reads as "this group, as a whole, is dirty". Clicking inside
+   * a <summary> must preventDefault or it would toggle the accordion. */
+  const groupControls = ($group) => [...$group.querySelectorAll('[data-cfg-key]')]
+  const groups = () => [...root.querySelectorAll('.ControlGroup')]
+    .map(($group) => ({
+      $group,
+      $head: $group.querySelector(':scope > summary, :scope > header'),
+    }))
+    .filter(({ $group, $head }) => $head && groupControls($group).length)
+
+  const injectDefaultButtons = () => {
+    const label = root.querySelector('.Controls')?.dataset.labelDefault ?? 'Use default'
+    groups().forEach(({ $group, $head }) => {
+      const $btn = document.createElement('button')
+      $btn.type = 'button'
+      $btn.className = 'Default'
+      $btn.textContent = '↺'
+      $btn.setAttribute('aria-label', label)
+      $btn.title = label
+      $btn.hidden = true
+      $btn.addEventListener('click', (e) => {
+        e.preventDefault()
+        groupControls($group).forEach(($el) => {
+          const key = $el.dataset.cfgKey
+          const v = defaultFor(key)
+          if ($el.type === 'checkbox') $el.checked = v
+          else $el.value = v
+          if (key !== 'autospaceOn' && key !== 'autospaceMode')
+            configRef.current = setPath(configRef.current, key, v)
+        })
+        sync('reset')
+      })
+      $head.append($btn)
+    })
+  }
+
+  const updateDefaultButtons = () => {
+    groups().forEach(({ $group, $head }) => {
+      const $btn = $head.querySelector(':scope > .Default')
+      if (!$btn) return
+      $btn.hidden = groupControls($group)
+        .every(($el) => readControl($el) === defaultFor($el.dataset.cfgKey))
+    })
+  }
+
   const applyVisibility = () => {
     root.querySelectorAll('[data-cfg-heritage-family]').forEach(($el) => {
       $el.toggleAttribute('hidden', configRef.current.heritage !== 'webfont')
@@ -130,6 +191,7 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
     applyTarget(configRef.current, target)
     applyFallbacks(configRef.current, target)
     applyVisibility()
+    updateDefaultButtons()
     dispatch(configRef.current, source)
   }
 
@@ -147,6 +209,8 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
 
   // 補水起始狀態進控件 DOM（lang 重渲染時保留使用者選擇）。
   if (initial) writeControls(configRef.current)
+
+  injectDefaultButtons()
 
   controls().forEach(($el) => {
     const key = $el.dataset.cfgKey

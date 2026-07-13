@@ -26,20 +26,25 @@
 
 .ControlGroup {
   > :is(header, summary) {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
     font-family: var(--_font-mono);
     font-size: var(--_fs-micro);
     font-weight: 500;
     text-transform: uppercase;
     color: var(--_supplement-text-2q);
     margin-block-end: 14px;
+
+    /* the group's ↺ 使用預設値 (JS-injected) — the auto margin absorbs
+       the free space, parking ↺ against the ＋/－ (or the row end);
+       when hidden, space-between takes back over. */
+    > .Default { margin-inline-start: auto; }
   }
 
   /* config groups fold as native <details>; a fullwidth ＋/－ signals state */
   > summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
     cursor: pointer;
     list-style: none;
 
@@ -168,6 +173,36 @@
     }
 
     &:has(input:checked) { color: var(--_text); }
+  }
+}
+
+
+/* ─── Default — per-GROUP 「使用預設値」 restore button ─────────────
+ * JS-injected (rail-config.js / rail-metrics.js) into each
+ * ControlGroup's head (每個 details 群組一顆，owner call); visible only
+ * while any control in the group deviates, so it doubles as the "this
+ * group was touched" marker. Quiet glyph button — the locale string
+ * rides on aria-label/title. */
+
+.Default {
+  & {
+    flex: none;
+    margin: 0;
+    padding: 0 2px;
+    font-size: var(--_fs-compact);
+    line-height: 1;
+    color: var(--_supplement-text-2q);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+
+  &:hover { color: var(--_accent); }
+
+  &:focus-visible {
+    outline: 2px solid var(--_accent);
+    outline-offset: 2px;
   }
 }
 

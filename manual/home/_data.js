@@ -98,7 +98,7 @@ export const HOME_I18N = {
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
-    pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
+    pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。\n\n<cite>本草綱目</cite><cite>辭海</cite>',
 
     snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
@@ -108,7 +108,7 @@ export const HOME_I18N = {
     clDiantenjeomLabel: 'diantenjeom・標點符號字型', clOldHomeLabel: '舊版首頁',
 
     railHeader: '配置面板——撥動即改寫全頁',
-    railReset: '回到預設',
+    pgUseDefault: '使用預設値',
   },
   hans: {
     siteTitle: '汉.css・印刷品般的汉字排版框架',
@@ -195,7 +195,7 @@ export const HOME_I18N = {
     clDiantenjeomLabel: 'diantenjeom・标点符号字型', clOldHomeLabel: '旧版首页',
 
     railHeader: '配置面板——拨动即改写全页',
-    railReset: '回到默认',
+    pgUseDefault: '使用预设值',
   },
   en: {
     siteTitle: 'Han.css・Print-quality Hanzi typography for the web',
@@ -282,7 +282,7 @@ export const HOME_I18N = {
     clDiantenjeomLabel: 'diantenjeom・punctuation font', clOldHomeLabel: 'Previous homepage',
 
     railHeader: 'Configurator — flip a switch, the whole page rewrites itself',
-    railReset: 'Reset to defaults',
+    pgUseDefault: 'Use default',
   },
   ja: {
     siteTitle: '漢.css・印刷品質の漢字組版フレームワーク',
@@ -377,7 +377,7 @@ export const HOME_I18N = {
     // to the hant (Traditional Chinese) values per established
     // convention. Revisit when ja copy is written.
     railHeader: '配置面板——撥動即改寫全頁',
-    railReset: '回到預設',
+    pgUseDefault: '使用預設値',
   },
   ko: {
     siteTitle: '한.css・인쇄 품질의 한자 조판 프레임워크',
@@ -472,6 +472,6 @@ export const HOME_I18N = {
     // to the hant (Traditional Chinese) values per established
     // convention. Revisit when ko copy is written.
     railHeader: '配置面板——撥動即改寫全頁',
-    railReset: '回到預設',
+    pgUseDefault: '使用預設値',
   },
 }

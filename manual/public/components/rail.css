@@ -67,27 +67,10 @@
       padding-inline: var(--_gutter);
 
       > .ControlGroup { min-inline-size: 220px; flex: none; }
-      > button.Reset  { flex: none; margin-inline-start: auto; }
     }
   }
 }
 
-button.Reset {
-  & {
-    align-self: flex-start;
-    padding: 6px 14px;
-    font-family: var(--_font-mono);
-    font-size: var(--_fs-fine);
-    color: var(--_supplement-text);
-    background: var(--_bg);
-    border: 1px solid var(--_rule);
-    border-radius: var(--_r-2);
-    cursor: pointer;
-    transition: border-color 150ms ease, color 150ms ease;
-  }
-
-  &:hover { border-color: var(--_text); color: var(--_text); }
-}
 
 /* <52rem — bottom sheet internals. The host's fixed viewport anchoring
    (position / inset / z-index / max-block-size) is a home.css rule on
