@@ -3,9 +3,10 @@
 /**
  * Han.css v4 — homepage styles.
  *
- * Visual system follows the ziano demo's design language (owner call):
- * a restrained type ramp (~5 content sizes, reused), one green accent, and
- * quiet neutrals. Token architecture mirrors `ziano/demo/src/css/
+ * Visual system (owner calls): ziano demo's restrained type ramp (~5
+ * content sizes, reused) and token ARCHITECTURE, but han's own original
+ * 清爽風 palette — warm paper neutrals, one green accent (mint/pine
+ * washes). Token architecture mirrors `ziano/demo/src/css/
  * variables.css` — appearance-named `--color-*` primitives (theme-
  * invariant) → role-named `--palette-*` semantics via `light-dark()`
  * with `-3q/-2q/-1q` color-mix alpha derivatives. Components consume the
@@ -35,22 +36,23 @@
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
    * by a component — only the `--palette-*` layer below does that
    * (web-style.md two-tier token rule; mirrors ziano variables.css). */
-  --color-white:    #ffffff;
-  --color-snow:     #f7f7f7; /* off-white surface */
-  --color-mist:     #eeeeee; /* pale grey — faint text / hairlines */
-  --color-cloud:    #e6e6e6; /* hairline grey — grid / rule */
-  --color-silver:   #b0b1b3;
-  --color-ash:      #9b9b9b;
-  --color-slate:    #696c6b; /* muted grey — supplement text */
-  --color-graphite: #2a2a2d;
-  --color-onyx:     #242427;
-  --color-charcoal: #18181b;
-  --color-black:    #111111; /* body-text black */
-  --color-ink:      #191515; /* deepest near-black surface */
-  --color-ink-grey: #4e4f51;
-  --color-ink-light:#4e4f519c;
+  --color-white:      #ffffff;
+  --color-paper-deep: #fafaf7; /* warm off-white — panels */
+  --color-snow:       #f3f3f0;
+  --color-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --color-cloud:      #ececea; /* hairline grey — grid / rule */
+  --color-silver:     #d2d2cd;
+  --color-ash:        #8c8c87;
+  --color-slate:      #666666; /* muted grey — supplement text */
+  --color-charcoal:   #2a2a2c;
+  --color-graphite:   #1f1f22;
+  --color-ink-deep:   #18171a;
+  --color-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
+  --color-black:      #111111; /* shadow base only */
   --color-green:        #0a8754; /* the one accent (light) */
   --color-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
+  --color-mint:         #e8f5ec; /* accent wash (light) */
+  --color-pine:         #163322; /* accent wash (dark) */
 
   /* ── semantic palette ────────────────────────────────────────────
    * Role names, each referencing a primitive. A flipping token carries
@@ -60,9 +62,9 @@
    * base re-tints them automatically.
    * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
   --palette-accent:    light-dark(var(--color-green), var(--color-green-bright));
-  --palette-accent-bg: color-mix(in srgb, var(--palette-accent) 10%, transparent);
-  --palette-text:      light-dark(var(--color-black), var(--color-mist));
-  --palette-grid:      light-dark(var(--color-cloud), var(--color-onyx));
+  --palette-accent-bg: light-dark(var(--color-mint), var(--color-pine));
+  --palette-text:      light-dark(var(--color-ink), var(--color-mist));
+  --palette-grid:      light-dark(var(--color-cloud), var(--color-charcoal));
 
   --palette-bg: light-dark(var(--color-white), var(--color-ink));
   --palette-bg-3q:
@@ -77,10 +79,10 @@
   --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
   --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
 
-  --palette-panel:    light-dark(var(--color-snow), var(--color-charcoal));
+  --palette-panel:    light-dark(var(--color-paper-deep), var(--color-ink-deep));
   --palette-ink:      var(--color-ink);
-  --palette-ink-grey: light-dark(var(--color-ink-grey), var(--color-silver));
-  --palette-rule:     light-dark(var(--color-cloud), var(--color-graphite));
+  --palette-ink-grey: light-dark(var(--color-graphite), var(--color-silver));
+  --palette-rule:     light-dark(var(--color-cloud), var(--color-charcoal));
 
   /* ── type ramp ────────────────────────────────────────────────────
    * ~5 content sizes (display / heading / lede / body / small), reused
