@@ -24,12 +24,13 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 **頁面結構**（`manual/_home.html` ＋ `manual/home/*.html` 七個 partial）：
 
 1. Topbar — Brand（漢.css 字標）、文檔/GitHub、語言切換、主題切換、版本章
-2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider、
+2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider
+   （字級/行距/字重——偏差會寫進伍站生成碼的 `body {}` 規則）、
    其下一塊**非收合的「模組」開關區**（語意/長文/行/字體四個開關＝import
    級模組閘門，撥動任一個即自動開合並灰顯其對應 details）、語意樣式標準化/
-   長文段落間距調整/行的調整/字體四群組（各組原「啟用」列已移除）、
-   JavaScript 群組；字體群組以「Web字體來源」（CDN/npm/不使用外部Web字體）
-   取代原「Ziano引入＋CDN來源」；**沒有全域 Reset**——每個控件
+   段落間距調整/行的調整/字體四群組（各組原「啟用」列已移除）、
+   JavaScript 群組；字體群組以「Web字體來源」（CDN／npm／不使用；選
+   不使用時 webfont 選項灰顯、值落回系統）取代原「Ziano引入＋CDN來源」；**沒有全域 Reset**——每個控件
    **群組**的標頭自帶「使用預設値」↺ 按鈕，僅在該組有偏離時出現（兼作
    「這組被動過」的標記，owner 拍板的互動模式，保持）；<52rem 變
    bottom sheet。
@@ -41,7 +42,8 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 4. 壹・語意 — 著重號、書名號、專名號、`<abbr>`、日文引文的活體示範文案
 5. 貳・字體排印 ＋ 參・行的調整 — 同上，範文即示範
 6. 肆・試玩 — 用戶自己貼 Markdown/HTML 的編輯器（預覽/原始碼分頁）
-7. 伍・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板）
+7. 伍・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板；
+   模組開關增減 import 行、度量偏差出 `body {}` 規則）
 8. Closing — 一行安裝、姊妹專案連結（ziano/diantenjeom）、版權腳注
 
 **視覺系統（已定案，不重議）**：
@@ -71,7 +73,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 ## 硬約束（violating any = 重做）
 
 - **功能一件不動**：rail 的全部控件、demo-lang chips、試玩編輯器、引用碼
-  生成、直排模式、五語系、亮暗雙態全部保留現有行為。35 條 e2e 是驗收網。
+  生成、直排模式、五語系、亮暗雙態全部保留現有行為。47＋條 e2e 是驗收網。
 - **規範絕對遵守**：`hanzi.pro/web-style.md`（語意 HTML、pseudo-element 優先、
   token 雙層、logical properties）、han repo `.claude/skills/css-naming`（12 條，
   無 wrapper div、無外觀類名）、`copy-style.md`（漢字標點、不手動空格、
