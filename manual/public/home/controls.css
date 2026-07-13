@@ -187,6 +187,10 @@
   }
 
   legend {
+    /* a <legend> normally sits outside the fieldset's layout flow and
+       claims its own line; floating it demotes it to normal flow, so it
+       becomes a flex item and shares the row with the radio pills. */
+    float: inline-start;
     padding: 0;
     margin-inline-end: 0.25rem;
     font-family: var(--_font-mono);
@@ -262,15 +266,13 @@
       color: var(--_supplement-text-2q);
     }
 
+    /* value readout — quiet right-aligned text, no pill (ziano's
+       playground slider look) */
     output {
       margin-inline-start: auto;
-      padding: 1px 7px;
       font-family: var(--_font-mono);
       font-size: var(--_fs-compact);
-      color: var(--_accent);
-      background: var(--_accent-bg);
-      border: 1px solid color-mix(in srgb, var(--_accent) 35%, transparent);
-      border-radius: var(--_r-1);
+      color: var(--_supplement-text);
     }
   }
 
