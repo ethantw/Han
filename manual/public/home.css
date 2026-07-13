@@ -504,6 +504,11 @@ body:has(han-rail[form="side"]) {
       --rail-col: 280px;
       display: grid;
       grid-template-columns: var(--rail-col) 1fr;
+      /* Explicit rows are load-bearing: `-1` in grid-row resolves against
+         the EXPLICIT grid only, so without this the rail's `1 / -1`
+         collapses to row 1 and its 100dvh inflates that row (main
+         starts a full viewport down). auto = Topbar, 1fr = main. */
+      grid-template-rows: auto 1fr;
       align-items: start;
       /* grid-template-columns animates length→length in every modern
          engine (Baseline 2023); degrades to a snap where unsupported. */
