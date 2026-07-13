@@ -1,7 +1,16 @@
 /**
  * Playground 配置器 · 純生成核心。
- * config in → string out，零 DOM——單測直跑 node --test。
+ * config in → pane[] out（`{ lang, code }[]`），零 DOM——單測直跑 node --test。
  * 變數 API 對照 docs/plans/playground-configurator-impl.md 表格。
+ *
+ * Pane API (Request A): each of renderBundler/renderCDN returns an
+ * ordered array of `{ lang: 'bash'|'html'|'js'|'css', code: string }`,
+ * empty panes omitted. configurator.js renders one <figure> per pane;
+ * highlight.js colours each <code> by its pane's `lang`.
+ *
+ * CDN @import method (formerly renderImport) was dropped per owner
+ * request — @import can't carry <link>-only delivery (e.g. ziano CDN
+ * webfonts) or JS, and two method tabs (bundler/CDN) cover the need.
  */
 
 const CDN = 'https://cdn.jsdelivr.net/npm/'
@@ -40,6 +49,10 @@ export const DEFAULTS = {
   baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
   fallbacks: false,
   legacyRuby: false,
+  // Request B — ziano webfont delivery only (han.css/diantenjeom keep
+  // their existing per-tab delivery: npm on bundler, CDN on cdn).
+  zianoDelivery: 'cdn',           // cdn|npm — CDN is ziano's 方法一, slice-on-demand is its point
+  zianoCdnSource: 'jsdelivr',     // jsdelivr|unpkg|esmsh
 }
 
 /* ── 1 · 變數偏差 ─────────────────────────────────────────── */
@@ -95,7 +108,8 @@ const configCSS = (c, indent = '  ') => {
 
 /* ── 2 · 套件清單 ─────────────────────────────────────────── */
 
-/** 實際用到的套件：han 恆在；ziano 依家族/楷體；dtj 依標點是否全關。 */
+/** 實際用到的（webfont）套件族：han 恆在；ziano 依家族/楷體；dtj 依標點是否
+ *  全關。與 zianoDelivery 無關——那只決定「怎麼送」，這裡只算「要不要」。 */
 export const packages = (c) => {
   // serif 家族與 sans 家族重疊的套件不重複列出（兩者常同源，如尚古）。
   const heritagePkgs = c.heritage === 'webfont'
@@ -114,7 +128,21 @@ export const packages = (c) => {
   return { ziano, dtj }
 }
 
-export const zianoUrl = (id) => `${CDN}${SCOPE}webfonts-${id}@latest/swap.css`
+/* ── 2b · CDN 來源（Request B）───────────────────────────────
+ * han.css／diantenjeom 恆走 jsdelivr（各方法頁既有行為不變）；只有 ziano
+ * webfont 套件的來源可由 zianoCdnSource 切換——鏡射 ziano/demo/src/cdn/cdn.ts
+ * 的 ORIGIN 表。 */
+const ORIGIN = {
+  jsdelivr: 'https://cdn.jsdelivr.net/npm/',
+  unpkg: 'https://unpkg.com/',
+  esmsh: 'https://esm.sh/',
+}
+
+export const zianoUrl = (id, source = 'jsdelivr') =>
+  `${ORIGIN[source]}${SCOPE}webfonts-${id}@latest/swap.css`
+
+const preconnectHost = (source) => new URL(ORIGIN[source]).origin
+
 const DTJ_URL = `${CDN}${SCOPE}diantenjeom@latest/dist/diantenjeom.css`
 const HAN_CSS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.css`
 const HAN_AUTO_URL = `${CDN}${SCOPE}han.css@latest/dist/han.auto.min.js`
@@ -122,68 +150,90 @@ const HAN_JS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.js`
 
 const styleUrls = (c) => {
   const { ziano, dtj } = packages(c)
-  return [HAN_CSS_URL, ...ziano.map(zianoUrl), ...(dtj ? [DTJ_URL] : [])]
+  return [
+    HAN_CSS_URL,
+    ...ziano.map((id) => zianoUrl(id, c.zianoCdnSource)),
+    ...(dtj ? [DTJ_URL] : []),
+  ]
 }
 
-/* ── 3 · 三分頁 ───────────────────────────────────────────── */
+// jsdelivr 恆需要（han.css／diantenjeom）；ziano 來源不同時再加一個 preconnect
+// （相同時 Set 會去重，維持單一 preconnect 行）。
+const preconnectLines = (c) => {
+  const { ziano } = packages(c)
+  const hosts = new Set(['https://cdn.jsdelivr.net'])
+  if (ziano.length) hosts.add(preconnectHost(c.zianoCdnSource))
+  return [...hosts].map((h) => `<link rel="preconnect" href="${h}" crossorigin>`)
+}
+
+/* ── 3 · 兩分頁（bundler／cdn）── 各自回傳 pane[]，空窗格省略 ──── */
 
 export const renderCDN = (c) => {
-  const parts = []
-  parts.push(
-    `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`,
+  const htmlLines = [
+    ...preconnectLines(c),
     ...styleUrls(c).map((u) => `<link rel="stylesheet" href="${u}">`),
-  )
+    ...(c.fallbacks ? [`<script type="module" src="${HAN_AUTO_URL}"></script>`] : []),
+    ...(c.legacyRuby
+      ? [
+          `<script type="module">\n` +
+          `  import { convertLegacyRuby } from '${HAN_JS_URL}'\n` +
+          `  convertLegacyRuby(document.body)\n` +
+          `</script>`,
+        ]
+      : []),
+  ]
   const css = configCSS(c)
-  if (css) parts.push(`<style>\n${css}\n</style>`)
-  if (c.fallbacks)
-    parts.push(`<script type="module" src="${HAN_AUTO_URL}"></script>`)
-  if (c.legacyRuby)
-    parts.push(
-      `<script type="module">\n` +
-      `  import { convertLegacyRuby } from '${HAN_JS_URL}'\n` +
-      `  convertLegacyRuby(document.body)\n` +
-      `</script>`,
-    )
-  return parts.join('\n')
+
+  return [
+    { lang: 'html', code: htmlLines.join('\n') },
+    ...(css ? [{ lang: 'css', code: css }] : []),
+  ]
 }
 
 const PM = { npm: 'npm i', pnpm: 'pnpm add', yarn: 'yarn add' }
 
+// exported name/label split: internal radio value stays `bundler` and this
+// export stays `renderBundler` for API/test stability — the ViewTabs label
+// reads "npm" now (owner rename), since delivery here is always npm-first.
 export const renderBundler = (c, pm = 'pnpm') => {
   const { ziano, dtj } = packages(c)
+  const npmZiano = c.zianoDelivery === 'npm' ? ziano : []
+  const cdnZiano = c.zianoDelivery === 'cdn' ? ziano : []
+
   const deps = [
     `${SCOPE}han.css`,
-    ...ziano.map((id) => `${SCOPE}webfonts-${id}`),
+    ...npmZiano.map((id) => `${SCOPE}webfonts-${id}`),
     ...(dtj ? [`${SCOPE}diantenjeom`] : []),
   ]
-  const lines = [`${PM[pm]} ${deps.join(' \\\n  ')}`, '']
-  lines.push('// main.js')
-  lines.push(`import '${SCOPE}han.css/styles'`)
-  for (const id of ziano) lines.push(`import '${SCOPE}webfonts-${id}'`)
-  if (dtj) lines.push(`import '${SCOPE}diantenjeom'`)
-  if (c.fallbacks) lines.push(`import '${SCOPE}han.css/auto'`)
-  if (c.legacyRuby)
-    lines.push(
-      `import { convertLegacyRuby } from '${SCOPE}han.css'`,
-      `convertLegacyRuby(document.body)`,
-    )
-  const css = configCSS(c)
-  if (css) lines.push('', '/* styles.css — 放進全域樣式表，勿貼進 main.js */', css)
-  return lines.join('\n')
-}
+  const bash = { lang: 'bash', code: `${PM[pm]} ${deps.join(' \\\n  ')}` }
 
-// @import 走 node_modules 裸 specifier（vite／postcss 等打包器解析）：
-// CDN URL 進 @import 會 render-block，CDN 情境本就該用 <link>（見 CDN 分頁）。
-export const renderImport = (c) => {
-  const { ziano, dtj } = packages(c)
-  const lines = [
-    `@import '${SCOPE}han.css/styles';`,
-    ...ziano.map((id) => `@import '${SCOPE}webfonts-${id}';`),
-    ...(dtj ? [`@import '${SCOPE}diantenjeom';`] : []),
+  const jsLines = [
+    '// main.js',
+    `import '${SCOPE}han.css/styles'`,
+    ...npmZiano.map((id) => `import '${SCOPE}webfonts-${id}'`),
+    ...(dtj ? [`import '${SCOPE}diantenjeom'`] : []),
+    ...(c.fallbacks ? [`import '${SCOPE}han.css/auto'`] : []),
+    ...(c.legacyRuby
+      ? [
+          `import { convertLegacyRuby } from '${SCOPE}han.css'`,
+          `convertLegacyRuby(document.body)`,
+        ]
+      : []),
   ]
-  const css = configCSS(c)
-  if (css) lines.push('', css)
-  if (c.fallbacks || c.legacyRuby)
-    lines.push('', `/* JS 需另外以 <script type="module"> 引入——@import 帶不動 JS。 */`)
-  return lines.join('\n')
+  const js = { lang: 'js', code: jsLines.join('\n') }
+
+  const cssBody = configCSS(c)
+  const css = cssBody ? { lang: 'css', code: `/* styles.css — 放進全域樣式表，勿貼進 main.js */\n${cssBody}` } : null
+
+  // zianoDelivery=cdn：ziano 家族不進 install/import，改在這裡出一段 <link>
+  // ——它不再走 npm，這段 CDN 引用是唯一的取得方式。
+  const htmlLines = cdnZiano.length
+    ? [
+        `<link rel="preconnect" href="${preconnectHost(c.zianoCdnSource)}" crossorigin>`,
+        ...cdnZiano.map((id) => `<link rel="stylesheet" href="${zianoUrl(id, c.zianoCdnSource)}">`),
+      ]
+    : []
+  const html = htmlLines.length ? { lang: 'html', code: htmlLines.join('\n') } : null
+
+  return [bash, js, ...(css ? [css] : []), ...(html ? [html] : [])]
 }
