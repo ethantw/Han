@@ -43,6 +43,8 @@ test.describe('playground configurator', () => {
 
   test('DTJ hant 換 GB → css pane 含覆寫；全預設 → css pane 缺席', async ({ page }) => {
     await expect(page.locator('[data-out-panes] pre[data-lang="css"]')).toHaveCount(0) // 初始＝全預設
+    // punct.hant 搬進了預設收合的「繁體專項」組——先展開。
+    await openGroupOf(page, 'punct.hant')
     await page.locator('[data-cfg-key="punct.hant"]').selectOption('GB')
     await expect(pane(page, 'css')).toContainText('--han-punctuation-hant: GB')
   })

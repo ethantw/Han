@@ -155,7 +155,10 @@
       </fieldset>
     </details>
 
-    <!-- 字體 -->
+    <!-- 字體 — 全域項在前，繁體專項成一組手風琴（TC 標點/傳承/楷體/注音
+         皆 hant-only），其餘語言標點各成一扁列（單控件不值一個手風琴）。
+         舊「標點字體（Diantenjeom）」子組已解散，品牌credit以 <small> 存續
+         於各標點列。 -->
     <details class="ControlGroup" open>
       <summary>{{ pgGrpFonts }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
@@ -167,10 +170,6 @@
             <option value="system">{{ pgModeSystem }}</option>
             <option value="off">{{ pgModeOff }}</option>
           </select>
-        </label>
-        <label class="Toggle">
-          <span>{{ pgTogZhuyin }}</span>
-          <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
         </label>
         <label class="Field">
           <span>{{ pgBaseGeneric }}</span>
@@ -199,38 +198,21 @@
         </label>
       </fieldset>
 
-      <!-- 標點字體（子組）— 逐語言的 Diantenjeom 規範 -->
-      <details class="ControlGroup" open>
-        <summary>{{ pgGrpPunct }}</summary>
-        <fieldset class="PlaygroundRules" data-cfg>
-          <legend class="sr-only">{{ pgGrpPunct }}</legend>
-          <label class="Field"><span>{{ pgPunctHant }}</span>
-            <select data-cfg-key="punct.hant">
-              <option value="MOE" selected>MOE</option><option value="JIS">JIS</option>
-              <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
-            </select></label>
-          <label class="Field"><span>{{ pgPunctHans }}</span>
-            <select data-cfg-key="punct.hans">
-              <option value="GB" selected>GB</option><option value="JIS">JIS</option>
-              <option value="MOE">MOE</option><option value="off">{{ pgModeOff }}</option>
-            </select></label>
-          <label class="Field"><span>{{ pgPunctJa }}</span>
-            <select data-cfg-key="punct.ja">
-              <option value="JIS" selected>JIS</option><option value="MOE">MOE</option>
-              <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
-            </select></label>
-          <label class="Field"><span>{{ pgPunctKo }}</span>
-            <select data-cfg-key="punct.ko">
-              <option value="KV" selected>KV</option><option value="off">{{ pgModeOff }}</option>
-            </select></label>
-        </fieldset>
-      </details>
-
-      <!-- 繁體專項（子組）— 傳承字形＋家族選單，繁體以外語言不適用，預設收合 -->
+      <!-- 繁體專項（子組）— TC 標點（Diantenjeom）＋傳承字形＋家族選單＋
+           注音Web字體，全屬 hant-only，繁體以外語言不適用，預設收合。 -->
       <details class="ControlGroup">
         <summary>{{ pgGrpHeritage }}</summary>
         <fieldset class="PlaygroundRules" data-cfg>
           <legend class="sr-only">{{ pgGrpHeritage }}</legend>
+          <!-- 繁體標點（MOE／GB）— 品牌credit以 <small> 存續 -->
+          <label class="Field">
+            <span>{{ pgPunctHant }} <small>Diantenjeom</small></span>
+            <select data-cfg-key="punct.hant">
+              <option value="MOE" selected>MOE</option>
+              <option value="GB">GB</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
           <label class="Field">
             <span>{{ pgHeritage }}</span>
             <select data-cfg-key="heritage">
@@ -256,8 +238,40 @@
               <option value="iansui">{{ pgFamIansui }}</option>
             </select>
           </label>
+          <!-- 注音Web字體（ㄅㄆㄇ）— hant-only，本就該歸繁體專項 -->
+          <label class="Toggle">
+            <span>{{ pgTogZhuyin }}</span>
+            <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+          </label>
         </fieldset>
       </details>
+
+      <!-- 其餘語言標點（各一控件，扁列不設手風琴）— Diantenjeom 規範，
+           品牌credit以 <small> 存續於各列。 -->
+      <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpPunctOther }}</legend>
+        <label class="Field">
+          <span>{{ pgPunctHans }} <small>Diantenjeom</small></span>
+          <select data-cfg-key="punct.hans">
+            <option value="GB" selected>GB</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+        <label class="Field">
+          <span>{{ pgPunctJa }} <small>Diantenjeom</small></span>
+          <select data-cfg-key="punct.ja">
+            <option value="JIS" selected>JIS</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+        <label class="Field">
+          <span>{{ pgPunctKo }} <small>Diantenjeom</small></span>
+          <select data-cfg-key="punct.ko">
+            <option value="KV" selected>KV</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+      </fieldset>
     </details>
 
     <!-- JavaScript -->
