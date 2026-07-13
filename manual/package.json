@@ -15,10 +15,12 @@
   "author": "Chen Yijun (ethantw@me.com)",
   "license": "MIT",
   "dependencies": {
-    "han-css": "workspace:*"
+    "@hanzi.pro/han.css": "workspace:*"
   },
   "devDependencies": {
+    "dompurify": "^3.2.4",
     "markdown-it": "^14.1.1",
+    "marked": "^15.0.6",
     "pagefind": "^1.5.2",
     "vite": "^8.0.10"
   }

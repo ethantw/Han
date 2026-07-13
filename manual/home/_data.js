@@ -93,7 +93,14 @@ export const HOME_I18N = {
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
-    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    // ── HP-2b: station⑤ playground (user-content editor) ──
+    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
+    pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
+    pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
+
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -173,7 +180,14 @@ export const HOME_I18N = {
     slP2: '汉字与English、与2011一类数字相遇，中西之间留隙0.125em——不多不少，恰是CSS text-autospace的量尺，无需手动空格。',
     slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书；日文原写作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，两制并陈。',
 
-    snEyebrow: '肆・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
+    // ── HP-2b: station⑤ playground (user-content editor) ──
+    pgStationEyebrow: '肆・随手试', pgStationH2: '换你的字上场',
+    pgStationLede: '——贴上Markdown或无伤大雅的HTML，切到预览即见汉字排版。',
+    pgStationViewsLegend: '编辑器页签', pgStationTabPreview: '预览', pgStationTabCode: '源码',
+    pgStationCodeLabel: '源码编辑区', pgStationPreviewLabel: '排版预览',
+    pgStationSample: '## 换你的字上场\n\n这是一段可自由编辑的范文。汉字与Latin、与2024并肩时，字距自动匀称，不必手动空格。文中要紧的词用<em>着重号</em>圈点。\n\n> 「引文自有其讲究——标点悬挂，行末仍齐。」\n\n注音直书亦不在话下：<ruby class="zhuyin">汉<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
+
+    snEyebrow: '伍・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
     snFinishLine: '选好了？两种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支持现代常青浏览器。',
 
@@ -253,7 +267,14 @@ export const HOME_I18N = {
     slP2: 'Where Hanzi meets English, or digits like 2011, a 0.125em gap opens between scripts — exactly what CSS text-autospace measures out, no manual space required.',
     slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base; the Japanese original writes it as <span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>, kana ruby instead of zhuyin — two conventions, side by side.',
 
-    snEyebrow: 'IV・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
+    // ── HP-2b: station⑤ playground (user-content editor) ──
+    pgStationEyebrow: 'IV・Playground', pgStationH2: 'Bring your own words',
+    pgStationLede: '— paste Markdown or plain HTML and watch han.css typeset it.',
+    pgStationViewsLegend: 'Editor view', pgStationTabPreview: 'Preview', pgStationTabCode: 'Code',
+    pgStationCodeLabel: 'Source editor', pgStationPreviewLabel: 'Rendered preview',
+    pgStationSample: '## Bring your own words\n\nEdit this freely — Han typography just works. The spacing between 漢字 and Latin is automatic, and emphasis dots mark <em lang="zh-Hant">要緊處</em>.\n\n> A blockquote keeps its manners — hanging punctuation, tidy line ends.\n\nRuby too: <ruby class="zhuyin" lang="zh-Hant">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin" lang="zh-Hant">字<rt>ㄗˋ</rt></ruby>.',
+
+    snEyebrow: 'V・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
     snFinishLine: 'Made your picks? Two ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
     snBrowserSupport: 'Supports modern evergreen browsers.',
 
@@ -338,7 +359,14 @@ export const HOME_I18N = {
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
-    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    // ── HP-2b: station⑤ playground (user-content editor) ──
+    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
+    pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
+    pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
+
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -426,7 +454,14 @@ export const HOME_I18N = {
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
-    snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    // ── HP-2b: station⑤ playground (user-content editor) ──
+    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
+    pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
+    pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
+
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 

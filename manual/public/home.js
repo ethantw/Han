@@ -26,6 +26,7 @@ import { initTheme } from '/home/theme.js'
 import '/components/han-rail.js'
 import { initDemoLang } from '/home/demo-lang.js'
 import { initSnippet } from '/home/snippet.js'
+import { initPlayground } from '/home/playground.js'
 import { initRailChooser } from '/home/rail-chooser.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $rail = document.querySelector('han-rail')
   initDemoLang(($target) => $rail?.reapplyFallbacks($target))
   initSnippet()
+  initPlayground()
   initRailChooser()
   initInstallChips()
 })

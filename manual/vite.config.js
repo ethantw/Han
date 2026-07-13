@@ -119,7 +119,7 @@ const HOME_LAYOUT = path.resolve(here, '_home.html')
 const HOME_DATA = path.resolve(HOME_DIR, '_data.js')
 const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
-  'station-snippet', 'closing',
+  'station-playground', 'station-snippet', 'closing',
 ]
 // The rail is chrome, not a station — it sits OUTSIDE <main class="han">
 // (mounted into `<aside data-rail-mount>`), so it stays out of
@@ -152,6 +152,37 @@ async function syncFramework() {
     const src = path.join(HAN_DIST, f)
     if (!existsSync(src)) continue
     await fs.copyFile(src, path.join(PUBLIC_HAN, f))
+  }
+}
+
+// Vendored runtime ESM — station-playground's Markdown parser (marked)
+// and HTML sanitizer (DOMPurify). Both are single-file, zero-dep browser
+// builds; we copy them out of node_modules so `public/` never carries a
+// hand-committed minified blob (package.json stays the single version
+// source). Emitted to `dist/vendor/` at build (closeBundle) and served
+// straight from node_modules by dev middleware — same pattern as the
+// generated rail-templates module.
+const NODE_MODULES = path.resolve(here, 'node_modules')
+const VENDOR_ASSETS = {
+  'marked.esm.js': path.join(NODE_MODULES, 'marked', 'lib', 'marked.esm.js'),
+  'purify.esm.js': path.join(NODE_MODULES, 'dompurify', 'dist', 'purify.es.mjs'),
+}
+
+// Drop the trailing `//# sourceMappingURL=` line — we don't ship the
+// `.map`, so leaving it only yields a devtools 404.
+function stripSourceMap(src) {
+  return src.replace(/\n\/\/# sourceMappingURL=\S*\s*$/, '\n')
+}
+
+async function readVendor(name) {
+  return stripSourceMap(await fs.readFile(VENDOR_ASSETS[name], 'utf-8'))
+}
+
+async function emitVendor() {
+  const outDir = path.join(MANUAL_DIST, 'vendor')
+  await fs.mkdir(outDir, { recursive: true })
+  for (const name of Object.keys(VENDOR_ASSETS)) {
+    await fs.writeFile(path.join(outDir, name), await readVendor(name))
   }
 }
 
@@ -574,6 +605,7 @@ function hanManualPlugin() {
     // it's a public/raw ESM asset, never part of rollup's graph.
     async closeBundle() {
       await emitRailTemplates()
+      await emitVendor()
     },
 
     configureServer(server) {
@@ -588,6 +620,20 @@ function hanManualPlugin() {
         res.setHeader('content-type', 'text/javascript; charset=utf-8')
         res.setHeader('cache-control', 'no-store')
         res.end(await renderRailTemplatesSource())
+      })
+
+      // Serve the vendored runtime ESM (marked / DOMPurify) straight from
+      // node_modules — the files never exist in the source tree, so
+      // nothing shadows them. Build emits them to `dist/vendor/` in
+      // closeBundle instead (emitVendor).
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = (req.url ?? '').split('?')[0]
+        if (!pathname.startsWith('/vendor/')) return next()
+        const name = pathname.slice('/vendor/'.length)
+        if (!Object.hasOwn(VENDOR_ASSETS, name)) return next()
+        res.setHeader('content-type', 'text/javascript; charset=utf-8')
+        res.setHeader('cache-control', 'no-store')
+        res.end(await readVendor(name))
       })
 
       // Files outside `root` (= SRC) need explicit registration; vite's

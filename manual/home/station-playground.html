@@ -1,0 +1,34 @@
+<!-- Station V・Playground — the user types their OWN Markdown / HTML and
+     watches han.css typeset it. Two radio tabs (preview default) mirror
+     station④'s ViewTabs; `.Preview` supplies the framed-panel primitive,
+     `.Playground` the editor-specific children. The preview is a plain
+     <article> INSIDE main.han, so the rail's `--han-*` config vars and the
+     metric sliders reach it with zero wiring (prose layer auto-scopes to
+     <article>). Render pipeline lives in home/playground.js:
+     marked(Markdown, inline HTML passes through) → DOMPurify(sanitize) →
+     article.innerHTML. The <textarea> ships the default sample; the module
+     restores localStorage over it on boot (rail Reset never touches it — it
+     is content, not config). -->
+<section id="station-playground" class="Station Playground" data-station="playground">
+  <hgroup>
+    <p>{{ pgStationEyebrow }}</p>
+    <h2>{{ pgStationH2 }}</h2>
+    <p>{{ pgStationLede }}</p>
+  </hgroup>
+
+  <div class="Preview Playground" data-playground>
+    <header>
+      <fieldset class="ViewTabs" data-pg-editor-views>
+        <legend class="sr-only">{{ pgStationViewsLegend }}</legend>
+        <label><input type="radio" name="pg-editor-view" value="preview" checked>{{ pgStationTabPreview }}</label>
+        <label><input type="radio" name="pg-editor-view" value="code">{{ pgStationTabCode }}</label>
+      </fieldset>
+    </header>
+
+    <!-- code tab = raw source, preview tab = typeset result; CSS
+         (:has(:checked)) shows one at a time. The textarea value is
+         RCDATA, so the sample's <ruby>/<em> tags sit here literally. -->
+    <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
+    <article data-pg-preview aria-label="{{ pgStationPreviewLabel }}"></article>
+  </div>
+</section>
