@@ -1,130 +1,25 @@
 /**
- * Playground section — interactive specimen.
+ * Controls — shared primitives for the whole-page configurator rail
+ * and station④'s snippet-generator pane.
  *
- * The preview is a real Han.css article (`.han`) so the framework's
- * own CSS handles punctuation kerning, mixed-script spacing, hanging
- * punctuation, and ruby.  The configurator (`configurator.js`) writes
- * `--han-*` cascade-var deviations as inline style on the preview body
- * — no DOM mutation, no re-install, just CSS; sliders write inline
- * `font-size` / `line-height` / `letter-spacing` the same way.
+ * HP-4: renamed from `playground.css` (the old two-column playground
+ * section this file used to lay out is gone; HP-3 moved every control
+ * into the rail — `.Rail` / `.RailScroll` / `.RailReset` chrome lives
+ * in `rail.css`, imported after this file). What survives here:
  *
- * The preview stage hosts two children: the article itself and a
- * Markdown textarea that's hidden until the "✎ 自訂" chip is picked.
- * In custom mode the stage becomes a 2-col split (input / render).
- *
- * The `.Toggle` primitive lives in `home.css` (shared with the Hero);
- * `.PlaygroundRules` only sets the playground-specific stack layout.
+ *   - `.ControlGroup` / `.PlaygroundRules` / `.Toggle` (layout only —
+ *     the primitive itself lives in `home.css`) / `.Field` /
+ *     `.MetricSliders` / `.MetricSlider` — the rail's control widgets.
+ *     `configurator.js` writes `--han-*` cascade-var deviations as
+ *     inline style on `main.han`; sliders write inline `font-size` /
+ *     `line-height` / `letter-spacing` the same way — no DOM mutation,
+ *     just CSS.
+ *   - `.Preview` / `.ViewTabs` / `.Copy` / `[data-out-*]` — station④'s
+ *     snippet pane (ziano-style radio-fieldset + `:has(:checked)`
+ *     tab switching). The old preview's markdown-custom-input split
+ *     and `[data-part="meta"]` header badge had no station④
+ *     equivalent and are pruned.
  */
-
-/* ─── section frame ─────────────────────────────────────────────── */
-
-.Playground {
-  & {
-    background: var(--paper-dim);
-    padding: 7.5rem var(--home-pad-x);
-    border-block-start: 1px solid var(--rule-soft);
-  }
-
-  /* Section header — design pattern: `叁 把玩・操場 ────────`,
-   * left-aligned, with a thin rule that fills the remaining inline
-   * width.  Subtitle sits in the upright latin serif (no italic per the
-   * no-cjk-pseudo-italics skill). */
-  .SectionHead {
-    & {
-      max-inline-size: var(--home-max);
-      margin: 0 auto 3.5rem;
-    }
-
-    [data-part="meta"] {
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-      margin-block-end: 1.125rem;
-    }
-
-    [data-part="numeral"] {
-      font-family: var(--han-font-latin-serif), serif;
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: var(--accent-deep);
-    }
-
-    [data-part="label"] {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.3em;
-      color: var(--ink-mute);
-      text-transform: uppercase;
-    }
-
-    [data-part="rule"] {
-      flex: 1;
-      block-size: 1px;
-      background: var(--rule);
-    }
-
-    h2 {
-      font-family: var(--han-font-alternative);
-      font-size: 3rem;
-      line-height: 1.25;
-      font-weight: 500;
-      color: var(--ink);
-      margin: 0 0 0.75rem;
-      letter-spacing: 0.02em;
-
-      @media (max-width: 720px) { font-size: 2.25rem; }
-    }
-
-    p {
-      font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--ink-mute);
-      margin: 0;
-      max-inline-size: 36em;
-    }
-  }
-
-  > .Body {
-    max-inline-size: var(--home-max);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 48px;
-    align-items: start;
-
-    @media (max-width: 980px) {
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-  }
-
-  @media (max-width: 720px) {
-    & { padding: 72px var(--home-pad-x); }
-  }
-}
-
-
-/* ─── Controls (left column) ───────────────────────────────────── */
-
-.Controls {
-  & {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    background: var(--paper-deep);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
-    padding: 24px 22px;
-  }
-
-  .ControlGroup + .ControlGroup {
-    padding-block-start: 24px;
-    border-block-start: 1px dashed var(--rule);
-  }
-}
-
 
 /* ─── ControlGroup (one labelled cluster of inputs) ────────────── */
 
@@ -155,54 +50,6 @@
   }
   &[open] > summary::after { content: '－'; }
   &:not([open]) > summary { margin-block-end: 0; }
-}
-
-
-/* ─── SampleChips (the language / custom picker) ───────────────── */
-
-.SampleChips {
-  & {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .Chip {
-    & {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      border: 1px solid var(--rule);
-      color: var(--ink-mute);
-      font-family: var(--han-font-default);
-      font-size: 0.75rem;
-      font-weight: 500;
-      padding: 4px 10px;
-      border-radius: 0;
-      cursor: pointer;
-      transition:
-        background-color 150ms ease,
-        border-color    150ms ease,
-        color           150ms ease;
-    }
-
-    &:hover {
-      border-color: var(--ink);
-      color: var(--ink);
-    }
-
-    &.is-active {
-      background: var(--accent-bg);
-      border-color: var(--accent-soft);
-      color: var(--accent-deep);
-    }
-
-    &[data-variant="custom"] {
-      margin-inline-start: auto;
-      font-family: var(--font-mono);
-    }
-  }
 }
 
 
@@ -380,143 +227,7 @@
 }
 
 
-/* ─── Preview (right column: chrome, stage, body) ──────────────── */
-
-.Preview {
-  & {
-    background: #fff;
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
-    overflow: hidden;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 28px 70px -36px rgba(40, 30, 10, 0.18);
-  }
-
-  > header {
-    & {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 12px 20px;
-      background: var(--paper-deep);
-      border-block-end: 1px solid var(--rule);
-    }
-
-    [data-part="meta"] {
-      margin-inline-start: auto;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--accent-deep);
-    }
-  }
-
-  [data-part="stage"] {
-    & {
-      display: flex;
-      min-block-size: 320px;
-
-      @media (max-width: 720px) {
-        flex-direction: column;
-        min-block-size: 0;
-      }
-    }
-
-    &.is-custom [data-part="custom-input"] { display: block; }
-  }
-
-  [data-part="custom-input"] {
-    & {
-      flex: 0 0 40%;
-      min-inline-size: 260px;
-      padding: 24px 26px;
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      line-height: 1.7;
-      color: var(--ink);
-      background: var(--paper-deep);
-      border: 0;
-      outline: none;
-      resize: none;
-      border-inline-end: 1px solid var(--rule);
-
-      @media (max-width: 720px) {
-        flex: 0 0 auto;
-        min-block-size: 160px;
-        border-inline-end: 0;
-        border-block-end: 1px solid var(--rule);
-      }
-    }
-
-    &::placeholder {
-      color: var(--ink-faint);
-      white-space: pre-line;
-    }
-  }
-
-  > [data-part="stage"] > article.han {
-    & {
-      flex: 1 1 auto;
-      padding: 32px 40px;
-      font-family: var(--han-font-alternative);
-      font-size: 1rem;
-      line-height: 1.85;
-      color: var(--ink);
-      background: #fff;
-
-      @media (max-width: 720px) { padding: 28px 24px; }
-    }
-
-    :is(p, h1, h2, h3, h4, blockquote) { margin: 0 0 1em; }
-    :is(p, h1, h2, h3, h4, blockquote):last-child { margin: 0; }
-
-    h1 { font-size: 1.625em; font-weight: 600; line-height: 1.3; }
-    h2 { font-size: 1.25em;  font-weight: 600; line-height: 1.35; }
-    h3 { font-size: 1.125em; font-weight: 600; line-height: 1.4; }
-
-    blockquote {
-      padding-inline-start: 1em;
-      border-inline-start: 2px solid var(--accent-soft);
-      color: var(--ink-mute);
-    }
-
-    code {
-      font-family: var(--font-mono);
-      font-size: 0.875em;
-      padding: 0.05em 0.4em;
-      background: var(--accent-bg);
-      border-radius: var(--r-1);
-      color: var(--accent-deep);
-    }
-
-    pre {
-      & {
-        margin: 0 0 1em;
-        padding: 14px 16px;
-        background: var(--paper-deep);
-        border: 1px solid var(--rule);
-        border-radius: var(--r-1);
-        overflow-x: auto;
-        font-family: var(--font-mono);
-        font-size: 0.875em;
-        line-height: 1.6;
-      }
-
-      code {
-        background: transparent;
-        padding: 0;
-        border-radius: 0;
-        color: inherit;
-      }
-    }
-
-  }
-}
-
-
-/* ─── Field — labelled select/text control (configurator groups) ──
-   Unscoped (was `[data-pg] .Field`): HP-3 moved these controls into
-   the rail, which has no shared `[data-pg]` ancestor with the old
-   preview — `.Field` now stands on its own. */
+/* ─── Field — labelled select/text control (configurator groups) ── */
 
 .Field {
   & {
@@ -549,14 +260,34 @@
 }
 
 
+/* ─── Preview — station④'s snippet-generator pane frame ────────── */
+
+.Preview {
+  & {
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 28px 70px -36px rgba(40, 30, 10, 0.18);
+  }
+
+  > header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: var(--paper-deep);
+    border-block-end: 1px solid var(--rule);
+  }
+}
+
+
 /* ─── ViewTabs + snippet pane ───────────────────────────────────────
    ziano-style pure-CSS switching: radio fieldset + :has(:checked).
-   HP-3: no more "preview" radio — the whole page IS the preview, so
-   station④'s `.Preview` always shows the `<pre data-out-code>`; the
+   Station④'s `.Preview` always shows the `<pre data-out-code>`; the
    only view-driven visibility left is the package-manager <select>,
-   which only makes sense on the "bundler" tab. Rescoped from the old
-   `[data-pg]` (removed) to `.Preview`, the class both the old
-   (frozen, unreferenced) playground panel and station④ share. */
+   which only makes sense on the "bundler" tab. */
 
 .Preview {
   .ViewTabs {

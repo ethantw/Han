@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // Language switcher — mirrors the homepage's `initLangSwitcher`
-  // (manual/public/home/hero.js). Trigger toggles the `<ul hidden>`;
+  // (manual/public/home/lang-switcher.js). Trigger toggles the `<ul hidden>`;
   // outside-click and Escape close it. Same shape as home so the CSS
   // and behaviour stay in sync.
   const langRoot = document.querySelector('[data-lang-switcher]')

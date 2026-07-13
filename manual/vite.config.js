@@ -4,7 +4,6 @@ import { existsSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { glob } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
-import { execFileSync } from 'node:child_process'
 import { defineConfig } from 'vite'
 import MarkdownIt from 'markdown-it'
 import { cjkEmphasis } from './_md-cjk-emphasis.js'
@@ -37,16 +36,9 @@ async function loadHomeData() {
 }
 
 /**
- * Hero stats — baked at build time so the four <dt> tiles in hero.html
- * reflect reality instead of typeset placeholders. ASCII formatting
- * across all locales (hant once used "一萬二 / 四 / 八.二 / 零"; the
- * priority is real data, the typographic numerals can come back via
- * a maintainer-curated formatter if desired).
+ * Homepage stats — baked at build time so the manifesto's `<dl class=
+ * "Stats">` tiles reflect reality instead of typeset placeholders.
  *
- *   - stars   GitHub stargazer count (gh api; falls back to "—") —
- *             unused on the new homepage (no stars stat there; the old
- *             frozen `old.html` baked its own value at freeze time),
- *             kept for callers that still want it.
  *   - scripts locale count the homepage itself ships (`HOME_LOCALE_SLUGS`,
  *             currently 5: hant/hans/en/ja/ko) — overwritten with the
  *             live count in `renderHomepage()` so it can never drift.
@@ -54,41 +46,28 @@ async function loadHomeData() {
  *             `dist/han.min.js` in kb, one decimal — the honest
  *             "css+js" figure for the stats row (P0 baseline).
  *   - deps    count of runtime deps in root package.json
+ *
+ * (HP-4: dropped the GitHub-stars stat — the new homepage's manifesto
+ * only lists honest scripts/size/deps figures, per the plan's P0
+ * baseline; `fetchStars()`/`gh api` wiring removed with it.)
  */
 let _heroStatsCache = null
 async function computeHeroStats() {
   if (_heroStatsCache) return _heroStatsCache
-  const [stars, sizeKb, deps] = await Promise.all([
-    fetchStars(),
+  const [sizeKb, deps] = await Promise.all([
     gzippedSizeKbCombined([
       path.join(HAN_DIST, 'han.min.css'),
       path.join(HAN_DIST, 'han.min.js'),
     ]),
     countRuntimeDeps(),
   ])
-  const fmtStars = n => n == null ? '—' : n >= 1000 ? `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k` : String(n)
-  const fmtSize  = kb => kb == null ? '—' : `${kb}k`
+  const fmtSize = kb => kb == null ? '—' : `${kb}k`
   _heroStatsCache = {
-    statStarsValue:   fmtStars(stars),
     statScriptsValue: '5',
     statSizeValue:    fmtSize(sizeKb),
     statDepsValue:    String(deps),
   }
   return _heroStatsCache
-}
-
-function fetchStars() {
-  try {
-    const out = execFileSync('gh', ['api', 'repos/ethantw/Han', '--jq', '.stargazers_count'], {
-      encoding: 'utf-8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 5000,
-    })
-    const n = Number(out.trim())
-    return Number.isFinite(n) ? n : null
-  } catch {
-    return null
-  }
 }
 
 async function gzippedSizeKb(file) {

@@ -26,33 +26,13 @@ export const HOME_I18N = {
   hant: {
     siteTitle: '漢.css・印刷品般的漢字排版框架',
     description: '印刷品般的漢字網頁排版框架。',
-    docs: '文檔', samples: '範例', play: '操場', glossary: '辭彙', changelog: '沿革',
-    cta: '開始使用',
-    eyebrow: '肆・〇　全新重構・四大模塊開關在握',
-    h1a: '一 行 引 入，',
-    h1b: '印 刷 品 般 的', h1c: '漢 字 排 版',
-    lede1: '「漢.css」是一套以原生樣式與腳本構築的',
-    lede2: '網頁漢字排版框架——標點擠壓、注音、著重號、',
-    lede3: '混排間隙、四大書體，立得其所。',
-    ctaPri: '開始使用', ctaSec: '査看範例',
-    statStars: '倉庫星星', statScripts: '支援語種', statSize: 'Gzipped壓縮字節', statDeps: '外部依賴',
-    demoLabel: '範文・即時演示', magLegend: '游標放大',
-    togPunct: '標點擠壓', togMix: '跨文種混排間隙', togRuby: '注音', togEmph: '著重號', togHang: '標點懸掛',
-    hint: '切換上方功能・立見其變・懸停細處可見其名',
-    langSwitcherLabel: '切換語言・LANGUAGE',
+    docs: '文檔', langSwitcherLabel: '切換語言・LANGUAGE',
     langSwitcherFoot: '站本身切換 5 種語言・操場可獨立選任一語言範文',
-    pgEyebrow: '把玩・操場',
-    pgH2: '把玩於指尖',
-    pgLede: '——切換各項排版規則，立見其變。',
-    pgSampleLabel: '範文・SAMPLE',
     pgMetricsLabel: '度量・METRICS',
-    pgChipHant: '中', pgChipHans: '简', pgChipEn: 'En', pgChipJa: '日', pgChipKo: '한',
-    pgChipCustom: '✎ 自訂', pgChipCustomEn: 'Custom Markdown',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
-   
-    pgCustomPlaceholder: '在此貼上你的 Markdown 文字 ——\n標題、段落、**著重**、`code`、> 引文，皆可。',
+
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化',
     pgTogProse: '行文版式',
@@ -79,8 +59,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-   
-    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+
+    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
@@ -116,32 +96,13 @@ export const HOME_I18N = {
   hans: {
     siteTitle: '汉.css・印刷品般的汉字排版框架',
     description: '印刷品般的汉字网页排版框架。',
-    docs: '文档', samples: '范例', play: '操场', glossary: '词汇', changelog: '沿革',
-    cta: '开始使用',
-    eyebrow: '肆・〇　全新重构・四大模块开关在握',
-    h1a: '印 刷 品 般 的', h1b: '汉 字 排 版，', h1c: '尽 在 一 行 引 入。',
-    lede1: '「汉.css」是一套以原生样式与脚本构筑的',
-    lede2: '网页汉字排版框架——标点挤压、注音、着重号、',
-    lede3: '混排间隙、四大书体，立得其所。',
-    ctaPri: '开始使用', ctaSec: '査看范例',
-    statStars: '源码仓星', statScripts: '所支文字', statSize: '压缩体积·千字节', statDeps: '无外部依赖',
-    demoLabel: '范文・即时演示', magLegend: '游标放大',
-    togPunct: '标点挤压', togMix: '跨文种混排间隙', togRuby: '注音', togEmph: '着重号', togHang: '标点悬挂',
-    hint: '切换上方功能・立见其变・悬停细处可见其名',
-    langSwitcherLabel: '切换语言・LANGUAGE',
+    docs: '文档', langSwitcherLabel: '切换语言・LANGUAGE',
     langSwitcherFoot: '站本身切换 5 种语言・操场可独立选任一语言范文',
-    pgEyebrow: '把玩・操场',
-    pgH2: '把玩于指尖',
-    pgLede: '——切换各项排版规则，即见其变。',
-    pgSampleLabel: '范文・SAMPLE',
     pgMetricsLabel: '度量・METRICS',
-    pgChipHant: '繁中', pgChipHans: '简中', pgChipEn: 'EN', pgChipJa: '日', pgChipKo: '한',
-    pgChipCustom: '✎ 自定', pgChipCustomEn: 'Custom Markdown',
     pgSliderSize: '字级', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
-   
-    pgCustomPlaceholder: '在此粘贴你的 Markdown 文字 ——\n标题、段落、**着重**、`code`、> 引文，皆可。',
+
     pgGrpLayers: '模块',
     pgTogSemantics: '语意强化',
     pgTogProse: '行文版式',
@@ -168,8 +129,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '旧浏览器后备', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '旧式 ruby 转换', pgTogLegacyRubyEn: 'convertLegacyRuby',
-   
-    pgViewPreview: '实时预览', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+
+    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '复制', pgCopied: '已复制',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
@@ -205,32 +166,13 @@ export const HOME_I18N = {
   en: {
     siteTitle: 'Han.css・Print-quality Hanzi typography for the web',
     description: 'A typography framework for print-quality Hanzi on the web.',
-    docs: 'Docs', samples: 'Examples', play: 'Playground', glossary: 'Glossary', changelog: 'Changelog',
-    cta: 'Get started',
-    eyebrow: 'v4.0・A complete rewrite・Four modules, toggle at will',
-    h1a: 'Print-quality', h1b: 'Hanzi typography,', h1c: 'in one line.',
-    lede1: 'Han.css is a CSS & JS framework for web Hanzi typography.',
-    lede2: 'Punctuation kerning, ruby, emphasis dots,',
-    lede3: 'mixed-script spacing, four print faces — out of the box.',
-    ctaPri: 'Get started', ctaSec: 'View examples',
-    statStars: 'GitHub stars', statScripts: 'scripts', statSize: 'kb gzipped', statDeps: 'dependencies',
-    demoLabel: 'Live demo', magLegend: 'cursor magnifier',
-    togPunct: 'Punct kerning', togMix: 'Mixed spacing', togRuby: 'Ruby', togEmph: 'Emph dots', togHang: 'Hanging punct',
-    hint: 'Toggle features above・hover any detail to see its name',
-    langSwitcherLabel: 'Switch language・LANGUAGE',
+    docs: 'Docs', langSwitcherLabel: 'Switch language・LANGUAGE',
     langSwitcherFoot: 'Site supports 5 languages・the playground sample picks any independently.',
-    pgEyebrow: 'Tinker・Playground',
-    pgH2: 'At your fingertips',
-    pgLede: '— Toggle the rules; see them shift.',
-    pgSampleLabel: 'Sample',
     pgMetricsLabel: 'Metrics',
-    pgChipHant: '繁', pgChipHans: '简', pgChipEn: 'EN', pgChipJa: '日', pgChipKo: '한',
-    pgChipCustom: '✎ Custom', pgChipCustomEn: 'Paste your own',
     pgSliderSize: 'Size', pgSliderSizeEn: 'font-size',
     pgSliderLeading: 'Leading', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: 'Tracking', pgSliderTrackingEn: 'letter-spacing',
-   
-    pgCustomPlaceholder: 'Paste any Markdown here ——\nheadings, paragraphs, **emphasis**, `code`, > quotes.',
+
     pgGrpLayers: 'Modules',
     pgTogSemantics: 'Semantics',
     pgTogProse: 'Prose layout',
@@ -257,8 +199,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: 'Legacy browser fallback', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: 'Legacy ruby conversion', pgTogLegacyRubyEn: 'convertLegacyRuby',
-   
-    pgViewPreview: 'Preview', pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+
+    pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: 'Copy', pgCopied: 'Copied',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
@@ -294,32 +236,13 @@ export const HOME_I18N = {
   ja: {
     siteTitle: '漢.css・印刷品質の漢字組版フレームワーク',
     description: '印刷品質の漢字組版フレームワーク。',
-    docs: 'ドキュメント', samples: '事例', play: '実験室', glossary: '用語', changelog: '更新履歴',
-    cta: '使い始める',
-    eyebrow: 'v4.0・全面書き直し・4つのモジュール、開閉自在',
-    h1a: '印 刷 品 質 の', h1b: '漢 字 組 版，', h1c: '一 行 で 導 入。',
-    lede1: '「Han.css」は CSS と JavaScript で構築された',
-    lede2: 'Web 漢字組版フレームワーク——約物詰め、ルビ、',
-    lede3: '圏点、和欧混植、四書体が即座に整う。',
-    ctaPri: '使い始める', ctaSec: '事例を見る',
-    statStars: 'GitHub スター', statScripts: '対応文字', statSize: 'kb (gzip)', statDeps: '依存ゼロ',
-    demoLabel: 'ライブデモ', magLegend: 'カーソル拡大',
-    togPunct: '約物詰め', togMix: '混植アキ', togRuby: 'ルビ', togEmph: '圏点', togHang: 'ぶら下げ',
-    hint: '上の機能を切り替えて違いを確認・詳細にホバー',
-    langSwitcherLabel: '言語切替・LANGUAGE',
+    docs: 'ドキュメント', langSwitcherLabel: '言語切替・LANGUAGE',
     langSwitcherFoot: 'サイトは 5 言語対応・実験室では言語を独立して選択可能',
-    pgEyebrow: '操作・プレイグラウンド',
-    pgH2: '指先で操作',
-    pgLede: '——規則を切り替え、即座に変化。',
-    pgSampleLabel: '範文・SAMPLE',
     pgMetricsLabel: '度量・METRICS',
-    pgChipHant: '繁', pgChipHans: '简', pgChipEn: 'EN', pgChipJa: '日', pgChipKo: '한',
-    pgChipCustom: '✎ 自由', pgChipCustomEn: 'Markdown 入力',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行送り', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '字送り', pgSliderTrackingEn: 'letter-spacing',
-   
-    pgCustomPlaceholder: 'お好きな Markdown をここに ——\n見出し、段落、**強調**、`コード`、> 引用、いずれも対応。',
+
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ja copy is written.
@@ -349,8 +272,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-   
-    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+
+    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
     // NOTE: HP-2 station keys below are not yet localized for ja —
@@ -391,32 +314,13 @@ export const HOME_I18N = {
   ko: {
     siteTitle: '한.css・인쇄 품질의 한자 조판 프레임워크',
     description: '인쇄 품질의 한자 조판 프레임워크.',
-    docs: '문서', samples: '예시', play: '놀이터', glossary: '용어', changelog: '변경 이력',
-    cta: '시작하기',
-    eyebrow: 'v4.0・전면 재작성・네 모듈, 자유자재로 개폐',
-    h1a: '인 쇄 품 질 의', h1b: '한 자 조 판，', h1c: '단 한 줄 의 임 포 트.',
-    lede1: '「Han.css」는 CSS와 JavaScript로 구축된',
-    lede2: '웹 한자 조판 프레임워크다——약물 조정, 루비,',
-    lede3: '권점, 다국어 혼식, 사대 서체가 즉시 적용된다.',
-    ctaPri: '시작하기', ctaSec: '예시 보기',
-    statStars: 'GitHub 별', statScripts: '지원 문자', statSize: 'kb (gzip)', statDeps: '의존성 없음',
-    demoLabel: '라이브 데모', magLegend: '커서 돋보기',
-    togPunct: '약물 조정', togMix: '혼식 공백', togRuby: '루비', togEmph: '권점', togHang: '괘점 매달기',
-    hint: '위 기능을 토글・디테일에 호버 시 이름 표시',
-    langSwitcherLabel: '언어 전환・LANGUAGE',
+    docs: '문서', langSwitcherLabel: '언어 전환・LANGUAGE',
     langSwitcherFoot: '사이트는 5 개 언어 지원・놀이터에서 독립적으로 언어 선택',
-    pgEyebrow: '조작・놀이터',
-    pgH2: '손끝에서 조정',
-    pgLede: '——규칙을 전환하면, 즉시 변화한다.',
-    pgSampleLabel: '예문・SAMPLE',
     pgMetricsLabel: '수치・METRICS',
-    pgChipHant: '繁', pgChipHans: '简', pgChipEn: 'EN', pgChipJa: '日', pgChipKo: '한',
-    pgChipCustom: '✎ 자유', pgChipCustomEn: '직접 입력',
     pgSliderSize: '글자 크기', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '행간', pgSliderLeadingEn: 'line-height',
     pgSliderTracking: '자간', pgSliderTrackingEn: 'letter-spacing',
-   
-    pgCustomPlaceholder: '여기에 Markdown 붙여넣기 ——\n제목, 단락, **강조**, `코드`, > 인용 모두 지원한다.',
+
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ko copy is written.
@@ -446,8 +350,8 @@ export const HOME_I18N = {
     pgGrpJs: 'JavaScript',
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
-   
-    pgViewPreview: '即時預覽', pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
+
+    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
     // NOTE: HP-2 station keys below are not yet localized for ko —
