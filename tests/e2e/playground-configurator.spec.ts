@@ -66,7 +66,7 @@ test.describe('playground configurator', () => {
   test('每個 pane 各有自己的複製鍵；點擊後短暫顯示 ✓', async ({ page }) => {
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
     const $figure = page.locator('[data-out-panes] figure').first()
-    const $copy = $figure.locator('[data-part="copy"]')
+    const $copy = $figure.locator('button')
     await expect($copy).toHaveText('⎘')
     await $copy.click()
     await expect($copy).toHaveText('✓')

@@ -1,18 +1,14 @@
 <!-- Manifesto — opening statement + the page's first live specimen. -->
 <section class="Manifesto">
-  <h1>
-    <span data-part="line">{{ mfH1a }}</span><br>
-    <span data-part="line" data-accent>{{ mfH1b }}</span>
-  </h1>
+  <h1>{{ mfH1a }}<br><span>{{ mfH1b }}</span></h1>
 
   <p class="Lede">{{ mfLede }}</p>
 
   <p class="Dogfood">{{ mfDogfood }}</p>
 
   <span class="InstallChip">
-    <span data-part="prompt">$</span>
-    <span data-part="cmd">pnpm add @hanzi.pro/han.css</span>
-    <button type="button" data-part="copy" aria-label="copy">⎘</button>
+    <code>pnpm add @hanzi.pro/han.css</code>
+    <button type="button" aria-label="copy">⎘</button>
   </span>
 
   <dl class="Stats">

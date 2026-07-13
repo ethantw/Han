@@ -1,13 +1,10 @@
 <!-- Station IV・Snippet — the reference-code generator (data-out-*/ViewTabs). -->
 <section id="station-snippet" class="Station Snippet" data-station="snippet">
-  <header class="SectionHead">
-    <div data-part="meta">
-      <span data-part="label" class="t-eyebrow">{{ snEyebrow }}</span>
-      <span data-part="rule" aria-hidden="true"></span>
-    </div>
+  <hgroup>
+    <p>{{ snEyebrow }}</p>
     <h2>{{ snH2 }}</h2>
     <p>{{ snLede }}</p>
-  </header>
+  </hgroup>
 
   <div class="Preview">
     <header>
@@ -25,11 +22,9 @@
       </select>
     </header>
 
-    <div data-part="stage">
-      <!-- configurator.js renders one <figure class="CodePane"> per
-           codegen.js pane here — see buildPane() there. -->
-      <div data-out-panes></div>
-    </div>
+    <!-- configurator.js renders one <figure class="CodePane"> per
+         codegen.js pane here — see buildPane() there. -->
+    <div data-out-panes></div>
   </div>
 
   <p class="Finish">{{ snFinishLine }}</p>

@@ -109,8 +109,8 @@ const applyFallbacks = async (config, $main) => {
  * pane[] → <figure class="CodePane"> per pane（ts-style：pure builder
  * returning elements, textContent for code — never innerHTML with
  * interpolated code). figcaption 是語言徽章（CLI/HTML/JS/CSS），
- * button[data-part="copy"] 鏡射 InstallChip 的 ⎘ 慣例（見
- * initConfigurator 裡的委派點擊處理）。 */
+ * 其唯一的 <button> 即複製鍵（元素選擇器承載，不需 data-* hook），
+ * 鏡射 InstallChip 的 ⎘ 慣例（見 initConfigurator 裡的委派點擊處理）。 */
 const LANG_LABEL = { bash: 'CLI', html: 'HTML', js: 'JS', css: 'CSS' }
 
 const buildPane = ({ lang, code }) => {
@@ -122,7 +122,6 @@ const buildPane = ({ lang, code }) => {
 
   const $copy = document.createElement('button')
   Object.assign($copy, { type: 'button', textContent: '⎘' })
-  $copy.dataset.part = 'copy'
   $copy.setAttribute('aria-label', 'copy')
 
   const $pre = document.createElement('pre')
@@ -228,7 +227,7 @@ export const initConfigurator = ($root = document) => {
   // 每個 pane 各自的複製鍵——委派在容器上（panes 每次 renderOutput 都整批
   // 重繪，個別綁定會漏掉新節點）。行為鏡射 home.js 的 InstallChip ⎘ handler。
   ui.$panes?.addEventListener('click', async (event) => {
-    const $btn = event.target.closest('[data-part="copy"]')
+    const $btn = event.target.closest('figure.CodePane button')
     if (!$btn) return
     const $code = $btn.closest('figure')?.querySelector('pre code')
     if (!$code) return

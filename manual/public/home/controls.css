@@ -2,32 +2,16 @@
  * Controls — shared primitives for the whole-page configurator rail
  * and station④'s snippet-generator pane.
  *
- * HP-4: renamed from `playground.css` (the old two-column playground
- * section this file used to lay out is gone; HP-3 moved every control
- * into the rail — `.Rail` and its nested `.Scroll` / `button.Reset`
- * chrome lives in `rail.css`, imported after this file). What
- * survives here:
+ * Compact chrome: moves onto the ziano-aligned `--palette-*` palette and
+ * the `--fs-*` ramp (owner call) but keeps its dense sizing (the rail is
+ * a control surface, not reading copy). `configurator.js` writes `--han-*`
+ * deviations as inline style on `main.han`; sliders write inline
+ * `font-size` / `line-height` / `font-weight` the same way — no DOM
+ * mutation, just CSS.
  *
- *   - `.ControlGroup` / `.PlaygroundRules` / `.Toggle` (layout only —
- *     the primitive itself lives in `home.css`) / `.Field` /
- *     `.MetricSliders` / `.MetricSlider` — the rail's control widgets.
- *     `configurator.js` writes `--han-*` cascade-var deviations as
- *     inline style on `main.han`; sliders write inline `font-size` /
- *     `line-height` / `font-weight` the same way (owner cut the
- *     字距/letter-spacing slider entirely — no content letter-spacing
- *     write survives anywhere on this page) — no DOM mutation, just CSS.
- *   - `.Preview` / `.ViewTabs` / `[data-out-*]` — station④'s snippet
- *     pane (ziano-style radio-fieldset + `:has(:checked)` tab
- *     switching). The old preview's markdown-custom-input split and
- *     `[data-part="meta"]` header badge had no station④ equivalent
- *     and are pruned.
- *   - `.CodePane` — one pane per `<figure>` inside `[data-out-panes]`
- *     (Request A: codegen.js now emits an array of panes, not one
- *     flat string). Terminal-dark in both themes via home.css's
- *     constant `--code-bg`/`--code-fg` (B v2 design — see that file's
- *     comment). `::highlight(code-*)` token colours are ziano's
- *     `usage.css` palette, tuned for dark terminals — reused as-is
- *     since this pane is dark-terminal-styled regardless of theme.
+ * `.CodePane` stays terminal-dark in BOTH themes (owner-approved) via
+ * home.css's constant `--code-bg`/`--code-fg`; its `::highlight()` token
+ * colours are ziano's usage.css palette, tuned for dark terminals.
  */
 
 /* ─── ControlGroup (one labelled cluster of inputs) ────────────── */
@@ -36,10 +20,10 @@
   > :is(header, summary) {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: var(--fs-micro);
     font-weight: 500;
     text-transform: uppercase;
-    color: var(--ink-faint);
+    color: var(--palette-supplement-text-2q);
     margin-block-end: 14px;
   }
 
@@ -54,7 +38,7 @@
     &::-webkit-details-marker { display: none; }
     &::after {
       content: '＋';
-      color: var(--ink-mute);
+      color: var(--palette-supplement-text);
     }
   }
   &[open] > summary::after { content: '－'; }
@@ -65,11 +49,11 @@
   .ControlGroup {
     margin-block-start: 14px;
     padding-inline-start: 0.875rem;
-    border-inline-start: 2px solid var(--rule);
+    border-inline-start: 2px solid var(--palette-rule);
 
     > summary {
       text-transform: none;
-      color: var(--ink-mute);
+      color: var(--palette-supplement-text);
     }
   }
 }
@@ -94,7 +78,7 @@
       inline-size: 100%;
       gap: 0.75rem;
       padding: 0.375rem 0.25rem;
-      color: var(--ink);
+      color: var(--palette-text);
     }
 
     span {
@@ -106,11 +90,11 @@
 
     small {
       font-family: var(--font-mono);
-      font-size: 0.625rem;
-      color: var(--ink-faint);
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text-2q);
     }
 
-    &:has(input:checked) { color: var(--ink); }
+    &:has(input:checked) { color: var(--palette-text); }
   }
 }
 
@@ -130,11 +114,11 @@
   }
 
   legend {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    color: var(--ink-faint);
     padding: 0;
     margin-inline-end: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    color: var(--palette-supplement-text-2q);
   }
 
   input {
@@ -146,22 +130,22 @@
   label {
     display: inline-flex;
     align-items: center;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    color: var(--ink-mute);
-    font-family: var(--han-font-default);
-    font-size: 0.75rem;
     padding: 3px 10px;
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
     border-radius: var(--r-1);
+    font-family: var(--han-font-default);
+    font-size: var(--fs-fine);
+    color: var(--palette-supplement-text);
     cursor: pointer;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 
-    &:hover { border-color: var(--ink); color: var(--ink); }
+    &:hover { border-color: var(--palette-text); color: var(--palette-text); }
 
     &:has(input:checked) {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: var(--paper);
+      background: var(--palette-text);
+      border-color: var(--palette-text);
+      color: var(--palette-bg);
     }
   }
 }
@@ -186,43 +170,46 @@
   }
 
   > header {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    block-size: 14px;
+    & {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      block-size: 14px;
+    }
+
+    span {
+      font-family: var(--han-font-default);
+      font-size: var(--fs-fine);
+      color: var(--palette-text);
+    }
+
+    small {
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text-2q);
+    }
+
+    output {
+      margin-inline-start: auto;
+      padding: 1px 7px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-accent);
+      background: var(--palette-accent-bg);
+      border: 1px solid color-mix(in srgb, var(--palette-accent) 35%, transparent);
+      border-radius: var(--r-1);
+    }
   }
 
-  [data-part="label"] {
-    font-family: var(--han-font-default);
-    font-size: 0.75rem;
-    color: var(--ink);
-  }
-
-  [data-part="label-en"] {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    color: var(--ink-faint);
-  }
-
-  [data-part="val"] {
-    margin-inline-start: auto;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--accent-deep);
-    background: var(--accent-bg);
-    border: 1px solid var(--accent-soft);
-    padding: 1px 7px;
-    border-radius: var(--r-1);
-  }
-
-  /* The track is a visual element behind the native range input.
-     The fill div is JS-driven; the native input handles pointer events. */
-  [data-part="track"] {
+  /* The track is a visual element behind the native range input. The
+     fill span is JS-driven (`rail-metrics.js` sets its width); the
+     native input handles pointer events. */
+  .Track {
     & {
       position: relative;
-      block-size: 16px;
       display: flex;
       align-items: center;
+      block-size: 16px;
     }
 
     &::before {
@@ -231,72 +218,72 @@
       inset: 50% 0 auto 0;
       margin-block-start: -2px;
       block-size: 4px;
-      background: var(--rule);
+      background: var(--palette-rule);
       border-radius: 4px;
     }
-  }
 
-  [data-part="fill"] {
-    position: absolute;
-    top: 50%;
-    margin-block-start: -2px;
-    inset-inline-start: 0;
-    inline-size: 0;
-    block-size: 4px;
-    background: var(--accent);
-    border-radius: 4px;
-    pointer-events: none;
-  }
-
-  input[type="range"] {
-    & {
+    [data-pg-slider-fill] {
       position: absolute;
-      inset: 0;
-      inline-size: 100%;
-      block-size: 100%;
-      margin: 0;
-      background: transparent;
-      -webkit-appearance: none;
-         -moz-appearance: none;
-              appearance: none;
-      cursor: pointer;
+      inset-block-start: 50%;
+      inset-inline-start: 0;
+      margin-block-start: -2px;
+      inline-size: 0;
+      block-size: 4px;
+      background: var(--palette-accent);
+      border-radius: 4px;
+      pointer-events: none;
     }
 
-    &:focus { outline: none; }
+    input[type="range"] {
+      & {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        margin: 0;
+        background: transparent;
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+        cursor: pointer;
+      }
 
-    &::-webkit-slider-runnable-track {
-      block-size: 16px;
-      background: transparent;
-      border: 0;
+      &:focus { outline: none; }
+
+      &::-webkit-slider-runnable-track {
+        block-size: 16px;
+        background: transparent;
+        border: 0;
+      }
+      &::-moz-range-track {
+        block-size: 16px;
+        background: transparent;
+        border: 0;
+      }
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+                appearance: none;
+        inline-size: 14px;
+        block-size: 14px;
+        margin-block-start: 1px;
+        border-radius: 50%;
+        background: var(--palette-bg);
+        border: 1px solid var(--palette-text);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        cursor: grab;
+      }
+      &::-moz-range-thumb {
+        inline-size: 14px;
+        block-size: 14px;
+        border-radius: 50%;
+        background: var(--palette-bg);
+        border: 1px solid var(--palette-text);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        cursor: grab;
+      }
+      &:active::-webkit-slider-thumb { cursor: grabbing; }
+      &:active::-moz-range-thumb     { cursor: grabbing; }
     }
-    &::-moz-range-track {
-      block-size: 16px;
-      background: transparent;
-      border: 0;
-    }
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-              appearance: none;
-      inline-size: 14px;
-      block-size: 14px;
-      margin-block-start: 1px;
-      border-radius: 50%;
-      background: #fff;
-      border: 1px solid var(--ink);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-      cursor: grab;
-    }
-    &::-moz-range-thumb {
-      inline-size: 14px;
-      block-size: 14px;
-      border-radius: 50%;
-      background: #fff;
-      border: 1px solid var(--ink);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-      cursor: grab;
-    }
-    &:active::-webkit-slider-thumb { cursor: grabbing; }
-    &:active::-moz-range-thumb     { cursor: grabbing; }
   }
 }
 
@@ -315,26 +302,26 @@
 
   > span {
     flex: none;
-    color: var(--ink);
+    color: var(--palette-text);
 
     small {
       display: block;
       font-family: var(--font-mono);
-      font-size: 0.625rem;
-      color: var(--ink-faint);
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text-2q);
     }
   }
 
   & :is(select, input[type="text"]) {
     inline-size: 9.5em;
-    font: inherit;
-    font-size: 0.8125rem;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-1);
     padding-block: 0.2em;
     padding-inline: 0.5em;
+    font: inherit;
+    font-size: var(--fs-compact);
+    color: var(--palette-text);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-1);
   }
 
   &[hidden] { display: none; }
@@ -345,11 +332,14 @@
 
 .Preview {
   & {
-    background: var(--paper-deep);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-3);
     overflow: hidden;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 28px 70px -36px rgba(40, 30, 10, 0.18);
+    background: var(--palette-panel);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    box-shadow:
+      0 1px 0 var(--palette-bg-2q),
+      0 28px 70px -36px color-mix(in srgb, var(--color-black) 18%, transparent)
+    ;
   }
 
   > header {
@@ -358,20 +348,13 @@
     align-items: center;
     flex-wrap: wrap;
     padding: 12px 20px;
-    background: var(--paper-deep);
-    border-block-end: 1px solid var(--rule);
+    background: var(--palette-panel);
+    border-block-end: 1px solid var(--palette-rule);
   }
-}
 
-
-/* ─── ViewTabs + snippet pane ───────────────────────────────────────
-   ziano-style pure-CSS switching: radio fieldset + :has(:checked).
-   Station④'s `.Preview` always shows `[data-out-panes]`; the only
-   view-driven visibility left is the package-manager <select>, which
-   only makes sense on the "bundler" tab (label reads "npm" — the
-   `bundler` radio value/export name are unchanged, label-only rename). */
-
-.Preview {
+  /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
+     :has(:checked). The only view-driven visibility is the package-
+     manager <select>, which only makes sense on the "bundler" tab. ── */
   .ViewTabs {
     display: flex;
     gap: 6px;
@@ -388,38 +371,38 @@
     label {
       display: inline-flex;
       align-items: center;
-      background: var(--paper);
-      border: 1px solid var(--rule);
-      color: var(--ink-mute);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
       padding: 4px 10px;
+      background: var(--palette-bg);
+      border: 1px solid var(--palette-rule);
       border-radius: var(--r-1);
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text);
       cursor: pointer;
       transition:
         background-color 150ms ease,
         border-color    150ms ease,
         color           150ms ease;
 
-      &:hover { border-color: var(--ink); color: var(--ink); }
+      &:hover { border-color: var(--palette-text); color: var(--palette-text); }
 
       &:has(input:checked) {
-        background: var(--ink);
-        border-color: var(--ink);
-        color: var(--paper);
+        background: var(--palette-text);
+        border-color: var(--palette-text);
+        color: var(--palette-bg);
       }
     }
   }
 
   [data-out-pm] {
-    font: inherit;
-    font-size: 0.75rem;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-1);
     padding-block: 4px;
     padding-inline: 6px;
+    font: inherit;
+    font-size: var(--fs-fine);
+    color: var(--palette-text);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-1);
   }
 
   [data-out-panes] {
@@ -435,45 +418,45 @@
 
 
 /* ─── CodePane — one labelled code exhibit inside [data-out-panes] ──
-   figure > figcaption (lang badge) + button[data-part="copy"] + pre >
-   code. Terminal-dark in both themes on purpose (home.css's constant
-   --code-bg/--code-fg — B v2 design), so panes read the same whether
-   the page itself is light or dark. */
+   figure > figcaption (lang badge + copy button) + pre > code.
+   Terminal-dark in both themes on purpose (home.css's constant
+   --code-bg/--code-fg). The copy button is the only button in the
+   figcaption, so an element selector carries it — no data-* hook. */
 
 figure.CodePane {
   & {
     margin: 0;
     background: var(--code-bg);
-    border-block-start: 1px solid var(--rule);
+    border-block-start: 1px solid var(--palette-rule);
   }
 
   &:first-child { border-block-start: 0; }
 
   figcaption {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 14px;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: color-mix(in srgb, var(--code-fg) 55%, transparent);
-    background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
-  }
-
-  button[data-part="copy"] {
     & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: color-mix(in srgb, var(--code-fg) 55%, transparent);
+      background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
+    }
+
+    button {
+      padding: 0 2px;
       font: inherit;
       color: inherit;
       background: transparent;
       border: 0;
-      padding: 0 2px;
       cursor: pointer;
-    }
 
-    &:hover { color: var(--code-fg); }
+      &:hover { color: var(--code-fg); }
+    }
   }
 
   pre {
@@ -482,14 +465,14 @@ figure.CodePane {
     padding: 14px 18px;
     background: transparent;
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: var(--fs-compact);
     line-height: 1.65;
     color: var(--code-fg);
   }
 
   code { background: transparent; padding: 0; }
 
-  /* Highlight-API token colours — ziano/demo/src/css/usage.css's palette. */
+  /* Highlight-API token colours — ziano/demo/src/css/usage.css palette. */
   pre code::highlight(code-comment) { color: #6f7b8b; }
   pre code::highlight(code-string)  { color: #b8d39a; }
   pre code::highlight(code-keyword) { color: #88aaff; }

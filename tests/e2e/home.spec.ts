@@ -180,7 +180,7 @@ test.describe('mobile bottom sheet', () => {
     const grip = page.locator('[data-rail-grip]')
     await expect(grip).toBeVisible()
 
-    const scroll = page.locator('.Rail .Scroll')
+    const scroll = page.locator('.Rail .Controls')
     const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
 
     const toggle = page.locator('.Rail .SheetToggle')

@@ -34,12 +34,12 @@ import { initDemoLang } from '/home/demo-lang.js'
 import { initMetrics } from '/home/rail-metrics.js'
 import { initRailChooser } from '/home/rail-chooser.js'
 
-/* InstallChip 的 ⎘ ——複製隔壁 [data-part="cmd"] 的指令文字。
- * （站④的 [data-out-copy] 由 configurator.js 自管；這裡只管 chip。） */
+/* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
+ * （站④的 CodePane 複製由 configurator.js 自管；這裡只管 chip。） */
 const initInstallChips = () => {
-  document.querySelectorAll('.InstallChip [data-part="copy"]').forEach(($btn) => {
+  document.querySelectorAll('.InstallChip button').forEach(($btn) => {
     $btn.addEventListener('click', async () => {
-      const $cmd = $btn.parentElement.querySelector('[data-part="cmd"]')
+      const $cmd = $btn.parentElement.querySelector('code')
       if (!$cmd) return
       await navigator.clipboard.writeText($cmd.textContent.trim())
       const original = $btn.textContent

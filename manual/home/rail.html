@@ -13,15 +13,16 @@
   floating chooser in `_home.html`) and the <52rem bottom-sheet grip
   are pure CSS in `rail.css`, driven by the checkbox-label `:has()`
   pattern (no JS needed for the sheet itself).
--->
-<div class="Inner">
-  <input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
-  <label class="Grip" for="rail-sheet" data-rail-grip>
-    <span data-part="bar" aria-hidden="true"></span>
-    <span data-part="label">{{ railHeader }}</span>
-  </label>
 
-  <div class="Scroll">
+  The `<aside class="Rail">` mount is itself the flex column — the
+  `SheetToggle` / `Grip` / `.Controls` stack are its direct children (no
+  `.Inner` wrapper; the sheet state anchors on `.Rail:has(.SheetToggle
+  :checked)`). `.Controls` is the scrolling stack of `.ControlGroup`s.
+-->
+<input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
+<label class="Grip" for="rail-sheet" data-rail-grip>{{ railHeader }}</label>
+
+<div class="Controls">
     <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
     <details class="ControlGroup">
       <summary>{{ pgGrpSemantics }}</summary>
@@ -246,12 +247,12 @@
       <div class="MetricSliders" data-pg-sliders>
         <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">
           <header>
-            <span data-part="label">{{ pgSliderSize }}</span>
-            <span data-part="label-en">{{ pgSliderSizeEn }}</span>
-            <output data-part="val" data-pg-slider-val>17 px</output>
+            <span>{{ pgSliderSize }}</span>
+            <small>{{ pgSliderSizeEn }}</small>
+            <output data-pg-slider-val>17 px</output>
           </header>
-          <div data-part="track">
-            <div data-part="fill" data-pg-slider-fill></div>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
             <input type="range" min="14" max="28" step="1" value="17"
                    aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
           </div>
@@ -259,12 +260,12 @@
 
         <div class="MetricSlider" data-metric="leading" data-unit="" data-precision="2">
           <header>
-            <span data-part="label">{{ pgSliderLeading }}</span>
-            <span data-part="label-en">{{ pgSliderLeadingEn }}</span>
-            <output data-part="val" data-pg-slider-val>1.85</output>
+            <span>{{ pgSliderLeading }}</span>
+            <small>{{ pgSliderLeadingEn }}</small>
+            <output data-pg-slider-val>1.85</output>
           </header>
-          <div data-part="track">
-            <div data-part="fill" data-pg-slider-fill></div>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
             <input type="range" min="1.4" max="2.4" step="0.05" value="1.85"
                    aria-label="{{ pgSliderLeading }} {{ pgSliderLeadingEn }}">
           </div>
@@ -272,12 +273,12 @@
 
         <div class="MetricSlider" data-metric="weight" data-unit="" data-precision="0">
           <header>
-            <span data-part="label">{{ pgSliderWeight }}</span>
-            <span data-part="label-en">{{ pgSliderWeightEn }}</span>
-            <output data-part="val" data-pg-slider-val>400</output>
+            <span>{{ pgSliderWeight }}</span>
+            <small>{{ pgSliderWeightEn }}</small>
+            <output data-pg-slider-val>400</output>
           </header>
-          <div data-part="track">
-            <div data-part="fill" data-pg-slider-fill></div>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
             <input type="range" min="250" max="900" step="25" value="400"
                    aria-label="{{ pgSliderWeight }} {{ pgSliderWeightEn }}">
           </div>
@@ -286,5 +287,4 @@
     </section>
 
     <button type="button" class="Reset" data-rail-reset>{{ railReset }}</button>
-  </div>
 </div>

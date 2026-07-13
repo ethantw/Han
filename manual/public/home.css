@@ -3,11 +3,19 @@
 /**
  * Han.css v4 — homepage styles.
  *
- * Tokens follow Claude Design's 方向 B v2 (清爽風 / 青翠綠 accent).
- * Base layer (this file) defines tokens, type ramp, base elements,
- * common helpers (buttons, hover annotations, code blocks, selection).
- * Section-specific styles live in `home/<section>.css` and are pulled
- * in below.
+ * Visual system follows the ziano demo's design language (owner call):
+ * a restrained type ramp (~5 content sizes, reused), one red accent, and
+ * quiet neutrals. Token architecture mirrors `ziano/demo/src/css/
+ * variables.css` — appearance-named `--color-*` primitives (theme-
+ * invariant) → role-named `--palette-*` semantics via `light-dark()`
+ * with `-3q/-2q/-1q` color-mix alpha derivatives. Components consume the
+ * `--palette-*` layer ONLY. Type comes from Han.css's own `--han-font-*`
+ * composites (the site dogfoods the framework; the rail drives them).
+ *
+ * This base file owns tokens, the type ramp, base elements, and shared
+ * chrome (Brand, Toggle, LangSwitcher, ThemeToggle, Topbar, VersionTag,
+ * code blocks, selection). Section-specific styles live in
+ * `home/<section>.css`, imported below.
  */
 
 /* Section partials — kept in `public/home/` so they ship as static
@@ -16,63 +24,76 @@
 @import url('./home/stations.css');
 @import url('./home/rail.css');
 
-/* ─── tokens (light) ──────────────────────────────────────────────── */
+/* ─── tokens ───────────────────────────────────────────────────────── */
 
 :root {
-  /* Type comes from Han.css's own vars (--han-font-default /
-     -alternative / -latin-*) — the site dogfoods the framework;
-     Shanggu heritage webfont links live in the page head. Mono is the
-     one site-local token: the framework has no mono slot. */
+  /* Mono is the one site-local type stack (the framework has no mono
+     slot); everything else comes from Han.css's `--han-font-*` vars. */
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   /* ── colour primitives ──────────────────────────────────────────
-   * Raw swatches, named by appearance, theme-INVARIANT. Never consumed
-   * directly by components — only the semantic layer below does that
-   * (web-style.md's two-tier token rule). */
-  --color-white:        #ffffff;
-  --color-paper-deep:   #fafaf7;
-  --color-paper-tint:   #f5f3ee;
-  --color-ink:          #0e0e10; /* doubles as dark-mode --paper */
-  --color-ink-deep:     #18171a;
-  --color-ink-dim:      #201f22;
-  --color-graphite:     #1f1f22;
-  --color-mist:         #e8e8e3;
-  --color-silver:       #d2d2cd;
-  --color-slate:        #666666;
-  --color-ash:          #8c8c87;
-  --color-fog:          #a0a09a;
-  --color-shadow:       #5f5f5b;
-  --color-cloud:        #ececea;
-  --color-charcoal:     #2a2a2c;
-  --color-snow:         #f3f3f0;
-  --color-onyx:         #1f1f21;
-  --color-green:        #0a8754;
-  --color-green-bright: #3f9d6f;
-  --color-green-deep:   #066b3f;
-  --color-green-light:  #5cc090;
-  --color-sage:         #7dc8a4;
-  --color-moss:         #2a5e3e;
-  --color-mint:         #e8f5ec;
-  --color-pine:         #163322;
+   * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
+   * by a component — only the `--palette-*` layer below does that
+   * (web-style.md two-tier token rule; mirrors ziano variables.css). */
+  --color-white:    #ffffff;
+  --color-snow:     #f7f7f7; /* off-white surface */
+  --color-mist:     #eeeeee; /* pale grey — faint text / hairlines */
+  --color-cloud:    #e6e6e6; /* hairline grey — grid / rule */
+  --color-silver:   #b0b1b3;
+  --color-ash:      #9b9b9b;
+  --color-slate:    #696c6b; /* muted grey — supplement text */
+  --color-graphite: #2a2a2d;
+  --color-onyx:     #242427;
+  --color-charcoal: #18181b;
+  --color-black:    #111111; /* body-text black */
+  --color-ink:      #191515; /* deepest near-black surface */
+  --color-ink-grey: #4e4f51;
+  --color-ink-light:#4e4f519c;
+  --color-red:      #b00404; /* the one accent */
 
-  /* ── semantic tokens (paper / ink / accent) ───────────────────────
-   * Each flipping token is defined ONCE as light-dark(<light>, <dark>)
-   * — dark mode is a single `color-scheme: dark` declaration below,
-   * not a per-token override block (web-style.md Dark-mode recipe,
-   * reference: ziano/demo's variables.css). */
-  --paper:       light-dark(var(--color-white), var(--color-ink));
-  --paper-deep:  light-dark(var(--color-paper-deep), var(--color-ink-deep));
-  --paper-tint:  light-dark(var(--color-paper-tint), var(--color-ink-dim));
-  --ink:         light-dark(var(--color-ink), var(--color-mist));
-  --ink-soft:    light-dark(var(--color-graphite), var(--color-silver));
-  --ink-mute:    light-dark(var(--color-slate), var(--color-ash));
-  --ink-faint:   light-dark(var(--color-fog), var(--color-shadow));
-  --rule:        light-dark(var(--color-cloud), var(--color-charcoal));
-  --rule-soft:   light-dark(var(--color-snow), var(--color-onyx));
-  --accent:      light-dark(var(--color-green), var(--color-green-bright));
-  --accent-deep: light-dark(var(--color-green-deep), var(--color-green-light));
-  --accent-soft: light-dark(var(--color-sage), var(--color-moss));
-  --accent-bg:   light-dark(var(--color-mint), var(--color-pine));
+  /* ── semantic palette ────────────────────────────────────────────
+   * Role names, each referencing a primitive. A flipping token carries
+   * BOTH values inline via light-dark(); color-scheme (below) picks. A
+   * single-value token is theme-invariant on purpose. The -3q/-2q/-1q
+   * alphas (75/50/25 %) are color-mix of their own base, so a flipped
+   * base re-tints them automatically.
+   * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
+  --palette-accent:    var(--color-red);
+  --palette-accent-bg: color-mix(in srgb, var(--color-red) 10%, transparent);
+  --palette-text:      light-dark(var(--color-black), var(--color-mist));
+  --palette-grid:      light-dark(var(--color-cloud), var(--color-onyx));
+
+  --palette-bg: light-dark(var(--color-white), var(--color-ink));
+  --palette-bg-3q:
+    light-dark(
+      color-mix(in srgb, var(--color-white) 75%, transparent),
+      color-mix(in srgb, var(--color-ink) 82%, transparent)
+    )
+  ;
+  --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
+  --palette-bg-1q: color-mix(in srgb, var(--palette-bg) 25%, transparent);
+
+  --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
+  --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
+
+  --palette-panel:    light-dark(var(--color-snow), var(--color-charcoal));
+  --palette-ink:      var(--color-ink);
+  --palette-ink-grey: light-dark(var(--color-ink-grey), var(--color-silver));
+  --palette-rule:     light-dark(var(--color-cloud), var(--color-graphite));
+
+  /* ── type ramp ────────────────────────────────────────────────────
+   * ~5 content sizes (display / heading / lede / body / small), reused
+   * everywhere; the compact rail chrome adds two denser steps
+   * (compact / fine / micro). No ad-hoc per-component sizes. Every rem
+   * value is a multiple of 0.125rem (css-naming rule 13). */
+  --fs-display: clamp(2rem, 8vw, 4rem); /* Manifesto headline only */
+  --fs-heading: 1.5rem;                 /* section h2, stat numerals */
+  --fs-lede:    1.125rem;               /* Manifesto lede */
+  --fs-body:    1rem;                   /* prose, body copy */
+  --fs-small:   0.875rem;               /* captions, supplement, nav */
+  --fs-compact: 0.8125rem;              /* dense controls, code terminal */
+  --fs-fine:    0.75rem;                /* mono labels, chips, fine print */
+  --fs-micro:   0.625rem;               /* rail micro group labels */
 
   /* radii (subtle, print-feel) */
   --r-1: 2px;
@@ -80,31 +101,23 @@
   --r-3: 6px;
   --r-4: 8px;
 
-  /* layout */
-  --home-max:     1280px;
-  --home-pad-x:   56px;
+  /* layout — ziano's calmer measure + fluid gutter */
+  --max-w-layout: 68rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
 
-  @media (max-width: 880px) {
-    --home-pad-x: 24px;
-  }
-
-  /* Dark inverted code blocks in BOTH themes — terminal-style, per the
-     B v2 design (mirrors manual.css's `--m-code-bg`/`--m-code-fg`).
-     Deliberately constant (not light-dark()) — see `.code-dark`'s own
-     comment for why it still needs a hairline border. */
+  /* Terminal-dark code panel — theme-INVARIANT in both modes (owner-
+     approved, mirrors ziano's --palette-ink usage). Needs a fixed faint
+     hairline so it doesn't go edgeless once the page bg is also dark
+     (web-style.md dark-mode gotcha). */
   --code-bg: var(--color-ink);
-  --code-fg: #e5e5e0;
+  --code-fg: color-mix(in srgb, var(--color-mist) 90%, transparent);
 
   /* Single source of truth: the masthead checkbox
-     (`input[name="dark-mode"]`, `_home.html`). Default light; the
-     `:has()` below flips the whole page's `light-dark()` tokens at
-     once. `color-scheme` also themes native UI (scrollbars, form
-     controls). The checkbox's initial `checked` state is restored by
-     a pre-paint inline script placed immediately after it — see
-     `_home.html` — so there's no flash on first paint. Same
-     `localStorage` key ('theme') as the docs site's own toggle, so
-     the preference carries over between the homepage and `/docs/`.
-     (light-dark(): Baseline 2024.) */
+     (`input[name="dark-mode"]`). Default light; the `:has()` below flips
+     the whole page's `light-dark()` tokens at once. The checkbox's
+     initial state is restored by a pre-paint inline script placed right
+     after it (see `_home.html`) — no flash. Same `localStorage` key
+     ('theme') as the docs toggle, so the preference carries over. */
   color-scheme: light;
 }
 
@@ -115,29 +128,22 @@
 /* ─── reset & base ────────────────────────────────────────────────── */
 
 body.home {
-  margin: 0;
-  font-family: var(--han-font-default);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--ink);
-  background: var(--paper);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  font-feature-settings: "kern", "liga", "calt";
+  & {
+    margin: 0;
+    font-family: var(--han-font-default);
+    font-size: var(--fs-body);
+    line-height: 1.8;
+    color: var(--palette-text);
+    background: var(--palette-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
 }
-body.home * { box-sizing: border-box; }
-body.home a { color: inherit; text-decoration: none; }
-body.home img, body.home svg { display: block; max-width: 100%; }
-
-/* ─── type ramp ──────────────────────────────────────────────────── */
-
-.t-display { font-family: var(--han-font-alternative); font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; }
-.t-h1      { font-family: var(--han-font-alternative); font-weight: 500; font-size: 64px; line-height: 1.2; letter-spacing: 0.02em; margin: 0; }
-.t-h2      { font-family: var(--han-font-alternative); font-weight: 500; font-size: 48px; line-height: 1.25; margin: 0; }
-.t-h3      { font-family: var(--han-font-alternative); font-weight: 500; font-size: 22px; line-height: 1.4; margin: 0; }
-.t-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--ink-mute); }
-.t-mono    { font-family: var(--font-mono); font-size: 13px; }
-.t-en        { font-family: var(--han-font-latin-serif), serif; color: var(--accent-deep); }
 
 /* ─── helpers ───────────────────────────────────────────────────── */
 
@@ -150,73 +156,13 @@ body.home img, body.home svg { display: block; max-width: 100%; }
   white-space: nowrap;
 }
 
-.muted   { color: var(--ink-mute); }
-.faint   { color: var(--ink-faint); }
-.accent  { color: var(--accent-deep); }
-.hairline { border-top: 1px solid var(--rule); }
-
-/* ─── Cta (shared call-to-action primitive) ─────────────────────────
- * Variants: `accent` (top-nav), `primary` (page actions), `ghost`
- * (secondary).  Used by Hero header, Hero pitch, Getting-started, etc.
- * Markup: `<a class="Cta" data-variant="primary|accent|ghost">…</a>`. */
-
-.Cta {
-  & {
-    display: inline-flex;
-    align-items: center;
-    min-block-size: 2rem;
-    gap: 0.625rem;
-    text-decoration: none;
-    font-family: var(--han-font-default);
-    font-weight: 500;
-    line-height: 1;
-    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
-  }
-
-  &[data-variant="accent"] {
-    background: var(--accent);
-    color: #fff;
-    padding: 0.5rem 0.875rem;
-    border-radius: 5px;
-    font-size: 0.75rem;
-
-    &:hover { background: var(--accent-deep); }
-  }
-
-  &[data-variant="primary"] {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 0.75rem 1.375rem;
-    border-radius: var(--r-2);
-    font-size: 0.875rem;
-    letter-spacing: 0.08em;
-
-    &:hover { background: var(--accent-deep); }
-  }
-
-  &[data-variant="ghost"] {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--rule);
-    padding: 0.6875rem 1.125rem;
-    border-radius: var(--r-2);
-    font-size: 0.875rem;
-
-    &:hover {
-      border-color: var(--ink);
-      background: var(--paper-deep);
-    }
-  }
-}
-
 /* ─── Brand (the 漢.css wordmark) ────────────────────────────────────
- * Sizes: `lg` (hero masthead), `sm` (footer).  An `md` variant can
- * be added when the docs masthead picks up this primitive.
- * Markup: `<a class="Brand" data-size="lg|sm">
- *   <span data-part="mark">漢</span><span data-part="dot">.</span>
- *   <span data-part="ext">css</span>
- *   <span data-part="sep"></span><span data-part="sub">…</span>
- * </a>`. */
+ * `<a class="Brand" data-size="lg|sm"><span data-part="mark">漢</span>
+ *  <span data-part="dot">.</span><span data-part="ext">css</span>
+ *  <small>漢字標準格式</small></a>`. mark/dot/ext are wordmark atoms
+ * (no element expresses a wordmark fragment — data-* is right here); the
+ * subtitle is a real `<small>`, divided from the mark by a `::before`
+ * hairline rather than a decorative `<span>`. */
 
 .Brand {
   & {
@@ -229,62 +175,59 @@ body.home img, body.home svg { display: block; max-width: 100%; }
   [data-part="mark"] {
     font-family: var(--han-font-alternative);
     font-weight: 600;
-    color: var(--ink);
+    color: var(--palette-text);
   }
   [data-part="dot"] {
     font-family: var(--han-font-alternative);
     font-weight: 600;
-    color: var(--accent);
+    color: var(--palette-accent);
   }
   [data-part="ext"] {
     font-family: var(--han-font-latin-serif), serif;
-    color: var(--ink);
+    color: var(--palette-text);
   }
-  [data-part="sep"] {
-    display: inline-block;
-    inline-size: 1px;
-    background: var(--rule);
-    align-self: center;
-  }
-  [data-part="sub"] {
+  small {
     font-family: var(--han-font-default);
-    color: var(--ink-mute);
+    color: var(--palette-supplement-text);
     letter-spacing: 0.3em;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      inline-size: 1px;
+      background: var(--palette-rule);
+      vertical-align: middle;
+    }
   }
 
   &[data-size="lg"] {
-    [data-part="mark"], [data-part="dot"] { font-size: 1.5rem; }
-    [data-part="ext"]                     { font-size: 1.125rem; }
-    [data-part="sep"]                     { block-size: 0.875rem; margin-inline: 0.875rem; }
-    [data-part="sub"]                     { font-size: 0.75rem; }
+    [data-part="mark"], [data-part="dot"] { font-size: var(--fs-heading); }
+    [data-part="ext"]                     { font-size: var(--fs-lede); }
+    small        { font-size: var(--fs-fine); }
+    small::before { block-size: 0.875rem; margin-inline: 0.875rem; }
   }
 
   &[data-size="sm"] {
-    [data-part="mark"], [data-part="dot"] { font-size: 1.125rem; }
-    [data-part="ext"]                     { font-size: 0.875rem; }
-    [data-part="sep"]                     { block-size: 0.75rem; margin-inline: 0.625rem; }
-    [data-part="sub"]                     { font-size: 0.625rem; }
+    [data-part="mark"], [data-part="dot"] { font-size: var(--fs-lede); }
+    [data-part="ext"]                     { font-size: var(--fs-small); }
+    small        { font-size: var(--fs-micro); }
+    small::before { block-size: 0.75rem; margin-inline: 0.625rem; }
   }
 }
 
 /* ─── Toggle (shared switch component) ─────────────────────────────
- * `<label class="Toggle"><input type="checkbox"><span>…</span></label>`
- * — a real checkbox with `appearance: none` so the input itself
- * paints the track, plus `::before` for the thumb.  `:checked`
- * drives the slide and colour shift entirely in CSS.  Used by
- * the hero `.FeatureToggles` and the playground's rule list.
- *
- * Section-specific layout (vertical vs horizontal, gap, etc.)
- * is set by the parent context (`.FeatureToggles`,
- * `.PlaygroundRules`), not here. */
+ * `<label class="Toggle"><span>…</span><input type="checkbox"></label>`
+ * — a real checkbox with `appearance: none`; the input paints the track,
+ * `::before` the thumb; `:checked` drives the slide entirely in CSS.
+ * Section layout (gap, direction) is set by the parent context. */
 .Toggle {
   & {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     font-family: var(--han-font-default);
-    font-size: 0.75rem;
-    color: var(--ink-mute);
+    font-size: var(--fs-fine);
+    color: var(--palette-supplement-text);
     cursor: pointer;
     user-select: none;
     transition: color 150ms ease;
@@ -296,8 +239,8 @@ body.home img, body.home svg { display: block; max-width: 100%; }
     inline-size: 2rem;
     block-size: 1.125rem;
     margin: 0;
-    background: var(--rule);
-    border: 1px solid var(--rule);
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
     border-radius: 1rem;
     position: relative;
     cursor: pointer;
@@ -309,134 +252,64 @@ body.home img, body.home svg { display: block; max-width: 100%; }
       inset-block: 0.0625rem;
       inset-inline-start: 0.0625rem;
       inline-size: 0.875rem;
-      background: #fff;
+      background: var(--palette-bg);
       border-radius: 50%;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
       transition: inset-inline-start 150ms ease, background-color 150ms ease;
     }
 
     &:checked {
-      background: var(--accent-bg);
-      border-color: var(--accent-soft);
+      background: var(--palette-accent-bg);
+      border-color: var(--palette-accent);
       &::before {
         inset-inline-start: calc(100% - 1rem);
-        background: var(--accent);
+        background: var(--palette-accent);
       }
     }
 
     &:focus-visible {
-      outline: 2px solid var(--accent-soft);
+      outline: 2px solid var(--palette-accent);
       outline-offset: 2px;
     }
   }
 
-  &:has(input:checked) { color: var(--accent-deep); }
-}
-
-/* ─── hover annotation system (data-annot) ──────────────────────── */
-
-[data-annot] {
-  & {
-    position: relative;
-    cursor: help;
-    transition: background-color 220ms ease;
-    border-radius: var(--r-1);
-  }
-
-  &:hover { background-color: var(--accent-bg); }
-
-  &::after {
-    content: attr(data-annot);
-    position: absolute;
-    bottom: calc(100% + 0.5rem);
-    left: 50%;
-    transform: translateX(-50%) translateY(0.25rem);
-    font-family: var(--han-font-default);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 0.25rem 0.625rem;
-    border-radius: var(--r-1);
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 180ms ease, transform 220ms ease;
-    z-index: 20;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    bottom: calc(100% + 0.25rem);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-top-color: var(--ink);
-    opacity: 0;
-    transition: opacity 180ms ease;
-    z-index: 20;
-  }
-
-  &:hover::after  { opacity: 1; transform: translateX(-50%) translateY(0); }
-  &:hover::before { opacity: 1; }
+  &:has(input:checked) { color: var(--palette-accent); }
 }
 
 /* ─── code blocks ───────────────────────────────────────────────── */
 
-body.home pre, body.home code { font-family: var(--font-mono); font-size: 13px; }
-/* 通用亮色 code 框——站④的 .CodePane 終端暗色面板自管樣式，
-   用 :where() 豁免（零特異度，不跟 controls.css 打 cascade 架）。 */
-body.home pre:where(:not(.CodePane pre)) {
-  background: var(--paper-deep);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-2);
-  padding: 18px 22px;
-  overflow-x: auto;
-  line-height: 1.6;
-  color: var(--ink-soft);
-}
-body.home code:not(pre code) {
-  background: var(--paper-deep);
-  border: 1px solid var(--rule-soft);
-  padding: 1px 6px;
-  border-radius: var(--r-1);
-  font-size: 0.88em;
-  color: var(--accent-deep);
-}
-/* `--code-bg`/`--code-fg` are deliberately constant, not light-dark() —
-   this surface stays dark-terminal-styled in both themes. Once the
-   page background also goes dark, a `transparent` border makes it
-   edgeless — give it a fixed faint hairline instead (web-style.md's
-   dark-mode gotcha). */
-.code-dark {
-  background: var(--code-bg) !important;
-  color: var(--code-fg) !important;
-  border-color: color-mix(in srgb, var(--color-mist) 16%, transparent) !important;
-}
+body.home {
+  pre, code { font-family: var(--font-mono); font-size: var(--fs-compact); }
 
-/* token colours for inline code highlighting */
-.tok-key  { color: #aa6420; }
-.tok-fn   { color: var(--accent-deep); }
-.tok-str  { color: #7d6f33; }
-.tok-com  { color: var(--ink-faint); }
-.tok-num  { color: #aa6420; }
-.tok-tag  { color: #4a5a8a; }
+  /* generic light code chrome — station④'s `.CodePane` terminal panel
+     opts out via :where() (zero specificity, no cascade fight). */
+  pre:where(:not(.CodePane pre)) {
+    background: var(--palette-panel);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-2);
+    padding: 18px 22px;
+    overflow-x: auto;
+    line-height: 1.6;
+    color: var(--palette-text);
+  }
+  code:not(pre code) {
+    background: var(--palette-panel);
+    border: 1px solid var(--palette-grid);
+    padding: 1px 6px;
+    border-radius: var(--r-1);
+    font-size: 0.875em;
+    color: var(--palette-accent);
+  }
+}
 
 /* ─── selection ─────────────────────────────────────────────────── */
 
-::selection { background: var(--accent-bg); color: var(--accent-deep); }
+::selection { background: var(--palette-accent-bg); color: var(--palette-accent); }
 
 /* ─── LangSwitcher (rendered by the homepage Vite plugin) ──────────
- * Markup: `<div class="LangSwitcher" data-lang-switcher>
- *   <button>… trigger flag/label/caret …</button>
- *   <ul hidden>
- *     <li data-part="label">…</li>
- *     <li><a><span data-part="flag">…</span>…</a></li> × N
- *     <li data-part="foot">…</li>
- *   </ul>
- * </div>`.  JS toggles the `<ul>`'s `hidden` attribute. */
+ * `<div class="LangSwitcher" data-lang-switcher><button>…icon/caret…
+ *  </button><ul hidden><li data-part="label">…<li><a>…<li data-part=
+ *  "foot">…</ul></div>`. JS toggles the `<ul>`'s `hidden` attribute. */
 
 .LangSwitcher {
   & {
@@ -451,24 +324,24 @@ body.home code:not(pre code) {
     border: 0;
     cursor: pointer;
     padding: 0.25rem 0.4rem;
-    color: var(--ink-soft);
+    color: var(--palette-text);
     border-radius: 0.25rem;
     transition: background-color 150ms ease;
 
-    &:hover                 { background: var(--paper-deep); }
-    &[aria-expanded="true"] { background: var(--paper-deep); }
+    &:hover                 { background: var(--palette-panel); }
+    &[aria-expanded="true"] { background: var(--palette-panel); }
 
     /* 文A bilingual glyph — universal i18n icon (cf. Google Translate).
-       Two superimposed characters of equal visual weight in matching
-       ink color. Sans-en for A so its cap reads upright next to 文. */
+       Two superimposed characters of equal weight; sans-en for A so its
+       cap reads upright next to 文. */
     [data-part="icon"] {
       display: inline-flex;
       align-items: center;
-      font-size: 1rem;
+      font-size: var(--fs-body);
       line-height: 1;
       letter-spacing: -0.22em;
       padding-inline-end: 0.22em;
-      color: var(--ink);
+      color: var(--palette-text);
 
       [data-glyph="zh"] {
         font-family: var(--han-font-alternative);
@@ -483,17 +356,17 @@ body.home code:not(pre code) {
       }
     }
 
-    [data-part="caret"] { font-size: 0.5rem; color: var(--ink-faint); }
+    [data-part="caret"] { font-size: 0.5rem; color: var(--palette-supplement-text-2q); }
   }
 
   > ul {
     position: absolute;
-    top: calc(100% + 0.375rem);
-    right: 0;
+    inset-block-start: calc(100% + 0.375rem);
+    inset-inline-end: 0;
     inline-size: 15rem;
-    background: var(--paper);
-    border: 1px solid var(--ink);
-    box-shadow: 4px 4px 0 rgba(14, 14, 16, 0.08);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-text);
+    box-shadow: 4px 4px 0 var(--palette-bg-3q);
     z-index: 50;
     padding: 0.625rem 0;
     margin: 0;
@@ -503,11 +376,11 @@ body.home code:not(pre code) {
 
     > li[data-part="label"] {
       font-family: var(--font-mono);
-      font-size: 0.625rem;
+      font-size: var(--fs-micro);
       letter-spacing: 0.3em;
-      color: var(--ink-faint);
+      color: var(--palette-supplement-text-2q);
       padding: 0.125rem 0.875rem 0.5rem;
-      border-bottom: 1px solid var(--rule-soft);
+      border-block-end: 1px solid var(--palette-grid);
     }
 
     > li[data-part="foot"] {
@@ -515,11 +388,11 @@ body.home code:not(pre code) {
       align-items: flex-start;
       gap: 0.375rem;
       padding: 0.625rem 0.875rem 0.25rem;
-      margin-top: 0.375rem;
-      border-top: 1px solid var(--rule-soft);
+      margin-block-start: 0.375rem;
+      border-block-start: 1px solid var(--palette-grid);
       font-family: var(--han-font-alternative);
-      font-size: 0.625rem;
-      color: var(--ink-mute);
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text);
       line-height: 1.5;
     }
 
@@ -529,18 +402,18 @@ body.home code:not(pre code) {
       gap: 0.625rem;
       inline-size: 100%;
       padding: 0.5rem 0.875rem;
-      text-align: left;
+      text-align: start;
       font-family: var(--han-font-default);
-      font-size: 0.8125rem;
-      color: var(--ink);
+      font-size: var(--fs-compact);
+      color: var(--palette-text);
 
-      &:hover     { background: var(--paper-deep); }
-      &.is-active { background: var(--accent-bg); }
+      &:hover     { background: var(--palette-panel); }
+      &.is-active { background: var(--palette-accent-bg); }
 
       [data-part="flag"] {
         font-family: var(--han-font-alternative);
-        font-size: 1.125rem;
-        color: var(--accent-deep);
+        font-size: var(--fs-lede);
+        color: var(--palette-accent);
         inline-size: 1.375rem;
         text-align: center;
       }
@@ -552,34 +425,30 @@ body.home code:not(pre code) {
         gap: 1px;
       }
 
-      [data-part="full"]  { color: var(--ink); font-size: 0.8125rem; }
-      [data-part="code"]  { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-faint); letter-spacing: 0.05em; }
-      [data-part="check"] { color: var(--accent-deep); font-size: 0.75rem; }
+      [data-part="full"]  { color: var(--palette-text); font-size: var(--fs-compact); }
+      [data-part="code"]  { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--palette-supplement-text-2q); letter-spacing: 0.05em; }
+      [data-part="check"] { color: var(--palette-accent); font-size: var(--fs-fine); }
     }
   }
 }
 
 /* ─── ThemeToggle (the sun/moon checkbox) ───────────────────────────
- * Markup: `<label class="ThemeToggle"><input type="checkbox"
- *   name="dark-mode">…pre-paint script…<svg data-name="sun">…
- *   <svg data-name="moon">…</label>`. A real checkbox drives
- * `:root:has(input[name='dark-mode']:checked)` (home.css's `:root`
- * block) — no JS class toggling; `theme.js` only persists the choice
- * to `localStorage`. Mirrors `manual.css`'s `button[data-theme-toggle]`
- * sun/moon affordance, state read via `:has(:checked)` instead of
- * `:root[data-theme]`. */
+ * `<label class="ThemeToggle"><input type="checkbox" name="dark-mode">
+ *  …pre-paint script…<svg data-name="sun"><svg data-name="moon"></label>`.
+ * A real checkbox drives `:root:has(input[name='dark-mode']:checked)` —
+ * no JS class toggling; `theme.js` only persists the choice. */
 
 .ThemeToggle {
   & {
     display: inline-flex;
     align-items: center;
     padding: 0.25em;
-    color: var(--ink-mute);
+    color: var(--palette-supplement-text);
     cursor: pointer;
     line-height: 0;
   }
 
-  &:hover { color: var(--accent-deep); }
+  &:hover { color: var(--palette-accent); }
 
   input[type="checkbox"] {
     position: absolute;
@@ -598,23 +467,20 @@ body.home code:not(pre code) {
 }
 
 /* ─── Topbar (homepage chrome — brand, nav, lang switcher, version) ─
- * Markup: `<header class="Topbar"><a class="Brand">…</a><nav>
- *   <a href="…">…</a>…<span data-part="sep"></span>{{ langSwitcher }}
- *   <span class="VersionTag">…</span></nav></header>`, mounted in
- * `_home.html` above `<aside class="Rail">`/`<main class="han">`.
- * Deliberately NOT sticky/fixed — `rail.css`'s side-form sticky rail
- * assumes it scrolls away with the page (see that file's comment); a
- * later pass pinning the Topbar needs to add a matching
- * `inset-block-start` offset there. */
+ * `<header class="Topbar"><a class="Brand">…</a><nav><a>…</a>…
+ *  {{ langSwitcher }}<label class="ThemeToggle">…</label>
+ *  <span class="VersionTag">…</span></nav></header>`, mounted in
+ * `_home.html` above the rail + `<main class="han">`. Deliberately NOT
+ * sticky (the side rail assumes the Topbar scrolls away — see rail.css). */
 
 .Topbar {
   & {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.125rem var(--home-pad-x);
-    border-block-end: 1px solid var(--rule-soft);
-    background: var(--paper);
+    padding: 1.125rem var(--gutter);
+    border-block-end: 1px solid var(--palette-grid);
+    background: var(--palette-bg);
   }
 
   nav {
@@ -624,24 +490,30 @@ body.home code:not(pre code) {
 
     > a {
       font-family: var(--han-font-default);
-      font-size: 0.75rem;
-      color: var(--ink-soft);
+      font-size: var(--fs-fine);
+      color: var(--palette-ink-grey);
       letter-spacing: 0.05em;
       text-decoration: none;
 
-      &:hover { color: var(--accent-deep); }
+      &:hover { color: var(--palette-accent); }
     }
 
-    [data-part="sep"] {
+    /* the divider between the text links and the tools cluster is a
+       hairline on the LangSwitcher (upward relationship, css-naming
+       rule 1) — no decorative `<span>` in the DOM. */
+    .LangSwitcher::before {
+      content: '';
       display: inline-block;
       inline-size: 1px;
       block-size: 0.875rem;
-      background: var(--rule);
+      margin-inline-end: 1rem;
+      background: var(--palette-rule);
+      vertical-align: middle;
     }
   }
 
   @media (max-width: 640px) {
-    & { padding: 0.875rem var(--home-pad-x); flex-wrap: wrap; gap: 0.75rem; }
+    & { padding: 0.875rem var(--gutter); flex-wrap: wrap; gap: 0.75rem; }
     nav { gap: 0.875rem; flex-wrap: wrap; }
   }
 }
@@ -650,6 +522,6 @@ body.home code:not(pre code) {
 
 .VersionTag {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--accent-deep);
+  font-size: var(--fs-fine);
+  color: var(--palette-accent);
 }
