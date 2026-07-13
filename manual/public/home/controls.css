@@ -4,8 +4,9 @@
  *
  * HP-4: renamed from `playground.css` (the old two-column playground
  * section this file used to lay out is gone; HP-3 moved every control
- * into the rail — `.Rail` / `.RailScroll` / `.RailReset` chrome lives
- * in `rail.css`, imported after this file). What survives here:
+ * into the rail — `.Rail` and its nested `.Scroll` / `button.Reset`
+ * chrome lives in `rail.css`, imported after this file). What
+ * survives here:
  *
  *   - `.ControlGroup` / `.PlaygroundRules` / `.Toggle` (layout only —
  *     the primitive itself lives in `home.css`) / `.Field` /

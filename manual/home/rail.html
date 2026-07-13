@@ -14,18 +14,19 @@
   are pure CSS in `rail.css`, driven by the checkbox-label `:has()`
   pattern (no JS needed for the sheet itself).
 -->
-<div class="RailInner">
-  <input type="checkbox" id="rail-sheet" class="RailSheetToggle" data-rail-sheet-toggle>
-  <label class="RailGrip" for="rail-sheet" data-rail-grip>
+<div class="Inner">
+  <input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
+  <label class="Grip" for="rail-sheet" data-rail-grip>
     <span data-part="bar" aria-hidden="true"></span>
     <span data-part="label">{{ railHeader }}</span>
   </label>
 
-  <div class="RailScroll">
+  <div class="Scroll">
     <!-- 模組（layer 級）— 每個 layer toggle 領著自己的細項，縮排標示從屬 -->
     <details class="ControlGroup">
       <summary>{{ pgGrpLayers }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpLayers }}</legend>
         <label class="Toggle">
           <span>{{ pgTogSemantics }}</span>
           <input type="checkbox" data-cfg-key="semantics" checked>
@@ -73,6 +74,7 @@
     <details class="ControlGroup">
       <summary>{{ pgGrpLines }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpLines }}</legend>
         <label class="Toggle">
           <span>{{ pgTogSqueeze }}</span>
           <input type="checkbox" data-cfg-key="squeeze" checked>
@@ -101,6 +103,7 @@
     <details class="ControlGroup" open>
       <summary>{{ pgGrpFonts }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpFonts }}</legend>
         <label class="Field">
           <span>{{ pgCursive }}</span>
           <select data-cfg-key="cursive">
@@ -127,6 +130,7 @@
     <details class="ControlGroup" open>
       <summary>{{ pgGrpPunct }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpPunct }}</legend>
         <label class="Field"><span>{{ pgPunctHant }}</span>
           <select data-cfg-key="punct.hant">
             <option value="MOE" selected>MOE</option><option value="JIS">JIS</option>
@@ -153,6 +157,7 @@
     <details class="ControlGroup">
       <summary>{{ pgGrpHeritage }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpHeritage }}</legend>
         <label class="Field">
           <span>{{ pgHeritage }}</span>
           <select data-cfg-key="heritage">
@@ -182,6 +187,7 @@
     <details class="ControlGroup">
       <summary>{{ pgGrpJs }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpJs }}</legend>
         <label class="Toggle">
           <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
           <input type="checkbox" data-cfg-key="fallbacks">
@@ -251,6 +257,6 @@
       </div>
     </section>
 
-    <button type="button" class="RailReset" data-rail-reset>{{ railReset }}</button>
+    <button type="button" class="Reset" data-rail-reset>{{ railReset }}</button>
   </div>
 </div>

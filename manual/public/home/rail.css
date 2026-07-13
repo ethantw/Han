@@ -17,52 +17,21 @@
  * (HP-4, mirrors `manual.css`'s pattern) — this file inherits
  * `--paper`/`--ink*`/`--rule` same as every other homepage component,
  * no dark-specific overrides needed here.
+ *
+ * Structure (css-naming SKILL rule 4): `.Rail` owns its inner parts as
+ * nested classes — `.Inner` / `.Scroll` / `.Grip` / `.SheetToggle` /
+ * `button.Reset` — no `Rail-` prefix. `.Chooser` (owner tooling) is an
+ * independent floating widget with its own PascalCase name, not a
+ * `Rail` sub-part.
  */
 
-/* ─── Rail chrome (all forms/sizes) ─────────────────────────────── */
+/* ─── side/top grid — affects the whole page shell (body/Topbar/main),
+   not just .Rail, so it's scoped to the body context rather than
+   nested inside a component class (SKILL 1a's "element it affects"
+   here is the body-level grid, not a PascalCase component). ────── */
 
-.Rail {
-  & {
-    background: var(--paper-deep);
-    border-inline-end: 1px solid var(--rule);
-  }
-
-  .RailSheetToggle { display: none; }
-  .RailGrip { display: none; }
-}
-
-.RailInner {
-  display: flex;
-  flex-direction: column;
-  min-block-size: 0;
-}
-
-.RailScroll {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px 18px;
-}
-
-.RailReset {
-  align-self: flex-start;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--ink-mute);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-2);
-  padding: 6px 14px;
-  cursor: pointer;
-  transition: border-color 150ms ease, color 150ms ease;
-
-  &:hover { border-color: var(--ink); color: var(--ink); }
-}
-
-/* ─── Side form (≥64rem) — sticky left column ───────────────────── */
-
-@media (min-width: 64rem) {
-  body[data-rail="side"] {
+body[data-rail="side"] {
+  @media (min-width: 64rem) {
     display: grid;
     grid-template-columns: 280px 1fr;
     align-items: start;
@@ -72,30 +41,15 @@
     > main.han { grid-column: 2; }
   }
 
-  body[data-rail="side"] .Rail {
-    /* The Topbar isn't fixed/sticky (yet) — it scrolls away with the
-       page, so the rail only needs to stick to the true viewport top.
-       If a later pass pins the Topbar, this needs an
-       `inset-block-start` offset matching its block-size. */
-    position: sticky;
-    inset-block-start: 0;
-    max-block-size: 100dvh;
-    overflow-y: auto;
-  }
-}
-
-/* ─── Side form, 52–64rem — narrower column (HP-4 call) ───────────
-   Below 64rem the desktop grid has no ≥64rem media query to fall back
-   on; rather than force a JS-set `data-rail` value we don't control
-   from CSS, the side form keeps its sticky grid but shrinks the rail
-   column (280px → 240px) so it doesn't crowd `main.han` at tablet
-   widths. The top form has no dedicated rule here — below 64rem it
-   degrades to `.RailScroll`'s base (column, in-flow) layout, which
-   reads fine as a plain block sitting above the content; simplest of
-   the two forms to leave alone at this width. */
-
-@media (min-width: 52rem) and (max-width: 63.9375rem) {
-  body[data-rail="side"] {
+  /* 52–64rem — narrower column (HP-4 call). Below 64rem the desktop
+     grid has no ≥64rem media query to fall back on; rather than force
+     a JS-set `data-rail` value we don't control from CSS, the side
+     form keeps its sticky grid but shrinks the rail column
+     (280px → 240px) so it doesn't crowd `main.han` at tablet widths.
+     The top form has no dedicated rule here — below 64rem it degrades
+     to `.Scroll`'s base (column, in-flow) layout, which reads fine as
+     a plain block sitting above the content. */
+  @media (min-width: 52rem) and (max-width: 63.9375rem) {
     display: grid;
     grid-template-columns: 240px 1fr;
     align-items: start;
@@ -104,138 +58,204 @@
     > .Rail    { grid-column: 1; }
     > main.han { grid-column: 2; }
   }
-
-  body[data-rail="side"] .Rail {
-    position: sticky;
-    inset-block-start: 0;
-    max-block-size: 100dvh;
-    overflow-y: auto;
-  }
 }
 
-/* ─── Top form (≥64rem) — sticky toolbar, groups scroll horizontally */
+/* ─── Rail chrome (all forms/sizes) ─────────────────────────────── */
 
-@media (min-width: 64rem) {
-  body[data-rail="top"] .Rail {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 30;
-    inline-size: 100%;
-    border-inline-end: 0;
-    border-block-end: 1px solid var(--rule);
+.Rail {
+  & {
+    background: var(--paper-deep);
+    border-inline-end: 1px solid var(--rule);
   }
 
-  body[data-rail="top"] .RailScroll {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 24px;
-    overflow-x: auto;
-    padding-inline: var(--home-pad-x, 24px);
+  .SheetToggle { display: none; }
+  .Grip { display: none; }
 
-    > .ControlGroup { min-inline-size: 220px; flex: none; }
-    > .RailReset    { flex: none; margin-inline-start: auto; }
-  }
-}
-
-/* ─── <52rem — bottom sheet ──────────────────────────────────────
-   Both forms collapse into the same sheet below 52rem: fixed to the
-   viewport bottom, peeking at the grip only. A hidden checkbox +
-   `:has()` expands it — dependency-free, matches the project's
-   checkbox/`:has()` toggle convention (cf. the dark-mode recipe). */
-
-@media (max-width: 52rem) {
-  .Rail {
-    position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
-    z-index: 40;
-    max-block-size: 70dvh;
-    border-inline-end: 0;
-    border-block-start: 1px solid var(--rule);
-    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
-  }
-
-  .RailInner { max-block-size: inherit; }
-
-  /* 窄屏時 checkbox 要進 tab 序（鍵盤開合 sheet）——用 clip 式
-     sr-only 保持可聚焦；桌面沿用 base 的 display:none 不污染 tab 序。
-     同 specificity 後出者勝，毋須 !important。 */
-  .Rail .RailSheetToggle {
-    display: block;
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    clip-path: inset(50%);
-    overflow: hidden;
-    white-space: nowrap;
-  }
-
-  .Rail:has(.RailSheetToggle:focus-visible) .RailGrip {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  /* `.Rail .RailGrip` (not bare `.RailGrip`) to match the specificity
-     of the always-off base rule above — same specificity, later in the
-     cascade, wins without needing !important. */
-  .Rail .RailGrip {
+  .Inner {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 18px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--ink-mute);
-    cursor: pointer;
-    user-select: none;
+    flex-direction: column;
+    min-block-size: 0;
+  }
 
-    [data-part="bar"] {
-      inline-size: 2rem;
-      block-size: 3px;
-      border-radius: 2px;
-      background: var(--rule);
+  .Scroll {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px 18px;
+    }
+
+    /* Top form (≥64rem) — sticky toolbar, groups scroll horizontally */
+    @media (min-width: 64rem) {
+      body[data-rail="top"] & {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 24px;
+        overflow-x: auto;
+        padding-inline: var(--home-pad-x, 24px);
+
+        > .ControlGroup  { min-inline-size: 220px; flex: none; }
+        > button.Reset   { flex: none; margin-inline-start: auto; }
+      }
     }
   }
 
-  .RailScroll {
-    max-block-size: 0;
-    overflow-y: hidden;
-    padding-block: 0;
-    transition: max-block-size 200ms ease;
+  button.Reset {
+    & {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-mute);
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: border-color 150ms ease, color 150ms ease;
+    }
+
+    &:hover { border-color: var(--ink); color: var(--ink); }
   }
 
-  .RailInner:has(.RailSheetToggle:checked) .RailScroll {
-    max-block-size: calc(70dvh - 2.75rem);
-    overflow-y: auto;
-    padding-block: 16px;
+  /* Side form (≥64rem) — sticky left column. The Topbar isn't
+     fixed/sticky (yet) — it scrolls away with the page, so the rail
+     only needs to stick to the true viewport top. If a later pass
+     pins the Topbar, this needs an `inset-block-start` offset
+     matching its block-size. */
+  @media (min-width: 64rem) {
+    body[data-rail="side"] & {
+      position: sticky;
+      inset-block-start: 0;
+      max-block-size: 100dvh;
+      overflow-y: auto;
+    }
+
+    body[data-rail="top"] & {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 30;
+      inline-size: 100%;
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--rule);
+    }
+  }
+
+  /* Side form, 52–64rem — narrower column (see the body-level rule
+     above for why this width band exists). */
+  @media (min-width: 52rem) and (max-width: 63.9375rem) {
+    body[data-rail="side"] & {
+      position: sticky;
+      inset-block-start: 0;
+      max-block-size: 100dvh;
+      overflow-y: auto;
+    }
+  }
+
+  /* <52rem — bottom sheet. Both forms collapse into the same sheet
+     below 52rem: fixed to the viewport bottom, peeking at the grip
+     only. A hidden checkbox + `:has()` expands it — dependency-free,
+     matches the project's checkbox/`:has()` toggle convention (cf.
+     the dark-mode recipe). */
+  @media (max-width: 52rem) {
+    & {
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 40;
+      max-block-size: 70dvh;
+      border-inline-end: 0;
+      border-block-start: 1px solid var(--rule);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .Inner { max-block-size: inherit; }
+
+    /* 窄屏時 checkbox 要進 tab 序（鍵盤開合 sheet）——用 clip 式
+       sr-only 保持可聚焦；桌面沿用 base 的 display:none 不污染 tab
+       序。 Both the base (outside this query) and this rule compile
+       to the same `.Rail .SheetToggle` specificity — later in the
+       cascade wins without `!important`. */
+    .SheetToggle {
+      display: block;
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      clip-path: inset(50%);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    &:has(.SheetToggle:focus-visible) .Grip {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .Grip {
+      & {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--ink-mute);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      [data-part="bar"] {
+        inline-size: 2rem;
+        block-size: 3px;
+        border-radius: 2px;
+        background: var(--rule);
+      }
+    }
+
+    .Scroll {
+      max-block-size: 0;
+      overflow-y: hidden;
+      padding-block: 0;
+      transition: max-block-size 200ms ease;
+    }
+
+    .Inner:has(.SheetToggle:checked) .Scroll {
+      max-block-size: calc(70dvh - 2.75rem);
+      overflow-y: auto;
+      padding-block: 16px;
+    }
   }
 }
 
-/* ─── Chooser pill (owner tooling; see rail-chooser.js) ───────────
-   選型用，owner 定案後移除。 */
+/* ─── Chooser (owner tooling; see rail-chooser.js) ────────────────
+   選型用，owner 定案後移除。 Independent floating widget — keeps its
+   own PascalCase name, not a `Rail`-prefixed sub-part (SKILL rule 4). */
 
-.RailChooser {
-  position: fixed;
-  inset-inline-end: 1rem;
-  inset-block-end: 1rem;
-  z-index: 50;
-  display: flex;
-  gap: 2px;
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 3px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+.Chooser {
+  & {
+    position: fixed;
+    inset-inline-end: 1rem;
+    inset-block-end: 1rem;
+    z-index: 50;
+    display: flex;
+    gap: 2px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 3px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  }
 
   button {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--ink-mute);
-    background: transparent;
-    border: 0;
-    border-radius: 999px;
-    padding: 4px 10px;
-    cursor: pointer;
+    & {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      color: var(--ink-mute);
+      background: transparent;
+      border: 0;
+      border-radius: 999px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
 
     &.is-active {
       background: var(--accent-bg);
