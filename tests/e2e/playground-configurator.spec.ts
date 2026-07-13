@@ -74,35 +74,66 @@ test.describe('playground configurator', () => {
   })
 })
 
-test.describe('ziano delivery (Request B)', () => {
+test.describe('webfont delivery (Request B)', () => {
+  // The merged 「Web字體來源」 select (webfontDelivery cdn|npm|none) now
+  // governs BOTH the ziano heritage/cursive families AND diantenjeom —
+  // one control replacing the old zianoDelivery/zianoCdnSource pair. The
+  // CDN-source select (webfontCdnSource) shows only while delivery=cdn.
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
   })
 
-  test('bundler：預設 zianoDelivery=cdn → bash pane 無 webfont 套件，html pane 有 jsdelivr <link>', async ({ page }) => {
+  test('bundler：預設 webfontDelivery=cdn → bash pane 無 webfont 套件，html pane 有 jsdelivr ziano＋dtj <link>', async ({ page }) => {
     const bash = pane(page, 'bash')
     await expect(bash).not.toContainText('webfonts-shanggu-sans')
+    await expect(bash).not.toContainText('diantenjeom')
     const html = pane(page, 'html')
     await expect(html).toContainText('cdn.jsdelivr.net')
     await expect(html).toContainText('webfonts-shanggu-sans')
+    // DTJ now rides the same delivery as ziano — cdn → <link> beside it.
+    await expect(html).toContainText('diantenjeom')
   })
 
-  test('切 zianoDelivery=npm → bash pane 含 webfont 套件，html pane 消失', async ({ page }) => {
+  test('切 webfontDelivery=npm → bash/js pane 含 webfont 套件＋diantenjeom，html pane 消失', async ({ page }) => {
     // 字體 group 出廠即展開（<details open>），不需 openGroupOf。
-    await page.locator('[data-cfg-key="zianoDelivery"]').selectOption('npm')
-    await expect(pane(page, 'bash')).toContainText('webfonts-shanggu-sans')
+    await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('npm')
+    const bash = pane(page, 'bash')
+    await expect(bash).toContainText('webfonts-shanggu-sans')
+    // DTJ follows: npm → @hanzi.pro/diantenjeom dep + import.
+    await expect(bash).toContainText('@hanzi.pro/diantenjeom')
+    await expect(pane(page, 'js')).toContainText('@hanzi.pro/diantenjeom')
     await expect(page.locator('[data-out-panes] pre[data-lang="html"]')).toHaveCount(0)
   })
 
-  test('切回 cdn 後再切 zianoCdnSource=unpkg → html pane 連結改用 unpkg.com', async ({ page }) => {
-    await page.locator('[data-cfg-key="zianoCdnSource"]').selectOption('unpkg')
-    await expect(pane(page, 'html')).toContainText('unpkg.com')
+  test('webfontCdnSource=unpkg → html pane ziano 與 dtj 連結都改用 unpkg.com', async ({ page }) => {
+    await page.locator('[data-cfg-key="webfontCdnSource"]').selectOption('unpkg')
+    const html = pane(page, 'html')
+    await expect(html).toContainText('unpkg.com')
+    await expect(html).toContainText('webfonts-shanggu-sans')
+    await expect(html).toContainText('diantenjeom')
+    await expect(html).not.toContainText('cdn.jsdelivr.net')
   })
 
-  test('zianoDelivery=npm 時，CDN 來源選單隱藏', async ({ page }) => {
-    const $sourceField = page.locator('[data-cfg-ziano-cdn-source]')
+  test('切 webfontDelivery=none → 面板無 ziano／dtj，傳承字形選單落回 system，切回 cdn 復原 webfont', async ({ page }) => {
+    const heritage = page.locator('[data-cfg-key="heritage"]')
+    await expect(heritage).toHaveValue('webfont')
+
+    // 'none' cascades: heritage/cursive→system, punct.*→off, so no
+    // external webfont packages or links appear anywhere in the output.
+    await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('none')
+    await expect(heritage).toHaveValue('system')
+    await expect(page.locator('[data-out-panes]')).not.toContainText('webfonts-')
+    await expect(page.locator('[data-out-panes]')).not.toContainText('diantenjeom')
+
+    // leaving 'none' restores the memoised heritage value.
+    await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('cdn')
+    await expect(heritage).toHaveValue('webfont')
+  })
+
+  test('webfontDelivery≠cdn 時，CDN 來源選單隱藏', async ({ page }) => {
+    const $sourceField = page.locator('[data-cfg-webfont-cdn-source]')
     await expect($sourceField).toBeVisible()
-    await page.locator('[data-cfg-key="zianoDelivery"]').selectOption('npm')
+    await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('npm')
     await expect($sourceField).toBeHidden()
   })
 })

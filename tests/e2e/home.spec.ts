@@ -11,10 +11,13 @@ import { test, expect, type Page } from '@playwright/test'
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
  * `[data-out-panes]`, one `<figure class="CodePane">` per codegen.js
  * pane — no more global `[data-out-copy]`/single `[data-out-code]`);
- * the rail carries all 24 `data-cfg-key` controls (added zianoDelivery
- * + zianoCdnSource, Request B) in an accordion of `details.ControlGroup`
- * (模組／字體／標點規範 groups open by default, 繁體專項／行調整／
- * JavaScript closed), three metric sliders (the 直排/橫排 switch is
+ * the rail carries all 26 `data-cfg-key` controls (four module switches
+ * — semantics/prose/lines/fonts — in a non-collapsible block, and the
+ * merged Web字體來源 pair webfontDelivery + webfontCdnSource under 字體,
+ * Request B — replacing the old zianoDelivery/zianoCdnSource and the
+ * per-group 啟用 rows) in an accordion of `details.ControlGroup` (only
+ * the 字體 group ships open; 語意／長文／行調整／JavaScript closed; 度量
+ * and 模組 are flat non-collapsible sections), three metric sliders (the 直排/橫排 switch is
  * page chrome now — a floating pill, writing-switch.js)
  * (`[data-pg-sliders]`), each control row with its own ↺ default button. A separate
  * `[data-demo-lang]` chip row (top-right of `<main>`) switches which

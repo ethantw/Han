@@ -109,6 +109,9 @@ test.describe('Task A — restructured 字體 group', () => {
     ).toHaveText('Diantenjeom')
   })
 
+  // Relies on the default webfontDelivery='cdn': under 'none' the punct
+  // selects are forced to 'off' + disabled by the cascade, so this must
+  // run before any delivery change (default cdn keeps them live).
   test('all four punct selects emit their data-cfg-key as han-config-change source', async ({ page }) => {
     await page.addInitScript(() => {
       ;(window as unknown as { __src: string[] }).__src = []
