@@ -97,6 +97,97 @@
     color: var(--ink-soft);
     margin: 0;
   }
+
+  blockquote {
+    font-family: var(--han-font-accent);
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--ink-mute);
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 2px solid var(--rule);
+  }
+}
+
+
+/* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
+   `rail-metrics.js` sets `main.han.dataset.writing`) ═══════════════
+   Flips the WHOLE page vertical-rl — dramatic by design (owner
+   request). Bounded block-size + horizontal scroll so it doesn't
+   blow out the viewport; station④'s interactive snippet panel (tabs,
+   <pre>, <select>, buttons) and the demo-lang chip row stay
+   horizontal-tb inside it — vertical Latin-heavy code/controls read
+   as broken, not "dramatic". */
+
+main.han[data-writing="vertical"] {
+  & {
+    writing-mode: vertical-rl;
+    max-block-size: 85dvh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-inline-end: 1px; /* clears the scrollbar from hairline borders */
+  }
+
+  .DemoLangSwitch,
+  #station-snippet .ViewTabs,
+  #station-snippet pre,
+  #station-snippet select,
+  #station-snippet button {
+    writing-mode: horizontal-tb;
+  }
+}
+
+
+/* ═══ DemoLangSwitch ═════════════════════════════════════════════
+   Chip row, top-right of the content column — switches which language
+   the SPECIMEN (station copy) demonstrates, independent of the site's
+   own UI locale (`_home.html`'s `lang="{{ htmlLang }}"`). JS
+   (`demo-lang.js`) sets `main.han[lang]` to the checked chip's value;
+   `:lang()` rules (heritage hant-only gate, DTJ per-locale punctuation)
+   re-evaluate natively from there. Same radio-fieldset +
+   `:has(:checked)` pattern as station④'s `.ViewTabs`. */
+
+.DemoLangSwitch {
+  & {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    max-inline-size: var(--home-max);
+    margin-inline: auto;
+    padding: 1.5rem var(--home-pad-x) 0;
+    border: 0;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink-mute);
+    font-family: var(--han-font-default);
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color    150ms ease,
+      color           150ms ease;
+
+    &:hover { border-color: var(--ink); color: var(--ink); }
+
+    &:has(input:checked) {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+  }
 }
 
 

@@ -31,12 +31,13 @@ export const HOME_I18N = {
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
-    pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
+    pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
+    pgWritingLabel: '書寫方向', pgWritingHorizontal: '橫排', pgWritingVertical: '直排',
 
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化',
     pgTogProse: '行文版式',
-    pgProseScope: '作用選擇器',
+    pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
@@ -48,7 +49,9 @@ export const HOME_I18N = {
     pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
-    pgHeritage: '傳承字形（僅繁體）',
+    pgHeritage: '傳承字形',
+    pgGrpHeritage: '繁體專項',
+    pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
     pgCursive: '楷體',
@@ -63,6 +66,8 @@ export const HOME_I18N = {
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
+    dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
+
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: '印刷品般的', mfH1b: '漢字排版',
     mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
@@ -73,15 +78,18 @@ export const HOME_I18N = {
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
+    ssJaLead: '日文引文亦各得其所——',
+    ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+    stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
     slEyebrow: '叁・行的調整', slH2: '行的呼吸',
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
-    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
@@ -101,12 +109,13 @@ export const HOME_I18N = {
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字级', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
-    pgSliderTracking: '字距', pgSliderTrackingEn: 'letter-spacing',
+    pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
+    pgWritingLabel: '书写方向', pgWritingHorizontal: '横排', pgWritingVertical: '直排',
 
     pgGrpLayers: '模块',
     pgTogSemantics: '语意强化',
     pgTogProse: '行文版式',
-    pgProseScope: '作用选择器',
+    pgProseScope: '作用选择器', pgProseScopeHint: '仅影响生成码',
     pgCiteMarks: '书名号',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
     pgEmSymbol: '着重号', pgEmPosition: '着重号位置',
@@ -118,7 +127,9 @@ export const HOME_I18N = {
     pgTogAutospace: '跨文种混排间隙',
     pgAutospaceMode: '进阶模式',
     pgGrpFonts: '字体',
-    pgHeritage: '传承字形（仅繁体）',
+    pgHeritage: '传承字形',
+    pgGrpHeritage: '繁体专项',
+    pgBaseGeneric: '默认字体',
     pgHeritageSans: '黑体家族', pgHeritageSerif: '明体家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
     pgCursive: '楷体',
@@ -133,6 +144,8 @@ export const HOME_I18N = {
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '复制', pgCopied: '已复制',
 
+    dlLegend: '范文语言', dlHant: '繁', dlHans: '简', dlJa: '日', dlKo: '韩',
+
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: '印刷品般的', mfH1b: '汉字排版',
     mfLede: '这是一套以CSS custom properties与少量JavaScript撑起的汉字排版系统——标点悬挂、着重号、注音、跨文种混排，字距不假空格字符，间隙定量0.125em，一如铅字时代的讲究。',
@@ -143,15 +156,18 @@ export const HOME_I18N = {
     ssP1: 'HTML5语意元素在汉字排版下自有其正确样式——<em>着重号</em>标记文中紧要之词，效果一如手写圈点。',
     ssP2: '引用书名时可用<cite>说文解字</cite>标记。书名号默认关闭（<code>--han-cite-title-marks: none</code>），此处另加一行<code>--han-cite-title-marks: bracket</code>方得见《》。',
     ssP3: '专有名词可用<u>专名号</u>标示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一类缩写，则交由&lt;abbr&gt;元素承载完整释义。',
+    ssJaLead: '日文引文亦各得其所——',
+    ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
     stEyebrow: '贰・字体排印', stH2: '一字三面',
     stHeritageP: '传承字形（尚古／源起，可由面板切换）承载了铅字时代未经简化的结构——非「更古老」，而是「未曾漂移」。',
     stPunctP: '标点断连亦有地域公约——「」『』（）之弧直、逗句之位置，MOE（台湾教育部）、JIS（日本工业规格）、GB（大陆国标）三制各异，一行CSS变量切换，「，。」之呼吸随之而变。',
+    stPunctExamples: '同一页上，各语言标点各从其规范——简体如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韩文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
     slEyebrow: '叁・行的调整', slH2: '行的呼吸',
     slP1: '「世界，你好。」「你好，世界！」相邻标点不再挤成一团——句尾若逢行末，标点悬而不入，版面仍齐。',
     slP2: '汉字与English、与2011一类数字相遇，中西之间留隙0.125em——不多不少，恰是CSS text-autospace的量尺，无需手动空格。',
-    slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书。',
+    slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书；日文原写作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，两制并陈。',
 
     snEyebrow: '肆・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
     snFinishLine: '选好了？三种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
@@ -171,12 +187,13 @@ export const HOME_I18N = {
     pgMetricsLabel: 'Metrics',
     pgSliderSize: 'Size', pgSliderSizeEn: 'font-size',
     pgSliderLeading: 'Leading', pgSliderLeadingEn: 'line-height',
-    pgSliderTracking: 'Tracking', pgSliderTrackingEn: 'letter-spacing',
+    pgSliderWeight: 'Weight', pgSliderWeightEn: 'font-weight',
+    pgWritingLabel: 'Writing mode', pgWritingHorizontal: 'Horizontal', pgWritingVertical: 'Vertical',
 
     pgGrpLayers: 'Modules',
     pgTogSemantics: 'Semantics',
     pgTogProse: 'Prose layout',
-    pgProseScope: 'Applies to (selector)',
+    pgProseScope: 'Applies to (selector)', pgProseScopeHint: 'Affects generated code only',
     pgCiteMarks: 'Title marks',
     pgCiteBracket: '《》 bracket', pgCiteWavy: '﹏ wavy',
     pgEmSymbol: 'Emphasis mark', pgEmPosition: 'Emphasis position',
@@ -188,7 +205,9 @@ export const HOME_I18N = {
     pgTogAutospace: 'Mixed-script spacing',
     pgAutospaceMode: 'Advanced mode',
     pgGrpFonts: 'Fonts',
-    pgHeritage: 'Heritage glyphs (TC only)',
+    pgHeritage: 'Heritage glyphs',
+    pgGrpHeritage: 'Traditional-Chinese specifics',
+    pgBaseGeneric: 'Default typeface',
     pgHeritageSans: 'Sans family', pgHeritageSerif: 'Serif family',
     pgFamShanggu: 'Shanggu', pgFamGenki: 'Genki',
     pgCursive: 'Cursive',
@@ -203,6 +222,8 @@ export const HOME_I18N = {
     pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: 'Copy', pgCopied: 'Copied',
 
+    dlLegend: 'Specimen language', dlHant: 'TC', dlHans: 'SC', dlJa: 'JA', dlKo: 'KO',
+
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: 'Print-quality', mfH1b: 'Hanzi typography',
     mfLede: 'A Hanzi typography system built on CSS custom properties and a touch of JavaScript — hanging punctuation, emphasis dots, ruby, mixed-script spacing. No hand-typed spaces, a measured 0.125em gap, the rigor of hot metal.',
@@ -213,15 +234,18 @@ export const HOME_I18N = {
     ssP1: 'HTML5 semantic elements have their own correct typographic treatment — <em>emphasis dots</em> mark the words that matter, the way a hand-drawn circle would.',
     ssP2: 'Citing a title uses <cite>Shuowen Jiezi</cite>; title marks default to off (<code>--han-cite-title-marks: none</code>) — here one extra line, <code>--han-cite-title-marks: bracket</code>, turns the 《》 back on.',
     ssP3: 'Proper nouns take <u>a proper-noun underline</u>, for names and places; abbreviations like <abbr title="Cascading Style Sheets">CSS</abbr> carry their full expansion in the &lt;abbr&gt; element itself.',
+    ssJaLead: 'Japanese citations, too, find their proper place —',
+    ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
     stEyebrow: 'II・Typography', stH2: 'One glyph, three faces',
     stHeritageP: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
     stPunctP: 'Even punctuation follows regional convention — the curve of「」『』（）, the position of commas and periods. MOE (Taiwan), JIS (Japan), GB (Mainland China) each differ; one CSS variable switches the whole page, and the rhythm of「，。」shifts with it.',
+    stPunctExamples: 'On this very page, each language keeps its own punctuation convention — Simplified as in <span lang="zh-Hans">「简体的引号与句号。」</span>, Japanese as in <span lang="ja">「日本語の約物です。」</span>, Korean as in <span lang="ko">「한국어 문장입니다.」</span>.',
 
     slEyebrow: 'III・Line adjustments', slH2: 'How a line breathes',
     slP1: '"世界，你好。""你好，世界！" Adjacent punctuation no longer crowds together — when a full stop lands at line end, it hangs past the margin instead of pushing in.',
     slP2: 'Where Hanzi meets English, or digits like 2011, a 0.125em gap opens between scripts — exactly what CSS text-autospace measures out, no manual space required.',
-    slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base.',
+    slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base; the Japanese original writes it as <span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>, kana ruby instead of zhuyin — two conventions, side by side.',
 
     snEyebrow: 'IV・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
     snFinishLine: 'Made your picks? Three ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
@@ -241,7 +265,8 @@ export const HOME_I18N = {
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行送り', pgSliderLeadingEn: 'line-height',
-    pgSliderTracking: '字送り', pgSliderTrackingEn: 'letter-spacing',
+    pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
+    pgWritingLabel: '書寫方向', pgWritingHorizontal: '橫排', pgWritingVertical: '直排',
 
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
@@ -249,7 +274,7 @@ export const HOME_I18N = {
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化',
     pgTogProse: '行文版式',
-    pgProseScope: '作用選擇器',
+    pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
@@ -261,7 +286,9 @@ export const HOME_I18N = {
     pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
-    pgHeritage: '傳承字形（僅繁體）',
+    pgHeritage: '傳承字形',
+    pgGrpHeritage: '繁體專項',
+    pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
     pgCursive: '楷體',
@@ -276,6 +303,8 @@ export const HOME_I18N = {
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
+    dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
+
     // NOTE: HP-2 station keys below are not yet localized for ja —
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ja copy is written.
@@ -288,15 +317,18 @@ export const HOME_I18N = {
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
+    ssJaLead: '日文引文亦各得其所——',
+    ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+    stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
     slEyebrow: '叁・行的調整', slH2: '行的呼吸',
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
-    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
@@ -319,7 +351,8 @@ export const HOME_I18N = {
     pgMetricsLabel: '수치・METRICS',
     pgSliderSize: '글자 크기', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '행간', pgSliderLeadingEn: 'line-height',
-    pgSliderTracking: '자간', pgSliderTrackingEn: 'letter-spacing',
+    pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
+    pgWritingLabel: '書寫方向', pgWritingHorizontal: '橫排', pgWritingVertical: '直排',
 
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
@@ -327,7 +360,7 @@ export const HOME_I18N = {
     pgGrpLayers: '模組',
     pgTogSemantics: '語意強化',
     pgTogProse: '行文版式',
-    pgProseScope: '作用選擇器',
+    pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
     pgEmSymbol: '著重號', pgEmPosition: '著重號位置',
@@ -339,7 +372,9 @@ export const HOME_I18N = {
     pgTogAutospace: '跨文種混排間隙',
     pgAutospaceMode: '進階模式',
     pgGrpFonts: '字體',
-    pgHeritage: '傳承字形（僅繁體）',
+    pgHeritage: '傳承字形',
+    pgGrpHeritage: '繁體專項',
+    pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
     pgCursive: '楷體',
@@ -354,6 +389,8 @@ export const HOME_I18N = {
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
+    dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
+
     // NOTE: HP-2 station keys below are not yet localized for ko —
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ko copy is written.
@@ -366,15 +403,18 @@ export const HOME_I18N = {
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
+    ssJaLead: '日文引文亦各得其所——',
+    ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
     stEyebrow: '貳・字體排印', stH2: '一字三面',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+    stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
     slEyebrow: '叁・行的調整', slH2: '行的呼吸',
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
-    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書。',
+    slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
     snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',

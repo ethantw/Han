@@ -64,6 +64,13 @@
 </div>
 
 <main class="han" lang="{{ htmlLang }}">
+<fieldset class="DemoLangSwitch" data-demo-lang>
+  <legend class="sr-only">{{ dlLegend }}</legend>
+  <label><input type="radio" name="demo-lang" value="zh-Hant" checked>{{ dlHant }}</label>
+  <label><input type="radio" name="demo-lang" value="zh-Hans">{{ dlHans }}</label>
+  <label><input type="radio" name="demo-lang" value="ja">{{ dlJa }}</label>
+  <label><input type="radio" name="demo-lang" value="ko">{{ dlKo }}</label>
+</fieldset>
 {{ manifestoSection }}
 {{ stationSemanticsSection }}
 {{ stationTypeSection }}

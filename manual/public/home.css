@@ -131,6 +131,15 @@ body.home img, body.home svg { display: block; max-width: 100%; }
 
 /* ─── helpers ───────────────────────────────────────────────────── */
 
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .muted   { color: var(--ink-mute); }
 .faint   { color: var(--ink-faint); }
 .accent  { color: var(--accent-deep); }

@@ -16,10 +16,15 @@
  * frozen `/old-assets/` copies. `initLangSwitcher` moved out of
  * `hero.js` into its own `lang-switcher.js` (HP-4) since it was the
  * only export this page still used.
+ *
+ * `initDemoLang` (owner-feedback round) needs `initConfigurator()`'s
+ * returned `{ reapplyFallbacks }` handle — boot order matters here:
+ * configurator first, demo-lang second.
  */
 
 import { initLangSwitcher } from '/home/lang-switcher.js'
 import { initConfigurator } from '/home/configurator.js'
+import { initDemoLang } from '/home/demo-lang.js'
 import { initMetrics } from '/home/rail-metrics.js'
 import { initRailChooser } from '/home/rail-chooser.js'
 
@@ -40,7 +45,8 @@ const initInstallChips = () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
-  initConfigurator()
+  const cfg = initConfigurator()
+  initDemoLang(cfg.reapplyFallbacks)
   initMetrics(document.querySelector('main.han'))
   initRailChooser()
   initInstallChips()
