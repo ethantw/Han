@@ -81,7 +81,7 @@
     align-items: center;
     gap: 0.5rem;
     font-family: var(--han-font-default);
-    font-size: var(--_fs-fine);
+    font-size: var(--_fs-compact);
     color: var(--_supplement-text);
     cursor: pointer;
     user-select: none;
@@ -208,7 +208,7 @@
     border: 1px solid var(--_rule);
     border-radius: var(--_r-1);
     font-family: var(--han-font-default);
-    font-size: var(--_fs-fine);
+    font-size: var(--_fs-compact);
     color: var(--_supplement-text);
     cursor: pointer;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
@@ -252,7 +252,7 @@
 
     span {
       font-family: var(--han-font-default);
-      font-size: var(--_fs-fine);
+      font-size: var(--_fs-compact);
       color: var(--_text);
     }
 
@@ -266,7 +266,7 @@
       margin-inline-start: auto;
       padding: 1px 7px;
       font-family: var(--_font-mono);
-      font-size: var(--_fs-fine);
+      font-size: var(--_fs-compact);
       color: var(--_accent);
       background: var(--_accent-bg);
       border: 1px solid color-mix(in srgb, var(--_accent) 35%, transparent);
@@ -375,6 +375,7 @@
 
   > span {
     flex: none;
+    font-size: var(--_fs-compact);
     color: var(--_text);
 
     small {

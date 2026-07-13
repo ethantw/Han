@@ -172,8 +172,8 @@ test.describe('rail reset', () => {
     await expect
       .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('')
-    await expect(sizeSlider).toHaveValue('17')
-    await expect(main).toHaveCSS('font-size', '17px')
+    await expect(sizeSlider).toHaveValue('16')
+    await expect(main).toHaveCSS('font-size', '16px')
   })
 })
 

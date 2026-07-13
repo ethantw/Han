@@ -15,6 +15,29 @@
  * hairline is a `::after`, not a decorative DOM node.
  */
 
+/* ─── em-based type ramp inside the specimen ─────────────────────────
+ * The rail's 字級 slider writes an inline `font-size` (px) on
+ * `main.han`; INSIDE it the `--fs-*` tokens re-resolve in em so every
+ * heading/caption scales as a multiple of that base (ziano playground
+ * pattern). The rem originals in home.css would pin to :root and
+ * ignore the slider — page chrome outside <main> keeps them. Custom
+ * properties substitute at the CONSUMING element, so home.css rules
+ * (InstallChip, VersionTag…) pick up the em版 automatically when they
+ * render inside <main>. No compounding: every font-size in this file
+ * sits on a child of a base-sized parent, never nested inside another
+ * `--fs-*`-sized element. */
+
+main.han {
+  --fs-display: clamp(2em, 8vw, 4em);
+  --fs-heading: 1.5em;
+  --fs-lede:    1.125em;
+  --fs-body:    1em;
+  --fs-small:   0.875em;
+  --fs-compact: 0.8125em;
+  --fs-fine:    0.75em;
+  --fs-micro:   0.625em;
+}
+
 /* ─── Station rhythm (shared frame for the four `.Station` sections) */
 
 .Station {

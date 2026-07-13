@@ -14,7 +14,7 @@
  * ts-style note: `stateRef` is the one-mutable-cell pattern — `.current`
  * replaced wholesale. Per-slider re-sync callbacks live in a `Map`.
  */
-const METRIC_DEFAULTS = { size: 17, leading: 1.85, weight: 400 }
+const METRIC_DEFAULTS = { size: 16, leading: 1.75, weight: 400 }
 const WRITING_DEFAULT = 'horizontal'
 
 export const mountRailMetrics = ({ root, target }) => {
