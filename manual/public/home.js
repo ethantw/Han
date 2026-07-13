@@ -15,6 +15,8 @@
  *   • `initDemoLang` — borrows the component's `reapplyFallbacks` method.
  *   • `initWritingSwitch` — 橫排/直排 floating pill (preview state,
  *     outside the rail — not a han.css variable).
+ *   • `initRailCollapse` — the `.RailToggle` handle that opens/closes the
+ *     side rail's column (`<han-rail collapsed>`, a page-LAYOUT hook).
  *   • `initLangSwitcher` / `initTheme` — top-nav chrome, unchanged.
  *
  * `initTheme` persists the masthead dark-mode checkbox to
@@ -29,6 +31,7 @@ import { initDemoLang } from '/home/demo-lang.js'
 import { initSnippet } from '/home/snippet.js'
 import { initPlayground } from '/home/playground.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
+import { initRailCollapse } from '/home/rail-collapse.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
@@ -59,5 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initSnippet()
   initPlayground()
   initWritingSwitch()
+  initRailCollapse()
   initInstallChips()
 })

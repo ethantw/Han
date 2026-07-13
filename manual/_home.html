@@ -70,6 +70,36 @@
      until upgrade — no FOUC. -->
 <han-rail lang="{{ locale }}" target="main.han" form="side"></han-rail>
 
+<!-- Collapse handle — page chrome at the aside/content boundary, the only
+     way back once the rail is collapsed. Toggles `<han-rail collapsed>`
+     (public component API, a page-LAYOUT hook home.css reads via
+     `body:has(han-rail[collapsed])`). Both aria-labels ride on data-* so
+     the pre-paint script + rail-collapse.js stay copy-free. Hidden <52rem
+     and for form="top" (home.css § RailToggle). -->
+<button class="RailToggle" type="button" data-rail-collapse
+        aria-expanded="true" aria-label="{{ railCollapse }}" title="{{ railCollapse }}"
+        data-label-collapse="{{ railCollapse }}" data-label-expand="{{ railExpand }}"></button>
+<!--
+  Restore the collapsed state the instant these nodes are parsed — before
+  first paint — so `body:has(han-rail[collapsed])` lays out collapsed on
+  the first frame, no flash (same no-FOUC pattern as the theme checkbox
+  above). rail-collapse.js only persists future toggles. The page's other
+  sanctioned pre-paint-script exception (web-style.md).
+-->
+<script>
+  try {
+    const $rail = document.querySelector('han-rail')
+    const $railToggle = document.querySelector('[data-rail-collapse]')
+    if (localStorage.getItem('han-rail-collapsed') === '1') {
+      $rail.setAttribute('collapsed', '')
+      $railToggle.setAttribute('aria-expanded', 'false')
+      const expandLabel = $railToggle.dataset.labelExpand
+      $railToggle.setAttribute('aria-label', expandLabel)
+      $railToggle.title = expandLabel
+    }
+  } catch (e) {}
+</script>
+
 <!-- 橫排/直排 preview switch — floating pill, bottom-right. Writing mode
      is PREVIEW state, not a han.css variable, so it lives OUTSIDE the
      configurator rail (owner call); writing-switch.js writes

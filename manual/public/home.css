@@ -476,68 +476,76 @@ body.home {
 /* ─── <han-rail> page layout (chrome) ───────────────────────────────
  * The rail is a shadow-DOM web component; its INTERNAL skeleton lives in
  * the component's own sheets (components/rail.css). The mounting page
- * owns PLACEMENT — the side/top grid (which also positions `main.han`),
- * the sticky columns, and the <52rem bottom-sheet's fixed viewport
- * anchoring — keyed off the component's public `form` attribute
- * (`side`|`top`; the page ships `side`). The rail's own
- * background/hairlines and the sheet collapse stay in the shadow.
+ * owns PLACEMENT — keyed off the component's public `form` (side|top) and
+ * `collapsed` (boolean) attributes. The rail's own background/hairlines
+ * and the sheet collapse stay in the shadow.
+ *
+ * Side form (≥52rem): the rail owns a FULL-viewport-height left column
+ * (`grid-row: 1 / -1`, 100dvh sticky, internal scroll), so it reaches the
+ * true viewport top — the Topbar/main/footer live in column 2, no header
+ * strip above the rail. Collapsing animates the column width to 0 and the
+ * right column slides left to fill (NOT an overlay — content is never
+ * covered). `--rail-col` is the animated column width (0 when collapsed);
+ * the `.RailToggle` handle reads it too so it tracks the boundary.
+ *
+ * Top form: normal-flow rows, sticky at ≥64rem (unchanged). <52rem: the
+ * bottom sheet, both forms (unchanged) — collapse doesn't apply there.
  *
  * FOUC guard — reserve the box but hide content until the element
  * upgrades and its shadow renders (visibility keeps the grid cell). */
 han-rail:not(:defined) { visibility: hidden; }
 
-/* side form — a two-column grid places the Topbar (full width), the
-   rail (col 1), and main.han (col 2). Top form stays in normal flow. */
 body:has(han-rail[form="side"]) {
-  @media (min-width: 64rem) {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    align-items: start;
+  /* Side form ≥52rem — the rail is a full-height column; header + main +
+     everything else sit in column 2. `--rail-col` drives the (animated)
+     track width; the collapsed override zeroes it. */
+  @media (min-width: 52rem) {
+    & {
+      --rail-col: 280px;
+      display: grid;
+      grid-template-columns: var(--rail-col) 1fr;
+      align-items: start;
+      /* grid-template-columns animates length→length in every modern
+         engine (Baseline 2023); degrades to a snap where unsupported. */
+      transition: grid-template-columns 250ms ease;
+    }
 
-    > .Topbar  { grid-column: 1 / -1; }
-    > han-rail { grid-column: 1; }
+    > .Topbar  { grid-column: 2; }
+    > han-rail { grid-column: 1; grid-row: 1 / -1; }
     > main.han { grid-column: 2; }
+
+    &:has(han-rail[collapsed]) { --rail-col: 0px; }
   }
 
   /* 52–64rem — narrower rail column so it doesn't crowd main.han at
      tablet widths. Below 52rem both forms collapse to the sheet. */
   @media (min-width: 52rem) and (max-width: 63.9375rem) {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    align-items: start;
-
-    > .Topbar  { grid-column: 1 / -1; }
-    > han-rail { grid-column: 1; }
-    > main.han { grid-column: 2; }
+    & { --rail-col: 240px; }
   }
 }
 
 han-rail {
-  /* Side form (≥64rem) — sticky left column. The Topbar isn't sticky,
-     so the rail sticks to the true viewport top. */
-  @media (min-width: 64rem) {
+  /* Side form (≥52rem) — full-height sticky left column, internal scroll.
+     `min-inline-size: 0` + clipped inline overflow let the grid shrink it
+     onto the 0 track mid-collapse without its content spilling over main;
+     `block-size: 100dvh` + sticky pin it to the true viewport top. */
+  @media (min-width: 52rem) {
     &[form="side"] {
       position: sticky;
       inset-block-start: 0;
-      max-block-size: 100dvh;
+      block-size: 100dvh;
+      min-inline-size: 0;
+      overflow-x: hidden;
       overflow-y: auto;
     }
+  }
 
+  @media (min-width: 64rem) {
     &[form="top"] {
       position: sticky;
       inset-block-start: 0;
       z-index: 30;
       inline-size: 100%;
-    }
-  }
-
-  /* Side form, 52–64rem — narrower sticky column. */
-  @media (min-width: 52rem) and (max-width: 63.9375rem) {
-    &[form="side"] {
-      position: sticky;
-      inset-block-start: 0;
-      max-block-size: 100dvh;
-      overflow-y: auto;
     }
   }
 
@@ -550,6 +558,65 @@ han-rail {
     inset-block-end: 0;
     z-index: 40;
     max-block-size: 70dvh;
+  }
+}
+
+/* ─── RailToggle (collapse / expand the side rail) ───────────────────
+ * Page chrome, NOT part of the rail component — a slim hairline handle at
+ * the aside/content boundary, visible in BOTH states (the only way back
+ * once collapsed). It sits on the content side of the boundary and tracks
+ * it via the inherited `--rail-col` (0 when collapsed). Side form only:
+ * hidden on the <52rem bottom sheet and for form="top" (rows, not a
+ * column — the toggle is a no-op there). `rail-collapse.js` flips the
+ * `<han-rail collapsed>` attribute + persists it; the chevron reads off
+ * the button's own aria-expanded (kept in sync by that module + a
+ * pre-paint script), so this stays self-contained. */
+.RailToggle {
+  & {
+    position: fixed;
+    inset-block-start: 50%;
+    inset-inline-start: var(--rail-col, 280px);
+    transform: translateY(-50%);
+    z-index: 45;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.125rem;
+    block-size: 3rem;
+    padding: 0;
+    color: var(--palette-supplement-text);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--r-2);
+    border-end-end-radius: var(--r-2);
+    cursor: pointer;
+    transition:
+      inset-inline-start 250ms ease,
+      color             150ms ease
+    ;
+  }
+
+  /* chevron points at the action: ‹ collapse (expanded) / › expand
+     (collapsed). Driven by the button's own state, no upward selector. */
+  &::before {
+    content: '‹';
+    font-size: var(--fs-small);
+    line-height: 1;
+  }
+  &[aria-expanded="false"]::before { content: '›'; }
+
+  &:hover { color: var(--palette-accent); }
+
+  &:focus-visible {
+    outline: 2px solid var(--palette-accent);
+    outline-offset: 2px;
+  }
+
+  /* only the side form on a real column (≥52rem) shows the handle */
+  @media (min-width: 52rem) {
+    body:has(han-rail[form="side"]) & { display: inline-flex; }
   }
 }
 

@@ -109,6 +109,7 @@ export const HOME_I18N = {
 
     railHeader: '配置面板——撥動即改寫全頁',
     pgUseDefault: '使用預設値',
+    railCollapse: '收合面板', railExpand: '展開面板',
   },
   hans: {
     siteTitle: '汉.css・像素间的活字美学',
@@ -196,6 +197,7 @@ export const HOME_I18N = {
 
     railHeader: '配置面板——拨动即改写全页',
     pgUseDefault: '使用预设值',
+    railCollapse: '收合面板', railExpand: '展开面板',
   },
   en: {
     siteTitle: 'Han.css・Movable type within the pixels',
@@ -283,6 +285,7 @@ export const HOME_I18N = {
 
     railHeader: 'Configurator — flip a switch, the whole page rewrites itself',
     pgUseDefault: 'Use default',
+    railCollapse: 'Collapse panel', railExpand: 'Expand panel',
   },
   ja: {
     siteTitle: '漢.css・ピクセルの間の活字美学',
@@ -378,6 +381,7 @@ export const HOME_I18N = {
     // convention. Revisit when ja copy is written.
     railHeader: '配置面板——撥動即改寫全頁',
     pgUseDefault: '使用預設値',
+    railCollapse: '收合面板', railExpand: '展開面板',
   },
   ko: {
     siteTitle: '漢.css・픽셀 사이의 活字 美學',
@@ -473,5 +477,6 @@ export const HOME_I18N = {
     // convention. Revisit when ko copy is written.
     railHeader: '配置面板——撥動即改寫全頁',
     pgUseDefault: '使用預設値',
+    railCollapse: '收合面板', railExpand: '展開面板',
   },
 }

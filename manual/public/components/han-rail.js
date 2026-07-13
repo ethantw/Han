@@ -12,6 +12,11 @@
  * spec; changing it needs owner sign-off):
  *   attrs   lang (hant|hans|en|ja|ko, dynamic) · target (CSS selector,
  *           default `main.han`) · form (side|top, pure-CSS in the shadow)
+ *           · collapsed (boolean) — a page-LAYOUT hook only: the component
+ *           itself ignores it (not observed), but the mounting page reads
+ *           `body:has(han-rail[collapsed])` to animate the side rail's
+ *           column shut (home.css § han-rail; toggled by home/
+ *           rail-collapse.js). No-op for form="top" / the <52rem sheet.
  *   event   `han-config-change` — bubbles + composed, detail
  *           `{ config, vars, source }`; config is a shallow-frozen copy,
  *           vars is `cssVars(config)`, source is the触發 data-cfg-key
