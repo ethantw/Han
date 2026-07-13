@@ -24,17 +24,6 @@
     <section class="ControlGroup">
       <header>{{ pgMetricsLabel }}</header>
 
-      <fieldset class="WritingModeSwitch" data-pg-writing>
-        <legend>{{ pgWritingLabel }}</legend>
-        <label>
-          <input type="radio" name="pg-writing" value="horizontal" checked>
-          {{ pgWritingHorizontal }}
-        </label>
-        <label>
-          <input type="radio" name="pg-writing" value="vertical">
-          {{ pgWritingVertical }}
-        </label>
-      </fieldset>
 
       <div class="MetricSliders" data-pg-sliders>
         <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">

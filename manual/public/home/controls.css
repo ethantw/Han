@@ -172,62 +172,6 @@
 }
 
 
-/* ─── WritingModeSwitch — 度量 group's 橫排/直排 radio pair (preview-
-   state, not part of generated code — `rail-metrics.js` sets
-   `main.han.dataset.writing`). ───────────────────────────────────── */
-
-.WritingModeSwitch {
-  & {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0 0 4px;
-    padding: 0;
-    border: 0;
-  }
-
-  legend {
-    /* a <legend> normally sits outside the fieldset's layout flow and
-       claims its own line; floating it demotes it to normal flow, so it
-       becomes a flex item and shares the row with the radio pills. */
-    float: inline-start;
-    padding: 0;
-    margin-inline-end: 0.25rem;
-    font-family: var(--_font-mono);
-    font-size: var(--_fs-micro);
-    color: var(--_supplement-text-2q);
-  }
-
-  input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  label {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    background: var(--_bg);
-    border: 1px solid var(--_rule);
-    border-radius: var(--_r-1);
-    font-family: var(--han-font-default);
-    font-size: var(--_fs-compact);
-    color: var(--_supplement-text);
-    cursor: pointer;
-    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-
-    &:hover { border-color: var(--_text); color: var(--_text); }
-
-    &:has(input:checked) {
-      background: var(--_text);
-      border-color: var(--_text);
-      color: var(--_bg);
-    }
-  }
-}
-
-
 /* ─── MetricSliders — three live <input type="range"> sliders ──── */
 
 .MetricSliders {

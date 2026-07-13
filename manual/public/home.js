@@ -13,7 +13,8 @@
  *   • `initSnippet` — station④'s code panes, now a SUBSCRIBER to the
  *     rail's `han-config-change` event (the future <han-snippet>).
  *   • `initDemoLang` — borrows the component's `reapplyFallbacks` method.
- *   • `initRailChooser` — writes the rail's `form` attribute (side/top).
+ *   • `initWritingSwitch` — 橫排/直排 floating pill (preview state,
+ *     outside the rail — not a han.css variable).
  *   • `initLangSwitcher` / `initTheme` — top-nav chrome, unchanged.
  *
  * `initTheme` persists the masthead dark-mode checkbox to
@@ -27,7 +28,7 @@ import '/components/han-rail.js'
 import { initDemoLang } from '/home/demo-lang.js'
 import { initSnippet } from '/home/snippet.js'
 import { initPlayground } from '/home/playground.js'
-import { initRailChooser } from '/home/rail-chooser.js'
+import { initWritingSwitch } from '/home/writing-switch.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
@@ -57,6 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initDemoLang(($target) => $rail?.reapplyFallbacks($target))
   initSnippet()
   initPlayground()
-  initRailChooser()
+  initWritingSwitch()
   initInstallChips()
 })

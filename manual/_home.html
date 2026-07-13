@@ -65,19 +65,21 @@
      template (locale-expanded from home/rail.html) is generated into
      home/rail-templates.js and injected into the shadow on connect; the
      page owns only its placement (home.css § han-rail). `form="side"` is
-     the initial layout so the grid resolves on first paint; rail-chooser
-     .js flips it. `han-rail:not(:defined){visibility:hidden}` (home.css)
-     hides it until upgrade — no FOUC. -->
+     the layout (the `form` attr stays public component API).
+     `han-rail:not(:defined){visibility:hidden}` (home.css) hides it
+     until upgrade — no FOUC. -->
 <han-rail lang="{{ locale }}" target="main.han" form="side"></han-rail>
 
-<!-- Rail-form chooser — 選型用，owner 定案後移除。 Floating pill, bottom-right,
-     picks between the two rail layouts (writes the `form` attr on
-     <han-rail>) and persists the choice in localStorage; boot logic in
-     rail-chooser.js. -->
-<div class="Chooser" data-rail-chooser>
-  <button type="button" data-rail-form="side">側欄</button>
-  <button type="button" data-rail-form="top">頂欄</button>
-</div>
+<!-- 橫排/直排 preview switch — floating pill, bottom-right. Writing mode
+     is PREVIEW state, not a han.css variable, so it lives OUTSIDE the
+     configurator rail (owner call); writing-switch.js writes
+     main.han's `data-writing`, pure-CSS vertical mode reacts
+     (stations.css). -->
+<fieldset class="WritingSwitch" data-writing-switch>
+  <legend class="sr-only">{{ pgWritingLabel }}</legend>
+  <label><input type="radio" name="writing-mode" value="horizontal" checked>{{ pgWritingHorizontal }}</label>
+  <label><input type="radio" name="writing-mode" value="vertical">{{ pgWritingVertical }}</label>
+</fieldset>
 
 <main class="han" lang="{{ htmlLang }}">
 <fieldset class="DemoLangSwitch" data-demo-lang>

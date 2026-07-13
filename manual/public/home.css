@@ -479,7 +479,7 @@ body.home {
  * owns PLACEMENT — the side/top grid (which also positions `main.han`),
  * the sticky columns, and the <52rem bottom-sheet's fixed viewport
  * anchoring — keyed off the component's public `form` attribute
- * (`side`|`top`, written by rail-chooser.js). The rail's own
+ * (`side`|`top`; the page ships `side`). The rail's own
  * background/hairlines and the sheet collapse stay in the shadow.
  *
  * FOUC guard — reserve the box but hide content until the element
@@ -553,12 +553,12 @@ han-rail {
   }
 }
 
-/* ─── Chooser (owner tooling; see rail-chooser.js) ────────────────
-   選型用，owner 定案後移除。 Floating pill that flips the rail's `form`
-   attribute; independent chrome, its own PascalCase name. Light DOM, so
-   it consumes `--palette-*` directly. */
+/* ─── WritingSwitch (橫排/直排 preview pill; see writing-switch.js) ──
+   Floating bottom-right. Writing mode is preview state, not a han.css
+   variable, so it lives outside the rail. Light DOM, consumes
+   `--palette-*` directly; radio pair like DemoLangSwitch. */
 
-.Chooser {
+.WritingSwitch {
   & {
     position: fixed;
     inset-inline-end: 1rem;
@@ -566,6 +566,7 @@ han-rail {
     z-index: 50;
     display: flex;
     gap: 2px;
+    margin: 0;
     padding: 3px;
     background: var(--palette-bg);
     border: 1px solid var(--palette-rule);
@@ -573,21 +574,30 @@ han-rail {
     box-shadow: 0 2px 10px color-mix(in srgb, var(--color-black) 12%, transparent);
   }
 
-  button {
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
     & {
       padding: 4px 10px;
-      font-family: var(--font-mono);
+      font-family: var(--han-font-default);
       font-size: var(--fs-fine);
       color: var(--palette-supplement-text);
-      background: transparent;
-      border: 0;
       border-radius: 999px;
       cursor: pointer;
     }
 
-    &.is-active {
+    &:has(input:checked) {
       background: var(--palette-accent-bg);
       color: var(--palette-accent);
+    }
+
+    &:has(input:focus-visible) {
+      outline: 2px solid var(--palette-accent);
+      outline-offset: 1px;
     }
   }
 }

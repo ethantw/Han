@@ -4,8 +4,8 @@ import { test, expect, type Page } from '@playwright/test'
  * Homepage-as-playground e2e (HP-5).
  *
  * `/` is a whole-page playground: topbar + the `<han-rail>` configurator
- * web component (shadow DOM; `form="side"|"top"` attr, floating chooser
- * persisting to `localStorage['han-rail-form']`, <52rem bottom-sheet) + `<main
+ * web component (shadow DOM; `form="side"|"top"` attr, <52rem
+ * bottom-sheet) + `<main
  * class="han">` with six stations (Manifesto, station-semantics,
  * station-type, station-lines, station-snippet, Closing). Station④
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
@@ -14,7 +14,8 @@ import { test, expect, type Page } from '@playwright/test'
  * the rail carries all 24 `data-cfg-key` controls (added zianoDelivery
  * + zianoCdnSource, Request B) in an accordion of `details.ControlGroup`
  * (模組／字體／標點規範 groups open by default, 繁體專項／行調整／
- * JavaScript closed), a 直排/橫排 switch plus three metric sliders
+ * JavaScript closed), three metric sliders (the 直排/橫排 switch is
+ * page chrome now — a floating pill, writing-switch.js)
  * (`[data-pg-sliders]`), and `[data-rail-reset]`. A separate
  * `[data-demo-lang]` chip row (top-right of `<main>`) switches which
  * language the specimen copy demonstrates, independent of the page's
@@ -110,26 +111,19 @@ test('old.html: 200, provenance marker, own frozen snippet renders', async ({ pa
   await expect(code).toContainText('pnpm add @hanzi.pro/han.css')
 })
 
-test.describe('rail forms — chooser + persistence', () => {
-  // Rail-form state now lives on the <han-rail> `form` attribute (the
-  // component's public API); the chooser writes it and the page grid
-  // reacts via `body:has(han-rail[form=…])`. Same semantics as the old
-  // body[data-rail] hook — flip + persist + survive reload.
-  test('chooser switches han-rail[form] and persists across reload', async ({ page }) => {
+test.describe('rail form attribute', () => {
+  // `form` stays public component API (side|top); the page ships side and
+  // no longer exposes a picker (the old owner-tooling chooser is gone).
+  // Flipping the attribute programmatically must still relayout via
+  // `body:has(han-rail[form=…])` + `:host([form="top"])` — both pure CSS.
+  test('form="top" flips the shadow skeleton without a reload', async ({ page }) => {
     await page.goto('/')
     const rail = page.locator('han-rail')
     await expect(rail).toHaveAttribute('form', 'side')
 
-    await page.locator('[data-rail-chooser] [data-rail-form="top"]').click()
+    await rail.evaluate((el) => el.setAttribute('form', 'top'))
     await expect(rail).toHaveAttribute('form', 'top')
-    expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('top')
-
-    await page.reload()
-    await expect(rail).toHaveAttribute('form', 'top')
-
-    await page.locator('[data-rail-chooser] [data-rail-form="side"]').click()
-    await expect(rail).toHaveAttribute('form', 'side')
-    expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('side')
+    await expect(page.locator('han-rail .Controls')).toBeVisible()
   })
 })
 
@@ -224,12 +218,14 @@ test.describe('metrics — weight slider + writing-mode switch', () => {
     await expect(main).toHaveCSS('font-weight', '700')
   })
 
-  test('直排 radio → main.han[data-writing=vertical]', async ({ page }) => {
+  test('floating 直排 pill → main.han[data-writing=vertical]', async ({ page }) => {
+    // the 橫排/直排 switch moved out of the rail to page chrome
+    // (writing-switch.js) — preview state, not a han.css variable.
     await page.goto('/')
     const main = page.locator('main.han')
     await expect(main).toHaveAttribute('data-writing', 'horizontal')
 
-    await page.locator('[data-pg-writing] label:has(input[value="vertical"])').click()
+    await page.locator('[data-writing-switch] label:has(input[value="vertical"])').click()
     await expect(main).toHaveAttribute('data-writing', 'vertical')
   })
 })

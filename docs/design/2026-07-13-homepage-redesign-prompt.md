@@ -16,7 +16,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 ```
 
 五個 locale（`/`＝hant、`/hans/`、`/en/`⋯）、亮暗兩態（masthead 月亮 toggle）、
-直排模式（rail 度量群組的「直排」）都要實際看過再動筆。舊版首頁凍結在
+直排模式（右下角懸浮的橫排／直排 pill）都要實際看過再動筆。舊版首頁凍結在
 `/old.html`，只作歷史參考。
 
 ## 現狀盤點（動筆前的事實基礎）
@@ -25,7 +25,10 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 1. Topbar — Brand（漢.css 字標）、文檔/GitHub、語言切換、主題切換、版本章
 2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider、
-   語意/長文/行調整/字體五群組、JS 開關、Reset；<52rem 變 bottom sheet
+   語意/長文/行調整/字體五群組、JS 開關、Reset；<52rem 變 bottom sheet。
+   另有一顆**右下角懸浮 pill（橫排／直排）**——書寫方向是純預覽狀態、
+   不是 han.css 變數，所以刻意脫離配置面板（owner 拍板）；設計時可
+   重新安置這顆 pill，但「預覽開關不入配置欄」的區隔要保持
 3. Manifesto — display 標題（「印刷品般的漢字排版」）＋ lede ＋ InstallChip ＋
    三格 Stats（支援語種/體積/依賴）
 4. 壹・語意 — 著重號、書名號、專名號、`<abbr>`、日文引文的活體示範文案

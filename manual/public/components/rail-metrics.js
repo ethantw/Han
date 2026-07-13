@@ -1,21 +1,21 @@
 /**
- * <han-rail> metric sliders — 字級 / 行距 / 字重, + 直排/橫排 switch.
- * Pure inline style / dataset on the `target` (`main.han`): font-size /
- * line-height / font-weight / dataset.writing. Preview-state only — none
- * of it enters the generated snippet (codegen.js is untouched), so this
- * module never dispatches `han-config-change`; the component wires its
- * `reset()` alongside the config core's.
+ * <han-rail> metric sliders — 字級 / 行距 / 字重.
+ * Pure inline style on the `target` (`main.han`): font-size /
+ * line-height / font-weight. Preview-state only — none of it enters the
+ * generated snippet (codegen.js is untouched), so this module never
+ * dispatches `han-config-change`; the component wires its `reset()`
+ * alongside the config core's.
  *
  * Moved from `home/rail-metrics.js` into the component and re-scoped:
- * sliders + the writing switch are queried from the shadow `root`, the
- * apply target is passed in. The letter-spacing slider stays removed
- * (owner call).
+ * sliders are queried from the shadow `root`, the apply target is
+ * passed in. The letter-spacing slider stays removed (owner call); the
+ * 橫排/直排 switch moved OUT to page chrome (`home/writing-switch.js`)
+ * — writing mode is a preview of the page, not a han.css config.
  *
  * ts-style note: `stateRef` is the one-mutable-cell pattern — `.current`
  * replaced wholesale. Per-slider re-sync callbacks live in a `Map`.
  */
 const METRIC_DEFAULTS = { size: 16, leading: 1.75, weight: 400 }
-const WRITING_DEFAULT = 'horizontal'
 
 export const mountRailMetrics = ({ root, target }) => {
   const $sliders = [...root.querySelectorAll('[data-pg-sliders] .MetricSlider')]
@@ -53,15 +53,6 @@ export const mountRailMetrics = ({ root, target }) => {
     sync()
   })
 
-  // 直排/橫排——radio pair，寫 target 的 dataset.writing（純 CSS 消費）。
-  const $writingGroup = root.querySelector('[data-pg-writing]')
-  const applyWriting = (value) => { if (target) target.dataset.writing = value }
-  $writingGroup?.addEventListener('input', () => {
-    const $checked = $writingGroup.querySelector('input:checked')
-    if ($checked) applyWriting($checked.value)
-  })
-  applyWriting(WRITING_DEFAULT)
-
   const reset = () => {
     stateRef.current = { ...METRIC_DEFAULTS }
     $sliders.forEach(($slider) => {
@@ -70,12 +61,6 @@ export const mountRailMetrics = ({ root, target }) => {
       syncBySlider.get($slider)?.()
     })
     apply()
-
-    if ($writingGroup) {
-      const $default = $writingGroup.querySelector(`input[value="${WRITING_DEFAULT}"]`)
-      if ($default) $default.checked = true
-    }
-    applyWriting(WRITING_DEFAULT)
   }
 
   apply()
