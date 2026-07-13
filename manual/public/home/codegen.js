@@ -37,6 +37,7 @@ export const DEFAULTS = {
   cursive: 'webfont',             // webfont|system|off
   punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KV' },
   zhuyinWebfont: true,
+  baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
   fallbacks: false,
   legacyRuby: false,
 }
@@ -84,6 +85,11 @@ const configCSS = (c, indent = '  ') => {
   const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
   if (c.prose && scope && scope !== 'article')
     rules.push(`${scope} { --han-prose: on; }`)
+  // baseGeneric：body 騎哪個複合字體——serif 換上 --han-font-alternative；
+  // sans-serif（出廠）本就是 --han-font-default，無需輸出。單獨判斷（不進
+  // cssVars()）——這不是 --han-* 變數偏差，是 body 本身的 font-family 覆寫。
+  if (c.baseGeneric === 'serif')
+    rules.push(`body { font-family: var(--han-font-alternative); }`)
   return rules.join('\n')
 }
 

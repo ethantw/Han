@@ -125,6 +125,21 @@ test('emPosition under → under right', () => {
   )
 })
 
+test('baseGeneric serif → 三分頁皆含 body 覆寫規則', () => {
+  const c = cfg({ baseGeneric: 'serif' })
+  const rule = 'body { font-family: var(--han-font-alternative); }'
+  assert.ok(renderCDN(c).includes(rule))
+  assert.ok(renderBundler(c, 'pnpm').includes(rule))
+  assert.ok(renderImport(c).includes(rule))
+})
+
+test('baseGeneric 預設 sans-serif → 三分頁皆無 body 覆寫規則', () => {
+  const rule = 'body { font-family: var(--han-font-alternative); }'
+  assert.ok(!renderCDN(DEFAULTS).includes(rule))
+  assert.ok(!renderBundler(DEFAULTS, 'pnpm').includes(rule))
+  assert.ok(!renderImport(DEFAULTS).includes(rule))
+})
+
 test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', () => {
   const cdn = renderCDN(cfg({ proseScope: 'main.doc<{};>' }))
   assert.ok(cdn.includes('main.doc { --han-prose: on; }'))

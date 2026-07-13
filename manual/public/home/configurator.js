@@ -57,6 +57,12 @@ const applyMain = (config, main) => {
   for (const [prop, value] of cssVars(config)) main.style.setProperty(prop, value)
   // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重
   for (const id of packages(config).ziano) ensureFont(id)
+  // baseGeneric：本頁沒有 <body> 可套（body 是 html.home 的殼），拿
+  // main.han 自身頂替——codegen.js 生成的引用碼寫的是 `body { … }`，
+  // 這裡的等效寫法是把同一條規則套在 main 本身（也是 --han-font-*
+  // 讀者實際排文的容器）。RESET 靠 default 分支的 removeProperty 收回。
+  if (config.baseGeneric === 'serif') main.style.fontFamily = 'var(--han-font-alternative)'
+  else main.style.removeProperty('font-family')
 }
 
 /* ── apply：JS 後備（作用於整個 main） ── */
@@ -116,6 +122,9 @@ export const initConfigurator = (root = document) => {
     })
     root.querySelectorAll('[data-cfg-semantics-sub]').forEach((el) => {
       el.toggleAttribute('hidden', !config.semantics)
+    })
+    root.querySelectorAll('[data-cfg-prose-sub]').forEach((el) => {
+      el.toggleAttribute('hidden', !config.prose)
     })
     root.querySelector('[data-cfg-advanced]')
       ?.toggleAttribute('hidden', !config.fallbacks)
