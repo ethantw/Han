@@ -24,8 +24,8 @@ export const HOME_LOCALE_LABELS = LOCALE_LABELS
 
 export const HOME_I18N = {
   hant: {
-    siteTitle: '漢.css・印刷品般的漢字排版框架',
-    description: '印刷品般的漢字網頁排版框架。',
+    siteTitle: '漢.css・像素間的活字美學',
+    description: '像素間的活字美學，為螢幕上的每一個漢字。',
     docs: '文檔', langSwitcherLabel: '切換語言・LANGUAGE',
     langSwitcherFoot: '站本身切換 5 種語言・操場可獨立選任一語言範文',
     themeToggle: '切換主題',
@@ -71,7 +71,7 @@ export const HOME_I18N = {
     dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
-    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfH1a: '漢.css⸺像素間的活字美學，', mfH1b: '為螢幕上的每一個漢字',
     mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
@@ -111,8 +111,8 @@ export const HOME_I18N = {
     pgUseDefault: '使用預設値',
   },
   hans: {
-    siteTitle: '汉.css・印刷品般的汉字排版框架',
-    description: '印刷品般的汉字网页排版框架。',
+    siteTitle: '汉.css・像素间的活字美学',
+    description: '像素间的活字美学，为屏幕上的每一个汉字。',
     docs: '文档', langSwitcherLabel: '切换语言・LANGUAGE',
     langSwitcherFoot: '站本身切换 5 种语言・操场可独立选任一语言范文',
     themeToggle: '切换主题',
@@ -158,7 +158,7 @@ export const HOME_I18N = {
     dlLegend: '范文语言', dlHant: '繁', dlHans: '简', dlJa: '日', dlKo: '韩',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
-    mfH1a: '印刷品般的', mfH1b: '汉字排版',
+    mfH1a: '汉.css⸺像素间的活字美学，', mfH1b: '为屏幕上的每一个汉字',
     mfLede: '这是一套以CSS custom properties与少量JavaScript撑起的汉字排版系统——标点悬挂、着重号、注音、跨文种混排，字距不假空格字符，间隙定量0.125em，一如铅字时代的讲究。',
     mfDogfood: '本页即范文——面板随手拨，全页随你而变。',
     mfStatLocales: '支持语种', mfStatSize: 'Gzip体积（css+js）', mfStatDeps: '外部依赖',
@@ -198,8 +198,8 @@ export const HOME_I18N = {
     pgUseDefault: '使用预设值',
   },
   en: {
-    siteTitle: 'Han.css・Print-quality Hanzi typography for the web',
-    description: 'A typography framework for print-quality Hanzi on the web.',
+    siteTitle: 'Han.css・Movable type within the pixels',
+    description: 'Crafting movable type within the pixels, for every Han character.',
     docs: 'Docs', langSwitcherLabel: 'Switch language・LANGUAGE',
     langSwitcherFoot: 'Site supports 5 languages・the playground sample picks any independently.',
     themeToggle: 'Toggle theme',
@@ -245,7 +245,7 @@ export const HOME_I18N = {
     dlLegend: 'Specimen language', dlHant: 'TC', dlHans: 'SC', dlJa: 'JA', dlKo: 'KO',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
-    mfH1a: 'Print-quality', mfH1b: 'Hanzi typography',
+    mfH1a: 'Han.css ⸺ crafting movable type within the pixels,', mfH1b: 'for every Han character.',
     mfLede: 'A Hanzi typography system built on CSS custom properties and a touch of JavaScript — hanging punctuation, emphasis dots, ruby, mixed-script spacing. No hand-typed spaces, a measured 0.125em gap, the rigor of hot metal.',
     mfDogfood: 'This page is the specimen — tweak the panel, watch the whole page respond.',
     mfStatLocales: 'locales', mfStatSize: 'gzip size (css+js)', mfStatDeps: 'dependency',
@@ -285,8 +285,8 @@ export const HOME_I18N = {
     pgUseDefault: 'Use default',
   },
   ja: {
-    siteTitle: '漢.css・印刷品質の漢字組版フレームワーク',
-    description: '印刷品質の漢字組版フレームワーク。',
+    siteTitle: '漢.css・ピクセルの間の活字美学',
+    description: 'ピクセルの間の活字美学、画面に並ぶ漢字へ。',
     docs: 'ドキュメント', langSwitcherLabel: '言語切替・LANGUAGE',
     langSwitcherFoot: 'サイトは 5 言語対応・実験室では言語を独立して選択可能',
     themeToggle: 'テーマ切り替え',
@@ -337,7 +337,7 @@ export const HOME_I18N = {
     // NOTE: HP-2 station keys below are not yet localized for ja —
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ja copy is written.
-    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfH1a: '漢.css⸺ピクセルの間の活字美学、', mfH1b: '画面に並ぶ漢字へ。',
     mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
@@ -380,8 +380,8 @@ export const HOME_I18N = {
     pgUseDefault: '使用預設値',
   },
   ko: {
-    siteTitle: '한.css・인쇄 품질의 한자 조판 프레임워크',
-    description: '인쇄 품질의 한자 조판 프레임워크.',
+    siteTitle: '漢.css・픽셀 사이의 活字 美學',
+    description: '픽셀 사이의 活字 美學, 畫面의 漢字에게.',
     docs: '문서', langSwitcherLabel: '언어 전환・LANGUAGE',
     langSwitcherFoot: '사이트는 5 개 언어 지원・놀이터에서 독립적으로 언어 선택',
     themeToggle: '테마 전환',
@@ -432,7 +432,7 @@ export const HOME_I18N = {
     // NOTE: HP-2 station keys below are not yet localized for ko —
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ko copy is written.
-    mfH1a: '印刷品般的', mfH1b: '漢字排版',
+    mfH1a: '漢.css ⸺ <ruby>픽셀<rt>pixel</rt></ruby> 사이의 <ruby>活字<rt>활자</rt></ruby> <ruby>美學<rt>미학</rt></ruby>,', mfH1b: '<ruby>畫面<rt>화면</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby>에게.',
     mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
