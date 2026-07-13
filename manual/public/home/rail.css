@@ -9,16 +9,14 @@
  * inherit the page's own `--han-*` deviations.
  *
  * `.ControlGroup` / `.Field` / `.Toggle` / `.MetricSlider` internals
- * are the primitives from `home/playground.css` (imported before this
+ * are the primitives from `home/controls.css` (imported before this
  * file in `home.css`) — this file only lays out the chrome: the two
  * desktop forms, the mobile sheet, and the chooser pill.
  *
- * NOTE for HP-4: the homepage has no dark-mode token layer yet
- * (`home.css`'s `:root` is light-only) — this file inherits whatever
- * `--paper`/`--ink*` resolve to, same as every other homepage
- * component. Wiring `prefers-color-scheme`/`color-scheme` for the
- * whole page is out of this task's scope; flagged for whoever does
- * the dark-mode pass.
+ * Dark mode: `home.css`'s `:root` now carries a dark token layer
+ * (HP-4, mirrors `manual.css`'s pattern) — this file inherits
+ * `--paper`/`--ink*`/`--rule` same as every other homepage component,
+ * no dark-specific overrides needed here.
  */
 
 /* ─── Rail chrome (all forms/sizes) ─────────────────────────────── */
@@ -79,6 +77,35 @@
        page, so the rail only needs to stick to the true viewport top.
        If a later pass pins the Topbar, this needs an
        `inset-block-start` offset matching its block-size. */
+    position: sticky;
+    inset-block-start: 0;
+    max-block-size: 100dvh;
+    overflow-y: auto;
+  }
+}
+
+/* ─── Side form, 52–64rem — narrower column (HP-4 call) ───────────
+   Below 64rem the desktop grid has no ≥64rem media query to fall back
+   on; rather than force a JS-set `data-rail` value we don't control
+   from CSS, the side form keeps its sticky grid but shrinks the rail
+   column (280px → 240px) so it doesn't crowd `main.han` at tablet
+   widths. The top form has no dedicated rule here — below 64rem it
+   degrades to `.RailScroll`'s base (column, in-flow) layout, which
+   reads fine as a plain block sitting above the content; simplest of
+   the two forms to leave alone at this width. */
+
+@media (min-width: 52rem) and (max-width: 63.9375rem) {
+  body[data-rail="side"] {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    align-items: start;
+
+    > .Topbar  { grid-column: 1 / -1; }
+    > .Rail    { grid-column: 1; }
+    > main.han { grid-column: 2; }
+  }
+
+  body[data-rail="side"] .Rail {
     position: sticky;
     inset-block-start: 0;
     max-block-size: 100dvh;

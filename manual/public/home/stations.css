@@ -1,0 +1,394 @@
+@charset "UTF-8";
+
+/**
+ * Stations — the six content sections inside `<main class="han">`
+ * (manifesto, station-semantics/-type/-lines/-snippet, closing).
+ *
+ * HP-4: the whole point of the rebuild is that these sections' running
+ * copy is itself the specimen the rail (`rail.css` + `configurator.js`)
+ * acts on — so this file stays purely typographic. It sets measure,
+ * rhythm, and the type ramp; it never touches `--han-*` behaviour
+ * (punctuation refinement, autospace, ruby, emphasis marks) — that's
+ * the framework's job, demonstrated live.
+ *
+ * Shared chrome (`.Topbar`, `.VersionTag`, `.Brand`, `.Cta`, `.Toggle`)
+ * lives in `home.css`; rail-only chrome lives in `rail.css`; shared
+ * control/snippet primitives (`.ControlGroup`, `.Preview`, `.ViewTabs`,
+ * …) live in `controls.css`.
+ *
+ * Corner language: card-like containers (the type specimen, the
+ * snippet pane) use `--r-3`, matching the rail's own cards; small
+ * chips/buttons keep `--r-1`/`--r-2` as set in `home.css`.
+ */
+
+/* ─── Station rhythm (shared frame for the four `.Station` sections) */
+
+.Station {
+  & {
+    max-inline-size: var(--home-max);
+    margin-inline: auto;
+    padding: 6rem var(--home-pad-x);
+    border-block-start: 1px solid var(--rule-soft);
+  }
+
+  @media (max-width: 640px) {
+    padding: 4rem var(--home-pad-x);
+  }
+}
+
+/* ─── SectionHead (eyebrow + rule + h2, shared by the four stations) */
+
+.SectionHead {
+  & {
+    max-inline-size: 38em;
+    margin: 0 0 2.5rem;
+  }
+
+  [data-part="meta"] {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-block-end: 1.125rem;
+  }
+
+  /* `[data-part="label"]` carries `class="t-eyebrow"` in markup — the
+     shared ramp from `home.css`; this rule only lays out the trailing
+     rule that fills the remaining inline space. */
+  [data-part="rule"] {
+    flex: 1;
+    block-size: 1px;
+    background: var(--rule);
+  }
+
+  h2 {
+    font-family: var(--han-font-alternative);
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 0;
+
+    @media (max-width: 640px) { font-size: 1.625rem; }
+  }
+
+  /* station-snippet's lede sits directly under the h2 in the same head */
+  > p {
+    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ink-mute);
+    margin: 0.75rem 0 0;
+  }
+}
+
+/* ─── Prose (running specimen copy — measure ~38em for readability) */
+
+.Prose {
+  display: flex;
+  flex-direction: column;
+  gap: 1.375rem;
+  max-inline-size: 38em;
+
+  p {
+    font-family: var(--han-font-alternative);
+    font-size: 1rem;
+    line-height: 1.9;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+}
+
+
+/* ═══ Manifesto ══════════════════════════════════════════════════ */
+
+.Manifesto {
+  & {
+    max-inline-size: var(--home-max);
+    margin-inline: auto;
+    padding: 7rem var(--home-pad-x) 5.5rem;
+  }
+
+  h1 {
+    font-family: var(--han-font-alternative);
+    font-weight: 600;
+    font-size: clamp(2.75rem, 3rem + 3vw, 4.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin: 0 0 2rem;
+
+    [data-part="line"] { display: block; }
+    [data-accent]       { color: var(--accent-deep); }
+  }
+
+  .Lede {
+    font-family: var(--han-font-alternative);
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    max-inline-size: 38em;
+    margin: 0 0 1.25rem;
+  }
+
+  .Dogfood {
+    font-family: var(--han-font-default);
+    font-size: 0.9375rem;
+    color: var(--ink-mute);
+    max-inline-size: 38em;
+    margin: 0 0 2.25rem;
+  }
+
+  .InstallChip { margin-block-end: 2.5rem; }
+
+  @media (max-width: 640px) {
+    & { padding: 5rem var(--home-pad-x) 4rem; }
+  }
+}
+
+/* ─── InstallChip (the `$ pnpm add …` mono chip — Manifesto + Closing) */
+
+.InstallChip {
+  & {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: var(--paper-deep);
+    border: 1px dashed var(--rule);
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--r-2);
+  }
+
+  [data-part="prompt"] { color: var(--accent); font-weight: 600; }
+
+  [data-part="copy"] {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    color: var(--ink-mute);
+    padding: 0;
+    font: inherit;
+
+    &:hover { color: var(--ink); }
+  }
+}
+
+/* ─── Stats (the three numeric callouts under the Manifesto lede) ── */
+
+.Stats {
+  & {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+    padding-block-start: 1.5rem;
+    margin: 0;
+    border-block-start: 1px solid var(--rule);
+  }
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  dt {
+    font-family: var(--han-font-alternative);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--han-font-default);
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+  }
+}
+
+
+/* ═══ Station II・Typography — the three-face specimen ══════════════
+   Moved from the old `features.css` (`.Illust[data-variant="faces"]`
+   was a header + `.Faces` + `.Legend`; the new markup drops the
+   header, so only the two lists are reused here). */
+
+.Illust[data-variant="faces"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-inline-size: 22rem;
+  margin: 0 0 2.5rem;
+}
+
+.Faces {
+  & {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--accent-soft);
+    background: var(--accent-bg);
+    border-radius: var(--r-3);
+    overflow: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  > li {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: var(--paper);
+    border-inline-end: 1px solid var(--accent-soft);
+
+    &:last-child { border-inline-end: 0; }
+  }
+
+  [data-part="ch"] {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  [data-part="label"] {
+    font-family: var(--han-font-latin-serif), serif;
+    font-size: 0.625rem;
+    color: var(--accent-deep);
+  }
+}
+
+.Legend {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--han-font-default);
+    font-size: 0.75rem;
+  }
+
+  dt {
+    color: var(--accent-deep);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    min-inline-size: 5.625rem;
+    margin: 0;
+  }
+
+  [data-part="dot"] {
+    flex: 1;
+    block-size: 0;
+    border-block-start: 1px dotted var(--rule);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+}
+
+
+/* ═══ Station IV・Snippet ═══════════════════════════════════════════
+   `.Preview`/`.ViewTabs`/`.Copy`/`[data-out-*]` are the shared
+   primitives from `controls.css`; this block only styles the two
+   station-local lines that frame the pane. */
+
+.Snippet {
+  .Finish, .BrowserSupport {
+    font-family: var(--han-font-alternative);
+    max-inline-size: 38em;
+    margin: 1.5rem 0 0;
+    color: var(--ink-mute);
+  }
+
+  .Finish {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--ink-soft);
+  }
+
+  .BrowserSupport {
+    font-size: 0.8125rem;
+    margin-block-start: 0.5rem;
+  }
+}
+
+
+/* ═══ Closing ═════════════════════════════════════════════════════
+   A modest footer band, not a `.Station` (full-bleed background,
+   centred content, no eyebrow/measure rhythm). */
+
+.Closing {
+  & {
+    border-block-start: 1px solid var(--rule);
+    background: var(--paper-tint);
+    padding: 3.5rem var(--home-pad-x);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    text-align: center;
+  }
+
+  .InstallLine {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    [data-part="label"] {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink-mute);
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .Siblings {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    a {
+      font-family: var(--han-font-default);
+      font-size: 0.8125rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      border-block-end: 1px solid var(--rule);
+      padding-block-end: 1px;
+
+      &:hover { color: var(--accent-deep); border-block-end-color: var(--accent-soft); }
+    }
+  }
+
+  .Foot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+
+    [data-part="old-home"] {
+      color: var(--ink-mute);
+      text-decoration: none;
+
+      &:hover { color: var(--accent-deep); }
+    }
+  }
+}

@@ -1,15 +1,8 @@
-<!--
-  Station IV・Snippet — the generator pane skeleton. Reuses the exact
-  data-out-* / ViewTabs contracts from the old playground panel, minus
-  the "preview" radio (the whole page is the preview now) and minus
-  `[data-pg]` (HP-3 wires this up under its own scope; until then this
-  stays inert markup — home.js's initPlayground() guards on
-  `[data-pg]` and no-ops here, per HP-2 instructions).
--->
+<!-- Station IV・Snippet — the reference-code generator (data-out-*/ViewTabs). -->
 <section id="station-snippet" class="Station Snippet" data-station="snippet">
   <header class="SectionHead">
     <div data-part="meta">
-      <span data-part="label">{{ snEyebrow }}</span>
+      <span data-part="label" class="t-eyebrow">{{ snEyebrow }}</span>
       <span data-part="rule" aria-hidden="true"></span>
     </div>
     <h2>{{ snH2 }}</h2>

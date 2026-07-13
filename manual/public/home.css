@@ -12,10 +12,8 @@
 
 /* Section partials — kept in `public/home/` so they ship as static
    assets without going through the build's module graph. */
-@import url('./home/hero.css');
-@import url('./home/features.css');
-@import url('./home/playground.css');
-@import url('./home/getting-started.css');
+@import url('./home/controls.css');
+@import url('./home/stations.css');
 @import url('./home/rail.css');
 
 /* ─── tokens (light) ──────────────────────────────────────────────── */
@@ -31,7 +29,6 @@
   --paper:        #ffffff;
   --paper-deep:   #fafaf7;
   --paper-tint:   #f5f3ee;
-  --paper-dim:    #f6f2e8;
   --ink:          #0e0e10;
   --ink-soft:     #1f1f22;
   --ink-mute:     #666666;
@@ -42,8 +39,6 @@
   --accent-deep:  #066b3f;
   --accent-soft:  #7dc8a4;
   --accent-bg:    #e8f5ec;
-  --accent-tint:  #d6ead9;
-  --seal:         #c43c2e;
 
   /* radii (subtle, print-feel) */
   --r-1: 2px;
@@ -54,6 +49,53 @@
   /* layout */
   --home-max:     1280px;
   --home-pad-x:   56px;
+
+  /* Dark inverted code blocks in BOTH themes — terminal-style, per the
+     B v2 design (mirrors manual.css's `--m-code-bg`/`--m-code-fg`). */
+  --code-bg: #0e0e10;
+  --code-fg: #e5e5e0;
+
+  color-scheme: light dark;
+
+  /* Dark-mode tokens — applied when (a) the system asks for dark AND
+     the user hasn't pinned a theme, or (b) the user has pinned dark
+     via the masthead toggle (`_home.html`'s pre-paint inline script
+     stamps `data-theme` on `<html>`). Mirrors `manual.css`'s exact
+     recipe (nested `@media` inside `:root`, SKILL rule 1a) so the two
+     stylesheets read as one design system. */
+  @media (prefers-color-scheme: dark) {
+    &:not([data-theme]) {
+      --paper:        #0e0e10;
+      --paper-deep:   #18171a;
+      --paper-tint:   #201f22;
+      --ink:          #e8e8e3;
+      --ink-soft:     #d2d2cd;
+      --ink-mute:     #8c8c87;
+      --ink-faint:    #5f5f5b;
+      --rule:         #2a2a2c;
+      --rule-soft:    #1f1f21;
+      --accent:       #3f9d6f;
+      --accent-deep:  #5cc090;
+      --accent-soft:  #2a5e3e;
+      --accent-bg:    #163322;
+    }
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper:        #0e0e10;
+  --paper-deep:   #18171a;
+  --paper-tint:   #201f22;
+  --ink:          #e8e8e3;
+  --ink-soft:     #d2d2cd;
+  --ink-mute:     #8c8c87;
+  --ink-faint:    #5f5f5b;
+  --rule:         #2a2a2c;
+  --rule-soft:    #1f1f21;
+  --accent:       #3f9d6f;
+  --accent-deep:  #5cc090;
+  --accent-soft:  #2a5e3e;
+  --accent-bg:    #163322;
 }
 
 @media (max-width: 880px) {
@@ -124,7 +166,7 @@ body.home img, body.home svg { display: block; max-width: 100%; }
 
   &[data-variant="primary"] {
     background: var(--ink);
-    color: #fff;
+    color: var(--paper);
     padding: 0.75rem 1.375rem;
     border-radius: var(--r-2);
     font-size: 0.875rem;
@@ -343,8 +385,8 @@ body.home code:not(pre code) {
   color: var(--accent-deep);
 }
 .code-dark {
-  background: #0e0e10 !important;
-  color: #e5e5e0 !important;
+  background: var(--code-bg) !important;
+  color: var(--code-fg) !important;
   border-color: transparent !important;
 }
 
@@ -423,7 +465,7 @@ body.home code:not(pre code) {
     top: calc(100% + 0.375rem);
     right: 0;
     inline-size: 15rem;
-    background: #fff;
+    background: var(--paper);
     border: 1px solid var(--ink);
     box-shadow: 4px 4px 0 rgba(14, 14, 16, 0.08);
     z-index: 50;
@@ -491,41 +533,59 @@ body.home code:not(pre code) {
   }
 }
 
-/* ─── Footer (homepage chrome) ────────────────────────────────────
- * Markup: `<footer class="Footer"><div>
- *   <a class="Brand" data-size="sm">…</a>
- *   <small>…version & tagline…</small>
- *   <a data-part="link" href="…">GitHub</a>
- * </div></footer>`. */
+/* ─── Topbar (homepage chrome — brand, nav, lang switcher, version) ─
+ * Markup: `<header class="Topbar"><a class="Brand">…</a><nav>
+ *   <a href="…">…</a>…<span data-part="sep"></span>{{ langSwitcher }}
+ *   <span class="VersionTag">…</span></nav></header>`, mounted in
+ * `_home.html` above `<aside class="Rail">`/`<main class="han">`.
+ * Deliberately NOT sticky/fixed — `rail.css`'s side-form sticky rail
+ * assumes it scrolls away with the page (see that file's comment); a
+ * later pass pinning the Topbar needs to add a matching
+ * `inset-block-start` offset there. */
 
-.Footer {
+.Topbar {
   & {
-    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.125rem var(--home-pad-x);
+    border-block-end: 1px solid var(--rule-soft);
     background: var(--paper);
   }
 
-  > div {
-    max-inline-size: var(--home-max);
-    margin: 0 auto;
-    padding: 2rem var(--home-pad-x);
+  nav {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    font-family: var(--han-font-default);
-    font-size: 0.8125rem;
-    color: var(--ink-mute);
-  }
 
-  small { color: var(--ink-mute); }
+    > a {
+      font-family: var(--han-font-default);
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.05em;
+      text-decoration: none;
 
-  [data-part="link"] {
-    margin-inline-start: auto;
-    color: var(--ink);
-    border-bottom: 1px solid var(--rule);
+      &:hover { color: var(--accent-deep); }
+    }
 
-    &:hover {
-      color: var(--accent-deep);
-      border-bottom-color: var(--accent-soft);
+    [data-part="sep"] {
+      display: inline-block;
+      inline-size: 1px;
+      block-size: 0.875rem;
+      background: var(--rule);
     }
   }
+
+  @media (max-width: 640px) {
+    & { padding: 0.875rem var(--home-pad-x); flex-wrap: wrap; gap: 0.75rem; }
+    nav { gap: 0.875rem; flex-wrap: wrap; }
+  }
+}
+
+/* ─── VersionTag (small mono/accent pill — Topbar nav + Closing foot) */
+
+.VersionTag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-deep);
 }
