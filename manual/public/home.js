@@ -23,9 +23,25 @@ import { initConfigurator } from '/home/configurator.js'
 import { initMetrics } from '/home/rail-metrics.js'
 import { initRailChooser } from '/home/rail-chooser.js'
 
+/* InstallChip 的 ⎘ ——複製隔壁 [data-part="cmd"] 的指令文字。
+ * （站④的 [data-out-copy] 由 configurator.js 自管；這裡只管 chip。） */
+const initInstallChips = () => {
+  document.querySelectorAll('.InstallChip [data-part="copy"]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const cmd = btn.parentElement.querySelector('[data-part="cmd"]')
+      if (!cmd) return
+      await navigator.clipboard.writeText(cmd.textContent.trim())
+      const original = btn.textContent
+      btn.textContent = '✓'
+      setTimeout(() => { btn.textContent = original }, 1500)
+    })
+  })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
   initConfigurator()
   initMetrics(document.querySelector('main.han'))
   initRailChooser()
+  initInstallChips()
 })
