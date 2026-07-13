@@ -199,9 +199,10 @@
       </fieldset>
 
       <!-- 繁體專項（子組）— TC 標點（Diantenjeom）＋傳承字形＋家族選單＋
-           注音Web字體，全屬 hant-only，繁體以外語言不適用，預設收合。 -->
-      <details class="ControlGroup">
-        <summary>{{ pgGrpHeritage }}</summary>
+           注音Web字體，全屬 hant-only。平鋪不收合（owner call）——
+           <section>＋<header>，與度量群組同款。 -->
+      <section class="ControlGroup">
+        <header>{{ pgGrpHeritage }}</header>
         <fieldset class="PlaygroundRules" data-cfg>
           <legend class="sr-only">{{ pgGrpHeritage }}</legend>
           <!-- 繁體標點（MOE／GB）— 品牌credit以 <small> 存續 -->
@@ -244,7 +245,7 @@
             <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
           </label>
         </fieldset>
-      </details>
+      </section>
 
       <!-- 其餘語言標點（各一控件，扁列不設手風琴）— Diantenjeom 規範，
            品牌credit以 <small> 存續於各列。 -->

@@ -4,26 +4,21 @@ import { test, expect, type Page } from '@playwright/test'
  * Task B — the collapsible full-height side rail — and Task A — the
  * restructured 字體 group.
  *
- * Collapse: the `.RailToggle` handle flips `<han-rail collapsed>`, and the
- * body grid animates its left column to 0 so header + main slide LEFT to
- * fill (never an overlay — content is never covered). The choice persists
- * to `localStorage['han-rail-collapsed']` and is restored pre-paint by an
- * inline script in `_home.html`.
+ * Collapse: the `.RailToggle` handle is a real checkbox (dark-mode
+ * recipe): checked = collapsed, layout is pure CSS via
+ * `body:has(.RailToggle input:checked)` — the body grid animates its
+ * left column to 0 so header + main slide LEFT to fill (never an
+ * overlay). The choice persists to `localStorage['han-rail-collapsed']`
+ * and is restored pre-paint by an inline script in `_home.html`.
  *
- * 字體 group: zhuyinWebfont + punct.hant moved into the collapsed 繁體專項
- * accordion (both hant-only); punct.hans/ja/ko are now flat rows in the
- * open 字體 group; all four punct selects still emit their data-cfg-key as
- * the `han-config-change` source.
+ * 字體 group: zhuyinWebfont + punct.hant live in the FLAT 繁體專項
+ * sub-section (no accordion — owner call); punct.hans/ja/ko are flat
+ * rows in the open 字體 group; all four punct selects still emit their
+ * data-cfg-key as the `han-config-change` source.
  *
  * Default Desktop Chrome viewport (1280×720) ≥ 64rem → side form, handle
  * visible.
  */
-
-/** 配置群組是 shadow 內的 <details> 手風琴——收合組裡的控件先展開。 */
-const openGroupOf = (page: Page, cfgKey: string) =>
-  page
-    .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
-    .click()
 
 const box = (page: Page, selector: string) =>
   page.locator(selector).evaluate((el) => {
@@ -36,15 +31,18 @@ test.describe('Task B — collapsible side rail', () => {
     await page.goto('/')
 
     const rail = page.locator('han-rail')
-    const toggle = page.locator('[data-rail-collapse]')
+    const toggle = page.locator('.RailToggle')
+    const checkbox = toggle.locator('input[type="checkbox"]')
     await expect(rail).toBeVisible()
     await expect(toggle).toBeVisible()
+    await expect(checkbox).not.toBeChecked()
 
     const mainBefore = await box(page, 'main.han')
     expect(mainBefore.x).toBeGreaterThan(100) // rail column occupies the left
 
+    // the input is visually hidden — click the label
     await toggle.click()
-    await expect(rail).toHaveAttribute('collapsed', '')
+    await expect(checkbox).toBeChecked()
 
     // Column animates to 0 → main slides left and widens. Poll past the
     // 250ms transition.
@@ -59,32 +57,27 @@ test.describe('Task B — collapsible side rail', () => {
     const railAfter = await box(page, 'han-rail')
     expect(railAfter.width).toBeLessThan(2)
     expect(railAfter.right).toBeLessThanOrEqual(mainAfter.x + 2)
-
-    // aria-expanded tracks state.
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
   })
 
   test('state persists across reload (restored pre-paint, collapsed on first frame)', async ({ page }) => {
     await page.goto('/')
-    await page.locator('[data-rail-collapse]').click()
+    await page.locator('.RailToggle').click()
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem('han-rail-collapsed')))
       .toBe('1')
 
     await page.reload()
 
-    // The pre-paint inline script sets the attribute synchronously as the
-    // node is parsed, so the page lays out collapsed with no flash.
-    const rail = page.locator('han-rail')
-    await expect(rail).toHaveAttribute('collapsed', '')
-    await expect(page.locator('[data-rail-collapse]')).toHaveAttribute('aria-expanded', 'false')
+    // The pre-paint inline script restores the checkbox synchronously as
+    // it's parsed, so the page lays out collapsed with no flash.
+    await expect(page.locator('.RailToggle input')).toBeChecked()
     await expect
       .poll(async () => (await box(page, 'main.han')).x)
       .toBeLessThan(2)
 
     // reopening clears the stored flag
-    await page.locator('[data-rail-collapse]').click()
-    await expect(rail).not.toHaveAttribute('collapsed', '')
+    await page.locator('.RailToggle').click()
+    await expect(page.locator('.RailToggle input')).not.toBeChecked()
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem('han-rail-collapsed')))
       .toBe('0')
@@ -92,20 +85,16 @@ test.describe('Task B — collapsible side rail', () => {
 })
 
 test.describe('Task A — restructured 字體 group', () => {
-  test('zhuyinWebfont + punct.hant live inside the collapsed 繁體專項 accordion', async ({ page }) => {
+  test('zhuyinWebfont + punct.hant live in the flat 繁體專項 sub-section (no accordion)', async ({ page }) => {
     await page.goto('/')
 
-    // Collapsed by default → both hant-only controls are hidden until the
-    // 繁體專項 group is opened.
-    await expect(page.locator('[data-cfg-key="zhuyinWebfont"]')).toBeHidden()
-    await expect(page.locator('[data-cfg-key="punct.hant"]')).toBeHidden()
-
-    await openGroupOf(page, 'zhuyinWebfont')
+    // Flat sub-section (owner call) — both hant-only controls are visible
+    // without opening anything.
     await expect(page.locator('[data-cfg-key="zhuyinWebfont"]')).toBeVisible()
     await expect(page.locator('[data-cfg-key="punct.hant"]')).toBeVisible()
 
-    // Same accordion holds heritage — proves the grouping.
-    const group = page.locator('details.ControlGroup:has([data-cfg-key="zhuyinWebfont"])')
+    // Same sub-section holds heritage — proves the grouping.
+    const group = page.locator('section.ControlGroup:has([data-cfg-key="zhuyinWebfont"])')
     await expect(group.locator('[data-cfg-key="heritage"]')).toHaveCount(1)
   })
 
@@ -132,7 +121,6 @@ test.describe('Task A — restructured 字體 group', () => {
     const lastSource = () =>
       page.evaluate(() => (window as unknown as { __src: string[] }).__src.at(-1))
 
-    await openGroupOf(page, 'punct.hant')
     await page.locator('[data-cfg-key="punct.hant"]').selectOption('GB')
     await expect.poll(lastSource).toBe('punct.hant')
 

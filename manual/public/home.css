@@ -519,7 +519,9 @@ body:has(han-rail[form="side"]) {
     > han-rail { grid-column: 1; grid-row: 1 / -1; }
     > main.han { grid-column: 2; }
 
-    &:has(han-rail[collapsed]) { --rail-col: 0px; }
+    /* checked = collapsed — the checkbox is the single source of truth
+       (dark-mode recipe); pre-paint script restores it, JS only persists. */
+    &:has(.RailToggle input:checked) { --rail-col: 0px; }
   }
 
   /* 52–64rem — narrower rail column so it doesn't crowd main.han at
@@ -569,13 +571,12 @@ han-rail {
 /* ─── RailToggle (collapse / expand the side rail) ───────────────────
  * Page chrome, NOT part of the rail component — a slim hairline handle at
  * the aside/content boundary, visible in BOTH states (the only way back
- * once collapsed). It sits on the content side of the boundary and tracks
- * it via the inherited `--rail-col` (0 when collapsed). Side form only:
- * hidden on the <52rem bottom sheet and for form="top" (rows, not a
- * column — the toggle is a no-op there). `rail-collapse.js` flips the
- * `<han-rail collapsed>` attribute + persists it; the chevron reads off
- * the button's own aria-expanded (kept in sync by that module + a
- * pre-paint script), so this stays self-contained. */
+ * once collapsed). A real `<label>` + `<input type="checkbox">` (owner
+ * call, dark-mode recipe): checked = collapsed, the body grid reads
+ * `body:has(.RailToggle input:checked)` — layout is pure CSS,
+ * `rail-collapse.js` only persists. Tracks the boundary via the
+ * inherited `--rail-col` (0 when collapsed). Side form only: hidden on
+ * the <52rem bottom sheet and for form="top" (rows, not a column). */
 .RailToggle {
   & {
     position: fixed;
@@ -603,18 +604,24 @@ han-rail {
     ;
   }
 
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* chevron points at the action: ‹ collapse (expanded) / › expand
-     (collapsed). Driven by the button's own state, no upward selector. */
+     (collapsed). Driven by the checkbox's own state, no upward selector. */
   &::before {
     content: '‹';
     font-size: var(--fs-small);
     line-height: 1;
   }
-  &[aria-expanded="false"]::before { content: '›'; }
+  &:has(input:checked)::before { content: '›'; }
 
   &:hover { color: var(--palette-accent); }
 
-  &:focus-visible {
+  &:has(input:focus-visible) {
     outline: 2px solid var(--palette-accent);
     outline-offset: 2px;
   }
