@@ -18,7 +18,7 @@
 | `lang` attr | `hant`｜`hans`｜`en`｜`ja`｜`ko`。預設繼承 `closest('[lang]')`（含自身），最後退 `document.documentElement.lang`，再退 `hant`。runtime 可改（observedAttributes → 重渲染 shadow 內文案，config 狀態保留）。 |
 | `target` attr | CSS selector，config 產生的 `--han-*` 變數與 metrics inline style 寫到的元素。預設 `main.han`。找不到時元件照常渲染、僅不套用（console.warn 一次）。 |
 | `form` attr | `side`｜`top`（預設 `side`）。只影響 shadow 內版面骨架；頁面層的 grid 佈局仍由掛載頁自己的 CSS 對 `han-rail` 元素負責。窄幅（<52rem）自動轉 bottom-sheet，與現行為同。 |
-| Event | `han-config-change` — `bubbles: true, composed: true`，`detail: { config, vars, source }`。`config` 為完整 config 物件的**淺凍結副本**（`Object.freeze({ ...config, punct: { ...punct } })`），`vars` 為 `cssVars(config)` 的 `[name, value][]`，`source` 為觸發的 `data-cfg-key`（reset 時為 `'reset'`）。連接後即發一次初始 event（`source: 'init'`），訂閱者不必自己撈初態。 |
+| Event | `han-config-change` — `bubbles: true, composed: true`，`detail: { config, vars, source }`。`config` 為完整 config 物件的**淺凍結副本**（`Object.freeze({ ...config, punct: { ...punct }, metrics: { ...metrics } })`，`punct`／`metrics` 一併深拷），`vars` 為 `cssVars(config)` 的 `[name, value][]`，`source` 為觸發的 `data-cfg-key`（reset 時為 `'reset'`，度量 slider 拖動時為 `'metrics'`）。連接後即發一次初始 event（`source: 'init'`），訂閱者不必自己撈初態。 |
 | 方法 | `reset()`（回預設並廣播）；`reapplyFallbacks()`（demo-lang 換內文語言後重跑 JS 補全，接手現在 `initConfigurator()` 回傳的 handle）。 |
 | 屬性 | `config` getter（同上的凍結副本）。 |
 
@@ -35,7 +35,9 @@ manual/public/components/
   rail-config.js     ← 現 configurator.js 的「控件→config→vars 套用」核心
   │                     （intents/apply、configRef、ALL_VARS、visibility 切換、
   │                      ensureFont、fallbacks 開關），DOM 查詢改收 shadowRoot
-  rail-metrics.js    ← 自 home/ 搬入（字級/行距/字重/書寫方向 sliders）
+  rail-metrics.js    ← 自 home/ 搬入（字級/行距/字重 sliders）。除了對 target
+  │                     寫 inline style 預覽，值也透過 onChange 進 config.metrics
+  │                     → codegen 只在偏差時生一條 `body { }` 規則（source:'metrics'）
   rail.css           ← 自 home/ 搬入；`.Rail` 根選擇器改 `:host`
   tokens.css         ← :host 層 token 預設值（見「Token 邊界」）
 manual/public/home/

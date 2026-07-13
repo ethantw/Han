@@ -41,6 +41,8 @@ export const DEFAULTS = {
   // 四個模組開關（semantics／lines／prose／fonts）：off ＝ 該模組 CSS 根本不
   // import（生成碼加／減 import 行）。semantics／prose 原就是布林旗標，這裡兼作
   // 模組開關重複使用。
+  // 度量 sliders — body-level 排版基準；只在偏差時輸出 body 規則，不屬任何模組
+  metrics: { size: 16, leading: 1.75, weight: 400 },
   semantics: true,
   citeTitleMarks: 'none',        // none|bracket|wavy（僅 semantics on 時輸出）
   emSymbol: 'circle',            // circle|dot|sesame|triangle（同上）
@@ -118,16 +120,32 @@ export const cssVars = (c) => {
 const configCSS = (c, indent = '  ') => {
   const vars = cssVars(c)
   const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
-  // baseGeneric：body 騎哪個複合字體——serif 換上 --han-font-alternative；
-  // sans-serif（出廠）本就是 --han-font-default，無需輸出。單獨判斷（不進
-  // cssVars()）——這不是 --han-* 變數偏差，是 body 本身的 font-family 覆寫；
-  // 該變數來自 fonts.css，故 fonts off 時整條規則失去意義，一併 gate 掉。
+  // body 規則：baseGeneric 的 font-family 覆寫 ＋ 度量 slider 的偏差，合成
+  // 「一條」body { }。各宣告獨立 gate、順序固定：
+  //  · font-family — baseGeneric serif 換上 --han-font-alternative；sans-serif
+  //    （出廠）本就是 --han-font-default，無需輸出。不進 cssVars()——這不是
+  //    --han-* 變數偏差，是 body 自己的 font-family 覆寫；該變數來自 fonts.css，
+  //    故 fonts off 時整條失去意義，一併 gate 掉。
+  //  · font-size／line-height／font-weight — 度量 slider 只在偏離出廠基準時輸出，
+  //    body 層排版基準，不屬任何 --han-* 模組。
+  // 恰一條宣告 → 維持單行 `body { … }`；兩條以上 → 展開成塊（比照 :root 的縮排）。
+  const m = c.metrics
+  const bodyDecls = [
+    ...(c.fonts && c.baseGeneric === 'serif' ? ['font-family: var(--han-font-alternative);'] : []),
+    ...(m.size !== 16 ? [`font-size: ${m.size}px;`] : []),
+    ...(m.leading !== 1.75 ? [`line-height: ${String(m.leading)};`] : []),
+    ...(m.weight !== 400 ? [`font-weight: ${m.weight};`] : []),
+  ]
+  const bodyRule =
+    bodyDecls.length === 0 ? []
+    : bodyDecls.length === 1 ? [`body { ${bodyDecls[0]} }`]
+    : [`body {\n${bodyDecls.map((d) => `${indent}${d}`).join('\n')}\n}`]
   const rules = [
     ...(vars.length
       ? [`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`]
       : []),
     ...(c.prose && scope && scope !== 'article' ? [`${scope} { --han-prose: on; }`] : []),
-    ...(c.fonts && c.baseGeneric === 'serif' ? [`body { font-family: var(--han-font-alternative); }`] : []),
+    ...bodyRule,
   ]
   return rules.join('\n')
 }

@@ -13,10 +13,12 @@ import { test, expect, type Page } from '@playwright/test'
  * consume this one event). Kept in sync by hand here on purpose: a drift
  * fails this test loudly.
  *
- * These are the 22 config-object keys (what the event carries), not the
+ * These are the 23 config-object keys (what the event carries), not the
  * 26 `data-cfg-key` DOM controls — `punct` is one config key spread over
- * four selects (hant/hans/ja/ko), and `autospace` is one key behind the
- * autospaceOn + autospaceMode pair. `semantics`/`prose` are now the
+ * four selects (hant/hans/ja/ko), `autospace` is one key behind the
+ * autospaceOn + autospaceMode pair, and `metrics` (size/leading/weight)
+ * rides in from the 度量 sliders with no `data-cfg-key` control at all.
+ * `semantics`/`prose` are now the
  * module switches themselves (the old per-group 啟用 rows are gone —
  * still one control each). `lines`/`fonts` joined as module switches, and
  * the merged Web字體來源 replaced the ziano-only pair
@@ -27,7 +29,7 @@ const DEFAULT_KEYS = [
   'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
   'zhuyinWebfont', 'baseGeneric', 'fallbacks', 'legacyRuby',
-  'webfontDelivery', 'webfontCdnSource',
+  'webfontDelivery', 'webfontCdnSource', 'metrics',
 ]
 
 /** 配置群組是 shadow 內的 <details> 手風琴——收合組裡的控件先展開。 */

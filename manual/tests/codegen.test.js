@@ -164,6 +164,47 @@ test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', 
   assert.ok(!none.includes('--han-prose'))
 })
 
+/* ── 度量 slider → body 規則 ──────────────────────────────────
+ * 字級/行距/字重只在偏離出廠基準時進生成碼，合成單一 body { }（baseGeneric
+ * serif 的 font-family 也併入同一條）。無偏差 → 無 body 規則。 */
+
+test('度量偏差（size 18／leading 1.6）→ css pane 含 body 塊，無 :root（無變數偏差）', () => {
+  const c = cfg({ metrics: { size: 18, leading: 1.6, weight: 400 } })
+  const css = paneCode(renderCDN(c), 'css')
+  assert.ok(css.includes('font-size: 18px'))
+  assert.ok(css.includes('line-height: 1.6'))
+  assert.ok(!css.includes(':root'))            // 無 --han-* 變數偏差
+  assert.equal((css.match(/body \{/g) ?? []).length, 1)
+})
+
+test('度量 leading 整數/小數格式（2 → "2"、1.8 → "1.8"）', () => {
+  assert.ok(paneCode(renderCDN(cfg({ metrics: { size: 16, leading: 2, weight: 400 } })), 'css')
+    .includes('line-height: 2;'))
+  assert.ok(paneCode(renderCDN(cfg({ metrics: { size: 16, leading: 1.8, weight: 400 } })), 'css')
+    .includes('line-height: 1.8;'))
+})
+
+test('度量偏差 ＋ baseGeneric serif → 單一 body 規則含 font-family 與度量行（不重複 body）', () => {
+  const c = cfg({ baseGeneric: 'serif', metrics: { size: 18, leading: 1.75, weight: 700 } })
+  const css = paneCode(renderCDN(c), 'css')
+  assert.ok(css.includes('font-family: var(--han-font-alternative)'))
+  assert.ok(css.includes('font-size: 18px'))
+  assert.ok(css.includes('font-weight: 700'))
+  assert.equal((css.match(/body \{/g) ?? []).length, 1)
+})
+
+test('全預設度量 → 無 body 規則（cdn／bundler 皆同）', () => {
+  assert.ok(!paneCode(renderCDN(DEFAULTS), 'css').includes('body {'))
+  assert.ok(!pane(renderBundler(DEFAULTS, 'pnpm'), 'css'))
+})
+
+test('fonts off ＋ 度量偏差 → body 規則仍出（含度量、但無 font-family）', () => {
+  const c = cfg({ fonts: false, metrics: { size: 18, leading: 1.75, weight: 400 } })
+  const css = paneCode(renderCDN(c), 'css')
+  assert.ok(css.includes('body { font-size: 18px; }'))   // 唯一宣告 → 單行
+  assert.ok(!css.includes('font-family'))
+})
+
 /* ── 模組開關 → 逐模組 import ───────────────────────────────── */
 
 test('全模組開 → 單一 han.css 入口（han.min.css／\'/styles\'），無逐模組行', () => {

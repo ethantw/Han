@@ -16,9 +16,12 @@
  *           `.RailToggle` checkbox + `body:has(input:checked)` own it,
  *           dark-mode recipe; see home.css § han-rail.)
  *   event   `han-config-change` — bubbles + composed, detail
- *           `{ config, vars, source }`; config is a shallow-frozen copy,
- *           vars is `cssVars(config)`, source is the触發 data-cfg-key
- *           ('init' on connect, 'reset' on reset). Fired once on connect.
+ *           `{ config, vars, source }`; config is a shallow-frozen copy
+ *           (with `punct` and `metrics` cloned), vars is `cssVars(config)`,
+ *           source is the触發 data-cfg-key ('init' on connect, 'reset' on
+ *           reset, 'metrics' when a 度量 slider moves). config now carries
+ *           `metrics { size, leading, weight }` — codegen turns any
+ *           deviation into a `body { }` rule. Fired once on connect.
  *   methods reset() · reapplyFallbacks($target?)
  *   prop    config (the frozen copy)
  */
@@ -102,7 +105,7 @@ class HanRail extends HTMLElement {
   // subscribers can't mutate our state; `vars` is the [name,value][].
   #dispatch = (config, source) => {
     const detail = {
-      config: Object.freeze({ ...config, punct: { ...config.punct } }),
+      config: Object.freeze({ ...config, punct: { ...config.punct }, metrics: { ...config.metrics } }),
       vars: cssVars(config),
       source,
     }
@@ -154,6 +157,10 @@ class HanRail extends HTMLElement {
       {
         root: this.shadowRoot,
         target: this.#target,
+        // 起始 metrics 取自剛掛載的 config 模組（lang 重渲染時保留使用者偏差）；
+        // onChange 把滑桿快照寫回 config core，由它廣播 source:'metrics'。
+        initial: this.#config.config.metrics,
+        onChange: (m) => this.#config.setMetrics(m),
       },
     )
     this.#ready = true
@@ -163,8 +170,11 @@ class HanRail extends HTMLElement {
   // No UI button anymore (per-control 「使用預設値」 buttons replaced the
   // global reset — owner call); the method stays public API.
   reset() {
-    this.#config?.reset()
+    // metrics 先 reset：其 onChange → setMetrics → 廣播 source:'metrics'。再
+    // config.reset() 廣播 source:'reset' 且 config 已全默認（含 metrics）——確保
+    // 「最後」那次廣播是乾淨的 source:'reset' 全預設，訂閱者收斂到正確終態。
     this.#metrics?.reset()
+    this.#config?.reset()
   }
 
   reapplyFallbacks($target) {

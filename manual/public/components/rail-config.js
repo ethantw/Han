@@ -304,5 +304,12 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
     reset,
     reapplyFallbacks: ($t) => applyFallbacks(configRef.current, $t ?? target),
     get config() { return configRef.current },
+    // 度量 slider → config.metrics 的唯一入口（rail-metrics.js 的 onChange）。
+    // metrics 不對應任何 [data-cfg-key] 控件，故 writeControls／defaultFor 無涉；
+    // DEFAULTS 已含 metrics，故 structuredClone／reset 自動帶上它。
+    setMetrics: (metrics) => {
+      configRef.current = { ...configRef.current, metrics: { ...metrics } }
+      sync('metrics')
+    },
   }
 }
