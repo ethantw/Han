@@ -22,7 +22,7 @@
   </label>
 
   <div class="RailScroll">
-    <!-- 模組（layer 級） -->
+    <!-- 模組（layer 級）— 每個 layer toggle 領著自己的細項，縮排標示從屬 -->
     <details class="ControlGroup">
       <summary>{{ pgGrpLayers }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
@@ -30,16 +30,8 @@
           <span>{{ pgTogSemantics }}</span>
           <input type="checkbox" data-cfg-key="semantics" checked>
         </label>
-        <label class="Toggle">
-          <span>{{ pgTogProse }}</span>
-          <input type="checkbox" data-cfg-key="prose" checked>
-        </label>
-        <label class="Field">
-          <span>{{ pgProseScope }}</span>
-          <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
-        </label>
         <!-- 語意細項（semantics off 時整組隱藏） -->
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field SubField" data-cfg-semantics-sub>
           <span>{{ pgCiteMarks }} <small>cite</small></span>
           <select data-cfg-key="citeTitleMarks">
             <option value="none" selected>{{ pgModeOff }}</option>
@@ -47,7 +39,7 @@
             <option value="wavy">{{ pgCiteWavy }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field SubField" data-cfg-semantics-sub>
           <span>{{ pgEmSymbol }} <small>em</small></span>
           <select data-cfg-key="emSymbol">
             <option value="circle" selected>{{ pgEmCircle }}</option>
@@ -56,13 +48,23 @@
             <option value="triangle">{{ pgEmTriangle }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field SubField" data-cfg-semantics-sub>
           <span>{{ pgEmPosition }}</span>
           <select data-cfg-key="emPosition">
             <option value="auto" selected>{{ pgEmPosAuto }}</option>
             <option value="under">{{ pgEmPosUnder }}</option>
             <option value="over">{{ pgEmPosOver }}</option>
           </select>
+        </label>
+
+        <label class="Toggle">
+          <span>{{ pgTogProse }}</span>
+          <input type="checkbox" data-cfg-key="prose" checked>
+        </label>
+        <!-- 作用選擇器（prose off 時隱藏；僅影響生成碼，本頁恆用 <main>） -->
+        <label class="Field SubField" data-cfg-prose-sub>
+          <span>{{ pgProseScope }} <small>{{ pgProseScopeHint }}</small></span>
+          <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
         </label>
       </fieldset>
     </details>
@@ -100,28 +102,6 @@
       <summary>{{ pgGrpFonts }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <label class="Field">
-          <span>{{ pgHeritage }}</span>
-          <select data-cfg-key="heritage">
-            <option value="webfont" selected>{{ pgModeWebfont }}</option>
-            <option value="system">{{ pgModeSystem }}</option>
-            <option value="off">{{ pgModeOff }}</option>
-          </select>
-        </label>
-        <label class="Field" data-cfg-heritage-family>
-          <span>{{ pgHeritageSans }}</span>
-          <select data-cfg-key="heritageSans">
-            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-            <option value="genki">{{ pgFamGenki }}</option>
-          </select>
-        </label>
-        <label class="Field" data-cfg-heritage-family>
-          <span>{{ pgHeritageSerif }}</span>
-          <select data-cfg-key="heritageSerif">
-            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-            <option value="genki">{{ pgFamGenki }}</option>
-          </select>
-        </label>
-        <label class="Field">
           <span>{{ pgCursive }}</span>
           <select data-cfg-key="cursive">
             <option value="webfont" selected>{{ pgModeWebfont }}</option>
@@ -132,6 +112,13 @@
         <label class="Toggle">
           <span>{{ pgTogZhuyin }}</span>
           <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+        </label>
+        <label class="Field">
+          <span>{{ pgBaseGeneric }}</span>
+          <select data-cfg-key="baseGeneric">
+            <option value="sans-serif" selected>sans-serif</option>
+            <option value="serif">serif</option>
+          </select>
         </label>
       </fieldset>
     </details>
@@ -162,6 +149,35 @@
       </fieldset>
     </details>
 
+    <!-- 繁體專項 — heritage 傳承字形 + 家族選單，繁體以外語言不適用，預設收合 -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpHeritage }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <label class="Field">
+          <span>{{ pgHeritage }}</span>
+          <select data-cfg-key="heritage">
+            <option value="webfont" selected>{{ pgModeWebfont }}</option>
+            <option value="system">{{ pgModeSystem }}</option>
+            <option value="off">{{ pgModeOff }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-heritage-family>
+          <span>{{ pgHeritageSans }}</span>
+          <select data-cfg-key="heritageSans">
+            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+            <option value="genki">{{ pgFamGenki }}</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-heritage-family>
+          <span>{{ pgHeritageSerif }}</span>
+          <select data-cfg-key="heritageSerif">
+            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+            <option value="genki">{{ pgFamGenki }}</option>
+          </select>
+        </label>
+      </fieldset>
+    </details>
+
     <!-- JavaScript -->
     <details class="ControlGroup">
       <summary>{{ pgGrpJs }}</summary>
@@ -180,6 +196,19 @@
     <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
     <section class="ControlGroup">
       <header>{{ pgMetricsLabel }}</header>
+
+      <fieldset class="WritingModeSwitch" data-pg-writing>
+        <legend>{{ pgWritingLabel }}</legend>
+        <label>
+          <input type="radio" name="pg-writing" value="horizontal" checked>
+          {{ pgWritingHorizontal }}
+        </label>
+        <label>
+          <input type="radio" name="pg-writing" value="vertical">
+          {{ pgWritingVertical }}
+        </label>
+      </fieldset>
+
       <div class="MetricSliders" data-pg-sliders>
         <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">
           <header>
@@ -207,16 +236,16 @@
           </div>
         </div>
 
-        <div class="MetricSlider" data-metric="tracking" data-unit="em" data-precision="2">
+        <div class="MetricSlider" data-metric="weight" data-unit="" data-precision="0">
           <header>
-            <span data-part="label">{{ pgSliderTracking }}</span>
-            <span data-part="label-en">{{ pgSliderTrackingEn }}</span>
-            <output data-part="val" data-pg-slider-val>0.02 em</output>
+            <span data-part="label">{{ pgSliderWeight }}</span>
+            <span data-part="label-en">{{ pgSliderWeightEn }}</span>
+            <output data-part="val" data-pg-slider-val>400</output>
           </header>
           <div data-part="track">
             <div data-part="fill" data-pg-slider-fill></div>
-            <input type="range" min="-0.04" max="0.12" step="0.01" value="0.02"
-                   aria-label="{{ pgSliderTracking }} {{ pgSliderTrackingEn }}">
+            <input type="range" min="250" max="900" step="25" value="400"
+                   aria-label="{{ pgSliderWeight }} {{ pgSliderWeightEn }}">
           </div>
         </div>
       </div>

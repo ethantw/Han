@@ -12,8 +12,9 @@
  *     `.MetricSliders` / `.MetricSlider` — the rail's control widgets.
  *     `configurator.js` writes `--han-*` cascade-var deviations as
  *     inline style on `main.han`; sliders write inline `font-size` /
- *     `line-height` / `letter-spacing` the same way — no DOM mutation,
- *     just CSS.
+ *     `line-height` / `font-weight` the same way (owner cut the
+ *     字距/letter-spacing slider entirely — no content letter-spacing
+ *     write survives anywhere on this page) — no DOM mutation, just CSS.
  *   - `.Preview` / `.ViewTabs` / `.Copy` / `[data-out-*]` — station④'s
  *     snippet pane (ziano-style radio-fieldset + `:has(:checked)`
  *     tab switching). The old preview's markdown-custom-input split
@@ -89,6 +90,70 @@
     }
 
     &:has(input:checked) { color: var(--ink); }
+  }
+}
+
+
+/* ─── SubField — nested control, visually owned by the toggle above
+   it (模組 group: 語意標準化/行文版式 own their sub-selects). Indent +
+   a subtle inline-start border read as "child of the toggle"; hidden
+   via the same `[data-cfg-semantics-sub]`/`[data-cfg-prose-sub]`
+   attribute `configurator.js` already toggles. ─────────────────── */
+
+.SubField {
+  padding-inline-start: 0.875rem;
+  border-inline-start: 2px solid var(--rule);
+}
+
+
+/* ─── WritingModeSwitch — 度量 group's 橫排/直排 radio pair (preview-
+   state, not part of generated code — `rail-metrics.js` sets
+   `main.han.dataset.writing`). ───────────────────────────────────── */
+
+.WritingModeSwitch {
+  & {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 4px;
+    padding: 0;
+    border: 0;
+  }
+
+  legend {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--ink-faint);
+    padding: 0;
+    margin-inline-end: 0.25rem;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink-mute);
+    font-family: var(--han-font-default);
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: var(--r-1);
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+
+    &:hover { border-color: var(--ink); color: var(--ink); }
+
+    &:has(input:checked) {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
   }
 }
 
@@ -242,6 +307,13 @@
   > span {
     flex: none;
     color: var(--ink);
+
+    small {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-faint);
+    }
   }
 
   & :is(select, input[type="text"]) {

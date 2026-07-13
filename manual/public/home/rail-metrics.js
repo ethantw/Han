@@ -1,11 +1,17 @@
 /**
- * Rail metric sliders — 字級 / 行距 / 字距. Pure inline style on
- * `main.han` (font-size / line-height / letter-spacing); the fill bar
- * and value <output> are driven the same way the old playground.js
- * did it, minus the meta-line bookkeeping (no preview header anymore
- * — the sliders act on the whole page, not a boxed specimen).
+ * Rail metric sliders — 字級 / 行距 / 字重, + 直排/橫排 switch. Pure
+ * inline style / dataset on `main.han` (font-size / line-height /
+ * font-weight / dataset.writing); the fill bar and value <output> are
+ * driven the same way the old playground.js did it, minus the
+ * meta-line bookkeeping (no preview header anymore — the sliders act
+ * on the whole page, not a boxed specimen).
+ *
+ * 字距（letter-spacing）滑桿已依 owner 要求整體移除——不留任何對內文
+ * letter-spacing 的寫入；字重與直排/橫排同樣是預覽態控制（不進生成
+ * 碼，codegen.js 未變動）。
  */
-const METRIC_DEFAULTS = { size: 17, leading: 1.85, tracking: 0.02 }
+const METRIC_DEFAULTS = { size: 17, leading: 1.85, weight: 400 }
+const WRITING_DEFAULT = 'horizontal'
 
 export function initMetrics(main) {
   if (!main) return
@@ -14,10 +20,10 @@ export function initMetrics(main) {
   const state = { ...METRIC_DEFAULTS }
 
   const apply = () => {
-    const { size, leading, tracking } = state
+    const { size, leading, weight } = state
     main.style.fontSize = `${size}px`
     main.style.lineHeight = String(leading)
-    main.style.letterSpacing = `${tracking}em`
+    main.style.fontWeight = String(weight)
   }
 
   sliders.forEach(slider => {
@@ -43,6 +49,17 @@ export function initMetrics(main) {
     sync()
   })
 
+  // 直排/橫排——radio pair，寫 main.han 的 dataset.writing；純 CSS 消費
+  // （stations.css 的 `main.han[data-writing="vertical"]`），與字級/
+  // 行距/字重的 inline-style 寫法並存不衝突（不同屬性）。
+  const writingGroup = document.querySelector('[data-pg-writing]')
+  const applyWriting = (value) => { main.dataset.writing = value }
+  writingGroup?.addEventListener('input', () => {
+    const checked = writingGroup.querySelector('input:checked')
+    if (checked) applyWriting(checked.value)
+  })
+  applyWriting(WRITING_DEFAULT)
+
   // 「回到預設」也歸位度量——與 configurator.js 各自監聽同一顆按鈕，
   // 兩模組保持解耦。
   document.querySelector('[data-rail-reset]')?.addEventListener('click', () => {
@@ -53,6 +70,12 @@ export function initMetrics(main) {
       slider._sync?.()
     })
     apply()
+
+    if (writingGroup) {
+      const def = writingGroup.querySelector(`input[value="${WRITING_DEFAULT}"]`)
+      if (def) def.checked = true
+    }
+    applyWriting(WRITING_DEFAULT)
   })
 
   apply()
