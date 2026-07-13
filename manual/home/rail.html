@@ -130,6 +130,24 @@
             <option value="serif">serif</option>
           </select>
         </label>
+        <!-- Request B — ziano webfont delivery only（han.css／diantenjeom
+             各自的引用方式不受影響）。CDN 來源選單只在 zianoDelivery=cdn
+             時展示——鏡射既有的 [data-cfg-heritage-family] hidden 慣例。 -->
+        <label class="Field">
+          <span>{{ pgZianoDelivery }}</span>
+          <select data-cfg-key="zianoDelivery">
+            <option value="cdn" selected>CDN</option>
+            <option value="npm">npm</option>
+          </select>
+        </label>
+        <label class="Field" data-cfg-ziano-cdn-source>
+          <span>{{ pgZianoCdnSource }}</span>
+          <select data-cfg-key="zianoCdnSource">
+            <option value="jsdelivr" selected>jsDelivr</option>
+            <option value="unpkg">unpkg</option>
+            <option value="esmsh">esm.sh</option>
+          </select>
+        </label>
       </fieldset>
     </details>
 

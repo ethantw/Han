@@ -11,22 +11,24 @@
 
   <div class="Preview">
     <header>
+      <!-- radio value stays `bundler` (matches codegen.js's renderBundler
+           export) — only the visible label was renamed to "npm". -->
       <fieldset class="ViewTabs" data-pg-views>
         <legend class="sr-only">{{ pgViewsLegend }}</legend>
         <label><input type="radio" name="pg-view" value="bundler" checked>{{ pgOutBundler }}</label>
         <label><input type="radio" name="pg-view" value="cdn">{{ pgOutCdn }}</label>
-        <label><input type="radio" name="pg-view" value="import">{{ pgOutImport }}</label>
       </fieldset>
       <select data-out-pm>
         <option value="pnpm" selected>pnpm</option>
         <option value="npm">npm</option>
         <option value="yarn">yarn</option>
       </select>
-      <button type="button" class="Copy" data-out-copy data-copied="{{ pgCopied }}">{{ pgCopy }}</button>
     </header>
 
     <div data-part="stage">
-      <pre data-out-code><code></code></pre>
+      <!-- configurator.js renders one <figure class="CodePane"> per
+           codegen.js pane here — see buildPane() there. -->
+      <div data-out-panes></div>
     </div>
   </div>
 

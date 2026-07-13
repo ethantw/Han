@@ -55,6 +55,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
     pgGrpPunct: '標點規範（Diantenjeom）',
@@ -65,8 +66,7 @@ export const HOME_I18N = {
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
-    pgCopy: '複製', pgCopied: '已複製',
+    pgOutBundler: 'npm', pgOutCdn: 'CDN', // label only — codegen's renderBundler export + radio value 'bundler' stay
 
     dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
 
@@ -135,6 +135,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默认字体',
     pgHeritageSans: '黑体家族', pgHeritageSerif: '明体家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN来源',
     pgCursive: '楷体',
     pgModeWebfont: 'webfont', pgModeSystem: '系统字体', pgModeOff: '关闭',
     pgGrpPunct: '标点规范（Diantenjeom）',
@@ -145,8 +146,7 @@ export const HOME_I18N = {
     pgTogLegacyRuby: '旧式 ruby 转换', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用码形式',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
-    pgCopy: '复制', pgCopied: '已复制',
+    pgOutBundler: 'npm', pgOutCdn: 'CDN', // label only — codegen's renderBundler export + radio value 'bundler' stay
 
     dlLegend: '范文语言', dlHant: '繁', dlHans: '简', dlJa: '日', dlKo: '韩',
 
@@ -215,6 +215,7 @@ export const HOME_I18N = {
     pgBaseGeneric: 'Default typeface',
     pgHeritageSans: 'Sans family', pgHeritageSerif: 'Serif family',
     pgFamShanggu: 'Shanggu', pgFamGenki: 'Genki',
+    pgZianoDelivery: 'Ziano delivery', pgZianoCdnSource: 'CDN source',
     pgCursive: 'Cursive',
     pgModeWebfont: 'Webfont', pgModeSystem: 'System font', pgModeOff: 'Off',
     pgGrpPunct: 'Punctuation convention (Diantenjeom)',
@@ -225,8 +226,7 @@ export const HOME_I18N = {
     pgTogLegacyRuby: 'Legacy ruby conversion', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: 'Snippet format',
-    pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
-    pgCopy: 'Copy', pgCopied: 'Copied',
+    pgOutBundler: 'npm', pgOutCdn: 'CDN', // label only — codegen's renderBundler export + radio value 'bundler' stay
 
     dlLegend: 'Specimen language', dlHant: 'TC', dlHans: 'SC', dlJa: 'JA', dlKo: 'KO',
 
@@ -298,6 +298,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
     pgGrpPunct: '標點規範（Diantenjeom）',
@@ -308,8 +309,7 @@ export const HOME_I18N = {
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
-    pgCopy: '複製', pgCopied: '已複製',
+    pgOutBundler: 'npm', pgOutCdn: 'CDN', // label only — codegen's renderBundler export + radio value 'bundler' stay
 
     dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
 
@@ -386,6 +386,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
     pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
     pgGrpPunct: '標點規範（Diantenjeom）',
@@ -396,8 +397,7 @@ export const HOME_I18N = {
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
-    pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
-    pgCopy: '複製', pgCopied: '已複製',
+    pgOutBundler: 'npm', pgOutCdn: 'CDN', // label only — codegen's renderBundler export + radio value 'bundler' stay
 
     dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
 

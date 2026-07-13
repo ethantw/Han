@@ -6,8 +6,13 @@
  * HP-3 scope change: 控制項活在 rail（`[data-cfg] [data-cfg-key]`，任何
  * DOM 位置皆可——rail 本身在 main 之外），套用目標是整個
  * `main.han`（不再是單一預覽 `<article>`），輸出面板是站④的
- * `[data-out-code] code` / `[data-pg-views]`（不再有「即時預覽」分頁，
+ * `[data-out-panes]` / `[data-pg-views]`（不再有「即時預覽」分頁，
  * 頁面本身就是預覽）。
+ *
+ * Request A（pane 化）: codegen.js 的 renderBundler/renderCDN 回傳
+ * `{ lang, code }[]`（不再是單一字串），`renderOutput` 把每個 pane 建成
+ * 一個 `<figure class="CodePane">`（`buildPane`，純函數，textContent 寫
+ * code——不用 innerHTML 拼字串），重繪後統一呼叫 `highlightAll()` 上色。
  *
  * ts-style note: `configRef` / `modRef` are this codebase's one-
  * mutable-cell pattern (ts-style SKILL §3, "no let, no mutation") —
@@ -19,20 +24,26 @@
  */
 import {
   DEFAULTS, cssVars, packages, zianoUrl,
-  renderCDN, renderBundler, renderImport,
+  renderCDN, renderBundler,
 } from '/home/codegen.js'
+import { highlightAll } from '/home/highlight.js'
 
 /* ── 按需字體載入（去重） ──
  * `loaded` is a dedup index, not app state — nothing reads its
  * history, only membership — so a mutated `Set` is the accepted
- * exception here rather than an immutable-collection rebuild. */
+ * exception here rather than an immutable-collection rebuild.
+ * Dedup key is `id:source` (Request B) — switching zianoCdnSource for
+ * an already-loaded family injects a second <link> under the new
+ * host; harmless (same CSS, different origin), just not deduped
+ * across sources. */
 const loaded = new Set()
-const ensureFont = (id) => {
-  if (loaded.has(id)) return
-  loaded.add(id)
+const ensureFont = (id, source) => {
+  const key = `${id}:${source}`
+  if (loaded.has(key)) return
+  loaded.add(key)
   document.head.insertAdjacentHTML(
     'beforeend',
-    `<link rel="stylesheet" href="${zianoUrl(id)}">`,
+    `<link rel="stylesheet" href="${zianoUrl(id, source)}">`,
   )
 }
 
@@ -66,8 +77,10 @@ const ALL_VARS = [
 const applyMain = (config, $main) => {
   for (const prop of ALL_VARS) $main.style.removeProperty(prop)
   for (const [prop, value] of cssVars(config)) $main.style.setProperty(prop, value)
-  // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重
-  for (const id of packages(config).ziano) ensureFont(id)
+  // packages() 已依 heritage/cursive 編碼需要的家族；ensureFont 去重。
+  // 預覽恆走 CDN link（不管 zianoDelivery 生成碼要不要走 npm）——那只
+  // 是「引用碼寫法」的選擇，頁面本身還是得從某處把字抓來。
+  for (const id of packages(config).ziano) ensureFont(id, config.zianoCdnSource)
   // baseGeneric：本頁沒有 <body> 可套（body 是 html.home 的殼），拿
   // main.han 自身頂替——codegen.js 生成的引用碼寫的是 `body { … }`，
   // 這裡的等效寫法是把同一條規則套在 main 本身（也是 --han-font-*
@@ -91,14 +104,50 @@ const applyFallbacks = async (config, $main) => {
   modRef.current.installFallbacks($main)
 }
 
-/* ── apply：輸出面板（站④） ── */
+/* ── apply：輸出面板（站④） ──
+ * pane[] → <figure class="CodePane"> per pane（ts-style：pure builder
+ * returning elements, textContent for code — never innerHTML with
+ * interpolated code). figcaption 是語言徽章（CLI/HTML/JS/CSS），
+ * button[data-part="copy"] 鏡射 InstallChip 的 ⎘ 慣例（見
+ * initConfigurator 裡的委派點擊處理）。 */
+const LANG_LABEL = { bash: 'CLI', html: 'HTML', js: 'JS', css: 'CSS' }
+
+const buildPane = ({ lang, code }) => {
+  const $figure = document.createElement('figure')
+  $figure.className = 'CodePane'
+
+  const $figcaption = document.createElement('figcaption')
+  $figcaption.textContent = LANG_LABEL[lang] ?? lang
+
+  const $copy = document.createElement('button')
+  Object.assign($copy, { type: 'button', textContent: '⎘' })
+  $copy.dataset.part = 'copy'
+  $copy.setAttribute('aria-label', 'copy')
+
+  const $pre = document.createElement('pre')
+  $pre.dataset.lang = lang
+  const $code = document.createElement('code')
+  $code.textContent = code
+  $pre.append($code)
+
+  $figure.append($figcaption, $copy, $pre)
+  return $figure
+}
+
+const renderPanes = ($container, panes) => {
+  $container.replaceChildren(...panes.map(buildPane))
+}
+
 const renderOutput = (config, ui) => {
-  const render = {
+  const panes = {
     bundler: () => renderBundler(config, ui.$pm.value),
     cdn: () => renderCDN(config),
-    import: () => renderImport(config),
-  }[ui.tab]
-  ui.$code.textContent = render()
+  }[ui.tab]()
+  renderPanes(ui.$panes, panes)
+  // Highlight API replaces ranges wholesale on every call (see
+  // highlight.js) — safe to re-run unconditionally after every pane
+  // rewrite, no leak across renders.
+  highlightAll('[data-out-panes] pre[data-lang] > code')
 }
 
 /* ── 進場 ──
@@ -113,7 +162,7 @@ export const initConfigurator = ($root = document) => {
   const ui = {
     tab: 'bundler',
     $pm: $root.querySelector('[data-out-pm]'),
-    $code: $root.querySelector('[data-out-code] code'),
+    $panes: $root.querySelector('[data-out-panes]'),
   }
 
   const controls = () => [...$root.querySelectorAll('[data-cfg] [data-cfg-key]')]
@@ -133,9 +182,13 @@ export const initConfigurator = ($root = document) => {
     applyFallbacks(configRef.current, $main)
     renderOutput(configRef.current, ui)
 
-    // 家族選單只在 heritage=webfont 時可用；進階 autospace 只在勾了後備時展示
+    // 家族選單只在 heritage=webfont 時可用；CDN 來源只在 zianoDelivery=cdn
+    // 時有意義；進階 autospace 只在勾了後備時展示
     $root.querySelectorAll('[data-cfg-heritage-family]').forEach(($el) => {
       $el.toggleAttribute('hidden', configRef.current.heritage !== 'webfont')
+    })
+    $root.querySelectorAll('[data-cfg-ziano-cdn-source]').forEach(($el) => {
+      $el.toggleAttribute('hidden', configRef.current.zianoDelivery !== 'cdn')
     })
     $root.querySelectorAll('[data-cfg-semantics-sub]').forEach(($el) => {
       $el.toggleAttribute('hidden', !configRef.current.semantics)
@@ -156,8 +209,8 @@ export const initConfigurator = ($root = document) => {
     })
   })
 
-  // pg-view 分頁（站④）：三分頁全是輸出碼（無「即時預覽」——全頁即預覽），
-  // radio 值直接就是 ui.tab，不需 CSS pane-switch。
+  // pg-view 分頁（站④）：兩分頁（npm／bundler、cdn）全是輸出碼（無「即時
+  // 預覽」——全頁即預覽），radio 值直接就是 ui.tab，不需 CSS pane-switch。
   const $views = $root.querySelector('[data-pg-views]')
   $views?.addEventListener('input', () => {
     ui.tab = $views.querySelector('input:checked').value
@@ -165,12 +218,17 @@ export const initConfigurator = ($root = document) => {
   })
   ui.$pm?.addEventListener('input', () => renderOutput(configRef.current, ui))
 
-  const $copy = $root.querySelector('[data-out-copy]')
-  $copy?.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(ui.$code.textContent)
-    const original = $copy.textContent
-    $copy.textContent = $copy.dataset.copied ?? '已複製'
-    setTimeout(() => { $copy.textContent = original }, 1500)
+  // 每個 pane 各自的複製鍵——委派在容器上（panes 每次 renderOutput 都整批
+  // 重繪，個別綁定會漏掉新節點）。行為鏡射 home.js 的 InstallChip ⎘ handler。
+  ui.$panes?.addEventListener('click', async (event) => {
+    const $btn = event.target.closest('[data-part="copy"]')
+    if (!$btn) return
+    const $code = $btn.closest('figure')?.querySelector('pre code')
+    if (!$code) return
+    await navigator.clipboard.writeText($code.textContent)
+    const original = $btn.textContent
+    $btn.textContent = '✓'
+    setTimeout(() => { $btn.textContent = original }, 1500)
   })
 
   // 「回到預設」— config 整個換回 DEFAULTS，控制項 DOM 狀態同步寫回，再 sync()。

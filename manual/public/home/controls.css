@@ -16,11 +16,18 @@
  *     `line-height` / `font-weight` the same way (owner cut the
  *     字距/letter-spacing slider entirely — no content letter-spacing
  *     write survives anywhere on this page) — no DOM mutation, just CSS.
- *   - `.Preview` / `.ViewTabs` / `.Copy` / `[data-out-*]` — station④'s
- *     snippet pane (ziano-style radio-fieldset + `:has(:checked)`
- *     tab switching). The old preview's markdown-custom-input split
- *     and `[data-part="meta"]` header badge had no station④
- *     equivalent and are pruned.
+ *   - `.Preview` / `.ViewTabs` / `[data-out-*]` — station④'s snippet
+ *     pane (ziano-style radio-fieldset + `:has(:checked)` tab
+ *     switching). The old preview's markdown-custom-input split and
+ *     `[data-part="meta"]` header badge had no station④ equivalent
+ *     and are pruned.
+ *   - `.CodePane` — one pane per `<figure>` inside `[data-out-panes]`
+ *     (Request A: codegen.js now emits an array of panes, not one
+ *     flat string). Terminal-dark in both themes via home.css's
+ *     constant `--code-bg`/`--code-fg` (B v2 design — see that file's
+ *     comment). `::highlight(code-*)` token colours are ziano's
+ *     `usage.css` palette, tuned for dark terminals — reused as-is
+ *     since this pane is dark-terminal-styled regardless of theme.
  */
 
 /* ─── ControlGroup (one labelled cluster of inputs) ────────────── */
@@ -346,9 +353,10 @@
 
 /* ─── ViewTabs + snippet pane ───────────────────────────────────────
    ziano-style pure-CSS switching: radio fieldset + :has(:checked).
-   Station④'s `.Preview` always shows the `<pre data-out-code>`; the
-   only view-driven visibility left is the package-manager <select>,
-   which only makes sense on the "bundler" tab. */
+   Station④'s `.Preview` always shows `[data-out-panes]`; the only
+   view-driven visibility left is the package-manager <select>, which
+   only makes sense on the "bundler" tab (label reads "npm" — the
+   `bundler` radio value/export name are unchanged, label-only rename). */
 
 .Preview {
   .ViewTabs {
@@ -401,38 +409,78 @@
     padding-inline: 6px;
   }
 
-  .Copy {
-    & {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--accent-deep);
-      background: var(--accent-bg);
-      border: 1px solid var(--accent-soft);
-      border-radius: var(--r-1);
-      padding: 4px 10px;
-      cursor: pointer;
-    }
-
-    &:hover { border-color: var(--accent-deep); }
-  }
-
-  [data-out-code] {
-    & {
-      margin: 0;
-      overflow: auto;
-      padding: 16px 18px;
-      background: var(--paper);
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      line-height: 1.65;
-      color: var(--ink);
-    }
-
-    code { background: transparent; padding: 0; }
+  [data-out-panes] {
+    display: flex;
+    flex-direction: column;
   }
 
   /* pg-view 切換：package-manager select 只在 bundler 分頁有意義 */
   &:not(:has([name="pg-view"][value="bundler"]:checked)) [data-out-pm] {
     display: none;
   }
+}
+
+
+/* ─── CodePane — one labelled code exhibit inside [data-out-panes] ──
+   figure > figcaption (lang badge) + button[data-part="copy"] + pre >
+   code. Terminal-dark in both themes on purpose (home.css's constant
+   --code-bg/--code-fg — B v2 design), so panes read the same whether
+   the page itself is light or dark. */
+
+.CodePane {
+  & {
+    margin: 0;
+    background: var(--code-bg);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  &:first-child { border-block-start: 0; }
+
+  figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: color-mix(in srgb, var(--code-fg) 55%, transparent);
+    background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
+  }
+
+  button[data-part="copy"] {
+    & {
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+
+    &:hover { color: var(--code-fg); }
+  }
+
+  pre {
+    margin: 0;
+    overflow: auto;
+    padding: 14px 18px;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: var(--code-fg);
+  }
+
+  code { background: transparent; padding: 0; }
+
+  /* Highlight-API token colours — ziano/demo/src/css/usage.css's palette. */
+  pre code::highlight(code-comment) { color: #6f7b8b; }
+  pre code::highlight(code-string)  { color: #b8d39a; }
+  pre code::highlight(code-keyword) { color: #88aaff; }
+  pre code::highlight(code-attr)    { color: #e8c275; }
+  pre code::highlight(code-number)  { color: #f2997a; }
+  pre code::highlight(code-punct)   { color: #8b94a3; }
 }
