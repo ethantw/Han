@@ -20,6 +20,64 @@
 <label class="Grip" for="rail-sheet" data-rail-grip>{{ railHeader }}</label>
 
 <div class="Controls">
+    <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
+    <section class="ControlGroup">
+      <header>{{ pgMetricsLabel }}</header>
+
+      <fieldset class="WritingModeSwitch" data-pg-writing>
+        <legend>{{ pgWritingLabel }}</legend>
+        <label>
+          <input type="radio" name="pg-writing" value="horizontal" checked>
+          {{ pgWritingHorizontal }}
+        </label>
+        <label>
+          <input type="radio" name="pg-writing" value="vertical">
+          {{ pgWritingVertical }}
+        </label>
+      </fieldset>
+
+      <div class="MetricSliders" data-pg-sliders>
+        <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">
+          <header>
+            <span>{{ pgSliderSize }}</span>
+            <small>{{ pgSliderSizeEn }}</small>
+            <output data-pg-slider-val>17 px</output>
+          </header>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
+            <input type="range" min="14" max="28" step="1" value="17"
+                   aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
+          </div>
+        </div>
+
+        <div class="MetricSlider" data-metric="leading" data-unit="" data-precision="2">
+          <header>
+            <span>{{ pgSliderLeading }}</span>
+            <small>{{ pgSliderLeadingEn }}</small>
+            <output data-pg-slider-val>1.85</output>
+          </header>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
+            <input type="range" min="1.4" max="2.4" step="0.05" value="1.85"
+                   aria-label="{{ pgSliderLeading }} {{ pgSliderLeadingEn }}">
+          </div>
+        </div>
+
+        <div class="MetricSlider" data-metric="weight" data-unit="" data-precision="0">
+          <header>
+            <span>{{ pgSliderWeight }}</span>
+            <small>{{ pgSliderWeightEn }}</small>
+            <output data-pg-slider-val>400</output>
+          </header>
+          <div class="Track">
+            <span data-pg-slider-fill></span>
+            <input type="range" min="250" max="900" step="25" value="400"
+                   aria-label="{{ pgSliderWeight }} {{ pgSliderWeightEn }}">
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
     <details class="ControlGroup">
       <summary>{{ pgGrpSemantics }}</summary>
@@ -224,64 +282,6 @@
         </label>
       </fieldset>
     </details>
-
-    <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
-    <section class="ControlGroup">
-      <header>{{ pgMetricsLabel }}</header>
-
-      <fieldset class="WritingModeSwitch" data-pg-writing>
-        <legend>{{ pgWritingLabel }}</legend>
-        <label>
-          <input type="radio" name="pg-writing" value="horizontal" checked>
-          {{ pgWritingHorizontal }}
-        </label>
-        <label>
-          <input type="radio" name="pg-writing" value="vertical">
-          {{ pgWritingVertical }}
-        </label>
-      </fieldset>
-
-      <div class="MetricSliders" data-pg-sliders>
-        <div class="MetricSlider" data-metric="size" data-unit="px" data-precision="0">
-          <header>
-            <span>{{ pgSliderSize }}</span>
-            <small>{{ pgSliderSizeEn }}</small>
-            <output data-pg-slider-val>17 px</output>
-          </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
-            <input type="range" min="14" max="28" step="1" value="17"
-                   aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
-          </div>
-        </div>
-
-        <div class="MetricSlider" data-metric="leading" data-unit="" data-precision="2">
-          <header>
-            <span>{{ pgSliderLeading }}</span>
-            <small>{{ pgSliderLeadingEn }}</small>
-            <output data-pg-slider-val>1.85</output>
-          </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
-            <input type="range" min="1.4" max="2.4" step="0.05" value="1.85"
-                   aria-label="{{ pgSliderLeading }} {{ pgSliderLeadingEn }}">
-          </div>
-        </div>
-
-        <div class="MetricSlider" data-metric="weight" data-unit="" data-precision="0">
-          <header>
-            <span>{{ pgSliderWeight }}</span>
-            <small>{{ pgSliderWeightEn }}</small>
-            <output data-pg-slider-val>400</output>
-          </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
-            <input type="range" min="250" max="900" step="25" value="400"
-                   aria-label="{{ pgSliderWeight }} {{ pgSliderWeightEn }}">
-          </div>
-        </div>
-      </div>
-    </section>
 
     <button type="button" class="Reset" data-rail-reset>{{ railReset }}</button>
 </div>
