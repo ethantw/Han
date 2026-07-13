@@ -1,13 +1,21 @@
+@charset "UTF-8";
+
 /**
- * Controls — shared primitives for the whole-page configurator rail
- * and station④'s snippet-generator pane.
+ * Controls — shared primitives for the <han-rail> configurator and
+ * station④'s snippet-generator pane. DUAL-HOMED (see the component
+ * spec): this file both stays linked on the page (via home.css's
+ * @import, for station④'s light-DOM `.Preview` / `figure.CodePane`) AND
+ * is fetched + adopted into `<han-rail>`'s shadow (for the rail's
+ * control primitives). One URL, HTTP cache hit, no fork.
  *
- * Compact chrome: moves onto the ziano-aligned `--palette-*` palette and
- * the `--fs-*` ramp (owner call) but keeps its dense sizing (the rail is
- * a control surface, not reading copy). `configurator.js` writes `--han-*`
- * deviations as inline style on `main.han`; sliders write inline
- * `font-size` / `line-height` / `font-weight` the same way — no DOM
- * mutation, just CSS.
+ * TOKEN SPLIT by context (the component's token boundary):
+ *   • rail clusters (`.ControlGroup` … `.Field`, `.Toggle`) live ONLY in
+ *     the shadow, so they consume the `--_*` indirection layer
+ *     (tokens.css) — literal fallbacks let them paint on a bare page.
+ *   • station④ clusters (`.Preview`, `figure.CodePane`) live ONLY in the
+ *     light DOM (the homepage, where `--palette-*` is defined), so they
+ *     keep consuming `--palette-*` directly. When `<han-snippet>` lands
+ *     later, they split into their own adopted sheet.
  *
  * `.CodePane` stays terminal-dark in BOTH themes (owner-approved) via
  * home.css's constant `--code-bg`/`--code-fg`; its `::highlight()` token
@@ -19,11 +27,11 @@
 .ControlGroup {
   > :is(header, summary) {
     display: block;
-    font-family: var(--font-mono);
-    font-size: var(--fs-micro);
+    font-family: var(--_font-mono);
+    font-size: var(--_fs-micro);
     font-weight: 500;
     text-transform: uppercase;
-    color: var(--palette-supplement-text-2q);
+    color: var(--_supplement-text-2q);
     margin-block-end: 14px;
   }
 
@@ -38,7 +46,7 @@
     &::-webkit-details-marker { display: none; }
     &::after {
       content: '＋';
-      color: var(--palette-supplement-text);
+      color: var(--_supplement-text);
     }
   }
   &[open] > summary::after { content: '－'; }
@@ -49,13 +57,78 @@
   .ControlGroup {
     margin-block-start: 14px;
     padding-inline-start: 0.875rem;
-    border-inline-start: 2px solid var(--palette-rule);
+    border-inline-start: 2px solid var(--_rule);
 
     > summary {
       text-transform: none;
-      color: var(--palette-supplement-text);
+      color: var(--_supplement-text);
     }
   }
+}
+
+
+/* ─── Toggle (shared switch component) ─────────────────────────────
+ * `<label class="Toggle"><span>…</span><input type="checkbox"></label>`
+ * — a real checkbox with `appearance: none`; the input paints the track,
+ * `::before` the thumb; `:checked` drives the slide entirely in CSS.
+ * Moved here from home.css so the rail's shadow (which doesn't adopt
+ * home.css) gets the switch; the homepage still links this file, and no
+ * live light-DOM element uses `.Toggle` (only the frozen /old.html, on
+ * its own frozen CSS). Section layout (gap, direction) is the parent's. */
+.Toggle {
+  & {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--han-font-default);
+    font-size: var(--_fs-fine);
+    color: var(--_supplement-text);
+    cursor: pointer;
+    user-select: none;
+    transition: color 150ms ease;
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    flex-shrink: 0;
+    inline-size: 2rem;
+    block-size: 1.125rem;
+    margin: 0;
+    background: var(--_rule);
+    border: 1px solid var(--_rule);
+    border-radius: 1rem;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 150ms ease, border-color 150ms ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset-block: 0.0625rem;
+      inset-inline-start: 0.0625rem;
+      inline-size: 0.875rem;
+      background: var(--_bg);
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+      transition: inset-inline-start 150ms ease, background-color 150ms ease;
+    }
+
+    &:checked {
+      background: var(--_accent-bg);
+      border-color: var(--_accent);
+      &::before {
+        inset-inline-start: calc(100% - 1rem);
+        background: var(--_accent);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--_accent);
+      outline-offset: 2px;
+    }
+  }
+
+  &:has(input:checked) { color: var(--_accent); }
 }
 
 
@@ -78,7 +151,7 @@
       inline-size: 100%;
       gap: 0.75rem;
       padding: 0.375rem 0.25rem;
-      color: var(--palette-text);
+      color: var(--_text);
     }
 
     span {
@@ -89,12 +162,12 @@
     }
 
     small {
-      font-family: var(--font-mono);
-      font-size: var(--fs-micro);
-      color: var(--palette-supplement-text-2q);
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-micro);
+      color: var(--_supplement-text-2q);
     }
 
-    &:has(input:checked) { color: var(--palette-text); }
+    &:has(input:checked) { color: var(--_text); }
   }
 }
 
@@ -116,9 +189,9 @@
   legend {
     padding: 0;
     margin-inline-end: 0.25rem;
-    font-family: var(--font-mono);
-    font-size: var(--fs-micro);
-    color: var(--palette-supplement-text-2q);
+    font-family: var(--_font-mono);
+    font-size: var(--_fs-micro);
+    color: var(--_supplement-text-2q);
   }
 
   input {
@@ -131,21 +204,21 @@
     display: inline-flex;
     align-items: center;
     padding: 3px 10px;
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-1);
+    background: var(--_bg);
+    border: 1px solid var(--_rule);
+    border-radius: var(--_r-1);
     font-family: var(--han-font-default);
-    font-size: var(--fs-fine);
-    color: var(--palette-supplement-text);
+    font-size: var(--_fs-fine);
+    color: var(--_supplement-text);
     cursor: pointer;
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 
-    &:hover { border-color: var(--palette-text); color: var(--palette-text); }
+    &:hover { border-color: var(--_text); color: var(--_text); }
 
     &:has(input:checked) {
-      background: var(--palette-text);
-      border-color: var(--palette-text);
-      color: var(--palette-bg);
+      background: var(--_text);
+      border-color: var(--_text);
+      color: var(--_bg);
     }
   }
 }
@@ -179,25 +252,25 @@
 
     span {
       font-family: var(--han-font-default);
-      font-size: var(--fs-fine);
-      color: var(--palette-text);
+      font-size: var(--_fs-fine);
+      color: var(--_text);
     }
 
     small {
-      font-family: var(--font-mono);
-      font-size: var(--fs-micro);
-      color: var(--palette-supplement-text-2q);
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-micro);
+      color: var(--_supplement-text-2q);
     }
 
     output {
       margin-inline-start: auto;
       padding: 1px 7px;
-      font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      color: var(--palette-accent);
-      background: var(--palette-accent-bg);
-      border: 1px solid color-mix(in srgb, var(--palette-accent) 35%, transparent);
-      border-radius: var(--r-1);
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-fine);
+      color: var(--_accent);
+      background: var(--_accent-bg);
+      border: 1px solid color-mix(in srgb, var(--_accent) 35%, transparent);
+      border-radius: var(--_r-1);
     }
   }
 
@@ -218,7 +291,7 @@
       inset: 50% 0 auto 0;
       margin-block-start: -2px;
       block-size: 4px;
-      background: var(--palette-rule);
+      background: var(--_rule);
       border-radius: 4px;
     }
 
@@ -229,7 +302,7 @@
       margin-block-start: -2px;
       inline-size: 0;
       block-size: 4px;
-      background: var(--palette-accent);
+      background: var(--_accent);
       border-radius: 4px;
       pointer-events: none;
     }
@@ -267,8 +340,8 @@
         block-size: 14px;
         margin-block-start: 1px;
         border-radius: 50%;
-        background: var(--palette-bg);
-        border: 1px solid var(--palette-text);
+        background: var(--_bg);
+        border: 1px solid var(--_text);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         cursor: grab;
       }
@@ -276,8 +349,8 @@
         inline-size: 14px;
         block-size: 14px;
         border-radius: 50%;
-        background: var(--palette-bg);
-        border: 1px solid var(--palette-text);
+        background: var(--_bg);
+        border: 1px solid var(--_text);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         cursor: grab;
       }
@@ -302,13 +375,13 @@
 
   > span {
     flex: none;
-    color: var(--palette-text);
+    color: var(--_text);
 
     small {
       display: block;
-      font-family: var(--font-mono);
-      font-size: var(--fs-micro);
-      color: var(--palette-supplement-text-2q);
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-micro);
+      color: var(--_supplement-text-2q);
     }
   }
 
@@ -317,18 +390,20 @@
     padding-block: 0.2em;
     padding-inline: 0.5em;
     font: inherit;
-    font-size: var(--fs-compact);
-    color: var(--palette-text);
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-1);
+    font-size: var(--_fs-compact);
+    color: var(--_text);
+    background: var(--_bg);
+    border: 1px solid var(--_rule);
+    border-radius: var(--_r-1);
   }
 
   &[hidden] { display: none; }
 }
 
 
-/* ─── Preview — station④'s snippet-generator pane frame ────────── */
+/* ─── Preview — station④'s snippet-generator pane frame (LIGHT DOM) ──
+   Consumes `--palette-*` directly: it renders on the homepage where
+   those tokens exist, never inside the shadow. */
 
 .Preview {
   & {
@@ -417,8 +492,8 @@
 }
 
 
-/* ─── CodePane — one labelled code exhibit inside [data-out-panes] ──
-   figure > figcaption (lang badge + copy button) + pre > code.
+/* ─── CodePane — one labelled code exhibit inside [data-out-panes] (LIGHT
+   DOM) — figure > figcaption (lang badge + copy button) + pre > code.
    Terminal-dark in both themes on purpose (home.css's constant
    --code-bg/--code-fg). The copy button is the only button in the
    figcaption, so an element selector carries it — no data-* hook. */

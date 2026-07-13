@@ -1,9 +1,10 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * Configurator behavior, ported to the whole-page rail (HP-5): controls
- * live in `<aside class="Rail">` behind `details.ControlGroup`
- * accordions (open a collapsed group before touching its controls),
+ * Configurator behavior, now inside the `<han-rail>` web component:
+ * controls live in its shadow root behind `details.ControlGroup`
+ * accordions (Playwright pierces the open shadow root for CSS locators;
+ * open a collapsed group before touching its controls),
  * apply target is `main.han` (there's no more boxed preview
  * `<article>`), and the output pane is station④'s ViewTabs
  * (`[data-pg-views]` / `[data-out-panes]`) — no "live preview" tab

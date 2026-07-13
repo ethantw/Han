@@ -1,41 +1,35 @@
 /**
  * Homepage entry — boots the whole-page interaction modules.
  *
- * HP-3: the page itself is the playground. `initConfigurator` wires the
- * rail's controls to `main.han` and station④'s output pane;
- * `initMetrics` ports the old playground's slider logic onto the same
- * `<main>`; `initRailChooser` drives the (temporary, owner-facing)
- * side/top layout picker. `initLangSwitcher` is unrelated chrome (top
- * nav) and stays.
+ * The playground rail is now the `<han-rail>` web component: importing
+ * `/components/han-rail.js` registers it, and it self-initializes on
+ * connect (adopt shadow sheets → inject its locale template → wire its
+ * controls to `main.han` → dispatch the initial `han-config-change`).
+ * So this entry no longer calls `initConfigurator` / `initMetrics` —
+ * those moved into the component (`components/rail-config.js` +
+ * `rail-metrics.js`). It wires the page-side chrome the component
+ * doesn't own:
  *
- * `initPlayground` / `initFeatureToggles` / `initMagnifier` /
- * `initSpecHint` targeted DOM that no longer exists on this page
- * (`[data-pg]`, `.Specimen`) — dropped from the boot list along with
- * their now-deleted live modules (`hero.js`, `playground.js`,
- * `playground-md.js`); `/old.html` still needs them via its own
- * frozen `/old-assets/` copies. `initLangSwitcher` moved out of
- * `hero.js` into its own `lang-switcher.js` (HP-4) since it was the
- * only export this page still used.
- *
- * `initDemoLang` (owner-feedback round) needs `initConfigurator()`'s
- * returned `{ reapplyFallbacks }` handle — boot order matters here:
- * configurator first, demo-lang second.
+ *   • `initSnippet` — station④'s code panes, now a SUBSCRIBER to the
+ *     rail's `han-config-change` event (the future <han-snippet>).
+ *   • `initDemoLang` — borrows the component's `reapplyFallbacks` method.
+ *   • `initRailChooser` — writes the rail's `form` attribute (side/top).
+ *   • `initLangSwitcher` / `initTheme` — top-nav chrome, unchanged.
  *
  * `initTheme` persists the masthead dark-mode checkbox to
- * `localStorage` (style-conformance pass — the checkbox's own initial
- * state is restored by a pre-paint inline script next to it in
- * `_home.html`, not by this module).
+ * `localStorage` (the checkbox's own initial state is restored by a
+ * pre-paint inline script next to it in `_home.html`, not here).
  */
 
 import { initLangSwitcher } from '/home/lang-switcher.js'
 import { initTheme } from '/home/theme.js'
-import { initConfigurator } from '/home/configurator.js'
+import '/components/han-rail.js'
 import { initDemoLang } from '/home/demo-lang.js'
-import { initMetrics } from '/home/rail-metrics.js'
+import { initSnippet } from '/home/snippet.js'
 import { initRailChooser } from '/home/rail-chooser.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
- * （站④的 CodePane 複製由 configurator.js 自管；這裡只管 chip。） */
+ * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
 const initInstallChips = () => {
   document.querySelectorAll('.InstallChip button').forEach(($btn) => {
     $btn.addEventListener('click', async () => {
@@ -52,9 +46,15 @@ const initInstallChips = () => {
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
   initTheme()
-  const cfg = initConfigurator()
-  initDemoLang(cfg.reapplyFallbacks)
-  initMetrics(document.querySelector('main.han'))
+  // <han-rail> self-initializes on connect (async: adopt sheets → inject
+  // template → dispatch the initial han-config-change). Boot order:
+  // demo-lang borrows its `reapplyFallbacks`; the snippet subscribes to
+  // its event (the rail's async init dispatch lands after this handler,
+  // and the snippet also seeds from the rail's `config` getter as a
+  // belt-and-suspenders against the boot race).
+  const $rail = document.querySelector('han-rail')
+  initDemoLang(($target) => $rail?.reapplyFallbacks($target))
+  initSnippet()
   initRailChooser()
   initInstallChips()
 })

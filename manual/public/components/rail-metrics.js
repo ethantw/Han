@@ -1,35 +1,33 @@
 /**
- * Rail metric sliders — 字級 / 行距 / 字重, + 直排/橫排 switch. Pure
- * inline style / dataset on `main.han` (font-size / line-height /
- * font-weight / dataset.writing); the fill bar and value <output> are
- * driven the same way the old playground.js did it, minus the
- * meta-line bookkeeping (no preview header anymore — the sliders act
- * on the whole page, not a boxed specimen).
+ * <han-rail> metric sliders — 字級 / 行距 / 字重, + 直排/橫排 switch.
+ * Pure inline style / dataset on the `target` (`main.han`): font-size /
+ * line-height / font-weight / dataset.writing. Preview-state only — none
+ * of it enters the generated snippet (codegen.js is untouched), so this
+ * module never dispatches `han-config-change`; the component wires its
+ * `reset()` alongside the config core's.
  *
- * 字距（letter-spacing）滑桿已依 owner 要求整體移除——不留任何對內文
- * letter-spacing 的寫入；字重與直排/橫排同樣是預覽態控制（不進生成
- * 碼，codegen.js 未變動）。
+ * Moved from `home/rail-metrics.js` into the component and re-scoped:
+ * sliders + the writing switch are queried from the shadow `root`, the
+ * apply target is passed in. The letter-spacing slider stays removed
+ * (owner call).
  *
- * ts-style note: `stateRef` is the one-mutable-cell pattern (see
- * `configurator.js`'s file header) — `.current` is replaced wholesale,
- * never patched in place. Per-slider re-sync callbacks live in
- * `syncBySlider` (a `Map`), not a `slider._sync` DOM-object patch.
+ * ts-style note: `stateRef` is the one-mutable-cell pattern — `.current`
+ * replaced wholesale. Per-slider re-sync callbacks live in a `Map`.
  */
 const METRIC_DEFAULTS = { size: 17, leading: 1.85, weight: 400 }
 const WRITING_DEFAULT = 'horizontal'
 
-export const initMetrics = ($main) => {
-  if (!$main) return
-
-  const $sliders = [...document.querySelectorAll('[data-pg-sliders] .MetricSlider')]
+export const mountRailMetrics = ({ root, target }) => {
+  const $sliders = [...root.querySelectorAll('[data-pg-sliders] .MetricSlider')]
   const stateRef = { current: { ...METRIC_DEFAULTS } }
   const syncBySlider = new Map()
 
   const apply = () => {
+    if (!target) return
     const { size, leading, weight } = stateRef.current
-    $main.style.fontSize = `${size}px`
-    $main.style.lineHeight = String(leading)
-    $main.style.fontWeight = String(weight)
+    target.style.fontSize = `${size}px`
+    target.style.lineHeight = String(leading)
+    target.style.fontWeight = String(weight)
   }
 
   $sliders.forEach(($slider) => {
@@ -55,20 +53,16 @@ export const initMetrics = ($main) => {
     sync()
   })
 
-  // 直排/橫排——radio pair，寫 main.han 的 dataset.writing；純 CSS 消費
-  // （stations.css 的 `main.han[data-writing="vertical"]`），與字級/
-  // 行距/字重的 inline-style 寫法並存不衝突（不同屬性）。
-  const $writingGroup = document.querySelector('[data-pg-writing]')
-  const applyWriting = (value) => { $main.dataset.writing = value }
+  // 直排/橫排——radio pair，寫 target 的 dataset.writing（純 CSS 消費）。
+  const $writingGroup = root.querySelector('[data-pg-writing]')
+  const applyWriting = (value) => { if (target) target.dataset.writing = value }
   $writingGroup?.addEventListener('input', () => {
     const $checked = $writingGroup.querySelector('input:checked')
     if ($checked) applyWriting($checked.value)
   })
   applyWriting(WRITING_DEFAULT)
 
-  // 「回到預設」也歸位度量——與 configurator.js 各自監聽同一顆按鈕，
-  // 兩模組保持解耦。
-  document.querySelector('[data-rail-reset]')?.addEventListener('click', () => {
+  const reset = () => {
     stateRef.current = { ...METRIC_DEFAULTS }
     $sliders.forEach(($slider) => {
       const $input = $slider.querySelector('input[type="range"]')
@@ -82,7 +76,9 @@ export const initMetrics = ($main) => {
       if ($default) $default.checked = true
     }
     applyWriting(WRITING_DEFAULT)
-  })
+  }
 
   apply()
+
+  return { reset }
 }

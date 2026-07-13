@@ -23,7 +23,6 @@
    assets without going through the build's module graph. */
 @import url('./home/controls.css');
 @import url('./home/stations.css');
-@import url('./home/rail.css');
 
 /* ─── tokens ───────────────────────────────────────────────────────── */
 
@@ -218,66 +217,11 @@ body.home {
   }
 }
 
-/* ─── Toggle (shared switch component) ─────────────────────────────
- * `<label class="Toggle"><span>…</span><input type="checkbox"></label>`
- * — a real checkbox with `appearance: none`; the input paints the track,
- * `::before` the thumb; `:checked` drives the slide entirely in CSS.
- * Section layout (gap, direction) is set by the parent context. */
-.Toggle {
-  & {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--han-font-default);
-    font-size: var(--fs-fine);
-    color: var(--palette-supplement-text);
-    cursor: pointer;
-    user-select: none;
-    transition: color 150ms ease;
-  }
-
-  input[type="checkbox"] {
-    appearance: none;
-    flex-shrink: 0;
-    inline-size: 2rem;
-    block-size: 1.125rem;
-    margin: 0;
-    background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
-    border-radius: 1rem;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 150ms ease, border-color 150ms ease;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset-block: 0.0625rem;
-      inset-inline-start: 0.0625rem;
-      inline-size: 0.875rem;
-      background: var(--palette-bg);
-      border-radius: 50%;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
-      transition: inset-inline-start 150ms ease, background-color 150ms ease;
-    }
-
-    &:checked {
-      background: var(--palette-accent-bg);
-      border-color: var(--palette-accent);
-      &::before {
-        inset-inline-start: calc(100% - 1rem);
-        background: var(--palette-accent);
-      }
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--palette-accent);
-      outline-offset: 2px;
-    }
-  }
-
-  &:has(input:checked) { color: var(--palette-accent); }
-}
+/* The `.Toggle` switch component moved to `home/controls.css` so it's
+   adopted into the <han-rail> shadow (home.css isn't). The homepage
+   still links controls.css, so any light-DOM `.Toggle` would still be
+   styled — but none exists now (the rail's toggles live in the shadow;
+   /old.html carries its own frozen copy). */
 
 /* ─── code blocks ───────────────────────────────────────────────── */
 
@@ -527,4 +471,123 @@ body.home {
   font-family: var(--font-mono);
   font-size: var(--fs-fine);
   color: var(--palette-accent);
+}
+
+/* ─── <han-rail> page layout (chrome) ───────────────────────────────
+ * The rail is a shadow-DOM web component; its INTERNAL skeleton lives in
+ * the component's own sheets (components/rail.css). The mounting page
+ * owns PLACEMENT — the side/top grid (which also positions `main.han`),
+ * the sticky columns, and the <52rem bottom-sheet's fixed viewport
+ * anchoring — keyed off the component's public `form` attribute
+ * (`side`|`top`, written by rail-chooser.js). The rail's own
+ * background/hairlines and the sheet collapse stay in the shadow.
+ *
+ * FOUC guard — reserve the box but hide content until the element
+ * upgrades and its shadow renders (visibility keeps the grid cell). */
+han-rail:not(:defined) { visibility: hidden; }
+
+/* side form — a two-column grid places the Topbar (full width), the
+   rail (col 1), and main.han (col 2). Top form stays in normal flow. */
+body:has(han-rail[form="side"]) {
+  @media (min-width: 64rem) {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    align-items: start;
+
+    > .Topbar  { grid-column: 1 / -1; }
+    > han-rail { grid-column: 1; }
+    > main.han { grid-column: 2; }
+  }
+
+  /* 52–64rem — narrower rail column so it doesn't crowd main.han at
+     tablet widths. Below 52rem both forms collapse to the sheet. */
+  @media (min-width: 52rem) and (max-width: 63.9375rem) {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    align-items: start;
+
+    > .Topbar  { grid-column: 1 / -1; }
+    > han-rail { grid-column: 1; }
+    > main.han { grid-column: 2; }
+  }
+}
+
+han-rail {
+  /* Side form (≥64rem) — sticky left column. The Topbar isn't sticky,
+     so the rail sticks to the true viewport top. */
+  @media (min-width: 64rem) {
+    &[form="side"] {
+      position: sticky;
+      inset-block-start: 0;
+      max-block-size: 100dvh;
+      overflow-y: auto;
+    }
+
+    &[form="top"] {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 30;
+      inline-size: 100%;
+    }
+  }
+
+  /* Side form, 52–64rem — narrower sticky column. */
+  @media (min-width: 52rem) and (max-width: 63.9375rem) {
+    &[form="side"] {
+      position: sticky;
+      inset-block-start: 0;
+      max-block-size: 100dvh;
+      overflow-y: auto;
+    }
+  }
+
+  /* <52rem — bottom sheet: both forms collapse to a viewport-anchored
+     sheet. The sheet's hairline/shadow and the collapse itself are in
+     the shadow (components/rail.css); this only anchors the box. */
+  @media (max-width: 52rem) {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 40;
+    max-block-size: 70dvh;
+  }
+}
+
+/* ─── Chooser (owner tooling; see rail-chooser.js) ────────────────
+   選型用，owner 定案後移除。 Floating pill that flips the rail's `form`
+   attribute; independent chrome, its own PascalCase name. Light DOM, so
+   it consumes `--palette-*` directly. */
+
+.Chooser {
+  & {
+    position: fixed;
+    inset-inline-end: 1rem;
+    inset-block-end: 1rem;
+    z-index: 50;
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: 999px;
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--color-black) 12%, transparent);
+  }
+
+  button {
+    & {
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text);
+      background: transparent;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    &.is-active {
+      background: var(--palette-accent-bg);
+      color: var(--palette-accent);
+    }
+  }
 }

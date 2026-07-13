@@ -1,0 +1,155 @@
+@charset "UTF-8";
+
+/**
+ * <han-rail> shadow skeleton — the rail's OWN box (all forms) plus the
+ * <52rem bottom-sheet internals. Adopted into the shadow root alongside
+ * `tokens.css` (the `--_*` layer this file consumes) and `controls.css`
+ * (the `.ControlGroup` / `.Field` / `.Toggle` / `.MetricSlider`
+ * primitives).
+ *
+ * PAGE-LAYOUT lives on the mounting page, NOT here: the side/top grid
+ * (which also places `main.han`), sticky positioning, and the sheet's
+ * fixed viewport anchoring are home.css rules on the `han-rail` element
+ * (see home.css § han-rail). This file only styles what's INSIDE the
+ * shadow: the flex column, its background/hairlines, the controls
+ * scroll, the grip, and the sheet expand/collapse.
+ *
+ * The shadow root's top-level children are siblings — `<input
+ * .SheetToggle>`, `<label .Grip>`, `<div .Controls>` — so sheet state
+ * uses the `~` sibling combinator (no `:host():has()` needed). Form is
+ * pure-CSS reactive via `:host([form="top"])`; no JS re-render.
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  background: var(--_panel);
+  border-inline-end: 1px solid var(--_rule);
+}
+
+/* Top form — the divider flips from the inline-end edge to the block-end
+   edge (it sits above main.han, not beside it). */
+:host([form="top"]) {
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--_rule);
+}
+
+/* sr-only — duplicated from home.css because home.css isn't adopted into
+   the shadow; the rail template's <legend> hooks need it here too. */
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.SheetToggle { display: none; }
+.Grip { display: none; }
+
+.Controls {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 18px;
+  }
+
+  /* Top form (≥64rem) — horizontal scrolling toolbar. */
+  @media (min-width: 64rem) {
+    :host([form="top"]) & {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 24px;
+      overflow-x: auto;
+      padding-inline: var(--_gutter);
+
+      > .ControlGroup { min-inline-size: 220px; flex: none; }
+      > button.Reset  { flex: none; margin-inline-start: auto; }
+    }
+  }
+}
+
+button.Reset {
+  & {
+    align-self: flex-start;
+    padding: 6px 14px;
+    font-family: var(--_font-mono);
+    font-size: var(--_fs-fine);
+    color: var(--_supplement-text);
+    background: var(--_bg);
+    border: 1px solid var(--_rule);
+    border-radius: var(--_r-2);
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+
+  &:hover { border-color: var(--_text); color: var(--_text); }
+}
+
+/* <52rem — bottom sheet internals. The host's fixed viewport anchoring
+   (position / inset / z-index / max-block-size) is a home.css rule on
+   the `han-rail` element; here we only dress the sheet (hairline + drop
+   shadow) and drive the grip + controls collapse. */
+@media (max-width: 52rem) {
+  :host {
+    border-inline-end: 0;
+    border-block-start: 1px solid var(--_rule);
+    box-shadow: 0 -8px 24px color-mix(in srgb, var(--_shadow-ink) 8%, transparent);
+  }
+
+  /* checkbox joins the tab order (keyboard open/close) — kept sr-only so
+     it stays focusable; desktop uses the base display:none above. */
+  .SheetToggle {
+    display: block;
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .SheetToggle:focus-visible ~ .Grip {
+    outline: 2px solid var(--_accent);
+    outline-offset: 2px;
+  }
+
+  /* the grabber bar is decorative → `::before`, not a DOM span */
+  .Grip {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-fine);
+      color: var(--_supplement-text);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    &::before {
+      content: '';
+      inline-size: 2rem;
+      block-size: 3px;
+      border-radius: 2px;
+      background: var(--_rule);
+    }
+  }
+
+  .Controls {
+    max-block-size: 0;
+    overflow-y: hidden;
+    padding-block: 0;
+    transition: max-block-size 200ms ease;
+  }
+
+  .SheetToggle:checked ~ .Controls {
+    max-block-size: calc(70dvh - 2.75rem);
+    overflow-y: auto;
+    padding-block: 16px;
+  }
+}

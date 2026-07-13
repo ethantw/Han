@@ -3,9 +3,9 @@ import { test, expect, type Page } from '@playwright/test'
 /**
  * Homepage-as-playground e2e (HP-5).
  *
- * `/` is a whole-page playground: topbar + configurator rail
- * (`body[data-rail="side"|"top"]`, floating chooser persisting to
- * `localStorage['han-rail-form']`, <52rem bottom-sheet) + `<main
+ * `/` is a whole-page playground: topbar + the `<han-rail>` configurator
+ * web component (shadow DOM; `form="side"|"top"` attr, floating chooser
+ * persisting to `localStorage['han-rail-form']`, <52rem bottom-sheet) + `<main
  * class="han">` with six stations (Manifesto, station-semantics,
  * station-type, station-lines, station-snippet, Closing). Station④
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
@@ -50,7 +50,8 @@ for (const { path, htmlLang, label } of LOCALES) {
 
     await expect(page.locator('.Topbar .Brand')).toBeVisible()
     await expect(page.locator('main.han')).toHaveCount(1)
-    await expect(page.locator('aside.Rail')).toBeVisible()
+    // The rail is now the <han-rail> web component (shadow DOM).
+    await expect(page.locator('han-rail')).toBeVisible()
 
     // Six stations, in document order: Manifesto, semantics, type,
     // lines, snippet, Closing.
@@ -110,20 +111,24 @@ test('old.html: 200, provenance marker, own frozen snippet renders', async ({ pa
 })
 
 test.describe('rail forms — chooser + persistence', () => {
-  test('chooser switches body[data-rail] and persists across reload', async ({ page }) => {
+  // Rail-form state now lives on the <han-rail> `form` attribute (the
+  // component's public API); the chooser writes it and the page grid
+  // reacts via `body:has(han-rail[form=…])`. Same semantics as the old
+  // body[data-rail] hook — flip + persist + survive reload.
+  test('chooser switches han-rail[form] and persists across reload', async ({ page }) => {
     await page.goto('/')
-    const body = page.locator('body')
-    await expect(body).toHaveAttribute('data-rail', 'side')
+    const rail = page.locator('han-rail')
+    await expect(rail).toHaveAttribute('form', 'side')
 
     await page.locator('[data-rail-chooser] [data-rail-form="top"]').click()
-    await expect(body).toHaveAttribute('data-rail', 'top')
+    await expect(rail).toHaveAttribute('form', 'top')
     expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('top')
 
     await page.reload()
-    await expect(body).toHaveAttribute('data-rail', 'top')
+    await expect(rail).toHaveAttribute('form', 'top')
 
     await page.locator('[data-rail-chooser] [data-rail-form="side"]').click()
-    await expect(body).toHaveAttribute('data-rail', 'side')
+    await expect(rail).toHaveAttribute('form', 'side')
     expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('side')
   })
 })
@@ -180,10 +185,12 @@ test.describe('mobile bottom sheet', () => {
     const grip = page.locator('[data-rail-grip]')
     await expect(grip).toBeVisible()
 
-    const scroll = page.locator('.Rail .Controls')
+    // .Controls / .SheetToggle live in the <han-rail> shadow — Playwright
+    // pierces open shadow roots for CSS locators.
+    const scroll = page.locator('.Controls')
     const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
 
-    const toggle = page.locator('.Rail .SheetToggle')
+    const toggle = page.locator('.SheetToggle')
     await toggle.focus()
     await page.keyboard.press('Space')
 
