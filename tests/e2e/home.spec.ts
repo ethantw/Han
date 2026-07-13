@@ -9,8 +9,10 @@ import { test, expect, type Page } from '@playwright/test'
  * class="han">` with six stations (Manifesto, station-semantics,
  * station-type, station-lines, station-snippet, Closing). Station④
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
- * `[data-out-copy]` / `[data-out-code]`); the rail carries all 22
- * `data-cfg-key` controls in an accordion of `details.ControlGroup`
+ * `[data-out-panes]`, one `<figure class="CodePane">` per codegen.js
+ * pane — no more global `[data-out-copy]`/single `[data-out-code]`);
+ * the rail carries all 24 `data-cfg-key` controls (added zianoDelivery
+ * + zianoCdnSource, Request B) in an accordion of `details.ControlGroup`
  * (模組／字體／標點規範 groups open by default, 繁體專項／行調整／
  * JavaScript closed), a 直排/橫排 switch plus three metric sliders
  * (`[data-pg-sliders]`), and `[data-rail-reset]`. A separate
@@ -19,7 +21,9 @@ import { test, expect, type Page } from '@playwright/test'
  * own UI locale.
  *
  * `/old.html` is the frozen pre-rebuild homepage, fully self-contained
- * under `/old-assets/`.
+ * under `/old-assets/` — untouched by the pane rework, still renders
+ * its own single-`<pre data-out-code>` snippet via its own frozen copy
+ * of codegen.js/configurator.js.
  */
 
 const LOCALES = [
@@ -137,7 +141,7 @@ test.describe('whole-page configuration', () => {
 
     // Radios in the ViewTabs are sr-only — click the label, not the input.
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
-    await expect(page.locator('[data-out-code]'))
+    await expect(page.locator('[data-out-panes] pre[data-lang="css"] code'))
       .toContainText('--han-punctuation-refinement: hang')
   })
 })
