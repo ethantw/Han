@@ -79,17 +79,17 @@ export const cssVars = (c) => {
 /** :root 區塊（含 prose 自訂作用域的附加規則）；無偏差回空字串。 */
 const configCSS = (c, indent = '  ') => {
   const vars = cssVars(c)
-  const rules = []
-  if (vars.length)
-    rules.push(`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`)
   const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
-  if (c.prose && scope && scope !== 'article')
-    rules.push(`${scope} { --han-prose: on; }`)
   // baseGeneric：body 騎哪個複合字體——serif 換上 --han-font-alternative；
   // sans-serif（出廠）本就是 --han-font-default，無需輸出。單獨判斷（不進
   // cssVars()）——這不是 --han-* 變數偏差，是 body 本身的 font-family 覆寫。
-  if (c.baseGeneric === 'serif')
-    rules.push(`body { font-family: var(--han-font-alternative); }`)
+  const rules = [
+    ...(vars.length
+      ? [`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`]
+      : []),
+    ...(c.prose && scope && scope !== 'article' ? [`${scope} { --han-prose: on; }`] : []),
+    ...(c.baseGeneric === 'serif' ? [`body { font-family: var(--han-font-alternative); }`] : []),
+  ]
   return rules.join('\n')
 }
 
@@ -97,13 +97,19 @@ const configCSS = (c, indent = '  ') => {
 
 /** 實際用到的套件：han 恆在；ziano 依家族/楷體；dtj 依標點是否全關。 */
 export const packages = (c) => {
-  const ziano = []
-  if (c.heritage === 'webfont') {
-    ziano.push(...HERITAGE[c.heritageSans].sans.pkgs)
-    for (const p of HERITAGE[c.heritageSerif].serif.pkgs)
-      if (!ziano.includes(p)) ziano.push(p)
-  }
-  if (c.cursive === 'webfont') ziano.push(...CURSIVE_PKGS)
+  // serif 家族與 sans 家族重疊的套件不重複列出（兩者常同源，如尚古）。
+  const heritagePkgs = c.heritage === 'webfont'
+    ? [
+        ...HERITAGE[c.heritageSans].sans.pkgs,
+        ...HERITAGE[c.heritageSerif].serif.pkgs.filter(
+          (p) => !HERITAGE[c.heritageSans].sans.pkgs.includes(p),
+        ),
+      ]
+    : []
+  const ziano = [
+    ...heritagePkgs,
+    ...(c.cursive === 'webfont' ? CURSIVE_PKGS : []),
+  ]
   const dtj = Object.values(c.punct).some((v) => v !== 'off')
   return { ziano, dtj }
 }

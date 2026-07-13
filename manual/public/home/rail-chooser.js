@@ -10,26 +10,26 @@
  */
 const KEY = 'han-rail-form'
 
-export function initRailChooser() {
+export const initRailChooser = () => {
   const saved = localStorage.getItem(KEY)
   const form = saved === 'top' ? 'top' : 'side'
   document.body.dataset.rail = form
 
-  const chooser = document.querySelector('[data-rail-chooser]')
-  if (!chooser) return
+  const $chooser = document.querySelector('[data-rail-chooser]')
+  if (!$chooser) return
 
   const markActive = () => {
-    chooser.querySelectorAll('[data-rail-form]').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.railForm === document.body.dataset.rail)
+    $chooser.querySelectorAll('[data-rail-form]').forEach(($btn) => {
+      $btn.classList.toggle('is-active', $btn.dataset.railForm === document.body.dataset.rail)
     })
   }
   markActive()
 
-  chooser.addEventListener('click', e => {
-    const btn = e.target.closest('[data-rail-form]')
-    if (!btn) return
-    document.body.dataset.rail = btn.dataset.railForm
-    localStorage.setItem(KEY, btn.dataset.railForm)
+  $chooser.addEventListener('click', (e) => {
+    const $btn = e.target.closest('[data-rail-form]')
+    if (!$btn) return
+    document.body.dataset.rail = $btn.dataset.railForm
+    localStorage.setItem(KEY, $btn.dataset.railForm)
     markActive()
   })
 }

@@ -16,15 +16,15 @@
  * (`installFallbacks`), some of what they patch is lang-sensitive, so a
  * demo-lang switch re-runs them the same way a config change would.
  */
-export const initDemoLang = (reapplyFallbacks, root = document) => {
-  const main = root.querySelector('main.han')
-  const group = root.querySelector('[data-demo-lang]')
-  if (!main || !group) return
+export const initDemoLang = (reapplyFallbacks, $root = document) => {
+  const $main = $root.querySelector('main.han')
+  const $group = $root.querySelector('[data-demo-lang]')
+  if (!$main || !$group) return
 
-  group.addEventListener('input', () => {
-    const checked = group.querySelector('input:checked')
-    if (!checked) return
-    main.lang = checked.value
-    reapplyFallbacks?.(main)
+  $group.addEventListener('input', () => {
+    const $checked = $group.querySelector('input:checked')
+    if (!$checked) return
+    $main.lang = $checked.value
+    reapplyFallbacks?.($main)
   })
 }
