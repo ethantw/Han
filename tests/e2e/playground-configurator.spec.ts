@@ -1,6 +1,14 @@
 import { test, expect, type Page } from '@playwright/test'
 
-/** 配置群組是 <details> 手風琴——收合組裡的控件要先展開才可見。 */
+/**
+ * Configurator behavior, ported to the whole-page rail (HP-5): controls
+ * live in `<aside class="Rail">` behind `details.ControlGroup`
+ * accordions (open a collapsed group before touching its controls),
+ * apply target is `main.han` (there's no more boxed preview
+ * `<article>`), and the output pane is station④'s ViewTabs
+ * (`[data-pg-views]` / `[data-out-code]`) — no "live preview" tab
+ * anymore, since the whole page is the preview.
+ */
 const openGroupOf = (page: Page, cfgKey: string) =>
   page
     .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
@@ -11,12 +19,12 @@ test.describe('playground configurator', () => {
     await page.goto('/')
   })
 
-  test('掛標點開關 → 預覽變數 + 生成碼同步', async ({ page }) => {
-    const body = page.locator('[data-pg-body]')
+  test('掛標點開關 → 頁面變數 + 生成碼同步', async ({ page }) => {
+    const main = page.locator('main.han')
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect
-      .poll(() => body.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .poll(() => main.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
 
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()

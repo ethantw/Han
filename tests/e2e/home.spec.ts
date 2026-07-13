@@ -1,16 +1,21 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * Homepage smoke for all 5 locales:
- *   /        → zh-Hant (default)
- *   /hans/   → zh-Hans
- *   /en/     → en
- *   /ja/     → ja
- *   /ko/     → ko
+ * Homepage-as-playground e2e (HP-5).
  *
- * Verifies the homepage builds + serves for every locale, hero
- * scaffolding renders, the language switcher opens / closes, and the
- * 5 hero toggles drive real Han.css cascade vars on the Specimen (ruby = display-only attr).
+ * `/` is a whole-page playground: topbar + configurator rail
+ * (`body[data-rail="side"|"top"]`, floating chooser persisting to
+ * `localStorage['han-rail-form']`, <52rem bottom-sheet) + `<main
+ * class="han">` with six stations (Manifesto, station-semantics,
+ * station-type, station-lines, station-snippet, Closing). Station④
+ * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
+ * `[data-out-copy]` / `[data-out-code]`); the rail carries all 21
+ * `data-cfg-key` controls in an accordion of `details.ControlGroup`
+ * (字體／標點 groups open by default, others closed), three metric
+ * sliders (`[data-pg-sliders]`), and `[data-rail-reset]`.
+ *
+ * `/old.html` is the frozen pre-rebuild homepage, fully self-contained
+ * under `/old-assets/`.
  */
 
 const LOCALES = [
@@ -21,19 +26,32 @@ const LOCALES = [
   { path: '/ko/',   htmlLang: 'ko',      label: 'ko'   },
 ] as const
 
+/** 配置群組是 <details> 手風琴——收合組裡的控件要先展開才可見。 */
+const openGroupOf = (page: Page, cfgKey: string) =>
+  page
+    .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
+    .click()
+
 for (const { path, htmlLang, label } of LOCALES) {
-  test(`${label}: homepage renders with html[lang="${htmlLang}"]`, async ({ page }) => {
+  test(`${label}: homepage renders — topbar, rail, all six stations`, async ({ page }) => {
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)
 
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang)
     await expect(page.locator('body.home')).toHaveAttribute('data-locale', label)
 
-    // Hero scaffolding. The Specimen has a magnifier-clone sibling, so
-    // use .first() to disambiguate.
-    await expect(page.locator('.Hero .Brand[data-size="lg"]')).toBeVisible()
-    await expect(page.locator('.Hero h1')).toBeVisible()
-    await expect(page.locator('.Hero .Specimen').first()).toBeVisible()
+    await expect(page.locator('.Topbar .Brand')).toBeVisible()
+    await expect(page.locator('main.han')).toHaveCount(1)
+    await expect(page.locator('aside.Rail')).toBeVisible()
+
+    // Six stations, in document order: Manifesto, semantics, type,
+    // lines, snippet, Closing.
+    await expect(page.locator('main.han > .Manifesto')).toBeVisible()
+    await expect(page.locator('#station-semantics')).toBeVisible()
+    await expect(page.locator('#station-type')).toBeVisible()
+    await expect(page.locator('#station-lines')).toBeVisible()
+    await expect(page.locator('#station-snippet')).toBeVisible()
+    await expect(page.locator('main.han > .Closing')).toBeVisible()
   })
 }
 
@@ -57,9 +75,6 @@ test('lang switcher menu lists all 5 locales (with the active one flagged)', asy
   const switcher = page.locator('[data-lang-switcher]').first()
   await switcher.locator('button[aria-haspopup="true"]').click()
 
-  // Homepage switcher uses data-lang on each link (markup convention
-  // distinct from the docs chrome's hreflang form). All 5 locales
-  // appear, the active one is flagged with .is-active.
   const links = switcher.locator('a[data-lang]')
   await expect(links).toHaveCount(5)
 
@@ -70,88 +85,122 @@ test('lang switcher menu lists all 5 locales (with the active one flagged)', asy
   await expect(switcher.locator('a[data-lang="hant"]')).toHaveClass(/is-active/)
 })
 
-/* Hero toggles drive REAL Han.css cascade vars on the specimen's .han
- * block (punct + hang compose --han-punctuation-refinement). Ruby stays
- * a display-only data-attr — Han.css has no ruby-off variable. */
-test('hero toggles drive Han.css vars on the specimen', async ({ page }) => {
-  await page.goto('/')
-  const box = (feat: string) =>
-    page.locator(`.Toggle input[type="checkbox"][data-feat="${feat}"]`)
-  const hanVar = (prop: string) =>
-    page
-      .locator('.Specimen:not(.is-magnified-clone) > .han')
-      .evaluate((el, p) => el.style.getPropertyValue(p), prop)
+test('old.html: 200, provenance marker, own frozen snippet renders', async ({ page, request }) => {
+  const response = await page.goto('/old.html')
+  expect(response?.status()).toBe(200)
 
-  // 預設：擠壓 on、懸掛 off → compress
-  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('compress')
-  await box('hang').click()   // 兩者皆開 → auto
-  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('auto')
-  await box('punct').click()  // 只剩懸掛 → hang
-  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('hang')
-  await box('hang').click()   // 全關 → none
-  await expect.poll(() => hanVar('--han-punctuation-refinement')).toBe('none')
+  // The provenance comment sits between <!doctype> and <html> — not part
+  // of the parsed DOM subtree `page.content()` serializes, so fetch the
+  // raw source instead.
+  const raw = await (await request.get('/old.html')).text()
+  expect(raw).toContain('frozen snapshot of the pre-rebuild homepage')
 
-  await box('mix').click()
-  await expect.poll(() => hanVar('--han-text-autospace')).toBe('no-autospace')
-  await box('emph').click()
-  await expect.poll(() => hanVar('--han-em-symbol')).toBe('none')
-
-  const specimen = page.locator('.Specimen:not(.is-magnified-clone)')
-  await expect(specimen).toHaveAttribute('data-feat-ruby', 'on')
-  await box('ruby').click()
-  await expect(specimen).toHaveAttribute('data-feat-ruby', 'off')
+  // The old page's own configurator/codegen (frozen under /old-assets/)
+  // still boots and dumps a bundler-tab snippet with the install line.
+  const code = page.locator('[data-out-code]').first()
+  await expect(code).toContainText('pnpm add @hanzi.pro/han.css')
 })
 
-test('all 5 hero toggles render', async ({ page }) => {
-  await page.goto('/')
-  const checkboxes = page.locator('.Toggle input[type="checkbox"][data-feat]')
-  await expect(checkboxes).toHaveCount(5)
+test.describe('rail forms — chooser + persistence', () => {
+  test('chooser switches body[data-rail] and persists across reload', async ({ page }) => {
+    await page.goto('/')
+    const body = page.locator('body')
+    await expect(body).toHaveAttribute('data-rail', 'side')
+
+    await page.locator('[data-rail-chooser] [data-rail-form="top"]').click()
+    await expect(body).toHaveAttribute('data-rail', 'top')
+    expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('top')
+
+    await page.reload()
+    await expect(body).toHaveAttribute('data-rail', 'top')
+
+    await page.locator('[data-rail-chooser] [data-rail-form="side"]').click()
+    await expect(body).toHaveAttribute('data-rail', 'side')
+    expect(await page.evaluate(() => localStorage.getItem('han-rail-form'))).toBe('side')
+  })
 })
 
-/**
- * Playground section — sample chips, rule toggles, metric sliders.
- * Asserts behavior (data-* flips, lang swap, inline style writes) without
- * locking visual snapshots so the spec stays cheap to run.
- */
-test('playground: sample chip swaps preview lang + meta', async ({ page }) => {
-  await page.goto('/')
-  const body = page.locator('[data-pg-body]')
-  const meta = page.locator('[data-pg-meta]')
+test.describe('whole-page configuration', () => {
+  test('rail toggle drives inline var on main.han; station④ snippet reflects it', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
 
-  await expect(body).toHaveAttribute('lang', 'zh-Hant')
+    await openGroupOf(page, 'squeeze')
+    await page.locator('[data-cfg-key="squeeze"]').uncheck()
+    await expect
+      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .toBe('hang')
 
-  await page.locator('[data-pg-chips] [data-sample="ja"]').click()
-  await expect(body).toHaveAttribute('lang', 'ja')
-  await expect(meta).toContainText('ja')
-
-  await page.locator('[data-pg-chips] [data-sample="ko"]').click()
-  await expect(body).toHaveAttribute('lang', 'ko')
-  await expect(meta).toContainText('ko')
+    // Radios in the ViewTabs are sr-only — click the label, not the input.
+    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await expect(page.locator('[data-out-code]'))
+      .toContainText('--han-punctuation-refinement: hang')
+  })
 })
 
-test('playground: size slider writes inline font-size + updates meta', async ({ page }) => {
-  await page.goto('/')
-  const body = page.locator('[data-pg-body]')
-  const meta = page.locator('[data-pg-meta]')
-  const slider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
+test.describe('rail reset', () => {
+  test('reset clears inline vars and restores metric sliders + main font-size', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
 
-  // Initial state from playground.js boot.
-  await expect(body).toHaveCSS('font-size', '17px')
-  await expect(meta).toContainText('17 px')
+    await openGroupOf(page, 'squeeze')
+    await page.locator('[data-cfg-key="squeeze"]').uncheck()
+    await expect
+      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .toBe('hang')
 
-  await slider.fill('22')
-  await slider.dispatchEvent('input')
-  await expect(body).toHaveCSS('font-size', '22px')
-  await expect(meta).toContainText('22 px')
+    const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
+    await sizeSlider.fill('22')
+    await sizeSlider.dispatchEvent('input')
+    await expect(main).toHaveCSS('font-size', '22px')
+
+    await page.locator('[data-rail-reset]').click()
+
+    await expect
+      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .toBe('')
+    await expect(sizeSlider).toHaveValue('17')
+    await expect(main).toHaveCSS('font-size', '17px')
+  })
 })
 
-test('playground: custom chip flips into Markdown input mode', async ({ page }) => {
-  await page.goto('/')
-  const stage = page.locator('[data-pg] [data-part="stage"]')
-  const textarea = page.locator('[data-pg-custom-input]')
+test.describe('mobile bottom sheet', () => {
+  test.use({ viewport: { width: 390, height: 844 } })
 
-  await expect(textarea).toBeHidden()
-  await page.locator('[data-pg-chips] [data-sample="custom"]').click()
-  await expect(stage).toHaveClass(/is-custom/)
-  await expect(textarea).toBeVisible()
+  test('grip visible; keyboard focus + Space expands the sheet', async ({ page }) => {
+    await page.goto('/')
+    const grip = page.locator('[data-rail-grip]')
+    await expect(grip).toBeVisible()
+
+    const scroll = page.locator('.RailScroll')
+    const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
+
+    const toggle = page.locator('.RailSheetToggle')
+    await toggle.focus()
+    await page.keyboard.press('Space')
+
+    await expect
+      .poll(async () => scroll.evaluate(el => el.getBoundingClientRect().height))
+      .toBeGreaterThan(collapsedHeight)
+  })
+})
+
+test.describe('fallbacks — JS layer', () => {
+  test('checking fallbacks installs h-iss on main.han; unchecking removes them', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
+
+    await openGroupOf(page, 'fallbacks')
+    const fallbacks = page.locator('[data-cfg-key="fallbacks"]')
+
+    await fallbacks.check()
+    await expect
+      .poll(() => main.locator('h-iss').count())
+      .toBeGreaterThan(0)
+
+    await fallbacks.uncheck()
+    await expect
+      .poll(() => main.locator('h-iss').count())
+      .toBe(0)
+  })
 })
