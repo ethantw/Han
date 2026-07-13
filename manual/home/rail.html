@@ -149,66 +149,66 @@
           </select>
         </label>
       </fieldset>
-    </details>
 
-    <!-- 標點規範 -->
-    <details class="ControlGroup" open>
-      <summary>{{ pgGrpPunct }}</summary>
-      <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpPunct }}</legend>
-        <label class="Field"><span>{{ pgPunctHant }}</span>
-          <select data-cfg-key="punct.hant">
-            <option value="MOE" selected>MOE</option><option value="JIS">JIS</option>
-            <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
-          </select></label>
-        <label class="Field"><span>{{ pgPunctHans }}</span>
-          <select data-cfg-key="punct.hans">
-            <option value="GB" selected>GB</option><option value="JIS">JIS</option>
-            <option value="MOE">MOE</option><option value="off">{{ pgModeOff }}</option>
-          </select></label>
-        <label class="Field"><span>{{ pgPunctJa }}</span>
-          <select data-cfg-key="punct.ja">
-            <option value="JIS" selected>JIS</option><option value="MOE">MOE</option>
-            <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
-          </select></label>
-        <label class="Field"><span>{{ pgPunctKo }}</span>
-          <select data-cfg-key="punct.ko">
-            <option value="KV" selected>KV</option><option value="off">{{ pgModeOff }}</option>
-          </select></label>
-      </fieldset>
-    </details>
+      <!-- 標點字體（子組）— 逐語言的 Diantenjeom 規範 -->
+      <details class="ControlGroup" open>
+        <summary>{{ pgGrpPunct }}</summary>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpPunct }}</legend>
+          <label class="Field"><span>{{ pgPunctHant }}</span>
+            <select data-cfg-key="punct.hant">
+              <option value="MOE" selected>MOE</option><option value="JIS">JIS</option>
+              <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
+            </select></label>
+          <label class="Field"><span>{{ pgPunctHans }}</span>
+            <select data-cfg-key="punct.hans">
+              <option value="GB" selected>GB</option><option value="JIS">JIS</option>
+              <option value="MOE">MOE</option><option value="off">{{ pgModeOff }}</option>
+            </select></label>
+          <label class="Field"><span>{{ pgPunctJa }}</span>
+            <select data-cfg-key="punct.ja">
+              <option value="JIS" selected>JIS</option><option value="MOE">MOE</option>
+              <option value="GB">GB</option><option value="off">{{ pgModeOff }}</option>
+            </select></label>
+          <label class="Field"><span>{{ pgPunctKo }}</span>
+            <select data-cfg-key="punct.ko">
+              <option value="KV" selected>KV</option><option value="off">{{ pgModeOff }}</option>
+            </select></label>
+        </fieldset>
+      </details>
 
-    <!-- 繁體專項 — heritage 傳承字形 + 家族選單，繁體以外語言不適用，預設收合 -->
-    <details class="ControlGroup">
-      <summary>{{ pgGrpHeritage }}</summary>
-      <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpHeritage }}</legend>
-        <label class="Field">
-          <span>{{ pgHeritage }}</span>
-          <select data-cfg-key="heritage">
-            <option value="webfont" selected>{{ pgModeWebfont }}</option>
-            <option value="system">{{ pgModeSystem }}</option>
-            <option value="off">{{ pgModeOff }}</option>
-          </select>
-        </label>
-        <!-- 印刷字體＝黑＋明成對同選（家族內同源，拆開選無意義） -->
-        <label class="Field" data-cfg-heritage-family>
-          <span>{{ pgHeritageFamily }}</span>
-          <select data-cfg-key="heritageFamily">
-            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-            <option value="genki">{{ pgFamGenki }}</option>
-          </select>
-        </label>
-        <!-- 繁體楷體家族（--han-webfont-cursive-hant swap 槽；
-             hans/ja 楷體不受影響） -->
-        <label class="Field" data-cfg-cursive-family>
-          <span>{{ pgCursiveFamily }}</span>
-          <select data-cfg-key="cursiveHant">
-            <option value="lxgw" selected>{{ pgFamLxgw }}</option>
-            <option value="iansui">{{ pgFamIansui }}</option>
-          </select>
-        </label>
-      </fieldset>
+      <!-- 繁體專項（子組）— 傳承字形＋家族選單，繁體以外語言不適用，預設收合 -->
+      <details class="ControlGroup">
+        <summary>{{ pgGrpHeritage }}</summary>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpHeritage }}</legend>
+          <label class="Field">
+            <span>{{ pgHeritage }}</span>
+            <select data-cfg-key="heritage">
+              <option value="webfont" selected>{{ pgModeWebfont }}</option>
+              <option value="system">{{ pgModeSystem }}</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <!-- 印刷字體＝黑＋明成對同選（家族內同源，拆開選無意義） -->
+          <label class="Field" data-cfg-heritage-family>
+            <span>{{ pgHeritageFamily }}</span>
+            <select data-cfg-key="heritageFamily">
+              <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+              <option value="genki">{{ pgFamGenki }}</option>
+            </select>
+          </label>
+          <!-- 繁體楷體家族（--han-webfont-cursive-hant swap 槽；
+               hans/ja 楷體不受影響） -->
+          <label class="Field" data-cfg-cursive-family>
+            <span>{{ pgCursiveFamily }}</span>
+            <select data-cfg-key="cursiveHant">
+              <option value="lxgw" selected>{{ pgFamLxgw }}</option>
+              <option value="iansui">{{ pgFamIansui }}</option>
+            </select>
+          </label>
+        </fieldset>
+      </details>
     </details>
 
     <!-- JavaScript -->

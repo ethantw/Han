@@ -59,6 +59,19 @@
   }
   &[open] > summary::after { content: '－'; }
   &:not([open]) > summary { margin-block-end: 0; }
+
+  /* 子組（字體底下的標點字體／繁體專項）——縮排一級、summary 恢復
+     字母大小寫並降去追蹤感，讀作外組的從屬而非並列。 */
+  .ControlGroup {
+    margin-block-start: 14px;
+    padding-inline-start: 0.875rem;
+    border-inline-start: 2px solid var(--rule);
+
+    > summary {
+      text-transform: none;
+      color: var(--ink-mute);
+    }
+  }
 }
 
 
