@@ -191,18 +191,21 @@
             <option value="off">{{ pgModeOff }}</option>
           </select>
         </label>
+        <!-- 印刷字體＝黑＋明成對同選（家族內同源，拆開選無意義） -->
         <label class="Field" data-cfg-heritage-family>
-          <span>{{ pgHeritageSans }}</span>
-          <select data-cfg-key="heritageSans">
+          <span>{{ pgHeritageFamily }}</span>
+          <select data-cfg-key="heritageFamily">
             <option value="shanggu" selected>{{ pgFamShanggu }}</option>
             <option value="genki">{{ pgFamGenki }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-heritage-family>
-          <span>{{ pgHeritageSerif }}</span>
-          <select data-cfg-key="heritageSerif">
-            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-            <option value="genki">{{ pgFamGenki }}</option>
+        <!-- 繁體楷體家族（--han-webfont-cursive-hant swap 槽；
+             hans/ja 楷體不受影響） -->
+        <label class="Field" data-cfg-cursive-family>
+          <span>{{ pgCursiveFamily }}</span>
+          <select data-cfg-key="cursiveHant">
+            <option value="lxgw" selected>{{ pgFamLxgw }}</option>
+            <option value="iansui">{{ pgFamIansui }}</option>
           </select>
         </label>
       </fieldset>

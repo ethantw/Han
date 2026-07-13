@@ -57,7 +57,7 @@ test('DTJ 逐語言覆寫只輸出偏差語言', () => {
 })
 
 test('換傳承家族 → 覆寫 heritage 堆疊 + 套件表含該家族', () => {
-  const c = cfg({ heritageSans: 'genki', heritageSerif: 'genki' })
+  const c = cfg({ heritageFamily: 'genki' })
   const vars = Object.fromEntries(cssVars(c))
   assert.equal(vars['--han-webfont-heritage-glyphs-sans'], "'Genki Gothic', 'Genki Gothic TC'")
   const ids = packages(c).ziano
@@ -191,4 +191,13 @@ test('cdn：ziano 來源與 jsdelivr 相異時，preconnect 出兩個 host；相
   assert.equal((twoHosts.match(/rel="preconnect"/g) ?? []).length, 2)
   const oneHost = paneCode(renderCDN(DEFAULTS), 'html')
   assert.equal((oneHost.match(/rel="preconnect"/g) ?? []).length, 1)
+})
+
+test('楷體家族 iansui → cursive-hant swap 變數＋套件替換', () => {
+  const c = cfg({ cursiveHant: 'iansui' })
+  const vars = Object.fromEntries(cssVars(c))
+  assert.equal(vars['--han-webfont-cursive-hant'], "'Iansui'")
+  const ids = packages(c).ziano
+  assert.ok(ids.includes('iansui') && !ids.includes('lxgw-wenkai-tc'))
+  assert.ok(ids.includes('lxgw-wenkai') && ids.includes('klee-one'))
 })

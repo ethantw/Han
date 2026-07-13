@@ -427,7 +427,7 @@
    --code-bg/--code-fg — B v2 design), so panes read the same whether
    the page itself is light or dark. */
 
-.CodePane {
+figure.CodePane {
   & {
     margin: 0;
     background: var(--code-bg);

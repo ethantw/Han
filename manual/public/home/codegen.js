@@ -28,7 +28,14 @@ export const HERITAGE = {
   },
 }
 
-const CURSIVE_PKGS = ['lxgw-wenkai-tc', 'lxgw-wenkai', 'klee-one']
+/* 繁體楷體的可換家族（--han-webfont-cursive-hant swap 槽）；
+   hans（lxgw-wenkai）與 ja（klee-one）楷體不受此選擇影響。 */
+export const CURSIVE_HANT = {
+  lxgw:   { stack: "'LXGW WenKai TC'", pkg: 'lxgw-wenkai-tc' },
+  iansui: { stack: "'Iansui'",         pkg: 'iansui' },
+}
+
+const cursivePkgs = (c) => [CURSIVE_HANT[c.cursiveHant].pkg, 'lxgw-wenkai', 'klee-one']
 
 export const DEFAULTS = {
   semantics: true,
@@ -41,9 +48,9 @@ export const DEFAULTS = {
   squeeze: true,
   autospace: 'normal',            // normal|insert|replace|strict|off
   heritage: 'webfont',            // webfont|system|off
-  heritageSans: 'shanggu',
-  heritageSerif: 'shanggu',
+  heritageFamily: 'shanggu',      // shanggu|genki — 印刷字體（黑＋明一體選）
   cursive: 'webfont',             // webfont|system|off
+  cursiveHant: 'lxgw',            // lxgw|iansui — 繁體楷體家族
   punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KV' },
   zhuyinWebfont: true,
   baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
@@ -76,12 +83,14 @@ export const cssVars = (c) => {
     out.push(['--han-text-autospace', c.autospace === 'off' ? 'no-autospace' : c.autospace])
   if (c.heritage !== 'webfont') out.push(['--han-use-heritage-glyphs-for-hant', c.heritage])
   if (c.heritage === 'webfont') {
-    if (c.heritageSans !== 'shanggu')
-      out.push(['--han-webfont-heritage-glyphs-sans', HERITAGE[c.heritageSans].sans.stack])
-    if (c.heritageSerif !== 'shanggu')
-      out.push(['--han-webfont-heritage-glyphs-serif', HERITAGE[c.heritageSerif].serif.stack])
+    if (c.heritageFamily !== 'shanggu') {
+      out.push(['--han-webfont-heritage-glyphs-sans', HERITAGE[c.heritageFamily].sans.stack])
+      out.push(['--han-webfont-heritage-glyphs-serif', HERITAGE[c.heritageFamily].serif.stack])
+    }
   }
   if (c.cursive !== 'webfont') out.push(['--han-cursive', c.cursive])
+  if (c.cursive === 'webfont' && c.cursiveHant !== 'lxgw')
+    out.push(['--han-webfont-cursive-hant', CURSIVE_HANT[c.cursiveHant].stack])
   for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS']])
     if (c.punct[key] !== def) out.push([`--han-punctuation-${key}`, c.punct[key]])
   if (c.punct.ko !== 'KV') out.push(['--han-punctuation-vertical-ko', c.punct.ko])
@@ -111,18 +120,16 @@ const configCSS = (c, indent = '  ') => {
 /** 實際用到的（webfont）套件族：han 恆在；ziano 依家族/楷體；dtj 依標點是否
  *  全關。與 zianoDelivery 無關——那只決定「怎麼送」，這裡只算「要不要」。 */
 export const packages = (c) => {
-  // serif 家族與 sans 家族重疊的套件不重複列出（兩者常同源，如尚古）。
+  // 印刷字體＝同家族的黑＋明成對（heritageFamily 單選驅動兩者）。
   const heritagePkgs = c.heritage === 'webfont'
     ? [
-        ...HERITAGE[c.heritageSans].sans.pkgs,
-        ...HERITAGE[c.heritageSerif].serif.pkgs.filter(
-          (p) => !HERITAGE[c.heritageSans].sans.pkgs.includes(p),
-        ),
+        ...HERITAGE[c.heritageFamily].sans.pkgs,
+        ...HERITAGE[c.heritageFamily].serif.pkgs,
       ]
     : []
   const ziano = [
     ...heritagePkgs,
-    ...(c.cursive === 'webfont' ? CURSIVE_PKGS : []),
+    ...(c.cursive === 'webfont' ? cursivePkgs(c) : []),
   ]
   const dtj = Object.values(c.punct).some((v) => v !== 'off')
   return { ziano, dtj }

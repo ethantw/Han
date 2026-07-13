@@ -386,7 +386,9 @@ body.home img, body.home svg { display: block; max-width: 100%; }
 /* ─── code blocks ───────────────────────────────────────────────── */
 
 body.home pre, body.home code { font-family: var(--font-mono); font-size: 13px; }
-body.home pre {
+/* 通用亮色 code 框——站④的 .CodePane 終端暗色面板自管樣式，
+   用 :where() 豁免（零特異度，不跟 controls.css 打 cascade 架）。 */
+body.home pre:where(:not(.CodePane pre)) {
   background: var(--paper-deep);
   border: 1px solid var(--rule);
   border-radius: var(--r-2);

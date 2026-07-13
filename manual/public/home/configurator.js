@@ -65,7 +65,8 @@ const ALL_VARS = [
   '--han-semantics', '--han-prose', '--han-punctuation-refinement',
   '--han-text-autospace', '--han-use-heritage-glyphs-for-hant',
   '--han-webfont-heritage-glyphs-sans', '--han-webfont-heritage-glyphs-serif',
-  '--han-cursive', '--han-punctuation-hant', '--han-punctuation-hans',
+  '--han-cursive', '--han-webfont-cursive-hant',
+  '--han-punctuation-hant', '--han-punctuation-hans',
   '--han-punctuation-ja', '--han-punctuation-vertical-ko',
   '--han-font-zhuyin-serif',
   '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
@@ -130,7 +131,10 @@ const buildPane = ({ lang, code }) => {
   $code.textContent = code
   $pre.append($code)
 
-  $figure.append($figcaption, $copy, $pre)
+  // copy 住在 figcaption 內（標籤靠左、⎘ 靠右——figcaption 的
+  // space-between 佈局），不是 figure 的直接子元素。
+  $figcaption.append($copy)
+  $figure.append($figcaption, $pre)
   return $figure
 }
 
@@ -186,6 +190,9 @@ export const initConfigurator = ($root = document) => {
     // 時有意義；進階 autospace 只在勾了後備時展示
     $root.querySelectorAll('[data-cfg-heritage-family]').forEach(($el) => {
       $el.toggleAttribute('hidden', configRef.current.heritage !== 'webfont')
+    })
+    $root.querySelectorAll('[data-cfg-cursive-family]').forEach(($el) => {
+      $el.toggleAttribute('hidden', configRef.current.cursive !== 'webfont')
     })
     $root.querySelectorAll('[data-cfg-ziano-cdn-source]').forEach(($el) => {
       $el.toggleAttribute('hidden', configRef.current.zianoDelivery !== 'cdn')

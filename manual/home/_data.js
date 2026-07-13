@@ -53,8 +53,8 @@ export const HOME_I18N = {
     pgHeritage: '傳承字形',
     pgGrpHeritage: '繁體專項',
     pgBaseGeneric: '默認字體',
-    pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
-    pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgHeritageFamily: '印刷字體',
+    pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
     pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
@@ -62,7 +62,7 @@ export const HOME_I18N = {
     pgPunctHant: '繁體中文', pgPunctHans: '簡體中文', pgPunctJa: '日文', pgPunctKo: '韓文直排',
     pgTogZhuyin: '注音webfont',
     pgGrpJs: 'JavaScript',
-    pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
+    pgTogFallbacks: 'JS排版補全', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
@@ -94,7 +94,7 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
-    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
@@ -133,8 +133,8 @@ export const HOME_I18N = {
     pgHeritage: '传承字形',
     pgGrpHeritage: '繁体专项',
     pgBaseGeneric: '默认字体',
-    pgHeritageSans: '黑体家族', pgHeritageSerif: '明体家族',
-    pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgHeritageFamily: '印刷字体',
+    pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷体家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
     pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN来源',
     pgCursive: '楷体',
     pgModeWebfont: 'webfont', pgModeSystem: '系统字体', pgModeOff: '关闭',
@@ -142,7 +142,7 @@ export const HOME_I18N = {
     pgPunctHant: '繁体中文', pgPunctHans: '简体中文', pgPunctJa: '日文', pgPunctKo: '韩文直排',
     pgTogZhuyin: '注音webfont',
     pgGrpJs: 'JavaScript',
-    pgTogFallbacks: '旧浏览器后备', pgTogFallbacksEn: 'installFallbacks',
+    pgTogFallbacks: 'JS排版补全', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '旧式 ruby 转换', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用码形式',
@@ -174,7 +174,7 @@ export const HOME_I18N = {
     slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书；日文原写作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，两制并陈。',
 
     snEyebrow: '肆・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
-    snFinishLine: '选好了？三种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
+    snFinishLine: '选好了？两种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支持现代常青浏览器。',
 
     clInstallLabel: '一行安装', clZianoLabel: 'ziano・传承字形webfont',
@@ -213,8 +213,8 @@ export const HOME_I18N = {
     pgHeritage: 'Heritage glyphs',
     pgGrpHeritage: 'Traditional-Chinese specifics',
     pgBaseGeneric: 'Default typeface',
-    pgHeritageSans: 'Sans family', pgHeritageSerif: 'Serif family',
-    pgFamShanggu: 'Shanggu', pgFamGenki: 'Genki',
+    pgHeritageFamily: 'Type family',
+    pgFamShanggu: 'Shanggu', pgFamGenki: 'Genki', pgCursiveFamily: 'Kai family', pgFamLxgw: 'LXGW WenKai TC', pgFamIansui: 'Iansui',
     pgZianoDelivery: 'Ziano delivery', pgZianoCdnSource: 'CDN source',
     pgCursive: 'Cursive',
     pgModeWebfont: 'Webfont', pgModeSystem: 'System font', pgModeOff: 'Off',
@@ -222,7 +222,7 @@ export const HOME_I18N = {
     pgPunctHant: 'Traditional Chinese', pgPunctHans: 'Simplified Chinese', pgPunctJa: 'Japanese', pgPunctKo: 'Korean (vertical)',
     pgTogZhuyin: 'Zhuyin webfont',
     pgGrpJs: 'JavaScript',
-    pgTogFallbacks: 'Legacy browser fallback', pgTogFallbacksEn: 'installFallbacks',
+    pgTogFallbacks: 'JS typesetting shims', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: 'Legacy ruby conversion', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: 'Snippet format',
@@ -254,7 +254,7 @@ export const HOME_I18N = {
     slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base; the Japanese original writes it as <span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>, kana ruby instead of zhuyin — two conventions, side by side.',
 
     snEyebrow: 'IV・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
-    snFinishLine: 'Made your picks? Three ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
+    snFinishLine: 'Made your picks? Two ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
     snBrowserSupport: 'Supports modern evergreen browsers.',
 
     clInstallLabel: 'One-line install', clZianoLabel: 'ziano・heritage webfont',
@@ -296,8 +296,8 @@ export const HOME_I18N = {
     pgHeritage: '傳承字形',
     pgGrpHeritage: '繁體專項',
     pgBaseGeneric: '默認字體',
-    pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
-    pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgHeritageFamily: '印刷字體',
+    pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
     pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
@@ -305,7 +305,7 @@ export const HOME_I18N = {
     pgPunctHant: '繁體中文', pgPunctHans: '簡體中文', pgPunctJa: '日文', pgPunctKo: '韓文直排',
     pgTogZhuyin: '注音webfont',
     pgGrpJs: 'JavaScript',
-    pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
+    pgTogFallbacks: 'JS排版補全', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
@@ -339,7 +339,7 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
-    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
@@ -384,8 +384,8 @@ export const HOME_I18N = {
     pgHeritage: '傳承字形',
     pgGrpHeritage: '繁體專項',
     pgBaseGeneric: '默認字體',
-    pgHeritageSans: '黑體家族', pgHeritageSerif: '明體家族',
-    pgFamShanggu: '尚古', pgFamGenki: '源起',
+    pgHeritageFamily: '印刷字體',
+    pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
     pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'webfont', pgModeSystem: '系統字體', pgModeOff: '關閉',
@@ -393,7 +393,7 @@ export const HOME_I18N = {
     pgPunctHant: '繁體中文', pgPunctHans: '簡體中文', pgPunctJa: '日文', pgPunctKo: '韓文直排',
     pgTogZhuyin: '注音webfont',
     pgGrpJs: 'JavaScript',
-    pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
+    pgTogFallbacks: 'JS排版補全', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
     pgViewsLegend: '引用碼形式',
@@ -427,7 +427,7 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     snEyebrow: '肆・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
-    snFinishLine: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
+    snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
     clInstallLabel: '一行安裝', clZianoLabel: 'ziano・傳承字形webfont',
