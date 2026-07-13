@@ -20,9 +20,15 @@
  * `initDemoLang` (owner-feedback round) needs `initConfigurator()`'s
  * returned `{ reapplyFallbacks }` handle — boot order matters here:
  * configurator first, demo-lang second.
+ *
+ * `initTheme` persists the masthead dark-mode checkbox to
+ * `localStorage` (style-conformance pass — the checkbox's own initial
+ * state is restored by a pre-paint inline script next to it in
+ * `_home.html`, not by this module).
  */
 
 import { initLangSwitcher } from '/home/lang-switcher.js'
+import { initTheme } from '/home/theme.js'
 import { initConfigurator } from '/home/configurator.js'
 import { initDemoLang } from '/home/demo-lang.js'
 import { initMetrics } from '/home/rail-metrics.js'
@@ -31,20 +37,21 @@ import { initRailChooser } from '/home/rail-chooser.js'
 /* InstallChip 的 ⎘ ——複製隔壁 [data-part="cmd"] 的指令文字。
  * （站④的 [data-out-copy] 由 configurator.js 自管；這裡只管 chip。） */
 const initInstallChips = () => {
-  document.querySelectorAll('.InstallChip [data-part="copy"]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const cmd = btn.parentElement.querySelector('[data-part="cmd"]')
-      if (!cmd) return
-      await navigator.clipboard.writeText(cmd.textContent.trim())
-      const original = btn.textContent
-      btn.textContent = '✓'
-      setTimeout(() => { btn.textContent = original }, 1500)
+  document.querySelectorAll('.InstallChip [data-part="copy"]').forEach(($btn) => {
+    $btn.addEventListener('click', async () => {
+      const $cmd = $btn.parentElement.querySelector('[data-part="cmd"]')
+      if (!$cmd) return
+      await navigator.clipboard.writeText($cmd.textContent.trim())
+      const original = $btn.textContent
+      $btn.textContent = '✓'
+      setTimeout(() => { $btn.textContent = original }, 1500)
     })
   })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
+  initTheme()
   const cfg = initConfigurator()
   initDemoLang(cfg.reapplyFallbacks)
   initMetrics(document.querySelector('main.han'))

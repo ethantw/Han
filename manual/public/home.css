@@ -25,20 +25,54 @@
      one site-local token: the framework has no mono slot. */
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* paper / ink / accent */
-  --paper:        #ffffff;
-  --paper-deep:   #fafaf7;
-  --paper-tint:   #f5f3ee;
-  --ink:          #0e0e10;
-  --ink-soft:     #1f1f22;
-  --ink-mute:     #666666;
-  --ink-faint:    #a0a09a;
-  --rule:         #ececea;
-  --rule-soft:    #f3f3f0;
-  --accent:       #0a8754;
-  --accent-deep:  #066b3f;
-  --accent-soft:  #7dc8a4;
-  --accent-bg:    #e8f5ec;
+  /* ── colour primitives ──────────────────────────────────────────
+   * Raw swatches, named by appearance, theme-INVARIANT. Never consumed
+   * directly by components — only the semantic layer below does that
+   * (web-style.md's two-tier token rule). */
+  --color-white:        #ffffff;
+  --color-paper-deep:   #fafaf7;
+  --color-paper-tint:   #f5f3ee;
+  --color-ink:          #0e0e10; /* doubles as dark-mode --paper */
+  --color-ink-deep:     #18171a;
+  --color-ink-dim:      #201f22;
+  --color-graphite:     #1f1f22;
+  --color-mist:         #e8e8e3;
+  --color-silver:       #d2d2cd;
+  --color-slate:        #666666;
+  --color-ash:          #8c8c87;
+  --color-fog:          #a0a09a;
+  --color-shadow:       #5f5f5b;
+  --color-cloud:        #ececea;
+  --color-charcoal:     #2a2a2c;
+  --color-snow:         #f3f3f0;
+  --color-onyx:         #1f1f21;
+  --color-green:        #0a8754;
+  --color-green-bright: #3f9d6f;
+  --color-green-deep:   #066b3f;
+  --color-green-light:  #5cc090;
+  --color-sage:         #7dc8a4;
+  --color-moss:         #2a5e3e;
+  --color-mint:         #e8f5ec;
+  --color-pine:         #163322;
+
+  /* ── semantic tokens (paper / ink / accent) ───────────────────────
+   * Each flipping token is defined ONCE as light-dark(<light>, <dark>)
+   * — dark mode is a single `color-scheme: dark` declaration below,
+   * not a per-token override block (web-style.md Dark-mode recipe,
+   * reference: ziano/demo's variables.css). */
+  --paper:       light-dark(var(--color-white), var(--color-ink));
+  --paper-deep:  light-dark(var(--color-paper-deep), var(--color-ink-deep));
+  --paper-tint:  light-dark(var(--color-paper-tint), var(--color-ink-dim));
+  --ink:         light-dark(var(--color-ink), var(--color-mist));
+  --ink-soft:    light-dark(var(--color-graphite), var(--color-silver));
+  --ink-mute:    light-dark(var(--color-slate), var(--color-ash));
+  --ink-faint:   light-dark(var(--color-fog), var(--color-shadow));
+  --rule:        light-dark(var(--color-cloud), var(--color-charcoal));
+  --rule-soft:   light-dark(var(--color-snow), var(--color-onyx));
+  --accent:      light-dark(var(--color-green), var(--color-green-bright));
+  --accent-deep: light-dark(var(--color-green-deep), var(--color-green-light));
+  --accent-soft: light-dark(var(--color-sage), var(--color-moss));
+  --accent-bg:   light-dark(var(--color-mint), var(--color-pine));
 
   /* radii (subtle, print-feel) */
   --r-1: 2px;
@@ -50,56 +84,32 @@
   --home-max:     1280px;
   --home-pad-x:   56px;
 
+  @media (max-width: 880px) {
+    --home-pad-x: 24px;
+  }
+
   /* Dark inverted code blocks in BOTH themes — terminal-style, per the
-     B v2 design (mirrors manual.css's `--m-code-bg`/`--m-code-fg`). */
-  --code-bg: #0e0e10;
+     B v2 design (mirrors manual.css's `--m-code-bg`/`--m-code-fg`).
+     Deliberately constant (not light-dark()) — see `.code-dark`'s own
+     comment for why it still needs a hairline border. */
+  --code-bg: var(--color-ink);
   --code-fg: #e5e5e0;
 
-  color-scheme: light dark;
-
-  /* Dark-mode tokens — applied when (a) the system asks for dark AND
-     the user hasn't pinned a theme, or (b) the user has pinned dark
-     via the masthead toggle (`_home.html`'s pre-paint inline script
-     stamps `data-theme` on `<html>`). Mirrors `manual.css`'s exact
-     recipe (nested `@media` inside `:root`, SKILL rule 1a) so the two
-     stylesheets read as one design system. */
-  @media (prefers-color-scheme: dark) {
-    &:not([data-theme]) {
-      --paper:        #0e0e10;
-      --paper-deep:   #18171a;
-      --paper-tint:   #201f22;
-      --ink:          #e8e8e3;
-      --ink-soft:     #d2d2cd;
-      --ink-mute:     #8c8c87;
-      --ink-faint:    #5f5f5b;
-      --rule:         #2a2a2c;
-      --rule-soft:    #1f1f21;
-      --accent:       #3f9d6f;
-      --accent-deep:  #5cc090;
-      --accent-soft:  #2a5e3e;
-      --accent-bg:    #163322;
-    }
-  }
+  /* Single source of truth: the masthead checkbox
+     (`input[name="dark-mode"]`, `_home.html`). Default light; the
+     `:has()` below flips the whole page's `light-dark()` tokens at
+     once. `color-scheme` also themes native UI (scrollbars, form
+     controls). The checkbox's initial `checked` state is restored by
+     a pre-paint inline script placed immediately after it — see
+     `_home.html` — so there's no flash on first paint. Same
+     `localStorage` key ('theme') as the docs site's own toggle, so
+     the preference carries over between the homepage and `/docs/`.
+     (light-dark(): Baseline 2024.) */
+  color-scheme: light;
 }
 
-:root[data-theme='dark'] {
-  --paper:        #0e0e10;
-  --paper-deep:   #18171a;
-  --paper-tint:   #201f22;
-  --ink:          #e8e8e3;
-  --ink-soft:     #d2d2cd;
-  --ink-mute:     #8c8c87;
-  --ink-faint:    #5f5f5b;
-  --rule:         #2a2a2c;
-  --rule-soft:    #1f1f21;
-  --accent:       #3f9d6f;
-  --accent-deep:  #5cc090;
-  --accent-soft:  #2a5e3e;
-  --accent-bg:    #163322;
-}
-
-@media (max-width: 880px) {
-  :root { --home-pad-x: 24px; }
+:root:has(input[name='dark-mode']:checked) {
+  color-scheme: dark;
 }
 
 /* ─── reset & base ────────────────────────────────────────────────── */
@@ -393,10 +403,15 @@ body.home code:not(pre code) {
   font-size: 0.88em;
   color: var(--accent-deep);
 }
+/* `--code-bg`/`--code-fg` are deliberately constant, not light-dark() —
+   this surface stays dark-terminal-styled in both themes. Once the
+   page background also goes dark, a `transparent` border makes it
+   edgeless — give it a fixed faint hairline instead (web-style.md's
+   dark-mode gotcha). */
 .code-dark {
   background: var(--code-bg) !important;
   color: var(--code-fg) !important;
-  border-color: transparent !important;
+  border-color: color-mix(in srgb, var(--color-mist) 16%, transparent) !important;
 }
 
 /* token colours for inline code highlighting */
@@ -539,6 +554,44 @@ body.home code:not(pre code) {
       [data-part="code"]  { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-faint); letter-spacing: 0.05em; }
       [data-part="check"] { color: var(--accent-deep); font-size: 0.75rem; }
     }
+  }
+}
+
+/* ─── ThemeToggle (the sun/moon checkbox) ───────────────────────────
+ * Markup: `<label class="ThemeToggle"><input type="checkbox"
+ *   name="dark-mode">…pre-paint script…<svg data-name="sun">…
+ *   <svg data-name="moon">…</label>`. A real checkbox drives
+ * `:root:has(input[name='dark-mode']:checked)` (home.css's `:root`
+ * block) — no JS class toggling; `theme.js` only persists the choice
+ * to `localStorage`. Mirrors `manual.css`'s `button[data-theme-toggle]`
+ * sun/moon affordance, state read via `:has(:checked)` instead of
+ * `:root[data-theme]`. */
+
+.ThemeToggle {
+  & {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em;
+    color: var(--ink-mute);
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  &:hover { color: var(--accent-deep); }
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Default (light): show the moon, hide the sun. */
+  svg[data-name="sun"]  { display: none; }
+  svg[data-name="moon"] { display: inline-block; }
+
+  &:has(input:checked) {
+    svg[data-name="sun"]  { display: inline-block; }
+    svg[data-name="moon"] { display: none; }
   }
 }
 
