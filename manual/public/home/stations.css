@@ -10,7 +10,7 @@
  * job, demonstrated live).
  *
  * Visual system: ziano-aligned (owner call) — `--palette-*` semantics,
- * one red accent, the `--fs-*` ramp from `home.css`. Section heads are
+ * one green accent, the `--fs-*` ramp from `home.css`. Section heads are
  * semantic `<hgroup>`s (eyebrow `<p>` + `<h2>`); the eyebrow's trailing
  * hairline is a `::after`, not a decorative DOM node.
  */

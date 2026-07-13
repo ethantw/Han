@@ -4,7 +4,7 @@
  * Han.css v4 — homepage styles.
  *
  * Visual system follows the ziano demo's design language (owner call):
- * a restrained type ramp (~5 content sizes, reused), one red accent, and
+ * a restrained type ramp (~5 content sizes, reused), one green accent, and
  * quiet neutrals. Token architecture mirrors `ziano/demo/src/css/
  * variables.css` — appearance-named `--color-*` primitives (theme-
  * invariant) → role-named `--palette-*` semantics via `light-dark()`
@@ -49,7 +49,8 @@
   --color-ink:      #191515; /* deepest near-black surface */
   --color-ink-grey: #4e4f51;
   --color-ink-light:#4e4f519c;
-  --color-red:      #b00404; /* the one accent */
+  --color-green:        #0a8754; /* the one accent (light) */
+  --color-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
 
   /* ── semantic palette ────────────────────────────────────────────
    * Role names, each referencing a primitive. A flipping token carries
@@ -58,8 +59,8 @@
    * alphas (75/50/25 %) are color-mix of their own base, so a flipped
    * base re-tints them automatically.
    * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
-  --palette-accent:    var(--color-red);
-  --palette-accent-bg: color-mix(in srgb, var(--color-red) 10%, transparent);
+  --palette-accent:    light-dark(var(--color-green), var(--color-green-bright));
+  --palette-accent-bg: color-mix(in srgb, var(--palette-accent) 10%, transparent);
   --palette-text:      light-dark(var(--color-black), var(--color-mist));
   --palette-grid:      light-dark(var(--color-cloud), var(--color-onyx));
 
