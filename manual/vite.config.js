@@ -140,6 +140,10 @@ const md = new MarkdownIt({
 
 const FRAMEWORK_ASSETS = [
   'han.css', 'han.min.css', 'han.basic.css', 'han.basic.min.css',
+  'han.semantics.css', 'han.semantics.min.css',
+  'han.lines.css', 'han.lines.min.css',
+  'han.prose.css', 'han.prose.min.css',
+  'han.fonts.css', 'han.fonts.min.css',
   'han.js', 'han.min.js', 'han.auto.js', 'han.auto.min.js',
   'em-space.woff2',
   'zhuyin.serif.woff2',

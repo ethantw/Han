@@ -15,7 +15,7 @@
  * to the `apply*` layer.
  */
 import {
-  DEFAULTS, cssVars, packages, zianoUrl,
+  DEFAULTS, MODULES, cssVars, packages, zianoUrl,
 } from '/home/codegen.js'
 
 /* ── 按需字體載入（去重）── injects into document.head (light DOM), so
@@ -64,13 +64,27 @@ const applyTarget = (config, $target) => {
   if (!$target) return
   for (const prop of ALL_VARS) $target.style.removeProperty(prop)
   for (const [prop, value] of cssVars(config)) $target.style.setProperty(prop, value)
-  // 預覽恆走 CDN link（不管 zianoDelivery 生成碼要不要走 npm）。
-  for (const id of packages(config).ziano) ensureFont(id, config.zianoCdnSource)
+  // 預覽恆走 CDN link（不管 webfontDelivery 生成碼要不要走 npm）。
+  for (const id of packages(config).ziano) ensureFont(id, config.webfontCdnSource)
   // baseGeneric：serif 時把 target 的 font-family 換上 --han-font-alternative
   // （鏡射生成碼的 `body { … }`）；RESET 靠 removeProperty 收回。
   config.baseGeneric === 'serif'
     ? ($target.style.fontFamily = 'var(--han-font-alternative)')
     : $target.style.removeProperty('font-family')
+}
+
+/* ── apply：模組 link 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
+ * 每個 `<link data-han-module>` 依對應模組布林撥 `.disabled`（模組 off ＝
+ * 該模組 CSS 不生效，鏡射生成碼少掉一行 import）；每個
+ * `<link data-han-webfont>` 於 webfontDelivery==='none' 時停用。沒有這些
+ * link 的頁面（元件單獨掛載）整層 no-op。 */
+const applyModules = (config) => {
+  document.querySelectorAll('link[data-han-module]').forEach(($link) => {
+    $link.disabled = !config[$link.dataset.hanModule]
+  })
+  document.querySelectorAll('link[data-han-webfont]').forEach(($link) => {
+    $link.disabled = config.webfontDelivery === 'none'
+  })
 }
 
 /* ── apply：JS 後備（作用於 target）──
@@ -94,6 +108,16 @@ const applyFallbacks = async (config, $target) => {
  * 狀態；預設 DEFAULTS）。 */
 export const mountRailConfig = ({ root, target, dispatch, initial }) => {
   const configRef = { current: structuredClone(initial ?? DEFAULTS) }
+
+  /* webfontDelivery='none' 級聯的兩格一格可變單元（ts-style §3）。進入 none
+   * 時 memo 記下 heritage／cursive／punct 原值、config 強制為無外部 webfont 的
+   * 等價設定；離開 none 時還原。以 sync 內「delivery 與上次相比是否改變」偵測
+   * 驅動，好讓 ↺／reset 路徑也一併走到（reset 直接棄 memo、不還原——reset 為
+   * 大）。zhuyinWebfont 不在級聯內：注音是 han.css 內建字體，與第三方 webfont
+   * 套件無關。已知可接受的邊界（設計取捨）：memo 不跨 lang 重渲染存活，補水後
+   * 從無 memo 起算。 */
+  const deliveryRef = { current: configRef.current.webfontDelivery }
+  const webfontMemo = { current: null }
 
   const controls = () => [...root.querySelectorAll('[data-cfg] [data-cfg-key]')]
   const $autospaceOn = () => root.querySelector('[data-cfg-key="autospaceOn"]')
@@ -161,26 +185,65 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
   }
 
   const applyVisibility = () => {
+    const c = configRef.current
     root.querySelectorAll('[data-cfg-heritage-family]').forEach(($el) => {
-      $el.toggleAttribute('hidden', configRef.current.heritage !== 'webfont')
+      $el.toggleAttribute('hidden', c.heritage !== 'webfont')
     })
     root.querySelectorAll('[data-cfg-cursive-family]').forEach(($el) => {
-      $el.toggleAttribute('hidden', configRef.current.cursive !== 'webfont')
+      $el.toggleAttribute('hidden', c.cursive !== 'webfont')
     })
-    root.querySelectorAll('[data-cfg-ziano-cdn-source]').forEach(($el) => {
-      $el.toggleAttribute('hidden', configRef.current.zianoDelivery !== 'cdn')
+    root.querySelectorAll('[data-cfg-webfont-cdn-source]').forEach(($el) => {
+      $el.toggleAttribute('hidden', c.webfontDelivery !== 'cdn')
     })
-    root.querySelectorAll('[data-cfg-semantics-sub]').forEach(($el) => {
-      $el.toggleAttribute('hidden', !configRef.current.semantics)
-    })
-    root.querySelectorAll('[data-cfg-prose-sub]').forEach(($el) => {
-      $el.toggleAttribute('hidden', !configRef.current.prose)
+    // 模組 off → 對應 details 掛 data-module-off（controls.css 灰掉整組，
+    // summary 仍可點）。狀態化、冪等；details 的開／合本身只在 input handler
+    // 撥動的當下處理，不在這裡（職責分離）。
+    for (const key of MODULES) {
+      root.querySelector(`details[data-module="${key}"]`)
+        ?.toggleAttribute('data-module-off', !c[key])
+    }
+    // webfontDelivery='none' → 外部 webfont 全不可達，停用相應選項（heritage／
+    // cursive 的 webfont 選項、四個 punct 的非 off 選項）；離開 none 一律解禁。
+    const noWebfont = c.webfontDelivery === 'none'
+    for (const key of ['heritage', 'cursive']) {
+      const $opt = root.querySelector(`[data-cfg-key="${key}"] option[value="webfont"]`)
+      if ($opt) $opt.disabled = noWebfont
+    }
+    root.querySelectorAll('[data-cfg-key^="punct."] option').forEach(($opt) => {
+      if ($opt.value !== 'off') $opt.disabled = noWebfont
     })
     root.querySelector('[data-cfg-advanced]')
-      ?.toggleAttribute('hidden', !configRef.current.fallbacks)
+      ?.toggleAttribute('hidden', !c.fallbacks)
   }
 
   const sync = (source) => {
+    // webfontDelivery 級聯（見 deliveryRef 宣告處註解）——以「與上次 sync 的
+    // delivery 差異」偵測驅動（imperative shell），故 reset 與 ↺ 路徑同樣經此。
+    const delivery = configRef.current.webfontDelivery
+    if (delivery !== deliveryRef.current) {
+      if (source === 'reset') {
+        webfontMemo.current = null              // reset 為大：棄 memo、不還原
+      } else if (delivery === 'none') {
+        webfontMemo.current = {
+          heritage: configRef.current.heritage,
+          cursive: configRef.current.cursive,
+          punct: { ...configRef.current.punct },
+        }
+        configRef.current = {
+          ...configRef.current,
+          heritage: 'system',
+          cursive: 'system',
+          punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' },
+        }
+        writeControls(configRef.current)
+      } else if (webfontMemo.current) {
+        configRef.current = { ...configRef.current, ...webfontMemo.current }
+        webfontMemo.current = null
+        writeControls(configRef.current)
+      }
+      deliveryRef.current = delivery
+    }
+
     // autospace 開關×進階模式 → config.autospace（fallbacks off 時折回 normal）
     const jsMode = configRef.current.fallbacks ? $autospaceMode().value : 'normal'
     configRef.current = {
@@ -189,6 +252,7 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
     }
 
     applyTarget(configRef.current, target)
+    applyModules(configRef.current)
     applyFallbacks(configRef.current, target)
     applyVisibility()
     updateDefaultButtons()
@@ -217,6 +281,12 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
     $el.addEventListener('input', () => {
       if (key !== 'autospaceOn' && key !== 'autospaceMode')
         configRef.current = setPath(configRef.current, key, readControl($el))
+      // 模組開關撥動的當下——同步展開／收合對應 details（勾＝開、取消＝合）；
+      // 僅此一刻，狀態化的 data-module-off 灰化由 applyVisibility 負責。
+      if (MODULES.includes(key)) {
+        const $details = root.querySelector(`details[data-module="${key}"]`)
+        if ($details) $details.open = $el.checked
+      }
       sync(key)
     })
   })

@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DEFAULTS, cssVars, packages, renderCDN, renderBundler,
+  DEFAULTS, MODULES, cssVars, packages, renderCDN, renderBundler,
 } from '../public/home/codegen.js'
 
 const cfg = (over = {}) => structuredClone({ ...DEFAULTS, ...over })
@@ -22,8 +22,14 @@ test('未勾任何 JS → 完全無 script/import JS', () => {
   assert.ok(!paneCode(renderBundler(DEFAULTS, 'pnpm'), 'js').includes('han.css/auto'))
 })
 
-test('關語意 → --han-semantics: off', () => {
-  assert.deepEqual(cssVars(cfg({ semantics: false })), [['--han-semantics', 'off']])
+test('關語意 → 不再輸出 --han-semantics（off 由缺席表達，無任何變數）', () => {
+  assert.deepEqual(cssVars(cfg({ semantics: false })), [])
+})
+
+test('semantics off → 兩分頁任何 pane 皆無 --han-semantics 殘留', () => {
+  const c = cfg({ semantics: false })
+  for (const p of [...renderCDN(c), ...renderBundler(c, 'pnpm')])
+    assert.ok(!p.code.includes('--han-semantics'))
 })
 
 test('語意細項：書名號/著重號輸出；semantics off 時被 gate 掉', () => {
@@ -37,13 +43,20 @@ test('語意細項：書名號/著重號輸出；semantics off 時被 gate 掉',
   )
   assert.deepEqual(
     cssVars(cfg({ semantics: false, citeTitleMarks: 'bracket' })),
-    [['--han-semantics', 'off']],
+    [],
   )
 })
 
 test('掛✓擠✗ → refinement: hang；掛✗擠✗ → none', () => {
   assert.deepEqual(cssVars(cfg({ squeeze: false })), [['--han-punctuation-refinement', 'hang']])
   assert.deepEqual(cssVars(cfg({ hang: false, squeeze: false })), [['--han-punctuation-refinement', 'none']])
+})
+
+test('lines off → 不輸出 refinement／autospace 變數', () => {
+  assert.deepEqual(
+    cssVars(cfg({ lines: false, hang: false, squeeze: false, autospace: 'off' })),
+    [],
+  )
 })
 
 test('混排 off → no-autospace；進階 replace 原樣輸出', () => {
@@ -72,6 +85,16 @@ test('heritage off → 不出 ziano sans/serif 套件；DTJ 全 off → 無 dian
   assert.equal(c2.dtj, false)
 })
 
+test('fonts off → 無字體變數、套件表全空、兩分頁皆無 ziano／dtj', () => {
+  const c = cfg({ fonts: false })
+  assert.deepEqual(cssVars(c), [])
+  assert.deepEqual(packages(c), { ziano: [], dtj: false })
+  for (const p of [...renderCDN(c), ...renderBundler(c, 'pnpm')]) {
+    assert.ok(!p.code.includes('webfonts-'))
+    assert.ok(!p.code.includes('diantenjeom'))
+  }
+})
+
 test('zhuyin webfont off → 覆寫 --han-font-zhuyin-serif', () => {
   assert.deepEqual(
     cssVars(cfg({ zhuyinWebfont: false })),
@@ -79,10 +102,10 @@ test('zhuyin webfont off → 覆寫 --han-font-zhuyin-serif', () => {
   )
 })
 
-test('prose 自訂作用選擇器 → cdn css pane 含額外規則；off → :root off', () => {
+test('prose 自訂作用選擇器 → cdn css pane 含額外規則；prose off → 不輸出 --han-prose', () => {
   const css = paneCode(renderCDN(cfg({ proseScope: 'main.doc' })), 'css')
   assert.ok(css.includes('main.doc { --han-prose: on; }'))
-  assert.deepEqual(cssVars(cfg({ prose: false })), [['--han-prose', 'off']])
+  assert.deepEqual(cssVars(cfg({ prose: false })), [])
 })
 
 test('CDN：勾後備 → html pane 含 han.auto script；勾 legacyRuby → module script 呼叫', () => {
@@ -92,11 +115,11 @@ test('CDN：勾後備 → html pane 含 han.auto script；勾 legacyRuby → mod
   assert.ok(withRuby.includes('convertLegacyRuby'))
 })
 
-test('bundler：pm 切換 + zianoDelivery=cdn（預設）→ 安裝清單不含 ziano 套件', () => {
+test('bundler：pm 切換 + webfontDelivery=cdn（預設）→ 安裝清單不含 ziano／dtj 套件', () => {
   const bash = paneCode(renderBundler(DEFAULTS, 'yarn'), 'bash')
   assert.ok(bash.startsWith('yarn add @hanzi.pro/han.css'))
   assert.ok(!bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
-  assert.ok(bash.includes('@hanzi.pro/diantenjeom'))
+  assert.ok(!bash.includes('@hanzi.pro/diantenjeom'))
 })
 
 test('heritage/cursive 模式 system|off → 對應變數', () => {
@@ -141,6 +164,53 @@ test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', 
   assert.ok(!none.includes('--han-prose'))
 })
 
+/* ── 模組開關 → 逐模組 import ───────────────────────────────── */
+
+test('全模組開 → 單一 han.css 入口（han.min.css／\'/styles\'），無逐模組行', () => {
+  const cdnHtml = paneCode(renderCDN(DEFAULTS), 'html')
+  assert.ok(cdnHtml.includes('han.min.css'))
+  assert.ok(!cdnHtml.includes('han.semantics.min.css'))
+  const js = paneCode(renderBundler(DEFAULTS, 'pnpm'), 'js')
+  assert.ok(js.includes("import '@hanzi.pro/han.css/styles'"))
+  assert.ok(!js.includes('/styles/'))
+})
+
+test('任一模組 off → CDN html 列啟用模組的逐一 min.css；npm js 列逐一 import', () => {
+  const c = cfg({ prose: false })          // 啟用 semantics／lines／fonts
+  const cdnHtml = paneCode(renderCDN(c), 'html')
+  assert.ok(!cdnHtml.includes('/han.min.css'))
+  for (const m of ['semantics', 'lines', 'fonts'])
+    assert.ok(cdnHtml.includes(`han.${m}.min.css`), `缺 han.${m}.min.css`)
+  assert.ok(!cdnHtml.includes('han.prose.min.css'))
+
+  const js = paneCode(renderBundler(c, 'pnpm'), 'js')
+  for (const m of ['semantics', 'lines', 'fonts'])
+    assert.ok(js.includes(`import '@hanzi.pro/han.css/styles/${m}'`), `缺 /styles/${m}`)
+  assert.ok(!js.includes("/styles/prose'"))
+  assert.ok(!js.includes("import '@hanzi.pro/han.css/styles'"))
+})
+
+test('逐模組順序恆依 MODULES（bundle 順序）', () => {
+  const c = cfg({ lines: false })          // 啟用 semantics／prose／fonts
+  const js = paneCode(renderBundler(c, 'pnpm'), 'js')
+  const order = ['semantics', 'prose', 'fonts']
+    .map((m) => js.indexOf(`/styles/${m}'`))
+  assert.deepEqual(order, [...order].sort((a, b) => a - b))
+  assert.deepEqual(MODULES, ['semantics', 'lines', 'prose', 'fonts'])
+})
+
+test('全模組 off + fallbacks:false → bash pane 無 han.css 套件', () => {
+  const c = cfg({ semantics: false, lines: false, prose: false, fonts: false, fallbacks: false })
+  const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
+  assert.ok(!bash.includes('@hanzi.pro/han.css'))
+})
+
+test('全模組 off 但勾 fallbacks → bash pane 仍列 han.css（JS 需要）', () => {
+  const c = cfg({ semantics: false, lines: false, prose: false, fonts: false, fallbacks: true })
+  const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
+  assert.ok(bash.includes('@hanzi.pro/han.css'))
+})
+
 /* ── pane 組成本身 ─────────────────────────────────────────── */
 
 test('cdn：panes 順序固定 html→css；全預設只有 html（css 缺席）', () => {
@@ -148,46 +218,66 @@ test('cdn：panes 順序固定 html→css；全預設只有 html（css 缺席）
   assert.deepEqual(langs(renderCDN(cfg({ baseGeneric: 'serif' }))), ['html', 'css'])
 })
 
-test('bundler：panes 順序固定 bash→js→css→html；全預設 zianoDelivery=cdn 已含 html（css 仍缺席）', () => {
+test('bundler：panes 順序固定 bash→js→css→html；全預設 webfontDelivery=cdn 已含 html（css 仍缺席）', () => {
   assert.deepEqual(langs(renderBundler(DEFAULTS, 'pnpm')), ['bash', 'js', 'html'])
   const full = cfg({ baseGeneric: 'serif' })
   assert.deepEqual(langs(renderBundler(full, 'pnpm')), ['bash', 'js', 'css', 'html'])
 })
 
-test('bundler：heritage/cursive 全 off 時，zianoDelivery=cdn 也不會生出 html pane（沒有 ziano 可連）', () => {
-  const c = cfg({ heritage: 'off', cursive: 'off' })
+test('bundler：字體全關（heritage/cursive/punct off）webfontDelivery=cdn 也不生 html pane', () => {
+  const c = cfg({ heritage: 'off', cursive: 'off', punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' } })
   assert.ok(!pane(renderBundler(c, 'pnpm'), 'html'))
 })
 
-/* ── Request B — ziano delivery + CDN source ──────────────────── */
+/* ── Request B — webfont delivery + CDN source ────────────────── */
 
-test('bundler：zianoDelivery=npm → 安裝清單 + js import 皆含 ziano 套件（無 html pane）', () => {
-  const c = cfg({ zianoDelivery: 'npm' })
+test('bundler：webfontDelivery=npm → 安裝清單 + js import 皆含 ziano 與 dtj（無 html pane）', () => {
+  const c = cfg({ webfontDelivery: 'npm' })
   const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
   assert.ok(bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
+  assert.ok(bash.includes('@hanzi.pro/diantenjeom'))
   const js = paneCode(renderBundler(c, 'pnpm'), 'js')
   assert.ok(js.includes("import '@hanzi.pro/webfonts-shanggu-sans'"))
+  assert.ok(js.includes("import '@hanzi.pro/diantenjeom'"))
   assert.ok(!pane(renderBundler(c, 'pnpm'), 'html'))
 })
 
-test('bundler：zianoDelivery=cdn（預設，heritage=webfont）→ html pane 含 ziano <link>，來源隨 zianoCdnSource', () => {
+test('bundler：webfontDelivery=cdn（預設）→ ziano ＋ dtj 皆為 html <link>（不進 bash/js），dtj 排 ziano 後', () => {
+  const c = DEFAULTS
+  const html = paneCode(renderBundler(c, 'pnpm'), 'html')
+  assert.ok(html.includes('webfonts-shanggu-sans'))
+  assert.ok(html.includes('diantenjeom'))
+  assert.ok(html.indexOf('diantenjeom') > html.indexOf('webfonts-shanggu-sans'))
+  const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
+  const js = paneCode(renderBundler(c, 'pnpm'), 'js')
+  assert.ok(!bash.includes('diantenjeom') && !js.includes('diantenjeom'))
+})
+
+test('bundler：webfontDelivery=cdn，來源隨 webfontCdnSource', () => {
   const html = paneCode(renderBundler(DEFAULTS, 'pnpm'), 'html')
   assert.ok(html.includes('cdn.jsdelivr.net'))
-  assert.ok(html.includes('webfonts-shanggu-sans'))
-  const unpkg = paneCode(renderBundler(cfg({ zianoCdnSource: 'unpkg' }), 'pnpm'), 'html')
+  const unpkg = paneCode(renderBundler(cfg({ webfontCdnSource: 'unpkg' }), 'pnpm'), 'html')
   assert.ok(unpkg.includes('unpkg.com'))
   assert.ok(!unpkg.includes('cdn.jsdelivr.net'))
 })
 
-test('cdn：zianoCdnSource 只影響 ziano 連結；han.css／diantenjeom 恆走 jsdelivr', () => {
-  const html = paneCode(renderCDN(cfg({ zianoCdnSource: 'unpkg' })), 'html')
-  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans@latest'))
-  assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest'))
-  assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest'))
+test('webfontDelivery=none → 兩分頁皆無 ziano／dtj', () => {
+  const c = cfg({ webfontDelivery: 'none' })
+  for (const p of [...renderCDN(c), ...renderBundler(c, 'pnpm')]) {
+    assert.ok(!p.code.includes('webfonts-'))
+    assert.ok(!p.code.includes('diantenjeom'))
+  }
 })
 
-test('cdn：ziano 來源與 jsdelivr 相異時，preconnect 出兩個 host；相同時只一個', () => {
-  const twoHosts = paneCode(renderCDN(cfg({ zianoCdnSource: 'esmsh' })), 'html')
+test('cdn：dtj 連結隨 webfontCdnSource（unpkg → unpkg.com），han.css 恆走 jsdelivr', () => {
+  const html = paneCode(renderCDN(cfg({ webfontCdnSource: 'unpkg' })), 'html')
+  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans@latest'))
+  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/diantenjeom@latest'))
+  assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest'))
+})
+
+test('cdn：ziano／dtj 來源與 jsdelivr 相異時，preconnect 出兩個 host；相同時只一個', () => {
+  const twoHosts = paneCode(renderCDN(cfg({ webfontCdnSource: 'esmsh' })), 'html')
   assert.equal((twoHosts.match(/rel="preconnect"/g) ?? []).length, 2)
   const oneHost = paneCode(renderCDN(DEFAULTS), 'html')
   assert.equal((oneHost.match(/rel="preconnect"/g) ?? []).length, 1)

@@ -73,6 +73,24 @@
 }
 
 
+/* ─── module-off — a module switch flipped OFF greys its details group ──
+ * The four module switches (rail.html) toggle `data-module-off` on the
+ * matching `details[data-module]` (rail-config.js applyVisibility). The
+ * group stays in place and its summary stays clickable — you can still
+ * peek the controls — but the body reads as inert. */
+
+.ControlGroup[data-module-off] {
+  /* group heads already sit at supplement-2q — dim by opacity so an
+     off-module summary reads distinctly quieter than a merely-closed one */
+  > summary { opacity: 0.55; }
+
+  > :not(summary) {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+
 /* ─── Toggle (shared switch component) ─────────────────────────────
  * `<label class="Toggle"><span>…</span><input type="checkbox"></label>`
  * — a real checkbox with `appearance: none`; the input paints the track,

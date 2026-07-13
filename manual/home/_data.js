@@ -35,9 +35,7 @@ export const HOME_I18N = {
     pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: '書寫方向', pgWritingHorizontal: '橫排', pgWritingVertical: '直排',
 
-    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
-   
-   
+    pgGrpModules: '模組', pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落間距調整',
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -55,7 +53,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageFamily: '印刷字體',
     pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
-    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
+    pgWebfontDelivery: 'Web字體來源', pgDeliveryNone: '不使用', pgWebfontCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'Web字體', pgModeSystem: '系統字體', pgModeSystemJa: '系統日文字體', pgModeOff: '關閉',
     pgPunctHant: '標點字體', pgPunctHans: '簡體・標點字體', pgPunctJa: '日文・標點字體', pgPunctKo: '韓文・直排標點',
@@ -123,9 +121,7 @@ export const HOME_I18N = {
     pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: '书写方向', pgWritingHorizontal: '横排', pgWritingVertical: '直排',
 
-    pgGrpSemantics: '语义样式标准化', pgGrpProse: '长文段落优化', pgTogEnabled: '启用',
-   
-   
+    pgGrpModules: '模块', pgGrpSemantics: '语义样式标准化', pgGrpProse: '长文段落间距调整',
     pgProseScope: '作用选择器', pgProseScopeHint: '仅影响生成码',
     pgCiteMarks: '书名号',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -143,7 +139,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默认字体',
     pgHeritageFamily: '印刷字体',
     pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷体家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
-    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN来源',
+    pgWebfontDelivery: 'Web字体来源', pgDeliveryNone: '不使用', pgWebfontCdnSource: 'CDN来源',
     pgCursive: '楷体',
     pgModeWebfont: 'Web字体', pgModeSystem: '系统字体', pgModeSystemJa: '系统日文字体', pgModeOff: '关闭',
     pgPunctHant: '标点字体', pgPunctHans: '简体・标点字体', pgPunctJa: '日文・标点字体', pgPunctKo: '韩文・竖排标点',
@@ -211,9 +207,7 @@ export const HOME_I18N = {
     pgSliderWeight: 'Weight', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: 'Writing mode', pgWritingHorizontal: 'Horizontal', pgWritingVertical: 'Vertical',
 
-    pgGrpSemantics: 'Semantic styling', pgGrpProse: 'Long-form prose', pgTogEnabled: 'Enabled',
-   
-   
+    pgGrpModules: 'Modules', pgGrpSemantics: 'Semantic styling', pgGrpProse: 'Prose spacing',
     pgProseScope: 'Applies to (selector)', pgProseScopeHint: 'Affects generated code only',
     pgCiteMarks: 'Title marks',
     pgCiteBracket: '《》 bracket', pgCiteWavy: '﹏ wavy',
@@ -231,7 +225,7 @@ export const HOME_I18N = {
     pgBaseGeneric: 'Default typeface',
     pgHeritageFamily: 'Type family',
     pgFamShanggu: 'Shanggu', pgFamGenki: 'Genki', pgCursiveFamily: 'Kai family', pgFamLxgw: 'LXGW WenKai TC', pgFamIansui: 'Iansui',
-    pgZianoDelivery: 'Ziano delivery', pgZianoCdnSource: 'CDN source',
+    pgWebfontDelivery: 'Webfont source', pgDeliveryNone: 'None', pgWebfontCdnSource: 'CDN source',
     pgCursive: 'Cursive',
     pgModeWebfont: 'Webfont', pgModeSystem: 'System font', pgModeSystemJa: 'System JP font', pgModeOff: 'Off',
     pgPunctHant: 'Punctuation', pgPunctHans: 'Hans · punctuation', pgPunctJa: 'Japanese · punctuation', pgPunctKo: 'Korean · vertical punctuation',
@@ -302,9 +296,7 @@ export const HOME_I18N = {
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ja copy is written.
-    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
-   
-   
+    pgGrpModules: '模組', pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落間距調整',
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -322,7 +314,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageFamily: '印刷字體',
     pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
-    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
+    pgWebfontDelivery: 'Web字體來源', pgDeliveryNone: '不使用', pgWebfontCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'Web字體', pgModeSystem: '系統字體', pgModeSystemJa: '系統日文字體', pgModeOff: '關閉',
     pgPunctHant: '標點字體', pgPunctHans: '簡體・標點字體', pgPunctJa: '日文・標點字體', pgPunctKo: '韓文・直排標點',
@@ -398,9 +390,7 @@ export const HOME_I18N = {
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ko copy is written.
-    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
-   
-   
+    pgGrpModules: '模組', pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落間距調整',
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -418,7 +408,7 @@ export const HOME_I18N = {
     pgBaseGeneric: '默認字體',
     pgHeritageFamily: '印刷字體',
     pgFamShanggu: '尚古', pgFamGenki: '源起', pgCursiveFamily: '楷體家族', pgFamLxgw: '霞鶩文楷TC', pgFamIansui: '芫荽',
-    pgZianoDelivery: 'Ziano引入', pgZianoCdnSource: 'CDN來源',
+    pgWebfontDelivery: 'Web字體來源', pgDeliveryNone: '不使用', pgWebfontCdnSource: 'CDN來源',
     pgCursive: '楷體',
     pgModeWebfont: 'Web字體', pgModeSystem: '系統字體', pgModeSystemJa: '系統日文字體', pgModeOff: '關閉',
     pgPunctHant: '標點字體', pgPunctHans: '簡體・標點字體', pgPunctJa: '日文・標點字體', pgPunctKo: '韓文・直排標點',

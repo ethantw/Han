@@ -71,17 +71,39 @@
       </div>
     </section>
 
+    <!-- 模組開關 — 每個開關＝該模組的 CSS 是否被 import（生成碼增減 import
+         行；預覽撥對應 link.disabled）。非收合，四個開關與下方四個 details
+         （語意樣式標準化／長文段落優化／行的調整／字體）一一對應；details
+         的自動開合由 rail-config.js 處理。 -->
+    <section class="ControlGroup">
+      <header>{{ pgGrpModules }}</header>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpModules }}</legend>
+        <label class="Toggle">
+          <span>{{ pgGrpSemantics }}</span>
+          <input type="checkbox" data-cfg-key="semantics" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgGrpProse }}</span>
+          <input type="checkbox" data-cfg-key="prose" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgGrpLines }}</span>
+          <input type="checkbox" data-cfg-key="lines" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgGrpFonts }}</span>
+          <input type="checkbox" data-cfg-key="fonts" checked>
+        </label>
+      </fieldset>
+    </section>
+
     <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
-    <details class="ControlGroup">
+    <details class="ControlGroup" data-module="semantics">
       <summary>{{ pgGrpSemantics }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <legend class="sr-only">{{ pgGrpSemantics }}</legend>
-        <label class="Toggle">
-          <span>{{ pgTogEnabled }}</span>
-          <input type="checkbox" data-cfg-key="semantics" checked>
-        </label>
-        <!-- 語意細項（semantics off 時整組隱藏） -->
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field">
           <span>{{ pgCiteMarks }} <small>cite</small></span>
           <select data-cfg-key="citeTitleMarks">
             <option value="none" selected>{{ pgModeOff }}</option>
@@ -89,7 +111,7 @@
             <option value="wavy">{{ pgCiteWavy }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field">
           <span>{{ pgEmSymbol }} <small>em</small></span>
           <select data-cfg-key="emSymbol">
             <option value="circle" selected>{{ pgEmCircle }}</option>
@@ -98,7 +120,7 @@
             <option value="triangle">{{ pgEmTriangle }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-semantics-sub>
+        <label class="Field">
           <span>{{ pgEmPosition }}</span>
           <select data-cfg-key="emPosition">
             <option value="auto" selected>{{ pgEmPosAuto }}</option>
@@ -110,16 +132,12 @@
     </details>
 
     <!-- 長文段落優化 — layer 開關＋作用選擇器自成一組 -->
-    <details class="ControlGroup">
+    <details class="ControlGroup" data-module="prose">
       <summary>{{ pgGrpProse }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <legend class="sr-only">{{ pgGrpProse }}</legend>
-        <label class="Toggle">
-          <span>{{ pgTogEnabled }}</span>
-          <input type="checkbox" data-cfg-key="prose" checked>
-        </label>
-        <!-- 作用選擇器（prose off 時隱藏；僅影響生成碼，本頁恆用 <main>） -->
-        <label class="Field" data-cfg-prose-sub>
+        <!-- 作用選擇器（僅影響生成碼，本頁恆用 <main>） -->
+        <label class="Field">
           <span>{{ pgProseScope }} <small>{{ pgProseScopeHint }}</small></span>
           <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
         </label>
@@ -127,7 +145,7 @@
     </details>
 
     <!-- 行調整（友善開關 + 進階） -->
-    <details class="ControlGroup">
+    <details class="ControlGroup" data-module="lines">
       <summary>{{ pgGrpLines }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <legend class="sr-only">{{ pgGrpLines }}</legend>
@@ -159,7 +177,7 @@
          皆 hant-only），其餘語言標點各成一扁列（單控件不值一個手風琴）。
          舊「標點字體（Diantenjeom）」子組已解散，品牌credit以 <small> 存續
          於各標點列。 -->
-    <details class="ControlGroup" open>
+    <details class="ControlGroup" data-module="fonts" open>
       <summary>{{ pgGrpFonts }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <legend class="sr-only">{{ pgGrpFonts }}</legend>
@@ -178,19 +196,22 @@
             <option value="serif">serif</option>
           </select>
         </label>
-        <!-- Request B — ziano webfont delivery only（han.css／diantenjeom
-             各自的引用方式不受影響）。CDN 來源選單只在 zianoDelivery=cdn
-             時展示——鏡射既有的 [data-cfg-heritage-family] hidden 慣例。 -->
+        <!-- Request B — 統一的 Web字體來源，套用於 ziano 家族 AND
+             diantenjeom（han.css 自身的引用方式不受影響）。'none'＝不載入
+             任何外部 Web 字體（zhuyin／em-space 是 han.css 內建，不受影響）。
+             CDN 來源選單只在 webfontDelivery=cdn 時展示——鏡射既有的
+             [data-cfg-heritage-family] hidden 慣例。 -->
         <label class="Field">
-          <span>{{ pgZianoDelivery }}</span>
-          <select data-cfg-key="zianoDelivery">
+          <span>{{ pgWebfontDelivery }}</span>
+          <select data-cfg-key="webfontDelivery">
             <option value="cdn" selected>CDN</option>
             <option value="npm">npm</option>
+            <option value="none">{{ pgDeliveryNone }}</option>
           </select>
         </label>
-        <label class="Field" data-cfg-ziano-cdn-source>
-          <span>{{ pgZianoCdnSource }}</span>
-          <select data-cfg-key="zianoCdnSource">
+        <label class="Field" data-cfg-webfont-cdn-source>
+          <span>{{ pgWebfontCdnSource }}</span>
+          <select data-cfg-key="webfontCdnSource">
             <option value="jsdelivr" selected>jsDelivr</option>
             <option value="unpkg">unpkg</option>
             <option value="esmsh">esm.sh</option>

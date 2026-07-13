@@ -25,7 +25,11 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 1. Topbar — Brand（漢.css 字標）、文檔/GitHub、語言切換、主題切換、版本章
 2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider、
-   語意/長文/行調整/字體五群組、JS 開關；**沒有全域 Reset**——每個控件
+   其下一塊**非收合的「模組」開關區**（語意/長文/行/字體四個開關＝import
+   級模組閘門，撥動任一個即自動開合並灰顯其對應 details）、語意樣式標準化/
+   長文段落間距調整/行的調整/字體四群組（各組原「啟用」列已移除）、
+   JavaScript 群組；字體群組以「Web字體來源」（CDN/npm/不使用外部Web字體）
+   取代原「Ziano引入＋CDN來源」；**沒有全域 Reset**——每個控件
    **群組**的標頭自帶「使用預設値」↺ 按鈕，僅在該組有偏離時出現（兼作
    「這組被動過」的標記，owner 拍板的互動模式，保持）；<52rem 變
    bottom sheet。
