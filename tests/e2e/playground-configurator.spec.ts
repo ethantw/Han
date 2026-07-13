@@ -41,6 +41,8 @@ test.describe('playground configurator', () => {
 
   test('換傳承家族 → 注入對應 webfont link', async ({ page }) => {
     await expect(page.locator('link[href*="webfonts-genki-gothic"]')).toHaveCount(0)
+    // heritage 系家族選單搬進了預設收合的「繁體專項」組——先展開。
+    await openGroupOf(page, 'heritageSans')
     await page.locator('[data-cfg-key="heritageSans"]').selectOption('genki')
     await expect(
       page.locator('link[href*="webfonts-genki-gothic"]').first(),

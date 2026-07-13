@@ -9,10 +9,14 @@ import { test, expect, type Page } from '@playwright/test'
  * class="han">` with six stations (Manifesto, station-semantics,
  * station-type, station-lines, station-snippet, Closing). Station④
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
- * `[data-out-copy]` / `[data-out-code]`); the rail carries all 21
+ * `[data-out-copy]` / `[data-out-code]`); the rail carries all 22
  * `data-cfg-key` controls in an accordion of `details.ControlGroup`
- * (字體／標點 groups open by default, others closed), three metric
- * sliders (`[data-pg-sliders]`), and `[data-rail-reset]`.
+ * (模組／字體／標點規範 groups open by default, 繁體專項／行調整／
+ * JavaScript closed), a 直排/橫排 switch plus three metric sliders
+ * (`[data-pg-sliders]`), and `[data-rail-reset]`. A separate
+ * `[data-demo-lang]` chip row (top-right of `<main>`) switches which
+ * language the specimen copy demonstrates, independent of the page's
+ * own UI locale.
  *
  * `/old.html` is the frozen pre-rebuild homepage, fully self-contained
  * under `/old-assets/`.
@@ -182,6 +186,40 @@ test.describe('mobile bottom sheet', () => {
     await expect
       .poll(async () => scroll.evaluate(el => el.getBoundingClientRect().height))
       .toBeGreaterThan(collapsedHeight)
+  })
+})
+
+test.describe('demo-lang chips', () => {
+  test('繁 active by default; 日 chip → main.han[lang=ja]; 繁 chip → back', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
+    await expect(main).toHaveAttribute('lang', 'zh-Hant')
+
+    await page.locator('[data-demo-lang] label:has(input[value="ja"])').click()
+    await expect(main).toHaveAttribute('lang', 'ja')
+
+    await page.locator('[data-demo-lang] label:has(input[value="zh-Hant"])').click()
+    await expect(main).toHaveAttribute('lang', 'zh-Hant')
+  })
+})
+
+test.describe('metrics — weight slider + writing-mode switch', () => {
+  test('字重 slider fill 700 → main font-weight 700', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
+    const weightSlider = page.locator('[data-pg-sliders] [data-metric="weight"] input[type="range"]')
+    await weightSlider.fill('700')
+    await weightSlider.dispatchEvent('input')
+    await expect(main).toHaveCSS('font-weight', '700')
+  })
+
+  test('直排 radio → main.han[data-writing=vertical]', async ({ page }) => {
+    await page.goto('/')
+    const main = page.locator('main.han')
+    await expect(main).toHaveAttribute('data-writing', 'horizontal')
+
+    await page.locator('[data-pg-writing] label:has(input[value="vertical"])').click()
+    await expect(main).toHaveAttribute('data-writing', 'vertical')
   })
 })
 
