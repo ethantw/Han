@@ -28,6 +28,7 @@ export const HOME_I18N = {
     description: '印刷品般的漢字網頁排版框架。',
     docs: '文檔', langSwitcherLabel: '切換語言・LANGUAGE',
     langSwitcherFoot: '站本身切換 5 種語言・操場可獨立選任一語言範文',
+    themeToggle: '切換主題',
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
@@ -63,6 +64,7 @@ export const HOME_I18N = {
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
+    pgViewsLegend: '引用碼形式',
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
@@ -106,6 +108,7 @@ export const HOME_I18N = {
     description: '印刷品般的汉字网页排版框架。',
     docs: '文档', langSwitcherLabel: '切换语言・LANGUAGE',
     langSwitcherFoot: '站本身切换 5 种语言・操场可独立选任一语言范文',
+    themeToggle: '切换主题',
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字级', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行距', pgSliderLeadingEn: 'line-height',
@@ -141,6 +144,7 @@ export const HOME_I18N = {
     pgTogFallbacks: '旧浏览器后备', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '旧式 ruby 转换', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
+    pgViewsLegend: '引用码形式',
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '复制', pgCopied: '已复制',
 
@@ -184,6 +188,7 @@ export const HOME_I18N = {
     description: 'A typography framework for print-quality Hanzi on the web.',
     docs: 'Docs', langSwitcherLabel: 'Switch language・LANGUAGE',
     langSwitcherFoot: 'Site supports 5 languages・the playground sample picks any independently.',
+    themeToggle: 'Toggle theme',
     pgMetricsLabel: 'Metrics',
     pgSliderSize: 'Size', pgSliderSizeEn: 'font-size',
     pgSliderLeading: 'Leading', pgSliderLeadingEn: 'line-height',
@@ -219,6 +224,7 @@ export const HOME_I18N = {
     pgTogFallbacks: 'Legacy browser fallback', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: 'Legacy ruby conversion', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
+    pgViewsLegend: 'Snippet format',
     pgOutBundler: 'Bundler', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: 'Copy', pgCopied: 'Copied',
 
@@ -262,6 +268,7 @@ export const HOME_I18N = {
     description: '印刷品質の漢字組版フレームワーク。',
     docs: 'ドキュメント', langSwitcherLabel: '言語切替・LANGUAGE',
     langSwitcherFoot: 'サイトは 5 言語対応・実験室では言語を独立して選択可能',
+    themeToggle: 'テーマ切り替え',
     pgMetricsLabel: '度量・METRICS',
     pgSliderSize: '字級', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '行送り', pgSliderLeadingEn: 'line-height',
@@ -300,6 +307,7 @@ export const HOME_I18N = {
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
+    pgViewsLegend: '引用碼形式',
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
@@ -348,6 +356,7 @@ export const HOME_I18N = {
     description: '인쇄 품질의 한자 조판 프레임워크.',
     docs: '문서', langSwitcherLabel: '언어 전환・LANGUAGE',
     langSwitcherFoot: '사이트는 5 개 언어 지원・놀이터에서 독립적으로 언어 선택',
+    themeToggle: '테마 전환',
     pgMetricsLabel: '수치・METRICS',
     pgSliderSize: '글자 크기', pgSliderSizeEn: 'font-size',
     pgSliderLeading: '행간', pgSliderLeadingEn: 'line-height',
@@ -386,6 +395,7 @@ export const HOME_I18N = {
     pgTogFallbacks: '舊瀏覽器後備', pgTogFallbacksEn: 'installFallbacks',
     pgTogLegacyRuby: '舊式 ruby 轉換', pgTogLegacyRubyEn: 'convertLegacyRuby',
 
+    pgViewsLegend: '引用碼形式',
     pgOutBundler: '打包工具', pgOutCdn: 'CDN', pgOutImport: 'CSS @import',
     pgCopy: '複製', pgCopied: '已複製',
 
