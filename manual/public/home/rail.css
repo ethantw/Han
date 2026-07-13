@@ -130,6 +130,24 @@
 
   .RailInner { max-block-size: inherit; }
 
+  /* 窄屏時 checkbox 要進 tab 序（鍵盤開合 sheet）——用 clip 式
+     sr-only 保持可聚焦；桌面沿用 base 的 display:none 不污染 tab 序。
+     同 specificity 後出者勝，毋須 !important。 */
+  .Rail .RailSheetToggle {
+    display: block;
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .Rail:has(.RailSheetToggle:focus-visible) .RailGrip {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   /* `.Rail .RailGrip` (not bare `.RailGrip`) to match the specificity
      of the always-off base rule above — same specificity, later in the
      cascade, wins without needing !important. */

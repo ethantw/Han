@@ -154,7 +154,7 @@ export const initConfigurator = (root = document) => {
     for (const el of controls()) {
       const key = el.dataset.cfgKey
       if (key === 'autospaceOn') { el.checked = DEFAULTS.autospace !== 'off'; continue }
-      if (key === 'autospaceMode') { el.value = 'normal'; continue }
+      if (key === 'autospaceMode') { el.value = DEFAULTS.autospace === 'off' ? 'normal' : DEFAULTS.autospace; continue }
       const v = getPath(DEFAULTS, key)
       if (el.type === 'checkbox') el.checked = v
       else el.value = v
