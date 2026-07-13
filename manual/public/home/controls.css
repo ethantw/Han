@@ -95,18 +95,6 @@
 }
 
 
-/* ─── SubField — nested control, visually owned by the toggle above
-   it (模組 group: 語意標準化/行文版式 own their sub-selects). Indent +
-   a subtle inline-start border read as "child of the toggle"; hidden
-   via the same `[data-cfg-semantics-sub]`/`[data-cfg-prose-sub]`
-   attribute `configurator.js` already toggles. ─────────────────── */
-
-.SubField {
-  padding-inline-start: 0.875rem;
-  border-inline-start: 2px solid var(--rule);
-}
-
-
 /* ─── WritingModeSwitch — 度量 group's 橫排/直排 radio pair (preview-
    state, not part of generated code — `rail-metrics.js` sets
    `main.han.dataset.writing`). ───────────────────────────────────── */

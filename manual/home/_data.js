@@ -35,9 +35,9 @@ export const HOME_I18N = {
     pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: '書寫方向', pgWritingHorizontal: '橫排', pgWritingVertical: '直排',
 
-    pgGrpLayers: '模組',
-    pgTogSemantics: '語意強化',
-    pgTogProse: '行文版式',
+    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
+   
+   
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -115,9 +115,9 @@ export const HOME_I18N = {
     pgSliderWeight: '字重', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: '书写方向', pgWritingHorizontal: '横排', pgWritingVertical: '直排',
 
-    pgGrpLayers: '模块',
-    pgTogSemantics: '语意强化',
-    pgTogProse: '行文版式',
+    pgGrpSemantics: '语义样式标准化', pgGrpProse: '长文段落优化', pgTogEnabled: '启用',
+   
+   
     pgProseScope: '作用选择器', pgProseScopeHint: '仅影响生成码',
     pgCiteMarks: '书名号',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -195,9 +195,9 @@ export const HOME_I18N = {
     pgSliderWeight: 'Weight', pgSliderWeightEn: 'font-weight',
     pgWritingLabel: 'Writing mode', pgWritingHorizontal: 'Horizontal', pgWritingVertical: 'Vertical',
 
-    pgGrpLayers: 'Modules',
-    pgTogSemantics: 'Semantics',
-    pgTogProse: 'Prose layout',
+    pgGrpSemantics: 'Semantic styling', pgGrpProse: 'Long-form prose', pgTogEnabled: 'Enabled',
+   
+   
     pgProseScope: 'Applies to (selector)', pgProseScopeHint: 'Affects generated code only',
     pgCiteMarks: 'Title marks',
     pgCiteBracket: '《》 bracket', pgCiteWavy: '﹏ wavy',
@@ -278,9 +278,9 @@ export const HOME_I18N = {
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ja — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ja copy is written.
-    pgGrpLayers: '模組',
-    pgTogSemantics: '語意強化',
-    pgTogProse: '行文版式',
+    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
+   
+   
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',
@@ -366,9 +366,9 @@ export const HOME_I18N = {
     // NOTE: pg{Grp,Tog,...} configurator strings below are not yet localized
     // for ko — falling back to the hant (Traditional Chinese) values per
     // Task 3 instructions. Revisit when ko copy is written.
-    pgGrpLayers: '模組',
-    pgTogSemantics: '語意強化',
-    pgTogProse: '行文版式',
+    pgGrpSemantics: '語意樣式標準化', pgGrpProse: '長文段落優化', pgTogEnabled: '啟用',
+   
+   
     pgProseScope: '作用選擇器', pgProseScopeHint: '僅影響生成碼',
     pgCiteMarks: '書名號',
     pgCiteBracket: '《》乙式', pgCiteWavy: '﹏甲式',

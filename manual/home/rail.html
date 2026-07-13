@@ -22,17 +22,17 @@
   </label>
 
   <div class="Scroll">
-    <!-- 模組（layer 級）— 每個 layer toggle 領著自己的細項，縮排標示從屬 -->
+    <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
     <details class="ControlGroup">
-      <summary>{{ pgGrpLayers }}</summary>
+      <summary>{{ pgGrpSemantics }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpLayers }}</legend>
+        <legend class="sr-only">{{ pgGrpSemantics }}</legend>
         <label class="Toggle">
-          <span>{{ pgTogSemantics }}</span>
+          <span>{{ pgTogEnabled }}</span>
           <input type="checkbox" data-cfg-key="semantics" checked>
         </label>
         <!-- 語意細項（semantics off 時整組隱藏） -->
-        <label class="Field SubField" data-cfg-semantics-sub>
+        <label class="Field" data-cfg-semantics-sub>
           <span>{{ pgCiteMarks }} <small>cite</small></span>
           <select data-cfg-key="citeTitleMarks">
             <option value="none" selected>{{ pgModeOff }}</option>
@@ -40,7 +40,7 @@
             <option value="wavy">{{ pgCiteWavy }}</option>
           </select>
         </label>
-        <label class="Field SubField" data-cfg-semantics-sub>
+        <label class="Field" data-cfg-semantics-sub>
           <span>{{ pgEmSymbol }} <small>em</small></span>
           <select data-cfg-key="emSymbol">
             <option value="circle" selected>{{ pgEmCircle }}</option>
@@ -49,7 +49,7 @@
             <option value="triangle">{{ pgEmTriangle }}</option>
           </select>
         </label>
-        <label class="Field SubField" data-cfg-semantics-sub>
+        <label class="Field" data-cfg-semantics-sub>
           <span>{{ pgEmPosition }}</span>
           <select data-cfg-key="emPosition">
             <option value="auto" selected>{{ pgEmPosAuto }}</option>
@@ -57,13 +57,20 @@
             <option value="over">{{ pgEmPosOver }}</option>
           </select>
         </label>
+      </fieldset>
+    </details>
 
+    <!-- 長文段落優化 — layer 開關＋作用選擇器自成一組 -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpProse }}</summary>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpProse }}</legend>
         <label class="Toggle">
-          <span>{{ pgTogProse }}</span>
+          <span>{{ pgTogEnabled }}</span>
           <input type="checkbox" data-cfg-key="prose" checked>
         </label>
         <!-- 作用選擇器（prose off 時隱藏；僅影響生成碼，本頁恆用 <main>） -->
-        <label class="Field SubField" data-cfg-prose-sub>
+        <label class="Field" data-cfg-prose-sub>
           <span>{{ pgProseScope }} <small>{{ pgProseScopeHint }}</small></span>
           <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
         </label>
