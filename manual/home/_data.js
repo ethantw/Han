@@ -81,8 +81,9 @@ export const HOME_I18N = {
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，拂偏歸正的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctFixP: '破折號、刪節號、間隔號的碼位中西共用，字體堆疊裡誰排前面，誰就說了算——於是「——」常被西文字體斷成兩截，「……」沉到基線。標點字體只含標點、排在堆疊最前，把它們一一放回原位。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
@@ -167,8 +168,9 @@ export const HOME_I18N = {
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '贰・字体排印', stH2: '百年传承的字体，随心所欲的标点',
+    stEyebrow: '贰・字体排印', stH2: '百年传承的字体，拂偏归正的标点',
     stHeritageP: '传承字形（尚古／源起，可由面板切换）承载了铅字时代未经简化的结构——非「更古老」，而是「未曾漂移」。',
+    stPunctFixP: '破折号、删节号、间隔号的码位中西共用，字体堆叠里谁排前面，谁就说了算——于是「——」常被西文字体断成两截，「……」沉到基线。标点字体只含标点、排在堆叠最前，把它们一一放回原位。',
     stPunctP: '标点断连亦有地域公约——「」『』（）之弧直、逗句之位置，MOE（台湾教育部）、JIS（日本工业规格）、GB（大陆国标）三制各异，一行CSS变量切换，「，。」之呼吸随之而变。',
     stPunctExamples: '同一页上，各语言标点各从其规范——简体如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韩文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
@@ -253,8 +255,9 @@ export const HOME_I18N = {
     ssJaLead: 'Japanese citations, too, find their proper place —',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: 'II・Typography', stH2: 'Century-old letterforms, punctuation your way',
+    stEyebrow: 'II・Typography', stH2: 'Century-old letterforms, punctuation set right',
     stHeritageP: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
+    stPunctFixP: 'Em dashes, ellipses and interpuncts share their codepoints with Western scripts — whichever font sits first in the stack has the final say, so “—” snaps in half and “…” sinks to the baseline. A punctuation-only font sits at the very front and puts every mark back where it belongs.',
     stPunctP: 'Even punctuation follows regional convention — the curve of「」『』（）, the position of commas and periods. MOE (Taiwan), JIS (Japan), GB (Mainland China) each differ; one CSS variable switches the whole page, and the rhythm of「，。」shifts with it.',
     stPunctExamples: 'On this very page, each language keeps its own punctuation convention — Simplified as in <span lang="zh-Hans">「简体的引号与句号。」</span>, Japanese as in <span lang="ja">「日本語の約物です。」</span>, Korean as in <span lang="ko">「한국어 문장입니다.」</span>.',
 
@@ -344,8 +347,9 @@ export const HOME_I18N = {
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，拂偏歸正的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctFixP: '破折號、刪節號、間隔號的碼位中西共用，字體堆疊裡誰排前面，誰就說了算——於是「——」常被西文字體斷成兩截，「……」沉到基線。標點字體只含標點、排在堆疊最前，把它們一一放回原位。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
@@ -438,8 +442,9 @@ export const HOME_I18N = {
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，拂偏歸正的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    stPunctFixP: '破折號、刪節號、間隔號的碼位中西共用，字體堆疊裡誰排前面，誰就說了算——於是「——」常被西文字體斷成兩截，「……」沉到基線。標點字體只含標點、排在堆疊最前，把它們一一放回原位。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
 
