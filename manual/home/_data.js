@@ -74,14 +74,14 @@ export const HOME_I18N = {
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
-    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
@@ -92,13 +92,13 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。\n\n<cite>本草綱目</cite><cite>辭海</cite>',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -160,14 +160,14 @@ export const HOME_I18N = {
     mfDogfood: '本页即范文——面板随手拨，全页随你而变。',
     mfStatLocales: '支持语种', mfStatSize: 'Gzip体积（css+js）', mfStatDeps: '外部依赖',
 
-    ssEyebrow: '壹・语意', ssH2: '语意，先于样式',
+    ssEyebrow: '壹・语意', ssH2: '名正言顺的元素样式',
     ssP1: 'HTML5语意元素在汉字排版下自有其正确样式——<em>着重号</em>标记文中紧要之词，效果一如手写圈点。',
     ssP2: '引用书名时可用<cite>说文解字</cite>标记。书名号默认关闭（<code>--han-cite-title-marks: none</code>），此处另加一行<code>--han-cite-title-marks: bracket</code>方得见《》。',
     ssP3: '专有名词可用<u>专名号</u>标示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一类缩写，则交由&lt;abbr&gt;元素承载完整释义。',
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '贰・字体排印', stH2: '一字三面',
+    stEyebrow: '贰・字体排印', stH2: '百年传承的字体，随心所欲的标点',
     stHeritageP: '传承字形（尚古／源起，可由面板切换）承载了铅字时代未经简化的结构——非「更古老」，而是「未曾漂移」。',
     stPunctP: '标点断连亦有地域公约——「」『』（）之弧直、逗句之位置，MOE（台湾教育部）、JIS（日本工业规格）、GB（大陆国标）三制各异，一行CSS变量切换，「，。」之呼吸随之而变。',
     stPunctExamples: '同一页上，各语言标点各从其规范——简体如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韩文如<span lang="ko">「한국어 문장입니다.」</span>。',
@@ -178,13 +178,13 @@ export const HOME_I18N = {
     slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书；日文原写作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，两制并陈。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・随手试', pgStationH2: '换你的字上场',
+    pgStationEyebrow: '肆・随手试', pgStationH2: '游乐场',
     pgStationLede: '——贴上Markdown或无伤大雅的HTML，切到预览即见汉字排版。',
     pgStationViewsLegend: '编辑器页签', pgStationTabPreview: '预览', pgStationTabCode: '源码',
     pgStationCodeLabel: '源码编辑区', pgStationPreviewLabel: '排版预览',
     pgStationSample: '## 换你的字上场\n\n这是一段可自由编辑的范文。汉字与Latin、与2024并肩时，字距自动匀称，不必手动空格。文中要紧的词用<em>着重号</em>圈点。\n\n> 「引文自有其讲究——标点悬挂，行末仍齐。」\n\n注音直书亦不在话下：<ruby class="zhuyin">汉<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用码', snH2: '生成引用码', snLede: '——切换页签，取你要的引用方式。',
+    snEyebrow: '伍・引用码', snH2: '生成引用码', snLede: '——这里的代码按照面板当前的配置实时生成，设置改了，代码也跟着变。选npm或CDN其中一种，复制粘贴就能直接用。',
     snFinishLine: '选好了？两种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支持现代常青浏览器。',
 
@@ -253,7 +253,7 @@ export const HOME_I18N = {
     ssJaLead: 'Japanese citations, too, find their proper place —',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: 'II・Typography', stH2: 'One glyph, three faces',
+    stEyebrow: 'II・Typography', stH2: 'Century-old letterforms, punctuation your way',
     stHeritageP: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
     stPunctP: 'Even punctuation follows regional convention — the curve of「」『』（）, the position of commas and periods. MOE (Taiwan), JIS (Japan), GB (Mainland China) each differ; one CSS variable switches the whole page, and the rhythm of「，。」shifts with it.',
     stPunctExamples: 'On this very page, each language keeps its own punctuation convention — Simplified as in <span lang="zh-Hans">「简体的引号与句号。」</span>, Japanese as in <span lang="ja">「日本語の約物です。」</span>, Korean as in <span lang="ko">「한국어 문장입니다.」</span>.',
@@ -270,7 +270,7 @@ export const HOME_I18N = {
     pgStationCodeLabel: 'Source editor', pgStationPreviewLabel: 'Rendered preview',
     pgStationSample: '## Bring your own words\n\nEdit this freely — Han typography just works. The spacing between 漢字 and Latin is automatic, and emphasis dots mark <em lang="zh-Hant">要緊處</em>.\n\n> A blockquote keeps its manners — hanging punctuation, tidy line ends.\n\nRuby too: <ruby class="zhuyin" lang="zh-Hant">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin" lang="zh-Hant">字<rt>ㄗˋ</rt></ruby>.',
 
-    snEyebrow: 'V・Snippet', snH2: 'Generate the snippet', snLede: '— switch tabs to get the form you need.',
+    snEyebrow: 'V・Snippet', snH2: 'Generate the snippet', snLede: '— generated live from your panel settings: flip a switch and the code updates. Pick npm or CDN, copy, paste, done.',
     snFinishLine: 'Made your picks? Two ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
     snBrowserSupport: 'Supports modern evergreen browsers.',
 
@@ -337,14 +337,14 @@ export const HOME_I18N = {
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
-    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
@@ -355,13 +355,13 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -431,14 +431,14 @@ export const HOME_I18N = {
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
-    ssEyebrow: '壹・語意', ssH2: '語意，先於樣式',
+    ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
     ssP2: '引用書名時可用<cite>說文解字</cite>標記。書名號預設關閉（<code>--han-cite-title-marks: none</code>），此處另加一行<code>--han-cite-title-marks: bracket</code>方得見《》。',
     ssP3: '專有名詞可用<u>專名號</u>標示，如人名地名。<abbr title="Cascading Style Sheets">CSS</abbr>一類縮寫，則交由&lt;abbr&gt;元素承載完整釋義。',
     ssJaLead: '日文引文亦各得其所——',
     ssJaQuote: '春はあけぼの。やうやう白くなりゆく山際、すこしあかりて。',
 
-    stEyebrow: '貳・字體排印', stH2: '一字三面',
+    stEyebrow: '貳・字體排印', stH2: '百年傳承的字體，隨心所欲的標點',
     stHeritageP: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
     stPunctP: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
     stPunctExamples: '同一頁上，各語言標點各從其規範——簡體如<span lang="zh-Hans">「简体的引号与句号。」</span>，日文如<span lang="ja">「日本語の約物です。」</span>，韓文如<span lang="ko">「한국어 문장입니다.」</span>。',
@@ -449,13 +449,13 @@ export const HOME_I18N = {
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '換你的字上場',
+    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——切換頁籤，取你要的引用方式。',
+    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
