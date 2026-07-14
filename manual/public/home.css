@@ -741,16 +741,32 @@ han-rail {
     overflow: clip;
   }
 
-  /* Headline up one visual notch — a hero-LOCAL clamp only. The --fs-display
-     ramp token is untouched; the contract (§ Hero) permits this local
-     override, mirroring the direction doc's local clamp. The upper bound is
-     pulled to 4em (from 4.5em) so the first logical line 「…活字美學，」
-     never spills its trailing 「學，」 onto a line of its own at 1280–1920,
-     and `text-wrap: balance` (Baseline 2024) evens the wrap so no single
-     character is orphaned. */
+  /* Crowned headline. The 漢.css Brand rides on top as a small serif line;
+     the two tagline phrases below it carry the hero's display scale. The
+     --fs-display ramp token is untouched — this is a hero-LOCAL clamp on the
+     phrase lines only (contract § Hero permits the local override). Because
+     the ramp re-resolves in `em` inside main.han, the h1 box itself stays at
+     the base step, so the crown — sized off --fs-lede/-small by .Brand's own
+     rule — reads as a subtitle rather than inheriting the display size; only
+     the phrase spans take the clamp. */
   h1 {
-    font-size: clamp(2.25em, 8vw, 4em);
-    text-wrap: balance;
+    & { font-size: var(--fs-body); }
+
+    /* the wordmark crown sits on its own line, generous gap below */
+    .Brand {
+      display: flex;
+      margin-block-end: 1.5rem;
+    }
+
+    /* each phrase is display:block (base rule); the hero scale + balanced
+       wrap live here. `text-wrap: balance` (Baseline 2024) keeps a phrase
+       that must wrap (≈390px) from orphaning a single trailing character;
+       at 1280–1920 each phrase fits on one line. */
+    > span:not(.Brand) {
+      font-size: clamp(2.5em, 8vw, 5.5em);
+      line-height: 1.25;
+      text-wrap: balance;
+    }
   }
 
   .Outline {

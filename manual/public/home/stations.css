@@ -399,22 +399,26 @@ main.han[data-writing="vertical"] {
   }
 
   h1 {
-    margin: 0 0 2rem;
-    font-family: var(--han-font-alternative);
-    font-weight: 400; /* ziano display weight — restrained, not bold */
-    font-size: var(--fs-display);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-    color: var(--palette-text);
+    & {
+      margin: 0 0 2rem;
+      font-family: var(--han-font-alternative);
+      font-weight: 400; /* ziano display weight — restrained, not bold */
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      color: var(--palette-text);
+    }
 
-    /* the accent line — a bare span is the sanctioned accent hook
-       (css-naming rule 3), no data-* / class needed */
-    span { color: var(--palette-accent); }
+    /* The two tagline phrases each own a display line — ink first, accent
+       second (a bare last-child span is the sanctioned accent hook,
+       css-naming rule 3). The 漢.css Brand crown above them is excluded
+       here; its own-line placement + hero sizing live in home.css. */
+    > span:not(.Brand) { display: block; }
+    > span:last-child  { color: var(--palette-accent); }
   }
 
   .Lede {
     margin: 0 0 1.25rem;
-    max-inline-size: 38em;
+    max-inline-size: 28em;
     font-family: var(--han-font-alternative);
     font-size: var(--fs-lede);
     line-height: 1.85;
