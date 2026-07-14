@@ -19,10 +19,10 @@
 <input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
 <label class="Grip" for="rail-sheet" data-rail-grip>{{ railHeader }}</label>
 
-<!-- data-label-default: aria-label/title for the JS-injected per-GROUP
-     「使用預設値」 buttons (one per ControlGroup head; rail-config.js /
-     rail-metrics.js read it back — the DOM carries the locale string,
-     JS stays copy-free). -->
+<!-- data-label-default: the visible text label (＋ title) for the
+     JS-injected per-GROUP 「↺ 使用預設値」 buttons (one per ControlGroup
+     head; rail-config.js / rail-metrics.js read it back — the DOM carries
+     the locale string, JS stays copy-free). -->
 <div class="Controls" data-label-default="{{ pgUseDefault }}">
     <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
     <section class="ControlGroup">
@@ -34,7 +34,7 @@
           <header>
             <span>{{ pgSliderSize }}</span>
             <small>{{ pgSliderSizeEn }}</small>
-            <output data-pg-slider-val>16 px</output>
+            <output data-pg-slider-val>16px</output>
           </header>
           <div class="Track">
             <span data-pg-slider-fill></span>

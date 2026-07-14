@@ -62,9 +62,8 @@ export const mountRailMetrics = ({ root, target, initial, onChange }) => {
   const $groupDefault = document.createElement('button')
   $groupDefault.type = 'button'
   $groupDefault.className = 'Default'
-  $groupDefault.textContent = '↺'
   const defaultLabel = root.querySelector('.Controls')?.dataset.labelDefault ?? 'Use default'
-  $groupDefault.setAttribute('aria-label', defaultLabel)
+  $groupDefault.textContent = `↺ ${defaultLabel}`
   $groupDefault.title = defaultLabel
   $groupDefault.hidden = true
   root.querySelector('[data-pg-sliders]')
@@ -91,7 +90,7 @@ export const mountRailMetrics = ({ root, target, initial, onChange }) => {
       const v = +$input.value
       stateRef.current = { ...stateRef.current, [metric]: v }
       const fmt = v.toFixed(precision)
-      $val.textContent = unit ? `${fmt} ${unit}` : fmt
+      $val.textContent = unit ? `${fmt}${unit}` : fmt
       $fill.style.width = `${((v - min) / (max - min)) * 100}%`
       updateGroupDefault()
       apply()

@@ -155,8 +155,7 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
       const $btn = document.createElement('button')
       $btn.type = 'button'
       $btn.className = 'Default'
-      $btn.textContent = '↺'
-      $btn.setAttribute('aria-label', label)
+      $btn.textContent = `↺ ${label}`
       $btn.title = label
       $btn.hidden = true
       $btn.addEventListener('click', (e) => {

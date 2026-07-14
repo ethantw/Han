@@ -43,8 +43,20 @@
     > .Default { margin-inline-start: auto; }
   }
 
-  /* config groups fold as native <details>; a fullwidth ＋/－ signals state */
+  /* config groups fold as native <details>. Unlike the non-collapsible
+     section <header>s (mono micro-caps, above), the fold heads read in
+     the body register and stack as one contiguous hairline list — each
+     summary carries a border-block-start; the last details in the stack
+     closes it with a border-block-end (rail.css § .Controls). A fullwidth
+     ＋/－, kept supplement-coloured, signals open/closed state. */
   > summary {
+    font-family: var(--han-font-default);
+    font-size: var(--_fs-compact);
+    text-transform: none;
+    color: var(--_text);
+    padding-block: 0.8rem;
+    margin-block-end: 0;
+    border-block-start: 1px solid var(--_rule);
     cursor: pointer;
     list-style: none;
 
@@ -54,8 +66,10 @@
       color: var(--_supplement-text);
     }
   }
-  &[open] > summary::after { content: '－'; }
-  &:not([open]) > summary { margin-block-end: 0; }
+  &[open] > summary {
+    margin-block-end: 14px;
+    &::after { content: '－'; }
+  }
 
   /* 子組（字體底下的繁體專項）——縮排一級、標頭恢復字母大小寫並降去
      追蹤感，讀作外組的從屬而非並列。<section>＋<header> 平鋪
@@ -115,8 +129,8 @@
   input[type="checkbox"] {
     appearance: none;
     flex-shrink: 0;
-    inline-size: 2rem;
-    block-size: 1.125rem;
+    inline-size: 2.25rem;
+    block-size: 1.25rem;
     margin: 0;
     background: var(--_rule);
     border: 1px solid var(--_rule);
@@ -128,21 +142,23 @@
     &::before {
       content: '';
       position: absolute;
-      inset-block: 0.0625rem;
-      inset-inline-start: 0.0625rem;
-      inline-size: 0.875rem;
+      inset-block: 0.125rem;
+      inset-inline-start: 0.125rem;
+      inline-size: 1rem;
       background: var(--_bg);
       border-radius: 50%;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
       transition: inset-inline-start 150ms ease, background-color 150ms ease;
     }
 
+    /* ON ＝ 實心 accent 軌＋紙色鈕（設計稿定稿）——紙色 token 讓暗色
+       主題自動換成墨底鈕，兩態都讀得出對比。 */
     &:checked {
-      background: var(--_accent-bg);
+      background: var(--_accent);
       border-color: var(--_accent);
       &::before {
-        inset-inline-start: calc(100% - 1rem);
-        background: var(--_accent);
+        inset-inline-start: calc(100% - 1rem - 0.125rem);
+        background: var(--_bg);
       }
     }
 
@@ -174,7 +190,7 @@
       justify-content: space-between;
       inline-size: 100%;
       gap: 0.75rem;
-      padding: 0.375rem 0.25rem;
+      padding: 0.55rem 0.25rem;
       color: var(--_text);
     }
 
@@ -200,24 +216,25 @@
  * JS-injected (rail-config.js / rail-metrics.js) into each
  * ControlGroup's head (每個 details 群組一顆，owner call); visible only
  * while any control in the group deviates, so it doubles as the "this
- * group was touched" marker. Quiet glyph button — the locale string
- * rides on aria-label/title. */
+ * group was touched" marker. Accent-coloured 「↺ 使用預設値」 with a
+ * visible text label (JS reads it from data-label-default; title kept). */
 
 .Default {
   & {
     flex: none;
     margin: 0;
     padding: 0 2px;
-    font-size: var(--_fs-compact);
+    font-size: var(--_fs-fine);
+    font-weight: 500;
     line-height: 1;
-    color: var(--_supplement-text-2q);
+    color: var(--_accent);
     background: transparent;
     border: 0;
     cursor: pointer;
     transition: color 150ms ease;
   }
 
-  &:hover { color: var(--_accent); }
+  &:hover { color: color-mix(in srgb, var(--_accent) 70%, var(--_text)); }
 
   &:focus-visible {
     outline: 2px solid var(--_accent);
@@ -255,6 +272,7 @@
     span {
       font-family: var(--han-font-default);
       font-size: var(--_fs-compact);
+      font-weight: 500;
       color: var(--_text);
     }
 
@@ -264,13 +282,14 @@
       color: var(--_supplement-text-2q);
     }
 
-    /* value readout — quiet right-aligned text, no pill (ziano's
-       playground slider look) */
+    /* value readout — the loudest thing in the row (ziano's playground
+       slider look, no pill): full-strength text, medium weight. */
     output {
       margin-inline-start: auto;
       font-family: var(--_font-mono);
       font-size: var(--_fs-compact);
-      color: var(--_supplement-text);
+      font-weight: 500;
+      color: var(--_text);
     }
   }
 
@@ -336,21 +355,24 @@
       &::-webkit-slider-thumb {
         -webkit-appearance: none;
                 appearance: none;
-        inline-size: 14px;
-        block-size: 14px;
-        margin-block-start: 1px;
+        box-sizing: border-box;
+        inline-size: 18px;
+        block-size: 18px;
+        /* centre the 18px thumb on the 4px fill within the 16px track box */
+        margin-block-start: -1px;
         border-radius: 50%;
         background: var(--_bg);
-        border: 1px solid var(--_text);
+        border: 2px solid var(--_accent);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         cursor: grab;
       }
       &::-moz-range-thumb {
-        inline-size: 14px;
-        block-size: 14px;
+        box-sizing: border-box;
+        inline-size: 18px;
+        block-size: 18px;
         border-radius: 50%;
         background: var(--_bg);
-        border: 1px solid var(--_text);
+        border: 2px solid var(--_accent);
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         cursor: grab;
       }

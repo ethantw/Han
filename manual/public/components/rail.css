@@ -53,11 +53,21 @@
   & {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     padding: 20px 18px;
   }
 
-  /* Top form (≥64rem) — horizontal scrolling toolbar. */
+  /* Spacing by element type, not a uniform gap: the non-collapsible
+     sections (度量 / 模組) keep generous separation, but the trailing run
+     of collapsible <details> sits FLUSH so their summary hairlines abut
+     into one contiguous table — closed at the bottom by a border-block-end
+     on the last details in the stack. */
+  > section.ControlGroup { margin-block-end: 24px; }
+  > details.ControlGroup:last-child {
+    border-block-end: 1px solid var(--_rule);
+  }
+
+  /* Top form (≥64rem) — horizontal scrolling toolbar. Back to a uniform
+     gap; drop the vertical margins/closing hairline of the side stack. */
   @media (min-width: 64rem) {
     :host([form="top"]) & {
       flex-direction: row;
@@ -66,7 +76,12 @@
       overflow-x: auto;
       padding-inline: var(--_gutter);
 
-      > .ControlGroup { min-inline-size: 220px; flex: none; }
+      > .ControlGroup {
+        min-inline-size: 220px;
+        flex: none;
+        margin-block: 0;
+        border-block-end: 0;
+      }
     }
   }
 }
