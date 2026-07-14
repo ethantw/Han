@@ -25,7 +25,7 @@ export const HOME_LOCALE_LABELS = LOCALE_LABELS
 export const HOME_I18N = {
   hant: {
     siteTitle: '漢.css・像素間的活字美學',
-    description: '像素間的活字美學，為螢幕上的每一個漢字。',
+    description: '像素間的活字美學，款待螢幕上的每一個漢字。',
     docs: '文檔', langSwitcherLabel: '切換語言・LANGUAGE',
     langSwitcherFoot: '站本身切換 5 種語言・操場可獨立選任一語言範文',
     themeToggle: '切換主題',
@@ -69,10 +69,9 @@ export const HOME_I18N = {
     dlLegend: '範文語言', dlHant: '繁', dlHans: '簡', dlJa: '日', dlKo: '韓',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
-    mfH1a: '像素間的活字美學，', mfH1b: '為螢幕上的每一個漢字',
+    mfH1a: '像素間的活字美學，', mfH1b: '款待螢幕上的每一個漢字',
     mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
-    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
     // ─── HP v2: hero vertical lede + station ledes / specimen /
     // comparison labels / marginalia notes / snippet bridge ───
@@ -127,6 +126,7 @@ export const HOME_I18N = {
     arSampleText: '排版的<em>要緊處</em>，一眼可辨。',
     arQuoteSample: '他說：<q>這行顏色是我的CSS說了算。</q>',
     arNote: '全庫零權重，覆寫從不需要!important。',
+    arLedgerTotal: '四模塊合計', arLedgerGzip: 'gzip', arLedgerDeps: '運行時依賴',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '陸・試玩', pgStationH2: '遊樂場',
@@ -148,7 +148,7 @@ export const HOME_I18N = {
   },
   hans: {
     siteTitle: '汉.css・像素间的活字美学',
-    description: '像素间的活字美学，为屏幕上的每一个汉字。',
+    description: '像素间的活字美学，款待屏幕上的每一个汉字。',
     docs: '文档', langSwitcherLabel: '切换语言・LANGUAGE',
     langSwitcherFoot: '站本身切换 5 种语言・操场可独立选任一语言范文',
     themeToggle: '切换主题',
@@ -192,10 +192,9 @@ export const HOME_I18N = {
     dlLegend: '范文语言', dlHant: '繁', dlHans: '简', dlJa: '日', dlKo: '韩',
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
-    mfH1a: '像素间的活字美学，', mfH1b: '为屏幕上的每一个汉字',
+    mfH1a: '像素间的活字美学，', mfH1b: '款待屏幕上的每一个汉字',
     mfLede: '以CSS变量为骨、少量JavaScript为筋——标点悬挂、着重号、注音、跨文种混排，皆有定法。中西之间不假空格字符，间隙一律0.125em：铅字时代的规矩，一条不少。',
     mfDogfood: '本页即范文——面板随手拨，全页随你而变。',
-    mfStatLocales: '支持语种', mfStatSize: 'Gzip体积（css+js）', mfStatDeps: '外部依赖',
 
     // ─── HP v2: hero vertical lede + station ledes / specimen /
     // comparison labels / marginalia notes / snippet bridge ───
@@ -250,6 +249,7 @@ export const HOME_I18N = {
     arSampleText: '排版的<em>要紧处</em>，一眼可辨。',
     arQuoteSample: '他说：<q>这行颜色是我的CSS说了算。</q>',
     arNote: '全库零权重，覆写从不需要!important。',
+    arLedgerTotal: '四模块合计', arLedgerGzip: 'gzip', arLedgerDeps: '运行时依赖',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '陆・随手试', pgStationH2: '游乐场',
@@ -318,7 +318,6 @@ export const HOME_I18N = {
     mfH1a: 'Crafting movable type within the pixels,', mfH1b: 'for every Han character.',
     mfLede: 'A Hanzi typography system: CSS variables for bone, a little JavaScript for sinew — hanging punctuation, emphasis dots, ruby, mixed-script spacing, each with its rule. No hand-typed space between scripts, a fixed 0.125em gap — the discipline of hot metal, not a rule dropped.',
     mfDogfood: 'This page is the specimen — tweak the panel, watch the whole page respond.',
-    mfStatLocales: 'locales', mfStatSize: 'gzip size (css+js)', mfStatDeps: 'dependency',
 
     // ─── HP v2: hero vertical lede + station ledes / specimen /
     // comparison labels / marginalia notes / snippet bridge ───
@@ -373,6 +372,7 @@ export const HOME_I18N = {
     arSampleText: 'The <em>part that matters</em> in typesetting, clear at a glance.',
     arQuoteSample: 'She said, <q>this colour is my call, set in CSS.</q>',
     arNote: 'Zero specificity across the whole library — overriding never needs !important.',
+    arLedgerTotal: 'All four modules', arLedgerGzip: 'gzip', arLedgerDeps: 'runtime dependency',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: 'VI・Playground', pgStationH2: 'Bring your own words',
@@ -446,7 +446,6 @@ export const HOME_I18N = {
     mfH1a: 'ピクセルの間の活字美学、', mfH1b: '画面に並ぶ漢字へ。',
     mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
-    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
     // ─── HP v2: hero vertical lede + station ledes / specimen /
     // comparison labels / marginalia notes / snippet bridge ───
@@ -501,6 +500,7 @@ export const HOME_I18N = {
     arSampleText: '排版的<em>要緊處</em>，一眼可辨。',
     arQuoteSample: '他說：<q>這行顏色是我的CSS說了算。</q>',
     arNote: '全庫零權重，覆寫從不需要!important。',
+    arLedgerTotal: '四模塊合計', arLedgerGzip: 'gzip', arLedgerDeps: '運行時依賴',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '陸・試玩', pgStationH2: '遊樂場',
@@ -577,7 +577,6 @@ export const HOME_I18N = {
     mfH1a: '<ruby>픽셀<rt>pixel</rt></ruby> 사이의 <ruby>活字<rt>활자</rt></ruby> <ruby>美學<rt>미학</rt></ruby>,', mfH1b: '<ruby>畫面<rt>화면</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby>에게.',
     mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
-    mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
 
     // ─── HP v2: hero vertical lede + station ledes / specimen /
     // comparison labels / marginalia notes / snippet bridge ───
@@ -632,6 +631,7 @@ export const HOME_I18N = {
     arSampleText: '排版的<em>要緊處</em>，一眼可辨。',
     arQuoteSample: '他說：<q>這行顏色是我的CSS說了算。</q>',
     arNote: '全庫零權重，覆寫從不需要!important。',
+    arLedgerTotal: '四模塊合計', arLedgerGzip: 'gzip', arLedgerDeps: '運行時依賴',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '陸・試玩', pgStationH2: '遊樂場',
