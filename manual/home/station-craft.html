@@ -1,0 +1,78 @@
+<!-- Station V・Architecture (工法) — "won't fight your CSS". Three REAL demos
+     prove the claim on THIS page: (1) a user rule beats the framework because
+     han-semantics wraps every selector in :where() (zero specificity); (2) the
+     four cascade layers map 1:1 to the rail's four module switches; (3) one
+     custom property on a container re-scopes a feature via inheritance /
+     @container style(). data-ground="a" continues the alternating chain
+     (prose=b → craft=a → playground=b). -->
+<section id="station-craft" class="Station" data-station="craft" data-ground="a" data-wm="層">
+  <hgroup>
+    <p>{{ arEyebrow }}</p>
+    <h2>{{ arH2 }}</h2>
+  </hgroup>
+
+  <p class="Lede">{{ arLede }}</p>
+
+  <!-- Override demo — the EXACT user rule the page really ships (see
+       stations.css § 示範用戶樣式 — KEEP THE <code> BELOW IN SYNC WITH IT)
+       beside the live sample it wins on. han-semantics styles <q> at
+       `:where(q)` (zero specificity) inside @layer han-semantics; this
+       single-class rule is unlayered — an unlayered declaration always
+       outranks a layered one — so its accent colour wins, no !important. -->
+  <figure class="Override">
+    <div>
+      <small>{{ arOverrideLabel }}</small>
+      <pre><code>.YourCss q {
+  color: var(--palette-accent);
+  font-weight: 500;
+}</code></pre>
+    </div>
+    <div>
+      <small>{{ arOverrideResult }}</small>
+      <p class="YourCss" lang="zh-Hant">{{ arQuoteSample }}</p>
+    </div>
+  </figure>
+
+  <!-- Layer map — the four cascade layers, one mono chip each, in source
+       order; they ARE the rail's four module switches (arLayerNote). -->
+  <figure class="LayerMap">
+    <ul>
+      <li>han-semantics</li>
+      <li>han-lines</li>
+      <li>han-prose</li>
+      <li>han-fonts</li>
+    </ul>
+    <figcaption>{{ arLayerNote }}</figcaption>
+  </figure>
+
+  <!-- Container demo — the SAME sample twice; the second cell's WRAPPER
+       carries `--han-em-symbol: sesame` (style queries read an ANCESTOR, not
+       the element itself — the repo's known trap), so the custom property
+       inherits down to its <em> and the 著重號 really becomes sesame dots,
+       while the first cell keeps the circle default. -->
+  <figure class="ScopeCompare">
+    <div class="Sample" lang="zh-Hant">
+      <small>{{ arContainerA }}</small>
+      <p>{{ arSampleText }}</p>
+    </div>
+    <div class="Sample" lang="zh-Hant" style="--han-em-symbol: sesame">
+      <small>{{ arContainerB }}</small>
+      <p>{{ arSampleText }}</p>
+    </div>
+  </figure>
+
+  <div class="Annotated">
+    <div class="Prose">
+      <p>{{ arP1 }}</p>
+      <p>{{ arP2 }}</p>
+      <p>{{ arP3 }}</p>
+    </div>
+
+    <aside class="Marginalia">
+      <code>:where()</code>
+      <code>@layer</code>
+      <code>@container style()</code>
+      <p>{{ arNote }}</p>
+    </aside>
+  </div>
+</section>

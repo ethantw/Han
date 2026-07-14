@@ -21,7 +21,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 ## 現狀盤點（動筆前的事實基礎）
 
-**頁面結構**（`manual/_home.html` ＋ `manual/home/*.html` 八個 partial）：
+**頁面結構**（`manual/_home.html` ＋ `manual/home/*.html` 九個 partial）：
 
 1. Topbar — Brand（漢.css 字標）、文檔/GitHub、語言切換、主題切換、版本章
 2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider
@@ -43,10 +43,12 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 5. 貳・字體排印 ＋ 參・行的調整 — 同上，範文即示範
 6. 肆・段落 — prose 模組的活體樣本：站文自己排在 `<article>` 裡（兩端
    對齊、2em 縮排尺、連續標題收攏都作用在這段文字上，撥模組開關即時回流）
-7. 伍・試玩 — 用戶自己貼 Markdown/HTML 的編輯器（預覽/原始碼分頁）
-8. 陸・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板；
+7. 伍・工法 — 架構站（零權重 :where()、@layer 四層、@container style() 圈地
+   ——三個真演示：用戶樣式覆寫現場、層圖譜、子樹變數換著重號）
+8. 陸・試玩 — 用戶自己貼 Markdown/HTML 的編輯器（預覽/原始碼分頁）
+9. 柒・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板；
    模組開關增減 import 行、度量偏差出 `body {}` 規則）
-9. Closing — 一行安裝、姊妹專案連結（ziano/diantenjeom）、版權腳注
+10. Closing — 一行安裝、姊妹專案連結（ziano/diantenjeom）、版權腳注
 
 **視覺系統（已定案，不重議）**：
 
@@ -62,7 +64,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 具體症狀，請逐一回應：
 
-1. **節奏單調**——八個區段全是「窄欄 hgroup ＋段落」，滾動時沒有大小、密度、
+1. **節奏單調**——九個區段全是「窄欄 hgroup ＋段落」，滾動時沒有大小、密度、
    明暗的變化；髮絲線是唯一的分節手段。
 2. **寬螢幕大量留白**——版心 38em 的正文欄在 1440px 下右側整片空白，沒有
    次欄、旁註、圖示等利用。

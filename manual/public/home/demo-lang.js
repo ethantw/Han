@@ -4,7 +4,7 @@
  *
  * Distinct from the site's own UI locale (`/`, `/hans/`, `/ja/`, `/ko/` —
  * that's `<html lang>`, chosen at build time per `_locales.js`): this
- * switches which language the SPECIMEN (the six stations' running copy)
+ * switches which language the SPECIMEN (the seven stations' running copy)
  * demonstrates, independent of what language the reader is browsing the
  * chrome in. Clicking a chip sets `main.han[lang]`; every `:lang()` rule
  * already in han.css/diantenjeom (heritage hant-only gate, per-locale

@@ -821,7 +821,174 @@ main.han[data-writing="vertical"] {
 }
 
 
-/* ═══ Station VI・Snippet — the CONSTANT-dark reference-code station ══
+/* ═══ Station 伍・工法 — the "won't fight your CSS" demos ═════════════
+ * Three honest demos for the unlayered/zero-specificity story: an override
+ * pair (a user rule beats the framework), a four-chip cascade-layer map, and
+ * a scope compare (one container var re-skins the 著重號). Token-driven, no
+ * new hues. The features the station EXPLAINS live in han.css, not here:
+ * `:where()` (Baseline 2021), `@layer` (Baseline 2022) and `@container
+ * style()` style queries (Chrome/Edge 111 + Safari 18; Firefox trailing) —
+ * the same query the whole framework already rides on. */
+
+/* 示範用戶樣式 — this is the EXACT rule the Override demo's <pre><code> prints
+ * (station-craft.html — KEEP THE TWO IN SYNC). It is UNLAYERED and a single
+ * class + element, so it beats han-semantics' `:where(q)` (zero specificity,
+ * and inside @layer han-semantics): an unlayered declaration always outranks
+ * a layered one — the whole point of the station, shown live, no !important. */
+.YourCss q {
+  color: var(--palette-accent);
+  font-weight: 500;
+}
+
+.Override {
+  & {
+    display: grid;
+    gap: 1px; /* the hairline seam between the two cells */
+    margin: 0 0 2.5rem;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* the two cells — the source stylesheet and what it renders */
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--palette-bg);
+  }
+
+  small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+    color: var(--palette-supplement-text);
+  }
+
+  /* the code block rides the homepage's generic light code chrome
+     (home.css § code blocks — `--palette-panel` ground, hairline, padding,
+     `overflow-x`); we only reset the default <pre> margin and neutralise the
+     inline-code chrome on the nested <code> so it inherits the pre's mono +
+     colour, dark-on-panel in both themes. */
+  pre {
+    & {
+      margin: 0;
+    }
+
+    code {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      font: inherit;
+      color: inherit;
+      white-space: pre;
+    }
+  }
+
+  /* the live sample — serif, sized up so the accent-won <q> reads clearly.
+     The <q> itself takes its colour from `.YourCss q` above, beating the
+     framework's zero-specificity `:where(q)`. */
+  .YourCss {
+    margin: 0;
+    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 1.7;
+    color: var(--palette-text);
+  }
+}
+
+
+/* ─── Station 伍・工法 — the cascade-layer map (four mono chips) ─────── */
+
+.LayerMap {
+  & {
+    margin: 0 0 2.5rem;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    padding: 0.375rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    color: var(--palette-accent);
+    background: var(--palette-panel);
+    border: 1px solid var(--palette-rule);
+    border-radius: 999px;
+  }
+
+  figcaption {
+    max-inline-size: 34em;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--palette-supplement-text);
+  }
+}
+
+
+/* ─── Station 伍・工法 — the container-scope compare (default vs sesame) ──
+ * Same sample twice; the second cell's WRAPPER carries `--han-em-symbol:
+ * sesame` inline, which inherits down to its <em>, so the 著重號 turns to
+ * sesame dots while the first keeps the circle default. Hairline-framed grid,
+ * mirroring .PunctCompare / .HangCompare. */
+
+.ScopeCompare {
+  & {
+    display: grid;
+    gap: 1px; /* hairline seam between the two cells */
+    margin: 0 0 2.5rem;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .Sample {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--palette-bg);
+  }
+
+  small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+    color: var(--palette-supplement-text);
+  }
+
+  /* the sample — serif, sized up; extra leading leaves room for the
+     emphasis dots (circle vs sesame) below the text. */
+  p {
+    margin: 0;
+    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 2;
+    color: var(--palette-text);
+  }
+}
+
+
+/* ═══ Station VII・Snippet — the CONSTANT-dark reference-code station ══
    `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
    `controls.css`; this block styles the two station-local lines that
    frame the pane, the mint transition band that hands off into the dark,
@@ -894,7 +1061,7 @@ main.han[data-writing="vertical"] {
 }
 
 
-/* ═══ Station V・Playground ═════════════════════════════════════════
+/* ═══ Station VI・Playground ════════════════════════════════════════
    User-content editor. `.Preview` (controls.css) supplies the framed
    panel + header + ViewTabs primitive; `.Playground` adds the two swap
    panes. The code pane is a real <textarea>, terminal-dark to mirror
