@@ -92,3 +92,21 @@ test('station 伍・工法: the container-scope demo really re-skins the 著重�
   expect(await symOf(0)).toBe('circle')
   expect(await symOf(1)).toBe('sesame')
 })
+
+test('station 伍・工法: the four layer chips carry build-computed gzip sizes', async ({ page }) => {
+  await page.goto('/')
+
+  // Each of the four cascade-layer chips (han-semantics/-lines/-prose/-fonts)
+  // rides a <small> with its gzipped weight, baked by vite's
+  // computeModuleLedger — proving the per-module dist files were found and
+  // measured (a missing file would render '—', not a 'N.Nk' figure).
+  const sizes = page.locator('#station-craft .LayerMap li small')
+  await expect(sizes).toHaveCount(4)
+
+  const texts = await sizes.allInnerTexts()
+  for (const text of texts) {
+    const t = text.trim()
+    expect(t).not.toBe('—')
+    expect(t).toMatch(/^\d+(\.\d+)?k$/)
+  }
+})

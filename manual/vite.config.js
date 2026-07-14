@@ -36,56 +36,48 @@ async function loadHomeData() {
 }
 
 /**
- * Homepage stats — baked at build time so the manifesto's `<dl class=
- * "Stats">` tiles reflect reality instead of typeset placeholders.
+ * Per-module ledger — baked at build time so the 工法站 layer map shows the
+ * real gzipped weight of each han.css module beside its cascade-layer chip,
+ * plus a footing line (four-module total ＋ runtime-dep count).
  *
- *   - scripts locale count the homepage itself ships (`HOME_LOCALE_SLUGS`,
- *             currently 5: hant/hans/en/ja/ko) — overwritten with the
- *             live count in `renderHomepage()` so it can never drift.
- *   - size    combined gzipped size of `dist/han.min.css` +
- *             `dist/han.min.js` in kb, one decimal — the honest
- *             "css+js" figure for the stats row (P0 baseline).
- *   - deps    count of runtime deps in root package.json
+ *   - sizeSemantics / sizeLines / sizeProse / sizeFonts
+ *             gzipped size of each per-module `dist/han.<mod>.min.css`, kb
+ *             with one decimal formatted like '2.3k'; a missing file → '—'.
+ *   - sizeTotal  sum of the four, one decimal + 'k'.
+ *   - depsCount  count of runtime deps in root package.json.
  *
- * (HP-4: dropped the GitHub-stars stat — the new homepage's manifesto
- * only lists honest scripts/size/deps figures, per the plan's P0
- * baseline; `fetchStars()`/`gh api` wiring removed with it.)
+ * The four module keys map 1:1 to the LayerMap's four chips (han-semantics
+ * / -lines / -prose / -fonts). Cached like the old hero stats were, and
+ * spread into the same per-locale `ctx` that feeds the station partials.
  */
-let _heroStatsCache = null
-async function computeHeroStats() {
-  if (_heroStatsCache) return _heroStatsCache
-  const [sizeKb, deps] = await Promise.all([
-    gzippedSizeKbCombined([
-      path.join(HAN_DIST, 'han.min.css'),
-      path.join(HAN_DIST, 'han.min.js'),
-    ]),
+let _moduleLedgerCache = null
+async function computeModuleLedger() {
+  if (_moduleLedgerCache) return _moduleLedgerCache
+  const modules = {
+    sizeSemantics: 'han.semantics.min.css',
+    sizeLines:     'han.lines.min.css',
+    sizeProse:     'han.prose.min.css',
+    sizeFonts:     'han.fonts.min.css',
+  }
+  const keys = Object.keys(modules)
+  const [sizes, deps] = await Promise.all([
+    Promise.all(keys.map(k => gzippedSizeKb(path.join(HAN_DIST, modules[k])))),
     countRuntimeDeps(),
   ])
   const fmtSize = kb => kb == null ? '—' : `${kb}k`
-  _heroStatsCache = {
-    statScriptsValue: '5',
-    statSizeValue:    fmtSize(sizeKb),
-    statDepsValue:    String(deps),
+  const total = sizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
+  _moduleLedgerCache = {
+    ...Object.fromEntries(keys.map((k, i) => [k, fmtSize(sizes[i])])),
+    sizeTotal: `${total.toFixed(1)}k`,
+    depsCount: String(deps),
   }
-  return _heroStatsCache
+  return _moduleLedgerCache
 }
 
 async function gzippedSizeKb(file) {
   if (!existsSync(file)) return null
   const buf = await fs.readFile(file)
   return +(gzipSync(buf).length / 1024).toFixed(1)
-}
-
-async function gzippedSizeKbCombined(files) {
-  let total = 0
-  let any = false
-  for (const file of files) {
-    if (!existsSync(file)) continue
-    any = true
-    const buf = await fs.readFile(file)
-    total += gzipSync(buf).length
-  }
-  return any ? +(total / 1024).toFixed(1) : null
 }
 
 async function countRuntimeDeps() {
@@ -375,7 +367,7 @@ async function renderHomepage() {
       [name, await fs.readFile(path.join(HOME_DIR, `${name}.html`), 'utf-8')],
     )),
   )
-  const stats = await computeHeroStats()
+  const ledger = await computeModuleLedger()
 
   for (const locale of HOME_LOCALE_SLUGS) {
     const t = HOME_I18N[locale] ?? HOME_I18N[HOME_DEFAULT_LOCALE]
@@ -390,12 +382,7 @@ async function renderHomepage() {
 
     const ctx = {
       ...t,
-      ...stats,
-      // Overwrite the cached scripts stat with the live locale count —
-      // this is the site's own honest "支援語種" number (P0 baseline),
-      // not the CJK-script-family reading `computeHeroStats()` used to
-      // hardcode.
-      statScriptsValue: String(HOME_LOCALE_SLUGS.length),
+      ...ledger,
       htmlLang: HOME_HTML_LANG[locale] ?? locale,
       locale,
       homeUrl,

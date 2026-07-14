@@ -39,35 +39,6 @@
     <button type="button" aria-label="copy">⎘</button>
   </span>
 
-  <dl class="Stats">
-    <div>
-      <dt>{{ statScriptsValue }}</dt>
-      <dd>{{ mfStatLocales }}</dd>
-    </div>
-    <div>
-      <dt>{{ statSizeValue }}</dt>
-      <dd>{{ mfStatSize }}</dd>
-    </div>
-    <div>
-      <dt>{{ statDepsValue }}</dt>
-      <dd>{{ mfStatDeps }}</dd>
-    </div>
-  </dl>
-
-  <!-- 字階尺 — the type ramp made visible. Eight 漢 set at the actual
-       home.css ramp tokens, each with its token name below. The glyphs are
-       decorative (<b>, aria-hidden); the mono labels are the real text. -->
-  <figure class="ScaleRun">
-    <span data-fs="display"><b aria-hidden="true">漢</b><small>--fs-display</small></span>
-    <span data-fs="heading"><b aria-hidden="true">漢</b><small>--fs-heading</small></span>
-    <span data-fs="lede"><b aria-hidden="true">漢</b><small>--fs-lede</small></span>
-    <span data-fs="body"><b aria-hidden="true">漢</b><small>--fs-body</small></span>
-    <span data-fs="small"><b aria-hidden="true">漢</b><small>--fs-small</small></span>
-    <span data-fs="compact"><b aria-hidden="true">漢</b><small>--fs-compact</small></span>
-    <span data-fs="fine"><b aria-hidden="true">漢</b><small>--fs-fine</small></span>
-    <span data-fs="micro"><b aria-hidden="true">漢</b><small>--fs-micro</small></span>
-  </figure>
-
   <!-- Vertical lede at the hero's inline-end — a serif column, shown only
        ≥68rem (hidden below, where it would collide with the copy measure). -->
   <p class="VerticalLede">{{ mfVLede }}</p>

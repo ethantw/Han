@@ -34,15 +34,24 @@
   </figure>
 
   <!-- Layer map — the four cascade layers, one mono chip each, in source
-       order; they ARE the rail's four module switches (arLayerNote). -->
+       order; they ARE the rail's four module switches (arLayerNote). Each
+       chip rides a quiet <small> with its build-computed gzip weight
+       (sizeSemantics… from vite's computeModuleLedger). The figcaption's
+       second line is the ledger footing — four-module total ＋ dep count —
+       composed from adjacent word/number tokens IN THE MARKUP (single-pass
+       substitution, so no token value may itself hold a mustache
+       placeholder). -->
   <figure class="LayerMap">
     <ul>
-      <li>han-semantics</li>
-      <li>han-lines</li>
-      <li>han-prose</li>
-      <li>han-fonts</li>
+      <li>han-semantics<small>{{ sizeSemantics }}</small></li>
+      <li>han-lines<small>{{ sizeLines }}</small></li>
+      <li>han-prose<small>{{ sizeProse }}</small></li>
+      <li>han-fonts<small>{{ sizeFonts }}</small></li>
     </ul>
-    <figcaption>{{ arLayerNote }}</figcaption>
+    <figcaption>
+      {{ arLayerNote }}
+      <small>{{ arLedgerTotal }}{{ sizeTotal }}（{{ arLedgerGzip }}）・{{ arLedgerDeps }}{{ depsCount }}</small>
+    </figcaption>
   </figure>
 
   <!-- Container demo — the SAME sample twice; the second cell's WRAPPER

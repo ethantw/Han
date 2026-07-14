@@ -484,43 +484,6 @@ main.han[data-writing="vertical"] {
   }
 }
 
-/* ─── Stats (the three numeric callouts under the Manifesto lede) ── */
-
-.Stats {
-  & {
-    display: flex;
-    align-items: center;
-    gap: 1.75rem;
-    flex-wrap: wrap;
-    margin: 0;
-    padding-block-start: 1.5rem;
-    border-block-start: 1px solid var(--palette-rule);
-  }
-
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-  }
-
-  dt {
-    margin: 0;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-heading);
-    font-weight: 600;
-    color: var(--palette-text);
-  }
-
-  dd {
-    margin: 0;
-    font-family: var(--han-font-default);
-    font-size: var(--fs-fine);
-    letter-spacing: 0.1em;
-    color: var(--palette-supplement-text);
-  }
-}
-
-
 /* ═══ Station II・Typography — the three-face specimen ══════════════ */
 
 .Illust[data-variant="faces"] {
@@ -925,21 +888,43 @@ main.han[data-writing="vertical"] {
   }
 
   li {
-    padding: 0.375rem 0.75rem;
-    font-family: var(--font-mono);
-    font-size: var(--fs-fine);
-    color: var(--palette-accent);
-    background: var(--palette-panel);
-    border: 1px solid var(--palette-rule);
-    border-radius: 999px;
+    & {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-accent);
+      background: var(--palette-panel);
+      border: 1px solid var(--palette-rule);
+      border-radius: 999px;
+    }
+
+    /* the module's build-computed gzip weight, riding the chip — quiet and
+       supplement-coloured, never a billboard (it supplements the layer name). */
+    small {
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text);
+    }
   }
 
   figcaption {
-    max-inline-size: 34em;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
-    line-height: 1.75;
-    color: var(--palette-supplement-text);
+    & {
+      max-inline-size: 34em;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-small);
+      line-height: 1.75;
+      color: var(--palette-supplement-text);
+    }
+
+    /* the ledger footing — a second, quieter line under the layer note */
+    small {
+      display: block;
+      margin-block-start: 0.5rem;
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+    }
   }
 }
 
