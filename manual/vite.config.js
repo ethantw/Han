@@ -119,7 +119,7 @@ const HOME_LAYOUT = path.resolve(here, '_home.html')
 const HOME_DATA = path.resolve(HOME_DIR, '_data.js')
 const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
-  'station-playground', 'station-snippet', 'closing',
+  'station-prose', 'station-playground', 'station-snippet', 'closing',
 ]
 // The rail is chrome, not a station — it sits OUTSIDE <main class="han">
 // (mounted into `<aside data-rail-mount>`), so it stays out of

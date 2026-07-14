@@ -21,11 +21,11 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 ## 現狀盤點（動筆前的事實基礎）
 
-**頁面結構**（`manual/_home.html` ＋ `manual/home/*.html` 七個 partial）：
+**頁面結構**（`manual/_home.html` ＋ `manual/home/*.html` 八個 partial）：
 
 1. Topbar — Brand（漢.css 字標）、文檔/GitHub、語言切換、主題切換、版本章
 2. `<han-rail>` — 左欄配置面板（web component，shadow DOM）：度量 slider
-   （字級/行距/字重——偏差會寫進伍站生成碼的 `body {}` 規則）、
+   （字級/行距/字重——偏差會寫進陸站生成碼的 `body {}` 規則）、
    其下一塊**非收合的「模組」開關區**（語意/長文/行/字體四個開關＝import
    級模組閘門，撥動任一個即自動開合並灰顯其對應 details）、語意樣式標準化/
    段落間距調整/行的調整/字體四群組（各組原「啟用」列已移除）、
@@ -41,10 +41,12 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
    三格 Stats（支援語種/體積/依賴）
 4. 壹・語意 — 著重號、書名號、專名號、`<abbr>`、日文引文的活體示範文案
 5. 貳・字體排印 ＋ 參・行的調整 — 同上，範文即示範
-6. 肆・試玩 — 用戶自己貼 Markdown/HTML 的編輯器（預覽/原始碼分頁）
-7. 伍・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板；
+6. 肆・段落 — prose 模組的活體樣本：站文自己排在 `<article>` 裡（兩端
+   對齊、2em 縮排尺、連續標題收攏都作用在這段文字上，撥模組開關即時回流）
+7. 伍・試玩 — 用戶自己貼 Markdown/HTML 的編輯器（預覽/原始碼分頁）
+8. 陸・引用碼 — 隨配置即時生成的安裝代碼（npm/CDN 分頁、語法高亮終端面板；
    模組開關增減 import 行、度量偏差出 `body {}` 規則）
-8. Closing — 一行安裝、姊妹專案連結（ziano/diantenjeom）、版權腳注
+9. Closing — 一行安裝、姊妹專案連結（ziano/diantenjeom）、版權腳注
 
 **視覺系統（已定案，不重議）**：
 
@@ -60,7 +62,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 
 具體症狀，請逐一回應：
 
-1. **節奏單調**——七個區段全是「窄欄 hgroup ＋段落」，滾動時沒有大小、密度、
+1. **節奏單調**——八個區段全是「窄欄 hgroup ＋段落」，滾動時沒有大小、密度、
    明暗的變化；髮絲線是唯一的分節手段。
 2. **寬螢幕大量留白**——版心 38em 的正文欄在 1440px 下右側整片空白，沒有
    次欄、旁註、圖示等利用。

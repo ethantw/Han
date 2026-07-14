@@ -91,15 +91,19 @@ export const HOME_I18N = {
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
+    prEyebrow: '肆・段落', prH2: '疏密有致的段落調配',
+    prP1: '長文的規矩，先是兩端對齊——漢字的段落是一塊完整的版，不留毛邊。標題連著標題時，中間的空白收攏歸零，眉題與題目貼成一組，不讓版面漏風。',
+    prP2: '縮排只用一把尺——引文、圖表、清單，一律退兩字（2em），層次靠同一個刻度分明。這套規矩預設只在<code>article</code>內生效，作用範圍可在面板指定；本站這幾段自己就排在一個<code>article</code>裡，撥一下對應的模組開關，疏密立見。',
+    prQuote: '引文退兩字——這一段自己，就是那把尺。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
+    pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。\n\n<cite>本草綱目</cite><cite>辭海</cite>',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
+    snEyebrow: '陸・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -178,15 +182,19 @@ export const HOME_I18N = {
     slP1: '「世界，你好。」「你好，世界！」相邻标点不再挤成一团——句尾若逢行末，标点悬而不入，版面仍齐。',
     slP2: '汉字与English、与2011一类数字相遇，中西之间留隙0.125em——不多不少，恰是CSS text-autospace的量尺，无需手动空格。',
     slP3: '东京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行标记，字旁直书；日文原写作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，两制并陈。',
+    prEyebrow: '肆・段落', prH2: '疏密有致的段落调配',
+    prP1: '长文的规矩，先是两端对齐——汉字的段落是一块完整的版，不留毛边。标题连着标题时，中间的空白收拢归零，眉题与题目贴成一组，不让版面漏风。',
+    prP2: '缩进只用一把尺——引文、图表、列表，一律退两字（2em），层次靠同一个刻度分明。这套规矩默认只在<code>article</code>内生效，作用范围可在面板指定；本站这几段自己就排在一个<code>article</code>里，拨一下对应的模块开关，疏密立见。',
+    prQuote: '引文退两字——这一段自己，就是那把尺。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・随手试', pgStationH2: '游乐场',
+    pgStationEyebrow: '伍・随手试', pgStationH2: '游乐场',
     pgStationLede: '——贴上Markdown或无伤大雅的HTML，切到预览即见汉字排版。',
     pgStationViewsLegend: '编辑器页签', pgStationTabPreview: '预览', pgStationTabCode: '源码',
     pgStationCodeLabel: '源码编辑区', pgStationPreviewLabel: '排版预览',
     pgStationSample: '## 换你的字上场\n\n这是一段可自由编辑的范文。汉字与Latin、与2024并肩时，字距自动匀称，不必手动空格。文中要紧的词用<em>着重号</em>圈点。\n\n> 「引文自有其讲究——标点悬挂，行末仍齐。」\n\n注音直书亦不在话下：<ruby class="zhuyin">汉<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用码', snH2: '生成引用码', snLede: '——这里的代码按照面板当前的配置实时生成，设置改了，代码也跟着变。选npm或CDN其中一种，复制粘贴就能直接用。',
+    snEyebrow: '陆・引用码', snH2: '生成引用码', snLede: '——这里的代码按照面板当前的配置实时生成，设置改了，代码也跟着变。选npm或CDN其中一种，复制粘贴就能直接用。',
     snFinishLine: '选好了？两种引用方式，贴进<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支持现代常青浏览器。',
 
@@ -265,15 +273,19 @@ export const HOME_I18N = {
     slP1: '"世界，你好。""你好，世界！" Adjacent punctuation no longer crowds together — when a full stop lands at line end, it hangs past the margin instead of pushing in.',
     slP2: 'Where Hanzi meets English, or digits like 2011, a 0.125em gap opens between scripts — exactly what CSS text-autospace measures out, no manual space required.',
     slP3: 'Tokyo <ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby> Skytree — one ruby per character, set beside its base; the Japanese original writes it as <span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>, kana ruby instead of zhuyin — two conventions, side by side.',
+    prEyebrow: 'IV・Prose', prH2: 'Paragraphs, well measured',
+    prP1: 'Long-form text starts with justification — a Han paragraph sets as a solid block, no ragged edge. And when headings stack, the gap between them closes to zero, so an eyebrow and its title read as one piece.',
+    prP2: 'One ruler for every indent — blockquotes, figures and lists all step in by two characters (2em), so hierarchy comes from a single measure. It applies inside <code>article</code> by default (the scope is yours to change in the panel); these very paragraphs sit in one, so flip the prose module switch and watch them reflow.',
+    prQuote: 'A blockquote steps in two characters — this paragraph is its own ruler.',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: 'IV・Playground', pgStationH2: 'Bring your own words',
+    pgStationEyebrow: 'V・Playground', pgStationH2: 'Bring your own words',
     pgStationLede: '— paste Markdown or plain HTML and watch han.css typeset it.',
     pgStationViewsLegend: 'Editor view', pgStationTabPreview: 'Preview', pgStationTabCode: 'Code',
     pgStationCodeLabel: 'Source editor', pgStationPreviewLabel: 'Rendered preview',
     pgStationSample: '## Bring your own words\n\nEdit this freely — Han typography just works. The spacing between 漢字 and Latin is automatic, and emphasis dots mark <em lang="zh-Hant">要緊處</em>.\n\n> A blockquote keeps its manners — hanging punctuation, tidy line ends.\n\nRuby too: <ruby class="zhuyin" lang="zh-Hant">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin" lang="zh-Hant">字<rt>ㄗˋ</rt></ruby>.',
 
-    snEyebrow: 'V・Snippet', snH2: 'Generate the snippet', snLede: '— generated live from your panel settings: flip a switch and the code updates. Pick npm or CDN, copy, paste, done.',
+    snEyebrow: 'VI・Snippet', snH2: 'Generate the snippet', snLede: '— generated live from your panel settings: flip a switch and the code updates. Pick npm or CDN, copy, paste, done.',
     snFinishLine: 'Made your picks? Two ways to bring it in — paste into <code>&lt;head&gt;</code> or your bundler entry and you\'re done.',
     snBrowserSupport: 'Supports modern evergreen browsers.',
 
@@ -357,15 +369,19 @@ export const HOME_I18N = {
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
+    prEyebrow: '肆・段落', prH2: '疏密有致的段落調配',
+    prP1: '長文的規矩，先是兩端對齊——漢字的段落是一塊完整的版，不留毛邊。標題連著標題時，中間的空白收攏歸零，眉題與題目貼成一組，不讓版面漏風。',
+    prP2: '縮排只用一把尺——引文、圖表、清單，一律退兩字（2em），層次靠同一個刻度分明。這套規矩預設只在<code>article</code>內生效，作用範圍可在面板指定；本站這幾段自己就排在一個<code>article</code>裡，撥一下對應的模組開關，疏密立見。',
+    prQuote: '引文退兩字——這一段自己，就是那把尺。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
+    pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
+    snEyebrow: '陸・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
@@ -452,15 +468,19 @@ export const HOME_I18N = {
     slP1: '「世界，你好。」「你好，世界！」相鄰標點不再擠成一團——句尾若逢行末，標點懸而不入，版面仍齊。',
     slP2: '漢字與English、與2011一類數字相遇，中西之間留隙0.125em——不多不少，恰是CSS text-autospace的量尺，無需手動空格。',
     slP3: '東京<ruby class="zhuyin">晴<rt>ㄑㄧㄥˊ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">塔<rt>ㄊㄚˇ</rt></ruby>，一行標記，字旁直書；日文原寫作<span lang="ja"><ruby>東京<rt>とうきょう</rt></ruby>スカイツリー</span>，假名注音，兩制並陳。',
+    prEyebrow: '肆・段落', prH2: '疏密有致的段落調配',
+    prP1: '長文的規矩，先是兩端對齊——漢字的段落是一塊完整的版，不留毛邊。標題連著標題時，中間的空白收攏歸零，眉題與題目貼成一組，不讓版面漏風。',
+    prP2: '縮排只用一把尺——引文、圖表、清單，一律退兩字（2em），層次靠同一個刻度分明。這套規矩預設只在<code>article</code>內生效，作用範圍可在面板指定；本站這幾段自己就排在一個<code>article</code>裡，撥一下對應的模組開關，疏密立見。',
+    prQuote: '引文退兩字——這一段自己，就是那把尺。',
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
-    pgStationEyebrow: '肆・試玩', pgStationH2: '遊樂場',
+    pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
     pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
 
-    snEyebrow: '伍・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
+    snEyebrow: '陸・引用碼', snH2: '生成引用碼', snLede: '——這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。選npm或CDN其中一種，複製貼上就能直接用。',
     snFinishLine: '選好了？兩種引用方式，貼進<code>&lt;head&gt;</code>或打包入口即完成。',
     snBrowserSupport: '支援現代常青瀏覽器。',
 
