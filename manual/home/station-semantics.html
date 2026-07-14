@@ -1,15 +1,37 @@
 <!-- Station I・Semantics — the explanatory copy is itself the specimen. -->
-<section id="station-semantics" class="Station" data-station="semantics">
+<section id="station-semantics" class="Station" data-station="semantics" data-ground="a" data-wm="語">
   <hgroup>
     <p>{{ ssEyebrow }}</p>
     <h2>{{ ssH2 }}</h2>
   </hgroup>
 
-  <div class="Prose">
-    <p>{{ ssP1 }}</p>
-    <p>{{ ssP2 }}</p>
-    <p>{{ ssP3 }}</p>
-    <p>{{ ssJaLead }}</p>
-    <blockquote lang="ja">{{ ssJaQuote }}</blockquote>
+  <p class="Lede">{{ ssLede }}</p>
+
+  <!-- display specimen — the token carries REAL <em>/<cite>/<u> markup, so
+       the emphasis dots, cite marks and proper-noun underline render live.
+       `--han-cite-title-marks: bracket` is set inline ON this block so the
+       《》 around <cite> actually show (style queries read an ancestor —
+       this element is the cite's ancestor); mirrors ssP2's explanation, and
+       an inline var keeps the preview honest — no fake glyphs. -->
+  <p class="Specimen" lang="zh-Hant" style="--han-cite-title-marks: bracket">{{ ssSpecimen }}</p>
+
+  <div class="Annotated">
+    <div class="Prose">
+      <p>{{ ssP1 }}</p>
+      <p>{{ ssP2 }}</p>
+      <p>{{ ssP3 }}</p>
+      <p>{{ ssJaLead }}</p>
+      <blockquote lang="ja">{{ ssJaQuote }}</blockquote>
+    </div>
+
+    <!-- marginalia — the variable names driving this station (code, mono)
+         plus one quiet note. Hidden below 68rem: it only names the vars,
+         so nothing is lost on narrow screens. -->
+    <aside class="Marginalia">
+      <code>--han-em-symbol</code>
+      <code>--han-em-dot-position</code>
+      <code>--han-cite-title-marks</code>
+      <p>{{ ssNote }}</p>
+    </aside>
   </div>
 </section>

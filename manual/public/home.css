@@ -83,6 +83,23 @@
   --palette-ink-grey: light-dark(var(--color-graphite), var(--color-silver));
   --palette-rule:     light-dark(var(--color-cloud), var(--color-charcoal));
 
+  /* ── station grounds & watermark ──────────────────────────────────
+   * The station-plate system (stations.css) alternates two section
+   * grounds and floats a giant watermark glyph behind the copy. Both
+   * flip with the theme via light-dark() over EXISTING primitives — no
+   * new hues. `-a` is the warm-paper (raised-ink in dark) base, `-b` a
+   * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
+   * Baseline 2023) that lifts to the paper side on dark so it still
+   * reads. Consumed only by `.Station` / `.Closing`. */
+  --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
+  --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));
+  --palette-wm:
+    light-dark(
+      color-mix(in srgb, var(--color-ink) 4%, transparent),
+      color-mix(in srgb, var(--color-paper-deep) 6%, transparent)
+    )
+  ;
+
   /* ── type ramp ────────────────────────────────────────────────────
    * ~5 content sizes (display / heading / lede / body / small), reused
    * everywhere; the compact rail chrome adds two denser steps
@@ -503,7 +520,15 @@ body:has(han-rail[form="side"]) {
     & {
       --rail-col: 280px;
       display: grid;
-      grid-template-columns: var(--rail-col) 1fr;
+      /* `minmax(0, 1fr)` not a bare `1fr`: a `1fr` track floors at the
+         content column's min-content, and the hero's clipped `.Outline`
+         glyph (absolute, `overflow: clip` on `.Manifesto`) still reports
+         into that intrinsic size in Chromium — inflating the track ~22px
+         and forcing a horizontal page scroll at 64–68rem. `minmax(0, …)`
+         drops the min-content floor so the track tracks the viewport;
+         `min-inline-size: 0` on `main.han` (below) is the same guard on
+         the grid ITEM. (grid minmax — Baseline 2020.) */
+      grid-template-columns: var(--rail-col) minmax(0, 1fr);
       /* Explicit rows are load-bearing: `-1` in grid-row resolves against
          the EXPLICIT grid only, so without this the rail's `1 / -1`
          collapses to row 1 and its 100dvh inflates that row (main
@@ -517,7 +542,11 @@ body:has(han-rail[form="side"]) {
 
     > .Topbar  { grid-column: 2; }
     > han-rail { grid-column: 1; grid-row: 1 / -1; }
-    > main.han { grid-column: 2; }
+    /* `min-inline-size: 0` lets the content column shrink past its own
+       min-content — the grid-item twin of the `minmax(0, 1fr)` track
+       above; without it a wide/clipped descendant can still blow the
+       column out. */
+    > main.han { grid-column: 2; min-inline-size: 0; }
 
     /* checked = collapsed — the checkbox is the single source of truth
        (dark-mode recipe); pre-paint script restores it, JS only persists. */
@@ -678,5 +707,215 @@ han-rail {
       outline: 2px solid var(--palette-accent);
       outline-offset: 1px;
     }
+  }
+}
+
+/* ─── Hero (Manifesto) — homepage-v2 redesign ────────────────────────
+ * Contract: docs/plans/homepage-v2-implementation.md § Hero.
+ *
+ * The Manifesto's BASE typography (h1 / .Lede / .Dogfood / .InstallChip /
+ * .Stats / .DemoLangSwitch) lives in `home/stations.css`. This region
+ * layers the hero-only redesign on top — the outline glyph, the relocated
+ * chips row, the 字階尺 scale-run, the vertical lede, the hairline-framed
+ * stats, and the one-shot entrance stagger. It lives in home.css (not
+ * stations.css) because the station-interior work owns stations.css; the
+ * higher-specificity `.Manifesto`-scoped selectors below win over the base
+ * by both specificity and cascade order (home.css follows the @imports).
+ *
+ * The Manifesto sits inside `main.han`, where stations.css re-declares the
+ * `--fs-*` ramp in `em` (rail-slider-scalable) — so the glyphs and copy
+ * here track the live specimen size, by design. */
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.Manifesto {
+  & {
+    /* Own stacking context so the z-index:-1 outline lands under the copy
+       but above the page ground; `overflow: clip` (Baseline 2023) crops
+       the oversized glyph so it never forces horizontal scroll. */
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+  }
+
+  /* Headline up one visual notch — a hero-LOCAL clamp only. The --fs-display
+     ramp token is untouched; the contract (§ Hero) permits this local
+     override, mirroring the direction doc's local clamp. The upper bound is
+     pulled to 4em (from 4.5em) so the first logical line 「…活字美學，」
+     never spills its trailing 「學，」 onto a line of its own at 1280–1920,
+     and `text-wrap: balance` (Baseline 2024) evens the wrap so no single
+     character is orphaned. */
+  h1 {
+    font-size: clamp(2.25em, 8vw, 4em);
+    text-wrap: balance;
+  }
+
+  .Outline {
+    position: absolute;
+    inset-block-start: -0.15em;
+    inset-inline-end: -0.05em;
+    z-index: -1;
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(14rem, 40vw, 30rem);
+    line-height: 0.8;
+    color: transparent;
+    /* Hairline stroke, token-derived so it stays faint yet legible in both
+       themes (color-mix — Baseline 2023). No fill, no animation loop. */
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--palette-text) 12%, transparent);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .DemoLangSwitch {
+    /* Relocated into the hero: drop the base rule's full-width top-right
+       framing and sit as a left-aligned chips row above the headline.
+       Hooks/labels/pill styling from the base rule are unchanged. */
+    max-inline-size: none;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .Stats {
+    /* Hairline-framed three columns — overrides the base flex row. The
+       numbers keep the --fs-heading serif from the base .Stats rule. */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    max-inline-size: 34rem;
+    padding: 0;
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-2);
+
+    > div {
+      gap: 0.25rem;
+      padding: 1.25rem 1.5rem;
+      border-inline-start: 1px solid var(--palette-rule);
+
+      &:first-child { border-inline-start: 0; }
+    }
+  }
+
+  .ScaleRun {
+    & {
+      display: flex;
+      align-items: end;
+      flex-wrap: wrap;
+      gap: 1.25rem 1.5rem;
+      margin: 3rem 0 0;
+      padding-block-start: 2rem;
+      border-block-start: 1px solid var(--palette-grid);
+    }
+
+    span[data-fs] {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Each 漢 set at its own ramp token (em, so it tracks the live base). */
+    b {
+      font-family: var(--han-font-alternative);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--palette-text);
+    }
+    span[data-fs="display"] b { font-size: var(--fs-display); }
+    span[data-fs="heading"] b { font-size: var(--fs-heading); }
+    span[data-fs="lede"]    b { font-size: var(--fs-lede); }
+    span[data-fs="body"]    b { font-size: var(--fs-body); }
+    span[data-fs="small"]   b { font-size: var(--fs-small); }
+    span[data-fs="compact"] b { font-size: var(--fs-compact); }
+    span[data-fs="fine"]    b { font-size: var(--fs-fine); }
+    span[data-fs="micro"]   b { font-size: var(--fs-micro); }
+
+    small {
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text-2q);
+    }
+
+    /* Narrow: drop the two densest steps rather than scroll the page. */
+    @media (max-width: 40rem) {
+      span[data-fs="fine"],
+      span[data-fs="micro"] { display: none; }
+    }
+  }
+
+  .VerticalLede {
+    /* Shown only ≥68rem — below that it would collide with the copy
+       measure; the hero degrades to the horizontal lede alone. */
+    & { display: none; }
+
+    @media (min-width: 68rem) {
+      display: block;
+      position: absolute;
+      /* PHYSICAL top/right, deliberately (not logical insets): this box is
+         itself `writing-mode: vertical-rl`, and per spec an abs-positioned
+         element resolves its LOGICAL insets in its OWN writing mode — so
+         `inset-block-start` rotates to the right edge and `inset-inline-end`
+         to the bottom, pinning the column to the hero's BOTTOM-right (the
+         v1 bug: it sat low beside the stats/scale-run and crept toward the
+         fixed pill). Physical top/right pin it to the hero's block-start,
+         riding the inline-end edge beside the headline, well clear of the
+         pill below even on short (≥900px) viewports. */
+      top: 7rem;
+      right: 1.5rem;
+      margin: 0;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-small);
+      line-height: 1.9;
+      color: var(--palette-supplement-text);
+      /* The column reads top→bottom down the hero's inline-end edge. */
+      writing-mode: vertical-rl;
+    }
+  }
+
+  /* Reserve the inline-end lane for the vertical lede so the copy never
+     runs under it (≥68rem only, matching where the lede shows). */
+  @media (min-width: 68rem) {
+    & { padding-inline-end: 6rem; }
+  }
+
+  /* One-shot entrance — each block rises + fades in on load; the settled
+     state is the base (no transform), and this whole block is gated on
+     no-preference, so reduced-motion shows everything immediately. `both`
+     holds the pre-start (opacity 0) state through the stagger delay — no
+     flash of the final frame. NO looping animation (contract § Motion).
+     transform-origin note: translateY is a physical axis (transforms have
+     no logical form); the shift is tiny and cosmetic. */
+  @media (prefers-reduced-motion: no-preference) {
+    .DemoLangSwitch,
+    h1,
+    .Lede,
+    .Dogfood,
+    .InstallChip,
+    .Stats {
+      animation: hero-rise 0.6s ease-out both;
+    }
+    h1           { animation-delay: 0.08s; }
+    .Lede        { animation-delay: 0.16s; }
+    .Dogfood     { animation-delay: 0.24s; }
+    .InstallChip { animation-delay: 0.32s; }
+    .Stats       { animation-delay: 0.4s; }
+
+    /* The ruler assembles last — its steps rise in sequence (delays capped
+       at 0.6s per the contract's ≤0.6s budget). */
+    .ScaleRun span[data-fs] {
+      animation: hero-rise 0.5s ease-out both;
+    }
+    .ScaleRun span[data-fs]:nth-child(1) { animation-delay: 0.4s; }
+    .ScaleRun span[data-fs]:nth-child(2) { animation-delay: 0.43s; }
+    .ScaleRun span[data-fs]:nth-child(3) { animation-delay: 0.46s; }
+    .ScaleRun span[data-fs]:nth-child(4) { animation-delay: 0.49s; }
+    .ScaleRun span[data-fs]:nth-child(5) { animation-delay: 0.52s; }
+    .ScaleRun span[data-fs]:nth-child(6) { animation-delay: 0.55s; }
+    .ScaleRun span[data-fs]:nth-child(7) { animation-delay: 0.58s; }
+    .ScaleRun span[data-fs]:nth-child(8) { animation-delay: 0.6s; }
   }
 }

@@ -109,13 +109,10 @@
 </fieldset>
 
 <main class="han" lang="{{ htmlLang }}">
-<fieldset class="DemoLangSwitch" data-demo-lang>
-  <legend class="sr-only">{{ dlLegend }}</legend>
-  <label><input type="radio" name="demo-lang" value="zh-Hant" checked>{{ dlHant }}</label>
-  <label><input type="radio" name="demo-lang" value="zh-Hans">{{ dlHans }}</label>
-  <label><input type="radio" name="demo-lang" value="ja">{{ dlJa }}</label>
-  <label><input type="radio" name="demo-lang" value="ko">{{ dlKo }}</label>
-</fieldset>
+<!-- The DemoLangSwitch (specimen-language chips) now lives at the top of
+     the hero (home/manifesto.html) as the chips row — same control markup
+     and hooks (demo-lang.js keys on [data-demo-lang]; e2e on the input
+     values), just relocated per the homepage-v2 hero contract. -->
 {{ manifestoSection }}
 {{ stationSemanticsSection }}
 {{ stationTypeSection }}

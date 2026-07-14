@@ -1,5 +1,14 @@
 <!-- Station IV・Snippet — the reference-code generator (data-out-*/ViewTabs). -->
-<section id="station-snippet" class="Station Snippet" data-station="snippet">
+<section id="station-snippet" class="Station Snippet" data-station="snippet" data-wm="碼">
+  <!-- transition band — a mint strip easing from the bright page into the
+       CONSTANT-dark station. Decorative (it echoes the eyebrow + a bridge
+       line), so role=presentation / aria-hidden keeps it out of the a11y
+       tree; the eyebrow is set vertically in CSS. -->
+  <div class="Bridge" role="presentation" aria-hidden="true">
+    <b data-part="lead">{{ snBridge }}</b>
+    <span data-part="eyebrow">{{ snEyebrow }}</span>
+  </div>
+
   <hgroup>
     <p>{{ snEyebrow }}</p>
     <h2>{{ snH2 }}</h2>

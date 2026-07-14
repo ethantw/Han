@@ -70,9 +70,28 @@ export const HOME_I18N = {
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: '漢.css⸺像素間的活字美學，', mfH1b: '為螢幕上的每一個漢字',
-    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    // ─── HP v2: hero vertical lede + station ledes / specimen /
+    // comparison labels / marginalia notes / snippet bridge ───
+    mfVLede: '排版是文明的底稿——鉛字時代的講究，不該亡於像素。',
+    ssLede: '標籤名正，則樣式言順——圈點自來。',
+    ssSpecimen: '文字之<em>道在細節</em>，讀<cite>考工記</cite>可知——<u>王羲之</u>寫過的每一筆，瀏覽器都該記得。',
+    ssNote: '旁註記的是對應的變數名——寬螢幕才出現。',
+    stLede: '一字三面——黑、明、楷，各司其職。',
+    stTrayNote: '鉛字反著刻，紙上才是正的——CSS變數是這個時代的活字盤，撥一格，全頁重排。',
+    stCompareSample: '字距，行氣。',
+    stCompareMoe: 'MOE・教育部', stCompareGb: 'GB・國標', stCompareOff: '關・原字體',
+    stNote: '撥左欄「傳承字形」，三面互換。',
+    slLede: '好的段落是一塊方正的墨——標點懸出行外，字字落在格上。',
+    slHangOffLabel: '懸掛・關', slHangOnLabel: '懸掛・開（han.css）',
+    slHangOffSample: '「世界，你好！」句子走到行末，標點擠而不入，版面凹凸。',
+    slHangOnSample: '「世界，你好！」句子走到行末，標點懸出格外，段落見方。',
+    slNote: '間隙由CSS生成，文中沒有一個空格字元。',
+    prNote: '作用範圍預設article，可在面板指定。',
+    snBridge: '配置即代碼',
 
     ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
@@ -98,7 +117,7 @@ export const HOME_I18N = {
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
-    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，這一頁的講究，即刻用在你的字上。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。\n\n<cite>本草綱目</cite><cite>辭海</cite>',
@@ -161,9 +180,28 @@ export const HOME_I18N = {
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: '汉.css⸺像素间的活字美学，', mfH1b: '为屏幕上的每一个汉字',
-    mfLede: '这是一套以CSS custom properties与少量JavaScript撑起的汉字排版系统——标点悬挂、着重号、注音、跨文种混排，字距不假空格字符，间隙定量0.125em，一如铅字时代的讲究。',
+    mfLede: '以CSS变量为骨、少量JavaScript为筋——标点悬挂、着重号、注音、跨文种混排，皆有定法。中西之间不假空格字符，间隙一律0.125em：铅字时代的规矩，一条不少。',
     mfDogfood: '本页即范文——面板随手拨，全页随你而变。',
     mfStatLocales: '支持语种', mfStatSize: 'Gzip体积（css+js）', mfStatDeps: '外部依赖',
+
+    // ─── HP v2: hero vertical lede + station ledes / specimen /
+    // comparison labels / marginalia notes / snippet bridge ───
+    mfVLede: '排版是文明的底稿——铅字时代的讲究，不该亡于像素。',
+    ssLede: '标签名正，则样式言顺——圈点自来。',
+    ssSpecimen: '文字之<em>道在细节</em>，读<cite>考工记</cite>可知——<u>王羲之</u>写过的每一笔，浏览器都该记得。',
+    ssNote: '旁注记的是对应的变量名——宽屏才出现。',
+    stLede: '一字三面——黑、明、楷，各司其职。',
+    stTrayNote: '铅字反着刻，纸上才是正的——CSS变量是这个时代的活字盘，拨一格，全页重排。',
+    stCompareSample: '字距，行气。',
+    stCompareMoe: 'MOE・教育部', stCompareGb: 'GB・国标', stCompareOff: '关・原字体',
+    stNote: '拨左栏「传承字形」，三面互换。',
+    slLede: '好的段落是一块方正的墨——标点悬出行外，字字落在格上。',
+    slHangOffLabel: '悬挂・关', slHangOnLabel: '悬挂・开（han.css）',
+    slHangOffSample: '「世界，你好！」句子走到行末，标点挤而不入，版面凹凸。',
+    slHangOnSample: '「世界，你好！」句子走到行末，标点悬出格外，段落见方。',
+    slNote: '间隙由CSS生成，文中没有一个空格字符。',
+    prNote: '作用范围默认article，可在面板指定。',
+    snBridge: '配置即代码',
 
     ssEyebrow: '壹・语意', ssH2: '名正言顺的元素样式',
     ssP1: 'HTML5语意元素在汉字排版下自有其正确样式——<em>着重号</em>标记文中紧要之词，效果一如手写圈点。',
@@ -189,7 +227,7 @@ export const HOME_I18N = {
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '伍・随手试', pgStationH2: '游乐场',
-    pgStationLede: '——贴上Markdown或无伤大雅的HTML，切到预览即见汉字排版。',
+    pgStationLede: '——贴上Markdown或无伤大雅的HTML，这一页的讲究，即刻用在你的字上。',
     pgStationViewsLegend: '编辑器页签', pgStationTabPreview: '预览', pgStationTabCode: '源码',
     pgStationCodeLabel: '源码编辑区', pgStationPreviewLabel: '排版预览',
     pgStationSample: '## 换你的字上场\n\n这是一段可自由编辑的范文。汉字与Latin、与2024并肩时，字距自动匀称，不必手动空格。文中要紧的词用<em>着重号</em>圈点。\n\n> 「引文自有其讲究——标点悬挂，行末仍齐。」\n\n注音直书亦不在话下：<ruby class="zhuyin">汉<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
@@ -252,9 +290,28 @@ export const HOME_I18N = {
 
     // ─── HP-2: new homepage stations (manifesto / station-* / closing) ───
     mfH1a: 'Han.css ⸺ crafting movable type within the pixels,', mfH1b: 'for every Han character.',
-    mfLede: 'A Hanzi typography system built on CSS custom properties and a touch of JavaScript — hanging punctuation, emphasis dots, ruby, mixed-script spacing. No hand-typed spaces, a measured 0.125em gap, the rigor of hot metal.',
+    mfLede: 'A Hanzi typography system: CSS variables for bone, a little JavaScript for sinew — hanging punctuation, emphasis dots, ruby, mixed-script spacing, each with its rule. No hand-typed space between scripts, a fixed 0.125em gap — the discipline of hot metal, not a rule dropped.',
     mfDogfood: 'This page is the specimen — tweak the panel, watch the whole page respond.',
     mfStatLocales: 'locales', mfStatSize: 'gzip size (css+js)', mfStatDeps: 'dependency',
+
+    // ─── HP v2: hero vertical lede + station ledes / specimen /
+    // comparison labels / marginalia notes / snippet bridge ───
+    mfVLede: 'Typography is the first draft of a civilization — the care of the metal-type age deserves better than dying in pixels.',
+    ssLede: 'Name the tag right and the style follows — the marks come for free.',
+    ssSpecimen: 'The <em>truth is in the detail</em>, as the <cite>Kaogongji</cite> teaches — every stroke <u>Wang Xizhi</u> ever set, the browser ought to remember.',
+    ssNote: 'The margin notes the matching variable name — wide screens only.',
+    stLede: 'One character, three faces — sans, serif and cursive, each to its task.',
+    stTrayNote: 'Type is cut in reverse; only on paper does it read true — a CSS variable is the type case of this era: nudge one slug and the whole page resets.',
+    stCompareSample: '字距，行氣。',
+    stCompareMoe: 'MOE · Taiwan', stCompareGb: 'GB · Mainland', stCompareOff: 'off · raw font',
+    stNote: 'Flip the heritage-glyph switch in the left column to swap the three faces.',
+    slLede: 'A good paragraph is a solid block of ink — punctuation hangs past the line, every character on the grid.',
+    slHangOffLabel: 'hang · off', slHangOnLabel: 'hang · on (han.css)',
+    slHangOffSample: '「世界，你好！」— when the sentence hits the line end, the punctuation jams in and the margin turns ragged.',
+    slHangOnSample: '「世界，你好！」— here the punctuation hangs past the grid instead, and the block stays square.',
+    slNote: 'The gap is generated by CSS; there is not a single space character in the text.',
+    prNote: 'Scoped to article by default; set the selector in the panel.',
+    snBridge: 'Config is code',
 
     ssEyebrow: 'I・Semantics', ssH2: 'Semantics before style',
     ssP1: 'HTML5 semantic elements have their own correct typographic treatment — <em>emphasis dots</em> mark the words that matter, the way a hand-drawn circle would.',
@@ -280,7 +337,7 @@ export const HOME_I18N = {
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: 'V・Playground', pgStationH2: 'Bring your own words',
-    pgStationLede: '— paste Markdown or plain HTML and watch han.css typeset it.',
+    pgStationLede: '— paste Markdown or harmless HTML, and the craft of this page applies to your words at once.',
     pgStationViewsLegend: 'Editor view', pgStationTabPreview: 'Preview', pgStationTabCode: 'Code',
     pgStationCodeLabel: 'Source editor', pgStationPreviewLabel: 'Rendered preview',
     pgStationSample: '## Bring your own words\n\nEdit this freely — Han typography just works. The spacing between 漢字 and Latin is automatic, and emphasis dots mark <em lang="zh-Hant">要緊處</em>.\n\n> A blockquote keeps its manners — hanging punctuation, tidy line ends.\n\nRuby too: <ruby class="zhuyin" lang="zh-Hant">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin" lang="zh-Hant">字<rt>ㄗˋ</rt></ruby>.',
@@ -348,9 +405,28 @@ export const HOME_I18N = {
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ja copy is written.
     mfH1a: '漢.css⸺ピクセルの間の活字美学、', mfH1b: '画面に並ぶ漢字へ。',
-    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    // ─── HP v2: hero vertical lede + station ledes / specimen /
+    // comparison labels / marginalia notes / snippet bridge ───
+    mfVLede: '排版是文明的底稿——鉛字時代的講究，不該亡於像素。',
+    ssLede: '標籤名正，則樣式言順——圈點自來。',
+    ssSpecimen: '文字之<em>道在細節</em>，讀<cite>考工記</cite>可知——<u>王羲之</u>寫過的每一筆，瀏覽器都該記得。',
+    ssNote: '旁註記的是對應的變數名——寬螢幕才出現。',
+    stLede: '一字三面——黑、明、楷，各司其職。',
+    stTrayNote: '鉛字反著刻，紙上才是正的——CSS變數是這個時代的活字盤，撥一格，全頁重排。',
+    stCompareSample: '字距，行氣。',
+    stCompareMoe: 'MOE・教育部', stCompareGb: 'GB・國標', stCompareOff: '關・原字體',
+    stNote: '撥左欄「傳承字形」，三面互換。',
+    slLede: '好的段落是一塊方正的墨——標點懸出行外，字字落在格上。',
+    slHangOffLabel: '懸掛・關', slHangOnLabel: '懸掛・開（han.css）',
+    slHangOffSample: '「世界，你好！」句子走到行末，標點擠而不入，版面凹凸。',
+    slHangOnSample: '「世界，你好！」句子走到行末，標點懸出格外，段落見方。',
+    slNote: '間隙由CSS生成，文中沒有一個空格字元。',
+    prNote: '作用範圍預設article，可在面板指定。',
+    snBridge: '配置即代碼',
 
     ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
@@ -376,7 +452,7 @@ export const HOME_I18N = {
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
-    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，這一頁的講究，即刻用在你的字上。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',
@@ -447,9 +523,28 @@ export const HOME_I18N = {
     // falling back to the hant (Traditional Chinese) values per
     // established convention. Revisit when ko copy is written.
     mfH1a: '漢.css ⸺ <ruby>픽셀<rt>pixel</rt></ruby> 사이의 <ruby>活字<rt>활자</rt></ruby> <ruby>美學<rt>미학</rt></ruby>,', mfH1b: '<ruby>畫面<rt>화면</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby>에게.',
-    mfLede: '這是一套以CSS custom properties與少量JavaScript撐起的漢字排版系統——標點懸掛、著重號、注音、跨文種混排，字距不假空格字元，間隙定量0.125em，一如鉛字時代的講究。',
+    mfLede: '以CSS變數為骨、少量JavaScript為筋——標點懸掛、著重號、注音、跨文種混排，皆有定法。中西之間不假空格字元，間隙一律0.125em：鉛字時代的規矩，一條不少。',
     mfDogfood: '本頁即範文——面板隨手撥，全頁隨你而變。',
     mfStatLocales: '支援語種', mfStatSize: 'Gzip體積（css+js）', mfStatDeps: '外部依賴',
+
+    // ─── HP v2: hero vertical lede + station ledes / specimen /
+    // comparison labels / marginalia notes / snippet bridge ───
+    mfVLede: '排版是文明的底稿——鉛字時代的講究，不該亡於像素。',
+    ssLede: '標籤名正，則樣式言順——圈點自來。',
+    ssSpecimen: '文字之<em>道在細節</em>，讀<cite>考工記</cite>可知——<u>王羲之</u>寫過的每一筆，瀏覽器都該記得。',
+    ssNote: '旁註記的是對應的變數名——寬螢幕才出現。',
+    stLede: '一字三面——黑、明、楷，各司其職。',
+    stTrayNote: '鉛字反著刻，紙上才是正的——CSS變數是這個時代的活字盤，撥一格，全頁重排。',
+    stCompareSample: '字距，行氣。',
+    stCompareMoe: 'MOE・教育部', stCompareGb: 'GB・國標', stCompareOff: '關・原字體',
+    stNote: '撥左欄「傳承字形」，三面互換。',
+    slLede: '好的段落是一塊方正的墨——標點懸出行外，字字落在格上。',
+    slHangOffLabel: '懸掛・關', slHangOnLabel: '懸掛・開（han.css）',
+    slHangOffSample: '「世界，你好！」句子走到行末，標點擠而不入，版面凹凸。',
+    slHangOnSample: '「世界，你好！」句子走到行末，標點懸出格外，段落見方。',
+    slNote: '間隙由CSS生成，文中沒有一個空格字元。',
+    prNote: '作用範圍預設article，可在面板指定。',
+    snBridge: '配置即代碼',
 
     ssEyebrow: '壹・語意', ssH2: '名正言順的元素樣式',
     ssP1: 'HTML5語意元素在漢字排版下自有其正確樣式——<em>著重號</em>標記文中緊要之詞，效果一如手寫圈點。',
@@ -475,7 +570,7 @@ export const HOME_I18N = {
 
     // ── HP-2b: station⑤ playground (user-content editor) ──
     pgStationEyebrow: '伍・試玩', pgStationH2: '遊樂場',
-    pgStationLede: '——貼上Markdown或無傷大雅的HTML，切到預覽即見漢字排版。',
+    pgStationLede: '——貼上Markdown或無傷大雅的HTML，這一頁的講究，即刻用在你的字上。',
     pgStationViewsLegend: '編輯器分頁', pgStationTabPreview: '預覽', pgStationTabCode: '原始碼',
     pgStationCodeLabel: '原始碼編輯區', pgStationPreviewLabel: '排版預覽',
     pgStationSample: '## 換你的字上場\n\n這是一段可自由編輯的範文。漢字與Latin、與2024並肩時，字距自動勻稱，不必手動空格。文中要緊的詞用<em>著重號</em>圈點。\n\n> 「引文自有其講究——標點懸掛，行末仍齊。」\n\n注音直書亦不在話下：<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>。',

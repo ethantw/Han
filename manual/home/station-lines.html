@@ -1,13 +1,42 @@
 <!-- Station III・Line adjustments — squeeze/hang, mixed-script, zhuyin ruby. -->
-<section id="station-lines" class="Station" data-station="lines">
+<section id="station-lines" class="Station" data-station="lines" data-ground="a" data-wm="行">
   <hgroup>
     <p>{{ slEyebrow }}</p>
     <h2>{{ slH2 }}</h2>
   </hgroup>
 
-  <div class="Prose">
-    <p>{{ slP1 }}</p>
-    <p>{{ slP2 }}</p>
-    <p>{{ slP3 }}</p>
+  <p class="Lede">{{ slLede }}</p>
+
+  <!-- REAL hanging comparison — the SAME kind of sentence, hang off vs on.
+       Column A sets `--han-punctuation-refinement: compress` on the <p>
+       (an ancestor of the sample text; the JS resolves the mode from the
+       element's computed value): squeeze kept, hang OFF, so a line-end
+       「，」/「。」 jams in and the margin turns ragged. Column B inherits
+       the page config (hang on) on a mint ground: the mark hangs past the
+       grid and the block stays square. The measure is tuned so the marks
+       really land at a line edge. No fake hang animation. -->
+  <figure class="HangCompare">
+    <div class="Col">
+      <small>{{ slHangOffLabel }}</small>
+      <p lang="zh-Hant" style="--han-punctuation-refinement: compress">{{ slHangOffSample }}</p>
+    </div>
+    <div class="Col" data-hang="on">
+      <small>{{ slHangOnLabel }}</small>
+      <p lang="zh-Hant">{{ slHangOnSample }}</p>
+    </div>
+  </figure>
+
+  <div class="Annotated">
+    <div class="Prose">
+      <p>{{ slP1 }}</p>
+      <p>{{ slP2 }}</p>
+      <p>{{ slP3 }}</p>
+    </div>
+
+    <aside class="Marginalia">
+      <code>--han-punctuation-refinement</code>
+      <code>--han-text-autospace</code>
+      <p>{{ slNote }}</p>
+    </aside>
   </div>
 </section>

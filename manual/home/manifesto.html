@@ -1,5 +1,22 @@
 <!-- Manifesto — opening statement + the page's first live specimen. -->
 <section class="Manifesto">
+  <!-- Outline watermark 漢 behind the headline — decorative (aria-hidden):
+       hairline stroke, transparent fill. A real span rather than a
+       ::before so it can sit at its own z-index under the copy; the
+       section clips it so it never forces horizontal scroll. -->
+  <span class="Outline" aria-hidden="true">漢</span>
+
+  <!-- Specimen-language chips — relocated here from the top of <main> as
+       the hero's control row. Same markup/hooks as before: demo-lang.js
+       keys on [data-demo-lang]; e2e on the input values. -->
+  <fieldset class="DemoLangSwitch" data-demo-lang>
+    <legend class="sr-only">{{ dlLegend }}</legend>
+    <label><input type="radio" name="demo-lang" value="zh-Hant" checked>{{ dlHant }}</label>
+    <label><input type="radio" name="demo-lang" value="zh-Hans">{{ dlHans }}</label>
+    <label><input type="radio" name="demo-lang" value="ja">{{ dlJa }}</label>
+    <label><input type="radio" name="demo-lang" value="ko">{{ dlKo }}</label>
+  </fieldset>
+
   <h1>{{ mfH1a }}<br><span>{{ mfH1b }}</span></h1>
 
   <p class="Lede">{{ mfLede }}</p>
@@ -25,4 +42,22 @@
       <dd>{{ mfStatDeps }}</dd>
     </div>
   </dl>
+
+  <!-- 字階尺 — the type ramp made visible. Eight 漢 set at the actual
+       home.css ramp tokens, each with its token name below. The glyphs are
+       decorative (<b>, aria-hidden); the mono labels are the real text. -->
+  <figure class="ScaleRun">
+    <span data-fs="display"><b aria-hidden="true">漢</b><small>--fs-display</small></span>
+    <span data-fs="heading"><b aria-hidden="true">漢</b><small>--fs-heading</small></span>
+    <span data-fs="lede"><b aria-hidden="true">漢</b><small>--fs-lede</small></span>
+    <span data-fs="body"><b aria-hidden="true">漢</b><small>--fs-body</small></span>
+    <span data-fs="small"><b aria-hidden="true">漢</b><small>--fs-small</small></span>
+    <span data-fs="compact"><b aria-hidden="true">漢</b><small>--fs-compact</small></span>
+    <span data-fs="fine"><b aria-hidden="true">漢</b><small>--fs-fine</small></span>
+    <span data-fs="micro"><b aria-hidden="true">漢</b><small>--fs-micro</small></span>
+  </figure>
+
+  <!-- Vertical lede at the hero's inline-end — a serif column, shown only
+       ≥68rem (hidden below, where it would collide with the copy measure). -->
+  <p class="VerticalLede">{{ mfVLede }}</p>
 </section>

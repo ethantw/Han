@@ -38,19 +38,55 @@ main.han {
   --fs-micro:   0.625em;
 }
 
-/* ─── Station rhythm (shared frame for the four `.Station` sections) */
+/* ─── Station plate (shared frame for the six `.Station` sections) ───
+ * Each station is a centred column carrying an alternating ground
+ * (`data-ground="a|b"` — an EXPLICIT hook, robust where `:nth-of-type`
+ * would miscount the `<section>` siblings inside `<main>`), a giant serif
+ * watermark set from `data-wm`, and a 1×/1.5× block-padding rhythm. The
+ * watermark is a `::before` sitting BELOW the copy: `isolation:isolate`
+ * gives the station its own stacking context so a `z-index:-1` pseudo
+ * lands above the ground but under the (non-positioned) content, and
+ * `overflow:clip` (Baseline 2023) crops the oversized glyph to the box. */
 
 .Station {
   & {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
     max-inline-size: var(--max-w-layout);
     margin-inline: auto;
     padding-block: 6rem;
     padding-inline: var(--gutter);
     border-block-start: 1px solid var(--palette-grid);
+    background: var(--palette-station-a);
+  }
+
+  /* the `-b` ground breathes 1.5× wider (the alternating rhythm) */
+  &[data-ground="b"] {
+    padding-block: 9rem;
+    background: var(--palette-station-b);
+  }
+
+  /* giant watermark glyph — content from `data-wm`, aria-hidden by nature
+     of the pseudo. Anchored to the block-start / inline-end corner. */
+  &::before {
+    content: attr(data-wm);
+    position: absolute;
+    inset-block-start: -0.1em;
+    inset-inline-end: 0.05em;
+    z-index: -1;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(12rem, 28vw, 22rem);
+    line-height: 1;
+    color: var(--palette-wm);
+    pointer-events: none;
+    user-select: none;
   }
 
   @media (max-width: 640px) {
     padding-block: 4rem;
+
+    &[data-ground="b"] { padding-block: 6rem; }
   }
 
   /* section head — eyebrow <p> + <h2> (+ lede <p> on station④) */
@@ -102,6 +138,47 @@ main.han {
   }
 }
 
+/* ─── Station entrance (one-shot reveal, see home/reveal.js) ─────────
+ * `reveal.js` stamps `[data-revealed]` the first time a station scrolls
+ * into view (then unobserves — no looping, per the direction doc). The
+ * SETTLED state is the base above, so content is fully visible when JS /
+ * IntersectionObserver is absent or reduced-motion is set; only INSIDE
+ * `no-preference` do we add the FROM state + transition. Reduced-motion
+ * or no-IO ⇒ reveal.js sets the attribute immediately, harmlessly. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .Station {
+    /* watermark fades and rises into place. `translate` is a physical
+       transform (CSS has no logical translate) — the rise reads the same
+       in vertical mode, so it stays. */
+    &::before {
+      opacity: 0;
+      translate: 0 1.5rem;
+      transition:
+        opacity   400ms ease-out,
+        translate 400ms ease-out
+      ;
+    }
+    &[data-revealed]::before {
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    /* the kicker hairline unrolls from the eyebrow outward.
+       `transform-origin` takes no logical keyword, so `left` is the
+       LTR line-start; a vertical / RTL build would flip it (documented
+       limitation of transform-origin). */
+    > hgroup p:first-child::after {
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 500ms ease-out 120ms;
+    }
+    &[data-revealed] > hgroup p:first-child::after {
+      transform: scaleX(1);
+    }
+  }
+}
+
 /* ─── Prose (running specimen copy — measure ~38em for readability) */
 
 .Prose {
@@ -127,6 +204,108 @@ main.han {
     line-height: 1.9;
     color: var(--palette-supplement-text);
   }
+}
+
+
+/* ─── Station lede (the one-line entry under the hgroup) ─────────────
+ * A serif lede sits between the section head and its interior. When a
+ * hgroup is immediately followed by one, the hgroup's own bottom margin
+ * pulls in so the pair reads as a unit (`:has()` — Baseline 2023; the
+ * lede owns the gap to the content below). */
+
+.Station {
+  > hgroup:has(+ .Lede) { margin-block-end: 1rem; }
+
+  > .Lede {
+    margin: 0 0 2.75rem;
+    max-inline-size: 34em;
+    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-size: var(--fs-lede);
+    line-height: 1.7;
+    color: var(--palette-supplement-text);
+  }
+}
+
+
+/* ─── Annotated (marginalia grid — main column ＋ margin notes) ───────
+ * Two-column layout only ≥68rem: a fluid main column plus a fixed 14rem
+ * margin rail. Below that the `.Marginalia` (which only names the vars
+ * this station drives) is hidden — no content is lost, so the grid
+ * collapses to plain block flow. */
+
+.Annotated {
+  & {
+    display: block;
+    max-inline-size: var(--max-w-layout);
+  }
+
+  @media (min-width: 68rem) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14rem;
+    column-gap: 4rem;
+    align-items: start;
+  }
+}
+
+/* ─── Marginalia (the var-name rail — code labels ＋ one quiet note) ── */
+
+.Marginalia {
+  & {
+    display: none; /* narrow: repeats var names only, nothing lost */
+    flex-direction: column;
+    gap: 0.375rem;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 1px solid var(--palette-rule);
+  }
+
+  @media (min-width: 68rem) {
+    & {
+      display: flex;
+      position: sticky;
+      inset-block-start: 2rem;
+    }
+  }
+
+  /* the driving variables — real names, set as code (mono, accent) */
+  code {
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    line-height: 1.6;
+    color: var(--palette-accent);
+    background: transparent;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* the note — a quiet line in the token's own language */
+  p {
+    margin: 0.625rem 0 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-fine);
+    line-height: 1.75;
+    color: var(--palette-supplement-text);
+  }
+}
+
+
+/* ─── Specimen (station①'s display block — the token's REAL markup) ───
+ * A hairline-framed display line: serif, sized up. The token ships live
+ * <em>/<cite>/<u>, so the emphasis dots, 《》 title marks (turned on by
+ * the inline `--han-cite-title-marks: bracket` on this element) and the
+ * proper-noun underline all render for real. */
+
+.Specimen {
+  margin: 0 0 3rem;
+  max-inline-size: none;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.75rem);
+  background: var(--palette-bg);
+  border: 1px solid var(--palette-rule);
+  border-radius: var(--r-3);
+  font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+  font-size: clamp(1.375rem, 4vw, 2rem);
+  line-height: 1.75;
+  color: var(--palette-text);
 }
 
 
@@ -430,12 +609,271 @@ main.han[data-writing="vertical"] {
 }
 
 
-/* ═══ Station IV・Snippet ═══════════════════════════════════════════
+/* ═══ Station II・Typography — the type tray (mirrored lead slugs) ═════
+ * A row of metal slugs, each glyph cut in reverse (`scaleX(-1)`); one is
+ * inked (the accent slug). All colour comes from the ink primitives via
+ * color-mix and the semantic accent — no new hues. Hover lifts a slug
+ * (interaction, inside no-preference); nothing loops. */
+
+.TypeTray {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    max-inline-size: 24rem;
+    margin: 0 0 2.5rem;
+  }
+
+  /* the type case — a dark metal tray holding the slugs */
+  .Slugs {
+    & {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      margin: 0;
+      padding: 8px;
+      border-radius: var(--r-3);
+      background:
+        linear-gradient(
+          158deg,
+          color-mix(in srgb, var(--color-ink) 82%, white),
+          var(--color-ink-deep)
+        )
+      ;
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, white 12%, transparent),
+        0 18px 44px -26px color-mix(in srgb, var(--color-black) 65%, transparent)
+      ;
+    }
+
+    /* one slug — a face-metal square, the glyph mirrored like real type */
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-heading);
+      line-height: 1;
+      color: color-mix(in srgb, var(--color-mist) 55%, transparent);
+      background:
+        linear-gradient(
+          152deg,
+          color-mix(in srgb, var(--color-ink) 62%, white),
+          var(--color-ink-deep)
+        )
+      ;
+      border-radius: var(--r-1);
+      box-shadow:
+        inset 0 1px 1px color-mix(in srgb, white 16%, transparent),
+        inset 0 -2px 3px color-mix(in srgb, var(--color-black) 55%, transparent)
+      ;
+      transform: scaleX(-1); /* the face is cut in reverse (physical: no logical mirror) */
+    }
+
+    /* the inked slug — the accent face, ready to strike paper */
+    [data-accent] {
+      color: var(--color-white);
+      background:
+        linear-gradient(
+          152deg,
+          color-mix(in srgb, var(--palette-accent) 88%, white),
+          color-mix(in srgb, var(--palette-accent) 62%, var(--color-ink-deep))
+        )
+      ;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      span {
+        transition:
+          transform  200ms ease-out,
+          box-shadow 200ms ease-out
+        ;
+      }
+
+      /* lift on hover — keep the mirror, raise the slug (physical translate
+         has no logical twin; a decorative hover, not a loop) */
+      span:hover {
+        transform: scaleX(-1) translateY(-4px);
+        box-shadow:
+          inset 0 1px 1px color-mix(in srgb, white 20%, transparent),
+          0 10px 18px -6px color-mix(in srgb, var(--color-black) 60%, transparent)
+        ;
+      }
+    }
+  }
+
+  figcaption {
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--palette-supplement-text);
+  }
+}
+
+
+/* ═══ Station II・Typography — the three-convention punctuation compare ═
+ * The same sample in three cells; each cell (an ancestor of its sample)
+ * carries a `--han-punctuation-hant` value, so the style-query font-swap
+ * resolves per cell — MOE centres「，。」, GB anchors them to the corner,
+ * off falls through to the body font. Hairline-framed grid. */
+
+.PunctCompare {
+  & {
+    margin: 0 0 2.5rem;
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+  }
+
+  ul {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px; /* the hairline between cells shows through the gap */
+    margin: 0;
+    padding: 0;
+    background: var(--palette-rule);
+    list-style: none;
+
+    @media (max-width: 32rem) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.25rem;
+    background: var(--palette-bg);
+  }
+
+  /* the sample — sized up, serif, so the mark's placement is legible */
+  span {
+    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 1.6;
+    color: var(--palette-text);
+  }
+
+  small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+    color: var(--palette-accent);
+  }
+}
+
+
+/* ═══ Station III・Line adjustments — the hanging comparison ══════════
+ * Two cells, same sentence: left forces `--han-punctuation-refinement:
+ * compress` (squeeze kept, hang OFF) on the sample's ancestor <p>; right
+ * inherits the page config (hang on) on a mint ground. The measure is
+ * capped so a 「，」/「。」 lands at the line edge, where the hang shows. */
+
+.HangCompare {
+  & {
+    margin: 0 0 2.5rem;
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+  }
+
+  & {
+    display: grid;
+    gap: 1px; /* hairline seam between the two cells */
+    background: var(--palette-rule);
+
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .Col {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.5rem 1.75rem;
+      background: var(--palette-bg);
+    }
+
+    /* the han.css side sits on the accent wash (mint / pine) */
+    &[data-hang="on"] { background: var(--palette-accent-bg); }
+
+    small {
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      letter-spacing: 0.04em;
+      color: var(--palette-supplement-text);
+    }
+
+    /* the sample — serif, measure tuned so the mark falls at line end */
+    p {
+      margin: 0;
+      max-inline-size: 11.5em;
+      font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+      font-size: 1.375rem;
+      line-height: 1.95;
+      color: var(--palette-text);
+    }
+  }
+}
+
+
+/* ═══ Station VI・Snippet — the CONSTANT-dark reference-code station ══
    `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
-   `controls.css`; this block only styles the two station-local lines
-   that frame the pane. */
+   `controls.css`; this block styles the two station-local lines that
+   frame the pane, the mint transition band that hands off into the dark,
+   and the dark ground itself. */
 
 .Snippet {
+  & {
+    /* 陸 is CONSTANT dark in BOTH page themes. `color-scheme: dark`
+       re-resolves every light-dark() token in this subtree to its dark
+       side (Baseline 2024) — so the hgroup/Prose text, the ViewTabs and
+       the native pm-select all read paper-on-ink with no per-control CSS.
+       The watermark's --palette-wm flips to its paper side here too, so
+       the 碼 glyph still reads on the dark ground. */
+    color-scheme: dark;
+    background: var(--palette-ink);
+    /* a dark band on a (possibly) dark page goes edgeless — pin the top
+       rule to a fixed faint mist hairline (web-style.md dark-surface
+       gotcha) instead of the theme-flipping --palette-grid. */
+    border-block-start-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+  }
+
+  /* transition band — a mint strip carrying the bridge line + the eyebrow
+     set vertically, easing from the bright page into the dark station.
+     It keeps `color-scheme: light` so its accent-wash resolves to mint. */
+  .Bridge {
+    & {
+      color-scheme: light;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--gutter);
+      margin: 0 0 2.5rem;
+      padding: 1.75rem 1.5rem;
+      background: var(--palette-accent-bg);
+      border-radius: var(--r-3);
+    }
+
+    [data-part="lead"] {
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-heading);
+      font-weight: 600;
+      color: var(--palette-accent);
+    }
+
+    [data-part="eyebrow"] {
+      writing-mode: vertical-rl;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-accent);
+    }
+  }
+
   .Finish, .BrowserSupport {
     max-inline-size: 38em;
     margin: 1.5rem 0 0;
@@ -465,6 +903,29 @@ main.han[data-writing="vertical"] {
    `--han-*` vars + han's prose layer with zero wiring. */
 
 .Playground {
+  /* `.Playground` rides on BOTH the <section> and the inner editor
+     <div class="Preview Playground" data-playground> — so anything that
+     must hit ONLY the editor panel is scoped by `[data-playground]`. */
+
+  /* editor chrome — the tab strip is a dark toolbar. `color-scheme: dark`
+     re-resolves the ViewTabs' light-dark() tokens to their dark side in
+     BOTH page themes (mirrors the .Snippet station's constant-dark recipe
+     above), so the tabs read paper-on-ink; a fixed faint mist hairline
+     keeps its lower edge visible on an already-dark page (web-style.md
+     dark-surface gotcha). The data-pg-* hooks are untouched. */
+  &[data-playground] > header {
+    color-scheme: dark;
+    background: var(--palette-ink);
+    border-block-end-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+  }
+
+  /* the editor may bleed one gutter past the station measure — a wider
+     canvas for typing. Only where the station is centred (≥ its max
+     width ＋ two gutters) so it never forces horizontal page scroll. */
+  @media (min-width: 74rem) {
+    &[data-playground] { margin-inline: calc(-1 * var(--gutter)); }
+  }
+
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
   [data-pg-preview] {
@@ -607,6 +1068,9 @@ main.han[data-writing="vertical"] {
 
 .Closing {
   & {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -615,6 +1079,25 @@ main.han[data-writing="vertical"] {
     border-block-start: 1px solid var(--palette-rule);
     background: var(--palette-panel);
     text-align: center;
+  }
+
+  /* the mirror watermark — a single 漢 centred behind the sign-off. Same
+     mechanism as `.Station::before` (z-index:-1 under an isolate context),
+     centred rather than corner-anchored. Always in its settled state (the
+     Closing isn't a reveal target). */
+  &::before {
+    content: attr(data-wm);
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(12rem, 40vw, 20rem);
+    line-height: 1;
+    color: var(--palette-wm);
+    pointer-events: none;
+    user-select: none;
   }
 
   .InstallLine {

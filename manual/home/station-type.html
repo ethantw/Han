@@ -1,9 +1,11 @@
 <!-- Station II・Typography — three-face specimen + heritage/punctuation copy. -->
-<section id="station-type" class="Station" data-station="type">
+<section id="station-type" class="Station" data-station="type" data-ground="b" data-wm="字">
   <hgroup>
     <p>{{ stEyebrow }}</p>
     <h2>{{ stH2 }}</h2>
   </hgroup>
+
+  <p class="Lede">{{ stLede }}</p>
 
   <figure class="Illust" data-variant="faces">
     <ul class="Faces">
@@ -36,12 +38,51 @@
     </dl>
   </figure>
 
-  <div class="Prose">
-    <p>{{ stHeritageP }}</p>
-    <!-- 拂偏歸正——先講「修好」（碼位被西文字體搶走的破折號／刪節號／
-         間隔號），再講「可選」（stPunctP 的三制公約）。 -->
-    <p>{{ stPunctFixP }}</p>
-    <p>{{ stPunctP }}</p>
-    <p>{{ stPunctExamples }}</p>
+  <!-- type-tray — mirrored lead slugs (the face is cut in reverse; only on
+       paper does it read true, per stTrayNote). The slug row is decorative
+       and reversed, so it's aria-hidden; the caption stays in the a11y tree. -->
+  <figure class="TypeTray">
+    <p class="Slugs" aria-hidden="true">
+      <span>漢</span><span>字</span><span data-accent>標</span><span>準</span><span>格</span><span>式</span>
+    </p>
+    <figcaption>{{ stTrayNote }}</figcaption>
+  </figure>
+
+  <!-- REAL punctuation comparison — the SAME sample under three conventions.
+       `--han-punctuation-hant` is set on each <li> (the cell = the sample's
+       ancestor), because style queries read an ancestor, never the element
+       itself. Cell 1 is the MOE default; cells 2/3 override to GB / off. -->
+  <figure class="PunctCompare">
+    <ul>
+      <li>
+        <span lang="zh-Hant">{{ stCompareSample }}</span>
+        <small>{{ stCompareMoe }}</small>
+      </li>
+      <li style="--han-punctuation-hant: GB">
+        <span lang="zh-Hant">{{ stCompareSample }}</span>
+        <small>{{ stCompareGb }}</small>
+      </li>
+      <li style="--han-punctuation-hant: off">
+        <span lang="zh-Hant">{{ stCompareSample }}</span>
+        <small>{{ stCompareOff }}</small>
+      </li>
+    </ul>
+  </figure>
+
+  <div class="Annotated">
+    <div class="Prose">
+      <p>{{ stHeritageP }}</p>
+      <!-- 拂偏歸正——先講「修好」（碼位被西文字體搶走的破折號／刪節號／
+           間隔號），再講「可選」（stPunctP 的三制公約）。 -->
+      <p>{{ stPunctFixP }}</p>
+      <p>{{ stPunctP }}</p>
+      <p>{{ stPunctExamples }}</p>
+    </div>
+
+    <aside class="Marginalia">
+      <code>--han-use-heritage-glyphs-for-hant</code>
+      <code>--han-punctuation-hant</code>
+      <p>{{ stNote }}</p>
+    </aside>
   </div>
 </section>

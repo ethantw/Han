@@ -32,6 +32,7 @@ import { initSnippet } from '/home/snippet.js'
 import { initPlayground } from '/home/playground.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
 import { initRailCollapse } from '/home/rail-collapse.js'
+import { initReveal } from '/home/reveal.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
@@ -64,4 +65,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initWritingSwitch()
   initRailCollapse()
   initInstallChips()
+  initReveal()
 })
