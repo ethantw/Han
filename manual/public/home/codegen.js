@@ -61,7 +61,7 @@ export const DEFAULTS = {
   punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KV' },
   zhuyinWebfont: true,
   baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
-  fallbacks: false,
+  fallbacks: true,               // JS排版補全 — on by default (owner call)
   legacyRuby: false,
   // Request B — 第三方 webfont 套件的送法，套用到「所有」外部 webfont 套件
   // （ziano 家族 ＋ diantenjeom）：'none' ＝ 完全不用外部 webfont。
@@ -105,7 +105,7 @@ export const cssVars = (c) => {
         out.push(['--han-webfont-heritage-glyphs-serif', HERITAGE[c.heritageFamily].serif.stack])
       }
     }
-    if (c.cursive !== 'webfont') out.push(['--han-cursive', c.cursive])
+    if (c.cursive !== 'webfont') out.push(['--han-use-cursive', c.cursive])
     if (c.cursive === 'webfont' && c.cursiveHant !== 'lxgw')
       out.push(['--han-webfont-cursive-hant', CURSIVE_HANT[c.cursiveHant].stack])
     for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS']])
@@ -202,6 +202,17 @@ const hanCssUrls = (c) => {
   const mods = enabledModules(c)
   return mods.length === MODULES.length ? [HAN_CSS_URL] : mods.map(HAN_CSS_MOD_URL)
 }
+
+// 站④「內嵌」分頁專用——同源、已由 vite.config.js 的 syncFramework() 同步進
+// public/han/ 的本機副本（rail 模組開關讀的就是這批檔案）。renderInline() 不
+// 自己 fetch（codegen.js 保持零 DOM、純函式、node --test 可測）；snippet.js
+// 用這幾個 URL 把「真正的 minified bytes」抓回來，當 assets 參數傳進去。
+export const localHanCssUrls = (c) => {
+  const mods = enabledModules(c)
+  return mods.length === MODULES.length ? ['/han/han.min.css'] : mods.map((m) => `/han/han.${m}.min.css`)
+}
+export const HAN_AUTO_LOCAL_URL = '/han/han.auto.min.js'
+export const HAN_JS_LOCAL_URL = '/han/han.min.js'
 
 const hanCssImports = (c) => {
   const mods = enabledModules(c)
@@ -311,4 +322,63 @@ export const renderBundler = (c, pm = 'pnpm') => {
   const html = htmlLines.length ? { lang: 'html', code: htmlLines.join('\n') } : null
 
   return [bash, js, ...(css ? [css] : []), ...(html ? [html] : [])]
+}
+
+/**
+ * 「內嵌」分頁 — 一段可以直接貼進任意網頁或 JSBin/CSSBin 之類單檔編輯器的
+ * `<style>`＋`<script type="module">`，framework 本體的 CSS/JS 是**真正貼進去
+ * 的 minified bytes**，不是 URL 參照。維持 codegen.js 零 DOM／純函式的約定：
+ * 不自己 fetch，`assets`（框架真正的 minified 文字）由呼叫端（snippet.js）先
+ * 抓好再傳進來——`renderInline(c, {})` 在 assets 還沒抓到時安全地省略對應區塊
+ * （不會丟例外），方便呼叫端在 fetch 進行中先用空 assets 渲染一次。
+ *
+ * ziano／diantenjeom 依然是 CDN `<link>`，不內嵌——它們的 CSS 本來就指向外部
+ * `.woff2`，內嵌那段 CSS 文字並不會讓頁面真正離線；把整組字重的 binary 轉
+ * base64 塞進去是完全另一個功能，這裡不做。
+ */
+export const renderInline = (c, assets = {}) => {
+  const { ziano, dtj } = packages(c)
+  const webfonts = c.webfontDelivery !== 'none'
+  const cdnZiano = webfonts ? ziano : []
+  const cdnDtj = webfonts && dtj
+
+  const linkLines = cdnZiano.length || cdnDtj
+    ? [
+        `<link rel="preconnect" href="${preconnectHost(c.webfontCdnSource)}" crossorigin>`,
+        ...cdnZiano.map((id) => `<link rel="stylesheet" href="${zianoUrl(id, c.webfontCdnSource)}">`),
+        ...(cdnDtj ? [`<link rel="stylesheet" href="${dtjUrl(c.webfontCdnSource)}">`] : []),
+      ]
+    : []
+
+  // framework minified CSS（assets，已抓好的 bytes）＋ 使用者變數偏差
+  // （configCSS，跟另外兩分頁同一套純函式）合成同一顆 <style>。
+  const cssBody = configCSS(c)
+  const styleBody = [assets.css, cssBody].filter(Boolean).join('')
+  const styleLines = styleBody ? [`<style>\n${styleBody}</style>`] : []
+
+  const scriptBlocks = []
+  if (c.fallbacks && assets.autoJs) {
+    // side-effect-only bundle（無 export 需要取用）——貼進去原樣執行，跟
+    // `<script type="module" src="…han.auto.min.js">` 效果相同。
+    scriptBlocks.push(`<script type="module">\n${assets.autoJs}</script>`)
+  }
+  if (c.legacyRuby && assets.hanJs) {
+    // han.min.js 經 esbuild minify 後內部名稱被改寫（例如
+    // `export{Co as convertLegacyRuby}`）——貼完原始碼直接呼叫裸露的
+    // `convertLegacyRuby(...)` 抓不到（那是 export-only 的名字，不是模組作用
+    // 域裡的變數）。改用 Blob URL 動態 import：瀏覽器回傳的是標準的模組
+    // namespace 物件，一律用「匯出名」查找，不管內部被改寫成什麼名字都拿得到。
+    scriptBlocks.push(
+      [
+        '<script type="module">',
+        `  const src = ${JSON.stringify(assets.hanJs)}`,
+        `  const mod = await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })))`,
+        `  mod.convertLegacyRuby(document.body)`,
+        '</script>',
+      ].join('\n'),
+    )
+  }
+
+  const htmlLines = [...linkLines, ...styleLines, ...scriptBlocks]
+  return htmlLines.length ? [{ lang: 'html', code: htmlLines.join('\n') }] : []
 }

@@ -230,6 +230,7 @@
           <label class="Field">
             <span>{{ pgPunctHant }} <small>Diantenjeom</small></span>
             <select data-cfg-key="punct.hant">
+              <option value="JIS">JIS</option>
               <option value="MOE" selected>MOE</option>
               <option value="GB">GB</option>
               <option value="off">{{ pgModeOff }}</option>
@@ -275,6 +276,8 @@
         <label class="Field">
           <span>{{ pgPunctHans }} <small>Diantenjeom</small></span>
           <select data-cfg-key="punct.hans">
+            <option value="JIS">JIS</option>
+            <option value="MOE">MOE</option>
             <option value="GB" selected>GB</option>
             <option value="off">{{ pgModeOff }}</option>
           </select>
@@ -283,6 +286,8 @@
           <span>{{ pgPunctJa }} <small>Diantenjeom</small></span>
           <select data-cfg-key="punct.ja">
             <option value="JIS" selected>JIS</option>
+            <option value="MOE">MOE</option>
+            <option value="GB">GB</option>
             <option value="off">{{ pgModeOff }}</option>
           </select>
         </label>
@@ -303,7 +308,7 @@
         <legend class="sr-only">{{ pgGrpJs }}</legend>
         <label class="Toggle">
           <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
-          <input type="checkbox" data-cfg-key="fallbacks">
+          <input type="checkbox" data-cfg-key="fallbacks" checked>
         </label>
         <label class="Toggle">
           <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>

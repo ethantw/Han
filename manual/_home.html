@@ -30,12 +30,27 @@
 <link rel="stylesheet" href="/home.css">
 <script type="module" src="/han/han.js"></script>
 <script type="module" src="/home.js"></script>
+
+<script>
+  // Shared by the pre-paint restore scripts below (theme, rail-collapsed):
+  // never let a boot-time failure (storage disabled, selector drift) break
+  // the rest of the page — but still surface it in devtools instead of
+  // swallowing it outright.
+  function silentlyTry(fn) {
+    try {
+      fn()
+    } catch (e) {
+      console.error('silentlyTry: pre-paint restore failed, page falls back to its default state', e)
+    }
+  }
+</script>
 </head>
 <body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
 <header class="Topbar">
   <a class="Brand" data-size="lg" href="{{ homeUrl }}">
     <span data-part="mark">漢</span><span data-part="dot">.</span><span data-part="ext">css</span>
     <small>漢字標準格式</small>
+    <small class="version">肆・〇</small>
   </a>
   <nav>
     <a href="{{ docsUrl }}">{{ docs }}</a>
@@ -52,16 +67,15 @@
         The page's one pre-paint-script exception (web-style.md).
       -->
       <script>
-        try {
+        silentlyTry(() => {
           const $darkModeInput = document.querySelector('input[name="dark-mode"]')
           const saved = localStorage.getItem('theme')
           $darkModeInput.checked = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
-        } catch (e) {}
+        })
       </script>
-      <svg data-name="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
-      <svg data-name="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <span class="Icon" data-name="sun" aria-hidden="true"></span>
+      <span class="Icon" data-name="moon" aria-hidden="true"></span>
     </label>
-    <span class="VersionTag">肆・〇</span>
   </nav>
 </header>
 
@@ -90,10 +104,10 @@
     exception (web-style.md).
   -->
   <script>
-    try {
+    silentlyTry(() => {
       document.querySelector('input[name="rail-collapsed"]').checked =
         localStorage.getItem('han-rail-collapsed') === '1'
-    } catch (e) {}
+    })
   </script>
 </label>
 

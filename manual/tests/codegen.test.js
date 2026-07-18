@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DEFAULTS, MODULES, cssVars, packages, renderCDN, renderBundler,
+  DEFAULTS, MODULES, cssVars, packages, renderCDN, renderBundler, renderInline,
 } from '../public/home/codegen.js'
 
 const cfg = (over = {}) => structuredClone({ ...DEFAULTS, ...over })
@@ -18,8 +18,11 @@ test('全預設 → 無變數偏差、css pane 整個省略（cdn／bundler 皆�
 })
 
 test('未勾任何 JS → 完全無 script/import JS', () => {
-  assert.ok(!paneCode(renderCDN(DEFAULTS), 'html').includes('<script'))
-  assert.ok(!paneCode(renderBundler(DEFAULTS, 'pnpm'), 'js').includes('han.css/auto'))
+  // fallbacks 出廠即開（owner call）——測的是「兩個 JS 開關都關」這個狀態本
+  // 身，不是出廠預設，故顯式覆寫兩者為 false。
+  const c = cfg({ fallbacks: false, legacyRuby: false })
+  assert.ok(!paneCode(renderCDN(c), 'html').includes('<script'))
+  assert.ok(!paneCode(renderBundler(c, 'pnpm'), 'js').includes('han.css/auto'))
 })
 
 test('關語意 → 不再輸出 --han-semantics（off 由缺席表達，無任何變數）', () => {
@@ -127,7 +130,7 @@ test('heritage/cursive 模式 system|off → 對應變數', () => {
     cssVars(cfg({ heritage: 'system' })),
     [['--han-use-heritage-glyphs-for-hant', 'system']],
   )
-  assert.deepEqual(cssVars(cfg({ cursive: 'off' })), [['--han-cursive', 'off']])
+  assert.deepEqual(cssVars(cfg({ cursive: 'off' })), [['--han-use-cursive', 'off']])
 })
 
 test('ko 直排標點 off → 變數輸出', () => {
@@ -331,4 +334,48 @@ test('楷體家族 iansui → cursive-hant swap 變數＋套件替換', () => {
   const ids = packages(c).ziano
   assert.ok(ids.includes('iansui') && !ids.includes('lxgw-wenkai-tc'))
   assert.ok(ids.includes('lxgw-wenkai') && ids.includes('klee-one'))
+})
+
+/* ── 內嵌分頁（renderInline）── framework 的 minified bytes 不是 codegen.js
+ * 自己抓的（保持零 DOM／純函式）——測試直接餵假字串當 assets，只驗生成邏輯，
+ * 不驗真實檔案內容。ziano/dtj 依然是 CDN <link>，這條分頁不內嵌它們。 */
+
+test('內嵌：無 assets、全預設 → 只有 ziano/dtj 的 <link>（webfontDelivery 預設 cdn），無 <style>/<script>', () => {
+  const html = paneCode(renderInline(DEFAULTS), 'html')
+  assert.ok(html.includes('<link rel="stylesheet"'))
+  assert.ok(!html.includes('<style>'))
+  assert.ok(!html.includes('<script'))
+})
+
+test('內嵌：webfontDelivery=none → 連 <link> 都不出（跟另兩分頁一致）', () => {
+  const out = renderInline(cfg({ webfontDelivery: 'none' }))
+  assert.deepEqual(out, [])
+})
+
+test('內嵌：assets.css 有內容 → 進同一顆 <style>，變數偏差接在後面', () => {
+  const c = cfg({ webfontDelivery: 'none', citeTitleMarks: 'bracket' })
+  const html = paneCode(renderInline(c, { css: '/* framework bytes */' }), 'html')
+  const styleBody = html.match(/<style>\n([\s\S]*?)<\/style>/)[1]
+  assert.ok(styleBody.startsWith('/* framework bytes */'))
+  assert.ok(styleBody.includes('--han-cite-title-marks: bracket'))
+})
+
+test('內嵌：fallbacks on 但 assets.autoJs 還沒抓到 → 安全省略，不丟例外', () => {
+  const c = cfg({ webfontDelivery: 'none', fallbacks: true })
+  assert.doesNotThrow(() => renderInline(c, {}))
+  assert.ok(!paneCode(renderInline(c, {}), 'html').includes('<script'))
+})
+
+test('內嵌：fallbacks on ＋ assets.autoJs → auto bundle 原樣貼進一顆 <script type="module">', () => {
+  const c = cfg({ webfontDelivery: 'none', fallbacks: true })
+  const html = paneCode(renderInline(c, { autoJs: '/* auto bundle */' }), 'html')
+  assert.ok(html.includes('<script type="module">\n/* auto bundle */</script>'))
+})
+
+test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mod.convertLegacyRuby', () => {
+  const c = cfg({ webfontDelivery: 'none', legacyRuby: true })
+  const html = paneCode(renderInline(c, { hanJs: '/* han.js bundle */' }), 'html')
+  assert.ok(html.includes(JSON.stringify('/* han.js bundle */')))
+  assert.ok(html.includes('new Blob([src]'))
+  assert.ok(html.includes('mod.convertLegacyRuby(document.body)'))
 })

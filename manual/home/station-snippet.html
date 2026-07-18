@@ -23,12 +23,8 @@
         <legend class="sr-only">{{ pgViewsLegend }}</legend>
         <label><input type="radio" name="pg-view" value="bundler" checked>{{ pgOutBundler }}</label>
         <label><input type="radio" name="pg-view" value="cdn">{{ pgOutCdn }}</label>
+        <label><input type="radio" name="pg-view" value="inline">{{ pgOutInline }}</label>
       </fieldset>
-      <select data-out-pm>
-        <option value="pnpm" selected>pnpm</option>
-        <option value="npm">npm</option>
-        <option value="yarn">yarn</option>
-      </select>
     </header>
 
     <!-- snippet.js renders one <figure class="CodePane"> per codegen.js

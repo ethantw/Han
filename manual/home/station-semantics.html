@@ -11,17 +11,38 @@
        the emphasis dots, cite marks and proper-noun underline render live.
        `--han-cite-title-marks: bracket` is set inline ON this block so the
        《》 around <cite> actually show (style queries read an ancestor —
-       this element is the cite's ancestor); mirrors ssP2's explanation, and
-       an inline var keeps the preview honest — no fake glyphs. -->
+       this element is the cite's ancestor), and an inline var keeps the
+       preview honest — no fake glyphs. -->
   <p class="Specimen" lang="zh-Hant" style="--han-cite-title-marks: bracket">{{ ssSpecimen }}</p>
 
   <div class="Annotated">
     <div class="Prose">
       <p>{{ ssP1 }}</p>
-      <p>{{ ssP2 }}</p>
-      <p>{{ ssP3 }}</p>
-      <p>{{ ssJaLead }}</p>
-      <blockquote lang="ja">{{ ssJaQuote }}</blockquote>
+
+      <!-- live per-language demo — four <article lang> panes let the
+           semantics rules (emphasis dots, cite title marks, proper-noun
+           underline, zhuyin / furigana ruby) render under each language's
+           own convention, and give the rail's per-language punctuation
+           selects something to act on. Ruby lives here, not in station③:
+           its styling belongs to the semantics module (semantics.css), and
+           annotation conventions are a per-language affair.
+           `--han-cite-title-marks: bracket` sits on the <figure> (style
+           queries read an ancestor). Texts below are PLACEHOLDERS — real
+           excerpts to be curated from the demo corpus (manual/demo/*.md). -->
+      <figure class="LangDemo" style="--han-cite-title-marks: bracket">
+        <article lang="zh-Hant">
+          <p>文中緊要處以<em>著重號</em>圈點；書名如<cite>說文解字</cite>，人名如<u>許慎</u>，各有其記。<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>依字直書，一行標記，排在字旁。</p>
+        </article>
+        <article lang="zh-Hans">
+          <p>文中紧要处以<em>着重号</em>圈点；书名如<cite>说文解字</cite>，人名如<u>许慎</u>，各有其记。</p>
+        </article>
+        <article lang="ja">
+          <p>強調は<em>圏点</em>で示し、書名は<cite><ruby>枕草子<rt>まくらのそうし</rt></ruby></cite>と記す——<u>清少納言</u>の筆による。振り仮名は字の上に沿う。</p>
+        </article>
+        <article lang="ko">
+          <p>강조는 <em>드러냄표</em>로, 책 이름은 <cite>훈민정음</cite>으로 표시한다.</p>
+        </article>
+      </figure>
     </div>
 
     <!-- marginalia — the variable names driving this station (code, mono)

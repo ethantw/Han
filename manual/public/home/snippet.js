@@ -16,20 +16,29 @@
  * ts-style note: `configRef` is the one-mutable-cell — replaced
  * wholesale on each event, never patched.
  */
-import { renderCDN, renderBundler } from '/home/codegen.js'
+import {
+  renderCDN, renderBundler, renderInline,
+  localHanCssUrls, HAN_AUTO_LOCAL_URL, HAN_JS_LOCAL_URL,
+} from '/home/codegen.js'
 import { highlightAll } from '/home/highlight.js'
 
 /* ── pane[] → <figure class="CodePane"> ──
- * figcaption 是語言徽章（CLI/HTML/JS/CSS），其唯一的 <button> 即複製鍵
- * （元素選擇器承載，不需 data-* hook），鏡射 InstallChip 的 ⎘ 慣例。 */
+ * figcaption 是語言徽章（CLI/HTML/JS/CSS）＋ 唯一的 <button> 複製鍵
+ * （元素選擇器承載，不需 data-* hook），鏡射 InstallChip 的 ⎘ 慣例。CLI
+ * pane 額外把 pm select 塞進標籤旁邊——package manager 只對這一格有意義，
+ * 放在 ViewTabs 那排反而讓人以為跟 CDN／內嵌分頁也有關係。 */
 const LANG_LABEL = { bash: 'CLI', html: 'HTML', js: 'JS', css: 'CSS' }
 
-const buildPane = ({ lang, code }) => {
+const buildPane = ({ lang, code }, $pm) => {
   const $figure = document.createElement('figure')
   $figure.className = 'CodePane'
 
   const $figcaption = document.createElement('figcaption')
-  $figcaption.textContent = LANG_LABEL[lang] ?? lang
+
+  const $label = document.createElement('span')
+  $label.dataset.part = 'label'
+  $label.append(LANG_LABEL[lang] ?? lang)
+  if (lang === 'bash' && $pm) $label.append($pm)
 
   const $copy = document.createElement('button')
   Object.assign($copy, { type: 'button', textContent: '⎘' })
@@ -41,27 +50,74 @@ const buildPane = ({ lang, code }) => {
   $code.textContent = code
   $pre.append($code)
 
-  // copy 住在 figcaption 內（標籤靠左、⎘ 靠右——figcaption 的
-  // space-between 佈局），不是 figure 的直接子元素。
-  $figcaption.append($copy)
+  // label(+pm select) 住 figcaption 左邊、⎘ 住右邊（figcaption 的
+  // space-between 佈局），兩個都不是 figure 的直接子元素。
+  $figcaption.append($label, $copy)
   $figure.append($figcaption, $pre)
   return $figure
 }
 
-const renderPanes = ($container, panes) => {
-  $container.replaceChildren(...panes.map(buildPane))
+const renderPanes = ($container, panes, $pm) => {
+  $container.replaceChildren(...panes.map((p) => buildPane(p, $pm)))
 }
 
-const renderOutput = (config, ui) => {
-  const panes = {
-    bundler: () => renderBundler(config, ui.$pm?.value),
-    cdn: () => renderCDN(config),
-  }[ui.tab]()
-  renderPanes(ui.$panes, panes)
+/* ── 「內嵌」分頁的資產抓取 ──
+ * framework 的 minified bytes 是靜態檔案（跟 rail 模組開關讀的是同一批，見
+ * vite.config.js syncFramework()），內容不隨 config 變動——只有「抓哪幾個」
+ * 隨模組開關變動。用 URL 當 key 快取，同一顆檔案在多次重繪之間只抓一次。 */
+const textCache = new Map()
+const fetchText = (url) => {
+  if (!textCache.has(url)) textCache.set(url, fetch(url).then((r) => r.text()))
+  return textCache.get(url)
+}
+
+const fetchInlineAssets = async (config) => {
+  const [cssTexts, autoJs, hanJs] = await Promise.all([
+    Promise.all(localHanCssUrls(config).map(fetchText)),
+    config.fallbacks ? fetchText(HAN_AUTO_LOCAL_URL) : undefined,
+    config.legacyRuby ? fetchText(HAN_JS_LOCAL_URL) : undefined,
+  ])
+  return { css: cssTexts.join('\n'), autoJs, hanJs }
+}
+
+// `renderToken` guards against a slower in-flight fetch (from an earlier
+// slider tweak) clobbering a newer one's result — only the render whose
+// token still matches after the `await` gets to touch the DOM.
+let renderToken = 0
+
+const renderOutput = async (config, ui) => {
+  const token = ++renderToken
+  if (ui.tab === 'inline') {
+    // Loading placeholder first — the fetch can take a moment on the very
+    // first inline render (subsequent ones hit the cache and resolve fast
+    // enough this rarely shows).
+    renderPanes(ui.$panes, [{ lang: 'html', code: '<!-- 載入 framework bytes… -->' }], ui.$pm)
+    const assets = await fetchInlineAssets(config)
+    if (token !== renderToken) return // a newer render started meanwhile
+    renderPanes(ui.$panes, renderInline(config, assets), ui.$pm)
+  } else {
+    const panes = ui.tab === 'bundler' ? renderBundler(config, ui.$pm?.value) : renderCDN(config)
+    renderPanes(ui.$panes, panes, ui.$pm)
+  }
   // Highlight API replaces ranges wholesale on every call — safe to
   // re-run unconditionally after every pane rewrite, no leak across
   // renders.
   highlightAll('[data-out-panes] pre[data-lang] > code')
+}
+
+/* pm select — 建一次、重繪時搬進當下那顆 CLI pane 的 figcaption（見
+ * buildPane）。node 本身在多次重繪之間是同一個引用，reparent 不會丟監聽器
+ * 也不會丟目前選的值；tab 不是 bundler 時沒有 bash pane，它就單純沒被接
+ * 回 DOM（仍在記憶體裡，下次切回 bundler 再被 append 回去）。 */
+const createPmSelect = () => {
+  const $pm = document.createElement('select')
+  $pm.dataset.outPm = ''
+  for (const v of ['pnpm', 'npm', 'yarn']) {
+    const $opt = document.createElement('option')
+    Object.assign($opt, { value: v, textContent: v, selected: v === 'pnpm' })
+    $pm.append($opt)
+  }
+  return $pm
 }
 
 /* ── 進場 ──
@@ -74,7 +130,7 @@ export const initSnippet = ($root = document) => {
 
   const ui = {
     tab: 'bundler',
-    $pm: $root.querySelector('[data-out-pm]'),
+    $pm: createPmSelect(),
     $panes,
   }
   const configRef = { current: null }

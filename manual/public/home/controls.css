@@ -451,8 +451,11 @@
   }
 
   /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
-     :has(:checked). The only view-driven visibility is the package-
-     manager <select>, which only makes sense on the "bundler" tab. ── */
+     :has(:checked). The package-manager <select> used to live here too,
+     but it only means anything on the CLI pane — it's parented into that
+     pane's figcaption now (snippet.js), so no view-driven visibility
+     rule is needed: switching away from "bundler" just means there's no
+     bash pane, hence no select in the DOM at all. ── */
   .ViewTabs {
     display: flex;
     gap: 6px;
@@ -492,32 +495,16 @@
     }
   }
 
-  [data-out-pm] {
-    padding-block: 4px;
-    padding-inline: 6px;
-    font: inherit;
-    font-size: var(--fs-fine);
-    color: var(--palette-text);
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-1);
-  }
-
   [data-out-panes] {
     display: flex;
     flex-direction: column;
-  }
-
-  /* pg-view 切換：package-manager select 只在 bundler 分頁有意義 */
-  &:not(:has([name="pg-view"][value="bundler"]:checked)) [data-out-pm] {
-    display: none;
   }
 }
 
 
 /* ─── CodePane — one labelled code exhibit inside [data-out-panes] (LIGHT
-   DOM) — figure > figcaption (lang badge + copy button) + pre > code.
-   Terminal-dark in both themes on purpose (home.css's constant
+   DOM) — figure > figcaption (label(+pm select) + copy button) + pre >
+   code. Terminal-dark in both themes on purpose (home.css's constant
    --code-bg/--code-fg). The copy button is the only button in the
    figcaption, so an element selector carries it — no data-* hook. */
 
@@ -543,6 +530,26 @@ figure.CodePane {
       letter-spacing: 0.04em;
       color: color-mix(in srgb, var(--code-fg) 55%, transparent);
       background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
+    }
+
+    /* label + (CLI pane only) the pm select, grouped so the copy button
+       stays the only thing space-between pushes to the far end. */
+    [data-part="label"] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    [data-out-pm] {
+      padding-block: 2px;
+      padding-inline: 4px;
+      font: inherit;
+      text-transform: none;
+      letter-spacing: normal;
+      color: var(--code-fg);
+      background: transparent;
+      border: 1px solid color-mix(in srgb, var(--code-fg) 30%, transparent);
+      border-radius: var(--r-1);
     }
 
     button {

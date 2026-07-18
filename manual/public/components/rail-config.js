@@ -51,7 +51,7 @@ const ALL_VARS = [
   '--han-semantics', '--han-prose', '--han-punctuation-refinement',
   '--han-text-autospace', '--han-use-heritage-glyphs-for-hant',
   '--han-webfont-heritage-glyphs-sans', '--han-webfont-heritage-glyphs-serif',
-  '--han-cursive', '--han-webfont-cursive-hant',
+  '--han-use-cursive', '--han-webfont-cursive-hant',
   '--han-punctuation-hant', '--han-punctuation-hans',
   '--han-punctuation-ja', '--han-punctuation-vertical-ko',
   '--han-font-zhuyin-serif',
