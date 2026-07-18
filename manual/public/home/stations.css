@@ -130,7 +130,7 @@ main.han {
     /* station④'s lede sits under the h2 in the same hgroup */
     h2 + p {
       margin: 0.75rem 0 0;
-      font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+      font-family: var(--han-font-alternative);
       font-size: var(--fs-body);
       line-height: 1.7;
       color: var(--palette-supplement-text);
@@ -219,7 +219,6 @@ main.han {
   > .Lede {
     margin: 0 0 2.75rem;
     max-inline-size: 34em;
-    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
     font-size: var(--fs-lede);
     line-height: 1.7;
     color: var(--palette-supplement-text);
@@ -302,7 +301,7 @@ main.han {
   background: var(--palette-bg);
   border: 1px solid var(--palette-rule);
   border-radius: var(--r-3);
-  font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+  font-family: var(--han-font-alternative);
   font-size: clamp(1.375rem, 4vw, 2rem);
   line-height: 1.75;
   color: var(--palette-text);
@@ -400,20 +399,30 @@ main.han[data-writing="vertical"] {
 
   h1 {
     & {
+      position: relative;
       margin: 0 0 2rem;
+      padding-block-start: 2.25rem;
       font-family: var(--han-font-alternative);
+      font-size: clamp(2.5em, 8vw, 4.5em);
       font-weight: 400; /* ziano display weight — restrained, not bold */
       line-height: 1.25;
       letter-spacing: -0.015em;
       color: var(--palette-text);
     }
 
+    .Brand {
+      position: absolute;
+      inset-block-start: 0;
+      margin-inline-start: .375rem;
+      font-size: 2rem;
+    }
+
     /* The two tagline phrases each own a display line — ink first, accent
        second (a bare last-child span is the sanctioned accent hook,
        css-naming rule 3). The 漢.css Brand crown above them is excluded
        here; its own-line placement + hero sizing live in home.css. */
-    > span:not(.Brand) { display: block; }
-    > span:last-child  { color: var(--palette-accent); }
+    /* > span:not(.Brand) { display: block; } */
+    &::first-line { color: var(--palette-accent); }
   }
 
   .Lede {
@@ -638,6 +647,24 @@ main.han[data-writing="vertical"] {
       transform: scaleX(-1); /* the face is cut in reverse (physical: no logical mirror) */
     }
 
+    /* the glyph is inline SVG stroke paths now (generated block in
+       station-type.html — scripts/stroke-animation/), sized like the old
+       text glyph via the span's font-size (1em box). The span keeps the
+       mirror, the metal, the hover lift. */
+    svg {
+      display: block;
+      inline-size: 1em;
+      block-size: 1em;
+      overflow: visible;
+    }
+
+    /* settled face — solid metal fill; the carve-in below is gated on
+       no-preference + the station's reveal stamp, so this is what no-JS
+       and reduced-motion get. */
+    .Stroke {
+      fill: currentColor;
+    }
+
     /* the inked slug — the accent face, ready to strike paper */
     [data-accent] {
       color: var(--color-white);
@@ -676,6 +703,39 @@ main.han[data-writing="vertical"] {
     line-height: 1.75;
     color: var(--palette-supplement-text);
   }
+}
+
+/* Carve-in on reveal — each slug's strokes score a hairline first, then
+ * the face metal fills, in manual stroke order
+ * (scripts/stroke-animation/stroke_order.py). Keyed off the station's
+ * one-shot `data-revealed` stamp (reveal.js) and gated on no-preference,
+ * so the settled solid face above is what no-JS and reduced-motion get.
+ * `--c` (slug index) and `--i` (stroke index) are stamped by the
+ * generator; `both` holds every path invisible through its delay. */
+@media (prefers-reduced-motion: no-preference) {
+  .Station[data-revealed] .Slugs .Stroke {
+    --at: calc(var(--c) * 0.1s + var(--i) * 0.14s);
+    stroke: currentColor;
+    /* USER UNITS (42/1000 ≈ 1px at the ~24px glyph box) — NOT
+       `non-scaling-stroke`, which janks the dash animation (see the
+       watermark note in home.css). */
+    stroke-width: 42;
+    stroke-dasharray: 1;
+    animation:
+      slug-carve 0.3s ease-out var(--at) both,
+      slug-ink   0.3s ease-in  calc(var(--at) + 0.2s) both
+    ;
+  }
+}
+
+@keyframes slug-carve {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes slug-ink {
+  from { fill-opacity: 0; }
+  to   { fill-opacity: 1; stroke-opacity: 0; }
 }
 
 
@@ -717,7 +777,7 @@ main.han[data-writing="vertical"] {
 
   /* the sample — sized up, serif, so the mark's placement is legible */
   span {
-    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-family: var(--han-font-alternative);
     font-size: var(--fs-heading);
     line-height: 1.6;
     color: var(--palette-text);
@@ -779,7 +839,7 @@ main.han[data-writing="vertical"] {
     p {
       margin: 0;
       max-inline-size: 11.5em;
-      font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+      font-family: var(--han-font-alternative);
       font-size: 1.375rem;
       line-height: 1.95;
       color: var(--palette-text);
@@ -863,7 +923,7 @@ main.han[data-writing="vertical"] {
      framework's zero-specificity `:where(q)`. */
   .YourCss {
     margin: 0;
-    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-family: var(--han-font-alternative);
     font-size: var(--fs-heading);
     line-height: 1.7;
     color: var(--palette-text);
@@ -969,7 +1029,7 @@ main.han[data-writing="vertical"] {
      emphasis dots (circle vs sesame) below the text. */
   p {
     margin: 0;
-    font-family: var(--han-font-latin-serif), serif, var(--han-font-alternative);
+    font-family: var(--han-font-alternative);
     font-size: var(--fs-heading);
     line-height: 2;
     color: var(--palette-text);

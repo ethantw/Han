@@ -138,6 +138,24 @@
      after it (see `_home.html`) — no flash. Same `localStorage` key
      ('theme') as the docs toggle, so the preference carries over. */
   color-scheme: light;
+
+  /* ── icon paths (ziano recipe: docs/css-clip-path-scaling.md) ────
+   * `shape()` — scales to whatever box the element gives it (`%`
+   * coordinates), so the icon box can resize without re-authoring the
+   * shape, same as ziano's `--path-caret`/`--path-check`. Coordinates
+   * are `<original SVG 0–24 coord> / 24 × 100`. The circle/crescent's
+   * `A rx ry x-rot large-arc sweep x y` becomes `arc to <end> of <r>
+   * [large|small] [cw|ccw]` — `large-arc-flag` → `large`/`small`,
+   * `sweep-flag` → `ccw`(0)/`cw`(1); verified against the `path()`
+   * baseline + at 18/48/96px, pixel-faithful and scales cleanly.
+   * Both are solid silhouettes of the original stroke-outline glyphs
+   * (circle+8 rays / crescent), filled instead of outlined — `clip-path`
+   * has no stroke concept, so this is the fill-equivalent redraw, not a
+   * 1:1 stroke-to-fill trace. (Baseline 2026 — Chrome/Edge 135+, Safari
+   * 18.4+, Firefox 148+; ~81% global reach mid-2026, no fallback wired
+   * here since the framework's own baseline floor already assumes it.) */
+  --path-sun: shape(from 31.25% 50%, arc to 68.75% 50% of 18.75% large ccw, arc to 31.25% 50% of 18.75% large ccw, move to 79.1667% 54.1667%, line to 91.6667% 54.1667%, line to 91.6667% 45.8333%, line to 79.1667% 45.8333%, move to 67.6777% 73.5702%, line to 76.5165% 82.4091%, line to 82.4091% 76.5165%, line to 73.5702% 67.6777%, move to 45.8333% 79.1667%, line to 45.8333% 91.6667%, line to 54.1667% 91.6667%, line to 54.1667% 79.1667%, move to 26.4298% 67.6777%, line to 17.5909% 76.5165%, line to 23.4835% 82.4091%, line to 32.3223% 73.5702%, move to 20.8333% 45.8333%, line to 8.3333% 45.8333%, line to 8.3333% 54.1667%, line to 20.8333% 54.1667%, move to 32.3223% 26.4298%, line to 23.4835% 17.5909%, line to 17.5909% 23.4835%, line to 26.4298% 32.3223%, move to 54.1667% 20.8333%, line to 54.1667% 8.3333%, line to 45.8333% 8.3333%, line to 45.8333% 20.8333%, move to 73.5702% 32.3223%, line to 82.4091% 23.4835%, line to 76.5165% 17.5909%, line to 67.6777% 26.4298%, close);
+  --path-moon: shape(from 87.5% 53.2917%, arc to 46.7083% 12.5% of 37.5% large cw, arc to 87.5% 53.2917% of 29.1667% small ccw, close);
 }
 
 :root:has(input[name='dark-mode']:checked) {
@@ -196,13 +214,14 @@ body.home {
     font-weight: 600;
     color: var(--palette-text);
   }
-  [data-part="dot"] {
+  [data-part="dot"] { 
+    padding-inline: .125rem;
     font-family: var(--han-font-alternative);
     font-weight: 600;
     color: var(--palette-accent);
   }
   [data-part="ext"] {
-    font-family: var(--han-font-latin-serif), serif;
+    font-family: var(--han-font-default);
     color: var(--palette-text);
   }
   small {
@@ -243,7 +262,7 @@ body.home {
 /* ─── code blocks ───────────────────────────────────────────────── */
 
 body.home {
-  pre, code { font-family: var(--font-mono); font-size: var(--fs-compact); }
+  pre, code { font-family: var(--font-mono); }
 
   /* generic light code chrome — station④'s `.CodePane` terminal panel
      opts out via :where() (zero specificity, no cascade fight). */
@@ -257,11 +276,10 @@ body.home {
     color: var(--palette-text);
   }
   code:not(pre code) {
+    padding: .125rem .5em;
     background: var(--palette-panel);
     border: 1px solid var(--palette-grid);
-    padding: 1px 6px;
     border-radius: var(--r-1);
-    font-size: 0.875em;
     color: var(--palette-accent);
   }
 }
@@ -398,9 +416,14 @@ body.home {
 
 /* ─── ThemeToggle (the sun/moon checkbox) ───────────────────────────
  * `<label class="ThemeToggle"><input type="checkbox" name="dark-mode">
- *  …pre-paint script…<svg data-name="sun"><svg data-name="moon"></label>`.
- * A real checkbox drives `:root:has(input[name='dark-mode']:checked)` —
- * no JS class toggling; `theme.js` only persists the choice. */
+ *  …pre-paint script…<span class="Icon" data-name="sun"><span
+ *  class="Icon" data-name="moon"></label>`. A real checkbox drives
+ * `:root:has(input[name='dark-mode']:checked)` — no JS class toggling;
+ * `theme.js` only persists the choice. The icons are no longer `<svg>`:
+ * a plain box `background-color: currentColor` clipped by the
+ * `--path-sun`/`--path-moon` tokens (home.css § icon paths) — same
+ * "shape lives in CSS, markup stays a bare glyph slot" recipe as
+ * ziano's `--path-caret`/`--path-check`. */
 
 .ThemeToggle {
   & {
@@ -420,13 +443,25 @@ body.home {
     pointer-events: none;
   }
 
+  .Icon {
+    display: inline-block;
+    /* em, not px — shape()'s whole point is scaling to the box; ties the
+       icon to the toggle's own font-size instead of a hardcoded 18px
+       (18px at the 16px root default, same footprint as before). */
+    width: 1.125em;
+    height: 1.125em;
+    background-color: currentColor;
+  }
+  .Icon[data-name="sun"]  { clip-path: var(--path-sun); }
+  .Icon[data-name="moon"] { clip-path: var(--path-moon); }
+
   /* Default (light): show the moon, hide the sun. */
-  svg[data-name="sun"]  { display: none; }
-  svg[data-name="moon"] { display: inline-block; }
+  .Icon[data-name="sun"]  { display: none; }
+  .Icon[data-name="moon"] { display: inline-block; }
 
   &:has(input:checked) {
-    svg[data-name="sun"]  { display: inline-block; }
-    svg[data-name="moon"] { display: none; }
+    .Icon[data-name="sun"]  { display: inline-block; }
+    .Icon[data-name="moon"] { display: none; }
   }
 }
 
@@ -750,12 +785,11 @@ han-rail {
      rule — reads as a subtitle rather than inheriting the display size; only
      the phrase spans take the clamp. */
   h1 {
-    & { font-size: var(--fs-body); }
+    /* & { font-size: var(--fs-body); } */
 
     /* the wordmark crown sits on its own line, generous gap below */
     .Brand {
       display: flex;
-      margin-block-end: 1.5rem;
     }
 
     /* each phrase is display:block (base rule); the hero scale + balanced
@@ -763,27 +797,48 @@ han-rail {
        that must wrap (≈390px) from orphaning a single trailing character;
        at 1280–1920 each phrase fits on one line. */
     > span:not(.Brand) {
-      font-size: clamp(2.5em, 8vw, 5.5em);
+      /* font-size: clamp(2.5em, 8vw, 4.5em); */
       line-height: 1.25;
       text-wrap: balance;
     }
   }
 
   .Outline {
-    position: absolute;
-    inset-block-start: -0.15em;
-    inset-inline-end: -0.05em;
-    z-index: -1;
-    margin: 0;
-    font-family: var(--han-font-alternative);
-    font-size: clamp(14rem, 40vw, 30rem);
-    line-height: 0.8;
-    color: transparent;
+    & {
+      /* The glyph is inline SVG stroke paths now (generated block in
+         manifesto.html — scripts/stroke-animation/), sized like the old
+         text watermark: font-size → inline-size, em-insets → size-derived. */
+      --wm-size: clamp(14rem, 40vw, 30rem);
+      position: absolute;
+      inset-block-start: calc(var(--wm-size) * -0.15);
+      inset-inline-end: calc(var(--wm-size) * -0.05);
+      z-index: -1;
+      margin: 0;
+      inline-size: var(--wm-size);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    svg {
+      display: block;
+      inline-size: 100%;
+      overflow: visible;
+    }
+
     /* Hairline stroke, token-derived so it stays faint yet legible in both
-       themes (color-mix — Baseline 2023). No fill, no animation loop. */
-    -webkit-text-stroke: 1px color-mix(in srgb, var(--palette-text) 12%, transparent);
-    pointer-events: none;
-    user-select: none;
+       themes (color-mix — Baseline 2023). Width in USER UNITS (2/1000 ≈
+       1px at the 30rem clamp ceiling), deliberately NOT
+       `vector-effect: non-scaling-stroke`: that forces per-frame
+       screen-space re-tessellation and janks the dash-draw animation
+       below (measured ~73fps → 120fps on a 120Hz display without it).
+       Below the ceiling the line thins slightly — a decorative watermark
+       at 12% alpha absorbs that. Settled (fully drawn) is the base state;
+       the draw-in is gated on no-preference. */
+    .Stroke {
+      fill: none;
+      stroke: color-mix(in srgb, var(--palette-text) 12%, transparent);
+      stroke-width: 2;
+    }
   }
 
   .DemoLangSwitch {
@@ -850,5 +905,23 @@ han-rail {
     .Lede        { animation-delay: 0.16s; }
     .Dogfood     { animation-delay: 0.24s; }
     .InstallChip { animation-delay: 0.32s; }
+
+    /* The watermark writes itself in, stroke by stroke, in manual stroke
+       order (scripts/stroke-animation/stroke_order.py) — one-shot on load
+       like the siblings above, no loop. `both` holds each path invisible
+       through its stagger delay; `--i` is stamped per path by the
+       generator. The 0.7s head start clears the load-time congestion
+       (hero-rise ×4 + webfont arrival) so the first strokes never
+       compete with the entrance storm — measured: mid-animation runs at
+       display refresh once the load window passes. */
+    .Outline .Stroke {
+      stroke-dasharray: 1;
+      animation: wm-draw 0.7s ease-in-out calc(0.7s + var(--i) * 0.28s) both;
+    }
   }
+}
+
+@keyframes wm-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
 }
