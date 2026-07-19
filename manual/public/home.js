@@ -33,6 +33,7 @@ import { initPlayground } from '/home/playground.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
 import { initRailCollapse } from '/home/rail-collapse.js'
 import { initReveal } from '/home/reveal.js'
+import { gateOpened } from '/home/fonts-gate.js'
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
@@ -65,5 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initWritingSwitch()
   initRailCollapse()
   initInstallChips()
-  initReveal()
+  // The fonts gate (pre-paint stamp → 漢-stroke ceremony → reveal)
+  // runs as its own early-mounted module (_home.html) so its metronome
+  // wakes before home.js's import graph lands on slow networks; here we
+  // only chain the reveal — reveal.js starts observing when the gate
+  // opens, so no station stamps data-revealed behind transparent text.
+  gateOpened.then(initReveal)
 })

@@ -151,3 +151,24 @@
     padding-block: 16px;
   }
 }
+
+/* ─── Fonts gate（home.css § Fonts gate 的 shadow 側） ───
+   The page's loading gate hides copy via `color: transparent`, but its
+   light-DOM selectors stop at this shadow boundary. The `--fonts-gate`
+   flag (set on :root while loading) rides custom-property inheritance
+   in, and the style query reads it back — @container style() resolves
+   containers up the FLAT tree, so shadow content can interrogate the
+   document root (the same mechanism han.css itself runs on; style
+   queries are this codebase's baseline bet). Pseudo lines included:
+   `*` never matches ::before/::after, where the ＋/－ group markers
+   live — and they must be a PLAIN selector list: pseudo-elements
+   inside :where()/:is() are forgivingly DROPPED (the css-traps ledger
+   already paid for this one). Backgrounds survive — the
+   toggles/sliders skeleton stays. */
+@container style(--fonts-gate: loading) {
+  *,
+  *::before,
+  *::after {
+    color: transparent !important;
+  }
+}

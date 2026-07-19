@@ -925,3 +925,99 @@ han-rail {
   from { stroke-dashoffset: 1; }
   to   { stroke-dashoffset: 0; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   Fonts gate — the 漢-stroke opening ceremony
+   (docs/plans/webfont-loading-gate.md)
+
+   `data-fonts-gate` on :root is stamped 'loading' pre-paint
+   (_home.html) and flipped to 'ready' by home/fonts-gate.js once the
+   webfonts have settled AND the watermark has finished ≥1 full stroke
+   pass (~1.34s) — deliberately also on cache hits: a font swap always
+   flashes once, a fixed ceremony never does. no-JS never stamps, so
+   every rule here is inert and the settled base applies.
+
+   While loading, copy hides via color:transparent — NOT visibility —
+   so the page skeleton (borders, grounds, tray metal faces) stays put
+   and layout still requests the unicode-range slices. The `!important`
+   is sanctioned here and only here: the gate must outrank every
+   descendant `color:` in one rule. The watermark is immune by
+   construction (it paints via `stroke:`, not color); the TypeTray
+   slugs (fill: currentColor) vanish with the text — correct, they are
+   glyphs. Known gap: <han-rail>'s shadow sets its own color tokens and
+   stays visible — acceptable, it wears its own :not(:defined) veil.
+
+   The pseudo lines matter: `body *` never matches pseudo-elements, and
+   glyphs hide there too — the hero h1's `::first-line` accent phrase
+   (found leaking in verification), the station grounds' big
+   `attr(data-wm)` chars, the InstallChip's `$` prompt. */
+:root[data-fonts-gate='loading'] body *,
+:root[data-fonts-gate='loading'] body *::before,
+:root[data-fonts-gate='loading'] body *::after,
+:root[data-fonts-gate='loading'] body *::first-line {
+  color: transparent !important;
+}
+
+/* Selectors stop at the shadow boundary, but custom properties don't:
+   this flag rides inheritance into <han-rail>'s shadow, where rail.css
+   reads it back with a style query (@container style() resolves
+   containers up the FLAT tree, so shadow content can interrogate
+   :root) — the same mechanism han.css itself runs on. */
+:root[data-fonts-gate='loading'] {
+  --fonts-gate: loading;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Stroke handover, three states: no stamp (no-JS) → the slow
+     entrance above runs as always; stamped at all → that entrance
+     never runs (the loading pass IS the watermark's entrance);
+     'loading' → one fast pass, 0.35s/stroke on a 0.09s stagger ≈
+     1.34s, then HOLDS — the drawn hairline stays as the finished
+     first sheet; 'ready' → no animation = the settled fully-drawn
+     hairline, seamlessly holding the frame the pass ended on. */
+  :root[data-fonts-gate] .Manifesto .Outline .Stroke {
+    animation: none;
+  }
+  :root[data-fonts-gate='loading'] .Manifesto .Outline .Stroke {
+    stroke-dasharray: 1;
+    animation: wm-draw 0.35s ease-in-out calc(var(--i) * 0.09s) both;
+  }
+
+  /* Encore sheet — fonts still in flight after the first pass, so
+     fonts-gate.js clones the strokes into a SECOND layer
+     ([data-encore]) that redraws on top: one shade darker, and ALL
+     TWELVE brushes land at once — each stroke draws at the same pen
+     speed, so its duration scales with its real path length
+     (fonts-gate.js measures getTotalLength and sets --encore-dur per
+     clone; the longest ≈1.8s ends the round, then the whole sheet
+     rewinds and replays in sync). The first sheet never un-draws —
+     the encore alone loops. The gate only opens at a round boundary,
+     so the sheet is always FULLY drawn when 'ready' lands; this base
+     state (opacity 0 + a quick 0.15s fade, owner spec) is what it
+     exits through, leaving the settled hairline. The clones are
+     JS-born, so no-JS pages never carry them. */
+  .Manifesto .Outline .Stroke[data-encore] {
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+  }
+  :root[data-fonts-gate='loading'] .Manifesto .Outline .Stroke[data-encore] {
+    opacity: 1;
+    stroke: color-mix(in srgb, var(--palette-text) 24%, transparent);
+    stroke-dasharray: 1;
+    animation: wm-draw var(--encore-dur, 1.8s) ease-in-out both;
+  }
+
+  /* With the gate engaged (either state), the hero-rise quartet never
+     runs and there is NO curtain-up on release: the ceremony (stroke
+     draw) IS the entrance, and the copy stamps in like set type the
+     instant the transparent lifts. Anything that re-animated here
+     would blink content that was already visible — the watermark, the
+     chips, the InstallChip box all flashed when a `body > *` fade
+     (and a re-run hero-rise) briefly returned them to opacity 0
+     (found in verification; the ziano-style gate-reveal was removed
+     for exactly that). hero-rise still greets the no-JS path, where
+     no gate ever stamps. */
+  :root[data-fonts-gate] .Manifesto :is(.DemoLangSwitch, h1, .Lede, .Dogfood, .InstallChip) {
+    animation: none;
+  }
+}
