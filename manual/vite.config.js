@@ -8,6 +8,12 @@ import { defineConfig } from 'vite'
 import MarkdownIt from 'markdown-it'
 import { cjkEmphasis } from './_md-cjk-emphasis.js'
 import { headings, renderPageToc } from './_md-headings.js'
+import {
+  DEFAULT_LOCALE as HOME_DEFAULT_LOCALE,
+  ALL_LOCALES as HOME_LOCALE_SLUGS,
+  HTML_LANG as HOME_HTML_LANG,
+  LOCALE_LABELS as HOME_LOCALE_LABELS,
+} from './_locales.js'
 
 /**
  * Re-import `_nav.js` and `_i18n.js` with a cache-bust query so each
@@ -30,9 +36,33 @@ async function loadNavI18n() {
   return { ...nav, I18N: i18nMod.I18N }
 }
 
-async function loadHomeData() {
-  const url = pathToFileURL(HOME_DATA).href + `?t=${Date.now()}`
-  return dynImport(url)
+/**
+ * Homepage i18n lives IN each template — a `<script type="text/x-i18n">`
+ * block at the top of `_home.html` / `home/*.html` holds that file's own
+ * strings as a JS object literal, key→locale:
+ *
+ *   { ssLede: { hant: '…', hans: '…', en: '…', ja: '…', ko: '…' }, … }
+ *
+ * Rationale: translations of one string sit adjacent for side-by-side
+ * comparison, and each section file is self-contained (DOM is the data).
+ * The block is a build-time construct only — `extractHomeI18n()` strips
+ * it before substitution, so rendered pages never carry it. A missing
+ * locale falls back PER KEY to the default locale (untranslated strings
+ * show the source text instead of a hole).
+ */
+function extractHomeI18n(src) {
+  const m = src.match(/<script type="text\/x-i18n">([\s\S]*?)<\/script>\r?\n?/)
+  if (!m) return { dict: {}, body: src }
+  // JS object literal, not JSON — same authoring ergonomics as the old
+  // `_data.js` (single quotes, trailing commas, comments allowed).
+  const dict = new Function(`return (${m[1]})`)()
+  return { dict, body: src.replace(m[0], '') }
+}
+
+function localizeHomeI18n(dict, locale) {
+  return Object.fromEntries(
+    Object.entries(dict).map(([k, v]) => [k, v[locale] ?? v[HOME_DEFAULT_LOCALE]]),
+  )
 }
 
 /**
@@ -104,11 +134,10 @@ const NOT_FOUND_LAYOUT = path.resolve(here, '_404.html')
 const NAV_FILE = path.resolve(here, '_nav.js')
 const I18N_FILE = path.resolve(here, '_i18n.js')
 // Homepage assets — separate from the docs Markdown pipeline. Each
-// locale gets its own `index.html` rendered straight from these
-// templates and the shared `_data.js` dictionary.
+// locale gets its own `index.html` rendered from these templates; every
+// template carries its own i18n block (see extractHomeI18n above).
 const HOME_DIR = path.resolve(here, 'home')
 const HOME_LAYOUT = path.resolve(here, '_home.html')
-const HOME_DATA = path.resolve(HOME_DIR, '_data.js')
 const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
   'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing',
@@ -346,31 +375,32 @@ async function renderMarkdownTree() {
  * Render the v4 landing page once per locale.
  *
  * Reads `_home.html` (the shell) plus `home/<section>.html` partials,
- * substitutes `{{ key }}` placeholders against `HOME_I18N[locale]`, and
- * writes to `<HTML_ROOT>/<slug>/index.html` (default locale at root).
+ * extracts each file's own i18n block, and substitutes `{{ key }}`
+ * placeholders against the merged per-locale dictionary. Writes to
+ * `<HTML_ROOT>/<slug>/index.html` (default locale at root).
  *
  * Independent of the docs Markdown pipeline — the homepage doesn't
  * follow `_nav.js` and isn't affected by which docs translations exist.
  */
 async function renderHomepage() {
-  const home = await loadHomeData()
   const $ = await loadNavI18n()
   const { urlFor } = $
-  const {
-    HOME_I18N, HOME_LOCALE_SLUGS, HOME_DEFAULT_LOCALE, HOME_HTML_LANG,
-    HOME_LOCALE_LABELS,
-  } = home
 
-  const layout = await fs.readFile(HOME_LAYOUT, 'utf-8')
+  const layout = extractHomeI18n(await fs.readFile(HOME_LAYOUT, 'utf-8'))
   const partials = Object.fromEntries(
     await Promise.all(HOME_SECTIONS.map(async name =>
-      [name, await fs.readFile(path.join(HOME_DIR, `${name}.html`), 'utf-8')],
+      [name, extractHomeI18n(await fs.readFile(path.join(HOME_DIR, `${name}.html`), 'utf-8'))],
     )),
   )
   const ledger = await computeModuleLedger()
 
   for (const locale of HOME_LOCALE_SLUGS) {
-    const t = HOME_I18N[locale] ?? HOME_I18N[HOME_DEFAULT_LOCALE]
+    // Keys are partitioned per file (no cross-file sharing), so merging
+    // every file's localized dict into one ctx is collision-free.
+    const t = Object.assign(
+      localizeHomeI18n(layout.dict, locale),
+      ...Object.values(partials).map(p => localizeHomeI18n(p.dict, locale)),
+    )
     const homeUrl = locale === HOME_DEFAULT_LOCALE ? '/' : `/${locale}/`
     // Docs entry — point at the matching locale's manual root if it
     // exists, else fall back to the default locale's manual.
@@ -391,13 +421,13 @@ async function renderHomepage() {
     }
 
     const sections = Object.fromEntries(
-      Object.entries(partials).map(([name, src]) => [`${camel(name)}Section`, applySubs(src, ctx)]),
+      Object.entries(partials).map(([name, p]) => [`${camel(name)}Section`, applySubs(p.body, ctx)]),
     )
 
     // The rail is now a `<han-rail>` component (see _home.html); its
     // locale template comes from `home/rail-templates.js`
     // (renderRailTemplatesSource) instead of an inline `{{ railSection }}`.
-    let html = applySubs(layout, { ...ctx, ...sections })
+    let html = applySubs(layout.body, { ...ctx, ...sections })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
 
     const outPath = locale === HOME_DEFAULT_LOCALE
@@ -412,9 +442,10 @@ async function renderHomepage() {
  * Generate the `<han-rail>` shadow template module — `home/rail.html`
  * expanded once per homepage locale via the SAME `applySubs` machinery
  * (and the same trailing-`{{ }}` sweep) that `renderHomepage()` uses for
- * `{{ railSection }}`, so the two can't drift. `home/rail.html` +
- * `HOME_I18N` stay the single source of truth; this just pre-bakes the
- * five expansions into an ESM module the component imports at runtime:
+ * the section partials, so the two can't drift. `home/rail.html` (with
+ * its own i18n block) stays the single source of truth; this just
+ * pre-bakes the five expansions into an ESM module the component
+ * imports at runtime:
  *
  *   export const TEMPLATES = { hant: '…', hans: '…', en: '…', ja: '…', ko: '…' }
  *
@@ -423,13 +454,11 @@ async function renderHomepage() {
  * into the source tree, so git stays clean.
  */
 async function renderRailTemplatesSource() {
-  const home = await loadHomeData()
-  const { HOME_I18N, HOME_LOCALE_SLUGS, HOME_DEFAULT_LOCALE } = home
-  const railSrc = await fs.readFile(HOME_RAIL, 'utf-8')
+  const rail = extractHomeI18n(await fs.readFile(HOME_RAIL, 'utf-8'))
 
   const entries = HOME_LOCALE_SLUGS.map((locale) => {
-    const t = HOME_I18N[locale] ?? HOME_I18N[HOME_DEFAULT_LOCALE]
-    const html = applySubs(railSrc, t).replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
+    const t = localizeHomeI18n(rail.dict, locale)
+    const html = applySubs(rail.body, t).replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
     return `  ${JSON.stringify(locale)}: ${JSON.stringify(html)}`
   })
 

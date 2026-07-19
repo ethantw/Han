@@ -1,3 +1,119 @@
+<script type="text/x-i18n">
+{
+  arEyebrow: {
+    hant: '伍・工法',
+    hans: '伍・工法',
+    en: 'V・Architecture',
+    ja: '伍・工法',
+    ko: '伍・工法',
+  },
+  arH2: {
+    hant: '輕如鴻毛的排版框架',
+    hans: '轻如鸿毛的排版框架',
+    en: 'The most flexible typesetting framework',
+    ja: '輕如鴻毛的排版框架',
+    ko: '輕如鴻毛的排版框架',
+  },
+  arLede: {
+    hant: '一百〇九個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。',
+    hans: '一百〇九个〇，仍然是「〇」——随意覆写，后来者的样式说了算。',
+    en: 'Zero specificity, layered by design — your CSS always has the last word.',
+    ja: '一百〇九個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。',
+    ko: '一百〇九個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。',
+  },
+  arP1: {
+    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，配合可自由定義樣式模塊順序的<code>@layer</code>，作者可大膽而隨心所欲地覆寫、重構框架提供的任何機能。',
+    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重，配合可自由定义样式模块顺序的<code>@layer</code>，作者可大胆而随心所欲地覆写、重构框架提供的任何机能。',
+    en: 'Every selector in the library is wrapped in <code>:where()</code>, so its specificity is zero — one line of your own <code>h2 { }</code> overrides the whole framework, with no <code>!important</code> and no selector-length arms race.',
+    ja: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，配合可自由定義樣式模塊順序的<code>@layer</code>，作者可大膽而隨心所欲地覆寫、重構框架提供的任何機能。',
+    ko: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，配合可自由定義樣式模塊順序的<code>@layer</code>，作者可大膽而隨心所欲地覆寫、重構框架提供的任何機能。',
+  },
+  arP3: {
+    hant: '透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能——原生CSS給作者最大的自訂彈性。',
+    hans: '透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能——原生CSS给作者最大的自定义弹性。',
+    en: 'Customising needs no HTML either — <code>@container style()</code> lets any container stake a claim with a single custom property: set <code>--han-em-symbol: sesame</code> and the emphasis dots in that subtree turn to sesame; set <code>--han-prose: off</code> and that block opts out of the long-form rules.',
+    ja: '透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能——原生CSS給作者最大的自訂彈性。',
+    ko: '透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能——原生CSS給作者最大的自訂彈性。',
+  },
+  arOverrideLabel: {
+    hant: '你的樣式表',
+    hans: '你的样式表',
+    en: 'your stylesheet',
+    ja: '你的樣式表',
+    ko: '你的樣式表',
+  },
+  arOverrideResult: {
+    hant: '實際渲染——你贏了',
+    hans: '实际渲染——你赢了',
+    en: 'what renders — you win',
+    ja: '實際渲染——你贏了',
+    ko: '實際渲染——你贏了',
+  },
+  arLayerNote: {
+    hant: '四層，正是左欄的四顆模組開關。',
+    hans: '四层，正是左栏的四颗模块开关。',
+    en: 'Four layers — exactly the four module switches in the left column.',
+    ja: '四層，正是左欄的四顆模組開關。',
+    ko: '四層，正是左欄的四顆模組開關。',
+  },
+  arContainerA: {
+    hant: '預設',
+    hans: '预设',
+    en: 'default',
+    ja: '預設',
+    ko: '預設',
+  },
+  arContainerB: {
+    hant: '芝麻點——容器上一個變數的事',
+    hans: '芝麻点——容器上一个变量的事',
+    en: 'sesame — one variable on the container',
+    ja: '芝麻點——容器上一個變數的事',
+    ko: '芝麻點——容器上一個變數的事',
+  },
+  arSampleText: {
+    hant: '排版的<em>要緊處</em>，一眼可辨。',
+    hans: '排版的<em>要紧处</em>，一眼可辨。',
+    en: 'The <em>part that matters</em> in typesetting, clear at a glance.',
+    ja: '排版的<em>要緊處</em>，一眼可辨。',
+    ko: '排版的<em>要緊處</em>，一眼可辨。',
+  },
+  arQuoteSample: {
+    hant: '他說：<q>這行顏色是我的CSS說了算。</q>',
+    hans: '他说：<q>这行颜色是我的CSS说了算。</q>',
+    en: 'She said, <q>this colour is my call, set in CSS.</q>',
+    ja: '他說：<q>這行顏色是我的CSS說了算。</q>',
+    ko: '他說：<q>這行顏色是我的CSS說了算。</q>',
+  },
+  arNote: {
+    hant: '全庫零權重，覆寫從不需要!important。',
+    hans: '全库零权重，覆写从不需要!important。',
+    en: 'Zero specificity across the whole library — overriding never needs !important.',
+    ja: '全庫零權重，覆寫從不需要!important。',
+    ko: '全庫零權重，覆寫從不需要!important。',
+  },
+  arLedgerTotal: {
+    hant: '四模塊合計',
+    hans: '四模块合计',
+    en: 'All four modules',
+    ja: '四模塊合計',
+    ko: '四模塊合計',
+  },
+  arLedgerGzip: {
+    hant: 'gzip',
+    hans: 'gzip',
+    en: 'gzip',
+    ja: 'gzip',
+    ko: 'gzip',
+  },
+  arLedgerDeps: {
+    hant: '運行時依賴',
+    hans: '运行时依赖',
+    en: 'runtime dependency',
+    ja: '運行時依賴',
+    ko: '運行時依賴',
+  },
+}
+</script>
 <!-- Station V・Architecture (工法) — "won't fight your CSS". Three REAL demos
      prove the claim on THIS page: (1) a user rule beats the framework because
      han-semantics wraps every selector in :where() (zero specificity); (2) the

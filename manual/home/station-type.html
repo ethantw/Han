@@ -1,3 +1,95 @@
+<script type="text/x-i18n">
+{
+  stLede: {
+    hant: '黑體、明體、楷體，三大字體，各司其職。',
+    hans: '黑体、明体、楷体，三大字体，各司其职。',
+    en: 'One character, three faces — sans, serif and cursive, each to its task.',
+    ja: '一字三面——黑、明、楷，各司其職。',
+    ko: '一字三面——黑、明、楷，各司其職。',
+  },
+  stTrayNote: {
+    hant: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為120個切片，取字的差事交給瀏覽器與<code>unicode-range</code>——按需下載，經CDN毫秒級遞送，填補千萬終端上系統字體的美學空缺。',
+    hans: '活字印刷时代，排版工人凭记忆在字盘中拣取文章所需的活字，填入版框；Web字体时代，数万字的汉字字体依使用频率分割为120个切片，取字的差事交给浏览器与<code>unicode-range</code>——按需下载，经CDN毫秒级递送，填补千万终端上系统字体的美学空缺。',
+    en: 'Type is cut in reverse; only on paper does it read true — a CSS variable is the type case of this era: nudge one slug and the whole page resets.',
+    ja: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為120個切片，取字的差事交給瀏覽器與<code>unicode-range</code>——按需下載，經CDN毫秒級遞送，填補千萬終端上系統字體的美學空缺。',
+    ko: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為120個切片，取字的差事交給瀏覽器與<code>unicode-range</code>——按需下載，經CDN毫秒級遞送，填補千萬終端上系統字體的美學空缺。',
+  },
+  stCompareSample: {
+    hant: '字距，行氣。',
+    hans: '字距，行气。',
+    en: '字距，行氣。',
+    ja: '字距，行氣。',
+    ko: '字距，行氣。',
+  },
+  stCompareMoe: {
+    hant: 'MOE・教育部',
+    hans: 'MOE・教育部',
+    en: 'MOE · Taiwan',
+    ja: 'MOE・教育部',
+    ko: 'MOE・教育部',
+  },
+  stCompareGb: {
+    hant: 'GB・國標',
+    hans: 'GB・国标',
+    en: 'GB · Mainland',
+    ja: 'GB・國標',
+    ko: 'GB・國標',
+  },
+  stCompareOff: {
+    hant: '關・原字體',
+    hans: '关・原字体',
+    en: 'off · raw font',
+    ja: '關・原字體',
+    ko: '關・原字體',
+  },
+  stNote: {
+    hant: '撥左欄「傳承字形」，三面互換。',
+    hans: '拨左栏「传承字形」，三面互换。',
+    en: 'Flip the heritage-glyph switch in the left column to swap the three faces.',
+    ja: '撥左欄「傳承字形」，三面互換。',
+    ko: '撥左欄「傳承字形」，三面互換。',
+  },
+  stEyebrow: {
+    hant: '貳・字體排印',
+    hans: '贰・字体排印',
+    en: 'II・Typography',
+    ja: '貳・字體排印',
+    ko: '貳・字體排印',
+  },
+  stH2: {
+    hant: '百年傳承的字形，拂歧歸正的標點',
+    hans: '百年传承的字形，拂歧归正的标点',
+    en: 'Century-old letterforms, punctuation set right',
+    ja: '百年傳承的字形，拂歧歸正的標點',
+    ko: '百年傳承的字形，拂歧歸正的標點',
+  },
+  stHeritageP: {
+    hant: '學究式楷化的<strong>國字標準字體</strong> = 新世代的美學降級——透過Web字體切片技術，在顯示器上重現百年傳承的字形結構。',
+    hans: '学究式楷化的<strong>国字标准字体</strong> = 新世代的美学降级——透过Web字体切片技术，在显示器上重现百年传承的字形结构。',
+    en: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
+    ja: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+    ko: '傳承字形（尚古／源起，可由面板切換）承載了鉛字時代未經簡化的結構——非「更古老」，而是「未曾漂移」。',
+  },
+  stPunctFixP: {
+    hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，起自Unicode共用碼位的歷史問題，透過OpenType + CSS <code>unicode-range</code>字體技術，精準為讀者拂偏歸正。',
+    hans: '中间断开的破折号、落在基线上的删节号、尺寸太小的间隔号，起自Unicode共用码位的历史问题，透过OpenType + CSS <code>unicode-range</code>字体技术，精准为读者拂偏归正。',
+    en: 'Em dashes, ellipses and interpuncts share their codepoints with Western scripts — whichever font sits first in the stack has the final say, so “—” snaps in half and “…” sinks to the baseline. A punctuation-only font sits at the very front and puts every mark back where it belongs.',
+    ja: '破折號、刪節號、間隔號的碼位中西共用，字體堆疊裡誰排前面，誰就說了算——於是「——」常被西文字體斷成兩截，「……」沉到基線。標點字體只含標點、排在堆疊最前，把它們一一放回原位。',
+    ko: '破折號、刪節號、間隔號的碼位中西共用，字體堆疊裡誰排前面，誰就說了算——於是「——」常被西文字體斷成兩截，「……」沉到基線。標點字體只含標點、排在堆疊最前，把它們一一放回原位。',
+  },
+  stPunctP: {
+    hant: '無論是遵循地區標點規範，或在簡中文本使用居中標點、在繁中文本使用偏倚式標點，透過Diantenjeom提供的4&times;2種標點字體，任意搭配，玩出排版新花樣。',
+    hans: '无论是遵循地区标点规范，或在简体文本使用居中标点、在繁体文本使用偏倚式标点，透过Diantenjeom提供的4&times;2种标点字体，任意搭配，玩出排版新花样。',
+    en: 'Even punctuation follows regional convention — the curve of「」『』（）, the position of commas and periods. MOE (Taiwan), JIS (Japan), GB (Mainland China) each differ; one CSS variable switches the whole page, and the rhythm of「，。」shifts with it.',
+    ja: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+    ko: '標點斷連亦有地域公約——「」『』（）之弧直、逗句之位置，MOE（臺灣教育部）、JIS（日本工業規格）、GB（大陸國標）三制各異，一行CSS變量切換，「，。」之呼吸隨之而變。',
+  },
+  stSqueezeP: {
+    hant: '字體內建完整的GPOS標點擠壓規則，行首行尾、連續標點，緊湊自在，一次到位。',
+    hans: '字体内建完整的GPOS标点挤压规则，行首行尾、连续标点，紧凑自在，一次到位。',
+  },
+}
+</script>
 <!-- Station II・Typography — three-face specimen + heritage/punctuation copy. -->
 <section id="station-type" class="Station" data-station="type" data-ground="b" data-wm="字">
   <hgroup>
