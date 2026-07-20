@@ -376,6 +376,7 @@ async function renderMarkdownTree() {
       pageSubtitle:      pageSubtitle,
       toggleNav:         escapeHtml(i18n.toggleNav),
       themeToggle:       escapeAttr(i18n.themeToggle),
+      railToggleLabel:   escapeAttr(i18n.railToggleLabel ?? '調校排版'),
       githubLabel:       escapeHtml(i18n.githubLabel),
       helpRefine:        i18n.helpRefine,
       homeLink:          escapeHtml(i18n.homeLink ?? 'Home'),

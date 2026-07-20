@@ -144,13 +144,66 @@ body.ManualPage {
     font-family: var(--han-font-default);
   }
 
-  /* ≥50em — header / (sidebar | main) / footer */
+  /* ≥50em — header / han-rail / (sidebar | main) / footer. The rail is a
+     full-width toolbar row under the Masthead; both span 1/-1 so the
+     sidebar+main pair flows into the 1fr content row below. */
   @media (min-width: 50em) {
     display: grid;
     grid-template-columns: var(--m-sidebar-w) 1fr;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto;
     min-block-size: 100vh;
   }
+}
+
+/* ─── <han-rail> configurator (form="top" toolbar) ─────────────────────
+ * Full-width row under the Masthead; sticky so readers can tweak while
+ * scrolled into the text. `:not(:defined)` hides it until the component
+ * upgrades (no FOUC). Its shadow owns the control styling (tokens.css +
+ * controls.css + rail.css, fetched on connect); this rule only places
+ * the host box on the page. */
+han-rail {
+  grid-column: 1 / -1;
+  /* Collapsed by default — the docs read first. The RailToggle in the
+     masthead opens it. block-size animates from 0; overflow clips the
+     tall control set while closed. */
+  position: sticky;
+  top: var(--m-header-h);
+  z-index: 9;
+  max-block-size: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(10px);
+  transition: max-block-size 260ms ease;
+}
+han-rail:not(:defined) { visibility: hidden; }
+
+/* Open — capped height with internal scroll so the (tall) fonts group
+   never eats the whole viewport; a hairline marks the toolbar edge. */
+body.ManualPage:has(.RailToggle input:checked) han-rail {
+  max-block-size: min(60vh, 32rem);
+  overflow-y: auto;
+  border-block-end: 1px solid var(--rule);
+}
+
+/* Masthead RailToggle — matches the theme toggle's button box; the
+   checkbox itself is visually hidden, the label carries the icon.
+   Tinted when open so its state reads. */
+.RailToggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--supplement-text);
+
+  & input { position: absolute; opacity: 0; inline-size: 0; block-size: 0; }
+  &:hover { color: var(--text); }
+  &:has(input:checked) { color: var(--accent); }
+  &:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+}
+
+@media (max-width: 49.99em) {
+  /* Below the grid breakpoint the rail flows inline under the masthead;
+     drop the sticky so it doesn't fight the narrow-screen nav drawer. */
+  han-rail { position: static; }
 }
 
 /* ─── Masthead (sticky 3-col grid) ─────────────────────────────────── */
