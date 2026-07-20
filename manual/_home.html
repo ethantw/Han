@@ -176,7 +176,9 @@
      the layout (the `form` attr stays public component API).
      `han-rail:not(:defined){visibility:hidden}` (home.css) hides it
      until upgrade — no FOUC. -->
-<han-rail lang="{{ locale }}" target="main.han" form="side"></han-rail>
+<!-- lang 用合法 BCP-47 tag（axe valid-lang 抓過 lang="hant" 違規）；
+     元件的 localeOf() 兩種都收（slug 或 tag），zh-Hant → hant。 -->
+<han-rail lang="{{ htmlLang }}" target="main.han" form="side"></han-rail>
 
 <!-- Collapse handle — page chrome at the aside/content boundary, the only
      way back once the rail is collapsed. A real checkbox (same recipe as

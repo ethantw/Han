@@ -112,6 +112,9 @@ const renderOutput = async (config, ui) => {
 const createPmSelect = () => {
   const $pm = document.createElement('select')
   $pm.dataset.outPm = ''
+  // 無可見 <label>（選單自身就是「pnpm/npm/yarn」語意），給 AT 一個
+  // 名字——axe select-name（critical）在此抓過違規。
+  $pm.setAttribute('aria-label', 'package manager')
   for (const v of ['pnpm', 'npm', 'yarn']) {
     const $opt = document.createElement('option')
     Object.assign($opt, { value: v, textContent: v, selected: v === 'pnpm' })
