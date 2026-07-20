@@ -20,15 +20,46 @@
  *     to its end, then the gate opens and the encore sheet fades out
  *     (0.15s, home.css). Owner spec, 2026-07-19.
  *
+ * The watermark itself is BUILT here, by cloning the brand logo's
+ * stroke paths (`.BrandGlyph`, the single source in `_shared.html`'s
+ * `logo` token) into `.Outline` — so the 漢 outline lives in exactly
+ * one place in the shipped HTML and everything else derives from it.
+ * Building it in JS also means this module creates AND starts the
+ * animation together, with no paint-vs-JS start race to paper over.
+ * Trade-off: the watermark is decorative (aria-hidden) and absent
+ * without JS; the loading indicator appears at DCL, not first paint.
+ *
  * Degradations: reduced-motion (the stroke animation never runs) or a
- * missing watermark → the pass leg collapses and the fonts leg alone
- * gates. A hard cap covers pathologies where animationend never fires
- * (throttled background tab). no-JS never stamps the attribute, so
- * this module is a no-op by absence.
+ * missing watermark/logo → the pass leg collapses and the fonts leg
+ * alone gates. A hard cap covers pathologies where animationend never
+ * fires (throttled background tab). no-JS never stamps the attribute,
+ * so the gate is a no-op by absence (and the watermark simply isn't
+ * built — the settled hero reads fine without its background glyph).
  */
 
 const FONTS_TIMEOUT_MS = 4_000
 const HARD_CAP_MS = 12_000
+const SVGNS = 'http://www.w3.org/2000/svg'
+
+/* Build the Manifesto watermark from the brand logo's paths — the one
+   source of the 漢 outline. The logo paths are stroke-ordered (baked by
+   gen_partials.py), so the array index IS the draw order (--i). */
+const buildWatermark = () => {
+  const $outline = document.querySelector('.Manifesto .Outline')
+  const $glyph = document.querySelector('.BrandGlyph')
+  if (!$outline || !$glyph || $outline.querySelector('svg')) return
+  const $svg = document.createElementNS(SVGNS, 'svg')
+  $svg.setAttribute('viewBox', $glyph.getAttribute('viewBox'))
+  $glyph.querySelectorAll('path').forEach(($path, i) => {
+    const $stroke = document.createElementNS(SVGNS, 'path')
+    $stroke.setAttribute('class', 'Stroke')
+    $stroke.setAttribute('style', `--i: ${i}`)
+    $stroke.setAttribute('pathLength', '1')
+    $stroke.setAttribute('d', $path.getAttribute('d'))
+    $svg.append($stroke)
+  })
+  $outline.append($svg)
+}
 
 const after = (ms) =>
   new Promise((resolve) => {
@@ -104,6 +135,10 @@ const encoreUntilSettled = ($strokes, fonts) =>
   })
 
 const initFontsGate = () => {
+  // Build the watermark first — the ceremony (and the settled hero
+  // decoration) both need it, and only JS knows the logo's paths now.
+  buildWatermark()
+
   const $root = document.documentElement
   if ($root.dataset.fontsGate !== 'loading') return Promise.resolve()
 

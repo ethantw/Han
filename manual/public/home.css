@@ -209,10 +209,28 @@ body.home {
     text-decoration: none;
   }
 
+  /* The mark 漢 is drawn as the heritage OUTLINE (same Shanggu stroke
+     paths as the Manifesto watermark, filled evenodd so the counters
+     stay open) — a vector logo that shows the perfect heritage form
+     even before the webfont lands (fill ≠ color, so the fonts gate's
+     `color: transparent` never touches it) and is pixel-identical to
+     the loaded glyph after (the paths ARE Shanggu's 漢). The real text
+     漢 stays for a11y / selection, rendered invisible; the SVG overlays
+     its em box on the baseline. Both wordmarks (Topbar + hero) share
+     this. */
   [data-part="mark"] {
+    position: relative;
     font-family: var(--han-font-alternative);
     font-weight: 600;
-    color: var(--palette-text);
+    color: transparent;
+  }
+  .BrandGlyph {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    block-size: 1em;
+    inline-size: 1em;
+    fill: var(--palette-text);
   }
   [data-part="dot"] { 
     padding-inline: .125rem;
@@ -792,12 +810,15 @@ han-rail {
       display: flex;
     }
 
-    /* each phrase is display:block (base rule); the hero scale + balanced
-       wrap live here. `text-wrap: balance` (Baseline 2024) keeps a phrase
-       that must wrap (≈390px) from orphaning a single trailing character;
-       at 1280–1920 each phrase fits on one line. */
-    > span:not(.Brand) {
-      /* font-size: clamp(2.5em, 8vw, 4.5em); */
+    /* The taglines live in `.Tagline` (a real span now, so the brand
+       crown beside them can be excluded from the entrance and stay lit
+       through the gate). display:block gives it the hero scale, its own
+       line under the crown, AND a transformable box for hero-rise
+       (transforms don't apply to inline boxes). `text-wrap: balance`
+       (Baseline 2024) keeps the wrapped phrase from orphaning a
+       trailing character. */
+    .Tagline {
+      display: block;
       line-height: 1.25;
       text-wrap: balance;
     }
@@ -894,14 +915,18 @@ han-rail {
      transform-origin note: translateY is a physical axis (transforms have
      no logical form); the shift is tiny and cosmetic. */
   @media (prefers-reduced-motion: no-preference) {
+    /* The brand crown is EXCLUDED from the entrance — it's the logo,
+       lit from first paint (see the gate § below). Only `.Tagline`
+       (the two phrases under the crown) rises, here and in the gate
+       hold; the crown, a sibling `.Brand`, is never touched. */
     .DemoLangSwitch,
-    h1,
+    .Tagline,
     .Lede,
     .Dogfood,
     .InstallChip {
       animation: hero-rise 0.6s ease-out both;
     }
-    h1           { animation-delay: 0.08s; }
+    .Tagline     { animation-delay: 0.08s; }
     .Lede        { animation-delay: 0.16s; }
     .Dogfood     { animation-delay: 0.24s; }
     .InstallChip { animation-delay: 0.32s; }
@@ -958,6 +983,29 @@ han-rail {
   color: transparent !important;
 }
 
+/* …except the brand wordmarks (Topbar + hero crown): the logo greets
+   from first paint. The 漢 is the heritage SVG (fill, already immune),
+   and its `.` + `css` are re-lit here — Latin/punctuation that the
+   fallback face renders perfectly, no webfont needed. The Topbar's
+   `漢字標準格式` subtitle is NOT re-lit: it's CJK, and showing it in a
+   system face is exactly the ugliness the gate exists to hide. */
+:root[data-fonts-gate='loading'] .Brand [data-part="dot"],
+:root[data-fonts-gate='loading'] .Brand [data-part="ext"] {
+  /* System font, not the webfont var: `.` and `css` are ASCII, and
+     their families (--han-font-*) are still in their font-display block
+     period while the slices download — a webfont mid-block renders
+     INVISIBLE text (FOIT), so re-lighting color alone left them blank.
+     A system sans paints them at once; the swap to the real face when
+     it lands is imperceptible on four Latin glyphs. */
+  font-family: ui-sans-serif, system-ui, sans-serif !important;
+}
+:root[data-fonts-gate='loading'] .Brand [data-part="dot"] {
+  color: var(--palette-accent) !important;
+}
+:root[data-fonts-gate='loading'] .Brand [data-part="ext"] {
+  color: var(--palette-text) !important;
+}
+
 /* Selectors stop at the shadow boundary, but custom properties don't:
    this flag rides inheritance into <han-rail>'s shadow, where rail.css
    reads it back with a style query (@container style() resolves
@@ -1007,17 +1055,19 @@ han-rail {
     animation: wm-draw var(--encore-dur, 1.8s) ease-in-out both;
   }
 
-  /* With the gate engaged (either state), the hero-rise quartet never
-     runs and there is NO curtain-up on release: the ceremony (stroke
-     draw) IS the entrance, and the copy stamps in like set type the
-     instant the transparent lifts. Anything that re-animated here
-     would blink content that was already visible — the watermark, the
-     chips, the InstallChip box all flashed when a `body > *` fade
-     (and a re-run hero-rise) briefly returned them to opacity 0
-     (found in verification; the ziano-style gate-reveal was removed
-     for exactly that). hero-rise still greets the no-JS path, where
-     no gate ever stamps. */
-  :root[data-fonts-gate] .Manifesto :is(.DemoLangSwitch, h1, .Lede, .Dogfood, .InstallChip) {
+  /* The hero copy flies in AT gate-open (owner spec: max(first pass,
+     fonts)): while loading, the quartet is held at opacity 0 OUTRIGHT
+     — boxes and all, not just transparent glyphs — so nothing that
+     was visible ever re-animates (the earlier blink: chips and the
+     InstallChip box flashed when hero-rise re-ran over their visible
+     shells; and NO `body > *` curtain-up either — a ziano-style
+     gate-reveal made the already-drawn watermark itself flash).
+     When 'loading' flips to 'ready' this suppression stops matching,
+     the base hero-rise above re-applies, and the stagger counts from
+     the reveal. no-JS never stamps → hero-rise greets on load, as
+     always. */
+  :root[data-fonts-gate='loading'] .Manifesto :is(.DemoLangSwitch, .Tagline, .Lede, .Dogfood, .InstallChip) {
+    opacity: 0;
     animation: none;
   }
 }

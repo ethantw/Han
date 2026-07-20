@@ -176,6 +176,28 @@ main.han {
     &[data-revealed] > hgroup p:first-child::after {
       transform: scaleX(1);
     }
+
+    /* the copy itself rises with the watermark — each direct child
+       (hgroup, then the content blocks) lifts in on a short stagger,
+       the station-side sibling of the hero's hero-rise (owner call,
+       2026-07-19: the hero copy flies at gate-open, the stations' on
+       first scroll). Same one-shot transition idiom as the watermark
+       above; `translate` is physical, same note as there. */
+    > * {
+      opacity: 0;
+      translate: 0 1rem;
+      transition:
+        opacity   450ms ease-out,
+        translate 450ms ease-out
+      ;
+    }
+    &[data-revealed] > * {
+      opacity: 1;
+      translate: 0 0;
+    }
+    &[data-revealed] > :nth-child(2)    { transition-delay: 90ms; }
+    &[data-revealed] > :nth-child(3)    { transition-delay: 180ms; }
+    &[data-revealed] > :nth-child(n+4)  { transition-delay: 270ms; }
   }
 }
 

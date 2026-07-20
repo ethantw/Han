@@ -10,15 +10,24 @@
  *
  * Guards: no IntersectionObserver support, or a reduced-motion preference ⇒
  * stamp every target immediately (skip the observer, skip the animation).
+ *
+ * `opened` (the fonts-gate promise): observation starts NOW, but every
+ * stamp routes through it. The fonts gate can hold the page for seconds
+ * on a slow network, and the user scrolls meanwhile — start observing
+ * only at gate-open and every station toured during the wait misses its
+ * stamp forever (found on real 3G: fly-ins "gone"). Queued this way,
+ * a station reached mid-gate stamps the instant the gate opens — still
+ * on screen, it flies in right as the copy prints.
  */
 
 // The hero (`.Manifesto`) reveals too — its own entrance CSS is owned by
 // the hero module; here we only hand it the `[data-revealed]` hook.
 const REVEAL_SELECTOR = '.Manifesto, .Station'
 
-const reveal = ($el) => $el.setAttribute('data-revealed', '')
-
-export const initReveal = () => {
+export const initReveal = (opened = Promise.resolve()) => {
+  const reveal = ($el) => {
+    opened.then(() => $el.setAttribute('data-revealed', ''))
+  }
   const $targets = Array.from(document.querySelectorAll(REVEAL_SELECTOR))
   if (!$targets.length) return
 

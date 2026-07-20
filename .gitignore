@@ -10,3 +10,7 @@ packages/fonts/
 /docs/
 .commit-script.sh
 .superpowers/
+
+# Python bytecode (gen_partials.py etc.)
+__pycache__/
+*.pyc
