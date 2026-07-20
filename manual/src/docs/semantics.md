@@ -70,4 +70,4 @@ article { --han-em-symbol: sesame; }
 
 ## 字體掛鉤
 
-semantics模組定義了一組字體堆疊變量的基礎值（`--han-font-default`／`--han-font-alternative`／`--han-font-accent`等，預設指向系統泛型）；[fonts模組](./fonts.html)載入時會以四層composite堆疊逐元素覆寫它們。兩個模組因此可獨立使用：只要semantics，字體交給系統；加上fonts，傳承字形與標點字體全套接管。
+semantics模組定義了一組字體堆疊變量的基礎值（`--han-font-default`／`--han-font-alternative`／`--han-font-accent`等，預設指向系統通用字族）；[fonts模組](./fonts.html)載入時會以四層composite堆疊逐元素覆寫它們。兩個模組因此可獨立使用：只要semantics，字體交給系統；加上fonts，傳承字形與標點字體全套接管。

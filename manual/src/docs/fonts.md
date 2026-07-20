@@ -13,7 +13,7 @@ title: 字體
 1. **標點層**——Diantenjeom標點字體（只含標點碼位），按語言慣例選變體；
 2. **Latin層**——web-safe西文字體，字形銳利、不含漢字，漢字自動穿透；
 3. **CJK層**——傳承字形webfont（尚古黑體／明體等，`unicode-range`切片）或系統回落；
-4. **泛型**——`sans-serif`等兜底。
+4. **通用字族**——`sans-serif`等兜底。
 
 模組把這套堆疊在**每個元素**上組裝（而非只在`:root`——各層槽位變量因此能在任何子樹替換），最終產出四份composite：`--han-system-ui`／`--han-sans`／`--han-serif`／`--han-cursive`，並映射到三個語意角色：
 
