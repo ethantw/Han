@@ -60,8 +60,12 @@ function extractHomeI18n(src) {
 }
 
 function localizeHomeI18n(dict, locale) {
+  // `'*'` is a wildcard locale: a value defined once under it applies to
+  // every locale — for strings that don't localise (the brand wordmark
+  // markup, an emoji, a bare number). Precedence: exact locale → wildcard
+  // → default locale.
   return Object.fromEntries(
-    Object.entries(dict).map(([k, v]) => [k, v[locale] ?? v[HOME_DEFAULT_LOCALE]]),
+    Object.entries(dict).map(([k, v]) => [k, v[locale] ?? v['*'] ?? v[HOME_DEFAULT_LOCALE]]),
   )
 }
 
@@ -138,6 +142,9 @@ const I18N_FILE = path.resolve(here, '_i18n.js')
 // template carries its own i18n block (see extractHomeI18n above).
 const HOME_DIR = path.resolve(here, 'home')
 const HOME_LAYOUT = path.resolve(here, '_home.html')
+// Cross-template i18n (the brand `logo` wordmark) — merged into every
+// homepage template's ctx. Not a section, not a per-file dict.
+const HOME_SHARED = path.resolve(HOME_DIR, '_shared.html')
 const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
   'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing',
@@ -386,6 +393,7 @@ async function renderHomepage() {
   const $ = await loadNavI18n()
   const { urlFor } = $
 
+  const shared = extractHomeI18n(await fs.readFile(HOME_SHARED, 'utf-8'))
   const layout = extractHomeI18n(await fs.readFile(HOME_LAYOUT, 'utf-8'))
   const partials = Object.fromEntries(
     await Promise.all(HOME_SECTIONS.map(async name =>
@@ -395,9 +403,12 @@ async function renderHomepage() {
   const ledger = await computeModuleLedger()
 
   for (const locale of HOME_LOCALE_SLUGS) {
-    // Keys are partitioned per file (no cross-file sharing), so merging
-    // every file's localized dict into one ctx is collision-free.
+    // Per-file keys are partitioned (no cross-file sharing), so merging
+    // every file's dict into one ctx is collision-free. `_shared.html`
+    // holds the exception — cross-template tokens (the brand `logo`)
+    // merged FIRST so any file may reference them via `{{ … }}`.
     const t = Object.assign(
+      localizeHomeI18n(shared.dict, locale),
       localizeHomeI18n(layout.dict, locale),
       ...Object.values(partials).map(p => localizeHomeI18n(p.dict, locale)),
     )

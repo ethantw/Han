@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""strokes.json → 首頁模板內聯 SVG（乙・Manifesto 水印＋甲・TypeTray 鉛字盤）。
+"""strokes.json → 首頁生成物（單一來源）。
 
-以標記註解圈住生成區塊，重跑冪等：
-  <!-- stroke-anim:watermark:begin --> … <!-- stroke-anim:watermark:end -->
-  <!-- stroke-anim:slugs:begin -->     … <!-- stroke-anim:slugs:end -->
-首次執行時自動把原始的 .Outline span／.Slugs <p> 換成標記區塊。
+生成兩處：
+  1. home/_shared.html —— 共用 i18n 的 `logo` token：漢.css wordmark，
+     「漢」是尚古傳承字形 SVG 輪廓（筆順序、evenodd 填實）。全站唯一
+     的漢輪廓來源——brand 兩處由 build 以 {{ logo }} 代入，Manifesto
+     水印由 fonts-gate.js 執行時 clone 本 SVG 的 path 建構。整檔生成。
+  2. station-type.html —— 甲・TypeTray 鉛字盤六顆字（漢字標準格式），
+     以標記註解圈住、重跑冪等。
+
+（舊的 Manifesto 水印生成已移除：.Outline 現為空 span，由 JS 填。）
 """
 import json
 import re
@@ -14,7 +19,7 @@ from stroke_order import ORDER
 
 HERE = Path(__file__).parent
 HAN = Path('/Users/yijun/Workspace/hanzi.pro/han')
-MANIFESTO = HAN / 'manual/home/manifesto.html'
+SHARED = HAN / 'manual/home/_shared.html'
 STATION_TYPE = HAN / 'manual/home/station-type.html'
 
 data = json.loads((HERE / 'strokes.json').read_text())
@@ -33,14 +38,33 @@ def paths_of(ch, indent):
     )
 
 
-# ─── 乙・Manifesto 水印（漢，輪廓逐筆） ───
-watermark = f'''<!-- stroke-anim:watermark:begin ({GEN_NOTE}) -->
-  <span class="Outline" aria-hidden="true">
-    <svg viewBox="{VIEWBOX}">
-{paths_of('漢', '      ')}
-    </svg>
-  </span>
-  <!-- stroke-anim:watermark:end -->'''
+# ─── 共用 logo token（漢.css wordmark，「漢」evenodd 填實輪廓） ───
+# wordmark 原子（mark＋dot＋ext）——brand 兩處各自以自己的 .Brand 外殼
+# 包 {{ logo }}（Topbar 是 <a>＋副標、hero 是 <span>）。SVG 的 path 依
+# 筆順序排列（水印逐筆描邊靠此序），填實時 order 無影響。
+brand_paths = ''.join(f'<path d="{s["d"]}" />' for s in chars['漢']['strokes'])
+brand_glyph = (
+    f'<svg class="BrandGlyph" viewBox="{VIEWBOX}" fill-rule="evenodd" aria-hidden="true">'
+    f'{brand_paths}</svg>'
+)
+wordmark = (
+    f'<span data-part="mark">{brand_glyph}漢</span>'
+    f'<span data-part="dot">.</span>'
+    f'<span data-part="ext">css</span>'
+)
+shared = f'''<script type="text/x-i18n">
+{{
+  // 全站共用、跨語言不變的 token（build 併進每個模版 ctx）。
+  // logo：漢.css wordmark 原子。「漢」是尚古傳承字形 SVG 輪廓——單一
+  // 來源，brand 兩處與 Manifesto 水印皆由此衍生（水印由 fonts-gate.js
+  // 執行時 clone 本 SVG 的 path）。
+  // ⚠️ {GEN_NOTE}
+  logo: {{
+    "*": `{wordmark}`,
+  }},
+}}
+</script>
+'''
 
 # ─── 甲・TypeTray 鉛字盤（六顆，鏡像雕刻） ───
 slug_spans = []
@@ -71,12 +95,10 @@ def patch(path, begin, end, block, first_run_re):
     print(f'✓ {path.name} 已更新')
 
 
-patch(
-    MANIFESTO,
-    '<!-- stroke-anim:watermark:begin', ':watermark:end -->',
-    watermark,
-    re.compile(r'<span class="Outline" aria-hidden="true">漢</span>'),
-)
+# _shared.html 整檔生成
+SHARED.write_text(shared)
+print(f'✓ {SHARED.name} 已生成（logo token）')
+
 patch(
     STATION_TYPE,
     '<!-- stroke-anim:slugs:begin', ':slugs:end -->',
