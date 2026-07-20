@@ -89,14 +89,14 @@ setPunctuationRefinementMode(mode)(src)    // 只寫變量
 type ISSMode = 'normal' | 'insert' | 'replace' | 'strict' | 'none'
 
 applyISSWithProbe(src)      // 預設瀏覽器入口——installFallbacks 用的就是它
-applyISS(src)               // 同上但不跑探針，信任引擎自我聲明
+applyISS(src)               // 讀 cascade 但不跑探針，信任引擎自我聲明
 applyISSWithMode(mode)(src) // 指定模式，SSR 入口
 setISSMode(mode)(src)       // 只寫變量
 ```
 
 兩個cascade入口的差別在**UA探針**：部分引擎自稱支援`text-autospace`，卻在行內元素邊界（如`<b>字</b>A`）丟失間隙——`applyISSWithProbe`實測一次（結果快取），中招則在`:root`蓋`--han-probe-autospace: broken`章，CSS據此強制JS側渲染。已知探針狀態或對量測敏感的子樹，用`applyISS`跳過。
 
-與標點組不同的細節：原生支援時ISS**完全不動作**（直接回傳），不把降級值寫進cascade——寫了會誤導style query與`:root`的變量解析。
+引擎原生支援`text-autospace`時，這組JS**完全不動作**、原樣回傳——不寫任何降級值進cascade，寫了會誤導style query與`:root`的變量解析。（對照：標點擠壓組在同情境下是降級續跑、只做懸掛。）
 
 ### 相鄰行裝飾線
 
@@ -109,8 +109,8 @@ markAdjacentLinesWithSelectors(selectors)(src) // 自訂選擇器家族，繞過
 setDecorationInsetMode(mode)(src)             // 只寫變量
 ```
 
-為「後面緊跟同族裝飾線」的元素（`u`/`ins`一族、`s`/`del`一族）打上`data-followed-by-adjacent-line`標記，CSS據此讓兩條線錯開。判定會穿越wrapper下潛與父層上爬，不只看直接兄弟。引擎原生支援`text-decoration-inset`後同樣完全讓位。`markAdjacentLinesWithSelectors`收自訂選擇器陣列，覆寫預設的兩個家族。
+為「後面緊跟同族裝飾線」的元素（`u`/`ins`一族、`s`/`del`一族）打上`data-followed-by-adjacent-line`標記，CSS據此讓兩條線錯開。判定會穿越wrapper下潛與父層上爬，不只看直接兄弟。引擎原生支援`text-decoration-inset`時，這組JS完全不動作、原樣回傳——cascade維持作者宣告的值不被覆寫。`markAdjacentLinesWithSelectors`收自訂選擇器陣列，覆寫預設的兩個家族。
 
 ### 完整導出清單
 
-主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`、上列三組共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
+主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`四支總管，加三組回落（標點擠壓懸掛、跨文種間隙、相鄰行裝飾線）共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。

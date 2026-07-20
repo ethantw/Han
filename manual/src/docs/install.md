@@ -43,7 +43,7 @@ installFallbacks(document.body)
 <script type="module" src="https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest/dist/han.auto.min.js"></script>
 ```
 
-單模組同樣可挑：`dist/han.semantics.min.css`、`dist/han.lines.min.css`、`dist/han.prose.min.css`、`dist/han.fonts.min.css`——四檔之和與整包完全等價。
+也可只掛單模組：`dist/han.semantics.min.css`、`dist/han.lines.min.css`、`dist/han.prose.min.css`、`dist/han.fonts.min.css`——四檔之和與整包完全等價。
 
 ## 產物一覽
 
