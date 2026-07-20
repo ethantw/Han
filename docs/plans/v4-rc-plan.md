@@ -35,6 +35,23 @@
 - arLede whereCount build-time token（純美化）。
 - 非阻塞的首頁潤飾（②卡片寬度、⑤依賴計數命名、⑥ssP1 停頓）。
 
+## Phase 0 基線（2026-07-20，已完成）
+- in-flight work 分四批提交（infra／homepage／docs／回歸修）。工作樹淨。
+- 單元：typecheck 淨、庫 185 過、manual 48 過。
+- e2e（chromium）：**58 過 / 22 敗 / 2 skip**。22 敗分類：
+  - **文檔缺（14）**：docs.spec ×13 ＋ a11y docs intro ×1 → Phase 1
+    寫文檔即修。
+  - **既有庫 bug（5）**：hanging.spec ×3（h-layer 安裝／絕對定位／視覺
+    基線）＋demo.spec ×2 → **Phase 2 查**。⚠️ hanging 是頭牌功能，
+    e2e 紅需確認瀏覽器內是否真壞（庫單元測試綠，疑範文/快照或
+    browser-only bug；與首頁審查③著重號同族）。
+  - **既有 rail-config bug（2）**：home.spec:155（per-group ↺ 預設鈕）
+    ＋module-switches:96（模組關閉未清 var）→ Phase 2 修。
+  - **既有 a11y（1 測 2 違規）**：`select-name`（critical，rail
+    `<select>` 缺無障礙名）＋`valid-lang`（serious）。axe-core 之前
+    沒裝故從沒抓到 → **Phase 2/QA 修**（critical 優先）。
+- 我這次改動的回歸已修：只延 playground、snippet 早載入、pg-ready。
+
 ## 十天排程（7/20–7/30）
 
 ### Phase 0 — 落地＋定範圍（7/20–7/21）
