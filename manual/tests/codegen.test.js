@@ -115,7 +115,7 @@ test('CDN：勾後備 → html pane 含 han.auto script；勾 legacyRuby → mod
   const withFallbacks = paneCode(renderCDN(cfg({ fallbacks: true })), 'html')
   assert.ok(withFallbacks.includes('han.auto.min.js'))
   const withRuby = paneCode(renderCDN(cfg({ legacyRuby: true })), 'html')
-  assert.ok(withRuby.includes('convertLegacyRuby'))
+  assert.ok(withRuby.includes('transpileRuby'))
 })
 
 test('bundler：pm 切換 + webfontDelivery=cdn（預設）→ 安裝清單不含 ziano／dtj 套件', () => {
@@ -372,10 +372,10 @@ test('內嵌：fallbacks on ＋ assets.autoJs → auto bundle 原樣貼進一顆
   assert.ok(html.includes('<script type="module">\n/* auto bundle */</script>'))
 })
 
-test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mod.convertLegacyRuby', () => {
+test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mod.transpileRuby', () => {
   const c = cfg({ webfontDelivery: 'none', legacyRuby: true })
   const html = paneCode(renderInline(c, { hanJs: '/* han.js bundle */' }), 'html')
   assert.ok(html.includes(JSON.stringify('/* han.js bundle */')))
   assert.ok(html.includes('new Blob([src]'))
-  assert.ok(html.includes('mod.convertLegacyRuby(document.body)'))
+  assert.ok(html.includes('mod.transpileRuby(document.body)'))
 })

@@ -14,37 +14,35 @@ export {
   DEFAULT_LOCALE, LOCALE_SLUGS, ALL_LOCALES, HTML_LANG, LOCALE_LABELS,
 }
 
+/*
+ * v4 結構（2026-07-20 定，v4-rc-plan.md 決策 4）：平攤四模組，
+ * 一模組一頁、頁內錨點分節——與代碼（src/css 四模組）、rail 面板
+ * 四組開關一比一對應，讀者從面板到文檔零翻譯。
+ * 舊「基本功能／高級排版」主題分組在 v4 已無對應物，廢除。
+ * RC 後補頁（設計理念／FAQ／辭彙表）直接加條目即可——建構管線
+ * 只 render 有 .md 的頁，側欄自動過濾。
+ */
 export const NAV = [
   {
     title: { hant: '從何開始', en: 'Getting started', ja: 'はじめに' },
     pages: [
-      { id: 'index',           title: { hant: '簡介', en: 'Introduction', ja: '紹介' } },
-      { id: 'philosophy',      title: { hant: '設計理念' } },
-      { id: 'install',         title: { hant: '安裝與啓用' } },
-      { id: 'faq',             title: { hant: '常見問題' } },
-      { id: 'glossary',        title: { hant: '辭彙表' } },
-      { id: 'demo',            title: { hant: '示例' } },
+      { id: 'index',   title: { hant: '簡介', en: 'Introduction', ja: '紹介', hans: '简介', ko: '소개' } },
+      { id: 'install', title: { hant: '安裝與啓用', en: 'Install & enable' } },
     ],
   },
   {
-    title: { hant: '基本功能' },
+    title: { hant: '四大模組', en: 'The four modules' },
     pages: [
-      { id: 'style-normalization', title: { hant: '樣式標準化' } },
-      { id: 'typography',          title: { hant: '字體排印' } },
-    ],
-  },
-  {
-    title: { hant: '高級排版' },
-    pages: [
-      { id: 'sectional', title: { hant: '章節的編排' } },
-      { id: 'inline',    title: { hant: '行的組成' } },
+      { id: 'semantics', title: { hant: '語意樣式標準化', en: 'Semantic styles' } },
+      { id: 'lines',     title: { hant: '行的調整', en: 'Line adjustments' } },
+      { id: 'prose',     title: { hant: '段落間距調整', en: 'Prose spacing' } },
+      { id: 'fonts',     title: { hant: '字體', en: 'Fonts' } },
     ],
   },
   {
     title: { hant: 'API' },
     pages: [
-      { id: 'api-css', title: { hant: 'CSS' } },
-      { id: 'api-js',  title: { hant: 'JavaScript' } },
+      { id: 'api-js', title: { hant: 'JavaScript' } },
     ],
   },
 ]

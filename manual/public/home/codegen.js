@@ -253,8 +253,8 @@ export const renderCDN = (c) => {
     ...(c.legacyRuby
       ? [
           `<script type="module">\n` +
-          `  import { convertLegacyRuby } from '${HAN_JS_URL}'\n` +
-          `  convertLegacyRuby(document.body)\n` +
+          `  import { transpileRuby } from '${HAN_JS_URL}'\n` +
+          `  transpileRuby(document.body)\n` +
           `</script>`,
         ]
       : []),
@@ -300,8 +300,8 @@ export const renderBundler = (c, pm = 'pnpm') => {
     ...(c.fallbacks ? [`import '${SCOPE}han.css/auto'`] : []),
     ...(c.legacyRuby
       ? [
-          `import { convertLegacyRuby } from '${SCOPE}han.css'`,
-          `convertLegacyRuby(document.body)`,
+          `import { transpileRuby } from '${SCOPE}han.css'`,
+          `transpileRuby(document.body)`,
         ]
       : []),
   ]
@@ -364,8 +364,8 @@ export const renderInline = (c, assets = {}) => {
   }
   if (c.legacyRuby && assets.hanJs) {
     // han.min.js 經 esbuild minify 後內部名稱被改寫（例如
-    // `export{Co as convertLegacyRuby}`）——貼完原始碼直接呼叫裸露的
-    // `convertLegacyRuby(...)` 抓不到（那是 export-only 的名字，不是模組作用
+    // `export{Co as transpileRuby}`）——貼完原始碼直接呼叫裸露的
+    // `transpileRuby(...)` 抓不到（那是 export-only 的名字，不是模組作用
     // 域裡的變數）。改用 Blob URL 動態 import：瀏覽器回傳的是標準的模組
     // namespace 物件，一律用「匯出名」查找，不管內部被改寫成什麼名字都拿得到。
     scriptBlocks.push(
@@ -373,7 +373,7 @@ export const renderInline = (c, assets = {}) => {
         '<script type="module">',
         `  const src = ${JSON.stringify(assets.hanJs)}`,
         `  const mod = await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })))`,
-        `  mod.convertLegacyRuby(document.body)`,
+        `  mod.transpileRuby(document.body)`,
         '</script>',
       ].join('\n'),
     )
