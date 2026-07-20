@@ -63,4 +63,54 @@ document.querySelectorAll('ruby').forEach((el) => transpileRuby(el))
 
 ## 低階API
 
-主入口另導出各回落的獨立函式，供精細控制：`refinePunctuation`／`applyISS`／`markAdjacentLines`與其`*WithMode`變體、`setISSMode`等模式設定器，以及型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。一般使用`installFallbacks`即可，低階API面向測試與特殊集成。
+`installFallbacks`是總開關；它調度的三組回落各自也是公開API，供精細控制、SSR管線與測試使用。三組共用同一套命名慣例與型別：
+
+- **無後綴**（`refinePunctuation(src)`）——**讀cascade決定**：從`src`的computed style解析對應的`--han-*`變量值，再按`CSS.supports`與探針決定JS要不要動手。日常入口。
+- **`*WithMode(mode)(src)`**——**呼叫者指定**：跳過cascade解析，原子地「寫入cascade變量＋執行轉換」，兩者永不脫鉤。curried設計（mode先收），便於部分套用與FP組合；SSR（無CSS環境）下這是唯一正確入口——cascade寫入自動跳過，交由客戶端hydration補寫。
+- **`set*Mode(mode)(src)`**——**純設定器**：只把變量寫成`src`元素的inline style，不跑任何轉換。供「先設定、稍後統一執行」的分離式流程。
+
+所有函式吃`Hyperly`（`string`｜`Element`｜`Hype`）、回傳`Hype`，可串進hyperly管線；重複執行冪等。
+
+### 標點擠壓與懸掛
+
+```ts
+type RefineMode = 'auto' | 'compress' | 'hang' | 'none'
+
+refinePunctuation(src)                     // 讀 --han-punctuation-refinement
+refinePunctuationWithMode(mode)(src)       // 指定模式，cascade＋轉換原子同步
+setPunctuationRefinementMode(mode)(src)    // 只寫變量
+```
+
+`refinePunctuation`解析到`none`直接短路；`auto`在原生`text-spacing-trim`可用的引擎降級為只做懸掛（擠壓交給原生），避免重複包裹引擎已處理的標點。
+
+### 跨文種間隙（ISS）
+
+```ts
+type ISSMode = 'normal' | 'insert' | 'replace' | 'strict' | 'none'
+
+applyISSWithProbe(src)      // 預設瀏覽器入口——installFallbacks 用的就是它
+applyISS(src)               // 同上但不跑探針，信任引擎自我聲明
+applyISSWithMode(mode)(src) // 指定模式，SSR 入口
+setISSMode(mode)(src)       // 只寫變量
+```
+
+兩個cascade入口的差別在**UA探針**：部分引擎自稱支援`text-autospace`，卻在行內元素邊界（如`<b>字</b>A`）丟失間隙——`applyISSWithProbe`實測一次（結果快取），中招則在`:root`蓋`--han-probe-autospace: broken`章，CSS據此強制JS側渲染。已知探針狀態或對量測敏感的子樹，用`applyISS`跳過。
+
+與標點組不同的細節：原生支援時ISS**完全不動作**（直接回傳），不把降級值寫進cascade——寫了會誤導style query與`:root`的變量解析。
+
+### 相鄰行裝飾線
+
+```ts
+type DecorationInsetMode = 'auto' | '0'
+
+markAdjacentLines(src)                        // 讀 --han-text-decoration-inset
+markAdjacentLinesWithMode(mode)(src)          // 指定模式
+markAdjacentLinesWithSelectors(selectors)(src) // 自訂選擇器家族，繞過 cascade 與 CSS.supports
+setDecorationInsetMode(mode)(src)             // 只寫變量
+```
+
+為「後面緊跟同族裝飾線」的元素（`u`/`ins`一族、`s`/`del`一族）打上`data-followed-by-adjacent-line`標記，CSS據此讓兩條線錯開。判定會穿越wrapper下潛與父層上爬，不只看直接兄弟。引擎原生支援`text-decoration-inset`後同樣完全讓位。`markAdjacentLinesWithSelectors`收自訂選擇器陣列，覆寫預設的兩個家族。
+
+### 完整導出清單
+
+主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`、上列三組共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
