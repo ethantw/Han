@@ -42,6 +42,14 @@ title: 行的調整
 
 `auto`之下，行尾懸掛不是一律開啓——它跟着各語言的標點字體慣例走（由fonts模組的`--han-punctuation-*`變量推導）：置中式標點（如教育部MOE慣例）不懸掛，偏倚式標點（如JIS、GB）懸掛。繁中另按`--han-use-heritage-glyphs-for-hant`細分：傳承字形webfont為置中標點（不懸掛），系統日文字體回落為偏倚標點（懸掛）。要繞過整套自動判準，直接指定`hang`或`compress`。
 
+## 懸掛與偽元素
+
+行尾懸掛的DOM層回落以絕對定位的懸掛層實現，對少數CSS特性有可觀測的影響，如實列明：
+
+- **`::first-line`**——會受影響：懸掛層脫離常規流，首行的組成因此改變。
+- **`::first-letter`**——理論上受影響，實際上永遠撞不到：懸掛標記只落在收尾標點（逗號、句號、收合括號），這類字符結構上不可能是段落第一個字。
+- **`::selection`、Custom Highlight API、結構型選擇器**（`:first-child`、`:has()`、`:lang()`等）——不受影響：它們查的是文字range與DOM樹，與定位無關。
+
 ## 與JS的關係
 
 擠壓與懸掛的DOM層回落由`installFallbacks`實作（包裹標點字符、安裝懸掛層）；跨文種間隙在未實作`text-autospace`的引擎同理。不引JS時，本模組退化為引擎原生能力所及的部分——設定不會壞，只是覆蓋面小。詳見[JavaScript API](./api-js.html)。
