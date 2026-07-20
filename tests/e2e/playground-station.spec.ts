@@ -37,6 +37,10 @@ const openGroupOf = (page: Page, cfgKey: string) =>
 test.describe('station⑤ playground', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
+    // Playground boots after the fonts gate opens (perf: its 190KB
+    // vendor is deferred past the stroke ceremony). Wait for the ready
+    // signal instead of racing the deferred dynamic import.
+    await page.waitForSelector('html[data-pg-ready]')
   })
 
   test('default sample renders in the preview (Markdown → h2 + em dots)', async ({ page }) => {

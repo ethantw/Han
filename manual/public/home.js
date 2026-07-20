@@ -30,18 +30,19 @@ import '/components/han-rail.js'
 import { initDemoLang } from '/home/demo-lang.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
 import { initRailCollapse } from '/home/rail-collapse.js'
+import { initSnippet } from '/home/snippet.js'
 import { initReveal } from '/home/reveal.js'
 import { gateOpened } from '/home/fonts-gate.js'
 
-// snippet + playground are DEFERRED past the fonts gate (dynamic import
-// below), not statically imported here: playground pulls in the marked
-// (72KB) + DOMPurify (118KB) vendor, ~190KB of fetch+parse+eval that
-// otherwise lands square in the stroke ceremony's ~1.3s window and
-// janks the main-thread dashoffset draw (measured: 5 long-task stalls
-// across the first pass, 158–483ms each under throttle; the encore,
-// running after this storm, stayed smooth). Neither feature is usable
-// while the copy is still hidden, so booting them at gate-open costs
-// nothing and hands the ceremony a quiet thread.
+// Only PLAYGROUND is deferred past the fonts gate (dynamic import
+// below) — it pulls the marked (72KB) + DOMPurify (118KB) vendor,
+// ~190KB of fetch+parse+eval that otherwise lands square in the stroke
+// ceremony's ~1.3s window and janks the main-thread dashoffset draw
+// (measured: 5 long-task stalls across the first pass, 158–483ms each
+// under throttle). It's unusable while the copy is hidden, so booting
+// it at gate-open costs nothing and hands the ceremony a quiet thread.
+// Snippet stays eager: it's light (highlight.js, no vendor) and the
+// rail's module switches drive its panes, so it must be wired at DCL.
 
 /* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // belt-and-suspenders against the boot race).
   const $rail = document.querySelector('han-rail')
   initDemoLang(($target) => $rail?.reapplyFallbacks($target))
+  initSnippet()
   initWritingSwitch()
   initRailCollapse()
   initInstallChips()
@@ -80,17 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // forever (found on real 3G).
   initReveal(gateOpened)
 
-  // Boot the code-content features once the curtain is up — see the
-  // import note above. The rail's initial `han-config-change` fires
-  // during its own (early) upgrade, before the snippet subscribes, so
-  // the snippet seeds from the rail's `config` getter on init anyway;
-  // deferring it changes nothing but the timing.
+  // Boot the playground once the curtain is up — see the import note
+  // above. `data-pg-ready` on <html> signals its wiring is live (the
+  // dynamic import lands a few ms after gate-open); e2e awaits it
+  // instead of racing the deferred load.
   gateOpened.then(async () => {
-    const [{ initSnippet }, { initPlayground }] = await Promise.all([
-      import('/home/snippet.js'),
-      import('/home/playground.js'),
-    ])
-    initSnippet()
+    const { initPlayground } = await import('/home/playground.js')
     initPlayground()
+    document.documentElement.dataset.pgReady = ''
   })
 })

@@ -66,6 +66,7 @@
     "hyperly": "0.2.0-rc.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
     "esbuild": "^0.28.0",
