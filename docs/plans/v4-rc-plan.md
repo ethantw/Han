@@ -63,14 +63,17 @@
 - [ ] **凍結 RC 範圍**＋定兩個決策（見下「待你拍板」）。
 - [ ] 起 `CHANGELOG` 素材：v4 對 v3 的賣點清單。
 
-### Phase 1 — 文檔內容（7/22–7/24）★關鍵路徑
-- [ ] hant 文檔：簡介（`index.md`）、安裝與啓用（`install.md`）、
-      四模組各一頁、字體堆疊／Web 字體、JS 補全（installFallbacks／
-      transpileRuby）。`manual/demo/*.md` 已有現成範例可借。
-- [ ] `_nav.js` 側欄／頁序接好；`docs.spec.ts` 依實際範圍對齊
-      （若 RC 只出 hant＋en，調整 spec 的語系清單）。
-- [ ] 懸掛標點對偽元素影響一節（`docs/TODO.md` 已備好講稿）。
-- [ ] en 文檔（至少簡介＋安裝，供國際採用）。
+### Phase 1 — 文檔內容（7/22–7/24）★關鍵路徑 → **7/20 當日完成，超前兩天**
+- [x] hant 七篇：簡介／安裝／四模組各一／JS API（變量表照 src 盤點
+      agent 的全量清單，未憑印象）。
+- [x] `_nav.js` 平攤四模組結構（決策乙）；docs.spec 對齊（LangSwitcher
+      下拉化）。13 綠。
+- [x] 懸掛對偽元素一節入 lines.md。
+- [x] en 簡介＋安裝；ja/hans/ko 簡介 stub。
+- [x] 順手修：codegen transpileRuby 改名（舊名照抄即炸，RC 阻塞級）、
+      a11y 二違規（select-name critical＋valid-lang）。
+- e2e 基線 22 敗 → **7 敗**（docs 14＋a11y 1 全綠）。餘 7 全屬 Phase 2
+      既有 bug：hanging×3、demo×2、rail-config×2。
 
 ### Phase 2 — 首頁＋庫修正（7/25–7/26）
 - [ ] ①LangDemo：`.LangDemo` 對照格線＋語言標籤（繁簡日韓 tags），
