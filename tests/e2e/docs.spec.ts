@@ -30,7 +30,9 @@ for (const { path, htmlLang, heading } of DOCS_ROUTES) {
 test('docs chrome ships sidebar / crumbs / pager / page-toc / colophon', async ({ page }) => {
   await page.goto('/manual/')
   await expect(page.locator('header.Masthead')).toBeVisible()
-  await expect(page.locator('nav.LangSwitcher')).toBeVisible()
+  // The switcher is the dropdown `div.LangSwitcher` (same component as
+  // the homepage), not the old `nav` — updated 2026-07-20.
+  await expect(page.locator('.LangSwitcher')).toBeVisible()
   await expect(page.locator('nav.Sidebar')).toBeVisible()
   await expect(page.locator('nav.Crumbs')).toBeVisible()
   await expect(page.locator('nav.Pager')).toBeVisible()
@@ -68,16 +70,18 @@ test('pager links to next page on /manual/ (intro → install)', async ({ page }
   await expect(next).toHaveAttribute('href', /install/)
 })
 
-test('lang switcher in docs chrome offers en + ja for the intro page', async ({ page }) => {
-  // / has en/ja translations available; hans/ko intros also exist
-  // post-2026-04-30. So the switcher should expose 4 alternates.
+test('lang switcher in docs chrome lists all five locales for the intro page', async ({ page }) => {
+  // The dropdown switcher lists every locale with an available page —
+  // intro exists in all five — including the active one (marked
+  // aria-current). Updated 2026-07-20 for the dropdown chrome.
   await page.goto('/manual/')
-  const switcher = page.locator('nav.LangSwitcher a[hreflang]')
-  await expect(switcher).toHaveCount(4)
+  const switcher = page.locator('.LangSwitcher a[hreflang]')
+  await expect(switcher).toHaveCount(5)
   const tags = await switcher.evaluateAll(els =>
     els.map(el => el.getAttribute('hreflang')),
   )
-  expect(new Set(tags)).toEqual(new Set(['en', 'ja', 'zh-Hans', 'ko']))
+  expect(new Set(tags)).toEqual(new Set(['zh-Hant', 'en', 'ja', 'zh-Hans', 'ko']))
+  await expect(page.locator('.LangSwitcher a[aria-current]')).toHaveAttribute('hreflang', 'zh-Hant')
 })
 
 test('hans/ko intro page exists (built from src/docs/<loc>/index.md stubs)', async ({ page }) => {
