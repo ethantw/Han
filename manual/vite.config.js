@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { glob } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
+import esbuild from 'esbuild'
 import { defineConfig } from 'vite'
 import MarkdownIt from 'markdown-it'
 import { cjkEmphasis } from './_md-cjk-emphasis.js'
@@ -216,6 +217,43 @@ async function emitVendor() {
   for (const name of Object.keys(VENDOR_ASSETS)) {
     await fs.writeFile(path.join(outDir, name), await readVendor(name))
   }
+}
+
+/**
+ * Inline the homepage CSS at BUILD time — `public/home.css` `@import`s its
+ * section partials (`home/controls.css`, `home/stations.css`, …), which
+ * lets us author in small readable files; esbuild bundles them into one
+ * `dist/home.css` so production ships a single stylesheet, not an
+ * `@import` waterfall of render-blocking requests. The SAME tool + shape
+ * as the library build (`build/library.js`); NOT minified, mirroring
+ * `dist/han.css` (readable in devtools — brotli at the edge handles the
+ * bytes). Dev keeps the raw `@import` files (cascade is identical, the
+ * waterfall doesn't matter locally), so no dev middleware is needed.
+ *
+ * Runs in `closeBundle`, after Vite has copied `public/` verbatim into
+ * `dist/`: we overwrite the raw `dist/home.css` with the bundled one.
+ * Add more `@import`ed partials freely — they all fold into this output.
+ *
+ * `stations.css` is then deleted from `dist` — nothing else references
+ * it, so its standalone copy is dead once inlined. `controls.css` is
+ * NOT deleted: it's dual-homed — `<han-rail>` fetches it standalone into
+ * its shadow root (`han-rail.js` loadSheets), so the file must survive.
+ * Its bytes do appear twice (inlined here for the light DOM's critical
+ * path, plus the standalone the rail fetches async after the gate) — a
+ * ~16KB overlap, brotli'd and cached, worth trading for a waterfall-free
+ * first paint.
+ */
+async function bundleHomeCss() {
+  await esbuild.build({
+    entryPoints: [path.join(here, 'public', 'home.css')],
+    bundle: true,
+    outfile: path.join(MANUAL_DIST, 'home.css'),
+    allowOverwrite: true,
+    loader: { '.woff2': 'file' },
+    assetNames: '[name]',
+    logLevel: 'warning',
+  })
+  await fs.rm(path.join(MANUAL_DIST, 'home', 'stations.css'), { force: true })
 }
 
 /** Frontmatter parser — only `key: value` lines, no nested structures. */
@@ -637,6 +675,7 @@ function hanManualPlugin() {
     async closeBundle() {
       await emitRailTemplates()
       await emitVendor()
+      await bundleHomeCss()
     },
 
     configureServer(server) {
