@@ -202,11 +202,38 @@ body.home {
  * hairline rather than a decorative `<span>`. */
 
 .Brand {
+  /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
+   * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
+   * per-font 常數，故絕對定位的 .BrandGlyph 要靠這幾個值換算（見該規則）。 */
+  --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880） */
+  --brand-glyph-below-baseline: 0.12em;  /* 基線以下 */
+  /* 行盒度量 hhea（fontTools 讀 Shanggu／Diantenjeom 同值）。此字
+   * USE_TYPO_METRICS 未設 → 瀏覽器排版用 hhea/win，非 sTypo。⚠ 勿用 canvas
+   * fontBoundingBox：被 Chrome 捨入成整數 px，多 ~0.005em 誤差。 */
+  --brand-line-ascent: 1.151em;          /* hhea ascender 1151 / upem 1000 */
+  --brand-line-descent: 0.286em;         /* hhea |descender| 286 / upem 1000 */
+
   & {
     display: inline-flex;
     align-items: baseline;
     gap: 0;
     text-decoration: none;
+    line-height: 1;
+  }
+
+  /* G3 字徽——favicon 同款符號，字標左側。fill/stroke 走 palette，隨主題
+     明暗自動切（暗色 --palette-text → 淺，括號跟著變亮）。字面高度 ~1em、
+     視覺置中對齊字標。 */
+  .BrandMark {
+    flex: 0 0 auto;
+    align-self: center;
+    /* margin-inline-end: 0.125em; */
+    block-size: 1em;
+    inline-size: 1em;
+    /* translate: 0 0.03em; */
+
+    circle { fill: var(--palette-accent); }
+    .brace { stroke: var(--palette-text); }
   }
 
   /* The mark 漢 is drawn as the heritage OUTLINE (same Shanggu stroke
@@ -225,14 +252,24 @@ body.home {
     color: transparent;
   }
   .BrandGlyph {
+    /* 絕對定位只能錨盒邊，吃不到 vertical-align；且 inline <svg> 的基線被
+     * Chrome 定在下緣上方 ~0.066em（非 replaced 的下緣邊），vertical-align
+     * 對它也失效——只能用實測度量把 SVG 頂錨到「文字基線 − 0.88em」：
+     *   文字基線距 line-box 頂 = 0.5lh + (line-asc − line-descent)/2
+     * 兩套度量差是 per-font 常數（此字 ≈ −0.44em），CSS 取不到 hhea 只能
+     * 寫死，性質同 --brand-glyph-baseline。實測殘差 0.004em。裝飾用途可改
+     * mask 空盒＋vertical-align 完全 font-independent，惟此 <path> 被
+     * fonts-gate.js 描邊動畫 clone，必須維持真 inline SVG，故走此路。 */
     position: absolute;
-    inset-block-end: 0;
+    inset-block-start: calc(
+      0.5lh + (var(--brand-line-ascent) - var(--brand-line-descent)) / 2 - var(--brand-glyph-baseline)
+    );
     inset-inline-start: 0;
     block-size: 1em;
     inline-size: 1em;
     fill: var(--palette-text);
   }
-  [data-part="dot"] { 
+  [data-part="dot"] {
     padding-inline: .125rem;
     font-family: var(--han-font-alternative);
     font-weight: 600;
