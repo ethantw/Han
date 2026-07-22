@@ -45,6 +45,12 @@ export const NAV = [
       { id: 'api-js', title: { hant: 'JavaScript' } },
     ],
   },
+  {
+    title: { hant: '遷移', en: 'Migration' },
+    pages: [
+      { id: 'migration', title: { hant: '從 v3 遷移', en: 'Migrating from v3' } },
+    ],
+  },
 ]
 
 /** Resolve `node.title[locale] ?? node.title[DEFAULT_LOCALE]`. */
