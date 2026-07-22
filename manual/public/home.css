@@ -561,9 +561,87 @@ body.home {
  * Top form: normal-flow rows, sticky at ≥64rem (unchanged). <52rem: the
  * bottom sheet, both forms (unchanged) — collapse doesn't apply there.
  *
- * FOUC guard — reserve the box but hide content until the element
- * upgrades and its shadow renders (visibility keeps the grid cell). */
-han-rail:not(:defined) { visibility: hidden; }
+ * Loading — the rail is dynamic-imported at gate-open (home.js) and its
+ * shadow sheets fetch async, so instead of veiling the box we fill it with
+ * the 字徽 loader: a LIGHT-DOM `.RailLoading` fallback inside <han-rail>.
+ * It renders while the element is undefined AND through the sheet fetch
+ * (the component defers attachShadow until sheets land — han-rail.js); the
+ * moment the shadow attaches (no <slot>) the light DOM stops rendering and
+ * the toolbar replaces it. No `:not(:defined)` veil needed — the loader IS
+ * the intended pre-upgrade content, and it self-clears on upgrade. */
+.RailLoading {
+  /* Loader keeps its OWN 朱砂×琥珀 identity (the approved palette) rather
+     than the site's green --palette-accent; themed via light-dark() like
+     the rest of the page (color-scheme is set by the dark-mode recipe).
+     light-dark() — Baseline 2024. */
+  --l-muted:      light-dark(#cdc6b8, #4a463d);
+  --l-accent:     light-dark(#cf4b2e, #f0664a);
+  --l-accent-2:   light-dark(#d99a3c, #e8b866);
+  --l-brace:      light-dark(#bcb4a5, #514c43);
+  --l-brace-deep: light-dark(#8f8674, #7d7666);
+  --l-dur: 2.6s;
+
+  display: grid;
+  place-items: center;
+  block-size: 100%;
+  min-block-size: 8rem;
+  padding-block: 2.5rem;
+}
+.RailLoaderMark {
+  display: block;
+  overflow: visible;
+
+  & circle {
+    fill: var(--l-muted);
+    transform-box: fill-box;   /* scale about each circle's own centre */
+    transform-origin: center;
+    animation: railBloom var(--l-dur) cubic-bezier(.45, 0, .25, 1) infinite;
+  }
+  /* three circles, one downward wave — staggered by negative delay */
+  & .d2 { animation-delay: calc(var(--l-dur) * -0.85); }
+  & .d3 { animation-delay: calc(var(--l-dur) * -0.70); }
+
+  & .brace-base {
+    fill: none;
+    stroke: var(--l-brace);
+    stroke-width: 6.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* the 括號 stays its resting colour; a short, slightly-deeper segment
+     re-traces it once every ~4 breaths, and only after the first 3 —
+     deliberately unobtrusive, the three circles are the subject. */
+  & .brace-trace {
+    fill: none;
+    stroke: var(--l-brace-deep);
+    stroke-width: 6.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 12 88;
+    opacity: 0;
+    animation: railRetrace calc(var(--l-dur) * 4) ease-in-out infinite;
+    animation-delay: calc(var(--l-dur) * 3);
+  }
+}
+
+@keyframes railBloom {
+  0%, 100% { transform: scale(1);    fill: var(--l-muted); }
+  28%      { transform: scale(1.26); fill: var(--l-accent); }
+  55%      { transform: scale(1.04); fill: var(--l-accent-2); }
+  80%      { transform: scale(1);    fill: var(--l-muted); }
+}
+@keyframes railRetrace {
+  0%   { stroke-dashoffset: 100; opacity: 0; }
+  1%   { opacity: 0.8; }
+  6%   { stroke-dashoffset: 0;   opacity: 0.8; }
+  8%   { opacity: 0; }
+  100% { stroke-dashoffset: 0;   opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .RailLoaderMark circle,
+  .RailLoaderMark .brace-trace { animation: none; }
+  .RailLoaderMark .brace-trace { opacity: 0; }
+}
 
 body:has(han-rail[form="side"]) {
   /* Side form ≥52rem — the rail is a full-height column; header + main +

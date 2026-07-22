@@ -25,12 +25,51 @@
  *   methods reset() · reapplyFallbacks($target?)
  *   prop    config (the frozen copy)
  */
-import { cssVars } from '/home/codegen.js'
+import { cssVars, DEFAULTS } from '/home/codegen.js'
 import { TEMPLATES } from '/home/rail-templates.js'
 import { mountRailConfig } from '/components/rail-config.js'
 import { mountRailMetrics } from '/components/rail-metrics.js'
 
 const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
+
+// Config persistence — same contract as the theme / rail-collapsed toggles:
+// the config survives reloads in localStorage, and a pre-paint inline script
+// (_home.html, in <main class="han">) restores it BEFORE first paint so a
+// returning visitor never waits for this (gate-open-deferred) module. We
+// store { config, vars }: `vars` is the precomputed cssVars() output the
+// inline script stamps without any codegen logic.
+const STORAGE_KEY = 'han-rail-config'
+
+/** Read the saved config, deep-merged OVER DEFAULTS so a config written by an
+ *  older schema can't leave required keys undefined (structuredClone(initial)
+ *  in the config core would otherwise carry those gaps into the controls).
+ *  Returns undefined when nothing (or garbage) is stored → caller falls back
+ *  to DEFAULTS. */
+const readStored = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return undefined
+    const { config } = JSON.parse(raw)
+    if (!config || typeof config !== 'object') return undefined
+    return {
+      ...DEFAULTS,
+      ...config,
+      punct: { ...DEFAULTS.punct, ...config.punct },
+      metrics: { ...DEFAULTS.metrics, ...config.metrics },
+    }
+  } catch {
+    return undefined
+  }
+}
+
+const persist = (config, vars) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ config, vars }))
+  } catch {
+    /* storage disabled / quota — the live config still works, just won't
+       survive the reload; the pre-paint restore simply finds nothing. */
+  }
+}
 
 /** Map a `lang` attribute (a locale slug OR an HTML language tag) to one
  *  of the five template slugs; null when it matches none. */
@@ -90,7 +129,10 @@ class HanRail extends HTMLElement {
   #warned = false
 
   connectedCallback() {
-    if (!this.shadowRoot) this.attachShadow({ mode: 'open' })
+    // NB: the shadow is attached inside #render, AFTER the async sheet
+    // fetch — not here. Until it attaches, the element has no shadow root,
+    // so its light-DOM fallback (the 字徽 loader) keeps rendering. That's
+    // what lets the loader cover the whole load, not just the paint gap.
     this.#render()
   }
 
@@ -110,6 +152,10 @@ class HanRail extends HTMLElement {
       source,
     }
     this.#detail = detail.config
+    // Persist every real change (not the connect-time 'init', which either
+    // replays what's already stored or writes untouched DEFAULTS). 'reset'
+    // persists too — so a returning visitor gets the reset-to-default state.
+    if (source !== 'init') persist(detail.config, detail.vars)
     this.dispatchEvent(
       new CustomEvent(
         'han-config-change',
@@ -132,12 +178,20 @@ class HanRail extends HTMLElement {
   }
 
   async #render() {
-    // FOUC guard: sheets ready BEFORE any markup is injected.
+    // Sheets ready BEFORE the shadow attaches — the FOUC guard AND the
+    // loading hand-off in one: while this awaits, the element has no shadow,
+    // so the light-DOM 字徽 loader shows; attaching the shadow (it has no
+    // <slot>) atomically stops the light DOM rendering and swaps in the
+    // toolbar — zero flash, and the loader spans the entire async load.
     const sheets = await loadSheets()
+    if (!this.shadowRoot) this.attachShadow({ mode: 'open' })
     this.shadowRoot.adoptedStyleSheets = sheets
 
-    // Preserve config across a lang re-render (fresh controls, same state).
-    const initial = this.#config?.config
+    // Seed config: a lang re-render keeps the live state; the FIRST mount
+    // seeds from localStorage (the same key the pre-paint script restored),
+    // so the toolbar's controls come up reflecting the saved config. null →
+    // mountRailConfig falls back to DEFAULTS.
+    const initial = this.#config?.config ?? readStored()
     const locale = resolveLocale(this)
     const tpl = TEMPLATES[locale] ?? TEMPLATES.hant
     this.shadowRoot.replaceChildren(
