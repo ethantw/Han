@@ -105,7 +105,7 @@ const renderOutput = async (config, ui) => {
   // station-craft's Override), not just the panes. Sharing one stable
   // selector with home.js's seed call is what stops each rewrite from
   // wiping the other's ranges. Safe to re-run unconditionally per rewrite.
-  highlightAll('main.han pre > code')
+  highlightAll('main pre > code')
 }
 
 /* pm select — 建一次、重繪時搬進當下那顆 CLI pane 的 figcaption（見

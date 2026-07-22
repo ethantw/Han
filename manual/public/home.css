@@ -14,7 +14,7 @@
  * composites (the site dogfoods the framework; the rail drives them).
  *
  * This base file owns tokens, the type ramp, base elements, and shared
- * chrome (Brand, Toggle, LangSwitcher, ThemeToggle, Topbar, VersionTag,
+ * chrome (Brand, Toggle, LangSwitcher, ThemeToggle, header, VersionTag,
  * code blocks, selection). Section-specific styles live in
  * `home/<section>.css`, imported below.
  */
@@ -90,7 +90,7 @@
    * new hues. `-a` is the warm-paper (raised-ink in dark) base, `-b` a
    * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
    * Baseline 2023) that lifts to the paper side on dark so it still
-   * reads. Consumed only by `.Station` / `.Closing`. */
+   * reads. Consumed only by `[data-station]` / `.Closing`. */
   --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
   --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));
   --palette-wm:
@@ -99,6 +99,16 @@
       color-mix(in srgb, var(--color-paper-deep) 6%, transparent)
     )
   ;
+
+  /* ── type-case slug (裝飾) ─────────────────────────────────────────
+   * 活字字盤／字面的金屬色——恆深、雙主題不變（比照 --palette-ink 的常值語意
+   * token）。stations.css 的 `.Slugs` 消費這組語意 token，而非直接吃
+   * `--color-*` primitive（two-tier）。梯度暗端與斜角高光／陰影仍用
+   * `white` ／ `--color-black` 的結構性光影（同 web-style dark-surface 例）。 */
+  --palette-slug:            var(--color-ink);       /* 字盤／字面金屬基色 */
+  --palette-slug-deep:       var(--color-ink-deep);  /* 金屬梯度暗端 */
+  --palette-slug-ink:        var(--color-mist);      /* 金屬面上的字 */
+  --palette-slug-ink-accent: var(--color-white);     /* 上墨（accent）字面上的字 */
 
   /* ── type ramp ────────────────────────────────────────────────────
    * ~5 content sizes (display / heading / lede / body / small), reused
@@ -523,8 +533,8 @@ body.home {
     /* em, not px — shape()'s whole point is scaling to the box; ties the
        icon to the toggle's own font-size instead of a hardcoded 18px
        (18px at the 16px root default, same footprint as before). */
-    width: 1.125em;
-    height: 1.125em;
+    inline-size: 1.125em;
+    block-size: 1.125em;
     background-color: currentColor;
   }
   .Icon[data-name="sun"]  { clip-path: var(--path-sun); }
@@ -541,13 +551,13 @@ body.home {
 }
 
 /* ─── Topbar (homepage chrome — brand, nav, lang switcher, version) ─
- * `<header class="Topbar"><a class="Brand">…</a><nav><a>…</a>…
+ * `<header><a class="Brand">…</a><nav><a>…</a>…
  *  {{ langSwitcher }}<label class="ThemeToggle">…</label>
  *  <span class="VersionTag">…</span></nav></header>`, mounted in
- * `_home.html` above the rail + `<main class="han">`. Deliberately NOT
+ * `_home.html` above the rail + `<main>`. Deliberately NOT
  * sticky (the side rail assumes the Topbar scrolls away — see rail.css). */
 
-.Topbar {
+body > header {
   & {
     display: flex;
     align-items: center;
@@ -714,7 +724,7 @@ body:has(han-rail[form="side"]) {
          into that intrinsic size in Chromium — inflating the track ~22px
          and forcing a horizontal page scroll at 64–68rem. `minmax(0, …)`
          drops the min-content floor so the track tracks the viewport;
-         `min-inline-size: 0` on `main.han` (below) is the same guard on
+         `min-inline-size: 0` on `main` (below) is the same guard on
          the grid ITEM. (grid minmax — Baseline 2020.) */
       grid-template-columns: var(--rail-col) minmax(0, 1fr);
       /* Explicit rows are load-bearing: `-1` in grid-row resolves against
@@ -734,14 +744,14 @@ body:has(han-rail[form="side"]) {
        min-content — the grid-item twin of the `minmax(0, 1fr)` track
        above; without it a wide/clipped descendant can still blow the
        column out. */
-    > main.han { grid-column: 2; min-inline-size: 0; }
+    > main { grid-column: 2; min-inline-size: 0; }
 
     /* checked = collapsed — the checkbox is the single source of truth
        (dark-mode recipe); pre-paint script restores it, JS only persists. */
     &:has(.RailToggle input:checked) { --rail-col: 0px; }
   }
 
-  /* 52–64rem — narrower rail column so it doesn't crowd main.han at
+  /* 52–64rem — narrower rail column so it doesn't crowd main at
      tablet widths. Below 52rem both forms collapse to the sheet. */
   @media (min-width: 52rem) and (max-width: 63.9375rem) {
     & { --rail-col: 240px; }
@@ -910,7 +920,7 @@ han-rail {
  * higher-specificity `.Manifesto`-scoped selectors below win over the base
  * by both specificity and cascade order (home.css follows the @imports).
  *
- * The Manifesto sits inside `main.han`, where stations.css re-declares the
+ * The Manifesto sits inside `main`, where stations.css re-declares the
  * `--fs-*` ramp in `em` (rail-slider-scalable) — so the glyphs and copy
  * here track the live specimen size, by design. */
 
@@ -933,7 +943,7 @@ han-rail {
      the two tagline phrases below it carry the hero's display scale. The
      --fs-display ramp token is untouched — this is a hero-LOCAL clamp on the
      phrase lines only (contract § Hero permits the local override). Because
-     the ramp re-resolves in `em` inside main.han, the h1 box itself stays at
+     the ramp re-resolves in `em` inside main, the h1 box itself stays at
      the base step, so the crown — sized off --fs-lede/-small by .Brand's own
      rule — reads as a subtitle rather than inheriting the display size; only
      the phrase spans take the clamp. */

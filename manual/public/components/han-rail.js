@@ -11,7 +11,7 @@
  * Public contract (the cross-boundary interface — see the component
  * spec; changing it needs owner sign-off):
  *   attrs   lang (hant|hans|en|ja|ko, dynamic) · target (CSS selector,
- *           default `main.han`) · form (side|top, pure-CSS in the shadow)
+ *           default `main`) · form (side|top, pure-CSS in the shadow)
  *           (page-level collapse is NOT component API — the page's
  *           `.RailToggle` checkbox + `body:has(input:checked)` own it,
  *           dark-mode recipe; see home.css § han-rail.)
@@ -34,7 +34,7 @@ const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
 
 // Config persistence — same contract as the theme / rail-collapsed toggles:
 // the config survives reloads in localStorage, and a pre-paint inline script
-// (_home.html, in <main class="han">) restores it BEFORE first paint so a
+// (_home.html, in <main>) restores it BEFORE first paint so a
 // returning visitor never waits for this (gate-open-deferred) module. We
 // store { config, vars }: `vars` is the precomputed cssVars() output the
 // inline script stamps without any codegen logic.
@@ -169,7 +169,7 @@ class HanRail extends HTMLElement {
   }
 
   #resolveTarget() {
-    const sel = this.getAttribute('target') || 'main.han'
+    const sel = this.getAttribute('target') || 'main'
     this.#target = document.querySelector(sel)
     if (!this.#target && !this.#warned) {
       this.#warned = true

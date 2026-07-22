@@ -11,4 +11,4 @@
  */
 import { highlightAll } from '/home/highlight.js'
 
-addEventListener('DOMContentLoaded', () => highlightAll('main.han pre > code'))
+addEventListener('DOMContentLoaded', () => highlightAll('main pre > code'))

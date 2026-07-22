@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * Stations — the content sections inside `<main class="han">`
+ * Stations — the content sections inside `<main>`
  * (manifesto, station-semantics/-type/-lines/-snippet, closing).
  *
  * HP-4: the running copy is itself the specimen the rail acts on — so
@@ -17,7 +17,7 @@
 
 /* ─── em-based type ramp inside the specimen ─────────────────────────
  * The rail's 字級 slider writes an inline `font-size` (px) on
- * `main.han`; INSIDE it the `--fs-*` tokens re-resolve in em so every
+ * `main`; INSIDE it the `--fs-*` tokens re-resolve in em so every
  * heading/caption scales as a multiple of that base (ziano playground
  * pattern). The rem originals in home.css would pin to :root and
  * ignore the slider — page chrome outside <main> keeps them. Custom
@@ -27,7 +27,7 @@
  * sits on a child of a base-sized parent, never nested inside another
  * `--fs-*`-sized element. */
 
-main.han {
+main {
   --fs-display: clamp(2em, 8vw, 4em);
   --fs-heading: 1.5em;
   --fs-lede:    1.125em;
@@ -38,7 +38,7 @@ main.han {
   --fs-micro:   0.625em;
 }
 
-/* ─── Station plate (shared frame for the six `.Station` sections) ───
+/* ─── Station plate (shared frame for the six `[data-station]` sections) ───
  * Each station is a centred column carrying an alternating ground
  * (`data-ground="a|b"` — an EXPLICIT hook, robust where `:nth-of-type`
  * would miscount the `<section>` siblings inside `<main>`), a giant serif
@@ -48,7 +48,7 @@ main.han {
  * lands above the ground but under the (non-positioned) content, and
  * `overflow:clip` (Baseline 2023) crops the oversized glyph to the box. */
 
-.Station {
+[data-station] {
   & {
     position: relative;
     isolation: isolate;
@@ -147,7 +147,7 @@ main.han {
  * or no-IO ⇒ reveal.js sets the attribute immediately, harmlessly. */
 
 @media (prefers-reduced-motion: no-preference) {
-  .Station {
+  [data-station] {
     /* watermark fades and rises into place. `translate` is a physical
        transform (CSS has no logical translate) — the rise reads the same
        in vertical mode, so it stays. */
@@ -235,7 +235,7 @@ main.han {
  * pulls in so the pair reads as a unit (`:has()` — Baseline 2023; the
  * lede owns the gap to the content below). */
 
-.Station {
+[data-station] {
   > hgroup:has(+ .Lede) { margin-block-end: 1rem; }
 
   > .Lede {
@@ -331,13 +331,13 @@ main.han {
 
 
 /* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
-   `rail-metrics.js` sets `main.han.dataset.writing`) ═══════════════
+   `rail-metrics.js` sets `main.dataset.writing`) ═══════════════
    Flips the WHOLE page vertical-rl — dramatic by design (owner
    request). Bounded block-size + horizontal scroll so it doesn't blow
    out the viewport; station④'s interactive snippet panel and the
    demo-lang chip row stay horizontal-tb inside it. */
 
-main.han[data-writing="vertical"] {
+main[data-writing="vertical"] {
   & {
     writing-mode: vertical-rl;
     max-block-size: 85dvh;
@@ -363,7 +363,7 @@ main.han[data-writing="vertical"] {
 /* ═══ DemoLangSwitch ═════════════════════════════════════════════
    Chip row, top-right of the content column — switches which language
    the SPECIMEN (station copy) demonstrates, independent of the site's
-   own UI locale. JS (`demo-lang.js`) sets `main.han[lang]`; `:lang()`
+   own UI locale. JS (`demo-lang.js`) sets `main[lang]`; `:lang()`
    rules re-evaluate natively from there. */
 
 .DemoLangSwitch {
@@ -414,7 +414,7 @@ main.han[data-writing="vertical"] {
 
 .Manifesto {
   & {
-    max-inline-size: var(--max-w-layout);
+    /* max-inline-size: var(--max-w-layout); */
     margin-inline: auto;
     padding: 7rem var(--gutter) 5.5rem;
   }
@@ -550,11 +550,17 @@ main.han[data-writing="vertical"] {
 
     &:last-child { border-inline-end: 0; }
 
-    /* the specimen glyph (font-family set inline per face) */
+    /* the specimen glyph — one of the three composite faces, keyed by
+       `data-face` on the span (the styling hook is the attribute, not an
+       inline `style` — web-style.md). */
     span {
       font-size: var(--fs-heading);
       line-height: 1;
       color: var(--palette-text);
+
+      &[data-face="sans"]    { font-family: var(--han-font-default); }
+      &[data-face="serif"]   { font-family: var(--han-font-alternative); }
+      &[data-face="cursive"] { font-family: var(--han-font-accent); }
     }
 
     small {
@@ -634,8 +640,8 @@ main.han[data-writing="vertical"] {
       background:
         linear-gradient(
           158deg,
-          color-mix(in srgb, var(--color-ink) 82%, white),
-          var(--color-ink-deep)
+          color-mix(in srgb, var(--palette-slug) 82%, white),
+          var(--palette-slug-deep)
         )
       ;
       box-shadow:
@@ -653,12 +659,12 @@ main.han[data-writing="vertical"] {
       font-family: var(--han-font-alternative);
       font-size: var(--fs-heading);
       line-height: 1;
-      color: color-mix(in srgb, var(--color-mist) 55%, transparent);
+      color: color-mix(in srgb, var(--palette-slug-ink) 55%, transparent);
       background:
         linear-gradient(
           152deg,
-          color-mix(in srgb, var(--color-ink) 62%, white),
-          var(--color-ink-deep)
+          color-mix(in srgb, var(--palette-slug) 62%, white),
+          var(--palette-slug-deep)
         )
       ;
       border-radius: var(--r-1);
@@ -689,12 +695,12 @@ main.han[data-writing="vertical"] {
 
     /* the inked slug — the accent face, ready to strike paper */
     [data-accent] {
-      color: var(--color-white);
+      color: var(--palette-slug-ink-accent);
       background:
         linear-gradient(
           152deg,
           color-mix(in srgb, var(--palette-accent) 88%, white),
-          color-mix(in srgb, var(--palette-accent) 62%, var(--color-ink-deep))
+          color-mix(in srgb, var(--palette-accent) 62%, var(--palette-slug-deep))
         )
       ;
     }
@@ -735,7 +741,7 @@ main.han[data-writing="vertical"] {
  * `--c` (slug index) and `--i` (stroke index) are stamped by the
  * generator; `both` holds every path invisible through its delay. */
 @media (prefers-reduced-motion: no-preference) {
-  .Station[data-revealed] .Slugs .Stroke {
+  [data-station][data-revealed] .Slugs .Stroke {
     --at: calc(var(--c) * 0.1s + var(--i) * 0.14s);
     stroke: currentColor;
     /* USER UNITS (42/1000 ≈ 1px at the ~24px glyph box) — NOT
@@ -1301,7 +1307,7 @@ main.han[data-writing="vertical"] {
 
 
 /* ═══ Closing ═════════════════════════════════════════════════════
-   A modest footer band, not a `.Station` (full-bleed panel, centred
+   A modest footer band, not a `[data-station]` (full-bleed panel, centred
    content, no eyebrow/measure rhythm). */
 
 .Closing {
@@ -1320,7 +1326,7 @@ main.han[data-writing="vertical"] {
   }
 
   /* the mirror watermark — a single 漢 centred behind the sign-off. Same
-     mechanism as `.Station::before` (z-index:-1 under an isolate context),
+     mechanism as `[data-station]::before` (z-index:-1 under an isolate context),
      centred rather than corner-anchored. Always in its settled state (the
      Closing isn't a reveal target). */
   &::before {

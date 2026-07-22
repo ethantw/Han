@@ -4,7 +4,7 @@
  * The playground rail is now the `<han-rail>` web component: importing
  * `/components/han-rail.js` registers it, and it self-initializes on
  * connect (adopt shadow sheets → inject its locale template → wire its
- * controls to `main.han` → dispatch the initial `han-config-change`).
+ * controls to `main` → dispatch the initial `han-config-change`).
  * So this entry no longer calls `initConfigurator` / `initMetrics` —
  * those moved into the component (`components/rail-config.js` +
  * `rail-metrics.js`). It wires the page-side chrome the component
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // change — the highlighter's registries are global and cleared wholesale
   // per call, so both paths MUST scan the same set of live <code> or one
   // wipes the other. Feature-detect + lang-resolution live inside.
-  highlightAll('main.han pre > code')
+  highlightAll('main pre > code')
   // The fonts gate (pre-paint stamp → 漢-stroke ceremony → reveal) runs
   // as its own early-mounted module (_home.html); reveal.js starts
   // OBSERVING now but routes every data-revealed stamp through the

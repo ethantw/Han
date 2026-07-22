@@ -3,7 +3,7 @@
  *
  * The configurator half of the old `home/configurator.js`, now scoped to
  * the component's shadow root (controls) and a light-DOM `target`
- * element (`main.han` by default — where the `--han-*` deviations and
+ * element (`main` by default — where the `--han-*` deviations and
  * the metrics inline style land). The OUTPUT half (station④'s code
  * panes) split out to `home/snippet.js`, which subscribes to the
  * `han-config-change` event this module broadcasts through `dispatch`.

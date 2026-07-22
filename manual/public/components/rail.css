@@ -8,7 +8,7 @@
  * primitives).
  *
  * PAGE-LAYOUT lives on the mounting page, NOT here: the side/top grid
- * (which also places `main.han`), sticky positioning, and the sheet's
+ * (which also places `main`), sticky positioning, and the sheet's
  * fixed viewport anchoring are home.css rules on the `han-rail` element
  * (see home.css § han-rail). This file only styles what's INSIDE the
  * shadow: the flex column, its background/hairlines, the controls
@@ -29,7 +29,7 @@
 }
 
 /* Top form — the divider flips from the inline-end edge to the block-end
-   edge (it sits above main.han, not beside it). */
+   edge (it sits above main, not beside it). */
 :host([form="top"]) {
   border-inline-end: 0;
   border-block-end: 1px solid var(--_rule);

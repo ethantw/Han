@@ -1,7 +1,7 @@
 /**
  * <han-rail> metric sliders — 字級 / 行距 / 字重.
  * Two effects, both fed by the same slider state: the live inline style
- * on the `target` (`main.han`: font-size / line-height / font-weight),
+ * on the `target` (`main`: font-size / line-height / font-weight),
  * AND — new — the values now ride `config.metrics` into the generated
  * snippet. This module owns the DOM (sliders), the config core owns the
  * canonical `metrics` and the `han-config-change` broadcast; the two

@@ -111,11 +111,11 @@
 </header>
 <!-- Typography configurator — readers dogfood the whole framework on the
      docs text itself. form="top" horizontal toolbar spanning under the
-     Masthead; writes the live `--han-*` config onto `main.han`, which
+     Masthead; writes the live `--han-*` config onto `main`, which
      cascades to the article + TOC. Same rail as the homepage. -->
-<han-rail form="top" target="main.han" lang="{{ htmlLang }}"></han-rail>
+<han-rail form="top" target="main" lang="{{ htmlLang }}"></han-rail>
 {{ sidebar }}
-<main class="han">
+<main>
 <article data-pagefind-body>
 <div data-pagefind-ignore>{{ breadcrumb }}</div>
 <h1>{{ title }}</h1>
