@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ title }}・{{ siteTitle }}</title>
 <meta name="description" content="{{ description }}">
-<link rel="icon" href="/img/favicon.png" type="image/png">
-<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/favicon.png" sizes="any">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.svg">
 <script>
   // Pre-paint theme application — avoids a flash of light when the user
   // has dark mode persisted. Reads localStorage; falls back to system.
@@ -34,10 +35,28 @@
      it gets its own module tag. Same component + templates as the
      homepage; the docs mount it as a form="top" toolbar. -->
 <script type="module" src="/components/han-rail.js"></script>
+<!-- Syntax-highlight the docs article's fenced code blocks — reuses the
+     homepage highlighter (Custom Highlight API, feature-detected inside;
+     degrades to plain text). Derives the language from markdown-it's
+     `language-XXX` class on each <code>. Loaded as a src-based PUBLIC module
+     (not inline): an inline `type="module"` importing the public
+     `/home/highlight.js` makes vite dev extract it to an `?html-proxy`
+     module and 500 on resolving the public import; a `src=` public module is
+     served raw and the browser resolves the import natively (same as the
+     homepage's home.js). manual.js is a classic script and can't import ESM. -->
+<script type="module" src="/highlight-docs.js"></script>
 </head>
 <body class="ManualPage" data-locale="{{ locale }}" data-page="{{ pageId }}">
 <header class="Masthead">
   <a class="Brand" data-size="md" href="{{ homeUrl }}">
+    <!-- G3 字徽（favicon 同款）——fill/stroke 走 docs token（--accent／
+         --ink），隨主題明暗自動切。 -->
+    <svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="20" cy="28" r="6.5" opacity=".55" />
+      <circle cx="20" cy="50" r="9.5" />
+      <circle cx="20" cy="78" r="12.5" opacity=".85" />
+      <path class="brace" d="M 82 14 H 57 V 47 C 57 50, 37 47, 37 50 C 37 53, 57 50, 57 53 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
     <span data-part="mark">漢</span><span data-part="dot">.</span><span data-part="ext">css</span>
     <span data-part="ver">v{{ version }}</span>
   </a>

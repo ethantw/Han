@@ -271,6 +271,19 @@ body.ManualPage:has(.RailToggle input:checked) han-rail {
     color: inherit;
   }
 
+  /* G3 字徽——字標左側，dots ＝ accent、括號 ＝ ink（隨主題明暗切）。 */
+  .BrandMark {
+    flex: 0 0 auto;
+    align-self: center;
+    block-size: 1.35rem;
+    inline-size: 1.35rem;
+    margin-inline-end: 0.25rem;
+    translate: 0 0.03em;
+
+    circle { fill: var(--accent); }
+    .brace { stroke: var(--ink); }
+  }
+
   [data-part="mark"] {
     font-family: var(--han-font-alternative);
     font-size: 1.5rem;
@@ -912,6 +925,17 @@ main {
         font-size: 1em;
       }
     }
+
+    /* Highlight-API token colours — the homepage highlighter (loaded by a
+       module tag in _layout.html) colours the fenced blocks via the Custom
+       Highlight API. Code blocks are terminal-dark in BOTH themes here, so
+       one light-on-dark palette serves both (matches controls.css's set). */
+    pre code::highlight(code-comment) { color: #6f7b8b; }
+    pre code::highlight(code-string)  { color: #b8d39a; }
+    pre code::highlight(code-keyword) { color: #88aaff; }
+    pre code::highlight(code-attr)    { color: #e8c275; }
+    pre code::highlight(code-number)  { color: #f2997a; }
+    pre code::highlight(code-punct)   { color: #8b94a3; }
 
     /* Tip callout — author writes raw <aside class="Tip"> in markdown
        (markdown-it `html: true` is on). Default 💡 + "TIP" eyebrow. */

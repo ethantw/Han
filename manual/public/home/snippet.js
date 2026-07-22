@@ -99,10 +99,13 @@ const renderOutput = async (config, ui) => {
     const panes = ui.tab === 'bundler' ? renderBundler(config, ui.$pm?.value) : renderCDN(config)
     renderPanes(ui.$panes, panes, ui.$pm)
   }
-  // Highlight API replaces ranges wholesale on every call — safe to
-  // re-run unconditionally after every pane rewrite, no leak across
-  // renders.
-  highlightAll('[data-out-panes] pre[data-lang] > code')
+  // Highlight API replaces ranges wholesale on every call — the global
+  // registries are cleared then re-added from scratch, so we re-scan EVERY
+  // live <code> under main (panes ＋ the hand-written prose blocks like
+  // station-craft's Override), not just the panes. Sharing one stable
+  // selector with home.js's seed call is what stops each rewrite from
+  // wiping the other's ranges. Safe to re-run unconditionally per rewrite.
+  highlightAll('main.han pre > code')
 }
 
 /* pm select — 建一次、重繪時搬進當下那顆 CLI pane 的 figcaption（見

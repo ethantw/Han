@@ -51,6 +51,26 @@ const RULES = {
 
 const CATS = ['comment', 'string', 'keyword', 'attr', 'number', 'punct']
 
+// Language token → RULES key. station④'s panes carry the canonical name on
+// `pre[data-lang]`; markdown-it fences write a `language-XXX` class on the
+// <code> with looser aliases (ts/typescript, sh/console…). Anything unmapped
+// falls through to plain text.
+const ALIAS = {
+  css: 'css',
+  html: 'html', xml: 'html', svg: 'html',
+  js: 'js', javascript: 'js', ts: 'js', typescript: 'js',
+  sh: 'bash', shell: 'bash', bash: 'bash', console: 'bash',
+}
+
+// pure: <code> → RULES key, from EITHER pre[data-lang] (panes) or the
+// `language-XXX` class markdown-it emits on the <code> (docs fences).
+const langOf = ($code) => {
+  const raw =
+    $code.parentElement?.dataset.lang
+    ?? [...$code.classList].find((c) => c.startsWith('language-'))?.slice(9)
+  return raw ? ALIAS[raw] : undefined
+}
+
 // pure: source → non-overlapping tokens
 const tokenize = (lang, src) => {
   const rules = RULES[lang]
@@ -90,15 +110,15 @@ const ensureReg = () => {
 // registries, so we clear them first — station④ rewrites every pane's text
 // on each config change, which invalidates the old ranges; clearing +
 // re-tokenising keeps them in sync.
-export const highlightAll = (selector = 'pre[data-lang] > code') => {
+export const highlightAll = (selector = 'pre > code') => {
   const r = ensureReg()
   if (!r) return
   CATS.forEach((c) => r[c].clear())
   $$(selector).forEach(($code) => {
     const text = $code.firstChild
     if (!(text instanceof Text)) return // expect one pure-text node per <code>
-    const lang = $code.parentElement?.dataset.lang
-    if (!lang || !(lang in RULES)) return
+    const lang = langOf($code)
+    if (!lang) return
     tokenize(lang, text.data).forEach(({ cat, start, end }) => {
       const range = new Range()
       range.setStart(text, start)
