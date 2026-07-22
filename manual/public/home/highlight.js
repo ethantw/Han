@@ -106,6 +106,25 @@ const ensureReg = () => {
   return reg
 }
 
+// Flat list of a subtree's text nodes with their cumulative offset into the
+// concatenated textContent. NOT just `<code>.firstChild`: on the docs, han.css's
+// inline fallbacks split a CJK code block's single text node — e.g. hanging
+// punctuation nests a mark inside `<h-char><h-layer>、</h-layer></h-char>`, so
+// `<code>` ends up TEXT · h-char · TEXT. Tokenising only the first node misses
+// everything after it (a `/* … */` whose closing `*/` sits in a later node
+// never matches → the whole block renders unhighlighted). We walk EVERY text
+// node so a token can span across the inserted wrappers.
+const textNodesOf = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  const out = []
+  let offset = 0
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    out.push({ node: n, start: offset, end: offset + n.data.length })
+    offset += n.data.length
+  }
+  return out
+}
+
 // (Re)highlight every matching <code>. Ranges live in the shared Highlight
 // registries, so we clear them first — station④ rewrites every pane's text
 // on each config change, which invalidates the old ranges; clearing +
@@ -115,15 +134,21 @@ export const highlightAll = (selector = 'pre > code') => {
   if (!r) return
   CATS.forEach((c) => r[c].clear())
   $$(selector).forEach(($code) => {
-    const text = $code.firstChild
-    if (!(text instanceof Text)) return // expect one pure-text node per <code>
     const lang = langOf($code)
     if (!lang) return
-    tokenize(lang, text.data).forEach(({ cat, start, end }) => {
-      const range = new Range()
-      range.setStart(text, start)
-      range.setEnd(text, end)
-      r[cat].add(range)
+    const parts = textNodesOf($code)
+    if (!parts.length) return
+    const src = parts.map((p) => p.node.data).join('')
+    tokenize(lang, src).forEach(({ cat, start, end }) => {
+      // A token [start,end) into `src` may straddle several text nodes;
+      // clip it onto each overlapping node and add a Range per fragment.
+      for (const { node, start: ns, end: ne } of parts) {
+        if (ne <= start || ns >= end) continue
+        const range = new Range()
+        range.setStart(node, Math.max(0, start - ns))
+        range.setEnd(node, Math.min(node.data.length, end - ns))
+        r[cat].add(range)
+      }
     })
   })
 }
