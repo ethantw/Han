@@ -225,12 +225,16 @@ body.home {
      明暗自動切（暗色 --palette-text → 淺，括號跟著變亮）。字面高度 ~1em、
      視覺置中對齊字標。 */
   .BrandMark {
+    /* 基線錨定，不用 align-self: center——後者在 flex 交叉盒置中，而交叉盒由
+     * 相鄰「透明漢字」的字體度量撐開；尚古行盒度量非對稱（上緣 1.151 ＞ 下緣
+     * 0.286），webfont 一載入就把交叉盒中心往上推，字徽跟著上飄，卻與實測錨定、
+     * 不動的漢 SVG 錯開。改錨到基線（與漢 SVG 同一參考），再以視覺置中量位移，
+     * 兩套字體下都穩定。位移＝把 1em 高的字徽中心對到漢字面光學中心。 */
     flex: 0 0 auto;
-    align-self: center;
-    /* margin-inline-end: 0.125em; */
+    align-self: baseline;
+    translate: 0 var(--brand-mark-shift, 0.16em);
     block-size: 1em;
     inline-size: 1em;
-    /* translate: 0 0.03em; */
 
     circle { fill: var(--palette-accent); }
     .brace { stroke: var(--palette-text); }
