@@ -103,6 +103,26 @@ const TS_BUNDLE_CONFIG = {
   external: ['happy-dom'],
 }
 
+/**
+ * Browser-conditional twin of TS_BUNDLE_CONFIG (`exports`' `browser`
+ * condition → `han.browser.js` / `han.auto.browser.js`). The external
+ * `import("happy-dom")` literal above is correct for Node, but browser
+ * bundlers try to resolve it: absent → "could not resolve happy-dom";
+ * present → happy-dom's Node built-ins (`url`, `buffer`) fail the
+ * browser build. Aliasing to a stub removes happy-dom from the browser
+ * module graph entirely; the aliased branch stays unreachable at
+ * runtime (`isBrowserSide` is true).
+ */
+const BROWSER_TS_BUNDLE_CONFIG = {
+  ...TS_BUNDLE_CONFIG,
+  entryPoints: [
+    { in: 'src/han.ts', out: 'han.browser' },
+    { in: 'src/han.auto.ts', out: 'han.auto.browser' },
+  ],
+  external: [],
+  alias: { 'happy-dom': './build/happy-dom.browser-stub.js' },
+}
+
 if (watch) {
   // Dev: unminified only, incremental rebuilds on file change.
   // Skip .d.ts emission to keep the watch loop fast — `pnpm typecheck`
@@ -111,6 +131,7 @@ if (watch) {
     esbuild.context({ ...CSS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...MODULE_CSS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...TS_BUNDLE_CONFIG, logLevel: 'info' }),
+    esbuild.context({ ...BROWSER_TS_BUNDLE_CONFIG, logLevel: 'info' }),
   ])
   await Promise.all(ctxs.map(ctx => ctx.watch()))
   console.log('[han-css] watching — Ctrl+C to stop')
@@ -132,6 +153,12 @@ if (watch) {
     esbuild.build(TS_BUNDLE_CONFIG),
     esbuild.build({
       ...TS_BUNDLE_CONFIG,
+      minify: true,
+      outExtension: { '.js': '.min.js' },
+    }),
+    esbuild.build(BROWSER_TS_BUNDLE_CONFIG),
+    esbuild.build({
+      ...BROWSER_TS_BUNDLE_CONFIG,
       minify: true,
       outExtension: { '.js': '.min.js' },
     }),

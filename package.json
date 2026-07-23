@@ -9,11 +9,13 @@
   "exports": {
     ".": {
       "types": "./dist/types/han.d.ts",
+      "browser": "./dist/han.browser.js",
       "import": "./dist/han.js",
       "default": "./dist/han.js"
     },
     "./auto": {
       "types": "./dist/types/han.auto.d.ts",
+      "browser": "./dist/han.auto.browser.js",
       "import": "./dist/han.auto.js",
       "default": "./dist/han.auto.js"
     },
@@ -67,6 +69,9 @@
   "license": "MIT",
   "dependencies": {
     "hyperly": "0.2.0-rc.3"
+  },
+  "optionalDependencies": {
+    "happy-dom": "^20.9.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
