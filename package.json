@@ -1,7 +1,7 @@
 {
   "name": "@hanzi.pro/han.css",
-  "version": "4.0.0",
-  "description": "CSS typography sets curated for CJK web pages.",
+  "version": "4.0.0-rc.1",
+  "description": "A CSS typography set curated for CJK web pages.",
   "type": "module",
   "main": "./dist/han.js",
   "types": "./dist/types/han.d.ts",
