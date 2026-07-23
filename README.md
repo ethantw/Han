@@ -8,8 +8,9 @@ dots beside the text, zhuyin and pinyin ruby, hair-width gaps between scripts,
 heritage glyph forms — the craft of the metal-type era, recreated on screen
 with CSS custom properties and a little JavaScript fallback.
 
-v4 is a ground-up rewrite on the native platform: **no Sass, no build step, no
-framework.** The library is four independent CSS modules plus one optional
+v4 is a ground-up rewrite on the native platform: **no CSS preprocessor, no
+required JavaScript (though it sharpens the finer details).** The library is
+four independent CSS modules plus one optional
 JavaScript companion, and every feature is switched and tuned through a
 `--han-*` custom property.
 

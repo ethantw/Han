@@ -14,7 +14,8 @@ primitives that did not exist when v3 was written — cascade layers,
 custom-property style queries (`@container style()`), `@property`,
 `text-spacing-trim`, `hanging-punctuation`, `text-autospace`,
 `text-decoration-skip` — and the JavaScript half is a thin, self-retiring
-fallback layer, not the engine. **No Sass, no build step, no framework.**
+fallback layer, not the engine. **No CSS preprocessor, no required
+JavaScript (though it sharpens the finer details).**
 
 ### Added
 

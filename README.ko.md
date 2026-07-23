@@ -6,7 +6,7 @@
 
 CJK 웹 페이지를 위해 골라 엮은 CSS <ruby>組版<rt>조판</rt></ruby> 세트다. 줄 끝에서 내어쓰기와 <ruby>壓縮<rt>압축</rt></ruby>을 하는 <ruby>文章<rt>문장</rt></ruby> <ruby>符號<rt>부호</rt></ruby>, 글자에 붙는 <ruby>傍點<rt>방점</rt></ruby>, <ruby>注音<rt>주음</rt></ruby>과 <ruby>倂音<rt>병음</rt></ruby>의 루비, <ruby>文字<rt>문자</rt></ruby> <ruby>種類<rt>종류</rt></ruby> 사이의 머리카락 같은 <ruby>間隙<rt>간극</rt></ruby>, 그리고 <ruby>傳承<rt>전승</rt></ruby> <ruby>字形<rt>자형</rt></ruby>——<ruby>活版<rt>활판</rt></ruby> <ruby>時代<rt>시대</rt></ruby> 組版 <ruby>技法<rt>기법</rt></ruby>를, CSS 커스텀 프로퍼티와 약간의 JavaScript 폴백으로 <ruby>畵面<rt>화면</rt></ruby> 위에 <ruby>再現<rt>재현</rt></ruby>한다.
 
-v4는 네이티브 플랫폼 위로 처음부터 다시 만든 것이다. **Sass 없이, 빌드 단계 없이, 프레임워크 없이.** 라이브러리의 <ruby>實體<rt>실체</rt></ruby>는 서로 <ruby>獨立<rt>독립</rt></ruby>한 네 개의 CSS 모듈과, <ruby>選擇<rt>선택</rt></ruby>할 수 있는 JavaScript <ruby>補助<rt>보조</rt></ruby> 하나다. 모든 <ruby>機能<rt>기능</rt></ruby>은 하나의 `--han-*` 커스텀 프로퍼티로 켜고 끈다.
+v4는 네이티브 플랫폼 위로 처음부터 다시 만든 것이다. **CSS 프리프로세서 없이, 필수 JavaScript 없이(있으면 더 좋다).** 라이브러리의 <ruby>實體<rt>실체</rt></ruby>는 서로 <ruby>獨立<rt>독립</rt></ruby>한 네 개의 CSS 모듈과, <ruby>選擇<rt>선택</rt></ruby>할 수 있는 JavaScript <ruby>補助<rt>보조</rt></ruby> 하나다. 모든 <ruby>機能<rt>기능</rt></ruby>은 하나의 `--han-*` 커스텀 프로퍼티로 켜고 끈다.
 
 ```
 pnpm add @hanzi.pro/han.css
