@@ -29,8 +29,8 @@ Each module lives in its own cascade layer and can be used alone.
 Set a `--han-*` property on any selector and the feature applies within that scope — plain CSS inheritance and style queries (`@container style()`), nothing invented:
 
 ```css
-:root { --han-emphasis-symbol: sesame; }
-.quoted-legacy-text { --han-punctuation-squeeze: off; }
+:root { --han-em-symbol: sesame; }
+.quoted-legacy-text { --han-punctuation-refinement: none; }
 ```
 
 One caveat throughout: style queries read **ancestors**, so set these properties on an ancestor (or `:root`) of the content you're targeting.
