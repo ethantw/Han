@@ -1,5 +1,7 @@
 # 漢字標準格式 Han.css
 
+**English** · [繁體中文](./README.zh-Hant.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md)
+
 **Movable type within the pixels.** A CSS typography set curated for CJK
 web pages: punctuation that compresses and hangs at the line edge, emphasis
 dots beside the text, zhuyin and pinyin ruby, hair-width gaps between scripts,
