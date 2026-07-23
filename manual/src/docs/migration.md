@@ -6,7 +6,7 @@ title: 從 v3 遷移
 
 v4不是v3的增量升級，而是架構層面的重寫。一句話概括：**v3是「Sass編譯期配置＋JS渲染行內機能」，v4是「執行期的原生CSS自訂屬性＋可選的最小JS回落」**。
 
-v3的樣式要先用Sass把`$han-*`變量編譯成CSS；語意與段落層CSS即生效，行內排版機能（間隙、擠壓、懸掛等）則另跑`Han.init()`、靠JavaScript掃過DOM包上節點才到位。v4把配置搬進原生CSS自訂屬性（`--han-*`）——不編譯、執行期讀取、可級聯、可在任意子樹覆寫；CSS一載入就生效，JS只在引擎缺原生能力時補位（且v4要補的部分已被瀏覽器原生化不少）。
+v3的樣式要先用Sass把`$han-*`變量編譯成CSS；語意與段落層CSS即生效，行內排版機能（間隙、擠壓、懸掛等）則另跑`Han.init()`、靠JavaScript掃過DOM包上節點才到位。v4把配置搬進原生CSS自訂屬性（`--han-*`）：不編譯、執行期讀取、可級聯、可在任意子樹覆寫；CSS一載入就生效，JS只在引擎缺原生能力時補位（且v4要補的部分已被瀏覽器原生化不少）。
 
 ## 核心變化總覽
 
@@ -22,7 +22,7 @@ v3的樣式要先用Sass把`$han-*`變量編譯成CSS；語意與段落層CSS即
 
 ## 配置：Sass 變量 → CSS 自訂屬性
 
-最大的改變。v3改設定要動Sass、重新編譯；v4把同一件事寫成`:root`（或任意祖先）上的CSS變量，執行期即時生效，且**可在子樹局部覆寫**——這是v3做不到的。常見對照：
+最大的改變。v3改設定要動Sass、重新編譯；v4把同一件事寫成`:root`（或任意祖先）上的CSS變量，執行期即時生效，且**可在子樹局部覆寫**，這是v3做不到的。常見對照：
 
 | v3 Sass（預設） | v4 CSS 自訂屬性 | 備註 |
 |------|------|------|
@@ -42,11 +42,11 @@ v3的樣式要先用Sass把`$han-*`變量編譯成CSS；語意與段落層CSS即
 
 ## 撐起 v4 的現代 CSS
 
-v4能把配置搬進執行期、把覆寫變簡單、把機能按子樹開關——靠的不是更多JavaScript，而是四項v3時代還不存在（或未普及）的**原生CSS能力**。它們是v4彈性的來源，也是這份遷移指南背後的道理。
+v4能把配置搬進執行期、把覆寫變簡單、把機能按子樹開關，靠的不是更多JavaScript，而是四項v3時代還不存在（或未普及）的**原生CSS能力**。它們是v4彈性的來源，也是這份遷移指南背後的道理。
 
 ### `:where()`——零權重，你的樣式永遠能覆寫
 
-漢.css每一條選擇器都包在`:where()`裡，選擇器權重歸〇。v3的選擇器帶正常權重，要覆寫框架就得拉高自己的權重、動`!important`、或改Sass重編。v4裡，一條普通的`h2 {}`（權重0-0-1）即可覆寫框架的`:where(…)`（權重0-0-0）——無須堆疊選擇器權重，也無須`!important`。
+漢.css每一條選擇器都包在`:where()`裡，選擇器權重歸〇。v3的選擇器帶正常權重，要覆寫框架就得拉高自己的權重、動`!important`、或改Sass重編。v4裡，一條普通的`h2 {}`（權重0-0-1）即可覆寫框架的`:where(…)`（權重0-0-0），無須堆疊選擇器權重，也無須`!important`。
 
 ### `@layer`——可預期的層疊順序
 
@@ -56,7 +56,7 @@ v4能把配置搬進執行期、把覆寫變簡單、把機能按子樹開關—
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
 ```
 
-v3沒有原生層疊層，覆寫順序只能以選擇器權重與源碼先後拼湊——脆弱又難預測。
+v3沒有原生層疊層，覆寫順序只能以選擇器權重與源碼先後拼湊，脆弱又難預測。
 
 ### `@container style()`——執行期、按子樹的機能開關
 
@@ -67,7 +67,7 @@ article { --han-em-symbol: sesame; }   /* 這棵子樹的著重號改芝麻點 *
 article .comments { --han-prose: off; } /* 這一塊退出段落樣式 */
 ```
 
-同一份CSS、不重編，頁面不同區域就能各有各的排版慣例——這是v3的編譯期配置給不了的。（也因為查的是祖先，變量要設在目標的**祖先**上，非目標自身，各模組頁的作用域通則皆源於此。）
+同一份CSS、不重編，頁面不同區域就能各有各的排版慣例，這是v3的編譯期配置給不了的。（也因為查的是祖先，變量要設在目標的**祖先**上，非目標自身，各模組頁的作用域通則皆源於此。）
 
 ### `@property`——帶型別與預設的變量
 
@@ -77,7 +77,7 @@ article .comments { --han-prose: off; } /* 這一塊退出段落樣式 */
 
 ## 啓用：CSS 優先，JS 補全
 
-兩版都是CSS優先，JS都是加分項。v3的語意與段落樣式CSS即生效，JS再補上跨文種間隙、標點擠壓、行尾懸掛等當時CSS無法獨力完成的行內機能——有JS更完整，沒JS也有可用的一層。v4延續這條路，而且因為更多能力已被瀏覽器原生化（`text-autospace`、`text-spacing-trim`），JS要補的比v3**更少**。
+兩版都是CSS優先，JS都是加分項。v3的語意與段落樣式CSS即生效，JS再補上跨文種間隙、標點擠壓、行尾懸掛等當時CSS無法獨力完成的行內機能：有JS更完整，沒JS也有可用的一層。v4延續這條路，而且因為更多能力已被瀏覽器原生化（`text-autospace`、`text-spacing-trim`），JS要補的比v3**更少**。
 
 變的是啓用的形狀：v3靠`Han.init()`／`.han-init`觸發一整套JS渲染管線；v4改為載入CSS即生效，JS按需接入。
 
@@ -109,13 +109,13 @@ installFallbacks(document.body)
 | `renderHWS([strict])` / `revertHWS()` | 併入`installFallbacks`（依`--han-text-autospace`）／`uninstallFallbacks()` |
 | `renderJiya()` / `revertJiya()` | 併入`installFallbacks`（依`--han-punctuation-refinement`）／`uninstallFallbacks()` |
 | `renderHanging()` / `revertHanging()` | 同上（懸掛一併併入） |
-| `renderEm()` / `renderElem()` | 移除——語意樣式改純CSS（[語意樣式標準化](./semantics.html)） |
+| `renderEm()` / `renderElem()` | 移除：語意樣式改純CSS（[語意樣式標準化](./semantics.html)） |
 | `renderDecoLine()` | 併入`installFallbacks`（相鄰行裝飾線標記） |
 | `renderRuby()` | `transpileRuby()`（opt-in，僅降級舊式標記） |
-| `Han.support` / `Han.detectFont()` / `initCond()` | 移除——改用`CSS.supports`＋內建探針（`runProbes`） |
+| `Han.support` / `Han.detectFont()` / `initCond()` | 移除：改用`CSS.supports`＋內建探針（`runProbes`） |
 | `groupify` / `charify` / `jinzify` / `replace` / `wrap` / `revert` | 非公開API（內部化／移除） |
 | `.han-init` / `.han-init-context` | `@hanzi.pro/han.css/auto`入口（可用`--han-install`調整） |
-| `<html class="han-js-rendered">` | 移除——無全域render旗標 |
+| `<html class="han-js-rendered">` | 移除：無全域render旗標 |
 
 v4的`installFallbacks`是總開關，其下三組回落（標點擠壓懸掛／跨文種間隙／相鄰行裝飾線）也各自公開、可精細控制與SSR。完整清單見[JavaScript API](./api-js.html)。
 
@@ -125,17 +125,17 @@ v4的`installFallbacks`是總開關，其下三組回落（標點擠壓懸掛／
 
 | v3 | v4 |
 |----|----|
-| `<hws>`（跨文種間隙） | `<h-iss>`——且**僅**`replace`／`strict`；`normal`走原生`text-autospace` |
+| `<hws>`（跨文種間隙） | `<h-iss>`，且**僅**`replace`／`strict`；`normal`走原生`text-autospace` |
 | `<h-jinze class="middle｜wei｜tou">`＋`<h-char>`（擠壓） | `<h-char data-punct="open｜close｜end｜middle｜consecutive">` |
 | `<h-hangable>`（懸掛） | `<h-char data-punct~="hangable"><h-layer>` |
-| `<h-char-group>` / `<h-word>`（分組） | 無——v4不做字元／詞分組 |
+| `<h-char-group>` / `<h-word>`（分組） | 無：v4不做字元／詞分組 |
 
 ## Ruby 遷移
 
 v3的注音ruby容許`<rb>`／`<rtc>`表格式與`rbspan`，另有`.complex`／`.rightangle`／`.romanization`等class。v4收斂為引擎當今能正確渲染的**interop形式**：每個注音ruby一個base，額外注解層改為巢狀`<ruby>`。
 
 - `.zhuyin`／`.mps`**保留**。
-- 舊式`<rb>`／`<rtc>`／multi-`<rt>`標記：跑[`transpileRuby`](./api-js.html)降級——SSR／建構期一次改寫最省，也可作runtime相容墊片（冪等、可重跑）。
+- 舊式`<rb>`／`<rtc>`／multi-`<rt>`標記：跑[`transpileRuby`](./api-js.html)降級，SSR／建構期一次改寫最省，也可作runtime相容墊片（冪等、可重跑）。
 - `.complex`／`.rightangle`／`.romanization`的多層標注，改由巢狀`<ruby>`慣例表達（見[語意樣式標準化](./semantics.html)的注音一節）。
 
 ## 語意標記與 class 的去留
@@ -146,7 +146,7 @@ v4以**元素語意**為主、少用class：
 |----------|----|
 | `.pn`（專名號） | `<u>`本身即專名號，免class |
 | `.poem-like` | **保留**（見[段落間距調整](./prose.html)） |
-| `.typo`（別字標記）／`.ship` | 移除——用適當元素或自訂樣式 |
+| `.typo`（別字標記）／`.ship` | 移除：用適當元素或自訂樣式 |
 | `.toc`（目錄自動編號） | 移除 |
 
 ## 字體遷移
@@ -169,4 +169,4 @@ v3自host一整套Han字體家族；v4的字體是外部資產，走CDN／npm切
 4. 舊式`<rb>`／`<rtc>` ruby跑一次`transpileRuby`。
 5. 清掉不再存在的class（`.pn`／`.toc`／`.typo`…），確認`<u>`等元素語意正確。
 6. 字體改掛CDN／npm；把`$han-biaodian-*`／`$han-glyph-set-*`的選擇對應到`--han-punctuation-*`／`--han-use-heritage-glyphs-for-hant`。
-7. 章節自動編號、目錄、行高、行動端縮排斷點等v3功能若有用到，改由你自己的CSS承接——v4的prose模組不含這些。
+7. 章節自動編號、目錄、行高、行動端縮排斷點等v3功能若有用到，改由你自己的CSS承接，v4的prose模組不含這些。
