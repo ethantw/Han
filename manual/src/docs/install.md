@@ -25,7 +25,7 @@ import '@hanzi.pro/han.css/styles/prose'
 import '@hanzi.pro/han.css/styles/fonts'
 ```
 
-JavaScript補全（可選，見下方〈要不要JS〉）：
+JavaScript補全（可選，見下方〈JavaScript的取捨〉）：
 
 ```js
 // 自動安裝：載入即在DOMContentLoaded執行，零呼叫
@@ -43,7 +43,7 @@ installFallbacks(document.body)
 <script type="module" src="https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest/dist/han.auto.min.js"></script>
 ```
 
-也可只掛單模組：`dist/han.semantics.min.css`、`dist/han.lines.min.css`、`dist/han.prose.min.css`、`dist/han.fonts.min.css`——四檔之和與整包完全等價。
+也可只掛單模組：`dist/han.semantics.min.css`、`dist/han.lines.min.css`、`dist/han.prose.min.css`、`dist/han.fonts.min.css`。
 
 ## 產物一覽
 
@@ -65,9 +65,9 @@ installFallbacks(document.body)
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
 ```
 
-漢.css所有選擇器權重為〇（`:where()`），即使不動layer順序，你的規則照樣蓋得過——layer宣告只是給你多一層確定性。
+漢.css所有選擇器權重為〇（`:where()`），即使不宣告layer順序，你的規則照樣能覆寫——layer宣告只是多一層確定性。
 
-## 要不要JS
+## JavaScript的取捨
 
 **不引JS也完全可用。** 四模組的核心機能是純CSS；JavaScript補全（`installFallbacks`）只做引擎尚未原生支援的部分：
 
@@ -75,7 +75,7 @@ installFallbacks(document.body)
 - 跨文種間隙在`text-autospace`未實作引擎上的回落（`--han-text-autospace`）；
 - 相鄰行底線間距的標記。
 
-引擎哪天原生支援了，同一份代碼自動讓位——`installFallbacks`逐項以`CSS.supports`與環境探針把關，不重複做引擎已會的事。取捨很單純：**在意行內排版細節的每一分，上`auto`；只要語意樣式與段落節奏，純CSS就夠。**
+待引擎原生支援，同一份代碼自動讓位——`installFallbacks`逐項以`CSS.supports`與環境探針把關，不重複做引擎已支援的事。取捨很單純：**講究行內排版細節，引入`auto`；只需要語意樣式與段落間距，純CSS即可。**
 
 ## Web字體（傳承字形）
 
@@ -87,7 +87,7 @@ fonts模組定義字體堆疊與家族名；傳承字形（尚古黑體／明體
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@latest/swap.css">
 ```
 
-不掛也行——`--han-use-heritage-glyphs-for-hant: system`改用系統字體回落，詳見[字體](./fonts.html)。
+也可以不引入——`--han-use-heritage-glyphs-for-hant: system`改用系統字體回落，詳見[字體](./fonts.html)。
 
 ## 啓用範圍
 

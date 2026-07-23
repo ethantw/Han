@@ -4,7 +4,7 @@ title: 語意樣式標準化
 
 # 語意樣式標準化
 
-`han-semantics`模組重新定義語意元素在漢字排版下應有的樣式——`<em>`是著重號不是斜體、`<cite>`是書名號、`<i>`與`<var>`走楷體、`<u>`是專名號、`<q>`的引號隨語言慣例。前提是一條被西方排版忽略太久的事實：**漢字字體沒有斜體**。瀏覽器對中日韓文套`font-style: italic`只會合成一道傾斜，是壞排版；本模組先把這道合成斜體收掉，再讓每個語意元素各就各位。使用正確的元素，即手可得，繁簡日韓各有所依。
+`han-semantics`模組重新定義語意元素在漢字排版下應有的樣式——`<em>`是著重號不是斜體、`<cite>`是書名號、`<i>`與`<var>`走楷體、`<u>`是專名號、`<q>`的引號隨語言慣例。前提是一條長期被忽略的事實：**漢字字體沒有斜體**。瀏覽器對中日韓文套`font-style: italic`只會合成一道傾斜，是壞排版；本模組先取消這道合成斜體，再為每個語意元素定義漢字排版下應有的表意方式。使用正確的元素，即手可得，繁簡日韓各有所依。
 
 ## 開關與作用域
 
@@ -34,8 +34,8 @@ title: 語意樣式標準化
 
 兩個設計要點：
 
-- **撒在`:where(*)`上，不列舉已知標籤**——刻意張的大網。斜體可以被套在任何元素上，逐一修補已知標籤永遠漏掉下一個。
-- **用`inherit`不用`normal`**——`normal`會把祖先刻意設定的斜體也一併抹平；`inherit`只中和每個元素自帶的UA斜體預設，卻讓「作者在祖先上主動設的斜體」順利流下來。合成的死、有意的活。
+- **宣告在`:where(*)`上，不列舉已知標籤**——刻意放寬涵蓋範圍。斜體可以被套在任何元素上，逐一修補已知標籤永遠漏掉下一個。
+- **用`inherit`不用`normal`**——`normal`會把祖先刻意設定的斜體也一併抹平；`inherit`只中和每個元素自帶的UA斜體預設，卻讓「作者在祖先上主動設的斜體」順利流下來。合成斜體被中和，作者刻意設定的斜體保留。
 
 取消斜體後，各語意元素改以漢字排版該有的方式表意——著重號、楷體、加粗、書名號，分述於下。西文（`:lang`非中日韓）不受影響，斜體照舊。
 
@@ -56,7 +56,7 @@ article { --han-em-symbol: sesame; }
 
 ## 楷體——`<i>`與`<var>`
 
-`<i>`（另一種聲氣、術語、船名等）與`<var>`（變量）在西文靠斜體區別；漢字既無斜體，改用楷體區別——指向強調字族`--han-font-accent`（預設`cursive`通用字族，fonts模組載入時換上楷體webfont）：
+`<i>`（另一種聲氣、術語、船名等）與`<var>`（變量）在西文靠斜體區別；漢字既無斜體，改用楷體區別——指向強調字族`--han-font-accent`（預設`cursive`通用字族，fonts模組載入時換上楷體Web字體）：
 
 ```css
 :where(i, var):is(:lang(zh), :lang(ja), :lang(ko)) {
@@ -121,13 +121,13 @@ article { --han-cite-title-marks: bracket; }
 
 ## 注音——`<ruby>`
 
-注音符號（zhuyin）ruby以字間注（`ruby-position: inter-character`）渲染，聲調位置由字體GPOS處理，`<rt>`用專用字族`--han-font-zhuyin-serif`（內建`Han Zhuyin Serif`webfont）並直立（`text-orientation: upright`）：
+注音符號（zhuyin）ruby以字間注（`ruby-position: inter-character`）渲染，聲調位置由字體GPOS處理，`<rt>`用專用字族`--han-font-zhuyin-serif`（內建`Han Zhuyin Serif`Web字體）並直立（`text-orientation: upright`）：
 
 ```html
 <ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>
 ```
 
-Safari 18.2+原生支援`inter-character`；Chrome／Firefox走`@supports not`回落（`letter-spacing`預留空間＋絕對定位`<rt>`）。此回落只認**單一base**的注音ruby，故一字一`<ruby>`是硬規矩——多base、`<rb>`／`<rtc>`表格式等舊式標記，須先經[`transpileRuby`](./api-js.html)降級為現代引擎可正確渲染的interop形式（一字一base、附加標注層以巢狀`<ruby>`表達）。
+Safari 18.2+原生支援`inter-character`；Chrome／Firefox走`@supports not`回落（`letter-spacing`預留空間＋絕對定位`<rt>`）。此回落只認**單一base**的注音ruby，故一字一`<ruby>`是硬性規則——多base、`<rb>`／`<rtc>`表格式等舊式標記，須先經[`transpileRuby`](./api-js.html)降級為現代引擎可正確渲染的interop形式（一字一base、附加標注層以巢狀`<ruby>`表達）。
 
 ## 字體掛鉤
 
@@ -140,13 +140,13 @@ semantics模組為一組字體堆疊變量定義基礎值，預設指向系統�
 | `--han-font-accent` | `cursive` | `<i>`／`<var>`楷體 |
 | `--han-font-zhuyin-serif` | `cursive` | 注音`<rt>` |
 
-只載semantics時，字體交給系統這組通用字族；[fonts模組](./fonts.html)載入時，以四層composite堆疊**逐元素**覆寫它們，傳承字形與標點字體全套接管。兩個模組因此可獨立使用。
+只載semantics時，字體交給系統這組通用字族；[fonts模組](./fonts.html)載入時，以四層composite堆疊**逐元素**覆寫它們，傳承字形與標點字體完整接手。兩個模組因此可獨立使用。
 
 ## 與JS的關係
 
-本模組的CSS在引擎能力所及處即完整生效；兩件事需JS補足，皆在原生支援時自動讓位、不引JS也不會壞，只是覆蓋面小：
+本模組的CSS在引擎能力所及處即完整生效；兩件事需JS補足，皆在原生支援時自動讓位；不引JS，設定仍然有效，僅覆蓋面較小：
 
-- **相鄰裝飾行的縫**——引擎未支援`text-decoration-inset: auto`時，`installFallbacks`會為「其後緊接同族裝飾行」的元素打上`[data-followed-by-adjacent-line]`標記，CSS據此縮進。JS的判定補上純CSS做不到的兩點：探入相鄰元素的子樹頭、以及跨父層向上攀爬找下一個候選（`<u>a</u>`後接`<em><u>b</u></em>`、或`<p><u>a</u></p><u>b</u>`都能正確標記）；`<wbr>`與HTML註解視為透明、逐層跳過。引擎原生支援時，JS完全不動作、也不覆寫串接變量，讓CSS層權威。
+- **相鄰裝飾行的縫**——引擎未支援`text-decoration-inset: auto`時，`installFallbacks`會為「其後緊接同族裝飾行」的元素打上`[data-followed-by-adjacent-line]`標記，CSS據此縮進。JS的判定補上純CSS做不到的兩點：探入相鄰元素的子樹頭、以及跨父層向上攀爬找下一個候選（`<u>a</u>`後接`<em><u>b</u></em>`、或`<p><u>a</u></p><u>b</u>`都能正確標記）；`<wbr>`與HTML註解視為透明、逐層跳過。引擎原生支援時，JS完全不動作、也不覆寫串接變量，以cascade的宣告為準。
 - **舊式ruby降級**——`transpileRuby`是**選用**的獨立函數（不在`installFallbacks`內），把`<rb>`／`<rtc>`表格式與多`<rt>`ruby改寫為interop形式，可於SSR一次跑完或作瀏覽器端相容墊片。
 
 詳見[JavaScript API](./api-js.html)。

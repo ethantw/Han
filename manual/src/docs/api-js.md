@@ -4,7 +4,7 @@ title: JavaScript
 
 # JavaScript API
 
-漢.css的JS是**補全，不是骨架**：CSS引擎尚未原生支援的行內機能，由這裡的回落補上；引擎跟上了，同一份代碼自動讓位。全部API從主入口導出：
+漢.css的JS是**補全，不是骨架**：CSS引擎尚未原生支援的行內機能，由這裡的回落補上；引擎原生支援後，同一份代碼自動讓位。全部API從主入口導出：
 
 ```js
 import { installFallbacks, transpileRuby } from '@hanzi.pro/han.css'
@@ -41,7 +41,7 @@ installFallbacks(src: string | Hype): Hype  // SSR：傳入HTML來源
 
 ```ts
 uninstallFallbacks(root?)  // 逆轉全部DOM變更（還原空格、拆包裹、清標記）
-runProbes()                // 只跑環境探針並在:root蓋章（供CSS回落規則讀取）
+runProbes()                // 只跑環境探針並在:root寫入結果（供CSS回落規則讀取）
 ```
 
 ## transpileRuby
@@ -54,7 +54,7 @@ opt-in的ruby降級器：把HTML5早期的`<rb>`／`<rtc>`表格式ruby與multi-
 
 - **冪等**——已是interop形式的標記原樣通過，可安心重跑。
 - **不自動執行**——未接入`installFallbacks`，需自行呼叫；適合runtime相容墊片，更適合建構期／SSR一次改寫。
-- **結構檢查**——`rbspan`總數超過base數、注音`<rt>`數與base數不符、`rbspan`跨段等結構錯誤會拋錯，不靜默吞掉。
+- **結構檢查**——`rbspan`總數超過base數、注音`<rt>`數與base數不符、`rbspan`跨段等結構錯誤會拋錯，不靜默忽略。
 
 ```js
 import { transpileRuby } from '@hanzi.pro/han.css'
@@ -65,11 +65,11 @@ document.querySelectorAll('ruby').forEach((el) => transpileRuby(el))
 
 `installFallbacks`是總開關；它調度的三組回落各自也是公開API，供精細控制、SSR管線與測試使用。三組共用同一套命名慣例與型別：
 
-- **無後綴**（`refinePunctuation(src)`）——**讀cascade決定**：從`src`的computed style解析對應的`--han-*`變量值，再按`CSS.supports`與探針決定JS要不要動手。日常入口。
+- **無後綴**（`refinePunctuation(src)`）——**讀cascade決定**：從`src`的computed style解析對應的`--han-*`變量值，再按`CSS.supports`與探針決定JS是否介入。日常入口。
 - **`*WithMode(mode)(src)`**——**呼叫者指定**：跳過cascade解析，原子地「寫入cascade變量＋執行轉換」，兩者永不脫鉤。curried設計（mode先收），便於部分套用與FP組合；SSR（無CSS環境）下這是唯一正確入口——cascade寫入自動跳過，交由客戶端hydration補寫。
 - **`set*Mode(mode)(src)`**——**純設定器**：只把變量寫成`src`元素的inline style，不跑任何轉換。供「先設定、稍後統一執行」的分離式流程。
 
-所有函式吃`Hyperly`（`string`｜`Element`｜`Hype`）、回傳`Hype`，可串進hyperly管線；重複執行冪等。
+所有函式接受`Hyperly`（`string`｜`Element`｜`Hype`）、回傳`Hype`，可串進hyperly管線；重複執行冪等。
 
 ### 標點擠壓與懸掛
 
@@ -94,7 +94,7 @@ applyISSWithMode(mode)(src) // 指定模式，SSR 入口
 setISSMode(mode)(src)       // 只寫變量
 ```
 
-兩個cascade入口的差別在**UA探針**：部分引擎自稱支援`text-autospace`，卻在行內元素邊界（如`<b>字</b>A`）丟失間隙——`applyISSWithProbe`實測一次（結果快取），中招則在`:root`蓋`--han-probe-autospace: broken`章，CSS據此強制JS側渲染。已知探針狀態或對量測敏感的子樹，用`applyISS`跳過。
+兩個cascade入口的差別在**UA探針**：部分引擎自稱支援`text-autospace`，卻在行內元素邊界（如`<b>字</b>A`）丟失間隙——`applyISSWithProbe`實測一次（結果快取），命中此病則在`:root`寫入`--han-probe-autospace: broken`，CSS據此強制JS側渲染。已知探針狀態或對量測敏感的子樹，用`applyISS`跳過。
 
 引擎原生支援`text-autospace`時，這組JS**完全不動作**、原樣回傳——不寫任何降級值進cascade，寫了會誤導style query與`:root`的變量解析。（對照：標點擠壓組在同情境下是降級續跑、只做懸掛。）
 
@@ -113,4 +113,4 @@ setDecorationInsetMode(mode)(src)             // 只寫變量
 
 ### 完整導出清單
 
-主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`四支總管，加三組回落（標點擠壓懸掛、跨文種間隙、相鄰行裝飾線）共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
+主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`四支總控函式，加三組回落（標點擠壓懸掛、跨文種間隙、相鄰行裝飾線）共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
