@@ -682,8 +682,8 @@ body > header {
   & .dun-base { fill: var(--l-brace); }
 
   /* 描邊主角化：字骨以較深的一筆描完（railDraw），頓點在描過中段時
-     以 scale＋opacity「按」出（railPress，明體起筆之意）。仍是配角——
-     四口呼吸描一次、頭三口不描，三圓的漸變呼吸才是主體。 */
+     以 scale＋opacity「按」出（railPress，明體起筆之意）。節奏同 demo——
+     三口呼吸描一次，字骨描滿一整口呼吸，停兩口再淡出。 */
   & .brace-draw {
     fill: none;
     stroke: var(--l-brace-deep);
@@ -692,16 +692,14 @@ body > header {
     stroke-linejoin: miter;
     stroke-dasharray: 100;   /* pathLength=100 → dash 讀作百分比 */
     opacity: 0;
-    animation: railDraw calc(var(--l-dur) * 4) ease-in-out infinite;
-    animation-delay: calc(var(--l-dur) * 3);
+    animation: railDraw calc(var(--l-dur) * 3) ease-in-out infinite;
   }
   & .dun {
     fill: var(--l-brace-deep);
     transform-box: fill-box;
     transform-origin: 100% 50%;   /* 自字骨右緣向左（內）按出 */
     opacity: 0;
-    animation: railPress calc(var(--l-dur) * 4) ease-out infinite;
-    animation-delay: calc(var(--l-dur) * 3);
+    animation: railPress calc(var(--l-dur) * 3) ease-out infinite;
   }
 }
 
@@ -711,23 +709,21 @@ body > header {
   55%      { transform: scale(1.04); fill: var(--l-accent-2); }
   80%      { transform: scale(1);    fill: var(--l-muted); }
 }
-/* 字骨一筆描完（快），短暫停留後淡出；resting 底層續留 */
+/* 字骨描滿一整口呼吸（0→33%），停兩口後淡出；resting 底層續留 */
 @keyframes railDraw {
   0%   { stroke-dashoffset: 100; opacity: 0; }
-  1%   { opacity: 0.9; }
-  10%  { stroke-dashoffset: 0;   opacity: 0.9; }
-  18%  { stroke-dashoffset: 0;   opacity: 0.9; }
-  22%  { opacity: 0; }
+  3%   { opacity: 1; }
+  33%  { stroke-dashoffset: 0;   opacity: 1; }
+  88%  { stroke-dashoffset: 0;   opacity: 1; }
   100% { stroke-dashoffset: 0;   opacity: 0; }
 }
-/* 頓點在字骨描過中段（~5% cycle）時按出 */
+/* 頓點在字骨描過中段（~18% cycle）時按出 */
 @keyframes railPress {
-  0%, 3% { transform: scale(0.2);  opacity: 0; }
-  7%     { transform: scale(1.12); opacity: 1; }
-  10%    { transform: scale(1);    opacity: 1; }
-  18%    { transform: scale(1);    opacity: 1; }
-  22%    { transform: scale(1);    opacity: 0; }
-  100%   { transform: scale(1);    opacity: 0; }
+  0%, 14% { transform: scale(0.2);  opacity: 0; }
+  22%     { transform: scale(1.12); opacity: 1; }
+  28%     { transform: scale(1);    opacity: 1; }
+  88%     { transform: scale(1);    opacity: 1; }
+  100%    { transform: scale(1);    opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .RailLoaderMark circle,
