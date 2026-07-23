@@ -337,6 +337,69 @@ main {
 }
 
 
+/* ─── LangDemo (stations ①/②) — the four-language comparison panel ───
+ * Four <article lang> panes share one grid. Each is labelled with its own
+ * endonym, read from the pane's `lang` (`article[lang]::before`) rather
+ * than duplicated in markup — the DOM stays the single source of truth.
+ * Before this frame the four ran as bare stacked paragraphs, so a reader
+ * met an unannounced switch from 繁 to 簡 to 日 to 韓; the grid + label
+ * turn that into a legible side-by-side. han.css's own :lang() rules
+ * typeset each pane in its punctuation / semantics convention for real. */
+
+figure.LangDemo {
+  & {
+    margin: 0 0 3rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* the 1px gaps read as hairline gridlines against the panel ground */
+    gap: 1px;
+    background: var(--palette-grid);
+    border: 1px solid var(--palette-grid);
+    border-radius: var(--r-3);
+    overflow: clip; /* clip the panes to the rounded corners — Baseline 2023 */
+
+    @media (max-width: 40rem) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  article {
+    & {
+      margin: 0;
+      padding: clamp(1.25rem, 3.5vw, 1.75rem) clamp(1.25rem, 3.5vw, 1.75rem) clamp(1.375rem, 3.5vw, 1.875rem);
+      background: var(--palette-bg);
+    }
+
+    /* the endonym label — derived from lang, so it never drifts from the
+     * content it names, and needs no i18n token (a language's own name is
+     * the same in every UI locale). */
+    &::before {
+      content: attr(lang);
+      display: block;
+      margin-block-end: 0.75rem;
+      /* label its own script's endonym → keep heritage glyphs on the tag too */
+      font-family: var(--han-font-default);
+      font-size: var(--fs-fine);
+      letter-spacing: 0.05em;
+      color: var(--palette-supplement-text);
+    }
+
+    &[lang="zh-Hant"]::before { content: "繁體中文"; }
+    &[lang="zh-Hans"]::before { content: "简体中文"; }
+    &[lang="ja"]::before      { content: "日本語"; }
+    &[lang="ko"]::before      { content: "한국어"; }
+
+    p {
+      margin: 0;
+      font-family: var(--han-font-default);
+      font-size: var(--fs-body);
+      line-height: 1.85;
+      color: var(--palette-text);
+    }
+  }
+}
+
+
 /* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
    `rail-metrics.js` sets `main.dataset.writing`) ═══════════════
    Flips the WHOLE page vertical-rl — dramatic by design (owner
