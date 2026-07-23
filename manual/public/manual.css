@@ -282,6 +282,7 @@ body.ManualPage:has(.RailToggle input:checked) han-rail {
 
     circle { fill: var(--accent); }
     .brace { stroke: var(--ink); }
+    .dun { fill: var(--ink); }   /* 明體頓點 ＝ 括號同色 */
   }
 
   [data-part="mark"] {
