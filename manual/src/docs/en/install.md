@@ -66,4 +66,4 @@ The fonts module defines stacks and family names; woff2 delivery is your choice.
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@latest/swap.css">
 ```
 
-Or set `--han-use-heritage-glyphs-for-hant: system` for a zero-download system fallback — see [Fonts](./fonts.html).
+Or set `--han-use-heritage-glyphs-for-hant: system` for a zero-download system fallback — see [Fonts](/manual/fonts.html).

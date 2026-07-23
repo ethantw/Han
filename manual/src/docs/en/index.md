@@ -17,10 +17,10 @@ Three things to know:
 
 | Module | Cascade layer | What it does |
 |--------|--------------|--------------|
-| [Semantic styles](./semantics.html) | `han-semantics` | What semantic elements should look like in Han typography — emphasis dots, title marks, proper-noun marks, ruby; farewell to fake italics |
-| [Line adjustments](./lines.html) | `han-lines` | The measure within a line — punctuation compression, end-of-line hanging, inter-script spacing |
-| [Prose spacing](./prose.html) | `han-prose` | Block-axis rhythm — spacing between headings, paragraphs and lists; indentation measured in characters |
-| [Fonts](./fonts.html) | `han-fonts` | Font stacks and webfonts — heritage glyph forms, punctuation faces, cursive families |
+| [Semantic styles](/manual/semantics.html) | `han-semantics` | What semantic elements should look like in Han typography — emphasis dots, title marks, proper-noun marks, ruby; farewell to fake italics |
+| [Line adjustments](/manual/lines.html) | `han-lines` | The measure within a line — punctuation compression, end-of-line hanging, inter-script spacing |
+| [Prose spacing](/manual/prose.html) | `han-prose` | Block-axis rhythm — spacing between headings, paragraphs and lists; indentation measured in characters |
+| [Fonts](/manual/fonts.html) | `han-fonts` | Font stacks and webfonts — heritage glyph forms, punctuation faces, cursive families |
 
 Each module lives in its own cascade layer and can be used alone.
 
@@ -41,7 +41,7 @@ Every rule ships inside `:where()` — zero specificity. Any rule of yours overr
 
 ## Browser support
 
-Modern evergreen browsers. Engine gaps in inline typography (`text-autospace`, `text-spacing-trim`) are covered on demand by the [JavaScript companion](./api-js.html).
+Modern evergreen browsers. Engine gaps in inline typography (`text-autospace`, `text-spacing-trim`) are covered on demand by the [JavaScript companion](/manual/api-js.html).
 
 ## Next
 
