@@ -73,11 +73,16 @@ const applyTarget = (config, $target) => {
     : $target.style.removeProperty('font-family')
 }
 
-/* ── apply：模組 link 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
- * 每個 `<link data-han-module>` 依對應模組布林撥 `.disabled`（模組 off ＝
- * 該模組 CSS 不生效，鏡射生成碼少掉一行 import）；每個
- * `<link data-han-webfont>` 於 webfontDelivery==='none' 時停用。沒有這些
- * link 的頁面（元件單獨掛載）整層 no-op。 */
+/* ── apply：模組／webfont link 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
+ * `.disabled` 撥的是 stylesheet 的**啟用**狀態，不是下載——設 disabled 只讓該
+ * sheet 不參與 cascade；CSS 檔本身照樣被 preload scanner 抓（實測 Chromium 如此，
+ * 連初始 HTML 就帶 disabled 屬性也照抓）。
+ *   · `<link data-han-module>` 依模組布林撥：off ＝ 該模組樣式**不套用**（鏡射
+ *     生成碼少一行 import 的視覺結果，並非省下該檔的下載）。
+ *   · `<link data-han-webfont>` 於 webfontDelivery==='none' 時 disable：其
+ *     `@font-face` 不啟用 → 連帶**不抓 woff2 字型檔**（真正省到的是字型檔，
+ *     不是那支 swap.css）。
+ * 沒有這些 link 的頁面（元件單獨掛載）整層 no-op。 */
 const applyModules = (config) => {
   document.querySelectorAll('link[data-han-module]').forEach(($link) => {
     $link.disabled = !config[$link.dataset.hanModule]

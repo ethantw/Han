@@ -97,7 +97,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-tc@latest/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest/dist/diantenjeom.css" data-han-webfont>
-<!-- per-module bundles — the rail's module switches toggle link.disabled -->
+<!-- per-module bundles — the rail's module switches toggle link.disabled
+     (a stylesheet's *applied* state, not its download: the CSS file is still
+     fetched by the preload scanner; disabling only drops it from the cascade). -->
 <link rel="stylesheet" href="/han/han.semantics.css" data-han-module="semantics">
 <link rel="stylesheet" href="/han/han.lines.css" data-han-module="lines">
 <link rel="stylesheet" href="/han/han.prose.css" data-han-module="prose">
