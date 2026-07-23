@@ -51,9 +51,14 @@ export const mountRailMetrics = ({ root, target, initial, onChange }) => {
   const apply = () => {
     if (!target) return
     const { size, leading, weight } = stateRef.current
-    target.style.fontSize = `${size}px`
-    target.style.lineHeight = String(leading)
-    target.style.fontWeight = String(weight)
+    // Metrics ride CSS custom properties, NOT direct font-* inline styles —
+    // so the live rail and the pre-paint config restore (_home.html) share
+    // one declarative mechanism. The consuming rule lives on `main`
+    // (stations.css / manual.css) as `font-size: var(--rail-metric-…,
+    // inherit)`, so an unset var reverts to the page's own inherited value.
+    target.style.setProperty('--rail-metric-size', `${size}px`)
+    target.style.setProperty('--rail-metric-leading', String(leading))
+    target.style.setProperty('--rail-metric-weight', String(weight))
   }
 
   // 度量群組的「使用預設値」——群組標頭一顆（owner call：每個群組，

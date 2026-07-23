@@ -255,9 +255,9 @@
       if (config.baseGeneric === 'serif') t.style.fontFamily = 'var(--han-font-alternative)'
       const m = config.metrics
       if (m) {
-        if (m.size && m.size !== 16) t.style.fontSize = `${m.size}px`
-        if (m.leading && m.leading !== 1.75) t.style.lineHeight = String(m.leading)
-        if (m.weight && m.weight !== 400) t.style.fontWeight = String(m.weight)
+        if (m.size && m.size !== 16) t.style.setProperty('--rail-metric-size', `${m.size}px`)
+        if (m.leading && m.leading !== 1.75) t.style.setProperty('--rail-metric-leading', String(m.leading))
+        if (m.weight && m.weight !== 400) t.style.setProperty('--rail-metric-weight', String(m.weight))
       }
     }
     // `=== false` (not `!value`): a key missing from an older saved schema
