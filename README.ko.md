@@ -116,4 +116,4 @@ installFallbacks(document.body)                  // 또는 타이밍과 範圍�
 
 ## 라이선스
 
-[MIT](./LICENSE) © 2012–2026 Chen Yijun. 內藏 및 傳承 웹폰트는 저마다 <ruby>上流<rt>상류</rt></ruby> 라이선스(OFL 1.1)를 따른다. 各 폰트 패키지를 보라.
+[MIT](./LICENSE) © 2012–2026 Chen Yijun. 內藏 注音 웹폰트는 BopomofoRuby1909(© 2018 But Ko)를 다시 꾸린 것으로 OFL 1.1을 따른다——[LICENSE-FONTS](./LICENSE-FONTS)를 보라. 傳承 字形 웹폰트는 따로 <ruby>配布<rt>배포</rt></ruby>되며 저마다 <ruby>上流<rt>상류</rt></ruby> 라이선스를 따른다. 各 폰트 패키지를 보라.

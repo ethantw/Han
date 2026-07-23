@@ -147,5 +147,7 @@ introduction and install, with Japanese and Korean on the way.
 
 ## License
 
-[MIT](./LICENSE) © 2012–2026 Chen Yijun. Bundled and heritage webfonts carry
-their own upstream licenses (OFL 1.1); see each font package.
+[MIT](./LICENSE) © 2012–2026 Chen Yijun. The bundled 注音 webfont is a
+repackaged BopomofoRuby1909 (© 2018 But Ko), OFL 1.1 — see
+[LICENSE-FONTS](./LICENSE-FONTS). Heritage webfonts are delivered
+separately and carry their own upstream licenses; see each font package.

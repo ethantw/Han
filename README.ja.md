@@ -116,4 +116,4 @@ installFallbacks(document.body)                  // または時機と範囲を�
 
 ## ライセンス
 
-[MIT](./LICENSE) © 2012–2026 Chen Yijun。内蔵および伝承のWebフォントは、それぞれ上流のライセンス（OFL 1.1）に従う。各フォントパッケージを参照のこと。
+[MIT](./LICENSE) © 2012–2026 Chen Yijun。内蔵の注音WebフォントはBopomofoRuby1909（© 2018 But Ko）の再パッケージであり、OFL 1.1に従う——[LICENSE-FONTS](./LICENSE-FONTS)を参照。伝承字形のWebフォントは別途配信で、それぞれ上流のライセンスに従う。各フォントパッケージを参照のこと。

@@ -33,7 +33,8 @@
     "README.zh-Hant.md",
     "README.ja.md",
     "README.ko.md",
-    "LICENSE"
+    "LICENSE",
+    "LICENSE-FONTS"
   ],
   "scripts": {
     "build": "node ./build/library",

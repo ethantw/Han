@@ -117,4 +117,4 @@ installFallbacks(document.body)                  // 或自行控制時機與範�
 
 ## 授權
 
-[MIT](./LICENSE) © 2012–2026 Chen Yijun。內建與傳承Web字體各自沿用上游授權（OFL 1.1），詳見各字體套件。
+[MIT](./LICENSE) © 2012–2026 Chen Yijun。內建注音字體改封裝自BopomofoRuby1909（© 2018 But Ko），採OFL 1.1——見[LICENSE-FONTS](./LICENSE-FONTS)。傳承字形Web字體另行遞送，各自沿用上游授權，詳見各字體套件。
