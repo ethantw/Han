@@ -34,6 +34,7 @@ import { initDemoLang } from '/home/demo-lang.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
 import { initRailCollapse } from '/home/rail-collapse.js'
 import { initSnippet } from '/home/snippet.js'
+import { initPapersDateline } from '/home/papers-dateline.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { gateOpened } from '/home/fonts-gate.js'
@@ -77,6 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSnippet()
   initWritingSwitch()
   initRailCollapse()
+  // station①'s four-edition datelines — 民國 era, today + 100 years
+  initPapersDateline()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
   // (station-craft's Override etc.); the panes get theirs when station④

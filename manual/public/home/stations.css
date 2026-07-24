@@ -492,10 +492,10 @@ figure.Papers {
 
     .Dateline {
       & {
+        /* flex, but NO gap: the era prefix, <time> and ・欄目 are separate
+         * flex items that must read as one continuous line */
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 0 0.75rem;
         margin: 0 0 0.75rem;
         padding-block: 0.25rem;
         /* …and the thin half */
@@ -510,14 +510,16 @@ figure.Papers {
       &::after {
         flex-shrink: 0;
         margin-inline-start: auto;
+        padding-inline-start: 0.75rem;
       }
     }
 
-    &[lang="zh-Hant"] .Dateline::after { content: "繁體中文版"; }
-    &[lang="zh-Hans"] .Dateline::after { content: "简体中文版"; }
-    &[lang="ja"] .Dateline::after      { content: "日本語版"; }
+    /* single-character edition marks; the home (zh-Hant) edition goes
+     * unmarked, the way a paper's domestic edition carries no flag */
+    &[lang="zh-Hans"] .Dateline::after { content: "简"; }
+    &[lang="ja"] .Dateline::after      { content: "日"; }
     /* prefix match — the hanja-mixed pane is lang="ko-Hant" */
-    &[lang^="ko"] .Dateline::after     { content: "한국어판"; }
+    &[lang^="ko"] .Dateline::after     { content: "한"; }
 
     h3 {
       margin: 0 0 0.625rem;

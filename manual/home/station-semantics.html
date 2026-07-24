@@ -87,15 +87,19 @@
        not in station③: its styling belongs to the semantics module
        (semantics.css), and annotation conventions are a per-language
        affair. `--han-cite-title-marks: bracket` sits on the <figure>
-       (style queries read an ancestor). The edition tag (繁體中文版…)
-       is CSS generated content derived from each pane's `lang` — the
-       DOM stays the single source of truth. The zh-Hant pane carries
-       the full semantic-element set (docs/plans/homepage-specimens.md). -->
+       (style queries read an ancestor). The edition mark (简/日/한;
+       the home edition goes unmarked) is CSS generated content derived
+       from each pane's `lang` — the DOM stays the single source of
+       truth. Datelines run on 民國 era at «today + 100 years»: the
+       static text is a no-JS fallback, `home/papers-dateline.js`
+       refreshes each <time> on boot in the edition's own numbering
+       convention. The zh-Hant pane carries the full semantic-element
+       set (docs/plans/homepage-specimens.md). -->
   <figure class="Papers" style="--han-cite-title-marks: bracket">
     <article lang="zh-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline">弘宙十七年七月十五日・科技考古</p>
+        <p class="Dateline">民國<time datetime="2126-07-24">二一五年七月廿四日</time>・科技考古</p>
       </header>
       <h3>謎底竟是一行亂碼</h3>
       <p><cite>地球無核協議</cite>簽署已屆十五年，最後一批冷戰飛彈的封存磁碟卻無人能讀。破譯組成員<u>謝廖沙・林</u>翻查文獻時，讀到一份塵封九十年的技術備忘錄——頁首印著<u>蘇聯</u><u>標準委員會</u>的紅色徽章，內容涉及一套名為<dfn>KOI-8</dfn>的字元編碼規範。</p>
@@ -105,7 +109,7 @@
     <article lang="zh-Hans">
       <header>
         <p class="Masthead">太阳中文报</p>
-        <p class="Dateline">弘宙十七年七月十五日・科技考古</p>
+        <p class="Dateline">民国<time datetime="2126-07-24">二一五年七月廿四日</time>・科技考古</p>
       </header>
       <h3>谜底竟是一行乱码</h3>
       <p><cite>地球无核协议</cite>签署已届十五年，最后一批冷战飞弹的封存磁碟却无人能读。破译组成员<u>谢廖沙・林</u>翻查文献时，读到一份尘封九十年的技术备忘录——页首印着<u>苏联</u><u>标准委员会</u>的红色徽章，内容涉及一套名为<dfn>KOI-8</dfn>的字元编码规范。</p>
@@ -115,7 +119,7 @@
     <article lang="ja">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline">弘宙十七年七月十五日・科学考古</p>
+        <p class="Dateline">民国<time datetime="2126-07-24">二一五年七月二十四日</time>・科学考古</p>
       </header>
       <h3>謎は一行の文字化けだった</h3>
       <p><cite>地球非核協定</cite>の調印から十五年、最後の冷戦ミサイルを封じたディスクは誰にも読めなかった。解読班の<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>は、九十年<ruby>眠<rt>ねむ</rt></ruby>り続けた技術覚書を偶然目にする——表紙には<u>ソ連</u><u>標準委員会</u>の赤い<ruby>徽章<rt>きしょう</rt></ruby>、内容は<dfn>KOI-8</dfn>と呼ばれる文字符号化規格に関するものだった。</p>
@@ -125,7 +129,7 @@
     <article lang="ko-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline"><ruby>弘宙<rt>홍주</rt></ruby> 17年 7月 15日・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
+        <p class="Dateline"><ruby>民國<rt>민국</rt></ruby> <time datetime="2126-07-24">215年 7月 24日</time>・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
       </header>
       <h3><ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마</rt></ruby>였다</h3>
       <p><cite><ruby>地球<rt>지구</rt></ruby> <ruby>無核<rt>무핵</rt></ruby> <ruby>協議<rt>협의</rt></ruby></cite> <ruby>締結<rt>체결</rt></ruby> 15年——마지막 <ruby>冷戰<rt>냉전</rt></ruby> 미사일을 <ruby>封存<rt>봉존</rt></ruby>한 디스크는 아무도 읽어낼 수 없었다. <ruby>解讀班<rt>해독반</rt></ruby>의 젊은 <ruby>隊員<rt>대원</rt></ruby> <u>세료샤 림</u>은 90年 동안 <ruby>塵封<rt>진봉</rt></ruby>된 <ruby>技術<rt>기술</rt></ruby> <ruby>備忘錄<rt>비망록</rt></ruby>을 우연히 발견했다——표지에는 <u><ruby>蘇聯<rt>소련</rt></ruby></u> <u><ruby>標準<rt>표준</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby></u>의 붉은 <ruby>徽章<rt>휘장</rt></ruby>이 찍혀 있었고, <ruby>內容<rt>내용</rt></ruby>은 <dfn>KOI-8</dfn>이라는 <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>에 관한 것이었다.</p>
