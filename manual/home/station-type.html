@@ -42,13 +42,6 @@
     ja: '切・素のフォント',
     ko: '끔・<ruby>原本<rt>원본</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
   },
-  stNote: {
-    hant: '撥左欄「傳承字形」，三面互換。',
-    hans: '拨左栏「传承字形」，三面互换。',
-    en: 'Flip the heritage-glyph switch in the left column to swap the three faces.',
-    ja: '左欄の「傳承字形」を撥ねれば、三つの面が入れ替わる。',
-    ko: '왼쪽 칸의 「<ruby>傳承<rt>전승</rt></ruby> <ruby>字形<rt>자형</rt></ruby>」을 켜면 세 <ruby>面<rt>면</rt></ruby>이 서로 바뀐다.',
-  },
   stEyebrow: {
     hant: '貳・字體排印',
     hans: '贰・字体排印',
@@ -248,46 +241,38 @@
     </ul>
   </figure>
 
-  <div class="Annotated">
-    <div class="Prose">
-      <p>{{ stHeritageP }}</p>
-      <!-- 拂歧歸正——先講「修好」（碼位被西文字體搶走的破折號／刪節號／
-           間隔號），再講「可選」（stPunctP 現在是 Diantenjeom 4×2 標點字體
-           的地域公約／自訂混搭），LangDemo figure 接著實況示範。stSqueezeP
-           收在最後——標點擠壓是獨立於「選哪種標點」的加分項，跟前面的
-           地域公約／自訂選擇沒有因果關係，放在示範之後單獨收尾。 -->
-      <p>{{ stPunctFixP }}</p>
-      <p>{{ stPunctP }}</p>
+  <div class="Prose">
+    <p>{{ stHeritageP }}</p>
+    <!-- 拂歧歸正——先講「修好」（碼位被西文字體搶走的破折號／刪節號／
+         間隔號），再講「可選」（stPunctP 現在是 Diantenjeom 4×2 標點字體
+         的地域公約／自訂混搭），LangDemo figure 接著實況示範。stSqueezeP
+         收在最後——標點擠壓是獨立於「選哪種標點」的加分項，跟前面的
+         地域公約／自訂選擇沒有因果關係，放在示範之後單獨收尾。 -->
+    <p>{{ stPunctFixP }}</p>
+    <p>{{ stPunctP }}</p>
 
-      <!-- live per-language punctuation demo — same LangDemo pattern as
-           station①: four <article lang> panes, each rendering its own
-           punctuation convention (and responding to the rail's four
-           per-language punctuation selects). Texts: the SAME furious
-           commuter quote from 太陽中文報's hyperloop-3min, in the corpus's
-           own parallel translations (hans = glyph conversion) — one
-           sentence, four punctuation conventions side by side. -->
-      <figure class="LangDemo">
-        <article lang="zh-Hant">
-          <p>山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！結果今天慢了三分鐘，我九點的會議只能改十分！這算什麼通勤？」言罷拂袖而去。</p>
-        </article>
-        <article lang="zh-Hans">
-          <p>山田脸色铁青：「我特地放弃瞬移舱改搭超回路，就是因为快十二秒！结果今天慢了三分钟，我九点的会议只能改十分！这算什么通勤？」言罢拂袖而去。</p>
-        </article>
-        <article lang="ja">
-          <p>山田は青ざめた顔で言い放った。「わざわざ瞬間移動カプセルをやめてハイパーループにしたのは十二秒速いからだ。それなのに今日は三分遅れた。九時の会議が九時十分に変更になった。これが通勤か」と言い捨て、その場を立ち去った。</p>
-        </article>
-        <article lang="ko-Hant">
-          <p>야마다는 굳은 얼굴로 말했다. 「<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐 <ruby>抛棄<rt>포기</rt></ruby>하고 하이퍼루프 탄 게 12秒 빠르다고 해서였어요. 근데 오늘 3分 늦어졌잖아요. 9時 <ruby>會議<rt>회의</rt></ruby>가 9時 10分으로 바뀌었고요. 이게 무슨 <ruby>通勤<rt>통근</rt></ruby>입니까」라고 말했다.</p>
-        </article>
-      </figure>
+    <!-- live per-language punctuation demo — same LangDemo pattern as
+         station①: four <article lang> panes, each rendering its own
+         punctuation convention (and responding to the rail's four
+         per-language punctuation selects). Texts: the SAME furious
+         commuter quote from 太陽中文報's hyperloop-3min, in the corpus's
+         own parallel translations (hans = glyph conversion) — one
+         sentence, four punctuation conventions side by side. -->
+    <figure class="LangDemo">
+      <article lang="zh-Hant">
+        <p>山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！結果今天慢了三分鐘，我九點的會議只能改十分！這算什麼通勤？」言罷拂袖而去。</p>
+      </article>
+      <article lang="zh-Hans">
+        <p>山田脸色铁青：「我特地放弃瞬移舱改搭超回路，就是因为快十二秒！结果今天慢了三分钟，我九点的会议只能改十分！这算什么通勤？」言罢拂袖而去。</p>
+      </article>
+      <article lang="ja">
+        <p>山田は青ざめた顔で言い放った。「わざわざ瞬間移動カプセルをやめてハイパーループにしたのは十二秒速いからだ。それなのに今日は三分遅れた。九時の会議が九時十分に変更になった。これが通勤か」と言い捨て、その場を立ち去った。</p>
+      </article>
+      <article lang="ko-Hant">
+        <p>야마다는 굳은 얼굴로 말했다. 「<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐 <ruby>抛棄<rt>포기</rt></ruby>하고 하이퍼루프 탄 게 12秒 빠르다고 해서였어요. 근데 오늘 3分 늦어졌잖아요. 9時 <ruby>會議<rt>회의</rt></ruby>가 9時 10分으로 바뀌었고요. 이게 무슨 <ruby>通勤<rt>통근</rt></ruby>입니까」라고 말했다.</p>
+      </article>
+    </figure>
 
-      <p>{{ stSqueezeP }}</p>
-    </div>
-
-    <aside class="Marginalia">
-      <code>--han-use-heritage-glyphs-for-hant</code>
-      <code>--han-punctuation-hant</code>
-      <p>{{ stNote }}</p>
-    </aside>
+    <p>{{ stSqueezeP }}</p>
   </div>
 </section>

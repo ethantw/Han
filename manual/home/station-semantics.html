@@ -14,13 +14,6 @@
     ja: '<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>が<ruby>天書<rt>てんしょ</rt></ruby>を睨むこと<em>十七分</em>——冷戦ミサイルはこうして退役した。詳しくは<cite>太陽中文報</cite>。',
     ko: '<u>세료샤 림</u>이 깨진 글자를 노려본 지 <em>17分</em>——<ruby>冷戰<rt>냉전</rt></ruby> 미사일은 이렇게 <ruby>退役<rt>퇴역</rt></ruby>했다. <cite><ruby>太陽中文報<rt>태양중문보</rt></ruby></cite>에 <ruby>詳報<rt>상보</rt></ruby>.',
   },
-  ssNote: {
-    hant: '旁註記的是對應的變數名——寬螢幕才出現。',
-    hans: '旁注记的是对应的变量名——宽屏才出现。',
-    en: 'The margin notes the matching variable name — wide screens only.',
-    ja: '傍註は対応する変数名を示す——広い画面でのみ現れる。',
-    ko: '<ruby>傍註<rt>방주</rt></ruby>는 <ruby>對應<rt>대응</rt></ruby>하는 <ruby>變數名<rt>변수명</rt></ruby>을 <ruby>表示<rt>표시</rt></ruby>한다——<ruby>畵面<rt>화면</rt></ruby>이 넓을 때만 나타난다.',
-  },
   ssEyebrow: {
     hant: '壹・語意',
     hans: '壹・语意',
@@ -61,20 +54,8 @@
        preview honest — no fake glyphs. -->
   <p class="Specimen" lang="zh-Hant" style="--han-cite-title-marks: bracket">{{ ssSpecimen }}</p>
 
-  <div class="Annotated">
-    <div class="Prose">
-      <p>{{ ssP1 }}</p>
-    </div>
-
-    <!-- marginalia — the variable names driving this station (code, mono)
-         plus one quiet note. Hidden below 68rem: it only names the vars,
-         so nothing is lost on narrow screens. -->
-    <aside class="Marginalia">
-      <code>--han-em-symbol</code>
-      <code>--han-em-dot-position</code>
-      <code>--han-cite-title-marks</code>
-      <p>{{ ssNote }}</p>
-    </aside>
+  <div class="Prose">
+    <p>{{ ssP1 }}</p>
   </div>
 
   <!-- live per-language demo — four newspaper panes (.Papers) set the

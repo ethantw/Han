@@ -57,6 +57,17 @@ Owner 反饋:站①川普摘句+亂碼四欄=兩篇故事太多;四欄不可只�
   `.Dateline` 拿掉 flex gap(era 前綴+time+欄目是三個 flex item,
   gap 會把一行字撐開),間距改由標記自己的 `padding-inline-start`。
 
+### 四修(2026-07-24)— Marginalia 全站拆除
+
+Owner:旁註(變數名+說明句)尷尬、無實際意義,docs 的事不進首頁。
+五站的 `.Annotated`/`.Marginalia` 整組移除(HTML unwrap 回 `.Prose`
+直落 section、CSS 兩組件刪除、對應 e2e 測試刪除,e2e 剩 54 綠)。
+註釋句處置:站① ssNote(介面自我解說)與 站②stNote/站肆prNote/
+站伍arNote 一併刪;**站叄 slNote「間隙由CSS生成,文中沒有一個空格
+字元」是核心賣點,併入 slP2 句尾**(hant/hans/ja/ko;en 正文本就有
+「no manual space required」不重複)。arNote 的零權重主張 arP1 已
+講過,無損失。
+
 ## 已完成的前置
 
 - **DB 全量轉出**:`~/Desktop/太陽中文報/{zh,ja,ko}/<slug>.md`,21 篇 ×3 語

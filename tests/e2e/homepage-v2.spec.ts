@@ -30,19 +30,6 @@ test('the seven stations each carry a watermark glyph 語字行段層格碼', as
   expect(marks).toEqual(STATION_WM)
 })
 
-test('marginalia is hidden at a narrow (52rem) viewport, visible at 1440', async ({ page }) => {
-  // The var-name marginalia only repeats the driving `--han-*` names, so it
-  // is display:none below 68rem (nothing lost) and a real rail at/above it.
-  const marginalia = page.locator('.Marginalia').first()
-
-  await page.setViewportSize({ width: 52 * 16, height: 900 })
-  await page.goto('/')
-  await expect(marginalia).toBeHidden()
-
-  await page.setViewportSize({ width: 1440, height: 900 })
-  await expect(marginalia).toBeVisible()
-})
-
 test('station 柒・引用碼 sits on a constant-dark ground in the LIGHT theme', async ({ page }) => {
   await page.goto('/')
 
