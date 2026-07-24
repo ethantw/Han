@@ -8,11 +8,11 @@
     ko: '<ruby>精誠<rt>정성</rt></ruby>껏 다듬은 <ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby>의 스타일——<ruby>漢字<rt>한자</rt></ruby>와 <ruby>相剋<rt>상극</rt></ruby>인 가짜 이탤릭과는 이것으로 작별이다.',
   },
   ssSpecimen: {
-    hant: '咀嚼<em>二十二秒</em>，<u>巴拉克・川普</u>驚覺人間美味——詳見<cite>太陽中文報</cite>。',
-    hans: '咀嚼<em>二十二秒</em>，<u>巴拉克・川普</u>惊觉人间美味——详见<cite>太阳中文报</cite>。',
-    en: 'Chewed for <em>twenty-two seconds</em>, <u>Barack Trump</u> wakes to worldly delight — see the <cite lang="zh-Hant">太陽中文報</cite>.',
-    ja: '<ruby>咀嚼<rt>そしゃく</rt></ruby><em>二十二秒</em>、<u>バラク・トランプ</u>は人間の美味に目覚めた——詳しくは<cite>太陽中文報</cite>。',
-    ko: '<ruby>咀嚼<rt>저작</rt></ruby> <em>22秒</em>——<u>바라크 트럼프</u>, <ruby>人間<rt>인간</rt></ruby>의 맛에 눈뜨다. <cite><ruby>太陽中文報<rt>태양중문보</rt></ruby></cite>에 <ruby>詳報<rt>상보</rt></ruby>.',
+    hant: '<u>謝廖沙・林</u>盯著天書<em>十七分鐘</em>，冷戰飛彈就此退役——詳見<cite>太陽中文報</cite>。',
+    hans: '<u>谢廖沙・林</u>盯着天书<em>十七分钟</em>，冷战飞弹就此退役——详见<cite>太阳中文报</cite>。',
+    en: 'Staring at gibberish for <em>seventeen minutes</em>, <u>Seryozha Lin</u> retired the last Cold-War missiles — see the <cite lang="zh-Hant">太陽中文報</cite>.',
+    ja: '<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>が<ruby>天書<rt>てんしょ</rt></ruby>を睨むこと<em>十七分</em>——冷戦ミサイルはこうして退役した。詳しくは<cite>太陽中文報</cite>。',
+    ko: '<u>세료샤 림</u>이 깨진 글자를 노려본 지 <em>17分</em>——<ruby>冷戰<rt>냉전</rt></ruby> 미사일은 이렇게 <ruby>退役<rt>퇴역</rt></ruby>했다. <cite><ruby>太陽中文報<rt>태양중문보</rt></ruby></cite>에 <ruby>詳報<rt>상보</rt></ruby>.',
   },
   ssNote: {
     hant: '旁註記的是對應的變數名——寬螢幕才出現。',
@@ -64,35 +64,6 @@
   <div class="Annotated">
     <div class="Prose">
       <p>{{ ssP1 }}</p>
-
-      <!-- live per-language demo — four <article lang> panes let the
-           semantics rules (emphasis dots, cite title marks, proper-noun
-           underline, zhuyin / furigana ruby) render under each language's
-           own convention, and give the rail's per-language punctuation
-           selects something to act on. Ruby lives here, not in station③:
-           its styling belongs to the semantics module (semantics.css), and
-           annotation conventions are a per-language affair.
-           `--han-cite-title-marks: bracket` sits on the <figure> (style
-           queries read an ancestor). Texts: parallel excerpts of 太陽中文報's
-           soviet-koi8-nuke (zh original; ja/ko from its own translations;
-           hans is a glyph-only conversion) — the zh-Hant pane carries the
-           full semantic-element set (docs/plans/homepage-specimens.md). -->
-      <figure class="LangDemo" style="--han-cite-title-marks: bracket">
-        <article lang="zh-Hant">
-          <p><cite>地球無核協議</cite>簽署已屆十五年，最後一批冷戰飛彈的封存磁碟卻無人能讀。破譯組成員<u>謝廖沙・林</u>翻查文獻時，讀到一份塵封九十年的技術備忘錄——頁首印著<u>蘇聯</u><u>標準委員會</u>的紅色徽章，內容涉及一套名為<dfn>KOI-8</dfn>的字元編碼規範。</p>
-          <p>所謂<dfn>亂碼</dfn>，是文件以某套對照表寫成——字元各有碼位<var>n</var>——卻被另一套對照表強行解讀的結果：正確的數字，對應到<em>全然錯誤</em>的文字。彼時的電腦，連<i lang="de">Schrödinger</i>這個名字都無法完整顯示。</p>
-          <p>人形語言學機器人VELES-7補充：<q>訓練資料不足以令模型辨識這是編碼錯誤，而非真實的漢字。</q>換言之，<strong>沒有人讀得懂，是因為所有人用的都是錯誤的鑰匙</strong>——正確解讀全程，耗時十七分鐘。彈體內的<ruby class="zhuyin">鈽<rt>ㄅㄨˋ</rt></ruby>，下週移送民用儲能工廠。</p>
-        </article>
-        <article lang="zh-Hans">
-          <p>所谓<dfn>乱码</dfn>，是文件以某套对照表写成——字元各有码位<var>n</var>——却被另一套对照表强行解读的结果：正确的数字，对应到<em>全然错误</em>的文字。彼时的电脑，连<i lang="de">Schrödinger</i>这个名字都无法完整显示。</p>
-        </article>
-        <article lang="ja">
-          <p><cite>地球非核協定</cite>から十五年、最後の冷戦ミサイルを封じたディスクは誰にも読めなかった。<dfn>文字化け</dfn>とは、ある対応表で書かれた文書を別の対応表で強引に読み解いたときに生じる<ruby>滑稽<rt>こっけい</rt></ruby>な結果である——正しい数値が、<em>まったく見当違いの文字</em>に対応してしまう。謎は九十年前に退場した符号化規格KOI-8にあり、正確な解読に要した時間は十七分だった。</p>
-        </article>
-        <article lang="ko-Hant">
-          <p><cite><ruby>地球<rt>지구</rt></ruby> <ruby>無核<rt>무핵</rt></ruby> <ruby>協議<rt>협의</rt></ruby></cite> 15年——아무도 읽어낼 수 없었던 것은 모두가 <em><ruby>誤謬<rt>오류</rt></ruby>의 열쇠</em>를 사용했기 때문이다. <ruby>正確<rt>정확</rt></ruby>한 <ruby>解法<rt>해법</rt></ruby>은 KOI-8 <ruby>形式<rt>형식</rt></ruby>으로 디스크를 다시 읽어 Unicode로 <ruby>變換<rt>변환</rt></ruby>하는 것——걸린 시간은 17分이었다.</p>
-        </article>
-      </figure>
     </div>
 
     <!-- marginalia — the variable names driving this station (code, mono)
@@ -105,4 +76,61 @@
       <p>{{ ssNote }}</p>
     </aside>
   </div>
+
+  <!-- live per-language demo — four newspaper panes (.Papers) set the
+       SAME three paragraphs of 太陽中文報's soviet-koi8-nuke in each
+       language's own edition, so the semantics rules (emphasis dots,
+       cite title marks, proper-noun underline, zhuyin / pinyin /
+       furigana / hangul-reading ruby) become directly comparable line
+       by line. zh original; ja/ko adapted from the article's own full
+       translations; hans is a glyph-only conversion. Ruby lives here,
+       not in station③: its styling belongs to the semantics module
+       (semantics.css), and annotation conventions are a per-language
+       affair. `--han-cite-title-marks: bracket` sits on the <figure>
+       (style queries read an ancestor). The edition tag (繁體中文版…)
+       is CSS generated content derived from each pane's `lang` — the
+       DOM stays the single source of truth. The zh-Hant pane carries
+       the full semantic-element set (docs/plans/homepage-specimens.md). -->
+  <figure class="Papers" style="--han-cite-title-marks: bracket">
+    <article lang="zh-Hant">
+      <header>
+        <p class="Masthead">太陽中文報</p>
+        <p class="Dateline">弘宙十七年七月十五日・科技考古</p>
+      </header>
+      <h3>謎底竟是一行亂碼</h3>
+      <p><cite>地球無核協議</cite>簽署已屆十五年，最後一批冷戰飛彈的封存磁碟卻無人能讀。破譯組成員<u>謝廖沙・林</u>翻查文獻時，讀到一份塵封九十年的技術備忘錄——頁首印著<u>蘇聯</u><u>標準委員會</u>的紅色徽章，內容涉及一套名為<dfn>KOI-8</dfn>的字元編碼規範。</p>
+      <p>所謂<dfn>亂碼</dfn>，是文件以某套對照表寫成——字元各有碼位<var>n</var>——卻被另一套對照表強行解讀的結果：正確的數字，對應到<em>全然錯誤</em>的文字。彼時的電腦，連<i lang="de">Schrödinger</i>這個名字都無法完整顯示。</p>
+      <p>人形語言學機器人VELES-7補充：<q>訓練資料不足以令模型辨識這是編碼錯誤，而非真實的漢字。</q>換言之，<strong>沒有人讀得懂，是因為所有人用的都是錯誤的鑰匙</strong>——正確解讀全程，耗時十七分鐘。彈體內的<ruby class="zhuyin">鈽<rt>ㄅㄨˋ</rt></ruby>，下週移送民用儲能工廠。</p>
+    </article>
+    <article lang="zh-Hans">
+      <header>
+        <p class="Masthead">太阳中文报</p>
+        <p class="Dateline">弘宙十七年七月十五日・科技考古</p>
+      </header>
+      <h3>谜底竟是一行乱码</h3>
+      <p><cite>地球无核协议</cite>签署已届十五年，最后一批冷战飞弹的封存磁碟却无人能读。破译组成员<u>谢廖沙・林</u>翻查文献时，读到一份尘封九十年的技术备忘录——页首印着<u>苏联</u><u>标准委员会</u>的红色徽章，内容涉及一套名为<dfn>KOI-8</dfn>的字元编码规范。</p>
+      <p>所谓<dfn>乱码</dfn>，是文件以某套对照表写成——字元各有码位<var>n</var>——却被另一套对照表强行解读的结果：正确的数字，对应到<em>全然错误</em>的文字。彼时的电脑，连<i lang="de">Schrödinger</i>这个名字都无法完整显示。</p>
+      <p>人形语言学机器人VELES-7补充：<q>训练资料不足以令模型辨识这是编码错误，而非真实的汉字。</q>换言之，<strong>没有人读得懂，是因为所有人用的都是错误的钥匙</strong>——正确解读全程，耗时十七分钟。弹体内的<ruby>钚<rt>bù</rt></ruby>，下周移送民用储能工厂。</p>
+    </article>
+    <article lang="ja">
+      <header>
+        <p class="Masthead">太陽中文報</p>
+        <p class="Dateline">弘宙十七年七月十五日・科学考古</p>
+      </header>
+      <h3>謎は一行の文字化けだった</h3>
+      <p><cite>地球非核協定</cite>の調印から十五年、最後の冷戦ミサイルを封じたディスクは誰にも読めなかった。解読班の<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>は、九十年<ruby>眠<rt>ねむ</rt></ruby>り続けた技術覚書を偶然目にする——表紙には<u>ソ連</u><u>標準委員会</u>の赤い<ruby>徽章<rt>きしょう</rt></ruby>、内容は<dfn>KOI-8</dfn>と呼ばれる文字符号化規格に関するものだった。</p>
+      <p><dfn>文字化け</dfn>とは、ある対応表で書かれた文書——文字はそれぞれ符号位置<var>n</var>を持つ——を、別の対応表で強引に読み解いたときに生じる<ruby>滑稽<rt>こっけい</rt></ruby>な結果である：正しい数値が、<em>まったく見当違いの文字</em>に対応してしまう。当時のコンピュータは、<i lang="de">Schrödinger</i>という名前さえ完全に表示できなかった。</p>
+      <p>ヒューマノイド言語学ロボットVELES-7は<q>訓練データが不十分なため、モデルはこれが符号化エラーであると認識できないのだ</q>と補った。要するに、<strong>誰にも読めなかったのは、全員が間違った鍵を使っていたからだ</strong>——正確な解読に要した時間は十七分。弾体内のプルトニウムは、来週民生用蓄電工場へ移送される。</p>
+    </article>
+    <article lang="ko-Hant">
+      <header>
+        <p class="Masthead">太陽中文報</p>
+        <p class="Dateline"><ruby>弘宙<rt>홍주</rt></ruby> 17年 7月 15日・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
+      </header>
+      <h3><ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마</rt></ruby>였다</h3>
+      <p><cite><ruby>地球<rt>지구</rt></ruby> <ruby>無核<rt>무핵</rt></ruby> <ruby>協議<rt>협의</rt></ruby></cite> <ruby>締結<rt>체결</rt></ruby> 15年——마지막 <ruby>冷戰<rt>냉전</rt></ruby> 미사일을 <ruby>封存<rt>봉존</rt></ruby>한 디스크는 아무도 읽어낼 수 없었다. <ruby>解讀班<rt>해독반</rt></ruby>의 젊은 <ruby>隊員<rt>대원</rt></ruby> <u>세료샤 림</u>은 90年 동안 <ruby>塵封<rt>진봉</rt></ruby>된 <ruby>技術<rt>기술</rt></ruby> <ruby>備忘錄<rt>비망록</rt></ruby>을 우연히 발견했다——표지에는 <u><ruby>蘇聯<rt>소련</rt></ruby></u> <u><ruby>標準<rt>표준</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby></u>의 붉은 <ruby>徽章<rt>휘장</rt></ruby>이 찍혀 있었고, <ruby>內容<rt>내용</rt></ruby>은 <dfn>KOI-8</dfn>이라는 <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>에 관한 것이었다.</p>
+      <p>소위 <dfn><ruby>亂碼<rt>난마</rt></ruby></dfn>란, 한 <ruby>對照表<rt>대조표</rt></ruby>로 작성된 <ruby>文書<rt>문서</rt></ruby>——<ruby>文字<rt>문자</rt></ruby>마다 코드 포인트 <var>n</var>이 있다——가 다른 <ruby>對照表<rt>대조표</rt></ruby>로 <ruby>强制<rt>강제</rt></ruby> <ruby>解讀<rt>해독</rt></ruby>될 때 생기는 결과다. 올바른 <ruby>數字<rt>수자</rt></ruby>가 <em>완전히 <ruby>誤謬<rt>오류</rt></ruby>의 <ruby>文字<rt>문자</rt></ruby></em>에 <ruby>對應<rt>대응</rt></ruby>되는 것이다. 당시의 <ruby>電腦<rt>전뇌</rt></ruby>는 <i lang="de">Schrödinger</i>라는 이름조차 온전히 표시할 수 없었다.</p>
+      <p><ruby>人形<rt>인형</rt></ruby> <ruby>言語學<rt>언어학</rt></ruby> 로봇 VELES-7이 덧붙였다. <q><ruby>訓練<rt>훈련</rt></ruby> <ruby>資料<rt>자료</rt></ruby>가 <ruby>不足<rt>부족</rt></ruby>하여, <ruby>模型<rt>모형</rt></ruby>은 이것이 <ruby>符號化<rt>부호화</rt></ruby> <ruby>誤謬<rt>오류</rt></ruby>임을 <ruby>識別<rt>식별</rt></ruby>하지 못했습니다.</q> 다시 말해, <strong>아무도 읽어낼 수 없었던 것은 모두가 <ruby>誤謬<rt>오류</rt></ruby>의 열쇠를 사용했기 때문이다</strong>——<ruby>正確<rt>정확</rt></ruby>한 <ruby>解讀<rt>해독</rt></ruby>에 걸린 시간은 17分이었다. <ruby>彈體<rt>탄체</rt></ruby> 속 플루토늄은 다음 주 <ruby>民用<rt>민용</rt></ruby> <ruby>蓄能<rt>축능</rt></ruby> <ruby>工廠<rt>공장</rt></ruby>으로 <ruby>移送<rt>이송</rt></ruby>된다.</p>
+    </article>
+  </figure>
 </section>
