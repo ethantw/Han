@@ -8,11 +8,11 @@
     ko: '<ruby>精誠<rt>정성</rt></ruby>껏 다듬은 <ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby>의 스타일——<ruby>漢字<rt>한자</rt></ruby>와 <ruby>相剋<rt>상극</rt></ruby>인 가짜 이탤릭과는 이것으로 작별이다.',
   },
   ssSpecimen: {
-    hant: '文字之<em>道在細節</em>，讀<cite>考工記</cite>可知——<u>王羲之</u>寫過的每一筆，瀏覽器都該記得。',
-    hans: '文字之<em>道在细节</em>，读<cite>考工记</cite>可知——<u>王羲之</u>写过的每一笔，浏览器都该记得。',
-    en: 'The <em>truth is in the detail</em>, as the <cite>Kaogongji</cite> teaches — every stroke <u>Wang Xizhi</u> ever set, the browser ought to remember.',
-    ja: '文字の<em>道は細部に宿る</em>——<cite>考工記</cite>を読めば分かる。<u>王羲之</u>が引いた一画一画を、ブラウザは記憶しておくべきである。',
-    ko: '<ruby>文字<rt>문자</rt></ruby>의 <em><ruby>道<rt>도</rt></ruby>는 <ruby>細部<rt>세부</rt></ruby>에 있다</em>, <cite><ruby>考工記<rt>고공기</rt></ruby></cite>를 읽으면 안다——<u><ruby>王羲之<rt>왕희지</rt></ruby></u>가 그은 모든 <ruby>劃<rt>획</rt></ruby>을, 브라우저는 <ruby>記憶<rt>기억</rt></ruby>해야 한다.',
+    hant: '咀嚼<em>二十二秒</em>，<u>巴拉克・川普</u>驚覺人間美味——詳見<cite>太陽中文報</cite>。',
+    hans: '咀嚼<em>二十二秒</em>，<u>巴拉克・川普</u>惊觉人间美味——详见<cite>太阳中文报</cite>。',
+    en: 'Chewed for <em>twenty-two seconds</em>, <u>Barack Trump</u> wakes to worldly delight — see the <cite lang="zh-Hant">太陽中文報</cite>.',
+    ja: '<ruby>咀嚼<rt>そしゃく</rt></ruby><em>二十二秒</em>、<u>バラク・トランプ</u>は人間の美味に目覚めた——詳しくは<cite>太陽中文報</cite>。',
+    ko: '<ruby>咀嚼<rt>저작</rt></ruby> <em>22秒</em>——<u>바라크 트럼프</u>, <ruby>人間<rt>인간</rt></ruby>의 맛에 눈뜨다. <cite><ruby>太陽中文報<rt>태양중문보</rt></ruby></cite>에 <ruby>詳報<rt>상보</rt></ruby>.',
   },
   ssNote: {
     hant: '旁註記的是對應的變數名——寬螢幕才出現。',
@@ -73,20 +73,24 @@
            its styling belongs to the semantics module (semantics.css), and
            annotation conventions are a per-language affair.
            `--han-cite-title-marks: bracket` sits on the <figure> (style
-           queries read an ancestor). Texts below are PLACEHOLDERS — real
-           excerpts to be curated from the demo corpus (manual/demo/*.md). -->
+           queries read an ancestor). Texts: parallel excerpts of 太陽中文報's
+           soviet-koi8-nuke (zh original; ja/ko from its own translations;
+           hans is a glyph-only conversion) — the zh-Hant pane carries the
+           full semantic-element set (docs/plans/homepage-specimens.md). -->
       <figure class="LangDemo" style="--han-cite-title-marks: bracket">
         <article lang="zh-Hant">
-          <p>文中緊要處以<em>著重號</em>圈點；書名如<cite>說文解字</cite>，人名如<u>許慎</u>，各有其記。<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>依字直書，一行標記，排在字旁。</p>
+          <p><cite>地球無核協議</cite>簽署已屆十五年，最後一批冷戰飛彈的封存磁碟卻無人能讀。破譯組成員<u>謝廖沙・林</u>翻查文獻時，讀到一份塵封九十年的技術備忘錄——頁首印著<u>蘇聯</u><u>標準委員會</u>的紅色徽章，內容涉及一套名為<dfn>KOI-8</dfn>的字元編碼規範。</p>
+          <p>所謂<dfn>亂碼</dfn>，是文件以某套對照表寫成——字元各有碼位<var>n</var>——卻被另一套對照表強行解讀的結果：正確的數字，對應到<em>全然錯誤</em>的文字。彼時的電腦，連<i lang="de">Schrödinger</i>這個名字都無法完整顯示。</p>
+          <p>人形語言學機器人VELES-7補充：<q>訓練資料不足以令模型辨識這是編碼錯誤，而非真實的漢字。</q>換言之，<strong>沒有人讀得懂，是因為所有人用的都是錯誤的鑰匙</strong>——正確解讀全程，耗時十七分鐘。彈體內的<ruby class="zhuyin">鈽<rt>ㄅㄨˋ</rt></ruby>，下週移送民用儲能工廠。</p>
         </article>
         <article lang="zh-Hans">
-          <p>文中紧要处以<em>着重号</em>圈点；书名如<cite>说文解字</cite>，人名如<u>许慎</u>，各有其记。</p>
+          <p>所谓<dfn>乱码</dfn>，是文件以某套对照表写成——字元各有码位<var>n</var>——却被另一套对照表强行解读的结果：正确的数字，对应到<em>全然错误</em>的文字。彼时的电脑，连<i lang="de">Schrödinger</i>这个名字都无法完整显示。</p>
         </article>
         <article lang="ja">
-          <p>強調は<em>圏点</em>で示し、書名は<cite><ruby>枕草子<rt>まくらのそうし</rt></ruby></cite>と記す——<u>清少納言</u>の筆による。振り仮名は字の上に沿う。</p>
+          <p><cite>地球非核協定</cite>から十五年、最後の冷戦ミサイルを封じたディスクは誰にも読めなかった。<dfn>文字化け</dfn>とは、ある対応表で書かれた文書を別の対応表で強引に読み解いたときに生じる<ruby>滑稽<rt>こっけい</rt></ruby>な結果である——正しい数値が、<em>まったく見当違いの文字</em>に対応してしまう。謎は九十年前に退場した符号化規格KOI-8にあり、正確な解読に要した時間は十七分だった。</p>
         </article>
-        <article lang="ko">
-          <p>강조는 <em>드러냄표</em>로, 책 이름은 <cite>훈민정음</cite>으로 표시한다.</p>
+        <article lang="ko-Hant">
+          <p><cite><ruby>地球<rt>지구</rt></ruby> <ruby>無核<rt>무핵</rt></ruby> <ruby>協議<rt>협의</rt></ruby></cite> 15年——아무도 읽어낼 수 없었던 것은 모두가 <em><ruby>誤謬<rt>오류</rt></ruby>의 열쇠</em>를 사용했기 때문이다. <ruby>正確<rt>정확</rt></ruby>한 <ruby>解法<rt>해법</rt></ruby>은 KOI-8 <ruby>形式<rt>형식</rt></ruby>으로 디스크를 다시 읽어 Unicode로 <ruby>變換<rt>변환</rt></ruby>하는 것——걸린 시간은 17分이었다.</p>
         </article>
       </figure>
     </div>

@@ -15,11 +15,11 @@
     ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>, <ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다. 웹폰트 <ruby>時代<rt>시대</rt></ruby>, <ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 120개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고, <ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <code>unicode-range</code>에 맡겨진다——<ruby>必要<rt>필요</rt></ruby>한 만큼만 CDN을 거쳐 밀리초 <ruby>單位<rt>단위</rt></ruby>로 닿아, <ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다.',
   },
   stCompareSample: {
-    hant: '字距，行氣。',
-    hans: '字距，行气。',
-    en: '字距，行氣。',
-    ja: '字距，行氣。',
-    ko: '字距，行氣。',
+    hant: '貝忒・古倫沉默四點七秒——足夠交換一部《三體通史》——然後說：「不，『說』這個詞……太慢了。」',
+    hans: '贝忒・古伦沉默四点七秒——足够交换一部《三体通史》——然后说：「不，『说』这个词……太慢了。」',
+    en: '貝忒・古倫沉默四點七秒——足夠交換一部《三體通史》——然後說：「不，『說』這個詞……太慢了。」',
+    ja: '貝忒・古倫沉默四點七秒——足夠交換一部《三體通史》——然後說：「不，『說』這個詞……太慢了。」',
+    ko: '貝忒・古倫沉默四點七秒——足夠交換一部《三體通史》——然後說：「不，『說』這個詞……太慢了。」',
   },
   stCompareMoe: {
     hant: 'MOE・教育部',
@@ -103,17 +103,22 @@
   <p class="Lede">{{ stLede }}</p>
 
   <figure class="Illust" data-variant="faces">
-    <ul class="Faces">
+    <!-- the specimen line packs the heritage-component tells into one
+         16-char sentence — 美(羊頭)、戶戶(戶/户/戸 three regional forms)、
+         情(青→円)、紀(糹)、運(辶)、廿 — a 太陽中文報 line where the
+         Taipei MRT is a century-old heritage fixture under the space
+         elevator (docs/plans/homepage-specimens.md). -->
+    <ul class="Faces" lang="zh-Hant">
       <li>
-        <span data-face="sans">字</span>
+        <span data-face="sans">天梯雖美，台北捷運，戶戶廿一世紀風情</span>
         <small>Hēi</small>
       </li>
       <li>
-        <span data-face="serif">字</span>
+        <span data-face="serif">天梯雖美，台北捷運，戶戶廿一世紀風情</span>
         <small>Míng</small>
       </li>
       <li>
-        <span data-face="cursive">字</span>
+        <span data-face="cursive">天梯雖美，台北捷運，戶戶廿一世紀風情</span>
         <small>Kǎi</small>
       </li>
     </ul>
@@ -257,20 +262,22 @@
       <!-- live per-language punctuation demo — same LangDemo pattern as
            station①: four <article lang> panes, each rendering its own
            punctuation convention (and responding to the rail's four
-           per-language punctuation selects). Texts are PLACEHOLDERS —
-           final demo copy TBD (see docs/TODO.md). -->
+           per-language punctuation selects). Texts: the SAME furious
+           commuter quote from 太陽中文報's hyperloop-3min, in the corpus's
+           own parallel translations (hans = glyph conversion) — one
+           sentence, four punctuation conventions side by side. -->
       <figure class="LangDemo">
         <article lang="zh-Hant">
-          <p>「標點各從其規範，弧直逗句，皆有出處。」</p>
+          <p>山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！結果今天慢了三分鐘，我九點的會議只能改十分！這算什麼通勤？」言罷拂袖而去。</p>
         </article>
         <article lang="zh-Hans">
-          <p>「简体的引号与句号，居中偏倚，各就其位。」</p>
+          <p>山田脸色铁青：「我特地放弃瞬移舱改搭超回路，就是因为快十二秒！结果今天慢了三分钟，我九点的会议只能改十分！这算什么通勤？」言罢拂袖而去。</p>
         </article>
         <article lang="ja">
-          <p>「日本語の約物です。カギ括弧も句読点も、JISの流儀で。」</p>
+          <p>山田は青ざめた顔で言い放った。「わざわざ瞬間移動カプセルをやめてハイパーループにしたのは十二秒速いからだ。それなのに今日は三分遅れた。九時の会議が九時十分に変更になった。これが通勤か」と言い捨て、その場を立ち去った。</p>
         </article>
-        <article lang="ko">
-          <p>「한국어 문장입니다. 세로쓰기 문장부호는 KV를 따른다.」</p>
+        <article lang="ko-Hant">
+          <p>야마다는 굳은 얼굴로 말했다. 「<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐 <ruby>抛棄<rt>포기</rt></ruby>하고 하이퍼루프 탄 게 12秒 빠르다고 해서였어요. 근데 오늘 3分 늦어졌잖아요. 9時 <ruby>會議<rt>회의</rt></ruby>가 9時 10分으로 바뀌었고요. 이게 무슨 <ruby>通勤<rt>통근</rt></ruby>입니까」라고 말했다.</p>
         </article>
       </figure>
 
