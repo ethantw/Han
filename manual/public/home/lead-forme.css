@@ -1,0 +1,252 @@
+/*
+ * lead-forme.css — station②'s isometric movable-type forme (lead-forme.js).
+ *
+ * Theme-aware line-art: dark mode keeps the 字談字暢 white-on-black look;
+ * light mode inverts to ink lines on paper. Every colour resolves through
+ * `--forme-*` tokens (light-dark() · Baseline 2024) so the SVG builder can
+ * stay colour-agnostic — it only ever emits `var(--forme-*)`. State lives on
+ * the figure's own `data-face` / `data-punct`, so nothing here touches :root.
+ *
+ * 明／黑 fonts + Diantenjeom already load in _home.html; 楷 (WenKai) is only
+ * needed here, so it's pulled in locally.
+ */
+@import url('https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@latest/swap.css');
+
+:where(.LeadForme) {
+  /* two-tier: primitives → semantic --forme-* (mirrors home.css § palette) */
+  --forme-bg: var(--palette-panel);
+  --forme-ink: var(--palette-text);
+  --forme-face-1: light-dark(#eceae4, #050507);
+  --forme-face-2: light-dark(#f1efe9, #0c0c10);
+  --forme-face-3: light-dark(#f7f5f0, #14141b);
+  --forme-wall: light-dark(#e2e0d9, #20202a);
+  --forme-relief: light-dark(#d6d4cc, #34343f);
+  --forme-hi: light-dark(#ffffff, #ffffff);
+  --forme-spec: var(--palette-supplement-text);
+  --forme-spec-dim: var(--palette-supplement-text-2q);
+
+  /* Diantenjeom punctuation family — flips JIS ⇄ MOE on the figure */
+  --dtj-serif: 'Diantenjeom Serif JIS';
+  --dtj-sans: 'Diantenjeom Sans JIS';
+
+  margin-block: clamp(1.5rem, 4vw, 3rem);
+  margin-inline: 0;
+
+  & svg {
+    display: block;
+    inline-size: min(100%, 620px);
+    block-size: auto;
+    margin-inline: auto;
+    overflow: visible;
+  }
+}
+:where(.LeadForme[data-punct='moe']) {
+  --dtj-serif: 'Diantenjeom Serif MOE';
+  --dtj-sans: 'Diantenjeom Sans MOE';
+}
+:where(.LeadForme[data-punct='gb']) {
+  --dtj-serif: 'Diantenjeom Serif GB';
+  --dtj-sans: 'Diantenjeom Sans GB';
+}
+
+/* current typeface — punctuation-first stack, heritage Han (Ziano) behind */
+:where(.LeadForme[data-face='m']) text.g {
+  font-family:
+    var(--dtj-serif),
+    'Shanggu Serif TC',
+    serif;
+}
+:where(.LeadForme[data-face='h']) text.g {
+  font-family:
+    var(--dtj-sans),
+    'Shanggu Sans TC',
+    sans-serif;
+}
+:where(.LeadForme[data-face='k']) text.g {
+  font-family:
+    var(--dtj-serif),
+    'LXGW WenKai TC',
+    cursive,
+    serif;
+}
+
+/* engraved side-face spec: Han → slice № + typeface name; punct → Diantenjeom */
+:where(.LeadForme) text.lbl-num,
+:where(.LeadForme) text.lbl-var {
+  font-family: ui-monospace, 'SF Mono', monospace;
+  fill: var(--forme-spec);
+}
+:where(.LeadForme) text.nm,
+:where(.LeadForme) text.lbl-sub {
+  font-family: system-ui, sans-serif;
+  fill: var(--forme-spec-dim);
+}
+:where(.LeadForme) text.nm,
+:where(.LeadForme) text.dtj {
+  display: none;
+}
+:where(.LeadForme[data-face='m']) text.nm-m,
+:where(.LeadForme[data-face='h']) text.nm-h,
+:where(.LeadForme[data-face='k']) text.nm-k {
+  display: inline;
+}
+/* punctuation font follows the typeface: Serif for 明／楷, Sans for 黑 */
+:where(.LeadForme[data-face='m']) text.dtj-serif,
+:where(.LeadForme[data-face='k']) text.dtj-serif,
+:where(.LeadForme[data-face='h']) text.dtj-sans {
+  display: inline;
+}
+
+/* entrance — settled is the default; the slugs drop in only once the station
+   is revealed (reveal.js stamps [data-revealed] on the section on scroll, so
+   an off-screen build stays settled and the ceremony plays when it's seen).
+   The face／punct swap is a separate WAA sequence in lead-forme.js. */
+/* blank slugs (空鉛 spacing) sit back at half opacity. The drop animation is
+   `both`, so its landing frame wins over a plain `opacity` — both the settled
+   default here AND the keyframe below read --slug-o, so 0.5 holds with or
+   without motion (and glyph slugs fall back to 1). */
+:where(.LeadForme) .Slug:not(.has-glyph) {
+  --slug-o: 0.5;
+  opacity: 0.5;
+}
+/* justify 小鉛塊 are solid, so they read as spacing material rather than a
+   ghost of the empty 空鉛 quads. (行距鉛條 stay half-opacity with the quads —
+   one whole box each, so plain group opacity composites seam-free.) */
+:where(.LeadForme) .Slug.solid {
+  --slug-o: 1;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* :not(.settled) — the full staggered entrance plays once; after the first
+     punct swap the forme is `.settled` and only the changed pieces re-drop
+     (lead-forme.js drives those with the Web Animations API). */
+  :where([data-revealed] .LeadForme:not(.settled)) .Slug {
+    transform-box: view-box; /* translateY animates in user units · Baseline 2023 */
+    animation: lf-drop 0.72s cubic-bezier(0.34, 1.24, 0.5, 1) both;
+    animation-delay: var(--d, 0s);
+  }
+}
+@keyframes lf-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-170px);
+  }
+  55% {
+    opacity: var(--slug-o, 1);
+  }
+  100% {
+    opacity: var(--slug-o, 1);
+    transform: translateY(0);
+  }
+}
+
+/* hover any slug → it lifts. Type slugs reveal their engraved side-face spec
+   (slice №/typeface name); spacing blocks (行距/字距/縮進/段末補空) just rise to
+   show they're real furniture. The lift rides the inner .SlugLift so it composes
+   with the drop transform on .Slug instead of being overridden by its `both` fill. */
+:where(.LeadForme) .SlugLift {
+  transform-box: view-box; /* translateY in user units · Baseline 2023 */
+}
+:where(.LeadForme) .Slug:hover .SlugLift {
+  transform: translateY(-46px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  :where(.LeadForme) .Slug .SlugLift {
+    transition: transform 0.22s ease-out;
+  }
+}
+
+/* controls — reader picks the current face + punctuation convention */
+:where(.LeadForme) .Controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem 1.4rem;
+  margin-block-start: 0.4rem;
+
+  & fieldset {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid var(--palette-rule);
+    border-radius: 0.6rem;
+    padding-block: 0.4rem;
+    padding-inline: 0.85rem;
+  }
+  & legend {
+    padding-inline: 0.35rem;
+    color: var(--palette-supplement-text);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+  & label {
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  & fieldset:hover {
+    border-color: var(--palette-supplement-text);
+  }
+}
+
+/* ── station②'s per-language punctuation demo (.PunctLang) ─────────────
+   Four cells, each a fixed language showing the 三體 line under its own
+   punctuation <select>. The selected value drives the han punctuation
+   variable on the cell's own <li> via :has(option:checked) — pure CSS, no
+   JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
+:where(.PunctLang) {
+  margin-block: clamp(1.5rem, 4vw, 2.5rem);
+
+  & ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: 0.6rem;
+    overflow: clip;
+  }
+  & li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: clamp(0.9rem, 2vw, 1.3rem);
+    background: var(--palette-panel);
+  }
+  & p {
+    flex: 1;
+    margin: 0;
+    /* MUST declare a han font stack here: font-family inherits as an already-
+       resolved string, so unless the var is re-read AT the sample, the
+       punctuation-font swap (--han-font-punctuation-* set by han.css's
+       convention container-query) never reaches it — the sample would freeze
+       on whatever punctuation font :root resolved. Serif reads the marks big. */
+    font-family: var(--han-serif);
+  }
+  & label {
+    align-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--palette-supplement-text);
+    font-size: 0.8rem;
+  }
+  & select {
+    font: inherit;
+    font-size: 0.8rem;
+    color: var(--palette-text);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: 0.4rem;
+    padding-block: 0.2rem;
+    padding-inline: 0.4rem;
+  }
+}
+@media (width < 34rem) {
+  :where(.PunctLang) ul { grid-template-columns: 1fr; }
+}
+/* No local punctuation override here: each cell's <select> is bound to the
+   rail (punct-lang.js) — the rail applies --han-punctuation-* to <main> and
+   the samples inherit it, so the rail config stays the single source of truth. */

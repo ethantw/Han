@@ -34,6 +34,8 @@ import { initDemoLang } from '/home/demo-lang.js'
 import { initWritingSwitch } from '/home/writing-switch.js'
 import { initRailCollapse } from '/home/rail-collapse.js'
 import { initSnippet } from '/home/snippet.js'
+import { initLeadForme } from '/home/lead-forme.js'
+import { initPunctLang } from '/home/punct-lang.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
@@ -76,6 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const $rail = document.querySelector('han-rail')
   initDemoLang(($target) => $rail?.reapplyFallbacks($target))
   initSnippet()
+  // station②'s isometric lead-type forme (builds its SVG + wires its face／
+  // punctuation form). Settled is the CSS default; the drop plays on reveal.
+  initLeadForme()
+  // station②'s per-language punctuation demo — its selects mirror the rail's
+  // per-language punctuation controls (single source of truth = rail config).
+  initPunctLang()
   initWritingSwitch()
   initRailCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years

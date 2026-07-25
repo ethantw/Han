@@ -23,6 +23,7 @@
    assets without going through the build's module graph. */
 @import url('./home/controls.css');
 @import url('./home/stations.css');
+@import url('./home/lead-forme.css');
 
 /* ─── tokens ───────────────────────────────────────────────────────── */
 
@@ -100,15 +101,6 @@
     )
   ;
 
-  /* ── type-case slug (裝飾) ─────────────────────────────────────────
-   * 活字字盤／字面的金屬色——恆深、雙主題不變（比照 --palette-ink 的常值語意
-   * token）。stations.css 的 `.Slugs` 消費這組語意 token，而非直接吃
-   * `--color-*` primitive（two-tier）。梯度暗端與斜角高光／陰影仍用
-   * `white` ／ `--color-black` 的結構性光影（同 web-style dark-surface 例）。 */
-  --palette-slug:            var(--color-ink);       /* 字盤／字面金屬基色 */
-  --palette-slug-deep:       var(--color-ink-deep);  /* 金屬梯度暗端 */
-  --palette-slug-ink:        var(--color-mist);      /* 金屬面上的字 */
-  --palette-slug-ink-accent: var(--color-white);     /* 上墨（accent）字面上的字 */
 
   /* ── type ramp ────────────────────────────────────────────────────
    * ~5 content sizes (display / heading / lede / body / small), reused
