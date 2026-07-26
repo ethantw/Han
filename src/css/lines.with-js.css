@@ -380,17 +380,19 @@
      * `open` / `middle` — `close` and `end` are precisely the characters that
      * make a mark unhangable, so they can never appear here.
      *
-     * The pull is a negative margin, mirroring the compress block's
-     * close/end arm — NOT a half-width filler. `font-size-adjust: ic-width`
-     * on this pseudo lands at ~0.3em, not 0.5em: `Han Em Space` is Courier
-     * under a `size-adjust`, it has no ideographic glyph to measure, so the
-     * ic fallback compounds with that scaling. A plain negative margin has
-     * no font metric in the loop.
-     *
-     * At a line end the filler is trailing whitespace and collapses whole,
-     * and nothing follows for the margin to pull, so hanging is untouched. */
-    &:is([data-followed-by="open"], [data-followed-by="middle"]) {
-      margin-inline-end: -.5em;
+     * The half em comes off the FILLER — swap the ½em face in for the 1em
+     * one — and NOT off a negative margin. Under `text-align: justify` a
+     * negative margin drags the text BEFORE the mark: the justifier sees a
+     * line whose content measures ½em short and stretches the whole line to
+     * make it up, so every character ahead of the mark slides along.
+     * Measured on a justified 24em column, ~0.45em of drift at the widths
+     * where the pair sits near the line end; the ½em filler shows none —
+     * it is bit-identical to the un-repaired wrapper there, and at other
+     * widths it pulls the line back onto the no-han.css baseline. (With the
+     * default `text-align: start` the two are indistinguishable, which is
+     * how the margin got written in the first place.) */
+    &:is([data-followed-by="open"], [data-followed-by="middle"])::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
     }
 
     h-layer {

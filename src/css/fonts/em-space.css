@@ -21,7 +21,9 @@
  *    baseline makes the spacer width deterministic; callers then dial it down
  *    to ½em / ¼em via `font-size-adjust: ic-width <n>` — independent of the
  *    body font. (Those `<n>` constants are font-specific; see the calibration
- *    note in `lines.with-js.css`.)
+ *    note in `lines.with-js.css`.) Where a caller needs a plain ½em and
+ *    nothing else, the `Han Half Em Space` pair at the foot of this file
+ *    gives it directly, no `ic-width` arithmetic in the loop.
  * 2. It must stay a real ' ' (U+0020) character, not a fixed-width box,
  *    because the whole trim/hang trick rides on CSS's whitespace-collapse-at-
  *    line-edge rule: mid-line the spacer holds its width while the glyph
@@ -54,6 +56,53 @@
 @font-face {
   font-family: 'Han Em Space Fallback';
   font-weight: 100 900;
+  src: url('./em-space.woff2') format('woff2');
+  unicode-range: U+20;
+}
+
+/* ========================================================================== *
+ * Han Half Em Space — the same trick, calibrated to ½em
+ * ========================================================================== */
+
+/**
+ * A U+0020 whose advance is exactly ½em. Same contract as `Han Em Space`
+ * above — a real space, so it still collapses at a line edge — just half the
+ * width.
+ *
+ * Why a whole second family rather than `font-size-adjust: ic-width 0.5` on
+ * the 1em one: `ic-width` measures the font's ideographic advance, and these
+ * faces have no ideographic glyph at all (they carry U+0020 and nothing
+ * else). The UA falls back to its own assumption and that assumption then
+ * compounds with the `size-adjust` already scaling the face — measured ~0.3em
+ * where ½em was wanted. Calibrating the face itself keeps the arithmetic in
+ * one place and out of the cascade.
+ *
+ * And why not a negative margin to claw back the half em: it breaks
+ * justification. The justifier measures the line's content, and a negative
+ * margin makes that measurement ½em short, so the whole line is stretched to
+ * make it up and every character AHEAD of the spacer slides along with it
+ * (~0.45em, measured). Keeping the adjustment inside the space itself keeps
+ * the line's measured content honest — and keeps it collapsible at a line
+ * edge, which a margin never is.
+ */
+
+/** Courier's space advance is 0.6em, so 83.3333% (= 0.5 / 0.6) lands on ½em. */
+@font-face {
+  font-family: 'Han Half Em Space';
+  font-weight: 100 900;
+  size-adjust: 83.3333%;
+  src: local(Courier New), local(Courier);
+  unicode-range: U+20;
+}
+
+/**
+ * Same `em-space.woff2` as the full-width fallback — its space glyph is
+ * exactly 1em, so plain `size-adjust: 50%` halves it. No second asset.
+ */
+@font-face {
+  font-family: 'Han Half Em Space Fallback';
+  font-weight: 100 900;
+  size-adjust: 50%;
   src: url('./em-space.woff2') format('woff2');
   unicode-range: U+20;
 }

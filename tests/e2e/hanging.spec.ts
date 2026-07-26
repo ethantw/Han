@@ -28,3 +28,17 @@ test('matches the hanging-punctuation visual baseline', async ({ page }) => {
     maxDiffPixelRatio: 0.01,
   })
 })
+
+test('the pair repair rides the ½em spacer, never a margin', async ({ page }) => {
+  // `，『` loses its pair squeeze when the comma's glyph goes out of flow, and
+  // the h-char pays that half em back itself. It MUST do so through the
+  // spacer's width: a negative margin makes the line's content measure short,
+  // so `text-align: justify` stretches the line to make it up and drags every
+  // character before the mark along with it (~0.45em, measured).
+  await page.goto('/tests/e2e/fixtures/hanging-justify.html')
+  const mark = page.locator('#target h-char[data-followed-by="open"]')
+  await expect(mark).toHaveCount(1)
+  await expect(mark).toHaveCSS('margin-inline-end', '0px')
+  const family = await mark.evaluate(el => getComputedStyle(el, '::after').fontFamily)
+  expect(family).toContain('Han Half Em Space')
+})
