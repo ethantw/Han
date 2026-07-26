@@ -27,7 +27,6 @@ const pts = (...ps) => ps.map((p) => `${p[0].toFixed(2)},${p[1].toFixed(2)}`).jo
 
 // theme tokens (resolved by CSS light-dark() — see home/lead-forme.css)
 const INK = 'var(--forme-ink)';
-const BG = 'var(--forme-bg)';
 const FACE = ['var(--forme-face-1)', 'var(--forme-face-2)', 'var(--forme-face-3)'];
 const WALL = 'var(--forme-wall)';
 const RELIEF = 'var(--forme-relief)';
@@ -151,7 +150,11 @@ const block = ({ O, char, d, sy = GEO.S, first, half }) => {
   return `<g class="${cls}" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
 };
 
-// ── build the whole forme for a punctuation mode → { viewBox, bg, markup } ──
+// ── build the whole forme for a punctuation mode → { viewBox, markup, lastDelay } ──
+/** per-piece entrance stagger, in seconds — a compositor sets one slug at a
+ *  time, so reading order becomes the drop order (the `--d` custom prop). */
+const STAGGER = 0.07;
+
 const buildForme = (punct) => {
   const { S, cell, H, r, leadEm } = GEO;
   const rows = COLS[0].length;
@@ -171,17 +174,17 @@ const buildForme = (punct) => {
     columnLayout(col, punct).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
       if (it.space)                           // justify 小鉛塊 — solid furniture
-        cells.push({ kind: 'space', O, sx: S, sy: it.size * cell, d: read++ * 0.07, first, solid: true });
+        cells.push({ kind: 'space', O, sx: S, sy: it.size * cell, d: read++ * STAGGER, first, solid: true });
       else if (!it.char.trim())               // 空鉛 段首/收尾 — half-opacity quad
-        cells.push({ kind: 'space', O, sx: S, sy: S, d: read++ * 0.07, first, solid: false });
+        cells.push({ kind: 'space', O, sx: S, sy: S, d: read++ * STAGGER, first, solid: false });
       else
-        cells.push({ kind: 'char', O, char: it.char, sy: it.size * S, d: read++ * 0.07, first, half: it.size < 1 });
+        cells.push({ kind: 'char', O, char: it.char, sy: it.size * S, d: read++ * STAGGER, first, half: it.size < 1 });
     });
     if (b < COLS.length - 1)                   // 行距鉛條 — ONE whole box (the
       // column-major order above makes a rows-spanning piece sort cleanly),
       // half-opacity like the 空鉛 quads: a single group composites plain
       // `opacity` with no seams, and the furniture behind ghosts through.
-      cells.push({ kind: 'space', O: add([0, 0], e1, bx + S), sx: colStep - S, sy: rows * cell, d: read++ * 0.07, solid: false });
+      cells.push({ kind: 'space', O: add([0, 0], e1, bx + S), sx: colStep - S, sy: rows * cell, d: read++ * STAGGER, solid: false });
   });
 
   // auto-fit the viewBox over every piece's footprint (rises by r, drops by H)
@@ -210,8 +213,11 @@ const buildForme = (punct) => {
     .join('');
   return {
     viewBox: `${minX.toFixed(1)} ${minY.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`,
-    bg: `<rect x="${minX.toFixed(1)}" y="${minY.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${BG}" />`,
     markup,
+    // when the LAST slug starts its drop. The caption's cue is derived from
+    // this in CSS (+ the drop's own duration), so the entrance stays ONE
+    // ceremony however many pieces the sentence lays out to.
+    lastDelay: (read - 1) * STAGGER,
   };
 };
 
@@ -230,9 +236,11 @@ export const initLeadForme = ($root = document) => {
   if (!$forme) return;
   const $svg = $forme.querySelector('svg');
   const render = () => {
-    const { viewBox, bg, markup } = buildForme($forme.dataset.punct || 'jis');
+    const { viewBox, markup, lastDelay } = buildForme($forme.dataset.punct || 'jis');
     $svg.setAttribute('viewBox', viewBox);
-    $svg.innerHTML = bg + markup;
+    $svg.innerHTML = markup;
+    // hand the drop's tail to CSS — it adds --lf-drop-dur for the caption's cue
+    $forme.style.setProperty('--lf-last-slug', `${lastDelay.toFixed(2)}s`);
   };
   render();
 

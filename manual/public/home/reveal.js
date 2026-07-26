@@ -22,7 +22,7 @@
 
 // The hero (`.Manifesto`) reveals too — its own entrance CSS is owned by
 // the hero module; here we only hand it the `[data-revealed]` hook.
-const REVEAL_SELECTOR = '.Manifesto, .Station'
+const REVEAL_SELECTOR = '.Manifesto, [data-station]'
 
 export const initReveal = (opened = Promise.resolve()) => {
   const reveal = ($el) => {

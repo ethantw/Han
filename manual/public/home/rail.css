@@ -1,0 +1,173 @@
+@charset "UTF-8";
+
+/**
+ * <han-rail> PLACEMENT — the page's half of the rail contract.
+ *
+ * The rail is a shadow-DOM web component; its internal skeleton, its own
+ * background/hairlines and the sheet collapse live in the component's
+ * sheets (`components/rail.css`). This file only positions the box,
+ * keyed off the component's public `form` (side|top) and the collapse
+ * checkbox. The loader that fills it pre-upgrade is in
+ * `home/rail-loader.css`.
+ *
+ * Side form (≥52rem): the rail owns a FULL-viewport-height left column
+ * (`grid-row: 1 / -1`, 100dvh sticky, internal scroll) so it reaches the
+ * true viewport top — Topbar, main and footer all live in column 2, no
+ * header strip above the rail. Collapsing animates the column width to 0
+ * and the right column slides left to fill; it is never an overlay, so
+ * content is never covered. `--rail-col` is the animated column width
+ * (0 when collapsed) and `.RailToggle` reads it too, so the handle
+ * tracks the boundary.
+ *
+ * Top form: normal-flow rows, sticky at ≥64rem. Below 52rem both forms
+ * collapse to the bottom sheet and the collapse doesn't apply.
+ */
+
+body:has(han-rail[form="side"]) {
+  /* Side form ≥52rem — the rail is a full-height column; header + main +
+     everything else sit in column 2. `--rail-col` drives the (animated)
+     track width; the collapsed override zeroes it. */
+  @media (min-width: 52rem) {
+    & {
+      --rail-col: 280px;
+      display: grid;
+      /* `minmax(0, 1fr)` not a bare `1fr`: a `1fr` track floors at the
+         content column's min-content, and the hero's clipped `.Outline`
+         glyph (absolute, `overflow: clip` on `.Manifesto`) still reports
+         into that intrinsic size in Chromium — inflating the track ~22px
+         and forcing a horizontal page scroll at 64–68rem. `minmax(0, …)`
+         drops the min-content floor so the track tracks the viewport;
+         `min-inline-size: 0` on `main` (below) is the same guard on
+         the grid ITEM. (grid minmax — Baseline 2020.) */
+      grid-template-columns: var(--rail-col) minmax(0, 1fr);
+      /* Explicit rows are load-bearing: `-1` in grid-row resolves against
+         the EXPLICIT grid only, so without this the rail's `1 / -1`
+         collapses to row 1 and its 100dvh inflates that row (main
+         starts a full viewport down). auto = Topbar, 1fr = main. */
+      grid-template-rows: auto 1fr;
+      align-items: start;
+      /* grid-template-columns animates length→length in every modern
+         engine (Baseline 2023); degrades to a snap where unsupported. */
+      transition: grid-template-columns 250ms ease;
+    }
+
+    > .Topbar  { grid-column: 2; }
+    > han-rail { grid-column: 1; grid-row: 1 / -1; }
+    /* `min-inline-size: 0` lets the content column shrink past its own
+       min-content — the grid-item twin of the `minmax(0, 1fr)` track
+       above; without it a wide/clipped descendant can still blow the
+       column out. */
+    > main { grid-column: 2; min-inline-size: 0; }
+
+    /* checked = collapsed — the checkbox is the single source of truth
+       (dark-mode recipe); pre-paint script restores it, JS only persists. */
+    &:has(.RailToggle input:checked) { --rail-col: 0px; }
+  }
+
+  /* 52–64rem — narrower rail column so it doesn't crowd main at
+     tablet widths. Below 52rem both forms collapse to the sheet. */
+  @media (min-width: 52rem) and (max-width: 63.9375rem) {
+    & { --rail-col: 240px; }
+  }
+}
+
+han-rail {
+  /* Side form (≥52rem) — full-height sticky left column, internal scroll.
+     `min-inline-size: 0` + clipped inline overflow let the grid shrink it
+     onto the 0 track mid-collapse without its content spilling over main;
+     `block-size: 100dvh` + sticky pin it to the true viewport top. */
+  @media (min-width: 52rem) {
+    &[form="side"] {
+      position: sticky;
+      inset-block-start: 0;
+      block-size: 100dvh;
+      min-inline-size: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    &[form="top"] {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 30;
+      inline-size: 100%;
+    }
+  }
+
+  /* <52rem — bottom sheet: both forms collapse to a viewport-anchored
+     sheet. The sheet's hairline/shadow and the collapse itself are in
+     the shadow (components/rail.css); this only anchors the box. */
+  @media (max-width: 52rem) {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 40;
+    max-block-size: 70dvh;
+  }
+}
+
+/* ─── RailToggle (collapse / expand the side rail) ───────────────────
+ * Page chrome, NOT part of the rail component — a slim hairline handle at
+ * the aside/content boundary, visible in BOTH states (the only way back
+ * once collapsed). A real `<label>` + `<input type="checkbox">` (owner
+ * call, dark-mode recipe): checked = collapsed, the body grid reads
+ * `body:has(.RailToggle input:checked)` — layout is pure CSS,
+ * `rail-collapse.js` only persists. Tracks the boundary via the
+ * inherited `--rail-col` (0 when collapsed). Side form only: hidden on
+ * the <52rem bottom sheet and for form="top" (rows, not a column). */
+.RailToggle {
+  & {
+    position: fixed;
+    inset-block-start: 50%;
+    inset-inline-start: var(--rail-col, 280px);
+    transform: translateY(-50%);
+    z-index: 45;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.125rem;
+    block-size: 3rem;
+    padding: 0;
+    color: var(--palette-supplement-text);
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--r-2);
+    border-end-end-radius: var(--r-2);
+    cursor: pointer;
+    transition:
+      inset-inline-start 250ms ease,
+      color             150ms ease
+    ;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* chevron points at the action: ‹ collapse (expanded) / › expand
+     (collapsed). Driven by the checkbox's own state, no upward selector. */
+  &::before {
+    content: '‹';
+    font-size: var(--fs-small);
+    line-height: 1;
+  }
+  &:has(input:checked)::before { content: '›'; }
+
+  &:hover { color: var(--palette-accent); }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--palette-accent);
+    outline-offset: 2px;
+  }
+
+  /* only the side form on a real column (≥52rem) shows the handle */
+  @media (min-width: 52rem) {
+    body:has(han-rail[form="side"]) & { display: inline-flex; }
+  }
+}
