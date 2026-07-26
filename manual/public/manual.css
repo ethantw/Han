@@ -21,6 +21,7 @@
  */
 
 @import url('./common/variables.css');
+@import url('./common/theme-toggle.css');
 
 h-placeholder { display: none }
 
@@ -87,17 +88,12 @@ h-placeholder { display: none }
 
 /* Dark theme — flip ONLY `color-scheme`; every `light-dark()` token
    above and in common/variables.css re-resolves to its dark value, so
-   there are no per-token overrides to keep in sync. The masthead toggle
-   pins a choice via `[data-theme]`; with nothing pinned we follow the
-   system. */
-:root[data-theme='dark'] {
+   there are no per-token overrides to keep in sync. The masthead
+   checkbox is the single source of truth (same recipe as the homepage);
+   a pre-paint inline script beside it restores the saved choice, and
+   defaults it to the system preference, before the first frame. */
+:root:has(input[name='dark-mode']:checked) {
   color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-  }
 }
 
 
@@ -619,36 +615,6 @@ body.ManualPage:has(.RailToggle input:checked) han-rail {
       [data-part="code"]  { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ink-faint); letter-spacing: 0.05em; }
       [data-part="check"] { color: var(--accent-deep); font-size: 0.75rem; }
     }
-  }
-}
-
-
-/* ─── Theme toggle (the sun/moon button) ───────────────────────────── */
-
-button[data-theme-toggle] {
-  & {
-    appearance: none;
-    background: transparent;
-    border: 0;
-    padding: 0.25em;
-    color: var(--ink-mute);
-    cursor: pointer;
-    line-height: 0;
-  }
-
-  &:hover { color: var(--accent-deep) }
-
-  /* Default (light theme): show the moon, hide the sun. */
-  svg[data-name="sun"]  { display: none }
-  svg[data-name="moon"] { display: inline-block }
-
-  /* Dark theme: invert. */
-  :root[data-theme='dark'] & svg[data-name="sun"]  { display: inline-block }
-  :root[data-theme='dark'] & svg[data-name="moon"] { display: none }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) & svg[data-name="sun"]  { display: inline-block }
-    :root:not([data-theme]) & svg[data-name="moon"] { display: none }
   }
 }
 

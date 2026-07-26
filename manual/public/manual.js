@@ -17,13 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
     e.currentTarget.setAttribute('aria-expanded', String(open))
   })
 
-  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-    const root = document.documentElement
-    const cur = root.dataset.theme
-      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    const next = cur === 'dark' ? 'light' : 'dark'
-    root.dataset.theme = next
-    localStorage.setItem('theme', next)
+  // The `.ThemeToggle` checkbox does the theming on its own — CSS reads
+  // it through `:root:has(…)`. This only remembers the choice; the
+  // initial state is restored pre-paint by the inline script beside the
+  // input (_layout.html). Same 'theme' key as the homepage.
+  document.querySelector('input[name="dark-mode"]')?.addEventListener('change', e => {
+    try {
+      localStorage.setItem('theme', e.target.checked ? 'dark' : 'light')
+    } catch {
+      /* private mode — the toggle still works, it just won't persist */
+    }
   })
 
   // Language switcher — mirrors the homepage's `initLangSwitcher`

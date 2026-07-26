@@ -5,25 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ notFoundTitle }}・{{ siteTitle }}</title>
 <meta name="description" content="{{ description }}">
-<script>
-  (() => {
-    const saved = localStorage.getItem('theme')
-    if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved
-  })()
-</script>
 <link rel="stylesheet" href="/han/han.css">
 <link rel="stylesheet" href="/manual.css">
 <script type="module" src="/han/han.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
-      const root = document.documentElement
-      const cur = root.dataset.theme
-        || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      const next = cur === 'dark' ? 'light' : 'dark'
-      root.dataset.theme = next
-      localStorage.setItem('theme', next)
-    })
+  // Persist the theme choice; the checkbox itself does the theming.
+  document.addEventListener('change', e => {
+    if (e.target.name === 'dark-mode') localStorage.setItem('theme', e.target.checked ? 'dark' : 'light')
   })
 </script>
 </head>
@@ -36,10 +24,27 @@
   <nav>
     <a href="{{ homeUrl }}">{{ homeLink }}</a>
     <a href="{{ docsUrl }}">{{ docsLink }}</a>
-    <button type="button" data-theme-toggle aria-label="{{ themeToggle }}" title="{{ themeToggle }}">
-      <svg data-name="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>
-      <svg data-name="moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+    <!-- Theme toggle. A real checkbox is the single source of truth:
+         `:root:has(input[name="dark-mode"]:checked)` (manual.css) flips
+         `color-scheme`, and every `light-dark()` token re-resolves. The
+         inline script restores the saved choice the instant the input is
+         parsed — before first paint, which a deferred script can't do —
+         so a dark-saved page never flashes light. manual.js only
+         persists changes. Shares the 'theme' key with the homepage. -->
+    <label class="ThemeToggle" title="{{ themeToggle }}">
+      <input type="checkbox" name="dark-mode" aria-label="{{ themeToggle }}">
+      <script>
+        try {
+          const $box = document.currentScript.previousElementSibling
+          const saved = localStorage.getItem('theme')
+          $box.checked = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+        } catch (e) {
+          console.error('pre-paint theme restore failed; page keeps its default', e)
+        }
+      </script>
+      <span class="Icon" data-name="sun" aria-hidden="true"></span>
+      <span class="Icon" data-name="moon" aria-hidden="true"></span>
+    </label>
     <a href="https://github.com/ethantw/Han">{{ githubLabel }}</a>
   </nav>
 </header>
