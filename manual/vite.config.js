@@ -3,6 +3,7 @@ import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { glob } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { gzipSync } from 'node:zlib'
 import esbuild from 'esbuild'
 import { defineConfig } from 'vite'
@@ -290,6 +291,71 @@ async function pruneInlinedPartials() {
     }
     if (!(await fs.readdir(abs).catch(() => ['x'])).length) await fs.rmdir(abs)
   }
+}
+
+/**
+ * Content-hash the sheets the PAGES link, and rewrite the emitted HTML to
+ * the hashed copies under `/assets/` — the one prefix `public/_headers`
+ * marks `immutable`, so a repeat visitor (and the home→docs hop, which now
+ * shares all four framework URLs) revalidates nothing at all.
+ *
+ * Copies rather than renames: `/home.css`, `/manual.css` and `/han/*.css`
+ * stay reachable at their plain paths on purpose — the playground's
+ * generated snippets hand the reader local `/han/han*.min.css` URLs, the
+ * docs quote those paths in prose, and an HTML page cached from before this
+ * change still resolves. The twins cost ~90KB of dist, nothing on the wire.
+ * Their plain paths get `must-revalidate` in `_headers` so a stale copy can
+ * never outlive a deploy.
+ *
+ * Deliberately NOT hashed: anything a URL string inside JS points at —
+ * `/han/han.js` (rail-config lazy-imports it), `/home/controls.css` (the
+ * rail fetches it into its shadow root), `/home/rail-templates.js`,
+ * `/vendor/*`. Hashing those means rewriting module specifiers, which is a
+ * bundler's job, not a rename step's.
+ *
+ * Only real `<link href>` attributes are rewritten. Code samples in the
+ * docs live inside `<pre>` with `&lt;link`, so the literal `<link` in the
+ * pattern can't match them.
+ */
+const HASHED_SHEETS = [
+  'home.css',
+  'manual.css',
+  'han/han.css',
+  'han/han.semantics.css',
+  'han/han.lines.css',
+  'han/han.prose.css',
+  'han/han.fonts.css',
+]
+
+async function hashLinkedSheets() {
+  const assetsDir = path.join(MANUAL_DIST, 'assets')
+  await fs.mkdir(assetsDir, { recursive: true })
+
+  /** `/home.css` → `/assets/home.1a2b3c4d.css` */
+  const map = new Map()
+  for (const rel of HASHED_SHEETS) {
+    const src = path.join(MANUAL_DIST, rel)
+    if (!existsSync(src)) continue
+    const bytes = await fs.readFile(src)
+    const hash = createHash('sha256').update(bytes).digest('hex').slice(0, 8)
+    const name = path.basename(rel).replace(/\.css$/, `.${hash}.css`)
+    await fs.writeFile(path.join(assetsDir, name), bytes)
+    map.set(`/${rel}`, `/assets/${name}`)
+  }
+
+  let pages = 0
+  for await (const file of glob('**/*.html', { cwd: MANUAL_DIST })) {
+    const abs = path.join(MANUAL_DIST, file)
+    const html = await fs.readFile(abs, 'utf-8')
+    const next = html.replace(
+      /(<link\b[^>]*\bhref=")([^"]+)(")/g,
+      (whole, head, href, tail) => (map.has(href) ? `${head}${map.get(href)}${tail}` : whole),
+    )
+    if (next === html) continue
+    await fs.writeFile(abs, next)
+    pages += 1
+  }
+  console.log(`  ✓ hashed ${map.size} sheets → /assets/, rewrote ${pages} pages`)
 }
 
 /** Frontmatter parser — only `key: value` lines, no nested structures. */
@@ -713,6 +779,8 @@ function hanManualPlugin() {
       await emitRailTemplates()
       await emitVendor()
       await bundleHomeCss()
+      // last: hashing reads the FINAL bytes of the bundled sheets
+      await hashLinkedSheets()
     },
 
     configureServer(server) {

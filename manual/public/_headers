@@ -1,0 +1,37 @@
+# Cloudflare Pages / Netlify-style response headers (sibling of `_redirects`).
+#
+# One rule carries the whole caching story: everything under `/assets/` is
+# content-hashed — vite's own JS chunks plus the sheets `hashLinkedSheets()`
+# copies there at build (home.css, manual.css, the four han.css modules) —
+# so its URLs can never change meaning. `immutable` means a repeat visitor
+# revalidates NOTHING, and the home→docs hop reuses all four framework
+# sheets straight from cache (both pages now link the same module URLs).
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The un-hashed twins stay reachable on purpose (the playground's generated
+# snippets and the docs prose quote these paths, and HTML cached from before
+# a deploy still resolves them) — but they DO change meaning between
+# deploys, so they must be revalidated every time.
+/home.css
+  Cache-Control: public, max-age=0, must-revalidate
+/manual.css
+  Cache-Control: public, max-age=0, must-revalidate
+/han/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Same reasoning for the un-hashed runtime files: their URLs are baked into
+# JS (the rail fetches `home/controls.css` into its shadow root and imports
+# `home/rail-templates.js`; `home.js` pulls the `home/*.js` modules and
+# `vendor/*`), so they can't be hashed without a bundler rewriting module
+# specifiers. Revalidate instead.
+/home/*
+  Cache-Control: public, max-age=0, must-revalidate
+/components/*
+  Cache-Control: public, max-age=0, must-revalidate
+/vendor/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+# HTML is the entry point that names every hashed URL — never cache it.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
