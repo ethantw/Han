@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ notFoundTitle }}・{{ siteTitle }}</title>
 <meta name="description" content="{{ description }}">
-<link rel="stylesheet" href="/han/han.css">
+<!-- The framework, loaded as its FOUR modules — byte-identical to the
+     combined `han.css` (verified: the four concatenated normalise to the
+     same sheet), split so that (a) the docs share the very same URLs as
+     the homepage, which serves them from cache on a home→docs hop, and
+     (b) `<han-rail>`'s module switches can actually reach them:
+     rail-config's `applyModules` toggles `link[data-han-module].disabled`,
+     a no-op on a page that links only the bundle. -->
+<link rel="stylesheet" href="/han/han.semantics.css" data-han-module="semantics">
+<link rel="stylesheet" href="/han/han.lines.css" data-han-module="lines">
+<link rel="stylesheet" href="/han/han.prose.css" data-han-module="prose">
+<link rel="stylesheet" href="/han/han.fonts.css" data-han-module="fonts">
 <link rel="stylesheet" href="/manual.css">
 <script type="module" src="/han/han.js"></script>
 <script>
