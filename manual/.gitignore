@@ -2,3 +2,4 @@ node_modules/
 dist/
 public/han/
 .cache/
+public/brand-lockup*.html
