@@ -81,7 +81,7 @@ const ISS_REPLACE_HTML = '<h-iss hidden data-mode="replace"> </h-iss>'
  * not `<b>字<iss></b>A`).
  */
 const ISS_INSERT_BOUNDARY = new RegExp(
-    `[${CJK}](?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
+  `[${CJK}](?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
   + `|[${WESTERN_ALPHA}${WESTERN_END}](?=[${CJK}])`,
   'gu',
 )
@@ -122,7 +122,7 @@ const insertISS = (src: Hyperly): Hype =>
  * `CJK` / `WESTERN_*`; it has no effect on `[ \t\n\r\f]` itself.
  */
 const ISS_REPLACE_WHITESPACE = new RegExp(
-    `(?<=[${CJK}])[ \\t\\n\\r\\f]+(?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
+  `(?<=[${CJK}])[ \\t\\n\\r\\f]+(?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
   + `|(?<=[${WESTERN_ALPHA}${WESTERN_END}])[ \\t\\n\\r\\f]+(?=[${CJK}])`,
   'gu',
 )
@@ -175,15 +175,15 @@ export const setISSMode = (mode: ISSMode) => (src: Hyperly): void =>
  *   none              identity. */
 const dispatchByISSMode = (mode: ISSMode): ((src: Hyperly) => Hype) =>
   ['normal', 'insert'].includes(mode)
-  ? insertISS
+    ? insertISS
 
-  : mode === 'replace'
-  ? replaceISS
+    : mode === 'replace'
+      ? replaceISS
 
-  : mode === 'strict'
-  ? pipe<Hyperly, Hype, Hype>(replaceISS, insertISS)
+      : mode === 'strict'
+        ? pipe<Hyperly, Hype, Hype>(replaceISS, insertISS)
 
-  : hype
+        : hype
 
 /** Cascade-write half of the `withMode` contract — only fires in browser.
  *  CSS uses `@container style(--han-text-autospace: …)` to switch behaviour
@@ -192,8 +192,8 @@ const dispatchByISSMode = (mode: ISSMode): ((src: Hyperly) => Hype) =>
  *  run will set it on hydration. */
 const syncCascadeIfBrowser = (mode: ISSMode) =>
   isBrowserSide()
-  ? tap(setISSMode(mode))
-  : identity
+    ? tap(setISSMode(mode))
+    : identity
 
 /**
  * Mode-explicit ISS primitive — atomic "set cascade + run JS" combo.
@@ -234,24 +234,28 @@ const resolveISSMode = (src: Hyperly): ISSMode => {
  *   `strict`         → true. No engine composes `insert` + `replace`; JS
  *                      always runs that pair itself.
  *   `none`           → false. Author opted out.
- *   otherwise        → skip when the matching native is reported. */
+ *   otherwise        → skip when the matching native is reported.
+ *
+ * Probe `normal`, not `insert`: shipping engines all support the property
+ * but report `false` for `CSS.supports('text-autospace', 'insert')`, which
+ * would keep JS running forever on engines that need none of it. */
 const needsJS = (mode: ISSMode, isBuggy: boolean): boolean =>
   mode === 'none'
-  ? false
+    ? false
 
-  : isBuggy || mode === 'strict'
-  ? true
+    : isBuggy || mode === 'strict'
+      ? true
 
-  : !(
-      (
-        ['normal', 'insert'].includes(mode) &&
-        CSS.supports('text-autospace', 'insert')
-      ) ||
-      (
-        mode === 'replace' &&
-        CSS.supports('text-autospace', 'replace')
+      : !(
+        (
+          ['normal', 'insert'].includes(mode) &&
+          CSS.supports('text-autospace', 'normal')
+        ) ||
+        (
+          mode === 'replace' &&
+          CSS.supports('text-autospace', 'replace')
+        )
       )
-    )
 
 /**
  * Cascade-dispatching ISS entry, *without* the UA inline-boundary probe.
@@ -297,6 +301,7 @@ export const applyISSWithProbe = (src: Hyperly): Hype => {
   if (declared === 'none') return hype(src)
 
   const isBuggy = detectAutospaceBoundaryBug()
+
   return needsJS(declared, isBuggy)
     ? applyISSWithMode(declared)(src)
     : hype(src)
