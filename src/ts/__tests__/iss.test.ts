@@ -346,9 +346,12 @@ test('applyISS: cascade "no-autospace"（CSS 枚舉的停用值）→ 映射 non
   }
 })
 
-test('applyISS: mode="normal" + native insert supported → no JS', async () => {
+test('applyISS: mode="normal" + native autospace supported → no JS', async () => {
+  // The probe asks for `normal`, not `insert` — every shipping engine reports
+  // false for `CSS.supports('text-autospace', 'insert')` even where the
+  // property works (see needsJS in line-adjustments/iss.ts).
   const { win, teardown } = await withCascadeGlobals(
-    (_p, v) => v === 'insert',
+    (_p, v) => v === 'normal',
   )
   try {
     const article = seed(win, 'normal')

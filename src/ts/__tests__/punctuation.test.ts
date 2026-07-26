@@ -112,7 +112,7 @@ test('auto: 字。「字 — 。 inside a run, next char is open → STILL hanga
   assert.equal(
     refine('auto')('<p>句。「字</p>'),
     '<p>句'
-      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
       + '<h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char>'
       + '字</p>',
   )
@@ -136,7 +136,7 @@ test('auto: cross-element run with a hangable end', () => {
   assert.equal(
     refine('auto')('<p>字。<b>「</b>字</p>'),
     '<p>字'
-      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
       + '<b><h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char></b>'
       + '字</p>',
   )
@@ -364,4 +364,65 @@ test('code-like elements are skipped — no <h-char> inside code/pre/kbd/samp', 
     assert.doesNotMatch(out, /<h-char/, `${tag}: punctuation must be left untouched`)
     assert.match(out, /，/, `${tag}: the comma survives verbatim`)
   }
+})
+
+/* ────────────────────────────────────────────────────────── */
+/* data-followed-by — what sits after a hangable mark          */
+/*                                                             */
+/* The wrapper's <h-layer> is out of flow, so the engine can no */
+/* longer squeeze the FOLLOWING mark against a glyph that has  */
+/* left the inline run. The attribute is the CSS hook that pays */
+/* that half em back (src/css/lines.with-js.css § 標點懸掛).    */
+/* ────────────────────────────────────────────────────────── */
+
+test('followed-by: hang — every opening bracket is reported', () => {
+  for (const open of '「『《〈（〔［｛【〖')
+    assert.equal(
+      refine('hang')(`<p>字。${open}字</p>`),
+      '<p>字'
+        + '<h-char data-punct="hangable" data-followed-by="open"><h-layer>。</h-layer></h-char>'
+        + `${open}字</p>`,
+      `after ${open}`,
+    )
+})
+
+test('followed-by: hang — 中点類 report middle, the rest of the bucket report nothing', () => {
+  for (const dot of '·・')
+    assert.match(
+      refine('hang')(`<p>字。${dot}字</p>`),
+      /data-followed-by="middle"/,
+      `${dot} is 中点類 — it compresses, so it must be reported`,
+    )
+  // `＼／－゠＆＿` share the `middle` subtype but do NOT compress against a
+  // preceding mark (measured: 2em with or without han.css), so reporting them
+  // would make the CSS over-squeeze by half an em.
+  for (const sym of '＼／－゠＆＿')
+    assert.doesNotMatch(
+      refine('hang')(`<p>字。${sym}字</p>`),
+      /data-followed-by/,
+      `${sym} does not compress — nothing to repair`,
+    )
+})
+
+test('followed-by: absent when nothing follows, or a plain character does', () => {
+  assert.doesNotMatch(refine('hang')('<p>字。</p>'), /data-followed-by/)
+  assert.doesNotMatch(refine('hang')('<p>字。字</p>'), /data-followed-by/)
+  assert.doesNotMatch(refine('hang')('<p>字。A</p>'), /data-followed-by/)
+})
+
+test('followed-by: auto reports it too, on the hangable mark only', () => {
+  assert.equal(
+    refine('auto')('<p>字。「字</p>'),
+    '<p>字'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char>'
+      + '字</p>',
+  )
+})
+
+test('followed-by: a blocked mark is neither hangable nor annotated', () => {
+  // 」 is a HANG_BLOCKING_CHAR, so 。 never hangs and never needs the hook.
+  const out = refine('auto')('<p>字。」字</p>')
+  assert.doesNotMatch(out, /hangable/)
+  assert.doesNotMatch(out, /data-followed-by/)
 })

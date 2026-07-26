@@ -26,6 +26,16 @@ export const PUNCT_CLOSE_CHARS  = '」』》〉）〕］｝】〗'
 export const PUNCT_END_EXTRA    = '︰．、，。：；？！ー'   // sentence-ending, not closing brackets
 export const PUNCT_MIDDLE_CHARS = '·＼／－゠＆・＿'
 
+/**
+ * 中点類 — the subset of `PUNCT_MIDDLE_CHARS` that is genuinely a middle DOT
+ * (JLREQ 中点類: half-em side spaces, compressible against a neighbouring
+ * mark). The rest of the middle bucket (`＼／－゠＆＿`) are fullwidth symbols
+ * that sit in that bucket for other styling reasons and do NOT compress —
+ * measured against a no-han.css baseline: `。·` and `，・` set 1.5em, while
+ * `、－` `。／` `，＼` `、＆` `。＿` `、゠` all set a full 2em.
+ */
+export const PUNCT_INTERPUNCT_CHARS = '·・'
+
 export const ALL_PUNCT = PUNCT_OPEN_CHARS + PUNCT_CLOSE_CHARS + PUNCT_END_EXTRA + PUNCT_MIDDLE_CHARS
 
 /** Matches one or more consecutive CJK punctuation characters. */
@@ -50,6 +60,17 @@ export const HANGABLE_PUNCT = new RegExp(
 )
 
 /**
+ * `hang` mode's regex. Same hangability rule as `HANGABLE_PUNCT`, plus a
+ * capturing lookahead for the character that follows — `hang` wraps single
+ * marks rather than whole runs, so without this it has no way to see its
+ * neighbour, and the neighbour is what `data-followed-by` reports.
+ */
+export const HANGABLE_PUNCT_WITH_NEXT = new RegExp(
+  `[、，。．](?![${PUNCT_CLOSE_CHARS}${PUNCT_END_EXTRA}])(?=(.?))`,
+  'gs',
+)
+
+/**
  * Same hangability rule as `HANGABLE_PUNCT`, expressed as a Set for
  * character-by-character iteration instead of regex replace.
  */
@@ -61,6 +82,53 @@ export const HANGABLE_CHARS = new Set([...'、，。．'])
  * in `HANGABLE_PUNCT`.
  */
 export const HANG_BLOCKING_CHARS = new Set([...PUNCT_CLOSE_CHARS, ...PUNCT_END_EXTRA])
+
+/**
+ * Attribute naming the subtype of whatever sits immediately after this mark.
+ * Mirrors `data-followed-by-adjacent-line` (semantics/adjacent-lines.ts): a
+ * fact about the NEIGHBOUR lives in its own attribute, never in `data-punct`,
+ * which classifies the character itself.
+ */
+export const FOLLOWED_BY = 'data-followed-by'
+
+/**
+ * Subtype of the character after a hangable mark, for `data-followed-by`.
+ *
+ * Only `open` and `middle` can ever appear, and only where the follower
+ * really does compress against its neighbour: `close` and `end` are exactly
+ * the `HANG_BLOCKING_CHARS`, so a mark followed by one of those is not
+ * hangable in the first place, and `middle` narrows to `PUNCT_INTERPUNCT_CHARS`.
+ * Anything else — a Han character, Latin, end of text — yields `''`, and the
+ * attribute is omitted.
+ *
+ * CSS needs this because the wrapper it enables destroys the pair spacing it
+ * has to restore: `<h-layer>` is out of flow, so the engine can no longer
+ * squeeze the following mark against a glyph that has left the inline run.
+ * See `src/css/lines.with-js.css` § 標點懸掛.
+ */
+export const followerSubtype = (next: string): '' | 'open' | 'middle' =>
+  // `''` first: `'…'.includes('')` is TRUE, so an empty follower (end of text)
+  // would otherwise report as `open`. Same guard `classifyPunctuation` opens
+  // with, for the same reason.
+  !next
+  ? ''
+
+  : PUNCT_OPEN_CHARS.includes(next)
+  ? 'open'
+
+  // 中点類 only, not the whole middle bucket — the fullwidth symbols in it
+  // don't compress against a preceding mark, so there is nothing to repair
+  // and claiming otherwise would over-squeeze them by half an em.
+  : PUNCT_INTERPUNCT_CHARS.includes(next)
+  ? 'middle'
+
+  : ''
+
+/** `data-followed-by="…"` for a follower, or `''` when there is nothing to say. */
+const followedByAttr = (next: string): string => {
+  const subtype = followerSubtype(next)
+  return subtype ? ` ${FOLLOWED_BY}="${subtype}"` : ''
+}
 
 /* ─── Internal Helpers & Config ──────────────────────────────────────────── */
 
@@ -153,26 +221,25 @@ const wrapBoth =
       return [...portion.text].map((ch, j) => {
         const i = portion.indexInMatch + j
 
-        // A punctuation mark can only hang if the character immediately
-        // following it (whether inside this same run, or sitting just after
-        // the run) is NOT a hang-blocking char like a closing bracket.
-        const hangable = (
-          HANGABLE_CHARS.has(ch) &&
-          !HANG_BLOCKING_CHARS.has(
-            i < runLen - 1
-            ? runText[i + 1] ?? ''
-            : nextAfterRun
-          )
-        )
+        // The character immediately after this one — inside the same run, or
+        // sitting just past its tail.
+        const next = i < runLen - 1 ? runText[i + 1] ?? '' : nextAfterRun
+
+        // A punctuation mark can only hang if what follows is NOT a
+        // hang-blocking char like a closing bracket.
+        const hangable = HANGABLE_CHARS.has(ch) && !HANG_BLOCKING_CHARS.has(next)
 
         const punctValues = [
           ...classifyPunctuation(ch),
           ...(isRun ? ['consecutive'] : []),
           ...(hangable ? ['hangable'] : []),
         ]
-        const attrs = isRun
+        const attrs = (isRun
           ? ` data-consecutive-pos="${i === 0 ? 'start' : i === runLen - 1 ? 'end' : 'inner'}"`
-          : ''
+          : '')
+          // only hangable marks carry it — it exists to repair the spacing
+          // their own `<h-layer>` breaks
+          + (hangable ? followedByAttr(next) : '')
         const inner = hangable ? `<h-layer>${ch}</h-layer>` : ch
         return `<h-char data-punct="${punctValues.join(' ')}"${attrs}>${inner}</h-char>`
       })
@@ -203,9 +270,9 @@ const wrapCompressible =
 const wrapHangable =
   transform
     (optionsIgnoringHChar)
-    (HANGABLE_PUNCT)
-    (portion => _match =>
-        '<h-char data-punct="hangable">'
+    (HANGABLE_PUNCT_WITH_NEXT)
+    (portion => match =>
+        `<h-char data-punct="hangable"${followedByAttr(match.captures[1] ?? '')}>`
       + `<h-layer>${portion.text}</h-layer>`
       + '</h-char>'
     )

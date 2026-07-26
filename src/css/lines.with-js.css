@@ -363,6 +363,36 @@
       visibility: hidden;
       line-height: 1;
     }
+
+    /* Repair the pair spacing this wrapper destroys.
+     *
+     * `<h-layer>` is out of flow, so the glyph leaves the inline run and the
+     * engine can no longer squeeze the FOLLOWING mark against it — measured:
+     * `。「` sets 2em wrapped where the same text sets 1.5em unwrapped, for
+     * every one of the ten opening brackets. The following mark can't be
+     * styled instead: in the `hang` recipe (what every engine with native
+     * `text-spacing-trim` actually runs) it isn't wrapped at all, it's a bare
+     * text node. So the hangable h-char pays the half em back itself — the
+     * filler reserves ½em instead of 1em and the follower's full em lands on
+     * top of it, restoring 1.5em.
+     *
+     * `data-followed-by` is emitted only on hangable marks and only carries
+     * `open` / `middle` — `close` and `end` are precisely the characters that
+     * make a mark unhangable, so they can never appear here.
+     *
+     * The pull is a negative margin, mirroring the compress block's
+     * close/end arm — NOT a half-width filler. `font-size-adjust: ic-width`
+     * on this pseudo lands at ~0.3em, not 0.5em: `Han Em Space` is Courier
+     * under a `size-adjust`, it has no ideographic glyph to measure, so the
+     * ic fallback compounds with that scaling. A plain negative margin has
+     * no font metric in the loop.
+     *
+     * At a line end the filler is trailing whitespace and collapses whole,
+     * and nothing follows for the margin to pull, so hanging is untouched. */
+    &:is([data-followed-by="open"], [data-followed-by="middle"]) {
+      margin-inline-end: -.5em;
+    }
+
     h-layer {
       position: absolute;
     }
