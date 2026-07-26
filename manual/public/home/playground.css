@@ -1,0 +1,168 @@
+@charset "UTF-8";
+
+/* ═══ Station VI・Playground ════════════════════════════════════════
+   User-content editor. `.Preview` (controls.css) supplies the framed
+   panel + header + ViewTabs primitive; `.Playground` adds the two swap
+   panes. The code pane is a real <textarea>, terminal-dark to mirror
+   figure.CodePane (so "code" reads as code across both stations); the
+   preview <article> sits on the page surface and inherits the rail's live
+   `--han-*` vars + han's prose layer with zero wiring. */
+
+.Playground {
+  /* `.Playground` rides on BOTH the <section> and the inner editor
+     <div class="Preview Playground" data-playground> — so anything that
+     must hit ONLY the editor panel is scoped by `[data-playground]`. */
+
+  /* editor chrome — the tab strip is a dark toolbar. `color-scheme: dark`
+     re-resolves the ViewTabs' light-dark() tokens to their dark side in
+     BOTH page themes (mirrors the .Snippet station's constant-dark recipe
+     above), so the tabs read paper-on-ink; a fixed faint mist hairline
+     keeps its lower edge visible on an already-dark page (web-style.md
+     dark-surface gotcha). The data-pg-* hooks are untouched. */
+  &[data-playground] > header {
+    color-scheme: dark;
+    background: var(--palette-ink);
+    border-block-end-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+  }
+
+  /* the editor may bleed one gutter past the station measure — a wider
+     canvas for typing. Only where the station is centred (≥ its max
+     width ＋ two gutters) so it never forces horizontal page scroll. */
+  @media (min-width: 74rem) {
+    &[data-playground] { margin-inline: calc(-1 * var(--gutter)); }
+  }
+
+  /* both panes share one box so the tab swap never jumps the panel height */
+  textarea,
+  [data-pg-preview] {
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 18rem;
+    margin: 0;
+    padding: 18px 20px;
+  }
+
+  textarea {
+    & {
+      resize: vertical;
+      background: var(--code-bg);
+      border: 0;
+      font-family: var(--font-mono);
+      font-size: var(--fs-compact);
+      line-height: 1.7;
+      color: var(--code-fg);
+      tab-size: 2;
+    }
+
+    &:focus { outline: none; }
+    &::selection { background: color-mix(in srgb, var(--code-fg) 25%, transparent); }
+  }
+
+  /* the preview — page surface, site prose typography; han.css layers on
+     the em dots / punctuation / autospace / ruby / prose spacing itself. */
+  [data-pg-preview] {
+    & {
+      background: var(--palette-bg);
+      color: var(--palette-text);
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-body);
+      line-height: 1.9;
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+      & {
+        margin: 1.5em 0 0.6em;
+        font-family: var(--han-font-alternative);
+        font-weight: 600;
+        line-height: 1.3;
+        color: var(--palette-text);
+      }
+
+      &:first-child { margin-block-start: 0; }
+    }
+
+    :is(h1, h2) { font-size: var(--fs-heading); }
+    h3 { font-size: var(--fs-lede); }
+    :is(h4, h5, h6) { font-size: var(--fs-body); }
+
+    p { margin: 0 0 1em; }
+
+    blockquote {
+      margin: 1em 0;
+      padding-inline-start: 1.25rem;
+      border-inline-start: 2px solid var(--palette-rule);
+      font-family: var(--han-font-accent);
+      color: var(--palette-supplement-text);
+    }
+
+    :is(ul, ol) {
+      margin: 0 0 1em;
+      padding-inline-start: 1.5em;
+    }
+
+    li { margin-block: 0.25em; }
+
+    a {
+      color: var(--palette-accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* inline code — the fenced-block <pre> case is handled separately */
+    :not(pre) > code {
+      padding: 0.1em 0.35em;
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: var(--palette-panel);
+      border: 1px solid var(--palette-rule);
+      border-radius: var(--r-1);
+    }
+
+    pre {
+      & {
+        margin: 0 0 1em;
+        overflow: auto;
+        padding: 14px 16px;
+        background: var(--code-bg);
+        border-radius: var(--r-2);
+        color: var(--code-fg);
+        font-family: var(--font-mono);
+        font-size: var(--fs-compact);
+        line-height: 1.6;
+      }
+
+      code {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        font: inherit;
+        color: inherit;
+      }
+    }
+
+    hr {
+      margin: 1.5em 0;
+      border: 0;
+      border-block-start: 1px solid var(--palette-rule);
+    }
+
+    :is(img, video) {
+      max-inline-size: 100%;
+      block-size: auto;
+    }
+
+    > :last-child { margin-block-end: 0; }
+  }
+
+  /* radio-driven tab swap — preview default, so hide the code pane until
+     its tab is checked, and hide the preview when code is. (:has() —
+     Baseline 2023.) */
+  &:has([name="pg-editor-view"][value="code"]:checked) [data-pg-preview] {
+    display: none;
+  }
+
+  &:not(:has([name="pg-editor-view"][value="code"]:checked)) textarea {
+    display: none;
+  }
+}

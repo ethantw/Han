@@ -1,0 +1,268 @@
+@charset "UTF-8";
+
+/**
+ * Station 伍・工法 and station VII・Snippet — the "how it behaves in your
+ * codebase" exhibits: the override demo, the cascade-layer map, the
+ * container-scope compare, and the constant-dark reference-code panel.
+ */
+
+/* ═══ Station 伍・工法 — the "won't fight your CSS" demos ═════════════
+ * Three honest demos for the unlayered/zero-specificity story: an override
+ * pair (a user rule beats the framework), a four-chip cascade-layer map, and
+ * a scope compare (one container var re-skins the 著重號). Token-driven, no
+ * new hues. The features the station EXPLAINS live in han.css, not here:
+ * `:where()` (Baseline 2021), `@layer` (Baseline 2022) and `@container
+ * style()` style queries (Chrome/Edge 111 + Safari 18; Firefox trailing) —
+ * the same query the whole framework already rides on. */
+
+/* 示範用戶樣式 — this is the EXACT rule the Override demo's <pre><code> prints
+ * (station-craft.html — KEEP THE TWO IN SYNC). It is UNLAYERED and a single
+ * class + element, so it beats han-semantics' `:where(q)` (zero specificity,
+ * and inside @layer han-semantics): an unlayered declaration always outranks
+ * a layered one — the whole point of the station, shown live, no !important. */
+.YourCss q {
+  color: var(--palette-accent);
+  font-weight: 500;
+}
+
+.Override {
+  & {
+    display: grid;
+    gap: 1px; /* the hairline seam between the two cells */
+    margin: 0 0 2.5rem;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* the two cells — the source stylesheet and what it renders */
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--palette-bg);
+  }
+
+  small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+    color: var(--palette-supplement-text);
+  }
+
+  /* the code block rides the homepage's generic light code chrome
+     (home.css § code blocks — `--palette-panel` ground, hairline, padding,
+     `overflow-x`); we only reset the default <pre> margin and neutralise the
+     inline-code chrome on the nested <code> so it inherits the pre's mono +
+     colour, dark-on-panel in both themes. */
+  pre {
+    & {
+      margin: 0;
+    }
+
+    code {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      font: inherit;
+      color: inherit;
+      white-space: pre;
+    }
+  }
+
+  /* the live sample — serif, sized up so the accent-won <q> reads clearly.
+     The <q> itself takes its colour from `.YourCss q` above, beating the
+     framework's zero-specificity `:where(q)`. */
+  .YourCss {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 1.7;
+    color: var(--palette-text);
+  }
+}
+
+
+/* ─── Station 伍・工法 — the cascade-layer map (four mono chips) ─────── */
+
+.LayerMap {
+  & {
+    margin: 0 0 2.5rem;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    & {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-accent);
+      background: var(--palette-panel);
+      border: 1px solid var(--palette-rule);
+      border-radius: 999px;
+    }
+
+    /* the module's build-computed gzip weight, riding the chip — quiet and
+       supplement-coloured, never a billboard (it supplements the layer name). */
+    small {
+      font-size: var(--fs-micro);
+      color: var(--palette-supplement-text);
+    }
+  }
+
+  figcaption {
+    & {
+      max-inline-size: 34em;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-small);
+      line-height: 1.75;
+      color: var(--palette-supplement-text);
+    }
+
+    /* the ledger footing — a second, quieter line under the layer note */
+    small {
+      display: block;
+      margin-block-start: 0.5rem;
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+    }
+  }
+}
+
+
+/* ─── Station 伍・工法 — the container-scope compare (default vs sesame) ──
+ * Same sample twice; the second cell's WRAPPER carries `--han-em-symbol:
+ * sesame` inline, which inherits down to its <em>, so the 著重號 turns to
+ * sesame dots while the first keeps the circle default. Hairline-framed grid,
+ * mirroring .PunctCompare / .HangCompare. */
+
+.ScopeCompare {
+  & {
+    display: grid;
+    gap: 1px; /* hairline seam between the two cells */
+    margin: 0 0 2.5rem;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .Sample {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--palette-bg);
+  }
+
+  small {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+    color: var(--palette-supplement-text);
+  }
+
+  /* the sample — serif, sized up; extra leading leaves room for the
+     emphasis dots (circle vs sesame) below the text. */
+  p {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 2;
+    color: var(--palette-text);
+  }
+}
+
+
+/* ═══ Station VII・Snippet — the CONSTANT-dark reference-code station ══
+   `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
+   `controls.css`; this block styles the two station-local lines that
+   frame the pane, the mint transition band that hands off into the dark,
+   and the dark ground itself. */
+
+.Snippet {
+  & {
+    /* 陸 is CONSTANT dark in BOTH page themes. `color-scheme: dark`
+       re-resolves every light-dark() token in this subtree to its dark
+       side (Baseline 2024) — so the hgroup/Prose text, the ViewTabs and
+       the native pm-select all read paper-on-ink with no per-control CSS.
+       The watermark's --palette-wm flips to its paper side here too, so
+       the 碼 glyph still reads on the dark ground. */
+    color-scheme: dark;
+    background: var(--palette-ink);
+    /* a dark band on a (possibly) dark page goes edgeless — pin the top
+       rule to a fixed faint mist hairline (web-style.md dark-surface
+       gotcha) instead of the theme-flipping --palette-grid. */
+    border-block-start-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+  }
+
+  /* transition band — a mint strip carrying the bridge line + the eyebrow
+     set vertically, easing from the bright page into the dark station.
+     It keeps `color-scheme: light` so its accent-wash resolves to mint. */
+  .Bridge {
+    & {
+      color-scheme: light;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--gutter);
+      margin: 0 0 2.5rem;
+      padding: 1.75rem 1.5rem;
+      background: var(--palette-accent-bg);
+      border-radius: var(--r-3);
+    }
+
+    [data-part="lead"] {
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-heading);
+      font-weight: 600;
+      color: var(--palette-accent);
+    }
+
+    [data-part="eyebrow"] {
+      writing-mode: vertical-rl;
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-accent);
+    }
+  }
+
+  .Finish, .BrowserSupport {
+    max-inline-size: 38em;
+    margin: 1.5rem 0 0;
+    font-family: var(--han-font-alternative);
+    color: var(--palette-supplement-text);
+  }
+
+  .Finish {
+    font-size: var(--fs-body);
+    line-height: 1.8;
+    color: var(--palette-text);
+  }
+
+  .BrowserSupport {
+    margin-block-start: 0.5rem;
+    font-size: var(--fs-small);
+  }
+}

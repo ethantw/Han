@@ -54,9 +54,19 @@ async function loadNavI18n() {
 function extractHomeI18n(src) {
   const m = src.match(/<script type="text\/x-i18n">([\s\S]*?)<\/script>\r?\n?/)
   if (!m) return { dict: {}, body: src }
-  // JS object literal, not JSON — same authoring ergonomics as the old
-  // `_data.js` (single quotes, trailing commas, comments allowed).
-  const dict = new Function(`return (${m[1]})`)()
+  // JS, not JSON — same authoring ergonomics as the old `_data.js`
+  // (single quotes, trailing commas, comments). Two block shapes:
+  //   • bare object literal `{ … }` — the default (one dict, no sharing);
+  //   • statement body `const X = …; return { … }` — when a value must be
+  //     DRY'd across keys (e.g. `_shared.html`'s 漢 SVG referenced by both
+  //     `logo` and `han`). We pick by the first non-blank char: `{` → wrap
+  //     as an expression; anything else → run as a function body that
+  //     returns. `new Function` can't take a `const` inside `return (…)`,
+  //     which is the only reason the two paths exist.
+  const code = m[1].trim()
+  const dict = code.startsWith('{')
+    ? new Function(`return (${code})`)()
+    : new Function(code)()
   return { dict, body: src.replace(m[0], '') }
 }
 
@@ -221,7 +231,7 @@ async function emitVendor() {
 
 /**
  * Inline the homepage CSS at BUILD time — `public/home.css` `@import`s its
- * section partials (`home/controls.css`, `home/stations.css`, …), which
+ * section partials (`common/*.css`, `home/*.css`), which
  * lets us author in small readable files; esbuild bundles them into one
  * `dist/home.css` so production ships a single stylesheet, not an
  * `@import` waterfall of render-blocking requests. The SAME tool + shape
@@ -234,14 +244,8 @@ async function emitVendor() {
  * `dist/`: we overwrite the raw `dist/home.css` with the bundled one.
  * Add more `@import`ed partials freely — they all fold into this output.
  *
- * `stations.css` is then deleted from `dist` — nothing else references
- * it, so its standalone copy is dead once inlined. `controls.css` is
- * NOT deleted: it's dual-homed — `<han-rail>` fetches it standalone into
- * its shadow root (`han-rail.js` loadSheets), so the file must survive.
- * Its bytes do appear twice (inlined here for the light DOM's critical
- * path, plus the standalone the rail fetches async after the gate) — a
- * ~16KB overlap, brotli'd and cached, worth trading for a waterfall-free
- * first paint.
+ * The now-redundant standalone partials are pruned from `dist`
+ * afterwards — see `pruneInlinedPartials()`.
  */
 async function bundleHomeCss() {
   await esbuild.build({
@@ -253,7 +257,35 @@ async function bundleHomeCss() {
     assetNames: '[name]',
     logLevel: 'warning',
   })
-  await fs.rm(path.join(MANUAL_DIST, 'home', 'stations.css'), { force: true })
+  await pruneInlinedPartials()
+}
+
+/**
+ * The partials are now inlined, so their standalone copies in `dist` are
+ * dead weight — drop every `.css` under `common/` and `home/` except the
+ * ones something still fetches by URL:
+ *
+ *   • `home/controls.css` — dual-homed, `<han-rail>` fetches it into its
+ *     shadow root (constructed stylesheets can't resolve `@import`, so it
+ *     must stay a standalone file).
+ *
+ * Its bytes therefore ship twice: inlined here for the light DOM's
+ * critical path, plus the standalone the rail fetches async after the
+ * gate. ~16KB of overlap, brotli'd and cached — cheaper than a
+ * waterfall on first paint.
+ */
+const KEEP_STANDALONE = new Set(['home/controls.css'])
+
+async function pruneInlinedPartials() {
+  for (const dir of ['common', 'home']) {
+    const abs = path.join(MANUAL_DIST, dir)
+    const entries = await fs.readdir(abs).catch(() => [])
+    for (const name of entries) {
+      if (!name.endsWith('.css') || KEEP_STANDALONE.has(`${dir}/${name}`)) continue
+      await fs.rm(path.join(abs, name), { force: true })
+    }
+    if (!(await fs.readdir(abs).catch(() => ['x'])).length) await fs.rmdir(abs)
+  }
 }
 
 /** Frontmatter parser — only `key: value` lines, no nested structures. */
