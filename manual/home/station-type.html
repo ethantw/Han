@@ -1,8 +1,8 @@
 <script type="text/x-i18n">
 {
   stLede: {
-    hant: '黑體、明體、楷體，三大字體，各司其職。',
-    hans: '黑体、明体、楷体，三大字体，各司其职。',
+    hant: '黑、明、楷，三大字體，各司其職。',
+    hans: '黑、明、楷，三大字体，各司其职。',
     en: 'One character, three faces — sans, serif and cursive, each to its task.',
     ja: 'ゴシック・明朝・楷書、三つの書体が、それぞれの役を負う。',
     ko: '<ruby>黑體<rt>흑체</rt></ruby>·<ruby>明體<rt>명체</rt></ruby>·<ruby>楷體<rt>해체</rt></ruby>, 세 <ruby>書體<rt>서체</rt></ruby>가 저마다 <ruby>所任<rt>소임</rt></ruby>을 맡는다.',
@@ -15,9 +15,9 @@
     ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>, <ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다. 웹폰트 <ruby>時代<rt>시대</rt></ruby>, <ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 120개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고, <ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <code>unicode-range</code>에 맡겨진다——<ruby>必要<rt>필요</rt></ruby>한 만큼만 CDN을 거쳐 밀리초 <ruby>單位<rt>단위</rt></ruby>로 닿아, <ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다.',
   },
   ltControls: {
-    hant: '字體與標點', hans: '字体与标点',
-    en: 'Face & punctuation', ja: '書体と約物',
-    ko: '<ruby>書體<rt>서체</rt></ruby>와 <ruby>符號<rt>부호</rt></ruby>',
+    hant: '字體、標點與行向', hans: '字体、标点与行向',
+    en: 'Face, punctuation & direction', ja: '書体・約物・行方向',
+    ko: '<ruby>書體<rt>서체</rt></ruby>・<ruby>符號<rt>부호</rt></ruby>・<ruby>行向<rt>행향</rt></ruby>',
   },
   ltFaceLegend: {
     hant: '字體', hans: '字体', en: 'Face', ja: '書体',
@@ -38,6 +38,18 @@
   ltPunctLegend: {
     hant: '標點', hans: '标点', en: 'Punctuation', ja: '約物',
     ko: '<ruby>符號<rt>부호</rt></ruby>',
+  },
+  ltOrientLegend: {
+    hant: '行向', hans: '行向', en: 'Direction', ja: '行方向',
+    ko: '<ruby>行向<rt>행향</rt></ruby>',
+  },
+  ltOrientV: {
+    hant: '直排', hans: '直排', en: 'Vertical', ja: '縦組',
+    ko: '<ruby>縱組<rt>종조</rt></ruby>',
+  },
+  ltOrientH: {
+    hant: '橫排', hans: '横排', en: 'Horizontal', ja: '横組',
+    ko: '<ruby>橫組<rt>횡조</rt></ruby>',
   },
   stEyebrow: {
     hant: '貳・字體排印',
@@ -84,7 +96,10 @@
 }
 </script>
 <!-- Station II・Typography — three-face specimen + heritage/punctuation copy. -->
-<section id="station-type" data-station="type" data-ground="b" data-wm="字">
+<!-- no `data-wm` here on purpose: station② hands its watermark corner to the
+     lead-type forme, which takes over that space as an absolutely-positioned
+     specimen on wide screens (home/lead-forme.css § corner). -->
+<section id="station-type" data-station="type" data-ground="b">
   <hgroup>
     <p>{{ stEyebrow }}</p>
     <h2>{{ stH2 }}</h2>
@@ -134,7 +149,7 @@
        form. lead-forme.js builds the SVG; home/lead-forme.css themes it. The
        forme is a decorative specimen (svg aria-hidden); the caption
        (stTrayNote) carries the type-picking ↔ unicode-range story. -->
-  <figure class="LeadForme" data-face="m" data-punct="jis">
+  <figure class="LeadForme" data-face="m" data-punct="jis" data-orient="v">
     <svg role="img" aria-hidden="true"></svg>
     <form class="Controls" aria-label="{{ ltControls }}">
       <fieldset>
@@ -148,6 +163,11 @@
         <label><input type="radio" name="lf-punct" value="jis" checked /> JIS</label>
         <label><input type="radio" name="lf-punct" value="moe" /> MOE</label>
         <label><input type="radio" name="lf-punct" value="gb" /> GB</label>
+      </fieldset>
+      <fieldset>
+        <legend>{{ ltOrientLegend }}</legend>
+        <label><input type="radio" name="lf-orient" value="v" checked /> {{ ltOrientV }}</label>
+        <label><input type="radio" name="lf-orient" value="h" /> {{ ltOrientH }}</label>
       </fieldset>
     </form>
     <figcaption>{{ stTrayNote }}</figcaption>

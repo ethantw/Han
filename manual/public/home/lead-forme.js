@@ -78,15 +78,20 @@ const spacer = (O, sx, sy, d, first, solid) =>
   `<g class="Slug${first ? ' col0' : ''}${solid ? ' solid' : ''}"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
 
 
-// column layout in cell units. MOE／GB: uniform 1-cell slugs. JIS with a ：「
-// pair: ： keeps a full em, 「 becomes a half slug (its front-half whitespace
-// trimmed), and the freed half is spread as small justify blocks between every
-// other pair — so the column keeps its full justified length.
-const columnLayout = (col, punct) => {
+// Line layout in cell units. Unsqueezed: uniform 1-cell slugs. Squeezed at a
+// ：「 pair: ： keeps a full em, 「 becomes a half slug (its front-half
+// whitespace trimmed), and the freed half is spread as small justify blocks
+// between every other pair — so the line keeps its full justified length.
+//
+// WHEN it squeezes differs by direction. 直排: JIS only — MOE／GB seat ： low in
+// the em there, so nothing meets 「's leading space. 橫排: ALL THREE — ：'s
+// trailing half-space abuts 「's leading half-space under every convention.
+const lineLayout = (col, punct, orient) => {
   const n = col.length;
   let sq = -1;
   for (let i = 0; i < n - 1; i++) if (col[i] === '：' && col[i + 1] === '「') sq = i;
-  if (punct !== 'jis' || sq < 0) return col.map((ch, i) => ({ char: ch, aStart: i, size: 1 }));
+  const squeezes = orient === 'h' || punct === 'jis';
+  if (!squeezes || sq < 0) return col.map((ch, i) => ({ char: ch, aStart: i, size: 1 }));
   const half = 0.5;
   // freed 0.5 is shared by every 字距 gap EXCEPT the tight ：「 pair and the gap
   // right after the 段首縮排 空鉛 (no 字距 block hugs the indent quad).
@@ -104,15 +109,26 @@ const columnLayout = (col, punct) => {
 };
 
 // ── one lead-type slug (a printing character) → SVG group string ──
-const block = ({ O, char, d, sy = GEO.S, first, half }) => {
+const block = ({ O, char, d, sy = GEO.S, first, half, orient }) => {
   const { S, H, r, fs, sw } = GEO;
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
   const faces = faces3(O, S, sy);
   const cls = `Slug has-glyph${first ? ' col0' : ''}${PUNCT.has(char) ? ' is-punct' : ''}`;
 
-  // mirrored printing face on the top plane (scaleX −1 baked into column 1)
-  const m = `matrix(${-COS} ${-SIN} ${-COS} ${SIN} ${cc[0].toFixed(2)} ${cc[1].toFixed(2)})`;
-  const glyphLayout = PUNCT.has(char)
+  // The printing face, engraved MIRRORED on the top plane (e1 × e2). Reading
+  // runs along e2 either way — the forme is the same 4×10 grid of square em
+  // bodies whichever direction it's read in — so all that turns is the glyph:
+  //   直排  glyph-x → −e1,  glyph-y → e2   (text descends the column)
+  //   橫排  glyph-x →  e2,  glyph-y → e1   (text advances along the line,
+  //                                          `down` points at the next line)
+  // Both determinants are −2·COS·SIN < 0, i.e. still cut in reverse.
+  const m = orient === 'h'
+    ? `matrix(${-COS} ${SIN} ${COS} ${SIN} ${cc[0].toFixed(2)} ${cc[1].toFixed(2)})`
+    : `matrix(${-COS} ${-SIN} ${-COS} ${SIN} ${cc[0].toFixed(2)} ${cc[1].toFixed(2)})`;
+  // 直排 punctuation needs the font's vertical forms (`vert`/`vrt2`), which
+  // `writing-mode` is what asks for. 橫排 wants the default horizontal cut —
+  // that IS the difference between the two faces of one piece of type.
+  const glyphLayout = orient !== 'h' && PUNCT.has(char)
     ? 'writing-mode:vertical-rl; text-orientation:upright'
     : 'dominant-baseline:central';
   const glyph = (fill, stroke, gsw, dy) => `
@@ -150,12 +166,12 @@ const block = ({ O, char, d, sy = GEO.S, first, half }) => {
   return `<g class="${cls}" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
 };
 
-// ── build the whole forme for a punctuation mode → { viewBox, markup, lastDelay } ──
+// ── build the whole forme → { viewBox, markup, lastDelay } ──
 /** per-piece entrance stagger, in seconds — a compositor sets one slug at a
  *  time, so reading order becomes the drop order (the `--d` custom prop). */
 const STAGGER = 0.07;
 
-const buildForme = (punct) => {
+const buildForme = (punct, orient) => {
   const { S, cell, H, r, leadEm } = GEO;
   const rows = COLS[0].length;
   const colStep = S * (1 + leadEm);          // 行距 — leading pitch between columns
@@ -171,7 +187,7 @@ const buildForme = (punct) => {
   COLS.forEach((col, b) => {
     const bx = b * colStep;
     const first = b === 0;                     // column 1 — re-laid-out on punct swap
-    columnLayout(col, punct).forEach((it) => {
+    lineLayout(col, punct, orient).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
       if (it.space)                           // justify 小鉛塊 — solid furniture
         cells.push({ kind: 'space', O, sx: S, sy: it.size * cell, d: read++ * STAGGER, first, solid: true });
@@ -208,7 +224,7 @@ const buildForme = (punct) => {
 
   const markup = cells
     .map((c) => (c.kind === 'char'
-      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, first: c.first, half: c.half })
+      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, first: c.first, half: c.half, orient })
       : spacer(c.O, c.sx, c.sy, c.d, c.first, c.solid)))
     .join('');
   return {
@@ -236,7 +252,10 @@ export const initLeadForme = ($root = document) => {
   if (!$forme) return;
   const $svg = $forme.querySelector('svg');
   const render = () => {
-    const { viewBox, markup, lastDelay } = buildForme($forme.dataset.punct || 'jis');
+    const { viewBox, markup, lastDelay } = buildForme(
+      $forme.dataset.punct || 'jis',
+      $forme.dataset.orient || 'v',
+    );
     $svg.setAttribute('viewBox', viewBox);
     $svg.innerHTML = markup;
     // hand the drop's tail to CSS — it adds --lf-drop-dur for the caption's cue
@@ -261,9 +280,15 @@ export const initLeadForme = ($root = document) => {
     busy = false;
   };
 
+  // Read the LIVE checked value rather than closing over the radio that fired.
+  // A swap is async, so a second click mid-flight would otherwise let the older
+  // handler apply its own stale value on completion — leaving the forme showing
+  // one thing and the pills another.
+  const picked = (name) => $forme.querySelector(`input[name="${name}"]:checked`)?.value;
+
   // face change is font-only → reslot the glyph slugs (no geometry change)
   $forme.querySelectorAll('input[name="lf-face"]').forEach((el) =>
-    el.addEventListener('change', () => reslot('.has-glyph', () => { $forme.dataset.face = el.value; })));
+    el.addEventListener('change', () => reslot('.has-glyph', () => { $forme.dataset.face = picked('lf-face'); })));
   // punct change re-lays-out the ：「 column (half 「 + justify blocks). Only the
   // punctuation slugs and column 1 differ, so we suppress the full entrance drop
   // (`.settled`, one-way) and re-drop JUST those pieces; the rest is rebuilt in
@@ -271,7 +296,7 @@ export const initLeadForme = ($root = document) => {
   $forme.querySelectorAll('input[name="lf-punct"]').forEach((el) =>
     el.addEventListener('change', () => {
       $forme.classList.add('settled');
-      $forme.dataset.punct = el.value;
+      $forme.dataset.punct = picked('lf-punct');
       render();
       if (reduced) return;
       // stagger the re-drop (fill:backwards holds each piece up-and-hidden until
@@ -284,5 +309,33 @@ export const initLeadForme = ($root = document) => {
         ...$svg.querySelectorAll('.is-punct:not(.col0)'),
       ].forEach(($el, i) =>
         $el.animate(DROP, { duration: 720, delay: i * 180, easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards' }));
+    }));
+
+  // Direction change re-engraves EVERY piece (the glyph turns a quarter) and,
+  // under MOE／GB, re-lays line 1 as well. So the whole forme comes apart and is
+  // set again — which is what changing direction actually means in a type shop.
+  // The grid itself is unchanged, so nothing moves; only the faces do.
+  $forme.querySelectorAll('input[name="lf-orient"]').forEach((el) =>
+    el.addEventListener('change', async () => {
+      $forme.classList.add('settled');
+      if (reduced || busy) { $forme.dataset.orient = picked('lf-orient'); render(); return; }
+      busy = true;
+      // the whole forme lifts at once (as in the face/punct swaps), then is set
+      // again one piece at a time — the asymmetry is the point: breaking a forme
+      // up is quick, setting one is not.
+      await Promise.all([...$svg.querySelectorAll('.Slug')]
+        .map(($el) => $el.animate(EJECT, {
+          duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards',
+        }))
+        .map((a) => a.finished));
+      $forme.dataset.orient = picked('lf-orient');
+      render();
+      // re-set at the entrance's own pace, reading order = drop order
+      await Promise.all([...$svg.querySelectorAll('.Slug')]
+        .map(($el, i) => $el.animate(DROP, {
+          duration: 720, delay: i * (STAGGER * 1000), easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards',
+        }))
+        .map((a) => a.finished));
+      busy = false;
     }));
 };
