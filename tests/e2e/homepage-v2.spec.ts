@@ -5,8 +5,9 @@ import { test, expect } from '@playwright/test'
  * constant-dark snippet station, and the reduced-motion reveal guard.
  *
  * Contract: docs/plans/homepage-v2-implementation.md. These are smoke-level
- * structural checks (not pixel baselines): the seven content stations each
- * carry a watermark glyph (語／字／行／段／層／格／碼) rendered from `data-wm`;
+ * structural checks (not pixel baselines): the content stations carry a
+ * watermark glyph rendered from `data-wm` — six of the seven, since
+ * station②・字體排印 hands its corner to the lead-type forme instead;
  * the var-name marginalia is a ≥68rem-only rail (hidden where it would only
  * repeat names); station 柒・引用碼 sits on a CONSTANT-dark ground in BOTH
  * page themes; and reveal.js must hand every station its `[data-revealed]`
@@ -14,15 +15,20 @@ import { test, expect } from '@playwright/test'
  * animation), so nothing is ever left hidden.
  */
 
-// The seven `.Station` sections in document order — Closing (data-wm="漢") is
-// a `.Closing`, not a `.Station`, so it is deliberately excluded.
-const STATION_WM = ['語', '字', '行', '段', '層', '格', '碼']
+// The seven stations in document order — Closing (data-wm="漢") is not a
+// `[data-station]`, so it is deliberately excluded. station②・字體排印 carries
+// NO watermark: its corner belongs to the lead-type forme (lead-forme.css
+// § corner), so the glyph list has six entries for seven stations.
+const STATION_WM = ['語', '行', '段', '層', '格', '碼']
 
-test('the seven stations each carry a watermark glyph 語字行段層格碼', async ({ page }) => {
+test('the stations carry their watermark glyphs 語行段層格碼 (station② has none)', async ({ page }) => {
   await page.goto('/')
 
-  const stations = page.locator('main.han .Station[data-wm]')
-  await expect(stations).toHaveCount(7)
+  await expect(page.locator('main [data-station]')).toHaveCount(7)
+  await expect(page.locator('main #station-type[data-wm]')).toHaveCount(0)
+
+  const stations = page.locator('main [data-station][data-wm]')
+  await expect(stations).toHaveCount(6)
 
   const marks = await stations.evaluateAll((els) =>
     els.map((el) => el.getAttribute('data-wm')),
@@ -52,7 +58,7 @@ test('reduced-motion: every station is revealed immediately (settled, not animat
   // targets up-front (skipping the IntersectionObserver), so the hero and
   // every station are in their settled — fully visible — state at once,
   // without scrolling.
-  const revealed = page.locator('main.han .Station[data-revealed]')
+  const revealed = page.locator('main [data-station][data-revealed]')
   await expect(revealed).toHaveCount(7)
   await expect(page.locator('.Manifesto[data-revealed]')).toHaveCount(1)
 

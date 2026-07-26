@@ -31,11 +31,11 @@ import { test, expect, type Page } from '@playwright/test'
  */
 
 const LOCALES = [
-  { path: '/',      htmlLang: 'zh-Hant', label: 'hant' },
+  { path: '/', htmlLang: 'zh-Hant', label: 'hant' },
   { path: '/hans/', htmlLang: 'zh-Hans', label: 'hans' },
-  { path: '/en/',   htmlLang: 'en',      label: 'en'   },
-  { path: '/ja/',   htmlLang: 'ja',      label: 'ja'   },
-  { path: '/ko/',   htmlLang: 'ko',      label: 'ko'   },
+  { path: '/en/', htmlLang: 'en', label: 'en' },
+  { path: '/ja/', htmlLang: 'ja', label: 'ja' },
+  { path: '/ko/', htmlLang: 'ko', label: 'ko' },
 ] as const
 
 /** 配置群組是 <details> 手風琴——收合組裡的控件要先展開才可見。 */
@@ -52,7 +52,7 @@ for (const { path, htmlLang, label } of LOCALES) {
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang)
     await expect(page.locator('body.home')).toHaveAttribute('data-locale', label)
 
-    await expect(page.locator('.Topbar .Brand')).toBeVisible()
+    await expect(page.locator('body > header .Brand')).toBeVisible()
     await expect(page.locator('main.han')).toHaveCount(1)
     // The rail is now the <han-rail> web component (shadow DOM).
     await expect(page.locator('han-rail')).toBeVisible()
