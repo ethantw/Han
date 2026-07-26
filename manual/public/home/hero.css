@@ -1,28 +1,88 @@
 @charset "UTF-8";
 
-/* ─── Hero (Manifesto) — homepage-v2 redesign ────────────────────────
+/**
+ * The hero — `.Manifesto` and the demo-language chip row above it.
  * Contract: docs/plans/homepage-v2-implementation.md § Hero.
  *
- * The Manifesto's BASE typography (h1 / .Lede / .Dogfood / .InstallChip /
- * .DemoLangSwitch) lives in `home/stations.css`. This region layers the
- * hero-only redesign on top — the outline glyph, the relocated chips row,
- * the vertical lede, and the one-shot entrance stagger. It lives in home.css
- * (not
- * stations.css) because the station-interior work owns stations.css; the
- * higher-specificity `.Manifesto`-scoped selectors below win over the base
- * by both specificity and cascade order (home.css follows the @imports).
+ * The Manifesto sits inside `main`, where `station-frame.css` re-declares
+ * the `--fs-*` ramp in `em` so the rail's size slider scales it — the
+ * hero's copy tracks the live specimen size by design. The `--fs-display`
+ * ramp step is deliberately NOT used: the phrase lines take a hero-local
+ * clamp instead (contract § Hero permits it), which keeps the h1 box at
+ * the base step so the Brand crown reads as a subtitle rather than
+ * inheriting display scale.
  *
- * The Manifesto sits inside `main`, where stations.css re-declares the
- * `--fs-*` ramp in `em` (rail-slider-scalable) — so the glyphs and copy
- * here track the live specimen size, by design. */
+ * The one-shot entrance below is what runs on a no-JS page. When
+ * `fonts-gate.js` is live it suppresses this and re-runs it at gate-open
+ * — see `home/gate.css`.
+ */
+
+/* ─── DemoLangSwitch ─────────────────────────────────────────────────
+ * Chip row switching which language the SPECIMEN demonstrates,
+ * independent of the site's own UI locale: `demo-lang.js` sets
+ * `main[lang]` and `:lang()` rules re-evaluate natively from there.
+ * Framed top-right of the content column by default; the hero relocates
+ * its own copy to a left-aligned row above the headline (below). */
+
+.DemoLangSwitch {
+  & {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    max-inline-size: var(--max-w-layout);
+    margin-inline: auto;
+    padding: 1.5rem var(--gutter) 0;
+    border: 0;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: var(--palette-bg);
+    border: 1px solid var(--palette-rule);
+    border-radius: 999px;
+    font-family: var(--han-font-default);
+    font-size: var(--fs-fine);
+    color: var(--palette-supplement-text);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color    150ms ease,
+      color           150ms ease;
+
+    &:hover { border-color: var(--palette-text); color: var(--palette-text); }
+
+    &:has(input:checked) {
+      background: var(--palette-text);
+      border-color: var(--palette-text);
+      color: var(--palette-bg);
+    }
+  }
+}
+
+/* ─── Manifesto ───────────────────────────────────────────────────── */
 
 @keyframes hero-rise {
   from { opacity: 0; transform: translateY(0.5rem); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes wm-draw {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
 .Manifesto {
   & {
+    margin-inline: auto;
+    padding: 7rem var(--gutter) 5.5rem;
     /* Own stacking context so the z-index:-1 outline lands under the copy
        but above the page ground; `overflow: clip` (Baseline 2023) crops
        the oversized glyph so it never forces horizontal scroll. */
@@ -31,29 +91,39 @@
     overflow: clip;
   }
 
-  /* Crowned headline. The 漢.css Brand rides on top as a small serif line;
-     the two tagline phrases below it carry the hero's display scale. The
-     --fs-display ramp token is untouched — this is a hero-LOCAL clamp on the
-     phrase lines only (contract § Hero permits the local override). Because
-     the ramp re-resolves in `em` inside main, the h1 box itself stays at
-     the base step, so the crown — sized off --fs-lede/-small by .Brand's own
-     rule — reads as a subtitle rather than inheriting the display size; only
-     the phrase spans take the clamp. */
+  /* Crowned headline: the 漢.css Brand rides on top as a small serif
+     line, the tagline phrases below carry the display scale. */
   h1 {
-    /* & { font-size: var(--fs-body); } */
+    & {
+      position: relative;
+      margin: 0 0 2rem;
+      padding-block-start: 2.25rem;
+      font-family: var(--han-font-alternative);
+      font-size: clamp(2.5em, 8vw, 4.5em);
+      font-weight: 400; /* ziano display weight — restrained, not bold */
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      color: var(--palette-text);
+    }
 
-    /* the wordmark crown sits on its own line, generous gap below */
+    /* accent hook for the first phrase — a pseudo, so the DOM stays
+       free of a span whose only job is colour (css-naming rule 3) */
+    &::first-line { color: var(--palette-accent); }
+
+    /* the wordmark crown sits on its own line above the phrases */
     .Brand {
+      position: absolute;
+      inset-block-start: 0;
+      margin-inline-start: .375rem;
+      font-size: 2rem;
       display: flex;
     }
 
-    /* The taglines live in `.Tagline` (a real span now, so the brand
-       crown beside them can be excluded from the entrance and stay lit
-       through the gate). display:block gives it the hero scale, its own
-       line under the crown, AND a transformable box for hero-rise
-       (transforms don't apply to inline boxes). `text-wrap: balance`
-       (Baseline 2024) keeps the wrapped phrase from orphaning a
-       trailing character. */
+    /* `.Tagline` is a real span so the crown beside it can be excluded
+       from the entrance and stay lit through the gate. `display: block`
+       gives it its own line AND a transformable box for hero-rise —
+       transforms don't apply to inline boxes. `text-wrap: balance`
+       (Baseline 2024) stops the wrapped phrase orphaning a character. */
     .Tagline {
       display: block;
       line-height: 1.25;
@@ -61,11 +131,31 @@
     }
   }
 
+  .Lede {
+    margin: 0 0 1.25rem;
+    max-inline-size: 28em;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-lede);
+    line-height: 1.85;
+    color: var(--palette-text);
+  }
+
+  .Dogfood {
+    margin: 0 0 2.25rem;
+    max-inline-size: 38em;
+    font-family: var(--han-font-default);
+    font-size: var(--fs-small);
+    color: var(--palette-supplement-text);
+  }
+
+  .InstallChip { margin-block-end: 2.5rem; }
+
+  /* The 漢 watermark: inline SVG stroke paths (generated into
+     manifesto.html by scripts/stroke-animation/), sized like the text
+     watermark it replaced — font-size became inline-size, em-insets
+     became size-derived. */
   .Outline {
     & {
-      /* The glyph is inline SVG stroke paths now (generated block in
-         manifesto.html — scripts/stroke-animation/), sized like the old
-         text watermark: font-size → inline-size, em-insets → size-derived. */
       --wm-size: clamp(14rem, 40vw, 30rem);
       position: absolute;
       inset-block-start: calc(var(--wm-size) * -0.15);
@@ -83,15 +173,13 @@
       overflow: visible;
     }
 
-    /* Hairline stroke, token-derived so it stays faint yet legible in both
-       themes (color-mix — Baseline 2023). Width in USER UNITS (2/1000 ≈
-       1px at the 30rem clamp ceiling), deliberately NOT
+    /* Stroke width is in USER UNITS, deliberately NOT
        `vector-effect: non-scaling-stroke`: that forces per-frame
-       screen-space re-tessellation and janks the dash-draw animation
-       below (measured ~73fps → 120fps on a 120Hz display without it).
-       Below the ceiling the line thins slightly — a decorative watermark
-       at 12% alpha absorbs that. Settled (fully drawn) is the base state;
-       the draw-in is gated on no-preference. */
+       screen-space re-tessellation and janks the dash-draw below
+       (measured ~73fps vs 120fps on a 120Hz display). Below the clamp
+       ceiling the hairline thins slightly — a 12%-alpha watermark
+       absorbs that. Fully drawn is the BASE state; the draw-in is gated
+       on no-preference. (color-mix — Baseline 2023.) */
     .Stroke {
       fill: none;
       stroke: color-mix(in srgb, var(--palette-text) 12%, transparent);
@@ -99,10 +187,9 @@
     }
   }
 
+  /* Relocated into the hero: drop the base rule's full-width top-right
+     framing and sit as a left-aligned chips row above the headline. */
   .DemoLangSwitch {
-    /* Relocated into the hero: drop the base rule's full-width top-right
-       framing and sit as a left-aligned chips row above the headline.
-       Hooks/labels/pill styling from the base rule are unchanged. */
     max-inline-size: none;
     margin: 0 0 1.75rem;
     padding: 0;
@@ -110,22 +197,19 @@
   }
 
   .VerticalLede {
-    /* Shown only ≥68rem — below that it would collide with the copy
-       measure; the hero degrades to the horizontal lede alone. */
+    /* ≥68rem only — below that it would collide with the copy measure
+       and the hero degrades to the horizontal lede alone. */
     & { display: none; }
 
     @media (min-width: 68rem) {
       display: block;
       position: absolute;
-      /* PHYSICAL top/right, deliberately (not logical insets): this box is
-         itself `writing-mode: vertical-rl`, and per spec an abs-positioned
-         element resolves its LOGICAL insets in its OWN writing mode — so
-         `inset-block-start` rotates to the right edge and `inset-inline-end`
-         to the bottom, pinning the column to the hero's BOTTOM-right (the
-         v1 bug: it sat low beside the stats/scale-run and crept toward the
-         fixed pill). Physical top/right pin it to the hero's block-start,
-         riding the inline-end edge beside the headline, well clear of the
-         pill below even on short (≥900px) viewports. */
+      /* PHYSICAL top/right, deliberately. This box is itself
+         `writing-mode: vertical-rl`, and per spec an abs-positioned
+         element resolves its LOGICAL insets in its OWN writing mode —
+         `inset-block-start` would rotate to the right edge and
+         `inset-inline-end` to the bottom, pinning the column to the
+         hero's bottom-right instead of beside the headline. */
       top: 7rem;
       right: 1.5rem;
       margin: 0;
@@ -133,29 +217,27 @@
       font-size: var(--fs-small);
       line-height: 1.9;
       color: var(--palette-supplement-text);
-      /* The column reads top→bottom down the hero's inline-end edge. */
       writing-mode: vertical-rl;
     }
   }
 
   /* Reserve the inline-end lane for the vertical lede so the copy never
-     runs under it (≥68rem only, matching where the lede shows). */
+     runs under it — same breakpoint as the lede itself. */
   @media (min-width: 68rem) {
     & { padding-inline-end: 6rem; }
   }
 
-  /* One-shot entrance — each block rises + fades in on load; the settled
-     state is the base (no transform), and this whole block is gated on
-     no-preference, so reduced-motion shows everything immediately. `both`
-     holds the pre-start (opacity 0) state through the stagger delay — no
-     flash of the final frame. NO looping animation (contract § Motion).
-     transform-origin note: translateY is a physical axis (transforms have
-     no logical form); the shift is tiny and cosmetic. */
+  @media (max-width: 640px) {
+    & { padding: 5rem var(--gutter) 4rem; }
+  }
+
+  /* One-shot entrance: each block rises + fades in on load. The settled
+     state IS the base (no transform), and the whole block is gated on
+     no-preference, so reduced-motion shows everything immediately.
+     `both` holds opacity 0 through the stagger delay — no flash of the
+     final frame. No looping animation (contract § Motion). The Brand
+     crown is excluded on purpose: it's the logo, lit from first paint. */
   @media (prefers-reduced-motion: no-preference) {
-    /* The brand crown is EXCLUDED from the entrance — it's the logo,
-       lit from first paint (see the gate § below). Only `.Tagline`
-       (the two phrases under the crown) rises, here and in the gate
-       hold; the crown, a sibling `.Brand`, is never touched. */
     .DemoLangSwitch,
     .Tagline,
     .Lede,
@@ -168,22 +250,13 @@
     .Dogfood     { animation-delay: 0.24s; }
     .InstallChip { animation-delay: 0.32s; }
 
-    /* The watermark writes itself in, stroke by stroke, in manual stroke
-       order (scripts/stroke-animation/stroke_order.py) — one-shot on load
-       like the siblings above, no loop. `both` holds each path invisible
-       through its stagger delay; `--i` is stamped per path by the
-       generator. The 0.7s head start clears the load-time congestion
-       (hero-rise ×4 + webfont arrival) so the first strokes never
-       compete with the entrance storm — measured: mid-animation runs at
-       display refresh once the load window passes. */
+    /* The watermark writes itself in stroke by stroke, in real stroke
+       order (`--i` is stamped per path by the generator). The 0.7s head
+       start clears the load-time congestion — hero-rise ×4 plus webfont
+       arrival — so the first strokes don't compete with it. */
     .Outline .Stroke {
       stroke-dasharray: 1;
       animation: wm-draw 0.7s ease-in-out calc(0.7s + var(--i) * 0.28s) both;
     }
   }
-}
-
-@keyframes wm-draw {
-  from { stroke-dashoffset: 1; }
-  to   { stroke-dashoffset: 0; }
 }
