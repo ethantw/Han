@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+/**
+ * `.ThemeToggle` — the sun/moon checkbox.
+ *
+ * `<label class="ThemeToggle"><input type="checkbox" name="dark-mode">
+ *  <span class="Icon" data-name="sun"><span class="Icon"
+ *  data-name="moon"></label>`. A real checkbox drives
+ * `:root:has(input[name='dark-mode']:checked)` — no JS class toggling;
+ * the theme script only persists the choice.
+ *
+ * The icons are not `<svg>`: a plain box painted with
+ * `background-color: currentColor` and clipped by the `--path-sun` /
+ * `--path-moon` tokens (common/variables.css) — the "shape lives in
+ * CSS, markup stays a bare glyph slot" recipe.
+ */
+
+.ThemeToggle {
+  & {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em;
+    color: var(--palette-supplement-text);
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  &:hover { color: var(--palette-accent); }
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .Icon {
+    display: inline-block;
+    /* em, not px — shape()'s whole point is scaling to the box; ties the
+       icon to the toggle's own font-size instead of a hardcoded 18px
+       (18px at the 16px root default, same footprint as before). */
+    inline-size: 1.125em;
+    block-size: 1.125em;
+    background-color: currentColor;
+  }
+  .Icon[data-name="sun"]  { clip-path: var(--path-sun); }
+  .Icon[data-name="moon"] { clip-path: var(--path-moon); }
+
+  /* Default (light): show the moon, hide the sun. */
+  .Icon[data-name="sun"]  { display: none; }
+  .Icon[data-name="moon"] { display: inline-block; }
+
+  &:has(input:checked) {
+    .Icon[data-name="sun"]  { display: inline-block; }
+    .Icon[data-name="moon"] { display: none; }
+  }
+}
