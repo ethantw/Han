@@ -1,0 +1,156 @@
+@charset "UTF-8";
+
+/**
+ * Design tokens — shared by the homepage (`home.css`) and the manual
+ * (`manual.css`).
+ *
+ * Two tiers (web-style.md): appearance-named `--color-*` PRIMITIVES,
+ * theme-invariant, never consumed by a component → role-named
+ * `--palette-*` SEMANTICS via `light-dark()`, which is all a component
+ * may read. Plus the type ramp, radii, layout measures and the icon
+ * `shape()` paths.
+ *
+ * Type itself comes from Han.css's own `--han-font-*` composites (the
+ * site dogfoods the framework); `--font-mono` is the one site-local
+ * stack, since the framework has no mono slot.
+ *
+ * The dark trigger is NOT here — each entry declares its own (both flip
+ * the same `color-scheme`, so every `light-dark()` below re-resolves).
+ * See `home/root.css` / `manual/root.css`.
+ *
+ * `components/tokens.css` mirrors the palette as literal fallbacks for
+ * the rail's shadow root; change a colour here and echo it there.
+ */
+
+:root {
+  /* Mono is the one site-local type stack (the framework has no mono
+     slot); everything else comes from Han.css's `--han-font-*` vars. */
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ── colour primitives ──────────────────────────────────────────
+   * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
+   * by a component — only the `--palette-*` layer below does that
+   * (web-style.md two-tier token rule; mirrors ziano variables.css). */
+  --color-white:      #ffffff;
+  --color-paper-deep: #fafaf7; /* warm off-white — panels */
+  --color-snow:       #f3f3f0;
+  --color-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --color-cloud:      #ececea; /* hairline grey — grid / rule */
+  --color-silver:     #d2d2cd;
+  --color-ash:        #8c8c87;
+  --color-slate:      #666666; /* muted grey — supplement text */
+  --color-charcoal:   #2a2a2c;
+  --color-graphite:   #1f1f22;
+  --color-ink-deep:   #18171a;
+  --color-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
+  --color-black:      #111111; /* shadow base only */
+  --color-green:        #0a8754; /* the one accent (light) */
+  --color-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
+  --color-mint:         #e8f5ec; /* accent wash (light) */
+  --color-pine:         #163322; /* accent wash (dark) */
+
+  /* ── semantic palette ────────────────────────────────────────────
+   * Role names, each referencing a primitive. A flipping token carries
+   * BOTH values inline via light-dark(); color-scheme (below) picks. A
+   * single-value token is theme-invariant on purpose. The -3q/-2q/-1q
+   * alphas (75/50/25 %) are color-mix of their own base, so a flipped
+   * base re-tints them automatically.
+   * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
+  --palette-accent:    light-dark(var(--color-green), var(--color-green-bright));
+  --palette-accent-bg: light-dark(var(--color-mint), var(--color-pine));
+  --palette-text:      light-dark(var(--color-ink), var(--color-mist));
+  --palette-grid:      light-dark(var(--color-cloud), var(--color-charcoal));
+
+  --palette-bg: light-dark(var(--color-white), var(--color-ink));
+  --palette-bg-3q:
+    light-dark(
+      color-mix(in srgb, var(--color-white) 75%, transparent),
+      color-mix(in srgb, var(--color-ink) 82%, transparent)
+    )
+  ;
+  --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
+  --palette-bg-1q: color-mix(in srgb, var(--palette-bg) 25%, transparent);
+
+  --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
+  --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
+
+  --palette-panel:    light-dark(var(--color-paper-deep), var(--color-ink-deep));
+  --palette-ink:      var(--color-ink);
+  --palette-ink-grey: light-dark(var(--color-graphite), var(--color-silver));
+  --palette-rule:     light-dark(var(--color-cloud), var(--color-charcoal));
+
+  /* ── station grounds & watermark ──────────────────────────────────
+   * The station-plate system (stations.css) alternates two section
+   * grounds and floats a giant watermark glyph behind the copy. Both
+   * flip with the theme via light-dark() over EXISTING primitives — no
+   * new hues. `-a` is the warm-paper (raised-ink in dark) base, `-b` a
+   * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
+   * Baseline 2023) that lifts to the paper side on dark so it still
+   * reads. Consumed only by `[data-station]` / `.Closing`. */
+  --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
+  --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));
+  --palette-wm:
+    light-dark(
+      color-mix(in srgb, var(--color-ink) 4%, transparent),
+      color-mix(in srgb, var(--color-paper-deep) 6%, transparent)
+    )
+  ;
+
+
+  /* ── type ramp ────────────────────────────────────────────────────
+   * ~5 content sizes (display / heading / lede / body / small), reused
+   * everywhere; the compact rail chrome adds two denser steps
+   * (compact / fine / micro). No ad-hoc per-component sizes. Every rem
+   * value is a multiple of 0.125rem (css-naming rule 13). */
+  --fs-display: clamp(2rem, 8vw, 4rem); /* Manifesto headline only */
+  --fs-heading: 1.5rem;                 /* section h2 */
+  --fs-lede:    1.125rem;               /* Manifesto lede */
+  --fs-body:    1rem;                   /* prose, body copy */
+  --fs-small:   0.875rem;               /* captions, supplement, nav */
+  --fs-compact: 0.8125rem;              /* dense controls, code terminal */
+  --fs-fine:    0.75rem;                /* mono labels, chips, fine print */
+  --fs-micro:   0.625rem;               /* rail micro group labels */
+
+  /* radii (subtle, print-feel) */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 6px;
+  --r-4: 8px;
+
+  /* layout — ziano's calmer measure + fluid gutter */
+  --max-w-layout: 68rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+
+  /* Terminal-dark code panel — theme-INVARIANT in both modes (owner-
+     approved, mirrors ziano's --palette-ink usage). Needs a fixed faint
+     hairline so it doesn't go edgeless once the page bg is also dark
+     (web-style.md dark-mode gotcha). */
+  --code-bg: var(--color-ink);
+  --code-fg: color-mix(in srgb, var(--color-mist) 90%, transparent);
+
+  /* Single source of truth: the masthead checkbox
+     (`input[name="dark-mode"]`). Default light; the `:has()` below flips
+     the whole page's `light-dark()` tokens at once. The checkbox's
+     initial state is restored by a pre-paint inline script placed right
+     after it (see `_home.html`) — no flash. Same `localStorage` key
+     ('theme') as the docs toggle, so the preference carries over. */
+  color-scheme: light;
+
+  /* ── icon paths (ziano recipe: docs/css-clip-path-scaling.md) ────
+   * `shape()` — scales to whatever box the element gives it (`%`
+   * coordinates), so the icon box can resize without re-authoring the
+   * shape, same as ziano's `--path-caret`/`--path-check`. Coordinates
+   * are `<original SVG 0–24 coord> / 24 × 100`. The circle/crescent's
+   * `A rx ry x-rot large-arc sweep x y` becomes `arc to <end> of <r>
+   * [large|small] [cw|ccw]` — `large-arc-flag` → `large`/`small`,
+   * `sweep-flag` → `ccw`(0)/`cw`(1); verified against the `path()`
+   * baseline + at 18/48/96px, pixel-faithful and scales cleanly.
+   * Both are solid silhouettes of the original stroke-outline glyphs
+   * (circle+8 rays / crescent), filled instead of outlined — `clip-path`
+   * has no stroke concept, so this is the fill-equivalent redraw, not a
+   * 1:1 stroke-to-fill trace. (Baseline 2026 — Chrome/Edge 135+, Safari
+   * 18.4+, Firefox 148+; ~81% global reach mid-2026, no fallback wired
+   * here since the framework's own baseline floor already assumes it.) */
+  --path-sun: shape(from 31.25% 50%, arc to 68.75% 50% of 18.75% large ccw, arc to 31.25% 50% of 18.75% large ccw, move to 79.1667% 54.1667%, line to 91.6667% 54.1667%, line to 91.6667% 45.8333%, line to 79.1667% 45.8333%, move to 67.6777% 73.5702%, line to 76.5165% 82.4091%, line to 82.4091% 76.5165%, line to 73.5702% 67.6777%, move to 45.8333% 79.1667%, line to 45.8333% 91.6667%, line to 54.1667% 91.6667%, line to 54.1667% 79.1667%, move to 26.4298% 67.6777%, line to 17.5909% 76.5165%, line to 23.4835% 82.4091%, line to 32.3223% 73.5702%, move to 20.8333% 45.8333%, line to 8.3333% 45.8333%, line to 8.3333% 54.1667%, line to 20.8333% 54.1667%, move to 32.3223% 26.4298%, line to 23.4835% 17.5909%, line to 17.5909% 23.4835%, line to 26.4298% 32.3223%, move to 54.1667% 20.8333%, line to 54.1667% 8.3333%, line to 45.8333% 8.3333%, line to 45.8333% 20.8333%, move to 73.5702% 32.3223%, line to 82.4091% 23.4835%, line to 76.5165% 17.5909%, line to 67.6777% 26.4298%, close);
+  --path-moon: shape(from 87.5% 53.2917%, arc to 46.7083% 12.5% of 37.5% large cw, arc to 87.5% 53.2917% of 29.1667% small ccw, close);
+}

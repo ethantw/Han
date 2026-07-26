@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/**
+ * Reset + a11y helpers — shared by `home.css` and `manual.css`.
+ *
+ * Deliberately tiny: Han.css itself is loaded first and already
+ * normalises typography, so this only carries what a framework has no
+ * business owning. Element-level base styling belongs to each entry's
+ * own `root.css`.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Visually hidden, still read aloud. `clip-path: inset(50%)` over the
+   legacy `clip` rect — same effect, no deprecated property. */
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
