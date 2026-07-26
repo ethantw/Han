@@ -22,6 +22,7 @@
 @import url('./common/lang-switcher.css');
 @import url('./common/theme-toggle.css');
 @import url('./home/controls.css');
+@import url('./home/preview.css');
 @import url('./home/station-frame.css');
 @import url('./home/station-specimen.css');
 @import url('./home/station-craft.css');

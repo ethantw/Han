@@ -1,0 +1,177 @@
+@charset "UTF-8";
+
+/**
+ * Station④'s snippet-generator pane — the framed `.Preview` panel and
+ * the `figure.CodePane` exhibits inside it.
+ *
+ * LIGHT DOM only, so these consume `--palette-*` directly rather than
+ * the rail's `--_*` indirection. They used to sit in `controls.css`,
+ * which <han-rail> adopts into its shadow; splitting them out keeps the
+ * shadow from carrying rules that can never match there.
+ *
+ * `.CodePane` stays terminal-dark in BOTH themes (owner-approved) via
+ * the constant `--code-bg` / `--code-fg` tokens; its `::highlight()`
+ * colours are ziano's usage.css palette, tuned for dark terminals.
+ */
+
+/* ─── Preview — station④'s snippet-generator pane frame (LIGHT DOM) ──
+   Consumes `--palette-*` directly: it renders on the homepage where
+   those tokens exist, never inside the shadow. */
+
+.Preview {
+  & {
+    overflow: hidden;
+    background: var(--palette-panel);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    box-shadow:
+      0 1px 0 var(--palette-bg-2q),
+      0 28px 70px -36px color-mix(in srgb, var(--color-black) 18%, transparent)
+    ;
+  }
+
+  > header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 20px;
+    background: var(--palette-panel);
+    border-block-end: 1px solid var(--palette-rule);
+  }
+
+  /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
+     :has(:checked). The package-manager <select> used to live here too,
+     but it only means anything on the CLI pane — it's parented into that
+     pane's figcaption now (snippet.js), so no view-driven visibility
+     rule is needed: switching away from "bundler" just means there's no
+     bash pane, hence no select in the DOM at all. ── */
+  .ViewTabs {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      background: var(--palette-bg);
+      border: 1px solid var(--palette-rule);
+      border-radius: var(--r-1);
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text);
+      cursor: pointer;
+      transition:
+        background-color 150ms ease,
+        border-color    150ms ease,
+        color           150ms ease;
+
+      &:hover { border-color: var(--palette-text); color: var(--palette-text); }
+
+      &:has(input:checked) {
+        background: var(--palette-text);
+        border-color: var(--palette-text);
+        color: var(--palette-bg);
+      }
+    }
+  }
+
+  [data-out-panes] {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+
+/* ─── CodePane — one labelled code exhibit inside [data-out-panes] (LIGHT
+   DOM) — figure > figcaption (label(+pm select) + copy button) + pre >
+   code. Terminal-dark in both themes on purpose (home.css's constant
+   --code-bg/--code-fg). The copy button is the only button in the
+   figcaption, so an element selector carries it — no data-* hook. */
+
+figure.CodePane {
+  & {
+    margin: 0;
+    background: var(--code-bg);
+    border-block-start: 1px solid var(--palette-rule);
+  }
+
+  &:first-child { border-block-start: 0; }
+
+  figcaption {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: color-mix(in srgb, var(--code-fg) 55%, transparent);
+      background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
+    }
+
+    /* label + (CLI pane only) the pm select, grouped so the copy button
+       stays the only thing space-between pushes to the far end. */
+    [data-part="label"] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    [data-out-pm] {
+      padding-block: 2px;
+      padding-inline: 4px;
+      font: inherit;
+      text-transform: none;
+      letter-spacing: normal;
+      color: var(--code-fg);
+      background: transparent;
+      border: 1px solid color-mix(in srgb, var(--code-fg) 30%, transparent);
+      border-radius: var(--r-1);
+    }
+
+    button {
+      padding: 0 2px;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+
+      &:hover { color: var(--code-fg); }
+    }
+  }
+
+  pre {
+    margin: 0;
+    overflow: auto;
+    padding: 14px 18px;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: var(--fs-compact);
+    line-height: 1.65;
+    color: var(--code-fg);
+  }
+
+  code { background: transparent; padding: 0; }
+
+  /* Highlight-API token colours — ziano/demo/src/css/usage.css palette. */
+  pre code::highlight(code-comment) { color: #6f7b8b; }
+  pre code::highlight(code-string)  { color: #b8d39a; }
+  pre code::highlight(code-keyword) { color: #88aaff; }
+  pre code::highlight(code-attr)    { color: #e8c275; }
+  pre code::highlight(code-number)  { color: #f2997a; }
+  pre code::highlight(code-punct)   { color: #8b94a3; }
+}
