@@ -230,11 +230,13 @@ async function emitVendor() {
 }
 
 /**
- * Inline the homepage CSS at BUILD time — `public/home.css` `@import`s its
- * section partials (`common/*.css`, `home/*.css`), which
+ * Inline the page CSS at BUILD time — `public/home.css` and
+ * `public/manual.css` each `@import` their partials (`common/*.css`,
+ * `home/*.css`, `manual/*.css`), which
  * lets us author in small readable files; esbuild bundles them into one
- * `dist/home.css` so production ships a single stylesheet, not an
- * `@import` waterfall of render-blocking requests. The SAME tool + shape
+ * one flat sheet per entry, so production ships two stylesheets rather
+ * than an `@import` waterfall of render-blocking requests. `common/*`
+ * is inlined into BOTH — two independent entries is the trade. The SAME tool + shape
  * as the library build (`build/library.js`); NOT minified, mirroring
  * `dist/han.css` (readable in devtools — brotli at the edge handles the
  * bytes). Dev keeps the raw `@import` files (cascade is identical, the
@@ -248,15 +250,17 @@ async function emitVendor() {
  * afterwards — see `pruneInlinedPartials()`.
  */
 async function bundleHomeCss() {
-  await esbuild.build({
-    entryPoints: [path.join(here, 'public', 'home.css')],
-    bundle: true,
-    outfile: path.join(MANUAL_DIST, 'home.css'),
-    allowOverwrite: true,
-    loader: { '.woff2': 'file' },
-    assetNames: '[name]',
-    logLevel: 'warning',
-  })
+  for (const entry of ['home.css', 'manual.css']) {
+    await esbuild.build({
+      entryPoints: [path.join(here, 'public', entry)],
+      bundle: true,
+      outfile: path.join(MANUAL_DIST, entry),
+      allowOverwrite: true,
+      loader: { '.woff2': 'file' },
+      assetNames: '[name]',
+      logLevel: 'warning',
+    })
+  }
   await pruneInlinedPartials()
 }
 
@@ -277,7 +281,7 @@ async function bundleHomeCss() {
 const KEEP_STANDALONE = new Set(['home/controls.css'])
 
 async function pruneInlinedPartials() {
-  for (const dir of ['common', 'home']) {
+  for (const dir of ['common', 'home', 'manual']) {
     const abs = path.join(MANUAL_DIST, dir)
     const entries = await fs.readdir(abs).catch(() => [])
     for (const name of entries) {

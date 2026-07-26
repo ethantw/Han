@@ -20,33 +20,45 @@
  * avoids cross-imports that pull in unrelated tokens.
  */
 
+@import url('./common/variables.css');
+
 h-placeholder { display: none }
 
-/* ─── design tokens (light) ────────────────────────────────────────── */
+/* ─── design tokens ────────────────────────────────────────────────
+ * Colour primitives and the shared `--palette-*` roles come from
+ * `common/variables.css` (imported above), the same layer the homepage
+ * consumes — the two palettes were already the same swatches under two
+ * sets of names.
+ *
+ * Below: the roles the docs need that the homepage has no counterpart
+ * for, then the historical `--paper` / `--ink` / `--m-*` alias layer.
+ * The aliases are kept on purpose — every selector in this file reads
+ * them, and re-pointing one layer is a smaller change than rewriting a
+ * thousand lines of declarations. */
 
 :root {
-  /* Type comes from Han.css's own vars (--han-font-default /
-     -alternative / -latin-*) — the site dogfoods the framework;
-     Shanggu heritage webfont links live in _layout.html's head. Mono
-     is the one site-local token: the framework has no mono slot. */
-  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  /* docs-only roles (light / dark) */
+  --palette-faint-text:  light-dark(#a0a09a, #5f5f5b);
+  --palette-rule-soft:   light-dark(#f3f3f0, #1f1f21);
+  --palette-accent-deep: light-dark(#066b3f, #5cc090);
+  --palette-accent-soft: light-dark(#7dc8a4, #2a5e3e);
+  --palette-tint-strong: light-dark(#d6ead9, #1f3328);
 
-  /* paper / ink / accent — B v2 青翠綠 */
-  --paper:         #ffffff;
-  --paper-deep:    #fafaf7;
-  --ink:           #0e0e10;
-  --ink-soft:      #1f1f22;
-  --ink-mute:      #666666;
-  --ink-faint:     #a0a09a;
-  --rule:          #ececea;
-  --rule-soft:     #f3f3f0;
-  --accent:        #0a8754;
-  --accent-deep:   #066b3f;
-  --accent-soft:   #7dc8a4;
-  --accent-bg:     #e8f5ec;
+  /* alias layer — paper / ink / accent */
+  --paper:         var(--palette-bg);
+  --paper-deep:    var(--palette-panel);
+  --ink:           var(--palette-text);
+  --ink-soft:      var(--palette-ink-grey);
+  --ink-mute:      var(--palette-supplement-text);
+  --ink-faint:     var(--palette-faint-text);
+  --rule:          var(--palette-rule);
+  --rule-soft:     var(--palette-rule-soft);
+  --accent:        var(--palette-accent);
+  --accent-deep:   var(--palette-accent-deep);
+  --accent-soft:   var(--palette-accent-soft);
+  --accent-bg:     var(--palette-accent-bg);
 
-  /* Manual-namespaced aliases — kept so older selectors still resolve.
-     These map onto the B v2 palette above. */
+  /* alias layer — `--m-*`, the oldest generation of names */
   --m-bg:           var(--paper);
   --m-bg-soft:      var(--paper-deep);
   --m-fg:           var(--ink);
@@ -55,7 +67,7 @@ h-placeholder { display: none }
   --m-faint:        var(--ink-faint);
   --m-rule:         var(--rule);
   --m-rule-soft:    var(--rule-soft);
-  --m-tint-strong:  #d6ead9;
+  --m-tint-strong:  var(--palette-tint-strong);
   --m-accent:       var(--accent-deep);
   --m-accent-bg:    var(--accent-bg);
   --m-callout-bg:   var(--accent-bg);
@@ -71,47 +83,23 @@ h-placeholder { display: none }
   --m-content-w:    42em;
   --m-gutter:       2.5em;
   --m-header-h:     3.5rem;
+}
 
-  /* Dark-mode tokens — applied when (a) the system asks for dark AND
-     the user hasn't pinned a theme, or (b) the user has pinned dark
-     via the masthead toggle. Nested in `:root` itself to keep the
-     `@media` close to the rule it modifies (SKILL rule 1a). */
-  @media (prefers-color-scheme: dark) {
-    &:not([data-theme]) {
-      --paper:        #0e0e10;
-      --paper-deep:   #18171a;
-      --ink:          #e8e8e3;
-      --ink-soft:     #d2d2cd;
-      --ink-mute:     #8c8c87;
-      --ink-faint:    #5f5f5b;
-      --rule:         #2a2a2c;
-      --rule-soft:    #1f1f21;
-      --accent:       #3f9d6f;
-      --accent-deep:  #5cc090;
-      --accent-soft:  #2a5e3e;
-      --accent-bg:    #163322;
+/* Dark theme — flip ONLY `color-scheme`; every `light-dark()` token
+   above and in common/variables.css re-resolves to its dark value, so
+   there are no per-token overrides to keep in sync. The masthead toggle
+   pins a choice via `[data-theme]`; with nothing pinned we follow the
+   system. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
 
-      --m-tint-strong: #1f3328;
-    }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
   }
 }
 
-:root[data-theme='dark'] {
-  --paper:        #0e0e10;
-  --paper-deep:   #18171a;
-  --ink:          #e8e8e3;
-  --ink-soft:     #d2d2cd;
-  --ink-mute:     #8c8c87;
-  --ink-faint:    #5f5f5b;
-  --rule:         #2a2a2c;
-  --rule-soft:    #1f1f21;
-  --accent:       #3f9d6f;
-  --accent-deep:  #5cc090;
-  --accent-soft:  #2a5e3e;
-  --accent-bg:    #163322;
-
-  --m-tint-strong: #1f3328;
-}
 
 /* ─── base ─────────────────────────────────────────────────────────── */
 
@@ -120,7 +108,6 @@ html {
   scroll-padding-top: calc(var(--m-header-h) + 1em);
   background: var(--paper);
   color: var(--ink);
-  color-scheme: light dark;
 }
 
 :where(:root) :where(*, *::before, *::after) {
