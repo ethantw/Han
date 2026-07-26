@@ -4,8 +4,9 @@
  * Homepage page base + top chrome.
  *
  * The dark trigger, `body.home`'s own type/colour base, the Topbar
- * (brand · nav · lang switcher · theme toggle · version) and the two
- * floating pills that are page chrome rather than rail state.
+ * (brand · nav · lang switcher · theme toggle · version) and the
+ * floating writing-mode pill, which is page chrome rather than rail
+ * state.
  */
 
 /* ─── theme + base ──────────────────────────────────────────────────
@@ -102,7 +103,7 @@ body > header {
 /* ─── WritingSwitch (橫排/直排 preview pill; see writing-switch.js) ──
    Floating bottom-right. Writing mode is preview state, not a han.css
    variable, so it lives outside the rail. Light DOM, consumes
-   `--palette-*` directly; radio pair like DemoLangSwitch.
+   `--palette-*` directly.
 
    HIDDEN for now (owner call): the rail's 度量 group already offers the
    直排 switch, so two controls for one preference was one too many. The

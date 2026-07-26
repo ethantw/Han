@@ -1,71 +1,20 @@
 @charset "UTF-8";
 
 /**
- * The hero — `.Manifesto` and the demo-language chip row above it.
+ * The hero — `.Manifesto`.
  * Contract: docs/plans/homepage-v2-implementation.md § Hero.
  *
  * The Manifesto sits inside `main`, where `station-frame.css` re-declares
  * the `--fs-*` ramp in `em` so the rail's size slider scales it — the
- * hero's copy tracks the live specimen size by design. The `--fs-display`
- * ramp step is deliberately NOT used: the phrase lines take a hero-local
- * clamp instead (contract § Hero permits it), which keeps the h1 box at
- * the base step so the Brand crown reads as a subtitle rather than
- * inheriting display scale.
+ * hero's copy tracks the live specimen size by design. The phrase lines
+ * take a hero-LOCAL clamp rather than a ramp step (contract § Hero
+ * permits it), which keeps the h1 box itself at the base step so the
+ * Brand crown reads as a subtitle instead of inheriting display scale.
  *
  * The one-shot entrance below is what runs on a no-JS page. When
  * `fonts-gate.js` is live it suppresses this and re-runs it at gate-open
  * — see `home/gate.css`.
  */
-
-/* ─── DemoLangSwitch ─────────────────────────────────────────────────
- * Chip row switching which language the SPECIMEN demonstrates,
- * independent of the site's own UI locale: `demo-lang.js` sets
- * `main[lang]` and `:lang()` rules re-evaluate natively from there.
- * Framed top-right of the content column by default; the hero relocates
- * its own copy to a left-aligned row above the headline (below). */
-
-.DemoLangSwitch {
-  & {
-    display: flex;
-    justify-content: flex-end;
-    gap: 6px;
-    max-inline-size: var(--max-w-layout);
-    margin-inline: auto;
-    padding: 1.5rem var(--gutter) 0;
-    border: 0;
-  }
-
-  input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  label {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 12px;
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
-    border-radius: 999px;
-    font-family: var(--han-font-default);
-    font-size: var(--fs-fine);
-    color: var(--palette-supplement-text);
-    cursor: pointer;
-    transition:
-      background-color 150ms ease,
-      border-color    150ms ease,
-      color           150ms ease;
-
-    &:hover { border-color: var(--palette-text); color: var(--palette-text); }
-
-    &:has(input:checked) {
-      background: var(--palette-text);
-      border-color: var(--palette-text);
-      color: var(--palette-bg);
-    }
-  }
-}
 
 /* ─── Manifesto ───────────────────────────────────────────────────── */
 
@@ -187,15 +136,6 @@
     }
   }
 
-  /* Relocated into the hero: drop the base rule's full-width top-right
-     framing and sit as a left-aligned chips row above the headline. */
-  .DemoLangSwitch {
-    max-inline-size: none;
-    margin: 0 0 1.75rem;
-    padding: 0;
-    justify-content: flex-start;
-  }
-
   .VerticalLede {
     /* ≥68rem only — below that it would collide with the copy measure
        and the hero degrades to the horizontal lede alone. */
@@ -238,7 +178,6 @@
      final frame. No looping animation (contract § Motion). The Brand
      crown is excluded on purpose: it's the logo, lit from first paint. */
   @media (prefers-reduced-motion: no-preference) {
-    .DemoLangSwitch,
     .Tagline,
     .Lede,
     .Dogfood,
@@ -252,7 +191,7 @@
 
     /* The watermark writes itself in stroke by stroke, in real stroke
        order (`--i` is stamped per path by the generator). The 0.7s head
-       start clears the load-time congestion — hero-rise ×4 plus webfont
+       start clears the load-time congestion — the copy entrance plus webfont
        arrival — so the first strokes don't compete with it. */
     .Outline .Stroke {
       stroke-dasharray: 1;

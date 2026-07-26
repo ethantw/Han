@@ -30,7 +30,6 @@ main {
   line-height: var(--rail-metric-leading, inherit);
   font-weight: var(--rail-metric-weight, inherit);
 
-  --fs-display: clamp(2em, 8vw, 4em);
   --fs-heading: 1.5em;
   --fs-lede:    1.125em;
   --fs-body:    1em;
@@ -291,8 +290,8 @@ article.Dispatch {
    `rail-metrics.js` sets `main.dataset.writing`) ═══════════════
    Flips the WHOLE page vertical-rl — dramatic by design (owner
    request). Bounded block-size + horizontal scroll so it doesn't blow
-   out the viewport; station④'s interactive snippet panel and the
-   demo-lang chip row stay horizontal-tb inside it. */
+   out the viewport; station④'s interactive snippet panel stays
+   horizontal-tb inside it. */
 
 main[data-writing="vertical"] {
   & {
@@ -303,7 +302,6 @@ main[data-writing="vertical"] {
     padding-inline-end: 1px; /* clears the scrollbar from hairline borders */
   }
 
-  .DemoLangSwitch,
   #station-snippet .ViewTabs,
   #station-snippet pre,
   #station-snippet select,

@@ -26,8 +26,7 @@
   /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
    * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
    * per-font 常數，故絕對定位的 .BrandGlyph 要靠這幾個值換算（見該規則）。 */
-  --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880） */
-  --brand-glyph-below-baseline: 0.12em;  /* 基線以下 */
+  --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880；基線以下 0.12em） */
   /* 行盒度量 hhea（fontTools 讀 Shanggu／Diantenjeom 同值）。此字
    * USE_TYPO_METRICS 未設 → 瀏覽器排版用 hhea/win，非 sTypo。⚠ 勿用 canvas
    * fontBoundingBox：被 Chrome 捨入成整數 px，多 ~0.005em 誤差。 */

@@ -22,7 +22,6 @@
   --palette-faint-text:  light-dark(#a0a09a, #5f5f5b);
   --palette-rule-soft:   light-dark(#f3f3f0, #1f1f21);
   --palette-accent-soft: light-dark(#7dc8a4, #2a5e3e);
-  --palette-tint-strong: light-dark(#d6ead9, #1f3328);
 
   /* alias layer — paper / ink / accent */
   --paper:         var(--palette-bg);
@@ -38,23 +37,9 @@
   --accent-soft:   var(--palette-accent-soft);
   --accent-bg:     var(--palette-accent-bg);
 
-  /* alias layer — `--m-*`, the oldest generation of names */
-  --m-bg:           var(--paper);
-  --m-bg-soft:      var(--paper-deep);
-  --m-fg:           var(--ink);
-  --m-fg-soft:      var(--ink-soft);
-  --m-muted:        var(--ink-mute);
-  --m-faint:        var(--ink-faint);
-  --m-rule:         var(--rule);
-  --m-rule-soft:    var(--rule-soft);
-  --m-tint-strong:  var(--palette-tint-strong);
-  --m-accent:       var(--accent-deep);
-  --m-accent-bg:    var(--accent-bg);
-  --m-callout-bg:   var(--accent-bg);
-  --m-callout-rule: var(--accent-soft);
-
-  /* Dark inverted code blocks in BOTH themes — terminal-style, per the
-     B v2 design. */
+  /* `--m-*` — the oldest generation of names. Only these are still read
+     by anything; the dozen colour aliases that used to sit here were
+     dead. Code blocks stay terminal-dark in BOTH themes, by design. */
   --m-code-bg:     #0e0e10;
   --m-code-fg:     #e5e5e0;
 

@@ -151,7 +151,7 @@
  * Same sample twice; the second cell's WRAPPER carries `--han-em-symbol:
  * sesame` inline, which inherits down to its <em>, so the 著重號 turns to
  * sesame dots while the first keeps the circle default. Hairline-framed grid,
- * mirroring .PunctCompare / .HangCompare. */
+ * mirroring .HangCompare. */
 
 .ScopeCompare {
   & {

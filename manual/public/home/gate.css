@@ -107,15 +107,14 @@
   /* The hero copy flies in AT gate-open (owner spec: max(first pass,
      fonts)): while loading, the quartet is held at opacity 0 OUTRIGHT
      — boxes and all, not just transparent glyphs — so nothing that
-     was visible ever re-animates (the earlier blink: chips and the
-     InstallChip box flashed when hero-rise re-ran over their visible
-     shells; and NO `body > *` curtain-up either — a ziano-style
+     was visible ever re-animates (the earlier blink: the InstallChip
+     box flashed when hero-rise re-ran over its visible shell; and NO `body > *` curtain-up either — a ziano-style
      gate-reveal made the already-drawn watermark itself flash).
      When 'loading' flips to 'ready' this suppression stops matching,
      the base hero-rise above re-applies, and the stagger counts from
      the reveal. no-JS never stamps → hero-rise greets on load, as
      always. */
-  :root[data-fonts-gate='loading'] .Manifesto :is(.DemoLangSwitch, .Tagline, .Lede, .Dogfood, .InstallChip) {
+  :root[data-fonts-gate='loading'] .Manifesto :is(.Tagline, .Lede, .Dogfood, .InstallChip) {
     opacity: 0;
     animation: none;
   }

@@ -72,7 +72,6 @@
     )
   ;
   --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
-  --palette-bg-1q: color-mix(in srgb, var(--palette-bg) 25%, transparent);
 
   --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
   --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
@@ -105,7 +104,6 @@
    * everywhere; the compact rail chrome adds two denser steps
    * (compact / fine / micro). No ad-hoc per-component sizes. Every rem
    * value is a multiple of 0.125rem (css-naming rule 13). */
-  --fs-display: clamp(2rem, 8vw, 4rem); /* Manifesto headline only */
   --fs-heading: 1.5rem;                 /* section h2 */
   --fs-lede:    1.125rem;               /* Manifesto lede */
   --fs-body:    1rem;                   /* prose, body copy */
@@ -118,7 +116,6 @@
   --r-1: 2px;
   --r-2: 4px;
   --r-3: 6px;
-  --r-4: 8px;
 
   /* layout — ziano's calmer measure + fluid gutter */
   --max-w-layout: 68rem;
