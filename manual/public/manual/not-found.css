@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+/* ─── Not-found page (standalone, no docs chrome) ──────────────────── */
+
+body.NotFoundPage {
+  font-family: var(--han-font-default);
+}
+
+.NotFound {
+  & {
+    max-inline-size: 36rem;
+    margin-inline: auto;
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+
+  [data-part="code"] {
+    margin-block: 0;
+    font-family: var(--han-font-latin-sans), sans-serif;
+    font-size: 5rem;
+    font-weight: 200;
+    line-height: 1;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    margin-block: 1.5rem 0.5rem;
+    font-size: 1.875rem;
+    font-weight: 500;
+  }
+
+  h1 + p {
+    margin-block: 0;
+    color: var(--ink-mute);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  [data-part="actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: center;
+    margin-block: 2.5rem 0;
+
+    a {
+      color: var(--accent-deep);
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+
+      &:hover { color: var(--accent) }
+    }
+  }
+}

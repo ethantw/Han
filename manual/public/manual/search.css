@@ -1,0 +1,181 @@
+@charset "UTF-8";
+
+/* ─── SiteSearch (the masthead search field + result panel) ────────── */
+
+.SiteSearch {
+  & {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    max-inline-size: 25rem;
+    background: var(--paper-deep);
+    font-family: var(--han-font-default);
+    font-size: 0.875rem;
+    transition: border-color 150ms ease, background-color 150ms ease;
+
+    @media (max-width: 49.99em) { display: none }
+  }
+
+  &.is-open,
+  &:focus-within {
+    border-color: var(--accent-soft);
+    background: var(--paper);
+  }
+
+  [data-part="icon"] { color: var(--ink-faint); font-size: 1rem; line-height: 1 }
+
+  input[type="search"] {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font: inherit;
+    color: var(--ink);
+    min-inline-size: 0;
+
+    &::placeholder { color: var(--ink-mute) }
+  }
+
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--paper);
+  }
+
+  /* The result-panel dropdown. */
+  .Panel {
+    & {
+      position: absolute;
+      inset-block-start: calc(100% + 8px);
+      inset-inline: 0;
+      z-index: 50;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02), 0 22px 60px -22px rgba(40, 30, 10, 0.22);
+      overflow: hidden;
+      font-family: var(--han-font-default);
+      font-size: 0.875rem;
+      min-inline-size: 22rem;
+
+      @media (max-width: 55em) {
+        position: fixed;
+        inset-block-start: 60px;
+        inset-inline: 12px;
+        min-inline-size: 0;
+      }
+    }
+
+    &[hidden] { display: none }
+
+    [data-part="status"] {
+      padding: 0.55rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      border-block-end: 1px dashed var(--rule);
+
+      &:empty { display: none }
+    }
+
+    > ol {
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+      max-block-size: 22rem;
+      overflow-y: auto;
+
+      &:empty { display: none }
+    }
+
+    .Foot {
+      & {
+        display: flex;
+        gap: 14px;
+        padding: 0.45rem 0.9rem;
+        background: var(--paper-deep);
+        border-block-start: 1px solid var(--rule);
+        font-family: var(--font-mono);
+        font-size: 0.625rem;
+        color: var(--ink-faint);
+        letter-spacing: 0.04em;
+      }
+
+      kbd {
+        display: inline-block;
+        min-inline-size: 14px;
+        padding: 0 4px;
+        margin-inline-end: 3px;
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--paper);
+        font-family: inherit;
+        line-height: 1.5;
+        text-align: center;
+      }
+    }
+  }
+
+  /* Each search hit. Built dynamically by `search.js`. */
+  .Result {
+    & {
+      display: block;
+      padding: 0.65rem 0.9rem;
+      color: var(--ink);
+      text-decoration: none;
+      border-inline-start: 2px solid transparent;
+      cursor: pointer;
+      transition: background-color 120ms ease, border-color 120ms ease;
+    }
+
+    &:hover,
+    &.is-active {
+      background: var(--accent-bg);
+      border-inline-start-color: var(--accent);
+    }
+
+    &.is-active [data-part="title"] { color: var(--accent-deep) }
+
+    [data-part="crumbs"] {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-block-end: 2px;
+
+      &:empty { display: none }
+    }
+
+    [data-part="title"] {
+      font-family: var(--han-font-alternative);
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-block-end: 2px;
+    }
+
+    [data-part="snippet"] {
+      font-size: 0.75rem;
+      color: var(--ink-mute);
+      line-height: 1.55;
+
+      mark {
+        background: transparent;
+        color: var(--accent-deep);
+        font-weight: 600;
+      }
+    }
+  }
+}

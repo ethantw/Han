@@ -1,0 +1,79 @@
+@charset "UTF-8";
+
+/**
+ * The sticky masthead — a 3-column grid (brand · search · nav) — plus
+ * the mobile-only 目錄 button that lives in it. The wordmark, the
+ * language dropdown and the theme toggle are shared components
+ * (`common/`); only their placement is here.
+ */
+
+/* ─── Masthead (sticky 3-col grid) ─────────────────────────────────── */
+
+.Masthead {
+  & {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: var(--m-sidebar-w) 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.75rem 2rem;
+    block-size: var(--m-header-h);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--rule);
+
+    @media (min-width: 50em) {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 49.99em) {
+      grid-template-columns: 1fr auto;
+      block-size: auto;
+      padding: 0.75rem 1.25rem;
+      gap: 1rem;
+    }
+  }
+
+  /* Right cluster of links + lang switcher + theme toggle. */
+  > nav {
+    display: flex;
+    gap: 1.375rem;
+    align-items: center;
+    font-family: var(--han-font-default);
+    font-size: 0.875rem;
+
+    > a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color 150ms;
+
+      &:hover { color: var(--accent-deep) }
+    }
+
+    > a[data-variant="version"] {
+      color: var(--accent-deep);
+      font-weight: 500;
+    }
+  }
+}
+
+
+/* ─── Nav toggle (mobile-only "目錄" button) ───────────────────────── */
+
+button[data-nav-toggle] {
+  display: none;
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 0.25em;
+  padding: 0.15em 0.6em;
+  color: var(--ink-mute);
+  font: inherit;
+  cursor: pointer;
+
+  @media (max-width: 49.99em) {
+    display: inline-block;
+  }
+}

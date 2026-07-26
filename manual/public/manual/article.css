@@ -1,0 +1,273 @@
+@charset "UTF-8";
+
+/**
+ * The article column — running docs prose, headings, tables, callouts,
+ * code blocks and the demo embeds inside a page.
+ */
+
+/* ─── main content (article + page TOC live in the right column) ───── */
+
+main {
+  & {
+    /* rail 度量以 CSS var 承接（rail-metrics.js 設 --rail-metric-*）；
+       `inherit` fallback ＝ 未偏差時同繼承現況，零風險。 */
+    font-size:   var(--rail-metric-size, inherit);
+    line-height: var(--rail-metric-leading, inherit);
+    font-weight: var(--rail-metric-weight, inherit);
+
+    padding: 3em var(--m-gutter) 5em;
+
+    @media (min-width: 50em) {
+      grid-column: 2;
+    }
+
+    @media (min-width: 76em) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--m-toc-w);
+      column-gap: 2em;
+      align-items: start;
+
+      > article {
+        max-inline-size: var(--m-content-w);
+        margin-inline: auto;
+      }
+
+      > .PageToc {
+        position: sticky;
+        top: calc(var(--m-header-h) + 1.5em);
+        max-block-size: calc(100vh - var(--m-header-h) - 3em);
+        overflow-y: auto;
+      }
+    }
+
+    @media (max-width: 49.99em) {
+      padding-inline: 1.25em;
+
+      article > h1 { font-size: 2.25rem }
+    }
+  }
+
+  > article {
+    max-inline-size: var(--m-content-w);
+    margin: 0 auto;
+    /* font-family: var(--han-font-alternative); */
+    font-size: 1rem;
+    line-height: 1.95;
+    color: var(--ink-soft);
+
+    > h1 {
+      margin: 0 0 8px;
+      font-family: var(--han-font-alternative);
+      font-size: 3rem;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+    }
+
+    /* Subtitle directly under the H1 (upright latin serif — no
+       pseudo-italics, per Han.css's mission). */
+    > p.Tagline {
+      margin: 0 0 32px;
+      font-family: var(--han-font-latin-serif), serif;
+      font-size: 0.875rem;
+      color: var(--ink-mute);
+    }
+
+    h2 {
+      position: relative;
+      margin: 56px 0 16px;
+      padding-block-start: 24px;
+      font-family: var(--han-font-alternative);
+      font-size: 1.75rem;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--ink);
+      border-block-start: 1px solid var(--rule);
+    }
+
+    h3 {
+      margin: 32px 0 12px;
+      font-family: var(--han-font-alternative);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    h4 {
+      margin: 24px 0 10px;
+      font-family: var(--han-font-alternative);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* Anchor "#" — purely CSS-driven; the heading already carries an
+       `id`, so we just decorate. Always-on at low opacity, full on
+       hover for affordance. */
+    h2[id], h3[id], h4[id] {
+      scroll-margin-top: calc(var(--m-header-h) + 1em);
+
+      &::before {
+        content: '#';
+        position: absolute;
+        inset-inline-start: -1.25em;
+        color: var(--ink-faint);
+        font-family: var(--font-mono);
+        font-weight: 400;
+        opacity: 0;
+        transition: opacity 150ms;
+      }
+
+      &:hover::before { opacity: 1; color: var(--accent) }
+    }
+
+    p, ul, ol, blockquote, pre, table, figure { margin: 0 0 1em }
+
+    /* Body links — accent-deep with a soft underline. */
+    a:link, a:visited {
+      color: var(--accent-deep);
+      text-decoration: none;
+      border-block-end: 1px solid var(--accent-soft);
+      transition: border-color 150ms;
+
+      &:hover { border-block-end-color: var(--accent) }
+    }
+
+    /* Tag chip — small bordered pill, used for language/feature tags. */
+    .Tag {
+      display: inline-block;
+      margin: 0 4px;
+      padding: 0 8px;
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      font-size: 0.875rem;
+      color: var(--ink);
+      background: var(--paper-deep);
+    }
+
+    /* Inline code — light pill, distinct from dark code blocks. */
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      padding: 1px 6px;
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      color: var(--ink);
+    }
+
+    /* Code blocks — dark inverted (terminal-style) in BOTH themes. */
+    pre {
+      padding: 18px 22px;
+      background: var(--m-code-bg);
+      color: var(--m-code-fg);
+      border: 0;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.7;
+
+      code {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        border: 0;
+        font-size: 1em;
+      }
+    }
+
+    /* Highlight-API token colours — the homepage highlighter (loaded by a
+       module tag in _layout.html) colours the fenced blocks via the Custom
+       Highlight API. Code blocks are terminal-dark in BOTH themes here, so
+       one light-on-dark palette serves both (matches controls.css's set). */
+    pre code::highlight(code-comment) { color: #6f7b8b; }
+    pre code::highlight(code-string)  { color: #b8d39a; }
+    pre code::highlight(code-keyword) { color: #88aaff; }
+    pre code::highlight(code-attr)    { color: #e8c275; }
+    pre code::highlight(code-number)  { color: #f2997a; }
+    pre code::highlight(code-punct)   { color: #8b94a3; }
+
+    /* Tip callout — author writes raw <aside class="Tip"> in markdown
+       (markdown-it `html: true` is on). Default 💡 + "TIP" eyebrow. */
+    aside.Tip {
+      & {
+        margin: 0 0 28px;
+        padding: 16px 18px;
+        background: var(--accent-bg);
+        border: 1px solid var(--accent-soft);
+        border-radius: 8px;
+        display: flex;
+        gap: 12px;
+        color: var(--ink-soft);
+        font-family: var(--han-font-alternative);
+        font-size: 0.875rem;
+        line-height: 1.85;
+      }
+
+      &::before {
+        content: '💡';
+        flex-shrink: 0;
+        font-size: 1.125rem;
+        line-height: 1.4;
+      }
+
+      [data-part="title"] {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        color: var(--accent-deep);
+        margin-block-end: 4px;
+      }
+
+      :first-child { margin-block-start: 0 }
+      :last-child  { margin-block-end: 0 }
+
+      a:link, a:visited { color: var(--accent-deep) }
+    }
+
+    /* Markdown blockquote → soft callout (kept for legacy markdown). */
+    blockquote {
+      margin-inline: 0;
+      padding: 14px 18px;
+      background: var(--paper-deep);
+      border-inline-start: 3px solid var(--accent-soft);
+      border-radius: 0 6px 6px 0;
+      color: var(--ink-soft);
+
+      :first-child { margin-block-start: 0 }
+      :last-child  { margin-block-end: 0 }
+    }
+
+    /* English inline runs — mark with the latin-serif face (upright; Han.css
+       has no pseudo-italics). The framework already uses `<em>` for
+       emphasis; only target English runs that opt in via `lang` or
+       a descriptive `.en-run` flag (kebab — rule 12 — it's a state, not
+       a component). */
+    em[lang|='en'], .en-run {
+      font-family: var(--han-font-latin-serif), serif;
+      color: var(--accent-deep);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+
+      th, td {
+        text-align: start;
+        padding: 0.5em 0.85em;
+        border-block-end: 1px solid var(--rule);
+      }
+
+      th {
+        color: var(--ink-mute);
+        font-weight: 600;
+        font-family: var(--han-font-default);
+      }
+    }
+  }
+}

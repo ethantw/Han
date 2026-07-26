@@ -57,6 +57,9 @@
    * base re-tints them automatically.
    * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
   --palette-accent:    light-dark(var(--color-green), var(--color-green-bright));
+  /* one step deeper than --palette-accent — small solid marks (badges,
+     flags, checks) need the extra contrast that body-size text doesn't. */
+  --palette-accent-deep: light-dark(#066b3f, #5cc090);
   --palette-accent-bg: light-dark(var(--color-mint), var(--color-pine));
   --palette-text:      light-dark(var(--color-ink), var(--color-mist));
   --palette-grid:      light-dark(var(--color-cloud), var(--color-charcoal));

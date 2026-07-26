@@ -1,0 +1,152 @@
+@charset "UTF-8";
+
+/**
+ * Navigation furniture around the article: the breadcrumb above the H1,
+ * the prev/next pager below it, the "on this page" TOC in the right
+ * column (≥76em), and the footer credit row.
+ */
+
+/* ─── Crumbs (breadcrumb above the H1) ─────────────────────────────── */
+
+.Crumbs {
+  & {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 20px;
+    font-family: var(--han-font-default);
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+  }
+
+  a {
+    color: var(--ink-mute);
+    text-decoration: none;
+
+    &:hover { color: var(--accent-deep) }
+  }
+
+  [aria-current='page'] { color: var(--ink) }
+
+  [data-part="sep"] { color: var(--ink-faint) }
+}
+
+
+/* ─── Pager (card-style prev/next at the foot of an article) ───────── */
+
+.Pager {
+  & {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-block-start: 56px;
+    padding-block-start: 24px;
+    border-block-start: 1px solid var(--rule);
+    font-family: var(--han-font-default);
+  }
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: border-color 150ms, background 150ms;
+
+    &:hover {
+      border-color: var(--accent-soft);
+      background: var(--rule-soft);
+    }
+  }
+
+  a[data-direction="next"] { text-align: end }
+
+  /* Empty cell that keeps the grid balanced when only one direction
+     exists. */
+  [data-part="spacer"] { /* placeholder — its only job is to occupy a column */ }
+
+  [data-part="hint"] {
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+  }
+
+  [data-part="title"] {
+    font-family: var(--han-font-alternative);
+    font-size: 0.875rem;
+    color: var(--accent-deep);
+    font-weight: 500;
+  }
+}
+
+
+/* ─── PageToc ("on this page" — right column at ≥76em) ─────────────── */
+
+.PageToc {
+  & {
+    font-family: var(--han-font-default);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    padding: 3em 1.5em 5em;
+
+    @media (max-width: 49.99em) { display: none }
+    @media (min-width: 50em) and (max-width: 75.99em) { display: none }
+  }
+
+  h2 {
+    margin: 0 0 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  li[data-level="3"] a { padding-inline-start: 24px; font-size: 0.75rem }
+
+  a {
+    display: block;
+    padding: 5px 12px;
+    color: var(--ink-mute);
+    text-decoration: none;
+    margin-inline-start: -1px;
+    border-inline-start: 1px solid transparent;
+    transition: color 150ms, border-color 150ms;
+
+    &:hover { color: var(--ink) }
+
+    &[aria-current='location'] {
+      color: var(--accent-deep);
+      border-inline-start-color: var(--accent);
+      font-weight: 500;
+    }
+  }
+}
+
+
+/* ─── Colophon (footer credit row) ─────────────────────────────────── */
+
+.Colophon {
+  & {
+    padding: 1.5em var(--m-gutter);
+    border-block-start: 1px solid var(--rule);
+    color: var(--ink-mute);
+    font-family: var(--han-font-default);
+    font-size: 0.875rem;
+    text-align: center;
+
+    @media (min-width: 50em) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  a { color: inherit }
+}

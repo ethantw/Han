@@ -139,3 +139,70 @@
    still links controls.css, so any light-DOM `.Toggle` would still be
    styled — but none exists now (the rail's toggles live in the shadow;
    /old.html carries its own frozen copy). */
+
+/* The docs masthead's own lockup: no `.BrandGlyph` overlay (the 漢 is
+   plain text there), a version badge instead of the 漢字標準格式
+   subtitle, and fixed sizes rather than ramp steps — it sits in a
+   3-column sticky grid whose height must not move with the ramp. */
+
+.Brand[data-size="md"] {
+  & {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    text-decoration: none;
+    color: inherit;
+    /* not the base rule's `line-height: 1` — this lockup sits in the
+       masthead's own line box and must keep its metrics. */
+    line-height: inherit;
+  }
+
+  /* G3 字徽——字標左側，dots ＝ accent、括號 ＝ ink（隨主題明暗切）。 */
+  .BrandMark {
+    flex: 0 0 auto;
+    align-self: center;
+    block-size: 1.35rem;
+    inline-size: 1.35rem;
+    margin-inline-end: 0.25rem;
+    translate: 0 0.03em;
+
+    circle { fill: var(--palette-accent); }
+    .brace { stroke: var(--palette-text); }
+    .dun { fill: var(--palette-text); }   /* 明體頓點 ＝ 括號同色 */
+  }
+
+  [data-part="mark"] {
+    font-family: var(--han-font-alternative);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--palette-text);
+  }
+
+  [data-part="dot"] {
+    /* no `padding-inline` here, unlike the base rule — the docs lockup
+       is tighter and its 漢 is plain text, not an SVG overlay. */
+    padding-inline: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--palette-accent);
+  }
+
+  [data-part="ext"] {
+    font-family: var(--han-font-latin-serif), serif;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--palette-text);
+    margin-inline-start: 1px;
+  }
+
+  [data-part="ver"] {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--palette-accent-deep);
+    background: var(--palette-accent-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-inline-start: 0.625rem;
+    letter-spacing: 0.05em;
+  }
+}
