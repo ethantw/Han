@@ -6,7 +6,24 @@
 `@import`、每個 partial 一個主題」結構，抽出 `common/` 供兩邊共用，並在 build 時把
 `@import` 內聯成 **home 與 manual 各一支** 打包檔。
 
-**未執行，先審。** 全程不改任何視覺輸出——純搬移＋刪死碼。
+**已完成**（2026-07-26）。逐步截圖比對，除下列兩處刻意變更外全程零像素差。
+
+執行時發現的偏差，記於此：
+
+- **打包早已存在**——`manual/vite.config.js` 本來就有一個 esbuild 內聯 plugin，
+  只是它只處理 `home.css`、且硬寫死刪除 `home/stations.css`（該檔一拆就靜默失效）。
+  改為兩個入口都內聯，並依「還有誰用 URL 抓」決定保留哪些 partial。
+- **修掉一個潛在 bug**——`html { color-scheme: light dark }` 讓 `<han-rail>` shadow
+  裡的 `light-dark()` 回退依「系統」而非「頁面已釘選的主題」解析，docs 暗色下 rail
+  的髮絲線是亮的。改成單一 `color-scheme` 翻轉後正確。
+- **兩處刻意的視覺變更**：docs 主題鈕改用共用的 `shape()` 實心日／月圖示（原為描邊
+  SVG）；docs 語言選單改用共用元件，配色與陰影跟著首頁。順帶發現首頁該選單的
+  `box-shadow` 取 `--palette-bg-3q`（亮色下 ＝ 75% 白），亮色模式其實看不見陰影——
+  疑似既有 bug，另案處理。
+- **`.DemoLangSwitch` 全死**——markup 早就從 `manifesto.html` 移除，只剩 CSS 與一段
+  過時註解。已刪；`home/demo-lang.js` 隨之成為 no-op，未動（那是 JS 的事）。
+- **e2e 現況未變**：前後皆 56 pass / 23 fail。那 23 條卡在首頁改版已經動過的 markup
+  （`main.han` 沒了 class、demo-lang chips 移除、直排 pill 隱藏），spec 還在樹裡改到一半。
 
 ---
 
