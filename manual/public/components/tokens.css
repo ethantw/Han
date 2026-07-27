@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * <han-rail> shadow token layer — the `--_*` indirection.
+ * <han-console> shadow token layer — the `--_*` indirection.
  *
  * Custom properties pierce the shadow boundary and inherit, so on the
  * homepage the outer `--palette-*` / `--fs-*` / `--font-mono` tokens
@@ -11,7 +11,7 @@
  * host page's inherited `color-scheme` is dark (color-scheme inherits
  * across the shadow boundary; light-dark() re-resolves inside).
  *
- * Shadow-internal styles (rail.css + controls.css's rail clusters)
+ * Shadow-internal styles (console.css + controls.css's console clusters)
  * consume `--_*` ONLY — never `--palette-*` directly, and NEVER declare
  * `--palette-*` here (that would beat the homepage's inherited values
  * and break its theming).

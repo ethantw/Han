@@ -3,7 +3,7 @@
  * (`[data-writing-switch]`, markup in `_home.html`).
  *
  * Writing mode is PREVIEW state, not a han.css variable — that's why it
- * lives outside the `<han-rail>` configurator (owner call): the rail
+ * lives outside the `<han-console>` configurator (owner call): the console
  * configures the framework, this flips how you look at the page. Sets
  * `main`'s `data-writing`; the vertical layout is pure CSS
  * (stations.css `main[data-writing="vertical"]`). Not persisted —

@@ -11,8 +11,8 @@
  * punctuation) re-evaluates natively from that attribute — no extra
  * JS-side branching needed here.
  *
- * `reapplyFallbacks` is the `<han-rail>` component's method (home.js
- * passes `$rail.reapplyFallbacks` in) — when JS fallbacks are installed
+ * `reapplyFallbacks` is the `<han-console>` component's method (home.js
+ * passes `$console.reapplyFallbacks` in) — when JS fallbacks are installed
  * (`installFallbacks`), some of what they patch is lang-sensitive, so a
  * demo-lang switch re-runs them the same way a config change would.
  */

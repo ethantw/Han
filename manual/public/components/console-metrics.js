@@ -1,5 +1,5 @@
 /**
- * <han-rail> metric sliders — 字級 / 行距 / 字重.
+ * <han-console> metric sliders — 字級 / 行距 / 字重.
  * Two effects, both fed by the same slider state: the live inline style
  * on the `target` (`main`: font-size / line-height / font-weight),
  * AND — new — the values now ride `config.metrics` into the generated
@@ -9,7 +9,7 @@
  * with source 'metrics' via that core (codegen emits a `body { }` rule
  * only when a metric deviates from its factory baseline).
  *
- * Moved from `home/rail-metrics.js` into the component and re-scoped:
+ * Moved from `home/console-metrics.js` into the component and re-scoped:
  * sliders are queried from the shadow `root`, the apply target is
  * passed in. The letter-spacing slider stays removed (owner call); the
  * 橫排/直排 switch moved OUT to page chrome (`home/writing-switch.js`)
@@ -29,7 +29,7 @@ import { DEFAULTS } from '/home/codegen.js'
 
 const METRIC_DEFAULTS = DEFAULTS.metrics
 
-export const mountRailMetrics = ({ root, target, initial, onChange }) => {
+export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
   const $sliders = [...root.querySelectorAll('[data-pg-sliders] .MetricSlider')]
   const stateRef = { current: { ...METRIC_DEFAULTS } }
   const syncBySlider = new Map()
@@ -52,13 +52,13 @@ export const mountRailMetrics = ({ root, target, initial, onChange }) => {
     if (!target) return
     const { size, leading, weight } = stateRef.current
     // Metrics ride CSS custom properties, NOT direct font-* inline styles —
-    // so the live rail and the pre-paint config restore (_home.html) share
+    // so the live console and the pre-paint config restore (_home.html) share
     // one declarative mechanism. The consuming rule lives on `main`
-    // (stations.css / manual.css) as `font-size: var(--rail-metric-…,
+    // (stations.css / manual.css) as `font-size: var(--console-metric-…,
     // inherit)`, so an unset var reverts to the page's own inherited value.
-    target.style.setProperty('--rail-metric-size', `${size}px`)
-    target.style.setProperty('--rail-metric-leading', String(leading))
-    target.style.setProperty('--rail-metric-weight', String(weight))
+    target.style.setProperty('--console-metric-size', `${size}px`)
+    target.style.setProperty('--console-metric-leading', String(leading))
+    target.style.setProperty('--console-metric-weight', String(weight))
   }
 
   // 度量群組的「使用預設値」——群組標頭一顆（owner call：每個群組，

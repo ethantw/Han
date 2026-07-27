@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test'
  *      modules, at the SAME URLs. That's what lets a home→docs hop serve
  *      the framework from cache (before, the docs pulled the combined
  *      `han.css`: identical rules, a different URL, downloaded twice),
- *      and it's what gives `<han-rail>`'s module switches something to
+ *      and it's what gives `<han-console>`'s module switches something to
  *      toggle on the docs too (`applyModules` flips
  *      `link[data-han-module].disabled`).
  *   2. Those URLs are content-hashed under `/assets/`, the one prefix

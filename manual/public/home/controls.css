@@ -1,12 +1,12 @@
 @charset "UTF-8";
 
 /**
- * Control primitives for the <han-rail> configurator — the labelled
+ * Control primitives for the <han-console> configurator — the labelled
  * groups, the switch, the restore button, the metric sliders and the
  * select/text fields.
  *
  * DUAL-HOMED: linked on the page through `home.css`'s @import AND
- * fetched + adopted into `<han-rail>`'s shadow root (`han-rail.js`
+ * fetched + adopted into `<han-console>`'s shadow root (`han-console.js`
  * loadSheets). One URL, one HTTP cache entry, no fork — which is also
  * why this file must never `@import`: a constructed stylesheet drops
  * `@import` rules on `replaceSync`.
@@ -43,7 +43,7 @@
      section <header>s (mono micro-caps, above), the fold heads read in
      the body register and stack as one contiguous hairline list — each
      summary carries a border-block-start; the last details in the stack
-     closes it with a border-block-end (rail.css § .Controls). A fullwidth
+     closes it with a border-block-end (console.css § .Controls). A fullwidth
      ＋/－, kept supplement-coloured, signals open/closed state. */
   > summary {
     font-family: var(--han-font-default);
@@ -84,8 +84,8 @@
 
 
 /* ─── module-off — a module switch flipped OFF greys its details group ──
- * The four module switches (rail.html) toggle `data-module-off` on the
- * matching `details[data-module]` (rail-config.js applyVisibility). The
+ * The four module switches (console.html) toggle `data-module-off` on the
+ * matching `details[data-module]` (console-config.js applyVisibility). The
  * group stays in place and its summary stays clickable — you can still
  * peek the controls — but the body reads as inert. */
 
@@ -105,7 +105,7 @@
  * `<label class="Toggle"><span>…</span><input type="checkbox"></label>`
  * — a real checkbox with `appearance: none`; the input paints the track,
  * `::before` the thumb; `:checked` drives the slide entirely in CSS.
- * Moved here from home.css so the rail's shadow (which doesn't adopt
+ * Moved here from home.css so the console's shadow (which doesn't adopt
  * home.css) gets the switch; the homepage still links this file, and no
  * live light-DOM element uses `.Toggle` (only the frozen /old.html, on
  * its own frozen CSS). Section layout (gap, direction) is the parent's. */
@@ -209,7 +209,7 @@
 
 
 /* ─── Default — per-GROUP 「使用預設値」 restore button ─────────────
- * JS-injected (rail-config.js / rail-metrics.js) into each
+ * JS-injected (console-config.js / console-metrics.js) into each
  * ControlGroup's head (每個 details 群組一顆，owner call); visible only
  * while any control in the group deviates, so it doubles as the "this
  * group was touched" marker. Accent-coloured 「↺ 使用預設値」 with a
@@ -290,7 +290,7 @@
   }
 
   /* The track is a visual element behind the native range input. The
-     fill span is JS-driven (`rail-metrics.js` sets its width); the
+     fill span is JS-driven (`console-metrics.js` sets its width); the
      native input handles pointer events. */
   .Track {
     & {

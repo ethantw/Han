@@ -5,7 +5,7 @@
  * Contract: docs/plans/homepage-v2-implementation.md § Hero.
  *
  * The Manifesto sits inside `main`, where `station-frame.css` re-declares
- * the `--fs-*` ramp in `em` so the rail's size slider scales it — the
+ * the `--fs-*` ramp in `em` so the console's size slider scales it — the
  * hero's copy tracks the live specimen size by design. The phrase lines
  * take a hero-LOCAL clamp rather than a ramp step (contract § Hero
  * permits it), which keeps the h1 box itself at the base step so the

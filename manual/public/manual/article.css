@@ -9,11 +9,11 @@
 
 main {
   & {
-    /* rail 度量以 CSS var 承接（rail-metrics.js 設 --rail-metric-*）；
+    /* console 度量以 CSS var 承接（console-metrics.js 設 --console-metric-*）；
        `inherit` fallback ＝ 未偏差時同繼承現況，零風險。 */
-    font-size:   var(--rail-metric-size, inherit);
-    line-height: var(--rail-metric-leading, inherit);
-    font-weight: var(--rail-metric-weight, inherit);
+    font-size:   var(--console-metric-size, inherit);
+    line-height: var(--console-metric-leading, inherit);
+    font-weight: var(--console-metric-weight, inherit);
 
     padding: 3em var(--m-gutter) 5em;
 

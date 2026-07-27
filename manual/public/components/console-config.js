@@ -1,5 +1,5 @@
 /**
- * <han-rail> config core — 控件 → config → 套用 + 廣播.
+ * <han-console> config core — 控件 → config → 套用 + 廣播.
  *
  * The configurator half of the old `home/configurator.js`, now scoped to
  * the component's shadow root (controls) and a light-DOM `target`
@@ -111,7 +111,7 @@ const applyFallbacks = async (config, $target) => {
  * null）；`dispatch(config, source)` = 廣播回呼（元件提供，發
  * han-config-change）；`initial` = 補水用起始 config（lang 重渲染時保留
  * 狀態；預設 DEFAULTS）。 */
-export const mountRailConfig = ({ root, target, dispatch, initial }) => {
+export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
   const configRef = { current: structuredClone(initial ?? DEFAULTS) }
 
   /* webfontDelivery='none' 級聯的兩格一格可變單元（ts-style §3）。進入 none
@@ -308,7 +308,7 @@ export const mountRailConfig = ({ root, target, dispatch, initial }) => {
     reset,
     reapplyFallbacks: ($t) => applyFallbacks(configRef.current, $t ?? target),
     get config() { return configRef.current },
-    // 度量 slider → config.metrics 的唯一入口（rail-metrics.js 的 onChange）。
+    // 度量 slider → config.metrics 的唯一入口（console-metrics.js 的 onChange）。
     // metrics 不對應任何 [data-cfg-key] 控件，故 writeControls／defaultFor 無涉；
     // DEFAULTS 已含 metrics，故 structuredClone／reset 自動帶上它。
     setMetrics: (metrics) => {

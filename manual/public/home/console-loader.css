@@ -1,12 +1,12 @@
 @charset "UTF-8";
 
 /**
- * `.RailLoading` — the 字徽 loader shown inside <han-rail> before the
+ * `.ConsoleLoading` — the 字徽 loader shown inside <han-console> before the
  * component upgrades.
  *
- * The rail is dynamic-imported at gate-open and its shadow sheets fetch
+ * The console is dynamic-imported at gate-open and its shadow sheets fetch
  * async, so instead of veiling the box we fill it: this is a LIGHT-DOM
- * child of <han-rail>. It renders while the element is undefined AND
+ * child of <han-console>. It renders while the element is undefined AND
  * through the sheet fetch (the component defers attachShadow until
  * sheets land), then stops rendering the moment the shadow attaches —
  * no `:not(:defined)` veil needed, the loader IS the intended
@@ -16,7 +16,7 @@
  * accent (owner call), themed via light-dark() like everything else.
  */
 
-.RailLoading {
+.ConsoleLoading {
   /* Loader keeps its OWN 朱砂×琥珀 identity (the approved palette) rather
      than the site's green --palette-accent; themed via light-dark() like
      the rest of the page (color-scheme is set by the dark-mode recipe).
@@ -34,7 +34,7 @@
   min-block-size: 8rem;
   padding-block: 2.5rem;
 }
-.RailLoaderMark {
+.ConsoleLoaderMark {
   display: block;
   overflow: visible;
 
@@ -42,7 +42,7 @@
     fill: var(--l-muted);
     transform-box: fill-box;   /* scale about each circle's own centre */
     transform-origin: center;
-    animation: railBloom var(--l-dur) cubic-bezier(.45, 0, .25, 1) infinite;
+    animation: consoleBloom var(--l-dur) cubic-bezier(.45, 0, .25, 1) infinite;
   }
   /* three circles, one downward wave — staggered by negative delay */
   & .d2 { animation-delay: calc(var(--l-dur) * -0.85); }
@@ -60,8 +60,8 @@
   }
   & .dun-base { fill: var(--l-brace); }
 
-  /* 描邊主角化：字骨以較深的一筆描完（railDraw），頓點在描過中段時
-     以 scale＋opacity「按」出（railPress，明體起筆之意）。節奏同 demo——
+  /* 描邊主角化：字骨以較深的一筆描完（consoleDraw），頓點在描過中段時
+     以 scale＋opacity「按」出（consolePress，明體起筆之意）。節奏同 demo——
      三口呼吸描一次，字骨描滿一整口呼吸，停兩口再淡出。 */
   & .brace-draw {
     fill: none;
@@ -71,25 +71,25 @@
     stroke-linejoin: miter;
     stroke-dasharray: 100;   /* pathLength=100 → dash 讀作百分比 */
     opacity: 0;
-    animation: railDraw calc(var(--l-dur) * 3) ease-in-out infinite;
+    animation: consoleDraw calc(var(--l-dur) * 3) ease-in-out infinite;
   }
   & .dun {
     fill: var(--l-brace-deep);
     transform-box: fill-box;
     transform-origin: 100% 50%;   /* 自字骨右緣向左（內）按出 */
     opacity: 0;
-    animation: railPress calc(var(--l-dur) * 3) ease-out infinite;
+    animation: consolePress calc(var(--l-dur) * 3) ease-out infinite;
   }
 }
 
-@keyframes railBloom {
+@keyframes consoleBloom {
   0%, 100% { transform: scale(1);    fill: var(--l-muted); }
   28%      { transform: scale(1.26); fill: var(--l-accent); }
   55%      { transform: scale(1.04); fill: var(--l-accent-2); }
   80%      { transform: scale(1);    fill: var(--l-muted); }
 }
 /* 字骨描滿一整口呼吸（0→33%），停兩口後淡出；resting 底層續留 */
-@keyframes railDraw {
+@keyframes consoleDraw {
   0%   { stroke-dashoffset: 100; opacity: 0; }
   3%   { opacity: 1; }
   33%  { stroke-dashoffset: 0;   opacity: 1; }
@@ -97,7 +97,7 @@
   100% { stroke-dashoffset: 0;   opacity: 0; }
 }
 /* 頓點在字骨描過中段（~18% cycle）時按出 */
-@keyframes railPress {
+@keyframes consolePress {
   0%, 14% { transform: scale(0.2);  opacity: 0; }
   22%     { transform: scale(1.12); opacity: 1; }
   28%     { transform: scale(1);    opacity: 1; }
@@ -105,9 +105,9 @@
   100%    { transform: scale(1);    opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .RailLoaderMark circle,
-  .RailLoaderMark .brace-draw,
-  .RailLoaderMark .dun { animation: none; }
-  .RailLoaderMark .brace-draw,
-  .RailLoaderMark .dun { opacity: 0; }   /* resting 底層已呈現完整 mark */
+  .ConsoleLoaderMark circle,
+  .ConsoleLoaderMark .brace-draw,
+  .ConsoleLoaderMark .dun { animation: none; }
+  .ConsoleLoaderMark .brace-draw,
+  .ConsoleLoaderMark .dun { opacity: 0; }   /* resting 底層已呈現完整 mark */
 }

@@ -5,7 +5,7 @@
  *
  * The dark trigger, `body.home`'s own type/colour base, the Topbar
  * (brand · nav · lang switcher · theme toggle · version) and the
- * floating writing-mode pill, which is page chrome rather than rail
+ * floating writing-mode pill, which is page chrome rather than console
  * state.
  */
 
@@ -43,8 +43,8 @@ body.home {
  * `<header><a class="Brand">…</a><nav><a>…</a>…
  *  {{ langSwitcher }}<label class="ThemeToggle">…</label>
  *  <span class="VersionTag">…</span></nav></header>`, mounted in
- * `_home.html` above the rail + `<main>`. Deliberately NOT
- * sticky (the side rail assumes the Topbar scrolls away — see rail.css). */
+ * `_home.html` above the console + `<main>`. Deliberately NOT
+ * sticky (the side console assumes the Topbar scrolls away — see console.css). */
 
 body > header {
   & {
@@ -102,10 +102,10 @@ body > header {
 
 /* ─── WritingSwitch (橫排/直排 preview pill; see writing-switch.js) ──
    Floating bottom-right. Writing mode is preview state, not a han.css
-   variable, so it lives outside the rail. Light DOM, consumes
+   variable, so it lives outside the console. Light DOM, consumes
    `--palette-*` directly.
 
-   HIDDEN for now (owner call): the rail's 度量 group already offers the
+   HIDDEN for now (owner call): the console's 度量 group already offers the
    直排 switch, so two controls for one preference was one too many. The
    markup and `writing-switch.js` stay wired — flip `display` back to
    `flex` to bring the pill back. */

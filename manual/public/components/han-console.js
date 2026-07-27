@@ -1,8 +1,8 @@
 /**
- * <han-rail> — the playground configurator, as a shadow-DOM web
+ * <han-console> — the playground configurator, as a shadow-DOM web
  * component. Thin imperative shell (the platform mandates `class extends
- * HTMLElement`); ALL logic lives in the FP modules `rail-config.js`
- * (controls → config → target + broadcast) and `rail-metrics.js`
+ * HTMLElement`); ALL logic lives in the FP modules `console-config.js`
+ * (controls → config → target + broadcast) and `console-metrics.js`
  * (preview sliders). This class only: attaches the shadow, adopts the
  * three stylesheets, injects the locale template, wires the reset
  * button, and relays lifecycle to those modules. That's the ts-style
@@ -13,8 +13,8 @@
  *   attrs   lang (hant|hans|en|ja|ko, dynamic) · target (CSS selector,
  *           default `main`) · form (side|top, pure-CSS in the shadow)
  *           (page-level collapse is NOT component API — the page's
- *           `.RailToggle` checkbox + `body:has(input:checked)` own it,
- *           dark-mode recipe; see home.css § han-rail.)
+ *           `.ConsoleToggle` checkbox + `body:has(input:checked)` own it,
+ *           dark-mode recipe; see home.css § han-console.)
  *   event   `han-config-change` — bubbles + composed, detail
  *           `{ config, vars, source }`; config is a shallow-frozen copy
  *           (with `punct` and `metrics` cloned), vars is `cssVars(config)`,
@@ -26,19 +26,19 @@
  *   prop    config (the frozen copy)
  */
 import { cssVars, DEFAULTS } from '/home/codegen.js'
-import { TEMPLATES } from '/home/rail-templates.js'
-import { mountRailConfig } from '/components/rail-config.js'
-import { mountRailMetrics } from '/components/rail-metrics.js'
+import { TEMPLATES } from '/home/console-templates.js'
+import { mountConsoleConfig } from '/components/console-config.js'
+import { mountConsoleMetrics } from '/components/console-metrics.js'
 
 const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
 
-// Config persistence — same contract as the theme / rail-collapsed toggles:
+// Config persistence — same contract as the theme / console-collapsed toggles:
 // the config survives reloads in localStorage, and a pre-paint inline script
 // (_home.html, in <main>) restores it BEFORE first paint so a
 // returning visitor never waits for this (gate-open-deferred) module. We
 // store { config, vars }: `vars` is the precomputed cssVars() output the
 // inline script stamps without any codegen logic.
-const STORAGE_KEY = 'han-rail-config'
+const STORAGE_KEY = 'han-console-config'
 
 /** Read the saved config, deep-merged OVER DEFAULTS so a config written by an
  *  older schema can't leave required keys undefined (structuredClone(initial)
@@ -99,7 +99,7 @@ const resolveLocale = (el) => {
 // Stylesheets fetched + parsed ONCE, shared across every instance. Raw
 // ESM environment (no CSS module import), URLs resolved from this
 // module. controls.css is the page-shared sheet (dual-homed); tokens →
-// controls → rail is the cascade order (tokens defines the --_* layer
+// controls → console is the cascade order (tokens defines the --_* layer
 // both later sheets consume).
 let sheetsPromise = null
 const loadSheets = () => {
@@ -107,7 +107,7 @@ const loadSheets = () => {
     [
       new URL('./tokens.css', import.meta.url),
       new URL('../home/controls.css', import.meta.url),
-      new URL('./rail.css', import.meta.url),
+      new URL('./console.css', import.meta.url),
     ].map(async (url) => {
       const css = await (await fetch(url)).text()
       const sheet = new CSSStyleSheet()
@@ -118,7 +118,7 @@ const loadSheets = () => {
   return sheetsPromise
 }
 
-class HanRail extends HTMLElement {
+class HanConsole extends HTMLElement {
   static observedAttributes = ['lang', 'target']
 
   #config = null
@@ -173,7 +173,7 @@ class HanRail extends HTMLElement {
     this.#target = document.querySelector(sel)
     if (!this.#target && !this.#warned) {
       this.#warned = true
-      console.warn(`<han-rail>: target "${sel}" not found — rendering without applying.`)
+      console.warn(`<han-console>: target "${sel}" not found — rendering without applying.`)
     }
   }
 
@@ -190,7 +190,7 @@ class HanRail extends HTMLElement {
     // Seed config: a lang re-render keeps the live state; the FIRST mount
     // seeds from localStorage (the same key the pre-paint script restored),
     // so the toolbar's controls come up reflecting the saved config. null →
-    // mountRailConfig falls back to DEFAULTS.
+    // mountConsoleConfig falls back to DEFAULTS.
     const initial = this.#config?.config ?? readStored()
     const locale = resolveLocale(this)
     const tpl = TEMPLATES[locale] ?? TEMPLATES.hant
@@ -199,7 +199,7 @@ class HanRail extends HTMLElement {
     )
 
     this.#resolveTarget()
-    this.#config = mountRailConfig(
+    this.#config = mountConsoleConfig(
       {
         root: this.shadowRoot,
         target: this.#target,
@@ -207,7 +207,7 @@ class HanRail extends HTMLElement {
         initial,
       },
     )
-    this.#metrics = mountRailMetrics(
+    this.#metrics = mountConsoleMetrics(
       {
         root: this.shadowRoot,
         target: this.#target,
@@ -240,4 +240,4 @@ class HanRail extends HTMLElement {
   }
 }
 
-customElements.define('han-rail', HanRail)
+customElements.define('han-console', HanConsole)

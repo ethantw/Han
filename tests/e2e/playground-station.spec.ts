@@ -6,8 +6,8 @@ import { test, expect, type Page } from '@playwright/test'
  * The station (`#station-playground`) hosts a `<textarea data-pg-src>`
  * (Code tab) whose Markdown/HTML is rendered — marked → DOMPurify →
  * `<article data-pg-preview>` (Preview tab, default). The preview lives
- * inside `main.han`, so the rail's `--han-*` vars inherit into it. Text
- * persists to `localStorage['han-playground-src']`; the rail's Reset never
+ * inside `main.han`, so the console's `--han-*` vars inherit into it. Text
+ * persists to `localStorage['han-playground-src']`; the console's Reset never
  * touches it.
  */
 
@@ -106,7 +106,7 @@ test.describe('station⑤ playground', () => {
     await expect($preview(page).locator('h1')).toHaveText(marker.slice(2))
   })
 
-  test('rail interplay: a rail control writes --han-* on main.han; the preview inherits it', async ({ page }) => {
+  test('console interplay: a console control writes --han-* on main.han; the preview inherits it', async ({ page }) => {
     const main = page.locator('main.han')
 
     // The preview must be a descendant of main.han (so it inherits config).

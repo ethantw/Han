@@ -204,7 +204,7 @@ const hanCssUrls = (c) => {
 }
 
 // 站④「內嵌」分頁專用——同源、已由 vite.config.js 的 syncFramework() 同步進
-// public/han/ 的本機副本（rail 模組開關讀的就是這批檔案）。renderInline() 不
+// public/han/ 的本機副本（console 模組開關讀的就是這批檔案）。renderInline() 不
 // 自己 fetch（codegen.js 保持零 DOM、純函式、node --test 可測）；snippet.js
 // 用這幾個 URL 把「真正的 minified bytes」抓回來，當 assets 參數傳進去。
 export const localHanCssUrls = (c) => {

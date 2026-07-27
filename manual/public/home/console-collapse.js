@@ -1,9 +1,9 @@
 /**
- * Rail collapse — persistence for the `.RailToggle` checkbox.
+ * Console collapse — persistence for the `.ConsoleToggle` checkbox.
  *
  * The handle is a real `<input type="checkbox">` (owner call — same
  * recipe as the dark-mode toggle): the LAYOUT is pure CSS via
- * `body:has(.RailToggle input:checked)` (home.css § han-rail; the body
+ * `body:has(.ConsoleToggle input:checked)` (home.css § han-console; the body
  * grid animates its left column to 0 and header + main slide left to
  * fill — never an overlay). checked = collapsed.
  *
@@ -14,10 +14,10 @@
  * form="top" / <52rem: the handle is `display: none` (home.css), so the
  * checkbox is unreachable — a no-op in those layouts.
  */
-const KEY = 'han-rail-collapsed'
+const KEY = 'han-console-collapsed'
 
-export const initRailCollapse = () => {
-  const $box = document.querySelector('.RailToggle input[type="checkbox"]')
+export const initConsoleCollapse = () => {
+  const $box = document.querySelector('.ConsoleToggle input[type="checkbox"]')
   if (!$box) return
 
   $box.addEventListener(

@@ -15,7 +15,7 @@ import { test, expect, type Page } from '@playwright/test'
  * "off" is expressed by the import's absence — the old
  * `--han-semantics: off` / `--han-prose: off` vars are gone.
  *
- * Playwright pierces the open shadow root for CSS locators, so the rail's
+ * Playwright pierces the open shadow root for CSS locators, so the console's
  * shadow controls are reachable by their `data-cfg-key` directly.
  */
 

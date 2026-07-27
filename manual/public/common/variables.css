@@ -19,7 +19,7 @@
  * See `home/root.css` / `manual/root.css`.
  *
  * `components/tokens.css` mirrors the palette as literal fallbacks for
- * the rail's shadow root; change a colour here and echo it there.
+ * the console's shadow root; change a colour here and echo it there.
  */
 
 :root {
@@ -101,7 +101,7 @@
 
   /* ── type ramp ────────────────────────────────────────────────────
    * ~5 content sizes (display / heading / lede / body / small), reused
-   * everywhere; the compact rail chrome adds two denser steps
+   * everywhere; the compact console chrome adds two denser steps
    * (compact / fine / micro). No ad-hoc per-component sizes. Every rem
    * value is a multiple of 0.125rem (css-naming rule 13). */
   --fs-heading: 1.5rem;                 /* section h2 */
@@ -110,7 +110,7 @@
   --fs-small:   0.875rem;               /* captions, supplement, nav */
   --fs-compact: 0.8125rem;              /* dense controls, code terminal */
   --fs-fine:    0.75rem;                /* mono labels, chips, fine print */
-  --fs-micro:   0.625rem;               /* rail micro group labels */
+  --fs-micro:   0.625rem;               /* console micro group labels */
 
   /* radii (subtle, print-feel) */
   --r-1: 2px;

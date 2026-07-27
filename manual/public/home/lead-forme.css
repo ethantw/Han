@@ -440,5 +440,5 @@
   :where(.PunctLang) ul { grid-template-columns: 1fr; }
 }
 /* No local punctuation override here: each cell's <select> is bound to the
-   rail (punct-lang.js) — the rail applies --han-punctuation-* to <main> and
-   the samples inherit it, so the rail config stays the single source of truth. */
+   console (punct-lang.js) — the console applies --han-punctuation-* to <main> and
+   the samples inherit it, so the console config stays the single source of truth. */

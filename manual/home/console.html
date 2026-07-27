@@ -406,7 +406,7 @@
     ja: 'transpileRuby',
     ko: 'transpileRuby',
   },
-  railHeader: {
+  consoleHeader: {
     hant: '配置面板——撥動即改寫全頁',
     hans: '配置面板——拨动即改写全页',
     en: 'Configurator — flip a switch, the whole page rewrites itself',
@@ -423,29 +423,29 @@
 }
 </script>
 <!--
-  Rail template — the SOURCE for `<han-rail>`'s shadow content. The build
-  (vite.config's renderRailTemplatesSource) expands this once per locale
-  via `applySubs` into `home/rail-templates.js`, which the component
+  Console template — the SOURCE for `<han-console>`'s shadow content. The build
+  (vite.config's renderConsoleTemplatesSource) expands this once per locale
+  via `applySubs` into `home/console-templates.js`, which the component
   injects into its shadow root on connect. Single source of truth: edit
   the markup here, not the generated module.
 
-  `rail-config.js` queries `[data-cfg] [data-cfg-key]` inside the shadow
-  and applies deviations to the `target` (`main.han`); `rail-metrics.js`
+  `console-config.js` queries `[data-cfg] [data-cfg-key]` inside the shadow
+  and applies deviations to the `target` (`main.han`); `console-metrics.js`
   owns the sliders. No sample chips, no custom-Markdown mode, no preview
   ViewTab — the page itself is the sample and station④ owns the output
   tabs (a `han-config-change` subscriber, snippet.js).
 
   The shadow root's top-level children are siblings — `SheetToggle` /
   `Grip` / `.Controls` — so the <52rem sheet uses the `~` sibling
-  combinator (components/rail.css). Form (side/top) is pure CSS via
-  `:host([form="top"])`; page layout is home.css § han-rail.
+  combinator (components/console.css). Form (side/top) is pure CSS via
+  `:host([form="top"])`; page layout is home.css § han-console.
 -->
-<input type="checkbox" id="rail-sheet" class="SheetToggle" data-rail-sheet-toggle>
-<label class="Grip" for="rail-sheet" data-rail-grip>{{ railHeader }}</label>
+<input type="checkbox" id="console-sheet" class="SheetToggle" data-console-sheet-toggle>
+<label class="Grip" for="console-sheet" data-console-grip>{{ consoleHeader }}</label>
 
 <!-- data-label-default: the visible text label (＋ title) for the
      JS-injected per-GROUP 「↺ 使用預設値」 buttons (one per ControlGroup
-     head; rail-config.js / rail-metrics.js read it back — the DOM carries
+     head; console-config.js / console-metrics.js read it back — the DOM carries
      the locale string, JS stays copy-free). -->
 <div class="Controls" data-label-default="{{ pgUseDefault }}">
     <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
@@ -498,7 +498,7 @@
     <!-- 模組開關 — 每個開關＝該模組的 CSS 是否被 import（生成碼增減 import
          行；預覽撥對應 link.disabled）。非收合，四個開關與下方四個 details
          （語意樣式標準化／長文段落優化／行的調整／字體）一一對應；details
-         的自動開合由 rail-config.js 處理。 -->
+         的自動開合由 console-config.js 處理。 -->
     <section class="ControlGroup">
       <header>{{ pgGrpModules }}</header>
       <fieldset class="PlaygroundRules" data-cfg>

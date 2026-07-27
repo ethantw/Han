@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  <han-rail> bare-page fixture (e2e). Deliberately has NO home.css — so
+  <han-console> bare-page fixture (e2e). Deliberately has NO home.css — so
   it proves the component stands alone: the shadow token layer
   (tokens.css) falls back to literal `light-dark()` values, the controls
   paint, and a control change still writes `--han-*` onto the `target`.
@@ -11,19 +11,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>han-rail bare fixture</title>
+<title>han-console bare fixture</title>
 <style>
   body { margin: 0; font-family: system-ui, sans-serif; }
   main.han { padding: 2rem; }
   /* the same FOUC guard a real mounting page would carry */
-  han-rail:not(:defined) { visibility: hidden; }
+  han-console:not(:defined) { visibility: hidden; }
 </style>
-<script type="module" src="/components/han-rail.js"></script>
+<script type="module" src="/components/han-console.js"></script>
 </head>
 <body>
-<han-rail lang="en" target="main.han"></han-rail>
+<han-console lang="en" target="main.han"></han-console>
 <main class="han">
-  <p>Target — the rail writes its config vars here.</p>
+  <p>Target — the console writes its config vars here.</p>
 </main>
 </body>
 </html>

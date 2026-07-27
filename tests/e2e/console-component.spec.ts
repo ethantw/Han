@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * <han-rail> web component — the two contracts the homepage specs don't
+ * <han-console> web component — the two contracts the homepage specs don't
  * cover: (a) it stands alone on a bare page (no home.css) with token
  * fallbacks painting and control writes reaching the target, and (b) the
  * public `han-config-change` event's shape / initial dispatch / source
@@ -40,15 +40,15 @@ const openGroupOf = (page: Page, cfgKey: string) =>
 
 test.describe('bare fixture — no home.css', () => {
   test('renders, token fallbacks paint, a control write reaches the target', async ({ page }) => {
-    await page.goto('/test/rail-fixture.html')
+    await page.goto('/test/console-fixture.html')
 
-    const rail = page.locator('han-rail')
-    await expect(rail).toBeVisible() // upgraded → :not(:defined) guard released
+    const $console = page.locator('han-console')
+    await expect($console).toBeVisible() // upgraded → :not(:defined) guard released
 
     // Token fallback: with no `--palette-*` on the page, `:host`'s
     // `--_panel` resolves to its literal light-dark() fallback
-    // (color-paper-deep #fafaf7 in light) — the rail actually paints.
-    const bg = await rail.evaluate(el => getComputedStyle(el).backgroundColor)
+    // (color-paper-deep #fafaf7 in light) — the console actually paints.
+    const bg = await $console.evaluate(el => getComputedStyle(el).backgroundColor)
     expect(bg).toBe('rgb(250, 250, 247)')
 
     // A control change still writes `--han-*` onto the target element.
@@ -66,10 +66,10 @@ test.describe('han-config-change event contract', () => {
   // component's connect-time `init` dispatch.
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      ;(window as unknown as { __rail: unknown[] }).__rail = []
+      ;(window as unknown as { __events: unknown[] }).__events = []
       document.addEventListener('han-config-change', (e: Event) => {
         const { detail } = e as CustomEvent
-        ;(window as unknown as { __rail: unknown[] }).__rail.push({
+        ;(window as unknown as { __events: unknown[] }).__events.push({
           source: detail.source,
           keys: Object.keys(detail.config),
           frozen: Object.isFrozen(detail.config),
@@ -81,7 +81,7 @@ test.describe('han-config-change event contract', () => {
   })
 
   const events = (page: Page) =>
-    page.evaluate(() => (window as unknown as { __rail: unknown[] }).__rail)
+    page.evaluate(() => (window as unknown as { __events: unknown[] }).__events)
 
   test('fires once on connect (source:init) with a frozen DEFAULTS-shaped detail', async ({ page }) => {
     await page.goto('/')
@@ -109,7 +109,7 @@ test.describe('han-config-change event contract', () => {
     // the global reset BUTTON is gone (per-control ↺ defaults replaced
     // it), but reset() stays public component API — the source:'reset'
     // broadcast is part of the event contract.
-    await page.locator('han-rail').evaluate((el: HTMLElement & { reset(): void }) => el.reset())
+    await page.locator('han-console').evaluate((el: HTMLElement & { reset(): void }) => el.reset())
     await expect
       .poll(async () => ((await events(page)).at(-1) as { source: string }).source)
       .toBe('reset')

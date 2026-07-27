@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * Configurator behavior, now inside the `<han-rail>` web component:
+ * Configurator behavior, now inside the `<han-console>` web component:
  * controls live in its shadow root behind `details.ControlGroup`
  * accordions (Playwright pierces the open shadow root for CSS locators;
  * open a collapsed group before touching its controls),
@@ -170,7 +170,7 @@ test.describe('度量 slider → body 規則', () => {
     await expect(pane(page, 'css')).toContainText('font-size: 18px')
 
     // 換內文語言 → 重渲染 shadow 模板；config.metrics 狀態應補水保留。
-    await page.locator('han-rail').evaluate((el) => el.setAttribute('lang', 'hans'))
+    await page.locator('han-console').evaluate((el) => el.setAttribute('lang', 'hans'))
 
     await expect(page.locator('[data-metric="size"] input[type="range"]')).toHaveValue('18')
     await expect(pane(page, 'css')).toContainText('font-size: 18px')

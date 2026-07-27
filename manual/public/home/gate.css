@@ -18,7 +18,7 @@
    descendant `color:` in one rule. The watermark is immune by
    construction (it paints via `stroke:`, not color); the TypeTray
    slugs (fill: currentColor) vanish with the text — correct, they are
-   glyphs. Known gap: <han-rail>'s shadow sets its own color tokens and
+   glyphs. Known gap: <han-console>'s shadow sets its own color tokens and
    stays visible — acceptable, it wears its own :not(:defined) veil.
 
    The pseudo lines matter: `body *` never matches pseudo-elements, and
@@ -56,7 +56,7 @@
 }
 
 /* Selectors stop at the shadow boundary, but custom properties don't:
-   this flag rides inheritance into <han-rail>'s shadow, where rail.css
+   this flag rides inheritance into <han-console>'s shadow, where console.css
    reads it back with a style query (@container style() resolves
    containers up the FLAT tree, so shadow content can interrogate
    :root) — the same mechanism han.css itself runs on. */

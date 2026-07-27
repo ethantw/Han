@@ -5,8 +5,8 @@
  * the `figure.CodePane` exhibits inside it.
  *
  * LIGHT DOM only, so these consume `--palette-*` directly rather than
- * the rail's `--_*` indirection. They used to sit in `controls.css`,
- * which <han-rail> adopts into its shadow; splitting them out keeps the
+ * the console's `--_*` indirection. They used to sit in `controls.css`,
+ * which <han-console> adopts into its shadow; splitting them out keeps the
  * shadow from carrying rules that can never match there.
  *
  * `.CodePane` stays terminal-dark in BOTH themes (owner-approved) via

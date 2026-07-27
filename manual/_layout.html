@@ -18,8 +18,8 @@
      combined `han.css` (verified: the four concatenated normalise to the
      same sheet), split so that (a) the docs share the very same URLs as
      the homepage, which serves them from cache on a home→docs hop, and
-     (b) `<han-rail>`'s module switches can actually reach them:
-     rail-config's `applyModules` toggles `link[data-han-module].disabled`,
+     (b) `<han-console>`'s module switches can actually reach them:
+     console-config's `applyModules` toggles `link[data-han-module].disabled`,
      a no-op on a page that links only the bundle. -->
 <link rel="stylesheet" href="/han/han.semantics.css" data-han-module="semantics">
 <link rel="stylesheet" href="/han/han.lines.css" data-han-module="lines">
@@ -29,12 +29,12 @@
 <script type="module" src="/han/han.js"></script>
 <script type="module" src="/search.js"></script>
 <script src="/manual.js" defer></script>
-<!-- Register <han-rail>; it self-initialises on connect (adopts shadow
+<!-- Register <han-console>; it self-initialises on connect (adopts shadow
      sheets → injects its locale template → wires controls → applies to
      `target`). manual.js is a classic script and can't import it, so
      it gets its own module tag. Same component + templates as the
      homepage; the docs mount it as a form="top" toolbar. -->
-<script type="module" src="/components/han-rail.js"></script>
+<script type="module" src="/components/han-console.js"></script>
 <!-- Syntax-highlight the docs article's fenced code blocks — reuses the
      homepage highlighter (Custom Highlight API, feature-detected inside;
      degrades to plain text). Derives the language from markdown-it's
@@ -95,11 +95,11 @@
     <a href="{{ docsUrl }}">{{ docsLink }}</a>
     <a href="#" data-variant="version">v{{ version }}</a>
     {{ langSwitcher }}
-    <!-- Reveal the <han-rail> configurator (collapsed by default so the
-         docs read first). Pure-CSS: `body:has(.RailToggle input:checked)`
-         drops the rail open — same recipe as the theme/nav toggles. -->
-    <label class="RailToggle" title="{{ railToggleLabel }}">
-      <input type="checkbox" name="rail-open" aria-label="{{ railToggleLabel }}">
+    <!-- Reveal the <han-console> configurator (collapsed by default so the
+         docs read first). Pure-CSS: `body:has(.ConsoleToggle input:checked)`
+         drops the console open — same recipe as the theme/nav toggles. -->
+    <label class="ConsoleToggle" title="{{ consoleToggleLabel }}">
+      <input type="checkbox" name="console-open" aria-label="{{ consoleToggleLabel }}">
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="15" cy="18" r="2"/></svg>
     </label>
     <!-- Theme toggle. A real checkbox is the single source of truth:
@@ -130,8 +130,8 @@
 <!-- Typography configurator — readers dogfood the whole framework on the
      docs text itself. form="top" horizontal toolbar spanning under the
      Masthead; writes the live `--han-*` config onto `main`, which
-     cascades to the article + TOC. Same rail as the homepage. -->
-<han-rail form="top" target="main" lang="{{ htmlLang }}"></han-rail>
+     cascades to the article + TOC. Same console as the homepage. -->
+<han-console form="top" target="main" lang="{{ htmlLang }}"></han-console>
 {{ sidebar }}
 <main>
 <article data-pagefind-body>

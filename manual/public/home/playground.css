@@ -5,7 +5,7 @@
    panel + header + ViewTabs primitive; `.Playground` adds the two swap
    panes. The code pane is a real <textarea>, terminal-dark to mirror
    figure.CodePane (so "code" reads as code across both stations); the
-   preview <article> sits on the page surface and inherits the rail's live
+   preview <article> sits on the page surface and inherits the console's live
    `--han-*` vars + han's prose layer with zero wiring. */
 
 .Playground {

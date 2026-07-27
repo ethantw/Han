@@ -8,7 +8,7 @@
  * toggle — a single path covers both, which is exactly the owner's
  * 「無傷大雅的HTML＆Markdown」in one input.
  *
- * The preview is a plain `<article>` inside `main`, so the rail's
+ * The preview is a plain `<article>` inside `main`, so the console's
  * `--han-*` config vars and the metric sliders inherit into it with zero
  * wiring (han's prose layer auto-scopes to `<article>`). The two tabs
  * (preview / code) switch purely in CSS via a radio `:has(:checked)` — JS
@@ -67,7 +67,7 @@ export const initPlayground = ($root = document) => {
   const $preview = $editor.querySelector('[data-pg-preview]')
   if (!$src || !$preview) return
 
-  // Restore the user's own text over the server-rendered sample. The rail's
+  // Restore the user's own text over the server-rendered sample. The console's
   // Reset never clears this key — it's content, not config.
   const saved = load()
   if (saved !== null) $src.value = saved

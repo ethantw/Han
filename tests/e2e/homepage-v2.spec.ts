@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test'
  * structural checks (not pixel baselines): the content stations carry a
  * watermark glyph rendered from `data-wm` — six of the seven, since
  * station②・字體排印 hands its corner to the lead-type forme instead;
- * the var-name marginalia is a ≥68rem-only rail (hidden where it would only
+ * the var-name marginalia is a ≥68rem-only console (hidden where it would only
  * repeat names); station 柒・引用碼 sits on a CONSTANT-dark ground in BOTH
  * page themes; and reveal.js must hand every station its `[data-revealed]`
  * hook immediately under a reduced-motion preference (settled state, no

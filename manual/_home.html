@@ -63,7 +63,7 @@
     ja: '直排',
     ko: '直排',
   },
-  railCollapse: {
+  consoleCollapse: {
     hant: '收合面板',
     hans: '收合面板',
     en: 'Collapse panel',
@@ -97,7 +97,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif-tc@latest/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest/dist/diantenjeom.css" data-han-webfont>
-<!-- per-module bundles — the rail's module switches toggle link.disabled
+<!-- per-module bundles — the console's module switches toggle link.disabled
      (a stylesheet's *applied* state, not its download: the CSS file is still
      fetched by the preload scanner; disabling only drops it from the cascade). -->
 <link rel="stylesheet" href="/han/han.semantics.css" data-han-module="semantics">
@@ -117,7 +117,7 @@
 <script type="module" src="/home.js"></script>
 
 <script>
-  // Shared by the pre-paint restore scripts below (theme, rail-collapsed):
+  // Shared by the pre-paint restore scripts below (theme, console-collapsed):
   // never let a boot-time failure (storage disabled, selector drift) break
   // the rest of the page — but still surface it in devtools instead of
   // swallowing it outright.
@@ -175,22 +175,22 @@
   </nav>
 </header>
 
-<!-- The playground rail is now a shadow-DOM web component. Its inner
-     template (locale-expanded from home/rail.html) is generated into
-     home/rail-templates.js and injected into the shadow on connect; the
-     page owns only its placement (home.css § han-rail). `form="side"` is
+<!-- The playground console is now a shadow-DOM web component. Its inner
+     template (locale-expanded from home/console.html) is generated into
+     home/console-templates.js and injected into the shadow on connect; the
+     page owns only its placement (home.css § han-console). `form="side"` is
      the layout (the `form` attr stays public component API).
-     The `.RailLoading` child is a LIGHT-DOM fallback (home.css § han-rail):
+     The `.ConsoleLoading` child is a LIGHT-DOM fallback (home.css § han-console):
      the 字徽 loader shows centered while the component's module + shadow
-     sheets load (rail is dynamic-imported at gate-open, off the ceremony
+     sheets load (console is dynamic-imported at gate-open, off the ceremony
      thread — home.js). The instant it upgrades and attaches its shadow
      (no <slot>), the light DOM stops rendering and the toolbar takes over —
      no FOUC, no double loader. -->
 <!-- lang 用合法 BCP-47 tag（axe valid-lang 抓過 lang="hant" 違規）；
      元件的 localeOf() 兩種都收（slug 或 tag），zh-Hant → hant。 -->
-<han-rail lang="{{ htmlLang }}" target="main" form="side">
-  <div class="RailLoading" role="status" aria-label="工具欄載入中">
-    <svg class="RailLoaderMark" viewBox="0 0 100 100" width="46" height="46" aria-hidden="true">
+<han-console lang="{{ htmlLang }}" target="main" form="side">
+  <div class="ConsoleLoading" role="status" aria-label="工具欄載入中">
+    <svg class="ConsoleLoaderMark" viewBox="0 0 100 100" width="46" height="46" aria-hidden="true">
       <circle class="d1" cx="20" cy="28" r="6.5" />
       <circle class="d2" cx="20" cy="50" r="9.5" />
       <circle class="d3" cx="20" cy="78" r="12.5" />
@@ -200,16 +200,16 @@
       <polygon class="dun" points="58,45 43,50 58,55" />
     </svg>
   </div>
-</han-rail>
+</han-console>
 
 <!-- Collapse handle — page chrome at the aside/content boundary, the only
-     way back once the rail is collapsed. A real checkbox (same recipe as
+     way back once the console is collapsed. A real checkbox (same recipe as
      the dark-mode toggle): the LAYOUT is pure CSS via
-     `body:has(.RailToggle input:checked)` (home.css); rail-collapse.js
+     `body:has(.ConsoleToggle input:checked)` (home.css); console-collapse.js
      only persists. checked = collapsed. Hidden <52rem and for
-     form="top" (home.css § RailToggle). -->
-<label class="RailToggle" title="{{ railCollapse }}">
-  <input type="checkbox" name="rail-collapsed" aria-label="{{ railCollapse }}">
+     form="top" (home.css § ConsoleToggle). -->
+<label class="ConsoleToggle" title="{{ consoleCollapse }}">
+  <input type="checkbox" name="console-collapsed" aria-label="{{ consoleCollapse }}">
   <!--
     Restore the collapsed state the instant the checkbox is parsed —
     before first paint — so `body:has(input:checked)` lays out collapsed
@@ -219,15 +219,15 @@
   -->
   <script>
     silentlyTry(() => {
-      document.querySelector('input[name="rail-collapsed"]').checked =
-        localStorage.getItem('han-rail-collapsed') === '1'
+      document.querySelector('input[name="console-collapsed"]').checked =
+        localStorage.getItem('han-console-collapsed') === '1'
     })
   </script>
 </label>
 
 <!-- 橫排/直排 preview switch — floating pill, bottom-right. Writing mode
      is PREVIEW state, not a han.css variable, so it lives OUTSIDE the
-     configurator rail (owner call); writing-switch.js writes
+     configurator console (owner call); writing-switch.js writes
      main's `data-writing`, pure-CSS vertical mode reacts
      (stations.css). -->
 <fieldset class="WritingSwitch" data-writing-switch>
@@ -238,19 +238,19 @@
 
 <main lang="{{ htmlLang }}">
 <script>
-  // Pre-paint rail-config restore — a returning visitor's saved playground
+  // Pre-paint console-config restore — a returning visitor's saved playground
   // config lands on main (and the module/webfont <link> switches) BEFORE
-  // first paint, instead of waiting for the rail's gate-open dynamic import
+  // first paint, instead of waiting for the console's gate-open dynamic import
   // (home.js). Same localStorage + silentlyTry pattern as the theme /
-  // rail-collapsed restores. The rail, when it upgrades, rehydrates its
-  // controls from the SAME key ('han-rail-config') and re-applies —
+  // console-collapsed restores. The console, when it upgrades, rehydrates its
+  // controls from the SAME key ('han-console-config') and re-applies —
   // idempotent, so no flash. Stored shape is { config, vars }: `vars` is the
   // precomputed cssVars() output, so this script needs no codegen logic;
   // `config` supplies the font-family / metrics / link-switch derivations.
   // The 4th sanctioned pre-paint script (web-style.md) — main is already
   // parsed (this is its first child), the <head> links too. -->
   silentlyTry(() => {
-    const raw = localStorage.getItem('han-rail-config')
+    const raw = localStorage.getItem('han-console-config')
     if (!raw) return
     const { config, vars } = JSON.parse(raw)
     const t = document.querySelector('main')
@@ -259,9 +259,9 @@
       if (config.baseGeneric === 'serif') t.style.fontFamily = 'var(--han-font-alternative)'
       const m = config.metrics
       if (m) {
-        if (m.size && m.size !== 16) t.style.setProperty('--rail-metric-size', `${m.size}px`)
-        if (m.leading && m.leading !== 1.75) t.style.setProperty('--rail-metric-leading', String(m.leading))
-        if (m.weight && m.weight !== 400) t.style.setProperty('--rail-metric-weight', String(m.weight))
+        if (m.size && m.size !== 16) t.style.setProperty('--console-metric-size', `${m.size}px`)
+        if (m.leading && m.leading !== 1.75) t.style.setProperty('--console-metric-leading', String(m.leading))
+        if (m.weight && m.weight !== 400) t.style.setProperty('--console-metric-weight', String(m.weight))
       }
     }
     // `=== false` (not `!value`): a key missing from an older saved schema

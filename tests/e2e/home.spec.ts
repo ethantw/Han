@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test'
 /**
  * Homepage-as-playground e2e (HP-5).
  *
- * `/` is a whole-page playground: topbar + the `<han-rail>` configurator
+ * `/` is a whole-page playground: topbar + the `<han-console>` configurator
  * web component (shadow DOM; `form="side"|"top"` attr, <52rem
  * bottom-sheet) + `<main
  * class="han">` with six stations (Manifesto, station-semantics,
@@ -11,7 +11,7 @@ import { test, expect, type Page } from '@playwright/test'
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
  * `[data-out-panes]`, one `<figure class="CodePane">` per codegen.js
  * pane — no more global `[data-out-copy]`/single `[data-out-code]`);
- * the rail carries all 26 `data-cfg-key` controls (four module switches
+ * the console carries all 26 `data-cfg-key` controls (four module switches
  * — semantics/prose/lines/fonts — in a non-collapsible block, and the
  * merged Web字體來源 pair webfontDelivery + webfontCdnSource under 字體,
  * Request B — replacing the old zianoDelivery/zianoCdnSource and the
@@ -45,7 +45,7 @@ const openGroupOf = (page: Page, cfgKey: string) =>
     .click()
 
 for (const { path, htmlLang, label } of LOCALES) {
-  test(`${label}: homepage renders — topbar, rail, all six stations`, async ({ page }) => {
+  test(`${label}: homepage renders — topbar, console, all six stations`, async ({ page }) => {
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)
 
@@ -54,8 +54,8 @@ for (const { path, htmlLang, label } of LOCALES) {
 
     await expect(page.locator('body > header .Brand')).toBeVisible()
     await expect(page.locator('main.han')).toHaveCount(1)
-    // The rail is now the <han-rail> web component (shadow DOM).
-    await expect(page.locator('han-rail')).toBeVisible()
+    // The console is now the <han-console> web component (shadow DOM).
+    await expect(page.locator('han-console')).toBeVisible()
 
     // Six stations, in document order: Manifesto, semantics, type,
     // lines, snippet, Closing.
@@ -114,24 +114,24 @@ test('old.html: 200, provenance marker, own frozen snippet renders', async ({ pa
   await expect(code).toContainText('pnpm add @hanzi.pro/han.css')
 })
 
-test.describe('rail form attribute', () => {
+test.describe('console form attribute', () => {
   // `form` stays public component API (side|top); the page ships side and
   // no longer exposes a picker (the old owner-tooling chooser is gone).
   // Flipping the attribute programmatically must still relayout via
-  // `body:has(han-rail[form=…])` + `:host([form="top"])` — both pure CSS.
+  // `body:has(han-console[form=…])` + `:host([form="top"])` — both pure CSS.
   test('form="top" flips the shadow skeleton without a reload', async ({ page }) => {
     await page.goto('/')
-    const rail = page.locator('han-rail')
-    await expect(rail).toHaveAttribute('form', 'side')
+    const $console = page.locator('han-console')
+    await expect($console).toHaveAttribute('form', 'side')
 
-    await rail.evaluate((el) => el.setAttribute('form', 'top'))
-    await expect(rail).toHaveAttribute('form', 'top')
-    await expect(page.locator('han-rail .Controls')).toBeVisible()
+    await $console.evaluate((el) => el.setAttribute('form', 'top'))
+    await expect($console).toHaveAttribute('form', 'top')
+    await expect(page.locator('han-console .Controls')).toBeVisible()
   })
 })
 
 test.describe('whole-page configuration', () => {
-  test('rail toggle drives inline var on main.han; station④ snippet reflects it', async ({ page }) => {
+  test('console toggle drives inline var on main.han; station④ snippet reflects it', async ({ page }) => {
     await page.goto('/')
     const main = page.locator('main.han')
 
@@ -208,10 +208,10 @@ test.describe('mobile bottom sheet', () => {
 
   test('grip visible; keyboard focus + Space expands the sheet', async ({ page }) => {
     await page.goto('/')
-    const grip = page.locator('[data-rail-grip]')
+    const grip = page.locator('[data-console-grip]')
     await expect(grip).toBeVisible()
 
-    // .Controls / .SheetToggle live in the <han-rail> shadow — Playwright
+    // .Controls / .SheetToggle live in the <han-console> shadow — Playwright
     // pierces open shadow roots for CSS locators.
     const scroll = page.locator('.Controls')
     const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
@@ -251,7 +251,7 @@ test.describe('metrics — weight slider + writing-mode switch', () => {
   })
 
   test('floating 直排 pill → main.han[data-writing=vertical]', async ({ page }) => {
-    // the 橫排/直排 switch moved out of the rail to page chrome
+    // the 橫排/直排 switch moved out of the console to page chrome
     // (writing-switch.js) — preview state, not a han.css variable.
     await page.goto('/')
     const main = page.locator('main.han')

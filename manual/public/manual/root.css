@@ -2,7 +2,7 @@
 
 /**
  * Docs page shell — the palette alias layer, the element base, the
- * `body.ManualPage` grid, and where the <han-rail> toolbar sits in it.
+ * `body.ManualPage` grid, and where the <han-console> toolbar sits in it.
  */
 
 /* ─── design tokens ────────────────────────────────────────────────
@@ -91,7 +91,7 @@ body.ManualPage {
     font-family: var(--han-font-default);
   }
 
-  /* ≥50em — header / han-rail / (sidebar | main) / footer. The rail is a
+  /* ≥50em — header / han-console / (sidebar | main) / footer. The console is a
      full-width toolbar row under the Masthead; both span 1/-1 so the
      sidebar+main pair flows into the 1fr content row below. */
   @media (min-width: 50em) {
@@ -103,15 +103,15 @@ body.ManualPage {
 }
 
 
-/* ─── <han-rail> configurator (form="top" toolbar) ─────────────────────
+/* ─── <han-console> configurator (form="top" toolbar) ─────────────────────
  * Full-width row under the Masthead; sticky so readers can tweak while
  * scrolled into the text. `:not(:defined)` hides it until the component
  * upgrades (no FOUC). Its shadow owns the control styling (tokens.css +
- * controls.css + rail.css, fetched on connect); this rule only places
+ * controls.css + console.css, fetched on connect); this rule only places
  * the host box on the page. */
-han-rail {
+han-console {
   grid-column: 1 / -1;
-  /* Collapsed by default — the docs read first. The RailToggle in the
+  /* Collapsed by default — the docs read first. The ConsoleToggle in the
      masthead opens it. block-size animates from 0; overflow clips the
      tall control set while closed. */
   position: sticky;
@@ -123,20 +123,20 @@ han-rail {
   backdrop-filter: blur(10px);
   transition: max-block-size 260ms ease;
 }
-han-rail:not(:defined) { visibility: hidden; }
+han-console:not(:defined) { visibility: hidden; }
 
 /* Open — capped height with internal scroll so the (tall) fonts group
    never eats the whole viewport; a hairline marks the toolbar edge. */
-body.ManualPage:has(.RailToggle input:checked) han-rail {
+body.ManualPage:has(.ConsoleToggle input:checked) han-console {
   max-block-size: min(60vh, 32rem);
   overflow-y: auto;
   border-block-end: 1px solid var(--rule);
 }
 
-/* Masthead RailToggle — matches the theme toggle's button box; the
+/* Masthead ConsoleToggle — matches the theme toggle's button box; the
    checkbox itself is visually hidden, the label carries the icon.
    Tinted when open so its state reads. */
-.RailToggle {
+.ConsoleToggle {
   display: inline-flex;
   align-items: center;
   cursor: pointer;
@@ -149,7 +149,7 @@ body.ManualPage:has(.RailToggle input:checked) han-rail {
 }
 
 @media (max-width: 49.99em) {
-  /* Below the grid breakpoint the rail flows inline under the masthead;
+  /* Below the grid breakpoint the console flows inline under the masthead;
      drop the sticky so it doesn't fight the narrow-screen nav drawer. */
-  han-rail { position: static; }
+  han-console { position: static; }
 }

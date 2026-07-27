@@ -21,8 +21,8 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 # Same reasoning for the un-hashed runtime files: their URLs are baked into
-# JS (the rail fetches `home/controls.css` into its shadow root and imports
-# `home/rail-templates.js`; `home.js` pulls the `home/*.js` modules and
+# JS (the console fetches `home/controls.css` into its shadow root and imports
+# `home/console-templates.js`; `home.js` pulls the `home/*.js` modules and
 # `vendor/*`), so they can't be hashed without a bundler rewriting module
 # specifiers. Revalidate instead.
 /home/*

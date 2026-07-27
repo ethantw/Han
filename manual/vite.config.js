@@ -161,11 +161,11 @@ const HOME_SECTIONS = [
   'manifesto', 'station-semantics', 'station-type', 'station-lines',
   'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing',
 ]
-// The rail is chrome, not a station — it sits OUTSIDE <main class="han">
-// (mounted into `<aside data-rail-mount>`), so it stays out of
-// HOME_SECTIONS and gets its own `{{ railSection }}` token instead of a
+// The console is chrome, not a station — it sits OUTSIDE <main class="han">
+// (mounted into `<aside data-console-mount>`), so it stays out of
+// HOME_SECTIONS and gets its own `{{ consoleSection }}` token instead of a
 // `<name>Section` one derived from the HOME_SECTIONS list.
-const HOME_RAIL = path.resolve(HOME_DIR, 'rail.html')
+const HOME_CONSOLE = path.resolve(HOME_DIR, 'console.html')
 // Per-section demo sources. `index.html` carries the page shell + a
 // `<!--demos: slug1 slug2 …-->` declaration; each `<slug>.md` holds the
 // inner content of one demo. `renderDemoPage()` stitches them into
@@ -205,7 +205,7 @@ async function syncFramework() {
 // hand-committed minified blob (package.json stays the single version
 // source). Emitted to `dist/vendor/` at build (closeBundle) and served
 // straight from node_modules by dev middleware — same pattern as the
-// generated rail-templates module.
+// generated console-templates module.
 const NODE_MODULES = path.resolve(here, 'node_modules')
 const VENDOR_ASSETS = {
   'marked.esm.js': path.join(NODE_MODULES, 'marked', 'lib', 'marked.esm.js'),
@@ -270,12 +270,12 @@ async function bundleHomeCss() {
  * dead weight — drop every `.css` under `common/` and `home/` except the
  * ones something still fetches by URL:
  *
- *   • `home/controls.css` — dual-homed, `<han-rail>` fetches it into its
+ *   • `home/controls.css` — dual-homed, `<han-console>` fetches it into its
  *     shadow root (constructed stylesheets can't resolve `@import`, so it
  *     must stay a standalone file).
  *
  * Its bytes therefore ship twice: inlined here for the light DOM's
- * critical path, plus the standalone the rail fetches async after the
+ * critical path, plus the standalone the console fetches async after the
  * gate. ~16KB of overlap, brotli'd and cached — cheaper than a
  * waterfall on first paint.
  */
@@ -308,8 +308,8 @@ async function pruneInlinedPartials() {
  * never outlive a deploy.
  *
  * Deliberately NOT hashed: anything a URL string inside JS points at —
- * `/han/han.js` (rail-config lazy-imports it), `/home/controls.css` (the
- * rail fetches it into its shadow root), `/home/rail-templates.js`,
+ * `/han/han.js` (console-config lazy-imports it), `/home/controls.css` (the
+ * console fetches it into its shadow root), `/home/console-templates.js`,
  * `/vendor/*`. Hashing those means rewriting module specifiers, which is a
  * bundler's job, not a rename step's.
  *
@@ -478,7 +478,7 @@ async function renderMarkdownTree() {
       pageSubtitle:      pageSubtitle,
       toggleNav:         escapeHtml(i18n.toggleNav),
       themeToggle:       escapeAttr(i18n.themeToggle),
-      railToggleLabel:   escapeAttr(i18n.railToggleLabel ?? '調校排版'),
+      consoleToggleLabel:   escapeAttr(i18n.consoleToggleLabel ?? '調校排版'),
       githubLabel:       escapeHtml(i18n.githubLabel),
       helpRefine:        i18n.helpRefine,
       homeLink:          escapeHtml(i18n.homeLink ?? 'Home'),
@@ -576,9 +576,9 @@ async function renderHomepage() {
       Object.entries(partials).map(([name, p]) => [`${camel(name)}Section`, applySubs(p.body, ctx)]),
     )
 
-    // The rail is now a `<han-rail>` component (see _home.html); its
-    // locale template comes from `home/rail-templates.js`
-    // (renderRailTemplatesSource) instead of an inline `{{ railSection }}`.
+    // The console is now a `<han-console>` component (see _home.html); its
+    // locale template comes from `home/console-templates.js`
+    // (renderConsoleTemplatesSource) instead of an inline `{{ consoleSection }}`.
     let html = applySubs(layout.body, { ...ctx, ...sections })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
 
@@ -591,39 +591,39 @@ async function renderHomepage() {
 }
 
 /**
- * Generate the `<han-rail>` shadow template module — `home/rail.html`
+ * Generate the `<han-console>` shadow template module — `home/console.html`
  * expanded once per homepage locale via the SAME `applySubs` machinery
  * (and the same trailing-`{{ }}` sweep) that `renderHomepage()` uses for
- * the section partials, so the two can't drift. `home/rail.html` (with
+ * the section partials, so the two can't drift. `home/console.html` (with
  * its own i18n block) stays the single source of truth; this just
  * pre-bakes the five expansions into an ESM module the component
  * imports at runtime:
  *
  *   export const TEMPLATES = { hant: '…', hans: '…', en: '…', ja: '…', ko: '…' }
  *
- * Emitted to `dist/home/rail-templates.js` at build time and served
+ * Emitted to `dist/home/console-templates.js` at build time and served
  * dynamically at the same URL in dev (middleware below) — never written
  * into the source tree, so git stays clean.
  */
-async function renderRailTemplatesSource() {
-  const rail = extractHomeI18n(await fs.readFile(HOME_RAIL, 'utf-8'))
+async function renderConsoleTemplatesSource() {
+  const source = extractHomeI18n(await fs.readFile(HOME_CONSOLE, 'utf-8'))
 
   const entries = HOME_LOCALE_SLUGS.map((locale) => {
-    const t = localizeHomeI18n(rail.dict, locale)
-    const html = applySubs(rail.body, t).replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
+    const t = localizeHomeI18n(source.dict, locale)
+    const html = applySubs(source.body, t).replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
     return `  ${JSON.stringify(locale)}: ${JSON.stringify(html)}`
   })
 
   return (
-    `// GENERATED by vite.config.js from home/rail.html × HOME_I18N.\n` +
+    `// GENERATED by vite.config.js from home/console.html × HOME_I18N.\n` +
     `// Do not edit — regenerated on every build / dev request.\n` +
     `export const TEMPLATES = {\n${entries.join(',\n')},\n}\n`
   )
 }
 
-async function emitRailTemplates() {
-  const src = await renderRailTemplatesSource()
-  const outPath = path.join(MANUAL_DIST, 'home', 'rail-templates.js')
+async function emitConsoleTemplates() {
+  const src = await renderConsoleTemplatesSource()
+  const outPath = path.join(MANUAL_DIST, 'home', 'console-templates.js')
   await fs.mkdir(path.dirname(outPath), { recursive: true })
   await fs.writeFile(outPath, src)
 }
@@ -772,11 +772,11 @@ function hanManualPlugin() {
     },
 
     // `dist/` exists only after the bundle is written; emit the
-    // <han-rail> template module here so it lands beside the copied
+    // <han-console> template module here so it lands beside the copied
     // public assets (dist/home/). The component fetches it at runtime —
     // it's a public/raw ESM asset, never part of rollup's graph.
     async closeBundle() {
-      await emitRailTemplates()
+      await emitConsoleTemplates()
       await emitVendor()
       await bundleHomeCss()
       // last: hashing reads the FINAL bytes of the bundled sheets
@@ -784,17 +784,17 @@ function hanManualPlugin() {
     },
 
     configureServer(server) {
-      // Serve the generated <han-rail> template module dynamically —
-      // regenerated per request so it tracks edits to home/rail.html and
+      // Serve the generated <han-console> template module dynamically —
+      // regenerated per request so it tracks edits to home/console.html and
       // HOME_I18N with the rest of the homepage re-render. Registered
       // before the static handler; the file never exists on disk in
       // dev, so nothing shadows it.
       server.middlewares.use(async (req, res, next) => {
         const pathname = (req.url ?? '').split('?')[0]
-        if (pathname !== '/home/rail-templates.js') return next()
+        if (pathname !== '/home/console-templates.js') return next()
         res.setHeader('content-type', 'text/javascript; charset=utf-8')
         res.setHeader('cache-control', 'no-store')
-        res.end(await renderRailTemplatesSource())
+        res.end(await renderConsoleTemplatesSource())
       })
 
       // Serve the vendored runtime ESM (marked / DOMPurify) straight from

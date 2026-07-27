@@ -11,7 +11,7 @@
  */
 
 /* ─── em-based type ramp inside the specimen ─────────────────────────
- * The rail's 字級 slider writes an inline `font-size` (px) on
+ * The console's 字級 slider writes an inline `font-size` (px) on
  * `main`; INSIDE it the `--fs-*` tokens re-resolve in em so every
  * heading/caption scales as a multiple of that base (ziano playground
  * pattern). The rem originals in home.css would pin to :root and
@@ -23,12 +23,12 @@
  * `--fs-*`-sized element. */
 
 main {
-  /* rail 度量以 CSS var 承接（rail-metrics.js／pre-paint restore 共用）。
+  /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
      `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
      零風險；偏差時 --fs-* 的 em 梯度隨之重解析（比照舊 inline font-size）。 */
-  font-size:   var(--rail-metric-size, inherit);
-  line-height: var(--rail-metric-leading, inherit);
-  font-weight: var(--rail-metric-weight, inherit);
+  font-size:   var(--console-metric-size, inherit);
+  line-height: var(--console-metric-leading, inherit);
+  font-weight: var(--console-metric-weight, inherit);
 
   --fs-heading: 1.5em;
   --fs-lede:    1.125em;
@@ -237,7 +237,7 @@ main {
  * consecutive-headings collapse (h1 straight onto h2), heading→paragraph,
  * paragraph→list and blockquote seams all belong to the han-prose layer.
  * Chrome only sets the frame and the type SCALE — never block margins,
- * which are exactly what the rail's prose switch reflows. */
+ * which are exactly what the console's prose switch reflows. */
 article.Dispatch {
   & {
     padding: 1.5rem 1.75rem 1.75rem;
@@ -287,7 +287,7 @@ article.Dispatch {
 
 
 /* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
-   `rail-metrics.js` sets `main.dataset.writing`) ═══════════════
+   `console-metrics.js` sets `main.dataset.writing`) ═══════════════
    Flips the WHOLE page vertical-rl — dramatic by design (owner
    request). Bounded block-size + horizontal scroll so it doesn't blow
    out the viewport; station④'s interactive snippet panel stays

@@ -1,35 +1,35 @@
 @charset "UTF-8";
 
 /**
- * <han-rail> PLACEMENT — the page's half of the rail contract.
+ * <han-console> PLACEMENT — the page's half of the console contract.
  *
- * The rail is a shadow-DOM web component; its internal skeleton, its own
+ * The console is a shadow-DOM web component; its internal skeleton, its own
  * background/hairlines and the sheet collapse live in the component's
- * sheets (`components/rail.css`). This file only positions the box,
+ * sheets (`components/console.css`). This file only positions the box,
  * keyed off the component's public `form` (side|top) and the collapse
  * checkbox. The loader that fills it pre-upgrade is in
- * `home/rail-loader.css`.
+ * `home/console-loader.css`.
  *
- * Side form (≥52rem): the rail owns a FULL-viewport-height left column
+ * Side form (≥52rem): the console owns a FULL-viewport-height left column
  * (`grid-row: 1 / -1`, 100dvh sticky, internal scroll) so it reaches the
  * true viewport top — Topbar, main and footer all live in column 2, no
- * header strip above the rail. Collapsing animates the column width to 0
+ * header strip above the console. Collapsing animates the column width to 0
  * and the right column slides left to fill; it is never an overlay, so
- * content is never covered. `--rail-col` is the animated column width
- * (0 when collapsed) and `.RailToggle` reads it too, so the handle
+ * content is never covered. `--console-col` is the animated column width
+ * (0 when collapsed) and `.ConsoleToggle` reads it too, so the handle
  * tracks the boundary.
  *
  * Top form: normal-flow rows, sticky at ≥64rem. Below 52rem both forms
  * collapse to the bottom sheet and the collapse doesn't apply.
  */
 
-body:has(han-rail[form="side"]) {
-  /* Side form ≥52rem — the rail is a full-height column; header + main +
-     everything else sit in column 2. `--rail-col` drives the (animated)
+body:has(han-console[form="side"]) {
+  /* Side form ≥52rem — the console is a full-height column; header + main +
+     everything else sit in column 2. `--console-col` drives the (animated)
      track width; the collapsed override zeroes it. */
   @media (min-width: 52rem) {
     & {
-      --rail-col: 280px;
+      --console-col: 280px;
       display: grid;
       /* `minmax(0, 1fr)` not a bare `1fr`: a `1fr` track floors at the
          content column's min-content, and the hero's clipped `.Outline`
@@ -39,9 +39,9 @@ body:has(han-rail[form="side"]) {
          drops the min-content floor so the track tracks the viewport;
          `min-inline-size: 0` on `main` (below) is the same guard on
          the grid ITEM. (grid minmax — Baseline 2020.) */
-      grid-template-columns: var(--rail-col) minmax(0, 1fr);
+      grid-template-columns: var(--console-col) minmax(0, 1fr);
       /* Explicit rows are load-bearing: `-1` in grid-row resolves against
-         the EXPLICIT grid only, so without this the rail's `1 / -1`
+         the EXPLICIT grid only, so without this the console's `1 / -1`
          collapses to row 1 and its 100dvh inflates that row (main
          starts a full viewport down). auto = Topbar, 1fr = main. */
       grid-template-rows: auto 1fr;
@@ -52,7 +52,7 @@ body:has(han-rail[form="side"]) {
     }
 
     > .Topbar  { grid-column: 2; }
-    > han-rail { grid-column: 1; grid-row: 1 / -1; }
+    > han-console { grid-column: 1; grid-row: 1 / -1; }
     /* `min-inline-size: 0` lets the content column shrink past its own
        min-content — the grid-item twin of the `minmax(0, 1fr)` track
        above; without it a wide/clipped descendant can still blow the
@@ -61,17 +61,17 @@ body:has(han-rail[form="side"]) {
 
     /* checked = collapsed — the checkbox is the single source of truth
        (dark-mode recipe); pre-paint script restores it, JS only persists. */
-    &:has(.RailToggle input:checked) { --rail-col: 0px; }
+    &:has(.ConsoleToggle input:checked) { --console-col: 0px; }
   }
 
-  /* 52–64rem — narrower rail column so it doesn't crowd main at
+  /* 52–64rem — narrower console column so it doesn't crowd main at
      tablet widths. Below 52rem both forms collapse to the sheet. */
   @media (min-width: 52rem) and (max-width: 63.9375rem) {
-    & { --rail-col: 240px; }
+    & { --console-col: 240px; }
   }
 }
 
-han-rail {
+han-console {
   /* Side form (≥52rem) — full-height sticky left column, internal scroll.
      `min-inline-size: 0` + clipped inline overflow let the grid shrink it
      onto the 0 track mid-collapse without its content spilling over main;
@@ -98,7 +98,7 @@ han-rail {
 
   /* <52rem — bottom sheet: both forms collapse to a viewport-anchored
      sheet. The sheet's hairline/shadow and the collapse itself are in
-     the shadow (components/rail.css); this only anchors the box. */
+     the shadow (components/console.css); this only anchors the box. */
   @media (max-width: 52rem) {
     position: fixed;
     inset-inline: 0;
@@ -108,20 +108,20 @@ han-rail {
   }
 }
 
-/* ─── RailToggle (collapse / expand the side rail) ───────────────────
- * Page chrome, NOT part of the rail component — a slim hairline handle at
+/* ─── ConsoleToggle (collapse / expand the side console) ───────────────────
+ * Page chrome, NOT part of the console component — a slim hairline handle at
  * the aside/content boundary, visible in BOTH states (the only way back
  * once collapsed). A real `<label>` + `<input type="checkbox">` (owner
  * call, dark-mode recipe): checked = collapsed, the body grid reads
- * `body:has(.RailToggle input:checked)` — layout is pure CSS,
- * `rail-collapse.js` only persists. Tracks the boundary via the
- * inherited `--rail-col` (0 when collapsed). Side form only: hidden on
+ * `body:has(.ConsoleToggle input:checked)` — layout is pure CSS,
+ * `console-collapse.js` only persists. Tracks the boundary via the
+ * inherited `--console-col` (0 when collapsed). Side form only: hidden on
  * the <52rem bottom sheet and for form="top" (rows, not a column). */
-.RailToggle {
+.ConsoleToggle {
   & {
     position: fixed;
     inset-block-start: 50%;
-    inset-inline-start: var(--rail-col, 280px);
+    inset-inline-start: var(--console-col, 280px);
     transform: translateY(-50%);
     z-index: 45;
     display: none;
@@ -168,6 +168,6 @@ han-rail {
 
   /* only the side form on a real column (≥52rem) shows the handle */
   @media (min-width: 52rem) {
-    body:has(han-rail[form="side"]) & { display: inline-flex; }
+    body:has(han-console[form="side"]) & { display: inline-flex; }
   }
 }

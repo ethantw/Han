@@ -2,10 +2,10 @@
  * Station④ snippet panel — the reference-code generator.
  *
  * The OUTPUT half of the old `configurator.js`, now a page-side
- * SUBSCRIBER: it listens for `<han-rail>`'s `han-config-change` event
+ * SUBSCRIBER: it listens for `<han-console>`'s `han-config-change` event
  * (bubbles + composed, so it surfaces to `document`) and rebuilds the
  * code panes from `detail.config`. This is the content of the future
- * `<han-snippet>` component — decoupled from the rail through the public
+ * `<han-snippet>` component — decoupled from the console through the public
  * event, so it can be lifted into its own element with zero rewiring.
  *
  * Rendering stays pure: codegen.js turns config into `{ lang, code }[]`,
@@ -62,7 +62,7 @@ const renderPanes = ($container, panes, $pm) => {
 }
 
 /* ── 「內嵌」分頁的資產抓取 ──
- * framework 的 minified bytes 是靜態檔案（跟 rail 模組開關讀的是同一批，見
+ * framework 的 minified bytes 是靜態檔案（跟 console 模組開關讀的是同一批，見
  * vite.config.js syncFramework()），內容不隨 config 變動——只有「抓哪幾個」
  * 隨模組開關變動。用 URL 當 key 快取，同一顆檔案在多次重繪之間只抓一次。 */
 const textCache = new Map()
@@ -145,7 +145,7 @@ export const initSnippet = ($root = document) => {
     if (configRef.current) renderOutput(configRef.current, ui)
   }
 
-  // The rail broadcasts the initial state on connect (source:'init') and
+  // The console broadcasts the initial state on connect (source:'init') and
   // on every change; we're the subscriber. Listen on document since the
   // event is composed + bubbling.
   document.addEventListener(
@@ -156,11 +156,11 @@ export const initSnippet = ($root = document) => {
     },
   )
 
-  // Safety net for the boot race: if the rail already dispatched before
+  // Safety net for the boot race: if the console already dispatched before
   // we subscribed, seed from its `config` getter.
-  const $rail = $root.querySelector('han-rail')
-  if ($rail?.config) {
-    configRef.current = $rail.config
+  const $console = $root.querySelector('han-console')
+  if ($console?.config) {
+    configRef.current = $console.config
     rerender()
   }
 

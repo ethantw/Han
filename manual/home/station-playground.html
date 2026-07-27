@@ -69,12 +69,12 @@
      watches han.css typeset it. Two radio tabs (preview default) mirror
      station④'s ViewTabs; `.Preview` supplies the framed-panel primitive,
      `.Playground` the editor-specific children. The preview is a plain
-     <article> INSIDE main.han, so the rail's `--han-*` config vars and the
+     <article> INSIDE main.han, so the console's `--han-*` config vars and the
      metric sliders reach it with zero wiring (prose layer auto-scopes to
      <article>). Render pipeline lives in home/playground.js:
      marked(Markdown, inline HTML passes through) → DOMPurify(sanitize) →
      article.innerHTML. The <textarea> ships the default sample; the module
-     restores localStorage over it on boot (rail Reset never touches it — it
+     restores localStorage over it on boot (console Reset never touches it — it
      is content, not config). -->
 <section id="station-playground" class="Station Playground" data-station="playground" data-ground="b" data-wm="格">
   <hgroup>

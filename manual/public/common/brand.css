@@ -134,9 +134,9 @@
 }
 
 /* The `.Toggle` switch component moved to `home/controls.css` so it's
-   adopted into the <han-rail> shadow (home.css isn't). The homepage
+   adopted into the <han-console> shadow (home.css isn't). The homepage
    still links controls.css, so any light-DOM `.Toggle` would still be
-   styled — but none exists now (the rail's toggles live in the shadow;
+   styled — but none exists now (the console's toggles live in the shadow;
    /old.html carries its own frozen copy). */
 
 /* The docs masthead's own lockup: no `.BrandGlyph` overlay (the 漢 is

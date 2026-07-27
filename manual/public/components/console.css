@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * <han-rail> shadow skeleton — the rail's OWN box (all forms) plus the
+ * <han-console> shadow skeleton — the console's OWN box (all forms) plus the
  * <52rem bottom-sheet internals. Adopted into the shadow root alongside
  * `tokens.css` (the `--_*` layer this file consumes) and `controls.css`
  * (the `.ControlGroup` / `.Field` / `.Toggle` / `.MetricSlider`
@@ -9,8 +9,8 @@
  *
  * PAGE-LAYOUT lives on the mounting page, NOT here: the side/top grid
  * (which also places `main`), sticky positioning, and the sheet's
- * fixed viewport anchoring are home.css rules on the `han-rail` element
- * (see home.css § han-rail). This file only styles what's INSIDE the
+ * fixed viewport anchoring are home.css rules on the `han-console` element
+ * (see home.css § han-console). This file only styles what's INSIDE the
  * shadow: the flex column, its background/hairlines, the controls
  * scroll, the grip, and the sheet expand/collapse.
  *
@@ -36,7 +36,7 @@
 }
 
 /* sr-only — duplicated from home.css because home.css isn't adopted into
-   the shadow; the rail template's <legend> hooks need it here too. */
+   the shadow; the console template's <legend> hooks need it here too. */
 .sr-only {
   position: absolute;
   inline-size: 1px;
@@ -89,7 +89,7 @@
 
 /* <52rem — bottom sheet internals. The host's fixed viewport anchoring
    (position / inset / z-index / max-block-size) is a home.css rule on
-   the `han-rail` element; here we only dress the sheet (hairline + drop
+   the `han-console` element; here we only dress the sheet (hairline + drop
    shadow) and drive the grip + controls collapse. */
 @media (max-width: 52rem) {
   :host {
