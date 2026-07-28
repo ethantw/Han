@@ -29,6 +29,30 @@ test('matches the hanging-punctuation visual baseline', async ({ page }) => {
   })
 })
 
+test('mirror: a close bracket before a hangable mark pays its ½em via letter-spacing', async ({ page }) => {
+  // `」，` — the close bracket keeps its trailing ½em because the following
+  // comma's glyph goes out of flow, so native trim can't squeeze it. On the
+  // auto→hang (native) path the squeezer is wrapped as a PLAIN inline h-char
+  // and pays the ½em with letter-spacing (v3's recipe: no justify drift, and
+  // trimmed at the line end). It must stay in flow — no margin, no abspos —
+  // so its own left-side squeeze survives.
+  await page.goto('/tests/e2e/fixtures/hanging-mirror.html')
+
+  const squeezer = page.locator('#target h-char[data-followed-by="hangable"]')
+  await expect(squeezer).toHaveCount(1)
+  await expect(squeezer).toHaveText('」')
+  await expect(squeezer).toHaveAttribute('data-punct', /close/)
+  // −0.5em at 18px = −9px, applied as letter-spacing (not a margin).
+  await expect(squeezer).toHaveCSS('letter-spacing', '-9px')
+  await expect(squeezer).toHaveCSS('margin-inline-end', '0px')
+  await expect(squeezer).toHaveCSS('position', 'static')
+
+  // the following comma is the wrapped hangable it repairs.
+  await expect(
+    squeezer.locator('+ h-char[data-punct~="hangable"] h-layer'),
+  ).toHaveCount(1)
+})
+
 test('the pair repair rides the ½em spacer, never a margin', async ({ page }) => {
   // `，『` loses its pair squeeze when the comma's glyph goes out of flow, and
   // the h-char pays that half em back itself. It MUST do so through the

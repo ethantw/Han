@@ -4,6 +4,7 @@ import { html } from 'hyperly/fp'
 import {
   refinePunctuation,
   refinePunctuationWithMode,
+  wrapHangable,
 } from '../line-adjustments/punctuation.ts'
 
 /** Install happy-dom globals so `isBrowserSide()` returns true. Returns a
@@ -425,4 +426,55 @@ test('followed-by: a blocked mark is neither hangable nor annotated', () => {
   const out = refine('auto')('<p>字。」字</p>')
   assert.doesNotMatch(out, /hangable/)
   assert.doesNotMatch(out, /data-followed-by/)
+})
+
+/* ─── preceded-by (mirror bug): squeeze-aware hang (auto → hang on native) ───
+ * `wrapHangable(true)` is what the auto-entry runs once the UA's native
+ * `text-spacing-trim` downgrades the recipe: squeeze IS wanted, so the
+ * squeezer before a wrapped hangable is wrapped too (plain inline) and marked
+ * `data-followed-by="hangable"` for CSS `letter-spacing`. */
+const refineSqueeze = (src: string) => html(wrapHangable(true)(src))
+
+test('preceded-by: 」 before hangable 、 is wrapped as a plain squeezer', () => {
+  // 對」，要 — 」 keeps its trailing ½em because the following 、is out of flow.
+  assert.equal(
+    refineSqueeze('<p>對」，要</p>'),
+    '<p>對'
+      + '<h-char data-punct="close end" data-followed-by="hangable">」</h-char>'
+      + '<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>'
+      + '要</p>',
+  )
+})
+
+test('preceded-by: an end mark 。 before hangable ， is a squeezer too', () => {
+  assert.equal(
+    refineSqueeze('<p>。，要</p>'),
+    '<p>'
+      + '<h-char data-punct="end" data-followed-by="hangable">。</h-char>'
+      + '<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>'
+      + '要</p>',
+  )
+})
+
+test('preceded-by: a Han char before a hangable is NOT wrapped', () => {
+  // only real squeezers pay the ½em; a plain ideograph has no trailing space.
+  assert.equal(
+    refineSqueeze('<p>甲，乙</p>'),
+    '<p>甲<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>乙</p>',
+  )
+})
+
+test('preceded-by: pure hang wraps only the hangable, no squeezer, no hook', () => {
+  // squeezeBefore=false → legacy shape; 」 stays a bare text node.
+  const out = html(wrapHangable(false)('<p>對」，要</p>'))
+  assert.equal(
+    out,
+    '<p>對」<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>要</p>',
+  )
+  assert.doesNotMatch(out, /data-followed-by="hangable"/)
+})
+
+test('preceded-by: idempotent — re-running leaves the wrappers untouched', () => {
+  const once = refineSqueeze('<p>對」，要</p>')
+  assert.equal(refineSqueeze(once), once)
 })

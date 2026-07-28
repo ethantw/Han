@@ -84,6 +84,25 @@ export const HANGABLE_CHARS = new Set([...'、，。．'])
 export const HANG_BLOCKING_CHARS = new Set([...PUNCT_CLOSE_CHARS, ...PUNCT_END_EXTRA])
 
 /**
+ * Marks whose TRAILING half-em the engine squeezes against a following mark —
+ * and can no longer once that following mark is a hangable wrapped in an
+ * out-of-flow `<h-layer>` (the mirror of the `data-followed-by` bug). In the
+ * `auto`-on-native path we wrap these as a PLAIN inline `<h-char>` so CSS can
+ * pay the half em back with `letter-spacing: -.5em` (han v3's recipe — trimmed
+ * at the line end, no `justify` drift, unlike a negative margin).
+ *
+ * Conservative set: the ten closing brackets + the comma/period family
+ * (`、，。．`, i.e. the hangable marks themselves), which unambiguously tsume
+ * against a following mark. The other sentence-enders (`：；？！︰`) are left
+ * OUT pending a proper pair-width measurement — a preceder that does NOT
+ * actually squeeze would be over-squeezed by half an em (the `PUNCT_
+ * INTERPUNCT_CHARS` lesson), so under-fixing a rare pair (`？，`) is the safe
+ * side. `ー` (長音符) has no side space and is excluded. See
+ * `docs/plans/hangable-after-close-bracket.md` § measurement.
+ */
+export const SQUEEZE_BEFORE_HANGABLE = PUNCT_CLOSE_CHARS + '、，。．'
+
+/**
  * Attribute naming the subtype of whatever sits immediately after this mark.
  * Mirrors `data-followed-by-adjacent-line` (semantics/adjacent-lines.ts): a
  * fact about the NEIGHBOUR lives in its own attribute, never in `data-punct`,
@@ -267,7 +286,8 @@ const wrapCompressible =
       }).join('')
     })
 
-const wrapHangable =
+/** Pure `hang` (no squeeze wanted): wrap only the hangable mark. Legacy shape. */
+const wrapHangableOnly =
   transform
     (optionsIgnoringHChar)
     (HANGABLE_PUNCT_WITH_NEXT)
@@ -277,8 +297,53 @@ const wrapHangable =
       + '</h-char>'
     )
 
-/** Mode → `Hyperly → Hype` dispatch. Pure value table, no side effects. */
-const dispatchByPunctMode = (mode: RefineMode): ((src: Hyperly) => Hype) =>
+/**
+ * `auto` downgraded to hang on a native-`text-spacing-trim` engine: squeeze IS
+ * wanted (the UA does it), but it dies at the seam where a hangable's abspos
+ * `<h-layer>` leaves the flow. Walk the run and additionally wrap the ONE
+ * squeezer immediately before each wrapped hangable as a plain inline
+ * `<h-char … data-followed-by="hangable">`, so CSS can pay the trailing ½em
+ * with `letter-spacing`. Everything else stays a bare text node — native
+ * trim-start handles it. Mirrors `wrapBoth`'s run walk (portion-safe indices).
+ */
+const wrapHangablePairs =
+  transform
+    (optionsIgnoringHChar)
+    (CJK_PUNCT_RUN_WITH_NEXT)
+    (portion => match => {
+      const runText = match.captures[0]
+      const runLen = runText.length
+      const nextAfterRun = match.captures[2] ?? ''
+      // Char at absolute run index k; one past the run is nextAfterRun, which
+      // is never CJK punct (runs are maximal) → never hangable, so a
+      // squeezer at the run's tail correctly never wraps.
+      const charAt = (k: number) =>
+        k < runLen ? runText[k] ?? '' : k === runLen ? nextAfterRun : ''
+      const isHangableAt = (k: number) =>
+        HANGABLE_CHARS.has(charAt(k)) && !HANG_BLOCKING_CHARS.has(charAt(k + 1))
+
+      return [...portion.text].map((ch, j) => {
+        const i = portion.indexInMatch + j
+        if (isHangableAt(i))
+          return `<h-char data-punct="hangable"${followedByAttr(charAt(i + 1))}>`
+            + `<h-layer>${ch}</h-layer></h-char>`
+        if (SQUEEZE_BEFORE_HANGABLE.includes(ch) && isHangableAt(i + 1))
+          return `<h-char data-punct="${classifyPunctuation(ch).join(' ')}"`
+            + ` ${FOLLOWED_BY}="hangable">${ch}</h-char>`
+        return ch
+      }).join('')
+    })
+
+/** Hang recipe, squeeze-aware. `true` (auto → hang on native) also wraps the
+ *  squeezer before each hangable; `false` (declared hang) is the minimal shape. */
+export const wrapHangable = (squeezeBefore: boolean) =>
+  squeezeBefore ? wrapHangablePairs : wrapHangableOnly
+
+/** Mode → `Hyperly → Hype` dispatch. Pure value table, no side effects.
+ *  `squeezeBefore` only matters for the `hang` recipe — it's the "declared
+ *  auto, downgraded to hang on a native engine" bit, so the recipe repairs the
+ *  squeeze the UA still wants; a declared `hang` passes `false`. */
+const dispatchByPunctMode = (mode: RefineMode, squeezeBefore: boolean): ((src: Hyperly) => Hype) =>
   mode === 'auto'
   ? wrapBoth
 
@@ -286,7 +351,7 @@ const dispatchByPunctMode = (mode: RefineMode): ((src: Hyperly) => Hype) =>
   ? wrapCompressible
 
   : mode === 'hang'
-  ? wrapHangable
+  ? wrapHangable(squeezeBefore)
 
   : hype
 
@@ -303,7 +368,10 @@ const syncCascadeIfBrowser = (mode: RefineMode) =>
 export const refinePunctuationWithMode = (mode: RefineMode) =>
   pipe<Hyperly, Hyperly, Hype>(
     syncCascadeIfBrowser(mode),
-    dispatchByPunctMode(mode),
+    // Explicit mode = literal intent: a declared `hang` wants no squeeze, so
+    // no squeezer wrapping. The squeeze-aware path lives only in the
+    // `refinePunctuation` auto-entry, which knows the engine downgraded it.
+    dispatchByPunctMode(mode, false),
   )
 
 /**
@@ -371,6 +439,8 @@ export const refinePunctuation = (src: Hyperly): Hype => {
 
   return pipe<Hyperly, Hyperly, Hype>(
     syncCascadeIfBrowser(declared),                  // cascade ← declared
-    dispatchByPunctMode(effectiveJSMode(declared)),  // JS      ← effective
+    // JS ← effective mode; the `squeezeBefore` bit is the declared intent the
+    // downgrade throws away (`auto` still wants squeeze, `hang` never did).
+    dispatchByPunctMode(effectiveJSMode(declared), declared === 'auto'),
   )(src)
 }

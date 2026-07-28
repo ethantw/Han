@@ -267,11 +267,11 @@
  * "unknown" isn't the honest answer here, unlike `hans` / `ja`, which
  * have no equivalent knob and keep the generic assumption above. Each of
  * the three values is a known, fixed glyph fact rather than a guess:
- *   webfont  Shanggu / Genki (尚古／源起) — centered. → off
- *   system   JP system fonts (Hiragino/Yu) standing in for heritage
- *            glyphs — side-biased (JP convention). → on
- *   off      the ugly generic TC system font (MS JhengHei / PMingLiU
- *            etc.) — centered. → off
+ *   webfont    Shanggu / Genki (尚古／源起) — centered. → off
+ *   system-ja  JP system fonts (Hiragino/Yu) standing in for heritage
+ *              glyphs — side-biased (JP convention). → on
+ *   off        the ugly generic TC system font (MS JhengHei / PMingLiU
+ *              etc.) — centered. → off
  * Both AND-operands query the ANCESTOR (never self), so this has the same
  * self-reference gap as the on/off pair above: an element that sets both
  * vars on itself won't see its own override reflected in its own state,
@@ -281,7 +281,7 @@
 @container style(--han-punctuation-hant: off) and (style(--han-use-heritage-glyphs-for-hant: webfont) or style(--han-use-heritage-glyphs-for-hant: off)) {
   :where(:lang(zh)) { --han-state-hanging-punctuation: off; }
 }
-@container style(--han-punctuation-hant: off) and style(--han-use-heritage-glyphs-for-hant: system) {
+@container style(--han-punctuation-hant: off) and style(--han-use-heritage-glyphs-for-hant: system-ja) {
   :where(:lang(zh)) { --han-state-hanging-punctuation: on; }
 }
 
@@ -364,39 +364,44 @@
       line-height: 1;
     }
 
-    /* Repair the pair spacing this wrapper destroys.
-     *
-     * `<h-layer>` is out of flow, so the glyph leaves the inline run and the
-     * engine can no longer squeeze the FOLLOWING mark against it — measured:
-     * `。「` sets 2em wrapped where the same text sets 1.5em unwrapped, for
-     * every one of the ten opening brackets. The following mark can't be
-     * styled instead: in the `hang` recipe (what every engine with native
-     * `text-spacing-trim` actually runs) it isn't wrapped at all, it's a bare
-     * text node. So the hangable h-char pays the half em back itself — the
-     * filler reserves ½em instead of 1em and the follower's full em lands on
-     * top of it, restoring 1.5em.
-     *
-     * `data-followed-by` is emitted only on hangable marks and only carries
-     * `open` / `middle` — `close` and `end` are precisely the characters that
-     * make a mark unhangable, so they can never appear here.
-     *
-     * The half em comes off the FILLER — swap the ½em face in for the 1em
-     * one — and NOT off a negative margin. Under `text-align: justify` a
-     * negative margin drags the text BEFORE the mark: the justifier sees a
-     * line whose content measures ½em short and stretches the whole line to
-     * make it up, so every character ahead of the mark slides along.
-     * Measured on a justified 24em column, ~0.45em of drift at the widths
-     * where the pair sits near the line end; the ½em filler shows none —
-     * it is bit-identical to the un-repaired wrapper there, and at other
-     * widths it pulls the line back onto the no-han.css baseline. (With the
-     * default `text-align: start` the two are indistinguishable, which is
-     * how the margin got written in the first place.) */
-    &:is([data-followed-by="open"], [data-followed-by="middle"])::after {
-      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
-    }
-
     h-layer {
       position: absolute;
     }
+  }
+}
+
+/* ─── 擠壓修正：只在「要擠壓」時（declared auto）─────────────────────
+ *
+ * A hangable mark's `<h-layer>` is out of flow, so the engine can no longer
+ * squeeze the mark that sits BESIDE it — on either side. Both repairs below
+ * exist only because squeeze is wanted, so they gate on the DECLARED
+ * `--han-punctuation-refinement: auto` (the cascade var carries the declared
+ * mode, before the native-engine downgrade to `hang`). A user who explicitly
+ * picks `hang` wants hanging without squeeze, so `」，` / `，「` stay
+ * full-width and neither repair fires. The `--han-state-hanging-punctuation:
+ * on` operand keeps it off wherever hanging isn't visually active (e.g. a MOE
+ * convention that centres marks) — there the h-layer isn't absolute, so
+ * nothing is broken to repair. */
+@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
+  /* FOLLOWING side (`，「`): the following open/middle mark is a bare text node
+   * (native trim path) — can't style it. The hangable pays the ½em from its
+   * OWN trailing filler: swap the ½em face in for the 1em one, so the
+   * follower's full em lands on top, restoring 1.5em. NOT a negative margin —
+   * under `text-align: justify` that drags the text before the mark (~0.45em
+   * on a 24em column); the filler is layout-honest content, no drift. */
+  h-char[data-punct~="hangable"]:is([data-followed-by="open"], [data-followed-by="middle"])::after {
+    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+  }
+
+  /* PRECEDING side (`」，`, the mirror): the preceding close/end squeezer keeps
+   * its trailing ½em because the engine can't trim it against the out-of-flow
+   * hangable. `wrapHangablePairs` wrapped that squeezer as a plain inline
+   * `<h-char … data-followed-by="hangable">` (staying in flow, so its OWN
+   * left-side squeeze still works); it pays the ½em with `letter-spacing`.
+   * han v3's recipe: trailing letter-spacing is trimmed at the line end (so
+   * hanging is untouched) and, unlike a negative margin, causes no `justify`
+   * drift. */
+  h-char[data-followed-by="hangable"] {
+    letter-spacing: -.5em;
   }
 }
