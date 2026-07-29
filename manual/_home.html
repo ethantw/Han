@@ -140,20 +140,18 @@
 </head>
 <body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
 <header>
-  <a class="Brand" data-size="lg" href="{{ homeUrl }}">
-    <!-- G3 字徽（favicon 同款）——三點水＝specificity 三級、括號＝rule
-         block、合成「漢」。fill/stroke 走 palette vars，自動隨主題明暗；
-         用 fill 非 color，故 fonts-gate 的 color:transparent 不影響它。 -->
+  <a class="Logo" href="{{ homeUrl }}">
     {{ logo }}
-    <small>漢字標準格式</small>
+    <small class="full-name">漢字標準格式</small>
     <small class="version">肆・〇</small>
   </a>
   <nav>
     <a href="{{ docsUrl }}">{{ manual }}</a>
-    <a href="https://github.com/ethantw/Han">GitHub</a>
+    <a href="https://github.com/hanzipro/han.css">GitHub</a>
     {{ langSwitcher }}
-    <label class="ThemeToggle">
-      <input type="checkbox" name="dark-mode" aria-label="{{ themeToggle }}" title="{{ themeToggle }}">
+    <label class="Toggle for-theme">
+      <input type="checkbox" name="dark-mode" />
+      <span title="{{ themeToggle }}">{{ themeToggle }}</span>
       <!--
         One job: restore the checkbox's checked state the instant it's
         parsed — before first paint — so `:root:has(input:checked)`

@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /**
  * `.Brand` — the 漢.css wordmark, shared by the homepage (Topbar + hero
  * crown) and the docs masthead.
@@ -22,6 +27,47 @@
  * and is pixel-identical to the loaded glyph after.
  */
 
+/* Metrics-only face — borrowed for its overridden line metrics, worn by the
+ * ONE atom whose glyph it cannot steal.
+ *
+ * `.Brand` is a baseline-aligned flex line, so the baseline's offset inside
+ * the box is `max(ascent)` over its atoms — and that JUMPED when the webfont
+ * swapped in (measured at the hero's 32px: the 「.」 and `css` sat 0.1875em /
+ * 6px lower before the swap, and the whole wordmark re-settled). Declaring an
+ * always-available local face FIRST on `[data-part="mark"]` makes it that
+ * atom's "first available font", pinning its ascent at a constant 1.151em —
+ * the largest in the line at every size — so `max(ascent)`, and with it the
+ * baseline, can no longer move.
+ *
+ * It rides the mark ALONE on purpose. A metrics face has to keep real glyph
+ * coverage to be picked up at all (measured: adding a `unicode-range` that
+ * matches nothing hands the metrics straight back to the next family), so
+ * anywhere else in the wordmark it would PAINT — the 「.」 and `css` came out
+ * of Helvetica. The mark holds a single 漢, which no Latin face covers, so the
+ * glyph falls through to the real stack untouched (and paints transparent
+ * anyway — the SVG is what you see).
+ *
+ * The percentages are calibrated, not copied from Shanggu's hhea: Chrome
+ * inflates an override face's used ascent by 0.15×(ascent+descent) (measured:
+ * 50%→0.618, 80%→0.963, 100%→1.193, 115.1%→1.367em), so 96.4% is what lands
+ * on Shanggu's 1.151. Exactness isn't load-bearing — `home/brand-glyph.js`
+ * measures the baseline and pins the glyph to it whatever these resolve to;
+ * the percentages only decide where the wordmark sits, and matching Shanggu
+ * keeps that where it has always been. If none of the `local()` faces
+ * resolve, the face is unavailable and we fall back to the old behaviour —
+ * never worse. */
+@font-face {
+  font-family: 'Brand Metrics';
+  src:
+    local('Helvetica'),
+    local('Arial'),
+    local('DejaVu Sans')
+  ;
+  ascent-override: 96.4%;     /* → used 1.151em, = Shanggu hhea 1151/1000 */
+  descent-override: 28.6%;    /* → used 0.286em, = |−286|/1000 (1:1, no fudge) */
+  line-gap-override: 0%;
+}
+
 .Brand {
   /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
    * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
@@ -39,6 +85,7 @@
     gap: 0;
     text-decoration: none;
     line-height: 1;
+    animation: fade-in .25s ease-out 1s both;
   }
 
   /* G3 字徽——favicon 同款符號，字標左側。fill/stroke 走 palette，隨主題
@@ -72,7 +119,7 @@
      this. */
   [data-part="mark"] {
     position: relative;
-    font-family: var(--han-font-alternative);
+    font-family: 'Brand Metrics', var(--han-font-alternative);
     font-weight: 600;
     color: transparent;
   }
@@ -86,9 +133,20 @@
      * mask 空盒＋vertical-align 完全 font-independent，惟此 <path> 被
      * fonts-gate.js 描邊動畫 clone，必須維持真 inline SVG，故走此路。 */
     position: absolute;
-    inset-block-start: calc(
+
+    /* MEASURED at runtime — `--brand-glyph-top` comes from
+     * home/brand-glyph.js. The baseline's offset inside this box is set by the
+     * FIRST AVAILABLE font's metrics, so it MOVES when the webfont swaps in:
+     * measured 0.750em under the serif fallback (Hiragino Mincho ProN) against
+     * Shanggu's 0.933em, which left the glyph hanging 0.182em (4.4px at the
+     * Topbar's 24px) below the text until the swap snapped it up. Measuring
+     * glues it to the real baseline in BOTH states, on any engine and any
+     * fallback — CSS can't read hhea, so no constant can do that.
+     * The calc() is the no-JS fallback: the same expression with Shanggu's own
+     * hhea baked in, i.e. correct once the webfont is there. */
+    inset-block-start: var(--brand-glyph-top, calc(
       0.5lh + (var(--brand-line-ascent) - var(--brand-line-descent)) / 2 - var(--brand-glyph-baseline)
-    );
+    ));
     inset-inline-start: 0;
     block-size: 1em;
     inline-size: 1em;

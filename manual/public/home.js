@@ -18,6 +18,8 @@
  *   • `initConsoleCollapse` — the `.ConsoleToggle` handle that opens/closes the
  *     side console's column (`<han-console collapsed>`, a page-LAYOUT hook).
  *   • `initLangSwitcher` / `initTheme` — top-nav chrome, unchanged.
+ *   • `initBrandGlyph` — measures the wordmark's baseline so the overlay
+ *     漢 SVG stops sinking while the webfont is still loading.
  *
  * `initTheme` persists the masthead dark-mode checkbox to
  * `localStorage` (the checkbox's own initial state is restored by a
@@ -26,6 +28,7 @@
 
 import { initLangSwitcher } from '/home/lang-switcher.js'
 import { initTheme } from '/home/theme.js'
+import { initBrandGlyph } from '/home/brand-glyph.js'
 // <han-console> is NOT statically imported — it's dynamic-imported at
 // gate-open (below) so its module graph + 3 shadow sheets don't compete
 // with the main content / the stroke ceremony's thread. Until it upgrades,
@@ -71,6 +74,11 @@ const initInstallChips = () => {
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
   initTheme()
+  // Wordmark 漢 — measure where the baseline actually is and pin the overlay
+  // SVG to it, in the fallback state AND again after the webfont swap. First
+  // in the boot order because it's above the fold and its CSS fallback value
+  // is only right on the post-swap side (see home/brand-glyph.js).
+  initBrandGlyph()
   // <han-console> self-initializes on connect (async: adopt sheets → inject
   // template → dispatch the initial han-config-change). Boot order:
   // demo-lang borrows its `reapplyFallbacks`; the snippet subscribes to
@@ -90,13 +98,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsoleCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
-  // reflect <han-console>'s module switches onto <html> — page CSS can't see
-  // a <link>'s disabled state, and station①'s specimen has to follow it
-  initModuleState()
   // station①'s 甲式 row: re-stamp the adjacent-line gap han.js's default pass
   // doesn't cover for <cite>. Must run AFTER han.js's own pass has set
   // `[data-adjacent-lines-refined]` — han.js is a separate early <script
   // type="module"> in _home.html, so by DCL it has already run.
+  // reflect <han-console>'s module switches onto <html> — page CSS can't see
+  // a <link>'s disabled state, and station①'s specimen has to follow it
+  initModuleState()
   initWavyCiteGap()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
