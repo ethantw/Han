@@ -146,6 +146,7 @@
   /* layout — ziano's calmer measure + fluid gutter */
   --max-w-layout: 68rem;
   --gutter: clamp(1rem, 4vw, 2rem);
+  --h-header: 4rem;
 
   /* Terminal-dark code panel — theme-INVARIANT in both modes (owner-
      approved, mirrors ziano's --palette-ink usage). Needs a fixed faint

@@ -42,27 +42,6 @@
     ja: 'テーマ切り替え',
     ko: '테마 전환',
   },
-  pgWritingLabel: {
-    hant: '書寫方向',
-    hans: '书写方向',
-    en: 'Writing mode',
-    ja: '書寫方向',
-    ko: '書寫方向',
-  },
-  pgWritingHorizontal: {
-    hant: '橫排',
-    hans: '横排',
-    en: 'Horizontal',
-    ja: '橫排',
-    ko: '橫排',
-  },
-  pgWritingVertical: {
-    hant: '直排',
-    hans: '直排',
-    en: 'Vertical',
-    ja: '直排',
-    ko: '直排',
-  },
   consoleCollapse: {
     hant: '收合面板',
     hans: '收合面板',
@@ -220,17 +199,6 @@
     })
   </script>
 </label>
-
-<!-- 橫排/直排 preview switch — floating pill, bottom-right. Writing mode
-     is PREVIEW state, not a han.css variable, so it lives OUTSIDE the
-     configurator console (owner call); writing-switch.js writes
-     main's `data-writing`, pure-CSS vertical mode reacts
-     (stations.css). -->
-<fieldset class="WritingSwitch" data-writing-switch>
-  <legend class="sr-only">{{ pgWritingLabel }}</legend>
-  <label><input type="radio" name="writing-mode" value="horizontal" checked>{{ pgWritingHorizontal }}</label>
-  <label><input type="radio" name="writing-mode" value="vertical">{{ pgWritingVertical }}</label>
-</fieldset>
 
 <main lang="{{ htmlLang }}">
 <script>

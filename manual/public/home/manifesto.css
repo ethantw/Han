@@ -1,24 +1,6 @@
 @charset "UTF-8";
 
-/**
- * The hero — `.Manifesto`.
- * Contract: docs/plans/homepage-v2-implementation.md § Hero.
- *
- * The Manifesto sits inside `main`, where `station-frame.css` re-declares
- * the `--fs-*` ramp in `em` so the console's size slider scales it — the
- * hero's copy tracks the live specimen size by design. The phrase lines
- * take a hero-LOCAL clamp rather than a ramp step (contract § Hero
- * permits it), which keeps the h1 box itself at the base step so the
- * Brand crown reads as a subtitle instead of inheriting display scale.
- *
- * The one-shot entrance below is what runs on a no-JS page. When
- * `fonts-gate.js` is live it suppresses this and re-runs it at gate-open
- * — see `home/gate.css`.
- */
-
-/* ─── Manifesto ───────────────────────────────────────────────────── */
-
-@keyframes hero-rise {
+@keyframes manifesto-rise {
   from { opacity: 0; transform: translateY(0.5rem); }
   to   { opacity: 1; transform: translateY(0); }
 }
@@ -30,13 +12,11 @@
 
 .Manifesto {
   & {
-    margin-inline: auto;
-    padding: 7rem var(--gutter) 5.5rem;
-    /* Own stacking context so the z-index:-1 outline lands under the copy
-       but above the page ground; `overflow: clip` (Baseline 2023) crops
-       the oversized glyph so it never forces horizontal scroll. */
     position: relative;
     isolation: isolate;
+    margin-inline: auto;
+    padding-block: 7rem 5.5rem;
+    background-color: var(--palette-bg);
     overflow: clip;
   }
 
@@ -51,13 +31,17 @@
       font-size: clamp(2.5em, 8vw, 4.5em);
       font-weight: 400; /* ziano display weight — restrained, not bold */
       line-height: 1.25;
+      text-wrap: balance;
       letter-spacing: -0.015em;
       color: var(--palette-text);
     }
 
     /* accent hook for the first phrase — a pseudo, so the DOM stays
        free of a span whose only job is colour (css-naming rule 3) */
-    &::first-line { color: var(--palette-accent); }
+    &::first-line,
+    h-char[data-punct]:has(~ br:first-of-type) {
+      color: var(--palette-accent);
+    }
 
     /* the wordmark crown sits on its own line above the phrases */
     .Brand {
@@ -67,20 +51,9 @@
       font-size: 2rem;
       display: flex;
     }
-
-    /* `.Tagline` is a real span so the crown beside it can be excluded
-       from the entrance and stay lit through the gate. `display: block`
-       gives it its own line AND a transformable box for hero-rise —
-       transforms don't apply to inline boxes. `text-wrap: balance`
-       (Baseline 2024) stops the wrapped phrase orphaning a character. */
-    .Tagline {
-      display: block;
-      line-height: 1.25;
-      text-wrap: balance;
-    }
   }
 
-  .Lede {
+  h1 + p {
     margin: 0 0 1.25rem;
     max-inline-size: 28em;
     font-family: var(--han-font-alternative);
@@ -89,7 +62,7 @@
     color: var(--palette-text);
   }
 
-  .Dogfood {
+  .dogfood {
     margin: 0 0 2.25rem;
     max-inline-size: 38em;
     font-family: var(--han-font-default);
@@ -97,7 +70,16 @@
     color: var(--palette-supplement-text);
   }
 
-  .InstallChip { margin-block-end: 2.5rem; }
+  .InstallChip {
+    & {
+      margin-block-end: 2.5rem;
+      font-size: 1.25rem;
+    }
+    code {
+      all: revert-layer;
+      color: var(--palette-accent);
+    }
+  }
 
   /* The 漢 watermark: inline SVG stroke paths (generated into
      manifesto.html by scripts/stroke-animation/), sized like the text
@@ -105,13 +87,14 @@
      became size-derived. */
   .Outline {
     & {
-      --wm-size: clamp(14rem, 40vw, 30rem);
+      --size: clamp(14rem, 90vh, 72rem);
       position: absolute;
-      inset-block-start: calc(var(--wm-size) * -0.15);
-      inset-inline-end: calc(var(--wm-size) * -0.05);
+      inset-inline-end: -.0625em;
+      inset-block-start: 0;
       z-index: -1;
       margin: 0;
-      inline-size: var(--wm-size);
+      inline-size: 1em;
+      font-size: var(--size);
       pointer-events: none;
       user-select: none;
     }
@@ -136,39 +119,8 @@
     }
   }
 
-  .VerticalLede {
-    /* ≥68rem only — below that it would collide with the copy measure
-       and the hero degrades to the horizontal lede alone. */
-    & { display: none; }
-
-    @media (min-width: 68rem) {
-      display: block;
-      position: absolute;
-      /* PHYSICAL top/right, deliberately. This box is itself
-         `writing-mode: vertical-rl`, and per spec an abs-positioned
-         element resolves its LOGICAL insets in its OWN writing mode —
-         `inset-block-start` would rotate to the right edge and
-         `inset-inline-end` to the bottom, pinning the column to the
-         hero's bottom-right instead of beside the headline. */
-      top: 7rem;
-      right: 1.5rem;
-      margin: 0;
-      font-family: var(--han-font-alternative);
-      font-size: var(--fs-small);
-      line-height: 1.9;
-      color: var(--palette-supplement-text);
-      writing-mode: vertical-rl;
-    }
-  }
-
-  /* Reserve the inline-end lane for the vertical lede so the copy never
-     runs under it — same breakpoint as the lede itself. */
-  @media (min-width: 68rem) {
-    & { padding-inline-end: 6rem; }
-  }
-
-  @media (max-width: 640px) {
-    & { padding: 5rem var(--gutter) 4rem; }
+  @media (max-width: 20rem) {
+    padding-block: 5rem 4rem;
   }
 
   /* One-shot entrance: each block rises + fades in on load. The settled
@@ -178,15 +130,15 @@
      final frame. No looping animation (contract § Motion). The Brand
      crown is excluded on purpose: it's the logo, lit from first paint. */
   @media (prefers-reduced-motion: no-preference) {
-    .Tagline,
-    .Lede,
-    .Dogfood,
+    h1,
+    h1 + p,
+    .dogfood,
     .InstallChip {
-      animation: hero-rise 0.6s ease-out both;
+      animation: manifesto-rise .6s ease-out 1s both;
     }
-    .Tagline     { animation-delay: 0.08s; }
-    .Lede        { animation-delay: 0.16s; }
-    .Dogfood     { animation-delay: 0.24s; }
+    h1           { animation-delay: 0.08s; }
+    h1 + p       { animation-delay: 0.16s; }
+    .dogfood     { animation-delay: 0.24s; }
     .InstallChip { animation-delay: 0.32s; }
 
     /* The watermark writes itself in stroke by stroke, in real stroke

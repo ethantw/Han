@@ -28,8 +28,8 @@
   /* the editor may bleed one gutter past the station measure — a wider
      canvas for typing. Only where the station is centred (≥ its max
      width ＋ two gutters) so it never forces horizontal page scroll. */
-  @media (min-width: 74rem) {
-    &[data-playground] { margin-inline: calc(-1 * var(--gutter)); }
+  @container (min-width: 74rem) {
+    /* &[data-playground] { margin-inline: calc(-1 * var(--gutter)); } */
   }
 
   /* both panes share one box so the tab swap never jumps the panel height */

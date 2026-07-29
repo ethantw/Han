@@ -72,6 +72,39 @@ body:has(han-console[form="side"]) {
 }
 
 han-console {
+  /* Pre-upgrade skeleton — the console's panel + hairline, painted from the
+     LIGHT DOM while the 字徽 loader runs, so the loading state is a real
+     console-shaped box rather than a hole in the layout: only the FORM is
+     allowed to arrive late (owner spec, 2026-07-27). These are the same
+     tokens `components/tokens.css` feeds the shadow's `--_panel` / `--_rule`,
+     which is why the hand-over is invisible.
+
+     It has to be a mirror rather than the single source: for the host
+     element, document rules beat the shadow's own `:host` rules whatever
+     the specificity, so an unconditional copy here would silently seize
+     ownership of the box's dress from the component. `[data-ready]` is
+     stamped by han-console.js in the frame it attaches the shadow — NOT
+     `:defined`, which flips long before the sheets land and would leave
+     the loader sitting in that hole for the rest of the fetch. */
+  &:not([data-ready]) {
+    background: var(--palette-panel);
+    border-inline-end: 1px solid var(--palette-rule);
+
+    &[form="top"] {
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--palette-rule);
+    }
+
+    /* <52rem — the bottom sheet wears a top hairline and lifts off main */
+    @media (max-width: 52rem) {
+      & {
+        border-inline-end: 0;
+        border-block-start: 1px solid var(--palette-rule);
+        box-shadow: 0 -8px 24px color-mix(in srgb, var(--color-black) 8%, transparent);
+      }
+    }
+  }
+
   /* Side form (≥52rem) — full-height sticky left column, internal scroll.
      `min-inline-size: 0` + clipped inline overflow let the grid shrink it
      onto the 0 track mid-collapse without its content spilling over main;

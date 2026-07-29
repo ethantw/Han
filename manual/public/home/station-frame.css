@@ -23,20 +23,19 @@
  * `--fs-*`-sized element. */
 
 main {
+  /* inline-size, NOT size: the station padding query below only asks about
+     the inline axis, and `container-type: size` would additionally apply
+     SIZE containment — main's auto height then computes as if it had no
+     content (measured: 0px), collapsing the grid row that gives the sticky
+     <han-console> its travel, so the console scrolled away with the page. */
+  container-type: inline-size;
   /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
      `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
      零風險；偏差時 --fs-* 的 em 梯度隨之重解析（比照舊 inline font-size）。 */
   font-size:   var(--console-metric-size, inherit);
   line-height: var(--console-metric-leading, inherit);
   font-weight: var(--console-metric-weight, inherit);
-
-  --fs-heading: 1.5em;
-  --fs-lede:    1.125em;
-  --fs-body:    1em;
-  --fs-small:   0.875em;
-  --fs-compact: 0.8125em;
-  --fs-fine:    0.75em;
-  --fs-micro:   0.625em;
+  text-align: justify;
 }
 
 /* ─── Station plate (shared frame for the six `[data-station]` sections) ───
@@ -49,7 +48,7 @@ main {
  * lands above the ground but under the (non-positioned) content, and
  * `overflow:clip` (Baseline 2023) crops the oversized glyph to the box. */
 
-[data-station] {
+main > section {
   & {
     position: relative;
     isolation: isolate;
@@ -84,9 +83,14 @@ main {
     user-select: none;
   }
 
-  @media (max-width: 640px) {
-    padding-block: 4rem;
+  @container (inline-size >= 72rem) {
+    & {
+      padding-inline: calc((100vw - var(--console-col) - var(--max-w-layout)) / 2);
+    }
+  }
 
+  @media (max-width: 20rem) {
+    & { padding-block: 4rem; }
     &[data-ground="b"] { padding-block: 6rem; }
   }
 
@@ -96,7 +100,6 @@ main {
       max-inline-size: 38em;
       margin: 0 0 2.5rem;
     }
-
     /* eyebrow — mono label whose trailing hairline fills the line */
     p:first-child {
       display: flex;
@@ -117,7 +120,6 @@ main {
         background: var(--palette-rule);
       }
     }
-
     h2 {
       margin: 0;
       font-family: var(--han-font-alternative);
@@ -127,12 +129,19 @@ main {
       letter-spacing: 0.01em;
       color: var(--palette-text);
     }
-
     /* station④'s lede sits under the h2 in the same hgroup */
     h2 + p {
       margin: 0.75rem 0 0;
       font-family: var(--han-font-alternative);
       font-size: var(--fs-body);
+      line-height: 1.7;
+      color: var(--palette-supplement-text);
+    }
+    & ~ p {
+      margin: -2rem 0 2.75rem;
+      max-inline-size: 32em;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-lede);
       line-height: 1.7;
       color: var(--palette-supplement-text);
     }
@@ -205,10 +214,12 @@ main {
 /* ─── Prose (running specimen copy — measure ~38em for readability) */
 
 .Prose {
-  display: flex;
-  flex-direction: column;
-  gap: 1.375rem;
-  max-inline-size: 38em;
+  & {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between; 
+    align-items: flex-start;
+  }
 
   /* direct children only — a nested specimen article (.Dispatch) manages
      its own internals via the han-prose layer; chrome must not reach in
@@ -240,29 +251,31 @@ main {
  * which are exactly what the console's prose switch reflows. */
 article.Dispatch {
   & {
-    padding: 1.5rem 1.75rem 1.75rem;
+    --size: 30em;
+    padding: 1em 1.5em;
+    inline-size: var(--size);
+    font-family: var(--han-font-alternative);
+    font-size: .75rem;
+    line-height: 1.75;
     background: var(--palette-bg);
     border: 1px solid var(--palette-rule);
     border-radius: var(--r-3);
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
-    line-height: 1.9;
     color: var(--palette-text);
   }
-
+  &.vertical {
+    /* inline-size: auto;
+    block-size: var(--size); */
+    writing-mode: vertical-rl;
+  }
   h1 {
-    font-size: 1.25rem;
-    line-height: 1.7;
+    line-height: 1.5;
   }
-
-  h2 {
-    font-size: 1rem;
-    line-height: 1.7;
+  ol {
+    list-style: trad-chinese-informal;
   }
-
-  blockquote {
-    font-family: var(--han-font-accent);
-    color: var(--palette-supplement-text);
+  blockquote cite:last-child {
+    display: block;
+    text-align: end;
   }
 }
 
