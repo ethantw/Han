@@ -213,7 +213,7 @@ test.describe('mobile bottom sheet', () => {
 
     // .Controls / .SheetToggle live in the <han-console> shadow — Playwright
     // pierces open shadow roots for CSS locators.
-    const scroll = page.locator('.Controls')
+    const scroll = page.locator('han-console .Controls')
     const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
 
     const toggle = page.locator('.SheetToggle')
