@@ -24,6 +24,7 @@
 @import url('./common/brand.css');
 @import url('./common/lang-switcher.css');
 @import url('./common/theme-toggle.css');
+@import url('./common/module-state.css');
 @import url('./manual/root.css');
 @import url('./manual/masthead.css');
 @import url('./manual/search.css');

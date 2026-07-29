@@ -73,31 +73,88 @@ const applyTarget = (config, $target) => {
     : $target.style.removeProperty('font-family')
 }
 
-/* ── apply：模組／webfont link 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
+/* ── apply：模組／webfont 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
+ *
+ * 三個模組撥 han.css 自己的旗標，只有 fonts 仍卸載樣式表。理由是實測到的：
+ * `link.disabled` 的代價**與模組大小無關**，是「重新收集整份 document 的
+ * stylesheet」的固定稅。首頁 Chromium、longtask observer 收 600ms、7 次
+ * 中位數（docs/plans/module-switch-css-vars.md §5）：
+ *
+ *              link.disabled      旗標
+ *   semantics    439ms            123ms   --han-semantics
+ *   lines        405ms            163ms   兩個旋鈕（見下）
+ *   prose        405ms              0ms   --han-prose
+ *   fonts        478ms（開）        ——     維持 link
+ *
+ * prose.css 只有 134 行也照樣要價 405ms，這就是「稅」而不是「工」的證據。
+ * 走旗標的成本才跟實際工作量成正比。fonts 留在 link 上是刻意的：換字體必然
+ * 全頁重新 shape，那份工旗標省不掉，而它的 `@font-face` / `@property` 註冊
+ * 本來就不是旗標關得掉的東西。
+ *
+ * **生成碼不變**：加／減一行 `@import` 仍是這幾個開關要預覽的決定，codegen
+ * 一個字都沒動。旗標只是拿來把那個決定畫出來的手段。
+ *
+ * 已知的單向近似（真的少一行 import 會更徹底，走旗標則留著）：
+ *   · semantics.css 刻意放在 `@container style()` 之外的那幾條（`:root` 的
+ *     font-family 與 underline-offset，該檔稱之為 correctness fix 而非可退
+ *     出的加值）仍會套用。
+ *   · 各模組的 `@property` 註冊都還在。
+ *
+ * 唯一補過的一處落差是 lines 的擠壓：`--han-punctuation-refinement: none`
+ * 會落到 `text-spacing-trim: space-all`，比「沒 import」關得更徹底（瀏覽器
+ * 原生本來就會擠）。由 common/module-state.css 把它 revert 回 UA 值，那支
+ * 檔的註解有量測與 `&` 那半為何不可省。
+ *
  * `.disabled` 撥的是 stylesheet 的**啟用**狀態，不是下載——設 disabled 只讓該
  * sheet 不參與 cascade；CSS 檔本身照樣被 preload scanner 抓（實測 Chromium 如此，
  * 連初始 HTML 就帶 disabled 屬性也照抓）。
- *   · `<link data-han-module>` 依模組布林撥：off ＝ 該模組樣式**不套用**（鏡射
- *     生成碼少一行 import 的視覺結果，並非省下該檔的下載）。
  *   · `<link data-han-webfont>` 於 webfontDelivery==='none' 時 disable：其
  *     `@font-face` 不啟用 → 連帶**不抓 woff2 字型檔**（真正省到的是字型檔，
  *     不是那支 swap.css）。
  * 沒有這些 link 的頁面（元件單獨掛載）整層 no-op。 */
+
+/** 模組 → 撥法。`link` ＝ 卸載樣式表；其餘是要寫在 `:root` 上的旗標。
+ *  lines 需要兩個旋鈕才蓋得住整個模組：`--han-text-autospace` 管混排間隙，
+ *  `--han-punctuation-refinement` 管擠壓＋懸掛，且 han.js 讀同兩個 cascade
+ *  變數決定要不要插 `<h-iss>` / 包 `<h-char>`（iss.ts 的 `resolveISSMode`
+ *  顯式把 `no-autospace` 映到 JS enum 的 `none`）。所以旗標一撥，CSS 與 JS
+ *  同時停手 —— 這是 `link.disabled` 做不到的：樣式表卸載連帶帶走
+ *  `@property` 註冊，han.js 讀回空字串後退回 `normal` / `auto`，照樣插
+ *  spacer、照樣包 wrapper，只是沒樣式所以看不見。 */
+const MODULE_MECHANISM = {
+  semantics: { '--han-semantics': 'off' },
+  lines: {
+    '--han-text-autospace': 'no-autospace',
+    '--han-punctuation-refinement': 'none',
+  },
+  /* prose 的旗標種在 `:where(article)` 上（prose.css 刻意如此），`:root` 撥
+     不到它 —— 所以這裡只鏡射狀態屬性，實際的 `article { --han-prose: off }`
+     在 common/module-state.css。 */
+  prose: {},
+  fonts: 'link',
+}
+
 const applyModules = (config) => {
+  const { style, dataset } = document.documentElement
+  for (const [name, mechanism] of Object.entries(MODULE_MECHANISM)) {
+    const on = config[name] !== false
+    if (mechanism !== 'link') {
+      for (const [prop, offValue] of Object.entries(mechanism)) {
+        if (on) style.removeProperty(prop)
+        else style.setProperty(prop, offValue)
+      }
+    }
+    /* 狀態鏡射到 `<html>`：頁面 CSS 有東西可以選（prose 的 article 規則、
+       站①的 `[data-han-module-semantics='off']`），且四個模組一致，不管該
+       模組走的是 link 還是旗標。 */
+    const key = `hanModule${name[0].toUpperCase()}${name.slice(1)}`
+    if (on) delete dataset[key]
+    else dataset[key] = 'off'
+  }
   document.querySelectorAll('link[data-han-module]').forEach(($link) => {
-    /* `semantics` 走 han.css 自己的功能旗標，不卸載樣式表 —— 實測
-       `:root { --han-semantics: off }` 阻塞主執行緒 169ms，`link.disabled`
-       則是 434ms，而那個差額正好落在站①的修正動畫上，掉幀看得見。
-       生成碼不變：加／減 import 行仍是這個開關要預覽的決定。
-       近似的部分只有一處、且是單向的 —— semantics.css 刻意放在
-       `@container style()` 之外的那幾條（`:root` 的 font-family 與
-       underline-offset 修正，該檔稱之為 correctness fix 而非可退出的加值）
-       在這裡仍會套用，真的沒 import 則會一併消失。 */
-    if ($link.dataset.hanModule === 'semantics') return
+    if (MODULE_MECHANISM[$link.dataset.hanModule] !== 'link') return
     $link.disabled = !config[$link.dataset.hanModule]
   })
-  if (config.semantics) document.documentElement.style.removeProperty('--han-semantics')
-  else document.documentElement.style.setProperty('--han-semantics', 'off')
   document.querySelectorAll('link[data-han-webfont]').forEach(($link) => {
     $link.disabled = config.webfontDelivery === 'none'
   })

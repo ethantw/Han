@@ -1,29 +1,26 @@
 /**
- * Mirror `<han-console>`'s module switches onto `<html>` so the page's own CSS
- * can react to them.
+ * Two-way-bind a page-side checkbox to a `<han-console>` module switch, and
+ * keep the expensive half of the flip out of the animation's way.
  *
- * The console expresses «module off» by disabling its `<link
- * data-han-module>` — the honest mechanism, since that IS what not importing
- * the file looks like. But a stylesheet's `disabled` state is invisible to
- * selectors: nothing in CSS can ask «is han.semantics.css participating?».
- * And the module's own `--han-semantics` flag is no help either, because the
- * `@property` that registers it lives inside the very sheet that just left.
+ * The root attributes this file used to write (`data-han-module-*`) now come
+ * from `components/console-config.js` § applyModules — the console's own apply
+ * layer owns them, so they land on every page that mounts the component, not
+ * just this one, and stay in step with the flags it writes alongside them.
+ * What is left here is the proxy: the station's checkbox is not a second
+ * switch, it drives the real one.
  *
- * That gap had already produced a real fault. Station ① reserves the space
- * its marks occupy so the band doesn't reflow when they come and go
- * (home/station-semantics.css § the poem's marks fade rather than vanish),
- * and those declarations are page-level — so with the semantics module
- * switched off the 著重號 kept being painted, at full ink, by the page,
- * after the library had stopped offering it. The page was drawing a mark
- * han.css was no longer making.
- *
- * So: one attribute per module on the root, absent when on. Page CSS that
- * needs to follow a module now has something to select on, and there is one
- * source of truth instead of a control per station quietly contradicting the
- * console.
+ * Why an attribute exists at all: a stylesheet's `disabled` state is invisible
+ * to selectors — nothing in CSS can ask «is han.semantics.css
+ * participating?» — and the module's own `--han-semantics` flag is no help
+ * either, because the `@property` that registers it lives inside the very
+ * sheet that would have left. That gap had already produced a real fault:
+ * station ① reserves the space its marks occupy so the band doesn't reflow
+ * when they come and go (home/station-semantics.css § the poem's marks fade
+ * rather than vanish), and those declarations are page-level — so with the
+ * semantics module switched off the 著重號 kept being painted, at full ink,
+ * by the page, after the library had stopped offering it. The page was
+ * drawing a mark han.css was no longer making.
  */
-
-const MODULES = ['semantics', 'lines', 'prose', 'fonts']
 
 /** Page-side checkboxes that stand in for a console module switch. */
 const proxies = () => [...document.querySelectorAll('input[data-han-module-proxy]')]
@@ -40,15 +37,6 @@ const consoleControl = (name) =>
   document.querySelector('han-console')?.shadowRoot
     ?.querySelector(`[data-cfg-key="${name}"]`) ?? null
 
-const reflect = (config) => {
-  if (!config) return
-  MODULES.forEach((name) => {
-    const key = `hanModule${name[0].toUpperCase()}${name.slice(1)}`
-    if (config[name] === false) document.documentElement.dataset[key] = 'off'
-    else delete document.documentElement.dataset[key]
-  })
-}
-
 /**
  * Subscribed on `document` because the console's event is `composed` and
  * bubbles out of the shadow root — the same route `punct-lang.js` and
@@ -59,8 +47,7 @@ const reflect = (config) => {
 export const initModuleState = () => {
   document.addEventListener('han-config-change', (e) => {
     const config = e.detail?.config
-    reflect(config)
-    // …and pull the proxies into line. Includes the console's very first
+    // Pull the proxies into line. Includes the console's very first
     // broadcast on connect, which is what seeds them from a restored
     // localStorage config rather than from their markup default.
     if (config) {
@@ -74,17 +61,22 @@ export const initModuleState = () => {
   // …and push the other way, but NOT in the same frame as the local
   // animation.
   //
-  // Flipping a module means enabling or disabling a whole stylesheet, and
-  // that is expensive: measured on this page, one toggle blocks the main
-  // thread for 404–530ms (`longtask` observer; an attribute-only flip for
-  // comparison costs 81). Fired on `change`, that landed squarely on top of
-  // the diagram's 520ms correction and ate most of its frames.
+  // Flipping a module is expensive even now that semantics rides a flag
+  // instead of `link.disabled`: 439ms → 123ms of blocked main thread
+  // (`longtask` observer, medians —
+  // docs/plans/module-switch-css-vars.md §5; an attribute-only flip for
+  // comparison costs 81). 123ms is still four dropped frames, and fired on
+  // `change` they land squarely on the diagram's 520ms correction.
   //
   // So the cheap half goes first and the expensive half waits: set the root
   // attribute immediately — that is all the diagram reads, and it costs one
   // small restyle — let the animation play out, and only then press the
   // console's button. The hitch still happens; it just no longer happens
   // during motion, where it is the only place anyone can see it.
+  //
+  // The attribute written here is the same one applyModules owns. Writing it
+  // early is not a second source of truth: applyModules re-asserts the exact
+  // same value when `press()` lands, so the two can only ever agree.
   //
   // Only when switching OFF. Coming back on there is nothing local to
   // protect: removing the attribute hands `--settle` straight back to the

@@ -118,3 +118,105 @@ test.describe('module switches', () => {
     await expect.poll(refinement).toBe('hang')
   })
 })
+
+/**
+ * How «off» is expressed per module.
+ *
+ * Three of the four ride han.css's own flags rather than unloading their
+ * stylesheet, because `link.disabled` costs ~400ms of blocked main thread
+ * regardless of module size — it is the price of re-collecting the document's
+ * stylesheets, not of the module's rules (measured:
+ * docs/plans/module-switch-css-vars.md §5). What must not regress is the
+ * MAPPING: which module uses which mechanism, and that a flagged module's
+ * `<link>` is left alone. Deliberately coarse on the visual result — one
+ * observable per module is enough; the plan's §6 table is where the
+ * per-property fidelity lives.
+ */
+const rootStyle = (page: Page, prop: string) =>
+  page.evaluate((p) => document.documentElement.style.getPropertyValue(p), prop)
+
+test.describe('module switches · off is a flag, not an unloaded sheet', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/')
+  })
+
+  test('lines off writes both knobs on :root and leaves its <link> loaded', async ({ page }) => {
+    // Two knobs, not one: `--han-text-autospace` covers 混排間隙,
+    // `--han-punctuation-refinement` covers 擠壓 + 懸掛. han.js reads the same
+    // two off the cascade, so flipping them stands CSS and JS down together.
+    await page.locator('[data-cfg-key="lines"]').uncheck()
+    await expect.poll(() => rootStyle(page, '--han-text-autospace')).toBe('no-autospace')
+    await expect.poll(() => rootStyle(page, '--han-punctuation-refinement')).toBe('none')
+    expect(await moduleLinkDisabled(page, 'lines')).toBe(false)
+
+    await page.locator('[data-cfg-key="lines"]').check()
+    await expect.poll(() => rootStyle(page, '--han-text-autospace')).toBe('')
+    await expect.poll(() => rootStyle(page, '--han-punctuation-refinement')).toBe('')
+  })
+
+  test('lines off hands 擠壓 back to the browser rather than switching it off too', async ({
+    page,
+  }) => {
+    // `refinement: none` lands on `text-spacing-trim: space-all`, which is
+    // MORE than a missing import does — Chromium's UA default is `normal` and
+    // squeezes on its own. common/module-state.css reverts it. Asserted on
+    // the computed value rather than a measured width: the width depends on
+    // the loaded webfont, the flag does not.
+    const trim = () => page.$eval('article p', (el) => getComputedStyle(el).textSpacingTrim)
+
+    expect(await trim()).toBe('trim-start')
+    await page.locator('[data-cfg-key="lines"]').uncheck()
+    await expect.poll(trim).toBe('normal')
+    await page.locator('[data-cfg-key="lines"]').check()
+    await expect.poll(trim).toBe('trim-start')
+  })
+
+  test('prose off reaches <article>, which :root alone cannot', async ({ page }) => {
+    // prose.css seeds `--han-prose: on` on `:where(article)`, so a flag on
+    // `:root` is shadowed inside every article. The reach comes from
+    // common/module-state.css keying on the mirrored root attribute — this
+    // asserts the pair works end to end, since the flag alone would silently
+    // do nothing.
+    const align = () =>
+      page.$eval('article p', (el) => getComputedStyle(el).textAlign)
+
+    expect(await align()).toBe('justify')
+    await page.locator('[data-cfg-key="prose"]').uncheck()
+    await expect.poll(align).not.toBe('justify')
+    expect(await moduleLinkDisabled(page, 'prose')).toBe(false)
+
+    await page.locator('[data-cfg-key="prose"]').check()
+    await expect.poll(align).toBe('justify')
+  })
+
+  test('only fonts unloads its stylesheet', async ({ page }) => {
+    for (const mod of ['semantics', 'lines', 'prose', 'fonts']) {
+      await page.locator(`[data-cfg-key="${mod}"]`).uncheck()
+    }
+    await expect.poll(() => moduleLinkDisabled(page, 'fonts')).toBe(true)
+    for (const mod of ['semantics', 'lines', 'prose']) {
+      expect(await moduleLinkDisabled(page, mod), `${mod} must stay loaded`).toBe(false)
+    }
+  })
+
+  test('a module switched off, reloaded, and switched back on actually comes back', async ({
+    page,
+  }) => {
+    // The pre-paint restore in `_home.html` re-applies the saved config before
+    // the console upgrades, and it has its own copy of the mechanism table
+    // (inline script, can't import). When the two disagreed, the symptom was
+    // exactly this: reload with semantics off → the sheet gets `disabled` by
+    // the pre-paint script → applyModules only ever clears the FLAG → the
+    // module can never be switched back on until the next reload.
+    await page.locator('[data-cfg-key="semantics"]').uncheck()
+    await expect.poll(() => rootStyle(page, '--han-semantics')).toBe('off')
+
+    await page.reload()
+    await expect.poll(() => rootStyle(page, '--han-semantics')).toBe('off')
+    expect(await moduleLinkDisabled(page, 'semantics')).toBe(false)
+
+    await page.locator('[data-cfg-key="semantics"]').check()
+    await expect.poll(() => rootStyle(page, '--han-semantics')).toBe('')
+    expect(await moduleLinkDisabled(page, 'semantics')).toBe(false)
+  })
+})

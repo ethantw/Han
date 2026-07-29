@@ -264,10 +264,26 @@
         if (m.weight && m.weight !== 400) t.style.setProperty('--console-metric-weight', String(m.weight))
       }
     }
+    // Modules, in the SAME shape as console-config.js § MODULE_MECHANISM —
+    // three ride han.css's own flags, only `fonts` unloads its stylesheet.
+    // Kept in sync by hand: this script is pre-paint and inline, so it can't
+    // import the table. If the two ever disagree the symptom is loud (a
+    // module that can't be switched back on until reload), and
+    // tests/e2e/module-switches.spec.ts § reload asserts exactly that.
+    //
     // `=== false` (not `!value`): a key missing from an older saved schema
-    // must default to ON, never silently disable that module's stylesheet.
-    document.querySelectorAll('link[data-han-module]').forEach((l) => {
-      l.disabled = config[l.dataset.hanModule] === false
+    // must default to ON, never silently disable that module.
+    const off = (name) => config[name] === false
+    const root = document.documentElement
+    if (off('semantics')) root.style.setProperty('--han-semantics', 'off')
+    if (off('lines')) {
+      root.style.setProperty('--han-text-autospace', 'no-autospace')
+      root.style.setProperty('--han-punctuation-refinement', 'none')
+    }
+    for (const name of ['semantics', 'lines', 'prose', 'fonts'])
+      if (off(name)) root.dataset[`hanModule${name[0].toUpperCase()}${name.slice(1)}`] = 'off'
+    document.querySelectorAll('link[data-han-module="fonts"]').forEach((l) => {
+      l.disabled = off('fonts')
     })
     document.querySelectorAll('link[data-han-webfont]').forEach((l) => {
       l.disabled = config.webfontDelivery === 'none'
