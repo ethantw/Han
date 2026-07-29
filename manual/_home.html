@@ -88,7 +88,7 @@
      and deliberately FIRST: module scripts execute in document order,
      so behind han.js/home.js it would inherit their whole import
      graph's network wait (measured seconds on 3G) — but the gate's
-     metronome must wake near the first watermark pass's end (~1.34s
+     metronome must wake near the first watermark pass's end (~2.2s
      after first paint) to start the loading encore. One file, no
      imports, dedupe-shared with home.js's import of the same URL. -->
 <script type="module" src="/home/fonts-gate.js"></script>
