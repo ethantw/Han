@@ -84,6 +84,31 @@
       或改範文。
 - [ ] ②⑤⑥ 視 Phase 1/2 餘裕收（非阻塞）。
 
+#### 7 個 e2e 既有失敗——根因調査（2026-07-27，明天修）
+clean HEAD 亦同，與傳承字形擴展無關。分三類：
+- **A｜測試計數過時（1）**：`demo.spec.ts:11`——demo 頁實際 130 cell
+  （on59/off59/replace4/strict4/pure4），測試寫死 124。修：確認 demo 增長
+  刻意後，更新 6 個 `toHaveCount`。低險。
+- **B｜markup 未接（2）**：`home.spec.ts:230`（`[data-demo-lang]`）、`:253`
+  （`[data-writing-switch]`／main `data-writing`）。`demo-lang.js`／
+  `writing-switch.js` 已存在且 `home.js` 已 import＋init，但 `_home.html`
+  無對應控件 markup。修：在 `_home.html` 補這兩組控件（JS 無需改）；
+  writing-switch 需設 `data-writing="horizontal"` 初值。功能補完非測試 bug。
+- **C｜需 runtime 追蹤／可能真 bug（4）**：
+  - `demo.spec.ts:24`：zh-Hans `.demo-off` cell 的 `h-layer` 竟 position:
+    absolute（懸掛開）。`--han-punctuation-refinement` @property initial=auto，
+    疑 demo 的 `.demo-off` 規則不再覆寫該變數為 none。查 demo CSS。
+  - `home.spec.ts:155` ＋ `module-switches.spec.ts:96`（同症）：reset／模組
+    off 後 `main` inline `--han-punctuation-refinement` 讀到 `auto` 而非 ``。
+    疑第二寫入路徑（`_home.html` pre-paint 補水 or snippet）把 @property
+    解析值顯式寫回 inline，或 reset 走顯式預設而非 removeProperty。瀏覽器
+    實查寫入者再定修法。
+  - `home.spec.ts:266`：勾 fallbacks 後 `main` 無 `h-iss`。h-iss 僅 strict
+    autospace（或 Safari boundary bug）注入，桌面 Chromium normal 本就 0——
+    測試前提與現行注入條件不符。修：改測 strict 下 h-iss，或改斷言
+    installFallbacks 有跑。偏測試過時。
+- 優先序：A/B 快、低險先做；C 三系統先 runtime trace 再定「修測試 vs 修庫」。
+
 ### Phase 3 — 發布管線＋QA（7/27–7/28）
 - [ ] npm 發布接通：release workflow 或手動 `npm publish --tag rc`；
       過 memory `release-npm-ci` 四雷（fetch sources／allow-same-
