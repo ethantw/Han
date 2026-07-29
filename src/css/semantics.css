@@ -413,8 +413,8 @@
  * if current UA does not support `text-decoration-inset: auto`.
  */
 @supports not (text-decoration-inset: auto) {
-  :where(u, ins):has(+ u, + ins),
-  :where(s, del):has(+ s, + del) {
+  :where(:is(u, ins):has(+ u, + ins)),
+  :where(:is(s, del):has(+ s, + del)) {
     margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
   }
 
@@ -429,7 +429,7 @@
    * TODO(css-if): migrate to `if()` together with the cite title-marks block.
    */
   @container style(--han-cite-title-marks: wavy) {
-    :where(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh)) {
+    :where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {
       margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
     }
   }
