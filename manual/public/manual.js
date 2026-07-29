@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.currentTarget.setAttribute('aria-expanded', String(open))
   })
 
-  // The `.ThemeToggle` checkbox does the theming on its own — CSS reads
+  // The `.Toggle.for-theme` checkbox does the theming on its own — CSS reads
   // it through `:root:has(…)`. This only remembers the choice; the
   // initial state is restored pre-paint by the inline script beside the
   // input (_layout.html). Same 'theme' key as the homepage.

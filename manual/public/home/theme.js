@@ -1,5 +1,5 @@
 /**
- * Theme persistence — the masthead `.ThemeToggle` checkbox
+ * Theme persistence — the masthead `.Toggle.for-theme` checkbox
  * (`input[name="dark-mode"]`, `_home.html`) drives `:root:has(...)`
  * in CSS; this module's only job is to remember the choice.
  *
