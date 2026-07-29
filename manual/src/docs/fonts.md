@@ -47,17 +47,20 @@ title: 字體
 
 ## 傳承字形
 
-| 變量 | 值 | 預設 |
-|------|----|------|
-| `--han-use-heritage-glyphs-for-hant` | `webfont`｜`system`｜`off` | `webfont` |
+傳承字形的CJK層逐語言各有開關；只有繁中預設開，簡日韓預設關。
 
-繁中（`:lang(zh-Hant)`）的CJK層由此變量控制：
+| 變量 | 選擇器 | 值 | 預設 |
+|------|--------|----|------|
+| `--han-use-heritage-glyphs-for-hant` | `:lang(zh-Hant)` | `webfont`｜`system-ja`｜`off` | `webfont` |
+| `--han-use-heritage-glyphs-for-hans` | `:lang(zh-Hans)` | `webfont`｜`off` | `off` |
+| `--han-use-heritage-glyphs-for-ja` | `:lang(ja)` | `webfont`｜`off` | `off` |
+| `--han-use-heritage-glyphs-for-ko` | `:lang(ko)` | `webfont`｜`off` | `off` |
 
-- `webfont`：用尚古黑體／明體webfont為主；載入失敗時回落到Hiragino（macOS／iOS）、Yu Gothic／Yu Mincho（Windows）、Noto CJK JP（Android），皆為風格相配、最接近傳承字形的系統字體。
-- `system`：跳過Web字體，直接用上述日文系統字體當CJK層，覆蓋面較窄但零下載。
-- `off`：不設CJK層，交給通用字族或瀏覽器預設。
+- `webfont`：用傳承字形webfont（尚古／源起，由下方「換字體家族」選）為該語言的CJK層主體；載入失敗時回落到該語言自己的系統字體。
+- `system-ja`（僅繁中）：跳過Web字體，借日文系統字體（Hiragino→Yu）當傳承字形替身——日文系統字繪出最接近傳承的共用字形，而繁中系統字（蘋方TC／微軟正黑）是本專案要避開的國標過度楷化形。只有繁中需要這條逃生口；簡日韓的`off`本就回落到各自（貼近傳承的）系統字。
+- `off`：不設傳承CJK層，交給通用字族（→該語言的OS字體）。
 
-> 僅作用於繁中。簡中的傳承字形尚未實作對應開關；簡中作者可暫時直接覆寫`--han-font-cjk-sans`／`--han-font-cjk-serif`。
+> ⚠️ **字形以傳承字形（舊字形／正字）為主，不符合JIS／GB國家標準字形。** 對`:lang(ja)`，共用漢字顯示繁中傳承形而非日本新字体（骨・直・漢等有別）；對`:lang(zh-Hans)`，整體風格偏繁而非GB標準。**適合作為繁簡日韓混排、四種文字需同時出現時的統一預設字體**；對字形合規（JIS／GB）有要求者請保持`off`。
 
 ## 楷體
 
@@ -73,15 +76,28 @@ title: 字體
 
 ## 換字體家族
 
-各Web字體槽位是可換的：
+傳承字形webfont可選**尚古**或**源起**，一個全域開關同時切黑體與明體：
 
-| 變量 | 預設 |
+| 變量 | 值 | 預設 |
+|------|----|------|
+| `--han-webfont-heritage-family` | `shanggu`｜`genki` | `shanggu` |
+
+- `shanggu`（尚古）：真・pan-CJK——繁簡日韓漢字全備、現代諺文全備（11172音節）。**韓文（`:lang(ko)`）務必用尚古。**
+- `genki`（源起）：較小。漢字全備，但諺文只涵蓋KS X 1001常用集（2350字）且無字母（Jamo），對韓文偏弱；`:lang(ko)`建議留尚古。
+
+> 兩家族的CJK拡張B（U+20000↑）皆<5%，超出BMP的罕用字（罕見姓名／地名字）會回落到系統字。
+
+底層的黑／明槽位仍可直接覆寫（`--han-webfont-heritage-family`即透過它們生效）：
+
+| 變量 | 預設（＝尚古） |
 |------|------|
-| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans', 'Shanggu Sans TC', 'Genki Gothic TC', 'Genki Gothic'` |
-| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif', 'Shanggu Serif TC', 'Genki Min TC', 'Genki Min'` |
+| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans', 'Shanggu Sans TC'` |
+| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif', 'Shanggu Serif TC'` |
 | `--han-webfont-cursive-hant` | `'LXGW WenKai TC'` |
 
 ```css
+/* 全域改用源起 */
+:root { --han-webfont-heritage-family: genki; }
 /* 楷體換芫荽 */
 :root { --han-webfont-cursive-hant: 'Iansui'; }
 ```

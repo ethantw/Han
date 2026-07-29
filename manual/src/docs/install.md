@@ -87,7 +87,7 @@ fonts模組定義字體堆疊與家族名；傳承字形（尚古黑體／明體
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@latest/swap.css">
 ```
 
-也可以不引入：`--han-use-heritage-glyphs-for-hant: system`改用系統字體回落，詳見[字體](./fonts.html)。
+也可以不引入：`--han-use-heritage-glyphs-for-hant: system-ja`改用日文系統字體回落，詳見[字體](./fonts.html)。簡日韓的傳承字形預設關閉、亦可各自開啟（`--han-use-heritage-glyphs-for-hans`／`-ja`／`-ko`），家族可選尚古或源起，詳見[字體](./fonts.html)。
 
 ## 啓用範圍
 

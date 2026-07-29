@@ -61,28 +61,82 @@
 }
 
 /**
- * Heritage glyph webfont mode for Traditional Chinese (傳承字形字體).
- * Controls whether Shanggu (尙古) heritage webfonts supply the CJK glyph
- * layer for `:lang(zh-Hant)` elements.
+ * Heritage glyph webfont mode, per script (傳承字形字體).
+ * Controls whether the heritage CJK webfonts (Shanggu 尙古 / Genki 源起,
+ * selected by `--han-webfont-heritage-family`) supply the CJK glyph layer for
+ * each locale.
  *
- *   webfont  Default. Use Shanggu Sans (尙古黑體) and Shanggu Serif (尙古明體)
- *            as the primary CJK font layer for Traditional Chinese. Falls back
- *            to Hiragino (macOS / iOS) then Yu Gothic / Yu Mincho (Windows)
- *            if the webfont fails to load.
- *   system   Skip the webfont entirely; use Hiragino then Yu fonts directly
- *            as the CJK layer.
- *   off      No heritage CJK font layer; glyphs fall through to the generic
- *            family or browser default.
+ * ⚠️  These fonts render **傳承字形 (heritage / orthodox) forms**, NOT the
+ *     national standard glyph shapes. For `:lang(ja)` shared kanji show the TC
+ *     heritage form, not the JIS 新字体 (骨・直・漢 differ); for `:lang(zh-Hans)`
+ *     the overall style leans traditional, not the GB standard. Suitable as a
+ *     UNIFYING font for mixed 繁簡日韓 text where all four scripts co-occur;
+ *     authors who need JIS / GB shape compliance should leave these `off`.
  *
- * Applies to Traditional Chinese only (`zh-Hant`). Simplified Chinese font
- * configuration is handled separately in `--han-use-heritage-glyphs-for-hans`
- * (not yet implemented; Hans authors can override `--han-font-cjk-sans` /
- * `--han-font-cjk-serif` directly in the meantime).
+ * Per-locale properties, selectors, values and defaults:
+ *
+ *   --han-use-heritage-glyphs-for-hant  :lang(zh-Hant)  webfont | system-ja | off   webfont
+ *   --han-use-heritage-glyphs-for-hans  :lang(zh-Hans)  webfont | off                off
+ *   --han-use-heritage-glyphs-for-ja    :lang(ja)       webfont | off                off
+ *   --han-use-heritage-glyphs-for-ko    :lang(ko)       webfont | off                off
+ *
+ *   webfont     Use the heritage webfont as the primary CJK layer, then the
+ *               locale's own system fonts as the load-failure safety net.
+ *   system-ja   (hant only) Skip the webfont; borrow JP system fonts
+ *               (Hiragino → Yu) as a heritage-ish stand-in — JP系統字體 draws
+ *               the closest-to-heritage shared shapes, and TC system fonts
+ *               (PingFang TC / MS JhengHei) are the over-楷化 GB forms this
+ *               project avoids. Only Traditional Chinese needs this escape
+ *               hatch; hans/ja/ko `off` already falls through to their own
+ *               (heritage-adequate) system fonts via the generic family.
+ *   off         No heritage CJK font layer; glyphs fall through to the generic
+ *               family (→ the OS font for that locale).
+ *
+ * Only Traditional Chinese defaults ON (webfont); the other three default off.
+ * ⚠️  Set on an ANCESTOR (`:root`), never on the targeted element itself.
  */
 @property --han-use-heritage-glyphs-for-hant {
-  syntax: "webfont | system | off";
+  syntax: "webfont | system-ja | off";
   inherits: true;
   initial-value: webfont;
+}
+
+@property --han-use-heritage-glyphs-for-hans {
+  syntax: "webfont | off";
+  inherits: true;
+  initial-value: off;
+}
+
+@property --han-use-heritage-glyphs-for-ja {
+  syntax: "webfont | off";
+  inherits: true;
+  initial-value: off;
+}
+
+@property --han-use-heritage-glyphs-for-ko {
+  syntax: "webfont | off";
+  inherits: true;
+  initial-value: off;
+}
+
+/**
+ * Which heritage webfont family supplies the CJK glyph layer (印刷字體家族).
+ * One global choice; drives the `--han-webfont-heritage-glyphs-*` swap slots
+ * for every locale whose `--han-use-heritage-glyphs-for-*` is `webfont`.
+ * Named to match those swap slots' `--han-webfont-heritage-` stem — it selects
+ * a WEBFONT family, not a system font.
+ *
+ *   shanggu  Default. 尙古 Shanggu (Sans 黑體 + Serif 明體) — a true pan-CJK
+ *            face: full 繁簡日韓 hanzi + full modern 諺文 (11172 syllables).
+ *            The right choice when Korean is in the mix.
+ *   genki    源起 Genki (Gothic 黑體 + Min 明體) — smaller. Full hanzi, but
+ *            諺文 covers only the 2350 KS X 1001 common set and no Jamo, so it
+ *            is weak for Korean; prefer shanggu for `:lang(ko)`.
+ */
+@property --han-webfont-heritage-family {
+  syntax: "shanggu | genki";
+  inherits: true;
+  initial-value: shanggu;
 }
 
 /**
@@ -233,8 +287,13 @@
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
 
-  --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans TC', 'Genki Gothic TC', 'Genki Gothic';
-  --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif TC', 'Genki Min TC', 'Genki Min';
+  /* Heritage webfont swap slots — family-pure (base + TC variant of ONE
+     family). Default 尙古 Shanggu; the `--han-webfont-heritage-family: genki`
+     @container block below re-points them. Cross-family gap-filling is left to
+     the per-locale system-font fallback in the webfont blocks, not stacked
+     here. */
+  --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans TC';
+  --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif TC';
 
   /* 繁體楷體 webfont 的可換槽——同 heritage-glyphs 的 swap-var 模式；
      下方 --han-use-cursive: webfont 的 zh 堆疊引用它。預設霞鶩文楷TC，
@@ -294,6 +353,19 @@
  * family names are 'Noto (Sans|Serif) CJK JP' — 'Noto Sans JP' is the
  * Google-Fonts webfont naming and does NOT exist on the device. Noto
  * Serif CJK ships since Android 9. */
+/* Heritage webfont family selection (印刷字體家族). Default swap slots (set on
+ * :root above) are 尙古 Shanggu; this block re-points them to 源起 Genki for any
+ * subtree whose `--han-webfont-heritage-family` is `genki`. On `:where(*)` so it
+ * re-substitutes at each element (same reason the composites are on `:where(*)`).
+ * :root itself has no ancestor for the style() query and stays on the shanggu
+ * default — as intended, since the property is meant to be set on an ancestor. */
+@container style(--han-webfont-heritage-family: genki) {
+  :where(*) {
+    --han-webfont-heritage-glyphs-sans: 'Genki Gothic', 'Genki Gothic TC';
+    --han-webfont-heritage-glyphs-serif: 'Genki Min', 'Genki Min TC';
+  }
+}
+
 @container style(--han-use-heritage-glyphs-for-hant: webfont) {
   :where(:lang(zh-Hant)) {
     --han-font-cjk-sans:
@@ -307,10 +379,54 @@
   }
 }
 
-@container style(--han-use-heritage-glyphs-for-hant: system) {
+@container style(--han-use-heritage-glyphs-for-hant: system-ja) {
   :where(:lang(zh-Hant)) {
     --han-font-cjk-sans: 'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP';
     --han-font-cjk-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
+  }
+}
+
+/* Simplified Chinese / Japanese / Korean heritage layer (default off →
+ * no block matches → CJK slots stay HanNone → generic → OS font). `webfont`
+ * puts the heritage face first, then that locale's own system fonts as the
+ * load-failure net. No `system` variant: only TC needs the JP-stand-in hatch
+ * (see the mode-property doc above). */
+@container style(--han-use-heritage-glyphs-for-hans: webfont) {
+  :where(:lang(zh-Hans)) {
+    --han-font-cjk-sans:
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans GB', 'Noto Sans CJK SC'
+    ;
+    --han-font-cjk-serif:
+      var(--han-webfont-heritage-glyphs-serif),
+      'Songti SC', 'Noto Serif CJK SC'
+    ;
+  }
+}
+
+@container style(--han-use-heritage-glyphs-for-ja: webfont) {
+  :where(:lang(ja)) {
+    --han-font-cjk-sans:
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans', 'Yu Gothic', 'Noto Sans CJK JP'
+    ;
+    --han-font-cjk-serif:
+      var(--han-webfont-heritage-glyphs-serif),
+      'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP'
+    ;
+  }
+}
+
+@container style(--han-use-heritage-glyphs-for-ko: webfont) {
+  :where(:lang(ko)) {
+    --han-font-cjk-sans:
+      var(--han-webfont-heritage-glyphs-sans),
+      'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR'
+    ;
+    --han-font-cjk-serif:
+      var(--han-webfont-heritage-glyphs-serif),
+      'Apple Myungjo', 'Batang', 'Noto Serif CJK KR'
+    ;
   }
 }
 
