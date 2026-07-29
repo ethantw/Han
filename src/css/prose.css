@@ -87,13 +87,13 @@
 
   :where(blockquote) {
     & {
-      margin-inline: var(--han-prose-indent);
+      margin-inline: var(--han-prose-indent) 0;
     }
     :where(figure) {
       margin-inline: initial;
     }
     :where(blockquote) {
-      margin-inline: calc(var(--han-prose-indent) / 2);
+      margin-inline: calc(var(--han-prose-indent) / 2) 0;
     }
   }
 
@@ -102,7 +102,7 @@
   }
 
   :where(ol, ul) {
-    margin-inline-start: var(--han-prose-indent);
+    padding-inline-start: var(--han-prose-indent);
   }
 
   :where(.poem-like) {
