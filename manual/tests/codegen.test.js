@@ -72,17 +72,41 @@ test('DTJ 逐語言覆寫只輸出偏差語言', () => {
   assert.deepEqual(vars, [['--han-punctuation-hant', 'GB']])
 })
 
-test('換傳承家族 → 覆寫 heritage 堆疊 + 套件表含該家族', () => {
+const HERITAGE_OFF = { hant: 'off', hans: 'off', ja: 'off', ko: 'off' }
+
+test('換傳承家族 genki → 單行 --han-webfont-heritage-family + 套件表含該家族', () => {
   const c = cfg({ heritageFamily: 'genki' })
   const vars = Object.fromEntries(cssVars(c))
-  assert.equal(vars['--han-webfont-heritage-glyphs-sans'], "'Genki Gothic', 'Genki Gothic TC'")
+  assert.equal(vars['--han-webfont-heritage-family'], 'genki')
   const ids = packages(c).ziano
   assert.ok(ids.includes('genki-gothic') && ids.includes('genki-gothic-tc'))
   assert.ok(!ids.includes('shanggu-sans'))
 })
 
-test('heritage off → 不出 ziano sans/serif 套件；DTJ 全 off → 無 diantenjeom', () => {
-  const c1 = packages(cfg({ heritage: 'off', cursive: 'off' }))
+test('per-locale heritage：hans/ja webfont 各自輸出，hant/ko 預設不輸出，家族單行', () => {
+  const vars = Object.fromEntries(cssVars(cfg({
+    heritage: { hant: 'webfont', hans: 'webfont', ja: 'webfont', ko: 'off' },
+    heritageFamily: 'genki',
+  })))
+  assert.equal(vars['--han-use-heritage-glyphs-for-hans'], 'webfont')
+  assert.equal(vars['--han-use-heritage-glyphs-for-ja'], 'webfont')
+  assert.ok(!('--han-use-heritage-glyphs-for-hant' in vars))   // webfont＝hant 預設
+  assert.ok(!('--han-use-heritage-glyphs-for-ko' in vars))     // off＝其餘預設
+  assert.equal(vars['--han-webfont-heritage-family'], 'genki')
+})
+
+test('家族非預設但無語言開 webfont → 不輸出 family（無效力）', () => {
+  const vars = cssVars(cfg({ heritage: HERITAGE_OFF, heritageFamily: 'genki' }))
+  assert.ok(!vars.some(([k]) => k === '--han-webfont-heritage-family'))
+})
+
+test('簡體開 webfont（家族預設 shanggu）→ 載入尚古套件', () => {
+  const ids = packages(cfg({ heritage: { ...HERITAGE_OFF, hans: 'webfont' } })).ziano
+  assert.ok(ids.includes('shanggu-sans') && ids.includes('shanggu-serif'))
+})
+
+test('heritage 全 off → 不出 ziano sans/serif 套件；DTJ 全 off → 無 diantenjeom', () => {
+  const c1 = packages(cfg({ heritage: HERITAGE_OFF, cursive: 'off' }))
   assert.deepEqual(c1.ziano, [])
   const c2 = packages(cfg({ punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' } }))
   assert.equal(c2.dtj, false)
@@ -125,10 +149,10 @@ test('bundler：pm 切換 + webfontDelivery=cdn（預設）→ 安裝清單不�
   assert.ok(!bash.includes('@hanzi.pro/diantenjeom'))
 })
 
-test('heritage/cursive 模式 system|off → 對應變數', () => {
+test('heritage hant system-ja／cursive off → 對應變數', () => {
   assert.deepEqual(
-    cssVars(cfg({ heritage: 'system' })),
-    [['--han-use-heritage-glyphs-for-hant', 'system']],
+    cssVars(cfg({ heritage: { hant: 'system-ja', hans: 'off', ja: 'off', ko: 'off' } })),
+    [['--han-use-heritage-glyphs-for-hant', 'system-ja']],
   )
   assert.deepEqual(cssVars(cfg({ cursive: 'off' })), [['--han-use-cursive', 'off']])
 })
@@ -269,7 +293,7 @@ test('bundler：panes 順序固定 bash→js→css→html；全預設 webfontDel
 })
 
 test('bundler：字體全關（heritage/cursive/punct off）webfontDelivery=cdn 也不生 html pane', () => {
-  const c = cfg({ heritage: 'off', cursive: 'off', punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' } })
+  const c = cfg({ heritage: HERITAGE_OFF, cursive: 'off', punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' } })
   assert.ok(!pane(renderBundler(c, 'pnpm'), 'html'))
 })
 

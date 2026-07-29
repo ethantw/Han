@@ -15,7 +15,7 @@
  * to the `apply*` layer.
  */
 import {
-  DEFAULTS, MODULES, cssVars, packages, zianoUrl,
+  DEFAULTS, MODULES, HERITAGE_LOCALES, cssVars, packages, zianoUrl,
 } from '/home/codegen.js'
 
 /* ── 按需字體載入（去重）── injects into document.head (light DOM), so
@@ -49,8 +49,10 @@ const readControl = ($el) => ($el.type === 'checkbox' ? $el.checked : $el.value)
    讓未偏差的值交還給 @property 的 initial-value。 */
 const ALL_VARS = [
   '--han-semantics', '--han-prose', '--han-punctuation-refinement',
-  '--han-text-autospace', '--han-use-heritage-glyphs-for-hant',
-  '--han-webfont-heritage-glyphs-sans', '--han-webfont-heritage-glyphs-serif',
+  '--han-text-autospace',
+  '--han-use-heritage-glyphs-for-hant', '--han-use-heritage-glyphs-for-hans',
+  '--han-use-heritage-glyphs-for-ja', '--han-use-heritage-glyphs-for-ko',
+  '--han-webfont-heritage-family',
   '--han-use-cursive', '--han-webfont-cursive-hant',
   '--han-punctuation-hant', '--han-punctuation-hans',
   '--han-punctuation-ja', '--han-punctuation-vertical-ko',
@@ -258,8 +260,9 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
 
   const applyVisibility = () => {
     const c = configRef.current
+    const anyHeritageWebfont = HERITAGE_LOCALES.some((loc) => c.heritage[loc] === 'webfont')
     root.querySelectorAll('[data-cfg-heritage-family]').forEach(($el) => {
-      $el.toggleAttribute('hidden', c.heritage !== 'webfont')
+      $el.toggleAttribute('hidden', !anyHeritageWebfont)
     })
     root.querySelectorAll('[data-cfg-cursive-family]').forEach(($el) => {
       $el.toggleAttribute('hidden', c.cursive !== 'webfont')
@@ -277,7 +280,11 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
     // webfontDelivery='none' → 外部 webfont 全不可達，停用相應選項（heritage／
     // cursive 的 webfont 選項、四個 punct 的非 off 選項）；離開 none 一律解禁。
     const noWebfont = c.webfontDelivery === 'none'
-    for (const key of ['heritage', 'cursive']) {
+    const webfontSelectKeys = [
+      ...HERITAGE_LOCALES.map((loc) => `heritage.${loc}`),
+      'cursive',
+    ]
+    for (const key of webfontSelectKeys) {
       const $opt = root.querySelector(`[data-cfg-key="${key}"] option[value="webfont"]`)
       if ($opt) $opt.disabled = noWebfont
     }
@@ -297,13 +304,14 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
         webfontMemo.current = null              // reset 為大：棄 memo、不還原
       } else if (delivery === 'none') {
         webfontMemo.current = {
-          heritage: configRef.current.heritage,
+          heritage: { ...configRef.current.heritage },
           cursive: configRef.current.cursive,
           punct: { ...configRef.current.punct },
         }
         configRef.current = {
           ...configRef.current,
-          heritage: 'system',
+          // 無外部 webfont：繁中退日系統字（system-ja），其餘語言退各自系統字（off）。
+          heritage: { hant: 'system-ja', hans: 'off', ja: 'off', ko: 'off' },
           cursive: 'system',
           punct: { hant: 'off', hans: 'off', ja: 'off', ko: 'off' },
         }

@@ -100,7 +100,8 @@ test.describe('han-config-change event contract', () => {
     await page.goto('/')
     await expect.poll(async () => (await events(page)).length).toBeGreaterThan(0)
 
-    // punct.hant 搬進了預設收合的「繁體專項」組——先展開。
+    // punct.hant 在「各文種專項 › 繁體專項」，該 <details> 預設收合——先展開。
+    await openGroupOf(page, 'punct.hant')
     await page.locator('[data-cfg-key="punct.hant"]').selectOption('GB')
     await expect
       .poll(async () => ((await events(page)).at(-1) as { source: string }).source)

@@ -40,6 +40,19 @@ const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
 // inline script stamps without any codegen logic.
 const STORAGE_KEY = 'han-console-config'
 
+/** Migrate `config.heritage` across the scalar → per-locale schema change.
+ *  Pre-expansion it was a string (`webfont|system|off`) applying to hant only;
+ *  now it is `{ hant, hans, ja, ko }`. An old string is carried onto `hant`
+ *  (with `system` → the renamed `system-ja`); the other three take DEFAULTS.
+ *  A non-object / non-string just yields DEFAULTS.heritage. */
+const migrateHeritage = (stored) => {
+  if (typeof stored === 'string')
+    return { ...DEFAULTS.heritage, hant: stored === 'system' ? 'system-ja' : stored }
+  if (stored && typeof stored === 'object')
+    return { ...DEFAULTS.heritage, ...stored }
+  return { ...DEFAULTS.heritage }
+}
+
 /** Read the saved config, deep-merged OVER DEFAULTS so a config written by an
  *  older schema can't leave required keys undefined (structuredClone(initial)
  *  in the config core would otherwise carry those gaps into the controls).
@@ -54,6 +67,7 @@ const readStored = () => {
     return {
       ...DEFAULTS,
       ...config,
+      heritage: migrateHeritage(config.heritage),
       punct: { ...DEFAULTS.punct, ...config.punct },
       metrics: { ...DEFAULTS.metrics, ...config.metrics },
     }
@@ -186,6 +200,13 @@ class HanConsole extends HTMLElement {
     const sheets = await loadSheets()
     if (!this.shadowRoot) this.attachShadow({ mode: 'open' })
     this.shadowRoot.adoptedStyleSheets = sheets
+    // Hand-over flag for the PAGE's pre-upgrade skeleton (home/console.css):
+    // the box's panel + hairline are painted from the light DOM until this
+    // moment, so the loader sits in a real console-shaped frame instead of
+    // a hole. `:defined` can't do it — the element is defined long before
+    // the sheets land — and this is the frame where the shadow's `:host`
+    // takes the paint over, so the two never both own it.
+    this.dataset.ready = ''
 
     // Seed config: a lang re-render keeps the live state; the FIRST mount
     // seeds from localStorage (the same key the pre-paint script restored),

@@ -28,6 +28,11 @@ export const HERITAGE = {
   },
 }
 
+/* 傳承字形 per-locale 的出廠預設（cssVars 只輸出偏離值；只有繁中預設開）。 */
+export const HERITAGE_LOCALES = ['hant', 'hans', 'ja', 'ko']
+const HERITAGE_DEFAULT = { hant: 'webfont', hans: 'off', ja: 'off', ko: 'off' }
+const anyHeritageWebfont = (c) => HERITAGE_LOCALES.some((loc) => c.heritage[loc] === 'webfont')
+
 /* 繁體楷體的可換家族（--han-webfont-cursive-hant swap 槽）；
    hans（lxgw-wenkai）與 ja（klee-one）楷體不受此選擇影響。 */
 export const CURSIVE_HANT = {
@@ -54,8 +59,11 @@ export const DEFAULTS = {
   squeeze: true,
   autospace: 'normal',            // normal|insert|replace|strict|off
   fonts: true,
-  heritage: 'webfont',            // webfont|system|off
-  heritageFamily: 'shanggu',      // shanggu|genki — 印刷字體（黑＋明一體選）
+  // 傳承字形 per-locale（鏡射 punct）：hant 三值 webfont|system-ja|off、預設
+  // webfont；hans/ja/ko 兩值 webfont|off、預設 off。字形以傳承字形為主，不符
+  // JIS/GB 國家標準——適合繁簡日韓混排統一字體，合規要求者留 off。
+  heritage: { hant: 'webfont', hans: 'off', ja: 'off', ko: 'off' },
+  heritageFamily: 'shanggu',      // shanggu|genki — 印刷字體（黑＋明一體選，全域）
   cursive: 'webfont',             // webfont|system|off
   cursiveHant: 'lxgw',            // lxgw|iansui — 繁體楷體家族
   punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KV' },
@@ -98,13 +106,13 @@ export const cssVars = (c) => {
       out.push(['--han-text-autospace', c.autospace === 'off' ? 'no-autospace' : c.autospace])
   }
   if (c.fonts) {              // 字體：heritage／cursive／punct／zhuyin 全歸此模組
-    if (c.heritage !== 'webfont') out.push(['--han-use-heritage-glyphs-for-hant', c.heritage])
-    if (c.heritage === 'webfont') {
-      if (c.heritageFamily !== 'shanggu') {
-        out.push(['--han-webfont-heritage-glyphs-sans', HERITAGE[c.heritageFamily].sans.stack])
-        out.push(['--han-webfont-heritage-glyphs-serif', HERITAGE[c.heritageFamily].serif.stack])
-      }
-    }
+    for (const loc of HERITAGE_LOCALES)
+      if (c.heritage[loc] !== HERITAGE_DEFAULT[loc])
+        out.push([`--han-use-heritage-glyphs-for-${loc}`, c.heritage[loc]])
+    // 家族＝單行 --han-webfont-heritage-family（library 端 @container 翻成
+    // swap 槽）；任一語言開 webfont 且非預設 shanggu 時才輸出。
+    if (anyHeritageWebfont(c) && c.heritageFamily !== 'shanggu')
+      out.push(['--han-webfont-heritage-family', c.heritageFamily])
     if (c.cursive !== 'webfont') out.push(['--han-use-cursive', c.cursive])
     if (c.cursive === 'webfont' && c.cursiveHant !== 'lxgw')
       out.push(['--han-webfont-cursive-hant', CURSIVE_HANT[c.cursiveHant].stack])
@@ -157,8 +165,9 @@ const configCSS = (c, indent = '  ') => {
  *  「怎麼送」，這裡只算「要不要」。 */
 export const packages = (c) => {
   if (!c.fonts) return { ziano: [], dtj: false }
-  // 印刷字體＝同家族的黑＋明成對（heritageFamily 單選驅動兩者）。
-  const heritagePkgs = c.heritage === 'webfont'
+  // 印刷字體＝同家族的黑＋明成對（heritageFamily 單選驅動兩者）；任一語言
+  // 開 webfont 即需載入（尚古/源起 base 已覆蓋全 CJK，同組 pkgs 服務四語言）。
+  const heritagePkgs = anyHeritageWebfont(c)
     ? [
         ...HERITAGE[c.heritageFamily].sans.pkgs,
         ...HERITAGE[c.heritageFamily].serif.pkgs,

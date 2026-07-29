@@ -84,24 +84,33 @@ test.describe('Task B — collapsible side console', () => {
   })
 })
 
-test.describe('Task A — restructured 字體 group', () => {
-  test('zhuyinWebfont + punct.hant live in the flat 繁體專項 sub-section (no accordion)', async ({ page }) => {
+test.describe('Task A — 各文種專項 group', () => {
+  // 各文種專項 is a collapsed <details> holding one flat <section> per script.
+  const openScriptSpecifics = (page: Page) =>
+    page
+      .locator('details.ControlGroup:not([open]):has([data-cfg-key="punct.hant"]) > summary')
+      .click()
+
+  test('per-script sub-sections group each script’s heritage + punct; 注音 is its own section', async ({ page }) => {
     await page.goto('/')
+    await openScriptSpecifics(page)
 
-    // Flat sub-section (owner call) — both hant-only controls are visible
-    // without opening anything.
+    // 繁體專項 <section> holds hant heritage + punct together.
+    const hant = page.locator('section.ControlGroup:has([data-cfg-key="heritage.hant"])')
+    await expect(hant.locator('[data-cfg-key="punct.hant"]')).toHaveCount(1)
+    // 注音ruby專項 is a SEPARATE section — the zhuyin toggle is no longer
+    // inside the 繁體 section.
+    await expect(hant.locator('[data-cfg-key="zhuyinWebfont"]')).toHaveCount(0)
     await expect(page.locator('[data-cfg-key="zhuyinWebfont"]')).toBeVisible()
-    await expect(page.locator('[data-cfg-key="punct.hant"]')).toBeVisible()
-
-    // Same sub-section holds heritage — proves the grouping.
-    const group = page.locator('section.ControlGroup:has([data-cfg-key="zhuyinWebfont"])')
-    await expect(group.locator('[data-cfg-key="heritage"]')).toHaveCount(1)
   })
 
-  test('punct.hans/ja/ko are flat rows in the open 字體 group (no accordion to open)', async ({ page }) => {
+  test('簡日韓 each get a sub-section pairing heritage + punct, brand credit intact', async ({ page }) => {
     await page.goto('/')
-    for (const key of ['punct.hans', 'punct.ja', 'punct.ko']) {
-      await expect(page.locator(`[data-cfg-key="${key}"]`)).toBeVisible()
+    await openScriptSpecifics(page)
+
+    for (const loc of ['hans', 'ja', 'ko']) {
+      const sec = page.locator(`section.ControlGroup:has([data-cfg-key="heritage.${loc}"])`)
+      await expect(sec.locator(`[data-cfg-key="punct.${loc}"]`)).toHaveCount(1)
     }
     // brand credit survived on each punct row
     await expect(
@@ -120,6 +129,7 @@ test.describe('Task A — restructured 字體 group', () => {
       })
     })
     await page.goto('/')
+    await openScriptSpecifics(page)
 
     const lastSource = () =>
       page.evaluate(() => (window as unknown as { __src: string[] }).__src.at(-1))

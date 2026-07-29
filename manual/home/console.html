@@ -8,11 +8,11 @@
     ko: '수치・METRICS',
   },
   pgSliderSize: {
-    hant: '字級',
-    hans: '字级',
-    en: 'Size',
-    ja: '字級',
-    ko: '글자 크기',
+    hant: '正文字級',
+    hans: '正文字级',
+    en: 'Body size',
+    ja: '正文字級',
+    ko: '본문 글자 크기',
   },
   pgSliderSizeEn: {
     hant: 'font-size',
@@ -217,12 +217,82 @@
     ja: '傳承字形',
     ko: '傳承字形',
   },
+  pgHeritageHans: {
+    hant: '簡體・傳承字形',
+    hans: '简体・传承字形',
+    en: 'Hans · heritage glyphs',
+    ja: '簡體・傳承字形',
+    ko: '簡體・傳承字形',
+  },
+  pgHeritageJa: {
+    hant: '日文・傳承字形',
+    hans: '日文・传承字形',
+    en: 'Japanese · heritage glyphs',
+    ja: '日文・傳承字形',
+    ko: '日文・傳承字形',
+  },
+  pgHeritageKo: {
+    hant: '韓文・傳承字形',
+    hans: '韩文・传承字形',
+    en: 'Korean · heritage glyphs',
+    ja: '韓文・傳承字形',
+    ko: '韓文・傳承字形',
+  },
+  pgGrpScriptSpecifics: {
+    hant: '各文種專項',
+    hans: '各文种专项',
+    en: 'Per-script specifics',
+    ja: '各文種專項',
+    ko: '各文種專項',
+  },
   pgGrpHeritage: {
     hant: '繁體專項',
     hans: '繁体专项',
     en: 'Traditional-Chinese specifics',
     ja: '繁體專項',
     ko: '繁體專項',
+  },
+  pgGrpHans: {
+    hant: '簡體專項',
+    hans: '简体专项',
+    en: 'Simplified-Chinese specifics',
+    ja: '簡體專項',
+    ko: '簡體專項',
+  },
+  pgGrpJa: {
+    hant: '日文專項',
+    hans: '日文专项',
+    en: 'Japanese specifics',
+    ja: '日文專項',
+    ko: '日文專項',
+  },
+  pgGrpKo: {
+    hant: '韓文專項',
+    hans: '韩文专项',
+    en: 'Korean specifics',
+    ja: '韓文專項',
+    ko: '韓文專項',
+  },
+  pgGrpZhuyin: {
+    hant: '注音ruby專項',
+    hans: '注音ruby专项',
+    en: 'Zhuyin-ruby specifics',
+    ja: '注音ruby專項',
+    ko: '注音ruby專項',
+  },
+  pgPunct: {
+    hant: '標點字體',
+    hans: '标点字体',
+    en: 'Punctuation',
+    ja: '標點字體',
+    ko: '標點字體',
+  },
+  pgPunctVertical: {
+    hant: '直排標點',
+    hans: '竖排标点',
+    en: 'Vertical punctuation',
+    ja: '直排標點',
+    ko: '直排標點',
   },
   pgBaseGeneric: {
     hant: '默認字體',
@@ -462,7 +532,7 @@
           </header>
           <div class="Track">
             <span data-pg-slider-fill></span>
-            <input type="range" min="12" max="32" step="1" value="16"
+            <input type="range" min="12" max="24" step="1" value="16"
                    aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
           </div>
         </div>
@@ -597,10 +667,9 @@
       </fieldset>
     </details>
 
-    <!-- 字體 — 全域項在前，繁體專項成一組手風琴（TC 標點/傳承/楷體/注音
-         皆 hant-only），其餘語言標點各成一扁列（單控件不值一個手風琴）。
-         舊「標點字體（Diantenjeom）」子組已解散，品牌credit以 <small> 存續
-         於各標點列。 -->
+    <!-- 字體 — 只留全域字體項（楷體模式／默認字體／印刷字體家族／Web字體來源）。
+         各文種（繁簡日韓）的傳承字形＋標點字體、以及注音ruby，全搬到下方獨立的
+         「各文種專項」<details>，各成一 <section> 專項。 -->
     <details class="ControlGroup" data-module="fonts" open>
       <summary>{{ pgGrpFonts }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
@@ -618,6 +687,15 @@
           <select data-cfg-key="baseGeneric">
             <option value="sans-serif" selected>sans-serif</option>
             <option value="serif">serif</option>
+          </select>
+        </label>
+        <!-- 印刷字體家族（尚古/源起）＝全域，同時切繁簡日韓的黑＋明；任一文種
+             傳承字形開 webfont 才顯示（[data-cfg-heritage-family] hidden 慣例）。 -->
+        <label class="Field" data-cfg-heritage-family>
+          <span>{{ pgHeritageFamily }}</span>
+          <select data-cfg-key="heritageFamily">
+            <option value="shanggu" selected>{{ pgFamShanggu }}</option>
+            <option value="genki">{{ pgFamGenki }}</option>
           </select>
         </label>
         <!-- Request B — 統一的 Web字體來源，套用於 ziano 家族 AND
@@ -643,16 +721,32 @@
         </label>
       </fieldset>
 
-      <!-- 繁體專項（子組）— TC 標點（Diantenjeom）＋傳承字形＋家族選單＋
-           注音Web字體，全屬 hant-only。平鋪不收合（owner call）——
-           <section>＋<header>，與度量群組同款。 -->
+    </details>
+
+    <!-- 各文種專項 — 繁簡日韓各成一 <section> 專項（傳承字形＋標點字體），注音
+         ruby 另成一專項。收合成一個 <details>（owner call：收在一起、不散開）。
+         傳承字形/標點/注音皆屬 fonts 模組輸出（codegen 以 c.fonts gate）；本
+         <details> 不掛 data-module，因日後將加入非字體的文種專項。每個 <section>
+         各自帶 ↺（injectDefaultButtons 依 .ControlScope 掛），外層 <details> 的
+         ↺ 覆蓋全體。 -->
+    <details class="ControlGroup">
+      <summary>{{ pgGrpScriptSpecifics }}</summary>
+
+      <!-- 繁體專項：傳承字形＋標點＋繁體楷體家族 -->
       <section class="ControlGroup">
         <header>{{ pgGrpHeritage }}</header>
         <fieldset class="PlaygroundRules" data-cfg>
           <legend class="sr-only">{{ pgGrpHeritage }}</legend>
-          <!-- 繁體標點（MOE／GB）— 品牌credit以 <small> 存續 -->
           <label class="Field">
-            <span>{{ pgPunctHant }} <small>Diantenjeom</small></span>
+            <span>{{ pgHeritage }}</span>
+            <select data-cfg-key="heritage.hant">
+              <option value="webfont" selected>{{ pgModeWebfont }}</option>
+              <option value="system-ja">{{ pgModeSystemJa }}</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgPunct }} <small>Diantenjeom</small></span>
             <select data-cfg-key="punct.hant">
               <option value="JIS">JIS</option>
               <option value="MOE" selected>MOE</option>
@@ -660,24 +754,7 @@
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
-          <label class="Field">
-            <span>{{ pgHeritage }}</span>
-            <select data-cfg-key="heritage">
-              <option value="webfont" selected>{{ pgModeWebfont }}</option>
-              <option value="system">{{ pgModeSystemJa }}</option>
-              <option value="off">{{ pgModeOff }}</option>
-            </select>
-          </label>
-          <!-- 印刷字體＝黑＋明成對同選（家族內同源，拆開選無意義） -->
-          <label class="Field" data-cfg-heritage-family>
-            <span>{{ pgHeritageFamily }}</span>
-            <select data-cfg-key="heritageFamily">
-              <option value="shanggu" selected>{{ pgFamShanggu }}</option>
-              <option value="genki">{{ pgFamGenki }}</option>
-            </select>
-          </label>
-          <!-- 繁體楷體家族（--han-webfont-cursive-hant swap 槽；
-               hans/ja 楷體不受影響） -->
+          <!-- 繁體楷體家族（--han-webfont-cursive-hant swap 槽；hans/ja 楷體不受影響） -->
           <label class="Field" data-cfg-cursive-family>
             <span>{{ pgCursiveFamily }}</span>
             <select data-cfg-key="cursiveHant">
@@ -685,44 +762,90 @@
               <option value="iansui">{{ pgFamIansui }}</option>
             </select>
           </label>
-          <!-- 注音Web字體（ㄅㄆㄇ）— hant-only，本就該歸繁體專項 -->
+        </fieldset>
+      </section>
+
+      <!-- 簡體專項：傳承字形＋標點（預設 off／GB） -->
+      <section class="ControlGroup">
+        <header>{{ pgGrpHans }}</header>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpHans }}</legend>
+          <label class="Field">
+            <span>{{ pgHeritage }}</span>
+            <select data-cfg-key="heritage.hans">
+              <option value="webfont">{{ pgModeWebfont }}</option>
+              <option value="off" selected>{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgPunct }} <small>Diantenjeom</small></span>
+            <select data-cfg-key="punct.hans">
+              <option value="JIS">JIS</option>
+              <option value="MOE">MOE</option>
+              <option value="GB" selected>GB</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+        </fieldset>
+      </section>
+
+      <!-- 日文專項：傳承字形＋標點（預設 off／JIS） -->
+      <section class="ControlGroup">
+        <header>{{ pgGrpJa }}</header>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpJa }}</legend>
+          <label class="Field">
+            <span>{{ pgHeritage }}</span>
+            <select data-cfg-key="heritage.ja">
+              <option value="webfont">{{ pgModeWebfont }}</option>
+              <option value="off" selected>{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgPunct }} <small>Diantenjeom</small></span>
+            <select data-cfg-key="punct.ja">
+              <option value="JIS" selected>JIS</option>
+              <option value="MOE">MOE</option>
+              <option value="GB">GB</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+        </fieldset>
+      </section>
+
+      <!-- 韓文專項：傳承字形＋直排標點（預設 off／KV） -->
+      <section class="ControlGroup">
+        <header>{{ pgGrpKo }}</header>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpKo }}</legend>
+          <label class="Field">
+            <span>{{ pgHeritage }}</span>
+            <select data-cfg-key="heritage.ko">
+              <option value="webfont">{{ pgModeWebfont }}</option>
+              <option value="off" selected>{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgPunctVertical }} <small>Diantenjeom</small></span>
+            <select data-cfg-key="punct.ko">
+              <option value="KV" selected>KV</option>
+              <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+        </fieldset>
+      </section>
+
+      <!-- 注音ruby專項：注音Web字體（ㄅㄆㄇ） -->
+      <section class="ControlGroup">
+        <header>{{ pgGrpZhuyin }}</header>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpZhuyin }}</legend>
           <label class="Toggle">
             <span>{{ pgTogZhuyin }}</span>
             <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
           </label>
         </fieldset>
       </section>
-
-      <!-- 其餘語言標點（各一控件，扁列不設手風琴）— Diantenjeom 規範，
-           品牌credit以 <small> 存續於各列。 -->
-      <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpPunctOther }}</legend>
-        <label class="Field">
-          <span>{{ pgPunctHans }} <small>Diantenjeom</small></span>
-          <select data-cfg-key="punct.hans">
-            <option value="JIS">JIS</option>
-            <option value="MOE">MOE</option>
-            <option value="GB" selected>GB</option>
-            <option value="off">{{ pgModeOff }}</option>
-          </select>
-        </label>
-        <label class="Field">
-          <span>{{ pgPunctJa }} <small>Diantenjeom</small></span>
-          <select data-cfg-key="punct.ja">
-            <option value="JIS" selected>JIS</option>
-            <option value="MOE">MOE</option>
-            <option value="GB">GB</option>
-            <option value="off">{{ pgModeOff }}</option>
-          </select>
-        </label>
-        <label class="Field">
-          <span>{{ pgPunctKo }} <small>Diantenjeom</small></span>
-          <select data-cfg-key="punct.ko">
-            <option value="KV" selected>KV</option>
-            <option value="off">{{ pgModeOff }}</option>
-          </select>
-        </label>
-      </fieldset>
     </details>
 
     <!-- JavaScript -->

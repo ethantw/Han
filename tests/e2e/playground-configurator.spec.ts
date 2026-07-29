@@ -43,7 +43,8 @@ test.describe('playground configurator', () => {
 
   test('DTJ hant 換 GB → css pane 含覆寫；全預設 → css pane 缺席', async ({ page }) => {
     await expect(page.locator('[data-out-panes] pre[data-lang="css"]')).toHaveCount(0) // 初始＝全預設
-    // punct.hant 搬進了預設收合的「繁體專項」組——先展開。
+    // punct.hant 在「各文種專項 › 繁體專項」，該 <details> 預設收合——先展開。
+    await openGroupOf(page, 'punct.hant')
     await page.locator('[data-cfg-key="punct.hant"]').selectOption('GB')
     await expect(pane(page, 'css')).toContainText('--han-punctuation-hant: GB')
   })
@@ -114,20 +115,32 @@ test.describe('webfont delivery (Request B)', () => {
     await expect(html).not.toContainText('cdn.jsdelivr.net')
   })
 
-  test('切 webfontDelivery=none → 面板無 ziano／dtj，傳承字形選單落回 system，切回 cdn 復原 webfont', async ({ page }) => {
-    const heritage = page.locator('[data-cfg-key="heritage"]')
+  test('切 webfontDelivery=none → 面板無 ziano／dtj，繁中傳承字形落回 system-ja，切回 cdn 復原 webfont', async ({ page }) => {
+    const heritage = page.locator('[data-cfg-key="heritage.hant"]')
     await expect(heritage).toHaveValue('webfont')
 
-    // 'none' cascades: heritage/cursive→system, punct.*→off, so no
-    // external webfont packages or links appear anywhere in the output.
+    // 'none' cascades: hant→system-ja, hans/ja/ko→off, cursive→system,
+    // punct.*→off, so no external webfont packages or links appear anywhere.
     await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('none')
-    await expect(heritage).toHaveValue('system')
+    await expect(heritage).toHaveValue('system-ja')
     await expect(page.locator('[data-out-panes]')).not.toContainText('webfonts-')
     await expect(page.locator('[data-out-panes]')).not.toContainText('diantenjeom')
 
     // leaving 'none' restores the memoised heritage value.
     await page.locator('[data-cfg-key="webfontDelivery"]').selectOption('cdn')
     await expect(heritage).toHaveValue('webfont')
+  })
+
+  test('簡日韓傳承字形預設 off、可各自開；開啟即載入該家族 webfont', async ({ page }) => {
+    // heritage.hans/ja/ko live in the collapsed 各文種專項 <details>; toHaveValue
+    // reads hidden elements fine, but selectOption needs the group opened.
+    for (const loc of ['hans', 'ja', 'ko']) {
+      await expect(page.locator(`[data-cfg-key="heritage.${loc}"]`)).toHaveValue('off')
+    }
+    await openGroupOf(page, 'heritage.hans')
+    // 開簡中傳承字形（家族預設尚古）→ 面板出現尚古 webfont link。
+    await page.locator('[data-cfg-key="heritage.hans"]').selectOption('webfont')
+    await expect(page.locator('[data-out-panes]')).toContainText('webfonts-shanggu-sans')
   })
 
   test('webfontDelivery≠cdn 時，CDN 來源選單隱藏', async ({ page }) => {
