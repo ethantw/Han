@@ -5,7 +5,7 @@ import { test, expect, type Page } from '@playwright/test'
  * controls live in its shadow root behind `details.ControlGroup`
  * accordions (Playwright pierces the open shadow root for CSS locators;
  * open a collapsed group before touching its controls),
- * apply target is `main.han` (there's no more boxed preview
+ * apply target is `main` (there's no more boxed preview
  * `<article>`), and the output pane is station④'s ViewTabs
  * (`[data-pg-views]` / `[data-out-panes]`) — no "live preview" tab
  * anymore, since the whole page is the preview.
@@ -30,7 +30,7 @@ test.describe('playground configurator', () => {
   })
 
   test('掛標點開關 → 頁面變數 + 生成碼同步', async ({ page }) => {
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect

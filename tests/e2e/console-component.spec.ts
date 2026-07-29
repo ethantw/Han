@@ -52,7 +52,7 @@ test.describe('bare fixture — no home.css', () => {
     expect(bg).toBe('rgb(250, 250, 247)')
 
     // A control change still writes `--han-*` onto the target element.
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect

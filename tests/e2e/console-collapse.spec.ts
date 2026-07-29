@@ -37,7 +37,7 @@ test.describe('Task B — collapsible side console', () => {
     await expect(toggle).toBeVisible()
     await expect(checkbox).not.toBeChecked()
 
-    const mainBefore = await box(page, 'main.han')
+    const mainBefore = await box(page, 'main')
     expect(mainBefore.x).toBeGreaterThan(100) // console column occupies the left
 
     // the input is visually hidden — click the label
@@ -47,9 +47,9 @@ test.describe('Task B — collapsible side console', () => {
     // Column animates to 0 → main slides left and widens. Poll past the
     // 250ms transition.
     await expect
-      .poll(async () => (await box(page, 'main.han')).x)
+      .poll(async () => (await box(page, 'main')).x)
       .toBeLessThan(2)
-    const mainAfter = await box(page, 'main.han')
+    const mainAfter = await box(page, 'main')
     expect(mainAfter.width).toBeGreaterThan(mainBefore.width)
 
     // Not an overlay: the console is clipped to ~0 width, so it can't sit on
@@ -72,7 +72,7 @@ test.describe('Task B — collapsible side console', () => {
     // it's parsed, so the page lays out collapsed with no flash.
     await expect(page.locator('.ConsoleToggle input')).toBeChecked()
     await expect
-      .poll(async () => (await box(page, 'main.han')).x)
+      .poll(async () => (await box(page, 'main')).x)
       .toBeLessThan(2)
 
     // reopening clears the stored flag

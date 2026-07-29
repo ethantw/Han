@@ -53,18 +53,18 @@ for (const { path, htmlLang, label } of LOCALES) {
     await expect(page.locator('body.home')).toHaveAttribute('data-locale', label)
 
     await expect(page.locator('body > header .Brand')).toBeVisible()
-    await expect(page.locator('main.han')).toHaveCount(1)
+    await expect(page.locator('main')).toHaveCount(1)
     // The console is now the <han-console> web component (shadow DOM).
     await expect(page.locator('han-console')).toBeVisible()
 
     // Six stations, in document order: Manifesto, semantics, type,
     // lines, snippet, Closing.
-    await expect(page.locator('main.han > .Manifesto')).toBeVisible()
+    await expect(page.locator('main > .Manifesto')).toBeVisible()
     await expect(page.locator('#station-semantics')).toBeVisible()
     await expect(page.locator('#station-type')).toBeVisible()
     await expect(page.locator('#station-lines')).toBeVisible()
     await expect(page.locator('#station-snippet')).toBeVisible()
-    await expect(page.locator('main.han > .Closing')).toBeVisible()
+    await expect(page.locator('main > .Closing')).toBeVisible()
   })
 }
 
@@ -131,9 +131,9 @@ test.describe('console form attribute', () => {
 })
 
 test.describe('whole-page configuration', () => {
-  test('console toggle drives inline var on main.han; station④ snippet reflects it', async ({ page }) => {
+  test('console toggle drives inline var on main; station④ snippet reflects it', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
 
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
@@ -154,7 +154,7 @@ test.describe('per-group 使用預設値 buttons', () => {
   // 細項), visible only while any control in the group deviates.
   test('deviating shows the group button; clicking restores that group only', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     const linesDefault = page.locator(
       'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary .Default',
     )
@@ -187,7 +187,7 @@ test.describe('per-group 使用預設値 buttons', () => {
 
   test('metrics group button restores all three sliders', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header .Default')
     const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
 
@@ -227,9 +227,9 @@ test.describe('mobile bottom sheet', () => {
 })
 
 test.describe('demo-lang chips', () => {
-  test('繁 active by default; 日 chip → main.han[lang=ja]; 繁 chip → back', async ({ page }) => {
+  test('繁 active by default; 日 chip → main[lang=ja]; 繁 chip → back', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     await expect(main).toHaveAttribute('lang', 'zh-Hant')
 
     await page.locator('[data-demo-lang] label:has(input[value="ja"])').click()
@@ -243,18 +243,18 @@ test.describe('demo-lang chips', () => {
 test.describe('metrics — weight slider + writing-mode switch', () => {
   test('字重 slider fill 700 → main font-weight 700', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     const weightSlider = page.locator('[data-pg-sliders] [data-metric="weight"] input[type="range"]')
     await weightSlider.fill('700')
     await weightSlider.dispatchEvent('input')
     await expect(main).toHaveCSS('font-weight', '700')
   })
 
-  test('floating 直排 pill → main.han[data-writing=vertical]', async ({ page }) => {
+  test('floating 直排 pill → main[data-writing=vertical]', async ({ page }) => {
     // the 橫排/直排 switch moved out of the console to page chrome
     // (writing-switch.js) — preview state, not a han.css variable.
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     await expect(main).toHaveAttribute('data-writing', 'horizontal')
 
     await page.locator('[data-writing-switch] label:has(input[value="vertical"])').click()
@@ -263,9 +263,9 @@ test.describe('metrics — weight slider + writing-mode switch', () => {
 })
 
 test.describe('fallbacks — JS layer', () => {
-  test('checking fallbacks installs h-iss on main.han; unchecking removes them', async ({ page }) => {
+  test('checking fallbacks installs h-iss on main; unchecking removes them', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main.han')
+    const main = page.locator('main')
 
     await openGroupOf(page, 'fallbacks')
     const fallbacks = page.locator('[data-cfg-key="fallbacks"]')

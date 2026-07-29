@@ -94,7 +94,7 @@ test.describe('module switches', () => {
   })
 
   test('module off greys but keeps its control values; re-enabling restores the vars (lines / squeeze)', async ({ page }) => {
-    const main = page.locator('main.han')
+    const main = page.locator('main')
     const lines = page.locator('[data-cfg-key="lines"]')
     const squeeze = page.locator('[data-cfg-key="squeeze"]')
     const refinement = () =>
@@ -106,7 +106,7 @@ test.describe('module switches', () => {
     await expect.poll(refinement).toBe('hang')
 
     // lines module off: the layer isn't imported → its var drops from
-    // main.han, and the details greys — but the squeeze value is retained.
+    // main, and the details greys — but the squeeze value is retained.
     await lines.uncheck()
     await expect(page.locator('details[data-module="lines"]')).toHaveAttribute('data-module-off', '')
     await expect.poll(refinement).toBe('')
