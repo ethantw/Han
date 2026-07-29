@@ -1,62 +1,318 @@
 <script type="text/x-i18n">
 {
-  ssLede: {
+  semanticsLede: {
     hant: '精心校調的語意元素樣式——與漢字水火不容的偽斜體，就此告別。',
     hans: '精心校调的语意元素样式——与汉字水火不容的伪斜体，就此告别。',
     en: 'Name the tag right and the style follows — the marks come for free.',
     ja: '入念に整えた意味要素のスタイル——漢字と相容れない擬似斜体とは、これでお別れである。',
     ko: '<ruby>精誠<rt>정성</rt></ruby>껏 다듬은 <ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby>의 스타일——<ruby>漢字<rt>한자</rt></ruby>와 <ruby>相剋<rt>상극</rt></ruby>인 가짜 이탤릭과는 이것으로 작별이다.',
   },
-  ssSpecimen: {
+  semanticsSpecimen: {
     hant: '<u>謝廖沙・林</u>盯著天書<em>十七分鐘</em>，冷戰飛彈就此退役——詳見<cite>太陽中文報</cite>。',
     hans: '<u>谢廖沙・林</u>盯着天书<em>十七分钟</em>，冷战飞弹就此退役——详见<cite>太阳中文报</cite>。',
     en: 'Staring at gibberish for <em>seventeen minutes</em>, <u>Seryozha Lin</u> retired the last Cold-War missiles — see the <cite lang="zh-Hant">太陽中文報</cite>.',
     ja: '<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>が<ruby>天書<rt>てんしょ</rt></ruby>を睨むこと<em>十七分</em>——冷戦ミサイルはこうして退役した。詳しくは<cite>太陽中文報</cite>。',
     ko: '<u>세료샤 림</u>이 깨진 글자를 노려본 지 <em>17分</em>——<ruby>冷戰<rt>냉전</rt></ruby> 미사일은 이렇게 <ruby>退役<rt>퇴역</rt></ruby>했다. <cite><ruby>太陽中文報<rt>태양중문보</rt></ruby></cite>에 <ruby>詳報<rt>상보</rt></ruby>.',
   },
-  ssEyebrow: {
+  semanticsEyebrow: {
     hant: '壹・語意',
     hans: '壹・语意',
     en: 'I・Semantics',
     ja: '壹・セマンティクス',
     ko: '壹・<ruby>意味<rt>의미</rt></ruby>',
   },
-  ssH2: {
+  semanticsH2: {
     hant: '名正言順的元素樣式',
     hans: '名正言顺的元素样式',
     en: 'Semantics before style',
     ja: '名は体を表す、要素のスタイル',
     ko: '<ruby>正名<rt>정명</rt></ruby>이 곧 <ruby>樣式<rt>양식</rt></ruby>이다',
   },
-  ssP1: {
-    hant: '語意與樣式分離——著重號、書名號、專名號、深淺字重、黑明楷體——語意元素在漢字排版下應有的樣式，漢.css逐一重新定義，使用正確的元素即手可得，繁簡日韓各有所依。<em>著重號</em>標記文中緊要強調之處一如本句。',
-    hans: '语意与样式分离——着重号、书名号、专名号、深浅字重、黑明楷体——语意元素在汉字排版下应有的样式，汉.css逐一重新定义，使用正确的元素即手可得，繁简日韩各有所依。<em>着重号</em>标记文中紧要强调之处一如本句。',
-    en: 'HTML5 semantic elements have their own correct typographic treatment — <em>emphasis dots</em> mark the words that matter, the way a hand-drawn circle would.',
-    ja: '意味と様式の分離——圏点、書名号、固有名詞の傍線、字重の濃淡、黒・明・楷——意味要素が漢字組版で持つべきスタイルを、漢.cssが一つずつ定義し直す。正しい要素を使えばそのまま手に入り、繁・簡・日・韓それぞれに拠りどころがある。<em>圏点</em>は本文の肝要な強調を、この一句のように標す。',
-    ko: '<ruby>意味<rt>의미</rt></ruby>와 <ruby>樣式<rt>양식</rt></ruby>의 <ruby>分離<rt>분리</rt></ruby>——<ruby>傍點<rt>방점</rt></ruby>, <ruby>書名號<rt>서명호</rt></ruby>, <ruby>固有名詞<rt>고유명사</rt></ruby> 표시, <ruby>字重<rt>자중</rt></ruby>의 <ruby>濃淡<rt>농담</rt></ruby>, <ruby>黑<rt>흑</rt></ruby>·<ruby>明<rt>명</rt></ruby>·<ruby>楷<rt>해</rt></ruby>——<ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby>가 <ruby>漢字<rt>한자</rt></ruby> <ruby>組版<rt>조판</rt></ruby>에서 가져야 할 스타일을 漢.css가 하나하나 <ruby>再定義<rt>재정의</rt></ruby>한다. 옳은 <ruby>要素<rt>요소</rt></ruby>를 쓰면 곧바로 얻어지고, <ruby>繁<rt>번</rt></ruby>·<ruby>簡<rt>간</rt></ruby>·<ruby>日<rt>일</rt></ruby>·<ruby>韓<rt>한</rt></ruby> 저마다 <ruby>根據<rt>근거</rt></ruby>가 있다. <em><ruby>傍點<rt>방점</rt></ruby></em>은 <ruby>本文<rt>본문</rt></ruby>의 <ruby>緊要<rt>긴요</rt></ruby>한 <ruby>强調<rt>강조</rt></ruby>를, 이 <ruby>句<rt>구</rt></ruby>처럼 <ruby>標示<rt>표시</rt></ruby>한다.',
+  semanticsP1: {
+    hant: '語意與樣式分離——著重號、書名號、專名號、深淺字重、黑明楷體——語意元素在漢字排版下應有的樣式，漢.css逐一重新定義，使用正確的元素即手可得，繁簡日韓各有所依。著重號標記文中緊要強調之處一如本句。',
+    hans: '语意与样式分离——着重号、书名号、专名号、深浅字重、黑明楷体——语意元素在汉字排版下应有的样式，汉.css逐一重新定义，使用正确的元素即手可得，繁简日韩各有所依。着重号标记文中紧要强调之处一如本句。',
+    en: 'HTML5 semantic elements have their own correct typographic treatment — emphasis dots mark the words that matter, the way a hand-drawn circle would.',
+    ja: '意味と様式の分離——圏点、書名号、固有名詞の傍線、字重の濃淡、黒・明・楷——意味要素が漢字組版で持つべきスタイルを、漢.cssが一つずつ定義し直す。正しい要素を使えばそのまま手に入り、繁・簡・日・韓それぞれに拠りどころがある。圏点は本文の肝要な強調を、この一句のように標す。',
+    ko: '<ruby>意味<rt>의미</rt></ruby>와 <ruby>樣式<rt>양식</rt></ruby>의 <ruby>分離<rt>분리</rt></ruby>——<ruby>傍點<rt>방점</rt></ruby>, <ruby>書名號<rt>서명호</rt></ruby>, <ruby>固有名詞<rt>고유명사</rt></ruby> 표시, <ruby>字重<rt>자중</rt></ruby>의 <ruby>濃淡<rt>농담</rt></ruby>, <ruby>黑<rt>흑</rt></ruby>·<ruby>明<rt>명</rt></ruby>·<ruby>楷<rt>해</rt></ruby>——<ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby>가 <ruby>漢字<rt>한자</rt></ruby> <ruby>組版<rt>조판</rt></ruby>에서 가져야 할 스타일을 漢.css가 하나하나 <ruby>再定義<rt>재정의</rt></ruby>한다. 옳은 <ruby>要素<rt>요소</rt></ruby>를 쓰면 곧바로 얻어지고, <ruby>繁<rt>번</rt></ruby>·<ruby>簡<rt>간</rt></ruby>·<ruby>日<rt>일</rt></ruby>·<ruby>韓<rt>한</rt></ruby> 저마다 <ruby>根據<rt>근거</rt></ruby>가 있다. <ruby>傍點<rt>방점</rt></ruby>은 <ruby>本文<rt>본문</rt></ruby>의 <ruby>緊要<rt>긴요</rt></ruby>한 <ruby>强調<rt>강조</rt></ruby>를, 이 <ruby>句<rt>구</rt></ruby>처럼 <ruby>標示<rt>표시</rt></ruby>한다.',
   },
 }
 </script>
 <!-- Station I・Semantics — the explanatory copy is itself the specimen. -->
-<section id="station-semantics" data-station="semantics" data-ground="a" data-wm="語">
+<section id="station-semantics" data-station="semantics" data-ground="a">
   <hgroup>
-    <p>{{ ssEyebrow }}</p>
-    <h2>{{ ssH2 }}</h2>
+    <p>{{ semanticsEyebrow }}</p>
+    <h2>{{ semanticsH2 }}</h2>
   </hgroup>
 
-  <p class="Lede">{{ ssLede }}</p>
+  <p>{{ semanticsLede }}</p>
 
-  <!-- display specimen — the token carries REAL <em>/<cite>/<u> markup, so
-       the emphasis dots, cite marks and proper-noun underline render live.
-       `--han-cite-title-marks: bracket` is set inline ON this block so the
-       《》 around <cite> actually show (style queries read an ancestor —
-       this element is the cite's ancestor), and an inline var keeps the
-       preview honest — no fake glyphs. -->
-  <p class="Specimen" lang="zh-Hant" style="--han-cite-title-marks: bracket">{{ ssSpecimen }}</p>
+  <!-- 一封橫跨四百年的通信,寫成一首短詩:〈古騰堡〉問編碼,〈畢昇〉答統一,
+       兩人翻遍古籍,終無定論。每一行落一個語意元素、一種標記
+       (專名號/著重號/深字重/楷體/書名號甲式/書名號乙式/去偽斜體),
+       七行讀完既是對照表,也是一則笑話——這是本站唯一能同時做到兩件事的
+       篇幅。刻意不用下方 .Papers 的 KOI-8 故事:同一站講兩遍,第二遍就自動
+       降格成裝飾。短句也讓每行剛好一欄,直排帶因此不再自己溢出底緣。
 
-  <div class="Prose">
-    <p>{{ ssP1 }}</p>
+       The conceit, in English: Bi Sheng (膠泥活字, c. 1045, recorded in
+       Shen Kuo's 夢溪筆談) and Gutenberg in Mainz argue about code points
+       across four centuries — which is what earns the address block its
+       reason to exist. Gutenberg needs ~300 sorts for 26 letters and is
+       done; Bi Sheng cut thirty thousand — a clean hundredfold — and it
+       still isn't enough. And then Unicode turns
+       out to hold one table for every script on Earth, most of its million
+       code points still empty. Two lifetimes of cutting type, and neither
+       man fills a corner of it. He thinks so; he doesn't say so. They
+       consult 字驗, the cipher chapter of 武經總要 (前集 卷十五, 1044): forty
+       military situations mapped onto the forty characters of a five-word
+       poem, a real Song codebook. They reach no conclusion. Fitting reading
+       for two men who spent their lives turning language into
+       interchangeable units.
+
+       Two rows exist purely to show a mark BREAKING between neighbours,
+       which is the part a single specimen can never demonstrate: 專名號 on
+       two adjacent proper nouns, and 書名號甲式 on a title and its chapter.
+       Note the difference in what the two adjacencies MEAN — adjacent 專名號
+       are two separate names, adjacent 書名號 are one work and a part of it.
+       Same typographic gap, opposite grammar.
+
+       The `<code>` ghosts ARE the markup, floated beside each run by
+       station-semantics.css — `aria-hidden` because a tag name is a picture
+       here, not content (the element itself already carries the meaning).
+
+       The checkbox hands the whole <ul> back to browser defaults through
+       `--han-semantics: off` (semantics.css § Feature Toggles), so the
+       「前」state is REAL UA output — synthetic obliques and all — never an
+       imitation we drew. That's also why the flag lands on the <ul> and not
+       the <figure>: a style query reads an ANCESTOR, so the caption housing
+       the switch has to stay outside the subtree it switches. -->
+  <!-- The two letterheads used to stand as the band's first and last
+       columns; now they literally ride an ENVELOPE — the letter arrives
+       addressed to 畢昇 himself, signed from Mainz (the sender columns,
+       lower left). The poem keeps its place; the envelope is an
+       absolutely-positioned decoration pinned to the STATION's top-right
+       corner, peeking over the section border into the manifesto by
+       exactly its red 郵遞區號 band — no 大宋, just the frame as a
+       first-screen teaser (`overflow-clip-margin`, @supports-gated —
+       browsers without it keep the whole envelope inside the clip).
+       It ENTERS when the 「漢」 tracing's first pass lands its last
+       stroke: fonts-gate.js stamps `data-han-traced` on <html>, and
+       the envelope rises out of the fold with a fade. The flap then
+       lifts one second after `reveal.js` stamps the STATION's
+       `[data-revealed]` — a pure CSS `transition-delay`; the envelope
+       owns no JS of its own. Envelope model (paint-order occlusion: flap FIRST in
+       DOM, both parts positioned, no z-index anywhere, so the face
+       always covers it and it only ever shows past the top edge — the
+       flap lives on the BACK of a real envelope) is documented in
+       manual/demo/envelope.html. No tag labels here, unlike the band:
+       the envelope reads as a LETTER, and a mono `<address>` floating
+       on the paper broke that reading.
+
+       <address> is the pseudo-italic case at its purest — the UA
+       italicises it by default and han.css cancels that for
+       :lang(zh|ja|ko) ONLY, so Gutenberg's German twin stays italic,
+       exactly as it should. One rule, opposite outcomes.
+
+       The recipient line: 道兄 — a brother on the same Way. The two
+       invented movable type INDEPENDENTLY, four centuries apart, so
+       any master-and-disciple address (祖師, 先師…) would claim a
+       lineage that never existed; 道兄 honours the elder (畢 is the
+       senior by ~480 years) while keeping them exactly what the poem
+       makes them: peers on one road, each walking it alone. 台啓 is
+       the matching opening-formula between respected equals — not
+       鈞啓, which bows to a superior. Both are filed
+       under postal systems that wouldn't exist for centuries, and both
+       postcodes are real: 55116 is Mainz's, and 438712 is 草盤地鎮's,
+       英山縣, Hubei — the hillside where Bi Sheng's tombstone was
+       unearthed in 1990 (authenticated 1995; the attribution has its
+       sceptics, but it is the official line) and where the 畢昇紀念園
+       with its memorial hall opened in 2023. Gutenberg's letter is
+       addressed, quite literally, to the Bi Sheng museum. The Song-era
+       address is period-correct too: 蘄州蘄水縣直河鄉 sat in 淮南路
+       all of Bi Sheng's life — the 東/西 split only came in 1071,
+       twenty years after his death. The postcode rides in the red
+       郵遞區號 frame, in kanji numerals — a 直排 column rotates Latin
+       digits onto their side, and Chinese numerals are what a vertical
+       address would have used anyway. Gutenberg really did print in
+       the Hof zum Humbrecht. -->
+  <div class="Envelope" role="presentation">
+    <span data-flap></span>
+    <div data-face>
+      <p data-postal aria-label="郵遞區號 438712">
+        <span>四</span><span>三</span><span>八</span><span>七</span><span>一</span><span>二</span>
+      </p>
+      <address>
+        <p>大宋　淮南路　蘄州蘄水縣　直河鄉五桂墩</p>
+        <p data-name>畢昇道兄<span data-honorific>台啓</span></p>
+      </address>
+      <address lang="de">
+        Johannes Gutenberg<br />
+        Hof zum Humbrecht, Schustergasse 12<br />
+        55116 Mainz<br />
+        Heiliges Römisches Reich
+      </address>
+    </div>
   </div>
+
+  <figure class="semantic-elements" style="--han-cite-title-marks: bracket">
+    <article>
+      <!-- Every line is wrapped in a bare <span>, and that is structural, not
+           decorative: `--han-semantics` is read by a STYLE QUERY, which only
+           ever looks at an ANCESTOR (semantics.css § Feature Toggles). The
+           one-shot correction walks the poem line by line, so each line needs
+           an ancestor of its own to carry the flag and its `--row-cue` — a
+           <br /> separates lines without creating a box, so it can't. It is
+           also where per-line `--han-cite-title-marks` lands (see 甲式 below).
+           A plain inline <span> costs nothing: it makes no box of its own, so
+           pair-squeeze still crosses it (workspace ledger:
+           pair-squeeze-and-markup.md — it is `inline-block` that kills it). -->
+      <!-- 專名號 breaking between two adjacent proper nouns — city then
+           person, the textbook case (〈美因茲〉〈古騰堡〉). Two runs, two
+           <u>: the gap between them is the convention, not a typo. -->
+      <p class="poem-like">
+        <span><u>美因茲</u><u>古騰堡</u>來信談編碼。</span>
+        <br />
+        <!-- 23, not 26 — J, U and W were not yet letters in the 1450s, only
+           positional variants of i and v. The B42 type still ran to roughly
+           290 sorts: ligatures, abbreviations and variant widths, cut so the
+           printed page could pass for a scribe's. The anachronism is worth
+           avoiding for its own sake, but 23 also carries the poem: the man
+           saying "enough" has an alphabet that is itself still three letters
+           short of finished — which is 畢昇's 百萬碼位猶空 seen from the
+           other side. The gloss catches readers who count 26. -->
+        <span>「拉丁二十三字，<em>三百枚足矣。</em>」</span>
+        <br />
+        <span><u>畢昇</u>答：華夏文字，三萬枚猶不足。</span>
+        <br />
+        <!-- 統一碼 is the whole term and stays whole, and it is defined by
+           what it actually IS — one table for every script on Earth. An
+           earlier draft defined it by Han unification instead; that is one
+           principle among many, unevenly applied, and far too small a
+           thing to hang the poem's turn on. -->
+        <span>幸有<dfn>統一碼</dfn>，天下文字共一表。</span>
+        <br />
+      <!-- <i> marks a CHANGE of voice, so the row hands the voice back:
+           inner thought in 楷體, then a clause of plain narration after it.
+           Without that return the 楷體 has nothing to be different FROM —
+           a register shift needs both registers in the same line. -->
+        <span>他心想：<i>百萬碼位猶空</i>，便不再說。</span>
+        <br />
+      <!-- 書名號甲式 — the wavy underline, Taiwan textbook convention.
+           `--han-cite-title-marks` is read by a style query, so it has to
+           sit on an ANCESTOR of the <cite>; the enclosing <span> is the
+           nearest one, which is also why it can differ row by row.
+
+           TWO ADJACENT 書名號 WITH NOTHING BETWEEN THEM MEAN CONTAINMENT,
+           not conjunction: the second is a chapter OF the first. An earlier
+           draft put 《武經總要》《孫子算經》 here — two unrelated books — which
+           the convention reads as «the 孫子算經 chapter of 武經總要». Naming
+           two separate works needs a 頓號 or a conjunction.
+
+           〈字驗〉 is genuinely a chapter of 《武經總要》 (前集 卷十五, 1044):
+           forty military situations mapped onto the forty characters of a
+           five-character poem — an actual Song codebook, and the reason this
+           title was chosen in the first place. 「一篇」 says the relationship
+           in prose too, so the row teaches the convention instead of merely
+           relying on it. -->
+        <span style="--han-cite-title-marks: wavy">同讀<cite>武經總要</cite><cite>字驗</cite>一篇。</span>
+        <br />
+      <!-- 書名號乙式 on a WESTERN title, rendered into Chinese. John
+           Wilkins, «An Essay towards a Real Character, and a Philosophical
+           Language» (1668) — a book that set out to invent one character
+           set for all of humanity, and didn't manage it either. Pointing
+           the poem's 「終無定論」 at it is the driest joke in the figure,
+           and the truest: the problem is older than both correspondents
+           and outlived them both. -->
+        <span>終無定論，另見<cite>真實字符論</cite>。</span>
+    </article>
+    <!-- 標記原理圖 — the whole lookup table, abstracted. Six bars: the same
+         input (a slanted, bare block of text) and six outputs. It exists
+         because the TEXT cannot animate any of this — Chromium's synthetic
+         oblique ignores `oblique <angle>` entirely, and in 直排 a `skewX`
+         shears the whole run sideways instead of slanting each glyph
+         (both measured; docs/plans/semantics-mark-diagram.md § 0). Move the
+         argument to pure geometry and every quantity becomes continuous.
+
+         横排 on purpose: set square to the 直排 poem, so nobody mistakes it
+         for typeset output. It is a diagram OF the specimen beside it, not
+         a layer under it.
+
+         Coordinates: 10 units = 1em, so every number below reads as an em.
+         Bars span 50→183 and split at 116.5 where two adjacent runs touch.
+         The paired marks are TWO elements from the start (50→115, 118→183),
+         each a whole 13 periods of a 0.5em wave that begins and ends on the
+         baseline heading upward — which is precisely what lets them abut
+         seamlessly when the gap closes, and break cleanly when it opens.
+
+         THE DIAGRAM IS IDEALISED, KNOWINGLY. Real 甲式 cannot promise this:
+         its wave is generated across the run, and the run's length is set by
+         the character count, so a five-character title may well end
+         mid-crest. This draws the CONVENTION as intended, not any engine's
+         output. Do not read a discrepancy with the poem as an implementation
+         bug — 楷體 is likewise absent because a change of typeface has no
+         geometric analogue, and inventing one would be a private code. -->
+    <svg class="MarkDiagram" viewBox="0 24 160 148"
+         role="presentation" aria-hidden="true" focusable="false">
+      <g data-mark="proper" style="--row-mid: 31px; --row-cue: 200ms">
+        <rect data-hit x="0" y="18" width="160" height="25" />
+        <text x="32" y="35"><tspan data-angle>&lt;</tspan><tspan data-tagname>u</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-bar><rect data-cell x="40" y="24" width="14" height="14" /><rect data-cell x="54" y="24" width="14" height="14" /><rect data-cell x="68" y="24" width="14" height="14" /><rect data-cell x="82" y="24" width="14" height="14" /><rect data-cell x="96" y="24" width="14" height="14" /><rect data-cell x="110" y="24" width="14" height="14" /><g transform="translate(42,26)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(56,26)"><path data-glyph d="M0 0 L10 0 L10 10 L0 10 z M3 3 L7 3 L7 7 L3 7 z" /></g><g transform="translate(70,26)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(84,26)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(98,26)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g><g transform="translate(112,26)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g></g>
+        <g data-rule><rect data-seg="a" x="40" y="41" width="40" height="1.5" /><rect data-seg="b" x="84" y="41" width="40" height="1.5" /></g>
+      </g>
+      <g data-mark="emphasis" style="--row-mid: 56px; --row-cue: 400ms">
+        <rect data-hit x="0" y="43" width="160" height="25" />
+        <text x="32" y="60"><tspan data-angle>&lt;</tspan><tspan data-tagname>em</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-bar><rect data-cell x="40" y="49" width="14" height="14" /><rect data-cell x="54" y="49" width="14" height="14" /><rect data-cell x="68" y="49" width="14" height="14" /><rect data-cell x="82" y="49" width="14" height="14" /><rect data-cell x="96" y="49" width="14" height="14" /><g transform="translate(42,51)"><path data-glyph d="M0 0 L10 0 L10 2.6 L0 2.6 z M0 3.7 L10 3.7 L10 6.3 L0 6.3 z M0 7.4 L10 7.4 L10 10 L0 10 z" /></g><g transform="translate(56,51)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(70,51)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g><g transform="translate(84,51)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(98,51)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><rect data-cell x="110" y="49" width="14" height="14" /><text data-mock-punct x="110" y="61.3">。</text></g>
+        <g data-dots><circle cx="47" cy="67" r="1.6" /><circle cx="61" cy="67" r="1.6" /><circle cx="75" cy="67" r="1.6" /><circle cx="89" cy="67" r="1.6" /><circle cx="103" cy="67" r="1.6" /></g>
+      </g>
+      <g data-mark="weight" style="--row-mid: 81px; --row-cue: 800ms">
+        <rect data-hit x="0" y="68" width="160" height="25" />
+        <text x="32" y="85"><tspan data-angle>&lt;</tspan><tspan data-tagname>dfn</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-bar><rect data-cell x="40" y="74" width="14" height="14" /><rect data-cell x="54" y="74" width="14" height="14" /><rect data-cell x="68" y="74" width="14" height="14" /><g transform="translate(42,76)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g><g transform="translate(56,76)"><path data-glyph d="M0 4.2 L10 4.2 L10 6 L0 6 z" /></g><g transform="translate(70,76)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g></g>
+      </g>
+      <g data-mark="plain" style="--row-mid: 106px; --row-cue: 1000ms">
+        <rect data-hit x="0" y="93" width="160" height="25" />
+        <text x="32" y="110"><tspan data-angle>&lt;</tspan><tspan data-tagname>i</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-bar><rect data-cell x="40" y="99" width="14" height="14" /><rect data-cell x="54" y="99" width="14" height="14" /><rect data-cell x="68" y="99" width="14" height="14" /><rect data-cell x="82" y="99" width="14" height="14" /><rect data-cell x="96" y="99" width="14" height="14" /><rect data-cell x="110" y="99" width="14" height="14" /><g transform="translate(42,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g><g transform="translate(56,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g><g transform="translate(70,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(84,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(98,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(112,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g></g>
+      </g>
+      <g data-mark="wavy" style="--row-mid: 131px; --row-cue: 1200ms">
+        <rect data-hit x="0" y="118" width="160" height="25" />
+        <text x="32" y="135"><tspan data-angle>&lt;</tspan><tspan data-tagname>cite</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-bar><rect data-cell x="40" y="124" width="14" height="14" /><rect data-cell x="54" y="124" width="14" height="14" /><rect data-cell x="68" y="124" width="14" height="14" /><rect data-cell x="82" y="124" width="14" height="14" /><rect data-cell x="96" y="124" width="14" height="14" /><rect data-cell x="110" y="124" width="14" height="14" /><g transform="translate(42,126)"><path data-glyph d="M0 0 L10 0 L10 10 M0.5 4.5 L5.5 4.5 L5.5 9.5 L0.5 9.5 z" /></g><g transform="translate(56,126)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g><g transform="translate(70,126)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g><g transform="translate(84,126)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(98,126)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(112,126)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g></g>
+        <g data-rule><path data-seg="a" d="M40 142 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0" /><path data-seg="b" d="M95.3 142 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0 q1.025 -2 2.05 0 q1.025 2 2.05 0" /></g>
+      </g>
+      <g data-mark="bracket" style="--row-mid: 156px; --row-cue: 1400ms">
+        <rect data-hit x="0" y="143" width="160" height="25" />
+        <text x="32" y="160"><tspan data-angle>&lt;</tspan><tspan data-tagname>cite</tspan><tspan data-angle>&gt;</tspan></text>
+        <g data-punct data-seg="a"><rect data-cell x="40" y="149" width="7" height="14" /><text class="dtj" x="47.6" y="161">《</text></g>
+        <g data-run>
+        <g data-bar><rect data-cell x="40" y="149" width="14" height="14" /><rect data-cell x="54" y="149" width="14" height="14" /><rect data-cell x="68" y="149" width="14" height="14" /><rect data-cell x="82" y="149" width="14" height="14" /><rect data-cell x="96" y="149" width="14" height="14" /><g transform="translate(42,151)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(56,151)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(70,151)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(84,151)"><path data-glyph d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /></g><g transform="translate(98,151)"><path data-glyph d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /></g></g>
+        <g data-punct data-seg="b"><rect data-cell x="110" y="149" width="7" height="14" /><text class="dtj" x="110" y="161">》</text></g>
+        </g>
+      </g>
+      <g data-clock style="--row-cue: 400ms"><g data-annotation><path data-ghost d="M110 166 L110 49" /><path data-wedge d="M110 63 L110 49 L113.49 49 Z" /><path data-lean d="M110 63 L113.49 49" /><path data-arc d="M110 54 A9 9 0 0 1 112.18 54.27" /><text x="116.0" y="53.5">14°</text></g></g>
+    </svg>
+    <figcaption>
+      <!-- The gloss sits OUTSIDE the <article>, so the switch never takes
+           it with it — the explanation has to stay readable in both states.
+           Plain prose on purpose: the poem earns its jokes by compression,
+           and compression is exactly what leaves a reader behind. -->
+      <p>古騰堡從美因茲來信談編碼，連合字帶異體刻三百枚就夠用，畢昇答漢字這邊刻了三萬枚還嫌不夠。幸好有統一碼，天下的文字共用一張表。畢昇心想那百萬個碼位還空著大半，就沒再說什麼。兩人翻遍古籍，沒有結論。</p>
+      <!-- A proxy for the console's `semantics` module switch, not a control
+           of its own. The console already reaches this figure — it disables
+           `han.semantics.css` page-wide — so a second, independent switch
+           here could only ever contradict it. Bound both ways by
+           home/module-state.js: this one presses the console's button, and
+           the console's broadcast presses this one back. Toggling it takes
+           the whole page with it, the newspaper below included, which is the
+           honest scope for a whether-imported decision. -->
+      <label class="Toggle for-semantics">
+        <input type="checkbox" name="semantics" data-han-module-proxy="semantics" checked />
+        <span>語意樣式——取消勾選，看瀏覽器的預設</span>
+      </label>
+    </figcaption>
+  </figure>
+
+  <p>{{ semanticsP1 }}</p>
 
   <!-- live per-language demo — four newspaper panes (.Papers) set the
        SAME three paragraphs of 太陽中文報's soviet-koi8-nuke in each
@@ -71,16 +327,20 @@
        (style queries read an ancestor). The edition mark (简/日/한;
        the home edition goes unmarked) is CSS generated content derived
        from each pane's `lang` — the DOM stays the single source of
-       truth. Datelines run on 民國 era at «today + 100 years»: the
-       static text is a no-JS fallback, `home/papers-dateline.js`
-       refreshes each <time> on boot in the edition's own numbering
-       convention. The zh-Hant pane carries the full semantic-element
+       truth. Datelines run at «today + 100 years», each edition in its
+       own ERA: 民國 for zh-Hant; 夏曆 for zh-Hans (converted through
+       `Intl` `-u-ca-chinese` — cyclic year, 闰-aware month, 初／十／廿
+       day names); the fictional 弘宙 reign for ja, pinned at 元年
+       forever (a reign that has only just begun — only month and day
+       ever move); plain 西紀 CE for ko. The static text is a no-JS
+       fallback, `home/papers-dateline.js` refreshes each <time> on
+       boot. The zh-Hant pane carries the full semantic-element
        set (docs/plans/homepage-specimens.md). -->
   <figure class="Papers" style="--han-cite-title-marks: bracket">
     <article lang="zh-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline">民國<time datetime="2126-07-24">二一五年七月廿四日</time>・科技考古</p>
+        <p class="Dateline"><time datetime="2126-07-29">中華民國二一五年七月廿九日</time>・科技考古</p>
       </header>
       <h3>謎底竟是一行亂碼</h3>
       <p><cite>地球無核協議</cite>簽署已屆十五年，最後一批冷戰飛彈的封存磁碟卻無人能讀。破譯組成員<u>謝廖沙・林</u>翻查文獻時，讀到一份塵封九十年的技術備忘錄——頁首印著<u>蘇聯</u><u>標準委員會</u>的紅色徽章，內容涉及一套名為<dfn>KOI-8</dfn>的字元編碼規範。</p>
@@ -90,7 +350,7 @@
     <article lang="zh-Hans">
       <header>
         <p class="Masthead">太阳中文报</p>
-        <p class="Dateline">民国<time datetime="2126-07-24">二一五年七月廿四日</time>・科技考古</p>
+        <p class="Dateline"><time datetime="2126-07-29">夏历丙戌年六月初十</time>・科技考古</p>
       </header>
       <h3>谜底竟是一行乱码</h3>
       <p><cite>地球无核协议</cite>签署已届十五年，最后一批冷战飞弹的封存磁碟却无人能读。破译组成员<u>谢廖沙・林</u>翻查文献时，读到一份尘封九十年的技术备忘录——页首印着<u>苏联</u><u>标准委员会</u>的红色徽章，内容涉及一套名为<dfn>KOI-8</dfn>的字元编码规范。</p>
@@ -100,7 +360,7 @@
     <article lang="ja">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline">民国<time datetime="2126-07-24">二一五年七月二十四日</time>・科学考古</p>
+        <p class="Dateline"><time datetime="2126-07-29">弘宙元年七月二十九日</time>・科技考古</p>
       </header>
       <h3>謎は一行の文字化けだった</h3>
       <p><cite>地球非核協定</cite>の調印から十五年、最後の冷戦ミサイルを封じたディスクは誰にも読めなかった。解読班の<u><ruby>謝廖沙<rt>セリョーシャ</rt></ruby>・林</u>は、九十年<ruby>眠<rt>ねむ</rt></ruby>り続けた技術覚書を偶然目にする——表紙には<u>ソ連</u><u>標準委員会</u>の赤い<ruby>徽章<rt>きしょう</rt></ruby>、内容は<dfn>KOI-8</dfn>と呼ばれる文字符号化規格に関するものだった。</p>
@@ -110,7 +370,7 @@
     <article lang="ko-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
-        <p class="Dateline"><ruby>民國<rt>민국</rt></ruby> <time datetime="2126-07-24">215年 7月 24日</time>・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
+        <p class="Dateline"><time datetime="2126-07-29"><ruby>西紀<rt>서기</rt></ruby> 2126年 7月 29日</time>・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
       </header>
       <h3><ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마</rt></ruby>였다</h3>
       <p><cite><ruby>地球<rt>지구</rt></ruby> <ruby>無核<rt>무핵</rt></ruby> <ruby>協議<rt>협의</rt></ruby></cite> <ruby>締結<rt>체결</rt></ruby> 15年——마지막 <ruby>冷戰<rt>냉전</rt></ruby> 미사일을 <ruby>封存<rt>봉존</rt></ruby>한 디스크는 아무도 읽어낼 수 없었다. <ruby>解讀班<rt>해독반</rt></ruby>의 젊은 <ruby>隊員<rt>대원</rt></ruby> <u>세료샤 림</u>은 90年 동안 <ruby>塵封<rt>진봉</rt></ruby>된 <ruby>技術<rt>기술</rt></ruby> <ruby>備忘錄<rt>비망록</rt></ruby>을 우연히 발견했다——표지에는 <u><ruby>蘇聯<rt>소련</rt></ruby></u> <u><ruby>標準<rt>표준</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby></u>의 붉은 <ruby>徽章<rt>휘장</rt></ruby>이 찍혀 있었고, <ruby>內容<rt>내용</rt></ruby>은 <dfn>KOI-8</dfn>이라는 <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>에 관한 것이었다.</p>

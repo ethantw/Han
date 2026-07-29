@@ -85,8 +85,19 @@ const applyTarget = (config, $target) => {
  * 沒有這些 link 的頁面（元件單獨掛載）整層 no-op。 */
 const applyModules = (config) => {
   document.querySelectorAll('link[data-han-module]').forEach(($link) => {
+    /* `semantics` 走 han.css 自己的功能旗標，不卸載樣式表 —— 實測
+       `:root { --han-semantics: off }` 阻塞主執行緒 169ms，`link.disabled`
+       則是 434ms，而那個差額正好落在站①的修正動畫上，掉幀看得見。
+       生成碼不變：加／減 import 行仍是這個開關要預覽的決定。
+       近似的部分只有一處、且是單向的 —— semantics.css 刻意放在
+       `@container style()` 之外的那幾條（`:root` 的 font-family 與
+       underline-offset 修正，該檔稱之為 correctness fix 而非可退出的加值）
+       在這裡仍會套用，真的沒 import 則會一併消失。 */
+    if ($link.dataset.hanModule === 'semantics') return
     $link.disabled = !config[$link.dataset.hanModule]
   })
+  if (config.semantics) document.documentElement.style.removeProperty('--han-semantics')
+  else document.documentElement.style.setProperty('--han-semantics', 'off')
   document.querySelectorAll('link[data-han-webfont]').forEach(($link) => {
     $link.disabled = config.webfontDelivery === 'none'
   })

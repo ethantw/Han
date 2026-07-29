@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>合成斜體回正——font-style: oblique &lt;角度&gt; 的過渡</title>
+
+<!--
+  站①的「偽斜體站直」動畫，計算值明明在補間（實測 italic → oblique 11.75deg
+  → 0.5deg → normal），肉眼卻像是直接切換。這頁把可能的原因一條一條拆開量：
+
+    ① 上漆是否連續？——計算值連續不代表畫面連續。合成斜體是一個 skew 矩陣，
+       瀏覽器可能量化角度、或在某個門檻才重新上漆。靜態刻度尺 + 手動拖桿
+       直接看得出來。
+    ② 時間曲線騙了眼睛？——ease-out 把絕大部分的旋轉塞進前 20% 的時間，
+       12° 又是小角度，520ms 的 ease-out 很可能就是「看起來沒過渡」的真兇。
+    ③ 起點就不連續？——動畫之前那一幀是 UA 自己的 `italic`，不是
+       `oblique 12deg`。`italic` 與 `oblique <角度>` 之間**不可補間**（規格上
+       是離散的），所以動畫開跑的瞬間本來就有一次跳變。
+
+  對照組是 `transform: skewX()`：它一定是連續的幾何變換，所以是「順的長什麼
+  樣」的基準。它在正式頁面不能用——需要 `display: inline-block`，而原子行內盒
+  會直接殺掉標點擠壓（workspace ledger: pair-squeeze-and-markup.md）。這裡只
+  當尺規。
+-->
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --ink: light-dark(#1a1a18, #e8e6e0);
+    --dim: light-dark(#6b6b66, #9a978f);
+    --rule: light-dark(#d8d5cd, #3a3934);
+    --bg: light-dark(#fbfaf6, #161614);
+    --accent: light-dark(#8a5a2b, #d3a06a);
+    --han: "Source Han Serif TC", "Noto Serif CJK TC", "Songti TC", serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 2.5rem clamp(1rem, 4vw, 3rem) 6rem;
+    background: var(--bg);
+    color: var(--ink);
+    font: 1rem/1.7 system-ui, sans-serif;
+  }
+
+  main { max-inline-size: 62rem; margin-inline: auto; }
+
+  h1 { font-size: 1.5rem; margin-block: 0 .5rem; }
+  h2 { font-size: 1.125rem; margin-block: 3rem .25rem; }
+  h2 + p { margin-block-start: 0; color: var(--dim); font-size: .875rem; }
+  p.note { color: var(--dim); font-size: .875rem; }
+  code { font-family: ui-monospace, monospace; font-size: .875em; color: var(--accent); }
+
+  section { border-block-start: 1px solid var(--rule); padding-block-start: .5rem; }
+
+  /* ── the specimen ────────────────────────────────────────────────────
+     One line of Han, set in a CJK serif that has no italic face — so any
+     slant on it is SYNTHETIC, which is exactly the thing under test. The
+     baseline rule behind it gives the eye a fixed vertical to judge the
+     angle against; without it a 12° rotation on a 2rem glyph is genuinely
+     hard to see at all, which is half of what this page is investigating. */
+  .Specimen {
+    & {
+      font-family: var(--han);
+      font-size: 2rem;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+
+    /* A vertical hairline every 1em: the reference the eye needs. Slanted
+       strokes read as slanted only against something known to be upright. */
+    background-image: repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--rule) 70%, transparent) 0 1px,
+      transparent 1px 2em
+    );
+  }
+
+  /* ── §1 static ladder ───────────────────────────────────────────────── */
+  .Ladder {
+    & {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+      gap: .75rem 1rem;
+      margin-block: 1rem;
+    }
+
+    li {
+      list-style: none;
+      font-family: var(--han);
+      font-size: 2rem;
+      font-style: oblique var(--deg);
+      /* Paint the degree with the sample so a quantised pair is visible as
+         two identical glyphs under two different labels. */
+      &::after {
+        content: var(--label);
+        display: block;
+        font: .625rem/1.4 ui-monospace, monospace;
+        font-style: normal;
+        color: var(--dim);
+      }
+    }
+  }
+
+  /* ── §2 manual scrub ────────────────────────────────────────────────── */
+  .Scrub {
+    & { margin-block: 1rem; }
+
+    output {
+      display: inline-block;
+      min-inline-size: 6ch;
+      font-family: ui-monospace, monospace;
+      color: var(--accent);
+    }
+
+    input[type="range"] { inline-size: min(100%, 34rem); }
+
+    .Specimen { font-style: oblique var(--deg, 0deg); }
+  }
+
+  /* ── §3 the comparison rows ─────────────────────────────────────────── */
+  .Controls {
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      align-items: end;
+      margin-block: 1rem;
+      padding: .875rem 1rem;
+      border: 1px solid var(--rule);
+      border-radius: .375rem;
+    }
+
+    label { display: grid; gap: .25rem; font-size: .8125rem; color: var(--dim); }
+    input, select { font: inherit; font-size: .875rem; }
+    input[type="number"] { inline-size: 6rem; }
+    button {
+      font: inherit;
+      font-size: .875rem;
+      padding: .375rem 1rem;
+      border: 1px solid var(--rule);
+      border-radius: .25rem;
+      background: none;
+      color: var(--ink);
+      cursor: pointer;
+      &:hover { border-color: var(--accent); color: var(--accent); }
+    }
+  }
+
+  .Row {
+    & {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: .25rem;
+      margin-block: 1.75rem;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: .8125rem;
+      font-weight: 600;
+      font-family: ui-monospace, monospace;
+      color: var(--accent);
+    }
+
+    /* :not(.Specimen) — a bare `p` here is (0,1,1) and would out-specify
+       `.Specimen` at (0,1,0), shrinking the very thing under test down to
+       caption size. */
+    p:not(.Specimen) { margin: 0; font-size: .8125rem; color: var(--dim); }
+    p.Specimen { margin: .25rem 0 0; }
+  }
+
+  /* (a) the production technique — animate the ANGLE of a synthetic oblique.
+     No box change, so pair-squeeze survives; the question is whether the
+     paint keeps up with the computed value. */
+  .Row[data-technique="angle"] .Specimen {
+    animation: straighten var(--dur) var(--ease) both;
+  }
+  @keyframes straighten {
+    from { font-style: oblique var(--from); }
+    to   { font-style: oblique 0deg; }
+  }
+
+  /* (b) same thing as a TRANSITION rather than an animation — different code
+     path in the engine, worth ruling in or out separately. */
+  .Row[data-technique="transition"] .Specimen {
+    font-style: oblique var(--from);
+    transition: font-style var(--dur) var(--ease);
+    &[data-settled] { font-style: oblique 0deg; }
+  }
+
+  /* (c) THE RULER. transform is a guaranteed-continuous geometric shear, so
+     this is what "smooth" looks like. Unusable in production: it needs an
+     atomic inline box, which kills 標點擠壓. */
+  .Row[data-technique="skew"] .Specimen {
+    display: inline-block;
+    transform-origin: left baseline;
+    animation: skew-straighten var(--dur) var(--ease) both;
+  }
+  @keyframes skew-straighten {
+    from { transform: skewX(calc(-1 * var(--from))); }
+    to   { transform: skewX(0deg); }
+  }
+
+  /* (d) starting from the UA's own `italic`, which is what the real page
+     does. font-style is DISCRETE between `italic` and `oblique <angle>`, so
+     this row should snap — and if it looks the same as (a), the snap the eye
+     is catching is at the handover, not during the run. */
+  .Row[data-technique="from-italic"] .Specimen {
+    animation: from-italic var(--dur) var(--ease) both;
+  }
+  @keyframes from-italic {
+    from { font-style: italic; }
+    to   { font-style: oblique 0deg; }
+  }
+
+  /* (e) production settings verbatim, for the record. */
+  .Row[data-technique="production"] .Specimen {
+    animation: straighten 520ms ease-out both;
+    --from: 12deg;
+  }
+
+  /* (f) THE WORKAROUND. skewX needs a box, and a box kills 標點擠壓 — but it
+     only needs one WHILE IT MOVES. `display` is a discrete property and
+     animates in @keyframes, so the run is an atomic inline box for the
+     duration and an ordinary inline again on the last frame. Fill mode is
+     `none` on purpose: the moment the animation lets go, the element is back
+     to whatever the cascade says, box and all. */
+  .Row[data-technique="skew-transient"] .Specimen i {
+    font-style: normal;   /* the slant comes from the transform, not the font */
+    animation: skew-transient var(--dur) var(--ease);
+  }
+  @keyframes skew-transient {
+    from { display: inline-block; transform: skewX(calc(-1 * var(--from))); }
+    99%  { display: inline-block; transform: skewX(0deg); }
+    to   { display: inline; transform: none; }
+  }
+
+  .ProbeTitle { font-size: .9375rem; margin-block: 2rem .25rem; }
+  .Probe {
+    margin-block: .75rem;
+    padding: .75rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: .375rem;
+    font: .75rem/1.7 ui-monospace, monospace;
+    color: var(--dim);
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .Findings {
+    & { margin-block: 1rem; }
+    dt { font-weight: 600; margin-block-start: .875rem; }
+    dd { margin-inline-start: 0; color: var(--dim); font-size: .9375rem; }
+  }
+
+  /* ── §4 the frame log ───────────────────────────────────────────────── */
+  .Log {
+    & {
+      margin-block: 1rem;
+      font: .75rem/1.6 ui-monospace, monospace;
+      color: var(--dim);
+      white-space: pre-wrap;
+      max-block-size: 22rem;
+      overflow: auto;
+      padding: .75rem 1rem;
+      border: 1px solid var(--rule);
+      border-radius: .375rem;
+    }
+  }
+</style>
+
+<script type="module">
+  const $ = (sel, root = document) => root.querySelector(sel)
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)]
+
+  /* ── §1 ladder — one <li> per whole degree, built from the DOM's own
+     data so the markup stays the source of truth for the range. */
+  const ladder = $('.Ladder')
+  const max = Number(ladder.dataset.max)
+  ladder.replaceChildren(
+    ...Array.from({ length: max + 1 }, (_, deg) => {
+      const li = document.createElement('li')
+      li.style.setProperty('--deg', `${deg}deg`)
+      li.style.setProperty('--label', JSON.stringify(`${deg}°`))
+      li.textContent = '漢字排版'
+      return li
+    }),
+  )
+
+  /* ── §2 scrub — the single most direct question this page asks: does the
+     PAINT follow the angle continuously, or in steps? */
+  const scrub = $('.Scrub')
+  const slider = $('input[type="range"]', scrub)
+  const apply = () => {
+    scrub.style.setProperty('--deg', `${slider.value / 10}deg`)
+    $('output', scrub).textContent = `${(slider.value / 10).toFixed(1)}°`
+  }
+  slider.addEventListener('input', apply)
+  apply()
+
+  /* ── §3 controls — one clock for every row, so the techniques are only
+     ever compared under identical timing. */
+  const stage = $('.Stage')
+  const controls = {
+    from: $('#from'),
+    dur: $('#dur'),
+    ease: $('#ease'),
+  }
+  const push = () => {
+    stage.style.setProperty('--from', `${controls.from.value}deg`)
+    stage.style.setProperty('--dur', `${controls.dur.value}ms`)
+    stage.style.setProperty('--ease', controls.ease.value)
+  }
+  Object.values(controls).forEach(($c) => $c.addEventListener('input', push))
+  push()
+
+  /* Replaying an animation needs the element out of the running state for a
+     frame — remove it, force a reflow read, put it back. The transition row
+     is driven by an attribute instead, so it gets its own beat. */
+  const replay = () => {
+    $$('.Row .Specimen').forEach(($s) => {
+      $s.removeAttribute('data-settled')
+      $s.style.animation = 'none'
+    })
+    void stage.offsetWidth
+    requestAnimationFrame(() => {
+      $$('.Row .Specimen').forEach(($s) => {
+        $s.style.animation = ''
+        $s.setAttribute('data-settled', '')
+      })
+      sample()
+    })
+  }
+  $('#replay').addEventListener('click', replay)
+
+  /* ── §0 live probe — the decisive measurement, run in the reader's own
+     browser rather than quoted from mine. Draw one glyph at each style and
+     measure the INK's shear: the leftmost lit pixel near the top of the
+     glyph minus the leftmost near the bottom. A synthetic oblique that
+     honours its angle produces a rising series; one that ignores it
+     produces the same number over and over. */
+  const probe = () => {
+    const c = document.createElement('canvas')
+    c.width = 400
+    c.height = 300
+    const x = c.getContext('2d', { willReadFrequently: true })
+    const family = getComputedStyle(document.querySelector('.Specimen')).fontFamily
+    const shear = (style) => {
+      x.clearRect(0, 0, 400, 300)
+      x.font = `${style} 160px ${family}`
+      x.fillStyle = '#000'
+      x.fillText('版', 60, 220)
+      const px = x.getImageData(0, 0, 400, 300).data
+      const leftmost = (from, to) => {
+        let min = Infinity
+        for (let y = from; y < to; y++)
+          for (let xx = 0; xx < 400; xx++)
+            if (px[(y * 400 + xx) * 4 + 3] > 40) { min = Math.min(min, xx); break }
+        return min
+      }
+      return leftmost(0, 110) - leftmost(190, 300)
+    }
+    const styles = ['normal', 'oblique 0deg', 'oblique 4deg', 'oblique 8deg',
+                    'oblique 10deg', 'oblique 14deg', 'oblique 20deg', 'italic']
+    const rows = styles.map((s) => [s, shear(s)])
+    const upright = rows[0][1]
+    document.querySelector('.Probe').textContent = [
+      `字型：${family}`,
+      '',
+      ...rows.map(([s, v]) =>
+        `${s.padEnd(14)} 上緣−下緣 = ${String(v).padStart(4)}px  ${v === upright ? '← 直立' : ''}`),
+      '',
+      new Set(rows.slice(2).map(([, v]) => v)).size === 1
+        ? '⇒ 所有非零角度畫出來完全相同：這個瀏覽器忽略合成斜體的角度。'
+        : '⇒ 角度有生效，數值隨角度變化。',
+    ].join('\n')
+  }
+  probe()
+
+  /* ── §4 frame log — computed value per frame for the production row,
+     alongside the count of DISTINCT values. A run that reports 30 frames
+     but only 4 distinct angles is quantised; one that reports 30 of 30 is
+     continuous in the computed value, and any remaining jerk is paint. */
+  const log = $('.Log')
+  const sample = () => {
+    const $target = $('.Row[data-technique="angle"] .Specimen')
+    const t0 = performance.now()
+    const frames = []
+    const tick = () => {
+      const t = performance.now() - t0
+      frames.push([Math.round(t), getComputedStyle($target).fontStyle])
+      if (t < Number(controls.dur.value) + 120) requestAnimationFrame(tick)
+      else {
+        const distinct = new Set(frames.map(([, v]) => v))
+        log.textContent = [
+          `${frames.length} 幀／${distinct.size} 個相異計算值`,
+          ...frames.map(([t, v]) => `${String(t).padStart(5)}ms  ${v}`),
+        ].join('\n')
+      }
+    }
+    requestAnimationFrame(tick)
+  }
+
+  replay()
+</script>
+</head>
+<body>
+<main>
+
+<h1>合成斜體回正——<code>font-style: oblique &lt;角度&gt;</code> 的過渡</h1>
+<p class="note">
+  站①〈語意〉的偽斜體站直動畫，計算值實測是在補間的（<code>italic →
+  oblique 11.75deg → 0.5deg → normal</code>），肉眼卻像沒有過渡。這頁把
+  「計算值連續」與「畫面連續」拆開量，並排除時間曲線的干擾。
+</p>
+
+<section>
+  <h2>⓪ 結論：Chromium 的合成斜體<strong>忽略角度</strong></h2>
+  <dl class="Findings">
+    <dt>只有 0° 是直立的，其餘每一個角度畫出來都一模一樣。</dt>
+    <dd>
+      拿 canvas 逐角度量實際墨跡的剪切量（同一個「版」字，上緣最左 − 下緣最左）：
+      <code>normal</code> 與 <code>oblique 0deg</code> 都是 10px（字本身的不對稱），
+      而 <code>4deg / 8deg / 10deg / 14deg / 20deg / italic</code> <strong>全部都是
+      41px</strong>。字型沒有斜體字面時，Chromium 用的是一個<strong>固定</strong>的
+      合成剪切矩陣，<code>&lt;角度&gt;</code> 只影響字型比對、不影響上漆。
+    </dd>
+
+    <dt>所以計算值在補間，畫面卻是二元的。</dt>
+    <dd>
+      逐幀讀數確實會走 <code>10deg → 9.75deg → …</code>（§④ 看得到），
+      但那串數字對應到畫面上只有兩種狀態：斜、與不斜。
+      「完全沒有過渡」不是錯覺，是事實——<strong>用 <code>font-style</code> 做不出這個動畫</strong>。
+      我先前說「每 0.5° 都重畫」是量錯的（DOM 截圖的差異來自抗鋸齒與版面位移，不是斜度）。
+    </dd>
+
+    <dt>唯一能連續的是幾何變換。</dt>
+    <dd>
+      <code>transform: skewX()</code> 一定連續，代價是需要 <code>display: inline-block</code>，
+      而原子行內盒會殺掉標點擠壓。§③ 的 (f) 列是解法：<strong>只在動畫進行中</strong>
+      變成 <code>inline-block</code>，最後一幀還原成 <code>inline</code>——擠壓只在那
+      幾百毫秒內失效，而讀者真正在讀的落定狀態完好。
+    </dd>
+
+    <dt>若連 (f) 都不接受，那就別轉了。</dt>
+    <dd>
+      「偽斜體就此告別」本來就是一刀切，不是溶接。把那一刻交給<strong>會動的東西</strong>
+      ——標記登場、著重號點上、一抹很淡的顏色——比硬做一個做不出來的旋轉誠實。
+    </dd>
+  </dl>
+
+  <h3 class="ProbeTitle">在你自己的瀏覽器上重量一次</h3>
+  <p class="note">
+    下面的數字是這個頁面現場用 canvas 量的，不是寫死的。若 <code>oblique</code> 各角度
+    的數值全部相同，就是上面說的情況。
+  </p>
+  <pre class="Probe"></pre>
+</section>
+
+<section>
+  <h2>① 靜態刻度尺——每一度都畫得出來嗎？</h2>
+  <p>
+    同一句話，逐度加斜。若相鄰兩格看起來一模一樣，代表引擎把角度<strong>量化</strong>了，
+    再怎麼補間也只會得到那幾階。
+  </p>
+  <ul class="Ladder" data-max="14"></ul>
+</section>
+
+<section>
+  <h2>② 手動拖桿——上漆跟得上嗎？</h2>
+  <p>
+    直接把角度交給手指。連續拖動時字形若是滑順地轉，問題就不在上漆；若是一階一階跳，
+    答案就在這裡。刻度為 0.1°。
+  </p>
+  <div class="Scrub">
+    <p><label>角度 <input type="range" min="0" max="140" value="100"></label> <output></output></p>
+    <p class="Specimen">漢字排版，天下文字共一表。</p>
+  </div>
+</section>
+
+<section>
+  <h2>③ 四種寫法，同一組時間</h2>
+  <p>
+    起點角度、時長、曲線三個旋鈕共用，所以差異只可能來自技術本身。
+    <code>skewX</code> 那列是<strong>尺規</strong>：幾何變換必定連續，順的長什麼樣以它為準。
+  </p>
+
+  <div class="Controls">
+    <label>起點角度（deg）<input id="from" type="number" min="0" max="30" step="1" value="10"></label>
+    <label>時長（ms）<input id="dur" type="number" min="60" max="4000" step="20" value="1200"></label>
+    <label>曲線
+      <select id="ease">
+        <option>ease-out</option>
+        <option selected>linear</option>
+        <option>ease-in-out</option>
+        <option>cubic-bezier(.2,.7,.3,1)</option>
+      </select>
+    </label>
+    <button id="replay" type="button">重播</button>
+  </div>
+
+  <div class="Stage">
+    <div class="Row" data-technique="angle">
+      <h3>(a) @keyframes font-style: oblique &lt;起點&gt; → 0deg</h3>
+      <p>正式頁面採用的寫法。不動盒模型，擠壓照樣穿得過去。</p>
+      <p class="Specimen">漢字排版，天下文字共一表。</p>
+    </div>
+
+    <div class="Row" data-technique="transition">
+      <h3>(b) transition: font-style</h3>
+      <p>同一件事走 transition 而非 animation——引擎裡是兩條路徑，分開排除。</p>
+      <p class="Specimen">漢字排版，天下文字共一表。</p>
+    </div>
+
+    <div class="Row" data-technique="skew">
+      <h3>(c) transform: skewX() ——尺規，不可上線</h3>
+      <p>
+        必定連續的幾何剪切。<strong>正式頁面不能用</strong>：需要
+        <code>display: inline-block</code>，而原子行內盒會殺掉標點擠壓。
+      </p>
+      <p class="Specimen">漢字排版，天下文字共一表。</p>
+    </div>
+
+    <div class="Row" data-technique="from-italic">
+      <h3>(d) from <code>italic</code> → <code>oblique 0deg</code></h3>
+      <p>
+        <code>italic</code> 與 <code>oblique &lt;角度&gt;</code> 之間規格上<strong>不可補間</strong>，
+        這列應該直接跳。若它看起來和 (a) 一樣，那眼睛抓到的跳變是在交接處，不在動畫中。
+      </p>
+      <p class="Specimen">漢字排版，天下文字共一表。</p>
+    </div>
+
+    <div class="Row" data-technique="production">
+      <h3>(e) 正式設定：12deg／520ms／ease-out（不受旋鈕影響）</h3>
+      <p>存查用。ease-out 把大半旋轉塞進前兩成的時間——這正是首要嫌犯。</p>
+      <p class="Specimen">漢字排版，天下文字共一表。</p>
+    </div>
+
+    <div class="Row" data-technique="skew-transient">
+      <h3>(f) 只在動畫中借一個盒子——可上線的解法</h3>
+      <p>
+        <code>skewX</code> ＋ <code>display: inline-block</code>，但
+        <code>display</code> 寫在關鍵幀裡（離散屬性也會動），最後一幀還原成
+        <code>inline</code>。擠壓只在動畫進行的那幾百毫秒失效，落定狀態完好。
+        代價：交接的那一幀有機會看到極輕微的版面位移。
+      </p>
+      <p class="Specimen">他心想：<i>百萬碼位猶空</i>，便不再說。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>④ 逐幀讀數（取 (a) 列）</h2>
+  <p>
+    幀數與<strong>相異計算值</strong>的比值就是答案：30 幀只有 4 個相異值 ⇒ 計算值被量化；
+    30 幀 30 個值 ⇒ 計算值連續，剩下的問題全在上漆或在時間曲線。
+  </p>
+  <pre class="Log"></pre>
+</section>
+
+</main>
+</body>
+</html>

@@ -44,6 +44,23 @@
   --color-ink-deep:   #18171a;
   --color-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
   --color-black:      #111111; /* shadow base only */
+  /* neutral cool greys — the mark diagram's «engine» register, i.e. what
+     the browser hands you before han.css touches it. Cool on purpose: the
+     diagram's whole colour argument is steel (the engine's) → ink (the
+     text's own) → green (what han.css gives it). */
+  --color-steel:      #98a0ac;
+  --color-steel-deep: #5d6572;
+  /* syntax blue — for the mark diagram's tag labels. Deliberately NOT the
+     accent: the diagram already spends green on «what han.css gives the
+     text», and a tag name is a different kind of thing (what you WROTE), so
+     it gets its own hue rather than a third weight of the same one. */
+  --color-lapis:        #4a56b8;
+  --color-lapis-bright: #939bea;
+  /* postal red — the page's one deliberate off-palette hue. Was inlined in
+     the envelope's 郵遞區號 frame; promoted to a primitive once the mark
+     diagram's angle annotation needed the same ink. */
+  --color-seal:        #b0342c;
+  --color-seal-bright: #d96a5f;
   --color-green:        #0a8754; /* the one accent (light) */
   --color-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
   --color-mint:         #e8f5ec; /* accent wash (light) */
@@ -80,6 +97,15 @@
   --palette-ink:      var(--color-ink);
   --palette-ink-grey: light-dark(var(--color-graphite), var(--color-silver));
   --palette-rule:     light-dark(var(--color-cloud), var(--color-charcoal));
+
+  /* 標記原理圖 (home/station-semantics.css § .MarkDiagram). Two inks and a
+     proof red: the mock glyphs ride `-ink-off` → `-ink` as they straighten,
+     so posture and colour temperature correct in one motion, while every
+     mark han.css ADDS arrives in `--palette-accent`. */
+  --palette-diagram-ink:     light-dark(var(--color-ink), var(--color-mist));
+  --palette-diagram-ink-off: light-dark(var(--color-steel), var(--color-steel-deep));
+  --palette-proof:           light-dark(var(--color-seal), var(--color-seal-bright));
+  --palette-syntax-tag:      light-dark(var(--color-lapis), var(--color-lapis-bright));
 
   /* ── station grounds & watermark ──────────────────────────────────
    * The station-plate system (stations.css) alternates two section

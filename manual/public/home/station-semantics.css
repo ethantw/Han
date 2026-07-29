@@ -1,0 +1,1246 @@
+@charset "UTF-8";
+
+/* The correction itself. `--han-semantics` is `@property`-registered
+   (semantics.css: `syntax: "on | off"`, `inherits: true`), which is what
+   makes it ANIMATABLE — a registered keyword property interpolates
+   discretely, so `step-end` gives a clean flip, and `animation-delay` is
+   what lets the correction walk down the band one column at a time.
+   `both` holds the `off` frame through the delay, so the row sits in the
+   browser's own hand until its turn comes.
+
+   The 260ms duration is load-bearing, not taste: at 1ms the last four
+   rows never flipped. Chromium reported them `finished` with the right
+   delays and still served the `from` value — a sub-frame discrete run
+   evidently loses its filled `to`, and the rows whose delay exceeded ~1s
+   were the ones that never landed (measured, 2026-07-28). Anything past
+   one frame is safe; `step-end` keeps it a flip regardless of duration.
+
+   Crucially the fill is what makes this degrade right: no JS ⇒ no
+   `data-revealed` ⇒ no animation ⇒ the plain, corrected state. The
+   uncorrected frame only ever exists inside a running animation. */
+@keyframes semantics-settle {
+  from { --han-semantics: off; }
+  to   { --han-semantics: on; }
+}
+
+/* The row's tag ghosts brighten as it turns — the whole point of the
+   stagger is to pin «THIS tag» to «THAT change» at one instant, and a
+   label that stays at rest opacity forfeits that. No fill mode on
+   purpose: once it has played, the base rule (and :hover) owns the
+   ghosts again. */
+@keyframes semantics-ghost-cue {
+  0%        { opacity: 0.42; }
+  18%, 62%  { opacity: 1; }
+  100%      { opacity: 0.42; }
+}
+
+/* THE PSEUDO-ITALIC STANDING UP — and a warning, because this does LESS
+   than it looks like it does.
+
+   The computed value really does interpolate: sampled frame by frame it
+   walks 10deg → 9.75deg → … → normal. THE PAINT DOES NOT FOLLOW.
+   Measured in Chromium 141 by drawing 「版」 at 160px and comparing the ink's
+   shear (leftmost lit pixel near the top minus near the bottom):
+
+     normal / oblique 0deg ............ 10px   (the glyph's own asymmetry)
+     oblique 4/8/10/14/20deg, italic ... 41px  — every one identical
+
+   A font with no oblique face gets a FIXED synthetic shear; the <angle>
+   only ever reaches font matching, never rasterisation. So this run is a
+   cut, not a rotation, and no amount of easing changes that. It is kept
+   because it costs nothing and is correct where an engine does honour the
+   angle (a real oblique face, a `slnt` axis); it is NOT the station's
+   argument. The argument moved to `.MarkDiagram`, where the slant is
+   geometry and therefore actually continuous — see
+   docs/plans/semantics-mark-diagram.md and manual/demo/oblique-straighten.html.
+
+   Do not "fix" this with `transform: skewX()`: transform does nothing to an
+   inline box, `display: inline-block` would be needed, and in the 直排 band
+   a skew shears the whole run sideways (measured: 1.28 characters at 12deg
+   over six glyphs) instead of slanting each glyph — every run slides out of
+   its own column.
+
+   No fill mode, and that is load-bearing at both ends: before the delay the
+   UA's own italic shows (the row is still `--han-semantics: off`), and after
+   the run the cascade takes back over — by then the flag has flipped and
+   han.css's `font-style: inherit` holds it upright. */
+@keyframes semantics-straighten {
+  from { font-style: oblique 12deg; }
+  to   { font-style: oblique 0deg; }
+}
+
+/* A tint on the three elements whose mark actually arrives — 書名號,
+   著重號, 楷體 — held to a whisper of accent and peaking at the exact
+   frame the mark lands. An earlier pass ran this on the whole <li> at
+   72% accent with an opacity dip: far too loud, and it tinted text that
+   wasn't changing at all. `currentColor` is why one property suffices —
+   the brackets and the dots take their ink from it. */
+@keyframes semantics-mark-cue {
+  0%, 100% { color: var(--palette-text); }
+  52%      { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
+}
+
+/* THE DIAGRAM'S CLOCK. One registered number, six geometries — deliberately
+   NOT `--han-semantics`, which is discrete (`on | off`) and so cannot express
+   the one thing this diagram exists to show. `0` ＝ slanted and bare, `1` ＝
+   upright and marked; every quantity below is `calc()`ed off it, which also
+   makes "the switch caught mid-flight" a state that simply works.
+
+   `initial-value: 1` is the no-JS contract, same as the poem's: no reveal
+   stamp ⇒ no animation ⇒ the corrected end, never the uncorrected one. */
+@property --settle {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+
+@keyframes mark-settle {
+  from { --settle: 0; }
+  to   { --settle: 1; }
+}
+
+/* The RETURN leg. A transition on --settle cannot carry this flip: the
+   before-change value lives in the ANIMATION origin (fill: both), and the
+   base value the transition would read is already at the far end —
+   measured: the diagram snapped to 0 in the same frame the switch was
+   thrown. So the return is the same clock run backwards, as a second
+   animation; swapping animation-name is what restarts it. No per-row cue
+   on purpose: the poem drops to UA output in ONE frame when the switch is
+   thrown, and the diagram should be seen answering that same instant. */
+/* Same frames as `mark-settle`, under a different name — and that is the
+   whole reason it exists. Re-declaring `animation: mark-settle …` on hover
+   does NOT restart it: the running animation has the same name, so the
+   engine treats the new declaration as a change to the existing animation's
+   timing rather than a new run, and nothing replays (measured: the row
+   scaled up on hover and sat perfectly still). A distinct name is a
+   distinct animation, so it starts from frame one. */
+@keyframes mark-replay {
+  from { --settle: 0; }
+  to   { --settle: 1; }
+}
+
+/* The angle's own one-shot. It lives on `[data-annotation]` — an element no
+   hover rule touches — and that placement IS the fix.
+
+   Keying its opacity to `1 - --settle` looked right and wasn't: leaving a
+   hovered row REPLACES `animation` back to the entrance rule, and an
+   entrance re-applied from scratch spends its `var(--row-cue)` delay
+   BACK-FILLING `--settle: 0`. So the row silently replayed on the way out
+   and the red mark flashed with it. Nothing about `:hover` could catch that
+   — by then the pointer was already gone.
+
+   Given its own animation on its own element, it plays once with the
+   entrance and stays filled at 0 forever after, however many times the row
+   beside it restarts. */
+@keyframes annotation-once {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes mark-unsettle {
+  from { --settle: 1; }
+  to   { --settle: 0; }
+}
+
+
+#station-semantics {
+  & {
+    position: relative;
+  }
+
+  figure.semantic-elements {
+    & {
+      margin: 2.5rem 0 3.5rem;
+      /* Poem and diagram are laid out as siblings — the diagram is beside
+         the specimen, not behind it. The envelope stays out of flow, so the
+         padding is what reserves its column; an abspos box takes the PADDING
+         box as its containing block, so `inset-inline-end: 0` still parks it
+         hard against the figure's edge rather than inside the reservation. */
+      display: flex;
+      flex-wrap: wrap;
+      /* tops, not centres: the diagram's first row and the poem's first
+         character start on one line. The svg's viewBox is cropped to begin
+         at that row (`viewBox="0 24 …"`), so this needs no compensating
+         offset — move the rows and the alignment follows. */
+      align-items: flex-start;
+      gap: 1.5rem;
+      /* padding-inline-end: 14rem; */
+    }
+
+    /* The caption is a flex item too, and left to itself it would stand as a
+       third column beside the poem — the gloss squeezed into a 4-character
+       ribbon. Force it onto its own line; it belongs UNDER the whole figure,
+       being the explanation of everything above it. */
+    figcaption {
+      flex: 1 0 100%;
+    }
+
+    /* 直排 lives on the LIST, not the figure — that keeps the caption
+       below it (and the switch it houses) in ordinary 橫排 flow. Columns
+       run right→left; `inline-size` is a column's HEIGHT, so one clause ＝
+       one column and the band grows sideways instead of running off its
+       own bottom edge. */
+    article {
+      writing-mode: vertical-rl;
+      inline-size: 17em;   /* ＝ the longest line, with a character to spare */
+      margin: 0;
+      padding: 0;
+      font-family: var(--han-font-alternative);
+      font-size: 1.5rem;
+      line-height: 2;
+      list-style: none;
+      text-align: start;
+
+      p:only-of-type {
+        margin: 0;
+      }
+    }
+
+    /* ── the letterhead labels ───────────────────────────────────────
+       The only tag labels left in the figure. The poem used to carry a
+       `<code>` ghost inside every marked run; the diagram beside it now does
+       that job better — the ghosts said «this is called `<cite>`», the
+       diagram says «and this is what it becomes» — so they are gone, and
+       with them a whole class of hazard: they were foreign content sitting
+       INSIDE the very elements on show, which is why this block used to need
+       explicit `text-emphasis: none` and `text-decoration: none` to stop them
+       collecting the marks they were there to explain.
+
+       The two letterheads keep a label, because nothing else says what they
+       are. But it is written as DATA and painted by CSS, never as a text
+       node: selecting a letterhead used to copy «<address>大宋　京畿路…»,
+       the tag name silently welded into the prose. In a station whose claim
+       is that the element carries the meaning, a fake tag string masquerading
+       as content is the one thing that must not be there. `attr()` on a
+       `data-tag` keeps the tag name in the HTML, as an attribute, where it
+       belongs — and generated content never joins a selection. */
+    address {
+      & {
+        position: relative;
+        font-size: .75em;
+        /* 直排: the right-hand margin. 橫排: the space above. Either way,
+           the room the label sits in. */
+        padding-block-start: 1.5em;
+      }
+
+      &::before {
+        content: attr(data-tag);
+        position: absolute;
+        /* PHYSICAL insets, deliberately. The label is 橫排 inside a 直排
+           box, and logical insets resolve in the ELEMENT'S OWN writing mode
+           — `inset-inline-start` here would mean «left», not «top of the
+           column», and the Chinese letterhead's tag flew off the band's left
+           edge. When two writing modes meet, physical is the honest spelling.
+           Top-right corner of the vertical block… */
+        inset: 0 0 auto auto;
+        writing-mode: horizontal-tb;
+        font-family: var(--font-mono);
+        /* absolute, not a fraction: a letterhead sets small, and a third of
+           0.875rem is a 4px smudge. */
+        font-size: var(--fs-fine);
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        color: var(--palette-accent);
+        opacity: 0.42;
+        transition: opacity 160ms ease;
+      }
+
+      /* …and top-LEFT for the 橫排 German one, where its text starts. */
+      &[lang]::before {
+        inset: 0 auto auto 0;
+      }
+
+      /* :focus-within as well as :hover — a keyboard reader is entitled to
+         the legend too. */
+      &:hover::before,
+      &:focus-within::before {
+        opacity: 1;
+      }
+    }
+
+    /* ── 標記原理圖 ───────────────────────────────────────────────────
+       Six bars: one input (a slanted, bare block of text), six outputs.
+       It exists because the TEXT cannot animate any of this — Chromium's
+       synthetic oblique ignores `oblique <angle>`, and in 直排 a `skewX`
+       shears the whole run sideways rather than slanting each glyph (both
+       measured; docs/plans/semantics-mark-diagram.md § 0). Pure geometry
+       makes every quantity continuous again.
+
+       It sits BESIDE the poem, never behind it: horizontal bars laid under
+       vertical columns cross all seven of them and read as strike-through.
+       That is a question of direction, not opacity — no amount of paleness
+       fixes it.
+
+       Everything is one register lighter than the poem. A footnote that
+       out-shouts its text is not a footnote. */
+    .MarkDiagram {
+      & {
+        /* An `<svg>` with a viewBox and no width/height attributes defaults
+           to 100% × 100%, which beats a flex-basis; the explicit inline-size
+           is what actually settles it. `block-size: auto` then lets the
+           viewBox's own ratio set the height. */
+        flex: 0 0 auto;
+        inline-size: 24em;
+        block-size: auto;
+        font-size: 1rem;
+        overflow: visible;
+        /* Decoration must not join a selection. The row labels are real
+           `<text>`, so without this, selecting the figure drags «<u><em>
+           <dfn>…» into the clipboard — reintroducing exactly the fake-tag-
+           as-content problem that removing the `<code>` ghosts just solved. */
+        user-select: none;
+      }
+
+      /* The tag labels are the only explicit link between diagram and poem,
+         so they borrow the ghosts' voice: mono, tiny. Two rows are both
+         `<cite>` — that is the point, not a slip. Grey, not accent: in
+         this diagram green belongs to the MARKS alone. */
+
+      /* ── the row labels, syntax-highlit ─────────────────────────────
+         Their own hue, and that is the point. The diagram spends steel on
+         «the engine's» and green on «what han.css gives the text»; a tag
+         name is neither — it is what the AUTHOR wrote, the input rather
+         than either output. Green everywhere was also simply too much of
+         one colour. The brackets take the same hue at a quarter strength,
+         so a tag reads as `<` + a decision + `>`. */
+      [data-tagname] { fill: var(--palette-syntax-tag); }
+      /* the brackets are the SAME hue at a quarter strength, not a separate
+         grey. A cold steel next to a warm page read as a third colour with
+         opinions of its own; one hue in two weights reads as one thing —
+         syntax — with the name carrying the emphasis. */
+      [data-angle] {
+        fill: color-mix(in srgb, var(--palette-syntax-tag) 40%, transparent);
+      }
+
+      [data-mark] > text {
+        font-family: var(--font-mono);
+        font-size: 7px;
+        fill: var(--palette-supplement-text);
+        text-anchor: end;
+      }
+
+      /* ── 字格 ────────────────────────────────────────────────────────
+         The em box of a fixed-width script — 原稿紙 ruling, set solid and
+         STATIC under every state: the grid belongs to the page, and no
+         engine ever bent it. What differs from row to row is only how
+         many cells there are. */
+      [data-cell] {
+        fill: none;
+        stroke: var(--palette-rule);
+        /* the diagram scales with `em`; pin the hairline or the ruling
+           fattens with it */
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* ── the mock characters ────────────────────────────────────────
+         IDC strokes. Geometric stroke-width on purpose (no non-scaling):
+         these are glyph strokes, and glyph strokes scale with the em.
+         Colour is the second axis: engine-steel while sheared, the text's
+         own ink once upright — the mix rides --settle frame by frame, so
+         temperature and posture correct in the same motion. skewX is
+         origin-x-invariant, so `center bottom` shears about the baseline. */
+      [data-glyph] {
+        fill: none;
+        /* DASHED, because that is how the characters themselves are drawn.
+           Rendered ⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻ in Shanggu Serif TC / Shanggu Sans /
+           Songti TC / PingFang TC / Hiragino Sans — every one of the five
+           dashes them. Solid was the deviation. It also earns its keep
+           twice: a dashed contour reads as «placeholder», which is exactly
+           what these mock characters are, and pushes the figure further
+           from anything mistakable for typeset output.
+
+           In user units, so it scales with the em like the strokes do —
+           the dash must stay a constant fraction of the glyph, not of the
+           viewport. */
+        stroke-dasharray: 1.1 0.9;
+        stroke-linecap: butt;
+        stroke: color-mix(in oklab,
+          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--palette-diagram-ink)
+        );
+        /* 0.62, not 0.9. Dashing roughly doubles a stroke's apparent
+           weight — each dash reads as a mark in its own right — so the
+           width that looked right solid comes out heavy and busy dashed. */
+        stroke-width: 0.62px;
+        transform-box: fill-box;
+        transform-origin: center bottom;
+        transform: skewX(calc((1 - var(--settle)) * var(--_slant, -14deg)));
+      }
+
+      /* The one real character in the diagram, and it is there to make a
+         point about what a mark does NOT reach: Chromium skips punctuation
+         when it draws 著重號 (verified — 三百枚足矣。 takes five dots, the
+         句號 none), so the row shows five marks under six characters.
+
+         It shears with the row like everything else, because the engine's
+         synthetic oblique takes the whole run, punctuation included. Filled
+         rather than dashed: this one is a character, not a placeholder. */
+      [data-mock-punct] {
+        /* Sans JIS: the JIS branch sets 句號 at the lower-left of its em
+           box, which is where a real one sits — so it can be anchored at
+           the cell's left edge on the baseline and simply land right,
+           instead of being nudged into position by eye. */
+        font-family: 'Diantenjeom Sans JIS', var(--han-font-alternative), serif;
+        font-size: 14px;
+        text-anchor: start;
+        fill: color-mix(in oklab,
+          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--palette-diagram-ink)
+        );
+        transform-box: fill-box;
+        transform-origin: center bottom;
+        transform: skewX(calc((1 - var(--settle)) * var(--_slant, -14deg)));
+      }
+
+      /* `<u>` IS NOT ITALICISED BY ANY BROWSER — it takes an underline and
+         stays upright. Its two states differ by the RULE alone: joined,
+         then broken. */
+      [data-mark="proper"] {
+        --_slant: 0deg;
+      }
+
+      /* `<dfn>` gains REAL weight — stroke-width, not a scale pun: the
+         one payoff of drawing the glyphs as strokes. */
+      [data-mark="weight"] [data-glyph] {
+        /* Weight is the dashes CLOSING UP, plus a little stroke. Pure
+           stroke-width fought the dashing: at 1.7 wide the dashes go square
+           and the glyph silts into a smear that reads as noise, not as
+           bold. Running the gap to nearly nothing puts the ink on the same
+           axis the dashing already uses — the placeholder fills in and
+           becomes set type, which is what 字重 means here anyway. */
+        stroke-width: calc(0.62px + var(--settle) * 0.42px);
+        stroke-dasharray:
+          calc(1.1px + var(--settle) * 1.4px)
+          calc(0.9px - var(--settle) * 0.75px);
+      }
+
+      /* `<i>` changes HANDS: the same IDC construction in a hand-drawn
+         cut crossfades over the print one — 楷體 is a different face, not
+         a lighter weight, and now the diagram says so. */
+      [data-glyph][data-print] { opacity: calc(1 - var(--settle)); }
+      [data-glyph][data-hand] {
+        opacity: var(--settle);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1px;
+      }
+
+      /* ── the marks ──────────────────────────────────────────────────
+         Siblings of the cells, never children: they belong to the upright
+         coordinate system. Accent-green, because they are the thing
+         han.css HANDS the text — the strokes are the page's own ink, the
+         green is the gift. */
+      [data-dots] circle {
+        fill: color-mix(in srgb,
+          var(--palette-accent) calc(var(--settle) * 100%),
+          transparent
+        );
+        translate: 0 calc((1 - var(--settle)) * -3px);
+        opacity: var(--settle);
+      }
+
+      /* 專名號 is the one mark the ENGINE also draws — `<u>`'s underline
+         exists in both states. So its rule arrives steel and only takes
+         the green as it breaks to convention: the continuous line is the
+         engine's, the broken one is 漢字排版's. */
+      [data-mark="proper"] [data-rule] rect {
+        fill: color-mix(in oklab,
+          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--palette-accent)
+        );
+      }
+
+      /* 甲式's wave NO ENGINE DRAWS AT ALL — so it must be absent in the
+         default state, not merely joined. Once colour encodes provenance
+         (steel = the engine's, green = han.css's), a green wave sitting in
+         the browser-defaults state claims the browser gave you one. It
+         didn't, and what han.css gives is the BROKEN one.
+
+         Two beats off one clock, and both are true: the wave arrives
+         (joined) over the first 40% of --settle, then the gap opens over
+         the rest. `--_break` is that second beat, remapped out of --settle
+         so the marks can be sequenced without a second animation. */
+      [data-mark="wavy"] [data-rule] {
+        --_break: clamp(0, calc((var(--settle) - 0.4) / 0.6), 1);
+
+        opacity: clamp(0, calc(var(--settle) / 0.4), 1);
+      }
+
+      [data-mark="wavy"] [data-rule] path {
+        fill: none;
+        stroke: var(--palette-accent);
+        stroke-width: 1.25;
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* THE BREAK. Both halves are authored at their FINAL geometry and
+         closing the gap is what moves them: whole periods meeting at a
+         matching zero crossing with matching slope read as one wave. The
+         halves close by ±2 to meet at the run boundary.
+
+         One break width for both marks, ±2 (0.2em). The 甲式 wave used to
+         open twice as wide, on the theory that a wave needs more clearance
+         than a straight rule to read as broken. It does not: the period is
+         2 units, so 4 units of gap is a whole period missing and the two
+         waves read as one wave with a bite out of it. At 2 the phase still
+         resumes cleanly on the far side — which is the whole point of
+         authoring each half as whole periods off a zero crossing. */
+      [data-rule] [data-seg="a"] { translate: calc((1 - var(--settle)) * 2px); }
+      [data-rule] [data-seg="b"] { translate: calc((1 - var(--settle)) * -2px); }
+      [data-mark="wavy"] [data-rule] [data-seg="a"] { translate: calc((1 - var(--_break)) * 1px); }
+      [data-mark="wavy"] [data-rule] [data-seg="b"] { translate: calc((1 - var(--_break)) * -1px); }
+
+      /* ── 書名號乙式 takes INLINE space ───────────────────────────────
+         Real punctuation occupies the line. The run shifts right half a
+         cell (a compressed 《 needs only half an em), the opener fills the
+         vacated half-cell on the FIRST half of --settle, the closer lands
+         after the last character on the SECOND — 先《後》, the order a
+         compositor would set them. Each bracket brings its own half-width
+         字格: it is a character, not a margin note. */
+      [data-run] {
+        translate: calc(var(--settle) * 7px);
+      }
+
+      [data-punct] text {
+        font-family: 'Diantenjeom Serif MOE', var(--han-font-alternative), serif;
+        /* sized to the mock characters — 書名號 is a character among
+           characters, not a display ornament */
+        font-size: 13px;
+        fill: var(--palette-accent);
+      }
+
+      [data-punct][data-seg="a"] {
+        & { opacity: clamp(0, calc(var(--settle) * 2), 1); }
+        text { text-anchor: end; }
+      }
+
+      [data-punct][data-seg="b"] {
+        & { opacity: clamp(0, calc(var(--settle) * 2 - 1), 1); }
+        text { text-anchor: start; }
+      }
+
+      /* the corrector's annotation — seal-red, the envelope's postal red
+         in a different office, standing in the margin at the row's end
+         like a proofreader's note: a dashed ghost where the stroke SHOULD
+         stand, an arc for the angle the engine dealt it. It marks the
+         defect while the defect exists and withdraws as the row settles. */
+      [data-annotation] {
+        & {
+          /* hidden by default: with the styles on and the entrance over,
+             the defect is gone and so is the note about it */
+          opacity: 0;
+        }
+
+        path {
+          fill: none;
+          stroke: var(--palette-proof);
+          stroke-width: 1;
+          vector-effect: non-scaling-stroke;
+        }
+
+        /* The angle as an AREA, not a hairline arc. It reads at a glance
+           now, which the 2px arc it replaces did not — and an area can
+           overshoot the row above and below, so the upright reference is
+           unmistakably a reference rather than part of the specimen. */
+        [data-wedge] {
+          fill: color-mix(in srgb, var(--palette-proof) 15%, transparent);
+          stroke: none;
+        }
+        /* dashed = where the stroke SHOULD stand; solid = where the engine
+           put it. The two edges of the wedge say the whole thing. */
+        [data-ghost] { stroke-dasharray: 2 2; }
+        [data-lean]  { stroke-width: 1.4; }
+        [data-arc]   { stroke-width: 0.8; }
+
+        text {
+          font-family: var(--font-mono);
+          font-size: 8px;
+          font-weight: 600;
+          fill: var(--palette-proof);
+          text-anchor: start;
+        }
+      }
+
+      /* ── hover: lift one row and play it again ──────────────────────
+         The rows are a lookup table, and a lookup table invites you to
+         look ONE thing up. Hovering a row scales it about its own left
+         edge — the labels stay in their column, the row grows into the
+         margin it already had — and replays that row's correction from
+         `off`, so the answer to «what does this tag do» is performed on
+         demand rather than only once, 1.4s after the station scrolled in.
+
+         `[data-hit]` is a transparent slab per row: 字格 are `fill: none`
+         and the strokes are hairlines, so without it a row is hoverable
+         only where there is ink, which reads as broken. Slabs are the
+         first child of each row so they never paint over it.
+
+         `[data-mark]:hover`, NOT `:has([data-hit]:hover)`. `:hover` matches
+         the element under the pointer and its ANCESTORS — a slab that is a
+         sibling of the glyph never gets it, because the glyph is on top and
+         takes the hover for itself. The group is the common ancestor of
+         both, so hovering either the ink or the empty space between it
+         lands on the group. The slab's job is only to make the empty space
+         count as inside.
+
+         Pointer-only, and no keyboard path: the diagram is `aria-hidden`
+         decoration whose every claim the poem beside it already makes in
+         real elements. Adding a focus stop here would put a keyboard reader
+         through the same content twice. */
+      [data-hit] {
+        fill: transparent;
+      }
+
+      @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+        /* Only the specimen grows. The label is a caption on the figure,
+           not part of it — a caption that swells with what it names reads as
+           a zoom, and the row stops being a row in a table.
+
+           `view-box` with an explicit `--row-mid`, NOT `fill-box`: the four
+           groups here have four different boxes, so fill-box would give each
+           its own origin and they would drift apart as they grew. One
+           coordinate system, one pivot, everything moves together. */
+        [data-mark] :is([data-bar], [data-rule], [data-dots], [data-punct]) {
+          transform-box: view-box;
+          transform-origin: 82px var(--row-mid);
+          transition: transform 220ms ease;
+        }
+
+        [data-mark] > text {
+          transition: fill 220ms ease;
+        }
+
+        #station-semantics[data-revealed] & [data-mark]:hover
+          :is([data-bar], [data-rule], [data-dots], [data-punct]) {
+          transform: scale(1.045);
+        }
+
+        /* the label answers in colour instead — it deepens, so the row it
+           names is unmistakable without either of them moving */
+        #station-semantics[data-revealed] & [data-mark]:hover {
+          [data-tagname] { fill: color-mix(in srgb, var(--palette-syntax-tag) 100%, var(--palette-text) 25%); }
+          [data-angle]   { fill: color-mix(in srgb, var(--palette-syntax-tag) 70%, transparent); }
+          /* the ID rides along to match the reveal rule's weight — a plain
+             `[data-mark]` selector loses to it and the replay never runs
+             (the same cascade trap the 前／後 switch fell into). */
+          animation: mark-replay 620ms ease-out both;
+        }
+
+      }
+
+
+      /* Same clock as the poem: each bar carries the `--row-cue` of the line
+         that owns its element (inline on the <g>, since the mapping is a
+         fact about the content, not about the styling). Out of sync it is
+         only decoration — the simultaneity IS the teaching. */
+      @media (prefers-reduced-motion: no-preference) {
+        #station-semantics[data-revealed] & [data-mark] {
+          animation: mark-settle 520ms ease-out var(--row-cue) both;
+        }
+
+        /* `backwards` holds it visible through the delay, so it stands over
+           the sheared row from the moment the station is stamped and leaves
+           exactly as the row stands up. */
+        #station-semantics[data-revealed] & [data-annotation] {
+          animation: annotation-once 520ms ease-out var(--row-cue) both;
+        }
+      }
+    }
+    article {
+      /* Declared unconditionally, in BOTH states: this is the space, and
+         the space must never depend on a flag that animates. Keeping it
+         only in the switched-off block meant that un-checking removed it
+         at once while `--han-semantics` stayed `off` for another
+         cue + 520ms — a window with no 著重號 at all, which the eye read
+         as the line narrowing and then springing back.
+
+         han.css declares the same values when the flag is on, so this is
+         idempotent there; all that is ever left to change is the ink. */
+      em {
+        text-emphasis-style: circle;
+        text-emphasis-position: under;
+      }
+
+      :where([style*='wavy']) cite {
+        text-decoration: underline wavy;
+      }
+
+      :is(em, cite) {
+        transition:
+          text-emphasis-color 420ms ease,
+          text-decoration-color 420ms ease;
+      }
+
+      /* The ink follows the FLAG, not the switch — a style query reads the
+         same animated `--han-semantics` the row is carrying, so each line
+         inks exactly on its own beat instead of all at once. */
+      @container style(--han-semantics: off) {
+        em { text-emphasis-color: transparent; }
+        :where([style*='wavy']) cite { text-decoration-color: transparent; }
+      }
+    }
+
+    /* ── 前／後 switch ────────────────────────────────────────────────
+       `--han-semantics: off` on the <ul> drops that whole subtree back to
+       browser defaults — the synthetic obliques this station exists to
+       argue against. Nothing here imitates that state; it IS that state.
+       `.Toggle` is the shared switch primitive (home/controls.css), which
+       consumes the console's `--_*` token layer; that layer is adopted
+       into the shadow only, so the tokens it needs are re-pointed at the
+       page palette here. */
+    figcaption {
+      & {
+        --_rule: var(--palette-rule);
+        --_bg: var(--palette-bg);
+        --_accent: var(--palette-accent);
+        --_supplement-text: var(--palette-supplement-text);
+        --_fs-compact: var(--fs-fine);
+
+        margin-block-start: 1.75rem;
+        font-size: .75rem;
+      }
+
+      /* The plain-language gloss. The poem buys its jokes with
+         compression, and compression is exactly what strands a reader who
+         doesn't already know what Han unification is — so the prose
+         version stands right under it, unstyled and unhurried. */
+      p {
+        margin: 0 0 1.25rem;
+        max-inline-size: 28em;
+        font-size: var(--fs-small);
+        line-height: 1.9;
+        color: var(--palette-supplement-text);
+      }
+    }
+
+    /* ── the one-shot correction ──────────────────────────────────────
+       The band arrives in the browser's own hand and corrects itself
+       column by column, 200ms apart, as the station scrolls into view.
+       Two reasons it walks instead of flipping at once: a simultaneous
+       change is a single event the eye can't parse into causes, and the
+       stagger is what lets each tag ghost flash at the exact instant ITS
+       mark appears — which is the mapping this whole figure exists to
+       teach.
+
+       Nothing here is imitated: the uncorrected frame is `--han-semantics:
+       off`, i.e. real UA output, synthetic obliques and all.
+
+       `reveal.js` stamps `[data-revealed]` on `[data-station]` the first
+       time it intersects (routed through the fonts gate, so a station
+       toured while the gate holds still gets its turn). Under
+       reduced-motion reveal.js stamps everything immediately — and the
+       @media below means no animation exists there anyway, so the corrected
+       state simply IS the state. */
+    @media (prefers-reduced-motion: no-preference) {
+      #station-semantics[data-revealed] & {
+        /* One clock, `--row-cue`, four runs — and they are choreographed to
+           a single instant at 520ms: the slant reaches upright exactly as
+           the marks arrive and the tint peaks. Straighten first, then the
+           marks land on a row that is already standing.
+
+           A «row» is whatever carries the flag: the two letterheads, and one
+           <span> per line of the poem. `--row-cue` inherits, so every mark
+           and ghost inside a row reads its row's beat without being told. */
+        .poem-like > span,
+        address[lang] {
+          animation: semantics-settle 520ms step-end var(--row-cue) both;
+        }
+        /* The Chinese letterhead is BOTH a row and an italicised run, so its
+           two animations must ride one declaration — `animation` is a
+           shorthand, and a second rule would have replaced the settle rather
+           than joined it. Fill modes are per-item in the list, which is how
+           the settle keeps its `both` while the straighten stays unfilled.
+           The German twin is excluded throughout: it is SUPPOSED to stay
+           italic, and would otherwise straighten and snap back the instant
+           the animation let go. */
+        address:not([lang]) {
+          animation:
+            semantics-settle 520ms step-end var(--row-cue) both,
+            semantics-straighten 520ms ease-out var(--row-cue);
+        }
+        .poem-like dfn {
+          animation: semantics-straighten 520ms ease-out var(--row-cue);
+        }
+        .poem-like :is(cite, em, i) {
+          animation:
+            semantics-straighten 520ms ease-out var(--row-cue),
+            semantics-mark-cue 1000ms ease-in-out var(--row-cue);
+        }
+        address::before {
+          animation: semantics-ghost-cue 820ms ease-out var(--row-cue);
+        }
+      }
+
+      /* One beat per row, in reading order: the letter arrives, the poem
+         runs, the signature closes. Spelled out rather than computed —
+         there is no sibling index in CSS until `sibling-index()` lands, and
+         literals read better than nth-child arithmetic. `nth-of-type`, not
+         `nth-child`: the <br /> separators are siblings too and would
+         otherwise eat half the beats. */
+      address:not([lang])          { --row-cue: 0ms; }
+      .poem-like > span:nth-of-type(1) { --row-cue: 200ms; }
+      .poem-like > span:nth-of-type(2) { --row-cue: 400ms; }
+      .poem-like > span:nth-of-type(3) { --row-cue: 600ms; }
+      .poem-like > span:nth-of-type(4) { --row-cue: 800ms; }
+      .poem-like > span:nth-of-type(5) { --row-cue: 1000ms; }
+      .poem-like > span:nth-of-type(6) { --row-cue: 1200ms; }
+      .poem-like > span:nth-of-type(7) { --row-cue: 1400ms; }
+      address[lang]                { --row-cue: 1600ms; }
+
+      /* The one mark that can genuinely tween: `font-weight` is a number,
+         so 400→700 interpolates. Everything else in the correction is a
+         discrete property (font-style, font-family, text-emphasis-style,
+         text-decoration-line, generated content) and lands in one frame —
+         which is the right reading anyway: 「就此告別」 is a cut, not a
+         dissolve. */
+      dfn {
+        transition: font-weight 280ms ease-out;
+      }
+    }
+
+    /* The switch is the state of record, so it has to beat the animation —
+       and an animation's filled value beats an ordinary declaration, which
+       is why the animation is REMOVED here rather than merely overridden.
+       Flipping the switch mid-correction stops the walk and shows the
+       browser's hand outright, which is exactly what it promises. */
+    /* ── 前／後: driven by `<han-console>`, not by a switch of our own ──
+       The figure used to carry its own checkbox. It had to go, and not only
+       for tidiness: the console's module switch ALREADY reaches this figure
+       — it disables `han.semantics.css` page-wide — so the two controls
+       overlapped with no relationship between them, and the page-level rules
+       that reserve the marks' space kept painting 著重號 at full ink after
+       the module had been switched off. The page was drawing a mark the
+       library had stopped making.
+
+       `[data-han-module-semantics]` is that state mirrored onto <html> by
+       home/module-state.js, because a `<link>`'s `disabled` is invisible to
+       selectors and the module's own `--han-semantics` flag leaves with the
+       sheet that registers it.
+
+       The cost, honestly: this figure no longer demonstrates han.css's
+       PER-SUBTREE opt-out (`--han-semantics: off`, semantics.css § Feature
+       Toggles) — the console's switch is a whether-imported control, which
+       is a different claim. But the local switch never conveyed that
+       distinction to a reader either; it only ever showed the effect. One
+       control that tells the truth beats two that disagree.
+
+       Kept ID-heavy to match the reveal rule (`#station-semantics
+       [data-revealed] &`); written lighter, the state silently lost the
+       cascade and did nothing. */
+    :root[data-han-module-semantics='off'] #station-semantics & {
+      article {
+        animation: none;
+        --han-semantics: off;
+      }
+      /* The diagram is a claim about the same two states, so it has to
+         answer the same switch — and with its own vocabulary, since it
+         never reads `--han-semantics`. */
+      /* ── the poem's marks fade rather than vanish ────────────────────
+         Switching the styles off drops `--han-semantics`, and han.css's
+         marks go with it — including the space they occupied. Measured, the
+         cost of that is small but real: the band narrows by 11px, because
+         著重號 in 直排 sit outside the glyph box and widen the line.
+
+         So the two marks the ENGINE never draws are kept rendered here and
+         merely turned transparent, and the colour transitions. Nothing
+         moves; the marks simply arrive and leave.
+
+         `<u>` is deliberately NOT in this list. The UA draws its underline
+         in both states — the measurement says so (`text-decoration-line:
+         underline` with the styles off) — so hiding it would be inventing a
+         browser that doesn't exist. Its two states differ by the GAP, which
+         is exactly what the diagram beside it claims.
+
+         KNOWN AND NOT FIXED HERE: 書名號乙式's 《》 are generated content
+         and take real inline space, so row 7 still shortens by 36px when
+         the styles go off. Reserving that space would mean drawing brackets
+         the browser never produces — a bigger lie than an 11px reflow, and
+         it belongs to the caption's promise, not to a layout tweak. */
+
+      /* With the styles off the defect is what you are looking at, so the
+         note belongs on screen again — and keyed to `--settle`, so the
+         hover preview fades it out as the row straightens rather than
+         snapping it away. */
+      .MarkDiagram [data-annotation] {
+        animation: none;
+        /* Sequenced, not simultaneous: the shear has to have happened before
+           there is an angle worth measuring. Remapped off the same clock —
+           nothing until --settle passes 0.45 on its way down, then a ramp to
+           full as it lands. The engine does its damage; the note follows. */
+        opacity: clamp(0, calc((0.45 - var(--settle)) / 0.45), 1);
+      }
+
+      /* `[data-clock]` rides along: the angle annotation sits outside every
+         row (its ghost line spans five), so it needs the clock handed to it
+         explicitly or `--settle` falls back to its registered initial of 1
+         and the note never appears. */
+      .MarkDiagram :is([data-mark], [data-clock]) {
+        animation: none;
+        --settle: 0;
+        /* the animated return — see @keyframes mark-unsettle. Under
+           reduced motion the plain declarations above stand: the flip is
+           instant, which is what that preference asks for. */
+        @media (prefers-reduced-motion: no-preference) {
+          animation: mark-unsettle 520ms ease-out both;
+        }
+
+        /* …and here hover means the opposite thing. With the styles ON,
+           hovering a row replays a correction you have already seen. With
+           them OFF you are looking at the browser's own output, and the
+           interesting question is «what WOULD this become» — so hover runs
+           the correction forward and `both` holds it there for as long as
+           the pointer stays. Leave, and the fill goes with the animation:
+           the row drops back to the engine's hand by itself.
+
+           One gesture, two readings, and both are «show me this row». */
+        @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+          &:hover {
+            animation: mark-replay 620ms ease-out both;
+          }
+        }
+      }
+      /* `… *`, not an enumeration: the straighten, the tint and the
+         ghost cue all live on descendants, and every one of them has to
+         stop — a half-rotated slant left running would fight the UA italic
+         the switch just restored. One flag on the subtree root covers
+         every row, since the style query only ever needs SOME ancestor. */
+      article * {
+        animation: none;
+      }
+    }
+  }
+}
+
+/* ── the envelope ────────────────────────────────────────────────────
+   Station ①'s letterheads made literal: a 長形 envelope pinned to the
+   STATION's top-right corner, carrying the two <address> specimens on
+   its face. Geometry and the occlusion model come from
+   manual/demo/envelope.html — the flap belongs to the envelope's BACK,
+   so it must NEVER paint over the face: flap first in DOM, both parts
+   positioned, no z-index anywhere ⇒ paint order alone guarantees the
+   face wins, and the flap only ever shows past the top edge.
+
+   Line-drawn, not shaded: the flap is the same paper as everything
+   around it, so tone can't carry it — a crisp contour does (the
+   reference 直式信封 diagrams are line art too). The open flap crosses
+   the section border into the manifesto's space; `main > section`
+   clips (`overflow: clip`, station-frame.css), so the escape runs
+   through `overflow-clip-margin` — safe HERE because this station has
+   no `data-wm` watermark waiting outside the box to be un-cropped.
+
+   Three beats, three signals: the ENTRANCE keys on `data-han-traced`
+   (fonts-gate.js — the 漢 tracing's last stroke), the OPENING on the
+   station's `[data-revealed]` (reveal.js) through a 1s
+   transition-delay, the hover replay on :hover. The envelope owns no
+   JS of its own. No-JS ⇒ no stamps ⇒ visible, settled, sealed;
+   everything lives on the face, so nothing is ever hidden. */
+#station-semantics {
+  /* let the envelope out of the section clip — just far enough that
+     its 郵遞區號 frame (and only that — no 大宋) rides above the
+     section border into the manifesto, a red teaser on the first
+     screen. 15rem still covers the open, hover-scaled flap tip.
+     Chrome 90 / FF 102; no Safari — the @supports below keeps the
+     envelope fully inside there, so nothing is ever half-cropped. */
+  overflow-clip-margin: 15rem;
+}
+
+/* 進場：等「漢」第一次描邊收筆——除非讀者先到。fonts-gate.js stamps
+   `data-han-traced` on <html> the moment the pale pass's last stroke
+   lands; until then the envelope waits below, sunk and transparent,
+   then rises out of the fold with the fade. But a reader who has
+   ALREADY scrolled to the station (reveal.js stamped its
+   `[data-revealed]`) shouldn't stare at a hole where the envelope
+   belongs while a ceremony they can't even see finishes upstairs —
+   either signal releases the entrance, whichever lands first.
+   The hidden FROM state is keyed on `html[data-fonts-gate]` — an
+   attribute only JS ever sets — so no-JS never hides the envelope;
+   reduced-motion skips the whole entrance via the media gate (base
+   state = settled, as everywhere else on this page). */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fonts-gate]:not([data-han-traced])
+    #station-semantics:not([data-revealed]) .Envelope {
+    opacity: 0;
+    translate: 0 3.5rem;
+  }
+  html[data-han-traced] #station-semantics .Envelope,
+  #station-semantics[data-revealed] .Envelope {
+    /* scale rides along — this list outweighs the hover block's, and
+       dropping scale here would snap the hover lift */
+    transition:
+      scale 450ms ease,
+      opacity 900ms ease-out,
+      translate 900ms cubic-bezier(.22, .7, .3, 1)
+    ;
+  }
+}
+
+#station-semantics .Envelope {
+  & {
+    --_env-b: 30rem;                          /* 信封高 — 唯一自由變數 */
+    --_env-i: calc(var(--_env-b) * 120 / 235);
+    --_env-flap: calc(var(--_env-b) * .09);
+    --_env-shadow: color-mix(in srgb, var(--color-black) 18%, transparent);
+    /* the contour — stronger than --palette-rule, which vanished into
+       the station ground */
+    --_env-line: color-mix(in srgb, var(--palette-text) 44%, transparent);
+    /* 郵遞區號框 red — postal convention. Tokenised as --palette-proof now
+       that the diagram's corrector-red annotation shares the hue. */
+    --_env-frame: var(--palette-proof);
+
+    position: absolute;
+    inset-block-start: 3.4rem;  /* flap fully inside the clip (Safari) */
+    inset-inline-end: var(--gutter);
+    inline-size: var(--_env-i);
+    block-size: var(--_env-b);
+
+    /* the station fly-in (station-frame.css `[data-station] > *`,
+       opacity + translate) must NOT touch the envelope — it is
+       first-screen furniture, simply THERE from the moment the page
+       paints, sealed until the reader reaches the station. The
+       heavier selector un-fades it. */
+    opacity: 1;
+    translate: none;
+  }
+
+  /* hover 拿起這封信：放大與闔蓋同拍起步、同拍落定（450ms），
+     闔好停 100ms 就重新掀開。scale 的擴張全數落在 15rem 的 clip
+     餘量與 gutter 之內。 */
+  @media (prefers-reduced-motion: no-preference) {
+    & {
+      transition: scale 450ms ease;
+    }
+    &:hover {
+      scale: 1.1;
+    }
+    &:hover [data-face] {
+      box-shadow:
+        0 2px 4px var(--_env-shadow),
+        0 2rem 3rem -.9rem var(--_env-shadow)
+      ;
+    }
+  }
+
+  /* …and where the clip can stretch, the letter peeks over the
+     section border into the manifesto — exactly the 郵遞區號 band
+     (frame bottom sits ~2.9rem below the face top) and not a hair of
+     the 大宋 column (which starts 4.4rem down), sealed until the
+     reader reaches the station */
+  @supports (overflow-clip-margin: 1rem) {
+    & { inset-block-start: -3.2rem; }
+  }
+
+  /* 蓋 — anchored above the face, hinge = the envelope's top edge.
+     Sealed: rotateX(-180deg), folded flat behind the face (invisible).
+     `perspective` stays INSIDE the transform: putting it on a parent
+     creates a stacking context and breaks the tree-order occlusion. */
+  [data-flap] {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: var(--_env-flap);
+    transform-origin: 50% 100%;
+    transform: perspective(1600px) rotateX(-180deg);
+    clip-path: polygon(17% 0, 83% 0, 100% 100%, 0 100%);
+    /* interior + contour, WITHOUT `filter`: a filtered element gets
+       layerized and Chromium clips that layer at the section's plain
+       clip edge — `overflow-clip-margin` never reaches it, and the
+       open flap (fully outside the box) vanished wholesale (measured
+       2026-07-28: red background painted, red drop-shadow didn't).
+       The line is an SVG stroke in the background stack instead —
+       background painting stays in the element's own layer, which the
+       clip margin does cover. Stroke colour is theme-neutral grey so
+       one data-URI serves both schemes; the box's 567:100 viewBox
+       matches the flap's fixed aspect (i : flap = (120/235) : .09),
+       so the stroke never distorts. */
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 567 100' preserveAspectRatio='none'%3E%3Cpath d='M97.9 1.5 L469.1 1.5 L565.5 98.5 L1.5 98.5 Z' fill='none' stroke='rgb(119 114 106 / 0.8)' stroke-width='3'/%3E%3C/svg%3E")
+        center / 100% 100% no-repeat,
+      var(--palette-bg)
+    ;
+    transition: transform 950ms cubic-bezier(.62, .02, .3, 1) 1s;
+  }
+
+  /* 正面 — later in DOM, opaque, covers the body ⇒ paints over the flap */
+  [data-face] {
+    position: relative;  /* same paint phase as the flap; tree order decides */
+    block-size: 100%;
+    background: var(--palette-bg);
+    border: 1px solid var(--_env-line);
+    box-shadow:
+      0 1px 2px var(--_env-shadow),
+      0 1.25rem 2rem -.9rem var(--_env-shadow)
+    ;
+    transition: box-shadow 450ms ease;  /* 影子與 scale 同拍 */
+  }
+
+  /* 郵遞區號框 — top-right, kanji numerals, red by convention */
+  [data-postal] {
+    position: absolute;
+    inset-block-start: 1.4rem;
+    inset-inline-end: 1.2rem;
+    display: flex;
+    margin: 0;
+    font-size: var(--fs-fine);
+    font-family: var(--font-mono);
+
+    & span {
+      display: grid;
+      place-content: center;
+      inline-size: 1.6em;
+      block-size: 1.9em;
+      border: 1px solid var(--_env-frame);
+      color: var(--_env-frame);
+      line-height: 1;
+    }
+    & span + span { margin-inline-start: -1px; }
+  }
+
+  /* 宛名 — the Song letterhead, 直排 down the face. Element-own logical
+     axes (vertical-rl): block = right→left, inline = top→bottom. The
+     block-end padding reserves the left flank for the German sender;
+     inline-start clears the 郵遞區號框. */
+  address:not([lang]) {
+    position: absolute;
+    inset: 0;
+    writing-mode: vertical-rl;
+    padding-block: 1.5rem 7rem;     /* 右／左（左は差出人の欄） */
+    padding-inline: 4.4rem 1.4rem;  /* 上（枠の下から）／下 */
+    font-size: var(--fs-small);
+    line-height: 2.1;
+    text-align: start;
+    word-break: keep-all;  /* 欄は全角空白でだけ折り返す — 語が千切れない */
+
+    & p { margin: 0; }
+
+    /* 收件人欄 — the big column, dropped from the head like the
+       reference envelope's 山田太郎様 */
+    & [data-name] {
+      margin-block-start: 1.2em;
+      padding-inline-start: 2.2em;
+      font-size: 1.6rem;
+      letter-spacing: .1em;
+    }
+
+    /* 「鈞啓」 rides the same column, a size down */
+    & [data-honorific] {
+      margin-inline-start: 1.1em;
+      font-size: .58em;
+      letter-spacing: .12em;
+    }
+  }
+
+  /* 差出人 — Mainz, 直排 like the 宛名: each <br>-line becomes a column
+     of sideways Latin (a 直排 column rotates Latin onto its side — the
+     figure's own footnote). Italic as the UA wills: han.css only cancels
+     the slant for CJK — the station's point, now set vertically.
+     Element-own logical axes again: block-end＝左, inline-end＝下. */
+  address[lang] {
+    position: absolute;
+    writing-mode: vertical-rl;
+    inset-block-end: 1.1rem;  /* 左 */
+    inset-inline-end: 1.3rem; /* 下 */
+    font-size: var(--fs-fine);
+    line-height: 1.6;
+    text-align: start;
+  }
+}
+
+/* The envelope opens on the STATION's reveal stamp. It once observed
+   its own box (the tall station used to stamp while the envelope sat
+   below the fold, and the flap finished opening unseen) — but now the
+   envelope rides above the fold from load, so the station's stamp
+   fires while it is guaranteed on screen, and «scroll to station ①»
+   is exactly the beat the opening should play on. */
+#station-semantics[data-revealed] .Envelope [data-flap] {
+  /* the ID rides along for cascade weight — the sealed base rule lives
+     under `#station-semantics` too, and an ID outguns any class pile */
+  transform: perspective(1600px) rotateX(-18deg);
+}
+
+/* hover replay — 闔上、只停 100ms、馬上再開。An ANIMATION, not a
+   transition: one hover state has to visit two transform values and
+   come back. Gated on the station's [data-revealed] (a sealed
+   envelope has nothing to replay) and on no-preference (it is pure
+   motion). Leaving mid-run cancels the animation and the computed
+   transform snaps back to the base (open) value — no transition
+   fires, since that value never changed.
+
+   The clock is 1.5s so the beats land where the hover choreography
+   wants them: 0–30% ＝ 450ms shut, in step with the 450ms scale-up
+   (lid closes exactly as the lift finishes); 30–37% ＝ ~100ms of
+   rest; 37–100% ＝ ~945ms re-opening on the demo's own easing. */
+@keyframes semantics-envelope-replay {
+  0% {
+    transform: perspective(1600px) rotateX(-18deg);
+    animation-timing-function: cubic-bezier(.45, 0, .55, 1);
+  }
+  30%, 37% {
+    transform: perspective(1600px) rotateX(-180deg);
+    animation-timing-function: cubic-bezier(.62, .02, .3, 1);
+  }
+  100% {
+    transform: perspective(1600px) rotateX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #station-semantics[data-revealed] .Envelope:hover [data-flap] {
+    animation: semantics-envelope-replay 1.5s;
+  }
+}
+
+/* The letterheads keep the correction walk (settle + straighten),
+   keyed to the envelope's own stamp now that they live outside the
+   figure's `[data-revealed] &` scope. The German twin only settles —
+   it is SUPPOSED to stay italic. */
+@media (prefers-reduced-motion: no-preference) {
+  #station-semantics[data-revealed] .Envelope {
+    address:not([lang]) {
+      animation:
+        semantics-settle 520ms step-end var(--row-cue) both,
+        semantics-straighten 520ms ease-out var(--row-cue);
+    }
+    address[lang] {
+      animation: semantics-settle 520ms step-end var(--row-cue) both;
+    }
+  }
+  #station-semantics .Envelope {
+    address:not([lang]) { --row-cue: 0ms; }
+    address[lang]       { --row-cue: 200ms; }
+  }
+}
+
+/* The 前／後 switch covers the envelope too — its letterheads are
+   specimens (the pseudo-italic case) even in decoration dress. */
+:root[data-han-module-semantics='off'] #station-semantics .Envelope {
+  & {
+    animation: none;
+    --han-semantics: off;
+  }
+  & * {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #station-semantics .Envelope [data-flap] {
+    transition-duration: 1ms;
+    transition-delay: 0s;
+  }
+}
+
+/* Below the width where the band and the envelope can share the row,
+   the decoration steps into the flow above the poem instead — it holds
+   real content (the two address specimens), so it can't just be hidden. */
+@media (max-width: 52rem) {
+  #station-semantics .Envelope {
+    position: static;
+    /* the flap opens UPWARD out of the box — the escape room goes above */
+    margin-block-start: calc(var(--_env-flap) + .5rem);
+    margin-block-end: 2rem;
+    margin-inline: auto;
+  }
+}
