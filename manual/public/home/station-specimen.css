@@ -171,12 +171,17 @@ figure.Papers {
       color: var(--palette-supplement-text);
     }
 
-    /* the sample — serif, measure tuned so the mark falls at line end:
-       at 12.5em the museum quote's 「？」」 lands exactly on the line-2
-       edge — hang-off squeezes it inside, hang-on lets it overhang. */
+    /* the sample — serif, measure tuned so marks fall at line end: at
+       13.5em the passport-museum quote drops TWO 「，」 on line edges
+       (lines 1 and 8) — hang-off squeezes them inside, hang-on lets them
+       overhang. Tuned by probing 10–16em headlessly WHILE the JS hang
+       layer was inert (the recorded fallbacks e2e debt), i.e. against the
+       un-hung layout, which is the correct baseline: hanging must not
+       reflow the line, it only lets the mark past the edge. Re-verify
+       when that debt is paid. */
     p {
       margin: 0;
-      max-inline-size: 12.5em;
+      max-inline-size: 13.5em;
       font-family: var(--han-font-alternative);
       font-size: 1.375rem;
       line-height: 1.95;
