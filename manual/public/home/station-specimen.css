@@ -172,9 +172,11 @@ figure.Papers {
     }
 
     /* the sample — serif, measure tuned so marks fall at line end: at
-       13.5em the passport-museum quote drops TWO 「，」 on line edges
-       (lines 1 and 8) — hang-off squeezes them inside, hang-on lets them
-       overhang. Tuned by probing 10–16em headlessly WHILE the JS hang
+       13.5em the passport-museum quote drops THREE marks on line edges
+       (「，」「。」「，」 on lines 1, 6 and 7) — hang-off squeezes them
+       inside, hang-on lets them overhang. It is the pick of 11.5–15em:
+       every neighbouring half-em lands one mark or none. Tuned by probing
+       headlessly WHILE the JS hang
        layer was inert (the recorded fallbacks e2e debt), i.e. against the
        un-hung layout, which is the correct baseline: hanging must not
        reflow the line, it only lets the mark past the edge. Re-verify

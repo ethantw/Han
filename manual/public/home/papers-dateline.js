@@ -1,7 +1,8 @@
 /**
- * Station①'s newspaper datelines — four editions, four ERAS, all at
- * «today + 100 years» so the panel never goes stale (the markup ships
- * a static fallback date for the no-JS case; this refreshes it on
+ * Every «today + 100 years» date on the homepage — station①'s four
+ * newspaper datelines (four editions, four ERAS) plus any prose year
+ * marked `<time data-plus-100>`, so nothing ever goes stale (the markup
+ * ships a static fallback for the no-JS case; this refreshes it on
  * boot).
  *
  *   zh-Hant  中華民國二一五年七月廿九日 — ROC era, masthead kanji
@@ -89,5 +90,15 @@ export function initPapersDateline() {
     if (!html) continue
     $time.dateTime = iso
     $time.innerHTML = html
+  }
+
+  /* prose years — station③'s hanging specimen opens on «the year», and the
+     museum's 一甲子 is measured FROM it, so a hard-coded 二一二六年 would
+     drift out of step with the newspapers above. Year precision only:
+     `datetime="2126"` is a valid <time> value, and the masthead digitwise
+     reading (二一二七年, not 二千一百二十七年) matches station①. */
+  for (const $time of document.querySelectorAll('time[data-plus-100]')) {
+    $time.dateTime = String(y)
+    $time.textContent = `${digitwise(y)}年`
   }
 }
