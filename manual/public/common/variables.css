@@ -91,7 +91,9 @@
   --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
 
   --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
+  --palette-supplement-text-3q: color-mix(in srgb, var(--palette-supplement-text) 75%, transparent);
   --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
+  --palette-supplement-text-1q: color-mix(in srgb, var(--palette-supplement-text) 25%, transparent);
 
   --palette-panel:    light-dark(var(--color-paper-deep), var(--color-ink-deep));
   --palette-ink:      var(--color-ink);

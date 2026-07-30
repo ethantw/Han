@@ -56,6 +56,27 @@
     ja: '「世界，你好。」「你好，世界！」隣り合う約物は余分な半角を詰め、締まって間延びしない。句読点が行末に達しても、押し込まず外へぶら下げるから、禁則による折り返しで字間が緩むこともない。',
     ko: '「世界，你好。」「你好，世界！」이웃한 <ruby>符號<rt>부호</rt></ruby>는 남는 반 칸을 <ruby>壓縮<rt>압축</rt></ruby>하여 <ruby>緊密<rt>긴밀</rt></ruby>하되 비지 않는다. <ruby>句讀點<rt>구두점</rt></ruby>이 <ruby>行<rt>행</rt></ruby>끝에 이르러도 밀지 않고 밖으로 내걸어, <ruby>禁則<rt>금칙</rt></ruby>에 따른 줄바꿈에도 <ruby>字間<rt>자간</rt></ruby>이 흐트러지지 않는다.',
   },
+  slBreathToggle: {
+    hant: '順暢呼吸模式',
+    hans: '顺畅呼吸模式',
+    en: 'Easy-breathing mode',
+    ja: '呼吸する組版',
+    ko: '숨 쉬는 <ruby>組版<rt>조판</rt></ruby>',
+  },
+  slBreathHint: {
+    hant: '取消勾選，同一段便屏息而排',
+    hans: '取消勾选，同一段便屏息而排',
+    en: 'Uncheck, and the same lines hold their breath',
+    ja: 'チェックを外せば、同じ行が息を止めて組まれる',
+    ko: '체크를 풀면 같은 <ruby>行<rt>행</rt></ruby>이 숨을 참고 짜인다',
+  },
+  slMoeNote: {
+    hant: '注：標點懸掛會在標點字體Diantenjeom選用MOE式時自動關閉。因其居中的標點會在懸掛後偏離版邊過多，效果不佳。使用JIS、GB等偏倚式標點方可懸掛。',
+    hans: '注：标点悬挂会在标点字体Diantenjeom选用MOE式时自动关闭。因其居中的标点会在悬挂后偏离版边过多，效果不佳。使用JIS、GB等偏倚式标点方可悬挂。',
+    en: 'Note: hanging switches itself off when Diantenjeom is set to MOE. Its marks sit centred in the em box, so hanging them strays too far past the column edge to read well. Side-biased conventions such as JIS or GB are the ones that hang.',
+    ja: '注：ぶら下げは約物書体DiantenjeomでMOE式を選ぶと自動的に切れる。中央に据わる約物はぶら下げると版面の縁から離れすぎ、効果を成さないからである。JIS・GBなど片寄せの方式でこそぶら下がる。',
+    ko: '<ruby>注<rt>주</rt></ruby>：내어쓰기는 <ruby>符號<rt>부호</rt></ruby> <ruby>書體<rt>서체</rt></ruby> Diantenjeom에서 MOE<ruby>式<rt>식</rt></ruby>을 고르면 <ruby>自動<rt>자동</rt></ruby>으로 꺼진다. 가운데 놓인 <ruby>符號<rt>부호</rt></ruby>는 내어써도 <ruby>版<rt>판</rt></ruby> 가장자리에서 너무 멀어져 <ruby>效果<rt>효과</rt></ruby>가 없기 때문이다. JIS, GB 등 한쪽으로 치우친 <ruby>方式<rt>방식</rt></ruby>이라야 내어쓸 수 있다.',
+  },
   slP2: {
     hant: '漢字與Latin、與Ελληνικά、與кириллица字母，與0-9的數字相遇，其間自動勻出髮絲之隙。不寬不窄，恰是跨文種間的優雅分寸。間隙由CSS自動生成。',
     hans: '汉字与Latin、与Ελληνικά、与кириллица字母，与0-9的数字相遇，其间自动匀出发丝之隙。不宽不窄，恰是跨文种间的优雅分寸。间隙由CSS自动生成。',
@@ -88,9 +109,46 @@
     </blockquote>
     <figcaption>
       <p>{{ slP1 }}</p>
-      <p>{{ slP2 }}
+      <p>{{ slP2 }}</p>
     </figcaption>
   </figure>
+
+  <!-- 呼吸開關與那條注移出 figcaption，落在站台右半邊的空白裡。左欄本來
+       就疊了樣張、兩段說明與一顆控件，資訊過密；右邊除了背後那張放大的
+       樣張以外是空的。分欄靠 section 自己的 grid（見 station-lines.css），
+       不加包裝用的 div——DOM 仍是「樣張＋旁註」兩件事，不是三層盒子。 -->
+  <aside class="Breath">
+    <!-- 呼吸開關 — 不是本站自己的開關，是 console 那顆「行的調整」模組
+         開關的分身，由 home/module-state.js 雙向綁定（`data-han-module-
+         proxy`，站①的語意樣式開關同一套）：這顆按下去按的是 console 的
+         按鈕，console 廣播回來再把這顆撥正。所以它跟站外的狀態永遠一致，
+         不可能出現「這裡開、那裡關」的自相矛盾。
+
+         擺在 figcaption 裡而不是樣張裡，理由同站①：它一撥就把整頁的
+         han.lines.css 帶走，說明文字必須在兩種狀態下都讀得到。撥動的
+         報酬也在這裡最大——前景樣張與背後那張放大九倍的樣張同時換氣，
+         懸掛的句讀縮回版口內，剩下一條空的懸掛區。 -->
+    <label class="Toggle for-lines">
+      <input type="checkbox" name="lines" data-han-module-proxy="lines" checked />
+      <span>{{ slBreathToggle }}</span>
+    </label>
+    <!-- 懸掛的閘不只這一個。lines.with-js.css 的
+         `--han-state-hanging-punctuation` 是逐文種算的：某個文種選了
+         MOE（點居於字身正中）就自己關掉，因為居中的點懸出去只會浮在
+         版邊，不貼欄口。ko 沒有對應的居中選項，無從關起。
+
+         值得寫進頁面而不只是註解，是因為本頁的 hant 預設就是 MOE ——
+         讀者若照預設看，這一站本來一個字都不會懸。上面兩段樣張各自把
+         `--han-punctuation-hant` 撥到 JIS 才有戲看；那是元素上的宣告，
+         console 的文種設定蓋不過去，所以這條規則在此地示範不出來，只
+         能明說。
+
+         文案裡不用（）括住 MOE：這條注只佔三行，又繼承頁面的兩端對齊，
+         而「（」不得居行末——禁則把斷點往前推一格，短掉的那行就被撐開，
+         字距肉眼可見地鬆掉。正文才剛說完「字距不因禁則換行而鬆動」，
+         注腳自己鬆給人看說不過去。改用破折號帶出，斷點就自由了。 -->
+    <small>{{ slMoeNote }}</small>
+  </aside>
 
   <div role="presentation">
     <p>{{ breathingLinesSample }}</p>

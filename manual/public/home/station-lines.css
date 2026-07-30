@@ -1,0 +1,300 @@
+#station-lines {
+  & {
+    position: relative;
+    /* 兩欄。左欄由樣張自己的 24em 定寬，右欄吃剩下的空白——開關與那條注
+       住在那裡。用 section 自己當 grid container，不另外包一層 div。
+
+       垂直節奏不受影響：hgroup 的 `margin-block-end: 2.5rem` 與 lede 的
+       `margin-block-start: -2rem`（station-frame.css）在流式排版裡會塌陷
+       成 0.5rem，而 grid 不塌陷、直接相加也是 0.5rem——同一個數。p 與
+       figure 之間同理（2.75rem + 0）。 */
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 3rem;
+  }
+  > hgroup,
+  > p {
+    grid-column: 1 / -1;
+  }
+  > figure {
+    grid-column: 1;
+  }
+  figure {
+    & {
+      position: relative;
+      z-index: 10;
+      margin: 0 0;
+      padding: 1em 1.5em;
+      inline-size: 24em;
+      font-size: 1.25rem;
+      line-height: 2;
+      background-color: var(--palette-bg-3q);
+      border: 1px solid var(--palette-rule);
+      border-radius: var(--r-3);
+      color: var(--palette-text);
+    }
+    > blockquote {
+      & {
+        margin: 0;
+        padding: 0;
+
+        --han-punctuation-refinement: auto;
+        --han-text-autospace: normal;
+
+        --han-punctuation-hant: JIS;
+        --han-punctuation-hans: GB;
+        --han-punctuation-ja: JIS;
+        --han-punctuation-ko: KV;
+      }
+      p {
+        margin: 0;
+        font-family: var(--han-serif);
+      }
+    }
+    figcaption {
+      & {
+        margin-block-start: 1.5rem;
+        max-inline-size: round(75%, 1em);
+        font-size: 1rem;
+        line-height: 1.75;
+        color: var(--palette-supplement-text-3q);
+      }
+      p {
+        margin-block: 0 1em;
+      }
+    }
+  }
+
+  /* 呼吸開關與 MOE 注 — 站台的右半邊。
+     背後那張放大的樣張，欄口落在版面約六成處，線外還有 1em 的懸掛區；
+     `justify-self: end` 把這一塊推到最右，正好讓開整條懸掛區，不壓在
+     它要解釋的東西上面。 */
+  > aside {
+    & {
+      position: relative;
+      z-index: 20;
+      grid-column: 2;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-inline-start: 5rem;
+      padding-block: 1rem;
+      inline-size: min(100%, 30em);
+      block-size: 100%;
+
+      /* 這一塊只有一條文字左緣，開關自己吊在緣外——懸掛的排法，正好是本
+         站在講的事。緣的位置＝軌寬＋軌與標籤的間距；兩個值都由這裡發出
+         去，開關與注各取所需，不會各寫各的而對不齊。 */
+      --_sw-track: 2.25rem;
+      --_sw-gap: 0.625rem;
+      --_text-edge: calc(var(--_sw-track) + var(--_sw-gap));
+
+      /* 這一欄不兩端對齊，跟版心的正文不同調。頁面的 justify 來自
+         station-frame.css § main；那是給 30em 以上的欄寬用的。這裡扣掉
+         吊開關的緣只剩十八字上下，又夾著 Diantenjeom 這種十個字母的西文
+         詞——一有勉強的斷點，短掉的行就被撐開，字距肉眼可見地鬆。窄欄
+         寧可右緣不齊，也不要行內鬆動：那正是本站正文在講的道理。 */
+      text-align: start;
+    }
+
+    /* 呼吸開關。`.Toggle` 是 controls.css 的共用零件，但那張表消費的是
+       console 的 `--_*` token 層，而那層只被 adopt 進影子 DOM——在本頁
+       的 light DOM 裡 `var(--_rule)` 沒有值，整顆開關會靜靜地畫成一片
+       透明（`background: var(--_rule)` 在 computed-value time 失效，
+       退成 unset）。所以照站①的作法在這裡把幾個 token 接回頁面調色盤。
+
+       接上之後開關自帶「開＝綠」的語彙（`.Toggle:has(input:checked)`
+       連標題一起轉綠），正好就是這顆開關要表達的狀態，不另外做；只把
+       提示壓回輔助色，免得整段都在喊。 */
+    .Toggle {
+      & {
+        --_rule: var(--palette-rule);
+        --_bg: var(--palette-bg);
+        --_accent: var(--palette-accent);
+        --_supplement-text: var(--palette-supplement-text);
+        /* 開關在正文級，不吃 console 那種密控件的字級——它是說明文的一
+           部分，不是儀表板上的一格。 */
+        --_fs-compact: var(--fs-body);
+
+        gap: var(--_sw-gap);
+        inline-size: 100%;
+      }
+      span {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        /* 沒有 min-inline-size: 0 的話，flex item 的最小尺寸是 auto，
+           提示那行撐著整顆開關不換行，右欄一窄就溢出去。 */
+        min-inline-size: 0;
+      }
+    }
+
+    /* MOE 注。直接子代：`.Toggle` 裡也有一個 small（開關的提示行），
+       那個歸開關管。 */
+    > small {
+      display: block;
+      /* 縮到與標籤同一條左緣（見上）。不然這一欄的文字有兩個左緣——標籤
+         被開關推進去、注貼著開關的邊——整塊看起來就是歪的。 */
+      /* 提示行與這條注同級同色，靠太近會讀成同一段話。 */
+      margin-block-start: 1rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--palette-supplement-text-3q);
+    }
+  }
+
+  /* 窄到放不下兩欄就疊回一欄，開關接回樣張下方。`main` 是 inline-size
+     容器（station-frame.css），量的是版心而非視窗。 */
+  @container (inline-size < 62rem) {
+    & {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    > aside {
+      grid-column: 1;
+      justify-self: start;
+      inline-size: min(100%, 28em);
+      margin-block-start: 0;
+    }
+  }
+  /* 巨型背景樣張 — 把前景 figure 的論點放大一遍：行末的句讀越過版口懸
+     出去。
+
+     這裡標的是「地界」，不是「某一個字」：版口線外那 1em 染成懸掛區，
+     任何越線的句讀自動落在色帶上。先前挑 `:nth-of-type(5)` 給 h-layer
+     上底色的作法有兩個毛病——h-layer 是 `position:absolute; inset:0`
+     的整個字身框，一個「。」只佔框心一點點，染出來是一大塊空心色塊；
+     而且同一段裡另一個一樣懸出的「。」沒被選中，看起來像 bug 不像論點。
+     染帶子則兩個都收，且不依賴字序。
+
+     配色只走一條 accent 的濃度階梯：文字是中性墨的紋理，帶子與線是
+     accent 的淡與稍濃。原本版口線用的校樣紅（--palette-proof）拿掉了
+     ——它與 accent 是兩個不相干的音，而且一條貫穿整站的紅線讀起來像
+     版面分隔線，不像欄的邊界。 */
+  div[role="presentation"] {
+    & {
+      --w-main: calc(100vw - var(--console-col));
+      --fs-bg-text: calc(var(--w-main) / 9);
+
+      /* 滿版文字。比裝飾用的 --palette-wm（4 %）再實一點：那個是純紋理，
+         這裡的字得看得出「行」，行末才有話可說。 */
+      --_wm-text:
+        light-dark(
+          color-mix(in srgb, var(--color-ink) 7%, transparent),
+          color-mix(in srgb, var(--color-paper-deep) 9%, transparent)
+        )
+      ;
+      /* 懸掛區與它的版口線。深色地上綠掉得快，淡側各補一級。 */
+      --_wm-zone:
+        light-dark(
+          color-mix(in srgb, var(--palette-accent) 11%, transparent),
+          color-mix(in srgb, var(--palette-accent) 15%, transparent)
+        )
+      ;
+      --_wm-rule: color-mix(in srgb, var(--palette-accent-deep) 42%, transparent);
+      /* 標點比字身再實一階。這一段裡真正在講話的是句讀，讓它自己浮出
+         半級，眼睛就會沿著標點走——走到版口外那幾個，話就講完了。
+         用 h-layer（懸掛用的絕對定位層）選得到全部可懸掛的標點，不必
+         挑第幾個，也不必知道哪一個真的落在行末。 */
+      --_wm-punct:
+        light-dark(
+          color-mix(in srgb, var(--color-ink) 13%, transparent),
+          color-mix(in srgb, var(--color-paper-deep) 16%, transparent)
+        )
+      ;
+
+      position: absolute;
+      inset: -1.4em auto auto -16.75em;
+      z-index: 0;
+
+      inline-size: 21em;
+      font-size: var(--fs-bg-text);
+
+      --han-punctuation-refinement: auto;
+      --han-text-autospace: normal;
+
+      --han-punctuation-hant: JIS;
+      --han-punctuation-hans: GB;
+      --han-punctuation-ja: JIS;
+      --han-punctuation-ko: KV;
+
+      color: var(--_wm-text);
+      user-select: none;
+
+      /* 段尾硬切在站台邊界上很難看——尾端淡出，收成印刷的殘影。帶子與
+         線是這個元素的子孫，一起吃這張遮罩，不必各自再淡一次。
+         （gradient 沒有 logical 的方向關鍵字，只能寫 to bottom；此站
+         為橫排版面。mask-image：Baseline 2023。）
+
+         `mask-clip: no-clip` 是這裡的關鍵，也是個好笑的陷阱：預設值
+         border-box 會把畫到邊框盒外的東西一併切掉——而懸掛出去的句讀
+         與線外的懸掛區，正好整個在盒外。照預設寫，這張遮罩會準確地
+         剪掉本段唯一想給人看的東西。（no-clip：Baseline 2023。） */
+      mask-image: linear-gradient(to bottom, #000 0 78%, transparent 100%);
+      mask-clip: no-clip;
+    }
+    p {
+      margin: 0;
+      font-family: var(--han-sans);
+      line-height: 1.25;
+      font-weight: 900;
+    }
+    /* 懸掛區 — 版口線起，往欄外 1em（懸掛能佔的全寬）。z-index: -1 讓它
+       沉到字底下當紙，否則絕對定位的偽元素會蓋在非定位的正文上。
+
+       底色往外淡出而不是平塗：JIS 的「。」畫在字身框的左下角，實際越線
+       的墨只佔這 1em 的前三分之一，平塗會多出三分之二的空綠，讀起來像
+       又開了一欄。淡出則自然收在墨止住的地方，像是溢出去的一點洇。 */
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset-block: 0;
+      inset-inline-start: 100%;
+      inline-size: 1em;
+      /* 平色＋遮罩，而不是把淡出寫進 gradient：background-image 的漸層
+         在轉場裡不保證能內插，background-color 一定可以——屏息那一撥要
+         讓帶子褪色褪得順，顏色就得留在能轉場的屬性上。 */
+      background-color: var(--_wm-zone);
+      mask-image: linear-gradient(to right, #000 0, transparent 100%);
+      border-inline-start: 1px solid var(--_wm-rule);
+    }
+    h-char[data-punct~="hangable"] h-layer {
+      color: var(--_wm-punct);
+    }
+
+    /* 屏息那一撥，帶子與標點是褪色不是切換。純色相變化，不是位移——但本站
+       的動效一律過這道閘（見 station-semantics.css），這裡照辦。 */
+    @media (prefers-reduced-motion: no-preference) {
+      &::before {
+        transition:
+          background-color 320ms ease,
+          border-color 320ms ease
+        ;
+      }
+      h-char[data-punct~="hangable"] h-layer {
+        transition: color 320ms ease;
+      }
+    }
+  }
+
+  /* 屏息 — console 的「行的調整」關掉（或站內那顆分身撥掉）時的樣子。
+     模組一走，句讀就縮回版口內，懸掛區空了出來。與其讓它空著仍染綠——
+     那等於替一件沒發生的事上色——不如把整條帶子連同版口線一起褪成中性
+     的墨：界線還在，只是再沒有東西走到那裡。標點的半級加重也一併撤掉，
+     它們此刻和別的字沒有兩樣。
+
+     `data-han-module-lines` 由 components/console-config.js § applyModules
+     寫在 <html> 上，四個模組一致；common/module-state.css 已經在用同一個
+     鉤子把擠壓交還給瀏覽器。 */
+  :root[data-han-module-lines="off"] & div[role="presentation"] {
+    --_wm-zone:
+      light-dark(
+        color-mix(in srgb, var(--color-ink) 4%, transparent),
+        color-mix(in srgb, var(--color-paper-deep) 6%, transparent)
+      )
+    ;
+    --_wm-rule: color-mix(in srgb, var(--palette-supplement-text) 30%, transparent);
+    --_wm-punct: var(--_wm-text);
+  }
+}
