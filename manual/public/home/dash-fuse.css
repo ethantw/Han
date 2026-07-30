@@ -1,0 +1,250 @@
+/*
+ * dash-fuse.css — station②'s 破折號熔接底圖（svg[data-name="dash-fuse"]
+ * ＋ .PunctFix，dash-fuse.js）。
+ *
+ * 一柱直排「沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬
+ * 年》」，畫在站台的 z-index:-1 底圖層（section 早有 isolation:isolate，
+ * watermark 用的同一層）。主角是「秒——這」那四格：卡在鉛字盤左下角與本欄
+ * 文案之間的梯形空格裡——「秒」半藏進鉛字左下角的字格、破折號佔滿空格、
+ * 「這」半沒進下方 .PunctLang 樣張卡。字級不固定：柱以 .PunctFix 為包含
+ * 塊，全部幾何用其高度的百分比換算，文案多高、空格多大，字就多大。句子
+ * 其餘的字沿柱伸出兩端，被鉛字、樣張卡與 section 的 overflow:clip 各自
+ * 遮掉。層序：鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、
+ * 本圖最底；鉛字的半透明面自然透出柱上的字。
+ *
+ * .PunctFix 是包含塊這件事由 station-frame 的階梯入場保證——它給每個
+ * section 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
+ * position: relative 把契約寫明。
+ *
+ * 動畫是 manual/demo/dash-fuse.html 的移植：破折號以兩塊 <rect> 斷開示人
+ * （中縫 10/1000 em——真實成因是西文領頭字體的 emdash 兩端縮進，Georgia
+ * 0.05em、Helvetica Neue 0.13em），一支 --df-fuse 時鐘把縫從兩邊合攏。
+ *
+ * 兩態都是 rect，不掛 DTJ 字體。理由：兩態本來就是同一組幾何的兩個值，交給
+ * 字體反而得照引擎擺放 R-class 字符的規矩走（那 5.25 user unit 的 hhea 偏
+ * 移），還得把 `——` 與漢字塞進同一個 <text> 才能讓 ccmp 開火。純幾何一概
+ * 免掉，破折號正好落在欄軸 60 上——與同柱漢字的 em 框中心對齊。
+ *
+ * 時序（dash-fuse.js）：柱不等鉛字排完，data-armed 一蓋就以斷開態示人；
+ * 鉛字落完才蓋 data-play 首播接合，此後一輪 16s。拍點（16s 為 100%）：
+ *
+ *     0     斷開（fuse 瞬間歸零——斷開本來就是突發的，漸變反而假）
+ *     0.8s  熔接 520ms
+ *     1.32s 閃一下深灰（280ms 竄到 --palette-ink-grey），
+ *           再 4.4s 慢慢淡回原來的近底色
+ *     6s    完全淡回，開始靜候
+ *     16s   下一輪 —— 也就是「淡回之後再等 10 秒」
+ *
+ * 只有破折號會閃：近底色宣告在柱根、由 <text> 繼承（同柱的漢字始終是淺
+ * 的），<rect> 自己用 --df-ink 在近底色與深灰之間 color-mix，所以那一下亮
+ * 起來的只有那條線。沒有整柱的淡出淡入——柱常駐，動的只有縫與那條線的墨色。
+ *
+ * 兩段文案的入場與柱脫鉤：鍵在 .PunctFix 自己的 data-revealed（淺門檻），
+ * 滾到鉛字以下就飛入，不等破折號。
+ *
+ * 動畫語彙同 MarkDiagram：一個事實一個 0→1、520ms ease-out、錯拍進場，
+ * 無高光無彈跳。無 JS 契約也同款：節拍變數 initial-value: 1 ＝ 沒有
+ * data-armed／data-play 就直接是已修正的終態。
+ *
+ * 座標系：1 user unit ＝ 1/100 em。欄軸 x=60；整句三十一格（字格表見
+ * station-type.html），破折號佔 720–920，墨跡外緣固定在 727／913（兩端各
+ * 0.07em 邊距），接縫在 820 開合——始終佔滿兩格，動的只有縫。
+ * 墨跡中心 54.7 而非 60：Chromium 把旋轉後的 R-class 字符擺在 hhea
+ * asc/desc 中點而非 em 框中心（差 52.5 font unit；量測見 demo 檔頭與
+ * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
+ */
+
+/* 節拍時鐘。@property 是全域註冊，故帶 df- 前綴。
+   --df-fuse 中縫合攏；--df-ink 破折號的墨色（0 ＝ 近底色、1 ＝ 深灰）。 */
+@property --df-fuse { syntax: "<number>"; inherits: true; initial-value: 1; }
+@property --df-ink { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+/* 由節拍算出的接縫兩緣。註冊為 <number>：computed-value time 即收斂成
+   數值 token，代入 scale() 不必再包 calc()。 */
+@property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 820; }
+@property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 820; }
+
+/* 一輪 16s，無限循環。輪點上 fuse 從 1 跳回 0（瞬間斷開——斷開本來就是
+   突發的，漸變反而假），持穩 0.8s（5%），熔接 520ms 到 8.25%。 */
+@keyframes df-fuse {
+  0%, 5% { --df-fuse: 0; }
+  8.25%, 100% { --df-fuse: 1; }
+}
+
+/* 接合之後閃一下深灰：280ms 竄到 --palette-ink-grey（8.25%→10%），再 4.4s
+   慢慢淡回近底色（10%→37.5% ＝ 6s）。之後靜候到 16s，也就是「完全淡回之後
+   再等 10 秒」才重播。
+
+   每一段的時間曲線各自指定——竄上去要 ease-out（一下就到），淡回要 ease-in
+   （先按得住、後段才鬆手）；整支若共用一條 ease-out，淡回會前快後爬，看起來
+   像沒淡完就停了。 */
+@keyframes df-ink {
+  0%, 8.25% {
+    --df-ink: 0;
+    animation-timing-function: ease-out;
+  }
+  10% {
+    --df-ink: 1;
+    animation-timing-function: ease-in;
+  }
+  37.5%, 100% { --df-ink: 0; }
+}
+
+/* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
+@keyframes df-copy-in {
+  from { opacity: 0; translate: 0 1rem; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+svg[data-name="dash-fuse"] {
+  & {
+    /* 接縫兩緣。斷開 815／825（縫 10），合上同歸 820 ——對稱地走向中
+       點，縫從兩邊一起合上，不是一邊追另一邊 */
+    --df-a1: calc(815 + 5 * var(--df-fuse));
+    --df-b0: calc(825 - 5 * var(--df-fuse));
+
+    position: absolute;
+    /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section
+       裡，-1 落在 station-b 底色之上、一切普通流內容之下 */
+    z-index: -1;
+
+    /* 錨定（對 .PunctFix，其高 H ＝ 兩段文案的高）。所有幾何以 H 的百分
+       比換算——「秒——這」那四格才能隨空格伸縮，字級不固定：
+
+         秒的字格中點  釘在文案上緣之上 0.75H ——鉛字左下角字格的下緣一
+                       帶，秒的上半沒入鉛字
+         這的字格中點  釘在文案下緣之下 0.33H ——.PunctLang 樣張卡的上
+                       緣一帶，這的下半沒入卡面
+         ⇒ 兩中點相距 2.08H ＝ 300 unit ⇒ 柱全長 3140 unit ＝ 2177%，
+           柱頂 ＝ 秒中點（y 670）再上 670 unit ＝ −540%
+
+       替換元素以 viewBox 固有比例從 block-size 得出行向尺寸，字級隨之。
+       橫向貼著文案行首（版面定稿 2026-07-30 的截圖位），窄屏退回 20%
+       免得溢出。裝飾底圖，對位是近似的，不求像素配準 */
+    inset-block-start: -540%;
+    block-size: 2177%;
+    inset-inline-start: min(4rem, 20%);
+    translate: -50% 0;
+    inline-size: auto;
+    overflow: visible;
+    pointer-events: none;
+    user-select: none;
+
+    /* 字色。面淡、邊清——低對比的可讀性來自輪廓而不是面積，正好讓底圖退後
+       而不消失。fill／stroke 是可繼承的 SVG 屬性，宣告在柱根由 <text> 繼承
+       ⇒ **同柱的漢字永遠是淺的**；只有 <rect> 覆寫成會閃的版本（見下）。
+
+       閃的目標色 --df-flash 用 --palette-ink-grey（light-dark(graphite,
+       silver)）而不是 --palette-text：正文墨色在亮色主題下是 #0e0e10，全黑
+       壓在這片近底色上太硬；graphite 是深灰，暗色主題那頭則是 silver，兩邊
+       都是「比底色果斷、但不是極端」的一階。 */
+    --df-face: color-mix(in srgb, var(--palette-text) 7%, var(--palette-station-b));
+    --df-edge: color-mix(in srgb, var(--palette-text) 12%, var(--palette-station-b));
+    --df-flash: var(--palette-ink-grey);
+    fill: var(--df-face);
+    stroke: var(--df-edge);
+  }
+
+  /* 直排交給引擎：漢字正立（UTR50 class U），破折號由引擎自轉 90°
+     （class R）。fill／stroke 繼承柱根（見上），此處只管字與描邊粗細 */
+  text {
+    font-family: var(--han-font-alternative);
+    font-size: 100px;
+    font-weight: 400;
+    writing-mode: vertical-rl;
+    stroke-width: .5;
+  }
+
+  /* 兩截破折號。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化
+     Firefox 尚未跟上）；transform-box 釘在 view-box 原點，座標才照字面
+     生效。vector-effect 讓描邊在非等比 scale() 下不變形，也擋掉兩塊相
+     接時描邊疊出的橫槓。
+
+     墨色在近底色與深灰之間由 --df-ink 插值——一支跑在柱根的動畫（--df-ink
+     是 inherits: true）餵兩塊矩形，所以兩截同步，而繼承同一個柱根的 <text>
+     不受影響。橫向 58 ＝ 欄軸 60 減半個線寬：不掛字體之後沒有引擎的 R-class
+     偏移要遷就，破折號回到欄軸上，與同柱漢字的 em 框中心對齊。 */
+  rect {
+    fill: color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-face));
+    stroke: color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-edge));
+    stroke-width: .5;
+    vector-effect: non-scaling-stroke;
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+  rect[data-seg="a"] {
+    transform:
+      translate(58px, 727px)
+      scale(4, calc(var(--df-a1) - 727))
+    ;
+  }
+  rect[data-seg="b"] {
+    transform:
+      translate(58px, calc(var(--df-b0) * 1px))
+      scale(4, calc(913 - var(--df-b0)))
+    ;
+  }
+
+  /* 頁面直排時收掉：本圖的「起自樣張卡、收在站尾」是縱向文案流的講法，
+     行向一轉，錨點全散 */
+  main[data-writing="vertical"] & { display: none; }
+
+  /* 時序（同站台 reveal 的契約：settled 是基態，動畫只活在 no-preference
+     之內；reduced ／ 無 JS ⇒ 永遠是已修正的終態，絕不停在壞畫面上）。
+     data-armed：dash-fuse.js 一啟動就蓋——柱即刻以斷開態示人，不等鉛字；
+     data-play：.PunctFix data-revealed 且鉛字盤落完——首播接合，此後 16s
+     一輪。 */
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-armed]:not([data-play]) { --df-fuse: 0; }
+    &[data-play] {
+      /* 兩支同騎一條 16s 的時間軸（拍點在各自的 keyframes 裡），無限循環
+         ＝「斷開、接上、閃一下深灰、慢慢淡回」，淡回之後再等 10 秒重播。
+         df-ink 的宣告用 linear，因為它的兩段各自在 keyframe 裡指定了
+         timing-function（見上），簡寫裡再給一條會被那兩條蓋掉 */
+      animation:
+        df-fuse 16s ease-out infinite both,
+        df-ink 16s linear infinite both
+      ;
+    }
+  }
+}
+
+.PunctFix {
+  & {
+    /* 柱的包含塊契約寫明（見檔頭——階梯入場的 translate 其實已保證） */
+    position: relative;
+    padding-block: 0 4rem;
+    padding-inline-start: 6rem;
+  }
+
+  /* 兩段文案。包進 .PunctFix 之後不再是 hgroup 的兄弟，station-frame.css
+     的 `> hgroup & ~ p` 措手不及——此處逐字複製那條規則（margin 的 -2rem
+     頂縮也照舊：第一段頂著鉛字盤的下緣、第二段咬進第一段的 2.75rem）。
+     改動時兩邊要一起改。 */
+  p {
+    /* margin: -4rem 0 5rem; */
+    margin: 0 0 0;
+    max-inline-size: 36em;
+    font-family: var(--han-font-alternative);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--palette-supplement-text);
+  }
+
+  /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的
+     淺門檻 0.15，見 station-type.html）——本欄緊接鉛字盤之下，露臉就等於
+     已滾到鉛字以下。
+
+     曾經鍵在 data-play 上（等鉛字落完＋首輪破折號接合完，延遲 2s），實際
+     讀起來太慢：讀者早滾過來了，話還沒說。破折號的節奏是柱自己的事，文案
+     不該被它扣住——兩者從此各自計時。
+
+     station-frame 的階梯入場管的是站台整欄的 reveal（它讓 .PunctFix 這個
+     div 現身）；這條規則管的是 div 裡面的兩段話，所以兩者不打架。 */
+  @media (prefers-reduced-motion: no-preference) {
+    &:not([data-revealed]) p { opacity: 0; }
+    &[data-revealed] p {
+      animation: df-copy-in 520ms ease-out both;
+    }
+  }
+}

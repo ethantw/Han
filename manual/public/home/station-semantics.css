@@ -164,7 +164,7 @@
          at that row (`viewBox="0 24 …"`), so this needs no compensating
          offset — move the rows and the alignment follows. */
       align-items: flex-start;
-      gap: 1.5rem;
+      gap: 0 1.5rem;
       /* padding-inline-end: 14rem; */
     }
 
@@ -698,8 +698,6 @@
         --_accent: var(--palette-accent);
         --_supplement-text: var(--palette-supplement-text);
         --_fs-compact: var(--fs-fine);
-
-        margin-block-start: 1.75rem;
         font-size: .75rem;
       }
 
@@ -710,8 +708,7 @@
       p {
         margin: 0 0 1.25rem;
         max-inline-size: 28em;
-        font-size: var(--fs-small);
-        line-height: 1.9;
+        line-height: 1.75;
         color: var(--palette-supplement-text);
       }
     }

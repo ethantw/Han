@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>破折號熔接——兩截該接上的線</title>
+
+<!--
+  一個破折號，一拍，一句話：「中間斷開的破折號，起自 Unicode 共用碼位的歷史
+  問題，透過 OpenType ＋ CSS unicode-range 字體技術，精準為讀者拂偏歸正。」
+
+  ── 與站③ MarkDiagram 的專名號互為鏡像 ────────────────────────────────
+  這張圖的幾何跟 MarkDiagram 專名號那一列是同一個：一對相鄰的線段，靠中縫
+  開合。但兩者要的答案剛好相反——
+
+    專名號  `[data-seg="a"]` / `"b"` 必須在字界處**斷開**，兩個相鄰的專名要
+            看得出是兩個專名，中縫合上就是錯的
+    破折號  兩截必須**接上**，`——` 是一根線而不是兩根，中縫留著就是錯的
+
+  同一個動作，兩個相反的正確答案。這是「標點的對錯從來不是幾何問題，是慣例
+  問題」最省話的證明，也是標點該有自己的字體槽的理由。
+
+  ── 為什麼會斷開 ──────────────────────────────────────────────────────
+  出在 CSS 的 fallback 順序。大家習慣把西文字體寫在前、漢字字體寫在後，而
+  `U+2014` 是中西共用碼位、西文字體都收——於是中文文章裡的破折號由西文字體
+  回答。西文又偏好兩端稍微不碰字框邊界的破折號（Georgia 兩側各留 0.05 em、
+  Helvetica Neue 各留 0.13 em），兩個並排，中間就開一道縫。
+
+  這不是漢字字體的錯：CJK 字體的 `emdash` 普遍貼齊字框兩緣，Noto CJK 甚至
+  自帶 `ccmp` 連字，直接把 `emdash + emdash` 熔成一個字符。問題純粹是「這個
+  碼位被誰接走了」。
+
+  ── 修法：`unicode-range` ＋ `ccmp` ───────────────────────────────────
+  Diantenjeom 的每個 @font-face 只帶約 30 個標點碼位的 `unicode-range`，並在
+  `src/css/fonts.css` 的 `--han-serif` 裡排在西文領頭字體**之前**。碼位一被搶
+  回來，`ccmp` 連字就把兩個 `emdash` 熔成單一的二字寬字符——中縫歸零，而且不
+  是靠平移，是靠連字：並排的兩截永遠有邊距，只有換成一個字符才真的沒有縫。
+
+  ── 這是示意圖，不是量測 ──────────────────────────────────────────────
+  座標取整，為的是看得清楚。動畫語彙照 MarkDiagram：一個事實一個 0→1、520ms
+  ease-out、錯拍 200ms，不加高光也不加彈跳。
+
+  真正的憑據在最後：幾何淡出、真字體淡入，而落點是逐位對過的，所以這一手交接
+  應該完全看不出來——看不出來就是對了，看得出位移才是 bug。
+
+  ── 直排交給引擎 ──────────────────────────────────────────────────────
+  SVG `<text>` 的 `writing-mode: vertical-rl` 在 Chromium 可用，漢字保持正立
+  （UTR50 class U），破折號由引擎依 R-class 自行順時針轉 90°（規範就是「拿橫
+  排字符自己轉，字體的 `vert` 一律忽略」——踩坑史見
+  ../../../diantenjeom/docs/vertical-text.md § Dash alignment）。
+
+  一個硬性要求：真字體那一層的 `——` 必須跟漢字**同在一個 <text> 裡**。
+  `U+2014` 的 Unicode script 是 Common，要靠漢字鄰居才判成 hani，`locl` ／
+  `ccmp` 才會開火。拆成「逐字一個 <text>」會親手切斷這件事，圖就再也演不出它
+  要演的東西。
+
+  座標：1 em ＝ 100 user unit。一行十三格（七字 ＋ 二格破折號 ＋ 四字），欄軸
+  x=60，run 從 y=40 到 1340，破折號佔 740–940。破折號的墨跡中心寫 54.7 而不是
+  60，因為 Chromium 把轉完的 R-class 字符擺在 hhea 的
+  asc／desc 中點上，而不是 em 框中心（差 52.5 font unit ＝ 5.25 user unit）。
+  照抄這一個常數，真字體與幾何才能無縫交棒。同一個病根的橫排版本見
+  docs/notes/2026-07-21-svg-glyph-baseline-alignment.md。
+
+  ── 無 JS 契約 ────────────────────────────────────────────────────────
+  沿用 MarkDiagram：節拍變數都 `initial-value: 1`。沒有 JS 蓋 `data-play` 就
+  沒有動畫，直接呈現**已修正**的終態，絕不停在壞畫面上。
+  `prefers-reduced-motion` 同樣直接給終態。
+-->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@latest/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest/dist/moe.css">
+
+<style>
+  /* ── 色彩・兩層 token ─────────────────────────────────────────────── */
+  :root {
+    color-scheme: light dark;
+
+    --ink: light-dark(#1a1a18, #e8e6e0);
+    --dim: light-dark(#6b6b66, #9a978f);
+    --rule: light-dark(#d8d5cd, #3a3934);
+    --bg: light-dark(#fbfaf6, #161614);
+    --accent: light-dark(#8a5a2b, #d3a06a);
+    /* ── 舞台。字幾乎與背景同色，看得出而不搶戲 ────────────────────
+       --stage 抄自 manual 的 --palette-station-b（light-dark(--color-snow,
+       --color-graphite)）；這頁是獨立檔案，載不到 common/variables.css，所以
+       把兩個 primitive 的值直接寫進來，改動時兩邊要一起改。
+
+       四階，對比一路遞增，刻意都很低：
+         --stage-ink   字身。與舞台的對比約 1.15，遠看是一片氣息
+         --stage-edge  描邊。約 1.9，負責把輪廓交代清楚——低對比的可讀性
+                       靠的是邊界而不是面積，所以面淡、邊清
+         --stage-grid  全角格線。比字還淡，它是尺不是圖；要是格線比字明顯，
+                       這張圖就本末倒置了
+       沒有第四階以上的高光：熔接不需要。MarkDiagram 全站只用一個 0→1 的
+       ease-out ＋ 錯拍，沒有火花也沒有閃光——這裡跟它同一套。 */
+    --stage: light-dark(#f3f3f0, #1f1f22);
+    --stage-ink: light-dark(#e7e7e0, #2b2b31);
+    --stage-edge: light-dark(#cdcdc2, #43434c);
+    --stage-grid: light-dark(#eeeee7, #26262b);
+
+    /* 標點槽在最前 —— 這個順序本身就是修法 */
+    --stack-on:
+      'Diantenjeom Serif MOE',
+      'Shanggu Serif',
+      serif
+    ;
+    /* 抽掉標點槽：西文領頭的 Georgia 認領 U+2014，漢字落到 Shanggu */
+    --stack-off:
+      Georgia,
+      'Shanggu Serif',
+      serif
+    ;
+    --mono: ui-monospace, 'SF Mono', monospace;
+  }
+
+  body {
+    margin: 0;
+    /* 舞台用 100vw 破出測量欄；100vw 含捲軸寬，這裡把溢出收掉。
+       `clip` 而非 `hidden`：hidden 會讓 body 成為捲動容器，position: sticky
+       與捲動錨定都會跟著壞掉（Baseline 2022） */
+    overflow-x: clip;
+    padding: 2.5rem clamp(1rem, 4vw, 3rem) 6rem;
+    background: var(--bg);
+    color: var(--ink);
+    font: 1rem/1.7 system-ui, sans-serif;
+  }
+
+  main { max-inline-size: 56rem; margin-inline: auto; }
+
+  h1 { font-size: 1.5rem; margin-block: 0 .5rem; }
+  h2 { font-size: 1.125rem; margin-block: 3rem .25rem; }
+  p.lede { color: var(--dim); max-inline-size: 42rem; }
+  code { font-family: var(--mono); font-size: .875em; color: var(--accent); }
+
+  section { border-block-start: 1px solid var(--rule); padding-block-start: .5rem; }
+
+  /* ══ 節拍時鐘 ══════════════════════════════════════════════════════
+     `ccmp` 是離散的替代——字符要嘛是兩個 `emdash`、要嘛是一個二字寬字符，
+     沒有「半個連字」。攤成一個 0→1，「中縫正在合攏」才成為看得見的狀態。
+
+       --fuse 中縫合攏
+       --real 幾何 → 真字體的交叉淡入
+
+     只有中縫在動。破折號**始終佔滿兩格**——墨跡外緣（747 與 933）從頭到尾是
+     常數，後文「這個時間」也一格都不移。斷開與接上的差別只有中間那一道縫。
+
+     這是刻意的取捨。真實的字體行為裡段長確實會變（不同字符的 advance 不同），
+     但一張示意圖同時動三個量，讀者會分不清哪個才是重點；何況「整行忽然變長
+     變短」本身就是最像特效的那一下。一個量，一句話。
+
+     兩者都 `initial-value: 1` ＝ 沒有 JS 就是終態（無 JS 契約）。 */
+  @property --fuse { syntax: "<number>"; inherits: true; initial-value: 1; }
+  @property --real { syntax: "<number>"; inherits: true; initial-value: 1; }
+
+  /* 由節拍算出的幾何。註冊為 <number>：註冊過的自訂屬性在 computed-value
+     time 就收斂成數值 token，代入 `scale()` 時不必再包一層 calc()，少一整類
+     語法風險。單位一律省略，要長度的地方才 `* 1px`。 */
+  @property --a1 { syntax: "<number>"; inherits: true; initial-value: 840; }
+  @property --b0 { syntax: "<number>"; inherits: true; initial-value: 840; }
+
+  /* ── 圖 ───────────────────────────────────────────────────────────── */
+  .DashFuse {
+    & {
+      /* 拍距。520ms ease-out，抄 MarkDiagram 的 --row-cue 節奏 */
+      --beat-fuse: 700ms;
+      --beat-real: 1500ms;
+
+      /* 破折號的墨跡中心與粗細。從頭到尾不動——動的只有中縫。
+         54.7 而不是 60 的理由見檔頭（Chromium 的 R-class 擺放常數）*/
+      --cx: 54.7;
+      --t: 4;
+
+      /* 兩截 → 一條。破折號的兩格是 740–940，墨跡外緣固定在 747 與 933
+         （兩端各留 0.07 em 邊距，全角標點該有的樣子），只有中間的接縫在 840
+         附近開合：
+
+           斷開   a 747–835   b 845–933   中縫 10
+           接上   a 747–840   b 840–933   中縫 0
+
+         收攏後兩塊矩形嚴絲合縫就等於一條線，所以同一組矩形能同時表達「斷
+         開」與「接上」——中縫是它們的差，而不是第三個元素。兩個量對稱地走向
+         840，縫是從兩邊一起合上的，不是一邊追另一邊。 */
+      --a1: calc(835 + 5 * var(--fuse));
+      --b0: calc(845 - 5 * var(--fuse));
+
+      margin-block: 2.5rem;
+
+      /* 舞台佔一個螢幕，而且滿幅出血。
+         一行十三格 ＝ 13 em 高、1 em 寬，長寬比就是 1:11——這種形狀塞不進
+         文章的測量欄，硬塞只會被摺線切斷（實測：字級一放大，破折號那兩格
+         就掉到視窗以下，整個動畫在看不到的地方演完）。所以反過來讓它自己
+         佔一屏，字置中，滾到就播（見 <script> 的 IntersectionObserver）。
+
+         滿幅：`main` 有 max-inline-size，用 100vw ＋ 負 margin 破出去。
+         100vw 含捲軸寬，所以配 `overflow-x: clip` 在 body 上收邊。 */
+      inline-size: 100vw;
+      margin-inline: calc(50% - 50vw);
+      min-block-size: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      justify-items: center;
+      align-content: center;
+      gap: 1rem;
+      padding-block: 2rem;
+      background: var(--stage);
+    }
+
+    svg {
+      display: block;
+      align-self: center;
+      /* 1345 unit 高、120 寬。高度吃視窗，整行一眼看完——這是一行字的圖，
+         不是一段字的圖。1600px 時每字約 119px */
+      block-size: min(82vh, 1600px);
+      inline-size: auto;
+      overflow: visible;
+      /* 圖不參與選取：欄裡是真 <text>，不擋著的話框選整頁會把
+         「沉默了四點七秒——這個時間」拖進剪貼簿，而那是圖不是內容 */
+      user-select: none;
+    }
+
+    figcaption {
+      max-inline-size: 34rem;
+      margin: 0;
+      font-size: .8125rem;
+      color: var(--dim);
+      text-align: center;
+      /* 舞台是滿幅的，字幕卻該照文章的測量欄對齊 */
+      padding-inline: clamp(1rem, 4vw, 3rem);
+    }
+  }
+
+  /* 全角字身格。它是尺：破折號始終橫跨第八、九兩格，所以格線同時交代了
+     「兩截加起來就是兩格」與「接上之後還是兩格」 */
+  .DashFuse [data-grid] rect {
+    fill: none;
+    stroke: var(--stage-grid);
+    stroke-width: 1;
+  }
+
+  /* 真直排，交給引擎：漢字正立（class U）、破折號由引擎自轉 90°（class R） */
+  .DashFuse text {
+    font-family: var(--stack-on);
+    font-size: 100px;             /* SVG 的 px ＝ user unit ＝ 1 em 格 */
+    font-weight: 400;
+    writing-mode: vertical-rl;
+    /* 面淡、邊清。stroke 疊在 fill 之上（`paint-order` 的預設），所以描邊
+       同時加粗了字身的細節——在這種低對比下正是可讀性的來源。1.2 unit ＝
+       0.012 em，明體的最細處大約就是這個量級 */
+    fill: var(--stage-ink);
+    stroke: var(--stage-edge);
+    stroke-width: 1.2;
+  }
+
+  /* ── 兩截破折號 ────────────────────────────────────────────────────
+     單位矩形 ＋ CSS transform，而不是動 x/y/width/height 幾何屬性——後者作
+     為 CSS 屬性的支援度至今不齊（Firefox 落後於 Chromium／WebKit），
+     transform 則到處都在。非等比縮放對矩形無害：沿欄軸縮長度、跨欄軸縮粗
+     細，出來還是矩形。
+
+     transform-box / transform-origin 寫明：SVG 元素上 CSS transform 的預設
+     原點是個經典地雷，釘在 view-box 的 0 0 才能讓上面那串座標照字面生效。*/
+  .DashFuse [data-bar] {
+    /* 跟真字體同一套上色，交棒才看不出來。矩形沒有內部細節，描邊純粹是為了
+       與 <text> 的輪廓等重 */
+    fill: var(--stage-ink);
+    stroke: var(--stage-edge);
+    stroke-width: 1.2;
+    /* 兩塊矩形相接時，接縫處兩條描邊會互相疊出一道橫槓——把它關掉。
+       vector-effect 不受 scale() 影響，所以描邊粗細在非等比縮放下不變形 */
+    vector-effect: non-scaling-stroke;
+    transform-box: view-box;
+    transform-origin: 0 0;
+  }
+  .DashFuse [data-bar="a"] {
+    transform:
+      translate(calc((var(--cx) - var(--t) / 2) * 1px), 747px)
+      scale(var(--t), calc(var(--a1) - 747))
+    ;
+  }
+  .DashFuse [data-bar="b"] {
+    transform:
+      translate(calc((var(--cx) - var(--t) / 2) * 1px), calc(var(--b0) * 1px))
+      scale(var(--t), calc(933 - var(--b0)))
+    ;
+  }
+
+  /* 幾何與真字體交叉淡入。兩層在同一個位置，所以這一下理應只看得到亮度變
+     化——位移才是 bug */
+  .DashFuse [data-geom] { opacity: calc(1 - var(--real)); }
+  .DashFuse [data-real] { opacity: var(--real); }
+
+  /* ══ 播放 ══════════════════════════════════════════════════════════
+     `data-play` 由 JS 蓋章，且等 document.fonts 就緒才蓋——最後一下要換成真
+     的 Diantenjeom 字符，字還沒到就換，看到的是 fallback 的位置。 */
+  .DashFuse[data-play] {
+    animation:
+      beat-fuse 520ms ease-out var(--beat-fuse) both,
+      beat-real 420ms ease-out var(--beat-real) both
+    ;
+  }
+
+  @keyframes beat-fuse { from { --fuse: 0; } to { --fuse: 1; } }
+  @keyframes beat-real { from { --real: 0; } to { --real: 1; } }
+
+  /* 手動拖桿。熔接只有 260ms，這是唯一看得清楚中間狀態的方式 */
+  .DashFuse[data-mode="scrub"] {
+    animation: none;
+    --fuse: clamp(0, calc(var(--s) / .55), 1);
+    --real: clamp(0, calc((var(--s) - .75) / .2), 1);
+  }
+
+  /* 動態減量：不播，直接終態。跟無 JS 走同一條路 */
+  @media (prefers-reduced-motion: reduce) {
+    .DashFuse[data-play]:not([data-mode="scrub"]) {
+      animation: none;
+    }
+  }
+
+  /* ── 控制列 ───────────────────────────────────────────────────────── */
+  .Controls {
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      align-items: end;
+      margin-block: 1rem;
+      padding: .875rem 1rem;
+      border: 1px solid var(--rule);
+      border-radius: .375rem;
+    }
+
+    label { display: grid; gap: .25rem; font-size: .8125rem; color: var(--dim); }
+    input[type="range"] { inline-size: min(100%, 24rem); }
+    button {
+      font: inherit;
+      font-size: .875rem;
+      padding: .375rem 1rem;
+      border: 1px solid var(--rule);
+      border-radius: .25rem;
+      background: none;
+      color: var(--ink);
+      cursor: pointer;
+      &:hover { border-color: var(--accent); color: var(--accent); }
+    }
+  }
+
+  /* ── 對照：同一段字，差別只有一層字體槽 ───────────────────────────── */
+  .Compare {
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-block: 1.5rem;
+    }
+
+    figure { margin: 0; }
+
+    /* 直排：inline-size 在這裡是垂直軸 */
+    p {
+      writing-mode: vertical-rl;
+      margin: 0;
+      font-family: var(--stack-on);
+      font-size: 2.75rem;
+      line-height: 1.6;
+      inline-size: 13.5em;
+      border: 1px solid var(--rule);
+      padding: .5em .25em;
+      /* 全角格的尺。跟圖裡的 [data-grid] 同一個用途 */
+      background-image: repeating-linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--grid) 80%, transparent) 0 1px,
+        transparent 1px 1em
+      );
+    }
+
+    [data-slot="off"] p { font-family: var(--stack-off); }
+
+    figcaption {
+      margin-block-start: .5rem;
+      font-size: .75rem;
+      font-family: var(--mono);
+      color: var(--dim);
+      max-inline-size: 13rem;
+    }
+  }
+</style>
+
+<script type="module">
+/* 蓋章與拖桿。狀態都是元素上的一個屬性，幾何全由 CSS 從節拍變數算出，這支
+   檔案不碰任何一個座標。 */
+const figure = document.querySelector('.DashFuse')
+
+const play = () => {
+  figure.removeAttribute('data-play')
+  void figure.offsetWidth        // 重排一次，強制重啟 animation
+  figure.setAttribute('data-play', '')
+}
+
+/* 等字到齊才開演：最後一下要把幾何換成真的 Diantenjeom 字符，字還沒下載完
+   就換，看到的是 fallback 的位置。CDN 掛了也要開演——退回系統 serif 的圖，
+   仍勝過一張不動的圖。 */
+await Promise.race([
+  Promise.all([
+    document.fonts.load('100px "Diantenjeom Serif MOE"', '——'),
+    document.fonts.load('100px "Shanggu Serif"', '沉默了四點七秒這個時間'),
+  ]).then(() => document.fonts.ready),
+  new Promise((resolve) => setTimeout(resolve, 3000)),
+])
+
+/*
+  滾進視窗才播，而不是載入就播。舞台佔一整屏，一行十三格的破折號在第八、九
+  格——頁面一載入時那兩格通常還在摺線以下，載入即播等於在看不到的地方演完。
+  離開再回來會重播，來回滾動就是免費的重播鈕。
+*/
+const stage = new IntersectionObserver(
+  (entries) => entries.forEach((entry) => { if (entry.isIntersecting) play() }),
+  { threshold: 0.55 },
+)
+stage.observe(figure)
+
+const scrub = document.querySelector('[data-scrub]')
+
+document.querySelector('[data-replay]').addEventListener(
+  'click',
+  () => {
+    scrub.value = ''
+    figure.removeAttribute('data-mode')
+    play()
+  },
+)
+
+scrub.addEventListener(
+  'input',
+  () => {
+    figure.setAttribute('data-mode', 'scrub')
+    figure.style.setProperty('--s', scrub.value)
+  },
+)
+</script>
+</head>
+<body>
+<header>
+  <h1>破折號熔接——兩截該接上的線</h1>
+  <p class="lede">中間斷開的破折號，起自 Unicode 共用碼位的歷史問題，透過 OpenType ＋ CSS <code>unicode-range</code> 字體技術，精準為讀者拂偏歸正。</p>
+</header>
+
+<main>
+
+<!-- 示意圖。一行十三格，1 em ＝ 100 user unit；座標取整、動作誇張，為的是
+     看得清楚 -->
+<figure class="DashFuse">
+  <svg viewBox="0 20 120 1345" role="img"
+       aria-label="一行直排的「沉默了四點七秒——這個時間」。破折號橫跨兩格，先是中間斷成兩截，接著那道縫從兩邊合上，成為一根連續的線。">
+    <!-- 全角字身格，十三格。破折號固定佔第八、九格 -->
+    <g data-grid>
+      <rect x="10" y="40" width="100" height="100" />
+      <rect x="10" y="140" width="100" height="100" />
+      <rect x="10" y="240" width="100" height="100" />
+      <rect x="10" y="340" width="100" height="100" />
+      <rect x="10" y="440" width="100" height="100" />
+      <rect x="10" y="540" width="100" height="100" />
+      <rect x="10" y="640" width="100" height="100" />
+      <rect x="10" y="740" width="100" height="100" />
+      <rect x="10" y="840" width="100" height="100" />
+      <rect x="10" y="940" width="100" height="100" />
+      <rect x="10" y="1040" width="100" height="100" />
+      <rect x="10" y="1140" width="100" height="100" />
+      <rect x="10" y="1240" width="100" height="100" />
+    </g>
+
+    <!-- 前七格。y 40–740，破折號從 740 起 -->
+    <text x="60" y="40">沉默了四點七秒</text>
+
+    <!-- 破折號。兩層疊在同一個位置，由 --real 交叉淡入 -->
+    <g data-geom>
+      <rect data-bar="a" x="0" y="0" width="1" height="1" />
+      <rect data-bar="b" x="0" y="0" width="1" height="1" />
+      <!--
+        幾何層的後文。位置固定在第十格——破折號始終佔滿兩格，所以它從頭到尾
+        不動。它必須畫在這一層，因為真字體層是一整個 `——這個時間` 的 run
+        （script 判定的要求），幾何階段那個 run 是隱形的。
+      -->
+      <text x="60" y="940">這個時間</text>
+    </g>
+
+    <!--
+      真字體那一層。`——` 與漢字必須同在一個 <text> 裡：`U+2014` 的 Unicode
+      script 是 Common，要靠漢字鄰居才判成 hani，`locl` ／ `ccmp` 才會開火。
+      拆成逐字 <text> 會親手切斷這件事。
+    -->
+    <g data-real>
+      <text lang="zh-Hant" x="60" y="740">——這個時間</text>
+    </g>
+  </svg>
+
+  <figcaption>兩截 → 一條。中縫不是靠平移合上的，是靠 <code>ccmp</code> 連字換成一個二字寬字符——並排的兩截永遠有邊距。最後幾何換成真字體，落點相同，所以那一手交接看不出來。</figcaption>
+</figure>
+
+<div class="Controls">
+  <button type="button" data-replay>重播</button>
+  <label>
+    手動拖過去（縫合、換真字體兩段）
+    <input type="range" data-scrub min="0" max="1" step="0.002">
+  </label>
+</div>
+
+<section>
+  <h2>為什麼會斷開</h2>
+  <p>
+    出在 CSS 的 fallback 順序。大家習慣把西文字體寫在前、漢字字體寫在後，而 <code>U+2014</code> 是中西共用碼位、西文字體都收——於是中文文章裡的破折號由<strong>西文字體</strong>回答。西文又偏好兩端稍微不碰字框邊界的破折號（Georgia 兩側各留 0.05 em、Helvetica Neue 各留 0.13 em），兩個並排，中間就開一道縫。
+  </p>
+  <p>
+    這不是漢字字體的錯：CJK 字體的 <code>emdash</code> 普遍貼齊字框兩緣，Noto CJK 甚至自帶 <code>ccmp</code> 連字，直接把兩個 <code>emdash</code> 熔成一個字符。問題純粹是<strong>這個碼位被誰接走了</strong>——所以修法也在那裡：<code>unicode-range</code> 只認約 30 個標點碼位，把標點槽插到西文字體之前，碼位一回來，連字就開火。
+  </p>
+</section>
+
+<section>
+  <h2>對照：同一段字，差別只有一層字體槽</h2>
+  <div class="Compare">
+    <figure data-slot="on">
+      <p>沉默了四點七秒——這個時間</p>
+      <figcaption>'Diantenjeom Serif MOE', 'Shanggu Serif', serif</figcaption>
+    </figure>
+    <figure data-slot="off">
+      <p>沉默了四點七秒——這個時間</p>
+      <figcaption>Georgia, 'Shanggu Serif', serif　←　抽掉標點槽，西文領頭字體接走 U+2014</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <h2>與專名號互為鏡像</h2>
+  <p>
+    這張圖的幾何跟首頁站③ MarkDiagram 專名號那一列是同一個：一對相鄰的線段，靠中縫開合。但兩者要的答案剛好相反——專名號的兩截<strong>必須斷開</strong>，兩個相鄰的專名要看得出是兩個；破折號的兩截<strong>必須接上</strong>，<code>——</code> 是一根線而不是兩根。
+  </p>
+  <p>
+    同一個動作，兩個相反的正確答案。標點的對錯從來不是幾何問題，是慣例問題——這也就是標點該有自己的字體槽的理由。
+  </p>
+</section>
+
+</main>
+
+<footer>
+  <p><a href="/demo/">回示例索引</a>　·　<a href="/">回手冊首頁</a></p>
+</footer>
+</body>
+</html>

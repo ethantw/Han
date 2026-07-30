@@ -2,9 +2,10 @@
  * lead-forme.js — station②'s isometric movable-type forme.
  *
  * A decorative specimen that embodies the type-picking ↔ unicode-range story
- * (stTrayNote): the sentence「字有百年筋骨，標點各歸其位。」set as mirrored
- * lead slugs in an isometric forme. Three heritage faces (Ziano 明／黑／楷)
- * and two punctuation conventions (Diantenjeom JIS／MOE) swap live from the
+ * (stTrayNote): the sentence「山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是
+ * 因為快十二秒！」」(see COLS) set as mirrored lead slugs in an isometric forme.
+ * Three heritage faces (Ziano 明／黑／楷) and three punctuation conventions
+ * (Diantenjeom JIS／MOE／GB) swap live from the
  * figure's own form — each swap ejects the affected slugs and drops the new
  * ones back in. Every slug is engraved on its reader-facing side with the
  * frequency slice it downloads from (Han) or its Diantenjeom name (punctuation).
@@ -73,9 +74,8 @@ const faces3 = (O, sx, sy, bodyH = GEO.H) => {
 // a spacing block — 空鉛 (段首/收尾)、justify 小鉛塊: a bare full-height box,
 // no glyph or label. `solid` = a real 小鉛塊 (opaque, so it reads as
 // furniture); otherwise a 空鉛 quad (half-opacity, CSS .Slug:not(.has-glyph)).
-// `first` tags column 1 so the punct swap re-drops it.
-const spacer = (O, sx, sy, d, first, solid) =>
-  `<g class="Slug${first ? ' col0' : ''}${solid ? ' solid' : ''}"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
+const spacer = (O, sx, sy, d, solid) =>
+  `<g class="Slug${solid ? ' solid' : ''}"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
 
 
 // Line layout in cell units. Unsqueezed: uniform 1-cell slugs. Squeezed at a
@@ -109,11 +109,10 @@ const lineLayout = (col, punct, orient) => {
 };
 
 // ── one lead-type slug (a printing character) → SVG group string ──
-const block = ({ O, char, d, sy = GEO.S, first, half, orient }) => {
+const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
   const { S, H, r, fs, sw } = GEO;
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
   const faces = faces3(O, S, sy);
-  const cls = `Slug has-glyph${first ? ' col0' : ''}${PUNCT.has(char) ? ' is-punct' : ''}`;
 
   // The printing face, engraved MIRRORED on the top plane (e1 × e2). Reading
   // runs along e2 either way — the forme is the same 4×10 grid of square em
@@ -163,7 +162,7 @@ const block = ({ O, char, d, sy = GEO.S, first, half, orient }) => {
   // full-area face when squeezed, so the half slug isn't crammed with text.
   const label = (half ? '' : faceLabel(mid(c1, c2), [COS, -SIN])) + faceLabel(mid(c3, c2), [COS, SIN]);
 
-  return `<g class="${cls}" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
+  return `<g class="Slug has-glyph" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
 };
 
 // ── build the whole forme → { viewBox, markup, lastDelay } ──
@@ -182,30 +181,45 @@ const buildForme = (punct, orient) => {
   // never overlap each other directly — 行距 colStep 153 > body H 140, every
   // cross-column overlap goes through the strip). The generic diagonal a+b sort
   // only fits unit boxes — under it a rows-spanning strip has NO valid slot.
+  // `line` groups a piece with the others re-set together when that line's
+  // spacing changes (§ reset). The 行距鉛條 is furniture BETWEEN lines, not
+  // part of one, so it gets a group of its own and stays put while the line it
+  // separates is re-laid.
   const cells = [];
   let read = 0;
   COLS.forEach((col, b) => {
     const bx = b * colStep;
-    const first = b === 0;                     // column 1 — re-laid-out on punct swap
     lineLayout(col, punct, orient).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
       if (it.space)                           // justify 小鉛塊 — solid furniture
-        cells.push({ kind: 'space', O, sx: S, sy: it.size * cell, d: read++ * STAGGER, first, solid: true });
+        cells.push({ kind: 'space', line: b, O, sx: S, sy: it.size * cell, d: read++ * STAGGER, solid: true });
       else if (!it.char.trim())               // 空鉛 段首/收尾 — half-opacity quad
-        cells.push({ kind: 'space', O, sx: S, sy: S, d: read++ * STAGGER, first, solid: false });
+        cells.push({ kind: 'space', line: b, O, sx: S, sy: S, d: read++ * STAGGER, solid: false });
       else
-        cells.push({ kind: 'char', O, char: it.char, sy: it.size * S, d: read++ * STAGGER, first, half: it.size < 1 });
+        cells.push({ kind: 'char', line: b, O, char: it.char, sy: it.size * S, d: read++ * STAGGER, half: it.size < 1 });
     });
     if (b < COLS.length - 1)                   // 行距鉛條 — ONE whole box (the
       // column-major order above makes a rows-spanning piece sort cleanly),
       // half-opacity like the 空鉛 quads: a single group composites plain
       // `opacity` with no seams, and the furniture behind ghosts through.
-      cells.push({ kind: 'space', O: add([0, 0], e1, bx + S), sx: colStep - S, sy: rows * cell, d: read++ * STAGGER, solid: false });
+      cells.push({ kind: 'space', line: `lead${b}`, O: add([0, 0], e1, bx + S), sx: colStep - S, sy: rows * cell, d: read++ * STAGGER, solid: false });
   });
 
   // auto-fit the viewBox over every piece's footprint (rises by r, drops by H)
   const xs = [];
   const ys = [];
+  // the inline-end vertex's FOOT — the lowest ink at the box's right edge.
+  // Everything below it along that edge is air (the bottom edge recedes
+  // inline-start-ward at the projection's slope), which is where the caption
+  // colophon hangs (lead-forme.css § pocket).
+  let footX = -Infinity;
+  let footY = -Infinity;
+  // the highest DRAWN point. Not `min(ys)`: the fit reserves the relief's rise
+  // `r` above every piece, but only type carries relief — a 空鉛 quad's top face
+  // IS its top. The origin piece happens to be the 段首 quad, so the box's own
+  // top edge sits a whole `r` above anything ever drawn there, and § air would
+  // report 11 units less void than there is.
+  let inkTop = Infinity;
   for (const c of cells) {
     const sx = c.sx ?? S;
     const c1 = add(c.O, e1, sx);
@@ -214,6 +228,13 @@ const buildForme = (punct, orient) => {
     for (const p of [c.O, c1, c2, c3]) {
       xs.push(p[0]);
       ys.push(p[1] - r, p[1] + H);
+      inkTop = Math.min(inkTop, p[1] - (c.kind === 'char' ? r : 0));
+      if (p[0] > footX + 1e-6) {
+        footX = p[0];
+        footY = p[1] + H;
+      } else if (p[0] > footX - 1e-6) {
+        footY = Math.max(footY, p[1] + H);
+      }
     }
   }
   const pad = 34;
@@ -224,59 +245,180 @@ const buildForme = (punct, orient) => {
 
   const markup = cells
     .map((c) => (c.kind === 'char'
-      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, first: c.first, half: c.half, orient })
-      : spacer(c.O, c.sx, c.sy, c.d, c.first, c.solid)))
+      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient })
+      : spacer(c.O, c.sx, c.sy, c.d, c.solid)))
     .join('');
   return {
     viewBox: `${minX.toFixed(1)} ${minY.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}`,
     markup,
+    // The forme's TOP VERTEX, as fractions of the rendered width — CSS needs
+    // these to size the empty wedge at the block-start／inline-start corner
+    // (lead-forme.css § showpiece · the lift). `apex` is where the origin slug
+    // sits across the box; `pad` is the band of air above it. Both are
+    // published rather than hard-coded because they move with the layout:
+    // 直排 and 橫排 lay the same sentence into different column counts, so the
+    // wedge is a different shape in each.
+    apex: (0 - minX) / w,
+    pad: (0 - minY) / w,
+    // …and the OTHER pocket's two: where the inline-end vertex's foot sits
+    // down the box (the caption may start below it), and the box's own
+    // height — both over width, because one length is all CSS has to scale by.
+    foot: (footY - minY) / w,
+    ratio: h / w,
+    /* The air the fitted box leaves around the INK — box edge to nearest drawn
+       point, on all four sides, as fractions of the rendered WIDTH (one length
+       for CSS to scale by, like everything above).
+
+       The viewBox is padded so a stroke at an extreme vertex isn't shaved, so
+       the box's edges are nowhere near the ink's: the left and right vertices
+       sit ~33px inside it at a 1320px forme, and the bottom vertex the same.
+       That air is the room the chrome is laid out in — it is why the note and
+       the pills have somewhere to sit at all — and CSS could not see a pixel of
+       it, so every placement against it was a tuned guess. These four turn it
+       into a number (lead-forme.css § showpiece → `--lf-air-*`).
+
+       PHYSICAL names on purpose: the isometric projection does not turn with
+       `writing-mode`, so top／bottom／left／right are what these are. Read off
+       the extremes rather than from the pad constant, so an asymmetric fit
+       would report itself instead of being papered over by a shared number.
+       Note `top` differs from `pad` above: this one is the highest INK, `pad`
+       is the origin's y=0 line, which sits r lower. */
+    gapTop: (inkTop - minY) / w,
+    gapBottom: (minY + h - Math.max(...ys)) / w,
+    gapLeft: (Math.min(...xs) - minX) / w,
+    gapRight: (minX + w - Math.max(...xs)) / w,
     // when the LAST slug starts its drop. The caption's cue is derived from
     // this in CSS (+ the drop's own duration), so the entrance stays ONE
     // ceremony however many pieces the sentence lays out to.
     lastDelay: (read - 1) * STAGGER,
+    // the pieces themselves, in generation = paint = DOM order, so a swap can
+    // diff two builds and re-set only what actually changed (§ reset).
+    cells,
   };
 };
 
+// ── § reset — which pieces a punctuation swap has to lift ─────────────
+/* Changing convention does NOT change a single character: what moves is
+   `lineLayout`'s squeeze decision (直排 squeezes under JIS only), and the
+   Diantenjeom face the punctuation slugs are drawn in. So there are exactly
+   two kinds of line:
+     · its spacing moved  → the whole line is re-set, because every piece after
+       the squeeze sits somewhere new and a line half re-set reads as a mistake;
+     · its spacing stands → only its punctuation is lifted, since only those
+       slugs are re-cut. Everything else is the same lead in the same place.
+   Compared by geometry rather than by markup: the markup of an unchanged
+   punctuation slug is identical across conventions (the face swap is CSS), so
+   a diff of the SVG strings would report "nothing changed" for the very
+   pieces that must move.
+   Indices, not selectors — generation order is DOM order, and this keeps the
+   pieces free of classes that exist only to be animated. */
+const geometry = (c) =>
+  `${c.O[0].toFixed(3)}/${c.O[1].toFixed(3)}/${(c.sx ?? 0).toFixed(3)}/${c.sy.toFixed(3)}`;
+
+const byLine = (cells) =>
+  cells.reduce((m, c, i) => m.set(c.line, [...(m.get(c.line) ?? []), i]), new Map());
+
+export const reset = (before, after) => {
+  const was = byLine(before);
+  const out = [];
+  const back = [];
+  for (const [line, now] of byLine(after)) {
+    const then = was.get(line) ?? [];
+    const stands =
+      then.length === now.length &&
+      then.every((i, k) => geometry(before[i]) === geometry(after[now[k]]));
+    if (!stands) {
+      out.push(...then);
+      back.push(...now);
+    } else {
+      // geometry matches piece for piece, so the two indices pair up
+      now.forEach((i, k) => {
+        if (!PUNCT.has(after[i].char)) return;
+        out.push(then[k]);
+        back.push(i);
+      });
+    }
+  }
+  return { out, back };
+};
+
 // ── imperative shell ──────────────────────────────────────────────
-const EJECT = [
-  { transform: 'translateY(0)', opacity: 1 },
+/* A slug's SETTLED opacity, read off the piece itself: 空鉛 quads and 行距鉛條
+   sit back at half (lead-forme.css § entrance), type and 小鉛塊 are solid. The
+   keyframes below have to honour it, and can't say so in CSS terms — the Web
+   Animations API takes computed values, not `var(--slug-o)` — so it's read
+   here and substituted. Hard-coding 1 (as these did) meant a spacing block
+   fell at FULL opacity and only dropped back to half when the animation was
+   cancelled and CSS took over: a snap, one frame after it landed. */
+const settledOpacity = ($el) =>
+  Number.parseFloat(getComputedStyle($el).getPropertyValue('--slug-o')) || 1;
+
+const eject = ($el) => [
+  { transform: 'translateY(0)', opacity: settledOpacity($el) },
   { transform: 'translateY(-150px)', opacity: 0 },
 ];
-const DROP = [
-  { transform: 'translateY(-150px)', opacity: 0 },
-  { transform: 'translateY(0)', opacity: 1 },
+/* the 0.55 stop mirrors the CSS `lf-drop` keyframe exactly: a piece reaches its
+   own opacity BEFORE it lands, so it is already reading as 空鉛 on the way
+   down, and the landing frame changes nothing. */
+const drop = ($el) => [
+  { transform: 'translateY(-150px)', opacity: 0, offset: 0 },
+  { opacity: settledOpacity($el), offset: 0.55 },
+  { transform: 'translateY(0)', opacity: settledOpacity($el), offset: 1 },
+];
+
+/** the measured numbers CSS reads back, as [custom property, build key]. */
+const GEOMETRY = [
+  ['--lf-apex', 'apex'],
+  ['--lf-pad', 'pad'],
+  ['--lf-foot', 'foot'],
+  ['--lf-ratio', 'ratio'],
+  ['--lf-gap-top', 'gapTop'],
+  ['--lf-gap-bottom', 'gapBottom'],
+  ['--lf-gap-left', 'gapLeft'],
+  ['--lf-gap-right', 'gapRight'],
 ];
 
 export const initLeadForme = ($root = document) => {
   const $forme = $root.querySelector('.LeadForme');
   if (!$forme) return;
   const $svg = $forme.querySelector('svg');
+  // the build currently on screen — § reset diffs the next one against it.
+  let built;
   const render = () => {
-    const { viewBox, markup, lastDelay } = buildForme(
-      $forme.dataset.punct || 'jis',
-      $forme.dataset.orient || 'v',
-    );
+    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v');
+    const { viewBox, markup, lastDelay } = built;
     $svg.setAttribute('viewBox', viewBox);
     $svg.innerHTML = markup;
     // hand the drop's tail to CSS — it adds --lf-drop-dur for the caption's cue
     $forme.style.setProperty('--lf-last-slug', `${lastDelay.toFixed(2)}s`);
+    // …and the measured geometry (see buildForme's return): the two pockets,
+    // and the air the fitted box leaves on each of the four sides.
+    for (const [prop, key] of GEOMETRY)
+      $forme.style.setProperty(prop, built[key].toFixed(4));
   };
   render();
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let busy = false;
-  // eject the affected slugs, swap the font while they're out of frame, drop back.
-  const reslot = async (sel, swap) => {
+  const $slugs = () => [...$svg.querySelectorAll('.Slug')];
+
+  /* Lift these pieces, swap while they are out of frame, set them back — one
+     motion, no stagger. `pick` runs twice, before and after the swap, because
+     a swap that re-lays the forme replaces every node: the pieces that came
+     out are not the ones that go back, and for a partial reset they are not
+     even at the same indices. */
+  const reslot = async (pick, swap) => {
     if (reduced || busy) return swap();
     busy = true;
-    const els = [...$svg.querySelectorAll(sel)];
-    const a1 = els.map((el) => el.animate(EJECT, { duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' }));
-    await Promise.all(a1.map((a) => a.finished));
+    const out = pick('out').map(($el) =>
+      $el.animate(eject($el), { duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' }));
+    await Promise.all(out.map((a) => a.finished));
     swap();
-    const a2 = els.map((el) => el.animate(DROP, { duration: 720, easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'forwards' }));
-    await Promise.all(a2.map((a) => a.finished));
-    a1.forEach((a) => a.cancel());
-    a2.forEach((a) => a.cancel());
+    const back = pick('back').map(($el) =>
+      $el.animate(drop($el), { duration: 720, easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'forwards' }));
+    await Promise.all(back.map((a) => a.finished));
+    out.forEach((a) => a.cancel());
+    back.forEach((a) => a.cancel());
     busy = false;
   };
 
@@ -288,27 +430,32 @@ export const initLeadForme = ($root = document) => {
 
   // face change is font-only → reslot the glyph slugs (no geometry change)
   $forme.querySelectorAll('input[name="lf-face"]').forEach((el) =>
-    el.addEventListener('change', () => reslot('.has-glyph', () => { $forme.dataset.face = picked('lf-face'); })));
-  // punct change re-lays-out the ：「 column (half 「 + justify blocks). Only the
-  // punctuation slugs and column 1 differ, so we suppress the full entrance drop
-  // (`.settled`, one-way) and re-drop JUST those pieces; the rest is rebuilt in
-  // place at unchanged positions, so it doesn't move.
+    el.addEventListener('change', () => reslot(
+      () => [...$svg.querySelectorAll('.has-glyph')],
+      () => { $forme.dataset.face = picked('lf-face'); },
+    )));
+  // punct change is ONE motion like the face swap beside it — the two pills sit
+  // shoulder to shoulder and should not answer in different tempos — but it
+  // lifts only the pieces the new convention actually disturbs: a re-spaced
+  // line whole, an undisturbed line's punctuation alone (§ reset). What comes
+  // out is computed against the build on screen, before the swap; what goes
+  // back, against the new one, after.
+  // `.settled` is one-way: the staggered ENTRANCE plays once, and after any
+  // swap the forme is a set forme being altered, not one being composed.
   $forme.querySelectorAll('input[name="lf-punct"]').forEach((el) =>
     el.addEventListener('change', () => {
-      $forme.classList.add('settled');
-      $forme.dataset.punct = picked('lf-punct');
-      render();
-      if (reduced) return;
-      // stagger the re-drop (fill:backwards holds each piece up-and-hidden until
-      // its turn) so the swap arranges over ~3s, matching the entrance pace.
-      // A compositor sets one line at a time: finish column 1 top-to-bottom
-      // (DOM = depth order = reading order there), THEN the other columns'
-      // punctuation — never hopping between lines mid-column.
-      [
-        ...$svg.querySelectorAll('.col0'),
-        ...$svg.querySelectorAll('.is-punct:not(.col0)'),
-      ].forEach(($el, i) =>
-        $el.animate(DROP, { duration: 720, delay: i * 180, easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards' }));
+      const moved = reset(
+        built.cells,
+        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v').cells,
+      );
+      reslot(
+        (half) => moved[half].map((i) => $slugs()[i]),
+        () => {
+          $forme.classList.add('settled');
+          $forme.dataset.punct = picked('lf-punct');
+          render();
+        },
+      );
     }));
 
   // Direction change re-engraves EVERY piece (the glyph turns a quarter) and,
@@ -321,18 +468,20 @@ export const initLeadForme = ($root = document) => {
       if (reduced || busy) { $forme.dataset.orient = picked('lf-orient'); render(); return; }
       busy = true;
       // the whole forme lifts at once (as in the face/punct swaps), then is set
-      // again one piece at a time — the asymmetry is the point: breaking a forme
-      // up is quick, setting one is not.
-      await Promise.all([...$svg.querySelectorAll('.Slug')]
-        .map(($el) => $el.animate(EJECT, {
+      // again ONE PIECE AT A TIME — the only swap that does. The asymmetry is
+      // the point, and so is the exception: breaking a forme up is quick,
+      // setting one is not, and turning the direction re-engraves every glyph
+      // rather than re-slotting a few, so it earns the long ceremony.
+      await Promise.all($slugs()
+        .map(($el) => $el.animate(eject($el), {
           duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards',
         }))
         .map((a) => a.finished));
       $forme.dataset.orient = picked('lf-orient');
       render();
       // re-set at the entrance's own pace, reading order = drop order
-      await Promise.all([...$svg.querySelectorAll('.Slug')]
-        .map(($el, i) => $el.animate(DROP, {
+      await Promise.all($slugs()
+        .map(($el, i) => $el.animate(drop($el), {
           duration: 720, delay: i * (STAGGER * 1000), easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards',
         }))
         .map((a) => a.finished));

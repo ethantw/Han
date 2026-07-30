@@ -38,6 +38,7 @@ import { initWritingSwitch } from '/home/writing-switch.js'
 import { initConsoleCollapse } from '/home/console-collapse.js'
 import { initSnippet } from '/home/snippet.js'
 import { initLeadForme } from '/home/lead-forme.js'
+import { initDashFuse } from '/home/dash-fuse.js'
 import { initPunctLang } from '/home/punct-lang.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
 import { initWavyCiteGap } from '/home/wavy-cite-gap.js'
@@ -91,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // station②'s isometric lead-type forme (builds its SVG + wires its face／
   // punctuation form). Settled is the CSS default; the drop plays on reveal.
   initLeadForme()
+  // station②'s 破折號熔接底圖 — stamps data-play on .PunctFix once the copy
+  // is revealed AND the forme's drop has landed (CSS owns the animation).
+  initDashFuse()
   // station②'s per-language punctuation demo — its selects mirror the console's
   // per-language punctuation controls (single source of truth = console config).
   initPunctLang()

@@ -55,15 +55,19 @@ main > section {
     overflow: clip;
     /* max-inline-size: var(--max-w-layout); */
     margin-inline: auto;
-    padding-block: 6rem;
-    padding-inline: var(--gutter);
+    padding-block: 4rem 6rem;
+    /* published as a var so a full-bleed child can cancel it exactly — the
+       lead-type forme reads it to run edge to edge (lead-forme.css
+       § showpiece). Overridden by the 72rem container query below. */
+    --plate-pad: var(--gutter);
+    padding-inline: var(--plate-pad);
     border-block-start: 1px solid var(--palette-grid);
     background: var(--palette-station-a);
   }
 
   /* the `-b` ground breathes 1.5× wider (the alternating rhythm) */
   &[data-ground="b"] {
-    padding-block: 9rem;
+    /* padding-block: 9rem; */
     background: var(--palette-station-b);
   }
 
@@ -85,7 +89,7 @@ main > section {
 
   @container (inline-size >= 72rem) {
     & {
-      padding-inline: calc((100vw - var(--console-col) - var(--max-w-layout)) / 2);
+      --plate-pad: calc((100vw - var(--console-col) - var(--max-w-layout)) / 2);
     }
   }
 

@@ -34,14 +34,36 @@
      lead-forme.js) plus this. */
   --lf-drop-dur: 0.72s;
 
-  margin-block: clamp(1.5rem, 4vw, 3rem);
+  /* a BFC, so the children's block margins stay inside the figure in the
+     STACKED layouts (narrow ／ page-直排) — § pocket replaces this with a
+     grid on wide 橫排, where margins can't escape anyway. */
+  display: flow-root;
+
+  margin-block: clamp(1.5rem, 4vw, 3rem) 0;
   margin-inline: 0;
+
+  /* the forme's box is mostly EMPTY — three of the parallelogram's four corners
+     are void, and § showpiece lifts the block-start/inline-start one up over
+     the specimen card on purpose. Element boxes (and an SVG root) swallow
+     pointer events across that whole void, so whatever the wedge covers — the
+     card's 護眼模式 toggle, the specimen text you might want to select —
+     becomes unclickable even though nothing is painted there. Turn the void
+     transparent to the pointer and hand it back to the three parts that
+     actually react. Measured: without this, the toggle is unreachable at ≥1440px
+     (Playwright: "<figure class=LeadForme> intercepts pointer events"). */
+  pointer-events: none;
 
   & svg {
     display: block;
     inline-size: 100%;   /* full column width — the forme is the spectacle */
     block-size: auto;
     overflow: visible;
+  }
+
+  .Slug,
+  .Controls,
+  figcaption {
+    pointer-events: auto;
   }
 }
 /* 直排: `inline-size` is the VERTICAL axis there, so a plain 100% would scale
@@ -63,13 +85,13 @@
 :where(.LeadForme[data-face='m']) text.g {
   font-family:
     var(--dtj-serif),
-    'Shanggu Serif TC',
+    'Shanggu Serif',
     serif;
 }
 :where(.LeadForme[data-face='h']) text.g {
   font-family:
     var(--dtj-sans),
-    'Shanggu Sans TC',
+    'Shanggu Sans',
     sans-serif;
 }
 :where(.LeadForme[data-face='k']) text.g {
@@ -107,10 +129,15 @@
   display: inline;
 }
 
-/* entrance — settled is the default; the slugs drop in only once the station
-   is revealed (reveal.js stamps [data-revealed] on the section on scroll, so
-   an off-screen build stays settled and the ceremony plays when it's seen).
-   The face／punct swap is a separate WAA sequence in lead-forme.js. */
+/* entrance — settled is the default; the slugs drop in only once the FORME
+   itself is revealed, so an off-screen build stays settled and the ceremony
+   plays when it's seen. The gate is the forme's OWN `[data-revealed]`, not the
+   station's: station② is three screenfuls (三體樣張 · 鉛字盤 · 標點), and the
+   station-wide cue fires while the reader is still on the specimen card — the
+   whole drop would be over before the forme scrolled into view. The figure
+   carries `data-reveal-at="0.6"` and reveal.js holds its stamp until three
+   fifths of it is on screen. The face／punct swap is a separate WAA sequence
+   in lead-forme.js. */
 /* blank slugs (空鉛 spacing) sit back at half opacity. The drop animation is
    `both`, so its landing frame wins over a plain `opacity` — both the settled
    default here AND the keyframe below read --slug-o, so 0.5 holds with or
@@ -127,37 +154,96 @@
   opacity: 1;
 }
 @media (prefers-reduced-motion: no-preference) {
+  /* the FROM state, and the reason the 60% cue needs one: at the moment it
+     fires, most of the forme is already on screen — without this the
+     reader would watch a finished forme for a second and then see it re-drop.
+     Hidden on the <svg>, not on .Slug: the slugs' own opacity rules above are
+     more specific than an ancestor-scoped one would be. Safe to hide behind
+     JS — the <svg> ships EMPTY and lead-forme.js draws it, so no-JS has
+     nothing to hide, and the pills below are inert without it anyway. */
+  :where(.LeadForme:not([data-revealed]):not(.settled)) svg,
+  :where(.LeadForme:not([data-revealed]):not(.settled)) figcaption,
+  :where(.LeadForme:not([data-revealed]):not(.settled)) .Controls fieldset {
+    opacity: 0;
+  }
+  /* …and the pills, being real form controls, must be out of the tab order
+     while they are invisible, not merely transparent — same reasoning as the
+     `visibility` in `lf-chrome-in` below, which takes over once the cue fires. */
+  :where(.LeadForme:not([data-revealed]):not(.settled)) .Controls fieldset {
+    visibility: hidden;
+  }
+
   /* :not(.settled) — the full staggered entrance plays once; after the first
      punct swap the forme is `.settled` and only the changed pieces re-drop
      (lead-forme.js drives those with the Web Animations API). */
-  :where([data-revealed] .LeadForme:not(.settled)) .Slug {
+  :where(.LeadForme[data-revealed]:not(.settled)) .Slug {
     transform-box: view-box; /* translateY animates in user units · Baseline 2023 */
     animation: lf-drop var(--lf-drop-dur) cubic-bezier(0.34, 1.24, 0.5, 1) both;
     animation-delay: var(--d, 0s);
   }
 }
-/* the caption is the compositor's note ON the finished forme, so it waits out
-   the whole drop and only then eases in. Its cue is derived, not typed twice:
-   lead-forme.js publishes --lf-last-slug (when the LAST slug starts falling)
-   and CSS adds the drop's own duration plus a beat of silence — re-lay the
-   sentence with more pieces and the caption still arrives after the last one
-   lands. --lf-cap-from is the fly-in offset; the wide 橫排 layout re-points it
-   along its own 直排 axis (see § forme in the corner). */
+/* the note and the pills are both things that belong to a FINISHED forme, so
+   both wait out the whole drop and only then ease in. The note is the
+   compositor's note written ON the set forme; the pills are the tools you
+   reach for once it is set — offering them mid-ceremony invites a click that
+   would cut the entrance short, and a control that appears before the thing it
+   controls has nothing to point at.
+
+   The cue is derived, not typed twice: lead-forme.js publishes --lf-last-slug
+   (when the LAST slug starts falling) and CSS adds the drop's own duration plus
+   a beat of silence — re-lay the sentence with more pieces and both still
+   arrive after the last one lands.
+
+   Both rise from BELOW, whatever they are set in. The note is 直排 in the
+   pocket, and it used to slide in along its own block axis (off the fore-edge,
+   inline-end → inline-start) to match; owner's call is that it shouldn't. The
+   forme is a thing laid on a table, and everything that belongs to it — pills
+   into the 空鉛 tray, the note onto the finished plate — arrives the same way
+   the reader's eye does: up off the ground. One direction reads as one
+   gesture; two read as two unrelated animations that happen to share a cue. */
 @media (prefers-reduced-motion: no-preference) {
-  :where([data-revealed] .LeadForme:not(.settled)) figcaption {
-    animation: lf-caption-in 0.9s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  :where(.LeadForme[data-revealed]:not(.settled)) figcaption {
+    animation: lf-chrome-in 0.9s cubic-bezier(0.22, 0.9, 0.3, 1) both;
     animation-delay: calc(var(--lf-last-slug, 2.9s) + var(--lf-drop-dur) + 0.2s);
   }
+
+  /* per fieldset, not on the <form>: the pills then arrive in reading order
+     (字體 → 標點 → 行向, which `row-reverse` also lays inline-end-first), and
+     the form's own box never moves, so nothing around it shifts. */
+  :where(.LeadForme[data-revealed]:not(.settled)) .Controls fieldset {
+    animation: lf-chrome-in 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+    animation-delay: calc(
+      var(--lf-last-slug, 2.9s) + var(--lf-drop-dur) + 0.2s + var(--lf-pill, 0s)
+    );
+
+    &:nth-child(2) { --lf-pill: 0.09s; }
+    &:nth-child(3) { --lf-pill: 0.18s; }
+  }
 }
-@keyframes lf-caption-in {
+/* one keyframe for both — the pills and the note now arrive by the same move,
+   so two would be the same six declarations kept in step by hand.
+   `visibility` is here for the PILLS: they are real form controls, and opacity
+   0 alone would leave three radio groups tabbable and clickable for the ~3.8s
+   they are invisible — a focus ring on nothing, and a click that lands on a
+   face you cannot see. Its animation behaviour is exactly what's wanted:
+   `hidden` holds through the DELAY (the animation is `both`, so the 0% frame
+   fills backwards), then any t > 0 resolves to `visible` per spec, so a piece
+   goes live the instant it starts fading in. `.settled` drops the animation
+   entirely and CSS's own default is visible, so a swapped forme is unaffected.
+   The note doesn't need it and isn't harmed: it is unreadable at opacity 0
+   either way, and this keeps it out of the a11y tree while it is. */
+@keyframes lf-chrome-in {
   from {
     opacity: 0;
-    /* independent transform property · Baseline 2022 — no `transform` on this
-       box to compose with, and it keeps the offset a plain pair of lengths. */
-    translate: var(--lf-cap-from, 0 1.25rem);
+    visibility: hidden;
+    /* independent transform property · Baseline 2022 — no `transform` on these
+       boxes to compose with, and it keeps the offset a plain pair of lengths.
+       PHYSICAL, so the rise is up off the ground for the 直排 note too. */
+    translate: 0 1.25rem;
   }
   to {
     opacity: 1;
+    visibility: visible;
     translate: none;
   }
 }
@@ -193,24 +279,28 @@
 }
 
 /* controls — reader picks the current face + punctuation convention.
-   Same fieldset/legend/radio semantics as before; the LOOK is the
-   WritingSwitch pill (the control language the 直排 switch already taught),
-   tucked into the forme's empty lower-right corner — the 空鉛 zone of the
-   short last column — so the switches live inside the scene, not under it. */
+   Same fieldset/legend/radio semantics as before; the LOOK is three 直排
+   pills, the forme's own writing mode, so the switches read as part of the
+   plate: legend at the head, options running down it, the selected one in
+   the accent lozenge. `row-reverse` keeps the DOM's reading order (字體 →
+   標點 → 行向) while laying them inline-end-first, i.e. read right-to-left
+   like the 直排 text they switch. Latin values (JIS／MOE／GB) lie rotated,
+   like the slugs' engraved specs — owner's call: one chrome, every locale,
+   費脖子 included. The pills stay upright even should the PAGE go 直排:
+   the vertical-rl is on the fieldsets, not inherited. */
 :where(.LeadForme) .Controls {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
+  flex-direction: row-reverse;
+  justify-content: center;
+  /* feet on a line; the heads stagger by content (行向 is one option short),
+     which is the step the pocket placement leans into. */
+  align-items: flex-end;
   gap: 0.6rem;
-  /* proportional tuck-up: block-axis % margins resolve against the INLINE
-     size (spec behaviour, used on purpose), so the overlap tracks the SVG's
-     scale at any viewport width. */
-  margin-block-start: -13%;
-  margin-inline-end: 2%;
+  margin-block: 1.25rem .5rem;
   position: relative;  /* paint above the SVG's overflowing strokes */
 
-  & fieldset {
+  fieldset {
+    writing-mode: vertical-rl;
     display: flex;
     align-items: center;
     gap: 2px;
@@ -220,27 +310,32 @@
     border-radius: 999px;
     background: var(--palette-bg);
     box-shadow: 0 2px 10px color-mix(in srgb, var(--color-black) 12%, transparent);
+
+    &:has(input[name="lf-punct"]) {
+      text-orientation: upright;
+      letter-spacing: -.3em;
+    }
   }
-  & legend {
+  legend {
     /* float strips legend's fieldset-notch special rendering (the classic
        de-legend trick), so it lays out as a plain leading flex item — the
-       pill's mini label. */
+       pill's head label. inline-start in vertical-rl = the top. */
     float: inline-start;
     padding-inline: 0.65em 0.35em;
     color: var(--palette-supplement-text);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
   }
-  & input {
+  input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
   }
-  & label {
+  label {
     padding-block: 4px;
     padding-inline: 10px;
-    border-radius: 999px;
-    font-size: 0.85rem;
+    border-radius: 40px;
+    font-size: .875rem;
     color: var(--palette-supplement-text);
     cursor: pointer;
 
@@ -257,127 +352,236 @@
     border-color: var(--palette-supplement-text);
   }
 }
-/* narrow viewports: the corner pocket vanishes — pills return to plain flow */
-@media (width < 34rem) {
-  :where(.LeadForme) .Controls {
-    justify-content: center;
-    margin-block-start: 0.5rem;
-    margin-inline-end: 0;
-  }
-}
 
-/* ── § corner — the forme takes over station②'s watermark space ────────
- * Wide screens only: the station's copy column (hgroup／.Lede／.Faces／
- * .Prose, all ≤38em) leaves the whole inline-end half empty, which is where
- * the giant `data-wm` glyph used to sit. The forme moves in there as an
- * absolutely-positioned specimen — the section itself is the containing
- * block (`position:relative` + `isolation:isolate`, stations.css § plate),
- * so taking the forme out of flow leaves the copy column exactly where it
- * was: nothing to the inline-start shifts by a pixel.
+/* ── § showpiece — the forme is the station's centrepiece, not its wallpaper
+ * It used to be absolutely positioned into station②'s watermark corner with
+ * the SVG pushed to `z-index:-1`, i.e. it read as a background the copy ran
+ * over. Owner call: this is the best animation on the page, so it gets to be
+ * the thing you look at — in flow, nothing on top of it, and as wide as the
+ * station will give.
  *
- * Depth: only the `<svg>` is pushed back (`z-index:-1`), landing above the
- * station ground but under the (non-positioned) copy — the same layer the
- * watermark occupied. The figure itself keeps `z-index:auto`, so it creates
- * NO stacking context and its Controls／figcaption stay in the positioned
- * layer ABOVE the copy — the radios remain clickable and focusable.
+ * "As wide as the station will give" = cancel the section's own
+ * `padding-inline` exactly, so the forme runs plate edge to plate edge at
+ * every width. The station publishes that padding as `--plate-pad`
+ * (station-frame.css § plate) precisely so this can be its negative rather
+ * than a second copy of the centring calc — the two can't drift apart, and
+ * the bleed can never overshoot into a scrollbar (the plate is
+ * `overflow: clip` anyway).
  *
- * Size beats tidiness (owner call): the forme is the spectacle, so it takes
- * the whole width it can get and both of its own empty corners are put to
- * work — the isometric projection leaves the block-start／inline-start corner
- * as air (that's the part allowed to slide under the .Faces card) and the
- * short last column leaves a 空鉛 triangle at the block-end／inline-end
- * corner, which is where the 直排 caption and the pills are printed. Its
- * sharpest corner deliberately breaks the plate's block-start hairline so the
- * station reads like a page with something ON it, not a sealed box.
- * Below the breakpoint everything reverts to the plain in-flow figure. */
-@media (width >= 80rem) {
-  /* the plate's `overflow:clip` was there to crop the giant `data-wm` glyph —
-     station② has none any more, so the BLOCK axis is freed for the forme's
-     tip to cross the hairline. The inline axis stays clipped, so the shape's
-     overflow can never reach the page and raise a scrollbar. (Physical
-     `clip visible` = x／y: this whole block is 橫排-only by construction.) */
-  :where(main:not([data-writing='vertical'])) #station-type {
-    overflow: clip visible;
+ * Which makes `--lf-w` — the SVG's rendered width — the plate's own measure,
+ * and that is the length every published fraction scales by (§ buildForme
+ * hands them over as fractions of the rendered width precisely so CSS needs
+ * exactly one length and no resize listener).
+ *
+ * ── § air — the void around the ink, as lengths you can lay out against ──
+ * The viewBox is fitted with a pad so a stroke at an extreme vertex isn't
+ * shaved, so the box's edges are nowhere near the ink's: the left, right and
+ * bottom vertices all sit ~33px inside it at a 1320px forme. That air is the
+ * room the chrome lives in — the pills and the note sit in it — and until now
+ * CSS could not see a pixel of it, so every placement against it was a tuned
+ * number that had to be re-tuned whenever the forme changed.
+ *
+ * `--lf-air-*` is that void, per side, resolved to length. Lay anything out
+ * against it: `margin-block-end: var(--lf-air-bottom)` puts a box on the ink's
+ * own floor, `padding-inline-end: var(--lf-air-right)` clears the fore-edge.
+ * PHYSICAL sides, because the isometric projection does not turn with
+ * `writing-mode`.
+ *
+ * 直排 keeps the capped in-flow size from § base — there the inline axis is
+ * vertical, so "full width" would mean a thousands-of-px-tall forme, and this
+ * whole section (physical properties throughout) does not apply. */
+:where(main:not([data-writing='vertical'])) .LeadForme {
+  & {
+    --lf-w: 100cqw;
+
+    --lf-air-top: calc(var(--lf-gap-top, 0.025) * var(--lf-w));
+    --lf-air-bottom: calc(var(--lf-gap-bottom, 0.025) * var(--lf-w));
+    --lf-air-left: calc(var(--lf-gap-left, 0.025) * var(--lf-w));
+    --lf-air-right: calc(var(--lf-gap-right, 0.025) * var(--lf-w));
+
+    margin-inline: calc(-1 * var(--plate-pad));
   }
 
-  /* 橫排 only: in 直排 the station's axes rotate and the copy column becomes
-     a 38em-TALL strip, so there is no inline-end corner to move into — the
-     forme stays in flow (as it does below the breakpoint). */
-  :where(main:not([data-writing='vertical']) #station-type) .LeadForme {
+  /* the bleed is for the forme, not for its note — hand the gutter back so
+     the caption starts where the copy does. (Superseded below once the note
+     moves into the forme's own corner.) */
+  figcaption {
+    margin-inline: var(--plate-pad);
+  }
+
+  /* ── the lift — the specimen sits IN the forme's empty corner ────────
+   * An isometric parallelogram hung in a rectangular box leaves four wedges
+   * of air, and the block-start／inline-start one is big: the top vertex is
+   * the FIRST slug, and everything to its inline-start descends along e2, so
+   * that whole corner is empty. The specimen card and its legend are exactly
+   * the width of that corner, so the forme rides up under them instead of
+   * starting below a band of nothing.
+   *
+   * How far up is arithmetic, not a guessed number. lead-forme.js publishes
+   * the vertex as two fractions of the rendered width (§ buildForme):
+   * `--lf-apex` = how far across the box it sits, `--lf-pad` = the air above
+   * it. The e2 edge falls at tan30 ≈ 0.5774 per unit travelled
+   * inline-start-ward, so the air above the forme at any inline offset x is
+   *
+   *     void(x) = --lf-pad·--lf-w + (--lf-apex·--lf-w − x)·tan30
+   *
+   * `--lf-pad`, not `--lf-air-top`: the lift is a negative margin on the BOX,
+   * so the box's own top edge is the right thing to measure from.
+   *
+   * and the x that matters is the specimen column's inline-end edge — one
+   * plate padding plus the card's own track (§ 三體樣張 in station-fonts.css).
+   * Lift by that and the diagonal runs just under the card and its legend;
+   * inline-end of that edge the forme climbs higher still, into the air below
+   * the two-line heritage note, which is where the extra height comes from.
+   *
+   * `--lf-graze` is the one tuned number: how far PAST that edge the forme is
+   * allowed to ride, so its diagonal clips the card's block-end／inline-end
+   * corner instead of stopping under it (owner's call — grazing the card is
+   * the point, covering a glyph is not). It is `cqw`-based, not a flat rem,
+   * because everything else here scales with the forme: a fixed 5rem would be
+   * a graze at 1600px and a bite at 900px. The ceiling it must not reach is
+   * the face label (`.Faces small`, centred against the last row's
+   * inline-end), which the clamp's upper bound is set against.
+   * The `clamp` bounds both ends. `0px`, because the specimen column can be
+   * wider than the vertex is far across (narrow stations) — there the wedge
+   * is behind the card and there is nothing to reclaim. `18rem`, because the
+   * wedge keeps growing with the station while the copy above it does NOT:
+   * the note stays two lines whatever the width, so the vertex would climb
+   * into it. Rise above the specimen block works out to ≈0.0715·W + 37px +
+   * the graze, and the note leaves ≈278px — i.e. it runs out at a ~2100px
+   * reading area. The ceiling only bites past that; below it the arithmetic
+   * above is untouched.
+   *
+   * Gated on the same container width that puts the note beside the card
+   * (station-fonts.css § 三體樣張): stacked, the copy above runs the full
+   * measure and the corner is not free. */
+  @container (inline-size >= 56rem) {
     & {
-      position: absolute;
-      /* negative: the tip pokes out over the previous station's bottom
-         padding — 6rem of empty ground there, so nothing is covered. */
-      inset-block-start: -8rem;
-      inset-inline-end: var(--gutter);
-      /* the 13rem clamp is the floor: the box never starts closer than that
-         to the copy column's start, and the shape's own inline-start overflow
-         eats a little more of the .Faces card (air, mostly). */
-      inline-size: min(82%, 100% - 13rem);
-      margin: 0;
+      /* ON the specimen card, not under it. The lift used to graze the card's
+         corner and stop; owner's call is that the slugs print over the
+         specimen line — a forme laid down on the proof, which is the gag the
+         whole lift is reaching for. z-index 2 clears the card's own 1
+         (station-fonts.css § 三體樣張), which is there to beat the WRAPPER's
+         collapsed box in hit-testing. Paint order is all this changes: the
+         forme is `pointer-events: none` (§ base), so the card's toggle and
+         its selectable text still answer the pointer straight through the
+         slugs above them. */
+      position: relative;
+      z-index: 2;
+
+      --lf-void: calc(
+        var(--lf-pad, 0.033) * var(--lf-w)
+        + (var(--lf-apex, 0.624) * var(--lf-w) - (var(--plate-pad) + 30rem)) * 0.5774
+      );
+      --lf-graze: clamp(3rem, 0.1 * var(--lf-w), 8rem);
+      margin-block-start: calc(-1 * clamp(0px, var(--lf-void) + var(--lf-graze), 24rem));
+    }
+
+    /* ── § pocket — pills and the note move INTO the forme's other air ──
+     * Beyond the parallelogram's inline-end vertex the box is pure air: the
+     * bottom edge recedes inline-start-ward from that vertex at the
+     * projection's own slope, so the whole strip below and to the right of
+     * it is free. The figure becomes a grid — the SVG spans all three
+     * columns, and the two later siblings sit in the last two, painting
+     * above the SVG's void by plain document order (no z-index).
+     *
+     * The note is a 直排 colophon down the fore-edge — a 牌記, which is what
+     * the text is. Its head clears the vertex's foot by `--lf-foot`,
+     * published by lead-forme.js (§ buildForme) like --lf-apex, because the
+     * vertex moves when 直排／橫排 re-lay the sentence; scaled by `--lf-w`,
+     * the SVG's own rendered width (§ showpiece).
+     *
+     * PHYSICAL height/margins on the note on purpose: the box is
+     * `vertical-rl`, so logical properties map through ITS writing mode and
+     * flip (measured in the previous wedge layout: `inset-inline-end`
+     * resolved to `bottom` and threw the caption across the station). The
+     * enclosing rule is 橫排-only by construction. */
+    & {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      column-gap: 1rem;
     }
 
     svg {
-      position: relative;
-      z-index: -1;   /* the layer the `data-wm` watermark used to hold */
+      grid-area: 1 / 1 / 2 / 4;
     }
 
-    /* the caption is PRINTED INTO the 空鉛 triangle, not given a column of
-       its own — every pixel of the figure's width stays forme. 直排 so the
-       columns stack along the triangle's tall (inline-end) side; it sits just
-       above the pills, which keep the very corner. */
-    /* the pills give the 空鉛 triangle up to the caption and ride just under
-       the forme's bottom edge instead of tucking into it. */
     .Controls {
-      margin-block-start: 0;
-      margin-inline-end: 0;
+      grid-area: 1 / 2;
+      align-self: end;
+      /* afloat in the pocket: feet held off the forme's bottom edge so the
+         pill rack hugs the slug diagonal above it rather than the ground.
+         `--lf-w`, not %, so it scales with the forme like everything else.
+         (`var(--lf-air-bottom)` is the box's own floor if you ever want the
+         rack sitting ON the lowest slug rather than afloat above it.) */
+      margin-block: 0 var(--lf-air-bottom);
+      padding-block-end: .5rem;
     }
 
-    /* The caption is SET INTO the forme's empty 空鉛 triangle — the wedge left
-       by the short last column, bounded by the isometric e2 edge. A float
-       carrying `shape-outside` (Baseline 2020) cuts the box down to that
-       wedge: the exclusion is the air ABOVE the edge, so the 直排 columns keep
-       their feet on the forme's bottom line and shorten as they march
-       inline-start-ward, exactly following the slope.
-       PHYSICAL properties on purpose — logical `inset-*`／`float`／`border-*`
-       map through the element's OWN writing mode, and this box is
-       `vertical-rl`, which flips them (measured: `inset-inline-end` resolved
-       to `bottom` and threw the caption across the .Faces card). The
-       enclosing rule is 橫排-only, so physical values are the honest spelling.
-       (`float: left` is line-left = the TOP here, which is what puts the
-       exclusion at the columns' heads.) */
     figcaption {
-      position: absolute;
-      right: 1rem;
-      bottom: 8rem;              /* clears the pills below the forme */
-      /* 1.732 = √3 = the projection's own run／rise (e2 = [-cos30, 0.5]), so
-         the box's diagonal IS the slug edge it hides under. */
-      width: 45%;
-      aspect-ratio: 1.732;
-      margin: 0;
-      writing-mode: vertical-rl;
-      font-size: var(--fs-fine);
-      line-height: 1.66667;
-      text-align: justify;
-      color: var(--palette-supplement-text);
-
-      /* 直排 here, so the block axis runs inline-end → inline-start: the caption
-         slides in OFF THE FORME rather than up off the ground. Physical, for
-         the same reason the box's insets are (see the note above). */
-      --lf-cap-from: 1.4rem 0;
-
+      /* the diagonal head. The forme's block-end／inline-end edge runs from
+         the inline-end vertex DOWN-inline-start along e2 = [−cos30, 0.5] —
+         √3 of run per unit of rise — so a float carrying `shape-outside`
+         (Baseline 2020) cut to that slope drops every column's head onto
+         that edge: the first falls from the vertex itself, each one further
+         inline-start starts lower, and their feet stay on the forme's bottom
+         line. The note then reads as ink resting IN the 空鉛 wedge rather
+         than in a rectangle that happens to sit near it. `float: left` is
+         line-left — the TOP in vertical-rl (measured) — which is what puts
+         the exclusion at the columns' heads.
+         The triangle is sized off the caption's WIDTH, not its height: the
+         box's height is the pocket's and scales with the forme, while the
+         slope must stay √3 at every viewport. */
       &::before {
         content: '';
-        float: left;             /* line-left → the TOP in 直排 */
+        float: left;
         width: 100%;
-        height: 100%;
+        height: calc(var(--lf-cap-w) / 1.732);
         shape-outside: polygon(0 0, 100% 0, 0 100%);
         shape-margin: 0.5rem;
       }
+      & {
+        grid-area: 1 / 3;
+        align-self: end;
+        /* A FLAT width, not a cqw fraction: how many columns the note needs
+           is a function of the text and the font size, and neither scales
+           with the forme. (Capacity ≈ width × height, and the height already
+           grows with the plate — a proportional width would overflow on
+           narrow plates and rattle around on wide ones.) */
+        --lf-cap-w: 10em;
 
-      code { font-size: 0.875em; }
+        margin: 0 var(--lf-air-right) var(--lf-air-bottom) 0;
+        padding-bottom: 1rem;
+        width: var(--lf-cap-w);
+        /* a DEFINITE height on purpose — the run from just under the vertex's
+           foot to the forme's bottom edge. The colophon is an orthogonal flow,
+           and with an auto height the grid track would have to guess its
+           column count. (Subtract `--lf-gap-bottom` from the run and add
+           `--lf-air-bottom` to the margin to stand it on the lowest slug
+           instead of the box's floor — § air.) */
+        height: 28em;
+        /* PHYSICAL width/height above on purpose, and this to match: the box
+           is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
+           base rule's 38em cap is the stacked note's measure, and here it
+           would crop the columns to a fraction of the pocket. */
+        max-inline-size: none;
+        font-size: .875rem;
+        writing-mode: vertical-rl;
+        text-align: justify;
+      }
     }
   }
+}
+
+/* the compositor's note: a caption, not body copy — kept to the copy
+   column's measure however wide the forme above it runs. */
+:where(.LeadForme) figcaption {
+  max-inline-size: 38em;
+  font-size: var(--fs-fine);
+  line-height: 1.66667;
+  color: var(--palette-supplement-text);
+
+  code { font-size: 0.875em; }
 }
 
 /* ── station②'s per-language punctuation demo (.PunctLang) ─────────────

@@ -1,0 +1,217 @@
+/* 三體樣張 — the specimen card (.Faces) with its dotted legend under it, and
+ * the heritage note (stHeritageP) set BESIDE the pair once the station is
+ * wide enough. The note is the figure's own figcaption, not loose copy: it
+ * says what the three lines are for, so it belongs to the specimen.
+ *
+ * One grid, two placements. Narrow: a single column, auto-placed —
+ * card ／ legend ／ note stacked, which is also the order they read in. Wide:
+ * the card and legend keep column 1 and the note takes column 2 across both
+ * rows, top-aligned with the card. Explicit `grid-area`s are required there:
+ * row-wise auto-placement would put the legend beside the card instead. */
+.Illust[data-variant="faces"] {
+  & {
+    display: grid;
+    grid-template-columns: minmax(0, 30rem);
+    align-content: start;
+    gap: 0.75rem;
+    /* no block-end margin: the forme below sets the gap from its own
+       margin-block-start, and when it lifts (lead-forme.css § showpiece · the
+       lift) that margin is NEGATIVE — a positive margin here would collapse
+       into it and silently eat part of the lift. */
+    margin: 0;
+    /* the forme below is lifted so its corner rides up over this card
+       (lead-forme.css § showpiece · the lift). That negative margin collapses
+       out of the forme's wrapper <div>, so the WRAPPER's box — not just the
+       forme — starts up here and, being a later sibling, wins every hit test
+       over the card. Raise the card and the card's own content answers the
+       pointer again (the 護眼模式 toggle, selecting the specimen line).
+       This is a fight with the WRAPPER, not with the forme: the forme itself
+       sits a layer higher still (lead-forme.css § the lift) so its slugs
+       print ON the specimen line, and it stays out of the pointer's way by
+       being `pointer-events: none` rather than by being underneath. */
+    position: relative;
+    z-index: 1;
+  }
+
+  figcaption {
+    max-inline-size: 32em;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-body);
+    line-height: 1.9;
+    color: var(--palette-text);
+
+    p { margin: 0; }
+  }
+
+  /* 56rem ≈ the card's 30rem + the gap + a readable second column. Queried on
+     <main> (station-frame.css § main), so the console's column is already out
+     of the number — the layout answers to the reading area, not the window. */
+  @container (inline-size >= 56rem) {
+    & {
+      grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+      column-gap: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    .Faces { grid-area: 1 / 1; }
+    .Legend { grid-area: 2 / 1; }
+    .Toggle { grid-area: 3 / 1; }
+    figcaption { grid-area: 1 / 2 / span 3; }
+  }
+
+  /* 護眼模式 — the two 對照組 rows drop out of the card. `display: none`, not
+     `visibility`/opacity: the row must give its height back so the three
+     heritage faces close ranks, which is the whole point of the toggle. The
+     `:last-child { border-block-end: 0 }` rule below still lands right —
+     楷 is last either way, and the hidden rows were never last. */
+  &:has(input[name="face-eyecare"]:checked) .Faces > li:is(
+    [data-face="system"],
+    [data-face="system-ming"]
+  ) {
+    display: none;
+  }
+}
+
+/* 護眼模式's switch — the shared `.Toggle` primitive (home/controls.css).
+   That primitive consumes the console's `--_*` token layer, which is adopted
+   into the shadow root only, so a light-DOM `.Toggle` has to re-point those
+   tokens at the page palette. Same five lines as station①'s 語意樣式 switch
+   (station-semantics.css § 前／後 switch) — the switches look identical
+   because they ARE the same component. */
+.Toggle.for-eyecare {
+  --_rule: var(--palette-rule);
+  --_bg: var(--palette-bg);
+  --_accent: var(--palette-accent);
+  --_supplement-text: var(--palette-supplement-text);
+  --_fs-compact: var(--fs-fine);
+
+  margin-block-start: 0.25rem;
+  /* `.Toggle` is inline-flex; as a grid item it would still stretch to the
+     card's full 30rem, making the click target a mostly-empty strip. */
+  justify-self: start;
+}
+
+.Faces {
+  & {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    background: var(--palette-panel);
+    overflow: hidden;
+    list-style: none;
+  }
+
+  /* one ROW per face — the specimen is a full 16-character line (heritage
+     components live in 部件: 美/戶戶/情/紀), so the three faces stack and
+     the same sentence reads down the column. The old design was three
+     1:1 cells with a single 字 each — one char showed nothing. */
+  > li {
+    position: relative;
+    padding: 1.125rem 2rem 1rem 1rem;
+    line-height: 1.5;
+    background: var(--palette-bg);
+    border-block-end: 1px solid var(--palette-rule);
+    color: var(--palette-text);
+    --han-punctuation-refinement: compress;
+
+    &[data-face="sans"]    { font-family: var(--han-sans); }
+    &[data-face="serif"]   { font-family: var(--han-serif); }
+    &[data-face="cursive"] { font-family: var(--han-cursive); }
+
+    /* 對照組 rows — the visitor's own national-standard system faces, each
+       set immediately before its heritage answer. Deliberately NOT
+       --han-sans/--han-serif (those resolve to the heritage webfonts) and
+       NOT bare sans-serif/serif (a JP-font fallback would draw non-standard
+       forms and the contrast would lie); the explicit TC stacks hit the
+       MOE-standard faces on all three platforms. Stacks copied from ziano
+       demo src/css/why.css § .compare .standard / .standard-ming. Smaller
+       and grey but the SAME weight — the comparison's evidence is the
+       letterforms, never the styling. Punctuation refinement off + native
+       trim back to the UA default (:root sets trim-start): the rows show
+       the untreated out-of-the-box rendering, marks included. */
+    &[data-face="system"],
+    &[data-face="system-ming"] {
+      padding-block: .125rem;
+      background-color: var(--color-cloud);
+      color: var(--palette-supplement-text-2q);
+      --han-punctuation-refinement: none;
+      text-spacing-trim: normal;
+
+      b {
+        color: var(--palette-supplement-text);
+        font-weight: inherit;
+      }
+    }
+    &[data-face="system"] {
+      font-family:
+        'PingFang TC', 'Microsoft JhengHei',
+        'Noto Sans TC',
+        sans-serif
+      ;
+    }
+    &[data-face="system-ming"] {
+      font-family:
+        'Songti TC', PMingLiU,
+        'Noto Serif TC',
+        serif
+      ;
+    }
+    &:last-child { border-block-end: 0; }
+
+    small {
+      position: absolute;
+      inset-inline-end: 1rem;
+      inset-block-start: 0;
+      display: flex;
+      align-items: center;
+      block-size: 100%;
+      font-family: var(--han-sans);
+      font-size: .75rem;
+      color: var(--palette-accent);
+    }
+  }
+}
+
+.Legend {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0.5rem 0 0;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--han-font-default);
+    font-size: var(--fs-fine);
+  }
+
+  dt {
+    margin: 0;
+    min-inline-size: 5.625rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--palette-accent);
+  }
+
+  dd {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin: 0;
+    color: var(--palette-text);
+
+    /* the dotted leader between term and definition — pseudo, not a span */
+    &::before {
+      content: '';
+      flex: 1;
+      margin-inline-end: 0.5rem;
+      border-block-start: 1px dotted var(--palette-rule);
+    }
+  }
+}

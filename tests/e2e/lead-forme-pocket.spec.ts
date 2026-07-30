@@ -1,0 +1,174 @@
+import { test, expect } from '@playwright/test'
+
+/**
+ * Station②'s § pocket layout (lead-forme.css): on wide 橫排 plates the forme
+ * becomes a grid — pills as 直排 lozenges and the caption as a 直排 colophon
+ * down the fore-edge, both set into the air beyond the parallelogram's
+ * inline-end vertex.
+ *
+ * What's asserted is the geometry RULE, not pixel positions: the colophon's
+ * head must clear the vertex's foot (--lf-foot, published by lead-forme.js)
+ * and its own foot must stay inside the figure. Slug-bbox intersection is
+ * deliberately NOT asserted — an isometric slug's bounding rect is mostly
+ * empty corner air, so it false-positives on layouts that are visually clear.
+ */
+
+test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 })
+  await page.goto('/')
+  await page.locator('.LeadForme .Slug').first().waitFor()
+
+  const geo = await page.locator('.LeadForme').evaluate(($f) => {
+    const svg = $f.querySelector('svg')!.getBoundingClientRect()
+    const cap = $f.querySelector('figcaption')!.getBoundingClientRect()
+    const ctl = $f.querySelector('.Controls')!.getBoundingClientRect()
+    const forme = $f.getBoundingClientRect()
+    const s = getComputedStyle($f)
+    return {
+      display: s.display,
+      foot: Number.parseFloat(s.getPropertyValue('--lf-foot')),
+      capWm: getComputedStyle($f.querySelector('figcaption')!).writingMode,
+      pillWm: getComputedStyle($f.querySelector('.Controls fieldset')!).writingMode,
+      svg, cap, ctl, forme,
+    }
+  })
+
+  expect(geo.display).toBe('grid')
+  expect(geo.capWm).toBe('vertical-rl')
+  expect(geo.pillWm).toBe('vertical-rl')
+
+  // the colophon hangs on the fore-edge strip: head below the vertex's foot…
+  expect(geo.cap.top).toBeGreaterThanOrEqual(geo.svg.top + geo.foot * geo.svg.width - 1)
+  // …foot inside the forme, and the whole column right of the pills
+  expect(geo.cap.bottom).toBeLessThanOrEqual(geo.forme.bottom + 1)
+  expect(geo.cap.left).toBeGreaterThanOrEqual(geo.ctl.right)
+  // pills afloat in the pocket, not resting on the forme's bottom edge
+  expect(geo.ctl.bottom).toBeLessThan(geo.svg.bottom)
+
+  // § air — the void the fitted viewBox leaves around the ink, resolved to
+  // length on .LeadForme so anything can be laid out against it. Asserted
+  // against the ink's real position, so a wrong fraction or a wrong multiplier
+  // shows up as a mismatch rather than as a plausible-looking number.
+  const air = await page.evaluate(() => {
+    const $f = document.querySelector('.LeadForme')!
+    const box = $f.querySelector('svg')!.getBoundingClientRect()
+    const ink = [...$f.querySelectorAll('.Slug')].reduce(
+      (a: { l: number; r: number; t: number; b: number } | null, g) => {
+        const r = g.getBoundingClientRect()
+        return a
+          ? { l: Math.min(a.l, r.left), r: Math.max(a.r, r.right), t: Math.min(a.t, r.top), b: Math.max(a.b, r.bottom) }
+          : { l: r.left, r: r.right, t: r.top, b: r.bottom }
+      },
+      null,
+    )!
+    // an unregistered custom property computes to its literal token, so
+    // getComputedStyle would hand back "calc(0.0251 * 100cqw)". Resolve it the
+    // way a consumer would: hand it to a real property and measure the box.
+    const $probe = document.createElement('div')
+    $probe.style.cssText = 'position:absolute; block-size:0; visibility:hidden'
+    $f.append($probe)
+    const px = (v: string) => {
+      $probe.style.inlineSize = `var(${v})`
+      return $probe.getBoundingClientRect().width
+    }
+    const out = {
+      declared: { top: px('--lf-air-top'), bottom: px('--lf-air-bottom'), left: px('--lf-air-left'), right: px('--lf-air-right') },
+      actual: { top: ink.t - box.top, bottom: box.bottom - ink.b, left: ink.l - box.left, right: box.right - ink.r },
+    }
+    $probe.remove()
+    return out
+  })
+  // 2px of slack: the declared value is pure geometry, the measured one carries
+  // half a stroke at whichever vertex is the extreme.
+  for (const side of ['top', 'bottom', 'left', 'right'] as const) {
+    expect(air.declared[side]).toBeGreaterThan(0)
+    expect(Math.abs(air.declared[side] - air.actual[side])).toBeLessThan(2)
+  }
+
+  // …and its columns hang off the forme's own bottom-inline-end edge: each
+  // one starts lower than the one inline-end of it, at the projection's slope
+  // (e2 = [−cos30, .5] ⇒ √3 of run per unit of rise). One rect per column.
+  const cols = await page.locator('.LeadForme figcaption').evaluate(($c) => {
+    const range = document.createRange()
+    range.selectNodeContents($c)
+    // one column can yield several rects, and the note's inline <code> is set
+    // a size down so its rect sits a few px off the column's own edge —
+    // cluster by position (half a column's advance) and keep each head.
+    const tol = Number.parseFloat(getComputedStyle($c).fontSize)
+    const cols: { x: number; top: number }[] = []
+    // block order in vertical-rl is right → left
+    for (const r of [...range.getClientRects()].sort((a, b) => b.x - a.x)) {
+      const last = cols.at(-1)
+      if (last && last.x - r.x < tol) last.top = Math.min(last.top, r.top)
+      else cols.push({ x: r.x, top: r.top })
+    }
+    return cols
+  })
+  expect(cols.length).toBeGreaterThanOrEqual(3)
+  cols.slice(1).forEach((col, i) => {
+    const prev = cols[i]
+    const run = prev.x - col.x
+    expect(run).toBeGreaterThan(0)
+    // 1/√3 ≈ 0.577 — generous band, the shape-margin rounds each head
+    expect((col.top - prev.top) / run).toBeGreaterThan(0.35)
+    expect((col.top - prev.top) / run).toBeLessThan(0.85)
+  })
+
+  // the forme is laid ON the specimen card, not tucked under it: it paints
+  // above (§ the lift) and its ink edge really does cut into the card's box.
+  // Both halves matter — a z-index with no overlap is a no-op, and an overlap
+  // with the old z-index would be the forme getting clipped by the proof.
+  const laid = await page.evaluate(() => {
+    const $card = document.querySelector('.Illust[data-variant="faces"]')!
+    const $faces = document.querySelector('.Faces')!.getBoundingClientRect()
+    const $f = document.querySelector('.LeadForme')!
+    const svg = $f.querySelector('svg')!.getBoundingClientRect()
+    const num = (el: Element, p: string) =>
+      Number.parseFloat(getComputedStyle(el).getPropertyValue(p))
+    // the parallelogram's inline-start edge falls at tan30 per unit travelled
+    // inline-start-ward from the apex — the same arithmetic § the lift uses.
+    const inkTop = svg.top + num($f, '--lf-gap-top') * svg.width
+    const apexX = svg.left + num($f, '--lf-apex') * svg.width
+    return {
+      z: num($f, 'z-index') - num($card, 'z-index'),
+      cut: $faces.bottom - (inkTop + Math.max(0, apexX - $faces.right) * 0.5774),
+    }
+  })
+  expect(laid.z).toBeGreaterThan(0)
+  expect(laid.cut).toBeGreaterThan(20)
+
+  // the radios still answer the pointer through the rotated labels. Settle the
+  // entrance first — the pills hold `visibility: hidden` until the drop is over
+  // (§ entrance · lf-chrome-in), so an un-revealed forme has nothing to click.
+  await page.locator('.LeadForme').evaluate(($f) => {
+    $f.setAttribute('data-revealed', '')
+    $f.classList.add('settled')
+  })
+  await page.locator('.LeadForme .Controls label', { hasText: '黑體' }).click()
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-face', 'h')
+  await page.locator('.LeadForme .Controls label', { hasText: 'GB' }).click()
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'gb')
+})
+
+test('stacked fallback: below the pocket width everything returns to flow', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 900 })
+  await page.goto('/')
+  await page.locator('.LeadForme .Slug').first().waitFor()
+
+  const geo = await page.locator('.LeadForme').evaluate(($f) => ({
+    display: getComputedStyle($f).display,
+    capWm: getComputedStyle($f.querySelector('figcaption')!).writingMode,
+    pillWm: getComputedStyle($f.querySelector('.Controls fieldset')!).writingMode,
+    svgBottom: $f.querySelector('svg')!.getBoundingClientRect().bottom,
+    ctlTop: $f.querySelector('.Controls')!.getBoundingClientRect().top,
+    capTop: $f.querySelector('figcaption')!.getBoundingClientRect().top,
+  }))
+
+  expect(geo.display).not.toBe('grid')
+  // the caption reads as a plain paragraph again; the pills stay 直排 lozenges
+  expect(geo.capWm).toBe('horizontal-tb')
+  expect(geo.pillWm).toBe('vertical-rl')
+  // stacked: forme, then pills, then note
+  expect(geo.ctlTop).toBeGreaterThanOrEqual(geo.svgBottom)
+  expect(geo.capTop).toBeGreaterThanOrEqual(geo.ctlTop)
+})

@@ -79,7 +79,7 @@ test('換傳承家族 genki → 單行 --han-webfont-heritage-family + 套件表
   const vars = Object.fromEntries(cssVars(c))
   assert.equal(vars['--han-webfont-heritage-family'], 'genki')
   const ids = packages(c).ziano
-  assert.ok(ids.includes('genki-gothic') && ids.includes('genki-gothic-tc'))
+  assert.ok(ids.includes('genki-gothic') && !ids.includes('genki-gothic-tc'))
   assert.ok(!ids.includes('shanggu-sans'))
 })
 
