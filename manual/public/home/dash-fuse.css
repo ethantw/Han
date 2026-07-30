@@ -25,15 +25,21 @@
  * 移），還得把 `——` 與漢字塞進同一個 <text> 才能讓 ccmp 開火。純幾何一概
  * 免掉，破折號正好落在欄軸 60 上——與同柱漢字的 em 框中心對齊。
  *
- * 時序（dash-fuse.js）：柱不等鉛字排完，data-armed 一蓋就以斷開態示人；
- * 鉛字落完才蓋 data-play 首播接合，此後一輪 16s。拍點（16s 為 100%）：
+ * 時序（dash-fuse.js）：柱不等鉛字排完，data-armed 一蓋就現身，兩截即
+ * 開始反覆試接（df-try，永不到 1）；鉛字落完才蓋 data-play 進主循環，
+ * 此後一輪 20s。拍點（20s 為 100%）：
  *
- *     0     斷開（fuse 瞬間歸零——斷開本來就是突發的，漸變反而假）
- *     0.8s  熔接 520ms
- *     1.32s 閃一下深灰（280ms 竄到 --palette-ink-grey），
- *           再 4.4s 慢慢淡回原來的近底色
- *     6s    完全淡回，開始靜候
- *     16s   下一輪 —— 也就是「淡回之後再等 10 秒」
+ *     0      斷開態起手（承接 df-try 的呼吸／上一輪尾端的鬆手）
+ *     0–3.7s 前兩次——慢慢吸近（.85／.93，都差一點點）、快快呼開
+ *            （-.9／-2.6，第二口更深，縫張得比基態更開）；呼開之後
+ *            不定格，輕輕回漂——動作從不真正停下，這就是呼吸感
+ *     3.7s   離得最遠，懸著半口氣——第三次：衝回來，臨門急煞，
+ *            貼到毫釐處慢慢爬……
+ *     4.2s   突然貼上；閃一下深灰（200ms 竄到
+ *            --palette-ink-grey），再 4.4s 慢慢淡回原來的近底色
+ *     8.8s   完全淡回，靜候 5 秒
+ *     13.8s  撐不住了——先小漏氣，越漏越大，中段起再也合不回去
+ *     20s    鬆手斷開＝下一輪的 0%，輪點無縫，沒有瞬間跳斷
  *
  * 只有破折號會閃：近底色宣告在柱根、由 <text> 繼承（同柱的漢字始終是淺
  * 的），<rect> 自己用 --df-ink 在近底色與深灰之間 color-mix，所以那一下亮
@@ -64,30 +70,86 @@
 @property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 820; }
 @property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 820; }
 
-/* 一輪 16s，無限循環。輪點上 fuse 從 1 跳回 0（瞬間斷開——斷開本來就是
-   突發的，漸變反而假），持穩 0.8s（5%），熔接 520ms 到 8.25%。 */
+/* 一輪 24s，三幕（拍點表見檔頭）。呼吸感的作法師法 ziano demo 的
+   hero-accent-transform（ziano/demo/src/css/hero.css）：整支騎一條
+   ease-in-out、每一段都是圓的；動作從不停死——呼開之後還會輕輕回漂；
+   每口氣的深淺與節奏都不同。
+   ① 0–4.2s 重逢嘗試＝總共三次——前兩次慢慢吸近（.85／.93，都差一點
+      點）、快快呼開（0.4s：-.9／-2.6，第二口更深）、呼開後輕輕回漂
+      （幅度壓小，只是餘韻，不是又一次撲近）；第三次＝離得最遠懸著半
+      口氣，衝回來（ease-out 臨門急煞）、貼到毫釐處慢慢爬 0.28s，最後
+      20ms 突然貼上——遲疑到底，接上卻是一瞬。
+   ② 4.2s 縫全合（閃黑與淡回在 df-ink 那支）。
+   ③ 13.8s 起「撐不住」——先小漏氣、越漏越大，74% 後再也合不回 1，
+      88.5% 起 ease-in 鬆手墜開，100% ＝ 0 正好是下一輪 0% 的斷開態，
+      輪點無縫，不再有瞬間跳斷。
+   曲線：簡寫掛 ease-in-out（呼吸的圓），例外三處在 keyframe 裡覆寫——
+   第三次衝回的 ease-out（急煞）、瞬接段的 linear（20ms 本就等於跳
+   變）、第三幕 88.5% 後的 ease-in（鬆脫墜開）。快慢全靠段長（吸 1s、
+   呼 0.4s），不靠曲線的稜角。 */
 @keyframes df-fuse {
-  0%, 5% { --df-fuse: 0; }
-  8.25%, 100% { --df-fuse: 1; }
+  /* 第一幕：前兩次——吸近、呼開、回漂，第二口更深 */
+  0% { --df-fuse: 0; }
+  5% { --df-fuse: .85; }
+  7% { --df-fuse: -.9; }
+  9.5% { --df-fuse: -.75; }
+  15% { --df-fuse: .93; }
+  17.25% { --df-fuse: -2.6; }
+  /* 離得最遠——懸著半口氣還在飄；第三次：衝回來，臨門急煞 */
+  18.5% { --df-fuse: -2.4; animation-timing-function: ease-out; }
+  /* 貼到毫釐處慢慢爬…… */
+  19.5% { --df-fuse: .8; }
+  /* ……突然貼上（20ms，等於瞬接） */
+  20.9% { --df-fuse: .93; animation-timing-function: linear; }
+  /* 第二幕：接上，然後靜候 */
+  21% { --df-fuse: 1; }
+  69% { --df-fuse: 1; }
+  /* 第三幕：撐不住——先小漏氣，越漏越大 */
+  71% { --df-fuse: .97; }
+  74% { --df-fuse: 1; }
+  76.5% { --df-fuse: .93; }
+  78.5% { --df-fuse: .99; }
+  81.5% { --df-fuse: .86; }
+  83.5% { --df-fuse: .95; }
+  86% { --df-fuse: .78; }
+  88.5% { --df-fuse: .88; animation-timing-function: ease-in; }
+  93% { --df-fuse: .5; animation-timing-function: ease-in; }
+  100% { --df-fuse: 0; }
 }
 
-/* 接合之後閃一下深灰：280ms 竄到 --palette-ink-grey（8.25%→10%），再 4.4s
-   慢慢淡回近底色（10%→37.5% ＝ 6s）。之後靜候到 16s，也就是「完全淡回之後
-   再等 10 秒」才重播。
+/* 接合之後閃一下深灰：200ms 竄到 --palette-ink-grey（21%→22%），再
+   4.4s 慢慢淡回近底色（22%→44%）。之後靜候到 69% 才開始「撐不住」，
+   也就是「完全淡回之後再等 5 秒」。
 
    每一段的時間曲線各自指定——竄上去要 ease-out（一下就到），淡回要 ease-in
    （先按得住、後段才鬆手）；整支若共用一條 ease-out，淡回會前快後爬，看起來
    像沒淡完就停了。 */
 @keyframes df-ink {
-  0%, 8.25% {
+  0%, 21% {
     --df-ink: 0;
     animation-timing-function: ease-out;
   }
-  10% {
+  22% {
     --df-ink: 1;
     animation-timing-function: ease-in;
   }
-  37.5%, 100% { --df-ink: 0; }
+  44%, 100% { --df-ink: 0; }
+}
+
+/* 開演前的等待（data-armed 而未 data-play）：兩截一直試著接上，每次都
+   差一點點又彈開——永不到 1、不閃墨，真正的重逢留給 data-play 的首輪。
+   一輪 6s 兩口呼吸：慢慢吸近（1.5s／1.3s）、快快呼開（0.5s，第二口
+   更深）、呼開後輕輕回漂，末段緩緩飄回基態——動作從不停死，同主循環
+   的呼吸語彙（整支 ease-in-out，快慢靠段長）。 */
+@keyframes df-try {
+  0% { --df-fuse: 0; }
+  25% { --df-fuse: .8; }
+  33% { --df-fuse: -.9; }
+  40% { --df-fuse: -.7; }
+  62% { --df-fuse: .85; }
+  70% { --df-fuse: -1.3; }
+  78% { --df-fuse: -1.05; }
+  100% { --df-fuse: 0; }
 }
 
 /* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
@@ -99,7 +161,9 @@
 svg[data-name="dash-fuse"] {
   & {
     /* 接縫兩緣。斷開 815／825（縫 10），合上同歸 820 ——對稱地走向中
-       點，縫從兩邊一起合上，不是一邊追另一邊 */
+       點，縫從兩邊一起合上，不是一邊追另一邊。呼開讓 fuse 探負值——縫
+       張得比基態更開（最深 -2.6 ⇒ 802／838，縫 36＝0.36em），墨跡外緣
+       727／913 仍不動 */
     --df-a1: calc(815 + 5 * var(--df-fuse));
     --df-b0: calc(825 - 5 * var(--df-fuse));
 
@@ -192,18 +256,24 @@ svg[data-name="dash-fuse"] {
   /* 時序（同站台 reveal 的契約：settled 是基態，動畫只活在 no-preference
      之內；reduced ／ 無 JS ⇒ 永遠是已修正的終態，絕不停在壞畫面上）。
      data-armed：dash-fuse.js 一啟動就蓋——柱即刻以斷開態示人，不等鉛字；
-     data-play：.PunctFix data-revealed 且鉛字盤落完——首播接合，此後 16s
+     data-play：.PunctFix data-revealed 且鉛字盤落完——進主循環，此後 20s
      一輪。 */
   @media (prefers-reduced-motion: no-preference) {
-    &[data-armed]:not([data-play]) { --df-fuse: 0; }
+    /* 開演前：基態斷開，兩截在其上反覆試接（df-try 永不到 1）。data-play
+       一蓋，動畫換成主循環，起手同為斷開態；交接若落在撲近中段，縫會瞬間
+       彈回 0——跳斷本就突發（同檔頭語彙），不做銜接。 */
+    &[data-armed]:not([data-play]) {
+      --df-fuse: 0;
+      animation: df-try 6s ease-in-out infinite;
+    }
     &[data-play] {
-      /* 兩支同騎一條 16s 的時間軸（拍點在各自的 keyframes 裡），無限循環
-         ＝「斷開、接上、閃一下深灰、慢慢淡回」，淡回之後再等 10 秒重播。
-         df-ink 的宣告用 linear，因為它的兩段各自在 keyframe 裡指定了
-         timing-function（見上），簡寫裡再給一條會被那兩條蓋掉 */
+      /* 兩支同騎一條 20s 的時間軸（拍點在各自的 keyframes 裡），無限循環
+         ＝「兩次差一點、第三次突然貼上、閃一下深灰、慢慢淡回、撐不住
+         再斷開」。df-fuse 簡寫掛 ease-in-out（呼吸的圓，見 keyframes
+         檔頭註），df-ink 維持 linear（它的兩段各自在 keyframe 裡覆寫）。 */
       animation:
-        df-fuse 16s ease-out infinite both,
-        df-ink 16s linear infinite both
+        df-fuse 20s ease-in-out infinite both,
+        df-ink 20s linear infinite both
       ;
     }
   }
