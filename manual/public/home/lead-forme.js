@@ -68,11 +68,18 @@ const COLS = [
  * `dominant-baseline: central`, which centres on the hhea ascent/descent
  * midpoint (measured: 0.4326em) rather than the em box's (sTypoAscender
  * 880/1000 = 0.38em, and the ink's own centre measures 0.375em) — so `central`
- * hangs every glyph 0.053em high. At the old 60-unit face that was 3.2 units
- * and invisible; against a full 90-unit face it is 4.8 units against a餘白 of
- * about 5, i.e. the whole bottom margin. Same two-metric-systems problem as
- * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md. */
-const GEO = { S: 90, cell: 94, H: 140, r: 11, sw: 2, leadEm: 0.7, emCentre: 0.38 };
+ * hangs every glyph 0.053em LOW. At the old 60-unit face that was 3.2 units and
+ * invisible; against a full 90-unit face it is 4.7 units against a 餘白 of about
+ * 5, i.e. the whole bottom margin. Same two-metric-systems problem as
+ * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md.
+ *
+ * There is no `cell` separate from `S` either, for the same reason `fs` isn't:
+ * a locked forme's pieces TOUCH. `cell` was the reading pitch and `S` the body,
+ * at 94 against 90 — four units of nothing between every two pieces, which is
+ * silent letter-spacing on top of the face's own. With them equal, two
+ * neighbours' 2-unit outlines straddle one shared edge and read as a single
+ * seam, which is what a seam between two pieces of lead looks like. */
+const GEO = { S: 90, H: 140, r: 11, sw: 2, leadEm: 0.7, emCentre: 0.38 };
 
 // three visible faces of a box: footprint sx (e1) × sy (e2), body height bodyH
 const faces3 = (O, sx, sy, bodyH = GEO.H) => {
@@ -95,7 +102,7 @@ const spacer = (O, sx, sy, d, solid) =>
   `<g class="Slug${solid ? ' solid' : ''}"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
 
 
-// Line layout in cell units. Unsqueezed: uniform 1-cell slugs. Squeezed at a
+// Line layout in body units. Unsqueezed: uniform 1-body slugs. Squeezed at a
 // ：「 pair: ： keeps a full em, 「 becomes a half slug (its front-half
 // whitespace trimmed), and the freed half is spread as small justify blocks
 // between every other pair — so the line keeps its full justified length.
@@ -211,7 +218,8 @@ const STAGGER = 0.07;
 const AIR = 34;
 
 const buildForme = (punct, orient) => {
-  const { S, cell, H, r, leadEm } = GEO;
+  const { S, H, r, leadEm } = GEO;
+  const cell = S;                    // 字身相接 — 沒有間距（§ GEO）
   const rows = COLS[0].length;
   const colStep = S * (1 + leadEm);          // 行距 — leading pitch between columns
   // Generation order IS the paint order — COLUMN-MAJOR: a column top-to-bottom,

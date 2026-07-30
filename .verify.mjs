@@ -12,7 +12,7 @@ await page.evaluate(async () => { await document.fonts.ready })
 await page.waitForTimeout(1500)
 
 const out = await page.evaluate(async () => {
-  const S = 90, cell = 94, r = 11, sw = 2, emCentre = 0.38
+  const S = 90, cell = 90, r = 11, sw = 2, emCentre = 0.38   /* cell ＝ S：字身相接 */
   const PUNCT = new Set(['，', '、', '。', '：', '；', '？', '！', '「', '」', '『', '』', '（', '）', '—', '…', '·', '．'])
   await document.fonts.load(`400 ${S}px "Shanggu Serif"`)
   const c = new OffscreenCanvas(10, 10).getContext('2d')
