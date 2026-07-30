@@ -14,3 +14,7 @@ packages/fonts/
 # Python bytecode (gen_partials.py etc.)
 __pycache__/
 *.pyc
+
+# ad-hoc measurement / screenshot scripts run from the repo root (Playwright
+# can't resolve @playwright/test from the scratchpad, so probes get copied here)
+/.*.mjs
