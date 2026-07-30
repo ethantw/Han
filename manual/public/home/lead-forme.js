@@ -170,6 +170,14 @@ const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
  *  time, so reading order becomes the drop order (the `--d` custom prop). */
 const STAGGER = 0.07;
 
+/** The air around the forme, in the viewBox's own units — no longer part of the
+ *  viewBox (which hugs the ink), but published as a fraction of the forme's
+ *  width so CSS can lay it out as the <figure>'s `padding` (lead-forme.css
+ *  § air). It stays a forme-relative number rather than a flat rem for the same
+ *  reason every other published length is: the forme scales with the plate, and
+ *  a fixed gutter would be generous at 900px and mean at 1600px. */
+const AIR = 34;
+
 const buildForme = (punct, orient) => {
   const { S, cell, H, r, leadEm } = GEO;
   const rows = COLS[0].length;
@@ -217,8 +225,8 @@ const buildForme = (punct, orient) => {
   // the highest DRAWN point. Not `min(ys)`: the fit reserves the relief's rise
   // `r` above every piece, but only type carries relief — a 空鉛 quad's top face
   // IS its top. The origin piece happens to be the 段首 quad, so the box's own
-  // top edge sits a whole `r` above anything ever drawn there, and § air would
-  // report 11 units less void than there is.
+  // top edge sits a whole `r` above anything ever drawn there — which is the
+  // ONE side the box does not hug (§ gapTop below).
   let inkTop = Infinity;
   for (const c of cells) {
     const sx = c.sx ?? S;
@@ -237,11 +245,18 @@ const buildForme = (punct, orient) => {
       }
     }
   }
-  const pad = 34;
-  const minX = Math.min(...xs) - pad;
-  const minY = Math.min(...ys) - pad;
-  const w = Math.max(...xs) + pad - minX;
-  const h = Math.max(...ys) + pad - minY;
+  // The box HUGS the forme: no fit pad. It used to carry one (34 units a side),
+  // which made the SVG's own box bigger than the 活字版 on every side — a band
+  // of dead space no CSS could reclaim, because a viewBox pad is inside the
+  // graphic. The air is CSS `padding` on the <figure> now (lead-forme.css
+  // § air), where it can be laid out against, so the SVG IS the forme.
+  // Strokes at an extreme vertex are not shaved for it: the <svg> is
+  // `overflow: visible`, so the ~1 unit a round join throws past a corner
+  // still paints, and the padding keeps it clear of anything around it.
+  const minX = Math.min(...xs);
+  const minY = Math.min(...ys);
+  const w = Math.max(...xs) - minX;
+  const h = Math.max(...ys) - minY;
 
   const markup = cells
     .map((c) => (c.kind === 'char'
@@ -265,28 +280,25 @@ const buildForme = (punct, orient) => {
     // height — both over width, because one length is all CSS has to scale by.
     foot: (footY - minY) / w,
     ratio: h / w,
-    /* The air the fitted box leaves around the INK — box edge to nearest drawn
-       point, on all four sides, as fractions of the rendered WIDTH (one length
-       for CSS to scale by, like everything above).
+    /* The air, as a fraction of the forme's own width — the length CSS turns
+       into the <figure>'s `padding` (lead-forme.css § air). It used to be a fit
+       pad inside the viewBox and CSS could not see a pixel of it, so every
+       placement against it was a tuned guess; now it is the one number both
+       sides share. */
+    bleed: AIR / w,
+    /* The one side the box does NOT hug, and why: the fit reserves the relief's
+       rise `r` above every piece, but only type carries relief — a 空鉛 quad's
+       top face IS its top, and the origin piece happens to be the 段首 quad. So
+       the box's top edge sits `r` above the highest thing ever drawn there.
+       Left, right and bottom are flush with the ink by construction (the
+       extremes ARE the box), which is why there are no gapLeft/Right/Bottom
+       here any more — they were three provable zeroes.
 
-       The viewBox is padded so a stroke at an extreme vertex isn't shaved, so
-       the box's edges are nowhere near the ink's: the left and right vertices
-       sit ~33px inside it at a 1320px forme, and the bottom vertex the same.
-       That air is the room the chrome is laid out in — it is why the note and
-       the pills have somewhere to sit at all — and CSS could not see a pixel of
-       it, so every placement against it was a tuned guess. These four turn it
-       into a number (lead-forme.css § showpiece → `--lf-air-*`).
-
-       PHYSICAL names on purpose: the isometric projection does not turn with
-       `writing-mode`, so top／bottom／left／right are what these are. Read off
-       the extremes rather than from the pad constant, so an asymmetric fit
-       would report itself instead of being papered over by a shared number.
-       Note `top` differs from `pad` above: this one is the highest INK, `pad`
-       is the origin's y=0 line, which sits r lower. */
+       PHYSICAL name on purpose: the isometric projection does not turn with
+       `writing-mode`, so `top` is what this is. Note it differs from `pad`
+       above: this one is measured to the highest INK, `pad` to the origin's
+       y=0 line, which sits `r` lower. */
     gapTop: (inkTop - minY) / w,
-    gapBottom: (minY + h - Math.max(...ys)) / w,
-    gapLeft: (Math.min(...xs) - minX) / w,
-    gapRight: (minX + w - Math.max(...xs)) / w,
     // when the LAST slug starts its drop. The caption's cue is derived from
     // this in CSS (+ the drop's own duration), so the entrance stays ONE
     // ceremony however many pieces the sentence lays out to.
@@ -372,10 +384,8 @@ const GEOMETRY = [
   ['--lf-pad', 'pad'],
   ['--lf-foot', 'foot'],
   ['--lf-ratio', 'ratio'],
+  ['--lf-bleed', 'bleed'],
   ['--lf-gap-top', 'gapTop'],
-  ['--lf-gap-bottom', 'gapBottom'],
-  ['--lf-gap-left', 'gapLeft'],
-  ['--lf-gap-right', 'gapRight'],
 ];
 
 export const initLeadForme = ($root = document) => {

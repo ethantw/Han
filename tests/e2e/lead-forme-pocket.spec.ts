@@ -42,13 +42,19 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   // …foot inside the forme, and the whole column right of the pills
   expect(geo.cap.bottom).toBeLessThanOrEqual(geo.forme.bottom + 1)
   expect(geo.cap.left).toBeGreaterThanOrEqual(geo.ctl.right)
-  // pills afloat in the pocket, not resting on the forme's bottom edge
-  expect(geo.ctl.bottom).toBeLessThan(geo.svg.bottom)
+  // pills stand on the LOWEST SLUG, not on the figure's floor. The SVG's box
+  // hugs the ink now (§ air), so the ink's bottom line IS svg.bottom and the
+  // rack lands on it by construction — where the old `--lf-air-bottom` margin
+  // used to hold it, one air above a padded viewBox's edge.
+  expect(Math.abs(geo.ctl.bottom - geo.svg.bottom)).toBeLessThan(2)
+  expect(geo.ctl.bottom).toBeLessThan(geo.forme.bottom)
 
-  // § air — the void the fitted viewBox leaves around the ink, resolved to
-  // length on .LeadForme so anything can be laid out against it. Asserted
-  // against the ink's real position, so a wrong fraction or a wrong multiplier
-  // shows up as a mismatch rather than as a plausible-looking number.
+  // § air — the SVG's box HUGS the 活字版 and the void around it is the
+  // figure's own padding. Three sides are flush with the ink by construction
+  // (the extremes ARE the box); only the block-start reserves the relief's rise
+  // above the topmost piece, published as --lf-gap-top. Asserted against the
+  // ink's real position, so a wrong fraction or a wrong multiplier shows up as a
+  // mismatch rather than as a plausible-looking number.
   const air = await page.evaluate(() => {
     const $f = document.querySelector('.LeadForme')!
     const box = $f.querySelector('svg')!.getBoundingClientRect()
@@ -72,18 +78,23 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
       return $probe.getBoundingClientRect().width
     }
     const out = {
-      declared: { top: px('--lf-air-top'), bottom: px('--lf-air-bottom'), left: px('--lf-air-left'), right: px('--lf-air-right') },
+      /* the air itself, as the figure's padding, and the one reserved side */
+      pad: px('--lf-air'),
+      reservedTop: Number.parseFloat(getComputedStyle($f).getPropertyValue('--lf-gap-top')) * box.width,
       actual: { top: ink.t - box.top, bottom: box.bottom - ink.b, left: ink.l - box.left, right: box.right - ink.r },
+      padding: getComputedStyle($f).paddingLeft,
     }
     $probe.remove()
     return out
   })
-  // 2px of slack: the declared value is pure geometry, the measured one carries
-  // half a stroke at whichever vertex is the extreme.
-  for (const side of ['top', 'bottom', 'left', 'right'] as const) {
-    expect(air.declared[side]).toBeGreaterThan(0)
-    expect(Math.abs(air.declared[side] - air.actual[side])).toBeLessThan(2)
-  }
+  // 2px of slack throughout: the declared values are pure geometry, the measured
+  // ones carry half a stroke at whichever vertex is the extreme.
+  expect(air.pad).toBeGreaterThan(0)
+  expect(Math.abs(Number.parseFloat(air.padding) - air.pad)).toBeLessThan(2)
+  for (const side of ['bottom', 'left', 'right'] as const)
+    expect(Math.abs(air.actual[side])).toBeLessThan(2)
+  expect(air.reservedTop).toBeGreaterThan(0)
+  expect(Math.abs(air.reservedTop - air.actual.top)).toBeLessThan(2)
 
   // …and its columns hang off the forme's own bottom-inline-end edge: each
   // one starts lower than the one inline-end of it, at the projection's slope

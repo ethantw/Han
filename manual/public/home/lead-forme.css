@@ -368,45 +368,55 @@
  * the bleed can never overshoot into a scrollbar (the plate is
  * `overflow: clip` anyway).
  *
- * Which makes `--lf-w` — the SVG's rendered width — the plate's own measure,
- * and that is the length every published fraction scales by (§ buildForme
- * hands them over as fractions of the rendered width precisely so CSS needs
- * exactly one length and no resize listener).
+ * Which makes `--lf-w` — the SVG's rendered width — the length every published
+ * fraction scales by (§ buildForme hands them over as fractions of the rendered
+ * width precisely so CSS needs exactly one length and no resize listener).
  *
- * ── § air — the void around the ink, as lengths you can lay out against ──
- * The viewBox is fitted with a pad so a stroke at an extreme vertex isn't
- * shaved, so the box's edges are nowhere near the ink's: the left, right and
- * bottom vertices all sit ~33px inside it at a 1320px forme. That air is the
- * room the chrome lives in — the pills and the note sit in it — and until now
- * CSS could not see a pixel of it, so every placement against it was a tuned
- * number that had to be re-tuned whenever the forme changed.
+ * ── § air — the void around the ink, now the figure's own padding ─────
+ * The viewBox used to carry a 34-unit fit pad, so the SVG's box was bigger than
+ * the 活字版 on all four sides: a band of dead space CSS could not reclaim,
+ * because a viewBox pad is INSIDE the graphic. The box hugs the ink now
+ * (§ buildForme) and the air is this figure's `padding` instead — the same void,
+ * on the outside, where it can be laid out against.
  *
- * `--lf-air-*` is that void, per side, resolved to length. Lay anything out
- * against it: `margin-block-end: var(--lf-air-bottom)` puts a box on the ink's
- * own floor, `padding-inline-end: var(--lf-air-right)` clears the fore-edge.
- * PHYSICAL sides, because the isometric projection does not turn with
- * `writing-mode`.
+ * Which is why `--lf-w` is no longer just `100cqw`. The padding is a fraction
+ * of the SVG's rendered width (`--lf-bleed`, published), and the SVG's width is
+ * what is left of the plate after the padding — so the two define each other.
+ * Solve it once instead of iterating:
+ *
+ *     W = C − 2P   and   P = bleed·W    ⇒    W = C / (1 + 2·bleed)
+ *
+ * with C the plate's measure (`100cqw`, the figure's padding box after the
+ * bleed above). At a 1160px plate: W = 1101.7px, P = 29.1px — and 1286/1101.7
+ * is the same units-per-pixel the padded box rendered at, i.e. the ink lands
+ * exactly where it did. Removing the pad was a refactor, not a re-layout.
+ *
+ * Only ONE side is not flush with the ink: the box reserves the relief's rise
+ * above the topmost piece (`--lf-gap-top`, § buildForme). Left, right and
+ * bottom are the ink's own extremes, so the three per-side air lengths that
+ * used to be published there are gone — they would all be zero, and the boxes
+ * that used to hold themselves off the ink with them now simply sit on the
+ * padding box's edge, which is the same line.
  *
  * 直排 keeps the capped in-flow size from § base — there the inline axis is
  * vertical, so "full width" would mean a thousands-of-px-tall forme, and this
- * whole section (physical properties throughout) does not apply. */
+ * whole section (physical properties throughout) does not apply. It gets no
+ * padding either: with no `--lf-w` there is nothing to take a fraction of, and
+ * a forme capped at 620px has the plate's own gutter around it already. */
 :where(main:not([data-writing='vertical'])) .LeadForme {
   & {
-    --lf-w: 100cqw;
-
-    --lf-air-top: calc(var(--lf-gap-top, 0.025) * var(--lf-w));
-    --lf-air-bottom: calc(var(--lf-gap-bottom, 0.025) * var(--lf-w));
-    --lf-air-left: calc(var(--lf-gap-left, 0.025) * var(--lf-w));
-    --lf-air-right: calc(var(--lf-gap-right, 0.025) * var(--lf-w));
+    --lf-w: calc(100cqw / (1 + 2 * var(--lf-bleed, 0.0264)));
+    --lf-air: calc(var(--lf-bleed, 0.0264) * var(--lf-w));
 
     margin-inline: calc(-1 * var(--plate-pad));
+    padding: var(--lf-air);
   }
 
   /* the bleed is for the forme, not for its note — hand the gutter back so
-     the caption starts where the copy does. (Superseded below once the note
-     moves into the forme's own corner.) */
+     the caption starts where the copy does, the figure's own padding included.
+     (Superseded below once the note moves into the forme's own corner.) */
   figcaption {
-    margin-inline: var(--plate-pad);
+    margin-inline: calc(var(--plate-pad) - var(--lf-air));
   }
 
   /* ── the lift — the specimen sits IN the forme's empty corner ────────
@@ -423,10 +433,14 @@
    * it. The e2 edge falls at tan30 ≈ 0.5774 per unit travelled
    * inline-start-ward, so the air above the forme at any inline offset x is
    *
-   *     void(x) = --lf-pad·--lf-w + (--lf-apex·--lf-w − x)·tan30
+   *     void(x) = --lf-air + --lf-pad·--lf-w + (--lf-air + --lf-apex·--lf-w − x)·tan30
    *
-   * `--lf-pad`, not `--lf-air-top`: the lift is a negative margin on the BOX,
-   * so the box's own top edge is the right thing to measure from.
+   * `--lf-pad` measures the box's top edge to the origin, and the lift is a
+   * negative margin on the MARGIN box, so both terms have to clear the figure's
+   * own padding as well — hence the two `--lf-air`s. They are exactly what the
+   * viewBox pad used to contribute before § air moved it outside, which is why
+   * this reads as two added terms rather than as a re-tuning: the sum is the
+   * same distance it always was.
    *
    * and the x that matters is the specimen column's inline-end edge — one
    * plate padding plus the card's own track (§ 三體樣張 in station-fonts.css).
@@ -439,7 +453,10 @@
    * corner instead of stopping under it (owner's call — grazing the card is
    * the point, covering a glyph is not). It is `cqw`-based, not a flat rem,
    * because everything else here scales with the forme: a fixed 5rem would be
-   * a graze at 1600px and a bite at 900px. The ceiling it must not reach is
+   * a graze at 1600px and a bite at 900px. `10cqw` rather than `0.1·--lf-w`,
+   * because the graze is a distance across the PLATE and `--lf-w` is now the
+   * plate minus the figure's padding — taking a tenth of that would quietly
+   * shorten the lift by 6px. The ceiling it must not reach is
    * the face label (`.Faces small`, centred against the last row's
    * inline-end), which the clamp's upper bound is set against.
    * The `clamp` bounds both ends. `0px`, because the specimen column can be
@@ -470,10 +487,12 @@
       z-index: 2;
 
       --lf-void: calc(
-        var(--lf-pad, 0.033) * var(--lf-w)
-        + (var(--lf-apex, 0.624) * var(--lf-w) - (var(--plate-pad) + 30rem)) * 0.5774
+        var(--lf-air)
+        + var(--lf-pad, 0.0086) * var(--lf-w)
+        + (var(--lf-air) + var(--lf-apex, 0.6303) * var(--lf-w)
+           - (var(--plate-pad) + 30rem)) * 0.5774
       );
-      --lf-graze: clamp(3rem, 0.1 * var(--lf-w), 8rem);
+      --lf-graze: clamp(3rem, 10cqw, 8rem);
       margin-block-start: calc(-1 * clamp(0px, var(--lf-void) + var(--lf-graze), 24rem));
     }
 
@@ -510,11 +529,13 @@
       grid-area: 1 / 2;
       align-self: end;
       /* afloat in the pocket: feet held off the forme's bottom edge so the
-         pill rack hugs the slug diagonal above it rather than the ground.
-         `--lf-w`, not %, so it scales with the forme like everything else.
-         (`var(--lf-air-bottom)` is the box's own floor if you ever want the
-         rack sitting ON the lowest slug rather than afloat above it.) */
-      margin-block: 0 var(--lf-air-bottom);
+         pill rack hugs the slug diagonal above it rather than the ground. That
+         hold-off used to be a margin of the box's own bottom air; the figure's
+         padding is that air now (§ air), so the grid's block-end edge already
+         sits one air above the lowest slug and the rack floats by construction.
+         (Drop the padding's worth back on as a negative margin if you ever want
+         the rack sitting ON the lowest slug instead.) */
+      margin-block: 0;
       padding-block-end: .5rem;
     }
 
@@ -550,15 +571,16 @@
            narrow plates and rattle around on wide ones.) */
         --lf-cap-w: 10em;
 
-        margin: 0 var(--lf-air-right) var(--lf-air-bottom) 0;
+        /* flush with the padding box on both the fore-edge and the floor — which
+           IS the ink's right edge and its bottom (§ air), the two lines the note
+           used to hold itself off with `--lf-air-right`/`-bottom`. */
+        margin: 0;
         padding-bottom: 1rem;
         width: var(--lf-cap-w);
         /* a DEFINITE height on purpose — the run from just under the vertex's
            foot to the forme's bottom edge. The colophon is an orthogonal flow,
            and with an auto height the grid track would have to guess its
-           column count. (Subtract `--lf-gap-bottom` from the run and add
-           `--lf-air-bottom` to the margin to stand it on the lowest slug
-           instead of the box's floor — § air.) */
+           column count. */
         height: 28em;
         /* PHYSICAL width/height above on purpose, and this to match: the box
            is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
