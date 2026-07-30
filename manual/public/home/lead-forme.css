@@ -19,8 +19,25 @@
   --forme-face-1: light-dark(#eceae4, #050507);
   --forme-face-2: light-dark(#f1efe9, #0c0c10);
   --forme-face-3: light-dark(#f7f5f0, #14141b);
-  --forme-wall: light-dark(#e2e0d9, #20202a);
-  --forme-relief: light-dark(#d6d4cc, #34343f);
+  /* the RELIEF — the two surfaces of a raised stroke, and the one place the
+     lighting has to be right or the type reads inside out. `relief` is a
+     stroke's top: a horizontal surface like the face it stands on, only higher,
+     so it is the LIGHTEST thing on the piece. `wall` is a stroke's side: a
+     vertical surface in its own shadow, like the body's own two walls, so it is
+     the darkest. They used to be the other way round (top #d6d4cc = 84%, wall
+     #e2e0d9 = 89%, against a face of #f7f5f0 = 97%) — a stroke darker than the
+     surface it rises out of, which is what an INCISED stroke looks like. The
+     type read as a rubbing off an engraved plate, the exact opposite of raised
+     movable type, and only the hairline outline said otherwise.
+     Light keeps the 素凸 (blind-emboss) idiom the rest of the figure is in —
+     paper on paper, no ink — so the step is small on the lit side (+2pt over the
+     face) and carried on the shadow side (−11pt), where a band of it rings every
+     stroke. Dark had the order right already and only wanted the range: the
+     stroke tops come up ~9pt so they read against a near-black face.
+     The three `--forme-face-*` above are the BODY's faces and are deliberately
+     untouched — this is a relief fix, not a re-colour of the forme. */
+  --forme-wall: light-dark(#dbd6c9, #26262f);
+  --forme-relief: light-dark(#fdfcf9, #4b4b58);
   --forme-hi: light-dark(#ffffff, #ffffff);
   --forme-spec: var(--palette-supplement-text);
   --forme-spec-dim: var(--palette-supplement-text-2q);
