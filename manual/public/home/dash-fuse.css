@@ -29,13 +29,16 @@
  * 開始反覆試接（df-try，永不到 1）；鉛字落完才蓋 data-play 進主循環，
  * 此後一輪 20s。拍點（20s 為 100%）：
  *
- *     0      斷開態起手（承接 df-try 的跳動／上一輪尾端的鬆手）
- *     0–2.3s 三次撲近（.8／.9／.96）——一次比一次接近，每次都差一點點
- *            又彈開
- *     2.6s   終於接上；閃一下深灰（280ms 竄到 --palette-ink-grey），
- *            再 4.4s 慢慢淡回原來的近底色
- *     7.28s  完全淡回，靜候整整 10 秒
- *     17.28s 撐不住了——髮絲縫越顫越大，中段起再也合不回去
+ *     0      斷開態起手（承接 df-try 的呼吸／上一輪尾端的鬆手）
+ *     0–3.7s 前兩次——慢慢吸近（.85／.93，都差一點點）、快快呼開
+ *            （-.9／-2.6，第二口更深，縫張得比基態更開）；呼開之後
+ *            不定格，輕輕回漂——動作從不真正停下，這就是呼吸感
+ *     3.7s   離得最遠，懸著半口氣——第三次：衝回來，臨門急煞，
+ *            貼到毫釐處慢慢爬……
+ *     4.2s   突然貼上；閃一下深灰（200ms 竄到
+ *            --palette-ink-grey），再 4.4s 慢慢淡回原來的近底色
+ *     8.8s   完全淡回，靜候 5 秒
+ *     13.8s  撐不住了——先小漏氣，越漏越大，中段起再也合不回去
  *     20s    鬆手斷開＝下一輪的 0%，輪點無縫，沒有瞬間跳斷
  *
  * 只有破折號會閃：近底色宣告在柱根、由 <text> 繼承（同柱的漢字始終是淺
@@ -67,80 +70,85 @@
 @property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 820; }
 @property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 820; }
 
-/* 一輪 20s，三幕（拍點表見檔頭）：
-   ① 0–2.6s 重逢嘗試——三次撲近（.8／.9／.96），一次比一次接近，每次
-      都差一點點又彈開；第三次只滑落到 .3 就直接熔接，接上是「快成了」
-      的延續而不是又一次從零起跳。
-   ② 2.6s 縫全合（閃黑與淡回在 df-ink 那支）。
-   ③ 17.28s 起「撐不住」——髮絲縫越顫越大，中段起再也合不回 1，96.6%
-      起鬆手、98% 後全放（ease-in 墜開），100% ＝ 0 正好是下一輪 0% 的
-      斷開態，輪點無縫，不再有瞬間跳斷。
-   撲近 ease-out、彈開／墜開 ease-in——伸手漸緩、鬆脫加速，同檔一貫；
-   唯第三幕髮絲顫的張開也用 ease-out——那是抽搐不是鬆脫，真正的鬆脫
-   留給 96.6% 之後的 ease-in。 */
+/* 一輪 24s，三幕（拍點表見檔頭）。呼吸感的作法師法 ziano demo 的
+   hero-accent-transform（ziano/demo/src/css/hero.css）：整支騎一條
+   ease-in-out、每一段都是圓的；動作從不停死——呼開之後還會輕輕回漂；
+   每口氣的深淺與節奏都不同。
+   ① 0–4.2s 重逢嘗試＝總共三次——前兩次慢慢吸近（.85／.93，都差一點
+      點）、快快呼開（0.4s：-.9／-2.6，第二口更深）、呼開後輕輕回漂
+      （幅度壓小，只是餘韻，不是又一次撲近）；第三次＝離得最遠懸著半
+      口氣，衝回來（ease-out 臨門急煞）、貼到毫釐處慢慢爬 0.28s，最後
+      20ms 突然貼上——遲疑到底，接上卻是一瞬。
+   ② 4.2s 縫全合（閃黑與淡回在 df-ink 那支）。
+   ③ 13.8s 起「撐不住」——先小漏氣、越漏越大，74% 後再也合不回 1，
+      88.5% 起 ease-in 鬆手墜開，100% ＝ 0 正好是下一輪 0% 的斷開態，
+      輪點無縫，不再有瞬間跳斷。
+   曲線：簡寫掛 ease-in-out（呼吸的圓），例外三處在 keyframe 裡覆寫——
+   第三次衝回的 ease-out（急煞）、瞬接段的 linear（20ms 本就等於跳
+   變）、第三幕 88.5% 後的 ease-in（鬆脫墜開）。快慢全靠段長（吸 1s、
+   呼 0.4s），不靠曲線的稜角。 */
 @keyframes df-fuse {
-  /* 第一幕：三次撲近 */
-  0% { --df-fuse: 0; animation-timing-function: ease-out; }
-  1.5% { --df-fuse: .8; animation-timing-function: linear; }
-  2% { --df-fuse: .8; animation-timing-function: ease-in; }
-  3% { --df-fuse: .06; animation-timing-function: linear; }
-  4.5% { --df-fuse: .06; animation-timing-function: ease-out; }
-  6% { --df-fuse: .9; animation-timing-function: linear; }
-  6.5% { --df-fuse: .9; animation-timing-function: ease-in; }
-  7.5% { --df-fuse: .1; animation-timing-function: linear; }
-  8.75% { --df-fuse: .1; animation-timing-function: ease-out; }
-  10.5% { --df-fuse: .96; animation-timing-function: ease-in; }
-  11.5% { --df-fuse: .3; animation-timing-function: ease-out; }
-  /* 第二幕：熔接，然後靜候 */
-  13% { --df-fuse: 1; animation-timing-function: linear; }
-  86.4% { --df-fuse: 1; animation-timing-function: ease-out; }
-  /* 第三幕：撐不住 */
-  87.4% { --df-fuse: .97; animation-timing-function: ease-out; }
-  88.4% { --df-fuse: 1; animation-timing-function: ease-out; }
-  89.8% { --df-fuse: .93; animation-timing-function: ease-out; }
-  91% { --df-fuse: 1; animation-timing-function: ease-out; }
-  92.6% { --df-fuse: .86; animation-timing-function: ease-out; }
-  93.8% { --df-fuse: .97; animation-timing-function: ease-out; }
-  95.4% { --df-fuse: .78; animation-timing-function: ease-out; }
-  96.6% { --df-fuse: .9; animation-timing-function: ease-in; }
-  98% { --df-fuse: .55; animation-timing-function: ease-in; }
+  /* 第一幕：前兩次——吸近、呼開、回漂，第二口更深 */
+  0% { --df-fuse: 0; }
+  5% { --df-fuse: .85; }
+  7% { --df-fuse: -.9; }
+  9.5% { --df-fuse: -.75; }
+  15% { --df-fuse: .93; }
+  17.25% { --df-fuse: -2.6; }
+  /* 離得最遠——懸著半口氣還在飄；第三次：衝回來，臨門急煞 */
+  18.5% { --df-fuse: -2.4; animation-timing-function: ease-out; }
+  /* 貼到毫釐處慢慢爬…… */
+  19.5% { --df-fuse: .8; }
+  /* ……突然貼上（20ms，等於瞬接） */
+  20.9% { --df-fuse: .93; animation-timing-function: linear; }
+  /* 第二幕：接上，然後靜候 */
+  21% { --df-fuse: 1; }
+  69% { --df-fuse: 1; }
+  /* 第三幕：撐不住——先小漏氣，越漏越大 */
+  71% { --df-fuse: .97; }
+  74% { --df-fuse: 1; }
+  76.5% { --df-fuse: .93; }
+  78.5% { --df-fuse: .99; }
+  81.5% { --df-fuse: .86; }
+  83.5% { --df-fuse: .95; }
+  86% { --df-fuse: .78; }
+  88.5% { --df-fuse: .88; animation-timing-function: ease-in; }
+  93% { --df-fuse: .5; animation-timing-function: ease-in; }
   100% { --df-fuse: 0; }
 }
 
-/* 接合之後閃一下深灰：280ms 竄到 --palette-ink-grey（13%→14.4%），再 4.4s
-   慢慢淡回近底色（14.4%→36.4%）。之後靜候到 86.4% 才開始「撐不住」，也就
-   是「完全淡回之後再等 10 秒」。
+/* 接合之後閃一下深灰：200ms 竄到 --palette-ink-grey（21%→22%），再
+   4.4s 慢慢淡回近底色（22%→44%）。之後靜候到 69% 才開始「撐不住」，
+   也就是「完全淡回之後再等 5 秒」。
 
    每一段的時間曲線各自指定——竄上去要 ease-out（一下就到），淡回要 ease-in
    （先按得住、後段才鬆手）；整支若共用一條 ease-out，淡回會前快後爬，看起來
    像沒淡完就停了。 */
 @keyframes df-ink {
-  0%, 13% {
+  0%, 21% {
     --df-ink: 0;
     animation-timing-function: ease-out;
   }
-  14.4% {
+  22% {
     --df-ink: 1;
     animation-timing-function: ease-in;
   }
-  36.4%, 100% { --df-ink: 0; }
+  44%, 100% { --df-ink: 0; }
 }
 
 /* 開演前的等待（data-armed 而未 data-play）：兩截一直試著接上，每次都
    差一點點又彈開——永不到 1、不閃墨，真正的重逢留給 data-play 的首輪。
-   兩次幅度不同的嘗試（.78／.88）湊一輪 2.8s，60% 後緩緩沉回 0 的長尾
-   也是故意的——幅度與節奏都不均勻，纔不像節拍器。
-   撲近 ease-out（伸手漸緩），彈開 ease-in（鬆脫墜開）——同 df-fuse
-   主循環的語彙。 */
+   一輪 6s 兩口呼吸：慢慢吸近（1.5s／1.3s）、快快呼開（0.5s，第二口
+   更深）、呼開後輕輕回漂，末段緩緩飄回基態——動作從不停死，同主循環
+   的呼吸語彙（整支 ease-in-out，快慢靠段長）。 */
 @keyframes df-try {
-  0% { --df-fuse: 0; animation-timing-function: ease-out; }
-  11% { --df-fuse: .78; animation-timing-function: linear; }
-  14% { --df-fuse: .78; animation-timing-function: ease-in; }
-  21% { --df-fuse: .06; animation-timing-function: linear; }
-  39% { --df-fuse: .06; animation-timing-function: ease-out; }
-  50% { --df-fuse: .88; animation-timing-function: linear; }
-  53% { --df-fuse: .88; animation-timing-function: ease-in; }
-  60% { --df-fuse: .05; animation-timing-function: linear; }
+  0% { --df-fuse: 0; }
+  25% { --df-fuse: .8; }
+  33% { --df-fuse: -.9; }
+  40% { --df-fuse: -.7; }
+  62% { --df-fuse: .85; }
+  70% { --df-fuse: -1.3; }
+  78% { --df-fuse: -1.05; }
   100% { --df-fuse: 0; }
 }
 
@@ -153,7 +161,9 @@
 svg[data-name="dash-fuse"] {
   & {
     /* 接縫兩緣。斷開 815／825（縫 10），合上同歸 820 ——對稱地走向中
-       點，縫從兩邊一起合上，不是一邊追另一邊 */
+       點，縫從兩邊一起合上，不是一邊追另一邊。呼開讓 fuse 探負值——縫
+       張得比基態更開（最深 -2.6 ⇒ 802／838，縫 36＝0.36em），墨跡外緣
+       727／913 仍不動 */
     --df-a1: calc(815 + 5 * var(--df-fuse));
     --df-b0: calc(825 - 5 * var(--df-fuse));
 
@@ -254,15 +264,15 @@ svg[data-name="dash-fuse"] {
        彈回 0——跳斷本就突發（同檔頭語彙），不做銜接。 */
     &[data-armed]:not([data-play]) {
       --df-fuse: 0;
-      animation: df-try 2.8s linear infinite;
+      animation: df-try 6s ease-in-out infinite;
     }
     &[data-play] {
       /* 兩支同騎一條 20s 的時間軸（拍點在各自的 keyframes 裡），無限循環
-         ＝「反覆試接、終於接上、閃一下深灰、慢慢淡回、撐不住再斷開」。
-         簡寫一律 linear——兩支的每一段都在 keyframe 裡自帶
-         timing-function，曲線全在 keyframes 裡，簡寫那條本來就會被蓋掉 */
+         ＝「兩次差一點、第三次突然貼上、閃一下深灰、慢慢淡回、撐不住
+         再斷開」。df-fuse 簡寫掛 ease-in-out（呼吸的圓，見 keyframes
+         檔頭註），df-ink 維持 linear（它的兩段各自在 keyframe 裡覆寫）。 */
       animation:
-        df-fuse 20s linear infinite both,
+        df-fuse 20s ease-in-out infinite both,
         df-ink 20s linear infinite both
       ;
     }
