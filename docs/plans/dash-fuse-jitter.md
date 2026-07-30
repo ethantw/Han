@@ -47,7 +47,7 @@ per-keyframe `animation-timing-function`）。無新依賴、無 JS 改動。
   之前新增一支 keyframes；`@media (prefers-reduced-motion: no-preference)`
   區塊裡改 armed 規則，現行約 197–198 行）
 
-- [ ] **Step 1: 新增 `@keyframes df-try`**
+- [x] **Step 1: 新增 `@keyframes df-try`**
 
 放在 `@keyframes df-ink` 之後、`@keyframes df-copy-in` 之前：
 
@@ -70,7 +70,7 @@ per-keyframe `animation-timing-function`）。無新依賴、無 JS 改動。
 }
 ```
 
-- [ ] **Step 2: armed 規則掛上動畫**
+- [x] **Step 2: armed 規則掛上動畫**
 
 現行：
 
@@ -89,14 +89,14 @@ per-keyframe `animation-timing-function`）。無新依賴、無 JS 改動。
 }
 ```
 
-- [ ] **Step 3: 目視驗證**
+- [x] **Step 3: 目視驗證**
 
 Run: `cd /Users/yijun/Workspace/hanzi.pro/han/manual && pnpm dev`，
 開首頁滾到 station②，在鉛字盤落完**之前**盯柱子。
 Expected: 破折號兩截反覆撲近又彈開，永遠差一點點；漢字與上下外緣不動。
 （`data-play` 蓋上後行為暫仍是舊 16s 循環——Task 2 才換。）
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 cd /Users/yijun/Workspace/hanzi.pro/han
@@ -115,7 +115,7 @@ git commit -m "feat(home): dash-fuse armed 等待期兩截反覆試接（df-try�
   整支重寫，現行約 69–72 行；`[data-play]` 的 animation 簡寫改時長，
   現行約 204–207 行）
 
-- [ ] **Step 1: 重寫 `@keyframes df-fuse`**
+- [x] **Step 1: 重寫 `@keyframes df-fuse`**
 
 整支替換為：
 
@@ -159,7 +159,7 @@ git commit -m "feat(home): dash-fuse armed 等待期兩截反覆試接（df-try�
 }
 ```
 
-- [ ] **Step 2: `[data-play]` 的時長 16s → 20s**
+- [x] **Step 2: `[data-play]` 的時長 16s → 20s**
 
 現行：
 
@@ -181,14 +181,14 @@ keyframe 裡自帶 timing-function，簡寫那條本來就會被逐段蓋掉，�
       ;
 ```
 
-- [ ] **Step 3: 目視驗證**
+- [x] **Step 3: 目視驗證**
 
 Run: dev server 照開，滾到 station②，看滿一輪以上（≥ 40s）。
 Expected: 首輪三次撲近後接上、閃黑、淡回；靜候約 10s；然後髮絲縫顫動
 加劇、鬆手斷開；緊接著又是三次撲近——輪點看不出跳變。
 （df-ink 的拍點此刻仍照 16s 的百分比走、閃黑時機會偏晚——Task 3 修正。）
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 cd /Users/yijun/Workspace/hanzi.pro/han
@@ -204,7 +204,7 @@ git commit -m "feat(home): dash-fuse 主循環重排——三次試接、撐不�
 - Modify: `han/manual/public/home/dash-fuse.css`（`@keyframes df-ink`，
   現行約 81–91 行——只改百分比，結構與註解裡的曲線理由照舊）
 
-- [ ] **Step 1: 重對百分比**
+- [x] **Step 1: 重對百分比**
 
 現行拍點 `0%, 8.25%` → `10%` → `37.5%, 100%`，改為（20s 制：熔接完成
 13%，閃 280ms ＝ 1.4%，淡回 4.4s ＝ 22%）：
@@ -226,12 +226,12 @@ git commit -m "feat(home): dash-fuse 主循環重排——三次試接、撐不�
 其上方註解裡的 `8.25%→10%`、`10%→37.5% ＝ 6s` 等舊拍點一併改成
 `13%→14.4%`、`14.4%→36.4%`（秒數不變：280ms、4.4s）。
 
-- [ ] **Step 2: 目視驗證**
+- [x] **Step 2: 目視驗證**
 
 Expected: 閃黑緊貼在「終於接上」那一刻之後（2.6s 處），不再滯後；
 淡回完（7.28s）到開始顫動（17.28s）之間恰好安靜 10s。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 cd /Users/yijun/Workspace/hanzi.pro/han
@@ -247,7 +247,7 @@ git commit -m "fix(home): dash-fuse 閃黑拍點對位 20s 新時間軸"
 - Modify: `han/manual/public/home/dash-fuse.css`（檔頭大註解裡的時序段，
   現行約 28–36 行；47 行「無 JS 契約」段不動）
 
-- [ ] **Step 1: 替換時序段**
+- [x] **Step 1: 替換時序段**
 
 把檔頭這一段：
 
@@ -280,7 +280,7 @@ git commit -m "fix(home): dash-fuse 閃黑拍點對位 20s 新時間軸"
  *     20s    鬆手斷開＝下一輪的 0%，輪點無縫，沒有瞬間跳斷
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 cd /Users/yijun/Workspace/hanzi.pro/han
@@ -295,7 +295,7 @@ git commit -m "docs(home): dash-fuse 檔頭拍點表對齊新時間軸"
 視覺效果沒有既有 e2e 基建（playground e2e debt 已另案記錄），驗證走
 「目視＋console 取樣」兩層；不為此新建測試框架（YAGNI）。
 
-- [ ] **Step 1: 目視走完整劇本**
+- [x] **Step 1: 目視走完整劇本**
 
 Run: dev server，硬重整首頁，正常滾讀到 station②。
 Expected 順序：柱以斷開態現身即開始試接（鉛字還在落）→ 鉛字落完後
@@ -303,7 +303,7 @@ Expected 順序：柱以斷開態現身即開始試接（鉛字還在落）→ �
 再試接……至少看兩個輪點確認無縫。另開一次 deep link 直達 station②
 （跳過鉛字儀式的 1s 短窗路徑）確認不卡在等待態。
 
-- [ ] **Step 2: console 取樣拍點**
+- [x] **Step 2: console 取樣拍點**
 
 DevTools console 貼：
 
@@ -323,14 +323,14 @@ Expected（以 data-play 蓋章起算的一輪）：0–2.3s 之間多次起落�
 < 1；13%（2.6s）–86.4%（17.28s）恆為 1（中段 10 秒靜候）；86.4% 後
 起落且回不到 1；輪點前後皆 ≈ 0（無跳變）。
 
-- [ ] **Step 3: reduced-motion 回歸**
+- [x] **Step 3: reduced-motion 回歸**
 
 macOS 系統設定開「減少動態效果」（或 DevTools Rendering →
 `prefers-reduced-motion: reduce`），重整。
 Expected: 柱靜止於已接合終態（`--df-fuse` initial-value 1），無任何
 跳動——與改動前一致。
 
-- [ ] **Step 4: 收尾**
+- [x] **Step 4: 收尾**
 
 全部通過後回報用戶過目；毋須 push（等用戶說 OK）。
 
@@ -344,3 +344,25 @@ Expected: 柱靜止於已接合終態（`--df-fuse` initial-value 1），無任�
 - **不加隨機性（JS 驅動的 jitter）。** 兩支 keyframes 內建幅度變化已
   足夠打破節拍器感；真隨機要 JS 每輪改變數，違反本檔「幾何與動畫全在
   CSS」的契約，除非用戶看完覺得還不夠活再議。
+
+---
+
+## 完工記錄（2026-07-31）
+
+五個 task 全數落地，分支 `dash-fuse-jitter` 四個實作 commit（df-try／主循環
+／df-ink 對位／註解對齊），逐 task 過 spec ＋品質雙審。與計畫的偏差：
+
+- **驗證改制**：各 task 的 dev-server 目視改為 headless Chrome real-time
+  取樣（`--virtual-time-budget` 對 @property 動畫不可靠——動畫時鐘會凍在
+  0% 或晚起跑；配方＝本地 server 拖住 load event ＋ `--dump-dom` 收 JSON）。
+  斷言 (a)–(h) ＋ reduced-motion ＋靜態檢查全過：armed 峰值 .78／.88 恆
+  < 1、閃黑只落在縫全合期間、靜候恰 10.0s、輪點兩側 ≈ 0 無跳變。
+- **Task 4 吸收三個審查發現**：媒體區塊上方漏網的「16s 一輪」、armed 註解
+  誠實記錄交接可能瞬彈回 0（原稿「交接不跳」寫過頭）、第三幕顫開用
+  ease-out 是抽搐不是鬆脫的語彙註記。
+
+**留給人眼的美學驗收**（程式驗不了，滾到 station②）：armed 撲接讀起來
+是「想接上」還是雜訊；armed→play 交接若落在撲近中段的瞬斷觀感；第一幕
+2.3s 三連撲會不會糊成一團；.3→1 的熔接是否讀成「快成了」的延續；第三幕
+髮絲顫（0.003–0.007em）在實際字級下是否可見；輪點連看兩圈；reduced-motion
+一眼。
