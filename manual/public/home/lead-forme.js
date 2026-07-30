@@ -55,7 +55,24 @@ const COLS = [
   ['迴', '路', '，', '就', '是', '因', '為', '快', '十', '二'],
   ['秒', '！', '」', '', '', '', '', '', '', ''],
 ];
-const GEO = { S: 90, cell: 94, H: 140, r: 11, fs: 60, sw: 2, leadEm: 0.7, squeezeGap: 0.5 };
+/* `S` is the type body's footprint AND the glyph's em — a piece of type has one
+ * square measure, and the 字面 (printing face) is that square. There used to be
+ * a separate `fs: 60`, i.e. a 90-unit body carrying a 60-unit face: 0.667em of
+ * glyph in a 1em body, which is 0.333em of dead tracking on every piece. Set a
+ * sentence in it and the forme read as though it had `letter-spacing` — the
+ * opposite of the 密排 a locked forme is. (Ziano's Han ink measures 0.81–0.94em
+ * inside that em, which is the font's own 字面餘白 and exactly the amount that
+ * should be there.)
+ *
+ * `emCentre` is where the baseline sits below the face's centre, in em. NOT
+ * `dominant-baseline: central`, which centres on the hhea ascent/descent
+ * midpoint (measured: 0.4326em) rather than the em box's (sTypoAscender
+ * 880/1000 = 0.38em, and the ink's own centre measures 0.375em) — so `central`
+ * hangs every glyph 0.053em high. At the old 60-unit face that was 3.2 units
+ * and invisible; against a full 90-unit face it is 4.8 units against a餘白 of
+ * about 5, i.e. the whole bottom margin. Same two-metric-systems problem as
+ * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md. */
+const GEO = { S: 90, cell: 94, H: 140, r: 11, sw: 2, leadEm: 0.7, emCentre: 0.38 };
 
 // three visible faces of a box: footprint sx (e1) × sy (e2), body height bodyH
 const faces3 = (O, sx, sy, bodyH = GEO.H) => {
@@ -110,7 +127,8 @@ const lineLayout = (col, punct, orient) => {
 
 // ── one lead-type slug (a printing character) → SVG group string ──
 const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
-  const { S, H, r, fs, sw } = GEO;
+  const { S, H, r, sw, emCentre } = GEO;
+  const fs = S;                                       // 字面 ＝ 字身（§ GEO）
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
   const faces = faces3(O, S, sy);
 
@@ -127,12 +145,26 @@ const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
   // 直排 punctuation needs the font's vertical forms (`vert`/`vrt2`), which
   // `writing-mode` is what asks for. 橫排 wants the default horizontal cut —
   // that IS the difference between the two faces of one piece of type.
-  const glyphLayout = orient !== 'h' && PUNCT.has(char)
-    ? 'writing-mode:vertical-rl; text-orientation:upright'
-    : 'dominant-baseline:central';
+  const vertical = orient !== 'h' && PUNCT.has(char);
+  // …and the two lay the em out on different axes, so they need different
+  // centring. Vertical text already centres the em on the anchor (the glyph's
+  // vertical origin against a 1em vertical advance), both axes, so x=y=0 is
+  // right. Horizontal text only centres the INLINE axis (`text-anchor`); the
+  // cross axis is wherever the baseline is put, hence the explicit `y`.
+  // MEASURED, not assumed — both branches, five to seven glyphs each, ink read
+  // off a rasterised probe and referred back to each glyph's own
+  // actualBoundingBox: vertical seats the baseline 0.383–0.391em below the
+  // anchor (the tight cluster is 0.3835; 田 and 一 read high because a heavy
+  // 明體 horizontal's antialiased edge biases an ink bbox), i.e. `emCentre`.
+  // The x offset came out IDENTICAL in the two branches for every glyph, so
+  // upright Han needs no cross-axis compensation — the 5.25-unit hhea offset
+  // from docs/notes/2026-07-21-svg-glyph-baseline-alignment.md is a class-R
+  // (browser-ROTATED) effect and does not reach class U.
+  const glyphY = vertical ? 0 : emCentre * fs;
+  const glyphLayout = vertical ? 'writing-mode:vertical-rl; text-orientation:upright' : '';
   const glyph = (fill, stroke, gsw, dy) => `
     <g transform="translate(0 ${-dy})"><g transform="${m}">
-      <text class="g" x="0" y="0" font-size="${fs}" text-anchor="middle" style="${glyphLayout}"
+      <text class="g" x="0" y="${glyphY.toFixed(2)}" font-size="${fs}" text-anchor="middle" style="${glyphLayout}"
             fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="${gsw}"` : ''}
             stroke-linejoin="round" paint-order="stroke">${char}</text>
     </g></g>`;

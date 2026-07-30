@@ -58,7 +58,11 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   const air = await page.evaluate(() => {
     const $f = document.querySelector('.LeadForme')!
     const box = $f.querySelector('svg')!.getBoundingClientRect()
-    const ink = [...$f.querySelectorAll('.Slug')].reduce(
+    // the FACE POLYGONS, not the `.Slug` groups: buildForme fits the box to the
+    // pieces' footprints, and a slug group's bounding rect also swallows its
+    // glyph <text> LAYOUT boxes — a 1.437em line height around a 1em face, so it
+    // reports ink far outside the type. A polygon's bbox is the polygon.
+    const ink = [...$f.querySelectorAll('svg polygon')].reduce(
       (a: { l: number; r: number; t: number; b: number } | null, g) => {
         const r = g.getBoundingClientRect()
         return a
