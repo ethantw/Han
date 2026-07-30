@@ -90,6 +90,24 @@
   37.5%, 100% { --df-ink: 0; }
 }
 
+/* 開演前的等待（data-armed 而未 data-play）：兩截一直試著接上，每次都
+   差一點點又彈開——永不到 1、不閃墨，真正的重逢留給 data-play 的首輪。
+   兩次幅度不同的嘗試（.78／.88）湊一輪 2.8s，60% 後緩緩沉回 0 的長尾
+   也是故意的——幅度與節奏都不均勻，纔不像節拍器。
+   撲近 ease-out（伸手漸緩），彈開 ease-in（鬆脫墜開）——同 df-fuse
+   主循環的語彙。 */
+@keyframes df-try {
+  0% { --df-fuse: 0; animation-timing-function: ease-out; }
+  11% { --df-fuse: .78; animation-timing-function: linear; }
+  14% { --df-fuse: .78; animation-timing-function: ease-in; }
+  21% { --df-fuse: .06; animation-timing-function: linear; }
+  39% { --df-fuse: .06; animation-timing-function: ease-out; }
+  50% { --df-fuse: .88; animation-timing-function: linear; }
+  53% { --df-fuse: .88; animation-timing-function: ease-in; }
+  60% { --df-fuse: .05; animation-timing-function: linear; }
+  100% { --df-fuse: 0; }
+}
+
 /* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
 @keyframes df-copy-in {
   from { opacity: 0; translate: 0 1rem; }
@@ -195,7 +213,13 @@ svg[data-name="dash-fuse"] {
      data-play：.PunctFix data-revealed 且鉛字盤落完——首播接合，此後 16s
      一輪。 */
   @media (prefers-reduced-motion: no-preference) {
-    &[data-armed]:not([data-play]) { --df-fuse: 0; }
+    /* 開演前：基態斷開，兩截在其上反覆試接（df-try 永不到 1）。data-play
+       一蓋，動畫換成主循環，起手同為斷開態；交接若落在撲近中段，縫會瞬間
+       彈回 0——跳斷本就突發（同檔頭語彙），不做銜接。 */
+    &[data-armed]:not([data-play]) {
+      --df-fuse: 0;
+      animation: df-try 2.8s linear infinite;
+    }
     &[data-play] {
       /* 兩支同騎一條 16s 的時間軸（拍點在各自的 keyframes 裡），無限循環
          ＝「斷開、接上、閃一下深灰、慢慢淡回」，淡回之後再等 10 秒重播。
