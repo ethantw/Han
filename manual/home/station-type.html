@@ -32,7 +32,7 @@
     ko: '尚古<ruby>黑體<rt>흑체</rt></ruby>',
   },
   ltFaceK: {
-    hant: '霞鶩文楷', hans: '霞鶩文楷', en: 'Kai', ja: '霞鶩文楷',
+    hant: '霞鶩文楷<abbr class="acronym">TC</abbr>', hans: '霞鶩文楷<abbr class="acronym">TC</abbr>', en: 'Kai', ja: '霞鶩文楷<abbr class="acronym">TC</abbr>',
     ko: '霞鶩<ruby>楷體<rt>해체</rt></ruby>',
   },
   ltPunctLegend: {
@@ -246,8 +246,8 @@
 
   <!-- lead-type forme — the sentence「山田臉色鐵青：『我特地放棄瞬移艙改搭
         超迴路，就是因為快十二秒！』」set as mirrored isometric slugs; three
-        heritage faces (Ziano 明／黑／楷) × three punctuation conventions
-        (Diantenjeom JIS／MOE／GB) swap live from its own form. lead-forme.js
+        heritage faces (Ziano 明／黑／楷) × four punctuation conventions
+        (Diantenjeom JIS／MOE／GB／KLR) swap live from its own form. lead-forme.js
         builds the SVG; home/lead-forme.css themes it. The forme is a
         decorative specimen (svg aria-hidden); the caption (stTrayNote)
         carries the type-picking ↔ unicode-range story.
@@ -273,9 +273,10 @@
       </fieldset>
       <fieldset>
         <legend>{{ ltPunctLegend }}</legend>
-        <label><input type="radio" name="lf-punct" value="jis" checked /> JIS</label>
-        <label><input type="radio" name="lf-punct" value="moe" /> MOE</label>
-        <label><input type="radio" name="lf-punct" value="gb" /> GB</label>
+        <label><input type="radio" name="lf-punct" value="jis" checked /><abbr class="acronym">JIS</abbr></label>
+        <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
+        <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
+        <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
       </fieldset>
       <fieldset>
         <legend>{{ ltOrientLegend }}</legend>

@@ -97,6 +97,12 @@
   --dtj-serif: 'Diantenjeom Serif GB';
   --dtj-sans: 'Diantenjeom Sans GB';
 }
+/* KLR ＝ W3C KLReq。兩個家族名並列的理由同 src/css/fonts.css：上游已改名
+   `… KLR`，發佈到 npm 的版本仍是 `… KV`，font stack 天然容錯，跨得過空窗。 */
+:where(.LeadForme[data-punct='klr']) {
+  --dtj-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+  --dtj-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+}
 
 /* current typeface — punctuation-first stack, heritage Han (Ziano) behind */
 :where(.LeadForme[data-face='m']) text.g {

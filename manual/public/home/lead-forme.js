@@ -4,7 +4,7 @@
  * A decorative specimen that embodies the type-picking ↔ unicode-range story
  * (stTrayNote): the sentence「山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是
  * 因為快十二秒！」」(see COLS) set as mirrored lead slugs in an isometric forme.
- * Three heritage faces (Ziano 明／黑／楷) and three punctuation conventions
+ * Three heritage faces (Ziano 明／黑／楷) and four punctuation conventions
  * (Diantenjeom JIS／MOE／GB) swap live from the
  * figure's own form — each swap ejects the affected slugs and drops the new
  * ones back in. Every slug is engraved on its reader-facing side with the
@@ -107,13 +107,20 @@ const spacer = (O, sx, sy, d, solid) =>
 // whitespace trimmed), and the freed half is spread as small justify blocks
 // between every other pair — so the line keeps its full justified length.
 //
-// WHEN it squeezes differs by direction. 直排: JIS only — MOE／GB seat ： low in
-// the em there, so nothing meets 「's leading space. 橫排: ALL THREE — ：'s
+// WHEN it squeezes differs by direction. 直排: JIS only — MOE／GB／KLR seat ：
+// clear of 「's leading space, so nothing meets it. 橫排: ALL FOUR — ：'s
 // trailing half-space abuts 「's leading half-space under every convention.
+//
+// KLR 跟 MOE／GB 同一套（owner 定案 2026-07-31），而且理由與那兩者不同：MOE／
+// GB 是把 ： 坐低在字身裡，KLR 是讓它**正立**——KLReq cl7 把 ：；· 歸為不隨直排
+// 旋轉的一類（diantenjeom build.py 的 `upright_cps=(0xFF1A,)` 就是這條）。兩條
+// 路殊途同歸：正立居中的 ： 一樣不會把半個空鉛送到 「 的門口。所以下面那個判定
+// 仍然只點名 jis，四個公約裡也只有它會擠。
 const lineLayout = (col, punct, orient) => {
   const n = col.length;
   let sq = -1;
   for (let i = 0; i < n - 1; i++) if (col[i] === '：' && col[i + 1] === '「') sq = i;
+  // 只有 jis 會在直排擠壓；moe／gb／klr 三者同一套（見上）。
   const squeezes = orient === 'h' || punct === 'jis';
   if (!squeezes || sq < 0) return col.map((ch, i) => ({ char: ch, aStart: i, size: 1 }));
   const half = 0.5;
