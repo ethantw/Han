@@ -11,8 +11,8 @@
     hant: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為120個切片，取字的差事交給瀏覽器與<code>unicode-range</code>。',
     hans: '活字印刷时代，排版工人凭记忆在字盘中拣取文章所需的活字，填入版框；Web字体时代，数万字的汉字字体依使用频率分割为120个切片，取字的差事交给浏览器与<code>unicode-range</code>。',
     en: 'Type is cut in reverse; only on paper does it read true — a CSS variable is the type case of this era: nudge one slug and the whole page resets.',
-    ja: '活版印刷の時代、植字工は記憶を頼りに文選箱から必要な活字を拾い、版に収めた。Webフォントの時代、数万字の漢字書体は使用頻度に応じて120の切片に分かれ、字を拾う仕事はブラウザと<code>unicode-range</code>に委ねられる——必要な分だけCDN経由でミリ秒単位に届き、幾千万の端末に欠けた書体の美を補う。',
-    ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>, <ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다. 웹폰트 <ruby>時代<rt>시대</rt></ruby>, <ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 120개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고, <ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <code>unicode-range</code>에 맡겨진다——<ruby>必要<rt>필요</rt></ruby>한 만큼만 CDN을 거쳐 밀리초 <ruby>單位<rt>단위</rt></ruby>로 닿아, <ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다.',
+    ja: '活版印刷の時代、植字工は記憶を頼りに文選箱から必要な活字を拾い、版に収めた。Webフォントの時代、数万字の漢字書体は使用頻度に応じて120の切片に分かれ、字を拾う仕事はブラウザと<code>unicode-range</code>に委ねられる。',
+    ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>, <ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다. 웹폰트 <ruby>時代<rt>시대</rt></ruby>, <ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 120개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고, <ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <code>unicode-range</code>에 맡겨진다.',
   },
   ltControls: {
     hant: '字體、標點與行向', hans: '字体、标点与行向',
@@ -58,6 +58,43 @@
     ja: '目にやさしいモード',
     ko: '눈 <ruby>保護<rt>보호</rt></ruby> 모드',
   },
+  /* 護眼開關的前後兩截——句子被開關切成兩半，而語序各語不同：漢語把動詞
+     放前面（開啓／關閉＋標籤），日韓的「をオンにすれば」「를 켜면」得跟在
+     標籤後面，英語則是 Turn on ＋ 標籤 ＋ to…。所以前綴在 ja/ko 是空字串
+     （`??` 只擋 null／undefined，空字串是有效值，不會回退到 hant），整句
+     重量落在後綴。
+
+     那一排是 flex（station-fonts.css），元素之間的空白文字節點不生成
+     flex item——西文的詞間空隙塞不進去，所以 en 的兩截自帶 `&nbsp;`。
+     漢語不需要，本來就該貼齊。 */
+  ltEyeCareOn: {
+    hant: '開啓',
+    hans: '开启',
+    en: 'Turn&nbsp;on&nbsp;',
+    ja: '',
+    ko: '',
+  },
+  ltEyeCareOff: {
+    hant: '關閉',
+    hans: '关闭',
+    en: 'Turn&nbsp;off&nbsp;',
+    ja: '',
+    ko: '',
+  },
+  ltEyeCareOnNote: {
+    hant: '——隱藏驚悚的國字標準字體',
+    hans: '——隐藏惊悚的国字标准字体',
+    en: '&nbsp;to hide those frightful national-standard forms',
+    ja: 'をオンにすれば、あの驚くべき国字標準字体は姿を消す',
+    ko: '를 켜면 소름 끼치는 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>가 사라진다',
+  },
+  ltEyeCareOffNote: {
+    hant: '——體驗國字標準字體的糟粕',
+    hans: '——体验国字标准字体的糟粕',
+    en: '&nbsp;to taste the national-standard dregs for yourself',
+    ja: 'をオフにすれば、国字標準字体の粗悪さを味わえる',
+    ko: '를 끄면 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>의 <ruby>粗惡<rt>조악</rt></ruby>함을 맛본다',
+  },
   stEyebrow: {
     hant: '貳・字體排印',
     hans: '贰・字体排印',
@@ -72,12 +109,19 @@
     ja: '百年を継ぐ字形、歪みを正す約物',
     ko: '<ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>, 비뚤어짐을 바로잡는 <ruby>符號<rt>부호</rt></ruby>',
   },
+  stHeritageH3: {
+    hant: '學究式楷化的<strong>國字標準字體</strong> = 新世代的美學降級',
+    hans: '学究式楷化的<strong>国字标准字体</strong> = 新世代的美学降级',
+    en: 'Pedantically kai-fied <strong>國字標準字體</strong> = a new generation’s aesthetic downgrade',
+    ja: '衒学的に楷書化された<strong>国字標準字体</strong> = 新世代の美学退化',
+    ko: '<ruby>衒學<rt>현학</rt></ruby>的으로 <ruby>楷書<rt>해서</rt></ruby>化한 <strong><ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby></strong> = 새 <ruby>世代<rt>세대</rt></ruby>의 <ruby>美學<rt>미학</rt></ruby>的 <ruby>退化<rt>퇴화</rt></ruby>',
+  },
   stHeritageP: {
-    hant: '學究式楷化的<strong>國字標準字體</strong> = 新世代的美學降級<br />——透過Google Fonts同源的Woff2字體切片技術及CDN的毫秒級遞送，在顯示器上重現百年傳承的字形，填補千萬終端上系統字體的美學空缺。',
-    hans: '学究式楷化的<strong>国字标准字体</strong> = 新世代的美学降级<br />——透过Google Fonts同源的Woff2字体切片技术及CDN的毫秒级递送，在显示器上重现百年传承的字形，填补千万终端上系统字体的美学空缺。',
-    en: 'Heritage forms (Shanggu／Genki, switchable in the panel) carry the unsimplified structure of the hot-metal era — not "older", but "never drifted".',
-    ja: '衒学的に楷書化された<strong>国字標準字体</strong>は、新世代の美的退化にほかならない——Webフォントの切片技術で、百年を継ぐ字形の骨格を画面上に甦らせる。',
-    ko: '<ruby>衒學<rt>현학</rt></ruby>的으로 <ruby>楷書<rt>해서</rt></ruby>化한 <strong><ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby></strong>는 새 <ruby>世代<rt>세대</rt></ruby>의 <ruby>美學<rt>미학</rt></ruby>的 <ruby>退化<rt>퇴화</rt></ruby>일 뿐이다——웹폰트 <ruby>切片<rt>절편</rt></ruby> <ruby>技術<rt>기술</rt></ruby>로, <ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>의 뼈대를 <ruby>畵面<rt>화면</rt></ruby> 위에 되살린다.',
+    hant: '——透過Google Fonts同源的Woff2字體切片技術及CDN的毫秒級遞送，在顯示器上重現百年傳承的字形，填補千萬終端上系統字體的美學空缺。',
+    hans: '——透过Google Fonts同源的Woff2字体切片技术及CDN的毫秒级递送，在显示器上重现百年传承的字形，填补千万终端上系统字体的美学空缺。',
+    en: '— woff2 subsets sliced the way Google Fonts slices them, delivered from a CDN in milliseconds: century-old letterforms return to the screen, filling the aesthetic gap the system faces leave on tens of millions of devices.',
+    ja: '——Google Fontsと同じ仕組みのwoff2切片技術と、CDNのミリ秒単位の配信で、百年を継ぐ字形を画面上に甦らせ、幾千万の端末に欠けたままの書体の美を補う。',
+    ko: '——Google Fonts와 <ruby>同一<rt>동일</rt></ruby>한 woff2 <ruby>切片<rt>절편</rt></ruby> <ruby>技術<rt>기술</rt></ruby>과 CDN의 밀리초 <ruby>單位<rt>단위</rt></ruby> <ruby>傳送<rt>전송</rt></ruby>으로, <ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>을 <ruby>畵面<rt>화면</rt></ruby> 위에 되살리고, <ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다.',
   },
   stPunctFixP: {
     hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，皆起自Unicode共用碼位的歷史問題，透過OpenType + CSS <code>unicode-range</code>字體技術，精準為讀者拂偏歸正。',
@@ -163,16 +207,16 @@
          are shown. -->
     <figcaption>
       <p>
-        <span class="on">開啓</span>
-        <span class="off">關閉</span>
+        <span class="to-turn-on">{{ ltEyeCareOn }}</span>
+        <span class="to-turn-off">{{ ltEyeCareOff }}</span>
         <label class="Toggle for-eyecare">
           <input type="checkbox" name="face-eyecare" />
           <span>{{ ltEyeCare }}</span>
         </label>
-        <span class="to-not-see">，隱藏驚悚的國字標準字體</span>
-        <span class="to-see">，體驗毫無美感的國字標準字體</span>
+        <span class="to-turn-on note">{{ ltEyeCareOnNote }}</span>
+        <span class="to-turn-off note">{{ ltEyeCareOffNote }}</span>
 
-
+      <h3>{{ stHeritageH3 }}</h3>
       <p>{{ stHeritageP }}
     </figcaption>
   </figure>
