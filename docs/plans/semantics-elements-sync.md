@@ -426,6 +426,9 @@ no-preference 則 reduced-motion 下會動）：
 - [ ] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
 - [ ] 模組 off→on 再開：整首詩含逐字 stagger 重演＝預期行為（與圖解
   replay 同語言），目測兩邊同步。
+- [ ] --cue-settle 的存廢：Task 3／4 定稿改鍵 @container 後歸零消費者，
+  token 區「勿再寫字面 520ms」的契約註已失準——Task 5 若同走 @container
+  即刪 token 並改寫該註；若留（外部文檔引用），註明「目前僅文檔性」。
 - [ ] semantic-chars.js 的雙 guard 化石：:11 冪等 guard 被 :12
   childElementCount 完全遮蔽，合併為一行一註解或原樣保留（擇一，記錄）。
 - [ ] revealed 終態 inline-block 常駐：對 justification／text-autospace
