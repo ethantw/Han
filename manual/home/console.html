@@ -287,13 +287,6 @@
     ja: '約物の書体',
     ko: '<ruby>符號<rt>부호</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
   },
-  pgPunctVertical: {
-    hant: '直排標點',
-    hans: '竖排标点',
-    en: 'Vertical punctuation',
-    ja: '縦組みの約物',
-    ko: '세로쓰기 <ruby>符號<rt>부호</rt></ruby>',
-  },
   pgBaseGeneric: {
     hant: '默認字體',
     hans: '默认字体',
@@ -751,6 +744,7 @@
               <option value="JIS">JIS</option>
               <option value="MOE" selected>MOE</option>
               <option value="GB">GB</option>
+              <option value="KV">KV</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
@@ -783,6 +777,7 @@
               <option value="JIS">JIS</option>
               <option value="MOE">MOE</option>
               <option value="GB" selected>GB</option>
+              <option value="KV">KV</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
@@ -807,13 +802,15 @@
               <option value="JIS" selected>JIS</option>
               <option value="MOE">MOE</option>
               <option value="GB">GB</option>
+              <option value="KV">KV</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
         </fieldset>
       </section>
 
-      <!-- 韓文專項：傳承字形＋直排標點（預設 off／KV） -->
+      <!-- 韓文專項：傳承字形＋標點（預設 off／KV）。標點公約與文種解耦，
+           這顆選單與另外三個文種同款五選一（見 src/css/fonts.css 檔頭）。 -->
       <section class="ControlGroup">
         <header>{{ pgGrpKo }}</header>
         <fieldset class="PlaygroundRules" data-cfg>
@@ -826,8 +823,11 @@
             </select>
           </label>
           <label class="Field">
-            <span>{{ pgPunctVertical }} <small>Diantenjeom</small></span>
+            <span>{{ pgPunct }} <small>Diantenjeom</small></span>
             <select data-cfg-key="punct.ko">
+              <option value="JIS">JIS</option>
+              <option value="MOE">MOE</option>
+              <option value="GB">GB</option>
               <option value="KV" selected>KV</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>

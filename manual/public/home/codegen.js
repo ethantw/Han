@@ -128,9 +128,10 @@ export const cssVars = (c) => {
     if (c.cursive !== 'webfont') out.push(['--han-use-cursive', c.cursive])
     if (c.cursive === 'webfont' && c.cursiveHant !== 'lxgw')
       out.push(['--han-webfont-cursive-hant', CURSIVE_HANT[c.cursiveHant].stack])
-    for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS']])
+    // 四個文種同構（公約與文種已解耦，見 src/css/fonts.css 檔頭）——ko 從前
+    // 因為變數名帶 `vertical-` 而要單獨一行，改名之後併回迴圈。
+    for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS'], ['ko', 'KV']])
       if (c.punct[key] !== def) out.push([`--han-punctuation-${key}`, c.punct[key]])
-    if (c.punct.ko !== 'KV') out.push(['--han-punctuation-vertical-ko', c.punct.ko])
     if (!c.zhuyinWebfont) out.push(['--han-font-zhuyin-serif', 'cursive, serif'])
   }
   return out

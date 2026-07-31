@@ -157,10 +157,32 @@ test('heritage hant system-ja／cursive off → 對應變數', () => {
   assert.deepEqual(cssVars(cfg({ cursive: 'off' })), [['--han-use-cursive', 'off']])
 })
 
-test('ko 直排標點 off → 變數輸出', () => {
+test('ko 標點 off → 變數輸出', () => {
   assert.deepEqual(
     cssVars(cfg({ punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'off' } })),
-    [['--han-punctuation-vertical-ko', 'off']],
+    [['--han-punctuation-ko', 'off']],
+  )
+})
+
+/* 公約與文種解耦之後的核心新能力：任一文種可選任一公約。兩個方向各驗一次
+   ——繁體選 KV（從前不在它的值域裡）、韓文選 MOE（同上）。 */
+test('公約與文種解耦：繁體可選 KV、韓文可選 MOE', () => {
+  assert.deepEqual(
+    cssVars(cfg({ punct: { hant: 'KV', hans: 'GB', ja: 'JIS', ko: 'KV' } })),
+    [['--han-punctuation-hant', 'KV']],
+  )
+  assert.deepEqual(
+    cssVars(cfg({ punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'MOE' } })),
+    [['--han-punctuation-ko', 'MOE']],
+  )
+  assert.deepEqual(
+    cssVars(cfg({ punct: { hant: 'JIS', hans: 'KV', ja: 'MOE', ko: 'GB' } })),
+    [
+      ['--han-punctuation-hant', 'JIS'],
+      ['--han-punctuation-hans', 'KV'],
+      ['--han-punctuation-ja', 'MOE'],
+      ['--han-punctuation-ko', 'GB'],
+    ],
   )
 })
 
