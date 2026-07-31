@@ -159,6 +159,21 @@
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
 }
 
+/* 楷體行的逐字歸正。時序是「交棒」：旗標翻 on 的那一瞬，font-style
+   的合成斜體（oblique）消失、每字的 skew(-12deg) 同時接手——斜度連續
+   無跳變；然後逐字（每字 +40ms）擺正。掛載規則鍵在 @container style
+   query（見動畫區）——翻旗前規則不存在，翻旗那一刻才開始匹配起跑。
+   span 不碰 font-style：off 態的瀏覽器斜體要原樣活著。inline-block 是
+   transform 生效的條件；atomic inline 會斷 pair-squeeze，但 <i> 內全是
+   漢字、邊界是冒號／逗號對漢字，不構成擠壓對（diantenjeom/docs/
+   pair-squeeze-and-markup.md）。
+   待目測（plan Task 3 Step 4）：article 是 vertical-rl，合成斜體在直排
+   的傾向若與 skewX 不合，改 skewY(12deg) 再測。 */
+@keyframes semantics-char-settle {
+  from { transform: skew(-12deg); }
+  to { transform: skew(0deg); }
+}
+
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
    詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
@@ -797,10 +812,36 @@
         .poem-like dfn {
           animation: semantics-straighten 520ms ease-out var(--row-cue);
         }
-        .poem-like :is(cite, em, i) {
+        .poem-like :is(cite, em) {
           animation:
             semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue);
+        }
+        /* <i> 不在 straighten 名單：它的歸正由逐字 skew 接手（見
+           @keyframes semantics-char-settle 的交棒論證），行級只留
+           mark-cue 的墨色一閃。 */
+        .poem-like i {
+          animation: semantics-mark-cue 1000ms ease-in-out var(--row-cue);
+        }
+        /* 逐字歸正鍵在旗標翻轉本身：@container 讓這條規則在
+           --han-semantics 翻 on 的那一刻才開始匹配——動畫起點＝翻旗瞬間，
+           不必再算 cue＋settle；both 的 backwards fill 把 -12deg 撐滿每字
+           的錯拍等待（翻旗前規則不存在，不會疊在還活著的合成斜體上——
+           雙重斜與直立空窗兩個雷一次拆掉）。機制同 :662 著重號／wavy 的
+           墨色淡入：style query 讀的是 <i> 從行 span 繼承來的旗標。
+           display: inline-block 也只在翻旗後生效——翻旗前 span 是普通
+           inline，不碰 pair-squeeze。 */
+        @container style(--han-semantics: on) {
+          .poem-like i [data-char] {
+            display: inline-block;
+            animation:
+              semantics-char-settle
+              520ms
+              ease-out
+              calc(var(--i) * 40ms)
+              both
+            ;
+          }
         }
         address::before {
           animation: semantics-ghost-cue 820ms ease-out var(--row-cue);
