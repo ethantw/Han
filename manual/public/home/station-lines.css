@@ -1,8 +1,10 @@
-/* 一趟 11s，走完一個波長（3.5 行）。linear：呼吸的快慢寫在波長與週期
-   上，不靠曲線的稜角——同 ziano hero 與 dash-fuse 的作法。 */
-@keyframes lines-breath {
-  from { background-position: 0 0; }
-  to { background-position: 0 calc(3.5 * var(--_wm-lh) * 1em); }
+/* 一口深呼吸 7s：吸 3.15s（綠漫出去）、吐 3.85s（收回貼著版口線）。
+   吐比吸長一點，跟人一樣。整支 ease-in-out——快慢寫在段長上。 */
+@property --lines-tide { syntax: "<percentage>"; inherits: true; initial-value: 30%; }
+
+@keyframes lines-tide {
+  0%, 100% { --lines-tide: 0%; }
+  45% { --lines-tide: 58%; }
 }
 
 #station-lines {
@@ -267,7 +269,16 @@
          在轉場裡不保證能內插，background-color 一定可以——屏息那一撥要
          讓帶子褪色褪得順，顏色就得留在能轉場的屬性上。 */
       background-color: var(--_wm-zone);
-      mask-image: linear-gradient(to right, #000 0, transparent 100%);
+      /* --lines-tide ＝ 實心段走多遠；淡出的尾巴永遠再多 70%（一個定
+         值，讓「漲」是實心面積在長，不是尾巴在飄——尾巴那一段本來就
+         淡到看不見，改它等於沒改）。 */
+      mask-image:
+        linear-gradient(
+          to right,
+          #000 var(--lines-tide),
+          transparent calc(var(--lines-tide) + 70%)
+        )
+      ;
       border-inline-start: 1px solid var(--_wm-rule);
     }
     h-char[data-punct~="hangable"] h-layer {
@@ -275,39 +286,24 @@
     }
 
     /* 行的呼吸。這一站叫「行的呼吸」，那口氣就該看得見——但只准墨動，
-       不准尺寸動：懸掛區的寬度是 1em（一個全形標點的身寬），那是本圖
-       的證據；帶子若脹縮，等於宣稱可懸掛的寬度會變。版口線同理死死不
-       動，基準一晃，量測就不成立。
+       不准框動：懸掛區的寬度是 1em（一個全形標點的身寬），版口線是量測
+       的基準，兩者都不能為了好看而移位。
 
-       所以呼吸是一道**沿行下走**的綠，不是整片明滅：整片明滅只說「這裡
-       有片綠在閃」，逐行下行說的是「行一行一行往版口外吐氣」——比喻與
-       這一站的主張重合，方向也順著橫排的閱讀動線。
+       所以漲落的是**實心的那一段有多寬**：帶子的遮罩是「從版口線往外
+       淡出」的一道漸層，讓它的實心段在 0% ⇄ 58% 之間長縮（尾巴恆為再
+       多 70%）——吐氣時只剩貼著線的一道淡邊，吸氣時整片綠漫到框緣。
+       框、線、1em 的寬度全程不動，動的只有綠的量。
 
-       手法：平色照舊（那是靜態、reduced-motion 與屏息態的樣子，不動），
-       另鋪一層波峰只有 +2 個百分點的漸層當「氣」，動 background-position
-       讓它下行。波長三行半——一行會變成掃描線，三行半才讀得出是一口氣
-       罩著幾行（行高取 --_wm-lh，與樣張的 <p> 同一個值）。一趟 11s，比人的呼吸慢一點，讀起來
-       才是靜不是喘。幅度刻意壓在兩個百分點內：這是正文**背後**、對比
-       11% 的浮水印，再多一點就從「活著」變成「背後有東西在閃」，正文就
-       不能讀了（同 dash-fuse 檔頭那條眼角視覺的教訓）。
+       7s 一口，深呼吸的速率（靜坐約 8–10 次／分）；吐比吸長，跟人一樣。
+       上一版鋪了一道沿行下走的 +2% 波——太含蓄了，在對比 11% 的浮水印上
+       等於沒有（owner 2026-08-01：「完全不知道在呼吸什麼」）。這一版把
+       幅度放在「漫多遠」而不是「多綠」：綠的濃度沒變，量卻看得出來。
 
        只在模組開著時呼吸：關掉「行的調整」句讀就不再懸掛，這片綠當場
        失去意義——靜止本身就是讀數，正好接上下面「屏息」那一撥的說法。 */
-    --_wm-breath: color-mix(in srgb, var(--palette-accent) 2%, transparent);
-
     @media (prefers-reduced-motion: no-preference) {
       :root:not([data-han-module-lines="off"]) &::before {
-        background-image:
-          linear-gradient(
-            to bottom,
-            transparent 0,
-            var(--_wm-breath) 50%,
-            transparent 100%
-          )
-        ;
-        background-repeat: repeat-y;
-        background-size: 100% calc(3.5 * var(--_wm-lh) * 1em);
-        animation: lines-breath 11s linear infinite;
+        animation: lines-tide 7s ease-in-out infinite;
       }
     }
 
