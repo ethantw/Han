@@ -1,46 +1,100 @@
 # TODO
 
-- **arLede 的「百零九」改為 build-time 計算 token。** 現為硬編碼，會隨
-  庫演進漂移（每次改 src 都可能變）。LayerMap 的 `{{ sizeSemantics }}`
-  （vite `computeModuleLedger`）已有同款機制——加一個 `whereCount`
-  token（`dist/han.css` 去註解後數 `:where`），再加阿拉伯數字→中文
-  數字（百零九式）的轉換。五語系的數字寫法要各自處理（en 用阿拉伯
-  數字即可）。
+依 2026-07-31 全 repo 審查刷新。分四段：RC 前、RC 後、明示延後、
+長期。舊項若已被新設計取代，記在「已了結」。
 
-- **兩個 LangDemo figure 的正式 demo 文字。** 站①（語意：著重號／書名號
-  ／專名號／注音 furigana）與站②（標點：各語言標點規範實況）都已改為
-  `<figure class="LangDemo">` 四篇 `<article lang="zh-Hant/zh-Hans/ja/ko">`
-  結構，現為 placeholder 文字。正式內容從 demo 範文庫（`manual/demo/*.md`）
-  挑選；`.LangDemo` 的樣式也還沒做。（stPunctExamples／ssP2／ssP3／
-  ssJaLead／ssJaQuote／slP3 六個 key 已因此撤除。）
+## RC 前（阻塞）
 
+- [ ] **e2e 11 敗歸零（首頁部分）。** ⏸ 用戶指示暫緩首頁 e2e 修正。
+  分類備查：
+  - 首頁重設計後測試漂移（4）：`homepage-v2.spec:24`（水印站數期待
+    6、實際 4）、`lead-forme-swap` ×2（橫排 moved=0，疑字面填滿改掉
+    letter-spacing 後判定失效）、`lead-forme-pocket`。逐一 triage
+    「測試過時 vs 真回歸」。
+  - markup 未接（2）：`home.spec:230` demo-lang chips、`:253`
+    writing switch——JS 都在、`_home.html` 無控件 markup。
+  - 既有 C 類（3）：`home:155` per-group ↺、`home:266` h-iss、
+    `demo:24` zh-Hans off-cell 懸掛未關。
+  - `demo:11` cell 計數過時——併入 demo re-sync 一起修。
+- [ ] **console.html ja/ko 約 70 個 i18n key 補譯**（pgGrp*/pgEm*/
+  pgPunct*/pgTog* 全滅）＋零星：`_home.html` consoleCollapse（ja/ko）、
+  station-craft arEyebrow（ja）、station-prose prEyebrow（ja）、
+  station-lines slHangOffSample／breathingLinesSample（en）。
+- [ ] **首頁六條審查（2026-07-18）對新版重驗。** ①LangDemo 已被
+  .Papers 四報設計解決；②站叄懸掛卡已重做。餘：③著重號懸空查證、
+  ④遊樂場書名號承諾、⑤LayerMap「運行時依賴1」點名（hyperly）、
+  ⑥ssP1「緊要強調之處一如本句」garden path（原定稿的破折號被拿掉）。
+- [ ] **repo URL 三處對齊。** package.json（ethantw/Han）、首頁
+  footer（hanzipro/han.css）、git remote css（hanzipro/css）——定
+  一個 canonical，RC tarball 別把錯的發出去。
+- [ ] **跨瀏覽器 QA。** ⏸ 暫緩（用戶指示）。Safari＋Firefox 過
+  gate／stroke／autospace／hanging／vertical。
+- [ ] **npm publish --tag rc → 冒煙 → pre-release tag。** ⏸ 暫緩
+  （用戶指示）。npm pack 已驗過：60 檔、exports 齊。
+
+## RC 後（正式版前）
+
+- [ ] **manual/demo/*.md 一次性 re-sync。** src API 已穩。死 API：
+  `curated-biaodian.md` 的 `han-use-curated-fonts` container、
+  `sectional.md` 的 `han-revert-prose`＋`revert-layer`（現行機制是
+  `--han-prose: off` style query）、`hanging.md` 的啓用條件敘述。
+  `demo.css` 同步；`demo.spec` 計數順勢更正。
+- [ ] **public/ dev 雜物出貨排除。** `test/console-fixture.html`
+  （e2e fixture，留意 console-component.spec 引用）、
+  `brand-lockup.html`、`brand-lockup-options.html`。
+- [ ] **尺寸文案 Brotli-first。** LayerMap 帳本 `arLedgerGzip` 改
+  br 主、gzip 副（memory `decision-brotli-first-size-claims`）；
+  vite `computeModuleLedger` 補 brotli 計算。⚠️ 站要放支援 Brotli
+  的 CDN，廣告數字才對得上。
+- [ ] **dist sourcemap 瘦身。** 8 個 JS map 各 ~366KB（內嵌
+  sourcesContent）→ tarball 948KB／解壓 4MB。去 sourcesContent
+  或不 ship map。
+- [ ] **release-please 接通。** workflow 只 watch `main` 但預設分支
+  是 `master` → 永不觸發；manifest 4.0.0 vs pkg 4.0.0-rc.1 對齊；
+  `NPM_TOKEN` repo secret 要由 owner 加。CI 的
+  `branches: [main, '**']` 順手清。
+- [ ] **README「Migration from v3」一節（四語）。** 列 v4 砍掉的每個
+  v3 JS 函數與其 CSS／字體技術等價物；來源：CHANGELOG →
+  4.0.0-rc.1 → Removed。
+
+## 明示延後（2026-07-31 用戶指示）
+
+- [ ] **RWD 精修。** 首頁概念已定，斷點細調延後。
+- [ ] **hans／ja／ko 文檔。** 現為 9 行 stub；RC 出 hant 全量＋en
+  簡介/安裝，其餘標 coming。
+
+## 長期／機會項
+
+- **arLede 的「百零九」改為 build-time 計算 token。** 現為硬編碼，會
+  隨庫演進漂移。LayerMap 的 `{{ sizeSemantics }}`（vite
+  `computeModuleLedger`）已有同款機制——加 `whereCount` token
+  （`dist/han.css` 去註解後數 `:where`），再加阿拉伯數字→中文數字
+  （百零九式）轉換。五語系數字寫法各自處理（en 用阿拉伯數字）。
 - **站內行內表單控件，與工具欄面板雙向同步。** 2026-07-17 定案方向：
-  文案句子裡直接嵌控件（explorable explanations 路數），首例是 prNote：
-  「作用域預設在article元素，--han-prose: on/off，在任何選擇器
-  `〔input：填選擇器〕`開關`〔checkbox：toggle〕`整個模塊。」
-  之後其他 station 也逐步加入。設計要點：
-  - 行內控件只是面板 state 的第二個視圖——發同樣的 intent，走現有
-    intents→state→apply，不建新機制；apply 時值相同不回寫，防迴圈。
-  - i18n 槽位標記放在譯文字串裡（各語言語序不同，插槽位置跟譯文走），
-    模板／JS hydrate。
-  - 無障礙：句子即說明，`aria-labelledby` 指回句子或整句包 `<label>`。
-  - 節制規矩：**每站至多一個行內控件句**。
-  - Marginalia 窄螢幕會隱藏，行內控件消失時面板仍在——天然 progressive
-    enhancement，不需特別處理。
-  - 微瑕疵備忘：input 有值時「在任何選擇器〔.post〕」的「任何」與具體值
-    微打架，實作時看渲染效果定奪。
-  - `_data.js` 目前放的是無控件也通順的過渡版文案。
+  文案句子裡直接嵌控件（explorable explanations），首例 prNote。
+  設計要點：行內控件只是面板 state 的第二個視圖（發同樣 intent，
+  走現有 intents→state→apply，值相同不回寫防迴圈）；i18n 槽位標記
+  放譯文字串裡；`aria-labelledby` 指回句子；**每站至多一個**；
+  Marginalia 窄螢幕隱藏時面板仍在，天然 progressive enhancement。
+  `_data.js` 現放無控件也通順的過渡版文案。
+- **標點懸掛（`<h-layer>` 絕對定位）對偽元素的影響，寫進 manual
+  doc。** CSS 層說明已在 `src/css/lines.with-js.css` 註解；文件動工
+  時一併講：`::first-line` 理論＋實際都受影響（`.Manifesto
+  h1::first-line` 是唯一現存規則）；`::first-letter` 理論受影響但
+  hangable 只落在收尾標點、結構上不可能是段首字，實際永不相撞（文件
+  可直說「不受影響」＋順帶原因）；`::selection`、`::highlight()`、
+  DOM 結構型選擇器皆不受影響（查的是渲染樹之外的東西）。
+- **Zhuyin `<rt>` 定位 workaround**（semantics.css 的 `[TODO]`
+  transform translate）——等 containing-block 方案，非 bug。
+- **`TODO(css-if)` 三處**（semantics/fonts/lines）——`if()` 落地後
+  的遷移註記，跟引擎走。
+- **原生 `hanging-punctuation` 佈線**——等 2/3 引擎出貨。
 
-- **標點懸掛（`<h-layer>` 絕對定位）對偽元素的影響，寫進 manual doc。**
-  CSS 層的說明已經寫在 `src/css/lines.with-js.css`（標點懸掛區塊的
-  comment）；manual 站的文件工作還沒開工，這塊等文件動工時要一併講：
-  - `::first-line` 理論上＋實際上都會受影響（`.Manifesto h1::first-line`
-    是唯一一條現存規則，見 `manual/public/home/stations.css`）。
-  - `::first-letter` 理論上受影響，但因為 hangable 標記只會落在收尾／
-    閉合標點上（逗號、句號、收合括號），這類字元結構上不可能是段落的
-    第一個字，所以實際上永遠不會撞到——文件裡可以直接說「不受影響」，
-    但順手提一句原因，免得以後有人照著理論去修一個不存在的問題。
-  - `::selection`、Custom Highlight API（`::highlight()`）、以及所有
-    DOM 結構型選擇器（`:first-child`、`:has()`、相鄰選擇器、`:lang()`）
-    都不受影響——這些查的是渲染樹之外的東西（selection/highlight 是文字
-    range，結構選擇器是 DOM 樹），跟 `position` 無關。
+## 已了結（供查）
+
+- ~~兩個 LangDemo figure 的正式 demo 文字~~ → 2026-07 首頁重設計以
+  `.Papers` 四報（太陽中文報 KOI-8 故事四語版）取代，含 demo 正文、
+  分語 dateline、per-lang ruby。`.LangDemo` 構想廢棄。
+- ~~docs.spec 13 紅（文檔空）~~ → hant 7 篇＋en 2 篇已上，docs.spec
+  全綠。
+- ~~a11y select-name／valid-lang~~ → 已修，a11y spec 綠。
