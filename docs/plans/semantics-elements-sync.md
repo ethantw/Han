@@ -253,18 +253,24 @@ station-semantics.css 新增：
 }
 ```
 
-動畫區內加：
+動畫區內加（**定稿機制**：鍵在旗標翻轉本身，不算秒——stagger 疊在
+delay 上時 forwards 只有第 0 字接得到棒，其餘字有直立空窗再彈回，
+Task 3 品質審查抓出後改為 @container；兩道外閘 load-bearing：無
+[data-revealed] 則旗標的 initial 'on' 在 reveal 前就匹配、無
+no-preference 則 reduced-motion 下會動）：
 
 ```css
-    .poem-like i [data-char] {
-      display: inline-block;
-      animation:
-        semantics-char-settle
-        520ms
-        ease-out
-        calc(var(--row-cue) + var(--cue-settle) + var(--i) * 40ms)
-        forwards
-      ;
+    @container style(--han-semantics: on) {
+      .poem-like i [data-char] {
+        display: inline-block;
+        animation:
+          semantics-char-settle
+          520ms
+          ease-out
+          calc(var(--i) * 40ms)
+          both
+        ;
+      }
     }
 ```
 
@@ -415,6 +421,11 @@ station-semantics.css 新增：
 - [ ] 用戶設 --han-text-decoration-inset: 0（核心退出閘，with-js.css:22）
   時 filled animation 仍釘住 .125em——記為已知取捨，不修。
 - [ ] 第 1 行兩顆 u 只有第一顆被 stamp：確認第二顆古騰堡無 margin。
+- [ ] 窄視窗折行：第五行 [data-char] span 邊界緊跟「，」的行首禁則
+  （Chrome／Safari 各測；atomic inline 的 kinsoku 實作有出入紀錄）。
+- [ ] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
+- [ ] revealed 終態 inline-block 常駐：對 justification／text-autospace
+  無影響抽查；reduced-motion 下 span 為 plain inline。
 - [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
   Task 7 Step 4（本 task 只確認 Task 1–5 沒弄壞既有 hover）。
 - [ ] 註解字句兩處（Task 1 複審遺留，非阻塞）：「這兩行 address」改
