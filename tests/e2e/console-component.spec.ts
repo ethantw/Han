@@ -40,7 +40,7 @@ const openGroupOf = (page: Page, cfgKey: string) =>
 
 test.describe('bare fixture — no home.css', () => {
   test('renders, token fallbacks paint, a control write reaches the target', async ({ page }) => {
-    await page.goto('/test/console-fixture.html')
+    await page.goto('/tests/e2e/fixtures/console-fixture.html')
 
     const $console = page.locator('han-console')
     await expect($console).toBeVisible() // upgraded → :not(:defined) guard released
