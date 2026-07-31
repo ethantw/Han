@@ -16,7 +16,13 @@
  *
  * Mechanism
  * ─────────
- * Every semantic rule below lives inside `@container style(--han-semantics: on)`.
+ * Nearly every rule below lives inside `@container style(--han-semantics: on)`.
+ * Two declarations in § Document deliberately do not, and each carries a
+ * comment saying why: the root font stack (belongs to the font layer, and
+ * `:root` has no ancestor for a style query to read) and
+ * `text-decoration-inset` (no engine implements it and style queries at the
+ * same time). Everything else is gated.
+ *
  * Since `@property` registers `initial-value: on`, the query matches by default.
  * Setting `--han-semantics: off` on an ancestor makes that element the nearest
  * style container; its value is `off`, the query stops matching, and the styles
@@ -197,45 +203,123 @@
  * ========================================================================== */
 
 /**
- * Set default fonts and refine styles of underlines on the root element.
+ * Use the default font stack for the document (starts with `system-ui`).
  *
- * 1. Use the default font stack for the document (starts with `system-ui`).
- * 2. Make sure the lines of two (or more) adjacent underlined or struck-through
- *    elements are visually distinguishable.
- * 3. Make sure underlines are slightly apart from the annotated text.
+ * `:root` has no ancestor, so style queries cannot target it — this
+ * declaration is unconditional and cannot be opted out via
+ * `--han-semantics`. That is deliberate rather than a limitation:
  *
- * `:root` has no ancestor; style queries cannot target it. These styles are
- * unconditional and cannot be opted out via `--han-semantics`.
+ * • The font stack is the font layer's identity, not a semantic refinement;
+ *   opting out of it belongs to fonts.css's own toggles (`--han-use-*`,
+ *   `--han-webfont-*`), not to `--han-semantics`.
+ * • `han.basic.css` ships this file WITHOUT fonts.css, so the root has to
+ *   get a CJK default from somewhere, and this is the only candidate.
+ * • Root-relative font units (`ch`, `ex`) resolve against the root's own
+ *   font, so moving this declaration to `<body>` would silently shift them.
+ *
+ * The two decoration-line declarations that used to live here have moved
+ * out: `text-underline-offset` into the `@container` gate below (it has to
+ * re-resolve its `em` per element anyway), `text-decoration-inset` onto
+ * `:where(*)` immediately below (it does not inherit — see there).
  */
 :where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
-  font-family: var(--han-font-default); /* 1 */
-  text-decoration-inset: var(--han-text-decoration-inset); /* 2 */
-  text-underline-offset: var(--han-underline-offset); /* 3 */
+  font-family: var(--han-font-default);
 }
 
 /**
- * Re-declare `text-underline-offset` on `:where(*)`, not an enumerated
- * list of underline-bearing elements — same aggressive-net reasoning as
- * the pseudo-italic correction below: a developer can underline literally
- * anything, and enumerating known tags always misses the next one. It only
- * inherits as the COMPUTED value, not the `var()` token stream, so a
- * `:root`-only declaration resolves `.125em` once against `:root`'s own
- * font-size (→ 2px) and every descendant inherits that fixed px regardless
- * of its own size; redeclaring here re-resolves the `em` fresh per element.
+ * Make sure the lines of two (or more) adjacent underlined or struck-through
+ * elements are visually distinguishable.
  *
- * Kept OUTSIDE the `@container style(--han-semantics: on)` gate below —
- * this is a correctness fix, not a semantic enhancement users should be
- * able to opt out of.
+ * On `:where(*)`, NOT `:root`: `text-decoration-inset` is not an inherited
+ * property. Verified in Firefox, currently the only engine that implements
+ * it — with the declaration on `:root`, `html` computes the given length,
+ * `body` computes `0px`, and a nested `<u>` stays at `auto`. A `:root`-only
+ * declaration therefore never reaches anything that can carry a decoration
+ * line; every element has to be declared on directly (an author-level
+ * `:where(*)` declaration does win over the UA value on `<u>` / `<s>`).
+ *
+ * Kept OUTSIDE the `@container style(--han-semantics: on)` gate, unlike
+ * almost everything else in this file, because engine support for the two
+ * features is currently disjoint: Firefox has `text-decoration-inset` but
+ * not style queries, Chromium/WebKit have style queries but not the
+ * property. Inside the gate this rule would be unreachable in the only
+ * engine that could honour it — dead in every browser rather than one.
+ *
+ * No opt-out story to explain either way: `--han-text-decoration-inset`
+ * registers `initial-value: auto`, so this resolves to the UA default
+ * until the user sets the variable.
+ *
+ * TODO(engine-convergence): once one engine ships BOTH the property and
+ * style queries, move this inside the gate next to `text-underline-offset`
+ * and drop this note. Until then the `@supports not (text-decoration-inset:
+ * auto)` fallback further down is what actually does the work in
+ * Chromium/WebKit.
  */
 :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
-  text-underline-offset: var(--han-underline-offset);
+  text-decoration-inset: var(--han-text-decoration-inset);
 }
 
 /* ========================================================================== *
  * Text-level semantics
  * ========================================================================== */
 
+/**
+ * Opting out of `text-underline-offset` needs an explicit counter-value, not
+ * just absence of the gated rule below — the one place in this file where
+ * the "nothing to revert" mechanism described at the top does not hold.
+ *
+ * Why: style queries read an ANCESTOR, and `text-underline-offset` inherits.
+ * An author writing `article { --han-semantics: off }` still leaves the
+ * `<article>` itself querying ITS parent, which is `on`, so the article does
+ * receive `.125em` — and then hands the resolved px down to the very subtree
+ * the opt-out was meant to protect. Measured before this block existed: the
+ * subtree computed 2px, not `auto`.
+ *
+ * The same shape as lines.css's `--han-text-autospace: no-autospace` branch,
+ * which spells out `text-autospace: no-autospace` for the same reason.
+ *
+ * Only `text-underline-offset` needs this. The other gated rules set
+ * non-inherited properties (`font-style`, `text-emphasis`, `content`), so the
+ * boundary element receiving them cannot leak anything downward.
+ */
+@container style(--han-semantics: off) {
+  :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
+    text-underline-offset: auto;
+  }
+}
+
 @container style(--han-semantics: on) {
+  /**
+   * Make sure underlines are slightly apart from the annotated text.
+   *
+   * On `:where(*)`, not an enumerated list of underline-bearing elements —
+   * same aggressive-net reasoning as the pseudo-italic correction below: a
+   * developer can underline literally anything, and enumerating known tags
+   * always misses the next one.
+   *
+   * It also has to be declared per element rather than once on `:root`:
+   * `text-underline-offset` inherits as the COMPUTED value, not the `var()`
+   * token stream, so a `:root`-only declaration resolves `.125em` once
+   * against `:root`'s own font-size (→ 2px) and every descendant inherits
+   * that fixed px regardless of its own size. Declared here it re-resolves
+   * the `em` fresh per element — measured: a 32px descendant computes 4px
+   * through this rule, 2px through a `:root`-only declaration.
+   *
+   * There is deliberately NO `:root` companion declaration. With one, an
+   * author setting `--han-semantics: off` would inherit `:root`'s frozen px
+   * instead of falling back to the UA default — Han.css's offset, mis-
+   * resolved, which is worse than either consistent state. Without it,
+   * `off` means `text-underline-offset: auto`, as it should.
+   *
+   * Cost of living inside the gate: engines without style queries (Firefox
+   * today) get no offset at all. That is already true of every other rule
+   * in this file and of all of lines.css, so it is consistent with how v4
+   * degrades rather than a new failure mode.
+   */
+  :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
+    text-underline-offset: var(--han-underline-offset);
+  }
+
   /**
    * Pseudo-italic correction.
    *
