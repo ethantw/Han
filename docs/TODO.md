@@ -25,6 +25,15 @@
   .Papers 四報設計解決；②站叄懸掛卡已重做。餘：③著重號懸空查證、
   ④遊樂場書名號承諾、⑤LayerMap「運行時依賴1」點名（hyperly）、
   ⑥ssP1「緊要強調之處一如本句」garden path（原定稿的破折號被拿掉）。
+- [ ] **diantenjeom 發版後，標點值 `KV` → `KLR` 收尾。** 標點公約已與文種
+  解耦（`docs/plans/punctuation-conventions-cross-locale.md`，2026-07-31
+  完工），過渡期採方案 (b)：`src/css/fonts.css` 的 KV 區塊 font stack 同時列
+  `'Diantenjeom … KLR'` 與 `'… KV'`，跨過上游改名與發版之間的空窗（實測：
+  KLR 今天不存在、stack 走到 KV；發版後自動改吃 KLR，han.css 不必動）。
+  上游一發版就做三件事：拆掉 stack 裡的 `… KV`；值 `KV` → `KLR`（
+  `@property` syntax、initial-value、console 四顆 select、codegen DEFAULTS、
+  `src/docs/fonts.md`、首頁四語樣張、codegen.test）；CHANGELOG 記一筆破壞性
+  改名（`--han-punctuation-vertical-ko` → `--han-punctuation-ko` 也一併記）。
 - [ ] **repo URL 三處對齊。** package.json（ethantw/Han）、首頁
   footer（hanzipro/han.css）、git remote css（hanzipro/css）——定
   一個 canonical，RC tarball 別把錯的發出去。
