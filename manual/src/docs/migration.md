@@ -157,7 +157,7 @@ v3自host一整套Han字體家族；v4的字體是外部資產，走CDN／npm切
 |---------|----|
 | Han Heiti／Han Songti | 尚古黑體／尚古明體（Shanggu，ziano CDN `unicode-range`切片） |
 | Han Kaiti | 霞鶩文楷TC（LXGW，可換芫荽等） |
-| Biaodian Pro（CNS／GB／Pro） | Diantenjeom（MOE／GB／JIS／KV） |
+| Biaodian Pro（CNS／GB／Pro） | Diantenjeom（MOE／GB／JIS／KV，四者對四個語言全面開放） |
 | Zhuyin Heiti／Zhuyin Kaiti | Han Zhuyin Serif（內建） |
 | Numeral LF／TF、Latin Italic、Romanization Sans | 移除 |
 

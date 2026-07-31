@@ -32,18 +32,24 @@ title: 字體
 
 | 變量 | 值 | 預設 | 作用語言 |
 |------|----|------|---------|
-| `--han-punctuation-hant` | `JIS`｜`MOE`｜`GB`｜`off` | `MOE` | `:lang(zh)`（繁中） |
-| `--han-punctuation-hans` | `JIS`｜`MOE`｜`GB`｜`off` | `GB` | `:lang(zh-Hans)` |
-| `--han-punctuation-ja` | `JIS`｜`MOE`｜`GB`｜`off` | `JIS` | `:lang(ja)` |
-| `--han-punctuation-vertical-ko` | `KV`｜`off` | `KV` | `:lang(ko)`直排 |
+| `--han-punctuation-hant` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `MOE` | `:lang(zh)`（繁中） |
+| `--han-punctuation-hans` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `GB` | `:lang(zh-Hans)` |
+| `--han-punctuation-ja` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `JIS` | `:lang(ja)` |
+| `--han-punctuation-ko` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `KV` | `:lang(ko)` |
 
 - `JIS`：日規（JIS X 0208），句末點號（，。、）靠格尾，其餘置中。
 - `MOE`：教育部標準，主要標點一律置中於全形格。
 - `GB`：國標（GB/T 15834），八個主要標點一律靠格尾。
-- `KV`：韓文直排標準（僅涵蓋直排；橫排的韓漢混排不在Diantenjeom範圍）。
+- `KV`：W3C [KLReq][klreq]（韓文排版要件）。括號與引號（cl1／cl2）貼齊格的一端；`！？：；`與間隔號（cl6／cl7）直排時保持正立而不旋轉；`。、`（cl8／cl9）全形貼角。韓國自2015年한글맞춤법刪去直排章節後便無成文的直排標點規範，KLReq是現行的參照。
 - `off`：關閉該語言的Diantenjeom，標點回落到正文字體自身的字形。
 
-可任意搭配，例如簡中文本配置中式標點。這組設定同時參與[行尾懸掛的自動判準](./lines.html)：置中式（MOE）不懸掛、偏倚式（JIS／GB）懸掛。
+**慣例與語言是解耦的。** 四個慣例對四個語言全面開放——日文配MOE、繁中配JIS、韓文配GB都合法。Diantenjeom四個變體覆蓋同一組CJK標點碼位，且刻意以排版規範而非語言命名，就是為了自由搭配；上表的預設值只是合理的起點，不是限制。選的是版面調性，不是語言。
+
+橫排韓文另有一層：KLReq要求橫排韓文使用半形西文`.`與`,`，那是**內容層**的選擇（作者敲哪個字元），標點字體代勞不了。`KV`給橫排韓文的是括號家族，給直排韓文的才是整套慣例。
+
+這組設定同時參與[行尾懸掛的自動判準](./lines.html)：置中式（MOE）不懸掛，偏倚式（JIS／GB／KV）懸掛——四個語言同一條規則。
+
+[klreq]: https://www.w3.org/TR/klreq/
 
 ## 傳承字形
 
