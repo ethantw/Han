@@ -188,6 +188,29 @@
   to { text-decoration-color: currentColor; }
 }
 
+/* 乙式《》是翻旗才存在的 content（core 的 ::before/::after 只在
+   --han-semantics: on ＋ 祖先 --han-cite-title-marks: bracket 之下才給；
+   48px 迴流的舊註記錄在案，見 off-gate 區），本動畫把「彈出」改成
+   「長出」——inline-size 0→1em 推開行文、墨色同步浮現。規則同樣鍵在
+   @container 的旗標翻轉（同逐字歸正／甲式），content 誕生的那一瞬起跑。
+   inline-block 是 inline-size 生效的條件，代價已量：atomic inline 斷
+   pair-squeeze，而第 7 行「另見《真實字符論》。」的 》。 恰是一組全形
+   標點對——首頁載 han.lines.css，:root 的 text-spacing-trim: trim-start
+   本會擠掉 .5em（headless Chrome 實測 24px 下 cite 156→168px，直排行長
+   348→360px）。此處是明知的取捨：換「長出」這齣戲
+   （diantenjeom/docs/pair-squeeze-and-markup.md）。
+   fill both ⇒ 結束定格 1em，與全形字實寬一致，無裁切。 */
+@keyframes semantics-bracket-in {
+  from {
+    color: transparent;
+    inline-size: 0;
+  }
+  to {
+    color: currentColor;
+    inline-size: 1em;
+  }
+}
+
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
    詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
@@ -871,6 +894,20 @@
               semantics-wavy-in 520ms ease-out both
             ;
           }
+          /* 乙式《》同理：pseudo 隨翻旗誕生，動畫即刻起跑（見
+             @keyframes semantics-bracket-in）。pseudo 一律不包進
+             :where()——forgiving list 會靜默吞掉它（core 的
+             src/css/semantics.css:370-376 記著書名號乙式就是這樣出過事）。
+             選擇器寫寬無妨：::before/::after 只存在於 bracket 祖先之下，
+             第 6 行的 span 覆寫成 wavy ⇒ 沒有這兩個盒，規則落空無害。
+             與行級的 :is(cite, em) 那條不打架——pseudo 是另外的盒，不是
+             同一元素上的 animation 簡寫覆寫。 */
+          .poem-like cite::before,
+          .poem-like cite::after {
+            display: inline-block;
+            overflow: clip;
+            animation: semantics-bracket-in 520ms ease-out both;
+          }
         }
         address::before {
           animation: semantics-ghost-cue 820ms ease-out var(--row-cue);
@@ -981,8 +1018,9 @@
          the orthographic gap, with no flag involved.
 
          KNOWN AND NOT FIXED HERE: 書名號乙式's 《》 are generated content
-         and take real inline space, so row 7 still shortens by 36px when
-         the styles go off. Reserving that space would mean drawing brackets
+         and take real inline space, so row 7 still shortens by 48px when
+         the styles go off（掛上 inline-block 後 》。 不再擠壓，48px 為新
+         實測）. Reserving that space would mean drawing brackets
          the browser never produces — a bigger lie than an 11px reflow, and
          it belongs to the caption's promise, not to a layout tweak. */
 
@@ -1034,6 +1072,15 @@
          the switch just restored. One flag on the subtree root covers
          every row, since the style query only ever needs SOME ancestor. */
       article * {
+        animation: none;
+      }
+      /* 掛載規則本身就在 @container style(--han-semantics: on) 內，關模組
+         時 article 的 --han-semantics: off 已讓它整條落空（content 隨
+         sheet 一起走，pseudo 根本不存在）。這一刀是保險：pseudo 不在
+         `article *` 的覆蓋內，日後若把掛載規則搬出 container query，
+         沒有它就會被 filled keyframe 把透明態釘死。 */
+      article cite::before,
+      article cite::after {
         animation: none;
       }
     }
