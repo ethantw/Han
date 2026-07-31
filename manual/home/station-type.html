@@ -336,7 +336,8 @@
         punctuation control (punct-lang.js): the console config is the SINGLE
         source of truth — the samples just inherit the global
         --han-punctuation-* the console applies to <main>, no local override.
-        Options mirror the console's sets: zh／ja JIS·MOE·GB·off, ko KV·off. -->
+        Options mirror the console's sets — 慣例與文種已解耦，四格同款
+        五選一：JIS·MOE·GB·KV·off。 -->
   <figure class="PunctLang">
     <ul>
       <li lang="zh-Hant">
@@ -345,6 +346,7 @@
           <option value="JIS">JIS</option>
           <option value="MOE" selected>MOE</option>
           <option value="GB">GB</option>
+          <option value="KV">KV</option>
           <option value="off">off</option>
         </select></label>
       </li>
@@ -354,6 +356,7 @@
           <option value="JIS">JIS</option>
           <option value="MOE">MOE</option>
           <option value="GB" selected>GB</option>
+          <option value="KV">KV</option>
           <option value="off">off</option>
         </select></label>
       </li>
@@ -363,12 +366,16 @@
           <option value="JIS" selected>JIS</option>
           <option value="MOE">MOE</option>
           <option value="GB">GB</option>
+          <option value="KV">KV</option>
           <option value="off">off</option>
         </select></label>
       </li>
       <li lang="ko-Hant">
         <p>베트・구룬의 <ruby>次例<rt>차례</rt></ruby>가 됐다。<ruby>地球<rt>지구</rt></ruby> <ruby>移民<rt>이민</rt></ruby>의 <ruby>後裔<rt>후예</rt></ruby>로 <ruby>三體<rt>삼체</rt></ruby> <ruby>移住區<rt>이주구</rt></ruby>에서 태어난 그는 세 살에 <ruby>神經<rt>신경</rt></ruby> <ruby>共振<rt>공진</rt></ruby> 칩을 넣었고，<ruby>地球<rt>지구</rt></ruby> 땅을 밟은 것은 지난해가 처음이다。일어나서 4.7<ruby>秒<rt>초</rt></ruby>를 <ruby>沈默<rt>침묵</rt></ruby>한다——이 <ruby>時間<rt>시간</rt></ruby>이면 <ruby>三體人<rt>삼체인</rt></ruby>이 『<ruby>三體通史<rt>삼체통사</rt></ruby> <ruby>十萬年<rt>십만년</rt></ruby>』한 <ruby>部<rt>부</rt></ruby> <ruby>分量<rt>분량</rt></ruby>의 <ruby>知識<rt>지식</rt></ruby>을 주고받기에 <ruby>充分<rt>충분</rt></ruby>하다——그러고는 말했다。「말하고 싶은 건……아니，『말한다』는 <ruby>單語<rt>단어</rt></ruby> <ruby>自體<rt>자체</rt></ruby>가 이미 너무 느려요……여러분，여러분 <ruby>地球人<rt>지구인</rt></ruby>은 정말 아직도 입을 쓰나요？」</p>
         <label>韓<select>
+          <option value="JIS">JIS</option>
+          <option value="MOE">MOE</option>
+          <option value="GB">GB</option>
           <option value="KV" selected>KV</option>
           <option value="off">off</option>
         </select></label>
