@@ -203,14 +203,22 @@ body > footer a { color: inherit; }
   line-height: 2;
 }
 
-/* === OFF mechanism: cascade variable overrides === */
-
+/* === OFF mechanism: cascade variable overrides ===
+ *
+ * All current v4 API — one variable per module concern, set on the cell
+ * (`<article class="demo-off">`) so the style queries its DESCENDANTS run
+ * read `off` from this ancestor:
+ *   - autospace / punctuation refinement (lines.css)
+ *   - prose spacing (prose.css; `<article>` defaults it to `on`)
+ *   - Diantenjeom punctuation faces, per locale (fonts.css) */
 .demo-off {
-  --han-text-autospace: auto;
-  --han-text-spacing-trim: auto;
-  --han-hanging-punctuation: none;
-  container-name: han-revert-prose;
-  --han-use-curated-fonts: false;
+  --han-text-autospace: no-autospace;
+  --han-punctuation-refinement: none;
+  --han-prose: off;
+  --han-punctuation-hant: off;
+  --han-punctuation-hans: off;
+  --han-punctuation-ja: off;
+  --han-punctuation-vertical-ko: off;
 }
 
 /* === Section 1·a: text-autospace JS-driven modes === */

@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Han.css 示例</title>
 <link rel="stylesheet" href="/han/han.css">
+<!-- Diantenjeom punctuation webfonts — §4's `--han-punctuation-*` demo
+     selects these families; without the CDN CSS the slots resolve to
+     nothing and ON/OFF cells render identically. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest/dist/diantenjeom.css">
 <link rel="stylesheet" href="/demo.css">
 <script type="module">
 const dynImport = new Function('s', 'return import(s)')

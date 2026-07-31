@@ -10,18 +10,18 @@
   <article class="demo-on"  lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락.</p><blockquote>인용 단락.</blockquote><ul><li>목록 항목.</li></ul></article>
   <article class="demo-off" lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락.</p><blockquote>인용 단락.</blockquote><ul><li>목록 항목.</li></ul></article>
 </div>
-<p class="demo-meta">機制：<code>container-name: han-prose</code>（<code>&lt;article&gt;</code> 預設啓用）；縮排量：<code>--han-prose-indent</code>。OFF 段套 <code>container-name: han-revert-prose</code>。</p>
+<p class="demo-meta">機制：<code>--han-prose</code> style query（<code>&lt;article&gt;</code> 預設 <code>on</code>）；縮排量：<code>--han-prose-indent</code>。OFF cell 設 <code>--han-prose: off</code>，其子孫的 style query 讀到即全數不生效。</p>
 
 <div class="sr-api-block">
   <h3>9·a・API 開關示範 — 子樹 opt-out</h3>
-  <p class="description">於 <code>&lt;article&gt;</code> 內任意子樹設 <code>container-name: han-revert-prose; container-type: size</code>，該子樹的標題邊距、縮排等皆以 <code>revert-layer</code> 還原為瀏覽器預設，而外層 <code>&lt;article&gt;</code> 的精細排版不受影響。</p>
+  <p class="description">於 <code>&lt;article&gt;</code> 內任意子樹的<strong>祖先</strong>上設 <code>--han-prose: off</code>，該子樹的標題邊距、縮排等一概不生效（style query 不命中即無事發生，無需 revert），而外層 <code>&lt;article&gt;</code> 的精細排版不受影響。</p>
   <article class="sr-api-host" lang="zh-Hant">
     <h4>外層 — 套精細排版</h4>
     <p>外層段落自帶縮排與邊距。</p>
     <blockquote>外層引文，內縮 2em。</blockquote>
     <ul><li>外層列表項目。</li></ul>
 
-    <div style="container-name: han-revert-prose; container-type: size;">
+    <div style="--han-prose: off;">
       <p class="sr-api-label">內層 — opt-out 子樹</p>
       <h4>內層標題</h4>
       <p>段落 — 三大瀏覽器皆退回 UA 預設邊距。</p>
@@ -29,5 +29,5 @@
       <ul><li>列表項目。</li></ul>
     </div>
   </article>
-  <p class="demo-meta">機制：<code>@container han-revert-prose { … revert-layer … }</code>，source-order tiebreak 勝出覆蓋外層 on-rules。</p>
+  <p class="demo-meta">機制：<code>@container style(--han-prose: on)</code> 只查<strong>祖先</strong>——子樹祖先標成 <code>off</code>，query 不命中，規則根本不套用，沒有東西需要還原。</p>
 </div>

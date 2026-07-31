@@ -9,13 +9,14 @@ test('demo page renders 16 sections', async ({ page }) => {
 })
 
 test('cell counts: standard / autospace-replace / pure-display grids', async ({ page }) => {
-  // 14 standard sections × 8 cells (4 lang × on/off) = 112
+  // 59 on/off pairs across the 14 standard sections (most run 4 langs ×
+  //   on/off = 8 cells; a few sections carry extra locale cells)   = 118
   //  1 autospace-replace section × 8 cells (4 lang × replace/strict) =  8
-  //  1 pure-display section × 4 cells (4 lang only)              =  4
-  // Total cells under .demo-grid:                                  124
-  await expect(page.locator('.demo-grid > article')).toHaveCount(124)
-  await expect(page.locator('.demo-grid > .demo-on')).toHaveCount(56)
-  await expect(page.locator('.demo-grid > .demo-off')).toHaveCount(56)
+  //  1 pure-display section × 4 cells (4 lang only)                 =  4
+  // Total cells under .demo-grid:                                    130
+  await expect(page.locator('.demo-grid > article')).toHaveCount(130)
+  await expect(page.locator('.demo-grid > .demo-on')).toHaveCount(59)
+  await expect(page.locator('.demo-grid > .demo-off')).toHaveCount(59)
   await expect(page.locator('.demo-grid > .demo-replace')).toHaveCount(4)
   await expect(page.locator('.demo-grid > .demo-strict')).toHaveCount(4)
   await expect(page.locator('.demo-grid.pure-display > article')).toHaveCount(4)
