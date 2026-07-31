@@ -144,6 +144,25 @@
 }
 
 
+/* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
+   詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
+   值即原 inline --row-cue，行為不變，只是把秒數收攏成契約。 */
+#station-semantics {
+  --cue-proper: 200ms;
+  --cue-emphasis: 400ms;
+  --cue-weight: 800ms;
+  --cue-plain: 1000ms;
+  --cue-wavy: 1200ms;
+  --cue-bracket: 1400ms;
+
+  /* 交棒點：行旗標的 step-end 在 cue+520ms 翻轉；Task 2–5 的新動畫
+     全部從 calc(cue + var(--cue-settle)) 起跑，勿再寫字面 520ms。
+     這六＋一個名字是 HTML inline style 的契約，改名要同步
+     station-semantics.html 的 <g> 區。 */
+  --cue-settle: 520ms;
+}
+
+
 #station-semantics {
   & {
     position: relative;
@@ -715,7 +734,8 @@
 
     /* ── the one-shot correction ──────────────────────────────────────
        The band arrives in the browser's own hand and corrects itself
-       column by column, 200ms apart, as the station scrolls into view.
+       column by column on the shared `--cue-*` clock, as the station
+       scrolls into view.
        Two reasons it walks instead of flipping at once: a simultaneous
        change is a single event the eye can't parse into causes, and the
        stagger is what lets each tag ghost flash at the exact instant ITS
@@ -771,20 +791,27 @@
         }
       }
 
-      /* One beat per row, in reading order: the letter arrives, the poem
-         runs, the signature closes. Spelled out rather than computed —
+      /* One beat per mark, NOT in reading order — rows sharing a mark light
+         together (that mapping is what the diagram teaches), so row 3 now
+         fires with row 1, ahead of row 2. Spelled out rather than computed —
          there is no sibling index in CSS until `sibling-index()` lands, and
          literals read better than nth-child arithmetic. `nth-of-type`, not
          `nth-child`: the <br /> separators are siblings too and would
-         otherwise eat half the beats. */
+         otherwise eat half the beats.
+
+         行拍按記號歸屬取圖解同一個 token：1、3 行專名號同亮，2 著重、
+         4 字重、5 楷體、6 甲式、7 乙式。 */
+      /* 註：這兩行 address 拍點已因信封移出 figure 而失效（見 .Envelope
+         區的 0ms／200ms 才是真拍）；死碼清理連同 semantics-ghost-cue
+         記在 plan Task 6。 */
       address:not([lang])          { --row-cue: 0ms; }
-      .poem-like > span:nth-of-type(1) { --row-cue: 200ms; }
-      .poem-like > span:nth-of-type(2) { --row-cue: 400ms; }
-      .poem-like > span:nth-of-type(3) { --row-cue: 600ms; }
-      .poem-like > span:nth-of-type(4) { --row-cue: 800ms; }
-      .poem-like > span:nth-of-type(5) { --row-cue: 1000ms; }
-      .poem-like > span:nth-of-type(6) { --row-cue: 1200ms; }
-      .poem-like > span:nth-of-type(7) { --row-cue: 1400ms; }
+      .poem-like > span:nth-of-type(1) { --row-cue: var(--cue-proper); }
+      .poem-like > span:nth-of-type(2) { --row-cue: var(--cue-emphasis); }
+      .poem-like > span:nth-of-type(3) { --row-cue: var(--cue-proper); }
+      .poem-like > span:nth-of-type(4) { --row-cue: var(--cue-weight); }
+      .poem-like > span:nth-of-type(5) { --row-cue: var(--cue-plain); }
+      .poem-like > span:nth-of-type(6) { --row-cue: var(--cue-wavy); }
+      .poem-like > span:nth-of-type(7) { --row-cue: var(--cue-bracket); }
       address[lang]                { --row-cue: 1600ms; }
 
       /* The one mark that can genuinely tween: `font-weight` is a number,
