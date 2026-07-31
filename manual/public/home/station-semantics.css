@@ -23,17 +23,6 @@
   to   { --han-semantics: on; }
 }
 
-/* The row's tag ghosts brighten as it turns — the whole point of the
-   stagger is to pin «THIS tag» to «THAT change» at one instant, and a
-   label that stays at rest opacity forfeits that. No fill mode on
-   purpose: once it has played, the base rule (and :hover) owns the
-   ghosts again. */
-@keyframes semantics-ghost-cue {
-  0%        { opacity: 0.42; }
-  18%, 62%  { opacity: 1; }
-  100%      { opacity: 0.42; }
-}
-
 /* THE PSEUDO-ITALIC STANDING UP — and a warning, because this does LESS
    than it looks like it does.
 
@@ -71,10 +60,11 @@
 
 /* A tint on the three elements whose mark actually arrives — 書名號,
    著重號, 楷體 — held to a whisper of accent and peaking at the exact
-   frame the mark lands. An earlier pass ran this on the whole <li> at
-   72% accent with an opacity dip: far too loud, and it tinted text that
-   wasn't changing at all. `currentColor` is why one property suffices —
-   the brackets and the dots take their ink from it. */
+   frame the mark lands. An earlier pass ran this on the whole LINE (the
+   `.poem-like > span` that carries the row) at 72% accent with an opacity
+   dip: far too loud, and it tinted text that wasn't changing at all.
+   `currentColor` is why one property suffices — the brackets and the dots
+   take their ink from it. */
 @keyframes semantics-mark-cue {
   0%, 100% { color: var(--palette-text); }
   52%      { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
@@ -143,17 +133,17 @@
   to   { --settle: 0; }
 }
 
-/* 專名號的入場：底線不淡入——它是引擎在兩態都會畫的那一條（:476-479
-   「the one mark the ENGINE also draws」的 provenance 論證，off 態亦
-   然），戲只有一場「裂開」：相鄰縫從 cheat 的 0 滑開到正字法的縫——
-   與圖解 proper 行逐格同相（settle 0 靠攏 → 1 滑開，同為線性跨滿整
+/* 專名號的入場：底線不淡入——它是引擎在兩態都會畫的那一條（圖解
+   [data-mark="proper"] [data-rule] 那條「the one mark the ENGINE also
+   draws」的 provenance 論證，off 態亦然），戲只有一場「裂開」：相鄰縫
+   從 cheat 的 0 滑開到正字法的縫——與圖解 proper 行逐格同相（settle 0 靠攏 → 1 滑開，同為線性跨滿整
    窗、同 ease-out）。相連態不是靜止態：reveal 之前沒有動畫，畫面上就
    是正字法的縫；`both` 的 backwards fill 只撐住 reveal 到 cue 之間的
    那段 delay，所以縫是在 reveal 那一瞬先合起來、再裂開——與檔頭
    `semantics-settle` 用 `both` 把整條 band 先跳回「瀏覽器的手」是同一
-   個約定（:8-9）。終值走核心同一個變數；本地 fallback 是防「模組
-   sheet 卸載時未定義 var() 毒化」的防呆（workspace 陷阱集），off-gate
-   的 animation: none 實務上先一步接管。 */
+   個約定（見該 @keyframes 的註）。終值走核心同一個變數；本地 fallback
+   是防「模組 sheet 卸載時未定義 var() 毒化」的防呆（workspace 陷阱
+   集），off-gate 的 animation: none 實務上先一步接管。 */
 @keyframes semantics-u-split {
   from { margin-inline-end: 0; }
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
@@ -214,7 +204,11 @@
 /* ── replay 雙胞胎 ──────────────────────────────────────────────────
    與各自的入場 keyframes 逐幀相同，只差名字——CSS 動畫同名重宣告
    不會重啟（mark-replay 的量測論證，見其 @keyframes 註），所以 hover
-   重播必須換一個名字才能從第一幀起跑。幀改動時兩份要同步改。 */
+   重播必須換一個名字才能從第一幀起跑。幀改動時兩份要同步改。
+   時長約定：replay 一律 620ms，與圖解的 mark-replay 同起同落（入場各
+   走各的 520ms，是另一回事）。兩個例外，都因為時長本身有意義：逐字的
+   char-settle-replay 留 520ms＋每字 40ms 錯拍（節奏是它的內容），
+   mark-cue-replay 留 1000ms（52% 峰值的墨色一閃，縮短會改變曲線形狀）。 */
 @keyframes semantics-u-split-replay {
   from { margin-inline-end: 0; }
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
@@ -251,11 +245,13 @@
   }
 }
 
-
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
    詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
    值即原 inline --row-cue，行為不變，只是把秒數收攏成契約。 */
 #station-semantics {
+  /* 這六個名字是 HTML inline style 的契約——圖解的 <g> 逐行寫
+     `--row-cue: var(--cue-…)`，改名要同步 station-semantics.html 的
+     <g> 區。 */
   --cue-proper: 200ms;
   --cue-emphasis: 400ms;
   --cue-weight: 800ms;
@@ -263,11 +259,9 @@
   --cue-wavy: 1200ms;
   --cue-bracket: 1400ms;
 
-  /* 交棒點：行旗標的 step-end 在 cue+520ms 翻轉；Task 2–5 的新動畫
-     全部從 calc(cue + var(--cue-settle)) 起跑，勿再寫字面 520ms。
-     這六＋一個名字是 HTML inline style 的契約，改名要同步
-     station-semantics.html 的 <g> 區。 */
-  --cue-settle: 520ms;
+  /* 交棒點＝cue+520ms（行旗標 step-end 翻轉的那一瞬）。新動畫一律鍵在
+     @container 的旗標翻轉上，不算秒——曾為此設的 --cue-settle token
+     已因此退役，零消費者。 */
 }
 
 
@@ -811,9 +805,10 @@
     }
 
     /* ── 前／後 switch ────────────────────────────────────────────────
-       `--han-semantics: off` on the <ul> drops that whole subtree back to
-       browser defaults — the synthetic obliques this station exists to
-       argue against. Nothing here imitates that state; it IS that state.
+       `--han-semantics: off` on the poem's <article> drops that whole
+       subtree back to browser defaults — the synthetic obliques this
+       station exists to argue against. Nothing here imitates that state;
+       it IS that state.
        `.Toggle` is the shared switch primitive (home/controls.css), which
        consumes the console's `--_*` token layer; that layer is adopted
        into the shadow only, so the tokens it needs are re-pointed at the
@@ -904,8 +899,9 @@
            --han-semantics 翻 on 的那一刻才開始匹配——動畫起點＝翻旗瞬間，
            不必再算 cue＋settle；both 的 backwards fill 把 -12deg 撐滿每字
            的錯拍等待（翻旗前規則不存在，不會疊在還活著的合成斜體上——
-           雙重斜與直立空窗兩個雷一次拆掉）。機制同 :662 著重號／wavy 的
-           墨色淡入：style query 讀的是 <i> 從行 span 繼承來的旗標。
+           雙重斜與直立空窗兩個雷一次拆掉）。機制同 article 區
+           `@container style(--han-semantics: off)` 那組著重號／wavy 墨色
+           淡入：style query 讀的是 <i> 從行 span 繼承來的旗標。
            display: inline-block 也只在翻旗後生效——翻旗前 span 是普通
            inline，不碰 pair-squeeze。 */
         @container style(--han-semantics: on) {
@@ -949,9 +945,6 @@
             animation: semantics-bracket-in 520ms ease-out both;
           }
         }
-        address::before {
-          animation: semantics-ghost-cue 820ms ease-out var(--row-cue);
-        }
         /* 裂縫只掛 han.js stamp 的那顆（相鄰對的第一顆）。@supports 閘與
            核心畫縫的機制同一道（src/css/semantics.css:499）——縫是 margin
            畫的才有「裂開」可演；Firefox 用原生 text-decoration-inset，
@@ -975,10 +968,8 @@
 
          行拍按記號歸屬取圖解同一個 token：1、3 行專名號同亮，2 著重、
          4 字重、5 楷體、6 甲式、7 乙式。 */
-      /* 註：這兩行 address 拍點已因信封移出 figure 而失效（見 .Envelope
-         區的 0ms／200ms 才是真拍）；死碼清理連同 semantics-ghost-cue
-         記在 plan Task 6。 */
-      address:not([lang])          { --row-cue: 0ms; }
+      /* 兩幅信箋的拍點不在這條階梯上——信封已移出 figure，0ms／200ms
+         寫在檔尾 .Envelope 區。 */
       .poem-like > span:nth-of-type(1) { --row-cue: var(--cue-proper); }
       .poem-like > span:nth-of-type(2) { --row-cue: var(--cue-emphasis); }
       .poem-like > span:nth-of-type(3) { --row-cue: var(--cue-proper); }
@@ -986,7 +977,6 @@
       .poem-like > span:nth-of-type(5) { --row-cue: var(--cue-plain); }
       .poem-like > span:nth-of-type(6) { --row-cue: var(--cue-wavy); }
       .poem-like > span:nth-of-type(7) { --row-cue: var(--cue-bracket); }
-      address[lang]                { --row-cue: 1600ms; }
 
       /* The one mark that can genuinely tween: `font-weight` is a number,
          so 400→700 interpolates. Everything else in the correction is a
@@ -1136,7 +1126,7 @@
         :root:not([data-han-module-semantics='off']) & .poem-like cite::after {
           animation:
             semantics-bracket-in 520ms ease-out both,
-            semantics-bracket-in-replay 520ms ease-out both
+            semantics-bracket-in-replay 620ms ease-out both
           ;
         }
       }

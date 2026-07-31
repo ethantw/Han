@@ -8,8 +8,9 @@
  */
 export const initSemanticChars = () => {
   for (const $i of document.querySelectorAll('#station-semantics .poem-like i')) {
-    if ($i.querySelector('[data-char]')) continue
-    if ($i.childElementCount) continue // 子元素會被 textContent 摧毀——不演，不毀
+    // 有子元素就不演：一刀同時擋掉重跑（前次包的 span 還在）與外來
+    // markup（textContent 會把它摧毀）。冪等不必另設 [data-char] guard。
+    if ($i.childElementCount) continue
     const chars = [...$i.textContent]
     let index = 0
     $i.replaceChildren(

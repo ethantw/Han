@@ -75,16 +75,18 @@
        are two separate names, adjacent 書名號 are one work and a part of it.
        Same typographic gap, opposite grammar.
 
-       The `<code>` ghosts ARE the markup, floated beside each run by
-       station-semantics.css — `aria-hidden` because a tag name is a picture
-       here, not content (the element itself already carries the meaning).
+       The poem used to float a `<code>` ghost beside every marked run,
+       naming the element. The .MarkDiagram beside it now does that job
+       better — the ghosts said «this is called <cite>», the diagram says
+       «and this is what it becomes» — so they are gone, tag names and all.
 
-       The checkbox hands the whole <ul> back to browser defaults through
-       `--han-semantics: off` (semantics.css § Feature Toggles), so the
-       「前」state is REAL UA output — synthetic obliques and all — never an
-       imitation we drew. That's also why the flag lands on the <ul> and not
-       the <figure>: a style query reads an ANCESTOR, so the caption housing
-       the switch has to stay outside the subtree it switches. -->
+       The console's 語意 module switch hands the whole <article> back to
+       browser defaults through `--han-semantics: off` (semantics.css
+       § Feature Toggles), so the 「前」state is REAL UA output — synthetic
+       obliques and all — never an imitation we drew. That is also why the
+       flag lands on the <article> and not the <figure>: a style query reads
+       an ANCESTOR, so the caption (and everything outside the poem) has to
+       stay out of the subtree it switches. -->
   <!-- The two letterheads used to stand as the band's first and last
        columns; now they literally ride an ENVELOPE — the letter arrives
        addressed to 畢昇 himself, signed from Mainz (the sender columns,
