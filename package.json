@@ -29,6 +29,7 @@
   },
   "files": [
     "dist",
+    "!dist/**/*.map",
     "README.md",
     "README.zh-Hant.md",
     "README.ja.md",
