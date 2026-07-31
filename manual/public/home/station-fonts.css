@@ -40,7 +40,14 @@
     line-height: 1.9;
     color: var(--palette-text);
 
-    p { margin: 0; }
+    h3 {
+      margin-block: 2.5em 0;
+      font-family: var(--han-sans);
+      font-weight: 400;
+    }
+    h3 + p {
+      margin-block-start: 0;
+    }
   }
 
   /* 56rem ≈ the card's 30rem + the gap + a readable second column. Queried on
@@ -82,12 +89,52 @@
   --_bg: var(--palette-bg);
   --_accent: var(--palette-accent);
   --_supplement-text: var(--palette-supplement-text);
-  --_fs-compact: var(--fs-fine);
 
-  margin-block-start: 0.25rem;
-  /* `.Toggle` is inline-flex; as a grid item it would still stretch to the
-     card's full 30rem, making the click target a mostly-empty strip. */
-  justify-self: start;
+  & {
+    /* `.Toggle` is inline-flex; as a grid item it would still stretch to the
+      card's full 30rem, making the click target a mostly-empty strip. */
+    justify-self: start;
+    margin-inline-start: .25rem;
+    /* 開關連同它的標籤不參與收縮：ja 的「目にやさしいモード」被壓到 120px
+      就從詞中間斷開（實測「目にやさし／いモード」），而這是一個點擊目標，
+      斷成兩行既難點也難讀。讓後半句去換行就好。 */
+    flex-shrink: 0;
+
+    font-size: .875rem;
+  }
+
+  p:has(&) {
+    & {
+      display: flex;
+      margin-block: 1.5em 1em;
+      align-items: center;
+      font-family: var(--han-sans);
+      /* 這一截不跟版心同調兩端對齊（頁面的 justify 來自 station-frame.css
+         § main，那是給 30em 以上欄寬用的）。開關佔掉一半，剩給句子的只有
+         十來字，一換行就被撐開——實測 en 的「to hide those frightful」
+         字間肉眼可見地鬆。同 station-lines.css § aside 的取捨。 */
+      text-align: start;
+    }
+    /* 這一句被開關切成兩截，而兩截的長度隨語言差三倍：hant 是「，隱藏驚悚
+       的國字標準字體」十二個字，ja/ko 的整句都壓在標籤之後，en 則是前後
+       各一截。只有句尾那截該讓步：flex item 的最小尺寸預設是 min-content，
+       量到的是整句，把卡片撐破；歸零之後長句在自己的欄位裡換行。
+
+       前綴（開啓／Turn on）反過來一格都不能收：它只有兩三個字，又用
+       `&nbsp;` 綁住不斷行，收縮的結果不是換行而是溢出——實測 en 的
+       「Turn on」被開關壓在身上。 */
+    > span {
+      flex-shrink: 0;
+    }
+    > span.note {
+      flex-shrink: 1;
+      min-inline-size: 0;
+    }
+    &:has(input:checked) .to-turn-on,
+    &:has(input:not(:checked)) .to-turn-off {
+      display: none;
+    }
+  }
 }
 
 .Faces {
