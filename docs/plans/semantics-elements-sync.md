@@ -405,6 +405,9 @@ station-semantics.css 新增：
   transition、楷體行回瀏覽器斜體——無透明殘留、無動畫重播。
 - [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
   Task 7 Step 4（本 task 只確認 Task 1–5 沒弄壞既有 hover）。
+- [ ] 註解字句兩處（Task 1 複審遺留，非阻塞）：「這兩行 address」改
+  「本階梯上下兩端的 address 拍點」並在 address[lang] 行尾補最短回指；
+  token 契約註把 --cue-settle（檔內用）與六個 mark cue（HTML 契約）分開講。
 - [ ] 清掉 figure 內兩行永不命中的 address 拍點與 semantics-ghost-cue（死碼，
   Task 1 品質審查點名）。
 - [ ] 檔頭與 :82-87、:686-693 的「`<ul>`／code ghost」歷史註解順手改掉
