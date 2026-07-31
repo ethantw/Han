@@ -988,7 +988,11 @@
            雙倍縫。拍點讀 --row-cue（本行即 --cue-proper），同區其他動畫
            一律如此。 */
         @supports not (text-decoration-inset: auto) {
-          .poem-like u[data-followed-by-adjacent-line] {
+          /* :root:not(…off) 同 hover 那批：這條的權重（2,4,2）高過
+             off-gate 的 article *（2,3,2），關模組時 animation: none
+             壓不住它，fill both 會把縫的值永久釘著——那正是「off ＝
+             瀏覽器原樣」破功的地方（縫本身已在核心進了旗標的門）。 */
+          :root:not([data-han-module-semantics='off']) & .poem-like u[data-followed-by-adjacent-line] {
             animation: semantics-line-split 520ms ease-out var(--row-cue) both;
           }
         }
