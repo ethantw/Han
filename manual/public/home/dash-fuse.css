@@ -37,9 +37,12 @@
  *                瞬退成墨——紅筆改稿、改正付印，就是這一站的敘事
  *     hover      不是重播錄影，是**按住不放**：游標進去 90ms 斷開（縫張到
  *                0.2em，真值的兩倍——讀者要的示範等於放大鏡）＋轉校樣紅，
- *                然後停在那裡，看多久由讀者決定；游標離開 340ms 接回去、
- *                紅退成墨。雙向都跑，靠 --df-* 的 transition（註冊過的
- *                @property 天生可轉場）。`(hover: hover)` 才有，觸控無此戲
+ *                0.2em，真值的兩倍——讀者要的示範等於放大鏡）＋轉校樣紅，
+ *                然後**兩截朝著對方呼吸**（2.6s 一口，永遠差一截：它們本
+ *                來就想接上，是字體讓它們接不上）；看多久由讀者決定。游標
+ *                離開 420ms 從呼吸的當下值接回終態、紅退成墨。進出都由
+ *                dash-fuse.js 蓋章（§ initHoldRepair），觸控與 reduced
+ *                一律不演
  *
  * **不循環**（2026-07-31 改，前身是 25s 四幕的獨腳戲，見
  * docs/plans/dash-fuse-rework.md）。三個理由：
@@ -130,6 +133,30 @@
   70.4% { --df-ink: 1; animation-timing-function: ease-out; }
   75.7% { --df-press: 0; }
   100% { --df-fuse: 1; --df-ink: .35; }
+}
+
+/* 放開游標的那一程（.PunctFix[data-repair]，dash-fuse.js 蓋）。起點不是
+   固定值而是 var(--df-from)——JS 在放手的瞬間把呼吸當下的 --df-fuse 抄進
+   去，動畫因此從「手放開時它正好在哪」接起，不會先跳一下再開始修。
+   末幀與基態逐項相同，所以 fill 不留也無縫。 */
+@keyframes df-repair {
+  from { --df-fuse: var(--df-from, -1); --df-red: 1; --df-ink: 0; }
+  to { --df-fuse: 1; --df-red: 0; --df-ink: .35; }
+}
+
+/* 被按住的期間（hover）：兩截朝著對方呼吸，永遠差一截。斷開不是靜照——
+   它們本來就想接上，是字體讓它們接不上，那股勁在被按住時仍該看得見。
+   縫在 0.2em ⇄ 0.142em 之間（fuse −1 ⇄ −.42），伸手 1.43s、鬆回 1.17s
+   ——伸手漸緩、鬆脫稍快，同檔一貫的語彙。永遠不接近 0：接上是游標放開
+   才有的事，按著的時候給希望不給結果。 */
+@keyframes df-break {
+  from { --df-fuse: 1; }
+  to { --df-fuse: -1; }
+}
+
+@keyframes df-hold {
+  0%, 100% { --df-fuse: -1; }
+  55% { --df-fuse: -.42; }
 }
 
 /* 開演前的等待（data-armed 而未 data-play）：柱以斷開態現身，兩截極淺地
@@ -288,39 +315,48 @@ svg[data-name="dash-fuse"] {
 
     /* 讀者要的那一齣，拆成兩半掛在游標的進出上——不是按一次播一遍錄影：
 
-         hover 進  90ms 斷開（斷是突發的，漸變反而假）＋校樣紅落下，然後
-                   **停在斷開態**，游標按著它不放
-         hover 出  340ms 接回去、紅退成墨——手一鬆，han.css 就把它修好
+         按住（data-hold）  90ms 斷開（斷是突發的）＋校樣紅落下，然後兩截
+                            朝著對方呼吸（df-hold），永遠差一截。看多久由
+                            讀者決定
+         放開（data-repair）420ms 接回去、紅退成墨——手一鬆，han.css 就把
+                            它修好
 
-       游標於是變成「按住不讓它修好」的那隻手，看多久由讀者決定；比任何
-       時長參數都可靠。雙向都會跑，是因為 --df-* 是註冊過的 @property，
-       transition 對它們天生雙向——這也是上面那支動畫要拿掉 fill 的原因。
+       游標於是變成「按住不讓它修好」的那隻手。縫張到 0.2em（fuse −1），
+       是真值 0.1em 的兩倍：hover 是讀者主動要求的示範，等於拿放大鏡看，
+       放大鏡不偽造事實——首播那一次仍嚴格照真值走（檔頭「幅度是真的」）。
+       壓印（--df-press）不參與：那記重音留給首播，一輩子只有一次。
 
-       這一齣的縫張到 0.2em（fuse −1），是真值 0.1em 的兩倍：hover 是讀者
-       主動要求的示範，等於拿放大鏡看，放大鏡不偽造事實——首播那一次仍然
-       嚴格照真值走（檔頭「幅度是真的」那段的分際）。
-       壓印（--df-press）不參與：那一下重音留給首播，一輩子只有一次。
-
-       `(hover: hover)` 擋掉觸控裝置：那裡沒有 hover，:hover 會黏在最後點
-       過的元素上，變成隨機重播。功能偵測而非 UA 嗅探（web-style.md）。 */
-    @media (hover: hover) {
-      &[data-play] {
-        transition:
-          --df-fuse 340ms ease-out,
-          --df-ink 340ms ease-out,
-          --df-red 420ms ease-out
-        ;
-      }
-      .PunctFix:hover &[data-play] {
-        --df-fuse: -1;
-        --df-ink: 0;
-        --df-red: 1;
-        transition:
-          --df-fuse 90ms linear,
-          --df-ink 90ms linear,
-          --df-red 90ms linear
-        ;
-      }
+       為什麼是 JS 蓋章而不是 :hover ＋ transition：放開的那一刻要從**呼吸
+       當下的值**接起（見 df-repair 的註），而 CSS 讀不到執行中的動畫值；
+       蓋章的同時把值抄進 --df-from，這一段才接得順。`(hover: hover)` 與
+       reduced-motion 的判斷也一併移進 JS（dash-fuse.js § initHoldRepair），
+       所以這裡不再需要那道 media query——沒有指標裝置就不會有章。 */
+    .PunctFix[data-hold] &[data-play] {
+      --df-ink: 0;
+      --df-red: 1;
+      /* 清單裡**追加**，不覆寫——df-fuse 那格必須原封不動留在第一位：
+         animation-name 的清單只要變動，留下來的動畫就會被當成新的、從頭
+         再播一次。這一條踩過：改成整支覆寫之後，data-repair 撤章的那一刻
+         df-fuse 重播，而它的 0% 幀正是 --df-red: 1，紅又亮起來（實測
+         2026-08-01）。追加的話 df-fuse 自始至終是同一個實例、早已跑完且
+         不留 fill，後面兩支排在它後面所以贏得那幾個變數。
+         df-break 90ms 把縫拉開，90ms 起 df-hold 接手無限呼吸。 */
+      animation:
+        df-fuse 1150ms linear,
+        df-break 90ms linear,
+        df-hold 2600ms ease-in-out 90ms infinite
+      ;
+      transition:
+        --df-ink 90ms linear,
+        --df-red 90ms linear
+      ;
+    }
+    .PunctFix[data-repair] &[data-play] {
+      /* 同上，df-fuse 留在第一位不動 */
+      animation:
+        df-fuse 1150ms linear,
+        df-repair 420ms ease-out
+      ;
     }
   }
 }

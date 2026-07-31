@@ -62,6 +62,37 @@ const formeSeen = ($forme) =>
     new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
   ])
 
+/* 讀者按住不放的那一齣（見 dash-fuse.css § .PunctFix[data-hold]）。
+ * 進：蓋 data-hold ⇒ 斷開、轉校樣紅、兩截朝對方呼吸。
+ * 出：把呼吸**當下**的 --df-fuse 抄進 --df-from，換蓋 data-repair ⇒ 從那個
+ *     值接回終態；動畫結束自己撤章。CSS 讀不到執行中的動畫值，這一抄是這
+ *     支存在的唯一理由。
+ * 兩道閘在這裡而不在 CSS：沒有指標裝置（觸控）就不蓋章——:hover 在那裡會
+ * 黏在最後點過的元素上；reduced-motion 同理，一律不演。 */
+const initHoldRepair = ($punct, $column) => {
+  if (!matchMedia('(hover: hover)').matches) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+  $punct.addEventListener('pointerenter', () => {
+    $punct.removeAttribute('data-repair')
+    $punct.setAttribute('data-hold', '')
+  })
+
+  $punct.addEventListener('pointerleave', () => {
+    if (!$punct.hasAttribute('data-hold')) return
+    $punct.style.setProperty(
+      '--df-from',
+      getComputedStyle($column).getPropertyValue('--df-fuse').trim() || '-1',
+    )
+    $punct.removeAttribute('data-hold')
+    $punct.setAttribute('data-repair', '')
+  })
+
+  $column.addEventListener('animationend', (event) => {
+    if (event.animationName === 'df-repair') $punct.removeAttribute('data-repair')
+  })
+}
+
 export const initDashFuse = () => {
   const $punct = document.querySelector('.PunctFix')
   if (!$punct) return
@@ -80,5 +111,8 @@ export const initDashFuse = () => {
     .then(() => {
       $punct.setAttribute('data-play', '')
       $column?.setAttribute('data-play', '')
+      /* 首播開始才接上 hover：在那之前這根破折號還沒演過修正，
+         按住它沒有東西可對照。 */
+      if ($column) initHoldRepair($punct, $column)
     })
 }
