@@ -183,13 +183,12 @@
 
 /* 乙式《》是翻旗才存在的 content（core 的 ::before/::after 只在
    --han-semantics: on ＋ 祖先 --han-cite-title-marks: bracket 之下才給；
-   48px 迴流的舊註記錄在案，見 off-gate 區），本動畫把「彈出」改成
-   「長出」——inline-size 0→1em 推開行文、墨色同步浮現。規則同樣鍵在
-   @container 的旗標翻轉（同逐字歸正／甲式），content 誕生的那一瞬起跑。
-   inline-block 是 inline-size 生效的條件，代價已量：atomic inline 斷
-   pair-squeeze，而第 7 行「另見《真實字符論》。」的 》。 恰是一組全形
-   標點對——首頁載 han.lines.css，:root 的 text-spacing-trim: trim-start
-   本會擠掉 .5em（headless Chrome 實測 24px 下 cite 156→168px，直排行長
+   36px 迴流的舊註見 off-gate 區），本動畫把「彈出」改成「長出」。
+   手法是負的行向 margin，不是 inline-size：撐開需要 inline-block，而
+   atomic inline 在直排不依 UTR50 轉向——《》會留在橫排字形、位置就歪
+   （初版栽在這裡），順帶還吃掉「論》。」那組全形標點對的擠壓
+   （han.lines 的 text-spacing-trim；實測行長 348→360px）。負 margin 讓
+   盒子始終是普通文字：轉向、擠壓、baseline 全部照舊。
    兩支分開寫：開括號把「後文」拉回來蓋住自己（margin-inline-end 負），
    閉括號把「自己」拉回去疊在前文上（margin-inline-start 負）。前 40%
    全透明——那段疊字期看不見；之後一邊讓開一邊浮墨。 */
@@ -936,7 +935,7 @@
             ;
           }
           /* 乙式《》同理：pseudo 隨翻旗誕生，動畫即刻起跑（見
-             @keyframes semantics-bracket-in）。pseudo 一律不包進
+             @keyframes semantics-bracket-in-before／-after）。pseudo 一律不包進
              :where()——forgiving list 會靜默吞掉它（core 的
              src/css/semantics.css:370-376 記著書名號乙式就是這樣出過事）。
              選擇器寫寬無妨：::before/::after 只存在於 bracket 祖先之下，
@@ -1206,9 +1205,8 @@
          the orthographic gap, with no flag involved.
 
          KNOWN AND NOT FIXED HERE: 書名號乙式's 《》 are generated content
-         and take real inline space, so row 7 still shortens by 48px when
-         the styles go off（掛上 inline-block 後 》。 不再擠壓，48px 為新
-         實測）. Reserving that space would mean drawing brackets
+         and take real inline space, so row 7 still shortens by 36px when
+         the styles go off（負 margin 版保住了 》。 的擠壓，故仍是 36px）. Reserving that space would mean drawing brackets
          the browser never produces — a bigger lie than an 11px reflow, and
          it belongs to the caption's promise, not to a layout tweak. */
 
