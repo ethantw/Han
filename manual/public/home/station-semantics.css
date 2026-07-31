@@ -210,10 +210,11 @@
    與各自的入場 keyframes 逐幀相同，只差名字——CSS 動畫同名重宣告
    不會重啟（mark-replay 的量測論證，見其 @keyframes 註），所以 hover
    重播必須換一個名字才能從第一幀起跑。幀改動時兩份要同步改。
-   時長約定：replay 一律 620ms，與圖解的 mark-replay 同起同落（入場各
-   走各的 520ms，是另一回事）。兩個例外，都因為時長本身有意義：逐字的
-   char-settle-replay 留 520ms＋每字 40ms 錯拍（節奏是它的內容），
-   mark-cue-replay 留 1000ms（52% 峰值的墨色一閃，縮短會改變曲線形狀）。 */
+   時長約定：replay 一律 1240ms，與圖解的 mark-replay 同起同落（入場各
+   走各的 520ms，是另一回事）——重播是讀者主動要看的，走得比入場慢一倍
+   才看得完（owner 定案 2026-07-31）。等比放大的兩個例外：逐字的
+   char-settle-replay 1040ms＋每字 80ms 錯拍（節奏是它的內容），
+   mark-cue-replay 與甲式的兩支 2000ms（墨色曲線的形狀靠時長撐開）。 */
 @keyframes semantics-line-split-replay {
   from { margin-inline-end: 0; }
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
@@ -752,7 +753,7 @@
           /* the ID rides along to match the reveal rule's weight — a plain
              `[data-mark]` selector loses to it and the replay never runs
              (the same cascade trap the 前／後 switch fell into). */
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
 
       }
@@ -1057,7 +1058,7 @@
         .poem-like u:hover
       ) & {
         .MarkDiagram [data-mark='proper'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         /* Firefox 閘同入場（src/css/semantics.css:499 同一道）——replay
            也動 margin，無閘的話 hover 一次就把雙倍縫永久釘上（fill
@@ -1066,7 +1067,7 @@
           :root:not([data-han-module-semantics='off']) & .poem-like u[data-followed-by-adjacent-line] {
             animation:
               semantics-line-split 520ms ease-out var(--row-cue) both,
-              semantics-line-split-replay 620ms ease-out both
+              semantics-line-split-replay 1240ms ease-out both
             ;
           }
         }
@@ -1077,7 +1078,7 @@
         .poem-like em:hover
       ) & {
         .MarkDiagram [data-mark='emphasis'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         /* em 的歸正早已交給逐字 skew（見 semantic-chars.js），所以詩行
            側要重播的是那個，不是元素上的 font-style——只掛 straighten
@@ -1085,13 +1086,13 @@
         :root:not([data-han-module-semantics='off']) & .poem-like em {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
-            semantics-mark-cue-replay 1000ms ease-in-out both
+            semantics-mark-cue-replay 2000ms ease-in-out both
           ;
         }
         :root:not([data-han-module-semantics='off']) & .poem-like em [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
+            semantics-char-settle-replay 1040ms ease-out calc(var(--i) * 80ms) both
           ;
         }
       }
@@ -1101,13 +1102,13 @@
         .poem-like dfn:hover
       ) & {
         .MarkDiagram [data-mark='weight'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         /* dfn 同 em：歸正在逐字 skew 上，元素本身無入場動畫可續。 */
         :root:not([data-han-module-semantics='off']) & .poem-like dfn [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
+            semantics-char-settle-replay 1040ms ease-out calc(var(--i) * 80ms) both
           ;
         }
       }
@@ -1117,18 +1118,18 @@
         .poem-like i:hover
       ) & {
         .MarkDiagram [data-mark='plain'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         :root:not([data-han-module-semantics='off']) & .poem-like i {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
-            semantics-mark-cue-replay 1000ms ease-in-out both
+            semantics-mark-cue-replay 2000ms ease-in-out both
           ;
         }
         :root:not([data-han-module-semantics='off']) & .poem-like i [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
+            semantics-char-settle-replay 1040ms ease-out calc(var(--i) * 80ms) both
           ;
         }
       }
@@ -1138,7 +1139,7 @@
         .poem-like :where([style*='wavy']) cite:hover
       ) & {
         .MarkDiagram [data-mark='wavy'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         /* 甲式的 replay 拉長到 1000ms：波浪線只有墨色可淡，620ms 讀不
            出來；同時加上與專名號同款的「黏住再分開」。 */
@@ -1147,7 +1148,7 @@
             semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
             semantics-wavy-in 520ms ease-out both,
-            semantics-wavy-in-replay 1000ms ease-out both
+            semantics-wavy-in-replay 2000ms ease-out both
           ;
         }
         @supports not (text-decoration-inset: auto) {
@@ -1157,8 +1158,8 @@
               semantics-mark-cue 1000ms ease-in-out var(--row-cue),
               semantics-wavy-in 520ms ease-out both,
               semantics-line-split 520ms ease-out var(--row-cue) both,
-              semantics-wavy-in-replay 1000ms ease-out both,
-              semantics-line-split-replay 1000ms ease-out both
+              semantics-wavy-in-replay 2000ms ease-out both,
+              semantics-line-split-replay 2000ms ease-out both
             ;
           }
         }
@@ -1174,7 +1175,7 @@
         .poem-like cite:hover:not(:where([style*='wavy']) cite)
       ) & {
         .MarkDiagram [data-mark='bracket'] {
-          animation: mark-replay 620ms ease-out both;
+          animation: mark-replay 1240ms ease-out both;
         }
         /* pseudo 一律不進 :where()（forgiving list 會吞掉它，見掛載規
            則的註）；選擇器寫寬無妨——乙式 pseudo 只存在於 bracket 祖
@@ -1182,13 +1183,13 @@
         :root:not([data-han-module-semantics='off']) & .poem-like cite::before {
           animation:
             semantics-bracket-in-before 520ms ease-out both,
-            semantics-bracket-in-before-replay 620ms ease-out both
+            semantics-bracket-in-before-replay 1240ms ease-out both
           ;
         }
         :root:not([data-han-module-semantics='off']) & .poem-like cite::after {
           animation:
             semantics-bracket-in-after 520ms ease-out both,
-            semantics-bracket-in-after-replay 620ms ease-out both
+            semantics-bracket-in-after-replay 1240ms ease-out both
           ;
         }
       }
@@ -1296,7 +1297,7 @@
            One gesture, two readings, and both are «show me this row». */
         @media (hover: hover) and (prefers-reduced-motion: no-preference) {
           &:hover {
-            animation: mark-replay 620ms ease-out both;
+            animation: mark-replay 1240ms ease-out both;
           }
         }
       }

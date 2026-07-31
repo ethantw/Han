@@ -495,7 +495,13 @@
  * Define a pure CSS fallback to make sure the lines between two (or more)
  * adjacent underlined or struck-through elements are visually distinguishable
  * if current UA does not support `text-decoration-inset: auto`.
+ *
+ * Gated on `--han-semantics: on` for the same reason as the JS-driven twin in
+ * `semantics.with-js.css`: the skip-gap is this module's convention, so it has
+ * to leave when the module does — otherwise `off` still shows han.css's gap
+ * and stops being the browser's own rendering.
  */
+@container style(--han-semantics: on) {
 @supports not (text-decoration-inset: auto) {
   :where(:is(u, ins):has(+ u, + ins)),
   :where(:is(s, del):has(+ s, + del)) {
@@ -517,4 +523,5 @@
       margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
     }
   }
+}
 }

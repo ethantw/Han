@@ -8,7 +8,15 @@
  * The `[data-followed-by-adjacent-line]` attribute is set by `markAdjacentLines`
  * in `src/ts/semantics/adjacent-lines.ts`; nothing else assigns it, so these
  * rules are inert until JS has run.
+ *
+ * Gated on `--han-semantics: on`, like every other mark this module draws.
+ * The skip-gap is a 漢字排版 convention (two adjacent 專名號 are two names,
+ * not one), not a UA behaviour — leaving it outside the gate meant switching
+ * the module off still left han.css's gap sitting there, so `off` was not
+ * actually the browser's own rendering. `margin-inline-end` is the only
+ * property this file sets, so the gate wraps the whole thing.
  */
+@container style(--han-semantics: on) {
 @supports not (text-decoration-inset: auto) {
   :where(u, ins, s, del, cite) {
     :where([data-adjacent-lines-refined] &:not([data-followed-by-adjacent-line])) {
@@ -24,4 +32,5 @@
       margin-inline-end: initial;
     }
   }
+}
 }
