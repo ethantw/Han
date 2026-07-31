@@ -38,6 +38,20 @@ main {
   text-align: justify;
 }
 
+/* 直排預覽下必須解除容器化：inline 軸隨行向轉——vertical-rl 的 inline 軸是
+   **垂直**的，於是上面那句 `container-type: inline-size` 收掉的正是 main 的
+   高度，auto 高度照「沒有內容」算（實測 main 高 1px，站台每個子元素高 0，
+   整頁一片空白，只有浮動的預覽開關看得見）。與上面記的 `container-type:
+   size` 是同一個坑，只是行向一轉，`inline-size` 就變成了那個坑。
+
+   代價說明白：本頁的容器查詢（.Illust 的 56rem、station-frame 自己的 72rem
+   版心、station-lines 的 62rem 兩欄）在直排預覽下一律不成立，退回各自的窄
+   版分支。預覽態要的是「看得到直排的樣子」，不是像素級等價；一片空白才是
+   真正的失真。 */
+main[data-writing="vertical"] {
+  container-type: normal;
+}
+
 /* ─── Station plate (shared frame for the six `[data-station]` sections) ───
  * Each station is a centred column carrying an alternating ground
  * (`data-ground="a|b"` — an EXPLICIT hook, robust where `:nth-of-type`
