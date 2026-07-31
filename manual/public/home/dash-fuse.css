@@ -32,10 +32,14 @@
  *     等待期  斷開（縫 0.1em ＝ 真實值），6s 兩口極淺的呼吸，只是「活著」
  *             的證據，不是「快接上了」的預告
  *     data-play  1150ms：靠近 → 彈開一點點 → 懸著 → 猛然接上（90ms）→
- *                墨色隨撞擊竄到峰值、線瞬間壓厚 → 淡回，但只回到 .35
- *     hover      游標停在 .PunctFix 上 ⇒ 重播（1600ms：90ms 猶豫窗、瞬斷、
- *                停在斷開態 140ms 給眼睛看清，再演一次同一套）。
- *                `(hover: hover)` 才有，觸控裝置無此戲
+ *                墨色隨撞擊竄到峰值、線瞬間壓厚 → 淡回，但只回到 .35。
+ *                開頭是**校樣紅**（--df-red，錯處被紅筆圈起），接觸的那一
+ *                瞬退成墨——紅筆改稿、改正付印，就是這一站的敘事
+ *     hover      不是重播錄影，是**按住不放**：游標進去 90ms 斷開（縫張到
+ *                0.2em，真值的兩倍——讀者要的示範等於放大鏡）＋轉校樣紅，
+ *                然後停在那裡，看多久由讀者決定；游標離開 340ms 接回去、
+ *                紅退成墨。雙向都跑，靠 --df-* 的 transition（註冊過的
+ *                @property 天生可轉場）。`(hover: hover)` 才有，觸控無此戲
  *
  * **不循環**（2026-07-31 改，前身是 25s 四幕的獨腳戲，見
  * docs/plans/dash-fuse-rework.md）。三個理由：
@@ -76,7 +80,7 @@
  * （連那一分殘留的實都在）。
  *
  * 座標系：1 user unit ＝ 1/100 em。欄軸 x=60；整句三十一格（字格表見
- * station-type.html），破折號佔 720–920，墨跡外緣固定在 727／913（兩端各
+ * station-fonts.html），破折號佔 720–920，墨跡外緣固定在 727／913（兩端各
  * 0.07em 邊距），接縫在 820 開合——始終佔滿兩格，動的只有縫。
  * 墨跡中心 54.7 而非 60：Chromium 把旋轉後的 R-class 字符擺在 hhea
  * asc/desc 中點而非 em 框中心（差 52.5 font unit；量測見 demo 檔頭與
@@ -89,10 +93,17 @@
               initial-value 是 **.35 而不是 0**——那是接合後的殘留深度，也就
               是「已修正」的常態；reduced-motion／無 JS 直接落在這裡，與滾讀
               過一次的人看到的同一根線。
-   --df-press 接觸瞬間的壓印：0 ＝ 常態線寬、1 ＝ 加厚 0.4 unit。 */
+   --df-press 接觸瞬間的壓印：0 ＝ 常態線寬、1 ＝ 加厚 0.4 unit。
+   --df-red   校樣紅：0 ＝ 墨、1 ＝ --palette-proof。紅是**動詞不是形容詞**
+              ——是「指出這裡錯了」的那個動作，不是「斷開」這個狀態的屬性。
+              所以它只出現在首播開頭與 hover 按住的期間，等待期（data-armed）
+              與終態都不紅：前者只是還沒開始，後者已經修好。校樣紅是站上
+              既有的語彙（站①的角度標註、楔形參考線同色），意思正是紅筆
+              改稿——紅筆圈錯、改正後付印成墨。 */
 @property --df-fuse { syntax: "<number>"; inherits: true; initial-value: 1; }
 @property --df-ink { syntax: "<number>"; inherits: true; initial-value: .35; }
 @property --df-press { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --df-red { syntax: "<number>"; inherits: true; initial-value: 0; }
 
 /* 由節拍算出的接縫兩緣。註冊為 <number>：computed-value time 即收斂成
    數值 token，代入 scale() 不必再包 calc()。 */
@@ -111,39 +122,15 @@
    （fuse ≥ 1）兩截只是重疊，畫面完全看不出來——過衝在這副幾何裡是隱形的。
    所以「猛然」寫在 90ms 的段長、ease-in 的加速、以及接觸瞬間的加厚上。 */
 @keyframes df-fuse {
-  0% { --df-fuse: 0; --df-ink: 0; --df-press: 0; animation-timing-function: ease-out; }
+  0% { --df-fuse: 0; --df-ink: 0; --df-press: 0; --df-red: 1; animation-timing-function: ease-out; }
   36.5% { --df-fuse: .82; animation-timing-function: ease-in; }
   50.4% { --df-fuse: .55; animation-timing-function: linear; }
-  57.4% { --df-fuse: .55; --df-ink: 0; --df-press: 0; animation-timing-function: ease-in; }
-  65.2% { --df-fuse: 1; --df-press: 1; animation-timing-function: ease-out; }
+  57.4% { --df-fuse: .55; --df-ink: 0; --df-press: 0; --df-red: 1; animation-timing-function: ease-in; }
+  65.2% { --df-fuse: 1; --df-press: 1; --df-red: 0; animation-timing-function: ease-out; }
   70.4% { --df-ink: 1; animation-timing-function: ease-out; }
   75.7% { --df-press: 0; }
   100% { --df-fuse: 1; --df-ink: .35; }
 }
-
-/* 讀者要求的重播（游標停在 .PunctFix 上）。同一套編舞，但前面多兩件事：
-     0–90ms     猶豫窗，畫面仍是接合態。.PunctFix 是整欄寬，滑鼠掃過很容易
-                掠過，擦一下就重播會變成新的煩躁源——停住才開演
-     90–100ms   瞬斷，墨色同時退回淡的（斷了就不該還是實的）。斷開本來就是
-                突發的，漸變反而假
-     100–240ms  停在斷開態 140ms——這一拍是給眼睛的：先看清楚它斷了，後面
-                的接合才有對照
-     240ms–     與首播同一套：靠近、彈開、懸著、猛然接上、壓印、淡回 .35
-   全長 1600ms。比首播長，因為重播是讀者主動要看的，慢一點才看得完。 */
-@keyframes df-replay {
-  0% { --df-fuse: 1; --df-ink: .35; --df-press: 0; animation-timing-function: linear; }
-  5.6% { --df-fuse: 1; --df-ink: .35; animation-timing-function: linear; }
-  6.2% { --df-fuse: 0; --df-ink: 0; animation-timing-function: linear; }
-  15% { --df-fuse: 0; animation-timing-function: ease-out; }
-  41% { --df-fuse: .82; animation-timing-function: ease-in; }
-  51% { --df-fuse: .55; animation-timing-function: linear; }
-  56% { --df-fuse: .55; --df-ink: 0; --df-press: 0; animation-timing-function: ease-in; }
-  62% { --df-fuse: 1; --df-press: 1; animation-timing-function: ease-out; }
-  66% { --df-ink: 1; animation-timing-function: ease-out; }
-  71% { --df-press: 0; }
-  100% { --df-fuse: 1; --df-ink: .35; }
-}
-
 
 /* 開演前的等待（data-armed 而未 data-play）：柱以斷開態現身，兩截極淺地
    呼吸——峰值 .35（縫 0.1em → 0.065em），只是「活著」的證據，不是「快接上
@@ -242,8 +229,20 @@ svg[data-name="dash-fuse"] {
      而不是靠更黑。橫向 58 ＝ 欄軸 60 減半個線寬：不掛字體之後沒有引擎的 R-class
      偏移要遷就，破折號回到欄軸上，與同柱漢字的 em 框中心對齊。 */
   rect {
-    fill: color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 60%), var(--df-face));
-    stroke: color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-edge));
+    fill:
+      color-mix(
+        in srgb,
+        var(--palette-proof) calc(var(--df-red) * 55%),
+        color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 60%), var(--df-face))
+      )
+    ;
+    stroke:
+      color-mix(
+        in srgb,
+        var(--palette-proof) calc(var(--df-red) * 100%),
+        color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-edge))
+      )
+    ;
     stroke-width: calc(.5 + .4 * var(--df-press));
     vector-effect: non-scaling-stroke;
     transform-box: view-box;
@@ -278,28 +277,48 @@ svg[data-name="dash-fuse"] {
       --df-ink: 0;
       animation: df-try 6s ease-in-out infinite;
     }
-    /* 開演：靠近、彈開、猛然接上（1150ms，拍點見 keyframes）。`both` 讓終態
-       留在「合上且比原來實一分」——此後這根破折號就是好的，不再自己拆開。 */
+    /* 開演：靠近、彈開、猛然接上（1150ms，拍點見 keyframes）。**不留
+       fill**：末幀的值（fuse 1、ink .35、red 0）與基態逐項相同，所以動畫
+       跑完自然交還給宣告值，畫面無縫——而且交還之後 hover 的 transition
+       才推得動這幾個變數（filled 的動畫值贏過一切宣告，留著 both 就等於
+       把後面那齣戲鎖死）。 */
     &[data-play] {
-      animation: df-fuse 1150ms linear both;
+      animation: df-fuse 1150ms linear;
     }
 
-    /* 讀者要求的重播。清單裡**追加**一支而不是換掉 df-fuse，是為了離開
-       hover 的那一刻：animation-name 的清單只要變動，換上來的動畫就會從頭
-       播——若 hover 時把 df-fuse 整支換成 df-replay，游標一移開 df-fuse 被
-       重新指派，又會從斷開態接一次（讀者沒要求的第二次重播）。追加的話
-       df-fuse 那格自始至終是同一個動畫實例、早已停在終態 1，df-replay 排
-       在清單後面所以贏得 --df-fuse；hover 一結束它整支消失，畫面直接回到
-       df-fuse 的 1。中途移開游標會從半途瞬間跳回合上——跳向「修好」是這
-       張圖唯一該有的方向，不做收尾動畫。
+    /* 讀者要的那一齣，拆成兩半掛在游標的進出上——不是按一次播一遍錄影：
+
+         hover 進  90ms 斷開（斷是突發的，漸變反而假）＋校樣紅落下，然後
+                   **停在斷開態**，游標按著它不放
+         hover 出  340ms 接回去、紅退成墨——手一鬆，han.css 就把它修好
+
+       游標於是變成「按住不讓它修好」的那隻手，看多久由讀者決定；比任何
+       時長參數都可靠。雙向都會跑，是因為 --df-* 是註冊過的 @property，
+       transition 對它們天生雙向——這也是上面那支動畫要拿掉 fill 的原因。
+
+       這一齣的縫張到 0.2em（fuse −1），是真值 0.1em 的兩倍：hover 是讀者
+       主動要求的示範，等於拿放大鏡看，放大鏡不偽造事實——首播那一次仍然
+       嚴格照真值走（檔頭「幅度是真的」那段的分際）。
+       壓印（--df-press）不參與：那一下重音留給首播，一輩子只有一次。
 
        `(hover: hover)` 擋掉觸控裝置：那裡沒有 hover，:hover 會黏在最後點
        過的元素上，變成隨機重播。功能偵測而非 UA 嗅探（web-style.md）。 */
     @media (hover: hover) {
+      &[data-play] {
+        transition:
+          --df-fuse 340ms ease-out,
+          --df-ink 340ms ease-out,
+          --df-red 420ms ease-out
+        ;
+      }
       .PunctFix:hover &[data-play] {
-        animation:
-          df-fuse 1150ms linear both,
-          df-replay 1600ms linear both
+        --df-fuse: -1;
+        --df-ink: 0;
+        --df-red: 1;
+        transition:
+          --df-fuse 90ms linear,
+          --df-ink 90ms linear,
+          --df-red 90ms linear
         ;
       }
     }
@@ -329,7 +348,7 @@ svg[data-name="dash-fuse"] {
   }
 
   /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的
-     淺門檻 0.15，見 station-type.html）——本欄緊接鉛字盤之下，露臉就等於
+     淺門檻 0.15，見 station-fonts.html）——本欄緊接鉛字盤之下，露臉就等於
      已滾到鉛字以下。
 
      曾經鍵在 data-play 上（等鉛字落完＋首輪破折號接合完，延遲 2s），實際
