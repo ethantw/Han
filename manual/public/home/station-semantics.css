@@ -143,6 +143,22 @@
   to   { --settle: 0; }
 }
 
+/* 專名號的入場：底線不淡入——它是引擎在兩態都會畫的那一條（:476-479
+   「the one mark the ENGINE also draws」的 provenance 論證，off 態亦
+   然），戲只有一場「裂開」：相鄰縫從 cheat 的 0 滑開到正字法的縫——
+   與圖解 proper 行逐格同相（settle 0 靠攏 → 1 滑開，同為線性跨滿整
+   窗、同 ease-out）。相連態不是靜止態：reveal 之前沒有動畫，畫面上就
+   是正字法的縫；`both` 的 backwards fill 只撐住 reveal 到 cue 之間的
+   那段 delay，所以縫是在 reveal 那一瞬先合起來、再裂開——與檔頭
+   `semantics-settle` 用 `both` 把整條 band 先跳回「瀏覽器的手」是同一
+   個約定（:8-9）。終值走核心同一個變數；本地 fallback 是防「模組
+   sheet 卸載時未定義 var() 毒化」的防呆（workspace 陷阱集），off-gate
+   的 animation: none 實務上先一步接管。 */
+@keyframes semantics-u-split {
+  from { margin-inline-end: 0; }
+  to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
+}
+
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
    詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
@@ -789,6 +805,17 @@
         address::before {
           animation: semantics-ghost-cue 820ms ease-out var(--row-cue);
         }
+        /* 裂縫只掛 han.js stamp 的那顆（相鄰對的第一顆）。@supports 閘與
+           核心畫縫的機制同一道（src/css/semantics.css:499）——縫是 margin
+           畫的才有「裂開」可演；Firefox 用原生 text-decoration-inset，
+           margin 機制整段不在，這支動畫若照跑會把 .125em 永久疊上去變
+           雙倍縫。拍點讀 --row-cue（本行即 --cue-proper），同區其他動畫
+           一律如此。 */
+        @supports not (text-decoration-inset: auto) {
+          .poem-like u[data-followed-by-adjacent-line] {
+            animation: semantics-u-split 520ms ease-out var(--row-cue) both;
+          }
+        }
       }
 
       /* One beat per mark, NOT in reading order — rows sharing a mark light
@@ -872,11 +899,16 @@
          merely turned transparent, and the colour transitions. Nothing
          moves; the marks simply arrive and leave.
 
-         `<u>` is deliberately NOT in this list. The UA draws its underline
-         in both states — the measurement says so (`text-decoration-line:
-         underline` with the styles off) — so hiding it would be inventing a
-         browser that doesn't exist. Its two states differ by the GAP, which
-         is exactly what the diagram beside it claims.
+         `<u>` is deliberately NOT in this list — it stays out of the flag
+         mechanism entirely. The UA draws its underline in both states — the
+         measurement says so (`text-decoration-line: underline` with the
+         styles off) — so putting its decoration-color inside the flag's
+         container query would hide the browser's own underline along with
+         ours, inventing a browser that doesn't exist. Its two states differ
+         by the GAP, which is exactly what the diagram beside it claims —
+         and that gap is what its entrance animates: `semantics-u-split`
+         (see its @keyframes note above) opens the connected underline into
+         the orthographic gap, with no flag involved.
 
          KNOWN AND NOT FIXED HERE: 書名號乙式's 《》 are generated content
          and take real inline space, so row 7 still shortens by 36px when
