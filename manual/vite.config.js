@@ -114,7 +114,7 @@ async function computeModuleLedger() {
   const [sizes, gzipSizes, deps] = await Promise.all([
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), brotliCompressSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), gzipSync))),
-    countRuntimeDeps(),
+    runtimeDeps(),
   ])
   const fmtSize = kb => kb == null ? '—' : `${kb}k`
   const total = sizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
@@ -123,7 +123,8 @@ async function computeModuleLedger() {
     ...Object.fromEntries(keys.map((k, i) => [k, fmtSize(sizes[i])])),
     sizeTotal: `${total.toFixed(1)}k`,
     sizeTotalGzip: `${totalGzip.toFixed(1)}k`,
-    depsCount: String(deps),
+    depsCount: String(deps.length),
+    depsNames: deps.join('・'),
   }
   return _moduleLedgerCache
 }
@@ -134,12 +135,18 @@ async function compressedSizeKb(file, compress) {
   return +(compress(buf).length / 1024).toFixed(1)
 }
 
-async function countRuntimeDeps() {
+/**
+ * Runtime deps, BY NAME — the footing prints「運行時依賴1（hyperly）」,
+ * naming the dependency instead of leaving a bare count to raise the
+ * question it should answer (homepage review 2026-07-18 §⑤). Names come
+ * from package.json so the ledger can never drift from reality.
+ */
+async function runtimeDeps() {
   try {
     const pkg = JSON.parse(await fs.readFile(path.resolve(here, '..', 'package.json'), 'utf-8'))
-    return Object.keys(pkg.dependencies ?? {}).length
+    return Object.keys(pkg.dependencies ?? {})
   } catch {
-    return 0
+    return []
   }
 }
 

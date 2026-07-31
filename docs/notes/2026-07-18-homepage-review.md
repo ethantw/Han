@@ -54,3 +54,19 @@ garden path（先讀成「強調之處一如本句」再回頭）。原定稿的
 
 站⑤三個 demo 與新文案咬合良好（「你贏了」一眼懂）；柒的三分頁代碼
 清楚；字體站三面對照＋鉛字盤敘事成立；hero 首屏、閉幕安裝區無礙。
+
+## 重驗補記（2026-07-31，首頁重設計後）
+
+- **①** 已解——`.Papers` 四報設計取代 LangDemo，含正式範文與分語 dateline。
+- **②** 已解——站叄懸掛卡重做（護照博物館長段樣張、measure 13.5em）。
+- **③ 查證結論：非庫 bug，是字體度量。** 隔離測試（headless Chromium）：
+  系統字體下 `text-emphasis-position: under` 的點緊貼字身，且行高 1 與 2
+  無差；載入 Shanggu 後點才沉入行距——落點跟字體 descent 走，CSS 無
+  offset 旋鈕。**修法在 ziano 端**（調 Shanggu 垂直度量），與工作區
+  ledger「abspos 字形 Y 軸 per-font 常數」同族。semantics.css 不動。
+- **④** 已修——遊樂場範文改為指向面板：「面板一撥書名號，本草綱目自入
+  《》」，四語同步；`<cite>` 保留，撥開 citeTitleMarks 即兌現。
+- **⑤** 已修——帳本點名：「運行時依賴1（hyperly）」，名字從 package.json
+  計算（vite `runtimeDeps()`），不硬編碼。
+- **⑥** 已修——「緊要強調之處——一如本句」破折號回歸；並補上原稿遺失的
+  `<em>`（此句先前根本沒有著重號可看），四語同步。
