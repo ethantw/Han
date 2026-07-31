@@ -173,7 +173,7 @@ const HOME_LAYOUT = path.resolve(here, '_home.html')
 // homepage template's ctx. Not a section, not a per-file dict.
 const HOME_SHARED = path.resolve(HOME_DIR, '_shared.html')
 const HOME_SECTIONS = [
-  'manifesto', 'station-semantics', 'station-type', 'station-lines',
+  'manifesto', 'station-semantics', 'station-fonts', 'station-lines',
   'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing',
 ]
 // The console is chrome, not a station — it sits OUTSIDE <main class="han">

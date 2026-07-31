@@ -174,7 +174,7 @@
      and a giant watermark glyph behind it would be one background pattern too
      many. The forme itself is NOT a watermark — it sits in flow, full-bleed,
      with nothing painted over it (home/lead-forme.css § showpiece). -->
-<section id="station-type" data-station="type" data-ground="b">
+<section id="station-fonts" data-station="type" data-ground="b">
   <hgroup>
     <p>{{ stEyebrow }}</p>
     <h2>{{ stH2 }}</h2>
@@ -382,35 +382,37 @@
         </select></label>
       </li>
     </ul>
+
+    <!-- 樣張切換 — 只管上面那四格四語樣張（.PunctLang），不動整頁。收在擠壓
+        那段之後，因為那段講的正是「行首行尾、連續標點，一次到位」：撥成直排，
+        行首行尾換一組規矩；換一種字體，換一份 GPOS 表——同一句話的兩個維度，
+        就在讀完它的地方試。
+
+        純 CSS，沒有 JS：樣式由 `#station-fonts:has(… :checked)` 直接選到樣張
+        （station-fonts.css § PunctLang 的切換），同 .PunctLang 每格那顆標點
+        <select> 用 `:has(option:checked)` 的作法（:has() · Baseline 2023）。
+        控件擺在樣張之外、DOM 順序在後，靠 :has() 從共同祖先反選——擺回樣張
+        裡面也行，那是一行的事。
+
+        楷體那顆不必特別配標點：han.css 的 `--han-font-punctuation-cursive`
+        本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
+        這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
+    <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
+      <fieldset>
+        <legend>{{ ltOrientLegend }}</legend>
+        <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
+        <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
+      </fieldset>
+      <fieldset>
+        <legend>{{ ltFaceLegend }}</legend>
+        <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
+        <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
+        <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>
+      </fieldset>
+    </form>
+
+    <figcaption>
+      {{ stSqueezeP }}
+    </figcaption>
   </figure>
-
-  <p>{{ stSqueezeP }}</p>
-
-  <!-- 樣張切換 — 只管上面那四格四語樣張（.PunctLang），不動整頁。收在擠壓
-       那段之後，因為那段講的正是「行首行尾、連續標點，一次到位」：撥成直排，
-       行首行尾換一組規矩；換一種字體，換一份 GPOS 表——同一句話的兩個維度，
-       就在讀完它的地方試。
-
-       純 CSS，沒有 JS：樣式由 `#station-type:has(… :checked)` 直接選到樣張
-       （station-fonts.css § PunctLang 的切換），同 .PunctLang 每格那顆標點
-       <select> 用 `:has(option:checked)` 的作法（:has() · Baseline 2023）。
-       控件擺在樣張之外、DOM 順序在後，靠 :has() 從共同祖先反選——擺回樣張
-       裡面也行，那是一行的事。
-
-       楷體那顆不必特別配標點：han.css 的 `--han-font-punctuation-cursive`
-       本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
-       這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
-  <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
-    <fieldset>
-      <legend>{{ ltOrientLegend }}</legend>
-      <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
-      <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
-    </fieldset>
-    <fieldset>
-      <legend>{{ ltFaceLegend }}</legend>
-      <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
-      <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
-      <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>
-    </fieldset>
-  </form>
 </section>

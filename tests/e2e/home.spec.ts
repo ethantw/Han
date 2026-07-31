@@ -7,7 +7,7 @@ import { test, expect, type Page } from '@playwright/test'
  * web component (shadow DOM; `form="side"|"top"` attr, <52rem
  * bottom-sheet) + `<main
  * class="han">` with six stations (Manifesto, station-semantics,
- * station-type, station-lines, station-snippet, Closing). Station④
+ * station-fonts, station-lines, station-snippet, Closing). Station④
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
  * `[data-out-panes]`, one `<figure class="CodePane">` per codegen.js
  * pane — no more global `[data-out-copy]`/single `[data-out-code]`);
@@ -56,7 +56,7 @@ for (const { path, htmlLang, label } of LOCALES) {
     // lines, snippet, Closing.
     await expect(page.locator('main > .Manifesto')).toBeVisible()
     await expect(page.locator('#station-semantics')).toBeVisible()
-    await expect(page.locator('#station-type')).toBeVisible()
+    await expect(page.locator('#station-fonts')).toBeVisible()
     await expect(page.locator('#station-lines')).toBeVisible()
     await expect(page.locator('#station-snippet')).toBeVisible()
     await expect(page.locator('main > .Closing')).toBeVisible()

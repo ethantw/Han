@@ -25,7 +25,7 @@ test('the stations carry their watermark glyphs 語行段層格碼 (station② h
   await page.goto('/')
 
   await expect(page.locator('main [data-station]')).toHaveCount(7)
-  await expect(page.locator('main #station-type[data-wm]')).toHaveCount(0)
+  await expect(page.locator('main #station-fonts[data-wm]')).toHaveCount(0)
 
   const stations = page.locator('main [data-station][data-wm]')
   await expect(stations).toHaveCount(6)

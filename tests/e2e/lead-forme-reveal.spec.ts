@@ -127,7 +127,7 @@ test('the station itself still reveals on the old sliver cue', async ({ page }) 
   // the stations, whose copy-rise still keys off a sliver of the section.
   await page.setViewportSize({ width: 1600, height: 1000 })
   await page.goto('/')
-  const station = page.locator('#station-type')
+  const station = page.locator('#station-fonts')
   // its TOP edge, not scrollIntoViewIfNeeded — that would scroll a station
   // this tall until its BOTTOM shows, which is the forme's cue too.
   await station.evaluate(($s) => scrollTo(0, $s.getBoundingClientRect().top + scrollY))

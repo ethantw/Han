@@ -279,11 +279,10 @@
   & {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: center;
     gap: 0.75rem;
-    /* 貼著上一段的尾巴：那段是 lede 級（station-frame.css § `hgroup ~ p`
-       的 2.75rem 下緣），這裡收回一截，讀成「這段話的附件」而不是新一段。 */
-    margin-block: -1.5rem 0;
+    margin-block: 1.5rem .75rem;
     font-family: var(--han-font-default);
   }
 
@@ -338,7 +337,7 @@
 }
 
 /* 開關 → 樣張。控件在樣張之外、DOM 順序還在它後面，所以從共同祖先
-   `#station-type` 用 `:has()` 反選（:has() · Baseline 2023，同 .PunctLang
+   `#station-fonts` 用 `:has()` 反選（:has() · Baseline 2023，同 .PunctLang
    每格那顆標點 <select> 的作法）。純 CSS，沒有 JS。
 
    字體宣告落在 `p` 上而不是圖說根上，理由同 lead-forme.css § .PunctLang 那
@@ -352,10 +351,10 @@
 
    明體那顆不必寫規則：`:where(.PunctLang) p` 的基態就是 `var(--han-serif)`
    （lead-forme.css），所以它是預設值，也是取消其餘兩條時的落點。 */
-#station-type:has(input[name="pl-face"][value="sans"]:checked) .PunctLang p {
+#station-fonts:has(input[name="pl-face"][value="sans"]:checked) .PunctLang p {
   font-family: var(--han-sans);
 }
-#station-type:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
+#station-fonts:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
   font-family: var(--han-cursive);
 
   /* 韓文那格例外，楷體時仍走明體（owner 定案）。不是覆蓋率的問題——實測
@@ -369,35 +368,37 @@
   }
 }
 
-/* 直排只翻樣張。`inline-size` 在 vertical-rl 是**垂直**的，所以那 16em 是
-   行長（一行從上到下十六個字左右）；欄數隨字數增加，往水平方向長出去，由
-   每一格自己橫向捲動。整頁的容器化不受影響——翻的是格子裡的 <p>，不是
-   main（station-frame.css 記過 main 一轉行向，inline-size 容器化收掉的就是
-   它的高度）。 */
-#station-type:has(input[name="pl-writing"][value="vertical"]:checked) .PunctLang {
-  /* 翻的是**格子**（捲動容器）本身，不是只翻裡面那段字。差別在起點：
-     vertical-rl 的文首在右邊，而一個 horizontal-tb 的容器初始捲動位置在
-     左緣——只翻 <p> 的話，一撥過去看到的是句子中段（實測）。容器自己是
-     vertical-rl，瀏覽器就把初始捲動放在它的 inline 起點，也就是文首。
-     格子原本是 flex column，翻向之後 block 軸變水平，那顆標點 <select>
-     順勢落到文字左側（直排的行末側），正是它該待的地方。 */
+/* 直排只翻樣張。整頁的容器化不受影響——翻的是格子裡的 <p>，不是 main
+   （station-frame.css 記過 main 一轉行向，inline-size 容器化收掉的就是它的
+   高度）。 */
+#station-fonts:has(input[name="pl-writing"][value="vertical"]:checked) .PunctLang {
   li {
-    writing-mode: vertical-rl;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
+    gap: 1rem;
   }
-  /* inline-size 在 vertical-rl 是**垂直**的：這 16em 是行長（一行從上到下
-     十六個字上下），欄數隨字數往水平方向長，超出的部分由格子橫向捲動。 */
+  /* 翻向的邊界劃在 <p> 上，**不是格子**：格子留在 horizontal-tb，它的 block
+     軸就還是垂直的，那顆標點 <select> 不論橫直排都落在樣張**下方**，只佔一條
+     橫帶，不吃直排文字的塊軸（＝水平）空間。格子轉向的版本會把 select 推到
+     文字側邊，等於從行寬裡割一塊走。
+
+     捲動容器也一併搬到 <p>：初始捲動位置取的是捲動容器**自己**的行向起點，
+     所以捲動容器必須是那個 vertical-rl 的盒子，一撥過去才停在文首（右緣）；
+     交給 horizontal-tb 的格子捲，起點在左緣＝句子末段（實測）。 */
   p {
+    /* inline-size 在 vertical-rl 是**垂直**的：這 16em 是行長（一行從上到下
+       十六個字上下），欄數隨字數往水平方向長，超出的由 <p> 自己橫向捲動。
+       basis 要收掉——基態的 `flex: 1` 讓格子把主軸（垂直）撐滿，行長就不是
+       16em 了。 */
+    flex: none;
+    block-size: 100%;
     inline-size: 16em;
-  }
-  /* 標籤與 <select> 不跟著轉——控件是 chrome，讀的是介面不是內文。
-     `order: -1` 把它挪到區塊起點（直排下＝右側，文首那一邊）：留在原位
-     的話它落在文字的另一頭，而那一頭在捲動範圍之外，格子一進畫面就看不到
-     這顆選單了。 */
-  label {
-    writing-mode: horizontal-tb;
-    order: -1;
-    align-self: start;
+
+    /* 塊軸（水平）貼齊格寬，超出的部分才有得捲；基態 align-items: center 會
+       讓它縮成內容寬而溢出格子。 */
+    /* align-self: stretch; */
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-block: contain;
+
+    writing-mode: vertical-rl;
   }
 }
