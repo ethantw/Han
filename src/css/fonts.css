@@ -7,7 +7,16 @@
 /**
  * Diantenjeom punctuation convention per locale (標點慣例).
  * Each property selects a Diantenjeom font variant for its target language;
- * the three share the same value set:
+ * all four share the same value set.
+ *
+ * **Convention and locale are decoupled** — every convention is available to
+ * every locale. The variants carry the SAME codepoint set (diantenjeom's
+ * `codepoints.py`: JIS / MOE / KV all use `BASE` as-is; GB adds vertical
+ * presentation forms on top), and upstream names them after the layout
+ * document, not the language, precisely so they can be paired freely
+ * (diantenjeom README: «pair any variant with any CJK text font»). Japanese
+ * text with MOE punctuation, TC with JIS, Korean with GB — all legal. The
+ * defaults below are a sensible starting point, not a restriction.
  *
  *   JIS  JIS X 0208 standard. Japanese convention; sentence-ending marks
  *        （，。、） anchored to the trailing cell edge; others centred.
@@ -15,6 +24,14 @@
  *        marks centred in the full-width cell.
  *   GB   Guóbiāo (GB/T 15834). Mainland Chinese standard; all eight principal
  *        marks anchored to the trailing cell edge.
+ *   KV   W3C KLReq (Requirements for Hangul Text Layout and Typography).
+ *        Brackets and quotes (cl1/cl2) flush against one end of the em;
+ *        `！？：；` and middle dots (cl6/cl7) stay UPRIGHT in vertical writing
+ *        instead of rotating; `。、` (cl8/cl9) full-width, corner-attached.
+ *        Korea has had no statutory vertical-punctuation spec since 한글
+ *        맞춤법 dropped its vertical chapter in 2015, so KLReq is the standing
+ *        reference. Its distinctive value concentrates in VERTICAL text plus
+ *        the bracket family — but nothing about it is Korean-only.
  *   off  Disable Diantenjeom for that locale; glyphs fall through to the body
  *        font's own forms.
  *
@@ -22,40 +39,46 @@
  *   --han-punctuation-hant  :lang(zh)       MOE
  *   --han-punctuation-hans  :lang(zh-Hans)  GB
  *   --han-punctuation-ja    :lang(ja)       JIS
+ *   --han-punctuation-ko    :lang(ko)       KV
  *
  * ⚠️  Set on an ANCESTOR, never on the targeted element itself.
  *     Style queries always check an ancestor — the element cannot
  *     query its own custom properties.
  */
 @property --han-punctuation-hant {
-  syntax: "JIS | MOE | GB | off";
+  syntax: "JIS | MOE | GB | KV | off";
   inherits: true;
   initial-value: MOE;
 }
 
 @property --han-punctuation-hans {
-  syntax: "JIS | MOE | GB | off";
+  syntax: "JIS | MOE | GB | KV | off";
   inherits: true;
   initial-value: GB;
 }
 
 @property --han-punctuation-ja {
-  syntax: "JIS | MOE | GB | off";
+  syntax: "JIS | MOE | GB | KV | off";
   inherits: true;
   initial-value: JIS;
 }
 
 /**
- * Diantenjeom punctuation convention for Korean vertical text (韓文直排用標點,
- * 세로쓰기용 문장부호). Selects the Diantenjeom variant for `:lang(ko)` elements.
- * Covers vertical writing modes. Horizontal Korean mixed with CJK is not covered
- * by Diantenjeom.
+ * Diantenjeom punctuation convention for Korean (한국어 문장부호). Same value
+ * set as the other three — see the block above for what each convention is.
  *
- *   KV   Default. Korean Vertical standard.
- *   off  Disable Diantenjeom fonts for Korean.
+ * Renamed from `--han-punctuation-vertical-ko` (v4 rc): the `vertical-`
+ * qualifier stopped being true once Korean gained JIS / MOE / GB, and the four
+ * locale properties should read alike.
+ *
+ * KLReq calls for HALF-WIDTH Western `.` `,` in horizontal Korean, which a
+ * system font already renders well — that is a content-layer decision (which
+ * characters the author types), not something a punctuation font can make.
+ * What KV gives horizontal Korean is the bracket family; what it gives
+ * vertical Korean is the whole convention.
  */
-@property --han-punctuation-vertical-ko {
-  syntax: "KV | off";
+@property --han-punctuation-ko {
+  syntax: "JIS | MOE | GB | KV | off";
   inherits: true;
   initial-value: KV;
 }
@@ -236,7 +259,9 @@
  * family of blocks into ONE `:where(:lang(…))` rule whose vars are assigned by
  * a single multi-branch `if()`, dropping the `@container` wrappers entirely.
  *
- * Future form (e.g. the four --han-punctuation-hant blocks → one rule):
+ * Future form (e.g. the FIVE --han-punctuation-hant blocks → one rule; the
+ * matrix is now 4 locales × 4 conventions + off = 20 blocks, so the payoff
+ * doubled when conventions were opened to every locale):
  *   :where(:lang(zh)) {
  *     --han-font-punctuation-sans: if(
  *       style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
@@ -472,6 +497,14 @@
   }
 }
 
+/* 標點公約 → 字體家族。四文種 × 四公約 ＋ off ＝ 20 塊；矩陣刻意攤平，收斂
+   寫法等 `if()`（見本檔 Future form 一節——那一節的收益隨這次擴充翻倍）。
+
+   KV 的家族名列了兩個：上游 diantenjeom 已把家族改名 `… KLR`（W3C KLReq 的
+   縮寫；KV ＝ Korean Vertical，那個名字本身就是「只給直排用」這個誤會的來
+   源），但發佈到 npm 的版本仍叫 `… KV`。font stack 天然容錯——缺席的家族直接
+   跳過——兩個都列就跨得過發版的空窗，也保護還沒更新字體的下游。上游發版後拆
+   掉後者；值本身（`KV` → `KLR`）另案改名。 */
 @container style(--han-punctuation-hant: JIS) {
   :where(:lang(zh)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
@@ -491,6 +524,13 @@
     --han-font-punctuation-sans: 'Diantenjeom Sans GB';
     --han-font-punctuation-serif: 'Diantenjeom Serif GB';
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
+  }
+}
+@container style(--han-punctuation-hant: KV) {
+  :where(:lang(zh)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+    --han-font-punctuation-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
   }
 }
 @container style(--han-punctuation-hant: off) {
@@ -521,6 +561,13 @@
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
+@container style(--han-punctuation-hans: KV) {
+  :where(:lang(zh-Hans)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+    --han-font-punctuation-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+  }
+}
 @container style(--han-punctuation-hans: off) {
   :where(:lang(zh-Hans)) {
     --han-font-punctuation-sans: initial;
@@ -549,6 +596,13 @@
     --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
   }
 }
+@container style(--han-punctuation-ja: KV) {
+  :where(:lang(ja)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+    --han-font-punctuation-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+  }
+}
 @container style(--han-punctuation-ja: off) {
   :where(:lang(ja)) {
     --han-font-punctuation-sans: initial;
@@ -556,14 +610,35 @@
     --han-font-punctuation-cursive: initial;
   }
 }
-@container style(--han-punctuation-vertical-ko: KV) {
+@container style(--han-punctuation-ko: JIS) {
   :where(:lang(ko)) {
-    --han-font-punctuation-sans: 'Diantenjeom Sans KV';
-    --han-font-punctuation-serif: 'Diantenjeom Serif KV';
-    --han-font-punctuation-cursive: 'Diantenjeom Serif KV';
+    --han-font-punctuation-sans: 'Diantenjeom Sans JIS';
+    --han-font-punctuation-serif: 'Diantenjeom Serif JIS';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif JIS';
   }
 }
-@container style(--han-punctuation-vertical-ko: off) {
+@container style(--han-punctuation-ko: MOE) {
+  :where(:lang(ko)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
+  }
+}
+@container style(--han-punctuation-ko: GB) {
+  :where(:lang(ko)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans GB';
+    --han-font-punctuation-serif: 'Diantenjeom Serif GB';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif GB';
+  }
+}
+@container style(--han-punctuation-ko: KV) {
+  :where(:lang(ko)) {
+    --han-font-punctuation-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+    --han-font-punctuation-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
+  }
+}
+@container style(--han-punctuation-ko: off) {
   :where(:lang(ko)) {
     --han-font-punctuation-sans: initial;
     --han-font-punctuation-serif: initial;
