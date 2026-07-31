@@ -426,6 +426,12 @@ no-preference 則 reduced-motion 下會動）：
 - [ ] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
 - [ ] 模組 off→on 再開：整首詩含逐字 stagger 重演＝預期行為（與圖解
   replay 同語言），目測兩邊同步。
+- [ ] **Owner 決定：》。的擠壓 vs 《》的長出**。乙式 pseudo 的
+  inline-block 讓第 7 行「論》。」的全形擠壓對失效（實測 +12px，帳記在
+  semantics-bracket-in 的註裡）。選項：(a) 收下（現狀，誠實記帳）；
+  (b) 用 discrete display 動畫在 to 幀落回 inline——擠壓在入場結束時
+  回歸，代價是 520ms 處一個 0.5em 的落定收縮（baseline: display 可
+  discrete 動畫，Chrome 116＋）；(c) 放棄長出戲改純淡入。目測後拍板。
 - [ ] --cue-settle 的存廢：Task 3／4 定稿改鍵 @container 後歸零消費者，
   token 區「勿再寫字面 520ms」的契約註已失準——Task 5 若同走 @container
   即刪 token 並改寫該註；若留（外部文檔引用），註明「目前僅文檔性」。
