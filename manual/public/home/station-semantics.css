@@ -211,6 +211,46 @@
   }
 }
 
+/* ── replay 雙胞胎 ──────────────────────────────────────────────────
+   與各自的入場 keyframes 逐幀相同，只差名字——CSS 動畫同名重宣告
+   不會重啟（mark-replay 的量測論證，見其 @keyframes 註），所以 hover
+   重播必須換一個名字才能從第一幀起跑。幀改動時兩份要同步改。 */
+@keyframes semantics-u-split-replay {
+  from { margin-inline-end: 0; }
+  to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
+}
+
+@keyframes semantics-straighten-replay {
+  from { font-style: oblique 12deg; }
+  to   { font-style: oblique 0deg; }
+}
+
+@keyframes semantics-mark-cue-replay {
+  0%, 100% { color: var(--palette-text); }
+  52%      { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
+}
+
+@keyframes semantics-char-settle-replay {
+  from { transform: skew(-12deg); }
+  to { transform: skew(0deg); }
+}
+
+@keyframes semantics-wavy-in-replay {
+  from { text-decoration-color: transparent; }
+  to { text-decoration-color: currentColor; }
+}
+
+@keyframes semantics-bracket-in-replay {
+  from {
+    color: transparent;
+    inline-size: 0;
+  }
+  to {
+    color: currentColor;
+    inline-size: 1em;
+  }
+}
+
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
    詩行第 1、3 行同為專名號，同取 --cue-proper，與圖解同亮）。
@@ -956,6 +996,149 @@
          dissolve. */
       dfn {
         transition: font-weight 280ms ease-out;
+      }
+    }
+
+    /* ── 雙向 hover 重播：詩行 ↔ 圖解 ────────────────────────────────
+       任一邊 hover——詩行的語意元素、或圖解的對應行——兩邊同時重播該
+       記號的戲：`:has()` 把觸發收在 #station-semantics 上，一條選擇器
+       天生雙向。圖解側沿用 mark-replay；詩行側用各自的 `-replay` 雙胞
+       胎（同名重宣告不重啟，見 mark-replay 的 @keyframes 註）。replay
+       一律去掉 cue delay——hover 即演；逐字 skew 保留每字 40ms 錯拍。
+
+       Shorthand 陷阱，本區的關鍵約定：hover 規則的 animation 簡寫整組
+       取代基態的入場列表，而動畫「移除後再加回」是會重啟的——若只寫
+       `-replay` 一支，離開 hover 的瞬間入場動畫就全數重演一遍。所以凡
+       是基態帶入場動畫的詩行元素，hover 列表都先原樣重列入場（同名 ⇒
+       hover 進入時不重啟、離開時無縫接回原列表），再附 `-replay`。圖解
+       側故意不重列——沿用既有 [data-mark]:hover 的先例：離開時
+       mark-settle 從頭再走一次，讀起來就是再一次 replay；會跟著閃的紅
+       註早已搬到自己的元素上（見 annotation-once 的論證）。
+
+       已知取捨（plan Task 7 Step 3）：(a) 詩行觸發是元素級、直排行內
+       命中面積小——owner 目測後若手感差，改行級 span:has(u):hover 是
+       一行的事。(b) off 態不對稱：詩行側規則掛
+       :root:not([data-han-module-semantics='off']) 閘——本區選擇器的重
+       量（雙 ID＋:has）壓得過 off-gate 的 `article * { animation:
+       none }`（2,3,2），打不贏就乾脆不匹配；圖解側不掛閘，off 態下詩
+       行 hover 照樣把圖解推成「修正預演」（mark-replay 蓋過
+       mark-unsettle），與 off-gate 內 hover 的語意一致。(c) Firefox：
+       proper 組只有圖解會重播——詩行的裂縫依入場同一道 @supports 閘
+       不存在。(d) 入場未完成時 hover（翻旗前的兩秒窗）會讓翻旗才存在
+       的記號提早著墨一拍——瞬態、離開即復原，不另設閘。 */
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      #station-semantics:has(
+        .MarkDiagram [data-mark='proper']:hover,
+        .poem-like u:hover
+      ) & {
+        .MarkDiagram [data-mark='proper'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        /* Firefox 閘同入場（src/css/semantics.css:499 同一道）——replay
+           也動 margin，無閘的話 hover 一次就把雙倍縫永久釘上（fill
+           both）。 */
+        @supports not (text-decoration-inset: auto) {
+          :root:not([data-han-module-semantics='off']) & .poem-like u[data-followed-by-adjacent-line] {
+            animation:
+              semantics-u-split 520ms ease-out var(--row-cue) both,
+              semantics-u-split-replay 620ms ease-out both
+            ;
+          }
+        }
+      }
+
+      #station-semantics:has(
+        .MarkDiagram [data-mark='emphasis']:hover,
+        .poem-like em:hover
+      ) & {
+        .MarkDiagram [data-mark='emphasis'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like em {
+          animation:
+            semantics-straighten 520ms ease-out var(--row-cue),
+            semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-straighten-replay 620ms ease-out both,
+            semantics-mark-cue-replay 1000ms ease-in-out both
+          ;
+        }
+      }
+
+      #station-semantics:has(
+        .MarkDiagram [data-mark='weight']:hover,
+        .poem-like dfn:hover
+      ) & {
+        .MarkDiagram [data-mark='weight'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like dfn {
+          animation:
+            semantics-straighten 520ms ease-out var(--row-cue),
+            semantics-straighten-replay 620ms ease-out both
+          ;
+        }
+      }
+
+      #station-semantics:has(
+        .MarkDiagram [data-mark='plain']:hover,
+        .poem-like i:hover
+      ) & {
+        .MarkDiagram [data-mark='plain'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like i {
+          animation:
+            semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-mark-cue-replay 1000ms ease-in-out both
+          ;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like i [data-char] {
+          animation:
+            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
+            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
+          ;
+        }
+      }
+
+      #station-semantics:has(
+        .MarkDiagram [data-mark='wavy']:hover,
+        .poem-like :where([style*='wavy']) cite:hover
+      ) & {
+        .MarkDiagram [data-mark='wavy'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like :where([style*='wavy']) cite {
+          animation:
+            semantics-straighten 520ms ease-out var(--row-cue),
+            semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-wavy-in 520ms ease-out both,
+            semantics-wavy-in-replay 620ms ease-out both
+          ;
+        }
+      }
+
+      /* 觸發是甲式觸發的逐字補集：cite:hover 減去「wavy 祖先之下的
+         cite」——與甲式那組共用同一個 :where([style*='wavy']) 判準，
+         markup 挪動旗標層級時兩組同義地一起對錯，不靠「cite 是 span
+         直接子元素」這類額外結構假設。replay 只動 pseudo——《》才是
+         這行的記號；pseudo 的 animation 列表與元素自身的不相撞。 */
+      #station-semantics:has(
+        .MarkDiagram [data-mark='bracket']:hover,
+        .poem-like cite:hover:not(:where([style*='wavy']) cite)
+      ) & {
+        .MarkDiagram [data-mark='bracket'] {
+          animation: mark-replay 620ms ease-out both;
+        }
+        /* pseudo 一律不進 :where()（forgiving list 會吞掉它，見掛載規
+           則的註）；選擇器寫寬無妨——乙式 pseudo 只存在於 bracket 祖
+           先之下，第 6 行沒有這兩個盒。 */
+        :root:not([data-han-module-semantics='off']) & .poem-like cite::before,
+        :root:not([data-han-module-semantics='off']) & .poem-like cite::after {
+          animation:
+            semantics-bracket-in 520ms ease-out both,
+            semantics-bracket-in-replay 520ms ease-out both
+          ;
+        }
       }
     }
 
