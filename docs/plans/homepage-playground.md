@@ -5,7 +5,7 @@
 > ＋ owner 拍板（2026-07-13）：「整個首頁就是一個大 playground」。
 
 **Goal:** 首頁本身成為可玩的範文——常駐配置 rail 作用於整個 `<main>`，章節即「站」
-（說明文字同時是該功能的範文），引用碼生成器跟人走。舊首頁凍結為 `old.html`。
+（說明文字同時是該功能的範文），引用碼生成器跟人走。
 
 **Architecture:** 復用既有資產：`codegen.js`（純生成，不動）、`configurator.js` 的
 intents/apply 模式（作用域從 `[data-pg-body]` 改為 `main.han`）、hero 的變數開關
@@ -22,21 +22,6 @@ autospace 間隙 1/8 em（0.125em）；書名號預設 `none`（示範 bracket �
 stats 只列誠實數據（語種／gzip 體積／依賴 1），星星退場。
 
 ---
-
-### Task 1: 凍結舊首頁為 old.html
-
-**Files:** Create: `manual/public/old.html`, `manual/public/old-assets/…`
-
-- [ ] 以現行代碼 build（`pnpm --filter han-manual build`），取 `manual/dist/index.html`
-      存為 `manual/public/old.html`。
-- [ ] 把它引用的自家資產（`/home.css`、`/home/*.css`、`/home.js`、`/home/*.js`）
-      複製進 `manual/public/old-assets/`（保持子結構），並 sed 改寫 old.html 與
-      複製出的 CSS 內 `@import './home/...'` 引用到 `/old-assets/...`。
-      `/han/han.js|css` 引用**保留原路徑**（跟隨 lib 演進可接受）。
-      old.html 內部錨點（#playground 等）自包含、`{{ }}` 零殘留。
-- [ ] 驗證：dev server `curl /old.html` 200、資產全 200、headless 無 console error、
-      snippet 面板照常生成（old 的 configurator 仍指舊 DOM，資產已凍結故可動）。
-- [ ] Commit: `chore(manual): freeze the pre-rebuild homepage as old.html`
 
 ### Task 2: 新首頁骨架＋站文案＋i18n
 
@@ -109,7 +94,7 @@ playground.css/getting-started.css` 中不再用的塊；`_data.js` 死鍵清理
 **Files:** Rewrite: `tests/e2e/home.spec.ts`（對新頁）；Modify:
 `tests/e2e/playground-configurator.spec.ts`（選擇器適配 rail）
 
-- [ ] home.spec：5 locale 渲染、old.html 200＋關鍵內容、rail 兩態切換
+- [ ] home.spec：5 locale 渲染、rail 兩態切換
       （chooser click→body 屬性＋localStorage）、任一開關→main inline 變數、
       reset 按鈕行為。
 - [ ] configurator.spec：四條既有斷言適配（作用域 main、ViewTabs 在站④）。
@@ -125,4 +110,3 @@ playground.css/getting-started.css` 中不再用的塊；`_data.js` 死鍵清理
 - 撥「標點懸掛」全頁行尾標點懸出；切 GB 全頁句號跳位；換源起全頁字形變；
   「回到預設」一鍵還原。
 - 站④分頁生成的引用碼與當前配置一致。
-- `/old.html`：舊首頁原樣可看。

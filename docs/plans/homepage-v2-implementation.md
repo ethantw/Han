@@ -137,7 +137,7 @@ repo skills (css-naming, ts-style). NO letter-spacing on content. All
   reduced-motion (emulateMedia) — smoke level, not pixel tests.
 
 ## Out of scope
-Rail internals, codegen, docs site, /old.html, mint gap-wash (rejected),
+Rail internals, codegen, docs site, mint gap-wash (rejected),
 CD's h2 copy, looping animations.
 The `.WritingSwitch` 橫排/直排 pill keeps its CURRENT styling exactly
 (owner call 2026-07-14) — do not restyle it to the mockup's version,

@@ -38,7 +38,6 @@
 | `public/home/lead-forme.css` | 444 | 尺寸 OK，不動 |
 | `public/brand.css` | 108 | **孤兒**：沒有任何頁面連它，內容是 home.css `.Brand` 的舊複本 |
 | `public/components/tokens.css` | 50 | shadow 的 `--_*` 回退層，硬抄一份 palette 字面値 |
-| `public/old-assets/**` | 1821 | `/old.html` 的凍結快照，**不在範圍內** |
 
 跨檔重複與矛盾：
 
@@ -233,10 +232,9 @@ manual.css 目前跑的是**另一套** token：`--paper`/`--ink`/`--accent` ＋
 
 ## 九、驗收
 
-- [ ] `find manual/public -name '*.css' -not -path '*old-assets*' | xargs wc -l` 全數 ≤500
+- [ ] `find manual/public -name '*.css' | xargs wc -l` 全數 ≤500
 - [ ] `dist/` 只有 `home.css` 與 `manual.css` 兩支頁面 CSS（外加 shadow 專用的
       `home/controls.css`、`components/*.css`）
 - [ ] 首頁亮／暗 × 窄／寬 × reduced-motion 截圖與重整前一致
 - [ ] docs 頁同上比對一輪，主題切換（含重整理後記憶）行為不變
 - [ ] rail shadow 內的控制項樣式完好（`/test/rail-fixture.html`）
-- [ ] `/old.html` 不受影響（old-assets 全程未動）

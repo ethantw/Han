@@ -105,4 +105,4 @@ esbuild.build with the same config.
 ### Out of scope
 
 JS per-module granularity (han.auto stays one bundle, gated by the
-JAVASCRIPT group as today); docs site; /old.html.
+JAVASCRIPT group as today); docs site.

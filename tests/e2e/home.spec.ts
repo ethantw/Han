@@ -23,11 +23,6 @@ import { test, expect, type Page } from '@playwright/test'
  * `[data-demo-lang]` chip row (top-right of `<main>`) switches which
  * language the specimen copy demonstrates, independent of the page's
  * own UI locale.
- *
- * `/old.html` is the frozen pre-rebuild homepage, fully self-contained
- * under `/old-assets/` — untouched by the pane rework, still renders
- * its own single-`<pre data-out-code>` snippet via its own frozen copy
- * of codegen.js/configurator.js.
  */
 
 const LOCALES = [
@@ -96,22 +91,6 @@ test('lang switcher menu lists all 5 locales (with the active one flagged)', asy
   )
   expect(new Set(slugs)).toEqual(new Set(['hant', 'hans', 'en', 'ja', 'ko']))
   await expect(switcher.locator('a[data-lang="hant"]')).toHaveClass(/is-active/)
-})
-
-test('old.html: 200, provenance marker, own frozen snippet renders', async ({ page, request }) => {
-  const response = await page.goto('/old.html')
-  expect(response?.status()).toBe(200)
-
-  // The provenance comment sits between <!doctype> and <html> — not part
-  // of the parsed DOM subtree `page.content()` serializes, so fetch the
-  // raw source instead.
-  const raw = await (await request.get('/old.html')).text()
-  expect(raw).toContain('frozen snapshot of the pre-rebuild homepage')
-
-  // The old page's own configurator/codegen (frozen under /old-assets/)
-  // still boots and dumps a bundler-tab snippet with the install line.
-  const code = page.locator('[data-out-code]').first()
-  await expect(code).toContainText('pnpm add @hanzi.pro/han.css')
 })
 
 test.describe('console form attribute', () => {

@@ -16,8 +16,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 ```
 
 五個 locale（`/`＝hant、`/hans/`、`/en/`⋯）、亮暗兩態（masthead 月亮 toggle）、
-直排模式（右下角懸浮的橫排／直排 pill）都要實際看過再動筆。舊版首頁凍結在
-`/old.html`，只作歷史參考。
+直排模式（右下角懸浮的橫排／直排 pill）都要實際看過再動筆。
 
 ## 現狀盤點（動筆前的事實基礎）
 
@@ -87,7 +86,7 @@ cd manual/dist && python3 -m http.server 4189   # → http://localhost:4189/
 - **內容不加 letter-spacing**（owner 三令五申）。
 - **不用重型資產**：無圖片檔/插畫檔依賴，視覺表現以字體排印本身、CSS
   繪製、既有 webfont 為材料——這個站的美術「就是字」。
-- 動效克制、`prefers-reduced-motion` 全程尊重；`/old.html` 與 docs 站不動。
+- 動效克制、`prefers-reduced-motion` 全程尊重；docs 站不動。
 
 ## 交付物（寫成 `docs/design/2026-07-1X-homepage-direction-*.md`，不寫代碼）
 

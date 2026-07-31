@@ -4,8 +4,7 @@
  * Split out of the old `home/hero.js` in HP-4 (dead-asset cleanup):
  * this is the only export from that file the new homepage still uses
  * (`initFeatureToggles` / `initMagnifier` / `initSpecHint` targeted
- * `.Specimen` markup that no longer exists on this page). `/old.html`
- * keeps its own frozen copy under `/old-assets/home/hero.js`.
+ * `.Specimen` markup that no longer exists on this page).
  */
 export const initLangSwitcher = () => {
   const $root = document.querySelector('[data-lang-switcher]')

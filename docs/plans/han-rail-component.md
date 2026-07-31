@@ -119,7 +119,7 @@ export const TEMPLATES = { hant: '…', hans: '…', en: '…', ja: '…', ko: '
    b. 首頁上 `han-config-change` event 合約：detail 形狀、初始 event、
       `source` 正確。
 5. 瀏覽器截圖：首頁視覺與元件化前一致（這次**是**「不許變」的重構）。
-6. `/old.html`、docs 站（manual.css/manual.js）不動。
+6. docs 站（manual.css/manual.js）不動。
 
 ## 風險與對策
 
