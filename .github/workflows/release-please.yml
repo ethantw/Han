@@ -7,11 +7,16 @@ name: Release Please
 # This workflow is INFRASTRUCTURE-ONLY as of 2026-05-02 — it does NOT
 # publish to npm. To enable publishing later, uncomment the publish
 # steps below and add `NPM_TOKEN` to repo secrets.
+#
+# Fires on `master` (this repo's default branch — there is no `main`).
+# Until the v4 line lands on master this never triggers, which matches
+# the RC decision: 4.0.0-rc.1 publishes MANUALLY (`npm publish --tag rc`);
+# automation takes over from the first stable release.
 
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions:
   contents: write

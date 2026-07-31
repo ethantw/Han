@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, '**']
+    branches: ['**']
   pull_request:
-    branches: [main]
+    branches: [master]
 
 concurrency:
   group: ci-${{ github.ref }}
