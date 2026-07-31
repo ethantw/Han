@@ -11,8 +11,9 @@
     6、實際 4）、`lead-forme-swap` ×2（橫排 moved=0，疑字面填滿改掉
     letter-spacing 後判定失效）、`lead-forme-pocket`。逐一 triage
     「測試過時 vs 真回歸」。
-  - markup 未接（2）：`home.spec:230` demo-lang chips、`:253`
-    writing switch——JS 都在、`_home.html` 無控件 markup。
+  - markup 未接（2）：`home.spec:209` demo-lang chips、`:232`
+    writing switch——JS 都在、`_home.html` 無控件 markup。writing
+    switch 那條**已明示延後到 Phase 2**（見下），紅著是預期的。
   - 既有 C 類（3）：`home:155` per-group ↺、`home:266` h-iss、
     `demo:24` zh-Hans off-cell 懸掛未關。
   - `demo:11` cell 計數過時——併入 demo re-sync 一起修。
@@ -58,6 +59,30 @@
   4.0.0-rc.1 → Removed。
 
 ## 明示延後（2026-07-31 用戶指示）
+
+- [ ] **全頁直排預覽 → Phase 2。** 那顆浮動直排 pill
+  （`[data-writing-switch]`）的 markup 在某次重構中遺失，
+  `writing-switch.js` 每次都在第 14 行 return，`home.spec:232` 因此
+  恆紅——RC 前不補，Phase 2 再決定它回到哪裡（頁面 chrome 的浮動
+  pill？還是併進 console？）。
+
+  補的時候可以直接接手的三件事（2026-07-31 已查證）：
+  - **塌陷的根因已修**（`83b1bf1`）：`main { container-type:
+    inline-size }` 的 inline 軸隨行向轉，vertical-rl 下收掉的是
+    main 的**高度**——實測翻直排後 main 高 1px、站台每個子元素高 0，
+    整頁空白。已加 `main[data-writing="vertical"] { container-type:
+    normal }`，代價是本頁的容器查詢（56rem／72rem／62rem）在直排預覽
+    下退回窄版分支。目前沒有入口能觸發這條規則。
+  - **捲動起點**：直排下 `main` 自己是橫向捲動容器（實測 765px 視窗
+    裝 51888px 內容），而 vertical-rl 的起點在最右——翻過去
+    scrollLeft 仍是 0 等於跳到全文尾端，一片空白。翻完要把當下這一站
+    `scrollIntoView({ inline: 'start' })` 捲回來。
+  - **開關自己的落點**：在流的位置會被擠到版心上緣、只露出二十來像素
+    （下半被 header 那 64px 壓住），而它是唯一的回頭路——直排下得抬成
+    浮動（fixed），且控件本身要鎖 `writing-mode: horizontal-tb`：翻轉
+    的是版面，不是回頭路。
+  站②尾巴那兩顆（`.SpecimenSwitch`）**不是**這一項——它們只翻四語樣張，
+  純 CSS、已上線（`89bf41f`）。
 
 - [ ] **RWD 精修。** 首頁概念已定，斷點細調延後。
 - [ ] **hans／ja／ko 文檔。** 現為 9 行 stub；RC 出 hant 全量＋en
