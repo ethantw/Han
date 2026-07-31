@@ -95,6 +95,28 @@
     ja: 'をオフにすれば、国字標準字体の粗悪さを味わえる',
     ko: '를 끄면 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>의 <ruby>粗惡<rt>조악</rt></ruby>함을 맛본다',
   },
+  /* 站②尾巴那組預覽切換。行向沿用鉛字盤那組的 ltOrient*——同一件事就用同
+     一個詞；正文字體另立，因為它撥的是 console 的 baseGeneric（正文騎哪個
+     generic），不是鉛字盤那三個具體字體家族（ltFaceM／H／K）。 */
+  stPreviewControls: {
+    hant: '預覽：行向與正文字體',
+    hans: '预览：行向与正文字体',
+    en: 'Preview: direction and body face',
+    ja: 'プレビュー：行方向と本文書体',
+    ko: '<ruby>豫覽<rt>예람</rt></ruby>：<ruby>行向<rt>행향</rt></ruby>과 <ruby>本文<rt>본문</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
+  },
+  stBodyFaceLegend: {
+    hant: '正文', hans: '正文', en: 'Body', ja: '本文',
+    ko: '<ruby>本文<rt>본문</rt></ruby>',
+  },
+  stBodySans: {
+    hant: '黑體', hans: '黑体', en: 'Sans', ja: 'ゴシック',
+    ko: '<ruby>黑體<rt>흑체</rt></ruby>',
+  },
+  stBodySerif: {
+    hant: '明體', hans: '明体', en: 'Serif', ja: '明朝',
+    ko: '<ruby>明體<rt>명체</rt></ruby>',
+  },
   stEyebrow: {
     hant: '貳・字體排印',
     hans: '贰・字体排印',
@@ -354,4 +376,29 @@
   </figure>
 
   <p>{{ stSqueezeP }}</p>
+
+  <!-- 預覽切換 — 收在擠壓那段之後，因為那段講的正是「行首行尾、連續標點，
+       一次到位」：撥成直排，禁則與行首行尾換一組規矩；撥成明體，換一份
+       GPOS 表——同一句話的兩個維度，就在讀完它的地方試。
+
+       兩顆的性質不同，刻意寫在同一排：
+       · 行向是**預覽**狀態，與 han.css 無關（writing-switch.js 只寫 main 的
+         data-writing，直排版面純 CSS）。屬性掛在 fieldset 上而不是 form 上：
+         那支 JS 讀的是容器裡第一個 `input:checked`，掛在 form 上會撈到隔壁
+         那組的 radio。
+       · 正文字體是**設定**——它同時決定 console 套在 main 上的 font-family
+         與生成碼裡 `body { … }` 那一行，所以走 `data-han-cfg-proxy` 分身到
+         console 的 baseGeneric（config-proxy.js），不自己算。 -->
+  <form class="PreviewSwitch" aria-label="{{ stPreviewControls }}">
+    <fieldset data-writing-switch>
+      <legend>{{ ltOrientLegend }}</legend>
+      <label><input type="radio" name="writing" value="horizontal" checked /> {{ ltOrientH }}</label>
+      <label><input type="radio" name="writing" value="vertical" /> {{ ltOrientV }}</label>
+    </fieldset>
+    <fieldset>
+      <legend>{{ stBodyFaceLegend }}</legend>
+      <label><input type="radio" name="base-generic" data-han-cfg-proxy="baseGeneric" value="sans-serif" checked /> {{ stBodySans }}</label>
+      <label><input type="radio" name="base-generic" data-han-cfg-proxy="baseGeneric" value="serif" /> {{ stBodySerif }}</label>
+    </fieldset>
+  </form>
 </section>

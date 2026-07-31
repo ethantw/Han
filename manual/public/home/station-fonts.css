@@ -262,3 +262,98 @@
     }
   }
 }
+
+
+/* ─── PreviewSwitch（站②尾巴：行向＋正文字體） ──────────────────────────
+ * 兩顆藥丸，收在擠壓那段之後——讀完「行首行尾、連續標點，一次到位」就地
+ * 試：撥直排換一組禁則，撥明體換一份 GPOS 表。
+ *
+ * 與鉛字盤那組 `.Controls`（lead-forme.css § .Controls）是同一套語彙——
+ * fieldset 作藥丸、legend 浮成頭標、radio 藏起來只留標籤——但**不共用類
+ * 名**：那組是 `writing-mode: vertical-rl` 的直立藥丸，為鉛字盤口袋裡那
+ * 塊窄地量身訂做，橫過來每一條規則都要反著寫。兩邊各自短、各自看得懂，
+ * 好過一個帶方向開關的共用元件。改配色時兩邊要一起看。 */
+.PreviewSwitch {
+  & {
+    /* 控件不跟著版面轉向：它是 chrome，不是內文。main 一撥成 vertical-rl，
+       這一排若跟著繼承就變成一根八百多像素高的直立柱，捲回眼前時頭端還會
+       鑽到 sticky header 底下——實測翻直排後 y=8，「橫排」那顆點不到，讀者
+       就真的回不來了。翻轉的是版面，不是回頭路。 */
+    writing-mode: horizontal-tb;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    /* 貼著上一段的尾巴：那段是 lede 級（station-frame.css § `hgroup ~ p`
+       的 2.75rem 下緣），這裡收回一截，讀成「這段話的附件」而不是新一段。 */
+    margin-block: -1.5rem 0;
+    font-family: var(--han-font-default);
+  }
+
+  fieldset {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+    padding: 3px;
+    border: 1px solid var(--palette-rule);
+    border-radius: 999px;
+    background: var(--palette-bg);
+
+    &:hover { border-color: var(--palette-supplement-text); }
+  }
+
+  legend {
+    /* float 剝掉 legend 在 fieldset 缺口上的特殊排版（經典的 de-legend
+       手法），它才會當一般的前導 flex item 排——藥丸的頭標。 */
+    float: inline-start;
+    padding-inline: 0.65em 0.35em;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--palette-supplement-text);
+  }
+
+  /* radio 本體藏起來但不移出可及性樹（opacity 而非 display:none），選中態
+     畫在標籤上；鍵盤焦點靠 `:has(input:focus-visible)` 借回來。 */
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
+    padding-block: 4px;
+    padding-inline: 12px;
+    border-radius: 40px;
+    font-size: .875rem;
+    color: var(--palette-supplement-text);
+    cursor: pointer;
+
+    &:has(input:checked) {
+      background: var(--palette-accent-bg);
+      color: var(--palette-accent);
+    }
+    &:has(input:focus-visible) {
+      outline: 2px solid var(--palette-accent);
+      outline-offset: 1px;
+    }
+  }
+}
+
+/* 直排預覽下改成浮動：版面主軸一轉，整頁變成五萬多像素寬的橫向捲動版面，
+   這一排的在流位置被擠到版心上緣、只露出二十來像素（下半被 header 那 64px
+   壓住），而它是唯一的回頭路——翻過去點不回來就只能重整。所以在直排下把它
+   抬出流、釘在視窗右下角：那本來就是這顆開關的原生形態（writing-switch.js
+   檔頭寫的 floating pill），只是現在只在真正需要它浮起來的那一態浮起來。 */
+main[data-writing="vertical"] .PreviewSwitch {
+  position: fixed;
+  z-index: 30;
+  inset-block-end: 1.25rem;
+  inset-inline-end: 1.25rem;
+  margin: 0;
+  padding: .5rem .625rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--palette-bg) 88%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 14px color-mix(in srgb, var(--color-black) 14%, transparent);
+}

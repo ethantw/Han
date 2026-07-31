@@ -13,7 +13,7 @@
  *   • `initSnippet` — station④'s code panes, now a SUBSCRIBER to the
  *     console's `han-config-change` event (the future <han-snippet>).
  *   • `initDemoLang` — borrows the component's `reapplyFallbacks` method.
- *   • `initWritingSwitch` — 橫排/直排 floating pill (preview state,
+ *   • `initWritingSwitch` — 橫排/直排 切換（站②尾巴的 preview state,
  *     outside the console — not a han.css variable).
  *   • `initConsoleCollapse` — the `.ConsoleToggle` handle that opens/closes the
  *     side console's column (`<han-console collapsed>`, a page-LAYOUT hook).
@@ -44,6 +44,7 @@ import { initPapersDateline } from '/home/papers-dateline.js'
 import { initWavyCiteGap } from '/home/wavy-cite-gap.js'
 import { initSemanticChars } from '/home/semantic-chars.js'
 import { initModuleState } from '/home/module-state.js'
+import { initConfigProxy } from '/home/config-proxy.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { gateOpened } from '/home/fonts-gate.js'
@@ -110,6 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()
+  // 站②尾巴的正文字體切換（sans-serif／serif）——同上，console 是真相來源，
+  // 這支只是把它的 baseGeneric 控件搬一顆分身到站台上
+  initConfigProxy()
   initWavyCiteGap()
   // 站①楷體行的逐字 span——包在 initReveal 之前，reveal 蓋章時 span 已
   // 就位，semantics-char-settle 才能從第一格就按 --i 排隊起跑。
