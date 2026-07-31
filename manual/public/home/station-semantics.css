@@ -146,6 +146,9 @@
    集），off-gate 的 animation: none 實務上先一步接管。 */
 @keyframes semantics-u-split {
   from { margin-inline-end: 0; }
+  /* 正字法的縫只有 .125em——直接滑過去肉眼讀不出「斷開」這件事，所以
+     中段誇張撐到 .5em 再落回真值：戲要看得見，終態仍是對的。 */
+  55% { margin-inline-end: .5em; }
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
 }
 
@@ -187,18 +190,18 @@
    pair-squeeze，而第 7 行「另見《真實字符論》。」的 》。 恰是一組全形
    標點對——首頁載 han.lines.css，:root 的 text-spacing-trim: trim-start
    本會擠掉 .5em（headless Chrome 實測 24px 下 cite 156→168px，直排行長
-   348→360px）。此處是明知的取捨：換「長出」這齣戲
-   （diantenjeom/docs/pair-squeeze-and-markup.md）。
-   fill both ⇒ 結束定格 1em，與全形字實寬一致，無裁切。 */
-@keyframes semantics-bracket-in {
-  from {
-    color: transparent;
-    inline-size: 0;
-  }
-  to {
-    color: currentColor;
-    inline-size: 1em;
-  }
+   兩支分開寫：開括號把「後文」拉回來蓋住自己（margin-inline-end 負），
+   閉括號把「自己」拉回去疊在前文上（margin-inline-start 負）。前 40%
+   全透明——那段疊字期看不見；之後一邊讓開一邊浮墨。 */
+@keyframes semantics-bracket-in-before {
+  from { color: transparent; margin-inline-end: -1em; }
+  40% { color: transparent; }
+  to { color: currentColor; margin-inline-end: 0; }
+}
+@keyframes semantics-bracket-in-after {
+  from { color: transparent; margin-inline-start: -1em; }
+  40% { color: transparent; }
+  to { color: currentColor; margin-inline-start: 0; }
 }
 
 /* ── replay 雙胞胎 ──────────────────────────────────────────────────
@@ -234,15 +237,15 @@
   to { text-decoration-color: currentColor; }
 }
 
-@keyframes semantics-bracket-in-replay {
-  from {
-    color: transparent;
-    inline-size: 0;
-  }
-  to {
-    color: currentColor;
-    inline-size: 1em;
-  }
+@keyframes semantics-bracket-in-before-replay {
+  from { color: transparent; margin-inline-end: -1em; }
+  40% { color: transparent; }
+  to { color: currentColor; margin-inline-end: 0; }
+}
+@keyframes semantics-bracket-in-after-replay {
+  from { color: transparent; margin-inline-start: -1em; }
+  40% { color: transparent; }
+  to { color: currentColor; margin-inline-start: 0; }
 }
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
@@ -882,18 +885,19 @@
             semantics-settle 520ms step-end var(--row-cue) both,
             semantics-straighten 520ms ease-out var(--row-cue);
         }
-        .poem-like dfn {
-          animation: semantics-straighten 520ms ease-out var(--row-cue);
-        }
-        .poem-like :is(cite, em) {
+
+        /* cite 的歸正仍走 font-style 插值：它的記號是線（甲式波浪、
+           乙式《》），而 text-decoration 畫不進 atomic inline——逐字
+           inline-block 會讓波浪線整條消失，所以 cite 不逐字包。 */
+        .poem-like cite {
           animation:
             semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue);
         }
-        /* <i> 不在 straighten 名單：它的歸正由逐字 skew 接手（見
+        /* i／em／dfn 不在 straighten 名單：歸正由逐字 skew 接手（見
            @keyframes semantics-char-settle 的交棒論證），行級只留
-           mark-cue 的墨色一閃。 */
-        .poem-like i {
+           mark-cue 的墨色一閃（dfn 本就無墨色一閃，字重交給 transition）。 */
+        .poem-like :is(i, em) {
           animation: semantics-mark-cue 1000ms ease-in-out var(--row-cue);
         }
         /* 逐字歸正鍵在旗標翻轉本身：@container 讓這條規則在
@@ -906,7 +910,7 @@
            display: inline-block 也只在翻旗後生效——翻旗前 span 是普通
            inline，不碰 pair-squeeze。 */
         @container style(--han-semantics: on) {
-          .poem-like i [data-char] {
+          .poem-like :is(i, em, dfn) [data-char] {
             display: inline-block;
             animation:
               semantics-char-settle
@@ -939,11 +943,16 @@
              第 6 行的 span 覆寫成 wavy ⇒ 沒有這兩個盒，規則落空無害。
              與行級的 :is(cite, em) 那條不打架——pseudo 是另外的盒，不是
              同一元素上的 animation 簡寫覆寫。 */
-          .poem-like cite::before,
+          /* 不用 inline-block／inline-size 撐開：atomic inline 在直排
+             不會依 UTR50 轉向——《》會保持橫排字形、位置就歪掉了（同一
+             個病根也吃掉「論》。」的擠壓對）。改用負的行向 margin：盒子
+             照常是文字，只是先被拉回去疊在後文底下（此時透明），margin
+             收回 0 的過程就是「長出來、把行文推開」。 */
+          .poem-like cite::before {
+            animation: semantics-bracket-in-before 520ms ease-out both;
+          }
           .poem-like cite::after {
-            display: inline-block;
-            overflow: clip;
-            animation: semantics-bracket-in 520ms ease-out both;
+            animation: semantics-bracket-in-after 520ms ease-out both;
           }
         }
         /* 裂縫只掛 han.js stamp 的那顆（相鄰對的第一顆）。@supports 閘與
@@ -1083,7 +1092,7 @@
             semantics-mark-cue-replay 1000ms ease-in-out both
           ;
         }
-        :root:not([data-han-module-semantics='off']) & .poem-like i [data-char] {
+        :root:not([data-han-module-semantics='off']) & .poem-like :is(i, em, dfn) [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
             semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
@@ -1123,11 +1132,16 @@
         /* pseudo 一律不進 :where()（forgiving list 會吞掉它，見掛載規
            則的註）；選擇器寫寬無妨——乙式 pseudo 只存在於 bracket 祖
            先之下，第 6 行沒有這兩個盒。 */
-        :root:not([data-han-module-semantics='off']) & .poem-like cite::before,
+        :root:not([data-han-module-semantics='off']) & .poem-like cite::before {
+          animation:
+            semantics-bracket-in-before 520ms ease-out both,
+            semantics-bracket-in-before-replay 620ms ease-out both
+          ;
+        }
         :root:not([data-han-module-semantics='off']) & .poem-like cite::after {
           animation:
-            semantics-bracket-in 520ms ease-out both,
-            semantics-bracket-in-replay 620ms ease-out both
+            semantics-bracket-in-after 520ms ease-out both,
+            semantics-bracket-in-after-replay 620ms ease-out both
           ;
         }
       }
