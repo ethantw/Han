@@ -424,6 +424,10 @@ no-preference 則 reduced-motion 下會動）：
 - [ ] 窄視窗折行：第五行 [data-char] span 邊界緊跟「，」的行首禁則
   （Chrome／Safari 各測；atomic inline 的 kinsoku 實作有出入紀錄）。
 - [ ] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
+- [ ] 模組 off→on 再開：整首詩含逐字 stagger 重演＝預期行為（與圖解
+  replay 同語言），目測兩邊同步。
+- [ ] semantic-chars.js 的雙 guard 化石：:11 冪等 guard 被 :12
+  childElementCount 完全遮蔽，合併為一行一註解或原樣保留（擇一，記錄）。
 - [ ] revealed 終態 inline-block 常駐：對 justification／text-autospace
   無影響抽查；reduced-motion 下 span 為 plain inline。
 - [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
