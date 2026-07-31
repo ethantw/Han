@@ -86,11 +86,11 @@ test('station 伍・工法: the container-scope demo really re-skins the 著重�
   expect(await symOf(1)).toBe('sesame')
 })
 
-test('station 伍・工法: the four layer chips carry build-computed gzip sizes', async ({ page }) => {
+test('station 伍・工法: the four layer chips carry build-computed brotli sizes', async ({ page }) => {
   await page.goto('/')
 
   // Each of the four cascade-layer chips (han-semantics/-lines/-prose/-fonts)
-  // rides a <small> with its gzipped weight, baked by vite's
+  // rides a <small> with its brotli weight, baked by vite's
   // computeModuleLedger — proving the per-module dist files were found and
   // measured (a missing file would render '—', not a 'N.Nk' figure).
   const sizes = page.locator('#station-craft .LayerMap li small')

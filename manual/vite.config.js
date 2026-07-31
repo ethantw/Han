@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { glob } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
-import { gzipSync } from 'node:zlib'
+import { brotliCompressSync, gzipSync } from 'node:zlib'
 import esbuild from 'esbuild'
 import { defineConfig } from 'vite'
 import MarkdownIt from 'markdown-it'
@@ -83,14 +83,19 @@ function localizeHomeI18n(dict, locale) {
 
 /**
  * Per-module ledger — baked at build time so the 工法站 layer map shows the
- * real gzipped weight of each han.css module beside its cascade-layer chip,
- * plus a footing line (four-module total ＋ runtime-dep count).
+ * real compressed weight of each han.css module beside its cascade-layer
+ * chip, plus a footing line (four-module total ＋ runtime-dep count).
+ *
+ * Brotli-first (decision 2026-06): headline numbers are brotli (q11, what a
+ * modern CDN actually serves); gzip rides along as the secondary figure in
+ * the footing since Bundlephobia and gzip-only hosts still speak it.
  *
  *   - sizeSemantics / sizeLines / sizeProse / sizeFonts
- *             gzipped size of each per-module `dist/han.<mod>.min.css`, kb
+ *             brotli size of each per-module `dist/han.<mod>.min.css`, kb
  *             with one decimal formatted like '2.3k'; a missing file → '—'.
- *   - sizeTotal  sum of the four, one decimal + 'k'.
- *   - depsCount  count of runtime deps in root package.json.
+ *   - sizeTotal      sum of the four (brotli), one decimal + 'k'.
+ *   - sizeTotalGzip  same sum, gzipped — the footing's secondary figure.
+ *   - depsCount      count of runtime deps in root package.json.
  *
  * The four module keys map 1:1 to the LayerMap's four chips (han-semantics
  * / -lines / -prose / -fonts). Cached like the old hero stats were, and
@@ -106,24 +111,27 @@ async function computeModuleLedger() {
     sizeFonts:     'han.fonts.min.css',
   }
   const keys = Object.keys(modules)
-  const [sizes, deps] = await Promise.all([
-    Promise.all(keys.map(k => gzippedSizeKb(path.join(HAN_DIST, modules[k])))),
+  const [sizes, gzipSizes, deps] = await Promise.all([
+    Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), brotliCompressSync))),
+    Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), gzipSync))),
     countRuntimeDeps(),
   ])
   const fmtSize = kb => kb == null ? '—' : `${kb}k`
   const total = sizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
+  const totalGzip = gzipSizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
   _moduleLedgerCache = {
     ...Object.fromEntries(keys.map((k, i) => [k, fmtSize(sizes[i])])),
     sizeTotal: `${total.toFixed(1)}k`,
+    sizeTotalGzip: `${totalGzip.toFixed(1)}k`,
     depsCount: String(deps),
   }
   return _moduleLedgerCache
 }
 
-async function gzippedSizeKb(file) {
+async function compressedSizeKb(file, compress) {
   if (!existsSync(file)) return null
   const buf = await fs.readFile(file)
-  return +(gzipSync(buf).length / 1024).toFixed(1)
+  return +(compress(buf).length / 1024).toFixed(1)
 }
 
 async function countRuntimeDeps() {

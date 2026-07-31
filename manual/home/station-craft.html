@@ -91,13 +91,6 @@
     ja: '四モジュール合計',
     ko: '네 모듈 <ruby>合計<rt>합계</rt></ruby>',
   },
-  arLedgerGzip: {
-    hant: 'gzip',
-    hans: 'gzip',
-    en: 'gzip',
-    ja: 'gzip',
-    ko: 'gzip',
-  },
   arLedgerDeps: {
     hant: '運行時依賴',
     hans: '运行时依赖',
@@ -144,8 +137,9 @@
 
   <!-- Layer map — the four cascade layers, one mono chip each, in source
        order; they ARE the console's four module switches (arLayerNote). Each
-       chip rides a quiet <small> with its build-computed gzip weight
-       (sizeSemantics… from vite's computeModuleLedger). The figcaption's
+       chip rides a quiet <small> with its build-computed brotli weight
+       (sizeSemantics… from vite's computeModuleLedger; gzip rides the
+       footing as the secondary figure). The figcaption's
        second line is the ledger footing — four-module total ＋ dep count —
        composed from adjacent word/number tokens IN THE MARKUP (single-pass
        substitution, so no token value may itself hold a mustache
@@ -159,7 +153,7 @@
     </ul>
     <figcaption>
       {{ arLayerNote }}
-      <small>{{ arLedgerTotal }}{{ sizeTotal }}（{{ arLedgerGzip }}）・{{ arLedgerDeps }}{{ depsCount }}</small>
+      <small>{{ arLedgerTotal }}{{ sizeTotal }}（brotli・gzip {{ sizeTotalGzip }}）・{{ arLedgerDeps }}{{ depsCount }}</small>
     </figcaption>
   </figure>
 
