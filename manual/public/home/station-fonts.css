@@ -357,6 +357,16 @@
 }
 #station-type:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
   font-family: var(--han-cursive);
+
+  /* 韓文那格例外，楷體時仍走明體（owner 定案）。不是覆蓋率的問題——實測
+     '한' 在 "LXGW WenKai TC" 下的字寬與 serif 不同（259.5 vs 299.7／100px），
+     它自己畫得出諺文——是美學取捨：楷體是漢字書寫傳統的字體，諺文沒有對應的
+     傳承楷，混排出來的諺文不是同一套骨架。標點仍是 DTJ Serif（`--han-serif`
+     與 `--han-cursive` 兩支的標點層本來就都指向 Diantenjeom Serif），所以這
+     一格換的只有漢字與諺文的字面，標點的公約不動。 */
+  &:where(li[lang|="ko"] p) {
+    font-family: var(--han-serif);
+  }
 }
 
 /* 直排只翻樣張。`inline-size` 在 vertical-rl 是**垂直**的，所以那 16em 是
