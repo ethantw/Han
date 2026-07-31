@@ -110,6 +110,24 @@ installFallbacks(document.body)                  // 또는 타이밍과 範圍�
 
 최신 에버그린 브라우저를 支援한다. 核心 <ruby>裝置<rt>장치</rt></ruby>(스타일 쿼리, `:where()`, `@layer`, `@property`)는 근래 Baseline을 따른다. 줄 안 組版에서의 엔진 <ruby>差異<rt>차이</rt></ruby>(`text-autospace`, `text-spacing-trim`)는 JavaScript 보조가 <ruby>必要<rt>필요</rt></ruby>에 따라 채운다.
 
+## v3에서 <ruby>移行<rt>이행</rt></ruby>하기
+
+v4는 v3의 JavaScript 런타임을 통째로 <ruby>退役<rt>퇴역</rt></ruby>시켰다——<ruby>各<rt>각</rt></ruby> <ruby>機能<rt>기능</rt></ruby>은 브라우저나 폰트의 네이티브 <ruby>擧動<rt>거동</rt></ruby>이 이어받고, <ruby>選擇的<rt>선택적</rt></ruby>인 JavaScript 보조는 엔진에 아직 없는 부분만 채운다. 내려간 API와 그 <ruby>代替<rt>대체</rt></ruby>：
+
+| v3 | <ruby>代替<rt>대체</rt></ruby> |
+|----|------|
+| `Han.init()`／`Han(ctx).render()` | <ruby>起動<rt>기동</rt></ruby>이 필요 없다——CSS는 읽히는 즉시 듣는다. JS 폴백이 필요할 때만 `installFallbacks()`(또는 `/auto` 엔트리) |
+| `renderHWS()`——<ruby>文種<rt>문종</rt></ruby> 사이 간격 | 네이티브 `text-autospace`. `installFallbacks()`의 `<h-iss>` 폴백 |
+| `renderJiya()`／`renderHanging()`——<ruby>約物<rt>약물</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>／내어쓰기 | 네이티브 `text-spacing-trim`／`hanging-punctuation`. 과도기는 JS 폴백이 맡는다 |
+| `renderEm()`／`renderElem()` | 순수 CSS——<ruby>意味<rt>의미</rt></ruby> 모듈 |
+| `renderDecoLine()` | `text-decoration-inset`＋CSS／JS <ruby>隣接<rt>인접</rt></ruby> 줄 폴백 |
+| `renderRuby()`／`substCombLigaWithPUA` | 네이티브 `ruby-position`＋<ruby>注音<rt>주음</rt></ruby> 폰트의 GPOS. 옛 `<rb>`／`<rtc>` 마크업은 `transpileRuby()`로 다운레벨 |
+| `locale/normalize`——<ruby>地域<rt>지역</rt></ruby> <ruby>字形<rt>자형</rt></ruby> | `lang`을 아는 폰트의 OpenType `locl` <ruby>機能<rt>기능</rt></ruby> |
+| `jinzify` | `text-justify: inter-character` |
+| `Han.support`／`Han.detectFont()` | `CSS.supports()`＋<ruby>內藏<rt>내장</rt></ruby> 프로브(`runProbes`) |
+
+v3의 class도 같은 길을 갔다——`.han-init`→`/auto` 엔트리, `.pn`→맨 `<u>`. Sass <ruby>變數<rt>변수</rt></ruby> <ruby>對照表<rt>대조표</rt></ruby>가 딸린 <ruby>案內<rt>안내</rt></ruby>는 [hanzi.pro/manual/migration.html](https://hanzi.pro/manual/migration.html)에 있다.
+
 ## 문서
 
 완전한 문서와 <ruby>對話型<rt>대화형</rt></ruby> 플레이그라운드——글을 붙이고, 패널을 바꾸고, <ruby>生成<rt>생성</rt></ruby>된 設定 코드를 복사한다——는 **[hanzi.pro](https://hanzi.pro)**에 있다. <ruby>參考<rt>참고</rt></ruby> 매뉴얼은 지금 <ruby>繁體<rt>번체</rt></ruby> <ruby>中國語<rt>중국어</rt></ruby>를 <ruby>基準<rt>기준</rt></ruby>으로 하고, 영어가 <ruby>紹介<rt>소개</rt></ruby>와 設置를 다루며, 일본어·한국어는 차례로 <ruby>準備<rt>준비</rt></ruby> 중이다.

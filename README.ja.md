@@ -110,6 +110,24 @@ installFallbacks(document.body)                  // または時機と範囲を�
 
 モダンなエバーグリーンブラウザに対応。中核の仕組み（スタイルクエリ、`:where()`、`@layer`、`@property`）は近年のBaselineに準拠する。行内組版におけるエンジン差（`text-autospace`、`text-spacing-trim`）はJavaScriptコンパニオンが必要に応じて埋める。
 
+## v3からの移行
+
+v4はv3のJavaScriptランタイムを丸ごと退役させた——各機能はブラウザまたはフォントのネイティブな挙動が引き継ぎ、任意のJSコンパニオンはエンジンにまだ欠けている部分だけを埋める。撤去されたAPIとその代替：
+
+| v3 | 代替 |
+|----|------|
+| `Han.init()`／`Han(ctx).render()` | 起動は不要——CSSは読み込み即座に効く。JSフォールバックが要るときだけ`installFallbacks()`（または`/auto`エントリ） |
+| `renderHWS()`——文種間スペース | ネイティブ`text-autospace`。`installFallbacks()`の`<h-iss>`フォールバック |
+| `renderJiya()`／`renderHanging()`——約物の詰め／ぶら下げ | ネイティブ`text-spacing-trim`／`hanging-punctuation`。過渡期はJSフォールバックが受け持つ |
+| `renderEm()`／`renderElem()` | 純CSS——セマンティクスモジュール |
+| `renderDecoLine()` | `text-decoration-inset`＋CSS／JSの隣接行フォールバック |
+| `renderRuby()`／`substCombLigaWithPUA` | ネイティブ`ruby-position`＋注音フォントのGPOS。旧式`<rb>`／`<rtc>`マークアップは`transpileRuby()`でダウンレベル |
+| `locale/normalize`——地域字形 | `lang`対応フォントのOpenType `locl`機能 |
+| `jinzify` | `text-justify: inter-character` |
+| `Han.support`／`Han.detectFont()` | `CSS.supports()`＋内蔵プローブ（`runProbes`） |
+
+v3のclassも同じ道を辿った——`.han-init`→`/auto`エントリ、`.pn`→素の`<u>`。Sass変数対照表つきの手順は[hanzi.pro/manual/migration.html](https://hanzi.pro/manual/migration.html)にある。
+
 ## ドキュメント
 
 完全なドキュメントとインタラクティブなプレイグラウンド——テキストを貼り、パネルを切り替え、生成された設定コードをコピーする——は **[hanzi.pro](https://hanzi.pro)** にある。リファレンスマニュアルは目下、繁体字中国語を正とし、英語が導入とインストールを、日本語・韓国語は順次整備中である。

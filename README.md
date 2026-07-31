@@ -138,6 +138,28 @@ Modern evergreen browsers. The core mechanisms (style queries, `:where()`,
 (`text-autospace`, `text-spacing-trim`) are filled on demand by the JavaScript
 companion.
 
+## Migrating from v3
+
+v4 retires the v3 JavaScript runtime wholesale — each feature is superseded
+by native browser or font behaviour, with the optional companion filling
+only what engines still lack. The dropped API, and what replaces it:
+
+| v3 | Superseded by |
+|----|---------------|
+| `Han.init()` / `Han(ctx).render()` | Nothing to boot — the CSS applies on load; `installFallbacks()` (or the `/auto` entry) only if you want the JS fallbacks |
+| `renderHWS()` — inter-script spacing | Native `text-autospace`; `<h-iss>` fallback via `installFallbacks()` |
+| `renderJiya()` / `renderHanging()` — punctuation squeeze / hanging | Native `text-spacing-trim` / `hanging-punctuation`; JS fallback meanwhile |
+| `renderEm()` / `renderElem()` | Pure CSS — the semantics module |
+| `renderDecoLine()` | `text-decoration-inset`, with CSS / JS adjacent-lines fallbacks |
+| `renderRuby()` / `substCombLigaWithPUA` | Native `ruby-position` + the zhuyin font's GPOS; `transpileRuby()` down-levels legacy `<rb>` / `<rtc>` markup |
+| `locale/normalize` — regional glyph variants | The OpenType `locl` feature on `lang`-aware fonts |
+| `jinzify` | `text-justify: inter-character` |
+| `Han.support` / `Han.detectFont()` | `CSS.supports()` + the built-in probes (`runProbes`) |
+
+The v3 classes went the same way — `.han-init` → the `/auto` entry, `.pn` →
+a bare `<u>`. Step-by-step guide, Sass-variable table included:
+[hanzi.pro/manual/migration.html](https://hanzi.pro/manual/migration.html).
+
 ## Documentation
 
 Full docs and an interactive playground — paste your text, flip the panel, copy

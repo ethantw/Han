@@ -111,6 +111,24 @@ installFallbacks(document.body)                  // 或自行控制時機與範�
 
 支援現代常青瀏覽器。核心機制（style query、`:where()`、`@layer`、`@property`）以近年Baseline為準；行內排版上個別引擎尚未實作的特性（`text-autospace`、`text-spacing-trim`）由JavaScript補全按需回落。
 
+## 從 v3 遷移
+
+v4整套退役了v3的JavaScript runtime——每一項機能都改由瀏覽器或字體的原生行為承接，可選的JS補全只填引擎尚缺的部分。撤下的API與其替代：
+
+| v3 | 替代 |
+|----|------|
+| `Han.init()`／`Han(ctx).render()` | 無需啓動——CSS載入即生效；要JS回落時才`installFallbacks()`（或`/auto`入口） |
+| `renderHWS()`——跨文種間隙 | 原生`text-autospace`；`installFallbacks()`的`<h-iss>`回落 |
+| `renderJiya()`／`renderHanging()`——標點擠壓／懸掛 | 原生`text-spacing-trim`／`hanging-punctuation`；過渡期由JS回落 |
+| `renderEm()`／`renderElem()` | 純CSS——語意模組 |
+| `renderDecoLine()` | `text-decoration-inset`＋CSS／JS相鄰行回落 |
+| `renderRuby()`／`substCombLigaWithPUA` | 原生`ruby-position`＋注音字體GPOS；舊式`<rb>`／`<rtc>`標記跑`transpileRuby()`降級 |
+| `locale/normalize`——地域字形 | `lang`感知字體的OpenType `locl`特性 |
+| `jinzify` | `text-justify: inter-character` |
+| `Han.support`／`Han.detectFont()` | `CSS.supports()`＋內建探針（`runProbes`） |
+
+v3的class同路退役——`.han-init`→`/auto`入口、`.pn`→直接用`<u>`。逐步指南含Sass變量對照表：[hanzi.pro/manual/migration.html](https://hanzi.pro/manual/migration.html)。
+
 ## 文檔
 
 完整文檔與互動遊樂場——貼上你的文字、調整面板、複製生成的引用碼——都在 **[hanzi.pro](https://hanzi.pro)**。參考手冊目前以繁體中文為準，英文涵蓋簡介與安裝，日文、韓文陸續補上。
