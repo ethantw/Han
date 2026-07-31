@@ -218,7 +218,7 @@
  * doesn't hold here.
  */
 
-/* Each language (except ko — see below) checks its OWN punctuation-
+/* Each language checks its OWN punctuation-
  * convention var, and excludes exactly ONE value: `MOE`, the only
  * convention *known* to be centered within its em-box (Taiwan MOE
  * standard) — hanging looks visually wrong there (the dot floats mid-
@@ -231,13 +231,17 @@
  * the one exception: see the dedicated block right after its on/off pair
  * below, where the body font is knowable via
  * `--han-use-heritage-glyphs-for-hant` and the assumption is replaced with
- * real per-value facts. `ko` has no `MOE`-equivalent
- * (`--han-punctuation-vertical-ko` is just `KV | off`, no centered
- * option at all), so it has nothing to exclude and is unconditionally
- * on for `:lang(ko-Hant)`, gated only by the master refinement override
- * below.
+ * real per-value facts.
  *
- * `hant` / `hans` / `ja` set BOTH `on` and `off` explicitly, every
+ * `ko` used to be the second exception — unconditionally `on`, because its
+ * property was `KV | off` and had no centered value to exclude. Since the
+ * conventions were opened to every locale (`--han-punctuation-ko` now takes
+ * the same `JIS | MOE | GB | KV | off`), Korean can be set to MOE like
+ * anyone else, so it follows the same rule as the rest. `KV` itself
+ * qualifies: KLReq attaches `。、` to the cell corner (cl8/cl9) — side-
+ * biased, the same reason `JIS` / `GB` qualify.
+ *
+ * All four locales set BOTH `on` and `off` explicitly, every
  * branch — NOT just `on` with `off` left to fall out of "the var is
  * simply absent". Reason: all three default to a QUALIFYING convention
  * (MOE excluded, everything else — including each one's own default —
@@ -299,8 +303,11 @@
   :where(:lang(ja)) { --han-state-hanging-punctuation: off; }
 }
 
-:where(:lang(ko-Hant)) {
-  --han-state-hanging-punctuation: on;
+@container not style(--han-punctuation-ko: MOE) {
+  :where(:lang(ko-Hant)) { --han-state-hanging-punctuation: on; }
+}
+@container style(--han-punctuation-ko: MOE) {
+  :where(:lang(ko-Hant)) { --han-state-hanging-punctuation: off; }
 }
 
 /* Master override — off whenever refinement isn't auto/hang, regardless of
