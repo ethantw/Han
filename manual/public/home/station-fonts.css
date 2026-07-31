@@ -264,22 +264,19 @@
 }
 
 
-/* ─── PreviewSwitch（站②尾巴：行向＋正文字體） ──────────────────────────
+/* ─── SpecimenSwitch（站②尾巴：四語樣張的行向與字體） ──────────────────
  * 兩顆藥丸，收在擠壓那段之後——讀完「行首行尾、連續標點，一次到位」就地
- * 試：撥直排換一組禁則，撥明體換一份 GPOS 表。
+ * 試：撥直排換一組行首行尾的規矩，換一種字體換一份 GPOS 表。作用範圍只有
+ * 上面那四格 .PunctLang 樣張，不動整頁（頁面級的行向預覽是另一回事，見
+ * home/writing-switch.js，那顆浮動 pill 目前沒有 markup）。
  *
  * 與鉛字盤那組 `.Controls`（lead-forme.css § .Controls）是同一套語彙——
  * fieldset 作藥丸、legend 浮成頭標、radio 藏起來只留標籤——但**不共用類
  * 名**：那組是 `writing-mode: vertical-rl` 的直立藥丸，為鉛字盤口袋裡那
  * 塊窄地量身訂做，橫過來每一條規則都要反著寫。兩邊各自短、各自看得懂，
  * 好過一個帶方向開關的共用元件。改配色時兩邊要一起看。 */
-.PreviewSwitch {
+.SpecimenSwitch {
   & {
-    /* 控件不跟著版面轉向：它是 chrome，不是內文。main 一撥成 vertical-rl，
-       這一排若跟著繼承就變成一根八百多像素高的直立柱，捲回眼前時頭端還會
-       鑽到 sticky header 底下——實測翻直排後 y=8，「橫排」那顆點不到，讀者
-       就真的回不來了。翻轉的是版面，不是回頭路。 */
-    writing-mode: horizontal-tb;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -340,20 +337,57 @@
   }
 }
 
-/* 直排預覽下改成浮動：版面主軸一轉，整頁變成五萬多像素寬的橫向捲動版面，
-   這一排的在流位置被擠到版心上緣、只露出二十來像素（下半被 header 那 64px
-   壓住），而它是唯一的回頭路——翻過去點不回來就只能重整。所以在直排下把它
-   抬出流、釘在視窗右下角：那本來就是這顆開關的原生形態（writing-switch.js
-   檔頭寫的 floating pill），只是現在只在真正需要它浮起來的那一態浮起來。 */
-main[data-writing="vertical"] .PreviewSwitch {
-  position: fixed;
-  z-index: 30;
-  inset-block-end: 1.25rem;
-  inset-inline-end: 1.25rem;
-  margin: 0;
-  padding: .5rem .625rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--palette-bg) 88%, transparent);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 14px color-mix(in srgb, var(--color-black) 14%, transparent);
+/* 開關 → 樣張。控件在樣張之外、DOM 順序還在它後面，所以從共同祖先
+   `#station-type` 用 `:has()` 反選（:has() · Baseline 2023，同 .PunctLang
+   每格那顆標點 <select> 的作法）。純 CSS，沒有 JS。
+
+   字體宣告落在 `p` 上而不是圖說根上，理由同 lead-forme.css § .PunctLang 那
+   條註解：font-family 繼承的是**已解析的字串**，不在樣張本身重讀一次變數，
+   標點字體的切換（han.css 依地域公約設的 --han-font-punctuation-*）就到不了
+   樣張。三顆都是通用類，落到哪個家族由 console 的字體設定決定。
+
+   楷體不必另配標點：han.css 的 `--han-font-punctuation-cursive` 本來就指向
+   Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive` 這一支拿到的
+   就是 DTJ serif 標點＋楷體漢字，正是要的搭配。
+
+   明體那顆不必寫規則：`:where(.PunctLang) p` 的基態就是 `var(--han-serif)`
+   （lead-forme.css），所以它是預設值，也是取消其餘兩條時的落點。 */
+#station-type:has(input[name="pl-face"][value="sans"]:checked) .PunctLang p {
+  font-family: var(--han-sans);
+}
+#station-type:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
+  font-family: var(--han-cursive);
+}
+
+/* 直排只翻樣張。`inline-size` 在 vertical-rl 是**垂直**的，所以那 16em 是
+   行長（一行從上到下十六個字左右）；欄數隨字數增加，往水平方向長出去，由
+   每一格自己橫向捲動。整頁的容器化不受影響——翻的是格子裡的 <p>，不是
+   main（station-frame.css 記過 main 一轉行向，inline-size 容器化收掉的就是
+   它的高度）。 */
+#station-type:has(input[name="pl-writing"][value="vertical"]:checked) .PunctLang {
+  /* 翻的是**格子**（捲動容器）本身，不是只翻裡面那段字。差別在起點：
+     vertical-rl 的文首在右邊，而一個 horizontal-tb 的容器初始捲動位置在
+     左緣——只翻 <p> 的話，一撥過去看到的是句子中段（實測）。容器自己是
+     vertical-rl，瀏覽器就把初始捲動放在它的 inline 起點，也就是文首。
+     格子原本是 flex column，翻向之後 block 軸變水平，那顆標點 <select>
+     順勢落到文字左側（直排的行末側），正是它該待的地方。 */
+  li {
+    writing-mode: vertical-rl;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  /* inline-size 在 vertical-rl 是**垂直**的：這 16em 是行長（一行從上到下
+     十六個字上下），欄數隨字數往水平方向長，超出的部分由格子橫向捲動。 */
+  p {
+    inline-size: 16em;
+  }
+  /* 標籤與 <select> 不跟著轉——控件是 chrome，讀的是介面不是內文。
+     `order: -1` 把它挪到區塊起點（直排下＝右側，文首那一邊）：留在原位
+     的話它落在文字的另一頭，而那一頭在捲動範圍之外，格子一進畫面就看不到
+     這顆選單了。 */
+  label {
+    writing-mode: horizontal-tb;
+    order: -1;
+    align-self: start;
+  }
 }

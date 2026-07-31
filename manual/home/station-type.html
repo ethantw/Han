@@ -95,19 +95,16 @@
     ja: 'をオフにすれば、国字標準字体の粗悪さを味わえる',
     ko: '를 끄면 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>의 <ruby>粗惡<rt>조악</rt></ruby>함을 맛본다',
   },
-  /* 站②尾巴那組預覽切換。行向沿用鉛字盤那組的 ltOrient*——同一件事就用同
-     一個詞；正文字體另立，因為它撥的是 console 的 baseGeneric（正文騎哪個
-     generic），不是鉛字盤那三個具體字體家族（ltFaceM／H／K）。 */
-  stPreviewControls: {
-    hant: '預覽：行向與正文字體',
-    hans: '预览：行向与正文字体',
-    en: 'Preview: direction and body face',
-    ja: 'プレビュー：行方向と本文書体',
-    ko: '<ruby>豫覽<rt>예람</rt></ruby>：<ruby>行向<rt>행향</rt></ruby>과 <ruby>本文<rt>본문</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
-  },
-  stBodyFaceLegend: {
-    hant: '正文', hans: '正文', en: 'Body', ja: '本文',
-    ko: '<ruby>本文<rt>본문</rt></ruby>',
+  /* 四語樣張的切換。行向與字體都沿用鉛字盤那組的詞（ltOrient*／ltFaceLegend）
+     ——同一件事就用同一個詞；三顆字體另立，因為這裡撥的是**通用類**（黑／明／
+     楷），實際落到哪個家族由 console 的字體設定決定，不像鉛字盤那三顆是具體
+     的家族名（尚古明體／尚古黑體／霞鶩文楷）。 */
+  stSpecimenControls: {
+    hant: '樣張：行向與字體',
+    hans: '样张：行向与字体',
+    en: 'Specimen: direction and face',
+    ja: '見本：行方向と書体',
+    ko: '<ruby>標本<rt>표본</rt></ruby>：<ruby>行向<rt>행향</rt></ruby>과 <ruby>書體<rt>서체</rt></ruby>',
   },
   stBodySans: {
     hant: '黑體', hans: '黑体', en: 'Sans', ja: 'ゴシック',
@@ -116,6 +113,10 @@
   stBodySerif: {
     hant: '明體', hans: '明体', en: 'Serif', ja: '明朝',
     ko: '<ruby>明體<rt>명체</rt></ruby>',
+  },
+  stBodyCursive: {
+    hant: '楷體', hans: '楷体', en: 'Kai', ja: '楷書',
+    ko: '<ruby>楷體<rt>해체</rt></ruby>',
   },
   stEyebrow: {
     hant: '貳・字體排印',
@@ -377,28 +378,31 @@
 
   <p>{{ stSqueezeP }}</p>
 
-  <!-- 預覽切換 — 收在擠壓那段之後，因為那段講的正是「行首行尾、連續標點，
-       一次到位」：撥成直排，禁則與行首行尾換一組規矩；撥成明體，換一份
-       GPOS 表——同一句話的兩個維度，就在讀完它的地方試。
+  <!-- 樣張切換 — 只管上面那四格四語樣張（.PunctLang），不動整頁。收在擠壓
+       那段之後，因為那段講的正是「行首行尾、連續標點，一次到位」：撥成直排，
+       行首行尾換一組規矩；換一種字體，換一份 GPOS 表——同一句話的兩個維度，
+       就在讀完它的地方試。
 
-       兩顆的性質不同，刻意寫在同一排：
-       · 行向是**預覽**狀態，與 han.css 無關（writing-switch.js 只寫 main 的
-         data-writing，直排版面純 CSS）。屬性掛在 fieldset 上而不是 form 上：
-         那支 JS 讀的是容器裡第一個 `input:checked`，掛在 form 上會撈到隔壁
-         那組的 radio。
-       · 正文字體是**設定**——它同時決定 console 套在 main 上的 font-family
-         與生成碼裡 `body { … }` 那一行，所以走 `data-han-cfg-proxy` 分身到
-         console 的 baseGeneric（config-proxy.js），不自己算。 -->
-  <form class="PreviewSwitch" aria-label="{{ stPreviewControls }}">
-    <fieldset data-writing-switch>
+       純 CSS，沒有 JS：樣式由 `#station-type:has(… :checked)` 直接選到樣張
+       （station-fonts.css § PunctLang 的切換），同 .PunctLang 每格那顆標點
+       <select> 用 `:has(option:checked)` 的作法（:has() · Baseline 2023）。
+       控件擺在樣張之外、DOM 順序在後，靠 :has() 從共同祖先反選——擺回樣張
+       裡面也行，那是一行的事。
+
+       楷體那顆不必特別配標點：han.css 的 `--han-font-punctuation-cursive`
+       本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
+       這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
+  <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
+    <fieldset>
       <legend>{{ ltOrientLegend }}</legend>
-      <label><input type="radio" name="writing" value="horizontal" checked /> {{ ltOrientH }}</label>
-      <label><input type="radio" name="writing" value="vertical" /> {{ ltOrientV }}</label>
+      <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
+      <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
     </fieldset>
     <fieldset>
-      <legend>{{ stBodyFaceLegend }}</legend>
-      <label><input type="radio" name="base-generic" data-han-cfg-proxy="baseGeneric" value="sans-serif" checked /> {{ stBodySans }}</label>
-      <label><input type="radio" name="base-generic" data-han-cfg-proxy="baseGeneric" value="serif" /> {{ stBodySerif }}</label>
+      <legend>{{ ltFaceLegend }}</legend>
+      <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
+      <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
+      <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>
     </fieldset>
   </form>
 </section>
