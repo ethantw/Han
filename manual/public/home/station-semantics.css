@@ -841,9 +841,9 @@
        scrolls into view.
        Two reasons it walks instead of flipping at once: a simultaneous
        change is a single event the eye can't parse into causes, and the
-       stagger is what lets each tag ghost flash at the exact instant ITS
-       mark appears — which is the mapping this whole figure exists to
-       teach.
+       stagger is what lets each row correct at the exact instant ITS
+       diagram mark settles — which is the mapping this whole figure
+       exists to teach.
 
        Nothing here is imitated: the uncorrected frame is `--han-semantics:
        off`, i.e. real UA output, synthetic obliques and all.
@@ -861,9 +861,10 @@
            the marks arrive and the tint peaks. Straighten first, then the
            marks land on a row that is already standing.
 
-           A «row» is whatever carries the flag: the two letterheads, and one
-           <span> per line of the poem. `--row-cue` inherits, so every mark
-           and ghost inside a row reads its row's beat without being told. */
+           A «row» is whatever carries the flag: one <span> per line of the
+           poem (the two letterheads run their own cues in the .Envelope
+           block). `--row-cue` inherits, so every mark inside a row reads
+           its row's beat without being told. */
         .poem-like > span,
         address[lang] {
           animation: semantics-settle 520ms step-end var(--row-cue) both;
@@ -1239,11 +1240,12 @@
           }
         }
       }
-      /* `… *`, not an enumeration: the straighten, the tint and the
-         ghost cue all live on descendants, and every one of them has to
-         stop — a half-rotated slant left running would fight the UA italic
-         the switch just restored. One flag on the subtree root covers
-         every row, since the style query only ever needs SOME ancestor. */
+      /* `… *`, not an enumeration: the straighten, the tint, the u split
+         and the per-char skew all live on descendants, and every one of
+         them has to stop — a half-rotated slant left running would fight
+         the UA italic the switch just restored. One flag on the subtree
+         root covers every row, since the style query only ever needs SOME
+         ancestor. */
       article * {
         animation: none;
       }
