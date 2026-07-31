@@ -403,6 +403,9 @@ station-semantics.css 新增：
 - [ ] 無 JS（`pnpm preview` 關 JS）：不包字、不 reveal，直接終態。
 - [ ] 模組開關連按數次：u 底線常在、《》瞬收瞬回、wavy/著重 420ms
   transition、楷體行回瀏覽器斜體——無透明殘留、無動畫重播。
+- [ ] 早滾快手回歸（Task 2 spec 審查點名）：han.js applyFallbacks 約 2.5s 時
+  撕掉重蓋 adjacent 標記——deep link 直達站①、reveal 早於重蓋時，裂縫動畫
+  會否重啟一幀？目測；有感則 dash-fuse.js 式等窗處理另議。
 - [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
   Task 7 Step 4（本 task 只確認 Task 1–5 沒弄壞既有 hover）。
 - [ ] 註解字句兩處（Task 1 複審遺留，非阻塞）：「這兩行 address」改
