@@ -15,11 +15,25 @@
     ko: '<ruby>疏密<rt>소밀</rt></ruby>을 아는 <ruby>段落<rt>단락</rt></ruby> <ruby>按排<rt>안배</rt></ruby>',
   },
   prP1: {
-    hant: '標點擠壓掌管主軸的留白，塊軸的節奏由prose模塊指揮——大標緊接次標，間距收攏為一體；標題接段落、段落接清單，各自以字為尺去蕪存菁。下面這篇報導就是活體樣本：撥動面板的prose開關，整篇節奏立現。',
-    hans: '标点挤压掌管主轴的留白，块轴的节奏由prose模块指挥——大标紧接次标，间距收拢为一体；标题接段落、段落接清单，各自以字为尺去芜存菁。下面这篇报导就是活体样本：拨动面板的prose开关，整篇节奏立现。',
-    en: 'Squeeze governs the inline axis; the prose module conducts the block axis — a headline stacked straight onto a subheading closes into one piece, while headings, paragraphs and lists each keep a character-measured distance. The dispatch below is the living specimen: flip the prose switch in the panel and watch its rhythm change.',
-    ja: '約物詰めが主軸の余白を司り、塊軸のリズムはproseモジュールが指揮する——大見出しに小見出しが続けば間隔は締まって一体となり、見出し・段落・箇条書きはそれぞれ字を物差しに間合いを取る。下の記事がその生きた見本である。パネルのprose切替を操れば、リズムは一目で変わる。',
-    ko: '<ruby>符號<rt>부호</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>이 <ruby>主軸<rt>주축</rt></ruby>의 여백을 맡고, 블록 축의 리듬은 prose 모듈이 <ruby>指揮<rt>지휘</rt></ruby>한다——큰 <ruby>標題<rt>표제</rt></ruby>에 작은 <ruby>標題<rt>표제</rt></ruby>가 이어지면 <ruby>間隔<rt>간격</rt></ruby>은 하나로 여며지고, <ruby>標題<rt>표제</rt></ruby>와 <ruby>段落<rt>단락</rt></ruby>과 <ruby>目錄<rt>목록</rt></ruby>은 저마다 <ruby>字<rt>자</rt></ruby>를 자로 삼아 사이를 둔다. 아래 <ruby>記事<rt>기사</rt></ruby>가 살아 있는 <ruby>標本<rt>표본</rt></ruby>이다. 패널의 prose 스위치를 젖히면 리듬이 한눈에 바뀐다.',
+    hant: '標點擠壓掌管主軸的留白，交叉軸的節奏由prose模組指揮——大標緊接次標，間距收攏聚合，標題接段落、段落接清單，以字為尺橫縱有序。閱讀下面的報導，並撥動模組開關，體驗優化前後的不同章法。',
+    hans: '标点挤压掌管主轴的留白，交叉轴的节奏由prose模块指挥——大标紧接次标，间距收拢聚合，标题接段落、段落接清单，以字为尺横纵有序。阅读下面的报导，并拨动模块开关，体验优化前后的不同章法。',
+    en: 'Squeeze governs the main axis; the prose module conducts the cross axis — a headline stacked straight onto a subheading closes up into one piece, while headings, paragraphs and lists keep a character-measured distance, set horizontally or vertically alike. Read the dispatch below, flip the module switch, and compare the two.',
+    ja: '約物詰めが主軸の余白を司り、交差軸のリズムはproseモジュールが指揮する——大見出しに小見出しが続けば間隔は締まって一体となり、見出し・段落・箇条書きは字を物差しに間合いを取る。縦組でも横組でも変わらない。下の記事を読みながらモジュール切替を操れば、前後の章法の違いが見て取れる。',
+    ko: '<ruby>符號<rt>부호</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>이 <ruby>主軸<rt>주축</rt></ruby>의 여백을 맡고, <ruby>交叉軸<rt>교차축</rt></ruby>의 리듬은 prose 모듈이 <ruby>指揮<rt>지휘</rt></ruby>한다——큰 <ruby>標題<rt>표제</rt></ruby>에 작은 <ruby>標題<rt>표제</rt></ruby>가 이어지면 <ruby>間隔<rt>간격</rt></ruby>은 하나로 여며지고, <ruby>標題<rt>표제</rt></ruby>와 <ruby>段落<rt>단락</rt></ruby>과 <ruby>目錄<rt>목록</rt></ruby>은 <ruby>字<rt>자</rt></ruby>를 자로 삼아 사이를 둔다. 세로로 짜든 가로로 짜든 마찬가지다. 아래 <ruby>記事<rt>기사</rt></ruby>를 읽으며 모듈 스위치를 젖히면, 앞뒤 <ruby>組版<rt>조판</rt></ruby>이 어떻게 다른지 한눈에 드러난다.',
+  },
+  prProseToggle: {
+    hant: '疏密有致模式',
+    hans: '疏密有致模式',
+    en: 'Well-measured mode',
+    ja: '疎密を按配する組版',
+    ko: '<ruby>疏密<rt>소밀</rt></ruby>을 <ruby>按排<rt>안배</rt></ruby>하는 <ruby>組版<rt>조판</rt></ruby>',
+  },
+  prProseHint: {
+    hant: '取消勾選，使用瀏覽器原生的間距',
+    hans: '取消勾选，使用浏览器原生的间距',
+    en: 'Uncheck to fall back on the browser’s own spacing',
+    ja: 'チェックを外せば、ブラウザ本来の間隔で組まれる',
+    ko: '체크를 풀면 브라우저 <ruby>本來<rt>본래</rt></ruby>의 <ruby>間隔<rt>간격</rt></ruby>으로 짜인다',
   },
 }
 </script>
@@ -37,6 +51,24 @@
     <h2>{{ prH2 }}</h2>
   </hgroup>
   <p>{{ prP1 }}</p>
+
+  <!-- prose 開關 — 與站①的語意開關、站③的呼吸開關同一套：不是本站自己的
+       控件，是 console 那顆「prose」模組開關的分身（`data-han-module-proxy`，
+       雙向綁定見 home/module-state.js）。所以站內站外永遠同一個狀態，不會
+       出現「這裡開、那裡關」。
+
+       擺在樣張之上而不是之下：一撥就把兩張樣張的塊軸間距全部重算，版面高度
+       隨之伸縮——擺在下面的話，讀者剛按下的那顆鈕會被自己引發的重排推走。
+       說明文字也留在開關之外（同站①），兩種狀態下都讀得到。
+
+       prose 的旗標種在 `:where(article)` 上，`:root` 撥不到，實際的
+       `article { --han-prose: off }` 在 common/module-state.css；這顆按下去
+       只是把 `<html>` 的狀態屬性與 console 的設定一起翻面。 -->
+  <label class="Toggle for-prose">
+    <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
+    <span>{{ prProseToggle }}</span>
+    <small>{{ prProseHint }}</small>
+  </label>
 
   <div class="Prose">
     <article class="Dispatch" lang="zh-Hant">

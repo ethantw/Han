@@ -1,0 +1,56 @@
+@charset "UTF-8";
+
+/**
+ * 站④・段落 — 只有那顆 prose 開關的樣式。樣張本身（`.Prose` 的欄與
+ * `article.Dispatch` 的框）住在 station-frame.css，因為那是站台共用的
+ * running-copy 零件；這裡只管本站多出來的那一件控件。
+ */
+
+#station-prose {
+  /* prose 開關。`.Toggle` 是 controls.css 的共用零件，但那張表消費的是
+     console 的 `--_*` token 層，而那層只被 adopt 進影子 DOM——在本頁的
+     light DOM 裡 `var(--_rule)` 沒有值，整顆開關會靜靜地畫成一片透明
+     （`background: var(--_rule)` 在 computed-value time 失效，退成
+     unset）。所以照站①③的作法在這裡把幾個 token 接回頁面調色盤。
+
+     接上之後開關自帶「開＝綠」的語彙（`.Toggle:has(input:checked)` 連
+     標題一起轉綠），正好就是這顆開關要表達的狀態，不另外做；只把提示
+     壓回輔助色，免得整行都在喊。 */
+  > .Toggle {
+    & {
+      --_rule: var(--palette-rule);
+      --_bg: var(--palette-bg);
+      --_accent: var(--palette-accent);
+      --_supplement-text: var(--palette-supplement-text);
+      /* 開關在正文級，不吃 console 那種密控件的字級——它是說明文的一
+         部分，不是儀表板上的一格。 */
+      --_fs-compact: var(--fs-body);
+
+      display: grid;
+      grid-template-columns: 2.25em auto;
+      grid-template-rows: 1.5em auto;
+      grid-gap: .125em .5em;
+
+      margin-block: -1em 2em;
+      inline-size: fit-content;
+
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    input {
+      align-self: flex-end;
+    }
+    span {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125em;
+      min-inline-size: 0;
+    }
+    small {
+      grid-column-start: 2;
+      grid-row-start: 2;
+      font-size: .75em;
+      color: var(--palette-supplement-text-3q);
+    }
+  }
+}
