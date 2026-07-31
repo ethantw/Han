@@ -144,7 +144,10 @@
    個約定（見該 @keyframes 的註）。終值走核心同一個變數；本地 fallback
    是防「模組 sheet 卸載時未定義 var() 毒化」的防呆（workspace 陷阱
    集），off-gate 的 animation: none 實務上先一步接管。 */
-@keyframes semantics-u-split {
+/* 相鄰記號的「黏住再分開」——服務 <u> 專名號與甲式相鄰 <cite>：兩者
+   的縫都是同一個 margin fallback（han.js／wavy-cite-gap.js 蓋的
+   data-followed-by-adjacent-line）。 */
+@keyframes semantics-line-split {
   from { margin-inline-end: 0; }
   /* 正字法的縫只有 .125em——直接滑過去肉眼讀不出「斷開」這件事，所以
      中段誇張撐到 .5em 再落回真值：戲要看得見，終態仍是對的。 */
@@ -211,7 +214,7 @@
    走各的 520ms，是另一回事）。兩個例外，都因為時長本身有意義：逐字的
    char-settle-replay 留 520ms＋每字 40ms 錯拍（節奏是它的內容），
    mark-cue-replay 留 1000ms（52% 峰值的墨色一閃，縮短會改變曲線形狀）。 */
-@keyframes semantics-u-split-replay {
+@keyframes semantics-line-split-replay {
   from { margin-inline-end: 0; }
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
 }
@@ -791,6 +794,15 @@
         text-decoration: underline wavy;
       }
 
+      /* text-underline-offset 不入戲。han.css 翻旗時把它從 auto 換成
+         .125em，底線會往外跳一格——那一下是屬性換值，不是這張圖要教的
+         正字法主張（戲是「兩條線黏住再分開」），跳位反而蓋過它。兩態
+         寫死同值，跳位就不存在；同上一條的道理，旗標開著時 han.css 宣告
+         的是同一個值，於此為冪等。 */
+      :is(u, [style*='wavy'] cite) {
+        text-underline-offset: var(--han-underline-offset, .125em);
+      }
+
       :is(em, cite) {
         transition:
           text-emphasis-color 420ms ease,
@@ -934,6 +946,20 @@
               semantics-wavy-in 520ms ease-out both
             ;
           }
+          /* 相鄰的兩個甲式書名號（《武經總要》〈字驗〉＝作品與其篇章）
+             也演「黏住再分開」——縫的機制與專名號同一個（wavy-cite-gap.js
+             蓋同一個屬性），故共用 semantics-line-split，並同掛
+             @supports 閘。四支列在一起，避免簡寫整組覆寫上一條。 */
+          @supports not (text-decoration-inset: auto) {
+            .poem-like :where([style*='wavy']) cite[data-followed-by-adjacent-line] {
+              animation:
+                semantics-straighten 520ms ease-out var(--row-cue),
+                semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+                semantics-wavy-in 520ms ease-out both,
+                semantics-line-split 520ms ease-out var(--row-cue) both
+              ;
+            }
+          }
           /* 乙式《》同理：pseudo 隨翻旗誕生，動畫即刻起跑（見
              @keyframes semantics-bracket-in-before／-after）。pseudo 一律不包進
              :where()——forgiving list 會靜默吞掉它（core 的
@@ -962,7 +988,7 @@
            一律如此。 */
         @supports not (text-decoration-inset: auto) {
           .poem-like u[data-followed-by-adjacent-line] {
-            animation: semantics-u-split 520ms ease-out var(--row-cue) both;
+            animation: semantics-line-split 520ms ease-out var(--row-cue) both;
           }
         }
       }
@@ -1039,8 +1065,8 @@
         @supports not (text-decoration-inset: auto) {
           :root:not([data-han-module-semantics='off']) & .poem-like u[data-followed-by-adjacent-line] {
             animation:
-              semantics-u-split 520ms ease-out var(--row-cue) both,
-              semantics-u-split-replay 620ms ease-out both
+              semantics-line-split 520ms ease-out var(--row-cue) both,
+              semantics-line-split-replay 620ms ease-out both
             ;
           }
         }
@@ -1053,12 +1079,19 @@
         .MarkDiagram [data-mark='emphasis'] {
           animation: mark-replay 620ms ease-out both;
         }
+        /* em 的歸正早已交給逐字 skew（見 semantic-chars.js），所以詩行
+           側要重播的是那個，不是元素上的 font-style——只掛 straighten
+           的舊寫法在畫面上等於沒動。元素本身留墨色一閃。 */
         :root:not([data-han-module-semantics='off']) & .poem-like em {
           animation:
-            semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
-            semantics-straighten-replay 620ms ease-out both,
             semantics-mark-cue-replay 1000ms ease-in-out both
+          ;
+        }
+        :root:not([data-han-module-semantics='off']) & .poem-like em [data-char] {
+          animation:
+            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
+            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
           ;
         }
       }
@@ -1070,10 +1103,11 @@
         .MarkDiagram [data-mark='weight'] {
           animation: mark-replay 620ms ease-out both;
         }
-        :root:not([data-han-module-semantics='off']) & .poem-like dfn {
+        /* dfn 同 em：歸正在逐字 skew 上，元素本身無入場動畫可續。 */
+        :root:not([data-han-module-semantics='off']) & .poem-like dfn [data-char] {
           animation:
-            semantics-straighten 520ms ease-out var(--row-cue),
-            semantics-straighten-replay 620ms ease-out both
+            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
+            semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
           ;
         }
       }
@@ -1091,7 +1125,7 @@
             semantics-mark-cue-replay 1000ms ease-in-out both
           ;
         }
-        :root:not([data-han-module-semantics='off']) & .poem-like :is(i, em, dfn) [data-char] {
+        :root:not([data-han-module-semantics='off']) & .poem-like i [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
             semantics-char-settle-replay 520ms ease-out calc(var(--i) * 40ms) both
@@ -1106,13 +1140,27 @@
         .MarkDiagram [data-mark='wavy'] {
           animation: mark-replay 620ms ease-out both;
         }
+        /* 甲式的 replay 拉長到 1000ms：波浪線只有墨色可淡，620ms 讀不
+           出來；同時加上與專名號同款的「黏住再分開」。 */
         :root:not([data-han-module-semantics='off']) & .poem-like :where([style*='wavy']) cite {
           animation:
             semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
             semantics-wavy-in 520ms ease-out both,
-            semantics-wavy-in-replay 620ms ease-out both
+            semantics-wavy-in-replay 1000ms ease-out both
           ;
+        }
+        @supports not (text-decoration-inset: auto) {
+          :root:not([data-han-module-semantics='off']) & .poem-like :where([style*='wavy']) cite[data-followed-by-adjacent-line] {
+            animation:
+              semantics-straighten 520ms ease-out var(--row-cue),
+              semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+              semantics-wavy-in 520ms ease-out both,
+              semantics-line-split 520ms ease-out var(--row-cue) both,
+              semantics-wavy-in-replay 1000ms ease-out both,
+              semantics-line-split-replay 1000ms ease-out both
+            ;
+          }
         }
       }
 
@@ -1200,7 +1248,7 @@
          container query would hide the browser's own underline along with
          ours, inventing a browser that doesn't exist. Its two states differ
          by the GAP, which is exactly what the diagram beside it claims —
-         and that gap is what its entrance animates: `semantics-u-split`
+         and that gap is what its entrance animates: `semantics-line-split`
          (see its @keyframes note above) opens the connected underline into
          the orthographic gap, with no flag involved.
 
