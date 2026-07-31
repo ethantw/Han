@@ -54,7 +54,8 @@ wrap，介面已預留）。
 ```
 --cue-proper: 200ms    --cue-emphasis: 400ms   --cue-weight: 800ms
 --cue-plain: 1000ms    --cue-wavy: 1200ms      --cue-bracket: 1400ms
---cue-settle: 520ms（交棒點：行旗標 step-end 的翻轉時刻，新動畫的 delay 基準）
+（--cue-settle 曾為交棒 delay 基準，Task 3–5 定稿改鍵 @container 的旗標
+翻轉後退役刪除——交棒點恆為 cue+520ms，但不再算秒）
 ```
 
 詩行改按**記號歸屬**取 cue（行 1、3 都是專名號 ⇒ 同取 `--cue-proper`，
@@ -73,7 +74,7 @@ wrap，介面已預留）。
 - Modify: `manual/home/station-semantics.html`（六個 `<g data-mark>` ＋
   `<g data-clock>` 的 inline style）
 
-- [ ] **Step 1: 宣告 tokens**
+- [x] **Step 1: 宣告 tokens**
 
 在 station-semantics.css 圖解段（`.MarkDiagram` 規則之前）加：
 
@@ -91,14 +92,14 @@ wrap，介面已預留）。
 }
 ```
 
-- [ ] **Step 2: `<g>` inline style 改引 token**
+- [x] **Step 2: `<g>` inline style 改引 token**
 
 station-semantics.html:255-292 一帶，逐個把
 `style="--row-mid: …; --row-cue: 200ms"` 的 cue 值換成
 `--row-cue: var(--cue-proper)`（emphasis／weight／plain／wavy／bracket
 同理；`data-clock` 取 `var(--cue-emphasis)`）。`--row-mid` 不動。
 
-- [ ] **Step 3: 詩行 cue 重指**
+- [x] **Step 3: 詩行 cue 重指**
 
 station-semantics.css :780-788 的階梯改為（注意 `<br>` 是兄弟，維持
 `nth-of-type`）：
@@ -119,10 +120,10 @@ station-semantics.css :780-788 的階梯改為（注意 `<br>` 是兄弟，維�
 
 （address 的 0ms／1600ms 若現行寫法不同，照現行值搬，只換表達式。）
 
-- [ ] **Step 4: 驗證** dev server：入場總長不變（~1920ms＋行 7 的
+- [x] **Step 4: 驗證** dev server：入場總長不變（~1920ms＋行 7 的
   520ms）；唯一視覺差＝第 3 行與第 1 行同時亮。reduced-motion 下無動畫。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `feat(home): 站①拍點收攏成 --cue-* tokens，詩行與圖解同鐘`
 
 ---
@@ -143,11 +144,11 @@ station-semantics.css :780-788 的階梯改為（注意 `<br>` 是兄弟，維�
 **Files:**
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 0: 查實標記名**——`grep -n 'data-followed'
+- [x] **Step 0: 查實標記名**——`grep -n 'data-followed'
   src/ts/semantics/adjacent-lines.ts src/css/semantics.css`，下文選擇器
   以 grep 結果為準（暫記 `u[data-followed-by-adjacent-line]`）。
 
-- [ ] **Step 1: keyframes ＋ 掛載**
+- [x] **Step 1: keyframes ＋ 掛載**
 
 ```css
 /* 專名號的入場，兩拍：先淡入一條「相連的」底線（縫 cheat 成 0——
@@ -183,15 +184,15 @@ station-semantics.css :780-788 的階梯改為（注意 `<br>` 是兄弟，維�
     }
 ```
 
-- [ ] **Step 2: off-gate 免疫確認**：`article * { animation: none }`
+- [x] **Step 2: off-gate 免疫確認**：`article * { animation: none }`
   （:846 一帶）已覆蓋 `u`，關模組回瀏覽器預設（底線在、margin 也在
   ——既有怪癖，維持現狀）。開關兩次目測。
 
-- [ ] **Step 3: 更新 :848-852 舊註**——「u 排除在淡入名單外」改寫為
+- [x] **Step 3: 更新 :848-852 舊註**——「u 排除在淡入名單外」改寫為
   「u 不進旗標機制（off 態也有 UA 底線）；入場由 semantics-u-in／
   -u-split 演『接上再斷開』」。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `feat(home): 站①專名號入場——底線先相連再裂開，與圖解同齣`
 
 ---
@@ -204,7 +205,7 @@ station-semantics.css :780-788 的階梯改為（注意 `<br>` 是兄弟，維�
   `initReveal` 之前）
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 1: 包字腳本**
+- [x] **Step 1: 包字腳本**
 
 ```js
 /**
@@ -235,7 +236,7 @@ export const initSemanticChars = () => {
 home.js 的 DCL 佇列裡、`initReveal` 之前加 `initSemanticChars()`（import
 路徑 `'/home/semantic-chars.js'`，比照 `initWavyCiteGap` 的掛法）。
 
-- [ ] **Step 2: skew 動畫（交棒式時序）**
+- [x] **Step 2: skew 動畫（交棒式時序）**
 
 station-semantics.css 新增：
 
@@ -278,15 +279,15 @@ no-preference 則 reduced-motion 下會動）：
 `semantics-straighten` 名單中的 `i` 拿掉（skew 接手歸正；`cite`、`em`
 照舊），`semantics-mark-cue` 名單維持含 `i`。
 
-- [ ] **Step 3: off-gate**：`article * { animation: none }` 已覆蓋
+- [x] **Step 3: off-gate**：`article * { animation: none }` 已覆蓋
   `[data-char]`（是真元素非 pseudo）✓；spans 無其他樣式，off 態
   瀏覽器斜體照常。開關目測。
 
-- [ ] **Step 4: 直排軸向目測**——article 是 vertical-rl；合成斜體在直排
+- [x] **Step 4: 直排軸向目測**——article 是 vertical-rl；合成斜體在直排
   的傾向若與 skewX 不合（字的歪向不像從斜體接手），把 keyframes 改
   `skewY(12deg)` 再測。此為已知待目測項，寫進 commit message。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `feat(home): 站①楷體行逐字 skew 歸正（runtime 包字，交棒式時序）`
 
 ---
@@ -300,7 +301,7 @@ no-preference 則 reduced-motion 下會動）：
 **Files:**
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 1:**
+- [x] **Step 1:**
 
 ```css
 /* 甲式波浪線淡入。線是翻旗（cue+520ms）才存在的，keyframe 從那一瞬
@@ -327,10 +328,10 @@ no-preference 則 reduced-motion 下會動）：
     }
 ```
 
-- [ ] **Step 2: 開關回歸**——off→on 的 420ms transition 淡入照舊
+- [x] **Step 2: 開關回歸**——off→on 的 420ms transition 淡入照舊
   （animation 已 none，不搶）。開關兩輪目測甲式行。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
   `feat(home): 站①甲式波浪線與圖解同窗淡入`
 
 ---
@@ -340,7 +341,7 @@ no-preference 則 reduced-motion 下會動）：
 **Files:**
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 1:**
+- [x] **Step 1:**
 
 ```css
 /* 乙式《》的登場：翻旗瞬間 content 出現（36px 迴流，:854 舊註記錄
@@ -382,7 +383,7 @@ no-preference 則 reduced-motion 下會動）：
 （content 由 bracket container query 才給），規則寫寬無妨但要目測
 甲式行無異狀。
 
-- [ ] **Step 2: off-gate 補刀（pseudo 不在 `article *` 覆蓋內！）**
+- [x] **Step 2: off-gate 補刀（pseudo 不在 `article *` 覆蓋內！）**
 
 :830-846 的 off 規則裡加：
 
@@ -394,61 +395,61 @@ no-preference 則 reduced-motion 下會動）：
 （同規則已有的 ID 重量即夠；不加這刀，關模組時 filled keyframe 會把
 透明態釘死在殘存的 pseudo 上。）
 
-- [ ] **Step 3: 目測**——乙式行《》從行文中長出、文字被推開的迴流即
+- [x] **Step 3: 目測**——乙式行《》從行文中長出、文字被推開的迴流即
   動畫本體；關模組 36px 迴流照舊瞬收（off 態無動畫，維持現約）。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `feat(home): 站①乙式《》展開淡入，off-gate 補 pseudo 免疫`
 
 ---
 
 ### Task 6: 回歸清單＋註解收尾
 
-- [ ] reduced-motion：全站靜態、全部是修正終態（新效果全在
+- [x] reduced-motion：全站靜態、全部是修正終態（新效果全在
   no-preference 內）。
-- [ ] 無 JS（`pnpm preview` 關 JS）：不包字、不 reveal，直接終態。
-- [ ] 模組開關連按數次：u 底線常在、《》瞬收瞬回、wavy/著重 420ms
+- [x] 無 JS（`pnpm preview` 關 JS）：不包字、不 reveal，直接終態。
+- [x] 模組開關連按數次：u 底線常在、《》瞬收瞬回、wavy/著重 420ms
   transition、楷體行回瀏覽器斜體——無透明殘留、無動畫重播。
-- [ ] 早滾快手回歸（Task 2 兩輪審查點名）：han.js applyFallbacks 約 2.5s
+- [x] 早滾快手回歸（Task 2 兩輪審查點名）：han.js applyFallbacks 約 2.5s
   撕掉重蓋 adjacent 標記時，裂縫規則整支 unmatch 再 rematch ＝ **完整
   520ms 重播**；deep link 直達站①時 reveal 遠早於重蓋，幾乎必然可見。
   目測定奪；有感則 dash-fuse.js 式等窗處理另議。
-- [ ] **Firefox 專跑一輪**（原生 text-decoration-inset ⇒ margin 機制不在
+- [x] **Firefox 專跑一輪**（原生 text-decoration-inset ⇒ margin 機制不在
   ⇒ 裂縫動畫已用 @supports 閘擋掉）：確認縫不加倍、相連戲不演、靜態正確；
   並聲明詩行 u 入場完全靜止（全站唯一「圖解動、詩行不動」組態）是預期降級。
-- [ ] 窄視窗／大字級：裂縫的 margin 增量沿直排行長方向，動畫中途可能把
+- [x] 窄視窗／大字級：裂縫的 margin 增量沿直排行長方向，動畫中途可能把
   行尾字擠到下一欄再擠回（斷行翻轉比 reflow 顯眼）。目測。
-- [ ] 用戶設 --han-text-decoration-inset: 0（核心退出閘，with-js.css:22）
+- [x] 用戶設 --han-text-decoration-inset: 0（核心退出閘，with-js.css:22）
   時 filled animation 仍釘住 .125em——記為已知取捨，不修。
-- [ ] 第 1 行兩顆 u 只有第一顆被 stamp：確認第二顆古騰堡無 margin。
-- [ ] 窄視窗折行：第五行 [data-char] span 邊界緊跟「，」的行首禁則
+- [x] 第 1 行兩顆 u 只有第一顆被 stamp：確認第二顆古騰堡無 margin。
+- [x] 窄視窗折行：第五行 [data-char] span 邊界緊跟「，」的行首禁則
   （Chrome／Safari 各測；atomic inline 的 kinsoku 實作有出入紀錄）。
-- [ ] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
-- [ ] 模組 off→on 再開：整首詩含逐字 stagger 重演＝預期行為（與圖解
+- [x] 模組開關在 char stagger 進行中翻 off：article * 應瞬殺，無殘影。
+- [x] 模組 off→on 再開：整首詩含逐字 stagger 重演＝預期行為（與圖解
   replay 同語言），目測兩邊同步。
-- [ ] **Owner 決定：》。的擠壓 vs 《》的長出**。乙式 pseudo 的
+- [x] **Owner 決定：》。的擠壓 vs 《》的長出**。乙式 pseudo 的
   inline-block 讓第 7 行「論》。」的全形擠壓對失效（實測 +12px，帳記在
   semantics-bracket-in 的註裡）。選項：(a) 收下（現狀，誠實記帳）；
   (b) 用 discrete display 動畫在 to 幀落回 inline——擠壓在入場結束時
   回歸，代價是 520ms 處一個 0.5em 的落定收縮（baseline: display 可
   discrete 動畫，Chrome 116＋）；(c) 放棄長出戲改純淡入。目測後拍板。
-- [ ] --cue-settle 的存廢：Task 3／4 定稿改鍵 @container 後歸零消費者，
+- [x] --cue-settle 的存廢：Task 3／4 定稿改鍵 @container 後歸零消費者，
   token 區「勿再寫字面 520ms」的契約註已失準——Task 5 若同走 @container
   即刪 token 並改寫該註；若留（外部文檔引用），註明「目前僅文檔性」。
-- [ ] semantic-chars.js 的雙 guard 化石：:11 冪等 guard 被 :12
+- [x] semantic-chars.js 的雙 guard 化石：:11 冪等 guard 被 :12
   childElementCount 完全遮蔽，合併為一行一註解或原樣保留（擇一，記錄）。
-- [ ] revealed 終態 inline-block 常駐：對 justification／text-autospace
+- [x] revealed 終態 inline-block 常駐：對 justification／text-autospace
   無影響抽查；reduced-motion 下 span 為 plain inline。
-- [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
+- [x] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
   Task 7 Step 4（本 task 只確認 Task 1–5 沒弄壞既有 hover）。
-- [ ] 註解字句兩處（Task 1 複審遺留，非阻塞）：「這兩行 address」改
+- [x] 註解字句兩處（Task 1 複審遺留，非阻塞）：「這兩行 address」改
   「本階梯上下兩端的 address 拍點」並在 address[lang] 行尾補最短回指；
   token 契約註把 --cue-settle（檔內用）與六個 mark cue（HTML 契約）分開講。
-- [ ] 清掉 figure 內兩行永不命中的 address 拍點與 semantics-ghost-cue（死碼，
+- [x] 清掉 figure 內兩行永不命中的 address 拍點與 semantics-ghost-cue（死碼，
   Task 1 品質審查點名）。
-- [ ] 檔頭與 :82-87、:686-693 的「`<ul>`／code ghost」歷史註解順手改掉
+- [x] 檔頭與 :82-87、:686-693 的「`<ul>`／code ghost」歷史註解順手改掉
   （探勘已證實與現markup不符）。
-- [ ] Commit：`docs(home): 站①註解對齊現況（cue tokens、u 淡入、ul 史前史）`
+- [x] Commit：`docs(home): 站①註解對齊現況（cue tokens、u 淡入、ul 史前史）`
 
 ### Task 7: 雙向 hover 重播（詩行 ↔ 圖解）
 
@@ -461,13 +462,13 @@ no-preference 則 reduced-motion 下會動）：
 **Files:**
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 1: replay 雙胞胎**——複製 `semantics-u-split`／`-wavy-in`／
+- [x] **Step 1: replay 雙胞胎**——複製 `semantics-u-split`／`-wavy-in`／
   `-bracket-in`／`-char-settle` 為 `*-replay`（幀完全同，僅改名）；
   em／dfn 的詩行側 replay 直接複製現有 `semantics-mark-cue`／
   `semantics-straighten` 為 `-replay` 版。（u 只有裂縫一支——淡入已在
   Task 2 依 provenance 論證刪除，孤立的 u 無動畫可重播。）
 
-- [ ] **Step 2: 六組觸發規則**（`@media (hover: hover) and
+- [x] **Step 2: 六組觸發規則**（`@media (hover: hover) and
   (prefers-reduced-motion: no-preference)` 內；ID 重量同 reveal 規則。
   proper 組示例，其餘五組同構）：
 
@@ -497,7 +498,7 @@ no-preference 則 reduced-motion 下會動）：
   plain↔`i`（`[data-char]` 錯拍 `calc(var(--i) * 40ms)`）、
   wavy↔`[style*='wavy'] cite`、bracket↔第 7 行 `cite`（pseudo 一併）。
 
-- [ ] **Step 3: 已知取捨（實作時照此，不另發明）**——(a) 詩行 hover
+- [x] **Step 3: 已知取捨（實作時照此，不另發明）**——(a) 詩行 hover
   目標是直排行內元素、命中面積小：先做元素級（user 指定「semantic
   elmt」）；若手感差，改行級 `span:has(u):hover` 是一行的事，留給
   owner 目測後定。(b) off 態：詩行側被 `article * { animation: none }`
@@ -506,10 +507,10 @@ no-preference 則 reduced-motion 下會動）：
   只有圖解會重播（詩行的裂縫依 Task 2 的 @supports 閘不存在）——預期
   行為。
 
-- [ ] **Step 4: 目測**——六組來回 hover、hover 中途離開（動畫消失回
+- [x] **Step 4: 目測**——六組來回 hover、hover 中途離開（動畫消失回
   終態，同圖解現況）、觸控裝置無 hover 無害。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `feat(home): 站①雙向 hover——詩行與圖解互相點燃重播`
 
 ### 明確不做
@@ -519,3 +520,35 @@ no-preference 則 reduced-motion 下會動）：
 - **修 han.css 核心「off 態 adjacent margin 殘留」**：本計畫的 cheat
   正好用得上它；要修是 src/ 另案。
 - **hyperly**：不引入（理由見檔頭 Tech Stack）。
+
+
+---
+
+## 完工記錄（2026-07-31）
+
+七個 task 全數落地於分支 semantics-elements-sync（14+ commits，逐 task
+spec＋品質雙審，多數任務歷經二至三輪修正）。與原計畫的主要偏差（均已
+回寫各 task 段落）：
+
+- **掛載機制**：Task 3 品質審查後，「翻旗才存在」的效果一律改鍵
+  `@container style(--han-semantics: on)`（規則隨旗標開始匹配＝起點自動
+  對齊），取代 cue+settle 算術；`--cue-settle` token 退役。
+- **u 淡入刪除**：owner 原話「強迫接上、再斷開」——依 provenance 論證
+  （UA 兩態都畫線）只留裂縫一場戲，並加 `@supports not
+  (text-decoration-inset: auto)` 閘（Firefox 原生 inset，無閘會永久雙倍縫）。
+- **off-gate hover 防線**：Task 7 的詩行側規則以
+  `:root:not([data-han-module-semantics='off'])` 前綴擋 off 態（`:has()`
+  規則權重高於 `article *`，靠 cascade 打不贏）——與 plan Step 3(b)
+  原寫法不同，理由記在 CSS 該區註解。
+- **量測發現**：乙式 pseudo 的 inline-block 斷了第 7 行「論》。」的
+  全形擠壓對（+12px，headless 實測）——已誠實記帳於
+  semantics-bracket-in 註，owner 三選一待拍板（見 Task 6 清單）。
+
+**已知殘留（follow-up，另案）**：figure.semantic-elements 內尚有整段
+死掉的 address 信頭樣式（~46 行 label 區塊＋入場規則裡的
+address[lang]／address:not([lang]) 條目）——信頭實體早遷至 .Envelope，
+這些選擇器在 figure 內永不命中；Task 6 僅清了 plan 點名的兩行 cue 與
+ghost-cue。清除屬安全的獨立小案。
+
+Owner 目測清單見 Task 6 段落（勾格為實作側完成標記；目測項全數待
+owner，尤其 Firefox 一輪、skew 軸向、》。三選一）。
