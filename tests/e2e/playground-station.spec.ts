@@ -106,7 +106,7 @@ test.describe('station⑤ playground', () => {
     await expect($preview(page).locator('h1')).toHaveText(marker.slice(2))
   })
 
-  test('console interplay: a console control writes --han-* on main; the preview inherits it', async ({ page }) => {
+  test('console interplay: a console control writes --han-* on :root; the preview inherits it', async ({ page }) => {
     const main = page.locator('main')
 
     // The preview must be a descendant of main (so it inherits config).
@@ -116,7 +116,8 @@ test.describe('station⑤ playground', () => {
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
 
     await expect
-      .poll(() => main.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .poll(() => page.evaluate(() =>
+        document.documentElement.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
 
     // Inherited all the way down to the preview article (computed value).

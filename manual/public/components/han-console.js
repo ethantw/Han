@@ -2,7 +2,7 @@
  * <han-console> — the playground configurator, as a shadow-DOM web
  * component. Thin imperative shell (the platform mandates `class extends
  * HTMLElement`); ALL logic lives in the FP modules `console-config.js`
- * (controls → config → target + broadcast) and `console-metrics.js`
+ * (controls → config → `:root` / `body` + broadcast) and `console-metrics.js`
  * (preview sliders). This class only: attaches the shadow, adopts the
  * three stylesheets, injects the locale template, wires the reset
  * button, and relays lifecycle to those modules. That's the ts-style
@@ -11,7 +11,9 @@
  * Public contract (the cross-boundary interface — see the component
  * spec; changing it needs owner sign-off):
  *   attrs   lang (hant|hans|en|ja|ko, dynamic) · target (CSS selector,
- *           default `main`) · form (side|top, pure-CSS in the shadow)
+ *           default `main` — the scope han.js's JS fallbacks are installed
+ *           on; the CSS side does NOT ride it, see below) · form
+ *           (side|top, pure-CSS in the shadow)
  *           (page-level collapse is NOT component API — the page's
  *           `.ConsoleToggle` checkbox + `body:has(input:checked)` own it,
  *           dark-mode recipe; see home.css § han-console.)
@@ -231,7 +233,11 @@ class HanConsole extends HTMLElement {
     this.#metrics = mountConsoleMetrics(
       {
         root: this.shadowRoot,
-        target: this.#target,
+        // 度量落在 `body`，與生成碼的 `body { font-size; line-height;
+        // font-weight }` 同一層（consoleConfig 的 CSS 落點同理，見
+        // console-config.js § applyTarget）。消費端是 `.Station` / article 的
+        // `var(--console-metric-…, inherit)`，繼承得到，不挑落點。
+        target: document.body,
         // 起始 metrics 取自剛掛載的 config 模組（lang 重渲染時保留使用者偏差）；
         // onChange 把滑桿快照寫回 config core，由它廣播 source:'metrics'。
         initial: this.#config.config.metrics,

@@ -94,22 +94,23 @@ test.describe('module switches', () => {
   })
 
   test('module off greys but keeps its control values; re-enabling restores the vars (lines / squeeze)', async ({ page }) => {
-    const main = page.locator('main')
     const lines = page.locator('[data-cfg-key="lines"]')
     const squeeze = page.locator('[data-cfg-key="squeeze"]')
     const refinement = () =>
-      main.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement'))
+      page.evaluate(() =>
+        document.documentElement.style.getPropertyValue('--han-punctuation-refinement'))
 
     // deviate inside the lines module: squeeze off → refinement:hang.
     await openGroupOf(page, 'squeeze')
     await squeeze.uncheck()
     await expect.poll(refinement).toBe('hang')
 
-    // lines module off: the layer isn't imported → its var drops from
-    // main, and the details greys — but the squeeze value is retained.
+    // lines module off: the layer isn't imported → the config var drops and
+    // the module's own off flag (`none`, MODULE_MECHANISM) takes the slot on
+    // :root; the details greys — but the squeeze value is retained.
     await lines.uncheck()
     await expect(page.locator('details[data-module="lines"]')).toHaveAttribute('data-module-off', '')
-    await expect.poll(refinement).toBe('')
+    await expect.poll(refinement).toBe('none')
     await expect.poll(() => squeeze.evaluate((el: HTMLInputElement) => el.checked)).toBe(false)
 
     // re-enabling restores the var from the retained value.

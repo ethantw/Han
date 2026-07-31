@@ -33,6 +33,14 @@ const LOCALES = [
   { path: '/ko/', htmlLang: 'ko', label: 'ko' },
 ] as const
 
+/** console 的 CSS 落點是 `:root` ＋ `body`，逐字鏡射生成碼的兩條規則；模式變數
+ *  不能再低（`body` 的 font-family 一代換就定型，見 console-config.js
+ *  § applyTarget）。度量另外走 `body`，但消費規則在 `main` 上讀繼承值，所以下面
+ *  的 font-size 斷言照樣量 main。 */
+const refinementOnRoot = (page: Page) =>
+  page.evaluate(() =>
+    document.documentElement.style.getPropertyValue('--han-punctuation-refinement'))
+
 /** 配置群組是 <details> 手風琴——收合組裡的控件要先展開才可見。 */
 const openGroupOf = (page: Page, cfgKey: string) =>
   page
@@ -110,15 +118,12 @@ test.describe('console form attribute', () => {
 })
 
 test.describe('whole-page configuration', () => {
-  test('console toggle drives inline var on main; station④ snippet reflects it', async ({ page }) => {
+  test('console toggle drives inline var on :root; station④ snippet reflects it', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main')
 
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
-    await expect
-      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
-      .toBe('hang')
+    await expect.poll(() => refinementOnRoot(page)).toBe('hang')
 
     // Radios in the ViewTabs are sr-only — click the label, not the input.
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
@@ -142,9 +147,7 @@ test.describe('per-group 使用預設値 buttons', () => {
     await expect(linesDefault).toBeHidden()
 
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
-    await expect
-      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
-      .toBe('hang')
+    await expect.poll(() => refinementOnRoot(page)).toBe('hang')
     await expect(linesDefault).toBeVisible()
 
     // an unrelated deviation in another group so we can prove the
@@ -155,9 +158,7 @@ test.describe('per-group 使用預設値 buttons', () => {
     await expect(main).toHaveCSS('font-size', '22px')
 
     await linesDefault.click()
-    await expect
-      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
-      .toBe('')
+    await expect.poll(() => refinementOnRoot(page)).toBe('')
     await expect(linesDefault).toBeHidden()
     // the accordion must not have been toggled shut by the click
     await expect(page.locator('[data-cfg-key="squeeze"]')).toBeVisible()

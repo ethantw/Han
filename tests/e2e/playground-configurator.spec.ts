@@ -5,7 +5,8 @@ import { test, expect, type Page } from '@playwright/test'
  * controls live in its shadow root behind `details.ControlGroup`
  * accordions (Playwright pierces the open shadow root for CSS locators;
  * open a collapsed group before touching its controls),
- * apply target is `main` (there's no more boxed preview
+ * the CSS lands on `:root` ＋ `body` — the same two rules the generated
+ * snippet emits (there's no more boxed preview
  * `<article>`), and the output pane is station④'s ViewTabs
  * (`[data-pg-views]` / `[data-out-panes]`) — no "live preview" tab
  * anymore, since the whole page is the preview.
@@ -30,11 +31,11 @@ test.describe('playground configurator', () => {
   })
 
   test('掛標點開關 → 頁面變數 + 生成碼同步', async ({ page }) => {
-    const main = page.locator('main')
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect
-      .poll(() => main.evaluate((el) => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .poll(() => page.evaluate(() =>
+        document.documentElement.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
 
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()

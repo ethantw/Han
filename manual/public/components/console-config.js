@@ -2,9 +2,10 @@
  * <han-console> config core — 控件 → config → 套用 + 廣播.
  *
  * The configurator half of the old `home/configurator.js`, now scoped to
- * the component's shadow root (controls) and a light-DOM `target`
- * element (`main` by default — where the `--han-*` deviations and
- * the metrics inline style land). The OUTPUT half (station④'s code
+ * the component's shadow root (controls). The CSS lands on `:root` ＋
+ * `body` —逐字鏡射生成碼的兩條規則，且非如此不可（§ applyTarget）；
+ * light-DOM 的 `target`（預設 `main`）只剩一個職責：han.js JS 後備的作用
+ * 範圍。The OUTPUT half (station④'s code
  * panes) split out to `home/snippet.js`, which subscribes to the
  * `han-config-change` event this module broadcasts through `dispatch`.
  *
@@ -60,19 +61,47 @@ const ALL_VARS = [
   '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
 ]
 
-/* ── apply：config → target 變數 ──
- * target 找不到時（元件照常渲染、僅不套用）這層整個略過。 */
-const applyTarget = (config, $target) => {
-  if (!$target) return
-  for (const prop of ALL_VARS) $target.style.removeProperty(prop)
-  for (const [prop, value] of cssVars(config)) $target.style.setProperty(prop, value)
+/* ── apply：config → 文件變數 ──
+ *
+ * 落點與生成碼**逐字一致**：模式變數上 `:root`，`font-family` 覆寫上 `body`
+ * （codegen.js § configCSS 產的就是這兩條規則）。這不是風格選擇，是必要條件：
+ *
+ *   `--han-punctuation-*` 之類的模式變數由 fonts.css 的 `@container style()`
+ *   翻成字體槽，而 style query **只看祖先、不看自己**。頁面的字體堆疊宣告在
+ *   `body { font-family: var(--han-font-default) }`——`font-family` 是普通繼承
+ *   屬性，`var()` 只在宣告它的那個元素上代換一次，代換出來的字串才往下繼承。
+ *   所以模式變數必須落在 `body` 的**上方**（＝`:root`）：落在 `body` 自己或
+ *   更下面的 `main`，body 代換時查到的仍是 `<html>` 的舊值，整棵子樹就繼承到
+ *   一份定型的舊字體堆疊——症狀是「按新公約懸掛、按舊公約畫字」（懸掛走
+ *   `--han-state-hanging-punctuation`，那條宣告在 `:where(:lang(zh))`，每個元素
+ *   各自重新求值，所以它是對的，只有字體是錯的）。
+ *
+ * 反過來，`font-family` 覆寫不能跟著上 `:root`：`body` 有自己的 `font-family`
+ * 宣告，會贏過從 `<html>` 繼承來的值：寫在 `:root` 等於沒寫。它必須落在 body
+ * 這一層，且落在這裡才讀得到 `:root` 剛寫上的模式變數。
+ *
+ * 元件的 `target` 屬性管的是另一件事（han.js JS 後備的作用範圍），與此無關。 */
+const applyTarget = (config, $fallbackScope) => {
+  const $root = document.documentElement
+  const $body = document.body
+  for (const prop of ALL_VARS) $root.style.removeProperty(prop)
+  /* han.js 的 JS 後備會把它解析出來的模式**回寫**成 `$fallbackScope` 上的行內
+     值（punctuation.ts § setPunctuationRefinementMode，autospace 同理）。那份
+     回寫是宣告值，會蓋掉從 `:root` 繼承下來的新設定——上一輪停在 `auto`，這一
+     輪 :root 改成 `hang`，整個 scope 仍讀到自己身上那個舊 `auto`，連 han.js
+     下一輪重讀 computed 都只讀得到自己的舊值，就此鎖死。所以每輪先把這批變數
+     從 scope 上掃掉，讓它重新繼承 `:root`，han.js 再據以回寫。CSS 落點統一到
+     `:root` 之前，這裡寫的就是 scope 本身，覆寫順手就把舊值蓋掉了，不必額外掃。 */
+  if ($fallbackScope && $fallbackScope !== $root)
+    for (const prop of ALL_VARS) $fallbackScope.style.removeProperty(prop)
+  for (const [prop, value] of cssVars(config)) $root.style.setProperty(prop, value)
   // 預覽恆走 CDN link（不管 webfontDelivery 生成碼要不要走 npm）。
   for (const id of packages(config).ziano) ensureFont(id, config.webfontCdnSource)
-  // baseGeneric：serif 時把 target 的 font-family 換上 --han-font-alternative
+  // baseGeneric：serif 時把 body 的 font-family 換上 --han-font-alternative
   // （鏡射生成碼的 `body { … }`）；RESET 靠 removeProperty 收回。
   config.baseGeneric === 'serif'
-    ? ($target.style.fontFamily = 'var(--han-font-alternative)')
-    : $target.style.removeProperty('font-family')
+    ? ($body.style.fontFamily = 'var(--han-font-alternative)')
+    : $body.style.removeProperty('font-family')
 }
 
 /* ── apply：模組／webfont 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
@@ -140,10 +169,17 @@ const applyModules = (config) => {
   const { style, dataset } = document.documentElement
   for (const [name, mechanism] of Object.entries(MODULE_MECHANISM)) {
     const on = config[name] !== false
+    /* 只**寫** off 旗標，不負責收回——收回由 applyTarget 的 ALL_VARS 掃除
+       統一做（三個旗標 `--han-semantics` / `--han-text-autospace` /
+       `--han-punctuation-refinement` 都在那張表裡）。自從 CSS 落點統一到
+       `:root`（applyTarget），兩邊寫的是同一個元素的同一批屬性：這裡若還帶
+       removeProperty，模組重新開啟那一輪就會把 applyTarget 剛寫上的偏差值
+       一併抹掉（sync 的順序是 applyTarget → applyModules）。反向也安全：
+       cssVars() 對關掉的模組本就不輸出任何變數，所以掃除完只剩這裡的 off
+       旗標，兩者不會爭同一個值。 */
     if (mechanism !== 'link') {
       for (const [prop, offValue] of Object.entries(mechanism)) {
-        if (on) style.removeProperty(prop)
-        else style.setProperty(prop, offValue)
+        if (!on) style.setProperty(prop, offValue)
       }
     }
     /* 狀態鏡射到 `<html>`：頁面 CSS 有東西可以選（prose 的 article 規則、
@@ -177,8 +213,9 @@ const applyFallbacks = async (config, $target) => {
 }
 
 /* ── 進場 ──
- * `root` = shadowRoot（控件所在）；`target` = 套用目標（light DOM，可
- * null）；`dispatch(config, source)` = 廣播回呼（元件提供，發
+ * `root` = shadowRoot（控件所在）；`target` = **han.js JS 後備的作用範圍**
+ * （light DOM，可 null——CSS 那側的落點固定是 `:root` ＋ `body`，見
+ * applyTarget）；`dispatch(config, source)` = 廣播回呼（元件提供，發
  * han-config-change）；`initial` = 補水用起始 config（lang 重渲染時保留
  * 狀態；預設 DEFAULTS）。 */
 export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {

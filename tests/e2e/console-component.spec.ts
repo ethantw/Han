@@ -51,12 +51,14 @@ test.describe('bare fixture — no home.css', () => {
     const bg = await $console.evaluate(el => getComputedStyle(el).backgroundColor)
     expect(bg).toBe('rgb(250, 250, 247)')
 
-    // A control change still writes `--han-*` onto the target element.
-    const main = page.locator('main')
+    // A control change still writes `--han-*` onto `:root` — the same
+    // landing spot the generated snippet's `:root { … }` rule uses
+    // (console-config.js § applyTarget explains why it can't be lower).
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
     await expect
-      .poll(() => main.evaluate(el => el.style.getPropertyValue('--han-punctuation-refinement')))
+      .poll(() => page.evaluate(() =>
+        document.documentElement.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
   })
 })

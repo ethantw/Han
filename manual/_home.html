@@ -201,7 +201,7 @@
 <main lang="{{ htmlLang }}">
 <script>
   // Pre-paint console-config restore — a returning visitor's saved playground
-  // config lands on main (and the module/webfont <link> switches) BEFORE
+  // config lands on :root / body (and the module/webfont <link> switches) BEFORE
   // first paint, instead of waiting for the console's gate-open dynamic import
   // (home.js). Same localStorage + silentlyTry pattern as the theme /
   // console-collapsed restores. The console, when it upgrades, rehydrates its
@@ -215,15 +215,20 @@
     const raw = localStorage.getItem('han-console-config')
     if (!raw) return
     const { config, vars } = JSON.parse(raw)
-    const t = document.querySelector('main')
-    if (t && Array.isArray(vars)) {
-      for (const [k, v] of vars) t.style.setProperty(k, v)
-      if (config.baseGeneric === 'serif') t.style.fontFamily = 'var(--han-font-alternative)'
+    // 落點鏡射 console-config.js § applyTarget（也就是生成碼本身）：模式變數上
+    // :root，font-family／度量上 body。模式變數不能降到 body 或 main —— 頁面的
+    // 字體堆疊宣告在 body，而 `@container style()` 只看祖先，落點一低整棵樹就
+    // 繼承到定型的舊字體堆疊。
+    const root = document.documentElement
+    const body = document.body
+    if (Array.isArray(vars)) {
+      for (const [k, v] of vars) root.style.setProperty(k, v)
+      if (config.baseGeneric === 'serif') body.style.fontFamily = 'var(--han-font-alternative)'
       const m = config.metrics
       if (m) {
-        if (m.size && m.size !== 16) t.style.setProperty('--console-metric-size', `${m.size}px`)
-        if (m.leading && m.leading !== 1.75) t.style.setProperty('--console-metric-leading', String(m.leading))
-        if (m.weight && m.weight !== 400) t.style.setProperty('--console-metric-weight', String(m.weight))
+        if (m.size && m.size !== 16) body.style.setProperty('--console-metric-size', `${m.size}px`)
+        if (m.leading && m.leading !== 1.75) body.style.setProperty('--console-metric-leading', String(m.leading))
+        if (m.weight && m.weight !== 400) body.style.setProperty('--console-metric-weight', String(m.weight))
       }
     }
     // Modules, in the SAME shape as console-config.js § MODULE_MECHANISM —
@@ -236,7 +241,6 @@
     // `=== false` (not `!value`): a key missing from an older saved schema
     // must default to ON, never silently disable that module.
     const off = (name) => config[name] === false
-    const root = document.documentElement
     if (off('semantics')) root.style.setProperty('--han-semantics', 'off')
     if (off('lines')) {
       root.style.setProperty('--han-text-autospace', 'no-autospace')
