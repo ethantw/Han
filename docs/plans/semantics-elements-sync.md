@@ -408,7 +408,8 @@ station-semantics.css 新增：
   520ms 重播**；deep link 直達站①時 reveal 遠早於重蓋，幾乎必然可見。
   目測定奪；有感則 dash-fuse.js 式等窗處理另議。
 - [ ] **Firefox 專跑一輪**（原生 text-decoration-inset ⇒ margin 機制不在
-  ⇒ 裂縫動畫已用 @supports 閘擋掉）：確認縫不加倍、相連戲不演、靜態正確。
+  ⇒ 裂縫動畫已用 @supports 閘擋掉）：確認縫不加倍、相連戲不演、靜態正確；
+  並聲明詩行 u 入場完全靜止（全站唯一「圖解動、詩行不動」組態）是預期降級。
 - [ ] 窄視窗／大字級：裂縫的 margin 增量沿直排行長方向，動畫中途可能把
   行尾字擠到下一欄再擠回（斷行翻轉比 reflow 顯眼）。目測。
 - [ ] 用戶設 --han-text-decoration-inset: 0（核心退出閘，with-js.css:22）
@@ -436,10 +437,11 @@ station-semantics.css 新增：
 **Files:**
 - Modify: `manual/public/home/station-semantics.css`
 
-- [ ] **Step 1: replay 雙胞胎**——複製 `semantics-u-in`／`-u-split`／
-  `-wavy-in`／`-bracket-in`／`-char-settle` 為 `*-replay`（幀完全同，
-  僅改名）；em／dfn 的詩行側 replay 直接複製現有
-  `semantics-mark-cue`／`semantics-straighten` 為 `-replay` 版。
+- [ ] **Step 1: replay 雙胞胎**——複製 `semantics-u-split`／`-wavy-in`／
+  `-bracket-in`／`-char-settle` 為 `*-replay`（幀完全同，僅改名）；
+  em／dfn 的詩行側 replay 直接複製現有 `semantics-mark-cue`／
+  `semantics-straighten` 為 `-replay` 版。（u 只有裂縫一支——淡入已在
+  Task 2 依 provenance 論證刪除，孤立的 u 無動畫可重播。）
 
 - [ ] **Step 2: 六組觸發規則**（`@media (hover: hover) and
   (prefers-reduced-motion: no-preference)` 內；ID 重量同 reveal 規則。
@@ -456,14 +458,13 @@ station-semantics.css 新增：
     .MarkDiagram [data-mark='proper'] {
       animation: mark-replay 620ms ease-out both;
     }
-    .poem-like u {
-      animation: semantics-u-replay 620ms ease-out both;
-    }
-    .poem-like u[data-followed-by-adjacent-line] {
-      animation:
-        semantics-u-replay 620ms ease-out both,
-        semantics-u-split-replay 620ms ease-out both
-      ;
+    /* Firefox 閘同 Task 2 入場（src/css/semantics.css:499 同一道）——
+       replay 也動 margin，無閘的話 hover 一次就把雙倍縫永久釘上
+       （fill both）。 */
+    @supports not (text-decoration-inset: auto) {
+      .poem-like u[data-followed-by-adjacent-line] {
+        animation: semantics-u-split-replay 620ms ease-out both;
+      }
     }
   }
 ```
@@ -477,7 +478,9 @@ station-semantics.css 新增：
   elmt」）；若手感差，改行級 `span:has(u):hover` 是一行的事，留給
   owner 目測後定。(b) off 態：詩行側被 `article * { animation: none }`
   壓住不重播、圖解側照舊（含被詩行 hover 點燃）——與現況 off 行為
-  一致的不對稱，接受並在 off-gate 註解記一筆。
+  一致的不對稱，接受並在 off-gate 註解記一筆。(c) Firefox：proper 組
+  只有圖解會重播（詩行的裂縫依 Task 2 的 @supports 閘不存在）——預期
+  行為。
 
 - [ ] **Step 4: 目測**——六組來回 hover、hover 中途離開（動畫消失回
   終態，同圖解現況）、觸控裝置無 hover 無害。
