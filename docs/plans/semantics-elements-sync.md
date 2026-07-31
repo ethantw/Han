@@ -262,8 +262,8 @@ station-semantics.css 新增：
         semantics-char-settle
         520ms
         ease-out
-        calc(var(--cue-plain) + var(--cue-settle) + var(--i) * 40ms)
-        both
+        calc(var(--row-cue) + var(--cue-settle) + var(--i) * 40ms)
+        forwards
       ;
     }
 ```
