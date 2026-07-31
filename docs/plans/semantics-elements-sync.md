@@ -54,6 +54,7 @@ wrap，介面已預留）。
 ```
 --cue-proper: 200ms    --cue-emphasis: 400ms   --cue-weight: 800ms
 --cue-plain: 1000ms    --cue-wavy: 1200ms      --cue-bracket: 1400ms
+--cue-settle: 520ms（交棒點：行旗標 step-end 的翻轉時刻，新動畫的 delay 基準）
 ```
 
 詩行改按**記號歸屬**取 cue（行 1、3 都是專名號 ⇒ 同取 `--cue-proper`，
@@ -261,7 +262,7 @@ station-semantics.css 新增：
         semantics-char-settle
         520ms
         ease-out
-        calc(var(--cue-plain) + 520ms + var(--i) * 40ms)
+        calc(var(--cue-plain) + var(--cue-settle) + var(--i) * 40ms)
         both
       ;
     }
@@ -314,7 +315,7 @@ station-semantics.css 新增：
         semantics-wavy-in
         520ms
         ease-out
-        calc(var(--cue-wavy) + 520ms)
+        calc(var(--cue-wavy) + var(--cue-settle))
         both
       ;
     }
@@ -365,7 +366,7 @@ station-semantics.css 新增：
         semantics-bracket-in
         520ms
         ease-out
-        calc(var(--cue-bracket) + 520ms)
+        calc(var(--cue-bracket) + var(--cue-settle))
         both
       ;
     }
@@ -404,6 +405,8 @@ station-semantics.css 新增：
   transition、楷體行回瀏覽器斜體——無透明殘留、無動畫重播。
 - [ ] hover 圖解各行：圖解自身 replay 照舊；雙向重播的驗收在
   Task 7 Step 4（本 task 只確認 Task 1–5 沒弄壞既有 hover）。
+- [ ] 清掉 figure 內兩行永不命中的 address 拍點與 semantics-ghost-cue（死碼，
+  Task 1 品質審查點名）。
 - [ ] 檔頭與 :82-87、:686-693 的「`<ul>`／code ghost」歷史註解順手改掉
   （探勘已證實與現markup不符）。
 - [ ] Commit：`docs(home): 站①註解對齊現況（cue tokens、u 淡入、ul 史前史）`
