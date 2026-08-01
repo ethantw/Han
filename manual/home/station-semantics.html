@@ -312,7 +312,20 @@
       </g>
       <g data-mark="plain" style="--row-mid: 106px; --row-cue: var(--cue-plain)">
         <rect data-hit x="0" y="93" width="160" height="25" />
-        <text x="32" y="110"><tspan data-angle>&lt;</tspan><tspan data-tagname>i</tspan><tspan data-angle>&gt;</tspan></text>
+        <!-- TWO tags, one bar — the only row that needs it, because <i> and
+             <var> are the same rule in han.css. Stacked, not joined by a
+             slash: the label gutter is x ∈ [0,32] with `text-anchor: end` at
+             7px mono, and `<cite>` (six characters, ~25 units) is already
+             the widest that fits — `<i> / <var>` on one line runs to nine
+             characters, ~38 units, and would spill past the viewBox's left
+             edge. The pair is sized to sit INSIDE the bar, not merely
+             inside the row: baselines 105 / 112 with a 7-unit leading put
+             the two cap-heights across 100–112, held by the cells' own
+             99–113 and centred on their 106. An earlier 106 / 114 spilled
+             the second line past the bar's bottom edge, and a label hanging
+             off the thing it names is what made the row read as two loose
+             objects instead of one. <i> on top: it comes first in the poem. -->
+        <text x="32" y="105"><tspan data-angle>&lt;</tspan><tspan data-tagname>i</tspan><tspan data-angle>&gt;</tspan><tspan x="32" dy="7"><tspan data-angle>&lt;</tspan><tspan data-tagname>var</tspan><tspan data-angle>&gt;</tspan></tspan></text>
         <g data-bar><rect data-cell x="40" y="99" width="14" height="14" /><rect data-cell x="54" y="99" width="14" height="14" /><rect data-cell x="68" y="99" width="14" height="14" /><rect data-cell x="82" y="99" width="14" height="14" /><rect data-cell x="96" y="99" width="14" height="14" /><rect data-cell x="110" y="99" width="14" height="14" /><g transform="translate(42,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g><g transform="translate(56,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g><g transform="translate(70,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(84,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(98,101)"><path data-glyph data-print d="M0 0 L4 0 L4 10 L0 10 z M6 0 L10 0 L10 10 L6 10 z" /><path data-glyph data-hand d="M0 0.4 Q-0.12 5.5 0.12 10 M0 0.4 Q2.2 -0.15 4 0 Q4.12 5 3.84 9.7 M0.12 10 Q2 9.78 3.84 9.5 M6 0.4 Q5.88 5.5 6.12 10 M6 0.4 Q8.2 -0.15 10 0 Q10.12 5 9.84 9.7 M6.12 10 Q8 9.78 9.84 9.5" /></g><g transform="translate(112,101)"><path data-glyph data-print d="M0 0 L10 0 L10 4 L0 4 z M0 6 L10 6 L10 10 L0 10 z" /><path data-glyph data-hand d="M0 0.6 Q-0.12 2.2 0.3 4 M0 0.6 Q5.5 -0.15 10 0 Q10.12 2 9.6 3.88 M0.3 4 Q5 3.78 9.6 3.58 M0 6.6 Q-0.12 8.2 0.3 10 M0 6.6 Q5.5 5.85 10 6 Q10.12 8 9.6 9.88 M0.3 10 Q5 9.78 9.6 9.58" /></g></g>
       </g>
       <g data-mark="wavy" style="--row-mid: 131px; --row-cue: var(--cue-wavy)">
