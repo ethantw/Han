@@ -967,7 +967,7 @@
         /* i／em／dfn 不在 straighten 名單：歸正由逐字 skew 接手（見
            @keyframes semantics-char-settle 的交棒論證），行級只留
            mark-cue 的墨色一閃（dfn 本就無墨色一閃，字重交給 transition）。 */
-        .poem-like :is(i, em) {
+        .poem-like :is(i, var, em) {
           animation: semantics-mark-cue 1000ms ease-in-out var(--row-cue);
         }
         /* 逐字歸正鍵在旗標翻轉本身：@container 讓這條規則在
@@ -980,7 +980,7 @@
            display: inline-block 也只在翻旗後生效——翻旗前 span 是普通
            inline，不碰 pair-squeeze。 */
         @container style(--han-semantics: on) {
-          .poem-like :is(i, em, dfn) [data-char] {
+          .poem-like :is(i, var, em, dfn) [data-char] {
             display: inline-block;
             animation:
               semantics-char-settle
@@ -1065,7 +1065,9 @@
          otherwise eat half the beats.
 
          行拍按記號歸屬取圖解同一個 token：1、3 行專名號同亮，2 著重、
-         4 字重、5 楷體、6 甲式、7 乙式。 */
+         4 字重、6 甲式、8 乙式；5（`<i>`）與 7（`<var>`）同取楷體那一拍
+         ——兩者在 han.css 是同一條規則，圖解那條 bar 因此掛兩個標籤而不是
+         多開一列。同亮即是配對，不必靠版面相鄰（同 1、3 行的作法）。 */
       /* 兩幅信箋的拍點不在這條階梯上——信封已移出 figure，0ms／200ms
          寫在檔尾 .Envelope 區。 */
       .poem-like > span:nth-of-type(1) { --row-cue: var(--cue-proper); }
@@ -1074,7 +1076,8 @@
       .poem-like > span:nth-of-type(4) { --row-cue: var(--cue-weight); }
       .poem-like > span:nth-of-type(5) { --row-cue: var(--cue-plain); }
       .poem-like > span:nth-of-type(6) { --row-cue: var(--cue-wavy); }
-      .poem-like > span:nth-of-type(7) { --row-cue: var(--cue-bracket); }
+      .poem-like > span:nth-of-type(7) { --row-cue: var(--cue-plain); }
+      .poem-like > span:nth-of-type(8) { --row-cue: var(--cue-bracket); }
 
       /* The one mark that can genuinely tween: `font-weight` is a number,
          so 400→700 interpolates. Everything else in the correction is a
@@ -1183,7 +1186,7 @@
 
       #station-semantics:has(
         .MarkDiagram [data-mark='plain']:hover,
-        .poem-like i:hover
+        .poem-like :is(i, var):hover
       ) & {
         .MarkDiagram [data-mark='plain'] {
           animation: mark-roundtrip 2500ms ease-in-out both;
@@ -1191,14 +1194,14 @@
         /* i 的原生態是**內文字體**加合成斜體——han.css 換上的楷體要一起
            退掉，否則等於把一半的修正藏著；字體先翻、斜度後動（見 replay
            雙胞胎的檔頭註）。 */
-        :root:not([data-han-module-semantics='off']) & .poem-like i {
+        :root:not([data-han-module-semantics='off']) & .poem-like :is(i, var) {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
             semantics-mark-cue-replay 2500ms ease-in-out both,
             semantics-i-face-replay 2500ms ease-in-out both
           ;
         }
-        :root:not([data-han-module-semantics='off']) & .poem-like i [data-char] {
+        :root:not([data-han-module-semantics='off']) & .poem-like :is(i, var) [data-char] {
           animation:
             semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
             semantics-char-settle-replay 2500ms ease-in-out calc(var(--i) * 80ms) both
