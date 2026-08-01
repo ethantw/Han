@@ -350,7 +350,12 @@
            it with it — the explanation has to stay readable in both states.
            Plain prose on purpose: the poem earns its jokes by compression,
            and compression is exactly what leaves a reader behind. -->
-      <p>古騰堡從美因茲來信談編碼，連合字帶異體刻三百枚就夠用，畢昇答漢字這邊刻了三萬枚還嫌不夠。幸好有統一碼，天下的文字共用一張表。畢昇心想那百萬個碼位還空著大半，就沒再說什麼。兩人翻遍古籍，沒有結論。</p>
+      <!-- 《》 here are literal characters, not <cite>: the console's module
+           switch kills han.semantics.css PAGE-WIDE, so a <cite> in the
+           caption would pick up the UA's synthetic oblique in the 「前」
+           state — and this paragraph has to stay readable in both. Same
+           reason the caption carries no semantic elements at all. -->
+      <p>古騰堡從美因茲來信談編碼，連合字帶異體刻三百枚就夠用，畢昇答漢字這邊刻了三萬枚還嫌不夠。幸好有統一碼，天下的文字共用一張表。畢昇心想那百萬個碼位還空著大半，就沒再說什麼。兩人同讀《武經總要》〈字驗〉一篇——宋代的密碼本，四十種軍情各配詩裡的一個字，字面與軍情毫不相干。翻遍古籍，終究沒有結論。</p>
       <!-- A proxy for the console's `semantics` module switch, not a control
            of its own. The console already reaches this figure — it disables
            `han.semantics.css` page-wide — so a second, independent switch
