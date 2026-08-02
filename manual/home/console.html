@@ -441,6 +441,36 @@
     ja: 'JavaScript',
     ko: 'JavaScript',
   },
+  pgGrpInstall: {
+    hant: '逐項取捨',
+    hans: '逐项取舍',
+    en: 'Pick passes',
+    ja: '個別に取捨',
+    ko: '<ruby>個別<rt>개별</rt></ruby> <ruby>選擇<rt>선택</rt></ruby>',
+  },
+  pgTogFbPunct: {
+    hant: '標點擠壓／懸掛', hans: '标点挤压／悬挂', en: 'Punctuation squeeze / hang',
+    ja: '約物の詰め／ぶら下げ', ko: '<ruby>約物<rt>약물</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>／<ruby>懸垂<rt>현수</rt></ruby>',
+  },
+  pgTogFbIss: {
+    hant: '混排間隙', hans: '混排间隙', en: 'Han ↔ Western spacing',
+    ja: '和欧間隔', ko: '<ruby>混排<rt>혼배</rt></ruby> <ruby>間隔<rt>간격</rt></ruby>',
+  },
+  pgTogFbAdjacent: {
+    hant: '鄰行間距', hans: '邻行间距', en: 'Adjacent-line insets',
+    ja: '隣行の間隔', ko: '<ruby>隣行<rt>인행</rt></ruby> <ruby>間隔<rt>간격</rt></ruby>',
+  },
+  pgTogFbProbes: {
+    hant: '環境探測', hans: '环境探测', en: 'Environment probes',
+    ja: '環境プローブ', ko: '<ruby>環境<rt>환경</rt></ruby> <ruby>探測<rt>탐측</rt></ruby>',
+  },
+  pgNoteInstall: {
+    hant: '這幾顆決定腳本做什麼，不決定它多大——三道pass共用同一層底，勾少了檔案一樣大。要少付，走npm具名匯入讓你的打包器自己搖。',
+    hans: '这几颗决定脚本做什么，不决定它多大——三道pass共用同一层底，勾少了档案一样大。要少付，走npm具名导入让你的打包器自己摇。',
+    en: 'These choose what the script does, not how big it is — the passes share one floor, so a narrower pick ships the same file. To pay less, import the named passes via npm and let your bundler shake the rest.',
+    ja: 'これらはスクリプトの「働き」を決めるもので、「大きさ」ではない——三つのpassは同じ土台を共有するので、絞ってもファイルは同じ大きさである。減らしたいならnpmの名前付きインポートで、バンドラに任せること。',
+    ko: '이 스위치들은 스크립트가 무엇을 하는지를 정할 뿐, 크기를 정하지 않는다——세 pass가 같은 바닥을 共有하므로 적게 골라도 파일 크기는 같다. 덜 내려면 npm 이름있는 import로 번들러에 맡길 것.',
+  },
   pgTogFallbacks: {
     hant: 'JS排版補全',
     hans: 'JS排版补全',
@@ -857,6 +887,33 @@
           <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
           <input type="checkbox" data-cfg-key="fallbacks" checked>
         </label>
+        <!-- Per-pass picks — `--han-install`'s token list (han.auto.ts).
+             Nested under the fallbacks switch because they only mean
+             anything while it is on; CSS greys the group out via
+             `:has()` when it isn't, no JS disabling needed.
+             ⚠ These change BEHAVIOUR, not bundle size — the passes share
+             one hyperly floor. The note below says so, in the reader's
+             language, so nobody picks them expecting a smaller file. -->
+        <fieldset class="SubRules">
+          <legend>{{ pgGrpInstall }}</legend>
+          <label class="Toggle">
+            <span>{{ pgTogFbPunct }} <small>punctuation</small></span>
+            <input type="checkbox" data-cfg-key="fbPunctuation" checked>
+          </label>
+          <label class="Toggle">
+            <span>{{ pgTogFbIss }} <small>iss</small></span>
+            <input type="checkbox" data-cfg-key="fbIss" checked>
+          </label>
+          <label class="Toggle">
+            <span>{{ pgTogFbAdjacent }} <small>adjacent-lines</small></span>
+            <input type="checkbox" data-cfg-key="fbAdjacentLines" checked>
+          </label>
+          <label class="Toggle">
+            <span>{{ pgTogFbProbes }} <small>probes</small></span>
+            <input type="checkbox" data-cfg-key="fbProbes" checked>
+          </label>
+          <p class="SubNote">{{ pgNoteInstall }}</p>
+        </fieldset>
         <label class="Toggle">
           <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>
           <input type="checkbox" data-cfg-key="legacyRuby">

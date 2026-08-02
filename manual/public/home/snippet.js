@@ -18,7 +18,7 @@
  */
 import {
   renderCDN, renderBundler, renderInline,
-  localHanCssUrls, HAN_AUTO_LOCAL_URL, HAN_JS_LOCAL_URL,
+  localHanCssUrls, HAN_INSTALL_LOCAL_URL, HAN_JS_LOCAL_URL,
 } from '/home/codegen.js'
 import { highlightAll } from '/home/highlight.js'
 import { icon } from '/common/icon.js'
@@ -76,7 +76,7 @@ const fetchText = (url) => {
 const fetchInlineAssets = async (config) => {
   const [cssTexts, autoJs, hanJs] = await Promise.all([
     Promise.all(localHanCssUrls(config).map(fetchText)),
-    config.fallbacks ? fetchText(HAN_AUTO_LOCAL_URL) : undefined,
+    config.fallbacks ? fetchText(HAN_INSTALL_LOCAL_URL) : undefined,
     config.legacyRuby ? fetchText(HAN_JS_LOCAL_URL) : undefined,
   ])
   return { css: cssTexts.join('\n'), autoJs, hanJs }

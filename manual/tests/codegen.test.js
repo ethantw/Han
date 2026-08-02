@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DEFAULTS, MODULES, cssVars, packages, renderCDN, renderBundler, renderInline,
+  DEFAULTS, MODULES, cssVars, installTokens, packages, renderCDN, renderBundler, renderInline,
 } from '../public/home/codegen.js'
 
 const cfg = (over = {}) => structuredClone({ ...DEFAULTS, ...over })
@@ -68,7 +68,7 @@ test('混排 off → no-autospace；進階 replace 原樣輸出', () => {
 })
 
 test('DTJ 逐語言覆寫只輸出偏差語言', () => {
-  const vars = cssVars(cfg({ punct: { hant: 'GB', hans: 'GB', ja: 'JIS', ko: 'KV' } }))
+  const vars = cssVars(cfg({ punct: { hant: 'GB', hans: 'GB', ja: 'JIS', ko: 'KLR' } }))
   assert.deepEqual(vars, [['--han-punctuation-hant', 'GB']])
 })
 
@@ -79,8 +79,8 @@ test('換傳承家族 genki → 單行 --han-webfont-heritage-family + 套件表
   const vars = Object.fromEntries(cssVars(c))
   assert.equal(vars['--han-webfont-heritage-family'], 'genki')
   const ids = packages(c).ziano
-  assert.ok(ids.includes('genki-gothic') && !ids.includes('genki-gothic-tc'))
-  assert.ok(!ids.includes('shanggu-sans'))
+  assert.ok(ids.includes('genki-sans-yue') && !ids.includes('genki-sans-dan'))
+  assert.ok(!ids.includes('shanggu-sans-dan'))
 })
 
 test('per-locale heritage：hans/ja webfont 各自輸出，hant/ko 預設不輸出，家族單行', () => {
@@ -102,7 +102,7 @@ test('家族非預設但無語言開 webfont → 不輸出 family（無效力）
 
 test('簡體開 webfont（家族預設 shanggu）→ 載入尚古套件', () => {
   const ids = packages(cfg({ heritage: { ...HERITAGE_OFF, hans: 'webfont' } })).ziano
-  assert.ok(ids.includes('shanggu-sans') && ids.includes('shanggu-serif'))
+  assert.ok(ids.includes('shanggu-sans-dan') && ids.includes('shanggu-serif-dan'))
 })
 
 test('heritage 全 off → 不出 ziano sans/serif 套件；DTJ 全 off → 無 diantenjeom', () => {
@@ -135,9 +135,12 @@ test('prose 自訂作用選擇器 → cdn css pane 含額外規則；prose off �
   assert.deepEqual(cssVars(cfg({ prose: false })), [])
 })
 
-test('CDN：勾後備 → html pane 含 han.auto script；勾 legacyRuby → module script 呼叫', () => {
+// `<script src>` 走的是 han.install（副作用專用打包，無匯出，比 han.auto
+// 少 1.5k brotli）；npm 那頁才是 `…/auto`，交給 bundler 自己搖。
+test('CDN：勾後備 → html pane 含 han.install script；勾 legacyRuby → module script 呼叫', () => {
   const withFallbacks = paneCode(renderCDN(cfg({ fallbacks: true })), 'html')
-  assert.ok(withFallbacks.includes('han.auto.min.js'))
+  assert.ok(withFallbacks.includes('han.install.min.js'))
+  assert.ok(!withFallbacks.includes('han.auto.min.js'))
   const withRuby = paneCode(renderCDN(cfg({ legacyRuby: true })), 'html')
   assert.ok(withRuby.includes('transpileRuby'))
 })
@@ -145,7 +148,7 @@ test('CDN：勾後備 → html pane 含 han.auto script；勾 legacyRuby → mod
 test('bundler：pm 切換 + webfontDelivery=cdn（預設）→ 安裝清單不含 ziano／dtj 套件', () => {
   const bash = paneCode(renderBundler(DEFAULTS, 'yarn'), 'bash')
   assert.ok(bash.startsWith('yarn add @hanzi.pro/han.css'))
-  assert.ok(!bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
+  assert.ok(!bash.includes('@hanzi.pro/webfonts-shanggu-sans-dan'))
   assert.ok(!bash.includes('@hanzi.pro/diantenjeom'))
 })
 
@@ -165,21 +168,21 @@ test('ko 標點 off → 變數輸出', () => {
 })
 
 /* 公約與文種解耦之後的核心新能力：任一文種可選任一公約。兩個方向各驗一次
-   ——繁體選 KV（從前不在它的值域裡）、韓文選 MOE（同上）。 */
-test('公約與文種解耦：繁體可選 KV、韓文可選 MOE', () => {
+   ——繁體選 KLR（從前不在它的值域裡）、韓文選 MOE（同上）。 */
+test('公約與文種解耦：繁體可選 KLR、韓文可選 MOE', () => {
   assert.deepEqual(
-    cssVars(cfg({ punct: { hant: 'KV', hans: 'GB', ja: 'JIS', ko: 'KV' } })),
-    [['--han-punctuation-hant', 'KV']],
+    cssVars(cfg({ punct: { hant: 'KLR', hans: 'GB', ja: 'JIS', ko: 'KLR' } })),
+    [['--han-punctuation-hant', 'KLR']],
   )
   assert.deepEqual(
     cssVars(cfg({ punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'MOE' } })),
     [['--han-punctuation-ko', 'MOE']],
   )
   assert.deepEqual(
-    cssVars(cfg({ punct: { hant: 'JIS', hans: 'KV', ja: 'MOE', ko: 'GB' } })),
+    cssVars(cfg({ punct: { hant: 'JIS', hans: 'KLR', ja: 'MOE', ko: 'GB' } })),
     [
       ['--han-punctuation-hant', 'JIS'],
-      ['--han-punctuation-hans', 'KV'],
+      ['--han-punctuation-hans', 'KLR'],
       ['--han-punctuation-ja', 'MOE'],
       ['--han-punctuation-ko', 'GB'],
     ],
@@ -324,10 +327,10 @@ test('bundler：字體全關（heritage/cursive/punct off）webfontDelivery=cdn 
 test('bundler：webfontDelivery=npm → 安裝清單 + js import 皆含 ziano 與 dtj（無 html pane）', () => {
   const c = cfg({ webfontDelivery: 'npm' })
   const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
-  assert.ok(bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
+  assert.ok(bash.includes('@hanzi.pro/webfonts-shanggu-sans-dan'))
   assert.ok(bash.includes('@hanzi.pro/diantenjeom'))
   const js = paneCode(renderBundler(c, 'pnpm'), 'js')
-  assert.ok(js.includes("import '@hanzi.pro/webfonts-shanggu-sans'"))
+  assert.ok(js.includes("import '@hanzi.pro/webfonts-shanggu-sans-dan'"))
   assert.ok(js.includes("import '@hanzi.pro/diantenjeom'"))
   assert.ok(!pane(renderBundler(c, 'pnpm'), 'html'))
 })
@@ -335,9 +338,9 @@ test('bundler：webfontDelivery=npm → 安裝清單 + js import 皆含 ziano �
 test('bundler：webfontDelivery=cdn（預設）→ ziano ＋ dtj 皆為 html <link>（不進 bash/js），dtj 排 ziano 後', () => {
   const c = DEFAULTS
   const html = paneCode(renderBundler(c, 'pnpm'), 'html')
-  assert.ok(html.includes('webfonts-shanggu-sans'))
+  assert.ok(html.includes('webfonts-shanggu-sans-dan'))
   assert.ok(html.includes('diantenjeom'))
-  assert.ok(html.indexOf('diantenjeom') > html.indexOf('webfonts-shanggu-sans'))
+  assert.ok(html.indexOf('diantenjeom') > html.indexOf('webfonts-shanggu-sans-dan'))
   const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
   const js = paneCode(renderBundler(c, 'pnpm'), 'js')
   assert.ok(!bash.includes('diantenjeom') && !js.includes('diantenjeom'))
@@ -361,7 +364,7 @@ test('webfontDelivery=none → 兩分頁皆無 ziano／dtj', () => {
 
 test('cdn：dtj 連結隨 webfontCdnSource（unpkg → unpkg.com），han.css 恆走 jsdelivr', () => {
   const html = paneCode(renderCDN(cfg({ webfontCdnSource: 'unpkg' })), 'html')
-  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans@latest'))
+  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans-dan@latest'))
   assert.ok(html.includes('https://unpkg.com/@hanzi.pro/diantenjeom@latest'))
   assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest'))
 })
@@ -424,4 +427,33 @@ test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mo
   assert.ok(html.includes(JSON.stringify('/* han.js bundle */')))
   assert.ok(html.includes('new Blob([src]'))
   assert.ok(html.includes('mod.transpileRuby(document.body)'))
+})
+
+// ── `--han-install`：逐 pass 取捨 ──────────────────────────────────────
+// 四顆全開＝出廠 auto，不該輸出宣告；全關＝none；其餘輸出 token 列表。
+// 這幾顆改的是行為不是體積（三道 pass 共用同一層 hyperly 地板），所以測的是
+// 「宣告對不對」，不是「檔案有沒有變小」。
+test('installTokens：全開→null（出廠 auto）；部分→token 列表；全關→none', () => {
+  assert.equal(installTokens(DEFAULTS), null)
+  assert.equal(installTokens(cfg({ fbProbes: false })), 'punctuation iss adjacent-lines')
+  assert.equal(
+    installTokens(cfg({ fbIss: false, fbAdjacentLines: false })),
+    'punctuation probes',
+  )
+  assert.equal(
+    installTokens(cfg({ fbPunctuation: false, fbIss: false, fbAdjacentLines: false, fbProbes: false })),
+    'none',
+  )
+  // 後備整顆關掉 → 根本不載腳本，`--han-install` 沒有意義
+  assert.equal(installTokens(cfg({ fallbacks: false })), null)
+})
+
+test('cssVars：--han-install 不受樣式模組開關影響（腳本自己讀的旗標）', () => {
+  const vars = cssVars(cfg({
+    fbProbes: false, semantics: false, lines: false, prose: false, fonts: false,
+  }))
+  assert.deepEqual(
+    vars.find(([prop]) => prop === '--han-install'),
+    ['--han-install', 'punctuation iss adjacent-lines'],
+  )
 })

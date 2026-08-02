@@ -172,3 +172,44 @@
     color: transparent !important;
   }
 }
+
+
+/* ─── Per-pass picks under the JS fallbacks switch ────────────────────
+ * `--han-install`'s token list, nested inside the switch that turns the
+ * installer on at all. The group has no meaning while that switch is off,
+ * so it greys out — driven by `:has()` on the fieldset the two share, not
+ * by JS setting `disabled`: the console's config layer owns control state,
+ * and a JS-written `disabled` would be a second writer to fight with it.
+ * `:has()` — Baseline 2023. */
+.SubRules {
+  & {
+    display: grid;
+    gap: 0.25rem;
+    margin-block: 0.25rem 0.5rem;
+    margin-inline: 0.75rem 0;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    border: 0;
+    border-inline-start: 2px solid var(--palette-rule);
+  }
+
+  legend {
+    padding: 0;
+    font-size: var(--fs-micro);
+    letter-spacing: 0.06em;
+    color: var(--palette-supplement-text-2q);
+  }
+
+  /* the honest note: these switches change behaviour, not bytes */
+  .SubNote {
+    margin-block: 0.375rem 0;
+    font-size: var(--fs-micro);
+    line-height: 1.7;
+    color: var(--palette-supplement-text-2q);
+  }
+}
+
+/* parent switch off → the whole per-pass group is inert-looking */
+.PlaygroundRules:has(> .Toggle > input[data-cfg-key="fallbacks"]:not(:checked)) .SubRules {
+  opacity: 0.45;
+}

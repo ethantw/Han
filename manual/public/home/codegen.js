@@ -30,13 +30,13 @@ const SCOPE = '@hanzi.pro/'
  */
 export const HERITAGE = {
   shanggu: {
-    sans:  { stack: "'Shanggu Sans', 'Shanggu Sans TC'",  pkgs: ['shanggu-sans'] },
-    serif: { stack: "'Shanggu Serif', 'Shanggu Serif TC'", pkgs: ['shanggu-serif'] },
+    sans:  { stack: "'Shanggu Sans Dan', 'Shanggu Sans Yue'",   pkgs: ['shanggu-sans-dan'] },
+    serif: { stack: "'Shanggu Serif Dan', 'Shanggu Serif Yue'", pkgs: ['shanggu-serif-dan'] },
   },
   // genyo（源樣）不提供：與源起同設計，源起的字型技術較新。
   genki: {
-    sans:  { stack: "'Genki Gothic', 'Genki Gothic TC'", pkgs: ['genki-gothic'] },
-    serif: { stack: "'Genki Min', 'Genki Min TC'",       pkgs: ['genki-min'] },
+    sans:  { stack: "'Genki Sans Yue', 'Genki Sans Dan'",   pkgs: ['genki-sans-yue'] },
+    serif: { stack: "'Genki Serif Yue', 'Genki Serif Dan'", pkgs: ['genki-serif-yue'] },
   },
 }
 
@@ -78,10 +78,22 @@ export const DEFAULTS = {
   heritageFamily: 'shanggu',      // shanggu|genki — 印刷字體（黑＋明一體選，全域）
   cursive: 'webfont',             // webfont|system|off
   cursiveHant: 'lxgw',            // lxgw|iansui — 繁體楷體家族
-  punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KV' },
+  punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KLR' },
   zhuyinWebfont: true,
   baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
   fallbacks: true,               // JS排版補全 — on by default (owner call)
+  /**
+   * 逐 pass 取捨（`--han-install` 的 token 列表；han.auto.ts 解析）。四顆全開
+   * ＝ 出廠的 `auto`，不輸出任何宣告。
+   * ⚠ 這是**行為**開關，不是體積開關：三道 pass 共用 hyperly ＋ helpers 那層
+   *   ~6.5k 的地板，勾少了檔案一樣大，只是少動你的 DOM。真要少付，走 npm ＋
+   *   bundler 的具名匯入（package.json 已宣告 sideEffects）。量測見
+   *   docs/plans/per-pass-install-and-lean-auto.md。
+   */
+  fbPunctuation: true,
+  fbIss: true,
+  fbAdjacentLines: true,
+  fbProbes: true,
   legacyRuby: false,
   // Request B — 第三方 webfont 套件的送法，套用到「所有」外部 webfont 套件
   // （ziano 家族 ＋ diantenjeom）：'none' ＝ 完全不用外部 webfont。
@@ -97,6 +109,20 @@ export const MODULES = ['semantics', 'lines', 'prose', 'fonts']
 const enabledModules = (c) => MODULES.filter((m) => c[m])
 
 /* ── 1 · 變數偏差 ─────────────────────────────────────────── */
+
+/** `--han-install` 的值：四顆全開回 null（出廠 `auto`，不必宣告），全關回
+ *  `'none'`，其餘輸出 token 列表。probes 與三道 pass 同列。 */
+export const installTokens = (c) => {
+  if (!c.fallbacks) return null
+  const tokens = [
+    c.fbPunctuation && 'punctuation',
+    c.fbIss && 'iss',
+    c.fbAdjacentLines && 'adjacent-lines',
+    c.fbProbes && 'probes',
+  ].filter(Boolean)
+  if (tokens.length === 4) return null
+  return tokens.length ? tokens.join(' ') : 'none'
+}
 
 const refinement = ({ hang, squeeze }) =>
   hang && squeeze ? 'auto' : hang ? 'hang' : squeeze ? 'compress' : 'none'
@@ -130,10 +156,14 @@ export const cssVars = (c) => {
       out.push(['--han-webfont-cursive-hant', CURSIVE_HANT[c.cursiveHant].stack])
     // 四個文種同構（公約與文種已解耦，見 src/css/fonts.css 檔頭）——ko 從前
     // 因為變數名帶 `vertical-` 而要單獨一行，改名之後併回迴圈。
-    for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS'], ['ko', 'KV']])
+    for (const [key, def] of [['hant', 'MOE'], ['hans', 'GB'], ['ja', 'JIS'], ['ko', 'KLR']])
       if (c.punct[key] !== def) out.push([`--han-punctuation-${key}`, c.punct[key]])
     if (!c.zhuyinWebfont) out.push(['--han-font-zhuyin-serif', 'cursive, serif'])
   }
+  // `--han-install`：不歸任何 CSS 模組——它是 han.auto／han.install 這支腳本自己
+  // 讀的旗標，樣式層關光了照樣有效，故排在模組 gate 之外。
+  const install = installTokens(c)
+  if (install) out.push(['--han-install', install])
   return out
 }
 
@@ -215,7 +245,11 @@ const preconnectHost = (source) => new URL(ORIGIN[source]).origin
 
 const HAN_CSS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.css`
 const HAN_CSS_MOD_URL = (mod) => `${CDN}${SCOPE}han.css@latest/dist/han.${mod}.min.css`
-const HAN_AUTO_URL = `${CDN}${SCOPE}han.css@latest/dist/han.auto.min.js`
+// `<script src>` and the pasted-inline path can't reach a named export, so
+// they take the side-effect-only build (han.install, −1.5k brotli vs
+// han.auto). The npm tab keeps `…/auto`: there a bundler resolves it, and
+// package.json's `sideEffects` lets it shake the API surface per project.
+const HAN_INSTALL_URL = `${CDN}${SCOPE}han.css@latest/dist/han.install.min.js`
 const HAN_JS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.js`
 
 // han.css 樣式引用：四模組全開 → 單一入口（han.min.css／'/styles'）；有關 →
@@ -233,7 +267,7 @@ export const localHanCssUrls = (c) => {
   const mods = enabledModules(c)
   return mods.length === MODULES.length ? ['/han/han.min.css'] : mods.map((m) => `/han/han.${m}.min.css`)
 }
-export const HAN_AUTO_LOCAL_URL = '/han/han.auto.min.js'
+export const HAN_INSTALL_LOCAL_URL = '/han/han.install.min.js'
 export const HAN_JS_LOCAL_URL = '/han/han.min.js'
 
 const hanCssImports = (c) => {
@@ -271,7 +305,7 @@ export const renderCDN = (c) => {
   const htmlLines = [
     ...preconnectLines(c),
     ...styleUrls(c).map((u) => `<link rel="stylesheet" href="${u}">`),
-    ...(c.fallbacks ? [`<script type="module" src="${HAN_AUTO_URL}"></script>`] : []),
+    ...(c.fallbacks ? [`<script type="module" src="${HAN_INSTALL_URL}"></script>`] : []),
     ...(c.legacyRuby
       ? [
           `<script type="module">\n` +
