@@ -1,5 +1,9 @@
 <script type="text/x-i18n">
 {
+  copyLabel: {
+    hant: '複製', hans: '复制', en: 'Copy', ja: 'コピー',
+    ko: '복사',
+  },
   clInstallLabel: {
     hant: '一行安裝',
     hans: '一行安装',
@@ -29,7 +33,7 @@
     <small>{{ clInstallLabel }}</small>
     <span class="InstallChip">
       <code>pnpm add @hanzi.pro/han.css</code>
-      <button type="button" aria-label="copy">⎘</button>
+      <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
     </span>
   </div>
 

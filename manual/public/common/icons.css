@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+/**
+ * icons.css — 介面圖標。
+ *
+ * 一顆圖標 ＝ 一個空盒 ＋ 一張 mask。**不用 inline `<svg>`**：inline SVG 的
+ * 基線在 Chrome 不等於它的下緣，`vertical-align` 對它失效（實測見
+ * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md），而本檔的圖標全部
+ * 貼著文字排，對齊就是主要需求。`brand.css` § BrandGlyph 為同一個理由已經
+ * 走 mask 盒，這裡沿用，不新增第二種做法。
+ * 順帶拿到的：`background: currentColor` 讓深淺模式、`:hover` 的 accent、
+ * 停用態的 `opacity` 全部跟著既有的 `--palette-*`／`--_*` 走，圖標不必另開
+ * 一層顏色 token。
+ *
+ * 形制（十顆是一套，不是十個地方各撿一顆字符）：24×24 grid、`stroke-width: 2`、
+ * `fill: none`、**square 端點 ＋ miter 接角**。方頭方角的依據是本站自己的
+ * 品牌記號（`_layout.html` 的 `.BrandMark` 用的正是 square/miter）——那是活字
+ * 與明體的收筆感，圓角圖標會跟它打架。
+ *
+ * data URI 只轉義三個字元：`<` `>` `#`，其餘保持原樣——可讀性優先，也免得
+ * base64 把 diff 變成一團。mask 讀的是 alpha，所以 `stroke` 給什麼顏色都行
+ * （這裡是 %23000），真正的顏色來自 `background`。
+ *
+ * 新增一顆圖標：在 `:root, :host` 加一行 `--icon-*`，再加一條
+ * `:where([data-icon='…'])` 的 `mask-image`。CSS 生成內容那一路（console 的
+ * 收合角標、`<details>` 的展合號）直接讀 `--icon-*`，不經過原語。
+ */
+
+/* `:host` 是給 `<han-console>` 的 shadow root 的——自訂屬性本來就會從宿主
+   繼承進 shadow tree，這一行只是讓這張表被 adopt 進去時自己也站得住。 */
+:root,
+:host {
+  /* 使用預設值。逆時針＝「回到原處」；順時針會讀成「重新整理」。 */
+  --icon-reset: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M3 12a9 9 0 1 0 9-9 9.7 9.7 0 0 0-6.9 2.9L3 8'/%3E%3Cpath d='M3 3v5h5'/%3E%3C/svg%3E");
+
+  /* 複製。兩個直角方框，前框在右下——不倒角，同品牌記號的收筆。 */
+  --icon-copy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Crect x='9' y='9' width='12' height='12'/%3E%3Cpath d='M5 15V3h12'/%3E%3C/svg%3E");
+
+  /* 完成／目前項。 */
+  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M4 12.5 9.5 17.5 20 6'/%3E%3C/svg%3E");
+
+  /* 搜尋。柄與圓相切於 45°。 */
+  --icon-search: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='11' cy='11' r='6'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E");
+
+  /* 角標。只畫向左那一顆，其餘三向由 `rotate`／`scale(-1,1)` 轉出來——
+     四個方向共用一張 mask，改線寬只要改這一行。 */
+  --icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M15 4 7 12l8 8'/%3E%3C/svg%3E");
+
+  /* 提示（手冊的 TIP 呼出框）。 */
+  --icon-bulb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M9 15.5A7 7 0 1 1 15 15.5'/%3E%3Cpath d='M9 15.5V18'/%3E%3Cpath d='M15 15.5V18'/%3E%3Cpath d='M9 18H15'/%3E%3Cpath d='M9 21H15'/%3E%3C/svg%3E");
+
+  /* 主題切換。原本是 variables.css 的 `--path-sun`／`--path-moon`，用
+     `clip-path: shape()` 畫實心剪影——那份註解自己寫著「clip-path 沒有
+     stroke 的概念，所以是填色等價的重畫，不是描邊的 1:1 描摹」。改走 mask
+     之後線描回得來，也就跟這一套的其餘八顆同一種筆法了；順帶把可用度從
+     `shape()` 的 Baseline 2026（約八成）換回 `mask` 的 Baseline 2023。
+     `shape()` 隨盒縮放的配方本身仍然成立（ziano 的
+     docs/css-clip-path-scaling.md），只是這裡不再需要它。 */
+  --icon-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M6.9 6.9 5.1 5.1M17.1 6.9 18.9 5.1M6.9 17.1 5.1 18.9M17.1 17.1 18.9 18.9'/%3E%3C/svg%3E");
+  --icon-moon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z'/%3E%3C/svg%3E");
+
+  /* 展／合。 */
+  --icon-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
+  --icon-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
+}
+
+/* 原語。整份 `:where()`——狀態切換（複製成功換 mask）與各處的微調都該
+   輕鬆蓋過它。 */
+:where([data-icon]) {
+  & {
+    display: inline-block;
+    inline-size: 1em;
+    block-size: 1em;
+    /* 光學置中：方盒的中心在基線上方 .5em，而漢字的字面中心約在 .41em
+       （em box −.06〜.88），差的 .09em 由這裡補。em 制，換字級不必改。 */
+    vertical-align: -0.09em;
+    background: currentColor;
+    /* mask 簡寫 · Baseline 2023（Safari 15.4 起無前綴） */
+    mask: center / contain no-repeat;
+  }
+
+  &[data-icon='reset']   { mask-image: var(--icon-reset); }
+  &[data-icon='copy']    { mask-image: var(--icon-copy); }
+  &[data-icon='check']   { mask-image: var(--icon-check); }
+  &[data-icon='search']  { mask-image: var(--icon-search); }
+  &[data-icon='chevron'] { mask-image: var(--icon-chevron); }
+  &[data-icon='bulb']    { mask-image: var(--icon-bulb); }
+  &[data-icon='sun']     { mask-image: var(--icon-sun); }
+  &[data-icon='moon']    { mask-image: var(--icon-moon); }
+
+  /* 角標的四向。`rotate`／`scale` 個別 transform 屬性 · Baseline 2022。 */
+  &[data-dir='down']  { rotate: -90deg; }
+  &[data-dir='up']    { rotate: 90deg; }
+  &[data-dir='right'] { scale: -1 1; }
+}
+
+/* 複製鍵的狀態——「已複製」換一張 mask，不動 DOM（snippet.js／home.js 只蓋
+   `data-state`）。寫在這裡而不是各自的區塊 CSS：兩處的按鈕結構相同，規則
+   本來就該只有一條。權重刻意高過上面那組 `:where()`，蓋得乾脆。 */
+button[data-state='copied'] > [data-icon='copy'] {
+  mask-image: var(--icon-check);
+}

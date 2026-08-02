@@ -21,10 +21,11 @@ import {
   localHanCssUrls, HAN_AUTO_LOCAL_URL, HAN_JS_LOCAL_URL,
 } from '/home/codegen.js'
 import { highlightAll } from '/home/highlight.js'
+import { icon } from '/common/icon.js'
 
 /* ── pane[] → <figure class="CodePane"> ──
  * figcaption 是語言徽章（CLI/HTML/JS/CSS）＋ 唯一的 <button> 複製鍵
- * （元素選擇器承載，不需 data-* hook），鏡射 InstallChip 的 ⎘ 慣例。CLI
+ * （元素選擇器承載，不需 data-* hook），鏡射 InstallChip 的複製鍵慣例。CLI
  * pane 額外把 pm select 塞進標籤旁邊——package manager 只對這一格有意義，
  * 放在 ViewTabs 那排反而讓人以為跟 CDN／內嵌分頁也有關係。 */
 const LANG_LABEL = { bash: 'CLI', html: 'HTML', js: 'JS', css: 'CSS' }
@@ -41,7 +42,8 @@ const buildPane = ({ lang, code }, $pm) => {
   if (lang === 'bash' && $pm) $label.append($pm)
 
   const $copy = document.createElement('button')
-  Object.assign($copy, { type: 'button', textContent: '⎘' })
+  $copy.type = 'button'
+  $copy.append(icon('copy'))
   $copy.setAttribute('aria-label', 'copy')
 
   const $pre = document.createElement('pre')
@@ -50,7 +52,7 @@ const buildPane = ({ lang, code }, $pm) => {
   $code.textContent = code
   $pre.append($code)
 
-  // label(+pm select) 住 figcaption 左邊、⎘ 住右邊（figcaption 的
+  // label(+pm select) 住 figcaption 左邊、複製鍵住右邊（figcaption 的
   // space-between 佈局），兩個都不是 figure 的直接子元素。
   $figcaption.append($label, $copy)
   $figure.append($figcaption, $pre)
@@ -176,7 +178,7 @@ export const initSnippet = ($root = document) => {
   ui.$pm?.addEventListener('input', rerender)
 
   // 每個 pane 各自的複製鍵——委派在容器上（panes 每次重繪整批換新，個別
-  // 綁定會漏新節點）。行為鏡射 home.js 的 InstallChip ⎘ handler。
+  // 綁定會漏新節點）。行為鏡射 home.js 的 InstallChip 複製 handler。
   $panes.addEventListener(
     'click',
     async (event) => {
@@ -185,9 +187,10 @@ export const initSnippet = ($root = document) => {
       const $code = $btn.closest('figure')?.querySelector('pre code')
       if (!$code) return
       await navigator.clipboard.writeText($code.textContent)
-      const original = $btn.textContent
-      $btn.textContent = '✓'
-      setTimeout(() => { $btn.textContent = original }, 1500)
+      // 成功回饋蓋在屬性上，不動 DOM——換的是哪張 mask 由 CSS 決定
+      // （icons.css § 複製鍵的狀態），JS 這邊只說「現在是 copied」。
+      $btn.dataset.state = 'copied'
+      setTimeout(() => { delete $btn.dataset.state }, 1500)
     },
   )
 }

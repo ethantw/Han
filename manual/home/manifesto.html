@@ -1,5 +1,9 @@
 <script type="text/x-i18n">
 {
+  copyLabel: {
+    hant: '複製', hans: '复制', en: 'Copy', ja: 'コピー',
+    ko: '복사',
+  },
   h1: {
     hant: '像素間的活字美學，<br />講究螢幕上的每一個漢字',
     hans: '像素间的活字美学，<br />讲究萤幕上的每一个汉字',
@@ -46,6 +50,6 @@
 
   <label class="InstallChip">
     <code>pnpm add @hanzi.pro/han.css</code>
-    <button type="button" aria-label="copy">⎘</button>
+    <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
   </label>
 </section>

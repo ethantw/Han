@@ -288,13 +288,16 @@ async function bundleHomeCss() {
  *   • `home/controls.css` — dual-homed, `<han-console>` fetches it into its
  *     shadow root (constructed stylesheets can't resolve `@import`, so it
  *     must stay a standalone file).
+ *   • `common/icons.css` — dual-homed for the same reason: the console's
+ *     ↺ 使用預設值 buttons and controls.css's ＋/－ read `--icon-*` and the
+ *     `[data-icon]` primitive from it.
  *
  * Its bytes therefore ship twice: inlined here for the light DOM's
  * critical path, plus the standalone the console fetches async after the
  * gate. ~16KB of overlap, brotli'd and cached — cheaper than a
  * waterfall on first paint.
  */
-const KEEP_STANDALONE = new Set(['home/controls.css'])
+const KEEP_STANDALONE = new Set(['home/controls.css', 'common/icons.css'])
 
 async function pruneInlinedPartials() {
   for (const dir of ['common', 'home', 'manual']) {
@@ -323,8 +326,9 @@ async function pruneInlinedPartials() {
  * never outlive a deploy.
  *
  * Deliberately NOT hashed: anything a URL string inside JS points at —
- * `/han/han.js` (console-config lazy-imports it), `/home/controls.css` (the
- * console fetches it into its shadow root), `/home/console-templates.js`,
+ * `/han/han.js` (console-config lazy-imports it), `/home/controls.css` and
+ * `/common/icons.css` (the console fetches both into its shadow root),
+ * `/home/console-templates.js`,
  * `/vendor/*`. Hashing those means rewriting module specifiers, which is a
  * bundler's job, not a rename step's.
  *
@@ -754,14 +758,14 @@ function renderHomeLangSwitcher(active, slugs, labels, t) {
         <span data-part="full">${escapeHtml(lab.full)}</span>
         <span data-part="code">${slug}</span>
       </span>
-      ${isActive ? '<span data-part="check">✓</span>' : ''}
+      ${isActive ? '<span data-part="check" data-icon="check" aria-hidden="true"></span>' : ''}
     </a></li>`
   }).join('')
 
   return `<div class="LangSwitcher" data-lang-switcher>
     <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="${escapeAttr(t.langSwitcherLabel)}">
       <span data-part="icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
-      <span data-part="caret" aria-hidden="true">▾</span>
+      <span data-part="caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
     </button>
     <ul hidden>
       <li data-part="label">${escapeHtml(t.langSwitcherLabel)}</li>

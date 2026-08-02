@@ -57,7 +57,7 @@ import { gateOpened } from '/home/fonts-gate.js'
 // Snippet stays eager: it's light (highlight.js, no vendor) and the
 // console's module switches drive its panes, so it must be wired at DCL.
 
-/* InstallChip 的 ⎘ ——複製隔壁 <code> 的指令文字。
+/* InstallChip 的複製鍵——複製隔壁 <code> 的指令文字。
  * （站④的 CodePane 複製由 snippet.js 自管；這裡只管 chip。） */
 const initInstallChips = () => {
   document.querySelectorAll('.InstallChip button').forEach(($btn) => {
@@ -65,9 +65,9 @@ const initInstallChips = () => {
       const $cmd = $btn.parentElement.querySelector('code')
       if (!$cmd) return
       await navigator.clipboard.writeText($cmd.textContent.trim())
-      const original = $btn.textContent
-      $btn.textContent = '✓'
-      setTimeout(() => { $btn.textContent = original }, 1500)
+      // 同 snippet.js：回饋是屬性，圖標的切換交給 CSS
+      $btn.dataset.state = 'copied'
+      setTimeout(() => { delete $btn.dataset.state }, 1500)
     })
   })
 }

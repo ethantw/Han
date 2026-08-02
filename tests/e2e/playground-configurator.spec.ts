@@ -59,20 +59,26 @@ test.describe('playground configurator', () => {
     ).toBeAttached()
   })
 
-  test('勾後備 → CDN 頁 html pane 出現 han.auto script 行', async ({ page }) => {
+  // `<script src>` 走 han.install（副作用專用打包、無匯出，比 han.auto 少 1.5k
+  // brotli）；npm 那頁才是 `…/auto`，交給消費者的 bundler 自己搖。
+  test('勾後備 → CDN 頁 html pane 出現 han.install script 行', async ({ page }) => {
     await openGroupOf(page, 'fallbacks')
     await page.locator('[data-cfg-key="fallbacks"]').check()
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
-    await expect(pane(page, 'html')).toContainText('han.auto.min.js')
+    await expect(pane(page, 'html')).toContainText('han.install.min.js')
+    await expect(pane(page, 'html')).not.toContainText('han.auto.min.js')
   })
 
-  test('每個 pane 各有自己的複製鍵；點擊後短暫顯示 ✓', async ({ page }) => {
+  // 圖標是 mask 空盒（common/icons.css），按鈕沒有文字可斷言——回饋改看
+  // `data-state`，那正是 JS 唯一寫的東西（snippet.js § 成功回饋）。
+  test('每個 pane 各有自己的複製鍵；點擊後短暫顯示已複製', async ({ page }) => {
     await page.context().grantPermissions(['clipboard-read', 'clipboard-write'])
     const $figure = page.locator('[data-out-panes] figure').first()
     const $copy = $figure.locator('button')
-    await expect($copy).toHaveText('⎘')
+    await expect($copy.locator('[data-icon="copy"]')).toHaveCount(1)
+    await expect($copy).not.toHaveAttribute('data-state', 'copied')
     await $copy.click()
-    await expect($copy).toHaveText('✓')
+    await expect($copy).toHaveAttribute('data-state', 'copied')
   })
 })
 

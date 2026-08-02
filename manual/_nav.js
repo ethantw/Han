@@ -168,7 +168,7 @@ export function renderLangSwitcher(activeLocale, availableByLocale, i18n) {
         <span data-part="full">${escape(lab.full)}</span>
         <span data-part="code">${slug}</span>
       </span>
-      ${isActive ? '<span data-part="check">✓</span>' : ''}
+      ${isActive ? '<span data-part="check" data-icon="check" aria-hidden="true"></span>' : ''}
     </a></li>`
   }).join('')
 
@@ -178,7 +178,7 @@ export function renderLangSwitcher(activeLocale, availableByLocale, i18n) {
   return `<div class="LangSwitcher" data-lang-switcher>
     <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="${escape(labelText)}">
       <span data-part="icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
-      <span data-part="caret" aria-hidden="true">▾</span>
+      <span data-part="caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
     </button>
     <ul hidden>
       <li data-part="label">${escape(labelText)}</li>

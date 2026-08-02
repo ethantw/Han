@@ -165,21 +165,7 @@
      ('theme') as the docs toggle, so the preference carries over. */
   color-scheme: light;
 
-  /* ── icon paths (ziano recipe: docs/css-clip-path-scaling.md) ────
-   * `shape()` — scales to whatever box the element gives it (`%`
-   * coordinates), so the icon box can resize without re-authoring the
-   * shape, same as ziano's `--path-caret`/`--path-check`. Coordinates
-   * are `<original SVG 0–24 coord> / 24 × 100`. The circle/crescent's
-   * `A rx ry x-rot large-arc sweep x y` becomes `arc to <end> of <r>
-   * [large|small] [cw|ccw]` — `large-arc-flag` → `large`/`small`,
-   * `sweep-flag` → `ccw`(0)/`cw`(1); verified against the `path()`
-   * baseline + at 18/48/96px, pixel-faithful and scales cleanly.
-   * Both are solid silhouettes of the original stroke-outline glyphs
-   * (circle+8 rays / crescent), filled instead of outlined — `clip-path`
-   * has no stroke concept, so this is the fill-equivalent redraw, not a
-   * 1:1 stroke-to-fill trace. (Baseline 2026 — Chrome/Edge 135+, Safari
-   * 18.4+, Firefox 148+; ~81% global reach mid-2026, no fallback wired
-   * here since the framework's own baseline floor already assumes it.) */
-  --path-sun: shape(from 31.25% 50%, arc to 68.75% 50% of 18.75% large ccw, arc to 31.25% 50% of 18.75% large ccw, move to 79.1667% 54.1667%, line to 91.6667% 54.1667%, line to 91.6667% 45.8333%, line to 79.1667% 45.8333%, move to 67.6777% 73.5702%, line to 76.5165% 82.4091%, line to 82.4091% 76.5165%, line to 73.5702% 67.6777%, move to 45.8333% 79.1667%, line to 45.8333% 91.6667%, line to 54.1667% 91.6667%, line to 54.1667% 79.1667%, move to 26.4298% 67.6777%, line to 17.5909% 76.5165%, line to 23.4835% 82.4091%, line to 32.3223% 73.5702%, move to 20.8333% 45.8333%, line to 8.3333% 45.8333%, line to 8.3333% 54.1667%, line to 20.8333% 54.1667%, move to 32.3223% 26.4298%, line to 23.4835% 17.5909%, line to 17.5909% 23.4835%, line to 26.4298% 32.3223%, move to 54.1667% 20.8333%, line to 54.1667% 8.3333%, line to 45.8333% 8.3333%, line to 45.8333% 20.8333%, move to 73.5702% 32.3223%, line to 82.4091% 23.4835%, line to 76.5165% 17.5909%, line to 67.6777% 26.4298%, close);
-  --path-moon: shape(from 87.5% 53.2917%, arc to 46.7083% 12.5% of 37.5% large cw, arc to 87.5% 53.2917% of 29.1667% small ccw, close);
+  /* 圖標一律住 `common/icons.css`（mask ＋ data URI），連主題切換的
+     日／月都在那裡——這裡曾有 `--path-sun`／`--path-moon` 兩顆
+     `clip-path: shape()`，理由與去向見該檔 § 主題切換。 */
 }

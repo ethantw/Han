@@ -31,15 +31,19 @@
     opacity: 0;
     pointer-events: none;
   }
+  /* 日／月同 icons.css 那一套：空盒 ＋ mask ＋ currentColor。
+     `[data-icon]` 原語沒用上——這顆盒是 1.125em 且不隨文字對齊
+     （父層 line-height: 0），自己寫三行比覆寫原語清楚。 */
   span {
     display: inline-block;
     inline-size: 1.125em;
     block-size: 1.125em;
     aspect-ratio: 1 / 1;
     background-color: currentColor;
-    clip-path: var(--path-moon);
+    /* mask 簡寫 · Baseline 2023 */
+    mask: var(--icon-moon) center / contain no-repeat;
   }
   &:has(input:checked) span {
-    clip-path: var(--path-sun);
+    mask-image: var(--icon-sun);
   }
 }

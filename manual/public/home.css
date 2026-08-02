@@ -16,6 +16,7 @@
  */
 
 @import url('./common/variables.css');
+@import url('./common/icons.css');
 @import url('./common/reset.css');
 @import url('./common/brand.css');
 @import url('./common/code.css');

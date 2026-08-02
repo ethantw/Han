@@ -18,6 +18,7 @@
 import {
   DEFAULTS, MODULES, HERITAGE_LOCALES, cssVars, packages, zianoUrl,
 } from '/home/codegen.js'
+import { icon } from '../common/icon.js'
 
 /* ── 按需字體載入（去重）── injects into document.head (light DOM), so
  * the target actually renders the webfonts the config encodes. `loaded`
@@ -267,7 +268,7 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
       const $btn = document.createElement('button')
       $btn.type = 'button'
       $btn.className = 'Default'
-      $btn.textContent = `↺ ${label}`
+      $btn.append(icon('reset'), label)
       $btn.title = label
       $btn.hidden = true
       $btn.addEventListener('click', (e) => {

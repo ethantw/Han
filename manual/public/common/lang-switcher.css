@@ -55,7 +55,9 @@
       }
     }
 
-    [data-part="caret"] { font-size: 0.5rem; color: var(--palette-supplement-text-2q); }
+    /* 圖標盒是實打實的 1em 方塊，不像 ▾ 字符只佔字面的一小塊——
+       0.5rem 的字級換成圖標會大一圈，改用 0.7rem 才是原來的視覺量。 */
+    [data-part="caret"] { font-size: 0.7rem; color: var(--palette-supplement-text-2q); }
   }
 
   > ul {

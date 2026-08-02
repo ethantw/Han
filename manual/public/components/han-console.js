@@ -114,14 +114,17 @@ const resolveLocale = (el) => {
 
 // Stylesheets fetched + parsed ONCE, shared across every instance. Raw
 // ESM environment (no CSS module import), URLs resolved from this
-// module. controls.css is the page-shared sheet (dual-homed); tokens →
-// controls → console is the cascade order (tokens defines the --_* layer
-// both later sheets consume).
+// module. controls.css and icons.css are page-shared sheets (dual-homed);
+// tokens → icons → controls → console is the cascade order (tokens defines
+// the --_* layer the later sheets consume; icons defines --icon-* and the
+// [data-icon] primitive that controls.css's ＋/－ and console.css's chevron
+// read).
 let sheetsPromise = null
 const loadSheets = () => {
   sheetsPromise ??= Promise.all(
     [
       new URL('./tokens.css', import.meta.url),
+      new URL('../common/icons.css', import.meta.url),
       new URL('../home/controls.css', import.meta.url),
       new URL('./console.css', import.meta.url),
     ].map(async (url) => {

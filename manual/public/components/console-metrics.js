@@ -26,6 +26,7 @@
  * then notify ONCE — never three events for one click.
  */
 import { DEFAULTS } from '/home/codegen.js'
+import { icon } from '../common/icon.js'
 
 const METRIC_DEFAULTS = DEFAULTS.metrics
 
@@ -68,7 +69,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
   $groupDefault.type = 'button'
   $groupDefault.className = 'Default'
   const defaultLabel = root.querySelector('.Controls')?.dataset.labelDefault ?? 'Use default'
-  $groupDefault.textContent = `↺ ${defaultLabel}`
+  $groupDefault.append(icon('reset'), defaultLabel)
   $groupDefault.title = defaultLabel
   $groupDefault.hidden = true
   root.querySelector('[data-pg-sliders]')

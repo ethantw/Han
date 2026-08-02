@@ -184,13 +184,20 @@ han-console {
   }
 
   /* chevron points at the action: ‹ collapse (expanded) / › expand
-     (collapsed). Driven by the checkbox's own state, no upward selector. */
+     (collapsed). Driven by the checkbox's own state, no upward selector.
+     一張 mask 兩個方向——展開態把它照鏡子（icons.css § 角標的四向 用的是
+     同一招，只是那邊由 data-dir 蓋）。 */
   &::before {
-    content: '‹';
-    font-size: var(--fs-small);
-    line-height: 1;
+    content: '';
+    display: inline-block;
+    inline-size: var(--fs-small);
+    block-size: var(--fs-small);
+    background: currentColor;
+    /* mask 簡寫 · Baseline 2023 */
+    mask: var(--icon-chevron) center / contain no-repeat;
   }
-  &:has(input:checked)::before { content: '›'; }
+  /* scale 個別 transform 屬性 · Baseline 2022 */
+  &:has(input:checked)::before { scale: -1 1; }
 
   &:hover { color: var(--palette-accent); }
 

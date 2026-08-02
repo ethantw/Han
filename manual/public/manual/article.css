@@ -190,7 +190,7 @@ main {
     pre code::highlight(code-punct)   { color: #8b94a3; }
 
     /* Tip callout — author writes raw <aside class="Tip"> in markdown
-       (markdown-it `html: true` is on). Default 💡 + "TIP" eyebrow. */
+       (markdown-it `html: true` is on). Default bulb icon + "TIP" eyebrow. */
     aside.Tip {
       & {
         margin: 0 0 28px;
@@ -207,10 +207,15 @@ main {
       }
 
       &::before {
-        content: '💡';
+        content: '';
         flex-shrink: 0;
-        font-size: 1.125rem;
-        line-height: 1.4;
+        /* 線描燈泡，同 common/icons.css 那一套；原本是 emoji，字面隨系統
+           跑（彩色／單色、字重、光學尺寸都不受控）。 */
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        background: currentColor;
+        /* mask 簡寫 · Baseline 2023 */
+        mask: var(--icon-bulb) center / contain no-repeat;
       }
 
       [data-part="title"] {

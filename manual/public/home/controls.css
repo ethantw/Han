@@ -43,8 +43,7 @@
      section <header>s (mono micro-caps, above), the fold heads read in
      the body register and stack as one contiguous hairline list — each
      summary carries a border-block-start; the last details in the stack
-     closes it with a border-block-end (console.css § .Controls). A fullwidth
-     ＋/－, kept supplement-coloured, signals open/closed state. */
+     closes it with a border-block-end (console.css § .Controls). A ＋/－ 圖標，kept supplement-coloured, signals open/closed state. */
   > summary {
     font-family: var(--han-font-default);
     font-size: var(--_fs-compact);
@@ -58,13 +57,18 @@
 
     &::-webkit-details-marker { display: none; }
     &::after {
-      content: '＋';
-      color: var(--_supplement-text);
+      content: '';
+      display: inline-block;
+      inline-size: 1em;
+      block-size: 1em;
+      background: var(--_supplement-text);
+      /* mask 簡寫 · Baseline 2023 */
+      mask: var(--icon-plus) center / contain no-repeat;
     }
   }
   &[open] > summary {
     margin-block-end: 14px;
-    &::after { content: '－'; }
+    &::after { mask-image: var(--icon-minus); }
   }
 
   /* 子組（字體底下的繁體專項）——縮排一級、標頭恢復字母大小寫並降去
@@ -271,6 +275,15 @@
 .Default {
   & {
     flex: none;
+    /* 圖標 ＋ 文字：inline-flex 才能給它們一道 gap，且圖標不吃行高 */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    /* 但 display 一寫下去就蓋掉了 UA 的 `[hidden] { display: none }`——
+       作者樣式無論權重都贏 UA 樣式，這顆按鈕平時是靠 `hidden` 屬性藏的
+       （console-config.js／console-metrics.js 只在偏離預設時放出來），
+       所以要自己把 hidden 還回來。 */
+    &[hidden] { display: none; }
     margin: 0;
     padding: 0 2px;
     font-size: var(--_fs-fine);
