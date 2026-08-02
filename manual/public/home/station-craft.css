@@ -15,81 +15,355 @@
  * style()` style queries (Chrome/Edge 111 + Safari 18; Firefox trailing) —
  * the same query the whole framework already rides on. */
 
-/* 示範用戶樣式 — this is the EXACT rule the Override demo's <pre><code> prints
- * (station-craft.html — KEEP THE TWO IN SYNC). It is UNLAYERED and a single
- * class + element, so it beats han-semantics' `:where(q)` (zero specificity,
- * and inside @layer han-semantics): an unlayered declaration always outranks
- * a layered one — the whole point of the station, shown live, no !important. */
-.YourCss q {
-  color: var(--palette-accent);
-  font-weight: 500;
+/* 示範用戶樣式・其二 — the rule §④'s proof table prints (station-craft.html
+ * — KEEP THE TWO IN SYNC). Unlayered and one class + element, so it outranks
+ * the (0,0,0) `:where(…)` rule han.css uses for 書名號 adjacent-line gaps,
+ * with no !important. This is the live half of the proof: the 5em really is
+ * a 5em, painted by the reader's own rule. */
+.YourCite cite {
+  margin-inline-end: 5em;
 }
 
-.Override {
+/* ─── Station 伍・工法 — the three equations, one plate ───────────────
+ * 式5.1 spans the top; 5.2 and 5.3 sit under it, side by side, divided by
+ * the same hairline the ledgers use. Presented apart they read as three
+ * asides; presented together they are the framework's whole contract, and
+ * the plate is the argument. */
+
+.Axioms {
   & {
     display: grid;
-    gap: 1px; /* the hairline seam between the two cells */
-    margin: 0 0 2.5rem;
+    gap: 1px;                       /* hairline seams, as in the ledgers */
+    margin: 0 0 2rem;
     background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-3);
-    overflow: hidden;
+    border-block: 1px solid var(--palette-rule);
 
     @media (min-width: 40rem) {
       grid-template-columns: 1fr 1fr;
     }
   }
 
-  /* the two cells — the source stylesheet and what it renders */
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem 1.75rem;
+  .Ax {
+    padding-block: 1.5rem;
+    padding-inline: 1.5rem;
     background: var(--palette-bg);
   }
 
-  small {
-    font-family: var(--font-mono);
-    font-size: var(--fs-micro);
-    letter-spacing: 0.04em;
-    color: var(--palette-supplement-text);
-  }
+  /* 式5.1 spans the pair below it — the theorem the corollaries hang off */
+  .Ax-lead {
+    padding-block: 2rem;
 
-  /* the code block rides the homepage's generic light code chrome
-     (home.css § code blocks — `--palette-panel` ground, hairline, padding,
-     `overflow-x`); we only reset the default <pre> margin and neutralise the
-     inline-code chrome on the nested <code> so it inherits the pre's mono +
-     colour, dark-on-panel in both themes. */
-  pre {
-    & {
-      margin: 0;
+    @media (min-width: 40rem) {
+      grid-column: 1 / -1;
     }
 
-    code {
-      padding: 0;
-      background: transparent;
-      border: 0;
-      font: inherit;
-      color: inherit;
-      white-space: pre;
+    .Formula {
+      font-size: var(--fs-heading);
     }
   }
 
-  /* the live sample — serif, sized up so the accent-won <q> reads clearly.
-     The <q> itself takes its colour from `.YourCss q` above, beating the
-     framework's zero-specificity `:where(q)`. */
-  .YourCss {
-    margin: 0;
+  .Formula {
+    font-size: var(--fs-lede);
+  }
+
+  .AxNote {
+    margin: 0.625rem 0 0;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-heading);
-    line-height: 1.7;
-    color: var(--palette-text);
+    font-size: var(--fs-fine);
+    line-height: 1.75;
+    color: var(--palette-supplement-text-2q);
+    text-align: center;
   }
 }
 
 
-/* ─── Station 伍・工法 — the cascade-layer map (four mono chips) ─────── */
+/* ─── Station 伍・工法 — §④ set as a theorem ──────────────────────────
+ * The claim is an identity, so it is typeset as one: statement, worked
+ * example, proof, two corollaries. Display maths in CJK prose wants the
+ * reading face for words and mono for code — never a maths webfont; the
+ * operators here (≡ ≻ → ∵ ∴ ∎) all resolve from the CJK faces already
+ * loaded, so nothing new is fetched.
+ * `.YourCite cite` (below, unlayered) is the live half of the proof. */
+
+.WhereLede {
+  margin: 0 0 1.5rem;
+}
+
+/* No box. This is the station's argument, not an exhibit beside it — a
+ * plate would frame it as「something to glance at」when it is the thing to
+ * read. It sits in the flow and is held together by rules and rhythm, the
+ * way display maths sits in a page of prose. */
+.Theorem {
+  & {
+    margin: 0 0 2.5rem;
+  }
+
+  /* where the (0,2,2) figure comes from — a source line, set like one */
+  .ThmSource {
+    margin: 1.25rem 0 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    line-height: 1.75;
+    color: var(--palette-supplement-text);
+    text-align: end;
+  }
+}
+
+/* The display line. `flex` + `wrap` rather than a grid: an equation should
+   break like a line of text on a narrow screen, not restructure. */
+.Formula {
+  /* NOT flex. A flex container turns every text run into its own item, so
+     `gap` opens a hole either side of 「，」 and the CJK punctuation drifts
+     away from the words it belongs to. This is a line of text — set it as
+     one, and position only the equation number. */
+  & {
+    position: relative;
+    margin: 0;
+    text-align: center;
+
+    /* Wide enough to spare the margin: the equation number sits out at the
+       end of the line, print-style. Narrow: it drops to its own line rather
+       than stealing 5em from an already-cramped measure. */
+    @media (min-width: 40rem) {
+      padding-inline-end: 5em;
+    }
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-heading);
+    line-height: 1.6;
+    color: var(--palette-text);
+  }
+
+  /* Per the CD's spec: the equation is SERIF throughout — `:where(…)` is
+     being used here as mathematical notation, not as code to copy, so it is
+     set like notation and merely dimmed. Only the selector *argument* is
+     literal CSS, and only that is mono. (I had this mono at first; it made
+     the line read as a snippet instead of a formula.) */
+  .Fn {
+    opacity: 0.7;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    color: var(--palette-text);
+  }
+
+  /* the maths italic of a bound variable */
+  var {
+    font-style: italic;
+    font-size: 0.95em;
+  }
+
+  /* operators get air on both sides, as in set maths — margins now that
+     there is no flex `gap` doing it */
+  .Op {
+    margin-inline: 0.5rem;
+    color: var(--palette-supplement-text);
+  }
+
+  /* the punchline: every route through this station ends at zero */
+  .Zero {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--palette-accent);
+  }
+
+  /* 「權重」 is one word — never let the line break inside it */
+  .Term {
+    font-size: 0.75em;
+    white-space: nowrap;
+  }
+
+  /* the equation number rides the end of the first line, quiet */
+  .EqNo {
+    & {
+      display: block;
+      margin-block-start: 0.25rem;
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+      white-space: nowrap;
+    }
+
+    @media (min-width: 40rem) {
+      position: absolute;
+      inset-inline-end: 0;
+      inset-block-start: 0.5em;
+      margin-block-start: 0;
+    }
+  }
+}
+
+.Theorem > .Formula:first-child {
+  margin-block-start: 0.5rem;
+}
+
+.ThmNote {
+  margin: 0.5rem 0 0;
+  font-family: var(--han-font-alternative);
+  font-size: var(--fs-small);
+  color: var(--palette-supplement-text);
+  text-align: center;
+}
+
+/* 例 5.1 — the real selector fed through the theorem */
+.Example {
+  & {
+    margin-block: 1.75rem;
+    padding-block-start: 1.25rem;
+    border-block-start: 1px solid var(--palette-rule);
+  }
+
+  .Applied {
+    font-size: var(--fs-lede);
+  }
+
+  /* the annotation under the argument — an underbrace, drawn with a border
+     rather than a glyph so it stretches to whatever the argument measures */
+  .Brace {
+    margin: 0.25rem auto 0.75rem;
+    max-inline-size: 46em;
+    padding-block-start: 0.375rem;
+    border-block-start: 1px solid var(--palette-rule);
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-fine);
+    color: var(--palette-supplement-text-2q);
+    text-align: center;
+  }
+
+  b {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+/* 證 … ∎ */
+.Proof {
+  & {
+    padding-block-start: 1.25rem;
+    border-block-start: 1px solid var(--palette-rule);
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    color: var(--palette-supplement-text);
+  }
+
+  .ProofLead {
+    & {
+      margin: 0 0 0.75rem;
+    }
+
+    /* 證 — a run-in marker, spaced like the 定理 label */
+    b {
+      margin-inline-end: 1em;
+      font-weight: 500;
+      color: var(--palette-text);
+    }
+  }
+
+  /* Narrow: rows stack (role → code → weight), because three columns of
+     CSS source in 420px collide into unreadable mush. Wide: a real table,
+     with the weights lining up down the end edge. */
+  table {
+    inline-size: 100%;
+    border-collapse: collapse;
+
+    @media (width < 40rem) {
+      :is(thead, tbody, tr, th, td) {
+        display: block;
+      }
+
+      tr + tr {
+        margin-block-start: 0.75rem;
+      }
+    }
+  }
+
+  :is(th, td) {
+    padding-block: 0.25rem;
+    vertical-align: baseline;
+  }
+
+  th {
+    font-weight: 400;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    color: var(--palette-text);
+  }
+
+  /* the specificity column — mono, tabular, end-aligned so the triples stack */
+  td:last-child {
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    font-variant-numeric: tabular-nums lining-nums;
+    text-align: end;
+    white-space: nowrap;
+
+    /* stacked: the weight reads as the row's verdict, so it keeps the end
+       edge but stops pretending to be a column */
+    @media (width < 40rem) {
+      padding-block-start: 0;
+    }
+  }
+
+  .Zero {
+    color: var(--palette-accent);
+  }
+
+}
+
+/* the live half of the proof — the same sentence, twice */
+.ProofSample {
+  & {
+    margin-block: 1rem;
+    padding-block: 0.875rem;
+    padding-inline: 1rem;
+    background: var(--palette-panel);
+    border-radius: var(--r-2);
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-body);
+    color: var(--palette-text);
+  }
+
+  p {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  small {
+    flex: none;
+    inline-size: 3.5em;
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    color: var(--palette-supplement-text-2q);
+  }
+
+  /* the winning row wears the accent, so the eye lands on it */
+  .YourCite small {
+    color: var(--palette-accent);
+  }
+}
+
+.LayerLede {
+  margin: 0 0 0.5rem;
+  font-family: var(--han-font-alternative);
+  font-size: var(--fs-body);
+  line-height: 1.9;
+  color: var(--palette-text);
+}
+
+
+/* ─── Station 伍・工法 — the cascade-layer map (four weight cards) ─────
+ * Was four inline pills with the weight as fine print; the weight IS the
+ * claim («輕如鴻毛»), so it now leads at heading scale and the layer name
+ * drops to a mono label beneath it. Hairline grid, same recipe as
+ * the ledgers. */
 
 .LayerMap {
   & {
@@ -97,33 +371,66 @@
   }
 
   ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0 0 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 1px; /* hairline seams between the cards */
+    margin: 0 0 1rem;
     padding: 0;
     list-style: none;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
   }
 
   li {
     & {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      padding: 0.375rem 0.75rem;
+      /* Visual order is brotli → name → uncompressed; the DOM keeps the
+         readable「name → brotli → uncompressed」and only the <b> is pulled
+         up (`order`), so a screen reader still reads
+         “han-semantics, 1.0k, 壓縮前4.0k”. The layer name is an anonymous
+         flex item — it cannot take an `order` of its own, which is exactly
+         why moving the <b> is the whole trick. */
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: 0.25rem;
+      padding-block: 1.125rem;
+      padding-inline: 1.25rem;
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
-      color: var(--palette-accent);
-      background: var(--palette-panel);
-      border: 1px solid var(--palette-rule);
-      border-radius: 999px;
+      color: var(--palette-supplement-text);
+      background: var(--palette-bg);
     }
 
-    /* the module's build-computed gzip weight, riding the chip — quiet and
-       supplement-coloured, never a billboard (it supplements the layer name). */
+    /* Unchecked in the console → the module is not in the build, so the card
+       steps back: the figure drops to the body ink and the whole card fades.
+       Not `display: none` — the point is that the reader can see what they
+       just put down, and the row keeps its place in the grid. */
+    &[data-off] {
+      opacity: 0.4;
+
+      b {
+        color: var(--palette-text);
+      }
+    }
+
+    /* the module's build-computed brotli weight — now the display figure.
+       Tabular + lining so the four cards' decimal points line up. */
+    b {
+      order: -1;
+      font-size: var(--fs-heading);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums lining-nums;
+      line-height: 1.2;
+      color: var(--palette-accent);
+    }
+
+    /* the same module before brotli — fine print, because it is the figure
+       a reader only meets when content-encoding negotiation fails. */
     small {
       font-size: var(--fs-micro);
-      color: var(--palette-supplement-text);
+      color: var(--palette-supplement-text-2q);
     }
   }
 
@@ -131,66 +438,236 @@
     & {
       max-inline-size: 34em;
       font-family: var(--han-font-alternative);
+      font-size: var(--fs-body);
+      line-height: 1.75;
+      color: var(--palette-supplement-text);
+    }
+
+    /* the ledger footing — the totals line, then a quieter gloss on what
+       the「before brotli」column actually measures */
+    small {
+      & {
+        display: block;
+        margin-block-start: 0.5rem;
+        font-size: var(--fs-small);
+        color: var(--palette-supplement-text-2q);
+      }
+
+      & + small {
+        margin-block-start: 0.25rem;
+        font-size: var(--fs-fine);
+      }
+
+      [data-total] {
+        font-family: var(--font-mono);
+        font-variant-numeric: tabular-nums lining-nums;
+        color: var(--palette-accent);
+      }
+    }
+  }
+}
+
+
+/* ─── Station 伍・工法 — the script and font ledgers ───────────────────
+ * Three sets of books, deliberately not one table: the style modules (the
+ * layer map above), han.css's own JS, and the webfonts. Webfonts are
+ * megabytes where the framework is kilobytes — merged into one plate they
+ * would swallow the «輕如鴻毛» claim outright — and each ledger's columns
+ * differ anyway (bundle × compression; family × slice × total; convention ×
+ * face). Same plate chrome for all of them, so they read as one system.
+ * The script figures are build-computed (dist/*.min.js is in this repo);
+ * the font figures are constants — the markup says how to re-measure. */
+
+/* The SSR footnote sits between the script and font ledgers: it is the one
+   route that takes the script bill to zero, so it belongs with the scripts —
+   but it is prose, not a plate, and reads at body measure. */
+.LedgerNote {
+  /* NOT the station's `.Prose` — that block is the two-column end matter, and
+     a 42em argument squeezed into one of its columns justifies badly. This is
+     a single measure at body size, like the station's lede. */
+  & {
+    margin: 0 0 2.5rem;
+    max-inline-size: 42em;
+  }
+
+  p {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-body);
+    line-height: 1.9;
+    color: var(--palette-text);
+  }
+
+}
+
+.LedgerHead {
+  /* The three books now follow prose, not a figure, so the heading has to
+     open the gap itself — a figure's 2.5rem bottom margin used to do it. */
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--han-font-alternative);
+  font-size: var(--fs-lede);
+  font-weight: 500;
+  color: var(--palette-text);
+}
+
+:is(.ScriptLedger, .FontLedger) {
+  /* Explicit track counts, NOT `repeat(auto-fit, …)`: the figcaption spans
+     `1 / -1`, which makes every track occupied, so auto-fit has no empty
+     track left to collapse and a two-plate ledger would sit in a
+     three-track grid with a dead column. Breakpoint as in .Override. */
+  & {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px; /* hairline seams, as in .LayerMap */
+    margin: 0 0 2.5rem;
+    background: var(--palette-rule);
+    border: 1px solid var(--palette-rule);
+    border-radius: var(--r-3);
+    overflow: hidden;
+  }
+
+  &.ScriptLedger {
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &.FontLedger {
+    @media (min-width: 40rem) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (min-width: 60rem) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* One plate per table. The chrome (ground ＋ inset) sits on the wrapper,
+     not on the <table>: a table's `<caption>` renders OUTSIDE the table's
+     border box, so any background or padding put on the table itself would
+     leave the caption stranded on the seam colour. */
+  > div {
+    padding-block: 1.25rem;
+    padding-inline: 1.25rem;
+    background: var(--palette-bg);
+  }
+
+  table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  caption {
+    margin-block-end: 0.75rem;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    color: var(--palette-supplement-text);
+    text-align: start;
+  }
+
+  :is(th, td) {
+    padding-block: 0.5rem;
+    border-block-end: 1px solid var(--palette-rule);
+  }
+
+  /* Column heads — the quietest row on the plate; the figures carry it. */
+  thead th {
+    & {
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      font-weight: 400;
+      color: var(--palette-supplement-text-2q);
+      text-align: end;
+      white-space: nowrap;
+    }
+
+    &:first-child {
+      font-family: var(--han-font-alternative);
+      text-align: start;
+    }
+  }
+
+  /* Family / convention names — the row's subject, in the reading face. */
+  tbody th {
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    font-weight: 400;
+    color: var(--palette-text);
+    text-align: start;
+  }
+
+  /* Figures: mono ＋ tabular ＋ end-aligned, so decimal points and
+     magnitudes stack into columns you can read down. */
+  td {
+    font-family: var(--font-mono);
+    font-size: var(--fs-compact);
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--palette-accent);
+    text-align: end;
+    white-space: nowrap;
+  }
+
+  /* same signal as the layer map's greyed cards: this bundle is not in the
+     build the console is describing. `opacity` on a <tr> is a grouping-
+     element opacity — it composites the whole row, borders included. */
+  tbody tr[data-off] {
+    & {
+      opacity: 0.4;
+    }
+
+    td {
+      color: var(--palette-text);
+    }
+  }
+
+  /* the last row needs no rule — the plate edge already closes the table */
+  tbody tr:last-child :is(th, td) {
+    border-block-end: 0;
+  }
+
+  /* Script ledger — one plate, whose row heads are FILE NAMES: mono, with
+     the「what it does」gloss dropped underneath in the reading face. */
+  &.ScriptLedger tbody th {
+    & {
+      font-family: var(--font-mono);
+      font-size: var(--fs-compact);
+    }
+
+    small {
+      display: block;
+      margin-block-start: 0.125rem;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+    }
+  }
+
+  figcaption {
+    & {
+      grid-column: 1 / -1;
+      padding-block: 1.125rem;
+      padding-inline: 1.25rem;
+      background: var(--palette-panel);
+      font-family: var(--han-font-alternative);
       font-size: var(--fs-small);
       line-height: 1.75;
       color: var(--palette-supplement-text);
     }
 
-    /* the ledger footing — a second, quieter line under the layer note */
     small {
       display: block;
       margin-block-start: 0.5rem;
       font-size: var(--fs-fine);
       color: var(--palette-supplement-text-2q);
     }
-  }
-}
 
-
-/* ─── Station 伍・工法 — the container-scope compare (default vs sesame) ──
- * Same sample twice; the second cell's WRAPPER carries `--han-em-symbol:
- * sesame` inline, which inherits down to its <em>, so the 著重號 turns to
- * sesame dots while the first keeps the circle default. Hairline-framed grid,
- * mirroring .HangCompare. */
-
-.ScopeCompare {
-  & {
-    display: grid;
-    gap: 1px; /* hairline seam between the two cells */
-    margin: 0 0 2.5rem;
-    background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-3);
-    overflow: hidden;
-
-    @media (min-width: 40rem) {
-      grid-template-columns: 1fr 1fr;
+    /* the live totals — the one figure in the caption that moves, so it
+       keeps the accent the ledgers use for every other number */
+    [data-total] {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--palette-accent);
     }
-  }
-
-  .Sample {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem 1.75rem;
-    background: var(--palette-bg);
-  }
-
-  small {
-    font-family: var(--font-mono);
-    font-size: var(--fs-micro);
-    letter-spacing: 0.04em;
-    color: var(--palette-supplement-text);
-  }
-
-  /* the sample — serif, sized up; extra leading leaves room for the
-     emphasis dots (circle vs sesame) below the text. */
-  p {
-    margin: 0;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-heading);
-    line-height: 2;
-    color: var(--palette-text);
   }
 }
 

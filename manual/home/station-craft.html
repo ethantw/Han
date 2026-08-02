@@ -21,19 +21,73 @@
     ja: '〇が109個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
     ko: '〇이 109개 있어도 여전히 「〇」다——마음껏 덮어쓰면, 나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다.',
   },
-  arP1: {
-    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，配合可自由定義樣式模塊順序的<code>@layer</code>，作者可大膽而隨心所欲地覆寫、重構框架提供的任何機能。',
-    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重，配合可自由定义样式模块顺序的<code>@layer</code>，作者可大胆而随心所欲地覆写、重构框架提供的任何机能。',
-    en: 'Every selector in the library is wrapped in <code>:where()</code>, so its specificity is zero — one line of your own <code>h2 { }</code> overrides the whole framework, with no <code>!important</code> and no selector-length arms race.',
-    ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す。様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、作者は大胆に、思うままにフレームワークのあらゆる機能を上書きし、組み替えられる。',
-    ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 <ruby>優先順位<rt>우선순위</rt></ruby>를 버린다. 스타일 모듈 <ruby>順序<rt>순서</rt></ruby>를 마음대로 <ruby>定義<rt>정의</rt></ruby>할 수 있는 <code>@layer</code>와 <ruby>結合<rt>결합</rt></ruby>하면, <ruby>開發者<rt>개발자</rt></ruby>는 <ruby>大膽<rt>대담</rt></ruby>하게, 뜻대로 프레임워크의 어떤 <ruby>機能<rt>기능</rt></ruby>이든 덮어쓰고 <ruby>再構成<rt>재구성</rt></ruby>할 수 있다.',
+  arThmNote: {
+    hant: '其中<var>s</var>為任意選擇器；「≡」讀作「選中的元素相同」。',
+    hans: '其中<var>s</var>为任意选择器；「≡」读作「选中的元素相同」。',
+    en: 'where <var>s</var> is any selector; “≡” reads “matches the same elements”.',
+    ja: '<var>s</var>は任意のセレクタ。「≡」は「選ぶ要素が同じ」と読む。',
+    ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터；「≡」는 「고르는 <ruby>要素<rt>요소</rt></ruby>가 같다」로 읽는다.',
   },
-  arP3: {
-    hant: '透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能——原生CSS給作者最大的自訂彈性。',
-    hans: '透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能——原生CSS给作者最大的自定义弹性。',
-    en: 'Customising needs no HTML either — <code>@container style()</code> lets any container stake a claim with a single custom property: set <code>--han-em-symbol: sesame</code> and the emphasis dots in that subtree turn to sesame; set <code>--han-prose: off</code> and that block opts out of the long-form rules.',
-    ja: 'CSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる——ネイティブCSSが作者に最大のカスタマイズ自由度を与える。',
-    ko: 'CSS <ruby>變數<rt>변수</rt></ruby>와 style query <code>@container</code>로, 어떤 셀렉터에서든 <ruby>機能<rt>기능</rt></ruby>을 켜고 끄고 <ruby>調整<rt>조정</rt></ruby>한다——<ruby>純粹<rt>순수</rt></ruby> CSS가 <ruby>開發者<rt>개발자</rt></ruby>에게 <ruby>最大<rt>최대</rt></ruby>의 커스터마이즈 <ruby>自由度<rt>자유도</rt></ruby>를 준다.',
+  arEgBrace: {
+    hant: '括號內任你寫多深，自身權重', hans: '括号内任你写多深，自身权重',
+    en: 'nest it as deep as you like — on its own it weighs', ja: '括弧の中はいくら深くてもよい。それ自身の詳細度は',
+    ko: '괄호 안은 얼마든지 깊어도 된다——그 <ruby>自體<rt>자체</rt></ruby>의 優先順位는',
+  },
+  arEgEquiv: {
+    hant: '同一批元素，權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
+    ja: '同じ要素、詳細度', ko: '같은 要素, 優先順位',
+  },
+  arProofLead: {
+    hant: '於是覆寫只需一條最低限度的規則：', hans: '于是覆写只需一条最低限度的规则：',
+    en: 'so overriding takes one minimal rule:', ja: 'ゆえに上書きは最小限の一行で足りる。',
+    ko: '그러므로 덮어쓰기는 <ruby>最小限<rt>최소한</rt></ruby>의 한 줄이면 된다：',
+  },
+  arRoleFramework: {
+    hant: '框架', hans: '框架', en: 'framework', ja: 'フレームワーク', ko: '프레임워크',
+  },
+  arRoleYours: {
+    hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet', ja: 'あなたの様式表', ko: '당신의 스타일시트',
+  },
+  arRoleOr: { hant: '或', hans: '或', en: 'or', ja: 'または', ko: '또는' },
+  arRoleMarkup: {
+    hant: '你的標記', hans: '你的标记', en: 'your markup', ja: 'あなたの標記', ko: '당신의 마크업',
+  },
+  arRoleMine: { hant: '你的', hans: '你的', en: 'yours', ja: 'あなた', ko: '당신' },
+  arProofSample: {
+    hant: '見<cite>《文心雕龍》</cite>卷十。', hans: '见<cite>《文心雕龙》</cite>卷十。',
+    en: 'See <cite>The Literary Mind</cite>, book ten.',
+    ja: '<cite>『文心雕龍』</cite>巻十を見よ。',
+    ko: '<cite>《文心雕龍》</cite><ruby>卷十<rt>권십</rt></ruby>을 보라.',
+  },
+  arEgCaption: {
+    hant: '全庫最重的一條，代入即歸零。',
+    hans: '全库最重的一条，代入即归零。',
+    en: 'The heaviest selector in the library; put it through and it is zero.',
+    ja: '全ライブラリで最も重い一条。代入すればゼロになる。',
+    ko: '全 라이브러리에서 가장 무거운 한 줄. 넣으면 <ruby>零<rt>영</rt></ruby>이 된다.',
+  },
+  arEq52Note: {
+    hant: '未分層的宣告永遠蓋過分層的——你的一條規則就贏。',
+    hans: '未分层的宣告永远盖过分层的——你的一条规则就赢。',
+    en: 'An unlayered declaration always outranks a layered one — one rule of yours is enough.',
+    ja: '未分層の宣言はつねに分層されたものを上書きする——あなたの一行で勝つ。',
+    ko: '層에 넣지 않은 <ruby>宣言<rt>선언</rt></ruby>은 늘 層에 든 것을 이긴다——당신의 한 줄이면 된다.',
+  },
+  arEq53Note: {
+    hant: '容器上寫一個變數，那片子樹的機能就跟著改。',
+    hans: '容器上写一个变量，那片子树的机能就跟着改。',
+    en: 'One property on a container retunes the feature for that whole subtree.',
+    ja: 'コンテナに変数をひとつ書けば、その部分木の機能が変わる。',
+    ko: '컨테이너에 變數 하나면 그 <ruby>部分<rt>부분</rt></ruby> 트리의 機能이 바뀐다.',
+  },
+  arEqUnlayered: {
+    hant: '未分層', hans: '未分层', en: 'unlayered', ja: '未分層', ko: '層 밖',
+  },
+  arEqFeature: {
+    hant: '機能', hans: '机能', en: 'feature', ja: '機能', ko: '機能',
+  },
+  arEqContainerVar: {
+    hant: '容器變數', hans: '容器变量', en: 'container variable', ja: 'コンテナ変数', ko: '컨테이너 變數',
   },
   arOverrideLabel: {
     hant: '你的樣式表',
@@ -56,47 +110,195 @@
     ja: '四層——左欄の四つのモジュールスイッチそのものである。',
     ko: '네 <ruby>層<rt>층</rt></ruby>, 바로 왼쪽 칸의 네 모듈 스위치다.',
   },
-  arContainerA: {
-    hant: '預設',
-    hans: '预设',
-    en: 'default',
-    ja: '既定',
-    ko: '<ruby>基本<rt>기본</rt></ruby>값',
-  },
-  arContainerB: {
-    hant: '芝麻點——容器上一個變數的事',
-    hans: '芝麻点——容器上一个变量的事',
-    en: 'sesame — one variable on the container',
-    ja: 'ゴマ点——コンテナ上の変数ひとつで済む',
-    ko: '참깨점——컨테이너의 <ruby>變數<rt>변수</rt></ruby> 하나면 된다',
-  },
-  arSampleText: {
-    hant: '排版的<em>要緊處</em>，一眼可辨。',
-    hans: '排版的<em>要紧处</em>，一眼可辨。',
-    en: 'The <em>part that matters</em> in typesetting, clear at a glance.',
-    ja: '組版の<em>要所</em>が、一目で分かる。',
-    ko: '<ruby>組版<rt>조판</rt></ruby>의 <em><ruby>要緊<rt>요긴</rt></ruby>한 대목</em>이 한눈에 <ruby>分揀<rt>분간</rt></ruby>된다.',
-  },
-  arQuoteSample: {
-    hant: '他說：<q>這行顏色是我的CSS說了算。</q>',
-    hans: '他说：<q>这行颜色是我的CSS说了算。</q>',
-    en: 'She said, <q>this colour is my call, set in CSS.</q>',
-    ja: '彼は言った、<q>この行の色は私のCSSが決める。</q>',
-    ko: '그가 말했다, <q>이 <ruby>行<rt>행</rt></ruby>의 <ruby>色<rt>색</rt></ruby>은 내 CSS가 <ruby>決定<rt>결정</rt></ruby>한다.</q>',
-  },
   arLedgerTotal: {
-    hant: '四模塊合計',
-    hans: '四模块合计',
-    en: 'All four modules',
-    ja: '四モジュール合計',
-    ko: '네 모듈 <ruby>合計<rt>합계</rt></ruby>',
+    hant: '已勾合計',
+    hans: '已勾合计',
+    en: 'Kept',
+    ja: 'チェック分',
+    ko: '<ruby>選擇<rt>선택</rt></ruby>분',
+  },
+  arScTotal: {
+    hant: '腳本合計',
+    hans: '脚本合计',
+    en: 'Scripts',
+    ja: 'スクリプト計',
+    ko: '스크립트 計',
+  },
+  arScGrand: {
+    hant: '連同樣式',
+    hans: '连同样式',
+    en: 'with styles',
+    ja: '様式と合わせて',
+    ko: '스타일까지',
   },
   arLedgerDeps: {
-    hant: '運行時依賴',
-    hans: '运行时依赖',
-    en: 'runtime dependency',
-    ja: 'ランタイム依存',
-    ko: '<ruby>實行<rt>실행</rt></ruby>時 <ruby>依存<rt>의존</rt></ruby>',
+    hant: 'JS運行時依賴',
+    hans: 'JS运行时依赖',
+    en: 'JS runtime dependency',
+    ja: 'JSランタイム依存',
+    ko: 'JS <ruby>實行<rt>실행</rt></ruby>時 <ruby>依存<rt>의존</rt></ruby>',
+  },
+  arWeightHead: {
+    hant: '四層的重量',
+    hans: '四层的重量',
+    en: 'What each layer weighs',
+    ja: '四層の重さ',
+    ko: '네 層의 <ruby>重量<rt>중량</rt></ruby>',
+  },
+  arScHead: {
+    hant: '腳本・三入口兩條件',
+    hans: '脚本・三入口两条件',
+    en: 'Scripts — three entries, two conditions',
+    ja: 'スクリプト・三入口二条件',
+    ko: '스크립트・세 入口 두 條件',
+  },
+  arScNote: {
+    hant: '腳本是選配——純CSS的漢.css自己就成立。合計只算左欄真正發給你的那兩份。',
+    hans: '脚本是选配——纯CSS的汉.css自己就成立。合计只算左栏真正发给你的那两份。',
+    en: 'The script is optional — han.css stands up as pure CSS. The total counts only the two the left column hands you.',
+    ja: 'スクリプトは任意——純粋なCSSだけで漢.cssは成立する。合計は左欄が実際に渡す二つだけ。',
+    ko: '스크립트는 <ruby>選擇<rt>선택</rt></ruby> 事項——純粹 CSS만으로 漢.css는 成立한다. 合計는 왼쪽이 실제로 주는 둘만 센다.',
+  },
+  arScCapDefault: {
+    hant: '通用條件・<code>import</code>',
+    hans: '通用条件・<code>import</code>',
+    en: 'Default condition — <code>import</code>',
+    ja: '汎用条件・<code>import</code>',
+    ko: '<ruby>汎用<rt>범용</rt></ruby> 條件・<code>import</code>',
+  },
+  arScCapBrowser: {
+    hant: '<code>browser</code>條件',
+    hans: '<code>browser</code>条件',
+    en: '<code>browser</code> condition',
+    ja: '<code>browser</code>条件',
+    ko: '<code>browser</code> 條件',
+  },
+  arScColBundle: {
+    hant: '入口', hans: '入口', en: 'Entry', ja: '入口', ko: '<ruby>入口<rt>입구</rt></ruby>',
+  },
+  arScUseInstall: {
+    hant: '載入即套用・無匯出', hans: '载入即套用・无导出', en: 'applies on load, no exports',
+    ja: '読み込んだ時点で適用・エクスポートなし', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>・<ruby>輸出<rt>수출</rt></ruby> 없음',
+  },
+  arScColRaw: {
+    hant: '未壓', hans: '未压', en: 'raw', ja: '未圧縮', ko: '未壓',
+  },
+  arScUseMain: {
+    hant: '自行呼叫API', hans: '自行调用API', en: 'you call the API',
+    ja: 'APIを自分で呼ぶ', ko: 'API를 <ruby>直接<rt>직접</rt></ruby> <ruby>呼出<rt>호출</rt></ruby>',
+  },
+  arScUseAuto: {
+    hant: '載入即套用', hans: '载入即套用', en: 'applies on load',
+    ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
+  },
+  arSsrNote: {
+    hant: '建構期跑一次，前端零JS；React／Vue的hydrate會沖掉，仍要載。',
+    hans: '构建期跑一次，前端零JS；React／Vue的hydrate会冲掉，仍要载。',
+    en: 'Run it at build time and the client ships no JS — but React and Vue wash it away when they hydrate.',
+    ja: '構築時に一度走らせればクライアントのJSはゼロ。ただしReactやVueはhydrateで流してしまう。',
+    ko: '構築時에 한 번 돌리면 클라이언트 JS는 <ruby>零<rt>영</rt></ruby>. 다만 React·Vue는 hydrate로 씻어 낸다.',
+  },
+  arFlHead: {
+    hant: '字體另計',
+    hans: '字体另计',
+    en: 'Fonts, separately',
+    ja: '字体は別勘定',
+    ko: '字體는 <ruby>別途<rt>별도</rt></ruby>',
+  },
+  arFlNote: {
+    hant: '字體按需切片——全家體積是庫存，不是運費。',
+    hans: '字体按需切片——全家体积是库存，不是运费。',
+    en: 'Sliced on demand — the family total is inventory, not postage.',
+    ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
+    ko: '必要한 切片만——家族 全體의 容量은 <ruby>在庫<rt>재고</rt></ruby>이지 <ruby>運賃<rt>운임</rt></ruby>이 아니다.',
+  },
+  arFlCapPrint: {
+    hant: '印刷字體・按需切片',
+    hans: '印刷字体・按需切片',
+    en: 'Text faces — sliced, fetched on demand',
+    ja: '印刷字体・オンデマンド切片',
+    ko: '印刷 字體・<ruby>必要<rt>필요</rt></ruby>한 切片만',
+  },
+  arFlCapPunct: {
+    hant: '標點字體・整檔載入',
+    hans: '标点字体・整档载入',
+    en: 'Punctuation faces — whole file',
+    ja: '約物字体・ファイル一括',
+    ko: '<ruby>約物<rt>약물</rt></ruby> 字體・<ruby>全體<rt>전체</rt></ruby> 로드',
+  },
+  arFlCapPatch: {
+    hant: '補綴字體',
+    hans: '补缀字体',
+    en: 'Patch faces',
+    ja: '補綴字体',
+    ko: '<ruby>補綴<rt>보철</rt></ruby> 字體',
+  },
+  arFlColFamily: {
+    hant: '字體', hans: '字体', en: 'Family', ja: '字体', ko: '字體',
+  },
+  arFlColAvg: {
+    hant: '平均切片', hans: '平均切片', en: 'Avg. slice', ja: '平均切片', ko: '平均 切片',
+  },
+  arFlColSlices: {
+    hant: '片數×字重',
+    hans: '片数×字重',
+    en: 'slices × weights',
+    ja: '片数×字重',
+    ko: '片數×字重',
+  },
+  arFlColTotal: {
+    hant: '全家', hans: '全家', en: 'Whole family', ja: '家族全体', ko: '家族 全體',
+  },
+  arFlColConv: {
+    hant: '慣例', hans: '惯例', en: 'Convention', ja: '慣例', ko: '<ruby>慣例<rt>관례</rt></ruby>',
+  },
+  arFlColSans: {
+    hant: '黑體', hans: '黑体', en: 'Sans', ja: 'ゴシック', ko: '黑體',
+  },
+  arFlColSerif: {
+    hant: '明體', hans: '明体', en: 'Serif', ja: '明朝', ko: '明體',
+  },
+  arFlColFace: {
+    hant: '用途', hans: '用途', en: 'Purpose', ja: '用途', ko: '<ruby>用途<rt>용도</rt></ruby>',
+  },
+  arFlColSize: {
+    hant: '體積', hans: '体积', en: 'Size', ja: '容量', ko: '<ruby>容量<rt>용량</rt></ruby>',
+  },
+  arFlShangguSans: {
+    hant: '尚古黑體', hans: '尚古黑体', en: 'Shanggu Sans', ja: '尚古ゴシック', ko: 'Shanggu Sans',
+  },
+  arFlShangguSerif: {
+    hant: '尚古明體', hans: '尚古明体', en: 'Shanggu Serif', ja: '尚古明朝', ko: 'Shanggu Serif',
+  },
+  arFlGenkiGothic: {
+    hant: '源起黑體', hans: '源起黑体', en: 'Genki Gothic', ja: '源起ゴシック', ko: 'Genki Gothic',
+  },
+  arFlGenkiMin: {
+    hant: '源起明體', hans: '源起明体', en: 'Genki Min', ja: '源起明朝', ko: 'Genki Min',
+  },
+  arFlLxgwTc: {
+    hant: '霞鶩文楷<abbr class="acronym">TC</abbr>', hans: '霞鹜文楷<abbr class="acronym">TC</abbr>',
+    en: 'LXGW WenKai<abbr class="acronym">TC</abbr>', ja: '霞鶩文楷<abbr class="acronym">TC</abbr>',
+    ko: 'LXGW WenKai<abbr class="acronym">TC</abbr>',
+  },
+  arFlLxgw: {
+    hant: '霞鶩文楷', hans: '霞鹜文楷', en: 'LXGW WenKai', ja: '霞鶩文楷', ko: 'LXGW WenKai',
+  },
+  arFlIansui: {
+    hant: '芫荽', hans: '芫荽', en: 'Iansui', ja: '芫荽', ko: 'Iansui',
+  },
+  arFlKlee: {
+    hant: 'Klee One', hans: 'Klee One', en: 'Klee One', ja: 'Klee One', ko: 'Klee One',
+  },
+  arFlEmphasis: {
+    hant: '著重號', hans: '着重号', en: 'Emphasis marks', ja: '圏点', ko: '<ruby>傍點<rt>방점</rt></ruby>',
+  },
+  arFlZhuyin: {
+    hant: '注音符號', hans: '注音符号',
+    en: 'Zhuyin ruby', ja: '注音符号', ko: '注音 <ruby>符號<rt>부호</rt></ruby>',
+  },
+  arFlEmSpace: {
+    hant: '全形空格', hans: '全形空格', en: 'Full-width space', ja: '全角空白', ko: '<ruby>全形<rt>전형</rt></ruby> <ruby>空白<rt>공백</rt></ruby>',
   },
 }
 </script>
@@ -113,68 +315,283 @@
     <h2>{{ arH2 }}</h2>
   </hgroup>
 
-  <p class="Lede">{{ arLede }}</p>
+  <p>{{ arLede }}</p>
 
-  <!-- Override demo — the EXACT user rule the page really ships (see
-       stations.css § 示範用戶樣式 — KEEP THE <code> BELOW IN SYNC WITH IT)
-       beside the live sample it wins on. han-semantics styles <q> at
-       `:where(q)` (zero specificity) inside @layer han-semantics; this
-       single-class rule is unlayered — an unlayered declaration always
-       outranks a layered one — so its accent colour wins, no !important. -->
-  <figure class="Override">
-    <div>
-      <small>{{ arOverrideLabel }}</small>
-      <pre data-lang="css"><code>.YourCss q {
-  color: var(--palette-accent);
-  font-weight: 500;
-}</code></pre>
+  <!-- The three equations read as one plate: 5.1 spans the top, a rule under
+       it, then the two corollaries side by side. Split across the section they
+       read as three asides; together they are what they actually are — the
+       framework's whole contract in three lines. The worked example follows,
+       so the reader meets the claim before the proof of it. -->
+  <div class="Axioms">
+    <div class="Ax Ax-lead">
+      <p class="Formula" lang="en">
+        <span class="Fn">:where(<var>s</var>)</span>
+        <span class="Op">≡</span>
+        <var>s</var><span class="Term">，權重</span>
+        <span class="Op">→</span>
+        <span class="Zero">0</span>
+        <small class="EqNo">（式5.1）</small>
+      </p>
+      <p class="AxNote">{{ arThmNote }}</p>
     </div>
-    <div>
-      <small>{{ arOverrideResult }}</small>
-      <p class="YourCss" lang="zh-Hant">{{ arQuoteSample }}</p>
-    </div>
-  </figure>
 
-  <!-- Layer map — the four cascade layers, one mono chip each, in source
-       order; they ARE the console's four module switches (arLayerNote). Each
-       chip rides a quiet <small> with its build-computed brotli weight
-       (sizeSemantics… from vite's computeModuleLedger; gzip rides the
-       footing as the secondary figure). The figcaption's
-       second line is the ledger footing — four-module total ＋ dep count —
-       composed from adjacent word/number tokens IN THE MARKUP (single-pass
-       substitution, so no token value may itself hold a mustache
-       placeholder). -->
+    <div class="Ax">
+      <p class="Formula">
+        {{ arEqUnlayered }}<span class="Op">≻</span><code>@layer</code>
+        <small class="EqNo">（式5.2）</small>
+      </p>
+      <p class="AxNote">{{ arEq52Note }}</p>
+    </div>
+
+    <div class="Ax">
+      <p class="Formula">
+        {{ arEqFeature }}<span class="Op">=</span><var>f</var><span class="Fn">(</span>{{ arEqContainerVar }}<span class="Fn">)</span>
+        <small class="EqNo">（式5.3）</small>
+      </p>
+      <p class="AxNote">{{ arEq53Note }}</p>
+    </div>
+  </div>
+
+  <div class="Theorem">
+    <div class="Example">
+      <p class="Formula Applied" lang="en">
+        <span class="Fn">:where(</span><code>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span>
+      </p>
+      <p class="Brace">{{ arEgBrace }}<b>(0,2,2)</b></p>
+      <p class="Formula Applied">
+        <span class="Op">≡</span>{{ arEgEquiv }}<b>(0,2,2)</b>
+        <span class="Op">→</span><span class="Zero">(0,0,0)</span>
+        <small class="EqNo">（例5.1）</small>
+      </p>
+    </div>
+
+    <div class="Proof">
+      <p class="ProofLead"><b>證</b>{{ arProofLead }}</p>
+
+      <table>
+        <tbody>
+          <tr><th scope="row">{{ arRoleFramework }}</th><td><code>:where(:is(u, ins, cite:lang(zh)):has(…)) { … }</code></td><td class="Zero">(0,0,0)</td></tr>
+          <tr><th scope="row">{{ arRoleYours }}</th><td><code>cite { margin-inline-end: 5em }</code></td><td>(0,0,1)</td></tr>
+          <tr><th scope="row">{{ arRoleOr }}</th><td><code>.a { margin-inline-end: 5em }</code></td><td>(0,1,0)</td></tr>
+          <tr><th scope="row">{{ arRoleMarkup }}</th><td><code>&lt;cite class="a"&gt;……&lt;/cite&gt;</code></td><td></td></tr>
+        </tbody>
+      </table>
+
+      <!-- the live half: the same sentence twice, the second under the
+           author's own unlayered rule (stations.css § 示範用戶樣式 —
+           KEEP THE <code> ABOVE IN SYNC WITH IT) -->
+      <div class="ProofSample" lang="zh-Hant">
+        <p><small>{{ arRoleFramework }}</small><span>{{ arProofSample }}</span></p>
+        <p class="YourCite"><small>{{ arRoleMine }}</small><span>{{ arProofSample }}</span></p>
+      </div>
+
+    </div>
+
+    <p class="ThmSource">{{ arEgCaption }}</p>
+  </div>
+
+
+  <!-- ── The books ────────────────────────────────────────────────────
+       Everything above argues「it won't fight your CSS」with live demos;
+       everything below prices it. They were interleaved and read as one
+       muddle — the layer map bridges the two (the four @layers ARE the four
+       priced modules), so it opens this half rather than closing the last.
+       Order: styles → scripts → fonts, cheapest books first. -->
+  <h3 class="LedgerHead">{{ arWeightHead }}</h3>
+  <!-- Layer map — the four cascade layers, one card each, in source order;
+       they ARE the console's four module switches (arLayerNote). Each card
+       carries its build-computed brotli weight in a <b> (sizeSemantics… from
+       vite's computeModuleLedger; gzip rides the footing as the secondary
+       figure). The weight is the DISPLAY figure — CSS stacks it above the
+       layer name via `flex-direction: column-reverse`, so the DOM keeps the
+       readable order「name → value」while the eye gets the number first.
+       The figcaption's second line is the ledger footing — four-module
+       total ＋ dep count — composed from adjacent word/number tokens IN THE
+       MARKUP (single-pass substitution, so no token value may itself hold a
+       mustache placeholder). -->
   <figure class="LayerMap">
     <ul>
-      <li>han-semantics<small>{{ sizeSemantics }}</small></li>
-      <li>han-lines<small>{{ sizeLines }}</small></li>
-      <li>han-prose<small>{{ sizeProse }}</small></li>
-      <li>han-fonts<small>{{ sizeFonts }}</small></li>
+      <li data-cfg="semantics" data-gzip="{{ sizeSemanticsGzip }}">han-semantics<b>{{ sizeSemantics }}</b><small>{{ sizeSemanticsRaw }}</small></li>
+      <li data-cfg="lines"     data-gzip="{{ sizeLinesGzip }}">han-lines<b>{{ sizeLines }}</b><small>{{ sizeLinesRaw }}</small></li>
+      <li data-cfg="prose"     data-gzip="{{ sizeProseGzip }}">han-prose<b>{{ sizeProse }}</b><small>{{ sizeProseRaw }}</small></li>
+      <li data-cfg="fonts"     data-gzip="{{ sizeFontsGzip }}">han-fonts<b>{{ sizeFonts }}</b><small>{{ sizeFontsRaw }}</small></li>
     </ul>
     <figcaption>
       {{ arLayerNote }}
-      <small>{{ arLedgerTotal }}{{ sizeTotal }}（brotli・gzip {{ sizeTotalGzip }}）・{{ arLedgerDeps }}{{ depsCount }}（{{ depsNames }}）</small>
+      <small>{{ arLedgerTotal }}<span data-total="css">{{ sizeTotal }}</span>（brotli・gzip <span data-total="css-gzip">{{ sizeTotalGzip }}</span>・未壓<span data-total="css-raw">{{ sizeTotalRaw }}</span>）・{{ arLedgerDeps }}{{ depsCount }}（{{ depsNames }}）</small>
     </figcaption>
   </figure>
 
-  <!-- Container demo — the SAME sample twice; the second cell's WRAPPER
-       carries `--han-em-symbol: sesame` (style queries read an ANCESTOR, not
-       the element itself — the repo's known trap), so the custom property
-       inherits down to its <em> and the 著重號 really becomes sesame dots,
-       while the first cell keeps the circle default. -->
-  <figure class="ScopeCompare">
-    <div class="Sample" lang="zh-Hant">
-      <small>{{ arContainerA }}</small>
-      <p>{{ arSampleText }}</p>
+  <!-- Script ledger — han.css's OWN JavaScript, and the third set of books
+       after the style modules and the fonts. Rows are SOURCE ENTRIES, plates
+       are `exports` conditions, and the cell's gloss names the file that
+       combination emits. That way round because there is no
+       `src/han.browser.ts`: build/library.js compiles `src/han.ts` twice —
+       once with happy-dom external (default/Node), once with it aliased to a
+       stub (browser) — so listing `han.browser.js` as if it were an entry of
+       its own would invent a source file that does not exist. Three entries
+       (han / han.auto / han.install) × the conditions each one ships under
+       = the five files in dist/.
+       `data-off` ships on the two legacyRuby rows because that switch is OFF
+       in the console's default config — so the greying is already right with
+       JS disabled, and home/ledger.js only takes it from there (it toggles
+       both ways from the console's first broadcast, including a restored
+       localStorage config that turns the switch back on).
+       Both figures are build-computed like the layer map's — the bundles
+       live in this repo's dist/, so vite measures them (sizeJs… from
+       computeModuleLedger); nothing here is a constant. -->
+  <h3 class="LedgerHead">{{ arScHead }}</h3>
+  <figure class="ScriptLedger">
+    <div>
+      <table>
+        <caption>{{ arScCapDefault }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ arScColBundle }}</th>
+            <th scope="col">{{ arScColRaw }}</th>
+            <th scope="col">brotli</th>
+            <th scope="col">gzip</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-cfg="legacyRuby" data-off data-in-total><th scope="row">han.ts<small>→han.js・{{ arScUseMain }}</small></th>     <td>{{ sizeJsRaw }}</td><td>{{ sizeJs }}</td>    <td>{{ sizeJsGzip }}</td></tr>
+          <tr data-cfg="fallbacks"><th scope="row">han.auto.ts<small>→han.auto.js・{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="Sample" lang="zh-Hant" style="--han-em-symbol: sesame">
-      <small>{{ arContainerB }}</small>
-      <p>{{ arSampleText }}</p>
+
+    <div>
+      <table>
+        <caption>{{ arScCapBrowser }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ arScColBundle }}</th>
+            <th scope="col">{{ arScColRaw }}</th>
+            <th scope="col">brotli</th>
+            <th scope="col">gzip</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-cfg="legacyRuby" data-off><th scope="row">han.ts<small>→han.browser.js・{{ arScUseMain }}</small></th>          <td>{{ sizeJsBrowserRaw }}</td><td>{{ sizeJsBrowser }}</td>    <td>{{ sizeJsBrowserGzip }}</td></tr>
+          <tr data-cfg="fallbacks"><th scope="row">han.auto.ts<small>→han.auto.browser.js・{{ arScUseAuto }}</small></th>     <td>{{ sizeJsAutoBrowserRaw }}</td><td>{{ sizeJsAutoBrowser }}</td><td>{{ sizeJsAutoBrowserGzip }}</td></tr>
+          <!-- browser-only by construction: a <script src> never runs in
+               Node, so this entry is compiled ONCE — it has no
+               default-condition row in the plate above. -->
+          <tr data-cfg="fallbacks" data-in-total><th scope="row">han.install.ts<small>→han.install.js・{{ arScUseInstall }}</small></th><td>{{ sizeJsInstallRaw }}</td><td>{{ sizeJsInstall }}</td><td>{{ sizeJsInstallGzip }}</td></tr>
+        </tbody>
+      </table>
     </div>
+
+    <figcaption>
+      {{ arScNote }}
+      <small>{{ arScTotal }}<span data-total="js">{{ sizeJsInstall }}</span>（brotli・gzip <span data-total="js-gzip">{{ sizeJsInstallGzip }}</span>・未壓<span data-total="js-raw">{{ sizeJsInstallRaw }}</span>）・{{ arScGrand }}<span data-total="all">{{ sizeDefaultTotal }}</span>（brotli・gzip <span data-total="all-gzip">{{ sizeDefaultTotalGzip }}</span>・未壓<span data-total="all-raw">{{ sizeDefaultTotalRaw }}</span>）</small>
+    </figcaption>
   </figure>
 
-  <div class="Prose">
-    <p>{{ arP1 }}</p>
-    <p>{{ arP3 }}</p>
+  <!-- SSR footnote — three sentences, because the station's job here is
+       「it is small, use it without worrying」, not a treatment of the SSR
+       path; the manual (§ api-js) carries that. Sources for the two caveats,
+       so nobody has to re-derive them to edit the copy: the SSR branch of
+       `installFallbacks` (src/ts/fallbacks.ts) has no `CSS.supports` to gate
+       on and `runProbes()` sits only on the browser branch. -->
+  <div class="LedgerNote">
+    <p>{{ arSsrNote }}</p>
   </div>
+
+  <!-- Font ledger — a SECOND, separate set of books. The four-module figure
+       above is the framework's own weight; webfonts are megabytes and would
+       swallow that claim if merged into one table, so they get their own
+       figure, their own heading and their own unit (M vs k).
+       ⚠ These numbers are CONSTANTS, not build-computed: the fonts live on
+       the CDN / in the sibling repos, not in this repo, so vite cannot
+       measure them the way it measures dist/han.*.min.css. They drift slowly
+       (a re-subset moves them by a percent or two), which is why a constant
+       is acceptable here. TO REFRESH THEM (measure — never estimate):
+         ziano families — in the ziano repo,
+           python3 -c "import os,glob,statistics;from collections import defaultdict; …"
+           over dist/<family>/files/*.woff2. Filenames are
+           `<family>.<weight>.<n>.woff2` for static instances and
+           `<family>.<n>.woff2` for variable ones, so group by weight:
+           avg slice = mean of ALL slices; 切片數 = 每字重片數×字重數;
+           全家 = sum of every slice.
+         diantenjeom — `stat -f "%z %N" diantenjeom/dist/fonts/*.woff2`.
+         zhuyin / em-space — `stat -f "%z %N"` on
+           han/manual/public/han/{zhuyin.serif,em-space}.woff2.
+         Without the repos checked out, jsDelivr's data API reports the same
+         byte counts and needs no font download:
+           https://data.jsdelivr.com/v1/packages/npm/@hanzi.pro/<pkg>@<version>?structure=flat
+       k = /1024, M = /1048576, both to the same precision as below.
+       Measured 2026-08-02 against the local ziano / diantenjeom dist trees.
+       The eight text families are exactly the roster codegen.js offers
+       (home/codegen.js § HERITAGE / CURSIVE_HANT) — keep the two in sync. -->
+  <h3 class="LedgerHead">{{ arFlHead }}</h3>
+  <figure class="FontLedger">
+    <div>
+      <table>
+        <caption>{{ arFlCapPrint }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ arFlColFamily }}</th>
+            <th scope="col">{{ arFlColAvg }}</th>
+            <th scope="col">{{ arFlColSlices }}</th>
+            <th scope="col">{{ arFlColTotal }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">{{ arFlShangguSans }}</th>  <td>43.8KB</td><td>109</td>   <td>4.67MB</td></tr>
+          <tr><th scope="row">{{ arFlShangguSerif }}</th> <td>61.2KB</td><td>109</td>   <td>6.51MB</td></tr>
+          <tr><th scope="row">{{ arFlGenkiGothic }}</th>  <td>25.6KB</td><td>108×6</td><td>16.2MB</td></tr>
+          <tr><th scope="row">{{ arFlGenkiMin }}</th>     <td>32.5KB</td><td>108×7</td><td>24.0MB</td></tr>
+          <tr><th scope="row">{{ arFlLxgwTc }}</th>       <td>44.5KB</td><td>103×3</td><td>13.4MB</td></tr>
+          <tr><th scope="row">{{ arFlLxgw }}</th>         <td>38.9KB</td><td>107×3</td><td>12.2MB</td></tr>
+          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101</td>   <td>3.67MB</td></tr>
+          <tr><th scope="row">{{ arFlKlee }}</th>         <td>32.8KB</td><td>120×2</td><td>7.69MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <caption>{{ arFlCapPunct }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ arFlColConv }}</th>
+            <th scope="col">{{ arFlColSans }}</th>
+            <th scope="col">{{ arFlColSerif }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><abbr class="acronym">JIS</abbr></th><td>10.6KB</td><td>11.6KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">MOE</abbr></th><td>13.4KB</td><td>14.8KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">GB</abbr></th> <td>13.1KB</td><td>14.3KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">KLR</abbr></th><td>10.5KB</td><td>11.6KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <table>
+        <caption>{{ arFlCapPatch }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ arFlColFace }}</th>
+            <th scope="col">{{ arFlColSize }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- the first two ship inside han.css itself (@font-face in
+               han.fonts.css, woff2 beside it); 著重號 comes from DTJ, hence
+               last — the figcaption draws exactly that line. -->
+          <tr><th scope="row">{{ arFlZhuyin }}</th>  <td>26.3KB</td></tr>
+          <tr><th scope="row">{{ arFlEmSpace }}</th> <td>0.4KB</td></tr>
+          <tr><th scope="row">{{ arFlEmphasis }}</th><td>1.1KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figcaption>
+      {{ arFlNote }}
+    </figcaption>
+  </figure>
+
 </section>

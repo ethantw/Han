@@ -28,7 +28,10 @@ const DEFAULT_KEYS = [
   'semantics', 'citeTitleMarks', 'emSymbol', 'emPosition',
   'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
-  'zhuyinWebfont', 'baseGeneric', 'fallbacks', 'legacyRuby',
+  'zhuyinWebfont', 'baseGeneric', 'fallbacks',
+  // `--han-install` 的逐 pass 取捨，掛在 fallbacks 底下
+  'fbPunctuation', 'fbIss', 'fbAdjacentLines', 'fbProbes',
+  'legacyRuby',
   'webfontDelivery', 'webfontCdnSource', 'metrics',
 ]
 

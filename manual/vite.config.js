@@ -93,7 +93,11 @@ function localizeHomeI18n(dict, locale) {
  *   - sizeSemantics / sizeLines / sizeProse / sizeFonts
  *             brotli size of each per-module `dist/han.<mod>.min.css`, kb
  *             with one decimal formatted like '2.3k'; a missing file → '—'.
- *   - sizeTotal      sum of the four (brotli), one decimal + 'k'.
+ *   - sizeJs…        the four JS bundles (brotli), plus a `…Gzip` twin
+ *                    each — han / han.auto × default / browser condition.
+ *   - …Raw           every module and bundle again, uncompressed (the
+ *                    minified file itself), plus `sizeTotalRaw`.
+ *   - sizeTotal      sum of the four CSS modules (brotli), one decimal + 'k'.
  *   - sizeTotalGzip  same sum, gzipped — the footing's secondary figure.
  *   - depsCount      count of runtime deps in root package.json.
  *
@@ -110,19 +114,70 @@ async function computeModuleLedger() {
     sizeProse:     'han.prose.min.css',
     sizeFonts:     'han.fonts.min.css',
   }
+  // The four JS bundles build/library.js emits: two entry points (`han` —
+  // call the API yourself; `han.auto` — apply on load) × the two `exports`
+  // conditions (default/Node vs `browser`, which swaps happy-dom for a
+  // stub). Same treatment as the CSS modules — measured, never guessed —
+  // but they feed their OWN table (the script ledger), so they stay out of
+  // the four-module `sizeTotal` footing below.
+  const bundles = {
+    sizeJs:           'han.min.js',
+    sizeJsAuto:       'han.auto.min.js',
+    sizeJsBrowser:    'han.browser.min.js',
+    sizeJsAutoBrowser:'han.auto.browser.min.js',
+    sizeJsInstall:    'han.install.min.js',
+  }
   const keys = Object.keys(modules)
-  const [sizes, gzipSizes, deps] = await Promise.all([
+  const jsKeys = Object.keys(bundles)
+  // `raw` is the minified file as it sits on disk — the figure a reader gets
+  // if their server never negotiated an encoding. Same measurement path as
+  // the compressed ones (identity, i.e. no compressor), so the three columns
+  // can never be measured against different files.
+  const identity = buf => buf
+  const [sizes, gzipSizes, rawSizes, jsSizes, jsGzipSizes, jsRawSizes, deps] = await Promise.all([
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), brotliCompressSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), gzipSync))),
+    Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), identity))),
+    Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), brotliCompressSync))),
+    Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), gzipSync))),
+    Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), identity))),
     runtimeDeps(),
   ])
-  const fmtSize = kb => kb == null ? '—' : `${kb}k`
+  // Always one decimal — the four cards print the figure at heading scale in
+  // a tabular-nums column, so a bare '1KB' beside '0.8KB' would break the
+  // decimal alignment the whole layer map is lined up on.
+  //
+  // Unit is capital `KB`, never `kb`: lower-case `b` is BITS. On a typography
+  // framework's own homepage an ambiguous unit is the one typo nobody would
+  // forgive — a reader who parses `3.5kb` as kilobits reads our claim as 8×
+  // better than it is.
+  const fmtSize = kb => kb == null ? '—' : `${kb.toFixed(1)}KB`
   const total = sizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
   const totalGzip = gzipSizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
   _moduleLedgerCache = {
     ...Object.fromEntries(keys.map((k, i) => [k, fmtSize(sizes[i])])),
-    sizeTotal: `${total.toFixed(1)}k`,
-    sizeTotalGzip: `${totalGzip.toFixed(1)}k`,
+    ...Object.fromEntries(jsKeys.map((k, i) => [k, fmtSize(jsSizes[i])])),
+    ...Object.fromEntries(jsKeys.map((k, i) => [`${k}Gzip`, fmtSize(jsGzipSizes[i])])),
+    ...Object.fromEntries(keys.map((k, i) => [`${k}Raw`, fmtSize(rawSizes[i])])),
+    ...Object.fromEntries(jsKeys.map((k, i) => [`${k}Raw`, fmtSize(jsRawSizes[i])])),
+    ...Object.fromEntries(keys.map((k, i) => [`${k}Gzip`, fmtSize(gzipSizes[i])])),
+    sizeTotalRaw: `${rawSizes.reduce((sum, kb) => sum + (kb ?? 0), 0).toFixed(1)}KB`,
+    // The ledger's totals are LIVE — home/ledger.js re-sums them from the
+    // printed figures whenever the console's switches change. These three are
+    // the same sums for the console's DEFAULT config (all four modules on,
+    // `fallbacks` on → han.install.js, `legacyRuby` off), so the line is already
+    // correct on first paint and stays correct with JS off. Keep in step with
+    // home/codegen.js § DEFAULT if those defaults ever move.
+    ...Object.fromEntries([['', jsSizes], ['Gzip', jsGzipSizes], ['Raw', jsRawSizes]].map(
+      ([suffix, group]) => [
+        `sizeDefaultTotal${suffix}`,
+        `${((suffix === 'Gzip' ? gzipSizes : suffix === 'Raw' ? rawSizes : sizes)
+          .reduce((sum, kb) => sum + (kb ?? 0), 0) + (group[jsKeys.indexOf('sizeJsInstall')] ?? 0)
+        ).toFixed(1)}KB`,
+      ],
+    )),
+    sizeTotal: `${total.toFixed(1)}KB`,
+    sizeTotalGzip: `${totalGzip.toFixed(1)}KB`,
     depsCount: String(deps.length),
     depsNames: deps.join('・'),
   }
@@ -200,6 +255,9 @@ const FRAMEWORK_ASSETS = [
   'han.prose.css', 'han.prose.min.css',
   'han.fonts.css', 'han.fonts.min.css',
   'han.js', 'han.min.js', 'han.auto.js', 'han.auto.min.js',
+  // side-effect-only twin of han.auto, for the <script src> / pasted-
+  // <script> paths the console generates (src/han.install.ts)
+  'han.install.js', 'han.install.min.js',
   'em-space.woff2',
   'zhuyin.serif.woff2',
 ]
