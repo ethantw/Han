@@ -117,6 +117,24 @@ clean HEAD 亦同，與傳承字形擴展無關。分三類：
       齊、無多餘）。
 - [ ] 跨瀏覽器 QA：Safari＋Firefox 跑 gate／stroke／autospace／
       hanging／vertical；e2e 全瀏覽器綠。
+- [ ] **重數「〇的個數」並統一文案**。首頁站伍的 lede 寫「一百〇九個〇」，
+      那是舊的量測；CSS 一有增減這個數就漂。2026-08-02 實測是 136 個
+      選擇器分支、其中 111 個權重為 `(0,0,0)`（去重 74／51）。發布前重跑
+      一次普查、把數字統一到 lede 與各語系文案（hant／hans／en／ja／ko
+      都寫死了數字）。腳本與兩個易踩的坑見
+      `docs/notes/2026-08-02-where-specificity-census.md`。
+      `prose.css` 那兩處 `:is()` 已改成 `:where()`（2026-08-02）。
+- [ ] **權重全數歸零**（擁有者定調的目標）。現況 136 個分支中 115 個是
+      `(0,0,0)`，還差 21 個：
+      · **15 個 `h-char` 一族**（`lines.with-js.css`，最重 `(0,6,2)`）——
+        可以包 `:where()` 歸零，但**這一族現在是靠權重分勝負的**
+        （`[data-punct~=open]` 疊在 `[data-punct]` 之上、`consecutive` 再疊
+        其上）。歸零後只剩源碼順序決定，必須逐條確認順序已由寬到窄、必要時
+        重排並補 e2e。這是這條 TODO 的真正工作量。
+      · **6 個 `(0,0,1)`** 是 `::before` / `::after` / `> rt` 的結構下限，
+        `:where()` 包不住偽元素——**歸不了零**，文案要據實寫成「作者寫得出來
+        的選擇器全數放棄權重」。
+      量測與腳本：`docs/notes/2026-08-02-where-specificity-census.md`。
 
 ### Phase 4 — 切 RC（7/29–7/30）
 - [ ] 版號 `4.0.0-rc.1`＋`CHANGELOG`。

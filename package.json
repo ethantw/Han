@@ -19,6 +19,10 @@
       "import": "./dist/han.auto.js",
       "default": "./dist/han.auto.js"
     },
+    "./install": {
+      "browser": "./dist/han.install.js",
+      "default": "./dist/han.install.js"
+    },
     "./styles": "./dist/han.css",
     "./styles/semantics": "./dist/han.semantics.css",
     "./styles/lines": "./dist/han.lines.css",
@@ -37,6 +41,12 @@
     "LICENSE",
     "LICENSE-FONTS"
   ],
+  "sideEffects": [
+    "*.css",
+    "**/han.auto.*",
+    "**/han.install.*"
+  ],
+
   "scripts": {
     "build": "node ./build/library",
     "dev": "node ./build/library --watch",

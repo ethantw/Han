@@ -71,7 +71,7 @@
     margin-block-end: var(--han-prose-consecutive-headings-a-block-end);
   }
 
-  :where(h1, h2, h3, h4, h5, h6):is(:first-child),
+  :where(h1, h2, h3, h4, h5, h6):where(:first-child),
   :where(h1) + :where(h2, h3, h4, h5, h6, blockquote, p, ol, ul),
   :where(h2) + :where(h2, h3, h4, h5, h6, blockquote, p, ol, ul),
   :where(h3) + :where(h3, h4, h5, h6, blockquote, p, ol, ul),
@@ -122,7 +122,7 @@
    * (any `--han-prose: on` container, not just literal `<article>`).
    */
   @container style(--han-prose-fonts: on) {
-    :where(blockquote):is(:lang(zh), :lang(ja), :lang(ko)) {
+    :where(blockquote):where(:lang(zh), :lang(ja), :lang(ko)) {
       & {
         font-family: var(--han-font-accent);
       }
