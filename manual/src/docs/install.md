@@ -83,11 +83,21 @@ fonts模組定義字體堆疊與家族名；傳承字形（尚古黑體／明體
 
 ```html
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@latest/swap.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-tc@latest/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-dan@latest/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-yue@latest/swap.css">
 ```
 
 也可以不引入：`--han-use-heritage-glyphs-for-hant: system-ja`改用日文系統字體回落，詳見[字體](./fonts.html)。簡日韓的傳承字形預設關閉、亦可各自開啟（`--han-use-heritage-glyphs-for-hans`／`-ja`／`-ko`），家族可選尚古或源起，詳見[字體](./fonts.html)。
+
+## Web字體（標點）
+
+標點層同理，掛diantenjeom即可。**要0.2.0以上**：0.1.0的家族名還是`… KV`，對不上本模組的`… KLR`，掛上去等於沒掛（靜默退回正文字體自身的標點）。
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@0.2.0/dist/diantenjeom.css">
+```
+
+整包含四套慣例；只用一套就改指`…/dist/moe.css`（或`jis`／`gb`／`klr`）。同版另附一個**著重號字體**`Diantenjeom Emphasis`，不隨上面的樣式表自動生效——它沒有`unicode-range`，須由你掛到`<em>`上，見[語意元素](./semantics.html)。
 
 ## 啓用範圍
 

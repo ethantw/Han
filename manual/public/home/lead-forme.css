@@ -108,13 +108,13 @@
 :where(.LeadForme[data-face='m']) text.g {
   font-family:
     var(--dtj-serif),
-    'Shanggu Serif',
+    'Shanggu Serif Dan',
     serif;
 }
 :where(.LeadForme[data-face='h']) text.g {
   font-family:
     var(--dtj-sans),
-    'Shanggu Sans',
+    'Shanggu Sans Dan',
     sans-serif;
 }
 :where(.LeadForme[data-face='k']) text.g {

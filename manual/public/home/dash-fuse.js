@@ -8,7 +8,7 @@
  *   § initClip      量出「超迴路運行廿載」樣張卡的上緣，發佈 --df-clip-top
  *   § 開演時機      什麼時候蓋 `data-play`
  *
- * 後者兩個條件都成立才蓋：
+ * 後者三個條件都成立才蓋：
  *
  *   ① .PunctFix 已被 reveal.js 蓋 `data-revealed`（data-reveal-at 深度
  *      門檻，且過 fonts-gate）——文案還沒印出來，底圖沒理由先開演。
@@ -16,6 +16,17 @@
  *      `--lf-last-slug`（最後一枚的起跳延遲）＋ `--lf-drop-dur`（一枚的
  *      落程），跟 lead-forme.css 給 figcaption 排隊用的是同一份時刻表；
  *      已經 `.settled` 的盤（reduced、或使用者先動過控制）視為落完。
+ *   ③ 至少喘滿 MIN_BREATHS 口，且卡在 df-strain 的輪邊界上（末幀
+ *      fuse 0 ＝ df-fuse 的起手），換支不跳。
+ *
+ * 等待期有兩種身分：**還沒露臉**時是 df-try（極淺，只是活著），
+ * **一露臉**就換 df-strain（較勁，見 dash-fuse.css）——**不等鉛字**。
+ * 較勁本來就是「等待」本身的樣子：讀者在看鉛字落下的那段時間，兩截已經
+ * 在使勁；鉛字落完，才在下一個輪邊界猛然接上。
+ *
+ * 實測沒有這一段時，滾到本欄後 1.1 秒就接合，那 1.1 秒裡 `--df-fuse`
+ * 只從 .003 漂到 .14（df-try 一輪 6s 的六分之一），縫的變化不到
+ * 0.01em——等待期寫得再細也等於沒演。
  *
  * 兩段文案的入場不經這裡：它鍵在 .PunctFix 自己的 `data-revealed` 上
  * （reveal.js 蓋，淺門檻），滾到鉛字以下就飛入，與柱的節奏無關。
@@ -137,6 +148,40 @@ const formeSeen = ($forme) =>
     new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
   ])
 
+/* 一口氣的長度，與 dash-fuse.css 的 `df-strain` 同值。 */
+const BREATH_MS = 1600
+
+/* 至少喘幾口才准接合（owner 定案）。鉛字通常在四口之內就落完，這道下限
+ * 是給「深連結／盤已 settled」那種一到就位的情形用的——沒有它，讀者根本
+ * 來不及看見兩截在試。 */
+const MIN_BREATHS = 4
+
+/* 從呼吸起跑算起，還要等多久才接合：湊滿 MIN_BREATHS 口，且落在**整數
+ * 輪的邊界**上。邊界這一條是硬的——接合必須從 fuse 0 起手（那是 df-strain
+ * 的末幀、也是 df-fuse 的第一幀），中途插進去會看到一次跳變。順帶它也讓
+ * 每一口氣都完整：鉛字若在吸到一半時落完，也會等這一口喘完才接。 */
+const toFuseEdge = (elapsed) => {
+  const earliest = Math.max(elapsed, MIN_BREATHS * BREATH_MS)
+  return Math.ceil(earliest / BREATH_MS) * BREATH_MS - elapsed
+}
+
+/* 相位要問**動畫自己**，不能用 performance.now() 從蓋章那一刻算。蓋章與
+ * 動畫起跑之間隔著一次樣式重算＋一次上畫，實測差 84ms——照 JS 的錶對邊界，
+ * 接合就會從 fuse −.06 跳到 0（約 1.6px，看得見）。Animation.currentTime
+ * 是動畫自己的錶，對它就準。
+ * currentTime 在時間軸動畫是毫秒數；捲動軸動畫會給 CSSUnitValue，這裡兩種
+ * 都接（本檔用不到後者，但取值不該挑食）。reduced-motion 下沒有動畫可問，
+ * 回 0 ＝ 立刻接合，正是那個模式該有的樣子。 */
+const strainClock = ($column) => {
+  const time = $column
+    ?.getAnimations?.()
+    .find((animation) => animation.animationName === 'df-strain')
+    ?.currentTime
+  return typeof time === 'number' ? time : (time?.value ?? 0)
+}
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 /* 讀者按住不放的那一齣（見 dash-fuse.css § .PunctFix[data-hold]）。
  * 進：蓋 data-hold ⇒ 斷開、轉校樣紅、兩截朝對方呼吸。
  * 出：把呼吸**當下**的 --df-fuse 抄進 --df-from，換蓋 data-repair ⇒ 從那個
@@ -184,10 +229,18 @@ export const initDashFuse = () => {
   $column?.setAttribute('data-armed', '')
 
   /* 首播章蓋兩處：柱（接合動畫鍵在它身上）與 .PunctFix（留著給 e2e ／
-     未來的旁證用）。條件：本欄 data-revealed 且鉛字盤入場落完。 */
+     未來的旁證用）。條件：本欄 data-revealed、鉛字盤入場落完，且柱已經
+     當著讀者的面較勁滿一輪。 */
   stamped($punct, 'data-revealed')
-    .then(() => ($forme ? formeSeen($forme) : false))
-    .then((seen) => (seen ? formeDone($forme) : undefined))
+    .then(() => {
+      /* 露臉就開始喘，**不等鉛字**——等鉛字的那段時間正是兩截一開一合的
+         時間。 */
+      $column?.setAttribute('data-strain', '')
+
+      return Promise.resolve($forme ? formeSeen($forme) : false)
+        .then((seen) => (seen ? formeDone($forme) : undefined))
+        .then(() => wait(toFuseEdge(strainClock($column))))
+    })
     .then(() => {
       $punct.setAttribute('data-play', '')
       $column?.setAttribute('data-play', '')

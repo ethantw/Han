@@ -557,7 +557,7 @@
       [data-glyph] {
         fill: none;
         /* DASHED, because that is how the characters themselves are drawn.
-           Rendered ⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻ in Shanggu Serif TC / Shanggu Sans /
+           Rendered ⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻ in Shanggu Serif Yue / Shanggu Sans Dan /
            Songti TC / PingFang TC / Hiragino Sans — every one of the five
            dashes them. Solid was the deviation. It also earns its keep
            twice: a dashed contour reads as «placeholder», which is exactly

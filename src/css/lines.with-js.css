@@ -234,10 +234,10 @@
  * real per-value facts.
  *
  * `ko` used to be the second exception — unconditionally `on`, because its
- * property was `KV | off` and had no centered value to exclude. Since the
+ * property was `KLR | off` and had no centered value to exclude. Since the
  * conventions were opened to every locale (`--han-punctuation-ko` now takes
- * the same `JIS | MOE | GB | KV | off`), Korean can be set to MOE like
- * anyone else, so it follows the same rule as the rest. `KV` itself
+ * the same `JIS | MOE | GB | KLR | off`), Korean can be set to MOE like
+ * anyone else, so it follows the same rule as the rest. `KLR` itself
  * qualifies: KLReq attaches `。、` to the cell corner (cl8/cl9) — side-
  * biased, the same reason `JIS` / `GB` qualify.
  *

@@ -160,11 +160,11 @@
   55% { --df-fuse: -.42; }
 }
 
-/* 開演前的等待（data-armed 而未 data-play）：柱以斷開態現身，兩截極淺地
-   呼吸——峰值 .35（縫 0.1em → 0.065em），只是「活著」的證據，不是「快接上
-   了」的預告；後者會先把重逢演一遍，真正接上的那一刻就沒有分量了。一輪
-   6s 兩口氣，慢吸快吐，末段飄回基態；起訖同為 0，與 df-fuse 的起手接得上
-   （整支 ease-in-out，快慢靠段長不靠曲線的稜角）。 */
+/* 還沒被看到時的等待（data-armed，未 data-strain／data-play）：柱以斷開態
+   現身，兩截極淺地呼吸——峰值 .35（縫 0.1em → 0.065em），只是「活著」的
+   證據。讀者的眼睛還沒到，這裡不必演戲。一輪 6s 兩口氣，慢吸快吐，末段
+   飄回基態；起訖同為 0，與後面兩支的起手都接得上（整支 ease-in-out，快慢
+   靠段長不靠曲線的稜角）。 */
 @keyframes df-try {
   0% { --df-fuse: 0; }
   25% { --df-fuse: .3; }
@@ -174,6 +174,36 @@
   70% { --df-fuse: 0; }
   78% { --df-fuse: .04; }
   100% { --df-fuse: 0; }
+}
+
+/* 露臉之後、接合之前的那一段（data-strain，dash-fuse.js 在 .PunctFix 亮章
+   時就蓋，不等鉛字）：兩截**開開合合**——收攏、差一截、鬆開得比原本還遠、
+   再收。等鉛字落下的那段時間，就是這幾口氣的時間。
+
+   語彙借按住那一齣（df-hold）的：同一種 ease-in-out 的往復，只是快一截
+   （1600ms 對 2600ms）——被按住是「被拉住不放」，這裡是自己一口一口地
+   試，節奏該急一點。
+
+   四個拍點，一口氣一個來回：
+     0%  fuse 0    ——字體真正的縫 0.1em，也是接合的起手（見末段）
+     25% fuse .62  ——收到最緊，縫剩 0.038em。**不到 1**：差一截始終在場，
+                     越過去就等於先把重逢演了一遍
+     75% fuse -.6  ——鬆開，縫張到 0.16em，比真值還開。這一段是 owner 定
+                     案：呼吸要讀得出來，幅度得夠；按住那一齣本來就張到
+                     0.2em（fuse −1），所以圖上並非沒有先例——差別只在
+                     那裡是讀者的手在拉，這裡是它自己在喘
+     100% 回到 0   ——輪邊界必須是真值，接合才接得上（df-fuse 的 0% 幀就是
+                     fuse 0），JS 因此把 data-play 卡在整數輪（見
+                     dash-fuse.js § BREATH_MS）
+
+   **只動縫，不動墨**：等待期的墨色恆為 0（宣告在 [data-armed] 那條，這支
+   不碰它）。墨色是接觸才有的事——撞上去那一下竄到峰值、線壓厚（--df-ink
+   ／--df-press），接觸前先亮起來就等於預告。校樣紅同理不進來，紅是「指出
+   錯處」的動詞。 */
+@keyframes df-strain {
+  0%, 100% { --df-fuse: 0; }
+  25% { --df-fuse: .62; }
+  75% { --df-fuse: -.6; }
 }
 
 /* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
@@ -325,7 +355,8 @@ svg[data-name="dash-fuse"] {
   /* 時序（同站台 reveal 的契約：settled 是基態，動畫只活在 no-preference
      之內；reduced ／ 無 JS ⇒ 永遠是已修正的終態，絕不停在壞畫面上）。
      data-armed：dash-fuse.js 一啟動就蓋——柱即刻以斷開態示人，不等鉛字；
-     data-play：.PunctFix data-revealed 且鉛字盤落完——熔接一次，就這一次。 */
+     data-strain：柱跨進視窗中帶才蓋——讀者的眼睛到了，漂移換成較勁；
+     data-play：前兩者之外還要鉛字盤落完、較勁滿一輪——熔接一次，就這一次。 */
   @media (prefers-reduced-motion: no-preference) {
     /* 開演前：基態斷開、墨色淺（還沒修好，不該先實起來），兩截在其上極淺
        地呼吸（df-try 峰值 .35）。 */
@@ -333,6 +364,12 @@ svg[data-name="dash-fuse"] {
       --df-fuse: 0;
       --df-ink: 0;
       animation: df-try 6s ease-in-out infinite;
+    }
+    /* 進了視野中央就換一支：較勁取代漂移。同 specificity 的後一條整組
+       取代前一條的簡寫（同檔一貫），df-try 停、df-strain 從 0 起跑——
+       起點相同，換支不跳。 */
+    &[data-strain]:not([data-play]) {
+      animation: df-strain 1600ms ease-in-out infinite;
     }
     /* 開演：靠近、彈開、猛然接上（1150ms，拍點見 keyframes）。**不留
        fill**：末幀的值（fuse 1、ink .35、red 0）與基態逐項相同，所以動畫

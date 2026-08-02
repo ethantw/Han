@@ -63,7 +63,7 @@ The fonts module defines stacks and family names; woff2 delivery is your choice.
 
 ```html
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@latest/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-dan@latest/swap.css">
 ```
 
 Or set `--han-use-heritage-glyphs-for-hant: system-ja` for a zero-download JP-system-font fallback. Simplified Chinese / Japanese / Korean heritage glyphs default off and can each be enabled (`--han-use-heritage-glyphs-for-hans`/`-ja`/`-ko`), with Shanggu or Genki as the family — see [Fonts](/manual/fonts.html).

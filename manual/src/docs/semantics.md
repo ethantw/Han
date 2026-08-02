@@ -54,6 +54,30 @@ title: 語意樣式標準化
 article { --han-em-symbol: sesame; }
 ```
 
+### 直排
+
+`under right`同時涵蓋橫直排：`over`／`under`只在橫排生效、`right`／`left`只在直排生效，是同一個屬性的兩半。故直排下`under right`＝標在字的**右側**，正是中文直排的慣例，不必另行覆寫（Chromium／Firefox／WebKit皆已量測確認）。日文的`over right`同理，直排下與繁中無異；差別只在橫排。
+
+### 著重號字體
+
+著重號的字面不是正文字體畫的：瀏覽器從`<em>`**字體堆疊裡第一個有該符號的字體**取字。系統字體對這個符號的大小、離字距離各有各的想法，有的乾脆沒有；要一致，就自己指定一個。diantenjeom 0.2.0起附一個專畫著重號的`Diantenjeom Emphasis`：
+
+```css
+:where(em) {
+  font-family: 'Diantenjeom Emphasis', var(--han-font-default);
+  line-height: 1.9;
+}
+```
+
+兩點要注意：
+
+- **必須排在最前面，而且只掛在要標著重號的元素上。** 這個字體刻意不帶`unicode-range`（帶了就永遠輪不到它被查詢），所以它也會接手正文裡真的打出來的`●`、`•`、`△`。掛在`body`上會波及全篇。
+- **行高至少`1.9`。** 著重號畫在離基線`0.475em`處，半行距要能兩側都容下它，門檻正好是`2 × (ascent + |descent|) / upem`。低於此值，有著重號的那一行會比鄰行高，整段參差。這是有間隙的著重號的代價，沒有CSS可以繞過。
+
+han.css不替你接這條線，是因為`font-family`無法「在繼承來的堆疊前面插一項」——它不知道你的`<em>`繼承到的是哪一疊。上例的`var(--han-font-default)`只在正文用預設堆疊時成立；若該處是`--han-font-alternative`（明體）或作者自訂的堆疊，跟着換掉即可。
+
+推導與量測見diantenjeom的[`docs/emphasis-marks.md`](https://github.com/hanzi-pro/diantenjeom/blob/main/docs/emphasis-marks.md)。
+
 ## 楷體——`<i>`與`<var>`
 
 `<i>`（另一種聲氣、術語、船名等）與`<var>`（變量）在西文靠斜體區別；漢字既無斜體，改用楷體區別，指向強調字族`--han-font-accent`（預設`cursive`通用字族，fonts模組載入時換上楷體Web字體）：

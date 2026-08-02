@@ -32,22 +32,22 @@ title: 字體
 
 | 變量 | 值 | 預設 | 作用語言 |
 |------|----|------|---------|
-| `--han-punctuation-hant` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `MOE` | `:lang(zh)`（繁中） |
-| `--han-punctuation-hans` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `GB` | `:lang(zh-Hans)` |
-| `--han-punctuation-ja` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `JIS` | `:lang(ja)` |
-| `--han-punctuation-ko` | `JIS`｜`MOE`｜`GB`｜`KV`｜`off` | `KV` | `:lang(ko)` |
+| `--han-punctuation-hant` | `JIS`｜`MOE`｜`GB`｜`KLR`｜`off` | `MOE` | `:lang(zh)`（繁中） |
+| `--han-punctuation-hans` | `JIS`｜`MOE`｜`GB`｜`KLR`｜`off` | `GB` | `:lang(zh-Hans)` |
+| `--han-punctuation-ja` | `JIS`｜`MOE`｜`GB`｜`KLR`｜`off` | `JIS` | `:lang(ja)` |
+| `--han-punctuation-ko` | `JIS`｜`MOE`｜`GB`｜`KLR`｜`off` | `KLR` | `:lang(ko)` |
 
 - `JIS`：日規（JIS X 0208），句末點號（，。、）靠格尾，其餘置中。
 - `MOE`：教育部標準，主要標點一律置中於全形格。
 - `GB`：國標（GB/T 15834），八個主要標點一律靠格尾。
-- `KV`：W3C [KLReq][klreq]（韓文排版要件）。括號與引號（cl1／cl2）貼齊格的一端；`！？：；`與間隔號（cl6／cl7）直排時保持正立而不旋轉；`。、`（cl8／cl9）全形貼角。韓國自2015年한글맞춤법刪去直排章節後便無成文的直排標點規範，KLReq是現行的參照。
+- `KLR`：W3C [KLReq][klreq]（韓文排版要件）。括號與引號（cl1／cl2）貼齊格的一端；`！？：；`與間隔號（cl6／cl7）直排時保持正立而不旋轉；`。、`（cl8／cl9）全形貼角。韓國自2015年한글맞춤법刪去直排章節後便無成文的直排標點規範，KLReq是現行的參照。
 - `off`：關閉該語言的Diantenjeom，標點回落到正文字體自身的字形。
 
 **慣例與語言是解耦的。** 四個慣例對四個語言全面開放——日文配MOE、繁中配JIS、韓文配GB都合法。Diantenjeom四個變體覆蓋同一組CJK標點碼位，且刻意以排版規範而非語言命名，就是為了自由搭配；上表的預設值只是合理的起點，不是限制。選的是版面調性，不是語言。
 
-橫排韓文另有一層：KLReq要求橫排韓文使用半形西文`.`與`,`，那是**內容層**的選擇（作者敲哪個字元），標點字體代勞不了。`KV`給橫排韓文的是括號家族，給直排韓文的才是整套慣例。
+橫排韓文另有一層：KLReq要求橫排韓文使用半形西文`.`與`,`，那是**內容層**的選擇（作者敲哪個字元），標點字體代勞不了。`KLR`給橫排韓文的是括號家族，給直排韓文的才是整套慣例。
 
-這組設定同時參與[行尾懸掛的自動判準](./lines.html)：置中式（MOE）不懸掛，偏倚式（JIS／GB／KV）懸掛——四個語言同一條規則。
+這組設定同時參與[行尾懸掛的自動判準](./lines.html)：置中式（MOE）不懸掛，偏倚式（JIS／GB／KLR）懸掛——四個語言同一條規則。
 
 [klreq]: https://www.w3.org/TR/klreq/
 
@@ -97,8 +97,8 @@ title: 字體
 
 | 變量 | 預設（＝尚古） |
 |------|------|
-| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans', 'Shanggu Sans TC'` |
-| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif', 'Shanggu Serif TC'` |
+| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans Dan', 'Shanggu Sans Yue'` |
+| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif Dan', 'Shanggu Serif Yue'` |
 | `--han-webfont-cursive-hant` | `'LXGW WenKai TC'` |
 
 ```css
@@ -112,7 +112,11 @@ Latin層同樣可換：`--han-font-latin-sans`（預設`'Avenir Next', 'Segoe UI
 
 ## Web字體遞送
 
-fonts模組只定義**家族名與堆疊**；woff2從哪來由你決定。傳承字形建議掛ziano CDN切片（依使用頻率分割、`unicode-range`按需下載），見[安裝與啓用](./install.html)；Diantenjeom標點字體同理（`@hanzi.pro/diantenjeom`）。模組自帶兩個小型字體資產：全形空格校準字體（`em-space.woff2`，供行內擠壓／間隙定寬）與注音字體（`zhuyin.serif.woff2`）。
+fonts模組只定義**家族名與堆疊**；woff2從哪來由你決定。傳承字形建議掛ziano CDN切片（依使用頻率分割、`unicode-range`按需下載），見[安裝與啓用](./install.html)；Diantenjeom標點字體同理（`@hanzi.pro/diantenjeom`，**需 0.2.0 以上**——0.1.0 的家族名還是`… KV`，對不上本模組的`… KLR`就會退回系統標點）。模組自帶兩個小型字體資產：全形空格校準字體（`em-space.woff2`，供行內擠壓／間隙定寬）與注音字體（`zhuyin.serif.woff2`）。
+
+Diantenjeom同版還附一個`Diantenjeom Emphasis`，只畫著重號的符號。它**不屬於這四層堆疊**，也不隨標點樣式表自動生效——著重號的字面是從元素堆疊裡第一個有該符號的字體取的，所以它必須由你掛到`<em>`上、且排在最前面，見[語意元素](./semantics.html)。
+
+另：ziano與diantenjeom自0.2.0起把各家族的`hhea`／`usWin*`統一正規化，中央基線一律落在`0.380em`。直排下瀏覽器以畫字的那個字體的`hhea`合成中央基線，而帶`unicode-range`的分片字體永遠當不上一行的第一順位字體，必走這條路；上游各家取值不一，混排就會整段左右錯開。正規化之後這一層由字體檔自己保證，本模組不必、也不應再加`ascent-override`（Safari根本不吃）。
 
 ## 不會整組失效的堆疊
 
