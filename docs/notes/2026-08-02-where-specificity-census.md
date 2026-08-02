@@ -86,20 +86,40 @@
 `consecutive` 又疊在其上），全部歸零之後就只剩「源碼順序後者勝」——所以不能
 無腦包，得逐條確認現有順序已經是由寬到窄，必要時重排。**這是真正的工作量所在。**
 
-### 六個 `(0,0,1)`——結構上歸不了零
+### `> rt` 可以歸零——但不是 `:where(> rt)`
+
+擁有者提的寫法，三家引擎實測（`CSS.supports('selector(…)')`，Chromium／
+WebKit／Firefox 一致）：
+
+| 寫法 | Chromium | WebKit | Firefox |
+|---|---|---|---|
+| `:where(> rt)` | ✘ | ✘ | ✘ |
+| **`:where(& > rt)`** | **✓** | **✓** | **✓** |
+| `:where(a::before)` | ✘ | ✘ | ✘ |
+| `:is(a::before)` | ✘ | ✘ | ✘ |
+| `:where(&::before)` | ✘ | ✘ | ✘ |
+
+`:where()` 收的是 `<complex-selector-list>`，**不收前導組合子**——收相對選擇器
+的只有 `:has()`。但巢狀裡的 `&` 是合法的複合選擇器，所以 `:where(& > rt)`
+成立、且權重為零。**`semantics.css` 那條 `> rt` 該這樣改。**
+
+### 四個 `::before` / `::after`——真的歸不了零，但也輸不掉
 
 ```
-:where(q)::before   :where(q)::after   :where(h-iss)::before
-:where(h-iss[data-mode=replace])::before
-:where(ruby:is(.zhuyin, .mps)) > rt     > rt
+:where(q)::before   :where(q)::after
+:where(h-iss)::before   :where(h-iss[data-mode=replace])::before
 ```
 
-`:where()` 包得住選擇器，包不住偽元素本身；`::before` 一出現，`c` 就是 1。
-`> rt` 同理，型別選擇器就是 1。**這六個無解**，除非改用別的機制（例如把
-`::before` 的樣式移到一個真實元素上，代價更大）。
+偽元素**不允許**出現在 `:is()` / `:where()` 內（三家一致拒絕），而規則只要帶
+`::before`，`c` 就至少是 1。這四個沒有辦法。
 
-⇒ 可達成的終點是「**十五個 `h-char` 歸零，六個偽元素殘留維持 `(0,0,1)`**」。
-文案要跟著寫準：作者寫得出來的選擇器全數放棄權重，剩下的 1 是偽元素的地板。
+不過它們**不構成問題**：任何要跟它們爭同一個偽元素的作者規則，自己也必然帶
+一個 `::before`（`q::before` 是 (0,0,2)、`.mine::before` 是 (0,1,1)），本來就
+贏；就算寫成 `*::before` 打平，作者的宣告未分層、照樣勝出。
+
+⇒ 終點是「**15 個 `h-char` ＋ 1 個 `> rt` 歸零，4 個偽元素殘留 `(0,0,1)`**」。
+文案寫準：作者寫得出來的選擇器全數放棄權重；剩下的 1 是偽元素的地板，而且
+那個 1 從來贏不過任何一條作者規則。
 
 ## 重跑
 

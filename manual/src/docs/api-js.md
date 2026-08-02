@@ -17,7 +17,9 @@ import { installFallbacks, transpileRuby } from '@hanzi.pro/han.css'
 | `@hanzi.pro/han.css` | 純named exports，不自動執行 |
 | `@hanzi.pro/han.css/auto` | 載入即自動安裝（`DOMContentLoaded`），並re-export主入口全部API |
 
-`auto`入口的行為可用`:root`上的`--han-install`變量調整：`auto`（預設，探針＋回落全上）｜`fallbacks`（只回落）｜`probes`（只跑探針）｜`none`（載入但不動作）。
+`auto`入口的行為可用`:root`上的`--han-install`變量調整。值是**空白分隔的token列表**：`auto`（預設，探針＋回落全上）｜`fallbacks`（只回落，三道pass）｜`probes`（只跑探針）｜`none`（載入但不動作）｜`punctuation`（標點擠壓／懸掛）｜`iss`（混排間隙）｜`adjacent-lines`（鄰行間距）。後三者可自由並列，也可再加`probes`，例如`--han-install: punctuation iss`只跑那兩道。四個原有關鍵字語意不變。
+
+> 這是**行為**開關，不是體積開關：三道pass共用同一層hyperly＋helpers的底（8.4k裡約6.5k），勾少了檔案一樣大，只是少動你的DOM。要真的少付，改用具名匯入讓打包器自己搖——`package.json`已宣告`sideEffects`。走`<script src>`的人則該指向`dist/han.install.min.js`：同樣的行為，但沒有取不到的匯出，比`han.auto.min.js`少約1.5k（brotli）。
 
 ## installFallbacks
 
