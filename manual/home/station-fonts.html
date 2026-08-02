@@ -265,21 +265,21 @@
   <figure class="LeadForme" data-face="m" data-punct="jis" data-orient="v" data-reveal-at="0.6">
     <svg role="img" aria-hidden="true"></svg>
     <form class="Controls" aria-label="{{ ltControls }}">
-      <fieldset>
-        <legend>{{ ltFaceLegend }}</legend>
+      <fieldset aria-labelledby="lf-lg-face">
+        <span class="PillHead" id="lf-lg-face">{{ ltFaceLegend }}</span>
         <label><input type="radio" name="lf-face" value="m" checked /> {{ ltFaceM }}</label>
         <label><input type="radio" name="lf-face" value="h" /> {{ ltFaceH }}</label>
         <label><input type="radio" name="lf-face" value="k" /> {{ ltFaceK }}</label>
       </fieldset>
-      <fieldset>
-        <legend>{{ ltPunctLegend }}</legend>
+      <fieldset aria-labelledby="lf-lg-punct">
+        <span class="PillHead" id="lf-lg-punct">{{ ltPunctLegend }}</span>
         <label><input type="radio" name="lf-punct" value="jis" checked /><abbr class="acronym">JIS</abbr></label>
         <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
         <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
         <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
       </fieldset>
-      <fieldset>
-        <legend>{{ ltOrientLegend }}</legend>
+      <fieldset aria-labelledby="lf-lg-orient">
+        <span class="PillHead" id="lf-lg-orient">{{ ltOrientLegend }}</span>
         <label><input type="radio" name="lf-orient" value="v" checked /> {{ ltOrientV }}</label>
         <label><input type="radio" name="lf-orient" value="h" /> {{ ltOrientH }}</label>
       </fieldset>
@@ -294,13 +294,13 @@
         地域公約／自訂選擇沒有因果關係，放在示範之後單獨收尾。
 
         .PunctFix 也載著破折號熔接底圖（dash-fuse.css）：一柱直排
-        「沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬年》」
-        畫在 z-index:-1（站台早有的底圖層，同 watermark）。柱不錨在本欄
-        而錨在整個 section（.PunctFix 刻意不 position）：起自「超迴路運行
-        廿載」樣張卡的背後，穿過鉛字盤與這兩段文案，一路排到站尾——柱高
-        由上下 inset 撐出，字級隨之縮放（SVG 固有比例）。破折號那兩格
-        落在鉛字盤下緣～文案一帶。動畫（兩截 rect 熔成一條，再交棒給真
-        字體，20s 一輪循環）由 dash-fuse.js 蓋 data-play 起跑：鉛字盤的
+        「三歲即植入神經共振晶片……他沉默了四點七秒——這個時間足夠三體人
+        交換一部《三體通史十萬年》體量的知識」畫在 z-index:-1（站台早有的
+        底圖層，同 watermark）。柱以 .PunctFix 為包含塊，上緣切在「超迴路運行
+        廿載」樣張卡的上緣（clip-path，切線由 dash-fuse.js 量），穿過鉛字盤與
+        這兩段文案，一路排到站尾——柱高由上下 inset 撐出，字級隨之縮放（SVG
+        固有比例）。破折號那兩格落在鉛字盤下緣～文案一帶。動畫（兩截 rect
+        熔成一條，一輩子演一次）由 dash-fuse.js 蓋 data-play 起跑：鉛字盤的
         入場先落完，且本欄已被 reveal.js 蓋章（data-reveal-at）之後；兩段
         文案作一個整體，在本欄自己的 reveal 上飛入——不等破折號。
         破折號兩態都用 <rect> 畫，不掛 DTJ 字體：兩態本來就是同一組幾何的
@@ -313,18 +313,22 @@
        `.Manifesto, [data-station], [data-reveal-at]`，拿掉它本欄就不再是
        reveal 目標，data-revealed 永遠不會蓋，柱的首播也就跟著卡死。 -->
   <div class="PunctFix" data-reveal-at="0.15">
-    <!-- 字格（1 格 ＝ 100 unit）：沉默了四點七秒 20–720、破折號 720–920、
-         這個時間足夠三體人交換一部 920–2220、《三體通史十萬年》2220–3120。
-         「秒——這」（620–1020）是主角，卡進鉛字左下角與本欄文案之間的梯形
-         空格：字級不固定，由 dash-fuse.css 以 .PunctFix 高度的百分比換算
-         （柱以 .PunctFix 為包含塊——station-frame 的階梯入場蓋的 translate
-         正好保證它是包含塊）。句子其餘的字沿柱伸出兩端，被鉛字、樣張卡
-         與 section 的 overflow:clip 各自遮掉。 -->
-    <svg data-name="dash-fuse" viewBox="0 0 120 3140" aria-hidden="true" focusable="false">
-      <text x="60" y="20">沉默了四點七秒</text>
+    <!-- 字格（1 格 ＝ 100 unit）：破折號前 33 格 20–3320、破折號 3320–3520、
+         破折號後 27 格 3520–6220。「秒——這」（3220–3620）是主角，卡進鉛字
+         左下角與本欄文案之間的梯形空格：字級不固定，由 dash-fuse.css 以
+         .PunctFix 高度的百分比換算（柱以 .PunctFix 為包含塊——station-frame
+         的階梯入場蓋的 translate 正好保證它是包含塊）。句子其餘的字沿柱伸出
+         兩端，由 dash-fuse.js 量出的 clip-path 裁掉（不再靠鉛字／樣張卡的
+         位置去遮——那三個不透明物件的相對位置隨螢幕寬而變，換個尺寸就漏）。
+
+         兩個 <text> 各裝一整句：**這裡是句子的唯一出處**，dash-fuse.js 讀
+         走它的 textContent，逐字換成一格一個的橫排 <text>（見該檔
+         § layoutColumn）。y 給的是**第一格的上緣**。 -->
+    <svg data-name="dash-fuse" viewBox="0 0 120 6240" aria-hidden="true" focusable="false">
+      <text x="60" y="20">三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒</text>
       <rect data-seg="a" x="0" y="0" width="1" height="1" />
       <rect data-seg="b" x="0" y="0" width="1" height="1" />
-      <text x="60" y="920">這個時間足夠三體人交換一部《三體通史十萬年》</text>
+      <text x="60" y="3520">這個時間足夠三體人交換一部《三體通史十萬年》體量的知識</text>
     </svg>
     <p>{{ stPunctFixP }}</p>
     <p>{{ stPunctP }}</p>
@@ -398,13 +402,13 @@
         本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
         這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
     <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
-      <fieldset>
-        <legend>{{ ltOrientLegend }}</legend>
+      <fieldset aria-labelledby="pl-lg-writing">
+        <span class="PillHead" id="pl-lg-writing">{{ ltOrientLegend }}</span>
         <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
         <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
       </fieldset>
-      <fieldset>
-        <legend>{{ ltFaceLegend }}</legend>
+      <fieldset aria-labelledby="pl-lg-face">
+        <span class="PillHead" id="pl-lg-face">{{ ltFaceLegend }}</span>
         <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
         <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
         <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>

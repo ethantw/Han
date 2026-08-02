@@ -216,11 +216,32 @@
         )
       ;
 
+      /* 欄寬與欄外。兩個長度都由這裡發出去：欄寬給 inline-size，欄外給
+         padding 與 ::before 的起點與寬，帶子的位置因此不必再靠 `100%`
+         去換算一個它其實不知道的數（見下方 § padding 的註）。 */
+      --_wm-col: 21em;
+      --_wm-hang: 3em;
+
       position: absolute;
       inset: -1.4em auto auto -16.75em;
       z-index: 0;
 
-      inline-size: 21em;
+      /* 頁面是 border-box，所以欄外那 3em 要加進來，文字欄才還是 21em。 */
+      inline-size: calc(var(--_wm-col) + var(--_wm-hang));
+      /* 欄外的懸掛區收進**自己的邊框盒**——這一段所有想給人看的東西
+         （懸掛出去的句讀、綠帶子、版口線）都畫在文字欄之外，而遮罩預設
+         的 `mask-clip: border-box` 會把邊框盒外的一切剪掉。
+
+         這裡本來寫 `mask-clip: no-clip` 來免掉那道剪裁，**WebKit 認得但
+         不做**：`CSS.supports` 與 computed style 都回 `no-clip`，畫面卻
+         照 border-box 剪（最小重現：一個帶此組遮罩的盒子，`::before` 放在
+         `inset-inline-start: 100%`，Safari 26 整條不見、Chromium 正常）。
+         實測頁面上被剪掉的正是綠帶、版口線與全部懸掛出去的句讀——一個
+         宣告吃掉本段唯一的論據。
+
+         所以改成不依賴那個關鍵字：欄外那 3em 以 padding 納進邊框盒，
+         預設的 border-box 就剪不到東西了，兩家一致。 */
+      padding-inline-end: var(--_wm-hang);
       font-size: var(--fs-bg-text);
 
       --han-punctuation-refinement: auto;
@@ -239,12 +260,10 @@
          （gradient 沒有 logical 的方向關鍵字，只能寫 to bottom；此站
          為橫排版面。mask-image：Baseline 2023。）
 
-         `mask-clip: no-clip` 是這裡的關鍵，也是個好笑的陷阱：預設值
-         border-box 會把畫到邊框盒外的東西一併切掉——而懸掛出去的句讀
-         與線外的懸掛區，正好整個在盒外。照預設寫，這張遮罩會準確地
-         剪掉本段唯一想給人看的東西。（no-clip：Baseline 2023。） */
+         剪裁範圍走預設的 border-box——欄外的東西靠上面那道
+         padding-inline-end 納進盒內，不靠 `mask-clip: no-clip`（WebKit
+         認得但不做，理由見上）。 */
       mask-image: linear-gradient(to bottom, #000 0 78%, transparent 100%);
-      mask-clip: no-clip;
     }
     p {
       margin: 0;
@@ -263,13 +282,16 @@
       position: absolute;
       z-index: -1;
       inset-block: 0;
-      inset-inline-start: 100%;
+      /* 貼著文字欄的外緣起算。不能寫 `100%`——絕對定位的百分比位移量的是
+         包含塊的**padding 盒**，而那個盒現在含了欄外那 3em（見上），100%
+         會把帶子整個推到懸掛區的外面去。欄寬自己說了算，就用欄寬。 */
+      inset-inline-start: var(--_wm-col);
       /* 三格寬，不是一格。真正的懸掛區是**內側那一格**（1em ＝ 一個全形
          標點的身寬，那是本圖的證據，也正是吸滿時實心綠的寬度）；外面兩
          格是給那口氣散開用的餘裕——沒有它，淡出得在一格之內走完，要嘛
          幅度小到看不見，要嘛在框緣被切出一條硬邊。氣散在框外不宣稱任何
          尺寸，因為它一路淡到全透明。 */
-      inline-size: 3em;
+      inline-size: var(--_wm-hang);
       /* 平色＋遮罩，而不是把淡出寫進 gradient：background-image 的漸層
          在轉場裡不保證能內插，background-color 一定可以——屏息那一撥要
          讓帶子褪色褪得順，顏色就得留在能轉場的屬性上。 */

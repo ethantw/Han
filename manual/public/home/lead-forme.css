@@ -125,6 +125,19 @@
     serif;
 }
 
+/* 直排標點的落點補償。`--lf-vshift` 由 lead-forme.js 量出來（§
+   measureVerticalShift）：Chromium 是 0，WebKit 因為把直排字塞進 hhea 的框
+   （1.437em）而不是字身框，字沿閱讀軸掉了約 .05em，這裡加回去。em 在此解析
+   為 <text> 自己的 font-size（＝字身 S），所以這條規則不必知道字級。
+
+   注意這隻補的是**位置**，不是字形：WebKit 在 SVG 裡根本不套 `vert`／
+   `vrt2`（連 `font-feature-settings` 明寫也沒用），所以 Safari 上「」：仍是
+   橫排字形。那要等 Diantenjeom 把 U+FE10–FE44 這些直排形碼位補進 cmap，字形
+   才點得到——見 docs/plans/safari-fixes-and-dash-fuse-clip.md § 二。 */
+:where(.LeadForme) text.g.vert {
+  translate: 0 calc(var(--lf-vshift, 0) * -1em);
+}
+
 /* engraved side-face spec: Han → slice № + typeface name; punct → Diantenjeom */
 :where(.LeadForme) text.lbl-num,
 :where(.LeadForme) text.lbl-var {
@@ -302,9 +315,10 @@
 }
 
 /* controls — reader picks the current face + punctuation convention.
-   Same fieldset/legend/radio semantics as before; the LOOK is three 直排
+   Same fieldset/radio semantics as before (the head label is a `<span>` +
+   `aria-labelledby`, see § .PillHead); the LOOK is three 直排
    pills, the forme's own writing mode, so the switches read as part of the
-   plate: legend at the head, options running down it, the selected one in
+   plate: the label at the head, options running down it, the selected one in
    the accent lozenge. `row-reverse` keeps the DOM's reading order (字體 →
    標點 → 行向) while laying them inline-end-first, i.e. read right-to-left
    like the 直排 text they switch. Latin values (JIS／MOE／GB) lie rotated,
@@ -339,11 +353,17 @@
       letter-spacing: -.35em;
     }
   }
-  legend {
-    /* float strips legend's fieldset-notch special rendering (the classic
-       de-legend trick), so it lays out as a plain leading flex item — the
-       pill's head label. inline-start in vertical-rl = the top. */
-    float: inline-start;
+  /* The head label is a `<span>`, not a `<legend>` — the fieldset takes its
+     accessible name from `aria-labelledby` instead (markup in
+     station-fonts.html). It used to be a `<legend>` de-legended with
+     `float: inline-start`, which **WebKit does not implement**: measured on
+     Safari 26, the legend stays the rendered legend pinned to the fieldset's
+     block-start, growing the pill from 40 to 60px and dropping the label
+     outside it (physical `float: left` behaves identically, so it is not the
+     logical keyword). A span has no such special layout, and both engines
+     agree. Station②'s `.SpecimenSwitch` carries the same change — keep the
+     two in step. */
+  .PillHead {
     padding-inline: 0.65em 0.35em;
     color: var(--palette-supplement-text);
     font-size: 0.75rem;

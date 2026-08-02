@@ -271,7 +271,7 @@
  * home/writing-switch.js，那顆浮動 pill 目前沒有 markup）。
  *
  * 與鉛字盤那組 `.Controls`（lead-forme.css § .Controls）是同一套語彙——
- * fieldset 作藥丸、legend 浮成頭標、radio 藏起來只留標籤——但**不共用類
+ * fieldset 作藥丸、`.PillHead` span 作頭標、radio 藏起來只留標籤——但**不共用類
  * 名**：那組是 `writing-mode: vertical-rl` 的直立藥丸，為鉛字盤口袋裡那
  * 塊窄地量身訂做，橫過來每一條規則都要反著寫。兩邊各自短、各自看得懂，
  * 好過一個帶方向開關的共用元件。改配色時兩邊要一起看。 */
@@ -299,10 +299,14 @@
     &:hover { border-color: var(--palette-supplement-text); }
   }
 
-  legend {
-    /* float 剝掉 legend 在 fieldset 缺口上的特殊排版（經典的 de-legend
-       手法），它才會當一般的前導 flex item 排——藥丸的頭標。 */
-    float: inline-start;
+  /* 頭標是 <span> 而不是 <legend>——`fieldset` 的可及名稱改由
+     `aria-labelledby` 指過來（markup 在 station-fonts.html）。曾經用
+     `legend { float: inline-start }`（經典的 de-legend 手法）把它變成一般的
+     前導 flex item，**WebKit 不吃**：實測 Safari 26 仍把它當 rendered legend
+     貼在 fieldset 頂端，藥丸從 40px 撐到 60px、頭標掉到藥丸外（物理的
+     `float: left` 一樣無效，不是邏輯關鍵字的問題）。span 沒有那套特殊排版，
+     兩家一致。鉛字盤那組 `.Controls` 同樣改法，兩邊要一起看。 */
+  .PillHead {
     padding-inline: 0.65em 0.35em;
     font-size: 0.75rem;
     letter-spacing: 0.08em;

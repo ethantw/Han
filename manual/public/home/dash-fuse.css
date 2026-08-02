@@ -2,14 +2,15 @@
  * dash-fuse.css — station②'s 破折號熔接底圖（svg[data-name="dash-fuse"]
  * ＋ .PunctFix，dash-fuse.js）。
  *
- * 一柱直排「沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬
- * 年》」，畫在站台的 z-index:-1 底圖層（section 早有 isolation:isolate，
+ * 一柱直排「三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四
+ * 點七秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識」，畫在
+ * 站台的 z-index:-1 底圖層（section 早有 isolation:isolate，
  * watermark 用的同一層）。主角是「秒——這」那四格：卡在鉛字盤左下角與本欄
  * 文案之間的梯形空格裡——「秒」半藏進鉛字左下角的字格、破折號佔滿空格、
  * 「這」半沒進下方 .PunctLang 樣張卡。字級不固定：柱以 .PunctFix 為包含
  * 塊，全部幾何用其高度的百分比換算，文案多高、空格多大，字就多大。句子
- * 其餘的字沿柱伸出兩端，被鉛字、樣張卡與 section 的 overflow:clip 各自
- * 遮掉。層序：鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、
+ * 其餘的字沿柱伸出兩端，由柱自己的 clip-path 裁掉（見下 § clip-path）。
+ * 層序：鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、
  * 本圖最底；鉛字的半透明面自然透出柱上的字。
  *
  * .PunctFix 是包含塊這件事由 station-frame 的階梯入場保證——它給每個
@@ -82,9 +83,9 @@
  * initial-value: .35 ＝ 沒有 data-armed／data-play 就直接是已修正的終態
  * （連那一分殘留的實都在）。
  *
- * 座標系：1 user unit ＝ 1/100 em。欄軸 x=60；整句三十一格（字格表見
- * station-fonts.html），破折號佔 720–920，墨跡外緣固定在 727／913（兩端各
- * 0.07em 邊距），接縫在 820 開合——始終佔滿兩格，動的只有縫。
+ * 座標系：1 user unit ＝ 1/100 em。欄軸 x=60；整句六十二格（字格表見
+ * station-fonts.html），破折號佔 3320–3520，墨跡外緣固定在 3327／3513（兩端
+ * 各 0.07em 邊距），接縫在 3420 開合——始終佔滿兩格，動的只有縫。
  * 墨跡中心 54.7 而非 60：Chromium 把旋轉後的 R-class 字符擺在 hhea
  * asc/desc 中點而非 em 框中心（差 52.5 font unit；量測見 demo 檔頭與
  * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
@@ -110,8 +111,8 @@
 
 /* 由節拍算出的接縫兩緣。註冊為 <number>：computed-value time 即收斂成
    數值 token，代入 scale() 不必再包 calc()。 */
-@property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 820; }
-@property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 820; }
+@property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 3420; }
+@property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 3420; }
 
 /* 一次修正，1150ms 一次演完（拍點以 1% ＝ 11.5ms 換算）：
      0–420ms    靠近（0 → .82，ease-out——伸手漸緩）
@@ -183,12 +184,12 @@
 
 svg[data-name="dash-fuse"] {
   & {
-    /* 接縫兩緣。斷開 815／825（縫 10 ＝ 0.1em，真實的病灶），合上同歸
-       820 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只
+    /* 接縫兩緣。斷開 3415／3425（縫 10 ＝ 0.1em，真實的病灶），合上同歸
+       3420 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只
        在 [0, 1] 之間走，縫最開就是那個真值（不再探負值把縫張到 0.36em——
-       誇張化會讓這張圖不再是證據）；墨跡外緣 727／913 始終不動 */
-    --df-a1: calc(815 + 5 * var(--df-fuse));
-    --df-b0: calc(825 - 5 * var(--df-fuse));
+       誇張化會讓這張圖不再是證據）；墨跡外緣 3327／3513 始終不動 */
+    --df-a1: calc(3415 + 5 * var(--df-fuse));
+    --df-b0: calc(3425 - 5 * var(--df-fuse));
 
     position: absolute;
     /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section
@@ -202,20 +203,30 @@ svg[data-name="dash-fuse"] {
                        帶，秒的上半沒入鉛字
          這的字格中點  釘在文案下緣之下 0.33H ——.PunctLang 樣張卡的上
                        緣一帶，這的下半沒入卡面
-         ⇒ 兩中點相距 2.08H ＝ 300 unit ⇒ 柱全長 3140 unit ＝ 2177%，
-           柱頂 ＝ 秒中點（y 670）再上 670 unit ＝ −540%
+         ⇒ 兩中點相距 2.08H ＝ 300 unit ⇒ 1 unit ＝ 0.0069331 H。
+           柱全長 6240 unit ＝ 4326%；秒中點在 y 3270，
+           柱頂 ＝ −(3270 × 0.0069331 + 0.75) H ＝ −2342%
 
        替換元素以 viewBox 固有比例從 block-size 得出行向尺寸，字級隨之。
        橫向貼著文案行首（版面定稿 2026-07-30 的截圖位），窄屏退回 20%
        免得溢出。裝飾底圖，對位是近似的，不求像素配準 */
-    inset-block-start: -540%;
-    block-size: 2177%;
+    inset-block-start: -2342%;
+    block-size: 4326%;
     inset-inline-start: min(4rem, 20%);
     translate: -50% 0;
     inline-size: auto;
     overflow: visible;
     pointer-events: none;
     user-select: none;
+
+    /* 上緣裁在「超迴路運行廿載」樣張卡的上緣。句子比空間長得多（owner
+       2026-08-02：「多的字讓 clip-path 去裁」），多出來的字以前是靠鉛字盤、
+       樣張卡與 section 的 overflow:clip 三個不透明物件擋住的——那是**位置
+       相依**的遮法，三者的相對位置隨版心寬變，換個螢幕尺寸就有字爬到 lede
+       上面。改成自己裁：切線由 dash-fuse.js 量出樣張卡與柱的距離、發佈成
+       --df-clip-top（§ initClip），CSS 只負責用。沒有 JS ⇒ 0px ⇒ 等於不裁，
+       與今天的行為相同。 */
+    clip-path: inset(var(--df-clip-top, 0px) 0 0 0);
 
     /* 字色。面淡、邊清——低對比的可讀性來自輪廓而不是面積，正好讓底圖退後
        而不消失。fill／stroke 是可繼承的 SVG 屬性，宣告在柱根由 <text> 繼承
@@ -233,8 +244,26 @@ svg[data-name="dash-fuse"] {
     stroke: var(--df-edge);
   }
 
-  /* 直排交給引擎：漢字正立（UTR50 class U），破折號由引擎自轉 90°
-     （class R）。fill／stroke 繼承柱根（見上），此處只管字與描邊粗細 */
+  /* 字。fill／stroke 繼承柱根（見上），此處只管字面與描邊粗細。
+
+     行向**不交給引擎**：dash-fuse.js 把整句拆成一格一個的橫排 <text>，
+     位置自己算，class R 的字符（《》…）自己 rotate 90°（§ layoutColumn）。
+     理由是 WebKit 的 SVG 直排文字兩處與 Chromium 不合，實測（2026-08-02，
+     Safari 26 / Chromium 147，同一支字體、同一頁）：
+       ① 字距讀 hhea 的 asc+desc（1151+286 ＝ 1.437em）而不是 vmtx 的
+          1.0em——七個字排成 1005.9 unit 而非 700，破折號當場插進「七／秒」
+          中間，下半句還衝出 viewBox。（字體是對的：shanggu-serif 有 vhea／
+          vmtx 且 advance 全是 1000/1000。HTML 直排兩家都正確，只有 SVG 壞。）
+       ② 不套 `vert`／`vrt2`——《》 畫成橫排字形；連明寫
+          `font-feature-settings: 'vert' 1` 都沒有作用。
+     而**橫排的 SVG 文字兩家逐像素相同**（量到同一個 ink 盒），所以整柱改走
+     橫排：漢字本來就正立（UTR50 class U），一格一個 <text> 就沒有字距可累積；
+     class R 的字符改由 transform 自轉，不必求引擎。、。，在預設的 MOE 公約
+     下橫直同形（居中），不必處理。
+
+     `writing-mode: vertical-rl` 留著當**沒有 JS 時的退路**——那時整句還在
+     原本的兩個 <text> 裡，直排至少是近似對的；JS 排完會蓋 data-laid，把行向
+     交還橫排。 */
   text {
     font-family: var(--han-font-alternative);
     font-size: 100px;
@@ -242,6 +271,7 @@ svg[data-name="dash-fuse"] {
     writing-mode: vertical-rl;
     stroke-width: .5;
   }
+  &[data-laid] text { writing-mode: horizontal-tb; }
 
   /* 兩截破折號。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化
      Firefox 尚未跟上）；transform-box 釘在 view-box 原點，座標才照字面
@@ -277,14 +307,14 @@ svg[data-name="dash-fuse"] {
   }
   rect[data-seg="a"] {
     transform:
-      translate(58px, 727px)
-      scale(4, calc(var(--df-a1) - 727))
+      translate(58px, 3327px)
+      scale(4, calc(var(--df-a1) - 3327))
     ;
   }
   rect[data-seg="b"] {
     transform:
       translate(58px, calc(var(--df-b0) * 1px))
-      scale(4, calc(913 - var(--df-b0)))
+      scale(4, calc(3513 - var(--df-b0)))
     ;
   }
 

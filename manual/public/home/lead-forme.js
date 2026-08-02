@@ -140,7 +140,57 @@ const lineLayout = (col, punct, orient) => {
 };
 
 // ── one lead-type slug (a printing character) → SVG group string ──
-const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
+/* ── what the `vert` feature actually DOES, per convention ──────────────
+ *
+ * Where the engine won't run `vert` (§ spin), the builder has to produce the
+ * 直排 form itself. It can, because the substitution is never a free redraw —
+ * it is either a 90° TURN or a MOVE, and which one is a property of the
+ * punctuation convention. Read straight off the four Diantenjeom Serif cuts
+ * with `fontTools` (2026-08-02), outline against outline:
+ *
+ *              ，       、       。       ：       ；     ！／？   brackets
+ *   JIS     move     move     move     TURN     same     same       TURN
+ *   MOE     same     same     same     same     same     same       TURN
+ *   GB      move     move     move     move     move     move       TURN
+ *   KLR     move     move     move     same     same     same       TURN
+ *
+ * Three things fall out of that table, and all three are the reason it is
+ * written here rather than assumed:
+ *   • EVERY bracket (「」『』〈〉《》〔〕【】（）) is a 90° turn in all four cuts.
+ *   • MOE moves nothing. Its marks are 居中 in both directions, so its 直排 form
+ *     IS its 橫排 form — the builder has nothing to do, and drawing the 橫排 cut
+ *     is not a fallback but the right answer.
+ *   • ：'s treatment is the convention's signature. JIS turns it; GB seats it
+ *     low; MOE and KLR leave it upright — KLReq cl7 classes ：；· as marks that
+ *     do NOT turn in 直排, which is diantenjeom's `upright_cps=(0xFF1A,)` and
+ *     the same fact § lineLayout leans on for the squeeze.
+ * A mark with no entry needs nothing done to it (—…· are `same` everywhere).
+ *
+ * Offsets are font units (1000/em) in FONT space, y up — § block flips y for
+ * the screen. They cluster around (+.62em, +.64em), i.e. the top-right corner,
+ * because that is where a 直排 corner mark goes; they are kept per-mark and
+ * measured rather than rounded to one number, since the marks differ by up to
+ * .06em and the whole point of this file is that the forme is not approximate. */
+const TURN = 'turn';
+const VERT_FORM = {
+  common: {
+    '「': TURN, '」': TURN, '『': TURN, '』': TURN,
+    '〈': TURN, '〉': TURN, '《': TURN, '》': TURN,
+    '〔': TURN, '〕': TURN, '【': TURN, '】': TURN,
+    '（': TURN, '）': TURN,
+    '．': [662, 662],
+  },
+  jis: { '，': [656, 668], '、': [635, 657], '。': [591, 606], '：': TURN },
+  moe: {},
+  gb: {
+    '，': [656, 668], '、': [635, 657], '。': [591, 606],
+    '：': [532, 223], '；': [532, 224], '！': [498, 29], '？': [500, 45],
+  },
+  klr: { '，': [656, 668], '、': [635, 657], '。': [591, 606] },
+};
+const vertForm = (char, punct) => VERT_FORM[punct]?.[char] ?? VERT_FORM.common[char];
+
+const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
   const { S, H, r, sw, emCentre } = GEO;
   const fs = S;                                       // 字面 ＝ 字身（§ GEO）
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
@@ -174,11 +224,63 @@ const block = ({ O, char, d, sy = GEO.S, half, orient }) => {
   // upright Han needs no cross-axis compensation — the 5.25-unit hhea offset
   // from docs/notes/2026-07-21-svg-glyph-baseline-alignment.md is a class-R
   // (browser-ROTATED) effect and does not reach class U.
-  const glyphY = vertical ? 0 : emCentre * fs;
-  const glyphLayout = vertical ? 'writing-mode:vertical-rl; text-orientation:upright' : '';
+  //
+  // WebKit needs one more nudge, and it is NOT baked in here: it seats the
+  // vertical glyph inside the font's hhea box (asc+desc = 1.437em) rather than
+  // the em box, and `text-anchor` centres THAT box on the anchor, so the em
+  // lands ~0.05em down the reading axis. The correction is measured at runtime
+  // and published as `--lf-vshift` (§ surveyEngine); the `vert` class
+  // below is what lets CSS find these glyphs (lead-forme.css § --lf-vshift).
+  // It stays out of the builder because the number needs a live DOM and loaded
+  // fonts, and the builder is pure.
+  //
+  // …and where the engine won't run `vert` at all (WebKit in SVG — measured, see
+  // § surveyEngine), `writing-mode` buys nothing: it returns the 橫排 glyph,
+  // just seated differently. So for class-R marks the builder stops asking and
+  // turns the 橫排 cut itself — same glyph the engine was going to hand over,
+  // pointing the right way. That means the ordinary 橫排 seating (`emCentre`,
+  // measured above) applies, and the turn is about the em's centre, which is the
+  // local origin the isometric `m` is already anchored on.
+  //
+  // +90°, derived from the outlines rather than guessed. In FONT space (y up)
+  // Diantenjeom's 直排 「 is its 橫排 「 under (x,y)→(y,−x): the 橫排 corner
+  // (678, 823) lands on the 直排 corner (957, 203) and the arm's far end
+  // (960, 823) lands on (957, −79) against the font's (975, −80). Text is drawn
+  // with the font's y flipped, and that same map in screen coordinates is
+  // (x,y)→(−y,x) — which is exactly SVG's `rotate(90)`. The turn goes INSIDE
+  // `m`, in the glyph's own space, so it produces the 直排 cut and the mirror
+  // then applies to it like it does to every other glyph.
+  //
+  // A spun glyph on a SQUEEZED slug needs one more thing the `vert` path gets
+  // for free. 「's ink lives in the trailing half of its em (font x 660–960 of
+  // 1000) — the leading half is the whitespace § lineLayout trims, which is why
+  // the slug is half a body wide. Down the `vert` path the font hands the engine
+  // a half-width piece to match (measured: Chromium reports that 「's text box
+  // as .5em against 1em for every other mark), so `text-anchor: middle` centres
+  // the half and the ink lands on the half slug. The 橫排 cut we turn ourselves
+  // is a full em, so centring it puts the ink a quarter-body past the slug — out
+  // over 「我」's face (owner 2026-08-02). Pulling the anchor back by the body the
+  // squeeze took away puts the em's trailing half back on the slug. A full slug
+  // gets 0, so this is inert everywhere else.
+  //
+  // A MOVE is the other half of § VERT_FORM, and the easy half: translate the
+  // 橫排 cut by what the font's own 直排 form is offset by. Font units are y-up,
+  // the screen is y-down, hence the sign on the second component.
+  const spun = vertical && spin;
+  const form = spun ? vertForm(char, punct) : undefined;
+  const engineVertical = vertical && !spun;
+  const glyphX = form === TURN ? ((sy / S) - 1) / 2 * fs : 0;
+  const glyphY = engineVertical ? 0 : emCentre * fs;
+  const glyphLayout = engineVertical ? 'writing-mode:vertical-rl; text-orientation:upright' : '';
+  const unit = fs / 1000;
+  const turn = form === TURN
+    ? ' rotate(90)'
+    : Array.isArray(form)
+      ? ` translate(${(form[0] * unit).toFixed(2)} ${(-form[1] * unit).toFixed(2)})`
+      : '';
   const glyph = (fill, stroke, gsw, dy) => `
-    <g transform="translate(0 ${-dy})"><g transform="${m}">
-      <text class="g" x="0" y="${glyphY.toFixed(2)}" font-size="${fs}" text-anchor="middle" style="${glyphLayout}"
+    <g transform="translate(0 ${-dy})"><g transform="${m}${turn}">
+      <text class="g${engineVertical ? ' vert' : ''}" x="${glyphX.toFixed(2)}" y="${glyphY.toFixed(2)}" font-size="${fs}" text-anchor="middle" style="${glyphLayout}"
             fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="${gsw}"` : ''}
             stroke-linejoin="round" paint-order="stroke">${char}</text>
     </g></g>`;
@@ -224,7 +326,7 @@ const STAGGER = 0.07;
  *  a fixed gutter would be generous at 900px and mean at 1600px. */
 const AIR = 34;
 
-const buildForme = (punct, orient) => {
+const buildForme = (punct, orient, spin) => {
   const { S, H, r, leadEm } = GEO;
   const cell = S;                    // 字身相接 — 沒有間距（§ GEO）
   const rows = COLS[0].length;
@@ -307,7 +409,7 @@ const buildForme = (punct, orient) => {
 
   const markup = cells
     .map((c) => (c.kind === 'char'
-      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient })
+      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct })
       : spacer(c.O, c.sx, c.sy, c.d, c.solid)))
     .join('');
   return {
@@ -425,6 +527,66 @@ const drop = ($el) => [
   { transform: 'translateY(0)', opacity: settledOpacity($el), offset: 1 },
 ];
 
+/* One probe, two answers, and both come from measuring the engine rather than
+ * reading its UA string.
+ *
+ * The engines seat SVG 直排 text in DIFFERENT boxes (measured 2026-08-02,
+ * Safari 26.4 vs Chromium 147 vs Firefox 148, same page, same fonts):
+ *
+ *   Chromium  the glyph's own box, from `vmtx`. `text-anchor: middle` centres
+ *             that on the anchor, which is exactly what § block assumes.
+ *   WebKit    the hhea box (asc + |desc| = 1.437em), the same for every glyph;
+ *             it never reads `vmtx`.
+ *
+ * `runsVert` — whether the engine applies `vert`/`vrt2` at all — rides on the
+ * same measurement, because it is the same code path: WebKit's SVG 直排 text
+ * neither reads `vmtx` nor runs `vert` (not through `writing-mode`, and not
+ * through an explicit `font-feature-settings: 'vert' 1` either). An engine
+ * whose 直排 box is the hhea box is on that path; anything else is reading the
+ * font's own vertical metrics and will have run the substitution too.
+ *
+ * This started out as a sharper test — Diantenjeom's JIS cut gives the 直排 ‘’“”
+ * a half-height `vmtx`, so one quote's advance told you outright whether the
+ * substitution had happened. It does not survive the other cuts: in the GB cut
+ * that same 直排 quote is a full 1000, so the test would call a `vert`-running
+ * engine a non-runner and turn every mark by hand. The box test asks about the
+ * ENGINE and holds for any font, which is what a probe should do.
+ *
+ * `shift` — how far the engine drops the glyph below the anchor, in em, for the
+ * `--lf-vshift` correction lead-forme.css applies. On the hhea path the anchor
+ * centres a 1.437em box instead of the em, so the em lands
+ * (hheaAsc − typoAsc + .5em) − box/2 ≒ .05em down the reading axis; off it,
+ * the anchor already centred the right thing ⇒ 0. Both hhea numbers come from a
+ * 橫排 `<text>`'s extent, which the engines agree on (height = asc + |desc|,
+ * top = −asc); typoAsc is `emCentre + .5em`, the measured constant § GEO
+ * explains.
+ *
+ * Probed with a punctuation glyph on purpose — the 直排 branch only ever runs
+ * for PUNCT, so the metrics that matter are Diantenjeom's, whichever Han face
+ * is selected. One glyph per probe, no pairs: two marks side by side would
+ * bring the font's own GPOS squeezing into the measurement. */
+const surveyEngine = ($svg) => {
+  const fs = 100;
+  const $probe = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  $probe.setAttribute('style', `font-size:${fs}px;visibility:hidden`);
+  $probe.innerHTML =
+    `<text class="g" x="0" y="0" style="writing-mode:vertical-rl;text-orientation:upright">。</text>`
+    + `<text class="g" x="0" y="0">。</text>`;
+  $svg.append($probe);
+  const [$vertical, $horizontal] = $probe.children;
+  const box = $vertical.getExtentOfChar(0).height;
+  const hhea = $horizontal.getExtentOfChar(0);
+  const hheaBox = hhea.height;
+  const hheaAscent = -hhea.y;
+  $probe.remove();
+
+  const onHheaPath = Math.abs(box - hheaBox) < 1;
+  return {
+    runsVert: !onHheaPath,
+    shift: onHheaPath ? (hheaAscent - GEO.emCentre * fs - hheaBox / 2) / fs : 0,
+  };
+};
+
 /** the measured numbers CSS reads back, as [custom property, build key]. */
 const GEOMETRY = [
   ['--lf-apex', 'apex'],
@@ -439,10 +601,17 @@ export const initLeadForme = ($root = document) => {
   const $forme = $root.querySelector('.LeadForme');
   if (!$forme) return;
   const $svg = $forme.querySelector('svg');
+  /* Turn the class-R marks ourselves instead of asking for `vert`? Only if the
+     engine won't run it (§ surveyEngine). Answered again once the fonts are
+     in — the first build happens against whatever is loaded, and a fallback
+     face has no `vert` to run, so an early probe says "turn them" for every
+     engine. Re-probing on `fonts.ready` puts Chromium back on the font's own
+     直排 forms; the value rarely changes twice, so the rebuild is one-off. */
+  let spin = false;
   // the build currently on screen — § reset diffs the next one against it.
   let built;
   const render = () => {
-    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v');
+    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v', spin);
     const { viewBox, markup, lastDelay } = built;
     $svg.setAttribute('viewBox', viewBox);
     $svg.innerHTML = markup;
@@ -453,7 +622,19 @@ export const initLeadForme = ($root = document) => {
     for (const [prop, key] of GEOMETRY)
       $forme.style.setProperty(prop, built[key].toFixed(4));
   };
+  const resurvey = () => {
+    const { runsVert, shift } = surveyEngine($svg);
+    /* 落點補償只是一個 CSS 變數，不必重排。 */
+    $forme.style.setProperty('--lf-vshift', shift.toFixed(4));
+    /* 這一項會改變產出的 markup，所以值變了才重排（§ spin）。 */
+    if (runsVert === !spin) return;
+    spin = !runsVert;
+    render();
+  };
+  spin = true;          // 字體到齊前先假設拿不到 vert（備用字體本來就沒有）
   render();
+  resurvey();
+  document.fonts?.ready.then(resurvey);
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let busy = false;
@@ -503,7 +684,7 @@ export const initLeadForme = ($root = document) => {
     el.addEventListener('change', () => {
       const moved = reset(
         built.cells,
-        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v').cells,
+        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin).cells,
       );
       reslot(
         (half) => moved[half].map((i) => $slugs()[i]),

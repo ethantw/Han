@@ -1,8 +1,14 @@
 /**
- * dash-fuse.js — station②'s 破折號熔接底圖的開演時機（.PunctFix）。
+ * dash-fuse.js — station②'s 破折號熔接底圖（.PunctFix）：柱的排版、裁切，
+ * 以及開演時機。
  *
- * 幾何與動畫全在 dash-fuse.css；這支只回答一個問題——什麼時候蓋
- * `data-play`。兩個條件都成立才蓋：
+ * 幾何與動畫在 dash-fuse.css，句子在 station-fonts.html；這支做三件事——
+ *
+ *   § layoutColumn  把 HTML 裡那兩句話拆成一格一個的**橫排** <text>
+ *   § initClip      量出「超迴路運行廿載」樣張卡的上緣，發佈 --df-clip-top
+ *   § 開演時機      什麼時候蓋 `data-play`
+ *
+ * 後者兩個條件都成立才蓋：
  *
  *   ① .PunctFix 已被 reveal.js 蓋 `data-revealed`（data-reveal-at 深度
  *      門檻，且過 fonts-gate）——文案還沒印出來，底圖沒理由先開演。
@@ -17,6 +23,75 @@
  * reduced-motion ⇒ 不蓋章也無妨：dash-fuse.css 的隱藏與動畫只活在
  * no-preference 之內，基態就是已修正的終態（同站台 reveal 契約）。
  */
+
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+/* 一格 ＝ 100 user unit ＝ 1em（font-size 也是 100px，dash-fuse.css）。 */
+const CELL = 100
+
+/* 字面的 em 框中心在基線之上 0.38em。**不是** `dominant-baseline: central`
+ * ——那個以 hhea asc/desc 的中點為準（實測 0.4326em），em 框的中點是
+ * sTypoAscender 880/1000。同一個數、同一個理由見 lead-forme.js § GEO
+ * `emCentre`，那裡是逐字量出來的。 */
+const EM_CENTRE = 0.38
+
+/* UTR50 class R——直排要轉 90° 的字符。這裡自己轉，不求引擎：WebKit 在 SVG
+ * 裡既不套 `vert`／`vrt2`，直排的字距又讀 hhea（見 dash-fuse.css § text）。
+ * 表只涵蓋這一柱**可能**出現的字符；漢字是 class U，正立，不在表上。 */
+const ROTATED = new Set([
+  '《', '》', '〈', '〉',
+  '「', '」', '『', '』',
+  '（', '）', '〔', '〕',
+  '—', '…', '～', 'ー',
+])
+
+/* 把一個裝著整句的 <text> 換成一格一個的橫排 <text>。
+ * 句子只寫在 HTML（station-fonts.html），這裡讀走、不複製；<text> 自己的
+ * `y` 是第一格的**上緣**，所以第 i 格的中點是 y + (i + .5) × CELL。 */
+const layoutColumn = ($column) => {
+  for (const $text of [...$column.querySelectorAll('text')]) {
+    const top = Number.parseFloat($text.getAttribute('y'))
+    const x = $text.getAttribute('x')
+    const $cells = document.createDocumentFragment()
+
+    ;[...$text.textContent].forEach((char, i) => {
+      const centre = top + (i + 0.5) * CELL
+      const $cell = document.createElementNS(SVG_NS, 'text')
+      $cell.setAttribute('x', x)
+      $cell.setAttribute('y', String(centre + EM_CENTRE * CELL))
+      $cell.setAttribute('text-anchor', 'middle')
+      /* 繞字格中點轉——text-anchor:middle 把 em 框橫向釘在欄軸上，
+         y 又是由中點回推的，所以 (x, centre) 正好是 em 框的中心。 */
+      if (ROTATED.has(char)) $cell.setAttribute('transform', `rotate(90 ${x} ${centre})`)
+      $cell.textContent = char
+      $cells.append($cell)
+    })
+
+    $text.replaceWith($cells)
+  }
+  /* 排完才交還橫排行向（CSS 的 `writing-mode: vertical-rl` 是沒有 JS 時的
+     退路，見 dash-fuse.css § text）。 */
+  $column.setAttribute('data-laid', '')
+}
+
+/* 柱的上緣切在「超迴路運行廿載」樣張卡的上緣。這個距離沒有靜態的 CSS 表
+ * 達式——它隨 lede 換行、隨版心寬變——所以量出來發佈成變數，CSS 只管用
+ * （同 lead-forme.js 把 --lf-* 發佈給 lead-forme.css 的作法）。
+ * 觀察 main 的尺寸就夠：站台的一切寬度都由它給。 */
+const initClip = ($column) => {
+  const $faces = document.querySelector('#station-fonts .Illust[data-variant="faces"]')
+  const $main = document.querySelector('main')
+  if (!$faces) return
+
+  const sync = () => {
+    const top = $faces.getBoundingClientRect().top - $column.getBoundingClientRect().top
+    $column.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
+  }
+
+  sync()
+  document.fonts?.ready.then(sync)
+  if ($main) new ResizeObserver(sync).observe($main)
+}
 
 const ms = (value, fallback) => {
   const n = Number.parseFloat(value)
@@ -98,6 +173,11 @@ export const initDashFuse = () => {
   if (!$punct) return
   const $forme = document.querySelector('.LeadForme')
   const $column = $punct.querySelector('svg[data-name="dash-fuse"]')
+
+  if ($column) {
+    layoutColumn($column)
+    initClip($column)
+  }
 
   /* 即刻武裝：柱以斷開態示人，不等鉛字排完（CSS 把 armed 的效果關在
      no-preference 之內，reduced 下這個章沒有作用）。 */
