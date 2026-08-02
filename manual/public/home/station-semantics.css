@@ -52,7 +52,12 @@
    No fill mode, and that is load-bearing at both ends: before the delay the
    UA's own italic shows (the row is still `--han-semantics: off`), and after
    the run the cascade takes back over — by then the flag has flipped and
-   han.css's `font-style: inherit` holds it upright. */
+   han.css's `font-style: inherit` holds it upright.
+
+   詩行已經不用這一支了（改整段 skewY，見 semantics-slant-settle）——只剩
+   宛名還掛著。它是一整塊多欄的 <address>，剪切的驅動軸會跨過所有欄而累積，
+   不能照搬詩行那招；而 Chrome 又不畫 `oblique <角度>`，所以那裡的「扶正」
+   目前等於在旗標翻轉的瞬間瞬跳。要補得先把宛名的斜體收進行級的 run。 */
 @keyframes semantics-straighten {
   from { font-style: oblique 12deg; }
   to   { font-style: oblique 0deg; }
@@ -155,19 +160,39 @@
   to { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
 }
 
-/* 楷體行的逐字歸正。時序是「交棒」：旗標翻 on 的那一瞬，font-style
-   的合成斜體（oblique）消失、每字的 skew(-12deg) 同時接手——斜度連續
-   無跳變；然後逐字（每字 +40ms）擺正。掛載規則鍵在 @container style
-   query（見動畫區）——翻旗前規則不存在，翻旗那一刻才開始匹配起跑。
-   span 不碰 font-style：off 態的瀏覽器斜體要原樣活著。inline-block 是
-   transform 生效的條件；atomic inline 會斷 pair-squeeze，但 <i> 內全是
-   漢字、邊界是冒號／逗號對漢字，不構成擠壓對（diantenjeom/docs/
-   pair-squeeze-and-markup.md）。
-   待目測（plan Task 3 Step 4）：article 是 vertical-rl，合成斜體在直排
-   的傾向若與 skewX 不合，改 skewY(12deg) 再測。 */
-@keyframes semantics-char-settle {
-  from { transform: skew(-12deg); }
-  to { transform: skew(0deg); }
+/* 記號行的歸正——**整段一個 skewY，不逐字包**（舊註留的
+   「plan Task 3 Step 4：直排若與 skewX 不合改 skewY 再測」，測完了，就是這個）。
+
+   直排的合成斜體，兩家瀏覽器畫的不是同一種幾何：
+     · Safari 剪切**行內軸**——橫畫傾斜、豎畫保持垂直。量 Safari 直排
+       italic 的墨跡質心斜率＝ −0.21 ⇒ −11.9°，就是 skewY(-12deg)。
+     · Chrome 沿用橫排那一招剪切區塊軸（豎畫傾斜），逐字才不會累積。
+   本站取 Safari 那一種：它是漢字直排斜體該有的樣子，而且**驅動軸是區塊軸**
+   （行厚 ≈1em），位移不隨行長累積，所以一整段掛一個 transform 就夠——
+   逐字 skew 那套（每字一個 span、--i 階梯，外加一支專門做 DOM 手術的
+   JS）因此整組退休了。反例存檔：直排下對整段用 skewX，位移 ∝ 行內座標，六個字
+   就斜出欄外 1.28 字（docs/plans/semantics-mark-diagram.md § 0）。
+   transform-origin 用預設的 50% 50%：實測整段的行向中心不動（4em 的
+   <cite> 前後各只脹 .155em ＝ 剪切本身的墨跡外擴），不必補償。
+
+   為什麼不交給 font-style：Chrome 對漢字堆疊只認關鍵字 `italic`，
+   `oblique <角度>` 完全不上漆（canvas 墨跡剪切實測：normal 與
+   oblique 0–12deg 同為 4px，italic 33px），所以角度不可補間、只能瞬跳。
+   自己剪切才有連續的斜度可演，順帶把瀏覽器差異一次抹平。
+
+   時序仍是「交棒」：旗標翻 on 的那一瞬，UA 的合成斜體消失、skewY(-12deg)
+   同時接手，斜度連續無跳變。掛載規則鍵在 @container style query（見動畫
+   區）——翻旗前規則不存在，翻旗那一刻才開始匹配起跑；元素不碰 font-style，
+   off 態的瀏覽器斜體要原樣活著。
+   inline-block 是 transform 生效的條件，原子盒的兩個顧慮都查過了：
+     · 擠壓——實測八行的行長改前改後一致（原子盒斷的是**成對**擠壓，
+       而這裡的邊界是漢字對單顆標點，trim-start 對單顆標點不需相鄰）；
+     · 裝飾——**自己身上**的 text-decoration／text-emphasis 照畫（元素自己
+       就是 decorating box），失效的只有從祖先傳下來的那種。甲式的波浪線、
+       著重號、專名號因此都能留在原位。 */
+@keyframes semantics-slant-settle {
+  from { transform: skewY(-12deg); }
+  to { transform: skewY(0deg); }
 }
 
 /* 甲式波浪線淡入。線是翻旗才存在的（core 的 text-decoration-line 在
@@ -240,28 +265,21 @@
   100% { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
 }
 
-@keyframes semantics-straighten-replay {
-  0% { font-style: oblique 0deg; }
-  10%, 50% { font-style: oblique 12deg; }
-  100% { font-style: oblique 0deg; }
-}
-
 @keyframes semantics-mark-cue-replay {
   0%, 100% { color: var(--palette-text); }
   76% { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
 }
 
-/* 逐字：斜度。字體的翻面在 semantics-i-face-replay（掛在 <i> 上），
-   刻意錯開——4% 翻字體、10% 才斜完；回程 54% 翻回字體、之後才扶正。 */
-@keyframes semantics-char-settle-replay {
-  0%, 4% { transform: skew(0deg); }
-  10%, 54% { transform: skew(-12deg); }
-  100% { transform: skew(0deg); }
+/* 斜度的來回。字體的翻面在 semantics-i-face-replay（掛在 <i> 上），
+   刻意錯開——4% 翻字體、10% 才斜完；回程 54% 翻回字體、之後才扶正。
+   幾何同入場那支（見 semantics-slant-settle 的註）：整段一個 skewY，
+   不逐字。 */
+@keyframes semantics-slant-replay {
+  0%, 4% { transform: skewY(0deg); }
+  10%, 54% { transform: skewY(-12deg); }
+  100% { transform: skewY(0deg); }
 }
 
-/* <i> 的字體：han.css 的楷體 ⇄ 內文字體。離散屬性在兩幀之間跳，所以
-   用貼近的幀夾住翻面時刻——2% 退回內文字體（早於斜度），52% 換回楷體
-   （早於扶正）。 */
 @keyframes semantics-i-face-replay {
   0% { font-family: var(--han-font-accent); }
   4%, 50% { font-family: inherit; }
@@ -288,17 +306,25 @@
   100% { text-decoration-color: currentColor; }
 }
 
+/* 收《》用 font-size 收到 0，**不是**入場那支的負 margin。負 margin 是個
+   寫死的 1em，而書名號在版面上不佔 1em——原生 text-spacing-trim（:root 的
+   trim-start）把全形括號削掉一半，實測《》各只佔 .492em。差的那 .5em 在
+   入場時看不出來（那段全透明，而且是「長出來」的過程），replay 卻是停在
+   收攏態一整秒：後文被多拉 .5em，句號就疊到「論」字上（MOE／JIS 皆然，
+   兩式的 trim 一樣）。font-size: 0 收的是盒子自己的前進量，多少就收多少，
+   擠壓公約換一套也不必回來改數字；em 制的 margin 也一併歸零。
+   仍是普通行內文字，UTR50 轉向與擠壓的顧慮（見入場那支的註）不受影響。 */
 @keyframes semantics-bracket-in-before-replay {
-  0% { color: currentColor; margin-inline-end: 0; }
-  10%, 50% { color: transparent; margin-inline-end: -1em; }
+  0% { color: currentColor; font-size: 1em; }
+  10%, 50% { color: transparent; font-size: 0em; }
   76% { color: transparent; }
-  100% { color: currentColor; margin-inline-end: 0; }
+  100% { color: currentColor; font-size: 1em; }
 }
 @keyframes semantics-bracket-in-after-replay {
-  0% { color: currentColor; margin-inline-start: 0; }
-  10%, 50% { color: transparent; margin-inline-start: -1em; }
+  0% { color: currentColor; font-size: 1em; }
+  10%, 50% { color: transparent; font-size: 0em; }
   76% { color: transparent; }
-  100% { color: currentColor; margin-inline-start: 0; }
+  100% { color: currentColor; font-size: 1em; }
 }
 
 /* 記號拍點——圖解 <g> 與詩行共用的同一組時鐘（誰的記號誰取用；
@@ -956,52 +982,49 @@
             semantics-straighten 520ms ease-out var(--row-cue);
         }
 
-        /* cite 的歸正仍走 font-style 插值：它的記號是線（甲式波浪、
-           乙式《》），而 text-decoration 畫不進 atomic inline——逐字
-           inline-block 會讓波浪線整條消失，所以 cite 不逐字包。 */
-        .poem-like cite {
-          animation:
-            semantics-straighten 520ms ease-out var(--row-cue),
-            semantics-mark-cue 1000ms ease-in-out var(--row-cue);
-        }
-        /* i／em／dfn 不在 straighten 名單：歸正由逐字 skew 接手（見
-           @keyframes semantics-char-settle 的交棒論證），行級只留
-           mark-cue 的墨色一閃（dfn 本就無墨色一閃，字重交給 transition）。 */
-        .poem-like :is(i, var, em) {
+        /* 墨色一閃，甲乙兩式與 i／var／em 同款（dfn 本就無墨色一閃，字重
+           交給 transition）。斜度不在這裡：它鍵在旗標翻轉，見下面的
+           @container——這一拍是從 reveal 起算的，那一拍是從翻旗起算的，
+           兩副時鐘所以分兩條規則寫。 */
+        .poem-like :is(cite, i, var, em) {
           animation: semantics-mark-cue 1000ms ease-in-out var(--row-cue);
         }
-        /* 逐字歸正鍵在旗標翻轉本身：@container 讓這條規則在
-           --han-semantics 翻 on 的那一刻才開始匹配——動畫起點＝翻旗瞬間，
-           不必再算 cue＋settle；both 的 backwards fill 把 -12deg 撐滿每字
-           的錯拍等待（翻旗前規則不存在，不會疊在還活著的合成斜體上——
-           雙重斜與直立空窗兩個雷一次拆掉）。機制同 article 區
-           `@container style(--han-semantics: off)` 那組著重號／wavy 墨色
-           淡入：style query 讀的是 <i> 從行 span 繼承來的旗標。
-           display: inline-block 也只在翻旗後生效——翻旗前 span 是普通
-           inline，不碰 pair-squeeze。 */
+        /* 歸正鍵在旗標翻轉本身：@container 讓這條規則在 --han-semantics
+           翻 on 的那一刻才開始匹配——動畫起點＝翻旗瞬間，不必再算
+           cue＋settle；both 的 backwards fill 把 -12deg 撐住（翻旗前規則
+           不存在，不會疊在還活著的合成斜體上——雙重斜與直立空窗兩個雷
+           一次拆掉）。機制同 article 區 `@container style(--han-semantics:
+           off)` 那組著重號／wavy 墨色淡入：style query 讀的是記號從行
+           span 繼承來的旗標。
+           display: inline-block 也只在翻旗後生效——翻旗前是普通 inline。 */
         @container style(--han-semantics: on) {
-          .poem-like :is(i, var, em, dfn) [data-char] {
+          /* 五種記號同一條路：整段一個 skewY(-12deg)（見 @keyframes
+             semantics-slant-settle）。甲式的 cite 也在名單裡——波浪線掛在
+             cite **自己**身上，原子盒照畫。 */
+          .poem-like :is(i, var, em, dfn, cite) {
             display: inline-block;
+          }
+          /* 同 specificity 的第二條 animation 簡寫會整組取代（同
+             address:not([lang]) 那條的 shorthand 陷阱註），所以每一層都要
+             把前面的重列一次；動畫按名字與位置續跑不重啟，mark-cue 不會被
+             翻旗打斷重來——重列的順序因此不能動。
+             dfn 不在 mark-cue 名單（本就無墨色一閃），單獨一條。 */
+          .poem-like :is(i, var, em, cite) {
             animation:
-              semantics-char-settle
-              520ms
-              ease-out
-              calc(var(--i) * 40ms)
-              both
+              semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+              semantics-slant-settle 520ms ease-out both
             ;
+          }
+          .poem-like dfn {
+            animation: semantics-slant-settle 520ms ease-out both;
           }
           /* 甲式波浪線同理：翻旗即起跑，無 delay（見 @keyframes
              semantics-wavy-in）。只命中第 6 行——inline
-             --han-cite-title-marks: wavy 的那顆 span；第 7 行乙式不匹配。
-             這條與上面 .poem-like :is(cite, em) 那條同 specificity，
-             同 specificity 的第二條 animation 簡寫會整組取代（同
-             address:not([lang]) 那條的 shorthand 陷阱註）——前兩支因此
-             要重列；動畫按名字續跑不重啟，straighten／mark-cue 不會被
-             翻旗打斷重來。 */
+             --han-cite-title-marks: wavy 的那顆 span；第 7 行乙式不匹配。 */
           .poem-like :where([style*='wavy']) cite {
             animation:
-              semantics-straighten 520ms ease-out var(--row-cue),
               semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+              semantics-slant-settle 520ms ease-out both,
               semantics-wavy-in 520ms ease-out both
             ;
           }
@@ -1012,8 +1035,8 @@
           @supports not (text-decoration-inset: auto) {
             .poem-like :where([style*='wavy']) cite[data-followed-by-adjacent-line] {
               animation:
-                semantics-straighten 520ms ease-out var(--row-cue),
                 semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+                semantics-slant-settle 520ms ease-out both,
                 semantics-wavy-in 520ms ease-out both,
                 semantics-line-split 520ms ease-out var(--row-cue) both
               ;
@@ -1095,7 +1118,7 @@
        記號的戲：`:has()` 把觸發收在 #station-semantics 上，一條選擇器
        天生雙向。圖解側沿用 mark-replay；詩行側用各自的 `-replay` 雙胞
        胎（同名重宣告不重啟，見 mark-replay 的 @keyframes 註）。replay
-       一律去掉 cue delay——hover 即演；逐字 skew 保留每字 40ms 錯拍。
+       一律去掉 cue delay——hover 即演。
 
        Shorthand 陷阱，本區的關鍵約定：hover 規則的 animation 簡寫整組
        取代基態的入場列表，而動畫「移除後再加回」是會重啟的——若只寫
@@ -1145,20 +1168,16 @@
         .MarkDiagram [data-mark='emphasis'] {
           animation: mark-roundtrip 2500ms ease-in-out both;
         }
-        /* em 的歸正早已交給逐字 skew（見 semantic-chars.js），所以詩行
-           側要重播的是那個，不是元素上的 font-style——只掛 straighten
-           的舊寫法在畫面上等於沒動。元素本身留墨色一閃。 */
+        /* 一條規則管到底：入場那兩支要原序重列（見掛載處的 shorthand
+           陷阱註），再把 replay 接在後面。著重號的點與斜度分兩支——
+           點是原生態沒有的東西，斜度是原生態有的東西。 */
         :root:not([data-han-module-semantics='off']) & .poem-like em {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-slant-settle 520ms ease-out both,
             semantics-mark-cue-replay 2500ms ease-in-out both,
-            semantics-dots-replay 2500ms ease-in-out both
-          ;
-        }
-        :root:not([data-han-module-semantics='off']) & .poem-like em [data-char] {
-          animation:
-            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 2500ms ease-in-out calc(var(--i) * 80ms) both
+            semantics-dots-replay 2500ms ease-in-out both,
+            semantics-slant-replay 2500ms ease-in-out both
           ;
         }
       }
@@ -1174,12 +1193,10 @@
            bolder）——字重與字體同屬「先於斜度」的那一類，見 replay
            雙胞胎的檔頭註。 */
         :root:not([data-han-module-semantics='off']) & .poem-like dfn {
-          animation: semantics-weight-replay 2500ms ease-in-out both;
-        }
-        :root:not([data-han-module-semantics='off']) & .poem-like dfn [data-char] {
           animation:
-            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 2500ms ease-in-out calc(var(--i) * 80ms) both
+            semantics-slant-settle 520ms ease-out both,
+            semantics-weight-replay 2500ms ease-in-out both,
+            semantics-slant-replay 2500ms ease-in-out both
           ;
         }
       }
@@ -1197,14 +1214,10 @@
         :root:not([data-han-module-semantics='off']) & .poem-like :is(i, var) {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-slant-settle 520ms ease-out both,
             semantics-mark-cue-replay 2500ms ease-in-out both,
-            semantics-i-face-replay 2500ms ease-in-out both
-          ;
-        }
-        :root:not([data-han-module-semantics='off']) & .poem-like :is(i, var) [data-char] {
-          animation:
-            semantics-char-settle 520ms ease-out calc(var(--i) * 40ms) both,
-            semantics-char-settle-replay 2500ms ease-in-out calc(var(--i) * 80ms) both
+            semantics-i-face-replay 2500ms ease-in-out both,
+            semantics-slant-replay 2500ms ease-in-out both
           ;
         }
       }
@@ -1217,40 +1230,58 @@
           animation: mark-roundtrip 2500ms ease-in-out both;
         }
         /* 甲式的 replay 拉長到 1000ms：波浪線只有墨色可淡，620ms 讀不
-           出來；同時加上與專名號同款的「黏住再分開」。 */
+           出來；同時加上與專名號同款的「黏住再分開」。
+           斜度也要退：`<cite>` 的原生態是**合成斜體**（UA 樣式表的
+           font-style: italic），han.css 扶正它——只淡掉波浪線等於把一半
+           的修正藏著（同 i／dfn 的字體、字重，見 replay 雙胞胎的檔頭註）。
+           入場的三支原序重列在前。 */
         :root:not([data-han-module-semantics='off']) & .poem-like :where([style*='wavy']) cite {
           animation:
-            semantics-straighten 520ms ease-out var(--row-cue),
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-slant-settle 520ms ease-out both,
             semantics-wavy-in 520ms ease-out both,
-            semantics-wavy-in-replay 2500ms ease-in-out both
+            semantics-wavy-in-replay 2500ms ease-in-out both,
+            semantics-slant-replay 2500ms ease-in-out both
           ;
         }
         @supports not (text-decoration-inset: auto) {
           :root:not([data-han-module-semantics='off']) & .poem-like :where([style*='wavy']) cite[data-followed-by-adjacent-line] {
             animation:
-              semantics-straighten 520ms ease-out var(--row-cue),
               semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+              semantics-slant-settle 520ms ease-out both,
               semantics-wavy-in 520ms ease-out both,
               semantics-line-split 520ms ease-out var(--row-cue) both,
               semantics-wavy-in-replay 2500ms ease-in-out both,
+              semantics-slant-replay 2500ms ease-in-out both,
               semantics-line-split-replay 2500ms ease-in-out both
             ;
           }
         }
       }
 
-      /* 觸發是甲式觸發的逐字補集：cite:hover 減去「wavy 祖先之下的
-         cite」——與甲式那組共用同一個 :where([style*='wavy']) 判準，
-         markup 挪動旗標層級時兩組同義地一起對錯，不靠「cite 是 span
-         直接子元素」這類額外結構假設。replay 只動 pseudo——《》才是
-         這行的記號；pseudo 的 animation 列表與元素自身的不相撞。 */
+      /* 觸發是甲式那組的補集：cite:hover 減去「wavy 祖先之下的
+         cite」——兩組共用同一個 :where([style*='wavy']) 判準，markup
+         挪動旗標層級時同義地一起對錯，不靠「cite 是 span 直接子元素」
+         這類額外結構假設。《》的 replay 掛在 pseudo 上，斜度掛在元素
+         上——兩份 animation 列表是分開的盒，不相撞。 */
       #station-semantics:has(
         .MarkDiagram [data-mark='bracket']:hover,
         .poem-like cite:hover:not(:where([style*='wavy']) cite)
       ) & {
         .MarkDiagram [data-mark='bracket'] {
           animation: mark-roundtrip 2500ms ease-in-out both;
+        }
+        /* 斜度：`<cite>` 的原生態是**合成斜體**（UA 樣式表的
+           font-style: italic），han.css 扶正它——replay 只淡掉《》等於
+           把一半的修正藏著（同 i／dfn 的字體、字重，見 replay 雙胞胎的
+           檔頭註）。選擇器用觸發那個補集，免得連甲式那兩顆一起蓋掉——
+           它們的 wavy-in（fill both）會被簡寫整組取代掉。 */
+        :root:not([data-han-module-semantics='off']) & .poem-like cite:not(:where([style*='wavy']) cite) {
+          animation:
+            semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+            semantics-slant-settle 520ms ease-out both,
+            semantics-slant-replay 2500ms ease-in-out both
+          ;
         }
         /* pseudo 一律不進 :where()（forgiving list 會吞掉它，見掛載規
            則的註）；選擇器寫寬無妨——乙式 pseudo 只存在於 bracket 祖

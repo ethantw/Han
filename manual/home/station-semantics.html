@@ -179,7 +179,7 @@
            person, the textbook case (〈美因茲〉〈古騰堡〉). Two runs, two
            <u>: the gap between them is the convention, not a typo. -->
       <p class="poem-like">
-        <span><u>美因茲</u><u>古騰堡</u>來信談編碼。</span>
+        <span><u>美因茲</u><u>古騰堡</u>來信談編碼</span>
         <br />
         <!-- 23, not 26 — J, U and W were not yet letters in the 1450s, only
            positional variants of i and v. The B42 type still ran to roughly
@@ -191,20 +191,20 @@
            other side. The gloss catches readers who count 26. -->
         <span>「<u>拉丁</u>二十三字，<em>三百枚足矣。</em>」</span>
         <br />
-        <span><u>畢昇</u>答：<u>華夏</u>文字，三萬枚猶不足。</span>
+        <span><u>畢昇</u>答：<u>華夏</u>文字，三萬枚猶不足</span>
         <br />
         <!-- 統一碼 is the whole term and stays whole, and it is defined by
            what it actually IS — one table for every script on Earth. An
            earlier draft defined it by Han unification instead; that is one
            principle among many, unevenly applied, and far too small a
            thing to hang the poem's turn on. -->
-        <span>幸有<dfn>統一碼</dfn>，天下文字共一表。</span>
+        <span>幸有<dfn>統一碼</dfn>，天下文字共一表</span>
         <br />
       <!-- <i> marks a CHANGE of voice, so the row hands the voice back:
            inner thought in 楷體, then a clause of plain narration after it.
            Without that return the 楷體 has nothing to be different FROM —
            a register shift needs both registers in the same line. -->
-        <span>他心想：<i>百萬碼位猶空</i>，便不再說。</span>
+        <span>他心想：<i>百萬碼位猶空</i>，便不再說</span>
         <br />
       <!-- 書名號甲式 — the wavy underline, Taiwan textbook convention.
            `--han-cite-title-marks` is read by a style query, so it has to
@@ -223,7 +223,7 @@
            title was chosen in the first place. 「一篇」 says the relationship
            in prose too, so the row teaches the convention instead of merely
            relying on it. -->
-        <span style="--han-cite-title-marks: wavy">同讀<cite>武經總要</cite><cite>字驗</cite>一篇。</span>
+        <span style="--han-cite-title-marks: wavy">同讀<cite>武經總要</cite><cite>字驗</cite>一篇</span>
         <br />
       <!-- <var> — the one place in the poem where a variable is literally
            what it says. 〈字驗〉 numbers forty military situations 1–40 and
@@ -254,7 +254,7 @@
            a lovely answer to 「拉丁二十三字」) — 甲子 is a concrete year name,
            a constant, and <var> would be the wrong tag. See
            docs/plans/station-semantics-specimen.md 第十六輪. -->
-        <span><var>甲</var>事書一字，其字非<var>甲</var>。</span>
+        <span><var>甲</var>事書一字，其字非<var>甲</var></span>
         <br />
       <!-- 書名號乙式 on a WESTERN title, rendered into Chinese. John
            Wilkins, «An Essay towards a Real Character, and a Philosophical
@@ -263,7 +263,7 @@
            the poem's 「終無定論」 at it is the driest joke in the figure,
            and the truest: the problem is older than both correspondents
            and outlived them both. -->
-        <span>終無定論，另見<cite>真實字符論</cite>。</span>
+        <span>終無定論，另見<cite>真實字符論</cite></span>
     </article>
     <!-- 標記原理圖 — the whole lookup table, abstracted. Six bars: the same
          input (a slanted, bare block of text) and six outputs. It exists
@@ -272,6 +272,16 @@
          shears the whole run sideways instead of slanting each glyph
          (both measured; docs/plans/semantics-mark-diagram.md § 0). Move the
          argument to pure geometry and every quantity becomes continuous.
+
+         Amended: the poem's runs DO slant continuously now — a run-level
+         `skewY(-12deg)`, the geometry Safari draws vertical italic with
+         (measured off a Safari screenshot: ink-centroid slope −0.21 ⇒ −11.9°),
+         whose driving axis is the block axis, so it does not accumulate the
+         way `skewX` did. `oblique <angle>` is still dead, which is why we
+         draw the slant ourselves — see station-semantics.css § semantics-
+         slant-settle. The diagram keeps its job for the OTHER five marks:
+         the text can show 著重號 arriving, but it cannot show the mark's
+         geometry apart from the glyphs it sits under.
 
          横排 on purpose: set square to the 直排 poem, so nobody mistakes it
          for typeset output. It is a diagram OF the specimen beside it, not

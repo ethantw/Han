@@ -42,7 +42,6 @@ import { initDashFuse } from '/home/dash-fuse.js'
 import { initPunctLang } from '/home/punct-lang.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
 import { initWavyCiteGap } from '/home/wavy-cite-gap.js'
-import { initSemanticChars } from '/home/semantic-chars.js'
 import { initModuleState } from '/home/module-state.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
@@ -111,9 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()
   initWavyCiteGap()
-  // 站①楷體行的逐字 span——包在 initReveal 之前，reveal 蓋章時 span 已
-  // 就位，semantics-char-settle 才能從第一格就按 --i 排隊起跑。
-  initSemanticChars()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
   // (station-craft's Override etc.); the panes get theirs when station④
