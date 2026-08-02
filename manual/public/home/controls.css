@@ -83,6 +83,59 @@
 }
 
 
+/* ─── ControlGroup · the fold's motion ────────────────────────────
+ * A `<details>` toggles with no transition of its own — the body just appears,
+ * which reads as a jump rather than a fold (owner 2026-08-02: 「好突兀」).
+ *
+ * The technique is the 0fr⇄1fr grid row, NOT a height transition: `<details>`
+ * becomes the grid container and `::details-content` its second track, so the
+ * open size is the content's real size and the easing is honest at any length.
+ * The alternatives were measured (2026-08-02, Chromium 147 / WebKit 26.4 /
+ * Firefox 148) and both lose:
+ *   • `block-size: 0 → auto` needs `interpolate-size: allow-keywords` /
+ *     `calc-size()`, and only Chromium has either — Safari and Firefox snap.
+ *   • `max-block-size: 0 → <big>` transitions everywhere but lies about the
+ *     timing: the cap has to exceed the tallest group, so a short one reaches
+ *     full height in the first tenth of the duration and then sits still.
+ *       Measured opening a 112px group under a 40rem cap: full height on the
+ *       first sample in all three engines, i.e. no visible easing at all.
+ *
+ * WebKit caveat, accepted: OPENING eases in all three engines, but CLOSING
+ * eases only in Chromium and Firefox — WebKit drops `::details-content` from
+ * layout the moment `open` goes away, so the `1fr` track resolves against zero
+ * content and the row collapses in one frame. It is not the discrete
+ * `content-visibility` transition failing (measured: the computed value does
+ * stay `visible` for the whole duration, and the same transition works on a
+ * plain element), so there is no author-side fix. Opening is the direction
+ * that was jarring anyway — content appearing from nowhere — and it is the
+ * one that now eases everywhere.
+ *
+ * Gated on `@supports selector(::details-content)` so engines without the
+ * pseudo never get the `display: grid` either, and keep today's exact layout.
+ * (`::details-content` — Chrome 131 / Safari 18.4 / Firefox 139.) */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    details.ControlGroup {
+      & {
+        display: grid;
+        grid-template-rows: auto 0fr;
+        transition: grid-template-rows 220ms ease;
+      }
+      &[open] { grid-template-rows: auto 1fr; }
+
+      /* `min-block-size: 0` is what lets the track actually reach 0 — a grid
+         item's automatic minimum size is its content, not zero. `overflow`
+         clips the body on the way through. */
+      &::details-content {
+        overflow: hidden;
+        min-block-size: 0;
+        transition: content-visibility 220ms allow-discrete;
+      }
+    }
+  }
+}
+
+
 /* ─── module-off — a module switch flipped OFF greys its details group ──
  * The four module switches (console.html) toggle `data-module-off` on the
  * matching `details[data-module]` (console-config.js applyVisibility). The
