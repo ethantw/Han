@@ -195,15 +195,20 @@ test('Browser: installFallbacks() with no arg defaults to documentElement', asyn
   }
 })
 
-test('runProbes: stamps probe results onto documentElement', async () => {
+test('runProbes: runs clean and leaves no debris', async () => {
   const { win, teardown } = await withBrowserGlobals()
   try {
+    // happy-dom can't lay out, so the one remaining probe (autospace) reads a
+    // zero delta and stamps nothing — which is the point: what this locks down
+    // is that a probe run is safe to call anywhere and tidies up after itself.
+    // Whether the marker is ever set is a real-engine question, and the e2e
+    // suite owns it.
     runProbes()
-    // happy-dom can't lay out, so the autospace probe doesn't mark broken;
-    // style-query probe consistently reports unsupported (no real engine).
+    assert.equal(win.document.body.children.length, 0, 'probe leaked into body')
     assert.equal(
-      win.document.documentElement.dataset.probeStyleQuery,
-      'unsupported',
+      win.document.head.querySelectorAll('style').length,
+      0,
+      '<style> leaked into head',
     )
   } finally {
     teardown()

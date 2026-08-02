@@ -16,10 +16,7 @@ import {
   markAdjacentLinesWithMode,
 } from './semantics/adjacent-lines.ts'
 
-import {
-  detectAutospaceBoundaryBug,
-  detectStyleQuerySupport,
-} from './helpers/probes.ts'
+import { detectAutospaceBoundaryBug } from './helpers/probes.ts'
 
 import { isServerSide } from './helpers/env.ts'
 import { pipe } from './helpers/fp.ts'
@@ -124,12 +121,9 @@ export function installFallbacks(root?: Hyperly) {
  *
  *   - `--han-probe-autospace: broken` / `data-probe-autospace="broken"`
  *     when Safari's `text-autospace` inline-boundary bug is detected.
- *   - `--han-probe-style-query: unsupported` / `data-probe-style-query="unsupported"`
- *     when CSS Style Queries (`@container style()`) are not supported.
  */
 export const runProbes = () => {
   detectAutospaceBoundaryBug()
-  detectStyleQuerySupport()
 }
 
 /**

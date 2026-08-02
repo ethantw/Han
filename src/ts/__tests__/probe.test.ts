@@ -1,9 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import {
-  detectAutospaceBoundaryBug,
-  detectStyleQuerySupport,
-} from '../helpers/probes.ts'
+import { detectAutospaceBoundaryBug } from '../helpers/probes.ts'
 
 /* ────────────────────────────────────────────────────────── */
 /* `detectAutospaceBoundaryBug`                         */
@@ -75,91 +72,5 @@ test('memoises the result across calls (no force flag)', async () => {
   } finally {
     delete (globalThis as Record<string, unknown>).document
     delete (globalThis as Record<string, unknown>).CSS
-  }
-})
-
-/* ────────────────────────────────────────────────────────── */
-/* `detectStyleQuerySupport`                            */
-/*                                                            */
-/* Same contract-test approach as `detectAutospaceBoundaryBug`*/
-/* above — happy-dom doesn't apply container style queries,   */
-/* so the function always returns `false` here. Real-engine   */
-/* feature detection is verified by e2e. Unit tests lock      */
-/* down: SSR-safe, no DOM debris, memoised, side-effect       */
-/* markers set on documentElement when unsupported.           */
-/* ────────────────────────────────────────────────────────── */
-
-test('styleQuery: returns false when document is undefined (SSR / non-browser)', () => {
-  const savedDoc = (globalThis as Record<string, unknown>).document
-  delete (globalThis as Record<string, unknown>).document
-  try {
-    assert.equal(detectStyleQuerySupport(true), false)
-  } finally {
-    if (savedDoc !== undefined) (globalThis as Record<string, unknown>).document = savedDoc
-  }
-})
-
-test('styleQuery: cleans up probe and <style> elements after running', async () => {
-  const { Window } = await import('happy-dom')
-  const win = new Window()
-  ;(globalThis as Record<string, unknown>).document = win.document
-  try {
-    detectStyleQuerySupport(true)
-    assert.equal(win.document.body.children.length, 0, 'probe leaked into body')
-    assert.equal(
-      win.document.head.querySelectorAll('style').length,
-      0,
-      '<style> leaked into head',
-    )
-  } finally {
-    delete (globalThis as Record<string, unknown>).document
-  }
-})
-
-test('styleQuery: marks documentElement when unsupported', async () => {
-  const { Window } = await import('happy-dom')
-  const win = new Window()
-  ;(globalThis as Record<string, unknown>).document = win.document
-  try {
-    const supported = detectStyleQuerySupport(true)
-    assert.equal(supported, false, 'happy-dom should report unsupported')
-    assert.equal(
-      win.document.documentElement.dataset.probeStyleQuery,
-      'unsupported',
-    )
-    assert.equal(
-      win.document.documentElement.style.getPropertyValue('--han-probe-style-query'),
-      'unsupported',
-    )
-  } finally {
-    delete (globalThis as Record<string, unknown>).document
-  }
-})
-
-test('styleQuery: cache hit re-applies the documentElement markers', async () => {
-  const { Window } = await import('happy-dom')
-  const win = new Window()
-  ;(globalThis as Record<string, unknown>).document = win.document
-  try {
-    // Populate cache with `force=true`.
-    detectStyleQuerySupport(true)
-    // Wipe the markers so we can detect whether the cache-hit branch re-applies them.
-    delete win.document.documentElement.dataset.probeStyleQuery
-    win.document.documentElement.style.removeProperty('--han-probe-style-query')
-
-    const result = detectStyleQuerySupport()
-    assert.equal(result, false, 'cached value preserved')
-    assert.equal(
-      win.document.documentElement.dataset.probeStyleQuery,
-      'unsupported',
-      'cache-hit branch should re-apply dataset marker',
-    )
-    assert.equal(
-      win.document.documentElement.style.getPropertyValue('--han-probe-style-query'),
-      'unsupported',
-      'cache-hit branch should re-apply CSS var',
-    )
-  } finally {
-    delete (globalThis as Record<string, unknown>).document
   }
 })

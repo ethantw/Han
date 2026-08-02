@@ -1,6 +1,5 @@
 export interface Probes {
   autospaceBoundaryBug?: boolean
-  styleQuerySupport?: boolean
 }
 
 const probesCache: Probes = {}
@@ -89,51 +88,4 @@ export function detectAutospaceBoundaryBug(force = false, doc = typeof document 
   /* node:coverage enable */
 
   return probesCache.autospaceBoundaryBug = broken
-}
-
-/**
- * Detect support for CSS Style Queries (`@container style(--var: value)`).
- *
- * `CSS.supports()` and CSSOM inspection are unreliable: older Firefox (110+)
- * parsed the rule into the CSSOM without applying it (Firefox shipped real
- * support in 2026-06). The only trustworthy check across versions is creating
- * a live DOM probe and reading `getComputedStyle`.
- */
-export const detectStyleQuerySupport = (force = false, doc = typeof document !== 'undefined' ? document : null): boolean => {
-  if (!doc) return false
-  if (probesCache.styleQuerySupport !== undefined && !force) {
-    const isSupported = probesCache.styleQuerySupport
-    if (!isSupported) {
-      doc.documentElement.style.setProperty('--han-probe-style-query', 'unsupported')
-      doc.documentElement.dataset.probeStyleQuery = 'unsupported'
-    }
-    return isSupported
-  }
-
-  const style = doc.createElement('style')
-  style.textContent = '#han-sq-parent{--han-probe:1}@container style(--han-probe:1){#han-sq-child{z-index:99}}'
-  doc.head.appendChild(style)
-
-  const parent = doc.createElement('div')
-  parent.id = 'han-sq-parent'
-  // Hidden so it doesn't affect layout
-  parent.style.display = 'none'
-
-  const child = doc.createElement('div')
-  child.id = 'han-sq-child'
-  parent.appendChild(child)
-
-  doc.body.appendChild(parent)
-
-  const isSupported = doc.defaultView!.getComputedStyle(child).zIndex === '99'
-
-  parent.remove()
-  style.remove()
-
-  if (!isSupported) {
-    doc.documentElement.style.setProperty('--han-probe-style-query', 'unsupported')
-    doc.documentElement.dataset.probeStyleQuery = 'unsupported'
-  }
-
-  return probesCache.styleQuerySupport = isSupported
 }
