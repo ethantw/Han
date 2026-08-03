@@ -59,9 +59,6 @@
     hant: '下一個選擇器', hans: '下一个选择器', en: 'Next selector',
     ja: '次のセレクタ', ko: '다음 셀렉터',
   },
-  arRoleFramework: {
-    hant: '框架', hans: '框架', en: 'framework', ja: 'フレームワーク', ko: '프레임워크',
-  },
   arEq52Note: {
     hant: '未分層的宣告永遠蓋過分層的——你的一條規則就贏。',
     hans: '未分层的宣告永远盖过分层的——你的一条规则就赢。',
@@ -407,7 +404,7 @@
       <ul class="SelRing">
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleTag" data-brand>{{ logo }}</p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: .125em;</code></p>
             <p class="RuleEnd">}</p>
@@ -421,7 +418,7 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleTag" data-brand>{{ logo }}</p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
             <p class="RuleEnd">}</p>
@@ -435,7 +432,7 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleTag" data-brand>{{ logo }}</p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: initial;</code></p>
             <p class="RuleEnd">}</p>
@@ -449,7 +446,7 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleTag" data-brand>{{ logo }}</p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
             <p class="RuleEnd">}</p>
@@ -463,7 +460,7 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleTag" data-brand>{{ logo }}</p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
             <p class="RuleEnd">}</p>

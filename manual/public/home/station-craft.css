@@ -371,11 +371,35 @@
        abspos label sits on top of the second line. devtools has the same
        collision and solves it the same way. */
     .RuleTag {
-      margin-block-end: 0.25rem;
-      font-family: var(--han-font-alternative);
-      font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
-      text-align: end;
+      & {
+        margin-block-end: 0.25rem;
+        font-family: var(--han-font-alternative);
+        font-size: var(--fs-fine);
+        color: var(--palette-supplement-text-2q);
+        text-align: end;
+      }
+
+      /* han.css's own rule is signed with the WORDMARK (the `logo` token from
+         home/_shared.html — the same atom the masthead wears), not the word
+         「框架」. A devtools pane names the sheet a rule came from; here the
+         sheet has a name and a face, so it may as well use them.
+         Sized from `--fs-fine`, one notch under the code beside it: the
+         signature has to read as a signature, not as a second headline. The
+         wordmark's own atoms scale off `font-size`, so one declaration on the
+         container carries the lockup. */
+      .Brand {
+        font-size: var(--fs-small);
+        vertical-align: baseline;
+      }
+
+      /* The circular mark needs ~20px to read as a mark; at signature size it
+         is a smudge, and a smudge beside the wordmark reads as a rendering
+         fault rather than a logo. The wordmark alone is a whole brand atom
+         (home/_shared.html calls mark/dot/ext exactly that), so drop the
+         device and keep the name. */
+      .BrandMark {
+        display: none;
+      }
     }
 
     /* han.css's own rule, struck through because it LOST — the same signal
