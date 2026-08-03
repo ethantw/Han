@@ -35,9 +35,9 @@
   --color-paper-deep: #fafaf7; /* warm off-white — panels */
   --color-snow:       #f3f3f0;
   --color-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --color-console:       #fafafa; /* 中性的近白 — 主控台地色（淺）*/
+  --color-console-night: #151515; /* 中性的暗 — 主控台地色（深）*/
   --color-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
-  --color-console:       #eceff2; /* 冷調的淡灰 — 主控台地色（淺）*/
-  --color-console-night: #101013; /* 近乎頁面最深的墨 — 主控台地色（深）*/
   --color-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
   --color-cloud:      #ececea; /* hairline grey — grid / rule */
   --color-silver:     #d2d2cd;
@@ -121,14 +121,17 @@
    * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
    * Baseline 2023) that lifts to the paper side on dark so it still
    * reads. Consumed only by `[data-station]` / `.Closing`. */
-  /* 主控台的地色。它曾經直接用 --palette-panel——而 panel 與 station-a 是
-     同一組值（paper-deep／ink-deep），於是「工具」與「內容」同色，兩者只隔
-     一條髮線，看不出界。
-     分野走**色溫**，不走明度：頁面的紙全是暖灰（paper-deep／snow／mist 一
-     系），主控台改成冷調的淡灰，明度只差一點，交界卻立刻讀得出來——而且
-     不會像加深暖灰那樣把工具面變成一片土色（試過 #eeece5，難看，「高級感」
-     全丟了）。深色一側往頁面最深的墨靠，工具自己退到後面去。
-     只有 <han-console> 的 host 用它；panel 那個角色還有一堆面板在用，不動。 */
+  /* 主控台的地色。它曾經直接用 --palette-panel——而 panel 與站台 a 同值
+     （paper-deep／ink-deep），於是「工具」與「內容」同色，只隔一條髮線。
+     兩側各用一種分野，因為暗處讀不出溫差：
+       · 淺色 #fafafa 是**純溫差**——與 paper-deep（250,250,247，偏黃）同明度，
+         差的只是中性 vs 暖。交界是一道溫差而不是一道階，兩邊都不顯「脏」。
+       · 深色 #151515 只能走**明度**——比 ink-deep（24,23,26）再暗三階，工具
+         往頁面最深的墨靠、自己退到後面去。
+     存檔的彎路都是在淺色側動明度：#eeece5（加深＋加暖＝土色）、#eceff2（明顯
+     冷調，脫離暖紙家族）、#eeeeea（同階梯再降一格，像第三種站台）。
+     只有 <han-console> 的 host 用它；--palette-panel 那個角色還有一堆面板在
+     用，不動。 */
   --palette-console: light-dark(var(--color-console), var(--color-console-night));
   --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
   --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));

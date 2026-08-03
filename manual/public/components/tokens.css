@@ -26,7 +26,7 @@
   --_text:            var(--palette-text, light-dark(#0e0e10, #e8e8e3));   /* color-ink / color-mist */
   --_rule:            var(--palette-rule, light-dark(#ececea, #2a2a2c));   /* color-cloud / color-charcoal */
   --_panel:           var(--palette-panel, light-dark(#fafaf7, #18171a));  /* color-paper-deep / color-ink-deep */
-  --_console-bg:      var(--palette-console, light-dark(#eceff2, #101013)); /* color-console / -night */
+  --_console-bg:      var(--palette-console, light-dark(#fafafa, #151515)); /* color-console / -night */
   --_bg:              var(--palette-bg, light-dark(#ffffff, #0e0e10));     /* color-white / color-ink */
   --_accent:          var(--palette-accent, light-dark(#0a8754, #3f9d6f)); /* color-green / color-green-bright */
   --_accent-bg:       var(--palette-accent-bg, light-dark(#e8f5ec, #163322)); /* color-mint / color-pine */
