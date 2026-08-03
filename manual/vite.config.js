@@ -200,26 +200,34 @@ async function compressedSizeKb(file, compress) {
 }
 
 /**
- * Runtime deps, BY NAME — the footing prints「運行時依賴1（hyperly）」,
- * naming the dependency instead of leaving a bare count to raise the
- * question it should answer (homepage review 2026-07-18 §⑤). Names come
- * from package.json so the ledger can never drift from reality.
- */
-/**
- * Fill station 伍's `<code data-spec>` weights from the selector text they
- * already carry, and seed the two `<b data-spec-out>` with the first one.
+ * Fill station 伍's cascade pairs with computed specificity: han.css's own
+ * selector (`data-spec`) and the reader's overriding one (`data-mine-spec`),
+ * plus the annotation line's two `<b>`s.
  *
- * Computed, never typed: the carousel's whole claim is that a selector of
- * ANY weight comes out at zero, so a triple that had drifted from the
- * selector printed beside it would undo the argument it exists to make. A
- * post-substitution pass over the rendered HTML rather than a token, so the
- * selectors stay in the markup where they are read (DOM is the data) instead
- * of migrating into this config as a table of strings.
+ * Computed, never typed: the whole claim is that a selector of ANY weight
+ * comes out at zero and loses to the reader, so a triple that had drifted
+ * from the selector printed beside it would undo the argument it exists to
+ * make. A post-substitution pass over the rendered HTML rather than a token,
+ * so the selectors stay in the markup where they are read (DOM is the data)
+ * instead of migrating into this config as a table of strings.
  */
 function fillSpecificity(html) {
   const unescape = (s) => s
     .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
     .replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+  /** A selector LIST weighs what its HEAVIEST branch weighs — that is the one
+   *  an author would have to beat. Ranked component-wise, not by string order:
+   *  '(0,1,10)' sorts before '(0,1,2)' as text. */
+  const rank = (list) => {
+    const heaviest = splitTopLevel(unescape(list))
+      .map(specificity)
+      .reduce((x, y) => (
+        x[0] !== y[0] ? (x[0] > y[0] ? x : y)
+        : x[1] !== y[1] ? (x[1] > y[1] ? x : y)
+        : x[2] >= y[2] ? x : y
+      ), [0, 0, 0])
+    return `(${heaviest.join(',')})`
+  }
   const specs = []
   // Terminator is `</code`, NOT `</code>` — the carousel's items close with
   // the tag split across a line break (`</code\n  ><code …`) to keep the
@@ -228,24 +236,30 @@ function fillSpecificity(html) {
   const filled = html.replace(
     /<code data-spec(?:="[^"]*")?>([\s\S]*?)<\/code/g,
     (_, body) => {
-      // A selector LIST prints the weight of its heaviest branch — that is the
-      // one an author would have to beat. Ranked component-wise, not by
-      // string order: '(0,1,10)' sorts before '(0,1,2)' as text.
-      const heaviest = splitTopLevel(unescape(body))
-        .map(specificity)
-        .reduce((x, y) => (
-          x[0] !== y[0] ? (x[0] > y[0] ? x : y)
-          : x[1] !== y[1] ? (x[1] > y[1] ? x : y)
-          : x[2] >= y[2] ? x : y
-        ), [0, 0, 0])
-      const spec = `(${heaviest.join(',')})`
+      const spec = rank(body)
       specs.push(spec)
       return `<code data-spec="${spec}">${body}</code`
     },
   )
-  return specs.length
-    ? filled.replace(/<b data-spec-out>[^<]*<\/b>/g, `<b data-spec-out>${specs[0]}</b>`)
-    : filled
+  // The reader's own selector in each cascade pair — same treatment, its own
+  // attribute, so the two rosters can never be mixed up by position.
+  const mine = []
+  const both = filled.replace(
+    /<code data-mine-spec(?:="[^"]*")?>([\s\S]*?)<\/code/g,
+    (_, body) => {
+      const spec = rank(body)
+      mine.push(spec)
+      return `<code data-mine-spec="${spec}">${body}</code`
+    },
+  )
+  // Seed the annotation line with the FIRST pair, so the plate reads correctly
+  // before (or without) carousel.js.
+  return [[specs, 'data-spec-out'], [mine, 'data-mine-out']].reduce(
+    (out, [list, attr]) => list.length
+      ? out.replace(new RegExp(`<b ${attr}>[^<]*</b>`, 'g'), `<b ${attr}>${list[0]}</b>`)
+      : out,
+    both,
+  )
 }
 
 /** dist/pass-sizes.json, or null before the library has been built. */
@@ -257,6 +271,12 @@ async function readPassSizes() {
   }
 }
 
+/**
+ * Runtime deps, BY NAME — the footing prints「運行時依賴1（hyperly）」,
+ * naming the dependency instead of leaving a bare count to raise the
+ * question it should answer (homepage review 2026-07-18 §⑤). Names come
+ * from package.json so the ledger can never drift from reality.
+ */
 async function runtimeDeps() {
   try {
     const pkg = JSON.parse(await fs.readFile(path.resolve(here, '..', 'package.json'), 'utf-8'))

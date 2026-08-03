@@ -33,6 +33,20 @@
     en: 'nest it as deep as you like — on its own it weighs', ja: '括弧の中はいくら深くてもよい。それ自身の詳細度は',
     ko: '괄호 안은 얼마든지 깊어도 된다——그 <ruby>自體<rt>자체</rt></ruby>의 優先順位는',
   },
+  arEgBeaten: {
+    hant: '；歸零之後，你的', hans: '；归零之后，你的',
+    en: '; zeroed, your own', ja: '。零になったあと、あなたの',
+    ko: '. 零이 된 뒤, 당신의',
+  },
+  arEgBeatenTail: {
+    hant: '就贏了。', hans: '就赢了。',
+    en: ' takes it.', ja: 'が勝つ。',
+    ko: '이 이긴다.',
+  },
+  arRoleMine: {
+    hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet',
+    ja: 'あなたのスタイルシート', ko: '당신의 스타일시트',
+  },
   arEgEquiv: {
     hant: '同一批元素，權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
     ja: '同じ要素、詳細度', ko: '같은 要素, 優先順位',
@@ -286,34 +300,103 @@
     </div>
   </div>
 
-  <!-- 例5.1 — the worked example, with the「任意選擇器」quantifier made
-       visible: the same equation over five REAL selectors from the library,
-       one per module, deliberately unalike in shape (a :has() pair, a :lang()
-       negation, a ten-branch heading rule, a ruby list, a JS-marked subtree).
-       They differ in weight from (0,0,2) to (0,2,2) and the right-hand side
-       is 0 every time — which is the point the roster is making.
+  <!-- 例5.1 — the worked example, set as a CASCADE STACK, the way devtools
+       shows one: han.css's real rule, then the reader's rule underneath, and
+       the framework declaration struck through because it lost. The claim
+       「不跟你的 CSS 打架」is abstract until you have seen the loser crossed
+       out, and every pair here is real — the selector, the property and the
+       value are what ships in dist/han.*.css.
+
+       The「任意選擇器」quantifier is made visible by cycling five of them,
+       one per module and deliberately unalike in shape (a :has() pair, a
+       ten-branch heading rule, a JS-marked subtree, a ruby list, a :lang()
+       negation). They range from (0,0,2) to (0,2,2) and lose to the reader
+       every time — which is the point the roster is making.
 
        READER-DRIVEN, never automatic. This is an equation to be read, not a
        marquee; a line that moves on its own while you are parsing it is a
        worse version of the same line.
 
-       The weights are NOT typed in: vite computes each from the selector's
-       own text (manual/_specificity.js) and fills `data-spec`, so editing a
-       selector can never leave a stale triple beside it. The first item's
-       weight is also baked into the two <b>s, so the plate is correct with
+       Neither weight is typed in: vite computes both from the selectors' own
+       text (manual/_specificity.js) into `data-spec` / `data-mine-spec`, so
+       editing a selector can never leave a stale triple beside it. The first
+       item's pair is also baked into the <b>s, so the plate is correct with
        JS off — home/carousel.js only takes it from there. -->
   <div class="Theorem">
     <div class="Example">
-      <p class="Formula Applied" lang="en">
-        <span class="Fn">:where(</span><span class="SelRing"
-          ><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code
-          ><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code
-          ><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code
-          ><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code
-          ><code data-spec>:lang(ko):not(:lang(ko-Hant))</code
-        ></span><span class="Fn">)</span>
-      </p>
-      <p class="Brace">{{ arEgBrace }}<b data-spec-out>(0,2,2)</b></p>
+      <ul class="SelRing">
+        <li>
+          <div class="Rule" data-role="framework">
+            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: .125em;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: initial;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: .25em;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>ruby.zhuyin</code> {</p>
+            <p class="RuleDecl" lang="en"><code>ruby-position: over;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <p class="RuleTag">{{ arRoleFramework }}</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.hanja :lang(ko)</code> {</p>
+            <p class="RuleDecl" lang="en"><code>--han-quotes: 「 」 『 』;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+      </ul>
+      <p class="Brace">{{ arEgBrace }}<b data-spec-out>(0,2,2)</b>{{ arEgBeaten }}<b data-mine-out>(0,1,1)</b>{{ arEgBeatenTail }}</p>
       <p class="Formula Applied">
         <span class="Op">≡</span>{{ arEgEquiv }}<b data-spec-out>(0,2,2)</b>
         <span class="Op">→</span><span class="Zero">(0,0,0)</span>

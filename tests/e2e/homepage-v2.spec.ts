@@ -104,33 +104,49 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   expect(total).toBeCloseTo(styles.reduce((a, b) => a + b, 0) + autoBr, 5)
 })
 
-test('station 伍・工法: 例5.1 cycles real library selectors, weights computed', async ({ page }) => {
+test('station 伍・工法: 例5.1 is a cascade stack over real library rules', async ({ page }) => {
   await page.goto('/')
 
-  const items = page.locator('#station-craft .SelRing code')
+  const items = page.locator('#station-craft .SelRing > li')
   await expect(items).toHaveCount(5)
 
-  // Every weight is build-computed from the selector text beside it
-  // (manual/_specificity.js) — never typed in, so it cannot drift.
-  const specs = await items.evaluateAll((els) =>
-    els.map((el) => (el as HTMLElement).dataset.spec),
-  )
+  // Each item is a PAIR — han.css's rule and the reader's — and every weight
+  // is build-computed from the selector text beside it
+  // (manual/_specificity.js), never typed in, so it cannot drift.
+  const specs = await items
+    .locator('[data-role="framework"] code[data-spec]')
+    .evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.spec))
   expect(specs).toEqual(['(0,2,2)', '(0,0,2)', '(0,2,1)', '(0,1,2)', '(0,2,0)'])
+
+  // The reader's selector must actually outrank zero in every pair — the
+  // claim the whole plate is making.
+  const mine = await items
+    .locator('[data-role="mine"] code[data-mine-spec]')
+    .evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.mineSpec))
+  expect(mine).toHaveLength(5)
+  for (const m of mine) expect(m).not.toBe('(0,0,0)')
+
+  // The framework declaration is struck through — it lost, and that is the
+  // signal a devtools reader already knows how to read.
+  await expect(
+    items.first().locator('[data-role="framework"] .RuleDecl'),
+  ).toHaveCSS('text-decoration-line', 'line-through')
 
   // Reader-driven: the nav is hidden in the markup and only carousel.js
   // unhides it, so a no-JS page never offers a button that does nothing.
   const next = page.locator('#station-craft [data-sel-step="1"]')
   await expect(next).toBeVisible()
-  const shown = page.locator('#station-craft .SelRing code[data-current]')
+  const shown = page.locator('#station-craft .SelRing > li[data-current]')
   await expect(shown).toHaveCount(1)
 
-  // …and the printed triple travels WITH the selector — the whole point of
-  // the ring is that a heavier selector still comes out at zero.
-  const brace = page.locator('#station-craft [data-spec-out]').first()
-  await expect(brace).toHaveText('(0,2,2)')
+  // …and BOTH printed triples travel with the pair.
+  const framework = page.locator('#station-craft [data-spec-out]').first()
+  const yours = page.locator('#station-craft [data-mine-out]').first()
+  await expect(framework).toHaveText('(0,2,2)')
+  await expect(yours).toHaveText('(0,1,1)')
   await next.click()
-  await expect(shown).toHaveAttribute('data-spec', '(0,0,2)')
-  await expect(brace).toHaveText('(0,0,2)')
+  await expect(framework).toHaveText('(0,0,2)')
+  await expect(yours).toHaveText('(0,0,2)')
 })
 
 test('station 伍・工法: the font ledger is a second, separate set of books', async ({ page }) => {

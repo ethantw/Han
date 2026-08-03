@@ -22,18 +22,28 @@ export const initCarousel = ($root = document) => {
   const $ring = $root.querySelector('.SelRing')
   if (!$ring) return
 
-  const $items = [...$ring.querySelectorAll('code')]
+  // One item = one whole cascade pair (han.css's rule ＋ the reader's), so the
+  // selector, the declarations and both weights swap together. Anything less
+  // and a half-swapped state would show a property being overridden by a
+  // declaration that does not mention it.
+  const $items = [...$ring.children]
   const $nav = $root.querySelector('.SelNav')
-  const $outs = [...$root.querySelectorAll('[data-spec-out]')]
   const $count = $nav?.querySelector('[data-sel-count]')
   if ($items.length < 2 || !$nav) return
 
+  // Each annotation `<b>` names the attribute it mirrors, so the two weights
+  // cannot be crossed by position.
+  const OUTS = [
+    ['data-spec', 'spec', 'data-spec-out'],
+    ['data-mine-spec', 'mineSpec', 'data-mine-out'],
+  ]
+
   const show = (i) => {
     $items.forEach(($el, n) => $el.toggleAttribute('data-current', n === i))
-    // The weight belongs to the selector, so it travels with it — otherwise
-    // the first swap would leave a triple that describes the previous line.
-    const spec = $items[i].dataset.spec
-    if (spec) $outs.forEach(($b) => ($b.textContent = spec))
+    for (const [attr, prop, out] of OUTS) {
+      const spec = $items[i].querySelector(`[${attr}]`)?.dataset[prop]
+      if (spec) $root.querySelectorAll(`[${out}]`).forEach(($b) => ($b.textContent = spec))
+    }
     if ($count) $count.textContent = `${i + 1}／${$items.length}`
   }
 

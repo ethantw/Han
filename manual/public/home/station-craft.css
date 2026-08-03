@@ -208,36 +208,115 @@
     font-variant-numeric: tabular-nums lining-nums;
   }
 
-  /* The selector ring — five candidates stacked in the SAME cell, so the
-     `:where(` … `)` wrapper either side never shifts as they swap. Grid, not
-     absolute positioning: every item still contributes to the intrinsic
-     size, so the row is as tall and as wide as the LONGEST selector and the
-     equation below it stays put. With JS off, only the first is painted (the
-     nav is `hidden` in the markup, and `data-current` is what carousel.js
-     adds), which is also the one whose weight is baked into the <b>s. */
+  /* The cascade stack — five pairs in the SAME grid cell, so the plate never
+     resizes as they swap. Grid, not absolute positioning: every item still
+     contributes to the intrinsic size, so the box is as tall and as wide as
+     the LONGEST pair and nothing below it moves. With JS off only the first
+     is painted (the nav is `hidden` in the markup and `data-current` is what
+     carousel.js adds), which is the pair whose weights are baked into the
+     annotation line. */
   .SelRing {
     & {
-      display: inline-grid;
-      vertical-align: top;
-      text-align: start;
+      display: grid;
+      margin: 0 0 0.25rem;
+      padding: 0;
+      list-style: none;
     }
 
-    code {
+    > li {
       grid-area: 1 / 1;
       visibility: hidden;
+      display: grid;
+      gap: 1px;                     /* hairline seam, as in the ledgers */
+      background: var(--palette-rule);
+      border: 1px solid var(--palette-rule);
+      border-radius: var(--r-3);
+      overflow: hidden;
     }
 
-    code:first-child,
-    code[data-current] {
+    > li:first-child,
+    > li[data-current] {
       visibility: visible;
     }
 
     /* JS present → `data-current` is authoritative and the first child is no
-       longer special. Written as a second rule rather than `:not()` on the
-       one above because the no-JS case must survive with the shorter
-       selector, not depend on this one being understood. */
-    &:has(code[data-current]) code:first-child:not([data-current]) {
+       longer special. A second rule rather than `:not()` on the one above, so
+       the no-JS case survives with the shorter selector instead of depending
+       on this one being understood. */
+    &:has(> li[data-current]) > li:first-child:not([data-current]) {
       visibility: hidden;
+    }
+  }
+
+  /* One rule, set the way a devtools styles pane sets one: the selector, the
+     declarations indented under it, the closing brace on its own line. */
+  .Rule {
+    & {
+      position: relative;
+      padding-block: 0.875rem;
+      padding-inline: 1rem;
+      background: var(--palette-bg);
+      font-family: var(--font-mono);
+      font-size: var(--fs-compact);
+      line-height: 1.7;
+      text-align: start;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    /* The whole panel is already code, so the page's inline-`<code>` chip
+       (tinted ground ＋ padding) would box every fragment inside a code
+       block — the boxes read as highlights and devtools has none. The
+       elements stay `<code>` because that is what they are; only the chrome
+       goes. */
+    code {
+      padding: 0;
+      background: none;
+      border: 0;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    .RuleSel {
+      color: var(--palette-text);
+    }
+
+    .RuleDecl {
+      padding-inline-start: 1.5em;
+      color: var(--palette-accent);
+    }
+
+    .RuleEnd {
+      color: var(--palette-supplement-text-2q);
+    }
+
+    /* Whose rule this is — the slot a devtools pane spends on the source
+       file, which is not a thing this page can point at. */
+    .RuleTag {
+      position: absolute;
+      inset-inline-end: 1rem;
+      inset-block-start: 0.875rem;
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+    }
+
+    /* han.css's own rule, struck through because it LOST — the same signal
+       devtools uses, and the whole point of showing the pair. `line-through`
+       on the declaration only: the selector still matched, it is the
+       declaration that was outranked. */
+    &[data-role="framework"] .RuleDecl {
+      color: var(--palette-supplement-text-2q);
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+    }
+
+    /* `:where()` reads as notation in the axioms above; here it is literal
+       CSS being quoted, so it keeps the mono face and only dims. */
+    .Fn {
+      opacity: 0.7;
     }
   }
 
