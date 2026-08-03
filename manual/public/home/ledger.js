@@ -116,8 +116,9 @@ export const initLedger = ($root = document) => {
   const $totals = new Map(
     [...$table.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
   )
-  // The caption's `CSS a + JS b = c` equation (MathML) — outside the table,
-  // hence its own lookup off the figure.
+  // The caption's `CSS a + JS b = c` equation array (MathML) — outside the
+  // table, hence its own lookup off the figure. Keys are `<col>-<part>`,
+  // e.g. `br-all`, so one flat map covers all nine cells.
   const $sum = new Map(
     [...($table.closest('figure')?.querySelectorAll('[data-sum]') ?? [])]
       .map(($el) => [$el.dataset.sum, $el]),
@@ -204,15 +205,17 @@ export const initLedger = ($root = document) => {
       if ($el) $el.textContent = fmtK(sumOf([...css, ...js].map((f) => f[i])))
     })
 
-    // The caption's equation restates the footing as CSS + JS = total, in
-    // brotli. Same numbers, same source — index 1 of the same triples the
-    // tfoot just summed, so the two lines cannot drift apart.
-    const cssKb = sumOf(css.map((f) => f[1]))
-    const jsKb = sumOf(js.map((f) => f[1]))
-    for (const [name, kb] of [['css', cssKb], ['js', jsKb], ['all', cssKb + jsKb]]) {
-      const $el = $sum.get(name)
-      if ($el) $el.textContent = fmtK(kb)
-    }
+    // The caption's equation array restates the footing as CSS + JS = total,
+    // once per compression. Same numbers, same source — the very triples the
+    // tfoot just summed, so the two blocks cannot drift apart.
+    COLS.forEach((col, i) => {
+      const cssKb = sumOf(css.map((f) => f[i]))
+      const jsKb = sumOf(js.map((f) => f[i]))
+      for (const [part, kb] of [['css', cssKb], ['js', jsKb], ['all', cssKb + jsKb]]) {
+        const $el = $sum.get(`${col}-${part}`)
+        if ($el) $el.textContent = fmtK(kb)
+      }
+    })
   }
 
   document.addEventListener('han-config-change', (e) => {

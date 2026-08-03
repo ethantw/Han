@@ -119,11 +119,11 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: '按brotli計，隨左欄的勾選重算。',
-    hans: '按brotli计，随左栏的勾选重算。',
-    en: 'brotli, re-added as you pick in the left column.',
-    ja: 'brotli換算。左欄の選択に応じて計算し直される。',
-    ko: 'brotli <ruby>基準<rt>기준</rt></ruby>. 왼쪽 칸의 選擇에 따라 다시 더해진다.',
+    hant: '三行都隨左欄的勾選重算。brotli是現代CDN實際送的那一份，故列在末行。',
+    hans: '三行都随左栏的勾选重算。brotli是现代CDN实际送的那一份，故列在末行。',
+    en: 'All three re-add themselves as you pick in the left column. brotli is what a modern CDN actually serves, so it takes the last line.',
+    ja: '三行とも左欄の選択に応じて計算し直される。brotliは現代のCDNが実際に送るものなので、最終行に置いた。',
+    ko: '세 줄 모두 왼쪽 칸의 選擇에 따라 다시 더해진다. brotli는 現代 CDN이 實際로 보내는 것이라 마지막 줄에 두었다.',
   },
   arSumNote: {
     hant: '四個樣式模組，正是左欄的四顆開關；腳本是選配——純CSS的漢.css自己就成立。這一欄隨你的勾選重算，數字全是實打包量到的。',
@@ -529,24 +529,53 @@
     </div>
 
     <figcaption>
-      <!-- The footing again, as the one line a reader would say out loud.
-           MathML because it IS an equation, and because the three operands
-           have to stay side by side when the line wraps — <mrow> keeps them
-           together where three spans would break anywhere.
-           brotli only: three compressions × three operands is a table, not a
-           sentence, and the table above already IS that. home/ledger.js
-           rewrites the three <mn>s from the same printed column the tfoot
-           sums, so this line can never disagree with it. -->
+      <!-- The footing again, as the three lines a reader would say out loud —
+           an ALIGNED EQUATION ARRAY, which is the one thing `<mtable>` is
+           for: `+` and `=` stack into columns, so the three compressions can
+           be compared straight down instead of hunted for across a table.
+
+           Order is compression strength — none → gzip → brotli — which puts
+           brotli last, in an arithmetic sum's answer position, under a rule.
+           That is where the emphasis comes from: the strongest number is
+           also the concluding one, and the two above it are the working. No
+           badge, no colour trick; the arrangement says it.
+
+           home/ledger.js rewrites all nine <mn>s from the same printed
+           column the tfoot sums, so these lines can never disagree with the
+           table above them. -->
       <math display="block" class="SumEq">
-        <mrow>
-          <mtext>CSS</mtext><mspace width="0.3em"></mspace>
-          <mn data-sum="css">{{ sizeTotal }}</mn>
-          <mo>+</mo>
-          <mtext>JS</mtext><mspace width="0.3em"></mspace>
-          <mn data-sum="js">{{ sizeJsAuto }}</mn>
-          <mo>=</mo>
-          <mn data-sum="all" class="Zero">{{ sizeDefaultTotal }}</mn>
-        </mrow>
+        <mtable>
+          <mtr class="Minor">
+            <mtd><mtext>{{ arScColRaw }}</mtext></mtd>
+            <mtd><mtext>CSS</mtext></mtd>
+            <mtd><mn data-sum="raw-css">{{ sizeTotalRaw }}</mn></mtd>
+            <mtd><mo>+</mo></mtd>
+            <mtd><mtext>JS</mtext></mtd>
+            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRaw }}</mn></mtd>
+            <mtd><mo>=</mo></mtd>
+            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRaw }}</mn></mtd>
+          </mtr>
+          <mtr class="Minor">
+            <mtd><mtext>gzip</mtext></mtd>
+            <mtd><mtext>CSS</mtext></mtd>
+            <mtd><mn data-sum="gz-css">{{ sizeTotalGzip }}</mn></mtd>
+            <mtd><mo>+</mo></mtd>
+            <mtd><mtext>JS</mtext></mtd>
+            <mtd><mn data-sum="gz-js">{{ sizeJsAutoGzip }}</mn></mtd>
+            <mtd><mo>=</mo></mtd>
+            <mtd><mn data-sum="gz-all">{{ sizeDefaultTotalGzip }}</mn></mtd>
+          </mtr>
+          <mtr class="Major">
+            <mtd><mtext>brotli</mtext></mtd>
+            <mtd><mtext>CSS</mtext></mtd>
+            <mtd><mn data-sum="br-css">{{ sizeTotal }}</mn></mtd>
+            <mtd><mo>+</mo></mtd>
+            <mtd><mtext>JS</mtext></mtd>
+            <mtd><mn data-sum="br-js">{{ sizeJsAuto }}</mn></mtd>
+            <mtd><mo>=</mo></mtd>
+            <mtd><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotal }}</mn></mtd>
+          </mtr>
+        </mtable>
       </math>
       <p class="SumEqNote">{{ arSumEqNote }}</p>
       <p class="SumProse">{{ arSumNote }}</p>

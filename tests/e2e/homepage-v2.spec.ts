@@ -107,16 +107,25 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   const cssKb = styles.reduce((a, b) => a + b, 0)
   expect(total).toBeCloseTo(cssKb + autoBr, 5)
 
-  // …and the caption's MathML says the same thing as one line. Same numbers,
-  // same source — if these two ever disagree the plate is lying twice.
+  // …and the caption's MathML array says the same thing, once per
+  // compression. If these ever disagree with the table the plate lies twice.
   // `textContent`, not `innerText`: these are MathML `<mn>`s, and a
   // MathMLElement has no innerText.
   const eq = async (name) =>
     Number((await page.locator(`#station-craft [data-sum="${name}"]`)
       .evaluate((el) => el.textContent)).trim().replace('KB', ''))
-  expect(await eq('css')).toBeCloseTo(cssKb, 5)
-  expect(await eq('js')).toBeCloseTo(autoBr, 5)
-  expect(await eq('all')).toBeCloseTo(total, 5)
+  expect(await eq('br-css')).toBeCloseTo(cssKb, 5)
+  expect(await eq('br-js')).toBeCloseTo(autoBr, 5)
+  expect(await eq('br-all')).toBeCloseTo(total, 5)
+
+  // The other two rows are the same sum over the other two columns — and
+  // every row has to add up on its own.
+  for (const [row, col] of [['raw', 2], ['gz', 4]] as const) {
+    const parts = await kb(styleRows.locator(`td:nth-child(${col})`))
+    const [js] = await kb(table.locator(`tr[data-js-row="auto"] td:nth-child(${col})`))
+    expect(await eq(`${row}-css`)).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)
+    expect(await eq(`${row}-all`)).toBeCloseTo(await eq(`${row}-css`) + js, 5)
+  }
 })
 
 test('station 伍・工法: 例5.1 is a cascade stack over real library rules', async ({ page }) => {

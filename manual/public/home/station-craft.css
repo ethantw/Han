@@ -653,14 +653,23 @@
     border-block-end-width: 2px;
   }
 
-  /* The footing said as one line. Bigger than the caption prose around it —
-     it is the answer, and a reader who scrolls to this station for one number
-     should be able to take it without reading a table. */
+  /* The footing said as an aligned equation array. `<mtable>` earns its keep
+     here: `+` and `=` land in columns, so the three compressions read straight
+     down instead of sideways across a table — which is the whole reason for
+     restating a table the reader has just looked at.
+
+     Emphasis by ARRANGEMENT, not decoration: the rows run in order of
+     compression strength (none → gzip → brotli), so brotli lands last, under
+     a rule, in an arithmetic sum's answer position. The two rows above it
+     read as the working. Alignment is CSS, not `columnalign` — MathML Core
+     dropped the table attributes, and logical `text-align: end` is what this
+     codebase writes anyway. */
   .SumEq {
-    margin-block: 0 0.25rem;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-lede);
-    color: var(--palette-text);
+    & {
+      margin-block: 0 0.375rem;
+      font-family: var(--han-font-alternative);
+      color: var(--palette-supplement-text-2q);
+    }
 
     mtext {
       font-style: normal;
@@ -671,13 +680,41 @@
       font-variant-numeric: tabular-nums lining-nums;
     }
 
-    mo {
-      margin-inline: 0.4rem;
-      color: var(--palette-supplement-text);
+    /* the two operand columns and the total — figures line up on their
+       decimal points, labels stay tight against them */
+    mtd {
+      padding-block: 0.15rem;
+      padding-inline: 0.2em;
+      text-align: end;
     }
 
-    .Zero {
-      color: var(--palette-accent);
+    mtd:first-child {
+      padding-inline-end: 1em;
+      font-size: 0.85em;
+    }
+
+    mo {
+      margin-inline: 0.1em;
+    }
+
+    /* the working: quiet, and a size below the answer */
+    .Minor {
+      font-size: var(--fs-fine);
+    }
+
+    /* the answer: full size, full ink, and the rule that says「總之」 */
+    .Major {
+      font-size: var(--fs-lede);
+      color: var(--palette-text);
+
+      mtd {
+        padding-block-start: 0.5rem;
+        border-block-start: 1px solid var(--palette-rule);
+      }
+
+      .Zero {
+        color: var(--palette-accent);
+      }
     }
   }
 
