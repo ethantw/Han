@@ -264,8 +264,8 @@
       display: grid;
       grid-template-columns: 2fr 1fr;
       grid-template-areas:
-        "note  rules"
         "eq    rules"
+        "note  rules"
         ".     nav";
       /* The nav belongs UNDER THE PANE, not under the prose: it pages the
          pane, and a control sitting under the thing it does not control is
@@ -282,8 +282,8 @@
   }
 
   .SelRing { grid-area: rules; }
-  .Brace   { grid-area: note; }
   .Applied { grid-area: eq; }
+  .EgNote  { grid-area: note; }
   .SelNav  { grid-area: nav; }
 
   .Applied {
@@ -312,28 +312,68 @@
     }
   }
 
-  /* The annotation. In one column it is an UNDERBRACE — a border, not a
-     glyph, so it stretches to whatever the argument above it measures. Once
-     the rules move to their own pane there is nothing above it to brace, so
-     the border goes; keeping it would draw a bracket under nothing.
-     It also RANGES LEFT there, and so does the equation below it: two centred
-     blocks of different widths share no edge, and the column read as two
-     things thrown in rather than one argument. */
-  .Brace {
+  /* 例5.1's own plate: `:where(w) → 0` on one line and the reader's weight
+     directly beneath the zero, same column, so the comparison is made by the
+     LAYOUT and the sentence underneath only has to name what is being
+     compared. Two rows of an `<mtable>`; the second is empty but for its last
+     cell, which is what parks the triple under the zero. */
+  .Applied {
+    mtable {
+      /* tokens sized against each other, not against the prose */
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    mtd {
+      padding-block: 0.15rem;
+      padding-inline: 0.5rem;
+    }
+
+    mtd:first-child {
+      padding-inline-start: 0;
+    }
+
+    /* `:where(` … `)` is notation here, not code to copy — italic and dimmed,
+       as in the axioms above (the CD's spec for 式5.1). */
+    .Fn {
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    .Fn mn {
+      font-style: normal;
+      opacity: 1;
+    }
+
+    mo {
+      margin-inline: 0.25em;
+      color: var(--palette-supplement-text);
+    }
+
+    .Zero {
+      color: var(--palette-accent);
+    }
+
+    /* The reader's weight — full ink and a shade heavier, because it is the
+       one that survives. It needs no arrow of its own: sitting in the zero's
+       column IS the comparison. */
+    .Mine {
+      color: var(--palette-text);
+      font-weight: 500;
+    }
+  }
+
+  /* the one sentence that says what the two rows are */
+  .EgNote {
     & {
-      margin: 0.25rem auto 0.75rem;
-      max-inline-size: 46em;
-      padding-block-start: 0.375rem;
-      border-block-start: 1px solid var(--palette-rule);
+      margin: 1rem 0 0;
+      max-inline-size: 34em;
       font-family: var(--han-font-alternative);
       font-size: var(--fs-small);
       line-height: 1.9;
       color: var(--palette-supplement-text);
-      text-align: center;
     }
 
-    /* no chip inside a running line — the page's inline-code ground turns
-       `:where()` into a button at the head of the sentence */
     code {
       padding: 0;
       background: none;
@@ -341,19 +381,6 @@
       font-family: var(--font-mono);
       font-size: 0.9em;
     }
-
-    @media (min-width: 60rem) {
-      margin-inline: 0;
-      padding-block-start: 0;
-      border-block-start: 0;
-      text-align: start;
-    }
-  }
-
-  b {
-    font-family: var(--font-mono);
-    font-weight: 400;
-    font-variant-numeric: tabular-nums lining-nums;
   }
 
   /* The cascade stack — five pairs in the SAME grid cell, so the plate never

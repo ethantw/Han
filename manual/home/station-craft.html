@@ -47,40 +47,16 @@
     ja: '<var>s</var>は任意のセレクタ。左辺と右辺が選ぶ要素は同じで、ただ左辺の詳細度が零になる。詳細度が(0,0,1)以上の規則であれば、前後を問わず上書きできる。',
     ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
   },
-  arEgBrace: {
-    hant: '<code>:where()</code>函數內的權重為：',
-    hans: '<code>:where()</code>函数内的权重为：',
-    en: 'inside <code>:where()</code> it weighs',
-    ja: '<code>:where()</code>の中での詳細度は',
-    ko: '<code>:where()</code> 안에서의 優先順位는',
-  },
-  arEgBeaten: {
-    hant: '；無論多少，歸零後，開發者的',
-    hans: '；无论多少，归零后，开发者的',
-    en: '; however much, once it is zeroed your own',
-    ja: '。どれだけ重くとも、零になったあとは、開発者の',
-    ko: '. 아무리 무겁든, 零이 된 뒤에는 開發者의',
-  },
-  arEgBeatenTail: {
-    hant: '永遠可以輕鬆覆蓋。',
-    hans: '永远可以轻松覆盖。',
-    en: ' can always override it, easily.',
-    ja: 'がいつでも難なく上書きできる。',
-    ko: '이 언제든 손쉽게 덮어쓸 수 있다.',
-  },
   arRoleMine: {
     hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet',
     ja: 'あなたのスタイルシート', ko: '당신의 스타일시트',
   },
-  /* 「元素相同」 has to stay: that is what the ≡ asserts. Shortened to
-     「權重」 alone the sign read as「is equivalent to a specificity of…」,
-     which is not the claim and is not true. */
-  arEgEquiv: {
-    hant: '元素相同，權重',
-    hans: '元素相同，权重',
-    en: 'same elements, specificity',
-    ja: '要素は同じ、詳細度',
-    ko: '要素는 같고, 優先順位',
+  arEgNote: {
+    hant: '上行是框架選擇器本來的權重，進了<code>:where()</code>就歸零；下行是開發者的，不歸零——所以無論原本多重，後者永遠蓋得過。',
+    hans: '上行是框架选择器本来的权重，进了<code>:where()</code>就归零；下行是开发者的，不归零——所以无论原本多重，后者永远盖得过。',
+    en: 'Above, what the framework’s selector would weigh — zeroed the moment it enters <code>:where()</code>. Below, yours, which is not zeroed. However heavy the first one started out, the second one wins.',
+    ja: '上の行はフレームワークのセレクタが本来もつ詳細度で、<code>:where()</code>に入った時点で零になる。下の行は開発者のもので、零にならない——もとがどれだけ重くとも、勝つのは下である。',
+    ko: '윗줄은 프레임워크 셀렉터가 본래 가진 優先順位로, <code>:where()</code>에 들어가는 瞬間 零이 된다. 아랫줄은 開發者의 것이며 零이 되지 않는다——처음이 아무리 무거웠든 이기는 쪽은 아래다.',
   },
   arSelPrev: {
     hant: '上一個選擇器', hans: '上一个选择器', en: 'Previous selector',
@@ -171,8 +147,8 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: '三欄是同一份minified檔案的三種傳輸編碼，不是三份檔案。brotli是當前最普及的高壓縮編碼，列於末欄；部分服務商目前僅支援gzip，二者差距不大，一併列出供開發者參考。',
-    hans: '三栏是同一份minified档案的三种传输编码，不是三份档案。brotli是当前最普及的高压缩编码，列于末栏；部分服务商目前仅支援gzip，二者差距不大，一并列出供开发者参考。',
+    hant: 'brotli是當前最普及的高壓縮編碼，列於末欄；部分服務商目前僅支援gzip，二者差距不大，一併列出供開發者參考。',
+    hans: 'brotli是当前最普及的高压缩编码，列于末栏；部分服务商目前仅支援gzip，二者差距不大，一并列出供开发者参考。',
     en: 'Three transfer encodings of the same minified file, not three files. brotli is the most widely deployed of the strong encodings, so it takes the last column; some hosts still serve only gzip, and the two are close enough that both are worth having here.',
     ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは強い圧縮のなかで最も普及しているため最終列に置いた。gzipしか送れない事業者もまだあり、両者の差は小さいので併記する。',
     ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 强한 壓縮 中 가장 널리 쓰이므로 마지막 열에 두었다. 아직 gzip만 보내는 業體도 있고 둘의 差는 크지 않아 함께 싣는다.',
@@ -226,14 +202,14 @@
    * 不同（120 片、命中 71–103），另計。
    */
   arFlNote: {
-    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），續讀下一篇通常只再多1片、約43KB，罕用字只在命中時才會下載，縮短頁面加載時間。尚古系列是可變字體，一個切片即涵蓋250–900全部字重；其餘家族每個字重各有一份切片，即表中的「片數×字重」。',
+    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），約43KB，罕用字只在命中時才會下載，縮短頁面加載時間。',
     hans: '字体按需加载命中的切片，单篇文章一般命中16–31个切片（中位24），续读下一篇通常只再多1片、约43KB，罕用字只在命中时才会下载，缩短页面加载时间。尚古系列是可变字体，一个切片即涵盖250–900全部字重；其余家族每个字重各有一份切片，即表中的「片数×字重」。',
     en: 'A page fetches only the slices its characters land in — 16–31 of them for a typical article (median 24), and usually one more slice, about 43KB, for the next article the reader opens. Rare characters arrive only when something actually uses them. Shanggu is a variable font, so one slice covers the whole 250–900 range; the other families ship a slice per weight, which is the “slices × weights” column.',
     ja: '字体は文字が当たった切片だけを読み込む——一本の記事で16〜31片（中央値24）、次の記事へ進んでも足されるのはたいてい1片、約43KBである。稀用字は実際に使われたときにだけ届く。尚古はバリアブルフォントで、一片が250〜900の全ウェイトを賄う。他の家族はウェイトごとに切片を持ち、それが表の「片数×字重」である。',
     ko: '字體는 글자가 걸린 切片만 내려받는다——記事 한 篇에 16–31片（中位 24）, 다음 篇으로 넘어가도 대개 1片, 約 43KB만 더해진다. 稀用字는 實際로 쓰일 때에만 온다. 尚古는 배리어블 폰트라 한 片이 250–900 全體 字重을 덮고, 나머지 家族은 字重마다 切片이 따로 있다——표의 「片數×字重」가 그것이다.',
   },
   arFlNote2: {
-    hant: '尚古系列字體及標點字體Diantenjeom採用Variable Font可變字體技術，一個字僅需下載一個切片即可使用100-900的任意字重。係漢.css首選推薦。',
+    hant: '尚古系列字體及標點字體Diantenjeom採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。',
     hans: '字体按需切片——全家体积是库存，不是运费。',
     en: 'Sliced on demand — the family total is inventory, not postage.',
     ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
@@ -515,19 +491,35 @@
           </div>
         </li>
       </ul>
-      <p class="Brace">{{ arEgBrace }}<b data-spec-out>(0,2,2)</b>{{ arEgBeaten }}<b data-mine-out>(0,1,1)</b>{{ arEgBeatenTail }}</p>
-      <p class="Formula Applied">
+      <!-- The whole comparison in one plate: the framework's own weight goes
+           into `:where()` and comes out zero; the reader's sits under it,
+           in the same column, so the two are read against each other without
+           a word of prose doing the comparing. Both triples are the carousel
+           item's own (`data-spec-out` / `data-mine-out`), so they travel with
+           the pair in the pane. -->
+      <p class="Formula Applied" lang="en">
         <math display="block">
-          <mrow>
-            <mo>≡</mo>
-            <mtext>{{ arEgEquiv }}</mtext>
-            <mn data-spec-out>(0,2,2)</mn>
-            <mo>→</mo>
-            <mn class="Zero">(0,0,0)</mn>
-          </mrow>
+          <mtable>
+            <mtr>
+              <mtd class="Fn">
+                <!-- The triple's OWN parentheses stand in for the function's:
+                     `:where(0,2,2)` rather than `:where((0,2,2))`, which is
+                     what a double set reads as. -->
+                <mrow><mi>:where</mi><mn data-spec-out>(0,2,2)</mn></mrow>
+              </mtd>
+              <mtd><mo>→</mo></mtd>
+              <mtd><mn class="Zero">(0,0,0)</mn></mtd>
+            </mtr>
+            <mtr class="Mine">
+              <mtd></mtd>
+              <mtd></mtd>
+              <mtd><mn data-mine-out>(0,0,2)</mn></mtd>
+            </mtr>
+          </mtable>
         </math>
         <small class="EqNo">（例5.1）</small>
       </p>
+      <p class="EgNote">{{ arEgNote }}</p>
       <nav class="SelNav" hidden>
         <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}">‹</button>
         <output data-sel-count aria-live="polite"></output>
