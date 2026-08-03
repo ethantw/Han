@@ -208,29 +208,67 @@
   }
 }
 
-/* 例 5.1 — the real selector fed through the theorem */
+/* 例 5.1 — the real selector fed through the theorem, laid out the way a
+   browser's devtools lays out the same information: the argument on the left
+   with the room to be read, and the STYLES PANE down the right at a third of
+   the width. That proportion is the whole reference — it is also why the
+   rules wrap: a real styles pane wraps these selectors too, and a pane wide
+   enough not to would stop looking like one.
+
+   Below the breakpoint it is one column in DOM order (rules, then the
+   annotation), which is also the order a screen reader gets either way. */
 .Example {
   & {
     margin-block: 1.75rem;
     padding-block-start: 1.25rem;
     border-block-start: 1px solid var(--palette-rule);
+
+    @media (min-width: 60rem) {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-areas:
+        "note  rules"
+        "eq    rules"
+        "nav   rules";
+      /* The pane spans all three rows and is the taller of the two columns,
+         so without this the slack is shared out BETWEEN the left column's
+         blocks and they drift apart. Parked in the last row instead, the
+         three read as one group with the pane beside them. */
+      grid-template-rows: auto auto 1fr;
+      align-items: start;
+      column-gap: 2.5rem;
+    }
   }
+
+  .SelRing { grid-area: rules; }
+  .Brace   { grid-area: note; }
+  .Applied { grid-area: eq; }
+  .SelNav  { grid-area: nav; }
 
   .Applied {
     font-size: var(--fs-lede);
   }
 
-  /* the annotation under the argument — an underbrace, drawn with a border
-     rather than a glyph so it stretches to whatever the argument measures */
+  /* The annotation. In one column it is an UNDERBRACE — a border, not a
+     glyph, so it stretches to whatever the argument above it measures. Once
+     the rules move to their own pane there is nothing above it to brace, so
+     the border goes; keeping it would draw a bracket under nothing. */
   .Brace {
-    margin: 0.25rem auto 0.75rem;
-    max-inline-size: 46em;
-    padding-block-start: 0.375rem;
-    border-block-start: 1px solid var(--palette-rule);
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-fine);
-    color: var(--palette-supplement-text-2q);
-    text-align: center;
+    & {
+      margin: 0.25rem auto 0.75rem;
+      max-inline-size: 46em;
+      padding-block-start: 0.375rem;
+      border-block-start: 1px solid var(--palette-rule);
+      font-family: var(--han-font-alternative);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+      text-align: center;
+    }
+
+    @media (min-width: 60rem) {
+      padding-block-start: 0;
+      border-block-start: 0;
+    }
   }
 
   b {
@@ -288,8 +326,8 @@
       padding-inline: 1rem;
       background: var(--palette-bg);
       font-family: var(--font-mono);
-      font-size: var(--fs-compact);
-      line-height: 1.7;
+      font-size: var(--fs-fine);
+      line-height: 1.8;
       text-align: start;
     }
 
@@ -312,6 +350,10 @@
 
     .RuleSel {
       color: var(--palette-text);
+      /* `break-word`, not `anywhere`: the selectors carry spaces after every
+         comma, so the line breaks at a comma before it will break mid-token.
+         A pane this narrow has to wrap somewhere; better at the joints. */
+      overflow-wrap: break-word;
     }
 
     .RuleDecl {
@@ -324,14 +366,16 @@
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
-       file, which is not a thing this page can point at. */
+       file, which is not a thing this page can point at. Its OWN line, not
+       absolutely positioned: in a third-width pane the selector wraps, and an
+       abspos label sits on top of the second line. devtools has the same
+       collision and solves it the same way. */
     .RuleTag {
-      position: absolute;
-      inset-inline-end: 1rem;
-      inset-block-start: 0.875rem;
+      margin-block-end: 0.25rem;
       font-family: var(--han-font-alternative);
       font-size: var(--fs-fine);
       color: var(--palette-supplement-text-2q);
+      text-align: end;
     }
 
     /* han.css's own rule, struck through because it LOST — the same signal
@@ -728,26 +772,30 @@
       font-style: normal;
     }
 
+    /* Reading face, NOT mono. The array is a piece of typesetting, not a
+       terminal dump, and a textbook sets its figures in the text face. The
+       column alignment that mono was doing is `tabular-nums`' job anyway —
+       it is a font feature, not a font. */
     mn {
-      font-family: var(--font-mono);
       font-variant-numeric: tabular-nums lining-nums;
     }
 
-    /* the two operand columns and the total — figures line up on their
-       decimal points, labels stay tight against them */
+    /* Room. Three equations stacked at mono's tight advance read as a wall;
+       the whole point of restating the table is that this block is easier to
+       take in than the table was. */
     mtd {
-      padding-block: 0.15rem;
-      padding-inline: 0.2em;
+      padding-block: 0.3rem;
+      padding-inline: 0.35em;
       text-align: end;
     }
 
     mtd:first-child {
-      padding-inline-end: 1em;
+      padding-inline-end: 1.5em;
       font-size: 0.85em;
     }
 
     mo {
-      margin-inline: 0.1em;
+      margin-inline: 0.25em;
     }
 
     /* the working: quiet, and two sizes below the answer */
