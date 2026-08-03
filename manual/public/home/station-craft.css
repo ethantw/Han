@@ -558,6 +558,29 @@
     white-space: nowrap;
   }
 
+  /* ONE column carries the accent. Columns run in order of compression
+     strength (minified → gzip → brotli), so brotli is last, where the eye
+     finishes — and it is the one a modern CDN actually serves, so it is the
+     figure the reader should leave with. Accenting all three made none of
+     them the answer; the other two step back to body ink and read as what
+     they are, context for the last one.
+     `:nth-child(4)` — the row head is column 1. Same order as the equation
+     array's rows below the plate. */
+  &.Sum :is(th, td):nth-child(4) {
+    color: var(--palette-accent);
+  }
+
+  &.Sum tbody td:not(:nth-child(4)),
+  &.Sum tfoot td:not(:nth-child(4)) {
+    color: var(--palette-supplement-text);
+  }
+
+  /* the accented column's head, lifted just enough to name the column the
+     figures below it belong to */
+  &.Sum thead th.Lead {
+    color: var(--palette-accent);
+  }
+
   /* same signal as the layer map's greyed cards: this bundle is not in the
      build the console is describing. `opacity` on a <tr> is a grouping-
      element opacity — it composites the whole row, borders included. */

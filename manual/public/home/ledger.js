@@ -61,8 +61,19 @@ const fmtK = (kb) => (Number.isFinite(kb) ? `${kb.toFixed(1)}KB` : '—')
 
 const sumOf = (values) => values.filter(Number.isFinite).reduce((sum, kb) => sum + kb, 0)
 
-/** The three compression columns, in the order the table prints them. */
-const COLS = ['raw', 'br', 'gz']
+/**
+ * The three compression columns, IN THE ORDER THE TABLE PRINTS THEM — which
+ * is compression strength, weakest first, so the reader's eye finishes on
+ * brotli. Same order as the equation array's rows below the plate; the two
+ * blocks are read one after the other and reversing one of them would make
+ * the pair harder to trust than either alone.
+ *
+ * Every triple in this module is in this order — `figuresOf` reads the cells
+ * left to right, `writeRow` writes them back the same way, and `sizeAt` /
+ * `floorKb` reorder `pass-sizes.json` (which is keyed by name) to match. Get
+ * one of them wrong and the plate silently prices gzip as brotli.
+ */
+const COLS = ['raw', 'gz', 'br']
 
 const figuresOf = ($row) =>
   [...$row.querySelectorAll('td')].map(($td) => parseK($td.textContent))
@@ -146,11 +157,11 @@ export const initLedger = ($root = document) => {
   const order = () => dataRef.current?.passes.map((p) => p.id) ?? []
   const sizeAt = (mask) => {
     const s = dataRef.current?.sizes[mask]
-    return s ? [s.raw, s.br, s.gz] : [0, 0, 0]
+    return s ? [s.raw, s.gz, s.br] : [0, 0, 0]   // COLS order, not JSON order
   }
   const floorKb = () => {
     const f = dataRef.current?.floor
-    return f ? [f.raw, f.br, f.gz] : [0, 0, 0]
+    return f ? [f.raw, f.gz, f.br] : [0, 0, 0]   // COLS order, not JSON order
   }
 
   /**

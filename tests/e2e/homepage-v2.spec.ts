@@ -75,6 +75,11 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   const table = page.locator('#station-craft .Sum table')
   await expect(table).toHaveCount(1)
 
+  // Column order is load-bearing: it matches the equation array's row order
+  // below the plate, and only the last one carries the accent.
+  expect(await table.locator('thead th').allInnerTexts())
+    .toEqual(['項目', 'minified', 'gzip', 'brotli'])
+
   // Line items are grouped now — CSS, then han.js — so each group opens with
   // a `<th scope="rowgroup">` row that carries no figures.
   await expect(table.locator('.GroupHead th')).toHaveText(['CSS', 'han.js'])
@@ -90,7 +95,9 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   // Three columns a row — raw, brotli, gzip — and compression has to make
   // the file smaller, or the columns were measured against different files.
   for (const row of await styleRows.all()) {
-    const [raw, br, gz] = (await row.locator('td').allInnerTexts())
+    // Columns run minified → gzip → brotli (compression strength, so the eye
+    // finishes on the one a CDN actually serves).
+    const [raw, gz, br] = (await row.locator('td').allInnerTexts())
       .map((t) => Number(t.trim().match(/^(\d+(?:\.\d+)?)KB$/)?.[1]))
     expect(raw).toBeGreaterThan(br)
     expect(gz).toBeGreaterThanOrEqual(br)
@@ -105,8 +112,8 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   // The footing is the sum of the visible column, to the printed precision.
   const kb = async (loc) =>
     (await loc.allInnerTexts()).map((t) => Number(t.trim().replace('KB', '')))
-  const styles = await kb(styleRows.locator('td:nth-child(3)'))
-  const [autoBr] = await kb(table.locator('tr[data-js-row="auto"] td:nth-child(3)'))
+  const styles = await kb(styleRows.locator('td:nth-child(4)'))
+  const [autoBr] = await kb(table.locator('tr[data-js-row="auto"] td:nth-child(4)'))
   const [total] = await kb(table.locator('tfoot [data-total="brotli"]'))
   const cssKb = styles.reduce((a, b) => a + b, 0)
   expect(total).toBeCloseTo(cssKb + autoBr, 5)
@@ -124,7 +131,7 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
 
   // The other two rows are the same sum over the other two columns — and
   // every row has to add up on its own.
-  for (const [row, col] of [['raw', 2], ['gz', 4]] as const) {
+  for (const [row, col] of [['raw', 2], ['gz', 3]] as const) {
     const parts = await kb(styleRows.locator(`td:nth-child(${col})`))
     const [js] = await kb(table.locator(`tr[data-js-row="auto"] td:nth-child(${col})`))
     expect(await eq(`${row}-css`)).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)
@@ -239,9 +246,9 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   // The column has to ADD UP — that is why pass-sizes.json bundles every
   // selection for real instead of summing marginals.
   const parts = [
-    ...(await kb(table.locator('tbody[data-group="css"] tr:not([data-off]) td:nth-child(3)'))),
-    ...(await kb(table.locator('tr[data-js-row="floor"] td:nth-child(3)'))),
-    ...(await kb(ticked.locator('td:nth-child(3)'))),
+    ...(await kb(table.locator('tbody[data-group="css"] tr:not([data-off]) td:nth-child(4)'))),
+    ...(await kb(table.locator('tr[data-js-row="floor"] td:nth-child(4)'))),
+    ...(await kb(ticked.locator('td:nth-child(4)'))),
   ]
   expect(await total()).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)
 
