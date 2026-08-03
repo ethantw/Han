@@ -174,6 +174,16 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
       const r = el.getBoundingClientRect()
       return r.y + r.height / 2
     }))
+  // The reader's triple sits in the framework zero's COLUMN — that alignment
+  // IS the comparison, so it is worth an assertion. Exact: `<mphantom>`
+  // mirrors the line above (including its italic `:where`, which is what put
+  // it 3px out the first time), so the two lines are the same width and both
+  // are centred.
+  const left = async (sel: string) =>
+    page.locator(sel).evaluate((el) => el.getBoundingClientRect().x)
+  expect(await left('#station-craft .Eq-mine [data-mine-out]'))
+    .toBeCloseTo(await left('#station-craft .Eq-lib .Zero'), 1)
+
   // Within a few px — the panels carry a border and the lines do not, so the
   // two centres round apart by a pixel or two; anything more means the
   // subgrid stopped applying and the rows collapsed.

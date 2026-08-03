@@ -357,43 +357,12 @@
     }
   }
 
-  /* The chevron that says「the lower one is the greater」— a `≻` turned a
-     quarter-turn anticlockwise, so its opening faces DOWN, toward the winner.
-     Drawn on the second line and pushed up into the gap between the two, so
-     it belongs to neither and points across both. `aria-hidden`-equivalent:
-     it is decoration for a comparison the sentence below states in words. */
+  /* No connector between the two lines, and no rotated comparison sign: the
+     second triple sits in the FIRST one's column (`<mphantom>` in the markup),
+     and a column is the comparison. Anything drawn across the gap was saying
+     again, less clearly, what the alignment already says. */
   .Eq-mine {
-    & {
-      position: relative;
-      margin-block-start: 0;
-    }
-
-    /* A short stroke coming down from the line above, ending in the chevron.
-       The stroke matters: the two lines are a panel's height apart, and a
-       chevron on its own at that distance reads as a stray caret rather than
-       as a comparison between them. Its length is fixed — the gap is set by
-       the pane and cannot be known here. */
-    &::before {
-      content: "";
-      position: absolute;
-      inset-block-end: calc(100% + 1.5em);
-      inset-inline-start: 50%;
-      block-size: 1.75em;
-      border-inline-start: 1px solid var(--palette-rule);
-    }
-
-    &::after {
-      content: "≻";
-      position: absolute;
-      inset-block-end: 100%;
-      inset-inline: 0;
-      margin-block-end: 0.1em;
-      rotate: -90deg;
-      font-size: 1.25em;
-      line-height: 1;
-      color: var(--palette-supplement-text);
-      text-align: center;
-    }
+    margin-block-start: 0;
   }
 
   /* the one sentence that says what the two rows are */
@@ -751,8 +720,9 @@
     &.FontLedger [data-plate="patch"] { grid-area: patch; }
     &.FontLedger figcaption {
       grid-area: caption;
-      font-size: var(--fs-lede);
-      line-height: 1.9;
+      font-family: var(--han-sans);
+      font-size: .875rem;
+      line-height: 1.75;
       color: var(--palette-text);
     }
   }
@@ -984,7 +954,7 @@
      attributes. */
   .SumEq {
     & {
-      margin-block: 0.25rem 1rem;
+      margin-block: 3rem 2rem;
       /* Sans, not the station's serif (owner call). It reads as a figure the
          interface is reporting rather than a line out of a textbook — which
          is what it is: a live total, not a worked example. */
@@ -1084,8 +1054,9 @@
 
   .SumEqNote {
     margin: 0 0 1rem;
-    font-size: var(--fs-fine);
-    color: var(--palette-supplement-text-2q);
+    font-family: var(--han-sans);
+    font-size: .75rem;
+    color: var(--palette-supplement-text-3q);
   }
 
   .SumProse {
@@ -1105,7 +1076,7 @@
     font-family: var(--han-font-default);
     font-size: var(--fs-small);
     line-height: 1.8;
-    color: var(--palette-supplement-text-2q);
+    color: var(--palette-supplement-text);
   }
 
   &.Sum figcaption {

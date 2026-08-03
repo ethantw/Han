@@ -203,17 +203,17 @@
    */
   arFlNote: {
     hant: '瀏覽器會按需加載命中的字體切片，單篇文章一般命中16–31個切片（中位24），每個切片約43KB。罕用字只在命中時才會下載，縮短頁面加載時間。',
-    hans: '字体按需加载命中的切片，单篇文章一般命中16–31个切片（中位24），续读下一篇通常只再多1片、约43KB，罕用字只在命中时才会下载，缩短页面加载时间。尚古系列是可变字体，一个切片即涵盖250–900全部字重；其余家族每个字重各有一份切片，即表中的「片数×字重」。',
-    en: 'A page fetches only the slices its characters land in — 16–31 of them for a typical article (median 24), and usually one more slice, about 43KB, for the next article the reader opens. Rare characters arrive only when something actually uses them. Shanggu is a variable font, so one slice covers the whole 250–900 range; the other families ship a slice per weight, which is the “slices × weights” column.',
-    ja: '字体は文字が当たった切片だけを読み込む——一本の記事で16〜31片（中央値24）、次の記事へ進んでも足されるのはたいてい1片、約43KBである。稀用字は実際に使われたときにだけ届く。尚古はバリアブルフォントで、一片が250〜900の全ウェイトを賄う。他の家族はウェイトごとに切片を持ち、それが表の「片数×字重」である。',
-    ko: '字體는 글자가 걸린 切片만 내려받는다——記事 한 篇에 16–31片（中位 24）, 다음 篇으로 넘어가도 대개 1片, 約 43KB만 더해진다. 稀用字는 實際로 쓰일 때에만 온다. 尚古는 배리어블 폰트라 한 片이 250–900 全體 字重을 덮고, 나머지 家族은 字重마다 切片이 따로 있다——표의 「片數×字重」가 그것이다.',
+    hans: '浏览器会按需加载命中的字体切片，单篇文章一般命中16–31个切片（中位24），每个切片约43KB。罕用字只在命中时才会下载，缩短页面加载时间。',
+    en: 'The browser fetches only the slices a page’s characters land in — 16–31 of them for a typical article (median 24), around 43KB each. Rare characters arrive only when something actually uses them, which is time the page does not spend loading.',
+    ja: 'ブラウザは、文字が当たった切片だけを必要に応じて読み込む。一本の記事でおおむね16〜31片（中央値24）、一片あたり約43KB。稀用字は実際に使われたときにだけ届くので、そのぶん読み込みが短くなる。',
+    ko: '브라우저는 글자가 걸린 字體 切片만 必要에 따라 내려받는다. 記事 한 篇이면 大體로 16–31片（中位 24）, 한 片에 約 43KB. 稀用字는 實際로 쓰일 때에만 오므로 그만큼 페이지 로딩이 짧아진다.',
   },
   arFlNote2: {
-    hant: '尚古系列字體及標點字體Diantenjeom採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。',
-    hans: '字体按需切片——全家体积是库存，不是运费。',
-    en: 'Sliced on demand — the family total is inventory, not postage.',
-    ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
-    ko: '必要한 切片만——家族 全體의 容量은 <ruby>在庫<rt>재고</rt></ruby>이지 <ruby>運賃<rt>운임</rt></ruby>이 아니다.',
+    hant: '尚古系列及Diantenjeom標點字體採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。',
+    hans: '尚古系列及Diantenjeom标点字体采用Variable Font可变字体技术，一个切片即涵盖250-900全部字重。系汉.css首选推荐。其余字体的每个字重各有一份切片，即表中的「片数×字重」。',
+    en: 'Shanggu and the Diantenjeom punctuation faces are variable fonts: one slice carries the whole 250–900 weight range, which is why han.css recommends them first. Every other family ships one slice per weight — the “slices × weights” column above.',
+    ja: '尚古シリーズと約物字体Diantenjeomはバリアブルフォントで、一片が250〜900の全ウェイトを賄う。漢.cssが第一に薦めるのはこのためである。ほかの字体はウェイトごとに切片を持つ——表の「片数×字重」がそれにあたる。',
+    ko: '尚古 시리즈와 約物 字體 Diantenjeom은 배리어블 폰트라, 한 切片이 250–900 全體 字重을 담는다. 漢.css가 첫손에 꼽는 理由다. 나머지 字體는 字重마다 切片이 따로 있으며, 그것이 표의 「片數×字重」다.',
   },
   arFlCapPrint: {
     hant: '印刷字體・按需切片',
@@ -518,7 +518,18 @@
       </p>
       <p class="Formula Applied Eq-mine" lang="en">
         <math display="block">
-          <mrow><mn data-mine-out>(0,1,1)</mn></mrow>
+          <mrow>
+            <!-- `<mphantom>` takes the space its content would occupy and
+                 paints nothing — the element MathML has for exactly this. It
+                 mirrors the line above, so this line is the same width, and
+                 two centred lines of equal width put the two triples in one
+                 column with nothing measured or hard-coded.
+                 The mirrored token carries `data-spec-out` too, so the
+                 carousel rewrites it along with the real one and the widths
+                 can never drift apart. -->
+            <mphantom><mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn><mo>→</mo></mphantom>
+            <mn data-mine-out>(0,1,1)</mn>
+          </mrow>
         </math>
       </p>
       <p class="EgNote">{{ arEgNote }}</p>
