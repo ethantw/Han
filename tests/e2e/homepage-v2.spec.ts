@@ -80,8 +80,12 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   await expect(table.locator('.GroupHead th')).toHaveText(['CSS', 'han.js'])
   const styleRows = table.locator('tbody[data-group="css"] tr:not(.GroupHead)')
   await expect(styleRows).toHaveCount(4)
-  expect(await styleRows.locator('th').allInnerTexts())
+  // The module NAME only — each head also carries the human name in a
+  // trailing <small>, the same string the console's own switch uses.
+  expect(await styleRows.locator('th label').allInnerTexts())
     .toEqual(['han-semantics', 'han-lines', 'han-prose', 'han-fonts'])
+  const human = await styleRows.locator('th small').allInnerTexts()
+  expect(human.every((t) => t.trim().length > 0)).toBe(true)
 
   // Three columns a row — raw, brotli, gzip — and compression has to make
   // the file smaller, or the columns were measured against different files.

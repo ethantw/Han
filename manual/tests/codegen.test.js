@@ -80,8 +80,8 @@ test('換傳承家族 genki → 單行 --han-webfont-heritage-family + 套件表
   const vars = Object.fromEntries(cssVars(c))
   assert.equal(vars['--han-webfont-heritage-family'], 'genki')
   const ids = packages(c).ziano
-  assert.ok(ids.includes('genki-sans-yue') && !ids.includes('genki-sans-dan'))
-  assert.ok(!ids.includes('shanggu-sans-dan'))
+  assert.ok(ids.includes('genki-sans-yue') && !ids.includes('genki-sans'))
+  assert.ok(!ids.includes('shanggu-sans'))
 })
 
 test('per-locale heritage：hans/ja webfont 各自輸出，hant/ko 預設不輸出，家族單行', () => {
@@ -103,7 +103,7 @@ test('家族非預設但無語言開 webfont → 不輸出 family（無效力）
 
 test('簡體開 webfont（家族預設 shanggu）→ 載入尚古套件', () => {
   const ids = packages(cfg({ heritage: { ...HERITAGE_OFF, hans: 'webfont' } })).ziano
-  assert.ok(ids.includes('shanggu-sans-dan') && ids.includes('shanggu-serif-dan'))
+  assert.ok(ids.includes('shanggu-sans') && ids.includes('shanggu-serif'))
 })
 
 test('heritage 全 off → 不出 ziano sans/serif 套件；DTJ 全 off → 無 diantenjeom', () => {
@@ -146,7 +146,7 @@ test('CDN：auto → han.auto script；勾 legacyRuby → 另一段 module scrip
 test('bundler：pm 切換 + webfontDelivery=cdn（預設）→ 安裝清單不含 ziano／dtj 套件', () => {
   const bash = paneCode(renderBundler(DEFAULTS, 'yarn'), 'bash')
   assert.ok(bash.startsWith('yarn add @hanzi.pro/han.css'))
-  assert.ok(!bash.includes('@hanzi.pro/webfonts-shanggu-sans-dan'))
+  assert.ok(!bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
   assert.ok(!bash.includes('@hanzi.pro/diantenjeom'))
 })
 
@@ -325,10 +325,10 @@ test('bundler：字體全關（heritage/cursive/punct off）webfontDelivery=cdn 
 test('bundler：webfontDelivery=npm → 安裝清單 + js import 皆含 ziano 與 dtj（無 html pane）', () => {
   const c = cfg({ webfontDelivery: 'npm' })
   const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
-  assert.ok(bash.includes('@hanzi.pro/webfonts-shanggu-sans-dan'))
+  assert.ok(bash.includes('@hanzi.pro/webfonts-shanggu-sans'))
   assert.ok(bash.includes('@hanzi.pro/diantenjeom'))
   const js = paneCode(renderBundler(c, 'pnpm'), 'js')
-  assert.ok(js.includes("import '@hanzi.pro/webfonts-shanggu-sans-dan'"))
+  assert.ok(js.includes("import '@hanzi.pro/webfonts-shanggu-sans'"))
   assert.ok(js.includes("import '@hanzi.pro/diantenjeom'"))
   assert.ok(!pane(renderBundler(c, 'pnpm'), 'html'))
 })
@@ -336,9 +336,9 @@ test('bundler：webfontDelivery=npm → 安裝清單 + js import 皆含 ziano �
 test('bundler：webfontDelivery=cdn（預設）→ ziano ＋ dtj 皆為 html <link>（不進 bash/js），dtj 排 ziano 後', () => {
   const c = DEFAULTS
   const html = paneCode(renderBundler(c, 'pnpm'), 'html')
-  assert.ok(html.includes('webfonts-shanggu-sans-dan'))
+  assert.ok(html.includes('webfonts-shanggu-sans'))
   assert.ok(html.includes('diantenjeom'))
-  assert.ok(html.indexOf('diantenjeom') > html.indexOf('webfonts-shanggu-sans-dan'))
+  assert.ok(html.indexOf('diantenjeom') > html.indexOf('webfonts-shanggu-sans'))
   const bash = paneCode(renderBundler(c, 'pnpm'), 'bash')
   const js = paneCode(renderBundler(c, 'pnpm'), 'js')
   assert.ok(!bash.includes('diantenjeom') && !js.includes('diantenjeom'))
@@ -362,7 +362,7 @@ test('webfontDelivery=none → 兩分頁皆無 ziano／dtj', () => {
 
 test('cdn：dtj 連結隨 webfontCdnSource（unpkg → unpkg.com），han.css 恆走 jsdelivr', () => {
   const html = paneCode(renderCDN(cfg({ webfontCdnSource: 'unpkg' })), 'html')
-  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans-dan@latest'))
+  assert.ok(html.includes('https://unpkg.com/@hanzi.pro/webfonts-shanggu-sans@latest'))
   assert.ok(html.includes('https://unpkg.com/@hanzi.pro/diantenjeom@latest'))
   assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest'))
 })

@@ -17,12 +17,13 @@ const CDN = 'https://cdn.jsdelivr.net/npm/'
 const SCOPE = '@hanzi.pro/'
 
 /**
- * 傳承字形家族。`pkgs` 只列 base，不列 `-tc`——那不是省略,是量出來的:
- * base 與 TC 兩個套件的 `unicode-range` 逐條相同（尚古明體 109 條、源起黑體
- * 648 條、源起明體 756 條,全數一致,只有 family 名與 woff2 檔不同）。CSS 的
- * 字體匹配只看 `unicode-range`,不看語言,所以 `'X', 'X TC'` 這種疊法裡 TC
- * 永遠輪不到——每個碼位都先被 base 接走。TC 是「改用」而非「補上」的關係。
- * 疊著只是多兩支 render-blocking 樣式表,一個字都不會由它畫。
+ * 傳承字形家族。`pkgs` 只列**第一順位那一刻**的套件,不列第二順位——那不是
+ * 省略,是量出來的: 丹與月兩個套件的 `unicode-range` 逐條相同（尚古明體 109
+ * 條、源起黑體 648 條、源起明體 756 條,全數一致,只有 family 名與 woff2 檔
+ * 不同）。CSS 的字體匹配只看 `unicode-range`,不看語言,所以 `'X', 'X Yue'`
+ * 這種疊法裡第二順位永遠輪不到——每個碼位都先被第一順位接走。兩刻是「改用」
+ * 而非「補上」的關係。疊著只是多兩支 render-blocking 樣式表,一個字都不會由
+ * 它畫。（ziano 的包名: 無後綴 ＝ 丹,`-yue` ＝ 月。）
  *
  * han.css 自己的 `--han-webfont-heritage-glyphs-*`（src/css/fonts.css）仍然
  * 兩個都列,那是刻意的保險:只裝 TC 套件的人靠第二順位才拿得到字。這裡是
@@ -30,13 +31,13 @@ const SCOPE = '@hanzi.pro/'
  */
 export const HERITAGE = {
   shanggu: {
-    sans:  { stack: "'Shanggu Sans Dan', 'Shanggu Sans Yue'",   pkgs: ['shanggu-sans-dan'] },
-    serif: { stack: "'Shanggu Serif Dan', 'Shanggu Serif Yue'", pkgs: ['shanggu-serif-dan'] },
+    sans:  { stack: "'Shanggu Sans', 'Shanggu Sans Yue'",   pkgs: ['shanggu-sans'] },
+    serif: { stack: "'Shanggu Serif', 'Shanggu Serif Yue'", pkgs: ['shanggu-serif'] },
   },
   // genyo（源樣）不提供：與源起同設計，源起的字型技術較新。
   genki: {
-    sans:  { stack: "'Genki Sans Yue', 'Genki Sans Dan'",   pkgs: ['genki-sans-yue'] },
-    serif: { stack: "'Genki Serif Yue', 'Genki Serif Dan'", pkgs: ['genki-serif-yue'] },
+    sans:  { stack: "'Genki Sans Yue', 'Genki Sans'",   pkgs: ['genki-sans-yue'] },
+    serif: { stack: "'Genki Serif Yue', 'Genki Serif'", pkgs: ['genki-serif-yue'] },
   },
 }
 

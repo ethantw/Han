@@ -97,8 +97,8 @@ title: 字體
 
 | 變量 | 預設（＝尚古） |
 |------|------|
-| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans Dan', 'Shanggu Sans Yue'` |
-| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif Dan', 'Shanggu Serif Yue'` |
+| `--han-webfont-heritage-glyphs-sans` | `'Shanggu Sans', 'Shanggu Sans Yue'` |
+| `--han-webfont-heritage-glyphs-serif` | `'Shanggu Serif', 'Shanggu Serif Yue'` |
 | `--han-webfont-cursive-hant` | `'LXGW WenKai TC'` |
 
 ```css

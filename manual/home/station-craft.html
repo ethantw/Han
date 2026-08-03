@@ -98,6 +98,38 @@
   arSumTotal: {
     hant: '合計', hans: '合计', en: 'Total', ja: '合計', ko: '<ruby>合計<rt>합계</rt></ruby>',
   },
+  /* The four style modules' human names — the SAME strings the console's own
+     四顆開關 carry (console.html § pgGrpSemantics/Lines/Prose/Fonts), because
+     the caption claims they are the same four switches and a reader should be
+     able to see that without translating between two vocabularies. */
+  arSumModSemantics: {
+    hant: '語意樣式標準化',
+    hans: '语义样式标准化',
+    en: 'Semantic styling',
+    ja: '意味様式の標準化',
+    ko: '<ruby>意味<rt>의미</rt></ruby> <ruby>樣式<rt>양식</rt></ruby> <ruby>標準化<rt>표준화</rt></ruby>',
+  },
+  arSumModLines: {
+    hant: '行的調整',
+    hans: '行的调整',
+    en: 'Line adjustments',
+    ja: '行の調整',
+    ko: '<ruby>行<rt>행</rt></ruby>의 <ruby>調整<rt>조정</rt></ruby>',
+  },
+  arSumModProse: {
+    hant: '段落間距調整',
+    hans: '长文段落间距调整',
+    en: 'Prose spacing',
+    ja: '段落間隔の調整',
+    ko: '<ruby>段落<rt>단락</rt></ruby> <ruby>間隔<rt>간격</rt></ruby> <ruby>調整<rt>조정</rt></ruby>',
+  },
+  arSumModFonts: {
+    hant: '字體',
+    hans: '字体',
+    en: 'Fonts',
+    ja: '書体',
+    ko: '<ruby>書體<rt>서체</rt></ruby>',
+  },
   arSumFloor: {
     hant: '地板・共用', hans: '地板・共用', en: 'floor, shared',
     ja: '土台・共有', ko: '<ruby>基底<rt>기저</rt></ruby>・<ruby>共有<rt>공유</rt></ruby>',
@@ -139,8 +171,13 @@
     ja: 'JSランタイム依存',
     ko: 'JS <ruby>實行<rt>실행</rt></ruby>時 <ruby>依存<rt>의존</rt></ruby>',
   },
+  /* The identity-encoded column. Named for the MINIFICATION, not for the
+     absence of compression: 「未壓」 alone reads as「the un-minified source」,
+     which it is not — all three columns are the same `han.*.min.css`, and the
+     note under the equation says so. That note is what makes this label safe;
+     without it a reader could take the other two columns for un-minified. */
   arScColRaw: {
-    hant: '未壓', hans: '未压', en: 'raw', ja: '未圧縮', ko: '未壓',
+    hant: 'minified', hans: 'minified', en: 'minified', ja: 'minified', ko: 'minified',
   },
   arScUseAuto: {
     hant: '載入即套用', hans: '载入即套用', en: 'applies on load',
@@ -502,10 +539,10 @@
         </thead>
         <tbody data-group="css">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">CSS</th></tr>
-          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label></th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemantics }}</td><td>{{ sizeSemanticsGzip }}</td></tr>
-          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label></th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLines }}</td><td>{{ sizeLinesGzip }}</td></tr>
-          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label></th><td>{{ sizeProseRaw }}</td><td>{{ sizeProse }}</td><td>{{ sizeProseGzip }}</td></tr>
-          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label></th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFonts }}</td><td>{{ sizeFontsGzip }}</td></tr>
+          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label><small>{{ arSumModSemantics }}</small></th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemantics }}</td><td>{{ sizeSemanticsGzip }}</td></tr>
+          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label><small>{{ arSumModLines }}</small></th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLines }}</td><td>{{ sizeLinesGzip }}</td></tr>
+          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label><small>{{ arSumModProse }}</small></th><td>{{ sizeProseRaw }}</td><td>{{ sizeProse }}</td><td>{{ sizeProseGzip }}</td></tr>
+          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label><small>{{ arSumModFonts }}</small></th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFonts }}</td><td>{{ sizeFontsGzip }}</td></tr>
         </tbody>
         <tbody data-group="js">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>

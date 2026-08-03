@@ -386,8 +386,8 @@
  * default — as intended, since the property is meant to be set on an ancestor. */
 @container style(--han-webfont-heritage-family: genki) {
   :where(*) {
-    --han-webfont-heritage-glyphs-sans: 'Genki Sans Yue', 'Genki Sans Dan';
-    --han-webfont-heritage-glyphs-serif: 'Genki Serif Yue', 'Genki Serif Dan';
+    --han-webfont-heritage-glyphs-sans: 'Genki Sans Yue', 'Genki Sans';
+    --han-webfont-heritage-glyphs-serif: 'Genki Serif Yue', 'Genki Serif';
   }
 }
 
