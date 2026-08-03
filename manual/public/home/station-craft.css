@@ -17,6 +17,30 @@
  * asides; presented together they are the framework's whole contract, and
  * the plate is the argument. */
 
+/* The way in, and the way out. The plate is notation; without a sentence
+   either side it reads as decoration and the reader skips it. The lede says
+   what the three statements are FOR, the tail says what they add up to —
+   the per-axiom notes inside already handle what each one does. */
+.AxLede,
+.AxTail {
+  margin: 0 auto;
+  max-inline-size: 42em;
+  font-family: var(--han-font-alternative);
+  font-size: var(--fs-body);
+  line-height: 1.9;
+  color: var(--palette-text);
+  text-align: center;
+}
+
+.AxLede {
+  margin-block-end: 1.25rem;
+}
+
+.AxTail {
+  margin-block-start: 1.25rem;
+  color: var(--palette-supplement-text);
+}
+
 .Axioms {
   & {
     display: grid;
@@ -497,28 +521,6 @@
  * (dist/han.*.min.css ＋ dist/pass-sizes.json, both built in this repo); the
  * font figures are constants — the markup says how to re-measure. */
 
-/* The SSR footnote sits between the addition and the font ledger: it is the
-   one route that takes the script bill to zero, so it belongs with the
-   scripts — but it is prose, not a plate, and reads at body measure. */
-.LedgerNote {
-  /* NOT the station's `.Prose` — that block is the two-column end matter, and
-     a 42em argument squeezed into one of its columns justifies badly. This is
-     a single measure at body size, like the station's lede. */
-  & {
-    margin: 0 0 2.5rem;
-    max-inline-size: 42em;
-  }
-
-  p {
-    margin: 0;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
-    line-height: 1.9;
-    color: var(--palette-text);
-  }
-
-}
-
 .LedgerHead {
   /* The three books now follow prose, not a figure, so the heading has to
      open the gap itself — a figure's 2.5rem bottom margin used to do it. */
@@ -551,6 +553,20 @@
      goes to the footing, and the RESULT (the MathML array) ends up beside the
      working rather than under it. That is the right hierarchy: the table is
      how the number is arrived at, the equation is the number. */
+  /* The gzip column is the first thing to go when the plate is squeezed.
+     It is the LEAST load-bearing of the three — brotli is what a CDN serves
+     and `minified` is what the file weighs — so dropping it costs the reader
+     nothing they came for, while keeping four figures per row in a half-width
+     plate costs them the row.
+     Two windows: the single-column layout below 64rem is wide enough to keep
+     it, and so is a big screen; the squeeze is the band in between, where the
+     table has just been pushed into the narrower of two columns. */
+  @media (min-width: 64rem) and (max-width: 85rem) {
+    &.Sum [data-col="gz"] {
+      display: none;
+    }
+  }
+
   &.Sum {
     grid-template-columns: 1fr;
 
@@ -839,20 +855,32 @@
       font-variant-numeric: tabular-nums lining-nums;
     }
 
+    /* Air. A sum is read column by column, and columns need daylight between
+       them or the eye tracks the wrong one — the first pass was set at the
+       density of a data table and read as one. */
     mtd {
-      padding-block: 0.25rem;
-      padding-inline: 0.4em;
+      padding-block: 0.4rem;
+      padding-inline: 0.7em;
       text-align: end;
     }
 
-    /* the operator gutter — signs live OUTSIDE the operands, as in a sum */
+    /* The operator gutter — signs live OUTSIDE the operands, as in a sum.
+       Moved with PADDING, not `text-align`: an `<mo>` inside an `<mtd>` is
+       placed by MathML layout, not by text layout, so `text-align` does
+       nothing to it (the two alignment variants rendered identically until
+       this was switched over). */
     .Op {
-      padding-inline: 0;
-      text-align: start;
+      padding-block: inherit;
     }
 
     .Op mo {
       margin-inline: 0;
+    }
+
+    /* the unit, stated once beside the answer */
+    .Unit {
+      font-size: 0.7em;
+      padding-inline-start: 0.15em;
     }
 
     /* which operand this row is */
@@ -890,6 +918,31 @@
     }
   }
 
+  /* ── Two decisions still open, both switchable from the figure ───────
+   * The owner is choosing between these; whichever wins, delete the other
+   * pair of rules and the `data-eq-*` attributes with them.
+   *
+   * `data-eq-align` — where the `+` / `=` sit. `start` puts them out in a
+   * margin, print-style; `end` tucks them against the operands so the `=`
+   * sits directly under the `+`.
+   * `data-eq-face`  — the reading face. `serif` is the station's own;
+   * `sans` reads more like an interface figure than a textbook one. */
+  &[data-eq-align="start"] .SumEq .Op {
+    padding-inline: 0 1.75em;
+  }
+
+  &[data-eq-align="end"] .SumEq .Op {
+    padding-inline: 1.5em 0.25em;
+  }
+
+  &[data-eq-face="sans"] .SumEq {
+    font-family: var(--han-font-default);
+  }
+
+  &[data-eq-face="serif"] .SumEq {
+    font-family: var(--han-font-alternative);
+  }
+
   .SumEqNote {
     margin: 0 0 1rem;
     font-size: var(--fs-fine);
@@ -898,6 +951,31 @@
 
   .SumProse {
     margin: 0;
+  }
+
+  /* The SSR footnote used to be a block of prose between the two ledgers.
+     It belongs with the scripts, and the scripts are in this plate, so it
+     comes into the footing — pushed to the BOTTOM of the column with
+     `margin-block-start: auto`, which is what pushes a flex item to the end
+     of a column (`align-self` moves it across the column, not down it).
+     Sans at --fs-small: it is an aside about deployment, not part of the
+     ledger's argument, and the change of face says so before the words do. */
+  .SsrNote {
+    margin-block: 1.5rem 0;
+    margin-inline: 0;
+    font-family: var(--han-font-default);
+    font-size: var(--fs-small);
+    line-height: 1.8;
+    color: var(--palette-supplement-text-2q);
+  }
+
+  &.Sum figcaption {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.Sum figcaption .SsrNote {
+    margin-block-start: auto;
   }
 
   figcaption {

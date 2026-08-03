@@ -59,6 +59,9 @@ const parseK = (text) => Number(text?.trim().match(/(\d+(?:\.\d+)?)KB$/)?.[1])
 
 const fmtK = (kb) => (Number.isFinite(kb) ? `${kb.toFixed(1)}KB` : '—')
 
+/** The same figure without its unit — the sum states KB once, at the answer. */
+const fmtNum = (kb) => (Number.isFinite(kb) ? kb.toFixed(1) : '—')
+
 const sumOf = (values) => values.filter(Number.isFinite).reduce((sum, kb) => sum + kb, 0)
 
 /**
@@ -259,7 +262,7 @@ export const initLedger = ($root = document) => {
       const jsKb = sumOf(js.map((f) => f[i]))
       for (const [part, kb] of [['css', cssKb], ['js', jsKb], ['all', cssKb + jsKb]]) {
         const $el = $sum.get(`${col}-${part}`)
-        if ($el) $el.textContent = fmtK(kb)
+        if ($el) $el.textContent = fmtNum(kb)
       }
     })
   }

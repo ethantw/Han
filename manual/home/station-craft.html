@@ -21,6 +21,25 @@
     ja: '〇が109個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
     ko: '〇이 109개 있어도 여전히 「〇」다——마음껏 덮어쓰면, 나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다.',
   },
+  /* The three axioms had no way in — a reader who has not met `:where()`
+     sees three lines of notation and no reason to care. One sentence before
+     the plate says what they are FOR; the per-axiom notes underneath already
+     say what each one does. Under 100 characters: it is a doorway, not a
+     lecture. */
+  arAxLede: {
+    hant: '框架與你的樣式表衝突，永遠是這三件事之一：權重、層級、作用範圍。漢.css在這三處都讓路——以下是它讓路的方式。',
+    hans: '框架与你的样式表冲突，永远是这三件事之一：权重、层级、作用范围。汉.css在这三处都让路——以下是它让路的方式。',
+    en: 'A framework can only fight your CSS in three ways: specificity, layer, scope. han.css yields on all three — here is how.',
+    ja: 'フレームワークがあなたのCSSと衝突する原因は三つしかない——詳細度、層、適用範囲。漢.cssはその三つとも譲る。以下がその譲り方である。',
+    ko: '프레임워크가 당신의 CSS와 부딪히는 길은 셋뿐이다——優先順位, 層, 適用 範圍. 漢.css는 셋 다 물러선다. 그 방식이 아래다.',
+  },
+  arAxTail: {
+    hant: '三式合起來就是：漢.css從不爭，你寫什麼就是什麼。',
+    hans: '三式合起来就是：汉.css从不争，你写什么就是什么。',
+    en: 'Together: han.css never competes. What you write is what renders.',
+    ja: '三式を合わせれば——漢.cssは争わない。あなたが書いたものが、そのまま出る。',
+    ko: '셋을 합치면——漢.css는 다투지 않는다. 당신이 쓴 것이 그대로 나온다.',
+  },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
     hans: '其中<var>s</var>为任意选择器。左式与右式选中的元素相同，惟前者权重归零。任意规则只要权重在(0,0,1)以上，不论先后皆可覆盖。',
@@ -320,6 +339,8 @@
        carries; `<mi>` only for the bound variables the theorem quantifies
        over. The equation numbers stay OUTSIDE the <math> — they number the
        statement, they are not part of it. -->
+  <p class="AxLede">{{ arAxLede }}</p>
+
   <div class="Axioms">
     <div class="Ax Ax-lead">
       <p class="Formula" lang="en">
@@ -376,6 +397,8 @@
       <p class="AxNote">{{ arEq53Note }}</p>
     </div>
   </div>
+
+  <p class="AxTail">{{ arAxTail }}</p>
 
   <!-- 例5.1 — the worked example, set as a CASCADE STACK, the way devtools
        shows one: han.css's real rule, then the reader's rule underneath, and
@@ -523,39 +546,39 @@
        and with JS off, and switching modes never waits on a fetch.
        `data-off` on the manual rows encodes the console's default (auto). -->
   <h3 class="LedgerHead">{{ arSumHead }}</h3>
-  <figure class="Sum">
+  <figure class="Sum" data-eq-face="serif" data-eq-align="start">
     <div data-plate="items">
       <table>
         <thead>
           <tr>
             <th scope="col">{{ arSumColPart }}</th>
             <th scope="col">{{ arScColRaw }}</th>
-            <th scope="col">gzip</th>
+            <th scope="col" data-col="gz">gzip</th>
             <th scope="col" class="Lead">brotli</th>
           </tr>
         </thead>
         <tbody data-group="css">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">CSS</th></tr>
-          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label><small>{{ arSumModSemantics }}</small></th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemanticsGzip }}</td><td>{{ sizeSemantics }}</td></tr>
-          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label><small>{{ arSumModLines }}</small></th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLinesGzip }}</td><td>{{ sizeLines }}</td></tr>
-          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label><small>{{ arSumModProse }}</small></th><td>{{ sizeProseRaw }}</td><td>{{ sizeProseGzip }}</td><td>{{ sizeProse }}</td></tr>
-          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label><small>{{ arSumModFonts }}</small></th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFontsGzip }}</td><td>{{ sizeFonts }}</td></tr>
+          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label><small>{{ arSumModSemantics }}</small></th><td>{{ sizeSemanticsRaw }}</td><td data-col="gz">{{ sizeSemanticsGzip }}</td><td>{{ sizeSemantics }}</td></tr>
+          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label><small>{{ arSumModLines }}</small></th><td>{{ sizeLinesRaw }}</td><td data-col="gz">{{ sizeLinesGzip }}</td><td>{{ sizeLines }}</td></tr>
+          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label><small>{{ arSumModProse }}</small></th><td>{{ sizeProseRaw }}</td><td data-col="gz">{{ sizeProseGzip }}</td><td>{{ sizeProse }}</td></tr>
+          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label><small>{{ arSumModFonts }}</small></th><td>{{ sizeFontsRaw }}</td><td data-col="gz">{{ sizeFontsGzip }}</td><td>{{ sizeFonts }}</td></tr>
         </tbody>
         <tbody data-group="js">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>
-          <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row"><label><input type="checkbox" data-toggle checked>han.auto.js</label><small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAutoGzip }}</td><td>{{ sizeJsAuto }}</td></tr>
-          <tr data-js-row="floor" hidden><th scope="row">hyperly<small>{{ arSumFloor }}</small></th><td>{{ floorRaw }}</td><td>{{ floorGz }}</td><td>{{ floorBr }}</td></tr>
-          <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row"><label><input type="checkbox" data-toggle>refinePunctuation</label><small>{{ arSumFnPunct }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="iss"><th scope="row"><label><input type="checkbox" data-toggle>applyISSWithProbe</label><small>{{ arSumFnIss }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row"><label><input type="checkbox" data-toggle>markAdjacentLines</label><small>{{ arSumFnAdjacent }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="ruby"><th scope="row"><label><input type="checkbox" data-toggle>transpileRuby</label><small>{{ arSumFnRuby }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="uninstall"><th scope="row"><label><input type="checkbox" data-toggle>uninstallFallbacks</label><small>{{ arSumFnUninstall }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row"><label><input type="checkbox" data-toggle checked>han.auto.js</label><small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td data-col="gz">{{ sizeJsAutoGzip }}</td><td>{{ sizeJsAuto }}</td></tr>
+          <tr data-js-row="floor" hidden><th scope="row">hyperly<small>{{ arSumFloor }}</small></th><td>{{ floorRaw }}</td><td data-col="gz">{{ floorGz }}</td><td>{{ floorBr }}</td></tr>
+          <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row"><label><input type="checkbox" data-toggle>refinePunctuation</label><small>{{ arSumFnPunct }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="iss"><th scope="row"><label><input type="checkbox" data-toggle>applyISSWithProbe</label><small>{{ arSumFnIss }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row"><label><input type="checkbox" data-toggle>markAdjacentLines</label><small>{{ arSumFnAdjacent }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="ruby"><th scope="row"><label><input type="checkbox" data-toggle>transpileRuby</label><small>{{ arSumFnRuby }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="uninstall"><th scope="row"><label><input type="checkbox" data-toggle>uninstallFallbacks</label><small>{{ arSumFnUninstall }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
         </tbody>
         <tfoot>
           <tr>
             <th scope="row">{{ arSumTotal }}</th>
             <td data-total="raw">{{ sizeDefaultTotalRaw }}</td>
-            <td data-total="gzip">{{ sizeDefaultTotalGzip }}</td>
+            <td data-col="gz" data-total="gzip">{{ sizeDefaultTotalGzip }}</td>
             <td data-total="brotli">{{ sizeDefaultTotal }}</td>
           </tr>
         </tfoot>
@@ -582,35 +605,41 @@
           <mtr class="Head">
             <mtd></mtd><mtd></mtd>
             <mtd><mtext>{{ arScColRaw }}</mtext></mtd>
-            <mtd><mtext>gzip</mtext></mtd>
+            <mtd data-col="gz"><mtext>gzip</mtext></mtd>
             <mtd class="Lead"><mtext>brotli</mtext></mtd>
           </mtr>
           <mtr>
             <mtd></mtd>
             <mtd class="Term"><mtext>CSS</mtext></mtd>
-            <mtd><mn data-sum="raw-css">{{ sizeTotalRaw }}</mn></mtd>
-            <mtd><mn data-sum="gz-css">{{ sizeTotalGzip }}</mn></mtd>
-            <mtd class="Lead"><mn data-sum="br-css">{{ sizeTotal }}</mn></mtd>
+            <mtd><mn data-sum="raw-css">19.8</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-css">3.9</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-css">3.3</mn></mtd>
           </mtr>
           <mtr>
             <mtd class="Op"><mo>+</mo></mtd>
             <mtd class="Term"><mtext>JS</mtext></mtd>
-            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRaw }}</mn></mtd>
-            <mtd><mn data-sum="gz-js">{{ sizeJsAutoGzip }}</mn></mtd>
-            <mtd class="Lead"><mn data-sum="br-js">{{ sizeJsAuto }}</mn></mtd>
+            <mtd><mn data-sum="raw-js">30.4</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-js">10.9</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-js">9.8</mn></mtd>
           </mtr>
           <mtr class="Total">
             <mtd class="Op"><mo>=</mo></mtd>
             <mtd></mtd>
-            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRaw }}</mn></mtd>
-            <mtd><mn data-sum="gz-all">{{ sizeDefaultTotalGzip }}</mn></mtd>
-            <mtd class="Lead"><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotal }}</mn></mtd>
+            <mtd><mn data-sum="raw-all">50.2</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-all">14.8</mn></mtd>
+            <!-- The unit, ONCE. Repeating KB in every cell turned the sum
+                 into a wall of the same two letters; a sum states its unit
+                 at the answer and the columns read as figures again. It is
+                 a sibling <mtext>, not part of the <mn>, so ledger.js can
+                 keep writing bare numbers into every cell alike. -->
+            <mtd class="Lead"><mn data-sum="br-all" class="Zero">13.1</mn><mtext class="Unit">KB</mtext></mtd>
           </mtr>
         </mtable>
       </math>
       <p class="SumEqNote">{{ arSumEqNote }}</p>
       <p class="SumProse">{{ arSumNote }}</p>
       <small>{{ arLedgerDeps }}{{ depsCount }}（{{ depsNames }}）</small>
+      <p class="SsrNote">{{ arSsrNote }}</p>
     </figcaption>
   </figure>
 
@@ -620,9 +649,6 @@
        so nobody has to re-derive them to edit the copy: the SSR branch of
        `installFallbacks` (src/ts/fallbacks.ts) has no `CSS.supports` to gate
        on, and the UA probe rides inside `applyISSWithProbe`, browser-only. -->
-  <div class="LedgerNote">
-    <p>{{ arSsrNote }}</p>
-  </div>
 
   <!-- Font ledger — a SECOND, separate set of books. The four-module figure
        above is the framework's own weight; webfonts are megabytes and would
