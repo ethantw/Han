@@ -682,6 +682,43 @@
   }
 }
 
+/* The fold eases, by the same recipe the console's groups use — the 0fr⇄1fr
+ * grid row on `::details-content`, NOT a height transition. The full
+ * reasoning, the three engines it was measured on, and why the alternatives
+ * (`block-size: auto`, `max-block-size`) both lose, are written once in
+ * home/controls.css § details transition; this is that rule applied to the
+ * one `<details>` outside the console.
+ *
+ * Same accepted caveat: opening eases everywhere, closing eases in Chromium
+ * and Firefox but snaps in WebKit (it drops `::details-content` from layout
+ * the instant `open` goes away). Opening was the jarring direction anyway.
+ *
+ * The ledger inside is itself a grid; it rides in the second track as one
+ * item and lays out unchanged. */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    .FontDetails {
+      & {
+        display: grid;
+        grid-template-rows: auto 0fr;
+        transition: grid-template-rows 260ms ease;
+      }
+
+      &[open] {
+        grid-template-rows: auto 1fr;
+      }
+
+      /* `min-block-size: 0` is what lets the track actually reach 0 — a grid
+         item's automatic minimum size is its content, not zero. */
+      &::details-content {
+        overflow: hidden;
+        min-block-size: 0;
+        transition: content-visibility 260ms allow-discrete;
+      }
+    }
+  }
+}
+
 .LedgerHead {
   /* The three books now follow prose, not a figure, so the heading has to
      open the gap itself — a figure's 2.5rem bottom margin used to do it. */
