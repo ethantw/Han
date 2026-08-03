@@ -75,7 +75,10 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   const table = page.locator('#station-craft .Sum table')
   await expect(table).toHaveCount(1)
 
-  const styleRows = table.locator('tbody:first-of-type tr')
+  // Line items are grouped now — CSS, then han.js — so each group opens with
+  // a `<th scope="rowgroup">` row that carries no figures.
+  await expect(table.locator('.GroupHead th')).toHaveText(['CSS', 'han.js'])
+  const styleRows = table.locator('tbody[data-group="css"] tr:not(.GroupHead)')
   await expect(styleRows).toHaveCount(4)
   expect(await styleRows.locator('th').allInnerTexts())
     .toEqual(['han-semantics', 'han-lines', 'han-prose', 'han-fonts'])
@@ -101,7 +104,19 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   const styles = await kb(styleRows.locator('td:nth-child(3)'))
   const [autoBr] = await kb(table.locator('tr[data-js-row="auto"] td:nth-child(3)'))
   const [total] = await kb(table.locator('tfoot [data-total="brotli"]'))
-  expect(total).toBeCloseTo(styles.reduce((a, b) => a + b, 0) + autoBr, 5)
+  const cssKb = styles.reduce((a, b) => a + b, 0)
+  expect(total).toBeCloseTo(cssKb + autoBr, 5)
+
+  // …and the caption's MathML says the same thing as one line. Same numbers,
+  // same source — if these two ever disagree the plate is lying twice.
+  // `textContent`, not `innerText`: these are MathML `<mn>`s, and a
+  // MathMLElement has no innerText.
+  const eq = async (name) =>
+    Number((await page.locator(`#station-craft [data-sum="${name}"]`)
+      .evaluate((el) => el.textContent)).trim().replace('KB', ''))
+  expect(await eq('css')).toBeCloseTo(cssKb, 5)
+  expect(await eq('js')).toBeCloseTo(autoBr, 5)
+  expect(await eq('all')).toBeCloseTo(total, 5)
 })
 
 test('station 伍・工法: 例5.1 is a cascade stack over real library rules', async ({ page }) => {
@@ -211,7 +226,7 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   // The column has to ADD UP — that is why pass-sizes.json bundles every
   // selection for real instead of summing marginals.
   const parts = [
-    ...(await kb(table.locator('tbody:first-of-type tr:not([data-off]) td:nth-child(3)'))),
+    ...(await kb(table.locator('tbody[data-group="css"] tr:not([data-off]) td:nth-child(3)'))),
     ...(await kb(table.locator('tr[data-js-row="floor"] td:nth-child(3)'))),
     ...(await kb(ticked.locator('td:nth-child(3)'))),
   ]

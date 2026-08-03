@@ -478,3 +478,31 @@ test('preceded-by: idempotent — re-running leaves the wrappers untouched', () 
   const once = refineSqueeze('<p>對」，要</p>')
   assert.equal(refineSqueeze(once), once)
 })
+
+/* ── Foreign content: MathML / SVG are skipped whole ─────────────────
+ * Not a style preference. MathML Core's UA sheet gives an unrecognised
+ * descendant of <math> `display: block`, so one <h-char> around a 「，」
+ * inside an <mtext> splits that line of display maths in two (observed in
+ * Chromium, station 伍's 式5.1). SVG <text> simply does not paint an
+ * unknown child. Neither has any legal position for an HTML wrapper. */
+test('MathML is left alone — no <h-char> inside <math>', () => {
+  const out = html(refinePunctuationWithMode('auto')(
+    '<p><math><mrow><mtext>權重，零</mtext></mrow></math></p>',
+  ))
+  assert.equal(out, '<p><math><mrow><mtext>權重，零</mtext></mrow></math></p>')
+})
+
+test('SVG is left alone — no <h-char> inside <svg>', () => {
+  const out = html(refinePunctuationWithMode('auto')(
+    '<p><svg><text>權重，零</text></svg></p>',
+  ))
+  assert.equal(out, '<p><svg><text>權重，零</text></svg></p>')
+})
+
+test('…but the paragraph AROUND the maths is still refined', () => {
+  const out = html(refinePunctuationWithMode('auto')(
+    '<p>如式，<math><mtext>零</mtext></math></p>',
+  ))
+  assert.match(out, /<h-char/)
+  assert.doesNotMatch(out, /<math>[\s\S]*<h-char/)
+})

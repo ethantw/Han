@@ -116,6 +116,12 @@ export const initLedger = ($root = document) => {
   const $totals = new Map(
     [...$table.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
   )
+  // The caption's `CSS a + JS b = c` equation (MathML) — outside the table,
+  // hence its own lookup off the figure.
+  const $sum = new Map(
+    [...($table.closest('figure')?.querySelectorAll('[data-sum]') ?? [])]
+      .map(($el) => [$el.dataset.sum, $el]),
+  )
 
   /**
    * Measured once, cached by the browser like any other static asset. The
@@ -186,13 +192,27 @@ export const initLedger = ($root = document) => {
     //     unrounded sum drifts by ~0.1KB over six rows and reads as an error;
     //   · it makes the visible state authoritative — a row can never be shown
     //     greyed while still being billed, because greyed IS how it drops out.
-    const kept = [...$table.querySelectorAll('tbody tr:not([hidden]):not([data-off])')]
-      .map(figuresOf)
+    const keptIn = (scope) =>
+      [...$table.querySelectorAll(`${scope} tr:not(.GroupHead):not([hidden]):not([data-off])`)]
+        .map(figuresOf)
+
+    const css = keptIn('tbody[data-group="css"]')
+    const js = keptIn('tbody[data-group="js"]')
 
     COLS.forEach((col, i) => {
       const $el = $totals.get({ raw: 'raw', br: 'brotli', gz: 'gzip' }[col])
-      if ($el) $el.textContent = fmtK(sumOf(kept.map((f) => f[i])))
+      if ($el) $el.textContent = fmtK(sumOf([...css, ...js].map((f) => f[i])))
     })
+
+    // The caption's equation restates the footing as CSS + JS = total, in
+    // brotli. Same numbers, same source — index 1 of the same triples the
+    // tfoot just summed, so the two lines cannot drift apart.
+    const cssKb = sumOf(css.map((f) => f[1]))
+    const jsKb = sumOf(js.map((f) => f[1]))
+    for (const [name, kb] of [['css', cssKb], ['js', jsKb], ['all', cssKb + jsKb]]) {
+      const $el = $sum.get(name)
+      if ($el) $el.textContent = fmtK(kb)
+    }
   }
 
   document.addEventListener('han-config-change', (e) => {

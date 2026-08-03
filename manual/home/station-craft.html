@@ -118,6 +118,13 @@
     hant: '還原', hans: '还原', en: 'undo',
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
+  arSumEqNote: {
+    hant: '按brotli計，隨左欄的勾選重算。',
+    hans: '按brotli计，随左栏的勾选重算。',
+    en: 'brotli, re-added as you pick in the left column.',
+    ja: 'brotli換算。左欄の選択に応じて計算し直される。',
+    ko: 'brotli <ruby>基準<rt>기준</rt></ruby>. 왼쪽 칸의 選擇에 따라 다시 더해진다.',
+  },
   arSumNote: {
     hant: '四個樣式模組，正是左欄的四顆開關；腳本是選配——純CSS的漢.css自己就成立。這一欄隨你的勾選重算，數字全是實打包量到的。',
     hans: '四个样式模块，正是左栏的四颗开关；脚本是选配——纯CSS的汉.css自己就成立。这一栏随你的勾选重算，数字全是实打包量到的。',
@@ -270,14 +277,37 @@
        read as three asides; together they are what they actually are — the
        framework's whole contract in three lines. The worked example follows,
        so the reader meets the claim before the proof of it. -->
+  <!-- The three axioms are real MathML (Core — Baseline 2023), not spans
+       dressed as maths. Overkill for three one-line statements, yes; but the
+       station's argument IS that these are identities rather than slogans,
+       and marking them up as identities is the one way to say so to a screen
+       reader, a copy-paste, or a search index. `<mtext>` for the prose runs
+       so the CJK stays upright and unstyled by the italic default `<mi>`
+       carries; `<mi>` only for the bound variables the theorem quantifies
+       over. The equation numbers stay OUTSIDE the <math> — they number the
+       statement, they are not part of it. -->
   <div class="Axioms">
     <div class="Ax Ax-lead">
       <p class="Formula" lang="en">
-        <span class="Fn">:where(<var>s</var>)</span>
-        <span class="Op">≡</span>
-        <var>s</var><span class="Term">，權重</span>
-        <span class="Op">→</span>
-        <span class="Zero">0</span>
+        <math display="block">
+          <mrow>
+            <!-- Both sides wrapped in their own <mrow>: a top-level <mrow>'s
+                 children are where MathML is allowed to break the line, so a
+                 flat list drops「權重」onto a line of its own the moment the
+                 measure gets tight. Nested, each side is one atom. -->
+            <mrow>
+              <mi class="Fn">:where</mi>
+              <mo class="Fn" stretchy="false">(</mo><mi>s</mi><mo class="Fn" stretchy="false">)</mo>
+            </mrow>
+            <mo>≡</mo>
+            <mrow>
+              <mi>s</mi>
+              <mtext class="Term">，權重</mtext>
+              <mo>→</mo>
+              <mn class="Zero">0</mn>
+            </mrow>
+          </mrow>
+        </math>
         <small class="EqNo">（式5.1）</small>
       </p>
       <p class="AxNote">{{ arThmNote }}</p>
@@ -285,7 +315,13 @@
 
     <div class="Ax">
       <p class="Formula">
-        {{ arEqUnlayered }}<span class="Op">≻</span><code>@layer</code>
+        <math display="block">
+          <mrow>
+            <mtext>{{ arEqUnlayered }}</mtext>
+            <mo>≻</mo>
+            <mtext class="Code">@layer</mtext>
+          </mrow>
+        </math>
         <small class="EqNo">（式5.2）</small>
       </p>
       <p class="AxNote">{{ arEq52Note }}</p>
@@ -293,7 +329,14 @@
 
     <div class="Ax">
       <p class="Formula">
-        {{ arEqFeature }}<span class="Op">=</span><var>f</var><span class="Fn">(</span>{{ arEqContainerVar }}<span class="Fn">)</span>
+        <math display="block">
+          <mrow>
+            <mtext>{{ arEqFeature }}</mtext>
+            <mo>=</mo>
+            <mi>f</mi>
+            <mo stretchy="false">(</mo><mtext>{{ arEqContainerVar }}</mtext><mo stretchy="false">)</mo>
+          </mrow>
+        </math>
         <small class="EqNo">（式5.3）</small>
       </p>
       <p class="AxNote">{{ arEq53Note }}</p>
@@ -398,8 +441,15 @@
       </ul>
       <p class="Brace">{{ arEgBrace }}<b data-spec-out>(0,2,2)</b>{{ arEgBeaten }}<b data-mine-out>(0,1,1)</b>{{ arEgBeatenTail }}</p>
       <p class="Formula Applied">
-        <span class="Op">≡</span>{{ arEgEquiv }}<b data-spec-out>(0,2,2)</b>
-        <span class="Op">→</span><span class="Zero">(0,0,0)</span>
+        <math display="block">
+          <mrow>
+            <mo>≡</mo>
+            <mtext>{{ arEgEquiv }}</mtext>
+            <mn data-spec-out>(0,2,2)</mn>
+            <mo>→</mo>
+            <mn class="Zero">(0,0,0)</mn>
+          </mrow>
+        </math>
         <small class="EqNo">（例5.1）</small>
       </p>
       <nav class="SelNav" hidden>
@@ -450,13 +500,15 @@
             <th scope="col">gzip</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-group="css">
+          <tr class="GroupHead"><th scope="rowgroup" colspan="4">CSS</th></tr>
           <tr data-cfg="semantics"><th scope="row">han-semantics</th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemantics }}</td><td>{{ sizeSemanticsGzip }}</td></tr>
           <tr data-cfg="lines"><th scope="row">han-lines</th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLines }}</td><td>{{ sizeLinesGzip }}</td></tr>
           <tr data-cfg="prose"><th scope="row">han-prose</th><td>{{ sizeProseRaw }}</td><td>{{ sizeProse }}</td><td>{{ sizeProseGzip }}</td></tr>
           <tr data-cfg="fonts"><th scope="row">han-fonts</th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFonts }}</td><td>{{ sizeFontsGzip }}</td></tr>
         </tbody>
-        <tbody data-js>
+        <tbody data-group="js">
+          <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>
           <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row">han.auto.js<small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
           <tr data-js-row="floor" hidden><th scope="row">hyperly<small>{{ arSumFloor }}</small></th><td>{{ floorRaw }}</td><td>{{ floorBr }}</td><td>{{ floorGz }}</td></tr>
           <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row">refinePunctuation<small>{{ arSumFnPunct }}</small></th><td>—</td><td>—</td><td>—</td></tr>
@@ -477,7 +529,27 @@
     </div>
 
     <figcaption>
-      {{ arSumNote }}
+      <!-- The footing again, as the one line a reader would say out loud.
+           MathML because it IS an equation, and because the three operands
+           have to stay side by side when the line wraps — <mrow> keeps them
+           together where three spans would break anywhere.
+           brotli only: three compressions × three operands is a table, not a
+           sentence, and the table above already IS that. home/ledger.js
+           rewrites the three <mn>s from the same printed column the tfoot
+           sums, so this line can never disagree with it. -->
+      <math display="block" class="SumEq">
+        <mrow>
+          <mtext>CSS</mtext><mspace width="0.3em"></mspace>
+          <mn data-sum="css">{{ sizeTotal }}</mn>
+          <mo>+</mo>
+          <mtext>JS</mtext><mspace width="0.3em"></mspace>
+          <mn data-sum="js">{{ sizeJsAuto }}</mn>
+          <mo>=</mo>
+          <mn data-sum="all" class="Zero">{{ sizeDefaultTotal }}</mn>
+        </mrow>
+      </math>
+      <p class="SumEqNote">{{ arSumEqNote }}</p>
+      <p class="SumProse">{{ arSumNote }}</p>
       <small>{{ arLedgerDeps }}{{ depsCount }}（{{ depsNames }}）</small>
     </figcaption>
   </figure>

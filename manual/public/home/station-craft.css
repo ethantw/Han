@@ -112,37 +112,61 @@
     color: var(--palette-text);
   }
 
+  /* The statements are real MathML (Core — Baseline 2023). Engines ship a
+     maths font by default; we override it, because a page whose subject is
+     CJK typography cannot have its own three display lines set in Latin
+     Modern. Inherit the serif the container already carries and let the
+     per-token rules below say what each token IS. */
+  math {
+    font-family: inherit;
+    font-size: inherit;
+    math-style: normal;
+  }
+
   /* Per the CD's spec: the equation is SERIF throughout — `:where(…)` is
      being used here as mathematical notation, not as code to copy, so it is
-     set like notation and merely dimmed. Only the selector *argument* is
-     literal CSS, and only that is mono. (I had this mono at first; it made
-     the line read as a snippet instead of a formula.) */
-  /* Italic, like a function name in a maths textbook — and it reinforces the
-     point the serif already makes: `:where(…)` is notation here, not a
-     snippet to copy. The argument inside stays upright mono, so the one part
-     that IS literal CSS still reads as literal CSS. */
+     set like notation and merely dimmed. Italic, like a function name in a
+     maths textbook. Only the selector *argument* is literal CSS, and only
+     that is mono. (I had this mono at first; it made the line read as a
+     snippet instead of a formula.) */
   .Fn {
     font-style: italic;
     opacity: 0.7;
   }
 
+  /* literal CSS quoted inside a formula (`@layer`) — mono, and `<mtext>`
+     rather than `<mi>` so no engine italicises it */
+  .Code,
   code {
     font-family: var(--font-mono);
     font-size: 0.8em;
     color: var(--palette-text);
   }
 
-  /* the maths italic of a bound variable */
-  var {
-    font-style: italic;
+  /* bound variables: MathML already italicises a single-char `<mi>`, so this
+     only sets the size relationship the surrounding CJK needs */
+  mi {
     font-size: 0.95em;
   }
 
-  /* operators get air on both sides, as in set maths — margins now that
-     there is no flex `gap` doing it */
-  .Op {
+  /* CJK runs inside the maths — upright, never the italic `<mi>` default */
+  mtext {
+    font-style: normal;
+  }
+
+  /* Operators get air on both sides, as in set maths. Sized up a touch: the
+     relational glyphs (≡ ≻ →) come from the CJK serif at whatever the
+     reading face gives them, and at body scale ≻ reads as a stray `>`. */
+  mo {
     margin-inline: 0.5rem;
+    font-size: 0.9em;
     color: var(--palette-supplement-text);
+  }
+
+  /* …except the ones that are brackets, which hug their argument */
+  mo.Fn,
+  mo[stretchy="false"] {
+    margin-inline: 0;
   }
 
   /* the punchline: every route through this station ends at zero */
@@ -152,10 +176,17 @@
     color: var(--palette-accent);
   }
 
-  /* 「權重」 is one word — never let the line break inside it */
+  /* the specificity triple, and 「權重」 — one token each, never broken */
+  mn,
   .Term {
-    font-size: 0.75em;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums lining-nums;
     white-space: nowrap;
+  }
+
+  .Term {
+    font-family: var(--han-font-alternative);
+    font-size: 0.75em;
   }
 
   /* the equation number rides the end of the first line, quiet */
@@ -545,6 +576,32 @@
     border-block-end: 0;
   }
 
+  /* Row-group heads — CSS and han.js. The line items were one flat run and
+     read as a heap; grouped, the plate says what the equation below it says
+     (「這些是 CSS，那些是 JS」) before anyone reads a number. A real
+     `<th scope="rowgroup">`, so the grouping is in the table's structure and
+     not just in its colour. */
+  &.Sum .GroupHead th {
+    padding-block: 0.875rem 0.375rem;
+    border-block-end: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--palette-supplement-text-2q);
+    text-align: start;
+  }
+
+  /* the first group opens the table — no lead-in gap needed */
+  &.Sum tbody:first-of-type .GroupHead th {
+    padding-block-start: 0;
+  }
+
+  /* group members sit in from their head, the way a nested list does */
+  &.Sum tbody th[scope="row"] {
+    padding-inline-start: 1rem;
+  }
+
   /* The addition — one plate, whose row heads are MODULE / FUNCTION NAMES:
      mono, with the「what it does」gloss dropped underneath in the reading
      face. */
@@ -592,8 +649,46 @@
      the LAST style row's cells rather than the first script row's: which
      script row comes first depends on the delivery mode, and a hidden row
      cannot carry the seam. */
-  &.Sum tbody:first-of-type tr:last-child :is(th, td) {
+  &.Sum tbody[data-group="css"] tr:last-child :is(th, td) {
     border-block-end-width: 2px;
+  }
+
+  /* The footing said as one line. Bigger than the caption prose around it —
+     it is the answer, and a reader who scrolls to this station for one number
+     should be able to take it without reading a table. */
+  .SumEq {
+    margin-block: 0 0.25rem;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-lede);
+    color: var(--palette-text);
+
+    mtext {
+      font-style: normal;
+    }
+
+    mn {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    mo {
+      margin-inline: 0.4rem;
+      color: var(--palette-supplement-text);
+    }
+
+    .Zero {
+      color: var(--palette-accent);
+    }
+  }
+
+  .SumEqNote {
+    margin: 0 0 1rem;
+    font-size: var(--fs-fine);
+    color: var(--palette-supplement-text-2q);
+  }
+
+  .SumProse {
+    margin: 0;
   }
 
   figcaption {
