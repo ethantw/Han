@@ -158,3 +158,27 @@ node <this-script> dist/han.semantics.css dist/han.lines.css dist/han.prose.css 
 | (0,2,0) | `:lang(ko):not(:lang(ko-Hant))` | fonts |
 | (0,1,2) | `ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))` | semantics |
 | (0,0,2) | `h1:has(+ h2, …, + section)` | prose |
+
+
+## 重數（2026-08-03）：132 分支 / 113 個零
+
+腳本落在 `build/census.js`，可直接跑：
+
+```
+node build/census.js
+→ 選擇器分支 132，其中權重為 (0,0,0) 的有 113 個
+→ 首頁 lede 用字：一百一十三個〇 ／ 數字 113
+```
+
+它不再依賴 postcss（這個 repo 只有 transitive 的一份，pnpm 不會 link，而為了
+標題裡一個數字加一個直接依賴不划算），改用自帶的括號掃描器；輸入是自家 esbuild
+的產物，只需要能繞過字串與註解。
+
+**它比本文原本的方法多算一條，而且是對的**：`walkRules` ＋「有直接宣告」的篩法
+會漏掉「宣告全部位在自己內部的 `@supports` / `@container` 裡」的規則——
+`lines.css` 的 `:where(h-iss)` 正是這個形狀。那些宣告確實會套到該選擇器（有條件
+地），所以它有權重、該計入。上文 8/2 記的 135／116 是舊 CSS ＋ 舊方法，兩項都變
+過，不必對得起來。
+
+首頁 lede 五語已同步（hant／hans 用漢字數字，ja／ko 用阿拉伯數字，en 本來就沒有
+數字）。**發布前再跑一次。**

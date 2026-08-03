@@ -118,8 +118,9 @@ applyISS          +0.9KB
 - `console.html` 的 `<option value="KV" selected>` 沒跟上 `DEFAULTS` 的 `'KLR'`
   ——a11y e2e 兩條紅燈的根因（`↺` 按鈕永久顯形 → nested-interactive）。
 - homepage-v2 的 watermark 一條仍紅（station-semantics 那批改動）。
-- 首頁 lede「一百〇九個〇」是舊量測，現況 135 分支／116 個零；發布前重數並統一
-  五語。
+- ~~首頁 lede「一百〇九個〇」是舊量測~~ **已處理（8/3）**：改成一百一十三個〇
+  ／113，五語同步。量測腳本 `build/census.js`（不依賴 postcss，可直接
+  `node build/census.js`），發布前再跑一次即可。
 - dev 模式下 `_moduleLedgerCache` 會把帳目凍在 server 起來那一刻，改了格式要重啟
   才看得到——這輪順手處理掉。
 
