@@ -20,6 +20,7 @@
  */
 import { marked } from '/vendor/marked.esm.js'
 import DOMPurify from '/vendor/purify.esm.js'
+import { plus100EraLine } from '/home/papers-dateline.js'
 
 const STORAGE_KEY = 'han-playground-src'
 const DEBOUNCE_MS = 200
@@ -45,6 +46,23 @@ const sanitize = (dirty) =>
 // Markdown (＋ passthrough inline/block HTML) → sanitized HTML string.
 const renderHtml = (src) => sanitize(marked.parse(src))
 
+/**
+ * 範本的日期列改寫成「今天＋100 年」——四套紀年並排，與站①的報頭同一個
+ * 瞬間（日期由 papers-dateline.js 算，這裡不再算一次）。
+ *
+ * 只換 `<time>` 的內容與 `datetime`：分類（・人物特寫）是範本的內容，不是
+ * 這支模組的事。HTML 裡寫死的那個 2126 是無 JS 的靜態退路，同 `.Papers`
+ * 報頭的做法；有 JS 就永遠不會過期。
+ * 純函數：字串進、字串出，換掉的那一份由呼叫端決定要不要用。
+ */
+const withFreshDateline = (src) => {
+  const { iso, text } = plus100EraLine()
+  return src.replace(
+    /<time datetime="[^"]*">[^<]*<\/time>/,
+    `<time datetime="${iso}">${text}</time>`,
+  )
+}
+
 /* ── shell ──────────────────────────────────────────────────────────
  * localStorage guarded per web-style; a private/disabled store must not
  * break the editor, so read + write both no-op quietly on throw. */
@@ -58,8 +76,18 @@ const save = (src) => {
 /**
  * Boot the playground. `$root` defaults to `document` — the station lives
  * in the page's light DOM.
+ *
+ * `reapplyFallbacks` is `<han-console>`'s own method, handed in by the
+ * composition root (same arrangement as `initDemoLang`): every re-render
+ * replaces the preview's whole subtree, and han.js's JS fallbacks live IN
+ * that subtree — `<h-char>` / `<h-iss>` wrappers are what
+ * `han.*.with-js.css` selects on, so a freshly rendered preview has nothing
+ * for those rules to match until the passes run again over it. Re-running
+ * through the console (rather than importing `installFallbacks` here) is
+ * what keeps the reader's own switches honoured: fallbacks off ⇒ it
+ * uninstalls instead, `manual` mode ⇒ only the passes they ticked, in order.
  */
-export const initPlayground = ($root = document) => {
+export const initPlayground = (reapplyFallbacks, $root = document) => {
   const $editor = $root.querySelector('[data-playground]')
   if (!$editor) return
 
@@ -69,18 +97,29 @@ export const initPlayground = ($root = document) => {
 
   // Restore the user's own text over the server-rendered sample. The console's
   // Reset never clears this key — it's content, not config.
+  // Only the SAMPLE gets its dateline refreshed: a saved draft is the reader's
+  // own text, and rewriting a date inside it would be editing their work.
   const saved = load()
-  if (saved !== null) $src.value = saved
+  $src.value = saved !== null ? saved : withFreshDateline($src.value)
 
   const render = () => { $preview.innerHTML = renderHtml($src.value) }
 
   // Debounced + rAF-aligned re-render; persistence is immediate so a fast
   // reload never loses keystrokes.
+  /* 重繪之後補跑 JS 後備（見檔頭那段），掛在 debounce 這條路上而**不是**
+     `render()` 裡：首屏那次同步 render 由主控台自己的 init pass 覆蓋——它的
+     作用域是整個 `main`，預覽本來就在裡面。塞進 render() 反而有害，實測
+     `tests/e2e/playground-station.spec.ts` 的「主控台一撥就寫 :root」那條會
+     掉：開機那一輪多一次 `await import('/han/han.js')`，把主控台的初始 sync
+     推到讀者（測試）撥動控件之後，那次 init 再把值蓋回預設。 */
   const timerRef = { current: 0 }
   const scheduleRender = () => {
     clearTimeout(timerRef.current)
     timerRef.current = setTimeout(
-      () => requestAnimationFrame(render),
+      () => requestAnimationFrame(() => {
+        render()
+        reapplyFallbacks?.($preview)
+      }),
       DEBOUNCE_MS,
     )
   }

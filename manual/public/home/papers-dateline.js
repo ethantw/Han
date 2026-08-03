@@ -18,6 +18,11 @@
  * Rendered with innerHTML — every string is a constant of our own
  * making, and the ko era label carries `<ruby>`, which a textContent
  * write would flatten into plain prose.
+ *
+ * Also the one place that owns the date itself: `plus100()` is private,
+ * and `plus100EraLine()` hands station⑥'s playground sample the same
+ * instant with all four eras on one line (see its own note). Nobody adds
+ * a hundred years twice.
  */
 
 const DIGITS = '〇一二三四五六七八九'
@@ -48,13 +53,38 @@ const lunarDay = (n) =>
   : '廿' + DIGITS[n - 20]
 
 /** Gregorian Date → { yearName: '丙戌', month: '六月', day: 10 } */
-const lunar = (date) => {
+const lunar = (date, locale) => {
   const parts = new Intl.DateTimeFormat(
-    'zh-Hans-u-ca-chinese',
+    locale,
     { year: 'numeric', month: 'long', day: 'numeric' },
   ).formatToParts(date)
   const part = (type) => parts.find(($p) => $p.type === type)?.value
   return { yearName: part('yearName'), month: part('month'), day: +part('day') }
+}
+
+/** 夏曆一行，或 null——引擎沒有農曆就說「不能」，讓呼叫端留靜態退路。
+    `label` 與 `locale` 分開傳：曆法的字面（夏历／夏曆）與月名的字形
+    （閏／闰）要跟著文種走，簡繁不可混。 */
+const lunarEra = (date, locale, label) => {
+  try {
+    const { yearName, month, day } = lunar(date, locale)
+    return yearName && month && day
+      ? `${label}${yearName}年${month}${lunarDay(day)}`
+      : null
+  } catch { return null }
+}
+
+/** 「今天＋100 年」——這一頁所有日期的唯一來源 */
+const plus100 = () => {
+  const date = new Date()
+  date.setFullYear(date.getFullYear() + 100)
+  const y = date.getFullYear()
+  const m = date.getMonth() + 1
+  const d = date.getDate()
+  return {
+    date, y, m, d,
+    iso: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
+  }
 }
 
 /** per-edition dateline builders — HTML strings, keyed by article lang.
@@ -63,27 +93,36 @@ const lunar = (date) => {
 const format = {
   'zh-Hant': (date, y, m, d) =>
     `中華民國${digitwise(y - 1911)}年${decimal(m)}月${zhDay(d)}日`,
-  'zh-Hans': (date) => {
-    try {
-      const { yearName, month, day } = lunar(date)
-      return yearName && month && day
-        ? `夏历${yearName}年${month}${lunarDay(day)}`
-        : null
-    } catch { return null }
-  },
+  'zh-Hans': (date) => lunarEra(date, 'zh-Hans-u-ca-chinese', '夏历'),
   'ja': (date, y, m, d) =>
     `弘宙元年${decimal(m)}月${decimal(d)}日`,
   'ko-Hant': (date, y, m, d) =>
     `<ruby>西紀<rt>서기</rt></ruby> ${y}年 ${m}月 ${d}日`,
 }
 
+/**
+ * 四套紀年並排的一行，給遊樂場的範本用：中華民國・夏曆・天皇・西元。
+ * 站①的報頭是一版一紀年（四份報紙各講自己的話），這裡相反——同一個瞬間
+ * 四種讀法擺在一起，範本要展示的正是這件事。
+ *
+ * 日期不另算：與報頭同一支 `plus100()`，所以遊樂場與站①永遠是同一天。
+ * 夏曆取繁體 locale（月名的閏字要正體）；天皇紀年沿用報頭那個虛構的弘宙
+ * 元年；西元用報頭的逐字讀法（二一二六年，不是二千一百二十六年）。
+ * 引擎沒有農曆時那一段自己缺席，另三段照舊。
+ */
+export const plus100EraLine = () => {
+  const { date, y, m, d, iso } = plus100()
+  const text = [
+    format['zh-Hant'](date, y, m, d),
+    lunarEra(date, 'zh-Hant-u-ca-chinese', '夏曆'),
+    format['ja'](date, y, m, d),
+    `西元${digitwise(y)}年${decimal(m)}月${zhDay(d)}日`,
+  ].filter(Boolean).join('・')
+  return { iso, text }
+}
+
 export function initPapersDateline() {
-  const date = new Date()
-  date.setFullYear(date.getFullYear() + 100)
-  const y = date.getFullYear()
-  const m = date.getMonth() + 1
-  const d = date.getDate()
-  const iso = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+  const { date, y, m, d, iso } = plus100()
 
   for (const $time of document.querySelectorAll('.Papers .Dateline time')) {
     const html = format[$time.closest('article').lang]?.(date, y, m, d)

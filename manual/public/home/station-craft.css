@@ -4,7 +4,7 @@
  * Station 伍・工法 and station VII・Snippet — the "how it behaves in your
  * codebase" half: three equations set as display maths, a selector ring,
  * the addition that prices the reader's own configuration, the font ledger,
- * and the constant-dark reference-code panel.
+ * and the reference-code panel on its own 稿紙米黃 ground.
  *
  * The features the station EXPLAINS live in han.css, not here: `:where()`
  * (Baseline 2021), `@layer` (Baseline 2022) and `@container style()` style
@@ -48,12 +48,17 @@
   color: var(--palette-supplement-text);
 }
 
+/* 無底色，只有線。原本是帳本那招「gap 露出容器底色當縫」——那要求格子本身
+   是實心的（`--palette-bg`），於是三個式子成了浮在站台底色上的一塊白版，
+   讀起來像貼上去的展品，而不像正文裡的一段顯示數學（同 .Theorem 的
+   「No box」註）。改成格子透明、縫用真正的 border 畫：站台的底色與「零」
+   字水印因此穿過整塊版面，只剩線在分隔。
+   縫的位置寫死，不用 :nth-child——版型就三格，寬螢幕是「上通欄＋下兩格」，
+   窄螢幕是三格直疊，兩種都只要一條規則。 */
 .Axioms {
   & {
     display: grid;
-    gap: 1px;                       /* hairline seams, as in the ledgers */
     margin: 0 0 2rem;
-    background: var(--palette-rule);
     border-block: 1px solid var(--palette-rule);
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
@@ -66,7 +71,21 @@
   .Ax {
     padding-block: 1.5rem;
     padding-inline: 1.5rem;
-    background: var(--palette-bg);
+  }
+
+  /* 窄螢幕：三格直疊，縫在每一格的上緣（第一格靠容器的 border-block）。 */
+  .Ax + .Ax {
+    border-block-start: 1px solid var(--palette-rule);
+
+    /* 寬螢幕：5.2 與 5.3 並排成一列，橫縫交還給通欄的 5.1（見下），
+       這裡只留兩格之間那一道直縫——畫在後一格的行首側。 */
+    @media (min-width: 40rem) {
+      border-block-start: 0;
+
+      & + .Ax {
+        border-inline-start: 1px solid var(--palette-rule);
+      }
+    }
   }
 
   /* 式5.1 spans the pair below it — the theorem the corollaries hang off */
@@ -75,6 +94,9 @@
 
     @media (min-width: 40rem) {
       grid-column: 1 / -1;
+      /* 通欄那條橫縫改由通欄的格子自己畫——下面兩格並排，各自畫上緣會
+         畫成兩截（中間那道直縫剛好把它切開），看得出接痕。 */
+      border-block-end: 1px solid var(--palette-rule);
     }
 
     .Formula {
@@ -1256,74 +1278,34 @@
 }
 
 
-/* ═══ Station VII・Snippet — the CONSTANT-dark reference-code station ══
+/* ═══ Station VII・Snippet — the 稿紙米黃 reference-code station ══════
    `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
-   `controls.css`; this block styles the two station-local lines that
-   frame the pane, the mint transition band that hands off into the dark,
-   and the dark ground itself. */
+   `controls.css`; this block styles the station's own ground and the one
+   line left under the pane.
+
+   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --palette-ink）：淺
+   色模式下一整片墨黑太搶戲，一個站台把半頁變成夜間。現在它跟著主題走，
+   只是地色是全站唯一不是灰白的那一塊——`--palette-station-code`，稿紙的
+   米黃（取色的理由見 variables.css 該 token 的註）。恆黑因此只剩下
+   pane 裡的 `--code-bg` 終端機：淺色模式是「亮紙上的一台黑終端」，那正
+   是這一站要給的東西，而不是整站陪著它黑。 */
 
 .Snippet {
   & {
-    /* 陸 is CONSTANT dark in BOTH page themes. `color-scheme: dark`
-       re-resolves every light-dark() token in this subtree to its dark
-       side (Baseline 2024) — so the hgroup/Prose text, the ViewTabs and
-       the native pm-select all read paper-on-ink with no per-control CSS.
-       The watermark's --palette-wm flips to its paper side here too, so
-       the 碼 glyph still reads on the dark ground. */
-    color-scheme: dark;
-    background: var(--palette-ink);
-    /* a dark band on a (possibly) dark page goes edgeless — pin the top
-       rule to a fixed faint mist hairline (web-style.md dark-surface
-       gotcha) instead of the theme-flipping --palette-grid. */
-    border-block-start-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+    background: var(--palette-station-code);
+    /* 上緣的髮線交還給共用的 --palette-grid（main > section）——地色不再
+       是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
+       mist 髮線防「深色疊深色沒有邊」。 */
   }
 
-  /* transition band — a mint strip carrying the bridge line + the eyebrow
-     set vertically, easing from the bright page into the dark station.
-     It keeps `color-scheme: light` so its accent-wash resolves to mint. */
-  .Bridge {
-    & {
-      color-scheme: light;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--gutter);
-      margin: 0 0 2.5rem;
-      padding: 1.75rem 1.5rem;
-      background: var(--palette-accent-bg);
-      border-radius: var(--r-3);
-    }
-
-    [data-part="lead"] {
-      font-family: var(--han-font-alternative);
-      font-size: var(--fs-heading);
-      font-weight: 600;
-      color: var(--palette-accent);
-    }
-
-    [data-part="eyebrow"] {
-      writing-mode: vertical-rl;
-      font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      color: var(--palette-accent);
-    }
-  }
-
-  .Finish, .BrowserSupport {
-    max-inline-size: 38em;
-    margin: 1.5rem 0 0;
-    font-family: var(--han-font-alternative);
-    color: var(--palette-supplement-text);
-  }
-
-  .Finish {
-    font-size: var(--fs-body);
-    line-height: 1.8;
-    color: var(--palette-text);
-  }
-
+  /* `.Bridge`（薄荷過場帶）與 `.Finish`（收尾句）的規則跟著它們的 markup 一起
+     退場——owner 在 station-snippet.html 裡刪掉了那兩塊，留著規則就是死碼。
+     剩下的 `.BrowserSupport` 自己承接原本共用的那幾行。 */
   .BrowserSupport {
-    margin-block-start: 0.5rem;
+    max-inline-size: 38em;
+    margin: 0.5rem 0 0;
+    font-family: var(--han-font-alternative);
     font-size: var(--fs-small);
+    color: var(--palette-supplement-text);
   }
 }

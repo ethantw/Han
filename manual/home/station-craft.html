@@ -31,11 +31,11 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要大於零或位於後方，就能輕鬆覆蓋（式5.1）。',
-    hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要大于零或位于后方，就能轻松覆盖（式5.1）。',
-    en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>. Yours only has to weigh more than zero, or come later, to override it (5.1).',
-    ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>によって詳細度がすべて零になる。開発者の様式は、零より重いか、あとに置かれてさえいれば、難なく上書きできる（式5.1）。',
-    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다. 開發者의 스타일은 零보다 무겁거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）.',
+    hant: '漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要權重大於零或位於後方，就能輕鬆覆蓋（式5.1）。',
+    hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要权重大于零或位于后方，就能轻松覆盖（式5.1）。',
+    en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>. Yours only has to carry a specificity above zero, or come later, to override it (5.1).',
+    ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>によって詳細度がすべて零になる。開発者の様式は、詳細度が零より大きいか、あとに置かれてさえいれば、難なく上書きできる（式5.1）。',
+    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다. 開發者의 스타일은 優先順位가 零보다 크거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）.',
   },
   arAxTail: {
     hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
@@ -335,7 +335,7 @@
      custom property on a container re-scopes a feature via inheritance /
      @container style(). data-ground="a" continues the alternating chain
      (prose=b → craft=a → playground=b). -->
-<section id="station-craft" data-station="craft" data-ground="a" data-wm="層">
+<section id="station-craft" data-station="craft" data-ground="a" data-wm="零">
   <hgroup>
     <p>{{ arEyebrow }}</p>
     <h2>{{ arH2 }}</h2>

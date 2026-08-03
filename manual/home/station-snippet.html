@@ -28,13 +28,6 @@
     ja: 'インライン',
     ko: '인라인',
   },
-  snBridge: {
-    hant: '配置即代碼',
-    hans: '配置即代码',
-    en: 'Config is code',
-    ja: '設定はコードである',
-    ko: '<ruby>設定<rt>설정</rt></ruby>이 곧 코드다',
-  },
   snEyebrow: {
     hant: '柒・引用碼',
     hans: '柒・引用码',
@@ -50,18 +43,11 @@
     ko: '스니펫 <ruby>生成<rt>생성</rt></ruby>',
   },
   snLede: {
-    hant: '這裡的代碼照著面板目前的配置即時生成，設定改了，代碼也跟著變。npm、CDN、內嵌三種形式，選一種複製貼上就能直接用。',
-    hans: '这里的代码按照面板当前的配置实时生成，设置改了，代码也跟着变。npm、CDN、内嵌三种形式，选一种复制粘贴就能直接用。',
-    en: '— generated live from your panel settings: flip a switch and the code updates. Pick npm, CDN, or inline, copy, paste, done.',
-    ja: 'ここのコードはパネルの現在の設定からその場で生成される——設定を変えれば、コードも追って変わる。npm・CDN・インラインの三形式、どれか一つを選んでコピー＆ペーストすればそのまま使える。',
-    ko: '여기 코드는 패널의 <ruby>現在<rt>현재</rt></ruby> <ruby>設定<rt>설정</rt></ruby>에 따라 <ruby>卽時<rt>즉시</rt></ruby> <ruby>生成<rt>생성</rt></ruby>된다. <ruby>設定<rt>설정</rt></ruby>을 바꾸면 코드도 따라 바뀐다. npm·CDN·인라인 세 <ruby>形式<rt>형식</rt></ruby> 中 하나를 골라 복사해 붙여넣으면 곧바로 쓸 수 있다.',
-  },
-  snFinishLine: {
-    hant: '選好了？三種引用方式，貼進<code>&lt;head&gt;</code>、打包入口，或單檔編輯器即完成。',
-    hans: '选好了？三种引用方式，贴进<code>&lt;head&gt;</code>、打包入口，或单档编辑器即完成。',
-    en: 'Made your picks? Three ways to bring it in — paste into <code>&lt;head&gt;</code>, your bundler entry, or straight into a single-file editor, and you\'re done.',
-    ja: '選び終えた？三つの取り込み方——<code>&lt;head&gt;</code>、バンドラのエントリ、または単一ファイルのエディタに貼れば完了である。',
-    ko: '다 골랐는가? 세 가지 <ruby>引用<rt>인용</rt></ruby> 방식——<code>&lt;head&gt;</code>, 번들러 <ruby>入口<rt>입구</rt></ruby>, 또는 <ruby>單一<rt>단일</rt></ruby> 파일 에디터에 붙이면 <ruby>完成<rt>완성</rt></ruby>이다.',
+    hant: '在左方的console裡更改配置，此處生成的代碼也會相應調整，按需載入。npm、CDN、內嵌等三種形式，擇一使用即可啓用漢.css。',
+    hans: '在左方的console里更改配置，此处生成的代码也会相应调整，按需载入。npm、CDN、内嵌等三种形式，择一使用即可启用汉.css。',
+    en: '— change the configuration in the console on the left and the code here follows, importing only what you asked for. npm, CDN or inline: pick one and han.css is on.',
+    ja: '左のコンソールで設定を変えれば、ここのコードもそれに応じて変わり、必要な分だけを読み込む。npm・CDN・インラインの三形式、どれか一つを選べば漢.cssが働きはじめる。',
+    ko: '왼쪽 콘솔에서 <ruby>設定<rt>설정</rt></ruby>을 바꾸면 여기 코드도 그에 맞춰 바뀌며, <ruby>必要<rt>필요</rt></ruby>한 만큼만 불러온다. npm·CDN·인라인 세 <ruby>形式<rt>형식</rt></ruby> 中 하나를 고르면 漢.css가 <ruby>作動<rt>작동</rt></ruby>한다.',
   },
   snBrowserSupport: {
     hant: '支援現代常青瀏覽器。',
@@ -74,15 +60,6 @@
 </script>
 <!-- Station IV・Snippet — the reference-code generator (data-out-*/ViewTabs). -->
 <section id="station-snippet" class="Station Snippet" data-station="snippet" data-wm="碼">
-  <!-- transition band — a mint strip easing from the bright page into the
-       CONSTANT-dark station. Decorative (it echoes the eyebrow + a bridge
-       line), so role=presentation / aria-hidden keeps it out of the a11y
-       tree; the eyebrow is set vertically in CSS. -->
-  <div class="Bridge" role="presentation" aria-hidden="true">
-    <b data-part="lead">{{ snBridge }}</b>
-    <span data-part="eyebrow">{{ snEyebrow }}</span>
-  </div>
-
   <hgroup>
     <p>{{ snEyebrow }}</p>
     <h2>{{ snH2 }}</h2>
@@ -107,6 +84,5 @@
     <div data-out-panes></div>
   </div>
 
-  <p class="Finish">{{ snFinishLine }}</p>
   <p class="BrowserSupport">{{ snBrowserSupport }}</p>
 </section>

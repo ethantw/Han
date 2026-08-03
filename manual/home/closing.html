@@ -1,16 +1,5 @@
 <script type="text/x-i18n">
 {
-  copyLabel: {
-    hant: '複製', hans: '复制', en: 'Copy', ja: 'コピー',
-    ko: '복사',
-  },
-  clInstallLabel: {
-    hant: '一行安裝',
-    hans: '一行安装',
-    en: 'One-line install',
-    ja: '一行でインストール',
-    ko: '한 줄 <ruby>設置<rt>설치</rt></ruby>',
-  },
   clZianoLabel: {
     hant: 'ziano・傳承字形Web字體',
     hans: 'ziano・传承字形Web字体',
@@ -29,14 +18,6 @@
 </script>
 <!-- Closing — install one-liner, sibling-project links, version. -->
 <section class="Closing" data-wm="漢">
-  <div class="InstallLine">
-    <small>{{ clInstallLabel }}</small>
-    <span class="InstallChip">
-      <code>pnpm add @hanzi.pro/han.css</code>
-      <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
-    </span>
-  </div>
-
   <nav class="Siblings">
     <a href="https://github.com/ethantw/Han">GitHub</a>
     <a href="https://hanzipro.github.io/ziano/">{{ clZianoLabel }}</a>

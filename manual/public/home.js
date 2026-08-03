@@ -146,7 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // the copy is hidden until the gate opens anyway.
     await import('/components/han-console.js')
     const { initPlayground } = await import('/home/playground.js')
-    initPlayground()
+    // 借主控台的 reapplyFallbacks（同 initDemoLang）：預覽每次重繪都是一棵新
+    // 子樹，han.js 的 `<h-char>`／`<h-iss>` 包裹得重跑，*.with-js.css 才有東西
+    // 可選。走主控台而不是直接 import installFallbacks，讀者的開關才算話。
+    initPlayground(($target) => $console?.reapplyFallbacks($target))
     document.documentElement.dataset.pgReady = ''
   })
 })

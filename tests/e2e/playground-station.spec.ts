@@ -15,10 +15,20 @@ const KEY = 'han-playground-src'
 
 const $preview = (page: Page) => page.locator('#station-playground [data-pg-preview]')
 const $src = (page: Page) => page.locator('#station-playground [data-pg-src]')
-const showCode = (page: Page) =>
-  page.locator('#station-playground [data-pg-editor-views] label:has(input[value="code"])').click()
-const showPreview = (page: Page) =>
-  page.locator('#station-playground [data-pg-editor-views] label:has(input[value="preview"])').click()
+const $tabs = (page: Page) => page.locator('#station-playground [data-pg-editor-views]')
+
+/** Tab clicks are only a thing in the NARROW panel. From 48rem of panel width
+ *  the editor is two-pane (playground.css § 夠寬就不必分頁): both source and
+ *  preview are on screen at once and the whole tab strip is `display: none`,
+ *  so clicking it would just hang. The default e2e viewport (1280) IS
+ *  two-pane — measured: 936px of panel — hence the guard rather than a
+ *  narrow-only assumption. */
+const showTab = async (page: Page, value: 'code' | 'preview') => {
+  if (!(await $tabs(page).isVisible())) return
+  await $tabs(page).locator(`label:has(input[value="${value}"])`).click()
+}
+const showCode = (page: Page) => showTab(page, 'code')
+const showPreview = (page: Page) => showTab(page, 'preview')
 
 /** Type source into the (hidden-under-Preview) textarea: reveal Code, fill,
  *  back to Preview so assertions see the rendered result. */
@@ -43,18 +53,41 @@ test.describe('station⑤ playground', () => {
     await page.waitForSelector('html[data-pg-ready]')
   })
 
-  test('default sample renders in the preview (Markdown → h2 + em dots)', async ({ page }) => {
-    // Preview is the default tab; the shipped sample is Markdown with an
-    // <em>, so parsing must yield an <h2> and at least one <em>.
-    await expect($preview(page).locator('h2')).toHaveCount(1)
+  test('default sample renders in the preview (a whole 太陽中文報 piece, marked up)', async ({ page }) => {
+    // The shipped sample is one full taisol article (zh/trump-sashimi.md) with
+    // han-semantics elements applied — headline, dateline, four sections.
+    await expect($preview(page).locator('h1')).toHaveCount(1)
+    await expect($preview(page).locator('h2')).toHaveCount(4)
     await expect($preview(page).locator('em').first()).toBeVisible()
+
+    // …and it exercises the elements han.semantics.css actually styles, which
+    // is the whole point of shipping a real article rather than a snippet.
+    for (const sel of ['u', 'q', 'dfn', 'i[lang]', 'ruby.zhuyin > rt', 'blockquote'])
+      expect(await $preview(page).locator(sel).count()).toBeGreaterThan(0)
+
+    // The dateline is rewritten on boot to «today + 100 years» — the same
+    // instant station①'s newspaper datelines carry (home/papers-dateline.js
+    // owns the date; the playground borrows it), with all four eras on one
+    // line. Only the year is asserted: the rest is that module's contract.
+    const plus100 = new Date().getFullYear() + 100
+    const $time = $preview(page).locator('time').first()
+    await expect($time).toHaveAttribute('datetime', new RegExp(`^${plus100}-`))
+    await expect($time).toContainText('中華民國')
+    await expect($time).toContainText('夏曆')
+    await expect($time).toContainText('弘宙元年')
+    await expect($time).toContainText('西元')
   })
 
   test('typing Markdown + inline HTML updates the preview', async ({ page }) => {
     await setSource(page, '## 標題\n\n這是<strong>粗體</strong>與*斜體*。')
-    await expect($preview(page).locator('h2')).toHaveText('標題')
-    await expect($preview(page).locator('strong')).toHaveText('粗體')
-    await expect($preview(page).locator('em')).toHaveText('斜體')
+    /* ARRAY form on purpose. The render is debounced, so the first poll still
+       sees the shipped sample — a whole article with four <h2> and five <em>
+       — and `toHaveText('…')` against a multi-element locator is a strict-mode
+       violation, which THROWS instead of retrying. The list form is defined
+       over «all matches», so it just fails that poll and waits. */
+    await expect($preview(page).locator('h2')).toHaveText(['標題'])
+    await expect($preview(page).locator('strong')).toHaveText(['粗體'])
+    await expect($preview(page).locator('em')).toHaveText(['斜體'])
   })
 
   test('XSS attempts are neutralized (no script / onerror / javascript: href)', async ({ page }) => {
@@ -104,6 +137,18 @@ test.describe('station⑤ playground', () => {
     await page.reload()
     await expect($src(page)).toHaveValue(marker)
     await expect($preview(page).locator('h1')).toHaveText(marker.slice(2))
+  })
+
+  test('a re-render re-installs the JS fallbacks, so *.with-js.css has wrappers to select', async ({ page }) => {
+    // `innerHTML` replaces the whole preview subtree, and han.js's wrappers
+    // live IN it — without a second pass over the new nodes, `<h-char>` /
+    // `<h-iss>` are simply gone and every `han.*.with-js.css` rule matches
+    // nothing. Fallbacks are on by default (codegen DEFAULTS.fallbacks), so
+    // typing must leave wrappers behind (playground.js § scheduleRender).
+    await setSource(page, '這一行有「引號」，還有句讀。')
+    await expect
+      .poll(() => $preview(page).locator('h-char').count())
+      .toBeGreaterThan(0)
   })
 
   test('console interplay: a console control writes --han-* on :root; the preview inherits it', async ({ page }) => {

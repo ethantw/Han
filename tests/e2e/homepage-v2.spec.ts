@@ -2,26 +2,26 @@ import { test, expect } from '@playwright/test'
 
 /**
  * Homepage redesign v2 — the station-plate system, marginalia gate, the
- * constant-dark snippet station, and the reduced-motion reveal guard.
+ * snippet station's own paper ground, and the reduced-motion reveal guard.
  *
  * Contract: docs/plans/homepage-v2-implementation.md. These are smoke-level
  * structural checks (not pixel baselines): the content stations carry a
  * watermark glyph rendered from `data-wm` — six of the seven, since
  * station②・字體排印 hands its corner to the lead-type forme instead;
  * the var-name marginalia is a ≥68rem-only console (hidden where it would only
- * repeat names); station 柒・引用碼 sits on a CONSTANT-dark ground in BOTH
- * page themes; and reveal.js must hand every station its `[data-revealed]`
- * hook immediately under a reduced-motion preference (settled state, no
- * animation), so nothing is ever left hidden.
+ * repeat names); station 柒・引用碼 sits on the one non-grey station ground
+ * (稿紙米黃, following the page theme); and reveal.js must hand every station
+ * its `[data-revealed]` hook immediately under a reduced-motion preference
+ * (settled state, no animation), so nothing is ever left hidden.
  */
 
 // The seven stations in document order — Closing (data-wm="漢") is not a
 // `[data-station]`, so it is deliberately excluded. station②・字體排印 carries
 // NO watermark: its corner belongs to the lead-type forme (lead-forme.css
 // § corner), so the glyph list has six entries for seven stations.
-const STATION_WM = ['語', '行', '段', '層', '格', '碼']
+const STATION_WM = ['語', '行', '段', '零', '格', '碼']
 
-test('the stations carry their watermark glyphs 語行段層格碼 (station② has none)', async ({ page }) => {
+test('the stations carry their watermark glyphs 語行段零格碼 (station② has none)', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.locator('main [data-station]')).toHaveCount(7)
@@ -36,18 +36,34 @@ test('the stations carry their watermark glyphs 語行段層格碼 (station② h
   expect(marks).toEqual(STATION_WM)
 })
 
-test('station 柒・引用碼 sits on a constant-dark ground in the LIGHT theme', async ({ page }) => {
+test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the page theme', async ({ page }) => {
   await page.goto('/')
 
   // Page defaults to light (no dark-mode checkbox) …
   await expect(page.locator('input[name="dark-mode"]')).not.toBeChecked()
 
-  // … yet the snippet station is constant-dark: `color-scheme: dark`
-  // re-resolves its light-dark() tokens, so its ground is the ink primitive
-  // (--color-ink = #0e0e10) regardless of the page theme.
+  // … and the station is light with it. It used to be constant-dark in both
+  // themes (`color-scheme: dark` + --palette-ink); the ground is now the one
+  // paper-coloured station plate, --palette-station-code = --color-buff (#f8f4ea).
   const snippet = page.locator('#station-snippet')
+  await expect(snippet).toHaveCSS('color-scheme', 'light')
+  await expect(snippet).toHaveCSS('background-color', 'rgb(248, 244, 234)')
+
+  // The code panes stay terminal-dark in BOTH themes — that part IS constant
+  // (--code-bg = --color-ink). A light station with a dark terminal on it is
+  // the point; the station no longer goes dark to keep the terminal company.
+  // (the ground is painted by `figure.CodePane`, not the `<pre>` inside it)
+  await expect(snippet.locator('figure.CodePane').first())
+    .toHaveCSS('background-color', 'rgb(14, 14, 16)')
+
+  // Dark theme: the same token's dark side, the same paper at night
+  // (--color-buff-night = #191712) — NOT a second slab of plain --color-ink.
+  // via the label: the checkbox itself is a visually-hidden `.Toggle` input,
+  // so a direct .check() has nothing to hit.
+  await page.locator('label.for-theme').click()
+  await expect(page.locator('input[name="dark-mode"]')).toBeChecked()
   await expect(snippet).toHaveCSS('color-scheme', 'dark')
-  await expect(snippet).toHaveCSS('background-color', 'rgb(14, 14, 16)')
+  await expect(snippet).toHaveCSS('background-color', 'rgb(25, 23, 18)')
 })
 
 test('reduced-motion: every station is revealed immediately (settled, not animated)', async ({ page }) => {

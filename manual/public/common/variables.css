@@ -35,6 +35,10 @@
   --color-paper-deep: #fafaf7; /* warm off-white — panels */
   --color-snow:       #f3f3f0;
   --color-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --color-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
+  --color-console:       #eceff2; /* 冷調的淡灰 — 主控台地色（淺）*/
+  --color-console-night: #101013; /* 近乎頁面最深的墨 — 主控台地色（深）*/
+  --color-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
   --color-cloud:      #ececea; /* hairline grey — grid / rule */
   --color-silver:     #d2d2cd;
   --color-ash:        #8c8c87;
@@ -117,8 +121,25 @@
    * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
    * Baseline 2023) that lifts to the paper side on dark so it still
    * reads. Consumed only by `[data-station]` / `.Closing`. */
+  /* 主控台的地色。它曾經直接用 --palette-panel——而 panel 與 station-a 是
+     同一組值（paper-deep／ink-deep），於是「工具」與「內容」同色，兩者只隔
+     一條髮線，看不出界。
+     分野走**色溫**，不走明度：頁面的紙全是暖灰（paper-deep／snow／mist 一
+     系），主控台改成冷調的淡灰，明度只差一點，交界卻立刻讀得出來——而且
+     不會像加深暖灰那樣把工具面變成一片土色（試過 #eeece5，難看，「高級感」
+     全丟了）。深色一側往頁面最深的墨靠，工具自己退到後面去。
+     只有 <han-console> 的 host 用它；panel 那個角色還有一堆面板在用，不動。 */
+  --palette-console: light-dark(var(--color-console), var(--color-console-night));
   --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
   --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));
+  /* 柒站（引用碼）的專屬地色——全站唯一不是灰白的站台底。它曾是「兩個
+     主題都恆黑」，淺色模式下整片墨黑太搶戲；改成隨主題走，淺色一側是
+     **稿紙的米黃**。取米黃而不是某個強調色的淡洗：這一站給的是你要抄回
+     自己專案的那段碼，而 pane 裡的終端機是恆黑的——黑落在米黃紙上就是
+     墨落在紙上，關係自己成立，不必再借一個色相來說。（試過 lapis 的淡洗
+     #eef0fa，太紫。）深色一側是同一張紙的夜色，暖墨，不是又一塊
+     --color-ink。 */
+  --palette-station-code: light-dark(var(--color-buff), var(--color-buff-night));
   --palette-wm:
     light-dark(
       color-mix(in srgb, var(--color-ink) 4%, transparent),
