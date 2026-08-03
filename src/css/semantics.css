@@ -112,7 +112,7 @@
  *            to `var(--han-quotes)`, as Japanese brackets titles with
  *            「」, not 《》.
  *   wavy     Underline with a wavy line (書名號甲式) — used in Taiwan
- *            textbooks, and in Taiwan/Mainland China reprints of classical 
+ *            textbooks, and in Taiwan/Mainland China reprints of classical
  *            texts (古籍復刻本). Suppresses the bracket quotes.
  *
  * Inherits, so authors can set it once on a section root and have all
@@ -457,11 +457,17 @@
  * Safari 18.2+: native `ruby-position: inter-character` (annotation alongside char).
  * Chrome / Firefox: `@supports not` fallback.
  */
-:where(ruby:is(.zhuyin, .mps)) {
+/* `:has(> rt…)` — a RELATIVE selector, anchored on the `:has()` subject, so
+ * it reads「has a direct child rt」. Written `:has(& > rt…)` it parses in all
+ * three engines but selects nothing: `&` is not the anchor, it is the parent
+ * selector (or `:scope` at top level), so the branch resolves to「has a
+ * descendant matching `:scope > rt`」and never matches. Verified against
+ * Chromium / WebKit / Firefox, 2026-08-03. */
+:where(ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))) {
   & {
     ruby-position: inter-character;
   }
-  > rt {
+  :where(& > rt) {
     font-family: var(--han-font-zhuyin-serif);
     text-orientation: upright;
   }
@@ -470,7 +476,7 @@
       position: relative;
       letter-spacing: .6em;
     }
-    > rt {
+    :where(& > rt) {
       position: absolute;
       /* out of annotation flow; display: ruby preserved */
       inset-inline-start: 50%;

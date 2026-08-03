@@ -37,6 +37,8 @@
     margin: 0 0 2rem;
     background: var(--palette-rule);
     border-block: 1px solid var(--palette-rule);
+    --han-punctuation-hant: KLR;
+    --han-punctuation-refinement: compress;
 
     @media (min-width: 40rem) {
       grid-template-columns: 1fr 1fr;
@@ -138,7 +140,12 @@
      set like notation and merely dimmed. Only the selector *argument* is
      literal CSS, and only that is mono. (I had this mono at first; it made
      the line read as a snippet instead of a formula.) */
+  /* Italic, like a function name in a maths textbook — and it reinforces the
+     point the serif already makes: `:where(…)` is notation here, not a
+     snippet to copy. The argument inside stays upright mono, so the one part
+     that IS literal CSS still reads as literal CSS. */
   .Fn {
+    font-style: italic;
     opacity: 0.7;
   }
 
