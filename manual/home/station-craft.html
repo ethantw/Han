@@ -21,24 +21,24 @@
     ja: '〇が109個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
     ko: '〇이 109개 있어도 여전히 「〇」다——마음껏 덮어쓰면, 나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다.',
   },
-  /* The three axioms had no way in — a reader who has not met `:where()`
-     sees three lines of notation and no reason to care. One sentence before
-     the plate says what they are FOR; the per-axiom notes underneath already
-     say what each one does. Under 100 characters: it is a doorway, not a
-     lecture. */
+  /* The way in, and the way out — restored from the copy that was settled
+     back in e212a6e (§ arP1 / arP3) and lost in a later edit. Two paragraphs
+     with the plate between them: the first ends on a colon, which is what
+     introduces the statements; the second reads them back and is the only
+     place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '框架與你的樣式表衝突，永遠是這三件事之一：權重、層級、作用範圍。漢.css在這三處都讓路——以下是它讓路的方式。',
-    hans: '框架与你的样式表冲突，永远是这三件事之一：权重、层级、作用范围。汉.css在这三处都让路——以下是它让路的方式。',
-    en: 'A framework can only fight your CSS in three ways: specificity, layer, scope. han.css yields on all three — here is how.',
-    ja: 'フレームワークがあなたのCSSと衝突する原因は三つしかない——詳細度、層、適用範囲。漢.cssはその三つとも譲る。以下がその譲り方である。',
-    ko: '프레임워크가 당신의 CSS와 부딪히는 길은 셋뿐이다——優先順位, 層, 適用 範圍. 漢.css는 셋 다 물러선다. 그 방식이 아래다.',
+    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重——框架的每一條規則，都與你裸寫的選擇器同權（式5.1）：',
+    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重——框架的每一条规则，都与你裸写的选择器同权（式5.1）：',
+    en: 'Every selector in the library is wrapped in <code>:where()</code>, so han.css gives up the specificity of its styles entirely — each of its rules weighs exactly what your own bare selector weighs (5.1):',
+    ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す——フレームワークのどの規則も、あなたが裸で書いたセレクタと同じ重さである（式5.1）。',
+    ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 <ruby>優先順位<rt>우선순위</rt></ruby>를 버린다——프레임워크의 어떤 規則도 당신이 그냥 쓴 셀렉터와 같은 무게다（式5.1）:',
   },
   arAxTail: {
-    hant: '三式合起來就是：漢.css從不爭，你寫什麼就是什麼。',
-    hans: '三式合起来就是：汉.css从不争，你写什么就是什么。',
-    en: 'Together: han.css never competes. What you write is what renders.',
-    ja: '三式を合わせれば——漢.cssは争わない。あなたが書いたものが、そのまま出る。',
-    ko: '셋을 합치면——漢.css는 다투지 않는다. 당신이 쓴 것이 그대로 나온다.',
+    hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層的你天生站上風（式5.2）；透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）——原生CSS給作者最大的自訂彈性。',
+    hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层的你天生站上风（式5.2）；透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）——原生CSS给作者最大的自定义弹性。',
+    en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — your CSS — starts out ahead (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3). Native CSS, giving the author the widest customisation there is.',
+    ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないあなたが初めから優位に立つ（式5.2）。CSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）——ネイティブCSSが作者に最大のカスタマイズ自由度を与える。',
+    ko: '스타일 모듈 <ruby>順序<rt>순서</rt></ruby>를 마음대로 <ruby>定義<rt>정의</rt></ruby>할 수 있는 <code>@layer</code>와 <ruby>結合<rt>결합</rt></ruby>하면, 層에 넣지 않은 당신이 처음부터 앞선다（式5.2）. CSS 變數와 style query <code>@container</code>로는 어떤 셀렉터 위에서든 機能을 켜고 끄고 <ruby>調律<rt>조율</rt></ruby>할 수 있다（式5.3）——네이티브 CSS가 作者에게 주는 가장 넓은 自由다.',
   },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',

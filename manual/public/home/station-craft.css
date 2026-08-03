@@ -18,26 +18,33 @@
  * the plate is the argument. */
 
 /* The way in, and the way out. The plate is notation; without a sentence
-   either side it reads as decoration and the reader skips it. The lede says
-   what the three statements are FOR, the tail says what they add up to —
-   the per-axiom notes inside already handle what each one does. */
+   either side it reads as decoration and gets skipped.
+   Set at the station's own measure and RANGED LEFT, not centred: these are
+   paragraphs now, and a three-line centred paragraph reads as a poster. The
+   plate between them stays centred — that one IS a display. */
 .AxLede,
 .AxTail {
-  margin: 0 auto;
-  max-inline-size: 42em;
-  font-family: var(--han-font-alternative);
-  font-size: var(--fs-body);
-  line-height: 1.9;
-  color: var(--palette-text);
-  text-align: center;
+  & {
+    margin-inline: 0;
+    max-inline-size: 42em;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-body);
+    line-height: 1.9;
+    color: var(--palette-text);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
 }
 
 .AxLede {
-  margin-block-end: 1.25rem;
+  margin-block: 0 1.25rem;
 }
 
 .AxTail {
-  margin-block-start: 1.25rem;
+  margin-block: 1.25rem 0;
   color: var(--palette-supplement-text);
 }
 
