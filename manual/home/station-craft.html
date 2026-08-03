@@ -148,11 +148,11 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: '三行是同一份minified檔案的三種傳輸編碼，不是三份檔案。brotli是現代CDN實際送的那一份，故列在末行；三行都隨左欄的勾選重算。',
-    hans: '三行是同一份minified档案的三种传输编码，不是三份档案。brotli是现代CDN实际送的那一份，故列在末行；三行都随左栏的勾选重算。',
-    en: 'Three transfer encodings of the same minified file, not three files. brotli is what a modern CDN actually serves, so it takes the last line; all three re-add themselves as you pick in the left column.',
-    ja: '三行は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは現代のCDNが実際に送るものなので最終行に置いた。三行とも左欄の選択に応じて計算し直される。',
-    ko: '세 줄은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 現代 CDN이 實際로 보내는 것이라 마지막 줄에 두었다. 세 줄 모두 왼쪽 칸의 選擇에 따라 다시 더해진다.',
+    hant: '三欄是同一份minified檔案的三種傳輸編碼，不是三份檔案。brotli是現代CDN實際送的那一份，故列在末欄；三欄都隨左欄的勾選重算。',
+    hans: '三栏是同一份minified档案的三种传输编码，不是三份档案。brotli是现代CDN实际送的那一份，故列在末栏；三栏都随左栏的勾选重算。',
+    en: 'Three transfer encodings of the same minified file, not three files. brotli is what a modern CDN actually serves, so it takes the last column; all three re-add themselves as you pick in the left column.',
+    ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは現代のCDNが実際に送るものなので最終列に置いた。三列とも左欄の選択に応じて計算し直される。',
+    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 現代 CDN이 實際로 보내는 것이라 마지막 열에 두었다. 세 열 모두 왼쪽 칸의 選擇에 따라 다시 더해진다.',
   },
   arSumNote: {
     hant: '四個樣式模組，正是左欄的四顆開關；腳本是選配——純CSS的漢.css自己就成立。這一欄隨你的勾選重算，數字全是實打包量到的。',
@@ -524,7 +524,7 @@
        `data-off` on the manual rows encodes the console's default (auto). -->
   <h3 class="LedgerHead">{{ arSumHead }}</h3>
   <figure class="Sum">
-    <div>
+    <div data-plate="items">
       <table>
         <thead>
           <tr>
@@ -579,35 +579,32 @@
            table above them. -->
       <math display="block" class="SumEq">
         <mtable>
-          <mtr class="Minor">
+          <mtr class="Head">
+            <mtd></mtd><mtd></mtd>
             <mtd><mtext>{{ arScColRaw }}</mtext></mtd>
-            <mtd><mtext>CSS</mtext></mtd>
-            <mtd><mn data-sum="raw-css">{{ sizeTotalRaw }}</mn></mtd>
-            <mtd><mo>+</mo></mtd>
-            <mtd><mtext>JS</mtext></mtd>
-            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRaw }}</mn></mtd>
-            <mtd><mo>=</mo></mtd>
-            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRaw }}</mn></mtd>
-          </mtr>
-          <mtr class="Minor">
             <mtd><mtext>gzip</mtext></mtd>
-            <mtd><mtext>CSS</mtext></mtd>
-            <mtd><mn data-sum="gz-css">{{ sizeTotalGzip }}</mn></mtd>
-            <mtd><mo>+</mo></mtd>
-            <mtd><mtext>JS</mtext></mtd>
-            <mtd><mn data-sum="gz-js">{{ sizeJsAutoGzip }}</mn></mtd>
-            <mtd><mo>=</mo></mtd>
-            <mtd><mn data-sum="gz-all">{{ sizeDefaultTotalGzip }}</mn></mtd>
+            <mtd class="Lead"><mtext>brotli</mtext></mtd>
           </mtr>
-          <mtr class="Major">
-            <mtd><mtext>brotli</mtext></mtd>
-            <mtd><mtext>CSS</mtext></mtd>
-            <mtd><mn data-sum="br-css">{{ sizeTotal }}</mn></mtd>
-            <mtd><mo>+</mo></mtd>
-            <mtd><mtext>JS</mtext></mtd>
-            <mtd><mn data-sum="br-js">{{ sizeJsAuto }}</mn></mtd>
-            <mtd><mo>=</mo></mtd>
-            <mtd><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotal }}</mn></mtd>
+          <mtr>
+            <mtd></mtd>
+            <mtd class="Term"><mtext>CSS</mtext></mtd>
+            <mtd><mn data-sum="raw-css">{{ sizeTotalRaw }}</mn></mtd>
+            <mtd><mn data-sum="gz-css">{{ sizeTotalGzip }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-css">{{ sizeTotal }}</mn></mtd>
+          </mtr>
+          <mtr>
+            <mtd class="Op"><mo>+</mo></mtd>
+            <mtd class="Term"><mtext>JS</mtext></mtd>
+            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRaw }}</mn></mtd>
+            <mtd><mn data-sum="gz-js">{{ sizeJsAutoGzip }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-js">{{ sizeJsAuto }}</mn></mtd>
+          </mtr>
+          <mtr class="Total">
+            <mtd class="Op"><mo>=</mo></mtd>
+            <mtd></mtd>
+            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRaw }}</mn></mtd>
+            <mtd><mn data-sum="gz-all">{{ sizeDefaultTotalGzip }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotal }}</mn></mtd>
           </mtr>
         </mtable>
       </math>
@@ -655,7 +652,7 @@
        (home/codegen.js § HERITAGE / CURSIVE_HANT) — keep the two in sync. -->
   <h3 class="LedgerHead">{{ arFlHead }}</h3>
   <figure class="FontLedger">
-    <div>
+    <div data-plate="print">
       <table>
         <caption>{{ arFlCapPrint }}</caption>
         <thead>
@@ -679,7 +676,7 @@
       </table>
     </div>
 
-    <div>
+    <div data-plate="punct">
       <table>
         <caption>{{ arFlCapPunct }}</caption>
         <thead>
@@ -698,7 +695,7 @@
       </table>
     </div>
 
-    <div>
+    <div data-plate="patch">
       <table>
         <caption>{{ arFlCapPatch }}</caption>
         <thead>

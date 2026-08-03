@@ -545,19 +545,53 @@
     overflow: hidden;
   }
 
+  /* The addition does NOT run the full measure. A line-item table stretched
+     to 100% reads as heavy, which is the one impression this station cannot
+     afford — the claim above it is 「輕如鴻毛」. Pulled in, the freed width
+     goes to the footing, and the RESULT (the MathML array) ends up beside the
+     working rather than under it. That is the right hierarchy: the table is
+     how the number is arrived at, the equation is the number. */
   &.Sum {
-    /* One plate, full measure — the addition is a single column of line
-       items and splitting it across two tracks would break the running eye. */
     grid-template-columns: 1fr;
+
+    @media (min-width: 64rem) {
+      grid-template-columns: minmax(0, 1.3fr) minmax(20rem, 1fr);
+    }
   }
 
+  /* Three plates, TWO columns of them: 印刷字體 is eight rows deep and the
+     other two are four and three, so a third column each left the punctuation
+     plate floating in white space and the whole figure two rows taller than
+     it needed to be. Stacked, 標點 ＋ 補綴 come out level with 印刷 — and the
+     column that frees up takes the footing, which then sits beside the
+     figures it is talking about instead of underneath them. */
   &.FontLedger {
     @media (min-width: 40rem) {
       grid-template-columns: 1fr 1fr;
     }
 
-    @media (min-width: 60rem) {
-      grid-template-columns: repeat(3, 1fr);
+    @media (min-width: 64rem) {
+      /* The note column is NARROWER than the two plates: it holds one
+         sentence, and an equal third would leave it looking unfinished.
+         What it gains instead is size — with a column to itself the note
+         stops being a footnote and becomes the ledger's epigraph. */
+      grid-template-columns: 1.15fr 1fr 0.7fr;
+      grid-template-areas:
+        "print punct caption"
+        "print patch caption";
+      grid-template-rows: auto 1fr;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    &.FontLedger [data-plate="print"] { grid-area: print; }
+    &.FontLedger [data-plate="punct"] { grid-area: punct; }
+    &.FontLedger [data-plate="patch"] { grid-area: patch; }
+    &.FontLedger figcaption {
+      grid-area: caption;
+      font-size: var(--fs-lede);
+      line-height: 1.9;
+      color: var(--palette-text);
     }
   }
 
@@ -774,21 +808,23 @@
     border-block-end-width: 2px;
   }
 
-  /* The footing said as an aligned equation array. `<mtable>` earns its keep
-     here: `+` and `=` land in columns, so the three compressions read straight
-     down instead of sideways across a table — which is the whole reason for
-     restating a table the reader has just looked at.
+  /* The footing said as a SCHOOL SUM — operands stacked, signs out in the
+     margin, a rule above the answer. That is what 「加起來多少」 asks for and
+     what a horizontal `a + b = c` never quite looks like; it is also far
+     narrower, which is what lets the whole block sit beside the table instead
+     of under it.
 
-     Emphasis by ARRANGEMENT, not decoration: the rows run in order of
-     compression strength (none → gzip → brotli), so brotli lands last, under
-     a rule, in an arithmetic sum's answer position. The two rows above it
-     read as the working. Alignment is CSS, not `columnalign` — MathML Core
-     dropped the table attributes, and logical `text-align: end` is what this
-     codebase writes anyway. */
+     Three compressions become three parallel COLUMNS of the same sum, so
+     they can be compared straight down — same order as the table's columns
+     (minified → gzip → brotli), so the eye finishes on brotli in both, and
+     only that column carries the accent. `<mtable>` is exactly the element
+     for this; alignment is CSS, since MathML Core dropped the table
+     attributes. */
   .SumEq {
     & {
-      margin-block: 0.5rem 0.625rem;
+      margin-block: 0.25rem 1rem;
       font-family: var(--han-font-alternative);
+      font-size: var(--fs-body);
       color: var(--palette-supplement-text-2q);
     }
 
@@ -796,41 +832,44 @@
       font-style: normal;
     }
 
-    /* Reading face, NOT mono. The array is a piece of typesetting, not a
-       terminal dump, and a textbook sets its figures in the text face. The
-       column alignment that mono was doing is `tabular-nums`' job anyway —
-       it is a font feature, not a font. */
+    /* Reading face, NOT mono — a textbook sets its figures in the text face,
+       and the column alignment mono was doing is `tabular-nums`' job anyway:
+       a font feature, not a font. */
     mn {
       font-variant-numeric: tabular-nums lining-nums;
     }
 
-    /* Room. Three equations stacked at mono's tight advance read as a wall;
-       the whole point of restating the table is that this block is easier to
-       take in than the table was. */
     mtd {
-      padding-block: 0.3rem;
-      padding-inline: 0.35em;
+      padding-block: 0.25rem;
+      padding-inline: 0.4em;
       text-align: end;
     }
 
-    mtd:first-child {
-      padding-inline-end: 1.5em;
+    /* the operator gutter — signs live OUTSIDE the operands, as in a sum */
+    .Op {
+      padding-inline: 0;
+      text-align: start;
+    }
+
+    .Op mo {
+      margin-inline: 0;
+    }
+
+    /* which operand this row is */
+    .Term {
+      padding-inline-end: 0.75em;
+      text-align: start;
       font-size: 0.85em;
     }
 
-    mo {
-      margin-inline: 0.25em;
-    }
-
-    /* the working: quiet, and two sizes below the answer */
-    .Minor {
+    /* the compression heads — the quietest row on the plate */
+    .Head {
       font-size: var(--fs-small);
     }
 
-    /* The answer — the biggest type in the station after the h2, because it
-       is the one figure a reader came for. Bigger than the table it restates,
-       deliberately: the table is the working, this is the result. */
-    .Major {
+    /* The answer: a rule across every column, then the total. Border on the
+       cells, not the row — a row's own border is not painted in every engine. */
+    .Total {
       font-size: var(--fs-heading);
       color: var(--palette-text);
 
@@ -838,10 +877,16 @@
         padding-block-start: 0.5rem;
         border-block-start: 1px solid var(--palette-rule);
       }
+    }
 
-      .Zero {
-        color: var(--palette-accent);
-      }
+    /* One column carries the accent: brotli, last, the one a CDN serves —
+       the same column the table above accents, for the same reason. */
+    .Lead {
+      color: var(--palette-accent);
+    }
+
+    .Total .Lead {
+      font-size: 1.1em;
     }
   }
 
@@ -861,6 +906,12 @@
       padding-block: 1.125rem;
       padding-inline: 1.25rem;
       background: var(--palette-panel);
+
+      /* Beside the plates, not under them — see the two grid rules above.
+         `1 / -1` stays the narrow-screen behaviour. */
+      @media (min-width: 64rem) {
+        grid-column: auto;
+      }
       font-family: var(--han-font-alternative);
       font-size: var(--fs-small);
       line-height: 1.75;
