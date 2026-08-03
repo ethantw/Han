@@ -202,14 +202,30 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   const shown = page.locator('#station-craft .SelRing > li[data-current]')
   await expect(shown).toHaveCount(1)
 
-  // …and BOTH printed triples travel with the pair.
-  const framework = page.locator('#station-craft [data-spec-out]').first()
-  const yours = page.locator('#station-craft [data-mine-out]').first()
-  await expect(framework).toHaveText('(0,2,2)')
-  await expect(yours).toHaveText('(0,1,1)')
-  await next.click()
-  await expect(framework).toHaveText('(0,0,2)')
-  await expect(yours).toHaveText('(0,0,2)')
+  // …and BOTH printed triples travel with the pair, for EVERY item — the
+  // equation on the left is a caption for the rules on the right, so a stale
+  // triple there is the plate quietly lying about the pane beside it.
+  // The phantom that does the column alignment is checked too: it mirrors the
+  // framework weight, and if it ever stopped tracking, the two lines would
+  // drift apart in width without any figure looking wrong.
+  for (let i = 0; i < 5; i++) {
+    const state = await page.evaluate(() => {
+      const li = document.querySelector('#station-craft li[data-current]')!
+      const t = (s: string, root: ParentNode = document) =>
+        root.querySelector(s)?.textContent?.trim()
+      return {
+        panelLib: li.querySelector<HTMLElement>('[data-role="framework"] code[data-spec]')!.dataset.spec,
+        panelMine: li.querySelector<HTMLElement>('[data-role="mine"] code[data-mine-spec]')!.dataset.mineSpec,
+        eqLib: t('#station-craft .Eq-lib [data-spec-out]'),
+        eqMine: t('#station-craft .Eq-mine [data-mine-out]'),
+        phantom: t('#station-craft .Eq-mine mphantom [data-spec-out]'),
+      }
+    })
+    expect(state.eqLib, `item ${i + 1}: framework weight`).toBe(state.panelLib)
+    expect(state.eqMine, `item ${i + 1}: your weight`).toBe(state.panelMine)
+    expect(state.phantom, `item ${i + 1}: the alignment phantom`).toBe(state.panelLib)
+    await next.click()
+  }
 })
 
 test('station 伍・工法: the font ledger is a second, separate set of books', async ({ page }) => {

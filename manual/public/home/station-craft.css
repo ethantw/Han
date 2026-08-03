@@ -262,7 +262,7 @@
 
     @media (min-width: 60rem) {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1fr 1fr;
       /* Two equation rows, each level with the rule it describes. The pane
          hands its own two panel heights up through `grid-template-rows:
          subgrid` (Baseline 2023), so rows 1 and 2 of THIS grid are exactly

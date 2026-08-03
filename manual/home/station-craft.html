@@ -27,7 +27,7 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，每一條規則，都可以為後來的樣式輕鬆覆蓋，如UA樣式（式5.1）。',
+    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，每一條規則，都可以為後來的樣式輕鬆覆蓋（式5.1）。',
     hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重，每一条规则，都可以为后来的样式轻松覆盖，如UA样式（式5.1）。',
     en: 'Wrapped in <code>:where()</code>, han.css gives up the specificity of every style it ships: each of its rules can be overridden by whatever comes after, the way a UA stylesheet can (5.1).',
     ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す。どの規則も、UA様式と同じように、後から来た様式に難なく上書きされる（式5.1）。',
@@ -48,11 +48,11 @@
     ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
   },
   arRoleMine: {
-    hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet',
+    hant: '開發者的樣式', hans: '你的样式表', en: 'your stylesheet',
     ja: 'あなたのスタイルシート', ko: '당신의 스타일시트',
   },
   arEgNote: {
-    hant: '上行是框架選擇器本來的權重，進了<code>:where()</code>就歸零；下行是開發者的，不歸零——所以無論原本多重，後者永遠蓋得過。',
+    hant: '漢.css樣式表中的選擇器權重全數經<code>:where()</code>函數歸零，任何權重大於<code>(0,0,0)</code>的選擇器都能隨意覆蓋，一如UA樣式。',
     hans: '上行是框架选择器本来的权重，进了<code>:where()</code>就归零；下行是开发者的，不归零——所以无论原本多重，后者永远盖得过。',
     en: 'Above, what the framework’s selector would weigh — zeroed the moment it enters <code>:where()</code>. Below, yours, which is not zeroed. However heavy the first one started out, the second one wins.',
     ja: '上の行はフレームワークのセレクタが本来もつ詳細度で、<code>:where()</code>に入った時点で零になる。下の行は開発者のもので、零にならない——もとがどれだけ重くとも、勝つのは下である。',
@@ -90,7 +90,7 @@
     hant: '容器變數', hans: '容器变量', en: 'container variable', ja: 'コンテナ変数', ko: '컨테이너 變數',
   },
   arSumHead: {
-    hant: '加起來多少',
+    hant: '文件也輕如鴻毛',
     hans: '加起来多少',
     en: 'What it adds up to',
     ja: '合計でいくら',
@@ -173,7 +173,7 @@
     ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
   },
   arSsrNote: {
-    hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，在後端就把JS原本要加上的那層包裹寫進HTML——樣式表認得它，客戶端便不必再載JS，也少一次請求。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
+    hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，在伺服端預先將HTML轉換為<code>*.with-js.css</code>可以直接套用樣式的格式，減少請求數及JS執行時差。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
     hans: '虽然汉.css的JS档案可按需加载且体积甚小，但在客户端安装JS增强必然有swap现象。最佳做法是透过SSR或CLI工具，在后端就把JS原本要加上的那层包裹写进HTML——样式表认得它，客户端便不必再载JS，也少一次请求。惟React、Vue等需要重渲染的前端框架，仍需在mount后执行JS方能正确显示。',
     en: 'The script loads on demand and is small, but installing it in the browser means one re-layout after it lands. Better to let SSR — or a build-time CLI — write the wrappers the script would have added straight into the HTML: the stylesheet already knows them, so the client needs neither the script nor the request. React, Vue and anything else that re-renders still has to run it after mount.',
     ja: '漢.cssのJSは必要な分だけ読み込め、しかも小さいが、ブラウザで導入する以上、一度は組み直しが起きる。最善はSSR、あるいはビルド時のCLIで、JSが付けるはずの包みをあらかじめHTMLに書いておくこと——様式表はそれを知っているので、クライアントはJSも要求も要らなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
