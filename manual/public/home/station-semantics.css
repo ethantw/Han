@@ -185,14 +185,27 @@
    區）——翻旗前規則不存在，翻旗那一刻才開始匹配起跑；元素不碰 font-style，
    off 態的瀏覽器斜體要原樣活著。
    inline-block 是 transform 生效的條件，原子盒的兩個顧慮都查過了：
-     · 擠壓——實測八行的行長改前改後一致（原子盒斷的是**成對**擠壓，
-       而這裡的邊界是漢字對單顆標點，trim-start 對單顆標點不需相鄰）；
+     · 擠壓——**這一條當初查漏了**，見乙式那條 text-spacing-trim 的修補註：
+       原子盒的**起邊被當成行首**，`trim-start` 會把 `::before` 的《削成
+       半形（實測該行 168→156px）。斷的不只是成對擠壓，單顆開括號也中。
+       其餘七行無 pseudo 開括號，行長確實不變；
      · 裝飾——**自己身上**的 text-decoration／text-emphasis 照畫（元素自己
        就是 decorating box），失效的只有從祖先傳下來的那種。甲式的波浪線、
        著重號、專名號因此都能留在原位。 */
 @keyframes semantics-slant-settle {
   from { transform: skewY(-12deg); }
   to { transform: skewY(0deg); }
+}
+
+/* `<i>`／`<var>` 的換體，入場版。三拍：斜 → 歸正 → 換楷體，而不是
+   「翻旗即楷體、同時歸正」。font-family 是離散屬性，不能插值——與其讓
+   它在歸正的半途無聲跳掉，不如給它自己的一拍：歸正走前 60%（312ms），
+   這支 `step-end` 撐住內文字體到 520ms，落在全站共用的那個著地瞬間。
+   `inherit` 就是原生態：翻旗前瀏覽器畫的正是內文字體＋合成斜體，所以
+   接棒處沒有跳變。倒帶版見 semantics-i-face-replay。 */
+@keyframes semantics-i-face-settle {
+  from { font-family: inherit; }
+  to { font-family: var(--han-font-accent); }
 }
 
 /* 甲式波浪線淡入。線是翻旗才存在的（core 的 text-decoration-line 在
@@ -255,9 +268,16 @@
      · dfn  除了斜體，字重也要退回 normal（han.css 給的是 bolder）
      · i    除了斜體，字體要退回 inherit（han.css 換成楷體；瀏覽器原生
             是內文字體加合成斜體，留著楷體等於偷偷把一半的修正藏著）
-   兩者的順序都是**先換字體／字重，再動斜度**：font-family 是離散屬性、
-   不能插值，讓它在斜度靜止時翻，眼睛才分得清「換了字體」與「扶正了」
-   是兩件事；同時變就只剩一團模糊。 */
+   離散屬性（font-family）不能插值，所以它一定要自己占一拍，讓眼睛分得清
+   「換了字體」與「扶正了」是兩件事；同時變就只剩一團模糊。i／var 的兩拍
+   **不對稱**，因為兩個方向要說的話不同：
+     · 退（→ 瀏覽器的手）先翻字體、再斜下去；
+     · 修（→ han.css）先扶正、最後才換上楷體。
+   換句話說：楷體永遠在**直立**的姿勢下換手，而斜度永遠對著**內文字體**
+   演；「歸正」與「換體」因此是兩件先後發生、各自看得清楚的事。入場同序
+   （見 semantics-i-face-settle）。
+   dfn 的字重不在此列：font-weight 可插值，與斜度同步漸變本身就讀得出來，
+   不必拆拍。 */
 @keyframes semantics-line-split-replay {
   0% { margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback, .125em); }
   10%, 50% { margin-inline-end: 0; }
@@ -270,20 +290,31 @@
   76% { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
 }
 
-/* 斜度的來回。字體的翻面在 semantics-i-face-replay（掛在 <i> 上），
-   刻意錯開——4% 翻字體、10% 才斜完；回程 54% 翻回字體、之後才扶正。
-   幾何同入場那支（見 semantics-slant-settle 的註）：整段一個 skewY，
-   不逐字。 */
+/* 斜度的來回（em／cite 用）。幾何同入場那支（見 semantics-slant-settle
+   的註）：整段一個 skewY，不逐字。 */
 @keyframes semantics-slant-replay {
   0%, 4% { transform: skewY(0deg); }
   10%, 54% { transform: skewY(-12deg); }
   100% { transform: skewY(0deg); }
 }
 
+/* i／var 專用的斜度來回：與上一支只差回程——扶正提早在 80% 落地，把最後
+   那 500ms 空出來給換體（見檔頭的不對稱兩拍）。退場那半段照舊，4% 起斜、
+   10% 斜滿，字體早在 4% 之前就翻完了。 */
+@keyframes semantics-i-slant-replay {
+  0%, 4% { transform: skewY(0deg); }
+  10%, 50% { transform: skewY(-12deg); }
+  80%, 100% { transform: skewY(0deg); }
+}
+
+/* 換體的來回。兩處 `step-end` 是重點：font-family 離散，預設會在區間**中
+   點**無聲跳掉——那正好落在斜度動得最兇的時候。釘死之後，退場是「4% 整
+   翻成內文字體，接著才開始斜」，回程是「80% 扶正落地，2500ms 整換上楷
+   體」，兩個方向都看得見先後。 */
 @keyframes semantics-i-face-replay {
-  0% { font-family: var(--han-font-accent); }
-  4%, 50% { font-family: inherit; }
-  54%, 100% { font-family: var(--han-font-accent); }
+  0% { font-family: var(--han-font-accent); animation-timing-function: step-end; }
+  4% { font-family: inherit; animation-timing-function: step-end; }
+  100% { font-family: var(--han-font-accent); }
 }
 
 /* <dfn> 的字重：han.css 的 bolder ⇄ 原生 normal，與字體同理先於斜度。 */
@@ -557,7 +588,7 @@
       [data-glyph] {
         fill: none;
         /* DASHED, because that is how the characters themselves are drawn.
-           Rendered ⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻ in Shanggu Serif Yue / Shanggu Sans Dan /
+           Rendered ⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻ in Shanggu Serif Yue / Shanggu Sans /
            Songti TC / PingFang TC / Hiragino Sans — every one of the five
            dashes them. Solid was the deviation. It also earns its keep
            twice: a dashed contour reads as «placeholder», which is exactly
@@ -631,13 +662,31 @@
 
       /* `<i>` changes HANDS: the same IDC construction in a hand-drawn
          cut crossfades over the print one — 楷體 is a different face, not
-         a lighter weight, and now the diagram says so. */
-      [data-glyph][data-print] { opacity: calc(1 - var(--settle)); }
-      [data-glyph][data-hand] {
-        opacity: var(--settle);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 1px;
+         a lighter weight, and now the diagram says so.
+
+         兩拍，不是一拍：**先歸正，再換手**——與詩行的 <i>／<var> 同序
+         （見 @keyframes semantics-i-face-settle 的註）。兩拍都從同一個
+         --settle 重映出來，所以倒帶（mark-roundtrip／mark-unsettle）自動
+         反序：先換回印刷體，再斜下去，正是詩行退場那半段在做的事。
+         切點 0.6 也與詩行對齊（312ms／520ms）。 */
+      /* 印刷／手寫兩層本來就只有這一列有，一併收進這個祖先——未定義的
+         var() 會毒化整個 calc()，把 --_face 的作用域寫窄比留 fallback
+         誠實。這一列的字符也因此改讀 --_upright（前 60% 歸正），其餘各列
+         照通則吃滿 --settle。 */
+      [data-mark="plain"] {
+        --_upright: clamp(0, calc(var(--settle) / 0.6), 1);
+        --_face: clamp(0, calc((var(--settle) - 0.6) / 0.4), 1);
+
+        [data-glyph] {
+          transform: skewX(calc((1 - var(--_upright)) * var(--_slant, -14deg)));
+        }
+        [data-glyph][data-print] { opacity: calc(1 - var(--_face)); }
+        [data-glyph][data-hand] {
+          opacity: var(--_face);
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 1px;
+        }
       }
 
       /* ── the marks ──────────────────────────────────────────────────
@@ -1015,6 +1064,20 @@
               semantics-slant-settle 520ms ease-out both
             ;
           }
+          /* i／var 多一拍：換體。歸正因此縮到 312ms（該窗的前 60%），
+             `step-end` 的換體撐滿 520ms——**先扶正、再換上楷體**，兩件事
+             不重疊，而落地仍在全站共用的那個 520ms 瞬間（見檔頭「一個
+             instant」的編排註）。圖解 plain 那列同一副拍點，用 --settle
+             重映（見 [data-mark="plain"] 的兩拍註），兩邊同相。
+             位置 1、2 與上一條同名同序，動畫續跑不重啟；第 3 支是新的，
+             翻旗那一刻才起跑。 */
+          .poem-like :is(i, var) {
+            animation:
+              semantics-mark-cue 1000ms ease-in-out var(--row-cue),
+              semantics-slant-settle 312ms ease-out both,
+              semantics-i-face-settle 520ms step-end both
+            ;
+          }
           .poem-like dfn {
             animation: semantics-slant-settle 520ms ease-out both;
           }
@@ -1057,6 +1120,16 @@
              收回 0 的過程就是「長出來、把行文推開」。 */
           .poem-like cite::before {
             animation: semantics-bracket-in-before 520ms ease-out both;
+            /* 開始書名號要**全寬**，這一行是在補 inline-block 的帳。
+               翻旗後 <cite> 是原子行內盒，而 Chrome 把原子盒的**起邊當成
+               行首**：核心 :root 的 `text-spacing-trim: trim-start` 於是
+               把《的前半削掉，一顆全寬的開括號變成半寬（實測第 7 行
+               168→156px，第一個字的位移 24→12px；改回 display: inline
+               即復原，兩者同值）。但這裡不是行首——「另見」就在《前面，
+               普通行內時 Chrome 也的確不削。`space-first` 說的正是這件
+               事：句首那顆開括號留住它的空。
+               只影響《這一顆盒；行內其餘的擠壓（含核心 trim-start）照舊。 */
+            text-spacing-trim: space-first;
           }
           .poem-like cite::after {
             animation: semantics-bracket-in-after 520ms ease-out both;
@@ -1209,15 +1282,18 @@
           animation: mark-roundtrip 2500ms ease-in-out both;
         }
         /* i 的原生態是**內文字體**加合成斜體——han.css 換上的楷體要一起
-           退掉，否則等於把一半的修正藏著；字體先翻、斜度後動（見 replay
-           雙胞胎的檔頭註）。 */
+           退掉，否則等於把一半的修正藏著。兩拍不對稱：退場字體先翻、斜度
+           後動；回程扶正先落地、楷體最後才上（見 replay 雙胞胎的檔頭註），
+           所以斜度走 i 專用的那支 semantics-i-slant-replay。
+           入場三支原序重列在前（含縮短的 312ms 歸正與 step-end 換體）。 */
         :root:not([data-han-module-semantics='off']) & .poem-like :is(i, var) {
           animation:
             semantics-mark-cue 1000ms ease-in-out var(--row-cue),
-            semantics-slant-settle 520ms ease-out both,
+            semantics-slant-settle 312ms ease-out both,
+            semantics-i-face-settle 520ms step-end both,
             semantics-mark-cue-replay 2500ms ease-in-out both,
             semantics-i-face-replay 2500ms ease-in-out both,
-            semantics-slant-replay 2500ms ease-in-out both
+            semantics-i-slant-replay 2500ms ease-in-out both
           ;
         }
       }
