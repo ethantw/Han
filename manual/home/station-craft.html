@@ -27,14 +27,14 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重——框架的每一條規則，都與你裸寫的選擇器同權（式5.1）：',
+    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，每一條規則，都可以為後來的樣式輕鬆覆蓋，如UA樣式（式5.1）。',
     hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重——框架的每一条规则，都与你裸写的选择器同权（式5.1）：',
     en: 'Every selector in the library is wrapped in <code>:where()</code>, so han.css gives up the specificity of its styles entirely — each of its rules weighs exactly what your own bare selector weighs (5.1):',
     ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す——フレームワークのどの規則も、あなたが裸で書いたセレクタと同じ重さである（式5.1）。',
     ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 <ruby>優先順位<rt>우선순위</rt></ruby>를 버린다——프레임워크의 어떤 規則도 당신이 그냥 쓴 셀렉터와 같은 무게다（式5.1）:',
   },
   arAxTail: {
-    hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層的你天生站上風（式5.2）；透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）——原生CSS給作者最大的自訂彈性。',
+    hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
     hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层的你天生站上风（式5.2）；透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）——原生CSS给作者最大的自定义弹性。',
     en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — your CSS — starts out ahead (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3). Native CSS, giving the author the widest customisation there is.',
     ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないあなたが初めから優位に立つ（式5.2）。CSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）——ネイティブCSSが作者に最大のカスタマイズ自由度を与える。',
@@ -48,17 +48,19 @@
     ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
   },
   arEgBrace: {
-    hant: '括號內任你寫多深，自身權重', hans: '括号内任你写多深，自身权重',
+    hant: '<code>:where()</code>函數內的權重為：',
+    hans: '括号内任你写多深，自身权重',
     en: 'nest it as deep as you like — on its own it weighs', ja: '括弧の中はいくら深くてもよい。それ自身の詳細度は',
     ko: '괄호 안은 얼마든지 깊어도 된다——그 <ruby>自體<rt>자체</rt></ruby>의 優先順位는',
   },
   arEgBeaten: {
-    hant: '；歸零之後，你的', hans: '；归零之后，你的',
+    hant: '；無論多少，歸零後，開發者的',
+    hans: '；归零之后，你的',
     en: '; zeroed, your own', ja: '。零になったあと、あなたの',
     ko: '. 零이 된 뒤, 당신의',
   },
   arEgBeatenTail: {
-    hant: '就贏了。', hans: '就赢了。',
+    hant: '永遠更大。', hans: '就赢了。',
     en: ' takes it.', ja: 'が勝つ。',
     ko: '이 이긴다.',
   },
@@ -67,7 +69,7 @@
     ja: 'あなたのスタイルシート', ko: '당신의 스타일시트',
   },
   arEgEquiv: {
-    hant: '同一批元素，權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
+    hant: '權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
     ja: '同じ要素、詳細度', ko: '같은 要素, 優先順位',
   },
   arSelPrev: {
@@ -167,25 +169,18 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: '三欄是同一份minified檔案的三種傳輸編碼，不是三份檔案。brotli是現代CDN實際送的那一份，故列在末欄；三欄都隨左欄的勾選重算。',
+    hant: 'brotli是當前最先進的壓縮編碼，列於末欄，部分服務商目前僅支援gzip壓縮，二者差距不大，在此列出供開發者參考。',
     hans: '三栏是同一份minified档案的三种传输编码，不是三份档案。brotli是现代CDN实际送的那一份，故列在末栏；三栏都随左栏的勾选重算。',
     en: 'Three transfer encodings of the same minified file, not three files. brotli is what a modern CDN actually serves, so it takes the last column; all three re-add themselves as you pick in the left column.',
     ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは現代のCDNが実際に送るものなので最終列に置いた。三列とも左欄の選択に応じて計算し直される。',
     ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 現代 CDN이 實際로 보내는 것이라 마지막 열에 두었다. 세 열 모두 왼쪽 칸의 選擇에 따라 다시 더해진다.',
   },
   arSumNote: {
-    hant: '四個樣式模組，正是左欄的四顆開關；腳本是選配——純CSS的漢.css自己就成立。這一欄隨你的勾選重算，數字全是實打包量到的。',
+    hant: '四個樣式模組與其對應的JS增強皆可按需選配，下方為您實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。',
     hans: '四个样式模块，正是左栏的四颗开关；脚本是选配——纯CSS的汉.css自己就成立。这一栏随你的勾选重算，数字全是实打包量到的。',
     en: 'The four style modules are the four switches in the left column; the script is optional — han.css stands up as pure CSS. The column re-adds itself as you pick, and every figure was bundled and weighed, not modelled.',
     ja: '四つの様式モジュールは左欄の四つのスイッチそのもの。スクリプトは任意で、純粋なCSSだけで漢.cssは成立する。この欄は選択に応じて計算し直され、数字はすべて実際に束ねて量ったものである。',
     ko: '네 樣式 모듈은 바로 왼쪽 칸의 네 스위치다. 스크립트는 <ruby>選擇<rt>선택</rt></ruby> 事項——純粹 CSS만으로 漢.css는 成立한다. 이 欄은 고를 때마다 다시 더해지며, 數字는 모두 實際로 번들해 잰 값이다.',
-  },
-  arLedgerDeps: {
-    hant: 'JS運行時依賴',
-    hans: 'JS运行时依赖',
-    en: 'JS runtime dependency',
-    ja: 'JSランタイム依存',
-    ko: 'JS <ruby>實行<rt>실행</rt></ruby>時 <ruby>依存<rt>의존</rt></ruby>',
   },
   /* The identity-encoded column. Named for the MINIFICATION, not for the
      absence of compression: 「未壓」 alone reads as「the un-minified source」,
@@ -200,7 +195,7 @@
     ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
   },
   arSsrNote: {
-    hant: '雖然JS體積小，但在客戶端渲染必然有swap的現象。最佳做法是靠SSR讓文字在後端就變成漢.css可用的格式，如此還能省下客戶端的JS體積與請求數。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS。',
+    hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，提前將HTML編譯成可為漢.with-js.css使用的格式。如此亦可節省客戶端的JS文件體積與請求數。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
     hans: '虽然JS体积小，但在客户端渲染必然有swap的现象。最佳做法是靠SSR让文字在后端就变成汉.css可用的格式，如此还能省下客户端的JS体积与请求数。惟React、Vue等需要重渲染的前端框架，仍需在mount后执行JS。',
     en: 'The script is small, but running it in the browser means the text is re-laid-out once it lands. Better to let SSR hand the client text han.css can already use — that spares the bundle and the request too. React, Vue and anything else that re-renders still has to run it after mount.',
     ja: 'JSは小さいとはいえ、クライアントで走らせれば一度は組み直しが起きる。最善はSSRで、漢.cssがそのまま使える形の文字列をサーバ側で作ってしまうこと——クライアントのJSも要求も要らなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
@@ -213,8 +208,30 @@
     ja: '字体は別勘定',
     ko: '字體는 <ruby>別途<rt>별도</rt></ruby>',
   },
+  /**
+   * ⚠ 切片命中數是**量出來的**，不是估的。語料：taisol 的 23 篇繁中報導
+   * （單篇 596–4,587 字，taisol/zh/*.md）；對象：尚古黑體的 109 個
+   * `unicode-range` 切片（ziano/dist/shanggu-sans-yue/swap.css）。
+   *
+   *   單篇命中 16–31 片，中位 24 片、約 1.6MB；
+   *   續讀下一篇的**新增**中位 1 片、43KB；
+   *   23 篇整站讀完累計 67 片 / 3.36MB（全家 4.68MB）。
+   *
+   * 重跑（在 hanzi.pro 工作區根目錄）：把 swap.css 的 @font-face 逐條解析成
+   * (unicode-range, 檔案大小)，同一 range 只取一份——靜態字重是同一批切片的
+   * 複本，不去重會把片數乘上字重數——再對每篇文章的字符集合求交集。四個 CJK
+   * 家族（尚古／源起／霞鶩／芫荽）的切片邊界一致，命中數相同；Klee One 切法
+   * 不同（120 片、命中 71–103），另計。
+   */
   arFlNote: {
-    hant: '字體按需切片——全家體積是庫存，不是運費。',
+    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），續讀下一篇通常只再多1片、約43KB，罕用字只在命中時才會下載，提升頁面加載時間。',
+    hans: '字体按需切片——全家体积是库存，不是运费。',
+    en: 'Sliced on demand — the family total is inventory, not postage.',
+    ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
+    ko: '必要한 切片만——家族 全體의 容量은 <ruby>在庫<rt>재고</rt></ruby>이지 <ruby>運賃<rt>운임</rt></ruby>이 아니다.',
+  },
+  arFlNote2: {
+    hant: '尚古系列字體及標點字體Diantenjeom採用Variable Font可變字體技術，一個字僅需下載一個切片即可使用100-900的任意字重。係漢.css首選推薦。',
     hans: '字体按需切片——全家体积是库存，不是运费。',
     en: 'Sliced on demand — the family total is inventory, not postage.',
     ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
@@ -586,6 +603,7 @@
     </div>
 
     <figcaption>
+      <p class="SumProse">{{ arSumNote }}</p>
       <!-- The footing again, as the three lines a reader would say out loud —
            an ALIGNED EQUATION ARRAY, which is the one thing `<mtable>` is
            for: `+` and `=` stack into columns, so the three compressions can
@@ -638,8 +656,6 @@
         </mtable>
       </math>
       <p class="SumEqNote">{{ arSumEqNote }}</p>
-      <p class="SumProse">{{ arSumNote }}</p>
-      <small>{{ arLedgerDeps }}{{ depsCount }}（{{ depsNames }}）</small>
       <p class="SsrNote">{{ arSsrNote }}</p>
     </figcaption>
   </figure>
@@ -697,7 +713,7 @@
           <tr><th scope="row">{{ arFlGenkiMin }}</th>     <td>32.5KB</td><td>108×7</td><td>24.0MB</td></tr>
           <tr><th scope="row">{{ arFlLxgwTc }}</th>       <td>44.5KB</td><td>103×3</td><td>13.4MB</td></tr>
           <tr><th scope="row">{{ arFlLxgw }}</th>         <td>38.9KB</td><td>107×3</td><td>12.2MB</td></tr>
-          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101</td>   <td>3.67MB</td></tr>
+          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101×1</td>   <td>3.67MB</td></tr>
           <tr><th scope="row">{{ arFlKlee }}</th>         <td>32.8KB</td><td>120×2</td><td>7.69MB</td></tr>
         </tbody>
       </table>
@@ -743,7 +759,8 @@
     </div>
 
     <figcaption>
-      {{ arFlNote }}
+      <p>{{ arFlNote }}
+      <p>{{ arFlNote2 }}
     </figcaption>
   </figure>
 

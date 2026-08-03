@@ -220,7 +220,11 @@
     font-size: 0.75em;
   }
 
-  /* the equation number rides the end of the first line, quiet */
+  /* The equation number rides the end of the line, quiet — print style.
+     Absolute at the axioms' width, where the plate is centred and there is
+     margin to ride in; but INLINE inside 例5.1's left column, where ranging
+     the equation left leaves the number stranded half a column away from
+     what it numbers. */
   .EqNo {
     & {
       display: block;
@@ -237,6 +241,8 @@
       margin-block-start: 0;
     }
   }
+
+
 }
 
 /* 例 5.1 — the real selector fed through the theorem, laid out the way a
@@ -260,12 +266,16 @@
       grid-template-areas:
         "note  rules"
         "eq    rules"
-        "nav   rules";
-      /* The pane spans all three rows and is the taller of the two columns,
-         so without this the slack is shared out BETWEEN the left column's
-         blocks and they drift apart. Parked in the last row instead, the
-         three read as one group with the pane beside them. */
-      grid-template-rows: auto auto 1fr;
+        ".     nav";
+      /* The nav belongs UNDER THE PANE, not under the prose: it pages the
+         pane, and a control sitting under the thing it does not control is
+         the kind of small wrongness a reader feels without being able to name.
+         So the pane spans the first two rows and the nav takes the third,
+         still in the pane's column.
+         `1fr` on the middle row (with `align-items: start`) parks the slack
+         BELOW the equation instead of sharing it out between the two blocks,
+         which is what pulled them apart. */
+      grid-template-rows: auto 1fr auto;
       align-items: start;
       column-gap: 2.5rem;
     }
@@ -277,13 +287,38 @@
   .SelNav  { grid-area: nav; }
 
   .Applied {
-    font-size: var(--fs-lede);
+    & {
+      font-size: var(--fs-lede);
+    }
+
+    /* Ranged left with the annotation above it — see .Brace. `text-align`
+       alone does NOT do it: `<math display="block">` is centred by the UA
+       with auto inline margins, and a block box with auto margins ignores its
+       parent's text-align. The margin is what has to go. */
+    @media (min-width: 60rem) {
+      margin-block-start: 1rem;
+      text-align: start;
+
+      /* `display: block math` CENTRES ITS OWN CONTENT (measured: the math
+         box sits at the parent's start edge with zero margins, and the <mrow>
+         inside it is centred). So neither `text-align` nor the margin ranges
+         it left — the box has to stop being a block. `inline math` shrinks it
+         to its content, and the paragraph's own `text-align: start` then puts
+         it where the annotation above it starts. */
+      math {
+        display: inline math;
+        margin-inline: 0;
+      }
+    }
   }
 
   /* The annotation. In one column it is an UNDERBRACE — a border, not a
      glyph, so it stretches to whatever the argument above it measures. Once
      the rules move to their own pane there is nothing above it to brace, so
-     the border goes; keeping it would draw a bracket under nothing. */
+     the border goes; keeping it would draw a bracket under nothing.
+     It also RANGES LEFT there, and so does the equation below it: two centred
+     blocks of different widths share no edge, and the column read as two
+     things thrown in rather than one argument. */
   .Brace {
     & {
       margin: 0.25rem auto 0.75rem;
@@ -291,14 +326,27 @@
       padding-block-start: 0.375rem;
       border-block-start: 1px solid var(--palette-rule);
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
+      font-size: var(--fs-small);
+      line-height: 1.9;
+      color: var(--palette-supplement-text);
       text-align: center;
     }
 
+    /* no chip inside a running line — the page's inline-code ground turns
+       `:where()` into a button at the head of the sentence */
+    code {
+      padding: 0;
+      background: none;
+      border: 0;
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+    }
+
     @media (min-width: 60rem) {
+      margin-inline: 0;
       padding-block-start: 0;
       border-block-start: 0;
+      text-align: start;
     }
   }
 
@@ -451,7 +499,7 @@
   }
 
   /* Reader-driven, so the controls have to be visible controls — not a hint
-     that something is animating. Quiet chrome, centred under the brace. */
+     that something is animating. Quiet chrome, under the pane it pages. */
   .SelNav {
     & {
       display: flex;
