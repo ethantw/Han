@@ -577,17 +577,27 @@
       margin-block-start: 1rem;
     }
 
+    /* `grid` + `place-items` rather than a line-height guess: the button
+       holds a 1em mask box, and centring a box is what grid does exactly. */
     button {
+      display: grid;
+      place-items: center;
       inline-size: 2rem;
       block-size: 2rem;
       padding: 0;
-      font-size: var(--fs-body);
-      line-height: 1;
+      font-size: var(--fs-small);
       color: var(--palette-supplement-text);
       background: transparent;
       border: 1px solid var(--palette-rule);
       border-radius: 50%;
       cursor: pointer;
+    }
+
+    /* the icon primitive nudges itself down .09em to sit on a CJK optical
+       centre; inside a round button there is no baseline to sit on, so that
+       correction is exactly what would knock it off-centre */
+    [data-icon] {
+      vertical-align: initial;
     }
 
     button:hover {

@@ -591,9 +591,13 @@
       </p>
       <p class="EgNote">{{ arEgNote }}</p>
       <nav class="SelNav" hidden>
-        <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}">‹</button>
+        <!-- The shared icon primitive (common/icons.css), not a 「‹」 glyph:
+             one chevron drawing, one stroke weight, and the same optical
+             centring every other button on the page gets. `data-dir="right"`
+             is the mirrored twin — the primitive already carries it. -->
+        <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}"><span data-icon="chevron" aria-hidden="true"></span></button>
         <output data-sel-count aria-live="polite"></output>
-        <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}">›</button>
+        <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
       </nav>
     </div>
   </div>
