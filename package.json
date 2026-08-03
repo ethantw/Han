@@ -19,10 +19,6 @@
       "import": "./dist/han.auto.js",
       "default": "./dist/han.auto.js"
     },
-    "./install": {
-      "browser": "./dist/han.install.js",
-      "default": "./dist/han.install.js"
-    },
     "./styles": "./dist/han.css",
     "./styles/semantics": "./dist/han.semantics.css",
     "./styles/lines": "./dist/han.lines.css",
@@ -34,6 +30,7 @@
   "files": [
     "dist",
     "!dist/**/*.map",
+    "!dist/pass-sizes.json",
     "README.md",
     "README.zh-Hant.md",
     "README.ja.md",
@@ -43,8 +40,7 @@
   ],
   "sideEffects": [
     "*.css",
-    "**/han.auto.*",
-    "**/han.install.*"
+    "**/han.auto.*"
   ],
 
   "scripts": {

@@ -66,68 +66,71 @@ test('reduced-motion: every station is revealed immediately (settled, not animat
   await expect(page.locator('#station-snippet')).toBeVisible()
 })
 
-test('station 伍・工法: the four layer chips carry build-computed brotli sizes', async ({ page }) => {
+test('station 伍・工法: the addition prices every part, measured', async ({ page }) => {
   await page.goto('/')
 
-  // Each of the four cascade-layer cards (han-semantics/-lines/-prose/-fonts)
-  // carries a <b> with its brotli weight, baked by vite's
-  // computeModuleLedger — proving the per-module dist files were found and
-  // measured (a missing file would render '—', not a 'N.Nk' figure).
-  const sizes = page.locator('#station-craft .LayerMap li b')
-  await expect(sizes).toHaveCount(4)
+  // Four style rows ＋ the delivery-mode script rows, all figures baked by
+  // vite (computeModuleLedger for the CSS, dist/pass-sizes.json for the
+  // floor) — a missing dist file would render '—', not a 'N.NKB' figure.
+  const table = page.locator('#station-craft .Sum table')
+  await expect(table).toHaveCount(1)
 
-  const texts = await sizes.allInnerTexts()
-  for (const text of texts) {
-    const t = text.trim()
-    expect(t).not.toBe('—')
-    expect(t).toMatch(/^\d+(\.\d+)?KB$/)
+  const styleRows = table.locator('tbody:first-of-type tr')
+  await expect(styleRows).toHaveCount(4)
+  expect(await styleRows.locator('th').allInnerTexts())
+    .toEqual(['han-semantics', 'han-lines', 'han-prose', 'han-fonts'])
+
+  // Three columns a row — raw, brotli, gzip — and compression has to make
+  // the file smaller, or the columns were measured against different files.
+  for (const row of await styleRows.all()) {
+    const [raw, br, gz] = (await row.locator('td').allInnerTexts())
+      .map((t) => Number(t.trim().match(/^(\d+(?:\.\d+)?)KB$/)?.[1]))
+    expect(raw).toBeGreaterThan(br)
+    expect(gz).toBeGreaterThanOrEqual(br)
   }
 
-  // …and each card also prints the module BEFORE brotli, which must be the
-  // larger of the two — a raw figure smaller than its compressed twin would
-  // mean the two columns were measured against different files.
-  const raws = page.locator('#station-craft .LayerMap li small')
-  await expect(raws).toHaveCount(4)
+  // The console's default is `auto`, so the auto row is the visible script
+  // line and the manual-mode rows are not part of this build at all.
+  await expect(table.locator('tr[data-js-row="auto"]')).toBeVisible()
+  await expect(table.locator('tr[data-js-row="floor"]')).toBeHidden()
+  await expect(table.locator('tr[data-js-row="pass"]')).toHaveCount(5)
 
-  const rawTexts = await raws.allInnerTexts()
-  for (const [i, text] of rawTexts.entries()) {
-    const kb = Number(text.trim().match(/(\d+(?:\.\d+)?)KB$/)?.[1])
-    expect(kb).toBeGreaterThan(Number(texts[i].trim().replace('KB', '')))
-  }
+  // The footing is the sum of the visible column, to the printed precision.
+  const kb = async (loc) =>
+    (await loc.allInnerTexts()).map((t) => Number(t.trim().replace('KB', '')))
+  const styles = await kb(styleRows.locator('td:nth-child(3)'))
+  const [autoBr] = await kb(table.locator('tr[data-js-row="auto"] td:nth-child(3)'))
+  const [total] = await kb(table.locator('tfoot [data-total="brotli"]'))
+  expect(total).toBeCloseTo(styles.reduce((a, b) => a + b, 0) + autoBr, 5)
 })
 
-test('station 伍・工法: the script ledger prices all four JS bundles', async ({ page }) => {
+test('station 伍・工法: 例5.1 cycles real library selectors, weights computed', async ({ page }) => {
   await page.goto('/')
 
-  // build/library.js emits four bundles — two entry points (han / han.auto)
-  // × the two `exports` conditions — and the ledger prices every one of them
-  // in both compressions, build-computed like the layer map (a missing
-  // dist/*.min.js would render '—').
-  const ledger = page.locator('#station-craft .ScriptLedger')
-  await expect(ledger.locator('table')).toHaveCount(1)
+  const items = page.locator('#station-craft .SelRing code')
+  await expect(items).toHaveCount(5)
 
-  // Rows are SOURCE ENTRIES, so han.ts appears in both plates — there is no
-  // `src/han.browser.ts`; that file is han.ts compiled under the `browser`
-  // condition, and the row's gloss names the artifact each cell emits.
-  // Two entries, two artifacts. The browser-condition twins were cut from
-  // the table: same code, near-identical weight, and「browser 條件」meant
-  // nothing to a reader who has not read the exports map.
-  const names = await ledger.locator('tbody th').allInnerTexts()
-  expect(names.map((n) => n.split('\n')[0].trim())).toEqual(['han.ts', 'han.auto.ts'])
-  const emitted = await ledger.locator('tbody th small').allInnerTexts()
-  expect(emitted.map((t) => t.trim().split('・')[0])).toEqual(['→han.js', '→han.auto.js'])
+  // Every weight is build-computed from the selector text beside it
+  // (manual/_specificity.js) — never typed in, so it cannot drift.
+  const specs = await items.evaluateAll((els) =>
+    els.map((el) => (el as HTMLElement).dataset.spec),
+  )
+  expect(specs).toEqual(['(0,2,2)', '(0,0,2)', '(0,2,1)', '(0,1,2)', '(0,2,0)'])
 
-  // three figures a row — before brotli, brotli, gzip — and compression has
-  // to actually shrink things: raw > gzip > brotli, every row.
-  const rows = ledger.locator('tbody tr')
-  await expect(rows).toHaveCount(2)
-  for (const row of await rows.all()) {
-    const cells = await row.locator('td').allInnerTexts()
-    expect(cells).toHaveLength(3)
-    const [raw, brotli, gzip] = cells.map((c) => Number(c.trim().replace('KB', '')))
-    expect(raw).toBeGreaterThan(gzip)
-    expect(gzip).toBeGreaterThan(brotli)
-  }
+  // Reader-driven: the nav is hidden in the markup and only carousel.js
+  // unhides it, so a no-JS page never offers a button that does nothing.
+  const next = page.locator('#station-craft [data-sel-step="1"]')
+  await expect(next).toBeVisible()
+  const shown = page.locator('#station-craft .SelRing code[data-current]')
+  await expect(shown).toHaveCount(1)
+
+  // …and the printed triple travels WITH the selector — the whole point of
+  // the ring is that a heavier selector still comes out at zero.
+  const brace = page.locator('#station-craft [data-spec-out]').first()
+  await expect(brace).toHaveText('(0,2,2)')
+  await next.click()
+  await expect(shown).toHaveAttribute('data-spec', '(0,0,2)')
+  await expect(brace).toHaveText('(0,0,2)')
 })
 
 test('station 伍・工法: the font ledger is a second, separate set of books', async ({ page }) => {
@@ -146,96 +149,63 @@ test('station 伍・工法: the font ledger is a second, separate set of books',
   expect(figures.length).toBe(8 * 3 + 4 * 2 + 3)
   for (const text of figures) expect(text.trim()).toMatch(/^\d+(\.\d+)?(KB|MB)$|^\d+(×\d+)?$/)
 
-  // …and the framework's own cards never quote a font weight.
-  await expect(page.locator('#station-craft .LayerMap table')).toHaveCount(0)
+  // …and the framework's own addition never quotes a font weight — the two
+  // sets of books stay separate, which is the reason there are two.
+  const sumCells = await page.locator('#station-craft .Sum td').allInnerTexts()
+  expect(sumCells.some((t) => t.includes('MB'))).toBe(false)
 })
 
-test('station 伍・工法: both ledgers price whatever the console has checked', async ({ page }) => {
+test('station 伍・工法: the addition follows the console, auto ⇄ manual', async ({ page }) => {
   await page.goto('/')
   await page.waitForFunction(() => 'pgReady' in document.documentElement.dataset)
 
-  const totals = () =>
-    page.evaluate(() =>
-      Object.fromEntries(
-        [...document.querySelectorAll('#station-craft [data-total]')].map(($el) => [
-          ($el as HTMLElement).dataset.total,
-          $el.textContent?.trim(),
-        ]),
-      ),
-    )
+  const table = page.locator('#station-craft .Sum table')
+  const kb = async (loc) =>
+    (await loc.allInnerTexts()).map((t) => Number(t.trim().replace('KB', '')))
+  const total = async () => (await kb(table.locator('tfoot [data-total="brotli"]')))[0]
 
-  // Default console config: four modules on, `fallbacks` on (han.auto.js),
-  // `legacyRuby` off. The server-rendered figures already say so — the line
-  // is correct before this module has run a single sum.
-  const before = await totals()
-  expect(Number(before['all']!.replace('KB', ''))).toBeCloseTo(
-    Number(before['css']!.replace('KB', '')) + Number(before['js']!.replace('KB', '')),
-    5,
-  )
-  // `legacyRuby` is off by default, so its row starts greyed — and it is
-  // greyed in the SERVER-RENDERED markup too, so the ledger reads right
-  // before any script runs.
-  await expect(page.locator('#station-craft [data-off]')).toHaveCount(1)
-  await expect(page.locator('#station-craft .LayerMap [data-off]')).toHaveCount(0)
+  const before = await total()
 
-  // Drop two modules, add the other bundle, straight through the console's
-  // own controls — this station never writes config, it only reflects it.
-  await page.evaluate(() => {
-    const root = document.querySelector('han-console')!.shadowRoot!
-    for (const [key, on] of [['prose', false], ['fonts', false], ['legacyRuby', true]] as const) {
-      const $c = root.querySelector<HTMLInputElement>(`[data-cfg-key="${key}"]`)!
-      $c.checked = on
+  // Drop two style modules, straight through the console's own controls —
+  // this station never writes config, it only reflects it.
+  const set = (key: string, value: string | boolean) =>
+    page.evaluate(([k, v]) => {
+      const root = document.querySelector('han-console')!.shadowRoot!
+      const $c = root.querySelector<HTMLInputElement>(`[data-cfg-key="${k}"]`)!
+      if (typeof v === 'boolean') $c.checked = v
+      else $c.value = v as string
       $c.dispatchEvent(new Event('input', { bubbles: true }))
-    }
-  })
+    }, [key, value] as const)
 
-  // the two dropped modules go grey; the han.js row comes back on
-  await expect(page.locator('#station-craft [data-off]')).toHaveCount(2)
-  await expect(page.locator('#station-craft .LayerMap [data-off]')).toHaveCount(2)
-  await expect(page.locator('#station-craft .ScriptLedger [data-off]')).toHaveCount(0)
-  await expect(page.locator('#station-craft .LayerMap li[data-cfg="prose"][data-off]')).toHaveCount(1)
-  await expect(page.locator('#station-craft .ScriptLedger tr[data-cfg="legacyRuby"][data-off]')).toHaveCount(0)
+  await set('prose', false)
+  await set('fonts', false)
+  await expect(table.locator('tbody:first-of-type tr[data-off]')).toHaveCount(2)
+  await expect(table.locator('tr[data-cfg="prose"][data-off]')).toHaveCount(1)
+  expect(await total()).toBeLessThan(before)
 
-  // …and the totals follow: styles lose han-prose + han-fonts, scripts gain
-  // han.js, and the grand total is still the sum of the two.
-  const after = await totals()
-  const kb = (t: Record<string, string | undefined>, k: string) => Number(t[k]!.replace('KB', ''))
-  expect(kb(after, 'css')).toBeLessThan(kb(before, 'css'))
-  expect(kb(after, 'js')).toBeGreaterThan(kb(before, 'js'))
-  expect(kb(after, 'all')).toBeCloseTo(kb(after, 'css') + kb(after, 'js'), 5)
+  // Switch to 自選函式 — the auto row leaves the plate and the floor plus the
+  // per-function rows take over. This is the addition the plan is for: the
+  // floor is its own line, so no reader mistakes a marginal for the price.
+  await set('jsMode', 'manual')
+  await expect(table.locator('tr[data-js-row="auto"]')).toBeHidden()
+  await expect(table.locator('tr[data-js-row="floor"]')).toBeVisible()
+  const ticked = table.locator('tr[data-js-row="pass"]:not([data-off])')
+  await expect(ticked).toHaveCount(3)   // punctuation / iss / adjacentLines
 
-  // Exactly the two bundles the console really hands out — han.install.js
-  // for `fallbacks`, han.min.js for `legacyRuby`. The other three are the
-  // same code repackaged (browser condition / the export-carrying auto
-  // build); counting them would bill the reader twice.
-  const summable = page.locator('#station-craft .ScriptLedger tr[data-in-total]')
-  await expect(summable).toHaveCount(2)
-  expect((await summable.locator('th small').allInnerTexts()).map((t) => t.trim().split('・')[0]))
-    .toEqual(['→han.js', '→han.auto.js'])
+  // The column has to ADD UP — that is why pass-sizes.json bundles every
+  // selection for real instead of summing marginals.
+  const parts = [
+    ...(await kb(table.locator('tbody:first-of-type tr:not([data-off]) td:nth-child(3)'))),
+    ...(await kb(table.locator('tr[data-js-row="floor"] td:nth-child(3)'))),
+    ...(await kb(ticked.locator('td:nth-child(3)'))),
+  ]
+  expect(await total()).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)
+
+  // Unticking a pass must make the build smaller — the claim the whole
+  // manual mode exists to support.
+  const manualAll = await total()
+  await set('fn.punctuation', false)
+  await expect(table.locator('tr[data-pass="punctuation"][data-off]')).toHaveCount(1)
+  expect(await total()).toBeLessThan(manualAll)
 })
 
-test('station 伍・工法: §④\u2019s proof is live — the reader\u2019s rule really beats han.css', async ({ page }) => {
-  await page.goto('/')
-
-  // The proof table claims a bare `cite { margin-inline-end: 5em }` outranks
-  // han.css's `:where(…)` rule for the same element. That is not a picture:
-  // `.YourCite cite` is a real unlayered rule (station-craft.css § 示範用戶
-  // 樣式・其二), so the second sample must actually carry the 5em while the
-  // first does not — if han.css ever stopped wrapping that selector in
-  // `:where()`, this is the assertion that would catch it.
-  const rows = page.locator('#station-craft .ProofSample cite')
-  await expect(rows).toHaveCount(2)
-
-  const px = (i: number) =>
-    rows.nth(i).evaluate((el) => parseFloat(getComputedStyle(el).marginInlineEnd))
-  const fontSize = await rows.nth(1).evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
-
-  expect(await px(1)).toBeCloseTo(5 * fontSize, 0)   // 5em, the reader's rule
-  expect(await px(0)).toBeLessThan(5 * fontSize)     // framework row untouched
-
-  // …and the plate states the identity the proof rests on: 式5.1 spans the
-  // top of .Axioms, with 5.2 / 5.3 under it (three equations, one plate).
-  await expect(page.locator('#station-craft .Axioms .Ax')).toHaveCount(3)
-  await expect(page.locator('#station-craft .Ax-lead .Formula')).toContainText(':where(')
-  await expect(page.locator('#station-craft .Ax-lead .Zero')).toHaveText('0')
-})

@@ -2,27 +2,14 @@
 
 /**
  * Station 伍・工法 and station VII・Snippet — the "how it behaves in your
- * codebase" exhibits: the override demo, the cascade-layer map, the
- * container-scope compare, and the constant-dark reference-code panel.
- */
-
-/* ═══ Station 伍・工法 — the "won't fight your CSS" demos ═════════════
- * Three honest demos for the unlayered/zero-specificity story: an override
- * pair (a user rule beats the framework), a four-chip cascade-layer map, and
- * a scope compare (one container var re-skins the 著重號). Token-driven, no
- * new hues. The features the station EXPLAINS live in han.css, not here:
- * `:where()` (Baseline 2021), `@layer` (Baseline 2022) and `@container
- * style()` style queries (Chrome/Edge 111 + Safari 18; Firefox trailing) —
- * the same query the whole framework already rides on. */
-
-/* 示範用戶樣式・其二 — the rule §④'s proof table prints (station-craft.html
- * — KEEP THE TWO IN SYNC). Unlayered and one class + element, so it outranks
- * the (0,0,0) `:where(…)` rule han.css uses for 書名號 adjacent-line gaps,
- * with no !important. This is the live half of the proof: the 5em really is
- * a 5em, painted by the reader's own rule. */
-.YourCite cite {
-  margin-inline-end: 5em;
-}
+ * codebase" half: three equations set as display maths, a selector ring,
+ * the addition that prices the reader's own configuration, the font ledger,
+ * and the constant-dark reference-code panel.
+ *
+ * The features the station EXPLAINS live in han.css, not here: `:where()`
+ * (Baseline 2021), `@layer` (Baseline 2022) and `@container style()` style
+ * queries (Chrome/Edge 111 + Safari 18; Firefox trailing) — the same query
+ * the whole framework already rides on. */
 
 /* ─── Station 伍・工法 — the three equations, one plate ───────────────
  * 式5.1 spans the top; 5.2 and 5.3 sit under it, side by side, divided by
@@ -80,12 +67,11 @@
 
 
 /* ─── Station 伍・工法 — §④ set as a theorem ──────────────────────────
- * The claim is an identity, so it is typeset as one: statement, worked
- * example, proof, two corollaries. Display maths in CJK prose wants the
- * reading face for words and mono for code — never a maths webfont; the
- * operators here (≡ ≻ → ∵ ∴ ∎) all resolve from the CJK faces already
- * loaded, so nothing new is fetched.
- * `.YourCite cite` (below, unlayered) is the live half of the proof. */
+ * The claim is an identity, so it is typeset as one: statement, then a
+ * worked example over a ring of real library selectors. Display maths in CJK
+ * prose wants the reading face for words and mono for code — never a maths
+ * webfont; the operators here (≡ ≻ → ) all resolve from the CJK faces
+ * already loaded, so nothing new is fetched. */
 
 .WhereLede {
   margin: 0 0 1.5rem;
@@ -100,15 +86,6 @@
     margin: 0 0 2.5rem;
   }
 
-  /* where the (0,2,2) figure comes from — a source line, set like one */
-  .ThmSource {
-    margin: 1.25rem 0 0;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
-    line-height: 1.75;
-    color: var(--palette-supplement-text);
-    text-align: end;
-  }
 }
 
 /* The display line. `flex` + `wrap` rather than a grid: an equation should
@@ -200,18 +177,6 @@
   }
 }
 
-.Theorem > .Formula:first-child {
-  margin-block-start: 0.5rem;
-}
-
-.ThmNote {
-  margin: 0.5rem 0 0;
-  font-family: var(--han-font-alternative);
-  font-size: var(--fs-small);
-  color: var(--palette-supplement-text);
-  text-align: center;
-}
-
 /* 例 5.1 — the real selector fed through the theorem */
 .Example {
   & {
@@ -242,6 +207,76 @@
     font-weight: 400;
     font-variant-numeric: tabular-nums lining-nums;
   }
+
+  /* The selector ring — five candidates stacked in the SAME cell, so the
+     `:where(` … `)` wrapper either side never shifts as they swap. Grid, not
+     absolute positioning: every item still contributes to the intrinsic
+     size, so the row is as tall and as wide as the LONGEST selector and the
+     equation below it stays put. With JS off, only the first is painted (the
+     nav is `hidden` in the markup, and `data-current` is what carousel.js
+     adds), which is also the one whose weight is baked into the <b>s. */
+  .SelRing {
+    & {
+      display: inline-grid;
+      vertical-align: top;
+      text-align: start;
+    }
+
+    code {
+      grid-area: 1 / 1;
+      visibility: hidden;
+    }
+
+    code:first-child,
+    code[data-current] {
+      visibility: visible;
+    }
+
+    /* JS present → `data-current` is authoritative and the first child is no
+       longer special. Written as a second rule rather than `:not()` on the
+       one above because the no-JS case must survive with the shorter
+       selector, not depend on this one being understood. */
+    &:has(code[data-current]) code:first-child:not([data-current]) {
+      visibility: hidden;
+    }
+  }
+
+  /* Reader-driven, so the controls have to be visible controls — not a hint
+     that something is animating. Quiet chrome, centred under the brace. */
+  .SelNav {
+    & {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-block-start: 1rem;
+    }
+
+    button {
+      inline-size: 2rem;
+      block-size: 2rem;
+      padding: 0;
+      font-size: var(--fs-body);
+      line-height: 1;
+      color: var(--palette-supplement-text);
+      background: transparent;
+      border: 1px solid var(--palette-rule);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    button:hover {
+      color: var(--palette-accent);
+      border-color: var(--palette-accent);
+    }
+
+    output {
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      font-variant-numeric: tabular-nums lining-nums;
+      color: var(--palette-supplement-text-2q);
+    }
+  }
 }
 
 /* 證 … ∎ */
@@ -264,39 +299,6 @@
 
 }
 
-/* the live half of the proof — the same sentence, twice */
-.ProofSample {
-  & {
-    margin-block: 1rem;
-    padding-block: 0.875rem;
-    padding-inline: 1rem;
-    background: var(--palette-panel);
-    border-radius: var(--r-2);
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
-    color: var(--palette-text);
-  }
-
-  p {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin: 0;
-  }
-
-  small {
-    flex: none;
-    inline-size: 3.5em;
-    font-family: var(--font-mono);
-    font-size: var(--fs-micro);
-    color: var(--palette-supplement-text-2q);
-  }
-
-  /* the winning row wears the accent, so the eye lands on it */
-  .YourCite small {
-    color: var(--palette-accent);
-  }
-}
 
 .LayerLede {
   margin: 0 0 0.5rem;
@@ -307,128 +309,19 @@
 }
 
 
-/* ─── Station 伍・工法 — the cascade-layer map (four weight cards) ─────
- * Was four inline pills with the weight as fine print; the weight IS the
- * claim («輕如鴻毛»), so it now leads at heading scale and the layer name
- * drops to a mono label beneath it. Hairline grid, same recipe as
- * the ledgers. */
+/* ─── Station 伍・工法 — the addition, and the font ledger ─────────────
+ * TWO sets of books, not one: the framework (styles ＋ its own JS, added up
+ * in a single column, `.Sum`) and the webfonts. Webfonts are megabytes where
+ * the framework is kilobytes — merged into one plate they would swallow the
+ * «輕如鴻毛» claim outright — and the columns differ anyway (part ×
+ * compression vs family × slice × total). Same plate chrome for both, so
+ * they read as one system. The addition's figures are all measured
+ * (dist/han.*.min.css ＋ dist/pass-sizes.json, both built in this repo); the
+ * font figures are constants — the markup says how to re-measure. */
 
-.LayerMap {
-  & {
-    margin: 0 0 2.5rem;
-  }
-
-  ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
-    gap: 1px; /* hairline seams between the cards */
-    margin: 0 0 1rem;
-    padding: 0;
-    list-style: none;
-    background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
-    border-radius: var(--r-3);
-    overflow: hidden;
-  }
-
-  li {
-    & {
-      /* Visual order is brotli → name → uncompressed; the DOM keeps the
-         readable「name → brotli → uncompressed」and only the <b> is pulled
-         up (`order`), so a screen reader still reads
-         “han-semantics, 1.0k, 壓縮前4.0k”. The layer name is an anonymous
-         flex item — it cannot take an `order` of its own, which is exactly
-         why moving the <b> is the whole trick. */
-      display: flex;
-      flex-direction: column;
-      align-items: start;
-      gap: 0.25rem;
-      padding-block: 1.125rem;
-      padding-inline: 1.25rem;
-      font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      color: var(--palette-supplement-text);
-      background: var(--palette-bg);
-    }
-
-    /* Unchecked in the console → the module is not in the build, so the card
-       steps back: the figure drops to the body ink and the whole card fades.
-       Not `display: none` — the point is that the reader can see what they
-       just put down, and the row keeps its place in the grid. */
-    &[data-off] {
-      opacity: 0.4;
-
-      b {
-        color: var(--palette-text);
-      }
-    }
-
-    /* the module's build-computed brotli weight — now the display figure.
-       Tabular + lining so the four cards' decimal points line up. */
-    b {
-      order: -1;
-      font-size: var(--fs-heading);
-      font-weight: 500;
-      font-variant-numeric: tabular-nums lining-nums;
-      line-height: 1.2;
-      color: var(--palette-accent);
-    }
-
-    /* the same module before brotli — fine print, because it is the figure
-       a reader only meets when content-encoding negotiation fails. */
-    small {
-      font-size: var(--fs-micro);
-      color: var(--palette-supplement-text-2q);
-    }
-  }
-
-  figcaption {
-    & {
-      max-inline-size: 34em;
-      font-family: var(--han-font-alternative);
-      font-size: var(--fs-body);
-      line-height: 1.75;
-      color: var(--palette-supplement-text);
-    }
-
-    /* the ledger footing — the totals line, then a quieter gloss on what
-       the「before brotli」column actually measures */
-    small {
-      & {
-        display: block;
-        margin-block-start: 0.5rem;
-        font-size: var(--fs-small);
-        color: var(--palette-supplement-text-2q);
-      }
-
-      & + small {
-        margin-block-start: 0.25rem;
-        font-size: var(--fs-fine);
-      }
-
-      [data-total] {
-        font-family: var(--font-mono);
-        font-variant-numeric: tabular-nums lining-nums;
-        color: var(--palette-accent);
-      }
-    }
-  }
-}
-
-
-/* ─── Station 伍・工法 — the script and font ledgers ───────────────────
- * Three sets of books, deliberately not one table: the style modules (the
- * layer map above), han.css's own JS, and the webfonts. Webfonts are
- * megabytes where the framework is kilobytes — merged into one plate they
- * would swallow the «輕如鴻毛» claim outright — and each ledger's columns
- * differ anyway (bundle × compression; family × slice × total; convention ×
- * face). Same plate chrome for all of them, so they read as one system.
- * The script figures are build-computed (dist/*.min.js is in this repo);
- * the font figures are constants — the markup says how to re-measure. */
-
-/* The SSR footnote sits between the script and font ledgers: it is the one
-   route that takes the script bill to zero, so it belongs with the scripts —
-   but it is prose, not a plate, and reads at body measure. */
+/* The SSR footnote sits between the addition and the font ledger: it is the
+   one route that takes the script bill to zero, so it belongs with the
+   scripts — but it is prose, not a plate, and reads at body measure. */
 .LedgerNote {
   /* NOT the station's `.Prose` — that block is the two-column end matter, and
      a 42em argument squeezed into one of its columns justifies badly. This is
@@ -458,7 +351,7 @@
   color: var(--palette-text);
 }
 
-:is(.ScriptLedger, .FontLedger) {
+:is(.Sum, .FontLedger) {
   /* Explicit track counts, NOT `repeat(auto-fit, …)`: the figcaption spans
      `1 / -1`, which makes every track occupied, so auto-fit has no empty
      track left to collapse and a two-plate ledger would sit in a
@@ -466,7 +359,7 @@
   & {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1px; /* hairline seams, as in .LayerMap */
+    gap: 1px; /* hairline seams between plate and footing */
     margin: 0 0 2.5rem;
     background: var(--palette-rule);
     border: 1px solid var(--palette-rule);
@@ -474,10 +367,10 @@
     overflow: hidden;
   }
 
-  &.ScriptLedger {
-    @media (min-width: 40rem) {
-      grid-template-columns: 1fr 1fr;
-    }
+  &.Sum {
+    /* One plate, full measure — the addition is a single column of line
+       items and splitting it across two tracks would break the running eye. */
+    grid-template-columns: 1fr;
   }
 
   &.FontLedger {
@@ -569,13 +462,14 @@
   }
 
   /* the last row needs no rule — the plate edge already closes the table */
-  tbody tr:last-child :is(th, td) {
+  tbody:last-of-type tr:last-child :is(th, td) {
     border-block-end: 0;
   }
 
-  /* Script ledger — one plate, whose row heads are FILE NAMES: mono, with
-     the「what it does」gloss dropped underneath in the reading face. */
-  &.ScriptLedger tbody th {
+  /* The addition — one plate, whose row heads are MODULE / FUNCTION NAMES:
+     mono, with the「what it does」gloss dropped underneath in the reading
+     face. */
+  &.Sum tbody th {
     & {
       font-family: var(--font-mono);
       font-size: var(--fs-compact);
@@ -588,6 +482,39 @@
       font-size: var(--fs-fine);
       color: var(--palette-supplement-text-2q);
     }
+  }
+
+  /* The footing: an accountant's double rule, so the column reads as an
+     addition rather than as one more row. `border-block-start` on the cells
+     (not the <tr>) because a row's own border is not painted under
+     `border-collapse: collapse` in every engine. */
+  &.Sum tfoot :is(th, td) {
+    padding-block-start: 0.75rem;
+    border-block-start: 2px solid var(--palette-rule);
+    border-block-end: 0;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  &.Sum tfoot th {
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--palette-text);
+    text-align: start;
+  }
+
+  &.Sum tfoot td {
+    font-size: var(--fs-body);
+    font-weight: 500;
+  }
+
+  /* The script half of the plate is a different KIND of line item from the
+     style modules above it — a seam says so without a second heading. Put on
+     the LAST style row's cells rather than the first script row's: which
+     script row comes first depends on the delivery mode, and a hidden row
+     cannot carry the seam. */
+  &.Sum tbody:first-of-type tr:last-child :is(th, td) {
+    border-block-end-width: 2px;
   }
 
   figcaption {

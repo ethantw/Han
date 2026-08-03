@@ -85,11 +85,20 @@ test.describe('Task B — collapsible side console', () => {
 })
 
 test.describe('Task A — 各文種專項 group', () => {
-  // 各文種專項 is a collapsed <details> holding one flat <section> per script.
-  const openScriptSpecifics = (page: Page) =>
-    page
-      .locator('details.ControlGroup:not([open]):has([data-cfg-key="punct.hant"]) > summary')
-      .click()
+  // 各文種專項 is a <details> holding one flat <section> per script. Wait for
+  // it to exist (the console mounts asynchronously), then open it only if it
+  // is closed — an unconditional click would CLOSE a group that some earlier
+  // step already sprung open, and a bare `:not([open])` selector matches
+  // nothing in that case and waits until the test times out.
+  const openScriptSpecifics = async (page: Page) => {
+    const $summary = page
+      .locator('details.ControlGroup:has([data-cfg-key="punct.hant"]) > summary')
+      .first()
+    await $summary.waitFor()
+    if (!(await $summary.evaluate(($el) => ($el.parentElement as HTMLDetailsElement).open))) {
+      await $summary.click()
+    }
+  }
 
   test('per-script sub-sections group each script’s heritage + punct; 注音 is its own section', async ({ page }) => {
     await page.goto('/')

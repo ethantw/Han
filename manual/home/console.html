@@ -441,12 +441,33 @@
     ja: 'JavaScript',
     ko: 'JavaScript',
   },
-  pgGrpInstall: {
-    hant: '逐項取捨',
-    hans: '逐项取舍',
-    en: 'Pick passes',
-    ja: '個別に取捨',
-    ko: '<ruby>個別<rt>개별</rt></ruby> <ruby>選擇<rt>선택</rt></ruby>',
+  pgFldJsMode: {
+    hant: '送法',
+    hans: '送法',
+    en: 'Delivery',
+    ja: '読み込み方',
+    ko: '<ruby>方式<rt>방식</rt></ruby>',
+  },
+  pgOptJsAuto: {
+    hant: '載入即安裝',
+    hans: '载入即安装',
+    en: 'Install on load',
+    ja: '読み込みで実行',
+    ko: '<ruby>自動<rt>자동</rt></ruby> <ruby>設置<rt>설치</rt></ruby>',
+  },
+  pgOptJsManual: {
+    hant: '自選函式',
+    hans: '自选函式',
+    en: 'Pick functions',
+    ja: '関数を選ぶ',
+    ko: '<ruby>函數<rt>함수</rt></ruby> <ruby>選擇<rt>선택</rt></ruby>',
+  },
+  pgGrpFns: {
+    hant: '要匯入哪幾支',
+    hans: '要导入哪几支',
+    en: 'Which to import',
+    ja: 'どれを読み込むか',
+    ko: '<ruby>導入<rt>도입</rt></ruby> <ruby>對象<rt>대상</rt></ruby>',
   },
   pgTogFbPunct: {
     hant: '標點擠壓／懸掛', hans: '标点挤压／悬挂', en: 'Punctuation squeeze / hang',
@@ -460,16 +481,20 @@
     hant: '鄰行間距', hans: '邻行间距', en: 'Adjacent-line insets',
     ja: '隣行の間隔', ko: '<ruby>隣行<rt>인행</rt></ruby> <ruby>間隔<rt>간격</rt></ruby>',
   },
-  pgTogFbProbes: {
-    hant: '環境探測', hans: '环境探测', en: 'Environment probes',
-    ja: '環境プローブ', ko: '<ruby>環境<rt>환경</rt></ruby> <ruby>探測<rt>탐측</rt></ruby>',
+  pgTogFbRuby: {
+    hant: '注音ruby轉寫', hans: '注音ruby转写', en: 'Zhuyin ruby transpile',
+    ja: '注音ルビの変換', ko: '<ruby>注音<rt>주음</rt></ruby> ruby <ruby>變換<rt>변환</rt></ruby>',
   },
-  pgNoteInstall: {
-    hant: '這幾顆決定腳本做什麼，不決定它多大——三道pass共用同一層底，勾少了檔案一樣大。要少付，走npm具名匯入讓你的打包器自己搖。',
-    hans: '这几颗决定脚本做什么，不决定它多大——三道pass共用同一层底，勾少了档案一样大。要少付，走npm具名导入让你的打包器自己摇。',
-    en: 'These choose what the script does, not how big it is — the passes share one floor, so a narrower pick ships the same file. To pay less, import the named passes via npm and let your bundler shake the rest.',
-    ja: 'これらはスクリプトの「働き」を決めるもので、「大きさ」ではない——三つのpassは同じ土台を共有するので、絞ってもファイルは同じ大きさである。減らしたいならnpmの名前付きインポートで、バンドラに任せること。',
-    ko: '이 스위치들은 스크립트가 무엇을 하는지를 정할 뿐, 크기를 정하지 않는다——세 pass가 같은 바닥을 共有하므로 적게 골라도 파일 크기는 같다. 덜 내려면 npm 이름있는 import로 번들러에 맡길 것.',
+  pgTogFbUninstall: {
+    hant: '還原', hans: '还原', en: 'Undo',
+    ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
+  },
+  pgNoteFns: {
+    hant: '勾了才匯入，沒勾的由你的打包器搖掉。站伍的加法式即時算出這套組合有多大。',
+    hans: '勾了才导入，没勾的由你的打包器摇掉。站伍的加法式实时算出这套组合有多大。',
+    en: 'Only what you tick gets imported; your bundler shakes off the rest. Station ⑤’s addition prices this exact selection.',
+    ja: 'チェックしたものだけを読み込み、残りはバンドラが落とす。第五站の加算式がこの組み合わせの大きさを即座に示す。',
+    ko: '고른 것만 import되고 나머지는 번들러가 떨어낸다. 第五站의 덧셈식이 이 조합의 크기를 즉시 보여준다.',
   },
   pgTogFallbacks: {
     hant: 'JS排版補全',
@@ -774,7 +799,7 @@
               <option value="JIS">JIS</option>
               <option value="MOE" selected>MOE</option>
               <option value="GB">GB</option>
-              <option value="KV">KV</option>
+              <option value="KLR">KLR</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
@@ -807,7 +832,7 @@
               <option value="JIS">JIS</option>
               <option value="MOE">MOE</option>
               <option value="GB" selected>GB</option>
-              <option value="KV">KV</option>
+              <option value="KLR">KLR</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
@@ -832,14 +857,14 @@
               <option value="JIS" selected>JIS</option>
               <option value="MOE">MOE</option>
               <option value="GB">GB</option>
-              <option value="KV">KV</option>
+              <option value="KLR">KLR</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
         </fieldset>
       </section>
 
-      <!-- 韓文專項：傳承字形＋標點（預設 off／KV）。標點公約與文種解耦，
+      <!-- 韓文專項：傳承字形＋標點（預設 off／KLR）。標點公約與文種解耦，
            這顆選單與另外三個文種同款五選一（見 src/css/fonts.css 檔頭）。 -->
       <section class="ControlGroup">
         <header>{{ pgGrpKo }}</header>
@@ -858,7 +883,7 @@
               <option value="JIS">JIS</option>
               <option value="MOE">MOE</option>
               <option value="GB">GB</option>
-              <option value="KV" selected>KV</option>
+              <option value="KLR" selected>KLR</option>
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
@@ -887,34 +912,46 @@
           <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
           <input type="checkbox" data-cfg-key="fallbacks" checked>
         </label>
-        <!-- Per-pass picks — `--han-install`'s token list (han.auto.ts).
-             Nested under the fallbacks switch because they only mean
-             anything while it is on; CSS greys the group out via
-             `:has()` when it isn't, no JS disabling needed.
-             ⚠ These change BEHAVIOUR, not bundle size — the passes share
-             one hyperly floor. The note below says so, in the reader's
-             language, so nobody picks them expecting a smaller file. -->
-        <fieldset class="SubRules">
-          <legend>{{ pgGrpInstall }}</legend>
+        <!-- 送法：auto ＝ 一行匯入、載入即全套安裝；manual ＝ 自己具名匯入
+             要用的那幾支，打包器把其餘搖掉。這對**體積**是有差的，站伍的
+             加法式即時把差額算給讀者看。 -->
+        <label class="Field">
+          <span>{{ pgFldJsMode }}</span>
+          <select data-cfg-key="jsMode">
+            <option value="auto" selected>{{ pgOptJsAuto }}</option>
+            <option value="manual">{{ pgOptJsManual }}</option>
+          </select>
+        </label>
+        <!-- 逐函式取捨。只在 manual 模式下有意義；CSS 用 `:has()` 收合，
+             不由 JS 設 disabled——控件狀態歸 config 層所有，JS 再寫一次
+             就是兩個 writer 互搶。 -->
+        <fieldset class="SubRules" data-js-manual>
+          <legend>{{ pgGrpFns }}</legend>
           <label class="Toggle">
-            <span>{{ pgTogFbPunct }} <small>punctuation</small></span>
-            <input type="checkbox" data-cfg-key="fbPunctuation" checked>
+            <span>{{ pgTogFbPunct }} <small>refinePunctuation</small></span>
+            <input type="checkbox" data-cfg-key="fn.punctuation" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogFbIss }} <small>iss</small></span>
-            <input type="checkbox" data-cfg-key="fbIss" checked>
+            <span>{{ pgTogFbIss }} <small>applyISSWithProbe</small></span>
+            <input type="checkbox" data-cfg-key="fn.iss" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogFbAdjacent }} <small>adjacent-lines</small></span>
-            <input type="checkbox" data-cfg-key="fbAdjacentLines" checked>
+            <span>{{ pgTogFbAdjacent }} <small>markAdjacentLines</small></span>
+            <input type="checkbox" data-cfg-key="fn.adjacentLines" checked>
           </label>
           <label class="Toggle">
-            <span>{{ pgTogFbProbes }} <small>probes</small></span>
-            <input type="checkbox" data-cfg-key="fbProbes" checked>
+            <span>{{ pgTogFbRuby }} <small>transpileRuby</small></span>
+            <input type="checkbox" data-cfg-key="fn.ruby">
           </label>
-          <p class="SubNote">{{ pgNoteInstall }}</p>
+          <label class="Toggle">
+            <span>{{ pgTogFbUninstall }} <small>uninstallFallbacks</small></span>
+            <input type="checkbox" data-cfg-key="fn.uninstall">
+          </label>
+          <p class="SubNote">{{ pgNoteFns }}</p>
         </fieldset>
-        <label class="Toggle">
+        <!-- auto 模式專屬：auto 不跑 transpileRuby，要就得自己補一支。
+             manual 模式下這件事由上面的 fn.ruby 表達，故隱藏。 -->
+        <label class="Toggle" data-js-auto>
           <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>
           <input type="checkbox" data-cfg-key="legacyRuby">
         </label>

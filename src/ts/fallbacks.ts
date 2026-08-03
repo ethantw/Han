@@ -16,8 +16,6 @@ import {
   markAdjacentLinesWithMode,
 } from './semantics/adjacent-lines.ts'
 
-import { detectAutospaceBoundaryBug } from './helpers/probes.ts'
-
 import { isServerSide } from './helpers/env.ts'
 import { pipe } from './helpers/fp.ts'
 
@@ -101,29 +99,18 @@ export function installFallbacks(root?: Hyperly) {
       (hype(root))
   }
 
-  runProbes()
+  // No separate probe step: the only probe there is
+  // (`detectAutospaceBoundaryBug`, for Safari's inline-boundary bug) is read
+  // by exactly one pass, so it lives inside that pass — `applyISSWithProbe`
+  // runs it, memoised. A standalone `runProbes()` used to sit here and was
+  // exported for callers assembling their own set; it bought nothing but a
+  // way to get the order wrong.
   const r = (root as Element | undefined) ?? document.documentElement
   refinePunctuation(r)
   applyISSWithProbe(r)
   markAdjacentLines(r)
 
   return hype(r)
-}
-
-/**
- * Run browser-capability probes and stamp the results onto `<html>`.
- *
- * Each probe is memoised — repeat calls within the same document are
- * effectively free. Called automatically by `installFallbacks()` and
- * when `--han-install: probes` is set.
- *
- * Side effects on `document.documentElement`:
- *
- *   - `--han-probe-autospace: broken` / `data-probe-autospace="broken"`
- *     when Safari's `text-autospace` inline-boundary bug is detected.
- */
-export const runProbes = () => {
-  detectAutospaceBoundaryBug()
 }
 
 /**

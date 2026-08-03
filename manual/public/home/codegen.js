@@ -83,17 +83,20 @@ export const DEFAULTS = {
   baseGeneric: 'sans-serif',      // sans-serif|serif — which composite the body rides
   fallbacks: true,               // JS排版補全 — on by default (owner call)
   /**
-   * 逐 pass 取捨（`--han-install` 的 token 列表；han.auto.ts 解析）。四顆全開
-   * ＝ 出廠的 `auto`，不輸出任何宣告。
-   * ⚠ 這是**行為**開關，不是體積開關：三道 pass 共用 hyperly ＋ helpers 那層
-   *   ~6.5k 的地板，勾少了檔案一樣大，只是少動你的 DOM。真要少付，走 npm ＋
-   *   bundler 的具名匯入（package.json 已宣告 sideEffects）。量測見
-   *   docs/plans/per-pass-install-and-lean-auto.md。
+   * 腳本怎麼送。`auto` ＝ 匯入 `…/auto`，載入即全套安裝，一行了事；`manual`
+   * ＝ 自己具名匯入要用的那幾支、自己挑時機呼叫，打包器把其餘搖掉。兩者的
+   * 差別是**體積**，這正是站伍加法式在算的東西。
    */
-  fbPunctuation: true,
-  fbIss: true,
-  fbAdjacentLines: true,
-  fbProbes: true,
+  jsMode: 'auto',                // auto|manual
+  /* jsMode='manual' 時逐函式取捨。預設三支 ＝ installFallbacks 會跑的那些，
+     所以「切到 manual 但一顆都不動」在行為上等同 auto，只是少了幾百 byte。 */
+  fn: {
+    punctuation: true,
+    iss: true,
+    adjacentLines: true,
+    ruby: false,
+    uninstall: false,
+  },
   legacyRuby: false,
   // Request B — 第三方 webfont 套件的送法，套用到「所有」外部 webfont 套件
   // （ziano 家族 ＋ diantenjeom）：'none' ＝ 完全不用外部 webfont。
@@ -110,19 +113,32 @@ const enabledModules = (c) => MODULES.filter((m) => c[m])
 
 /* ── 1 · 變數偏差 ─────────────────────────────────────────── */
 
-/** `--han-install` 的值：四顆全開回 null（出廠 `auto`，不必宣告），全關回
- *  `'none'`，其餘輸出 token 列表。probes 與三道 pass 同列。 */
-export const installTokens = (c) => {
-  if (!c.fallbacks) return null
-  const tokens = [
-    c.fbPunctuation && 'punctuation',
-    c.fbIss && 'iss',
-    c.fbAdjacentLines && 'adjacent-lines',
-    c.fbProbes && 'probes',
-  ].filter(Boolean)
-  if (tokens.length === 4) return null
-  return tokens.length ? tokens.join(' ') : 'none'
-}
+/**
+ * 可具名匯入的函式，順序 ＝ 生成碼的呼叫順序 ＝ 站伍加法式的列序。順序是有
+ * 作用的：加法式把共用碼算給先出現的那一支（見 home/ledger.js 的鏈式拆解），
+ * 所以共用最多 helper 的兩道行調整排在前面。ISS 給的是帶探針的那支——Safari
+ * 的 inline-boundary bug 全靠它，而探針有記憶化，沒有理由把不帶探針的版本
+ * 當成預設選項。
+ *
+ * `id` ＝ config.fn 的鍵、console 的 checkbox 鍵；`fn` ＝ 匯出名；`call` ＝ 生成
+ * 碼那一行。這三者必須與 `dist/pass-sizes.json` 逐字相同，否則加法式報的是讀者
+ * 拿不到的那個打包——manual/tests/codegen.test.js 有一條專門盯這件事。
+ */
+export const PASSES = [
+  { id: 'punctuation',   fn: 'refinePunctuation',  call: 'refinePunctuation(document.body)' },
+  { id: 'iss',           fn: 'applyISSWithProbe',  call: 'applyISSWithProbe(document.body)' },
+  { id: 'adjacentLines', fn: 'markAdjacentLines',  call: 'markAdjacentLines(document.body)' },
+  { id: 'ruby',          fn: 'transpileRuby',      call: 'transpileRuby(document.body)' },
+  { id: 'uninstall',     fn: 'uninstallFallbacks', call: 'uninstallFallbacks(document.body)' },
+]
+
+/** 選中的 pass（依 PASSES 序）；非 manual 模式或後備整顆關掉時為空。 */
+export const selectedPasses = (c) =>
+  c.fallbacks && c.jsMode === 'manual' ? PASSES.filter((p) => c.fn[p.id]) : []
+
+/** 選擇的 bitmask — `dist/pass-sizes.json` 的查表鍵（bit i ↔ PASSES[i]）。 */
+export const passMask = (c) =>
+  PASSES.reduce((m, p, i) => (c.fallbacks && c.jsMode === 'manual' && c.fn[p.id] ? m | (1 << i) : m), 0)
 
 const refinement = ({ hang, squeeze }) =>
   hang && squeeze ? 'auto' : hang ? 'hang' : squeeze ? 'compress' : 'none'
@@ -160,10 +176,6 @@ export const cssVars = (c) => {
       if (c.punct[key] !== def) out.push([`--han-punctuation-${key}`, c.punct[key]])
     if (!c.zhuyinWebfont) out.push(['--han-font-zhuyin-serif', 'cursive, serif'])
   }
-  // `--han-install`：不歸任何 CSS 模組——它是 han.auto／han.install 這支腳本自己
-  // 讀的旗標，樣式層關光了照樣有效，故排在模組 gate 之外。
-  const install = installTokens(c)
-  if (install) out.push(['--han-install', install])
   return out
 }
 
@@ -245,11 +257,7 @@ const preconnectHost = (source) => new URL(ORIGIN[source]).origin
 
 const HAN_CSS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.css`
 const HAN_CSS_MOD_URL = (mod) => `${CDN}${SCOPE}han.css@latest/dist/han.${mod}.min.css`
-// `<script src>` and the pasted-inline path can't reach a named export, so
-// they take the side-effect-only build (han.install, −1.5k brotli vs
-// han.auto). The npm tab keeps `…/auto`: there a bundler resolves it, and
-// package.json's `sideEffects` lets it shake the API surface per project.
-const HAN_INSTALL_URL = `${CDN}${SCOPE}han.css@latest/dist/han.install.min.js`
+const HAN_AUTO_URL = `${CDN}${SCOPE}han.css@latest/dist/han.auto.min.js`
 const HAN_JS_URL = `${CDN}${SCOPE}han.css@latest/dist/han.min.js`
 
 // han.css 樣式引用：四模組全開 → 單一入口（han.min.css／'/styles'）；有關 →
@@ -267,7 +275,7 @@ export const localHanCssUrls = (c) => {
   const mods = enabledModules(c)
   return mods.length === MODULES.length ? ['/han/han.min.css'] : mods.map((m) => `/han/han.${m}.min.css`)
 }
-export const HAN_INSTALL_LOCAL_URL = '/han/han.install.min.js'
+export const HAN_AUTO_LOCAL_URL = '/han/han.auto.min.js'
 export const HAN_JS_LOCAL_URL = '/han/han.min.js'
 
 const hanCssImports = (c) => {
@@ -301,19 +309,36 @@ const preconnectLines = (c) => {
 
 /* ── 3 · 兩分頁（bundler／cdn）── 各自回傳 pane[]，空窗格省略 ──── */
 
+/**
+ * 腳本區塊（CDN／內嵌兩分頁共用的形狀）。`auto` ＝ 一行 `<script src>`；
+ * `manual` ＝ 一段具名匯入的 module 區塊，讀者自己挑的那幾支、按 PASSES 序
+ * 呼叫。`legacyRuby` 只在 auto 模式下另掛一段——manual 模式的 ruby 由
+ * `fn.ruby` 這顆勾選表達，兩處都給會變成同一件事有兩個開關。
+ */
+const moduleScript = (url, passes) => [
+  '<script type="module">',
+  `  import { ${passes.map((p) => p.fn).join(', ')} } from '${url}'`,
+  ...passes.map((p) => `  ${p.call}`),
+  '</script>',
+].join('\n')
+
+const scriptLines = (c, autoUrl, jsUrl) => {
+  if (!c.fallbacks) return []
+  if (c.jsMode === 'manual') {
+    const passes = selectedPasses(c)
+    return passes.length ? [moduleScript(jsUrl, passes)] : []
+  }
+  return [
+    `<script type="module" src="${autoUrl}"></script>`,
+    ...(c.legacyRuby ? [moduleScript(jsUrl, [PASSES.find((p) => p.id === 'ruby')])] : []),
+  ]
+}
+
 export const renderCDN = (c) => {
   const htmlLines = [
     ...preconnectLines(c),
     ...styleUrls(c).map((u) => `<link rel="stylesheet" href="${u}">`),
-    ...(c.fallbacks ? [`<script type="module" src="${HAN_INSTALL_URL}"></script>`] : []),
-    ...(c.legacyRuby
-      ? [
-          `<script type="module">\n` +
-          `  import { transpileRuby } from '${HAN_JS_URL}'\n` +
-          `  transpileRuby(document.body)\n` +
-          `</script>`,
-        ]
-      : []),
+    ...scriptLines(c, HAN_AUTO_URL, HAN_JS_URL),
   ]
   const css = configCSS(c)
 
@@ -337,6 +362,8 @@ export const renderBundler = (c, pm = 'pnpm') => {
   const npmDtj = npm && dtj
   const cdnDtj = cdn && dtj
 
+  const jsPasses = selectedPasses(c)
+
   // han.css dep：任一模組開，或 fallbacks／legacyRuby 的 JS 仍需 han.css 套件時
   // 才列——全模組關且無 JS 附掛時整個 han.css 套件都不需要。
   const needHanCss = enabledModules(c).length > 0 || c.fallbacks || c.legacyRuby
@@ -353,13 +380,24 @@ export const renderBundler = (c, pm = 'pnpm') => {
     ...hanCssImports(c),
     ...npmZiano.map((id) => `import '${SCOPE}webfonts-${id}'`),
     ...(npmDtj ? [`import '${SCOPE}diantenjeom'`] : []),
-    ...(c.fallbacks ? [`import '${SCOPE}han.css/auto'`] : []),
-    ...(c.legacyRuby
+    // auto ＝ 一行匯入，載入即安裝；manual ＝ 具名匯入自選的那幾支，打包器
+    // 靠 package.json 的 sideEffects 把其餘搖掉（站伍加法式算的就是這個）。
+    ...(jsPasses.length
       ? [
-          `import { transpileRuby } from '${SCOPE}han.css'`,
-          `transpileRuby(document.body)`,
+          `import { ${jsPasses.map((p) => p.fn).join(', ')} } from '${SCOPE}han.css'`,
+          ...jsPasses.map((p) => p.call),
         ]
-      : []),
+      : c.fallbacks
+        ? [
+            `import '${SCOPE}han.css/auto'`,
+            ...(c.legacyRuby
+              ? [
+                  `import { transpileRuby } from '${SCOPE}han.css'`,
+                  `transpileRuby(document.body)`,
+                ]
+              : []),
+          ]
+        : []),
   ]
   const js = { lang: 'js', code: jsLines.join('\n') }
 
@@ -412,28 +450,32 @@ export const renderInline = (c, assets = {}) => {
   const styleBody = [assets.css, cssBody].filter(Boolean).join('')
   const styleLines = styleBody ? [`<style>\n${styleBody}</style>`] : []
 
-  const scriptBlocks = []
-  if (c.fallbacks && assets.autoJs) {
-    // side-effect-only bundle（無 export 需要取用）——貼進去原樣執行，跟
+  /**
+   * han.min.js 經 esbuild minify 後內部名稱被改寫（例如
+   * `export{Co as transpileRuby}`）——貼完原始碼直接呼叫裸露的
+   * `transpileRuby(...)` 抓不到（那是 export-only 的名字，不是模組作用域裡的
+   * 變數）。改用 Blob URL 動態 import：瀏覽器回傳的是標準的模組 namespace
+   * 物件，一律用「匯出名」查找，不管內部被改寫成什麼名字都拿得到。
+   */
+  const blobScript = (passes) => [
+    '<script type="module">',
+    `  const src = ${JSON.stringify(assets.hanJs)}`,
+    `  const mod = await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })))`,
+    ...passes.map((p) => `  mod.${p.call}`),
+    '</script>',
+  ].join('\n')
+
+  // 每個區塊各自 gate 在自己那份 asset 上——呼叫端可能只抓到其中一支（或還
+  // 在抓），少一支不該連帶讓另一支消失。
+  const jsPasses = selectedPasses(c)
+  const manual = c.fallbacks && c.jsMode === 'manual'
+  const scriptBlocks = [
+    ...(manual && jsPasses.length && assets.hanJs ? [blobScript(jsPasses)] : []),
+    // side-effect-only 的貼法（無 export 需要取用）——貼進去原樣執行，跟
     // `<script type="module" src="…han.auto.min.js">` 效果相同。
-    scriptBlocks.push(`<script type="module">\n${assets.autoJs}</script>`)
-  }
-  if (c.legacyRuby && assets.hanJs) {
-    // han.min.js 經 esbuild minify 後內部名稱被改寫（例如
-    // `export{Co as transpileRuby}`）——貼完原始碼直接呼叫裸露的
-    // `transpileRuby(...)` 抓不到（那是 export-only 的名字，不是模組作用
-    // 域裡的變數）。改用 Blob URL 動態 import：瀏覽器回傳的是標準的模組
-    // namespace 物件，一律用「匯出名」查找，不管內部被改寫成什麼名字都拿得到。
-    scriptBlocks.push(
-      [
-        '<script type="module">',
-        `  const src = ${JSON.stringify(assets.hanJs)}`,
-        `  const mod = await import(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })))`,
-        `  mod.transpileRuby(document.body)`,
-        '</script>',
-      ].join('\n'),
-    )
-  }
+    ...(!manual && c.fallbacks && assets.autoJs ? [`<script type="module">\n${assets.autoJs}</script>`] : []),
+    ...(!manual && c.legacyRuby && assets.hanJs ? [blobScript([PASSES.find((p) => p.id === 'ruby')])] : []),
+  ]
 
   const htmlLines = [...linkLines, ...styleLines, ...scriptBlocks]
   return htmlLines.length ? [{ lang: 'html', code: htmlLines.join('\n') }] : []

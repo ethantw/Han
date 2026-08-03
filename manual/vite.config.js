@@ -9,6 +9,7 @@ import esbuild from 'esbuild'
 import { defineConfig } from 'vite'
 import MarkdownIt from 'markdown-it'
 import { cjkEmphasis } from './_md-cjk-emphasis.js'
+import { specificity, splitTopLevel } from './_specificity.js'
 import { headings, renderPageToc } from './_md-headings.js'
 import {
   DEFAULT_LOCALE as HOME_DEFAULT_LOCALE,
@@ -101,7 +102,7 @@ function localizeHomeI18n(dict, locale) {
  *   - sizeTotalGzip  same sum, gzipped — the footing's secondary figure.
  *   - depsCount      count of runtime deps in root package.json.
  *
- * The four module keys map 1:1 to the LayerMap's four chips (han-semantics
+ * The four module keys map 1:1 to the addition's four style rows (han-semantics
  * / -lines / -prose / -fonts). Cached like the old hero stats were, and
  * spread into the same per-locale `ctx` that feeds the station partials.
  */
@@ -125,7 +126,6 @@ async function computeModuleLedger() {
     sizeJsAuto:       'han.auto.min.js',
     sizeJsBrowser:    'han.browser.min.js',
     sizeJsAutoBrowser:'han.auto.browser.min.js',
-    sizeJsInstall:    'han.install.min.js',
   }
   const keys = Object.keys(modules)
   const jsKeys = Object.keys(bundles)
@@ -134,7 +134,7 @@ async function computeModuleLedger() {
   // the compressed ones (identity, i.e. no compressor), so the three columns
   // can never be measured against different files.
   const identity = buf => buf
-  const [sizes, gzipSizes, rawSizes, jsSizes, jsGzipSizes, jsRawSizes, deps] = await Promise.all([
+  const [sizes, gzipSizes, rawSizes, jsSizes, jsGzipSizes, jsRawSizes, deps, passSizes] = await Promise.all([
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), brotliCompressSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), gzipSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), identity))),
@@ -142,6 +142,7 @@ async function computeModuleLedger() {
     Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), gzipSync))),
     Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), identity))),
     runtimeDeps(),
+    readPassSizes(),
   ])
   // Always one decimal — the four cards print the figure at heading scale in
   // a tabular-nums column, so a bare '1KB' beside '0.8KB' would break the
@@ -178,6 +179,14 @@ async function computeModuleLedger() {
     )),
     sizeTotal: `${total.toFixed(1)}KB`,
     sizeTotalGzip: `${totalGzip.toFixed(1)}KB`,
+    // The hyperly floor — the addition ledger's own row, printed at build
+    // time so the manual-mode rows are never blank before ledger.js runs.
+    // From dist/pass-sizes.json (build/pass-sizes.js), same run that built
+    // the bundles above; '—' if the library has not been built yet.
+    ...Object.fromEntries(
+      [['floorRaw', 'raw'], ['floorBr', 'br'], ['floorGz', 'gz']]
+        .map(([token, key]) => [token, fmtSize(passSizes?.floor?.[key])]),
+    ),
     depsCount: String(deps.length),
     depsNames: deps.join('・'),
   }
@@ -196,6 +205,58 @@ async function compressedSizeKb(file, compress) {
  * question it should answer (homepage review 2026-07-18 §⑤). Names come
  * from package.json so the ledger can never drift from reality.
  */
+/**
+ * Fill station 伍's `<code data-spec>` weights from the selector text they
+ * already carry, and seed the two `<b data-spec-out>` with the first one.
+ *
+ * Computed, never typed: the carousel's whole claim is that a selector of
+ * ANY weight comes out at zero, so a triple that had drifted from the
+ * selector printed beside it would undo the argument it exists to make. A
+ * post-substitution pass over the rendered HTML rather than a token, so the
+ * selectors stay in the markup where they are read (DOM is the data) instead
+ * of migrating into this config as a table of strings.
+ */
+function fillSpecificity(html) {
+  const unescape = (s) => s
+    .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+    .replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+  const specs = []
+  // Terminator is `</code`, NOT `</code>` — the carousel's items close with
+  // the tag split across a line break (`</code\n  ><code …`) to keep the
+  // inline-grid free of whitespace text nodes, so requiring the `>` matches
+  // nothing and a lazy `[\s\S]*?` then swallows all five selectors as one.
+  const filled = html.replace(
+    /<code data-spec(?:="[^"]*")?>([\s\S]*?)<\/code/g,
+    (_, body) => {
+      // A selector LIST prints the weight of its heaviest branch — that is the
+      // one an author would have to beat. Ranked component-wise, not by
+      // string order: '(0,1,10)' sorts before '(0,1,2)' as text.
+      const heaviest = splitTopLevel(unescape(body))
+        .map(specificity)
+        .reduce((x, y) => (
+          x[0] !== y[0] ? (x[0] > y[0] ? x : y)
+          : x[1] !== y[1] ? (x[1] > y[1] ? x : y)
+          : x[2] >= y[2] ? x : y
+        ), [0, 0, 0])
+      const spec = `(${heaviest.join(',')})`
+      specs.push(spec)
+      return `<code data-spec="${spec}">${body}</code`
+    },
+  )
+  return specs.length
+    ? filled.replace(/<b data-spec-out>[^<]*<\/b>/g, `<b data-spec-out>${specs[0]}</b>`)
+    : filled
+}
+
+/** dist/pass-sizes.json, or null before the library has been built. */
+async function readPassSizes() {
+  try {
+    return JSON.parse(await fs.readFile(path.join(HAN_DIST, 'pass-sizes.json'), 'utf-8'))
+  } catch {
+    return null
+  }
+}
+
 async function runtimeDeps() {
   try {
     const pkg = JSON.parse(await fs.readFile(path.resolve(here, '..', 'package.json'), 'utf-8'))
@@ -255,9 +316,9 @@ const FRAMEWORK_ASSETS = [
   'han.prose.css', 'han.prose.min.css',
   'han.fonts.css', 'han.fonts.min.css',
   'han.js', 'han.min.js', 'han.auto.js', 'han.auto.min.js',
-  // side-effect-only twin of han.auto, for the <script src> / pasted-
-  // <script> paths the console generates (src/han.install.ts)
-  'han.install.js', 'han.install.min.js',
+  // The addition ledger's measured figures — read at runtime by
+  // home/ledger.js as the console's switches move (build/pass-sizes.js).
+  'pass-sizes.json',
   'em-space.woff2',
   'zhuyin.serif.woff2',
 ]
@@ -658,6 +719,7 @@ async function renderHomepage() {
     // (renderConsoleTemplatesSource) instead of an inline `{{ consoleSection }}`.
     let html = applySubs(layout.body, { ...ctx, ...sections })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
+    html = fillSpecificity(html)
 
     const outPath = locale === HOME_DEFAULT_LOCALE
       ? path.join(HTML_ROOT, 'index.html')

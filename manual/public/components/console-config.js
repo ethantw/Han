@@ -16,7 +16,7 @@
  * to the `apply*` layer.
  */
 import {
-  DEFAULTS, MODULES, HERITAGE_LOCALES, cssVars, packages, zianoUrl,
+  DEFAULTS, MODULES, HERITAGE_LOCALES, cssVars, packages, zianoUrl, selectedPasses,
 } from '/home/codegen.js'
 import { icon } from '../common/icon.js'
 
@@ -200,7 +200,15 @@ const applyModules = (config) => {
 }
 
 /* ── apply：JS 後備（作用於 target）──
- * `modRef` — the one-mutable-cell for the lazily-imported han.js module. */
+ * `modRef` — the one-mutable-cell for the lazily-imported han.js module.
+ *
+ * 兩種送法在預覽裡要真的長得不一樣：`auto` 跑整套 `installFallbacks`，
+ * `manual` 只跑讀者勾的那幾支、依 PASSES 序。預覽的目的就是讓「少勾一支」
+ * 看得見，全部一律 installFallbacks 會讓那幾顆 checkbox 變成純裝飾。
+ *
+ * `uninstall` 這一支不在預覽裡執行——它的作用是「把前面做的全撤掉」，在一個
+ * 每次重繪本來就先 uninstall 一次的預覽裡跑它，等於把整組勾選歸零，讀者只會
+ * 看到畫面突然沒有排版。它出現在清單上是為了讓加法式替它計價。 */
 const modRef = { current: null }
 const applyFallbacks = async (config, $target) => {
   if (!$target) return
@@ -208,9 +216,15 @@ const applyFallbacks = async (config, $target) => {
     modRef.current?.uninstallFallbacks($target)
     return
   }
-  modRef.current ??= await import('/han/han.js')
-  modRef.current.uninstallFallbacks($target)
-  modRef.current.installFallbacks($target)
+  const mod = modRef.current ??= await import('/han/han.js')
+  mod.uninstallFallbacks($target)
+  if (config.jsMode !== 'manual') {
+    mod.installFallbacks($target)
+    return
+  }
+  selectedPasses(config)
+    .filter((p) => p.id !== 'uninstall')
+    .forEach((p) => mod[p.fn]($target))
 }
 
 /* ── 進場 ──

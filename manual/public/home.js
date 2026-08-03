@@ -44,6 +44,7 @@ import { initPapersDateline } from '/home/papers-dateline.js'
 import { initWavyCiteGap } from '/home/wavy-cite-gap.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
+import { initCarousel } from '/home/carousel.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { gateOpened } from '/home/fonts-gate.js'
@@ -110,9 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()
-  // station 伍's two ledgers price what the console is actually configuring:
-  // unchecked modules / scripts go grey and drop out of the totals
+  // station 伍's addition prices what the console is actually configuring:
+  // unchecked parts go grey and drop out of the footing
   initLedger()
+  // …and 例5.1 cycles through real library selectors, reader-driven
+  initCarousel()
   initWavyCiteGap()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks

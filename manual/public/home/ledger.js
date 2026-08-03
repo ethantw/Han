@@ -1,10 +1,10 @@
 /**
- * ledger.js — station 伍's two ledgers ⇄ the console's switches.
+ * ledger.js — station 伍's addition ⇄ the console's switches.
  *
- * The layer map and the script ledger are not decoration: they price the
- * build the reader is actually configuring in the left column. So every row
- * names the console key that ships it (`data-cfg`), unchecked rows go grey,
- * and the totals are re-summed from what is left.
+ * The plate is not decoration: it prices the build the reader is actually
+ * configuring in the left column. Every row names the console key that ships
+ * it (`data-cfg` / `data-pass`), unchecked rows go grey, and the footing is
+ * the sum of what is left.
  *
  * The console owns the state. This module never writes config and never
  * presses a control — it only listens to `han-config-change` (composed, so it
@@ -12,15 +12,35 @@
  * reflects. The component broadcasts its config on connect, which is what
  * seeds the first pass from a restored localStorage config.
  *
- * THE FIGURES ARE THE DOM'S. Nothing here knows how big han-prose is; it
- * reads the printed 'N.Nk' back out of the cells vite baked, so the sum can
- * never disagree with the column above it. The one exception is the cards'
- * gzip figure, which the card does not print but the footing needs — that
- * rides a `data-gzip` attribute on the same <li>. Summing the ROUNDED
- * figures (rather than bytes) is deliberate too: it makes the total equal
- * what a reader gets adding the visible column by hand.
+ * TWO SOURCES OF FIGURE, and the split is deliberate:
  *
- * Pure core (`parseK` / `sumOf` / `fmtK`), imperative shell (`initLedger`);
+ *   - The CSS rows and the `auto` row are FIXED files. Vite baked their
+ *     figures into the cells at build time.
+ *   - The manual-mode rows are NOT fixed — what `refinePunctuation` costs
+ *     depends on what else you ticked, because passes share code. Those come
+ *     from `pass-sizes.json`, which holds a real measured bundle for each of
+ *     the 31 possible selections (build/pass-sizes.js).
+ *
+ * The FOOTING, though, has one source: the printed column. Whatever wrote a
+ * row, the total re-reads it from the cells, so it can never disagree with
+ * the figures above it.
+ *
+ * ATTRIBUTION. For a selection, each ticked pass is billed the difference its
+ * arrival made, in PASSES order:
+ *
+ *     Δᵢ = size(first i passes) − size(first i−1 passes)
+ *
+ * so the column adds up to `size(selection)` exactly — a bundle that exists,
+ * not a model of one. Shared code lands on whichever pass comes first; that
+ * is the one honest choice available, since the alternative (charging both)
+ * would make the column sum to more than the file. An UNticked pass is priced
+ * differently and more usefully: what ticking it would add on top of the
+ * current selection.
+ *
+ * Summing the ROUNDED figures (rather than bytes) is deliberate too: it makes
+ * the total equal what a reader gets adding the visible column by hand.
+ *
+ * Pure core (`parseK` / `fmtK` / `chain`), imperative shell (`initLedger`);
  * no classes, no state of its own.
  */
 
@@ -32,69 +52,158 @@
  */
 const parseK = (text) => Number(text?.trim().match(/(\d+(?:\.\d+)?)KB$/)?.[1])
 
-const fmtK = (kb) => `${kb.toFixed(1)}KB`
+const fmtK = (kb) => (Number.isFinite(kb) ? `${kb.toFixed(1)}KB` : '—')
 
 const sumOf = (values) => values.filter(Number.isFinite).reduce((sum, kb) => sum + kb, 0)
 
+/** The three compression columns, in the order the table prints them. */
+const COLS = ['raw', 'br', 'gz']
+
+const figuresOf = ($row) =>
+  [...$row.querySelectorAll('td')].map(($td) => parseK($td.textContent))
+
 /**
- * A row's three figures, in the order the ledger prints them. The layer-map
- * cards print two and carry the third; the script rows print all three as
- * <td>s, so both shapes resolve through the same function and the totals
- * cannot end up measuring different things.
+ * Bill a selection: `{ floor, deltas }`, both in KB per column.
+ *
+ * `floor` is charged once, to its own row, the moment any hyperly-using pass
+ * is in play — detected as「the running total has cleared the floor」rather
+ * than by a hardcoded list, so adding a pass that happens not to need hyperly
+ * needs no change here.
+ *
+ * `ids` is the ticked passes in PASSES order; `sizeAt(mask)` returns the
+ * measured triple for a bitmask.
  */
-const figuresOf = ($row) => {
-  const $cells = $row.querySelectorAll('td')
-  if ($cells.length) {
-    const [raw, brotli, gzip] = [...$cells].map(($td) => parseK($td.textContent))
-    return { raw, brotli, gzip }
+const chain = (ids, order, sizeAt, floor) => {
+  const deltas = {}
+  let mask = 0
+  const prev = [0, 0, 0]
+  const charged = [false, false, false]
+
+  for (const id of order) {
+    if (!ids.includes(id)) continue
+    mask |= 1 << order.indexOf(id)
+    const cur = sizeAt(mask)
+    deltas[id] = COLS.map((_, i) => {
+      let d = cur[i] - prev[i]
+      if (!charged[i] && cur[i] >= floor[i]) {
+        d -= floor[i]
+        charged[i] = true
+      }
+      return d
+    })
+    COLS.forEach((_, i) => (prev[i] = cur[i]))
   }
-  return {
-    raw: parseK($row.querySelector('small')?.textContent),
-    brotli: parseK($row.querySelector('b')?.textContent),
-    gzip: parseK($row.dataset.gzip),
+
+  // What each UNticked pass would add on top of the current selection —
+  // the number a reader is actually asking for when hovering a checkbox.
+  for (const id of order) {
+    if (ids.includes(id)) continue
+    const withIt = sizeAt(mask | (1 << order.indexOf(id)))
+    deltas[id] = COLS.map((_, i) => withIt[i] - (mask ? prev[i] : 0))
   }
+
+  return { floor: charged, total: mask ? prev : [0, 0, 0], deltas, mask }
 }
 
-/** Rows whose console switch is still checked. `config` absent → all of them. */
-const keptOf = ($rows, config) =>
-  $rows.filter(($row) => config?.[$row.dataset.cfg] !== false)
-
 export const initLedger = ($root = document) => {
-  const $cards = [...$root.querySelectorAll('.LayerMap li[data-cfg]')]
-  const $scripts = [...$root.querySelectorAll('.ScriptLedger tbody tr[data-cfg]')]
-  if (!$cards.length && !$scripts.length) return
+  const $table = $root.querySelector('.Sum table')
+  if (!$table) return
 
+  const $css = [...$table.querySelectorAll('tbody tr[data-cfg]:not([data-js-row])')]
+  const $auto = $table.querySelector('tr[data-js-row="auto"]')
+  const $floor = $table.querySelector('tr[data-js-row="floor"]')
+  const $passes = [...$table.querySelectorAll('tr[data-js-row="pass"]')]
   const $totals = new Map(
-    [...$root.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
+    [...$table.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
   )
-  const write = (name, kb) => {
-    const $el = $totals.get(name)
-    if ($el) $el.textContent = fmtK(kb)
+
+  /**
+   * Measured once, cached by the browser like any other static asset. The
+   * fetch is NOT awaited before wiring up: `<han-console>` broadcasts its
+   * config on connect, and awaiting here would let that first event fire into
+   * a page with no listener — the plate would then sit at its build-time
+   * figures until the reader happened to touch a control. So the listener
+   * goes on synchronously, the latest config is remembered, and the arriving
+   * data replays it.
+   *
+   * A failed fetch is not fatal: the plate keeps the build-time figures and
+   * the auto row, which is the console's default anyway.
+   */
+  const dataRef = { current: null }
+  const latest = { current: null }
+  const order = () => dataRef.current?.passes.map((p) => p.id) ?? []
+  const sizeAt = (mask) => {
+    const s = dataRef.current?.sizes[mask]
+    return s ? [s.raw, s.br, s.gz] : [0, 0, 0]
+  }
+  const floorKb = () => {
+    const f = dataRef.current?.floor
+    return f ? [f.raw, f.br, f.gz] : [0, 0, 0]
+  }
+
+  const writeRow = ($row, triple, off) => {
+    $row.toggleAttribute('data-off', off)
+    $row.querySelectorAll('td').forEach(($td, i) => {
+      $td.textContent = fmtK(triple?.[i])
+    })
   }
 
   const apply = (config) => {
-    // grey out what the reader unchecked — both ledgers, one rule
-    for (const $row of [...$cards, ...$scripts]) {
+    latest.current = config
+    for (const $row of $css) {
       $row.toggleAttribute('data-off', config?.[$row.dataset.cfg] === false)
     }
 
-    // …then re-price what is left. Only the default-condition bundles carry
-    // `data-in-total`: the two `browser` rows are the SAME code packaged for
-    // a different `exports` condition, so counting them would bill the reader
-    // twice for one script.
-    const css = keptOf($cards, config).map(figuresOf)
-    const js = keptOf($scripts.filter(($r) => 'inTotal' in $r.dataset), config).map(figuresOf)
+    const data = dataRef.current
+    const manual = config?.fallbacks !== false && config?.jsMode === 'manual'
+    const ticked = manual ? order().filter((id) => config?.fn?.[id]) : []
+    const bill = data ? chain(ticked, order(), sizeAt, floorKb()) : null
 
-    for (const [suffix, key] of [['', 'brotli'], ['-gzip', 'gzip'], ['-raw', 'raw']]) {
-      const cssTotal = sumOf(css.map((f) => f[key]))
-      const jsTotal = sumOf(js.map((f) => f[key]))
-      write(`css${suffix}`, cssTotal)
-      write(`js${suffix}`, jsTotal)
-      write(`all${suffix}`, cssTotal + jsTotal)
+    // Mode gates which script rows are part of the plate at all. `hidden`,
+    // not `data-off`: an auto-mode reader is not「declining」the hyperly row,
+    // it is not a line item in their build.
+    if ($auto) {
+      $auto.hidden = manual
+      $auto.toggleAttribute('data-off', config?.fallbacks === false)
     }
+    if ($floor) {
+      $floor.hidden = !manual
+      // Charged only when something in the selection actually pulls hyperly
+      // in; a probes-only build never touches it.
+      $floor.toggleAttribute('data-off', !bill?.floor.some(Boolean))
+    }
+    for (const $row of $passes) {
+      $row.hidden = !manual
+      if (bill) writeRow($row, bill.deltas[$row.dataset.pass], !ticked.includes($row.dataset.pass))
+    }
+
+    // The footing sums the PRINTED column — every row that is on the plate
+    // (`:not([hidden])`) and still in the build (`:not([data-off])`), read
+    // back out of its own cells. Two reasons, and both matter:
+    //
+    //   · adding the rounded figures is what a reader does by hand, so this
+    //     is the only way the total can agree with the column above it. The
+    //     unrounded sum drifts by ~0.1KB over six rows and reads as an error;
+    //   · it makes the visible state authoritative — a row can never be shown
+    //     greyed while still being billed, because greyed IS how it drops out.
+    const kept = [...$table.querySelectorAll('tbody tr:not([hidden]):not([data-off])')]
+      .map(figuresOf)
+
+    COLS.forEach((col, i) => {
+      const $el = $totals.get({ raw: 'raw', br: 'brotli', gz: 'gzip' }[col])
+      if ($el) $el.textContent = fmtK(sumOf(kept.map((f) => f[i])))
+    })
   }
 
   document.addEventListener('han-config-change', (e) => {
     if (e.detail?.config) apply(e.detail.config)
   })
+
+  fetch('/han/pass-sizes.json')
+    .then((r) => r.json())
+    .then((data) => {
+      dataRef.current = data
+      if (latest.current) apply(latest.current)
+    })
+    .catch(() => {})
 }

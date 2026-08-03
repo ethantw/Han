@@ -140,3 +140,21 @@ node <this-script> dist/han.semantics.css dist/han.lines.css dist/han.prose.css 
    每個選擇器看起來都非零（第一版就是這樣錯的，111 個零被算成 0 個）。
 2. **`:where()` 內的逗號是選擇器列表**，展開後要逐支排名，不能把整串當成一個
    選擇器加總——否則會得到 `(0,4,0)` 這種把三個選擇器加在一起的假數字。
+
+
+## 後記：權重改由 build 期實算（2026-08-03）
+
+站伍的輪播不再寫死三元組。`manual/_specificity.js` 依 Selectors-4 §17 從選擇器
+文字本身算出權重，vite 在渲染後填進 `<code data-spec>`——所以改了選擇器，旁邊的
+數字不可能還停在舊值。上面〈重跑〉那支 postcss 腳本管的是另一件事（掃整份樣式表
+做普查），兩者不重疊。
+
+輪播選用的五條與本文算出的相同：
+
+| 權重 | 選擇器 | 模組 |
+|---|---|---|
+| (0,2,2) | `:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))` | semantics |
+| (0,2,1) | `[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])` | lines |
+| (0,2,0) | `:lang(ko):not(:lang(ko-Hant))` | fonts |
+| (0,1,2) | `ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))` | semantics |
+| (0,0,2) | `h1:has(+ h2, …, + section)` | prose |

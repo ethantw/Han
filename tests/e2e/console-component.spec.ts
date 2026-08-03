@@ -28,18 +28,31 @@ const DEFAULT_KEYS = [
   'semantics', 'citeTitleMarks', 'emSymbol', 'emPosition',
   'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
-  'zhuyinWebfont', 'baseGeneric', 'fallbacks',
-  // `--han-install` 的逐 pass 取捨，掛在 fallbacks 底下
-  'fbPunctuation', 'fbIss', 'fbAdjacentLines', 'fbProbes',
+  'zhuyinWebfont', 'baseGeneric', 'fallbacks', 'jsMode',
+  // 逐函式取捨（jsMode='manual' 時才有意義），掛在 fallbacks 底下。與
+  // heritage／punct 同樣是一個巢狀物件，控件用 `fn.<id>` 的點路徑對應。
+  'fn',
   'legacyRuby',
   'webfontDelivery', 'webfontCdnSource', 'metrics',
 ]
 
-/** 配置群組是 shadow 內的 <details> 手風琴——收合組裡的控件先展開。 */
-const openGroupOf = (page: Page, cfgKey: string) =>
-  page
-    .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
-    .click()
+/** 配置群組是 shadow 內的 <details> 手風琴——控件在收合的組裡就先展開。
+ *  已展開時是 no-op：模組開關撥動會連動展開對應的 details，所以「這一組是開
+ *  是關」取決於這條測試前面做了什麼，硬點一次 `:not([open])` 會等到逾時。 */
+const openGroupOf = async (page: Page, cfgKey: string) => {
+  // Wait for the group to EXIST first (the console mounts asynchronously), then
+  // click only if it is closed. A bare `:not([open]) … .click()` conflates the
+  // two: before the console mounts it matches nothing and auto-waits, which is
+  // right; after a module switch has already sprung the group open it also
+  // matches nothing, and then it waits until the test times out.
+  const $summary = page
+    .locator(`details.ControlGroup:has([data-cfg-key="${cfgKey}"]) > summary`)
+    .first()
+  await $summary.waitFor()
+  if (!(await $summary.evaluate(($el) => ($el.parentElement as HTMLDetailsElement).open))) {
+    await $summary.click()
+  }
+}
 
 test.describe('bare fixture — no home.css', () => {
   test('renders, token fallbacks paint, a control write reaches the target', async ({ page }) => {

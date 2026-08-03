@@ -17,9 +17,9 @@ import { installFallbacks, transpileRuby } from '@hanzi.pro/han.css'
 | `@hanzi.pro/han.css` | 純named exports，不自動執行 |
 | `@hanzi.pro/han.css/auto` | 載入即自動安裝（`DOMContentLoaded`），並re-export主入口全部API |
 
-`auto`入口的行為可用`:root`上的`--han-install`變量調整。值是**空白分隔的token列表**：`auto`（預設，探針＋回落全上）｜`fallbacks`（只回落，三道pass）｜`probes`（只跑探針）｜`none`（載入但不動作）｜`punctuation`（標點擠壓／懸掛）｜`iss`（混排間隙）｜`adjacent-lines`（鄰行間距）。後三者可自由並列，也可再加`probes`，例如`--han-install: punctuation iss`只跑那兩道。四個原有關鍵字語意不變。
+兩個入口的差別就是**體積**。`auto`把整套裝上，一行了事；主入口讓你只匯入用得到的那幾支，其餘交給打包器搖掉（`package.json`已宣告`sideEffects`）。首頁的`<han-console>`可以逐支勾選，並即時算出該組合打包後的大小。
 
-> 這是**行為**開關，不是體積開關：三道pass共用同一層hyperly＋helpers的底（8.4k裡約6.5k），勾少了檔案一樣大，只是少動你的DOM。要真的少付，改用具名匯入讓打包器自己搖——`package.json`已宣告`sideEffects`。走`<script src>`的人則該指向`dist/han.install.min.js`：同樣的行為，但沒有取不到的匯出，比`han.auto.min.js`少約1.5k（brotli）。
+> 曾經有個`--han-install`變量能從CSS縮減`auto`要跑的pass，已移除。各pass共用同一層hyperly的底，縮減只換得較小的DOM改動，換不到較小的檔案——在一個以體積為賣點的框架上，這種開關只會誤導。要少付，就走具名匯入。
 
 ## installFallbacks
 
@@ -43,7 +43,6 @@ installFallbacks(src: string | Hype): Hype  // SSR：傳入HTML來源
 
 ```ts
 uninstallFallbacks(root?)  // 逆轉全部DOM變更（還原空格、拆包裹、清標記）
-runProbes()                // 只跑環境探針並在:root寫入結果（供CSS回落規則讀取）
 ```
 
 ## transpileRuby
@@ -115,4 +114,6 @@ setDecorationInsetMode(mode)(src)             // 只寫變量
 
 ### 完整導出清單
 
-主入口共導出十五支函式：`installFallbacks`／`uninstallFallbacks`／`runProbes`／`transpileRuby`四支總控函式，加三組回落（標點擠壓懸掛、跨文種間隙、相鄰行裝飾線）共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
+主入口共導出十四支函式：`installFallbacks`／`uninstallFallbacks`／`transpileRuby`三支總控函式，加三組回落（標點擠壓懸掛、跨文種間隙、相鄰行裝飾線）共十一支；另有型別`RefineMode`／`ISSMode`／`DecorationInsetMode`。`auto`入口re-export全部。
+
+環境探針沒有獨立的入口。唯一的探針（Safari原生`text-autospace`跨行內元素邊界失效）只有混排間隙那一道pass在讀，所以它就住在那一道裡：`applyISSWithProbe`會跑它，結果記憶化。曾經有支`runProbes()`可單獨呼叫，除了讓人有機會把順序寫錯以外沒有別的作用。

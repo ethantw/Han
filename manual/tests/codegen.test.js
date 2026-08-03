@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DEFAULTS, MODULES, cssVars, installTokens, packages, renderCDN, renderBundler, renderInline,
+  DEFAULTS, MODULES, cssVars, PASSES, selectedPasses, passMask,
+  packages, renderCDN, renderBundler, renderInline,
 } from '../public/home/codegen.js'
 
 const cfg = (over = {}) => structuredClone({ ...DEFAULTS, ...over })
@@ -135,12 +136,9 @@ test('prose 自訂作用選擇器 → cdn css pane 含額外規則；prose off �
   assert.deepEqual(cssVars(cfg({ prose: false })), [])
 })
 
-// `<script src>` 走的是 han.install（副作用專用打包，無匯出，比 han.auto
-// 少 1.5k brotli）；npm 那頁才是 `…/auto`，交給 bundler 自己搖。
-test('CDN：勾後備 → html pane 含 han.install script；勾 legacyRuby → module script 呼叫', () => {
+test('CDN：auto → han.auto script；勾 legacyRuby → 另一段 module script 呼叫', () => {
   const withFallbacks = paneCode(renderCDN(cfg({ fallbacks: true })), 'html')
-  assert.ok(withFallbacks.includes('han.install.min.js'))
-  assert.ok(!withFallbacks.includes('han.auto.min.js'))
+  assert.ok(withFallbacks.includes('han.auto.min.js'))
   const withRuby = paneCode(renderCDN(cfg({ legacyRuby: true })), 'html')
   assert.ok(withRuby.includes('transpileRuby'))
 })
@@ -429,31 +427,45 @@ test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mo
   assert.ok(html.includes('mod.transpileRuby(document.body)'))
 })
 
-// ── `--han-install`：逐 pass 取捨 ──────────────────────────────────────
-// 四顆全開＝出廠 auto，不該輸出宣告；全關＝none；其餘輸出 token 列表。
-// 這幾顆改的是行為不是體積（三道 pass 共用同一層 hyperly 地板），所以測的是
-// 「宣告對不對」，不是「檔案有沒有變小」。
-test('installTokens：全開→null（出廠 auto）；部分→token 列表；全關→none', () => {
-  assert.equal(installTokens(DEFAULTS), null)
-  assert.equal(installTokens(cfg({ fbProbes: false })), 'punctuation iss adjacent-lines')
-  assert.equal(
-    installTokens(cfg({ fbIss: false, fbAdjacentLines: false })),
-    'punctuation probes',
-  )
-  assert.equal(
-    installTokens(cfg({ fbPunctuation: false, fbIss: false, fbAdjacentLines: false, fbProbes: false })),
-    'none',
-  )
-  // 後備整顆關掉 → 根本不載腳本，`--han-install` 沒有意義
-  assert.equal(installTokens(cfg({ fallbacks: false })), null)
+// ── 逐函式取捨（jsMode='manual'）────────────────────────────────────
+// 這裡改的是**體積**：勾了才 import，沒勾的交給打包器搖掉。所以測的是生成碼
+// 到底 import 了誰、呼叫了誰，以及 bitmask（站伍加法式的查表鍵）對不對。
+
+test('selectedPasses：auto 模式一律空；manual 依 fn 取捨，順序照 PASSES', () => {
+  assert.deepEqual(selectedPasses(DEFAULTS), [])
+  const ids = selectedPasses(cfg({ jsMode: 'manual' })).map((p) => p.id)
+  assert.deepEqual(ids, ['punctuation', 'iss', 'adjacentLines'])
+  // 後備整顆關掉 → 連 manual 也沒有東西可匯入
+  assert.deepEqual(selectedPasses(cfg({ jsMode: 'manual', fallbacks: false })), [])
 })
 
-test('cssVars：--han-install 不受樣式模組開關影響（腳本自己讀的旗標）', () => {
-  const vars = cssVars(cfg({
-    fbProbes: false, semantics: false, lines: false, prose: false, fonts: false,
-  }))
+test('passMask：bit i ↔ PASSES[i]，與 dist/pass-sizes.json 的查表鍵同構', () => {
+  assert.equal(passMask(DEFAULTS), 0)
+  assert.equal(passMask(cfg({ jsMode: 'manual' })), 0b00111)
+  assert.equal(
+    passMask(cfg({ jsMode: 'manual', fn: { ...DEFAULTS.fn, punctuation: false, ruby: true } })),
+    0b01110,
+  )
+})
+
+test('manual 模式：npm pane 具名匯入 ＋ 逐支呼叫，不再 import …/auto', () => {
+  const js = paneCode(renderBundler(cfg({ jsMode: 'manual' })), 'js')
+  assert.ok(js.includes("import { refinePunctuation, applyISSWithProbe, markAdjacentLines } from '@hanzi.pro/han.css'"))
+  assert.ok(js.includes('refinePunctuation(document.body)'))
+  assert.ok(!js.includes("han.css/auto"))
+})
+
+test('manual 模式：CDN pane 從 han.min.js 具名匯入，不掛 han.auto', () => {
+  const html = paneCode(renderCDN(cfg({ jsMode: 'manual' })), 'html')
+  assert.ok(html.includes('han.min.js'))
+  assert.ok(!html.includes('han.auto.min.js'))
+  assert.ok(html.includes('applyISSWithProbe(document.body)'))
+})
+
+test('PASSES 的 call 與 dist/pass-sizes.json 逐字相同——量的與生成的必須是同一個打包', async () => {
+  const { PASSES: MEASURED } = await import('../../build/pass-sizes.js')
   assert.deepEqual(
-    vars.find(([prop]) => prop === '--han-install'),
-    ['--han-install', 'punctuation iss adjacent-lines'],
+    PASSES.map(({ id, fn, call }) => ({ id, fn, call })),
+    MEASURED.map(({ id, fn, call }) => ({ id, fn, call })),
   )
 })

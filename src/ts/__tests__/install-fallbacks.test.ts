@@ -3,9 +3,9 @@ import assert from 'node:assert/strict'
 import { html } from 'hyperly/fp'
 import {
   installFallbacks,
-  runProbes,
   uninstallFallbacks,
 } from '../fallbacks.ts'
+import { applyISSWithProbe } from '../line-adjustments/iss.ts'
 
 /* `installFallbacks` has two execution modes; this file exercises the
  * Node SSR path (no `document` global) where it accepts a Hyperly
@@ -134,7 +134,6 @@ test('uninstallFallbacks: SSR + no root throws (clear contract)', () => {
 /* ────────────────────────────────────────────────────────── */
 /* Browser path — `document` + `CSS` globals defined.         */
 /*                                                            */
-/* Exercises the L106-108 branch: `runProbes()` is called,    */
 /* `root` defaults to `document.documentElement` when omitted */
 /* and `refinePunctuation` / `applyISSWithProbe` /            */
 /* `markAdjacentLines` run on a live DOM. Cleans up globals   */
@@ -195,15 +194,15 @@ test('Browser: installFallbacks() with no arg defaults to documentElement', asyn
   }
 })
 
-test('runProbes: runs clean and leaves no debris', async () => {
+test('the UA probe runs clean and leaves no debris', async () => {
   const { win, teardown } = await withBrowserGlobals()
   try {
-    // happy-dom can't lay out, so the one remaining probe (autospace) reads a
-    // zero delta and stamps nothing — which is the point: what this locks down
-    // is that a probe run is safe to call anywhere and tidies up after itself.
-    // Whether the marker is ever set is a real-engine question, and the e2e
-    // suite owns it.
-    runProbes()
+    // The probe lives inside `applyISSWithProbe` — there is no standalone
+    // `runProbes()` to call. happy-dom can't lay out, so the probe reads a
+    // zero delta and stamps nothing; what this locks down is that a probe run
+    // is safe to call anywhere and tidies up after itself. Whether the marker
+    // is ever set is a real-engine question, and the e2e suite owns it.
+    applyISSWithProbe(win.document.documentElement as any)
     assert.equal(win.document.body.children.length, 0, 'probe leaked into body')
     assert.equal(
       win.document.head.querySelectorAll('style').length,

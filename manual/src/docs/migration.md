@@ -112,9 +112,9 @@ installFallbacks(document.body)
 | `renderEm()` / `renderElem()` | 移除：語意樣式改純CSS（[語意樣式標準化](./semantics.html)） |
 | `renderDecoLine()` | 併入`installFallbacks`（相鄰行裝飾線標記） |
 | `renderRuby()` | `transpileRuby()`（opt-in，僅降級舊式標記） |
-| `Han.support` / `Han.detectFont()` / `initCond()` | 移除：改用`CSS.supports`＋內建探針（`runProbes`） |
+| `Han.support` / `Han.detectFont()` / `initCond()` | 移除：改用`CSS.supports`＋內建探針（`applyISSWithProbe`內建，無需自行呼叫） |
 | `groupify` / `charify` / `jinzify` / `replace` / `wrap` / `revert` | 非公開API（內部化／移除） |
-| `.han-init` / `.han-init-context` | `@hanzi.pro/han.css/auto`入口（可用`--han-install`調整） |
+| `.han-init` / `.han-init-context` | `@hanzi.pro/han.css/auto`入口（或自主入口具名匯入所需的pass） |
 | `<html class="han-js-rendered">` | 移除：無全域render旗標 |
 
 v4的`installFallbacks`是總開關，其下三組回落（標點擠壓懸掛／跨文種間隙／相鄰行裝飾線）也各自公開、可精細控制與SSR。完整清單見[JavaScript API](./api-js.html)。

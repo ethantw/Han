@@ -18,7 +18,7 @@
  */
 import {
   renderCDN, renderBundler, renderInline,
-  localHanCssUrls, HAN_INSTALL_LOCAL_URL, HAN_JS_LOCAL_URL,
+  localHanCssUrls, HAN_AUTO_LOCAL_URL, HAN_JS_LOCAL_URL, selectedPasses,
 } from '/home/codegen.js'
 import { highlightAll } from '/home/highlight.js'
 import { icon } from '/common/icon.js'
@@ -76,8 +76,10 @@ const fetchText = (url) => {
 const fetchInlineAssets = async (config) => {
   const [cssTexts, autoJs, hanJs] = await Promise.all([
     Promise.all(localHanCssUrls(config).map(fetchText)),
-    config.fallbacks ? fetchText(HAN_INSTALL_LOCAL_URL) : undefined,
-    config.legacyRuby ? fetchText(HAN_JS_LOCAL_URL) : undefined,
+    config.fallbacks && config.jsMode !== 'manual' ? fetchText(HAN_AUTO_LOCAL_URL) : undefined,
+    // 具名匯入的路徑（jsMode='manual'）與 legacyRuby 都要 han.min.js 的原始
+    // bytes——renderInline 從它動態 import，按匯出名取用選中的那幾支。
+    config.legacyRuby || selectedPasses(config).length ? fetchText(HAN_JS_LOCAL_URL) : undefined,
   ])
   return { css: cssTexts.join('\n'), autoJs, hanJs }
 }

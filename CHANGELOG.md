@@ -44,15 +44,15 @@ JavaScript (though it sharpens the finer details).**
   `<ruby>`. Safari 18.2+ uses native `ruby-position: inter-character`;
   other engines emulate it via an `@supports not` fallback. No JS polyfill.
 - **Optional JavaScript companion** (`installFallbacks`, or the `./auto`
-  entry that installs on `DOMContentLoaded` and honours the `--han-install`
-  knob: `auto` / `fallbacks` / `probes` / `none`). Each pass is gated by
+  entry that installs on `DOMContentLoaded`; import the named passes from the
+  main entry instead and your bundler ships only those). Each pass is gated by
   `CSS.supports` and runtime probes, and steps aside as engines catch up:
   - `refinePunctuation` — wraps full-width punctuation for squeeze / hang
     where `text-spacing-trim` / `hanging-punctuation` are absent.
   - `applyISS` — inter-script spacing where `text-autospace` is absent.
   - `markAdjacentLines` — adjacent-underline gap where
     `text-decoration-skip` is absent.
-  - `runProbes` / `uninstallFallbacks` — environment probing and teardown.
+  - `uninstallFallbacks` — teardown; every DOM change reversed.
   - Curried `…WithMode` / `…WithSelectors` / `set*Mode` variants for
     callers that need explicit control instead of cascade dispatch.
 - **`transpileRuby`** — opt-in helper that rewrites v3-legacy `<rtc>` /

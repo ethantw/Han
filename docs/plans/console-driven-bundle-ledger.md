@@ -1,7 +1,7 @@
 # 由 console 勾選算出的打包帳（＋站伍加法式、選擇器輪播）
 
-> 狀態：**待審**。2026-08-03 擬。動工前請先過目——這份計畫會撤掉 8/2 才做進去的
-> `han.install` 與 `--han-install`。
+> 狀態：**已落地**（2026-08-03）。原計畫保留在下，實作時的三處偏離記在文末
+> 〈落地紀錄〉。
 
 ## 一句話
 
@@ -122,3 +122,54 @@ applyISS          +0.9KB
   五語。
 - dev 模式下 `_moduleLedgerCache` 會把帳目凍在 server 起來那一刻，改了格式要重啟
   才看得到——這輪順手處理掉。
+
+
+## 落地紀錄（2026-08-03）
+
+四步都做完了。三處偏離原計畫，都是量了之後才知道非改不可：
+
+### ② 改成 2ⁿ 全打包，不做邊際估計
+
+計畫要的「地板 ＋ ΣΔ」有兩個破口：
+
+- `runProbes` 根本不引 hyperly（單獨打包 0.41KB），對地板的邊際是**負的**；
+- `refinePunctuation` 與 `applyISS` 共用約 1.5KB 的 line-adjustment helper，
+  兩者相加比實測的組合高估 20%——超過計畫自己設的 15% 警戒線。
+
+但實測發現**所有組合全部真打包只要不到兩秒**（esbuild 共用一個 service
+process），於是改成打完整查表：`build/pass-sizes.js` 產出
+`dist/pass-sizes.json`，每一種選擇都對應一個真的存在過的 bundle。估計誤差這
+一整類問題就此消失，加法式也才真的加得起來。
+
+`build/library.js` 在 prod build 尾端呼叫它；`manual/vite.config.js` 讀它取
+地板數字；`home/ledger.js` 執行期讀它算鏈式拆解。
+
+### 併掉 `runProbes`（擁有者中途指示）
+
+探針只剩 `detectAutospaceBoundaryBug` 一支，而讀它的只有混排間隙那一道 pass，
+所以它併回 `applyISSWithProbe`，不再單獨匯出、不上 console、不進加法式。
+console 的 `iss` 那一格因此改指 `applyISSWithProbe`——不然讀者自選 `applyISS`
+會靜默失去 Safari 的修正。可選函式從六支收成五支，組合數 63 → 31。
+
+### 加法式的合計改為「重讀印出來的那一欄」
+
+原本合計是拿未四捨五入的 KB 相加，與印出來的一位小數逐列相加差了 0.1KB。現在
+footing 掃 `tbody tr:not([hidden]):not([data-off])` 把格子裡的數字讀回來加，
+所以讀者自己用手加也會得到同一個數，且「置灰」與「不計入」在實作上是同一件事。
+
+### 其餘
+
+- ④ 的權重改由 `manual/_specificity.js` 於 build 期實算（Selectors-4 §17，
+  `:is()`／`:has()`／`:not()` 取引數中最重的一支、`:where()` 恆零），填進
+  `<code data-spec>`。輪播五條的權重 (0,2,2)／(0,0,2)／(0,2,1)／(0,1,2)／
+  (0,2,0) 全部與普查筆記對得上。
+- 版面上，計畫說的「取代兩本帳」照做了：`.LayerMap` 四張卡與 `.ScriptLedger`
+  合併成單一 `.Sum` 加法表，字體帳仍獨立。
+- 既有債清掉三項：console 的 `KV` → `KLR` 補完（a11y 兩條紅燈轉綠）、
+  `openGroupOf`／`openScriptSpecifics` 兩個測試 helper 改成等到元件掛載再判斷
+  開合（原本 `:not([open])` 在「已經開著」時匹配不到而空等到逾時）、
+  `webfonts-genki-gothic` 改為實際的套件名 `webfonts-genki-sans-yue`。
+  chromium e2e 由 15 紅收到 8 紅，剩下的八條在 HEAD 上同樣是紅的
+  （首頁 hero／lead-forme 一族與 watermark），與這輪無關。
+- 仍未處理：watermark、首頁 lede「一百〇九個〇」的重數、dev 模式
+  `_moduleLedgerCache` 的凍結。

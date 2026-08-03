@@ -17,10 +17,23 @@ import { test, expect, type Page } from '@playwright/test'
  * The CSS @import method tab was dropped (owner call) — only
  * bundler/npm ("bundler" radio value, label reads "npm") and cdn remain.
  */
-const openGroupOf = (page: Page, cfgKey: string) =>
-  page
-    .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
-    .click()
+/** 配置群組是 shadow 內的 <details> 手風琴——控件在收合的組裡就先展開。
+ *  已展開時是 no-op：模組開關撥動會連動展開對應的 details，所以「這一組是開
+ *  是關」取決於這條測試前面做了什麼，硬點一次 `:not([open])` 會等到逾時。 */
+const openGroupOf = async (page: Page, cfgKey: string) => {
+  // Wait for the group to EXIST first (the console mounts asynchronously), then
+  // click only if it is closed. A bare `:not([open]) … .click()` conflates the
+  // two: before the console mounts it matches nothing and auto-waits, which is
+  // right; after a module switch has already sprung the group open it also
+  // matches nothing, and then it waits until the test times out.
+  const $summary = page
+    .locator(`details.ControlGroup:has([data-cfg-key="${cfgKey}"]) > summary`)
+    .first()
+  await $summary.waitFor()
+  if (!(await $summary.evaluate(($el) => ($el.parentElement as HTMLDetailsElement).open))) {
+    await $summary.click()
+  }
+}
 
 const pane = (page: Page, lang: string) =>
   page.locator(`[data-out-panes] pre[data-lang="${lang}"] code`)
@@ -51,22 +64,21 @@ test.describe('playground configurator', () => {
   })
 
   test('換傳承家族 → 注入對應 webfont link', async ({ page }) => {
-    await expect(page.locator('link[href*="webfonts-genki-gothic"]')).toHaveCount(0)
+    await expect(page.locator('link[href*="webfonts-genki-sans-yue"]')).toHaveCount(0)
     // 繁體專項平鋪（owner call）——家族選單直接可見。
     await page.locator('[data-cfg-key="heritageFamily"]').selectOption('genki')
     await expect(
-      page.locator('link[href*="webfonts-genki-gothic"]').first(),
+      page.locator('link[href*="webfonts-genki-sans-yue"]').first(),
     ).toBeAttached()
   })
 
-  // `<script src>` 走 han.install（副作用專用打包、無匯出，比 han.auto 少 1.5k
-  // brotli）；npm 那頁才是 `…/auto`，交給消費者的 bundler 自己搖。
-  test('勾後備 → CDN 頁 html pane 出現 han.install script 行', async ({ page }) => {
+  // `<script src>` 走 han.auto（載入即安裝）；要縮體積是 manual 模式的事——
+  // 那條路改成從 han.min.js 具名匯入，交給消費者的 bundler 自己搖。
+  test('勾後備 → CDN 頁 html pane 出現 han.auto script 行', async ({ page }) => {
     await openGroupOf(page, 'fallbacks')
     await page.locator('[data-cfg-key="fallbacks"]').check()
     await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
-    await expect(pane(page, 'html')).toContainText('han.install.min.js')
-    await expect(pane(page, 'html')).not.toContainText('han.auto.min.js')
+    await expect(pane(page, 'html')).toContainText('han.auto.min.js')
   })
 
   // 圖標是 mask 空盒（common/icons.css），按鈕沒有文字可斷言——回饋改看

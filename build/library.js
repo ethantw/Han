@@ -1,6 +1,7 @@
 import esbuild from 'esbuild'
 import { spawnSync } from 'node:child_process'
 import { readFile, writeFile, rm } from 'node:fs/promises'
+import { measurePassSizes } from './pass-sizes.js'
 
 const watch = process.argv.includes('--watch')
 
@@ -118,15 +119,6 @@ const BROWSER_TS_BUNDLE_CONFIG = {
   entryPoints: [
     { in: 'src/han.ts', out: 'han.browser' },
     { in: 'src/han.auto.ts', out: 'han.auto.browser' },
-    /**
-     * `han.install` — the side-effect-only twin of `han.auto`, for the
-     * `<script type="module" src="…">` audience (see src/han.install.ts).
-     * Browser-condition ONLY, and deliberately so: a script tag never runs
-     * in Node, so there is no default-condition sibling to build. Dropping
-     * the re-exports is worth ~1.5k brotli (10.1k → 8.6k) — the figure the
-     * homepage's script ledger prices.
-     */
-    { in: 'src/han.install.ts', out: 'han.install' },
   ],
   external: [],
   alias: { 'happy-dom': './build/happy-dom.browser-stub.js' },
@@ -173,4 +165,14 @@ if (watch) {
     }),
   ])
   await emitTypes()
+  await emitPassSizes()
+}
+
+/**
+ * `dist/pass-sizes.json` — the homepage's addition ledger, measured here
+ * rather than in the manual's own build so the figures come from the same
+ * run that produced the bundles they describe. See build/pass-sizes.js.
+ */
+async function emitPassSizes() {
+  await writeFile('dist/pass-sizes.json', JSON.stringify(await measurePassSizes(), null, 2))
 }
