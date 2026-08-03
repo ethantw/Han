@@ -202,7 +202,7 @@
    * 不同（120 片、命中 71–103），另計。
    */
   arFlNote: {
-    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），約43KB，罕用字只在命中時才會下載，縮短頁面加載時間。',
+    hant: '瀏覽器會按需加載命中的字體切片，單篇文章一般命中16–31個切片（中位24），每個切片約43KB。罕用字只在命中時才會下載，縮短頁面加載時間。',
     hans: '字体按需加载命中的切片，单篇文章一般命中16–31个切片（中位24），续读下一篇通常只再多1片、约43KB，罕用字只在命中时才会下载，缩短页面加载时间。尚古系列是可变字体，一个切片即涵盖250–900全部字重；其余家族每个字重各有一份切片，即表中的「片数×字重」。',
     en: 'A page fetches only the slices its characters land in — 16–31 of them for a typical article (median 24), and usually one more slice, about 43KB, for the next article the reader opens. Rare characters arrive only when something actually uses them. Shanggu is a variable font, so one slice covers the whole 250–900 range; the other families ship a slice per weight, which is the “slices × weights” column.',
     ja: '字体は文字が当たった切片だけを読み込む——一本の記事で16〜31片（中央値24）、次の記事へ進んでも足されるのはたいてい1片、約43KBである。稀用字は実際に使われたときにだけ届く。尚古はバリアブルフォントで、一片が250〜900の全ウェイトを賄う。他の家族はウェイトごとに切片を持ち、それが表の「片数×字重」である。',
@@ -497,27 +497,29 @@
            a word of prose doing the comparing. Both triples are the carousel
            item's own (`data-spec-out` / `data-mine-out`), so they travel with
            the pair in the pane. -->
-      <p class="Formula Applied" lang="en">
+      <!-- The comparison, split into two lines so each can sit level with the
+           rule it describes in the pane beside it (CSS subgrid — see
+           station-craft.css § .Example). Line one is the framework's weight
+           going into `:where()` and coming out zero; line two is the reader's.
+           The chevron between them opens DOWNWARD: it is a `≻` turned a
+           quarter-turn, and it says the lower of the two is the greater. -->
+      <p class="Formula Applied Eq-lib" lang="en">
         <math display="block">
-          <mtable>
-            <mtr>
-              <mtd class="Fn">
-                <!-- The triple's OWN parentheses stand in for the function's:
-                     `:where(0,2,2)` rather than `:where((0,2,2))`, which is
-                     what a double set reads as. -->
-                <mrow><mi>:where</mi><mn data-spec-out>(0,2,2)</mn></mrow>
-              </mtd>
-              <mtd><mo>→</mo></mtd>
-              <mtd><mn class="Zero">(0,0,0)</mn></mtd>
-            </mtr>
-            <mtr class="Mine">
-              <mtd></mtd>
-              <mtd></mtd>
-              <mtd><mn data-mine-out>(0,0,2)</mn></mtd>
-            </mtr>
-          </mtable>
+          <mrow>
+            <!-- The triple's OWN parentheses stand in for the function's:
+                 `:where(0,2,2)` rather than `:where((0,2,2))`, which is what
+                 a double set reads as. -->
+            <mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn>
+            <mo>→</mo>
+            <mn class="Zero">(0,0,0)</mn>
+          </mrow>
         </math>
         <small class="EqNo">（例5.1）</small>
+      </p>
+      <p class="Formula Applied Eq-mine" lang="en">
+        <math display="block">
+          <mrow><mn data-mine-out>(0,1,1)</mn></mrow>
+        </math>
       </p>
       <p class="EgNote">{{ arEgNote }}</p>
       <nav class="SelNav" hidden>

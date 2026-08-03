@@ -166,6 +166,25 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
     items.first().locator('[data-role="framework"] .RuleDecl'),
   ).toHaveCSS('text-decoration-line', 'line-through')
 
+  // Each equation line sits level with the rule it describes — the pane
+  // hands its two panel heights up through subgrid, so this holds however
+  // tall the item is. (Centre-to-centre, to the pixel.)
+  const mid = async (sel: string) =>
+    Math.round(await page.locator(sel).evaluate((el) => {
+      const r = el.getBoundingClientRect()
+      return r.y + r.height / 2
+    }))
+  // Within a few px — the panels carry a border and the lines do not, so the
+  // two centres round apart by a pixel or two; anything more means the
+  // subgrid stopped applying and the rows collapsed.
+  for (const [line, panel] of [['lib', 'framework'], ['mine', 'mine']] as const) {
+    const drift = Math.abs(
+      (await mid(`#station-craft .Eq-${line}`))
+      - (await mid(`#station-craft li[data-current] [data-role="${panel}"]`)),
+    )
+    expect(drift).toBeLessThan(4)
+  }
+
   // Reader-driven: the nav is hidden in the markup and only carousel.js
   // unhides it, so a no-JS page never offers a button that does nothing.
   const next = page.locator('#station-craft [data-sel-step="1"]')

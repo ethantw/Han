@@ -263,10 +263,15 @@
     @media (min-width: 60rem) {
       display: grid;
       grid-template-columns: 2fr 1fr;
+      /* Two equation rows, each level with the rule it describes. The pane
+         hands its own two panel heights up through `grid-template-rows:
+         subgrid` (Baseline 2023), so rows 1 and 2 of THIS grid are exactly
+         the two panels' heights — and `align-self: center` then puts each
+         line on its panel's middle. Nothing measures anything in JS. */
       grid-template-areas:
-        "eq    rules"
-        "note  rules"
-        ".     nav";
+        "eqa   rules"
+        "eqb   rules"
+        "note  nav";
       /* The nav belongs UNDER THE PANE, not under the prose: it pages the
          pane, and a control sitting under the thing it does not control is
          the kind of small wrongness a reader feels without being able to name.
@@ -275,14 +280,15 @@
          `1fr` on the middle row (with `align-items: start`) parks the slack
          BELOW the equation instead of sharing it out between the two blocks,
          which is what pulled them apart. */
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: auto auto auto;
       align-items: start;
       column-gap: 2.5rem;
     }
   }
 
   .SelRing { grid-area: rules; }
-  .Applied { grid-area: eq; }
+  .Eq-lib  { grid-area: eqa; }
+  .Eq-mine { grid-area: eqb; }
   .EgNote  { grid-area: note; }
   .SelNav  { grid-area: nav; }
 
@@ -291,24 +297,12 @@
       font-size: var(--fs-lede);
     }
 
-    /* Ranged left with the annotation above it — see .Brace. `text-align`
-       alone does NOT do it: `<math display="block">` is centred by the UA
-       with auto inline margins, and a block box with auto margins ignores its
-       parent's text-align. The margin is what has to go. */
+    /* Centred — and `display: block math` centres its own content, which is
+       exactly what is wanted here, so nothing has to be said. (It is worth
+       knowing that it does: `text-align` cannot move it, measured.) */
     @media (min-width: 60rem) {
-      margin-block-start: 1rem;
-      text-align: start;
-
-      /* `display: block math` CENTRES ITS OWN CONTENT (measured: the math
-         box sits at the parent's start edge with zero margins, and the <mrow>
-         inside it is centred). So neither `text-align` nor the margin ranges
-         it left — the box has to stop being a block. `inline math` shrinks it
-         to its content, and the paragraph's own `text-align: start` then puts
-         it where the annotation above it starts. */
-      math {
-        display: inline math;
-        margin-inline: 0;
-      }
+      margin-block: 0;
+      padding-inline-end: 0;
     }
   }
 
@@ -360,6 +354,45 @@
     .Mine {
       color: var(--palette-text);
       font-weight: 500;
+    }
+  }
+
+  /* The chevron that says「the lower one is the greater」— a `≻` turned a
+     quarter-turn anticlockwise, so its opening faces DOWN, toward the winner.
+     Drawn on the second line and pushed up into the gap between the two, so
+     it belongs to neither and points across both. `aria-hidden`-equivalent:
+     it is decoration for a comparison the sentence below states in words. */
+  .Eq-mine {
+    & {
+      position: relative;
+      margin-block-start: 0;
+    }
+
+    /* A short stroke coming down from the line above, ending in the chevron.
+       The stroke matters: the two lines are a panel's height apart, and a
+       chevron on its own at that distance reads as a stray caret rather than
+       as a comparison between them. Its length is fixed — the gap is set by
+       the pane and cannot be known here. */
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block-end: calc(100% + 1.5em);
+      inset-inline-start: 50%;
+      block-size: 1.75em;
+      border-inline-start: 1px solid var(--palette-rule);
+    }
+
+    &::after {
+      content: "≻";
+      position: absolute;
+      inset-block-end: 100%;
+      inset-inline: 0;
+      margin-block-end: 0.1em;
+      rotate: -90deg;
+      font-size: 1.25em;
+      line-height: 1;
+      color: var(--palette-supplement-text);
+      text-align: center;
     }
   }
 
@@ -559,6 +592,37 @@
       font-size: var(--fs-fine);
       font-variant-numeric: tabular-nums lining-nums;
       color: var(--palette-supplement-text-2q);
+    }
+  }
+
+  /* ── Each equation level with the rule it describes ──────────────────
+   * LAST in this block on purpose: the carousel's own `> li { grid-area:
+   * 1 / 1 }` (above) would otherwise win on source order and collapse the
+   * two panels back into one cell.
+   *
+   * The pane hands its two panel heights up through `grid-template-rows:
+   * subgrid` (Baseline 2023) — twice, since the panels are a generation
+   * further down (.SelRing → li → .Rule). Rows 1 and 2 of `.Example` then
+   * ARE the two panels, and `align-self: center` puts each line on its
+   * panel's middle. Nothing is measured in JS, and it survives the carousel
+   * swapping items of different heights. */
+  @media (min-width: 60rem) {
+    .SelRing {
+      grid-row: 1 / span 2;
+      grid-template-rows: subgrid;
+    }
+
+    .SelRing > li {
+      grid-area: 1 / 1 / span 2 / span 1;
+      grid-template-rows: subgrid;
+    }
+
+    .Rule[data-role="framework"] { grid-row: 1; }
+    .Rule[data-role="mine"]      { grid-row: 2; }
+
+    .Eq-lib,
+    .Eq-mine {
+      align-self: center;
     }
   }
 }
