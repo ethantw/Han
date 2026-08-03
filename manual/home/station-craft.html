@@ -546,7 +546,7 @@
        and with JS off, and switching modes never waits on a fetch.
        `data-off` on the manual rows encodes the console's default (auto). -->
   <h3 class="LedgerHead">{{ arSumHead }}</h3>
-  <figure class="Sum" data-eq-face="serif" data-eq-align="start">
+  <figure class="Sum">
     <div data-plate="items">
       <table>
         <thead>
@@ -606,33 +606,34 @@
             <mtd></mtd><mtd></mtd>
             <mtd><mtext>{{ arScColRaw }}</mtext></mtd>
             <mtd data-col="gz"><mtext>gzip</mtext></mtd>
-            <mtd class="Lead"><mtext>brotli</mtext></mtd>
+            <mtd class="Lead"><mtext>brotli</mtext></mtd><mtd></mtd>
           </mtr>
           <mtr>
             <mtd></mtd>
             <mtd class="Term"><mtext>CSS</mtext></mtd>
-            <mtd><mn data-sum="raw-css">19.8</mn></mtd>
-            <mtd data-col="gz"><mn data-sum="gz-css">3.9</mn></mtd>
-            <mtd class="Lead"><mn data-sum="br-css">3.3</mn></mtd>
+            <mtd><mn data-sum="raw-css">{{ sizeTotalRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-css">{{ sizeTotalGzipNum }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-css">{{ sizeTotalNum }}</mn></mtd><mtd></mtd>
           </mtr>
           <mtr>
             <mtd class="Op"><mo>+</mo></mtd>
             <mtd class="Term"><mtext>JS</mtext></mtd>
-            <mtd><mn data-sum="raw-js">30.4</mn></mtd>
-            <mtd data-col="gz"><mn data-sum="gz-js">10.9</mn></mtd>
-            <mtd class="Lead"><mn data-sum="br-js">9.8</mn></mtd>
+            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-js">{{ sizeJsAutoGzipNum }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-js">{{ sizeJsAutoNum }}</mn></mtd><mtd></mtd>
           </mtr>
           <mtr class="Total">
             <mtd class="Op"><mo>=</mo></mtd>
             <mtd></mtd>
-            <mtd><mn data-sum="raw-all">50.2</mn></mtd>
-            <mtd data-col="gz"><mn data-sum="gz-all">14.8</mn></mtd>
+            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-all">{{ sizeDefaultTotalGzipNum }}</mn></mtd>
             <!-- The unit, ONCE. Repeating KB in every cell turned the sum
                  into a wall of the same two letters; a sum states its unit
                  at the answer and the columns read as figures again. It is
                  a sibling <mtext>, not part of the <mn>, so ledger.js can
                  keep writing bare numbers into every cell alike. -->
-            <mtd class="Lead"><mn data-sum="br-all" class="Zero">13.1</mn><mtext class="Unit">KB</mtext></mtd>
+            <mtd class="Lead"><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotalNum }}</mn></mtd>
+            <mtd class="Unit"><mtext>KB</mtext></mtd>
           </mtr>
         </mtable>
       </math>

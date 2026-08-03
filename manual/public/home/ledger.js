@@ -59,8 +59,32 @@ const parseK = (text) => Number(text?.trim().match(/(\d+(?:\.\d+)?)KB$/)?.[1])
 
 const fmtK = (kb) => (Number.isFinite(kb) ? `${kb.toFixed(1)}KB` : '—')
 
-/** The same figure without its unit — the sum states KB once, at the answer. */
-const fmtNum = (kb) => (Number.isFinite(kb) ? kb.toFixed(1) : '—')
+/**
+ * The same figure without its unit — the sum states KB once, at the answer —
+ * and PADDED TO A FIXED WIDTH with U+2007 FIGURE SPACE.
+ *
+ * That padding is what aligns the decimal points, and it is the only thing
+ * that can. A `<mtd>` is a table cell whose UA `text-align` is
+ * `-webkit-center`, but an `<mn>` inside it computes to `display: block math`
+ * — a BLOCK child, which `text-align` does not move. Measured: `text-align`,
+ * `direction: rtl` and `display: inline-block` on the token all failed to
+ * shift it, and forcing the cell to `display: block` collapses the mtable.
+ *
+ * So the alignment is done in the TEXT, the way a compositor would: U+2007 is
+ * defined to be the width of a digit, `tabular-nums` makes that exact, and
+ * once every string in a column is the same width the UA's centring puts them
+ * in the same place. (This is also why the sum's rows are all one size — a
+ * larger row would have wider digits and drift out of column again.)
+ */
+const FIGURE_SPACE = '\u2007'
+const INT_WIDTH = 2
+
+const padNum = (text) => {
+  const [int] = text.split('.')
+  return FIGURE_SPACE.repeat(Math.max(0, INT_WIDTH - int.length)) + text
+}
+
+const fmtNum = (kb) => (Number.isFinite(kb) ? padNum(kb.toFixed(1)) : '—')
 
 const sumOf = (values) => values.filter(Number.isFinite).reduce((sum, kb) => sum + kb, 0)
 

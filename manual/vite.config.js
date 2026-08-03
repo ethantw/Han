@@ -153,8 +153,19 @@ async function computeModuleLedger() {
   // forgive — a reader who parses `3.5kb` as kilobits reads our claim as 8×
   // better than it is.
   const fmtSize = kb => kb == null ? '—' : `${kb.toFixed(1)}KB`
-  const total = sizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
-  const totalGzip = gzipSizes.reduce((sum, kb) => sum + (kb ?? 0), 0)
+  /**
+   * The same figure with no unit, padded to two integer digits with U+2007
+   * FIGURE SPACE — the caption's sum aligns its decimal points that way (and
+   * only that way; see home/ledger.js § fmtNum).
+   */
+  const fmtFigure = kb => {
+    if (kb == null) return '—'
+    const text = kb.toFixed(1)
+    return '\u2007'.repeat(Math.max(0, 2 - text.split('.')[0].length)) + text
+  }
+  const sum = xs => xs.reduce((acc, kb) => acc + (kb ?? 0), 0)
+  const total = sum(sizes)
+  const totalGzip = sum(gzipSizes)
   _moduleLedgerCache = {
     ...Object.fromEntries(keys.map((k, i) => [k, fmtSize(sizes[i])])),
     ...Object.fromEntries(jsKeys.map((k, i) => [k, fmtSize(jsSizes[i])])),
@@ -187,6 +198,23 @@ async function computeModuleLedger() {
       [['floorRaw', 'raw'], ['floorBr', 'br'], ['floorGz', 'gz']]
         .map(([token, key]) => [token, fmtSize(passSizes?.floor?.[key])]),
     ),
+    /**
+     * Unit-less twins for the caption's sum, padded to a fixed integer width
+     * with U+2007 FIGURE SPACE so the decimal points line up before
+     * home/ledger.js has run (it pads the same way — see `fmtNum` there for
+     * why the alignment cannot be done in CSS).
+     */
+    ...Object.fromEntries(Object.entries({
+      sizeTotalNum:            total,
+      sizeTotalGzipNum:        totalGzip,
+      sizeTotalRawNum:         sum(rawSizes),
+      sizeJsAutoNum:           jsSizes[jsKeys.indexOf('sizeJsAuto')],
+      sizeJsAutoGzipNum:       jsGzipSizes[jsKeys.indexOf('sizeJsAuto')],
+      sizeJsAutoRawNum:        jsRawSizes[jsKeys.indexOf('sizeJsAuto')],
+      sizeDefaultTotalNum:     total + (jsSizes[jsKeys.indexOf('sizeJsAuto')] ?? 0),
+      sizeDefaultTotalGzipNum: totalGzip + (jsGzipSizes[jsKeys.indexOf('sizeJsAuto')] ?? 0),
+      sizeDefaultTotalRawNum:  sum(rawSizes) + (jsRawSizes[jsKeys.indexOf('sizeJsAuto')] ?? 0),
+    }).map(([k, kb]) => [k, fmtFigure(kb)])),
     depsCount: String(deps.length),
     depsNames: deps.join('・'),
   }
