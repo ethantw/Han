@@ -6,11 +6,16 @@
  * it (`data-cfg` / `data-pass`), unchecked rows go grey, and the footing is
  * the sum of what is left.
  *
- * The console owns the state. This module never writes config and never
- * presses a control — it only listens to `han-config-change` (composed, so it
- * bubbles out of the shadow root, the same route punct-lang.js takes) and
- * reflects. The component broadcasts its config on connect, which is what
- * seeds the first pass from a restored localStorage config.
+ * The console still owns the state. Ticking a box here does NOT set config:
+ * it drives the console's own control (`.checked` ＋ an `input` event) and
+ * waits for the broadcast to come back, exactly as punct-lang.js does. One
+ * writer, one source of truth — a plate that set config directly would be a
+ * second one, and the two would drift the first time the console grew a
+ * cascade rule the plate did not know about.
+ *
+ * So: push on click, pull on `han-config-change` (composed, so it bubbles out
+ * of the shadow root). The component broadcasts its config on connect, which
+ * is what seeds the first pass from a restored localStorage config.
  *
  * TWO SOURCES OF FIGURE, and the split is deliberate:
  *
@@ -148,8 +153,38 @@ export const initLedger = ($root = document) => {
     return f ? [f.raw, f.br, f.gz] : [0, 0, 0]
   }
 
-  const writeRow = ($row, triple, off) => {
+  /**
+   * A row's console key: a style module (`data-cfg`) or a named import
+   * (`data-pass` → the console's `fn.<id>` checkbox). Rows without one (the
+   * hyperly floor, the group heads) are not switches and carry no box.
+   */
+  const keyOf = ($row) =>
+    $row.dataset.cfg ?? ($row.dataset.pass ? `fn.${$row.dataset.pass}` : null)
+
+  /** Drive the console's own control — never `config` directly (see header). */
+  const push = ($row, on) => {
+    const key = keyOf($row)
+    const $ctrl = key && document.querySelector('han-console')
+      ?.shadowRoot?.querySelector(`[data-cfg-key="${key}"]`)
+    if (!$ctrl || $ctrl.checked === on) return
+    $ctrl.checked = on
+    $ctrl.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+
+  $table.addEventListener('change', (e) => {
+    const $box = e.target.closest?.('input[data-toggle]')
+    if ($box) push($box.closest('tr'), $box.checked)
+  })
+
+  /** Reflect a row's state — greying and its box move together, always. */
+  const setOff = ($row, off) => {
     $row.toggleAttribute('data-off', off)
+    const $box = $row.querySelector('input[data-toggle]')
+    if ($box) $box.checked = !off
+  }
+
+  const writeRow = ($row, triple, off) => {
+    setOff($row, off)
     $row.querySelectorAll('td').forEach(($td, i) => {
       $td.textContent = fmtK(triple?.[i])
     })
@@ -158,7 +193,7 @@ export const initLedger = ($root = document) => {
   const apply = (config) => {
     latest.current = config
     for (const $row of $css) {
-      $row.toggleAttribute('data-off', config?.[$row.dataset.cfg] === false)
+      setOff($row, config?.[$row.dataset.cfg] === false)
     }
 
     const data = dataRef.current
@@ -171,13 +206,13 @@ export const initLedger = ($root = document) => {
     // it is not a line item in their build.
     if ($auto) {
       $auto.hidden = manual
-      $auto.toggleAttribute('data-off', config?.fallbacks === false)
+      setOff($auto, config?.fallbacks === false)
     }
     if ($floor) {
       $floor.hidden = !manual
       // Charged only when something in the selection actually pulls hyperly
       // in; a probes-only build never touches it.
-      $floor.toggleAttribute('data-off', !bill?.floor.some(Boolean))
+      setOff($floor, !bill?.floor.some(Boolean))
     }
     for (const $row of $passes) {
       $row.hidden = !manual

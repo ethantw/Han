@@ -502,20 +502,20 @@
         </thead>
         <tbody data-group="css">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">CSS</th></tr>
-          <tr data-cfg="semantics"><th scope="row">han-semantics</th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemantics }}</td><td>{{ sizeSemanticsGzip }}</td></tr>
-          <tr data-cfg="lines"><th scope="row">han-lines</th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLines }}</td><td>{{ sizeLinesGzip }}</td></tr>
-          <tr data-cfg="prose"><th scope="row">han-prose</th><td>{{ sizeProseRaw }}</td><td>{{ sizeProse }}</td><td>{{ sizeProseGzip }}</td></tr>
-          <tr data-cfg="fonts"><th scope="row">han-fonts</th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFonts }}</td><td>{{ sizeFontsGzip }}</td></tr>
+          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label></th><td>{{ sizeSemanticsRaw }}</td><td>{{ sizeSemantics }}</td><td>{{ sizeSemanticsGzip }}</td></tr>
+          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label></th><td>{{ sizeLinesRaw }}</td><td>{{ sizeLines }}</td><td>{{ sizeLinesGzip }}</td></tr>
+          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label></th><td>{{ sizeProseRaw }}</td><td>{{ sizeProse }}</td><td>{{ sizeProseGzip }}</td></tr>
+          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label></th><td>{{ sizeFontsRaw }}</td><td>{{ sizeFonts }}</td><td>{{ sizeFontsGzip }}</td></tr>
         </tbody>
         <tbody data-group="js">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>
-          <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row">han.auto.js<small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
+          <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row"><label><input type="checkbox" data-toggle checked>han.auto.js</label><small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
           <tr data-js-row="floor" hidden><th scope="row">hyperly<small>{{ arSumFloor }}</small></th><td>{{ floorRaw }}</td><td>{{ floorBr }}</td><td>{{ floorGz }}</td></tr>
-          <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row">refinePunctuation<small>{{ arSumFnPunct }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="iss"><th scope="row">applyISSWithProbe<small>{{ arSumFnIss }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row">markAdjacentLines<small>{{ arSumFnAdjacent }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="ruby"><th scope="row">transpileRuby<small>{{ arSumFnRuby }}</small></th><td>—</td><td>—</td><td>—</td></tr>
-          <tr hidden data-js-row="pass" data-pass="uninstall"><th scope="row">uninstallFallbacks<small>{{ arSumFnUninstall }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row"><label><input type="checkbox" data-toggle>refinePunctuation</label><small>{{ arSumFnPunct }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="iss"><th scope="row"><label><input type="checkbox" data-toggle>applyISSWithProbe</label><small>{{ arSumFnIss }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row"><label><input type="checkbox" data-toggle>markAdjacentLines</label><small>{{ arSumFnAdjacent }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="ruby"><th scope="row"><label><input type="checkbox" data-toggle>transpileRuby</label><small>{{ arSumFnRuby }}</small></th><td>—</td><td>—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="uninstall"><th scope="row"><label><input type="checkbox" data-toggle>uninstallFallbacks</label><small>{{ arSumFnUninstall }}</small></th><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
         <tfoot>
           <tr>

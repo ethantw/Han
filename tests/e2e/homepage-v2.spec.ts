@@ -247,5 +247,48 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   await set('fn.punctuation', false)
   await expect(table.locator('tr[data-pass="punctuation"][data-off]')).toHaveCount(1)
   expect(await total()).toBeLessThan(manualAll)
+
+  // …and the plate's OWN box does the same thing, because it drives the
+  // console's control rather than setting config behind its back. Ticking it
+  // here must move the switch in the left column, not just the row.
+  await table.locator('tr[data-pass="punctuation"] input[data-toggle]').check()
+  await expect(table.locator('tr[data-pass="punctuation"][data-off]')).toHaveCount(0)
+  expect(await total()).toBeCloseTo(manualAll, 5)
+  expect(await page.evaluate(() =>
+    document.querySelector('han-console')!.shadowRoot!
+      .querySelector<HTMLInputElement>('[data-cfg-key="fn.punctuation"]')!.checked,
+  )).toBe(true)
+})
+
+test('station 伍・工法: the plate\u2019s own boxes drive the console', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForFunction(() => 'pgReady' in document.documentElement.dataset)
+
+  const table = page.locator('#station-craft .Sum table')
+  const consoleBox = (key: string) =>
+    page.evaluate((k) => document.querySelector('han-console')!.shadowRoot!
+      .querySelector<HTMLInputElement>(`[data-cfg-key="${k}"]`)!.checked, key)
+
+  // Untick a style module from the plate → the console's switch follows, the
+  // row greys, and the footing drops. One writer: the plate never sets
+  // config, it presses the console's control (see home/ledger.js).
+  const before = Number((await table.locator('tfoot [data-total="brotli"]').innerText())
+    .trim().replace('KB', ''))
+  await table.locator('tr[data-cfg="prose"] input[data-toggle]').uncheck()
+  expect(await consoleBox('prose')).toBe(false)
+  await expect(table.locator('tr[data-cfg="prose"][data-off]')).toHaveCount(1)
+  const after = Number((await table.locator('tfoot [data-total="brotli"]').innerText())
+    .trim().replace('KB', ''))
+  expect(after).toBeLessThan(before)
+
+  // …and back, from the console this time — the two stay in step both ways.
+  await page.evaluate(() => {
+    const $c = document.querySelector('han-console')!.shadowRoot!
+      .querySelector<HTMLInputElement>('[data-cfg-key="prose"]')!
+    $c.checked = true
+    $c.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await expect(table.locator('tr[data-cfg="prose"][data-off]')).toHaveCount(0)
+  await expect(table.locator('tr[data-cfg="prose"] input[data-toggle]')).toBeChecked()
 })
 

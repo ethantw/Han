@@ -602,22 +602,52 @@
     padding-inline-start: 1rem;
   }
 
-  /* The addition — one plate, whose row heads are MODULE / FUNCTION NAMES:
-     mono, with the「what it does」gloss dropped underneath in the reading
-     face. */
+  /* The addition — one plate, whose row heads are MODULE / FUNCTION NAMES in
+     mono, each with a real checkbox and the「what it does」gloss trailing on
+     the SAME line. Stacked, the gloss doubled every script row's height and
+     the han.js group started to look like the main event; it is not — the
+     CSS is. One line each puts the two groups back in proportion. */
   &.Sum tbody th {
     & {
       font-family: var(--font-mono);
       font-size: var(--fs-compact);
+      font-weight: 400;
+    }
+
+    /* The whole name is the hit area — a bare 13px box is a poor target and
+       an unlabelled one is worse. `<label>` wrapping the input gives both the
+       association and the target with no `for`/`id` pairing to keep in sync. */
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      cursor: pointer;
+    }
+
+    input[data-toggle] {
+      inline-size: 0.875em;
+      block-size: 0.875em;
+      margin: 0;
+      accent-color: var(--palette-accent);
+      cursor: pointer;
     }
 
     small {
-      display: block;
-      margin-block-start: 0.125rem;
+      margin-inline-start: 0.75em;
       font-family: var(--han-font-alternative);
       font-size: var(--fs-fine);
       color: var(--palette-supplement-text-2q);
     }
+  }
+
+  /* A greyed row is now also a CONTROL, so it cannot fade as far as the font
+     ledger's rows do — the reader has to be able to find the box to switch
+     the part back on. Raised here rather than on the shared rule: nothing in
+     the font ledger is clickable. (A child cannot out-opacity its parent, so
+     lifting the box alone is not an option — `opacity` on a <tr> composites
+     the whole group.) */
+  &.Sum tbody tr[data-off] {
+    opacity: 0.55;
   }
 
   /* The footing: an accountant's double rule, so the column reads as an
@@ -666,7 +696,7 @@
      codebase writes anyway. */
   .SumEq {
     & {
-      margin-block: 0 0.375rem;
+      margin-block: 0.5rem 0.625rem;
       font-family: var(--han-font-alternative);
       color: var(--palette-supplement-text-2q);
     }
@@ -697,14 +727,16 @@
       margin-inline: 0.1em;
     }
 
-    /* the working: quiet, and a size below the answer */
+    /* the working: quiet, and two sizes below the answer */
     .Minor {
-      font-size: var(--fs-fine);
+      font-size: var(--fs-small);
     }
 
-    /* the answer: full size, full ink, and the rule that says「總之」 */
+    /* The answer — the biggest type in the station after the h2, because it
+       is the one figure a reader came for. Bigger than the table it restates,
+       deliberately: the table is the working, this is the result. */
     .Major {
-      font-size: var(--fs-lede);
+      font-size: var(--fs-heading);
       color: var(--palette-text);
 
       mtd {
