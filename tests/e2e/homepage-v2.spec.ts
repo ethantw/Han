@@ -106,7 +106,6 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   // The console's default is `auto`, so the auto row is the visible script
   // line and the manual-mode rows are not part of this build at all.
   await expect(table.locator('tr[data-js-row="auto"]')).toBeVisible()
-  await expect(table.locator('tr[data-js-row="floor"]')).toBeHidden()
   await expect(table.locator('tr[data-js-row="pass"]')).toHaveCount(5)
 
   // The footing is the sum of the visible column, to the printed precision.
@@ -234,12 +233,12 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   await expect(table.locator('tr[data-cfg="prose"][data-off]')).toHaveCount(1)
   expect(await total()).toBeLessThan(before)
 
-  // Switch to 自選函式 — the auto row leaves the plate and the floor plus the
-  // per-function rows take over. This is the addition the plan is for: the
-  // floor is its own line, so no reader mistakes a marginal for the price.
+  // Switch to 自選函式 — the auto row leaves the plate and the per-function
+  // rows take over. There is no separate 「floor」 row: the shared runtime is
+  // billed to the first ticked pass, which is why that one is the expensive
+  // line and the rest are cheap.
   await set('jsMode', 'manual')
   await expect(table.locator('tr[data-js-row="auto"]')).toBeHidden()
-  await expect(table.locator('tr[data-js-row="floor"]')).toBeVisible()
   const ticked = table.locator('tr[data-js-row="pass"]:not([data-off])')
   await expect(ticked).toHaveCount(3)   // punctuation / iss / adjacentLines
 
@@ -247,7 +246,6 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   // selection for real instead of summing marginals.
   const parts = [
     ...(await kb(table.locator('tbody[data-group="css"] tr:not([data-off]) td:nth-child(4)'))),
-    ...(await kb(table.locator('tr[data-js-row="floor"] td:nth-child(4)'))),
     ...(await kb(ticked.locator('td:nth-child(4)'))),
   ]
   expect(await total()).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)

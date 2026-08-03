@@ -28,17 +28,17 @@
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
     hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，每一條規則，都可以為後來的樣式輕鬆覆蓋，如UA樣式（式5.1）。',
-    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重——框架的每一条规则，都与你裸写的选择器同权（式5.1）：',
-    en: 'Every selector in the library is wrapped in <code>:where()</code>, so han.css gives up the specificity of its styles entirely — each of its rules weighs exactly what your own bare selector weighs (5.1):',
-    ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す——フレームワークのどの規則も、あなたが裸で書いたセレクタと同じ重さである（式5.1）。',
-    ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 <ruby>優先順位<rt>우선순위</rt></ruby>를 버린다——프레임워크의 어떤 規則도 당신이 그냥 쓴 셀렉터와 같은 무게다（式5.1）:',
+    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重，每一条规则，都可以为后来的样式轻松覆盖，如UA样式（式5.1）。',
+    en: 'Wrapped in <code>:where()</code>, han.css gives up the specificity of every style it ships: each of its rules can be overridden by whatever comes after, the way a UA stylesheet can (5.1).',
+    ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す。どの規則も、UA様式と同じように、後から来た様式に難なく上書きされる（式5.1）。',
+    ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 優先順位를 버린다. 어떤 規則이든 UA 스타일시트처럼 뒤에 오는 스타일이 손쉽게 덮어쓴다（式5.1）.',
   },
   arAxTail: {
     hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
-    hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层的你天生站上风（式5.2）；透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）——原生CSS给作者最大的自定义弹性。',
-    en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — your CSS — starts out ahead (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3). Native CSS, giving the author the widest customisation there is.',
-    ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないあなたが初めから優位に立つ（式5.2）。CSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）——ネイティブCSSが作者に最大のカスタマイズ自由度を与える。',
-    ko: '스타일 모듈 <ruby>順序<rt>순서</rt></ruby>를 마음대로 <ruby>定義<rt>정의</rt></ruby>할 수 있는 <code>@layer</code>와 <ruby>結合<rt>결합</rt></ruby>하면, 層에 넣지 않은 당신이 처음부터 앞선다（式5.2）. CSS 變數와 style query <code>@container</code>로는 어떤 셀렉터 위에서든 機能을 켜고 끄고 <ruby>調律<rt>조율</rt></ruby>할 수 있다（式5.3）——네이티브 CSS가 作者에게 주는 가장 넓은 自由다.',
+    hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层或后来的分层样式权重较大，提供更大的层级排列自由度（式5.2）；开发者更可透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）。',
+    en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — or in a later layer — outranks what came before, which is as much freedom over the cascade as CSS has to give (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3).',
+    ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないもの、あるいは後の層にあるものが優先される——層の並べ方をそれだけ自由にできる（式5.2）。さらにCSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）。',
+    ko: '스타일 모듈 順序를 마음대로 定義할 수 있는 <code>@layer</code>와 함께라면, 層에 넣지 않은 것—또는 뒤쪽 層에 있는 것—이 앞선다. 層을 배열하는 自由가 그만큼 넓다（式5.2）. 게다가 CSS 變數와 style query <code>@container</code>로 어떤 셀렉터 위에서든 機能을 켜고 끄고 調律할 수 있다（式5.3）.',
   },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
@@ -49,28 +49,38 @@
   },
   arEgBrace: {
     hant: '<code>:where()</code>函數內的權重為：',
-    hans: '括号内任你写多深，自身权重',
-    en: 'nest it as deep as you like — on its own it weighs', ja: '括弧の中はいくら深くてもよい。それ自身の詳細度は',
-    ko: '괄호 안은 얼마든지 깊어도 된다——그 <ruby>自體<rt>자체</rt></ruby>의 優先順位는',
+    hans: '<code>:where()</code>函数内的权重为：',
+    en: 'inside <code>:where()</code> it weighs',
+    ja: '<code>:where()</code>の中での詳細度は',
+    ko: '<code>:where()</code> 안에서의 優先順位는',
   },
   arEgBeaten: {
     hant: '；無論多少，歸零後，開發者的',
-    hans: '；归零之后，你的',
-    en: '; zeroed, your own', ja: '。零になったあと、あなたの',
-    ko: '. 零이 된 뒤, 당신의',
+    hans: '；无论多少，归零后，开发者的',
+    en: '; however much, once it is zeroed your own',
+    ja: '。どれだけ重くとも、零になったあとは、開発者の',
+    ko: '. 아무리 무겁든, 零이 된 뒤에는 開發者의',
   },
   arEgBeatenTail: {
-    hant: '永遠更大。', hans: '就赢了。',
-    en: ' takes it.', ja: 'が勝つ。',
-    ko: '이 이긴다.',
+    hant: '永遠可以輕鬆覆蓋。',
+    hans: '永远可以轻松覆盖。',
+    en: ' can always override it, easily.',
+    ja: 'がいつでも難なく上書きできる。',
+    ko: '이 언제든 손쉽게 덮어쓸 수 있다.',
   },
   arRoleMine: {
     hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet',
     ja: 'あなたのスタイルシート', ko: '당신의 스타일시트',
   },
+  /* 「元素相同」 has to stay: that is what the ≡ asserts. Shortened to
+     「權重」 alone the sign read as「is equivalent to a specificity of…」,
+     which is not the claim and is not true. */
   arEgEquiv: {
-    hant: '權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
-    ja: '同じ要素、詳細度', ko: '같은 要素, 優先順位',
+    hant: '元素相同，權重',
+    hans: '元素相同，权重',
+    en: 'same elements, specificity',
+    ja: '要素は同じ、詳細度',
+    ko: '要素는 같고, 優先順位',
   },
   arSelPrev: {
     hant: '上一個選擇器', hans: '上一个选择器', en: 'Previous selector',
@@ -148,14 +158,6 @@
     ja: '書体',
     ko: '<ruby>書體<rt>서체</rt></ruby>',
   },
-  arSumFloor: {
-    hant: '地板・共用', hans: '地板・共用', en: 'floor, shared',
-    ja: '土台・共有', ko: '<ruby>基底<rt>기저</rt></ruby>・<ruby>共有<rt>공유</rt></ruby>',
-  },
-  arSumFnIss: {
-    hant: '混排間隙', hans: '混排间隙', en: 'Han ↔ Western spacing',
-    ja: '和欧間隔', ko: '<ruby>混排<rt>혼배</rt></ruby> <ruby>間隔<rt>간격</rt></ruby>',
-  },
   arSumFnAdjacent: {
     hant: '鄰行間距', hans: '邻行间距', en: 'adjacent-line insets',
     ja: '隣行の間隔', ko: '<ruby>隣行<rt>인행</rt></ruby> <ruby>間隔<rt>간격</rt></ruby>',
@@ -169,18 +171,18 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: 'brotli是當前最先進的壓縮編碼，列於末欄，部分服務商目前僅支援gzip壓縮，二者差距不大，在此列出供開發者參考。',
-    hans: '三栏是同一份minified档案的三种传输编码，不是三份档案。brotli是现代CDN实际送的那一份，故列在末栏；三栏都随左栏的勾选重算。',
-    en: 'Three transfer encodings of the same minified file, not three files. brotli is what a modern CDN actually serves, so it takes the last column; all three re-add themselves as you pick in the left column.',
-    ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは現代のCDNが実際に送るものなので最終列に置いた。三列とも左欄の選択に応じて計算し直される。',
-    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 現代 CDN이 實際로 보내는 것이라 마지막 열에 두었다. 세 열 모두 왼쪽 칸의 選擇에 따라 다시 더해진다.',
+    hant: '三欄是同一份minified檔案的三種傳輸編碼，不是三份檔案。brotli是當前最普及的高壓縮編碼，列於末欄；部分服務商目前僅支援gzip，二者差距不大，一併列出供開發者參考。',
+    hans: '三栏是同一份minified档案的三种传输编码，不是三份档案。brotli是当前最普及的高压缩编码，列于末栏；部分服务商目前仅支援gzip，二者差距不大，一并列出供开发者参考。',
+    en: 'Three transfer encodings of the same minified file, not three files. brotli is the most widely deployed of the strong encodings, so it takes the last column; some hosts still serve only gzip, and the two are close enough that both are worth having here.',
+    ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは強い圧縮のなかで最も普及しているため最終列に置いた。gzipしか送れない事業者もまだあり、両者の差は小さいので併記する。',
+    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 强한 壓縮 中 가장 널리 쓰이므로 마지막 열에 두었다. 아직 gzip만 보내는 業體도 있고 둘의 差는 크지 않아 함께 싣는다.',
   },
   arSumNote: {
-    hant: '四個樣式模組與其對應的JS增強皆可按需選配，下方為您實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。',
-    hans: '四个样式模块，正是左栏的四颗开关；脚本是选配——纯CSS的汉.css自己就成立。这一栏随你的勾选重算，数字全是实打包量到的。',
-    en: 'The four style modules are the four switches in the left column; the script is optional — han.css stands up as pure CSS. The column re-adds itself as you pick, and every figure was bundled and weighed, not modelled.',
-    ja: '四つの様式モジュールは左欄の四つのスイッチそのもの。スクリプトは任意で、純粋なCSSだけで漢.cssは成立する。この欄は選択に応じて計算し直され、数字はすべて実際に束ねて量ったものである。',
-    ko: '네 樣式 모듈은 바로 왼쪽 칸의 네 스위치다. 스크립트는 <ruby>選擇<rt>선택</rt></ruby> 事項——純粹 CSS만으로 漢.css는 成立한다. 이 欄은 고를 때마다 다시 더해지며, 數字는 모두 實際로 번들해 잰 값이다.',
+    hant: '四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。',
+    hans: '四个样式模块与相关的JS增强皆可按需选配，下方实时计算汉.css打包后的档案尺寸，包含minified及二种主流的伺服端压缩编码。',
+    en: 'The four style modules and the JS passes that go with them are all optional. Below, the size of the han.css you have just configured, bundled and weighed live — minified, and under the two server encodings in common use.',
+    ja: '四つの様式モジュールと、それに連なるJSの各パスは、すべて任意である。下段は、いま組んだ漢.cssを実際に束ねて量った大きさ——minifiedと、広く使われている二つのサーバ側エンコーディング。',
+    ko: '네 樣式 모듈과 그에 딸린 JS 패스는 모두 選擇 事項이다. 아래는 지금 고른 漢.css를 實際로 번들해 잰 크기다——minified, 그리고 널리 쓰이는 두 가지 서버 인코딩.',
   },
   /* The identity-encoded column. Named for the MINIFICATION, not for the
      absence of compression: 「未壓」 alone reads as「the un-minified source」,
@@ -195,11 +197,11 @@
     ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
   },
   arSsrNote: {
-    hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，提前將HTML編譯成可為漢.with-js.css使用的格式。如此亦可節省客戶端的JS文件體積與請求數。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
-    hans: '虽然JS体积小，但在客户端渲染必然有swap的现象。最佳做法是靠SSR让文字在后端就变成汉.css可用的格式，如此还能省下客户端的JS体积与请求数。惟React、Vue等需要重渲染的前端框架，仍需在mount后执行JS。',
-    en: 'The script is small, but running it in the browser means the text is re-laid-out once it lands. Better to let SSR hand the client text han.css can already use — that spares the bundle and the request too. React, Vue and anything else that re-renders still has to run it after mount.',
-    ja: 'JSは小さいとはいえ、クライアントで走らせれば一度は組み直しが起きる。最善はSSRで、漢.cssがそのまま使える形の文字列をサーバ側で作ってしまうこと——クライアントのJSも要求も要らなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
-    ko: 'JS는 작지만, 클라이언트에서 돌리면 한 番은 다시 짜이게 된다. 가장 좋은 것은 SSR로 漢.css가 바로 쓸 수 있는 形態의 텍스트를 서버에서 만들어 두는 것——클라이언트의 JS도 要請도 없어진다. 다만 React·Vue처럼 다시 그리는 프레임워크는 mount 뒤에 여전히 實行해야 한다.',
+    hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，在後端就把JS原本要加上的那層包裹寫進HTML——樣式表認得它，客戶端便不必再載JS，也少一次請求。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
+    hans: '虽然汉.css的JS档案可按需加载且体积甚小，但在客户端安装JS增强必然有swap现象。最佳做法是透过SSR或CLI工具，在后端就把JS原本要加上的那层包裹写进HTML——样式表认得它，客户端便不必再载JS，也少一次请求。惟React、Vue等需要重渲染的前端框架，仍需在mount后执行JS方能正确显示。',
+    en: 'The script loads on demand and is small, but installing it in the browser means one re-layout after it lands. Better to let SSR — or a build-time CLI — write the wrappers the script would have added straight into the HTML: the stylesheet already knows them, so the client needs neither the script nor the request. React, Vue and anything else that re-renders still has to run it after mount.',
+    ja: '漢.cssのJSは必要な分だけ読み込め、しかも小さいが、ブラウザで導入する以上、一度は組み直しが起きる。最善はSSR、あるいはビルド時のCLIで、JSが付けるはずの包みをあらかじめHTMLに書いておくこと——様式表はそれを知っているので、クライアントはJSも要求も要らなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
+    ko: '漢.css의 JS는 必要한 만큼만 불러올 수 있고 크기도 작지만, 브라우저에서 설치하는 以上 한 番은 다시 짜이게 된다. 가장 좋은 것은 SSR이나 빌드 時 CLI로, JS가 붙일 包裝을 미리 HTML에 써 두는 것이다——스타일시트가 이미 그것을 알고 있으니 클라이언트는 JS도 要請도 필요 없다. 다만 React·Vue처럼 다시 그리는 프레임워크는 mount 뒤에 여전히 實行해야 한다.',
   },
   arFlHead: {
     hant: '字體另計',
@@ -224,11 +226,11 @@
    * 不同（120 片、命中 71–103），另計。
    */
   arFlNote: {
-    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），續讀下一篇通常只再多1片、約43KB，罕用字只在命中時才會下載，提升頁面加載時間。',
-    hans: '字体按需切片——全家体积是库存，不是运费。',
-    en: 'Sliced on demand — the family total is inventory, not postage.',
-    ja: '字体は必要な切片だけ——家族全体の容量は在庫であって送料ではない。',
-    ko: '必要한 切片만——家族 全體의 容量은 <ruby>在庫<rt>재고</rt></ruby>이지 <ruby>運賃<rt>운임</rt></ruby>이 아니다.',
+    hant: '字體按需加載命中的切片，單篇文章一般命中16–31個切片（中位24），續讀下一篇通常只再多1片、約43KB，罕用字只在命中時才會下載，縮短頁面加載時間。尚古系列是可變字體，一個切片即涵蓋250–900全部字重；其餘家族每個字重各有一份切片，即表中的「片數×字重」。',
+    hans: '字体按需加载命中的切片，单篇文章一般命中16–31个切片（中位24），续读下一篇通常只再多1片、约43KB，罕用字只在命中时才会下载，缩短页面加载时间。尚古系列是可变字体，一个切片即涵盖250–900全部字重；其余家族每个字重各有一份切片，即表中的「片数×字重」。',
+    en: 'A page fetches only the slices its characters land in — 16–31 of them for a typical article (median 24), and usually one more slice, about 43KB, for the next article the reader opens. Rare characters arrive only when something actually uses them. Shanggu is a variable font, so one slice covers the whole 250–900 range; the other families ship a slice per weight, which is the “slices × weights” column.',
+    ja: '字体は文字が当たった切片だけを読み込む——一本の記事で16〜31片（中央値24）、次の記事へ進んでも足されるのはたいてい1片、約43KBである。稀用字は実際に使われたときにだけ届く。尚古はバリアブルフォントで、一片が250〜900の全ウェイトを賄う。他の家族はウェイトごとに切片を持ち、それが表の「片数×字重」である。',
+    ko: '字體는 글자가 걸린 切片만 내려받는다——記事 한 篇에 16–31片（中位 24）, 다음 篇으로 넘어가도 대개 1片, 約 43KB만 더해진다. 稀用字는 實際로 쓰일 때에만 온다. 尚古는 배리어블 폰트라 한 片이 250–900 全體 字重을 덮고, 나머지 家族은 字重마다 切片이 따로 있다——표의 「片數×字重」가 그것이다.',
   },
   arFlNote2: {
     hant: '尚古系列字體及標點字體Diantenjeom採用Variable Font可變字體技術，一個字僅需下載一個切片即可使用100-900的任意字重。係漢.css首選推薦。',
@@ -584,7 +586,6 @@
         <tbody data-group="js">
           <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>
           <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row"><label><input type="checkbox" data-toggle checked>han.auto.js</label><small>{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td data-col="gz">{{ sizeJsAutoGzip }}</td><td>{{ sizeJsAuto }}</td></tr>
-          <tr data-js-row="floor" hidden><th scope="row">hyperly<small>{{ arSumFloor }}</small></th><td>{{ floorRaw }}</td><td data-col="gz">{{ floorGz }}</td><td>{{ floorBr }}</td></tr>
           <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row"><label><input type="checkbox" data-toggle>refinePunctuation</label><small>{{ arSumFnPunct }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
           <tr hidden data-js-row="pass" data-pass="iss"><th scope="row"><label><input type="checkbox" data-toggle>applyISSWithProbe</label><small>{{ arSumFnIss }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
           <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row"><label><input type="checkbox" data-toggle>markAdjacentLines</label><small>{{ arSumFnAdjacent }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
@@ -707,13 +708,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">{{ arFlShangguSans }}</th>  <td>43.8KB</td><td>109</td>   <td>4.67MB</td></tr>
-          <tr><th scope="row">{{ arFlShangguSerif }}</th> <td>61.2KB</td><td>109</td>   <td>6.51MB</td></tr>
+          <tr><th scope="row">{{ arFlShangguSans }}</th>  <td>43.8KB</td><td>109×1</td>   <td>4.67MB</td></tr>
+          <tr><th scope="row">{{ arFlShangguSerif }}</th> <td>61.2KB</td><td>109×1</td>   <td>6.51MB</td></tr>
           <tr><th scope="row">{{ arFlGenkiGothic }}</th>  <td>25.6KB</td><td>108×6</td><td>16.2MB</td></tr>
           <tr><th scope="row">{{ arFlGenkiMin }}</th>     <td>32.5KB</td><td>108×7</td><td>24.0MB</td></tr>
           <tr><th scope="row">{{ arFlLxgwTc }}</th>       <td>44.5KB</td><td>103×3</td><td>13.4MB</td></tr>
           <tr><th scope="row">{{ arFlLxgw }}</th>         <td>38.9KB</td><td>107×3</td><td>12.2MB</td></tr>
-          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101×1</td>   <td>3.67MB</td></tr>
+          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101×1</td><td>3.67MB</td></tr>
           <tr><th scope="row">{{ arFlKlee }}</th>         <td>32.8KB</td><td>120×2</td><td>7.69MB</td></tr>
         </tbody>
       </table>

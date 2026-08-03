@@ -31,7 +31,8 @@
  * the figures above it.
  *
  * ATTRIBUTION. For a selection, each ticked pass is billed the difference its
- * arrival made, in PASSES order:
+ * arrival made, in PASSES order — so the first one carries the shared runtime
+ * as well as its own code:
  *
  *     Δᵢ = size(first i passes) − size(first i−1 passes)
  *
@@ -106,34 +107,28 @@ const figuresOf = ($row) =>
   [...$row.querySelectorAll('td')].map(($td) => parseK($td.textContent))
 
 /**
- * Bill a selection: `{ floor, deltas }`, both in KB per column.
+ * Bill a selection: `{ deltas }`, in KB per column.
  *
- * `floor` is charged once, to its own row, the moment any hyperly-using pass
- * is in play — detected as「the running total has cleared the floor」rather
- * than by a hardcoded list, so adding a pass that happens not to need hyperly
- * needs no change here.
+ * Each ticked pass is charged what its arrival added, in PASSES order — so
+ * the FIRST one carries the shared runtime (hyperly ＋ helpers) along with
+ * its own code. That used to be split out into a 「hyperly 地板」 row of its
+ * own; it was more detail than the plate is for (owner call), and folding it
+ * into the first line item keeps the column adding up to a bundle that
+ * exists, which is the only property here that must not break.
  *
  * `ids` is the ticked passes in PASSES order; `sizeAt(mask)` returns the
  * measured triple for a bitmask.
  */
-const chain = (ids, order, sizeAt, floor) => {
+const chain = (ids, order, sizeAt) => {
   const deltas = {}
   let mask = 0
   const prev = [0, 0, 0]
-  const charged = [false, false, false]
 
   for (const id of order) {
     if (!ids.includes(id)) continue
     mask |= 1 << order.indexOf(id)
     const cur = sizeAt(mask)
-    deltas[id] = COLS.map((_, i) => {
-      let d = cur[i] - prev[i]
-      if (!charged[i] && cur[i] >= floor[i]) {
-        d -= floor[i]
-        charged[i] = true
-      }
-      return d
-    })
+    deltas[id] = COLS.map((_, i) => cur[i] - prev[i])
     COLS.forEach((_, i) => (prev[i] = cur[i]))
   }
 
@@ -145,7 +140,7 @@ const chain = (ids, order, sizeAt, floor) => {
     deltas[id] = COLS.map((_, i) => withIt[i] - (mask ? prev[i] : 0))
   }
 
-  return { floor: charged, total: mask ? prev : [0, 0, 0], deltas, mask }
+  return { total: mask ? prev : [0, 0, 0], deltas, mask }
 }
 
 export const initLedger = ($root = document) => {
@@ -154,7 +149,6 @@ export const initLedger = ($root = document) => {
 
   const $css = [...$table.querySelectorAll('tbody tr[data-cfg]:not([data-js-row])')]
   const $auto = $table.querySelector('tr[data-js-row="auto"]')
-  const $floor = $table.querySelector('tr[data-js-row="floor"]')
   const $passes = [...$table.querySelectorAll('tr[data-js-row="pass"]')]
   const $totals = new Map(
     [...$table.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
@@ -186,15 +180,11 @@ export const initLedger = ($root = document) => {
     const s = dataRef.current?.sizes[mask]
     return s ? [s.raw, s.gz, s.br] : [0, 0, 0]   // COLS order, not JSON order
   }
-  const floorKb = () => {
-    const f = dataRef.current?.floor
-    return f ? [f.raw, f.gz, f.br] : [0, 0, 0]   // COLS order, not JSON order
-  }
 
   /**
    * A row's console key: a style module (`data-cfg`) or a named import
    * (`data-pass` → the console's `fn.<id>` checkbox). Rows without one (the
-   * hyperly floor, the group heads) are not switches and carry no box.
+   * group heads) are not switches and carry no box.
    */
   const keyOf = ($row) =>
     $row.dataset.cfg ?? ($row.dataset.pass ? `fn.${$row.dataset.pass}` : null)
@@ -237,7 +227,7 @@ export const initLedger = ($root = document) => {
     const data = dataRef.current
     const manual = config?.fallbacks !== false && config?.jsMode === 'manual'
     const ticked = manual ? order().filter((id) => config?.fn?.[id]) : []
-    const bill = data ? chain(ticked, order(), sizeAt, floorKb()) : null
+    const bill = data ? chain(ticked, order(), sizeAt) : null
 
     // Mode gates which script rows are part of the plate at all. `hidden`,
     // not `data-off`: an auto-mode reader is not「declining」the hyperly row,
@@ -245,12 +235,6 @@ export const initLedger = ($root = document) => {
     if ($auto) {
       $auto.hidden = manual
       setOff($auto, config?.fallbacks === false)
-    }
-    if ($floor) {
-      $floor.hidden = !manual
-      // Charged only when something in the selection actually pulls hyperly
-      // in; a probes-only build never touches it.
-      setOff($floor, !bill?.floor.some(Boolean))
     }
     for (const $row of $passes) {
       $row.hidden = !manual

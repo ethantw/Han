@@ -100,7 +100,6 @@ function localizeHomeI18n(dict, locale) {
  *                    minified file itself), plus `sizeTotalRaw`.
  *   - sizeTotal      sum of the four CSS modules (brotli), one decimal + 'k'.
  *   - sizeTotalGzip  same sum, gzipped — the footing's secondary figure.
- *   - depsCount      count of runtime deps in root package.json.
  *
  * The four module keys map 1:1 to the addition's four style rows (han-semantics
  * / -lines / -prose / -fonts). Cached like the old hero stats were, and
@@ -134,15 +133,13 @@ async function computeModuleLedger() {
   // the compressed ones (identity, i.e. no compressor), so the three columns
   // can never be measured against different files.
   const identity = buf => buf
-  const [sizes, gzipSizes, rawSizes, jsSizes, jsGzipSizes, jsRawSizes, deps, passSizes] = await Promise.all([
+  const [sizes, gzipSizes, rawSizes, jsSizes, jsGzipSizes, jsRawSizes] = await Promise.all([
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), brotliCompressSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), gzipSync))),
     Promise.all(keys.map(k => compressedSizeKb(path.join(HAN_DIST, modules[k]), identity))),
     Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), brotliCompressSync))),
     Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), gzipSync))),
     Promise.all(jsKeys.map(k => compressedSizeKb(path.join(HAN_DIST, bundles[k]), identity))),
-    runtimeDeps(),
-    readPassSizes(),
   ])
   // Always one decimal — the four cards print the figure at heading scale in
   // a tabular-nums column, so a bare '1KB' beside '0.8KB' would break the
@@ -190,14 +187,6 @@ async function computeModuleLedger() {
     )),
     sizeTotal: `${total.toFixed(1)}KB`,
     sizeTotalGzip: `${totalGzip.toFixed(1)}KB`,
-    // The hyperly floor — the addition ledger's own row, printed at build
-    // time so the manual-mode rows are never blank before ledger.js runs.
-    // From dist/pass-sizes.json (build/pass-sizes.js), same run that built
-    // the bundles above; '—' if the library has not been built yet.
-    ...Object.fromEntries(
-      [['floorRaw', 'raw'], ['floorBr', 'br'], ['floorGz', 'gz']]
-        .map(([token, key]) => [token, fmtSize(passSizes?.floor?.[key])]),
-    ),
     /**
      * Unit-less twins for the caption's sum, padded to a fixed integer width
      * with U+2007 FIGURE SPACE so the decimal points line up before
@@ -215,8 +204,6 @@ async function computeModuleLedger() {
       sizeDefaultTotalGzipNum: totalGzip + (jsGzipSizes[jsKeys.indexOf('sizeJsAuto')] ?? 0),
       sizeDefaultTotalRawNum:  sum(rawSizes) + (jsRawSizes[jsKeys.indexOf('sizeJsAuto')] ?? 0),
     }).map(([k, kb]) => [k, fmtFigure(kb)])),
-    depsCount: String(deps.length),
-    depsNames: deps.join('・'),
   }
   return _moduleLedgerCache
 }
@@ -290,29 +277,7 @@ function fillSpecificity(html) {
   )
 }
 
-/** dist/pass-sizes.json, or null before the library has been built. */
-async function readPassSizes() {
-  try {
-    return JSON.parse(await fs.readFile(path.join(HAN_DIST, 'pass-sizes.json'), 'utf-8'))
-  } catch {
-    return null
-  }
-}
 
-/**
- * Runtime deps, BY NAME — the footing prints「運行時依賴1（hyperly）」,
- * naming the dependency instead of leaving a bare count to raise the
- * question it should answer (homepage review 2026-07-18 §⑤). Names come
- * from package.json so the ledger can never drift from reality.
- */
-async function runtimeDeps() {
-  try {
-    const pkg = JSON.parse(await fs.readFile(path.resolve(here, '..', 'package.json'), 'utf-8'))
-    return Object.keys(pkg.dependencies ?? {})
-  } catch {
-    return []
-  }
-}
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const HAN_DIST = path.resolve(here, '..', 'dist')
