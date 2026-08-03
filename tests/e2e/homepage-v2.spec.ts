@@ -220,6 +220,14 @@ test('station 伍・工法: the font ledger is a second, separate set of books',
   // ledger stays out of the framework's four-card figure, and every cell is
   // a real 'N.Nk' / 'N.NNM' / slice-count figure rather than an empty
   // placeholder left behind by a mustache token that never resolved.
+  // Folded away by default (owner call — the station read as one endless
+   // ledger with it open), so the summary has to carry the point on its own
+   // and the figures only exist once a reader asks for them.
+  const details = page.locator('#station-craft .FontDetails')
+  await expect(details).not.toHaveAttribute('open', '')
+  await expect(details.locator('summary')).toContainText('字體體積另計')
+  await details.locator('summary').click()
+
   const ledger = page.locator('#station-craft .FontLedger')
   await expect(ledger.locator('table')).toHaveCount(3)
   await expect(ledger.locator('tbody tr')).toHaveCount(8 + 4 + 3)

@@ -636,6 +636,52 @@
  * (dist/han.*.min.css ＋ dist/pass-sizes.json, both built in this repo); the
  * font figures are constants — the markup says how to re-measure. */
 
+/* ─── The font ledger, folded away ───────────────────────────────────
+ * A native `<details>`, styled as the heading it replaces: same type, same
+ * rhythm, plus a marker that says which way it goes. No JS — the element
+ * already is a disclosure widget, and find-in-page opens it by itself. */
+.FontDetails {
+  & {
+    margin-block-end: 2.5rem;
+  }
+
+  /* The default triangle is a UA glyph in a UA size and sits badly beside CJK
+     display type; `list-style: none` removes it in every engine that matters
+     (Safari also needs the `::-webkit-details-marker` twin, kept below), and
+     the `+` is drawn as text so it inherits the heading's own colour. */
+  summary {
+    & {
+      list-style: none;
+      cursor: pointer;
+    }
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: "＋";
+      margin-inline-start: 0.5em;
+      font-size: 0.75em;
+      color: var(--palette-supplement-text-2q);
+    }
+
+    &:hover {
+      color: var(--palette-accent);
+    }
+  }
+
+  &[open] > summary::after {
+    content: "－";
+  }
+
+  /* the ledger's own bottom margin would double the details' — drop it */
+  > .FontLedger {
+    margin-block-start: 1rem;
+    margin-block-end: 0;
+  }
+}
+
 .LedgerHead {
   /* The three books now follow prose, not a figure, so the heading has to
      open the gap itself — a figure's 2.5rem bottom margin used to do it. */

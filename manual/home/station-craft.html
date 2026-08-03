@@ -179,12 +179,16 @@
     ja: '漢.cssのJSは必要な分だけ読み込め、しかも小さいが、ブラウザで導入する以上、一度は組み直しが起きる。最善はSSR、あるいはビルド時のCLIで、JSが付けるはずの包みをあらかじめHTMLに書いておくこと——様式表はそれを知っているので、クライアントはJSも要求も要らなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
     ko: '漢.css의 JS는 必要한 만큼만 불러올 수 있고 크기도 작지만, 브라우저에서 설치하는 以上 한 番은 다시 짜이게 된다. 가장 좋은 것은 SSR이나 빌드 時 CLI로, JS가 붙일 包裝을 미리 HTML에 써 두는 것이다——스타일시트가 이미 그것을 알고 있으니 클라이언트는 JS도 要請도 필요 없다. 다만 React·Vue처럼 다시 그리는 프레임워크는 mount 뒤에 여전히 實行해야 한다.',
   },
+  /* The summary line of a closed `<details>`. It has to carry the WHOLE
+     point on its own — most readers will never open it — so it says the
+     thing (字體體積另計) and then offers the detail, rather than being a
+     heading that means nothing until expanded. */
   arFlHead: {
-    hant: '字體另計',
-    hans: '字体另计',
-    en: 'Fonts, separately',
-    ja: '字体は別勘定',
-    ko: '字體는 <ruby>別途<rt>별도</rt></ruby>',
+    hant: '字體體積另計，展開詳情',
+    hans: '字体体积另计，展开详情',
+    en: 'Webfonts are billed separately — open for the figures',
+    ja: '字体の容量は別勘定——詳細を開く',
+    ko: '字體 容量은 <ruby>別途<rt>별도</rt></ruby>——<ruby>詳細<rt>상세</rt></ruby> 펼치기',
   },
   /**
    * ⚠ 切片命中數是**量出來的**，不是估的。語料：taisol 的 23 篇繁中報導
@@ -699,7 +703,14 @@
        Measured 2026-08-02 against the local ziano / diantenjeom dist trees.
        The eight text families are exactly the roster codegen.js offers
        (home/codegen.js § HERITAGE / CURSIVE_HANT) — keep the two in sync. -->
-  <h3 class="LedgerHead">{{ arFlHead }}</h3>
+  <!-- Folded away by default. The webfont figures are a second, quite
+       different set of books — megabytes where the framework is kilobytes —
+       and left open they made the station read as one long ledger with no end.
+       A native `<details>`: it works with no JS, it is a real disclosure
+       widget to a screen reader, and the browser's own find-in-page opens it.
+       The summary states the fact; opening it only supplies the numbers. -->
+  <details class="FontDetails">
+    <summary class="LedgerHead">{{ arFlHead }}</summary>
   <figure class="FontLedger">
     <div data-plate="print">
       <table>
@@ -769,5 +780,6 @@
       <p>{{ arFlNote2 }}
     </figcaption>
   </figure>
+  </details>
 
 </section>
