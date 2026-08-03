@@ -53,7 +53,7 @@
         --han-punctuation-hant: JIS;
         --han-punctuation-hans: GB;
         --han-punctuation-ja: JIS;
-        --han-punctuation-ko: KV;
+        --han-punctuation-ko: KLR;
       }
       p {
         margin: 0;
@@ -250,7 +250,7 @@
       --han-punctuation-hant: JIS;
       --han-punctuation-hans: GB;
       --han-punctuation-ja: JIS;
-      --han-punctuation-ko: KV;
+      --han-punctuation-ko: KLR;
 
       color: var(--_wm-text);
       user-select: none;
