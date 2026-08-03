@@ -165,14 +165,14 @@ async function computeModuleLedger() {
     // The ledger's totals are LIVE — home/ledger.js re-sums them from the
     // printed figures whenever the console's switches change. These three are
     // the same sums for the console's DEFAULT config (all four modules on,
-    // `fallbacks` on → han.install.js, `legacyRuby` off), so the line is already
+    // `fallbacks` on → han.auto.js, `legacyRuby` off), so the line is already
     // correct on first paint and stays correct with JS off. Keep in step with
     // home/codegen.js § DEFAULT if those defaults ever move.
     ...Object.fromEntries([['', jsSizes], ['Gzip', jsGzipSizes], ['Raw', jsRawSizes]].map(
       ([suffix, group]) => [
         `sizeDefaultTotal${suffix}`,
         `${((suffix === 'Gzip' ? gzipSizes : suffix === 'Raw' ? rawSizes : sizes)
-          .reduce((sum, kb) => sum + (kb ?? 0), 0) + (group[jsKeys.indexOf('sizeJsInstall')] ?? 0)
+          .reduce((sum, kb) => sum + (kb ?? 0), 0) + (group[jsKeys.indexOf('sizeJsAuto')] ?? 0)
         ).toFixed(1)}KB`,
       ],
     )),

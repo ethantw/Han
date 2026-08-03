@@ -104,26 +104,23 @@ test('station 伍・工法: the script ledger prices all four JS bundles', async
   // in both compressions, build-computed like the layer map (a missing
   // dist/*.min.js would render '—').
   const ledger = page.locator('#station-craft .ScriptLedger')
-  await expect(ledger.locator('table')).toHaveCount(2)
+  await expect(ledger.locator('table')).toHaveCount(1)
 
   // Rows are SOURCE ENTRIES, so han.ts appears in both plates — there is no
   // `src/han.browser.ts`; that file is han.ts compiled under the `browser`
   // condition, and the row's gloss names the artifact each cell emits.
+  // Two entries, two artifacts. The browser-condition twins were cut from
+  // the table: same code, near-identical weight, and「browser 條件」meant
+  // nothing to a reader who has not read the exports map.
   const names = await ledger.locator('tbody th').allInnerTexts()
-  expect(names.map((n) => n.split('\n')[0].trim())).toEqual([
-    'han.ts', 'han.auto.ts',
-    'han.ts', 'han.auto.ts', 'han.install.ts',
-  ])
+  expect(names.map((n) => n.split('\n')[0].trim())).toEqual(['han.ts', 'han.auto.ts'])
   const emitted = await ledger.locator('tbody th small').allInnerTexts()
-  expect(emitted.map((t) => t.trim().split('・')[0])).toEqual([
-    '→han.js', '→han.auto.js',
-    '→han.browser.js', '→han.auto.browser.js', '→han.install.js',
-  ])
+  expect(emitted.map((t) => t.trim().split('・')[0])).toEqual(['→han.js', '→han.auto.js'])
 
   // three figures a row — before brotli, brotli, gzip — and compression has
   // to actually shrink things: raw > gzip > brotli, every row.
   const rows = ledger.locator('tbody tr')
-  await expect(rows).toHaveCount(5)
+  await expect(rows).toHaveCount(2)
   for (const row of await rows.all()) {
     const cells = await row.locator('td').allInnerTexts()
     expect(cells).toHaveLength(3)
@@ -175,10 +172,10 @@ test('station 伍・工法: both ledgers price whatever the console has checked'
     Number(before['css']!.replace('KB', '')) + Number(before['js']!.replace('KB', '')),
     5,
   )
-  // `legacyRuby` is off by default, so its two rows (default ＋ browser
-  // condition) start greyed — and they are greyed in the SERVER-RENDERED
-  // markup too, so the ledger reads right before any script runs.
-  await expect(page.locator('#station-craft [data-off]')).toHaveCount(2)
+  // `legacyRuby` is off by default, so its row starts greyed — and it is
+  // greyed in the SERVER-RENDERED markup too, so the ledger reads right
+  // before any script runs.
+  await expect(page.locator('#station-craft [data-off]')).toHaveCount(1)
   await expect(page.locator('#station-craft .LayerMap [data-off]')).toHaveCount(0)
 
   // Drop two modules, add the other bundle, straight through the console's
@@ -192,10 +189,10 @@ test('station 伍・工法: both ledgers price whatever the console has checked'
     }
   })
 
-  // the two dropped modules go grey; both han.js rows come back on, so the
-  // greyed count stays at two but has moved from one ledger to the other
+  // the two dropped modules go grey; the han.js row comes back on
   await expect(page.locator('#station-craft [data-off]')).toHaveCount(2)
   await expect(page.locator('#station-craft .LayerMap [data-off]')).toHaveCount(2)
+  await expect(page.locator('#station-craft .ScriptLedger [data-off]')).toHaveCount(0)
   await expect(page.locator('#station-craft .LayerMap li[data-cfg="prose"][data-off]')).toHaveCount(1)
   await expect(page.locator('#station-craft .ScriptLedger tr[data-cfg="legacyRuby"][data-off]')).toHaveCount(0)
 
@@ -214,7 +211,7 @@ test('station 伍・工法: both ledgers price whatever the console has checked'
   const summable = page.locator('#station-craft .ScriptLedger tr[data-in-total]')
   await expect(summable).toHaveCount(2)
   expect((await summable.locator('th small').allInnerTexts()).map((t) => t.trim().split('・')[0]))
-    .toEqual(['→han.js', '→han.install.js'])
+    .toEqual(['→han.js', '→han.auto.js'])
 })
 
 test('station 伍・工法: §④\u2019s proof is live — the reader\u2019s rule really beats han.css', async ({ page }) => {

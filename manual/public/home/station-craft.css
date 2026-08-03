@@ -254,69 +254,10 @@
     color: var(--palette-supplement-text);
   }
 
-  .ProofLead {
-    & {
-      margin: 0 0 0.75rem;
-    }
-
-    /* 證 — a run-in marker, spaced like the 定理 label */
-    b {
-      margin-inline-end: 1em;
-      font-weight: 500;
-      color: var(--palette-text);
-    }
-  }
-
   /* Narrow: rows stack (role → code → weight), because three columns of
      CSS source in 420px collide into unreadable mush. Wide: a real table,
      with the weights lining up down the end edge. */
-  table {
-    inline-size: 100%;
-    border-collapse: collapse;
-
-    @media (width < 40rem) {
-      :is(thead, tbody, tr, th, td) {
-        display: block;
-      }
-
-      tr + tr {
-        margin-block-start: 0.75rem;
-      }
-    }
-  }
-
-  :is(th, td) {
-    padding-block: 0.25rem;
-    vertical-align: baseline;
-  }
-
-  th {
-    font-weight: 400;
-    text-align: start;
-    white-space: nowrap;
-  }
-
-  code {
-    font-family: var(--font-mono);
-    font-size: var(--fs-fine);
-    color: var(--palette-text);
-  }
-
   /* the specificity column — mono, tabular, end-aligned so the triples stack */
-  td:last-child {
-    font-family: var(--font-mono);
-    font-size: var(--fs-fine);
-    font-variant-numeric: tabular-nums lining-nums;
-    text-align: end;
-    white-space: nowrap;
-
-    /* stacked: the weight reads as the row's verdict, so it keeps the end
-       edge but stops pretending to be a column */
-    @media (width < 40rem) {
-      padding-block-start: 0;
-    }
-  }
-
   .Zero {
     color: var(--palette-accent);
   }

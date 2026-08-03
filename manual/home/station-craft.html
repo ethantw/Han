@@ -22,11 +22,11 @@
     ko: '〇이 109개 있어도 여전히 「〇」다——마음껏 덮어쓰면, 나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다.',
   },
   arThmNote: {
-    hant: '其中<var>s</var>為任意選擇器；「≡」讀作「選中的元素相同」。',
-    hans: '其中<var>s</var>为任意选择器；「≡」读作「选中的元素相同」。',
-    en: 'where <var>s</var> is any selector; “≡” reads “matches the same elements”.',
-    ja: '<var>s</var>は任意のセレクタ。「≡」は「選ぶ要素が同じ」と読む。',
-    ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터；「≡」는 「고르는 <ruby>要素<rt>요소</rt></ruby>가 같다」로 읽는다.',
+    hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
+    hans: '其中<var>s</var>为任意选择器。左式与右式选中的元素相同，惟前者权重归零。任意规则只要权重在(0,0,1)以上，不论先后皆可覆盖。',
+    en: 'where <var>s</var> is any selector. Both sides match the same elements; only the left weighs nothing. Any rule of (0,0,1) or more overrides it, wherever it sits.',
+    ja: '<var>s</var>は任意のセレクタ。左辺と右辺が選ぶ要素は同じで、ただ左辺の詳細度が零になる。詳細度が(0,0,1)以上の規則であれば、前後を問わず上書きできる。',
+    ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
   },
   arEgBrace: {
     hant: '括號內任你寫多深，自身權重', hans: '括号内任你写多深，自身权重',
@@ -37,34 +37,8 @@
     hant: '同一批元素，權重', hans: '同一批元素，权重', en: 'the same elements, specificity',
     ja: '同じ要素、詳細度', ko: '같은 要素, 優先順位',
   },
-  arProofLead: {
-    hant: '於是覆寫只需一條最低限度的規則：', hans: '于是覆写只需一条最低限度的规则：',
-    en: 'so overriding takes one minimal rule:', ja: 'ゆえに上書きは最小限の一行で足りる。',
-    ko: '그러므로 덮어쓰기는 <ruby>最小限<rt>최소한</rt></ruby>의 한 줄이면 된다：',
-  },
   arRoleFramework: {
     hant: '框架', hans: '框架', en: 'framework', ja: 'フレームワーク', ko: '프레임워크',
-  },
-  arRoleYours: {
-    hant: '你的樣式表', hans: '你的样式表', en: 'your stylesheet', ja: 'あなたの様式表', ko: '당신의 스타일시트',
-  },
-  arRoleOr: { hant: '或', hans: '或', en: 'or', ja: 'または', ko: '또는' },
-  arRoleMarkup: {
-    hant: '你的標記', hans: '你的标记', en: 'your markup', ja: 'あなたの標記', ko: '당신의 마크업',
-  },
-  arRoleMine: { hant: '你的', hans: '你的', en: 'yours', ja: 'あなた', ko: '당신' },
-  arProofSample: {
-    hant: '見<cite>《文心雕龍》</cite>卷十。', hans: '见<cite>《文心雕龙》</cite>卷十。',
-    en: 'See <cite>The Literary Mind</cite>, book ten.',
-    ja: '<cite>『文心雕龍』</cite>巻十を見よ。',
-    ko: '<cite>《文心雕龍》</cite><ruby>卷十<rt>권십</rt></ruby>을 보라.',
-  },
-  arEgCaption: {
-    hant: '全庫最重的一條，代入即歸零。',
-    hans: '全库最重的一条，代入即归零。',
-    en: 'The heaviest selector in the library; put it through and it is zero.',
-    ja: '全ライブラリで最も重い一条。代入すればゼロになる。',
-    ko: '全 라이브러리에서 가장 무거운 한 줄. 넣으면 <ruby>零<rt>영</rt></ruby>이 된다.',
   },
   arEq52Note: {
     hant: '未分層的宣告永遠蓋過分層的——你的一條規則就贏。',
@@ -146,39 +120,21 @@
     ko: '네 層의 <ruby>重量<rt>중량</rt></ruby>',
   },
   arScHead: {
-    hant: '腳本・三入口兩條件',
-    hans: '脚本・三入口两条件',
-    en: 'Scripts — three entries, two conditions',
-    ja: 'スクリプト・三入口二条件',
-    ko: '스크립트・세 入口 두 條件',
+    hant: '腳本',
+    hans: '脚本',
+    en: 'Scripts',
+    ja: 'スクリプト',
+    ko: '스크립트',
   },
   arScNote: {
-    hant: '腳本是選配——純CSS的漢.css自己就成立。合計只算左欄真正發給你的那兩份。',
-    hans: '脚本是选配——纯CSS的汉.css自己就成立。合计只算左栏真正发给你的那两份。',
-    en: 'The script is optional — han.css stands up as pure CSS. The total counts only the two the left column hands you.',
-    ja: 'スクリプトは任意——純粋なCSSだけで漢.cssは成立する。合計は左欄が実際に渡す二つだけ。',
-    ko: '스크립트는 <ruby>選擇<rt>선택</rt></ruby> 事項——純粹 CSS만으로 漢.css는 成立한다. 合計는 왼쪽이 실제로 주는 둘만 센다.',
-  },
-  arScCapDefault: {
-    hant: '通用條件・<code>import</code>',
-    hans: '通用条件・<code>import</code>',
-    en: 'Default condition — <code>import</code>',
-    ja: '汎用条件・<code>import</code>',
-    ko: '<ruby>汎用<rt>범용</rt></ruby> 條件・<code>import</code>',
-  },
-  arScCapBrowser: {
-    hant: '<code>browser</code>條件',
-    hans: '<code>browser</code>条件',
-    en: '<code>browser</code> condition',
-    ja: '<code>browser</code>条件',
-    ko: '<code>browser</code> 條件',
+    hant: '腳本是選配——純CSS的漢.css自己就成立。',
+    hans: '脚本是选配——纯CSS的汉.css自己就成立。',
+    en: 'The script is optional — han.css stands up as pure CSS.',
+    ja: 'スクリプトは任意——純粋なCSSだけで漢.cssは成立する。',
+    ko: '스크립트는 <ruby>選擇<rt>선택</rt></ruby> 事項——純粹 CSS만으로 漢.css는 成立한다.',
   },
   arScColBundle: {
     hant: '入口', hans: '入口', en: 'Entry', ja: '入口', ko: '<ruby>入口<rt>입구</rt></ruby>',
-  },
-  arScUseInstall: {
-    hant: '載入即套用・無匯出', hans: '载入即套用・无导出', en: 'applies on load, no exports',
-    ja: '読み込んだ時点で適用・エクスポートなし', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>・<ruby>輸出<rt>수출</rt></ruby> 없음',
   },
   arScColRaw: {
     hant: '未壓', hans: '未压', en: 'raw', ja: '未圧縮', ko: '未壓',
@@ -192,11 +148,11 @@
     ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
   },
   arSsrNote: {
-    hant: '建構期跑一次，前端零JS；React／Vue的hydrate會沖掉，仍要載。',
-    hans: '构建期跑一次，前端零JS；React／Vue的hydrate会冲掉，仍要载。',
-    en: 'Run it at build time and the client ships no JS — but React and Vue wash it away when they hydrate.',
-    ja: '構築時に一度走らせればクライアントのJSはゼロ。ただしReactやVueはhydrateで流してしまう。',
-    ko: '構築時에 한 번 돌리면 클라이언트 JS는 <ruby>零<rt>영</rt></ruby>. 다만 React·Vue는 hydrate로 씻어 낸다.',
+    hant: '寫成SSR也可以，如此甚至不需要客戶端的JS。惟不適合React／Vue等需要重渲染的框架。',
+    hans: '写成SSR也可以，如此甚至不需要客户端的JS。惟不适合React／Vue等需要重渲染的框架。',
+    en: 'It can run as SSR instead, and then the client needs no JS at all — though not for React, Vue or anything else that re-renders.',
+    ja: 'SSRとして走らせることもでき、その場合クライアントのJSは一切要らない。ただしReactやVueのように再描画する枠組みには向かない。',
+    ko: 'SSR로 써도 된다. 그러면 클라이언트 JS는 <ruby>全<rt>전</rt></ruby>혀 필요 없다. 다만 React·Vue처럼 다시 그리는 프레임워크에는 맞지 않는다.',
   },
   arFlHead: {
     hant: '字體另計',
@@ -364,30 +320,6 @@
         <small class="EqNo">（例5.1）</small>
       </p>
     </div>
-
-    <div class="Proof">
-      <p class="ProofLead"><b>證</b>{{ arProofLead }}</p>
-
-      <table>
-        <tbody>
-          <tr><th scope="row">{{ arRoleFramework }}</th><td><code>:where(:is(u, ins, cite:lang(zh)):has(…)) { … }</code></td><td class="Zero">(0,0,0)</td></tr>
-          <tr><th scope="row">{{ arRoleYours }}</th><td><code>cite { margin-inline-end: 5em }</code></td><td>(0,0,1)</td></tr>
-          <tr><th scope="row">{{ arRoleOr }}</th><td><code>.a { margin-inline-end: 5em }</code></td><td>(0,1,0)</td></tr>
-          <tr><th scope="row">{{ arRoleMarkup }}</th><td><code>&lt;cite class="a"&gt;……&lt;/cite&gt;</code></td><td></td></tr>
-        </tbody>
-      </table>
-
-      <!-- the live half: the same sentence twice, the second under the
-           author's own unlayered rule (stations.css § 示範用戶樣式 —
-           KEEP THE <code> ABOVE IN SYNC WITH IT) -->
-      <div class="ProofSample" lang="zh-Hant">
-        <p><small>{{ arRoleFramework }}</small><span>{{ arProofSample }}</span></p>
-        <p class="YourCite"><small>{{ arRoleMine }}</small><span>{{ arProofSample }}</span></p>
-      </div>
-
-    </div>
-
-    <p class="ThmSource">{{ arEgCaption }}</p>
   </div>
 
 
@@ -444,7 +376,6 @@
   <figure class="ScriptLedger">
     <div>
       <table>
-        <caption>{{ arScCapDefault }}</caption>
         <thead>
           <tr>
             <th scope="col">{{ arScColBundle }}</th>
@@ -454,37 +385,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr data-cfg="legacyRuby" data-off data-in-total><th scope="row">han.ts<small>→han.js・{{ arScUseMain }}</small></th>     <td>{{ sizeJsRaw }}</td><td>{{ sizeJs }}</td>    <td>{{ sizeJsGzip }}</td></tr>
-          <tr data-cfg="fallbacks"><th scope="row">han.auto.ts<small>→han.auto.js・{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div>
-      <table>
-        <caption>{{ arScCapBrowser }}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{{ arScColBundle }}</th>
-            <th scope="col">{{ arScColRaw }}</th>
-            <th scope="col">brotli</th>
-            <th scope="col">gzip</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-cfg="legacyRuby" data-off><th scope="row">han.ts<small>→han.browser.js・{{ arScUseMain }}</small></th>          <td>{{ sizeJsBrowserRaw }}</td><td>{{ sizeJsBrowser }}</td>    <td>{{ sizeJsBrowserGzip }}</td></tr>
-          <tr data-cfg="fallbacks"><th scope="row">han.auto.ts<small>→han.auto.browser.js・{{ arScUseAuto }}</small></th>     <td>{{ sizeJsAutoBrowserRaw }}</td><td>{{ sizeJsAutoBrowser }}</td><td>{{ sizeJsAutoBrowserGzip }}</td></tr>
-          <!-- browser-only by construction: a <script src> never runs in
-               Node, so this entry is compiled ONCE — it has no
-               default-condition row in the plate above. -->
-          <tr data-cfg="fallbacks" data-in-total><th scope="row">han.install.ts<small>→han.install.js・{{ arScUseInstall }}</small></th><td>{{ sizeJsInstallRaw }}</td><td>{{ sizeJsInstall }}</td><td>{{ sizeJsInstallGzip }}</td></tr>
+          <tr data-cfg="legacyRuby" data-off data-in-total><th scope="row">han.ts<small>→han.js・{{ arScUseMain }}</small></th><td>{{ sizeJsRaw }}</td><td>{{ sizeJs }}</td><td>{{ sizeJsGzip }}</td></tr>
+          <tr data-cfg="fallbacks" data-in-total><th scope="row">han.auto.ts<small>→han.auto.js・{{ arScUseAuto }}</small></th><td>{{ sizeJsAutoRaw }}</td><td>{{ sizeJsAuto }}</td><td>{{ sizeJsAutoGzip }}</td></tr>
         </tbody>
       </table>
     </div>
 
     <figcaption>
       {{ arScNote }}
-      <small>{{ arScTotal }}<span data-total="js">{{ sizeJsInstall }}</span>（brotli・gzip <span data-total="js-gzip">{{ sizeJsInstallGzip }}</span>・未壓<span data-total="js-raw">{{ sizeJsInstallRaw }}</span>）・{{ arScGrand }}<span data-total="all">{{ sizeDefaultTotal }}</span>（brotli・gzip <span data-total="all-gzip">{{ sizeDefaultTotalGzip }}</span>・未壓<span data-total="all-raw">{{ sizeDefaultTotalRaw }}</span>）</small>
+      <small>{{ arScTotal }}<span data-total="js">{{ sizeJsAuto }}</span>（brotli・gzip <span data-total="js-gzip">{{ sizeJsAutoGzip }}</span>・未壓<span data-total="js-raw">{{ sizeJsAutoRaw }}</span>）・{{ arScGrand }}<span data-total="all">{{ sizeDefaultTotal }}</span>（brotli・gzip <span data-total="all-gzip">{{ sizeDefaultTotalGzip }}</span>・未壓<span data-total="all-raw">{{ sizeDefaultTotalRaw }}</span>）</small>
     </figcaption>
   </figure>
 
