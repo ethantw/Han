@@ -456,6 +456,45 @@
       color: inherit;
     }
 
+    /* The cascade layer, in devtools' own slot — a band above the block.
+       The developer's block carries「未分層」in the same place, so 式5.2 is
+       something you can see in the plate rather than something the prose has
+       to assert. */
+    .RuleLayer {
+      margin-block: 0 0.5rem;
+      padding-block: 0.25rem;
+      padding-inline: 0.5rem;
+      background: var(--palette-panel);
+      border-radius: var(--r-1);
+      font-family: var(--font-mono);
+      font-size: var(--fs-fine);
+      color: var(--palette-supplement-text-2q);
+    }
+
+    .RuleLayer b {
+      font-weight: 400;
+      color: var(--palette-supplement-text);
+    }
+
+    /* the reader's rule is in no layer — say it, in the same slot */
+    .RuleLayer[data-unlayered] {
+      font-family: var(--han-font-alternative);
+    }
+
+    /* The conditions the rule actually sits under. Off-topic for a plate
+       about specificity, and they cost real height — but they are the only
+       place `@container style()` appears as itself rather than as notation,
+       so they earn it (owner call). Dimmed a step: they are context, and the
+       selector is the subject. */
+    .At {
+      color: var(--palette-supplement-text-2q);
+    }
+
+    /* nesting IS nesting — one rule, any depth */
+    .Nest {
+      padding-inline-start: 1em;
+    }
+
     .RuleSel {
       color: var(--palette-text);
       /* `break-word`, not `anywhere`: the selectors carry spaces after every
@@ -934,7 +973,7 @@
 
   /* the first group opens the table — no lead-in gap needed */
   &.Sum tbody:first-of-type .GroupHead th {
-    padding-block-start: 0;
+    padding-block-start: .5rem;
   }
 
   /* group members sit in from their head, the way a nested list does */

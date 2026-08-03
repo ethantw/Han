@@ -31,11 +31,11 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '透過<code>:where()</code>偽類函數，漢.css放棄所有樣式的選擇器權重，每一條規則，都可以為後來的樣式輕鬆覆蓋（式5.1）。',
-    hans: '透过<code>:where()</code>伪类函数，汉.css放弃所有样式的选择器权重，每一条规则，都可以为后来的样式轻松覆盖（式5.1）。',
-    en: 'Wrapped in <code>:where()</code>, han.css gives up the specificity of every style it ships: each of its rules can be overridden by whatever comes after (5.1).',
-    ja: '<code>:where()</code>擬似クラス関数によって、漢.cssはすべての様式のセレクタ詳細度を手放す。どの規則も、後から来た様式に難なく上書きされる（式5.1）。',
-    ko: '<code>:where()</code> <ruby>擬似<rt>의사</rt></ruby> 클래스 <ruby>函數<rt>함수</rt></ruby>로, 漢.css는 모든 스타일의 셀렉터 優先順位를 버린다. 어떤 規則이든 뒤에 오는 스타일이 손쉽게 덮어쓴다（式5.1）.',
+    hant: '漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要大於零或位於後方，就能輕鬆覆蓋（式5.1）。',
+    hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要大于零或位于后方，就能轻松覆盖（式5.1）。',
+    en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>. Yours only has to weigh more than zero, or come later, to override it (5.1).',
+    ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>によって詳細度がすべて零になる。開発者の様式は、零より重いか、あとに置かれてさえいれば、難なく上書きできる（式5.1）。',
+    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다. 開發者의 스타일은 零보다 무겁거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）.',
   },
   arAxTail: {
     hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
@@ -50,6 +50,15 @@
     en: 'where <var>s</var> is any selector. Both sides match the same elements; only the left weighs nothing. Any rule of (0,0,1) or more overrides it, wherever it sits.',
     ja: '<var>s</var>は任意のセレクタ。左辺と右辺が選ぶ要素は同じで、ただ左辺の詳細度が零になる。詳細度が(0,0,1)以上の規則であれば、前後を問わず上書きできる。',
     ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
+  },
+  /* devtools puts the cascade layer above each rule block; so do we — and
+     the developer's block says 「未分層」 in the same slot, which is 式5.2
+     made visible instead of merely asserted. */
+  arRuleLayer: {
+    hant: 'Layer ', hans: 'Layer ', en: 'Layer ', ja: 'Layer ', ko: 'Layer ',
+  },
+  arRuleUnlayered: {
+    hant: '未分層', hans: '未分层', en: 'unlayered', ja: '未分層', ko: '層 밖',
   },
   arRoleMine: {
     hant: '開發者的樣式',
@@ -176,8 +185,11 @@
     hant: 'minified', hans: 'minified', en: 'minified', ja: 'minified', ko: 'minified',
   },
   arScUseAuto: {
-    hant: '載入即套用', hans: '载入即套用', en: 'applies on load',
-    ja: '読み込んだ時点で適用', ko: '로드 <ruby>卽時<rt>즉시</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
+    hant: '載入後自動套用',
+    hans: '载入后自动套用',
+    en: 'applies itself once loaded',
+    ja: '読み込まれると自動で適用',
+    ko: '로드되면 <ruby>自動<rt>자동</rt></ruby> <ruby>適用<rt>적용</rt></ruby>',
   },
   arSsrNote: {
     hant: '雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，在伺服端預先將HTML轉換為<code>*.with-js.css</code>可以直接套用樣式的格式，減少請求數及JS執行時差。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。',
@@ -434,12 +446,26 @@
         <li>
           <div class="Rule" data-role="framework">
             <p class="RuleTag" data-brand>{{ logo }}</p>
+            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <p class="At" lang="en">@container style(--han-semantics: on) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@container style(--han-cite-title-marks: wavy) {</p>
+            <div class="Nest">
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: .125em;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
             <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: 0;</code></p>
             <p class="RuleEnd">}</p>
@@ -448,12 +474,18 @@
         <li>
           <div class="Rule" data-role="framework">
             <p class="RuleTag" data-brand>{{ logo }}</p>
+            <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
+            <p class="At" lang="en">@container style(--han-prose: on) {</p>
+            <div class="Nest">
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
             <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
             <p class="RuleEnd">}</p>
@@ -462,12 +494,22 @@
         <li>
           <div class="Rule" data-role="framework">
             <p class="RuleTag" data-brand>{{ logo }}</p>
+            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <p class="At" lang="en">@container style(--han-semantics: on) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
+            <div class="Nest">
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: initial;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
             <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: .25em;</code></p>
             <p class="RuleEnd">}</p>
@@ -476,12 +518,14 @@
         <li>
           <div class="Rule" data-role="framework">
             <p class="RuleTag" data-brand>{{ logo }}</p>
+            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
             <p class="RuleSel" lang="en"><code data-mine-spec>ruby.zhuyin</code> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: over;</code></p>
             <p class="RuleEnd">}</p>
@@ -490,12 +534,14 @@
         <li>
           <div class="Rule" data-role="framework">
             <p class="RuleTag" data-brand>{{ logo }}</p>
+            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <p class="RuleTag">{{ arRoleMine }}</p>
+            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
             <p class="RuleSel" lang="en"><code data-mine-spec>.hanja :lang(ko)</code> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: 「 」 『 』;</code></p>
             <p class="RuleEnd">}</p>
