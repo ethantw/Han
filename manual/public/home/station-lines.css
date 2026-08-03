@@ -269,6 +269,10 @@
       margin: 0;
       font-family: var(--han-sans);
       line-height: var(--_wm-lh);
+      /* 靜止態的字重。呼吸時**不動這一條**，改動變體軸（見下方 § 行的
+         呼吸）——`font-weight` 一變，Latin 那層（`--han-font-latin-sans`
+         ＝ Avenir Next／Segoe UI，靜態字面）會換一張字面、寬度跳一次，
+         整段重新斷行，版口線上的懸掛標點就在呼吸中途跳行了。 */
       font-weight: 900;
     }
     /* 懸掛區 — 版口線起，往欄外 1em（懸掛能佔的全寬）。z-index: -1 讓它
@@ -330,10 +334,31 @@
        幅度放在「漫多遠」而不是「多綠」：綠的濃度沒變，量卻看得出來。
 
        只在模組開著時呼吸：關掉「行的調整」句讀就不再懸掛，這片綠當場
-       失去意義——靜止本身就是讀數，正好接上下面「屏息」那一撥的說法。 */
+       失去意義——靜止本身就是讀數，正好接上下面「屏息」那一撥的說法。
+
+       第二層是墨自己的厚薄：尙古黑體是變體字型（wght 250–900），滿版
+       這段就順手把那支軸也接上同一口氣——吸滿時 900（＝靜止態的字重，
+       所以動畫的端點與不動時對得起來），吐盡時 500。動的是變體軸而不是
+       `font-weight`：後者會連 Latin 一起換字面而重排（見上 § p），前者
+       非變體字型直接忽略，而漢字全形字身寬恆為 1em，斷行全程不變。
+       標點那層（Diantenjeom Sans，wght 100–900）同樣吃這支軸，所以句讀
+       跟著一起厚薄，不會字瘦了而「。」還是黑的。
+
+       下限收在 500 而不放到 400：浮水印的對比只有 7 %／9 %，150px 級的
+       字身再瘦下去就成髮絲線，整片背景近乎消失——那讀起來是頁面在褪色，
+       不是字在呼吸，跟上一版「幅度太含蓄」是同一個坑的兩面。
+
+       `--lines-tide` 的動畫因此掛在本元素上，不在 `::before`：它
+       `inherits: true`，偽元素與 <p> 都繼承得到，一支 keyframes 帶兩層，
+       不會出現兩口不同步的氣。 */
     @media (prefers-reduced-motion: no-preference) {
-      :root:not([data-han-module-lines="off"]) &::before {
-        animation: lines-tide 7s ease-in-out infinite;
+      :root:not([data-han-module-lines="off"]) & {
+        & {
+          animation: lines-tide 7s ease-in-out infinite;
+        }
+        p {
+          font-variation-settings: 'wght' calc(500 + var(--lines-tide) * 400);
+        }
       }
     }
 
