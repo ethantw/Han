@@ -117,8 +117,47 @@
 </head>
 <body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
 <header>
-  <label for="console-collapsed">
-    2333
+  <!-- Collapse handle — page chrome, the only way back once the console is
+       collapsed. A real checkbox (same recipe as the dark-mode toggle): the
+       LAYOUT is pure CSS via `body:has(.ConsoleToggle input:checked)`
+       (home/console.css); console-collapse.js only persists. checked =
+       collapsed. Hidden <52rem and for form="top" (home/console.css).
+
+       它住在 header 裡，而不是浮在主控台與內容的交界上——那個位置是
+       2026-08-04 的錯位事故現場：藥丸靠 `translate` 貼著邊界走，而邊界由
+       `body` 的 `padding-inline-start` 推出來。時長、曲線、起跑幀三樣全
+       都一樣，Chromium 卻把 translate 丟到**合成執行緒**、把 padding 留
+       在主執行緒；主執行緒每掉一幀，藥丸就多走一格（250ms／280px，120Hz
+       下約 2.3px），動的時候差幾像素，停了又自己對齊。（量法：transition
+       跑到一半把主執行緒卡死 200ms，合成的那支照樣送出 20 幀。）
+
+       進了 header 就沒有那回事——它是 header 的 flex item，跟著整片內容
+       一起被 padding 推，本來就同一個時鐘，也不必再為自己那支過場付一份
+       animation。收合仍然是重排（內容隨容器撐大，見 § 收合的代價），但
+       重排只剩一處在動。
+
+       不拿 .Logo 兼差：那是回首頁的連結，一個元素身兼導覽與開關，鍵盤與
+       輔助技術都說不清它按下去會發生什麼。 -->
+  <label class="ConsoleToggle" title="{{ consoleCollapse }}">
+    <input type="checkbox" id="console-collapsed" name="console-collapsed" aria-label="{{ consoleCollapse }}">
+    <!-- 圖標走 common/icons.css 的 mask 盒原語（那份檔頭寫得明白：不用
+         inline `<svg>`，因為 inline SVG 的基線在 Chrome 不等於它的下緣）。
+         行不指向任何方向，開合兩態共用一張圖——方向由 title／aria-label
+         說。 -->
+    <span data-icon="console" aria-hidden="true"></span>
+    <!--
+      Restore the collapsed state the instant the checkbox is parsed —
+      before first paint — so `body:has(input:checked)` lays out collapsed
+      on the first frame, no flash (same no-FOUC pattern as the theme
+      checkbox below). The page's other sanctioned pre-paint-script
+      exception (web-style.md).
+    -->
+    <script>
+      silentlyTry(() => {
+        document.querySelector('input[name="console-collapsed"]').checked =
+          localStorage.getItem('han-console-collapsed') === '1'
+      })
+    </script>
   </label>
   <a class="Logo" href="{{ homeUrl }}">
     {{ logo }}
@@ -177,29 +216,6 @@
     </svg>
   </div>
 </han-console>
-
-<!-- Collapse handle — page chrome at the aside/content boundary, the only
-     way back once the console is collapsed. A real checkbox (same recipe as
-     the dark-mode toggle): the LAYOUT is pure CSS via
-     `body:has(.ConsoleToggle input:checked)` (home.css); console-collapse.js
-     only persists. checked = collapsed. Hidden <52rem and for
-     form="top" (home.css § ConsoleToggle). -->
-<label class="ConsoleToggle" title="{{ consoleCollapse }}">
-  <input type="checkbox" id="console-collapsed" name="console-collapsed" aria-label="{{ consoleCollapse }}">
-  <!--
-    Restore the collapsed state the instant the checkbox is parsed —
-    before first paint — so `body:has(input:checked)` lays out collapsed
-    on the first frame, no flash (same no-FOUC pattern as the theme
-    checkbox above). The page's other sanctioned pre-paint-script
-    exception (web-style.md).
-  -->
-  <script>
-    silentlyTry(() => {
-      document.querySelector('input[name="console-collapsed"]').checked =
-        localStorage.getItem('han-console-collapsed') === '1'
-    })
-  </script>
-</label>
 
 <main lang="{{ htmlLang }}">
 <script>

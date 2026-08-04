@@ -59,6 +59,34 @@
   --icon-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M6.9 6.9 5.1 5.1M17.1 6.9 18.9 5.1M6.9 17.1 5.1 18.9M17.1 17.1 18.9 18.9'/%3E%3C/svg%3E");
   --icon-moon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z'/%3E%3C/svg%3E");
 
+  /* 主控台。四條推桿，其中兩條掛著長方的鈕——一台調音台的樣子。
+     這一顆是本檔唯一的例外，三處破格都是故意的（2026-08-04 定案）：
+
+     (1) **不是 24×24，是 24×32 的直式。** 其餘九顆都貼著文字排，方盒才
+         對得上字；這一顆填的是 header 左端那一格（home/console.css §
+         ConsoleToggle），它自己就是一片面板的縮圖。也因為填的是格子，它
+         不必再與字標比高低——同一格的通天界線是同一套解法（那一格的註
+         有完整推導：字標墨心比帶子中線低 3.3px，六個造形候選最多只補得
+         回 1.5px，所以不靠造形，靠版位）。
+         先做過 44×32 的橫式，四條全掛鈕——太滿，owner 說「有點密恐」。
+         直式、且只留兩顆鈕之後，墨量掉一半，「這是一組可調的東西」這句
+         話仍然說得完整。
+     (2) **不是四顆鈕，是兩顆。** 說明可調性不需要每條都示範一次；沒鈕的
+         那兩條反而讓有鈕的那兩條讀得出來是鈕。
+     (3) **鈕不對齊，線長因此不等。** 鈕排成一直線試過，讀成條碼／畫面
+         故障，不是控件；錯開才像「這幾項各自停在各自的值上」。與手冊那
+         顆「長短不一所以亂」不同：那裡的不等沒有理由，這裡的不等就是讀
+         數本身。兩顆分踞第二、四列，也順手把墨往下帶一點。
+
+     (4) **線寬 1.5，不是全套的 2。** 其餘九顆都在 24 格裡畫一兩筆，2 才
+         撐得住；這一顆有六筆軌加兩個框，同樣的 2 會糊成一片。細一級之
+         後，四條軌讀得出是四條（owner 2026-08-04）。
+
+     幾何：軌 x 2→22，四列 y 4／12／20／28；鈕 4×6 落在 x 6（第二列）與
+     14（第四列）。square 端點各外伸半個線寬（1.5 ⇒ 0.75），所以軌與鈕
+     外緣之間仍留得住縫——縫是畫出來的，不是擠出來的。全部整數。 */
+  --icon-console: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M2 4h20M2 12h1M13 12h9M2 20h20M2 28h9M21 28h1'/%3E%3Crect x='6' y='9' width='4' height='6'/%3E%3Crect x='14' y='25' width='4' height='6'/%3E%3C/svg%3E");
+
   /* 展／合。 */
   --icon-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");
   --icon-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5 12h14'/%3E%3C/svg%3E");
@@ -87,6 +115,7 @@
   &[data-icon='bulb']    { mask-image: var(--icon-bulb); }
   &[data-icon='sun']     { mask-image: var(--icon-sun); }
   &[data-icon='moon']    { mask-image: var(--icon-moon); }
+  &[data-icon='console'] { mask-image: var(--icon-console); }
 
   /* 角標的四向。`rotate`／`scale` 個別 transform 屬性 · Baseline 2022。 */
   &[data-dir='down']  { rotate: -90deg; }

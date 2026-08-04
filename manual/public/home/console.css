@@ -4,7 +4,7 @@
 body:has(han-console) {
   & {
     padding-inline-start: var(--w-console);
-    transition: .25s padding-inline-start ease-out;
+    transition: .25s padding-inline-start ease-in;
     will-change: padding-inline-start;
   }
   &:has(.ConsoleToggle input:checked) {
@@ -15,60 +15,82 @@ body:has(han-console) {
     inset: 0 auto auto 0;
     inline-size: var(--w-console);
     block-size: 100vh;
-  border-inline-end: 1px solid var(--palette-rule);
+    border-inline-end: 1px solid var(--palette-rule);
   }
+  /* 收合開關 — header 裡的一顆一般控件，不是浮在交界上的藥丸。
+     為什麼在 header：見 _home.html 該處的註（一句話：邊界由主執行緒的
+     padding 推，藥丸的 translate 卻跑在合成執行緒，兩個時鐘會差幾像素）。
+     它現在是 header 的 flex item，跟著內容一起被推，同一個時鐘，而且自己
+     那支過場整支省掉——只剩 hover 的顏色會動。 */
   .ConsoleToggle {
     & {
-      position: fixed;
-      inset-block-start: 50%;
-      inset-inline-start: 0;
-      translate: var(--w-console) -50%;
-      z-index: 45;
       display: flex;
       align-items: center;
       justify-content: center;
-      inline-size: 1.125rem;
-      block-size: 3rem;
-      padding: 0;
+      /* 開關自成一格，界線**通天落地**（`align-self: stretch` 撐滿整條
+         頭高），不是一道與文字齊高的短線。
+
+         短線試過，不行：短線得跟 logo 的視覺重心對齊，而本站的字標重心
+         整個偏下——漢的字身、左側那列點、貼著基線的 .css，量出來的幾何
+         中線（31.5px）與看起來的中心根本不在一處，於是那道線怎麼擺都像
+         沒對準（owner 2026-08-04）。通天的線不必跟任何字協調：它分的是
+         header 這條**帶子**，不是那一行字，所以「對不對齊」這個問題自
+         始就不成立。順帶還接上了版面的既有語彙——主控台自己的右緣也是
+         一條通天的 1px，兩條讀起來是同一件事的上下兩截。
+
+         負的 margin-inline-start 把 header 的 gutter 吃回來，格子才真的
+         從版邊起算；左右各補一個 gutter 的內距，圖標因此落在格子正中。 */
+      align-self: stretch;
+      margin-inline-start: calc(var(--gutter) * -1);
+      padding-inline: 1rem;
+      margin-inline-end: var(--gutter);
+      border-inline-end: 1px solid var(--palette-rule);
       color: var(--palette-supplement-text);
-      background: var(--palette-bg);
-      border: 1px solid var(--palette-rule);
-      border-start-start-radius: 0;
-      border-end-start-radius: 0;
-      border-start-end-radius: var(--r-2);
-      border-end-end-radius: var(--r-2);
       cursor: pointer;
-      visibility: hidden;
-      transition:
-        /* .25s translate ease-out, */
-        .25s color ease-out
-      ;
+      transition: .25s color ease-out;
     }
     input {
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
-    &::before {
-      content: '';
-      display: inline-block;
-      inline-size: var(--fs-small);
-      block-size: var(--fs-small);
-      background: currentColor;
-      /* mask 簡寫 · Baseline 2023 */
-      mask: var(--icon-chevron) center / contain no-repeat;
-    }
-    /* scale 個別 transform 屬性 · Baseline 2022 */
-    &:has(input:checked) {
-      & {
-        translate: 0 -50%;
-      }
-      &::before {
-        rotate: 180deg;
-      }
+    /* mask 盒的邊長 ＝ 自己的 font-size（common/icons.css § 原語）。
+       原語替行內用法留的 `vertical-align: -0.09em` 在這裡不作用——label
+       是 flex 容器，置中由上面那組 align-items 管。
+
+       ── 那 2px（2026-08-04 量測）────────────────────────────────
+       幾何置中與看起來置中在這裡差得出來。以「離背景多遠」當墨量、量 y
+       方向的重心：帶子的幾何中線 31.5、圖標 31.9、而字標（漢.css ＋左側
+       點列）是 **35.1** ——字標的墨心低了 3.3px，所以任何對稱、置中於帶子
+       的圖標都會看起來偏高（owner 連報兩次）。
+
+       試過用**造形**去補：旋鈕移到下線、括號＋三線、字身框＋基線、點列
+       ＋三線、下密上疏的四線……六個候選量下來，墨心最低的那顆也只降了
+       1.5px，仍差 1.8px。這個落差由字標自己的結構決定（漢的字身、貼著
+       基線的 .css、往下長的點列），不是圖標內部分佈補得回來的 ⇒ **這不是
+       圖標的問題，是視覺對位的問題**，別再換圖了。
+
+       出路不是造形，是**版位**：圖標填的是這一格（24×32 的直式，見
+       common/icons.css § --icon-console），它就不再是一顆浮在留白裡、
+       等著跟隔壁那行字比高低的小記號，而是這一格自己的內容——與通天界
+       線同一套解法。原語的 1em 方盒因此要在這裡覆寫掉，非方形。
+
+       剩下的 2px 仍然給：填滿之後墨心仍在格子的幾何中線上，而字標低
+       3.3px；2px 落在字標墨跡上下緣中點（33.25）與墨心（35.13）之間，
+       兩種對位讀法都說得過去，3px 會過頭到墨心之下。用 `translate` 而不
+       是 margin——這是光學修正，不該動到版面。 */
+    [data-icon] {
+      inline-size: 1.5rem;
+      block-size: 2rem;
+      translate: 0 .125rem;
     }
     &:hover {
       color: var(--palette-accent);
+    }
+    /* 鍵盤焦點看得見：input 是 opacity:0 的真控件，焦點環得由 label 代畫 */
+    &:has(input:focus-visible) {
+      outline: 2px solid var(--palette-accent);
+      outline-offset: 2px;
     }
   }
 }

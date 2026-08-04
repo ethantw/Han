@@ -91,65 +91,92 @@ body.ManualPage {
     font-family: var(--han-font-default);
   }
 
-  /* ≥50em — header / han-console / (sidebar | main) / footer. The console is a
-     full-width toolbar row under the Masthead; both span 1/-1 so the
-     sidebar+main pair flows into the 1fr content row below. */
+  /* ≥50em — header / (sidebar | main) / footer. The console is no longer a
+     row in this grid: it's an out-of-flow column at the inline start (see
+     § han-console below), so the sidebar+main pair sits in the 1fr row
+     directly under the Masthead. */
   @media (min-width: 50em) {
     display: grid;
     grid-template-columns: var(--m-sidebar-w) 1fr;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto 1fr auto;
     min-block-size: 100vh;
+
+    /* 主控台推開整頁，而不是蓋住它——與首頁同一個契約
+       （home/console.css § body:has(han-console)）。手冊的**預設是收著**
+       （文件先讓人讀），所以初值 0、勾起才推開；首頁反過來。
+
+       推的是 padding 而不是 transform：內容是隨容器撐大的，只平移不改變
+       容器大小不符合預期（欄寬、斷行、全出血的底色都吃容器）。代價是每
+       幀一次全文件重排，那是已知的（見首頁那份註）。
+
+       **只在 ≥78em 推**。手冊比首頁多一根 16em 的側欄與一欄本頁目錄：
+       量出來的內容最小寬是 953px，加上 17.5em 的主控台 ＝ 1233px，所以
+       門檻不是 64em 而是 78em（1248px）——64em 試過，1024–1200 這一段
+       一開就橫向溢出到 1233。以下改成**覆蓋**：主控台照樣滑進來，只是
+       蓋在左緣，頁面不動（z-index 低於 masthead，那顆開關始終按得到，
+       見 § han-console）。寬螢幕推、中螢幕蓋，是這種側欄面板的常規解。 */
+    @media (min-width: 78em) {
+      & {
+        padding-inline-start: 0;
+        transition: .25s padding-inline-start ease-out;
+      }
+      &:has(.ConsoleToggle input:checked) {
+        padding-inline-start: var(--w-console);
+      }
+    }
   }
 }
 
 
-/* ─── <han-console> configurator (form="top" toolbar) ─────────────────────
- * Full-width row under the Masthead; sticky so readers can tweak while
- * scrolled into the text. `:not(:defined)` hides it until the component
- * upgrades (no FOUC). Its shadow owns the control styling (tokens.css +
- * controls.css + console.css, fetched on connect); this rule only places
- * the host box on the page. */
-han-console {
-  grid-column: 1 / -1;
-  /* Collapsed by default — the docs read first. The ConsoleToggle in the
-     masthead opens it. block-size animates from 0; overflow clips the
-     tall control set while closed. */
-  position: sticky;
-  top: var(--m-header-h);
-  z-index: 9;
-  max-block-size: 0;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(10px);
-  transition: max-block-size 260ms ease;
-}
+/* ─── <han-console> configurator (form="side" column) ─────────────────────
+ * A full-viewport-height column pinned to the inline start, with its own
+ * scroll. `:not(:defined)` hides it until the component upgrades (no
+ * FOUC). Its shadow owns the control styling (tokens.css + controls.css +
+ * console.css, fetched on connect); this rule only places the host box.
+ *
+ * 收著的時候整根滑到版外，**動的是 `inset-inline-start` 而不是
+ * `translate`**。這是刻意選 layout 屬性：內容那一側由 body 的
+ * `padding-inline-start` 推，那是主執行緒的活；`translate` 會被 Chromium
+ * 丟到合成執行緒去跑，時長／曲線／起跑幀全一樣也沒用——兩個時鐘，主執行
+ * 緒每掉一幀，面板就比內容多走一格，交界處露出幾像素的縫（首頁 2026-08-04
+ * 踩過，量法與數字見 home/console.css § ConsoleToggle）。同走 layout 屬性
+ * 就只有一個時鐘。 */
 han-console:not(:defined) { visibility: hidden; }
 
-/* Open — capped height with internal scroll so the (tall) fonts group
-   never eats the whole viewport; a hairline marks the toolbar edge. */
-body.ManualPage:has(.ConsoleToggle input:checked) han-console {
-  max-block-size: min(60vh, 32rem);
-  overflow-y: auto;
-  border-block-end: 1px solid var(--rule);
-}
-
-/* Masthead ConsoleToggle — matches the theme toggle's button box; the
-   checkbox itself is visually hidden, the label carries the icon.
-   Tinted when open so its state reads. */
-.ConsoleToggle {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-  color: var(--supplement-text);
-
-  & input { position: absolute; opacity: 0; inline-size: 0; block-size: 0; }
-  &:hover { color: var(--text); }
-  &:has(input:checked) { color: var(--accent); }
-  &:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (min-width: 50em) {
+  han-console {
+    position: fixed;
+    inset-block: 0;
+    /* 收著 ＝ 整根在版外。負的 inline-start 而不是 `display: none`：
+       過場要有東西可以動，元件也不必重新 upgrade。 */
+    inset-inline-start: calc(var(--w-console) * -1);
+    inline-size: var(--w-console);
+    /* 低於 masthead 的 10：64em 以下主控台是覆蓋式的，會壓到 masthead 的
+       左段，而那正是開關所在——排在下面，開關才關得掉自己。 */
+    z-index: 9;
+    overflow-y: auto;
+    background: var(--paper);
+    border-inline-end: 1px solid var(--rule);
+    transition: .25s inset-inline-start ease-out;
+  }
+  body.ManualPage:has(.ConsoleToggle input:checked) han-console {
+    inset-inline-start: 0;
+  }
 }
 
 @media (max-width: 49.99em) {
-  /* Below the grid breakpoint the console flows inline under the masthead;
-     drop the sticky so it doesn't fight the narrow-screen nav drawer. */
-  han-console { position: static; }
+  /* 窄屏維持原本的行為：主控台在 masthead 底下順流展開，不搶那道抽屜式
+     導覽的位置。側欄式只在 ≥50em 成立。 */
+  han-console {
+    position: static;
+    max-block-size: 0;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    transition: max-block-size 260ms ease;
+  }
+  body.ManualPage:has(.ConsoleToggle input:checked) han-console {
+    max-block-size: min(60vh, 32rem);
+    overflow-y: auto;
+    border-block-end: 1px solid var(--rule);
+  }
 }

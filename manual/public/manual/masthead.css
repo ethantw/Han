@@ -15,7 +15,9 @@
     top: 0;
     z-index: 10;
     display: grid;
-    grid-template-columns: var(--m-sidebar-w) 1fr auto;
+    /* 四欄：主控台開關・字標（對齊側欄寬）・搜尋・導覽。第一欄是 auto，
+       開關自己說了算（見下方 § ConsoleToggle）。 */
+    grid-template-columns: auto var(--m-sidebar-w) 1fr auto;
     align-items: center;
     gap: 2rem;
     padding: 0.75rem 2rem;
@@ -28,13 +30,77 @@
       grid-column: 1 / -1;
     }
 
+    /* 50–60em — 字標不再佔滿側欄寬、間隙收一半。多出來的那一欄（開關）
+       在這個帶寬會把 masthead 的最小寬度頂出視窗（量到 900px 下溢出
+       53px）；字標與側欄對齊是寬螢幕的講究，這裡先讓位給不溢出。 */
+    @media (min-width: 50em) and (max-width: 59.99em) {
+      grid-template-columns: auto auto 1fr auto;
+      gap: 1rem;
+    }
+
     @media (max-width: 49.99em) {
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto 1fr auto;
       block-size: auto;
       padding: 0.75rem 1.25rem;
       gap: 1rem;
     }
   }
+
+  /* 主控台開關 — 自成一格，界線**通天落地**，與首頁同一套
+     （home/console.css § ConsoleToggle 有完整推導：短線得跟字標的視覺
+     重心對齊，而字標重心整個偏下，怎麼擺都像沒對準；通天的線分的是
+     masthead 這條帶子而不是那一行字，「對不對齊」就不成立）。它與它要
+     開的那根欄子同一側，讀者的手不必橫越整條 masthead。
+
+     負的 margin 把 masthead 的 padding 與 gap 都吃回來，格子才真的從版邊
+     起算、右緣才貼著字標欄的起點。字標因此比底下的側欄縮進一格——那是
+     這道鐵軌自己的寬度，不是沒對齊。 */
+  > .ConsoleToggle {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: stretch;
+      /* 直向的負 margin 是通天的關鍵：masthead 有 .75rem 的上下內距，
+         只寫 `align-self: stretch` 只撐到內容盒（量到 36.8px），撐不到
+         帶子的上下緣（56px）。 */
+      margin-block: -0.75rem;
+      margin-inline: -2rem -2rem;
+      padding-inline: 1rem;
+      border-inline-end: 1px solid var(--rule);
+      color: var(--ink-mute);
+      cursor: pointer;
+      transition: color 150ms;
+    }
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* mask 盒不是方的（24×32，common/icons.css § --icon-console）；原語的
+       1em 方盒要在這裡覆寫掉。2px 的下移是光學修正，理由同首頁。 */
+    [data-icon] {
+      inline-size: 1.5rem;
+      block-size: 2rem;
+      translate: 0 .125rem;
+    }
+    &:hover,
+    &:has(input:checked) {
+      color: var(--accent);
+    }
+    &:has(input:focus-visible) {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+
+    @media (max-width: 49.99em) {
+      & {
+        margin-inline: -1.25rem -1rem;
+        padding-inline: .75rem;
+      }
+    }
+  }
+
 
   /* Right cluster of links + lang switcher + theme toggle. */
   > nav {

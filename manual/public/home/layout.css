@@ -48,6 +48,10 @@ body > header {
       display: flex;
       align-items: baseline;
       font-size: 1.5rem;
+      /* header 現在有三件東西（收合開關・logo・nav）。space-between 會把
+         三件平均攤開，開關與 logo 就分了家——讓 logo 自己吃掉中間所有
+         餘白，前兩件貼左、nav 貼右，回到原本的兩端配置。 */
+      margin-inline-end: auto;
     }
     small {
       color: var(--palette-supplement-text);

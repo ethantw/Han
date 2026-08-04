@@ -46,6 +46,20 @@
 </head>
 <body class="ManualPage" data-locale="{{ locale }}" data-page="{{ pageId }}">
 <header class="Masthead">
+  <!-- Console handle — same treatment as the homepage (_home.html §
+       ConsoleToggle): its own full-bleed cell at the masthead's inline
+       start, divided from the rest by a floor-to-ceiling hairline, and
+       sitting on the same side as the console it opens.
+
+       手冊與首頁的**預設態相反**：文件先讓人讀，所以主控台預設收著，
+       checkbox 叫 `console-open`（勾起 ＝ 開）；首頁的叫
+       `console-collapsed`（勾起 ＝ 收）。兩邊都是「checkbox 是唯一事實」
+       的同一套配方，只是初值不同，所以這裡不需要首頁那段 pre-paint 還原
+       腳本——預設就是收著，沒有可閃的東西。 -->
+  <label class="ConsoleToggle" title="{{ consoleToggleLabel }}">
+    <input type="checkbox" name="console-open" aria-label="{{ consoleToggleLabel }}">
+    <span data-icon="console" aria-hidden="true"></span>
+  </label>
   <a class="Brand" data-size="md" href="{{ homeUrl }}">
     <!-- G3 字徽（favicon 同款）——fill/stroke 走 docs token（--accent／
          --ink），隨主題明暗自動切。 -->
@@ -93,13 +107,6 @@
     <a href="{{ docsUrl }}">{{ docsLink }}</a>
     <a href="#" data-variant="version">v{{ version }}</a>
     {{ langSwitcher }}
-    <!-- Reveal the <han-console> configurator (collapsed by default so the
-         docs read first). Pure-CSS: `body:has(.ConsoleToggle input:checked)`
-         drops the console open — same recipe as the theme/nav toggles. -->
-    <label class="ConsoleToggle" title="{{ consoleToggleLabel }}">
-      <input type="checkbox" name="console-open" aria-label="{{ consoleToggleLabel }}">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"/><circle cx="18" cy="6" r="2"/><circle cx="15" cy="18" r="2"/></svg>
-    </label>
     <!-- Theme toggle. A real checkbox is the single source of truth:
          `:root:has(input[name="dark-mode"]:checked)` (manual.css) flips
          `color-scheme`, and every `light-dark()` token re-resolves. The
@@ -126,10 +133,14 @@
   </nav>
 </header>
 <!-- Typography configurator — readers dogfood the whole framework on the
-     docs text itself. form="top" horizontal toolbar spanning under the
-     Masthead; writes the live `--han-*` config onto `main`, which
-     cascades to the article + TOC. Same console as the homepage. -->
-<han-console form="top" target="main" lang="{{ htmlLang }}"></han-console>
+     docs text itself. Writes the live `--han-*` config onto `main`, which
+     cascades to the article + TOC. Same console, same form as the homepage:
+     a full-height column at the inline start that PUSHES the page rather
+     than covering it (manual/root.css § han-console). It used to be
+     form="top", a toolbar row under the Masthead; the side column is the
+     one the homepage proved out, and the docs' own sidebar reads better
+     next to it than under a 32rem-tall toolbar. -->
+<han-console form="side" target="main" lang="{{ htmlLang }}"></han-console>
 {{ sidebar }}
 <main>
 <article data-pagefind-body>
