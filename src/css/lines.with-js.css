@@ -373,6 +373,7 @@
 
     h-layer {
       position: absolute;
+      text-indent: 0;
     }
   }
 }

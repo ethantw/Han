@@ -113,13 +113,20 @@ figure.Papers {
       line-height: 1.5;
       color: var(--palette-text);
     }
-
-    p {
+    p.author {
+      margin-block-start: -.5em;
+      font-size: .75rem;
+      text-indent: 0;
+    }
+    h3 ~ p {
       margin: 0;
+      text-indent: 1em;
+    }
+    p {
+      margin: .25em 0;
       font-family: var(--han-font-default);
       font-size: 0.875rem;
       line-height: 2;
-      text-indent: 1em;
       color: var(--palette-text);
 
       &:last-child {
