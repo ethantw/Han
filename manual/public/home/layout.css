@@ -11,8 +11,8 @@ body.home {
     font-size: var(--fs-body);
     line-height: 1.8;
     font-feature-settings: "kern", "liga", "calt";
-    background: var(--palette-bg);
-    color: var(--palette-text);
+    background: var(--ui-bg);
+    color: var(--ui-text);
   }
   a {
     color: inherit;
@@ -35,15 +35,15 @@ body > header {
     margin-inline-start: -1px;
     padding-inline: var(--gutter);
     block-size: var(--h-header);
-    background-color: var(--palette-bg);
-    border-inline-start: 1px solid var(--palette-rule);
-    border-block-end: 1px solid var(--palette-rule);
+    background-color: var(--ui-bg);
+    border-inline-start: 1px solid var(--ui-rule);
+    border-block-end: 1px solid var(--ui-rule);
   }
   a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--palette-bg);
+    background: var(--ui-bg);
   }
   .Logo {
     & {
@@ -57,13 +57,13 @@ body > header {
       translate: -.875rem -.125rem;
     }
     small {
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       margin-inline: 1em -.125em;
       padding-inline-start: 1em;
       font-size: .5em;
       line-height: 1;
       letter-spacing: .125em;
-      border-inline-start: 1px solid var(--palette-rule);
+      border-inline-start: 1px solid var(--ui-rule);
     }
     .version {
       letter-spacing: -.05em;
@@ -77,11 +77,11 @@ body > header {
     > a {
       font-family: var(--han-font-default);
       font-size: var(--fs-fine);
-      color: var(--palette-ink-grey);
+      color: var(--ui-ink-grey);
       letter-spacing: 0.05em;
       text-decoration: none;
 
-      &:hover { color: var(--palette-accent); }
+      &:hover { color: var(--ui-accent); }
     }
 
     /* the divider between the text links and the tools cluster is a
@@ -93,7 +93,7 @@ body > header {
       inline-size: 1px;
       block-size: 0.875rem;
       margin-inline-end: 1rem;
-      background: var(--palette-rule);
+      background: var(--ui-rule);
       vertical-align: middle;
     }
   }

@@ -12,7 +12,7 @@
  * `@import` rules on `replaceSync`.
  *
  * Everything here consumes the `--_*` indirection layer
- * (`components/tokens.css`) rather than `--palette-*`: the homepage's
+ * (`components/tokens.css`) rather than `--ui-*`: the homepage's
  * tokens inherit through the shadow boundary and win, while the literal
  * fallbacks let the same rules paint on a bare page. Station④'s
  * light-DOM panels live in `home/preview.css`.

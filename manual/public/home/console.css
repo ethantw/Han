@@ -15,7 +15,7 @@ body:has(han-console) {
     inset: 0 auto auto 0;
     inline-size: var(--w-console);
     block-size: 100vh;
-    /* border-inline-end: 1px solid var(--palette-rule); */
+    /* border-inline-end: 1px solid var(--ui-rule); */
   }
   /* 收合開關 — header 裡的一顆一般控件，不是浮在交界上的藥丸。
      為什麼在 header：見 _home.html 該處的註（一句話：邊界由主執行緒的
@@ -44,8 +44,8 @@ body:has(han-console) {
       margin-inline-start: calc(var(--gutter) * -1);
       padding-inline: 1rem;
       margin-inline-end: var(--gutter);
-      border-inline-end: 1px solid var(--palette-rule);
-      color: var(--palette-supplement-text);
+      border-inline-end: 1px solid var(--ui-rule);
+      color: var(--ui-supplement-text);
       cursor: pointer;
       transition: .25s color ease-out;
     }
@@ -84,11 +84,11 @@ body:has(han-console) {
       block-size: 2rem;
     }
     &:hover {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
     /* 鍵盤焦點看得見：input 是 opacity:0 的真控件，焦點環得由 label 代畫 */
     &:has(input:focus-visible) {
-      outline: 2px solid var(--palette-accent);
+      outline: 2px solid var(--ui-accent);
       outline-offset: 2px;
     }
   }
@@ -186,20 +186,20 @@ han-consoleX {
      `:defined`, which flips long before the sheets land and would leave
      the loader sitting in that hole for the rest of the fetch. */
   &:not([data-ready]) {
-    background: var(--palette-panel);
-    border-inline-end: 1px solid var(--palette-rule);
+    background: var(--ui-panel);
+    border-inline-end: 1px solid var(--ui-rule);
 
     &[form="top"] {
       border-inline-end: 0;
-      border-block-end: 1px solid var(--palette-rule);
+      border-block-end: 1px solid var(--ui-rule);
     }
 
     /* <52rem — the bottom sheet wears a top hairline and lifts off main */
     @media (max-width: 52rem) {
       & {
         border-inline-end: 0;
-        border-block-start: 1px solid var(--palette-rule);
-        box-shadow: 0 -8px 24px color-mix(in srgb, var(--color-black) 8%, transparent);
+        border-block-start: 1px solid var(--ui-rule);
+        box-shadow: 0 -8px 24px color-mix(in srgb, var(--palette-black) 8%, transparent);
       }
     }
   }

@@ -18,7 +18,7 @@
 
 .ConsoleLoading {
   /* Loader keeps its OWN 朱砂×琥珀 identity (the approved palette) rather
-     than the site's green --palette-accent; themed via light-dark() like
+     than the site's green --ui-accent; themed via light-dark() like
      the rest of the page (color-scheme is set by the dark-mode recipe).
      light-dark() — Baseline 2024. */
   --l-muted:      light-dark(#cdc6b8, #4a463d);

@@ -210,14 +210,14 @@
     padding-block: 0.5rem;
     padding-inline: 0.75rem;
     border: 0;
-    border-inline-start: 2px solid var(--palette-rule);
+    border-inline-start: 2px solid var(--ui-rule);
   }
 
   legend {
     padding: 0;
     font-size: var(--fs-micro);
     letter-spacing: 0.06em;
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
   }
 
   /* what the picks buy, in the reader's language */
@@ -225,7 +225,7 @@
     margin-block: 0.375rem 0;
     font-size: var(--fs-micro);
     line-height: 1.7;
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
   }
 }
 

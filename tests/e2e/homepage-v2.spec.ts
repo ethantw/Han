@@ -43,21 +43,21 @@ test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the 
   await expect(page.locator('input[name="dark-mode"]')).not.toBeChecked()
 
   // … and the station is light with it. It used to be constant-dark in both
-  // themes (`color-scheme: dark` + --palette-ink); the ground is now the one
-  // paper-coloured station plate, --palette-station-code = --color-buff (#f8f4ea).
+  // themes (`color-scheme: dark` + --ui-ink); the ground is now the one
+  // paper-coloured station plate, --ui-station-code = --palette-buff (#f8f4ea).
   const snippet = page.locator('#station-snippet')
   await expect(snippet).toHaveCSS('color-scheme', 'light')
   await expect(snippet).toHaveCSS('background-color', 'rgb(248, 244, 234)')
 
   // The code panes stay terminal-dark in BOTH themes — that part IS constant
-  // (--code-bg = --color-ink). A light station with a dark terminal on it is
+  // (--code-bg = --palette-ink). A light station with a dark terminal on it is
   // the point; the station no longer goes dark to keep the terminal company.
   // (the ground is painted by `figure.CodePane`, not the `<pre>` inside it)
   await expect(snippet.locator('figure.CodePane').first())
     .toHaveCSS('background-color', 'rgb(14, 14, 16)')
 
   // Dark theme: the same token's dark side, the same paper at night
-  // (--color-buff-night = #191712) — NOT a second slab of plain --color-ink.
+  // (--palette-buff-night = #191712) — NOT a second slab of plain --palette-ink.
   // via the label: the checkbox itself is a visually-hidden `.Toggle` input,
   // so a direct .check() has nothing to hit.
   await page.locator('label.for-theme').click()

@@ -38,7 +38,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-body);
     line-height: 1.9;
-    color: var(--palette-text);
+    color: var(--ui-text);
 
     h3 {
       margin-block: 2.5em 0;
@@ -85,10 +85,10 @@
    (station-semantics.css § 前／後 switch) — the switches look identical
    because they ARE the same component. */
 .Toggle.for-eyecare {
-  --_rule: var(--palette-rule);
-  --_bg: var(--palette-bg);
-  --_accent: var(--palette-accent);
-  --_supplement-text: var(--palette-supplement-text);
+  --_rule: var(--ui-rule);
+  --_bg: var(--ui-bg);
+  --_accent: var(--ui-accent);
+  --_supplement-text: var(--ui-supplement-text);
 
   & {
     /* `.Toggle` is inline-flex; as a grid item it would still stretch to the
@@ -144,9 +144,9 @@
     margin: 0;
     padding: 0;
     font-size: clamp(1.125rem, 2.2vw, 1.375rem);
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
-    background: var(--palette-panel);
+    background: var(--ui-panel);
     overflow: hidden;
     list-style: none;
   }
@@ -159,9 +159,9 @@
     position: relative;
     padding: 1.125rem 2rem 1rem 1rem;
     line-height: 1.5;
-    background: var(--palette-bg);
-    border-block-end: 1px solid var(--palette-rule);
-    color: var(--palette-text);
+    background: var(--ui-bg);
+    border-block-end: 1px solid var(--ui-rule);
+    color: var(--ui-text);
     --han-punctuation-refinement: compress;
 
     &[data-face="sans"]    { font-family: var(--han-sans); }
@@ -182,13 +182,13 @@
     &[data-face="system"],
     &[data-face="system-ming"] {
       padding-block: .125rem;
-      background-color: var(--color-cloud);
-      color: var(--palette-supplement-text-2q);
+      background-color: var(--palette-cloud);
+      color: var(--ui-supplement-text-2q);
       --han-punctuation-refinement: none;
       text-spacing-trim: normal;
 
       b {
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
         font-weight: inherit;
       }
     }
@@ -217,7 +217,7 @@
       block-size: 100%;
       font-family: var(--han-sans);
       font-size: .75rem;
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
   }
 }
@@ -243,7 +243,7 @@
     min-inline-size: 5.625rem;
     font-weight: 500;
     letter-spacing: 0.05em;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   dd {
@@ -251,14 +251,14 @@
     flex: 1;
     align-items: center;
     margin: 0;
-    color: var(--palette-text);
+    color: var(--ui-text);
 
     /* the dotted leader between term and definition — pseudo, not a span */
     &::before {
       content: '';
       flex: 1;
       margin-inline-end: 0.5rem;
-      border-block-start: 1px dotted var(--palette-rule);
+      border-block-start: 1px dotted var(--ui-rule);
     }
   }
 }
@@ -292,11 +292,11 @@
     gap: 2px;
     margin: 0;
     padding: 3px;
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: 999px;
-    background: var(--palette-bg);
+    background: var(--ui-bg);
 
-    &:hover { border-color: var(--palette-supplement-text); }
+    &:hover { border-color: var(--ui-supplement-text); }
   }
 
   /* 頭標是 <span> 而不是 <legend>——`fieldset` 的可及名稱改由
@@ -310,7 +310,7 @@
     padding-inline: 0.65em 0.35em;
     font-size: 0.75rem;
     letter-spacing: 0.08em;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* radio 本體藏起來但不移出可及性樹（opacity 而非 display:none），選中態
@@ -326,15 +326,15 @@
     padding-inline: 12px;
     border-radius: 40px;
     font-size: .875rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     cursor: pointer;
 
     &:has(input:checked) {
-      background: var(--palette-accent-bg);
-      color: var(--palette-accent);
+      background: var(--ui-accent-bg);
+      color: var(--ui-accent);
     }
     &:has(input:focus-visible) {
-      outline: 2px solid var(--palette-accent);
+      outline: 2px solid var(--ui-accent);
       outline-offset: 1px;
     }
   }

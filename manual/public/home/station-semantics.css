@@ -71,8 +71,8 @@
    `currentColor` is why one property suffices — the brackets and the dots
    take their ink from it. */
 @keyframes semantics-mark-cue {
-  0%, 100% { color: var(--palette-text); }
-  52%      { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
+  0%, 100% { color: var(--ui-text); }
+  52%      { color: color-mix(in srgb, var(--ui-accent) 38%, var(--ui-text)); }
 }
 
 /* THE DIAGRAM'S CLOCK. One registered number, six geometries — deliberately
@@ -286,8 +286,8 @@
 }
 
 @keyframes semantics-mark-cue-replay {
-  0%, 100% { color: var(--palette-text); }
-  76% { color: color-mix(in srgb, var(--palette-accent) 38%, var(--palette-text)); }
+  0%, 100% { color: var(--ui-text); }
+  76% { color: color-mix(in srgb, var(--ui-accent) 38%, var(--ui-text)); }
 }
 
 /* 斜度的來回（em／cite 用）。幾何同入場那支（見 semantics-slant-settle
@@ -486,7 +486,7 @@
         line-height: 1;
         letter-spacing: -0.03em;
         white-space: nowrap;
-        color: var(--palette-accent);
+        color: var(--ui-accent);
         opacity: 0.42;
         transition: opacity 160ms ease;
       }
@@ -549,19 +549,19 @@
          than either output. Green everywhere was also simply too much of
          one colour. The brackets take the same hue at a quarter strength,
          so a tag reads as `<` + a decision + `>`. */
-      [data-tagname] { fill: var(--palette-syntax-tag); }
+      [data-tagname] { fill: var(--ui-syntax-tag); }
       /* the brackets are the SAME hue at a quarter strength, not a separate
          grey. A cold steel next to a warm page read as a third colour with
          opinions of its own; one hue in two weights reads as one thing —
          syntax — with the name carrying the emphasis. */
       [data-angle] {
-        fill: color-mix(in srgb, var(--palette-syntax-tag) 40%, transparent);
+        fill: color-mix(in srgb, var(--ui-syntax-tag) 40%, transparent);
       }
 
       [data-mark] > text {
         font-family: var(--font-mono);
         font-size: 7px;
-        fill: var(--palette-supplement-text);
+        fill: var(--ui-supplement-text);
         text-anchor: end;
       }
 
@@ -572,7 +572,7 @@
          many cells there are. */
       [data-cell] {
         fill: none;
-        stroke: var(--palette-rule);
+        stroke: var(--ui-rule);
         /* the diagram scales with `em`; pin the hairline or the ruling
            fattens with it */
         vector-effect: non-scaling-stroke;
@@ -601,8 +601,8 @@
         stroke-dasharray: 1.1 0.9;
         stroke-linecap: butt;
         stroke: color-mix(in oklab,
-          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
-          var(--palette-diagram-ink)
+          var(--ui-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--ui-diagram-ink)
         );
         /* 0.62, not 0.9. Dashing roughly doubles a stroke's apparent
            weight — each dash reads as a mark in its own right — so the
@@ -630,8 +630,8 @@
         font-size: 14px;
         text-anchor: start;
         fill: color-mix(in oklab,
-          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
-          var(--palette-diagram-ink)
+          var(--ui-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--ui-diagram-ink)
         );
         transform-box: fill-box;
         transform-origin: center bottom;
@@ -696,7 +696,7 @@
          green is the gift. */
       [data-dots] circle {
         fill: color-mix(in srgb,
-          var(--palette-accent) calc(var(--settle) * 100%),
+          var(--ui-accent) calc(var(--settle) * 100%),
           transparent
         );
         translate: 0 calc((1 - var(--settle)) * -3px);
@@ -709,8 +709,8 @@
          engine's, the broken one is 漢字排版's. */
       [data-mark="proper"] [data-rule] rect {
         fill: color-mix(in oklab,
-          var(--palette-diagram-ink-off) calc((1 - var(--settle)) * 100%),
-          var(--palette-accent)
+          var(--ui-diagram-ink-off) calc((1 - var(--settle)) * 100%),
+          var(--ui-accent)
         );
       }
 
@@ -732,7 +732,7 @@
 
       [data-mark="wavy"] [data-rule] path {
         fill: none;
-        stroke: var(--palette-accent);
+        stroke: var(--ui-accent);
         stroke-width: 1.25;
         vector-effect: non-scaling-stroke;
       }
@@ -770,7 +770,7 @@
         /* sized to the mock characters — 書名號 is a character among
            characters, not a display ornament */
         font-size: 13px;
-        fill: var(--palette-accent);
+        fill: var(--ui-accent);
       }
 
       [data-punct][data-seg="a"] {
@@ -797,7 +797,7 @@
 
         path {
           fill: none;
-          stroke: var(--palette-proof);
+          stroke: var(--ui-proof);
           stroke-width: 1;
           vector-effect: non-scaling-stroke;
         }
@@ -807,7 +807,7 @@
            overshoot the row above and below, so the upright reference is
            unmistakably a reference rather than part of the specimen. */
         [data-wedge] {
-          fill: color-mix(in srgb, var(--palette-proof) 15%, transparent);
+          fill: color-mix(in srgb, var(--ui-proof) 15%, transparent);
           stroke: none;
         }
         /* dashed = where the stroke SHOULD stand; solid = where the engine
@@ -820,7 +820,7 @@
           font-family: var(--font-mono);
           font-size: 8px;
           font-weight: 600;
-          fill: var(--palette-proof);
+          fill: var(--ui-proof);
           text-anchor: start;
         }
       }
@@ -881,8 +881,8 @@
         /* the label answers in colour instead — it deepens, so the row it
            names is unmistakable without either of them moving */
         #station-semantics[data-revealed] & [data-mark]:hover {
-          [data-tagname] { fill: color-mix(in srgb, var(--palette-syntax-tag) 100%, var(--palette-text) 25%); }
-          [data-angle]   { fill: color-mix(in srgb, var(--palette-syntax-tag) 70%, transparent); }
+          [data-tagname] { fill: color-mix(in srgb, var(--ui-syntax-tag) 100%, var(--ui-text) 25%); }
+          [data-angle]   { fill: color-mix(in srgb, var(--ui-syntax-tag) 70%, transparent); }
           /* the ID rides along to match the reveal rule's weight — a plain
              `[data-mark]` selector loses to it and the replay never runs
              (the same cascade trap the 前／後 switch fell into). */
@@ -963,10 +963,10 @@
        page palette here. */
     figcaption {
       & {
-        --_rule: var(--palette-rule);
-        --_bg: var(--palette-bg);
-        --_accent: var(--palette-accent);
-        --_supplement-text: var(--palette-supplement-text);
+        --_rule: var(--ui-rule);
+        --_bg: var(--ui-bg);
+        --_accent: var(--ui-accent);
+        --_supplement-text: var(--ui-supplement-text);
         --_fs-compact: var(--fs-fine);
         font-size: .75rem;
       }
@@ -979,7 +979,7 @@
         margin: 0 0 1.25rem;
         max-inline-size: 28em;
         line-height: 1.75;
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
       }
     }
 
@@ -1573,13 +1573,13 @@
     --_env-b: 30rem;                          /* 信封高 — 唯一自由變數 */
     --_env-i: calc(var(--_env-b) * 120 / 235);
     --_env-flap: calc(var(--_env-b) * .09);
-    --_env-shadow: color-mix(in srgb, var(--color-black) 18%, transparent);
-    /* the contour — stronger than --palette-rule, which vanished into
+    --_env-shadow: color-mix(in srgb, var(--palette-black) 18%, transparent);
+    /* the contour — stronger than --ui-rule, which vanished into
        the station ground */
-    --_env-line: color-mix(in srgb, var(--palette-text) 44%, transparent);
-    /* 郵遞區號框 red — postal convention. Tokenised as --palette-proof now
+    --_env-line: color-mix(in srgb, var(--ui-text) 44%, transparent);
+    /* 郵遞區號框 red — postal convention. Tokenised as --ui-proof now
        that the diagram's corrector-red annotation shares the hue. */
-    --_env-frame: var(--palette-proof);
+    --_env-frame: var(--ui-proof);
 
     position: absolute;
     inset-block-start: 3.4rem;  /* flap fully inside the clip (Safari) */
@@ -1649,7 +1649,7 @@
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 567 100' preserveAspectRatio='none'%3E%3Cpath d='M97.9 1.5 L469.1 1.5 L565.5 98.5 L1.5 98.5 Z' fill='none' stroke='rgb(119 114 106 / 0.8)' stroke-width='3'/%3E%3C/svg%3E")
         center / 100% 100% no-repeat,
-      var(--palette-bg)
+      var(--ui-bg)
     ;
     transition: transform 950ms cubic-bezier(.62, .02, .3, 1) 1s;
   }
@@ -1658,7 +1658,7 @@
   [data-face] {
     position: relative;  /* same paint phase as the flap; tree order decides */
     block-size: 100%;
-    background: var(--palette-bg);
+    background: var(--ui-bg);
     border: 1px solid var(--_env-line);
     box-shadow:
       0 1px 2px var(--_env-shadow),

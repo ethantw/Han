@@ -30,8 +30,6 @@ main {
      <han-console> its travel, so the console scrolled away with the page. */
   container-type: inline-size;
   position: relative;
-  z-index: 10000;
-  /* margin-inline-start: -1px; */
   /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
      `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
      零風險；偏差時 --fs-* 的 em 梯度隨之重解析（比照舊 inline font-size）。 */
@@ -39,7 +37,7 @@ main {
   line-height: var(--console-metric-leading, inherit);
   font-weight: var(--console-metric-weight, inherit);
   text-align: justify;
-  border-inline-start: 1px solid var(--palette-rule);
+  border-inline-start: 1px solid var(--ui-rule);
 }
 
 /* 直排預覽下必須解除容器化：inline 軸隨行向轉——vertical-rl 的 inline 軸是
@@ -79,8 +77,8 @@ main > section {
        § showpiece). Overridden by the 72rem container query below. */
     --plate-pad: var(--gutter);
     padding-inline: var(--plate-pad);
-    border-block-start: 1px solid var(--palette-grid);
-    background: var(--palette-station-a);
+    border-block-start: 1px solid var(--ui-grid);
+    background: var(--ui-station-a);
   }
 
   &:first-of-type {
@@ -89,7 +87,7 @@ main > section {
 
   /* the `-b` ground breathes 1.5× wider (the alternating rhythm) */
   &:nth-of-type(2n+3) {
-    background: var(--palette-station-b);
+    background: var(--ui-station-b);
   }
 
   /* giant watermark glyph — content from `data-wm`, aria-hidden by nature
@@ -103,7 +101,7 @@ main > section {
     font-family: var(--han-font-alternative);
     font-size: clamp(12rem, 28vw, 22rem);
     line-height: 1;
-    color: var(--palette-wm);
+    color: var(--ui-wm);
     pointer-events: none;
     user-select: none;
   }
@@ -136,13 +134,13 @@ main > section {
       font-weight: 500;
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
 
       &::after {
         content: '';
         flex: 1;
         block-size: 1px;
-        background: var(--palette-rule);
+        background: var(--ui-rule);
       }
     }
     h2 {
@@ -152,7 +150,7 @@ main > section {
       font-size: var(--fs-heading);
       line-height: 1.3;
       letter-spacing: 0.01em;
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
     /* station④'s lede sits under the h2 in the same hgroup */
     h2 + p {
@@ -160,7 +158,7 @@ main > section {
       font-family: var(--han-font-alternative);
       font-size: var(--fs-body);
       line-height: 1.7;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
     & ~ p {
       margin: -2rem 0 2.75rem;
@@ -168,7 +166,7 @@ main > section {
       font-family: var(--han-font-alternative);
       font-size: var(--fs-lede);
       line-height: 1.7;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
   }
 }
@@ -254,17 +252,17 @@ main > section {
     font-family: var(--han-font-alternative);
     font-size: var(--fs-body);
     line-height: 1.9;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   > blockquote {
     margin: 0;
     padding-inline-start: 1.25rem;
-    border-inline-start: 2px solid var(--palette-rule);
+    border-inline-start: 2px solid var(--ui-rule);
     font-family: var(--han-font-accent);
     font-size: var(--fs-body);
     line-height: 1.9;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 }
 
@@ -284,10 +282,10 @@ article.Dispatch {
     font-family: var(--han-font-alternative);
     font-size: .75rem;
     line-height: 1.75;
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
   &.vertical {
     writing-mode: vertical-rl;
@@ -320,7 +318,7 @@ article.Dispatch {
     max-inline-size: 34em;
     font-size: var(--fs-lede);
     line-height: 1.7;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 }
 
@@ -365,8 +363,8 @@ main[data-writing="vertical"] {
     padding: 0.625rem 0.875rem;
     font-family: var(--font-mono);
     font-size: var(--fs-fine);
-    background: var(--palette-panel);
-    border: 1px dashed var(--palette-rule);
+    background: var(--ui-panel);
+    border: 1px dashed var(--ui-rule);
     border-radius: var(--r-2);
   }
 
@@ -375,7 +373,7 @@ main[data-writing="vertical"] {
     content: '$';
     margin-inline-end: 0.5rem;
     font-weight: 600;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   /* the command is a real <code>; neutralise the generic code chrome */
@@ -392,10 +390,10 @@ main[data-writing="vertical"] {
     background: transparent;
     border: 0;
     font: inherit;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     cursor: pointer;
 
-    &:hover { color: var(--palette-text); }
+    &:hover { color: var(--ui-text); }
   }
 }
 
@@ -414,8 +412,8 @@ main[data-writing="vertical"] {
     align-items: center;
     gap: 1.75rem;
     padding: 3.5rem var(--gutter);
-    border-block-start: 1px solid var(--palette-rule);
-    background: var(--palette-panel);
+    border-block-start: 1px solid var(--ui-rule);
+    background: var(--ui-panel);
     text-align: center;
   }
 
@@ -433,7 +431,7 @@ main[data-writing="vertical"] {
     font-family: var(--han-font-alternative);
     font-size: clamp(12rem, 40vw, 20rem);
     line-height: 1;
-    color: var(--palette-wm);
+    color: var(--ui-wm);
     pointer-events: none;
     user-select: none;
   }
@@ -449,7 +447,7 @@ main[data-writing="vertical"] {
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
       letter-spacing: 0.05em;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
   }
 
@@ -463,10 +461,10 @@ main[data-writing="vertical"] {
       padding-block-end: 1px;
       font-family: var(--han-font-default);
       font-size: var(--fs-compact);
-      color: var(--palette-text);
-      border-block-end: 1px solid var(--palette-rule);
+      color: var(--ui-text);
+      border-block-end: 1px solid var(--ui-rule);
 
-      &:hover { color: var(--palette-accent); border-block-end-color: var(--palette-accent); }
+      &:hover { color: var(--ui-accent); border-block-end-color: var(--ui-accent); }
     }
   }
 
@@ -476,13 +474,13 @@ main[data-writing="vertical"] {
     gap: 1rem;
     font-family: var(--font-mono);
     font-size: var(--fs-fine);
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
 
     a {
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       text-decoration: none;
 
-      &:hover { color: var(--palette-accent); }
+      &:hover { color: var(--ui-accent); }
     }
   }
 }

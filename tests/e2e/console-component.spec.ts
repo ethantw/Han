@@ -61,7 +61,7 @@ test.describe('bare fixture — no home.css', () => {
     const $console = page.locator('han-console')
     await expect($console).toBeVisible() // upgraded → :not(:defined) guard released
 
-    // Token fallback: with no `--palette-*` on the page, `:host`'s
+    // Token fallback: with no `--ui-*` on the page, `:host`'s
     // `--_panel` resolves to its literal light-dark() fallback
     // (color-paper-deep #fafaf7 in light) — the console actually paints.
     const bg = await $console.evaluate(el => getComputedStyle(el).backgroundColor)

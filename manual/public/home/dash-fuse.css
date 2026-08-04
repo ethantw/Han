@@ -98,7 +98,7 @@
               是「已修正」的常態；reduced-motion／無 JS 直接落在這裡，與滾讀
               過一次的人看到的同一根線。
    --df-press 接觸瞬間的壓印：0 ＝ 常態線寬、1 ＝ 加厚 0.4 unit。
-   --df-red   校樣紅：0 ＝ 墨、1 ＝ --palette-proof。紅是**動詞不是形容詞**
+   --df-red   校樣紅：0 ＝ 墨、1 ＝ --ui-proof。紅是**動詞不是形容詞**
               ——是「指出這裡錯了」的那個動作，不是「斷開」這個狀態的屬性。
               所以它只出現在首播開頭與 hover 按住的期間，等待期（data-armed）
               與終態都不紅：前者只是還沒開始，後者已經修好。校樣紅是站上
@@ -273,14 +273,14 @@ svg[data-name="dash-fuse"] {
        而不消失。fill／stroke 是可繼承的 SVG 屬性，宣告在柱根由 <text> 繼承
        ⇒ **同柱的漢字永遠是淺的**；只有 <rect> 會隨 --df-ink 加深（見下）。
 
-       加深的目標色 --df-flash 用 --palette-ink-grey（light-dark(graphite,
-       silver)）而不是 --palette-text：正文墨色在亮色主題下是 #0e0e10，全黑
+       加深的目標色 --df-flash 用 --ui-ink-grey（light-dark(graphite,
+       silver)）而不是 --ui-text：正文墨色在亮色主題下是 #0e0e10，全黑
        壓在這片近底色上太硬；graphite 是深灰，暗色主題那頭則是 silver（該主
        題的站台底就是 graphite，方向自動反過來），兩邊都是「比底色果斷、但
        不是極端」的一階。走墨、不走光——這是印刷的頁面，不是儀表板。 */
-    --df-face: color-mix(in srgb, var(--palette-text) 7%, var(--palette-station-b));
-    --df-edge: color-mix(in srgb, var(--palette-text) 12%, var(--palette-station-b));
-    --df-flash: var(--palette-ink-grey);
+    --df-face: color-mix(in srgb, var(--ui-text) 7%, var(--ui-station-b));
+    --df-edge: color-mix(in srgb, var(--ui-text) 12%, var(--ui-station-b));
+    --df-flash: var(--ui-ink-grey);
     fill: var(--df-face);
     stroke: var(--df-edge);
   }
@@ -330,14 +330,14 @@ svg[data-name="dash-fuse"] {
     fill:
       color-mix(
         in srgb,
-        var(--palette-proof) calc(var(--df-red) * 55%),
+        var(--ui-proof) calc(var(--df-red) * 55%),
         color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 60%), var(--df-face))
       )
     ;
     stroke:
       color-mix(
         in srgb,
-        var(--palette-proof) calc(var(--df-red) * 100%),
+        var(--ui-proof) calc(var(--df-red) * 100%),
         color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-edge))
       )
     ;
@@ -460,7 +460,7 @@ svg[data-name="dash-fuse"] {
     font-family: var(--han-font-alternative);
     font-size: 1rem;
     line-height: 1.75;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的

@@ -41,13 +41,13 @@
 :root[data-fonts-gate='loading'] .Brand [data-part="dot"] {
   &,
   &::first-line {
-    color: var(--palette-accent) !important;
+    color: var(--ui-accent) !important;
   }
 }
 :root[data-fonts-gate='loading'] .Brand [data-part="ext"] {
   &,
   &::first-line {
-    color: var(--palette-text) !important;
+    color: var(--ui-text) !important;
   }
 }
 
@@ -122,7 +122,7 @@
   .Manifesto .Outline .Stroke[data-encore] {
     animation: none;
     opacity: 0;
-    stroke: color-mix(in srgb, var(--palette-text) 20%, transparent);
+    stroke: color-mix(in srgb, var(--ui-text) 20%, transparent);
     transition: opacity 0.8s ease-out;
   }
   .Manifesto .Outline .Stroke[data-encore='drawing'] {

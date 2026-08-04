@@ -6,7 +6,7 @@
  */
 
 /* ─── design tokens ────────────────────────────────────────────────
- * Colour primitives and the shared `--palette-*` roles come from
+ * Colour primitives and the shared `--ui-*` roles come from
  * `common/variables.css` (imported above), the same layer the homepage
  * consumes — the two palettes were already the same swatches under two
  * sets of names.
@@ -19,23 +19,23 @@
 
 :root {
   /* docs-only roles (light / dark) */
-  --palette-faint-text:  light-dark(#a0a09a, #5f5f5b);
-  --palette-rule-soft:   light-dark(#f3f3f0, #1f1f21);
-  --palette-accent-soft: light-dark(#7dc8a4, #2a5e3e);
+  --ui-faint-text:  light-dark(#a0a09a, #5f5f5b);
+  --ui-rule-soft:   light-dark(#f3f3f0, #1f1f21);
+  --ui-accent-soft: light-dark(#7dc8a4, #2a5e3e);
 
   /* alias layer — paper / ink / accent */
-  --paper:         var(--palette-bg);
-  --paper-deep:    var(--palette-panel);
-  --ink:           var(--palette-text);
-  --ink-soft:      var(--palette-ink-grey);
-  --ink-mute:      var(--palette-supplement-text);
-  --ink-faint:     var(--palette-faint-text);
-  --rule:          var(--palette-rule);
-  --rule-soft:     var(--palette-rule-soft);
-  --accent:        var(--palette-accent);
-  --accent-deep:   var(--palette-accent-deep);
-  --accent-soft:   var(--palette-accent-soft);
-  --accent-bg:     var(--palette-accent-bg);
+  --paper:         var(--ui-bg);
+  --paper-deep:    var(--ui-panel);
+  --ink:           var(--ui-text);
+  --ink-soft:      var(--ui-ink-grey);
+  --ink-mute:      var(--ui-supplement-text);
+  --ink-faint:     var(--ui-faint-text);
+  --rule:          var(--ui-rule);
+  --rule-soft:     var(--ui-rule-soft);
+  --accent:        var(--ui-accent);
+  --accent-deep:   var(--ui-accent-deep);
+  --accent-soft:   var(--ui-accent-soft);
+  --accent-bg:     var(--ui-accent-bg);
 
   /* `--m-*` — the oldest generation of names. Only these are still read
      by anything; the dozen colour aliases that used to sit here were

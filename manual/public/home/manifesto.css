@@ -14,7 +14,7 @@
   & {
     margin-inline: auto;
     padding-block: 7rem 5.5rem;
-    background-color: var(--palette-bg);
+    background-color: var(--ui-bg);
   }
 
   /* Crowned headline: the 漢.css Brand rides on top as a small serif
@@ -30,14 +30,14 @@
       line-height: 1.25;
       text-wrap: balance;
       letter-spacing: -0.015em;
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
 
     /* accent hook for the first phrase — a pseudo, so the DOM stays
        free of a span whose only job is colour (css-naming rule 3) */
     &::first-line,
     h-char[data-punct]:has(~ br:first-of-type) {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
 
     /* the wordmark crown sits on its own line above the phrases */
@@ -56,7 +56,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-lede);
     line-height: 1.85;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   .dogfood {
@@ -64,7 +64,7 @@
     max-inline-size: 38em;
     font-family: var(--han-font-default);
     font-size: var(--fs-small);
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   .InstallChip {
@@ -74,7 +74,7 @@
     }
     code {
       all: revert-layer;
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
   }
 
@@ -111,7 +111,7 @@
        on no-preference. (color-mix — Baseline 2023.) */
     .Stroke {
       fill: none;
-      stroke: color-mix(in srgb, var(--palette-text) 12%, transparent);
+      stroke: color-mix(in srgb, var(--ui-text) 12%, transparent);
       stroke-width: 2;
     }
   }

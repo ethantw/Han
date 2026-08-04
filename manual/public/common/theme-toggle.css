@@ -19,12 +19,12 @@
     align-items: center;
     padding: 0.25em;
     line-height: 0;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     cursor: pointer;
     transition: .15s all ease-out;
   }
   &:hover {
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
   input[type="checkbox"] {
     position: absolute;

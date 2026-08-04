@@ -89,7 +89,7 @@
   }
 
   /* G3 字徽——favicon 同款符號，字標左側。fill/stroke 走 palette，隨主題
-     明暗自動切（暗色 --palette-text → 淺，括號跟著變亮）。字面高度 ~1em、
+     明暗自動切（暗色 --ui-text → 淺，括號跟著變亮）。字面高度 ~1em、
      視覺置中對齊字標。 */
   .BrandMark {
     /* 基線錨定，不用 align-self: center——後者在 flex 交叉盒置中，而交叉盒由
@@ -103,9 +103,9 @@
     block-size: 1em;
     inline-size: 1em;
 
-    circle { fill: var(--palette-accent); }
-    .brace { stroke: var(--palette-text); }
-    .dun { fill: var(--palette-text); }   /* 明體頓點 ＝ 括號同色 */
+    circle { fill: var(--ui-accent); }
+    .brace { stroke: var(--ui-text); }
+    .dun { fill: var(--ui-text); }   /* 明體頓點 ＝ 括號同色 */
   }
 
   /* The mark 漢 is drawn as the heritage OUTLINE (same Shanggu stroke
@@ -150,28 +150,28 @@
     inset-inline-start: 0;
     block-size: 1em;
     inline-size: 1em;
-    fill: var(--palette-text);
+    fill: var(--ui-text);
   }
   [data-part="dot"] {
     padding-inline: .125rem;
     font-family: var(--han-font-alternative);
     font-weight: 600;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
   [data-part="ext"] {
     font-family: var(--han-font-default);
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
   small {
     font-family: var(--han-font-default);
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     letter-spacing: 0.3em;
 
     &::before {
       content: '';
       display: inline-block;
       inline-size: 1px;
-      background: var(--palette-rule);
+      background: var(--ui-rule);
       vertical-align: middle;
     }
   }
@@ -223,16 +223,16 @@
     margin-inline-end: 0.25rem;
     translate: 0 0.03em;
 
-    circle { fill: var(--palette-accent); }
-    .brace { stroke: var(--palette-text); }
-    .dun { fill: var(--palette-text); }   /* 明體頓點 ＝ 括號同色 */
+    circle { fill: var(--ui-accent); }
+    .brace { stroke: var(--ui-text); }
+    .dun { fill: var(--ui-text); }   /* 明體頓點 ＝ 括號同色 */
   }
 
   [data-part="mark"] {
     font-family: var(--han-font-alternative);
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   [data-part="dot"] {
@@ -241,22 +241,22 @@
     padding-inline: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   [data-part="ext"] {
     font-family: var(--han-font-latin-serif), serif;
     font-size: 1.125rem;
     font-weight: 500;
-    color: var(--palette-text);
+    color: var(--ui-text);
     margin-inline-start: 1px;
   }
 
   [data-part="ver"] {
     font-family: var(--font-mono);
     font-size: 0.625rem;
-    color: var(--palette-accent-deep);
-    background: var(--palette-accent-bg);
+    color: var(--ui-accent-deep);
+    background: var(--ui-accent-bg);
     padding: 2px 6px;
     border-radius: 3px;
     margin-inline-start: 0.625rem;

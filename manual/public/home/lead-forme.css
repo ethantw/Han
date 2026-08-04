@@ -15,7 +15,7 @@
   /* two-tier: primitives → semantic --forme-* (mirrors home.css § palette).
      No --forme-bg: the SVG is backgroundless — the forme sits directly on the
      station's ground, a plaything in the copy rather than a framed picture. */
-  --forme-ink: var(--palette-text);
+  --forme-ink: var(--ui-text);
   --forme-face-1: light-dark(#eceae4, #050507);
   --forme-face-2: light-dark(#f1efe9, #0c0c10);
   --forme-face-3: light-dark(#f7f5f0, #14141b);
@@ -39,8 +39,8 @@
   --forme-wall: light-dark(#dbd6c9, #26262f);
   --forme-relief: light-dark(#fdfcf9, #4b4b58);
   --forme-hi: light-dark(#ffffff, #ffffff);
-  --forme-spec: var(--palette-supplement-text);
-  --forme-spec-dim: var(--palette-supplement-text-2q);
+  --forme-spec: var(--ui-supplement-text);
+  --forme-spec-dim: var(--ui-supplement-text-2q);
 
   /* Diantenjeom punctuation family — flips JIS ⇄ MOE on the figure */
   --dtj-serif: 'Diantenjeom Serif JIS';
@@ -343,10 +343,10 @@
     gap: 2px;
     margin: 0;
     padding: 3px;
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: 999px;
-    background: var(--palette-bg);
-    box-shadow: 0 2px 10px color-mix(in srgb, var(--color-black) 12%, transparent);
+    background: var(--ui-bg);
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--palette-black) 12%, transparent);
 
     abbr.acronym {
       text-orientation: upright;
@@ -365,7 +365,7 @@
      two in step. */
   .PillHead {
     padding-inline: 0.65em 0.35em;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     font-size: 0.75rem;
     letter-spacing: 0.08em;
   }
@@ -379,20 +379,20 @@
     padding-inline: 10px;
     border-radius: 40px;
     font-size: .875rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     cursor: pointer;
 
     &:has(input:checked) {
-      background: var(--palette-accent-bg);
-      color: var(--palette-accent);
+      background: var(--ui-accent-bg);
+      color: var(--ui-accent);
     }
     &:has(input:focus-visible) {
-      outline: 2px solid var(--palette-accent);
+      outline: 2px solid var(--ui-accent);
       outline-offset: 1px;
     }
   }
   & fieldset:hover {
-    border-color: var(--palette-supplement-text);
+    border-color: var(--ui-supplement-text);
   }
 }
 
@@ -709,7 +709,7 @@
   max-inline-size: 38em;
   font-size: var(--fs-fine);
   line-height: 1.66667;
-  color: var(--palette-supplement-text);
+  color: var(--ui-supplement-text);
 
   code { font-size: 0.875em; }
 }
@@ -730,8 +730,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1px;
-    background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
+    background: var(--ui-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: 0.6rem;
     overflow: clip;
   }
@@ -741,7 +741,7 @@
     align-items: center;
     gap: .75rem;
     padding: clamp(.875rem, 2vw, 1.375rem);
-    background: var(--palette-panel);
+    background: var(--ui-panel);
   }
   p {
     flex: 1;
@@ -759,15 +759,15 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     font-size: 0.8rem;
   }
   select {
     font: inherit;
     font-size: 0.8rem;
-    color: var(--palette-text);
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
     border-radius: 0.4rem;
     padding-block: 0.2rem;
     padding-inline: 0.4rem;

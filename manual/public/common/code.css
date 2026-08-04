@@ -20,24 +20,24 @@ body.home {
   /* generic light code chrome — station④'s `.CodePane` terminal panel
      opts out via :where() (zero specificity, no cascade fight). */
   pre:where(:not(.CodePane pre)) {
-    background: var(--palette-panel);
-    border: 1px solid var(--palette-rule);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-rule);
     border-radius: var(--r-2);
     padding: 18px 22px;
     overflow-x: auto;
     line-height: 1.6;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
   code:not(pre code) {
     padding: .125rem .5em;
-    background: var(--palette-panel);
-    border: 1px solid var(--palette-grid);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-grid);
     border-radius: var(--r-1);
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   /* Highlight-API token colours for the generic (non-CodePane) code blocks —
-     station-craft's Override rides the light/dark `--palette-panel` ground,
+     station-craft's Override rides the light/dark `--ui-panel` ground,
      so the tokens flip with the theme via light-dark() (color-scheme is set
      by the dark-mode recipe; light-dark(): Baseline 2024). Station④'s
      terminal-dark `.CodePane` keeps its own light-on-dark palette
@@ -55,4 +55,4 @@ body.home {
 
 /* ─── selection ─────────────────────────────────────────────────── */
 
-::selection { background: var(--palette-accent-bg); color: var(--palette-accent); }
+::selection { background: var(--ui-accent-bg); color: var(--ui-accent); }

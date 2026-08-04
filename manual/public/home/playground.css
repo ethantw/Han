@@ -20,8 +20,8 @@
      dark-surface gotcha). The data-pg-* hooks are untouched. */
   &[data-playground] > header {
     color-scheme: dark;
-    background: var(--palette-ink);
-    border-block-end-color: color-mix(in srgb, var(--color-mist) 16%, transparent);
+    background: var(--ui-ink);
+    border-block-end-color: color-mix(in srgb, var(--palette-mist) 16%, transparent);
   }
 
   /* the editor may bleed one gutter past the station measure — a wider
@@ -62,8 +62,8 @@
      the em dots / punctuation / autospace / ruby / prose spacing itself. */
   [data-pg-preview] {
     & {
-      background: var(--palette-bg);
-      color: var(--palette-text);
+      background: var(--ui-bg);
+      color: var(--ui-text);
       font-family: var(--han-font-alternative);
       font-size: var(--fs-body);
       line-height: 1.9;
@@ -75,7 +75,7 @@
         font-family: var(--han-font-alternative);
         font-weight: 600;
         line-height: 1.3;
-        color: var(--palette-text);
+        color: var(--ui-text);
       }
 
       &:first-child { margin-block-start: 0; }
@@ -90,9 +90,9 @@
     blockquote {
       margin: 1em 0;
       padding-inline-start: 1.25rem;
-      border-inline-start: 2px solid var(--palette-rule);
+      border-inline-start: 2px solid var(--ui-rule);
       font-family: var(--han-font-accent);
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
 
     :is(ul, ol) {
@@ -103,7 +103,7 @@
     li { margin-block: 0.25em; }
 
     a {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
       text-decoration: underline;
       text-underline-offset: 2px;
     }
@@ -113,8 +113,8 @@
       padding: 0.1em 0.35em;
       font-family: var(--font-mono);
       font-size: 0.875em;
-      background: var(--palette-panel);
-      border: 1px solid var(--palette-rule);
+      background: var(--ui-panel);
+      border: 1px solid var(--ui-rule);
       border-radius: var(--r-1);
     }
 
@@ -143,7 +143,7 @@
     hr {
       margin: 1.5em 0;
       border: 0;
-      border-block-start: 1px solid var(--palette-rule);
+      border-block-start: 1px solid var(--ui-rule);
     }
 
     :is(img, video) {
@@ -224,8 +224,8 @@
       resize: none;
       /* 中縫。淺色下它畫在深色的 textarea 那一側所以看得見；深色下兩邊的
          底色幾乎同色，這條線就是唯一分界，故用固定的 mist 而非會跟著主題
-         翻的 --palette-rule（web-style.md 深色面 gotcha）。 */
-      border-inline-end: 1px solid color-mix(in srgb, var(--color-mist) 16%, transparent);
+         翻的 --ui-rule（web-style.md 深色面 gotcha）。 */
+      border-inline-end: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
     }
 
     [data-pg-preview] {

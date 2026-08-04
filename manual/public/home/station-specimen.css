@@ -18,7 +18,7 @@
   font-family: var(--han-font-alternative);
   font-size: round(clamp(1.375rem, 4vw, 2rem), 2px);
   line-height: 1.75;
-  color: var(--palette-text);
+  color: var(--ui-text);
 }
 
 
@@ -54,8 +54,8 @@ figure.Papers {
       margin: 0;
       align-self: start;
       padding: 0.875rem 0.875rem 1.125rem;
-      background: var(--palette-bg);
-      border: 1px solid var(--palette-rule);
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
     }
 
@@ -63,7 +63,7 @@ figure.Papers {
       margin: 0;
       padding-block-end: 0.25rem;
       /* the thick half of the classic masthead double rule */
-      border-block-end: 2px solid var(--palette-text);
+      border-block-end: 2px solid var(--ui-text);
       text-align: center;
       font-family: var(--han-font-alternative);
       font-weight: 700;
@@ -71,7 +71,7 @@ figure.Papers {
       /* tracked-out logotype — trailing tracking rebalanced by indent */
       letter-spacing: 0.25em;
       text-indent: 0.25em;
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
 
     .Dateline {
@@ -83,10 +83,10 @@ figure.Papers {
         margin: 0 0 0.75rem;
         padding-block: 0.25rem;
         /* …and the thin half */
-        border-block-end: 1px solid var(--palette-rule);
+        border-block-end: 1px solid var(--ui-rule);
         font-family: var(--han-font-default);
         font-size: var(--fs-fine);
-        color: var(--palette-supplement-text);
+        color: var(--ui-supplement-text);
       }
 
       /* the edition tag — derived from the pane's lang, no i18n token.
@@ -111,7 +111,7 @@ figure.Papers {
       font-weight: 700;
       font-size: 1.125rem;
       line-height: 1.5;
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
     p.author {
       margin-block-start: -.5em;
@@ -127,7 +127,7 @@ figure.Papers {
       font-family: var(--han-font-default);
       font-size: 0.875rem;
       line-height: 2;
-      color: var(--palette-text);
+      color: var(--ui-text);
 
       &:last-child {
         margin-block-end: 0;

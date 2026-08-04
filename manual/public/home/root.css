@@ -26,8 +26,8 @@ body.home {
     font-family: var(--han-font-default);
     font-size: var(--fs-body);
     line-height: 1.8;
-    color: var(--palette-text);
-    background: var(--palette-bg);
+    color: var(--ui-text);
+    background: var(--ui-bg);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern", "liga", "calt";

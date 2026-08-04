@@ -4,9 +4,9 @@
  * Design tokens — shared by the homepage (`home.css`) and the manual
  * (`manual.css`).
  *
- * Two tiers (web-style.md): appearance-named `--color-*` PRIMITIVES,
+ * Two tiers (web-style.md): appearance-named `--palette-*` PRIMITIVES,
  * theme-invariant, never consumed by a component → role-named
- * `--palette-*` SEMANTICS via `light-dark()`, which is all a component
+ * `--ui-*` SEMANTICS via `light-dark()`, which is all a component
  * may read. Plus the type ramp, radii, layout measures and the icon
  * `shape()` paths.
  *
@@ -29,46 +29,46 @@
 
   /* ── colour primitives ──────────────────────────────────────────
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
-   * by a component — only the `--palette-*` layer below does that
+   * by a component — only the `--ui-*` layer below does that
    * (web-style.md two-tier token rule; mirrors ziano variables.css). */
-  --color-white:      #ffffff;
-  --color-paper-deep: #fafaf7; /* warm off-white — panels */
-  --color-snow:       #f3f3f0;
-  --color-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
-  --color-console:       #fafafa; /* 中性的近白 — 主控台地色（淺）*/
-  --color-console-night: #151515; /* 中性的暗 — 主控台地色（深）*/
-  --color-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
-  --color-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
-  --color-cloud:      #ececea; /* hairline grey — grid / rule */
-  --color-silver:     #d2d2cd;
-  --color-ash:        #8c8c87;
-  --color-slate:      #666666; /* muted grey — supplement text */
-  --color-charcoal:   #2a2a2c;
-  --color-graphite:   #1f1f22;
-  --color-ink-deep:   #18171a;
-  --color-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
-  --color-black:      #111111; /* shadow base only */
+  --palette-white:      #ffffff;
+  --palette-paper-deep: #fafaf7; /* warm off-white — panels */
+  --palette-snow:       #f3f3f0;
+  --palette-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --palette-console:       #fafafa; /* 中性的近白 — 主控台地色（淺）*/
+  --palette-console-night: #151515; /* 中性的暗 — 主控台地色（深）*/
+  --palette-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
+  --palette-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
+  --palette-cloud:      #ececea; /* hairline grey — grid / rule */
+  --palette-silver:     #d2d2cd;
+  --palette-ash:        #8c8c87;
+  --palette-slate:      #666666; /* muted grey — supplement text */
+  --palette-charcoal:   #2a2a2c;
+  --palette-graphite:   #1f1f22;
+  --palette-ink-deep:   #18171a;
+  --palette-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
+  --palette-black:      #111111; /* shadow base only */
   /* neutral cool greys — the mark diagram's «engine» register, i.e. what
      the browser hands you before han.css touches it. Cool on purpose: the
      diagram's whole colour argument is steel (the engine's) → ink (the
      text's own) → green (what han.css gives it). */
-  --color-steel:      #98a0ac;
-  --color-steel-deep: #5d6572;
+  --palette-steel:      #98a0ac;
+  --palette-steel-deep: #5d6572;
   /* syntax blue — for the mark diagram's tag labels. Deliberately NOT the
      accent: the diagram already spends green on «what han.css gives the
      text», and a tag name is a different kind of thing (what you WROTE), so
      it gets its own hue rather than a third weight of the same one. */
-  --color-lapis:        #4a56b8;
-  --color-lapis-bright: #939bea;
+  --palette-lapis:        #4a56b8;
+  --palette-lapis-bright: #939bea;
   /* postal red — the page's one deliberate off-palette hue. Was inlined in
      the envelope's 郵遞區號 frame; promoted to a primitive once the mark
      diagram's angle annotation needed the same ink. */
-  --color-seal:        #b0342c;
-  --color-seal-bright: #d96a5f;
-  --color-green:        #0a8754; /* the one accent (light) */
-  --color-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
-  --color-mint:         #e8f5ec; /* accent wash (light) */
-  --color-pine:         #163322; /* accent wash (dark) */
+  --palette-seal:        #b0342c;
+  --palette-seal-bright: #d96a5f;
+  --palette-green:        #0a8754; /* the one accent (light) */
+  --palette-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
+  --palette-mint:         #e8f5ec; /* accent wash (light) */
+  --palette-pine:         #163322; /* accent wash (dark) */
 
   /* ── semantic palette ────────────────────────────────────────────
    * Role names, each referencing a primitive. A flipping token carries
@@ -77,41 +77,41 @@
    * alphas (75/50/25 %) are color-mix of their own base, so a flipped
    * base re-tints them automatically.
    * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
-  --palette-accent:    light-dark(var(--color-green), var(--color-green-bright));
-  /* one step deeper than --palette-accent — small solid marks (badges,
+  --ui-accent:    light-dark(var(--palette-green), var(--palette-green-bright));
+  /* one step deeper than --ui-accent — small solid marks (badges,
      flags, checks) need the extra contrast that body-size text doesn't. */
-  --palette-accent-deep: light-dark(#066b3f, #5cc090);
-  --palette-accent-bg: light-dark(var(--color-mint), var(--color-pine));
-  --palette-text:      light-dark(var(--color-ink), var(--color-mist));
-  --palette-grid:      light-dark(var(--color-cloud), var(--color-charcoal));
+  --ui-accent-deep: light-dark(#066b3f, #5cc090);
+  --ui-accent-bg: light-dark(var(--palette-mint), var(--palette-pine));
+  --ui-text:      light-dark(var(--palette-ink), var(--palette-mist));
+  --ui-grid:      light-dark(var(--palette-cloud), var(--palette-charcoal));
 
-  --palette-bg: light-dark(var(--color-white), var(--color-ink));
-  --palette-bg-3q:
+  --ui-bg: light-dark(var(--palette-white), var(--palette-ink));
+  --ui-bg-3q:
     light-dark(
-      color-mix(in srgb, var(--color-white) 75%, transparent),
-      color-mix(in srgb, var(--color-ink) 82%, transparent)
+      color-mix(in srgb, var(--palette-white) 75%, transparent),
+      color-mix(in srgb, var(--palette-ink) 82%, transparent)
     )
   ;
-  --palette-bg-2q: color-mix(in srgb, var(--palette-bg) 50%, transparent);
+  --ui-bg-2q: color-mix(in srgb, var(--ui-bg) 50%, transparent);
 
-  --palette-supplement-text:    light-dark(var(--color-slate), var(--color-ash));
-  --palette-supplement-text-3q: color-mix(in srgb, var(--palette-supplement-text) 75%, transparent);
-  --palette-supplement-text-2q: color-mix(in srgb, var(--palette-supplement-text) 50%, transparent);
-  --palette-supplement-text-1q: color-mix(in srgb, var(--palette-supplement-text) 25%, transparent);
+  --ui-supplement-text:    light-dark(var(--palette-slate), var(--palette-ash));
+  --ui-supplement-text-3q: color-mix(in srgb, var(--ui-supplement-text) 75%, transparent);
+  --ui-supplement-text-2q: color-mix(in srgb, var(--ui-supplement-text) 50%, transparent);
+  --ui-supplement-text-1q: color-mix(in srgb, var(--ui-supplement-text) 25%, transparent);
 
-  --palette-panel:    light-dark(var(--color-paper-deep), var(--color-ink-deep));
-  --palette-ink:      var(--color-ink);
-  --palette-ink-grey: light-dark(var(--color-graphite), var(--color-silver));
-  --palette-rule:     light-dark(var(--color-cloud), var(--color-charcoal));
+  --ui-panel:    light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
+  --ui-ink:      var(--palette-ink);
+  --ui-ink-grey: light-dark(var(--palette-graphite), var(--palette-silver));
+  --ui-rule:     light-dark(var(--palette-cloud), var(--palette-charcoal));
 
   /* 標記原理圖 (home/station-semantics.css § .MarkDiagram). Two inks and a
      proof red: the mock glyphs ride `-ink-off` → `-ink` as they straighten,
      so posture and colour temperature correct in one motion, while every
-     mark han.css ADDS arrives in `--palette-accent`. */
-  --palette-diagram-ink:     light-dark(var(--color-ink), var(--color-mist));
-  --palette-diagram-ink-off: light-dark(var(--color-steel), var(--color-steel-deep));
-  --palette-proof:           light-dark(var(--color-seal), var(--color-seal-bright));
-  --palette-syntax-tag:      light-dark(var(--color-lapis), var(--color-lapis-bright));
+     mark han.css ADDS arrives in `--ui-accent`. */
+  --ui-diagram-ink:     light-dark(var(--palette-ink), var(--palette-mist));
+  --ui-diagram-ink-off: light-dark(var(--palette-steel), var(--palette-steel-deep));
+  --ui-proof:           light-dark(var(--palette-seal), var(--palette-seal-bright));
+  --ui-syntax-tag:      light-dark(var(--palette-lapis), var(--palette-lapis-bright));
 
   /* ── station grounds & watermark ──────────────────────────────────
    * The station-plate system (stations.css) alternates two section
@@ -121,7 +121,7 @@
    * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
    * Baseline 2023) that lifts to the paper side on dark so it still
    * reads. Consumed only by `[data-station]` / `.Closing`. */
-  /* 主控台的地色。它曾經直接用 --palette-panel——而 panel 與站台 a 同值
+  /* 主控台的地色。它曾經直接用 --ui-panel——而 panel 與站台 a 同值
      （paper-deep／ink-deep），於是「工具」與「內容」同色，只隔一條髮線。
      兩側各用一種分野，因為暗處讀不出溫差：
        · 淺色 #fafafa 是**純溫差**——與 paper-deep（250,250,247，偏黃）同明度，
@@ -130,23 +130,23 @@
          往頁面最深的墨靠、自己退到後面去。
      存檔的彎路都是在淺色側動明度：#eeece5（加深＋加暖＝土色）、#eceff2（明顯
      冷調，脫離暖紙家族）、#eeeeea（同階梯再降一格，像第三種站台）。
-     只有 <han-console> 的 host 用它；--palette-panel 那個角色還有一堆面板在
+     只有 <han-console> 的 host 用它；--ui-panel 那個角色還有一堆面板在
      用，不動。 */
-  --palette-console: light-dark(var(--color-console), var(--color-console-night));
-  --palette-station-a: light-dark(var(--color-paper-deep), var(--color-ink-deep));
-  --palette-station-b: light-dark(var(--color-snow), var(--color-graphite));
+  --ui-console: light-dark(var(--palette-console), var(--palette-console-night));
+  --ui-station-a: light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
+  --ui-station-b: light-dark(var(--palette-snow), var(--palette-graphite));
   /* 柒站（引用碼）的專屬地色——全站唯一不是灰白的站台底。它曾是「兩個
      主題都恆黑」，淺色模式下整片墨黑太搶戲；改成隨主題走，淺色一側是
      **稿紙的米黃**。取米黃而不是某個強調色的淡洗：這一站給的是你要抄回
      自己專案的那段碼，而 pane 裡的終端機是恆黑的——黑落在米黃紙上就是
      墨落在紙上，關係自己成立，不必再借一個色相來說。（試過 lapis 的淡洗
      #eef0fa，太紫。）深色一側是同一張紙的夜色，暖墨，不是又一塊
-     --color-ink。 */
-  --palette-station-code: light-dark(var(--color-buff), var(--color-buff-night));
-  --palette-wm:
+     --palette-ink。 */
+  --ui-station-code: light-dark(var(--palette-buff), var(--palette-buff-night));
+  --ui-wm:
     light-dark(
-      color-mix(in srgb, var(--color-ink) 4%, transparent),
-      color-mix(in srgb, var(--color-paper-deep) 6%, transparent)
+      color-mix(in srgb, var(--palette-ink) 4%, transparent),
+      color-mix(in srgb, var(--palette-paper-deep) 6%, transparent)
     )
   ;
 
@@ -176,11 +176,11 @@
   --w-console: 17.5rem;
 
   /* Terminal-dark code panel — theme-INVARIANT in both modes (owner-
-     approved, mirrors ziano's --palette-ink usage). Needs a fixed faint
+     approved, mirrors ziano's --ui-ink usage). Needs a fixed faint
      hairline so it doesn't go edgeless once the page bg is also dark
      (web-style.md dark-mode gotcha). */
-  --code-bg: var(--color-ink);
-  --code-fg: color-mix(in srgb, var(--color-mist) 90%, transparent);
+  --code-bg: var(--palette-ink);
+  --code-fg: color-mix(in srgb, var(--palette-mist) 90%, transparent);
 
   /* Single source of truth: the masthead checkbox
      (`input[name="dark-mode"]`). Default light; the `:has()` below flips

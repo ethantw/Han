@@ -30,7 +30,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-body);
     line-height: 1.9;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   code {
@@ -45,11 +45,11 @@
 
 .AxTail {
   margin-block: 1.25rem 0;
-  color: var(--palette-supplement-text);
+  color: var(--ui-supplement-text);
 }
 
 /* 無底色，只有線。原本是帳本那招「gap 露出容器底色當縫」——那要求格子本身
-   是實心的（`--palette-bg`），於是三個式子成了浮在站台底色上的一塊白版，
+   是實心的（`--ui-bg`），於是三個式子成了浮在站台底色上的一塊白版，
    讀起來像貼上去的展品，而不像正文裡的一段顯示數學（同 .Theorem 的
    「No box」註）。改成格子透明、縫用真正的 border 畫：站台的底色與「零」
    字水印因此穿過整塊版面，只剩線在分隔。
@@ -59,7 +59,7 @@
   & {
     display: grid;
     margin: 0 0 2rem;
-    border-block: 1px solid var(--palette-rule);
+    border-block: 1px solid var(--ui-rule);
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
 
@@ -75,7 +75,7 @@
 
   /* 窄螢幕：三格直疊，縫在每一格的上緣（第一格靠容器的 border-block）。 */
   .Ax + .Ax {
-    border-block-start: 1px solid var(--palette-rule);
+    border-block-start: 1px solid var(--ui-rule);
 
     /* 寬螢幕：5.2 與 5.3 並排成一列，橫縫交還給通欄的 5.1（見下），
        這裡只留兩格之間那一道直縫——畫在後一格的行首側。 */
@@ -83,7 +83,7 @@
       border-block-start: 0;
 
       & + .Ax {
-        border-inline-start: 1px solid var(--palette-rule);
+        border-inline-start: 1px solid var(--ui-rule);
       }
     }
   }
@@ -96,7 +96,7 @@
       grid-column: 1 / -1;
       /* 通欄那條橫縫改由通欄的格子自己畫——下面兩格並排，各自畫上緣會
          畫成兩截（中間那道直縫剛好把它切開），看得出接痕。 */
-      border-block-end: 1px solid var(--palette-rule);
+      border-block-end: 1px solid var(--ui-rule);
     }
 
     .Formula {
@@ -113,7 +113,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-fine);
     line-height: 1.75;
-    color: var(--palette-supplement-text-3q);
+    color: var(--ui-supplement-text-3q);
     text-align: center;
   }
 }
@@ -162,7 +162,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-heading);
     line-height: 1.6;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   /* The statements are real MathML (Core — Baseline 2023). Engines ship a
@@ -193,7 +193,7 @@
   code {
     font-family: var(--font-mono);
     font-size: 0.8em;
-    color: var(--palette-text);
+    color: var(--ui-text);
   }
 
   /* bound variables: MathML already italicises a single-char `<mi>`, so this
@@ -213,7 +213,7 @@
   mo {
     margin-inline: 0.5rem;
     font-size: 0.9em;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* …except the ones that are brackets, which hug their argument */
@@ -226,7 +226,7 @@
   .Zero {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums lining-nums;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   /* the specificity triple, and 「權重」 — one token each, never broken */
@@ -252,7 +252,7 @@
       display: block;
       margin-block-start: 0.25rem;
       font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
       white-space: nowrap;
     }
 
@@ -280,7 +280,7 @@
   & {
     margin-block: 1.75rem;
     padding-block-start: 1.25rem;
-    border-block-start: 1px solid var(--palette-rule);
+    border-block-start: 1px solid var(--ui-rule);
 
     @media (min-width: 60rem) {
       display: grid;
@@ -363,18 +363,18 @@
 
     mo {
       margin-inline: 0.25em;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
 
     .Zero {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
 
     /* The reader's weight — full ink and a shade heavier, because it is the
        one that survives. It needs no arrow of its own: sitting in the zero's
        column IS the comparison. */
     .Mine {
-      color: var(--palette-text);
+      color: var(--ui-text);
       font-weight: 500;
     }
   }
@@ -395,7 +395,7 @@
       font-family: var(--han-font-alternative);
       font-size: var(--fs-small);
       line-height: 1.9;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
 
     code {
@@ -427,8 +427,8 @@
       visibility: hidden;
       display: grid;
       gap: 1px;                     /* hairline seam, as in the ledgers */
-      background: var(--palette-rule);
-      border: 1px solid var(--palette-rule);
+      background: var(--ui-rule);
+      border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
       overflow: hidden;
     }
@@ -454,7 +454,7 @@
       position: relative;
       padding-block: 0.875rem;
       padding-inline: 1rem;
-      background: var(--palette-bg);
+      background: var(--ui-bg);
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
       line-height: 1.8;
@@ -493,7 +493,7 @@
       margin-block-end: 0.5rem;
       padding-block: 0.25rem;
       padding-inline: 0.5rem;
-      background: var(--palette-panel);
+      background: var(--ui-panel);
       border-radius: var(--r-1);
     }
 
@@ -502,12 +502,12 @@
       margin-block: 0;
       font-family: var(--font-mono);
       font-size: .75rem;
-      color: var(--palette-supplement-text-3q);
+      color: var(--ui-supplement-text-3q);
     }
 
     .RuleLayer b {
       font-weight: 400;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
 
     /* The conditions the rule actually sits under. Off-topic for a plate
@@ -516,7 +516,7 @@
        so they earn it (owner call). Dimmed a step: they are context, and the
        selector is the subject. */
     .At {
-      color: var(--palette-supplement-text-3q);
+      color: var(--ui-supplement-text-3q);
     }
 
     /* nesting IS nesting — one rule, any depth */
@@ -525,7 +525,7 @@
     }
 
     .RuleSel {
-      color: var(--palette-text);
+      color: var(--ui-text);
       /* `break-word`, not `anywhere`: the selectors carry spaces after every
          comma, so the line breaks at a comma before it will break mid-token.
          A pane this narrow has to wrap somewhere; better at the joints. */
@@ -534,11 +534,11 @@
 
     .RuleDecl {
       padding-inline-start: 1.5em;
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
 
     .RuleEnd {
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
@@ -553,7 +553,7 @@
       & {
         margin-block: 0;
         font-size: .875rem;
-        color: var(--palette-supplement-text-3q);
+        color: var(--ui-supplement-text-3q);
         text-align: end;
       }
 
@@ -585,7 +585,7 @@
        on the declaration only: the selector still matched, it is the
        declaration that was outranked. */
     &[data-role="framework"] .RuleDecl {
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
       text-decoration: line-through;
       text-decoration-thickness: 1px;
     }
@@ -617,9 +617,9 @@
       block-size: 2rem;
       padding: 0;
       font-size: var(--fs-small);
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       background: transparent;
-      border: 1px solid var(--palette-rule);
+      border: 1px solid var(--ui-rule);
       border-radius: 50%;
       cursor: pointer;
     }
@@ -632,15 +632,15 @@
     }
 
     button:hover {
-      color: var(--palette-accent);
-      border-color: var(--palette-accent);
+      color: var(--ui-accent);
+      border-color: var(--ui-accent);
     }
 
     output {
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
       font-variant-numeric: tabular-nums lining-nums;
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
     }
   }
 
@@ -680,10 +680,10 @@
 .Proof {
   & {
     padding-block-start: 1.25rem;
-    border-block-start: 1px solid var(--palette-rule);
+    border-block-start: 1px solid var(--ui-rule);
     font-family: var(--han-font-alternative);
     font-size: var(--fs-small);
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* Narrow: rows stack (role → code → weight), because three columns of
@@ -691,7 +691,7 @@
      with the weights lining up down the end edge. */
   /* the specificity column — mono, tabular, end-aligned so the triples stack */
   .Zero {
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
 }
@@ -702,7 +702,7 @@
   font-family: var(--han-font-alternative);
   font-size: var(--fs-body);
   line-height: 1.9;
-  color: var(--palette-text);
+  color: var(--ui-text);
 }
 
 
@@ -743,11 +743,11 @@
       content: "＋";
       margin-inline-start: 0.5em;
       font-size: 0.75em;
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
     }
 
     &:hover {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
   }
 
@@ -806,7 +806,7 @@
   font-family: var(--han-font-alternative);
   font-size: var(--fs-lede);
   font-weight: 500;
-  color: var(--palette-text);
+  color: var(--ui-text);
 }
 
 :is(.Sum, .FontLedger) {
@@ -819,8 +819,8 @@
     grid-template-columns: 1fr;
     gap: 1px; /* hairline seams between plate and footing */
     margin: 0 0 2.5rem;
-    background: var(--palette-rule);
-    border: 1px solid var(--palette-rule);
+    background: var(--ui-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
     overflow: hidden;
   }
@@ -886,7 +886,7 @@
       font-family: var(--han-sans);
       font-size: .875rem;
       line-height: 1.75;
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
   }
 
@@ -897,7 +897,7 @@
   > div {
     padding-block: 1.25rem;
     padding-inline: 1.25rem;
-    background: var(--palette-bg);
+    background: var(--ui-bg);
   }
 
   table {
@@ -909,13 +909,13 @@
     margin-block-end: 0.75rem;
     font-family: var(--han-font-alternative);
     font-size: var(--fs-small);
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
     text-align: start;
   }
 
   :is(th, td) {
     padding-block: 0.5rem;
-    border-block-end: 1px solid var(--palette-rule);
+    border-block-end: 1px solid var(--ui-rule);
   }
 
   /* Column heads — the quietest row on the plate; the figures carry it. */
@@ -924,7 +924,7 @@
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
       font-weight: 400;
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
       text-align: end;
       white-space: nowrap;
     }
@@ -940,7 +940,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-small);
     font-weight: 400;
-    color: var(--palette-text);
+    color: var(--ui-text);
     text-align: start;
   }
 
@@ -950,7 +950,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-compact);
     font-variant-numeric: tabular-nums lining-nums;
-    color: var(--palette-accent);
+    color: var(--ui-accent);
     text-align: end;
     white-space: nowrap;
   }
@@ -964,18 +964,18 @@
      `:nth-child(4)` — the row head is column 1. Same order as the equation
      array's rows below the plate. */
   &.Sum :is(th, td):nth-child(4) {
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   &.Sum tbody td:not(:nth-child(4)),
   &.Sum tfoot td:not(:nth-child(4)) {
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   /* the accented column's head, lifted just enough to name the column the
      figures below it belong to */
   &.Sum thead th.Lead {
-    color: var(--palette-accent);
+    color: var(--ui-accent);
   }
 
   /* same signal as the layer map's greyed cards: this bundle is not in the
@@ -987,7 +987,7 @@
     }
 
     td {
-      color: var(--palette-text);
+      color: var(--ui-text);
     }
   }
 
@@ -1008,7 +1008,7 @@
     font-size: var(--fs-fine);
     font-weight: 400;
     letter-spacing: 0.08em;
-    color: var(--palette-supplement-text-2q);
+    color: var(--ui-supplement-text-2q);
     text-align: start;
   }
 
@@ -1048,14 +1048,14 @@
       inline-size: 0.875em;
       block-size: 0.875em;
       margin: 0;
-      accent-color: var(--palette-accent);
+      accent-color: var(--ui-accent);
       cursor: pointer;
     }
 
     small {
       margin-inline-start: 0.75em;
       font-size: .75rem;
-      color: var(--palette-supplement-text-3q);
+      color: var(--ui-supplement-text-3q);
     }
   }
 
@@ -1075,7 +1075,7 @@
      `border-collapse: collapse` in every engine. */
   &.Sum tfoot :is(th, td) {
     padding-block-start: 0.75rem;
-    border-block-start: 2px solid var(--palette-rule);
+    border-block-start: 2px solid var(--ui-rule);
     border-block-end: 0;
     font-variant-numeric: tabular-nums lining-nums;
   }
@@ -1084,7 +1084,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-small);
     font-weight: 500;
-    color: var(--palette-text);
+    color: var(--ui-text);
     text-align: start;
   }
 
@@ -1128,7 +1128,7 @@
          fmtNum). A school sum sets its answer at the same size anyway; what
          marks it is the rule above it and the weight of the ink. */
       font-size: var(--fs-lede);
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
     }
 
     mtext {
@@ -1194,18 +1194,18 @@
        cells, not the row — a row's own border is not painted in every engine. */
     .Total {
       font-weight: 500;
-      color: var(--palette-text);
+      color: var(--ui-text);
 
       mtd {
         padding-block-start: 0.5rem;
-        border-block-start: 1px solid var(--palette-rule);
+        border-block-start: 1px solid var(--ui-rule);
       }
     }
 
     /* One column carries the accent: brotli, last, the one a CDN serves —
        the same column the table above accents, for the same reason. */
     .Lead {
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
 
     .Total .Lead {
@@ -1218,7 +1218,7 @@
     margin: 0 0 1rem;
     font-family: var(--han-sans);
     font-size: .75rem;
-    color: var(--palette-supplement-text-3q);
+    color: var(--ui-supplement-text-3q);
   }
 
   .SumProse {
@@ -1238,7 +1238,7 @@
     font-family: var(--han-font-default);
     font-size: var(--fs-small);
     line-height: 1.8;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 
   &.Sum figcaption {
@@ -1255,7 +1255,7 @@
       grid-column: 1 / -1;
       padding-block: 1.125rem;
       padding-inline: 1.25rem;
-      background: var(--palette-panel);
+      background: var(--ui-panel);
 
       /* Beside the plates, not under them — see the two grid rules above.
          `1 / -1` stays the narrow-screen behaviour. */
@@ -1265,14 +1265,14 @@
       font-family: var(--han-font-alternative);
       font-size: var(--fs-small);
       line-height: 1.75;
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
     }
 
     small {
       display: block;
       margin-block-start: 0.5rem;
       font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
+      color: var(--ui-supplement-text-2q);
     }
 
     /* the live totals — the one figure in the caption that moves, so it
@@ -1280,7 +1280,7 @@
     [data-total] {
       font-family: var(--font-mono);
       font-variant-numeric: tabular-nums lining-nums;
-      color: var(--palette-accent);
+      color: var(--ui-accent);
     }
   }
 }
@@ -1291,17 +1291,17 @@
    `controls.css`; this block styles the station's own ground and the one
    line left under the pane.
 
-   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --palette-ink）：淺
+   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --ui-ink）：淺
    色模式下一整片墨黑太搶戲，一個站台把半頁變成夜間。現在它跟著主題走，
-   只是地色是全站唯一不是灰白的那一塊——`--palette-station-code`，稿紙的
+   只是地色是全站唯一不是灰白的那一塊——`--ui-station-code`，稿紙的
    米黃（取色的理由見 variables.css 該 token 的註）。恆黑因此只剩下
    pane 裡的 `--code-bg` 終端機：淺色模式是「亮紙上的一台黑終端」，那正
    是這一站要給的東西，而不是整站陪著它黑。 */
 
 .Snippet {
   & {
-    background: var(--palette-station-code);
-    /* 上緣的髮線交還給共用的 --palette-grid（main > section）——地色不再
+    background: var(--ui-station-code);
+    /* 上緣的髮線交還給共用的 --ui-grid（main > section）——地色不再
        是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
        mist 髮線防「深色疊深色沒有邊」。 */
   }
@@ -1313,6 +1313,6 @@
     margin: 1rem 0 0;
     max-inline-size: 20em;
     font-size: .875rem;
-    color: var(--palette-supplement-text);
+    color: var(--ui-supplement-text);
   }
 }

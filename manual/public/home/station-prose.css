@@ -18,10 +18,10 @@
      壓回輔助色，免得整行都在喊。 */
   > .Toggle {
     & {
-      --_rule: var(--palette-rule);
-      --_bg: var(--palette-bg);
-      --_accent: var(--palette-accent);
-      --_supplement-text: var(--palette-supplement-text);
+      --_rule: var(--ui-rule);
+      --_bg: var(--ui-bg);
+      --_accent: var(--ui-accent);
+      --_supplement-text: var(--ui-supplement-text);
       /* 開關在正文級，不吃 console 那種密控件的字級——它是說明文的一
          部分，不是儀表板上的一格。 */
       --_fs-compact: var(--fs-body);
@@ -50,7 +50,7 @@
       grid-column-start: 2;
       grid-row-start: 2;
       font-size: .75em;
-      color: var(--palette-supplement-text-3q);
+      color: var(--ui-supplement-text-3q);
     }
   }
 }

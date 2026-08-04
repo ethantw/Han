@@ -11,28 +11,28 @@
   color-scheme: light;
 
   /* primitives — raw swatches, theme-invariant */
-  --color-white:     #fffdf7;
-  --color-paper:     #f6f1e4;
-  --color-paper-dim: #e7dfcc;
-  --color-mist:      #e9e4d8;
-  --color-ink:       #1c1a16;
-  --color-ink-soft:  #4c473d;
-  --color-red:       #c4352b;
-  --color-night:     #12110e;
-  --color-night-2:   #1d1b17;
-  --color-night-3:   #2b2721;
+  --palette-white:     #fffdf7;
+  --palette-paper:     #f6f1e4;
+  --palette-paper-dim: #e7dfcc;
+  --palette-mist:      #e9e4d8;
+  --palette-ink:       #1c1a16;
+  --palette-ink-soft:  #4c473d;
+  --palette-red:       #c4352b;
+  --palette-night:     #12110e;
+  --palette-night-2:   #1d1b17;
+  --palette-night-3:   #2b2721;
 
   /* semantic — components consume only these */
-  --palette-bg:            light-dark(var(--color-mist),  var(--color-night));
-  --palette-text:          light-dark(var(--color-ink),   var(--color-mist));
-  --palette-text-2q:       color-mix(in srgb, var(--palette-text) 50%, transparent);
-  --palette-envelope:      light-dark(var(--color-white), var(--color-night-3));
-  --palette-envelope-fold: light-dark(var(--color-paper), var(--color-night-2));
-  --palette-address:       light-dark(var(--color-ink),      var(--color-paper-dim));
-  --palette-address-soft:  light-dark(var(--color-ink-soft), var(--color-mist));
-  --palette-accent:        var(--color-red);
-  --palette-rule:          color-mix(in srgb, var(--palette-text) 22%, transparent);
-  --palette-shadow:        light-dark(rgb(28 26 22 / .18), rgb(0 0 0 / .5));
+  --ui-bg:            light-dark(var(--palette-mist),  var(--palette-night));
+  --ui-text:          light-dark(var(--palette-ink),   var(--palette-mist));
+  --ui-text-2q:       color-mix(in srgb, var(--ui-text) 50%, transparent);
+  --ui-envelope:      light-dark(var(--palette-white), var(--palette-night-3));
+  --ui-envelope-fold: light-dark(var(--palette-paper), var(--palette-night-2));
+  --ui-address:       light-dark(var(--palette-ink),      var(--palette-paper-dim));
+  --ui-address-soft:  light-dark(var(--palette-ink-soft), var(--palette-mist));
+  --ui-accent:        var(--palette-red);
+  --ui-rule:          color-mix(in srgb, var(--ui-text) 22%, transparent);
+  --ui-shadow:        light-dark(rgb(28 26 22 / .18), rgb(0 0 0 / .5));
 
   /* 4-layer stacks — Western / system CJK (Mac→Win) / generic */
   --font-serif:
@@ -80,8 +80,8 @@ body {
   align-content: start;
   min-block-size: 100dvb;
   padding: clamp(1.5rem, 5vw, 3.5rem) 1.25rem;
-  background: var(--palette-bg);
-  color: var(--palette-text);
+  background: var(--ui-bg);
+  color: var(--ui-text);
   font-family: var(--font-sans-serif);
   line-height: 1.7;
 }
@@ -101,7 +101,7 @@ header {
   }
 
   & hgroup p {
-    color: var(--palette-text-2q);
+    color: var(--ui-text-2q);
     font-size: .8rem;
   }
 }
@@ -115,7 +115,7 @@ menu {
     gap: .4em;
     align-items: center;
     padding: .35em .9em;
-    border: 1px solid var(--palette-rule);
+    border: 1px solid var(--ui-rule);
     border-radius: 999px;
     font-size: .8rem;
     cursor: pointer;
@@ -124,7 +124,7 @@ menu {
 }
 
 footer {
-  color: var(--palette-text-2q);
+  color: var(--ui-text-2q);
   font-size: .75rem;
 }
 
@@ -164,17 +164,17 @@ main { padding-block-start: var(--size-flap); }  /* 立起的蓋子的逃げ */
   background:
     linear-gradient(
       to top,
-      var(--palette-envelope-fold),
-      var(--palette-envelope) 60%
+      var(--ui-envelope-fold),
+      var(--ui-envelope) 60%
     )
   ;
   /* 輪廓：緊貼 clip-path 的 1px 線（疊兩層讓它實起來）＋一點下沉軟影。
      軟影保持小半徑、向下偏移——大暈影會溢到本體兩側外，
      看起來就像蓋子浮在正面之前（前一版的教訓） */
   filter:
-    drop-shadow(0 0 1px var(--palette-rule))
-    drop-shadow(0 0 1px var(--palette-rule))
-    drop-shadow(0 .3rem .4rem var(--palette-shadow))
+    drop-shadow(0 0 1px var(--ui-rule))
+    drop-shadow(0 0 1px var(--ui-rule))
+    drop-shadow(0 .3rem .4rem var(--ui-shadow))
   ;
   cursor: pointer;
   transition: transform var(--time-flap) cubic-bezier(.62, .02, .3, 1);
@@ -184,14 +184,14 @@ main { padding-block-start: var(--size-flap); }  /* 立起的蓋子的逃げ */
 [data-face] {
   position: relative;  /* 與蓋子同一繪製階段（樹序才生效），不帶 z-index */
   block-size: 100%;
-  background: var(--palette-envelope);
-  border: 1px solid var(--palette-rule);
+  background: var(--ui-envelope);
+  border: 1px solid var(--ui-rule);
   box-shadow:
-    0 1px 2px var(--palette-shadow),
-    0 1.5rem 2.5rem -1rem var(--palette-shadow)
+    0 1px 2px var(--ui-shadow),
+    0 1.5rem 2.5rem -1rem var(--ui-shadow)
   ;
   font-family: var(--font-serif);
-  color: var(--palette-address);
+  color: var(--ui-address);
 }
 
 /* ─── 郵便番号枠 ───────────────────────────────────────────────────── */
@@ -209,8 +209,8 @@ main { padding-block-start: var(--size-flap); }  /* 立起的蓋子的逃げ */
     place-content: center;
     inline-size: 1.7em;
     block-size: 1.35em;
-    border: 1px solid var(--palette-accent);
-    color: var(--palette-accent);
+    border: 1px solid var(--ui-accent);
+    color: var(--ui-accent);
     line-height: 1;
   }
 
@@ -254,7 +254,7 @@ main { padding-block-start: var(--size-flap); }  /* 立起的蓋子的逃げ */
   & [data-line='title'] {
     padding-inline-start: 4em;
     font-size: var(--size-rank);
-    color: var(--palette-address-soft);
+    color: var(--ui-address-soft);
   }
 
   & [data-line='dept']  { margin-block-start: 1.6em; }
@@ -304,7 +304,7 @@ main { padding-block-start: var(--size-flap); }  /* 立起的蓋子的逃げ */
   font-family: var(--font-sans-serif);
   font-size: calc(var(--size-envelope-i) * .034);
   letter-spacing: .06em;
-  color: var(--palette-address-soft);
+  color: var(--ui-address-soft);
 }
 
 :root:has(input[name='flap']:checked) [data-flap] {

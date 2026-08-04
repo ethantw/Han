@@ -4,7 +4,7 @@
  * Station④'s snippet-generator pane — the framed `.Preview` panel and
  * the `figure.CodePane` exhibits inside it.
  *
- * LIGHT DOM only, so these consume `--palette-*` directly rather than
+ * LIGHT DOM only, so these consume `--ui-*` directly rather than
  * the console's `--_*` indirection. They used to sit in `controls.css`,
  * which <han-console> adopts into its shadow; splitting them out keeps the
  * shadow from carrying rules that can never match there.
@@ -15,18 +15,18 @@
  */
 
 /* ─── Preview — station④'s snippet-generator pane frame (LIGHT DOM) ──
-   Consumes `--palette-*` directly: it renders on the homepage where
+   Consumes `--ui-*` directly: it renders on the homepage where
    those tokens exist, never inside the shadow. */
 
 .Preview {
   & {
     overflow: hidden;
-    background: var(--palette-panel);
-    border: 1px solid var(--palette-rule);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
     box-shadow:
-      0 1px 0 var(--palette-bg-2q),
-      0 28px 70px -36px color-mix(in srgb, var(--color-black) 18%, transparent)
+      0 1px 0 var(--ui-bg-2q),
+      0 28px 70px -36px color-mix(in srgb, var(--palette-black) 18%, transparent)
     ;
   }
 
@@ -36,8 +36,8 @@
     align-items: center;
     flex-wrap: wrap;
     padding: 12px 20px;
-    background: var(--palette-panel);
-    border-block-end: 1px solid var(--palette-rule);
+    background: var(--ui-panel);
+    border-block-end: 1px solid var(--ui-rule);
   }
 
   /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
@@ -63,29 +63,29 @@
       display: inline-flex;
       align-items: center;
       padding: 4px 10px;
-      background: var(--palette-bg);
-      border: 1px solid var(--palette-rule);
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
       border-radius: var(--r-1);
       font-family: var(--font-mono);
       font-size: var(--fs-fine);
-      color: var(--palette-supplement-text);
+      color: var(--ui-supplement-text);
       cursor: pointer;
       transition:
         background-color 150ms ease,
         border-color    150ms ease,
         color           150ms ease;
 
-      &:hover { border-color: var(--palette-text); color: var(--palette-text); }
+      &:hover { border-color: var(--ui-text); color: var(--ui-text); }
 
       &:has(input:checked) {
-        background: var(--palette-text);
-        border-color: var(--palette-text);
-        color: var(--palette-bg);
+        background: var(--ui-text);
+        border-color: var(--ui-text);
+        color: var(--ui-bg);
       }
     }
   }
 
-  /* 卡片之間留縫，縫裡透出面板的紙。原本四塊 pane 靠一條 --palette-rule
+  /* 卡片之間留縫，縫裡透出面板的紙。原本四塊 pane 靠一條 --ui-rule
      髮線相接，整組讀起來是一面黑牆（owner：「全黑色塊、整個黏在一起」）；
      縫一開，四段碼各自成一張卡，數量與段落一眼看得出來。
      padding 與 gap 同值，所以四周的留白與卡間的縫一樣寬——卡片浮在紙上，
@@ -114,7 +114,7 @@ figure.CodePane {
     /* 卡緣。淺色模式下這張卡落在米黃紙上，靠底色差就分得開；深色模式下紙
        也暗，卡緣得自己說話——固定的 mist 微光，不隨主題翻（web-style.md
        深色面 gotcha）。 */
-    border: 1px solid color-mix(in srgb, var(--color-mist) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--palette-mist) 12%, transparent);
   }
 
   figcaption {
@@ -199,10 +199,10 @@ figure.CodePane {
        · 紅  = seal，全頁唯一的離群色，留給數字這種要一眼跳出來的量
      其餘交給 mist 的三個濃度：正文、註解、標點各一階。
      色相都取 `-bright` 那一支：卡是恆黑的，深色側的值才有對比。 */
-  pre code::highlight(code-comment) { color: color-mix(in srgb, var(--color-mist) 38%, transparent); }
-  pre code::highlight(code-punct)   { color: color-mix(in srgb, var(--color-mist) 55%, transparent); }
-  pre code::highlight(code-keyword) { color: var(--color-green-bright); }
-  pre code::highlight(code-string)  { color: var(--color-lapis-bright); }
-  pre code::highlight(code-attr)    { color: color-mix(in srgb, var(--color-mist) 78%, transparent); }
-  pre code::highlight(code-number)  { color: var(--color-seal-bright); }
+  pre code::highlight(code-comment) { color: color-mix(in srgb, var(--palette-mist) 38%, transparent); }
+  pre code::highlight(code-punct)   { color: color-mix(in srgb, var(--palette-mist) 55%, transparent); }
+  pre code::highlight(code-keyword) { color: var(--palette-green-bright); }
+  pre code::highlight(code-string)  { color: var(--palette-lapis-bright); }
+  pre code::highlight(code-attr)    { color: color-mix(in srgb, var(--palette-mist) 78%, transparent); }
+  pre code::highlight(code-number)  { color: var(--palette-seal-bright); }
 }
