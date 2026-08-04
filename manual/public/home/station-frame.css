@@ -30,7 +30,7 @@ main {
      <han-console> its travel, so the console scrolled away with the page. */
   container-type: inline-size;
   position: relative;
-  z-index: 10;
+  z-index: 10000;
   /* margin-inline-start: -1px; */
   /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
      `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
@@ -276,9 +276,11 @@ main > section {
  * which are exactly what the console's prose switch reflows. */
 article.Dispatch {
   & {
-    --size: 30em;
+    --size: 24em;
     padding: 1em 1.5em;
-    inline-size: var(--size);
+    inline-size: calc(var(--size) * 2);
+    column-count: 2;
+    column-gap: 2em;
     font-family: var(--han-font-alternative);
     font-size: .75rem;
     line-height: 1.75;
@@ -288,12 +290,11 @@ article.Dispatch {
     color: var(--palette-text);
   }
   &.vertical {
-    /* inline-size: auto;
-    block-size: var(--size); */
     writing-mode: vertical-rl;
   }
   h1 {
     line-height: 1.5;
+    column-span: all;
   }
   ol {
     list-style: trad-chinese-informal;

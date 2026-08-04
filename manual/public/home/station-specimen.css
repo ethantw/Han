@@ -106,7 +106,7 @@ figure.Papers {
     &[lang^="ko"] .Dateline::after     { content: "한"; }
 
     h3 {
-      margin: 0 0 0.625rem;
+      margin: .5rem 0 0.625rem;
       font-family: var(--han-font-alternative);
       font-weight: 700;
       font-size: 1.125rem;
@@ -115,10 +115,11 @@ figure.Papers {
     }
 
     p {
-      margin: 0 0 0.75em;
+      margin: 0;
       font-family: var(--han-font-default);
       font-size: 0.875rem;
       line-height: 2;
+      text-indent: 1em;
       color: var(--palette-text);
 
       &:last-child {
