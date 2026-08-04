@@ -242,7 +242,18 @@ svg[data-name="dash-fuse"] {
        免得溢出。裝飾底圖，對位是近似的，不求像素配準 */
     inset-block-start: -2342%;
     block-size: 4326%;
-    inset-inline-start: min(4rem, 20%);
+    /* 位置是**原位往右一點**，不是換邊（owner 2026-08-04 圈點）：柱要卡的
+       是鉛字盤左下角與本欄文案之間那塊梯形空格，那塊空格在版心的行首側，
+       換到行末就離開了它存在的理由。先做過整個貼右緣的版本，柱跑到版心
+       右緣、與鉛字的左下角分了家——那不是「重心平衡」，是把它從自己的
+       位子上拔走。
+
+       右移的量是 6.75rem（＝原位 +108px，owner 分三次圈定：+48、+120、
+       −60）。與下方 .PunctFix 的內距同進退——那一條同樣 +6.75rem，柱與
+       文案的相對關係因此不變：柱的中線仍落在文案起點之前，兩段話壓在柱
+       的右半，與原本的疊法一致。%那一項是窄屏的上限（欄寬掉到 ~660px
+       以下改由它接手），窄下去柱按比例往左收，不會頂穿梯形空格。 */
+    inset-inline-start: min(13rem, 26%);
     translate: -50% 0;
     inline-size: auto;
     overflow: visible;
@@ -433,7 +444,9 @@ svg[data-name="dash-fuse"] {
     /* 柱的包含塊契約寫明（見檔頭——階梯入場的 translate 其實已保證） */
     position: relative;
     padding-block: 0 4rem;
-    padding-inline-start: 6rem;
+    /* 6rem → 12.75rem：與柱同步右移 6.75rem（見上 § 柱的錨點），兩者的
+       相對關係不變，整欄一起往右挪。 */
+    padding-inline-start: 15rem;
   }
 
   /* 兩段文案。包進 .PunctFix 之後不再是 hgroup 的兄弟，station-frame.css

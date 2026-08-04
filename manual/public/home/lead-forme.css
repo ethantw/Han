@@ -446,12 +446,73 @@
  * whole section (physical properties throughout) does not apply. It gets no
  * padding either: with no `--lf-w` there is nothing to take a fraction of, and
  * a forme capped at 620px has the plate's own gutter around it already. */
+/* ── § 凍住量尺 — 為什麼 C 不再是 `100cqw`（2026-08-04）─────────────
+ * 這張圖有 **1805 個節點**，佔全頁 4160 的 43%。`100cqw` 量的是 main，而
+ * main 的寬在主控台開合的那 250ms 裡每一幀都在變 ⇒ SVG 自己的框每一幀都要
+ * 重解一次 ⇒ 那 1805 個節點整棵陪著重排。實測（開合四次的 layout 均攤）：
+ *
+ *     現況（cqw）            6.6ms／次      ← 每一幀都超過 16.7ms 的預算
+ *     SVG 寬不吃容器          3.0ms／次
+ *     圖與 SVG 都不吃容器      1.7ms／次     ← 與「整張圖刪掉」相同（1.7）
+ *     content-visibility     8.0ms／次     ← 圖在畫面內時形同無效
+ *     contain: strict／layout 8.4／9.3ms    ← 完全無效
+ *
+ * containment 擋不住「元素自己的框變了」，所以唯一的解是讓框不變。
+ *
+ * C 取 `100vw − --w-console` ——「主控台開著時的版心寬」，也就是本頁的預設
+ * 態。這不是新發明的量法：`--plate-pad` 在 ≥72rem 早就寫著
+ * `calc((100vw - var(--w-console) - var(--max-w-layout)) / 2)`，同一個「以
+ * 開著的版心為準」的凍法，這裡只是把它推到 C。
+ *
+ * 為什麼不是純 `100vw`（讓圖比版心寬、交給 plate 的 `overflow: clip` 裁）：
+ * 那會**裁掉圖說**。牌記與 figcaption 住在 forme 自己右下角的空氣裡
+ * （§ pocket），x 落在 1340——已經在 1231 的版心之外，plate 一裁就連它們
+ * 一起裁掉。owner 的條件是圖說與破折號動畫不可以亂，所以 C 往內取。
+ *
+ * 代價說清楚：主控台**收起**時，版心變寬 280px 而這張圖不再跟著長大
+ * （原本 1231→1511）。右緣多出來的是空氣，不是破圖——圖說仍在圖自己的
+ * 角落裡，座標系整套是同一把尺量的，不會錯位。 */
 :where(main:not([data-writing='vertical'])) .LeadForme {
   & {
-    --lf-w: calc(100cqw / (1 + 2 * var(--lf-bleed, 0.0264)));
+    /* 版心寬，凍在「主控台開著」那一態。減的 1px 是 main 自己的
+       `border-inline-start`（station-frame.css § main）——plate 的內容寬少
+       掉那一條，圖要與 plate 的右緣齊平就得跟著減。 */
+    --lf-c: calc(100vw - var(--w-console) - 1px);
+    /* 右對齊之後，圖的左緣離版心左緣有多遠。抬升的算式量的是「樣張欄的
+       行末邊緣在**圖的座標系**裡的 x」，圖一往右挪，那個 x 就得減掉這段
+       位移，否則抬升會多算一截、鉛字爬進樣張卡。主控台開著時是 0。
+       這一支只餵抬升（一個 margin），不進圖的寬——所以 cqw 回到這裡不會
+       把那 1805 個節點叫醒。 */
+    --lf-shift: calc(100cqw - var(--lf-c));
+    --lf-w: calc(var(--lf-c) / (1 + 2 * var(--lf-bleed, 0.0264)));
     --lf-air: calc(var(--lf-bleed, 0.0264) * var(--lf-w));
 
-    margin-inline: calc(-1 * var(--plate-pad));
+    /* 顯式寬度是這一節的重點：圖的框從此不由父層推導，主控台一開一合就
+       碰不到它，那 1805 個節點也就不必重排。 */
+    inline-size: var(--lf-c);
+
+    /* **靠版心的行末對齊**（owner 2026-08-04：「全頁的重心都在左邊」）。
+       主控台佔著版面左緣，鉛字盤再從左緣起排，整頁的墨就全壓在同一側；
+       貼右緣排，兩塊重物才分踞兩端。
+
+       主控台**開著**時（本頁預設）--lf-c 正好等於版心寬，左右對齊是同一
+       個位置——這一條只在收起時才看得出來：多出來的 280px 空氣從右邊換到
+       左邊。貼的仍是版心的**外緣**（負的 --plate-pad 那條線），與原本貼左
+       緣時同一條線。
+
+       start 邊是算出來的，不是 `auto`：圖比版心的內容盒寬（寬了兩個
+       --plate-pad），剩餘空間是負的，而**負剩餘空間下 `margin: auto` 一律
+       解析成 0**——實測圖因此貼在內容盒左緣、再被 end 的負 margin 推出版心
+       右緣 72px，連圖說都跑到版外去了。改成明寫：
+
+           左緣 ＝ 版心外緣的右端 − 圖寬 ＝ 100cqw − --plate-pad − --lf-c
+
+       主控台開著時它等於 −--plate-pad（＝原本那條），收起時多出來的 280px
+       自動落到左邊。圖在畫面上的位置兩態相同（版心右緣本來就不動），變的
+       只是它相對於內容盒左緣的距離——所以這支 cqw 只讓 margin 重算，不碰
+       圖的寬，那 1805 個節點仍然不必重排（見下方實測）。 */
+    margin-inline-start: calc(100cqw - var(--plate-pad) - var(--lf-c));
+    margin-inline-end: calc(-1 * var(--plate-pad));
     padding: var(--lf-air);
   }
 
@@ -533,9 +594,13 @@
         var(--lf-air)
         + var(--lf-pad, 0.0086) * var(--lf-w)
         + (var(--lf-air) + var(--lf-apex, 0.6303) * var(--lf-w)
-           - (var(--plate-pad) + 30rem)) * 0.5774
+           - (var(--plate-pad) + 30rem - var(--lf-shift))) * 0.5774
       );
-      --lf-graze: clamp(3rem, 10cqw, 8rem);
+      /* `10cqw` 的原意是「一段跨過版心的距離」（見上），但 cqw 量的是 main，
+         主控台一開合就變 ⇒ 抬升量跟著變 ⇒ 圖又被碰一次。改成同一把凍住的
+         尺的十分之一：意思不變（仍是版心的一成），只是量的是「開著時的版
+         心」，與 --lf-w 同源，抬升與圖從此一起靜止。 */
+      --lf-graze: clamp(3rem, calc(0.1 * var(--lf-c)), 8rem);
       margin-block-start: calc(-1 * clamp(0px, var(--lf-void) + var(--lf-graze), 24rem));
     }
 

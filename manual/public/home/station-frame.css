@@ -29,6 +29,9 @@ main {
      content (measured: 0px), collapsing the grid row that gives the sticky
      <han-console> its travel, so the console scrolled away with the page. */
   container-type: inline-size;
+  position: relative;
+  z-index: 10;
+  /* margin-inline-start: -1px; */
   /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
      `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
      零風險；偏差時 --fs-* 的 em 梯度隨之重解析（比照舊 inline font-size）。 */
@@ -36,6 +39,7 @@ main {
   line-height: var(--console-metric-leading, inherit);
   font-weight: var(--console-metric-weight, inherit);
   text-align: justify;
+  border-inline-start: 1px solid var(--palette-rule);
 }
 
 /* 直排預覽下必須解除容器化：inline 軸隨行向轉——vertical-rl 的 inline 軸是

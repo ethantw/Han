@@ -65,14 +65,14 @@ article { --han-em-symbol: sesame; }
 ```css
 :where(em) {
   font-family: 'Diantenjeom Emphasis', var(--han-font-default);
-  line-height: 1.9;
+  line-height: 2;
 }
 ```
 
 兩點要注意：
 
 - **必須排在最前面，而且只掛在要標著重號的元素上。** 這個字體刻意不帶`unicode-range`（帶了就永遠輪不到它被查詢），所以它也會接手正文裡真的打出來的`●`、`•`、`△`。掛在`body`上會波及全篇。
-- **行高至少`1.9`。** 著重號畫在離基線`0.475em`處，半行距要能兩側都容下它，門檻正好是`2 × (ascent + |descent|) / upem`。低於此值，有著重號的那一行會比鄰行高，整段參差。這是有間隙的著重號的代價，沒有CSS可以繞過。
+- **行高至少`2`。** 著重號畫在離基線`0.5em`處，半行距要能兩側都容下它，門檻正好是`2 × (ascent + |descent|) / upem`。低於此值，有著重號的那一行會比鄰行高，整段參差。這是有間隙的著重號的代價，沒有CSS可以繞過。
 
 han.css不替你接這條線，是因為`font-family`無法「在繼承來的堆疊前面插一項」——它不知道你的`<em>`繼承到的是哪一疊。上例的`var(--han-font-default)`只在正文用預設堆疊時成立；若該處是`--han-font-alternative`（明體）或作者自訂的堆疊，跟着換掉即可。
 

@@ -85,9 +85,16 @@
     }
   }
 
+  /* 卡片之間留縫，縫裡透出面板的紙。原本四塊 pane 靠一條 --palette-rule
+     髮線相接，整組讀起來是一面黑牆（owner：「全黑色塊、整個黏在一起」）；
+     縫一開，四段碼各自成一張卡，數量與段落一眼看得出來。
+     padding 與 gap 同值，所以四周的留白與卡間的縫一樣寬——卡片浮在紙上，
+     不是被框住。 */
   [data-out-panes] {
     display: flex;
     flex-direction: column;
+    gap: 12px;
+    padding: 12px;
   }
 }
 
@@ -101,25 +108,30 @@
 figure.CodePane {
   & {
     margin: 0;
+    overflow: hidden;
     background: var(--code-bg);
-    border-block-start: 1px solid var(--palette-rule);
+    border-radius: var(--r-2);
+    /* 卡緣。淺色模式下這張卡落在米黃紙上，靠底色差就分得開；深色模式下紙
+       也暗，卡緣得自己說話——固定的 mist 微光，不隨主題翻（web-style.md
+       深色面 gotcha）。 */
+    border: 1px solid color-mix(in srgb, var(--color-mist) 12%, transparent);
   }
-
-  &:first-child { border-block-start: 0; }
 
   figcaption {
     & {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 14px;
+      padding: 10px 16px 2px;
       font-family: var(--font-mono);
       font-size: var(--fs-micro);
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: color-mix(in srgb, var(--code-fg) 55%, transparent);
-      background: color-mix(in srgb, var(--code-bg) 85%, white 15%);
+      letter-spacing: 0.08em;
+      color: color-mix(in srgb, var(--code-fg) 42%, transparent);
+      /* 沒有底色。原本這裡是一條 15% 白的灰帶，四張卡疊起來就是四條灰槓，
+         比碼還搶眼；標籤本來只是「這段是什麼」，一行淡字就夠。 */
+      background: none;
     }
 
     /* label + (CLI pane only) the pm select, grouped so the copy button
@@ -142,6 +154,8 @@ figure.CodePane {
       border-radius: var(--r-1);
     }
 
+    /* 複製鍵平時是幽靈，指標一過才上墨——它是「需要時才在」的東西，不該
+       跟標籤搶同一行的注意力。 */
     button {
       padding: 0 2px;
       font: inherit;
@@ -149,29 +163,46 @@ figure.CodePane {
       background: transparent;
       border: 0;
       cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 150ms ease, color 150ms ease;
 
-      &:hover { color: var(--code-fg); }
+      &:hover, &:focus-visible { opacity: 1; color: var(--code-fg); }
     }
   }
 
   pre {
     margin: 0;
-    overflow: auto;
-    padding: 14px 18px;
+    /* 碼不折行——長行橫向捲（owner call）。`overflow-x` 要下在 `<pre>` 這個
+       區塊上而不是裡面的 `<code>`：非替換的行內盒吃不到 overflow，寫在
+       `code` 上不會有捲軸。曾經改成 pre-wrap，兩個代價都不划算：URL 被拆到
+       下一行、續行又沒有懸掛縮排（單一文字節點，text-indent 只吃第一行）。 */
+    overflow-x: auto;
+    /* main 是 `text-align: justify` 的（station-frame.css，為了正文的齊行）。
+       強制斷行的行不會被兩端對齊，所以現在看不出差別——但這一條是防呆：碼
+       一旦折行（曾經如此），token 之間立刻被撐出一格格的洞。碼一律左齊。 */
+    text-align: start;
+    padding: 4px 16px 14px;
     background: transparent;
     font-family: var(--font-mono);
     font-size: var(--fs-compact);
-    line-height: 1.65;
+    line-height: 1.55;
     color: var(--code-fg);
   }
 
   code { background: transparent; padding: 0; }
 
-  /* Highlight-API token colours — ziano/demo/src/css/usage.css palette. */
-  pre code::highlight(code-comment) { color: #6f7b8b; }
-  pre code::highlight(code-string)  { color: #b8d39a; }
-  pre code::highlight(code-keyword) { color: #88aaff; }
-  pre code::highlight(code-attr)    { color: #e8c275; }
-  pre code::highlight(code-number)  { color: #f2997a; }
-  pre code::highlight(code-punct)   { color: #8b94a3; }
+  /* Highlight-API 的著色。原本抄 ziano/demo 的六色（藍關鍵字、綠字串、金
+     屬性、橘數字…），六個色相在一頁只有一個強調色的網站裡是外來語。改成
+     **本頁自己的墨**：三個色相都已經是既有 primitive，語意也對得上——
+       · 綠  = 強調色，這一頁「漢.css 給你的東西」一律是綠（同標記原理圖）
+       · 藍  = lapis，「你寫下的東西」（同圖解裡的標籤名，見 variables.css）
+       · 紅  = seal，全頁唯一的離群色，留給數字這種要一眼跳出來的量
+     其餘交給 mist 的三個濃度：正文、註解、標點各一階。
+     色相都取 `-bright` 那一支：卡是恆黑的，深色側的值才有對比。 */
+  pre code::highlight(code-comment) { color: color-mix(in srgb, var(--color-mist) 38%, transparent); }
+  pre code::highlight(code-punct)   { color: color-mix(in srgb, var(--color-mist) 55%, transparent); }
+  pre code::highlight(code-keyword) { color: var(--color-green-bright); }
+  pre code::highlight(code-string)  { color: var(--color-lapis-bright); }
+  pre code::highlight(code-attr)    { color: color-mix(in srgb, var(--color-mist) 78%, transparent); }
+  pre code::highlight(code-number)  { color: var(--color-seal-bright); }
 }

@@ -2,7 +2,7 @@
  * lead-forme.js — station②'s isometric movable-type forme.
  *
  * A decorative specimen that embodies the type-picking ↔ unicode-range story
- * (stTrayNote): the sentence「山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是
+ * (stTrayNote): the sentence「石田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是
  * 因為快十二秒！」」(see COLS) set as mirrored lead slugs in an isometric forme.
  * Three heritage faces (Ziano 明／黑／楷) and four punctuation conventions
  * (Diantenjeom JIS／MOE／GB) swap live from the
@@ -36,7 +36,7 @@ const HI = 'var(--forme-hi)';
 const PUNCT = new Set(['，', '、', '。', '：', '；', '？', '！', '「', '」', '『', '』', '（', '）', '—', '…', '·', '．']);
 // the real Ziano frequency slice each glyph downloads from (120-way partition)
 const SLICE = {
-  山: 117, 田: 114, 臉: 115, 色: 118, 鐵: 115, 青: 116,
+  石: 115, 田: 114, 臉: 115, 色: 118, 鐵: 115, 青: 116,
   我: 119, 特: 118, 地: 119, 放: 117, 棄: 113, 瞬: 109, 移: 114, 艙: 105,
   改: 117, 搭: 115, 超: 118, 迴: 112, 路: 118, 就: 118, 是: 119,
   因: 118, 為: 119, 快: 118, 十: 117, 二: 118, 秒: 113,
@@ -48,9 +48,9 @@ const SLICE = {
 // (kinsoku) holds — 「 lands 2nd-from-tail (never line-end), 「，！」」never at
 // a line-head. The short last column is packed out with 空鉛 (quads) to fill
 // the 版框 — real justification locks the forme so the type can't shift.
-//   山田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！」
+//   石田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！」
 const COLS = [
-  ['', '山', '田', '臉', '色', '鐵', '青', '：', '「', '我'],
+  ['', '石', '田', '臉', '色', '鐵', '青', '：', '「', '我'],
   ['特', '地', '放', '棄', '瞬', '移', '艙', '改', '搭', '超'],
   ['迴', '路', '，', '就', '是', '因', '為', '快', '十', '二'],
   ['秒', '！', '」', '', '', '', '', '', '', ''],

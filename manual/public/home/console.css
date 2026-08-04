@@ -15,7 +15,7 @@ body:has(han-console) {
     inset: 0 auto auto 0;
     inline-size: var(--w-console);
     block-size: 100vh;
-    border-inline-end: 1px solid var(--palette-rule);
+    /* border-inline-end: 1px solid var(--palette-rule); */
   }
   /* 收合開關 — header 裡的一顆一般控件，不是浮在交界上的藥丸。
      為什麼在 header：見 _home.html 該處的註（一句話：邊界由主執行緒的
@@ -82,7 +82,6 @@ body:has(han-console) {
     [data-icon] {
       inline-size: 1.5rem;
       block-size: 2rem;
-      translate: 0 .125rem;
     }
     &:hover {
       color: var(--palette-accent);

@@ -32,10 +32,12 @@ body > header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-inline-start: -1px;
     padding-inline: var(--gutter);
     block-size: var(--h-header);
     background-color: var(--palette-bg);
-    border-block-end: 1px solid var(--palette-grid);
+    border-inline-start: 1px solid var(--palette-rule);
+    border-block-end: 1px solid var(--palette-rule);
   }
   a {
     display: flex;
@@ -52,6 +54,7 @@ body > header {
          三件平均攤開，開關與 logo 就分了家——讓 logo 自己吃掉中間所有
          餘白，前兩件貼左、nav 貼右，回到原本的兩端配置。 */
       margin-inline-end: auto;
+      translate: -.875rem -.125rem;
     }
     small {
       color: var(--palette-supplement-text);

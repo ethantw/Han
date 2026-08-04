@@ -85,7 +85,7 @@
      幾何：軌 x 2→22，四列 y 4／12／20／28；鈕 4×6 落在 x 6（第二列）與
      14（第四列）。square 端點各外伸半個線寬（1.5 ⇒ 0.75），所以軌與鈕
      外緣之間仍留得住縫——縫是畫出來的，不是擠出來的。全部整數。 */
-  --icon-console: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M2 4h20M2 12h1M13 12h9M2 20h20M2 28h9M21 28h1'/%3E%3Crect x='6' y='9' width='4' height='6'/%3E%3Crect x='14' y='25' width='4' height='6'/%3E%3C/svg%3E");
+  --icon-console: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32' fill='none' stroke='%23000' stroke-width='1' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M2 4h20M2 12h1M13 12h9M2 20h20M2 28h9M21 28h1'/%3E%3Crect x='6' y='9' width='4' height='6'/%3E%3Crect x='14' y='25' width='4' height='6'/%3E%3C/svg%3E");
 
   /* 展／合。 */
   --icon-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");

@@ -20,6 +20,25 @@
  * pure-CSS reactive via `:host([form="top"])`; no JS re-render.
  */
 
+/* box-sizing 不會穿過 shadow 邊界。頁面那條 `:where(:root) :where(*)` 的
+   border-box 重置（home/root.css／manual/root.css）到不了這裡，於是 shadow
+   裡的每一個盒子都是 **content-box** ——`.Field` 寫著 `inline-size: 100%`
+   加左右各 .25rem 的內距，實際就比容器寬 8px（實測：`.Controls` 的內容盒
+   右緣 264，`.Field` 的右緣 272）。
+
+   平常看不出來，因為 `.Controls` 的 `overflow-x: hidden` 是剪在**內距盒**
+   （280）上，8px 的溢出還在裡面。但只要那道剪裁邊往左移一點——macOS 系統
+   設定把捲軸設成「總是顯示」、或任何會佔位的經典捲軸——`.Controls` 的
+   內距盒縮 15px，select 的右框（268）就落到剪裁線外，整條邊不見
+   （owner 2026-08-04 回報）。
+
+   所以修的是 box-sizing，不是那顆 select：同一個成因會讓 shadow 裡每一個
+   「100% ＋ 內距」的盒子都偷偷寬出去，補一條重置一次解決，與頁面那側的
+   寫法對齊（`:where()` 保持零權重，個別規則照樣蓋得動）。 */
+:where(:host, *, *::before, *::after) {
+  box-sizing: border-box;
+}
+
 :host {
   display: flex;
   flex-direction: column;
@@ -52,7 +71,9 @@
   & {
     display: flex;
     flex-direction: column;
-    padding: 20px 18px;
+    padding: 1.25rem 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* Spacing by element type, not a uniform gap: the non-collapsible
