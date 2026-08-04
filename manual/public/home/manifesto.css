@@ -12,12 +12,9 @@
 
 .Manifesto {
   & {
-    position: relative;
-    isolation: isolate;
     margin-inline: auto;
     padding-block: 7rem 5.5rem;
     background-color: var(--palette-bg);
-    overflow: clip;
   }
 
   /* Crowned headline: the 漢.css Brand rides on top as a small serif

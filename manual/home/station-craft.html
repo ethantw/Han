@@ -333,9 +333,8 @@
      han-semantics wraps every selector in :where() (zero specificity); (2) the
      four cascade layers map 1:1 to the console's four module switches; (3) one
      custom property on a container re-scopes a feature via inheritance /
-     @container style(). data-ground="a" continues the alternating chain
-     (prose=b → craft=a → playground=b). -->
-<section id="station-craft" data-station="craft" data-ground="a" data-wm="零">
+     @container style(). -->
+<section id="station-craft" data-station="craft" data-wm="零">
   <hgroup>
     <p>{{ arEyebrow }}</p>
     <h2>{{ arH2 }}</h2>
@@ -445,8 +444,10 @@
       <ul class="SelRing">
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag" data-brand>{{ logo }}</p>
-            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
             <p class="At" lang="en">@container style(--han-semantics: on) {</p>
             <div class="Nest">
             <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
@@ -464,8 +465,10 @@
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
-            <p class="RuleTag">{{ arRoleMine }}</p>
-            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <p class="RuleTag">{{ arRoleMine }}</p>
+            </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: 0;</code></p>
             <p class="RuleEnd">}</p>
@@ -473,8 +476,10 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag" data-brand>{{ logo }}</p>
-            <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
             <p class="At" lang="en">@container style(--han-prose: on) {</p>
             <div class="Nest">
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
@@ -484,8 +489,10 @@
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
-            <p class="RuleTag">{{ arRoleMine }}</p>
-            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <p class="RuleTag">{{ arRoleMine }}</p>
+            </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
             <p class="RuleEnd">}</p>
@@ -493,8 +500,10 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag" data-brand>{{ logo }}</p>
-            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
             <p class="At" lang="en">@container style(--han-semantics: on) {</p>
             <div class="Nest">
             <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
@@ -508,8 +517,10 @@
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
-            <p class="RuleTag">{{ arRoleMine }}</p>
-            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <p class="RuleTag">{{ arRoleMine }}</p>
+            </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline-end: .25em;</code></p>
             <p class="RuleEnd">}</p>
@@ -517,15 +528,19 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag" data-brand>{{ logo }}</p>
-            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
-            <p class="RuleTag">{{ arRoleMine }}</p>
-            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <p class="RuleTag">{{ arRoleMine }}</p>
+            </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>ruby.zhuyin</code> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: over;</code></p>
             <p class="RuleEnd">}</p>
@@ -533,15 +548,19 @@
         </li>
         <li>
           <div class="Rule" data-role="framework">
-            <p class="RuleTag" data-brand>{{ logo }}</p>
-            <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
-            <p class="RuleTag">{{ arRoleMine }}</p>
-            <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <p class="RuleTag">{{ arRoleMine }}</p>
+            </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>.hanja :lang(ko)</code> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: 「 」 『 』;</code></p>
             <p class="RuleEnd">}</p>

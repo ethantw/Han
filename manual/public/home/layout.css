@@ -26,11 +26,16 @@ body.home {
 
 body > header {
   & {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-inline: var(--gutter);
     block-size: var(--h-header);
+    background-color: var(--palette-bg);
+    border-block-end: 1px solid var(--palette-grid);
   }
   a {
     display: flex;
@@ -44,7 +49,7 @@ body > header {
       align-items: baseline;
       font-size: 1.5rem;
     }
-    small { 
+    small {
       color: var(--palette-supplement-text);
       margin-inline: 1em -.125em;
       padding-inline-start: 1em;

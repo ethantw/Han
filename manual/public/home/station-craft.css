@@ -105,7 +105,7 @@
   }
 
   .Formula {
-    font-size: var(--fs-lede);
+    font-size: var(--fs-lede);2
   }
 
   .AxNote {
@@ -113,7 +113,7 @@
     font-family: var(--han-font-alternative);
     font-size: var(--fs-fine);
     line-height: 1.75;
-    color: var(--palette-supplement-text-2q);
+    color: var(--palette-supplement-text-3q);
     text-align: center;
   }
 }
@@ -482,25 +482,32 @@
        The developer's block carries「未分層」in the same place, so 式5.2 is
        something you can see in the plate rather than something the prose has
        to assert. */
-    .RuleLayer {
-      margin-block: 0 0.5rem;
+    /* 一列兩件，**共用一塊底**：層帶與署名同屬「這條規則的出身」——在哪一層、
+       誰寫的——所以底色畫在列上（.RuleHead），不是畫在層帶上。底只包住層名
+       而讓署名浮在外面，讀起來像兩件東西恰好對齊，而不是一列。 */
+    .RuleHead {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0 0.75rem;
+      margin-block-end: 0.5rem;
       padding-block: 0.25rem;
       padding-inline: 0.5rem;
       background: var(--palette-panel);
       border-radius: var(--r-1);
+    }
+
+    .RuleLayer {
+      flex: 1;
+      margin-block: 0;
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
+      font-size: .75rem;
+      color: var(--palette-supplement-text-3q);
     }
 
     .RuleLayer b {
       font-weight: 400;
       color: var(--palette-supplement-text);
-    }
-
-    /* the reader's rule is in no layer — say it, in the same slot */
-    .RuleLayer[data-unlayered] {
-      font-family: var(--han-font-alternative);
     }
 
     /* The conditions the rule actually sits under. Off-topic for a plate
@@ -509,7 +516,7 @@
        so they earn it (owner call). Dimmed a step: they are context, and the
        selector is the subject. */
     .At {
-      color: var(--palette-supplement-text-2q);
+      color: var(--palette-supplement-text-3q);
     }
 
     /* nesting IS nesting — one rule, any depth */
@@ -535,16 +542,18 @@
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
-       file, which is not a thing this page can point at. Its OWN line, not
-       absolutely positioned: in a third-width pane the selector wraps, and an
-       abspos label sits on top of the second line. devtools has the same
-       collision and solves it the same way. */
+       file, which is not a thing this page can point at. It rides the LAYER
+       band's row (`.RuleHead`), right-aligned: two one-word labels that used
+       to cost two lines each now cost one, ten times over.
+       Still not absolutely positioned — the old note about that stands, only
+       the collision moved: in a narrow pane the row simply wraps and the
+       signature drops under the band, where an abspos label would have sat
+       on top of it. */
     .RuleTag {
       & {
-        margin-block-end: 0.25rem;
-        font-family: var(--han-font-alternative);
-        font-size: var(--fs-fine);
-        color: var(--palette-supplement-text-2q);
+        margin-block: 0;
+        font-size: .875rem;
+        color: var(--palette-supplement-text-3q);
         text-align: end;
       }
 
@@ -1045,9 +1054,8 @@
 
     small {
       margin-inline-start: 0.75em;
-      font-family: var(--han-font-alternative);
-      font-size: var(--fs-fine);
-      color: var(--palette-supplement-text-2q);
+      font-size: .75rem;
+      color: var(--palette-supplement-text-3q);
     }
   }
 
@@ -1302,10 +1310,9 @@
      退場——owner 在 station-snippet.html 裡刪掉了那兩塊，留著規則就是死碼。
      剩下的 `.BrowserSupport` 自己承接原本共用的那幾行。 */
   .BrowserSupport {
-    max-inline-size: 38em;
-    margin: 0.5rem 0 0;
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
+    margin: 1rem 0 0;
+    max-inline-size: 20em;
+    font-size: .875rem;
     color: var(--palette-supplement-text);
   }
 }

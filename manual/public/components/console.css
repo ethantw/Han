@@ -25,7 +25,6 @@
   flex-direction: column;
   min-block-size: 0;
   background: var(--_console-bg);
-  border-inline-end: 1px solid var(--_rule);
 }
 
 /* Top form — the divider flips from the inline-end edge to the block-end

@@ -117,6 +117,9 @@
 </head>
 <body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
 <header>
+  <label for="console-collapsed">
+    2333
+  </label>
   <a class="Logo" href="{{ homeUrl }}">
     {{ logo }}
     <small class="full-name">漢字標準格式</small>
@@ -182,7 +185,7 @@
      only persists. checked = collapsed. Hidden <52rem and for
      form="top" (home.css § ConsoleToggle). -->
 <label class="ConsoleToggle" title="{{ consoleCollapse }}">
-  <input type="checkbox" name="console-collapsed" aria-label="{{ consoleCollapse }}">
+  <input type="checkbox" id="console-collapsed" name="console-collapsed" aria-label="{{ consoleCollapse }}">
   <!--
     Restore the collapsed state the instant the checkbox is parsed —
     before first paint — so `body:has(input:checked)` lays out collapsed

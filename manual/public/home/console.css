@@ -1,5 +1,78 @@
 @charset "UTF-8";
 
+
+body:has(han-console) {
+  & {
+    padding-inline-start: var(--w-console);
+    transition: .25s padding-inline-start ease-out;
+    will-change: padding-inline-start;
+  }
+  &:has(.ConsoleToggle input:checked) {
+    padding-inline-start: 0;
+  }
+  han-console {
+    position: fixed;
+    inset: 0 auto auto 0;
+    inline-size: var(--w-console);
+    block-size: 100vh;
+  border-inline-end: 1px solid var(--palette-rule);
+  }
+  .ConsoleToggle {
+    & {
+      position: fixed;
+      inset-block-start: 50%;
+      inset-inline-start: 0;
+      translate: var(--w-console) -50%;
+      z-index: 45;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 1.125rem;
+      block-size: 3rem;
+      padding: 0;
+      color: var(--palette-supplement-text);
+      background: var(--palette-bg);
+      border: 1px solid var(--palette-rule);
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+      border-start-end-radius: var(--r-2);
+      border-end-end-radius: var(--r-2);
+      cursor: pointer;
+      visibility: hidden;
+      transition:
+        /* .25s translate ease-out, */
+        .25s color ease-out
+      ;
+    }
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    &::before {
+      content: '';
+      display: inline-block;
+      inline-size: var(--fs-small);
+      block-size: var(--fs-small);
+      background: currentColor;
+      /* mask 簡寫 · Baseline 2023 */
+      mask: var(--icon-chevron) center / contain no-repeat;
+    }
+    /* scale 個別 transform 屬性 · Baseline 2022 */
+    &:has(input:checked) {
+      & {
+        translate: 0 -50%;
+      }
+      &::before {
+        rotate: 180deg;
+      }
+    }
+    &:hover {
+      color: var(--palette-accent);
+    }
+  }
+}
+
 /**
  * <han-console> PLACEMENT — the page's half of the console contract.
  *
@@ -15,7 +88,7 @@
  * true viewport top — Topbar, main and footer all live in column 2, no
  * header strip above the console. Collapsing animates the column width to 0
  * and the right column slides left to fill; it is never an overlay, so
- * content is never covered. `--console-col` is the animated column width
+ * content is never covered. `--w-console` is the animated column width
  * (0 when collapsed) and `.ConsoleToggle` reads it too, so the handle
  * tracks the boundary.
  *
@@ -25,11 +98,11 @@
 
 body:has(han-console[form="side"]) {
   /* Side form ≥52rem — the console is a full-height column; header + main +
-     everything else sit in column 2. `--console-col` drives the (animated)
+     everything else sit in column 2. `--w-console` drives the (animated)
      track width; the collapsed override zeroes it. */
-  @media (min-width: 52rem) {
+  @media (min-width: 520000rem) {
     & {
-      --console-col: 280px;
+      /* --w-console: 280px; */
       display: grid;
       /* `minmax(0, 1fr)` not a bare `1fr`: a `1fr` track floors at the
          content column's min-content, and the hero's clipped `.Outline`
@@ -39,7 +112,7 @@ body:has(han-console[form="side"]) {
          drops the min-content floor so the track tracks the viewport;
          `min-inline-size: 0` on `main` (below) is the same guard on
          the grid ITEM. (grid minmax — Baseline 2020.) */
-      grid-template-columns: var(--console-col) minmax(0, 1fr);
+      grid-template-columns: var(--w-console) minmax(0, 1fr);
       /* Explicit rows are load-bearing: `-1` in grid-row resolves against
          the EXPLICIT grid only, so without this the console's `1 / -1`
          collapses to row 1 and its 100dvh inflates that row (main
@@ -61,17 +134,22 @@ body:has(han-console[form="side"]) {
 
     /* checked = collapsed — the checkbox is the single source of truth
        (dark-mode recipe); pre-paint script restores it, JS only persists. */
-    &:has(.ConsoleToggle input:checked) { --console-col: 0px; }
+    /* &:has(.ConsoleToggle input:checked) { --w-console: 0px; } */
   }
 
   /* 52–64rem — narrower console column so it doesn't crowd main at
      tablet widths. Below 52rem both forms collapse to the sheet. */
   @media (min-width: 52rem) and (max-width: 63.9375rem) {
-    & { --console-col: 240px; }
+    & { --w-console: 240px; }
   }
 }
 
-han-console {
+han-consoleX {
+  & {
+    position: fixed;
+    inset: 0 auto auto 0;
+  }
+
   /* Pre-upgrade skeleton — the console's panel + hairline, painted from the
      LIGHT DOM while the 字徽 loader runs, so the loading state is a real
      console-shaped box rather than a hole in the layout: only the FORM is
@@ -138,76 +216,5 @@ han-console {
     inset-block-end: 0;
     z-index: 40;
     max-block-size: 70dvh;
-  }
-}
-
-/* ─── ConsoleToggle (collapse / expand the side console) ───────────────────
- * Page chrome, NOT part of the console component — a slim hairline handle at
- * the aside/content boundary, visible in BOTH states (the only way back
- * once collapsed). A real `<label>` + `<input type="checkbox">` (owner
- * call, dark-mode recipe): checked = collapsed, the body grid reads
- * `body:has(.ConsoleToggle input:checked)` — layout is pure CSS,
- * `console-collapse.js` only persists. Tracks the boundary via the
- * inherited `--console-col` (0 when collapsed). Side form only: hidden on
- * the <52rem bottom sheet and for form="top" (rows, not a column). */
-.ConsoleToggle {
-  & {
-    position: fixed;
-    inset-block-start: 50%;
-    inset-inline-start: var(--console-col, 280px);
-    transform: translateY(-50%);
-    z-index: 45;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    inline-size: 1.125rem;
-    block-size: 3rem;
-    padding: 0;
-    color: var(--palette-supplement-text);
-    background: var(--palette-bg);
-    border: 1px solid var(--palette-rule);
-    border-start-start-radius: 0;
-    border-end-start-radius: 0;
-    border-start-end-radius: var(--r-2);
-    border-end-end-radius: var(--r-2);
-    cursor: pointer;
-    transition:
-      inset-inline-start 250ms ease,
-      color             150ms ease
-    ;
-  }
-
-  input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* chevron points at the action: ‹ collapse (expanded) / › expand
-     (collapsed). Driven by the checkbox's own state, no upward selector.
-     一張 mask 兩個方向——展開態把它照鏡子（icons.css § 角標的四向 用的是
-     同一招，只是那邊由 data-dir 蓋）。 */
-  &::before {
-    content: '';
-    display: inline-block;
-    inline-size: var(--fs-small);
-    block-size: var(--fs-small);
-    background: currentColor;
-    /* mask 簡寫 · Baseline 2023 */
-    mask: var(--icon-chevron) center / contain no-repeat;
-  }
-  /* scale 個別 transform 屬性 · Baseline 2022 */
-  &:has(input:checked)::before { scale: -1 1; }
-
-  &:hover { color: var(--palette-accent); }
-
-  &:has(input:focus-visible) {
-    outline: 2px solid var(--palette-accent);
-    outline-offset: 2px;
-  }
-
-  /* only the side form on a real column (≥52rem) shows the handle */
-  @media (min-width: 52rem) {
-    body:has(han-console[form="side"]) & { display: inline-flex; }
   }
 }

@@ -47,6 +47,7 @@ import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
+import { initBreath } from '/home/breath.js'
 import { gateOpened } from '/home/fonts-gate.js'
 
 // Only PLAYGROUND is deferred past the fonts gate (dynamic import
@@ -132,6 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // and flies in the instant it opens, instead of missing its stamp
   // forever (found on real 3G).
   initReveal(gateOpened)
+  // 循環動畫的視窗閘（`[data-breath]`）：站③浮水印那口氣動的是變體字重，
+  // 每幀一記全文件重排（實測主執行緒 68%），捲出畫面就暫停。不過 gate ——
+  // 它管的是「別算」，愈早裝上愈好，字幕還沒開之前尤其該省。
+  initBreath()
 
   // Boot the playground once the curtain is up — see the import note
   // above. `data-pg-ready` on <html> signals its wiring is live (the

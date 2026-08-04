@@ -79,9 +79,12 @@ main > section {
     background: var(--palette-station-a);
   }
 
+  &:first-of-type {
+    border-block-start: 0;
+  }
+
   /* the `-b` ground breathes 1.5× wider (the alternating rhythm) */
-  &[data-ground="b"] {
-    /* padding-block: 9rem; */
+  &:nth-of-type(2n+3) {
     background: var(--palette-station-b);
   }
 
@@ -103,7 +106,7 @@ main > section {
 
   @container (inline-size >= 72rem) {
     & {
-      --plate-pad: calc((100vw - var(--console-col) - var(--max-w-layout)) / 2);
+      --plate-pad: calc((100vw - var(--w-console) - var(--max-w-layout)) / 2);
     }
   }
 
@@ -235,7 +238,7 @@ main > section {
   & {
     display: flex;
     gap: 1rem;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: flex-start;
   }
 

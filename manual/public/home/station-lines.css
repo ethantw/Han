@@ -182,7 +182,7 @@
      版面分隔線，不像欄的邊界。 */
   div[role="presentation"] {
     & {
-      --w-main: calc(100vw - var(--console-col));
+      --w-main: calc(100vw - var(--w-console));
       --fs-bg-text: calc(var(--w-main) / 9);
       /* 樣張自己的行高。呼吸的波長要按這個算——::before 不是 <p> 的子孫，
          `lh` 在它身上取到的是繼承來的正文行高（1.75），拿來當「幾行」會
@@ -350,14 +350,47 @@
 
        `--lines-tide` 的動畫因此掛在本元素上，不在 `::before`：它
        `inherits: true`，偽元素與 <p> 都繼承得到，一支 keyframes 帶兩層，
-       不會出現兩口不同步的氣。 */
+       不會出現兩口不同步的氣。
+
+       ── 這口氣有多貴（2026-08-04 量測）─────────────────────────
+       字重那一層是**每一幀一次全文件重排**：`font-variation-settings`
+       一動，那段字就得重新 shape，而失效會一路傳到 `#document`——量到
+       的 layoutRoot 全是 `(depth 1, #document)`，7447 個 layout object
+       陪著 25 個元素、169 個字的裝飾浮水印重排一遍，每次 7.3ms、每秒
+       62 次。整條主執行緒 68% 耗在這裡，頁面因此**從載入起就沒有空檔**，
+       開合主控台那 250ms 是排在一條早已滿載的執行緒後面才顯得頓。
+       `contain: layout` ／ `strict` 擋不住（Blink 的字型失效不吃
+       containment，實測 1833ms／3s，形同沒加）。
+
+       兩道閘因此都是必要的，各修一半：
+
+       (1) `round()` 把字重量化成 25 一階（500…900 共 17 檔，吸滿的那
+           3.15s 裡約 185ms 走一格）。遮罩那層**不量化**——它只吃 paint，
+           一幀一次不花錢，波形該是連續的；量化只加在會引發重排的那一支
+           上，ease-in-out 的輪廓也因此原封不動（若改用 `steps()` 當
+           timing function，兩層會一起變階梯）。
+           階距選 25 不選 50／100：三者的代價都已經進了雜訊裡
+           （96／46／30ms 每 3.5s，對照未量化的 2275ms），既然差別不到
+           主執行緒的 2%，就買最不可能被看出階梯的那一檔——這一站的動效
+           幅度是論據的一部分（owner 2026-08-01：「完全不知道在呼吸
+           什麼」），不該為了省 50ms 去賭讀者看不看得見。
+           `round()`：Baseline 2024；不支援的引擎整條宣告作廢，退回
+           上面 § p 的 `font-weight: 900` 靜止態——正是我們要的降級。
+       (2) 不在視窗裡就不喘（`data-breath-idle`，home/breath.js 蓋）。
+           讀者在站①時沒有理由替站③的浮水印算重排。用
+           `animation-play-state` 而不是拆掉 `animation`：拆掉會讓下次
+           進場從 0% 重跑，那口氣在讀者眼前跳一下；暫停則從當下的值接
+           回去。無 JS ⇒ 沒有那個屬性 ⇒ 一路呼吸，與今天的行為相同。 */
     @media (prefers-reduced-motion: no-preference) {
       :root:not([data-han-module-lines="off"]) & {
         & {
           animation: lines-tide 7s ease-in-out infinite;
         }
+        &[data-breath-idle] {
+          animation-play-state: paused;
+        }
         p {
-          font-variation-settings: 'wght' calc(500 + var(--lines-tide) * 400);
+          font-variation-settings: 'wght' calc(round(500 + var(--lines-tide) * 400, 25));
         }
       }
     }

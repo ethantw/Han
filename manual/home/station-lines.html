@@ -87,7 +87,7 @@
 }
 </script>
 <!-- Station III・Line adjustments — squeeze/hang, mixed-script, zhuyin ruby. -->
-<section id="station-lines" data-station="lines" data-ground="a">
+<section id="station-lines" data-station="lines">
   <hgroup>
     <p>{{ slEyebrow }}</p>
     <h2>{{ slH2 }}</h2>
@@ -150,7 +150,9 @@
     <small>{{ slMoeNote }}</small>
   </aside>
 
-  <div role="presentation">
+  <!-- 背後那張放大九倍的樣張。`data-breath` 是視窗閘的 opt-in（home/breath.js）：
+       它那口氣動的是變體字重，每幀一記全文件重排，捲出畫面就該停下來。 -->
+  <div role="presentation" data-breath>
     <p>{{ breathingLinesSample }}</p>
   </div>
 </section>
