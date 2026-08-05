@@ -3,10 +3,15 @@
 /**
  * Homepage page base + top chrome.
  *
- * The dark trigger, `body.home`'s own type/colour base, the Topbar
- * (brand · nav · lang switcher · theme toggle · version) and the
- * floating writing-mode pill, which is page chrome rather than console
- * state.
+ * The dark trigger, `body.home`'s own type/colour base, and the Topbar
+ * (collapse handle · brand · nav · lang switcher · theme toggle · version).
+ *
+ * (This file absorbed `home/layout.css`, 2026-08-05: the two carried a
+ * verbatim copy of the theme trigger and of the `body.home` base between
+ * them — layout.css won on import order, so editing the copy here changed
+ * nothing on screen. The base below is the UNION of the two, and the Topbar
+ * came over unchanged. The old header also claimed a floating writing-mode
+ * pill; that markup is gone from `_home.html`.)
  */
 
 /* ─── theme + base ──────────────────────────────────────────────────
@@ -35,4 +40,86 @@ body.home {
 
   a { color: inherit; text-decoration: none; }
   img, svg { display: block; max-width: 100%; }
+}
+
+/* ─── Topbar ─────────────────────────────────────────────────────── */
+
+body > header {
+  & {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-inline-start: -1px;
+    padding-inline: var(--gutter);
+    block-size: var(--h-header);
+    background-color: var(--ui-bg);
+    border-inline-start: 1px solid var(--ui-rule);
+    border-block-end: 1px solid var(--ui-rule);
+  }
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ui-bg);
+  }
+  .Logo {
+    & {
+      display: flex;
+      align-items: baseline;
+      font-size: 1.5rem;
+      /* header 現在有三件東西（收合開關・logo・nav）。space-between 會把
+         三件平均攤開，開關與 logo 就分了家——讓 logo 自己吃掉中間所有
+         餘白，前兩件貼左、nav 貼右，回到原本的兩端配置。 */
+      margin-inline-end: auto;
+      translate: -.875rem -.125rem;
+    }
+    small {
+      color: var(--ui-supplement-text);
+      margin-inline: 1em -.125em;
+      padding-inline-start: 1em;
+      font-size: .5em;
+      line-height: 1;
+      letter-spacing: .125em;
+      border-inline-start: 1px solid var(--ui-rule);
+    }
+    .version {
+      letter-spacing: -.05em;
+    }
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+
+    > a {
+      font-family: var(--han-font-default);
+      font-size: var(--fs-fine);
+      color: var(--ui-ink-grey);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+
+      &:hover { color: var(--ui-accent); }
+    }
+
+    /* the divider between the text links and the tools cluster is a
+       hairline on the LangSwitcher (upward relationship, css-naming
+       rule 1) — no decorative `<span>` in the DOM. */
+    .LangSwitcher::before {
+      content: '';
+      display: inline-block;
+      inline-size: 1px;
+      block-size: 0.875rem;
+      margin-inline-end: 1rem;
+      background: var(--ui-rule);
+      vertical-align: middle;
+    }
+  }
+
+  @media (width <= 20rem) {
+    & { padding: 0.875rem var(--gutter); flex-wrap: wrap; gap: 0.75rem; }
+    nav { gap: 0.875rem; flex-wrap: wrap; }
+  }
 }

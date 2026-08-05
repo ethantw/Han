@@ -85,25 +85,44 @@ const VARIANTS = [
 const collect = (props) => {
   const key = ($el) => {
     const parts = []
-    for (let $n = $el; $n && $n.tagName !== 'BODY'; $n = $n.parentElement) {
-      const i = $n.parentElement ? [...$n.parentElement.children].indexOf($n) : 0
+    for (let $n = $el; $n && $n.tagName !== 'BODY'; ) {
+      const $parent = $n.parentElement
+      const i = $parent ? [...$parent.children].indexOf($n) : 0
       const id = $n.id ? `#${$n.id}` : ''
       const cls = $n.classList.length ? `.${[...$n.classList].join('.')}` : ''
       parts.unshift(`${i}.${$n.tagName.toLowerCase()}${id}${cls}`)
+      // Climb out of a shadow root through its host, so a shadow key can
+      // never collide with a light-DOM one.
+      if (!$parent) {
+        const $host = $n.getRootNode()?.host
+        if (!$host) break
+        parts.unshift('⟨shadow⟩')
+        $n = $host
+      } else $n = $parent
     }
     return parts.join('>')
   }
 
-  const $main = document.querySelector('main')
   const out = {}
   /* The wordmark's stroke ceremony builds and tears down its own <path>s, so
      the SVG's child COUNT differs run to run (measured: 12 vs 24). Nothing
      inside it is styled by the sheets this refactor touches — record the host
      span, skip the subtree, and the tool stays deterministic. */
-  const $skip = [...$main.querySelectorAll('.Outline svg')]
+  const $skip = [...document.querySelectorAll('.Outline svg')]
   const skipped = ($el) => $skip.some(($s) => $s.contains($el))
 
-  for (const $el of $main.querySelectorAll('*')) {
+  /* The whole light DOM, not just `<main>`: the Topbar is `body > header` and
+     the refactor moves rules that reach it. Shadow roots are walked too —
+     `common/controls.css` is adopted by <han-console>'s shadow, so a move
+     there has to be provable as well. */
+  const walk = function* ($root) {
+    for (const $el of $root.querySelectorAll('*')) {
+      yield $el
+      if ($el.shadowRoot) yield* walk($el.shadowRoot)
+    }
+  }
+
+  for (const $el of walk(document.body)) {
     if (skipped($el)) continue
     // Shadow hosts: the component owns its interior, and the plan does not
     // touch components/. Record the host box, skip inside.
@@ -111,7 +130,10 @@ const collect = (props) => {
     const rect = $el.getBoundingClientRect()
     const row = {}
     for (const p of props) row[p] = cs.getPropertyValue(p)
-    row['@rect'] = [rect.width, rect.height].map((n) => Math.round(n * 100) / 100).join('×')
+    // One decimal, not two: SVG <text> advance widths jitter in the last
+    // hundredth between runs (measured on the mark diagram, 201.6 vs 201.59)
+    // and that noise would show up in every diff from here on.
+    row['@rect'] = [rect.width, rect.height].map((n) => Math.round(n * 10) / 10).join('×')
     out[key($el)] = row
   }
   return out
