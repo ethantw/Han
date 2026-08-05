@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+/**
+ * Closing — the footer band under the last station.
+ *
+ * Not a `[data-station]`: a full-bleed panel with centred content and no
+ * eyebrow/measure rhythm, so it shares none of the station plate's frame.
+ * (Moved out of `station-frame.css`, 2026-08-05 — one section, one file.)
+ */
+
+.Closing {
+  & {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    padding: 3.5rem var(--gutter);
+    border-block-start: 1px solid var(--ui-rule);
+    background: var(--ui-panel);
+    text-align: center;
+  }
+
+  /* the mirror watermark — a single 漢 centred behind the sign-off. Same
+     mechanism as `[data-station]::before` (z-index:-1 under an isolate context),
+     centred rather than corner-anchored. Always in its settled state (the
+     Closing isn't a reveal target). */
+  &::before {
+    content: attr(data-wm);
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(12rem, 40vw, 20rem);
+    line-height: 1;
+    color: var(--ui-wm);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .Siblings {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    a {
+      padding-block-end: 1px;
+      font-family: var(--han-font-default);
+      font-size: var(--fs-compact);
+      color: var(--ui-text);
+      border-block-end: 1px solid var(--ui-rule);
+
+      &:hover { color: var(--ui-accent); border-block-end-color: var(--ui-accent); }
+    }
+  }
+
+  .Foot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    color: var(--ui-supplement-text-2q);
+
+    a {
+      color: var(--ui-supplement-text);
+      text-decoration: none;
+
+      &:hover { color: var(--ui-accent); }
+    }
+  }
+}
