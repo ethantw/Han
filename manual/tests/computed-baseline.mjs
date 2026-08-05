@@ -237,13 +237,41 @@ const snapshot = async (browser, variant) => {
   // let the one-shot transitions run out before freezing
   await page.waitForTimeout(700)
 
+  /* `document.fonts.ready` a SECOND time, after the tour. The first await only
+     covers what the initial paint asked for; the playground's preview is
+     rendered from markdown at gate-open and asks for more (the zhuyin ruby
+     slice among them), so a single early await leaves its <rt> boxes measured
+     mid-fallback — 11px vs 8px, and stable per build, which makes it look
+     like a real regression instead of a race. */
+  await page.evaluate(() => document.fonts.ready)
+  await page.waitForTimeout(300)
+
   await page.evaluate(freezeAnimations)
   const data = await page.evaluate(collect, PROPS)
   await context.close()
   return data
 }
 
+/* The manual's Vite build inlines every `@import` into ONE dist/home.css. When
+   its plugin throws — an unterminated comment in a partial is enough — Vite
+   still writes the un-inlined entry and only the *build log* says so. The page
+   then works (the browser resolves the @import chain itself) but loads its CSS
+   in a different order and timing, which shows up here as a scatter of
+   plausible-looking geometry diffs. Caught it the hard way; now it's a hard
+   stop instead of an afternoon. */
+const assertBundled = () => {
+  const bundle = path.join(ROOT, 'manual', 'dist', 'home.css')
+  if (readFileSync(bundle, 'utf8').includes('@import')) {
+    console.error(
+      `${bundle} still contains @import — the build's inline plugin failed.\n` +
+        'Re-run `pnpm --filter han-manual build` and read the log; measuring this is meaningless.',
+    )
+    process.exit(2)
+  }
+}
+
 const run = async (outArg) => {
+  assertBundled()
   const out = path.isAbsolute(outArg) || outArg.includes('/') ? outArg : path.join(OUT_DIR, outArg)
   mkdirSync(path.dirname(out), { recursive: true })
   const server = await serve()

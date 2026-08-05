@@ -364,3 +364,81 @@
     writing-mode: vertical-rl;
   }
 }
+
+
+/* （2026-08-05 自 lead-forme.css 遷入：`.PunctLang` 是站②自己的四語樣張，
+   而管它的兩顆開關（`#station-fonts:has(input[name="pl-*"])`）本來就寫在本檔
+   ——同一件東西分居兩檔，改一邊要記得另一邊。鉛字盤那支檔現在只剩鉛字盤。） */
+
+
+/* ── station②'s per-language punctuation demo (.PunctLang) ─────────────
+   Four cells, each a fixed language showing the 三體 line under its own
+   punctuation <select>. The selected value drives the han punctuation
+   variable on the cell's own <li> via :has(option:checked) — pure CSS, no
+   JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
+:where(.PunctLang) {
+  & {
+    margin-block: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--ui-rule);
+    border: 1px solid var(--ui-rule);
+    border-radius: 0.6rem;
+    overflow: clip;
+  }
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .75rem;
+    padding: clamp(.875rem, 2vw, 1.375rem);
+    background: var(--ui-panel);
+  }
+  p {
+    flex: 1;
+    margin: 0;
+    inline-size: round(100%, 1em);
+    /* MUST declare a han font stack here: font-family inherits as an already-
+       resolved string, so unless the var is re-read AT the sample, the
+       punctuation-font swap (--han-font-punctuation-* set by han.css's
+       convention container-query) never reaches it — the sample would freeze
+       on whatever punctuation font :root resolved. Serif reads the marks big. */
+    font-family: var(--han-serif);
+  }
+  label {
+    align-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ui-supplement-text);
+    font-size: 0.8rem;
+  }
+  select {
+    font: inherit;
+    font-size: 0.8rem;
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: 0.4rem;
+    padding-block: 0.2rem;
+    padding-inline: 0.4rem;
+  }
+  figcaption {
+    margin-inline-start: auto;
+    max-inline-size: 18em;
+    font-family: var(--han-sans);
+    font-size: .875rem;
+  }
+}
+@media (width < 34rem) {
+  :where(.PunctLang) ul { grid-template-columns: 1fr; }
+}
+/* No local punctuation override here: each cell's <select> is bound to the
+   console (punct-lang.js) — the console applies --han-punctuation-* to <main> and
+   the samples inherit it, so the console config stays the single source of truth. */
