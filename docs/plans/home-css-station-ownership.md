@@ -186,7 +186,14 @@ public/home/
 刪除：layout.css、station-specimen.css、preview.css、playground.css、station-frame.css
 ```
 
-> **執行時的更正（2026-08-05）：這兩支都沒有切。** 判準「整塊搬走、不必帶走站台的
+> **再更正（2026-08-06）：切了，而且切得更乾淨。** owner 指出下面那個判斷少想了
+> 一步——**把耦合的兩邊一起搬**，編排就完整地跟著走。於是站①拆成三檔：
+> `station-semantics.css`（118，四版報頭）／`semantics-specimen.css`（1521，詩行
+> ＋圖解＋編排＋全部 keyframes）／`envelope.css`（348）。樣張本體仍破 500，但它
+> 就是一件展品，再切會把那套 hover 編排拆散。下面這段保留，當作「判準用錯了層級
+> 會擋掉該做的事」的紀錄。
+>
+> **原記錄（2026-08-05）：這兩支都沒有切。** 判準「整塊搬走、不必帶走站台的
 > 任何規則」自己把它們擋下了：
 >
 > - **`.MarkDiagram` 切不開**——它的 hover 編排與詩行是同一套：
