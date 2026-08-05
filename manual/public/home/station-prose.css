@@ -1,9 +1,10 @@
 @charset "UTF-8";
 
 /**
- * 站④・段落 — 只有那顆 prose 開關的樣式。樣張本身（`.Prose` 的欄與
- * `article.Dispatch` 的框）住在 station-frame.css，因為那是站台共用的
- * running-copy 零件；這裡只管本站多出來的那一件控件。
+ * 站④・段落 — 這一站的全部樣式：那顆 prose 開關，加上樣張本身
+ * （`.Prose` 的欄與 `article.Dispatch` 的框）。後兩者原住在
+ * station-frame.css，2026-08-05 搬回本站——它們只出現在 station-prose.html，
+ * 從來不是站台版框共用的零件。
  */
 
 #station-prose {
@@ -52,5 +53,75 @@
       font-size: .75em;
       color: var(--ui-supplement-text-3q);
     }
+  }
+}
+
+
+/* ─── Prose (running specimen copy — measure ~38em for readability) */
+
+.Prose {
+  & {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  /* direct children only — a nested specimen article (.Dispatch) manages
+     its own internals via the han-prose layer; chrome must not reach in
+     and flatten the very margins the module demonstrates. */
+  > p {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: var(--fs-body);
+    line-height: 1.9;
+    color: var(--ui-text);
+  }
+
+  > blockquote {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 2px solid var(--ui-rule);
+    font-family: var(--han-font-accent);
+    font-size: var(--fs-body);
+    line-height: 1.9;
+    color: var(--ui-supplement-text);
+  }
+}
+
+/* ─── Dispatch (station④'s living specimen — a 太陽中文報 mini-article) ──
+ * The card frames a REAL <article> so prose.css auto-scopes to it: the
+ * consecutive-headings collapse (h1 straight onto h2), heading→paragraph,
+ * paragraph→list and blockquote seams all belong to the han-prose layer.
+ * Chrome only sets the frame and the type SCALE — never block margins,
+ * which are exactly what the console's prose switch reflows. */
+article.Dispatch {
+  & {
+    --size: 24em;
+    padding: 1em 1.5em;
+    inline-size: calc(var(--size) * 2);
+    column-count: 2;
+    column-gap: 2em;
+    font-family: var(--han-font-alternative);
+    font-size: .75rem;
+    line-height: 1.75;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    color: var(--ui-text);
+  }
+  &.vertical {
+    writing-mode: vertical-rl;
+  }
+  h1 {
+    line-height: 1.5;
+    column-span: all;
+  }
+  ol {
+    list-style: trad-chinese-informal;
+  }
+  blockquote cite:last-child {
+    display: block;
+    text-align: end;
   }
 }
