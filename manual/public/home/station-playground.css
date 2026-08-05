@@ -52,7 +52,7 @@
       background: var(--code-bg);
       border: 0;
       font-family: var(--font-mono);
-      font-size: var(--fs-compact);
+      font-size: 0.8125rem;
       line-height: 1.7;
       color: var(--code-fg);
       tab-size: 2;
@@ -69,7 +69,7 @@
       background: var(--ui-bg);
       color: var(--ui-text);
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-body);
+      font-size: 1rem;
       line-height: 1.9;
     }
 
@@ -85,9 +85,9 @@
       &:first-child { margin-block-start: 0; }
     }
 
-    :is(h1, h2) { font-size: var(--fs-heading); }
-    h3 { font-size: var(--fs-lede); }
-    :is(h4, h5, h6) { font-size: var(--fs-body); }
+    :is(h1, h2) { font-size: 1.5rem; }
+    h3 { font-size: 1.125rem; }
+    :is(h4, h5, h6) { font-size: 1rem; }
 
     p { margin: 0 0 1em; }
 
@@ -131,7 +131,7 @@
         border-radius: var(--r-2);
         color: var(--code-fg);
         font-family: var(--font-mono);
-        font-size: var(--fs-compact);
+        font-size: 0.8125rem;
         line-height: 1.6;
       }
 

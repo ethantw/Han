@@ -215,7 +215,7 @@
 
   legend {
     padding: 0;
-    font-size: var(--fs-micro);
+    font-size: 0.625rem;
     letter-spacing: 0.06em;
     color: var(--ui-supplement-text-2q);
   }
@@ -223,7 +223,7 @@
   /* what the picks buy, in the reader's language */
   .SubNote {
     margin-block: 0.375rem 0;
-    font-size: var(--fs-micro);
+    font-size: 0.625rem;
     line-height: 1.7;
     color: var(--ui-supplement-text-2q);
   }

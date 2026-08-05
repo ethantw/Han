@@ -67,7 +67,7 @@
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-1);
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       color: var(--ui-supplement-text);
       cursor: pointer;
       transition:

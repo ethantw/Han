@@ -480,7 +480,7 @@
         font-family: var(--font-mono);
         /* absolute, not a fraction: a letterhead sets small, and a third of
            0.875rem is a 4px smudge. */
-        font-size: var(--fs-fine);
+        font-size: 0.75rem;
         font-style: normal;
         font-weight: 400;
         line-height: 1;
@@ -967,7 +967,7 @@
         --_bg: var(--ui-bg);
         --_accent: var(--ui-accent);
         --_supplement-text: var(--ui-supplement-text);
-        --_fs-compact: var(--fs-fine);
+        --_fs-compact: 0.75rem;
         font-size: .75rem;
       }
 
@@ -1674,7 +1674,7 @@
     inset-inline-end: 1.2rem;
     display: flex;
     margin: 0;
-    font-size: var(--fs-fine);
+    font-size: 0.75rem;
     font-family: var(--font-mono);
 
     & span {
@@ -1699,7 +1699,7 @@
     writing-mode: vertical-rl;
     padding-block: 1.5rem 7rem;     /* 右／左（左は差出人の欄） */
     padding-inline: 4.4rem 1.4rem;  /* 上（枠の下から）／下 */
-    font-size: var(--fs-small);
+    font-size: 0.875rem;
     line-height: 2.1;
     text-align: start;
     word-break: keep-all;  /* 欄は全角空白でだけ折り返す — 語が千切れない */
@@ -1733,7 +1733,7 @@
     writing-mode: vertical-rl;
     inset-block-end: 1.1rem;  /* 左 */
     inset-inline-end: 1.3rem; /* 下 */
-    font-size: var(--fs-fine);
+    font-size: 0.75rem;
     line-height: 1.6;
     text-align: start;
   }
@@ -1904,7 +1904,7 @@ figure.Papers {
         /* …and the thin half */
         border-block-end: 1px solid var(--ui-rule);
         font-family: var(--han-font-default);
-        font-size: var(--fs-fine);
+        font-size: 0.75rem;
         color: var(--ui-supplement-text);
       }
 

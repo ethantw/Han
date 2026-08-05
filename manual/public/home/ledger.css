@@ -16,7 +16,7 @@
      open the gap itself — a figure's 2.5rem bottom margin used to do it. */
   margin: 2.5rem 0 0.75rem;
   font-family: var(--han-font-alternative);
-  font-size: var(--fs-lede);
+  font-size: 1.125rem;
   font-weight: 500;
   color: var(--ui-text);
 }
@@ -120,7 +120,7 @@
   caption {
     margin-block-end: 0.75rem;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
+    font-size: 0.875rem;
     color: var(--ui-supplement-text);
     text-align: start;
   }
@@ -134,7 +134,7 @@
   thead th {
     & {
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       font-weight: 400;
       color: var(--ui-supplement-text-2q);
       text-align: end;
@@ -150,7 +150,7 @@
   /* Family / convention names — the row's subject, in the reading face. */
   tbody th {
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
+    font-size: 0.875rem;
     font-weight: 400;
     color: var(--ui-text);
     text-align: start;
@@ -160,7 +160,7 @@
      magnitudes stack into columns you can read down. */
   td {
     font-family: var(--font-mono);
-    font-size: var(--fs-compact);
+    font-size: 0.8125rem;
     font-variant-numeric: tabular-nums lining-nums;
     color: var(--ui-accent);
     text-align: end;
@@ -217,7 +217,7 @@
     padding-block: 0.875rem 0.375rem;
     border-block-end: 0;
     font-family: var(--font-mono);
-    font-size: var(--fs-fine);
+    font-size: 0.75rem;
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--ui-supplement-text-2q);
@@ -242,7 +242,7 @@
   &.Sum tbody th {
     & {
       font-family: var(--font-mono);
-      font-size: var(--fs-compact);
+      font-size: 0.8125rem;
       font-weight: 400;
     }
 
@@ -294,14 +294,14 @@
 
   &.Sum tfoot th {
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
+    font-size: 0.875rem;
     font-weight: 500;
     color: var(--ui-text);
     text-align: start;
   }
 
   &.Sum tfoot td {
-    font-size: var(--fs-body);
+    font-size: 1rem;
     font-weight: 500;
   }
 
@@ -339,7 +339,7 @@
          padded (the alignment itself is done in the text — see ledger.js §
          fmtNum). A school sum sets its answer at the same size anyway; what
          marks it is the rule above it and the weight of the ink. */
-      font-size: var(--fs-lede);
+      font-size: 1.125rem;
       color: var(--ui-supplement-text-2q);
     }
 
@@ -448,7 +448,7 @@
     margin-block: 1.5rem 0;
     margin-inline: 0;
     font-family: var(--han-font-default);
-    font-size: var(--fs-small);
+    font-size: 0.875rem;
     line-height: 1.8;
     color: var(--ui-supplement-text);
   }
@@ -475,7 +475,7 @@
         grid-column: auto;
       }
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-small);
+      font-size: 0.875rem;
       line-height: 1.75;
       color: var(--ui-supplement-text);
     }
@@ -483,7 +483,7 @@
     small {
       display: block;
       margin-block-start: 0.5rem;
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       color: var(--ui-supplement-text-2q);
     }
 

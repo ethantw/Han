@@ -177,16 +177,16 @@
   }
 
   &[data-size="lg"] {
-    [data-part="mark"], [data-part="dot"] { font-size: var(--fs-heading); }
-    [data-part="ext"]                     { font-size: var(--fs-lede); }
-    small        { font-size: var(--fs-fine); }
+    [data-part="mark"], [data-part="dot"] { font-size: 1.5rem; }
+    [data-part="ext"]                     { font-size: 1.125rem; }
+    small        { font-size: 0.75rem; }
     small::before { block-size: 0.875rem; margin-inline: 0.875rem; }
   }
 
   &[data-size="sm"] {
-    [data-part="mark"], [data-part="dot"] { font-size: var(--fs-lede); }
-    [data-part="ext"]                     { font-size: var(--fs-small); }
-    small        { font-size: var(--fs-micro); }
+    [data-part="mark"], [data-part="dot"] { font-size: 1.125rem; }
+    [data-part="ext"]                     { font-size: 0.875rem; }
+    small        { font-size: 0.625rem; }
     small::before { block-size: 0.75rem; margin-inline: 0.625rem; }
   }
 }

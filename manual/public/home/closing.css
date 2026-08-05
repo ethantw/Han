@@ -51,7 +51,7 @@
     a {
       padding-block-end: 1px;
       font-family: var(--han-font-default);
-      font-size: var(--fs-compact);
+      font-size: 0.8125rem;
       color: var(--ui-text);
       border-block-end: 1px solid var(--ui-rule);
 
@@ -64,7 +64,7 @@
     align-items: center;
     gap: 1rem;
     font-family: var(--font-mono);
-    font-size: var(--fs-fine);
+    font-size: 0.75rem;
     color: var(--ui-supplement-text-2q);
 
     a {

@@ -151,18 +151,25 @@
   ;
 
 
-  /* ── type ramp ────────────────────────────────────────────────────
-   * ~5 content sizes (display / heading / lede / body / small), reused
-   * everywhere; the compact console chrome adds two denser steps
-   * (compact / fine / micro). No ad-hoc per-component sizes. Every rem
-   * value is a multiple of 0.125rem (css-naming rule 13). */
-  --fs-heading: 1.5rem;                 /* section h2 */
-  --fs-lede:    1.125rem;               /* Manifesto lede */
-  --fs-body:    1rem;                   /* prose, body copy */
-  --fs-small:   0.875rem;               /* captions, supplement, nav */
-  --fs-compact: 0.8125rem;              /* dense controls, code terminal */
-  --fs-fine:    0.75rem;                /* mono labels, chips, fine print */
-  --fs-micro:   0.625rem;               /* console micro group labels */
+  /* ── type ramp — 沒有代號，直接寫值 ────────────────────────────────
+   * 級數還是這七級，寫規則時照這張表挑；但 `font-size` 一律寫字面 rem，
+   * 不再經過 `--fs-*` 一層（2026-08-05 廢除，見
+   * docs/plans/home-css-station-ownership.md 一·丙）。`.875rem` 自己就說得
+   * 清楚，`--fs-small` 還要回頭查表；而字級沒有換主題／換模式要整批翻轉的
+   * 需求——那是顏色才有的事，所以 `--ui-*` 留著。參考實作 ziano/demo 本來
+   * 就是這樣寫的，級數還逐一相同。
+   *
+   *   1.5rem     section h2
+   *   1.125rem   Manifesto lede
+   *   1rem       prose, body copy
+   *   0.875rem   captions, supplement, nav
+   *   0.8125rem  dense controls, code terminal
+   *   0.75rem    mono labels, chips, fine print
+   *   0.625rem   console micro group labels
+   *
+   * 每個 rem 值都是 0.125rem 的倍數（css-naming rule 13），新增一級也照辦。
+   * 元件那層的 `--_fs-*`（components/tokens.css）留著：它是可被覆寫的旋鈕
+   * ——站③④ 就各自把 `--_fs-compact` 調成正文級——只是預設值現在也寫死。 */
 
   /* radii (subtle, print-feel) */
   --r-1: 2px;

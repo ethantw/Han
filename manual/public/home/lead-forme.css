@@ -707,7 +707,7 @@
    column's measure however wide the forme above it runs. */
 :where(.LeadForme) figcaption {
   max-inline-size: 38em;
-  font-size: var(--fs-fine);
+  font-size: 0.75rem;
   line-height: 1.66667;
   color: var(--ui-supplement-text);
 

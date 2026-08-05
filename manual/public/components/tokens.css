@@ -42,9 +42,9 @@
 
   /* type + metrics — theme-invariant single-value fallbacks (home.css ramp) */
   --_font-mono:  var(--font-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
-  --_fs-compact: var(--fs-compact, 0.8125rem);
-  --_fs-fine:    var(--fs-fine, 0.75rem);
-  --_fs-micro:   var(--fs-micro, 0.625rem);
+  --_fs-compact: 0.8125rem;
+  --_fs-fine:    0.75rem;
+  --_fs-micro:   0.625rem;
   --_r-1:        var(--r-1, 2px);
   --_r-2:        var(--r-2, 4px);
   --_gutter:     var(--gutter, clamp(1rem, 4vw, 2rem));

@@ -10,17 +10,12 @@
  * `station-*.css`（一站一檔）.
  */
 
-/* ─── em-based type ramp inside the specimen ─────────────────────────
- * The console's 字級 slider writes an inline `font-size` (px) on
- * `main`; INSIDE it the `--fs-*` tokens re-resolve in em so every
- * heading/caption scales as a multiple of that base (ziano playground
- * pattern). The rem originals in home.css would pin to :root and
- * ignore the slider — page chrome outside <main> keeps them. Custom
- * properties substitute at the CONSUMING element, so home.css rules
- * (InstallChip, VersionTag…) pick up the em版 automatically when they
- * render inside <main>. No compounding: every font-size in this file
- * sits on a child of a base-sized parent, never nested inside another
- * `--fs-*`-sized element. */
+/* 字級滑桿的作用範圍，記一筆：`main` 的 font-size 由 --console-metric-size
+ * 承接（見下），但站內每一條寫死 rem 的 font-size 都釘在 :root，不跟著縮放
+ * ——滑桿只動「沒有明式 font-size 的文字」。這裡曾經有一段註解，描述 `--fs-*`
+ * 在 main 底下整批改寫成 em、好讓標題與說明文字一起縮放的機制；那個覆寫區塊
+ * 早就不在了，註解留到 2026-08-05 才隨 --fs-* 一起清掉。真要把那個行為做回來，
+ * 就在受影響的規則上直接寫 em。 */
 
 main {
   /* inline-size, NOT size: the station padding query below only asks about
@@ -130,7 +125,7 @@ main > section {
       gap: 0.875rem;
       margin: 0 0 1.125rem;
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       font-weight: 500;
       letter-spacing: 0.4em;
       text-transform: uppercase;
@@ -147,7 +142,7 @@ main > section {
       margin: 0;
       font-family: var(--han-font-alternative);
       font-weight: 600;
-      font-size: var(--fs-heading);
+      font-size: 1.5rem;
       line-height: 1.3;
       letter-spacing: 0.01em;
       color: var(--ui-text);
@@ -156,7 +151,7 @@ main > section {
     h2 + p {
       margin: 0.75rem 0 0;
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-body);
+      font-size: 1rem;
       line-height: 1.7;
       color: var(--ui-supplement-text);
     }
@@ -164,7 +159,7 @@ main > section {
       margin: -2rem 0 2.75rem;
       max-inline-size: 32em;
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-lede);
+      font-size: 1.125rem;
       line-height: 1.7;
       color: var(--ui-supplement-text);
     }

@@ -36,7 +36,7 @@
   figcaption {
     max-inline-size: 32em;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
+    font-size: 1rem;
     line-height: 1.9;
     color: var(--ui-text);
 

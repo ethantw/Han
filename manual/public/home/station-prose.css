@@ -25,7 +25,7 @@
       --_supplement-text: var(--ui-supplement-text);
       /* 開關在正文級，不吃 console 那種密控件的字級——它是說明文的一
          部分，不是儀表板上的一格。 */
-      --_fs-compact: var(--fs-body);
+      --_fs-compact: 1rem;
 
       display: grid;
       grid-template-columns: 2.25em auto;
@@ -73,7 +73,7 @@
   > p {
     margin: 0;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
+    font-size: 1rem;
     line-height: 1.9;
     color: var(--ui-text);
   }
@@ -83,7 +83,7 @@
     padding-inline-start: 1.25rem;
     border-inline-start: 2px solid var(--ui-rule);
     font-family: var(--han-font-accent);
-    font-size: var(--fs-body);
+    font-size: 1rem;
     line-height: 1.9;
     color: var(--ui-supplement-text);
   }

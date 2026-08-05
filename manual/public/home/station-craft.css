@@ -28,7 +28,7 @@
     margin-inline: 0;
     max-inline-size: 42em;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-body);
+    font-size: 1rem;
     line-height: 1.9;
     color: var(--ui-text);
   }
@@ -100,18 +100,18 @@
     }
 
     .Formula {
-      font-size: var(--fs-heading);
+      font-size: 1.5rem;
     }
   }
 
   .Formula {
-    font-size: var(--fs-lede);
+    font-size: 1.125rem;
   }
 
   .AxNote {
     margin: 0.625rem 0 0;
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-fine);
+    font-size: 0.75rem;
     line-height: 1.75;
     color: var(--ui-supplement-text-3q);
     text-align: center;
@@ -156,7 +156,7 @@
       padding-inline-end: 5em;
     }
     font-family: var(--han-font-alternative);
-    font-size: var(--fs-heading);
+    font-size: 1.5rem;
     line-height: 1.6;
     color: var(--ui-text);
   }
@@ -247,7 +247,7 @@
     & {
       display: block;
       margin-block-start: 0.25rem;
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       color: var(--ui-supplement-text-2q);
       white-space: nowrap;
     }
@@ -312,7 +312,7 @@
 
   .Applied {
     & {
-      font-size: var(--fs-lede);
+      font-size: 1.125rem;
     }
 
     /* Centred — and `display: block math` centres its own content, which is
@@ -381,7 +381,7 @@
       margin: 1rem 0 0;
       max-inline-size: 34em;
       font-family: var(--han-font-alternative);
-      font-size: var(--fs-small);
+      font-size: 0.875rem;
       line-height: 1.9;
       color: var(--ui-supplement-text);
     }
@@ -444,7 +444,7 @@
       padding-inline: 1rem;
       background: var(--ui-bg);
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       line-height: 1.8;
       text-align: start;
     }
@@ -554,7 +554,7 @@
          wordmark's own atoms scale off `font-size`, so one declaration on the
          container carries the lockup. */
       .Brand {
-        font-size: var(--fs-small);
+        font-size: 0.875rem;
         vertical-align: baseline;
       }
 
@@ -604,7 +604,7 @@
       inline-size: 2rem;
       block-size: 2rem;
       padding: 0;
-      font-size: var(--fs-small);
+      font-size: 0.875rem;
       color: var(--ui-supplement-text);
       background: transparent;
       border: 1px solid var(--ui-rule);
@@ -626,7 +626,7 @@
 
     output {
       font-family: var(--font-mono);
-      font-size: var(--fs-fine);
+      font-size: 0.75rem;
       font-variant-numeric: tabular-nums lining-nums;
       color: var(--ui-supplement-text-2q);
     }

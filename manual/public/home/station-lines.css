@@ -124,7 +124,7 @@
         --_supplement-text: var(--ui-supplement-text);
         /* 開關在正文級，不吃 console 那種密控件的字級——它是說明文的一
            部分，不是儀表板上的一格。 */
-        --_fs-compact: var(--fs-body);
+        --_fs-compact: 1rem;
 
         gap: var(--_sw-gap);
         inline-size: 100%;
