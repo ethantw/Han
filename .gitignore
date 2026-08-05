@@ -18,3 +18,7 @@ __pycache__/
 # ad-hoc measurement / screenshot scripts run from the repo root (Playwright
 # can't resolve @playwright/test from the scratchpad, so probes get copied here)
 /.*.mjs
+
+# computed-style snapshots (manual/tests/computed-baseline.mjs) — a working
+# artefact of a refactor, meaningless once it lands
+manual/tests/.baseline/
