@@ -96,7 +96,6 @@
       grid-area: caption;
       font-family: var(--han-sans);
       font-size: .875rem;
-      line-height: 1.75;
       color: var(--ui-text);
     }
   }
