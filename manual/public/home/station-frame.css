@@ -304,24 +304,6 @@ article.Dispatch {
 }
 
 
-/* ─── Station lede (the one-line entry under the hgroup) ─────────────
- * A serif lede sits between the section head and its interior. When a
- * hgroup is immediately followed by one, the hgroup's own bottom margin
- * pulls in so the pair reads as a unit (`:has()` — Baseline 2023; the
- * lede owns the gap to the content below). */
-
-[data-station] {
-  > hgroup:has(+ .Lede) { margin-block-end: 1rem; }
-
-  > .Lede {
-    margin: 0 0 2.75rem;
-    max-inline-size: 34em;
-    font-size: var(--fs-lede);
-    line-height: 1.7;
-    color: var(--ui-supplement-text);
-  }
-}
-
 
 /* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
    `console-metrics.js` sets `main.dataset.writing`) ═══════════════
@@ -434,21 +416,6 @@ main[data-writing="vertical"] {
     color: var(--ui-wm);
     pointer-events: none;
     user-select: none;
-  }
-
-  .InstallLine {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.875rem;
-    flex-wrap: wrap;
-
-    small {
-      font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      letter-spacing: 0.05em;
-      color: var(--ui-supplement-text);
-    }
   }
 
   .Siblings {

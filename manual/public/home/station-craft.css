@@ -126,10 +126,6 @@
  * webfont; the operators here (≡ ≻ → ) all resolve from the CJK faces
  * already loaded, so nothing new is fetched. */
 
-.WhereLede {
-  margin: 0 0 1.5rem;
-}
-
 /* No box. This is the station's argument, not an exhibit beside it — a
  * plate would frame it as「something to glance at」when it is the thing to
  * read. It sits in the flow and is held together by rules and rhythm, the
@@ -368,14 +364,6 @@
 
     .Zero {
       color: var(--ui-accent);
-    }
-
-    /* The reader's weight — full ink and a shade heavier, because it is the
-       one that survives. It needs no arrow of its own: sitting in the zero's
-       column IS the comparison. */
-    .Mine {
-      color: var(--ui-text);
-      font-weight: 500;
     }
   }
 
@@ -674,35 +662,6 @@
       align-self: center;
     }
   }
-}
-
-/* 證 … ∎ */
-.Proof {
-  & {
-    padding-block-start: 1.25rem;
-    border-block-start: 1px solid var(--ui-rule);
-    font-family: var(--han-font-alternative);
-    font-size: var(--fs-small);
-    color: var(--ui-supplement-text);
-  }
-
-  /* Narrow: rows stack (role → code → weight), because three columns of
-     CSS source in 420px collide into unreadable mush. Wide: a real table,
-     with the weights lining up down the end edge. */
-  /* the specificity column — mono, tabular, end-aligned so the triples stack */
-  .Zero {
-    color: var(--ui-accent);
-  }
-
-}
-
-
-.LayerLede {
-  margin: 0 0 0.5rem;
-  font-family: var(--han-font-alternative);
-  font-size: var(--fs-body);
-  line-height: 1.9;
-  color: var(--ui-text);
 }
 
 
