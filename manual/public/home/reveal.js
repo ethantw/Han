@@ -30,8 +30,18 @@
 // the hero module; here we only hand it the `[data-revealed]` hook.
 const REVEAL_SELECTOR = '.Manifesto, [data-station], [data-reveal-at]'
 
-/** the default cue: a sliver on screen, minus a tenth of the fold. */
-const SLIVER = { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+/* the default cue: a sliver on screen, minus a tenth of the fold.
+   `threshold: 0`, and it MUST be 0 — intersectionRatio is measured against
+   the TARGET, so a station taller than the viewport can never reach a
+   fractional threshold at all. It read 0.1 until 2026-08-05, which meant
+   that at 390px wide station①（17,075px tall, ratio ≤ 0.053）, station②
+   （0.071）and station⑦（0.029）never fired, and `[data-station] > * {
+   opacity: 0 }` stood forever — three of seven stations blank on a phone.
+   The callback only ever asks `isIntersecting`, which is exactly what
+   「a sliver」means, so 0 is also the honest spelling of the intent.
+   (The same trap is already documented for `data-reveal-at` below, which
+   is why THAT path measures against min(target, viewport).) */
+const SLIVER = { rootMargin: '0px 0px -10% 0px', threshold: 0 }
 
 /* A `data-reveal-at` observer can't just pass that fraction as `threshold`:
    IntersectionObserver measures the ratio against the TARGET, so a target

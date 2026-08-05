@@ -207,13 +207,17 @@ const snapshot = async (browser, variant) => {
   // Tour the page so every station gets its [data-revealed] stamp, then go
   // back to the top so sticky/scroll-linked geometry reads the same each run.
   await page.evaluate(async () => {
-    const step = innerHeight * 0.8
-    for (let y = 0; y < document.body.scrollHeight; y += step) {
-      scrollTo(0, y)
-      await new Promise((r) => setTimeout(r, 60))
+    // scrollIntoView per target, not a scrollTo ladder down the Y axis: in
+    // 直排 the page scrolls on the INLINE axis and a Y ladder never moves it,
+    // so every station would need force-stamping instead of revealing (and a
+    // force-stamped station is captured before its settle animations have
+    // even been created — measured, they come out at their start values).
+    for (const $t of document.querySelectorAll('.Manifesto, [data-station]')) {
+      $t.scrollIntoView({ block: 'center', inline: 'center' })
+      await new Promise((r) => setTimeout(r, 90))
     }
     scrollTo(0, 0)
-    await new Promise((r) => setTimeout(r, 400))
+    await new Promise((r) => setTimeout(r, 600))
   })
   /* Force-stamp whatever the tour couldn't reach, and say so. At 390px the
      three tallest stations never reveal on their own — reveal.js's default
