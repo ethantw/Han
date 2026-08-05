@@ -7,7 +7,7 @@
  * Six stations alternate two grounds and float a giant watermark glyph
  * behind the copy; `reveal.js` stamps `[data-revealed]` as each scrolls
  * in and the entrance below plays once. Station INTERIORS live in
- * `station-specimen.css` / `station-craft.css` / `playground.css`.
+ * `station-*.css`（一站一檔）.
  */
 
 /* ─── em-based type ramp inside the specimen ─────────────────────────
