@@ -10,7 +10,8 @@
  *
  * Public contract (the cross-boundary interface — see the component
  * spec; changing it needs owner sign-off):
- *   attrs   lang (hant|hans|en|ja|ko, dynamic) · target (CSS selector,
+ *   attrs   lang (hant|hans|en|ja|ko, dynamic) · stateless (skip
+ *           localStorage load+save — demo pages) · target (CSS selector,
  *           default `main` — the scope han.js's JS fallbacks are installed
  *           on; the CSS side does NOT ride it, see below) · form
  *           (side|top, pure-CSS in the shadow)
@@ -174,7 +175,7 @@ class HanConsole extends HTMLElement {
     // Persist every real change (not the connect-time 'init', which either
     // replays what's already stored or writes untouched DEFAULTS). 'reset'
     // persists too — so a returning visitor gets the reset-to-default state.
-    if (source !== 'init') persist(detail.config, detail.vars)
+    if (source !== 'init' && !this.hasAttribute('stateless')) persist(detail.config, detail.vars)
     this.dispatchEvent(
       new CustomEvent(
         'han-config-change',
@@ -217,7 +218,10 @@ class HanConsole extends HTMLElement {
     // seeds from localStorage (the same key the pre-paint script restored),
     // so the toolbar's controls come up reflecting the saved config. null →
     // mountConsoleConfig falls back to DEFAULTS.
-    const initial = this.#config?.config ?? readStored()
+    // `stateless` attr（bare.html 之類的 demo 頁）：不讀不寫 localStorage——
+    // 每次進頁都是出廠 DEFAULTS，也不污染 home 存檔（同 origin 共用鍵）。
+    const initial = this.#config?.config
+      ?? (this.hasAttribute('stateless') ? undefined : readStored())
     const locale = resolveLocale(this)
     const tpl = TEMPLATES[locale] ?? TEMPLATES.hant
     this.shadowRoot.replaceChildren(

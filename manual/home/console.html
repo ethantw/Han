@@ -434,6 +434,48 @@
     ja: '注音Webフォント',
     ko: '<ruby>注音<rt>주음</rt></ruby> 웹폰트',
   },
+  pgZhuyinPosition: {
+    hant: '標音位置',
+    hans: '标音位置',
+    en: 'Annotation position',
+    ja: '注音の位置',
+    ko: '<ruby>注音<rt>주음</rt></ruby> <ruby>位置<rt>위치</rt></ruby>',
+  },
+  pgZhuyinPosOver: {
+    hant: '字上橫列',
+    hans: '字上横列',
+    en: 'Interlinear (over)',
+    ja: '字の上・横並び',
+    ko: '글자 위 가로',
+  },
+  pgZhuyinPosIC: {
+    hant: '字旁直行・課本式',
+    hans: '字旁直行・课本式',
+    en: 'Inter-character',
+    ja: '字の傍・縦並び',
+    ko: '글자 옆 세로',
+  },
+  pgGrpDirection: {
+    hant: '書寫方向',
+    hans: '书写方向',
+    en: 'Writing direction',
+    ja: '書字方向',
+    ko: '<ruby>書字<rt>서자</rt></ruby> <ruby>方向<rt>방향</rt></ruby>',
+  },
+  pgWmHorizontal: {
+    hant: '橫排',
+    hans: '横排',
+    en: 'Horizontal',
+    ja: '横書き',
+    ko: '가로쓰기',
+  },
+  pgWmVertical: {
+    hant: '直排',
+    hans: '竖排',
+    en: 'Vertical',
+    ja: '縦書き',
+    ko: '세로쓰기',
+  },
   pgGrpJs: {
     hant: 'JavaScript',
     hans: 'JavaScript',
@@ -636,6 +678,25 @@
         <label class="Toggle">
           <span>{{ pgGrpFonts }}</span>
           <input type="checkbox" data-cfg-key="fonts" checked>
+        </label>
+      </fieldset>
+    </section>
+
+    <!-- 書寫方向 — --han-writing-mode 鏡射變數（全庫基礎設施）。CSS style
+         query 讀不到原生 writing-mode，庫方要求「凡寫 writing-mode 處鏡射
+         一行」；此開關＝預覽整頁方向＋生成碼 :root 鏡射（整頁直排站直接可
+         用；局部直排站把兩行搬去自己的直排容器）。真 writing-mode 由頁面聽
+         han-config-change 自套。 -->
+    <section class="ControlGroup">
+      <header>{{ pgGrpDirection }}</header>
+      <fieldset class="PlaygroundRules" data-cfg>
+        <legend class="sr-only">{{ pgGrpDirection }}</legend>
+        <label class="Field">
+          <span>{{ pgGrpDirection }} <small>writing-mode</small></span>
+          <select data-cfg-key="writingMode">
+            <option value="horizontal-tb" selected>{{ pgWmHorizontal }}</option>
+            <option value="vertical-rl">{{ pgWmVertical }}</option>
+          </select>
         </label>
       </fieldset>
     </section>
@@ -898,6 +959,13 @@
           <label class="Toggle">
             <span>{{ pgTogZhuyin }}</span>
             <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+          </label>
+          <label class="Field">
+            <span>{{ pgZhuyinPosition }} <small>ruby</small></span>
+            <select data-cfg-key="zhuyinPosition">
+              <option value="over" selected>{{ pgZhuyinPosOver }}</option>
+              <option value="inter-character">{{ pgZhuyinPosIC }}</option>
+            </select>
           </label>
         </fieldset>
       </section>

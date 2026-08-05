@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`--han-zhuyin-ruby-position`** (`over | inter-character`, default
+  `over`) — zhuyin ruby position is now configurable. `inter-character`
+  (side-run bopomofo, the Taiwan-textbook convention, recommended for
+  horizontal writing) gates the native `ruby-position: inter-character`
+  path plus its DOM-geometry fallback; the `over` default is the
+  browser's own interlinear rendering. Set on an ancestor; scope
+  `inter-character` to horizontal containers — the CSS fallback cannot
+  self-neutralize in vertical writing (native engines do, per CSS Ruby L1).
+
+- **`--han-writing-mode`** (`horizontal-tb | vertical-rl | vertical-lr`,
+  default `horizontal-tb`) — library-wide writing-mode mirror. CSS style
+  queries can't read native properties, so vertical subtrees must
+  redeclare their `writing-mode` value into this variable (copy-paste,
+  same rule). Consumed by zhuyin ruby today; retires once CSS
+  Conditional 5 arbitrary-property style queries ship.
+
+### Fixed
+
+- **The document font stack now actually reaches the page without any
+  page CSS.** The composite `font-family` was declared on `:root` only —
+  the one element style queries cannot reach (no ancestor) — so it baked
+  the `HanNone` slot sentinels and, `font-family` inheriting as the
+  computed string, the whole page inherited a stack with no webfont
+  layers. Pages that re-declared `font-family` themselves (like the
+  homepage) masked this. Now declared at `:root` (kept for `ch`/`ex`
+  units), `body` (the un-freezer), and every `[lang]` boundary — which
+  also means an inline `<span lang="ja">` inside a zh page now gets the
+  ja stacks instead of inheriting zh's resolved string.
+- **Zhuyin tone marks in horizontal interlinear (`over`) ruby** now use
+  the font's `salt` alternates (tone after the syllable) instead of the
+  vertical side forms — automatic, no configuration, gated to
+  horizontal × `over` via the writing-mode mirror. In vertical and
+  inter-character runs the font's `vert` chain keeps owning tone
+  placement, and `salt` stays off there (it would strand the tone glyph
+  outside `vert`'s coverage).
+
+### Changed
+
+- **Breaking: vertical-writing pages must declare the
+  `--han-writing-mode` mirror** on their vertical subtrees; unmirrored
+  vertical content is assumed horizontal and renders zhuyin wrong.
+  Horizontal pages are unaffected.
+- **Breaking: zhuyin ruby now defaults to `over` (interlinear), not
+  `inter-character`.** The previous hard-wired inter-character rendering
+  is behind the opt-in above. Rationale: `over` is correct in both
+  writing modes and on engines without style-query support; restore the
+  old look with `:root { --han-zhuyin-ruby-position: inter-character; }`
+  on horizontal sites.
+
 ## [4.0.0-rc.1] — 2026-07-23
 
 Han.css v4 is a rebuild from scratch. It leans on native browser

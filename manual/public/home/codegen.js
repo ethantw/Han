@@ -65,6 +65,16 @@ export const DEFAULTS = {
   citeTitleMarks: 'none',        // none|bracket|wavy（僅 semantics on 時輸出）
   emSymbol: 'circle',            // circle|dot|sesame|triangle（同上）
   emPosition: 'auto',            // auto|under|over → '<v> right'（同上）
+  zhuyinPosition: 'over',        // over|inter-character（同上；橫排推薦 inter-character）
+  /**
+   * 書寫方向——--han-writing-mode 鏡射變數（全庫基礎設施，非注音專用）。
+   * CSS style query 讀不到原生 writing-mode，庫方要求「凡寫 writing-mode
+   * 處鏡射一行」；console 這顆開關＝整頁方向的預覽＋生成碼裡的 :root 鏡射
+   * （整頁直排站直接可用；局部直排站把兩行搬去自己的直排容器）。預覽側的
+   * 真 writing-mode 由頁面聽 han-config-change 自套，不在 cssVars 裡——
+   * 那是頁面版面，不是 --han-* 偏差。
+   */
+  writingMode: 'horizontal-tb',  // horizontal-tb|vertical-rl
   prose: true,
   proseScope: 'article',
   lines: true,
@@ -153,7 +163,11 @@ export const cssVars = (c) => {
     if (c.citeTitleMarks !== 'none') out.push(['--han-cite-title-marks', c.citeTitleMarks])
     if (c.emSymbol !== 'circle') out.push(['--han-em-symbol', c.emSymbol])
     if (c.emPosition !== 'auto') out.push(['--han-em-dot-position', `${c.emPosition} right`])
+    if (c.zhuyinPosition !== 'over') out.push(['--han-zhuyin-ruby-position', c.zhuyinPosition])
   }
+  // 鏡射變數不掛任何模組 gate——它是全庫基礎設施（雖註冊於 semantics.css，
+  // 語意上屬文檔層，如同 lang 屬性）。
+  if (c.writingMode !== 'horizontal-tb') out.push(['--han-writing-mode', c.writingMode])
   if (c.lines) {              // 行的調整：標點refine ＋ 混排autospace
     const refine = refinement(c)
     if (refine !== 'auto') out.push(['--han-punctuation-refinement', refine])

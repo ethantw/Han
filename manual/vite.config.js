@@ -429,7 +429,13 @@ async function bundleHomeCss() {
  * gate. ~16KB of overlap, brotli'd and cached — cheaper than a
  * waterfall on first paint.
  */
-const KEEP_STANDALONE = new Set(['home/controls.css', 'common/icons.css'])
+const KEEP_STANDALONE = new Set([
+  'home/controls.css',
+  'common/icons.css',
+  // `bare.html` links it by URL (the console's page-side module-state
+  // mapping; the bare page loads no home.css/manual.css to inline it).
+  'common/module-state.css',
+])
 
 async function pruneInlinedPartials() {
   for (const dir of ['common', 'home', 'manual']) {
@@ -868,6 +874,18 @@ async function renderDemoPage() {
   await fs.writeFile(outPath, html)
 }
 
+/**
+ * `demo/bare.html` — the bare-page playground (zero page CSS + <han-console>)
+ * — is a SHIPPED page, unlike its workbench siblings (`dash-fuse.html` …,
+ * dev-only). No templating: copied verbatim into HTML_ROOT so it joins the
+ * site at /bare.html in both dev and build.
+ */
+async function renderBarePage() {
+  const src = path.join(DEMO_DIR, 'bare.html')
+  await fs.mkdir(HTML_ROOT, { recursive: true })
+  await fs.copyFile(src, path.join(HTML_ROOT, 'bare.html'))
+}
+
 function camel(s) {
   return s.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
 }
@@ -921,6 +939,7 @@ function hanManualPlugin() {
       await renderHomepage()
       await render404()
       await renderDemoPage()
+      await renderBarePage()
     },
 
     // `dist/` exists only after the bundle is written; emit the
@@ -1038,6 +1057,12 @@ function hanManualPlugin() {
           return
         }
 
+        if (file.endsWith('bare.html') && file.startsWith(DEMO_DIR)) {
+          await renderBarePage()
+          console.log('[han-manual] bare.html → re-copied (refresh browser)')
+          return
+        }
+
         if (file.startsWith(DEMO_DIR) && (file.endsWith('.md') || file.endsWith('index.html'))) {
           await renderDemoPage()
           console.log(`[han-manual] ${path.basename(file)} → demo re-rendered (refresh browser)`)
@@ -1096,6 +1121,7 @@ async function collectHtmlEntries() {
   await renderHomepage()
   await render404()
   await renderDemoPage()
+  await renderBarePage()
   const inputs = {}
   for await (const file of glob('**/*.html', { cwd: HTML_ROOT })) {
     const id = file.replace(/\.html$/, '').replace(/\\/g, '/')

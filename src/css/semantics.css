@@ -124,6 +124,77 @@
   initial-value: none;
 }
 
+/**
+ * Writing-mode mirror (書寫方向鏡射) — library-wide infrastructure.
+ *
+ * CSS cannot condition on `writing-mode`: `@container style()` supports
+ * CUSTOM PROPERTIES only, and arbitrary-property style queries (CSS
+ * Conditional 5) are shipped nowhere. Until they ship, this variable is
+ * the manual mirror: wherever you declare `writing-mode`, redeclare its
+ * value here on the same rule —
+ *
+ *   .tategaki {
+ *     writing-mode: vertical-rl;
+ *     --han-writing-mode: vertical-rl;
+ *   }
+ *
+ * Values mirror the native property 1:1 so the redeclaration is a
+ * copy-paste (`sideways-*` not supported). Horizontal documents never
+ * touch it — the initial value is `horizontal-tb`. An undeclared
+ * vertical subtree is ASSUMED HORIZONTAL; the mirror is a prerequisite
+ * for any direction-dependent Han.css behaviour to stand down correctly.
+ *
+ * Consumers today: zhuyin ruby (tone-mark `salt` alternates are
+ * horizontal-only; the inter-character fallback geometry is
+ * horizontal-only). Future direction-dependent behaviour should read
+ * this variable rather than grow its own flag.
+ *
+ * TODO(css-conditional-5): when arbitrary-property style queries ship,
+ * switch consumers to `style(writing-mode: …)` and retire this variable.
+ *
+ * ⚠️  Declare it on the element that carries `writing-mode` (or any
+ *     ancestor of the affected content) — style queries read ancestors.
+ */
+@property --han-writing-mode {
+  syntax: "horizontal-tb | vertical-rl | vertical-lr";
+  inherits: true;
+  initial-value: horizontal-tb;
+}
+
+/**
+ * Zhuyin ruby position (注音標音位置) for `ruby.zhuyin` / `ruby.mps`.
+ *
+ *   over            Interlinear (annotation above the base in horizontal
+ *                   writing, on the line's right side in vertical). Default.
+ *                   This is the browser's own ruby rendering — the default
+ *                   branch declares nothing, so it is equally safe in
+ *                   horizontal and vertical writing, and on engines without
+ *                   style queries (where the opt-in below can never match).
+ *   inter-character Side-run bopomofo: a vertical annotation column hugging
+ *                   each base character's right side — the Taiwan-textbook
+ *                   convention for HORIZONTAL writing, and the recommended
+ *                   value for horizontal zhuyin content.
+ *
+ * The value name mirrors the CSS `ruby-position` keyword on purpose. Per
+ * CSS Ruby L1, native `inter-character` already self-neutralizes in
+ * vertical writing («If the writing mode of the enclosing ruby container
+ * is vertical, this value has the same effect as over»); the `@supports
+ * not` fallback below is horizontal-only geometry and cannot read the
+ * writing mode itself, so both it and the tone-mark treatment condition
+ * on the `--han-writing-mode` mirror (registered above) — in a declared
+ * vertical subtree, inter-character stands down to `over` and `salt`
+ * stays off, all three engines alike. An UNDECLARED vertical subtree is
+ * assumed horizontal: mirror `writing-mode` or zhuyin renders wrong.
+ *
+ * ⚠️  Set on an ANCESTOR, never on the `<ruby>` itself — style queries
+ *     always check an ancestor.
+ */
+@property --han-zhuyin-ruby-position {
+  syntax: "over | inter-character";
+  inherits: true;
+  initial-value: over;
+}
+
 /* ========================================================================== *
  * Variables
  * ========================================================================== */
@@ -222,7 +293,26 @@
  * re-resolve its `em` per element anyway), `text-decoration-inset` onto
  * `:where(*)` immediately below (it does not inherit — see there).
  */
-:where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
+/**
+ * Declared at THREE anchors, not `:root` alone — each is load-bearing:
+ *
+ *   :root   ch/ex root-relative units resolve against the root's own font,
+ *           so the root must carry the stack itself (see the block above).
+ *   body    THE UNFREEZER. `:root` is the one element style queries cannot
+ *           reach (no ancestor), so its composite bakes the `HanNone`
+ *           sentinels and — font-family inheriting as the COMPUTED string —
+ *           the whole page inherits that frozen stack. `<body>`'s ancestor
+ *           IS queryable (initial values → the default @container branches
+ *           fire), so re-declaring here re-substitutes the composite with
+ *           real slot values and every descendant inherits a working stack.
+ *           Without this line, han.css alone (no page CSS re-declaring
+ *           font-family anywhere) never delivers the webfont layers —
+ *           found by the bare-page demo, where nothing else declares fonts.
+ *   [lang]  every explicit language boundary re-resolves with ITS OWN
+ *           per-locale slots — a `<section lang="ja">` inside a zh page
+ *           gets the ja stacks instead of inheriting zh's resolved string.
+ */
+:where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
   font-family: var(--han-font-default);
 }
 
@@ -451,11 +541,39 @@
 }
 
 /**
- * Zhuyin (Mandarin Phonetic Symbols) inter-character ruby.
+ * Zhuyin (Mandarin Phonetic Symbols) ruby.
  *
- * Font GPOS handles tone-mark positioning within the annotation space.
- * Safari 18.2+: native `ruby-position: inter-character` (annotation alongside char).
- * Chrome / Firefox: `@supports not` fallback.
+ * Position is selected by `--han-zhuyin-ruby-position` (registered above):
+ * the `over` default is the browser's own rendering (no positional rules),
+ * the `inter-character` opt-in gates the native property plus its
+ * DOM-geometry fallback. Font and orientation stay OUTSIDE the gates —
+ * `Han Zhuyin Serif` carries both layouts — but the TONE-MARK feature
+ * switch is per-combination and the font cannot see the writing mode
+ * from inside a feature, so CSS drives it via the `--han-writing-mode`
+ * mirror:
+ *
+ *   over × horizontal        `font-feature-settings: 'salt'` — the font's
+ *                            stylistic alternates place the tone mark
+ *                            after the syllable (interlinear run).
+ *   over × vertical          no features; the font's `vert` chain owns
+ *                            tone placement. `salt` would divert the
+ *                            tone glyph BEFORE `vert`'s coverage (which
+ *                            keys on the base glyphs, not the salt
+ *                            alternates) and strand it in the horizontal
+ *                            form — so it must stay off.
+ *   inter-character          no features, ever — the annotation is a
+ *                            vertical side-run in both the native and
+ *                            fallback paths; same `vert`-owned placement.
+ *
+ * Both gates therefore require `--han-writing-mode: horizontal-tb`:
+ * in a declared vertical subtree inter-character stands down to `over`
+ * (matching native engines' spec behaviour, CSS Ruby L1) and no `salt`
+ * fires. Undeclared vertical = assumed horizontal = wrong zhuyin; the
+ * mirror is a documented prerequisite for vertical writing.
+ *
+ * Inter-character rendering: Safari 18.2+ native `ruby-position:
+ * inter-character` (annotation alongside char); Chrome / Firefox get the
+ * `@supports not` fallback.
  */
 /* `:has(> rt…)` — a RELATIVE selector, anchored on the `:has()` subject, so
  * it reads「has a direct child rt」. Written `:has(& > rt…)` it parses in all
@@ -464,35 +582,44 @@
  * descendant matching `:scope > rt`」and never matches. Verified against
  * Chromium / WebKit / Firefox, 2026-08-03. */
 :where(ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))) {
-  & {
-    ruby-position: inter-character;
-  }
   :where(& > rt) {
     font-family: var(--han-font-zhuyin-serif);
     text-orientation: upright;
   }
-  @supports not (ruby-position: inter-character) {
-    & {
-      position: relative;
-      letter-spacing: .6em;
-    }
+
+  @container style(--han-zhuyin-ruby-position: over) and style(--han-writing-mode: horizontal-tb) {
     :where(& > rt) {
-      position: absolute;
-      /* out of annotation flow; display: ruby preserved */
-      inset-inline-start: 50%;
-      transform: translate(-133%, -40%);
-      transform-origin: center;
-      display: inline-flex;
-      justify-content: center;
-      block-size: 1em;
-      inline-size: 3em;
-      font-size: .4em;
-      letter-spacing: 0;
-      line-height: .95;
-      writing-mode: vertical-rl;
-      /* [TODO] top / inset-inline-start to position rt to the right of its base.
-      * containing block = nearest positioned ancestor (not the ruby itself).
-      * Alternative: use transform: translate() to avoid containing-block issues. */
+      font-feature-settings: 'salt';
+    }
+  }
+
+  @container style(--han-zhuyin-ruby-position: inter-character) and style(--han-writing-mode: horizontal-tb) {
+    & {
+      ruby-position: inter-character;
+    }
+    @supports not (ruby-position: inter-character) {
+      & {
+        position: relative;
+        letter-spacing: .6em;
+      }
+      :where(& > rt) {
+        position: absolute;
+        /* out of annotation flow; display: ruby preserved */
+        inset-inline-start: 50%;
+        transform: translate(-133%, -40%);
+        transform-origin: center;
+        display: inline-flex;
+        justify-content: center;
+        block-size: 1em;
+        inline-size: 3em;
+        font-size: .4em;
+        letter-spacing: 0;
+        line-height: .95;
+        writing-mode: vertical-rl;
+        /* [TODO] top / inset-inline-start to position rt to the right of its base.
+        * containing block = nearest positioned ancestor (not the ruby itself).
+        * Alternative: use transform: translate() to avoid containing-block issues. */
+      }
     }
   }
 }
