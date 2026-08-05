@@ -30,7 +30,6 @@
       line-height: 1.25;
       text-wrap: balance;
       letter-spacing: -0.015em;
-      color: var(--ui-text);
     }
 
     /* accent hook for the first phrase — a pseudo, so the DOM stays
@@ -56,13 +55,11 @@
     font-family: var(--han-font-alternative);
     font-size: 1.125rem;
     line-height: 1.85;
-    color: var(--ui-text);
   }
 
   .dogfood {
     margin: 0 0 2.25rem;
     max-inline-size: 38em;
-    font-family: var(--han-font-default);
     font-size: 0.875rem;
     color: var(--ui-supplement-text);
   }
@@ -162,7 +159,6 @@
     gap: 0.625rem;
     padding: 0.625rem 0.875rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
     background: var(--ui-panel);
     border: 1px dashed var(--ui-rule);
     border-radius: var(--r-2);
@@ -182,7 +178,6 @@
     background: transparent;
     border: 0;
     font: inherit;
-    color: inherit;
   }
 
   button {

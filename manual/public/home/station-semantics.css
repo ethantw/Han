@@ -528,7 +528,6 @@
         flex: 0 0 auto;
         inline-size: 24em;
         block-size: auto;
-        font-size: 1rem;
         overflow: visible;
         /* Decoration must not join a selection. The row labels are real
            `<text>`, so without this, selecting the figure drags «<u><em>
@@ -978,7 +977,6 @@
       p {
         margin: 0 0 1.25rem;
         max-inline-size: 28em;
-        line-height: 1.75;
         color: var(--ui-supplement-text);
       }
     }
@@ -1890,7 +1888,6 @@ figure.Papers {
       /* tracked-out logotype — trailing tracking rebalanced by indent */
       letter-spacing: 0.25em;
       text-indent: 0.25em;
-      color: var(--ui-text);
     }
 
     .Dateline {
@@ -1903,7 +1900,6 @@ figure.Papers {
         padding-block: 0.25rem;
         /* …and the thin half */
         border-block-end: 1px solid var(--ui-rule);
-        font-family: var(--han-font-default);
         font-size: 0.75rem;
         color: var(--ui-supplement-text);
       }
@@ -1927,10 +1923,8 @@ figure.Papers {
     h3 {
       margin: .5rem 0 0.625rem;
       font-family: var(--han-font-alternative);
-      font-weight: 700;
       font-size: 1.125rem;
       line-height: 1.5;
-      color: var(--ui-text);
     }
     p.author {
       margin-block-start: -.5em;
@@ -1943,10 +1937,8 @@ figure.Papers {
     }
     p {
       margin: .25em 0;
-      font-family: var(--han-font-default);
       font-size: 0.875rem;
       line-height: 2;
-      color: var(--ui-text);
 
       &:last-child {
         margin-block-end: 0;

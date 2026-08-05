@@ -28,8 +28,6 @@
 body.home {
   & {
     margin: 0;
-    font-family: var(--han-font-default);
-    font-size: 1rem;
     line-height: 1.8;
     color: var(--ui-text);
     background: var(--ui-bg);
@@ -95,9 +93,7 @@ body > header {
     gap: 1.5em;
 
     > a {
-      font-family: var(--han-font-default);
       font-size: 0.75rem;
-      color: var(--ui-ink-grey);
       letter-spacing: 0.05em;
       text-decoration: none;
 

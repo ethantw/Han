@@ -40,7 +40,6 @@
       background-color: var(--ui-bg-3q);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
-      color: var(--ui-text);
     }
     > blockquote {
       & {

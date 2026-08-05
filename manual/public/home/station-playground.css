@@ -67,19 +67,15 @@
   [data-pg-preview] {
     & {
       background: var(--ui-bg);
-      color: var(--ui-text);
       font-family: var(--han-font-alternative);
-      font-size: 1rem;
       line-height: 1.9;
     }
 
     :is(h1, h2, h3, h4, h5, h6) {
       & {
         margin: 1.5em 0 0.6em;
-        font-family: var(--han-font-alternative);
         font-weight: 600;
         line-height: 1.3;
-        color: var(--ui-text);
       }
 
       &:first-child { margin-block-start: 0; }
@@ -95,7 +91,6 @@
       margin: 1em 0;
       padding-inline-start: 1.25rem;
       border-inline-start: 2px solid var(--ui-rule);
-      font-family: var(--han-font-accent);
       color: var(--ui-supplement-text);
     }
 

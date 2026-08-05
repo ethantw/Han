@@ -112,7 +112,6 @@
     margin: 0.625rem 0 0;
     font-family: var(--han-font-alternative);
     font-size: 0.75rem;
-    line-height: 1.75;
     color: var(--ui-supplement-text-3q);
     text-align: center;
   }
@@ -168,7 +167,6 @@
      per-token rules below say what each token IS. */
   math {
     font-family: inherit;
-    font-size: inherit;
     math-style: normal;
   }
 
@@ -200,7 +198,6 @@
 
   /* CJK runs inside the maths — upright, never the italic `<mi>` default */
   mtext {
-    font-style: normal;
   }
 
   /* Operators get air on both sides, as in set maths. Sized up a touch: the
@@ -220,7 +217,6 @@
 
   /* the punchline: every route through this station ends at zero */
   .Zero {
-    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums lining-nums;
     color: var(--ui-accent);
   }
@@ -348,7 +344,6 @@
     /* `:where(` … `)` is notation here, not code to copy — italic and dimmed,
        as in the axioms above (the CD's spec for 式5.1). */
     .Fn {
-      font-style: italic;
       opacity: 0.7;
     }
 
@@ -359,11 +354,9 @@
 
     mo {
       margin-inline: 0.25em;
-      color: var(--ui-supplement-text);
     }
 
     .Zero {
-      color: var(--ui-accent);
     }
   }
 
@@ -390,7 +383,6 @@
       padding: 0;
       background: none;
       border: 0;
-      font-family: var(--font-mono);
       font-size: 0.9em;
     }
   }
@@ -462,7 +454,6 @@
       padding: 0;
       background: none;
       border: 0;
-      font-size: inherit;
       color: inherit;
     }
 
@@ -488,7 +479,6 @@
     .RuleLayer {
       flex: 1;
       margin-block: 0;
-      font-family: var(--font-mono);
       font-size: .75rem;
       color: var(--ui-supplement-text-3q);
     }
@@ -513,7 +503,6 @@
     }
 
     .RuleSel {
-      color: var(--ui-text);
       /* `break-word`, not `anywhere`: the selectors carry spaces after every
          comma, so the line breaks at a comma before it will break mid-token.
          A pane this narrow has to wrap somewhere; better at the joints. */
@@ -554,7 +543,6 @@
          wordmark's own atoms scale off `font-size`, so one declaration on the
          container carries the lockup. */
       .Brand {
-        font-size: 0.875rem;
         vertical-align: baseline;
       }
 

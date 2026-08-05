@@ -35,8 +35,6 @@
       margin-block: -1em 2em;
       inline-size: fit-content;
 
-      font-size: 1rem;
-      line-height: 1.75;
     }
     input {
       align-self: flex-end;
@@ -104,11 +102,9 @@ article.Dispatch {
     column-gap: 2em;
     font-family: var(--han-font-alternative);
     font-size: .75rem;
-    line-height: 1.75;
     background: var(--ui-bg);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
-    color: var(--ui-text);
   }
   &.vertical {
     writing-mode: vertical-rl;

@@ -41,7 +41,6 @@
     margin: 1rem 0 0;
     max-inline-size: 20em;
     font-size: .875rem;
-    color: var(--ui-supplement-text);
   }
 }
 
@@ -93,8 +92,6 @@ figure.CodePane {
       padding-block: 2px;
       padding-inline: 4px;
       font: inherit;
-      text-transform: none;
-      letter-spacing: normal;
       color: var(--code-fg);
       background: transparent;
       border: 1px solid color-mix(in srgb, var(--code-fg) 30%, transparent);
@@ -130,7 +127,6 @@ figure.CodePane {
     text-align: start;
     padding: 4px 16px 14px;
     background: transparent;
-    font-family: var(--font-mono);
     font-size: 0.8125rem;
     line-height: 1.55;
     color: var(--code-fg);

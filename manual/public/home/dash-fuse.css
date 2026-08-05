@@ -308,7 +308,6 @@ svg[data-name="dash-fuse"] {
   text {
     font-family: var(--han-font-alternative);
     font-size: 100px;
-    font-weight: 400;
     writing-mode: vertical-rl;
     stroke-width: .5;
   }
@@ -458,8 +457,6 @@ svg[data-name="dash-fuse"] {
     margin: 0 0 0;
     max-inline-size: 36em;
     font-family: var(--han-font-alternative);
-    font-size: 1rem;
-    line-height: 1.75;
     color: var(--ui-supplement-text);
   }
 

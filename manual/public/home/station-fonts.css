@@ -36,9 +36,7 @@
   figcaption {
     max-inline-size: 32em;
     font-family: var(--han-font-alternative);
-    font-size: 1rem;
     line-height: 1.9;
-    color: var(--ui-text);
 
     h3 {
       margin-block: 2.5em 0;
@@ -160,7 +158,6 @@
     line-height: 1.5;
     background: var(--ui-bg);
     border-block-end: 1px solid var(--ui-rule);
-    color: var(--ui-text);
     --han-punctuation-refinement: compress;
 
     &[data-face="sans"]    { font-family: var(--han-sans); }
@@ -241,7 +238,6 @@
     align-items: center;
     gap: 0.75rem;
     margin-block: 1.5rem .75rem;
-    font-family: var(--han-font-default);
   }
 
   fieldset {
@@ -284,7 +280,6 @@
     padding-inline: 12px;
     border-radius: 40px;
     font-size: .875rem;
-    color: var(--ui-supplement-text);
     cursor: pointer;
 
     &:has(input:checked) {
