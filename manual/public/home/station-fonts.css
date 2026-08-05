@@ -75,7 +75,7 @@
   }
 }
 
-/* 護眼模式's switch — the shared `.Toggle` primitive (home/controls.css).
+/* 護眼模式's switch — the shared `.Toggle` primitive (common/controls.css).
    That primitive consumes the console's `--_*` token layer, which is adopted
    into the shadow root only, so a light-DOM `.Toggle` has to re-point those
    tokens at the page palette. Same five lines as station①'s 語意樣式 switch

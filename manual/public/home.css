@@ -23,7 +23,7 @@
 @import url('./common/theme-toggle.css');
 @import url('./common/module-state.css');
 @import url('./common/panel.css');
-@import url('./home/controls.css');
+@import url('./common/controls.css');
 
 /* ── 版框 ── */
 @import url('./home/root.css');

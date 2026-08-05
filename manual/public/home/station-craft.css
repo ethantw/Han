@@ -713,7 +713,7 @@
  * grid row on `::details-content`, NOT a height transition. The full
  * reasoning, the three engines it was measured on, and why the alternatives
  * (`block-size: auto`, `max-block-size`) both lose, are written once in
- * home/controls.css § details transition; this is that rule applied to the
+ * common/controls.css § details transition; this is that rule applied to the
  * one `<details>` outside the console.
  *
  * Same accepted caveat: opening eases everywhere, closing eases in Chromium

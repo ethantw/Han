@@ -956,7 +956,7 @@
        subtree back to browser defaults — the synthetic obliques this
        station exists to argue against. Nothing here imitates that state;
        it IS that state.
-       `.Toggle` is the shared switch primitive (home/controls.css), which
+       `.Toggle` is the shared switch primitive (common/controls.css), which
        consumes the console's `--_*` token layer; that layer is adopted
        into the shadow only, so the tokens it needs are re-pointed at the
        page palette here. */

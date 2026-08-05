@@ -126,7 +126,7 @@ const loadSheets = () => {
     [
       new URL('./tokens.css', import.meta.url),
       new URL('../common/icons.css', import.meta.url),
-      new URL('../home/controls.css', import.meta.url),
+      new URL('../common/controls.css', import.meta.url),
       new URL('./console.css', import.meta.url),
     ].map(async (url) => {
       const css = await (await fetch(url)).text()

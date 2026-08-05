@@ -417,7 +417,7 @@ async function bundleHomeCss() {
  * dead weight — drop every `.css` under `common/` and `home/` except the
  * ones something still fetches by URL:
  *
- *   • `home/controls.css` — dual-homed, `<han-console>` fetches it into its
+ *   • `common/controls.css` — dual-homed, `<han-console>` fetches it into its
  *     shadow root (constructed stylesheets can't resolve `@import`, so it
  *     must stay a standalone file).
  *   • `common/icons.css` — dual-homed for the same reason: the console's
@@ -430,7 +430,7 @@ async function bundleHomeCss() {
  * waterfall on first paint.
  */
 const KEEP_STANDALONE = new Set([
-  'home/controls.css',
+  'common/controls.css',
   'common/icons.css',
   // `bare.html` links it by URL (the console's page-side module-state
   // mapping; the bare page loads no home.css/manual.css to inline it).
@@ -464,7 +464,7 @@ async function pruneInlinedPartials() {
  * never outlive a deploy.
  *
  * Deliberately NOT hashed: anything a URL string inside JS points at —
- * `/han/han.js` (console-config lazy-imports it), `/home/controls.css` and
+ * `/han/han.js` (console-config lazy-imports it), `/common/controls.css` and
  * `/common/icons.css` (the console fetches both into its shadow root),
  * `/home/console-templates.js`,
  * `/vendor/*`. Hashing those means rewriting module specifiers, which is a
