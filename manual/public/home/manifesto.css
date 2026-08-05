@@ -148,3 +148,51 @@
     }
   }
 }
+
+
+/* ─── InstallChip (the `$ pnpm add …` mono chip) ──────────────────────
+ * Lives here because `manifesto.html` is the only section that carries one.
+ * (Moved out of station-frame.css, 2026-08-05; the note there still said
+ * 「Manifesto ＋ Closing」, but the Closing's chip is long gone.) */
+
+.InstallChip {
+  & {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    font-family: var(--font-mono);
+    font-size: var(--fs-fine);
+    background: var(--ui-panel);
+    border: 1px dashed var(--ui-rule);
+    border-radius: var(--r-2);
+  }
+
+  /* the shell prompt is decorative → pseudo, never a DOM span */
+  code::before {
+    content: '$';
+    margin-inline-end: 0.5rem;
+    font-weight: 600;
+    color: var(--ui-accent);
+  }
+
+  /* the command is a real <code>; neutralise the generic code chrome */
+  code {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    color: var(--ui-supplement-text);
+    cursor: pointer;
+
+    &:hover { color: var(--ui-text); }
+  }
+}
