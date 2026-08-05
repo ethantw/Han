@@ -26,9 +26,16 @@ main {
   container-type: inline-size;
   position: relative;
   /* console 度量以 CSS var 承接（console-metrics.js／pre-paint restore 共用）。
-     `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況，
-     零風險；偏差時 --fs-* 的 em 梯度隨之重解析（比照舊 inline font-size）。 */
+     `inherit` fallback ＝ 未偏差時等同「main 無明式、繼承 body」的現況。
+
+     **三條都不能刪**：滑桿沒動時它們確實什麼都沒做——inherit-audit 因此把
+     font-size／font-weight 兩條報成冗餘，computed-baseline 也照樣全綠（它從不
+     去動滑桿）——但主控台就是靠寫這三個變數來改版面的，刪掉滑桿就失效
+     （e2e home.spec § 字級／字重 抓到）。凡是值為 `var(--x, fallback)` 的宣告
+     都是這種旋鈕，不是重複宣告。 */
+  font-size:   var(--console-metric-size, inherit);
   line-height: var(--console-metric-leading, inherit);
+  font-weight: var(--console-metric-weight, inherit);
   text-align: justify;
   border-inline-start: 1px solid var(--ui-rule);
 }

@@ -103,6 +103,14 @@ const audit = (props) => {
         for (const prop of props) {
           const value = rule.style.getPropertyValue(prop)
           if (!value) continue
+          /* `var(--x, fallback)` is a KNOB, never a repeat: with the variable
+             unset it resolves to its fallback and looks like a no-op, which is
+             exactly what this audit measures. `main`'s
+             `font-size: var(--console-metric-size, inherit)` is how the console's
+             字級 slider moves the page — deleting it took the sliders out and
+             the computed baseline stayed green, because the baseline never
+             touches a slider. Only e2e caught it. */
+          if (/var\(--[\w-]+\s*,/.test(value)) continue
           const priority = rule.style.getPropertyPriority(prop)
           const before = $els.map(($e) => getComputedStyle($e).getPropertyValue(prop))
           rule.style.removeProperty(prop)
