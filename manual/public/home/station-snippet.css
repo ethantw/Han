@@ -1,100 +1,47 @@
 @charset "UTF-8";
 
 /**
- * Station④'s snippet-generator pane — the framed `.Preview` panel and
- * the `figure.CodePane` exhibits inside it.
+ * 站④・引用碼 — 稿紙米黃的參考碼站台。
  *
- * LIGHT DOM only, so these consume `--ui-*` directly rather than
- * the console's `--_*` indirection. They used to sit in `controls.css`,
- * which <han-console> adopts into its shadow; splitting them out keeps the
- * shadow from carrying rules that can never match there.
+ * 本站的地色與那行說明，加上 pane 裡的 `figure.CodePane` 展品。框本身
+ * （`.Preview`）是站④與站⑦共用的原生零件，住在 common/panel.css。
  *
- * `.CodePane` stays terminal-dark in BOTH themes (owner-approved) via
- * the constant `--code-bg` / `--code-fg` tokens; its `::highlight()`
- * colours are ziano's usage.css palette, tuned for dark terminals.
+ * `.CodePane` 兩個主題都維持終端機黑（owner 拍板），靠恆定的
+ * `--code-bg` / `--code-fg`；它的 `::highlight()` 配色沿用 ziano usage.css
+ * 那組，本來就是為深色終端機調的。
+ *
+ * （2026-08-05 立檔：`.Snippet` 原在 station-craft.css 尾巴，`figure.CodePane`
+ * 原在 preview.css——這一站原本是全站唯一沒有自己檔案的一站。）
  */
 
-/* ─── Preview — station④'s snippet-generator pane frame (LIGHT DOM) ──
-   Consumes `--ui-*` directly: it renders on the homepage where
-   those tokens exist, never inside the shadow. */
+/* ═══ Station VII・Snippet — the 稿紙米黃 reference-code station ══════
+   `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
+   `controls.css`; this block styles the station's own ground and the one
+   line left under the pane.
 
-.Preview {
+   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --ui-ink）：淺
+   色模式下一整片墨黑太搶戲，一個站台把半頁變成夜間。現在它跟著主題走，
+   只是地色是全站唯一不是灰白的那一塊——`--ui-station-code`，稿紙的
+   米黃（取色的理由見 variables.css 該 token 的註）。恆黑因此只剩下
+   pane 裡的 `--code-bg` 終端機：淺色模式是「亮紙上的一台黑終端」，那正
+   是這一站要給的東西，而不是整站陪著它黑。 */
+
+.Snippet {
   & {
-    overflow: hidden;
-    background: var(--ui-panel);
-    border: 1px solid var(--ui-rule);
-    border-radius: var(--r-3);
-    box-shadow:
-      0 1px 0 var(--ui-bg-2q),
-      0 28px 70px -36px color-mix(in srgb, var(--palette-black) 18%, transparent)
-    ;
+    background: var(--ui-station-code);
+    /* 上緣的髮線交還給共用的 --ui-grid（main > section）——地色不再
+       是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
+       mist 髮線防「深色疊深色沒有邊」。 */
   }
 
-  > header {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 20px;
-    background: var(--ui-panel);
-    border-block-end: 1px solid var(--ui-rule);
-  }
-
-  /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
-     :has(:checked). The package-manager <select> used to live here too,
-     but it only means anything on the CLI pane — it's parented into that
-     pane's figcaption now (snippet.js), so no view-driven visibility
-     rule is needed: switching away from "bundler" just means there's no
-     bash pane, hence no select in the DOM at all. ── */
-  .ViewTabs {
-    display: flex;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-
-    input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    label {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-1);
-      font-family: var(--font-mono);
-      font-size: var(--fs-fine);
-      color: var(--ui-supplement-text);
-      cursor: pointer;
-      transition:
-        background-color 150ms ease,
-        border-color    150ms ease,
-        color           150ms ease;
-
-      &:hover { border-color: var(--ui-text); color: var(--ui-text); }
-
-      &:has(input:checked) {
-        background: var(--ui-text);
-        border-color: var(--ui-text);
-        color: var(--ui-bg);
-      }
-    }
-  }
-
-  /* 卡片之間留縫，縫裡透出面板的紙。原本四塊 pane 靠一條 --ui-rule
-     髮線相接，整組讀起來是一面黑牆（owner：「全黑色塊、整個黏在一起」）；
-     縫一開，四段碼各自成一張卡，數量與段落一眼看得出來。
-     padding 與 gap 同值，所以四周的留白與卡間的縫一樣寬——卡片浮在紙上，
-     不是被框住。 */
-  [data-out-panes] {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
+  /* `.Bridge`（薄荷過場帶）與 `.Finish`（收尾句）的規則跟著它們的 markup 一起
+     退場——owner 在 station-snippet.html 裡刪掉了那兩塊，留著規則就是死碼。
+     剩下的 `.BrowserSupport` 自己承接原本共用的那幾行。 */
+  .BrowserSupport {
+    margin: 1rem 0 0;
+    max-inline-size: 20em;
+    font-size: .875rem;
+    color: var(--ui-supplement-text);
   }
 }
 

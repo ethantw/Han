@@ -1243,35 +1243,3 @@
     }
   }
 }
-
-
-/* ═══ Station VII・Snippet — the 稿紙米黃 reference-code station ══════
-   `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
-   `controls.css`; this block styles the station's own ground and the one
-   line left under the pane.
-
-   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --ui-ink）：淺
-   色模式下一整片墨黑太搶戲，一個站台把半頁變成夜間。現在它跟著主題走，
-   只是地色是全站唯一不是灰白的那一塊——`--ui-station-code`，稿紙的
-   米黃（取色的理由見 variables.css 該 token 的註）。恆黑因此只剩下
-   pane 裡的 `--code-bg` 終端機：淺色模式是「亮紙上的一台黑終端」，那正
-   是這一站要給的東西，而不是整站陪著它黑。 */
-
-.Snippet {
-  & {
-    background: var(--ui-station-code);
-    /* 上緣的髮線交還給共用的 --ui-grid（main > section）——地色不再
-       是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
-       mist 髮線防「深色疊深色沒有邊」。 */
-  }
-
-  /* `.Bridge`（薄荷過場帶）與 `.Finish`（收尾句）的規則跟著它們的 markup 一起
-     退場——owner 在 station-snippet.html 裡刪掉了那兩塊，留著規則就是死碼。
-     剩下的 `.BrowserSupport` 自己承接原本共用的那幾行。 */
-  .BrowserSupport {
-    margin: 1rem 0 0;
-    max-inline-size: 20em;
-    font-size: .875rem;
-    color: var(--ui-supplement-text);
-  }
-}

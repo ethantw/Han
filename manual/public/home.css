@@ -23,8 +23,9 @@
 @import url('./common/lang-switcher.css');
 @import url('./common/theme-toggle.css');
 @import url('./common/module-state.css');
+@import url('./common/panel.css');
 @import url('./home/controls.css');
-@import url('./home/preview.css');
+@import url('./home/station-snippet.css');
 @import url('./home/station-frame.css');
 @import url('./home/closing.css');
 @import url('./home/station-semantics.css');
