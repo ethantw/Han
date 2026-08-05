@@ -186,6 +186,21 @@ public/home/
 刪除：layout.css、station-specimen.css、preview.css、playground.css、station-frame.css
 ```
 
+> **執行時的更正（2026-08-05）：這兩支都沒有切。** 判準「整塊搬走、不必帶走站台的
+> 任何規則」自己把它們擋下了：
+>
+> - **`.MarkDiagram` 切不開**——它的 hover 編排與詩行是同一套：
+>   `#station-semantics:has(.MarkDiagram [data-mark='proper']:hover, .poem-like u:hover)`
+>   一個選擇器同時管圖解與詩行，且這類規則散落在站台大區塊的 1216–1485 行之間，
+>   與非圖解的規則交錯。切出去要嘛拆散這套編排，要嘛把詩行一起帶走。
+> - **`.Envelope` 切了沒有好處**——它的規則全是 `#station-semantics .Envelope …`，
+>   搬到別的檔也還是綁在這一站；而 `manual/demo/envelope.html` 是一份**自帶 token
+>   的獨立複本**，不吃頁面的 CSS，所以也沒有「兩處共用」可省。
+>
+> 結果：`station-semantics.css` 維持一整支（步驟3f 後 1956 行），是全庫唯一破 800 的
+> 檔。它的體積要靠第 4、5 步（字級與繼承）處理，做完再看數字決定要不要動它。
+> 下面這段保留原樣，當作「這條判準確實會擋掉東西」的紀錄。
+
 **兩支切出來的圖示，各自帶走什麼：**
 
 - `mark-diagram.css` — `.MarkDiagram`（`station-semantics.css:522–911`，390 行）＋
@@ -229,6 +244,16 @@ station-prose.css      ~110   envelope.css           ~210
 ## 三、執行順序
 
 每一步都獨立可驗、獨立可 commit。先做零風險的減法，再做搬移，最後才動繼承。
+
+> **執行時學到的兩件事（2026-08-05，寫在這裡免得下一輪再踩）：**
+> 1. **`pnpm --filter han-manual build` 失敗時仍會寫出 dist。** vite 的內聯 plugin 在
+>    `closeBundle` 拋錯（一個註解少了結尾 `*/` 就夠），但未內聯的入口檔已經寫進
+>    `dist/`——頁面照樣能看（瀏覽器自己解 `@import` 鏈），只是載入順序與時機變了，
+>    量出來是一片看似真實的幾何差異。**build 的輸出絕對不可以 `>/dev/null`**；
+>    baseline 工具現在會先檢查 `dist/home.css` 裡還有沒有 `@import`，有就中止。
+> 2. **量測前後兩次的樹必須一致。** 工作區裡若有別人未提交的改動，stash／pop 的時機
+>    會讓「before」與「after」落在不同的樹上，量出來全是那個人的改動。要嘛兩次都帶著
+>    那份改動，要嘛兩次都不帶。
 
 **第 0 步——量測基準。** 寫 `manual/tests/computed-baseline.mjs`：headless Chrome 開
 首頁（亮／暗 × 橫排／直排 × 寬 1280／390 共 8 組），對 `main` 底下每個元素 dump
