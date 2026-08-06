@@ -130,7 +130,7 @@ self-hosting.
 
 ## 4. CSS custom properties
 
-49 public properties. Conventions:
+51 public properties. Conventions:
 
 - **Set control properties on an ancestor** (usually `:root`), never on the
   element you want them to affect. Mode switches are read via
@@ -252,6 +252,7 @@ compliance matters.
 | `--han-font-latin-sans` | `'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto` |
 | `--han-font-latin-serif` | `Palatino, Cambria` |
 | `--han-font-latin-cursive` | `var(--han-font-latin-serif)` |
+| `--han-font-latin-mono` | `ui-monospace, Menlo, Consolas` |
 
 **Low-level slots** (usually driven by the mode switches; direct override
 possible): `--han-font-punctuation-{sans,serif,cursive}`,
@@ -268,6 +269,13 @@ layer → Latin layer → CJK layer → generic):
 | `--han-sans` | `sans-serif` |
 | `--han-serif` | `serif` |
 | `--han-cursive` | `cursive, serif` |
+| `--han-monospace` | `monospace` |
+
+`--han-monospace` deliberately has **no punctuation layer** (code must show
+characters verbatim — punctuation-face glyph swaps would tamper with the
+sample) and borrows the **sans** CJK slot (no monospace CJK webfont exists;
+Han glyphs at least follow the site's heritage choice). Not consumed by any
+library rule — style your own `code`/`pre` with it.
 
 **Role vars** (what elements actually consume; re-point these to switch the
 document between sans and serif):

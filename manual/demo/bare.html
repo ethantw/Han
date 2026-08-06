@@ -186,8 +186,8 @@
     text-align: start;
     font-size: 12px;
     line-height: 1.5;
-    /* han.css 目前沒有 --han-monospace 這支合成堆疊（只有 sans／serif／
-       cursive／system-ui）。帶著它寫，庫端補上就自動接手。 */
+    /* --han-monospace：庫的等寬合成堆疊（無標點層——碼要逐字原樣；
+       CJK 層借 sans 槽）。fallback 留著當無 fonts 模組時的防呆。 */
     font-family: var(--han-monospace, ui-monospace, monospace);
     white-space: pre-wrap;
   }

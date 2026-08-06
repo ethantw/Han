@@ -226,6 +226,7 @@
   --han-sans: sans-serif;
   --han-serif: serif;
   --han-cursive: cursive, serif;
+  --han-monospace: ui-monospace, monospace;
 
   --han-font-default: var(--han-system-ui);
   --han-font-alternative: var(--han-serif);

@@ -318,6 +318,9 @@
   --han-font-latin-sans: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto;
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
+  /* ui-monospace 領頭（Mac SF Mono／缺 Han 讓 CJK 穿透），Windows 給
+     Consolas、舊 Mac 給 Menlo；作者換掉這一槽就整段自理。 */
+  --han-font-latin-mono: ui-monospace, Menlo, Consolas;
 
   /* Heritage webfont swap slots — family-pure (base + TC variant of ONE
      family). Default 尙古 Shanggu; the `--han-webfont-heritage-family: genki`
@@ -370,6 +373,14 @@
     var(--han-font-latin-cursive),
     var(--han-font-cjk-cursive),
     cursive, serif
+  ;
+  /* 無標點層是刻意的：碼要顯示逐字原樣的字符，DTJ 的標點換臉（全形
+     引號／頓號改繪）進了 <code> 就是竄改樣本。CJK 層借 sans 槽——等寬
+     CJK webfont 不存在，Han 字形至少跟上站方的傳承字形選擇。 */
+  --han-monospace:
+    var(--han-font-latin-mono),
+    var(--han-font-cjk-sans),
+    monospace
   ;
 
   --han-font-default: var(--han-system-ui);

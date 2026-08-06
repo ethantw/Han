@@ -25,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   same rule). Consumed by zhuyin ruby today; retires once CSS
   Conditional 5 arbitrary-property style queries ship.
 
+- **`--han-monospace`** composite font stack (+ its `--han-font-latin-mono`
+  swap slot, default `ui-monospace, Menlo, Consolas`) — for authors to put
+  on their own `code`/`pre`; no library rule consumes it. Deliberately has
+  no punctuation layer (code must show characters verbatim) and borrows
+  the sans CJK slot (no monospace CJK webfont exists). `han.basic.css`
+  carries a generic-only fallback.
+
 ### Fixed
 
 - **`installFallbacks` no longer overflows the call stack on large
