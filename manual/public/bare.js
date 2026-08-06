@@ -8,7 +8,7 @@
 import '/components/han-console.js'
 import { renderCDN } from '/home/codegen.js'
 
-const CONSOLE_LANG = { 'zh-Hant': 'hant', ja: 'ja', ko: 'ko' }
+const CONSOLE_LANG = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', ko: 'ko' }
 
 /* 《太陽中文報》永遠是一百年後的報紙——年份現算，別寫死。標記裡留著
  * 上一個算出來的值當無 JS 時的門面。 */
