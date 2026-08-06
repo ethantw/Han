@@ -146,7 +146,6 @@
 }
 :where(.LeadForme) text.nm,
 :where(.LeadForme) text.lbl-sub {
-  font-family: system-ui, sans-serif;
   fill: var(--forme-spec-dim);
 }
 :where(.LeadForme) text.nm,
