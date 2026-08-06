@@ -10,16 +10,23 @@ test('auto-installs h-layer wrappers for every hangable mark', async ({ page }) 
   await expect(page.locator('#target h-char[data-punct~="hangable"]')).toHaveCount(5)
 })
 
-test('h-layer is positioned absolutely so it can overflow the line', async ({ page }) => {
-  // The hanging-fallback CSS now has a Firefox-friendly named-size-
-  // query mirror (see src/css/with-js/line-adjustments.css ~line 220),
-  // so this test runs on all 3 engines.
+test('h-layer is a zero-width inline-block so the glyph overflows past the spacer', async ({ page }) => {
+  // 2026-08-06：懸掛層由 abspos（static position 錨行盒邊，over 著重號
+  // 一撐行盒就上浮）改為零寬 inline-block——基線由自己的文字對齊，
+  // overflow 必須維持 visible（否則基線改成盒底邊）。
+  // docs/notes/2026-08-06-hangable-baseline-vs-static-position.md
   await expect(page.locator('#target h-layer').first()).toBeAttached()
-  const position = await page
+  const s = await page
     .locator('#target h-layer')
     .first()
-    .evaluate(el => getComputedStyle(el).position)
-  expect(position).toBe('absolute')
+    .evaluate(el => {
+      const cs = getComputedStyle(el)
+      return { display: cs.display, position: cs.position, inlineSize: cs.inlineSize, overflowX: cs.overflowX }
+    })
+  expect(s.display).toBe('inline-block')
+  expect(s.position).toBe('static')
+  expect(s.inlineSize).toBe('0px')
+  expect(s.overflowX).toBe('visible')
 })
 
 test('matches the hanging-punctuation visual baseline', async ({ page }) => {
