@@ -7,7 +7,7 @@
   <article class="demo-off" lang="zh-Hans">"引号"与（括号），不用系统字型，标点窄而紧。</article>
   <article class="demo-on"  lang="ja">「引用符」と（括弧）、システムフォントを使わず、句読点が狭く緊密。</article>
   <article class="demo-off" lang="ja">「引用符」と（括弧）、システムフォントを使わず、句読点が狭く緊密。</article>
-  <article class="demo-on"  lang="ko">"인용 부호"와 (괄호), 시스템 글꼴을 쓰지 않고 부호가 좁고 빽빽하게.</article>
-  <article class="demo-off" lang="ko">"인용 부호"와 (괄호), 시스템 글꼴을 쓰지 않고 부호가 좁고 빽빽하게.</article>
+  <article class="demo-on"  lang="ko">"인용 부호"와 (괄호)、시스템 글꼴을 쓰지 않고 부호가 좁고 빽빽하게。</article>
+  <article class="demo-off" lang="ko">"인용 부호"와 (괄호)、시스템 글꼴을 쓰지 않고 부호가 좁고 빽빽하게。</article>
 </div>
 <p class="demo-meta">機制：<code>@container style(--han-punctuation-hant: MOE)</code> 等分支把 Diantenjeom 各變體填入標點字體槽（<code>--han-font-punctuation-*</code>）。ON cell 走各語言預設（MOE／GB／JIS）；OFF cell 逐語言設 <code>off</code>，標點落回正文字體。韓文橫排本就不經 Diantenjeom，此節 ko 兩格同貌屬預期。</p>

@@ -7,7 +7,7 @@
   <article class="demo-off" lang="zh-Hans"><h3>大标题</h3><h4>紧接的小标题</h4><p>正文。</p></article>
   <article class="demo-on"  lang="ja"><h3>見出し</h3><h4>続く小見出し</h4><p>本文。</p></article>
   <article class="demo-off" lang="ja"><h3>見出し</h3><h4>続く小見出し</h4><p>本文。</p></article>
-  <article class="demo-on"  lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문.</p></article>
-  <article class="demo-off" lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문.</p></article>
+  <article class="demo-on"  lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문。</p></article>
+  <article class="demo-off" lang="ko"><h3>제목</h3><h4>이어지는 부제목</h4><p>본문。</p></article>
 </div>
 <p class="demo-meta">控制變數：<code>--han-prose-consecutive-headings-a-block-end</code>（預設 <code>0</code>）</p>

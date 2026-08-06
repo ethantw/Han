@@ -9,8 +9,8 @@
   <article class="demo-off" lang="zh-Hans"><p><del>已刪除的文字</del><del>另一段已刪除文字</del>繼續正文。</p></article>
   <article class="demo-on"  lang="ja"><p><ins>追記甲</ins><ins>追記乙</ins>の後も文章は続く。</p></article>
   <article class="demo-off" lang="ja"><p><ins>追記甲</ins><ins>追記乙</ins>の後も文章は続く。</p></article>
-  <article class="demo-on"  lang="ko"><p><s>취소선 갑</s><s>취소선 을</s> 이후 본문이 이어진다.</p></article>
-  <article class="demo-off" lang="ko"><p><s>취소선 갑</s><s>취소선 을</s> 이후 본문이 이어진다.</p></article>
+  <article class="demo-on"  lang="ko"><p><s>취소선 갑</s><s>취소선 을</s> 이후 본문이 이어진다。</p></article>
+  <article class="demo-off" lang="ko"><p><s>취소선 갑</s><s>취소선 을</s> 이후 본문이 이어진다。</p></article>
 </div>
 
 <h3>單一元素跨行斷線</h3>

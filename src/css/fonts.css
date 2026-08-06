@@ -71,11 +71,18 @@
  * qualifier stopped being true once Korean gained JIS / MOE / GB, and the four
  * locale properties should read alike.
  *
- * KLReq calls for HALF-WIDTH Western `.` `,` in horizontal Korean, which a
- * system font already renders well — that is a content-layer decision (which
- * characters the author types), not something a punctuation font can make.
- * What KLR gives horizontal Korean is the bracket family; what it gives
- * vertical Korean is the whole convention.
+ * KLReq recommends HALF-WIDTH Western `.` `,` for HORIZONTAL Korean, and
+ * full-width `。` `、` (cl8/cl9, corner-attached) for VERTICAL. Which one the
+ * page gets is a content-layer decision — which characters the author types —
+ * so a punctuation font cannot make it either way.
+ *
+ * This project's own Korean copy takes the vertical set for BOTH modes: one
+ * character, one set of layout rules, and a page that can be flipped to
+ * 直排 without rewriting its punctuation. That is a house decision, not a
+ * KLReq requirement — an author following KLReq to the letter in horizontal
+ * text is equally correct, and `KLR` serves them too (its distinctive value
+ * in horizontal Korean is the bracket family; in vertical, the whole
+ * convention).
  */
 @property --han-punctuation-ko {
   syntax: "JIS | MOE | GB | KLR | off";

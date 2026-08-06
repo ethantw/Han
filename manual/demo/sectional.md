@@ -7,8 +7,8 @@
   <article class="demo-off" lang="zh-Hans"><h3>第一节</h3><h4>子节</h4><p>正文段落。</p><blockquote>引文段落。</blockquote><ul><li>列表项目。</li></ul></article>
   <article class="demo-on"  lang="ja"><h3>第一節</h3><h4>サブセクション</h4><p>本文段落。</p><blockquote>引用段落。</blockquote><ul><li>リスト項目。</li></ul></article>
   <article class="demo-off" lang="ja"><h3>第一節</h3><h4>サブセクション</h4><p>本文段落。</p><blockquote>引用段落。</blockquote><ul><li>リスト項目。</li></ul></article>
-  <article class="demo-on"  lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락.</p><blockquote>인용 단락.</blockquote><ul><li>목록 항목.</li></ul></article>
-  <article class="demo-off" lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락.</p><blockquote>인용 단락.</blockquote><ul><li>목록 항목.</li></ul></article>
+  <article class="demo-on"  lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락。</p><blockquote>인용 단락。</blockquote><ul><li>목록 항목。</li></ul></article>
+  <article class="demo-off" lang="ko"><h3>제1절</h3><h4>하위 절</h4><p>본문 단락。</p><blockquote>인용 단락。</blockquote><ul><li>목록 항목。</li></ul></article>
 </div>
 <p class="demo-meta">機制：<code>--han-prose</code> style query（<code>&lt;article&gt;</code> 預設 <code>on</code>）；縮排量：<code>--han-prose-indent</code>。OFF cell 設 <code>--han-prose: off</code>，其子孫的 style query 讀到即全數不生效。</p>
 

@@ -23,7 +23,7 @@
     hans: '一百一十三个〇，仍然是「〇」——随意覆写，后来者的样式说了算。',
     en: 'Zero specificity, layered by design — your CSS always has the last word.',
     ja: '〇が113個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
-    ko: '〇이 113개 있어도 여전히 「〇」다——마음껏 덮어쓰면, 나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다.',
+    ko: '〇이 113개 있어도 여전히 「〇」다——마음껏 덮어쓰면、나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다。',
   },
   /* The way in, and the way out — restored from the copy that was settled
      back in e212a6e (§ arP1 / arP3) and lost in a later edit. Two paragraphs
@@ -35,21 +35,21 @@
     hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要权重大于零或位于后方，就能轻松覆盖（式5.1）。',
     en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>. Yours only has to carry a specificity above zero, or come later, to override it (5.1).',
     ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>によって詳細度がすべて零になる。開発者の様式は、詳細度が零より大きいか、あとに置かれてさえいれば、難なく上書きできる（式5.1）。',
-    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다. 開發者의 스타일은 優先順位가 零보다 크거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）.',
+    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다。開發者의 스타일은 優先順位가 零보다 크거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）。',
   },
   arAxTail: {
     hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
     hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层或后来的分层样式权重较大，提供更大的层级排列自由度（式5.2）；开发者更可透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）。',
     en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — or in a later layer — outranks what came before, which is as much freedom over the cascade as CSS has to give (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3).',
     ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないもの、あるいは後の層にあるものが優先される——層の並べ方をそれだけ自由にできる（式5.2）。さらにCSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）。',
-    ko: '스타일 모듈 順序를 마음대로 定義할 수 있는 <code>@layer</code>와 함께라면, 層에 넣지 않은 것—또는 뒤쪽 層에 있는 것—이 앞선다. 層을 배열하는 自由가 그만큼 넓다（式5.2）. 게다가 CSS 變數와 style query <code>@container</code>로 어떤 셀렉터 위에서든 機能을 켜고 끄고 調律할 수 있다（式5.3）.',
+    ko: '스타일 모듈 順序를 마음대로 定義할 수 있는 <code>@layer</code>와 함께라면、層에 넣지 않은 것—또는 뒤쪽 層에 있는 것—이 앞선다。層을 배열하는 自由가 그만큼 넓다（式5.2）。게다가 CSS 變數와 style query <code>@container</code>로 어떤 셀렉터 위에서든 機能을 켜고 끄고 調律할 수 있다（式5.3）。',
   },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
     hans: '其中<var>s</var>为任意选择器。左式与右式选中的元素相同，惟前者权重归零。任意规则只要权重在(0,0,1)以上，不论先后皆可覆盖。',
     en: 'where <var>s</var> is any selector. Both sides match the same elements; only the left weighs nothing. Any rule of (0,0,1) or more overrides it, wherever it sits.',
     ja: '<var>s</var>は任意のセレクタ。左辺と右辺が選ぶ要素は同じで、ただ左辺の詳細度が零になる。詳細度が(0,0,1)以上の規則であれば、前後を問わず上書きできる。',
-    ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터. <ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고, 다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다. (0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다.',
+    ko: '<var>s</var>는 <ruby>任意<rt>임의</rt></ruby>의 셀렉터。<ruby>左邊<rt>좌변</rt></ruby>과 <ruby>右邊<rt>우변</rt></ruby>이 고르는 要素는 같고、다만 左邊의 優先順位가 <ruby>零<rt>영</rt></ruby>이다。(0,0,1) 以上인 規則이면 앞뒤를 가리지 않고 덮어쓴다。',
   },
   /* devtools puts the cascade layer above each rule block; so do we — and
      the developer's block says 「未分層」 in the same slot, which is 式5.2
@@ -72,7 +72,7 @@
     hans: '汉.css样式表中的选择器权重全数经<code>:where()</code>函数归零，任何权重大于<code>(0,0,0)</code>的选择器都能随意覆盖，一如UA样式。',
     en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>, so anything of yours weighing more than <code>(0,0,0)</code> overrides it at will — exactly as it would a UA stylesheet.',
     ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>関数によって詳細度がすべて零になる。<code>(0,0,0)</code>より重いセレクタであれば、UA様式と同じように、思うままに上書きできる。',
-    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code> 函數로 優先順位가 모두 零이 된다. <code>(0,0,0)</code>보다 무거운 셀렉터라면 UA 스타일시트를 덮어쓰듯 마음대로 덮어쓸 수 있다.',
+    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code> 函數로 優先順位가 모두 零이 된다。<code>(0,0,0)</code>보다 무거운 셀렉터라면 UA 스타일시트를 덮어쓰듯 마음대로 덮어쓸 수 있다。',
   },
   arSelPrev: {
     hant: '上一個選擇器', hans: '上一个选择器', en: 'Previous selector',
@@ -87,14 +87,14 @@
     hans: '未分层的宣告永远盖过分层的——你的一条规则就赢。',
     en: 'An unlayered declaration always outranks a layered one — one rule of yours is enough.',
     ja: '未分層の宣言はつねに分層されたものを上書きする——あなたの一行で勝つ。',
-    ko: '層에 넣지 않은 <ruby>宣言<rt>선언</rt></ruby>은 늘 層에 든 것을 이긴다——당신의 한 줄이면 된다.',
+    ko: '層에 넣지 않은 <ruby>宣言<rt>선언</rt></ruby>은 늘 層에 든 것을 이긴다——당신의 한 줄이면 된다。',
   },
   arEq53Note: {
     hant: '容器上寫一個變數，那片子樹的機能就跟著改。',
     hans: '容器上写一个变量，那片子树的机能就跟着改。',
     en: 'One property on a container retunes the feature for that whole subtree.',
     ja: 'コンテナに変数をひとつ書けば、その部分木の機能が変わる。',
-    ko: '컨테이너에 變數 하나면 그 <ruby>部分<rt>부분</rt></ruby> 트리의 機能이 바뀐다.',
+    ko: '컨테이너에 變數 하나면 그 <ruby>部分<rt>부분</rt></ruby> 트리의 機能이 바뀐다。',
   },
   arEqUnlayered: {
     hant: '未分層', hans: '未分层', en: 'unlayered', ja: '未分層', ko: '層 밖',
@@ -167,14 +167,14 @@
     hans: 'brotli是当前最普及的高压缩编码，列于末栏；部分服务商目前仅支援gzip，二者差距不大，一并列出供开发者参考。',
     en: 'Three transfer encodings of the same minified file, not three files. brotli is the most widely deployed of the strong encodings, so it takes the last column; some hosts still serve only gzip, and the two are close enough that both are worth having here.',
     ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは強い圧縮のなかで最も普及しているため最終列に置いた。gzipしか送れない事業者もまだあり、両者の差は小さいので併記する。',
-    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지, 세 개의 파일이 아니다. brotli는 强한 壓縮 中 가장 널리 쓰이므로 마지막 열에 두었다. 아직 gzip만 보내는 業體도 있고 둘의 差는 크지 않아 함께 싣는다.',
+    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지、세 개의 파일이 아니다。brotli는 强한 壓縮 中 가장 널리 쓰이므로 마지막 열에 두었다。아직 gzip만 보내는 業體도 있고 둘의 差는 크지 않아 함께 싣는다。',
   },
   arSumNote: {
     hant: '四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。',
     hans: '四个样式模块与相关的JS增强皆可按需选配，下方实时计算汉.css打包后的档案尺寸，包含minified及二种主流的伺服端压缩编码。',
     en: 'The four style modules and the JS passes that go with them are all optional. Below, the size of the han.css you have just configured, bundled and weighed live — minified, and under the two server encodings in common use.',
     ja: '四つの様式モジュールと、それに連なるJSの各パスは、すべて任意である。下段は、いま組んだ漢.cssを実際に束ねて量った大きさ——minifiedと、広く使われている二つのサーバ側エンコーディング。',
-    ko: '네 樣式 모듈과 그에 딸린 JS 패스는 모두 選擇 事項이다. 아래는 지금 고른 漢.css를 實際로 번들해 잰 크기다——minified, 그리고 널리 쓰이는 두 가지 서버 인코딩.',
+    ko: '네 樣式 모듈과 그에 딸린 JS 패스는 모두 選擇 事項이다。아래는 지금 고른 漢.css를 實際로 번들해 잰 크기다——minified、그리고 널리 쓰이는 두 가지 서버 인코딩。',
   },
   /* The identity-encoded column. Named for the MINIFICATION, not for the
      absence of compression: 「未壓」 alone reads as「the un-minified source」,
@@ -196,7 +196,7 @@
     hans: '虽然汉.css的JS档案可按需加载且体积甚小，但在客户端安装JS增强必然有swap现象。最佳做法是透过SSR或CLI工具，在伺服端预先将HTML转换为<code>*.with-js.css</code>可以直接套用样式的格式，减少请求数及JS执行时差。惟React、Vue等需要重渲染的前端框架，仍需在mount后执行JS方能正确显示。',
     en: 'The script loads on demand and is small, but installing it in the browser always means one swap. Better to let SSR — or a build-time CLI — turn the HTML into the form <code>*.with-js.css</code> can style directly, on the server: one request fewer, and none of the delay of running the script. React, Vue and anything else that re-renders still has to run it after mount.',
     ja: '漢.cssのJSは必要な分だけ読み込め、しかも小さいが、クライアントで導入する以上、swapは必ず起きる。最善はSSRあるいはビルド時のCLIで、サーバ側であらかじめHTMLを<code>*.with-js.css</code>がそのまま当てられる形に変換しておくこと。要求がひとつ減り、JSの実行待ちもなくなる。ただしReactやVueのように再描画する枠組みでは、mount後にやはり実行する必要がある。',
-    ko: '漢.css의 JS는 必要한 만큼만 불러올 수 있고 크기도 작지만, 클라이언트에서 設置하는 以上 swap은 반드시 생긴다. 가장 좋은 것은 SSR이나 빌드 時 CLI로, 서버에서 미리 HTML을 <code>*.with-js.css</code>가 곧바로 適用될 수 있는 形態로 바꿔 두는 것이다. 要請이 하나 줄고 JS 實行을 기다리는 時差도 없다. 다만 React·Vue처럼 다시 그리는 프레임워크는 mount 뒤에 여전히 實行해야 한다.',
+    ko: '漢.css의 JS는 必要한 만큼만 불러올 수 있고 크기도 작지만、클라이언트에서 設置하는 以上 swap은 반드시 생긴다。가장 좋은 것은 SSR이나 빌드 時 CLI로、서버에서 미리 HTML을 <code>*.with-js.css</code>가 곧바로 適用될 수 있는 形態로 바꿔 두는 것이다。要請이 하나 줄고 JS 實行을 기다리는 時差도 없다。다만 React·Vue처럼 다시 그리는 프레임워크는 mount 뒤에 여전히 實行해야 한다。',
   },
   /* The summary line of a closed `<details>`. It has to carry the WHOLE
      point on its own — most readers will never open it — so it says the
@@ -229,14 +229,14 @@
     hans: '浏览器会按需加载命中的字体切片，单篇文章一般命中16–31个切片（中位24），每个切片约43KB。罕用字只在命中时才会下载，缩短页面加载时间。',
     en: 'The browser fetches only the slices a page’s characters land in — 16–31 of them for a typical article (median 24), around 43KB each. Rare characters arrive only when something actually uses them, which is time the page does not spend loading.',
     ja: 'ブラウザは、文字が当たった切片だけを必要に応じて読み込む。一本の記事でおおむね16〜31片（中央値24）、一片あたり約43KB。稀用字は実際に使われたときにだけ届くので、そのぶん読み込みが短くなる。',
-    ko: '브라우저는 글자가 걸린 字體 切片만 必要에 따라 내려받는다. 記事 한 篇이면 大體로 16–31片（中位 24）, 한 片에 約 43KB. 稀用字는 實際로 쓰일 때에만 오므로 그만큼 페이지 로딩이 짧아진다.',
+    ko: '브라우저는 글자가 걸린 字體 切片만 必要에 따라 내려받는다。記事 한 篇이면 大體로 16–31片（中位 24）、한 片에 約 43KB。稀用字는 實際로 쓰일 때에만 오므로 그만큼 페이지 로딩이 짧아진다。',
   },
   arFlNote2: {
     hant: '尚古系列及Diantenjeom標點字體採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。',
     hans: '尚古系列及Diantenjeom标点字体采用Variable Font可变字体技术，一个切片即涵盖250-900全部字重。系汉.css首选推荐。其余字体的每个字重各有一份切片，即表中的「片数×字重」。',
     en: 'Shanggu and the Diantenjeom punctuation faces are variable fonts: one slice carries the whole 250–900 weight range, which is why han.css recommends them first. Every other family ships one slice per weight — the “slices × weights” column above.',
     ja: '尚古シリーズと約物字体Diantenjeomはバリアブルフォントで、一片が250〜900の全ウェイトを賄う。漢.cssが第一に薦めるのはこのためである。ほかの字体はウェイトごとに切片を持つ——表の「片数×字重」がそれにあたる。',
-    ko: '尚古 시리즈와 約物 字體 Diantenjeom은 배리어블 폰트라, 한 切片이 250–900 全體 字重을 담는다. 漢.css가 첫손에 꼽는 理由다. 나머지 字體는 字重마다 切片이 따로 있으며, 그것이 표의 「片數×字重」다.',
+    ko: '尚古 시리즈와 約物 字體 Diantenjeom은 배리어블 폰트라、한 切片이 250–900 全體 字重을 담는다。漢.css가 첫손에 꼽는 理由다。나머지 字體는 字重마다 切片이 따로 있으며、그것이 표의 「片數×字重」다。',
   },
   arFlCapPrint: {
     hant: '印刷字體・按需切片',

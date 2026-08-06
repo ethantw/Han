@@ -7,7 +7,7 @@
   <article class="demo-off" lang="zh-Hans"><div class="poem-like"><p>白日依山尽，</p><p>黄河入海流。</p><p>欲穷千里目，</p><p>更上一层楼。</p></div></article>
   <article class="demo-on"  lang="ja"><div class="poem-like"><p>古池や、</p><p>蛙飛びこむ、</p><p>水の音。</p></div></article>
   <article class="demo-off" lang="ja"><div class="poem-like"><p>古池や、</p><p>蛙飛びこむ、</p><p>水の音。</p></div></article>
-  <article class="demo-on"  lang="ko"><div class="poem-like"><p>가시리 가시리잇고,</p><p>바리고 가시리잇고,</p><p>날러는 엇디 살라 하고,</p><p>바리고 가시리잇고.</p></div></article>
-  <article class="demo-off" lang="ko"><div class="poem-like"><p>가시리 가시리잇고,</p><p>바리고 가시리잇고,</p><p>날러는 엇디 살라 하고,</p><p>바리고 가시리잇고.</p></div></article>
+  <article class="demo-on"  lang="ko"><div class="poem-like"><p>가시리 가시리잇고、</p><p>바리고 가시리잇고、</p><p>날러는 엇디 살라 하고、</p><p>바리고 가시리잇고。</p></div></article>
+  <article class="demo-off" lang="ko"><div class="poem-like"><p>가시리 가시리잇고、</p><p>바리고 가시리잇고、</p><p>날러는 엇디 살라 하고、</p><p>바리고 가시리잇고。</p></div></article>
 </div>
 <p class="demo-meta">機制：<code>.poem-like p { margin-inline-start: var(--han-prose-indent) }</code></p>
