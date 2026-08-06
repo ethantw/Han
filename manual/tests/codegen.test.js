@@ -215,7 +215,7 @@ test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', 
 })
 
 /* ── 度量 slider → body 規則 ──────────────────────────────────
- * 字級/行距/字重只在偏離出廠基準時進生成碼，合成單一 body { }（baseGeneric
+ * 字級/行高/字重只在偏離出廠基準時進生成碼，合成單一 body { }（baseGeneric
  * serif 的 font-family 也併入同一條）。無偏差 → 無 body 規則。 */
 
 test('度量偏差（size 18／leading 1.6）→ css pane 含 body 塊，無 :root（無變數偏差）', () => {

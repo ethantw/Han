@@ -330,12 +330,12 @@ const buildForme = (punct, orient, spin) => {
   const { S, H, r, leadEm } = GEO;
   const cell = S;                    // 字身相接 — 沒有間距（§ GEO）
   const rows = COLS[0].length;
-  const colStep = S * (1 + leadEm);          // 行距 — leading pitch between columns
+  const colStep = S * (1 + leadEm);          // 行高 — 字身 ＋ 行距，欄與欄的間距
   // Generation order IS the paint order — COLUMN-MAJOR: a column top-to-bottom,
   // then its 行距鉛條, then the next column. That's a valid painter's sort here
   // (view ray = e1+e2+up, so a strip is always in FRONT of the column it
   // follows and BEHIND the next one, which the block order gives; and columns
-  // never overlap each other directly — 行距 colStep 153 > body H 140, every
+  // never overlap each other directly — 行高 colStep 153 > body H 140, every
   // cross-column overlap goes through the strip). The generic diagonal a+b sort
   // only fits unit boxes — under it a rows-spanning strip has NO valid slot.
   // `line` groups a piece with the others re-set together when that line's

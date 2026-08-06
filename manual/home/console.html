@@ -22,11 +22,11 @@
     ko: 'font-size',
   },
   pgSliderLeading: {
-    hant: '行距',
-    hans: '行距',
-    en: 'Leading',
+    hant: '行高',
+    hans: '行高',
+    en: 'Line height',
     ja: '行送り',
-    ko: '행간',
+    ko: '행 높이',
   },
   pgSliderLeadingEn: {
     hant: 'line-height',
@@ -455,26 +455,47 @@
     ja: '字の傍・縦並び',
     ko: '글자 옆 세로',
   },
-  pgGrpDirection: {
-    hant: '書寫方向',
-    hans: '书写方向',
-    en: 'Writing direction',
-    ja: '書字方向',
-    ko: '<ruby>書字<rt>서자</rt></ruby> <ruby>方向<rt>방향</rt></ruby>',
+  pgGrpDemo: {
+    hant: '示例頁',
+    hans: '示例页',
+    en: 'This demo',
+    ja: 'この実例ページ',
+    ko: '이 <ruby>實例<rt>실례</rt></ruby> 페이지',
   },
-  pgWmHorizontal: {
-    hant: '橫排',
-    hans: '横排',
-    en: 'Horizontal',
-    ja: '横書き',
-    ko: '가로쓰기',
-  },
-  pgWmVertical: {
+  pgDemoVertical: {
     hant: '直排',
     hans: '竖排',
     en: 'Vertical',
     ja: '縦書き',
     ko: '세로쓰기',
+  },
+  pgDemoDark: {
+    hant: '深色',
+    hans: '深色',
+    en: 'Dark',
+    ja: 'ダーク',
+    ko: '다크',
+  },
+  pgDemoJustify: {
+    hant: '兩端對齊',
+    hans: '两端对齐',
+    en: 'Justify',
+    ja: '両端揃え',
+    ko: '<ruby>兩端<rt>양단</rt></ruby> 정렬',
+  },
+  pgDemoMeasure: {
+    hant: '易讀行長',
+    hans: '易读行长',
+    en: 'Readable measure',
+    ja: '読みやすい行長',
+    ko: '읽기 좋은 <ruby>行長<rt>행장</rt></ruby>',
+  },
+  pgDemoChrome: {
+    hant: '顯示結構標註',
+    hans: '显示结构标注',
+    en: 'Structure labels',
+    ja: '構造注記を表示',
+    ko: '<ruby>構造<rt>구조</rt></ruby> <ruby>註記<rt>주기</rt></ruby> 표시',
   },
   pgGrpJs: {
     hant: 'JavaScript',
@@ -536,7 +557,7 @@
     hans: '勾了才导入，没勾的由你的打包器摇掉。站伍的加法式实时算出这套组合有多大。',
     en: 'Only what you tick gets imported; your bundler shakes off the rest. Station ⑤’s addition prices this exact selection.',
     ja: 'チェックしたものだけを読み込み、残りはバンドラが落とす。第五站の加算式がこの組み合わせの大きさを即座に示す。',
-    ko: '고른 것만 import되고 나머지는 번들러가 떨어낸다. 第五站의 덧셈식이 이 조합의 크기를 즉시 보여준다.',
+    ko: '고른 것만 import되고 나머지는 번들러가 떨어낸다。第五站의 덧셈식이 이 조합의 크기를 즉시 보여준다。',
   },
   pgTogFallbacks: {
     hant: 'JS排版補全',
@@ -608,6 +629,39 @@
      head; console-config.js / console-metrics.js read it back — the DOM carries
      the locale string, JS stays copy-free). -->
 <div class="Controls" data-label-default="{{ pgUseDefault }}">
+    <!-- 示例頁專屬。只在 <han-console demo> 下顯示（console.css），首頁沒有。
+         這幾顆**不進 config、不進生成碼**：它們調的是示例頁自己的呈現
+         （方向預覽、深色、對齊、行長、結構標註），不是 han.css 的設定。
+         狀態由元件鏡射成 <html> 上的 data-demo-* 屬性——`:has()` 跨不過
+         影界，頁面 CSS 只能靠屬性讀到它們（同模組開關的 data-han-module-*
+         那條路）。 -->
+    <section class="ControlGroup" data-demo>
+      <header>{{ pgGrpDemo }}</header>
+      <fieldset class="PlaygroundRules">
+        <legend class="sr-only">{{ pgGrpDemo }}</legend>
+        <label class="Toggle">
+          <span>{{ pgDemoVertical }}</span>
+          <input type="checkbox" data-demo-key="vertical">
+        </label>
+        <label class="Toggle">
+          <span>{{ pgDemoDark }}</span>
+          <input type="checkbox" data-demo-key="dark">
+        </label>
+        <label class="Toggle">
+          <span>{{ pgDemoJustify }}</span>
+          <input type="checkbox" data-demo-key="justify">
+        </label>
+        <label class="Toggle">
+          <span>{{ pgDemoMeasure }}</span>
+          <input type="checkbox" data-demo-key="measure" checked>
+        </label>
+        <label class="Toggle">
+          <span>{{ pgDemoChrome }}</span>
+          <input type="checkbox" data-demo-key="chrome" checked>
+        </label>
+      </fieldset>
+    </section>
+
     <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
     <section class="ControlGroup">
       <header>{{ pgMetricsLabel }}</header>
@@ -682,24 +736,6 @@
       </fieldset>
     </section>
 
-    <!-- 書寫方向 — --han-writing-mode 鏡射變數（全庫基礎設施）。CSS style
-         query 讀不到原生 writing-mode，庫方要求「凡寫 writing-mode 處鏡射
-         一行」；此開關＝預覽整頁方向＋生成碼 :root 鏡射（整頁直排站直接可
-         用；局部直排站把兩行搬去自己的直排容器）。真 writing-mode 由頁面聽
-         han-config-change 自套。 -->
-    <section class="ControlGroup">
-      <header>{{ pgGrpDirection }}</header>
-      <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpDirection }}</legend>
-        <label class="Field">
-          <span>{{ pgGrpDirection }} <small>writing-mode</small></span>
-          <select data-cfg-key="writingMode">
-            <option value="horizontal-tb" selected>{{ pgWmHorizontal }}</option>
-            <option value="vertical-rl">{{ pgWmVertical }}</option>
-          </select>
-        </label>
-      </fieldset>
-    </section>
 
     <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
     <details class="ControlGroup" data-module="semantics">

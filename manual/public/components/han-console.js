@@ -25,7 +25,8 @@
  *           reset, 'metrics' when a 度量 slider moves). config now carries
  *           `metrics { size, leading, weight }` — codegen turns any
  *           deviation into a `body { }` rule. Fired once on connect.
- *   methods reset() · reapplyFallbacks($target?)
+ *   methods reset() · reapplyFallbacks($target?) · setDemoSwitch(key, on)
+ *   attr    demo — 顯示示例頁專屬開關，狀態鏡射到 <html data-demo-*>
  *   prop    config (the frozen copy)
  */
 import { cssVars, DEFAULTS } from '/home/codegen.js'
@@ -251,7 +252,44 @@ class HanConsole extends HTMLElement {
         onChange: (m) => this.#config.setMetrics(m),
       },
     )
+    this.#mountDemoSwitches()
     this.#ready = true
+  }
+
+  /**
+   * 示例頁專屬開關（`<han-console demo>`；模板裡的 `[data-demo-key]`）。
+   *
+   * 它們不進 config、不進生成碼——調的是示例頁自己的呈現。狀態鏡射成
+   * `<html>` 上的 `data-demo-<key>` 屬性，因為 **`:has()` 跨不過影界**：
+   * 開關進了 shadow，頁面 CSS 就再也選不到它，只能靠屬性讀。同一條路
+   * console-config.js 已經替模組開關走過（`data-han-module-*`）。
+   *
+   * 方向是**屬性 → 控件**：頁面可以在 <html> 上先寫好初值（深色的
+   * pre-paint 還原就靠這個，免 FOUC），元件掛載時照著把 checkbox 撥對，
+   * 而不是反過來讓晚到的元件把畫面推翻一次。
+   */
+  #mountDemoSwitches() {
+    const $root = document.documentElement
+    for (const $el of this.shadowRoot.querySelectorAll('[data-demo-key]')) {
+      const attr = `data-demo-${$el.dataset.demoKey}`
+      if ($root.hasAttribute(attr) !== $el.checked) $el.checked = $root.hasAttribute(attr)
+      $el.addEventListener('input', () => {
+        $root.toggleAttribute(attr, $el.checked)
+        this.dispatchEvent(new CustomEvent('han-demo-change', {
+          bubbles: true,
+          composed: true,
+          detail: { key: $el.dataset.demoKey, on: $el.checked },
+        }))
+      })
+    }
+  }
+
+  /** 從外部撥一顆示例開關（供頁面與 console 內建控件對點，如書寫方向）。 */
+  setDemoSwitch(key, on) {
+    const $el = this.shadowRoot?.querySelector(`[data-demo-key="${key}"]`)
+    if (!$el || $el.checked === on) return
+    $el.checked = on
+    $el.dispatchEvent(new Event('input', { bubbles: true }))
   }
 
   // ── public API ──

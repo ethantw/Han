@@ -890,12 +890,43 @@ function camel(s) {
   return s.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
 }
 
+/**
+ * Substitute `{{ key }}` — and STRIP MARKUP when the placeholder sits inside a
+ * tag (i.e. in an attribute value).
+ *
+ * The i18n values are HTML: Korean copy carries `<ruby>` per the house style.
+ * That is right in content position and wrong in an attribute, where the
+ * browser has nowhere to render it — a `title` shows the literal tags, an
+ * `aria-label` gets read out tag by tag, and `data-label-default` (which
+ * console-config.js appends to a button as TEXT) prints `<ruby>基本…` on
+ * screen. Caught in the wild on the 度量 group's ↺ button, 2026-08-06.
+ *
+ * Position is decided by a scan, not by a per-key opt-out list: if the last
+ * `<` before the placeholder is later than the last `>`, we are inside a tag.
+ * Six keys across four templates were already affected; a list would have
+ * gone stale the moment someone added the seventh.
+ */
+const stripMarkup = (html) =>
+  String(html)
+    // <rt> first: ruby annotations are a GLOSS on the base, so dropping the
+    // tags alone would splice the reading into the word — `<ruby>基本<rt>기본
+    // </rt></ruby>값` became `基本기본값`, the hanja followed by its own
+    // pronunciation. Only the base survives into an attribute.
+    .replace(/<rt\b[^>]*>.*?<\/rt>/gs, '')
+    .replace(/<rp\b[^>]*>.*?<\/rp>/gs, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+const insideTag = (text, index) =>
+  text.lastIndexOf('<', index) > text.lastIndexOf('>', index)
+
 function applySubs(template, ctx) {
-  let out = template
-  for (const [k, v] of Object.entries(ctx)) {
-    out = out.replaceAll(`{{ ${k} }}`, v ?? '')
-  }
-  return out
+  return template.replace(/\{\{\s*([\w-]+)\s*\}\}/g, (match, key, offset) => {
+    if (!(key in ctx)) return match
+    const value = ctx[key] ?? ''
+    return insideTag(template, offset) ? stripMarkup(value) : value
+  })
 }
 
 function renderHomeLangSwitcher(active, slugs, labels, t) {
@@ -955,6 +986,24 @@ function hanManualPlugin() {
     },
 
     configureServer(server) {
+      // `bare.html` — read STRAIGHT off `demo/bare.html` on every request, so a
+      // save is live on the next reload. (Build still copies it into HTML_ROOT;
+      // see renderBarePage.)
+      //
+      // Why not the copy-in path in dev: the source lives outside Vite's root
+      // (.cache/docs), so Vite never sees the edit, and the copy only happens
+      // if the watcher branch below is registered — which it is not for a dev
+      // server that was started BEFORE this config gained that branch. The
+      // symptom is brutal to debug: you edit, you reload, nothing changes, and
+      // nothing anywhere says why. Reading from source removes the whole class.
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = (req.url ?? '').split('?')[0]
+        if (pathname !== '/bare.html') return next()
+        res.setHeader('content-type', 'text/html; charset=utf-8')
+        res.setHeader('cache-control', 'no-store')
+        res.end(await fs.readFile(path.join(DEMO_DIR, 'bare.html'), 'utf-8'))
+      })
+
       // Serve the generated <han-console> template module dynamically —
       // regenerated per request so it tracks edits to home/console.html and
       // HOME_I18N with the rest of the homepage re-render. Registered
@@ -1057,11 +1106,8 @@ function hanManualPlugin() {
           return
         }
 
-        if (file.endsWith('bare.html') && file.startsWith(DEMO_DIR)) {
-          await renderBarePage()
-          console.log('[han-manual] bare.html → re-copied (refresh browser)')
-          return
-        }
+        // bare.html 不進 watcher：dev 由上方的 middleware 逐次請求直接讀來源檔，
+        // 存檔即生效，沒有中間產物可以走味。
 
         if (file.startsWith(DEMO_DIR) && (file.endsWith('.md') || file.endsWith('index.html'))) {
           await renderDemoPage()

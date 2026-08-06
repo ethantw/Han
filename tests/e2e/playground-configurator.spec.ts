@@ -171,7 +171,7 @@ test.describe('webfont delivery (Request B)', () => {
 })
 
 test.describe('度量 slider → body 規則', () => {
-  // 字級/行距/字重 sliders now ride config.metrics into the snippet: a
+  // 字級/行高/字重 sliders now ride config.metrics into the snippet: a
   // deviation emits a `body { }` rule; the 度量 群組 ↺ clears it. Range
   // inputs don't take .fill() reliably — set value + dispatch 'input'.
   const setSize = (page: Page, value: string) =>

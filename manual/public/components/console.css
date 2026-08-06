@@ -48,6 +48,12 @@
 
 /* Top form — the divider flips from the inline-end edge to the block-end
    edge (it sits above main, not beside it). */
+/* 示例頁專屬的那組開關：只有 <han-console demo> 顯示（首頁不掛這個屬性，
+   整組不存在於畫面上，也不影響任何既有版面）。 */
+:host(:not([demo])) [data-demo] {
+  display: none;
+}
+
 :host([form="top"]) {
   border-inline-end: 0;
   border-block-end: 1px solid var(--_rule);
