@@ -295,13 +295,11 @@
   </div>
 
   <!--
-    `target` 指向一個不存在的元素，是**刻意**的：console 的內建安裝會對整個
-    target 跑一次 `installFallbacks`，而本頁三個語言包合計 12,251 個節點，
-    超過 han.js DOM 走訪的爆棧門檻（實測約 7,500 節點／單次呼叫）。
-    target 解析不到元素時 console 直接跳過安裝（console-config.js 的
-    `if (!$target) return`），改由 bare.js 逐區塊安裝——見該檔 § 分塊安裝。
+    console 的內建安裝直接吃整個 main：han.js 的 `installFallbacks` 自帶
+    分塊（本頁三個語言包合計 12,251 個節點，超過單次 DOM 走訪的爆棧門檻
+    ~7,500——正是這一頁逼出來的庫級修法，src/ts/helpers/chunk.ts）。
   -->
-  <han-console form="side" target="#han-install-disabled" demo></han-console>
+  <han-console form="side" target="main" demo></han-console>
 
   <details id="codegen">
     <summary>生成的引入碼 <button type="button" id="copy-code">複製</button></summary>

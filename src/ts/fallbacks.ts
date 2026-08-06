@@ -14,10 +14,12 @@ import {
 import {
   markAdjacentLines,
   markAdjacentLinesWithMode,
+  ADJACENT_LINES_REFINED,
 } from './semantics/adjacent-lines.ts'
 
 import { isServerSide } from './helpers/env.ts'
 import { pipe } from './helpers/fp.ts'
+import { forEachChunk } from './helpers/chunk.ts'
 
 /**
  * Install all DOM-level fallbacks. Two execution modes:
@@ -76,6 +78,57 @@ import { pipe } from './helpers/fp.ts'
  *                         the inline custom element as transparent.
  *   `no-autospace`      — native off; no JS work either.
  */
+/**
+ * The three passes write their resolved mode back as an INLINE custom
+ * property on the element they are called with (`syncCascadeIfBrowser`).
+ * Called once on the root that is the documented contract; called once per
+ * CHUNK it would litter nested elements with inline copies of an inherited
+ * value — and a stale inline copy LOCKS that subtree against later `:root`
+ * changes (the exact failure console-config.js § applyTarget scrubs for).
+ * So every non-root chunk restores its prior inline state after the pass —
+ * which also protects author-set inline opt-outs (`--han-punctuation-
+ * refinement: none` on a demo box IS an element a chunk walk may land on).
+ */
+const SYNCED_VARS = [
+  '--han-punctuation-refinement',
+  '--han-text-autospace',
+  '--han-text-decoration-inset',
+] as const
+
+export const runPassChunked = (root: Element, fn: (el: Element) => unknown): void => {
+  forEachChunk(root, (el) => {
+    if (el === root) {
+      fn(el)
+      return
+    }
+    const style = (el as HTMLElement).style
+    if (!style) {
+      fn(el)
+      return
+    }
+    const prior = SYNCED_VARS.map((v) => [v, style.getPropertyValue(v)] as const)
+    fn(el)
+    for (const [v, val] of prior) {
+      if (val) style.setProperty(v, val)
+      else style.removeProperty(v)
+    }
+  })
+}
+
+/**
+ * 鄰行 pass 在它施作的根上蓋 `data-adjacent-lines-refined` 章（CSS 靠祖先
+ * 上的這個章判定「已修補」——semantics.with-js.css）。分塊後章會落在每個
+ * chunk 上——語意沒錯，但屬性噪音 ×N，且與單根時代的輸出不再逐位元相等。
+ * 收斂回單根契約：後代的章全部上移到安裝根。pass 整個被跳過（原生支援）
+ * 時後代沒有章，這裡也不會無中生有。
+ */
+const hoistAdjacentLinesStamp = (root: Element): void => {
+  const stamped = root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)
+  if (stamped.length === 0) return
+  stamped.forEach((el) => el.removeAttribute(ADJACENT_LINES_REFINED))
+  root.setAttribute(ADJACENT_LINES_REFINED, '')
+}
+
 export function installFallbacks(): Hype
 export function installFallbacks(root: Element): Hype
 export function installFallbacks(src: string | Hype): Hype
@@ -88,15 +141,17 @@ export function installFallbacks(root?: Hyperly) {
     // is preserved — calling element() on a fragment string would
     // promote it to the host body Element and html() would then emit
     // a `<body>…</body>` wrapper, breaking round-trip equality.
-    // Each transform returns a new Hype wrapping the SAME element
-    // reference, so the void mutators still see the in-place changes.
-    return pipe<Hyperly, Hype, Hype, Hype>
-      (
-        refinePunctuationWithMode('auto'),
-        applyISSWithMode('strict'),
-        markAdjacentLinesWithMode('auto'),
-      )
-      (hype(root))
+    // The transforms mutate the same element reference in place, so the
+    // chunked calls below compose exactly like the old straight pipe —
+    // and the chunking matters in Node too: its default stack is in the
+    // same ballpark as the browsers'.
+    const h = hype(root)
+    const el = element(h)
+    runPassChunked(el, (chunk) => refinePunctuationWithMode('auto')(chunk))
+    runPassChunked(el, (chunk) => applyISSWithMode('strict')(chunk))
+    runPassChunked(el, (chunk) => markAdjacentLinesWithMode('auto')(chunk))
+    hoistAdjacentLinesStamp(el)
+    return h
   }
 
   // No separate probe step: the only probe there is
@@ -105,10 +160,23 @@ export function installFallbacks(root?: Hyperly) {
   // runs it, memoised. A standalone `runProbes()` used to sit here and was
   // exported for callers assembling their own set; it bought nothing but a
   // way to get the order wrong.
+  //
+  // CHUNKED, not one straight walk over the root: hyperly's walk recurses
+  // per node and blows the stack at ~7,500 nodes — WORSE, it fails
+  // partially, leaving a half-refined page with no error anyone will
+  // connect to typography (docs/notes/2026-08-05-install-fallbacks-stack-
+  // overflow.md, found by the 12k-node bare-page demo). `forEachChunk`
+  // splits at element-only levels, which is exactly the boundary both
+  // passes tolerate: the punctuation look-ahead and the adjacent-lines
+  // sibling pairing both live inside inline flow, and inline flow is never
+  // split (see chunk.ts). Each pass runs its own chunk loop — a shared
+  // loop would interleave passes per chunk, changing the install order
+  // within the document for no benefit.
   const r = (root as Element | undefined) ?? document.documentElement
-  refinePunctuation(r)
-  applyISSWithProbe(r)
-  markAdjacentLines(r)
+  runPassChunked(r, refinePunctuation)
+  runPassChunked(r, applyISSWithProbe)
+  runPassChunked(r, markAdjacentLines)
+  hoistAdjacentLinesStamp(r)
 
   return hype(r)
 }
@@ -148,4 +216,10 @@ export function uninstallFallbacks(root?: Hyperly) {
 
   $root.querySelectorAll('[data-followed-by-adjacent-line]')
     .forEach(el => el.removeAttribute('data-followed-by-adjacent-line'))
+
+  // 「已修補」章也要撤——留著它，CSS 會在 wrapper 已拆光的樹上繼續按
+  // 「JS 修補過」的分支行事。根自己也可能帶章（querySelectorAll 不含根）。
+  $root.removeAttribute(ADJACENT_LINES_REFINED)
+  $root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)
+    .forEach(el => el.removeAttribute(ADJACENT_LINES_REFINED))
 }

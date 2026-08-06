@@ -224,7 +224,9 @@ const applyFallbacks = async (config, $target) => {
   }
   selectedPasses(config)
     .filter((p) => p.id !== 'uninstall')
-    .forEach((p) => mod[p.fn]($target))
+    // runPassChunked：單支 pass 直接吃大文檔會爆棧（han.js 的遞迴走訪
+    // ~7,500 節點上限；installFallbacks 內建同一套分塊）。
+    .forEach((p) => mod.runPassChunked($target, ($chunk) => mod[p.fn]($chunk)))
 }
 
 /* ── 進場 ──

@@ -370,7 +370,8 @@ installFallbacks(src: string | Hype): Hype     // SSR: requires explicit source
 Runs, in order: `refinePunctuation` → `applyISSWithProbe` →
 `markAdjacentLines`. Browser passes gate on `CSS.supports` + the cascade
 vars (`--han-punctuation-refinement`, `--han-text-autospace`); SSR runs all
-three unconditionally (`auto` / `strict` / `auto`).
+three unconditionally (`auto` / `strict` / `auto`). Large documents are
+chunked internally (§9) — no size ceiling for callers.
 
 ```ts
 uninstallFallbacks(root?: Hyperly): void
@@ -406,11 +407,15 @@ applies, which are `(src: Hyperly) => Hype`.
 `applyISSWithProbe` = `applyISS` + memoized Safari boundary-bug probe
 (`detectAutospaceBoundaryBug`) — prefer it in browsers.
 
+Per-pass calls do NOT chunk internally — on documents that may exceed
+~7,500 nodes wrap them: `runPassChunked(root, pass)` (§9).
+
 Exported constants (advanced): `PUNCT_OPEN_CHARS`, `PUNCT_CLOSE_CHARS`,
 `PUNCT_END_EXTRA`, `PUNCT_MIDDLE_CHARS`, `ALL_PUNCT`, `HANGABLE_CHARS`,
 `isValidMode`, selector/attribute constants
 (`ADJACENT_LINES_REFINED`, `FOLLOWED_BY_ADJACENT_LINE`,
-`SELECTORS_FOR_ELEMENTS_WITH_LINES`). Types: `RefineMode`, `ISSMode`,
+`SELECTORS_FOR_ELEMENTS_WITH_LINES`), chunking helpers (`runPassChunked`,
+`forEachChunk`, `CHUNK_NODE_LIMIT`). Types: `RefineMode`, `ISSMode`,
 `DecorationInsetMode`.
 
 ## 7. Web fonts (delivery is yours)
@@ -480,22 +485,24 @@ browsers; features degrade individually per the matrix.
   Custom Highlight API, structural selectors unaffected.)
 - **`installFallbacks` is one-shot**: no MutationObserver; dynamically
   inserted content needs an explicit call.
-- **Large subtrees overflow the stack.** The DOM walk recurses per node, so
-  a single call over roughly **7,500+ nodes** throws
-  `RangeError: Maximum call stack size exceeded` (measured 2026-08-05,
-  Chromium; threshold is node COUNT, not nesting depth — the test document
-  was only 10 levels deep). Worse, it fails *partially*: some wrappers land
-  before the throw, so the page looks merely under-refined rather than
-  broken. **Workaround — install per section:**
+- **Large documents: `installFallbacks` chunks automatically.** The DOM
+  walk recurses per node and a single straight call over roughly **7,500+
+  nodes** would throw `RangeError: Maximum call stack size exceeded`
+  (measured 2026-08-05, Chromium; threshold is node COUNT, not nesting
+  depth) — and fail *partially*, leaving the page merely under-refined.
+  `installFallbacks` therefore splits the work internally at element-only
+  tree levels (never inside inline flow, so punctuation look-ahead and
+  `markAdjacentLines` sibling pairs stay intact; `src/ts/helpers/chunk.ts`).
+  No caller action needed. Callers assembling their own pass set from the
+  named exports must chunk too — wrap each pass with `runPassChunked`:
 
   ```js
-  for (const el of root.querySelectorAll(':scope > article, :scope > section'))
-    installFallbacks(el)
+  runPassChunked(root, refinePunctuation)   // instead of refinePunctuation(root)
   ```
 
-  Chunk at block boundaries, not arbitrarily: `markAdjacentLines` compares
-  siblings, so an adjacent `<u>`/`<ins>` pair must not be split across two
-  calls. `manual/demo/bare.html` does exactly this (12k-node document).
+  (`forEachChunk`/`CHUNK_NODE_LIMIT` are exported for lower-level use;
+  `runPassChunked` additionally keeps pass-synced inline `--han-*` vars off
+  the chunk elements so later `:root` config changes still inherit through.)
 - **Style queries in Firefox**: toggle-gated CSS inert until Gecko ships
   `@container style()`.
 - **`<rtc>`/tabular ruby**: not rendered by any engine; run `transpileRuby`.

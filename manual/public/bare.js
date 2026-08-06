@@ -6,7 +6,7 @@
  * 不重複、也不得重複——雙寫就是漂移的起點。
  */
 import '/components/han-console.js'
-import { renderCDN, selectedPasses } from '/home/codegen.js'
+import { renderCDN } from '/home/codegen.js'
 
 const CONSOLE_LANG = { 'zh-Hant': 'hant', ja: 'ja', ko: 'ko' }
 
@@ -50,38 +50,10 @@ const applyLang = (lang) => {
   })
 }
 
-/* 三個語言包在初載時就一次裝好（見下方分塊安裝），所以切語言不必補跑。 */
+/* 三個語言包在初載時就由 console 的內建安裝一次裝好（target="main"；
+ * 12,251 個節點的分塊由 han.js 的 installFallbacks 自理），所以切語言
+ * 不必補跑，本檔也沒有任何 JS 後備邏輯——雙寫就是漂移的起點。 */
 $select.addEventListener('input', () => applyLang($select.value))
-
-/* ── 分塊安裝 JS 後備 ──
- * han.js 的 DOM 走訪是遞迴的，單次呼叫**約 7,500 個節點**就爆
- * `RangeError: Maximum call stack size exceeded`（2026-08-05 實測；與巢狀
- * 深度無關——本頁最深才 10 層，純看節點數）。本頁三個語言包合計 12,251
- * 節點，整包一次裝必爆，所以逐**區塊**安裝：每個語言包的頂層子元素各一次
- * （最大的一塊 3,324 節點，離門檻很遠）。
- *
- * 切在頂層子元素而不是任意切碎，是因為 `markAdjacentLines` 要看兄弟關係——
- * 相鄰的 <u>／<ins> 對必須落在同一次呼叫裡，才不會在切點上漏判。article 與
- * section 的邊界天然不會有跨界的相鄰裝飾線對。
- *
- * console 的內建安裝已由不存在的 `target` 停用（見 bare.html），這裡改用
- * 它的 `selectedPasses`——同一份 PASSES 定義，jsMode／逐支勾選的語意不會
- * 跟 console 漂移。 */
-const AUTO_PASSES = ['refinePunctuation', 'applyISSWithProbe', 'markAdjacentLines']
-const chunks = () => document.querySelectorAll('[data-lang-pack] > *')
-
-let han = null
-const applyFallbacksChunked = async (config) => {
-  han ??= await import('/han/han.js')
-  han.uninstallFallbacks($main)
-  if (!config.fallbacks) return
-  const passes = config.jsMode === 'manual'
-    ? selectedPasses(config).filter((p) => p.id !== 'uninstall').map((p) => p.fn)
-    : AUTO_PASSES
-  for (const $chunk of chunks()) {
-    for (const fn of passes) han[fn]($chunk)
-  }
-}
 
 /* ── 示例開關 ──
  * 五顆開關住在 console 的 shadow 裡（`<han-console demo>`），狀態由元件鏡射
@@ -127,11 +99,9 @@ addEventListener('han-config-change', (e) => {
   $root.style.setProperty('--console-metric-leading', String(leading))
   $root.style.setProperty('--console-metric-weight', String(weight))
 
-  /* 拖度量拖桿不必重裝 JS 後備——度量純粹是 CSS，一個 wrapper 都不會變，
-   * 而重裝要走一萬兩千個節點，每一格都跑會卡死。 */
+  /* 度量拖桿只動 CSS，不必重算生成碼以外的東西（JS 後備的 reapply 是
+   * console 的內建行為，本檔不插手）。 */
   if (e.detail.source === 'metrics') return
-
-  applyFallbacksChunked(e.detail.config)
 
   // 配好就能複製走——renderCDN 是首頁站⑥同一支 codegen，不另寫一份。
   const blocks = renderCDN(e.detail.config)

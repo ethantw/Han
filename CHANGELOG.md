@@ -27,6 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`installFallbacks` no longer overflows the call stack on large
+  documents.** The recursive DOM walk threw
+  `RangeError: Maximum call stack size exceeded` at roughly 7,500+ nodes
+  per call — and failed *partially*, leaving the page silently
+  under-refined. The install now chunks internally at element-only tree
+  levels (never inside inline flow, so punctuation look-ahead and
+  adjacent-line sibling pairs stay intact), in both browser and SSR
+  paths. Callers assembling their own pass set can wrap each pass with
+  the new `runPassChunked(root, pass)` export (`forEachChunk` /
+  `CHUNK_NODE_LIMIT` also exported). `uninstallFallbacks` now also
+  removes the `data-adjacent-lines-refined` marker.
+
 - **Hung punctuation no longer floats when the line box grows.** The hang
   layer was `position: absolute` with no inset — its static position
   anchors to the line-box edges, not the baseline, so over-position

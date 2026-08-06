@@ -2,7 +2,11 @@
 
 **日期**：2026-08-05
 **發現處**：`manual/demo/bare.html`（三語言包全文，12,251 節點）
-**狀態**：已文檔化＋頁面側繞過；**庫端未修**
+**狀態**：**庫端已修（2026-08-06）**——`installFallbacks` 內建分塊
+（`src/ts/helpers/chunk.ts`＋`fallbacks.ts` 的 `runPassChunked`），瀏覽器與
+SSR 兩路都走；自組 pass 的呼叫端用導出的 `runPassChunked` 包。頁面側的
+分塊繞法已拆除（bare 頁回歸 `<han-console target="main">`）。以下保留
+病史與量測原文。
 
 ## 症狀
 
@@ -59,7 +63,26 @@ bare 頁的實作另外把 `<han-console target>` 指向一個不存在的元素
 `bare.js` 用元件同一份 `selectedPasses` 逐塊安裝——jsMode／逐支勾選的語意
 不會漂移。
 
-## 庫端該怎麼修（未做）
+## 庫端修法（2026-08-06 已落地）
+
+`forEachChunk`（`src/ts/helpers/chunk.ts`）：節點數超過 `CHUNK_NODE_LIMIT`
+（3,500，實測爆點的一半）就往**全元素層**下探，混有文字節點的層（＝行內
+流）整層一塊——lookahead 與兄弟配對天然不被切。外加兩個收斂，讓分塊後
+的輸出與單根時代逐位元相等：
+
+1. **行內變數還原**（`runPassChunked`）——pass 會把解析出的模式回寫成
+   行內變數，逐塊呼叫會在每個 chunk 上留殘值，鎖死後續 `:root` 變更
+   （console-config § applyTarget 掃的就是這個病），還可能誤傷作者寫的
+   行內 opt-out。非根 chunk 施作後還原行內原狀。
+2. **`data-adjacent-lines-refined` 章上移**——分塊會逐 chunk 蓋章，收斂
+   回「只蓋安裝根」的單根契約；`uninstallFallbacks` 順帶補上撤章。
+
+單元測試：`src/ts/__tests__/chunk.test.ts`（3,000 段大文檔首尾都有貨、
+大文檔段落輸出 ≡ 單獨處理、混合層不切、全元素層下探）。瀏覽器實測
+（bare 頁，headless Chromium）：hant 652／ja 678／ko 483 顆 `h-char`，
+uninstall→install 往返 1813→0→1813，作者行內 opt-out 18 處零污染。
+
+## 當初的修法建議（歷史）
 
 `src/ts/fallbacks.ts` 的瀏覽器分支可以自己分塊，但**不能無腦切**：
 
