@@ -14,6 +14,11 @@ description: >-
 
 # han.css v4 Setup
 
+> This file is canonical. The sibling `han-setup-zh-hant` / `-zh-hans` /
+> `-ja` / `-ko` skills are language entry points that redirect here — they
+> duplicate no technical content. Converse in the user's language; take
+> every technical fact from this file and the API reference.
+
 You are configuring **han.css v4** (`@hanzi.pro/han.css`) into the user's
 project. Work detection-first: inspect the repo before asking anything, ask
 only what you cannot detect, and record every decision — with its reason —
