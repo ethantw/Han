@@ -1,7 +1,7 @@
 <h2>7・注音／旁注 <code>&lt;ruby&gt;</code></h2>
-<p class="description">注音（zh-Hant、Bopomofo）以 <code>Han Zhuyin Serif</code> web font 搭配原生 <code>&lt;ruby&gt;</code> 呈現——OpenType GPOS 處理調號定位，<code>ruby-position: inter-character</code> 處理字旁直書（Safari 18.2+ 原生；其他引擎以 <code>@supports not</code> CSS fallback 模擬）。其餘語系（拼音、振仮名、한자 read）保留原生 <code>&lt;ruby&gt;</code> 渲染——四大瀏覽器都已實裝。</p>
+<p class="description">注音（zh-Hant、Bopomofo）以 <code>Han Zhuyin Serif</code> web font 搭配原生 <code>&lt;ruby&gt;</code> 呈現，直橫二式的調號定位由字體 GSUB 依排版方向處理。標音位置由 <code>--han-zhuyin-ruby-position</code> 選擇：預設 <code>over</code>（字上橫列，直橫排皆穩）；橫排推薦設 <code>inter-character</code>（字旁直書，國語課本慣例——Safari 18.2+ 原生，其他引擎以 <code>@supports not</code> CSS fallback 模擬）。其餘語系（拼音、振仮名、한자 read）保留原生 <code>&lt;ruby&gt;</code> 渲染——四大瀏覽器都已實裝。</p>
 
-<article>
+<article style="--han-zhuyin-ruby-position: inter-character">
   <p>
     <ruby>
       <rb>我</rb><rb>有</rb><rb>一</rb><rb>个</rb><rb>朋</rb><rb>友</rb>，<rb>伊</rb><rb>真</rb><rb>有</rb><rb>志</rb><rb>氣</rb>，
@@ -88,6 +88,8 @@
 </article>
 
 <div class="demo-grid">
+  <article class="demo-on"  lang="zh-Hant" style="--han-zhuyin-ruby-position: inter-character"><ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>。</article>
+  <article class="demo-off" lang="zh-Hant"><ruby>漢<rt>ㄏㄢˋ</rt></ruby><ruby>字<rt>ㄗˋ</rt></ruby>、<ruby>注<rt>ㄓㄨˋ</rt></ruby><ruby>音<rt>ㄧㄣ</rt></ruby>。</article>
   <article class="demo-on"  lang="zh-Hant"><ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>。</article>
   <article class="demo-off" lang="zh-Hant"><ruby>漢<rt>ㄏㄢˋ</rt></ruby><ruby>字<rt>ㄗˋ</rt></ruby>、<ruby>注<rt>ㄓㄨˋ</rt></ruby><ruby>音<rt>ㄧㄣ</rt></ruby>。</article>
   <article class="demo-on"  lang="zh-Hans"><ruby>汉<rt>hàn</rt></ruby><ruby>字<rt>zì</rt></ruby>、<ruby>拼<rt>pīn</rt></ruby><ruby>音<rt>yīn</rt></ruby>。</article>
@@ -97,4 +99,4 @@
   <article class="demo-on"  lang="ko"><ruby>漢<rt>한</rt></ruby><ruby>字<rt>자</rt></ruby>、<ruby>훈<rt>訓</rt></ruby><ruby>음<rt>音</rt></ruby>。</article>
   <article class="demo-off" lang="ko"><ruby>漢<rt>한</rt></ruby><ruby>字<rt>자</rt></ruby>、<ruby>훈<rt>訓</rt></ruby><ruby>음<rt>音</rt></ruby>。</article>
 </div>
-<p class="demo-meta">機制：注音 ON cell 以 <code>&lt;ruby class="zhuyin"&gt;</code> 觸發 CSS 規則——載入 <code>Han Zhuyin Serif</code> web font（GPOS 定位調號）並啓用 <code>ruby-position: inter-character</code>；Safari 18.2+ 走原生，其他引擎以 <code>@supports not</code> CSS fallback 模擬字旁直書。每個 <code>&lt;ruby class="zhuyin"&gt;</code> 僅含 1 個基字，多字詞以相鄰 ruby 表達，這是字旁直書 layout 在 inter-character CSS fallback 下能正確運作的前提。OFF cell 為純 <code>&lt;ruby&gt;</code>，走瀏覽器預設。其他語系 ON/OFF 內容相同，皆由原生 ruby 處理——本框示意 markup 而非對比差異。</p>
+<p class="demo-meta">機制：<code>&lt;ruby class="zhuyin"&gt;</code> 觸發 CSS 規則，載入 <code>Han Zhuyin Serif</code> web font——直橫二式都用它，調號位置由字體 GSUB 依排版方向決定（字旁直書調號在側、字上橫列調號在音節後）。注音第一列的 ON cell 另設 <code>--han-zhuyin-ruby-position: inter-character</code>（設在祖先 <code>article</code> 上——style query 查祖先，設在 ruby 自身無效）啓用字旁直書：Safari 18.2+ 走原生 <code>ruby-position: inter-character</code>，其他引擎以 <code>@supports not</code> CSS fallback 模擬。第二列的 ON cell 不設值，展示 <code>over</code> 預設——字上橫列，等同瀏覽器預設位置、僅字體不同。每個 <code>&lt;ruby class="zhuyin"&gt;</code> 僅含 1 個基字，多字詞以相鄰 ruby 表達，這是字旁直書 layout 在 inter-character CSS fallback 下能正確運作的前提。OFF cell 為純 <code>&lt;ruby&gt;</code>，走瀏覽器預設。其他語系 ON/OFF 內容相同，皆由原生 ruby 處理——本框示意 markup 而非對比差異。</p>

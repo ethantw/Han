@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>--han-zhuyin-ruby-position 二式 × 直橫排</title>
+<link rel="stylesheet" href="/han/han.css">
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    margin: 0; padding: 2rem 1.5rem;
+    background: light-dark(#faf9f7, #1c1b1a);
+    color: light-dark(#2a2825, #d9d5cf);
+  }
+  header { max-inline-size: 60rem; margin-inline: auto; margin-block-end: 1.5rem; }
+  h1 { font-size: 1.15rem; font-weight: 600; margin: 0 0 .25rem; }
+  header p { margin: 0; font-size: .85rem; opacity: .7; }
+  header code { font-family: ui-monospace, monospace; font-size: .95em; }
+  .grid {
+    display: grid; gap: 1rem; max-inline-size: 60rem; margin-inline: auto;
+    grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  }
+  .cell {
+    border: 1px solid light-dark(#ddd8d0, #3a3835);
+    border-radius: .5rem; overflow: hidden;
+    background: light-dark(#fff, #232220);
+  }
+  .cell > h2 {
+    margin: 0; padding: .5rem .9rem; font-size: .8rem; font-weight: 600;
+    border-block-end: 1px solid light-dark(#eee9e2, #33312e);
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  }
+  .cell > h2 code { font-family: ui-monospace, monospace; font-weight: 400; font-size: .9em; opacity: .75; }
+  .cell > h2 .warn { color: light-dark(#a05a00, #e0a04a); font-weight: 400; font-size: .85em; }
+  .specimen {
+    padding: 1.4rem 1.2rem; font-size: 1.35rem; line-height: 2.6;
+  }
+  .vertical .specimen {
+    writing-mode: vertical-rl; --han-writing-mode: vertical-rl; inline-size: 17rem;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><code>--han-zhuyin-ruby-position</code>：inter-character／over × 橫排／直排</h1>
+  <p>同一段 markup、同一個 <code>Han Zhuyin Serif</code>；只有變數與 <code>writing-mode</code> 不同。左上為橫排推薦組態。</p>
+</header>
+<div class="grid">
+
+  <section class="cell" style="--han-zhuyin-ruby-position: inter-character">
+    <h2>橫排 × inter-character<code>推薦・國語課本式</code></h2>
+    <div class="specimen"><ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby><ruby class="zhuyin">符<rt>ㄈㄨˊ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby>，<ruby class="zhuyin">標<rt>ㄅㄧㄠ</rt></ruby><ruby class="zhuyin">在<rt>ㄗㄞˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">旁<rt>ㄆㄤˊ</rt></ruby>；<ruby class="zhuyin">調<rt>ㄉㄧㄠˋ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">位<rt>ㄨㄟˋ</rt></ruby><ruby class="zhuyin">置<rt>ㄓˋ</rt></ruby><ruby class="zhuyin">由<rt>ㄧㄡˊ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">決<rt>ㄐㄩㄝˊ</rt></ruby><ruby class="zhuyin">定<rt>ㄉㄧㄥˋ</rt></ruby>。</div>
+  </section>
+
+  <section class="cell">
+    <h2>橫排 × over<code>預設・字上橫列</code></h2>
+    <div class="specimen"><ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby><ruby class="zhuyin">符<rt>ㄈㄨˊ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby>，<ruby class="zhuyin">標<rt>ㄅㄧㄠ</rt></ruby><ruby class="zhuyin">在<rt>ㄗㄞˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">旁<rt>ㄆㄤˊ</rt></ruby>；<ruby class="zhuyin">調<rt>ㄉㄧㄠˋ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">位<rt>ㄨㄟˋ</rt></ruby><ruby class="zhuyin">置<rt>ㄓˋ</rt></ruby><ruby class="zhuyin">由<rt>ㄧㄡˊ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">決<rt>ㄐㄩㄝˊ</rt></ruby><ruby class="zhuyin">定<rt>ㄉㄧㄥˋ</rt></ruby>。</div>
+  </section>
+
+  <section class="cell vertical">
+    <h2>直排 × over<code>預設・行右直行</code></h2>
+    <div class="specimen"><ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby><ruby class="zhuyin">符<rt>ㄈㄨˊ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby>，<ruby class="zhuyin">標<rt>ㄅㄧㄠ</rt></ruby><ruby class="zhuyin">在<rt>ㄗㄞˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">旁<rt>ㄆㄤˊ</rt></ruby>；<ruby class="zhuyin">調<rt>ㄉㄧㄠˋ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">位<rt>ㄨㄟˋ</rt></ruby><ruby class="zhuyin">置<rt>ㄓˋ</rt></ruby><ruby class="zhuyin">由<rt>ㄧㄡˊ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">決<rt>ㄐㄩㄝˊ</rt></ruby><ruby class="zhuyin">定<rt>ㄉㄧㄥˋ</rt></ruby>。</div>
+  </section>
+
+  <section class="cell vertical" style="--han-zhuyin-ruby-position: inter-character">
+    <h2>直排 × inter-character<code>已鏡射 --han-writing-mode——自動讓位成 over，三引擎一致</code></h2>
+    <div class="specimen"><ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby><ruby class="zhuyin">符<rt>ㄈㄨˊ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby>，<ruby class="zhuyin">標<rt>ㄅㄧㄠ</rt></ruby><ruby class="zhuyin">在<rt>ㄗㄞˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">旁<rt>ㄆㄤˊ</rt></ruby>；<ruby class="zhuyin">調<rt>ㄉㄧㄠˋ</rt></ruby><ruby class="zhuyin">號<rt>ㄏㄠˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">位<rt>ㄨㄟˋ</rt></ruby><ruby class="zhuyin">置<rt>ㄓˋ</rt></ruby><ruby class="zhuyin">由<rt>ㄧㄡˊ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">決<rt>ㄐㄩㄝˊ</rt></ruby><ruby class="zhuyin">定<rt>ㄉㄧㄥˋ</rt></ruby>。</div>
+  </section>
+
+</div>
+</body>
+</html>

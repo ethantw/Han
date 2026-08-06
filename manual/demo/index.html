@@ -12,8 +12,8 @@
 <link rel="stylesheet" href="/demo.css">
 <script type="module">
 const dynImport = new Function('s', 'return import(s)')
-const { convertLegacyRuby } = await dynImport('/han/han.auto.js')
-convertLegacyRuby(document.documentElement)
+const { transpileRuby } = await dynImport('/han/han.auto.js')
+transpileRuby(document.documentElement)
 </script>
 </head>
 <body>
@@ -24,6 +24,7 @@ convertLegacyRuby(document.documentElement)
 <main>
 <!--demos:
   ruby
+  zhuyin-position
   adjacent-lines
   em-emphasis
   cjk-non-italic
@@ -45,7 +46,7 @@ convertLegacyRuby(document.documentElement)
 -->
 </main>
 <footer>
-  <p>Han.css v4・<a href="/">回手冊首頁</a></p>
+  <p>Han.css v4・<a href="/">回手冊首頁</a>・<a href="/bare.html">裸頁樣張</a></p>
 </footer>
 </body>
 </html>

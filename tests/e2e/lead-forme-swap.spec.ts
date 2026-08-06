@@ -80,7 +80,7 @@ test('直排: the re-spaced line goes back whole, its neighbours keep their type
   const { moved } = await watch(page, 1400)
 
   // line 1 entire — plain type, not just the marks that were re-cut
-  for (const ch of ['山', '田', '臉', '色', '鐵', '青', '我']) expect(moved).toContain(ch)
+  for (const ch of ['石', '田', '臉', '色', '鐵', '青', '我']) expect(moved).toContain(ch)
   // line 2 stands: its spacing is untouched and it holds no punctuation
   for (const ch of ['特', '地', '放', '棄', '瞬', '移', '艙']) expect(moved).not.toContain(ch)
   // …while the marks on the standing lines are still re-cut
