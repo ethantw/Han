@@ -27,6 +27,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Hung punctuation no longer floats when the line box grows.** The hang
+  layer was `position: absolute` with no inset — its static position
+  anchors to the line-box edges, not the baseline, so over-position
+  emphasis dots (which grow the ascent) carried the hung mark upward
+  (−14px at `line-height: 1.75`, font 24px; `under` was unaffected).
+  `<h-layer>` is now a zero-width `inline-block`: baseline-aligned by its
+  own text, immune to line-box inflation, same hang geometry (verified
+  0px deviation in Chromium/WebKit, horizontal and vertical; the mark
+  never wraps to a line start across a 320→120px width sweep).
+
 - **The document font stack now actually reaches the page without any
   page CSS.** The composite `font-family` was declared on `:root` only —
   the one element style queries cannot reach (no ancestor) — so it baked

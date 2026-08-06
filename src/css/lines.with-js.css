@@ -177,30 +177,54 @@
  *
  *   - `::after` is a 1em hidden Han Em Space ' ' on the h-char,
  *     reserving 1em of inline space at the column tail.
- *   - `<h-layer>` is `position: absolute; inset: 0` over the
- *     same box, so the glyph paints on top of the placeholder.
+ *   - `<h-layer>` is a ZERO-WIDTH `inline-block`: its box takes no
+ *     inline space, the glyph inside overflows it in the inline
+ *     direction and paints over the placeholder.
  *
  * Mid-line: filler holds 1em, glyph paints over it → glyph sits
  * at its natural inline position, visually unchanged.
  * Line wraps exactly at this h-char: `::after`'s trailing ' '
  * is the line's last whitespace and collapses per CSS-Text
  * line-end rules, so the 1em vanishes from the inline-progression
- * and the column tail tucks back; but `<h-layer>` is absolutely
- * positioned, so its box keeps its previous visual position and
- * the glyph appears to hang past the column edge.
+ * and the column tail tucks back; the zero-width box now sits AT
+ * the column edge and its overflowing glyph paints past it — the
+ * hang. (The 0-width box also never forces a wrap of its own: it
+ * fits anywhere, and the breaker always prefers the later
+ * opportunity at the spacer — width-swept 320→120px, the mark
+ * never lands at a line start; three engines.)
  *
- * `<h-layer>` being out-of-flow also detaches its glyph from any
- * flow-dependent pseudo-element an ancestor might apply:
- *   - `::first-line` won't colour/style it — out-of-flow content
- *     isn't part of the block container's first formatted line.
- *   - `::first-letter` is affected in principle too, but never in
- *     practice: hangable-marked characters are always trailing/
- *     closing punctuation (comma, period, closing bracket), which
- *     structurally cannot open a paragraph — the true first letter
- *     is always some preceding character, never the hangable one.
+ * WHY inline-block and NOT `position: absolute` (the previous
+ * implementation, and the bug it carried): an abspos with no
+ * inset sits at its STATIC POSITION, and Chromium anchors an
+ * inline-level static position to the LINE BOX EDGES, not the
+ * baseline. Any time the line box grows asymmetrically the anchor
+ * and the text part ways — over-position emphasis dots (`--han-
+ * em-dot-position: over right`, ja's default) grow the ascent,
+ * the line-box top moves up, and the hung mark floated up with it
+ * (measured: −14px @ line-height 1.75, −21px @ 1.2, font 24px;
+ * `under` grows the descent and was unaffected — the asymmetry is
+ * the tell). This is the same two-metric-systems disease as the
+ * logo's SVG baseline saga (docs/notes/2026-07-21-svg-glyph-
+ * baseline-alignment.md): box edges vs baselines. That note's
+ * conclusion already named the fix family — a non-empty
+ * inline-block is on the short list of things that BASELINE-align
+ * cleanly. The layer's baseline is its own text's baseline, so it
+ * rides the outer baseline by construction, immune to whatever
+ * inflates the line box (dots, ruby, taller runs). Verified 0px
+ * deviation in Chromium / WebKit / Firefox, horizontal and
+ * vertical.
+ *
+ * Pseudo-element / selector semantics under the atomic box:
+ *   - `::first-line` still can't restyle the mark — first-line
+ *     styles don't inherit into atomic inline-level contents
+ *     (previously guaranteed by out-of-flow; same fact, new
+ *     mechanism).
+ *   - `::first-letter`: affected in principle, never in practice —
+ *     hangables are trailing punctuation and cannot open a
+ *     paragraph.
  * DOM-structural selectors (`:first-child`, `:has()`, sibling
  * combinators, `:lang()`, …) are unaffected — those query the DOM
- * tree, not the render tree, and `position` doesn't touch the DOM.
+ * tree, not the render tree.
  *
  * Gated by the derived `--han-state-hanging-punctuation` flag (computed just
  * below from each language's own punctuation convention +
@@ -328,9 +352,9 @@
  * fallback when the native property handles it. */
 @container style(--han-state-hanging-punctuation: on) {
   h-char[data-punct~="hangable"] {
-    & {
-      position: relative;
-    }
+    /* No `position: relative` any more — it existed solely as the abspos
+     * containing block for <h-layer>, and the layer is baseline-aligned
+     * inline-block now (see the header comment's WHY). */
     /* `line-height: 1` here is load-bearing — NOT cosmetic.
      *
      * `font-family: Han Em Space` is declared in
@@ -354,8 +378,7 @@
      * `line-height: 1` pins this pseudo's inline-box height to
      * 1em independent of the size-adjusted metrics, sealing the
      * scaling weirdness inside its own box.  The line-box then
-     * sizes from the dominant CJK text font, the absolute CB is
-     * correct, and <h-layer> sits at baseline with no JS probe /
+     * sizes from the dominant CJK text font, with no JS probe /
      * no per-font correction needed.
      *
      * Lesson: any time a placeholder pseudo uses a font-family
@@ -372,7 +395,15 @@
     }
 
     h-layer {
-      position: absolute;
+      /* Zero-width atomic box, baseline-aligned by its own text — the
+       * glyph overflows in the inline direction and paints over the
+       * ::after placeholder. `overflow` must stay `visible` (default):
+       * anything else moves an inline-block's baseline to its bottom
+       * margin edge and the alignment is gone.
+       * `text-indent: 0`: inline-block is a block container, so an
+       * inherited indent (prose `.poem-like` etc.) would push the mark. */
+      display: inline-block;
+      inline-size: 0;
       text-indent: 0;
     }
   }
@@ -380,8 +411,11 @@
 
 /* ─── 擠壓修正：只在「要擠壓」時（declared auto）─────────────────────
  *
- * A hangable mark's `<h-layer>` is out of flow, so the engine can no longer
- * squeeze the mark that sits BESIDE it — on either side. Both repairs below
+ * A hangable mark's `<h-layer>` is an atomic inline box, and pair-squeeze
+ * dies across atomic boxes (workspace ledger: pair-squeeze-and-markup.md;
+ * the previous abspos layer was equally unsqueezable, so the repairs
+ * predate the box change) — the engine cannot squeeze the mark that sits
+ * BESIDE it, on either side. Both repairs below
  * exist only because squeeze is wanted, so they gate on the DECLARED
  * `--han-punctuation-refinement: auto` (the cascade var carries the declared
  * mode, before the native-engine downgrade to `hang`). A user who explicitly
