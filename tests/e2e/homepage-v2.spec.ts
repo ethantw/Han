@@ -16,19 +16,23 @@ import { test, expect } from '@playwright/test'
  */
 
 // The seven stations in document order — Closing (data-wm="漢") is not a
-// `[data-station]`, so it is deliberately excluded. station②・字體排印 carries
-// NO watermark: its corner belongs to the lead-type forme (lead-forme.css
-// § corner), so the glyph list has six entries for seven stations.
-const STATION_WM = ['語', '行', '段', '零', '格', '碼']
+// `[data-station]`, so it is deliberately excluded. Three stations carry NO
+// watermark, each because its corner belongs to a spectacle of its own:
+// station①・語意（1c26740 的六列 mark diagram）、station②・字體排印
+// （lead-type forme，lead-forme.css § corner）、station③・行文（破折號
+// 熔接底圖）。playground 的字改「樂」（ab6210b）。四entries for seven.
+const STATION_WM = ['段', '零', '樂', '碼']
 
-test('the stations carry their watermark glyphs 語行段零格碼 (station② has none)', async ({ page }) => {
+test('the stations carry their watermark glyphs 段零樂碼 (①②③ have none)', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.locator('main [data-station]')).toHaveCount(7)
   await expect(page.locator('main #station-fonts[data-wm]')).toHaveCount(0)
+  await expect(page.locator('main #station-semantics[data-wm]')).toHaveCount(0)
+  await expect(page.locator('main #station-lines[data-wm]')).toHaveCount(0)
 
   const stations = page.locator('main [data-station][data-wm]')
-  await expect(stations).toHaveCount(6)
+  await expect(stations).toHaveCount(4)
 
   const marks = await stations.evaluateAll((els) =>
     els.map((el) => el.getAttribute('data-wm')),

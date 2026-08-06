@@ -12,9 +12,6 @@
  *
  *   • `initSnippet` — station④'s code panes, now a SUBSCRIBER to the
  *     console's `han-config-change` event (the future <han-snippet>).
- *   • `initDemoLang` — borrows the component's `reapplyFallbacks` method.
- *   • `initWritingSwitch` — 橫排/直排 floating pill (preview state,
- *     outside the console — not a han.css variable).
  *   • `initConsoleCollapse` — the `.ConsoleToggle` handle that opens/closes the
  *     side console's column (`<han-console collapsed>`, a page-LAYOUT hook).
  *   • `initLangSwitcher` / `initTheme` — top-nav chrome, unchanged.
@@ -33,8 +30,6 @@ import { initBrandGlyph } from '/home/brand-glyph.js'
 // gate-open (below) so its module graph + 3 shadow sheets don't compete
 // with the main content / the stroke ceremony's thread. Until it upgrades,
 // its light-DOM `.ConsoleLoading` fallback shows the 字徽 loader (home.css).
-import { initDemoLang } from '/home/demo-lang.js'
-import { initWritingSwitch } from '/home/writing-switch.js'
 import { initConsoleCollapse } from '/home/console-collapse.js'
 import { initSnippet } from '/home/snippet.js'
 import { initLeadForme } from '/home/lead-forme.js'
@@ -85,12 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initBrandGlyph()
   // <han-console> self-initializes on connect (async: adopt sheets → inject
   // template → dispatch the initial han-config-change). Boot order:
-  // demo-lang borrows its `reapplyFallbacks`; the snippet subscribes to
-  // its event (the console's async init dispatch lands after this handler,
-  // and the snippet also seeds from the console's `config` getter as a
-  // belt-and-suspenders against the boot race).
+  // the snippet subscribes to the console's event (the console's async init
+  // dispatch lands after this handler, and the snippet also seeds from the
+  // console's `config` getter as a belt-and-suspenders against the boot race).
+  // playground（gate 後才 import）借它的 reapplyFallbacks，先取好引用。
   const $console = document.querySelector('han-console')
-  initDemoLang(($target) => $console?.reapplyFallbacks($target))
   initSnippet()
   // station②'s isometric lead-type forme (builds its SVG + wires its face／
   // punctuation form). Settled is the CSS default; the drop plays on reveal.
@@ -101,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // station②'s per-language punctuation demo — its selects mirror the console's
   // per-language punctuation controls (single source of truth = console config).
   initPunctLang()
-  initWritingSwitch()
   initConsoleCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
@@ -151,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // the copy is hidden until the gate opens anyway.
     await import('/components/han-console.js')
     const { initPlayground } = await import('/home/playground.js')
-    // 借主控台的 reapplyFallbacks（同 initDemoLang）：預覽每次重繪都是一棵新
+    // 借主控台的 reapplyFallbacks：預覽每次重繪都是一棵新
     // 子樹，han.js 的 `<h-char>`／`<h-iss>` 包裹得重跑，*.with-js.css 才有東西
     // 可選。走主控台而不是直接 import installFallbacks，讀者的開關才算話。
     initPlayground(($target) => $console?.reapplyFallbacks($target))

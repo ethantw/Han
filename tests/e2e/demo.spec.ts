@@ -4,22 +4,24 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/manual/demo.html')
 })
 
-test('demo page renders 16 sections', async ({ page }) => {
-  await expect(page.locator('body > main section')).toHaveCount(16)
+test('demo page renders 17 sections', async ({ page }) => {
+  await expect(page.locator('body > main section')).toHaveCount(17)
 })
 
 test('cell counts: standard / autospace-replace / pure-display grids', async ({ page }) => {
-  // 59 on/off pairs across the 14 standard sections (most run 4 langs ×
-  //   on/off = 8 cells; a few sections carry extra locale cells)   = 118
+  // 60 on/off pairs across the standard sections (most run 4 langs ×
+  //   on/off = 8 cells; a few sections carry extra locale cells;
+  //   ruby's 注音位置增補添了第 60 對)                              = 120
   //  1 autospace-replace section × 8 cells (4 lang × replace/strict) =  8
-  //  1 pure-display section × 4 cells (4 lang only)                 =  4
-  // Total cells under .demo-grid:                                    130
-  await expect(page.locator('.demo-grid > article')).toHaveCount(130)
-  await expect(page.locator('.demo-grid > .demo-on')).toHaveCount(59)
-  await expect(page.locator('.demo-grid > .demo-off')).toHaveCount(59)
+  //  2 pure-display sections × 4 cells (poem 4 lang;
+  //    zhuyin-position 直橫 × over/inter-character)                  =  8
+  // Total cells under .demo-grid:                                    136
+  await expect(page.locator('.demo-grid > article')).toHaveCount(136)
+  await expect(page.locator('.demo-grid > .demo-on')).toHaveCount(60)
+  await expect(page.locator('.demo-grid > .demo-off')).toHaveCount(60)
   await expect(page.locator('.demo-grid > .demo-replace')).toHaveCount(4)
   await expect(page.locator('.demo-grid > .demo-strict')).toHaveCount(4)
-  await expect(page.locator('.demo-grid.pure-display > article')).toHaveCount(4)
+  await expect(page.locator('.demo-grid.pure-display > article')).toHaveCount(8)
 })
 
 test('hanging-punct CSS effect on in zh-Hans ON cell, off in zh-Hans OFF cell', async ({ page, browserName }) => {
@@ -40,11 +42,14 @@ test('hanging-punct CSS effect on in zh-Hans ON cell, off in zh-Hans OFF cell', 
   await expect(onCell.locator('h-layer').first()).toBeAttached()
   await expect(offCell.locator('h-layer').first()).toBeAttached()
 
-  const onPos  = await onCell.locator('h-layer').first().evaluate(el => getComputedStyle(el).position)
-  const offPos = await offCell.locator('h-layer').first().evaluate(el => getComputedStyle(el).position)
+  // 2026-08-06：懸掛層由 abspos 改為零寬 inline-block（docs/notes/
+  // 2026-08-06-hangable-baseline-vs-static-position.md）——ON 格吃到
+  // gate 裡的 display: inline-block，OFF 格維持素 inline。
+  const onDisp  = await onCell.locator('h-layer').first().evaluate(el => getComputedStyle(el).display)
+  const offDisp = await offCell.locator('h-layer').first().evaluate(el => getComputedStyle(el).display)
 
-  expect(onPos).toBe('absolute')
-  expect(offPos).not.toBe('absolute')
+  expect(onDisp).toBe('inline-block')
+  expect(offDisp).not.toBe('inline-block')
 })
 
 test('em ON cells get text-emphasis, OFF cells fall back to UA italic', async ({ page }) => {

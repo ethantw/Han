@@ -222,8 +222,8 @@
 /* ─── SpecimenSwitch（站②尾巴：四語樣張的行向與字體） ──────────────────
  * 兩顆藥丸，收在擠壓那段之後——讀完「行首行尾、連續標點，一次到位」就地
  * 試：撥直排換一組行首行尾的規矩，換一種字體換一份 GPOS 表。作用範圍只有
- * 上面那四格 .PunctLang 樣張，不動整頁（頁面級的行向預覽是另一回事，見
- * home/writing-switch.js，那顆浮動 pill 目前沒有 markup）。
+ * 上面那四格 .PunctLang 樣張，不動整頁（頁面級的直排預覽已退役，
+ * 直排示範歸 bare.html 的示例開關）。
  *
  * 與鉛字盤那組 `.Controls`（lead-forme.css § .Controls）是同一套語彙——
  * fieldset 作藥丸、`.PillHead` span 作頭標、radio 藏起來只留標籤——但**不共用類

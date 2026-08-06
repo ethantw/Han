@@ -206,21 +206,10 @@ test.describe('mobile bottom sheet', () => {
   })
 })
 
-test.describe('demo-lang chips', () => {
-  test('繁 active by default; 日 chip → main[lang=ja]; 繁 chip → back', async ({ page }) => {
-    await page.goto('/')
-    const main = page.locator('main')
-    await expect(main).toHaveAttribute('lang', 'zh-Hant')
+// demo-lang chips（.DemoLangSwitch）已在首頁改版移除（e1c32a0 § Step 10）
+// ——樣張語言不再有頁面級切換，對應測試一併退役。
 
-    await page.locator('[data-demo-lang] label:has(input[value="ja"])').click()
-    await expect(main).toHaveAttribute('lang', 'ja')
-
-    await page.locator('[data-demo-lang] label:has(input[value="zh-Hant"])').click()
-    await expect(main).toHaveAttribute('lang', 'zh-Hant')
-  })
-})
-
-test.describe('metrics — weight slider + writing-mode switch', () => {
+test.describe('metrics — weight slider', () => {
   test('字重 slider fill 700 → main font-weight 700', async ({ page }) => {
     await page.goto('/')
     const main = page.locator('main')
@@ -230,20 +219,15 @@ test.describe('metrics — weight slider + writing-mode switch', () => {
     await expect(main).toHaveCSS('font-weight', '700')
   })
 
-  test('floating 直排 pill → main[data-writing=vertical]', async ({ page }) => {
-    // the 橫排/直排 switch moved out of the console to page chrome
-    // (writing-switch.js) — preview state, not a han.css variable.
-    await page.goto('/')
-    const main = page.locator('main')
-    await expect(main).toHaveAttribute('data-writing', 'horizontal')
-
-    await page.locator('[data-writing-switch] label:has(input[value="vertical"])').click()
-    await expect(main).toHaveAttribute('data-writing', 'vertical')
-  })
+  // 直排 pill（[data-writing-switch]）已退役——首頁不再提供整頁直排預覽
+  // （直排示範歸 bare.html 的示例開關），對應測試刪除。
 })
 
 test.describe('fallbacks — JS layer', () => {
-  test('checking fallbacks installs h-iss on main; unchecking removes them', async ({ page }) => {
+  test('checking fallbacks installs h-char on main; unchecking removes them', async ({ page }) => {
+    // 探針用 h-char 不用 h-iss：Chromium 已原生支援 text-autospace，
+    // ISS pass 依設計讓位（CSS.supports gate）、一顆 h-iss 都不會出。
+    // 懸掛（hanging-punctuation）Chromium 仍無原生 ⇒ h-char 穩定存在。
     await page.goto('/')
     const main = page.locator('main')
 
@@ -252,12 +236,12 @@ test.describe('fallbacks — JS layer', () => {
 
     await fallbacks.check()
     await expect
-      .poll(() => main.locator('h-iss').count())
+      .poll(() => main.locator('h-char').count())
       .toBeGreaterThan(0)
 
     await fallbacks.uncheck()
     await expect
-      .poll(() => main.locator('h-iss').count())
+      .poll(() => main.locator('h-char').count())
       .toBe(0)
   })
 })

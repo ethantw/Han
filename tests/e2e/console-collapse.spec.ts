@@ -52,11 +52,16 @@ test.describe('Task B — collapsible side console', () => {
     const mainAfter = await box(page, 'main')
     expect(mainAfter.width).toBeGreaterThan(mainBefore.width)
 
-    // Not an overlay: the console is clipped to ~0 width, so it can't sit on
-    // top of main's content.
-    const consoleAfter = await box(page, 'han-console')
-    expect(consoleAfter.width).toBeLessThan(2)
-    expect(consoleAfter.right).toBeLessThanOrEqual(mainAfter.x + 2)
+    // Not an overlay — but the mechanism changed (d4bb37a): the console is a
+    // FIXED panel that stays put at 0..280; collapsing removes the body's
+    // padding so header + main slide left OVER it. The invariant that
+    // matters is z-order: anywhere in the old console column, hit-testing
+    // must reach main's content, never the console.
+    const covered = await page.evaluate(() => {
+      const hits = [200, 400, 600].map((y) => document.elementFromPoint(140, y))
+      return hits.every(($el) => $el !== null && !$el.closest('han-console'))
+    })
+    expect(covered).toBe(true)
   })
 
   test('state persists across reload (restored pre-paint, collapsed on first frame)', async ({ page }) => {

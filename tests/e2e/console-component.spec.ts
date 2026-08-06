@@ -28,7 +28,7 @@ const DEFAULT_KEYS = [
   'semantics', 'citeTitleMarks', 'emSymbol', 'emPosition',
   'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
-  'zhuyinWebfont', 'baseGeneric', 'fallbacks', 'jsMode',
+  'zhuyinWebfont', 'zhuyinPosition', 'baseGeneric', 'fallbacks', 'jsMode',
   // 逐函式取捨（jsMode='manual' 時才有意義），掛在 fallbacks 底下。與
   // heritage／punct 同樣是一個巢狀物件，控件用 `fn.<id>` 的點路徑對應。
   'fn',
@@ -62,10 +62,10 @@ test.describe('bare fixture — no home.css', () => {
     await expect($console).toBeVisible() // upgraded → :not(:defined) guard released
 
     // Token fallback: with no `--ui-*` on the page, `:host`'s
-    // `--_panel` resolves to its literal light-dark() fallback
-    // (color-paper-deep #fafaf7 in light) — the console actually paints.
+    // `--_console-bg` resolves to its literal light-dark() fallback
+    // (color-console #fafafa in light) — the console actually paints.
     const bg = await $console.evaluate(el => getComputedStyle(el).backgroundColor)
-    expect(bg).toBe('rgb(250, 250, 247)')
+    expect(bg).toBe('rgb(250, 250, 250)')
 
     // A control change still writes `--han-*` onto `:root` — the same
     // landing spot the generated snippet's `:root { … }` rule uses
