@@ -21,8 +21,6 @@ const $console = document.querySelector('han-console')
 const $main = document.querySelector('main')
 const $tools = document.querySelector('#tools')
 const $open = document.querySelector('#tools-open')
-const $vertical = document.querySelector('#vertical')
-const $dark = document.querySelector('#dark')
 
 /* ── 控制台開合 ──
  * `show()` 而非 `showModal()`：沒有 backdrop、不鎖焦點——撥一個開關就看得
@@ -85,49 +83,40 @@ const applyFallbacksChunked = async (config) => {
   }
 }
 
-/* ── 直排 ──
- * checkbox 不自己動手——它撥 console 的書寫方向控件、由 console 的單一
- * 管線（cssVars → :root ＋ han-config-change）落地，兩個入口永不漂移；
- * 事件回來時再同步 checkbox 狀態。 */
-const setConsoleWritingMode = (mode) => {
-  const $ctl = $console.shadowRoot?.querySelector('[data-cfg-key="writingMode"]')
-  if (!$ctl || $ctl.value === mode) return
-  $ctl.value = mode
-  $ctl.dispatchEvent(new Event('input', { bubbles: true }))
+/* ── 示例開關 ──
+ * 五顆開關住在 console 的 shadow 裡（`<han-console demo>`），狀態由元件鏡射
+ * 成 <html data-demo-*>，畫面幾乎全部交給 CSS。這裡只接三件 CSS 做不到的
+ * 事：直排要套真的 writing-mode 與鏡射變數、捲軸要回行首、深色要寫回偏好。
+ *
+ * 直排**不進 config、不進生成碼**：鏡射變數的落點依標記而定（要寫在自己的
+ * 直排容器上，不是無腦 :root），把它做成全域設定會教錯人。這裡是預覽，
+ * 落在 main 與 :root 剛好對——因為整頁就是那個直排容器。 */
+const applyVertical = (on) => {
+  $main.style.writingMode = on ? 'vertical-rl' : ''
+  // 凡寫 writing-mode 處鏡射一行——注音的 salt 與 inter-character 讓位都讀它
+  document.documentElement.style.setProperty('--han-writing-mode', on ? 'vertical-rl' : 'horizontal-tb')
+  /* 捲軸帶回行首：直排 vertical-rl 的起點在**右**邊，沿用原本的位置會落在
+   * 文末。等一幀讓重排先算完（實測當場捲會被夾回 0）。 */
+  requestAnimationFrame(() => {
+    scrollTo({ left: on ? document.documentElement.scrollWidth : 0, top: 0 })
+  })
 }
 
-$vertical.addEventListener('input', () => {
-  setConsoleWritingMode($vertical.checked ? 'vertical-rl' : 'horizontal-tb')
+addEventListener('han-demo-change', (e) => {
+  const { key, on } = e.detail
+  if (key === 'vertical') applyVertical(on)
+  if (key === 'dark') {
+    try {
+      localStorage.setItem('theme', on ? 'dark' : 'light')
+    } catch { /* 存取被封鎖：本次仍生效，只是不留到下次 */ }
+  }
 })
 
-/* ── 深色 ──
- * 畫面由 CSS 的 :root:has(input[name='dark-mode']:checked) 負責；初值由
- * 控制台裡的 pre-paint script 還原。這裡只寫回偏好（'theme' 鍵與首頁
- * ／手冊共用，跨站帶著走）。 */
-$dark.addEventListener('input', () => {
-  try {
-    localStorage.setItem('theme', $dark.checked ? 'dark' : 'light')
-  } catch { /* 存取被封鎖：本次仍生效，只是不留到下次 */ }
-})
-
-/* ── 直排狀態同步 ＋ 生成碼 ── */
+/* ── 生成碼 ── */
 const $codeHtml = document.querySelector('#code-html')
 const $codeCss = document.querySelector('#code-css')
 
-/* 前一次的書寫方向。不能拿 checkbox 的狀態來比——從 checkbox 發動時，
- * 原生點擊早在事件繞一圈回來之前就把它勾好了，比出來永遠是「沒變」。 */
-let lastWritingMode = 'horizontal-tb'
-
 addEventListener('han-config-change', (e) => {
-  const vertical = e.detail.config.writingMode === 'vertical-rl'
-  const changed = e.detail.config.writingMode !== lastWritingMode
-  lastWritingMode = e.detail.config.writingMode
-  $main.style.writingMode = vertical ? 'vertical-rl' : ''
-  $vertical.checked = vertical
-  // 切了方向就把捲軸帶回行首：直排 vertical-rl 的起點在**右**邊，沿用
-  // 原本的捲動位置會落在文末，看起來像跳到別的地方去了。
-  // 必須等分塊安裝跑完再捲：那一輪會改寫上萬個節點，重排會把先捲好的位置
-  // 洗掉（實測——當場捲或只等一幀，都會被夾回 0）。
   /* 度量鏡射到 `:root`。元件把 `--console-metric-*` 寫在 `body` 上（與生成碼
    * 的 `body { … }` 同層），而繼承只往下走——`:root` 讀不到自己子孫身上的
    * 變數。從 config 取值再寫一份上去，rem 與 em 制的東西（正文行長、標註
@@ -142,10 +131,7 @@ addEventListener('han-config-change', (e) => {
    * 而重裝要走一萬兩千個節點，每一格都跑會卡死。 */
   if (e.detail.source === 'metrics') return
 
-  applyFallbacksChunked(e.detail.config).then(() => {
-    if (!changed) return
-    scrollTo({ left: vertical ? document.documentElement.scrollWidth : 0, top: 0 })
-  })
+  applyFallbacksChunked(e.detail.config)
 
   // 配好就能複製走——renderCDN 是首頁站⑥同一支 codegen，不另寫一份。
   const blocks = renderCDN(e.detail.config)

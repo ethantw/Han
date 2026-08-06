@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-demo-measure data-demo-chrome>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,19 +36,43 @@
      初值由控制台裡緊接該 checkbox 的 pre-paint inline script 還原
      （免 FOUC），bare.js 只負責寫回 localStorage（'theme' 鍵，與首頁
      ／手冊互通）。 */
-  :root {
-    color-scheme: light;
-    /* 度量三支落在 `:root`，所以 rem 與所有 em 制的東西（正文行長 45em、
-       標註字級）都跟著走。變數由 bare.js 從 config.metrics 鏡射上來——
-       元件自己是寫在 `body` 上的，而繼承只往下走，`:root` 讀不到。
-       工具 chrome 一律用 px（見下），才不會被拖大。 */
+  :root { color-scheme: light; }
+  :root[data-demo-dark] { color-scheme: dark; }
+
+  /* 兩端對齊。han 的 prose 本來只把 <article> 裡的 <p> 兩端對齊
+     （--han-prose-alignment-for-article-p），這顆開關把整份內容一起拉齊，
+     好看行尾懸掛與擠壓在對齊壓力下的表現。預設不勾。 */
+  :root[data-demo-justify] main { text-align: justify; }
+
+  /* 行長，自成一顆開關——與結構標註分家：一個是「看骨架」，一個是
+     「看排版」，兩件事該分得開。han.css 本身不管行長，所以關掉就是瀏覽器
+     給的全寬，那是誠實的素態。 */
+  :root[data-demo-measure] main {
+    /* 欄寬。`vi` 是**行內軸**的視窗單位，所以這一條直橫排通用：橫排時
+       100vi ＝ 視窗寬，直排時 ＝ 視窗高，不必寫兩份（Baseline 2023）。
+       `round(down, …, 1rem)` 把欄寬吸附到整數 rem —— 根字級固定 16px，
+       也就是整數個漢字寬，行末不會剩下半格。**無條件捨去**而不是四捨五入：
+       實測 520px 高的視窗會被四捨五入成 528px，比視窗還高，吸附與貼合同時
+       落空。round() 是 Baseline 2024，沒有的引擎吃上面那條沒有 round 的
+       宣告，行為一樣、只是不吸附。 */
+    max-inline-size: clamp(20rem, 100vi, 40rem);
+    max-inline-size: round(down, clamp(20rem, 100vi, 40rem), 1rem);
+    margin-inline: auto;
+  }
+
+
+  /* 度量三支落在 `body`，不是 `:root`——這正是 console 生成碼裡那條
+     `body { font-size; line-height; font-weight }`，同一層。
+     不放 `:root` 的理由是 rem：控制台的 shadow 樣式有十七處 rem，而 rem 永遠
+     對根字級解析、從外面蓋不掉——字級一拖整個控制台跟著縮放。落在 body 則根
+     字級不動、chrome 全免疫，拉桿只管示例內容。變數由 bare.js 從
+     config.metrics 鏡射到 `:root`，這裡繼承得到。 */
+  body {
+    margin: 0;
     font-size: var(--console-metric-size, 16px);
     line-height: var(--console-metric-leading, 1.75);
     font-weight: var(--console-metric-weight, 400);
   }
-  :root:has(input[name='dark-mode']:checked) { color-scheme: dark; }
-
-  body { margin: 0; }
 
   /* 叫用鈕：右下角浮鈕，圖標取自 icons.css 的 --icon-console。 */
   .ToolsFab {
@@ -61,9 +85,12 @@
     inline-size: 44px;
     block-size: 44px;
     /* 表單控件不吃繼承的排版——不寫的話 UA 會塞它自己的 Arial 13.333px */
+    /* 控制台有自己的排版，不隨度量拉桿走（拉桿只管示例內容）。
+       表單控件連字族都不繼承——不寫的話 UA 會塞它自己的 Arial 13.333px。 */
     font-family: var(--han-sans, sans-serif);
     font-size: 1.25rem;
     line-height: 1;
+    font-weight: 400;
     border: 1px solid light-dark(#ccc6bc, #4a4640);
     border-radius: 50%;
     background: light-dark(#fffefc, #262421);
@@ -98,7 +125,10 @@
     color: light-dark(#2a2825, #d9d5cf);
     box-shadow: 0 6px 28px light-dark(#0003, #0008);
     overflow: hidden;
+    /* 控制台自己的排版，不隨拉桿走（rem 對根字級，而根字級不動）。 */
     font-size: .75rem;
+    line-height: 1.35;
+    font-weight: 400;
   }
   .Tools > header {
     display: flex;
@@ -163,38 +193,39 @@
   }
 
   /* ── 二・結構標註層：#chrome 取消勾選即整層失效 ────────────── */
-  :root:has(#chrome:checked) {
+  :root[data-demo-chrome] {
     & body {
       background: light-dark(#faf9f7, #1c1b1a);
       color: light-dark(#2a2825, #d9d5cf);
-    }
-    /* 行長。han.css 不管這件事，所以素態＝瀏覽器給的全寬（誠實），
-       標註態才收成一欄像樣的閱讀寬度。邏輯屬性：直排下 inline 軸是
-       垂直的，這條自動變成「欄高」——正是直排要的那個量。 */
-    & main {
-      max-inline-size: 45em;
-      margin-inline: auto;
-      padding-inline: 1.5rem;
     }
 
     /* 語意 block 元素可視化：虛線框＋左上角元素名標籤 */
     & main :is(article, section, blockquote, figure, ol, ul, dl, table) {
       position: relative;
       outline: 1px dashed var(--_tag-c, light-dark(#b8b2a8, #6b655c));
-      outline-offset: 4px;
     }
+    /* 標籤是一塊貼著元素上緣的色片（inset-block-end: 100% ⇒ 緊貼、不浮空、
+       也不蓋到內文），底色即該類元素的識別色，字反白。平時 .625 讓它退到
+       背景去，游標移上去才實體化。 */
     & main :is(article, section, blockquote, figure, ol, ul, dl, table)::before {
       content: var(--_tag, '');
       position: absolute;
-      inset-block-start: -1.5em;
+      inset-block-end: 100%;
       inset-inline-start: 0;
       font-weight: 500;
       font-size: .625rem;
       line-height: 1;
       font-family: var(--han-monospace, ui-monospace, monospace);
-      color: var(--_tag-c);
-      background: light-dark(#faf9f7dd, #1c1b1add);
-      padding: .15em .35em;
+      color: light-dark(#fff, #17161a);
+      background: var(--_tag-c);
+      padding: .2em .4em;
+      border-start-start-radius: .25em;
+      border-start-end-radius: .25em;
+      opacity: .625;
+      transition: opacity .12s ease-out;
+    }
+    & main :is(article, section, blockquote, figure, ol, ul, dl, table):hover::before {
+      opacity: 1;
     }
     & main article    { --_tag: '<article>';    --_tag-c: light-dark(#4a7bb5, #7ea8d8); }
     & main section    { --_tag: '<section>';    --_tag-c: light-dark(#8a8377, #99917f); }
@@ -228,6 +259,18 @@
 <script type="module" src="/bare.js"></script>
 </head>
 <body>
+<!--
+  唯一一支 pre-paint script（web-style 的既定例外）：第一幀之前就把深色偏好
+  寫成 <html> 上的屬性，畫面不閃白。控制台是後到的，掛載時照這個屬性把開關
+  撥對（han-console § mountDemoSwitches），而不是反過來推翻已經畫好的畫面。
+-->
+<script>
+  try {
+    const saved = localStorage.getItem('theme')
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+    document.documentElement.toggleAttribute('data-demo-dark', dark)
+  } catch {}
+</script>
 <!-- 工具全收進非模態 <dialog>：內容區一件 chrome 也不留，正文行長是
      瀏覽器給的真值。叫用鈕浮在右下角。 -->
 <button type="button" class="ToolsFab" id="tools-open" aria-expanded="false"
@@ -249,21 +292,6 @@
         <option value="ko">한국어</option>
       </select>
     </label>
-    <label><input type="checkbox" id="vertical">直排</label>
-    <label><input type="checkbox" name="dark-mode" id="dark">深色</label>
-    <!--
-      唯一一支 pre-paint script（web-style 的既定例外）：在解析到的那一刻
-      就把 checkbox 的狀態還原，讓 :root:has(:checked) 在第一幀就是深色，
-      不閃白。寫回由 bare.js 負責，共用首頁的 'theme' 鍵。
-    -->
-    <script>
-      try {
-        const $dark = document.querySelector('#dark')
-        const saved = localStorage.getItem('theme')
-        $dark.checked = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
-      } catch {}
-    </script>
-    <label><input type="checkbox" id="chrome" checked>顯示結構標註</label>
   </div>
 
   <!--
@@ -273,7 +301,7 @@
     target 解析不到元素時 console 直接跳過安裝（console-config.js 的
     `if (!$target) return`），改由 bare.js 逐區塊安裝——見該檔 § 分塊安裝。
   -->
-  <han-console form="side" target="#han-install-disabled"></han-console>
+  <han-console form="side" target="#han-install-disabled" demo></han-console>
 
   <details id="codegen">
     <summary>生成的引入碼 <button type="button" id="copy-code">複製</button></summary>
@@ -348,13 +376,13 @@
     <p>（編按：瞬移艙之衣物行李列為「附屬質量」，公告損失率為千萬分之三。又，宮內廳內規載明，皇位繼承順位前三位者不得搭乘瞬移艙。此一內規行之數十年，理由從未公開説明。上皇讓位後已不在順位之列，據宮內廳表示，其本人「表達過興趣」。）</p>
     <h2>弘宙之爭　議十九日</h2>
     <p>「弘宙」二字，取<cite>淮南子・齊俗訓</cite>「往古來今謂之宙」。有識者會議九人，議十九日。爭點不在出處，在那個「宙」字——守舊派以為年號當言治世之德，「宙」是地理名詞，且是別的地方的地理。</p>
-    <p>主張採用者東塚暖香的理由只有一句，會議紀錄逐字收錄：<q>絕大多數國民已經<em>不住在這座列島上</em>了。</q></p>
+    <p>主張採用者東塚暖香的理由只有一句，會議紀錄逐字收錄：「絕大多數國民已經<em>不住在這座列島上</em>了。」</p>
     <p>紀錄顯示，該句之後，會場靜默四十一秒。</p>
     <p>另據宮內廳事後説明，候補案共六，其中一案於初審階段即遭淘汰，原因與字義無涉：該案首字在宮內廳公文系統中顯示為一個空白方框。承辦官員大木憲三度回報<q>那個字，電腦顯示不出來</q>，系統顧問AI三度回覆<q>字就是字，請貴機關重新確認顯示設定</q>，往返十一次，未有結論。</p>
     <p>宮內廳表示，最終選定之二字「在所有已知系統中皆可正常顯示」。此語列於説明文件第七頁，未與出典並陳。</p>
     <h2>萬歲不能同時　五小時十七分傳畢</h2>
     <p>典禮末尾之萬歲三唱，本屆首度面臨一項無法迴避的技術問題：太陽系太大了。</p>
-    <p>正殿之內，首相領銜三唱，在場一千八百人隨之。此後，萬歲便以光速向外擴散。月城遲一・二八秒，火星轉播站遲十八分四十秒，木衛二歐羅巴殖民局遲卅五分十一秒，土星軌道群遲一小時十二分。最後一處為柯伊伯帶第七觀測站，遲五小時十七分——該站當值人員共四名，昨日依規定於本地收訊時刻齊聲高呼，站長事後受訪表示：「我們四個人，對著一個沒有空氣的地方喊。」</p>
+    <p>正殿之內，首相領銜三唱，在場一千八百人隨之。此後，萬歲便以光速向外擴散。月城遲一・二八秒，火星轉播站遲十八分四十秒，木衛二歐羅巴管理局遲卅五分十一秒，土星軌道群遲一小時十二分。最後一處為柯伊伯帶第七觀測站，遲五小時十七分——該站當值人員共四名，昨日依規定於本地收訊時刻齊聲高呼，站長事後受訪表示：「我們四個人，對著一個沒有空氣的地方喊。」</p>
     <p>宮內廳典儀課曾就「可否經智子同步」徵詢意見，結論為否。內部文件所載理由為：「萬歲須以耳聞之聲為之。」</p>
     <p>本報記者向該課求證此語出於何典，答覆為：「這是我們自己寫的。」</p>
     <figure>
@@ -363,7 +391,7 @@
         <tbody>
         <tr><td>月城</td><td>一・二八秒</td></tr>
         <tr><td>火星轉播站</td><td>十八分四十秒</td></tr>
-        <tr><td>木衛二歐羅巴殖民局</td><td>卅五分十一秒</td></tr>
+        <tr><td>木衛二歐羅巴管理局</td><td>卅五分十一秒</td></tr>
         <tr><td>土星軌道群</td><td>一小時十二分</td></tr>
         <tr><td>柯伊伯帶第七觀測站</td><td>五小時十七分</td></tr>
         </tbody>
@@ -529,7 +557,7 @@
     <h3>發行資訊</h3>
     <p>太陽中文報社・曙光線同步發行・第一四六〇七號。</p>
     <h4>訂閱</h4>
-    <p>各殖民地報亭均售；柯伊伯帶以遠採光速郵購，時效自負。</p>
+    <p>太陽系各地及南門二部分地區報亭均售；柯伊伯帶以遠採光速郵購，時效自負。</p>
     <h5>轉載</h5>
     <p>轉載須註明出處；經智子轉載者，視同已於發稿前轉載。</p>
     <h6>免責聲明</h6>
@@ -541,22 +569,22 @@
     <h2>模組 opt-out 對照</h2>
     <p>同一句樣張，各關掉一件事：</p>
     <h3>全效（對照基準）</h3>
-    <p>《太陽中文報》創刊於2126年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
+    <p>《太陽中文報》創刊至今已逾七十年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
     <h3>--han-semantics: off</h3>
     <div style="--han-semantics: off">
-      <p>《太陽中文報》創刊於2126年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
+      <p>《太陽中文報》創刊至今已逾七十年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
     </div>
     <h3>lines off（no-autospace ＋ refinement none）</h3>
     <div style="--han-text-autospace: no-autospace; --han-punctuation-refinement: none">
-      <p>《太陽中文報》創刊於2126年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
+      <p>《太陽中文報》創刊至今已逾七十年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
     </div>
     <h3>fonts off（標點與傳承字形退回系統）</h3>
     <div style="--han-punctuation-hant: off; --han-use-heritage-glyphs-for-hant: off">
-      <p>《太陽中文報》創刊於2126年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
+      <p>《太陽中文報》創刊至今已逾七十年，<em>每日</em>隨曙光線發行；〈編碼考〉一文詳述KOI-8始末。</p>
     </div>
     <h3>--han-prose: off（整篇）</h3>
     <article style="--han-prose: off">
-      <p>《太陽中文報》創刊於2126年，<em>每日</em>隨曙光線發行。（本段在 article 內，但整篇退出 prose——與上方文中的局部退出對照。）</p>
+      <p>《太陽中文報》創刊至今已逾七十年，<em>每日</em>隨曙光線發行。（本段在 article 內，但整篇退出 prose——與上方文中的局部退出對照。）</p>
     </article>
     <p><small>opt-out 全用 han 自己的變數 API（inline 宣告設在包裹元素上、作用於後代）——這些 inline style 是展品的一部分，不屬標註層。</small></p>
   </section>
@@ -639,7 +667,7 @@
     <p>宮内庁は、最終的に選ばれた二字が「既知のあらゆるシステムで正常に表示される」と述べている。この一文は説明文書の七ページ目にあり、<ruby>出典<rt>しゅってん</rt></ruby>とは並べて書かれていない。</p>
     <h2>万歳は同時にできない　五時間十七分で<ruby>伝<rt>つた</rt></ruby>わり<ruby>終<rt>お</rt></ruby>わる</h2>
     <p>儀式の最後の<ruby>万歳三唱<rt>ばんざいさんしょう</rt></ruby>は、今回はじめて<ruby>避<rt>さ</rt></ruby>けようのない技術的問題に<ruby>直面<rt>ちょくめん</rt></ruby>した。太陽系が広すぎるのである。</p>
-    <p>正殿の内では首相が<ruby>音頭<rt>おんど</rt></ruby>を取り、参列の千八百人が続いた。その後、万歳は光速で外へ広がっていった。月城は1.28秒、火星中継所は18分40秒、エウロパの<ruby>殖民局<rt>しょくみんきょく</rt></ruby>は35分11秒、土星<ruby>軌道群<rt>きどうぐん</rt></ruby>は一時間十二分、それぞれ遅れた。最後の一か所はカイパーベルト第七観測所で、遅れは五時間十七分。同観測所の当直は四名、規定どおり現地の受信時刻に<ruby>声<rt>こえ</rt></ruby>を<ruby>揃<rt>そろ</rt></ruby>えた。所長は後にこう語った。「われわれ四人で、空気のないところに向かって叫んだ」。</p>
+    <p>正殿の内では首相が<ruby>音頭<rt>おんど</rt></ruby>を取り、参列の千八百人が続いた。その後、万歳は光速で外へ広がっていった。月城は1.28秒、火星中継所は18分40秒、エウロパの<ruby>管理局<rt>かんりきょく</rt></ruby>は35分11秒、土星<ruby>軌道群<rt>きどうぐん</rt></ruby>は一時間十二分、それぞれ遅れた。最後の一か所はカイパーベルト第七観測所で、遅れは五時間十七分。同観測所の当直は四名、規定どおり現地の受信時刻に<ruby>声<rt>こえ</rt></ruby>を<ruby>揃<rt>そろ</rt></ruby>えた。所長は後にこう語った。「われわれ四人で、空気のないところに向かって叫んだ」。</p>
     <p>宮内庁典儀課は「<ruby>智子<rt>ソフォン</rt></ruby>で同期できないか」を<ruby>諮<rt>はか</rt></ruby>ったが、結論は否だった。内部文書に記された理由はこうである。「<ruby>万歳<rt>ばんざい</rt></ruby>は、耳に聞こえる声をもってなすべし」。</p>
     <p>本紙が<ruby>典拠<rt>てんきょ</rt></ruby>を<ruby>問<rt>と</rt></ruby>うと、同課の回答はこうだった。「これは、うちで書いたものだ」。</p>
     <figure>
@@ -648,7 +676,7 @@
         <tbody>
         <tr><td>月城</td><td>一・二八秒</td></tr>
         <tr><td>火星中継局</td><td>十八分四十秒</td></tr>
-        <tr><td>エウロパ植民局</td><td>三十五分十一秒</td></tr>
+        <tr><td>エウロパ管理局</td><td>三十五分十一秒</td></tr>
         <tr><td>土星軌道群</td><td>一時間十二分</td></tr>
         <tr><td>カイパーベルト第七観測所</td><td>五時間十七分</td></tr>
         </tbody>
@@ -812,7 +840,7 @@
     <h3>発行情報</h3>
     <p>太陽新聞社・曙光線同時発行・第一四六〇七号。</p>
     <h4>購読</h4>
-    <p>各植民地の売店で発売。カイパーベルト以遠は光速通販、日数は自己責任。</p>
+    <p>太陽系各地および<ruby>南門二<rt>なんもんに</rt></ruby>の一部地域の売店で発売。カイパーベルト以遠は光速通販、日数は自己責任。</p>
     <h5>転載</h5>
     <p>転載には出典明記のこと。智子経由の転載は、発稿前の転載と見なす。</p>
     <h6>免責事項</h6>
@@ -823,22 +851,22 @@
   <section>
     <h2>モジュール opt-out 対照</h2>
     <h3>全効（基準）</h3>
-    <p>『太陽新聞』は2126年創刊、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
+    <p>『太陽新聞』は創刊から七十年余、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
     <h3>--han-semantics: off</h3>
     <div style="--han-semantics: off">
-      <p>『太陽新聞』は2126年創刊、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
+      <p>『太陽新聞』は創刊から七十年余、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
     </div>
     <h3>lines off</h3>
     <div style="--han-text-autospace: no-autospace; --han-punctuation-refinement: none">
-      <p>『太陽新聞』は2126年創刊、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
+      <p>『太陽新聞』は創刊から七十年余、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
     </div>
     <h3>fonts off</h3>
     <div style="--han-punctuation-ja: off">
-      <p>『太陽新聞』は2126年創刊、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
+      <p>『太陽新聞』は創刊から七十年余、<em>毎日</em>曙光線とともに配達される；「符号考」はKOI-8の顛末を詳述する。</p>
     </div>
     <h3>--han-prose: off（全篇）</h3>
     <article style="--han-prose: off">
-      <p>『太陽新聞』は2126年創刊、<em>毎日</em>曙光線とともに配達される。（article 内だが全篇 prose 離脱。）</p>
+      <p>『太陽新聞』は創刊から七十年余、<em>毎日</em>曙光線とともに配達される。（article 内だが全篇 prose 離脱。）</p>
     </article>
   </section>
 
@@ -852,12 +880,12 @@
 <section lang="ko" hidden data-lang-pack>
 
   <h1><ruby>漢<rt>한</rt></ruby>.css <ruby>示例<rt>시례</rt></ruby></h1>
-  <p>이 페이지는 맨 HTML이다——<ruby>本文<rt>본문</rt></ruby> <ruby>領域<rt>영역</rt></ruby>에는 han.css 말고 어떤 페이지 CSS도 없다. 오른쪽 아래 <ruby>操縱臺<rt>조종대</rt></ruby>에서 <ruby>模塊<rt>모듈</rt></ruby>과 <ruby>機能<rt>기능</rt></ruby>을 켜고 끄면, <ruby>組版<rt>조판</rt></ruby>이 맨 <ruby>文書<rt>문서</rt></ruby>에 무엇을 하는지 그 자리에서 보인다. 「<ruby>構造<rt>구조</rt></ruby> <ruby>註記<rt>주기</rt></ruby> 표시」를 끄면 <ruby>出廠<rt>출창</rt></ruby> 그대로의 모습이다.</p>
-  <p><ruby>本文<rt>본문</rt></ruby>은 《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》 <span data-future-year>2126</span><ruby>年<rt>년</rt></ruby>의 <ruby>記事<rt>기사</rt></ruby> 세 편에서 가져왔다. <ruby>繁體<rt>번체</rt></ruby> <ruby>中國語<rt>중국어</rt></ruby>·<ruby>日本語<rt>일본어</rt></ruby>·<ruby>韓國語<rt>한국어</rt></ruby> 세 <ruby>言語<rt>언어</rt></ruby>를 나란히 짰다. <ruby>區塊<rt>구획</rt></ruby>마다 <ruby>元素<rt>원소</rt></ruby> 이름을 달았고, <ruby>段落<rt>단락</rt></ruby> 사이의 작은 글씨가 그 자리에서 쓰인 <ruby>模塊<rt>모듈</rt></ruby>·<ruby>元素<rt>원소</rt></ruby>·<ruby>技法<rt>기법</rt></ruby>을 설명한다.</p>
+  <p>이 페이지는 맨 HTML이다——<ruby>本文<rt>본문</rt></ruby> <ruby>領域<rt>영역</rt></ruby>에는 han.css 말고 어떤 페이지 CSS도 없다。오른쪽 아래 <ruby>操縱臺<rt>조종대</rt></ruby>에서 <ruby>模塊<rt>모듈</rt></ruby>과 <ruby>機能<rt>기능</rt></ruby>을 켜고 끄면、<ruby>組版<rt>조판</rt></ruby>이 맨 <ruby>文書<rt>문서</rt></ruby>에 무엇을 하는지 그 자리에서 보인다。「<ruby>構造<rt>구조</rt></ruby> <ruby>註記<rt>주기</rt></ruby> 표시」를 끄면 <ruby>出廠<rt>출창</rt></ruby> 그대로의 모습이다。</p>
+  <p><ruby>本文<rt>본문</rt></ruby>은 《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》 <span data-future-year>2126</span><ruby>年<rt>년</rt></ruby>의 <ruby>記事<rt>기사</rt></ruby> 세 편에서 가져왔다。<ruby>繁體<rt>번체</rt></ruby> <ruby>中國語<rt>중국어</rt></ruby>·<ruby>日本語<rt>일본어</rt></ruby>·<ruby>韓國語<rt>한국어</rt></ruby> 세 <ruby>言語<rt>언어</rt></ruby>를 나란히 짰다。<ruby>區塊<rt>구획</rt></ruby>마다 <ruby>元素<rt>원소</rt></ruby> 이름을 달았고、<ruby>段落<rt>단락</rt></ruby> 사이의 작은 글씨가 그 자리에서 쓰인 <ruby>模塊<rt>모듈</rt></ruby>·<ruby>元素<rt>원소</rt></ruby>·<ruby>技法<rt>기법</rt></ruby>을 설명한다。</p>
 
 
   <h2><ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby></h2>
-  <p>먼저 article에 기대지 않는 쪽부터. 시 한 편이 semantics <ruby>模塊<rt>모듈</rt></ruby>의 <ruby>擔當<rt>담당</rt></ruby> <ruby>範圍<rt>범위</rt></ruby>를 한 번에 보여 준다——<ruby>固有名詞<rt>고유명사</rt></ruby> 밑줄, <ruby>傍點<rt>방점</rt></ruby>, <ruby>書名號<rt>서명호</rt></ruby> 두 <ruby>樣式<rt>양식</rt></ruby>, <ruby>楷書<rt>해서</rt></ruby>로의 <ruby>轉調<rt>전조</rt></ruby>, <ruby>定義<rt>정의</rt></ruby>, <ruby>變數<rt>변수</rt></ruby>. <ruby>中國語<rt>중국어</rt></ruby> <ruby>作品<rt>작품</rt></ruby>이므로 <i>lang="zh-Hant"</i>를 달았다.</p>
+  <p>먼저 article에 기대지 않는 쪽부터。시 한 편이 semantics <ruby>模塊<rt>모듈</rt></ruby>의 <ruby>擔當<rt>담당</rt></ruby> <ruby>範圍<rt>범위</rt></ruby>를 한 번에 보여 준다——<ruby>固有名詞<rt>고유명사</rt></ruby> 밑줄、<ruby>傍點<rt>방점</rt></ruby>、<ruby>書名號<rt>서명호</rt></ruby> 두 <ruby>樣式<rt>양식</rt></ruby>、<ruby>楷書<rt>해서</rt></ruby>로의 <ruby>轉調<rt>전조</rt></ruby>、<ruby>定義<rt>정의</rt></ruby>、<ruby>變數<rt>변수</rt></ruby>。<ruby>中國語<rt>중국어</rt></ruby> <ruby>作品<rt>작품</rt></ruby>이므로 <i>lang="zh-Hant"</i>를 달았다。</p>
   <figure lang="zh-Hant" style="--han-cite-title-marks: bracket">
     <p class="poem-like">
       <span><u>美因茲</u><u>古騰堡</u>來信談編碼</span>
@@ -876,115 +904,115 @@
       <br />
       <span>終無定論，另見<cite>真實字符論</cite></span>
     </p>
-    <figcaption lang="ko"><ruby>四百年<rt>사백년</rt></ruby>을 건너는 <ruby>便紙<rt>편지</rt></ruby> 한 통——구텐베르크가 <ruby>符號化<rt>부호화</rt></ruby>를 묻고, 畢昇이 <ruby>統一<rt>통일</rt></ruby>로 답한다.</figcaption>
+    <figcaption lang="ko"><ruby>四百年<rt>사백년</rt></ruby>을 건너는 <ruby>便紙<rt>편지</rt></ruby> 한 통——구텐베르크가 <ruby>符號化<rt>부호화</rt></ruby>를 묻고、畢昇이 <ruby>統一<rt>통일</rt></ruby>로 답한다。</figcaption>
   </figure>
-  <p><small>나란한 두 <ruby>固有名詞<rt>고유명사</rt></ruby> 밑줄은 끊어져서 이어진다——<ruby>慣例<rt>관례</rt></ruby>이지 <ruby>誤植<rt>오식</rt></ruby>이 아니다. 이 밑줄은 <ruby>中國語<rt>중국어</rt></ruby>의 <ruby>符號<rt>부호</rt></ruby>이고 <ruby>韓國語<rt>한국어</rt></ruby> <ruby>組版<rt>조판</rt></ruby>에는 없다: 그래서 <i>lang</i>을 다는 값이 있다.</small></p>
+  <p><small>나란한 두 <ruby>固有名詞<rt>고유명사</rt></ruby> 밑줄은 끊어져서 이어진다——<ruby>慣例<rt>관례</rt></ruby>이지 <ruby>誤植<rt>오식</rt></ruby>이 아니다。이 밑줄은 <ruby>中國語<rt>중국어</rt></ruby>의 <ruby>符號<rt>부호</rt></ruby>이고 <ruby>韓國語<rt>한국어</rt></ruby> <ruby>組版<rt>조판</rt></ruby>에는 없다: 그래서 <i>lang</i>을 다는 값이 있다。</small></p>
 
   <article>
-    <h1>새 <ruby>天皇<rt>천황</rt></ruby>, 어제 다카미쿠라에 오르다　센묘 467<ruby>字<rt>자</rt></ruby>에 11<ruby>分<rt>분</rt></ruby>　'<ruby>皇配<rt>황배</rt></ruby>' <ruby>稱號<rt>칭호</rt></ruby> 정하는 데 31<ruby>日<rt>일</rt></ruby>　<ruby>年號<rt>연호</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 더 걸렸다　<ruby>結論<rt>결론</rt></ruby>은 넷 다 된다</h1>
+    <h1>새 <ruby>天皇<rt>천황</rt></ruby>、어제 다카미쿠라에 오르다　센묘 467<ruby>字<rt>자</rt></ruby>에 11<ruby>分<rt>분</rt></ruby>　'<ruby>皇配<rt>황배</rt></ruby>' <ruby>稱號<rt>칭호</rt></ruby> 정하는 데 31<ruby>日<rt>일</rt></ruby>　<ruby>年號<rt>연호</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 더 걸렸다　<ruby>結論<rt>결론</rt></ruby>은 넷 다 된다</h1>
     <blockquote>
-      <p><ruby>卽位禮<rt>즉위례</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>이 어제 <ruby>皇居<rt>황거</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>에서 열렸다. 새 <ruby>天皇<rt>천황</rt></ruby> 아키코 덴노는 고로젠노고호(<ruby>黃櫨染御袍<rt>황로염어포</rt></ruby>)를 입고 다카미쿠라(<ruby>高御座<rt>고어좌</rt></ruby>)에 올랐고, <ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>黑袍<rt>흑포</rt></ruby> <ruby>束帶<rt>속대</rt></ruby> 차림으로 미초다이(<ruby>御帳臺<rt>어장대</rt></ruby>)에 섰다. 센묘(<ruby>宣命<rt>선명</rt></ruby>)는 467<ruby>字<rt>자</rt></ruby>, 11분 4초였다. <ruby>皇配<rt>황배</rt></ruby> <ruby>稱號<rt>칭호</rt></ruby>는 네 <ruby>案<rt>안</rt></ruby>이 나란히 올라 <ruby>宮內廳<rt>궁내청</rt></ruby>이 31<ruby>日<rt>일</rt></ruby>을 썼다. 새 <ruby>年號<rt>연호</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 길었고, <ruby>結論<rt>결론</rt></ruby>은 네 <ruby>案<rt>안</rt></ruby> 모두 可였다. <ruby>年號<rt>연호</rt></ruby> '<ruby>弘宙<rt>홍주</rt></ruby>'는 『<ruby>淮南子<rt>회남자</rt></ruby>』에서 왔다. <ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>가 다툰 것은 <ruby>年號<rt>연호</rt></ruby>에 <ruby>宇宙<rt>우주</rt></ruby>를 가리키는 글자를 써도 되느냐였다. <ruby>萬歲<rt>만세</rt></ruby>는 <ruby>同時<rt>동시</rt></ruby>에 할 수 없었다——<ruby>光速<rt>광속</rt></ruby>에 막혀 <ruby>月城<rt>월성</rt></ruby>은 1.28초, 에우로파는 35분, 가장 먼 한 곳은 5시간 17분 늦었다.</p>
+      <p><ruby>卽位禮<rt>즉위례</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>이 어제 <ruby>皇居<rt>황거</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>에서 열렸다。새 <ruby>天皇<rt>천황</rt></ruby> 아키코 덴노는 고로젠노고호(<ruby>黃櫨染御袍<rt>황로염어포</rt></ruby>)를 입고 다카미쿠라(<ruby>高御座<rt>고어좌</rt></ruby>)에 올랐고、<ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>黑袍<rt>흑포</rt></ruby> <ruby>束帶<rt>속대</rt></ruby> 차림으로 미초다이(<ruby>御帳臺<rt>어장대</rt></ruby>)에 섰다。센묘(<ruby>宣命<rt>선명</rt></ruby>)는 467<ruby>字<rt>자</rt></ruby>、11분 4초였다。<ruby>皇配<rt>황배</rt></ruby> <ruby>稱號<rt>칭호</rt></ruby>는 네 <ruby>案<rt>안</rt></ruby>이 나란히 올라 <ruby>宮內廳<rt>궁내청</rt></ruby>이 31<ruby>日<rt>일</rt></ruby>을 썼다。새 <ruby>年號<rt>연호</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 길었고、<ruby>結論<rt>결론</rt></ruby>은 네 <ruby>案<rt>안</rt></ruby> 모두 可였다。<ruby>年號<rt>연호</rt></ruby> '<ruby>弘宙<rt>홍주</rt></ruby>'는 『<ruby>淮南子<rt>회남자</rt></ruby>』에서 왔다。<ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>가 다툰 것은 <ruby>年號<rt>연호</rt></ruby>에 <ruby>宇宙<rt>우주</rt></ruby>를 가리키는 글자를 써도 되느냐였다。<ruby>萬歲<rt>만세</rt></ruby>는 <ruby>同時<rt>동시</rt></ruby>에 할 수 없었다——<ruby>光速<rt>광속</rt></ruby>에 막혀 <ruby>月城<rt>월성</rt></ruby>은 1.28초、에우로파는 35분、가장 먼 한 곳은 5시간 17분 늦었다。</p>
     </blockquote>
     <h2><ruby>昇座<rt>승좌</rt></ruby> 11<ruby>分<rt>분</rt></ruby>　센묘 467<ruby>字<rt>자</rt></ruby></h2>
-    <p>【<ruby>本紙<rt>본지</rt></ruby> <ruby>文化<rt>문화</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> <ruby>賀穎靑<rt>하영청</rt></ruby> 도쿄 <ruby>電傳<rt>전전</rt></ruby>】<ruby>卽位禮<rt>즉위례</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>은 어제 <ruby>午前<rt>오전</rt></ruby> 10시 30분 <ruby>皇居<rt>황거</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>에서 열렸다. 새 <ruby>天皇<rt>천황</rt></ruby> 아키코 덴노는 고로젠노고호를 입고 다카미쿠라에 올랐고, <ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>黑袍<rt>흑포</rt></ruby> <ruby>束帶<rt>속대</rt></ruby> 차림으로 미초다이에 섰다. 센묘는 <ruby>全文<rt>전문</rt></ruby> 467<ruby>字<rt>자</rt></ruby>, '<ruby>現御神<rt>현어신</rt></ruby>' 구절에서 시작해 <ruby>謝辭<rt>사사</rt></ruby>로 끝나기까지 11분 4초가 걸렸다.</p>
+    <p>【<ruby>本紙<rt>본지</rt></ruby> <ruby>文化<rt>문화</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> <ruby>賀穎靑<rt>하영청</rt></ruby> 도쿄 <ruby>電傳<rt>전전</rt></ruby>】<ruby>卽位禮<rt>즉위례</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>은 어제 <ruby>午前<rt>오전</rt></ruby> 10시 30분 <ruby>皇居<rt>황거</rt></ruby> <ruby>正殿<rt>정전</rt></ruby>에서 열렸다。새 <ruby>天皇<rt>천황</rt></ruby> 아키코 덴노는 고로젠노고호를 입고 다카미쿠라에 올랐고、<ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>黑袍<rt>흑포</rt></ruby> <ruby>束帶<rt>속대</rt></ruby> 차림으로 미초다이에 섰다。센묘는 <ruby>全文<rt>전문</rt></ruby> 467<ruby>字<rt>자</rt></ruby>、'<ruby>現御神<rt>현어신</rt></ruby>' 구절에서 시작해 <ruby>謝辭<rt>사사</rt></ruby>로 끝나기까지 11분 4초가 걸렸다。</p>
     <blockquote class="poem-like" lang="ja">
       <p>現御神と大八洲國知ろしめす</p>
       <p>明子天皇が大命らまと宣る</p>
       <p>天地の共に長く遠く</p>
       <p>弘き宙に萬民を撫でたまはむ</p>
     </blockquote>
-    <p><small>센묘 <ruby>抄錄<rt>초록</rt></ruby>(예시)——.poem-like의 시행 들여쓰기. lang="ja" 구간은 일본어 <ruby>符號<rt>부호</rt></ruby>와 <ruby>字體<rt>자체</rt></ruby>로 바뀐다.</small></p>
-    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>日本<rt>일본</rt></ruby>의 <ruby>皇位<rt>황위</rt></ruby> <ruby>繼承<rt>계승</rt></ruby>은 두 <ruby>段階<rt>단계</rt></ruby>로 나뉜다. 前 <ruby>天皇<rt>천황</rt></ruby>은 올해 초 <ruby>讓位<rt>양위</rt></ruby>했고 새 <ruby>天皇<rt>천황</rt></ruby>은 그날 <ruby>踐祚<rt>천조</rt></ruby>, 이튿날 <ruby>改元<rt>개원</rt></ruby>했다. <ruby>法統<rt>법통</rt></ruby>은 그 <ruby>時點<rt>시점</rt></ruby>에 이미 정해진 것이다. 어제의 <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>은 안팎에 알리기 위한 <ruby>典禮<rt>전례</rt></ruby>이며, 몇 달이 비는 것은 <ruby>常制<rt>상제</rt></ruby>다. <ruby>上皇<rt>상황</rt></ruby>의 <ruby>在位<rt>재위</rt></ruby>는 30여 년, <ruby>年號<rt>연호</rt></ruby>는 '<ruby>豐洋<rt>풍양</rt></ruby>'이었다.）</p>
-    <p>고로젠노고호는 본래 <ruby>上皇<rt>상황</rt></ruby>의 몸에 맞춰 지은 것이다. <ruby>宮內廳<rt>궁내청</rt></ruby>은 세 번 고쳤다.</p>
+    <p><small>센묘 <ruby>抄錄<rt>초록</rt></ruby>(예시)——.poem-like의 시행 들여쓰기。lang="ja" 구간은 일본어 <ruby>符號<rt>부호</rt></ruby>와 <ruby>字體<rt>자체</rt></ruby>로 바뀐다。</small></p>
+    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>日本<rt>일본</rt></ruby>의 <ruby>皇位<rt>황위</rt></ruby> <ruby>繼承<rt>계승</rt></ruby>은 두 <ruby>段階<rt>단계</rt></ruby>로 나뉜다。前 <ruby>天皇<rt>천황</rt></ruby>은 올해 초 <ruby>讓位<rt>양위</rt></ruby>했고 새 <ruby>天皇<rt>천황</rt></ruby>은 그날 <ruby>踐祚<rt>천조</rt></ruby>、이튿날 <ruby>改元<rt>개원</rt></ruby>했다。<ruby>法統<rt>법통</rt></ruby>은 그 <ruby>時點<rt>시점</rt></ruby>에 이미 정해진 것이다。어제의 <ruby>正殿<rt>정전</rt></ruby>의 <ruby>儀式<rt>의식</rt></ruby>은 안팎에 알리기 위한 <ruby>典禮<rt>전례</rt></ruby>이며、몇 달이 비는 것은 <ruby>常制<rt>상제</rt></ruby>다。<ruby>上皇<rt>상황</rt></ruby>의 <ruby>在位<rt>재위</rt></ruby>는 30여 년、<ruby>年號<rt>연호</rt></ruby>는 '<ruby>豐洋<rt>풍양</rt></ruby>'이었다.）</p>
+    <p>고로젠노고호는 본래 <ruby>上皇<rt>상황</rt></ruby>의 몸에 맞춰 지은 것이다。<ruby>宮內廳<rt>궁내청</rt></ruby>은 세 번 고쳤다。</p>
     <h2>'<ruby>皇配<rt>황배</rt></ruby>' 두 글자　31<ruby>日<rt>일</rt></ruby>의 <ruby>論議<rt>논의</rt></ruby></h2>
-    <p><ruby>皇配<rt>황배</rt></ruby>의 <ruby>稱號<rt>칭호</rt></ruby>가 어려웠던 것은 <ruby>先例<rt>선례</rt></ruby>가 없어서가 아니다. <ruby>先例<rt>선례</rt></ruby>가 너무 많아서였다. <ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>專門<rt>전문</rt></ruby> <ruby>會議<rt>회의</rt></ruby>를 두고 31<ruby>日<rt>일</rt></ruby>을 썼다. <ruby>年號<rt>연호</rt></ruby> <ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>의 19<ruby>日<rt>일</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 길다.</p>
-    <p><ruby>候補<rt>후보</rt></ruby>는 넷이었다——<ruby>皇壻<rt>황서</rt></ruby>, <ruby>皇夫<rt>황부</rt></ruby>, <ruby>皇配<rt>황배</rt></ruby>, <ruby>王配<rt>왕배</rt></ruby>. 넷 다 <ruby>典籍<rt>전적</rt></ruby>과 <ruby>近世<rt>근세</rt></ruby> <ruby>用例<rt>용례</rt></ruby>에 <ruby>出典<rt>출전</rt></ruby>이 있었고, <ruby>會議錄<rt>회의록</rt></ruby>은 한 건씩 <ruby>羅列<rt>나열</rt></ruby>한 뒤 한 건씩 「<ruby>制度<rt>제도</rt></ruby>에 <ruby>無理<rt>무리</rt></ruby> 없음」이라 <ruby>認定<rt>인정</rt></ruby>했다. 29<ruby>日<rt>일</rt></ruby>째, <ruby>論議<rt>논의</rt></ruby>는 「어느 것이 <ruby>職務<rt>직무</rt></ruby> 이름으로 <ruby>誤讀<rt>오독</rt></ruby>될 <ruby>可能性<rt>가능성</rt></ruby>이 가장 낮은가」로 옮겨 갔으나 그래도 <ruby>結論<rt>결론</rt></ruby>이 나지 않았다. 31<ruby>日<rt>일</rt></ruby>째, 뽑기 順에 따른 <ruby>票決<rt>표결</rt></ruby>로 '<ruby>皇配<rt>황배</rt></ruby>'가 정해졌다.</p>
-    <p><ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>典儀課長<rt>전의과장</rt></ruby>은 <ruby>本紙<rt>본지</rt></ruby>에 이렇게 답했다. 「넷 다 쓸 수 있었습니다. 넷 다 쓸 수 있다는 것을 <ruby>確認<rt>확인</rt></ruby>하는 데 31일이 걸렸습니다」.</p>
-    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>宮內廳<rt>궁내청</rt></ruby>은 아울러 各 <ruby>言語<rt>언어</rt></ruby> <ruby>對譯<rt>대역</rt></ruby>에 <ruby>性別<rt>성별</rt></ruby>을 나타내는 <ruby>語尾<rt>어미</rt></ruby>를 일절 붙이지 않는다고 <ruby>公告<rt>공고</rt></ruby>했다. 이 <ruby>事項<rt>사항</rt></ruby>은 <ruby>通知<rt>통지</rt></ruby> <ruby>第一號<rt>제일호</rt></ruby>에 놓였고, <ruby>全文<rt>전문</rt></ruby> 14<ruby>字<rt>자</rt></ruby>로 이번 <ruby>公告<rt>공고</rt></ruby> 가운데 가장 짧다.）</p>
+    <p><ruby>皇配<rt>황배</rt></ruby>의 <ruby>稱號<rt>칭호</rt></ruby>가 어려웠던 것은 <ruby>先例<rt>선례</rt></ruby>가 없어서가 아니다。<ruby>先例<rt>선례</rt></ruby>가 너무 많아서였다。<ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>專門<rt>전문</rt></ruby> <ruby>會議<rt>회의</rt></ruby>를 두고 31<ruby>日<rt>일</rt></ruby>을 썼다。<ruby>年號<rt>연호</rt></ruby> <ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>의 19<ruby>日<rt>일</rt></ruby>보다 12<ruby>日<rt>일</rt></ruby> 길다。</p>
+    <p><ruby>候補<rt>후보</rt></ruby>는 넷이었다——<ruby>皇壻<rt>황서</rt></ruby>、<ruby>皇夫<rt>황부</rt></ruby>、<ruby>皇配<rt>황배</rt></ruby>、<ruby>王配<rt>왕배</rt></ruby>。넷 다 <ruby>典籍<rt>전적</rt></ruby>과 <ruby>近世<rt>근세</rt></ruby> <ruby>用例<rt>용례</rt></ruby>에 <ruby>出典<rt>출전</rt></ruby>이 있었고、<ruby>會議錄<rt>회의록</rt></ruby>은 한 건씩 <ruby>羅列<rt>나열</rt></ruby>한 뒤 한 건씩 「<ruby>制度<rt>제도</rt></ruby>에 <ruby>無理<rt>무리</rt></ruby> 없음」이라 <ruby>認定<rt>인정</rt></ruby>했다。29<ruby>日<rt>일</rt></ruby>째、<ruby>論議<rt>논의</rt></ruby>는 「어느 것이 <ruby>職務<rt>직무</rt></ruby> 이름으로 <ruby>誤讀<rt>오독</rt></ruby>될 <ruby>可能性<rt>가능성</rt></ruby>이 가장 낮은가」로 옮겨 갔으나 그래도 <ruby>結論<rt>결론</rt></ruby>이 나지 않았다。31<ruby>日<rt>일</rt></ruby>째、뽑기 順에 따른 <ruby>票決<rt>표결</rt></ruby>로 '<ruby>皇配<rt>황배</rt></ruby>'가 정해졌다。</p>
+    <p><ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>典儀課長<rt>전의과장</rt></ruby>은 <ruby>本紙<rt>본지</rt></ruby>에 이렇게 답했다。「넷 다 쓸 수 있었습니다。넷 다 쓸 수 있다는 것을 <ruby>確認<rt>확인</rt></ruby>하는 데 31일이 걸렸습니다」。</p>
+    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>宮內廳<rt>궁내청</rt></ruby>은 아울러 各 <ruby>言語<rt>언어</rt></ruby> <ruby>對譯<rt>대역</rt></ruby>에 <ruby>性別<rt>성별</rt></ruby>을 나타내는 <ruby>語尾<rt>어미</rt></ruby>를 일절 붙이지 않는다고 <ruby>公告<rt>공고</rt></ruby>했다。이 <ruby>事項<rt>사항</rt></ruby>은 <ruby>通知<rt>통지</rt></ruby> <ruby>第一號<rt>제일호</rt></ruby>에 놓였고、<ruby>全文<rt>전문</rt></ruby> 14<ruby>字<rt>자</rt></ruby>로 이번 <ruby>公告<rt>공고</rt></ruby> 가운데 가장 짧다.）</p>
     <h2><ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby>　<ruby>平壤<rt>평양</rt></ruby>에서 <ruby>白磁<rt>백자</rt></ruby>를 굽다</h2>
-    <p><ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>平壤<rt>평양</rt></ruby> 사람으로 <ruby>白磁<rt>백자</rt></ruby> <ruby>匠人<rt>장인</rt></ruby>이며, <ruby>大同江<rt>대동강</rt></ruby> <ruby>北岸<rt>북안</rt></ruby>에 있는 <ruby>家傳<rt>가전</rt></ruby> <ruby>窯場<rt>요장</rt></ruby> 「<ruby>尙古窯<rt>상고요</rt></ruby>」를 본인이 <ruby>主宰<rt>주재</rt></ruby>한다. <ruby>機械<rt>기계</rt></ruby> <ruby>補助<rt>보조</rt></ruby> 없이 굽고, <ruby>出窯<rt>출요</rt></ruby>는 한 해 네 번이다. <ruby>注文<rt>주문</rt></ruby>은 이미 100년 뒤까지 차 있다——<ruby>現行<rt>현행</rt></ruby> <ruby>慣行<rt>관행</rt></ruby>상 이런 <ruby>豫約<rt>예약</rt></ruby>은 <ruby>相續<rt>상속</rt></ruby>도 <ruby>讓渡<rt>양도</rt></ruby>도 되지만, 새치기는 되지 않는다.</p>
-    <p>어제 <ruby>正殿<rt>정전</rt></ruby>에 놓인 <ruby>白磁<rt>백자</rt></ruby> <ruby>甁<rt>병</rt></ruby> 한 쌍도 그의 <ruby>作品<rt>작품</rt></ruby>이다. <ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>目錄<rt>목록</rt></ruby>에는 「<ruby>皇配<rt>황배</rt></ruby> <ruby>御自作<rt>어자작</rt></ruby>」이라고만 적혀 있고, <ruby>器名<rt>기명</rt></ruby>도 <ruby>燒成<rt>소성</rt></ruby> <ruby>年月<rt>연월</rt></ruby>도 없다.</p>
-    <p>그 <ruby>家門<rt>가문</rt></ruby>의 <ruby>族譜<rt>족보</rt></ruby>에는, 14<ruby>代<rt>대</rt></ruby> <ruby>祖<rt>조</rt></ruby>가 1592<ruby>年<rt>년</rt></ruby>에 <ruby>日本<rt>일본</rt></ruby>으로 끌려갔고 그 <ruby>後孫<rt>후손</rt></ruby>의 한 갈래가 몇 <ruby>代<rt>대</rt></ruby> 뒤에 바다를 건너 돌아와 <ruby>轉轉<rt>전전</rt></ruby>하다 <ruby>平壤<rt>평양</rt></ruby>에 자리 잡았다고 적혀 있다.</p>
-    <p><ruby>本紙<rt>본지</rt></ruby>는 <ruby>儀式<rt>의식</rt></ruby> 前<ruby>日<rt>일</rt></ruby> <ruby>窯場<rt>요장</rt></ruby>에 <ruby>電話<rt>전화</rt></ruby>해 이 일을 물었다. 받은 이는 <ruby>窯場<rt>요장</rt></ruby> <ruby>事務員<rt>사무원</rt></ruby>이었고, 「그 <ruby>質問<rt>질문</rt></ruby>에는 <ruby>先生<rt>선생</rt></ruby>님이 <ruby>普通<rt>보통</rt></ruby> 答하지 않으십니다」라고 말했다. <ruby>忌諱<rt>기휘</rt></ruby>냐고 다시 묻자 이렇게 돌아왔다. 「아닙니다. <ruby>先生<rt>선생</rt></ruby>님은, 그건 가마를 때는 일이지 말하는 일이 아니라고 하십니다」.</p>
-    <h2>다카미쿠라, 사흘에 걸쳐 東으로　<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐은 쓰지 않는다</h2>
-    <p>다카미쿠라는 무게 약 8톤, 높이 6.48미터로 평소에는 교토 고쇼에 놓여 있다. 이번 東行에 <ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>環球<rt>환구</rt></ruby> <ruby>鐵道<rt>철도</rt></ruby>——가장 느리고, 가장 낡고, <ruby>沿線<rt>연선</rt></ruby> 어느 <ruby>驛<rt>역</rt></ruby>에나 서는 그것——을 골랐다. 사흘 7시간, <ruby>停車<rt>정차</rt></ruby> 29개 <ruby>驛<rt>역</rt></ruby>이었다.</p>
-    <p>왜 하이퍼루프를 쓰지 않느냐고 묻자 <ruby>典儀課長<rt>전의과장</rt></ruby>은 이렇게 답했다. 「<ruby>御座<rt>어좌</rt></ruby>는 <ruby>旅客<rt>여객</rt></ruby>이 아닙니다」.</p>
-    <p>그러면 왜 <ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐이 아니냐고 묻자, 課長은 잠시 <ruby>沈默<rt>침묵</rt></ruby>한 뒤 답했다. 「<ruby>附屬<rt>부속</rt></ruby> <ruby>質量<rt>질량</rt></ruby>은 아주 낮은 <ruby>確率<rt>확률</rt></ruby>로 <ruby>毁損<rt>훼손</rt></ruby>되거나 <ruby>逸失<rt>일실</rt></ruby>됩니다」.</p>
-    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐에서 옷과 <ruby>手荷物<rt>수하물</rt></ruby>은 「<ruby>附屬<rt>부속</rt></ruby> <ruby>質量<rt>질량</rt></ruby>」으로 <ruby>分類<rt>분류</rt></ruby>되며 <ruby>公表<rt>공표</rt></ruby> <ruby>逸失率<rt>일실률</rt></ruby>은 <ruby>一千萬<rt>일천만</rt></ruby>분의 3이다. 또한 <ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>內規<rt>내규</rt></ruby>에는 <ruby>皇位<rt>황위</rt></ruby> <ruby>繼承<rt>계승</rt></ruby> <ruby>順位<rt>순위</rt></ruby> <ruby>上位<rt>상위</rt></ruby> 3<ruby>人<rt>인</rt></ruby>은 <ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐에 타서는 안 된다고 적혀 있다. 이 <ruby>內規<rt>내규</rt></ruby>는 수십 년 <ruby>施行<rt>시행</rt></ruby>돼 왔으나 <ruby>理由<rt>이유</rt></ruby>가 <ruby>公開<rt>공개</rt></ruby>된 적은 한 번도 없다. <ruby>上皇<rt>상황</rt></ruby>은 <ruby>讓位<rt>양위</rt></ruby>로 <ruby>順位<rt>순위</rt></ruby>에서 벗어났다. <ruby>宮內廳<rt>궁내청</rt></ruby>에 따르면 본인은 「<ruby>關心<rt>관심</rt></ruby>을 나타내셨다」고 한다.）</p>
+    <p><ruby>皇配<rt>황배</rt></ruby> <ruby>金賢宇<rt>김현우</rt></ruby> 씨는 <ruby>平壤<rt>평양</rt></ruby> 사람으로 <ruby>白磁<rt>백자</rt></ruby> <ruby>匠人<rt>장인</rt></ruby>이며、<ruby>大同江<rt>대동강</rt></ruby> <ruby>北岸<rt>북안</rt></ruby>에 있는 <ruby>家傳<rt>가전</rt></ruby> <ruby>窯場<rt>요장</rt></ruby> 「<ruby>尙古窯<rt>상고요</rt></ruby>」를 본인이 <ruby>主宰<rt>주재</rt></ruby>한다。<ruby>機械<rt>기계</rt></ruby> <ruby>補助<rt>보조</rt></ruby> 없이 굽고、<ruby>出窯<rt>출요</rt></ruby>는 한 해 네 번이다。<ruby>注文<rt>주문</rt></ruby>은 이미 100년 뒤까지 차 있다——<ruby>現行<rt>현행</rt></ruby> <ruby>慣行<rt>관행</rt></ruby>상 이런 <ruby>豫約<rt>예약</rt></ruby>은 <ruby>相續<rt>상속</rt></ruby>도 <ruby>讓渡<rt>양도</rt></ruby>도 되지만、새치기는 되지 않는다。</p>
+    <p>어제 <ruby>正殿<rt>정전</rt></ruby>에 놓인 <ruby>白磁<rt>백자</rt></ruby> <ruby>甁<rt>병</rt></ruby> 한 쌍도 그의 <ruby>作品<rt>작품</rt></ruby>이다。<ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>目錄<rt>목록</rt></ruby>에는 「<ruby>皇配<rt>황배</rt></ruby> <ruby>御自作<rt>어자작</rt></ruby>」이라고만 적혀 있고、<ruby>器名<rt>기명</rt></ruby>도 <ruby>燒成<rt>소성</rt></ruby> <ruby>年月<rt>연월</rt></ruby>도 없다。</p>
+    <p>그 <ruby>家門<rt>가문</rt></ruby>의 <ruby>族譜<rt>족보</rt></ruby>에는、14<ruby>代<rt>대</rt></ruby> <ruby>祖<rt>조</rt></ruby>가 1592<ruby>年<rt>년</rt></ruby>에 <ruby>日本<rt>일본</rt></ruby>으로 끌려갔고 그 <ruby>後孫<rt>후손</rt></ruby>의 한 갈래가 몇 <ruby>代<rt>대</rt></ruby> 뒤에 바다를 건너 돌아와 <ruby>轉轉<rt>전전</rt></ruby>하다 <ruby>平壤<rt>평양</rt></ruby>에 자리 잡았다고 적혀 있다。</p>
+    <p><ruby>本紙<rt>본지</rt></ruby>는 <ruby>儀式<rt>의식</rt></ruby> 前<ruby>日<rt>일</rt></ruby> <ruby>窯場<rt>요장</rt></ruby>에 <ruby>電話<rt>전화</rt></ruby>해 이 일을 물었다。받은 이는 <ruby>窯場<rt>요장</rt></ruby> <ruby>事務員<rt>사무원</rt></ruby>이었고、「그 <ruby>質問<rt>질문</rt></ruby>에는 <ruby>先生<rt>선생</rt></ruby>님이 <ruby>普通<rt>보통</rt></ruby> 答하지 않으십니다」라고 말했다。<ruby>忌諱<rt>기휘</rt></ruby>냐고 다시 묻자 이렇게 돌아왔다。「아닙니다。<ruby>先生<rt>선생</rt></ruby>님은、그건 가마를 때는 일이지 말하는 일이 아니라고 하십니다」。</p>
+    <h2>다카미쿠라、사흘에 걸쳐 東으로　<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐은 쓰지 않는다</h2>
+    <p>다카미쿠라는 무게 약 8톤、높이 6.48미터로 평소에는 교토 고쇼에 놓여 있다。이번 東行에 <ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>環球<rt>환구</rt></ruby> <ruby>鐵道<rt>철도</rt></ruby>——가장 느리고、가장 낡고、<ruby>沿線<rt>연선</rt></ruby> 어느 <ruby>驛<rt>역</rt></ruby>에나 서는 그것——을 골랐다。사흘 7시간、<ruby>停車<rt>정차</rt></ruby> 29개 <ruby>驛<rt>역</rt></ruby>이었다。</p>
+    <p>왜 하이퍼루프를 쓰지 않느냐고 묻자 <ruby>典儀課長<rt>전의과장</rt></ruby>은 이렇게 답했다。「<ruby>御座<rt>어좌</rt></ruby>는 <ruby>旅客<rt>여객</rt></ruby>이 아닙니다」。</p>
+    <p>그러면 왜 <ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐이 아니냐고 묻자、課長은 잠시 <ruby>沈默<rt>침묵</rt></ruby>한 뒤 답했다。「<ruby>附屬<rt>부속</rt></ruby> <ruby>質量<rt>질량</rt></ruby>은 아주 낮은 <ruby>確率<rt>확률</rt></ruby>로 <ruby>毁損<rt>훼손</rt></ruby>되거나 <ruby>逸失<rt>일실</rt></ruby>됩니다」。</p>
+    <p>（<ruby>編輯<rt>편집</rt></ruby> <ruby>注<rt>주</rt></ruby>：<ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐에서 옷과 <ruby>手荷物<rt>수하물</rt></ruby>은 「<ruby>附屬<rt>부속</rt></ruby> <ruby>質量<rt>질량</rt></ruby>」으로 <ruby>分類<rt>분류</rt></ruby>되며 <ruby>公表<rt>공표</rt></ruby> <ruby>逸失率<rt>일실률</rt></ruby>은 <ruby>一千萬<rt>일천만</rt></ruby>분의 3이다。또한 <ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>內規<rt>내규</rt></ruby>에는 <ruby>皇位<rt>황위</rt></ruby> <ruby>繼承<rt>계승</rt></ruby> <ruby>順位<rt>순위</rt></ruby> <ruby>上位<rt>상위</rt></ruby> 3<ruby>人<rt>인</rt></ruby>은 <ruby>瞬間移動<rt>순간이동</rt></ruby> 캡슐에 타서는 안 된다고 적혀 있다。이 <ruby>內規<rt>내규</rt></ruby>는 수십 년 <ruby>施行<rt>시행</rt></ruby>돼 왔으나 <ruby>理由<rt>이유</rt></ruby>가 <ruby>公開<rt>공개</rt></ruby>된 적은 한 번도 없다。<ruby>上皇<rt>상황</rt></ruby>은 <ruby>讓位<rt>양위</rt></ruby>로 <ruby>順位<rt>순위</rt></ruby>에서 벗어났다。<ruby>宮內廳<rt>궁내청</rt></ruby>에 따르면 본인은 「<ruby>關心<rt>관심</rt></ruby>을 나타내셨다」고 한다.）</p>
     <h2><ruby>弘宙<rt>홍주</rt></ruby>를 둘러싼 <ruby>論爭<rt>논쟁</rt></ruby>　19<ruby>日<rt>일</rt></ruby></h2>
-    <p>'<ruby>弘宙<rt>홍주</rt></ruby>' 두 글자는 『<ruby>淮南子<rt>회남자</rt></ruby>・<ruby>齊俗訓<rt>제속훈</rt></ruby>』의 「<ruby>往古來今<rt>왕고내금</rt></ruby>을 일러 <ruby>宙<rt>주</rt></ruby>라 한다」에서 왔다. <ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>는 9<ruby>人<rt>인</rt></ruby>, <ruby>論議<rt>논의</rt></ruby>는 19<ruby>日<rt>일</rt></ruby>에 이르렀다. <ruby>爭點<rt>쟁점</rt></ruby>은 <ruby>出典<rt>출전</rt></ruby>이 아니라 그 '<ruby>宙<rt>주</rt></ruby>' 자였다——<ruby>年號<rt>연호</rt></ruby>는 <ruby>治世<rt>치세</rt></ruby>의 <ruby>德<rt>덕</rt></ruby>을 말해야 하는데 '<ruby>宙<rt>주</rt></ruby>'는 <ruby>地理<rt>지리</rt></ruby>를 가리키는 말이고, 그것도 남의 동네 <ruby>地理<rt>지리</rt></ruby>라고 <ruby>守舊<rt>수구</rt></ruby>派는 말했다.</p>
-    <p><ruby>採用<rt>채용</rt></ruby>을 <ruby>主張<rt>주장</rt></ruby>한 도즈카 하루카 <ruby>委員<rt>위원</rt></ruby>의 <ruby>理由<rt>이유</rt></ruby>는 하나뿐이었고, <ruby>會議錄<rt>회의록</rt></ruby>에 그대로 실렸다. 「<ruby>國民<rt>국민</rt></ruby>의 <ruby>大多數<rt>대다수</rt></ruby>는 이제 이 <ruby>列島<rt>열도</rt></ruby>에 살지 않습니다」.</p>
-    <p><ruby>會議錄<rt>회의록</rt></ruby>에 따르면 이 한마디 뒤에 <ruby>會場<rt>회장</rt></ruby>은 41초 <ruby>沈默<rt>침묵</rt></ruby>했다.</p>
-    <p><ruby>宮內廳<rt>궁내청</rt></ruby>의 事後 <ruby>說明<rt>설명</rt></ruby>에 따르면 <ruby>候補案<rt>후보안</rt></ruby>은 여섯이었고, 그중 하나는 <ruby>初審<rt>초심</rt></ruby> <ruby>段階<rt>단계</rt></ruby>에서 <ruby>脫落<rt>탈락</rt></ruby>했다. <ruby>字義<rt>자의</rt></ruby>와는 <ruby>無關<rt>무관</rt></ruby>한 <ruby>理由<rt>이유</rt></ruby>다——그 <ruby>案<rt>안</rt></ruby>의 첫 글자가 <ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>公文書<rt>공문서</rt></ruby> 시스템에서 빈 네모로 <ruby>表示<rt>표시</rt></ruby>된 것이다. <ruby>擔當<rt>담당</rt></ruby> <ruby>官員<rt>관원</rt></ruby> 오키 켄은 「그 글자는 컴퓨터에 <ruby>表示<rt>표시</rt></ruby>되지 않습니다」라고 세 번 <ruby>報告<rt>보고</rt></ruby>했고, 시스템 <ruby>顧問<rt>고문</rt></ruby> AI는 「글자는 글자입니다. 貴 <ruby>機關<rt>기관</rt></ruby>의 <ruby>表示<rt>표시</rt></ruby> <ruby>設定<rt>설정</rt></ruby>을 다시 <ruby>確認<rt>확인</rt></ruby>해 주십시오」라고 세 번 <ruby>回信<rt>회신</rt></ruby>했다. 열한 차례 오갔으나 <ruby>結論<rt>결론</rt></ruby>은 나오지 않았다.</p>
-    <p><ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>最終<rt>최종</rt></ruby> <ruby>選定<rt>선정</rt></ruby>된 두 글자가 「<ruby>旣知<rt>기지</rt></ruby>의 모든 시스템에서 <ruby>正常<rt>정상</rt></ruby> <ruby>表示<rt>표시</rt></ruby>된다」고 밝혔다. 이 문장은 <ruby>說明<rt>설명</rt></ruby> <ruby>文書<rt>문서</rt></ruby> 7쪽에 있고, <ruby>出典<rt>출전</rt></ruby>과 나란히 놓여 있지는 않다.</p>
+    <p>'<ruby>弘宙<rt>홍주</rt></ruby>' 두 글자는 『<ruby>淮南子<rt>회남자</rt></ruby>・<ruby>齊俗訓<rt>제속훈</rt></ruby>』의 「<ruby>往古來今<rt>왕고내금</rt></ruby>을 일러 <ruby>宙<rt>주</rt></ruby>라 한다」에서 왔다。<ruby>有識者<rt>유식자</rt></ruby> <ruby>會議<rt>회의</rt></ruby>는 9<ruby>人<rt>인</rt></ruby>、<ruby>論議<rt>논의</rt></ruby>는 19<ruby>日<rt>일</rt></ruby>에 이르렀다。<ruby>爭點<rt>쟁점</rt></ruby>은 <ruby>出典<rt>출전</rt></ruby>이 아니라 그 '<ruby>宙<rt>주</rt></ruby>' 자였다——<ruby>年號<rt>연호</rt></ruby>는 <ruby>治世<rt>치세</rt></ruby>의 <ruby>德<rt>덕</rt></ruby>을 말해야 하는데 '<ruby>宙<rt>주</rt></ruby>'는 <ruby>地理<rt>지리</rt></ruby>를 가리키는 말이고、그것도 남의 동네 <ruby>地理<rt>지리</rt></ruby>라고 <ruby>守舊<rt>수구</rt></ruby>派는 말했다。</p>
+    <p><ruby>採用<rt>채용</rt></ruby>을 <ruby>主張<rt>주장</rt></ruby>한 도즈카 하루카 <ruby>委員<rt>위원</rt></ruby>의 <ruby>理由<rt>이유</rt></ruby>는 하나뿐이었고、<ruby>會議錄<rt>회의록</rt></ruby>에 그대로 실렸다。「<ruby>國民<rt>국민</rt></ruby>의 <ruby>大多數<rt>대다수</rt></ruby>는 이제 이 <ruby>列島<rt>열도</rt></ruby>에 살지 않습니다」。</p>
+    <p><ruby>會議錄<rt>회의록</rt></ruby>에 따르면 이 한마디 뒤에 <ruby>會場<rt>회장</rt></ruby>은 41초 <ruby>沈默<rt>침묵</rt></ruby>했다。</p>
+    <p><ruby>宮內廳<rt>궁내청</rt></ruby>의 事後 <ruby>說明<rt>설명</rt></ruby>에 따르면 <ruby>候補案<rt>후보안</rt></ruby>은 여섯이었고、그중 하나는 <ruby>初審<rt>초심</rt></ruby> <ruby>段階<rt>단계</rt></ruby>에서 <ruby>脫落<rt>탈락</rt></ruby>했다。<ruby>字義<rt>자의</rt></ruby>와는 <ruby>無關<rt>무관</rt></ruby>한 <ruby>理由<rt>이유</rt></ruby>다——그 <ruby>案<rt>안</rt></ruby>의 첫 글자가 <ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>公文書<rt>공문서</rt></ruby> 시스템에서 빈 네모로 <ruby>表示<rt>표시</rt></ruby>된 것이다。<ruby>擔當<rt>담당</rt></ruby> <ruby>官員<rt>관원</rt></ruby> 오키 켄은 「그 글자는 컴퓨터에 <ruby>表示<rt>표시</rt></ruby>되지 않습니다」라고 세 번 <ruby>報告<rt>보고</rt></ruby>했고、시스템 <ruby>顧問<rt>고문</rt></ruby> AI는 「글자는 글자입니다。貴 <ruby>機關<rt>기관</rt></ruby>의 <ruby>表示<rt>표시</rt></ruby> <ruby>設定<rt>설정</rt></ruby>을 다시 <ruby>確認<rt>확인</rt></ruby>해 주십시오」라고 세 번 <ruby>回信<rt>회신</rt></ruby>했다。열한 차례 오갔으나 <ruby>結論<rt>결론</rt></ruby>은 나오지 않았다。</p>
+    <p><ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>最終<rt>최종</rt></ruby> <ruby>選定<rt>선정</rt></ruby>된 두 글자가 「<ruby>旣知<rt>기지</rt></ruby>의 모든 시스템에서 <ruby>正常<rt>정상</rt></ruby> <ruby>表示<rt>표시</rt></ruby>된다」고 밝혔다。이 문장은 <ruby>說明<rt>설명</rt></ruby> <ruby>文書<rt>문서</rt></ruby> 7쪽에 있고、<ruby>出典<rt>출전</rt></ruby>과 나란히 놓여 있지는 않다。</p>
     <h2><ruby>萬歲<rt>만세</rt></ruby>는 <ruby>同時<rt>동시</rt></ruby>에 못 한다　5시간 17분 만에 <ruby>傳播<rt>전파</rt></ruby> <ruby>完了<rt>완료</rt></ruby></h2>
-    <p><ruby>儀式<rt>의식</rt></ruby> 끝의 <ruby>萬歲<rt>만세</rt></ruby> <ruby>三唱<rt>삼창</rt></ruby>은 이번에 처음으로 피할 수 없는 <ruby>技術的<rt>기술적</rt></ruby> <ruby>問題<rt>문제</rt></ruby>에 <ruby>直面<rt>직면</rt></ruby>했다. <ruby>太陽系<rt>태양계</rt></ruby>가 너무 넓다는 것이다.</p>
-    <p><ruby>正殿<rt>정전</rt></ruby> 안에서는 <ruby>首相<rt>수상</rt></ruby>이 <ruby>先唱<rt>선창</rt></ruby>하고 <ruby>參席<rt>참석</rt></ruby>한 1800<ruby>人<rt>인</rt></ruby>이 따랐다. 그 뒤 <ruby>萬歲<rt>만세</rt></ruby>는 <ruby>光速<rt>광속</rt></ruby>으로 바깥을 향해 퍼져 나갔다. <ruby>月城<rt>월성</rt></ruby> 1.28초, <ruby>火星<rt>화성</rt></ruby> <ruby>中繼所<rt>중계소</rt></ruby> 18분 40초, 에우로파 <ruby>殖民局<rt>식민국</rt></ruby> 35분 11초, <ruby>土星<rt>토성</rt></ruby> <ruby>軌道群<rt>궤도군</rt></ruby> 1시간 12분씩 늦었다. 마지막 한 곳은 카이퍼 벨트 <ruby>第七<rt>제칠</rt></ruby> <ruby>觀測所<rt>관측소</rt></ruby>로, 5시간 17분 늦었다. 그날 <ruby>當直<rt>당직</rt></ruby>은 4<ruby>人<rt>인</rt></ruby>. <ruby>規定<rt>규정</rt></ruby>대로 <ruby>現地<rt>현지</rt></ruby> <ruby>受信<rt>수신</rt></ruby> <ruby>時刻<rt>시각</rt></ruby>에 목소리를 맞췄다. <ruby>所長<rt>소장</rt></ruby>은 나중에 이렇게 말했다. 「우리 넷이서, <ruby>空氣<rt>공기</rt></ruby>도 없는 데를 向해 소리를 질렀습니다」.</p>
-    <p><ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>典儀課<rt>전의과</rt></ruby>는 「<ruby>智子<rt>지자</rt></ruby>로 <ruby>同期<rt>동기</rt></ruby>할 수 없느냐」를 <ruby>諮問<rt>자문</rt></ruby>했으나 <ruby>結論<rt>결론</rt></ruby>은 否였다. <ruby>內部<rt>내부</rt></ruby> <ruby>文書<rt>문서</rt></ruby>에 적힌 <ruby>理由<rt>이유</rt></ruby>는 이렇다. 「<ruby>萬歲<rt>만세</rt></ruby>는 귀에 들리는 소리로 해야 한다」.</p>
-    <p><ruby>本紙<rt>본지</rt></ruby>가 <ruby>典據<rt>전거</rt></ruby>를 묻자 該 課의 <ruby>答辯<rt>답변</rt></ruby>은 이랬다. 「그건 저희가 쓴 겁니다」.</p>
+    <p><ruby>儀式<rt>의식</rt></ruby> 끝의 <ruby>萬歲<rt>만세</rt></ruby> <ruby>三唱<rt>삼창</rt></ruby>은 이번에 처음으로 피할 수 없는 <ruby>技術的<rt>기술적</rt></ruby> <ruby>問題<rt>문제</rt></ruby>에 <ruby>直面<rt>직면</rt></ruby>했다。<ruby>太陽系<rt>태양계</rt></ruby>가 너무 넓다는 것이다。</p>
+    <p><ruby>正殿<rt>정전</rt></ruby> 안에서는 <ruby>首相<rt>수상</rt></ruby>이 <ruby>先唱<rt>선창</rt></ruby>하고 <ruby>參席<rt>참석</rt></ruby>한 1800<ruby>人<rt>인</rt></ruby>이 따랐다。그 뒤 <ruby>萬歲<rt>만세</rt></ruby>는 <ruby>光速<rt>광속</rt></ruby>으로 바깥을 향해 퍼져 나갔다。<ruby>月城<rt>월성</rt></ruby> 1.28초、<ruby>火星<rt>화성</rt></ruby> <ruby>中繼所<rt>중계소</rt></ruby> 18분 40초、에우로파 <ruby>管理局<rt>관리국</rt></ruby> 35분 11초、<ruby>土星<rt>토성</rt></ruby> <ruby>軌道群<rt>궤도군</rt></ruby> 1시간 12분씩 늦었다。마지막 한 곳은 카이퍼 벨트 <ruby>第七<rt>제칠</rt></ruby> <ruby>觀測所<rt>관측소</rt></ruby>로、5시간 17분 늦었다。그날 <ruby>當直<rt>당직</rt></ruby>은 4<ruby>人<rt>인</rt></ruby>。<ruby>規定<rt>규정</rt></ruby>대로 <ruby>現地<rt>현지</rt></ruby> <ruby>受信<rt>수신</rt></ruby> <ruby>時刻<rt>시각</rt></ruby>에 목소리를 맞췄다。<ruby>所長<rt>소장</rt></ruby>은 나중에 이렇게 말했다。「우리 넷이서、<ruby>空氣<rt>공기</rt></ruby>도 없는 데를 向해 소리를 질렀습니다」。</p>
+    <p><ruby>宮內廳<rt>궁내청</rt></ruby> <ruby>典儀課<rt>전의과</rt></ruby>는 「<ruby>智子<rt>지자</rt></ruby>로 <ruby>同期<rt>동기</rt></ruby>할 수 없느냐」를 <ruby>諮問<rt>자문</rt></ruby>했으나 <ruby>結論<rt>결론</rt></ruby>은 否였다。<ruby>內部<rt>내부</rt></ruby> <ruby>文書<rt>문서</rt></ruby>에 적힌 <ruby>理由<rt>이유</rt></ruby>는 이렇다。「<ruby>萬歲<rt>만세</rt></ruby>는 귀에 들리는 소리로 해야 한다」。</p>
+    <p><ruby>本紙<rt>본지</rt></ruby>가 <ruby>典據<rt>전거</rt></ruby>를 묻자 該 課의 <ruby>答辯<rt>답변</rt></ruby>은 이랬다。「그건 저희가 쓴 겁니다」。</p>
     <figure>
       <table>
         <thead><tr><th><ruby>據點<rt>거점</rt></ruby></th><th>지연</th></tr></thead>
         <tbody>
         <tr><td><ruby>月城<rt>월성</rt></ruby></td><td>1.28초</td></tr>
         <tr><td>화성 중계국</td><td>18분 40초</td></tr>
-        <tr><td>유로파 식민국</td><td>35분 11초</td></tr>
+        <tr><td>유로파 管理局</td><td>35분 11초</td></tr>
         <tr><td>토성 궤도군</td><td>1시간 12분</td></tr>
         <tr><td>카이퍼대 제7관측소</td><td>5시간 17분</td></tr>
         </tbody>
       </table>
       <figcaption><ruby>萬歲<rt>만세</rt></ruby> <ruby>三唱<rt>삼창</rt></ruby>·광속 지연 일람</figcaption>
     </figure>
-    <p><small>figure＋table＋figcaption——표를 figure에 담아 prose 들여쓰기를 받는다.</small></p>
+    <p><small>figure＋table＋figcaption——표를 figure에 담아 prose 들여쓰기를 받는다。</small></p>
     <h2><ruby>祝電<rt>축전</rt></ruby>은 닿았고　<ruby>三星<rt>삼성</rt></ruby>은 이미 다 봤다</h2>
-    <p>4.24<ruby>光年<rt>광년</rt></ruby> 밖의 <ruby>南門二<rt>남문이</rt></ruby> <ruby>三星<rt>삼성</rt></ruby> <ruby>定住區<rt>정주구</rt></ruby>에서는 어제 <ruby>午後<rt>오후</rt></ruby>에 이미 도쿄로 <ruby>祝電<rt>축전</rt></ruby>이 닿았다. <ruby>智子<rt>지자</rt></ruby>로 보낸 것으로, <ruby>發信<rt>발신</rt></ruby>은 該 <ruby>區<rt>구</rt></ruby> <ruby>僑民<rt>교민</rt></ruby> <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>, <ruby>全文<rt>전문</rt></ruby> 19<ruby>字<rt>자</rt></ruby>로 새 <ruby>天皇<rt>천황</rt></ruby>의 <ruby>踐祚<rt>천조</rt></ruby>를 <ruby>祝賀<rt>축하</rt></ruby>하는 <ruby>內容<rt>내용</rt></ruby>이다.</p>
+    <p>4.24<ruby>光年<rt>광년</rt></ruby> 밖의 <ruby>南門二<rt>남문이</rt></ruby> <ruby>三星<rt>삼성</rt></ruby> <ruby>定住區<rt>정주구</rt></ruby>에서는 어제 <ruby>午後<rt>오후</rt></ruby>에 이미 도쿄로 <ruby>祝電<rt>축전</rt></ruby>이 닿았다。<ruby>智子<rt>지자</rt></ruby>로 보낸 것으로、<ruby>發信<rt>발신</rt></ruby>은 該 <ruby>區<rt>구</rt></ruby> <ruby>僑民<rt>교민</rt></ruby> <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>、<ruby>全文<rt>전문</rt></ruby> 19<ruby>字<rt>자</rt></ruby>로 새 <ruby>天皇<rt>천황</rt></ruby>의 <ruby>踐祚<rt>천조</rt></ruby>를 <ruby>祝賀<rt>축하</rt></ruby>하는 <ruby>內容<rt>내용</rt></ruby>이다。</p>
     <blockquote>
-      <p>새 <ruby>天皇<rt>천황</rt></ruby>의 <ruby>踐祚<rt>천조</rt></ruby>를 삼가 <ruby>慶賀<rt>경하</rt></ruby>한다. 센묘를 엎드려 읽으니——</p>
+      <p>새 <ruby>天皇<rt>천황</rt></ruby>의 <ruby>踐祚<rt>천조</rt></ruby>를 삼가 <ruby>慶賀<rt>경하</rt></ruby>한다。센묘를 엎드려 읽으니——</p>
       <blockquote lang="ja"><p>弘き宙に萬民を撫でたまはむ</p></blockquote>
       <p><ruby>僑民<rt>교민</rt></ruby> 일동 기쁨을 함께한다.（남문2 3성 <ruby>定住區<rt>정주구</rt></ruby> <ruby>僑民<rt>교민</rt></ruby> <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>）</p>
     </blockquote>
-    <p><small><ruby>賀電<rt>하전</rt></ruby>이 센묘를 인용——blockquote 중첩, 안쪽 들여쓰기는 자동으로 절반.</small></p>
-    <p><ruby>祝電<rt>축전</rt></ruby>에는 두 줄이 덧붙어 있었다. 한 줄은 새 <ruby>天皇<rt>천황</rt></ruby>이 <ruby>昇座<rt>승좌</rt></ruby>할 때 오른쪽 소매가 드리워진 모양을 <ruby>言及<rt>언급</rt></ruby>했고, 다른 한 줄은 센묘가 <ruby>豫告本<rt>예고본</rt></ruby>보다 네 <ruby>字<rt>자</rt></ruby> 많다고 <ruby>指摘<rt>지적</rt></ruby>했다. 둘 다 그날에야 <ruby>生<rt>생</rt></ruby>긴 <ruby>事實<rt>사실</rt></ruby>이다.</p>
-    <p><ruby>規制<rt>규제</rt></ruby>에 따르면 <ruby>卽位<rt>즉위</rt></ruby> <ruby>映像<rt>영상</rt></ruby>은 <ruby>光速<rt>광속</rt></ruby>으로 全 <ruby>宇宙<rt>우주</rt></ruby>에 <ruby>傳<rt>전</rt></ruby>해져야 한다. <ruby>儀式<rt>의식</rt></ruby>의 <ruby>神聖性<rt>신성성</rt></ruby>이 거기에 걸려 있다는 것으로, <ruby>典儀課<rt>전의과</rt></ruby> <ruby>內部<rt>내부</rt></ruby> <ruby>文書<rt>문서</rt></ruby> <ruby>第二條<rt>제이조</rt></ruby>에 적혀 있다. 같은 <ruby>文書<rt>문서</rt></ruby> <ruby>第九條<rt>제구조</rt></ruby>에는 이번 <ruby>儀式<rt>의식</rt></ruby>을 全 <ruby>過程<rt>과정</rt></ruby> <ruby>智子<rt>지자</rt></ruby> <ruby>中繼<rt>중계</rt></ruby>에 <ruby>開放<rt>개방</rt></ruby>한다고 적혀 있다. 「<ruby>受信<rt>수신</rt></ruby>이 좋지 않은 <ruby>地域<rt>지역</rt></ruby>을 위하여」라는 <ruby>但書<rt>단서</rt></ruby>가 붙었다.</p>
-    <p>該 <ruby>區<rt>구</rt></ruby> <ruby>住民<rt>주민</rt></ruby>이 <ruby>光速<rt>광속</rt></ruby>으로 오는 <ruby>映像<rt>영상</rt></ruby>을 받는 것은 4년 뒤다. 그때 다시 <ruby>萬歲<rt>만세</rt></ruby> <ruby>三唱<rt>삼창</rt></ruby>을 해도 되는지 <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>가 <ruby>照會<rt>조회</rt></ruby>했다. <ruby>典儀課<rt>전의과</rt></ruby>의 <ruby>答辯<rt>답변</rt></ruby>은, 可하며 <ruby>遲刻<rt>지각</rt></ruby>으로 보지 않는다, 였다.</p>
-    <p><ruby>地球<rt>지구</rt></ruby> 쪽도 남 말 할 처지는 아니다. <ruby>三星<rt>삼성</rt></ruby> <ruby>職業<rt>직업</rt></ruby> 야구 리그는 近年 <ruby>智子<rt>지자</rt></ruby>로 <ruby>地球<rt>지구</rt></ruby>에 <ruby>中繼<rt>중계</rt></ruby>되며 <ruby>視聽<rt>시청</rt></ruby>이 해마다 늘고 있다——어제 <ruby>正規<rt>정규</rt></ruby> 리그 한 <ruby>競技<rt>경기</rt></ruby>의 <ruby>地球<rt>지구</rt></ruby> 쪽 <ruby>視聽<rt>시청</rt></ruby> 수는 <ruby>卽位<rt>즉위</rt></ruby> <ruby>大禮<rt>대례</rt></ruby> <ruby>中繼<rt>중계</rt></ruby>의 2.3배였다. 최근 몇 해 동안 <ruby>地球<rt>지구</rt></ruby> <ruby>選手<rt>선수</rt></ruby> 11<ruby>名<rt>명</rt></ruby>이 <ruby>三星<rt>삼성</rt></ruby> 구단의 <ruby>招請<rt>초청</rt></ruby>을 받았고 그중 7<ruby>名<rt>명</rt></ruby>이 이미 <ruby>赴任<rt>부임</rt></ruby>했다. 사람은 배를 타야 하니 닿는 데 4년 남짓 걸린다. <ruby>競技<rt>경기</rt></ruby>는 떠나기 전에 이미 다 봤다.</p>
-    <p>한 <ruby>解說者<rt>해설자</rt></ruby>는 <ruby>取材<rt>취재</rt></ruby>에 이렇게 답했다. 「저쪽 <ruby>打擊<rt>타격</rt></ruby> 타이밍은 아무래도 이상합니다」. <ruby>重力<rt>중력</rt></ruby> 때문이냐고 묻자 「아마도요」.</p>
-    <p>「<ruby>儀式<rt>의식</rt></ruby> <ruby>映像<rt>영상</rt></ruby>은 <ruby>光速<rt>광속</rt></ruby>으로 보내야 한다」는 것과 「모두가 진작 <ruby>智子<rt>지자</rt></ruby>로 봤다」는 것이 함께 있는 데 대해, <ruby>宮內廳<rt>궁내청</rt></ruby>도 <ruby>定住區<rt>정주구</rt></ruby> <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>도 구단 팬 <ruby>團體<rt>단체</rt></ruby>도 <ruby>可否<rt>가부</rt></ruby>를 말하지 않았다.</p>
-    <p>【<ruby>本紙<rt>본지</rt></ruby> <ruby>科學技術<rt>과학기술</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> <ruby>陳師俊<rt>진사준</rt></ruby> <ruby>補<rt>보</rt></ruby>】<ruby>神經<rt>신경</rt></ruby> <ruby>共振<rt>공진</rt></ruby>은 <ruby>近距離<rt>근거리</rt></ruby> <ruby>生物<rt>생물</rt></ruby> 사이의 <ruby>情報<rt>정보</rt></ruby> <ruby>交換<rt>교환</rt></ruby> <ruby>機制<rt>기제</rt></ruby>로 미치는 <ruby>範圍<rt>범위</rt></ruby>가 미터 <ruby>單位<rt>단위</rt></ruby>이며 <ruby>遠距離<rt>원거리</rt></ruby> <ruby>通信<rt>통신</rt></ruby>과는 <ruby>無關<rt>무관</rt></ruby>하다. <ruby>巷間<rt>항간</rt></ruby>에서 자주 <ruby>混同<rt>혼동</rt></ruby>된다. <ruby>球際<rt>구제</rt></ruby> <ruby>卽時<rt>즉시</rt></ruby> <ruby>通信<rt>통신</rt></ruby>은 모두 <ruby>智子<rt>지자</rt></ruby>가 맡는다. <ruby>儀式<rt>의식</rt></ruby> <ruby>映像<rt>영상</rt></ruby>이 왜 <ruby>光速<rt>광속</rt></ruby>으로 한 벌 더 가야 하는지에 대해 <ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>說明<rt>설명</rt></ruby>하지 않았다. <ruby>本紙<rt>본지</rt></ruby>도 거듭 묻지 않았다.</p>
+    <p><small><ruby>賀電<rt>하전</rt></ruby>이 센묘를 인용——blockquote 중첩、안쪽 들여쓰기는 자동으로 절반。</small></p>
+    <p><ruby>祝電<rt>축전</rt></ruby>에는 두 줄이 덧붙어 있었다。한 줄은 새 <ruby>天皇<rt>천황</rt></ruby>이 <ruby>昇座<rt>승좌</rt></ruby>할 때 오른쪽 소매가 드리워진 모양을 <ruby>言及<rt>언급</rt></ruby>했고、다른 한 줄은 센묘가 <ruby>豫告本<rt>예고본</rt></ruby>보다 네 <ruby>字<rt>자</rt></ruby> 많다고 <ruby>指摘<rt>지적</rt></ruby>했다。둘 다 그날에야 <ruby>生<rt>생</rt></ruby>긴 <ruby>事實<rt>사실</rt></ruby>이다。</p>
+    <p><ruby>規制<rt>규제</rt></ruby>에 따르면 <ruby>卽位<rt>즉위</rt></ruby> <ruby>映像<rt>영상</rt></ruby>은 <ruby>光速<rt>광속</rt></ruby>으로 全 <ruby>宇宙<rt>우주</rt></ruby>에 <ruby>傳<rt>전</rt></ruby>해져야 한다。<ruby>儀式<rt>의식</rt></ruby>의 <ruby>神聖性<rt>신성성</rt></ruby>이 거기에 걸려 있다는 것으로、<ruby>典儀課<rt>전의과</rt></ruby> <ruby>內部<rt>내부</rt></ruby> <ruby>文書<rt>문서</rt></ruby> <ruby>第二條<rt>제이조</rt></ruby>에 적혀 있다。같은 <ruby>文書<rt>문서</rt></ruby> <ruby>第九條<rt>제구조</rt></ruby>에는 이번 <ruby>儀式<rt>의식</rt></ruby>을 全 <ruby>過程<rt>과정</rt></ruby> <ruby>智子<rt>지자</rt></ruby> <ruby>中繼<rt>중계</rt></ruby>에 <ruby>開放<rt>개방</rt></ruby>한다고 적혀 있다。「<ruby>受信<rt>수신</rt></ruby>이 좋지 않은 <ruby>地域<rt>지역</rt></ruby>을 위하여」라는 <ruby>但書<rt>단서</rt></ruby>가 붙었다。</p>
+    <p>該 <ruby>區<rt>구</rt></ruby> <ruby>住民<rt>주민</rt></ruby>이 <ruby>光速<rt>광속</rt></ruby>으로 오는 <ruby>映像<rt>영상</rt></ruby>을 받는 것은 4년 뒤다。그때 다시 <ruby>萬歲<rt>만세</rt></ruby> <ruby>三唱<rt>삼창</rt></ruby>을 해도 되는지 <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>가 <ruby>照會<rt>조회</rt></ruby>했다。<ruby>典儀課<rt>전의과</rt></ruby>의 <ruby>答辯<rt>답변</rt></ruby>은、可하며 <ruby>遲刻<rt>지각</rt></ruby>으로 보지 않는다、였다。</p>
+    <p><ruby>地球<rt>지구</rt></ruby> 쪽도 남 말 할 처지는 아니다。<ruby>三星<rt>삼성</rt></ruby> <ruby>職業<rt>직업</rt></ruby> 야구 리그는 近年 <ruby>智子<rt>지자</rt></ruby>로 <ruby>地球<rt>지구</rt></ruby>에 <ruby>中繼<rt>중계</rt></ruby>되며 <ruby>視聽<rt>시청</rt></ruby>이 해마다 늘고 있다——어제 <ruby>正規<rt>정규</rt></ruby> 리그 한 <ruby>競技<rt>경기</rt></ruby>의 <ruby>地球<rt>지구</rt></ruby> 쪽 <ruby>視聽<rt>시청</rt></ruby> 수는 <ruby>卽位<rt>즉위</rt></ruby> <ruby>大禮<rt>대례</rt></ruby> <ruby>中繼<rt>중계</rt></ruby>의 2.3배였다。최근 몇 해 동안 <ruby>地球<rt>지구</rt></ruby> <ruby>選手<rt>선수</rt></ruby> 11<ruby>名<rt>명</rt></ruby>이 <ruby>三星<rt>삼성</rt></ruby> 구단의 <ruby>招請<rt>초청</rt></ruby>을 받았고 그중 7<ruby>名<rt>명</rt></ruby>이 이미 <ruby>赴任<rt>부임</rt></ruby>했다。사람은 배를 타야 하니 닿는 데 4년 남짓 걸린다。<ruby>競技<rt>경기</rt></ruby>는 떠나기 전에 이미 다 봤다。</p>
+    <p>한 <ruby>解說者<rt>해설자</rt></ruby>는 <ruby>取材<rt>취재</rt></ruby>에 이렇게 답했다。「저쪽 <ruby>打擊<rt>타격</rt></ruby> 타이밍은 아무래도 이상합니다」。<ruby>重力<rt>중력</rt></ruby> 때문이냐고 묻자 「아마도요」。</p>
+    <p>「<ruby>儀式<rt>의식</rt></ruby> <ruby>映像<rt>영상</rt></ruby>은 <ruby>光速<rt>광속</rt></ruby>으로 보내야 한다」는 것과 「모두가 진작 <ruby>智子<rt>지자</rt></ruby>로 봤다」는 것이 함께 있는 데 대해、<ruby>宮內廳<rt>궁내청</rt></ruby>도 <ruby>定住區<rt>정주구</rt></ruby> <ruby>代表<rt>대표</rt></ruby> <ruby>會議<rt>회의</rt></ruby>도 구단 팬 <ruby>團體<rt>단체</rt></ruby>도 <ruby>可否<rt>가부</rt></ruby>를 말하지 않았다。</p>
+    <p>【<ruby>本紙<rt>본지</rt></ruby> <ruby>科學技術<rt>과학기술</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> <ruby>陳師俊<rt>진사준</rt></ruby> <ruby>補<rt>보</rt></ruby>】<ruby>神經<rt>신경</rt></ruby> <ruby>共振<rt>공진</rt></ruby>은 <ruby>近距離<rt>근거리</rt></ruby> <ruby>生物<rt>생물</rt></ruby> 사이의 <ruby>情報<rt>정보</rt></ruby> <ruby>交換<rt>교환</rt></ruby> <ruby>機制<rt>기제</rt></ruby>로 미치는 <ruby>範圍<rt>범위</rt></ruby>가 미터 <ruby>單位<rt>단위</rt></ruby>이며 <ruby>遠距離<rt>원거리</rt></ruby> <ruby>通信<rt>통신</rt></ruby>과는 <ruby>無關<rt>무관</rt></ruby>하다。<ruby>巷間<rt>항간</rt></ruby>에서 자주 <ruby>混同<rt>혼동</rt></ruby>된다。<ruby>球際<rt>구제</rt></ruby> <ruby>卽時<rt>즉시</rt></ruby> <ruby>通信<rt>통신</rt></ruby>은 모두 <ruby>智子<rt>지자</rt></ruby>가 맡는다。<ruby>儀式<rt>의식</rt></ruby> <ruby>映像<rt>영상</rt></ruby>이 왜 <ruby>光速<rt>광속</rt></ruby>으로 한 벌 더 가야 하는지에 대해 <ruby>宮內廳<rt>궁내청</rt></ruby>은 <ruby>說明<rt>설명</rt></ruby>하지 않았다。<ruby>本紙<rt>본지</rt></ruby>도 거듭 묻지 않았다。</p>
     <h2>낡은 <ruby>袍<rt>포</rt></ruby> 한 벌</h2>
-    <p><ruby>儀式<rt>의식</rt></ruby>이 끝난 뒤 새 <ruby>天皇<rt>천황</rt></ruby>과 <ruby>上皇<rt>상황</rt></ruby>은 <ruby>正殿<rt>정전</rt></ruby> 곁방에서 짧게 <ruby>對面<rt>대면</rt></ruby>했다. <ruby>取材<rt>취재</rt></ruby>는 들어가지 못했다. <ruby>宮內廳<rt>궁내청</rt></ruby>이 나중에 <ruby>公開<rt>공개</rt></ruby>한 것은 17초짜리 <ruby>映像<rt>영상</rt></ruby>뿐이다——<ruby>上皇<rt>상황</rt></ruby>이 손을 뻗어 새 <ruby>天皇<rt>천황</rt></ruby>의 고로젠노고호 오른쪽 <ruby>襟<rt>금</rt></ruby>을 여며 준다.</p>
-    <p>그 <ruby>袍<rt>포</rt></ruby>를, <ruby>上皇<rt>상황</rt></ruby> 자신은 30여 년 입었다.</p>
+    <p><ruby>儀式<rt>의식</rt></ruby>이 끝난 뒤 새 <ruby>天皇<rt>천황</rt></ruby>과 <ruby>上皇<rt>상황</rt></ruby>은 <ruby>正殿<rt>정전</rt></ruby> 곁방에서 짧게 <ruby>對面<rt>대면</rt></ruby>했다。<ruby>取材<rt>취재</rt></ruby>는 들어가지 못했다。<ruby>宮內廳<rt>궁내청</rt></ruby>이 나중에 <ruby>公開<rt>공개</rt></ruby>한 것은 17초짜리 <ruby>映像<rt>영상</rt></ruby>뿐이다——<ruby>上皇<rt>상황</rt></ruby>이 손을 뻗어 새 <ruby>天皇<rt>천황</rt></ruby>의 고로젠노고호 오른쪽 <ruby>襟<rt>금</rt></ruby>을 여며 준다。</p>
+    <p>그 <ruby>袍<rt>포</rt></ruby>를、<ruby>上皇<rt>상황</rt></ruby> 자신은 30여 년 입었다。</p>
   </article>
 
   <hr>
 
   <article>
-    <h1><ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마</rt></ruby>였다　<ruby>蘇聯<rt>소련</rt></ruby> <ruby>核彈<rt>핵탄</rt></ruby> <ruby>封存<rt>봉존</rt></ruby> <ruby>三十年<rt>삼십년</rt></ruby>　<ruby>解讀者<rt>해독자</rt></ruby> 曰：「<ruby>磁氣<rt>자기</rt></ruby> 디스크는 멀쩡하다, 당신의 <ruby>電腦<rt>전뇌</rt></ruby>가 너무 새것일 뿐」</h1>
+    <h1><ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마</rt></ruby>였다　<ruby>蘇聯<rt>소련</rt></ruby> <ruby>核彈<rt>핵탄</rt></ruby> <ruby>封存<rt>봉존</rt></ruby> <ruby>三十年<rt>삼십년</rt></ruby>　<ruby>解讀者<rt>해독자</rt></ruby> 曰：「<ruby>磁氣<rt>자기</rt></ruby> 디스크는 멀쩡하다、당신의 <ruby>電腦<rt>전뇌</rt></ruby>가 너무 새것일 뿐」</h1>
     <blockquote>
-      <p><ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby> <ruby>十五年<rt>십오년</rt></ruby>, 마지막 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>大陸間<rt>대륙간</rt></ruby> <ruby>彈道<rt>탄도</rt></ruby> <ruby>飛彈<rt>비탄</rt></ruby>은 <ruby>解體<rt>해체</rt></ruby>가 지지부진했다. <ruby>封存<rt>봉존</rt></ruby>된 <ruby>磁氣<rt>자기</rt></ruby> 디스크는 <ruby>完好<rt>완호</rt></ruby>하나, 읽어내면 모두 <ruby>亂碼<rt>난마</rt></ruby>였다. <ruby>謎底<rt>미저</rt></ruby>가 밝혀지는 데 <ruby>十五年<rt>십오년</rt></ruby>이 걸렸으니——<ruby>問題<rt>문제</rt></ruby>는 <ruby>磁氣<rt>자기</rt></ruby> 디스크에 있지 않고 <ruby>九十年<rt>구십년</rt></ruby> 전에 <ruby>退場<rt>퇴장</rt></ruby>한, 이제 아무도 기억하지 못하는 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>字符<rt>자부</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby> KOI-8에 있었다. <ruby>正確<rt>정확</rt></ruby>한 <ruby>解讀<rt>해독</rt></ruby>에 걸린 시간은 <ruby>十七<rt>십칠</rt></ruby> 분이었다.</p>
+      <p><ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby> <ruby>十五年<rt>십오년</rt></ruby>、마지막 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>大陸間<rt>대륙간</rt></ruby> <ruby>彈道<rt>탄도</rt></ruby> <ruby>飛彈<rt>비탄</rt></ruby>은 <ruby>解體<rt>해체</rt></ruby>가 지지부진했다。<ruby>封存<rt>봉존</rt></ruby>된 <ruby>磁氣<rt>자기</rt></ruby> 디스크는 <ruby>完好<rt>완호</rt></ruby>하나、읽어내면 모두 <ruby>亂碼<rt>난마</rt></ruby>였다。<ruby>謎底<rt>미저</rt></ruby>가 밝혀지는 데 <ruby>十五年<rt>십오년</rt></ruby>이 걸렸으니——<ruby>問題<rt>문제</rt></ruby>는 <ruby>磁氣<rt>자기</rt></ruby> 디스크에 있지 않고 <ruby>九十年<rt>구십년</rt></ruby> 전에 <ruby>退場<rt>퇴장</rt></ruby>한、이제 아무도 기억하지 못하는 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>字符<rt>자부</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby> KOI-8에 있었다。<ruby>正確<rt>정확</rt></ruby>한 <ruby>解讀<rt>해독</rt></ruby>에 걸린 시간은 <ruby>十七<rt>십칠</rt></ruby> 분이었다。</p>
     </blockquote>
     <p>【본지 <ruby>月球<rt>월구</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby>　錢福興　<ruby>專電<rt>전전</rt></ruby>】</p>
-    <p><ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby> <ruby>締結<rt>체결</rt></ruby> <ruby>十五週年<rt>십오주년</rt></ruby>이 되었건만, <ruby>人類<rt>인류</rt></ruby>가 <ruby>核兵器<rt>핵무기</rt></ruby> <ruby>完全<rt>완전</rt></ruby> <ruby>廢絕<rt>폐절</rt></ruby>의 <ruby>終點<rt>종점</rt></ruby>에 이르기까지는 아직도 마지막 몇 기의 녹슨 <ruby>老物件<rt>노물건</rt></ruby>이 남아 있다.</p>
-    <p><ruby>問題<rt>문제</rt></ruby>는 <ruby>政治<rt>정치</rt></ruby>에도, <ruby>意志<rt>의지</rt></ruby>에도 있지 않다. 아무도 읽어낼 수 없는 <ruby>磁氣<rt>자기</rt></ruby> 디스크 한 묶음에 있다.</p>
-    <p><ruby>冷戰<rt>냉전</rt></ruby>의 <ruby>遺産<rt>유산</rt></ruby>——<ruby>蘇聯<rt>소련</rt></ruby>이 <ruby>一九七〇<rt>일구칠공</rt></ruby>·<ruby>八〇年代<rt>팔공년대</rt></ruby>에 <ruby>配備<rt>배비</rt></ruby>한 <ruby>大陸間<rt>대륙간</rt></ruby> <ruby>彈道<rt>탄도</rt></ruby> <ruby>飛彈群<rt>비탄군</rt></ruby>——은 오늘까지도 <ruby>原裝<rt>원장</rt></ruby> <ruby>起動<rt>기동</rt></ruby>·<ruby>停止<rt>정지</rt></ruby> <ruby>程序<rt>정서</rt></ruby>를 그대로 간직한 채, <ruby>烏拉爾山<rt>우랄산</rt></ruby> <ruby>以東<rt>이동</rt></ruby> 어딘가의 <ruby>地下<rt>지하</rt></ruby> <ruby>施設<rt>시설</rt></ruby>에 <ruby>封存<rt>봉존</rt></ruby>되어 있다. <ruby>程序<rt>정서</rt></ruby> <ruby>自體<rt>자체</rt></ruby>는 한 번도 <ruby>損傷<rt>손상</rt></ruby>되지 않았다. <ruby>問題<rt>문제</rt></ruby>는 단 하나——그것이 무엇을 적고 있는지 읽어낼 수 있는 사람이 없다는 것이다.</p>
-    <p>각국 <ruby>政府<rt>정부</rt></ruby>는 이를 위해 <ruby>史上<rt>사상</rt></ruby> <ruby>前例<rt>전례</rt></ruby>가 없는 <ruby>解讀<rt>해독</rt></ruby> <ruby>特別隊<rt>특별대</rt></ruby>를 <ruby>編成<rt>편성</rt></ruby>했다. <ruby>構成員<rt>구성원</rt></ruby>은 <ruby>科學<rt>과학</rt></ruby> <ruby>考古學者<rt>고고학자</rt></ruby>, 여러 나라 말에 정통한 <ruby>言語學者<rt>언어학자</rt></ruby>, 그리고 <ruby>最新<rt>최신</rt></ruby> <ruby>世代<rt>세대</rt></ruby>의 <ruby>人形<rt>인형</rt></ruby> <ruby>言語學<rt>언어학</rt></ruby> <ruby>機器人<rt>기기인</rt></ruby>에 이르기까지 두루 걸쳐 있었다. <ruby>十五年<rt>십오년</rt></ruby> 동안 이 <ruby>隊伍<rt>대오</rt></ruby>는 <ruby>地球<rt>지구</rt></ruby> 위에 <ruby>冷戰<rt>냉전</rt></ruby> <ruby>文書<rt>문서</rt></ruby>가 보관된 <ruby>地下<rt>지하</rt></ruby> <ruby>庫房<rt>고방</rt></ruby>을 모조리 뒤졌으나, 끝내 빈손이었다. <ruby>癥結<rt>증결</rt></ruby>은 언제나 같았다. <ruby>現代<rt>현대</rt></ruby> <ruby>考古<rt>고고</rt></ruby> <ruby>電腦<rt>전뇌</rt></ruby>로 읽어낸 그 <ruby>磁氣<rt>자기</rt></ruby> 디스크들은 한자와 <ruby>亂符<rt>난부</rt></ruby>가 뒤엉킨 한 장의 <ruby>天書<rt>천서</rt></ruby>였다.</p>
-    <p>「틀림없이 <ruby>磁氣<rt>자기</rt></ruby> 디스크가 망가진 것이다.」 <ruby>匿名<rt>익명</rt></ruby>을 원한 한 <ruby>科學<rt>과학</rt></ruby> <ruby>考古學者<rt>고고학자</rt></ruby>가 <ruby>十年<rt>십년</rt></ruby> 전 <ruby>會議<rt>회의</rt></ruby> <ruby>記錄<rt>기록</rt></ruby>에 남긴 말이다. 「러시아어 <ruby>程序<rt>정서</rt></ruby>가 한자로 표시되는 건 그 때문이다.」</p>
-    <p>또 다른 <ruby>一派<rt>일파</rt></ruby>의 <ruby>學者<rt>학자</rt></ruby>들은 <ruby>正反對<rt>정반대</rt></ruby>의 견해를 <ruby>固執<rt>고집</rt></ruby>하며, 그로 인해 <ruby>十餘年<rt>십여년</rt></ruby>에 걸친 <ruby>學術<rt>학술</rt></ruby> <ruby>筆戰<rt>필전</rt></ruby>이 <ruby>勃發<rt>발발</rt></ruby>했다. 그들은 <ruby>蘇聯<rt>소련</rt></ruby>과 <ruby>共産<rt>공산</rt></ruby> <ruby>中國<rt>중국</rt></ruby> 사이의 <ruby>關係<rt>관계</rt></ruby>가 <ruby>史書<rt>사서</rt></ruby>에 기록된 것보다 훨씬 더 <ruby>曖昧<rt>애매</rt></ruby>했을지 모른다고, 권혜정 <ruby>敎授<rt>교수</rt></ruby>를 <ruby>筆頭<rt>필두</rt></ruby>로 한 一派가 <ruby>指摘<rt>지적</rt></ruby>한다——<ruby>相互間<rt>상호간</rt></ruby>에 <ruby>意識形態<rt>의식형태</rt></ruby>적으로는 <ruby>劍拔弩張<rt>검발노장</rt></ruby>이었어도, 비밀스러운 <ruby>技術<rt>기술</rt></ruby> <ruby>交流<rt>교류</rt></ruby>가 완전히 <ruby>斷絕<rt>단절</rt></ruby>되었는지는 <ruby>史料<rt>사료</rt></ruby>가 <ruby>明確<rt>명확</rt></ruby>한 <ruby>答<rt>답</rt></ruby>을 준 적이 없다는 것이다. <ruby>程序<rt>정서</rt></ruby> 안에 중국어가 뒤섞이거나 한자가 <ruby>暗號化<rt>암호화</rt></ruby> <ruby>手段<rt>수단</rt></ruby>으로 쓰였을 <ruby>可能性<rt>가능성</rt></ruby>도 <ruby>全無<rt>전무</rt></ruby>하다고는 할 수 없다는 것이다.</p>
-    <p>（<ruby>編按<rt>편안</rt></ruby>：이 <ruby>論點<rt>논점</rt></ruby>에 대해 <ruby>史學界<rt>사학계</rt></ruby>는 아직 <ruby>定論<rt>정론</rt></ruby>을 내리지 못했다. 그러나 <ruby>中蘇<rt>중소</rt></ruby>는 <ruby>一九六九年<rt>일구육구년</rt></ruby>에 이미 <ruby>國境<rt>국경</rt></ruby> <ruby>武裝<rt>무장</rt></ruby> <ruby>衝突<rt>충돌</rt></ruby>을 <ruby>勃發<rt>발발</rt></ruby>시켰고, <ruby>蘇聯<rt>소련</rt></ruby>은 한때 <ruby>中國<rt>중국</rt></ruby>에 대한 <ruby>核先制攻擊<rt>핵선제공격</rt></ruby>을 <ruby>評價<rt>평가</rt></ruby>한 바 있으며, <ruby>學界<rt>학계</rt></ruby> <ruby>多數<rt>다수</rt></ruby>는 <ruby>技術<rt>기술</rt></ruby> <ruby>共有<rt>공유</rt></ruby> <ruby>可能性<rt>가능성</rt></ruby>이 극히 낮다고 본다. 이 <ruby>論爭<rt>논쟁</rt></ruby>은 오늘날까지도 <ruby>考古<rt>고고</rt></ruby> <ruby>言語學界<rt>언어학계</rt></ruby>의 著名한 <ruby>公案<rt>공안</rt></ruby>으로 남아 있다.）</p>
-    <p>위의 <ruby>爭議<rt>쟁의</rt></ruby>는 지난달 유독 <ruby>洩氣<rt>설기</rt></ruby>스러운 방식으로 <ruby>終止符<rt>종지부</rt></ruby>를 찍었다.</p>
-    <p><ruby>謎底<rt>미저</rt></ruby>는 <ruby>磁氣<rt>자기</rt></ruby> 디스크에도, <ruby>蘇中<rt>소중</rt></ruby> <ruby>秘密<rt>비밀</rt></ruby> <ruby>協定<rt>협정</rt></ruby>에도 있지 않았다. 모두가 생각하기를 잊어버린 한 가지——<ruby>符號化<rt>부호화</rt></ruby>——에 있었다.</p>
-    <p><ruby>解讀<rt>해독</rt></ruby> <ruby>班<rt>반</rt></ruby>의 젊은 <ruby>隊員<rt>대원</rt></ruby> 슈냐 설은, 어느 <ruby>平常<rt>평상</rt></ruby>한 날 <ruby>二十世紀<rt>이십세기</rt></ruby> <ruby>情報工學<rt>정보공학</rt></ruby> <ruby>文獻<rt>문헌</rt></ruby>을 <ruby>定例<rt>정례</rt></ruby>로 <ruby>閱覽<rt>열람</rt></ruby>하던 중, <ruby>九十年<rt>구십년</rt></ruby> 동안 <ruby>塵封<rt>진봉</rt></ruby>되어 있던 <ruby>技術<rt>기술</rt></ruby> <ruby>備忘錄<rt>비망록</rt></ruby> 한 장을 우연히 발견했다. <ruby>頁首<rt>혈수</rt></ruby>에는 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>의 붉은 <ruby>徽章<rt>휘장</rt></ruby>이 찍혀 있었고, <ruby>內容<rt>내용</rt></ruby>은 KOI-8이라는 이름의 <ruby>字元<rt>자원</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>에 관한 것이었다——키릴 <ruby>文字<rt>문자</rt></ruby>를 위해 <ruby>設計<rt>설계</rt></ruby>된 것으로, 당시 <ruby>西方<rt>서방</rt></ruby>에서 통용되던 ASCII <ruby>體系<rt>체계</rt></ruby>와 서로 <ruby>相容<rt>상용</rt></ruby>되지 않아, 어느 <ruby>文字<rt>문자</rt></ruby> 하나도 <ruby>對應<rt>대응</rt></ruby>하는 것이 없었다.</p>
-    <p>여기서 <ruby>萬碼歸一<rt>만마귀일</rt></ruby>에 익숙해진 <ruby>現代<rt>현대</rt></ruby> <ruby>讀者<rt>독자</rt></ruby>에게 잠시 <ruby>説明<rt>설명</rt></ruby>이 <ruby>必要<rt>필요</rt></ruby>하다. 소위 「<ruby>符號化<rt>부호화</rt></ruby>」란 <ruby>電腦<rt>전뇌</rt></ruby>가 <ruby>文字<rt>문자</rt></ruby>를 <ruby>數字<rt>수자</rt></ruby> <ruby>信號<rt>신호</rt></ruby>로 <ruby>變換<rt>변환</rt></ruby>할 때 <ruby>依據<rt>의거</rt></ruby>하는 <ruby>對照表<rt>대조표</rt></ruby>이다. 그리고 소위 「<ruby>亂碼<rt>난마</rt></ruby>」란, 어떤 <ruby>文書<rt>문서</rt></ruby>가 한 <ruby>對照表<rt>대조표</rt></ruby>로 작성되었는데 다른 <ruby>對照表<rt>대조표</rt></ruby>로 <ruby>强制<rt>강제</rt></ruby> <ruby>解讀<rt>해독</rt></ruby>될 때 생겨나는 <ruby>荒唐<rt>황당</rt></ruby>한 결과다——올바른 <ruby>數字<rt>수자</rt></ruby>가 완전히 <ruby>誤謬<rt>오류</rt></ruby>의 <ruby>文字<rt>문자</rt></ruby>에 <ruby>對應<rt>대응</rt></ruby>되는 것이다. 오늘날에는 이 말이 황당하게 들릴 것이다. 왜냐하면 <ruby>當代<rt>당대</rt></ruby>에 통용되는 Unicode <ruby>標準<rt>표준</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> 위의 거의 모든 <ruby>文字<rt>문자</rt></ruby> <ruby>體系<rt>체계</rt></ruby>를 <ruby>網羅<rt>망라</rt></ruby>하여, 어떤 <ruby>裝置<rt>장치</rt></ruby>에서 어떤 <ruby>文書<rt>문서</rt></ruby>를 열어도 같은 하나의 <ruby>總表<rt>총표</rt></ruby>에서 <ruby>文字<rt>문자</rt></ruby>를 가져오기 때문이다. <ruby>亂碼<rt>난마</rt></ruby>는 하나의 <ruby>日常的<rt>일상적</rt></ruby> <ruby>災難<rt>재난</rt></ruby>으로서 이미 <ruby>八十年<rt>팔십년</rt></ruby> 이상 전에 <ruby>絶跡<rt>절적</rt></ruby>했다. 그러나 <ruby>二十世紀<rt>이십세기</rt></ruby> <ruby>下半葉<rt>하반엽</rt></ruby>에는, 각국·각 <ruby>體系<rt>체계</rt></ruby>·때로는 심지어 각 <ruby>機關<rt>기관</rt></ruby>마다 서로 <ruby>承認<rt>승인</rt></ruby>하지 않는 <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>을 각자 <ruby>維持<rt>유지</rt></ruby>하고 있었다. 마치 <ruby>言語<rt>언어</rt></ruby>는 같지만 <ruby>文字<rt>문자</rt></ruby>가 서로 다른 <ruby>平行<rt>평행</rt></ruby> <ruby>文明<rt>문명</rt></ruby>과도 같았다. 「당시 <ruby>美國<rt>미국</rt></ruby>의 <ruby>電腦<rt>전뇌</rt></ruby>는,」 슈냐 설이 <ruby>記者<rt>기자</rt></ruby> <ruby>會見<rt>회견</rt></ruby>에서 <ruby>冷靜<rt>냉정</rt></ruby>함이 거의 <ruby>殘忍<rt>잔인</rt></ruby>함에 가까운 <ruby>語調<rt>어조</rt></ruby>로 말했다. 「'Schrödinger'라는 이름조차, 당시의 <ruby>電腦<rt>전뇌</rt></ruby>는 <ruby>完整<rt>완전</rt></ruby>하게 표시할 수 없었습니다——<ruby>核子<rt>핵자</rt></ruby> <ruby>時代<rt>시대</rt></ruby>의 가장 著名한 <ruby>思想實驗<rt>사상실험</rt></ruby>에 이름을 남긴 그 사람의 이름을. <ruby>全體<rt>전체</rt></ruby> <ruby>數位<rt>수위</rt></ruby> <ruby>文明<rt>문명</rt></ruby>은 당시 사실상 각자 <ruby>各説各話<rt>각설각화</rt></ruby>를 하고 있었던 것입니다.」</p>
-    <p>그녀는 곧 덧붙였다. KOI-8을 비롯한 <ruby>同類<rt>동류</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby>는, 지금으로부터 약 <ruby>九十年<rt>구십년</rt></ruby> 전 Unicode <ruby>統一<rt>통일</rt></ruby> <ruby>標準<rt>표준</rt></ruby>의 <ruby>全球<rt>전구</rt></ruby> <ruby>普及<rt>보급</rt></ruby>에 따라 <ruby>歷史<rt>역사</rt></ruby>의 <ruby>舞臺<rt>무대</rt></ruby>에서 <ruby>悄然<rt>초연</rt></ruby>히 <ruby>退場<rt>퇴장</rt></ruby>했다. 거의 半 <ruby>世紀<rt>세기</rt></ruby> 동안 <ruby>人工知能<rt>인공지능</rt></ruby> <ruby>模型<rt>모형</rt></ruby>의 <ruby>訓練<rt>훈련</rt></ruby> <ruby>語料庫<rt>어료고</rt></ruby>에서 이런 형식의 <ruby>文本<rt>문본</rt></ruby>은 <ruby>無視<rt>무시</rt></ruby>해도 좋을 만큼 드물어졌다는 것이다.</p>
-    <p>「<ruby>電腦<rt>전뇌</rt></ruby>도 마찬가지입니다.」 현장에 <ruby>待機<rt>대기</rt></ruby> 중이던 <ruby>人形<rt>인형</rt></ruby> <ruby>言語學<rt>언어학</rt></ruby> <ruby>機器人<rt>기기인</rt></ruby> EISO-2200이 덧붙였다. 그 <ruby>措辭<rt>조사</rt></ruby>는 늘 그렇듯 <ruby>精確<rt>정확</rt></ruby>하되 어떤 <ruby>感情色彩<rt>감정색채</rt></ruby>도 없었다. 「<ruby>關聯<rt>관련</rt></ruby> <ruby>訓練<rt>훈련</rt></ruby> <ruby>資料<rt>자료</rt></ruby>량이 <ruby>不足<rt>부족</rt></ruby>하여, <ruby>模型<rt>모형</rt></ruby>이 이것이 <ruby>系統的<rt>계통적</rt></ruby>인 <ruby>符號化<rt>부호화</rt></ruby> <ruby>誤謬<rt>오류</rt></ruby>임을 <ruby>識別<rt>식별</rt></ruby>하지 못하고 <ruby>眞正<rt>진정</rt></ruby>한 한자 <ruby>內容<rt>내용</rt></ruby>으로 <ruby>認識<rt>인식</rt></ruby>했습니다.」</p>
-    <p>다시 말해, 아무도 읽어낼 수 없었던 것은 모두가 <ruby>誤謬<rt>오류</rt></ruby>의 열쇠를 사용했기 때문이다. <ruby>正確<rt>정확</rt></ruby>한 <ruby>解法<rt>해법</rt></ruby>은 KOI-8 <ruby>形式<rt>형식</rt></ruby>으로 <ruby>磁氣<rt>자기</rt></ruby> 디스크를 다시 읽은 다음 <ruby>當代<rt>당대</rt></ruby> Unicode <ruby>標準<rt>표준</rt></ruby>으로 <ruby>變換<rt>변환</rt></ruby>하는 것이었다. 전 <ruby>過程<rt>과정</rt></ruby>은 약 <ruby>十七<rt>십칠</rt></ruby> 분이 걸렸다. 그리고 이 방법은 <ruby>百年<rt>백년</rt></ruby> 전에는 어느 <ruby>情報工學<rt>정보공학</rt></ruby> <ruby>學生<rt>학생</rt></ruby>이나 입학 첫째 주에 익히는 상식이었다——다만 그 <ruby>科目<rt>과목</rt></ruby>은 이미 모든 <ruby>大學<rt>대학</rt></ruby>의 <ruby>課程表<rt>과정표</rt></ruby>에서 사라진 지 오래였다.</p>
-    <p><ruby>解讀<rt>해독</rt></ruby> <ruby>班<rt>반</rt></ruby>은 사후에 밝혔다. <ruby>正確<rt>정확</rt></ruby>한 <ruby>版本<rt>판본</rt></ruby>의 <ruby>程序<rt>정서</rt></ruby>는 <ruby>標準<rt>표준</rt></ruby> <ruby>俄語<rt>아어</rt></ruby>로 작성되어 있었으며, <ruby>技術<rt>기술</rt></ruby> <ruby>論理<rt>논리</rt></ruby>가 <ruby>明確<rt>명확</rt></ruby>하고 <ruby>保存<rt>보존</rt></ruby> <ruby>狀態<rt>상태</rt></ruby>가 <ruby>完好<rt>완호</rt></ruby>하며, 어떠한 <ruby>損傷<rt>손상</rt></ruby>이나 <ruby>暗號化<rt>암호화</rt></ruby>의 흔적도 없었다고.</p>
-    <p>알려진 바에 따르면 <ruby>解體<rt>해체</rt></ruby> <ruby>作業<rt>작업</rt></ruby>은 다음 주에 <ruby>正式<rt>정식</rt></ruby>으로 <ruby>開始<rt>개시</rt></ruby>될 예정이다. 이 <ruby>飛彈<rt>비탄</rt></ruby>들 <ruby>內部<rt>내부</rt></ruby>의 플루토늄과 우라늄-235는 아프리카 <ruby>超導<rt>초도</rt></ruby> <ruby>電池<rt>전지</rt></ruby> <ruby>聯合<rt>연합</rt></ruby> <ruby>工廠<rt>공장</rt></ruby>으로 <ruby>一括<rt>일괄</rt></ruby> <ruby>移送<rt>이송</rt></ruby>되어, <ruby>低濃縮<rt>저농축</rt></ruby> <ruby>處理<rt>처리</rt></ruby> 후 <ruby>民用<rt>민용</rt></ruby> <ruby>蓄能<rt>축능</rt></ruby> <ruby>電芯<rt>전심</rt></ruby>으로 <ruby>製造<rt>제조</rt></ruby>될 것이다. 첫 <ruby>批<rt>비</rt></ruby> <ruby>製品<rt>제품</rt></ruby>은 <ruby>月球<rt>월구</rt></ruby> <ruby>定住地<rt>정주지</rt></ruby>와 <ruby>南極洲<rt>남극주</rt></ruby> <ruby>越冬<rt>월동</rt></ruby> <ruby>基地<rt>기지</rt></ruby> <ruby>居民<rt>거민</rt></ruby>에게 무료로 <ruby>配給<rt>배급</rt></ruby>되어 <ruby>暖房<rt>난방</rt></ruby> <ruby>設備<rt>설비</rt></ruby>의 <ruby>電源<rt>전원</rt></ruby>으로 쓰일 예정이라 한다.</p>
-    <p>한 <ruby>世紀<rt>세기</rt></ruby> 반 전에 <ruby>凝固<rt>응고</rt></ruby>된 <ruby>末日<rt>말일</rt></ruby>의 <ruby>豫言<rt>예언</rt></ruby>이, 이렇게 해서 그 <ruby>最終<rt>최종</rt></ruby>의 <ruby>行先地<rt>행선지</rt></ruby>에 다다르게 되었다. 어느 집 <ruby>暖房<rt>난방</rt></ruby>기구, <ruby>極夜<rt>극야</rt></ruby> 속에서 켜지는 불빛으로.</p>
-    <p>슈냐 설이 <ruby>記者臺<rt>기자대</rt></ruby>를 떠나려던 참에, 어딘가 <ruby>人群<rt>인군</rt></ruby> 속에서 한 마디가 날아왔다. 「그럼 그 <ruby>十五年<rt>십오년</rt></ruby>은요?」</p>
-    <p>그녀는 일 초 멈칫했다.</p>
-    <p>「그 <ruby>十五年<rt>십오년</rt></ruby>은,」 그녀가 말했다. 「우리가 <ruby>歷史<rt>역사</rt></ruby>를 기억하지 못한 데 치른 <ruby>授業料<rt>수업료</rt></ruby>입니다.」</p>
-    <p><ruby>拍手<rt>박수</rt></ruby>는 일어나지 않았다.</p>
+    <p><ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby> <ruby>締結<rt>체결</rt></ruby> <ruby>十五週年<rt>십오주년</rt></ruby>이 되었건만、<ruby>人類<rt>인류</rt></ruby>가 <ruby>核兵器<rt>핵무기</rt></ruby> <ruby>完全<rt>완전</rt></ruby> <ruby>廢絕<rt>폐절</rt></ruby>의 <ruby>終點<rt>종점</rt></ruby>에 이르기까지는 아직도 마지막 몇 기의 녹슨 <ruby>老物件<rt>노물건</rt></ruby>이 남아 있다。</p>
+    <p><ruby>問題<rt>문제</rt></ruby>는 <ruby>政治<rt>정치</rt></ruby>에도、<ruby>意志<rt>의지</rt></ruby>에도 있지 않다。아무도 읽어낼 수 없는 <ruby>磁氣<rt>자기</rt></ruby> 디스크 한 묶음에 있다。</p>
+    <p><ruby>冷戰<rt>냉전</rt></ruby>의 <ruby>遺産<rt>유산</rt></ruby>——<ruby>蘇聯<rt>소련</rt></ruby>이 <ruby>一九七〇<rt>일구칠공</rt></ruby>·<ruby>八〇年代<rt>팔공년대</rt></ruby>에 <ruby>配備<rt>배비</rt></ruby>한 <ruby>大陸間<rt>대륙간</rt></ruby> <ruby>彈道<rt>탄도</rt></ruby> <ruby>飛彈群<rt>비탄군</rt></ruby>——은 오늘까지도 <ruby>原裝<rt>원장</rt></ruby> <ruby>起動<rt>기동</rt></ruby>·<ruby>停止<rt>정지</rt></ruby> <ruby>程序<rt>정서</rt></ruby>를 그대로 간직한 채、<ruby>烏拉爾山<rt>우랄산</rt></ruby> <ruby>以東<rt>이동</rt></ruby> 어딘가의 <ruby>地下<rt>지하</rt></ruby> <ruby>施設<rt>시설</rt></ruby>에 <ruby>封存<rt>봉존</rt></ruby>되어 있다。<ruby>程序<rt>정서</rt></ruby> <ruby>自體<rt>자체</rt></ruby>는 한 번도 <ruby>損傷<rt>손상</rt></ruby>되지 않았다。<ruby>問題<rt>문제</rt></ruby>는 단 하나——그것이 무엇을 적고 있는지 읽어낼 수 있는 사람이 없다는 것이다。</p>
+    <p>각국 <ruby>政府<rt>정부</rt></ruby>는 이를 위해 <ruby>史上<rt>사상</rt></ruby> <ruby>前例<rt>전례</rt></ruby>가 없는 <ruby>解讀<rt>해독</rt></ruby> <ruby>特別隊<rt>특별대</rt></ruby>를 <ruby>編成<rt>편성</rt></ruby>했다。<ruby>構成員<rt>구성원</rt></ruby>은 <ruby>科學<rt>과학</rt></ruby> <ruby>考古學者<rt>고고학자</rt></ruby>、여러 나라 말에 정통한 <ruby>言語學者<rt>언어학자</rt></ruby>、그리고 <ruby>最新<rt>최신</rt></ruby> <ruby>世代<rt>세대</rt></ruby>의 <ruby>人形<rt>인형</rt></ruby> <ruby>言語學<rt>언어학</rt></ruby> <ruby>機器人<rt>기기인</rt></ruby>에 이르기까지 두루 걸쳐 있었다。<ruby>十五年<rt>십오년</rt></ruby> 동안 이 <ruby>隊伍<rt>대오</rt></ruby>는 <ruby>地球<rt>지구</rt></ruby> 위에 <ruby>冷戰<rt>냉전</rt></ruby> <ruby>文書<rt>문서</rt></ruby>가 보관된 <ruby>地下<rt>지하</rt></ruby> <ruby>庫房<rt>고방</rt></ruby>을 모조리 뒤졌으나、끝내 빈손이었다。<ruby>癥結<rt>증결</rt></ruby>은 언제나 같았다。<ruby>現代<rt>현대</rt></ruby> <ruby>考古<rt>고고</rt></ruby> <ruby>電腦<rt>전뇌</rt></ruby>로 읽어낸 그 <ruby>磁氣<rt>자기</rt></ruby> 디스크들은 한자와 <ruby>亂符<rt>난부</rt></ruby>가 뒤엉킨 한 장의 <ruby>天書<rt>천서</rt></ruby>였다。</p>
+    <p>「틀림없이 <ruby>磁氣<rt>자기</rt></ruby> 디스크가 망가진 것이다.」 <ruby>匿名<rt>익명</rt></ruby>을 원한 한 <ruby>科學<rt>과학</rt></ruby> <ruby>考古學者<rt>고고학자</rt></ruby>가 <ruby>十年<rt>십년</rt></ruby> 전 <ruby>會議<rt>회의</rt></ruby> <ruby>記錄<rt>기록</rt></ruby>에 남긴 말이다。「러시아어 <ruby>程序<rt>정서</rt></ruby>가 한자로 표시되는 건 그 때문이다.」</p>
+    <p>또 다른 <ruby>一派<rt>일파</rt></ruby>의 <ruby>學者<rt>학자</rt></ruby>들은 <ruby>正反對<rt>정반대</rt></ruby>의 견해를 <ruby>固執<rt>고집</rt></ruby>하며、그로 인해 <ruby>十餘年<rt>십여년</rt></ruby>에 걸친 <ruby>學術<rt>학술</rt></ruby> <ruby>筆戰<rt>필전</rt></ruby>이 <ruby>勃發<rt>발발</rt></ruby>했다。그들은 <ruby>蘇聯<rt>소련</rt></ruby>과 <ruby>共産<rt>공산</rt></ruby> <ruby>中國<rt>중국</rt></ruby> 사이의 <ruby>關係<rt>관계</rt></ruby>가 <ruby>史書<rt>사서</rt></ruby>에 기록된 것보다 훨씬 더 <ruby>曖昧<rt>애매</rt></ruby>했을지 모른다고、권혜정 <ruby>敎授<rt>교수</rt></ruby>를 <ruby>筆頭<rt>필두</rt></ruby>로 한 一派가 <ruby>指摘<rt>지적</rt></ruby>한다——<ruby>相互間<rt>상호간</rt></ruby>에 <ruby>意識形態<rt>의식형태</rt></ruby>적으로는 <ruby>劍拔弩張<rt>검발노장</rt></ruby>이었어도、비밀스러운 <ruby>技術<rt>기술</rt></ruby> <ruby>交流<rt>교류</rt></ruby>가 완전히 <ruby>斷絕<rt>단절</rt></ruby>되었는지는 <ruby>史料<rt>사료</rt></ruby>가 <ruby>明確<rt>명확</rt></ruby>한 <ruby>答<rt>답</rt></ruby>을 준 적이 없다는 것이다。<ruby>程序<rt>정서</rt></ruby> 안에 중국어가 뒤섞이거나 한자가 <ruby>暗號化<rt>암호화</rt></ruby> <ruby>手段<rt>수단</rt></ruby>으로 쓰였을 <ruby>可能性<rt>가능성</rt></ruby>도 <ruby>全無<rt>전무</rt></ruby>하다고는 할 수 없다는 것이다。</p>
+    <p>（<ruby>編按<rt>편안</rt></ruby>：이 <ruby>論點<rt>논점</rt></ruby>에 대해 <ruby>史學界<rt>사학계</rt></ruby>는 아직 <ruby>定論<rt>정론</rt></ruby>을 내리지 못했다。그러나 <ruby>中蘇<rt>중소</rt></ruby>는 <ruby>一九六九年<rt>일구육구년</rt></ruby>에 이미 <ruby>國境<rt>국경</rt></ruby> <ruby>武裝<rt>무장</rt></ruby> <ruby>衝突<rt>충돌</rt></ruby>을 <ruby>勃發<rt>발발</rt></ruby>시켰고、<ruby>蘇聯<rt>소련</rt></ruby>은 한때 <ruby>中國<rt>중국</rt></ruby>에 대한 <ruby>核先制攻擊<rt>핵선제공격</rt></ruby>을 <ruby>評價<rt>평가</rt></ruby>한 바 있으며、<ruby>學界<rt>학계</rt></ruby> <ruby>多數<rt>다수</rt></ruby>는 <ruby>技術<rt>기술</rt></ruby> <ruby>共有<rt>공유</rt></ruby> <ruby>可能性<rt>가능성</rt></ruby>이 극히 낮다고 본다。이 <ruby>論爭<rt>논쟁</rt></ruby>은 오늘날까지도 <ruby>考古<rt>고고</rt></ruby> <ruby>言語學界<rt>언어학계</rt></ruby>의 著名한 <ruby>公案<rt>공안</rt></ruby>으로 남아 있다.）</p>
+    <p>위의 <ruby>爭議<rt>쟁의</rt></ruby>는 지난달 유독 <ruby>洩氣<rt>설기</rt></ruby>스러운 방식으로 <ruby>終止符<rt>종지부</rt></ruby>를 찍었다。</p>
+    <p><ruby>謎底<rt>미저</rt></ruby>는 <ruby>磁氣<rt>자기</rt></ruby> 디스크에도、<ruby>蘇中<rt>소중</rt></ruby> <ruby>秘密<rt>비밀</rt></ruby> <ruby>協定<rt>협정</rt></ruby>에도 있지 않았다。모두가 생각하기를 잊어버린 한 가지——<ruby>符號化<rt>부호화</rt></ruby>——에 있었다。</p>
+    <p><ruby>解讀<rt>해독</rt></ruby> <ruby>班<rt>반</rt></ruby>의 젊은 <ruby>隊員<rt>대원</rt></ruby> 슈냐 설은、어느 <ruby>平常<rt>평상</rt></ruby>한 날 <ruby>二十世紀<rt>이십세기</rt></ruby> <ruby>情報工學<rt>정보공학</rt></ruby> <ruby>文獻<rt>문헌</rt></ruby>을 <ruby>定例<rt>정례</rt></ruby>로 <ruby>閱覽<rt>열람</rt></ruby>하던 중、<ruby>九十年<rt>구십년</rt></ruby> 동안 <ruby>塵封<rt>진봉</rt></ruby>되어 있던 <ruby>技術<rt>기술</rt></ruby> <ruby>備忘錄<rt>비망록</rt></ruby> 한 장을 우연히 발견했다。<ruby>頁首<rt>혈수</rt></ruby>에는 <ruby>蘇聯<rt>소련</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>의 붉은 <ruby>徽章<rt>휘장</rt></ruby>이 찍혀 있었고、<ruby>內容<rt>내용</rt></ruby>은 KOI-8이라는 이름의 <ruby>字元<rt>자원</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>에 관한 것이었다——키릴 <ruby>文字<rt>문자</rt></ruby>를 위해 <ruby>設計<rt>설계</rt></ruby>된 것으로、당시 <ruby>西方<rt>서방</rt></ruby>에서 통용되던 ASCII <ruby>體系<rt>체계</rt></ruby>와 서로 <ruby>相容<rt>상용</rt></ruby>되지 않아、어느 <ruby>文字<rt>문자</rt></ruby> 하나도 <ruby>對應<rt>대응</rt></ruby>하는 것이 없었다。</p>
+    <p>여기서 <ruby>萬碼歸一<rt>만마귀일</rt></ruby>에 익숙해진 <ruby>現代<rt>현대</rt></ruby> <ruby>讀者<rt>독자</rt></ruby>에게 잠시 <ruby>説明<rt>설명</rt></ruby>이 <ruby>必要<rt>필요</rt></ruby>하다。소위 「<ruby>符號化<rt>부호화</rt></ruby>」란 <ruby>電腦<rt>전뇌</rt></ruby>가 <ruby>文字<rt>문자</rt></ruby>를 <ruby>數字<rt>수자</rt></ruby> <ruby>信號<rt>신호</rt></ruby>로 <ruby>變換<rt>변환</rt></ruby>할 때 <ruby>依據<rt>의거</rt></ruby>하는 <ruby>對照表<rt>대조표</rt></ruby>이다。그리고 소위 「<ruby>亂碼<rt>난마</rt></ruby>」란、어떤 <ruby>文書<rt>문서</rt></ruby>가 한 <ruby>對照表<rt>대조표</rt></ruby>로 작성되었는데 다른 <ruby>對照表<rt>대조표</rt></ruby>로 <ruby>强制<rt>강제</rt></ruby> <ruby>解讀<rt>해독</rt></ruby>될 때 생겨나는 <ruby>荒唐<rt>황당</rt></ruby>한 결과다——올바른 <ruby>數字<rt>수자</rt></ruby>가 완전히 <ruby>誤謬<rt>오류</rt></ruby>의 <ruby>文字<rt>문자</rt></ruby>에 <ruby>對應<rt>대응</rt></ruby>되는 것이다。오늘날에는 이 말이 황당하게 들릴 것이다。왜냐하면 <ruby>當代<rt>당대</rt></ruby>에 통용되는 Unicode <ruby>標準<rt>표준</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> 위의 거의 모든 <ruby>文字<rt>문자</rt></ruby> <ruby>體系<rt>체계</rt></ruby>를 <ruby>網羅<rt>망라</rt></ruby>하여、어떤 <ruby>裝置<rt>장치</rt></ruby>에서 어떤 <ruby>文書<rt>문서</rt></ruby>를 열어도 같은 하나의 <ruby>總表<rt>총표</rt></ruby>에서 <ruby>文字<rt>문자</rt></ruby>를 가져오기 때문이다。<ruby>亂碼<rt>난마</rt></ruby>는 하나의 <ruby>日常的<rt>일상적</rt></ruby> <ruby>災難<rt>재난</rt></ruby>으로서 이미 <ruby>八十年<rt>팔십년</rt></ruby> 이상 전에 <ruby>絶跡<rt>절적</rt></ruby>했다。그러나 <ruby>二十世紀<rt>이십세기</rt></ruby> <ruby>下半葉<rt>하반엽</rt></ruby>에는、각국·각 <ruby>體系<rt>체계</rt></ruby>·때로는 심지어 각 <ruby>機關<rt>기관</rt></ruby>마다 서로 <ruby>承認<rt>승인</rt></ruby>하지 않는 <ruby>符號化<rt>부호화</rt></ruby> <ruby>規格<rt>규격</rt></ruby>을 각자 <ruby>維持<rt>유지</rt></ruby>하고 있었다。마치 <ruby>言語<rt>언어</rt></ruby>는 같지만 <ruby>文字<rt>문자</rt></ruby>가 서로 다른 <ruby>平行<rt>평행</rt></ruby> <ruby>文明<rt>문명</rt></ruby>과도 같았다。「당시 <ruby>美國<rt>미국</rt></ruby>의 <ruby>電腦<rt>전뇌</rt></ruby>는、」 슈냐 설이 <ruby>記者<rt>기자</rt></ruby> <ruby>會見<rt>회견</rt></ruby>에서 <ruby>冷靜<rt>냉정</rt></ruby>함이 거의 <ruby>殘忍<rt>잔인</rt></ruby>함에 가까운 <ruby>語調<rt>어조</rt></ruby>로 말했다。「'Schrödinger'라는 이름조차、당시의 <ruby>電腦<rt>전뇌</rt></ruby>는 <ruby>完整<rt>완전</rt></ruby>하게 표시할 수 없었습니다——<ruby>核子<rt>핵자</rt></ruby> <ruby>時代<rt>시대</rt></ruby>의 가장 著名한 <ruby>思想實驗<rt>사상실험</rt></ruby>에 이름을 남긴 그 사람의 이름을。<ruby>全體<rt>전체</rt></ruby> <ruby>數位<rt>수위</rt></ruby> <ruby>文明<rt>문명</rt></ruby>은 당시 사실상 각자 <ruby>各説各話<rt>각설각화</rt></ruby>를 하고 있었던 것입니다.」</p>
+    <p>그녀는 곧 덧붙였다。KOI-8을 비롯한 <ruby>同類<rt>동류</rt></ruby> <ruby>符號化<rt>부호화</rt></ruby>는、지금으로부터 약 <ruby>九十年<rt>구십년</rt></ruby> 전 Unicode <ruby>統一<rt>통일</rt></ruby> <ruby>標準<rt>표준</rt></ruby>의 <ruby>全球<rt>전구</rt></ruby> <ruby>普及<rt>보급</rt></ruby>에 따라 <ruby>歷史<rt>역사</rt></ruby>의 <ruby>舞臺<rt>무대</rt></ruby>에서 <ruby>悄然<rt>초연</rt></ruby>히 <ruby>退場<rt>퇴장</rt></ruby>했다。거의 半 <ruby>世紀<rt>세기</rt></ruby> 동안 <ruby>人工知能<rt>인공지능</rt></ruby> <ruby>模型<rt>모형</rt></ruby>의 <ruby>訓練<rt>훈련</rt></ruby> <ruby>語料庫<rt>어료고</rt></ruby>에서 이런 형식의 <ruby>文本<rt>문본</rt></ruby>은 <ruby>無視<rt>무시</rt></ruby>해도 좋을 만큼 드물어졌다는 것이다。</p>
+    <p>「<ruby>電腦<rt>전뇌</rt></ruby>도 마찬가지입니다.」 현장에 <ruby>待機<rt>대기</rt></ruby> 중이던 <ruby>人形<rt>인형</rt></ruby> <ruby>言語學<rt>언어학</rt></ruby> <ruby>機器人<rt>기기인</rt></ruby> EISO-2200이 덧붙였다。그 <ruby>措辭<rt>조사</rt></ruby>는 늘 그렇듯 <ruby>精確<rt>정확</rt></ruby>하되 어떤 <ruby>感情色彩<rt>감정색채</rt></ruby>도 없었다。「<ruby>關聯<rt>관련</rt></ruby> <ruby>訓練<rt>훈련</rt></ruby> <ruby>資料<rt>자료</rt></ruby>량이 <ruby>不足<rt>부족</rt></ruby>하여、<ruby>模型<rt>모형</rt></ruby>이 이것이 <ruby>系統的<rt>계통적</rt></ruby>인 <ruby>符號化<rt>부호화</rt></ruby> <ruby>誤謬<rt>오류</rt></ruby>임을 <ruby>識別<rt>식별</rt></ruby>하지 못하고 <ruby>眞正<rt>진정</rt></ruby>한 한자 <ruby>內容<rt>내용</rt></ruby>으로 <ruby>認識<rt>인식</rt></ruby>했습니다.」</p>
+    <p>다시 말해、아무도 읽어낼 수 없었던 것은 모두가 <ruby>誤謬<rt>오류</rt></ruby>의 열쇠를 사용했기 때문이다。<ruby>正確<rt>정확</rt></ruby>한 <ruby>解法<rt>해법</rt></ruby>은 KOI-8 <ruby>形式<rt>형식</rt></ruby>으로 <ruby>磁氣<rt>자기</rt></ruby> 디스크를 다시 읽은 다음 <ruby>當代<rt>당대</rt></ruby> Unicode <ruby>標準<rt>표준</rt></ruby>으로 <ruby>變換<rt>변환</rt></ruby>하는 것이었다。전 <ruby>過程<rt>과정</rt></ruby>은 약 <ruby>十七<rt>십칠</rt></ruby> 분이 걸렸다。그리고 이 방법은 <ruby>百年<rt>백년</rt></ruby> 전에는 어느 <ruby>情報工學<rt>정보공학</rt></ruby> <ruby>學生<rt>학생</rt></ruby>이나 입학 첫째 주에 익히는 상식이었다——다만 그 <ruby>科目<rt>과목</rt></ruby>은 이미 모든 <ruby>大學<rt>대학</rt></ruby>의 <ruby>課程表<rt>과정표</rt></ruby>에서 사라진 지 오래였다。</p>
+    <p><ruby>解讀<rt>해독</rt></ruby> <ruby>班<rt>반</rt></ruby>은 사후에 밝혔다。<ruby>正確<rt>정확</rt></ruby>한 <ruby>版本<rt>판본</rt></ruby>의 <ruby>程序<rt>정서</rt></ruby>는 <ruby>標準<rt>표준</rt></ruby> <ruby>俄語<rt>아어</rt></ruby>로 작성되어 있었으며、<ruby>技術<rt>기술</rt></ruby> <ruby>論理<rt>논리</rt></ruby>가 <ruby>明確<rt>명확</rt></ruby>하고 <ruby>保存<rt>보존</rt></ruby> <ruby>狀態<rt>상태</rt></ruby>가 <ruby>完好<rt>완호</rt></ruby>하며、어떠한 <ruby>損傷<rt>손상</rt></ruby>이나 <ruby>暗號化<rt>암호화</rt></ruby>의 흔적도 없었다고。</p>
+    <p>알려진 바에 따르면 <ruby>解體<rt>해체</rt></ruby> <ruby>作業<rt>작업</rt></ruby>은 다음 주에 <ruby>正式<rt>정식</rt></ruby>으로 <ruby>開始<rt>개시</rt></ruby>될 예정이다。이 <ruby>飛彈<rt>비탄</rt></ruby>들 <ruby>內部<rt>내부</rt></ruby>의 플루토늄과 우라늄-235는 아프리카 <ruby>超導<rt>초도</rt></ruby> <ruby>電池<rt>전지</rt></ruby> <ruby>聯合<rt>연합</rt></ruby> <ruby>工廠<rt>공장</rt></ruby>으로 <ruby>一括<rt>일괄</rt></ruby> <ruby>移送<rt>이송</rt></ruby>되어、<ruby>低濃縮<rt>저농축</rt></ruby> <ruby>處理<rt>처리</rt></ruby> 후 <ruby>民用<rt>민용</rt></ruby> <ruby>蓄能<rt>축능</rt></ruby> <ruby>電芯<rt>전심</rt></ruby>으로 <ruby>製造<rt>제조</rt></ruby>될 것이다。첫 <ruby>批<rt>비</rt></ruby> <ruby>製品<rt>제품</rt></ruby>은 <ruby>月球<rt>월구</rt></ruby> <ruby>定住地<rt>정주지</rt></ruby>와 <ruby>南極洲<rt>남극주</rt></ruby> <ruby>越冬<rt>월동</rt></ruby> <ruby>基地<rt>기지</rt></ruby> <ruby>居民<rt>거민</rt></ruby>에게 무료로 <ruby>配給<rt>배급</rt></ruby>되어 <ruby>暖房<rt>난방</rt></ruby> <ruby>設備<rt>설비</rt></ruby>의 <ruby>電源<rt>전원</rt></ruby>으로 쓰일 예정이라 한다。</p>
+    <p>한 <ruby>世紀<rt>세기</rt></ruby> 반 전에 <ruby>凝固<rt>응고</rt></ruby>된 <ruby>末日<rt>말일</rt></ruby>의 <ruby>豫言<rt>예언</rt></ruby>이、이렇게 해서 그 <ruby>最終<rt>최종</rt></ruby>의 <ruby>行先地<rt>행선지</rt></ruby>에 다다르게 되었다。어느 집 <ruby>暖房<rt>난방</rt></ruby>기구、<ruby>極夜<rt>극야</rt></ruby> 속에서 켜지는 불빛으로。</p>
+    <p>슈냐 설이 <ruby>記者臺<rt>기자대</rt></ruby>를 떠나려던 참에、어딘가 <ruby>人群<rt>인군</rt></ruby> 속에서 한 마디가 날아왔다。「그럼 그 <ruby>十五年<rt>십오년</rt></ruby>은요？」</p>
+    <p>그녀는 일 초 멈칫했다。</p>
+    <p>「그 <ruby>十五年<rt>십오년</rt></ruby>은、」 그녀가 말했다。「우리가 <ruby>歷史<rt>역사</rt></ruby>를 기억하지 못한 데 치른 <ruby>授業料<rt>수업료</rt></ruby>입니다.」</p>
+    <p><ruby>拍手<rt>박수</rt></ruby>는 일어나지 않았다。</p>
   </article>
 
   <hr>
@@ -992,14 +1020,14 @@
   <article>
     <h1><ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터<rt>엘리베이터</rt></ruby> 코딱지 <ruby>事件<rt>사건</rt></ruby>이 <ruby>地月<rt>지월</rt></ruby> <ruby>危機<rt>위기</rt></ruby>로 <ruby>飛火<rt>비화</rt></ruby>　<ruby>昇降室<rt>승강실</rt></ruby> <ruby>管轄權<rt>관할권</rt></ruby> <ruby>紛爭<rt>분쟁</rt></ruby>이 <ruby>資源<rt>자원</rt></ruby> <ruby>協商<rt>협상</rt></ruby>까지 번져　결국 《에이지 오브 엠파이어》 20전으로 <ruby>勝負<rt>승부</rt></ruby></h1>
     <blockquote>
-      <p><ruby>月城方<rt>월성방</rt></ruby>이 「3인 이상 <ruby>公共場所<rt>공공장소</rt></ruby> 코딱지 파기 <ruby>禁止<rt>금지</rt></ruby>」 <ruby>法案<rt>법안</rt></ruby>을 신규 <ruby>可決<rt>가결</rt></ruby>한 가운데, 한 <ruby>地球<rt>지구</rt></ruby> <ruby>旅行客<rt>여행객</rt></ruby>이 <ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터<rt>엘리베이터</rt></ruby> <ruby>昇降室<rt>승강실</rt></ruby> 내에서 이를 어겼다는 이유로 <ruby>月人<rt>월인</rt></ruby>에게 <ruby>制止<rt>제지</rt></ruby>당했다. <ruby>兩側<rt>양측</rt></ruby>은 「<ruby>昇降室<rt>승강실</rt></ruby>이 <ruby>地球<rt>지구</rt></ruby>와 달 중 어느 쪽 <ruby>管轄<rt>관할</rt></ruby>인가」를 두고 <ruby>攻防<rt>공방</rt></ruby>을 벌이며 다수 <ruby>人員<rt>인원</rt></ruby>이 <ruby>衝突<rt>충돌</rt></ruby>하는 <ruby>事態<rt>사태</rt></ruby>로 번졌다. 이 <ruby>事件<rt>사건</rt></ruby>은 오랫동안 <ruby>累積<rt>누적</rt></ruby>된 <ruby>地月<rt>지월</rt></ruby> 간 <ruby>資源<rt>자원</rt></ruby> <ruby>分配<rt>분배</rt></ruby>의 불씨에 기름을 부었고, <ruby>外交<rt>외교</rt></ruby> <ruby>協商<rt>협상</rt></ruby>이 <ruby>決裂<rt>결렬</rt></ruby> 직전에 이르자 한 <ruby>諮問官<rt>자문관</rt></ruby>의 <ruby>提案<rt>제안</rt></ruby>으로 《에이지 오브 엠파이어》로 <ruby>勝負<rt>승부</rt></ruby>를 가르기로 했다. <ruby>兩側<rt>양측</rt></ruby>이 각각 10승씩 거두며 화가 풀린 끝에 《<ruby>地月共榮協定<rt>지월공영협정</rt></ruby>》이 <ruby>締結<rt>체결</rt></ruby>됐다.</p>
+      <p><ruby>月城方<rt>월성방</rt></ruby>이 「3인 이상 <ruby>公共場所<rt>공공장소</rt></ruby> 코딱지 파기 <ruby>禁止<rt>금지</rt></ruby>」 <ruby>法案<rt>법안</rt></ruby>을 신규 <ruby>可決<rt>가결</rt></ruby>한 가운데、한 <ruby>地球<rt>지구</rt></ruby> <ruby>旅行客<rt>여행객</rt></ruby>이 <ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터<rt>엘리베이터</rt></ruby> <ruby>昇降室<rt>승강실</rt></ruby> 내에서 이를 어겼다는 이유로 <ruby>月人<rt>월인</rt></ruby>에게 <ruby>制止<rt>제지</rt></ruby>당했다。<ruby>兩側<rt>양측</rt></ruby>은 「<ruby>昇降室<rt>승강실</rt></ruby>이 <ruby>地球<rt>지구</rt></ruby>와 달 중 어느 쪽 <ruby>管轄<rt>관할</rt></ruby>인가」를 두고 <ruby>攻防<rt>공방</rt></ruby>을 벌이며 다수 <ruby>人員<rt>인원</rt></ruby>이 <ruby>衝突<rt>충돌</rt></ruby>하는 <ruby>事態<rt>사태</rt></ruby>로 번졌다。이 <ruby>事件<rt>사건</rt></ruby>은 오랫동안 <ruby>累積<rt>누적</rt></ruby>된 <ruby>地月<rt>지월</rt></ruby> 간 <ruby>資源<rt>자원</rt></ruby> <ruby>分配<rt>분배</rt></ruby>의 불씨에 기름을 부었고、<ruby>外交<rt>외교</rt></ruby> <ruby>協商<rt>협상</rt></ruby>이 <ruby>決裂<rt>결렬</rt></ruby> 직전에 이르자 한 <ruby>諮問官<rt>자문관</rt></ruby>의 <ruby>提案<rt>제안</rt></ruby>으로 《에이지 오브 엠파이어》로 <ruby>勝負<rt>승부</rt></ruby>를 가르기로 했다。<ruby>兩側<rt>양측</rt></ruby>이 각각 10승씩 거두며 화가 풀린 끝에 《<ruby>地月共榮協定<rt>지월공영협정</rt></ruby>》이 <ruby>締結<rt>체결</rt></ruby>됐다。</p>
     </blockquote>
-    <h2><ruby>事件<rt>사건</rt></ruby>의 <ruby>發端<rt>발단</rt></ruby>──손가락 하나, 콧구멍 하나, <ruby>法條項<rt>법조항</rt></ruby> 하나</h2>
-    <p>【본지 <ruby>地月<rt>지월</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> 장자웨이 제네바-<ruby>月城<rt>월성</rt></ruby> <ruby>連結<rt>연결</rt></ruby> <ruby>報道<rt>보도</rt></ruby>】4월 17일, <ruby>地月<rt>지월</rt></ruby> <ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터</ruby> 「<ruby>天柱<rt>천주</rt></ruby> 1호」 <ruby>昇降室<rt>승강실</rt></ruby>, <ruby>高度<rt>고도</rt></ruby> 약 17만 킬로미터, <ruby>地月<rt>지월</rt></ruby> 라그랑주 점 <ruby>下方<rt>하방</rt></ruby> 3천 킬로미터 <ruby>地點<rt>지점</rt></ruby>이었다.</p>
-    <p><ruby>乘客<rt>승객</rt></ruby> 진대균, <ruby>中彰投<rt>중창투</rt></ruby> <ruby>大墩<rt>대돈</rt></ruby> <ruby>特別市<rt>특별시</rt></ruby> <ruby>出身<rt>출신</rt></ruby>, <ruby>檢指<rt>검지</rt></ruby>를 왼쪽 콧구멍에 넣고 있었다.</p>
-    <p>「선생님, 이곳에서는 코딱지 파기가 <ruby>禁止<rt>금지</rt></ruby>되어 있습니다」</p>
-    <p>말을 건넨 사람은 비스듬히 맞은편에 앉아 있던 <ruby>月城方<rt>월성방</rt></ruby> <ruby>市民<rt>시민</rt></ruby> 소천-779(XQ-779)였다. <ruby>語調<rt>어조</rt></ruby>는 차분했지만 <ruby>月人<rt>월인</rt></ruby> <ruby>特有<rt>특유</rt></ruby>의, <ruby>規則<rt>규칙</rt></ruby>에 대한 흔들림 없는 <ruby>確信<rt>확신</rt></ruby>이 배어 있었다. 그녀는 곧이어 <ruby>携帶<rt>휴대</rt></ruby> <ruby>端末機<rt>단말기</rt></ruby>를 꺼내 <ruby>月城方<rt>월성방</rt></ruby> <ruby>議會<rt>의회</rt></ruby>가 이번 달 막 <ruby>可決<rt>가결</rt></ruby>한 《<ruby>公衆<rt>공중</rt></ruby> <ruby>衛生<rt>위생</rt></ruby> <ruby>精密化<rt>정밀화</rt></ruby> <ruby>法案<rt>법안</rt></ruby>》 제13조를 <ruby>提示<rt>제시</rt></ruby>했다. 「3인 이상이 있는 <ruby>密閉<rt>밀폐</rt></ruby> <ruby>公共<rt>공공</rt></ruby> <ruby>空間<rt>공간</rt></ruby>에서는 어떠한 <ruby>形態<rt>형태</rt></ruby>의 <ruby>鼻腔<rt>비강</rt></ruby> <ruby>自家<rt>자가</rt></ruby> <ruby>淸掃<rt>청소</rt></ruby> <ruby>行爲<rt>행위</rt></ruby>도 <ruby>禁止<rt>금지</rt></ruby>한다」.</p>
-    <p>진대균은 손가락을 빼며 물었다. 「여기가 달인가」</p>
+    <h2><ruby>事件<rt>사건</rt></ruby>의 <ruby>發端<rt>발단</rt></ruby>──손가락 하나、콧구멍 하나、<ruby>法條項<rt>법조항</rt></ruby> 하나</h2>
+    <p>【본지 <ruby>地月<rt>지월</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby> 장자웨이 제네바-<ruby>月城<rt>월성</rt></ruby> <ruby>連結<rt>연결</rt></ruby> <ruby>報道<rt>보도</rt></ruby>】4월 17일、<ruby>地月<rt>지월</rt></ruby> <ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터</ruby> 「<ruby>天柱<rt>천주</rt></ruby> 1호」 <ruby>昇降室<rt>승강실</rt></ruby>、<ruby>高度<rt>고도</rt></ruby> 약 17만 킬로미터、<ruby>地月<rt>지월</rt></ruby> 라그랑주 점 <ruby>下方<rt>하방</rt></ruby> 3천 킬로미터 <ruby>地點<rt>지점</rt></ruby>이었다。</p>
+    <p><ruby>乘客<rt>승객</rt></ruby> 진대균、<ruby>中彰投<rt>중창투</rt></ruby> <ruby>大墩<rt>대돈</rt></ruby> <ruby>特別市<rt>특별시</rt></ruby> <ruby>出身<rt>출신</rt></ruby>、<ruby>檢指<rt>검지</rt></ruby>를 왼쪽 콧구멍에 넣고 있었다。</p>
+    <p>「선생님、이곳에서는 코딱지 파기가 <ruby>禁止<rt>금지</rt></ruby>되어 있습니다」</p>
+    <p>말을 건넨 사람은 비스듬히 맞은편에 앉아 있던 <ruby>月城方<rt>월성방</rt></ruby> <ruby>市民<rt>시민</rt></ruby> 소천-779(XQ-779)였다。<ruby>語調<rt>어조</rt></ruby>는 차분했지만 <ruby>月人<rt>월인</rt></ruby> <ruby>特有<rt>특유</rt></ruby>의、<ruby>規則<rt>규칙</rt></ruby>에 대한 흔들림 없는 <ruby>確信<rt>확신</rt></ruby>이 배어 있었다。그녀는 곧이어 <ruby>携帶<rt>휴대</rt></ruby> <ruby>端末機<rt>단말기</rt></ruby>를 꺼내 <ruby>月城方<rt>월성방</rt></ruby> <ruby>議會<rt>의회</rt></ruby>가 이번 달 막 <ruby>可決<rt>가결</rt></ruby>한 《<ruby>公衆<rt>공중</rt></ruby> <ruby>衛生<rt>위생</rt></ruby> <ruby>精密化<rt>정밀화</rt></ruby> <ruby>法案<rt>법안</rt></ruby>》 제13조를 <ruby>提示<rt>제시</rt></ruby>했다。「3인 이상이 있는 <ruby>密閉<rt>밀폐</rt></ruby> <ruby>公共<rt>공공</rt></ruby> <ruby>空間<rt>공간</rt></ruby>에서는 어떠한 <ruby>形態<rt>형태</rt></ruby>의 <ruby>鼻腔<rt>비강</rt></ruby> <ruby>自家<rt>자가</rt></ruby> <ruby>淸掃<rt>청소</rt></ruby> <ruby>行爲<rt>행위</rt></ruby>도 <ruby>禁止<rt>금지</rt></ruby>한다」。</p>
+    <p>진대균은 손가락을 빼며 물었다。「여기가 달인가」</p>
     <p>「달로 향하는 <ruby>交通手段<rt>교통수단</rt></ruby>이다」</p>
     <p>「그렇다면 지금은 <ruby>地球<rt>지구</rt></ruby>다」</p>
     <p>「지금은 <ruby>昇降室<rt>승강실</rt></ruby>이다」</p>
@@ -1008,41 +1036,41 @@
     <p>「내가 산 것은 <ruby>地球<rt>지구</rt></ruby> <ruby>區間<rt>구간</rt></ruby> <ruby>運賃<rt>운임</rt></ruby>이다」</p>
     <p>「귀하가 <ruby>現在<rt>현재</rt></ruby> <ruby>位置<rt>위치</rt></ruby>한 <ruby>高度<rt>고도</rt></ruby>는 <ruby>地球<rt>지구</rt></ruby>가 <ruby>管轄<rt>관할</rt></ruby>하지 않는다」</p>
     <h2><ruby>昇降室<rt>승강실</rt></ruby> <ruby>管轄權<rt>관할권</rt></ruby> <ruby>紛爭<rt>분쟁</rt></ruby></h2>
-    <p><ruby>論爭<rt>논쟁</rt></ruby>은 약 40분간 <ruby>持續<rt>지속</rt></ruby>됐다. 그 사이 달 <ruby>住民<rt>주민</rt></ruby> 3명이 소천-779 <ruby>側<rt>측</rt></ruby>에 <ruby>加勢<rt>가세</rt></ruby>하고, <ruby>地球<rt>지구</rt></ruby> <ruby>旅行客<rt>여행객</rt></ruby> 2명이 진대균 <ruby>陣營<rt>진영</rt></ruby>에 <ruby>合流<rt>합류</rt></ruby>했다──그런데 <ruby>合流<rt>합류</rt></ruby>하자마자 두 사람은 각자 <ruby>檢指<rt>검지</rt></ruby>를 콧구멍에 넣고 <ruby>泰然<rt>태연</rt></ruby>한 <ruby>表情<rt>표정</rt></ruby>을 지어 보였다. <ruby>問題<rt>문제</rt></ruby>는 두 사람 모두 <ruby>昇降室<rt>승강실</rt></ruby> <ruby>搭乘<rt>탑승</rt></ruby> 전에 <ruby>標準<rt>표준</rt></ruby> <ruby>淸潔<rt>청결</rt></ruby> 샤워실을 <ruby>使用<rt>사용</rt></ruby>해 <ruby>全身<rt>전신</rt></ruby>의 먼지가 <ruby>零<rt>영</rt></ruby>이었다는 점이다. <ruby>昇降室<rt>승강실</rt></ruby> <ruby>自體<rt>자체</rt></ruby>도 <ruby>完全<rt>완전</rt></ruby> <ruby>密閉<rt>밀폐</rt></ruby> <ruby>無塵<rt>무진</rt></ruby> <ruby>環境<rt>환경</rt></ruby>이어서, <ruby>理論上<rt>이론상</rt></ruby> 단 몇 분 안에 <ruby>鼻腔<rt>비강</rt></ruby> 내에 <ruby>除去<rt>제거</rt></ruby>할 만한 <ruby>異物<rt>이물</rt></ruby>이 새로 쌓이는 것은 <ruby>不可能<rt>불가능</rt></ruby>했다. <ruby>挑發<rt>도발</rt></ruby> <ruby>意圖<rt>의도</rt></ruby>가 너무도 <ruby>露骨的<rt>노골적</rt></ruby>이어서 <ruby>現場<rt>현장</rt></ruby>의 달 <ruby>住民<rt>주민</rt></ruby>들이 <ruby>一齊<rt>일제</rt></ruby>히 <ruby>視線<rt>시선</rt></ruby>을 보냈고, 소천-779는 <ruby>卽席<rt>즉석</rt></ruby>에서 <ruby>法條項<rt>법조항</rt></ruby> <ruby>照會<rt>조회</rt></ruby> <ruby>인터페이스</ruby>로 「<ruby>實質的<rt>실질적</rt></ruby> 코딱지가 없는 <ruby>模倣<rt>모방</rt></ruby> 코딱지 파기 <ruby>行爲<rt>행위</rt></ruby>가 해당 <ruby>條項<rt>조항</rt></ruby>의 <ruby>違反<rt>위반</rt></ruby>을 <ruby>構成<rt>구성</rt></ruby>하는지 <ruby>與否<rt>여부</rt></ruby>」를 <ruby>確認<rt>확인</rt></ruby>했으나, <ruby>시스템</ruby>의 <ruby>答辯<rt>답변</rt></ruby>은 「<ruby>先例<rt>선례</rt></ruby> 없음」이었다. <ruby>昇降室<rt>승강실</rt></ruby> 안에는 다른 <ruby>乘客<rt>승객</rt></ruby> 11명이 더 있었고, 그중 7명은 <ruby>노이즈 캔슬링</ruby> <ruby>헤드폰</ruby>을 <ruby>着用<rt>착용</rt></ruby>했으며, 4명은 <ruby>映像<rt>영상</rt></ruby>을 <ruby>撮影<rt>촬영</rt></ruby>해 <ruby>廣場<rt>광장</rt></ruby>에 <ruby>업로드</ruby>했다.</p>
-    <p>「<ruby>天柱<rt>천주</rt></ruby> 1호」 <ruby>昇降室<rt>승강실</rt></ruby>의 <ruby>法的<rt>법적</rt></ruby> <ruby>地位<rt>지위</rt></ruby>는 <ruby>事實<rt>사실</rt></ruby> 오랫동안 매듭짓지 못한 <ruby>灰色地帶<rt>회색지대</rt></ruby>였다. 2102년 《<ruby>地月<rt>지월</rt></ruby> <ruby>交通<rt>교통</rt></ruby> <ruby>共同管理<rt>공동관리</rt></ruby> <ruby>基本協定<rt>기본협정</rt></ruby>》에 따르면, <ruby>昇降室<rt>승강실</rt></ruby>은 <ruby>地表面<rt>지표면</rt></ruby>부터 <ruby>高度<rt>고도</rt></ruby> 10만 킬로미터까지의 <ruby>區間<rt>구간</rt></ruby>에는 <ruby>地球法<rt>지구법</rt></ruby>이, 10만 킬로미터부터 달 <ruby>軌道<rt>궤도</rt></ruby>까지의 <ruby>區間<rt>구간</rt></ruby>에는 <ruby>月法<rt>월법</rt></ruby>이 <ruby>適用<rt>적용</rt></ruby>되며, 라그랑주 점 <ruby>附近<rt>부근</rt></ruby> <ruby>區域<rt>구역</rt></ruby>은 「<ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby>」로서 양측 <ruby>法律<rt>법률</rt></ruby> 모두 <ruby>强制<rt>강제</rt></ruby> <ruby>執行<rt>집행</rt></ruby>되지 않고 「<ruby>衝突<rt>충돌</rt></ruby>을 일으키지 않는 것을 <ruby>原則<rt>원칙</rt></ruby>으로」 한다고 <ruby>規定<rt>규정</rt></ruby>돼 있었다.</p>
-    <p>진대균이 <ruby>事件<rt>사건</rt></ruby> <ruby>發生<rt>발생</rt></ruby> 시 <ruby>位置<rt>위치</rt></ruby>한 곳은 바로 이 <ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby>였다.</p>
-    <p>달 側 <ruby>法律<rt>법률</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>은 <ruby>意見書<rt>의견서</rt></ruby>를 통해 「<ruby>昇降室<rt>승강실</rt></ruby>에는 <ruby>月城方<rt>월성방</rt></ruby> 깃발이 <ruby>揭揚<rt>게양</rt></ruby>되어 있으니, <ruby>精神的<rt>정신적</rt></ruby>으로는 달 <ruby>管轄<rt>관할</rt></ruby>에 속한다」고 <ruby>認定<rt>인정</rt></ruby>했다. 이에 <ruby>地球<rt>지구</rt></ruby> 側 <ruby>法律<rt>법률</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>은 「깃발은 <ruby>主權<rt>주권</rt></ruby>과 <ruby>同一<rt>동일</rt></ruby>하지 않다. 그렇지 않다면 60년간 <ruby>月面<rt>월면</rt></ruby>에 꽂혀 있는 <ruby>地球<rt>지구</rt></ruby> 깃발로 인해 달은 진작에 <ruby>地球<rt>지구</rt></ruby>의 것이 되어 있어야 한다」고 <ruby>反駁<rt>반박</rt></ruby>했다.</p>
+    <p><ruby>論爭<rt>논쟁</rt></ruby>은 약 40분간 <ruby>持續<rt>지속</rt></ruby>됐다。그 사이 달 <ruby>住民<rt>주민</rt></ruby> 3명이 소천-779 <ruby>側<rt>측</rt></ruby>에 <ruby>加勢<rt>가세</rt></ruby>하고、<ruby>地球<rt>지구</rt></ruby> <ruby>旅行客<rt>여행객</rt></ruby> 2명이 진대균 <ruby>陣營<rt>진영</rt></ruby>에 <ruby>合流<rt>합류</rt></ruby>했다──그런데 <ruby>合流<rt>합류</rt></ruby>하자마자 두 사람은 각자 <ruby>檢指<rt>검지</rt></ruby>를 콧구멍에 넣고 <ruby>泰然<rt>태연</rt></ruby>한 <ruby>表情<rt>표정</rt></ruby>을 지어 보였다。<ruby>問題<rt>문제</rt></ruby>는 두 사람 모두 <ruby>昇降室<rt>승강실</rt></ruby> <ruby>搭乘<rt>탑승</rt></ruby> 전에 <ruby>標準<rt>표준</rt></ruby> <ruby>淸潔<rt>청결</rt></ruby> 샤워실을 <ruby>使用<rt>사용</rt></ruby>해 <ruby>全身<rt>전신</rt></ruby>의 먼지가 <ruby>零<rt>영</rt></ruby>이었다는 점이다。<ruby>昇降室<rt>승강실</rt></ruby> <ruby>自體<rt>자체</rt></ruby>도 <ruby>完全<rt>완전</rt></ruby> <ruby>密閉<rt>밀폐</rt></ruby> <ruby>無塵<rt>무진</rt></ruby> <ruby>環境<rt>환경</rt></ruby>이어서、<ruby>理論上<rt>이론상</rt></ruby> 단 몇 분 안에 <ruby>鼻腔<rt>비강</rt></ruby> 내에 <ruby>除去<rt>제거</rt></ruby>할 만한 <ruby>異物<rt>이물</rt></ruby>이 새로 쌓이는 것은 <ruby>不可能<rt>불가능</rt></ruby>했다。<ruby>挑發<rt>도발</rt></ruby> <ruby>意圖<rt>의도</rt></ruby>가 너무도 <ruby>露骨的<rt>노골적</rt></ruby>이어서 <ruby>現場<rt>현장</rt></ruby>의 달 <ruby>住民<rt>주민</rt></ruby>들이 <ruby>一齊<rt>일제</rt></ruby>히 <ruby>視線<rt>시선</rt></ruby>을 보냈고、소천-779는 <ruby>卽席<rt>즉석</rt></ruby>에서 <ruby>法條項<rt>법조항</rt></ruby> <ruby>照會<rt>조회</rt></ruby> <ruby>인터페이스</ruby>로 「<ruby>實質的<rt>실질적</rt></ruby> 코딱지가 없는 <ruby>模倣<rt>모방</rt></ruby> 코딱지 파기 <ruby>行爲<rt>행위</rt></ruby>가 해당 <ruby>條項<rt>조항</rt></ruby>의 <ruby>違反<rt>위반</rt></ruby>을 <ruby>構成<rt>구성</rt></ruby>하는지 <ruby>與否<rt>여부</rt></ruby>」를 <ruby>確認<rt>확인</rt></ruby>했으나、<ruby>시스템</ruby>의 <ruby>答辯<rt>답변</rt></ruby>은 「<ruby>先例<rt>선례</rt></ruby> 없음」이었다。<ruby>昇降室<rt>승강실</rt></ruby> 안에는 다른 <ruby>乘客<rt>승객</rt></ruby> 11명이 더 있었고、그중 7명은 <ruby>노이즈 캔슬링</ruby> <ruby>헤드폰</ruby>을 <ruby>着用<rt>착용</rt></ruby>했으며、4명은 <ruby>映像<rt>영상</rt></ruby>을 <ruby>撮影<rt>촬영</rt></ruby>해 <ruby>廣場<rt>광장</rt></ruby>에 <ruby>업로드</ruby>했다。</p>
+    <p>「<ruby>天柱<rt>천주</rt></ruby> 1호」 <ruby>昇降室<rt>승강실</rt></ruby>의 <ruby>法的<rt>법적</rt></ruby> <ruby>地位<rt>지위</rt></ruby>는 <ruby>事實<rt>사실</rt></ruby> 오랫동안 매듭짓지 못한 <ruby>灰色地帶<rt>회색지대</rt></ruby>였다。2102년 《<ruby>地月<rt>지월</rt></ruby> <ruby>交通<rt>교통</rt></ruby> <ruby>共同管理<rt>공동관리</rt></ruby> <ruby>基本協定<rt>기본협정</rt></ruby>》에 따르면、<ruby>昇降室<rt>승강실</rt></ruby>은 <ruby>地表面<rt>지표면</rt></ruby>부터 <ruby>高度<rt>고도</rt></ruby> 10만 킬로미터까지의 <ruby>區間<rt>구간</rt></ruby>에는 <ruby>地球法<rt>지구법</rt></ruby>이、10만 킬로미터부터 달 <ruby>軌道<rt>궤도</rt></ruby>까지의 <ruby>區間<rt>구간</rt></ruby>에는 <ruby>月法<rt>월법</rt></ruby>이 <ruby>適用<rt>적용</rt></ruby>되며、라그랑주 점 <ruby>附近<rt>부근</rt></ruby> <ruby>區域<rt>구역</rt></ruby>은 「<ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby>」로서 양측 <ruby>法律<rt>법률</rt></ruby> 모두 <ruby>强制<rt>강제</rt></ruby> <ruby>執行<rt>집행</rt></ruby>되지 않고 「<ruby>衝突<rt>충돌</rt></ruby>을 일으키지 않는 것을 <ruby>原則<rt>원칙</rt></ruby>으로」 한다고 <ruby>規定<rt>규정</rt></ruby>돼 있었다。</p>
+    <p>진대균이 <ruby>事件<rt>사건</rt></ruby> <ruby>發生<rt>발생</rt></ruby> 시 <ruby>位置<rt>위치</rt></ruby>한 곳은 바로 이 <ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby>였다。</p>
+    <p>달 側 <ruby>法律<rt>법률</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>은 <ruby>意見書<rt>의견서</rt></ruby>를 통해 「<ruby>昇降室<rt>승강실</rt></ruby>에는 <ruby>月城方<rt>월성방</rt></ruby> 깃발이 <ruby>揭揚<rt>게양</rt></ruby>되어 있으니、<ruby>精神的<rt>정신적</rt></ruby>으로는 달 <ruby>管轄<rt>관할</rt></ruby>에 속한다」고 <ruby>認定<rt>인정</rt></ruby>했다。이에 <ruby>地球<rt>지구</rt></ruby> 側 <ruby>法律<rt>법률</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>은 「깃발은 <ruby>主權<rt>주권</rt></ruby>과 <ruby>同一<rt>동일</rt></ruby>하지 않다。그렇지 않다면 60년간 <ruby>月面<rt>월면</rt></ruby>에 꽂혀 있는 <ruby>地球<rt>지구</rt></ruby> 깃발로 인해 달은 진작에 <ruby>地球<rt>지구</rt></ruby>의 것이 되어 있어야 한다」고 <ruby>反駁<rt>반박</rt></ruby>했다。</p>
     <h2><ruby>蓄積<rt>축적</rt></ruby>된 <ruby>怨恨<rt>원한</rt></ruby>이 <ruby>爆發<rt>폭발</rt></ruby></h2>
-    <p><ruby>昇降室<rt>승강실</rt></ruby> <ruby>事件<rt>사건</rt></ruby>은 본래라면 작은 뉴스로 끝날 일이었다. 그러나 불행히도 그것은 <ruby>火山<rt>화산</rt></ruby>의 <ruby>噴火口<rt>분화구</rt></ruby>를 밟고 있었다.</p>
-    <p><ruby>地月<rt>지월</rt></ruby> 양측의 <ruby>水資源<rt>수자원</rt></ruby> 및 <ruby>鑛山<rt>광산</rt></ruby> <ruby>資源<rt>자원</rt></ruby> <ruby>分配<rt>분배</rt></ruby> <ruby>協商<rt>협상</rt></ruby>은 이미 11차례에 걸쳐 <ruby>膠着<rt>교착</rt></ruby> <ruby>狀態<rt>상태</rt></ruby>였고, <ruby>月城方<rt>월성방</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> <ruby>海水<rt>해수</rt></ruby> <ruby>年間<rt>연간</rt></ruby> <ruby>取水<rt>취수</rt></ruby> <ruby>쿼터</ruby> <ruby>上向<rt>상향</rt></ruby>을 <ruby>要求<rt>요구</rt></ruby>한 반면 <ruby>地球<rt>지구</rt></ruby> 側은 달의 <ruby>鑛産物<rt>광산물</rt></ruby> <ruby>輸出<rt>수출</rt></ruby> <ruby>制限<rt>제한</rt></ruby>이 <ruby>事實上<rt>사실상</rt></ruby> <ruby>獨占<rt>독점</rt></ruby>이라고 <ruby>非難<rt>비난</rt></ruby>해 왔다. <ruby>昇降室<rt>승강실</rt></ruby> <ruby>衝突<rt>충돌</rt></ruby> <ruby>映像<rt>영상</rt></ruby>이 <ruby>廣場<rt>광장</rt></ruby>에서 <ruby>바이러스</ruby>처럼 <ruby>擴散<rt>확산</rt></ruby>되며 양측 <ruby>民心<rt>민심</rt></ruby>에 즉각 불이 붙었고, 양측 <ruby>政府<rt>정부</rt></ruby>는 잇달아 「<ruby>强硬<rt>강경</rt></ruby> <ruby>立場<rt>입장</rt></ruby>」을 <ruby>表明<rt>표명</rt></ruby>, <ruby>外交<rt>외교</rt></ruby> <ruby>채널</ruby>의 <ruby>火藥<rt>화약</rt></ruby> 냄새가 <ruby>急速度<rt>급속도</rt></ruby>로 짙어졌다.</p>
-    <p>4월 <ruby>下旬<rt>하순</rt></ruby>, <ruby>月城方<rt>월성방</rt></ruby> <ruby>聯合軍<rt>연합군</rt></ruby>이 「<ruby>定例<rt>정례</rt></ruby> <ruby>訓練<rt>훈련</rt></ruby>」을 <ruby>發表<rt>발표</rt></ruby>하며 <ruby>鑛業<rt>광업</rt></ruby> <ruby>重型<rt>중형</rt></ruby> <ruby>艦艇<rt>함정</rt></ruby>을 라그랑주 점에 <ruby>布陣<rt>포진</rt></ruby>시켰다. <ruby>地球<rt>지구</rt></ruby> <ruby>太陽系<rt>태양계</rt></ruby> <ruby>聯邦<rt>연방</rt></ruby>도 즉시 <ruby>海洋<rt>해양</rt></ruby> <ruby>防衛<rt>방위</rt></ruby> <ruby>艦隊<rt>함대</rt></ruby>를 <ruby>高軌道<rt>고궤도</rt></ruby>로 <ruby>上昇<rt>상승</rt></ruby>시켜 <ruby>待機<rt>대기</rt></ruby>시켰다.</p>
-    <p><ruby>情勢<rt>정세</rt></ruby>는 <ruby>一觸卽發<rt>일촉즉발</rt></ruby>이었다.</p>
+    <p><ruby>昇降室<rt>승강실</rt></ruby> <ruby>事件<rt>사건</rt></ruby>은 본래라면 작은 뉴스로 끝날 일이었다。그러나 불행히도 그것은 <ruby>火山<rt>화산</rt></ruby>의 <ruby>噴火口<rt>분화구</rt></ruby>를 밟고 있었다。</p>
+    <p><ruby>地月<rt>지월</rt></ruby> 양측의 <ruby>水資源<rt>수자원</rt></ruby> 및 <ruby>鑛山<rt>광산</rt></ruby> <ruby>資源<rt>자원</rt></ruby> <ruby>分配<rt>분배</rt></ruby> <ruby>協商<rt>협상</rt></ruby>은 이미 11차례에 걸쳐 <ruby>膠着<rt>교착</rt></ruby> <ruby>狀態<rt>상태</rt></ruby>였고、<ruby>月城方<rt>월성방</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> <ruby>海水<rt>해수</rt></ruby> <ruby>年間<rt>연간</rt></ruby> <ruby>取水<rt>취수</rt></ruby> <ruby>쿼터</ruby> <ruby>上向<rt>상향</rt></ruby>을 <ruby>要求<rt>요구</rt></ruby>한 반면 <ruby>地球<rt>지구</rt></ruby> 側은 달의 <ruby>鑛産物<rt>광산물</rt></ruby> <ruby>輸出<rt>수출</rt></ruby> <ruby>制限<rt>제한</rt></ruby>이 <ruby>事實上<rt>사실상</rt></ruby> <ruby>獨占<rt>독점</rt></ruby>이라고 <ruby>非難<rt>비난</rt></ruby>해 왔다。<ruby>昇降室<rt>승강실</rt></ruby> <ruby>衝突<rt>충돌</rt></ruby> <ruby>映像<rt>영상</rt></ruby>이 <ruby>廣場<rt>광장</rt></ruby>에서 <ruby>바이러스</ruby>처럼 <ruby>擴散<rt>확산</rt></ruby>되며 양측 <ruby>民心<rt>민심</rt></ruby>에 즉각 불이 붙었고、양측 <ruby>政府<rt>정부</rt></ruby>는 잇달아 「<ruby>强硬<rt>강경</rt></ruby> <ruby>立場<rt>입장</rt></ruby>」을 <ruby>表明<rt>표명</rt></ruby>、<ruby>外交<rt>외교</rt></ruby> <ruby>채널</ruby>의 <ruby>火藥<rt>화약</rt></ruby> 냄새가 <ruby>急速度<rt>급속도</rt></ruby>로 짙어졌다。</p>
+    <p>4월 <ruby>下旬<rt>하순</rt></ruby>、<ruby>月城方<rt>월성방</rt></ruby> <ruby>聯合軍<rt>연합군</rt></ruby>이 「<ruby>定例<rt>정례</rt></ruby> <ruby>訓練<rt>훈련</rt></ruby>」을 <ruby>發表<rt>발표</rt></ruby>하며 <ruby>鑛業<rt>광업</rt></ruby> <ruby>重型<rt>중형</rt></ruby> <ruby>艦艇<rt>함정</rt></ruby>을 라그랑주 점에 <ruby>布陣<rt>포진</rt></ruby>시켰다。<ruby>地球<rt>지구</rt></ruby> <ruby>太陽系<rt>태양계</rt></ruby> <ruby>聯邦<rt>연방</rt></ruby>도 즉시 <ruby>海洋<rt>해양</rt></ruby> <ruby>防衛<rt>방위</rt></ruby> <ruby>艦隊<rt>함대</rt></ruby>를 <ruby>高軌道<rt>고궤도</rt></ruby>로 <ruby>上昇<rt>상승</rt></ruby>시켜 <ruby>待機<rt>대기</rt></ruby>시켰다。</p>
+    <p><ruby>情勢<rt>정세</rt></ruby>는 <ruby>一觸卽發<rt>일촉즉발</rt></ruby>이었다。</p>
     <h2>어느 <ruby>諮問官<rt>자문관</rt></ruby>의 <ruby>提案<rt>제안</rt></ruby></h2>
-    <p>마지막 라운드 <ruby>協商<rt>협상</rt></ruby>이 <ruby>膠着<rt>교착</rt></ruby>에 빠진 지 사흘째 되던 깊은 밤, <ruby>地球<rt>지구</rt></ruby> <ruby>代表團<rt>대표단</rt></ruby>의 한 젊은 <ruby>外交<rt>외교</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>──그의 <ruby>身元<rt>신원</rt></ruby>은 지금까지 <ruby>公式的<rt>공식적</rt></ruby>으로 <ruby>確認<rt>확인</rt></ruby>되지 않아, 본지는 일단 「Y군」으로 칭한다──이 <ruby>休憩室<rt>휴게실</rt></ruby>에서 양측 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>에게 손으로 쓴 쪽지 한 장을 건넸다. 거기에는 단 한 <ruby>文章<rt>문장</rt></ruby>이 적혀 있었다. 「《에이지 오브 엠파이어》로 <ruby>決判<rt>결판</rt></ruby>을 내는 것은 어떨까」</p>
-    <p>양측 <ruby>代表<rt>대표</rt></ruby>는 약 8초간 <ruby>沈默<rt>침묵</rt></ruby> 속에 <ruby>視線<rt>시선</rt></ruby>을 주고받았다.</p>
-    <p>달 側 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>가 물었다. 「어느 버전인가」</p>
-    <p>Y군이 답했다. 「VR판이다」</p>
-    <p>다시 5초의 <ruby>沈默<rt>침묵</rt></ruby>.</p>
-    <p>「좋다」 달 側 <ruby>代表<rt>대표</rt></ruby>가 말했다. 「단 우리는 몽골을 <ruby>選擇<rt>선택</rt></ruby>하겠다」</p>
-    <p><ruby>地球<rt>지구</rt></ruby> 側 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>는 잠시 <ruby>熟考<rt>숙고</rt></ruby>한 뒤 답했다. 「우리는 <ruby>韓國<rt>한국</rt></ruby>을 <ruby>選擇<rt>선택</rt></ruby>하겠다」</p>
-    <p>달 側 <ruby>代表<rt>대표</rt></ruby>의 <ruby>表情<rt>표정</rt></ruby>이 <ruby>微妙<rt>미묘</rt></ruby>하게 변했다. <ruby>韓國<rt>한국</rt></ruby> <ruby>文明<rt>문명</rt></ruby>은 《에이지 오브 엠파이어 VIII》에서 거북선과 <ruby>超長距離<rt>초장거리</rt></ruby> <ruby>弩砲<rt>노포</rt></ruby>로 이름이 높고, <ruby>騎兵系<rt>기병계</rt></ruby>를 <ruby>制壓<rt>제압</rt></ruby>하며 <ruby>相剋<rt>상극</rt></ruby>이 <ruby>極<rt>극</rt></ruby>히 <ruby>分明<rt>분명</rt></ruby>하다. 그녀는 Y군을 한 번 흘끗 보았다. Y군은 고개를 숙이고 바닥만 보고 있었다.</p>
+    <p>마지막 라운드 <ruby>協商<rt>협상</rt></ruby>이 <ruby>膠着<rt>교착</rt></ruby>에 빠진 지 사흘째 되던 깊은 밤、<ruby>地球<rt>지구</rt></ruby> <ruby>代表團<rt>대표단</rt></ruby>의 한 젊은 <ruby>外交<rt>외교</rt></ruby> <ruby>諮問官<rt>자문관</rt></ruby>──그의 <ruby>身元<rt>신원</rt></ruby>은 지금까지 <ruby>公式的<rt>공식적</rt></ruby>으로 <ruby>確認<rt>확인</rt></ruby>되지 않아、본지는 일단 「Y군」으로 칭한다──이 <ruby>休憩室<rt>휴게실</rt></ruby>에서 양측 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>에게 손으로 쓴 쪽지 한 장을 건넸다。거기에는 단 한 <ruby>文章<rt>문장</rt></ruby>이 적혀 있었다。「《에이지 오브 엠파이어》로 <ruby>決判<rt>결판</rt></ruby>을 내는 것은 어떨까」</p>
+    <p>양측 <ruby>代表<rt>대표</rt></ruby>는 약 8초간 <ruby>沈默<rt>침묵</rt></ruby> 속에 <ruby>視線<rt>시선</rt></ruby>을 주고받았다。</p>
+    <p>달 側 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>가 물었다。「어느 버전인가」</p>
+    <p>Y군이 답했다。「VR판이다」</p>
+    <p>다시 5초의 <ruby>沈默<rt>침묵</rt></ruby>。</p>
+    <p>「좋다」 달 側 <ruby>代表<rt>대표</rt></ruby>가 말했다。「단 우리는 몽골을 <ruby>選擇<rt>선택</rt></ruby>하겠다」</p>
+    <p><ruby>地球<rt>지구</rt></ruby> 側 <ruby>首席<rt>수석</rt></ruby> <ruby>代表<rt>대표</rt></ruby>는 잠시 <ruby>熟考<rt>숙고</rt></ruby>한 뒤 답했다。「우리는 <ruby>韓國<rt>한국</rt></ruby>을 <ruby>選擇<rt>선택</rt></ruby>하겠다」</p>
+    <p>달 側 <ruby>代表<rt>대표</rt></ruby>의 <ruby>表情<rt>표정</rt></ruby>이 <ruby>微妙<rt>미묘</rt></ruby>하게 변했다。<ruby>韓國<rt>한국</rt></ruby> <ruby>文明<rt>문명</rt></ruby>은 《에이지 오브 엠파이어 VIII》에서 거북선과 <ruby>超長距離<rt>초장거리</rt></ruby> <ruby>弩砲<rt>노포</rt></ruby>로 이름이 높고、<ruby>騎兵系<rt>기병계</rt></ruby>를 <ruby>制壓<rt>제압</rt></ruby>하며 <ruby>相剋<rt>상극</rt></ruby>이 <ruby>極<rt>극</rt></ruby>히 <ruby>分明<rt>분명</rt></ruby>하다。그녀는 Y군을 한 번 흘끗 보았다。Y군은 고개를 숙이고 바닥만 보고 있었다。</p>
     <h2>9일 20전──<ruby>全<rt>전</rt></ruby> <ruby>競技<rt>경기</rt></ruby> <ruby>生中繼<rt>생중계</rt></ruby></h2>
-    <p><ruby>協定<rt>협정</rt></ruby>이 <ruby>成立<rt>성립</rt></ruby>된 후, 양측은 각각 10명의 <ruby>代表<rt>대표</rt></ruby>팀을 <ruby>編成<rt>편성</rt></ruby>해 <ruby>유엔</ruby>이 <ruby>提供<rt>제공</rt></ruby>한 <ruby>完全<rt>완전</rt></ruby> <ruby>沒入型<rt>몰입형</rt></ruby> VR <ruby>戰場<rt>전장</rt></ruby>에 <ruby>入場<rt>입장</rt></ruby>했다. <ruby>競技<rt>경기</rt></ruby> <ruby>方式<rt>방식</rt></ruby>은 5일제, <ruby>日日<rt>일일</rt></ruby> 4<ruby>競技<rt>경기</rt></ruby>, 1전 1휴, 총 <ruby>競技<rt>경기</rt></ruby> <ruby>期間<rt>기간</rt></ruby> 9일이었다. 20전을 통해 총 <ruby>勝數<rt>승수</rt></ruby>로 <ruby>協商<rt>협상</rt></ruby>의 <ruby>優先<rt>우선</rt></ruby> <ruby>提案權<rt>제안권</rt></ruby>을 <ruby>決定<rt>결정</rt></ruby>하는 <ruby>方式<rt>방식</rt></ruby>이었다.</p>
-    <p><ruby>消息<rt>소식</rt></ruby>이 전해지자 <ruby>유엔</ruby> <ruby>미디어</ruby> <ruby>센터</ruby>는 즉각 전 <ruby>競技<rt>경기</rt></ruby> <ruby>生中繼<rt>생중계</rt></ruby>를 <ruby>發表<rt>발표</rt></ruby>했다. <ruby>開幕<rt>개막</rt></ruby> 첫날 <ruby>同時<rt>동시</rt></ruby> <ruby>視聽者<rt>시청자</rt></ruby> 수는 47억에 달해 당시 <ruby>월드컵</ruby> <ruby>決勝<rt>결승</rt></ruby> <ruby>記錄<rt>기록</rt></ruby>을 갈아치웠다. <ruby>解説<rt>해설</rt></ruby>은 <ruby>地月<rt>지월</rt></ruby> 양측에서 각 1명이 맡았는데, <ruby>生中繼<rt>생중계</rt></ruby> 도중 다툰 횟수가 11차례에 이르렀다. 그중 3차례는 「맵이 어느 쪽에 <ruby>有利<rt>유리</rt></ruby>한가」, 2차례는 「<ruby>騎兵<rt>기병</rt></ruby> 대 거북선 <ruby>勝率<rt>승률</rt></ruby> <ruby>統計<rt>통계</rt></ruby> <ruby>方法論<rt>방법론</rt></ruby>」, 1차례는 순전히 <ruby>個人的<rt>개인적</rt></ruby> <ruby>怨恨<rt>원한</rt></ruby>이었으며 <ruby>原因<rt>원인</rt></ruby>은 불명이었다.</p>
-    <p><ruby>公式<rt>공식</rt></ruby> <ruby>外交<rt>외교</rt></ruby> <ruby>채널</ruby>은 <ruby>競技<rt>경기</rt></ruby> <ruby>期間<rt>기간</rt></ruby> 내내 <ruby>全面的<rt>전면적</rt></ruby>으로 <ruby>沈默<rt>침묵</rt></ruby>을 지켰다. 양 팀은 <ruby>寢食<rt>침식</rt></ruby>을 모두 VR <ruby>포드</ruby> 안에서 <ruby>解決<rt>해결</rt></ruby>했고, 하루에 주어지는 것은 <ruby>食事<rt>식사</rt></ruby> 한 끼, 8시간의 <ruby>睡眠<rt>수면</rt></ruby>, 그리고 30분의 <ruby>化粧室<rt>화장실</rt></ruby> 시간뿐이었다. <ruby>場外<rt>장외</rt></ruby>에서는 <ruby>應援團<rt>응원단</rt></ruby>이 <ruby>自發的<rt>자발적</rt></ruby>으로 <ruby>結成<rt>결성</rt></ruby>됐는데, 달 側은 제네바 <ruby>湖水<rt>호수</rt></ruby>가에 <ruby>大型<rt>대형</rt></ruby> <ruby>스크린</ruby>을 <ruby>設置<rt>설치</rt></ruby>했고, <ruby>地球<rt>지구</rt></ruby> 側은 타이베이, 뭄바이, 나이로비에서 <ruby>同時<rt>동시</rt></ruby> <ruby>生中繼<rt>생중계</rt></ruby>를 <ruby>進行<rt>진행</rt></ruby>했다. 세 도시 모두에서 「우리 <ruby>陣營<rt>진영</rt></ruby>이 <ruby>突破<rt>돌파</rt></ruby>당했다」며 통곡하는 <ruby>市民<rt>시민</rt></ruby>들이 <ruby>目擊<rt>목격</rt></ruby>됐다.</p>
+    <p><ruby>協定<rt>협정</rt></ruby>이 <ruby>成立<rt>성립</rt></ruby>된 후、양측은 각각 10명의 <ruby>代表<rt>대표</rt></ruby>팀을 <ruby>編成<rt>편성</rt></ruby>해 <ruby>유엔</ruby>이 <ruby>提供<rt>제공</rt></ruby>한 <ruby>完全<rt>완전</rt></ruby> <ruby>沒入型<rt>몰입형</rt></ruby> VR <ruby>戰場<rt>전장</rt></ruby>에 <ruby>入場<rt>입장</rt></ruby>했다。<ruby>競技<rt>경기</rt></ruby> <ruby>方式<rt>방식</rt></ruby>은 5일제、<ruby>日日<rt>일일</rt></ruby> 4<ruby>競技<rt>경기</rt></ruby>、1전 1휴、총 <ruby>競技<rt>경기</rt></ruby> <ruby>期間<rt>기간</rt></ruby> 9일이었다。20전을 통해 총 <ruby>勝數<rt>승수</rt></ruby>로 <ruby>協商<rt>협상</rt></ruby>의 <ruby>優先<rt>우선</rt></ruby> <ruby>提案權<rt>제안권</rt></ruby>을 <ruby>決定<rt>결정</rt></ruby>하는 <ruby>方式<rt>방식</rt></ruby>이었다。</p>
+    <p><ruby>消息<rt>소식</rt></ruby>이 전해지자 <ruby>유엔</ruby> <ruby>미디어</ruby> <ruby>센터</ruby>는 즉각 전 <ruby>競技<rt>경기</rt></ruby> <ruby>生中繼<rt>생중계</rt></ruby>를 <ruby>發表<rt>발표</rt></ruby>했다。<ruby>開幕<rt>개막</rt></ruby> 첫날 <ruby>同時<rt>동시</rt></ruby> <ruby>視聽者<rt>시청자</rt></ruby> 수는 47억에 달해 당시 <ruby>월드컵</ruby> <ruby>決勝<rt>결승</rt></ruby> <ruby>記錄<rt>기록</rt></ruby>을 갈아치웠다。<ruby>解説<rt>해설</rt></ruby>은 <ruby>地月<rt>지월</rt></ruby> 양측에서 각 1명이 맡았는데、<ruby>生中繼<rt>생중계</rt></ruby> 도중 다툰 횟수가 11차례에 이르렀다。그중 3차례는 「맵이 어느 쪽에 <ruby>有利<rt>유리</rt></ruby>한가」、2차례는 「<ruby>騎兵<rt>기병</rt></ruby> 대 거북선 <ruby>勝率<rt>승률</rt></ruby> <ruby>統計<rt>통계</rt></ruby> <ruby>方法論<rt>방법론</rt></ruby>」、1차례는 순전히 <ruby>個人的<rt>개인적</rt></ruby> <ruby>怨恨<rt>원한</rt></ruby>이었으며 <ruby>原因<rt>원인</rt></ruby>은 불명이었다。</p>
+    <p><ruby>公式<rt>공식</rt></ruby> <ruby>外交<rt>외교</rt></ruby> <ruby>채널</ruby>은 <ruby>競技<rt>경기</rt></ruby> <ruby>期間<rt>기간</rt></ruby> 내내 <ruby>全面的<rt>전면적</rt></ruby>으로 <ruby>沈默<rt>침묵</rt></ruby>을 지켰다。양 팀은 <ruby>寢食<rt>침식</rt></ruby>을 모두 VR <ruby>포드</ruby> 안에서 <ruby>解決<rt>해결</rt></ruby>했고、하루에 주어지는 것은 <ruby>食事<rt>식사</rt></ruby> 한 끼、8시간의 <ruby>睡眠<rt>수면</rt></ruby>、그리고 30분의 <ruby>化粧室<rt>화장실</rt></ruby> 시간뿐이었다。<ruby>場外<rt>장외</rt></ruby>에서는 <ruby>應援團<rt>응원단</rt></ruby>이 <ruby>自發的<rt>자발적</rt></ruby>으로 <ruby>結成<rt>결성</rt></ruby>됐는데、달 側은 제네바 <ruby>湖水<rt>호수</rt></ruby>가에 <ruby>大型<rt>대형</rt></ruby> <ruby>스크린</ruby>을 <ruby>設置<rt>설치</rt></ruby>했고、<ruby>地球<rt>지구</rt></ruby> 側은 타이베이、뭄바이、나이로비에서 <ruby>同時<rt>동시</rt></ruby> <ruby>生中繼<rt>생중계</rt></ruby>를 <ruby>進行<rt>진행</rt></ruby>했다。세 도시 모두에서 「우리 <ruby>陣營<rt>진영</rt></ruby>이 <ruby>突破<rt>돌파</rt></ruby>당했다」며 통곡하는 <ruby>市民<rt>시민</rt></ruby>들이 <ruby>目擊<rt>목격</rt></ruby>됐다。</p>
     <h2><ruby>名場面<rt>명장면</rt></ruby></h2>
-    <p>3차전, 달의 몽골 <ruby>騎兵<rt>기병</rt></ruby> <ruby>大軍<rt>대군</rt></ruby>이 밀어닥치며 <ruby>地球<rt>지구</rt></ruby> <ruby>韓國<rt>한국</rt></ruby> <ruby>守備隊<rt>수비대</rt></ruby>가 <ruby>潰滅<rt>궤멸</rt></ruby> 직전까지 몰렸다. <ruby>地球<rt>지구</rt></ruby> 팀 7번 <ruby>選手<rt>선수</rt></ruby> 양경──<ruby>職業上<rt>직업상</rt></ruby> <ruby>身分<rt>신분</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> <ruby>聯邦<rt>연방</rt></ruby> <ruby>環境部<rt>환경부</rt></ruby> <ruby>次官<rt>차관</rt></ruby>──는 거북선 <ruby>艦隊<rt>함대</rt></ruby>로 <ruby>迂廻<rt>우회</rt></ruby> <ruby>奇襲<rt>기습</rt></ruby>을 <ruby>敢行<rt>감행</rt></ruby>, <ruby>側面<rt>측면</rt></ruby>에서 달의 <ruby>補給線<rt>보급선</rt></ruby>을 끊어내고 4분 안에 <ruby>戰勢<rt>전세</rt></ruby>를 <ruby>逆轉<rt>역전</rt></ruby>시켰다. <ruby>生中繼<rt>생중계</rt></ruby> <ruby>댓글</ruby>창은 당시 초당 300만 건을 넘어섰고, 1위에 오른 <ruby>댓글</ruby>은 무려 2분간 자리를 지켰다. 「<ruby>次官<rt>차관</rt></ruby>님 사랑합니다」.</p>
-    <p>9차전은 <ruby>시리즈</ruby> <ruby>全體<rt>전체</rt></ruby>에서 가장 많은 <ruby>論難<rt>논란</rt></ruby>을 빚었다. 달 팀은 <ruby>神聖<rt>신성</rt></ruby> 로마 <ruby>帝國<rt>제국</rt></ruby>으로 <ruby>出戰<rt>출전</rt></ruby>해 <ruby>러시</ruby> <ruby>戰法<rt>전법</rt></ruby>을 <ruby>採擇<rt>채택</rt></ruby>, 7분 만에 <ruby>地球<rt>지구</rt></ruby> 본진의 <ruby>城壁<rt>성벽</rt></ruby> 아래까지 <ruby>進擊<rt>진격</rt></ruby>했다. <ruby>地球<rt>지구</rt></ruby> 側 <ruby>解説者<rt>해설자</rt></ruby>는 <ruby>生中繼<rt>생중계</rt></ruby>에서 「끝났다 끝났다」라고 외쳤다. 달 側 <ruby>解説者<rt>해설자</rt></ruby>가 미처 입을 떼기도 전, <ruby>地球<rt>지구</rt></ruby> 팀은 돌연 <ruby>一齊<rt>일제</rt></ruby> <ruby>砲擊<rt>포격</rt></ruby>으로 달의 <ruby>先鋒<rt>선봉</rt></ruby>을 <ruby>粉碎<rt>분쇄</rt></ruby>하고, 이어 40분에 걸친 <ruby>消耗戰<rt>소모전</rt></ruby>으로 달 팀을 바닥까지 갈아 무너뜨렸다. 달 側 <ruby>解説者<rt>해설자</rt></ruby>는 <ruby>카메라</ruby> 앞에서 17분간 <ruby>沈默<rt>침묵</rt></ruby>하며 단 한 마디도 하지 않았다.</p>
+    <p>3차전、달의 몽골 <ruby>騎兵<rt>기병</rt></ruby> <ruby>大軍<rt>대군</rt></ruby>이 밀어닥치며 <ruby>地球<rt>지구</rt></ruby> <ruby>韓國<rt>한국</rt></ruby> <ruby>守備隊<rt>수비대</rt></ruby>가 <ruby>潰滅<rt>궤멸</rt></ruby> 직전까지 몰렸다。<ruby>地球<rt>지구</rt></ruby> 팀 7번 <ruby>選手<rt>선수</rt></ruby> 양경──<ruby>職業上<rt>직업상</rt></ruby> <ruby>身分<rt>신분</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> <ruby>聯邦<rt>연방</rt></ruby> <ruby>環境部<rt>환경부</rt></ruby> <ruby>次官<rt>차관</rt></ruby>──는 거북선 <ruby>艦隊<rt>함대</rt></ruby>로 <ruby>迂廻<rt>우회</rt></ruby> <ruby>奇襲<rt>기습</rt></ruby>을 <ruby>敢行<rt>감행</rt></ruby>、<ruby>側面<rt>측면</rt></ruby>에서 달의 <ruby>補給線<rt>보급선</rt></ruby>을 끊어내고 4분 안에 <ruby>戰勢<rt>전세</rt></ruby>를 <ruby>逆轉<rt>역전</rt></ruby>시켰다。<ruby>生中繼<rt>생중계</rt></ruby> <ruby>댓글</ruby>창은 당시 초당 300만 건을 넘어섰고、1위에 오른 <ruby>댓글</ruby>은 무려 2분간 자리를 지켰다。「<ruby>次官<rt>차관</rt></ruby>님 사랑합니다」。</p>
+    <p>9차전은 <ruby>시리즈</ruby> <ruby>全體<rt>전체</rt></ruby>에서 가장 많은 <ruby>論難<rt>논란</rt></ruby>을 빚었다。달 팀은 <ruby>神聖<rt>신성</rt></ruby> 로마 <ruby>帝國<rt>제국</rt></ruby>으로 <ruby>出戰<rt>출전</rt></ruby>해 <ruby>러시</ruby> <ruby>戰法<rt>전법</rt></ruby>을 <ruby>採擇<rt>채택</rt></ruby>、7분 만에 <ruby>地球<rt>지구</rt></ruby> 본진의 <ruby>城壁<rt>성벽</rt></ruby> 아래까지 <ruby>進擊<rt>진격</rt></ruby>했다。<ruby>地球<rt>지구</rt></ruby> 側 <ruby>解説者<rt>해설자</rt></ruby>는 <ruby>生中繼<rt>생중계</rt></ruby>에서 「끝났다 끝났다」라고 외쳤다。달 側 <ruby>解説者<rt>해설자</rt></ruby>가 미처 입을 떼기도 전、<ruby>地球<rt>지구</rt></ruby> 팀은 돌연 <ruby>一齊<rt>일제</rt></ruby> <ruby>砲擊<rt>포격</rt></ruby>으로 달의 <ruby>先鋒<rt>선봉</rt></ruby>을 <ruby>粉碎<rt>분쇄</rt></ruby>하고、이어 40분에 걸친 <ruby>消耗戰<rt>소모전</rt></ruby>으로 달 팀을 바닥까지 갈아 무너뜨렸다。달 側 <ruby>解説者<rt>해설자</rt></ruby>는 <ruby>카메라</ruby> 앞에서 17분간 <ruby>沈默<rt>침묵</rt></ruby>하며 단 한 마디도 하지 않았다。</p>
     <h2><ruby>스크립트</ruby> <ruby>게이트</ruby></h2>
-    <p>3일째 되는 날, 달 팀 7번 <ruby>選手<rt>선수</rt></ruby>에게 「<ruby>自動化<rt>자동화</rt></ruby> <ruby>採集<rt>채집</rt></ruby> <ruby>스크립트</ruby> <ruby>使用<rt>사용</rt></ruby>」 <ruby>疑惑<rt>의혹</rt></ruby>이 불거졌다──그의 <ruby>資源<rt>자원</rt></ruby> <ruby>採集<rt>채집</rt></ruby> <ruby>速度<rt>속도</rt></ruby>와 <ruby>操作<rt>조작</rt></ruby> <ruby>精密度<rt>정밀도</rt></ruby>가 <ruby>地球<rt>지구</rt></ruby> 側 <ruby>技術<rt>기술</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>에 의해 「<ruby>人類<rt>인류</rt></ruby>의 <ruby>反應<rt>반응</rt></ruby> <ruby>限界<rt>한계</rt></ruby>를 <ruby>超過<rt>초과</rt></ruby>했다」고 <ruby>判定<rt>판정</rt></ruby>된 것이다. 달 側은 해당 <ruby>프로그램</ruby>이 「<ruby>集中力<rt>집중력</rt></ruby> <ruby>補助<rt>보조</rt></ruby> <ruby>道具<rt>도구</rt></ruby>」이지 <ruby>自動化<rt>자동화</rt></ruby> <ruby>치트</ruby> <ruby>스크립트</ruby>가 아니며, 「<ruby>人間<rt>인간</rt></ruby> <ruby>選手<rt>선수</rt></ruby>가 커피를 마시는 것과 <ruby>類似<rt>유사</rt></ruby>하다」고 <ruby>抗辯<rt>항변</rt></ruby>했다.</p>
-    <p><ruby>地球<rt>지구</rt></ruby> 側은 되물었다. 「커피로 분당 <ruby>正確<rt>정확</rt></ruby>히 300회의 <ruby>클릭</ruby>이 <ruby>可能<rt>가능</rt></ruby>한가」</p>
-    <p><ruby>仲裁<rt>중재</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>가 <ruby>緊急<rt>긴급</rt></ruby> <ruby>會議<rt>회의</rt></ruby>를 열어 1<ruby>競技<rt>경기</rt></ruby> <ruby>再試合<rt>재시합</rt></ruby>을 <ruby>決定<rt>결정</rt></ruby>했다. 달 側은 이를 <ruby>受容<rt>수용</rt></ruby>하면서 「<ruby>異議<rt>이의</rt></ruby> 있음, 다만 <ruby>保留<rt>보류</rt></ruby>한다」고 밝히고, 아울러 <ruby>地球<rt>지구</rt></ruby> 側에 <ruby>次官<rt>차관</rt></ruby>이 3차전에서 <ruby>使用<rt>사용</rt></ruby>한 거북선 <ruby>迂廻<rt>우회</rt></ruby> <ruby>經路<rt>경로</rt></ruby>가 「AI <ruby>補助<rt>보조</rt></ruby> <ruby>計算<rt>계산</rt></ruby>을 거친 것인지 <ruby>與否<rt>여부</rt></ruby>」에 대한 <ruby>解明<rt>해명</rt></ruby>을 <ruby>要求<rt>요구</rt></ruby>했다. <ruby>地球<rt>지구</rt></ruby> 側은 「그것은 <ruby>直感<rt>직감</rt></ruby>이다」라고 답했다. 달 側은 「믿을 수 없다」고 <ruby>應酬<rt>응수</rt></ruby>했다. 본 <ruby>事案<rt>사안</rt></ruby>은 <ruby>現在<rt>현재</rt></ruby> <ruby>別件<rt>별건</rt></ruby>으로 <ruby>調査<rt>조사</rt></ruby> 중이다.</p>
+    <p>3일째 되는 날、달 팀 7번 <ruby>選手<rt>선수</rt></ruby>에게 「<ruby>自動化<rt>자동화</rt></ruby> <ruby>採集<rt>채집</rt></ruby> <ruby>스크립트</ruby> <ruby>使用<rt>사용</rt></ruby>」 <ruby>疑惑<rt>의혹</rt></ruby>이 불거졌다──그의 <ruby>資源<rt>자원</rt></ruby> <ruby>採集<rt>채집</rt></ruby> <ruby>速度<rt>속도</rt></ruby>와 <ruby>操作<rt>조작</rt></ruby> <ruby>精密度<rt>정밀도</rt></ruby>가 <ruby>地球<rt>지구</rt></ruby> 側 <ruby>技術<rt>기술</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>에 의해 「<ruby>人類<rt>인류</rt></ruby>의 <ruby>反應<rt>반응</rt></ruby> <ruby>限界<rt>한계</rt></ruby>를 <ruby>超過<rt>초과</rt></ruby>했다」고 <ruby>判定<rt>판정</rt></ruby>된 것이다。달 側은 해당 <ruby>프로그램</ruby>이 「<ruby>集中力<rt>집중력</rt></ruby> <ruby>補助<rt>보조</rt></ruby> <ruby>道具<rt>도구</rt></ruby>」이지 <ruby>自動化<rt>자동화</rt></ruby> <ruby>치트</ruby> <ruby>스크립트</ruby>가 아니며、「<ruby>人間<rt>인간</rt></ruby> <ruby>選手<rt>선수</rt></ruby>가 커피를 마시는 것과 <ruby>類似<rt>유사</rt></ruby>하다」고 <ruby>抗辯<rt>항변</rt></ruby>했다。</p>
+    <p><ruby>地球<rt>지구</rt></ruby> 側은 되물었다。「커피로 분당 <ruby>正確<rt>정확</rt></ruby>히 300회의 <ruby>클릭</ruby>이 <ruby>可能<rt>가능</rt></ruby>한가」</p>
+    <p><ruby>仲裁<rt>중재</rt></ruby> <ruby>委員會<rt>위원회</rt></ruby>가 <ruby>緊急<rt>긴급</rt></ruby> <ruby>會議<rt>회의</rt></ruby>를 열어 1<ruby>競技<rt>경기</rt></ruby> <ruby>再試合<rt>재시합</rt></ruby>을 <ruby>決定<rt>결정</rt></ruby>했다。달 側은 이를 <ruby>受容<rt>수용</rt></ruby>하면서 「<ruby>異議<rt>이의</rt></ruby> 있음、다만 <ruby>保留<rt>보류</rt></ruby>한다」고 밝히고、아울러 <ruby>地球<rt>지구</rt></ruby> 側에 <ruby>次官<rt>차관</rt></ruby>이 3차전에서 <ruby>使用<rt>사용</rt></ruby>한 거북선 <ruby>迂廻<rt>우회</rt></ruby> <ruby>經路<rt>경로</rt></ruby>가 「AI <ruby>補助<rt>보조</rt></ruby> <ruby>計算<rt>계산</rt></ruby>을 거친 것인지 <ruby>與否<rt>여부</rt></ruby>」에 대한 <ruby>解明<rt>해명</rt></ruby>을 <ruby>要求<rt>요구</rt></ruby>했다。<ruby>地球<rt>지구</rt></ruby> 側은 「그것은 <ruby>直感<rt>직감</rt></ruby>이다」라고 답했다。달 側은 「믿을 수 없다」고 <ruby>應酬<rt>응수</rt></ruby>했다。본 <ruby>事案<rt>사안</rt></ruby>은 <ruby>現在<rt>현재</rt></ruby> <ruby>別件<rt>별건</rt></ruby>으로 <ruby>調査<rt>조사</rt></ruby> 중이다。</p>
     <h2>10대 10　화가 절반은 풀렸다</h2>
-    <p><ruby>最終<rt>최종</rt></ruby> <ruby>스코어</ruby>는 <ruby>地球<rt>지구</rt></ruby> 10승, 달 10승이었다.</p>
-    <p><ruby>結果<rt>결과</rt></ruby>가 <ruby>發表<rt>발표</rt></ruby>된 순간 <ruby>生中繼<rt>생중계</rt></ruby> <ruby>同時<rt>동시</rt></ruby> <ruby>視聽者<rt>시청자</rt></ruby> 수는 51억에 달해 당일 <ruby>最高値<rt>최고치</rt></ruby>를 <ruby>記錄<rt>기록</rt></ruby>했다. <ruby>地月<rt>지월</rt></ruby> 양측 팬들은 각자의 <ruby>集會<rt>집회</rt></ruby> 장소에서 약 30초간 <ruby>同時<rt>동시</rt></ruby>에 <ruby>沈默<rt>침묵</rt></ruby>한 뒤, 각자 한숨을 쉬고 의자를 접고 고개를 숙인 채 집으로 돌아갔다.</p>
-    <p><ruby>無勝負<rt>무승부</rt></ruby>였으므로 양측 모두 <ruby>協商<rt>협상</rt></ruby>의 <ruby>優先權<rt>우선권</rt></ruby>이 없어 다시 <ruby>協商<rt>협상</rt></ruby> <ruby>테이블</ruby>로 돌아왔다. <ruby>參席者<rt>참석자</rt></ruby>의 <ruby>傳言<rt>전언</rt></ruby>에 따르면 <ruby>雰圍氣<rt>분위기</rt></ruby>는 열흘 전과 <ruby>比較<rt>비교</rt></ruby>해 <ruby>確然<rt>확연</rt></ruby>히 부드러워졌다고 한다──「열흘간 <ruby>게임</ruby>을 했기 때문인지, 아니면 <ruby>相對<rt>상대</rt></ruby> <ruby>次官<rt>차관</rt></ruby>이 정말로 강했기 때문인지 모르겠지만, 어쨌든 모두가 <ruby>比較的<rt>비교적</rt></ruby> 앉아서 이야기할 수 있는 <ruby>狀態<rt>상태</rt></ruby>가 됐어요」라고 말했다.</p>
+    <p><ruby>最終<rt>최종</rt></ruby> <ruby>스코어</ruby>는 <ruby>地球<rt>지구</rt></ruby> 10승、달 10승이었다。</p>
+    <p><ruby>結果<rt>결과</rt></ruby>가 <ruby>發表<rt>발표</rt></ruby>된 순간 <ruby>生中繼<rt>생중계</rt></ruby> <ruby>同時<rt>동시</rt></ruby> <ruby>視聽者<rt>시청자</rt></ruby> 수는 51억에 달해 당일 <ruby>最高値<rt>최고치</rt></ruby>를 <ruby>記錄<rt>기록</rt></ruby>했다。<ruby>地月<rt>지월</rt></ruby> 양측 팬들은 각자의 <ruby>集會<rt>집회</rt></ruby> 장소에서 약 30초간 <ruby>同時<rt>동시</rt></ruby>에 <ruby>沈默<rt>침묵</rt></ruby>한 뒤、각자 한숨을 쉬고 의자를 접고 고개를 숙인 채 집으로 돌아갔다。</p>
+    <p><ruby>無勝負<rt>무승부</rt></ruby>였으므로 양측 모두 <ruby>協商<rt>협상</rt></ruby>의 <ruby>優先權<rt>우선권</rt></ruby>이 없어 다시 <ruby>協商<rt>협상</rt></ruby> <ruby>테이블</ruby>로 돌아왔다。<ruby>參席者<rt>참석자</rt></ruby>의 <ruby>傳言<rt>전언</rt></ruby>에 따르면 <ruby>雰圍氣<rt>분위기</rt></ruby>는 열흘 전과 <ruby>比較<rt>비교</rt></ruby>해 <ruby>確然<rt>확연</rt></ruby>히 부드러워졌다고 한다──「열흘간 <ruby>게임</ruby>을 했기 때문인지、아니면 <ruby>相對<rt>상대</rt></ruby> <ruby>次官<rt>차관</rt></ruby>이 정말로 강했기 때문인지 모르겠지만、어쨌든 모두가 <ruby>比較的<rt>비교적</rt></ruby> 앉아서 이야기할 수 있는 <ruby>狀態<rt>상태</rt></ruby>가 됐어요」라고 말했다。</p>
     <h2>《<ruby>地月共榮協定<rt>지월공영협정</rt></ruby>》 <ruby>主要<rt>주요</rt></ruby> <ruby>內容<rt>내용</rt></ruby></h2>
-    <p><ruby>調印式<rt>조인식</rt></ruby>은 제네바 제7<ruby>平和宮<rt>평화궁</rt></ruby>에서 <ruby>擧行<rt>거행</rt></ruby>됐고, 전 <ruby>過程<rt>과정</rt></ruby>에 단 19분이 <ruby>所要<rt>소요</rt></ruby>됐다──듣건대, 양측 <ruby>代表<rt>대표</rt></ruby>는 <ruby>署名<rt>서명</rt></ruby> 직전에 <ruby>臨時<rt>임시</rt></ruby>로 「<ruby>追加<rt>추가</rt></ruby> <ruby>競技<rt>경기</rt></ruby>」를 한 판 더 잡아 40분간 <ruby>對戰<rt>대전</rt></ruby>했고, 그 <ruby>結果<rt>결과</rt></ruby> <ruby>地球<rt>지구</rt></ruby>가 <ruby>勝利<rt>승리</rt></ruby>했다. 달 側 <ruby>代表<rt>대표</rt></ruby>는 「감이 이상하다」며, <ruby>主力<rt>주력</rt></ruby> <ruby>選手<rt>선수</rt></ruby>들이 아직 <ruby>地球<rt>지구</rt></ruby> <ruby>重力<rt>중력</rt></ruby>에 <ruby>完全<rt>완전</rt></ruby>히 <ruby>適應<rt>적응</rt></ruby>하지 못한 점을 들어 <ruby>勝敗<rt>승패</rt></ruby>를 <ruby>認定<rt>인정</rt></ruby>하지 않고 「내년 같은 시기에 <ruby>親善<rt>친선</rt></ruby> <ruby>再競技<rt>재경기</rt></ruby>」를 <ruby>要求<rt>요구</rt></ruby>했다. <ruby>地球<rt>지구</rt></ruby> 側은 이에 <ruby>同意<rt>동의</rt></ruby>하며 그때에도 여전히 <ruby>韓國<rt>한국</rt></ruby>을 <ruby>選擇<rt>선택</rt></ruby>하겠다고 밝혔다. 달 側은 「이번에는 <ruby>바이킹</ruby>을 <ruby>準備<rt>준비</rt></ruby>해 두었다」라고 말했다.</p>
+    <p><ruby>調印式<rt>조인식</rt></ruby>은 제네바 제7<ruby>平和宮<rt>평화궁</rt></ruby>에서 <ruby>擧行<rt>거행</rt></ruby>됐고、전 <ruby>過程<rt>과정</rt></ruby>에 단 19분이 <ruby>所要<rt>소요</rt></ruby>됐다──듣건대、양측 <ruby>代表<rt>대표</rt></ruby>는 <ruby>署名<rt>서명</rt></ruby> 직전에 <ruby>臨時<rt>임시</rt></ruby>로 「<ruby>追加<rt>추가</rt></ruby> <ruby>競技<rt>경기</rt></ruby>」를 한 판 더 잡아 40분간 <ruby>對戰<rt>대전</rt></ruby>했고、그 <ruby>結果<rt>결과</rt></ruby> <ruby>地球<rt>지구</rt></ruby>가 <ruby>勝利<rt>승리</rt></ruby>했다。달 側 <ruby>代表<rt>대표</rt></ruby>는 「감이 이상하다」며、<ruby>主力<rt>주력</rt></ruby> <ruby>選手<rt>선수</rt></ruby>들이 아직 <ruby>地球<rt>지구</rt></ruby> <ruby>重力<rt>중력</rt></ruby>에 <ruby>完全<rt>완전</rt></ruby>히 <ruby>適應<rt>적응</rt></ruby>하지 못한 점을 들어 <ruby>勝敗<rt>승패</rt></ruby>를 <ruby>認定<rt>인정</rt></ruby>하지 않고 「내년 같은 시기에 <ruby>親善<rt>친선</rt></ruby> <ruby>再競技<rt>재경기</rt></ruby>」를 <ruby>要求<rt>요구</rt></ruby>했다。<ruby>地球<rt>지구</rt></ruby> 側은 이에 <ruby>同意<rt>동의</rt></ruby>하며 그때에도 여전히 <ruby>韓國<rt>한국</rt></ruby>을 <ruby>選擇<rt>선택</rt></ruby>하겠다고 밝혔다。달 側은 「이번에는 <ruby>바이킹</ruby>을 <ruby>準備<rt>준비</rt></ruby>해 두었다」라고 말했다。</p>
         <p><ruby>協定<rt>협정</rt></ruby>의 <ruby>核心<rt>핵심</rt></ruby> <ruby>條項<rt>조항</rt></ruby>은 다음과 같다──</p>
     <ol>
       <li><ruby>月城方<rt>월성방</rt></ruby>은 <ruby>地球<rt>지구</rt></ruby> <ruby>南太平洋<rt>남태평양</rt></ruby> <ruby>指定<rt>지정</rt></ruby> <ruby>海域<rt>해역</rt></ruby>에서 <ruby>海水<rt>해수</rt></ruby>를 <ruby>自由<rt>자유</rt></ruby>롭게 <ruby>取水<rt>취수</rt></ruby>할 수 있으며 <ruby>年間<rt>연간</rt></ruby> <ruby>쿼터</ruby>는 30억 <ruby>立方<rt>입방</rt></ruby>미터;</li>
@@ -1051,29 +1079,29 @@
           <li><ruby>利益<rt>이익</rt></ruby> <ruby>分配<rt>분배</rt></ruby> <ruby>比率<rt>비율</rt></ruby>은 달 7 대 지 3;</li>
         </ul>
       </li>
-      <li><ruby>地月<rt>지월</rt></ruby> <ruby>國境<rt>국경</rt></ruby>에서의 <ruby>醫療<rt>의료</rt></ruby> <ruby>隔離<rt>격리</rt></ruby> 시간은 <ruby>技術<rt>기술</rt></ruby> <ruby>發展<rt>발전</rt></ruby>에 따라 2시간에서 <ruby>象徵的<rt>상징적</rt></ruby>인 45분으로 <ruby>短縮<rt>단축</rt></ruby>된다.</li>
+      <li><ruby>地月<rt>지월</rt></ruby> <ruby>國境<rt>국경</rt></ruby>에서의 <ruby>醫療<rt>의료</rt></ruby> <ruby>隔離<rt>격리</rt></ruby> 시간은 <ruby>技術<rt>기술</rt></ruby> <ruby>發展<rt>발전</rt></ruby>에 따라 2시간에서 <ruby>象徵的<rt>상징적</rt></ruby>인 45분으로 <ruby>短縮<rt>단축</rt></ruby>된다。</li>
     </ol>
-    <p><small>제목에 이어지는 ol과 중첩 ul——prose의 목록 들여쓰기.</small></p>
-    <p><ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터</ruby> <ruby>昇降室<rt>승강실</rt></ruby>의 <ruby>法的<rt>법적</rt></ruby> <ruby>管轄<rt>관할</rt></ruby> <ruby>問題<rt>문제</rt></ruby>에 관해서는, <ruby>協定<rt>협정</rt></ruby> <ruby>附屬<rt>부속</rt></ruby> 제7조가 짧게 적고 있다──「<ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby> 내에서 각측의 <ruby>個人<rt>개인</rt></ruby> <ruby>衛生<rt>위생</rt></ruby> <ruby>習慣<rt>습관</rt></ruby>은 타인을 방해하지 않는 것을 <ruby>原則<rt>원칙</rt></ruby>으로 하며, 양측 모두 <ruby>能動的<rt>능동적</rt></ruby>으로 <ruby>法<rt>법</rt></ruby>을 <ruby>執行<rt>집행</rt></ruby>하지 않는다」.</p>
-    <p>진대균은 이 <ruby>結果<rt>결과</rt></ruby>에 <ruby>滿足<rt>만족</rt></ruby>을 표했다. 소천-779는 「<ruby>協定<rt>협정</rt></ruby>의 <ruby>精神<rt>정신</rt></ruby>은 <ruby>尊重<rt>존중</rt></ruby>하지만, <ruby>個人的<rt>개인적</rt></ruby>으로는 여전히 아무 데서나 코딱지를 파는 것은 역겹다고 생각합니다. 다만 적어도 지나치게 긴 2시간의 <ruby>醫療<rt>의료</rt></ruby> <ruby>隔離<rt>격리</rt></ruby>를 견딜 <ruby>必要<rt>필요</rt></ruby>는 없게 됐습니다」라고 말했다.</p>
+    <p><small>제목에 이어지는 ol과 중첩 ul——prose의 목록 들여쓰기。</small></p>
+    <p><ruby>宇宙<rt>우주</rt></ruby> <ruby>엘리베이터</ruby> <ruby>昇降室<rt>승강실</rt></ruby>의 <ruby>法的<rt>법적</rt></ruby> <ruby>管轄<rt>관할</rt></ruby> <ruby>問題<rt>문제</rt></ruby>에 관해서는、<ruby>協定<rt>협정</rt></ruby> <ruby>附屬<rt>부속</rt></ruby> 제7조가 짧게 적고 있다──「<ruby>共同管理<rt>공동관리</rt></ruby> <ruby>緩衝區<rt>완충구</rt></ruby> 내에서 각측의 <ruby>個人<rt>개인</rt></ruby> <ruby>衛生<rt>위생</rt></ruby> <ruby>習慣<rt>습관</rt></ruby>은 타인을 방해하지 않는 것을 <ruby>原則<rt>원칙</rt></ruby>으로 하며、양측 모두 <ruby>能動的<rt>능동적</rt></ruby>으로 <ruby>法<rt>법</rt></ruby>을 <ruby>執行<rt>집행</rt></ruby>하지 않는다」。</p>
+    <p>진대균은 이 <ruby>結果<rt>결과</rt></ruby>에 <ruby>滿足<rt>만족</rt></ruby>을 표했다。소천-779는 「<ruby>協定<rt>협정</rt></ruby>의 <ruby>精神<rt>정신</rt></ruby>은 <ruby>尊重<rt>존중</rt></ruby>하지만、<ruby>個人的<rt>개인적</rt></ruby>으로는 여전히 아무 데서나 코딱지를 파는 것은 역겹다고 생각합니다。다만 적어도 지나치게 긴 2시간의 <ruby>醫療<rt>의료</rt></ruby> <ruby>隔離<rt>격리</rt></ruby>를 견딜 <ruby>必要<rt>필요</rt></ruby>는 없게 됐습니다」라고 말했다。</p>
   </article>
 
-  <p><small>위 세 편이 <b>article</b> <ruby>領域<rt>영역</rt></ruby>——prose <ruby>模塊<rt>모듈</rt></ruby>이 자동으로 듣는다(들여쓰기·양단 정렬·제목 붙임). 점선 틀과 라벨은 본 페이지의 「구조 주석 레이어」로, 페이지 머리의 체크박스로 일괄 끌 수 있다.</small></p>
+  <p><small>위 세 편이 <b>article</b> <ruby>領域<rt>영역</rt></ruby>——prose <ruby>模塊<rt>모듈</rt></ruby>이 자동으로 듣는다(들여쓰기·양단 정렬·제목 붙임)。점선 틀과 라벨은 본 페이지의 「구조 주석 레이어」로、페이지 머리의 체크박스로 일괄 끌 수 있다。</small></p>
 
   <section>
     <h2>이번 호 <ruby>要目<rt>요목</rt></ruby></h2>
     <h3><ruby>宮廷<rt>궁정</rt></ruby> <ruby>典禮<rt>전례</rt></ruby></h3>
     <h4>새 <ruby>天皇<rt>천황</rt></ruby> 다카미쿠라에 오르다　센묘 467<ruby>字<rt>자</rt></ruby></h4>
-    <p><ruby>年號<rt>연호</rt></ruby> <ruby>弘宙<rt>홍주</rt></ruby>는 《<ruby>淮南子<rt>회남자</rt></ruby>》에서 나왔다. <ruby>候補<rt>후보</rt></ruby> 한 <ruby>案<rt>안</rt></ruby>은 두부자(豆腐字)로 <ruby>脫落<rt>탈락</rt></ruby>.</p>
+    <p><ruby>年號<rt>연호</rt></ruby> <ruby>弘宙<rt>홍주</rt></ruby>는 《<ruby>淮南子<rt>회남자</rt></ruby>》에서 나왔다。<ruby>候補<rt>후보</rt></ruby> 한 <ruby>案<rt>안</rt></ruby>은 두부자(豆腐字)로 <ruby>脫落<rt>탈락</rt></ruby>。</p>
     <h3><ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></h3>
     <h4><ruby>蘇聯<rt>소련</rt></ruby> <ruby>核彈<rt>핵탄</rt></ruby>과 KOI-8</h4>
-    <p>30년의 <ruby>亂碼<rt>난마</rt></ruby>, 17분의 <ruby>解讀<rt>해독</rt></ruby>.</p>
+    <p>30년의 <ruby>亂碼<rt>난마</rt></ruby>、17분의 <ruby>解讀<rt>해독</rt></ruby>。</p>
     <h3><ruby>星際<rt>성제</rt></ruby> <ruby>政治<rt>정치</rt></ruby></h3>
     <h4><ruby>宇宙<rt>우주</rt></ruby> 엘리베이터 코딱지 <ruby>危機<rt>위기</rt></ruby></h4>
-    <p>스무 판의 《에이지 오브 엠파이어》로 <ruby>決着<rt>결착</rt></ruby>.</p>
-    <p><small>이 <ruby>節<rt>절</rt></ruby>은 article 밖——prose가 듣지 않는다. h2→h3→h4 <ruby>連續<rt>연속</rt></ruby> 제목은 <ruby>模塊<rt>모듈</rt></ruby> <ruby>境界<rt>경계</rt></ruby>의 示範.</small></p>
-    <p><ruby>訂正<rt>정정</rt></ruby>：<ruby>前版<rt>전판</rt></ruby>에서 <ruby>解讀<rt>해독</rt></ruby> <ruby>所要<rt>소요</rt></ruby> 시간을 <del>16분</del><ins>17분</ins>으로 <ruby>誤植<rt>오식</rt></ruby>했다.</p>
-    <p><small>del／ins <ruby>隣接<rt>인접</rt></ruby> 시 밑줄 끊김——semantics <ruby>模塊<rt>모듈</rt></ruby>.</small></p>
+    <p>스무 판의 《에이지 오브 엠파이어》로 <ruby>決着<rt>결착</rt></ruby>。</p>
+    <p><small>이 <ruby>節<rt>절</rt></ruby>은 article 밖——prose가 듣지 않는다。h2→h3→h4 <ruby>連續<rt>연속</rt></ruby> 제목은 <ruby>模塊<rt>모듈</rt></ruby> <ruby>境界<rt>경계</rt></ruby>의 示範。</small></p>
+    <p><ruby>訂正<rt>정정</rt></ruby>：<ruby>前版<rt>전판</rt></ruby>에서 <ruby>解讀<rt>해독</rt></ruby> <ruby>所要<rt>소요</rt></ruby> 시간을 <del>16분</del><ins>17분</ins>으로 <ruby>誤植<rt>오식</rt></ruby>했다。</p>
+    <p><small>del／ins <ruby>隣接<rt>인접</rt></ruby> 시 밑줄 끊김——semantics <ruby>模塊<rt>모듈</rt></ruby>。</small></p>
   </section>
 
   <section>
@@ -1081,51 +1109,51 @@
     <dl>
       <dt>센묘 <ruby>字數<rt>자수</rt></ruby></dt><dd>467자（<ruby>豫告本<rt>예고본</rt></ruby>보다 4자 많음）</dd>
       <dt><ruby>皇配<rt>황배</rt></ruby> <ruby>名銜<rt>명함</rt></ruby> <ruby>論議<rt>논의</rt></ruby></dt><dd>31일——<ruby>結論<rt>결론</rt></ruby>: 넷 다 된다</dd>
-      <dt><ruby>年號<rt>연호</rt></ruby> <ruby>論議<rt>논의</rt></ruby></dt><dd>19일, <ruby>候補<rt>후보</rt></ruby> 6안, 그중 1안은 두부자로 <ruby>脫落<rt>탈락</rt></ruby></dd>
+      <dt><ruby>年號<rt>연호</rt></ruby> <ruby>論議<rt>논의</rt></ruby></dt><dd>19일、<ruby>候補<rt>후보</rt></ruby> 6안、그중 1안은 두부자로 <ruby>脫落<rt>탈락</rt></ruby></dd>
       <dt><ruby>萬歲<rt>만세</rt></ruby> <ruby>最遠<rt>최원</rt></ruby> 지연</dt><dd>5시간 17분（카이퍼대 제7관측소）</dd>
     </dl>
-    <p><small>dl 데이터 칸——한·서 <ruby>混排<rt>혼배</rt></ruby> 숫자와 text-autospace <ruby>間隙<rt>간극</rt></ruby>.</small></p>
+    <p><small>dl 데이터 칸——한·서 <ruby>混排<rt>혼배</rt></ruby> 숫자와 text-autospace <ruby>間隙<rt>간극</rt></ruby>。</small></p>
   </section>
 
   <section>
     <h2><ruby>刊末<rt>간말</rt></ruby></h2>
     <h3><ruby>發行<rt>발행</rt></ruby> <ruby>情報<rt>정보</rt></ruby></h3>
-    <p><ruby>太陽中文報<rt>태양중문보</rt></ruby>사·<ruby>曙光線<rt>서광선</rt></ruby> <ruby>同時<rt>동시</rt></ruby> <ruby>發行<rt>발행</rt></ruby>·제14607호.</p>
+    <p><ruby>太陽中文報<rt>태양중문보</rt></ruby>사·<ruby>曙光線<rt>서광선</rt></ruby> <ruby>同時<rt>동시</rt></ruby> <ruby>發行<rt>발행</rt></ruby>·제14607호。</p>
     <h4><ruby>購讀<rt>구독</rt></ruby></h4>
-    <p>각 <ruby>植民地<rt>식민지</rt></ruby> 가판대 판매. 카이퍼대 이원은 광속 통판, <ruby>時效<rt>시효</rt></ruby>는 자기 책임.</p>
+    <p><ruby>太陽系<rt>태양계</rt></ruby> 各地와 <ruby>南門二<rt>남문이</rt></ruby> <ruby>一部<rt>일부</rt></ruby> <ruby>地域<rt>지역</rt></ruby>의 가판대에서 판매。카이퍼대 이원은 광속 통판、<ruby>時效<rt>시효</rt></ruby>는 자기 책임。</p>
     <h5><ruby>轉載<rt>전재</rt></ruby></h5>
-    <p><ruby>轉載<rt>전재</rt></ruby>는 <ruby>出處<rt>출처</rt></ruby> 명기. <ruby>智子<rt>지자</rt></ruby> 경유 전재는 발고 전 전재로 본다.</p>
+    <p><ruby>轉載<rt>전재</rt></ruby>는 <ruby>出處<rt>출처</rt></ruby> 명기。<ruby>智子<rt>지자</rt></ruby> 경유 전재는 발고 전 전재로 본다。</p>
     <h6><ruby>免責<rt>면책</rt></ruby> <ruby>聲明<rt>성명</rt></ruby></h6>
-    <p>광속 지연으로 인한 <ruby>情報<rt>정보</rt></ruby> <ruby>時差<rt>시차</rt></ruby>에 대해 <ruby>本紙<rt>본지</rt></ruby>는 책임지지 않는다.</p>
-    <p><small>h2→h3→h4→h5→h6 <ruby>全階<rt>전계</rt></ruby>——<ruby>刊末<rt>간말</rt></ruby> 세부 칸의 중첩 <ruby>意味<rt>의미</rt></ruby> 구조.</small></p>
+    <p>광속 지연으로 인한 <ruby>情報<rt>정보</rt></ruby> <ruby>時差<rt>시차</rt></ruby>에 대해 <ruby>本紙<rt>본지</rt></ruby>는 책임지지 않는다。</p>
+    <p><small>h2→h3→h4→h5→h6 <ruby>全階<rt>전계</rt></ruby>——<ruby>刊末<rt>간말</rt></ruby> 세부 칸의 중첩 <ruby>意味<rt>의미</rt></ruby> 구조。</small></p>
   </section>
 
   <section>
     <h2><ruby>模塊<rt>모듈</rt></ruby> opt-out <ruby>對照<rt>대조</rt></ruby></h2>
     <h3><ruby>全效<rt>전효</rt></ruby>（<ruby>基準<rt>기준</rt></ruby>）</h3>
-    <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 2126<ruby>年<rt>년</rt></ruby> <ruby>創刊<rt>창간</rt></ruby>, <em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다.</p>
+    <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 <ruby>創刊<rt>창간</rt></ruby> 이래 70여 <ruby>年<rt>년</rt></ruby>、<em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다。</p>
     <h3>--han-semantics: off</h3>
     <div style="--han-semantics: off">
-      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 2126<ruby>年<rt>년</rt></ruby> <ruby>創刊<rt>창간</rt></ruby>, <em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다.</p>
+      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 <ruby>創刊<rt>창간</rt></ruby> 이래 70여 <ruby>年<rt>년</rt></ruby>、<em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다。</p>
     </div>
     <h3>lines off</h3>
     <div style="--han-text-autospace: no-autospace; --han-punctuation-refinement: none">
-      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 2126<ruby>年<rt>년</rt></ruby> <ruby>創刊<rt>창간</rt></ruby>, <em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다.</p>
+      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 <ruby>創刊<rt>창간</rt></ruby> 이래 70여 <ruby>年<rt>년</rt></ruby>、<em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다。</p>
     </div>
     <h3>fonts off</h3>
     <div style="--han-punctuation-ko: off; --han-use-heritage-glyphs-for-ko: off">
-      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 2126<ruby>年<rt>년</rt></ruby> <ruby>創刊<rt>창간</rt></ruby>, <em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다.</p>
+      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 <ruby>創刊<rt>창간</rt></ruby> 이래 70여 <ruby>年<rt>년</rt></ruby>、<em>매일</em> <ruby>曙光線<rt>서광선</rt></ruby>과 함께 <ruby>配達<rt>배달</rt></ruby>된다。</p>
     </div>
     <h3>--han-prose: off（<ruby>全篇<rt>전편</rt></ruby>）</h3>
     <article style="--han-prose: off">
-      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 2126<ruby>年<rt>년</rt></ruby> <ruby>創刊<rt>창간</rt></ruby>했다.（article 안이나 <ruby>全篇<rt>전편</rt></ruby> prose <ruby>離脫<rt>이탈</rt></ruby>.）</p>
+      <p>《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》는 <ruby>創刊<rt>창간</rt></ruby> 이래 70여 <ruby>年<rt>년</rt></ruby>이 되었다.（article 안이나 <ruby>全篇<rt>전편</rt></ruby> prose <ruby>離脫<rt>이탈</rt></ruby>.）</p>
     </article>
   </section>
 
   <section>
     <h2><ruby>多言語<rt>다언어</rt></ruby> <ruby>混植<rt>혼식</rt></ruby></h2>
-    <p>같은 <ruby>記事<rt>기사</rt></ruby>의 중국어판 <ruby>題目<rt>제목</rt></ruby>은 「<span lang="zh-Hant">謎底竟是一行亂碼</span>」, 일본어판은 「<span lang="ja">謎は一行の文字化けだった</span>」——행 안의 각 언어 run이 lang <ruby>屬性<rt>속성</rt></ruby>을 지니며, 괄호와 <ruby>符號<rt>부호</rt></ruby> <ruby>慣例<rt>관례</rt></ruby>가 run마다 바뀐다.</p>
-    <p><ruby>西文<rt>서문</rt></ruby> <ruby>混植<rt>혼식</rt></ruby>의 두 <ruby>樣態<rt>양태</rt></ruby>：lang을 단 <span lang="de">Schrödinger</span>와 <span lang="ru">Код Обмена Информацией</span>；lang 없는 КОИ-8, τυπογραφία, π——<ruby>間隙<rt>간극</rt></ruby>은 <ruby>文字<rt>문자</rt></ruby> <ruby>單位<rt>단위</rt></ruby>, <ruby>字體<rt>자체</rt></ruby> <ruby>回落<rt>회락</rt></ruby>은 코드포인트 <ruby>單位<rt>단위</rt></ruby>이므로 lang 없이도 <ruby>作動<rt>작동</rt></ruby>한다.</p>
+    <p>같은 <ruby>記事<rt>기사</rt></ruby>의 중국어판 <ruby>題目<rt>제목</rt></ruby>은 「<span lang="zh-Hant">謎底竟是一行亂碼</span>」、일본어판은 「<span lang="ja">謎は一行の文字化けだった</span>」——행 안의 각 언어 run이 lang <ruby>屬性<rt>속성</rt></ruby>을 지니며、괄호와 <ruby>符號<rt>부호</rt></ruby> <ruby>慣例<rt>관례</rt></ruby>가 run마다 바뀐다。</p>
+    <p><ruby>西文<rt>서문</rt></ruby> <ruby>混植<rt>혼식</rt></ruby>의 두 <ruby>樣態<rt>양태</rt></ruby>：lang을 단 <span lang="de">Schrödinger</span>와 <span lang="ru">Код Обмена Информацией</span>；lang 없는 КОИ-8、τυπογραφία、π——<ruby>間隙<rt>간극</rt></ruby>은 <ruby>文字<rt>문자</rt></ruby> <ruby>單位<rt>단위</rt></ruby>、<ruby>字體<rt>자체</rt></ruby> <ruby>回落<rt>회락</rt></ruby>은 코드포인트 <ruby>單位<rt>단위</rt></ruby>이므로 lang 없이도 <ruby>作動<rt>작동</rt></ruby>한다。</p>
   </section>
 </section>
 
