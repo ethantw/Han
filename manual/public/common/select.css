@@ -55,7 +55,18 @@ select {
     transition: border-color 150ms ease-out, color 150ms ease-out;
   }
 
-  &:hover { border-color: var(--_sel-dim); }
+  &:hover:not(:disabled) { border-color: var(--_sel-dim); }
+
+  /* 真正被停用的那種。目前站上沒有（主控台裡簡體／日文的楷體只有一個 option，
+     但**沒有**停用——下拉照樣打得開，說得出「可選的就這一支」）。這一條留著是
+     元件表該有的態：UA 預設的灰化會把邊框一起洗掉，交給自己控制濃淡才不會像
+     壞掉。 */
+  &:disabled {
+    color: var(--_sel-dim);
+    cursor: default;
+    opacity: 1;   /* UA 的預設灰化會把邊框一起洗掉，這裡自己控制濃淡 */
+  }
+
   &:focus-visible {
     outline: 2px solid var(--_sel-accent);
     outline-offset: 1px;
@@ -95,7 +106,9 @@ select {
       rotate: -90deg;
       transition: rotate 200ms ease-out, background-color 150ms ease-out;
     }
-    &:hover::picker-icon { background: var(--_sel-ink); }
+    &:hover:not(:disabled)::picker-icon { background: var(--_sel-ink); }
+    /* 沒得選就不畫角標——一顆轉不動的箭頭比沒有箭頭更難解釋。 */
+    &:disabled::picker-icon { display: none; }
     &:open::picker-icon  { rotate: 90deg; }
   }
 

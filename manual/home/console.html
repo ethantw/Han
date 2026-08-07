@@ -336,6 +336,22 @@
     ja: '芫荽',
     ko: 'Iansui',
   },
+  /* 簡體與日文的楷體沒有第二個選擇——庫各自只綁一支（見 codegen 的
+     cursivePkgs），所以那兩顆下拉是唯讀的讀數，不是選項。 */
+  pgFamLxgwSc: {
+    hant: '霞鶩文楷SC',
+    hans: '霞鹜文楷SC',
+    en: 'LXGW WenKai SC',
+    ja: '霞鶩文楷SC',
+    ko: 'LXGW WenKai SC',
+  },
+  pgFamKlee: {
+    hant: 'Klee One',
+    hans: 'Klee One',
+    en: 'Klee One',
+    ja: 'クレー One',
+    ko: 'Klee One',
+  },
   pgWebfontDelivery: {
     hant: 'Web字體來源',
     hans: 'Web字体来源',
@@ -933,6 +949,16 @@
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
+          <!-- 簡體楷體：庫只綁 lxgw-wenkai（SC），所以只有一個 option——但**不停用**：
+               下拉照樣打得開，讀者看得到「可選的就這一支」，而停用的控件只說得出
+               「不能碰」，說不出為什麼。擺這一格也是為了讓三個文種的欄位對得起來。
+               可見性與繁體那顆同一個旗標。 -->
+          <label class="Field" data-cfg-cursive-family>
+            <span>{{ pgCursive }}</span>
+            <select>
+              <option selected>{{ pgFamLxgwSc }}</option>
+            </select>
+          </label>
         </fieldset>
       </section>
 
@@ -956,6 +982,13 @@
               <option value="GB">GB</option>
               <option value="KLR">KLR</option>
               <option value="off">{{ pgModeOff }}</option>
+            </select>
+          </label>
+          <!-- 日文楷體：同上，庫綁 klee-one。 -->
+          <label class="Field" data-cfg-cursive-family>
+            <span>{{ pgCursive }}</span>
+            <select>
+              <option selected>{{ pgFamKlee }}</option>
             </select>
           </label>
         </fieldset>
