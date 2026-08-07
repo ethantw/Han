@@ -39,7 +39,11 @@
      初值由控制台裡緊接該 checkbox 的 pre-paint inline script 還原
      （免 FOUC），bare.js 只負責寫回 localStorage（'theme' 鍵，與首頁
      ／手冊互通）。 */
-  :root { color-scheme: light; }
+  :root {
+    color-scheme: light;
+    /* 本頁的髮線：三處分隔線與控件邊界共用 */
+    --rule: light-dark(#e4dfd7, #322f2c);
+  }
   :root[data-demo-dark] { color-scheme: dark; }
 
   /* 兩端對齊。han 的 prose 本來只把 <article> 裡的 <p> 兩端對齊
@@ -139,14 +143,14 @@
     justify-content: space-between;
     padding: 10px 14px;
     font-weight: 600;
-    border-block-end: 1px solid light-dark(#e4dfd7, #322f2c);
+    border-block-end: 1px solid var(--rule);
   }
   .Tools .Switches {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 14px;
     padding: 11px 14px;
-    border-block-end: 1px solid light-dark(#e4dfd7, #322f2c);
+    border-block-end: 1px solid var(--rule);
   }
   .Tools label {
     display: inline-flex;
@@ -158,7 +162,9 @@
      給它用——不補也能看（會落到 Canvas／AccentColor），補了才是本站的綠。 */
   .Tools {
     --ui-accent: light-dark(#1a6f4f, #6fbf9a);
-    --ui-rule:   light-dark(#ccc6bc, #4a4640);
+    /* 控件的邊界＝本頁髮線的同一個值（下面三處 border 用的就是它）。原本借了
+       按鈕那顆較深的 #ccc6bc，淺色下一整排下拉框讀起來太硬（owner 回報）。 */
+    --ui-rule:   var(--rule);
     --ui-panel:  light-dark(#f4f1ec, #26241f);
   }
   /* select 的長相由 /common/select.css 給（含下拉本體）；這裡只把字接回來。 */
@@ -184,7 +190,7 @@
   }
   /* 生成的引入碼 */
   .Tools details {
-    border-block-start: 1px solid light-dark(#e4dfd7, #322f2c);
+    border-block-start: 1px solid var(--rule);
   }
   .Tools summary {
     padding: 9px 14px;
