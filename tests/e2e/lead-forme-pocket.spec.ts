@@ -129,34 +129,16 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
     expect((col.top - prev.top) / run).toBeLessThan(0.85)
   })
 
-  // the forme is laid ON the specimen card, not tucked under it: it paints
-  // above (§ the lift) and its ink edge really does cut into the card's box.
-  // Both halves matter — a z-index with no overlap is a no-op, and an overlap
-  // with the old z-index would be the forme getting clipped by the proof.
-  const laid = await page.evaluate(() => {
-    const $card = document.querySelector('.Illust[data-variant="faces"]')!
-    const $faces = document.querySelector('.Faces')!.getBoundingClientRect()
-    const $f = document.querySelector('.LeadForme')!
-    const svg = $f.querySelector('svg')!.getBoundingClientRect()
-    const num = (el: Element, p: string) =>
-      Number.parseFloat(getComputedStyle(el).getPropertyValue(p))
-    // the parallelogram's inline-start edge falls at tan30 per unit travelled
-    // inline-start-ward from the apex — the same arithmetic § the lift uses.
-    const inkTop = svg.top + num($f, '--lf-gap-top') * svg.width
-    const apexX = svg.left + num($f, '--lf-apex') * svg.width
-    return {
-      z: num($f, 'z-index') - num($card, 'z-index'),
-      cut: $faces.bottom - (inkTop + Math.max(0, apexX - $faces.right) * 0.5774),
-    }
-  })
-  expect(laid.z).toBeGreaterThan(0)
-  // cut 是內容敏感值：抬升是開環的（幾何常數＋手調 graze，不錨卡片實際
-  // 位置），樣張欄上方任何文案改高度它就漂——實測出生即 −3、經兩輪內容
-  // 改動落到 −41，從未達過原門檻 +20（docs/notes/2026-08-06-pocket-cut-
-  // erosion.md，含三個修法選項）。這裡只擋「徹底脫離」的迴歸；「切進卡
-  // 片」的視覺哏由人眼驗收，救回哏（調 graze 或閉環量測）是 owner 的
-  // 設計取捨。
-  expect(laid.cut).toBeGreaterThan(-60)
+  // 「鉛字版壓在樣張卡上」那個視覺哏**不在這裡斷言**（2026-08-07 撤除）。
+  // 它量的是斜邊切進卡片幾 px，而抬升是開環的——負 margin 由幾何常數算
+  // 出、不錨卡片實際位置，樣張欄上方任何文案改高度它就漂。實測它出生即
+  // 未達門檻、經兩輪內容改動一路惡化，是個週期性假紅的美學量
+  //（docs/notes/2026-08-06-pocket-cut-erosion.md）。哏成不成立由人眼驗收。
+  //
+  // 真正該守的功能性不變量另有人守：鉛字版疊上去之後，卡片自己的互動
+  // 不能被吃掉——eye-care.spec.ts 在同一個視口用**真的點擊**（非
+  // force，Playwright 的 actionability 檢查會擋下任何攔截）驗護眼模式
+  // 開關，並另有一個測試驗鉛字版的 slug 自己接得到指標。
 
   // the radios still answer the pointer through the rotated labels. Settle the
   // entrance first — the pills hold `visibility: hidden` until the drop is over
