@@ -71,17 +71,34 @@
     &::after { mask-image: var(--icon-minus); }
   }
 
-  /* 子組（字體底下的繁體專項）——縮排一級、標頭恢復字母大小寫並降去
-     追蹤感，讀作外組的從屬而非並列。<section>＋<header> 平鋪
-     （owner call：子組不收合）。 */
+  /* 子組（字體底下的繁體專項）。標頭恢復字母大小寫並降去追蹤感，讀作外組的
+     從屬而非並列。<section>＋<header> 平鋪（owner call：子組不收合）。
+
+     分界靠**標頭自己拖一條髮線到欄緣**，不是左邊那道縱向欄線（owner
+     2026-08-07：「太醜」）。縱線的毛病有二：它把子組往右推一級，控件的右緣
+     就跟外層的對不齊；而且五個子組疊起來是五條斷斷續續的短豎，讀成一堆殘
+     邊。改成橫的之後，欄寬回到與外層齊平，標頭與線是同一行——這是本站站台
+     眉標用了一輪的作法（home/frame.css § hgroup 的 `p:first-child`），
+     主控台跟著用同一支筆。 */
   .ControlGroup {
-    margin-block-start: 14px;
-    padding-inline-start: 0.875rem;
-    border-inline-start: 2px solid var(--_rule);
+    margin-block-start: 18px;
 
     > :is(header, summary) {
       text-transform: none;
       color: var(--_supplement-text);
+    }
+
+    > header {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+
+      &::after {
+        content: '';
+        flex: 1;
+        block-size: 1px;
+        background: var(--_rule);
+      }
     }
   }
 }
