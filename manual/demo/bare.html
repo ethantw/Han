@@ -23,6 +23,8 @@
 <!-- 自訂 <select>（appearance: base-select）。獨立的一張表，三層回退到系統色，
      所以這一頁不必為了一顆控件拉進整套 controls.css。 -->
 <link rel="stylesheet" href="/common/select.css">
+<!-- 生成碼的終端機色 ＋ Highlight API 的六色（與首頁站柒共用同一份）。 -->
+<link rel="stylesheet" href="/common/code-terminal.css">
 <!-- 本頁唯一樣式表，兩段：①工具 chrome（叫用鈕＋<dialog>，常駐、不受標註
      開關影響——儀表板不是展品）；②結構標註層（罩在 :root:has(#chrome:checked)
      下，取消勾選「顯示結構標註」即整層失效＝內容區零樣式素態）。
@@ -200,28 +202,35 @@
      **不折行**：URL 是一整條沒有斷點的 token，折行只會把「不一樣的那一段」
      推到看不見的地方，整片讀起來像被剪過（owner 2026-08-07 回報）。要用的人
      按的是複製鍵，看的人只需要辨認得出這是哪一段。 */
+  /* 黑底、不折行、六色高亮都在 /common/code-terminal.css（與首頁站柒同一
+     份）；這裡只給本頁的內距與字級。字體那條要留：那張共用表的 fallback 是
+     ui-monospace，而本頁要的是庫自己的等寬合成堆疊 --han-monospace（無標點
+     層——碼要逐字原樣；CJK 層借 sans 槽）。 */
   .Tools pre {
     margin: 0;
     padding: 0 14px 8px;
-    overflow-x: auto;
-    /* 碼一律 start 對齊——正文的 justify 絕不能碰碼 */
-    text-align: start;
     font-size: 12px;
     line-height: 1.5;
-    /* --han-monospace：庫的等寬合成堆疊（無標點層——碼要逐字原樣；
-       CJK 層借 sans 槽）。fallback 留著當無 fonts 模組時的防呆。 */
     font-family: var(--han-monospace, ui-monospace, monospace);
-    white-space: pre;
   }
   /* 段首的語言標記——三塊碼連著排，沒有標記就分不出從哪裡到哪裡。 */
   .Tools pre[data-lang]::before {
+    /* 值小寫是給高亮器讀的（highlight.js 的 langOf 吃 pre[data-lang]，別名表
+       只收小寫），顯示交給 text-transform——一個屬性兩個用途，不必再加一個。 */
     content: attr(data-lang);
     display: block;
     padding-block: 6px 2px;
     font-size: 10px;
     letter-spacing: 0.12em;
-    color: light-dark(#8c8780, #7c766e);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--code-fg) 45%, transparent);
   }
+  /* 摺疊頭留在面板的紙上，只有內容那一段是終端機——標題是 chrome，碼才是碼 */
+  #codegen > summary {
+    background: light-dark(#fbfaf8, #1c1b1a);
+    color: light-dark(#25211c, #e8e4dc);
+  }
+  #codegen > :not(summary):last-child { padding-block-end: 14px; }
   /* 沒有內容的那一塊整個收起來（配置沒偏差時 CSS 那塊是空的）——`:empty`
      不管用，`<pre>` 裡永遠有個 `<code>`，要問的是那顆 code 空不空。 */
   .Tools pre:has(code:empty) { display: none; }
@@ -336,11 +345,11 @@
   -->
   <han-console form="side" target="main" demo></han-console>
 
-  <details id="codegen">
+  <details id="codegen" class="CodeTerminal">
     <summary>生成的引入碼 <button type="button" id="copy-code">複製</button></summary>
-    <pre data-lang="HTML"><code id="code-html"></code></pre>
-    <pre data-lang="JS"><code id="code-js"></code></pre>
-    <pre data-lang="CSS"><code id="code-css"></code></pre>
+    <pre data-lang="html"><code id="code-html"></code></pre>
+    <pre data-lang="js"><code id="code-js"></code></pre>
+    <pre data-lang="css"><code id="code-css"></code></pre>
   </details>
 </dialog>
 

@@ -140,18 +140,7 @@ figure.CodePane {
 
   code { background: transparent; padding: 0; }
 
-  /* Highlight-API 的著色。原本抄 ziano/demo 的六色（藍關鍵字、綠字串、金
-     屬性、橘數字…），六個色相在一頁只有一個強調色的網站裡是外來語。改成
-     **本頁自己的墨**：三個色相都已經是既有 primitive，語意也對得上——
-       · 綠  = 強調色，這一頁「漢.css 給你的東西」一律是綠（同標記原理圖）
-       · 藍  = lapis，「你寫下的東西」（同圖解裡的標籤名，見 variables.css）
-       · 紅  = seal，全頁唯一的離群色，留給數字這種要一眼跳出來的量
-     其餘交給 mist 的三個濃度：正文、註解、標點各一階。
-     色相都取 `-bright` 那一支：卡是恆黑的，深色側的值才有對比。 */
-  pre code::highlight(code-comment) { color: color-mix(in srgb, var(--palette-mist) 38%, transparent); }
-  pre code::highlight(code-punct)   { color: color-mix(in srgb, var(--palette-mist) 55%, transparent); }
-  pre code::highlight(code-keyword) { color: var(--palette-green-bright); }
-  pre code::highlight(code-string)  { color: var(--palette-lapis-bright); }
-  pre code::highlight(code-attr)    { color: color-mix(in srgb, var(--palette-mist) 78%, transparent); }
-  pre code::highlight(code-number)  { color: var(--palette-seal-bright); }
+  /* 碼的黑底與六個 token 色搬到 common/code-terminal.css（與 demo/bare.html
+     共用一份，選擇器是零權重的 :where()，這裡要覆寫不必加重量）；本檔只
+     留卡片自己的 chrome。 */
 }

@@ -7,6 +7,8 @@
  */
 import '/components/han-console.js'
 import { renderCDN } from '/home/codegen.js'
+// 首頁站柒同一支高亮器（Highlight API，不動 DOM——碼仍是純文字，複製得到原樣）
+import { highlightAll } from '/home/highlight.js'
 
 const CONSOLE_LANG = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', ko: 'ko' }
 
@@ -114,6 +116,7 @@ addEventListener('han-config-change', (e) => {
   $codeHtml.textContent = lines.filter((l) => !l.startsWith('<script')).join('\n')
   $codeJs.textContent = lines.filter((l) => l.startsWith('<script')).join('\n')
   $codeCss.textContent = blocks.find((b) => b.lang === 'css')?.code ?? ''
+  highlightAll('#codegen pre > code')
 })
 
 document.querySelector('#copy-code').addEventListener('click', async (e) => {

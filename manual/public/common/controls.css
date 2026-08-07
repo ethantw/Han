@@ -50,6 +50,10 @@
     text-transform: none;
     color: var(--_text);
     padding-block: 0.8rem;
+    /* 上一組的最後一列與這條分界線原本是**貼著**的（實測 0px），線於是像
+       黏在前一顆控件的下緣，而不是兩組之間的界（owner 2026-08-07：太擠）。
+       補一段外距在線之上——線上 10px、線下 12.8px，讀起來才是「隔開」。 */
+    margin-block-start: 0.625rem;
     margin-block-end: 0;
     border-block-start: 1px solid var(--_rule);
     cursor: pointer;
@@ -97,7 +101,9 @@
         content: '';
         flex: 1;
         block-size: 1px;
-        background: var(--_rule);
+        /* 比其他髮線再淡一半：子組的分界不該與組間的分界同重，否則五個子組
+           讀起來跟五個獨立的組一樣（owner call）。 */
+        background: color-mix(in srgb, var(--_rule) 50%, transparent);
       }
     }
   }

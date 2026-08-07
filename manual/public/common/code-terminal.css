@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/**
+ * 終端機色的碼區塊 — 首頁站柒的 `figure.CodePane` 與 `demo/bare.html` 的
+ * 生成碼共用。
+ *
+ * 只管**兩件事**：黑底白字的盒，與 Highlight API 的六個 token 色。卡片自己的
+ * chrome（圓角、卡緣、標籤列、複製鍵）留在各自的樣式表，因為那是版面，不是
+ * 「碼長什麼樣」。
+ *
+ * 選擇器一律 `:where()`（零權重），所以站柒那邊要覆寫任何一條都不必加重量。
+ * 色值帶 `--palette-*` 的字面 fallback：`bare.html` 不載 variables.css，缺了
+ * 那層整條宣告會失效（未定義 var() 毒化整個值）。
+ *
+ * 掛載處：`home.css` @import、`demo/bare.html` <link>（後者要進 vite 的
+ * KEEP_STANDALONE，否則 inline 後會被 prune）。
+ */
+
+:where(figure.CodePane, .CodeTerminal) {
+  --code-bg: var(--palette-ink, #0e0e10);
+  --code-fg: color-mix(in srgb, var(--palette-mist, #e8e8e3) 90%, transparent);
+
+  background: var(--code-bg);
+  color: var(--code-fg);
+}
+
+:where(figure.CodePane, .CodeTerminal) pre {
+  /* 碼不折行——長行橫向捲。`overflow-x` 要下在 `<pre>` 這個區塊上而不是裡面的
+     `<code>`：非替換的行內盒吃不到 overflow。 */
+  overflow-x: auto;
+  white-space: pre;
+  /* 容器若是 `text-align: justify`（首頁的 main 就是），折行的碼會被撐出一格格
+     的洞。碼一律左齊，當防呆留著。 */
+  text-align: start;
+  color: var(--code-fg);
+  font-family: var(--font-mono, var(--han-monospace, ui-monospace, monospace));
+}
+
+:where(figure.CodePane, .CodeTerminal) code {
+  background: transparent;
+  padding: 0;
+}
+
+/* Highlight API 的著色。**本站自己的墨**，不是編輯器那套六色：
+     · 綠  = 強調色，這一頁「漢.css 給你的東西」一律是綠（同標記原理圖）
+     · 藍  = lapis，「你寫下的東西」（同圖解裡的標籤名，見 variables.css）
+     · 紅  = seal，全頁唯一的離群色，留給數字這種要一眼跳出來的量
+   其餘交給 mist 的三個濃度：正文、註解、標點各一階。色相都取 `-bright` 那一
+   支：盒是恆黑的，深色側的值才有對比。 */
+:where(figure.CodePane, .CodeTerminal) code {
+  &::highlight(code-comment) { color: color-mix(in srgb, var(--palette-mist, #e8e8e3) 38%, transparent); }
+  &::highlight(code-punct)   { color: color-mix(in srgb, var(--palette-mist, #e8e8e3) 55%, transparent); }
+  &::highlight(code-keyword) { color: var(--palette-green-bright, #3f9d6f); }
+  &::highlight(code-string)  { color: var(--palette-lapis-bright, #939bea); }
+  &::highlight(code-attr)    { color: color-mix(in srgb, var(--palette-mist, #e8e8e3) 78%, transparent); }
+  &::highlight(code-number)  { color: var(--palette-seal-bright, #d96a5f); }
+}
