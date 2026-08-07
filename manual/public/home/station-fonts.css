@@ -414,15 +414,10 @@
     color: var(--ui-supplement-text);
     font-size: 0.8rem;
   }
+  /* 盒的長相交給 common/controls.css § Customizable <select>；這裡只留
+     這一格自己要的字級。 */
   select {
-    font: inherit;
     font-size: 0.8rem;
-    color: var(--ui-text);
-    background: var(--ui-bg);
-    border: 1px solid var(--ui-rule);
-    border-radius: 0.4rem;
-    padding-block: 0.2rem;
-    padding-inline: 0.4rem;
   }
   figcaption {
     margin-inline-start: auto;

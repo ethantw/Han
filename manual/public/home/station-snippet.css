@@ -88,14 +88,20 @@ figure.CodePane {
       gap: 8px;
     }
 
+    /* 這張卡是恆黑的，所以那顆 <select> 不能吃頁面的淺色色票——把
+       common/controls.css § Customizable <select> 那組區域變數整組換成終端機
+       的色，按鈕、角標、下拉、勾號就一起跟著變深，不必逐條複寫。 */
     [data-out-pm] {
+      --_sel-ink:    var(--code-fg);
+      --_sel-dim:    color-mix(in srgb, var(--code-fg) 60%, transparent);
+      --_sel-bg:     var(--code-bg);
+      --_sel-panel:  color-mix(in srgb, var(--palette-mist) 12%, transparent);
+      --_sel-rule:   color-mix(in srgb, var(--code-fg) 30%, transparent);
+      --_sel-accent: var(--palette-green-bright);
+
       padding-block: 2px;
       padding-inline: 4px;
       font: inherit;
-      color: var(--code-fg);
-      background: transparent;
-      border: 1px solid color-mix(in srgb, var(--code-fg) 30%, transparent);
-      border-radius: var(--r-1);
     }
 
     /* 複製鍵平時是幽靈，指標一過才上墨——它是「需要時才在」的東西，不該
