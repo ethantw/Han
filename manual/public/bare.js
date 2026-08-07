@@ -86,6 +86,7 @@ addEventListener('han-demo-change', (e) => {
 
 /* ── 生成碼 ── */
 const $codeHtml = document.querySelector('#code-html')
+const $codeJs = document.querySelector('#code-js')
 const $codeCss = document.querySelector('#code-css')
 
 addEventListener('han-config-change', (e) => {
@@ -105,14 +106,20 @@ addEventListener('han-config-change', (e) => {
 
   // 配好就能複製走——renderCDN 是首頁站⑥同一支 codegen，不另寫一份。
   const blocks = renderCDN(e.detail.config)
-  $codeHtml.textContent = blocks.find((b) => b.lang === 'html')?.code ?? ''
+  const html = blocks.find((b) => b.lang === 'html')?.code ?? ''
+  /* HTML 那塊裡混著 `<script>`——它是 JS 的送法，跟 `<link>` 不是同一件事，
+     分兩塊貼才不會讓人把整段連 script 一起塞進 <head> 的樣式區。切在行上，
+     不動 codegen 的輸出（那支首頁站⑥也在用，改它會牽動兩邊）。 */
+  const lines = html.split('\n')
+  $codeHtml.textContent = lines.filter((l) => !l.startsWith('<script')).join('\n')
+  $codeJs.textContent = lines.filter((l) => l.startsWith('<script')).join('\n')
   $codeCss.textContent = blocks.find((b) => b.lang === 'css')?.code ?? ''
 })
 
 document.querySelector('#copy-code').addEventListener('click', async (e) => {
   e.preventDefault()   // <summary> 裡的按鈕：別讓點擊順手摺疊 details
   const $btn = e.currentTarget
-  const code = [$codeHtml.textContent, $codeCss.textContent].filter(Boolean).join('\n\n')
+  const code = [$codeHtml.textContent, $codeJs.textContent, $codeCss.textContent].filter(Boolean).join('\n\n')
   try {
     await navigator.clipboard.writeText(code)
     $btn.textContent = '已複製'

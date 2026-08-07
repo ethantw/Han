@@ -196,19 +196,35 @@
     padding: 9px 14px;
     cursor: pointer;
   }
+  /* 生成的碼分三塊（HTML／JS／CSS），各自橫捲。
+     **不折行**：URL 是一整條沒有斷點的 token，折行只會把「不一樣的那一段」
+     推到看不見的地方，整片讀起來像被剪過（owner 2026-08-07 回報）。要用的人
+     按的是複製鍵，看的人只需要辨認得出這是哪一段。 */
   .Tools pre {
     margin: 0;
     padding: 0 14px 8px;
     overflow-x: auto;
-    /* 碼一律 start 對齊——正文的 justify 絕不能碰折行的碼 */
+    /* 碼一律 start 對齊——正文的 justify 絕不能碰碼 */
     text-align: start;
     font-size: 12px;
     line-height: 1.5;
     /* --han-monospace：庫的等寬合成堆疊（無標點層——碼要逐字原樣；
        CJK 層借 sans 槽）。fallback 留著當無 fonts 模組時的防呆。 */
     font-family: var(--han-monospace, ui-monospace, monospace);
-    white-space: pre-wrap;
+    white-space: pre;
   }
+  /* 段首的語言標記——三塊碼連著排，沒有標記就分不出從哪裡到哪裡。 */
+  .Tools pre[data-lang]::before {
+    content: attr(data-lang);
+    display: block;
+    padding-block: 6px 2px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: light-dark(#8c8780, #7c766e);
+  }
+  /* 沒有內容的那一塊整個收起來（配置沒偏差時 CSS 那塊是空的）——`:empty`
+     不管用，`<pre>` 裡永遠有個 `<code>`，要問的是那顆 code 空不空。 */
+  .Tools pre:has(code:empty) { display: none; }
 
   /* ── 二・結構標註層：#chrome 取消勾選即整層失效 ────────────── */
   :root[data-demo-chrome] {
@@ -322,8 +338,9 @@
 
   <details id="codegen">
     <summary>生成的引入碼 <button type="button" id="copy-code">複製</button></summary>
-    <pre><code id="code-html"></code></pre>
-    <pre><code id="code-css"></code></pre>
+    <pre data-lang="HTML"><code id="code-html"></code></pre>
+    <pre data-lang="JS"><code id="code-js"></code></pre>
+    <pre data-lang="CSS"><code id="code-css"></code></pre>
   </details>
 </dialog>
 
