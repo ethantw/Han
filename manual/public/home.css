@@ -24,6 +24,7 @@
 @import url('./common/module-state.css');
 @import url('./common/panel.css');
 @import url('./common/controls.css');
+@import url('./common/select.css');
 
 /* ── 版框 ── */
 @import url('./home/root.css');

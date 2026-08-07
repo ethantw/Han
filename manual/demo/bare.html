@@ -20,6 +20,9 @@
 <link rel="stylesheet" href="/common/module-state.css">
 <!-- 圖標原語（[data-icon] ＋ --icon-*），控制台叫用鈕用它的 --icon-console。 -->
 <link rel="stylesheet" href="/common/icons.css">
+<!-- 自訂 <select>（appearance: base-select）。獨立的一張表，三層回退到系統色，
+     所以這一頁不必為了一顆控件拉進整套 controls.css。 -->
+<link rel="stylesheet" href="/common/select.css">
 <!-- 本頁唯一樣式表，兩段：①工具 chrome（叫用鈕＋<dialog>，常駐、不受標註
      開關影響——儀表板不是展品）；②結構標註層（罩在 :root:has(#chrome:checked)
      下，取消勾選「顯示結構標註」即整層失效＝內容區零樣式素態）。
@@ -150,14 +153,23 @@
     align-items: center;
     gap: 6px;
   }
+  /* select 的長相由 /common/select.css 給（含下拉本體）。那張表是三層回退
+     （--_* → --ui-* → 系統色），這一頁沒有 --ui-* 那層，所以補三顆本頁的色
+     給它用——不補也能看（會落到 Canvas／AccentColor），補了才是本站的綠。 */
+  .Tools {
+    --ui-accent: light-dark(#1a6f4f, #6fbf9a);
+    --ui-rule:   light-dark(#ccc6bc, #4a4640);
+    --ui-panel:  light-dark(#f4f1ec, #26241f);
+  }
+  /* select 的長相由 /common/select.css 給（含下拉本體）；這裡只把字接回來。 */
   .Tools select,
   .Tools button {
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
     line-height: inherit;
-    color: inherit;
   }
+  .Tools button { color: inherit; }
   .Tools button {
     border: 1px solid light-dark(#ccc6bc, #4a4640);
     border-radius: 5px;

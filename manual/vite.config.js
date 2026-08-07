@@ -432,6 +432,9 @@ async function bundleHomeCss() {
 const KEEP_STANDALONE = new Set([
   'common/controls.css',
   'common/icons.css',
+  // `common/select.css` — 同樣 dual-homed：<han-console> 要 fetch 它進 shadow，
+  // 而 `bare.html` 也直接 <link> 它（那一頁不載 home.css，沒有 inline 的那份）。
+  'common/select.css',
   // `bare.html` links it by URL (the console's page-side module-state
   // mapping; the bare page loads no home.css/manual.css to inline it).
   'common/module-state.css',

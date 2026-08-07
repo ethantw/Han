@@ -1,0 +1,184 @@
+@charset "UTF-8";
+
+/**
+ * Customizable <select> — 一顆自己的下拉，全站共用。
+ *
+ * 獨立成一張表（不併進 controls.css）是為了**可單獨掛載**：`demo/bare.html`
+ * 那種「內容區零樣式」的頁面只想要這一顆控件的長相，不需要 .Toggle／.Field／
+ * 滑桿那一整套。同一個理由讓它三層回退（見下），所以這張表丟到任何頁面上都
+ * 站得住——同 ziano/demo/src/css/select.css 的定位。
+ *
+ * 掛載處：`home.css` @import、`<han-console>` adopt、`demo/bare.html` <link>。
+ * 圖標吃 `common/icons.css` 的 `--icon-chevron`／`--icon-check`，那張表要一起在。
+ */
+
+/* ─── Customizable <select> — 一顆自己的下拉，兩邊共用 ──────────────
+ * 這張表是 dual-homed（頁面 @import ＋ <han-console> adopt），所以同一份
+ * 規則同時管到首頁的 <select> 與主控台 shadow 裡的。
+ *
+ * 漸進增強：`appearance: base-select` 目前只有 Chromium 135+ 有（不是
+ * Baseline），所以**只有按鈕的外觀是無條件的**——邊框、圓角、字級在任何瀏覽器
+ * 都套得上，跟原本 `.Field` 那條一樣；下拉本體（`::picker(select)`）與選項的
+ * 樣式整組關在 `@supports` 裡，沒有支援的瀏覽器拿到的就是原生選單，不會壞。
+ * 參考：MDN Learn/Forms/Customizable_select，以及 ziano/demo/src/css/select.css
+ * （那支是本工作區的參考實作，這裡照它的骨架改成本站的色與圖標）。
+ *
+ * 色彩**三層回退**：`--_*`（shadow 的代號層）→ `--ui-*`（頁面的語意層）→
+ * 系統色（`Canvas`／`CanvasText`／`GrayText`／`AccentColor`）。shadow 裡沒有
+ * `--ui-*`、頁面上沒有 `--_*`、`demo/bare.html` 兩套都沒有——少一層那個宣告就
+ * 整條失效（未定義 var() 會毒化整個值，見工作區 CLAUDE.md 的陷阱集）。壓到
+ * 系統色收尾還有個好處：`color-scheme` 一設，那一層自己就會跟著明暗翻。 */
+
+:where(select) {
+  --_sel-ink:    var(--_text, var(--ui-text, CanvasText));
+  --_sel-dim:    var(--_supplement-text, var(--ui-supplement-text, GrayText));
+  --_sel-bg:     var(--_bg, var(--ui-bg, Canvas));
+  --_sel-panel:  var(--_panel, var(--ui-panel, color-mix(in srgb, CanvasText 8%, transparent)));
+  --_sel-rule:   var(--_rule, var(--ui-rule, color-mix(in srgb, CanvasText 25%, transparent)));
+  --_sel-accent: var(--_accent, var(--ui-accent, AccentColor));
+  --_sel-radius: var(--_r-1, var(--r-1, 2px));
+  --_sel-fs:     var(--_fs-compact, var(--fs-compact, inherit));
+}
+
+/* 按鈕本體。無條件套用——原生控件也吃得到邊框與圓角，只是箭頭仍是系統的。 */
+select {
+  & {
+    padding-block: 0.2em;
+    padding-inline: 0.5em;
+    font: inherit;
+    font-size: var(--_sel-fs);
+    color: var(--_sel-ink);
+    background: var(--_sel-bg);
+    border: 1px solid var(--_sel-rule);
+    border-radius: var(--_sel-radius);
+    cursor: pointer;
+    transition: border-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  &:hover { border-color: var(--_sel-dim); }
+  &:focus-visible {
+    outline: 2px solid var(--_sel-accent);
+    outline-offset: 1px;
+  }
+}
+
+@supports (appearance: base-select) {
+  select,
+  select::picker(select) {
+    appearance: base-select;
+  }
+
+  select {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      text-align: start;
+    }
+
+    /* 開著的時候邊框收深一階，讓「這顆正在被操作」看得出來 */
+    &:open { border-color: var(--_sel-ink); }
+
+    /* 角標用全站同一張 mask（common/icons.css 的 --icon-chevron 畫的是向左那
+       一顆，四個方向都靠 rotate 轉出來），所以下拉的箭頭與手冊、主控台的收合
+       箭頭是同一支筆。開合時轉 180°，方向本身就是狀態。 */
+    &::picker-icon {
+      content: '';
+      margin-inline: auto -0.15em;
+      inline-size: 1em;
+      block-size: 1em;
+      background: var(--_sel-dim);
+      mask-image: var(--icon-chevron);
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+      rotate: -90deg;
+      transition: rotate 200ms ease-out, background-color 150ms ease-out;
+    }
+    &:hover::picker-icon { background: var(--_sel-ink); }
+    &:open::picker-icon  { rotate: 90deg; }
+  }
+
+  /* 按鈕裡顯示的那一段（UA 自動生成）——太長就截，不要把控件撐開 */
+  selectedcontent {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* 下拉本體。它是 popover，在 top layer 上，所以不受任何祖先的 overflow／
+     stacking 影響——主控台那個會捲動的 .Controls 也關不住它。 */
+  /* **偽元素的宣告不可以再包一層 `& { }`**：巢狀會把它展開成
+     `:is(select::picker(select))`，而 `:is()` 不收偽元素——forgiving list 會
+     靜默吞掉整塊，畫面上就是「下拉還是系統白底」（實測 picker 的
+     background-color 停在 rgb(255,255,255)，但 --_sel-bg 明明已經傳到了）。
+     同一個坑工作區 CLAUDE.md 記過：`:where(::pseudo)` 寬容忽略。 */
+  select::picker(select) {
+    padding: 0.25rem;
+    background: var(--_sel-bg);
+    border: 1px solid var(--_sel-rule);
+    border-radius: var(--_r-2, var(--r-2));
+    box-shadow: 0 0.5rem 1.5rem -0.5rem color-mix(in srgb, var(--_sel-ink) 30%, transparent);
+    /* 進出場：display 與 overlay 是離散屬性，靠 allow-discrete 撐住那一拍，
+       @starting-style 給進場一個起點（兩者都是 Baseline 2024）。 */
+    opacity: 0;
+    translate: 0 -0.25rem;
+    transition:
+      opacity 150ms ease-out,
+      translate 150ms ease-out,
+      display 150ms allow-discrete,
+      overlay 150ms allow-discrete
+    ;
+  }
+
+  select:open::picker(select) {
+    margin-block: 0.25rem;
+    opacity: 1;
+    translate: 0 0;
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 -0.25rem;
+    }
+  }
+
+  option {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      padding-block: 0.3em;
+      padding-inline: 0.5em;
+      border-radius: var(--_sel-radius);
+      font-size: var(--_sel-fs);
+      color: var(--_sel-ink);
+      cursor: pointer;
+    }
+
+    /* 指標與鍵盤都要看得見「現在停在哪一列」，但 UA 那圈藍色焦點框在深色卡上
+       尤其突兀——用底色標示停留，鍵盤焦點另給自己的描邊。 */
+    &:hover,
+    &:focus { background: var(--_sel-panel); }
+    &:focus { outline: none; }
+    &:focus-visible {
+      outline: 2px solid var(--_sel-accent);
+      outline-offset: -2px;
+    }
+
+    /* 目前值：上綠色，並在行尾補一個勾。勾用的是 `::checkmark` 這個偽元素，
+       UA 會自己插在每個 option 前面，我們只把它推到行尾並換成自己的圖標。 */
+    &:checked { color: var(--_sel-accent); }
+    &::checkmark {
+      content: '';
+      order: 1;
+      margin-inline-start: auto;
+      inline-size: 0.9em;
+      block-size: 0.9em;
+      background: var(--_sel-accent);
+      mask-image: var(--icon-check);
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      mask-position: center;
+    }
+  }
+}
