@@ -7,7 +7,10 @@ playwright-report/
 test-results/
 packages/fonts/
 .claude/settings.local.json
-/docs/
+# Re-include docs/ — the user's global ~/.gitignore_global excludes it, and
+# this repo ignored it locally too, so durable notes stayed invisible until
+# someone remembered `git add -f`. Scratch belongs in .ideas/, not here.
+!/docs/
 .commit-script.sh
 .superpowers/
 
