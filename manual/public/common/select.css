@@ -40,14 +40,46 @@
   --_sel-fs:     var(--_fs-compact, var(--fs-compact, inherit));
 }
 
-/* 沒有 `base-select` 的瀏覽器（今日的 Safari／Firefox）**整顆留給原生**——
-   只接字級，盒不碰。曾經無條件套邊框與圓角，結果是「我們的盒 ＋ 系統的箭頭」
-   的混血：兩層 chrome 疊在一起，比純原生更難看（owner 2026-08-07 於 Safari
-   回報）。要嘛整顆自己畫，要嘛整顆讓給系統——沒有中間值。 */
+/* ── 基礎層：**每一家都自己畫**，不依賴 base-select ──────────────
+   一開始只把盒畫在原生控件上、箭頭留給系統，結果是兩層 chrome 疊著的混血
+   （owner 2026-08-07 於 Safari 回報）。反過來整顆讓給原生也不對：那等於
+   Safari 與 Chrome 長成兩個東西。
+
+   所以 `appearance: none` 收掉系統的 chrome，角標自己畫——但**不是**用
+   `::picker-icon`（那要 base-select）也不是 mask（mask 會把整顆控件連字一起
+   遮掉），而是兩道 `linear-gradient` 拼出的三角。這一招唯一的意義就是：
+   漸層吃得到 `var()`，所以角標會跟著主題與 `--_sel-*` 走，而 data-URI 的
+   SVG 背景圖做不到（顏色烤死在檔案裡）。
+
+   有 base-select 的瀏覽器在下面把這顆三角換成描邊的角標（開合會轉），兩條路
+   各自完整；讀者一次只看得到一種引擎，不會並排比較。 */
 select {
+  appearance: none;
+  padding-block: 0.2em;
+  padding-inline: 0.5em calc(0.5em + 1.1em);
   font: inherit;
   font-size: var(--_sel-fs);
+  color: var(--_sel-ink);
+  border: 1px solid var(--_sel-rule);
+  border-radius: var(--_sel-radius);
   cursor: pointer;
+  transition: border-color 150ms ease-out, color 150ms ease-out;
+
+  /* 兩道 45° 的斜切拼成一顆實心三角，收在行尾 */
+  background:
+    linear-gradient(45deg, transparent 50%, var(--_sel-dim) 50%)
+      calc(100% - 1.05em) 50% / 0.32em 0.32em no-repeat,
+    linear-gradient(135deg, var(--_sel-dim) 50%, transparent 50%)
+      calc(100% - 0.73em) 50% / 0.32em 0.32em no-repeat,
+    var(--_sel-bg)
+  ;
+
+  &:hover:not(:disabled) { border-color: var(--_sel-dim); }
+  &:focus-visible {
+    outline: 2px solid var(--_sel-accent);
+    outline-offset: 1px;
+  }
+  &:disabled { color: var(--_sel-dim); cursor: default; opacity: 1; }
 }
 
 @supports (appearance: base-select) {
@@ -63,14 +95,11 @@ select {
       display: flex;
       align-items: center;
       gap: 0.5em;
-      padding-block: 0.2em;
+      /* 角標改由 `::picker-icon` 畫，所以行尾不必再替三角留位；`background`
+         的單值寫法也順手把上面那兩道漸層洗掉。 */
       padding-inline: 0.5em;
       text-align: start;
-      color: var(--_sel-ink);
       background: var(--_sel-bg);
-      border: 1px solid var(--_sel-rule);
-      border-radius: var(--_sel-radius);
-      transition: border-color 150ms ease-out, color 150ms ease-out;
     }
 
     &:hover:not(:disabled) { border-color: var(--_sel-dim); }
