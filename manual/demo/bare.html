@@ -185,9 +185,15 @@
     background: light-dark(#fff, #1c1b1a);
     cursor: pointer;
   }
-  /* console 佔滿餘下高度，其 shadow 內部自己捲動 */
+  /* console 佔滿餘下高度，其 shadow 內部自己捲動。
+     **`flex: 1 1 auto`，不是 `flex: 1`**（＝`1 1 0%`）：這個 <dialog> 是
+     auto 高度，而 basis 0 的項目在「內容決定高度」的容器裡不貢獻任何內在高度
+     ——Chromium 仍會拿內容去量，WebKit 照規矩給 0，於是 Safari 上整個控制台
+     高度 0、shadow 內容直接溢出蓋在下面的摺疊區上（owner 2026-08-07 回報，
+     Playwright WebKit 重現：host 高度 0）。basis auto 讓兩家都從內容量起，
+     `min-block-size: 0` 保住封頂時縮得下去。 */
   .Tools han-console {
-    flex: 1;
+    flex: 1 1 auto;
     min-block-size: 0;
   }
   /* 生成的引入碼 */
