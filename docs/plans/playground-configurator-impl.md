@@ -1,5 +1,19 @@
 # Playground Configurator Implementation Plan
 
+> ## ⚠️ 已完成的歷史計畫——**不要照抄本檔的值**
+>
+> 這份計畫在 2026-06 落地，之後配置器整個被 `<han-console>` 取代。留在
+> repo 裡是歷史紀錄，**不是可用的參考**。底下的變數表至少有三處值已經
+> 過期，照抄會寫出壞掉的 CSS：
+>
+> | 本檔寫的 | 現在是 |
+> |---|---|
+> | `system` | `system-ja` |
+> | `'Shanggu Sans TC'` | `'Shanggu Sans Yue'` |
+> | `KV` | `KLR` |
+>
+> **變數名、值與預設值的唯一權威是 `docs/api-reference.md`。**
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 把 manual 首頁 playground 升級為配置器——配置 han.css 各模組 → 即時預覽 → 生成三分頁引用碼（pnpm／CDN／@import），並修正 Ziano 字體對接的 font-family bug。

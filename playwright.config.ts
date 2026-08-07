@@ -15,8 +15,10 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  // Chromium-only across CI and local (decided 2026-05-01, see
-  // docs/plans/2026-04-29-state-of-repo.md §4.2 P1 / §3.5 P2). Visual
+  // Chromium-only across CI and local (decided 2026-05-01). The reason
+  // stands on its own below; the plan this used to cite
+  // (docs/plans/2026-04-29-state-of-repo.md) has never existed in this
+  // repo — it was a dead link, not a moved file. Visual
   // baselines are platform-sensitive and the per-engine snapshot churn
   // isn't worth it for a single-author project. Cross-engine coverage
   // stays manual (T23-style smoke checks in real Safari + Firefox).
