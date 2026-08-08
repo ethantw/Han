@@ -42,6 +42,20 @@
     max-inline-size: 20em;
     font-size: .875rem;
   }
+
+  /* 樣張入口。與上一行同級的小字，只有連結上墨——不給框、不給底色、不給
+     側邊線：這是一句補充，不是呼出框。 */
+  .TrySpecimen {
+    margin: .375rem 0 0;
+    max-inline-size: 34em;
+    font-size: .875rem;
+    color: var(--ui-supplement-text);
+
+    a {
+      color: var(--ui-accent);
+      text-underline-offset: var(--han-underline-offset, .16em);
+    }
+  }
 }
 
 
