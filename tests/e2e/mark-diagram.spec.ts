@@ -118,8 +118,8 @@ test.describe('station ① mark diagram', () => {
 
 /**
  * The real behaviour the diagram's 甲式 row abstracts. Kept in this file on
- * purpose: the diagram DRAWS the break, `home/wavy-cite-gap.js` MAKES it, and
- * if they ever disagree the figure starts lying about its own specimen.
+ * purpose: the diagram DRAWS the break, the library MAKES it, and if they ever
+ * disagree the figure starts lying about its own specimen.
  */
 test.describe('station ① 甲式 adjacent-title gap', () => {
   test('adjacent wavy <cite> keep a gap, and keep it after the fallbacks re-run', async ({
@@ -138,11 +138,13 @@ test.describe('station ① 甲式 adjacent-title gap', () => {
     // containment, so the two waves MUST stay distinguishable; merged, the row
     // reads as one long title 「武經總要字驗」 and the grammar is lost.
     //
-    // han.css's CSS fallback grants this gap, but han.js's refinement pass
-    // revokes it for `cite` (it re-stamps only `u, ins` / `s, del`) — so the
-    // page tops it up. This asserts the top-up survives, which is the part
-    // that is easy to break silently: the wipe lands ~455ms after the config
-    // broadcast, well after any listener would have run.
+    // 2026-08-08 這條從「頁面自己補」變成「庫負責」：han.js 的鄰行 pass 以前
+    // 只認 `u, ins` / `s, del` 兩家，`cite` 在 with-js CSS 的撤銷名單裡卻沒有
+    // 任何家族會標記它——JS 一跑，純 CSS 給的縫就被撤掉。手冊為此帶了一支
+    // `home/wavy-cite-gap.js` 補標記；現在庫發第二顆標記
+    // （`data-followed-by-adjacent-wavy`），那支補丁已刪。
+    // 這條斷言因此升級成庫的迴歸鎖，包含「控制台重跑一輪 fallbacks 之後縫還在」
+    // ——那一輪會先把標記全抹掉再重標，是最容易靜默壞掉的一刻。
     await expect.poll(() => gapOf(1), { timeout: 15_000 }).not.toBe('0px')
 
     // 乙式 elsewhere must NOT be touched — 《》 already separate the titles.

@@ -2,15 +2,18 @@
  * Adjacent-line gap fallback — JS-class fallback for browsers that do not
  * support `text-decoration-inset: auto`.
  *
- * The companion CSS in `src/css/semantics.with-js.css` reads:
+ * The companion CSS in `src/css/semantics.with-js.css` revokes the pure-CSS
+ * `:has()` fallback wherever this pass ran, then re-applies the gap from the
+ * markers this pass sets:
  *
- *   :where(u, ins, s, del, cite) {
- *     &:where(:not([data-followed-by-adjacent-line])) { margin-inline-end: initial }
- *     &:where([data-followed-by-adjacent-line])       { margin-inline-end: var(--…) }
- *   }
+ *   [data-followed-by-adjacent-line]   straight-line families (`u`+`ins`,
+ *                                      `s`+`del`) — gap in every mode.
+ *   [data-followed-by-adjacent-wavy]   pairs involving `<cite>` — gap only under
+ *                                      `--han-cite-title-marks: wavy`, the one
+ *                                      mode where `<cite>` draws a line.
  *
- * This module adds `[data-followed-by-adjacent-line]` to every element that is
- * effectively followed by a same-family element, with two traversal rules:
+ * This module adds those markers to every element that is effectively followed
+ * by an element of the same family, with two traversal rules:
  *
  *   1. Wrapper descent — if the next candidate node is not itself a same-family
  *      element, descend into its first-child chain to check whether it *starts*
@@ -34,7 +37,7 @@
  */
 
 import {
-  element, hype,
+  element, hype, htmlType,
   type Hyperly, type Hype,
 } from 'hyperly/fp'
 
@@ -48,10 +51,48 @@ export const ADJACENT_LINES_REFINED = 'data-adjacent-lines-refined'
 export const FOLLOWED_BY_ADJACENT_LINE = 'data-followed-by-adjacent-line'
 
 /**
+ * Second marker, for pairs where a `<cite>` is one of the two.
+ *
+ * `<cite>` only draws a line under `--han-cite-title-marks: wavy` (書名號甲式),
+ * and that is a CSS fact this pass cannot read — the mode lives in the cascade.
+ * So the pass records WHICH FAMILY paired and `semantics.with-js.css` decides
+ * whether that family currently draws a line. Folding cite into the plain
+ * marker instead would put a stray 2px before 《 in `bracket` mode.
+ */
+export const FOLLOWED_BY_ADJACENT_WAVY = 'data-followed-by-adjacent-wavy'
+
+/**
  * Selector groups for "same family" — elements with the same kind of
  * decoration line. Underline-family and strike-family don't interact.
  */
 export const SELECTORS_FOR_ELEMENTS_WITH_LINES = ['u, ins', 's, del'] as const
+
+/**
+ * One pairing rule: mark an element matching `subject` when the element that
+ * effectively follows it matches `next`, using attribute `attr`.
+ *
+ * Same-family rules have `subject === next`; the wavy 書名號 rules are
+ * DIRECTED, because the family is asymmetric — `<cite>` counts as underlined
+ * only in wavy mode, so a `u`→`cite` pair must be marked on the `u` with the
+ * wavy attribute (the gap belongs to the earlier element), while a `u`→`u` pair
+ * is plain-family business.
+ */
+type PairingRule = {
+  readonly subject: string
+  readonly next: string
+  readonly attr: string
+}
+
+/** Default rules: the two straight-line families, plus the two directed wavy
+ *  ones that give `<cite>` a family at all (it had none until 2026-08-08 —
+ *  see FOLLOWED_BY_ADJACENT_WAVY). `cite` is unqualified here on purpose:
+ *  `:lang(zh)` gating belongs to the CSS, which is where the mode lives. */
+export const ADJACENT_LINE_PAIRING_RULES: readonly PairingRule[] = [
+  ...SELECTORS_FOR_ELEMENTS_WITH_LINES
+    .map((s) => ({ subject: s, next: s, attr: FOLLOWED_BY_ADJACENT_LINE })),
+  { subject: 'cite',  next: 'u, ins, cite', attr: FOLLOWED_BY_ADJACENT_WAVY },
+  { subject: 'u, ins', next: 'cite',        attr: FOLLOWED_BY_ADJACENT_WAVY },
+]
 
 const ignore = (node: Node | null): boolean =>
   node?.nodeName === 'WBR' ||
@@ -106,23 +147,85 @@ const getNextCandidateNode =
   }
 }
 
-type Selectors = readonly string[]
+/**
+ * Where the "refined" stamp has to go so that it SURVIVES `html(src)`.
+ *
+ * The companion CSS reads the stamp off an ANCESTOR, so the pass has always
+ * put it on the source's root. But hyperly picks its serialiser from the
+ * source's shape:
+ *
+ *   | htmlType    | source                                       | html() emits     | root attrs |
+ *   |-------------|----------------------------------------------|------------------|------------|
+ *   | `Outer`     | `<div>…</div>`, an Element, a full document   | `outerHTML`      | kept |
+ *   | `BodyOuter` | a lone `<body>`                              | `body.outerHTML` | kept |
+ *   | `Inner`     | has head/body but incomplete                 | `innerHTML`      | **dropped** |
+ *   | `BodyInner` | a bare fragment string — the common SSR case | `body.innerHTML` | **dropped** |
+ *
+ * For the two `*Inner` shapes the root is a container the output never contains
+ * (a synthetic `<body>` for fragment strings), so stamping it writes to
+ * /dev/null: the per-element markers ship, the ancestor stamp does not, and
+ * `semantics.with-js.css` can no longer revoke the pure-CSS skip-gap it exists
+ * to revoke. Measured symptom: 2px, on the manual's SSR specimen page
+ * (2026-08-08 — docs/notes/2026-08-08-ssr-string-source-loses-root-marker.md).
+ *
+ * So for those shapes, stamp the top-level element children instead — each is
+ * the root of a refined subtree and each IS serialised. Usually there is exactly
+ * one (`installFallbacks('<main>…</main>')`), so the byte cost is unchanged.
+ *
+ * Two deliberate exclusions:
+ *
+ *   - **Our own wrappers.** On a text-only fragment (`'甲乙，丙'`) the
+ *     punctuation pass can leave an `<h-char>` as the only top-level element.
+ *     Nothing inside an `<h-char>` / `<h-iss>` can be a `<u>` / `<cite>`, so
+ *     there is nothing to protect; claiming a generated inline wrapper is an
+ *     author container would just be noise in a diff.
+ *   - **Nothing at all** when every top-level element is one of ours — no stamp
+ *     is the honest answer, and the CSS stays on its pure-CSS branch.
+ *
+ * Known edge, documented rather than solved: when a top-level child is ITSELF a
+ * `<u>` / `<cite>`, the revoke rule wants a proper ancestor and an element is
+ * not its own ancestor. Wrap the fragment in a container and it is fine.
+ */
+const OWN_WRAPPERS = /^H-(CHAR|ISS|LAYER)$/
+
+export const stampTargets = (src: Hyperly): readonly Element[] => {
+  const type = htmlType(src)
+  const $root = element(src)
+  if (type === 'Outer' || type === 'BodyOuter') return [$root]
+  return [...$root.children].filter(($child) => !OWN_WRAPPERS.test($child.tagName))
+}
+
+type Selectors = readonly (string | PairingRule)[]
 
 /**
- * Per-family `Hype → Hype` pass — finds every element under `src` matching
- * `selector` that is effectively followed by a same-family element (via
- * sibling, wrapper descent, or parent climbing), and adds
- * `[data-followed-by-adjacent-line]` to it. Returns `hype(src)` so the pass
- * composes with other Hyperly transforms.
+ * Per-family `Hype → Hype` pass — finds every element under `src` matching a
+ * rule's `subject` that is effectively followed by an element matching its
+ * `next` (via sibling, wrapper descent, or parent climbing), and adds that
+ * rule's attribute to it. Returns `hype(src)` so the pass composes with other
+ * Hyperly transforms.
+ *
+ * Accepts the historical shape too: a bare selector string means "same family,
+ * `[data-followed-by-adjacent-line]`" — so existing callers passing
+ * `SELECTORS_FOR_ELEMENTS_WITH_LINES` (or their own string list) are unchanged.
  */
 export const markAdjacentLinesWithSelectors =
     (selectors: Selectors) =>
     (src: Hyperly): Hype => {
-  const $src = element(src) as HTMLElement
-  $src.setAttribute(ADJACENT_LINES_REFINED, '')
+  // ONE parse, then work inside it. `element(src)` and `hype(src)` on a STRING
+  // source each parse their own DOM — mark in the first, return the second, and
+  // every mutation is thrown away: `markAdjacentLinesWithSelectors(['u, ins'])`
+  // called with a string was completely inert, silently
+  // (2026-08-08; the other passes already did `hype()` first).
+  const h = hype(src)
+  const $src = element(h) as HTMLElement
+  stampTargets(h).forEach(($el) => $el.setAttribute(ADJACENT_LINES_REFINED, ''))
 
-  selectors.forEach(selector => {
-    [...$src.querySelectorAll(selector)]
+  selectors.forEach(rule => {
+    const { subject, next: nextSel, attr } = typeof rule === 'string'
+      ? { subject: rule, next: rule, attr: FOLLOWED_BY_ADJACENT_LINE }
+      : rule
+
+    ;[...$src.querySelectorAll(subject)]
       .filter(el => {
         const next = getNextCandidateNode(el, $src)
         if (!next || next.nodeType !== ELEMENT_NODE_TYPE) {
@@ -130,14 +233,14 @@ export const markAdjacentLinesWithSelectors =
         }
         const nextElmt = next as Element
         return (
-          nextElmt.matches(selector)
-          || startsWithMatch(nextElmt, selector)
+          nextElmt.matches(nextSel)
+          || startsWithMatch(nextElmt, nextSel)
         )
       })
-      .forEach($elmt => $elmt.setAttribute(FOLLOWED_BY_ADJACENT_LINE, ''))
+      .forEach($elmt => $elmt.setAttribute(attr, ''))
   })
 
-  return hype(src)
+  return h
 }
 
 /** CSS values Han.css currently supports for `--han-text-decoration-inset`. */
@@ -161,7 +264,7 @@ export const setDecorationInsetMode =
  *  every underline/strike-family element followed by another in its family.
  *  Bound to the default selector groups; callers needing other groups
  *  invoke `markAdjacentLinesWithSelectors(...)` directly. */
-const markDefault = markAdjacentLinesWithSelectors(SELECTORS_FOR_ELEMENTS_WITH_LINES)
+const markDefault = markAdjacentLinesWithSelectors(ADJACENT_LINE_PAIRING_RULES)
 
 /** Mode → `Hyperly → Hype` dispatch. Pure value table, no side effects. */
 const dispatchByDecorationInsetMode = (mode: DecorationInsetMode): ((src: Hyperly) => Hype) =>

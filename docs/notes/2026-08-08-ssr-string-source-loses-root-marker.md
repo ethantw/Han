@@ -46,15 +46,36 @@ html(markAdjacentLines('<main><p><u>甲</u><u>乙</u>丙</p></main>'))
 也就是說：**JS 判斷「這一對不必加縫」，但純 CSS 後備仍然加了，因為撤銷那一
 步的鑰匙掉在字串來源的合成 body 上。**
 
-## 現況
+## 已修（同日，庫這一側）
 
-手冊在頁面這一側補平——`manual/vite.config.js` 的 `ssrMain()` 把
-`data-adjacent-lines-refined` 加回輸出的 `<main>` 標籤。補完之後
-`margin-inline-end` 兩頁都是 `0px`，22 個區塊高度全等。
+`adjacent-lines.ts` 新增 `stampTargets(src)`：依 `htmlType` 決定章該蓋在哪
+——`Outer`／`BodyOuter` 蓋根自己，`Inner`／`BodyInner` 蓋**頂層子元素**（跳過
+han.css 自己的 `<h-char>`／`<h-iss>` wrapper；全是自家 wrapper 時就不蓋，那才
+誠實）。pass 與 `installFallbacks` 的分塊收斂共用這一支，兩邊不可能給出不同的
+答案。
 
-庫要不要改是另一件事，且不是加一行就好：字串來源沒有「呼叫者的根」可用，
-真要修得決定**字串來源的根是誰**——是把標記下到每一顆頂層子元素上，還是要求
-SSR 呼叫者自己包一層容器並回傳那顆容器。動的是 API 語義，不是實作細節。
+規則放在 pass 那一側而不是 `fallbacks.ts`，是 owner 點出來的：章是 pass 蓋的，
+「蓋哪裡才留得住」就該與它同住——而且**單一 pass 入口有同一個病**
+（`markAdjacentLines('<main>…</main>')`），只修 `installFallbacks` 等於修一半。
+
+殘留的已知邊界（寫進 `docs/api-reference.md` §6）：頂層子元素**自己就是**
+`<u>`／`<cite>` 時無解，因為撤銷規則要的是**真祖先**。包一層容器即可。
+
+手冊那一側的 workaround（`ssrMain()`）已刪。
+
+## 順手挖出來的第二個病：單一 pass 的字串來源整支失效
+
+`markAdjacentLinesWithSelectors` 當年寫成 `element(src)` 標記、`hype(src)` 回傳
+——對**字串**來源那是**兩次獨立解析**，標記全下在一顆用完就丟的 DOM 上。所以
+
+```js
+html(markAdjacentLinesWithSelectors(['u, ins'])('<main><u>甲</u><u>乙</u></main>'))
+// → 原樣吐回，一顆標記都沒有
+```
+
+而它是文檔列出的可搖樹入口之一。`installFallbacks` 沒踩到，因為它餵進去的是
+chunk 元素（Element 來源只有一顆 DOM）。其餘兩支 pass 本來就先 `hype()`，只有
+這一支沒有。改成一次解析、回傳同一顆 `Hype`。
 
 ## 順帶量到的
 

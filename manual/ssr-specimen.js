@@ -21,27 +21,6 @@
  * `docs/notes/2026-08-08-request-time-ssr-on-edge-hosts.md`。
  */
 
-/**
- * 補回 `data-adjacent-lines-refined`。
- *
- * `markAdjacentLines` 把這顆總開關下在**來源的根元素**上。來源是 DOM 節點時，
- * 根就是呼叫者的容器，標記留得住；來源是**字串**時，hyperly 解析出來的根是一顆
- * 合成的 `<body>`，而序列化吐的是它的 innerHTML——標記隨那顆 body 蒸發。逐元素
- * 的 `[data-followed-by-adjacent-line]` 不受影響，掉的只有這顆總開關。
- *
- * 後果不只是少一顆屬性：`semantics.with-js.css` 靠它把**沒被 JS 標記**的
- * `u`／`cite` 的 skip-gap 收回（`margin-inline-end: initial`），純 CSS 那條後備
- * 才不會與 JS 的判斷打架。標記一掉，那條後備就留在原地——實測本頁 wavy 書名號
- * 那一對 `<cite>` 之間，SSR 版比瀏覽器版多 2px。
- *
- * 這是庫的 SSR 路徑與瀏覽器路徑的實質差異（2026-08-08 由本頁量出，
- * `docs/notes/2026-08-08-ssr-string-source-loses-root-marker.md`）。這裡先在頁面
- * 這一側補平；庫要不要改是另一件事，改法會動到「字串來源的根該是誰」這個 API
- * 問題。
- */
-const withAdjacentLinesMarker = (main) =>
-  main.replace(/^<main\b/, '<main data-adjacent-lines-refined')
-
 /* 每一條都**行首錨定 ＋ 驗證有換到**。頁內的註解與文案裡寫得出 `<main>`、
  * `<title>`、`<han-console>` 這些字，而 `String#replace` 換的是第一顆——換錯了
  * 不會報錯，只會生出一頁少了 `no-fallbacks` 的 SSR 樣張，然後瀏覽器端把伺服器
@@ -87,7 +66,7 @@ export const ssrSpecimen = async (src, { mode = 'build', now = new Date() } = {}
     // **只過 `<main>`，不過整頁**：控制台的標記（<dialog> 裡的控件、生成碼的
     // <pre>）不是排版展品，包了只是噪音，而碼區塊被塞進 <h-char> 之後複製出去
     // 就不是原樣了。
-    [m[0], () => withAdjacentLinesMarker(html(installFallbacks(m[0])))],
+    [m[0], () => html(installFallbacks(m[0]))],
   ].reduce((s, [re, to]) => swap(s, re, to), src)
     // 年份建置／請求時就填好：那頁的賣點是「關掉 JS 也對」，留給 client JS 補
     // 就破功了。

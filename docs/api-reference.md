@@ -117,7 +117,8 @@ CSS (each also as `.min` with source map):
 Sum of the four single-module bundles ≡ `han.css`.
 
 JS (ESM; `browser` condition in `exports` picks the `.browser` builds, which
-stub out the SSR DOM dependency):
+stub out the SSR DOM dependency — import from `@hanzi.pro/han.css/ssr`, which
+has no `browser` condition, whenever a bundler processes server-side code):
 
 | File | Contents | min+gzip |
 |---|---|---|
@@ -329,7 +330,7 @@ to copy-paste and AT; removed cleanly by `uninstallFallbacks`):
 | `<h-char data-punct="…">` | `refinePunctuation` | punctuation wrapper; `data-punct` tokens: `open`, `close`, `end`, `middle`, `hangable`, `consecutive` (+ `data-consecutive-pos`, `data-followed-by`) |
 | `<h-layer>` | `refinePunctuation` | zero-width inline-block hang layer inside `<h-char>` — baseline-aligned, glyph overflows past the collapsed line-end spacer |
 | `<h-iss>` | `applyISS` | inter-script spacer; `data-mode="replace"` marks a consumed author space |
-| `[data-followed-by-adjacent-line]`, `[data-adjacent-lines-refined]` | `markAdjacentLines` | adjacent decoration-line gap markers (attributes, not elements) |
+| `[data-followed-by-adjacent-line]`, `[data-followed-by-adjacent-wavy]`, `[data-adjacent-lines-refined]` | `markAdjacentLines` | adjacent decoration-line gap markers (attributes, not elements). `-line` = straight-line families (`u`+`ins`, `s`+`del`), gap in every mode; `-wavy` = pairs involving `<cite>`, gap only under `--han-cite-title-marks: wavy` (the one mode where `<cite>` draws a line); `-refined` = "this subtree was processed", read off an ancestor so the pure-CSS `:has()` fallback stands down |
 
 **Native elements han.css styles** (semantics module): `cite`, `em`, `i`,
 `var`, `dfn`, `q`, `u`, `ins`, `s`, `del`, `ruby`/`rt`, `blockquote`,
@@ -367,6 +368,29 @@ returns a `Hype` (from `hyperly`) that serializes back to HTML. In SSR,
 transforms run unconditionally (browser CSS decides at delivery time which
 wrappers become load-bearing). The browser build stubs the DOM dependency —
 bundle size stays JS-only.
+
+Import from **`@hanzi.pro/han.css/ssr`** in anything a bundler processes. The
+main entry carries a `browser` condition, and tools that bundle "for the
+browser" pick it even when the output runs on a server — you then get the
+stubbed DOM and a throw on first call. The `/ssr` subpath has no `browser`
+condition, so every resolver lands on the Node build. Plain `node` needs no
+special path; `/ssr` is simply always correct.
+
+Requires Node: the DOM is parsed by happy-dom, which needs
+`vm.Script.runInContext`. That rules out workerd today — Cloudflare Workers /
+Pages Functions throw `[unenv] Script.runInContext is not implemented yet!`,
+and the wall is in the dependency chain, not the framework, so a Next.js app on
+workerd hits it too. Vercel Functions (Node runtime) and ordinary Node servers
+are fine.
+
+**Where the "refined" stamp lands.** `[data-adjacent-lines-refined]` is read off
+an ANCESTOR, and hyperly serializes a fragment source as its container's
+`innerHTML` — so a stamp on that container would not survive. The passes
+therefore stamp the fragment's own top-level elements (`installFallbacks(
+'<main>…</main>')` → the `<main>`), skipping han.css's own `<h-char>` / `<h-iss>`
+wrappers. Known edge: if a top-level child IS a `<u>` / `<cite>`, the revoke rule
+wants a proper ancestor and an element is not its own ancestor — wrap the
+fragment in a container.
 
 ### High level
 
@@ -419,12 +443,19 @@ Per-pass calls do NOT chunk internally — on documents that may exceed
 ~7,500 nodes wrap them: `runPassChunked(root, pass)` (§9).
 
 Exported constants (advanced): `PUNCT_OPEN_CHARS`, `PUNCT_CLOSE_CHARS`,
-`PUNCT_END_EXTRA`, `PUNCT_MIDDLE_CHARS`, `ALL_PUNCT`, `HANGABLE_CHARS`,
-`isValidMode`, selector/attribute constants
+`PUNCT_END_EXTRA`, `PUNCT_MIDDLE_CHARS`, `PUNCT_INTERPUNCT_CHARS`,
+`ALL_PUNCT`, `HANGABLE_CHARS`, `isValidMode`, selector/attribute constants
 (`ADJACENT_LINES_REFINED`, `FOLLOWED_BY_ADJACENT_LINE`,
-`SELECTORS_FOR_ELEMENTS_WITH_LINES`), chunking helpers (`runPassChunked`,
+`FOLLOWED_BY_ADJACENT_WAVY`, `SELECTORS_FOR_ELEMENTS_WITH_LINES`,
+`ADJACENT_LINE_PAIRING_RULES`), chunking helpers (`runPassChunked`,
 `forEachChunk`, `CHUNK_NODE_LIMIT`). Types: `RefineMode`, `ISSMode`,
 `DecorationInsetMode`.
+
+`markAdjacentLinesWithSelectors` accepts either bare selector strings (same
+family, marked `[data-followed-by-adjacent-line]`) or full pairing rules
+`{ subject, next, attr }` — the shape `ADJACENT_LINE_PAIRING_RULES` is made of.
+Pass that constant plus your own rules to extend the defaults instead of
+restating them.
 
 ## 7. Web fonts (delivery is yours)
 

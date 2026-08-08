@@ -45,8 +45,14 @@ test('big document: wrappers reach both the first and the last paragraph', () =>
 test('chunking does not change the output: big-doc paragraph ≡ solo paragraph', () => {
   // 切點只落在「子節點全是元素」的層，行內流永不被切——所以每段的
   // 輸出必須與單獨處理一字不差（lookahead、鄰行配對都在段內）。
-  const solo = html(installFallbacks('<p>「漢字」與Web排版，句尾。</p>'))
-  assert.ok(bigResult.includes(solo))
+  //
+  // 比的是**段落本身**，所以兩邊都包在同樣的 main/article 裡再取出那一段：
+  // `data-adjacent-lines-refined` 蓋在會被序列化的頂層元素上，裸 `<p>` 進去
+  // 時那顆就落在 `<p>` 自己身上，段落層的字串因此不可能相等（與分塊無關）。
+  const soloDoc = html(installFallbacks(bigDoc(1)))
+  const onlyParagraph = (s: string): string =>
+    s.slice(s.indexOf('<p>'), s.lastIndexOf('</p>') + '</p>'.length)
+  assert.ok(bigResult.includes(onlyParagraph(soloDoc)))
 })
 
 test('small tree: processed whole, as a single chunk rooted at root', () => {

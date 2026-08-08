@@ -36,7 +36,6 @@ import { initLeadForme } from '/home/lead-forme.js'
 import { initDashFuse } from '/home/dash-fuse.js'
 import { initPunctLang } from '/home/punct-lang.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
-import { initWavyCiteGap } from '/home/wavy-cite-gap.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
@@ -98,10 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsoleCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
-  // station①'s 甲式 row: re-stamp the adjacent-line gap han.js's default pass
-  // doesn't cover for <cite>. Must run AFTER han.js's own pass has set
-  // `[data-adjacent-lines-refined]` — han.js is a separate early <script
-  // type="module"> in _home.html, so by DCL it has already run.
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()
@@ -110,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initLedger()
   // …and 例5.1 cycles through real library selectors, reader-driven
   initCarousel()
-  initWavyCiteGap()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
   // (station-craft's Override etc.); the panes get theirs when station④

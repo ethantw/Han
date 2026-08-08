@@ -15,6 +15,9 @@ import {
   markAdjacentLines,
   markAdjacentLinesWithMode,
   ADJACENT_LINES_REFINED,
+  FOLLOWED_BY_ADJACENT_LINE,
+  FOLLOWED_BY_ADJACENT_WAVY,
+  stampTargets,
 } from './semantics/adjacent-lines.ts'
 
 import { isServerSide } from './helpers/env.ts'
@@ -121,12 +124,24 @@ export const runPassChunked = (root: Element, fn: (el: Element) => unknown): voi
  * chunk 上——語意沒錯，但屬性噪音 ×N，且與單根時代的輸出不再逐位元相等。
  * 收斂回單根契約：後代的章全部上移到安裝根。pass 整個被跳過（原生支援）
  * 時後代沒有章，這裡也不會無中生有。
+ *
+ * **「章該落在哪一顆元素」不是這裡的知識**——那條規則（來源形狀決定序列化
+ * 哪一段，因此決定章放哪才留得住）住在 pass 自己那邊：
+ * `adjacent-lines.ts` § stampTargets。本函式只負責分塊扇出的收斂，`stampOn`
+ * 由呼叫端算好傳進來，兩邊因此不可能給出不同的答案。
  */
-const hoistAdjacentLinesStamp = (root: Element): void => {
-  const stamped = root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)
-  if (stamped.length === 0) return
+const hoistAdjacentLinesStamp = (root: Element, stampOn: readonly Element[] = [root]): void => {
+  const stamped = [...root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)]
+  // `querySelectorAll` never returns the root, and when the whole tree fits one
+  // chunk the pass stamps the root ITSELF — so the descendant list alone can't
+  // answer "did the pass run?". Missing this is how the SSR re-stamp silently
+  // did nothing on its first cut: zero descendants → early return → the
+  // children never got the stamp they exist to carry.
+  const rootStamped = root.hasAttribute(ADJACENT_LINES_REFINED)
+  if (stamped.length === 0 && !rootStamped) return
   stamped.forEach((el) => el.removeAttribute(ADJACENT_LINES_REFINED))
-  root.setAttribute(ADJACENT_LINES_REFINED, '')
+  if (rootStamped && !stampOn.includes(root)) root.removeAttribute(ADJACENT_LINES_REFINED)
+  stampOn.forEach((el) => el.setAttribute(ADJACENT_LINES_REFINED, ''))
 }
 
 export function installFallbacks(): Hype
@@ -150,7 +165,7 @@ export function installFallbacks(root?: Hyperly) {
     runPassChunked(el, (chunk) => refinePunctuationWithMode('auto')(chunk))
     runPassChunked(el, (chunk) => applyISSWithMode('strict')(chunk))
     runPassChunked(el, (chunk) => markAdjacentLinesWithMode('auto')(chunk))
-    hoistAdjacentLinesStamp(el)
+    hoistAdjacentLinesStamp(el, stampTargets(h))
     return h
   }
 
@@ -194,7 +209,8 @@ export function installFallbacks(root?: Hyperly) {
  *   - `<h-iss>` (insert mode) — deleted without replacement; no space
  *     existed in the source at that boundary.
  *   - `<h-char>` — unwrapped back to the plain punctuation text node.
- *   - `[data-followed-by-adjacent-line]` — attribute removed.
+ *   - `[data-followed-by-adjacent-line]` / `[data-followed-by-adjacent-wavy]`
+ *     — attributes removed.
  *
  * `root` defaults to `document.documentElement` when omitted.
  */
@@ -214,8 +230,12 @@ export function uninstallFallbacks(root?: Hyperly) {
   $root.querySelectorAll('h-char')
     .forEach(el => el.replaceWith(el.textContent ?? ''))
 
-  $root.querySelectorAll('[data-followed-by-adjacent-line]')
-    .forEach(el => el.removeAttribute('data-followed-by-adjacent-line'))
+  // 兩顆配對標記都要撤。漏掉 wavy 那顆的後果是靜默的：wrapper 全拆了，兩個
+  // 相鄰的波浪書名號之間卻還留著 skip-gap。
+  for (const attr of [FOLLOWED_BY_ADJACENT_LINE, FOLLOWED_BY_ADJACENT_WAVY]) {
+    $root.querySelectorAll(`[${attr}]`)
+      .forEach(el => el.removeAttribute(attr))
+  }
 
   // 「已修補」章也要撤——留著它，CSS 會在 wrapper 已拆光的樹上繼續按
   // 「JS 修補過」的分支行事。根自己也可能帶章（querySelectorAll 不含根）。
