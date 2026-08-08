@@ -19,11 +19,11 @@
      `node build/census.js` before a release; it prints both the numeral and
      the digits, which is all five locales need (en carries no number). */
   arLede: {
-    hant: '一百一十三個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。',
-    hans: '一百一十三个〇，仍然是「〇」——随意覆写，后来者的样式说了算。',
+    hant: '一百一十五個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。',
+    hans: '一百一十五个〇，仍然是「〇」——随意覆写，后来者的样式说了算。',
     en: 'Zero specificity, layered by design — your CSS always has the last word.',
-    ja: '〇が113個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
-    ko: '〇이 113개 있어도 여전히 「〇」다——마음껏 덮어쓰면、나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다。',
+    ja: '〇が115個並んでも、やはり「〇」——好きに上書きすれば、後から来た様式が勝つ。',
+    ko: '〇이 115개 있어도 여전히 「〇」다——마음껏 덮어쓰면、나중에 온 <ruby>樣式<rt>양식</rt></ruby>이 이긴다。',
   },
   /* The way in, and the way out — restored from the copy that was settled
      back in e212a6e (§ arP1 / arP3) and lost in a later edit. Two paragraphs
@@ -215,8 +215,13 @@
    * `unicode-range` 切片（ziano/dist/shanggu-sans-yue/swap.css）。
    *
    *   單篇命中 16–31 片，中位 24 片、約 1.6MB；
-   *   續讀下一篇的**新增**中位 1 片、43KB；
+   *   續讀下一篇的**新增**中位 1 片、44KB；
    *   23 篇整站讀完累計 67 片 / 3.36MB（全家 4.68MB）。
+   *
+   * 每片平均與全家合計（下方家族表那三欄）重量一次（2026-08-09）：
+   *   for d in ziano/dist/<family>; do 取該目錄所有 .woff2 的平均與總和; done
+   * ——尚古兩家是 VF，109 片 ×1；其餘每個字重各一份切片，片數 ＝ 目錄檔數 ÷
+   * 字重數。表列取 `-yue` 變體（與上面語料量測用的同一批切片）。
    *
    * 重跑（在 hanzi.pro 工作區根目錄）：把 swap.css 的 @font-face 逐條解析成
    * (unicode-range, 檔案大小)，同一 range 只取一份——靜態字重是同一批切片的
@@ -225,11 +230,11 @@
    * 不同（120 片、命中 71–103），另計。
    */
   arFlNote: {
-    hant: '瀏覽器會按需加載命中的字體切片，單篇文章一般命中16–31個切片（中位24），每個切片約43KB。罕用字只在命中時才會下載，縮短頁面加載時間。',
-    hans: '浏览器会按需加载命中的字体切片，单篇文章一般命中16–31个切片（中位24），每个切片约43KB。罕用字只在命中时才会下载，缩短页面加载时间。',
-    en: 'The browser fetches only the slices a page’s characters land in — 16–31 of them for a typical article (median 24), around 43KB each. Rare characters arrive only when something actually uses them, which is time the page does not spend loading.',
-    ja: 'ブラウザは、文字が当たった切片だけを必要に応じて読み込む。一本の記事でおおむね16〜31片（中央値24）、一片あたり約43KB。稀用字は実際に使われたときにだけ届くので、そのぶん読み込みが短くなる。',
-    ko: '브라우저는 글자가 걸린 字體 切片만 必要에 따라 내려받는다。記事 한 篇이면 大體로 16–31片（中位 24）、한 片에 約 43KB。稀用字는 實際로 쓰일 때에만 오므로 그만큼 페이지 로딩이 짧아진다。',
+    hant: '瀏覽器會按需加載命中的字體切片，單篇文章一般命中16–31個切片（中位24），每個切片約44KB。罕用字只在命中時才會下載，縮短頁面加載時間。',
+    hans: '浏览器会按需加载命中的字体切片，单篇文章一般命中16–31个切片（中位24），每个切片约44KB。罕用字只在命中时才会下载，缩短页面加载时间。',
+    en: 'The browser fetches only the slices a page’s characters land in — 16–31 of them for a typical article (median 24), around 44KB each. Rare characters arrive only when something actually uses them, which is time the page does not spend loading.',
+    ja: 'ブラウザは、文字が当たった切片だけを必要に応じて読み込む。一本の記事でおおむね16〜31片（中央値24）、一片あたり約44KB。稀用字は実際に使われたときにだけ届くので、そのぶん読み込みが短くなる。',
+    ko: '브라우저는 글자가 걸린 字體 切片만 必要에 따라 내려받는다。記事 한 篇이면 大體로 16–31片（中位 24）、한 片에 約 44KB。稀用字는 實際로 쓰일 때에만 오므로 그만큼 페이지 로딩이 짧아진다。',
   },
   arFlNote2: {
     hant: '尚古系列及Diantenjeom標點字體採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。',
@@ -800,13 +805,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row">{{ arFlShangguSans }}</th>  <td>43.8KB</td><td>109×1</td>   <td>4.67MB</td></tr>
-          <tr><th scope="row">{{ arFlShangguSerif }}</th> <td>61.2KB</td><td>109×1</td>   <td>6.51MB</td></tr>
-          <tr><th scope="row">{{ arFlGenkiGothic }}</th>  <td>25.6KB</td><td>108×6</td><td>16.2MB</td></tr>
-          <tr><th scope="row">{{ arFlGenkiMin }}</th>     <td>32.5KB</td><td>108×7</td><td>24.0MB</td></tr>
-          <tr><th scope="row">{{ arFlLxgwTc }}</th>       <td>44.5KB</td><td>103×3</td><td>13.4MB</td></tr>
-          <tr><th scope="row">{{ arFlLxgw }}</th>         <td>38.9KB</td><td>107×3</td><td>12.2MB</td></tr>
-          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.2KB</td><td>101×1</td><td>3.67MB</td></tr>
+          <tr><th scope="row">{{ arFlShangguSans }}</th>  <td>44.0KB</td><td>109×1</td>   <td>4.68MB</td></tr>
+          <tr><th scope="row">{{ arFlShangguSerif }}</th> <td>61.3KB</td><td>109×1</td>   <td>6.53MB</td></tr>
+          <tr><th scope="row">{{ arFlGenkiGothic }}</th>  <td>25.7KB</td><td>108×6</td><td>16.3MB</td></tr>
+          <tr><th scope="row">{{ arFlGenkiMin }}</th>     <td>32.7KB</td><td>108×7</td><td>24.1MB</td></tr>
+          <tr><th scope="row">{{ arFlLxgwTc }}</th>       <td>44.7KB</td><td>103×3</td><td>13.5MB</td></tr>
+          <tr><th scope="row">{{ arFlLxgw }}</th>         <td>39.0KB</td><td>107×3</td><td>12.2MB</td></tr>
+          <tr><th scope="row">{{ arFlIansui }}</th>       <td>37.3KB</td><td>101×1</td><td>3.68MB</td></tr>
           <tr><th scope="row">{{ arFlKlee }}</th>         <td>32.8KB</td><td>120×2</td><td>7.69MB</td></tr>
         </tbody>
       </table>

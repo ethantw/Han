@@ -103,16 +103,18 @@ no single master kill-switch. The JS side scopes naturally:
 
 ## 3. Bundles
 
-CSS (each also as `.min` with source map):
+CSS (each also as `.min` with source map). Figures are min+gzip, measured
+2026-08-09 — the homepage's 工法站 ledger prints the same files brotli'd, from
+the build, so treat that as the live number and this table as a snapshot:
 
 | File | Contents | min+gzip |
 |---|---|---|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.4 KB |
-| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.2 KB |
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.5 KB |
+| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.3 KB |
 | `han.lines.css` | Lines module (incl. JS-companion styles) | 1.0 KB |
 | `han.prose.css` | Prose module | 0.6 KB |
 | `han.fonts.css` | Fonts module + font assets | 1.4 KB |
-| `han.basic.css` | Lean bundle: semantics + lines + prose, **CSS-only** — no fonts module, no JS-companion styles, no font assets | 1.6 KB |
+| `han.basic.css` | Lean bundle: semantics + lines + prose, **CSS-only** — no fonts module, no JS-companion styles, no font assets | 1.7 KB |
 
 Sum of the four single-module bundles ≡ `han.css`.
 
@@ -122,8 +124,8 @@ has no `browser` condition, whenever a bundler processes server-side code):
 
 | File | Contents | min+gzip |
 |---|---|---|
-| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | ~11 KB full, less shaken |
-| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | ~11 KB |
+| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 11.5 KB full, less shaken |
+| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 11.6 KB |
 
 Assets shipped alongside: `em-space.woff2` (420 B), `zhuyin.serif.woff2`.
 The CSS references them by relative URL — keep `dist/` file layout when
