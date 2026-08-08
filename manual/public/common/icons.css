@@ -12,7 +12,7 @@
  * 停用態的 `opacity` 全部跟著既有的 `--ui-*`／`--_*` 走，圖標不必另開
  * 一層顏色 token。
  *
- * 形制（十顆是一套，不是十個地方各撿一顆字符）：24×24 grid、`stroke-width: 2`、
+ * 形制（一整套，不是十來個地方各撿一顆字符）：24×24 grid、`stroke-width: 2`、
  * `fill: none`、**square 端點 ＋ miter 接角**。方頭方角的依據是本站自己的
  * 品牌記號（`_layout.html` 的 `.BrandMark` 用的正是 square/miter）——那是活字
  * 與明體的收筆感，圓角圖標會跟它打架。
@@ -58,6 +58,12 @@
      四個方向共用一張 mask，改線寬只要改這一行。 */
   --icon-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M15 4 7 12l8 8'/%3E%3C/svg%3E");
 
+  /* 關閉。兩筆對角線，端點都落在 5／19——與 `--icon-plus` 同一個十字轉 45°，
+     所以兩顆並排時墨量一致。**不用 `×`／`✕` 字符**：那是「當圖標用的字」，
+     字體一換筆畫粗細就跟旁邊的線描圖標對不上（bare 頁的關閉鈕原本就是
+     `×`，owner 2026-08-08）。 */
+  --icon-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M5 5 19 19M19 5 5 19'/%3E%3C/svg%3E");
+
   /* 提示（手冊的 TIP 呼出框）。 */
   --icon-bulb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M9 15.5A7 7 0 1 1 15 15.5'/%3E%3Cpath d='M9 15.5V18'/%3E%3Cpath d='M15 15.5V18'/%3E%3Cpath d='M9 18H15'/%3E%3Cpath d='M9 21H15'/%3E%3C/svg%3E");
 
@@ -74,7 +80,7 @@
   /* 主控台。四條推桿，其中兩條掛著長方的鈕——一台調音台的樣子。
      這一顆是本檔唯一的例外，三處破格都是故意的（2026-08-04 定案）：
 
-     (1) **不是 24×24，是 24×32 的直式。** 其餘九顆都貼著文字排，方盒才
+     (1) **不是 24×24，是 24×32 的直式。** 其餘各顆都貼著文字排，方盒才
          對得上字；這一顆填的是 header 左端那一格（home/console.css §
          ConsoleToggle），它自己就是一片面板的縮圖。也因為填的是格子，它
          不必再與字標比高低——同一格的通天界線是同一套解法（那一格的註
@@ -124,6 +130,7 @@
   &[data-icon='check']   { mask-image: var(--icon-check); }
   &[data-icon='search']  { mask-image: var(--icon-search); }
   &[data-icon='chevron'] { mask-image: var(--icon-chevron); }
+  &[data-icon='close']   { mask-image: var(--icon-close); }
   &[data-icon='bulb']    { mask-image: var(--icon-bulb); }
   &[data-icon='sun']     { mask-image: var(--icon-sun); }
   &[data-icon='moon']    { mask-image: var(--icon-moon); }

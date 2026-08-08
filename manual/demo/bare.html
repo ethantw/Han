@@ -185,6 +185,30 @@
     background: light-dark(#fff, #1c1b1a);
     cursor: pointer;
   }
+  /* 關閉鈕不套上面那組框：標題列裡一個框住的圖標比標題本身還重。圖標盒是
+     1em 見方（common/icons.css），這裡把字級提到 14px 當作圖標大小，再用
+     24px 的按鈕撐出點擊區；負的 margin 把方盒的內縮吃掉，讓圖標的視覺右緣
+     對回 header 那 14px 的 padding。 */
+  .Tools #tools-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 24px;
+    block-size: 24px;
+    margin-inline-end: -5px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: none;
+    font-size: 14px;
+    opacity: .55;
+    transition: opacity 150ms ease, background-color 150ms ease;
+
+    &:hover, &:focus-visible {
+      opacity: 1;
+      background: var(--ui-panel);
+    }
+  }
   /* console 佔滿餘下高度，其 shadow 內部自己捲動。
      **`flex: 1 1 auto`，不是 `flex: 1`**（＝`1 1 0%`）：這個 <dialog> 是
      auto 高度，而 basis 0 的項目在「內容決定高度」的容器裡不貢獻任何內在高度
@@ -330,7 +354,9 @@
 <dialog class="Tools" id="tools">
   <header>
     排版控制台
-    <button type="button" id="tools-close" aria-label="關閉控制台">×</button>
+    <button type="button" id="tools-close" aria-label="關閉控制台">
+      <span data-icon="close" aria-hidden="true"></span>
+    </button>
   </header>
 
   <div class="Switches">
