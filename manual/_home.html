@@ -56,6 +56,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- iOS Safari's data detectors read a run of spaced numbers as a phone number and
+     link it. han's own pages carry no such run today (checked across home, the docs
+     and the demo), but a typesetting manual is exactly where 「250 300 400 500 700 900」
+     turns up — it bit ziano's specimen cards, which offered to call 250 300 400 500 700.
+     Pre-emptive, and free: there is no tel: link anywhere in this site. -->
+<meta name="format-detection" content="telephone=no">
 <title>{{ siteTitle }}</title>
 <meta name="description" content="{{ description }}">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
