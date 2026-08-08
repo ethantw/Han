@@ -3,12 +3,12 @@
 /**
  * Customizable <select> — 一顆自己的下拉，全站共用。
  *
- * 獨立成一張表（不併進 controls.css）是為了**可單獨掛載**：`demo/bare.html`
+ * 獨立成一張表（不併進 controls.css）是為了**可單獨掛載**：`demo/specimen.html`
  * 那種「內容區零樣式」的頁面只想要這一顆控件的長相，不需要 .Toggle／.Field／
  * 滑桿那一整套。同一個理由讓它三層回退（見下），所以這張表丟到任何頁面上都
  * 站得住——同 ziano/demo/src/css/select.css 的定位。
  *
- * 掛載處：`home.css` @import、`<han-console>` adopt、`demo/bare.html` <link>。
+ * 掛載處：`home.css` @import、`<han-console>` adopt、`demo/specimen.html` <link>。
  * 圖標吃 `common/icons.css` 的 `--icon-chevron`／`--icon-check`，那張表要一起在。
  */
 
@@ -25,7 +25,7 @@
  *
  * 色彩**三層回退**：`--_*`（shadow 的代號層）→ `--ui-*`（頁面的語意層）→
  * 系統色（`Canvas`／`CanvasText`／`GrayText`／`AccentColor`）。shadow 裡沒有
- * `--ui-*`、頁面上沒有 `--_*`、`demo/bare.html` 兩套都沒有——少一層那個宣告就
+ * `--ui-*`、頁面上沒有 `--_*`、`demo/specimen.html` 兩套都沒有——少一層那個宣告就
  * 整條失效（未定義 var() 會毒化整個值，見工作區 CLAUDE.md 的陷阱集）。壓到
  * 系統色收尾還有個好處：`color-scheme` 一設，那一層自己就會跟著明暗翻。 */
 

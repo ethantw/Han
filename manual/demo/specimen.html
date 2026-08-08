@@ -3,7 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Han.css 裸頁樣張</title>
+<title>Han.css 樣張</title>
+<!-- 這一份標記出兩張頁：`/specimen.html`（JS 後備跑在瀏覽器）與
+     `/specimen.ssr.html`（跑在伺服器，`<main>` 已烤好 wrapper）。生成的那一份
+     由 vite.config.js 的 ssrSpecimen() 在建置時產出，只動四個地方：`<html>` 掛
+     `data-han-ssr`、換 `<title>`、`<han-console>` 加 `no-fallbacks`、`<main>`
+     整段過 installFallbacks()。**內容不得分家**——「差別只在 JS 跑的位置」是這
+     一對頁面唯一要展示的事，兩份檔案遲早會漂。頁內少數必須不同的文案寫成
+     `[data-runtime="browser|server"]` 一對，由下面那條 CSS 擇一顯示。 -->
+<!-- 舊網址是 `/bare.html`（2026-08-08 改名，_redirects 留了 301）。 -->
 <!-- 零頁面樣式是本頁規格：除 han.css（四個單模組 bundle，供 console 逐一
      開關）與標點 webfont 外，不載任何 CSS。<han-console> 是儀表板不是展品，
      其 shadow 樣式不在此列。 -->
@@ -39,7 +47,7 @@
 
   /* 深色模式：house pattern——真 checkbox 驅動，零 JS class；
      初值由控制台裡緊接該 checkbox 的 pre-paint inline script 還原
-     （免 FOUC），bare.js 只負責寫回 localStorage（'theme' 鍵，與首頁
+     （免 FOUC），specimen.js 只負責寫回 localStorage（'theme' 鍵，與首頁
      ／手冊互通）。 */
   :root {
     color-scheme: light;
@@ -47,6 +55,18 @@
     --rule: light-dark(#e4dfd7, #322f2c);
   }
   :root[data-demo-dark] { color-scheme: dark; }
+
+  /* 兩張樣張共用這一份標記，只有 `[data-runtime]` 那一對句子不同——`data-han-ssr`
+     由生成端掛上（vite.config.js § ssrSpecimen），這裡擇一顯示。屬性選擇器而不是
+     兩個 class：頁面的狀態是「這一份是哪一種送法」，那是一顆屬性的事。 */
+  :root:not([data-han-ssr]) [data-runtime='server'],
+  :root[data-han-ssr] [data-runtime='browser'] { display: none; }
+
+  /* 伺服器端那一份還分兩種送法：`data-han-ssr="request"`（邊緣函式，每個請求
+     現排）與 `"build"`（建置時排一次的靜態檔，也是函式掛掉時的退路）。頁面
+     自己說得出是哪一種，靠的是這兩句 ＋ 那個真的時間戳，不是文案宣稱。 */
+  :root:not([data-han-ssr='request']) [data-ssr-mode='request'],
+  :root:not([data-han-ssr='build']) [data-ssr-mode='build'] { display: none; }
 
   /* 兩端對齊。han 的 prose 本來只把 <article> 裡的 <p> 兩端對齊
      （--han-prose-alignment-for-article-p），這顆開關把整份內容一起拉齊，
@@ -74,7 +94,7 @@
      `body { font-size; line-height; font-weight }`，同一層。
      不放 `:root` 的理由是 rem：控制台的 shadow 樣式有十七處 rem，而 rem 永遠
      對根字級解析、從外面蓋不掉——字級一拖整個控制台跟著縮放。落在 body 則根
-     字級不動、chrome 全免疫，拉桿只管示例內容。變數由 bare.js 從
+     字級不動、chrome 全免疫，拉桿只管示例內容。變數由 specimen.js 從
      config.metrics 鏡射到 `:root`，這裡繼承得到。 */
   body {
     margin: 0;
@@ -329,7 +349,7 @@
     }
   }
 </style>
-<script type="module" src="/bare.js"></script>
+<script type="module" src="/specimen.js"></script>
 </head>
 <body>
 <!--
@@ -392,6 +412,8 @@
   <h1>漢.css示例</h1>
   <p>這頁是素HTML——內容區除了han.css自己，沒有任何頁面樣式。右下角的控制台可以逐模組、逐功能開關，即時看排版在裸文檔上做了什麼；取消「顯示結構標註」，看到的就是出廠的樣子。</p>
   <p>正文取自《太陽中文報》<span data-future-year>2126</span>年的三則報導，繁體中文、日本語、한국어三種語言平行排版。每個區塊都標了它的元素名，段落之間的小字說明該處用到哪個模組、哪些元素、什麼技巧。</p>
+  <p data-runtime="browser">JS的排版補全跑在<strong>瀏覽器</strong>裡：這頁送達時還是素標記，<code>&lt;h-char&gt;</code>、<code>&lt;h-iss&gt;</code>那些包裹是han.css的JS載入後當場加上的。<a href="/specimen.ssr.html">同一份內容，在伺服器端排版的那一頁</a>。</p>
+  <p data-runtime="server">JS的排版補全跑在<strong>伺服器</strong>上：這頁送達時包裹已經在標記裡，關掉JavaScript排版照樣成立。<small>這一份<span data-ssr-mode="request">是伺服器在你請求的那一刻現排的——重新整理，下面的時刻就跟著走</span><span data-ssr-mode="build">由建置時的Node排好、以靜態檔送出，整個部署期間都是同一份</span>，排版於<time data-ssr-stamp>—</time>。兩條路是同一支<code>installFallbacks()</code>。</small><a href="/specimen.html">同一份內容，在瀏覽器端排版的那一頁</a>。</p>
 
 
   <h2>語意元素</h2>
@@ -677,6 +699,8 @@
   <h1>汉.css示例</h1>
   <p>这页是素HTML——内容区除了han.css自己，没有任何页面样式。右下角的控制台可以逐模组、逐功能开关，即时看排版在裸文档上做了什么；取消“显示结构标注”，看到的就是出厂的样子。</p>
   <p>正文取自《太阳中文报》<span data-future-year>2126</span>年的三则报导，简体中文、日本语、한국어三种语言平行排版。每个区块都标了它的元素名，段落之间的小字说明该处用到哪个模组、哪些元素、什么技巧。</p>
+  <p data-runtime="browser">JS的排版补全跑在<strong>浏览器</strong>里：这页送达时还是素标记，<code>&lt;h-char&gt;</code>、<code>&lt;h-iss&gt;</code>那些包裹是han.css的JS载入后当场加上的。<a href="/specimen.ssr.html">同一份内容，在服务器端排版的那一页</a>。</p>
+  <p data-runtime="server">JS的排版补全跑在<strong>服务器</strong>上：这页送达时包裹已经在标记里，关掉JavaScript排版照样成立。<small>这一份<span data-ssr-mode="request">是服务器在你请求的那一刻现排的——刷新一下，下面的时刻就跟着走</span><span data-ssr-mode="build">由构建时的Node排好、以静态档送出，整个部署期间都是同一份</span>，排版于<time data-ssr-stamp>—</time>。两条路是同一支<code>installFallbacks()</code>。</small><a href="/specimen.html">同一份内容，在浏览器端排版的那一页</a>。</p>
 
 
   <h2>语意元素</h2>
@@ -962,6 +986,8 @@
   <h1>漢.css実例</h1>
   <p>このページは素のHTML——本文領域にはhan.css以外のページCSSが一切ない。右下のコンソールでモジュールと機能を切り替えれば、組版が裸の文書に何をしているのかがその場で見える。「構造注記を表示」を外せば、出荷そのままの姿になる。</p>
   <p>本文は『太陽新聞』<span data-future-year>2126</span>年の三本の記事から。繁体字中国語・日本語・한국어の三言語を並行して組んでいる。各ブロックには要素名を添え、段落のあいだの小さな文字が、そこで効いているモジュール・要素・手法を説明する。</p>
+  <p data-runtime="browser">JSによる組版フォールバックは<strong>ブラウザ側</strong>で走る。このページが届いた時点ではまだ素のマークアップで、<code>&lt;h-char&gt;</code>や<code>&lt;h-iss&gt;</code>といったラッパーはhan.cssのJSが読み込まれてからその場で付く。<a href="/specimen.ssr.html">同じ内容をサーバー側で組んだページ</a>もある。</p>
+  <p data-runtime="server">JSによる組版フォールバックは<strong>サーバー側</strong>で走る。このページが届いた時点でラッパーはすでにマークアップの中にあり、JavaScriptを切っても組版はそのまま成り立つ。<small>この一部は<span data-ssr-mode="request">サーバーがリクエストを受けたその瞬間に組んだもの——再読み込みすれば下の時刻も動く</span><span data-ssr-mode="build">ビルド時のNodeが一度だけ組み、静的ファイルとして配られている。デプロイのあいだじゅう同じ一部だ</span>。組んだ時刻は<time data-ssr-stamp>—</time>。どちらの道も同じ<code>installFallbacks()</code>である。</small><a href="/specimen.html">同じ内容をブラウザ側で組んだページ</a>もある。</p>
 
 
   <h2>意味づけの要素</h2>
@@ -1242,6 +1268,8 @@
   <h1><ruby>漢<rt>한</rt></ruby>.css <ruby>示例<rt>시례</rt></ruby></h1>
   <p>이 페이지는 맨 HTML이다——<ruby>本文<rt>본문</rt></ruby> <ruby>領域<rt>영역</rt></ruby>에는 han.css 말고 어떤 페이지 CSS도 없다。오른쪽 아래 <ruby>操縱臺<rt>조종대</rt></ruby>에서 <ruby>模塊<rt>모듈</rt></ruby>과 <ruby>機能<rt>기능</rt></ruby>을 켜고 끄면、<ruby>組版<rt>조판</rt></ruby>이 맨 <ruby>文書<rt>문서</rt></ruby>에 무엇을 하는지 그 자리에서 보인다。「<ruby>構造<rt>구조</rt></ruby> <ruby>註記<rt>주기</rt></ruby> 표시」를 끄면 <ruby>出廠<rt>출창</rt></ruby> 그대로의 모습이다。</p>
   <p><ruby>本文<rt>본문</rt></ruby>은 《<ruby>太陽中文報<rt>태양중문보</rt></ruby>》 <span data-future-year>2126</span><ruby>年<rt>년</rt></ruby>의 <ruby>記事<rt>기사</rt></ruby> 세 편에서 가져왔다。<ruby>繁體<rt>번체</rt></ruby> <ruby>中國語<rt>중국어</rt></ruby>·<ruby>日本語<rt>일본어</rt></ruby>·<ruby>韓國語<rt>한국어</rt></ruby> 세 <ruby>言語<rt>언어</rt></ruby>를 나란히 짰다。<ruby>區塊<rt>구획</rt></ruby>마다 <ruby>元素<rt>원소</rt></ruby> 이름을 달았고、<ruby>段落<rt>단락</rt></ruby> 사이의 작은 글씨가 그 자리에서 쓰인 <ruby>模塊<rt>모듈</rt></ruby>·<ruby>元素<rt>원소</rt></ruby>·<ruby>技法<rt>기법</rt></ruby>을 설명한다。</p>
+  <p data-runtime="browser">JS <ruby>組版<rt>조판</rt></ruby> 폴백은 <strong><ruby>瀏覽器<rt>브라우저</rt></ruby> 쪽</strong>에서 돈다。이 페이지가 닿을 때는 아직 맨 마크업이고、<code>&lt;h-char&gt;</code>·<code>&lt;h-iss&gt;</code> 같은 래퍼는 han.css의 JS가 실린 뒤 그 자리에서 붙는다。<a href="/specimen.ssr.html">같은 <ruby>內容<rt>내용</rt></ruby>을 서버 쪽에서 짠 페이지</a>도 있다。</p>
+  <p data-runtime="server">JS <ruby>組版<rt>조판</rt></ruby> 폴백은 <strong>서버 쪽</strong>에서 돈다。이 페이지가 닿을 때 래퍼는 이미 마크업 안에 있어、JavaScript를 꺼도 <ruby>組版<rt>조판</rt></ruby>은 그대로 선다。<small>이 한 부는 <span data-ssr-mode="request">서버가 <ruby>要請<rt>요청</rt></ruby>을 받은 그 <ruby>瞬間<rt>순간</rt></ruby>에 짠 것이다——<ruby>更新<rt>갱신</rt></ruby>하면 아래 <ruby>時刻<rt>시각</rt></ruby>도 따라 움직인다</span><span data-ssr-mode="build">빌드 때 Node가 한 番 짜서 <ruby>靜的<rt>정적</rt></ruby> 파일로 내보낸 것이며、<ruby>配布<rt>배포</rt></ruby> 내내 같은 한 부다</span>。짠 <ruby>時刻<rt>시각</rt></ruby>은 <time data-ssr-stamp>—</time>。두 길 모두 같은 <code>installFallbacks()</code>이다。</small><a href="/specimen.html">같은 <ruby>內容<rt>내용</rt></ruby>을 <ruby>瀏覽器<rt>브라우저</rt></ruby> 쪽에서 짠 페이지</a>도 있다。</p>
 
 
   <h2><ruby>意味<rt>의미</rt></ruby> <ruby>要素<rt>요소</rt></ruby></h2>

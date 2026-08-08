@@ -575,6 +575,13 @@
     ja: 'チェックしたものだけを読み込み、残りはバンドラが落とす。第五站の加算式がこの組み合わせの大きさを即座に示す。',
     ko: '고른 것만 import되고 나머지는 번들러가 떨어낸다。第五站의 덧셈식이 이 조합의 크기를 즉시 보여준다。',
   },
+  pgNoteSsr: {
+    hant: '本頁的補全在<strong>伺服器端</strong>就裝好了——這一組只影響下面生成的碼，不重排眼前的畫面。',
+    hans: '本页的补全在<strong>服务器端</strong>就装好了——这一组只影响下面生成的码，不重排眼前的画面。',
+    en: 'On this page the shims were installed <strong>on the server</strong> — these controls only shape the generated code, they don’t re-typeset what you see.',
+    ja: 'このページのフォールバックは<strong>サーバー側</strong>で適用済み——この組は生成コードにのみ効き、いま見えている組版は組み直さない。',
+    ko: '이 <ruby>頁面<rt>페이지</rt></ruby>의 폴백은 <strong>서버 쪽</strong>에서 이미 適用되었다——이 組의 控制는 生成 코드에만 미치고、지금 보이는 組版은 다시 짜지 않는다。',
+  },
   pgTogFallbacks: {
     hant: 'JS排版補全',
     hans: 'JS排版补全',
@@ -1049,6 +1056,10 @@
           <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
           <input type="checkbox" data-cfg-key="fallbacks" checked>
         </label>
+        <!-- 伺服器端樣張專屬（`<han-console no-fallbacks>`）。平時 display: none，
+             由 console.css 的 `:host([no-fallbacks])` 打開——不由 JS 加減節點：
+             模板是一份，狀態歸屬性所有。 -->
+        <p class="SubNote" data-ssr-note>{{ pgNoteSsr }}</p>
         <!-- 送法：auto ＝ 一行匯入、載入即全套安裝；manual ＝ 自己具名匯入
              要用的那幾支，打包器把其餘搖掉。這對**體積**是有差的，站伍的
              加法式即時把差額算給讀者看。 -->

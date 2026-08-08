@@ -11,6 +11,7 @@ import MarkdownIt from 'markdown-it'
 import { cjkEmphasis } from './_md-cjk-emphasis.js'
 import { specificity, splitTopLevel } from './_specificity.js'
 import { headings, renderPageToc } from './_md-headings.js'
+import { ssrSpecimen } from './ssr-specimen.js'
 import {
   DEFAULT_LOCALE as HOME_DEFAULT_LOCALE,
   ALL_LOCALES as HOME_LOCALE_SLUGS,
@@ -310,11 +311,13 @@ const HOME_SECTIONS = [
 // HOME_SECTIONS and gets its own `{{ consoleSection }}` token instead of a
 // `<name>Section` one derived from the HOME_SECTIONS list.
 const HOME_CONSOLE = path.resolve(HOME_DIR, 'console.html')
-// Per-section demo sources. `index.html` carries the page shell + a
-// `<!--demos: slug1 slug2 …-->` declaration; each `<slug>.md` holds the
-// inner content of one demo. `renderDemoPage()` stitches them into
-// `.cache/docs/demo.html` so it joins the rest of the manual at /demo.
+// 示例頁。`specimen.html` 是 shipped 的樣張（renderSpecimenPages 由它生出
+// /specimen.html 與 /specimen.ssr.html 兩份）；同目錄其餘 .html 是 dev-only
+// 的工作台頁，首頁站台以連結指過去。
+// （2026-08-08：原本還有一頁 `/demo`——`index.html` ＋ 十八個 `.md` 分節拼成的
+// 對照表。刪了：太醜、示例意義不大，樣張頁承擔得了同一件事，owner 拍板。）
 const DEMO_DIR = path.resolve(here, 'demo')
+const SPECIMEN_FILE = 'specimen.html'
 
 const md = new MarkdownIt({
   html: true,
@@ -433,12 +436,12 @@ const KEEP_STANDALONE = new Set([
   'common/controls.css',
   'common/icons.css',
   // `common/select.css` — 同樣 dual-homed：<han-console> 要 fetch 它進 shadow，
-  // 而 `bare.html` 也直接 <link> 它（那一頁不載 home.css，沒有 inline 的那份）。
+  // 而 `specimen.html` 也直接 <link> 它（那一頁不載 home.css，沒有 inline 的那份）。
   'common/select.css',
-  // `common/code-terminal.css` — bare.html 的生成碼直接 <link> 它。
+  // `common/code-terminal.css` — specimen.html 的生成碼直接 <link> 它。
   'common/code-terminal.css',
-  // `bare.html` links it by URL (the console's page-side module-state
-  // mapping; the bare page loads no home.css/manual.css to inline it).
+  // `specimen.html` links it by URL (the console's page-side module-state
+  // mapping; the specimen page loads no home.css/manual.css to inline it).
   'common/module-state.css',
 ])
 
@@ -839,57 +842,46 @@ async function render404() {
 }
 
 /**
- * Concat the per-section files in `manual/demo/` into a single page.
- * `index.html` is the page shell; its `<!--demos: slug1 slug2 …-->`
- * comment names the slugs (one per line) in render order. Each
- * `<slug>.md` is markdown-rendered (raw HTML passes through) and
- * wrapped in `<section id="<slug>" class="demo-section">…</section>`,
- * then the comment block is replaced with the concatenation.
+ * 樣張頁 — `demo/specimen.html` 是**唯一來源**，寫出兩份：
  *
- * Reordering / adding / removing demos is one place: edit the comment
- * block in `index.html`. Missing-file or empty-list cases throw a
- * named error so dev-mode noise points straight at the offending slug.
+ *   /specimen.html      逐字照抄。han 的 JS 後備在瀏覽器裡跑（<han-console>
+ *                       掛載時 installFallbacks(main)）。
+ *   /specimen.ssr.html  同一份標記，但 `<main>` 已經在 Node 裡跑過
+ *                       `installFallbacks()`——`<h-char>`／`<h-iss>`／
+ *                       `<h-layer>` 烤進 HTML，瀏覽器端一支 han 的 JS 都不跑。
+ *
+ * 兩頁是**生成的雙生子而不是兩份檔案**：內容一旦分家，「差別只在 JS 跑的位置」
+ * 這句話就不再為真，而那正是這一對頁面唯一要展示的東西。頁內少數必須不同的
+ * 文案由 `<html data-han-ssr>` 以 CSS 切換（specimen.html § 三），不進這裡。
+ *
+ * 這裡寫出的 SSR 那一份是**保底**：`mode: 'build'`，任何靜態託管都吃得到。
+ * 部署到 Cloudflare Pages／Vercel 時，`functions/` ／ `api/` 底下的邊緣函式會
+ * 攔下同一個網址，在**每個請求**現排一份（`mode: 'request'`）蓋過它；函式掛了
+ * 就自動退回這一份。dev 的 middleware 同樣是逐次請求現算。頁面上的時間戳分得
+ * 出自己是哪一種——那是刻意的，不靠文案宣稱。
+ *
+ * 這頁是 SHIPPED page，與同目錄的工作台頁（`dash-fuse.html` …，dev-only）不同。
  */
-async function renderDemoPage() {
-  const shellPath = path.join(DEMO_DIR, 'index.html')
-  const shell = await fs.readFile(shellPath, 'utf-8')
+async function renderSpecimenPages() {
+  const src = await fs.readFile(path.join(DEMO_DIR, SPECIMEN_FILE), 'utf-8')
+  await fs.mkdir(HTML_ROOT, { recursive: true })
+  await fs.writeFile(path.join(HTML_ROOT, 'specimen.html'), src)
 
-  const m = shell.match(/<!--\s*demos:\s*([\s\S]*?)-->/)
-  if (!m) {
-    throw new Error(`[han-manual] manual/demo/index.html: missing <!--demos: ...--> declaration`)
-  }
-  const slugs = m[1].split('\n').map(s => s.trim()).filter(Boolean)
-  if (slugs.length === 0) {
-    throw new Error(`[han-manual] manual/demo/index.html: <!--demos: ...--> block is empty`)
-  }
-
-  const rendered = await Promise.all(slugs.map(async slug => {
-    const file = path.join(DEMO_DIR, `${slug}.md`)
-    if (!existsSync(file)) {
-      throw new Error(`[han-manual] manual/demo/index.html lists "${slug}" but ${file} does not exist`)
-    }
-    const src = await fs.readFile(file, 'utf-8')
-    const inner = md.render(src)
-    return `<section id="${slug}" class="demo-section">\n${inner}</section>`
-  }))
-
-  const html = shell.replace(m[0], rendered.join('\n'))
-  const outPath = path.join(HTML_ROOT, 'demo.html')
-  await fs.mkdir(path.dirname(outPath), { recursive: true })
-  await fs.writeFile(outPath, html)
+  const prerendered = await ssrSpecimen(src, { mode: 'build' })
+  await fs.writeFile(path.join(HTML_ROOT, 'specimen.ssr.html'), prerendered)
+  // 同一份、第二個網址。Vercel 上 `/specimen.ssr.html` 被 rewrite 給了函式
+  // （vercel.json），函式掛掉時就沒有路可以回到靜態那一份了——這個別名就是那條
+  // 退路。Cloudflare 不需要它（`env.ASSETS.fetch()` 讀得到被函式蓋住的原檔），
+  // 留著是為了兩家共用一份輸出。代價是部署裡多一份約 490KB 的 HTML，可接受：
+  // 它壓縮得極好，而且沒有任何讀者路徑會同時抓兩份。
+  await fs.writeFile(path.join(HTML_ROOT, 'specimen.ssr.prebuilt.html'), prerendered)
 }
 
 /**
- * `demo/bare.html` — the bare-page playground (zero page CSS + <han-console>)
- * — is a SHIPPED page, unlike its workbench siblings (`dash-fuse.html` …,
- * dev-only). No templating: copied verbatim into HTML_ROOT so it joins the
- * site at /bare.html in both dev and build.
+ * 樣張頁的伺服器端變體、以及那五處變換的說明，全在 `manual/ssr-specimen.js`
+ * ——本檔（建置時）、dev middleware（每個請求）與生產的邊緣函式（每個請求）
+ * 共用同一支，三邊的輸出才保證一致。
  */
-async function renderBarePage() {
-  const src = path.join(DEMO_DIR, 'bare.html')
-  await fs.mkdir(HTML_ROOT, { recursive: true })
-  await fs.copyFile(src, path.join(HTML_ROOT, 'bare.html'))
-}
 
 function camel(s) {
   return s.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
@@ -974,8 +966,7 @@ function hanManualPlugin() {
       await renderMarkdownTree()
       await renderHomepage()
       await render404()
-      await renderDemoPage()
-      await renderBarePage()
+      await renderSpecimenPages()
     },
 
     // `dist/` exists only after the bundle is written; emit the
@@ -991,9 +982,9 @@ function hanManualPlugin() {
     },
 
     configureServer(server) {
-      // `bare.html` — read STRAIGHT off `demo/bare.html` on every request, so a
-      // save is live on the next reload. (Build still copies it into HTML_ROOT;
-      // see renderBarePage.)
+      // 兩張樣張 — read STRAIGHT off `demo/specimen.html` on every request, so a
+      // save is live on the next reload. (Build still writes both into
+      // HTML_ROOT; see renderSpecimenPages.)
       //
       // Why not the copy-in path in dev: the source lives outside Vite's root
       // (.cache/docs), so Vite never sees the edit, and the copy only happens
@@ -1001,12 +992,17 @@ function hanManualPlugin() {
       // server that was started BEFORE this config gained that branch. The
       // symptom is brutal to debug: you edit, you reload, nothing changes, and
       // nothing anywhere says why. Reading from source removes the whole class.
+      //
+      // 順帶一提，`/specimen.ssr.html` 在 dev 下**真的是**伺服器渲染：每一次
+      // 請求現跑一遍 `installFallbacks()`，不是讀建置好的檔。
       server.middlewares.use(async (req, res, next) => {
         const pathname = (req.url ?? '').split('?')[0]
-        if (pathname !== '/bare.html') return next()
+        const ssr = pathname === '/specimen.ssr.html'
+        if (!ssr && pathname !== '/specimen.html') return next()
+        const src = await fs.readFile(path.join(DEMO_DIR, SPECIMEN_FILE), 'utf-8')
         res.setHeader('content-type', 'text/html; charset=utf-8')
         res.setHeader('cache-control', 'no-store')
-        res.end(await fs.readFile(path.join(DEMO_DIR, 'bare.html'), 'utf-8'))
+        res.end(ssr ? await ssrSpecimen(src, { mode: 'request' }) : src)
       })
 
       // Serve the generated <han-console> template module dynamically —
@@ -1111,14 +1107,8 @@ function hanManualPlugin() {
           return
         }
 
-        // bare.html 不進 watcher：dev 由上方的 middleware 逐次請求直接讀來源檔，
-        // 存檔即生效，沒有中間產物可以走味。
-
-        if (file.startsWith(DEMO_DIR) && (file.endsWith('.md') || file.endsWith('index.html'))) {
-          await renderDemoPage()
-          console.log(`[han-manual] ${path.basename(file)} → demo re-rendered (refresh browser)`)
-          return
-        }
+        // specimen.html 不進 watcher：dev 由上方的 middleware 逐次請求直接讀
+        // 來源檔（SSR 那份也現算），存檔即生效，沒有中間產物可以走味。
 
         if (file === NOT_FOUND_LAYOUT) {
           await render404()
@@ -1171,8 +1161,7 @@ async function collectHtmlEntries() {
   await renderMarkdownTree()
   await renderHomepage()
   await render404()
-  await renderDemoPage()
-  await renderBarePage()
+  await renderSpecimenPages()
   const inputs = {}
   for await (const file of glob('**/*.html', { cwd: HTML_ROOT })) {
     const id = file.replace(/\.html$/, '').replace(/\\/g, '/')

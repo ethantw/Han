@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * 終端機色的碼區塊 — 首頁站柒的 `figure.CodePane` 與 `demo/bare.html` 的
+ * 終端機色的碼區塊 — 首頁站柒的 `figure.CodePane` 與 `demo/specimen.html` 的
  * 生成碼共用。
  *
  * 只管**兩件事**：黑底白字的盒，與 Highlight API 的六個 token 色。卡片自己的
@@ -9,10 +9,10 @@
  * 「碼長什麼樣」。
  *
  * 選擇器一律 `:where()`（零權重），所以站柒那邊要覆寫任何一條都不必加重量。
- * 色值帶 `--palette-*` 的字面 fallback：`bare.html` 不載 variables.css，缺了
+ * 色值帶 `--palette-*` 的字面 fallback：`specimen.html` 不載 variables.css，缺了
  * 那層整條宣告會失效（未定義 var() 毒化整個值）。
  *
- * 掛載處：`home.css` @import、`demo/bare.html` <link>（後者要進 vite 的
+ * 掛載處：`home.css` @import、`demo/specimen.html` <link>（後者要進 vite 的
  * KEEP_STANDALONE，否則 inline 後會被 prune）。
  */
 

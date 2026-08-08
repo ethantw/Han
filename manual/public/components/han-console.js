@@ -191,6 +191,14 @@ class HanConsole extends HTMLElement {
   }
 
   #resolveTarget() {
+    // `no-fallbacks`（specimen.ssr.html）：頁面的 JS 後備已經在**伺服器端**
+    // 裝好了，瀏覽器這一側一支都不能再跑——在既有的 <h-char>／<h-iss> 上再
+    // 包一層就是雙重加工。target 為 null 時 applyFallbacks 首行即 return，
+    // CSS 那一側（:root／body 的 --han-*）照常落地，控制台其餘功能全在。
+    if (this.hasAttribute('no-fallbacks')) {
+      this.#target = null
+      return
+    }
     const sel = this.getAttribute('target') || 'main'
     this.#target = document.querySelector(sel)
     if (!this.#target && !this.#warned) {
@@ -220,7 +228,7 @@ class HanConsole extends HTMLElement {
     // seeds from localStorage (the same key the pre-paint script restored),
     // so the toolbar's controls come up reflecting the saved config. null →
     // mountConsoleConfig falls back to DEFAULTS.
-    // `stateless` attr（bare.html 之類的 demo 頁）：不讀不寫 localStorage——
+    // `stateless` attr（specimen.html 之類的 demo 頁）：不讀不寫 localStorage——
     // 每次進頁都是出廠 DEFAULTS，也不污染 home 存檔（同 origin 共用鍵）。
     const initial = this.#config?.config
       ?? (this.hasAttribute('stateless') ? undefined : readStored())

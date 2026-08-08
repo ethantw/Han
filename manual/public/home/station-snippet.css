@@ -140,7 +140,7 @@ figure.CodePane {
 
   code { background: transparent; padding: 0; }
 
-  /* 碼的黑底與六個 token 色搬到 common/code-terminal.css（與 demo/bare.html
+  /* 碼的黑底與六個 token 色搬到 common/code-terminal.css（與 demo/specimen.html
      共用一份，選擇器是零權重的 :where()，這裡要覆寫不必加重量）；本檔只
      留卡片自己的 chrome。 */
 }

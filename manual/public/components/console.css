@@ -235,6 +235,12 @@
   }
 }
 
+/* 伺服器端樣張的注記：只有宿主帶 `no-fallbacks` 時才在（specimen.ssr.html）。
+   預設隱藏而不是預設顯示，因為那是例外的一頁；`:host()` 選的是宿主，跨得過
+   影界。 */
+[data-ssr-note] { display: none; }
+:host([no-fallbacks]) [data-ssr-note] { display: block; }
+
 /* parent switch off → the whole per-function group is inert-looking */
 .PlaygroundRules:has(> .Toggle > input[data-cfg-key="fallbacks"]:not(:checked)) .SubRules {
   opacity: 0.45;

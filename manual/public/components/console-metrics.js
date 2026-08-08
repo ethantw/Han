@@ -13,7 +13,7 @@
  * sliders are queried from the shadow `root`, the apply target is
  * passed in. The letter-spacing slider stays removed (owner call); the
  * 橫排/直排 switch moved OUT of the console — writing mode is a preview
- * of the page, not a han.css config (today only bare.html's demo
+ * of the page, not a han.css config (today only specimen.html's demo
  * switches offer it; the homepage pill is retired).
  *
  * ts-style note: `stateRef` is the one-mutable-cell pattern — `.current`

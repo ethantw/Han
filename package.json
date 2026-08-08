@@ -19,6 +19,10 @@
       "import": "./dist/han.auto.js",
       "default": "./dist/han.auto.js"
     },
+    "./ssr": {
+      "types": "./dist/types/han.d.ts",
+      "default": "./dist/han.js"
+    },
     "./styles": "./dist/han.css",
     "./styles/semantics": "./dist/han.semantics.css",
     "./styles/lines": "./dist/han.lines.css",

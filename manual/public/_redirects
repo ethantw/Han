@@ -8,9 +8,14 @@
 # (Cloudflare Pages' default static handler may auto-strip trailing
 # slashes for flat .html files; rules kept explicit for safety.)
 
-# Top-level flat demo entries
-/demo/   /demo    301
-/demo2/  /demo2   301
+# Top-level flat specimen entries
+/specimen/      /specimen      301
+/specimen.ssr/  /specimen.ssr  301
+
+# 舊名。`/bare.html` 曾是這一頁的網址（2026-08-08 改名為樣張）——外面
+# 引用得到，所以留一條 301，不留空洞。
+/bare      /specimen  301
+/bare.html /specimen  301
 
 # Docs pages under /manual/<slug>/ (default-locale)
 /manual/:slug/  /manual/:slug  301

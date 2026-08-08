@@ -1,5 +1,5 @@
 /**
- * bare.html 的組裝根——控制台的開合、語言三層對齊、直排、深色、生成碼。
+ * specimen.html 的組裝根——控制台的開合、語言三層對齊、直排、深色、生成碼。
  *
  * 模組 `link[data-han-module]` 的 disabled 切換、`:root` 變數落地、JS 後備
  * 的 reapply，全都是 <han-console>（console-config.js）的內建行為，本檔
@@ -11,6 +11,24 @@ import { renderCDN } from '/home/codegen.js'
 import { highlightAll } from '/home/highlight.js'
 
 const CONSOLE_LANG = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', ko: 'ko' }
+
+/* 這一份腳本服務兩張樣張。`data-han-ssr` 由生成端掛在 `<html>` 上
+ * （vite.config.js § ssrSpecimen），本檔只讀它一處：生成碼的 JS 那一塊。
+ * 其餘行為兩頁相同——JS 後備的不跑是 `<han-console no-fallbacks>` 的事，
+ * 不在這裡開分支。 */
+const SSR = document.documentElement.hasAttribute('data-han-ssr')
+
+/* 伺服器端送法沒有 CDN／模組選項可配（那些是瀏覽器的事），所以是一段定文，
+ * 不經 codegen。與本頁的產生方式逐字一致——`installFallbacks()` 吃字串、
+ * `html()` 序列化回字串。 */
+const SSR_JS = [
+  '// 伺服器端：Node（Vercel Functions／建置腳本／任何 SSR 框架）',
+  "import { installFallbacks } from '@hanzi.pro/han.css'",
+  "import { html } from 'hyperly/fp'",
+  '',
+  '// source ＝ 這一頁的 HTML 字串；輸出已含 <h-char>／<h-iss>／<h-layer>',
+  'const rendered = html(installFallbacks(source))',
+].join('\n')
 
 /* 《太陽中文報》永遠是一百年後的報紙——年份現算，別寫死。標記裡留著
  * 上一個算出來的值當無 JS 時的門面。 */
@@ -29,7 +47,7 @@ const $open = document.querySelector('#tools-open')
  * 到文字重排，模態會把 playground 的命根子拿掉。代價有二，都自己補：
  * Esc 不會自動關（下面補），以及它**不進 top layer**（那是 showModal()
  * 專有）——所以脫離文流與疊層順序都由 CSS 的 position: fixed ＋ z-index
- * 負責，見 bare.html § .Tools。 */
+ * 負責，見 specimen.html § .Tools。 */
 const setOpen = (open) => {
   if (open) $tools.show()
   else $tools.close()
@@ -113,8 +131,11 @@ addEventListener('han-config-change', (e) => {
      分兩塊貼才不會讓人把整段連 script 一起塞進 <head> 的樣式區。切在行上，
      不動 codegen 的輸出（那支首頁站⑥也在用，改它會牽動兩邊）。 */
   const lines = html.split('\n')
+  const js = lines.filter((l) => l.startsWith('<script'))
   $codeHtml.textContent = lines.filter((l) => !l.startsWith('<script')).join('\n')
-  $codeJs.textContent = lines.filter((l) => l.startsWith('<script')).join('\n')
+  /* 關掉 JS 後備時 codegen 一行 script 也不發——那時兩頁都該是空的，
+     SSR 頁不例外（伺服器端不跑，就是不跑）。 */
+  $codeJs.textContent = js.length === 0 ? '' : SSR ? SSR_JS : js.join('\n')
   $codeCss.textContent = blocks.find((b) => b.lang === 'css')?.code ?? ''
   highlightAll('#codegen pre > code')
 })
