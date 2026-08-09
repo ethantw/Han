@@ -81,50 +81,20 @@
   }
 }
 
-/* ─── 標點擠壓 (jiya) ────────────────────────────────────────
- * `refinePunctuation('compress' | 'auto')` emits
+/* ─── 標點擠壓 (jiya) — `text-spacing-trim` fallback ────────────
+ * A -.5em margin pulls the glyph in unconditionally; a hidden ½em
+ * whitespace filler (`::before`/`::after`, a real ' ') pushes back the
+ * same amount. Mid-line the two cancel; at a line edge the filler's
+ * space COLLAPSES per CSS-Text line-edge rules, only the margin
+ * survives, and the glyph pulls flush — the trim is paid for by the
+ * engine's own whitespace collapsing, so it fires exactly where a line
+ * happens to break. Without the filler, the trim would fire mid-line
+ * too. Full derivation + measurements:
+ * docs/notes/2026-08-09-hang-compress-dom-mechanism.md.
  *
- *     <h-char data-punct="…">{P}</h-char>
- *
- * and this stylesheet attaches a half-em invisible spacer:
- *
- *     open               →  ::before   (placeholder before glyph)
- *     close/-end/-mid    →  ::after    (placeholder after glyph)
- *
- * ── How the trim actually triggers ──
- * CJK biaodian glyphs ship with ~½em of whitespace baked into
- * the em-box on the script side (the side that *should* hug the
- * next character in running text).  We don't want to see that
- * ½em at line edges or between adjacent biaodian, but we DO want
- * it preserved mid-line.  Two pieces collaborate:
- *
- *   1. `margin-inline-{start|end}: -.5em` pulls the glyph ½em
- *      into the previous/next column unconditionally.
- *   2. `::before` / `::after` is a hidden ½em-wide Han Em Space
- *      placeholder (a real ' ' character) that pushes back ½em
- *      of inline space.
- *
- * Net displacement *mid-line*: -.5em + .5em = 0 → invisible.
- * At line *start* (for `data-punct="open"`) the `::before`'s ' ' is the
- * line's leading whitespace and collapses per CSS-Text line-edge
- * rules; only the -.5em margin survives, so the glyph pulls
- * flush against the column edge.  Same trick mirrored at line
- * end for closing / sentence-end / middle marks.  The visible
- * "trim" is therefore paid for by CSS's whitespace-collapse-at-
- * line-edge rule, not by the negative margin alone — without
- * the placeholder the trim would also fire mid-line and the
- * spacing would collapse everywhere.
- *
- * Within a `data-punct="…consecutive"` run, only the run's outermost trims
- * survive — inner edges revert to a natural .5em gap so adjacent
- * biaodian don't fuse together.
- *
- * Compose with hang: `refinePunctuation('auto')` emits the
- * combined shape `<h-char data-punct="end hangable">…`
- * for line-end-hangable marks. When `[data-punct~="hangable"]` is also
- * present, the hang block below owns the visual treatment —
- * `:not([data-punct~="hangable"])` here suppresses the compress trim
- * spacer + negative margin that would otherwise stack.
+ * Consecutive runs keep only their outermost trims (inner edges revert
+ * to the natural ½em so marks don't fuse); combined `auto`-mode
+ * hangables are excluded here — the hang block below owns them.
  */
 @supports not (text-spacing-trim: trim-start) {
   h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not([data-punct~="hangable"]) {
@@ -160,127 +130,44 @@
   }
 }
 
-/* ─── 標點懸掛 (hanging punctuation) ─────────────────────────
- * `refinePunctuation('hang')` emits
+/* ─── 標點懸掛 (hanging punctuation) — native-property stand-in ──
+ * The compress trick mirrored: `::after` reserves 1em with a hidden
+ * whitespace filler, and `<h-layer>` is a ZERO-WIDTH inline-block whose
+ * glyph overflows the box and paints over the filler. Mid-line: filler
+ * holds, glyph covers it, visually unchanged. Line breaks at this mark:
+ * the filler's trailing space collapses, the column tail tucks back,
+ * and the zero-width box now sits AT the edge with its glyph painting
+ * past it — the hang. The breaker always prefers the filler's later
+ * break opportunity, so the mark never lands at a line start.
  *
- *     <h-char data-punct="hangable"><h-layer>{P}</h-layer></h-char>
+ * The layer is a baseline-aligned inline-block, NOT abspos — an abspos
+ * anchors to line-box edges and drifts when the line box grows
+ * asymmetrically (docs/notes/2026-08-06-hangable-baseline-vs-static-
+ * position.md). Mechanism in full:
+ * docs/notes/2026-08-09-hang-compress-dom-mechanism.md.
  *
- * and `refinePunctuation('auto')` emits the combined shape
+ * `::first-line` can't restyle the mark (first-line styles don't reach
+ * atomic inline contents); DOM-structural selectors are unaffected.
  *
- *     <h-char data-punct="end hangable"><h-layer>{P}</h-layer></h-char>
- *
- * The compress block above scopes its rules with
- * `:not([data-punct~="hangable"])`, so this block's treatment wins on the
- * combined element — same visual outcome whether `hang` or `auto`.
- *
- * Same line-edge-collapse trick as 擠壓 above, mirrored:
- *
- *   - `::after` is a 1em hidden Han Em Space ' ' on the h-char,
- *     reserving 1em of inline space at the column tail.
- *   - `<h-layer>` is a ZERO-WIDTH `inline-block`: its box takes no
- *     inline space, the glyph inside overflows it in the inline
- *     direction and paints over the placeholder.
- *
- * Mid-line: filler holds 1em, glyph paints over it → glyph sits
- * at its natural inline position, visually unchanged.
- * Line wraps exactly at this h-char: `::after`'s trailing ' '
- * is the line's last whitespace and collapses per CSS-Text
- * line-end rules, so the 1em vanishes from the inline-progression
- * and the column tail tucks back; the zero-width box now sits AT
- * the column edge and its overflowing glyph paints past it — the
- * hang. (The 0-width box also never forces a wrap of its own: it
- * fits anywhere, and the breaker always prefers the later
- * opportunity at the spacer — width-swept 320→120px, the mark
- * never lands at a line start; three engines.)
- *
- * WHY inline-block and NOT `position: absolute` (the previous
- * implementation, and the bug it carried): an abspos with no
- * inset sits at its STATIC POSITION, and Chromium anchors an
- * inline-level static position to the LINE BOX EDGES, not the
- * baseline. Any time the line box grows asymmetrically the anchor
- * and the text part ways — over-position emphasis dots (`--han-
- * em-dot-position: over right`, ja's default) grow the ascent,
- * the line-box top moves up, and the hung mark floated up with it
- * (measured: −14px @ line-height 1.75, −21px @ 1.2, font 24px;
- * `under` grows the descent and was unaffected — the asymmetry is
- * the tell). This is the same two-metric-systems disease as the
- * logo's SVG baseline saga (docs/notes/2026-07-21-svg-glyph-
- * baseline-alignment.md): box edges vs baselines. That note's
- * conclusion already named the fix family — a non-empty
- * inline-block is on the short list of things that BASELINE-align
- * cleanly. The layer's baseline is its own text's baseline, so it
- * rides the outer baseline by construction, immune to whatever
- * inflates the line box (dots, ruby, taller runs). Verified 0px
- * deviation in Chromium / WebKit / Firefox, horizontal and
- * vertical.
- *
- * Pseudo-element / selector semantics under the atomic box:
- *   - `::first-line` still can't restyle the mark — first-line
- *     styles don't inherit into atomic inline-level contents
- *     (previously guaranteed by out-of-flow; same fact, new
- *     mechanism).
- *   - `::first-letter`: affected in principle, never in practice —
- *     hangables are trailing punctuation and cannot open a
- *     paragraph.
- * DOM-structural selectors (`:first-child`, `:has()`, sibling
- * combinators, `:lang()`, …) are unaffected — those query the DOM
- * tree, not the render tree.
- *
- * Gated by the derived `--han-state-hanging-punctuation` flag (computed just
- * below from each language's own punctuation convention +
- * `--han-punctuation-refinement`) and applied via `@container
- * style(--han-state-hanging-punctuation: on)`. There is no native
- * `hanging-punctuation` rule yet — the property isn't broadly shipped; this
- * JS-emitted-markup fallback stands in until then. To opt out, drive the
- * inputs so the derived state resolves to `off` (e.g. set
- * `--han-punctuation-refinement` to something other than `auto` / `hang` on
- * an ancestor).
- *
- * Not registered via `@property`. Unlike the rest of this file's derived
- * flags, every branch below sets BOTH `on` and `off` explicitly — see the
- * boundary-leak note below for why the usual "absence == off" shortcut
- * doesn't hold here.
+ * Gated on the derived `--han-state-hanging-punctuation` (computed
+ * below from each language's punctuation convention + the declared
+ * refinement mode). Not `@property`-registered: every branch sets BOTH
+ * `on` and `off` explicitly — see the derivation block below.
  */
 
-/* Each language checks its OWN punctuation-
- * convention var, and excludes exactly ONE value: `MOE`, the only
- * convention *known* to be centered within its em-box (Taiwan MOE
- * standard) — hanging looks visually wrong there (the dot floats mid-
- * margin instead of tucking into the column edge). `off` (Diantenjeom
- * disabled, glyphs fall through to the body font's own forms) is NOT
- * excluded: the shape is merely unknown there, not known-centered, and
- * most body fonts default to side-biased punctuation anyway — so `off`
- * qualifies the same as `JIS` / `GB` — this generic "unknown, probably
- * side-biased" assumption is what `hans` / `ja` still rely on. `hant` is
- * the one exception: see the dedicated block right after its on/off pair
- * below, where the body font is knowable via
- * `--han-use-heritage-glyphs-for-hant` and the assumption is replaced with
- * real per-value facts.
+/* Hanging follows each language's own convention variable, excluding
+ * exactly ONE value: `MOE`, the only convention KNOWN to centre its
+ * marks (a centred dot floats mid-margin instead of tucking into the
+ * column edge). Everything else — including `off`, where the glyph
+ * shape is merely unknown and body fonts default to side-biased — hangs.
+ * `hant` refines its own `off` below, where the actual font IS knowable.
  *
- * `ko` used to be the second exception — unconditionally `on`, because its
- * property was `KLR | off` and had no centered value to exclude. Since the
- * conventions were opened to every locale (`--han-punctuation-ko` now takes
- * the same `JIS | MOE | GB | KLR | off`), Korean can be set to MOE like
- * anyone else, so it follows the same rule as the rest. `KLR` itself
- * qualifies: KLReq attaches `。、` to the cell corner (cl8/cl9) — side-
- * biased, the same reason `JIS` / `GB` qualify.
- *
- * All four locales set BOTH `on` and `off` explicitly, every
- * branch — NOT just `on` with `off` left to fall out of "the var is
- * simply absent". Reason: all three default to a QUALIFYING convention
- * (MOE excluded, everything else — including each one's own default —
- * qualifies). If a user overrides one to `MOE` on some wrapper element,
- * that wrapper's OWN style-query evaluation checks ITS ancestor (never
- * itself) — which still reports the old qualifying default — so the
- * wrapper computes `on` for ITSELF despite declaring the very override
- * that should turn it off. Its descendants query correctly (their
- * ancestor is now the wrapper, which really does say `MOE`) and get NO
- * declaration from an `on`-only rule — so they'd inherit the wrapper's
- * wrong `on` instead of getting their own `off`. Making every branch
- * explicit removes this dependency on which direction an override
- * happens to go: a real declaration always wins over an inherited one,
- * so the wrapper's own (unavoidably stale) verdict can never leak past
- * it. */
+ * Every branch sets BOTH `on` and `off`. An element that overrides the
+ * convention on itself gets a stale verdict (style queries ask the
+ * ANCESTOR, never self); only an explicit declaration on its descendants
+ * stops that stale value from leaking down by inheritance — an `on`-only
+ * rule would let it. Derivation in full:
+ * docs/notes/2026-08-09-hang-compress-dom-mechanism.md. */
 @container not style(--han-punctuation-hant: MOE) {
   :where(:lang(zh)) { --han-state-hanging-punctuation: on; }
 }
@@ -288,24 +175,13 @@
   :where(:lang(zh)) { --han-state-hanging-punctuation: off; }
 }
 
-/* `hant`-only refinement of its own `off` branch above. `--han-punctuation-
- * hant: off` means Diantenjeom isn't drawing the glyph, so it falls
- * through to whatever CJK font is actually active — and for `hant`,
- * that's exactly what `--han-use-heritage-glyphs-for-hant` controls, so
- * "unknown" isn't the honest answer here, unlike `hans` / `ja`, which
- * have no equivalent knob and keep the generic assumption above. Each of
- * the three values is a known, fixed glyph fact rather than a guess:
- *   webfont    Shanggu / Genki (尚古／源起) — centered. → off
- *   system-ja  JP system fonts (Hiragino/Yu) standing in for heritage
- *              glyphs — side-biased (JP convention). → on
- *   off        the ugly generic TC system font (MS JhengHei / PMingLiU
- *              etc.) — centered. → off
- * Both AND-operands query the ANCESTOR (never self), so this has the same
- * self-reference gap as the on/off pair above: an element that sets both
- * vars on itself won't see its own override reflected in its own state,
- * only its descendants will. Harmless in practice — `h-char` is always a
- * JS-inserted deep descendant of whatever element carries the language +
- * override, never that element itself. */
+/* `hant` refinement of its `off` branch: with Diantenjeom off, the
+ * glyph falls through to whatever `--han-use-heritage-glyphs-for-hant`
+ * selects, and each value is a known glyph fact, not a guess —
+ * `webfont` (Shanggu/Genki: centred → no hang), `system-ja` (JP fonts:
+ * side-biased → hang), `off` (generic TC system fonts: centred → no
+ * hang). Same ancestor-query gap as above; harmless — `h-char` is
+ * always a deep descendant of the element carrying the override. */
 @container style(--han-punctuation-hant: off) and (style(--han-use-heritage-glyphs-for-hant: webfont) or style(--han-use-heritage-glyphs-for-hant: off)) {
   :where(:lang(zh)) { --han-state-hanging-punctuation: off; }
 }
@@ -352,41 +228,13 @@
  * fallback when the native property handles it. */
 @container style(--han-state-hanging-punctuation: on) {
   h-char[data-punct~="hangable"] {
-    /* No `position: relative` any more — it existed solely as the abspos
-     * containing block for <h-layer>, and the layer is baseline-aligned
-     * inline-block now (see the header comment's WHY). */
-    /* `line-height: 1` here is load-bearing — NOT cosmetic.
-     *
-     * `font-family: Han Em Space` is declared in
-     * `src/css/fonts/em-space.css` as
-     *   src: local(Courier New), local(Courier);
-     *   size-adjust: 166.667%;
-     * — i.e. Courier scaled up so its U+0020 glyph occupies 1em
-     * of advance width.  Per CSS Fonts 5 §6.5, `size-adjust`
-     * scales the font's *vertical* metrics too, so Courier's
-     * ascent / descent (~0.83 / 0.30em) become ~1.38 / 0.50em.
-     * Per CSS2.1 §10.8.1, an inline box contributes its computed
-     * `line-height` to the line-box — and `line-height: normal`
-     * resolves against the element's own font metrics.  Without
-     * a numeric override, this pseudo's inline box inherits
-     * `normal` and resolves it via the size-adjust-amplified
-     * Courier metrics (≈ 1.88em), which pushes <h-char>'s
-     * line-box well above the surrounding CJK text's strut,
-     * which inflates the absolute <h-layer>'s containing block,
-     * which makes the glyph drift vertically by a few px.
-     *
-     * `line-height: 1` pins this pseudo's inline-box height to
-     * 1em independent of the size-adjusted metrics, sealing the
-     * scaling weirdness inside its own box.  The line-box then
-     * sizes from the dominant CJK text font, with no JS probe /
-     * no per-font correction needed.
-     *
-     * Lesson: any time a placeholder pseudo uses a font-family
-     * with `size-adjust`, `font-size-adjust`, or a custom webfont
-     * whose metrics may differ from surrounding text, lock its
-     * `line-height` numerically.  Don't trust `normal` — it
-     * leaks the (possibly amplified) metrics into the parent's
-     * line-box. */
+    /* `line-height: 1` is load-bearing: Han Em Space is Courier with
+     * `size-adjust: 166.667%`, which amplifies the VERTICAL metrics too,
+     * and `line-height: normal` resolves against the pseudo's own font —
+     * the inflated inline box would grow the line box and drift the glyph.
+     * Rule of thumb: a placeholder pseudo using any size-adjusted font
+     * gets a numeric line-height, never `normal`
+     * (docs/notes/2026-08-09-hang-compress-dom-mechanism.md). */
     &::after {
       content: ' ';
       font-family: Han Em Space, Han Em Space Fallback, monospace;
@@ -409,40 +257,27 @@
   }
 }
 
-/* ─── 擠壓修正：只在「要擠壓」時（declared auto）─────────────────────
- *
- * A hangable mark's `<h-layer>` is an atomic inline box, and pair-squeeze
- * dies across atomic boxes (workspace ledger: pair-squeeze-and-markup.md;
- * the previous abspos layer was equally unsqueezable, so the repairs
- * predate the box change) — the engine cannot squeeze the mark that sits
- * BESIDE it, on either side. Both repairs below
- * exist only because squeeze is wanted, so they gate on the DECLARED
- * `--han-punctuation-refinement: auto` (the cascade var carries the declared
- * mode, before the native-engine downgrade to `hang`). A user who explicitly
- * picks `hang` wants hanging without squeeze, so `」，` / `，「` stay
- * full-width and neither repair fires. The `--han-state-hanging-punctuation:
- * on` operand keeps it off wherever hanging isn't visually active (e.g. a MOE
- * convention that centres marks) — there the h-layer isn't absolute, so
- * nothing is broken to repair. */
+/* ─── Squeeze repairs at the hang seam — declared `auto` only ──────
+ * `<h-layer>` is an atomic inline box and pair-squeeze dies across
+ * atomic boxes (workspace ledger: pair-squeeze-and-markup.md), so the
+ * engine can't squeeze the neighbour on either side of a hangable.
+ * Both repairs gate on the DECLARED mode: an explicit `hang` wants
+ * hanging without squeeze, so `」，`/`，「` stay full-width; and on the
+ * derived hanging state — where hanging isn't active there is nothing
+ * to repair. */
 @container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
-  /* FOLLOWING side (`，「`): the following open/middle mark is a bare text node
-   * (native trim path) — can't style it. The hangable pays the ½em from its
-   * OWN trailing filler: swap the ½em face in for the 1em one, so the
-   * follower's full em lands on top, restoring 1.5em. NOT a negative margin —
-   * under `text-align: justify` that drags the text before the mark (~0.45em
-   * on a 24em column); the filler is layout-honest content, no drift. */
+  /* FOLLOWING side (`，「`): the follower is a bare text node we can't
+   * style, so the hangable pays the ½em itself — its 1em filler swaps to
+   * a ½em face. Not a negative margin: under `justify` that drags the
+   * text before the mark; a filler is layout-honest content. */
   h-char[data-punct~="hangable"]:is([data-followed-by="open"], [data-followed-by="middle"])::after {
     font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
   }
 
-  /* PRECEDING side (`」，`, the mirror): the preceding close/end squeezer keeps
-   * its trailing ½em because the engine can't trim it against the out-of-flow
-   * hangable. `wrapHangablePairs` wrapped that squeezer as a plain inline
-   * `<h-char … data-followed-by="hangable">` (staying in flow, so its OWN
-   * left-side squeeze still works); it pays the ½em with `letter-spacing`.
-   * han v3's recipe: trailing letter-spacing is trimmed at the line end (so
-   * hanging is untouched) and, unlike a negative margin, causes no `justify`
-   * drift. */
+  /* PRECEDING side (`」，`): the squeezer before the hangable stays in
+   * flow (wrapped by `wrapHangablePairs`) and pays its ½em with
+   * `letter-spacing` — trimmed at line end so hanging is untouched, and
+   * no `justify` drift. */
   h-char[data-followed-by="hangable"] {
     letter-spacing: -.5em;
   }

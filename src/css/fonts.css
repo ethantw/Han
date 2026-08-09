@@ -260,59 +260,23 @@
  * Font configuration
  * ========================================================================== */
 
-/* TODO(css-if): Every `@container style()` block below maps one mode-property
- * value to a set of font-var assignments — the textbook shape for CSS Values 5
- * `if()`. Once `if()` ships in all major engines, collapse each per-locale
- * family of blocks into ONE `:where(:lang(…))` rule whose vars are assigned by
- * a single multi-branch `if()`, dropping the `@container` wrappers entirely.
+/* TODO(css-if): every `@container style()` block below maps one
+ * mode-property value to a set of font-var assignments — the textbook shape
+ * for CSS Values 5 `if()`. When it ships everywhere, collapse each
+ * per-locale family of blocks (now 4 locales × 4 conventions + off) into
+ * one rule with a multi-branch `if(style(…))`. Three migration traps,
+ * measured against registered properties:
  *
- * Future form (e.g. the FIVE --han-punctuation-hant blocks → one rule; the
- * matrix is now 4 locales × 4 conventions + off = 20 blocks, so the payoff
- * doubled when conventions were opened to every locale):
- *   :where(:lang(zh)) {
- *     --han-font-punctuation-sans: if(
- *       style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
- *       style(--han-punctuation-hant: MOE): 'Diantenjeom Sans MOE';
- *       style(--han-punctuation-hant: GB):  'Diantenjeom Sans GB';
- *       else:                               initial            /* off *\/
- *     );
- *     /* …serif / cursive likewise… *\/
- *   }
- *
- * Migration notes
- * ───────────────
- * • Scope: `@container style()` reads the nearest ANCESTOR container's value;
- *   `if(style())` reads the element's OWN computed value (after inheritance).
- *   All mode properties are `inherits: true` and registered via `@property`
- *   with an initial-value, and are meant to be set on an ANCESTOR (`:root`),
- *   so the two resolve identically here — EXCEPT at `:root` itself, which
- *   has no ancestor for `@container style()` to query, so these slot vars
- *   (`--han-font-punctuation-sans` and friends) are stuck at their `HanNone`
- *   `@property` fallback there today. `if(style())` reads `:root`'s own
- *   (inherited) mode-property value instead of an ancestor's, so it doesn't
- *   need one — this migration fixes that specific gap.
- *
- * • This does NOT let the composites below (`--han-sans` / `--han-serif` /
- *   `--han-cursive`, and semantics.css's `--han-font-default` and friends)
- *   move back to a `:root`-only declaration. That's a separate mechanism:
- *   a custom property's value is computed once on the element that
- *   declares it, and THAT resolved string is what inherits — regardless of
- *   whether the slot it references was assigned via `@container` or
- *   `if()`. A `:root`-only composite still freezes at `:root`'s own value
- *   and every descendant inherits that frozen string, ignoring any nested
- *   override (e.g. `.PunctCompare`'s `--han-punctuation-hant: GB` set on a
- *   single `<li>`). The composites stay on `:where(*)` either way.
- *
- * • Unmatched branch: an `if()` with no matching condition and no `else:`
- *   returns `<guaranteed-invalid>` — NOT an unset/`initial` value. Because each
- *   property is registered with a closed enum (`@property` syntax), map the
- *   final enum value (the `off` block, → `initial`) onto `else:` so every real
- *   value is covered and the result is never guaranteed-invalid.
- *
- * • `revert` vs `initial`: the `off` blocks set the var to `initial` (empty),
- *   letting the outer `var(--han-font-punctuation-sans), …` fallback chain take
- *   over. Keep that exact value in the `else:` branch — do not substitute
- *   `revert` / `unset`, which resolve differently for registered properties.
+ * • `if(style())` reads the element's OWN value where `@container` reads
+ *   the ancestor's — identical for ancestor-set modes, and it FIXES the
+ *   `:root` gap (`:root` has no ancestor, so today its slot vars sit at
+ *   their `HanNone` fallback).
+ * • The composite stacks (`--han-sans` et al.) must STAY on `:where(*)`:
+ *   a custom property computes once where declared and inherits the
+ *   resolved string, whatever assigned its slots.
+ * • An unmatched `if()` returns guaranteed-invalid, not `initial` — map
+ *   the `off` branch onto `else: initial` (exactly `initial`; `revert` /
+ *   `unset` resolve differently for registered properties).
  */
 :where(:root) {
   --han-font-latin-sans: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto;

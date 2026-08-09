@@ -6,37 +6,17 @@
 
 /**
  * Semantic refinements are on by default (`@property` registers
- * `initial-value: on`). To OPT OUT in a subtree, set `--han-semantics`
- * to `off` on any ancestor:
+ * `initial-value: on`); opt a subtree out with `--han-semantics: off` on
+ * any ANCESTOR — never on the targeted element itself, because a style
+ * query always reads an ancestor, so an element cannot switch itself:
  *
- *   article { --han-semantics: off; }
+ *   ✓  article { --han-semantics: off; }   → all descendants opt out
+ *   ✗  address { --han-semantics: off; }   → <address> itself unaffected
  *
- * Custom properties inherit, so one declaration covers the entire subtree.
- * Any descendant can re-enable with `--han-semantics: on`.
- *
- * Mechanism
- * ─────────
- * Nearly every rule below lives inside `@container style(--han-semantics: on)`.
- * Two declarations in § Document deliberately do not, and each carries a
- * comment saying why: the root font stack (belongs to the font layer, and
- * `:root` has no ancestor for a style query to read) and
- * `text-decoration-inset` (no engine implements it and style queries at the
- * same time). Everything else is gated.
- *
- * Since `@property` registers `initial-value: on`, the query matches by default.
- * Setting `--han-semantics: off` on an ancestor makes that element the nearest
- * style container; its value is `off`, the query stops matching, and the styles
- * simply don't fire — nothing to revert.
- *
- * Caveat
- * ──────
- * ⚠️  Set on an ANCESTOR, never on the targeted element itself.
- *     Style queries always check an ancestor — the element cannot
- *     query its own custom properties.
- *
- *   ✓  article { --han-semantics: off; }  → all descendants opt out
- *   ✗  address { --han-semantics: off; }  → no effect on <address> itself,
- *                                            only on its descendants
+ * Nearly every rule below lives inside `@container style(--han-semantics:
+ * on)`; the two § Document declarations that don't each say why inline.
+ * The registered initial value means the query matches by default and
+ * opting out simply stops it matching — nothing to revert.
  */
 
 /* ========================================================================== *
@@ -125,35 +105,13 @@
 }
 
 /**
- * Writing-mode mirror (書寫方向鏡射) — library-wide infrastructure.
- *
- * CSS cannot condition on `writing-mode`: `@container style()` supports
- * CUSTOM PROPERTIES only, and arbitrary-property style queries (CSS
- * Conditional 5) are shipped nowhere. Until they ship, this variable is
- * the manual mirror: wherever you declare `writing-mode`, redeclare its
- * value here on the same rule —
- *
- *   .tategaki {
- *     writing-mode: vertical-rl;
- *     --han-writing-mode: vertical-rl;
- *   }
- *
- * Values mirror the native property 1:1 so the redeclaration is a
- * copy-paste (`sideways-*` not supported). Horizontal documents never
- * touch it — the initial value is `horizontal-tb`. An undeclared
- * vertical subtree is ASSUMED HORIZONTAL; the mirror is a prerequisite
- * for any direction-dependent Han.css behaviour to stand down correctly.
- *
- * Consumers today: zhuyin ruby (tone-mark `salt` alternates are
- * horizontal-only; the inter-character fallback geometry is
- * horizontal-only). Future direction-dependent behaviour should read
- * this variable rather than grow its own flag.
- *
- * TODO(css-conditional-5): when arbitrary-property style queries ship,
- * switch consumers to `style(writing-mode: …)` and retire this variable.
- *
- * ⚠️  Declare it on the element that carries `writing-mode` (or any
- *     ancestor of the affected content) — style queries read ancestors.
+ * Writing-mode mirror (書寫方向鏡射) — library-wide infrastructure. CSS
+ * cannot condition on `writing-mode` itself (style queries read custom
+ * properties only), so every direction-dependent behaviour reads this
+ * mirror instead, and declaring it alongside every `writing-mode` — same
+ * element, same value — is a documented prerequisite for vertical text.
+ * Undeclared vertical = assumed horizontal = wrong output. Retires when
+ * arbitrary-property style queries ship.
  */
 @property --han-writing-mode {
   syntax: "horizontal-tb | vertical-rl | vertical-lr";
@@ -318,33 +276,20 @@
 }
 
 /**
- * Make sure the lines of two (or more) adjacent underlined or struck-through
- * elements are visually distinguishable.
+ * Keep the lines of adjacent underlined / struck-through elements apart.
  *
- * On `:where(*)`, NOT `:root`: `text-decoration-inset` is not an inherited
- * property. Verified in Firefox, currently the only engine that implements
- * it — with the declaration on `:root`, `html` computes the given length,
- * `body` computes `0px`, and a nested `<u>` stays at `auto`. A `:root`-only
- * declaration therefore never reaches anything that can carry a decoration
- * line; every element has to be declared on directly (an author-level
- * `:where(*)` declaration does win over the UA value on `<u>` / `<s>`).
+ * On `:where(*)`, NOT `:root`: `text-decoration-inset` does not inherit —
+ * declared on `:root` it never reaches anything that can carry a line
+ * (verified in Firefox, the one engine that implements it).
  *
- * Kept OUTSIDE the `@container style(--han-semantics: on)` gate, unlike
- * almost everything else in this file, because engine support for the two
- * features is currently disjoint: Firefox has `text-decoration-inset` but
- * not style queries, Chromium/WebKit have style queries but not the
- * property. Inside the gate this rule would be unreachable in the only
- * engine that could honour it — dead in every browser rather than one.
+ * Deliberately OUTSIDE the `--han-semantics` gate: engine support is
+ * disjoint — Firefox has the property but not style queries,
+ * Chromium/WebKit the reverse — so inside the gate this rule would be dead
+ * in every browser instead of one. The `@supports not` fallback below does
+ * the real work in Chromium/WebKit today.
  *
- * No opt-out story to explain either way: `--han-text-decoration-inset`
- * registers `initial-value: auto`, so this resolves to the UA default
- * until the user sets the variable.
- *
- * TODO(engine-convergence): once one engine ships BOTH the property and
- * style queries, move this inside the gate next to `text-underline-offset`
- * and drop this note. Until then the `@supports not (text-decoration-inset:
- * auto)` fallback further down is what actually does the work in
- * Chromium/WebKit.
+ * TODO(engine-convergence): when one engine ships both, move this inside
+ * the gate and drop this note.
  */
 :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
   text-decoration-inset: var(--han-text-decoration-inset);
@@ -381,31 +326,16 @@
 
 @container style(--han-semantics: on) {
   /**
-   * Make sure underlines are slightly apart from the annotated text.
+   * Keep underlines slightly apart from the annotated text.
    *
-   * On `:where(*)`, not an enumerated list of underline-bearing elements —
-   * same aggressive-net reasoning as the pseudo-italic correction below: a
-   * developer can underline literally anything, and enumerating known tags
-   * always misses the next one.
-   *
-   * It also has to be declared per element rather than once on `:root`:
-   * `text-underline-offset` inherits as the COMPUTED value, not the `var()`
-   * token stream, so a `:root`-only declaration resolves `.125em` once
-   * against `:root`'s own font-size (→ 2px) and every descendant inherits
-   * that fixed px regardless of its own size. Declared here it re-resolves
-   * the `em` fresh per element — measured: a 32px descendant computes 4px
-   * through this rule, 2px through a `:root`-only declaration.
-   *
-   * There is deliberately NO `:root` companion declaration. With one, an
-   * author setting `--han-semantics: off` would inherit `:root`'s frozen px
-   * instead of falling back to the UA default — Han.css's offset, mis-
-   * resolved, which is worse than either consistent state. Without it,
-   * `off` means `text-underline-offset: auto`, as it should.
-   *
-   * Cost of living inside the gate: engines without style queries (Firefox
-   * today) get no offset at all. That is already true of every other rule
-   * in this file and of all of lines.css, so it is consistent with how v4
-   * degrades rather than a new failure mode.
+   * On `:where(*)` — anything can be underlined, an enumerated tag list
+   * always misses the next one. And declared PER ELEMENT, not once on
+   * `:root`: `text-underline-offset` inherits as the COMPUTED value, so a
+   * `:root` declaration freezes `.125em` against the root font-size and
+   * every descendant inherits that px (measured: 32px text gets 4px here,
+   * 2px via `:root`). Deliberately no `:root` companion — with one,
+   * `--han-semantics: off` would inherit the frozen px instead of falling
+   * back to the UA default.
    */
   :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
     text-underline-offset: var(--han-underline-offset);
@@ -429,29 +359,15 @@
   }
 
   /**
-   * Title marks for `<cite>` per `--han-cite-title-marks` (none | bracket | wavy):
+   * Title marks for `<cite>` — value semantics live on the
+   * `--han-cite-title-marks` registration above. `quotes:
+   * var(--han-title-marks)` is always set so the `bracket` branch's
+   * open/close-quote content has something to resolve against; `wavy` and
+   * `none` override it back to `none`.
    *
-   *   bracket  Wrap with 《》 / 〈〉 via `quotes` + ::before / ::after content
-   *            — ja / ko-Hant instead get 「」 / 『』 (--han-title-marks
-   *            re-points to --han-quotes for those langs, see above).
-   *   wavy     Underline with a wavy line (書名號甲式; Taiwan textbooks +
-   *            classical-text reprints); suppresses the bracket quotes,
-   *            since the style-query blocks are mutually exclusive — the
-   *            variable can only hold one value at a time. zh only — not
-   *            a ja/ko-Hant convention.
-   *   none     Suppress both: no quotes, no underline (zh) / no quotes
-   *            (ja, ko-Hant).
-   *
-   * `quotes: var(--han-title-marks)` is always set so that the `bracket`
-   * block's `open-quote` / `close-quote` content has something to resolve
-   * against. The `wavy` and `none` blocks override it back to `none`.
-   *
-   * TODO(css-if): once `if()` ships, replace these three
-   * `@container style(--han-cite-title-marks: …)` blocks with per-property
-   * `if()`. `if()` reads the element's OWN value, so the title-mark mode could
-   * then be set directly on a `<cite>` — today `@container` queries an ancestor,
-   * so it only takes effect when set on an ancestor. The wavy skip-gap further
-   * down (under `@supports not (text-decoration-inset)`) migrates together.
+   * TODO(css-if): with `if()` these three style-query branches collapse to
+   * per-property conditions readable on the `<cite>` ITSELF (today the mode
+   * must sit on an ancestor). The wavy skip-gap below migrates together.
    */
   :where(cite:is(:lang(zh), :lang(ja), :lang(ko-Hant))) {
     & {
@@ -542,38 +458,24 @@
 }
 
 /**
- * Zhuyin (Mandarin Phonetic Symbols) ruby.
+ * Zhuyin (Mandarin Phonetic Symbols) ruby. Position semantics live on the
+ * `--han-zhuyin-ruby-position` registration above; font and orientation
+ * stay outside the gates (`Han Zhuyin Serif` carries both layouts).
  *
- * Position is selected by `--han-zhuyin-ruby-position` (registered above):
- * the `over` default is the browser's own rendering (no positional rules),
- * the `inter-character` opt-in gates the native property plus its
- * DOM-geometry fallback. Font and orientation stay OUTSIDE the gates —
- * `Han Zhuyin Serif` carries both layouts — but the TONE-MARK feature
- * switch is per-combination and the font cannot see the writing mode
- * from inside a feature, so CSS drives it via the `--han-writing-mode`
- * mirror:
+ * The TONE-MARK feature is per-combination — the font cannot see the
+ * writing mode from inside a feature, so CSS drives it via the
+ * `--han-writing-mode` mirror:
  *
- *   over × horizontal        `font-feature-settings: 'salt'` — the font's
- *                            stylistic alternates place the tone mark
- *                            after the syllable (interlinear run).
- *   over × vertical          no features; the font's `vert` chain owns
- *                            tone placement. `salt` would divert the
- *                            tone glyph BEFORE `vert`'s coverage (which
- *                            keys on the base glyphs, not the salt
- *                            alternates) and strand it in the horizontal
- *                            form — so it must stay off.
- *   inter-character          no features, ever — the annotation is a
- *                            vertical side-run in both the native and
- *                            fallback paths; same `vert`-owned placement.
+ *   over × horizontal   `'salt'` — alternates place the tone after the
+ *                       syllable (interlinear run).
+ *   over × vertical     no features: the font's `vert` chain owns tone
+ *                       placement, and `salt` would divert the tone glyph
+ *                       out of `vert`'s coverage, stranding its horizontal
+ *                       form.
+ *   inter-character     no features ever — the annotation is a vertical
+ *                       side-run in both the native and fallback paths.
  *
- * Both gates therefore require `--han-writing-mode: horizontal-tb`:
- * in a declared vertical subtree inter-character stands down to `over`
- * (matching native engines' spec behaviour, CSS Ruby L1) and no `salt`
- * fires. Undeclared vertical = assumed horizontal = wrong zhuyin; the
- * mirror is a documented prerequisite for vertical writing.
- *
- * Inter-character rendering: Safari 18.2+ native `ruby-position:
- * inter-character` (annotation alongside char); Chrome / Firefox get the
+ * Inter-character: Safari 18.2+ native; Chrome/Firefox get the
  * `@supports not` fallback.
  */
 /* `:has(> rt…)` — a RELATIVE selector, anchored on the `:has()` subject, so

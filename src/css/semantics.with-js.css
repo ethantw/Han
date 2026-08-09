@@ -1,47 +1,31 @@
 @charset "UTF-8";
 
 /**
- * JavaScript-based styling fallback to make sure the lines between two (or
- * more) adjacent underlined or struck-through elements are visually distin-
- * guishable if current UA does not support `text-decoration-inset: auto`.
+ * Companion CSS for `markAdjacentLines` (adjacent-lines.ts) on engines
+ * without `text-decoration-inset: auto` — inert until JS has run.
  *
- * Two markers, both set by `markAdjacentLines` in
- * `src/ts/semantics/adjacent-lines.ts`; nothing else assigns them, so these
- * rules are inert until JS has run:
+ * Wherever the pass ran (`[data-adjacent-lines-refined]` on an ancestor),
+ * the pure-CSS `:has()` fallback in semantics.css stands down — it can't
+ * see text between the pair or a sibling's first descendant, so it
+ * over-marks — and the gap is re-applied from the pass's two markers:
  *
- *   `[data-followed-by-adjacent-line]`   underline / strike families
- *                                        (`u`+`ins`, `s`+`del`) — the line is
- *                                        there in every title-mark mode, so the
- *                                        gap applies unconditionally.
- *   `[data-followed-by-adjacent-wavy]`   pairs where a `<cite>` is one of the
- *                                        two — `<cite>` only draws a line under
- *                                        `--han-cite-title-marks: wavy`
- *                                        (書名號甲式), so its gap is gated on
- *                                        that mode. In `bracket` / `none` there
- *                                        is no line to merge and a gap would be
- *                                        a stray 2px before 《.
+ *   [data-followed-by-adjacent-line]   straight-line families — gap in
+ *                                      every mode.
+ *   [data-followed-by-adjacent-wavy]   pairs involving `<cite>` — gap only
+ *                                      under `--han-cite-title-marks: wavy`,
+ *                                      the one mode where `<cite>` draws a
+ *                                      line (JS records WHICH family paired;
+ *                                      the mode is a cascade fact only CSS
+ *                                      can read).
  *
- * Why two markers and not one: the mode is a CSS fact (a style query), and JS
- * cannot read the cascade. So the JS side records WHICH FAMILY paired, and CSS
- * decides whether that family currently draws a line. One boolean marker would
- * force the choice at mark time and get `bracket` mode wrong.
- * (2026-08-08: `<cite>` had no family at all — it sat in the revoke list below
- * but was never marked, so JS running REMOVED the pure-CSS gap between two
- * adjacent wavy 書名號 and let the two underlines merge. Found on the manual's
- * specimen page.)
- *
- * Gated on `--han-semantics: on`, like every other mark this module draws.
- * The skip-gap is a 漢字排版 convention (two adjacent 專名號 are two names,
- * not one), not a UA behaviour — leaving it outside the gate meant switching
- * the module off still left han.css's gap sitting there, so `off` was not
- * actually the browser's own rendering. `margin-inline-end` is the only
- * property this file sets, so the gate wraps the whole thing.
+ * Gated on `--han-semantics: on` like every mark the module draws — the
+ * skip-gap is a 漢字排版 convention, not a UA behaviour, so it must leave
+ * when the module does.
  */
 @container style(--han-semantics: on) {
 @supports not (text-decoration-inset: auto) {
-  /* JS 跑過就由標記說話：`semantics.css` 的純 CSS `:has()` 後備一律歸零。
-     那條後備讀不到「中間隔著文字節點」與「下一顆的第一個後代」，會多給；
-     這裡把沒被任何標記選中的元素收回，兩套判斷才不會同時發言。 */
+  /* Once JS ran, the markers speak — revoke the pure-CSS gap everywhere
+     it wasn't re-granted, so the two judgements never speak at once. */
   :where(u, ins, s, del, cite) {
     :where([data-adjacent-lines-refined] &:not([data-followed-by-adjacent-line]):not([data-followed-by-adjacent-wavy])) {
       margin-inline-end: initial;
@@ -52,10 +36,9 @@
     margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
   }
 
-  /* 波浪式書名號那一家。`cite:lang(zh)` 與 semantics.css 的甲式規則同一個條件
-     ——只有 zh 的 `<cite>` 在 wavy 下畫線（ja／ko-Hant 用引號），所以也只有
-     它需要讓縫。`u`／`ins` 也列在主體裡：專名號緊接一個波浪書名號時，讓縫的
-     是前面那顆。 */
+  /* The wavy family. `cite:lang(zh)` matches the 甲式 rule's condition —
+     only zh cites draw a line under wavy (ja/ko-Hant use quotes). `u`/`ins`
+     are subjects too: a 專名號 right before a wavy title yields the gap. */
   @container style(--han-cite-title-marks: wavy) {
     :where(u, ins, cite:lang(zh)):where([data-followed-by-adjacent-wavy]) {
       margin-inline-end: var(--han-adjacent-lines-skip-gap-fallback);
