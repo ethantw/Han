@@ -153,6 +153,8 @@ article { --han-cite-title-marks: bracket; }
 
 Safari 18.2+原生支援`inter-character`；Chrome／Firefox走`@supports not`回落（`letter-spacing`預留空間＋絕對定位`<rt>`）。此回落只認**單一base**的注音ruby，故一字一`<ruby>`是硬性規則：多base、`<rb>`／`<rtc>`表格式等舊式標記，須先經[`transpileRuby`](./api-js.html)降級為現代引擎可正確渲染的interop形式（一字一base、附加標注層以巢狀`<ruby>`表達）。
 
+注意泛用選擇器的誤傷：你自己一句`ruby { ruby-position: under }`未分層時贏過漢.css的一切（layer內的規則一律輸給未分層規則），會把注音的標音位置一併翻掉。頁面上另有一般ruby要調整時，排除注音即可——`ruby:not(.zhuyin, .mps)`。
+
 ## 字體掛鉤
 
 semantics模組為一組字體堆疊變量定義基礎值，預設指向系統通用字族：

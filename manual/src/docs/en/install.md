@@ -45,13 +45,24 @@ Per-module bundles exist too (`dist/han.semantics.min.css` etc.); the four sum t
 
 ## Cascade layers
 
-Modules live in `han-semantics` / `han-lines` / `han-prose` / `han-fonts`. Pre-declare the order if you want certainty:
+Modules live in `han-semantics` / `han-lines` / `han-prose` / `han-fonts`. That buys you one rule and one opportunity: **unlayered declarations beat layered ones regardless of specificity** — every line of CSS you write casually already outranks han.css. The flip side: rules that weren't *meant* for han.css outrank it too.
+
+An unlayered reset like `* { margin: 0 }` wipes out typesetting features along the way — the verse indent of `.poem-like`, for one. Put the reset in a layer declared **before** han.css's and the collateral damage disappears, while everything you actually want to override stays overridable:
 
 ```css
-@layer han-semantics, han-lines, han-prose, han-fonts, app;
+@layer reset, han-semantics, han-lines, han-prose, han-fonts, app;
+
+@layer reset { /* your reset — loses to han.css, no more collateral */ }
+@layer app   { /* your styles — beat everything han.css does */ }
 ```
 
-Specificity is zero throughout (`:where()`), so your rules win regardless.
+Likewise, broad selectors hit elements you didn't have in mind: `ruby { ruby-position: under }` hits **every** ruby on the page, zhuyin included — flipping the annotation position (`--han-zhuyin-ruby-position`) it was configured to use. Exclude zhuyin if you don't mean it:
+
+```css
+ruby:not(.zhuyin, .mps) { ruby-position: under; }
+```
+
+Specificity is zero throughout (`:where()`), so overriding never takes selector tricks; layer order governs the opposite direction — which of your rules should *not* beat han.css.
 
 ## Do you need the JS?
 

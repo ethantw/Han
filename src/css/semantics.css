@@ -589,6 +589,11 @@
   }
 
   @container style(--han-zhuyin-ruby-position: over) and style(--han-writing-mode: horizontal-tb) {
+    /* 明寫，儘管 `over` 就是 UA 預設：位置是本模組的主張，不能只存在於
+     * 預設值的沉默裡——被覆寫時 devtools 才有一條被劃掉的宣告可回溯。 */
+    & {
+      ruby-position: over;
+    }
     :where(& > rt) {
       font-feature-settings: 'salt';
     }

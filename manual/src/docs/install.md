@@ -59,13 +59,24 @@ installFallbacks(document.body)
 
 ## cascade layer
 
-四個模組分別住在`han-semantics`／`han-lines`／`han-prose`／`han-fonts`四個layer。想明確控制與自家樣式的先後，可在引入前先宣告順序：
+四個模組分別住在`han-semantics`／`han-lines`／`han-prose`／`han-fonts`四個layer。這帶來一條規則與一個機會：**未分層的規則永遠贏過分層的，與權重無關**——你隨手寫的每一句CSS都自動贏過漢.css；反過來，reset那種「不是說給漢.css聽」的泛用規則，也會誤傷它。
+
+`* { margin: 0 }`一類的reset未分層時，會連詩行縮排（`.poem-like`）這些排版機能一起清掉。把reset收進一個**排在漢.css之前**的layer，誤傷就消失，而你真心要蓋的照樣蓋得掉：
 
 ```css
-@layer han-semantics, han-lines, han-prose, han-fonts, app;
+@layer reset, han-semantics, han-lines, han-prose, han-fonts, app;
+
+@layer reset { /* 你的reset——輸給漢.css，不再誤傷 */ }
+@layer app   { /* 你的樣式——贏過漢.css的一切 */ }
 ```
 
-漢.css所有選擇器權重為〇（`:where()`），即使不宣告layer順序，你的規則照樣能覆寫；layer宣告只是多一層確定性。
+同理，泛用選擇器會打中你沒想到的元素：`ruby { ruby-position: under }`打中頁面上**所有**ruby，包括注音——注音的標音位置（`--han-zhuyin-ruby-position`）會被這一句翻掉。不想波及注音，排除即可：
+
+```css
+ruby:not(.zhuyin, .mps) { ruby-position: under; }
+```
+
+漢.css所有選擇器權重為〇（`:where()`），覆寫不需要任何權重技巧；layer順序管的是反方向——「哪些規則**不要**贏過漢.css」。
 
 ## JavaScript的取捨
 
