@@ -4,13 +4,11 @@
  * behaviour for projects that previously relied on implicit auto-setup.
  *
  * On module load, `installFallbacks()` fires against `<html>`. There is no
- * switch: this entry IS the switch. A `--han-install` custom property briefly
- * let a page narrow the passes from CSS; it was removed because every pass
- * shares the same hyperly floor, so narrowing bought a smaller DOM diff but
- * never a smaller file — a confusing thing to offer on a framework that sells
- * its size. The way to actually pay less is the other entry: import the named
- * passes from `han.js` and let your bundler shake the rest (`package.json`
- * declares `sideEffects`). The homepage's console prices every combination.
+ * switch: this entry IS the switch, and there is deliberately no way to
+ * narrow the passes from here — every pass shares the same hyperly floor,
+ * so narrowing would shrink the DOM diff but never the file. To actually
+ * pay less, import the named passes from `han.js` and let your bundler
+ * shake the rest (`package.json` declares `sideEffects`).
  *
  * Installation is deferred to `DOMContentLoaded` when the document is still
  * loading; otherwise it runs synchronously. The call is a no-op in

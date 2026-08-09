@@ -67,10 +67,6 @@
  * Diantenjeom punctuation convention for Korean (한국어 문장부호). Same value
  * set as the other three — see the block above for what each convention is.
  *
- * Renamed from `--han-punctuation-vertical-ko` (v4 rc): the `vertical-`
- * qualifier stopped being true once Korean gained JIS / MOE / GB, and the four
- * locale properties should read alike.
- *
  * KLReq recommends HALF-WIDTH Western `.` `,` for HORIZONTAL Korean, and
  * full-width `。` `、` (cl8/cl9, corner-attached) for VERTICAL. Which one the
  * page gets is a content-layer decision — which characters the author types —
@@ -176,16 +172,12 @@
  * other elements that receive the cursive generic family.
  *
  * Named `--han-use-cursive`, not the shorter `--han-cursive` — semantics.css
- * already owns `--han-cursive` as the actual font-STACK var
- * (`--han-font-accent: var(--han-cursive)`). Registering a same-named
- * `@property` here with a `webfont | system | off` syntax used to silently
- * clobber that font-stack meaning everywhere `--han-cursive` was consumed
- * (`@property` registration is global, not `@layer`-scoped, so this file's
- * enum registration won regardless of module load order) — every consumer
- * of `--han-font-accent` was quietly rendering the literal string
- * `"webfont"` as a font-family whenever both modules were loaded together.
- * `--han-use-*` matches this file's own naming for the sibling toggle,
- * `--han-use-heritage-glyphs-for-hant`, just above.
+ * owns `--han-cursive` as the actual font-STACK var (`--han-font-accent:
+ * var(--han-cursive)`), and `@property` registration is global, not
+ * `@layer`-scoped: a same-named enum registration here would clobber that
+ * font-stack meaning everywhere both modules load together, regardless of
+ * order. `--han-use-*` matches the sibling toggle
+ * `--han-use-heritage-glyphs-for-hant` above.
  *
  *   webfont  Default. LXGW WenKai TC / LXGW WenKai (霞鶩文楷) as the primary
  *            cursive CJK font. Falls back to Klee / BiauKai / Kaiti TC for
@@ -282,8 +274,9 @@
   --han-font-latin-sans: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto;
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
-  /* ui-monospace 領頭（Mac SF Mono／缺 Han 讓 CJK 穿透），Windows 給
-     Consolas、舊 Mac 給 Menlo；作者換掉這一槽就整段自理。 */
+  /* ui-monospace leads (Mac SF Mono; no Han coverage, so CJK falls
+     through), Consolas for Windows, Menlo for older Macs. Swap this slot
+     and the whole mono stack follows. */
   --han-font-latin-mono: ui-monospace, Menlo, Consolas;
 
   /* Heritage webfont swap slots — family-pure (base + TC variant of ONE
@@ -294,9 +287,9 @@
   --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans Yue';
   --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif Yue';
 
-  /* 繁體楷體 webfont 的可換槽——同 heritage-glyphs 的 swap-var 模式；
-     下方 --han-use-cursive: webfont 的 zh 堆疊引用它。預設霞鶩文楷TC，
-     可覆寫為 'Iansui'（芫荽）等。 */
+  /* Swap slot for the TC cursive webfont — same swap-var pattern as the
+     heritage glyphs; the `--han-use-cursive: webfont` zh stack below reads
+     it. Default LXGW WenKai TC; override with 'Iansui' (芫荽) etc. */
   --han-webfont-cursive-hant: 'LXGW WenKai TC';
 }
 
@@ -338,9 +331,10 @@
     var(--han-font-cjk-cursive),
     cursive, serif
   ;
-  /* 無標點層是刻意的：碼要顯示逐字原樣的字符，DTJ 的標點換臉（全形
-     引號／頓號改繪）進了 <code> 就是竄改樣本。CJK 層借 sans 槽——等寬
-     CJK webfont 不存在，Han 字形至少跟上站方的傳承字形選擇。 */
+  /* No punctuation layer, deliberately: code must show characters exactly
+     as typed, and DTJ's redrawn marks inside <code> would tamper with the
+     sample. The CJK layer borrows the sans slot — no monospace CJK webfont
+     exists, so Han glyphs at least follow the site's heritage choice. */
   --han-monospace:
     var(--han-font-latin-mono),
     var(--han-font-cjk-sans),
@@ -479,12 +473,14 @@
   }
 }
 
-/* 標點公約 → 字體家族。四文種 × 四公約 ＋ off ＝ 20 塊；矩陣刻意攤平，收斂
-   寫法等 `if()`（見本檔 Future form 一節——那一節的收益隨這次擴充翻倍）。
+/* Punctuation convention → font family. 4 locales × 4 conventions + off
+   = 20 blocks; the matrix is deliberately flat — the collapsed form waits
+   for `if()` (see the TODO above).
 
-   公約值與家族名都用 `KLR`（W3C KLReq 的縮寫）。曾經叫 KV ＝ Korean Vertical，
-   而那個名字本身就是「只給直排用」這個誤會的來源。需要 diantenjeom ≥ 0.2.0
-   ——0.1.0 發布的家族名還是 `… KV`，對不上就會退回系統標點。 */
+   Convention value and family names both read `KLR` (after W3C KLReq).
+   Requires diantenjeom ≥ 0.2.0 — 0.1.0 shipped the families as `… KV`
+   (Korean Vertical, a name that itself bred the "vertical-only"
+   misreading); a mismatch falls back to system punctuation. */
 @container style(--han-punctuation-hant: JIS) {
   :where(:lang(zh)) {
     --han-font-punctuation-sans: 'Diantenjeom Sans JIS';

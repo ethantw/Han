@@ -8,10 +8,9 @@
  * `--han-prose-fonts` is a prose × fonts coupling point, on purpose — the name
  * says so. It gates the blockquote font-swap below (Sectional refinements),
  * nested under `--han-prose: on` so it's meaningless without prose already
- * being active. Registered `on` by default (not the `--han-prose` off-by-
- * default pattern) because this preserves prior behaviour: the blockquote
- * swap used to be unconditional whenever `--han-semantics: on`, so flipping
- * it to a new opt-in default would be a silent breaking change.
+ * being active. Registered `on` by default — the swap is part of prose's
+ * default look; the off-by-default pattern is for whole features
+ * (`--han-prose`), not sub-gates of an already-active one.
  *
  * It deliberately reads `--han-font-accent` / `--han-font-default` (owned by
  * semantics.css / fonts.css) — intentional prose↔fonts coupling, not an

@@ -246,11 +246,6 @@
  *   get a CJK default from somewhere, and this is the only candidate.
  * • Root-relative font units (`ch`, `ex`) resolve against the root's own
  *   font, so moving this declaration to `<body>` would silently shift them.
- *
- * The two decoration-line declarations that used to live here have moved
- * out: `text-underline-offset` into the `@container` gate below (it has to
- * re-resolve its `em` per element anyway), `text-decoration-inset` onto
- * `:where(*)` immediately below (it does not inherit — see there).
  */
 /**
  * Declared at THREE anchors, not `:root` alone — each is load-bearing:
@@ -483,7 +478,7 @@
  * three engines but selects nothing: `&` is not the anchor, it is the parent
  * selector (or `:scope` at top level), so the branch resolves to「has a
  * descendant matching `:scope > rt`」and never matches. Verified against
- * Chromium / WebKit / Firefox, 2026-08-03. */
+ * Chromium / WebKit / Firefox. */
 :where(ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))) {
   :where(& > rt) {
     font-family: var(--han-font-zhuyin-serif);
@@ -491,8 +486,9 @@
   }
 
   @container style(--han-zhuyin-ruby-position: over) and style(--han-writing-mode: horizontal-tb) {
-    /* 明寫，儘管 `over` 就是 UA 預設：位置是本模組的主張，不能只存在於
-     * 預設值的沉默裡——被覆寫時 devtools 才有一條被劃掉的宣告可回溯。 */
+    /* Declared even though `over` IS the UA default: the position is this
+     * module's claim and must not live only in a default's silence — an
+     * override should leave a struck-through declaration in devtools. */
     & {
       ruby-position: over;
     }
