@@ -15,43 +15,21 @@ const optionsSkippingCode: Options = {
 }
 
 /**
- * 跨文種混排間隙 (inter-script spacing, ISS) — JS-side companions for
- * the `text-autospace` cascade variable.
+ * 跨文種混排間隙 (inter-script spacing, ISS) — JS-side companions for the
+ * `text-autospace` cascade variable. Two internal passes, picked by the
+ * resolved mode:
  *
- * Two internal passes drive every public entry, picked based on the
- * resolved mode (`--han-text-autospace` cascade, or an explicit
- * `ISSMode` arg in the SSR / primitive path):
+ *   `replaceISS`  consumes an author-typed whitespace run at a CJK↔Western
+ *                 boundary and drops `<h-iss hidden> </h-iss>` in its place
+ *                 (CSS-Text-4 `replace` semantic — no engine ships it).
+ *   `insertISS`   inserts an `<h-iss>` where there is NO space (`insert`
+ *                 semantic — native in modern engines; JS covers long-tail
+ *                 UAs and `strict`).
  *
- *   `replaceISS`   — fires when value is `replace` or `strict`.
- *                    Finds an existing whitespace run between a CJK
- *                    glyph and a Western letter / digit / quote and
- *                    consumes it, dropping a `<h-iss hidden> </h-iss>`
- *                    in its place. This is the CSS-Text-4 `replace`
- *                    autospacing semantic, which no engine ships yet.
- *
- *   `insertISS`    — fires only when value is `strict` (also the
- *                    legacy entrypoint for hand-callers on UAs that
- *                    don't speak `text-autospace: normal` natively).
- *                    Inserts a `<h-iss>` between Han ↔ Western pairs
- *                    where there *isn't* an existing space — the
- *                    `insert` semantic, which Chromium / WebKit / Gecko
- *                    now do natively. JS coverage is kept around for
- *                    long-tail UAs and for `strict` mode.
- *
- * In `strict` mode `replaceISS` runs first, then `insertISS`. The
- * order matters: after `replaceISS` ate the explicit space and
- * dropped a `<h-iss>` in its stead, the inserted h-iss's own space
- * *is* a real text node (across-element from the CJK and the Latin
- * sides), but `insertISS`'s lookahead is `(?=[Western])` — it sees
- * the space, not Latin, so it doesn't double-fire on the same site.
- *
- * "CJK" = Han ∪ Hiragana ∪ Katakana ∪ Hangul, "Western" = Latin ∪
- * Greek ∪ Cyrillic + ASCII digits, both via `\p{sc=…}` so SMP / sur-
- * rogate-pair Han are handled without explicit `[\uD800-\uDBFF]…`.
- *
- * Companion CSS in `src/css/lines.with-js.css` sizes the
- * inserted element to ¼-em (or `font-size-adjust: ic-width 0.208375`
- * on `Han Em Space`, when the UA supports it).
+ * `strict` runs replace THEN insert; the order is load-bearing — the
+ * replaced spacer's own space char fails insert's lookahead, so the same
+ * seam never double-fires. Companion CSS in `lines.with-js.css` sizes the
+ * element to ¼ em.
  */
 
 const CJK = '\\p{sc=Han}\\p{sc=Hira}\\p{sc=Kana}\\p{sc=Hang}'
@@ -72,13 +50,10 @@ const ISS_REPLACE_HTML = '<h-iss hidden data-mode="replace"> </h-iss>'
 /* ────────────────────────────────────────────────────────── */
 
 /**
- * Match a single boundary character (CJK side OR Western side), with
- * a lookahead asserting the opposite side follows directly. The match
- * itself is the boundary char on the *left* of the gap; the spacer is
- * dropped in after it via hyperly's `insert(... { end, outer: true })`,
- * which lets the spacer bubble out of any wrapping inline element so
- * the boundary lands at the actual visual seam (e.g. `<b>字</b><iss>A`,
- * not `<b>字<iss></b>A`).
+ * A boundary char with a lookahead asserting the opposite script follows.
+ * The match is the char LEFT of the seam; `insert({ end, outer: true })`
+ * lets the spacer bubble out of wrapping inlines so it lands at the visual
+ * seam (`<b>字</b><iss>A`, not `<b>字<iss></b>A`).
  */
 const ISS_INSERT_BOUNDARY = new RegExp(
   `[${CJK}](?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
@@ -86,12 +61,8 @@ const ISS_INSERT_BOUNDARY = new RegExp(
   'gu',
 )
 
-/**
- * `text-autospace: insert` JS fallback — inserts an `<h-iss>` at a
- * Han ↔ Western boundary where the source has no whitespace. Idempo-
- * tent because the inserted h-iss's space character matches neither
- * lookahead arm.
- */
+/** `text-autospace: insert` — spacer where the source has no whitespace.
+ *  Idempotent: the inserted spacer's space matches neither lookahead arm. */
 const insertISS = (src: Hyperly): Hype =>
   insert
     (optionsSkippingCode)
@@ -104,22 +75,11 @@ const insertISS = (src: Hyperly): Hype =>
 /* ────────────────────────────────────────────────────────── */
 
 /**
- * Match a contiguous *collapsible* whitespace run sandwiched between a
- * CJK glyph and a Western glyph (in either order). Lookbehind / look-
- * ahead carry the boundary check; the regex *only* matches the white-
- * space itself, so the surrounding chars stay in place when hyperly
- * substitutes the match with the ISS tag.
- *
- * The character class `[ \t\n\r\f]` lists exactly the five characters
- * CSS Text 3 §4 treats as collapsible whitespace: SPACE, TAB, LF, CR,
- * FF. It deliberately excludes the no-break / fixed-width spaces that
- * `\s` (or `\p{White_Space}`) would also catch — U+00A0 NBSP, U+202F
- * NNBSP, U+2000-200A, U+205F, U+3000 IDEOGRAPHIC SPACE etc. Those
- * render at a fixed visible width and are explicit author choices, so
- * we leave them alone instead of squashing them into a ¼-em h-iss.
- *
- * The `u` flag is required by the `\p{sc=…}` script classes used in
- * `CJK` / `WESTERN_*`; it has no effect on `[ \t\n\r\f]` itself.
+ * A collapsible-whitespace run sandwiched between CJK and Western glyphs;
+ * only the whitespace matches, so the neighbours stay in place. The class
+ * `[ \t\n\r\f]` is exactly CSS Text's collapsible set — it deliberately
+ * excludes NBSP / U+3000 and friends, which render at a fixed width and are
+ * explicit author choices, not seams to squash into a ¼-em spacer.
  */
 const ISS_REPLACE_WHITESPACE = new RegExp(
   `(?<=[${CJK}])[ \\t\\n\\r\\f]+(?=[${WESTERN_ALPHA}${WESTERN_OPEN}])`
@@ -127,14 +87,8 @@ const ISS_REPLACE_WHITESPACE = new RegExp(
   'gu',
 )
 
-/**
- * `text-autospace: replace` JS implementation — eats every contiguous
- * collapsible-whitespace run that sits at a Han ↔ Western boundary,
- * replacing it with `<h-iss hidden> </h-iss>`. Sourced cases like
- * `字 A` and `Hello 世界` collapse to `字<h-iss/>A` / `Hello<h-iss/>世界`;
- * an already-tight `字A` / `Hello world`, or one separated by a fixed-
- * width space (NBSP, U+3000…), is left alone.
- */
+/** `text-autospace: replace` — `字 A` → `字<h-iss/>A`; tight pairs and
+ *  fixed-width spaces are left alone. */
 const replaceISS = (src: Hyperly): Hype =>
   transform
     (optionsSkippingCode)
@@ -196,14 +150,9 @@ const syncCascadeIfBrowser = (mode: ISSMode) =>
     : identity
 
 /**
- * Mode-explicit ISS primitive — atomic "set cascade + run JS" combo.
- *
- * Curried (mode first) to compose with `hyperly/fp` pipelines and to allow
- * caller-side reuse of a partially-applied applier. Exported for SSR / Node
- * usage where there's no CSS cascade to read from. Browser callers
- * normally want `applyISSWithProbe(src)` (cascade + UA bug probe) or
- * `applyISS(src)` (cascade only, no probe), which decide whether to call
- * this primitive at all.
+ * Mode-explicit ISS primitive — atomic "set cascade + run JS". For SSR and
+ * callers that already know the mode; browser callers normally want
+ * `applyISSWithProbe` (cascade + UA probe) or `applyISS` (cascade only).
  */
 export const applyISSWithMode = (mode: ISSMode) =>
   pipe<Hyperly, Hyperly, Hype>(
@@ -258,20 +207,11 @@ const needsJS = (mode: ISSMode, isBuggy: boolean): boolean =>
       )
 
 /**
- * Cascade-dispatching ISS entry, *without* the UA inline-boundary probe.
- * Resolves the mode from `--han-text-autospace`, falling back to `'normal'`
- * for unknown tokens, then gates against `CSS.supports`. Trusts native
- * support at face value — does not run `detectAutospaceBoundaryBug`.
- *
- * Use when the probe state is already established (e.g. seeded by
- * `applyISSWithProbe` elsewhere on the page) or perf-sensitive subtrees
- * want to skip the probe's measurement-element insertion.
- *
- * Diverges from `refinePunctuation`'s downgrade-to-different-mode shape:
- * here, native support means "JS does nothing at all". Writing a no-op
- * value (`'none'`) to inline cascade would mislead `@container style()`
- * queries and the `:root` `text-autospace: var(...)` resolution, so we
- * short-circuit `hype(src)` instead, leaving the cascade authoritative.
+ * Cascade-dispatching ISS entry WITHOUT the UA inline-boundary probe —
+ * trusts `CSS.supports` at face value. Use when probe state is already
+ * seeded elsewhere, or the probe's measurement-element insertion is
+ * unwanted. Standing down short-circuits without writing the cascade var:
+ * the cascade must stay authoritative.
  */
 export const applyISS = (src: Hyperly): Hype => {
   const declared = resolveISSMode(src)
@@ -281,20 +221,10 @@ export const applyISS = (src: Hyperly): Hype => {
 }
 
 /**
- * Cascade-dispatching ISS entry, *with* the UA inline-boundary probe.
- * The default browser entry — what `installFallbacks` calls.
- *
- * The probe (`detectAutospaceBoundaryBug`) catches UAs that ship native
- * `text-autospace` but lose the gap across an inline-element boundary
- * (e.g. `<b>字</b>A`). On a positive probe we set `--han-probe-autospace:
- * broken` on `:root`, which `lines.with-js.css` keys off to
- * force the JS-side `<h-iss>` to render even when the engine claims
- * native support.
- *
- * `declared === 'none'` short-circuits *before* the probe — opt-out
- * shouldn't poke the DOM (the probe inserts + removes a measurement
- * element). Other subtrees still trigger the probe; its result is cached
- * in `probes.ts`.
+ * Default browser entry (what `installFallbacks` calls): cascade dispatch
+ * plus the memoised UA probe for engines that ship `text-autospace` but
+ * drop the gap across inline boundaries (`<b>字</b>A`). Opt-out
+ * short-circuits BEFORE the probe — opting out shouldn't poke the DOM.
  */
 export const applyISSWithProbe = (src: Hyperly): Hype => {
   const declared = resolveISSMode(src)

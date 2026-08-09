@@ -18,12 +18,13 @@ export const isValidMode = (mode: any): mode is RefineMode =>
 
 /* ─── Constants & Regex ──────────────────────────────────────────────────── */
 
-/**
- * CJK punctuation character sets:
- */
+/** CJK opening brackets (開括號). */
 export const PUNCT_OPEN_CHARS   = '「『《〈（〔［｛【〖'
+/** CJK closing brackets (閉括號). */
 export const PUNCT_CLOSE_CHARS  = '」』》〉）〕］｝】〗'
-export const PUNCT_END_EXTRA    = '︰．、，。：；？！ー'   // sentence-ending, not closing brackets
+/** Sentence-ending marks that are not closing brackets (句末點號). */
+export const PUNCT_END_EXTRA    = '︰．、，。：；？！ー'
+/** Fullwidth middle symbols (中點與全形符號). */
 export const PUNCT_MIDDLE_CHARS = '·＼／－゠＆・＿'
 
 /**
@@ -36,6 +37,7 @@ export const PUNCT_MIDDLE_CHARS = '·＼／－゠＆・＿'
  */
 export const PUNCT_INTERPUNCT_CHARS = '·・'
 
+/** Every character the punctuation passes classify. */
 export const ALL_PUNCT = PUNCT_OPEN_CHARS + PUNCT_CLOSE_CHARS + PUNCT_END_EXTRA + PUNCT_MIDDLE_CHARS
 
 /** Matches one or more consecutive CJK punctuation characters. */
@@ -195,33 +197,6 @@ const optionsIgnoringHChar: Options = {
 
 /* ─── Public API ─────────────────────────────────────────────────────────── */
 
-/**
- * Mode-explicit punctuation primitive. The four modes dispatch to their
- * respective wrappers:
- *
- *   - `auto`     — compress + hang in a single pass; hangable
- *                  punctuation get the combined shape
- *                  `<h-char data-punct="end hangable"><h-layer>…</h-layer></h-char>`.
- *                  Subsumes `compress` and `hang`.
- *   - `compress` — only the 標點擠壓 wrappers (`<h-char data-punct="…">`).
- *   - `hang`     — only the 標點懸掛 wrappers
- *                  (`<h-char data-punct="hangable"><h-layer>…</h-layer></h-char>`).
- *   - `none`     — identity transform (`hype`). For SSR pipelines that
- *                  want to skip the punct stage explicitly.
- *
- * Curried (mode first) to compose with `hyperly/fp` pipelines and
- * to allow caller-side reuse of a partially-applied refiner:
- *
- * ```ts
- * const autoPunct = refinePunctuationWithMode('auto')
- * const articleHype = autoPunct($article)
- * const asideHype = autoPunct($aside)
- * ```
- *
- * Exported for SSR / Node usage where there's no CSS cascade to read
- * from. Browser callers normally want `refinePunctuation(src)`, which
- * resolves the mode from `--han-punctuation-refinement`.
- */
 /* ─── Mode-specific transform recipes (module-level, pure values) ────────── */
 
 /** auto = compress + hang in a single pass. Sees one char past the run end
@@ -365,6 +340,13 @@ const syncCascadeIfBrowser = (mode: RefineMode) =>
   ? tap(setPunctuationRefinementMode(mode))
   : identity
 
+/**
+ * Mode-explicit punctuation primitive — atomic "set cascade + run JS" on the
+ * caller-supplied mode: `auto` (compress + hang in one pass), `compress`,
+ * `hang`, or `none`. For SSR and callers that already know the mode; browser
+ * callers normally want `refinePunctuation(src)`, which resolves the mode
+ * from the cascade and downgrades for native engine support.
+ */
 export const refinePunctuationWithMode = (mode: RefineMode) =>
   pipe<Hyperly, Hyperly, Hype>(
     syncCascadeIfBrowser(mode),
@@ -374,13 +356,8 @@ export const refinePunctuationWithMode = (mode: RefineMode) =>
     dispatchByPunctMode(mode, false),
   )
 
-/**
- * Write `--han-punctuation-refinement: {mode}` as an inline style on
- * `src`'s resolved element. Useful when a caller wants to switch a
- * subtree's mode from JS without touching the stylesheet. Mutation
- * is visible to subsequent CSS reads, not just the next
- * `refinePunctuation` call.
- */
+/** Write `--han-punctuation-refinement: {mode}` as an inline style — pure
+ *  setter, no marking pass. */
 export const setPunctuationRefinementMode =
     (mode: RefineMode) =>
     (src: Hyperly): void =>
@@ -408,30 +385,12 @@ const effectiveJSMode = (declared: RefineMode): RefineMode =>
   : declared
 
 /**
- * Auto-dispatching punctuation entry — resolves the cascade-declared mode
- * (`src → :root` walk on `--han-punctuation-refinement`), then runs the
- * right JS recipe for the current engine.
- *
- * `declared === 'none'` short-circuits — opt-out runs no pass and writes
- * no cascade.
- *
- * **Asymmetric cascade vs. JS** (mirrors `applyISS` / `markAdjacentLines`):
- *
- *   - Cascade var: written with the **declared** mode. CSS keys behaviour
- *     off `--han-punctuation-refinement` and uses `@supports` internally
- *     to branch native vs. fallback styling; JS doesn't need to stomp the
- *     cascade with the downgraded mode.
- *   - JS recipe:   the **effective** mode (`auto → hang` when native
- *     trim-start is supported). Avoids emitting compress wrappers the
- *     engine already produces.
- *
- * The mode-explicit primitive `refinePunctuationWithMode(mode)(src)` keeps
- * cascade and JS in lockstep on the caller-supplied mode — it's the
- * "I know what I want, do exactly this" form. The asymmetry only lives in
- * this auto-entry, where we know more than the caller.
- *
- * To force a specific mode, call `setPunctuationRefinementMode(mode)(src)`
- * first, or use `refinePunctuationWithMode(mode)(src)` directly.
+ * Cascade-dispatching entry — resolves `--han-punctuation-refinement`, then
+ * runs the recipe the current engine still needs. Asymmetric on purpose:
+ * the cascade var gets the DECLARED mode (CSS branches on it), while JS runs
+ * the EFFECTIVE mode (`auto` → `hang` when native trim-start covers the
+ * compress half) — the auto-entry knows more than the caller, the
+ * mode-explicit primitive stays literal. `none` runs and writes nothing.
  */
 export const refinePunctuation = (src: Hyperly): Hype => {
   const declared = resolvePunctMode(src)

@@ -24,80 +24,24 @@ import { isServerSide } from './helpers/env.ts'
 import { pipe } from './helpers/fp.ts'
 import { forEachChunk } from './helpers/chunk.ts'
 
-/**
- * Install all DOM-level fallbacks. Two execution modes:
- *
- *   - **Browser** (`document` / `CSS` available): mutate the given
- *     `Element` in place; gate each transform by `CSS.supports` and
- *     the `--han-punctuation-refinement` / `--han-text-autospace` cascade vars.
- *     Returns `void`. This is what the auto-installer at the bottom
- *     of this file invokes on `DOMContentLoaded`.
- *   - **Node SSR** (`document` undefined): treat `root` as a Hyperly
- *     source (`string | Element | Hype`), materialise it through
- *     happy-dom (`element(root)`), run every transform unconditionally,
- *     and return a `Hype` so the caller can `html(...)` it back to a
- *     string. No `CSS.supports` / `getComputedStyle` paths are taken —
- *     the browser CSS decides at delivery time which wrappers stay
- *     load-bearing.
- *
- * Transform inventory:
- *
- *   - 標點擠壓 + 標點懸掛  ← `refinePunctuationWithMode(mode)` (single pass)
- *   - 混排間隙             ← `replaceISS` + `insertISS` (gated in browser
- *                            by `--han-text-autospace`; unconditional in SSR)
- *   - 鄰行間距             ← `markAdjacentLines` (gated in browser by
- *                            `text-decoration-inset: auto`; unconditional in SSR)
- *   - 注音 ruby            ← CSS-native（`ruby-position: inter-character` + font GPOS；
- *                            `@supports not` fallback for Chrome/Firefox）
- *                            `transformZhuyinRuby` no longer called by `installFallbacks`.
- *
- * `--han-punctuation-refinement` legal values (browser-only; SSR forces `auto`):
- *
- *   `auto` (default)  — Run JS only for what the engine doesn't natively
- *                       support. Both supported → no JS punct work;
- *                       trim-start only → emit hang wrappers;
- *                       allow-end only → emit compress wrappers;
- *                       neither → emit combined wrappers in one pass.
- *   `compress`        — Force compress-only wrappers regardless of native.
- *   `hang`            — Force hang-only wrappers regardless of native.
- *   `none`            — Skip JS punct refinement entirely.
- *
- * `--han-text-autospace` legal values (unchanged):
- *
- *   `normal` (default)  — native `text-autospace: normal` (= insert);
- *                         no JS work.
- *   `insert`            — alias for `normal`.
- *   `replace`           — native off; JS runs `replaceISS` to consume
- *                         author-typed whitespace at Han ↔ Western
- *                         boundaries (CSS-Text-4 `replace` semantic,
- *                         not yet shipped by any engine).
- *   `strict`            — native off; JS runs both `replaceISS` and
- *                         `insertISS`, so every Han ↔ Western pair
- *                         (with or without an author space) ends up
- *                         spaced via the `<h-iss>` element. All-JS
- *                         path is chosen deliberately — letting native
- *                         insert ride alongside JS-injected `<h-iss>`
- *                         risks a double ¼-em on engines that treat
- *                         the inline custom element as transparent.
- *   `no-autospace`      — native off; no JS work either.
- */
-/**
- * The three passes write their resolved mode back as an INLINE custom
- * property on the element they are called with (`syncCascadeIfBrowser`).
- * Called once on the root that is the documented contract; called once per
- * CHUNK it would litter nested elements with inline copies of an inherited
- * value — and a stale inline copy LOCKS that subtree against later `:root`
- * changes (the exact failure console-config.js § applyTarget scrubs for).
- * So every non-root chunk restores its prior inline state after the pass —
- * which also protects author-set inline opt-outs (`--han-punctuation-
- * refinement: none` on a demo box IS an element a chunk walk may land on).
- */
+/* The three passes write their resolved mode back as an inline custom
+ * property on the element they run on. That write belongs on the install
+ * root only: a stale inline copy on a nested element locks that subtree
+ * against later `:root` changes, and may clobber an author's inline opt-out.
+ * So every non-root chunk restores its prior inline state after the pass. */
 const SYNCED_VARS = [
   '--han-punctuation-refinement',
   '--han-text-autospace',
   '--han-text-decoration-inset',
 ] as const
 
+/**
+ * Run a single pass over `root` in stack-safe chunks. Use this to feed a
+ * large document to any per-pass entry (`refinePunctuation`, `applyISS…`,
+ * `markAdjacentLines…`) — fed whole, hyperly's recursive walk overflows at
+ * ~7,500 nodes and fails PARTIALLY, leaving a half-refined page.
+ * `installFallbacks` chunks internally; per-pass calls do not.
+ */
 export const runPassChunked = (root: Element, fn: (el: Element) => unknown): void => {
   forEachChunk(root, (el) => {
     if (el === root) {
@@ -118,25 +62,14 @@ export const runPassChunked = (root: Element, fn: (el: Element) => unknown): voi
   })
 }
 
-/**
- * 鄰行 pass 在它施作的根上蓋 `data-adjacent-lines-refined` 章（CSS 靠祖先
- * 上的這個章判定「已修補」——semantics.with-js.css）。分塊後章會落在每個
- * chunk 上——語意沒錯，但屬性噪音 ×N，且與單根時代的輸出不再逐位元相等。
- * 收斂回單根契約：後代的章全部上移到安裝根。pass 整個被跳過（原生支援）
- * 時後代沒有章，這裡也不會無中生有。
- *
- * **「章該落在哪一顆元素」不是這裡的知識**——那條規則（來源形狀決定序列化
- * 哪一段，因此決定章放哪才留得住）住在 pass 自己那邊：
- * `adjacent-lines.ts` § stampTargets。本函式只負責分塊扇出的收斂，`stampOn`
- * 由呼叫端算好傳進來，兩邊因此不可能給出不同的答案。
- */
+/* Chunking leaves a "refined" stamp on every chunk — correct, but ×N
+ * attribute noise. Converge back to the single-root contract by hoisting
+ * descendants' stamps onto the install root. WHERE a stamp must live is the
+ * pass's knowledge (stampTargets); this only undoes the chunk fan-out. */
 const hoistAdjacentLinesStamp = (root: Element, stampOn: readonly Element[] = [root]): void => {
   const stamped = [...root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)]
-  // `querySelectorAll` never returns the root, and when the whole tree fits one
-  // chunk the pass stamps the root ITSELF — so the descendant list alone can't
-  // answer "did the pass run?". Missing this is how the SSR re-stamp silently
-  // did nothing on its first cut: zero descendants → early return → the
-  // children never got the stamp they exist to carry.
+  // A tree that fits one chunk stamps the root itself, and querySelectorAll
+  // never returns the root — "did the pass run?" must ask both places.
   const rootStamped = root.hasAttribute(ADJACENT_LINES_REFINED)
   if (stamped.length === 0 && !rootStamped) return
   stamped.forEach((el) => el.removeAttribute(ADJACENT_LINES_REFINED))
@@ -144,6 +77,27 @@ const hoistAdjacentLinesStamp = (root: Element, stampOn: readonly Element[] = [r
   stampOn.forEach((el) => el.setAttribute(ADJACENT_LINES_REFINED, ''))
 }
 
+/**
+ * Install every DOM-level typesetting fallback: 標點擠壓／懸掛
+ * (`refinePunctuation`) → 混排間隙 (`applyISS`) → 鄰行間距
+ * (`markAdjacentLines`), each in stack-safe chunks — no document size limit.
+ *
+ * Two execution modes, chosen by environment:
+ *
+ * - **Browser**: mutates the element in place (default
+ *   `document.documentElement`); each pass self-gates on `CSS.supports`
+ *   and the `--han-*` cascade variables, doing only what the engine lacks.
+ * - **Node SSR**: requires an explicit source, runs every pass
+ *   unconditionally (the browser's CSS decides at delivery time which
+ *   wrappers become load-bearing), and returns a `Hype` — serialize with
+ *   `html()` from `hyperly/fp`.
+ *
+ * @example
+ * // SSR
+ * import { installFallbacks } from '@hanzi.pro/han.css/ssr'
+ * import { html } from 'hyperly/fp'
+ * const rendered = html(installFallbacks('<main>…</main>'))
+ */
 export function installFallbacks(): Hype
 export function installFallbacks(root: Element): Hype
 export function installFallbacks(src: string | Hype): Hype
@@ -152,14 +106,9 @@ export function installFallbacks(root?: Hyperly) {
     if (root === undefined) {
       throw new Error('installFallbacks: SSR path requires an explicit source (string | Element | Hype)')
     }
-    // hype(root) FIRST so the original htmlType (BodyInner / Outer / …)
-    // is preserved — calling element() on a fragment string would
-    // promote it to the host body Element and html() would then emit
-    // a `<body>…</body>` wrapper, breaking round-trip equality.
-    // The transforms mutate the same element reference in place, so the
-    // chunked calls below compose exactly like the old straight pipe —
-    // and the chunking matters in Node too: its default stack is in the
-    // same ballpark as the browsers'.
+    // hype(root) FIRST: the source's htmlType decides what html() emits;
+    // element() on a fragment string would promote it to the host body and
+    // break round-trip equality.
     const h = hype(root)
     const el = element(h)
     runPassChunked(el, (chunk) => refinePunctuationWithMode('auto')(chunk))
@@ -169,24 +118,8 @@ export function installFallbacks(root?: Hyperly) {
     return h
   }
 
-  // No separate probe step: the only probe there is
-  // (`detectAutospaceBoundaryBug`, for Safari's inline-boundary bug) is read
-  // by exactly one pass, so it lives inside that pass — `applyISSWithProbe`
-  // runs it, memoised. A standalone `runProbes()` used to sit here and was
-  // exported for callers assembling their own set; it bought nothing but a
-  // way to get the order wrong.
-  //
-  // CHUNKED, not one straight walk over the root: hyperly's walk recurses
-  // per node and blows the stack at ~7,500 nodes — WORSE, it fails
-  // partially, leaving a half-refined page with no error anyone will
-  // connect to typography (docs/notes/2026-08-05-install-fallbacks-stack-
-  // overflow.md, found by the 12k-node bare-page demo). `forEachChunk`
-  // splits at element-only levels, which is exactly the boundary both
-  // passes tolerate: the punctuation look-ahead and the adjacent-lines
-  // sibling pairing both live inside inline flow, and inline flow is never
-  // split (see chunk.ts). Each pass runs its own chunk loop — a shared
-  // loop would interleave passes per chunk, changing the install order
-  // within the document for no benefit.
+  // One chunk loop per pass — a shared loop would interleave passes through
+  // the document, making install order position-dependent for no benefit.
   const r = (root as Element | undefined) ?? document.documentElement
   runPassChunked(r, refinePunctuation)
   runPassChunked(r, applyISSWithProbe)
@@ -197,22 +130,12 @@ export function installFallbacks(root?: Hyperly) {
 }
 
 /**
- * Reverse all DOM mutations made by `installFallbacks`. Works on any
- * subtree regardless of whether it was processed by the browser or SSR
- * path — no prior `installFallbacks` call is required.
+ * Reverse all DOM mutations made by `installFallbacks` — browser- or
+ * SSR-produced alike; no prior install call required. Consumed author
+ * spaces are restored, `<h-char>` unwrapped, `<h-iss>` removed, and all
+ * marker attributes cleared.
  *
- * What is removed:
- *
- *   - `<h-iss data-mode="replace">` — restores the original author
- *     space (U+0020) that `replaceISS` consumed at a Han ↔ Western
- *     boundary.
- *   - `<h-iss>` (insert mode) — deleted without replacement; no space
- *     existed in the source at that boundary.
- *   - `<h-char>` — unwrapped back to the plain punctuation text node.
- *   - `[data-followed-by-adjacent-line]` / `[data-followed-by-adjacent-wavy]`
- *     — attributes removed.
- *
- * `root` defaults to `document.documentElement` when omitted.
+ * `root` defaults to `document.documentElement`; SSR requires it explicit.
  */
 export function uninstallFallbacks(root?: Hyperly) {
   if (isServerSide() && root === undefined) {
@@ -230,15 +153,15 @@ export function uninstallFallbacks(root?: Hyperly) {
   $root.querySelectorAll('h-char')
     .forEach(el => el.replaceWith(el.textContent ?? ''))
 
-  // 兩顆配對標記都要撤。漏掉 wavy 那顆的後果是靜默的：wrapper 全拆了，兩個
-  // 相鄰的波浪書名號之間卻還留著 skip-gap。
+  // Clear BOTH pairing markers — missing the wavy one fails silently:
+  // wrappers all gone, skip-gap still there.
   for (const attr of [FOLLOWED_BY_ADJACENT_LINE, FOLLOWED_BY_ADJACENT_WAVY]) {
     $root.querySelectorAll(`[${attr}]`)
       .forEach(el => el.removeAttribute(attr))
   }
 
-  // 「已修補」章也要撤——留著它，CSS 會在 wrapper 已拆光的樹上繼續按
-  // 「JS 修補過」的分支行事。根自己也可能帶章（querySelectorAll 不含根）。
+  // Clear the "refined" stamp too, or the CSS keeps taking the JS-refined
+  // branch on a stripped tree; the root itself may carry it.
   $root.removeAttribute(ADJACENT_LINES_REFINED)
   $root.querySelectorAll(`[${ADJACENT_LINES_REFINED}]`)
     .forEach(el => el.removeAttribute(ADJACENT_LINES_REFINED))

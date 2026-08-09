@@ -1,52 +1,11 @@
 /**
- * `transpileRuby` — opt-in down-leveler: rewrites `<rb>` / `<rtc>` tabular
- * ruby and multi-`<rt>` ruby into the interop form today's engines render
- * correctly (one base per zhuyin ruby, extra annotation layers as nested
- * `<ruby>`). Not wired into `installFallbacks`; consumers must import and
- * call this themselves.
- *
- * Why transpile at all: `<rb>` / `<rtc>` are conforming markup — the W3C
- * HTML Ruby Markup Extensions spec (CR, 2026-06-04) revoked their obsolete
- * status — but no engine yet renders the tabular model interoperably, so
- * the markup is down-leveled the way newer-standard JS is transpiled for
- * older targets. Two passes, two motives:
- *
- *   - Pass 1 (tabular → nested): engines don't render `<rtc>` layers.
- *   - Pass 2 (multi-`<rt>` split): conforming as-is, but the inter-character
- *     CSS fallback needs one base per ruby (see the skill's Rule 1 geometry).
- *
- * Use cases:
- *   - **Runtime compat**: hand-roll a call after page load so existing
- *     `<rtc>` / `<rb>` content renders in v4 without rewriting source.
- *   - **Build / Node**: run once during SSR / static-site generation,
- *     write the transpiled HTML back to disk.
- *
- * Authoring rules for the interop form live in
- * `.claude/skills/zhuyin-ruby-markup`. In short: one base per
- * `<ruby class="zhuyin">`, extra annotation layers as nested `<ruby>`,
- * no whitespace between ruby and adjacent punctuation.
- *
- * Supported input forms:
- *
- *   A. Tabular zhuyin —
- *      `<ruby class="zhuyin"><rb>漢</rb><rb>字</rb><rtc><rt>ㄏㄢˋ</rt><rt>ㄗˋ</rt></rtc></ruby>`
- *   B. Tabular dual —
- *      `<ruby><rb>…</rb>×N<rtc class="zhuyin">…</rtc><rtc class="romanization">…</rtc></ruby>`
- *      with `rbspan` on the romanization side
- *   C. Multi-`<rt>` zhuyin (anonymous bases, no `<rb>` / `<rtc>`) —
- *      `<ruby class="zhuyin">漢<rt>ㄏㄢˋ</rt>字<rt>ㄗˋ</rt></ruby>`,
- *      split into per-base rubies by pass 2
- *   E. 3+ layers — multiple non-zhuyin `<rtc>`s alongside one zhuyin
- *      layer; emitted as multi-layer nested `<ruby>`s.
- *
- * The algorithm is purely structural: `<rb>` content is never inspected.
- * Any non-whitespace text between `<rb>` elements is extracted and placed
- * flush between output rubies; it also acts as a segment boundary that
- * `rbspan` cannot cross.
- *
- * Throws on structural mismatches (rbspan total > base count, primary `<rt>`
- * count ≠ base count, rbspan crossing a segment boundary) so authoring
- * errors surface immediately rather than silently producing broken output.
+ * `transpileRuby` — opt-in down-leveler for W3C tabular ruby. `<rb>`/`<rtc>`
+ * markup is conforming, but no engine renders the tabular model
+ * interoperably, so it is down-leveled the way newer-standard JS is
+ * transpiled: one base per ruby, extra annotation layers as nested
+ * `<ruby>`. Not wired into `installFallbacks` — call it yourself, once
+ * (SSR/build time, or after load). Purely structural: base text is never
+ * inspected, and structural mismatches throw so authoring errors surface.
  */
 
 import { element, hype, type Hyperly, type Hype } from 'hyperly/fp'
