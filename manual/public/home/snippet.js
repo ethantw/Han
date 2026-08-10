@@ -48,6 +48,11 @@ const buildPane = ({ lang, code }, $pm) => {
 
   const $pre = document.createElement('pre')
   $pre.dataset.lang = lang
+  // Long lines scroll horizontally (URLs are unbreakable tokens), and a
+  // scrollable region the keyboard can't reach is a serious axe violation
+  // (scrollable-region-focusable) — whether it overflows is a few px of
+  // content-length luck, so the pane is focusable unconditionally.
+  $pre.tabIndex = 0
   const $code = document.createElement('code')
   $code.textContent = code
   $pre.append($code)

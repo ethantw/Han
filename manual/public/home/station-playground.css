@@ -81,9 +81,12 @@
       &:first-child { margin-block-start: 0; }
     }
 
-    :is(h1, h2) { font-size: 1.5rem; }
-    h3 { font-size: 1.125rem; }
-    :is(h4, h5, h6) { font-size: 1rem; }
+    /* em, not rem — the preview re-bases its font-size (galley overview
+       below, console metric slider otherwise), and headings must follow
+       the base or a 10px galley gets 24px headlines. */
+    :is(h1, h2) { font-size: 1.5em; }
+    h3 { font-size: 1.125em; }
+    :is(h4, h5, h6) { font-size: 1em; }
 
     p { margin: 0 0 1em; }
 
@@ -126,7 +129,7 @@
         border-radius: var(--r-2);
         color: var(--code-fg);
         font-family: var(--font-mono);
-        font-size: 0.8125rem;
+        font-size: 0.8125em;
         line-height: 1.6;
       }
 
@@ -164,27 +167,20 @@
     display: none;
   }
 
-  /* ── 夠寬就不必分頁：原始碼與預覽並排 ─────────────────────────────
-     48rem 起兩欄，一邊打字一邊看排版——分頁本來就是窄螢幕的折衷。
-     問的是**容器**而不是視窗（`@container`，Baseline 2023）：站台兩側的
-     padding 是 clamp 出來的 gutter，主控台還會從版心裡再收一欄，視窗寬度
-     算不準面板自己有多寬。
+  /* ── Wide enough: no tabs — two SEPARATE cards side by side ────────
+     From 48rem of station width the panel stops being one framed box and
+     dissolves into an invisible grid; source and preview each become their
+     own card, unbound from each other's height.
 
-     查 `min-width` 而不是 `min-inline-size`，這是刻意的：容器只做 inline
-     軸的 containment，所以直排時 width 屬於**不可查的區塊軸**，條件判為
-     unknown ⇒ 直排自動退回分頁模式。那正是要的結果——直排的預覽本來就
-     是縱向長條（station-frame.css 讓它保持直排、只把 textarea 轉回橫排），
-     並排兩欄在那裡沒有意義。
-
-     容器掛在 **<section>** 上而不是面板自己：容器查詢只看**祖先**，元素
-     問不到自己（`container-type` 與 `@container` 同掛一個元素＝永不匹配）。
-     而 section 的**內容盒**就是面板的寬度——面板是它沒有邊距的區塊子元素，
-     所以量 section 等於量面板，48rem 這個數字照 owner 說的算。
-     具名（`pg-station`）是為了讓下面每一條規則——不管主體是面板、
-     窗格還是分頁鈕——都對著**同一個盒**翻，否則面板自己一旦也成了容器
-     （`.Playground` 這個 class 同時掛在 section 與面板上），深一層的主體
-     會改問面板的內容盒，兩者差一道邊框寬，就會出現「格線已成形、窗格還在
-     分頁」的兩像素窗口。 */
+     The query asks the CONTAINER (the station's content box = the panel's
+     width; gutters and the docked console make the viewport a bad proxy),
+     via `min-width` on purpose: containers contain the inline axis only,
+     so in vertical writing the block-axis width is unqueryable, the
+     condition is unknown, and the station falls back to tabs — which is
+     what a vertical preview wants anyway. Named (`pg-station`) so every
+     rule below flips on the same box; the panel itself also carries
+     `.Playground`, and an unnamed query would re-anchor nested subjects to
+     the panel's content box, one border-width apart. */
   &:where(section) {
     container: pg-station / inline-size;
   }
@@ -192,52 +188,85 @@
   @container pg-station (min-width: 48rem) {
     &[data-playground] {
       display: grid;
-      /* 兩個窗格各半，一列到底——中縫是一條髮線，兩邊各自捲動 */
-      grid-template-columns: 1fr 1fr;
-      /* 面板要**封頂**，否則兩欄就是個笑話：預覽讓內容撐到多高（範本全文
-         實測 2753px），textarea 就被 grid 拉到一樣高，四十行原始碼後面跟
-         著兩千像素的空白墨版。封頂之後兩邊各自捲動，才是並排該有的樣子。
-         min() 取「視窗的八成」與 48rem 的小者：窄長的視窗不被 48rem 撐爆，
-         大螢幕也不會拉出一片望不到底的編輯區。 */
-      block-size: min(80dvh, 48rem);
+      /* editor is the workspace, the galley is a narrower proof copy */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+      gap: var(--gutter);
+      align-items: start;
+
+      /* shed the `.Preview` frame — the wrapper is pure grid now, the
+         cards below carry their own chrome */
+      overflow: visible;
+      background: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
     }
 
-    /* 分頁的顯隱作廢：兩個窗格同時在場，radio 也就無事可做。
-       選擇器**逐字照抄**上面那兩條，不另寫更短的——`:has()` 的重量取自
-       它的參數（`[name][value]:checked` ＝ 0,3,0），那兩條加起來是 0,5,0，
-       一條 `&[data-playground] :is(…)`（0,3,0）壓不過去，窗格會照舊藏著。
-       同形同重、只差在後面，靠源序取勝，而且讀起來就是「上面那兩條，在這
-       個寬度下取消」。容器查詢本身不加權重。 */
+    /* The tab swap is void: both panes are on stage, the radios have
+       nothing to do. Selectors copied VERBATIM from the tab rules above —
+       same shape, same specificity (0,5,0), later in source, so they win
+       the tie; anything shorter loses and the panes stay hidden. */
     &:has([name="pg-editor-view"][value="code"]:checked) [data-pg-preview],
     &:not(:has([name="pg-editor-view"][value="code"]:checked)) textarea {
       display: block;
     }
 
-    /* 兩個窗格都是捲動容器，所以 grid 的 `min-block-size: auto` 收成 0，
-       軌道壓得比內容小也不會溢出去（共用規則那條 18rem 底線仍在，面板本身
-       比它高得多，不衝突）。resize 收掉：拖高 textarea 會把封頂的格線撐開。 */
-    textarea {
-      /* 原始碼在行首側：先寫後看，與分頁模式下 tab 的左右順序一致 */
-      grid-column: 1;
-      overflow: auto;
-      resize: none;
-      /* 中縫。淺色下它畫在深色的 textarea 那一側所以看得見；深色下兩邊的
-         底色幾乎同色，這條線就是唯一分界，故用固定的 mist 而非會跟著主題
-         翻的 --ui-rule（web-style.md 深色面 gotcha）。 */
-      border-inline-end: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
-    }
-
-    [data-pg-preview] {
-      grid-column: 2;
-      overflow: auto;
-    }
-
-    /* 分頁鈕連同整條工具列退場。留著分頁鈕就是兩個互相矛盾的控制項（同
-       站③圖說那個「一個說真話的開關勝過兩個各說各話」的論證）；而 header
-       裡除了分頁鈕沒有別的東西，只藏鈕就剩一條空的深色橫槓在面板頂上。
-       這一段沒有工具列可言，兩個窗格自己就是面板。 */
+    /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
     > header {
       display: none;
+    }
+
+    /* ── The editor card: a full-height terminal ──────────────────────
+       Viewport-sized minus the site header, scrolls inside. Sticky so it
+       stays at hand when the galley grows past a viewport (long user
+       content is allowed to). */
+    textarea {
+      grid-column: 1;
+      block-size: calc(100dvh - var(--h-header) - 2rem);
+      overflow: auto;
+      resize: none;
+      position: sticky;
+      inset-block-start: calc(var(--h-header) + 1rem);
+      /* its own card edge — fixed faint mist, legible on the terminal
+         ground in both themes (web-style.md dark-surface gotcha) */
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      border-radius: var(--r-3);
+    }
+
+    /* ── The galley card (校樣) ───────────────────────────────────────
+       A newspaper proof: the WHOLE text at a glance — tiny type, balanced
+       columns, natural height, no scrollbar. Hover (or keyboard focus)
+       trades overview for reading: type up to legible, height capped to
+       the viewport, scrolling inside. Column width is in em, so the
+       column keeps its character measure across both states and the
+       galley re-folds like a paper rather than reflowing into a blog. */
+    [data-pg-preview] {
+      & {
+        grid-column: 2;
+        background: var(--ui-bg);
+        border: 1px solid var(--ui-rule);
+        border-radius: var(--r-3);
+        box-shadow: 0 1px 0 var(--ui-bg-2q);
+        padding: 1.25rem 1.5rem;
+
+        font-size: 0.5625rem;
+        line-height: 1.7;
+        columns: 10em;
+        column-gap: 2em;
+        column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
+        cursor: zoom-in;
+      }
+
+      /* Reading mode: single flow — a height-capped multicol would fill
+         SIDEWAYS into overflow columns (that is how multicol overflows),
+         and a proof you scroll horizontally is nobody's newspaper. */
+      &:is(:hover, :focus-within, :focus) {
+        font-size: 0.875rem;
+        columns: auto;
+        max-block-size: calc(100dvh - var(--h-header) - 2rem);
+        overflow: auto;
+        cursor: auto;
+      }
     }
   }
 }
