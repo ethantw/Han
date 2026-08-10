@@ -66,3 +66,24 @@ test('the page stylesheet is hashed too, on both pages', async ({ page }) => {
   await page.goto('/manual/')
   await expect(page.locator('link[href^="/assets/manual."]')).toHaveCount(1)
 })
+
+test('hashed sheets carry no sheet-relative url() — fonts must resolve from /assets/', async ({ page, request }) => {
+  // A sheet copied under /assets/ resolves `url("./x.woff2")` against
+  // /assets/, where nothing unhashed may live — the font then 404s and
+  // zhuyin ruby falls back silently. hashLinkedSheets() rewrites the
+  // relative refs to the sheet's original directory; this pins that.
+  await page.goto('/')
+  const hrefs = await page
+    .locator('link[rel="stylesheet"][href^="/assets/"]')
+    .evaluateAll((els: HTMLLinkElement[]) => els.map((el) => el.getAttribute('href')))
+  expect(hrefs.length).toBeGreaterThan(0)
+
+  for (const href of hrefs) {
+    const css = await (await request.get(href!)).text()
+    expect(css, `${href} still has sheet-relative url()`).not.toMatch(/url\((['"]?)\.\//)
+    // and every absolute url() it declares actually resolves
+    for (const [, , url] of css.matchAll(/url\((['"]?)(\/[^'")]+)\1\)/g)) {
+      expect((await request.get(url)).status(), `${url} referenced by ${href}`).toBe(200)
+    }
+  }
+})

@@ -501,10 +501,20 @@ async function hashLinkedSheets() {
   for (const rel of HASHED_SHEETS) {
     const src = path.join(MANUAL_DIST, rel)
     if (!existsSync(src)) continue
-    const bytes = await fs.readFile(src)
-    const hash = createHash('sha256').update(bytes).digest('hex').slice(0, 8)
+    // A copied sheet resolves its relative url() against ITS OWN URL — moved
+    // under /assets/, `url("./zhuyin.serif.woff2")` starts asking for
+    // /assets/zhuyin.serif.woff2, a file that must not exist there (the
+    // /assets/ prefix is immutable-cached and content-hashed ONLY). Anchor
+    // every relative url() to the sheet's original directory instead; the
+    // fonts stay single copies at their plain, must-revalidate paths.
+    const dir = path.posix.dirname(`/${rel}`)
+    const css = (await fs.readFile(src, 'utf-8')).replace(
+      /url\((['"]?)\.\/([^'")]+)\1\)/g,
+      (_, q, file) => `url(${q}${path.posix.join(dir, file)}${q})`,
+    )
+    const hash = createHash('sha256').update(css).digest('hex').slice(0, 8)
     const name = path.basename(rel).replace(/\.css$/, `.${hash}.css`)
-    await fs.writeFile(path.join(assetsDir, name), bytes)
+    await fs.writeFile(path.join(assetsDir, name), css)
     map.set(`/${rel}`, `/assets/${name}`)
   }
 
