@@ -257,15 +257,69 @@
         cursor: zoom-in;
       }
 
-      /* Reading mode: single flow — a height-capped multicol would fill
-         SIDEWAYS into overflow columns (that is how multicol overflows),
+      /* the lens needs a positioning context, and its circle must be able
+         to poke past the card edge */
+      position: relative;
+      overflow: visible;
+
+      /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
+         mouse gets the lens below, and a click-to-select must not reflow
+         the card): the galley itself flips to reading size. Single flow —
+         a height-capped multicol overflows SIDEWAYS into extra columns,
          and a proof you scroll horizontally is nobody's newspaper. */
-      &:is(:hover, :focus-within, :focus) {
+      &:focus-visible {
         font-size: 0.875rem;
         columns: auto;
         max-block-size: calc(100dvh - var(--h-header) - 2rem);
         overflow: auto;
         cursor: auto;
+      }
+
+      /* ── The lens (.PgLens, built by home/playground-lens.js) ───────
+         A circular window that paints the SAME galley (a live clone,
+         every [data-pg-preview] rule reapplies) at 2.25× under the
+         cursor. Hover-only, mouse-only; hidden on coarse pointers. */
+      &:hover .PgLens { opacity: 1; }
+    }
+
+    .PgLens {
+      & {
+        position: absolute;
+        inline-size: 11rem;
+        block-size: 11rem;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 3;
+        opacity: 0;
+        transition: opacity 120ms ease;
+        border-radius: 50%;
+        background: var(--ui-bg);
+        /* rim: ink line + paper inset + soft drop — a loupe on paper */
+        border: 2px solid color-mix(in srgb, var(--ui-text) 70%, transparent);
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--ui-bg) 60%, transparent) inset,
+          0 12px 32px color-mix(in srgb, var(--palette-black) 22%, transparent)
+        ;
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        display: none;
+      }
+
+      .is-lens-clone {
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        transform-origin: 0 0;
+        pointer-events: none;
+        user-select: none;
+        /* the clone re-runs this card's galley styles by keeping
+           data-pg-preview; only its box duties are neutralised */
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        min-block-size: 0;
       }
     }
   }
