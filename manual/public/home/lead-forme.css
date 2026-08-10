@@ -97,11 +97,12 @@
   --dtj-serif: 'Diantenjeom Serif GB';
   --dtj-sans: 'Diantenjeom Sans GB';
 }
-/* KLR ＝ W3C KLReq。兩個家族名並列的理由同 src/css/fonts.css：上游已改名
-   `… KLR`，發佈到 npm 的版本仍是 `… KV`，font stack 天然容錯，跨得過空窗。 */
+/* KLR ＝ W3C KLReq，Requirements for Hangul Text Layout and Typography。
+   `… KV` 的並列 fallback 拆掉了：那是「上游已改名、npm 上還是舊名」的過渡，
+   0.2.0-rc.0 起 npm 上就是 KLR。 */
 :where(.LeadForme[data-punct='klr']) {
-  --dtj-serif: 'Diantenjeom Serif KLR', 'Diantenjeom Serif KV';
-  --dtj-sans: 'Diantenjeom Sans KLR', 'Diantenjeom Sans KV';
+  --dtj-serif: 'Diantenjeom Serif KLR';
+  --dtj-sans: 'Diantenjeom Sans KLR';
 }
 
 /* current typeface — punctuation-first stack, heritage Han (Ziano) behind */

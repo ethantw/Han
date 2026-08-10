@@ -490,9 +490,9 @@
 }
 @container style(--han-punctuation-hant: MOE) {
   :where(:lang(zh)) {
-    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
-    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
-    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
   }
 }
 @container style(--han-punctuation-hant: GB) {
@@ -525,9 +525,9 @@
 }
 @container style(--han-punctuation-hans: MOE) {
   :where(:lang(zh-Hans)) {
-    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
-    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
-    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
   }
 }
 @container style(--han-punctuation-hans: GB) {
@@ -560,9 +560,9 @@
 }
 @container style(--han-punctuation-ja: MOE) {
   :where(:lang(ja)) {
-    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
-    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
-    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
   }
 }
 @container style(--han-punctuation-ja: GB) {
@@ -595,9 +595,9 @@
 }
 @container style(--han-punctuation-ko: MOE) {
   :where(:lang(ko)) {
-    --han-font-punctuation-sans: 'Diantenjeom Sans MOE';
-    --han-font-punctuation-serif: 'Diantenjeom Serif MOE';
-    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE';
+    --han-font-punctuation-sans: 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    --han-font-punctuation-serif: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    --han-font-punctuation-cursive: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
   }
 }
 @container style(--han-punctuation-ko: GB) {
