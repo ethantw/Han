@@ -55,7 +55,8 @@ test.describe('station⑤ playground', () => {
 
   test('default sample renders in the preview (a whole 太陽中文報 piece, marked up)', async ({ page }) => {
     // The shipped sample is one full taisol article (zh/trump-sashimi.md) with
-    // han-semantics elements applied — headline, dateline, four sections.
+    // han-semantics elements applied — headline and four sections; the
+    // dateline is paper chrome, asserted below.
     await expect($preview(page).locator('h1')).toHaveCount(1)
     await expect($preview(page).locator('h2')).toHaveCount(4)
     await expect($preview(page).locator('em').first()).toBeVisible()
@@ -65,12 +66,12 @@ test.describe('station⑤ playground', () => {
     for (const sel of ['u', 'q', 'dfn', 'i[lang]', 'ruby.zhuyin > rt', 'blockquote'])
       expect(await $preview(page).locator(sel).count()).toBeGreaterThan(0)
 
-    // The dateline is rewritten on boot to «today + 100 years» — the same
-    // instant station①'s newspaper datelines carry (home/papers-dateline.js
-    // owns the date; the playground borrows it), with all four eras on one
-    // line. Only the year is asserted: the rest is that module's contract.
+    // The dateline is card CHROME above the editable article (so it can't
+    // be pickled into a localStorage draft), rewritten on boot to «today +
+    // 100 years» — the same instant station①'s newspaper datelines carry
+    // (home/papers-dateline.js owns the date; the playground borrows it).
     const plus100 = new Date().getFullYear() + 100
-    const $time = $preview(page).locator('time').first()
+    const $time = page.locator('#station-playground [data-pg-dateline]')
     await expect($time).toHaveAttribute('datetime', new RegExp(`^${plus100}-`))
     await expect($time).toContainText('中華民國')
     await expect($time).toContainText('夏曆')

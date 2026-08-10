@@ -46,22 +46,6 @@ const sanitize = (dirty) =>
 // Markdown (＋ passthrough inline/block HTML) → sanitized HTML string.
 const renderHtml = (src) => sanitize(marked.parse(src))
 
-/**
- * 範本的日期列改寫成「今天＋100 年」——四套紀年並排，與站①的報頭同一個
- * 瞬間（日期由 papers-dateline.js 算，這裡不再算一次）。
- *
- * 只換 `<time>` 的內容與 `datetime`：分類（・人物特寫）是範本的內容，不是
- * 這支模組的事。HTML 裡寫死的那個 2126 是無 JS 的靜態退路，同 `.Papers`
- * 報頭的做法；有 JS 就永遠不會過期。
- * 純函數：字串進、字串出，換掉的那一份由呼叫端決定要不要用。
- */
-const withFreshDateline = (src) => {
-  const { iso, text } = plus100EraLine()
-  return src.replace(
-    /<time datetime="[^"]*">[^<]*<\/time>/,
-    `<time datetime="${iso}">${text}</time>`,
-  )
-}
 
 /* ── shell ──────────────────────────────────────────────────────────
  * localStorage guarded per web-style; a private/disabled store must not
@@ -95,12 +79,46 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   const $preview = $editor.querySelector('[data-pg-preview]')
   if (!$src || !$preview) return
 
+  /* ── 專心編輯模式 ──
+   * The studio borrows the LIVE panes: moving nodes keeps the draft, its
+   * input listeners and the rendered preview intact — nothing re-renders,
+   * nothing re-mounts. On exit they return in front of the lens (the `~`
+   * reveal rule needs the lens last). Esc is cancelled on purpose: the
+   * mode's contract is「只有 ✕ 能退出」, so a stray Esc can't dump the
+   * writer back into the scrolling page. */
+  const $studio = $editor.querySelector('[data-pg-studio]')
+  const $studioBody = $editor.querySelector('[data-pg-studio-body]')
+  const $focusBtn = $editor.querySelector('[data-pg-focus]')
+  const $paper = $editor.querySelector('[data-pg-paper]')
+  if ($studio && $studioBody && $focusBtn && $paper) {
+    $focusBtn.addEventListener('click', () => {
+      $studioBody.append($src, $paper)
+      $studio.showModal()
+      $src.focus()
+    })
+    $studio.addEventListener('cancel', (e) => e.preventDefault())
+    $studio.querySelector('[data-pg-studio-close]').addEventListener('click', () => {
+      const $lens = $editor.querySelector('.PgLens')
+      $editor.insertBefore($src, $lens)
+      $editor.insertBefore($paper, $lens)
+      $studio.close()
+    })
+  }
+
+  // The paper's dateline is card chrome, not editable content — refreshed
+  // to «today + 100 years» on every load (papers-dateline.js owns the
+  // date), so it can never go stale inside a saved draft.
+  const $dateline = $editor.querySelector('[data-pg-dateline]')
+  if ($dateline) {
+    const { iso, text } = plus100EraLine()
+    $dateline.dateTime = iso
+    $dateline.textContent = text
+  }
+
   // Restore the user's own text over the server-rendered sample. The console's
   // Reset never clears this key — it's content, not config.
-  // Only the SAMPLE gets its dateline refreshed: a saved draft is the reader's
-  // own text, and rewriting a date inside it would be editing their work.
   const saved = load()
-  $src.value = saved !== null ? saved : withFreshDateline($src.value)
+  if (saved !== null) $src.value = saved
 
   const render = () => { $preview.innerHTML = renderHtml($src.value) }
 

@@ -27,29 +27,35 @@ const ZOOM = 2.25
 export const initPlaygroundLens = () => {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return
   const $galley = document.querySelector('[data-pg-preview]')
-  if (!$galley) return
+  const $wrap = $galley?.closest('[data-playground]')
+  if (!$galley || !$wrap) return
 
+  // The lens is a SIBLING of the galley, not a descendant: everything that
+  // queries [data-pg-preview] — the render pipeline, the fallbacks pass,
+  // the tests — must keep seeing exactly one preview with exactly one copy
+  // of the content. Sibling placement also means the innerHTML swaps on
+  // re-render can never evict the lens.
   const $lens = document.createElement('div')
   $lens.className = 'PgLens'
   $lens.setAttribute('data-mag-lens', '')
   $lens.setAttribute('aria-hidden', 'true')
-  $galley.append($lens)
+  $wrap.append($lens)
 
   /* One clone at a time; rebuilt whenever the galley's content changes.
      Strip anything that must not duplicate: the lens itself (recursion),
      ids, and the focus/AT surface. */
   let $clone = null
   const recloneNow = () => {
-    // The render pipeline replaces the galley's innerHTML wholesale, which
-    // evicts the lens along with the old content — re-adopt it first.
-    if (!$lens.isConnected) $galley.append($lens)
     $clone?.remove()
     $clone = $galley.cloneNode(true)
     $clone.classList.add('is-lens-clone')
+    // Not a preview — a picture of one. The attribute is the data hook the
+    // pipeline and the tests select by; the clone must not answer to it
+    // (CSS shares the galley face with .is-lens-clone instead).
+    $clone.removeAttribute('data-pg-preview')
     $clone.setAttribute('aria-hidden', 'true')
     $clone.removeAttribute('tabindex')
     $clone.removeAttribute('aria-label')
-    $clone.querySelectorAll('[data-mag-lens]').forEach(($el) => $el.remove())
     $clone.querySelectorAll('[id]').forEach(($el) => $el.removeAttribute('id'))
     $lens.append($clone)
     sync()
@@ -71,8 +77,11 @@ export const initPlaygroundLens = () => {
 
   const positionAt = (cx, cy) => {
     if (!lensSize || !$clone) return
-    $lens.style.insetInlineStart = `${cx}px`
-    $lens.style.insetBlockStart = `${cy}px`
+    // cx/cy are galley-relative; the lens is positioned in the wrapper.
+    const g = $galley.getBoundingClientRect()
+    const w = $wrap.getBoundingClientRect()
+    $lens.style.insetInlineStart = `${g.left - w.left + cx}px`
+    $lens.style.insetBlockStart = `${g.top - w.top + cy}px`
     $clone.style.transform =
       `translate(${lensSize / 2 - cx * ZOOM}px, ${lensSize / 2 - cy * ZOOM}px) scale(${ZOOM})`
   }
@@ -96,11 +105,8 @@ export const initPlaygroundLens = () => {
   })
 
   // Content changes (render pipeline + fallbacks pass) → fresh clone.
-  // The observer would see its own reclone too — guard by scoping to
-  // childList changes OUTSIDE the lens.
-  new MutationObserver((records) => {
-    if (records.some((rec) => !$lens.contains(rec.target))) reclone()
-  }).observe($galley, { childList: true, subtree: true, characterData: true })
+  new MutationObserver(reclone)
+    .observe($galley, { childList: true, subtree: true, characterData: true })
 
   new ResizeObserver(sync).observe($galley)
   recloneNow()

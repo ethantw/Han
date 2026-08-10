@@ -35,15 +35,58 @@
     /* &[data-playground] { margin-inline: calc(-1 * var(--gutter)); } */
   }
 
+  /* the lens (a sibling overlay) anchors to the panel */
+  &[data-playground] { position: relative; }
+
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
-  [data-pg-preview] {
+  [data-pg-paper] {
     display: block;
     box-sizing: border-box;
     inline-size: 100%;
     min-block-size: 18rem;
     margin: 0;
     padding: 18px 20px;
+  }
+
+  /* ── The paper chrome (masthead ＋ dateline) — fixed, not editable ──
+     The galley is a 太陽中文報 page, so it carries the paper's own head:
+     logotype over the classic double rule, then the four-era dateline the
+     page computes fresh on every load (playground.js ← papers-dateline.js).
+     Living OUTSIDE the editable article, the date can never be pickled
+     into a reader's localStorage draft. Mirrors station①'s .Papers head. */
+  [data-pg-paper] {
+    .Masthead {
+      margin: 0;
+      padding-block-end: 0.25rem;
+      border-block-end: 2px solid var(--ui-text);
+      text-align: center;
+      font-family: var(--han-font-alternative);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em;
+    }
+
+    .Dateline {
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 0 1rem;
+        padding-block: 0.25rem;
+        border-block-end: 1px solid var(--ui-rule);
+        font-size: 0.6875rem;
+        color: var(--ui-supplement-text);
+      }
+
+      /* the proof mark — this page is a 校樣, not an edition */
+      &::after {
+        content: "校";
+        flex-shrink: 0;
+        margin-inline-start: auto;
+        padding-inline-start: 0.75rem;
+      }
+    }
   }
 
   textarea {
@@ -63,8 +106,12 @@
   }
 
   /* the preview — page surface, site prose typography; han.css layers on
-     the em dots / punctuation / autospace / ruby / prose spacing itself. */
-  [data-pg-preview] {
+     the em dots / punctuation / autospace / ruby / prose spacing itself.
+     `.is-lens-clone` is the magnifier's live copy of the article — it
+     deliberately does NOT carry data-pg-preview (that attribute is the
+     pipeline's and the tests' data hook), so every rule keyed on the
+     galley face lists it alongside. */
+  :is([data-pg-preview], .is-lens-clone) {
     & {
       background: var(--ui-bg);
       font-family: var(--han-font-alternative);
@@ -159,11 +206,14 @@
   /* radio-driven tab swap — preview default, so hide the code pane until
      its tab is checked, and hide the preview when code is. (:has() —
      Baseline 2023.) */
-  &:has([name="pg-editor-view"][value="code"]:checked) [data-pg-preview] {
+  /* Direct children ONLY (`>`): the studio (dialog) borrows these same
+     panes by reparenting them into its body — one combinator exempts them
+     from the whole tab/grid regime while they're on loan. */
+  &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-paper] {
     display: none;
   }
 
-  &:not(:has([name="pg-editor-view"][value="code"]:checked)) textarea {
+  &:not(:has([name="pg-editor-view"][value="code"]:checked)) > textarea {
     display: none;
   }
 
@@ -206,8 +256,8 @@
        nothing to do. Selectors copied VERBATIM from the tab rules above —
        same shape, same specificity (0,5,0), later in source, so they win
        the tie; anything shorter loses and the panes stay hidden. */
-    &:has([name="pg-editor-view"][value="code"]:checked) [data-pg-preview],
-    &:not(:has([name="pg-editor-view"][value="code"]:checked)) textarea {
+    &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-paper],
+    &:not(:has([name="pg-editor-view"][value="code"]:checked)) > textarea {
       display: block;
     }
 
@@ -220,7 +270,7 @@
        Viewport-sized minus the site header, scrolls inside. Sticky so it
        stays at hand when the galley grows past a viewport (long user
        content is allowed to). */
-    textarea {
+    & > textarea {
       grid-column: 1;
       block-size: calc(100dvh - var(--h-header) - 2rem);
       overflow: auto;
@@ -240,27 +290,28 @@
        the viewport, scrolling inside. Column width is in em, so the
        column keeps its character measure across both states and the
        galley re-folds like a paper rather than reflowing into a blog. */
+    & > [data-pg-paper] {
+      grid-column: 2;
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      box-shadow: 0 1px 0 var(--ui-bg-2q);
+      padding: 1.25rem 1.5rem;
+    }
+
+    /* the galley face — the article and the magnifier's clone must render
+       identically or the lens shows a different page */
+    [data-pg-preview],
+    .is-lens-clone {
+      font-size: 0.5625rem;
+      line-height: 1.7;
+      columns: 10em;
+      column-gap: 2em;
+      column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
+    }
+
     [data-pg-preview] {
-      & {
-        grid-column: 2;
-        background: var(--ui-bg);
-        border: 1px solid var(--ui-rule);
-        border-radius: var(--r-3);
-        box-shadow: 0 1px 0 var(--ui-bg-2q);
-        padding: 1.25rem 1.5rem;
-
-        font-size: 0.5625rem;
-        line-height: 1.7;
-        columns: 10em;
-        column-gap: 2em;
-        column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
-        cursor: zoom-in;
-      }
-
-      /* the lens needs a positioning context, and its circle must be able
-         to poke past the card edge */
-      position: relative;
-      overflow: visible;
+      cursor: zoom-in;
 
       /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
          mouse gets the lens below, and a click-to-select must not reflow
@@ -274,12 +325,17 @@
         overflow: auto;
         cursor: auto;
       }
+    }
 
-      /* ── The lens (.PgLens, built by home/playground-lens.js) ───────
-         A circular window that paints the SAME galley (a live clone,
-         every [data-pg-preview] rule reapplies) at 2.25× under the
-         cursor. Hover-only, mouse-only; hidden on coarse pointers. */
-      &:hover .PgLens { opacity: 1; }
+    /* ── The lens (.PgLens, home/playground-lens.js) — a circular window
+       painting the live clone at 2.25× under the cursor. A SIBLING of the
+       cards (anchored to the grid wrapper), so the preview subtree stays
+       the pipeline's alone. Hover-only, mouse-only. */
+    [data-pg-paper]:hover ~ .PgLens { opacity: 1; }
+
+    /* wide mode floats the button over the editor card's top-right */
+    .PgFocus {
+      inset-block-start: 0.75rem;
     }
 
     .PgLens {
@@ -323,4 +379,122 @@
       }
     }
   }
+}
+
+
+/* ── 專心編輯模式 ────────────────────────────────────────────────────
+   The toggle lives on the panel's top-right corner — over the dark tab
+   strip in tab mode, over the terminal card in the wide layout, so one
+   dark-ground style serves both. */
+.Playground .PgFocus {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--palette-paper);
+  background: color-mix(in srgb, var(--palette-mist) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--palette-mist) 30%, transparent);
+  border-radius: var(--r-2);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:hover { background: color-mix(in srgb, var(--palette-mist) 22%, transparent); }
+}
+
+/* The studio: a fullscreen modal holding the SAME two panes side by side.
+   Top layer means the page can never scroll out from under the writer;
+   exit is the ✕ alone (playground.js cancels Esc). */
+.PgStudio {
+  &[open] {
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  & {
+    inline-size: 100vw;
+    block-size: 100dvh;
+    max-inline-size: none;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+  }
+
+  > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem var(--gutter);
+    border-block-end: 1px solid var(--ui-rule);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    color: var(--ui-supplement-text);
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 28px;
+      block-size: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: var(--r-2);
+      background: none;
+      color: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 150ms ease, background-color 150ms ease;
+
+      &:hover, &:focus-visible { opacity: 1; background: var(--ui-panel); }
+    }
+  }
+
+  [data-pg-studio-body] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gutter);
+    padding: var(--gutter);
+    min-block-size: 0;
+
+    /* both panes fill the row and scroll inside — the writer's viewport
+       is the studio, not the page */
+    textarea,
+    [data-pg-paper] {
+      block-size: 100%;
+      min-block-size: 0;
+      overflow: auto;
+      resize: none;
+    }
+
+    textarea {
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      border-radius: var(--r-3);
+    }
+
+    [data-pg-paper] {
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      padding: 1.5rem 2rem;
+    }
+
+    /* reading-size newspaper: the studio is for WRITING, so the proof
+       reads at full size — real columns, but legible ones */
+    [data-pg-preview] {
+      font-size: 0.9375rem;
+      line-height: 1.9;
+      columns: 18em;
+      column-gap: 2.5em;
+      cursor: auto;
+    }
+  }
+}
+
+/* the page behind the studio must not rubber-band along */
+body:has(.PgStudio[open]) {
+  overflow: hidden;
 }
