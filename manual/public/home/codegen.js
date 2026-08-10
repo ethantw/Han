@@ -249,12 +249,20 @@ const ORIGIN = {
   esmsh: 'https://esm.sh/',
 }
 
+/* 版本號來自 `window.__hanCdn`，由 _layout.html／_home.html 從 manual/.env
+   注入（見那兩個檔的 head）。這支檔在 public/ 底下、被 Vite 原樣複製，所以讀不到
+   import.meta.env，也吃不到 `%VITE_…%` 替換——只能靠全域傳進來。
+   讀不到就退回 `latest`：這支也可以被直接開來讀、當成示範程式碼，那種情境下沒有
+   layout，不該因此壞掉。
+   要緊的是它產生的片段與讀者眼前那一頁載入的是同一版；兩者同源於 .env。 */
+const version = (pkg) => globalThis.__hanCdn?.[pkg] || 'latest'
+
 export const zianoUrl = (id, source = 'jsdelivr') =>
-  `${ORIGIN[source]}${SCOPE}webfonts-${id}@latest/swap.css`
+  `${ORIGIN[source]}${SCOPE}webfonts-${id}@${version('ziano')}/swap.css`
 
 // diantenjeom 現在也隨 webfontCdnSource（han.css 本身仍恆 jsdelivr）。
 export const dtjUrl = (source = 'jsdelivr') =>
-  `${ORIGIN[source]}${SCOPE}diantenjeom@latest/dist/diantenjeom.css`
+  `${ORIGIN[source]}${SCOPE}diantenjeom@${version('diantenjeom')}/dist/diantenjeom.css`
 
 const preconnectHost = (source) => new URL(ORIGIN[source]).origin
 

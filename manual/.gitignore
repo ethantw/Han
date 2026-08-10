@@ -3,3 +3,6 @@ dist/
 public/han/
 .cache/
 public/brand-lockup*.html
+
+# local CDN version overrides for soak-testing an rc
+.env.local

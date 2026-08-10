@@ -1133,6 +1133,9 @@ function hanManualPlugin() {
 
 export default defineConfig({
   root: HTML_ROOT,
+  // `root` is a generated cache directory that the build wipes, so .env has to
+  // be looked up beside this config instead.
+  envDir: here,
   publicDir: path.resolve(here, 'public'),
   plugins: [hanManualPlugin()],
   appType: 'mpa',
