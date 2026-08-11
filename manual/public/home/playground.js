@@ -135,8 +135,10 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
         $studioHead.insertBefore($tabs, $studioHead.querySelector('[data-pg-studio-close]'))
       }
       $studioBody.append($src, $sheet)
-      fitSheet()               // clears the page-layout solve
       $studio.showModal()
+      // AFTER showModal: a closed dialog is `display: none`, so anything
+      // measured before it opens reads zero (the columns came back as one).
+      fitSheet()
       $src.focus()
     })
     $studio.addEventListener('cancel', (e) => {
@@ -231,14 +233,56 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     if (getComputedStyle($editor).display !== 'grid') return   // tab mode
     const $paper = $editor.querySelector('[data-pg-paper]')
     if (!$paper) return
+    const inStudio = !!$paper.closest('[data-pg-studio]')
+
+    /* Widen the multicol box to cover every column it produced.
+     *
+     * Overflow columns spill straight THROUGH the card's end padding — a
+     * scroll container's trailing padding is not part of its scrollable area
+     * once content overflows into it — so at full scroll the last column sat
+     * flush against the edge. Once the box is as wide as its columns there
+     * are no overflow columns, the padding counts again, and the sheet ends
+     * with a margin like a page should.
+     *
+     * Measured, not derived: the column COUNT is a function of the copy's
+     * length, and `max-content` doesn't answer it (it reports the unwrapped
+     * width — 9 columns where 5 were needed). The card's `scrollWidth` does.
+     * Valid only with the measure PINNED (`--pg-galley-col-used`): otherwise
+     * `column-width` is a minimum the box stretches, so `c` is not the width
+     * a column actually has and the count comes out wrong. */
+    const coverColumns = (c, gap) => {
+      const padStart = Number.parseFloat(getComputedStyle($paper).paddingInlineStart)
+      const total = $paper.scrollWidth - padStart
+      const n = Math.max(1, Math.round((total + gap) / (c + gap)))
+      $preview.style.setProperty('--pg-galley-w', `${n * c + (n - 1) * gap}px`)
+    }
+
+    /** Columns of at least the token measure, stretched to fill `visible`
+     *  exactly — no half column, because in here there is no cut to signal. */
+    const fillMeasure = (visible, floorC, gap) => {
+      const k = Math.max(1, Math.floor((visible + gap) / (floorC + gap)))
+      return (visible - (k - 1) * gap) / k
+    }
+
     // In 認真模式 the sheet is on loan to the dialog, which lays it out its
     // own way; solving page geometry there would write a bleed measured
-    // against a layout the sheet isn't in. Clear the solve and stand down.
-    if ($paper.closest('[data-pg-studio]')) {
+    // against a layout the sheet isn't in. The columns still need covering.
+    if (inStudio) {
       $paper.style.removeProperty('--pg-bleed')
       $paper.removeAttribute('data-pg-bled')
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')
+      const scs = getComputedStyle($paper)
+      const sgs = getComputedStyle($preview)
+      const gap = Number.parseFloat(sgs.columnGap) || 0
+      const floorC =
+        Number.parseFloat(sgs.fontSize) * Number.parseFloat(sgs.getPropertyValue('--pg-galley-col'))
+      const visible = $paper.clientWidth
+        - Number.parseFloat(scs.paddingInlineStart) - Number.parseFloat(scs.paddingInlineEnd)
+      if (!Number.isFinite(floorC) || floorC <= 0 || !(visible > 0)) return
+      const c = fillMeasure(visible, floorC, gap)
+      $preview.style.setProperty('--pg-galley-col-used', `${c}px`)
+      coverColumns(c, gap)
       return
     }
 
@@ -280,7 +324,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     if (!overflowing()) {
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')
+      return
     }
+    coverColumns(c, gap)
   }
 
   const render = () => { $preview.innerHTML = renderHtml($src.value) }

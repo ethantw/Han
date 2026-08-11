@@ -187,12 +187,23 @@ test.describe('station⑤ playground', () => {
           right: Math.round($card.getBoundingClientRect().right),
           winRight: document.documentElement.clientWidth,
           scrolls: $card.scrollWidth > $card.clientWidth + 1,
-          // width shown past the pinned box: half a column, when cut
-          tail: Math.round(
-            $card.clientWidth - pad - Number.parseFloat(gs.inlineSize)
-              - Number.parseFloat(gs.columnGap),
-          ),
+          // The card's edge must fall on a column's midpoint: whatever the
+          // visible width has left over after whole columns is half of one.
+          tail: Math.round(($card.clientWidth - pad) % (used + Number.parseFloat(gs.columnGap))),
           half: Math.round(used / 2),
+          // scrolled to the end, the sheet keeps its margin: the last column
+          // stops short of the card's edge (overflow columns would spill
+          // straight through the padding — hence the covering box)
+          endGap: (() => {
+            const before = $card.scrollLeft
+            $card.scrollLeft = $card.scrollWidth
+            const gap = Math.round(
+              $card.getBoundingClientRect().right - $g.getBoundingClientRect().right,
+            )
+            $card.scrollLeft = before
+            return gap
+          })(),
+          padEnd: Math.round(Number.parseFloat(cs.paddingInlineEnd)),
         }
       })
 
@@ -214,6 +225,7 @@ test.describe('station⑤ playground', () => {
     // right edge on the window's edge, and the cut is half a column wide
     expect(Math.abs(long.right - long.winRight)).toBeLessThanOrEqual(2)
     expect(Math.abs(long.tail - long.half)).toBeLessThanOrEqual(2)
+    expect(long.endGap).toBe(long.padEnd)
   })
 
   test('the loupe has an off switch, and comes back to the headline', async ({ page }) => {

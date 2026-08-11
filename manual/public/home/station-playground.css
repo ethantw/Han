@@ -701,13 +701,17 @@
     /* reading-size newspaper: the studio is for WRITING, so the proof
        reads at full size — real columns, but legible ones */
     .PgGalley {
-      /* The solve's pinned box belongs to the page; in here the galley just
-         fills the card, at reading size, and keeps filling sequentially so
-         the sheet reads the same way it does outside. */
-      inline-size: 100%;
+      /* Reading size, wider measure — same token, so the module's column
+         arithmetic reads the same way in here as it does on the page. The
+         page's half-cut solve stays outside; what the box still needs is to
+         COVER its columns (fitSheet), or the last one would sit flush
+         against the card's edge. */
+      --pg-galley-col: 18;
+
+      inline-size: var(--pg-galley-w, 100%);
       block-size: auto;
       font-size: 0.9375rem;
-      columns: 18em;
+      columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
       column-gap: 2.5em;
       column-fill: auto;
       cursor: auto;
