@@ -35,8 +35,11 @@
     /* &[data-playground] { margin-inline: calc(-1 * var(--gutter)); } */
   }
 
-  /* the lens (a sibling overlay) anchors to the panel */
+  /* the lens (a sibling overlay) anchors to the panel; it belongs to the
+     two-card layout only — in tab mode it would be a stray block of
+     duplicated content, so it is hidden until the wide rules turn it on. */
   &[data-playground] { position: relative; }
+  .PgLens { display: none; }
 
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
@@ -90,7 +93,6 @@
       border: 0;
       font-family: var(--font-mono);
       font-size: 0.8125rem;
-      line-height: 1.7;
       color: var(--code-fg);
       tab-size: 2;
     }
@@ -109,14 +111,12 @@
     & {
       background: var(--ui-bg);
       font-family: var(--han-font-alternative);
-      line-height: 1.9;
+      line-height: 2;
     }
 
     :is(h1, h2, h3, h4, h5, h6) {
       & {
-        margin: 1.5em 0 0.6em;
-        font-weight: 600;
-        line-height: 1.3;
+        line-height: 1.25;
       }
 
       &:first-child { margin-block-start: 0; }
@@ -125,30 +125,14 @@
     /* em, not rem — the preview re-bases its font-size (galley overview
        below, console metric slider otherwise), and headings must follow
        the base or a 10px galley gets 24px headlines. */
-    :is(h1, h2) { font-size: 1.5em; }
+    :is(h1, h2) { font-size: 1.25em; }
     h3 { font-size: 1.125em; }
     :is(h4, h5, h6) { font-size: 1em; }
-
-    p { margin: 0 0 1em; }
 
     /* No rule, no padding: han's prose layer already indents a blockquote
        by `--han-prose-indent` and swaps it to the cursive face, and this
        card exists to show THAT. A page-side side-line would both fight the
        library and misreport what it does. */
-    blockquote {
-      /* `margin-block`, NOT the `margin` shorthand — the shorthand also
-         writes margin-inline: 0, which silently cancels han's indent. */
-      margin-block: 1em;
-      color: var(--ui-supplement-text);
-    }
-
-    :is(ul, ol) {
-      margin: 0 0 1em;
-      padding-inline-start: 1.5em;
-    }
-
-    li { margin-block: 0.25em; }
-
     a {
       color: var(--ui-accent);
       text-decoration: underline;
@@ -175,7 +159,6 @@
         color: var(--code-fg);
         font-family: var(--font-mono);
         font-size: 0.8125em;
-        line-height: 1.6;
       }
 
       code {
@@ -316,13 +299,13 @@
     /* the galley face */
     .PgGalley {
       font-size: var(--pg-galley-fs);
-      line-height: 1.7;
       columns: calc(var(--pg-galley-col) * 1em);
       column-gap: 2em;
       column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
     }
 
     [data-pg-preview] {
+      --han-prose-indent: 1em;
 
       /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
          mouse gets the lens below, and a click-to-select must not reflow
@@ -340,10 +323,13 @@
 
     /* ── The lens (.PgLens, home/playground-lens.js) — a circular window
        painting a live copy of the WHOLE paper card (masthead and dateline
-       included: they are part of the page being proofed) under the cursor.
-       A SIBLING of the cards, so the pipeline's subtree stays its own.
-       Hover-only, mouse-only. */
-    [data-pg-paper]:hover ~ .PgLens { opacity: 1; }
+       included: they are part of the page being proofed). A SIBLING of the
+       cards, so the pipeline's subtree stays its own.
+
+       Always on stage (the module parks it over the headline until the
+       cursor takes over): a loupe you have to discover by hovering can't
+       tell you it's there. */
+    .PgLens { display: block; }
 
     .PgLens {
       & {
@@ -365,8 +351,6 @@
         pointer-events: none;
         overflow: hidden;
         z-index: 3;
-        opacity: 0;
-        transition: opacity 120ms ease;
         border-radius: 50%;
         background: var(--ui-bg);
         /* rim: ink line + paper inset + soft drop — a loupe on paper */
@@ -506,7 +490,6 @@
        reads at full size — real columns, but legible ones */
     [data-pg-preview] {
       font-size: 0.9375rem;
-      line-height: 1.9;
       columns: 18em;
       column-gap: 2.5em;
       cursor: auto;

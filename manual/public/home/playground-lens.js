@@ -18,6 +18,11 @@
  * pass), so the clone is refreshed from a MutationObserver — one rAF per
  * burst — rather than by coupling into playground.js's render path.
  *
+ * The lens is ALWAYS on stage: before any hover it parks over the headline
+ * (that is the reader's first sentence, and a lens that only exists after
+ * you find it explains nothing), and when the cursor leaves it stays where
+ * it left rather than snapping home.
+ *
  * Mouse-only sugar: gated on `(hover: hover) and (pointer: fine)`, and the
  * keyboard path stays in CSS (`:focus-visible` flips the galley itself to
  * reading size).
@@ -88,6 +93,10 @@ export const initPlaygroundLens = () => {
   let lastX = 0
   let lastY = 0
   let lensSize = 0
+  // Until the reader takes over, the lens belongs to the headline — and it
+  // re-finds it after every re-render, so it never ends up parked over
+  // whitespace the last render left behind.
+  let readerDriving = false
 
   const positionAt = (cx, cy) => {
     if (!lensSize || !$clone) return
@@ -101,6 +110,17 @@ export const initPlaygroundLens = () => {
       `translate(${lensSize / 2 - cx * z}px, ${lensSize / 2 - cy * z}px) scale(${z})`
   }
 
+  /** Card-relative centre of the galley's headline (any first block will
+   *  do — an empty draft has none, and the card's middle is the honest
+   *  answer there). */
+  const headlinePoint = () => {
+    const card = $paper.getBoundingClientRect()
+    const $first = $galley.querySelector('h1, h2, h3, p, blockquote')
+    if (!$first) return [card.width / 2, card.height / 2]
+    const r = $first.getBoundingClientRect()
+    return [r.left - card.left + r.width / 2, r.top - card.top + r.height / 2]
+  }
+
   /* The clone must occupy the card's exact geometry or the column layout
      re-folds and the lens shows a different page. */
   const sync = () => {
@@ -109,13 +129,24 @@ export const initPlaygroundLens = () => {
     $clone.style.inlineSize = `${r.width}px`
     $clone.style.blockSize = `${r.height}px`
     lensSize = $lens.getBoundingClientRect().width
+    if (!readerDriving) [lastX, lastY] = headlinePoint()
     positionAt(lastX, lastY)
   }
 
   $paper.addEventListener('mousemove', (e) => {
+    readerDriving = true
     const r = $paper.getBoundingClientRect()
     lastX = e.clientX - r.left
     lastY = e.clientY - r.top
+    positionAt(lastX, lastY)
+  })
+
+  /* Leaving parks the lens where the cursor left, clamped to the card — the
+     leave event's own coordinates are already outside it. */
+  $paper.addEventListener('mouseleave', (e) => {
+    const r = $paper.getBoundingClientRect()
+    lastX = Math.min(Math.max(e.clientX - r.left, 0), r.width)
+    lastY = Math.min(Math.max(e.clientY - r.top, 0), r.height)
     positionAt(lastX, lastY)
   })
 
