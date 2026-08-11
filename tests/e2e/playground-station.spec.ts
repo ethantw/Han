@@ -334,6 +334,21 @@ test.describe('station⑤ playground', () => {
       }),
     ).toEqual({ lifted: false, pastWindow: false, pageScrollsX: false, closeReachable: true })
 
+    // …but it is still a page: columns fill downward, then rightward, and the
+    // card pans. (Reading size, so the article needs many more columns here.)
+    expect(
+      await page.evaluate(() => {
+        const $card = document.querySelector('[data-pg-studio] [data-pg-paper]')!
+        const $g = document.querySelector('[data-pg-studio] [data-pg-preview]')!
+        $card.scrollLeft = 200
+        return {
+          fill: getComputedStyle($g).columnFill,
+          pans: $card.scrollWidth > $card.clientWidth + 1,
+          scrolled: $card.scrollLeft > 0,
+        }
+      }),
+    ).toEqual({ fill: 'auto', pans: true, scrolled: true })
+
     // Esc is an editing reflex while the caret is in the editor…
     await page.locator('[data-pg-src]').focus()
     await page.keyboard.press('Escape')

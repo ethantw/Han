@@ -423,7 +423,6 @@
     /* the loupe's switch sits under the sheet, in the galley column */
     .PgLensSwitch {
       display: inline-flex;
-      /* align-self: flex-end; */
 
       /* Above the loupe, on its own paper. The circle is 386px across and
          the cursor has to travel toward this switch to reach it — dragging
@@ -435,6 +434,7 @@
       position: relative;
       z-index: 4;
       translate: 0 -7rem;
+      margin-block-start: 1rem;
 
       /* `.Toggle` (controls.css) speaks the console's `--_*` indirection,
          which lives on the shadow `:host`; bridge the five it reads. */
@@ -648,8 +648,9 @@
     /* Both panes fill the row and scroll inside — the writer's viewport is
        the studio, not the page. The sheet arrives dressed for the page
        (lifted, bled to the window's edge, its column box pinned by the
-       solve), so everything positional is handed back here: in the studio
-       the proof is a column you scroll, not a page you pan. */
+       solve), so the positional half is handed back here — but it is still
+       a PAGE: columns fill downward then continue rightward, and you pan it.
+       The studio only gives it more room and bigger type. */
     textarea,
     [data-pg-sheet] {
       block-size: 100%;
@@ -673,8 +674,11 @@
       inline-size: 100%;
       block-size: auto;
       translate: none;
-      overflow-x: hidden;
-      overflow-y: auto;
+      /* pans, like the page — the sheet is the same sheet */
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
       border-inline-end: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
       cursor: auto;
@@ -697,12 +701,15 @@
     /* reading-size newspaper: the studio is for WRITING, so the proof
        reads at full size — real columns, but legible ones */
     .PgGalley {
+      /* The solve's pinned box belongs to the page; in here the galley just
+         fills the card, at reading size, and keeps filling sequentially so
+         the sheet reads the same way it does outside. */
       inline-size: 100%;
       block-size: auto;
       font-size: 0.9375rem;
       columns: 18em;
       column-gap: 2.5em;
-      column-fill: balance;
+      column-fill: auto;
       cursor: auto;
     }
   }
