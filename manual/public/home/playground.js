@@ -198,10 +198,18 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    *
    *     visible = k·c + k·g + c/2   ⇒   c = (visible − k·g) / (k + 0.5)
    *
-   * k comes from the CSS target (`--pg-galley-col` em), so the measure
-   * drifts a few px instead of the design changing. The box is k·c + (k−1)·g
-   * — exactly k columns, no stretch — and the rest of the copy flows into
-   * overflow columns beyond it, inside the card's scroll.
+   * `--pg-galley-col` (em) is a FLOOR, not a target: k is the largest count
+   * whose solved measure still clears it, so the columns come out at or
+   * above the design measure and never below it. Three demands meet here —
+   * the right edge on the window, the cut exactly half a column, the measure
+   * at least 14em — and only one of them can absorb the remainder; the
+   * measure is the one that can grow without lying about anything.
+   *
+   *     c ≥ floor  ⟺  k ≤ (visible − floor/2) / (floor + g)
+   *
+   * The box is k·c + (k−1)·g — exactly k columns, no stretch — and the rest
+   * of the copy flows into overflow columns beyond it, inside the card's
+   * scroll.
    *
    * Pinning the box is the whole trick: a multicol box always stretches its
    * columns to fill itself, so as long as the box IS the visible width every
@@ -235,12 +243,12 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
 
     const gs = getComputedStyle($preview)
     const gap = Number.parseFloat(gs.columnGap) || 0
-    const target =
+    const floorC =
       Number.parseFloat(gs.fontSize) * Number.parseFloat(gs.getPropertyValue('--pg-galley-col'))
     const visible = $paper.clientWidth - pad
-    if (!Number.isFinite(target) || target <= 0 || !(visible > 0)) return
+    if (!Number.isFinite(floorC) || floorC <= 0 || !(visible > 0)) return
 
-    const k = Math.max(1, Math.round((visible + gap) / (target + gap) - 0.5))
+    const k = Math.max(1, Math.floor((visible - floorC / 2) / (floorC + gap)))
     const c = (visible - k * gap) / (k + 0.5)
     $preview.style.setProperty('--pg-galley-col-used', `${c}px`)
     $preview.style.setProperty('--pg-galley-w', `${k * c + (k - 1) * gap}px`)

@@ -178,8 +178,10 @@ test.describe('station⑤ playground', () => {
         const pad =
           Number.parseFloat(cs.paddingInlineStart) + Number.parseFloat(cs.paddingInlineEnd)
         const used = Number.parseFloat(gs.getPropertyValue('--pg-galley-col-used'))
+        const em = Number.parseFloat(gs.fontSize)
         return {
           fill: gs.columnFill,
+          colEm: (used || Number.parseFloat(gs.columnWidth)) / em,
           bled: $card.hasAttribute('data-pg-bled'),
           gap: Math.round(Number.parseFloat(gs.columnGap)),
           right: Math.round($card.getBoundingClientRect().right),
@@ -207,6 +209,8 @@ test.describe('station⑤ playground', () => {
 
     const long = await sheet()
     expect(long.scrolls).toBe(true)
+    // the design measure is a FLOOR — the solve may widen, never narrow
+    expect(long.colEm).toBeGreaterThanOrEqual(14)
     // right edge on the window's edge, and the cut is half a column wide
     expect(Math.abs(long.right - long.winRight)).toBeLessThanOrEqual(2)
     expect(Math.abs(long.tail - long.half)).toBeLessThanOrEqual(2)

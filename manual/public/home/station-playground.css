@@ -362,7 +362,8 @@
          WHOLE number of columns so the columns keep their measure instead of
          stretching to fill the box — stretching is exactly what makes every
          visible column complete, and a complete last column signals
-         nothing. `14em` survives as the target JS solves around. */
+         nothing. The 14em below is a FLOOR: the solve may hand the columns
+         more, never less. */
       inline-size: var(--pg-galley-w, 100%);
       columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
       column-gap: 2em;
