@@ -74,6 +74,12 @@
     ja: '# ここにあなたの文を\n\nこの数行を消して、あなたの文章に差し替えてほしい。MarkdownもHTMLも通る——<u>固有名詞</u>、<em>圏点</em>、<cite>書名</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>、どれも組める。',
     ko: '# 여기에 당신의 글을\n\n이 몇 줄을 지우고 당신의 <ruby>文章<rt>문장</rt></ruby>으로 바꾸면 된다。Markdown도 HTML도 받는다——<u>固有名詞</u>、<em>傍點</em>、<cite>書名</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby> 모두 짜인다。',
   },
+  /* The strip's control is an ACTION — 進入…; the dialog's own head names
+     the mode it put you in. Two strings, two jobs. */
+  pgFocusEnter: {
+    hant: '進入認真模式', hans: '进入认真模式', en: 'Enter serious mode',
+    ja: '本気モードに入る', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드로',
+  },
   pgFocusTitle: {
     hant: '認真模式', hans: '认真模式', en: 'Serious mode',
     ja: '本気モード', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드',
@@ -128,10 +134,14 @@
         <label><input type="radio" name="pg-content" value="custom">{{ pgContentCustom }}</label>
       </fieldset>
 
-      <label class="Toggle PgFocus">
-        <span>{{ pgFocusTitle }}</span>
-        <input type="checkbox" data-pg-focus>
-      </label>
+      <!-- Still a checkbox (checked ⇒ in the studio, so the switch and the
+           reality can't drift), but its face is a button: entering is an
+           action, and a switch would promise a way back the modal doesn't
+           give. The input is visually hidden — the `for=`/`id=` pair is what
+           makes the label操作得動 it, and `:focus-visible` on the input
+           paints the ring on the label. -->
+      <input type="checkbox" id="pg-focus" class="sr-only" data-pg-focus>
+      <label class="PgFocus" for="pg-focus">{{ pgFocusEnter }}</label>
     </div>
   </hgroup>
 

@@ -431,30 +431,47 @@
 
 
 /* ── 認真模式 ─────────────────────────────────────────────────────────
-   The switch shares the <h2>'s line in the station head. Its face is the
-   shared `.Toggle` primitive (controls.css) — the same switch the console
-   uses, so「開關」looks like one switch across the whole site.
-
-   `.Toggle` consumes the console's `--_*` indirection, which is declared
-   on the shadow `:host` and therefore absent out here; bridge the five it
-   reads to the page's own `--ui-*`. (Bridging beats duplicating the
-   switch's paint job: one face, two homes.) */
+   A checkbox wearing a button: the input keeps the state (checked ⇒ in the
+   studio, so control and reality can't drift) while the label does the
+   talking. Not the `.Toggle` switch — a switch reads as「撥回來就出去」, and
+   inside the modal only the ✕ can do that. */
 .Playground .PgFocus {
-  --_rule: var(--ui-rule);
-  --_bg: var(--ui-bg);
-  --_accent: var(--ui-accent);
-  --_supplement-text: var(--ui-supplement-text);
-  --_fs-compact: 0.8125rem;
+  &  {
+    padding: 0.3125rem 0.875rem;
+    font-family: var(--han-font-default);
+    font-size: 0.8125rem;
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-2);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color     150ms ease,
+      color            150ms ease
+    ;
+  }
+
+  &:hover {
+    border-color: var(--ui-text);
+  }
+
+  /* the ring belongs on the label — the input it names is visually hidden */
+  :where(#pg-focus:focus-visible) + & {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
 }
 
 /* One control strip under the lede: which text is being typeset at the
    start, the 認真模式 switch at the end. */
 .Playground:where(section) > hgroup {
-  max-inline-size: clamp(18rem, 45%, 40rem);
   /* above the panel's stacking context — a lens parked near the top of the
      paper must never cover the controls */
   position: relative;
   z-index: 1;
+  margin-block-end: 1rem;
+  max-inline-size: clamp(18rem, 45%, 40rem);
 }
 .Playground:where(section) > hgroup > .PgControls {
   display: flex;

@@ -185,7 +185,7 @@ test.describe('station⑤ playground', () => {
 
   test('the content tabs follow the panes into 認真模式', async ({ page }) => {
     // One fieldset, moved — not a second copy kept in sync.
-    await page.locator('#station-playground [data-pg-focus]').click()
+    await page.locator('#station-playground label.PgFocus').click()
     await expect(page.locator('[data-pg-studio-head] [data-pg-content-tabs]')).toBeVisible()
 
     await page.locator('[data-pg-studio] [data-pg-content-tabs] label')
