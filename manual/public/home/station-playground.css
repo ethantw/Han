@@ -55,7 +55,7 @@
      page computes fresh on every load (playground.js ← papers-dateline.js).
      Living OUTSIDE the editable article, the date can never be pickled
      into a reader's localStorage draft. Mirrors station①'s .Papers head. */
-  [data-pg-paper] {
+  .PgPaper {
     .Masthead {
       margin: 0;
       padding-block-end: 0.25rem;
@@ -101,11 +101,11 @@
 
   /* the preview — page surface, site prose typography; han.css layers on
      the em dots / punctuation / autospace / ruby / prose spacing itself.
-     `.is-lens-clone` is the magnifier's live copy of the article — it
-     deliberately does NOT carry data-pg-preview (that attribute is the
-     pipeline's and the tests' data hook), so every rule keyed on the
-     galley face lists it alongside. */
-  :is([data-pg-preview], .is-lens-clone) {
+     Keyed on the CLASS, never the data hook: `data-pg-*` is what the
+     render pipeline and the tests select by, and the magnifier's live copy
+     must not answer to any of them — it keeps the classes (its face) and
+     drops every data-*. */
+  .PgGalley {
     & {
       background: var(--ui-bg);
       font-family: var(--han-font-alternative);
@@ -242,8 +242,10 @@
       --pg-galley-col: 14;   /* column measure, in galley em */
 
       display: grid;
-      /* editor is the workspace, the galley is a narrower proof copy */
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+      /* The galley takes the wider track: it is the thing being read, and
+         its column count comes out of that width. `minmax(0, …)` on both
+         so neither pane's intrinsic content can floor a track. */
+      grid-template-columns: minmax(0, .75fr) minmax(0, 1fr);
       gap: var(--gutter);
       align-items: start;
 
@@ -294,19 +296,24 @@
        the viewport, scrolling inside. Column width is in em, so the
        column keeps its character measure across both states and the
        galley re-folds like a paper rather than reflowing into a blog. */
-    & > [data-pg-paper] {
-      grid-column: 2;
+    /* the card face — the real paper AND the lens's copy of it, or the
+       magnified view lands on different geometry than the page shows */
+    & > [data-pg-paper],
+    .PgLens .PgPaper {
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
-      box-shadow: 0 1px 0 var(--ui-bg-2q);
       padding: 1.25rem 1.5rem;
     }
 
-    /* the galley face — the article and the magnifier's clone must render
-       identically or the lens shows a different page */
-    [data-pg-preview],
-    .is-lens-clone {
+    & > [data-pg-paper] {
+      grid-column: 2;
+      box-shadow: 0 1px 0 var(--ui-bg-2q);
+      cursor: zoom-in;
+    }
+
+    /* the galley face */
+    .PgGalley {
       font-size: var(--pg-galley-fs);
       line-height: 1.7;
       columns: calc(var(--pg-galley-col) * 1em);
@@ -315,7 +322,6 @@
     }
 
     [data-pg-preview] {
-      cursor: zoom-in;
 
       /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
          mouse gets the lens below, and a click-to-select must not reflow
@@ -332,9 +338,10 @@
     }
 
     /* ── The lens (.PgLens, home/playground-lens.js) — a circular window
-       painting the live clone at 2.25× under the cursor. A SIBLING of the
-       cards (anchored to the grid wrapper), so the preview subtree stays
-       the pipeline's alone. Hover-only, mouse-only. */
+       painting a live copy of the WHOLE paper card (masthead and dateline
+       included: they are part of the page being proofed) under the cursor.
+       A SIBLING of the cards, so the pipeline's subtree stays its own.
+       Hover-only, mouse-only. */
     [data-pg-paper]:hover ~ .PgLens { opacity: 1; }
 
     .PgLens {
@@ -380,11 +387,10 @@
         transform-origin: 0 0;
         pointer-events: none;
         user-select: none;
-        /* the clone re-runs this card's galley styles by keeping
-           data-pg-preview; only its box duties are neutralised */
+        /* JS sizes it to the source card's BORDER box, so it must measure
+           the same way or every offset inside drifts by the padding. */
+        box-sizing: border-box;
         margin: 0;
-        border: 0;
-        box-shadow: none;
         min-block-size: 0;
       }
     }
