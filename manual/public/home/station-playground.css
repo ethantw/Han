@@ -137,10 +137,14 @@
 
     p { margin: 0 0 1em; }
 
+    /* No rule, no padding: han's prose layer already indents a blockquote
+       by `--han-prose-indent` and swaps it to the cursive face, and this
+       card exists to show THAT. A page-side side-line would both fight the
+       library and misreport what it does. */
     blockquote {
-      margin: 1em 0;
-      padding-inline-start: 1.25rem;
-      border-inline-start: 2px solid var(--ui-rule);
+      /* `margin-block`, NOT the `margin` shorthand — the shorthand also
+         writes margin-inline: 0, which silently cancels han's indent. */
+      margin-block: 1em;
       color: var(--ui-supplement-text);
     }
 

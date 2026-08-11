@@ -76,10 +76,13 @@
     color: var(--ui-text);
   }
 
+  /* Same reasoning as the playground galley: the indent and the cursive
+     face are han's own prose treatment — a side-line drawn by the page
+     would be reporting a feature the library doesn't have. */
   > blockquote {
-    margin: 0;
-    padding-inline-start: 1.25rem;
-    border-inline-start: 2px solid var(--ui-rule);
+    /* `margin-block`, not `margin`: the shorthand's margin-inline: 0 would
+       cancel the very indent this specimen is here to show. */
+    margin-block: 0;
     font-family: var(--han-font-accent);
     font-size: 1rem;
     line-height: 1.9;
