@@ -163,6 +163,19 @@ test.describe('station⑤ playground', () => {
     await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
   })
 
+  test('the content tabs follow the panes into 認真模式', async ({ page }) => {
+    // One fieldset, moved — not a second copy kept in sync.
+    await page.locator('#station-playground [data-pg-focus]').click()
+    await expect(page.locator('[data-pg-studio-head] [data-pg-content-tabs]')).toBeVisible()
+
+    await page.locator('[data-pg-studio] [data-pg-content-tabs] label')
+      .filter({ hasText: '自訂內容' }).click()
+    await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
+
+    await page.locator('[data-pg-studio-close]').click()
+    await expect(page.locator('.PgControls > [data-pg-content-tabs]')).toBeVisible()
+  })
+
   test('a re-render re-installs the JS fallbacks, so *.with-js.css has wrappers to select', async ({ page }) => {
     // `innerHTML` replaces the whole preview subtree, and han.js's wrappers
     // live IN it — without a second pass over the new nodes, `<h-char>` /

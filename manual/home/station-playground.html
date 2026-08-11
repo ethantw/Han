@@ -147,7 +147,13 @@
     <!-- code tab = raw source, preview tab = typeset result; CSS
          (:has(:checked)) shows one at a time. The textarea value is
          RCDATA, so the sample's <ruby>/<em> tags sit here literally. -->
-    <textarea data-pg-src data-pg-custom-default="{{ pgCustomSample }}" spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
+    <!-- 自訂內容's default lives in raw-text element content, not in a
+         `data-*`: an attribute placeholder gets its markup stripped and its
+         line breaks collapsed by the templating, and this default is
+         multi-line Markdown with inline HTML in it. `type="text/plain"`
+         keeps the browser from executing or rendering anything. -->
+    <script type="text/plain" data-pg-custom-default>{{ pgCustomSample }}</script>
+    <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
          article — the date is computed fresh every load (playground.js ←
          papers-dateline.js), so it can never be pickled into a reader's
@@ -169,7 +175,10 @@
          trip untouched. Exit is the ✕ only (Esc is cancelled in JS) — the
          whole point is that nothing scrolls out from under you. -->
     <dialog class="PgStudio" data-pg-studio aria-label="{{ pgFocusTitle }}">
-      <header>
+      <!-- The content tabs are MOVED in here on open (playground.js) — the
+           same fieldset, so switching 報導／自訂內容 works identically inside
+           and out, with no second copy of the state to keep in step. -->
+      <header data-pg-studio-head>
         <span>{{ pgFocusTitle }}</span>
         <button type="button" data-pg-studio-close aria-label="{{ pgFocusClose }}">
           <span data-icon="close" aria-hidden="true"></span>

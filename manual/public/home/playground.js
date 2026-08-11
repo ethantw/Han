@@ -110,6 +110,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * writer back into the scrolling page. */
   const $studio = $editor.querySelector('[data-pg-studio]')
   const $studioBody = $editor.querySelector('[data-pg-studio-body]')
+  const $studioHead = $editor.querySelector('[data-pg-studio-head]')
   // the switch sits in the station head, outside [data-playground]
   const $focusBtn = $editor.closest('section')?.querySelector('[data-pg-focus]')
   const $paper = $editor.querySelector('[data-pg-paper]')
@@ -119,6 +120,13 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     // it closes AND unchecks, keeping switch and reality in step.
     $focusBtn.addEventListener('change', () => {
       if (!$focusBtn.checked) return
+      // The content tabs travel WITH the panes — same element, so the same
+      // listener and the same buffers; a second set of radios in here would
+      // be two writers on one piece of state.
+      // …before the ✕, which owns the far end of that row.
+      if ($tabs && $studioHead) {
+        $studioHead.insertBefore($tabs, $studioHead.querySelector('[data-pg-studio-close]'))
+      }
       $studioBody.append($src, $paper)
       $studio.showModal()
       $src.focus()
@@ -128,6 +136,8 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       const $lens = $editor.querySelector('.PgLens')
       $editor.insertBefore($src, $lens)
       $editor.insertBefore($paper, $lens)
+      // …and the tabs go back to the head, ahead of the focus switch.
+      if ($tabs) $focusBtn.closest('.PgControls')?.prepend($tabs)
       $studio.close()
       $focusBtn.checked = false
     })
@@ -151,7 +161,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * console's Reset never clears this key — it's content, not config. */
   const DEFAULTS = {
     story: $src.value,
-    custom: $src.dataset.pgCustomDefault ?? '',
+    custom: $editor.querySelector('[data-pg-custom-default]')?.textContent ?? '',
   }
   const $tabs = $editor.closest('section')?.querySelector('[data-pg-content-tabs]')
   const saved = load()

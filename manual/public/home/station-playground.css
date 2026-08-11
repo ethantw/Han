@@ -464,17 +464,21 @@
   > header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* title · content tabs … ✕ — the close button is pushed to the far end
+       by its own auto margin, so the borrowed tabs can sit beside the title
+       without space-between flinging the three apart. */
+    gap: 1rem;
     padding: 0.625rem var(--gutter);
     border-block-end: 1px solid var(--ui-rule);
     font-size: 0.8125rem;
     letter-spacing: 0.06em;
     color: var(--ui-supplement-text);
 
-    button {
+    > button {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-inline-start: auto;
       inline-size: 28px;
       block-size: 28px;
       padding: 0;
