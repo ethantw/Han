@@ -75,10 +75,18 @@ const firstRealChild = (parent: Element): Node | null => {
   return node
 }
 
-/** The node that effectively follows `start`, climbing out of wrappers it
- *  ends. Climbing is only reached when nothing follows within the parent —
- *  a trailing text node is returned instead and ends the search, which is
- *  how "any text breaks adjacency" falls out. */
+/**
+ * The node that effectively follows `start`, climbing out of wrappers it
+ * ends. Climbing is only reached when nothing follows within the parent —
+ * a trailing text node is returned instead and ends the search, which is
+ * how "any text breaks adjacency" falls out.
+ *
+ * Climbing out of a GENERATOR ends the search with nothing: that element's
+ * own close bracket is painted at exactly that point, so it, not whatever
+ * comes after the element, is what follows. Missing this put two closing
+ * brackets on top of each other — `《…〈…〉》` marked BOTH cites as meeting
+ * the following comma, and both `::after`s took the half-em letter-spacing.
+ */
 const nextRealNode = (start: Element): Node | null => {
   let node: Node = start
   while (true) {
@@ -86,7 +94,7 @@ const nextRealNode = (start: Element): Node | null => {
     while (next !== null && isTransparent(next)) next = next.nextSibling
     if (next !== null) return next
     const parent: Element | null = node.parentElement
-    if (parent === null) return null
+    if (parent === null || isGenerator(parent)) return null
     node = parent
   }
 }

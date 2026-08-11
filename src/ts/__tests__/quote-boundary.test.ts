@@ -187,6 +187,54 @@ test('auto: on the open side too — <em>…、</em>然後<q> is not a boundary'
   )
 })
 
+/* ─── a generator's own close bracket blocks the climb ───── */
+
+/* Climbing out of an element to find what follows is only sound while the
+ * element paints nothing. Climb out of a `<q>`/`<cite>` and its OWN close
+ * bracket is painted right there, between the mark and whatever is next —
+ * so nothing past that point is adjacent any more. */
+
+test('auto: only the OUTER cite is marked — the inner one\'s 〉 is followed by the outer 》', () => {
+  assert.equal(
+    auto('<p>他讀了<cite>太陽中文報<cite>社論</cite></cite>、然後</p>'),
+    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite>社論</cite></cite>'
+      + '<h-char data-punct="end hangable"><h-layer>、</h-layer></h-char>'
+      + '然後</p>',
+  )
+})
+
+test('auto: a mark ending a <q> is NOT open-q for the next <q> — its own 」 is in between', () => {
+  assert.equal(
+    auto('<p><q>今天真好。</q><q>明天也是</q></p>'),
+    '<p><q>今天真好'
+      + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
+      + '<h-layer>。</h-layer></h-char>'
+      + '</q><q>明天也是</q></p>',
+  )
+})
+
+test('auto: same across kinds — 」《 is a pseudo-to-pseudo seam, not the mark\'s business', () => {
+  assert.equal(
+    auto('<p><q>今天真好，</q><cite>太陽中文報</cite></p>'),
+    '<p><q>今天真好'
+      + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
+      + '<h-layer>，</h-layer></h-char>'
+      + '</q><cite>太陽中文報</cite></p>',
+  )
+})
+
+test('auto: climbing out of a plain wrapper still finds the boundary', () => {
+  // The block above must not over-correct: `<em>` paints nothing, so the
+  // climb through it is still sound.
+  assert.equal(
+    auto('<p><em>他說、</em><q>好</q></p>'),
+    '<p><em>他說'
+      + '<h-char data-punct="end hangable" data-followed-by-quote="open-q">'
+      + '<h-layer>、</h-layer></h-char>'
+      + '</em><q>好</q></p>',
+  )
+})
+
 /* ─── what breaks adjacency ──────────────────────────────── */
 
 test('auto: whitespace-only text breaks the boundary like any other text', () => {

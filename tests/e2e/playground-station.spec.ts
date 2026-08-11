@@ -269,6 +269,35 @@ test.describe('station⑤ playground', () => {
     expect(await centre()).toBe(parked)
   })
 
+  test('the loupe magnifies THIS page: the copy fragments identically', async ({ page }) => {
+    // A loupe that lays its copy out differently isn't magnifying the page,
+    // it's showing a second one. Every rule that shapes the galley therefore
+    // has to reach the copy — which is why the face is keyed on classes and
+    // the card's flex layout is shared: keyed on `data-pg-*` (stripped from
+    // the copy) the galley fell back to an auto height and a wider prose
+    // indent, and the columns broke elsewhere.
+    const diffs = await page.evaluate(() => {
+      const sig = (root: Element, scale: number) => {
+        const g = root.getBoundingClientRect()
+        return [...root.querySelectorAll('h1, h2, p, blockquote')].map((el) => {
+          const r = el.getBoundingClientRect()
+          return `${el.textContent!.slice(0, 3)}|${Math.round((r.x - g.x) / scale)},${Math.round((r.y - g.y) / scale)}`
+        })
+      }
+      const $src = document.querySelector('#station-playground [data-pg-preview]')!
+      const $copy = document.querySelector('#station-playground .is-lens-clone .PgGalley')!
+      const zoom = Number.parseFloat(
+        getComputedStyle(document.querySelector('#station-playground .PgLens')!)
+          .getPropertyValue('--pg-lens-zoom'),
+      )
+      const a = sig($src, 1)
+      const b = sig($copy, zoom)
+      return { n: a.length, diffs: a.map((v, i) => [v, b[i]]).filter(([x, y]) => x !== y) }
+    })
+    expect(diffs.n).toBeGreaterThan(10)
+    expect(diffs.diffs).toEqual([])
+  })
+
   test('the content tabs follow the panes into 認真模式', async ({ page }) => {
     // One fieldset, moved — not a second copy kept in sync.
     await page.locator('#station-playground label.PgFocus').click()

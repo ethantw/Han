@@ -293,12 +293,27 @@
        galley re-folds like a paper rather than reflowing into a blog. */
     /* the card face — the real paper AND the lens's copy of it, or the
        magnified view lands on different geometry than the page shows */
+    /* The card face — the real paper AND the loupe's copy of it. This must
+       include the LAYOUT, not just the paint: the galley's height comes from
+       flexing against the card, and a clone that laid out as a plain block
+       gave its galley an auto height, so the copy fragmented into different
+       columns than the page it was supposed to be magnifying. */
     [data-pg-sheet] > [data-pg-paper],
     .PgLens .PgPaper {
       padding: 1.25rem 1rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
+      block-size: var(--pg-pane-h);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* The copy clips instead of scrolling — the module mirrors the source's
+       scroll offset onto it, and a scrollbar inside the circle would be a
+       control nobody can reach. */
+    .PgLens .PgPaper {
+      overflow: hidden;
     }
 
     /* The sheet unit owns the track; the LIFT belongs to its two children,
@@ -319,12 +334,6 @@
 
     [data-pg-sheet] > [data-pg-paper] {
       inline-size: 100%;
-      /* One pane tall, with the galley taking whatever the masthead and
-         dateline leave — measured by flex rather than guessed at in a
-         `calc`, since the dateline wraps at some widths. */
-      block-size: var(--pg-pane-h);
-      display: flex;
-      flex-direction: column;
       translate: 0 -7rem;
       box-shadow: 0 1px 0 var(--ui-bg-2q);
       cursor: zoom-in;
@@ -387,11 +396,14 @@
       column-fill: auto;
     }
 
-    [data-pg-preview] {
-      & {
-        --han-prose-indent: 1em;
-      }
+    /* The narrower measure wants a narrower indent. On the CLASS: this is
+       part of the galley's face, and the loupe's copy has to indent the same
+       or it breaks its lines somewhere else and stops being a copy. */
+    .PgGalley {
+      --han-prose-indent: 1em;
+    }
 
+    [data-pg-preview] {
       /* Keyboard reading mode (`:focus-visible`, not :hover/:focus — the
          mouse gets the lens, and a click-to-select must not reflow the
          card): unfold the page into ONE vertical column at reading size.
