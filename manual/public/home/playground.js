@@ -180,6 +180,79 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     save({ tab, ...buffers })
   }
 
+  /* ── fitSheet — how wide the sheet is, and where it gets cut ────────
+   * A sheet that fits its grid track stays in it. One that doesn't widens
+   * to the WINDOW's right edge and gets its last visible column cut in
+   * half: a page ending mid-column is the only honest way to say「還有右邊」
+   * without drawing an arrow at the reader.
+   *
+   * Two numbers CSS can't reach on its own (they need the viewport and the
+   * used column metrics in one expression):
+   *
+   *   --pg-bleed             width past the grid track
+   *   --pg-galley-w          the multicol box, pinned to a WHOLE number of
+   *   --pg-galley-col-used   columns at a solved measure
+   *
+   * The solve: let k full columns, k gaps and one HALF column exactly fill
+   * the visible width —
+   *
+   *     visible = k·c + k·g + c/2   ⇒   c = (visible − k·g) / (k + 0.5)
+   *
+   * k comes from the CSS target (`--pg-galley-col` em), so the measure
+   * drifts a few px instead of the design changing. The box is k·c + (k−1)·g
+   * — exactly k columns, no stretch — and the rest of the copy flows into
+   * overflow columns beyond it, inside the card's scroll.
+   *
+   * Pinning the box is the whole trick: a multicol box always stretches its
+   * columns to fill itself, so as long as the box IS the visible width every
+   * visible column is complete, and a complete last column signals nothing.
+   */
+  const fitSheet = () => {
+    if (getComputedStyle($editor).display !== 'grid') return   // tab mode
+    const $paper = $editor.querySelector('[data-pg-paper]')
+    if (!$paper) return
+
+    // Start from the honest default: the track, columns filling it whole.
+    const reset = () => {
+      $paper.style.setProperty('--pg-bleed', '0px')
+      $paper.removeAttribute('data-pg-bled')
+      $preview.style.removeProperty('--pg-galley-w')
+      $preview.style.removeProperty('--pg-galley-col-used')
+    }
+    const overflowing = () => $paper.scrollWidth > $paper.clientWidth + 1
+
+    reset()
+    if (!overflowing()) return                  // one sheet, no scroll, no cut
+
+    const cs = getComputedStyle($paper)
+    const pad = Number.parseFloat(cs.paddingInlineStart) + Number.parseFloat(cs.paddingInlineEnd)
+    const track = $paper.getBoundingClientRect()
+    const room = document.documentElement.clientWidth - track.left
+    if (room > track.width + 1) {
+      $paper.style.setProperty('--pg-bleed', `${room - track.width}px`)
+      $paper.setAttribute('data-pg-bled', '')
+    }
+
+    const gs = getComputedStyle($preview)
+    const gap = Number.parseFloat(gs.columnGap) || 0
+    const target =
+      Number.parseFloat(gs.fontSize) * Number.parseFloat(gs.getPropertyValue('--pg-galley-col'))
+    const visible = $paper.clientWidth - pad
+    if (!Number.isFinite(target) || target <= 0 || !(visible > 0)) return
+
+    const k = Math.max(1, Math.round((visible + gap) / (target + gap) - 0.5))
+    const c = (visible - k * gap) / (k + 0.5)
+    $preview.style.setProperty('--pg-galley-col-used', `${c}px`)
+    $preview.style.setProperty('--pg-galley-w', `${k * c + (k - 1) * gap}px`)
+
+    // Wider sheet, wider capacity: if the copy now fits, a cut column would
+    // promise a next page that isn't there. Fill instead, and keep the bleed.
+    if (!overflowing()) {
+      $preview.style.removeProperty('--pg-galley-w')
+      $preview.style.removeProperty('--pg-galley-col-used')
+    }
+  }
+
   const render = () => { $preview.innerHTML = renderHtml($src.value) }
 
   // Debounced + rAF-aligned re-render; persistence is immediate so a fast
@@ -197,6 +270,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       () => requestAnimationFrame(() => {
         render()
         reapplyFallbacks?.($preview)
+        fitSheet()
       }),
       DEBOUNCE_MS,
     )
@@ -225,9 +299,13 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     persist()
     render()
     reapplyFallbacks?.($preview)
+    fitSheet()
   })
 
   // First paint is synchronous so the preview reads as typeset content in
   // the page flow immediately (preview is the default tab).
   render()
+  fitSheet()
+  // The sheet is measured against the viewport, so a resize re-solves it.
+  addEventListener('resize', fitSheet)
 }

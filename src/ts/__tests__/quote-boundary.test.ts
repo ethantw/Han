@@ -39,8 +39,10 @@ const auto = boundaries('auto')
 test('auto: 。 ending a <q> is marked close-q (renders as 。」 — must not hang)', () => {
   assert.equal(
     auto('<p>他說：<q>今天真好。</q></p>'),
+    // The colon is at the open boundary itself — 他說：「今天真好。」 is the
+    // canonical shape, and `：「` is a genuine squeeze pair.
     '<p>他說'
-      + '<h-char data-punct="end">：</h-char>'
+      + '<h-char data-punct="end" data-followed-by-quote="open-q">：</h-char>'
       + '<q>今天真好'
       + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
       + '<h-layer>。</h-layer></h-char>'
@@ -142,7 +144,63 @@ test('auto: a NON-hangable mark after </q> leaves the <q> unmarked — the repai
   )
 })
 
+test('auto: a closing bracket before a <cite> is marked open-cite (renders as 」《)', () => {
+  assert.equal(
+    auto('<p>「引」<cite>紅樓夢</cite></p>'),
+    '<p><h-char data-punct="open">「</h-char>引'
+      + '<h-char data-punct="close end" data-followed-by-quote="open-cite">」</h-char>'
+      + '<cite>紅樓夢</cite></p>',
+  )
+})
+
+/* ─── last child ≠ at the boundary ───────────────────────── */
+
+/* The mark has to be the last thing in the element's whole flow, not merely
+ * the last child of SOME descendant — `<q><em>好，</em>然後</q>` renders as
+ * 「好，然後」, where the comma sits mid-line and must keep hanging. A naive
+ * "climb while lastChild" would mark it. Mirrored on the open side. */
+
+test('auto: a mark that is a descendant last-child but NOT at the </q> edge is left alone', () => {
+  assert.equal(
+    auto('<p><q><em>今天真好，</em>然後</q></p>'),
+    '<p><q><em>今天真好'
+      + '<h-char data-punct="end hangable"><h-layer>，</h-layer></h-char>'
+      + '</em>然後</q></p>',
+  )
+})
+
+test('auto: a mark followed by more content inside the same <q> is left alone', () => {
+  assert.equal(
+    auto('<p><q>今天真好，<em>然後</em></q></p>'),
+    '<p><q>今天真好'
+      + '<h-char data-punct="end hangable"><h-layer>，</h-layer></h-char>'
+      + '<em>然後</em></q></p>',
+  )
+})
+
+test('auto: on the open side too — <em>…、</em>然後<q> is not a boundary', () => {
+  assert.equal(
+    auto('<p><em>他說、</em>然後<q>好</q></p>'),
+    '<p><em>他說'
+      + '<h-char data-punct="end hangable"><h-layer>、</h-layer></h-char>'
+      + '</em>然後<q>好</q></p>',
+  )
+})
+
 /* ─── what breaks adjacency ──────────────────────────────── */
+
+test('auto: whitespace-only text breaks the boundary like any other text', () => {
+  // Aligned with `markAdjacentLines`: any text between the pair breaks it,
+  // and indentation IS text — `。` newline `</q>` renders the collapsed space
+  // between the period and the 」, so they are genuinely not adjacent. The
+  // marks only ever describe what actually touches.
+  assert.equal(
+    auto('<p><q>今天真好。\n</q></p>'),
+    '<p><q>今天真好'
+      + '<h-char data-punct="end hangable"><h-layer>。</h-layer></h-char>'
+      + '\n</q></p>',
+  )
+})
 
 test('auto: text between the mark and the <q> breaks the boundary', () => {
   assert.equal(

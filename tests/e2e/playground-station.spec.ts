@@ -163,24 +163,53 @@ test.describe('station⑤ playground', () => {
     await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
   })
 
-  test('the galley is a page: short copy stays in column one, long copy grows sideways', async ({ page }) => {
+  test('the galley is a page: short copy stays in column one, long copy runs off the right edge', async ({ page }) => {
     // Definite height + `column-fill: auto`: columns fill downward, then
-    // continue rightward. A short draft must NOT be balanced across three
-    // columns (that reads as if the text were rationed).
-    const box = () =>
-      page.$eval('#station-playground [data-pg-preview]', (el) => ({
-        scrollW: el.scrollWidth, clientW: el.clientWidth, fill: getComputedStyle(el).columnFill,
-      }))
+    // continue rightward. A short draft must NOT be balanced across columns
+    // (that reads as if the text were rationed), and a page that outgrows
+    // its track bleeds to the window edge with its last column cut in half
+    // — the signal that there is more to the right.
+    const sheet = () =>
+      page.evaluate(() => {
+        const $card = document.querySelector('#station-playground [data-pg-paper]')!
+        const $g = document.querySelector('#station-playground [data-pg-preview]')!
+        const cs = getComputedStyle($card)
+        const gs = getComputedStyle($g)
+        const pad =
+          Number.parseFloat(cs.paddingInlineStart) + Number.parseFloat(cs.paddingInlineEnd)
+        const used = Number.parseFloat(gs.getPropertyValue('--pg-galley-col-used'))
+        return {
+          fill: gs.columnFill,
+          bled: $card.hasAttribute('data-pg-bled'),
+          gap: Math.round(Number.parseFloat(gs.columnGap)),
+          right: Math.round($card.getBoundingClientRect().right),
+          winRight: document.documentElement.clientWidth,
+          scrolls: $card.scrollWidth > $card.clientWidth + 1,
+          // width shown past the pinned box: half a column, when cut
+          tail: Math.round(
+            $card.clientWidth - pad - Number.parseFloat(gs.inlineSize)
+              - Number.parseFloat(gs.columnGap),
+          ),
+          half: Math.round(used / 2),
+        }
+      })
 
     const tab = (label: string) =>
       page.locator('#station-playground [data-pg-content-tabs] label').filter({ hasText: label }).click()
     await tab('自訂內容')
-    const short = await box()
+    const short = await sheet()
     expect(short.fill).toBe('auto')
-    expect(short.scrollW).toBeLessThanOrEqual(short.clientW + 1)   // one screenful of page
+    expect(short.bled, 'a sheet that fits stays in its track').toBe(false)
+    expect(short.scrolls).toBe(false)
 
-    await setSource(page, '# 長\n\n' + '把校樣撐過一整頁。'.repeat(400))
-    await expect.poll(async () => (await box()).scrollW > (await box()).clientW).toBe(true)
+    await setSource(page, '# 長\n\n' + '把校樣撐出好幾欄來看看橫向捲動。'.repeat(300))
+    await expect.poll(async () => (await sheet()).bled).toBe(true)
+
+    const long = await sheet()
+    expect(long.scrolls).toBe(true)
+    // right edge on the window's edge, and the cut is half a column wide
+    expect(Math.abs(long.right - long.winRight)).toBeLessThanOrEqual(2)
+    expect(Math.abs(long.tail - long.half)).toBeLessThanOrEqual(2)
   })
 
   test('the content tabs follow the panes into 認真模式', async ({ page }) => {

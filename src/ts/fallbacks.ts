@@ -6,6 +6,13 @@ import {
 } from './line-adjustments/punctuation.ts'
 
 import {
+  markQuoteBoundaries,
+  FOLLOWED_BY_QUOTE,
+  FOLLOWED_BY as FOLLOWED_BY_ON_QUOTE,
+  QUOTE_GENERATOR_TAGS,
+} from './line-adjustments/quote-boundary.ts'
+
+import {
   applyISS,
   applyISSWithProbe,
   applyISSWithMode,
@@ -112,6 +119,7 @@ export function installFallbacks(root?: Hyperly) {
     const h = hype(root)
     const el = element(h)
     runPassChunked(el, (chunk) => refinePunctuationWithMode('auto')(chunk))
+    runPassChunked(el, (chunk) => markQuoteBoundaries(chunk))
     runPassChunked(el, (chunk) => applyISSWithMode('strict')(chunk))
     runPassChunked(el, (chunk) => markAdjacentLinesWithMode('auto')(chunk))
     hoistAdjacentLinesStamp(el, stampTargets(h))
@@ -122,6 +130,10 @@ export function installFallbacks(root?: Hyperly) {
   // the document, making install order position-dependent for no benefit.
   const r = (root as Element | undefined) ?? document.documentElement
   runPassChunked(r, refinePunctuation)
+  // Immediately after the wrappers exist and before anything else inserts
+  // nodes into the inline flow — `<h-iss>` spacers between the mark and the
+  // element boundary would read as content and break the adjacency.
+  runPassChunked(r, markQuoteBoundaries)
   runPassChunked(r, applyISSWithProbe)
   runPassChunked(r, markAdjacentLines)
   hoistAdjacentLinesStamp(r)
@@ -152,6 +164,15 @@ export function uninstallFallbacks(root?: Hyperly) {
 
   $root.querySelectorAll('h-char')
     .forEach(el => el.replaceWith(el.textContent ?? ''))
+
+  // The quote-boundary markers. `data-followed-by` is cleared only off the
+  // elements that can generate a bracket: on an `<h-char>` the same attribute
+  // is punctuation.ts's, and a blanket sweep would strip that too.
+  $root.querySelectorAll(`[${FOLLOWED_BY_QUOTE}]`)
+    .forEach(el => el.removeAttribute(FOLLOWED_BY_QUOTE))
+
+  $root.querySelectorAll([...QUOTE_GENERATOR_TAGS].join(', ').toLowerCase())
+    .forEach(el => el.removeAttribute(FOLLOWED_BY_ON_QUOTE))
 
   // Clear BOTH pairing markers — missing the wavy one fails silently:
   // wrappers all gone, skip-gap still there.

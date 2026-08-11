@@ -282,3 +282,89 @@
     letter-spacing: -.5em;
   }
 }
+
+/* ─── 引號邊界 (quote boundaries) — the brackets that aren't in the DOM ──
+ * `<q>` and `<cite>` paint 「」『』《》〈〉 from `::before` / `::after`, so
+ * `refinePunctuation` cannot see them and every judgement it makes at those
+ * seams is one character short. `markQuoteBoundaries`
+ * (line-adjustments/quote-boundary.ts) supplies the missing structural fact —
+ * `data-followed-by-quote`, nearest bracket first — and each rule below adds
+ * the cascade half JS cannot read: does that element generate a CJK bracket
+ * at all? Mode and language, both live-switchable, hence the double gate.
+ *
+ * Measured, so the scope is small on purpose
+ * (docs/notes/2026-08-11-pseudo-quote-boundaries.md): the font's pair squeeze
+ * crosses a pseudo-element boundary in both directions, and `trim-start`
+ * flushes a generated opening bracket at a line start exactly like a real
+ * character. A native engine therefore needs nothing here EXCEPT the seam
+ * `<h-layer>` breaks itself — the same half em the DOM-neighbour repairs
+ * above already pay, claimed by the same two mechanisms.
+ *
+ * The `q` gate excludes `zh-Hans`, whose `--han-quotes` is 「」-shaped for
+ * every other CJK language but Western (“”) there; the `cite` gate does not,
+ * since `bracket` mode brackets 简体 titles with 《》 like everyone else.
+ * Both read the language, not `--han-quotes` itself: a style query can only
+ * test a custom property for an exact value, and that one holds four strings.
+ */
+
+/* A generated CLOSE bracket revokes the hang. 「今天真好。」 is the ordinary
+ * shape of quoted Chinese, and its period is NOT line-final — the same
+ * verdict `HANG_BLOCKING_CHARS` reaches for a 」 that IS in the DOM. Revoked
+ * rather than never granted: the grant cannot know which of a mark's tokens
+ * is live, but a revocation can be written once per generator.
+ *
+ * The un-hung mark is left without the compress block's trim, which excludes
+ * hangables. Deliberate: the only thing that trim buys is a flush glyph at a
+ * line end, and `。」` never breaks between the two. */
+@container style(--han-state-hanging-punctuation: on) {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans)) {
+    &::after {
+      content: none;
+    }
+    h-layer {
+      display: inline;
+      inline-size: auto;
+    }
+  }
+}
+
+@container style(--han-state-hanging-punctuation: on) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="close-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)) {
+    &::after {
+      content: none;
+    }
+    h-layer {
+      display: inline;
+      inline-size: auto;
+    }
+  }
+}
+
+/* The two seam repairs, extended to a bracket that lives in a pseudo. Same
+ * gates as their DOM-neighbour twins — declared `auto` only, because an
+ * explicit `hang` wants 」，／，「 full-width. */
+@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
+  /* FOLLOWING side (`，「`): the generated opening bracket is even less
+   * reachable than a bare text node, so the hangable pays with the same ½em
+   * filler face. */
+  h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans))::after {
+    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+  }
+
+  /* PRECEDING side (`」，`): here the squeezer IS the pseudo, so it can pay
+   * directly — no wrapper needed, and `letter-spacing` on a one-character
+   * `content` lands entirely after the bracket. */
+  q[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans))::after {
+    letter-spacing: -.5em;
+  }
+}
+
+@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Hant))::after {
+    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+  }
+
+  cite[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Hant))::after {
+    letter-spacing: -.5em;
+  }
+}

@@ -127,6 +127,65 @@ test('uninstallFallbacks: removes [data-followed-by-adjacent-line] attribute', a
   assert.equal(body.querySelector('[data-followed-by-adjacent-line]'), null)
 })
 
+/* ─── quote boundaries ───────────────────────────────────── */
+
+/* The pass has to be part of the install, not an opt-in extra: without it
+ * every `<q>今天真好。</q>` in an SSR'd page hangs a period that has a
+ * generated 」 painted after it. Unit coverage of the marking rules lives in
+ * `quote-boundary.test.ts`; these pin that it actually runs, in both modes,
+ * and that uninstall reverses it. */
+
+test('SSR: a mark ending a <q> is marked close-q', () => {
+  assert.equal(
+    html(installFallbacks('<p><q>今天真好。</q>然後</p>')),
+    '<p data-adjacent-lines-refined="">'
+      + '<q>今天真好'
+      + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
+      + '<h-layer>。</h-layer></h-char>'
+      + '</q>然後</p>',
+  )
+})
+
+test('SSR: a <q> whose close bracket meets a hangable mark is marked on the element', () => {
+  assert.equal(
+    html(installFallbacks('<p><q>今天真好</q>、然後</p>')),
+    '<p data-adjacent-lines-refined="">'
+      + '<q data-followed-by="hangable">今天真好</q>'
+      + '<h-char data-punct="end hangable"><h-layer>、</h-layer></h-char>'
+      + '然後</p>',
+  )
+})
+
+test('Browser: the quote-boundary pass runs on the browser path too', async () => {
+  const { win, teardown } = await withBrowserGlobals()
+  try {
+    win.document.body.innerHTML = '<p><q>今天真好。</q></p>'
+    const p = win.document.body.querySelector('p')! as unknown as Element
+    installFallbacks(p)
+    assert.match(
+      (p as any as HTMLElement).innerHTML,
+      /data-followed-by-quote="close-q"/,
+    )
+  } finally {
+    teardown()
+  }
+})
+
+test('uninstallFallbacks: removes both quote-boundary markers', async () => {
+  const { Window } = await import('happy-dom')
+  const win = new Window()
+  win.document.body.innerHTML = '<p><q>今天真好。</q>、然後</p>'
+  const body = win.document.body as unknown as Element
+
+  installFallbacks(body)
+  assert.ok(body.querySelector('[data-followed-by-quote]') !== null)
+  assert.ok(body.querySelector('q[data-followed-by]') !== null)
+
+  uninstallFallbacks(body)
+  assert.equal(body.querySelector('[data-followed-by-quote]'), null)
+  assert.equal(body.querySelector('q[data-followed-by]'), null)
+})
+
 test('uninstallFallbacks: SSR + no root throws (clear contract)', () => {
   assert.throws(
     () => (uninstallFallbacks as () => unknown)(),

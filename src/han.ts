@@ -12,6 +12,12 @@ export {
 } from './ts/line-adjustments/iss.ts'
 
 export {
+  markQuoteBoundaries,
+  FOLLOWED_BY_QUOTE,
+  QUOTE_GENERATOR_TAGS,
+} from './ts/line-adjustments/quote-boundary.ts'
+
+export {
   markAdjacentLines,
   markAdjacentLinesWithMode,
   markAdjacentLinesWithSelectors,

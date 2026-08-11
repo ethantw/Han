@@ -104,14 +104,14 @@ no single master kill-switch. The JS side scopes naturally:
 ## 3. Bundles
 
 CSS (each also as `.min` with source map). Figures are min+gzip, measured
-2026-08-09 — the homepage's 工法站 ledger prints the same files brotli'd, from
+2026-08-11 — the homepage's 工法站 ledger prints the same files brotli'd, from
 the build, so treat that as the live number and this table as a snapshot:
 
 | File | Contents | min+gzip |
 |---|---|---|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.5 KB |
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.6 KB |
 | `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.3 KB |
-| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.0 KB |
+| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.1 KB |
 | `han.prose.css` | Prose module | 0.6 KB |
 | `han.fonts.css` | Fonts module + font assets | 1.4 KB |
 | `han.basic.css` | Lean bundle: semantics + lines + prose, **CSS-only** — no fonts module, no JS-companion styles, no font assets | 1.7 KB |
@@ -124,8 +124,8 @@ has no `browser` condition, whenever a bundler processes server-side code):
 
 | File | Contents | min+gzip |
 |---|---|---|
-| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 11.5 KB full, less shaken |
-| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 11.6 KB |
+| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 11.9 KB full, less shaken |
+| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.0 KB |
 
 Assets shipped alongside: `em-space.woff2` (420 B), `zhuyin.serif.woff2`.
 The CSS references them by relative URL — keep `dist/` file layout when
@@ -332,6 +332,7 @@ to copy-paste and AT; removed cleanly by `uninstallFallbacks`):
 | `<h-char data-punct="…">` | `refinePunctuation` | punctuation wrapper; `data-punct` tokens: `open`, `close`, `end`, `middle`, `hangable`, `consecutive` (+ `data-consecutive-pos`, `data-followed-by`) |
 | `<h-layer>` | `refinePunctuation` | zero-width inline-block hang layer inside `<h-char>` — baseline-aligned, glyph overflows past the collapsed line-end spacer |
 | `<h-iss>` | `applyISS` | inter-script spacer; `data-mode="replace"` marks a consumed author space |
+| `[data-followed-by-quote]`, `q[data-followed-by]`, `cite[data-followed-by]` | `markQuoteBoundaries` | quote-boundary markers (attributes, not elements). `<q>`/`<cite>` draw their CJK brackets from `::before`/`::after`, so those glyphs are invisible to the punctuation pass; the tokens name which boundary a mark abuts, nearest bracket first (`close-cite close-q`, `open-q`), and CSS decides per `--han-cite-title-marks` + `:lang()` whether a bracket is actually painted. `data-followed-by="hangable"` on the element itself is the mirror: its generated close bracket meets a hangable mark and pays the half em from `::after` |
 | `[data-followed-by-adjacent-line]`, `[data-followed-by-adjacent-wavy]`, `[data-adjacent-lines-refined]` | `markAdjacentLines` | adjacent decoration-line gap markers (attributes, not elements). `-line` = straight-line families (`u`+`ins`, `s`+`del`), gap in every mode; `-wavy` = pairs involving `<cite>`, gap only under `--han-cite-title-marks: wavy` (the one mode where `<cite>` draws a line); `-refined` = "this subtree was processed", read off an ancestor so the pure-CSS `:has()` fallback stands down |
 
 **Native elements han.css styles** (semantics module): `cite`, `em`, `i`,
@@ -401,10 +402,11 @@ installFallbacks(): Hype                       // browser: document.documentElem
 installFallbacks(root: Element): Hype          // browser: scoped
 installFallbacks(src: string | Hype): Hype     // SSR: requires explicit source
 ```
-Runs, in order: `refinePunctuation` → `applyISSWithProbe` →
-`markAdjacentLines`. Browser passes gate on `CSS.supports` + the cascade
-vars (`--han-punctuation-refinement`, `--han-text-autospace`); SSR runs all
-three unconditionally (`auto` / `strict` / `auto`). Large documents are
+Runs, in order: `refinePunctuation` → `markQuoteBoundaries` →
+`applyISSWithProbe` → `markAdjacentLines`. Browser passes gate on `CSS.supports` + the cascade
+vars (`--han-punctuation-refinement`, `--han-text-autospace`); SSR runs them all
+unconditionally (`auto` / — / `strict` / `auto`; the quote-boundary pass has
+no mode of its own). Large documents are
 chunked internally (§9) — no size ceiling for callers.
 
 ```ts
@@ -429,6 +431,7 @@ rt/base count mismatch) so authoring errors surface.
 |---|---|---|---|---|
 | Punctuation 標點擠壓／懸掛 | `refinePunctuation(src)` | `refinePunctuationWithMode(mode)(src)` | `setPunctuationRefinementMode(mode)(src)` | `RefineMode = 'auto' \| 'compress' \| 'hang' \| 'none'` |
 | Inter-script spacing 混排間隙 | `applyISS(src)`, `applyISSWithProbe(src)` | `applyISSWithMode(mode)(src)` | `setISSMode(mode)(src)` | `ISSMode = 'normal' \| 'insert' \| 'replace' \| 'strict' \| 'none'` |
+| Quote boundaries 引號邊界 | `markQuoteBoundaries(src)` | — (no mode; CSS gates on `--han-cite-title-marks` + `:lang()`) | — | — |
 | Adjacent lines 鄰行間距 | `markAdjacentLines(src)` | `markAdjacentLinesWithMode(mode)(src)`, `markAdjacentLinesWithSelectors(selectors)(src)` | `setDecorationInsetMode(mode)(src)` | `DecorationInsetMode = 'auto' \| '0'` |
 
 Shapes: plain `apply` reads the declared cascade var and self-gates;
@@ -449,7 +452,7 @@ Exported constants (advanced): `PUNCT_OPEN_CHARS`, `PUNCT_CLOSE_CHARS`,
 `ALL_PUNCT`, `HANGABLE_CHARS`, `isValidMode`, selector/attribute constants
 (`ADJACENT_LINES_REFINED`, `FOLLOWED_BY_ADJACENT_LINE`,
 `FOLLOWED_BY_ADJACENT_WAVY`, `SELECTORS_FOR_ELEMENTS_WITH_LINES`,
-`ADJACENT_LINE_PAIRING_RULES`), chunking helpers (`runPassChunked`,
+`ADJACENT_LINE_PAIRING_RULES`, `FOLLOWED_BY_QUOTE`, `QUOTE_GENERATOR_TAGS`), chunking helpers (`runPassChunked`,
 `forEachChunk`, `CHUNK_NODE_LIMIT`). Types: `RefineMode`, `ISSMode`,
 `DecorationInsetMode`.
 

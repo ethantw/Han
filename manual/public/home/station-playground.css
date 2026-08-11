@@ -54,7 +54,7 @@
      rules turn it on. */
   &[data-playground] {
     position: relative;
-    z-index: 0;
+    /* z-index: 0; */
   }
   .PgLens { display: none; }
 
@@ -309,8 +309,39 @@
     & > [data-pg-paper] {
       grid-column: 2;
       box-shadow: 0 1px 0 var(--ui-bg-2q);
-      translate: 0 -5rem;
+      translate: 0 -7rem;
       cursor: zoom-in;
+
+      /* ── the sheet runs off the page to the right ─────────────────────
+         When the galley needs more columns than the track holds, the card
+         stops obeying that track and widens to the WINDOW's right edge,
+         with the last visible column cut in half: a page that ends
+         mid-column is telling you there is more of it. Both numbers are
+         solved in playground.js § fitSheet — they need the viewport and the
+         used column metrics. No JS: the card keeps its track and scrolls,
+         columns filling it whole.
+
+         The CARD is the scroll container, so the whole sheet pans (and the
+         masthead stays put — it is sticky, below). */
+      inline-size: calc(100% + var(--pg-bleed, 0px));
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+
+      /* bled to the window edge, the right side is a cut, not an edge */
+      &[data-pg-bled] {
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+        border-inline-end: 0;
+      }
+    }
+
+    /* The paper's head stays while the body pans — a masthead sliding out
+       of view would make one sheet read as two unrelated pages. */
+    [data-pg-paper] > :is(.Masthead, .Dateline) {
+      position: sticky;
+      inset-inline-start: 0;
     }
 
     /* ── the galley face: a PAGE, not a stream ─────────────────────────
@@ -320,22 +351,23 @@
        would ration three lines across three columns), and long copy grows
        the page sideways into overflow columns you scroll to.
 
-       The scroll stays INSIDE the card — the page may be wider than the
-       viewport, the site's layout may not. `overscroll-behavior-inline:
-       contain` keeps a trackpad swipe from turning into browser-back. */
+       The scroll lives on the CARD (above), never on the page: a sheet may
+       be wider than the window, the site's layout may not. */
     .PgGalley {
       --pg-galley-budget: calc(100dvh - var(--h-header) - 8rem);
 
       font-size: var(--pg-galley-fs);
       block-size: var(--pg-galley-budget);
-      columns: calc(var(--pg-galley-col) * 1em);
+      /* Width and column measure are SOLVED (fitSheet), and pinned to a
+         WHOLE number of columns so the columns keep their measure instead of
+         stretching to fill the box — stretching is exactly what makes every
+         visible column complete, and a complete last column signals
+         nothing. `14em` survives as the target JS solves around. */
+      inline-size: var(--pg-galley-w, 100%);
+      columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
       column-gap: 2em;
       column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
       column-fill: auto;
-      overflow-x: auto;
-      overflow-y: hidden;
-      overscroll-behavior-inline: contain;
-      scrollbar-width: thin;
     }
 
     [data-pg-preview] {
@@ -350,6 +382,7 @@
          arrow keys is no way to read. */
       &:focus-visible {
         font-size: 0.875rem;
+        inline-size: 100%;
         columns: auto;
         column-rule: none;
         overflow-x: hidden;
@@ -437,6 +470,7 @@
    inside the modal only the ✕ can do that. */
 .Playground .PgFocus {
   &  {
+    margin-inline-start: auto;
     padding: 0.3125rem 0.875rem;
     font-family: var(--han-font-default);
     font-size: 0.8125rem;
@@ -469,7 +503,7 @@
   /* above the panel's stacking context — a lens parked near the top of the
      paper must never cover the controls */
   position: relative;
-  z-index: 1;
+  /* z-index: 1; */
   margin-block-end: 1rem;
   max-inline-size: clamp(18rem, 45%, 40rem);
 }
