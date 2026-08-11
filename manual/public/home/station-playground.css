@@ -343,12 +343,12 @@
            reads it back (`--pg-lens-zoom`). 1.75× lifts the 9px galley to
            ~16px — reading size, the same ballpark as the studio.
 
-           Diameter = 1.5 × the MAGNIFIED column. A circle only offers its
+           Diameter = 1.75 × the MAGNIFIED column. A circle only offers its
            full width across the middle, so a lens merely as wide as the
-           column would clip the start and end of every line it shows; at
-           1.5× a whole column line sits inside the readable band. */
+           column would clip the start and end of every line it shows; the
+           margin buys a readable band several lines deep, not just one. */
         --pg-lens-zoom: 1.75;
-        --pg-lens-size: calc(1.5 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--pg-lens-zoom));
+        --pg-lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--pg-lens-zoom));
 
         position: absolute;
         inline-size: var(--pg-lens-size);
