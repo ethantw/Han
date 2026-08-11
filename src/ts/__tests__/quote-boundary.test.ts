@@ -203,6 +203,30 @@ test('auto: only the OUTER cite is marked — the inner one\'s 〉 is followed b
   )
 })
 
+test('auto: both traversals at once — ancestor climb inside, forward climb outside', () => {
+  // The two walks answer different questions and only one of them can be
+  // wrong here: the inner period asks "which layers do I close" (ancestors,
+  // both), while each cite asks "does my close bracket meet a hangable"
+  // (forward, outer only). Moving this one period in or out of the inner
+  // cite is what decides which walk runs at all.
+  //
+  // The period is `consecutive` with the comma and NOT hangable, because
+  // hyperly matches over the flattened text and cannot see the two `</cite>`
+  // between them (docs/notes/2026-08-11-pseudo-quote-boundaries.md § 附帶發現).
+  // The verdict is right by accident — 〉》 really do follow it — and this
+  // pass's own markers are unaffected, which is what is asserted here.
+  assert.equal(
+    auto('<p>他讀了<cite>太陽中文報<cite>社論。</cite></cite>、然後</p>'),
+    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite>社論'
+      + '<h-char data-punct="end consecutive" data-consecutive-pos="start"'
+      + ' data-followed-by-quote="close-cite close-cite">。</h-char>'
+      + '</cite></cite>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="end">'
+      + '<h-layer>、</h-layer></h-char>'
+      + '然後</p>',
+  )
+})
+
 test('auto: a mark ending a <q> is NOT open-q for the next <q> — its own 」 is in between', () => {
   assert.equal(
     auto('<p><q>今天真好。</q><q>明天也是</q></p>'),

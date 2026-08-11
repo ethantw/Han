@@ -1047,6 +1047,30 @@ function hanManualPlugin() {
       // fresh on each change, you decide when to refresh the browser.
       server.watcher.add([HAN_DIST, NAV_FILE, I18N_FILE, LAYOUT, NOT_FOUND_LAYOUT, HOME_LAYOUT, HOME_DIR, DEMO_DIR])
 
+      // Workbench pages (`demo/*.html`) — dev-only, and outside `root`, so
+      // nothing serves them by default. Most are self-contained and open
+      // straight off the filesystem; the ones that exercise the LIBRARY
+      // cannot, because a module `import` over `file://` is blocked. Serving
+      // them here gives those pages a real origin, and `/han/…` resolves the
+      // same way it does for the specimen page.
+      const DEMO_TYPES = {
+        '.html': 'text/html; charset=utf-8',
+        '.js': 'text/javascript; charset=utf-8',
+        '.css': 'text/css; charset=utf-8',
+      }
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = (req.url ?? '').split('?')[0]
+        if (!pathname.startsWith('/demo/')) return next()
+        const file = path.resolve(DEMO_DIR, pathname.slice('/demo/'.length))
+        const type = DEMO_TYPES[path.extname(file)]
+        // `path.resolve` collapses `..`, so the prefix check is what keeps a
+        // crafted URL inside the directory.
+        if (!type || !file.startsWith(DEMO_DIR + path.sep) || !existsSync(file)) return next()
+        res.setHeader('content-type', type)
+        res.setHeader('cache-control', 'no-store')
+        res.end(await fs.readFile(file))
+      })
+
       // Trailing-slash leniency for flat top-level entries: a request
       // for `/demo/` should serve `.cache/docs/demo.html`, the same as
       // `/demo`. Vite's static handler natively maps `/X/` to

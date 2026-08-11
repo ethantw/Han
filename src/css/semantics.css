@@ -105,6 +105,34 @@
 }
 
 /**
+ * Whether `<q>` draws quotation marks at all (引號).
+ *
+ *   on   Draw them, from `--han-quotes` via `::before` / `::after`. Default,
+ *        and what every UA does for `<q>` unprompted — han.css only changes
+ *        WHICH marks, so this stays outside the `--han-semantics` gate.
+ *   off  Draw none. For text that already carries its own quotation marks,
+ *        or a design that marks quotation some other way.
+ *
+ * The companion of `--han-cite-title-marks`, and named for the same pair:
+ * `--han-quotes` holds the glyphs, this decides whether they appear.
+ *
+ * Setting `quotes: none` on the `<q>` yourself achieves the same visual
+ * result but is invisible to the rest of han.css: the hanging-punctuation
+ * pass revokes a hang on a mark that ends a `<q>` precisely because a close
+ * bracket follows it, and only a queryable value can tell it otherwise.
+ * Use this switch and that stays consistent.
+ *
+ * Inherits, and — like every style-query switch here — must be set on an
+ * ANCESTOR: a style query reads the container, so a value written on the
+ * `<q>` itself does not reach its own pseudo-elements.
+ */
+@property --han-q-quotes {
+  syntax: "on | off";
+  inherits: true;
+  initial-value: on;
+}
+
+/**
  * Writing-mode mirror (書寫方向鏡射) — library-wide infrastructure. CSS
  * cannot condition on `writing-mode` itself (style queries read custom
  * properties only), so every direction-dependent behaviour reads this
@@ -438,17 +466,45 @@
 }
 
 /**
- * Add quotes to `q` elements according to the given languages.
+ * Add quotes to `q` elements according to the given languages. Value
+ * semantics for the switch live on the `--han-q-quotes` registration above.
+ *
+ * `quotes` is declared unconditionally so the `on` branch's open/close-quote
+ * has something to resolve against — same shape as `<cite>`'s title marks.
+ * The `off` branch suppresses `content` rather than setting `quotes: none`:
+ * both stop the glyph, but only the former leaves the nesting depth alone,
+ * and `quotes: none` is exactly the author-side override that no style query
+ * can see — the one this switch exists to replace.
  */
 :where(q) {
   & {
     quotes: var(--han-quotes);
   }
-  &::before {
-    content: open-quote;
+
+  /* Not `:where(&::before)` — pseudo-elements are invalid inside `:where()`,
+   * which takes a forgiving list and would silently match nothing (see the
+   * `<cite>` block above, and 2026-08-07-css-silent-failures.md). */
+  @container style(--han-q-quotes: on) {
+    &::before {
+      content: open-quote;
+    }
+    &::after {
+      content: close-quote;
+    }
   }
-  &::after {
-    content: close-quote;
+
+  /* The `off` branch has to say `content: none` OUT LOUD — dropping our own
+   * declaration only falls back to the UA stylesheet, which draws quotes on
+   * `<q>` unprompted (`q::before { content: open-quote }`). Measured: with
+   * the `on` branch alone, `off` still rendered both marks at full width.
+   * `<cite>` needs no such branch; no UA sheet generates content for it. */
+  @container style(--han-q-quotes: off) {
+    &::before {
+      content: none;
+    }
+    &::after {
+      content: none;
+    }
   }
 }
 

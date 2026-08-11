@@ -88,6 +88,54 @@ Chrome headless（`--headless=new`）＋本機 `http.server`，
 節點）、改變 `q.textContent`（作者腳本與 AT 讀到的東西都變了）、SSR 拿不到
 cascade 只能猜。記在這裡是為了讓下一個人不要「修好」它。
 
+## 把引號關掉會怎樣（撤銷懸掛會不會跟著撤銷）
+
+撤銷懸掛的前提是「後面真的有一顆閉括號」。所以每一種「不畫括號」的設定都要
+驗一次。`<h-layer>` 的 computed `display` 是懸掛那半的判詞（`inline-block`
+＝ 還在，`inline` ＝ 撤銷）；括號那半**不能**看 computed `content`——它對
+`open-quote`／`close-quote` 一律回傳關鍵字本身，只能量寬度
+（`字<q>字</q>`，100px 字級：400 ＝ 有畫，200 ＝ 沒畫）。
+
+| 設定 | 括號 | 懸掛 | |
+|---|---|---|---|
+| `--han-cite-title-marks: bracket` | 400 | 撤銷 | ✓ |
+| `--han-cite-title-marks: none` | 200 | 照懸 | ✓ |
+| `--han-cite-title-marks: wavy` | — | 照懸 | ✓ |
+| `--han-semantics: off` | — | 照懸 | ✓ |
+| `q` 預設 | 400 | 撤銷 | ✓ |
+| `--han-q-quotes: off` | 200 | 照懸 | ✓ |
+| `q` in `zh-Hans`（`“”`） | 400 | 照懸 | ✓ |
+| `--han-quotes: none` | 400 | 撤銷 | ✓（關不掉，所以不該撤銷） |
+| `q { quotes: none }` | 200 | 撤銷 | ✗ 唯一的洞 |
+
+### `--han-q-quotes` 為什麼要存在，以及它的 `off` 分支為什麼必須明寫
+
+原本 `<cite>` 有開關而 `<q>` 沒有，於是 `q` 這半只能靠 `:lang()` 判斷，作者
+一旦自己關掉引號就對不上。補一個與 `--han-cite-title-marks` 對稱的
+`--han-q-quotes: on | off`（`--han-quotes` 管字形，它管畫不畫）即可，撤銷懸掛
+的三條規則一起閘在它上面。
+
+**踩點：`off` 分支必須明寫 `content: none`。** `<q>` 的引號**本來就來自 UA
+樣式表**（`q::before { content: open-quote }`）——han.css 只是改了用哪幾個字。
+所以「不宣告」不等於「關掉」，只是落回 UA 的那份：第一版只寫 `on` 分支，實測
+`off` 仍然畫出兩顆全寬引號（400px 不動）。`<cite>` 沒這問題，沒有任何 UA 樣式
+表替它生成內容（實測 `none` 就是 200px）。
+
+**通則：凡是覆寫 UA 會自己生成的東西，關掉都要明寫，撤回自己的宣告只會把 UA
+的那份放回來。** 與 `2026-08-07-css-silent-failures.md` 同一族——寫錯不報錯，
+只是「看起來沒生效」。
+
+### 剩下的洞
+
+`q { quotes: none }`（或直接 `content: none`）繞過變數 API，CSS 偵測不到，
+句末標點會少懸一次。`--han-quotes` 也當不了開關：實測設在祖先上括號照畫
+（400px 不動），因為 `:where(:lang(zh), …)` 在 `<q>` **自己身上**又宣告了一次，
+per-element 宣告蓋過繼承。記進 `api-reference.md` § 9。
+
+另外，這一族開關**都必須設在祖先上**：style query 讀的是容器，寫在 `<q>` 自己
+身上時它的 pseudo 讀不到（維持舊值），但它內部的 `<h-char>` 讀得到——兩半會
+各說各話。`<cite>` 從一開始就有這個限制，不是新的。
+
 ## 一個容易寫錯的地方：往上爬要在生成器停住
 
 找「後面是誰」時會爬出結束於此的包裝元素（`<em>` 之類）。**但爬出一個

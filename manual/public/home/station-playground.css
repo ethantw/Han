@@ -645,15 +645,43 @@
     padding: var(--gutter);
     min-block-size: 0;
 
-    /* both panes fill the row and scroll inside — the writer's viewport
-       is the studio, not the page */
+    /* Both panes fill the row and scroll inside — the writer's viewport is
+       the studio, not the page. The sheet arrives dressed for the page
+       (lifted, bled to the window's edge, its column box pinned by the
+       solve), so everything positional is handed back here: in the studio
+       the proof is a column you scroll, not a page you pan. */
     textarea,
-    [data-pg-paper] {
+    [data-pg-sheet] {
       block-size: 100%;
       min-block-size: 0;
+      overflow: hidden;
+    }
+
+    textarea {
       overflow: auto;
       resize: none;
     }
+
+    [data-pg-sheet] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    [data-pg-sheet] > [data-pg-paper] {
+      flex: 1 1 auto;
+      min-block-size: 0;
+      inline-size: 100%;
+      block-size: auto;
+      translate: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+      border-inline-end: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      cursor: auto;
+    }
+
+    /* the loupe belongs to the page; in here the type is already legible */
+    [data-pg-lens-switch] { display: none; }
 
     textarea {
       border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
@@ -668,10 +696,13 @@
 
     /* reading-size newspaper: the studio is for WRITING, so the proof
        reads at full size — real columns, but legible ones */
-    [data-pg-preview] {
+    .PgGalley {
+      inline-size: 100%;
+      block-size: auto;
       font-size: 0.9375rem;
       columns: 18em;
       column-gap: 2.5em;
+      column-fill: balance;
       cursor: auto;
     }
   }

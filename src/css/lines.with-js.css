@@ -265,7 +265,7 @@
  * hanging without squeeze, so `」，`/`，「` stay full-width; and on the
  * derived hanging state — where hanging isn't active there is nothing
  * to repair. */
-@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
+@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-q-quotes: on) {
   /* FOLLOWING side (`，「`): the follower is a bare text node we can't
    * style, so the hangable pays the ½em itself — its 1em filler swaps to
    * a ½em face. Not a negative margin: under `justify` that drags the
@@ -303,8 +303,19 @@
  * The `q` gate excludes `zh-Hans`, whose `--han-quotes` is 「」-shaped for
  * every other CJK language but Western (“”) there; the `cite` gate does not,
  * since `bracket` mode brackets 简体 titles with 《》 like everyone else.
- * Both read the language, not `--han-quotes` itself: a style query can only
- * test a custom property for an exact value, and that one holds four strings.
+ *
+ * Both gates read the LANGUAGE for the SHAPE of the mark and a registered
+ * switch for whether it is drawn at all — `--han-q-quotes` here,
+ * `--han-cite-title-marks` for titles. The language cannot be swapped for the
+ * glyph variable: `--han-quotes` is re-declared per element under
+ * `:where(:lang(zh), …)`, so an ancestor's override never reaches the `<q>`
+ * (measured — the brackets still paint), and a style query can only test a
+ * custom property for an exact value anyway.
+ *
+ * That leaves one uncoverable hole, the same one `<cite>` has: an author who
+ * writes `q { quotes: none }` directly drops the brackets without any
+ * queryable value changing, and a sentence-final mark inside that `<q>` stops
+ * hanging. Use the switch instead; api-reference.md § 9.
  */
 
 /* A generated CLOSE bracket revokes the hang. 「今天真好。」 is the ordinary
@@ -316,7 +327,7 @@
  * The un-hung mark is left without the compress block's trim, which excludes
  * hangables. Deliberate: the only thing that trim buys is a flush glyph at a
  * line end, and `。」` never breaks between the two. */
-@container style(--han-state-hanging-punctuation: on) {
+@container style(--han-state-hanging-punctuation: on) and style(--han-q-quotes: on) {
   h-char[data-punct~="hangable"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans)) {
     &::after {
       content: none;

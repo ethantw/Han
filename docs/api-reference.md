@@ -199,6 +199,7 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-em-dot-position` | any `text-emphasis-position` value | `under right` (ja: `over right`) | `<em>` |
 | `--han-cite-title-marks` | `none \| bracket \| wavy` | `none` | `<cite>` title marks (書名號): `bracket` = 《》/〈〉 via quotes (ja/ko-Hant: 「」/『』); `wavy` = wavy underline (甲式, zh only) |
 | `--han-title-marks` | quote-char sequence | `《》〈〉` (ja/ko-Hant: re-pointed to `--han-quotes`) | `<cite>` bracket glyphs |
+| `--han-q-quotes` | `on \| off` | `on` | `<q>` quotation marks (引號): whether they are drawn at all. The switch half of the pair `--han-quotes` completes — glyphs there, on/off here. Prefer it over `q { quotes: none }`: only a queryable value keeps the hanging-punctuation pass in step (a mark ending a `<q>` stops hanging because a close bracket follows it) |
 | `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Hant: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
 | `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | **Library-wide writing-mode mirror** (see §1 prerequisite) — declare alongside every `writing-mode`, same value. Consumed by direction-dependent behavior (zhuyin, below); retires when arbitrary-property style queries ship |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
@@ -351,6 +352,11 @@ Vertical writing: all styles use logical properties; the punctuation
 webfonts handle vertical forms via their own cmap.
 
 ## 6. JavaScript API
+
+> **工作台頁**：`manual/demo/punctuation.html` — 跑起 `pnpm --filter han-manual
+> dev` 後開 `/demo/punctuation.html`。四種模式並排、逐格印出實際產出的標記、
+> 所有 cascade 開關現場可切，並標出哪些開關會重跑 pass、哪些只動 CSS。
+
 
 Import from `@hanzi.pro/han.css` (nothing auto-runs) or
 `@hanzi.pro/han.css/auto` (same exports + auto-install side effect).
@@ -547,6 +553,21 @@ browsers; features degrade individually per the matrix.
   (`forEachChunk`/`CHUNK_NODE_LIMIT` are exported for lower-level use;
   `runPassChunked` additionally keeps pass-synced inline `--han-*` vars off
   the chunk elements so later `:root` config changes still inherit through.)
+- **Quote marks removed outside the switches**: han.css revokes the hang on
+  a mark that ends a `<q>`/`<cite>` because a generated close bracket follows
+  it, and it learns that a bracket is gone only from a style-queryable value
+  — `--han-q-quotes`, `--han-cite-title-marks`, `--han-semantics`. Suppress
+  the marks any other way (`q { quotes: none }`, `content: none` on the
+  pseudo) and CSS cannot see it: computed `content` reports the
+  `open-quote`/`close-quote` keyword either way. The mark then stops hanging
+  with nothing after it. `--han-quotes: none` is not an off switch either —
+  han.css re-declares that variable per element under `:where(:lang(zh), …)`,
+  so an ancestor's value never reaches the `<q>` (measured 2026-08-11).
+- **Style-query switches must be set on an ANCESTOR**, never the element
+  they govern: `--han-q-quotes` on a `<q>`, or `--han-cite-title-marks` on a
+  `<cite>`, leaves that element's own pseudo-elements unchanged (the query
+  reads the container) while descendants — including the punctuation
+  wrappers inside it — do see the new value, so the two halves disagree.
 - **Style queries in Firefox**: toggle-gated CSS inert until Gecko ships
   `@container style()`.
 - **`<rtc>`/tabular ruby**: not rendered by any engine; run `transpileRuby`.

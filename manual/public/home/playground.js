@@ -105,9 +105,16 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * The studio borrows the LIVE panes: moving nodes keeps the draft, its
    * input listeners and the rendered preview intact — nothing re-renders,
    * nothing re-mounts. On exit they return in front of the lens (the `~`
-   * reveal rule needs the lens last). Esc is cancelled on purpose: the
-   * mode's contract is「只有 ✕ 能退出」, so a stray Esc can't dump the
-   * writer back into the scrolling page. */
+   * reveal rule needs the lens last).
+   *
+   * Esc closes — EXCEPT while the caret is in the editor, where the key is
+   * an editing reflex (leave insert mode, dismiss a completion) and losing
+   * the whole mode to it would be a nasty surprise. Everywhere else, the
+   * usual dialog contract stands.
+   *
+   * Teardown hangs off the dialog's own `close` event, not off the ✕, so
+   * every way out — button, Esc, `close()` from anywhere — puts the panes
+   * back and re-solves the page geometry exactly once. */
   const $studio = $editor.querySelector('[data-pg-studio]')
   const $studioBody = $editor.querySelector('[data-pg-studio-body]')
   const $studioHead = $editor.querySelector('[data-pg-studio-head]')
@@ -128,18 +135,23 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
         $studioHead.insertBefore($tabs, $studioHead.querySelector('[data-pg-studio-close]'))
       }
       $studioBody.append($src, $sheet)
+      fitSheet()               // clears the page-layout solve
       $studio.showModal()
       $src.focus()
     })
-    $studio.addEventListener('cancel', (e) => e.preventDefault())
-    $studio.querySelector('[data-pg-studio-close]').addEventListener('click', () => {
+    $studio.addEventListener('cancel', (e) => {
+      if (document.activeElement === $src) e.preventDefault()
+    })
+    $studio.querySelector('[data-pg-studio-close]')
+      .addEventListener('click', () => $studio.close())
+    $studio.addEventListener('close', () => {
       const $lens = $editor.querySelector('.PgLens')
       $editor.insertBefore($src, $lens)
       $editor.insertBefore($sheet, $lens)
       // …and the tabs go back to the head, ahead of the focus switch.
       if ($tabs) $focusBtn.closest('.PgControls')?.prepend($tabs)
-      $studio.close()
       $focusBtn.checked = false
+      fitSheet()
     })
   }
 
@@ -219,6 +231,16 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     if (getComputedStyle($editor).display !== 'grid') return   // tab mode
     const $paper = $editor.querySelector('[data-pg-paper]')
     if (!$paper) return
+    // In 認真模式 the sheet is on loan to the dialog, which lays it out its
+    // own way; solving page geometry there would write a bleed measured
+    // against a layout the sheet isn't in. Clear the solve and stand down.
+    if ($paper.closest('[data-pg-studio]')) {
+      $paper.style.removeProperty('--pg-bleed')
+      $paper.removeAttribute('data-pg-bled')
+      $preview.style.removeProperty('--pg-galley-w')
+      $preview.style.removeProperty('--pg-galley-col-used')
+      return
+    }
 
     // Start from the honest default: the track, columns filling it whole.
     const reset = () => {

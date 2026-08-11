@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>標點細修工作台——擠壓、懸掛，與引號邊界</title>
+
+<!--
+  開發者用的工作台，不是樣張。樣張看的是「排好的樣子」（/specimen.html），
+  這頁看的是「JS 到底產出了什麼、CSS 憑什麼分支」。
+
+  每一份樣本都自己跑一次 pass，模式寫在它自己的 `data-mode` 上，所以同一頁
+  能並排四種模式——`refinePunctuationWithMode` 把宣告寫成該元素的行內
+  `--han-punctuation-refinement`，CSS 的 `@container style()` 逐子樹分支，
+  這正是「模式可以逐段不同」的證明。頁面本身不呼叫 han.auto。
+
+  控制台的開關分兩類，這個分野是全頁的主題：
+    重跑 JS —— 模式、混排間隙。它們決定 pass **產出哪些包裹**。
+    只動 CSS —— 書名號、引號、語意模組、標點慣例、傳承字形、語言、直排。
+                它們決定既有的包裹**當下算不算數**。
+  後者一律不重跑 JS。做得到的原因是 JS 只記結構事實，模式判斷留給 cascade。
+-->
+
+<link rel="stylesheet" href="/han/han.css">
+<script type="module" src="./punctuation.js"></script>
+
+<style>
+  :root {
+    color-scheme: light dark;
+
+    --palette-ink: #1c1b19;
+    --palette-paper: #fbfaf7;
+    --palette-ink-dark: #e7e4de;
+    --palette-paper-dark: #15151a;
+    --palette-accent: #9d2f45;
+    --palette-accent-dark: #f0a0ae;
+
+    --ui-ink: light-dark(var(--palette-ink), var(--palette-ink-dark));
+    --ui-paper: light-dark(var(--palette-paper), var(--palette-paper-dark));
+    --ui-accent: light-dark(var(--palette-accent), var(--palette-accent-dark));
+    --ui-rule: light-dark(#00000022, #ffffff2a);
+    --ui-faint: light-dark(#00000008, #ffffff0d);
+    --ui-dim: color-mix(in oklab, var(--ui-ink) 62%, transparent);
+
+    --ui-column: 15em;
+
+    /* 本機沒有 Diantenjeom 的標點字體時，`MOE` 會把懸掛狀態推導成 off（唯一
+       已知置中的慣例），整頁的懸掛就看不到。工作台預設 JIS 讓推導落在 on；
+       控制台可以改回 MOE 觀察推導本身。 */
+    --han-punctuation-hant: JIS;
+  }
+
+  :where(body) {
+    margin: 0;
+    padding-block: 2.5rem 8rem;
+    padding-inline: max(1.5rem, 50vw - 34rem);
+    background: var(--ui-paper);
+    color: var(--ui-ink);
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  :where(h1) {
+    margin-block: 0 .3em;
+    font-size: 1.6rem;
+  }
+
+  :where(h2) {
+    margin-block: 0 .3em;
+    font-size: 1.1rem;
+  }
+
+  :where(h3) {
+    margin-block: 0 .4em;
+    font-family: ui-monospace, monospace;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--ui-accent);
+  }
+
+  :where(p) {
+    margin-block: 0 1em;
+    max-inline-size: 42em;
+  }
+
+  :where(code, kbd) {
+    font-family: ui-monospace, monospace;
+    font-size: .88em;
+  }
+
+  .Lede {
+    color: var(--ui-dim);
+    font-size: .92rem;
+  }
+
+  .Note {
+    color: var(--ui-dim);
+    font-size: .85rem;
+  }
+
+  .Note b,
+  .Lede b {
+    color: var(--ui-accent);
+    font-weight: 600;
+  }
+
+  /* ─── Console ──────────────────────────────────────────────
+     Sticky, and every control is a plain form control: the page reads
+     `.value` off the DOM rather than keeping a parallel copy in JS. */
+
+  .Console {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    margin-block: 1.5rem 2.5rem;
+    padding-block: .75rem;
+    border-block-end: 1px solid var(--ui-rule);
+    background: color-mix(in oklab, var(--ui-paper) 90%, transparent);
+    backdrop-filter: blur(10px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: .5rem 1.25rem;
+    font-size: .8rem;
+  }
+
+  .Console label {
+    display: flex;
+    gap: .4em;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .Console select,
+  .Console input {
+    max-inline-size: 9.5em;
+    font: inherit;
+  }
+
+  .Console :where(select, input[type="range"]) {
+    flex: 0 1 auto;
+  }
+
+  /* The two controls that re-run the passes are marked, because the whole
+     page is an argument about which ones do not. */
+  .Console [data-reruns] {
+    color: var(--ui-accent);
+    font-weight: 600;
+  }
+
+  .ConsoleLegend {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--ui-dim);
+    font-size: .75rem;
+  }
+
+  /* ─── Sections ─────────────────────────────────────────────── */
+
+  section {
+    margin-block: 3rem;
+    padding-block-start: 1.25rem;
+    border-block-start: 1px solid var(--ui-rule);
+  }
+
+  .Grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 1.75rem 1.5rem;
+  }
+
+  .Row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  /* The specimen column. The visible inline-end rule IS the measurement —
+     a hanging mark is only legible against the edge it hangs past. */
+  .Specimen {
+    inline-size: var(--ui-column);
+    border-inline-end: 1px solid var(--ui-accent);
+    font-size: 1.3rem;
+    text-align: justify;
+  }
+
+  .Grid .Specimen {
+    inline-size: 100%;
+    font-size: 1.1rem;
+  }
+
+  :root:has(#vertical:checked) .Specimen {
+    writing-mode: vertical-rl;
+    block-size: var(--ui-column);
+    inline-size: auto;
+    border-inline-end: none;
+    border-block-end: 1px solid var(--ui-accent);
+  }
+
+  .Out {
+    display: block;
+    margin-block-start: .5em;
+    font-family: ui-monospace, monospace;
+    font-size: .7rem;
+    line-height: 1.55;
+    color: var(--ui-dim);
+    white-space: pre-wrap;
+  }
+
+  .Code {
+    flex: 1 1 22em;
+    min-inline-size: 0;
+    margin: 0;
+    padding: .6rem .8rem;
+    border-radius: .3rem;
+    background: var(--ui-faint);
+    font-family: ui-monospace, monospace;
+    font-size: .74rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    /* 碼一律 start：容器的 justify 會撐開 token 之間的空隙。 */
+    text-align: start;
+    white-space: pre;
+  }
+
+  .Code[data-wrap] {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* Emitted-markup panels are opt-in; a workbench that dumps them
+     unconditionally is unreadable. */
+  :root:not(:has(#markup:checked)) .Markup {
+    display: none;
+  }
+
+  /* ─── Marker reveal ─────────────────────────────────────────
+     Baseline 2023 for `:has()`. The switch is a checkbox, not a class —
+     nothing in JS knows about presentation. */
+
+  :root:has(#reveal:checked) {
+    h-char[data-punct] {
+      outline: 1px dotted color-mix(in oklab, var(--ui-ink) 35%, transparent);
+    }
+
+    h-char[data-followed-by-quote] {
+      outline: 1px dashed var(--ui-accent);
+      background: color-mix(in oklab, var(--ui-accent) 12%, transparent);
+    }
+
+    :is(q, cite)[data-followed-by] {
+      background: color-mix(in oklab, var(--ui-accent) 8%, transparent);
+    }
+
+    h-iss {
+      background: color-mix(in oklab, var(--ui-accent) 25%, transparent);
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    inline-size: 100%;
+    font-size: .82rem;
+  }
+
+  :where(th, td) {
+    padding: .35em .6em;
+    border-block-end: 1px solid var(--ui-rule);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td code {
+    white-space: nowrap;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>標點細修工作台</h1>
+
+<p class="Lede">
+  <code>refinePunctuation</code> 與它的同伴 pass 到底產出什麼標記，CSS 又憑什麼
+  分支。這頁不呼叫 <code>han.auto</code>：每一份樣本自己跑一次 pass，模式寫在
+  它自己身上，所以四種模式可以並排。控制台的<b>紅色</b>開關會重跑 JS，其餘只動
+  cascade——分野本身就是這套設計的主張。
+</p>
+
+<form class="Console" id="console">
+  <label>
+    <span data-reruns>標點細修</span>
+    <select name="refinement">
+      <option value="auto" selected>auto</option>
+      <option value="compress">compress</option>
+      <option value="hang">hang</option>
+      <option value="none">none</option>
+    </select>
+  </label>
+
+  <label>
+    <span data-reruns>混排間隙</span>
+    <select name="autospace">
+      <option value="normal" selected>normal</option>
+      <option value="insert">insert</option>
+      <option value="replace">replace</option>
+      <option value="strict">strict</option>
+      <option value="no-autospace">no-autospace</option>
+    </select>
+  </label>
+
+  <label>
+    <span>書名號</span>
+    <select name="cite-marks">
+      <option value="bracket" selected>bracket</option>
+      <option value="wavy">wavy</option>
+      <option value="none">none</option>
+    </select>
+  </label>
+
+  <label>
+    <span>引號</span>
+    <select name="q-quotes">
+      <option value="on" selected>on</option>
+      <option value="off">off</option>
+    </select>
+  </label>
+
+  <label>
+    <span>語意模組</span>
+    <select name="semantics">
+      <option value="on" selected>on</option>
+      <option value="off">off</option>
+    </select>
+  </label>
+
+  <label>
+    <span>標點慣例</span>
+    <select name="punctuation-hant">
+      <option value="JIS" selected>JIS</option>
+      <option value="MOE">MOE</option>
+      <option value="GB">GB</option>
+      <option value="KLR">KLR</option>
+      <option value="off">off</option>
+    </select>
+  </label>
+
+  <label>
+    <span>傳承字形</span>
+    <select name="heritage">
+      <option value="webfont" selected>webfont</option>
+      <option value="system-ja">system-ja</option>
+      <option value="off">off</option>
+    </select>
+  </label>
+
+  <label>
+    <span>語言</span>
+    <select name="lang">
+      <option value="zh-Hant" selected>zh-Hant</option>
+      <option value="zh-Hans">zh-Hans</option>
+      <option value="ja">ja</option>
+      <option value="ko-Hant">ko-Hant</option>
+    </select>
+  </label>
+
+  <label>
+    <span>欄寬</span>
+    <input type="range" name="column" min="7" max="26" value="15">
+  </label>
+
+  <label>
+    <span>直排</span>
+    <input type="checkbox" id="vertical" name="vertical">
+  </label>
+
+  <label>
+    <span>顯示標記</span>
+    <input type="checkbox" id="reveal" name="reveal">
+  </label>
+
+  <label>
+    <span>顯示產出標記</span>
+    <input type="checkbox" id="markup" name="markup">
+  </label>
+
+  <label>
+    <span>引號邊界修正</span>
+    <input type="checkbox" id="fix" name="fix" checked>
+  </label>
+
+  <p class="ConsoleLegend">
+    紅色 ＝ 重跑 pass；其餘只改 cascade 變數，DOM 一個字都不動。
+  </p>
+</form>
+
+
+<section>
+  <h2>一、四種模式產出什麼</h2>
+  <p class="Note">
+    四份相同的文字，各自以 <code>refinePunctuationWithMode(mode)(el)</code>
+    跑一次——不受控制台的模式開關影響。這也是「模式可以逐段不同」的證明：該函式
+    把宣告寫成元素的行內 <code>--han-punctuation-refinement</code>，CSS 的
+    <code>@container style()</code> 就逐子樹分支。勾「顯示產出標記」看標記。
+    樣本裡的 <code>。」，</code> 是一串<b>寫在 DOM 裡</b>的連續標點——那是
+    <code>data-consecutive-pos</code> 的用武之地，而 <code>&lt;q&gt;</code> 生的
+    括號永遠不在裡面。
+  </p>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-mode="auto" data-report="markup">
+      <h3>auto — 擠壓＋懸掛，一趟走完</h3>
+      <div class="Specimen">她說「今天真好。」，又問<q>明天呢。</q></div>
+      <pre class="Code Markup" data-wrap></pre>
+    </div>
+    <div class="Cell" data-specimen data-mode="compress" data-report="markup">
+      <h3>compress — 只包，不懸掛</h3>
+      <div class="Specimen">她說「今天真好。」，又問<q>明天呢。</q></div>
+      <pre class="Code Markup" data-wrap></pre>
+    </div>
+    <div class="Cell" data-specimen data-mode="hang" data-report="markup">
+      <h3>hang — 只包可懸掛的那幾顆</h3>
+      <div class="Specimen">她說「今天真好。」，又問<q>明天呢。</q></div>
+      <pre class="Code Markup" data-wrap></pre>
+    </div>
+    <div class="Cell" data-specimen data-mode="none" data-report="markup">
+      <h3>none — 原樣送出</h3>
+      <div class="Specimen">她說「今天真好。」，又問<q>明天呢。</q></div>
+      <pre class="Code Markup" data-wrap></pre>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>二、cascade 派工與引擎降級</h2>
+  <p class="Note">
+    <code>refinePunctuation(el)</code>（不帶模式）讀 cascade 宣告的模式，再依
+    引擎能力挑實際要跑的配方：宣告 <code>auto</code> 而引擎原生支援
+    <code>text-spacing-trim: trim-start</code> 時，擠壓那半交給引擎，JS 只做懸掛
+    ——但它知道作者要的是 <code>auto</code>，所以仍會把每顆可懸掛標點<b>前面</b>
+    那顆擠壓者一併包起來，補回原子盒打斷的半個字。下面這份跟著控制台的模式走。
+  </p>
+  <div class="Row">
+    <div class="Cell" data-specimen data-mode="cascade" data-report="markup">
+      <div class="Specimen">她說<q>今天真好</q>、又補了一句<q>明天也會</q>、就走了。</div>
+      <pre class="Code Markup" data-wrap></pre>
+    </div>
+    <pre class="Code" id="engine"></pre>
+  </div>
+</section>
+
+
+<section>
+  <h2>三、標記契約</h2>
+  <p class="Note">
+    pass 產出的每一種包裹與屬性。數字是本頁當下的實際計數，隨控制台變動。
+  </p>
+  <div class="Row" data-specimen data-mode="cascade" data-report="markup">
+    <div class="Specimen">他在 2026 年讀了 Acta Taisolis Sinensis，也讀了《太陽中文報》。</div>
+    <pre class="Code Markup" data-wrap></pre>
+  </div>
+  <p class="Note">
+    上面這份同時踩到三件事：漢字與拉丁／數字的接縫（<code>&lt;h-iss&gt;</code>，
+    把「混排間隙」切到 <code>strict</code> 或 <code>insert</code> 才會長出來，
+    <code>normal</code> 是交給引擎的 <code>text-autospace</code>）、寫死在 DOM 裡的
+    書名號、以及 <code>》。</code> 這串連續標點。
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>標記</th><th>由誰產出</th><th>意思</th><th>本頁</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>&lt;h-char data-punct&gt;</code></td>
+        <td><code>refinePunctuation</code></td>
+        <td>標點包裹。token：<code>open</code>／<code>close</code>／<code>end</code>／<code>middle</code>／<code>hangable</code>／<code>consecutive</code></td>
+        <td data-count="h-char[data-punct]"></td>
+      </tr>
+      <tr>
+        <td><code>&lt;h-layer&gt;</code></td>
+        <td><code>refinePunctuation</code></td>
+        <td>零寬原子盒，字形溢出蓋在塌縮用的填充上——懸掛就是這麼來的</td>
+        <td data-count="h-layer"></td>
+      </tr>
+      <tr>
+        <td><code>data-consecutive-pos</code></td>
+        <td><code>refinePunctuation</code></td>
+        <td>連續標點串裡的位置（<code>start</code>／<code>inner</code>／<code>end</code>），串的內緣不修剪</td>
+        <td data-count="[data-consecutive-pos]"></td>
+      </tr>
+      <tr>
+        <td><code>data-followed-by</code></td>
+        <td><code>refinePunctuation</code></td>
+        <td>可懸掛標點後面那顆的類別，用來補回原子盒打斷的擠壓</td>
+        <td data-count="h-char[data-followed-by]"></td>
+      </tr>
+      <tr>
+        <td><code>data-followed-by-quote</code></td>
+        <td><code>markQuoteBoundaries</code></td>
+        <td>這顆標點貼著哪幾層引號邊界，由近而遠——括號在 pseudo 裡，pass 看不到</td>
+        <td data-count="[data-followed-by-quote]"></td>
+      </tr>
+      <tr>
+        <td><code>q[data-followed-by]</code></td>
+        <td><code>markQuoteBoundaries</code></td>
+        <td>這個元素的閉括號後面接著可懸掛標點，由 <code>::after</code> 付那半個字</td>
+        <td data-count="q[data-followed-by], cite[data-followed-by]"></td>
+      </tr>
+      <tr>
+        <td><code>&lt;h-iss&gt;</code></td>
+        <td><code>applyISS</code></td>
+        <td>跨文種混排間隙。<code>data-mode="replace"</code> 表示吃掉了作者的空白</td>
+        <td data-count="h-iss"></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<section>
+  <h2>四、引號邊界</h2>
+  <p class="Note">
+    <code>&lt;q&gt;</code> 與 <code>&lt;cite&gt;</code> 的括號來自
+    <code>::before</code>／<code>::after</code>，<b>不在 DOM 裡</b>，所以標點 pass
+    在這些接縫上的每個判斷都少算一個字：<code>&lt;q&gt;今天真好。&lt;/q&gt;</code>
+    渲染成「今天真好。」，句號後面還有一顆 <code>」</code>，它不該懸掛。
+    <code>markQuoteBoundaries</code> 只記結構事實，模式判斷留給 CSS。
+    關掉「引號邊界修正」就是修正前的樣子。
+  </p>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>句號收在 q 尾端</h3>
+      <div class="Specimen">她停下腳步，說<q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>開側 ，「</h3>
+      <div class="Specimen">她回頭看了一眼，<q>今天真好。</q>然後就走了。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>外閉側 」、</h3>
+      <div class="Specimen">她說<q>今天真好</q>、又補了一句<q>明天也會</q>、就走了。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>逗號是 last-child，但不在邊界上</h3>
+      <div class="Specimen">她想了想，說<q><em>今天真好，</em>明天也不會差到哪去。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>空白斷開（縮排也是文字）</h3>
+      <div class="Specimen">她停下腳步，說<q>
+        今天真好。
+      </q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>模式即時切換，JS 不重跑</h3>
+      <div class="Specimen">他讀的是<cite>太陽中文報。</cite>那天下午。</div>
+      <output class="Out"></output>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>五、交叉矩陣</h2>
+  <p class="Note">
+    <code>q</code> 與 <code>cite</code> 的四種交叉關係，逐格窮舉。標記由頁面從
+    實際 DOM 讀出來印，不是寫死的預期值。兩種走訪的規則<b>正好相反</b>：爬祖先
+    每經過一層生成器就記一個 token；爬後續碰到生成器就停——它自己的閉括號擋在
+    中間。
+  </p>
+
+  <h3 style="color: inherit; font-family: inherit; font-size: .95rem; margin-block-start: 1.5rem">巢狀 A &gt; B — 句號一次收兩層</h3>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q &gt; q</h3>
+      <div class="Specimen">她說<q>他昨天講過<q>今天真好。</q></q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q &gt; cite</h3>
+      <div class="Specimen">她說<q>你該讀讀<cite>太陽中文報。</cite></q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite &gt; q</h3>
+      <div class="Specimen">他讀了<cite>他說<q>不。</q></cite>整整一夜。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite &gt; cite</h3>
+      <div class="Specimen">他讀了<cite>太陽中文報<cite>社論。</cite></cite></div>
+      <output class="Out"></output>
+    </div>
+  </div>
+
+  <h3 style="color: inherit; font-family: inherit; font-size: .95rem; margin-block-start: 2rem">直接相鄰 A + B — 兩顆 pseudo 面對面</h3>
+  <p class="Note">
+    實測：字體的擠壓跨得過 pseudo 邊界，<b>那條縫本身不需要修理</b>。A 尾端的
+    標點只記 <code>close-A</code>——它不記下一個元素的開括號，因為 A 自己的
+    <code>」</code> 就畫在中間。
+  </p>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q + q</h3>
+      <div class="Specimen">她說<q>今天真好。</q><q>明天也是。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q + cite</h3>
+      <div class="Specimen">她說<q>今天真好。</q><cite>太陽中文報</cite>登了。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite + q</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite><q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite + cite</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite><cite>社論</cite>兩份。</div>
+      <output class="Out"></output>
+    </div>
+  </div>
+
+  <h3 style="color: inherit; font-family: inherit; font-size: .95rem; margin-block-start: 2rem">中間夾一顆可懸掛標點 A 、 B</h3>
+  <p class="Note">
+    最完整的形狀：同一顆頓號兩側都是 pseudo。前面那顆閉括號由
+    <code>A::after</code> 的 <code>letter-spacing</code> 付帳（標記掛在元素上），
+    後面那顆開括號由頓號自己把填充換成半個字寬的面孔付帳（標記掛在
+    <code>&lt;h-char&gt;</code> 上）。
+  </p>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q 、 q</h3>
+      <div class="Specimen">她說<q>今天真好</q>、<q>明天也是</q>。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q 、 cite</h3>
+      <div class="Specimen">她說<q>今天真好</q>、<cite>太陽中文報</cite>都這麼講。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite 、 q</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite>、<q>今天真好</q>。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite 、 cite</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite>、<cite>社論</cite>。</div>
+      <output class="Out"></output>
+    </div>
+  </div>
+
+  <h3 style="color: inherit; font-family: inherit; font-size: .95rem; margin-block-start: 2rem">中間夾正文 A 然後 B — 對照組，四格應全空</h3>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q ~ q</h3>
+      <div class="Specimen">她說<q>今天真好</q>然後又說<q>明天也是</q>那天下午。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>q ~ cite</h3>
+      <div class="Specimen">她說<q>今天真好</q>然後翻開<cite>太陽中文報</cite>那一頁。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite ~ q</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite>然後說<q>今天真好</q>那一句。</div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="tokens">
+      <h3>cite ~ cite</h3>
+      <div class="Specimen">他讀<cite>太陽中文報</cite>然後讀<cite>社論</cite>那一篇。</div>
+      <output class="Out"></output>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>六、把引號關掉</h2>
+  <p class="Note">
+    撤銷懸掛的前提是「後面真的有一顆閉括號」，所以每一種「不畫括號」的設定都要
+    驗。判詞取 <code>&lt;h-layer&gt;</code> 的 computed <code>display</code>：
+    <code>inline-block</code> ＝ 懸掛還在，<code>inline</code> ＝ 被撤銷。這些格子
+    各自帶著寫死的設定，不跟控制台走。
+  </p>
+  <div class="Grid">
+    <div class="Cell" data-specimen data-report="hang" data-expect="nohang">
+      <h3>--han-cite-title-marks: bracket</h3>
+      <div class="Specimen" style="--han-cite-title-marks: bracket">他讀了<cite>太陽中文報。</cite></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>--han-cite-title-marks: none</h3>
+      <div class="Specimen" style="--han-cite-title-marks: none">他讀了<cite>太陽中文報。</cite></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>--han-cite-title-marks: wavy</h3>
+      <div class="Specimen" style="--han-cite-title-marks: wavy">他讀了<cite>太陽中文報。</cite></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>--han-semantics: off</h3>
+      <div class="Specimen" style="--han-cite-title-marks: bracket; --han-semantics: off">他讀了<cite>太陽中文報。</cite></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="nohang">
+      <h3>--han-q-quotes: on（預設）</h3>
+      <div class="Specimen" style="--han-q-quotes: on">她說<q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>--han-q-quotes: off</h3>
+      <div class="Specimen" style="--han-q-quotes: off">她說<q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>zh-Hans 的 “”（非全形）</h3>
+      <div class="Specimen" lang="zh-Hans">她说<q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="nohang">
+      <h3>--han-quotes: none（關不掉）</h3>
+      <div class="Specimen" style="--han-quotes: none">她說<q>今天真好。</q></div>
+      <output class="Out"></output>
+    </div>
+    <div class="Cell" data-specimen data-report="hang" data-expect="hang">
+      <h3>q { quotes: none }（繞過開關）</h3>
+      <div class="Specimen"><q style="quotes: none">今天真好。</q>她說。</div>
+      <output class="Out"></output>
+    </div>
+  </div>
+  <p class="Note">
+    最後一格是已知限制：直接寫 <code>quotes: none</code> 繞過了變數 API，而
+    computed <code>content</code> 對 <code>close-quote</code> 兩種情況都回同一個
+    關鍵字，CSS 偵測不到，句末標點會少懸一次。請改用
+    <code>--han-q-quotes: off</code>。<code>--han-quotes: none</code> 也不是開關
+    ——<code>semantics.css</code> 在 <code>&lt;q&gt;</code> 自己身上又宣告了一次，
+    per-element 宣告蓋過繼承，括號照畫。
+  </p>
+</section>
+
+
+<section>
+  <h2>七、狀態推導</h2>
+  <p class="Note">
+    懸掛不是由模式直接決定的，而是由各語言自己的標點慣例推導出來：排除唯一已知
+    置中的 <code>MOE</code>，其餘一律懸掛；<code>zh-Hant</code> 的 <code>off</code>
+    再依傳承字形細分。改控制台的「標點慣例」「傳承字形」「語言」看它變。
+  </p>
+  <pre class="Code" id="state"></pre>
+</section>
+
+
+<section>
+  <h2>八、API 用例</h2>
+  <p class="Note">
+    每一支都吃 <code>Hyperly</code>（<code>string | Element | Hype</code>）並回傳
+    <code>Hype</code>，所以可以自由串接。瀏覽器端會就地改 DOM，SSR 端回傳可序列化的
+    結果。
+  </p>
+
+  <h3>一次裝好全部</h3>
+  <pre class="Code">import { installFallbacks } from '@hanzi.pro/han.css'
+
+// 瀏覽器：預設整份文件，也可以只給一棵子樹
+installFallbacks()
+installFallbacks(document.querySelector('main'))
+
+// 依序跑：refinePunctuation → markQuoteBoundaries
+//        → applyISSWithProbe → markAdjacentLines
+// 大文件自動分塊，沒有節點數上限</pre>
+
+  <h3>SSR</h3>
+  <pre class="Code">import { installFallbacks } from '@hanzi.pro/han.css/ssr'
+import { html } from 'hyperly/fp'
+
+// SSR 必須明給來源；每一支 pass 都無條件跑，
+// 由送達後的 CSS 決定哪些包裹算數
+const rendered = html(installFallbacks('&lt;main&gt;…&lt;/main&gt;'))</pre>
+
+  <h3>只跑標點，模式交給 cascade</h3>
+  <pre class="Code">import { refinePunctuation } from '@hanzi.pro/han.css'
+
+// 讀 --han-punctuation-refinement，再依引擎能力挑配方：
+// 宣告 auto ＋ 原生 trim-start ⇒ 只跑懸掛那半
+refinePunctuation(document.body)</pre>
+
+  <h3>指定模式（本頁第一節用的就是這支）</h3>
+  <pre class="Code">import { refinePunctuationWithMode } from '@hanzi.pro/han.css'
+
+// 不問引擎、不問 cascade，就跑這個模式，
+// 並把宣告寫成該元素的行內 --han-punctuation-refinement
+refinePunctuationWithMode('compress')(el)</pre>
+
+  <h3>只寫 cascade 變數，不動 DOM</h3>
+  <pre class="Code">import { setPunctuationRefinementMode } from '@hanzi.pro/han.css'
+
+setPunctuationRefinementMode('none')(el)</pre>
+
+  <h3>引號邊界（跑在標點之後）</h3>
+  <pre class="Code">import { markQuoteBoundaries } from '@hanzi.pro/han.css'
+
+// 標記 &lt;q&gt;／&lt;cite&gt; 邊界上的標點包裹。
+// 只記結構事實：括號當下畫不畫，是 CSS 依
+// --han-q-quotes／--han-cite-title-marks／:lang() 決定的
+markQuoteBoundaries(el)</pre>
+
+  <h3>還原</h3>
+  <pre class="Code">import { uninstallFallbacks } from '@hanzi.pro/han.css'
+
+// 拆掉所有包裹、還原被吃掉的空白、清掉全部標記屬性。
+// 不需要先裝過，SSR 產出的標記一樣拆得掉
+uninstallFallbacks(document.body)</pre>
+
+  <h3>自組 pass 集合時要自己分塊</h3>
+  <pre class="Code">import { runPassChunked, refinePunctuation } from '@hanzi.pro/han.css'
+
+// 單支 pass 不會自己分塊；約七千五百個節點以上會爆堆疊，
+// 而且是「部分失敗」——半篇排好、半篇沒有
+runPassChunked(root, refinePunctuation)</pre>
+</section>
+
+
+<section>
+  <h2>九、踩點</h2>
+  <ul class="Note">
+    <li>
+      <b>原子行內盒的起邊被當成行首。</b>把 <code>&lt;q&gt;</code> 或
+      <code>&lt;cite&gt;</code> 改成 <code>inline-block</code>（常見於為了
+      transform 或裝飾），原生 <code>trim-start</code> 會把它盒內第一顆全形開括號
+      削成半形，行中也削，而且不報錯。逐盒解法是
+      <code>text-spacing-trim: space-first</code>。
+    </li>
+    <li>
+      <b>style query 讀的是容器，不是元素自己。</b>
+      <code>--han-q-quotes</code>、<code>--han-cite-title-marks</code> 這類開關
+      一律設在<b>祖先</b>上；寫在被它管的元素身上時，該元素的 pseudo 讀不到，
+      但它內部的 <code>&lt;h-char&gt;</code> 讀得到——兩半會各說各話。
+    </li>
+    <li>
+      <b>覆寫 UA 會自己生成的東西，關掉要明寫。</b><code>&lt;q&gt;</code> 的引號
+      本來就來自 UA 樣式表，撤回自己的宣告只是落回 UA 那份。這是
+      <code>--han-q-quotes</code> 的 <code>off</code> 分支必須明寫
+      <code>content: none</code> 的原因。
+    </li>
+    <li>
+      <b>包裹字符的手法不可以走進 <code>&lt;math&gt;</code>／<code>&lt;svg&gt;</code>。</b>
+      MathML Core 的 UA 樣式表給未知後代 <code>display: block</code>，一個
+      <code>&lt;h-char&gt;</code> 就把公式拆成兩行；SVG 則根本不畫。兩者整棵跳過，
+      交給引擎的 <code>text-spacing-trim</code>。
+    </li>
+    <li>
+      <b>比對跨得過元素邊界。</b>底層的文字走訪在攤平後的文字上比對，所以
+      <code>&lt;q&gt;…。&lt;/q&gt;、</code> 的句號與頓號會被當成同一串連續標點，
+      即使畫面上隔著一顆 <code>」</code>。目前只影響連續串內緣修剪的取捨。
+    </li>
+  </ul>
+</section>
+
+</body>
+</html>

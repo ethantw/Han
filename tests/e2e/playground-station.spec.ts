@@ -311,6 +311,43 @@ test.describe('station⑤ playground', () => {
     await expect(page.locator('.PgControls > [data-pg-content-tabs]')).toBeVisible()
   })
 
+  test('認真模式 lays the borrowed sheet out its own way, and Esc respects the caret', async ({ page }) => {
+    await page.locator('#station-playground label.PgFocus').click()
+    const $studio = page.locator('[data-pg-studio]')
+    await expect($studio).toBeVisible()
+
+    // The sheet arrives dressed for the page (lifted, bled to the window's
+    // edge, column box pinned). In here none of that applies.
+    expect(
+      await page.evaluate(() => {
+        const $card = document.querySelector('[data-pg-studio] [data-pg-paper]')!
+        const cs = getComputedStyle($card)
+        return {
+          lifted: cs.translate !== 'none',
+          pastWindow: $card.getBoundingClientRect().right > document.documentElement.clientWidth,
+          pageScrollsX:
+            document.documentElement.scrollWidth > document.documentElement.clientWidth,
+          closeReachable:
+            document.querySelector('[data-pg-studio-close]')!.getBoundingClientRect().right <=
+            document.documentElement.clientWidth,
+        }
+      }),
+    ).toEqual({ lifted: false, pastWindow: false, pageScrollsX: false, closeReachable: true })
+
+    // Esc is an editing reflex while the caret is in the editor…
+    await page.locator('[data-pg-src]').focus()
+    await page.keyboard.press('Escape')
+    await expect($studio).toBeVisible()
+
+    // …and the usual dialog contract everywhere else.
+    await page.locator('[data-pg-studio] [data-pg-preview]').click()
+    await page.keyboard.press('Escape')
+    await expect($studio).toBeHidden()
+    // whichever way out, the panes come home and the switch follows
+    await expect(page.locator('[data-playground] > [data-pg-sheet]')).toBeVisible()
+    await expect(page.locator('#pg-focus')).not.toBeChecked()
+  })
+
   test('a re-render re-installs the JS fallbacks, so *.with-js.css has wrappers to select', async ({ page }) => {
     // `innerHTML` replaces the whole preview subtree, and han.js's wrappers
     // live IN it — without a second pass over the new nodes, `<h-char>` /
