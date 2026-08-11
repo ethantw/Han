@@ -245,7 +245,7 @@
       /* The galley takes the wider track: it is the thing being read, and
          its column count comes out of that width. `minmax(0, …)` on both
          so neither pane's intrinsic content can floor a track. */
-      grid-template-columns: minmax(0, .75fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
       gap: var(--gutter);
       align-items: start;
 
@@ -303,12 +303,13 @@
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
-      padding: 1.25rem 1.5rem;
+      padding: 1.25rem 1rem;
     }
 
     & > [data-pg-paper] {
       grid-column: 2;
       box-shadow: 0 1px 0 var(--ui-bg-2q);
+      translate: 0 -5rem;
       cursor: zoom-in;
     }
 
@@ -415,19 +416,11 @@
   --_fs-compact: 0.8125rem;
 }
 
-/* The head becomes a two-column grid so the switch can sit on the heading
-   row while staying AFTER the lede in source order — `h2 + p` (frame.css)
-   must keep matching the lede. */
-.Playground:where(section) > hgroup {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  column-gap: 1rem;
-
-  > p:first-child { grid-column: 1 / -1; }
-  > h2            { grid-column: 1; grid-row: 2; }
-  > .PgFocus      { grid-column: 2; grid-row: 2; justify-self: end; }
-  > h2 + p        { grid-column: 1 / -1; grid-row: 3; }
+/* The switch sits under the lede, its own line in the station head. Source
+   order already puts it last, so no grid placement is needed — just the
+   space above it, and a lede that no longer has to share its row. */
+.Playground:where(section) > hgroup > .PgFocus {
+  margin-block-start: 1rem;
 }
 
 /* The studio: a fullscreen modal holding the SAME two panes side by side.
