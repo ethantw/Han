@@ -308,10 +308,12 @@
       border-radius: var(--r-3);
     }
 
-    /* the sheet unit owns the track and the lift; the card fills it */
+    /* The sheet unit owns the track; the LIFT belongs to its two children,
+       not to the wrapper. A `translate` on the wrapper would make it a
+       stacking context, trapping the switch's z-index inside it — and the
+       switch has to be able to paint above the loupe (see below). */
     & > [data-pg-sheet] {
       grid-column: 2;
-      translate: 0 -7rem;
       /* the switch tucks under the sheet's right edge. NOT `align-items:
          flex-end` — that would align the bled card by its RIGHT edge, so the
          extra width would grow leftward and the sheet would never reach the
@@ -324,6 +326,7 @@
 
     [data-pg-sheet] > [data-pg-paper] {
       inline-size: 100%;
+      translate: 0 -7rem;
       box-shadow: 0 1px 0 var(--ui-bg-2q);
       cursor: zoom-in;
 
@@ -411,6 +414,20 @@
     .PgLensSwitch {
       display: inline-flex;
       align-self: flex-end;
+
+      /* Above the loupe, on its own paper. The circle is 386px across and
+         the cursor has to travel toward this switch to reach it — dragging
+         the lens right over it on the way. Stacking it above keeps it
+         readable, and the pill keeps it readable over MAGNIFIED TEXT (the
+         same `--ui-bg` as the page, so on the page it reads as nothing at
+         all). The lens is `pointer-events: none`, so clicking was never the
+         problem — seeing was. */
+      position: relative;
+      z-index: 4;
+      translate: 0 -7rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--ui-bg);
+      border-radius: var(--r-2);
 
       /* `.Toggle` (controls.css) speaks the console's `--_*` indirection,
          which lives on the shadow `:host`; bridge the five it reads. */

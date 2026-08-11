@@ -236,6 +236,29 @@ test.describe('station⑤ playground', () => {
     await $card.hover({ position: { x: 200, y: 320 } })
     await expect.poll(centre).not.toBe(parked)
 
+    // The switch has to paint ABOVE the loupe — the cursor travels over it to
+    // reach the switch, dragging the circle along. Asserted structurally,
+    // because `elementFromPoint` can't see it: the lens is
+    // `pointer-events: none`, so hit-testing reports the switch on top even
+    // when the circle is painted over it. What actually decides the paint
+    // order is that no ancestor up to the panel makes a stacking context
+    // (a `translate` on the sheet wrapper used to trap the z-index inside).
+    expect(
+      await page.evaluate(() => {
+        const $sw = document.querySelector('#station-playground [data-pg-lens-switch]')!
+        const $panel = $sw.closest('[data-playground]')!
+        const swZ = Number.parseInt(getComputedStyle($sw).zIndex, 10)
+        const lensZ = Number.parseInt(
+          getComputedStyle(document.querySelector('#station-playground .PgLens')!).zIndex, 10)
+        let trapped = false
+        for (let $el = $sw.parentElement; $el && $el !== $panel; $el = $el.parentElement) {
+          const cs = getComputedStyle($el)
+          if (cs.transform !== 'none' || cs.translate !== 'none' || cs.filter !== 'none') trapped = true
+        }
+        return { above: swZ > lensZ, trapped }
+      }),
+    ).toEqual({ above: true, trapped: false })
+
     await $switch.click()
     await expect($lens).toBeHidden()
 
