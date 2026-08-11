@@ -429,10 +429,15 @@
 .Playground:where(section) > hgroup > .PgControls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.75rem 1rem;
+  gap: 0.75rem 1.5rem;
   margin-block-start: 1rem;
+  /* Clustered at the start, NOT spread across the head: the head's measure
+     is a share of the station, so on a wide screen its far end reaches over
+     the galley card — and a switch floating on the newspaper's masthead
+     reads as part of the paper. Keeping both controls together also says
+     what they are: one strip of controls for one station. */
+  justify-content: flex-start;
 }
 
 /* The studio: a fullscreen modal holding the SAME two panes side by side.
