@@ -1,5 +1,15 @@
 @charset "UTF-8";
 
+/* Registered so `getComputedStyle` hands the module a RESOLVED length:
+   an unregistered custom property computes to its literal token stream
+   (`calc(100dvh - 4rem - 8rem)`), which `parseFloat` reads as NaN — the
+   first cut of fitColumns() silently never folded anything. */
+@property --pg-galley-budget {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 /**
  * 站⑦・遊樂場 — user-content editor.
  *
@@ -290,10 +300,10 @@
        magnified view lands on different geometry than the page shows */
     & > [data-pg-paper],
     .PgLens .PgPaper {
+      padding: 1.25rem 1rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
-      padding: 1.25rem 1rem;
     }
 
     & > [data-pg-paper] {
@@ -304,15 +314,33 @@
     }
 
     /* the galley face */
+    /* ── the galley face ───────────────────────────────────────────────
+       ONE column until one column no longer fits. Multicol BALANCES by
+       default, which spreads a three-line draft across three columns — a
+       page that reads as if the text were rationed. So the folded state is
+       a class the module flips after each render (playground.js §
+       fitColumns), measured against the budget below: the height a proof
+       may occupy before it has to fold.
+
+       Not `column-fill: auto`: sequential fill needs a DEFINITE height, and
+       a definite height sends long copy into overflow columns — horizontal
+       scrolling, which is not a newspaper. */
     .PgGalley {
+      --pg-galley-budget: calc(100dvh - var(--h-header) - 8rem);
+
       font-size: var(--pg-galley-fs);
+    }
+
+    .PgGalley.is-multicol {
       columns: calc(var(--pg-galley-col) * 1em);
       column-gap: 2em;
       column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
     }
 
     [data-pg-preview] {
-      --han-prose-indent: 1em;
+      & {
+        --han-prose-indent: 1em;
+      }
 
       /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
          mouse gets the lens below, and a click-to-select must not reflow
@@ -321,7 +349,6 @@
          and a proof you scroll horizontally is nobody's newspaper. */
       &:focus-visible {
         font-size: 0.875rem;
-        columns: auto;
         max-block-size: calc(100dvh - var(--h-header) - 2rem);
         overflow: auto;
         cursor: auto;
