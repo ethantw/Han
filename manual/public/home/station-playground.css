@@ -56,10 +56,12 @@
     position: relative;
     /* z-index: 0; */
   }
-  .PgLens { display: none; }
+  .PgLens,
+  .PgLensSwitch { display: none; }
 
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
+  [data-pg-sheet],
   [data-pg-paper] {
     display: block;
     box-sizing: border-box;
@@ -207,7 +209,7 @@
   /* Direct children ONLY (`>`): the studio (dialog) borrows these same
      panes by reparenting them into its body — one combinator exempts them
      from the whole tab/grid regime while they're on loan. */
-  &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-paper] {
+  &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-sheet] {
     display: none;
   }
 
@@ -262,7 +264,7 @@
        nothing to do. Selectors copied VERBATIM from the tab rules above —
        same shape, same specificity (0,5,0), later in source, so they win
        the tie; anything shorter loses and the panes stay hidden. */
-    &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-paper],
+    &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-sheet],
     &:not(:has([name="pg-editor-view"][value="code"]:checked)) > textarea {
       display: block;
     }
@@ -298,7 +300,7 @@
        galley re-folds like a paper rather than reflowing into a blog. */
     /* the card face — the real paper AND the lens's copy of it, or the
        magnified view lands on different geometry than the page shows */
-    & > [data-pg-paper],
+    [data-pg-sheet] > [data-pg-paper],
     .PgLens .PgPaper {
       padding: 1.25rem 1rem;
       background: var(--ui-bg);
@@ -306,10 +308,23 @@
       border-radius: var(--r-3);
     }
 
-    & > [data-pg-paper] {
+    /* the sheet unit owns the track and the lift; the card fills it */
+    & > [data-pg-sheet] {
       grid-column: 2;
-      box-shadow: 0 1px 0 var(--ui-bg-2q);
       translate: 0 -7rem;
+      /* the switch tucks under the sheet's right edge. NOT `align-items:
+         flex-end` — that would align the bled card by its RIGHT edge, so the
+         extra width would grow leftward and the sheet would never reach the
+         window. The card keeps the start edge; only the switch shifts. */
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0;
+    }
+
+    [data-pg-sheet] > [data-pg-paper] {
+      inline-size: 100%;
+      box-shadow: 0 1px 0 var(--ui-bg-2q);
       cursor: zoom-in;
 
       /* ── the sheet runs off the page to the right ─────────────────────
@@ -390,6 +405,28 @@
         overflow-y: auto;
         cursor: auto;
       }
+    }
+
+    /* the loupe's switch sits under the sheet, in the galley column */
+    .PgLensSwitch {
+      display: inline-flex;
+      align-self: flex-end;
+
+      /* `.Toggle` (controls.css) speaks the console's `--_*` indirection,
+         which lives on the shadow `:host`; bridge the five it reads. */
+      --_rule: var(--ui-rule);
+      --_bg: var(--ui-bg);
+      --_accent: var(--ui-accent);
+      --_supplement-text: var(--ui-supplement-text);
+      --_fs-compact: 0.75rem;
+    }
+
+    /* switch off ⇒ no loupe. The module keeps tracking the cursor (cheap,
+       and the lens is ready the moment it comes back); only the paint
+       stops. */
+    &[data-playground]:has([data-pg-lens-switch] input:not(:checked)) .PgLens {
+      opacity: 0;
+      visibility: hidden;
     }
 
     /* ── The lens (.PgLens, home/playground-lens.js) — a circular window

@@ -167,6 +167,16 @@ export const initPlaygroundLens = () => {
   new MutationObserver(reclone)
     .observe($galley, { childList: true, subtree: true, characterData: true })
 
+  /* Switched off and on again, the loupe starts over: it goes back to the
+     headline instead of reappearing wherever it happened to be left. Putting
+     something down and picking it up again is a fresh look at the page. */
+  const $switch = $paper.closest('[data-pg-sheet]')?.querySelector('[data-pg-lens-switch] input')
+  $switch?.addEventListener('change', () => {
+    if (!$switch.checked) return
+    readerDriving = false
+    sync()
+  })
+
   new ResizeObserver(sync).observe($paper)
   recloneNow()
 }

@@ -216,6 +216,36 @@ test.describe('station⑤ playground', () => {
     expect(Math.abs(long.tail - long.half)).toBeLessThanOrEqual(2)
   })
 
+  test('the loupe has an off switch, and comes back to the headline', async ({ page }) => {
+    const $lens = page.locator('#station-playground .PgLens')
+    const $switch = page.locator('#station-playground [data-pg-lens-switch]')
+    await expect($lens).toBeVisible()                      // on by default
+
+    // parked on the headline, then dragged elsewhere
+    const centre = () =>
+      page.evaluate(() => {
+        const c = document.querySelector('#station-playground [data-pg-paper]')!.getBoundingClientRect()
+        const l = document.querySelector('#station-playground .PgLens')!.getBoundingClientRect()
+        return Math.round(l.y + l.height / 2 - c.y)
+      })
+    const parked = await centre()
+    // `hover` with an explicit position, not raw mouse coordinates: the card
+    // is `translate`d and taller than this viewport, so a computed page
+    // coordinate can land outside it.
+    const $card = page.locator('#station-playground [data-pg-paper]')
+    await $card.hover({ position: { x: 200, y: 320 } })
+    await expect.poll(centre).not.toBe(parked)
+
+    await $switch.click()
+    await expect($lens).toBeHidden()
+
+    // Picking the loupe back up is a fresh look: it returns to the headline
+    // rather than to wherever it was put down.
+    await $switch.click()
+    await expect($lens).toBeVisible()
+    expect(await centre()).toBe(parked)
+  })
+
   test('the content tabs follow the panes into 認真模式', async ({ page }) => {
     // One fieldset, moved — not a second copy kept in sync.
     await page.locator('#station-playground label.PgFocus').click()

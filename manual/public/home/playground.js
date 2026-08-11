@@ -113,8 +113,8 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   const $studioHead = $editor.querySelector('[data-pg-studio-head]')
   // the switch sits in the station head, outside [data-playground]
   const $focusBtn = $editor.closest('section')?.querySelector('[data-pg-focus]')
-  const $paper = $editor.querySelector('[data-pg-paper]')
-  if ($studio && $studioBody && $focusBtn && $paper) {
+  const $sheet = $editor.querySelector('[data-pg-sheet]')
+  if ($studio && $studioBody && $focusBtn && $sheet) {
     // The switch is a checkbox: checked ⇒ in the studio. While the modal is
     // up the switch is inert behind it, so the ✕ is the only way back —
     // it closes AND unchecks, keeping switch and reality in step.
@@ -127,7 +127,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       if ($tabs && $studioHead) {
         $studioHead.insertBefore($tabs, $studioHead.querySelector('[data-pg-studio-close]'))
       }
-      $studioBody.append($src, $paper)
+      $studioBody.append($src, $sheet)
       $studio.showModal()
       $src.focus()
     })
@@ -135,7 +135,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     $studio.querySelector('[data-pg-studio-close]').addEventListener('click', () => {
       const $lens = $editor.querySelector('.PgLens')
       $editor.insertBefore($src, $lens)
-      $editor.insertBefore($paper, $lens)
+      $editor.insertBefore($sheet, $lens)
       // …and the tabs go back to the head, ahead of the focus switch.
       if ($tabs) $focusBtn.closest('.PgControls')?.prepend($tabs)
       $studio.close()
