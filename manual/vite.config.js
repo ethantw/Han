@@ -1150,17 +1150,14 @@ export default defineConfig({
   plugins: [hanManualPlugin()],
   appType: 'mpa',
   server: {
-    // 7000, not vite's 5173: `build/serve.js` (the static server the e2e
-    // suite and any「看成品」check use) already owns 5173, and two servers
-    // fighting over one port is a confusing way to lose an afternoon.
-    port: 7000,
+    port: 7776,
     hmr: false,
     fs: {
       allow: [path.resolve(here, '..')],
     },
   },
   // `vite preview` serves the built output — same port story.
-  preview: { port: 7000 },
+  preview: { port: 7777 },
   build: {
     outDir: path.resolve(here, 'dist'),
     emptyOutDir: true,

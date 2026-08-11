@@ -328,8 +328,16 @@
 
        Always on stage (the module parks it over the headline until the
        cursor takes over): a loupe you have to discover by hovering can't
-       tell you it's there. */
+       tell you it's there.
+
+       …except while the writer is IN the editor. Typing is the one moment
+       the proof isn't being read, and a loupe hanging over the page then
+       is furniture in the way. `:has()` on the panel, keyed on the
+       textarea's own focus — it fades out on entry and back in the moment
+       focus leaves, whatever takes it next. */
     .PgLens { display: block; }
+
+    &[data-playground]:has(> textarea:focus) .PgLens { opacity: 0; }
 
     .PgLens {
       & {
@@ -351,6 +359,8 @@
         pointer-events: none;
         overflow: hidden;
         z-index: 3;
+        opacity: 1;
+        transition: opacity 220ms ease;
         border-radius: 50%;
         background: var(--ui-bg);
         /* rim: ink line + paper inset + soft drop — a loupe on paper */
