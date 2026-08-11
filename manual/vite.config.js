@@ -992,6 +992,26 @@ function hanManualPlugin() {
     },
 
     configureServer(server) {
+      /**
+       * `%VITE_FOO%` substitution, by hand.
+       *
+       * Vite performs it inside its own HTML transform, which only sees files
+       * under `root`. Everything this server hands out from a middleware —
+       * the two specimen URLs (read straight off `demo/`, deliberately) and
+       * the workbench pages — bypasses that transform, so a template read
+       * from disk still carries the raw token. It reaches the browser as a
+       * literal `@%VITE_ZIANO_VERSION%` inside a CDN URL: the request 404s,
+       * the webfont silently never arrives, and nothing in the console names
+       * the cause. Build is unaffected (those pages are rollup inputs).
+       *
+       * `server.config.env` is the resolved env, so `envDir` and
+       * `.env.local` overrides are honoured. An unknown token is left alone
+       * rather than blanked — a visible `%VITE_TYPO%` is a better bug report
+       * than an empty string.
+       */
+      const substituteEnv = (html) =>
+        html.replace(/%(VITE_[A-Z0-9_]+)%/g, (token, name) => server.config.env[name] ?? token)
+
       // 兩張樣張 — read STRAIGHT off `demo/specimen.html` on every request, so a
       // save is live on the next reload. (Build still writes both into
       // HTML_ROOT; see renderSpecimenPages.)
@@ -1009,7 +1029,7 @@ function hanManualPlugin() {
         const pathname = (req.url ?? '').split('?')[0]
         const ssr = pathname === '/specimen.ssr.html'
         if (!ssr && pathname !== '/specimen.html') return next()
-        const src = await fs.readFile(path.join(DEMO_DIR, SPECIMEN_FILE), 'utf-8')
+        const src = substituteEnv(await fs.readFile(path.join(DEMO_DIR, SPECIMEN_FILE), 'utf-8'))
         res.setHeader('content-type', 'text/html; charset=utf-8')
         res.setHeader('cache-control', 'no-store')
         res.end(ssr ? await ssrSpecimen(src, { mode: 'request' }) : src)
@@ -1066,9 +1086,10 @@ function hanManualPlugin() {
         // `path.resolve` collapses `..`, so the prefix check is what keeps a
         // crafted URL inside the directory.
         if (!type || !file.startsWith(DEMO_DIR + path.sep) || !existsSync(file)) return next()
+        const body = await fs.readFile(file, 'utf-8')
         res.setHeader('content-type', type)
         res.setHeader('cache-control', 'no-store')
-        res.end(await fs.readFile(file))
+        res.end(type.startsWith('text/html') ? substituteEnv(body) : body)
       })
 
       // Trailing-slash leniency for flat top-level entries: a request
