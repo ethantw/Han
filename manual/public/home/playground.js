@@ -182,23 +182,6 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
 
   const render = () => { $preview.innerHTML = renderHtml($src.value) }
 
-  /* ── one column, or folded into several ──
-   * A galley folds into columns only when a single column would outrun its
-   * budget (the height a proof may occupy — declared in CSS beside the
-   * column measure). Measured single-column FIRST, because that is the
-   * question being asked; multicol's own height is the balanced one and
-   * answers nothing. `scrollHeight` on the un-folded galley is the natural
-   * height of the text, one reflow, no cloning. */
-  const fitColumns = () => {
-    $preview.classList.remove('is-multicol')
-    const budget = Number.parseFloat(
-      getComputedStyle($preview).getPropertyValue('--pg-galley-budget'),
-    )
-    if (Number.isFinite(budget) && $preview.scrollHeight > budget) {
-      $preview.classList.add('is-multicol')
-    }
-  }
-
   // Debounced + rAF-aligned re-render; persistence is immediate so a fast
   // reload never loses keystrokes.
   /* 重繪之後補跑 JS 後備（見檔頭那段），掛在 debounce 這條路上而**不是**
@@ -214,7 +197,6 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       () => requestAnimationFrame(() => {
         render()
         reapplyFallbacks?.($preview)
-        fitColumns()
       }),
       DEBOUNCE_MS,
     )
@@ -243,14 +225,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     persist()
     render()
     reapplyFallbacks?.($preview)
-    fitColumns()
   })
 
   // First paint is synchronous so the preview reads as typeset content in
   // the page flow immediately (preview is the default tab).
   render()
-  fitColumns()
-  // The budget is viewport-derived, so a resized window re-asks the
-  // question. (Cheap: one class flip, and only if the answer changed.)
-  addEventListener('resize', fitColumns)
 }

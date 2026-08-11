@@ -163,21 +163,24 @@ test.describe('station⑤ playground', () => {
     await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
   })
 
-  test('a short galley stays one column; long copy folds into several', async ({ page }) => {
-    // Multicol balances by default, which would ration three lines across
-    // three columns. The fold is a measured decision (playground.js §
-    // fitColumns) — one column until one column stops fitting.
-    const $galley = page.locator('#station-playground [data-pg-preview]')
-    await expect($galley).toHaveClass(/is-multicol/)          // the article
+  test('the galley is a page: short copy stays in column one, long copy grows sideways', async ({ page }) => {
+    // Definite height + `column-fill: auto`: columns fill downward, then
+    // continue rightward. A short draft must NOT be balanced across three
+    // columns (that reads as if the text were rationed).
+    const box = () =>
+      page.$eval('#station-playground [data-pg-preview]', (el) => ({
+        scrollW: el.scrollWidth, clientW: el.clientWidth, fill: getComputedStyle(el).columnFill,
+      }))
 
     const tab = (label: string) =>
       page.locator('#station-playground [data-pg-content-tabs] label').filter({ hasText: label }).click()
     await tab('自訂內容')
-    await expect($galley).not.toHaveClass(/is-multicol/)      // a few lines
+    const short = await box()
+    expect(short.fill).toBe('auto')
+    expect(short.scrollW).toBeLessThanOrEqual(short.clientW + 1)   // one screenful of page
 
-    // Decisively over budget: one column of this is several viewports tall.
-    await setSource(page, '# 長\n\n' + '把校樣撐過預算高度。'.repeat(400))
-    await expect($galley).toHaveClass(/is-multicol/)
+    await setSource(page, '# 長\n\n' + '把校樣撐過一整頁。'.repeat(400))
+    await expect.poll(async () => (await box()).scrollW > (await box()).clientW).toBe(true)
   })
 
   test('the content tabs follow the panes into 認真模式', async ({ page }) => {

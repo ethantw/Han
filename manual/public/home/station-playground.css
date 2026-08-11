@@ -313,28 +313,29 @@
       cursor: zoom-in;
     }
 
-    /* the galley face */
-    /* ── the galley face ───────────────────────────────────────────────
-       ONE column until one column no longer fits. Multicol BALANCES by
-       default, which spreads a three-line draft across three columns — a
-       page that reads as if the text were rationed. So the folded state is
-       a class the module flips after each render (playground.js §
-       fitColumns), measured against the budget below: the height a proof
-       may occupy before it has to fold.
+    /* ── the galley face: a PAGE, not a stream ─────────────────────────
+       Definite height ＋ `column-fill: auto` ＝ columns fill top-to-bottom
+       and then continue RIGHTWARD, the way a broadsheet does: a short draft
+       sits in column one and leaves the rest of the sheet white (balancing
+       would ration three lines across three columns), and long copy grows
+       the page sideways into overflow columns you scroll to.
 
-       Not `column-fill: auto`: sequential fill needs a DEFINITE height, and
-       a definite height sends long copy into overflow columns — horizontal
-       scrolling, which is not a newspaper. */
+       The scroll stays INSIDE the card — the page may be wider than the
+       viewport, the site's layout may not. `overscroll-behavior-inline:
+       contain` keeps a trackpad swipe from turning into browser-back. */
     .PgGalley {
       --pg-galley-budget: calc(100dvh - var(--h-header) - 8rem);
 
       font-size: var(--pg-galley-fs);
-    }
-
-    .PgGalley.is-multicol {
+      block-size: var(--pg-galley-budget);
       columns: calc(var(--pg-galley-col) * 1em);
       column-gap: 2em;
       column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
+      column-fill: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
     }
 
     [data-pg-preview] {
@@ -342,15 +343,17 @@
         --han-prose-indent: 1em;
       }
 
-      /* Keyboard path only (`:focus-visible`, not :hover/:focus — the
-         mouse gets the lens below, and a click-to-select must not reflow
-         the card): the galley itself flips to reading size. Single flow —
-         a height-capped multicol overflows SIDEWAYS into extra columns,
-         and a proof you scroll horizontally is nobody's newspaper. */
+      /* Keyboard reading mode (`:focus-visible`, not :hover/:focus — the
+         mouse gets the lens, and a click-to-select must not reflow the
+         card): unfold the page into ONE vertical column at reading size.
+         A keyboard scrolls a column happily; chasing a sideways page with
+         arrow keys is no way to read. */
       &:focus-visible {
         font-size: 0.875rem;
-        max-block-size: calc(100dvh - var(--h-header) - 2rem);
-        overflow: auto;
+        columns: auto;
+        column-rule: none;
+        overflow-x: hidden;
+        overflow-y: auto;
         cursor: auto;
       }
     }

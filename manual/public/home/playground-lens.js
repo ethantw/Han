@@ -129,9 +129,22 @@ export const initPlaygroundLens = () => {
     $clone.style.inlineSize = `${r.width}px`
     $clone.style.blockSize = `${r.height}px`
     lensSize = $lens.getBoundingClientRect().width
+    syncScroll()
     if (!readerDriving) [lastX, lastY] = headlinePoint()
     positionAt(lastX, lastY)
   }
+
+  /* The galley scrolls sideways (a page wider than its card), and a clone
+   * starts at scroll 0 — so mirror the offset or the lens shows column one
+   * while the reader is looking at column five. */
+  const syncScroll = () => {
+    const $cloneGalley = $clone?.querySelector('.PgGalley')
+    if ($cloneGalley) $cloneGalley.scrollLeft = $galley.scrollLeft
+  }
+  $galley.addEventListener('scroll', () => {
+    syncScroll()
+    positionAt(lastX, lastY)
+  })
 
   $paper.addEventListener('mousemove', (e) => {
     readerDriving = true
