@@ -1,15 +1,5 @@
 @charset "UTF-8";
 
-/* Registered so `getComputedStyle` hands the module a RESOLVED length:
-   an unregistered custom property computes to its literal token stream
-   (`calc(100dvh - 4rem - 8rem)`), which `parseFloat` reads as NaN — the
-   first cut of fitColumns() silently never folded anything. */
-@property --pg-galley-budget {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
 /**
  * 站⑦・遊樂場 — user-content editor.
  *
@@ -242,6 +232,10 @@
          itself from the same two (see .PgLens). */
       --pg-galley-fs: 0.5625rem;
       --pg-galley-col: 14;   /* column measure, in galley em */
+      /* Both panes stand this tall — one token, so the editor and the sheet
+         can never drift apart. Short of the full viewport on purpose: a pane
+         that ends before the fold shows there is a page around it. */
+      --pg-pane-h: calc(0.85 * (100dvh - var(--h-header)));
 
       display: grid;
       /* The galley takes the wider track: it is the thing being read, and
@@ -274,13 +268,12 @@
       display: none;
     }
 
-    /* ── The editor card: a full-height terminal ──────────────────────
-       Viewport-sized minus the site header, scrolls inside. Sticky so it
-       stays at hand when the galley grows past a viewport (long user
-       content is allowed to). */
+    /* ── The editor card: a terminal, one pane tall ────────────────────
+       Scrolls inside; sticky, so it stays at hand when the sheet grows past
+       a viewport (long user content is allowed to). */
     & > textarea {
       grid-column: 1;
-      block-size: calc(100dvh - var(--h-header) - 2rem);
+      block-size: var(--pg-pane-h);
       overflow: auto;
       resize: none;
       position: sticky;
@@ -326,6 +319,12 @@
 
     [data-pg-sheet] > [data-pg-paper] {
       inline-size: 100%;
+      /* One pane tall, with the galley taking whatever the masthead and
+         dateline leave — measured by flex rather than guessed at in a
+         `calc`, since the dateline wraps at some widths. */
+      block-size: var(--pg-pane-h);
+      display: flex;
+      flex-direction: column;
       translate: 0 -7rem;
       box-shadow: 0 1px 0 var(--ui-bg-2q);
       cursor: zoom-in;
@@ -372,10 +371,9 @@
        The scroll lives on the CARD (above), never on the page: a sheet may
        be wider than the window, the site's layout may not. */
     .PgGalley {
-      --pg-galley-budget: calc(100dvh - var(--h-header) - 8rem);
-
       font-size: var(--pg-galley-fs);
-      block-size: var(--pg-galley-budget);
+      flex: 1 1 auto;
+      min-block-size: 0;
       /* Width and column measure are SOLVED (fitSheet), and pinned to a
          WHOLE number of columns so the columns keep their measure instead of
          stretching to fill the box — stretching is exactly what makes every
@@ -413,7 +411,7 @@
     /* the loupe's switch sits under the sheet, in the galley column */
     .PgLensSwitch {
       display: inline-flex;
-      align-self: flex-end;
+      /* align-self: flex-end; */
 
       /* Above the loupe, on its own paper. The circle is 386px across and
          the cursor has to travel toward this switch to reach it — dragging
@@ -425,9 +423,6 @@
       position: relative;
       z-index: 4;
       translate: 0 -7rem;
-      padding: 0.25rem 0.5rem;
-      background: var(--ui-bg);
-      border-radius: var(--r-2);
 
       /* `.Toggle` (controls.css) speaks the console's `--_*` indirection,
          which lives on the shadow `:host`; bridge the five it reads. */
