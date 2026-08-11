@@ -79,13 +79,7 @@
         color: var(--ui-supplement-text);
       }
 
-      /* the proof mark — this page is a 校樣, not an edition */
-      &::after {
-        content: "校";
-        flex-shrink: 0;
-        margin-inline-start: auto;
-        padding-inline-start: 0.75rem;
-      }
+
     }
   }
 
@@ -241,6 +235,12 @@
 
   @container pg-station (min-width: 48rem) {
     &[data-playground] {
+      /* The galley's two geometry numbers live here, on the common
+         ancestor, because the lens is a SIBLING of the galley and sizes
+         itself from the same two (see .PgLens). */
+      --pg-galley-fs: 0.5625rem;
+      --pg-galley-col: 14;   /* column measure, in galley em */
+
       display: grid;
       /* editor is the workspace, the galley is a narrower proof copy */
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
@@ -307,9 +307,9 @@
        identically or the lens shows a different page */
     [data-pg-preview],
     .is-lens-clone {
-      font-size: 0.5625rem;
+      font-size: var(--pg-galley-fs);
       line-height: 1.7;
-      columns: 10em;
+      columns: calc(var(--pg-galley-col) * 1em);
       column-gap: 2em;
       column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
     }
@@ -337,16 +337,22 @@
        the pipeline's alone. Hover-only, mouse-only. */
     [data-pg-paper]:hover ~ .PgLens { opacity: 1; }
 
-    /* wide mode floats the button over the editor card's top-right */
-    .PgFocus {
-      inset-block-start: 0.75rem;
-    }
-
     .PgLens {
       & {
+        /* Zoom lives in CSS so ONE place owns the geometry; the module
+           reads it back (`--pg-lens-zoom`). 1.75× lifts the 9px galley to
+           ~16px — reading size, the same ballpark as the studio.
+
+           Diameter = 1.5 × the MAGNIFIED column. A circle only offers its
+           full width across the middle, so a lens merely as wide as the
+           column would clip the start and end of every line it shows; at
+           1.5× a whole column line sits inside the readable band. */
+        --pg-lens-zoom: 1.75;
+        --pg-lens-size: calc(1.5 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--pg-lens-zoom));
+
         position: absolute;
-        inline-size: 11rem;
-        block-size: 11rem;
+        inline-size: var(--pg-lens-size);
+        block-size: var(--pg-lens-size);
         transform: translate(-50%, -50%);
         pointer-events: none;
         overflow: hidden;
@@ -386,25 +392,36 @@
 }
 
 
-/* ── 專心編輯模式 ────────────────────────────────────────────────────
-   The toggle lives on the panel's top-right corner — over the dark tab
-   strip in tab mode, over the terminal card in the wide layout, so one
-   dark-ground style serves both. */
-.Playground .PgFocus {
-  position: absolute;
-  z-index: 2;
-  inset-block-start: 0.5rem;
-  inset-inline-end: 0.75rem;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  color: var(--palette-paper);
-  background: color-mix(in srgb, var(--palette-mist) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--palette-mist) 30%, transparent);
-  border-radius: var(--r-2);
-  cursor: pointer;
-  transition: background-color 150ms ease;
+/* ── 認真模式 ─────────────────────────────────────────────────────────
+   The switch shares the <h2>'s line in the station head. Its face is the
+   shared `.Toggle` primitive (controls.css) — the same switch the console
+   uses, so「開關」looks like one switch across the whole site.
 
-  &:hover { background: color-mix(in srgb, var(--palette-mist) 22%, transparent); }
+   `.Toggle` consumes the console's `--_*` indirection, which is declared
+   on the shadow `:host` and therefore absent out here; bridge the five it
+   reads to the page's own `--ui-*`. (Bridging beats duplicating the
+   switch's paint job: one face, two homes.) */
+.Playground .PgFocus {
+  --_rule: var(--ui-rule);
+  --_bg: var(--ui-bg);
+  --_accent: var(--ui-accent);
+  --_supplement-text: var(--ui-supplement-text);
+  --_fs-compact: 0.8125rem;
+}
+
+/* The head becomes a two-column grid so the switch can sit on the heading
+   row while staying AFTER the lede in source order — `h2 + p` (frame.css)
+   must keep matching the lede. */
+.Playground:where(section) > hgroup {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1rem;
+
+  > p:first-child { grid-column: 1 / -1; }
+  > h2            { grid-column: 1; grid-row: 2; }
+  > .PgFocus      { grid-column: 2; grid-row: 2; justify-self: end; }
+  > h2 + p        { grid-column: 1 / -1; grid-row: 3; }
 }
 
 /* The studio: a fullscreen modal holding the SAME two panes side by side.

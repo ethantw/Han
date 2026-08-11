@@ -22,7 +22,11 @@
  * reading size).
  */
 
-const ZOOM = 2.25
+/* Geometry belongs to CSS (station-playground.css § .PgLens): the lens's
+ * diameter is derived from the galley's column measure and this zoom, so
+ * the two can never drift into a lens that clips the column it magnifies. */
+const zoomOf = ($lens) =>
+  Number.parseFloat(getComputedStyle($lens).getPropertyValue('--pg-lens-zoom')) || 2
 
 export const initPlaygroundLens = () => {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return
@@ -82,8 +86,9 @@ export const initPlaygroundLens = () => {
     const w = $wrap.getBoundingClientRect()
     $lens.style.insetInlineStart = `${g.left - w.left + cx}px`
     $lens.style.insetBlockStart = `${g.top - w.top + cy}px`
+    const z = zoomOf($lens)
     $clone.style.transform =
-      `translate(${lensSize / 2 - cx * ZOOM}px, ${lensSize / 2 - cy * ZOOM}px) scale(${ZOOM})`
+      `translate(${lensSize / 2 - cx * z}px, ${lensSize / 2 - cy * z}px) scale(${z})`
   }
 
   /* The clone must occupy the galley's exact content geometry or the

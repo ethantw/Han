@@ -56,17 +56,13 @@
     ja: '組版プレビュー',
     ko: '<ruby>組版<rt>조판</rt></ruby> 미리보기',
   },
-  pgFocusOpen: {
-    hant: '專心編輯', hans: '专心编辑', en: 'Focus mode',
-    ja: '集中執筆', ko: '<ruby>集中<rt>집중</rt></ruby> <ruby>編輯<rt>편집</rt></ruby>',
-  },
   pgFocusTitle: {
-    hant: '專心編輯模式', hans: '专心编辑模式', en: 'Focus mode',
-    ja: '集中執筆モード', ko: '<ruby>集中<rt>집중</rt></ruby> <ruby>編輯<rt>편집</rt></ruby> 모드',
+    hant: '認真模式', hans: '认真模式', en: 'Serious mode',
+    ja: '本気モード', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드',
   },
   pgFocusClose: {
-    hant: '退出專心編輯', hans: '退出专心编辑', en: 'Exit focus mode',
-    ja: '集中執筆を終了', ko: '<ruby>集中<rt>집중</rt></ruby> <ruby>編輯<rt>편집</rt></ruby> 나가기',
+    hant: '退出認真模式', hans: '退出认真模式', en: 'Exit serious mode',
+    ja: '本気モードを終了', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드 나가기',
   },
   pgPaperMasthead: {
     hant: '太陽中文報', hans: '太阳中文报', en: 'Acta Taisolis Sinensis',
@@ -97,10 +93,18 @@
      restores localStorage over it on boot (console Reset never touches it — it
      is content, not config). -->
 <section id="station-playground" class="Station Playground" data-station="playground" data-wm="樂">
+  <!-- The 認真模式 switch rides in the station head, on the <h2>'s line.
+       It sits AFTER the lede in source so `h2 + p` (frame.css's lede rule)
+       still matches; the grid in station-playground.css puts it back on
+       the heading row. -->
   <hgroup>
     <p>{{ pgStationEyebrow }}</p>
     <h2>{{ pgStationH2 }}</h2>
     <p>{{ pgStationLede }}</p>
+    <label class="Toggle PgFocus">
+      <span>{{ pgFocusTitle }}</span>
+      <input type="checkbox" data-pg-focus>
+    </label>
   </hgroup>
 
   <div class="Preview Playground" data-playground>
@@ -123,21 +127,19 @@
          arrangement as station①'s .Papers. -->
     <div class="PgPaper" data-pg-paper>
       <p class="Masthead">{{ pgPaperMasthead }}</p>
-      <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time>・{{ pgPaperColumn }}</p>
+      <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
       <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
            scrollable region the keyboard can't reach is a serious axe
            violation (scrollable-region-focusable). In tab mode it's one
            extra tab stop with an accessible name — a fair price. -->
-      <article data-pg-preview tabindex="0" aria-label="{{ pgStationPreviewLabel }}"></article>
+      <article data-pg-preview tabindex="0" aria-label="{{ pgPaperColumn }}"></article>
     </div>
 
-    <!-- 專心編輯模式 — a fullscreen modal studio. The button MOVES the two
-         live panes (textarea + paper) into the dialog body and back: same
-         nodes, so the draft, its listeners and the rendered preview all
-         survive the trip untouched. Exit is the ✕ only (Esc is cancelled in
-         JS) — the whole point is that nothing scrolls out from under you. -->
-    <button type="button" class="PgFocus" data-pg-focus aria-haspopup="dialog">{{ pgFocusOpen }}</button>
-
+    <!-- 認真模式 — a fullscreen modal studio. Opening MOVES the two live
+         panes (textarea + paper) into the dialog body and back: same nodes,
+         so the draft, its listeners and the rendered preview survive the
+         trip untouched. Exit is the ✕ only (Esc is cancelled in JS) — the
+         whole point is that nothing scrolls out from under you. -->
     <dialog class="PgStudio" data-pg-studio aria-label="{{ pgFocusTitle }}">
       <header>
         <span>{{ pgFocusTitle }}</span>

@@ -88,10 +88,15 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * writer back into the scrolling page. */
   const $studio = $editor.querySelector('[data-pg-studio]')
   const $studioBody = $editor.querySelector('[data-pg-studio-body]')
-  const $focusBtn = $editor.querySelector('[data-pg-focus]')
+  // the switch sits in the station head, outside [data-playground]
+  const $focusBtn = $editor.closest('section')?.querySelector('[data-pg-focus]')
   const $paper = $editor.querySelector('[data-pg-paper]')
   if ($studio && $studioBody && $focusBtn && $paper) {
-    $focusBtn.addEventListener('click', () => {
+    // The switch is a checkbox: checked ⇒ in the studio. While the modal is
+    // up the switch is inert behind it, so the ✕ is the only way back —
+    // it closes AND unchecks, keeping switch and reality in step.
+    $focusBtn.addEventListener('change', () => {
+      if (!$focusBtn.checked) return
       $studioBody.append($src, $paper)
       $studio.showModal()
       $src.focus()
@@ -102,6 +107,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       $editor.insertBefore($src, $lens)
       $editor.insertBefore($paper, $lens)
       $studio.close()
+      $focusBtn.checked = false
     })
   }
 
