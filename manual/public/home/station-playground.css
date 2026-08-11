@@ -35,10 +35,17 @@
     /* &[data-playground] { margin-inline: calc(-1 * var(--gutter)); } */
   }
 
-  /* the lens (a sibling overlay) anchors to the panel; it belongs to the
-     two-card layout only — in tab mode it would be a stray block of
-     duplicated content, so it is hidden until the wide rules turn it on. */
-  &[data-playground] { position: relative; }
+  /* The lens (a sibling overlay) anchors to the panel, and `z-index: 0`
+     makes the panel a STACKING CONTEXT so the lens can never paint outside
+     it: parked on the headline the circle reaches above the card's top
+     edge, and unfenced it lands on the station head's control strip.
+     The lens belongs to the two-card layout only — in tab mode it would be
+     a stray block of duplicated content, so it stays hidden until the wide
+     rules turn it on. */
+  &[data-playground] {
+    position: relative;
+    z-index: 0;
+  }
   .PgLens { display: none; }
 
   /* both panes share one box so the tab swap never jumps the panel height */
@@ -410,10 +417,21 @@
   --_fs-compact: 0.8125rem;
 }
 
-/* The switch sits under the lede, its own line in the station head. Source
-   order already puts it last, so no grid placement is needed — just the
-   space above it, and a lede that no longer has to share its row. */
-.Playground:where(section) > hgroup > .PgFocus {
+/* One control strip under the lede: which text is being typeset at the
+   start, the 認真模式 switch at the end. */
+.Playground:where(section) > hgroup {
+  max-inline-size: clamp(18rem, 45%, 40rem);
+  /* above the panel's stacking context — a lens parked near the top of the
+     paper must never cover the controls */
+  position: relative;
+  z-index: 1;
+}
+.Playground:where(section) > hgroup > .PgControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
   margin-block-start: 1rem;
 }
 

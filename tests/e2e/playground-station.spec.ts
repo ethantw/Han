@@ -140,6 +140,29 @@ test.describe('station⑤ playground', () => {
     await expect($preview(page).locator('h1')).toHaveText(marker.slice(2))
   })
 
+  test('the two content buffers are independent, and a blanked one refills', async ({ page }) => {
+    // 報導 and 自訂內容 are separate pages, each with its own default.
+    const tab = (label: string) =>
+      page.locator('#station-playground [data-pg-content-tabs] label').filter({ hasText: label }).click()
+
+    await tab('自訂內容')
+    await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
+
+    const mine = '# MINE-' + Date.now()
+    await setSource(page, mine)
+    await tab('報導')
+    await expect($src(page)).toHaveValue(/太陽中文報/)   // the article, untouched
+    await tab('自訂內容')
+    await expect($src(page)).toHaveValue(mine)
+
+    // Emptying a buffer is how a reader says「從頭來過」: the blank must not
+    // come back as a saved draft — the default does.
+    await setSource(page, '   \n  ')
+    await page.reload()
+    await tab('自訂內容')
+    await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
+  })
+
   test('a re-render re-installs the JS fallbacks, so *.with-js.css has wrappers to select', async ({ page }) => {
     // `innerHTML` replaces the whole preview subtree, and han.js's wrappers
     // live IN it — without a second pass over the new nodes, `<h-char>` /

@@ -48,13 +48,35 @@ const renderHtml = (src) => sanitize(marked.parse(src))
 
 
 /* ── shell ──────────────────────────────────────────────────────────
+ * Two independent buffers — 報導 (the shipped article) and 自訂內容 (the
+ * reader's own page) — each with its own default, persisted together as
+ * one JSON record `{ tab, story, custom }`. Ported from ziano's
+ * playground, including the rule that earns its keep:
+ *
+ *   **A blank buffer is not a saved draft.** Emptying the editor is how a
+ *   reader says「從頭來過」, so a whitespace-only buffer is dropped on the
+ *   way in and its default comes back — never a blank page inherited from
+ *   a session they already walked away from.
+ *
  * localStorage guarded per web-style; a private/disabled store must not
  * break the editor, so read + write both no-op quietly on throw. */
+const isBlank = (src) => (src ?? '').trim() === ''
+
 const load = () => {
-  try { return localStorage.getItem(STORAGE_KEY) } catch (e) { return null }
+  let raw = null
+  try { raw = localStorage.getItem(STORAGE_KEY) } catch (e) { return {} }
+  if (raw === null) return {}
+  try {
+    const saved = JSON.parse(raw)
+    // A pre-tabs draft was a bare string. It is the reader's own writing,
+    // so it lands in 自訂內容 and 報導 keeps its pristine article.
+    return typeof saved === 'string' ? { tab: 'custom', custom: saved } : saved
+  } catch (e) {
+    return { tab: 'custom', custom: raw }
+  }
 }
-const save = (src) => {
-  try { localStorage.setItem(STORAGE_KEY, src) } catch (e) { /* quota / private mode */ }
+const save = (record) => {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(record)) } catch (e) { /* quota / private mode */ }
 }
 
 /**
@@ -121,10 +143,32 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     $dateline.textContent = text
   }
 
-  // Restore the user's own text over the server-rendered sample. The console's
-  // Reset never clears this key — it's content, not config.
+  /* ── the two content buffers ──
+   * Defaults come from the DOM, not from JS: 報導 is the server-rendered
+   * sample already sitting in the textarea, 自訂內容 travels as a data-*
+   * on the same element. Buffers live in memory while the reader switches
+   * between them, and are written out together on every keystroke. The
+   * console's Reset never clears this key — it's content, not config. */
+  const DEFAULTS = {
+    story: $src.value,
+    custom: $src.dataset.pgCustomDefault ?? '',
+  }
+  const $tabs = $editor.closest('section')?.querySelector('[data-pg-content-tabs]')
   const saved = load()
-  if (saved !== null) $src.value = saved
+  const buffers = {
+    story: isBlank(saved.story) ? DEFAULTS.story : saved.story,
+    custom: isBlank(saved.custom) ? DEFAULTS.custom : saved.custom,
+  }
+  let tab = saved.tab === 'custom' ? 'custom' : 'story'
+
+  const $tabInput = $tabs?.querySelector(`[name="pg-content"][value="${tab}"]`)
+  if ($tabInput) $tabInput.checked = true
+  $src.value = buffers[tab]
+
+  const persist = () => {
+    buffers[tab] = $src.value
+    save({ tab, ...buffers })
+  }
 
   const render = () => { $preview.innerHTML = renderHtml($src.value) }
 
@@ -151,10 +195,27 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   $src.addEventListener(
     'input',
     () => {
-      save($src.value)
+      persist()
       scheduleRender()
     },
   )
+
+  /* Switching content tabs: park what is on screen, bring the other buffer
+     up, redraw at once (a tab swap is not typing — there is nothing to
+     debounce), and re-run the JS fallbacks over the fresh subtree. */
+  $tabs?.addEventListener('change', (e) => {
+    const next = e.target?.value
+    if (next !== 'story' && next !== 'custom') return
+    buffers[tab] = $src.value
+    tab = next
+    // An emptied buffer refills the moment you come back to it: a tab is a
+    // page, and a page with nothing on it helps no one.
+    if (isBlank(buffers[tab])) buffers[tab] = DEFAULTS[tab]
+    $src.value = buffers[tab]
+    persist()
+    render()
+    reapplyFallbacks?.($preview)
+  })
 
   // First paint is synchronous so the preview reads as typeset content in
   // the page flow immediately (preview is the default tab).

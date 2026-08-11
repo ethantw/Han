@@ -56,6 +56,24 @@
     ja: '組版プレビュー',
     ko: '<ruby>組版<rt>조판</rt></ruby> 미리보기',
   },
+  pgContentLegend: {
+    hant: '內容', hans: '内容', en: 'Content', ja: '内容', ko: '<ruby>內容<rt>내용</rt></ruby>',
+  },
+  pgContentStory: {
+    hant: '報導', hans: '报导', en: 'Article', ja: '記事', ko: '<ruby>記事<rt>기사</rt></ruby>',
+  },
+  pgContentCustom: {
+    hant: '自訂內容', hans: '自订内容', en: 'Your own', ja: '自分の文', ko: '<ruby>自作<rt>자작</rt></ruby>',
+  },
+  /* The 自訂內容 buffer's starting text — also what it returns to when the
+     reader empties it. A prompt, not a specimen: this tab is their page. */
+  pgCustomSample: {
+    hant: '# 在這裡寫你自己的字\n\n刪掉這幾行，換上你的文章。Markdown與HTML都收；<u>專名號</u>、<em>著重號</em>、<cite>書名號</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>都排得出來。',
+    hans: '# 在这里写你自己的字\n\n删掉这几行，换上你的文章。Markdown与HTML都收；<u>专名号</u>、<em>着重号</em>、<cite>书名号</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>都排得出来。',
+    en: '# Your words here\n\nDelete these lines and paste your own. Markdown and HTML both work — <u>proper names</u>, <em>emphasis dots</em>, <cite>title marks</cite> and <ruby class="zhuyin" lang="zh-Hant">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin" lang="zh-Hant">音<rt>ㄧㄣ</rt></ruby> all typeset.',
+    ja: '# ここにあなたの文を\n\nこの数行を消して、あなたの文章に差し替えてほしい。MarkdownもHTMLも通る——<u>固有名詞</u>、<em>圏点</em>、<cite>書名</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby>、どれも組める。',
+    ko: '# 여기에 당신의 글을\n\n이 몇 줄을 지우고 당신의 <ruby>文章<rt>문장</rt></ruby>으로 바꾸면 된다。Markdown도 HTML도 받는다——<u>固有名詞</u>、<em>傍點</em>、<cite>書名</cite>、<ruby class="zhuyin">注<rt>ㄓㄨˋ</rt></ruby><ruby class="zhuyin">音<rt>ㄧㄣ</rt></ruby> 모두 짜인다。',
+  },
   pgFocusTitle: {
     hant: '認真模式', hans: '认真模式', en: 'Serious mode',
     ja: '本気モード', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드',
@@ -101,10 +119,20 @@
     <p>{{ pgStationEyebrow }}</p>
     <h2>{{ pgStationH2 }}</h2>
     <p>{{ pgStationLede }}</p>
-    <label class="Toggle PgFocus">
-      <span>{{ pgFocusTitle }}</span>
-      <input type="checkbox" data-pg-focus>
-    </label>
+    <!-- One control strip for the station: which text is being typeset on
+         the left, the focus switch on the right. -->
+    <div class="PgControls">
+      <fieldset class="ViewTabs" data-pg-content-tabs>
+        <legend class="sr-only">{{ pgContentLegend }}</legend>
+        <label><input type="radio" name="pg-content" value="story" checked>{{ pgContentStory }}</label>
+        <label><input type="radio" name="pg-content" value="custom">{{ pgContentCustom }}</label>
+      </fieldset>
+
+      <label class="Toggle PgFocus">
+        <span>{{ pgFocusTitle }}</span>
+        <input type="checkbox" data-pg-focus>
+      </label>
+    </div>
   </hgroup>
 
   <div class="Preview Playground" data-playground>
@@ -119,7 +147,7 @@
     <!-- code tab = raw source, preview tab = typeset result; CSS
          (:has(:checked)) shows one at a time. The textarea value is
          RCDATA, so the sample's <ruby>/<em> tags sit here literally. -->
-    <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
+    <textarea data-pg-src data-pg-custom-default="{{ pgCustomSample }}" spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
          article — the date is computed fresh every load (playground.js ←
          papers-dateline.js), so it can never be pickled into a reader's

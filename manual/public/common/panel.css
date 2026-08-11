@@ -29,7 +29,9 @@
       0 28px 70px -36px color-mix(in srgb, var(--palette-black) 18%, transparent)
     ;
   }
-
+  &:not(.Playground) {
+    max-inline-size: 40em;
+  }
   > header {
     display: flex;
     gap: 8px;
@@ -39,52 +41,6 @@
     background: var(--ui-panel);
     border-block-end: 1px solid var(--ui-rule);
   }
-
-  /* ── ViewTabs — ziano-style pure-CSS switching: radio fieldset +
-     :has(:checked). The package-manager <select> used to live here too,
-     but it only means anything on the CLI pane — it's parented into that
-     pane's figcaption now (snippet.js), so no view-driven visibility
-     rule is needed: switching away from "bundler" just means there's no
-     bash pane, hence no select in the DOM at all. ── */
-  .ViewTabs {
-    display: flex;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-
-    input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    label {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-1);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--ui-supplement-text);
-      cursor: pointer;
-      transition:
-        background-color 150ms ease,
-        border-color    150ms ease,
-        color           150ms ease;
-
-      &:hover { border-color: var(--ui-text); color: var(--ui-text); }
-
-      &:has(input:checked) {
-        background: var(--ui-text);
-        border-color: var(--ui-text);
-        color: var(--ui-bg);
-      }
-    }
-  }
-
   /* 卡片之間留縫，縫裡透出面板的紙。原本四塊 pane 靠一條 --ui-rule
      髮線相接，整組讀起來是一面黑牆（owner：「全黑色塊、整個黏在一起」）；
      縫一開，四段碼各自成一張卡，數量與段落一眼看得出來。
@@ -95,5 +51,49 @@
     flex-direction: column;
     gap: 12px;
     padding: 12px;
+  }
+}
+
+/* ── ViewTabs — ziano-style pure-CSS switching: a radio fieldset whose
+   labels light up via `:has(:checked)`. A PRIMITIVE, not panel furniture:
+   station④'s snippet panes, the playground's editor tabs and the
+   playground's content switch (in the station head, outside any panel)
+   all wear it, so it lives at the top level of this file. ── */
+.ViewTabs {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-1);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ui-supplement-text);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color    150ms ease,
+      color           150ms ease;
+
+    &:hover { border-color: var(--ui-text); color: var(--ui-text); }
+
+    &:has(input:checked) {
+      background: var(--ui-text);
+      border-color: var(--ui-text);
+      color: var(--ui-bg);
+    }
   }
 }
