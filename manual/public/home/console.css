@@ -44,6 +44,13 @@ body:has(han-console) {
       margin-inline-start: calc(var(--gutter) * -1);
       padding-inline: 1rem;
       margin-inline-end: var(--gutter);
+
+      /* 窄視窗收窄這一格——界線仍然通天，只是格子不必那麼寬。帽子在 390px
+         只差 1px 出頭（差到「使用手冊」被壓成兩行），這 16px 就是那一口氣。 */
+      @media (width < 30rem) {
+        padding-inline: 0.625rem;
+        margin-inline-end: 0.75rem;
+      }
       border-inline-end: 1px solid var(--ui-rule);
       /* 明式：不是繼承來的（收合把手在 <header> 底下，繼承到的是正文色）。
          inherit-audit 曾把它報成冗餘，baseline 抓到——工具的判讀對這一條是錯的。 */

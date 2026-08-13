@@ -68,6 +68,13 @@
     & {
       margin-block-end: 2.5rem;
       font-size: 1.25rem;
+
+      /* 窄欄裡降一級：1.25rem 下這行指令折在空格處，等於把「要複製的東西」
+         切成兩半。降到正文級剛好一行排完。這一級住在這裡而不是 § InstallChip
+         ——1.25rem 是這裡給的，覆寫它的規則得跟它同一個權重。 */
+      @container (inline-size < 30rem) {
+        font-size: 1rem;
+      }
     }
     code {
       all: revert-layer;
@@ -159,6 +166,10 @@
     gap: 0.625rem;
     padding: 0.625rem 0.875rem;
     font-family: var(--font-mono);
+    /* 碼一律不兩端對齊。`main` 是 justify（CJK 正文要的），而這是一行指令：
+       折行之後 justify 會去撐 token 之間的空隙，讀起來像被剪過（首頁站柒的
+       `<pre>` 同一條防呆）。 */
+    text-align: start;
     background: var(--ui-panel);
     border: 1px dashed var(--ui-rule);
     border-radius: var(--r-2);
