@@ -89,6 +89,28 @@ test.describe('Task B — collapsible side console', () => {
   })
 })
 
+test.describe('the floating panel form (<52rem)', () => {
+  test('costs the layout nothing, opens from the same handle, closes on Escape', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const $panel = page.locator('.ConsolePanel')
+    const $toggle = page.locator('.ConsoleToggle')
+    // 面板預設關著——一支蓋在正文上的面板不能是初見的第一印象。而不管開沒開，
+    // 版面都不該讓位：整個窗寬都是站台的。
+    await expect($panel).toBeHidden()
+    const full = await box(page, 'main')
+    expect(full.x).toBeLessThan(2)
+
+    await $toggle.click()
+    await expect($panel).toBeVisible()
+    expect((await box(page, 'main')).width).toBe(full.width)
+
+    await page.keyboard.press('Escape')
+    await expect($panel).toBeHidden()
+  })
+})
+
 test.describe('Task A — 各文種專項 group', () => {
   // 各文種專項 is a <details> holding one flat <section> per script. Wait for
   // it to exist (the console mounts asynchronously), then open it only if it

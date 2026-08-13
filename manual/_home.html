@@ -42,6 +42,13 @@
     ja: 'テーマ切り替え',
     ko: '테마 전환',
   },
+  consoleTitle: {
+    hant: '排版控制台',
+    hans: '排版控制台',
+    en: 'Typesetting console',
+    ja: '組版コンソール',
+    ko: '<ruby>組版<rt>조판</rt></ruby> 콘솔',
+  },
   consoleCollapse: {
     hant: '收合面板',
     hans: '收合面板',
@@ -165,8 +172,15 @@
     -->
     <script>
       silentlyTry(() => {
+        // checked ＝ 收合 in the side form, ＝ 面板開著 in the floating one, so
+        // the two forms cannot share a stored bit: a desktop visitor who had
+        // collapsed the column would otherwise arrive on a phone with the
+        // panel sitting over the page. Default differs too — the column is
+        // open, the panel is not. Mirrored in home/console-collapse.js.
         document.querySelector('input[name="console-collapsed"]').checked =
-          localStorage.getItem('han-console-collapsed') === '1'
+          matchMedia('(min-width: 52rem)').matches
+            ? localStorage.getItem('han-console-collapsed') === '1'
+            : localStorage.getItem('han-console-panel-open') === '1'
       })
     </script>
   </label>
@@ -214,6 +228,26 @@
      no FOUC, no double loader. -->
 <!-- lang 用合法 BCP-47 tag（axe valid-lang 抓過 lang="hant" 違規）；
      元件的 localeOf() 兩種都收（slug 或 tag），zh-Hant → hant。 -->
+<!-- Below 52rem the same console is a floating panel instead of a column, so
+     it lives in a NON-MODAL <dialog>: `position: fixed` costs the layout
+     nothing (a side column costs 280px of a 360px window), and non-modal is
+     the whole point — 撥一個開關就要當場看到版面重排，模態會把那件事拿掉。
+
+     It stays `open`: the open state belongs to the header checkbox, like every
+     other state on this page, and the cascade decides whether the panel is on
+     stage (home/console.css § <52rem). That also keeps no-JS honest — the
+     panel is there without a single line running. At 52rem and up the element
+     is `display: contents`, so the column inside is the box, unchanged. -->
+<dialog class="ConsolePanel" open>
+  <header>
+    <span>{{ consoleTitle }}</span>
+    <!-- the ✕ is a second face for the collapse checkbox: a non-modal dialog
+         has no backdrop to dismiss, and the handle that opened it sits in the
+         header behind the panel. -->
+    <label class="ConsolePanelClose" for="console-collapsed" title="{{ consoleCollapse }}">
+      <span data-icon="close" aria-hidden="true"></span>
+    </label>
+  </header>
 <han-console lang="{{ htmlLang }}" target="main" form="side">
   <div class="ConsoleLoading" role="status" aria-label="工具欄載入中">
     <svg class="ConsoleLoaderMark" viewBox="0 0 100 100" width="46" height="46" aria-hidden="true">
@@ -227,6 +261,7 @@
     </svg>
   </div>
 </han-console>
+</dialog>
 
 <main lang="{{ htmlLang }}">
 <script>

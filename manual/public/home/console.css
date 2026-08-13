@@ -99,145 +99,155 @@ body:has(han-console) {
 /**
  * <han-console> PLACEMENT — the page's half of the console contract.
  *
- * The console is a shadow-DOM web component; its internal skeleton, its own
- * background/hairlines and the sheet collapse live in the component's
- * sheets (`components/console.css`). This file only positions the box,
- * keyed off the component's public `form` (side|top) and the collapse
- * checkbox. The loader that fills it pre-upgrade is in
- * `home/console-loader.css`.
+ * Two forms, and the boundary is 52rem:
  *
- * Side form (≥52rem): the console owns a FULL-viewport-height left column
- * (`grid-row: 1 / -1`, 100dvh sticky, internal scroll) so it reaches the
- * true viewport top — Topbar, main and footer all live in column 2, no
- * header strip above the console. Collapsing animates the column width to 0
- * and the right column slides left to fill; it is never an overlay, so
- * content is never covered. `--w-console` is the animated column width
- * (0 when collapsed) and `.ConsoleToggle` reads it too, so the handle
- * tracks the boundary.
+ *   ≥64rem   側欄 280px — a fixed full-height column, `body` padded aside
+ *            for it. Collapsing animates that padding to 0.
+ *   52–64rem 側欄 240px — same column, narrower, so it doesn't crowd main.
+ *   <52rem   浮動面板 — the specimen page's form (`manual/demo/specimen.html`
+ *            § 工具 chrome): a `<dialog>` that costs the layout nothing, so
+ *            every station gets the full window. A side column here leaves
+ *            488px at 768px and 79px at 360px, and every station is pushed
+ *            into a narrower branch to pay for a panel nobody has open.
  *
- * Top form: normal-flow rows, sticky at ≥64rem. Below 52rem both forms
- * collapse to the bottom sheet and the collapse doesn't apply.
+ * Why a `<dialog>` and not a drawer: the console's whole job is「撥一下就看到
+ * 版面改了」，所以它必須是**非模態**——頁面照常可互動、照常重排。The one
+ * thing the element is NOT allowed to do here is own the open state: that
+ * belongs to the header checkbox, like every other state on this page, so the
+ * dialog stays `open` and the cascade decides whether it is on stage.
+ *
+ * (Deleted 2026-08-13: a grid-column version of the side form and a
+ * bottom-sheet version of the narrow one. Both were disabled in place — one
+ * keyed on `min-width: 520000rem`, the other on an element named
+ * `han-consoleX` — and neither is the design any more.)
  */
 
-body:has(han-console[form="side"]) {
-  /* Side form ≥52rem — the console is a full-height column; header + main +
-     everything else sit in column 2. `--w-console` drives the (animated)
-     track width; the collapsed override zeroes it. */
-  @media (min-width: 520000rem) {
-    & {
-      /* --w-console: 280px; */
-      display: grid;
-      /* `minmax(0, 1fr)` not a bare `1fr`: a `1fr` track floors at the
-         content column's min-content, and the hero's clipped `.Outline`
-         glyph (absolute, `overflow: clip` on `.Manifesto`) still reports
-         into that intrinsic size in Chromium — inflating the track ~22px
-         and forcing a horizontal page scroll at 64–68rem. `minmax(0, …)`
-         drops the min-content floor so the track tracks the viewport;
-         `min-inline-size: 0` on `main` (below) is the same guard on
-         the grid ITEM. (grid minmax — Baseline 2020.) */
-      grid-template-columns: var(--w-console) minmax(0, 1fr);
-      /* Explicit rows are load-bearing: `-1` in grid-row resolves against
-         the EXPLICIT grid only, so without this the console's `1 / -1`
-         collapses to row 1 and its 100dvh inflates that row (main
-         starts a full viewport down). auto = Topbar, 1fr = main. */
-      grid-template-rows: auto 1fr;
-      align-items: start;
-      /* grid-template-columns animates length→length in every modern
-         engine (Baseline 2023); degrades to a snap where unsupported. */
-      transition: grid-template-columns 250ms ease;
-    }
-
-    > .Topbar  { grid-column: 2; }
-    > han-console { grid-column: 1; grid-row: 1 / -1; }
-    /* `min-inline-size: 0` lets the content column shrink past its own
-       min-content — the grid-item twin of the `minmax(0, 1fr)` track
-       above; without it a wide/clipped descendant can still blow the
-       column out. */
-    > main { grid-column: 2; min-inline-size: 0; }
-
-    /* checked = collapsed — the checkbox is the single source of truth
-       (dark-mode recipe); pre-paint script restores it, JS only persists. */
-    /* &:has(.ConsoleToggle input:checked) { --w-console: 0px; } */
-  }
-
-  /* 52–64rem — narrower console column so it doesn't crowd main at
-     tablet widths. Below 52rem both forms collapse to the sheet. */
-  @media (min-width: 52rem) and (max-width: 63.9375rem) {
-    & { --w-console: 240px; }
-  }
+/* ── 52–64rem — the same column, 40px narrower ─────────────────────────
+   Inclusive at the top so 1024px (＝64rem, iPad landscape) lands here: those
+   40px are the difference between 680 and 720 of content, and the stations'
+   own 60/62rem branches sit just above it either way. */
+@media (min-width: 52rem) and (max-width: 64rem) {
+  :root { --w-console: 15rem; }
 }
 
-han-consoleX {
-  & {
-    position: fixed;
-    inset: 0 auto auto 0;
+/* ── <52rem — the floating panel ───────────────────────────────────── */
+@media (max-width: 51.9375rem) {
+  /* Zero footprint, and `--w-console` is the honest way to say it: half a
+     dozen rules across the page derive a width from it (the lead forme's
+     frozen measure, station③'s `--w-main`, the plate's centring), so a
+     panel that costs no layout has to read as 0 there too — not just in
+     `body`'s padding. */
+  :root { --w-console: 0px; }
+
+  body:has(han-console) {
+    padding-inline-start: 0;
+
+    han-console {
+      position: static;
+      inline-size: 100%;
+      block-size: auto;
+      min-block-size: 0;
+      /* The panel is `max-block-size`-capped and this is its only flexible
+         child, so it must be allowed to shrink below its content and scroll
+         inside — `1 1 auto`, never `flex: 1` (＝basis 0): in a container
+         whose height comes from its content, WebKit gives a basis-0 item 0
+         and the controls spill out of the card (specimen.html § .Tools). */
+      flex: 1 1 auto;
+    }
   }
 
-  /* Pre-upgrade skeleton — the console's panel + hairline, painted from the
-     LIGHT DOM while the 字徽 loader runs, so the loading state is a real
-     console-shaped box rather than a hole in the layout: only the FORM is
-     allowed to arrive late (owner spec, 2026-07-27). These are the same
-     tokens `components/tokens.css` feeds the shadow's `--_panel` / `--_rule`,
-     which is why the hand-over is invisible.
+  .ConsolePanel {
+    & {
+      position: fixed;
+      /* Anchored under its own control. The specimen page hangs this panel
+         off a floating button in the opposite corner, which works because
+         the two are neighbours; here the opener is the header's collapse
+         handle at the top-start corner, and a panel that answered it from
+         the far corner would read as an unrelated thing appearing. */
+      inset-block-start: calc(var(--h-header) + 0.5rem);
+      inset-inline-start: var(--gutter);
+      z-index: 60;
+      inline-size: min(21rem, calc(100vw - 2 * var(--gutter)));
+      max-block-size: min(78dvh, 46rem);
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      color: var(--ui-text);
+      background: var(--ui-panel);
+      /* 6px, not the specimen page's 12px: over there nothing else is round,
+         here every card on the page is `--r-3`, and a panel rounder than the
+         content it configures reads as a visitor. */
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      box-shadow:
+        0 12px 32px color-mix(in srgb, var(--palette-black) 18%, transparent)
+      ;
+    }
 
-     It has to be a mirror rather than the single source: for the host
-     element, document rules beat the shadow's own `:host` rules whatever
-     the specificity, so an unconditional copy here would silently seize
-     ownership of the box's dress from the component. `[data-ready]` is
-     stamped by han-console.js in the frame it attaches the shadow — NOT
-     `:defined`, which flips long before the sheets land and would leave
-     the loader sitting in that hole for the rest of the fetch. */
-  &:not([data-ready]) {
-    background: var(--ui-panel);
-    border-inline-end: 1px solid var(--ui-rule);
+    /* checked ＝ on stage. The bit means the opposite of what it means at
+       52rem and up (there it collapses the column), which is why the two
+       forms remember it under their own keys — see home/console-collapse.js. */
+    body:has(.ConsoleToggle input:not(:checked)) & {
+      display: none;
+    }
 
-    &[form="top"] {
-      border-inline-end: 0;
+    > header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.75rem;
       border-block-end: 1px solid var(--ui-rule);
     }
 
-    /* <52rem — the bottom sheet wears a top hairline and lifts off main */
-    @media (max-width: 52rem) {
-      & {
-        border-inline-end: 0;
-        border-block-start: 1px solid var(--ui-rule);
-        box-shadow: 0 -8px 24px color-mix(in srgb, var(--palette-black) 8%, transparent);
-      }
+    /* The ✕ is a second face for the same checkbox, not a button of its own:
+       a non-modal dialog has no backdrop to dismiss, and the handle that
+       opened it is up in the header behind the panel. */
+    .ConsolePanelClose {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 1.5rem;
+      block-size: 1.5rem;
+      margin-inline-end: -0.25rem;
+      color: var(--ui-supplement-text);
+      cursor: pointer;
+
+      &:hover { color: var(--ui-accent); }
     }
   }
+}
 
-  /* Side form (≥52rem) — full-height sticky left column, internal scroll.
-     `min-inline-size: 0` + clipped inline overflow let the grid shrink it
-     onto the 0 track mid-collapse without its content spilling over main;
-     `block-size: 100dvh` + sticky pin it to the true viewport top. */
+/* ≥52rem — the dialog is only a wrapper; the column inside it is the box.
+   `display: contents` so the element has no geometry of its own to reset. */
+@media (min-width: 52rem) {
+  .ConsolePanel {
+    display: contents;
+
+    > header { display: none; }
+  }
+}
+
+/* Pre-upgrade skeleton — the console's panel + hairline, painted from the
+   LIGHT DOM while the 字徽 loader runs, so the loading state is a real
+   console-shaped box rather than a hole: only the FORM is allowed to arrive
+   late (owner spec, 2026-07-27). These are the same tokens
+   `components/tokens.css` feeds the shadow's `--_panel` / `--_rule`, which is
+   why the hand-over is invisible.
+
+   It has to be a mirror rather than the single source: for the host element,
+   document rules beat the shadow's own `:host` rules whatever the
+   specificity, so an unconditional copy here would silently seize ownership
+   of the box's dress from the component. `[data-ready]` is stamped by
+   han-console.js in the frame it attaches the shadow — NOT `:defined`, which
+   flips long before the sheets land and would leave the loader sitting in
+   that hole for the rest of the fetch. */
+han-console:not([data-ready]) {
+  background: var(--ui-panel);
+
   @media (min-width: 52rem) {
-    &[form="side"] {
-      position: sticky;
-      inset-block-start: 0;
-      block-size: 100dvh;
-      min-inline-size: 0;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    &[form="top"] {
-      position: sticky;
-      inset-block-start: 0;
-      z-index: 30;
-      inline-size: 100%;
-    }
-  }
-
-  /* <52rem — bottom sheet: both forms collapse to a viewport-anchored
-     sheet. The sheet's hairline/shadow and the collapse itself are in
-     the shadow (components/console.css); this only anchors the box. */
-  @media (max-width: 52rem) {
-    position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
-    z-index: 40;
-    max-block-size: 70dvh;
+    border-inline-end: 1px solid var(--ui-rule);
   }
 }
