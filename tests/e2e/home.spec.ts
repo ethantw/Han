@@ -183,26 +183,29 @@ test.describe('per-group 使用預設値 buttons', () => {
   })
 })
 
-test.describe('mobile bottom sheet', () => {
+test.describe('the narrow form is a panel, not a drawer', () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
-  test('grip visible; keyboard focus + Space expands the sheet', async ({ page }) => {
+  test('no grip, and the controls are NOT collapsed by the window being narrow', async ({ page }) => {
     await page.goto('/')
-    const grip = page.locator('[data-console-grip]')
-    await expect(grip).toBeVisible()
 
-    // .Controls / .SheetToggle live in the <han-console> shadow — Playwright
-    // pierces open shadow roots for CSS locators.
+    // The bottom sheet is retired (owner call, 2026-08-13): below 52rem the
+    // console is a floating panel the page positions — open/close/Escape are
+    // asserted in console-collapse.spec.ts. What this guards is the bug that
+    // made the drawer worth retiring: its styles were keyed on the WINDOW, so
+    // the controls collapsed whenever the window was narrow, however much room
+    // the console actually had (the specimen page's 338×704 panel came up as a
+    // 172px stub).
+    await expect(page.locator('[data-console-grip]')).toBeHidden()
+
+    await page.locator('.ConsoleToggle').click()
+    // .Controls lives in the <han-console> shadow — Playwright pierces open
+    // shadow roots for CSS locators.
     const scroll = page.locator('han-console .Controls')
-    const collapsedHeight = await scroll.evaluate(el => el.getBoundingClientRect().height)
-
-    const toggle = page.locator('.SheetToggle')
-    await toggle.focus()
-    await page.keyboard.press('Space')
-
+    await expect(scroll).toBeVisible()
     await expect
-      .poll(async () => scroll.evaluate(el => el.getBoundingClientRect().height))
-      .toBeGreaterThan(collapsedHeight)
+      .poll(() => scroll.evaluate((el) => el.getBoundingClientRect().height))
+      .toBeGreaterThan(200)
   })
 })
 

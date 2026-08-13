@@ -115,14 +115,17 @@ body > header {
   }
 
   /* 窄視窗——這條帽子的 min-content 是 465px，所以 30rem 以下總得讓出點
-     什麼。先讓的是品牌鋪陳而不是功能：標誌的兩枚 small 合計 112px，而版本號
-     在頁尾還有一份，撤掉不損資訊；nav 四項全留，只是站近一點。
+     什麼。先讓的是品牌鋪陳與裝飾，不是功能：標誌的兩枚 small 合計 112px（版本
+     號在頁尾還有一份，撤掉不損資訊），加上那道分隔線的 19px，min-content 落到
+     371px；nav 四項全留，只是站近一點。360px 仍然差一截——那一格另議。
 
      鍵在視窗寬而不是容器：這條帽子是視窗 chrome，不隨主控台的收合變寬。 */
   @media (width < 30rem) {
     .Logo small { display: none; }
     nav { gap: 0.875em; }
-    nav .LangSwitcher::before { margin-inline-end: 0.625rem; }
+    /* 那道分隔線是裝飾，不是內容——這一格的 19px（線＋左右留白）換回來，
+       390px 才有餘裕，「使用手冊」四個字不必折行。 */
+    nav .LangSwitcher::before { display: none; }
   }
 
   @media (width <= 20rem) {
