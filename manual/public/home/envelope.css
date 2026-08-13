@@ -337,7 +337,14 @@
    real content (the two address specimens), so it can't just be hidden. */
 @media (max-width: 52rem) {
   #station-semantics .Envelope {
-    position: static;
+    /* `relative`, not `static`: everything drawn on the face — 郵遞區號框,
+       the letterheads, the flap — is absolutely positioned against this box.
+       Made static, they escape to the nearest positioned ancestor (the
+       station), and one of them stretched to the station's full width: a
+       ~3px horizontal scroll on the whole document at 360px, and a red
+       postal frame that was no longer on the envelope. In flow it must
+       still be a containing block; only its POSITIONING changes. */
+    position: relative;
     /* the flap opens UPWARD out of the box — the escape room goes above */
     margin-block-start: calc(var(--_env-flap) + .5rem);
     margin-block-end: 2rem;
