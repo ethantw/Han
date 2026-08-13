@@ -63,6 +63,9 @@
     gap: 1rem;
     justify-content: space-between;
     align-items: flex-start;
+    /* 並排要 96em；容器裝不下就疊起來，一張一行。用 `flex-wrap` 而不是斷點
+       ——主控台一收合內容欄就變寬，該不該並排是容器的事，不是視窗的事。 */
+    flex-wrap: wrap;
   }
 
   /* direct children only — a nested specimen article (.Dispatch) manages
@@ -111,6 +114,31 @@ article.Dispatch {
   }
   &.vertical {
     writing-mode: vertical-rl;
+  }
+
+  /* 疊起來之後各吃滿一行——但兩張卡的軸向相反，一條規則服務不了兩個行向。
+     卡刻意維持 0.75rem 雙欄的「整篇一眼」（那就是這一站的展品），要讀哪一段
+     交給放大鏡。 */
+  @container (inline-size < 52rem) {
+    &:not(.vertical) {
+      inline-size: min(100%, calc(var(--size) * 2));
+    }
+    /* 直排卡走另一條路：**先離開多欄**，再封頂塊軸、沿塊軸捲。
+
+       兩件事都不能照橫排卡的寫法抄。一，`inline-size` 在這張卡上是欄長
+       （物理高度），百分比要對父層的 auto 高度解析＝不定值，`min(100%, …)`
+       在這裡是靜默失效。二，多欄盒的塊軸一旦封頂，裝不下的內容不會溢出，
+       而是**多裂出幾欄**——欄沿 inline 軸（直排時是垂直）疊下去，於是卡片
+       裡多一條縱向捲軸，跟頁面的縱捲打架。退出多欄，封頂才真的變成溢出。
+
+       代價說明白：窄站台下這張卡只有一欄。雙欄的節奏由旁邊那張橫排卡繼續
+       演；直排卡在這裡要證明的是行向本身，而橫著捲正是直排頁面的手勢。 */
+    &.vertical {
+      columns: auto;
+      max-block-size: 100%;
+      overflow-block: auto;
+      overscroll-behavior-block: contain;
+    }
   }
   h1 {
     line-height: 1.5;

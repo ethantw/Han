@@ -114,6 +114,17 @@ body > header {
     }
   }
 
+  /* 窄視窗——這條帽子的 min-content 是 465px，所以 30rem 以下總得讓出點
+     什麼。先讓的是品牌鋪陳而不是功能：標誌的兩枚 small 合計 112px，而版本號
+     在頁尾還有一份，撤掉不損資訊；nav 四項全留，只是站近一點。
+
+     鍵在視窗寬而不是容器：這條帽子是視窗 chrome，不隨主控台的收合變寬。 */
+  @media (width < 30rem) {
+    .Logo small { display: none; }
+    nav { gap: 0.875em; }
+    nav .LangSwitcher::before { margin-inline-end: 0.625rem; }
+  }
+
   @media (width <= 20rem) {
     & { padding: 0.875rem var(--gutter); flex-wrap: wrap; gap: 0.75rem; }
     nav { gap: 0.875rem; flex-wrap: wrap; }

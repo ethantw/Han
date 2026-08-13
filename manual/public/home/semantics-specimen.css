@@ -450,6 +450,21 @@
         text-align: start;
       }
 
+      /* 窄站台：直排的塊軸是物理水平，欄一多就把整頁撐寬（實測 360px 視窗
+         下文件寬 402px，而站台的 `overflow: clip` 只遮住了畫面）。封頂在圖
+         的寬度、沿塊軸捲：行不折，直排體例不破。
+
+         `overflow-block`（Baseline 2023）是這裡唯一誠實的拼法——它問的是
+         「塊軸」，而這個盒的塊軸是橫的；寬站台不進這條，免得憑空多一個
+         捲動盒去剪盒外的著重號。 */
+      @container (inline-size < 34rem) {
+        & {
+          max-block-size: 100%;
+          overflow-block: auto;
+          overscroll-behavior-block: contain;
+        }
+      }
+
       p:only-of-type {
         margin: 0;
       }

@@ -34,7 +34,11 @@
       z-index: 10;
       margin: 0 0;
       padding: 1em 1.5em;
-      inline-size: 24em;
+      /* 24em 是「一行幾個字」的定寬，窄站台裝不下就讓行長縮——擠壓與懸掛
+         發生在行內，逐行照樣成立；被切掉右緣才是真的看不到。降字級反而把
+         懸掛出版口的幅度縮小到辨認不出來，所以字級不動。（右側說明欄本來
+         就是這個寫法。） */
+      inline-size: min(100%, 24em);
       font-size: 1.25rem;
       line-height: 2;
       background-color: var(--ui-bg-3q);
