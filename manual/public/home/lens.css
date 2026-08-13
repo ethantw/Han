@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+/**
+ * The loupe — a circular window painting a live, magnified copy of the
+ * specimen under the cursor, so「想讀這一段」never reflows the page.
+ *
+ * Face only. Geometry is two tokens each host sets for itself, and the
+ * module reads the zoom back, so one place owns it. Mounted by
+ * `home/lens.js` on every `[data-lens]`; hosts: the playground's 9px proof,
+ * station①'s four editions, station④'s two miniature dispatches.
+ */
+
+.Lens {
+  & {
+    /* Diameter is the host's business, but it is never just「as wide as the
+       column」: a circle only offers its full width across the middle, so a
+       lens the width of the line it magnifies clips every line's head and
+       tail. Hosts buy a margin on top of the magnified measure, and cap it
+       against the reading area (`cqi`) so a phone never gets a loupe wider
+       than the page it is held over. */
+    --lens-zoom: 1.75;
+    --lens-size: min(22rem, 85cqi);
+
+    position: absolute;
+    inline-size: var(--lens-size);
+    block-size: var(--lens-size);
+    /* The module puts the lens's CENTRE on the cursor by writing the inset
+       pair; this pulls the box back onto that point. */
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 3;
+    opacity: 1;
+    transition: opacity 220ms ease;
+    border-radius: 50%;
+    background: var(--ui-bg);
+    /* rim: ink line + paper inset + soft drop — a loupe on paper */
+    border: 2px solid color-mix(in srgb, var(--ui-text) 70%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--ui-bg) 60%, transparent) inset,
+      0 12px 32px color-mix(in srgb, var(--palette-black) 22%, transparent)
+    ;
+  }
+
+  /* Touch has no cursor, so there is no loupe to move — the stations that
+     depend on one say so in a line of their own copy instead. */
+  @media (hover: none), (pointer: coarse) {
+    display: none;
+  }
+
+  .is-lens-clone {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    transform-origin: 0 0;
+    pointer-events: none;
+    user-select: none;
+    /* JS sizes it to the host's BORDER box, so it must measure the same way
+       or every offset inside drifts by the padding. */
+    box-sizing: border-box;
+    margin: 0;
+    min-block-size: 0;
+  }
+}
+
+/* The 雙指放大 line — only where there is no loupe to offer. It is copy, so
+   it lives in the markup; this only decides when it is on stage. */
+.LensHint {
+  display: none;
+
+  @media (hover: none), (pointer: coarse) {
+    display: block;
+    margin-block: 0.75rem 0;
+    font-size: 0.75rem;
+    color: var(--ui-supplement-text-3q);
+  }
+}

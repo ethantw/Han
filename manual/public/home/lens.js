@@ -1,0 +1,172 @@
+/**
+ * Magnifying loupe for the specimens that have to stay small. A circular
+ * overlay follows the cursor and paints a zoomed view of the host under it,
+ * so "read this bit" never reflows the page — the playground's 9px proof,
+ * station①'s four editions (one loupe over the whole figure, so one line can
+ * be compared across all four) and station④'s two miniature dispatches.
+ *
+ * Mechanism: the host is CLONED into the lens; on mousemove the clone gets
+ * `translate(L/2 − cx·z, L/2 − cy·z) scale(z)` so the source point under the
+ * cursor lands at the lens centre. The clone keeps its CLASSES (its face:
+ * card chrome, column measure, type scale, han.css's own wrappers) and drops
+ * every `data-*` — those are the render pipelines' and the tests' hooks, and
+ * there must only ever be one of each on the page.
+ *
+ * The lens is ALWAYS on stage: before any hover it parks over the host's
+ * first block (that is the reader's first sentence, and a loupe that only
+ * exists after you find it explains nothing), and when the cursor leaves it
+ * stays where it left rather than snapping home.
+ *
+ * Mouse-only sugar, gated on `(hover: hover) and (pointer: fine)`; the
+ * keyboard path stays in CSS (`:focus-visible` flips the galley itself to
+ * reading size).
+ */
+
+/* Geometry belongs to CSS (home/lens.css + each host's two tokens): the
+ * diameter is derived from the host's own measure and this zoom, so the two
+ * can never drift into a lens that clips the column it magnifies. */
+const zoomOf = ($lens) =>
+  Number.parseFloat(getComputedStyle($lens).getPropertyValue('--lens-zoom')) || 2
+
+/** A picture of the host, not a second one: strip every hook an observer, a
+ *  query or a test could trip over. `data-*` goes wholesale — on this page
+ *  every one of them is a pipeline's or a test's handle, while the face is
+ *  keyed on classes and `lang`, both of which the clone keeps. */
+const depersonalise = ($el) => {
+  for (const { name } of [...$el.attributes]) {
+    if (name.startsWith('data-') || name === 'id' || name === 'tabindex') {
+      $el.removeAttribute(name)
+    }
+  }
+}
+
+/** One loupe over one host. `live` hosts re-render (the playground draft), so
+ *  their copy is rebuilt from a MutationObserver; the rest are set once. */
+const mountOne = ($host, { live }) => {
+  // The lens is a SIBLING of the host, not a descendant: everything that
+  // queries the host — the render pipeline, the fallbacks pass, the tests —
+  // must keep seeing exactly one of it with exactly one copy of the content.
+  // Sibling placement also means an innerHTML swap on re-render can never
+  // evict the lens.
+  const $frame = $host.parentElement
+  if (!$frame) return
+
+  const $lens = document.createElement('div')
+  $lens.className = 'Lens'
+  $lens.setAttribute('data-mag-lens', '')
+  $lens.setAttribute('aria-hidden', 'true')
+  $frame.append($lens)
+
+  let $clone = null
+  const recloneNow = () => {
+    $clone?.remove()
+    $clone = $host.cloneNode(true)
+    $clone.classList.add('is-lens-clone')
+    $clone.setAttribute('aria-hidden', 'true')
+    $clone.removeAttribute('aria-label')
+    depersonalise($clone)
+    $clone.querySelectorAll('*').forEach(depersonalise)
+    $lens.append($clone)
+    sync()
+  }
+
+  let cloneQueued = false
+  const reclone = () => {
+    if (cloneQueued) return
+    cloneQueued = true
+    requestAnimationFrame(() => {
+      cloneQueued = false
+      recloneNow()
+    })
+  }
+
+  let lastX = 0
+  let lastY = 0
+  let lensSize = 0
+  // Until the reader takes over, the lens belongs to the host's opening
+  // block — and it re-finds it after every re-render, so it never ends up
+  // parked over whitespace the last render left behind.
+  let readerDriving = false
+
+  const positionAt = (cx, cy) => {
+    if (!lensSize || !$clone) return
+    // cx/cy are host-relative; the lens is positioned in the frame.
+    const h = $host.getBoundingClientRect()
+    const f = $frame.getBoundingClientRect()
+    $lens.style.insetInlineStart = `${h.left - f.left + cx}px`
+    $lens.style.insetBlockStart = `${h.top - f.top + cy}px`
+    const z = zoomOf($lens)
+    $clone.style.transform =
+      `translate(${lensSize / 2 - cx * z}px, ${lensSize / 2 - cy * z}px) scale(${z})`
+  }
+
+  /** Host-relative centre of its first block (an empty draft has none, and
+   *  the host's middle is the honest answer there). */
+  const openingPoint = () => {
+    const box = $host.getBoundingClientRect()
+    const $first = $host.querySelector('h1, h2, h3, p, blockquote')
+    if (!$first) return [box.width / 2, box.height / 2]
+    const r = $first.getBoundingClientRect()
+    return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]
+  }
+
+  /* The clone must occupy the host's exact geometry or its layout re-folds
+     and the lens shows a different page. */
+  const sync = () => {
+    if (!$clone) return
+    const r = $host.getBoundingClientRect()
+    $clone.style.inlineSize = `${r.width}px`
+    $clone.style.blockSize = `${r.height}px`
+    lensSize = $lens.getBoundingClientRect().width
+    syncScroll()
+    if (!readerDriving) [lastX, lastY] = openingPoint()
+    positionAt(lastX, lastY)
+  }
+
+  /* A host can be its own scroll container (a sheet wider than its card, a
+   * 直排 card scrolling along its block axis), and a clone starts at offset
+   * 0 — mirror both axes, or the loupe shows column one while the reader is
+   * looking at column five. */
+  const syncScroll = () => {
+    if (!$clone) return
+    $clone.scrollLeft = $host.scrollLeft
+    $clone.scrollTop = $host.scrollTop
+  }
+  $host.addEventListener('scroll', () => {
+    syncScroll()
+    positionAt(lastX, lastY)
+  })
+
+  $host.addEventListener('mousemove', (e) => {
+    readerDriving = true
+    const r = $host.getBoundingClientRect()
+    lastX = e.clientX - r.left
+    lastY = e.clientY - r.top
+    positionAt(lastX, lastY)
+  })
+
+  /* Leaving parks the lens where the cursor left, clamped to the host — the
+     leave event's own coordinates are already outside it. */
+  $host.addEventListener('mouseleave', (e) => {
+    const r = $host.getBoundingClientRect()
+    lastX = Math.min(Math.max(e.clientX - r.left, 0), r.width)
+    lastY = Math.min(Math.max(e.clientY - r.top, 0), r.height)
+    positionAt(lastX, lastY)
+  })
+
+  if (live) {
+    new MutationObserver(reclone)
+      .observe($host, { childList: true, subtree: true, characterData: true })
+  }
+  new ResizeObserver(sync).observe($host)
+  recloneNow()
+}
+
+/** Mount a loupe on every `[data-lens]`; `data-lens="live"` marks a host
+ *  whose content is re-rendered, so its copy is rebuilt as it changes. */
+export const initLens = () => {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return
+  document.querySelectorAll('[data-lens]').forEach(($host) => {
+    mountOne($host, { live: $host.dataset.lens === 'live' })
+  })
+}

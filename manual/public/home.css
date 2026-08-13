@@ -44,6 +44,7 @@
 @import url('./home/closing.css');
 
 /* ── 例外：自帶 JS 的圖示組件，與主控台 ── */
+@import url('./home/lens.css');
 @import url('./home/lead-forme.css');
 @import url('./home/dash-fuse.css');
 @import url('./home/envelope.css');

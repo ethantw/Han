@@ -228,57 +228,46 @@ test.describe('station⑤ playground', () => {
     expect(long.endGap).toBe(long.padEnd)
   })
 
-  test('the loupe has an off switch, and comes back to the headline', async ({ page }) => {
-    const $lens = page.locator('#station-playground .PgLens')
-    const $switch = page.locator('#station-playground [data-pg-lens-switch]')
-    await expect($lens).toBeVisible()                      // on by default
+  test('the loupe is on stage from the first frame, and follows the cursor', async ({ page }) => {
+    // No switch: in a hover environment the loupe is simply there (owner's
+    // call). It parks on the host's opening block so it never has to be
+    // discovered, and from then on the reader drives it.
+    const $lens = page.locator('#station-playground .Lens')
+    await expect($lens).toBeVisible()
 
-    // parked on the headline, then dragged elsewhere
     const centre = () =>
       page.evaluate(() => {
         const c = document.querySelector('#station-playground [data-pg-paper]')!.getBoundingClientRect()
-        const l = document.querySelector('#station-playground .PgLens')!.getBoundingClientRect()
+        const l = document.querySelector('#station-playground .Lens')!.getBoundingClientRect()
         return Math.round(l.y + l.height / 2 - c.y)
       })
     const parked = await centre()
     // `hover` with an explicit position, not raw mouse coordinates: the card
     // is `translate`d and taller than this viewport, so a computed page
     // coordinate can land outside it.
-    const $card = page.locator('#station-playground [data-pg-paper]')
-    await $card.hover({ position: { x: 200, y: 320 } })
+    await page.locator('#station-playground [data-pg-paper]').hover({ position: { x: 200, y: 320 } })
     await expect.poll(centre).not.toBe(parked)
+  })
 
-    // The switch has to paint ABOVE the loupe — the cursor travels over it to
-    // reach the switch, dragging the circle along. Asserted structurally,
-    // because `elementFromPoint` can't see it: the lens is
-    // `pointer-events: none`, so hit-testing reports the switch on top even
-    // when the circle is painted over it. What actually decides the paint
-    // order is that no ancestor up to the panel makes a stacking context
-    // (a `translate` on the sheet wrapper used to trap the z-index inside).
+  test('every miniature specimen carries its own loupe', async ({ page }) => {
+    // The loupe is a page-level primitive, not the playground's toy: the four
+    // editions of station① and the two dispatches of station④ are kept small
+    // on purpose, so each one gets a circle of its own.
     expect(
-      await page.evaluate(() => {
-        const $sw = document.querySelector('#station-playground [data-pg-lens-switch]')!
-        const $panel = $sw.closest('[data-playground]')!
-        const swZ = Number.parseInt(getComputedStyle($sw).zIndex, 10)
-        const lensZ = Number.parseInt(
-          getComputedStyle(document.querySelector('#station-playground .PgLens')!).zIndex, 10)
-        let trapped = false
-        for (let $el = $sw.parentElement; $el && $el !== $panel; $el = $el.parentElement) {
-          const cs = getComputedStyle($el)
-          if (cs.transform !== 'none' || cs.translate !== 'none' || cs.filter !== 'none') trapped = true
-        }
-        return { above: swZ > lensZ, trapped }
-      }),
-    ).toEqual({ above: true, trapped: false })
-
-    await $switch.click()
-    await expect($lens).toBeHidden()
-
-    // Picking the loupe back up is a fresh look: it returns to the headline
-    // rather than to wherever it was put down.
-    await $switch.click()
-    await expect($lens).toBeVisible()
-    expect(await centre()).toBe(parked)
+      await page.evaluate(() =>
+        [...document.querySelectorAll('[data-lens]')].map(($h) => [
+          $h.className,
+          // sibling, never a descendant — one copy of the content per host
+          !!$h.parentElement!.querySelector(':scope > .Lens'),
+          $h.querySelectorAll('.Lens').length,
+        ]),
+      ),
+    ).toEqual([
+      ['Papers', true, 0],
+      ['Dispatch', true, 0],
+      ['Dispatch vertical', true, 0],
+      ['PgPaper', true, 0],
+    ])
   })
 
   test('the loupe magnifies THIS page: the copy fragments identically', async ({ page }) => {
@@ -299,8 +288,8 @@ test.describe('station⑤ playground', () => {
       const $src = document.querySelector('#station-playground [data-pg-preview]')!
       const $copy = document.querySelector('#station-playground .is-lens-clone .PgGalley')!
       const zoom = Number.parseFloat(
-        getComputedStyle(document.querySelector('#station-playground .PgLens')!)
-          .getPropertyValue('--pg-lens-zoom'),
+        getComputedStyle(document.querySelector('#station-playground .Lens')!)
+          .getPropertyValue('--lens-zoom'),
       )
       const a = sig($src, 1)
       const b = sig($copy, zoom)

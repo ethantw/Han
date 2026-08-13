@@ -66,6 +66,17 @@
     /* 並排要 96em；容器裝不下就疊起來，一張一行。用 `flex-wrap` 而不是斷點
        ——主控台一收合內容欄就變寬，該不該並排是容器的事，不是視窗的事。 */
     flex-wrap: wrap;
+    /* the loupes are absolute siblings of the two cards, so this is the box
+       they anchor in */
+    position: relative;
+  }
+
+  /* The loupe over each dispatch (home/lens.css). The cards stay 0.75rem
+     縮圖 on purpose — 整篇一眼 is what this station demonstrates — so on a
+     phone-width column the copy is only readable through the circle. */
+  .Lens {
+    --lens-zoom: 1.75;
+    --lens-size: min(24rem, 85cqi);
   }
 
   /* direct children only — a nested specimen article (.Dispatch) manages

@@ -39,15 +39,15 @@
      makes the panel a STACKING CONTEXT so the lens can never paint outside
      it: parked on the headline the circle reaches above the card's top
      edge, and unfenced it lands on the station head's control strip.
-     The lens belongs to the two-card layout only — in tab mode it would be
-     a stray block of duplicated content, so it stays hidden until the wide
-     rules turn it on. */
+     Whether it is on at all is decided below. */
   &[data-playground] {
     position: relative;
     /* z-index: 0; */
   }
-  .PgLens,
-  .PgLensSwitch { display: none; }
+  /* the loupe belongs to the two-card layout only — in tab mode the proof is
+     already at reading size and the pane may be the editor, so a circle over
+     it would magnify a stray copy. The wide rules turn it on. */
+  .Lens { display: none; }
 
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
@@ -229,7 +229,7 @@
     &[data-playground] {
       /* The galley's two geometry numbers live here, on the common
          ancestor, because the lens is a SIBLING of the galley and sizes
-         itself from the same two (see .PgLens). */
+         itself from the same two (see § the loupe). */
       --pg-galley-fs: 0.5625rem;
       --pg-galley-col: 14;   /* column measure, in galley em */
       /* Both panes stand this tall — one token, so the editor and the sheet
@@ -291,15 +291,13 @@
        the viewport, scrolling inside. Column width is in em, so the
        column keeps its character measure across both states and the
        galley re-folds like a paper rather than reflowing into a blog. */
-    /* the card face — the real paper AND the lens's copy of it, or the
-       magnified view lands on different geometry than the page shows */
     /* The card face — the real paper AND the loupe's copy of it. This must
        include the LAYOUT, not just the paint: the galley's height comes from
        flexing against the card, and a clone that laid out as a plain block
        gave its galley an auto height, so the copy fragmented into different
        columns than the page it was supposed to be magnifying. */
     [data-pg-sheet] > [data-pg-paper],
-    .PgLens .PgPaper {
+    .Lens .PgPaper {
       padding: 1.25rem 1rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
@@ -312,7 +310,7 @@
     /* The copy clips instead of scrolling — the module mirrors the source's
        scroll offset onto it, and a scrollbar inside the circle would be a
        control nobody can reach. */
-    .PgLens .PgPaper {
+    .Lens .PgPaper {
       overflow: hidden;
     }
 
@@ -420,107 +418,27 @@
       }
     }
 
-    /* the loupe's switch sits under the sheet, in the galley column */
-    .PgLensSwitch {
-      display: inline-flex;
 
-      /* Above the loupe, on its own paper. The circle is 386px across and
-         the cursor has to travel toward this switch to reach it — dragging
-         the lens right over it on the way. Stacking it above keeps it
-         readable, and the pill keeps it readable over MAGNIFIED TEXT (the
-         same `--ui-bg` as the page, so on the page it reads as nothing at
-         all). The lens is `pointer-events: none`, so clicking was never the
-         problem — seeing was. */
-      position: relative;
-      z-index: 4;
-      translate: 0 -7rem;
-      margin-block-start: 1rem;
-
-      /* `.Toggle` (controls.css) speaks the console's `--_*` indirection,
-         which lives on the shadow `:host`; bridge the five it reads. */
-      --_rule: var(--ui-rule);
-      --_bg: var(--ui-bg);
-      --_accent: var(--ui-accent);
-      --_supplement-text: var(--ui-supplement-text);
-      --_fs-compact: 0.75rem;
-    }
-
-    /* switch off ⇒ no loupe. The module keeps tracking the cursor (cheap,
-       and the lens is ready the moment it comes back); only the paint
-       stops. */
-    &[data-playground]:has([data-pg-lens-switch] input:not(:checked)) .PgLens {
-      opacity: 0;
-      visibility: hidden;
-    }
-
-    /* ── The lens (.PgLens, home/playground-lens.js) — a circular window
+    /* ── The loupe (home/lens.css + home/lens.js) — a circular window
        painting a live copy of the WHOLE paper card (masthead and dateline
-       included: they are part of the page being proofed). A SIBLING of the
-       cards, so the pipeline's subtree stays its own.
+       included: they are part of the page being proofed).
 
-       Always on stage (the module parks it over the headline until the
-       cursor takes over): a loupe you have to discover by hovering can't
-       tell you it's there.
+       Only the two geometry tokens are the station's business. 1.75× lifts
+       the 9px galley to ~16px — reading size, the same ballpark as the
+       studio — and the diameter is 1.75 × the MAGNIFIED column, because a
+       circle only offers its full width across the middle.
 
-       …except while the writer is IN the editor. Typing is the one moment
-       the proof isn't being read, and a loupe hanging over the page then
-       is furniture in the way. `:has()` on the panel, keyed on the
-       textarea's own focus — it fades out on entry and back in the moment
-       focus leaves, whatever takes it next. */
-    .PgLens { display: block; }
-
-    &[data-playground]:has(> textarea:focus) .PgLens { opacity: 0; }
-
-    .PgLens {
-      & {
-        /* Zoom lives in CSS so ONE place owns the geometry; the module
-           reads it back (`--pg-lens-zoom`). 1.75× lifts the 9px galley to
-           ~16px — reading size, the same ballpark as the studio.
-
-           Diameter = 1.75 × the MAGNIFIED column. A circle only offers its
-           full width across the middle, so a lens merely as wide as the
-           column would clip the start and end of every line it shows; the
-           margin buys a readable band several lines deep, not just one. */
-        --pg-lens-zoom: 1.75;
-        --pg-lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--pg-lens-zoom));
-
-        position: absolute;
-        inline-size: var(--pg-lens-size);
-        block-size: var(--pg-lens-size);
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        overflow: hidden;
-        z-index: 3;
-        opacity: 1;
-        transition: opacity 220ms ease;
-        border-radius: 50%;
-        background: var(--ui-bg);
-        /* rim: ink line + paper inset + soft drop — a loupe on paper */
-        border: 2px solid color-mix(in srgb, var(--ui-text) 70%, transparent);
-        box-shadow:
-          0 0 0 1px color-mix(in srgb, var(--ui-bg) 60%, transparent) inset,
-          0 12px 32px color-mix(in srgb, var(--palette-black) 22%, transparent)
-        ;
-      }
-
-      @media (hover: none), (pointer: coarse) {
-        display: none;
-      }
-
-      .is-lens-clone {
-        position: absolute;
-        inset-block-start: 0;
-        inset-inline-start: 0;
-        transform-origin: 0 0;
-        pointer-events: none;
-        user-select: none;
-        /* JS sizes it to the source card's BORDER box, so it must measure
-           the same way or every offset inside drifts by the padding. */
-        box-sizing: border-box;
-        margin: 0;
-        min-block-size: 0;
-      }
+       On stage from the first frame, except while the writer is IN the
+       editor: typing is the one moment the proof isn't being read, and a
+       loupe hanging over the page then is furniture in the way. `:has()` on
+       the panel, keyed on the textarea's own focus. */
+    .Lens {
+      display: block;
+      --lens-zoom: 1.75;
+      --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
     }
+
+    &[data-playground]:has(> textarea:focus) .Lens { opacity: 0; }
   }
 }
 
@@ -685,7 +603,7 @@
     }
 
     /* the loupe belongs to the page; in here the type is already legible */
-    [data-pg-lens-switch] { display: none; }
+    .Lens { display: none; }
 
     textarea {
       border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);

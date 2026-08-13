@@ -76,10 +76,6 @@
   },
   /* The strip's control is an ACTION — 進入…; the dialog's own head names
      the mode it put you in. Two strings, two jobs. */
-  pgLensToggle: {
-    hant: '放大鏡', hans: '放大镜', en: 'Loupe',
-    ja: '拡大鏡', ko: '<ruby>擴大鏡<rt>확대경</rt></ruby>',
-  },
   pgFocusEnter: {
     hant: '進入認真模式', hans: '进入认真模式', en: 'Enter serious mode',
     ja: '本気モードに入る', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드로',
@@ -178,7 +174,7 @@
          is `translate`d and the grid's own rows are sized by the taller
          editor, so nothing else keeps the two together. -->
     <div class="PgSheet" data-pg-sheet>
-    <div class="PgPaper" data-pg-paper>
+    <div class="PgPaper" data-pg-paper data-lens="live">
       <p class="Masthead">{{ pgPaperMasthead }}</p>
       <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
       <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
@@ -187,15 +183,6 @@
            extra tab stop with an accessible name — a fair price. -->
       <article class="PgGalley" data-pg-preview tabindex="0" aria-label="{{ pgPaperColumn }}"></article>
     </div>
-
-    <!-- The loupe's own switch, under the sheet it magnifies. On by default:
-         the lens is how a 9px proof gets read, so it has to be there before
-         anyone looks for it — but a reader who finds it in the way can put
-         it down. CSS reads the checkbox (`:has()`), JS never touches it. -->
-    <label class="Toggle PgLensSwitch" data-pg-lens-switch>
-      <span>{{ pgLensToggle }}</span>
-      <input type="checkbox" checked>
-    </label>
     </div>
 
     <!-- 認真模式 — a fullscreen modal studio. Opening MOVES the two live
