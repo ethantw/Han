@@ -1,10 +1,32 @@
 /* 一口深呼吸 7s：吸 3.15s（綠漫出去）、吐 3.85s（收回貼著版口線）。
-   吐比吸長一點，跟人一樣。整支 ease-in-out——快慢寫在段長上。 */
+   吐比吸長一點，跟人一樣。整支 ease-in-out——快慢寫在段長上。
+
+   **一口氣，兩支時鐘**，因為兩個消費者的代價差了兩個數量級：
+
+     --lines-tide  字重那一層（`p` 的 font-variation-settings）。它每動一次
+                   就是一次重排，而值本來就以 `round(…, 25)` 量化成 17 檔
+                   ——所以這支跟著走 `steps(17)`：畫面逐格相同，只是不再為
+                   算出同一個數而每秒失效六十次。`inherits: true`，因為讀它
+                   的是子孫。
+     --lines-mask  帶子的遮罩停點。連續、只吃 paint，一幀一次不花錢，波形
+                   該是連續的。`inherits: false` ＋ 掛在 `::before` 自己身上
+                   ⇒ 失效範圍就是那一個元素，碰不到底下那片浮水印文字。
+
+   拆開之前兩者共用一支 `--lines-tide`：想量化就得用 `steps()` 當 timing
+   function，而那會把遮罩一起變階梯（owner 2026-08-04 因此否決）。拆成兩支
+   之後，量化只落在需要量化的那一半，畫面一格不變。
+   實測站③停在畫面上，每 3 秒的 style recalc 330ms → 見下方 § 量測。 */
 @property --lines-tide { syntax: "<number>"; inherits: true; initial-value: .45; }
+@property --lines-mask { syntax: "<number>"; inherits: false; initial-value: .45; }
 
 @keyframes lines-tide {
   0%, 100% { --lines-tide: 0; }
   45% { --lines-tide: 1; }
+}
+
+@keyframes lines-mask {
+  0%, 100% { --lines-mask: 0; }
+  45% { --lines-mask: 1; }
 }
 
 #station-lines {
@@ -320,8 +342,8 @@
       mask-image:
         linear-gradient(
           to right,
-          #000 calc(var(--lines-tide) * 30%),
-          transparent calc(25% + var(--lines-tide) * 75%)
+          #000 calc(var(--lines-mask) * 30%),
+          transparent calc(25% + var(--lines-mask) * 75%)
         )
       ;
       border-inline-start: 1px solid var(--_wm-rule);
@@ -395,9 +417,15 @@
     @media (prefers-reduced-motion: no-preference) {
       :root:not([data-han-module-lines="off"]) & {
         & {
-          animation: lines-tide 7s ease-in-out infinite;
+          /* 17 檔 ＝ `round(…, 25)` 在 500…900 之間的檔數，所以逐格與連續版
+             一模一樣，只是不再每幀重算一次同樣的字重。 */
+          animation: lines-tide 7s steps(17, jump-none) infinite;
         }
-        &[data-breath-idle] {
+        &::before {
+          animation: lines-mask 7s ease-in-out infinite;
+        }
+        &[data-breath-idle],
+        &[data-breath-idle]::before {
           animation-play-state: paused;
         }
         p {
