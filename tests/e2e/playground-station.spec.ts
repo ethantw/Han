@@ -247,6 +247,24 @@ test.describe('station⑤ playground', () => {
     // coordinate can land outside it.
     await page.locator('#station-playground [data-pg-paper]').hover({ position: { x: 200, y: 320 } })
     await expect.poll(centre).not.toBe(parked)
+
+    // …and it lands ON the cursor, not merely somewhere else. The circle is
+    // `position: absolute`, so the browser resolves its insets against the
+    // nearest POSITIONED ancestor: mount it on a static parent and the module
+    // measures one box while the browser uses another — the loupe drifts by
+    // exactly the distance between them (it moved into the editor column when
+    // the module started mounting on the host's parent instead).
+    expect(
+      await page.evaluate(() => {
+        const $h = document.querySelector('#station-playground [data-pg-paper]')!
+        let $frame = $h.parentElement!
+        while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
+        const l = $frame.querySelector(':scope > .Lens')!.getBoundingClientRect()
+        const h = $h.getBoundingClientRect()
+        // hovered at 200,320 inside the card
+        return [Math.round(l.x + l.width / 2 - h.x - 200), Math.round(l.y + l.height / 2 - h.y - 320)]
+      }),
+    ).toEqual([0, 0])
   })
 
   test('every miniature specimen carries its own loupe', async ({ page }) => {
@@ -255,12 +273,19 @@ test.describe('station⑤ playground', () => {
     // on purpose, so each one gets a circle of its own.
     expect(
       await page.evaluate(() =>
-        [...document.querySelectorAll('[data-lens]')].map(($h) => [
-          $h.className,
-          // sibling, never a descendant — one copy of the content per host
-          !!$h.parentElement!.querySelector(':scope > .Lens'),
-          $h.querySelectorAll('.Lens').length,
-        ]),
+        [...document.querySelectorAll('[data-lens]')].map(($h) => {
+          // The circle sits in the host's nearest POSITIONED ancestor (that is
+          // the box its insets resolve against), as a SIBLING of the content —
+          // never a descendant, or the host would carry a second copy of
+          // itself past every query and every test.
+          let $frame = $h.parentElement!
+          while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
+          return [
+            $h.className,
+            !!$frame.querySelector(':scope > .Lens'),
+            $h.querySelectorAll('.Lens').length,
+          ]
+        }),
       ),
     ).toEqual([
       ['Papers', true, 0],

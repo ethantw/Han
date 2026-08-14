@@ -40,15 +40,29 @@ const depersonalise = ($el) => {
   }
 }
 
+/** The box the lens is positioned in: the nearest POSITIONED ancestor, not
+ *  simply the parent. The lens is `position: absolute`, so the browser
+ *  resolves its insets against that ancestor — mounting it on a static parent
+ *  makes the module measure one box while the browser uses another, and the
+ *  circle lands displaced by exactly the distance between them (the
+ *  playground's loupe drifted into the editor column: its host's parent is
+ *  the sheet, but the positioned box is the panel). */
+const frameOf = ($host) => {
+  for (let $a = $host.parentElement; $a; $a = $a.parentElement) {
+    if (getComputedStyle($a).position !== 'static') return $a
+  }
+  return $host.parentElement
+}
+
 /** One loupe over one host. `live` hosts re-render (the playground draft), so
  *  their copy is rebuilt from a MutationObserver; the rest are set once. */
 const mountOne = ($host, { live }) => {
-  // The lens is a SIBLING of the host, not a descendant: everything that
+  // The lens is a SIBLING of the host, never a descendant: everything that
   // queries the host — the render pipeline, the fallbacks pass, the tests —
   // must keep seeing exactly one of it with exactly one copy of the content.
   // Sibling placement also means an innerHTML swap on re-render can never
   // evict the lens.
-  const $frame = $host.parentElement
+  const $frame = frameOf($host)
   if (!$frame) return
 
   const $lens = document.createElement('div')
