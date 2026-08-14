@@ -114,97 +114,10 @@
 @property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 3420; }
 @property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 3420; }
 
-/* 一次修正，1150ms 一次演完（拍點以 1% ＝ 11.5ms 換算）：
-     0–420ms    靠近（0 → .82，ease-out——伸手漸緩）
-     420–580ms  彈開一點點（.82 → .55，ease-in——鬆脫加速）
-     580–660ms  懸著 80ms
-     660–750ms  猛然接上（.55 → 1，90ms ease-in，撞上去）
-     660–810ms  墨色隨著撞擊竄到峰值（150ms）
-     660–870ms  壓印：接觸的一瞬線變厚（.5 → .9 → .5）
-     810–1150ms 淡回，但只回到 .35——接上之後這根線比原來實一分，永久留著
-   為什麼衝擊靠厚度與速度而不是位移過衝：墨跡外緣 727／913 固定，縫一旦合上
-   （fuse ≥ 1）兩截只是重疊，畫面完全看不出來——過衝在這副幾何裡是隱形的。
-   所以「猛然」寫在 90ms 的段長、ease-in 的加速、以及接觸瞬間的加厚上。 */
-@keyframes df-fuse {
-  0% { --df-fuse: 0; --df-ink: 0; --df-press: 0; --df-red: 1; animation-timing-function: ease-out; }
-  36.5% { --df-fuse: .82; animation-timing-function: ease-in; }
-  50.4% { --df-fuse: .55; animation-timing-function: linear; }
-  57.4% { --df-fuse: .55; --df-ink: 0; --df-press: 0; --df-red: 1; animation-timing-function: ease-in; }
-  65.2% { --df-fuse: 1; --df-press: 1; --df-red: 0; animation-timing-function: ease-out; }
-  70.4% { --df-ink: 1; animation-timing-function: ease-out; }
-  75.7% { --df-press: 0; }
-  100% { --df-fuse: 1; --df-ink: .35; }
-}
 
-/* 放開游標的那一程（.PunctFix[data-repair]，dash-fuse.js 蓋）。起點不是
-   固定值而是 var(--df-from)——JS 在放手的瞬間把呼吸當下的 --df-fuse 抄進
-   去，動畫因此從「手放開時它正好在哪」接起，不會先跳一下再開始修。
-   末幀與基態逐項相同，所以 fill 不留也無縫。 */
-@keyframes df-repair {
-  from { --df-fuse: var(--df-from, -1); --df-red: 1; --df-ink: 0; }
-  to { --df-fuse: 1; --df-red: 0; --df-ink: .35; }
-}
 
-/* 被按住的期間（hover）：兩截朝著對方呼吸，永遠差一截。斷開不是靜照——
-   它們本來就想接上，是字體讓它們接不上，那股勁在被按住時仍該看得見。
-   縫在 0.2em ⇄ 0.142em 之間（fuse −1 ⇄ −.42），伸手 1.43s、鬆回 1.17s
-   ——伸手漸緩、鬆脫稍快，同檔一貫的語彙。永遠不接近 0：接上是游標放開
-   才有的事，按著的時候給希望不給結果。 */
-@keyframes df-break {
-  from { --df-fuse: 1; }
-  to { --df-fuse: -1; }
-}
 
-@keyframes df-hold {
-  0%, 100% { --df-fuse: -1; }
-  55% { --df-fuse: -.42; }
-}
 
-/* 還沒被看到時的等待（data-armed，未 data-strain／data-play）：柱以斷開態
-   現身，兩截極淺地呼吸——峰值 .35（縫 0.1em → 0.065em），只是「活著」的
-   證據。讀者的眼睛還沒到，這裡不必演戲。一輪 6s 兩口氣，慢吸快吐，末段
-   飄回基態；起訖同為 0，與後面兩支的起手都接得上（整支 ease-in-out，快慢
-   靠段長不靠曲線的稜角）。 */
-@keyframes df-try {
-  0% { --df-fuse: 0; }
-  25% { --df-fuse: .3; }
-  33% { --df-fuse: .02; }
-  40% { --df-fuse: .06; }
-  62% { --df-fuse: .35; }
-  70% { --df-fuse: 0; }
-  78% { --df-fuse: .04; }
-  100% { --df-fuse: 0; }
-}
-
-/* 露臉之後、接合之前的那一段（data-strain，dash-fuse.js 在 .PunctFix 亮章
-   時就蓋，不等鉛字）：兩截**開開合合**——收攏、差一截、鬆開得比原本還遠、
-   再收。等鉛字落下的那段時間，就是這幾口氣的時間。
-
-   語彙借按住那一齣（df-hold）的：同一種 ease-in-out 的往復，只是快一截
-   （1600ms 對 2600ms）——被按住是「被拉住不放」，這裡是自己一口一口地
-   試，節奏該急一點。
-
-   四個拍點，一口氣一個來回：
-     0%  fuse 0    ——字體真正的縫 0.1em，也是接合的起手（見末段）
-     25% fuse .62  ——收到最緊，縫剩 0.038em。**不到 1**：差一截始終在場，
-                     越過去就等於先把重逢演了一遍
-     75% fuse -.6  ——鬆開，縫張到 0.16em，比真值還開。這一段是 owner 定
-                     案：呼吸要讀得出來，幅度得夠；按住那一齣本來就張到
-                     0.2em（fuse −1），所以圖上並非沒有先例——差別只在
-                     那裡是讀者的手在拉，這裡是它自己在喘
-     100% 回到 0   ——輪邊界必須是真值，接合才接得上（df-fuse 的 0% 幀就是
-                     fuse 0），JS 因此把 data-play 卡在整數輪（見
-                     dash-fuse.js § BREATH_MS）
-
-   **只動縫，不動墨**：等待期的墨色恆為 0（宣告在 [data-armed] 那條，這支
-   不碰它）。墨色是接觸才有的事——撞上去那一下竄到峰值、線壓厚（--df-ink
-   ／--df-press），接觸前先亮起來就等於預告。校樣紅同理不進來，紅是「指出
-   錯處」的動詞。 */
-@keyframes df-strain {
-  0%, 100% { --df-fuse: 0; }
-  25% { --df-fuse: .62; }
-  75% { --df-fuse: -.6; }
-}
 
 /* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
 @keyframes df-copy-in {
@@ -218,9 +131,6 @@ svg[data-name="dash-fuse"] {
        3420 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只
        在 [0, 1] 之間走，縫最開就是那個真值（不再探負值把縫張到 0.36em——
        誇張化會讓這張圖不再是證據）；墨跡外緣 3327／3513 始終不動 */
-    --df-a1: calc(3415 + 5 * var(--df-fuse));
-    --df-b0: calc(3425 - 5 * var(--df-fuse));
-
     position: absolute;
     /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section
        裡，-1 落在 station-b 底色之上、一切普通流內容之下 */
@@ -326,6 +236,17 @@ svg[data-name="dash-fuse"] {
      而不是靠更黑。橫向 58 ＝ 欄軸 60 減半個線寬：不掛字體之後沒有引擎的 R-class
      偏移要遷就，破折號回到欄軸上，與同柱漢字的 em 框中心對齊。 */
   rect {
+    /* 接縫兩緣。斷開 3415／3425（縫 10 ＝ 0.1em，真實的病灶），合上同歸
+       3420 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只在
+       [0, 1] 之間走，縫最開就是那個真值；墨跡外緣 3327／3513 始終不動。
+
+       算在**這裡**而不是柱根：`--df-fuse` 是唯一被動畫的變數，而讀它的只有
+       這兩塊矩形（見下方兩條 transform）。掛在柱根時它每一幀讓整棵子樹的繼承
+       屬性失效——那棵子樹是 1,804 個字節點，一個都不讀它——實測站②停在畫面上
+       時每 3 秒燒掉 613ms style recalc，只暫停這一支就歸零。 */
+    --df-a1: calc(3415 + 5 * var(--df-fuse));
+    --df-b0: calc(3425 - 5 * var(--df-fuse));
+
     fill:
       color-mix(
         in srgb,
@@ -362,98 +283,21 @@ svg[data-name="dash-fuse"] {
      行向一轉，錨點全散 */
   main[data-writing="vertical"] & { display: none; }
 
-  /* 時序（同站台 reveal 的契約：settled 是基態，動畫只活在 no-preference
-     之內；reduced ／ 無 JS ⇒ 永遠是已修正的終態，絕不停在壞畫面上）。
-     data-armed：dash-fuse.js 一啟動就蓋——柱即刻以斷開態示人，不等鉛字；
-     data-strain：柱跨進視窗中帶才蓋——讀者的眼睛到了，漂移換成較勁；
-     data-play：前兩者之外還要鉛字盤落完、較勁滿一輪——熔接一次，就這一次。 */
-  @media (prefers-reduced-motion: no-preference) {
-    /* 開演前：基態斷開、墨色淺（還沒修好，不該先實起來），兩截在其上極淺
-       地呼吸（df-try 峰值 .35）。 */
-    &[data-armed]:not([data-play]) {
-      --df-fuse: 0;
-      --df-ink: 0;
-      animation: df-try 6s ease-in-out infinite;
-    }
-    /* 進了視野中央就換一支：較勁取代漂移。同 specificity 的後一條整組
-       取代前一條的簡寫（同檔一貫），df-try 停、df-strain 從 0 起跑——
-       起點相同，換支不跳。 */
-    &[data-strain]:not([data-play]) {
-      animation: df-strain 1600ms ease-in-out infinite;
-    }
+  /* ── 動畫暫時撤下（owner 2026-08-14）────────────────────────────
+     這根柱以「已經熔接好」的靜止態示人，也就是它本來的 reduced-motion ／
+     無 JS 基態（`@property` 的 initial-value：fuse 1 ⇒ 兩截同歸 3420、
+     ink .35、red 0），所以撤掉動畫不會留下壞畫面。
 
-    /* 不在視窗裡就不漂（`data-breath-idle`，home/breath.js 的通用閘，站③的
-       那口氣先用了它）。漂移是**開演前**的等待態，而它等的是讀者——讀者人
-       在別站時，這支動畫仍然每幀讓整棵子樹的繼承屬性失效、SVG 幾何跟著重排
-       （實測 `getAnimations()` 在任何捲動位置都回報 df-try running，站②在畫面
-       上時 idle 三秒吃掉 787ms style recalc）。
+     為什麼撤：那支循環是整頁 idle 時唯一的成本來源。實測站②停在畫面上，
+     每 3 秒吃掉 613ms style recalc（動畫掛在柱根，每幀讓 1,804 個字節點的
+     繼承屬性失效）；把宣告移到真正讀那些變數的兩塊矩形上之後降到 ~130ms，
+     但仍是那一站唯一在跑的東西，而互動本身要重新設計。
 
-       `animation-play-state` 而不是拆掉 `animation`：拆掉會讓下次進場從 0%
-       重跑，那截漂移在讀者眼前跳一下。
+     那台戲（df-try 漂移／df-strain 較勁／df-fuse 首播／按住不修好的
+     df-hold＋df-break＋df-repair，連同六支 keyframes 與 dash-fuse.js 的
+     開演時機）整組留在 git 裡：`git show 0a6f2b1^:manual/public/home/dash-fuse.css`
+     ——重做互動時從那裡取。 */
 
-       選擇器要兩個屬性才夠：上面每一條都是用 `animation` **簡寫**宣告的，而
-       簡寫會把 `animation-play-state` 一併重設回 `running`——單寫
-       `&[data-breath-idle]`（0,2,1）壓不過 `&[data-strain]:not([data-play])`
-       （0,3,1），實測章蓋上了、動畫照跑。加上 `[data-armed]` 之後同權重而
-       在後，才真的暫停。 */
-    &[data-breath-idle][data-armed] {
-      animation-play-state: paused;
-    }
-    /* 開演：靠近、彈開、猛然接上（1150ms，拍點見 keyframes）。**不留
-       fill**：末幀的值（fuse 1、ink .35、red 0）與基態逐項相同，所以動畫
-       跑完自然交還給宣告值，畫面無縫——而且交還之後 hover 的 transition
-       才推得動這幾個變數（filled 的動畫值贏過一切宣告，留著 both 就等於
-       把後面那齣戲鎖死）。 */
-    &[data-play] {
-      animation: df-fuse 1150ms linear;
-    }
-
-    /* 讀者要的那一齣，拆成兩半掛在游標的進出上——不是按一次播一遍錄影：
-
-         按住（data-hold）  90ms 斷開（斷是突發的）＋校樣紅落下，然後兩截
-                            朝著對方呼吸（df-hold），永遠差一截。看多久由
-                            讀者決定
-         放開（data-repair）420ms 接回去、紅退成墨——手一鬆，han.css 就把
-                            它修好
-
-       游標於是變成「按住不讓它修好」的那隻手。縫張到 0.2em（fuse −1），
-       是真值 0.1em 的兩倍：hover 是讀者主動要求的示範，等於拿放大鏡看，
-       放大鏡不偽造事實——首播那一次仍嚴格照真值走（檔頭「幅度是真的」）。
-       壓印（--df-press）不參與：那記重音留給首播，一輩子只有一次。
-
-       為什麼是 JS 蓋章而不是 :hover ＋ transition：放開的那一刻要從**呼吸
-       當下的值**接起（見 df-repair 的註），而 CSS 讀不到執行中的動畫值；
-       蓋章的同時把值抄進 --df-from，這一段才接得順。`(hover: hover)` 與
-       reduced-motion 的判斷也一併移進 JS（dash-fuse.js § initHoldRepair），
-       所以這裡不再需要那道 media query——沒有指標裝置就不會有章。 */
-    .PunctFix[data-hold] &[data-play] {
-      --df-ink: 0;
-      --df-red: 1;
-      /* 清單裡**追加**，不覆寫——df-fuse 那格必須原封不動留在第一位：
-         animation-name 的清單只要變動，留下來的動畫就會被當成新的、從頭
-         再播一次。這一條踩過：改成整支覆寫之後，data-repair 撤章的那一刻
-         df-fuse 重播，而它的 0% 幀正是 --df-red: 1，紅又亮起來（實測
-         2026-08-01）。追加的話 df-fuse 自始至終是同一個實例、早已跑完且
-         不留 fill，後面兩支排在它後面所以贏得那幾個變數。
-         df-break 90ms 把縫拉開，90ms 起 df-hold 接手無限呼吸。 */
-      animation:
-        df-fuse 1150ms linear,
-        df-break 90ms linear,
-        df-hold 2600ms ease-in-out 90ms infinite
-      ;
-      transition:
-        --df-ink 90ms linear,
-        --df-red 90ms linear
-      ;
-    }
-    .PunctFix[data-repair] &[data-play] {
-      /* 同上，df-fuse 留在第一位不動 */
-      animation:
-        df-fuse 1150ms linear,
-        df-repair 420ms ease-out
-      ;
-    }
-  }
 }
 
 .PunctFix {
