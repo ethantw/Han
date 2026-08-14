@@ -142,6 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 子樹，han.js 的 `<h-char>`／`<h-iss>` 包裹得重跑，*.with-js.css 才有東西
     // 可選。走主控台而不是直接 import installFallbacks，讀者的開關才算話。
     initPlayground(($target) => $console?.reapplyFallbacks($target))
+    // 站①的四版橫捲：藥丸與捲動位置互相對齊（CSS 管捲與吸附）
+    const { initSnapStrips } = await import('/home/snap.js')
+    initSnapStrips()
     // 三站的放大鏡（滑鼠專屬；鍵盤路徑是 CSS 的 :focus-visible 閱讀模式）
     const { initLens } = await import('/home/lens.js')
     initLens()

@@ -405,8 +405,19 @@
        fallback, `home/papers-dateline.js` refreshes each <time> on
        boot. The zh-Hant pane carries the full semantic-element
        set (docs/plans/homepage-specimens.md). -->
-  <figure class="Papers" data-lens style="--han-cite-title-marks: bracket">
-    <article lang="zh-Hant">
+  <!-- 窄站台下這四版不疊起來，而是留在同一列裡橫向捲（station-semantics.css
+       § Papers）：這一圖要證明的是「同一行，四種寫法」，疊起來就沒有比對。
+       上面那排藥丸是**導覽不是篩選**——四份始終在場，藥丸只是快速捲過去
+       （home/snap.js；無 JS 時它們就是普通的頁內連結）。字面是文種標記，
+       不是文案，所以不進 i18n。 -->
+  <nav class="PaperPills" data-snap-pills="papers" aria-label="四版切換">
+    <a href="#paper-hant">繁</a>
+    <a href="#paper-hans">简</a>
+    <a href="#paper-ja">日</a>
+    <a href="#paper-ko">한</a>
+  </nav>
+  <figure class="Papers" data-snap-strip="papers" data-lens style="--han-cite-title-marks: bracket">
+    <article id="paper-hant" lang="zh-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
         <p class="Dateline"><time datetime="2126-07-29">中華民國二一五年七月廿九日</time>・科技考古</p>
@@ -418,7 +429,7 @@
       <p>所謂<dfn>亂碼</dfn>，是文件以某套對照表寫成——字元各有碼位<var>n</var>——卻被另一套強行解讀：正確的數字，對應到<em>全然錯誤</em>的文字。彼時的電腦，連<i lang="de">Schrödinger</i>都顯示不全。</p>
       <p>人形語言學機器人EISO-2200補充：<q>訓練資料不足以令模型辨識這是編碼錯誤，而非真實的漢字。</q>換言之，<strong>沒有人讀得懂，是因為所有人用的都是錯誤的鑰匙</strong>——正確解讀十七分鐘，而那是一百年前資訊工程系第一週的常識。彈體內的<ruby class="zhuyin">鈽<rt>ㄅㄨˋ</rt></ruby>下週移送民用儲能工廠。有人問那十五年算什麼，<u>循尼亞・薛</u>答：<q>學費。</q></p>
     </article>
-    <article lang="zh-Hans">
+    <article id="paper-hans" lang="zh-Hans">
       <header>
         <p class="Masthead">太阳中文报</p>
         <p class="Dateline"><time datetime="2126-07-29">夏历丙戌年六月初十</time>・科技考古</p>
@@ -430,7 +441,7 @@
       <p>所谓<dfn>乱码</dfn>，是文件以某套对照表写成——字元各有码位<var>n</var>——却被另一套强行解读：正确的数字，对应到<em>全然错误</em>的文字。彼时的电脑，连<i lang="de">Schrödinger</i>都显示不全。</p>
       <p>人形语言学机器人EISO-2200补充：<q>训练资料不足以令模型辨识这是编码错误，而非真实的汉字。</q>换言之，<strong>没有人读得懂，是因为所有人用的都是错误的钥匙</strong>——正确解读十七分钟，而那是一百年前资讯工程系第一周的常识。弹体内的<ruby>钚<rt>bù</rt></ruby>下周移送民用储能工厂。有人问那十五年算什么，<u>循尼亚・薛</u>答：<q>学费。</q></p>
     </article>
-    <article lang="ja">
+    <article id="paper-ja" lang="ja">
       <header>
         <p class="Masthead">太陽中文報</p>
         <p class="Dateline"><time datetime="2126-07-29">弘宙元年七月二十九日</time>・科技考古</p>
@@ -442,7 +453,7 @@
       <p><dfn>文字化け</dfn>とは、ある対応表で書かれた文書——文字はそれぞれ符号位置<var>n</var>を持つ——を、別の対応表で強引に読み解いた結果である：正しい数値が、<em>まったく見当違いの文字</em>に対応してしまう。当時のコンピュータは、<i lang="de">Schrödinger</i>という名前さえ完全に表示できなかった。</p>
       <p>ヒューマノイド言語学ロボットEISO-2200は<q>訓練データが不十分なため、モデルはこれが符号化エラーであると認識できないのだ</q>と補った。要するに、<strong>誰にも読めなかったのは、全員が間違った鍵を使っていたからだ</strong>——正確な解読に要した時間は十七分、しかも百年前なら情報工学科の一週目に習う常識だった。弾体内のプルトニウムは、来週民生用蓄電工場へ移送される。あの十五年は何だったのかと問われ、<u><ruby>循尼亞<rt>シューニャ</rt></ruby>・薛</u>は答えた。<q>授業料です。</q></p>
     </article>
-    <article lang="ko-Hant">
+    <article id="paper-ko" lang="ko-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
         <p class="Dateline"><time datetime="2126-07-29"><ruby>西紀<rt>서기</rt></ruby> 2126年 7月 29日</time>・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>
