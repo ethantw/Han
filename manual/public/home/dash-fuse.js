@@ -16,6 +16,8 @@
  * dash-fuse.css § 動畫暫時撤下。
  */
 
+import { settled, onRendered } from '/home/measure.js'
+
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 /* 一格 ＝ 100 user unit ＝ 1em（font-size 也是 100px，dash-fuse.css）。 */
@@ -75,13 +77,20 @@ const initClip = ($column) => {
   const $main = document.querySelector('main')
   if (!$faces) return
 
-  const sync = () => {
+  const measure = () => {
     const top = $faces.getBoundingClientRect().top - $column.getBoundingClientRect().top
     $column.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
   }
 
-  sync()
+  /* 放手才算，畫面外不算（home/measure.js）：讀 `$column` 的 rect 會逼出那
+     1,804 個字節點的同步版面（owner 的 trace：每次 107ms，14 次共 1.5 秒），
+     而這條裁切線是裝飾——拖曳中停在上一次的值沒有人看得出來。 */
+  const $station = $column.closest('[data-station]')
+  const sync = settled(measure, $station)
+
+  measure()
   document.fonts?.ready.then(sync)
+  onRendered($station, sync)
   if ($main) new ResizeObserver(sync).observe($main)
 }
 

@@ -19,6 +19,7 @@
  * `timerRef` is the one-mutable-cell (debounce handle), replaced wholesale.
  */
 import { marked } from '/vendor/marked.esm.js'
+import { settled, onRendered } from '/home/measure.js'
 import DOMPurify from '/vendor/purify.esm.js'
 import { plus100EraLine } from '/home/papers-dateline.js'
 
@@ -409,6 +410,16 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   // the page flow immediately (preview is the default tab).
   render()
   fitSheet()
-  // The sheet is measured against the viewport, so a resize re-solves it.
-  addEventListener('resize', fitSheet)
+  /* The sheet is measured against the viewport, so a resize re-solves it —
+     but only once the drag has stopped, and not at all while the station is
+     skipped (home/measure.js). The solver pins the measure and then reads
+     `scrollWidth`, so every call forces a synchronous layout of a page whose
+     layout costs ~27ms on the owner's machine (their trace: 53ms × 14 in one
+     drag). Mid-drag the galley keeps the previous solve, which nobody is
+     reading while the window is moving; off screen it would be solving
+     against `contain-intrinsic-size` anyway. */
+  const $station = $editor.closest('[data-station]')
+  const resolve = settled(fitSheet, $station)
+  addEventListener('resize', resolve)
+  onRendered($station, resolve)
 }

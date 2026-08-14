@@ -254,9 +254,13 @@ test.describe('station⑤ playground', () => {
     // measures one box while the browser uses another — the loupe drifts by
     // exactly the distance between them (it moved into the editor column when
     // the module started mounting on the host's parent instead).
-    // Within a pixel: the hover point is rounded to an integer while the card's
-    // own origin is fractional, so exact equality is not the claim — being ON
-    // the cursor rather than a column away is.
+    // Within a pixel, once the page has settled: the geometry solvers run
+    // SETTLE_MS after the last resize (home/measure.js), so a card measured in
+    // that window has not finished moving. The hover point is also rounded to
+    // an integer while the card's origin is fractional — exact equality is not
+    // the claim, being ON the cursor rather than a column away is.
+    await page.waitForTimeout(250)
+    await page.locator('#station-playground [data-pg-paper]').hover({ position: { x: 200, y: 320 } })
     const off = await page.evaluate(() => {
       const $h = document.querySelector('#station-playground [data-pg-paper]')!
       let $frame = $h.parentElement!

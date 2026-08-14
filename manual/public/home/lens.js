@@ -28,9 +28,16 @@
  * reading size).
  */
 
+import { settled } from '/home/measure.js'
+
 /* Geometry belongs to CSS (home/lens.css + each host's two tokens): the
  * diameter is derived from the host's own measure and this zoom, so the two
- * can never drift into a lens that clips the column it magnifies. */
+ * can never drift into a lens that clips the column it magnifies.
+ *
+ * Read once per settle, never per pointer event: `getComputedStyle` flushes
+ * style, and with it whatever layout is pending — owner's trace caught this
+ * one inside `follow()`, i.e. once per mousemove, forcing a layout of a page
+ * whose full layout costs half a second on their machine. */
 const zoomOf = ($lens) =>
   Number.parseFloat(getComputedStyle($lens).getPropertyValue('--lens-zoom')) || 2
 
@@ -109,6 +116,7 @@ const mountOne = ($host, { live }) => {
   let lastX = 0
   let lastY = 0
   let lensSize = 0
+  let zoom = 2
   /* A fine pointer just moves over the page, so the loupe can be on from the
      start; a coarse one has to DRAG it, and dragging is how that reader
      scrolls — so there it waits to be asked (the host stops scrolling while
@@ -139,9 +147,8 @@ const mountOne = ($host, { live }) => {
     const f = $frame.getBoundingClientRect()
     $lens.style.insetInlineStart = `${h.left - f.left + cx}px`
     $lens.style.insetBlockStart = `${h.top - f.top + cy}px`
-    const z = zoomOf($lens)
     $clone.style.transform =
-      `translate(${lensSize / 2 - cx * z}px, ${lensSize / 2 - cy * z}px) scale(${z})`
+      `translate(${lensSize / 2 - cx * zoom}px, ${lensSize / 2 - cy * zoom}px) scale(${zoom})`
   }
 
   /** Host-relative centre of its first block (an empty draft has none, and
@@ -162,6 +169,7 @@ const mountOne = ($host, { live }) => {
     $clone.style.inlineSize = `${r.width}px`
     $clone.style.blockSize = `${r.height}px`
     lensSize = $lens.getBoundingClientRect().width
+    zoom = zoomOf($lens)
     syncScroll()
     if (!readerDriving) [lastX, lastY] = openingPoint()
     positionAt(lastX, lastY)
@@ -233,7 +241,9 @@ const mountOne = ($host, { live }) => {
     new MutationObserver(reclone)
       .observe($host, { childList: true, subtree: true, characterData: true })
   }
-  new ResizeObserver(sync).observe($host)
+  /* 放手才算（見 home/measure.js）：複本要與宿主等尺寸，而每次同步都會讀
+     rect——拖著窗邊改大小時那是每幀一次同步版面，而拖曳中沒有人在讀鏡子。 */
+  new ResizeObserver(settled(sync, $host)).observe($host)
   // apply() builds the first copy if the loupe starts on (a fine pointer);
   // a coarse one starts off and pays nothing until it is asked.
   apply()
