@@ -381,6 +381,24 @@ svg[data-name="dash-fuse"] {
     &[data-strain]:not([data-play]) {
       animation: df-strain 1600ms ease-in-out infinite;
     }
+
+    /* 不在視窗裡就不漂（`data-breath-idle`，home/breath.js 的通用閘，站③的
+       那口氣先用了它）。漂移是**開演前**的等待態，而它等的是讀者——讀者人
+       在別站時，這支動畫仍然每幀讓整棵子樹的繼承屬性失效、SVG 幾何跟著重排
+       （實測 `getAnimations()` 在任何捲動位置都回報 df-try running，站②在畫面
+       上時 idle 三秒吃掉 787ms style recalc）。
+
+       `animation-play-state` 而不是拆掉 `animation`：拆掉會讓下次進場從 0%
+       重跑，那截漂移在讀者眼前跳一下。
+
+       選擇器要兩個屬性才夠：上面每一條都是用 `animation` **簡寫**宣告的，而
+       簡寫會把 `animation-play-state` 一併重設回 `running`——單寫
+       `&[data-breath-idle]`（0,2,1）壓不過 `&[data-strain]:not([data-play])`
+       （0,3,1），實測章蓋上了、動畫照跑。加上 `[data-armed]` 之後同權重而
+       在後，才真的暫停。 */
+    &[data-breath-idle][data-armed] {
+      animation-play-state: paused;
+    }
     /* 開演：靠近、彈開、猛然接上（1150ms，拍點見 keyframes）。**不留
        fill**：末幀的值（fuse 1、ink .35、red 0）與基態逐項相同，所以動畫
        跑完自然交還給宣告值，畫面無縫——而且交還之後 hover 的 transition
