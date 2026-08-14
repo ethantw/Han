@@ -291,6 +291,11 @@
        Scrolls inside; sticky, so it stays at hand when the sheet grows past
        a viewport (long user content is allowed to). */
     [data-pg-panes] > textarea {
+      /* 明寫**列與行**。窄站台給校樣卡的 `order: -1`（把預設那一格排在軌首）
+         在網格裡照樣算——它改的是自動佈局的順序，於是定了欄的編輯區只能被
+         擠到第二列去（實測 1440／1900 下編輯區掉到 y≈1069，整站錯位）。兩塊
+         都把行寫死，順序就管不著它們了。 */
+      grid-row: 1;
       grid-column: 1;
       block-size: var(--pg-pane-h);
       overflow: auto;
@@ -338,6 +343,7 @@
        stacking context, trapping the switch's z-index inside it — and the
        switch has to be able to paint above the loupe (see below). */
     [data-pg-panes] > [data-pg-sheet] {
+      grid-row: 1;
       grid-column: 2;
       /* the switch tucks under the sheet's right edge. NOT `align-items:
          flex-end` — that would align the bled card by its RIGHT edge, so the
