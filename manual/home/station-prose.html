@@ -21,16 +21,6 @@
     ja: '約物詰めが主軸の余白を司り、交差軸のリズムはproseモジュールが指揮する——大見出しに小見出しが続けば間隔は締まって一体となり、見出し・段落・箇条書きは字を物差しに間合いを取る。縦組でも横組でも変わらない。下の記事を読みながらモジュール切替を操れば、前後の章法の違いが見て取れる。',
     ko: '<ruby>符號<rt>부호</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>이 <ruby>主軸<rt>주축</rt></ruby>의 여백을 맡고、<ruby>交叉軸<rt>교차축</rt></ruby>의 리듬은 prose 모듈이 <ruby>指揮<rt>지휘</rt></ruby>한다——큰 <ruby>標題<rt>표제</rt></ruby>에 작은 <ruby>標題<rt>표제</rt></ruby>가 이어지면 <ruby>間隔<rt>간격</rt></ruby>은 하나로 여며지고、<ruby>標題<rt>표제</rt></ruby>와 <ruby>段落<rt>단락</rt></ruby>과 <ruby>目錄<rt>목록</rt></ruby>은 <ruby>字<rt>자</rt></ruby>를 자로 삼아 사이를 둔다。세로로 짜든 가로로 짜든 마찬가지다。아래 <ruby>記事<rt>기사</rt></ruby>를 읽으며 모듈 스위치를 젖히면、앞뒤 <ruby>組版<rt>조판</rt></ruby>이 어떻게 다른지 한눈에 드러난다。',
   },
-  /* Touch has no cursor, so no loupe (home/lens.css). The cards stay
-     miniatures on purpose, so the reader is owed a word about how to read
-     them. Only shown where there is no loupe. */
-  prLensHint: {
-    hant: '字小之處，雙指開合可放大細看。',
-    hans: '字小之处，双指开合可放大细看。',
-    en: 'Pinch to zoom in on the small type.',
-    ja: '小さな字は、二本指の開閉で拡大して読める。',
-    ko: '<ruby>字<rt>자</rt></ruby>가 작은 곳은、두 손가락으로 벌려 크게 볼 수 있다。',
-  },
   prProseToggle: {
     hant: '疏密有致模式',
     hans: '疏密有致模式',
@@ -80,8 +70,10 @@
     <small>{{ prProseHint }}</small>
   </label>
 
-  <div class="Prose">
-    <article class="Dispatch" data-lens lang="zh-Hant">
+  <!-- 一顆放大鏡管兩張卡（`data-lens` 在容器上，不在各卡上）：兩顆圓疊在一起
+       只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->
+  <div class="Prose" data-lens>
+    <article class="Dispatch" lang="zh-Hant">
       <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
       <h2>一根手指，一道法條</h2>
       <p>四月十七日，地月太空電梯「天柱一號」梯艙，高度十七萬公里。來自中彰投大墩特別市的乘客陳大鈞正以食指探入左鼻孔，斜對面的月球居民小倩-七七九出示本月甫通過的《公共衛生精緻化法案》第十三條：三人以上之密閉公共空間，禁止任何形式之鼻腔自行清潔行為。爭論四十分鐘，雙方各有援軍——地球方兩人加入後隨即各自探入鼻腔，神情泰然；而全艙為無塵環境，理論上無屑可挖。</p>
@@ -106,7 +98,7 @@
       <p>陳大鈞表示對此結果感到滿意。小倩-七七九表示「尊重協議精神，但個人仍覺得隨地挖鼻屎很噁心，不過至少不必再忍受過長的二小時醫療隔離了。」</p>
     </article>
 
-    <article class="Dispatch vertical" data-lens lang="zh-Hant">
+    <article class="Dispatch vertical" lang="zh-Hant">
       <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
       <h2>一根手指，一道法條</h2>
       <p>四月十七日，地月太空電梯「天柱一號」梯艙，高度十七萬公里。來自中彰投大墩特別市的乘客陳大鈞正以食指探入左鼻孔，斜對面的月球居民小倩-七七九出示本月甫通過的《公共衛生精緻化法案》第十三條：三人以上之密閉公共空間，禁止任何形式之鼻腔自行清潔行為。爭論四十分鐘，雙方各有援軍——地球方兩人加入後隨即各自探入鼻腔，神情泰然；而全艙為無塵環境，理論上無屑可挖。</p>
@@ -133,5 +125,5 @@
   </div>
   <!-- outside .Prose deliberately: in there `.Prose > p` owns the type, and
        this line is chrome, not specimen copy. -->
-  <p class="LensHint">{{ prLensHint }}</p>
+  <p class="LensHint">{{ lensHint }}</p>
 </section>

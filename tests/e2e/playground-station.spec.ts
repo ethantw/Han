@@ -254,17 +254,23 @@ test.describe('station⑤ playground', () => {
     // measures one box while the browser uses another — the loupe drifts by
     // exactly the distance between them (it moved into the editor column when
     // the module started mounting on the host's parent instead).
-    expect(
-      await page.evaluate(() => {
-        const $h = document.querySelector('#station-playground [data-pg-paper]')!
-        let $frame = $h.parentElement!
-        while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
-        const l = $frame.querySelector(':scope > .Lens')!.getBoundingClientRect()
-        const h = $h.getBoundingClientRect()
-        // hovered at 200,320 inside the card
-        return [Math.round(l.x + l.width / 2 - h.x - 200), Math.round(l.y + l.height / 2 - h.y - 320)]
-      }),
-    ).toEqual([0, 0])
+    // Within a pixel: the hover point is rounded to an integer while the card's
+    // own origin is fractional, so exact equality is not the claim — being ON
+    // the cursor rather than a column away is.
+    const off = await page.evaluate(() => {
+      const $h = document.querySelector('#station-playground [data-pg-paper]')!
+      let $frame = $h.parentElement!
+      while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
+      const l = $frame.querySelector(':scope > .Lens')!.getBoundingClientRect()
+      const h = $h.getBoundingClientRect()
+      // hovered at 200,320 inside the card
+      return [
+        Math.abs(l.x + l.width / 2 - h.x - 200),
+        Math.abs(l.y + l.height / 2 - h.y - 320),
+      ]
+    })
+    expect(Math.max(...off)).toBeLessThanOrEqual(1)
+
   })
 
   test('every miniature specimen carries its own loupe', async ({ page }) => {
@@ -289,8 +295,10 @@ test.describe('station⑤ playground', () => {
       ),
     ).toEqual([
       ['Papers', true, 0],
-      ['Dispatch', true, 0],
-      ['Dispatch vertical', true, 0],
+      // ONE circle for the pair of dispatches, not one each: two would overlap
+      // where the cards stack, and a loupe that crosses from the 橫排 card into
+      // the 直排 one magnifies the comparison this station is making.
+      ['Prose', true, 0],
       ['PgPaper', true, 0],
     ])
   })

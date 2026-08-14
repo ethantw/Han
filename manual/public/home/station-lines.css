@@ -34,17 +34,25 @@
       z-index: 10;
       margin: 0 0;
       padding: 1em 1.5em;
-      /* 24em 是「一行幾個字」的定寬，窄站台裝不下就讓行長縮——擠壓與懸掛
-         發生在行內，逐行照樣成立；被切掉右緣才是真的看不到。降字級反而把
-         懸掛出版口的幅度縮小到辨認不出來，所以字級不動。（右側說明欄本來
-         就是這個寫法。） */
-      inline-size: min(100%, 24em);
+      /* 24em 是「一行幾個字」的定寬。 */
+      inline-size: 24em;
       font-size: 1.25rem;
       line-height: 2;
       background-color: var(--ui-bg-3q);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
     }
+    /* 窄站台裝不下 24em 就讓行長縮——擠壓與懸掛發生在行內，逐行照樣成立，
+       被切掉右緣才是真的看不到；字級不動，降級反而把懸掛出版口的幅度縮小到
+       辨認不出來。
+
+       **只在窄站台**：`min(100%, 24em)` 若無條件寫上，寬站台下 100% 量的是
+       這個 figure 所在的**網格軌**（它只佔兩欄中的一欄），於是行長被軌壓窄、
+       盒子往下長——實測 1440px 下 figure 從 654px 拉到 1418px。 */
+    @container (inline-size < 34rem) {
+      & { inline-size: min(100%, 24em); }
+    }
+
     > blockquote {
       & {
         margin: 0;

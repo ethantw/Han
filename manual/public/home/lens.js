@@ -12,13 +12,19 @@
  * every `data-*` — those are the render pipelines' and the tests' hooks, and
  * there must only ever be one of each on the page.
  *
- * The lens is ALWAYS on stage: before any hover it parks over the host's
- * first block (that is the reader's first sentence, and a loupe that only
- * exists after you find it explains nothing), and when the cursor leaves it
- * stays where it left rather than snapping home.
+ * It parks over the host's first block before anyone touches it (that is the
+ * reader's first sentence, and a loupe that only exists after you find it
+ * explains nothing), and when the pointer leaves it stays where it left
+ * rather than snapping home.
  *
- * Mouse-only sugar, gated on `(hover: hover) and (pointer: fine)`; the
- * keyboard path stays in CSS (`:focus-visible` flips the galley itself to
+ * **The gesture is the switch**: a double-click (double-tap) on the specimen
+ * turns its loupe off and on again, so the page needs no chrome for it — each
+ * station says so in a line of small print. A fine pointer gets it on from
+ * the first frame; a coarse one does not, because there it is DRAGGED, and a
+ * drag that starts on the page has to keep meaning「scroll」until the reader
+ * asks for something else.
+ *
+ * The keyboard path stays in CSS (`:focus-visible` flips the galley itself to
  * reading size).
  */
 
@@ -97,10 +103,23 @@ const mountOne = ($host, { live }) => {
   let lastX = 0
   let lastY = 0
   let lensSize = 0
+  /* A fine pointer just moves over the page, so the loupe can be on from the
+     start; a coarse one has to DRAG it, and dragging is how that reader
+     scrolls — so there it waits to be asked (the host stops scrolling while
+     the loupe is on, which is exactly the trade the double-tap toggles). */
+  let on = matchMedia('(hover: hover) and (pointer: fine)').matches
+  const dragging = new Set()
   // Until the reader takes over, the lens belongs to the host's opening
   // block — and it re-finds it after every re-render, so it never ends up
   // parked over whitespace the last render left behind.
   let readerDriving = false
+
+  /* State lives on the FRAME, because that is the one box that contains both
+     the host and the circle: one attribute dresses the lens and tells the
+     host to stop scrolling while a drag belongs to the loupe. */
+  const apply = () => {
+    $frame.toggleAttribute('data-lens-on', on)
+  }
 
   const positionAt = (cx, cy) => {
     if (!lensSize || !$clone) return
@@ -151,21 +170,52 @@ const mountOne = ($host, { live }) => {
     positionAt(lastX, lastY)
   })
 
-  $host.addEventListener('mousemove', (e) => {
+  const follow = (e) => {
     readerDriving = true
     const r = $host.getBoundingClientRect()
     lastX = e.clientX - r.left
     lastY = e.clientY - r.top
     positionAt(lastX, lastY)
-  })
+  }
 
-  /* Leaving parks the lens where the cursor left, clamped to the host — the
+  /* One code path, two pointers: a hovering pointer moves the circle by
+     hovering, a coarse one only while it is down. `pointerType` is the
+     honest question — a hybrid machine can do both, and the same finger on
+     the same page should still drag. */
+  $host.addEventListener('pointermove', (e) => {
+    if (!on) return
+    if (e.pointerType !== 'mouse' && !dragging.has(e.pointerId)) return
+    follow(e)
+  })
+  $host.addEventListener('pointerdown', (e) => {
+    if (!on || e.pointerType === 'mouse') return
+    dragging.add(e.pointerId)
+    follow(e)
+  })
+  for (const type of ['pointerup', 'pointercancel']) {
+    $host.addEventListener(type, (e) => dragging.delete(e.pointerId))
+  }
+
+  /* Leaving parks the lens where the pointer left, clamped to the host — the
      leave event's own coordinates are already outside it. */
-  $host.addEventListener('mouseleave', (e) => {
+  $host.addEventListener('pointerleave', (e) => {
+    if (!on) return
     const r = $host.getBoundingClientRect()
     lastX = Math.min(Math.max(e.clientX - r.left, 0), r.width)
     lastY = Math.min(Math.max(e.clientY - r.top, 0), r.height)
     positionAt(lastX, lastY)
+  })
+
+  /* Put it down and pick it up again: a double-click (double-tap) toggles.
+     Coming back is a fresh look at the page, so it goes home to the opening
+     block rather than reappearing wherever it was left. */
+  $host.addEventListener('dblclick', () => {
+    on = !on
+    if (on) {
+      readerDriving = false
+      sync()
+    }
+    apply()
   })
 
   if (live) {
@@ -173,13 +223,13 @@ const mountOne = ($host, { live }) => {
       .observe($host, { childList: true, subtree: true, characterData: true })
   }
   new ResizeObserver(sync).observe($host)
+  apply()
   recloneNow()
 }
 
 /** Mount a loupe on every `[data-lens]`; `data-lens="live"` marks a host
  *  whose content is re-rendered, so its copy is rebuilt as it changes. */
 export const initLens = () => {
-  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return
   document.querySelectorAll('[data-lens]').forEach(($host) => {
     mountOne($host, { live: $host.dataset.lens === 'live' })
   })

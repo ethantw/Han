@@ -30,7 +30,6 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 3;
-    opacity: 1;
     transition: opacity 220ms ease;
     border-radius: 50%;
     background: var(--ui-bg);
@@ -42,10 +41,16 @@
     ;
   }
 
-  /* Touch has no cursor, so there is no loupe to move — the stations that
-     depend on one say so in a line of their own copy instead. */
-  @media (hover: none), (pointer: coarse) {
-    display: none;
+  /* Off is the resting state in the markup, so a page with no JS never shows a
+     circle nothing can move. The module turns it on (a fine pointer from the
+     first frame, a coarse one on double-tap) and the reader toggles it with a
+     double-click on the specimen — hence no chrome for it anywhere. */
+  opacity: 0;
+  visibility: hidden;
+
+  [data-lens-on] > & {
+    opacity: 1;
+    visibility: visible;
   }
 
   .is-lens-clone {
@@ -63,15 +68,22 @@
   }
 }
 
-/* The 雙指放大 line — only where there is no loupe to offer. It is copy, so
-   it lives in the markup; this only decides when it is on stage. */
+/* The line that says how the loupe works. It is the only place the page
+   mentions it, since the gesture replaced the switch — so it is on stage for
+   both pointers, not just for touch. Copy lives in the markup (`lensHint`,
+   home/_shared.html); this only dresses it. */
 .LensHint {
-  display: none;
+  margin-block: 0.75rem 0;
+  font-size: 0.75rem;
+  color: var(--ui-supplement-text-3q);
+}
 
-  @media (hover: none), (pointer: coarse) {
-    display: block;
-    margin-block: 0.75rem 0;
-    font-size: 0.75rem;
-    color: var(--ui-supplement-text-3q);
+/* While the loupe is on, a drag on the specimen belongs to the loupe, not to
+   the scroll container underneath it — which is the other half of what the
+   double-tap toggles: turn it off and the strip scrolls again. Only coarse
+   pointers scroll by dragging, so only they need it taken away. */
+@media (hover: none), (pointer: coarse) {
+  [data-lens-on] [data-lens] {
+    touch-action: none;
   }
 }

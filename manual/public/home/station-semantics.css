@@ -93,7 +93,9 @@ figure.Papers {
     @container (inline-size < 34rem) {
       grid-auto-flow: column;
       grid-template-columns: none;
-      grid-auto-columns: min(80%, 20rem);
+      /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
+         接近整欄的行長。 */
+      grid-auto-columns: min(92%, 24rem);
       overflow-inline: auto;
       overscroll-behavior-inline: contain;
       scroll-snap-type: inline mandatory;
