@@ -78,8 +78,14 @@ const mountOne = ($host, { live }) => {
   $frame.append($lens)
 
   let $clone = null
+  /* The copy is a whole duplicated card, so it is built only while the loupe
+     is ON and thrown away when it goes off: a page carrying three idle copies
+     pays their layout on every resize, and this page's layout is expensive
+     (the measurement is in home/frame.css § content-visibility). */
   const recloneNow = () => {
     $clone?.remove()
+    $clone = null
+    if (!on) return
     $clone = $host.cloneNode(true)
     $clone.classList.add('is-lens-clone')
     $clone.setAttribute('aria-hidden', 'true')
@@ -92,7 +98,7 @@ const mountOne = ($host, { live }) => {
 
   let cloneQueued = false
   const reclone = () => {
-    if (cloneQueued) return
+    if (!on || cloneQueued) return
     cloneQueued = true
     requestAnimationFrame(() => {
       cloneQueued = false
@@ -119,6 +125,11 @@ const mountOne = ($host, { live }) => {
      host to stop scrolling while a drag belongs to the loupe. */
   const apply = () => {
     $frame.toggleAttribute('data-lens-on', on)
+    if (on && !$clone) recloneNow()
+    else if (!on && $clone) {
+      $clone.remove()
+      $clone = null
+    }
   }
 
   const positionAt = (cx, cy) => {
@@ -146,7 +157,7 @@ const mountOne = ($host, { live }) => {
   /* The clone must occupy the host's exact geometry or its layout re-folds
      and the lens shows a different page. */
   const sync = () => {
-    if (!$clone) return
+    if (!on || !$clone) return
     const r = $host.getBoundingClientRect()
     $clone.style.inlineSize = `${r.width}px`
     $clone.style.blockSize = `${r.height}px`
@@ -223,8 +234,9 @@ const mountOne = ($host, { live }) => {
       .observe($host, { childList: true, subtree: true, characterData: true })
   }
   new ResizeObserver(sync).observe($host)
+  // apply() builds the first copy if the loupe starts on (a fine pointer);
+  // a coarse one starts off and pays nothing until it is asked.
   apply()
-  recloneNow()
 }
 
 /** Mount a loupe on every `[data-lens]`; `data-lens="live"` marks a host

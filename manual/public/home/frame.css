@@ -79,6 +79,19 @@ main > section {
     padding-inline: var(--plate-pad);
     border-block-start: 1px solid var(--ui-grid);
     background: var(--ui-station-a);
+
+    /* 畫面外的站台不參與版面。這一頁的 layout 成本大半不在節點數，而在**字體
+       匹配**：正文的字族有 14 層，其中兩層是各 109 片 `unicode-range` 的傳承
+       webfont，每一段文字都得走一遍（實測把字族覆蓋成 `system-ui`，改一次視窗
+       寬從 923ms 掉到 404ms）。看不見的站連匹配都不必做——實測整頁一次 resize
+       1031 → 736ms，畫面外的動畫也一起停（那是 idle 時 WindowServer 的那份）。
+
+       han.js 的後備層不受影響（實測 `h-char` 695 個一個不少）：它是 DOM 手術，
+       不等版面。`auto` 的內在尺寸記住上一次算過的高度，捲軸長度因此不跳；
+       60rem 只是第一次的估值。裁切沒有變化——站台本來就有 `overflow: clip`。
+       （content-visibility：Baseline 2024） */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 60rem;
   }
 
   &:first-of-type {

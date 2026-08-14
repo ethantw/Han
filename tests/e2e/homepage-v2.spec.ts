@@ -88,6 +88,9 @@ test('reduced-motion: every station is revealed immediately (settled, not animat
 
 test('station 伍・工法: the addition prices every part, measured', async ({ page }) => {
   await page.goto('/')
+  // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
+  // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
+  await page.locator('#station-craft').scrollIntoViewIfNeeded()
 
   // Four style rows ＋ the delivery-mode script rows, all figures baked by
   // vite (computeModuleLedger for the CSS, dist/pass-sizes.json for the
@@ -160,6 +163,9 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
 
 test('station 伍・工法: 例5.1 is a cascade stack over real library rules', async ({ page }) => {
   await page.goto('/')
+  // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
+  // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
+  await page.locator('#station-craft').scrollIntoViewIfNeeded()
 
   const items = page.locator('#station-craft .SelRing > li')
   await expect(items).toHaveCount(5)
@@ -250,6 +256,9 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
 
 test('station 伍・工法: the font ledger is a second, separate set of books', async ({ page }) => {
   await page.goto('/')
+  // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
+  // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
+  await page.locator('#station-craft').scrollIntoViewIfNeeded()
 
   // The webfont figures are constants (the fonts live on the CDN, not in
   // this repo — see the markup comment), so this only guards the SHAPE: the
@@ -280,6 +289,9 @@ test('station 伍・工法: the font ledger is a second, separate set of books',
 
 test('station 伍・工法: the addition follows the console, auto ⇄ manual', async ({ page }) => {
   await page.goto('/')
+  // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
+  // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
+  await page.locator('#station-craft').scrollIntoViewIfNeeded()
   await page.waitForFunction(() => 'pgReady' in document.documentElement.dataset)
 
   const table = page.locator('#station-craft .Sum table')
@@ -344,6 +356,9 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
 
 test('station 伍・工法: the plate\u2019s own boxes drive the console', async ({ page }) => {
   await page.goto('/')
+  // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
+  // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
+  await page.locator('#station-craft').scrollIntoViewIfNeeded()
   await page.waitForFunction(() => 'pgReady' in document.documentElement.dataset)
 
   const table = page.locator('#station-craft .Sum table')

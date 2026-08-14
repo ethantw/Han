@@ -47,10 +47,16 @@
      double-click on the specimen — hence no chrome for it anywhere. */
   opacity: 0;
   visibility: hidden;
+  /* …and while it is off the copy inside costs nothing: `content-visibility`
+     skips its layout entirely, where `visibility: hidden` would still lay the
+     duplicated card out on every resize. The module drops the copy on the way
+     out too; this is for the frame before it gets there. */
+  content-visibility: hidden;
 
   [data-lens-on] > & {
     opacity: 1;
     visibility: visible;
+    content-visibility: visible;
   }
 
   .is-lens-clone {
