@@ -163,6 +163,11 @@
          multi-line Markdown with inline HTML in it. `type="text/plain"`
          keeps the browser from executing or rendering anything. -->
     <script type="text/plain" data-pg-custom-default>{{ pgCustomSample }}</script>
+    <!-- 兩塊窗格自成一個盒：窄站台下它就是那條可以左右滑的軌（吸附一格一
+         格走，home/playground.js § swipe 讓藥丸與滑到哪裡互相對齊），寬站台
+         下它是那張兩欄的網格。認真模式把兩塊窗格借走時，它們離開這個盒，
+         所以借出期間所有 `[data-pg-panes] >` 的規則自動失效。 -->
+    <div class="PgPanes" data-pg-panes>
     <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
          article — the date is computed fresh every load (playground.js ←
@@ -182,6 +187,7 @@
            violation (scrollable-region-focusable). In tab mode it's one
            extra tab stop with an accessible name — a fair price. -->
       <article class="PgGalley" data-pg-preview tabindex="0" aria-label="{{ pgPaperColumn }}"></article>
+    </div>
     </div>
     </div>
 

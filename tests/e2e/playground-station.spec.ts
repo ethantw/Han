@@ -385,7 +385,8 @@ test.describe('station⑤ playground', () => {
     await page.keyboard.press('Escape')
     await expect($studio).toBeHidden()
     // whichever way out, the panes come home and the switch follows
-    await expect(page.locator('[data-playground] > [data-pg-sheet]')).toBeVisible()
+    // back in its own box (the pane strip), not loose in the panel
+    await expect(page.locator('[data-pg-panes] > [data-pg-sheet]')).toBeVisible()
     await expect(page.locator('#pg-focus')).not.toBeChecked()
   })
 

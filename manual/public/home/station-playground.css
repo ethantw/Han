@@ -199,12 +199,34 @@
   /* Direct children ONLY (`>`): the studio (dialog) borrows these same
      panes by reparenting them into its body — one combinator exempts them
      from the whole tab/grid regime while they're on loan. */
-  &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-sheet] {
-    display: none;
-  }
+  /* Both panes stay on stage and the box scrolls between them: a swipe moves
+     one pane per gesture (`scroll-snap-type: inline mandatory`), and the tabs
+     above are the same control the pills are in station① — they take you
+     there, they don't hide the other one. The two halves are kept in step by
+     `home/playground.js § swipe`: a tab scrolls the strip, the strip checks
+     the tab. (`scroll-snap`: Baseline 2021.)
 
-  &:not(:has([name="pg-editor-view"][value="code"]:checked)) > textarea {
-    display: none;
+     `overflow-inline`, not `overflow-x`: 直排預覽把整頁的行向轉直，而「一次
+     一格」問的是**行向**上的下一格。 */
+  [data-pg-panes] {
+    display: flex;
+    overflow-inline: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+
+    > * {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+    }
+
+    /* 預覽在前，因為它是預設的那一格：捲動位置 0 與勾選的分頁從第一帧就
+       一致，不必靠 JS 先把軌推過去。DOM 序不動（編輯區仍是第一個），焦點
+       序因此還是「先寫再看」。 */
+    > [data-pg-sheet] { order: -1; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
   }
 
   /* ── Wide enough: no tabs — two SEPARATE cards side by side ────────
@@ -237,15 +259,7 @@
          that ends before the fold shows there is a page around it. */
       --pg-pane-h: calc(0.85 * (100dvh - var(--h-header)));
 
-      display: grid;
-      /* The galley takes the wider track: it is the thing being read, and
-         its column count comes out of that width. `minmax(0, …)` on both
-         so neither pane's intrinsic content can floor a track. */
-      grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
-      gap: var(--gutter);
-      align-items: start;
-
-      /* shed the `.Preview` frame — the wrapper is pure grid now, the
+      /* shed the `.Preview` frame — the wrapper is pure layout now, the
          cards below carry their own chrome */
       overflow: visible;
       background: none;
@@ -254,13 +268,18 @@
       box-shadow: none;
     }
 
-    /* The tab swap is void: both panes are on stage, the radios have
-       nothing to do. Selectors copied VERBATIM from the tab rules above —
-       same shape, same specificity (0,5,0), later in source, so they win
-       the tie; anything shorter loses and the panes stay hidden. */
-    &:has([name="pg-editor-view"][value="code"]:checked) > [data-pg-sheet],
-    &:not(:has([name="pg-editor-view"][value="code"]:checked)) > textarea {
-      display: block;
+    /* Two SEPARATE cards side by side — the pane box is the grid. */
+    [data-pg-panes] {
+      display: grid;
+      /* The galley takes the wider track: it is the thing being read, and
+         its column count comes out of that width. `minmax(0, …)` on both
+         so neither pane's intrinsic content can floor a track. */
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
+      gap: var(--gutter);
+      align-items: start;
+      /* the strip's own regime is off up here */
+      overflow: visible;
+      scroll-snap-type: none;
     }
 
     /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
@@ -271,7 +290,7 @@
     /* ── The editor card: a terminal, one pane tall ────────────────────
        Scrolls inside; sticky, so it stays at hand when the sheet grows past
        a viewport (long user content is allowed to). */
-    & > textarea {
+    [data-pg-panes] > textarea {
       grid-column: 1;
       block-size: var(--pg-pane-h);
       overflow: auto;
@@ -318,7 +337,7 @@
        not to the wrapper. A `translate` on the wrapper would make it a
        stacking context, trapping the switch's z-index inside it — and the
        switch has to be able to paint above the loupe (see below). */
-    & > [data-pg-sheet] {
+    [data-pg-panes] > [data-pg-sheet] {
       grid-column: 2;
       /* the switch tucks under the sheet's right edge. NOT `align-items:
          flex-end` — that would align the bled card by its RIGHT edge, so the
@@ -438,7 +457,7 @@
       --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
     }
 
-    &[data-playground]:has(> textarea:focus) .Lens { opacity: 0; }
+    &[data-playground]:has([data-pg-panes] > textarea:focus) .Lens { opacity: 0; }
   }
 }
 

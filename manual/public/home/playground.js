@@ -121,6 +121,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   // the switch sits in the station head, outside [data-playground]
   const $focusBtn = $editor.closest('section')?.querySelector('[data-pg-focus]')
   const $sheet = $editor.querySelector('[data-pg-sheet]')
+  const $panes = $editor.querySelector('[data-pg-panes]')
   if ($studio && $studioBody && $focusBtn && $sheet) {
     // The switch is a checkbox: checked ⇒ in the studio. While the modal is
     // up the switch is inert behind it, so the ✕ is the only way back —
@@ -147,13 +148,37 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     $studio.querySelector('[data-pg-studio-close]')
       .addEventListener('click', () => $studio.close())
     $studio.addEventListener('close', () => {
-      const $lens = $editor.querySelector('.PgLens')
-      $editor.insertBefore($src, $lens)
-      $editor.insertBefore($sheet, $lens)
+      // back into the box they came from, in their own order — the strip's
+      // rules and the wide grid both select through it.
+      $panes.append($src, $sheet)
       // …and the tabs go back to the head, ahead of the focus switch.
       if ($tabs) $focusBtn.closest('.PgControls')?.prepend($tabs)
       $focusBtn.checked = false
       fitSheet()
+    })
+  }
+
+  /* ── 手勢與分頁互相對齊 ──────────────────────────────────────────
+   * 窄站台下兩塊窗格並排在一條吸附軌上，於是「哪一塊在看」有兩個入口，兩
+   * 邊必須讀出同一件事：撥分頁就把軌捲過去，滑軌就把分頁勾過來。
+   *
+   * 鍵在 `scrollend`（Baseline 2024）而不是每一幀的 scroll：滑到哪一格這件
+   * 事，要等手勢停下來才有答案，中途每幀都去改勾選只會讓控件跳。 */
+  const paneOfView = (value) => (value === 'code' ? $src : $sheet)
+  const stripMode = () => $panes && getComputedStyle($panes).display !== 'grid'
+  if ($panes) {
+    for (const $radio of $editor.querySelectorAll('[name="pg-editor-view"]')) {
+      $radio.addEventListener('change', () => {
+        if (!$radio.checked || !stripMode()) return
+        paneOfView($radio.value).scrollIntoView({ inline: 'start', block: 'nearest' })
+      })
+    }
+    $panes.addEventListener('scrollend', () => {
+      if (!stripMode()) return
+      // 預覽在軌首（CSS 的 `order: -1`），所以過了半格就是原始碼那一格
+      const view = $panes.scrollLeft > $panes.clientWidth / 2 ? 'code' : 'preview'
+      const $radio = $editor.querySelector(`[name="pg-editor-view"][value="${view}"]`)
+      if ($radio && !$radio.checked) $radio.checked = true
     })
   }
 
@@ -230,7 +255,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * visible column is complete, and a complete last column signals nothing.
    */
   const fitSheet = () => {
-    if (getComputedStyle($editor).display !== 'grid') return   // tab mode
+    // tab mode — the pane box is a scrolling strip there, a grid only when
+    // both panes stand side by side.
+    if ($panes && getComputedStyle($panes).display !== 'grid') return
     const $paper = $editor.querySelector('[data-pg-paper]')
     if (!$paper) return
     const inStudio = !!$paper.closest('[data-pg-studio]')

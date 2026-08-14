@@ -131,6 +131,11 @@ article.Dispatch {
      卡刻意維持 0.75rem 雙欄的「整篇一眼」（那就是這一站的展品），要讀哪一段
      交給放大鏡。 */
   @container (inline-size < 52rem) {
+    & {
+      /* 再降一級。窄欄裡「整篇一眼」的價值更高，而讀得清楚這件事已經交給
+         放大鏡了——那正是它存在的理由。0.625rem 是字級階梯的最後一級。 */
+      font-size: 0.625rem;
+    }
     &:not(.vertical) {
       inline-size: min(100%, calc(var(--size) * 2));
     }
