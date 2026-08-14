@@ -128,6 +128,13 @@ body > header {
     nav .LangSwitcher::before { display: none; }
   }
 
+  /* 360–389 — 再讓一步，這次讓的是兩個文字連結。owner 的話：rc.0 本來就還
+     不上使用手冊，GitHub 也不急著在這一格。留下的兩顆是圖標控件（語言、
+     主題），帽子因此在 360px 排得開。 */
+  @media (width < 24.375rem) {
+    nav > a { display: none; }
+  }
+
   @media (width <= 20rem) {
     & { padding: 0.875rem var(--gutter); flex-wrap: wrap; gap: 0.75rem; }
     nav { gap: 0.875rem; flex-wrap: wrap; }

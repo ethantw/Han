@@ -446,6 +446,24 @@ svg[data-name="dash-fuse"] {
     /* 6rem → 12.75rem：與柱同步右移 6.75rem（見上 § 柱的錨點），兩者的
        相對關係不變，整欄一起往右挪。 */
     padding-inline-start: 15rem;
+
+    /* 窄站台：這 15rem 是留給柱的欄，而 390px 下它吃掉 240、只剩 117 給
+       文案。柱撤，欄也就沒有理由留著。 */
+    @container (inline-size < 52rem) {
+      padding-inline-start: 0;
+    }
+  }
+
+  /* 柱在窄站台撤下。它的每一段幾何都是**文案高度的百分比**（柱長 4326%、
+     柱頂 −2342%），而對位的兩端是它上面的鉛字盤與下面的樣張卡：文案一折行
+     就長成三倍，柱跟著脹三倍（實測 12,502px），要對的那兩樣東西也早已不在
+     原來的位置。它是這一站的底圖，不是展品——三體卡、鉛字盤、標點樣張都還在。
+
+     選擇器連著 .PunctFix 寫，不是為了讀起來清楚：`svg[data-name=…]` 自己是
+     (0,1,1)，與頁面基底的 `body.home svg { display: block }` 同權重而輸給它
+     ——實測 flat 選擇器不生效，加一個祖先就生效。 */
+  @container (inline-size < 52rem) {
+    svg[data-name="dash-fuse"] { display: none; }
   }
 
   /* 兩段文案。包進 .PunctFix 之後不再是 hgroup 的兄弟，station-frame.css
