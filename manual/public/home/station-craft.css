@@ -112,7 +112,7 @@
     margin: 0.625rem 0 0;
     font-family: var(--han-font-alternative);
     font-size: 0.75rem;
-    color: var(--ui-supplement-text-3q);
+    color: var(--ui-supplement-text);
     text-align: center;
   }
 }
@@ -244,7 +244,7 @@
       display: block;
       margin-block-start: 0.25rem;
       font-size: 0.75rem;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
       white-space: nowrap;
     }
 
@@ -480,7 +480,7 @@
       flex: 1;
       margin-block: 0;
       font-size: .75rem;
-      color: var(--ui-supplement-text-3q);
+      color: var(--ui-supplement-text);
     }
 
     .RuleLayer b {
@@ -494,7 +494,7 @@
        so they earn it (owner call). Dimmed a step: they are context, and the
        selector is the subject. */
     .At {
-      color: var(--ui-supplement-text-3q);
+      color: var(--ui-supplement-text);
     }
 
     /* nesting IS nesting — one rule, any depth */
@@ -515,7 +515,7 @@
     }
 
     .RuleEnd {
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
@@ -530,7 +530,7 @@
       & {
         margin-block: 0;
         font-size: .875rem;
-        color: var(--ui-supplement-text-3q);
+        color: var(--ui-supplement-text);
         text-align: end;
       }
 
@@ -561,7 +561,7 @@
        on the declaration only: the selector still matched, it is the
        declaration that was outranked. */
     &[data-role="framework"] .RuleDecl {
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
       text-decoration: line-through;
       text-decoration-thickness: 1px;
     }
@@ -616,7 +616,7 @@
       font-family: var(--font-mono);
       font-size: 0.75rem;
       font-variant-numeric: tabular-nums lining-nums;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
     }
   }
 
@@ -690,7 +690,7 @@
       content: "＋";
       margin-inline-start: 0.5em;
       font-size: 0.75em;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
     }
 
     &:hover {

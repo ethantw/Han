@@ -134,7 +134,7 @@
       font-family: var(--font-mono);
       font-size: 0.75rem;
       font-weight: 400;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
       text-align: end;
       white-space: nowrap;
     }
@@ -213,7 +213,7 @@
     border-block-end: 0;
     font-size: 0.75rem;
     letter-spacing: 0.08em;
-    color: var(--ui-supplement-text-2q);
+    color: var(--ui-supplement-text);
   }
 
   /* the first group opens the table — no lead-in gap needed */
@@ -258,7 +258,7 @@
     small {
       margin-inline-start: 0.75em;
       font-size: .75rem;
-      color: var(--ui-supplement-text-3q);
+      color: var(--ui-supplement-text);
     }
   }
 
@@ -330,7 +330,7 @@
          fmtNum). A school sum sets its answer at the same size anyway; what
          marks it is the rule above it and the weight of the ink. */
       font-size: 1.125rem;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
     }
 
     mtext {
@@ -419,7 +419,7 @@
     margin: 0 0 1rem;
     font-family: var(--han-sans);
     font-size: .75rem;
-    color: var(--ui-supplement-text-3q);
+    color: var(--ui-supplement-text);
   }
 
   .SumProse {
@@ -471,7 +471,7 @@
       display: block;
       margin-block-start: 0.5rem;
       font-size: 0.75rem;
-      color: var(--ui-supplement-text-2q);
+      color: var(--ui-supplement-text);
     }
 
     /* the live totals — the one figure in the caption that moves, so it
