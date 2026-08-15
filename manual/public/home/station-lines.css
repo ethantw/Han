@@ -215,6 +215,17 @@
      版面分隔線，不像欄的邊界。 */
   div[role="presentation"] {
     & {
+      /* 它自己也跳過畫面外的部分。這一塊是全站最貴的**光柵化**來源——169 個
+         129px 的字加一條遮罩帶，實測一段四秒的捲動裡，整頁 1,985ms 的 RasterTask
+         有 1,112ms 是它（藏掉它只剩 873ms）。站台已經有 content-visibility，但
+         這塊比站台還高，自己再跳一次還能省 20%。
+
+         試過而無效的兩條，別再試：`will-change: transform`（1,984→2,008ms）與
+         `contain: paint`（1,896ms）——成本不是「重複光柵化同一塊」，是那些字本身
+         就大。真要再省只能動設計（字再小一級，或少幾行）。 */
+      content-visibility: auto;
+      contain-intrinsic-size: auto 1200px;
+
       --w-main: calc(100vw - var(--w-console));
       --fs-bg-text: calc(var(--w-main) / 9);
       /* 樣張自己的行高。呼吸的波長要按這個算——::before 不是 <p> 的子孫，
