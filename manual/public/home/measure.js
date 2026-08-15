@@ -58,6 +58,46 @@ export const settled = (job) => () => {
   timer = setTimeout(flush, SETTLE_MS)
 }
 
+/* 拖曳中：`<html data-resizing>`。
+ *
+ * 第四條紀律，也是從 owner 的 trace 逼出來的一條：**改尺寸不是演出的理由**。
+ * 站①的入場編舞刻意鍵在 `@container` 旗標的翻轉上（樣張裡有註明），而 console
+ * 在 52rem 那道門檻讓 `body` 的行首內距一次跳 15rem——容器寬度隨之跳 240px，
+ * 旗標翻面，整套入場就被當成「該演了」。實測拖過那道門檻：放手當下 49 支動畫
+ * 同時起跑，之後還一路串到第三秒（`startTime` 為證，不是 `fill: both` 留下的
+ * 屍體），期間每一幀都在改樣式與版面——看起來就是「醜好幾秒才到位」。同一批
+ * 裡還有二十條斷點自己改值引發的 transition，頁首那幾條最顯眼。
+ *
+ * 壓成 0 秒而不是 `animation: none`：這些動畫多數 `both` 填充，終態才是靜止態
+ * （`--settle` 的 `initial-value: 1` 就是這個契約），事後抽掉會讓少數已填充的
+ * 值掉回去——實測 851 顆像素變色。0 秒則讓重觸發**瞬間落在原本的終態**，畫面
+ * 與演完一模一樣，只是不演。旗標只在拖曳期間掛著，hover 重播不受影響。 */
+/* 旗標要蓋過整段編舞，不是只蓋拖曳。0 秒讓動畫「當場演完」，但那只在旗標
+   掛著時成立——一撤掉，時長還原，還在延遲期的那些等於重新上膛（實測撤旗那
+   一刻 50 支同時起跑）。所以撐到最長一支（cue 1400ms ＋ 1000ms）算完為止，
+   還原時它們早已過期，不會再演。 */
+const HOLD_MS = SETTLE_MS + 2600
+let holdTimer = 0
+let holding = false
+
+addEventListener(
+  'resize',
+  () => {
+    /* 已經掛著就別再寫一次——`setAttribute` 同值也會讓整份樣式失效，而這個
+       事件每秒來六十次以上。 */
+    if (!holding) {
+      holding = true
+      document.documentElement.dataset.resizing = ''
+    }
+    clearTimeout(holdTimer)
+    holdTimer = setTimeout(() => {
+      holding = false
+      delete document.documentElement.dataset.resizing
+    }, HOLD_MS)
+  },
+  { passive: true },
+)
+
 /** 被跳過的站台推回畫面的那一刻補算一次——否則它停在佔位尺寸算出來的值。 */
 export const onRendered = ($watch, fn) => {
   $watch?.addEventListener?.('contentvisibilityautostatechange', (event) => {

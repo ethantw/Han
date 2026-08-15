@@ -273,3 +273,23 @@ main[data-writing="vertical"] {
   /* station⑤'s preview <article> deliberately stays vertical — it IS the
      content the 直排 switch is meant to typeset. */
 }
+
+
+/* ═══ 拖曳中不演出 ═══════════════════════════════════════════════
+   `measure.js` 在改尺寸期間掛 `<html data-resizing>`（那支檔案的第四條紀律
+   寫了為什麼：斷點翻面會被站①的編舞當成入場訊號，49 支動畫串三秒）。這裡
+   把重觸發壓成 0 秒——不是 `animation: none`。多數入場動畫 `both` 填充、終
+   態即靜止態，抽掉動畫會讓填充值掉回去；0 秒則瞬間落在同一個終態，看起來
+   就是「本來就在那裡」。
+
+   `!important` 是這條規則的存在理由：它要壓過每一處各自宣告的 animation
+   與 transition 簡寫，包括容器查詢裡的。 */
+
+:root[data-resizing],
+:root[data-resizing] *,
+:root[data-resizing] *::before,
+:root[data-resizing] *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition: none !important;
+}
