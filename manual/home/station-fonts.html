@@ -313,23 +313,23 @@
        `.Manifesto, [data-station], [data-reveal-at]`，拿掉它本欄就不再是
        reveal 目標，data-revealed 永遠不會蓋，柱的首播也就跟著卡死。 -->
   <div class="PunctFix" data-reveal-at="0.15">
-    <!-- 字格（1 格 ＝ 100 unit）：破折號前 33 格 20–3320、破折號 3320–3520、
-         破折號後 27 格 3520–6220。「秒——這」（3220–3620）是主角，卡進鉛字
-         左下角與本欄文案之間的梯形空格：字級不固定，由 dash-fuse.css 以
-         .PunctFix 高度的百分比換算（柱以 .PunctFix 為包含塊——station-frame
-         的階梯入場蓋的 translate 正好保證它是包含塊）。句子其餘的字沿柱伸出
-         兩端，由 dash-fuse.js 量出的 clip-path 裁掉（不再靠鉛字／樣張卡的
-         位置去遮——那三個不透明物件的相對位置隨螢幕寬而變，換個尺寸就漏）。
+    <!-- 底圖那一柱：一句直排的話，中間一個破折號。
 
-         兩個 <text> 各裝一整句：**這裡是句子的唯一出處**，dash-fuse.js 讀
-         走它的 textContent，逐字換成一格一個的橫排 <text>（見該檔
-         § layoutColumn）。y 給的是**第一格的上緣**。 -->
-    <svg data-name="dash-fuse" viewBox="0 0 120 6240" aria-hidden="true" focusable="false">
-      <text x="60" y="20">三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒</text>
-      <rect data-seg="a" x="0" y="0" width="1" height="1" />
-      <rect data-seg="b" x="0" y="0" width="1" height="1" />
-      <text x="60" y="3520">這個時間足夠三體人交換一部《三體通史十萬年》體量的知識</text>
-    </svg>
+         **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15 改）。原本整柱都在
+         一個 `<svg>` 裡，是為了讓兩截破折號能以次像素精度開合；動畫撤下之後那個
+         理由沒了，而 SVG 的代價還在——WebKit 的 SVG 直排文字不能用（字距讀 hhea
+         而非 vmtx、不套 `vert`），所以那六十個字得由 JS 逐格算座標擺，柱頂還得
+         再量一次才知道裁在哪。交還給 HTML 之後兩支 JS 都不必存在：直排由引擎排，
+         位置由字級決定（見 dash-fuse.css § 柱）。
+
+         那兩格仍是 SVG：破折號要能在未來的互動裡以次像素開合，而那是 CSS 畫不出
+         來的東西。空的 inline-block 佔位負責在行裡站對位置，`<svg>` 絕對定位在它
+         裡面只管畫——inline `<svg>` 的基線在 Chrome 不等於它的下緣，直接塞進行內
+         會歪（docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
+
+         這句話因此成了 han.css 排的正文：背景那句裡的破折號與逗號由自家模組經手，
+         比畫出來更有說服力。 -->
+    <p class="DashColumn" aria-hidden="true">三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><rect data-seg="a" x="0" y="0" width="1" height="1" /><rect data-seg="b" x="0" y="0" width="1" height="1" /></svg></span>這個時間足夠三體人交換一部《三體通史十萬年》體量的知識</p>
     <p>{{ stPunctFixP }}</p>
     <p>{{ stPunctP }}</p>
   </div>

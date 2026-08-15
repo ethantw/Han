@@ -1,109 +1,33 @@
 /*
- * dash-fuse.css — station②'s 破折號熔接底圖（svg[data-name="dash-fuse"]
- * ＋ .PunctFix，dash-fuse.js）。
+ * dash-fuse.css — station②'s 破折號底圖（`.DashColumn` ＋ `.PunctFix`）。
  *
- * 一柱直排「三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四
- * 點七秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識」，畫在
- * 站台的 z-index:-1 底圖層（section 早有 isolation:isolate，
- * watermark 用的同一層）。主角是「秒——這」那四格：卡在鉛字盤左下角與本欄
- * 文案之間的梯形空格裡——「秒」半藏進鉛字左下角的字格、破折號佔滿空格、
- * 「這」半沒進下方 .PunctLang 樣張卡。字級不固定：柱以 .PunctFix 為包含
- * 塊，全部幾何用其高度的百分比換算，文案多高、空格多大，字就多大。句子
- * 其餘的字沿柱伸出兩端，由柱自己的 clip-path 裁掉（見下 § clip-path）。
- * 層序：鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、
- * 本圖最底；鉛字的半透明面自然透出柱上的字。
+ * 一柱直排「三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七
+ * 秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識」，畫在站台的
+ * z-index:-1 底圖層（section 早有 isolation:isolate，watermark 用的同一層）。
+ * 主角是「秒——這」那四格：卡在鉛字盤左下角與本欄文案之間的梯形空格裡。層序：
+ * 鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、本圖最底；鉛字的
+ * 半透明面自然透出柱上的字。
  *
- * .PunctFix 是包含塊這件事由 station-frame 的階梯入場保證——它給每個
- * section 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
+ * **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15）。整柱原本都在一個
+ * `<svg>` 裡，為的是讓兩截破折號以次像素精度開合；那台戲 2026-08-14 撤下之後，
+ * SVG 的代價就只剩壞處——WebKit 的 SVG 直排文字不能用（字距讀 hhea 的 asc+desc
+ * 而不是 vmtx 的 1em，且不套 vert／vrt2；HTML 直排兩家都對，只有 SVG 壞 →
+ * docs/notes/2026-08-02-webkit-svg-vertical-text.md），所以那六十個字得由 JS
+ * 逐格算座標擺，柱頂還得再量一次卡片上緣才知道裁在哪。交還 HTML 之後那支 JS
+ * 整個不必存在：直排由引擎排，位置由字級決定（見 § 柱）。
+ *
+ * 那句話因此成了 han.css 排的正文——背景那句裡的破折號與逗號由自家模組經手，
+ * 比畫出來更有說服力。
+ *
+ * `.PunctFix` 是包含塊這件事由 station-frame 的階梯入場保證——它給每個 section
+ * 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
  * position: relative 把契約寫明。
  *
- * 動畫是 manual/demo/dash-fuse.html 的移植：破折號以兩塊 <rect> 斷開示人
- * （中縫 10/1000 em——真實成因是西文領頭字體的 emdash 兩端縮進，Georgia
- * 0.05em、Helvetica Neue 0.13em），一支 --df-fuse 時鐘把縫從兩邊合攏。
- *
- * 兩態都是 rect，不掛 DTJ 字體。理由：兩態本來就是同一組幾何的兩個值，交給
- * 字體反而得照引擎擺放 R-class 字符的規矩走（那 5.25 user unit 的 hhea 偏
- * 移），還得把 `——` 與漢字塞進同一個 <text> 才能讓 ccmp 開火。純幾何一概
- * 免掉，破折號正好落在欄軸 60 上——與同柱漢字的 em 框中心對齊。
- *
- * 時序（dash-fuse.js）：柱不等鉛字排完，data-armed 一蓋就現身，兩截以斷
- * 開態微微呼吸（df-try，幅度極小、永不接上）；鉛字落完才蓋 data-play——
- * 演一次熔接，從此接著。
- *
- *     等待期  斷開（縫 0.1em ＝ 真實值），6s 兩口極淺的呼吸，只是「活著」
- *             的證據，不是「快接上了」的預告
- *     data-play  1150ms：靠近 → 彈開一點點 → 懸著 → 猛然接上（90ms）→
- *                墨色隨撞擊竄到峰值、線瞬間壓厚 → 淡回，但只回到 .35。
- *                開頭是**校樣紅**（--df-red，錯處被紅筆圈起），接觸的那一
- *                瞬退成墨——紅筆改稿、改正付印，就是這一站的敘事
- *     hover      不是重播錄影，是**按住不放**：游標進去 90ms 斷開（縫張到
- *                0.2em，真值的兩倍——讀者要的示範等於放大鏡）＋轉校樣紅，
- *                0.2em，真值的兩倍——讀者要的示範等於放大鏡）＋轉校樣紅，
- *                然後**兩截朝著對方呼吸**（2.6s 一口，永遠差一截：它們本
- *                來就想接上，是字體讓它們接不上）；看多久由讀者決定。游標
- *                離開 420ms 從呼吸的當下值接回終態、紅退成墨。進出都由
- *                dash-fuse.js 蓋章（§ initHoldRepair），觸控與 reduced
- *                一律不演
- *
- * **不循環**（2026-07-31 改，前身是 25s 四幕的獨腳戲，見
- * docs/plans/dash-fuse-rework.md）。三個理由：
- *   ① 這一欄的文案說 han.css 把破折號接上了，圖就該停在接上。舊編舞 25s
- *      裡有 14.4s 破折號是壞的，每一輪還把修好的東西再拆一次——那是 bug
- *      的動畫，不是 fix 的動畫。
- *   ② 這是 z-index:-1、對比 7% 的裝飾底圖，只會被眼角看見；眼角分辨得出
- *      「有沒有在動」，分辨不出「猶豫、退半步、停半秒」，細膩的編舞在感
- *      知上一律塌縮成「那邊有東西一直在動」。
- *   ③ 一站一個主角，戲留給鉛字盤（.LeadForme）。
- * 錯過了也能再看：hover 重播，由讀者要求，不是頁面自作主張。
- *
- * 幅度是真的：真實的病是西文領頭字體 emdash 兩端縮進造成的 0.1em 中縫
- * （Georgia 0.05em、Helvetica Neue 0.13em），所以 --df-fuse 只在 [0, 1]
- * 之間走，縫最開就是那個真值。舊版為了遠處看得見把它張到 0.36em——這張
- * 圖全部的說服力建立在「它是真的」，誇張化把紀錄片變成漫畫。
- *
- * 變色的分寸（owner 定案 2026-07-31，第二輪）：接上要看得出來，但不重蹈舊
- * 版的覆轍。舊版錯在三處，這一版逐條避開——
- *   ① 舊版 fill 與 stroke 同時竄滿，整條線從「線」變成「棒」，把本檔「面
- *      淡、邊清」的語彙換成面積語言。現在**邊走滿、面只走六成**。
- *   ② 舊版 250ms 竄上、4.5s ease-in 淡回，實測接上後 2.4s 仍近全深——那不
- *      是閃，是亮著，等於一根深色重槓貼在正文左緣當分隔線。現在 150ms 上、
- *      340ms 下，衝擊在瞬間，不在持續。
- *   ③ 舊版每 25 秒閃一次，是儀表板的節奏。現在一輩子只閃這一次（外加讀者
- *      自己 hover 要來的），而且**淡回只回到 .35**：接上之後這根線比原來實
- *      一分，永久留著——不循環也留得下痕跡，晚點回頭看得出它是被修過的。
- * 衝擊主要不靠更黑，靠速度與厚度：接觸的一瞬 stroke-width 由 .5 壓到 .9 再
- * 彈回（--df-press），印刷的語彙（壓印吃墨），不是發光體的語彙。
- *
- * 兩段文案的入場與柱脫鉤：鍵在 .PunctFix 自己的 data-revealed（淺門檻），
- * 滾到鉛字以下就飛入，不等破折號。
- *
- * 動畫語彙的親戚是 MarkDiagram（一個事實一個 0→1、錯拍進場），但這裡的
- * 0→1 帶了一次彈開與一次撞擊——這一站的主張是「壞的被修好」，修好的那一
- * 下值得一個重音。無 JS 契約不變：--df-fuse initial-value: 1、--df-ink
- * initial-value: .35 ＝ 沒有 data-armed／data-play 就直接是已修正的終態
- * （連那一分殘留的實都在）。
- *
- * 座標系：1 user unit ＝ 1/100 em。欄軸 x=60；整句六十二格（字格表見
- * station-fonts.html），破折號佔 3320–3520，墨跡外緣固定在 3327／3513（兩端
- * 各 0.07em 邊距），接縫在 3420 開合——始終佔滿兩格，動的只有縫。
- * 墨跡中心 54.7 而非 60：Chromium 把旋轉後的 R-class 字符擺在 hhea
- * asc/desc 中點而非 em 框中心（差 52.5 font unit；量測見 demo 檔頭與
- * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
+ * 破折號的動畫（漂移／較勁／首播熔接／按住不讓它修好）2026-08-14 整組撤下，
+ * 互動要重新設計；兩塊 <rect> 留在原地，`@property` 的 initial-value 就是
+ * 「已經熔接好」的樣子。時序與六支 keyframes 都在 git 裡。
  */
 
-/* 節拍時鐘。@property 是全域註冊，故帶 df- 前綴。
-   --df-fuse  中縫合攏：0 ＝ 斷開（縫 0.1em ＝ 真實值）、1 ＝ 合上。
-   --df-ink   破折號的墨色：0 ＝ 與同柱漢字同階的近底色、1 ＝ 深灰峰值。
-              initial-value 是 **.35 而不是 0**——那是接合後的殘留深度，也就
-              是「已修正」的常態；reduced-motion／無 JS 直接落在這裡，與滾讀
-              過一次的人看到的同一根線。
-   --df-press 接觸瞬間的壓印：0 ＝ 常態線寬、1 ＝ 加厚 0.4 unit。
-   --df-red   校樣紅：0 ＝ 墨、1 ＝ --ui-proof。紅是**動詞不是形容詞**
-              ——是「指出這裡錯了」的那個動作，不是「斷開」這個狀態的屬性。
-              所以它只出現在首播開頭與 hover 按住的期間，等待期（data-armed）
-              與終態都不紅：前者只是還沒開始，後者已經修好。校樣紅是站上
-              既有的語彙（站①的角度標註、楔形參考線同色），意思正是紅筆
-              改稿——紅筆圈錯、改正後付印成墨。 */
 @property --df-fuse { syntax: "<number>"; inherits: true; initial-value: 1; }
 @property --df-ink { syntax: "<number>"; inherits: true; initial-value: .35; }
 @property --df-press { syntax: "<number>"; inherits: true; initial-value: 0; }
@@ -125,127 +49,109 @@
   to { opacity: 1; translate: 0 0; }
 }
 
-svg[data-name="dash-fuse"] {
+/* ── 柱 ─────────────────────────────────────────────────────────────
+ * 一句直排的話，中間一個破折號。句子是 HTML（`.DashColumn`），只有破折號那
+ * 兩格是 SVG（`.DashCell`）——分界的理由見 station-fonts.html 該處的註。
+ *
+ * 位置由**字級**決定，不由量測決定：破折號是句中第 34 格，所以把整柱往上推
+ * 34 格，它就落在文案上緣附近；其餘的字沿柱伸出兩端，由站台的 `overflow: clip`
+ * 收掉。舊版把柱錨在 `.PunctFix` 高度的 −2342%，那個百分比隨 lede 換行而變，
+ * 於是每次改視窗都要量一次卡片上緣（實測每次 250ms，見 git 記錄）。
+ * 對位是近似的，本來就不求像素配準。
+ */
+.DashColumn {
   & {
-    /* 接縫兩緣。斷開 3415／3425（縫 10 ＝ 0.1em，真實的病灶），合上同歸
-       3420 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只
-       在 [0, 1] 之間走，縫最開就是那個真值（不再探負值把縫張到 0.36em——
-       誇張化會讓這張圖不再是證據）；墨跡外緣 3327／3513 始終不動 */
-    position: absolute;
-    /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section
-       裡，-1 落在 station-b 底色之上、一切普通流內容之下 */
-    z-index: -1;
-
-    /* 錨定（對 .PunctFix，其高 H ＝ 兩段文案的高）。所有幾何以 H 的百分
-       比換算——「秒——這」那四格才能隨空格伸縮，字級不固定：
-
-         秒的字格中點  釘在文案上緣之上 0.75H ——鉛字左下角字格的下緣一
-                       帶，秒的上半沒入鉛字
-         這的字格中點  釘在文案下緣之下 0.33H ——.PunctLang 樣張卡的上
-                       緣一帶，這的下半沒入卡面
-         ⇒ 兩中點相距 2.08H ＝ 300 unit ⇒ 1 unit ＝ 0.0069331 H。
-           柱全長 6240 unit ＝ 4326%；秒中點在 y 3270，
-           柱頂 ＝ −(3270 × 0.0069331 + 0.75) H ＝ −2342%
-
-       替換元素以 viewBox 固有比例從 block-size 得出行向尺寸，字級隨之。
-       橫向貼著文案行首（版面定稿 2026-07-30 的截圖位），窄屏退回 20%
-       免得溢出。裝飾底圖，對位是近似的，不求像素配準 */
-    inset-block-start: -2342%;
-    block-size: 4326%;
-    /* 位置是**原位往右一點**，不是換邊（owner 2026-08-04 圈點）：柱要卡的
-       是鉛字盤左下角與本欄文案之間那塊梯形空格，那塊空格在版心的行首側，
-       換到行末就離開了它存在的理由。先做過整個貼右緣的版本，柱跑到版心
-       右緣、與鉛字的左下角分了家——那不是「重心平衡」，是把它從自己的
-       位子上拔走。
-
-       右移的量是 6.75rem（＝原位 +108px，owner 分三次圈定：+48、+120、
-       −60）。與下方 .PunctFix 的內距同進退——那一條同樣 +6.75rem，柱與
-       文案的相對關係因此不變：柱的中線仍落在文案起點之前，兩段話壓在柱
-       的右半，與原本的疊法一致。%那一項是窄屏的上限（欄寬掉到 ~660px
-       以下改由它接手），窄下去柱按比例往左收，不會頂穿梯形空格。 */
-    inset-inline-start: min(13rem, 26%);
-    translate: -50% 0;
-    inline-size: auto;
-    overflow: visible;
-    pointer-events: none;
-    user-select: none;
-
-    /* 上緣裁在「超迴路運行廿載」樣張卡的上緣。句子比空間長得多（owner
-       2026-08-02：「多的字讓 clip-path 去裁」），多出來的字以前是靠鉛字盤、
-       樣張卡與 section 的 overflow:clip 三個不透明物件擋住的——那是**位置
-       相依**的遮法，三者的相對位置隨版心寬變，換個螢幕尺寸就有字爬到 lede
-       上面。改成自己裁：切線由 dash-fuse.js 量出樣張卡與柱的距離、發佈成
-       --df-clip-top（§ initClip），CSS 只負責用。沒有 JS ⇒ 0px ⇒ 等於不裁，
-       與今天的行為相同。 */
-    clip-path: inset(var(--df-clip-top, 0px) 0 0 0);
-
-    /* 字色。面淡、邊清——低對比的可讀性來自輪廓而不是面積，正好讓底圖退後
-       而不消失。fill／stroke 是可繼承的 SVG 屬性，宣告在柱根由 <text> 繼承
-       ⇒ **同柱的漢字永遠是淺的**；只有 <rect> 會隨 --df-ink 加深（見下）。
-
-       加深的目標色 --df-flash 用 --ui-ink-grey（light-dark(graphite,
-       silver)）而不是 --ui-text：正文墨色在亮色主題下是 #0e0e10，全黑
-       壓在這片近底色上太硬；graphite 是深灰，暗色主題那頭則是 silver（該主
-       題的站台底就是 graphite，方向自動反過來），兩邊都是「比底色果斷、但
-       不是極端」的一階。走墨、不走光——這是印刷的頁面，不是儀表板。 */
+    /* 面與邊。加深的目標色 --df-flash 用 --ui-ink-grey 而不是 --ui-text：正文
+       墨色在亮色主題下是 #0e0e10，全黑壓在這片近底色上太硬；graphite 是深灰，
+       暗色主題那頭則是 silver（該主題的站台底就是 graphite，方向自動反過來）。
+       走墨、不走光——這是印刷的頁面，不是儀表板。 */
     --df-face: color-mix(in srgb, var(--ui-text) 7%, var(--ui-station-b));
     --df-edge: color-mix(in srgb, var(--ui-text) 12%, var(--ui-station-b));
     --df-flash: var(--ui-ink-grey);
-    fill: var(--df-face);
-    stroke: var(--df-edge);
-  }
+    /* 破折號在句中的字序。位置與字級的唯一連結，改句子時跟著改。 */
+    --df-dash-cell: 34;
 
-  /* 字。fill／stroke 繼承柱根（見上），此處只管字面與描邊粗細。
+    position: absolute;
+    /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section 裡，
+       −1 落在 station-b 底色之上、一切普通流內容之下。 */
+    z-index: -1;
+    /* **物理 inset，刻意的**：這個盒是 vertical-rl，而邏輯 inset 照**元素自己
+       的行向**解析——`inset-block-start` 在這裡是「離右緣多遠」，寫上去柱會被
+       推到版面右外側 3,648px（實測 x=4463）。兩種行向相遇時物理才是誠實的拼法
+       （同檔 § address::before 早有同一條註）。
 
-     行向**不交給引擎**：dash-fuse.js 把整句拆成一格一個的橫排 <text>，
-     位置自己算，class R 的字符（《》…）自己 rotate 90°（§ layoutColumn）。
-     理由是 WebKit 的 SVG 直排文字兩處與 Chromium 不合，實測（2026-08-02，
-     Safari 26 / Chromium 147，同一支字體、同一頁）：
-       ① 字距讀 hhea 的 asc+desc（1151+286 ＝ 1.437em）而不是 vmtx 的
-          1.0em——七個字排成 1005.9 unit 而非 700，破折號當場插進「七／秒」
-          中間，下半句還衝出 viewBox。（字體是對的：shanggu-serif 有 vhea／
-          vmtx 且 advance 全是 1000/1000。HTML 直排兩家都正確，只有 SVG 壞。）
-       ② 不套 `vert`／`vrt2`——《》 畫成橫排字形；連明寫
-          `font-feature-settings: 'vert' 1` 都沒有作用。
-     而**橫排的 SVG 文字兩家逐像素相同**（量到同一個 ink 盒），所以整柱改走
-     橫排：漢字本來就正立（UTR50 class U），一格一個 <text> 就沒有字距可累積；
-     class R 的字符改由 transform 自轉，不必求引擎。、。，在預設的 MOE 公約
-     下橫直同形（居中），不必處理。
+       縱向：破折號是句中第 34 格，所以整柱往上推 34 格，它就落在文案上緣往下
+       1.5rem——位置跟著字級走，不必量任何東西。
+       橫向：原位往右一點，不是換邊（owner 2026-08-04 圈點）。 */
+    top: calc(1.5rem - var(--df-dash-cell) * 1em);
+    left: min(13rem, 26%);
+    translate: -50% 0;
 
-     `writing-mode: vertical-rl` 留著當**沒有 JS 時的退路**——那時整句還在
-     原本的兩個 <text> 裡，直排至少是近似對的；JS 排完會蓋 data-laid，把行向
-     交還橫排。 */
-  text {
-    font-family: var(--han-font-alternative);
-    font-size: 100px;
+    margin: 0;
     writing-mode: vertical-rl;
-    stroke-width: .5;
+    /* 一整句排成**一欄**。直排下 inline 軸是垂直的，而絕對定位的元素若讓那個
+       軸自己決定，它會被包含塊的高度夾住——`auto` 折成 33 欄、`max-content`
+       仍折成 2 欄（Chrome 對絕對定位的 shrink-to-fit 會夾在可用空間上）。所以
+       寫死格數：句子 60 格 ＋ 破折號 2 格 ＝ 62 格，與 `--df-dash-cell` 同一套
+       「以格計數」的講法，改句子時兩個一起改。 */
+    --df-cells: 62;
+    inline-size: calc(var(--df-cells) * 1em);
+    font-family: var(--han-font-alternative);
+    /* 隨版心走，兩端封住：太小讀不出「這是一句話」，太大會把破折號推出畫面。
+       量的是版心而不是 `cqi`——站③的巨型樣張用的是同一把尺
+       （station-lines.css § div[role=presentation] 的 `--fs-bg-text`），
+       而 `cqi` 在這裡會落到別的容器上（實測只給到 7rem 的下限）。
+       1440px 下約 129px，與舊版（柱高的 0.693，約 142px）同一個級。 */
+    font-size: clamp(7rem, calc((100vw - var(--w-console)) / 9), 10rem);
+    line-height: 1;
+    color: var(--df-face);
+    -webkit-text-stroke: 0.5px var(--df-edge);
+    pointer-events: none;
+    user-select: none;
   }
-  &[data-laid] text { writing-mode: horizontal-tb; }
 
-  /* 兩截破折號。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化
-     Firefox 尚未跟上）；transform-box 釘在 view-box 原點，座標才照字面
-     生效。vector-effect 讓描邊在非等比 scale() 下不變形，也擋掉兩塊相
-     接時描邊疊出的橫槓。
+  /* 頁面直排時收掉：本圖的「起自樣張卡、收在站尾」是縱向文案流的講法，行向
+     一轉，錨點全散。 */
+  main[data-writing="vertical"] & { display: none; }
+}
 
-     墨色由 --df-ink 在近底色與深灰之間插值（--df-ink 是 inherits: true，跑
-     在柱根的動畫一支餵兩塊矩形，所以兩截同步；繼承同一個柱根的 <text> 不受
-     影響）。**邊走滿、面只走六成**：這張圖的可讀性本來就來自輪廓，接合的那
-     一下若讓面積跟著滿，整條線會從「線」變成「棒」，語彙就換掉了。
-     stroke-width 隨 --df-press 加厚，只在接觸的一瞬——壓印吃墨，衝擊靠這個
-     而不是靠更黑。橫向 58 ＝ 欄軸 60 減半個線寬：不掛字體之後沒有引擎的 R-class
-     偏移要遷就，破折號回到欄軸上，與同柱漢字的 em 框中心對齊。 */
+/* ── 破折號那兩格 ───────────────────────────────────────────────────
+ * 空的 inline-block 站位置，`<svg>` 絕對定位在它裡面畫——inline `<svg>` 的基線
+ * 在 Chrome 不等於它的下緣，直接放進行內對不齊
+ * （docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
+ *
+ * 直排下 inline 軸是**垂直**的：兩格長 ＝ `inline-size: 2em`，一格寬 ＝
+ * `block-size: 1em`。寫反了會得到一條橫躺的破折號。
+ */
+.DashCell {
+  & {
+    position: relative;
+    display: inline-block;
+    inline-size: 2em;
+    block-size: 1em;
+    vertical-align: middle;
+  }
+
+  svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+  }
+
+  /* 兩截。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化 Firefox 尚未跟上）；
+     transform-box 釘在 view-box 原點，座標才照字面生效。vector-effect 讓描邊在
+     非等比 scale() 下不變形，也擋掉兩塊相接時描邊疊出的橫槓。
+
+     縫的真值是 0.1em ＝ 10 unit（1em ＝ 100 unit，兩格 ＝ 200）：`--df-fuse` 1
+     時兩截同歸 y=100，0 時各退 5 unit。基態是**已經熔接好**（`@property` 的
+     initial-value 就是 1）——動畫 2026-08-14 撤下，這兩塊留在原地等新的互動。
+
+     **邊走滿、面只走六成**：這張圖的可讀性來自輪廓，接合時若讓面積跟著滿，整條
+     線會從「線」變成「棒」，語彙就換掉了。 */
   rect {
-    /* 接縫兩緣。斷開 3415／3425（縫 10 ＝ 0.1em，真實的病灶），合上同歸
-       3420 ——對稱地走向中點，縫從兩邊一起合上，不是一邊追另一邊。fuse 只在
-       [0, 1] 之間走，縫最開就是那個真值；墨跡外緣 3327／3513 始終不動。
-
-       算在**這裡**而不是柱根：`--df-fuse` 是唯一被動畫的變數，而讀它的只有
-       這兩塊矩形（見下方兩條 transform）。掛在柱根時它每一幀讓整棵子樹的繼承
-       屬性失效——那棵子樹是 1,804 個字節點，一個都不讀它——實測站②停在畫面上
-       時每 3 秒燒掉 613ms style recalc，只暫停這一支就歸零。 */
-    --df-a1: calc(3415 + 5 * var(--df-fuse));
-    --df-b0: calc(3425 - 5 * var(--df-fuse));
+    --df-gap: calc(5 * (1 - var(--df-fuse)));
 
     fill:
       color-mix(
@@ -266,39 +172,22 @@ svg[data-name="dash-fuse"] {
     transform-box: view-box;
     transform-origin: 0 0;
   }
+  /* 上半截：從頂端長到中點前 --df-gap。橫向 48 ＝ 欄軸 50 減半個線寬。 */
   rect[data-seg="a"] {
     transform:
-      translate(58px, 3327px)
-      scale(4, calc(var(--df-a1) - 3327))
+      translate(48px, 0)
+      scale(4, calc(100 - var(--df-gap)))
     ;
   }
+  /* 下半截：從中點後 --df-gap 長到底。 */
   rect[data-seg="b"] {
     transform:
-      translate(58px, calc(var(--df-b0) * 1px))
-      scale(4, calc(3513 - var(--df-b0)))
+      translate(48px, calc((100 + var(--df-gap)) * 1px))
+      scale(4, calc(100 - var(--df-gap)))
     ;
   }
-
-  /* 頁面直排時收掉：本圖的「起自樣張卡、收在站尾」是縱向文案流的講法，
-     行向一轉，錨點全散 */
-  main[data-writing="vertical"] & { display: none; }
-
-  /* ── 動畫暫時撤下（owner 2026-08-14）────────────────────────────
-     這根柱以「已經熔接好」的靜止態示人，也就是它本來的 reduced-motion ／
-     無 JS 基態（`@property` 的 initial-value：fuse 1 ⇒ 兩截同歸 3420、
-     ink .35、red 0），所以撤掉動畫不會留下壞畫面。
-
-     為什麼撤：那支循環是整頁 idle 時唯一的成本來源。實測站②停在畫面上，
-     每 3 秒吃掉 613ms style recalc（動畫掛在柱根，每幀讓 1,804 個字節點的
-     繼承屬性失效）；把宣告移到真正讀那些變數的兩塊矩形上之後降到 ~130ms，
-     但仍是那一站唯一在跑的東西，而互動本身要重新設計。
-
-     那台戲（df-try 漂移／df-strain 較勁／df-fuse 首播／按住不修好的
-     df-hold＋df-break＋df-repair，連同六支 keyframes 與 dash-fuse.js 的
-     開演時機）整組留在 git 裡：`git show 0a6f2b1^:manual/public/home/dash-fuse.css`
-     ——重做互動時從那裡取。 */
-
 }
+
 
 .PunctFix {
   & {
@@ -325,14 +214,17 @@ svg[data-name="dash-fuse"] {
      (0,1,1)，與頁面基底的 `body.home svg { display: block }` 同權重而輸給它
      ——實測 flat 選擇器不生效，加一個祖先就生效。 */
   @container (inline-size < 52rem) {
-    svg[data-name="dash-fuse"] { display: none; }
+    .DashColumn { display: none; }
   }
 
   /* 兩段文案。包進 .PunctFix 之後不再是 hgroup 的兄弟，station-frame.css
      的 `> hgroup & ~ p` 措手不及——此處逐字複製那條規則（margin 的 -2rem
      頂縮也照舊：第一段頂著鉛字盤的下緣、第二段咬進第一段的 2.75rem）。
      改動時兩邊要一起改。 */
-  p {
+  /* 兩段文案——**柱不算**：它也是這一欄裡的 `<p>`（一句直排的話），但它是底圖，
+     不吃這裡的行長、字族與顏色。不寫 `:not()` 的話它會被這條的 36em 夾住（實測
+     整句折成兩欄），而 (0,1,1) 也壓得過 `.DashColumn` 的 (0,1,0)。 */
+  p:not(.DashColumn) {
     /* margin: -4rem 0 5rem; */
     margin: 0 0 0;
     max-inline-size: 36em;
@@ -351,8 +243,8 @@ svg[data-name="dash-fuse"] {
      station-frame 的階梯入場管的是站台整欄的 reveal（它讓 .PunctFix 這個
      div 現身）；這條規則管的是 div 裡面的兩段話，所以兩者不打架。 */
   @media (prefers-reduced-motion: no-preference) {
-    &:not([data-revealed]) p { opacity: 0; }
-    &[data-revealed] p {
+    &:not([data-revealed]) p:not(.DashColumn) { opacity: 0; }
+    &[data-revealed] p:not(.DashColumn) {
       animation: df-copy-in 520ms ease-out both;
     }
   }
