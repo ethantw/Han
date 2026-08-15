@@ -1,6 +1,8 @@
 /**
- * measure.js — 量測驅動的版面共用的三條紀律：**放手才算**、**看不到不算**、
- * **先全部讀完再寫**。
+ * measure.js — 量測驅動的版面共用的五條紀律：**放手才算**、**看不到不算**、
+ * **先全部讀完再寫**、**改尺寸不是演出的理由**、**拖曳中看不到的就不要排**。
+ * 前三條治這一頁自己的量測迴路，後兩條治拖曳期間的引擎開銷；五條都是從
+ * owner 的 trace 逼出來的。
  *
  * 這一頁有三處「觀察尺寸 → 讀幾何 → 寫變數」的迴路（破折號柱的裁切、校樣的
  * 欄解、放大鏡的複本）。三條紀律各治一段，都是從 owner 的 trace 逼出來的：
@@ -71,11 +73,12 @@ export const settled = (job) => () => {
  * 壓成 0 秒而不是 `animation: none`：這些動畫多數 `both` 填充，終態才是靜止態
  * （`--settle` 的 `initial-value: 1` 就是這個契約），事後抽掉會讓少數已填充的
  * 值掉回去——實測 851 顆像素變色。0 秒則讓重觸發**瞬間落在原本的終態**，畫面
- * 與演完一模一樣，只是不演。旗標只在拖曳期間掛著，hover 重播不受影響。 */
-/* 旗標要蓋過整段編舞，不是只蓋拖曳。0 秒讓動畫「當場演完」，但那只在旗標
-   掛著時成立——一撤掉，時長還原，還在延遲期的那些等於重新上膛（實測撤旗那
-   一刻 50 支同時起跑）。所以撐到最長一支（cue 1400ms ＋ 1000ms）算完為止，
-   還原時它們早已過期，不會再演。 */
+ * 與演完一模一樣，只是不演。hover 重播不受影響——沒有人在拖曳中 hover。
+ *
+ * 旗標要蓋過整段編舞，不是只蓋拖曳：0 秒讓動畫「當場演完」，但那只在旗標掛
+ * 著時成立——一撤掉，時長還原，還在延遲期的那些等於重新上膛（實測撤旗那一刻
+ * 50 支同時起跑）。所以撐到最長一支（cue 1400ms ＋ 1000ms）算完為止，還原時
+ * 它們早已過期。 */
 const HOLD_MS = SETTLE_MS + 2600
 
 /* 第五條紀律：**拖曳期間，看不到的就不要排**。
@@ -124,8 +127,9 @@ const unpark = () => {
   parked.length = 0
 }
 
-/* 兩支時鐘，因為兩件事該撐的長度不同：凍結一放手就要解（拖完馬上往下捲的人
-   不該看到空白），而動畫旗標要撐到整段編舞過期。 */
+/* 兩支時鐘、兩個旗標，因為兩件事該撐的長度不同：
+   `data-dragging` 一放手就撤——凍結要解（拖完馬上往下捲的人不該看到空白），
+   放大鏡也要立刻回來；`data-resizing` 要撐到整段入場編舞過期才撤。 */
 let holdTimer = 0
 let parkTimer = 0
 let holding = false
@@ -138,11 +142,13 @@ addEventListener(
     if (!holding) {
       holding = true
       document.documentElement.dataset.resizing = ''
+      document.documentElement.dataset.dragging = ''
       parkBelowFold()
     }
     clearTimeout(parkTimer)
     parkTimer = setTimeout(() => {
       holding = false
+      delete document.documentElement.dataset.dragging
       unpark()
     }, SETTLE_MS)
     clearTimeout(holdTimer)

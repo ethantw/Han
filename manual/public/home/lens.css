@@ -59,6 +59,17 @@
     content-visibility: visible;
   }
 
+  /* 拖曳期間收起來，而且要排在 on 態後面才壓得過它。滑鼠環境下鏡片從第一幀
+     就是開的（owner 要的），於是最重的兩塊——四份報紙與長正文——在 DOM 裡
+     長期各有第二份，且不被跳過。owner 的 trace 抓到這份複本：576 個排版物件
+     的獨立子樹，十次、每次 132ms，佔他全部排版時間的四分之一。改窗口時鏡片
+     的位置本來就是舊的、也沒有人在讀它，所以整片跳過。用 `data-dragging`
+     而不是 `data-resizing`：後者要撐 2.7 秒等編舞過期，鏡片不該跟著消失
+     那麼久。 */
+  :root[data-dragging] & {
+    content-visibility: hidden;
+  }
+
   .is-lens-clone {
     position: absolute;
     inset-block-start: 0;
