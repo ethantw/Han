@@ -163,16 +163,28 @@ const mountOne = ($host, { live }) => {
 
   /* The clone must occupy the host's exact geometry or its layout re-folds
      and the lens shows a different page. */
+  const readGeometry = () => ({
+    host: $host.getBoundingClientRect(),
+    size: $lens.getBoundingClientRect().width,
+    zoom: zoomOf($lens),
+    opening: readerDriving ? null : openingPoint(),
+  })
+
+  const writeGeometry = (g) => {
+    if (!on || !$clone || !g) return
+    $clone.style.inlineSize = `${g.host.width}px`
+    $clone.style.blockSize = `${g.host.height}px`
+    lensSize = g.size
+    zoom = g.zoom
+    syncScroll()
+    if (g.opening) [lastX, lastY] = g.opening
+    positionAt(lastX, lastY)
+  }
+
+  /* 讀寫分開，好讓共用的排程器把所有讀集中在前（home/measure.js § 先讀再寫）。 */
   const sync = () => {
     if (!on || !$clone) return
-    const r = $host.getBoundingClientRect()
-    $clone.style.inlineSize = `${r.width}px`
-    $clone.style.blockSize = `${r.height}px`
-    lensSize = $lens.getBoundingClientRect().width
-    zoom = zoomOf($lens)
-    syncScroll()
-    if (!readerDriving) [lastX, lastY] = openingPoint()
-    positionAt(lastX, lastY)
+    writeGeometry(readGeometry())
   }
 
   /* A host can be its own scroll container (a sheet wider than its card, a
@@ -243,7 +255,8 @@ const mountOne = ($host, { live }) => {
   }
   /* 放手才算（見 home/measure.js）：複本要與宿主等尺寸，而每次同步都會讀
      rect——拖著窗邊改大小時那是每幀一次同步版面，而拖曳中沒有人在讀鏡子。 */
-  new ResizeObserver(settled(sync, $host)).observe($host)
+  new ResizeObserver(settled({ read: readGeometry, write: writeGeometry, watch: $host }))
+    .observe($host)
   // apply() builds the first copy if the loupe starts on (a fine pointer);
   // a coarse one starts off and pays nothing until it is asked.
   apply()

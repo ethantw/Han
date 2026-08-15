@@ -419,7 +419,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
      reading while the window is moving; off screen it would be solving
      against `contain-intrinsic-size` anyway. */
   const $station = $editor.closest('[data-station]')
-  const resolve = settled(fitSheet, $station)
+  /* 多趟解算拆不開讀寫（釘住 measure 再讀 scrollWidth 才知道欄數），所以整支
+     當成 `write` 登記——它排在同一輪所有讀之後，沒有人在它弄髒之後還要讀。 */
+  const resolve = settled({ write: fitSheet, watch: $station })
   addEventListener('resize', resolve)
   onRendered($station, resolve)
 }

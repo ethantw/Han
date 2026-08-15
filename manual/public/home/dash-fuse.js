@@ -77,18 +77,19 @@ const initClip = ($column) => {
   const $main = document.querySelector('main')
   if (!$faces) return
 
-  const measure = () => {
-    const top = $faces.getBoundingClientRect().top - $column.getBoundingClientRect().top
+  /* 讀與寫分開登記（home/measure.js）：這一寫會弄髒那 1,804 個字節點的 SVG，
+     所以它必須排在**所有**讀之後——不然下一個回呼的讀要把整棵樹算完（owner
+     的第二份 trace：每次 250ms，三次共 0.8 秒）。放手才算、畫面外不算也在同
+     一支排程裡：這條裁切線是裝飾，拖曳中停在上一次的值沒有人看得出來。 */
+  const read = () =>
+    $faces.getBoundingClientRect().top - $column.getBoundingClientRect().top
+  const write = (top) =>
     $column.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
-  }
 
-  /* 放手才算，畫面外不算（home/measure.js）：讀 `$column` 的 rect 會逼出那
-     1,804 個字節點的同步版面（owner 的 trace：每次 107ms，14 次共 1.5 秒），
-     而這條裁切線是裝飾——拖曳中停在上一次的值沒有人看得出來。 */
   const $station = $column.closest('[data-station]')
-  const sync = settled(measure, $station)
+  const sync = settled({ read, write, watch: $station })
 
-  measure()
+  write(read())
   document.fonts?.ready.then(sync)
   onRendered($station, sync)
   if ($main) new ResizeObserver(sync).observe($main)
