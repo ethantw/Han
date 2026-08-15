@@ -77,21 +77,76 @@ export const settled = (job) => () => {
    一刻 50 支同時起跑）。所以撐到最長一支（cue 1400ms ＋ 1000ms）算完為止，
    還原時它們早已過期，不會再演。 */
 const HOLD_MS = SETTLE_MS + 2600
+
+/* 第五條紀律：**拖曳期間，看不到的就不要排**。
+ *
+ * `content-visibility: auto` 只掛在 `main > section` 上，而站台很高——你人在
+ * 頁首，站①的上緣露出來就算「可見」，於是它下面兩千像素外的四份報紙每一步
+ * 都跟著重排。實測站①一站就佔每步 55ms 裡的 33ms，其中報紙 18ms。
+ *
+ * 所以拖曳一開始就親手凍住「視窗下緣以下」的塊：站台整個在下方就凍站台，
+ * 跨到畫面內就退一層去看它的子元素，最多三層（第二層拿到絕大部分效益，第三
+ * 層只多一點，再深下去凍的塊數暴增而效益持平）。**只凍下方**——凍上方會讓
+ * 可見內容在拖曳中位移。尺寸先釘進 `contain-intrinsic-size` 再凍，否則塊一
+ * 縮，整頁往上補位，量到與看到的都是別人的帳。
+ *
+ * 每步版面：頁首 55 → 30ms，停在站① 102 → 54ms。 */
+const PARK_DEPTH = 3
+const parked = []
+
+const parkBelowFold = () => {
+  const vh = innerHeight
+  const found = []
+  /* 先只讀。這一趟共逼出一次版面，寫在後面一次做完。 */
+  const scan = ($el, depth) => {
+    for (const $child of $el.children) {
+      const rect = $child.getBoundingClientRect()
+      if (!rect.height || rect.bottom <= 0) continue
+      if (rect.top >= vh) found.push([$child, rect.width, rect.height])
+      else if (depth > 1) scan($child, depth - 1)
+    }
+  }
+  const $main = document.querySelector('main')
+  if ($main) scan($main, PARK_DEPTH)
+
+  for (const [$child, width, height] of found) {
+    parked.push([$child, $child.style.containIntrinsicSize])
+    $child.style.containIntrinsicSize = `${width}px ${height}px`
+    $child.setAttribute('data-park', '')
+  }
+}
+
+const unpark = () => {
+  for (const [$child, previous] of parked) {
+    $child.style.containIntrinsicSize = previous
+    $child.removeAttribute('data-park')
+  }
+  parked.length = 0
+}
+
+/* 兩支時鐘，因為兩件事該撐的長度不同：凍結一放手就要解（拖完馬上往下捲的人
+   不該看到空白），而動畫旗標要撐到整段編舞過期。 */
 let holdTimer = 0
+let parkTimer = 0
 let holding = false
 
 addEventListener(
   'resize',
   () => {
     /* 已經掛著就別再寫一次——`setAttribute` 同值也會讓整份樣式失效，而這個
-       事件每秒來六十次以上。 */
+       事件每秒來六十次以上。凍結同理，只在第一次算一遍。 */
     if (!holding) {
       holding = true
       document.documentElement.dataset.resizing = ''
+      parkBelowFold()
     }
+    clearTimeout(parkTimer)
+    parkTimer = setTimeout(() => {
+      holding = false
+      unpark()
+    }, SETTLE_MS)
     clearTimeout(holdTimer)
     holdTimer = setTimeout(() => {
-      holding = false
       delete document.documentElement.dataset.resizing
     }, HOLD_MS)
   },

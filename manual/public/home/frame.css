@@ -293,3 +293,11 @@ main[data-writing="vertical"] {
   animation-delay: 0s !important;
   transition: none !important;
 }
+
+/* 拖曳期間凍住視窗下方看不到的塊（`measure.js` 第五條紀律：站台太高，上緣
+   露出來就不算被 CV 跳過，底下兩千像素外的報紙照樣每步重排）。尺寸由 JS 釘
+   在 inline 的 `contain-intrinsic-size` 上，這裡只負責凍。 */
+
+:root[data-resizing] [data-park] {
+  content-visibility: hidden;
+}
