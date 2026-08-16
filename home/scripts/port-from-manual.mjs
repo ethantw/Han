@@ -16,19 +16,20 @@ const OUT = 'home'
 const LOCALE = 'hant'
 
 /* 搬進來的區塊，順序即 `<main>` 的順序。清單以外的都在 HTML 裡留註解佔位。 */
-const SECTIONS = ['manifesto', 'station-craft', 'station-playground', 'station-snippet', 'closing']
+const SECTIONS = ['manifesto', 'station-semantics', 'station-craft', 'station-playground',
+  'station-snippet', 'closing']
 
 /* 搬進來的 `home/*.css`。入口裡其餘的 `@import` 會被註解掉。
    前六份是版框與主控台，其後是各站及它們用到的組件：
    ledger（station-craft 的 .FontLedger）、lens（station-playground 的 .LensHint）。 */
 const STYLES = [
   'root', 'frame', 'manifesto', 'closing', 'console', 'console-loader',
+  'station-semantics', 'semantics-specimen', 'envelope',
   'station-craft', 'station-playground', 'station-snippet', 'ledger', 'lens',
 ]
 
 /* 舊模版裡出現、但這一輪不搬的區塊 token，照原順序留註解。 */
 const PARKED = [
-  ['stationSemanticsSection', '舊站的 _home.html 目前把這一行拿掉了，是 owner 的實驗，位置照原順序留著'],
   ['stationFontsSection', ''],
   ['stationLinesSection', ''],
   ['stationProseSection', ''],
@@ -50,10 +51,26 @@ const fill = (html, ctx) => html.replace(/\{\{\s*(\w+)\s*\}\}/g, (all, k) => (k 
 
 const camel = (name) => name.replace(/-(\w)/g, (_, c) => c.toUpperCase())
 
+/* 四份報紙只留繁體那一份，其餘三份收成佔位。
+   留下 `<header>`（報頭與報眉）與 `<h3>`：欄還是四欄、藥丸還有得跳，版面
+   形狀不變——被拿掉的正是正文那幾段，也就是量到最貴的那一塊。三段佔位各用
+   自己那一版的語言寫，才不會在 `lang` 上說謊。 */
+const PAPER_PLACEHOLDER = {
+  hans: '（简体版报导・待搬）',
+  ja: '（日本語版・移植待ち）',
+  ko: '（한국어판・移植 待機）',
+}
+const placeholderPapers = (html) => html.replace(
+  /(<article id="paper-(hans|ja|ko)"[^>]*>\s*<header>[\s\S]*?<\/header>\s*)([\s\S]*?)(<\/article>)/g,
+  (all, head, which, _body, tail) =>
+    `${head}<p class="PaperPlaceholder">${PAPER_PLACEHOLDER[which]}</p>\n    ${tail}`,
+)
+
 const shared = pick(readI18n(readFileSync(`${SRC}/home/_shared.html`, 'utf8')))
 const render = (name) => {
   const raw = readFileSync(`${SRC}/home/${name}.html`, 'utf8')
-  return fill(stripI18n(raw), { ...shared, ...pick(readI18n(raw)) })
+  const out = fill(stripI18n(raw), { ...shared, ...pick(readI18n(raw)) })
+  return name === 'station-semantics' ? placeholderPapers(out) : out
 }
 
 /* ── 版面 ── */
@@ -98,11 +115,13 @@ for (const f of readdirSync(`${SRC}/public/common`)) {
 for (const n of STYLES) copyFileSync(`${SRC}/public/home/${n}.css`, `${OUT}/public/home/${n}.css`)
 for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/img/${f}`, `${OUT}/public/img/${f}`)
 
-/* 入口的匯入順序即層疊順序，所以照抄舊站的那一份，只把沒搬的註解掉。 */
+/* 入口的匯入順序即層疊順序，所以照抄舊站的那一份，只把沒搬的註解掉。
+   最後補一行 `_port.css`——那是遷移期間 home/ 自己維護的規則，這支腳本不
+   複製也不覆寫它，排在最後所以永遠壓得過搬進來的那些。 */
 const entry = readFileSync(`${SRC}/public/home.css`, 'utf8')
   .replace(/^@import url\('\.\/home\/(.+?)\.css'\);$/gm, (line, n) =>
     STYLES.includes(n) ? line : `/* ${line} */`)
-writeFileSync(`${OUT}/public/home.css`, entry)
+writeFileSync(`${OUT}/public/home.css`, `${entry}\n/* ── 遷移期間 home/ 自己的規則，搬完連同 scripts/ 一起刪 ── */\n@import url('./home/_port.css');\n`)
 
 const parkedCount = (html.match(/這一輪先不搬/g) ?? []).length
 console.log(`index.html ${html.length} bytes・區塊 ${SECTIONS.length} 搬／${parkedCount} 留註解`)

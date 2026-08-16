@@ -33,8 +33,8 @@
 
 /* ── 各區塊，依 <main> 裡的出現順序 ── */
 @import url('./home/manifesto.css');
-/* @import url('./home/station-semantics.css'); */
-/* @import url('./home/semantics-specimen.css'); */
+@import url('./home/station-semantics.css');
+@import url('./home/semantics-specimen.css');
 /* @import url('./home/station-fonts.css'); */
 /* @import url('./home/station-lines.css'); */
 /* @import url('./home/station-prose.css'); */
@@ -47,8 +47,11 @@
 @import url('./home/lens.css');
 /* @import url('./home/lead-forme.css'); */
 /* @import url('./home/dash-fuse.css'); */
-/* @import url('./home/envelope.css'); */
+@import url('./home/envelope.css');
 @import url('./home/ledger.css');
 @import url('./home/console-loader.css');
 @import url('./home/console.css');
 /* @import url('./home/gate.css'); */
+
+/* ── 遷移期間 home/ 自己的規則，搬完連同 scripts/ 一起刪 ── */
+@import url('./home/_port.css');

@@ -12,8 +12,8 @@
 | --- | --- |
 | Vite 設定 | 二十行，只指定 port 7770 |
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
-| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 11 份；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
-| 區塊 | manifesto、工法、遊樂場、引用碼、closing；其餘四站在 HTML 裡留註解佔位 |
+| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 14 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
+| 區塊 | manifesto、語意、工法、遊樂場、引用碼、closing；其餘三站在 HTML 裡留註解佔位 |
 | JS | 沒有。互動只有兩顆 checkbox（主題、主控台收合），純 CSS |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
@@ -29,6 +29,21 @@
 `<han-console>` 是空殼——沒有腳本註冊這個名字，所以它是未定義元素，只有
 light DOM 的載入中字徽會畫出來。收合仍然有效，因為那一路本來就是
 `body:has(.ConsoleToggle input:checked)`，不經過 JS。
+
+## `_port.css` — 唯一一份搬運不碰的樣式
+
+`home/*.css` 每次搬運都是從 `manual/` 整份複製，所以「因為還沒搬完才需要」
+的規則不能寫進去——寫了下一次就沒了，而且兩邊看起來像同一份卻不同步。那類
+規則一律寫 `public/home/_port.css`，它由 `home/` 自己維護，排在入口最後一行，
+永遠壓得過搬進來的那些。搬完連同 `scripts/` 一起刪。
+
+目前它只有一條：三份未搬報導的佔位字樣。
+
+## 語意站的四份報導
+
+只搬繁體那一份。其餘三份留下 `<header>`（報頭與報眉），正文換成一行自己語言
+的佔位——欄還是四欄、藥丸還有得跳、版面形狀不變，被拿掉的正是量起來最貴的
+那一塊（繁體那份 502 字／871px，三份佔位各 29–39 字／137px）。
 
 ## 沒有 JS 就是空的（預期內）
 
