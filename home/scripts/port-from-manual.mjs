@@ -90,9 +90,19 @@ const ctx = {
 
 let html = fill(stripI18n(layoutRaw), ctx)
 
-/* JS 全不搬：module 入口與 pre-paint 還原一併清掉，留下的互動只有兩顆
-   checkbox（主題、主控台收合）與空殼 `<han-console>`，兩者本來就是純 CSS。 */
+/* 頁面自己的 JS 全不搬：module 入口與 pre-paint 還原一併清掉，留下的互動只有
+   兩顆 checkbox（主題、主控台收合）與空殼 `<han-console>`，兩者本來就是純
+   CSS。 */
 html = html.replace(/[ \t]*<script(?![^>]*type="text\/x-i18n")[\s\S]*?<\/script>\n?/g, '')
+
+/* 唯一掛回來的腳本：樣式庫自己的回落層。
+ *
+ * 掛 `han.auto.js` 而不是舊站那支 `han.js`——後者只是函式庫模組，載進來不會
+ * 動任何 DOM；舊站是由主控台在讀者撥開關時才呼叫 `installFallbacks`。這裡沒
+ * 有主控台，而 auto 版在 `DOMContentLoaded` 自己跑一次
+ * `installFallbacks(document.documentElement)`，正好是「頁面零 JS，樣式庫照
+ * 常工作」要的形狀。 */
+html = html.replace('</head>', '<script type="module" src="/han/han.auto.js"></script>\n</head>')
 /* 入場揭示的**已就位**態直接寫進標記。
    `frame.css` 在 `prefers-reduced-motion: no-preference` 底下給
    `[data-station] > *` 一個 `opacity: 0` 的起始態，只有 `reveal.js` 蓋上

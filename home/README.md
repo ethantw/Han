@@ -14,7 +14,7 @@
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
 | CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 14 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
 | 區塊 | manifesto、語意、工法、遊樂場、引用碼、closing；其餘三站在 HTML 裡留註解佔位 |
-| JS | 沒有。互動只有兩顆 checkbox（主題、主控台收合），純 CSS |
+| JS | 頁面自己的一支都沒有；只掛樣式庫的 `/han/han.auto.js`。互動只有兩顆 checkbox（主題、主控台收合），純 CSS |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
 取 `hant`，`<script type="text/x-i18n">` 區塊與所有 `<script>` 一併移除，CDN
@@ -29,6 +29,18 @@
 `<han-console>` 是空殼——沒有腳本註冊這個名字，所以它是未定義元素，只有
 light DOM 的載入中字徽會畫出來。收合仍然有效，因為那一路本來就是
 `body:has(.ConsoleToggle input:checked)`，不經過 JS。
+
+## 為什麼是 `han.auto.js`，不是 `han.js`
+
+舊站在 `<head>` 掛的是 `/han/han.js`——那只是函式庫模組，載進來不會動任何
+DOM；真正呼叫 `installFallbacks` 的是主控台，在讀者撥開關的時候。這裡沒有
+主控台，所以改掛 auto 版：它在 `DOMContentLoaded` 自己跑一次
+`installFallbacks(document.documentElement)`，正好是「頁面零 JS、樣式庫照常
+工作」要的形狀。實測裝上 140 個 `h-char`。
+
+`/han/*` 由 `vite.config.js` 的中介層直餵倉庫根的 `dist/`，副檔名白名單
+`.css/.js/.json/.map/.woff2`——所以改了樣式庫、重跑 `node build/library`，
+這一頁下一次重新整理就是新的。
 
 ## `_port.css` — 唯一一份搬運不碰的樣式
 
