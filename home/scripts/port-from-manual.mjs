@@ -51,6 +51,9 @@ const fill = (html, ctx) => html.replace(/\{\{\s*(\w+)\s*\}\}/g, (all, k) => (k 
 
 const camel = (name) => name.replace(/-(\w)/g, (_, c) => c.toUpperCase())
 
+/* CDN 版本本來由 vite 從 `manual/.env` 代入；這裡沒有那條管線，寫死。 */
+const CDN = '0.2.0-rc.0'
+
 /* 四份報紙只留繁體那一份，其餘三份收成佔位。
    留下 `<header>`（報頭與報眉）與 `<h3>`：欄還是四欄、藥丸還有得跳，版面
    形狀不變——被拿掉的正是正文那幾段，也就是量到最貴的那一塊。三段佔位各用
@@ -88,21 +91,31 @@ const ctx = {
     [token, `<!-- {{ ${token} }} — 這一輪先不搬${note ? `（${note}）` : ''} -->`])),
 }
 
-let html = fill(stripI18n(layoutRaw), ctx)
+let html = fill(stripI18n(layoutRaw), ctx).replace(/%VITE_ZIANO_VERSION%|%VITE_DIANTENJEOM_VERSION%/g, CDN)
 
 /* 頁面自己的 JS 全不搬：module 入口與 pre-paint 還原一併清掉，留下的互動只有
    兩顆 checkbox（主題、主控台收合）與空殼 `<han-console>`，兩者本來就是純
    CSS。 */
 html = html.replace(/[ \t]*<script(?![^>]*type="text\/x-i18n")[\s\S]*?<\/script>\n?/g, '')
 
-/* 唯一掛回來的腳本：樣式庫自己的回落層。
+/* 掛回來的腳本只有兩行，而且都不是「頁面的」JS。
  *
- * 掛 `han.auto.js` 而不是舊站那支 `han.js`——後者只是函式庫模組，載進來不會
- * 動任何 DOM；舊站是由主控台在讀者撥開關時才呼叫 `installFallbacks`。這裡沒
- * 有主控台，而 auto 版在 `DOMContentLoaded` 自己跑一次
- * `installFallbacks(document.documentElement)`，正好是「頁面零 JS，樣式庫照
- * 常工作」要的形狀。 */
-html = html.replace('</head>', '<script type="module" src="/han/han.auto.js"></script>\n</head>')
+ * 一是主控台元件：`<han-console>` 連上 DOM 就自己起來（採用 shadow 樣式表 →
+ * 注入模板 → 接上 `main` → 發第一次 `han-config-change`）。舊站是在字體閘門
+ * 開啟後才動態 import 它，那是為了把它的模組圖挪出開場；這裡沒有閘門，直接
+ * 靜態載入。
+ *
+ * 二是 CDN 版本號。`codegen.js` 從 `window.__hanCdn` 讀，缺了會退回
+ * `latest`——那會讓引用碼站產出與本頁不一致的版本，所以照舊站補上。
+ *
+ * **不掛 `han.auto.js`**：回落層由主控台呼叫 `installFallbacks`，讀者的
+ * 「JS 後備」開關才算話（`console-config.js` 的 applyFallbacks 就是那條路，
+ * 它自己 `import('/han/han.js')`）。auto 版會在元件之外先套一次，兩邊打架。 */
+html = html.replace('</head>', [
+  `<script>window.__hanCdn = { ziano: '${CDN}', diantenjeom: '${CDN}' }</script>`,
+  '<script type="module" src="/components/han-console.js"></script>',
+  '</head>',
+].join('\n'))
 /* 入場揭示的**已就位**態直接寫進標記。
    `frame.css` 在 `prefers-reduced-motion: no-preference` 底下給
    `[data-station] > *` 一個 `opacity: 0` 的起始態，只有 `reveal.js` 蓋上
@@ -110,9 +123,6 @@ html = html.replace('</head>', '<script type="module" src="/han/han.auto.js"></s
    讀者停用 JS 時亦然）。這一輪不搬 JS，就由標記自己說它已經就位。 */
 html = html.replace(/<section\b(?=[^>]*\bdata-station=)/g, '<section data-revealed')
 
-/* CDN 版本本來由 vite 從 `manual/.env` 代入；這裡沒有那條管線，寫死。 */
-const CDN = '0.2.0-rc.0'
-html = html.replace(/%VITE_ZIANO_VERSION%|%VITE_DIANTENJEOM_VERSION%/g, CDN)
 
 writeFileSync(`${OUT}/index.html`, html)
 
@@ -124,6 +134,33 @@ for (const f of readdirSync(`${SRC}/public/common`)) {
 }
 for (const n of STYLES) copyFileSync(`${SRC}/public/home/${n}.css`, `${OUT}/public/home/${n}.css`)
 for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/img/${f}`, `${OUT}/public/img/${f}`)
+
+/* ── JS：只有主控台元件那一支模組圖 ──
+   舊站的 `home/*.js`（reveal、lens、playground…）一支都不搬；這裡搬的是
+   `<han-console>` 自己，以及它 import 的東西。回落層走它那條路
+   （`console-config.js` 動態 `import('/han/han.js')` 再 `installFallbacks`），
+   所以 han.js 也就一起活過來了，而且是讀者的開關說了算。 */
+const SCRIPTS = [
+  'components/han-console.js',
+  'components/console-config.js',
+  'components/console-metrics.js',
+  'components/console.css',
+  'components/tokens.css',
+  'common/icon.js',
+  'home/codegen.js',
+]
+mkdirSync(`${OUT}/public/components`, { recursive: true })
+for (const f of SCRIPTS) copyFileSync(`${SRC}/public/${f}`, `${OUT}/public/${f}`)
+
+/* 主控台的 shadow 模板沒有源檔——`manual/vite.config.js` 由 `home/console.html`
+   × 五種語言生出來，只存在於 `manual/dist/`。這裡照抄，並削成只剩繁體：
+   118KB → 一種語言，其餘四種本來就沒有入口能選到。 */
+const templates = readFileSync(`${SRC}/dist/home/console-templates.js`, 'utf8')
+const only = new Function(`${templates.replace('export const TEMPLATES', 'const TEMPLATES')}; return TEMPLATES`)()
+writeFileSync(`${OUT}/public/home/console-templates.js`,
+  `// 由 home/scripts/port-from-manual.mjs 從 manual/dist/ 搬來，只留 ${LOCALE}。\n`
+  + `// 源頭是 manual/vite.config.js 用 home/console.html × HOME_I18N 生的，別手改。\n`
+  + `export const TEMPLATES = ${JSON.stringify({ [LOCALE]: only[LOCALE] }, null, 0)}\n`)
 
 /* 入口的匯入順序即層疊順序，所以照抄舊站的那一份，只把沒搬的註解掉。
    最後補一行 `_port.css`——那是遷移期間 home/ 自己維護的規則，這支腳本不

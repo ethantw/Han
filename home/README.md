@@ -14,7 +14,7 @@
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
 | CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 14 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
 | 區塊 | manifesto、語意、工法、遊樂場、引用碼、closing；其餘三站在 HTML 裡留註解佔位 |
-| JS | 頁面自己的一支都沒有；只掛樣式庫的 `/han/han.auto.js`。互動只有兩顆 checkbox（主題、主控台收合），純 CSS |
+| JS | 只有 `<han-console>` 那一支模組圖。舊站的 `home/*.js` 一支都沒搬 |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
 取 `hant`，`<script type="text/x-i18n">` 區塊與所有 `<script>` 一併移除，CDN
@@ -30,17 +30,32 @@
 light DOM 的載入中字徽會畫出來。收合仍然有效，因為那一路本來就是
 `body:has(.ConsoleToggle input:checked)`，不經過 JS。
 
-## 為什麼是 `han.auto.js`，不是 `han.js`
+## 主控台，以及 han.js 走的那條路
 
-舊站在 `<head>` 掛的是 `/han/han.js`——那只是函式庫模組，載進來不會動任何
-DOM；真正呼叫 `installFallbacks` 的是主控台，在讀者撥開關的時候。這裡沒有
-主控台，所以改掛 auto 版：它在 `DOMContentLoaded` 自己跑一次
-`installFallbacks(document.documentElement)`，正好是「頁面零 JS、樣式庫照常
-工作」要的形狀。實測裝上 140 個 `h-char`。
+`<head>` 掛兩行：`<han-console>` 元件，以及 `window.__hanCdn` 的版本號
+（`codegen.js` 讀它，缺了會退回 `latest`，引用碼站就會印出與本頁不一致的
+版本）。元件連上 DOM 就自己起來——採用 shadow 樣式表、注入模板、接上
+`main`、發第一次 `han-config-change`。舊站是在字體閘門開啟後才動態 import
+它，那是為了把它的模組圖挪出開場；這裡沒有閘門，直接靜態載入。
+
+**沒有 `han.auto.js`。** 回落層由主控台呼叫：`console-config.js` 的
+`applyFallbacks` 自己 `import('/han/han.js')` 再 `installFallbacks($target)`，
+所以讀者的「JS 後備」開關才算話。auto 版會在元件之外先套一次，兩邊打架。
+
+搬進來的模組圖只有七個檔：`components/{han-console,console-config,
+console-metrics}.js` ＋ 兩份 shadow 樣式表、`common/icon.js`、
+`home/codegen.js`。主控台的 shadow 模板沒有源檔——`manual/vite.config.js`
+由 `home/console.html` × 五種語言生成，只存在於 `manual/dist/`——搬運腳本
+照抄並削成只剩繁體（118KB → 23KB）。
+
+實測：元件註冊、shadow 319 節點／60 個控件；撥「語意樣式標準化」，`:root`
+的 `--han-semantics` 由 `on` 變 `off`；開場即由主控台裝上 140 個 `h-char`
+（舊站同一支路徑是 698，區塊多、報導四份，比例對得上）。`h-hangable`／
+`h-word`／`h-ruby` 兩站都是 0，那是函式庫的常態，不是搬漏。
 
 `/han/*` 由 `vite.config.js` 的中介層直餵倉庫根的 `dist/`，副檔名白名單
-`.css/.js/.json/.map/.woff2`——所以改了樣式庫、重跑 `node build/library`，
-這一頁下一次重新整理就是新的。
+`.css/.js/.json/.map/.woff2`——改了樣式庫、重跑 `node build/library`，這一頁
+下一次重新整理就是新的。
 
 ## `_port.css` — 唯一一份搬運不碰的樣式
 
@@ -59,9 +74,10 @@ DOM；真正呼叫 `installFallbacks` 的是主控台，在讀者撥開關的時
 
 ## 沒有 JS 就是空的（預期內）
 
-搬進來的三站是靜態外殼，內容由各自的模組填：遊樂場的預覽窗（`playground.js`）、
-引用碼的代碼窗（`codegen.js`，連元素都是執行時建的）、工法的字體帳
-（`ledger.js`）。標題、公式、範例與報紙樣張是寫死的標記，都在。
+搬進來的站是靜態外殼，內容由各自的模組填：遊樂場的預覽窗（`playground.js`）、
+引用碼的代碼窗（`snippet.js`＋`codegen.js`，連元素都是執行時建的，所以那顆
+「JS 後備」開關也還不在）、工法的字體帳（`ledger.js`）。標題、公式、範例與
+報紙樣張是寫死的標記，都在。
 
 ## 沒搬的東西，與為什麼
 
