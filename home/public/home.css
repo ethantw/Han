@@ -38,17 +38,17 @@
 /* @import url('./home/station-fonts.css'); */
 /* @import url('./home/station-lines.css'); */
 /* @import url('./home/station-prose.css'); */
-/* @import url('./home/station-craft.css'); */
-/* @import url('./home/station-playground.css'); */
-/* @import url('./home/station-snippet.css'); */
+@import url('./home/station-craft.css');
+@import url('./home/station-playground.css');
+@import url('./home/station-snippet.css');
 @import url('./home/closing.css');
 
 /* ── 例外：自帶 JS 的圖示組件，與主控台 ── */
-/* @import url('./home/lens.css'); */
+@import url('./home/lens.css');
 /* @import url('./home/lead-forme.css'); */
 /* @import url('./home/dash-fuse.css'); */
 /* @import url('./home/envelope.css'); */
-/* @import url('./home/ledger.css'); */
+@import url('./home/ledger.css');
 @import url('./home/console-loader.css');
 @import url('./home/console.css');
 /* @import url('./home/gate.css'); */

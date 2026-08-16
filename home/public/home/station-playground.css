@@ -1,0 +1,668 @@
+@charset "UTF-8";
+
+/**
+ * 站⑦・遊樂場 — user-content editor.
+ *
+ * （2026-08-05 由 playground.css 更名，對齊「一個區塊一支同名檔」。）
+ */
+
+/* `.Preview` (common/panel.css) supplies the framed panel + header +
+   ViewTabs primitive; `.Playground` adds the two swap panes. The code pane is a real <textarea>, terminal-dark to mirror
+   figure.CodePane (so "code" reads as code across both stations); the
+   preview <article> sits on the page surface and inherits the console's live
+   `--han-*` vars + han's prose layer with zero wiring. */
+
+.Playground {
+  /* `.Playground` rides on BOTH the <section> and the inner editor
+     <div class="Preview Playground" data-playground> — so anything that
+     must hit ONLY the editor panel is scoped by `[data-playground]`. */
+
+  /* editor chrome — the tab strip is a dark toolbar. `color-scheme: dark`
+     re-resolves the ViewTabs' light-dark() tokens to their dark side in
+     BOTH page themes, so the tabs read paper-on-ink; a fixed faint mist
+     hairline keeps its lower edge visible on an already-dark page (web-style.md
+     dark-surface gotcha). The data-pg-* hooks are untouched. */
+  &[data-playground] > header {
+    color-scheme: dark;
+    background: var(--ui-ink);
+    border-block-end-color: color-mix(in srgb, var(--palette-mist) 16%, transparent);
+  }
+
+  /* the editor may bleed one gutter past the station measure — a wider
+     canvas for typing. Only where the station is centred (≥ its max
+     width ＋ two gutters) so it never forces horizontal page scroll. */
+  @container (min-width: 74rem) {
+    /* &[data-playground] { margin-inline: calc(-1 * var(--gutter)); } */
+  }
+
+  /* The lens (a sibling overlay) anchors to the panel, and `z-index: 0`
+     makes the panel a STACKING CONTEXT so the lens can never paint outside
+     it: parked on the headline the circle reaches above the card's top
+     edge, and unfenced it lands on the station head's control strip.
+     Whether it is on at all is decided below. */
+  &[data-playground] {
+    position: relative;
+    /* z-index: 0; */
+  }
+  /* the loupe belongs to the two-card layout only — in tab mode the proof is
+     already at reading size and the pane may be the editor, so a circle over
+     it would magnify a stray copy. The wide rules turn it on. */
+  .Lens { display: none; }
+
+  /* both panes share one box so the tab swap never jumps the panel height */
+  textarea,
+  [data-pg-sheet],
+  [data-pg-paper] {
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 18rem;
+    margin: 0;
+    padding: 18px 20px;
+  }
+
+  /* ── The paper chrome (masthead ＋ dateline) — fixed, not editable ──
+     The galley is a 太陽中文報 page, so it carries the paper's own head:
+     logotype over the classic double rule, then the four-era dateline the
+     page computes fresh on every load (playground.js ← papers-dateline.js).
+     Living OUTSIDE the editable article, the date can never be pickled
+     into a reader's localStorage draft. Mirrors station①'s .Papers head. */
+  .PgPaper {
+    .Masthead {
+      margin: 0;
+      padding-block-end: 0.25rem;
+      border-block-end: 2px solid var(--ui-text);
+      text-align: center;
+      font-family: var(--han-font-alternative);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em;
+    }
+
+    .Dateline {
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 0 1rem;
+        padding-block: 0.25rem;
+        border-block-end: 1px solid var(--ui-rule);
+        font-size: 0.6875rem;
+        color: var(--ui-supplement-text);
+      }
+
+
+    }
+  }
+
+  textarea {
+    & {
+      resize: vertical;
+      background: var(--code-bg);
+      border: 0;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--code-fg);
+      tab-size: 2;
+    }
+
+    &:focus { outline: none; }
+    &::selection { background: color-mix(in srgb, var(--code-fg) 25%, transparent); }
+  }
+
+  /* the preview — page surface, site prose typography; han.css layers on
+     the em dots / punctuation / autospace / ruby / prose spacing itself.
+     Keyed on the CLASS, never the data hook: `data-pg-*` is what the
+     render pipeline and the tests select by, and the magnifier's live copy
+     must not answer to any of them — it keeps the classes (its face) and
+     drops every data-*. */
+  .PgGalley {
+    & {
+      background: var(--ui-bg);
+      font-family: var(--han-font-alternative);
+      line-height: 2;
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+      & {
+        line-height: 1.25;
+      }
+
+      &:first-child { margin-block-start: 0; }
+    }
+
+    /* em, not rem — the preview re-bases its font-size (galley overview
+       below, console metric slider otherwise), and headings must follow
+       the base or a 10px galley gets 24px headlines. */
+    :is(h1, h2) { font-size: 1.25em; }
+    h3 { font-size: 1.125em; }
+    :is(h4, h5, h6) { font-size: 1em; }
+
+    /* No rule, no padding: han's prose layer already indents a blockquote
+       by `--han-prose-indent` and swaps it to the cursive face, and this
+       card exists to show THAT. A page-side side-line would both fight the
+       library and misreport what it does. */
+    a {
+      color: var(--ui-accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* inline code — the fenced-block <pre> case is handled separately */
+    :not(pre) > code {
+      padding: 0.1em 0.35em;
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: var(--ui-panel);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-1);
+    }
+
+    pre {
+      & {
+        margin: 0 0 1em;
+        overflow: auto;
+        padding: 14px 16px;
+        background: var(--code-bg);
+        border-radius: var(--r-2);
+        color: var(--code-fg);
+        font-family: var(--font-mono);
+        font-size: 0.8125em;
+      }
+
+      code {
+        padding: 0;
+        background: transparent;
+        border: 0;
+        font: inherit;
+        color: inherit;
+      }
+    }
+
+    hr {
+      margin: 1.5em 0;
+      border: 0;
+      border-block-start: 1px solid var(--ui-rule);
+    }
+
+    :is(img, video) {
+      max-inline-size: 100%;
+      block-size: auto;
+    }
+
+    > :last-child { margin-block-end: 0; }
+  }
+
+  /* radio-driven tab swap — preview default, so hide the code pane until
+     its tab is checked, and hide the preview when code is. (:has() —
+     Baseline 2023.) */
+  /* Direct children ONLY (`>`): the studio (dialog) borrows these same
+     panes by reparenting them into its body — one combinator exempts them
+     from the whole tab/grid regime while they're on loan. */
+  /* Both panes stay on stage and the box scrolls between them: a swipe moves
+     one pane per gesture (`scroll-snap-type: inline mandatory`), and the tabs
+     above are the same control the pills are in station① — they take you
+     there, they don't hide the other one. The two halves are kept in step by
+     `home/playground.js § swipe`: a tab scrolls the strip, the strip checks
+     the tab. (`scroll-snap`: Baseline 2021.)
+
+     `overflow-inline`, not `overflow-x`: 直排預覽把整頁的行向轉直，而「一次
+     一格」問的是**行向**上的下一格。 */
+  [data-pg-panes] {
+    display: flex;
+    overflow-inline: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+
+    > * {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+    }
+
+    /* 預覽在前，因為它是預設的那一格：捲動位置 0 與勾選的分頁從第一帧就
+       一致，不必靠 JS 先把軌推過去。DOM 序不動（編輯區仍是第一個），焦點
+       序因此還是「先寫再看」。 */
+    > [data-pg-sheet] { order: -1; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* ── Wide enough: no tabs — two SEPARATE cards side by side ────────
+     From 48rem of station width the panel stops being one framed box and
+     dissolves into an invisible grid; source and preview each become their
+     own card, unbound from each other's height.
+
+     The query asks the CONTAINER (the station's content box = the panel's
+     width; gutters and the docked console make the viewport a bad proxy),
+     via `min-width` on purpose: containers contain the inline axis only,
+     so in vertical writing the block-axis width is unqueryable, the
+     condition is unknown, and the station falls back to tabs — which is
+     what a vertical preview wants anyway. Named (`pg-station`) so every
+     rule below flips on the same box; the panel itself also carries
+     `.Playground`, and an unnamed query would re-anchor nested subjects to
+     the panel's content box, one border-width apart. */
+  &:where(section) {
+    container: pg-station / inline-size;
+  }
+
+  @container pg-station (min-width: 48rem) {
+    &[data-playground] {
+      /* The galley's two geometry numbers live here, on the common
+         ancestor, because the lens is a SIBLING of the galley and sizes
+         itself from the same two (see § the loupe). */
+      --pg-galley-fs: 0.5625rem;
+      --pg-galley-col: 14;   /* column measure, in galley em */
+      /* Both panes stand this tall — one token, so the editor and the sheet
+         can never drift apart. Short of the full viewport on purpose: a pane
+         that ends before the fold shows there is a page around it. */
+      --pg-pane-h: calc(0.85 * (100dvh - var(--h-header)));
+
+      /* shed the `.Preview` frame — the wrapper is pure layout now, the
+         cards below carry their own chrome */
+      overflow: visible;
+      background: none;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    /* Two SEPARATE cards side by side — the pane box is the grid. */
+    [data-pg-panes] {
+      display: grid;
+      /* The galley takes the wider track: it is the thing being read, and
+         its column count comes out of that width. `minmax(0, …)` on both
+         so neither pane's intrinsic content can floor a track. */
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
+      gap: var(--gutter);
+      align-items: start;
+      /* the strip's own regime is off up here */
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+
+    /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
+    > header {
+      display: none;
+    }
+
+    /* ── The editor card: a terminal, one pane tall ────────────────────
+       Scrolls inside; sticky, so it stays at hand when the sheet grows past
+       a viewport (long user content is allowed to). */
+    [data-pg-panes] > textarea {
+      /* 明寫**列與行**。窄站台給校樣卡的 `order: -1`（把預設那一格排在軌首）
+         在網格裡照樣算——它改的是自動佈局的順序，於是定了欄的編輯區只能被
+         擠到第二列去（實測 1440／1900 下編輯區掉到 y≈1069，整站錯位）。兩塊
+         都把行寫死，順序就管不著它們了。 */
+      grid-row: 1;
+      grid-column: 1;
+      block-size: var(--pg-pane-h);
+      overflow: auto;
+      resize: none;
+      position: sticky;
+      inset-block-start: calc(var(--h-header) + 1rem);
+      /* its own card edge — fixed faint mist, legible on the terminal
+         ground in both themes (web-style.md dark-surface gotcha) */
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      border-radius: var(--r-3);
+    }
+
+    /* ── The galley card (校樣) ───────────────────────────────────────
+       A newspaper proof: the WHOLE text at a glance — tiny type, balanced
+       columns, natural height, no scrollbar. Hover (or keyboard focus)
+       trades overview for reading: type up to legible, height capped to
+       the viewport, scrolling inside. Column width is in em, so the
+       column keeps its character measure across both states and the
+       galley re-folds like a paper rather than reflowing into a blog. */
+    /* The card face — the real paper AND the loupe's copy of it. This must
+       include the LAYOUT, not just the paint: the galley's height comes from
+       flexing against the card, and a clone that laid out as a plain block
+       gave its galley an auto height, so the copy fragmented into different
+       columns than the page it was supposed to be magnifying. */
+    [data-pg-sheet] > [data-pg-paper],
+    .Lens .PgPaper {
+      padding: 1.25rem 1rem;
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      block-size: var(--pg-pane-h);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* The copy clips instead of scrolling — the module mirrors the source's
+       scroll offset onto it, and a scrollbar inside the circle would be a
+       control nobody can reach. */
+    .Lens .PgPaper {
+      overflow: hidden;
+    }
+
+    /* The sheet unit owns the track; the LIFT belongs to its two children,
+       not to the wrapper. A `translate` on the wrapper would make it a
+       stacking context, trapping the switch's z-index inside it — and the
+       switch has to be able to paint above the loupe (see below). */
+    [data-pg-panes] > [data-pg-sheet] {
+      grid-row: 1;
+      grid-column: 2;
+      /* the switch tucks under the sheet's right edge. NOT `align-items:
+         flex-end` — that would align the bled card by its RIGHT edge, so the
+         extra width would grow leftward and the sheet would never reach the
+         window. The card keeps the start edge; only the switch shifts. */
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0;
+    }
+
+    [data-pg-sheet] > [data-pg-paper] {
+      inline-size: 100%;
+      translate: 0 -7rem;
+      box-shadow: 0 1px 0 var(--ui-bg-2q);
+      cursor: zoom-in;
+
+      /* ── the sheet runs off the page to the right ─────────────────────
+         When the galley needs more columns than the track holds, the card
+         stops obeying that track and widens to the WINDOW's right edge,
+         with the last visible column cut in half: a page that ends
+         mid-column is telling you there is more of it. Both numbers are
+         solved in playground.js § fitSheet — they need the viewport and the
+         used column metrics. No JS: the card keeps its track and scrolls,
+         columns filling it whole.
+
+         The CARD is the scroll container, so the whole sheet pans (and the
+         masthead stays put — it is sticky, below). */
+      inline-size: calc(100% + var(--pg-bleed, 0px));
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+
+      /* bled to the window edge, the right side is a cut, not an edge */
+      &[data-pg-bled] {
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+        border-inline-end: 0;
+      }
+    }
+
+    /* The paper's head stays while the body pans — a masthead sliding out
+       of view would make one sheet read as two unrelated pages. */
+    [data-pg-paper] > :is(.Masthead, .Dateline) {
+      position: sticky;
+      inset-inline-start: 0;
+    }
+
+    /* ── the galley face: a PAGE, not a stream ─────────────────────────
+       Definite height ＋ `column-fill: auto` ＝ columns fill top-to-bottom
+       and then continue RIGHTWARD, the way a broadsheet does: a short draft
+       sits in column one and leaves the rest of the sheet white (balancing
+       would ration three lines across three columns), and long copy grows
+       the page sideways into overflow columns you scroll to.
+
+       The scroll lives on the CARD (above), never on the page: a sheet may
+       be wider than the window, the site's layout may not. */
+    .PgGalley {
+      font-size: var(--pg-galley-fs);
+      flex: 1 1 auto;
+      min-block-size: 0;
+      /* Width and column measure are SOLVED (fitSheet), and pinned to a
+         WHOLE number of columns so the columns keep their measure instead of
+         stretching to fill the box — stretching is exactly what makes every
+         visible column complete, and a complete last column signals
+         nothing. The 14em below is a FLOOR: the solve may hand the columns
+         more, never less. */
+      inline-size: var(--pg-galley-w, 100%);
+      columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
+      column-gap: 2em;
+      column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
+      column-fill: auto;
+    }
+
+    /* The narrower measure wants a narrower indent. On the CLASS: this is
+       part of the galley's face, and the loupe's copy has to indent the same
+       or it breaks its lines somewhere else and stops being a copy. */
+    .PgGalley {
+      --han-prose-indent: 1em;
+    }
+
+    [data-pg-preview] {
+      /* Keyboard reading mode (`:focus-visible`, not :hover/:focus — the
+         mouse gets the lens, and a click-to-select must not reflow the
+         card): unfold the page into ONE vertical column at reading size.
+         A keyboard scrolls a column happily; chasing a sideways page with
+         arrow keys is no way to read. */
+      &:focus-visible {
+        font-size: 0.875rem;
+        inline-size: 100%;
+        columns: auto;
+        column-rule: none;
+        overflow-x: hidden;
+        overflow-y: auto;
+        cursor: auto;
+      }
+    }
+
+
+    /* ── The loupe (home/lens.css + home/lens.js) — a circular window
+       painting a live copy of the WHOLE paper card (masthead and dateline
+       included: they are part of the page being proofed).
+
+       Only the two geometry tokens are the station's business. 1.75× lifts
+       the 9px galley to ~16px — reading size, the same ballpark as the
+       studio — and the diameter is 1.75 × the MAGNIFIED column, because a
+       circle only offers its full width across the middle.
+
+       On stage from the first frame, except while the writer is IN the
+       editor: typing is the one moment the proof isn't being read, and a
+       loupe hanging over the page then is furniture in the way. `:has()` on
+       the panel, keyed on the textarea's own focus. */
+    .Lens {
+      display: block;
+      --lens-zoom: 1.75;
+      --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
+    }
+
+    &[data-playground]:has([data-pg-panes] > textarea:focus) .Lens { opacity: 0; }
+  }
+}
+
+
+/* ── 認真模式 ─────────────────────────────────────────────────────────
+   A checkbox wearing a button: the input keeps the state (checked ⇒ in the
+   studio, so control and reality can't drift) while the label does the
+   talking. Not the `.Toggle` switch — a switch reads as「撥回來就出去」, and
+   inside the modal only the ✕ can do that. */
+.Playground .PgFocus {
+  &  {
+    margin-inline-start: auto;
+    padding: 0.3125rem 0.875rem;
+    font-family: var(--han-font-default);
+    font-size: 0.8125rem;
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-2);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      border-color     150ms ease,
+      color            150ms ease
+    ;
+  }
+
+  &:hover {
+    border-color: var(--ui-text);
+  }
+
+  /* the ring belongs on the label — the input it names is visually hidden */
+  :where(#pg-focus:focus-visible) + & {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* One control strip under the lede: which text is being typeset at the
+   start, the 認真模式 switch at the end. */
+.Playground:where(section) > hgroup {
+  /* above the panel's stacking context — a lens parked near the top of the
+     paper must never cover the controls */
+  position: relative;
+  /* z-index: 1; */
+  margin-block-end: 1rem;
+  max-inline-size: clamp(18rem, 45%, 40rem);
+}
+.Playground:where(section) > hgroup > .PgControls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-block-start: 1rem;
+  /* Clustered at the start, NOT spread across the head: the head's measure
+     is a share of the station, so on a wide screen its far end reaches over
+     the galley card — and a switch floating on the newspaper's masthead
+     reads as part of the paper. Keeping both controls together also says
+     what they are: one strip of controls for one station. */
+  justify-content: flex-start;
+}
+
+/* The studio: a fullscreen modal holding the SAME two panes side by side.
+   Top layer means the page can never scroll out from under the writer;
+   exit is the ✕ alone (playground.js cancels Esc). */
+.PgStudio {
+  &[open] {
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  & {
+    inline-size: 100vw;
+    block-size: 100dvh;
+    max-inline-size: none;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+  }
+
+  > header {
+    display: flex;
+    align-items: center;
+    /* title · content tabs … ✕ — the close button is pushed to the far end
+       by its own auto margin, so the borrowed tabs can sit beside the title
+       without space-between flinging the three apart. */
+    gap: 1rem;
+    padding: 0.625rem var(--gutter);
+    border-block-end: 1px solid var(--ui-rule);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    color: var(--ui-supplement-text);
+
+    > button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-inline-start: auto;
+      inline-size: 28px;
+      block-size: 28px;
+      padding: 0;
+      border: 0;
+      border-radius: var(--r-2);
+      background: none;
+      color: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 150ms ease, background-color 150ms ease;
+
+      &:hover, &:focus-visible { opacity: 1; background: var(--ui-panel); }
+    }
+  }
+
+  [data-pg-studio-body] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gutter);
+    padding: var(--gutter);
+    min-block-size: 0;
+
+    /* Both panes fill the row and scroll inside — the writer's viewport is
+       the studio, not the page. The sheet arrives dressed for the page
+       (lifted, bled to the window's edge, its column box pinned by the
+       solve), so the positional half is handed back here — but it is still
+       a PAGE: columns fill downward then continue rightward, and you pan it.
+       The studio only gives it more room and bigger type. */
+    textarea,
+    [data-pg-sheet] {
+      block-size: 100%;
+      min-block-size: 0;
+      overflow: hidden;
+    }
+
+    textarea {
+      overflow: auto;
+      resize: none;
+    }
+
+    [data-pg-sheet] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    [data-pg-sheet] > [data-pg-paper] {
+      flex: 1 1 auto;
+      min-block-size: 0;
+      inline-size: 100%;
+      block-size: auto;
+      translate: none;
+      /* pans, like the page — the sheet is the same sheet */
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+      border-inline-end: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      cursor: auto;
+    }
+
+    /* the loupe belongs to the page; in here the type is already legible */
+    .Lens { display: none; }
+
+    textarea {
+      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+      border-radius: var(--r-3);
+    }
+
+    [data-pg-paper] {
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      padding: 1.5rem 2rem;
+    }
+
+    /* reading-size newspaper: the studio is for WRITING, so the proof
+       reads at full size — real columns, but legible ones */
+    .PgGalley {
+      /* Reading size, wider measure — same token, so the module's column
+         arithmetic reads the same way in here as it does on the page. The
+         page's half-cut solve stays outside; what the box still needs is to
+         COVER its columns (fitSheet), or the last one would sit flush
+         against the card's edge. */
+      --pg-galley-col: 18;
+
+      inline-size: var(--pg-galley-w, 100%);
+      block-size: auto;
+      font-size: 0.9375rem;
+      columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
+      column-gap: 2.5em;
+      column-fill: auto;
+      cursor: auto;
+    }
+  }
+}
+
+/* the page behind the studio must not rubber-band along */
+body:has(.PgStudio[open]) {
+  overflow: hidden;
+}

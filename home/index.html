@@ -186,13 +186,738 @@
   </label>
 </section>
 
-<!-- {{ stationSemanticsSection }} — 這一輪先不搬（舊站的 _home.html 目前把這一行拿掉了，是 owner 的實驗，位置照原順序留在這裡） -->
+<!-- {{ stationSemanticsSection }} — 這一輪先不搬（舊站的 _home.html 目前把這一行拿掉了，是 owner 的實驗，位置照原順序留著） -->
 <!-- {{ stationFontsSection }} — 這一輪先不搬 -->
 <!-- {{ stationLinesSection }} — 這一輪先不搬 -->
 <!-- {{ stationProseSection }} — 這一輪先不搬 -->
-<!-- {{ stationCraftSection }} — 這一輪先不搬 -->
-<!-- {{ stationPlaygroundSection }} — 這一輪先不搬 -->
-<!-- {{ stationSnippetSection }} — 這一輪先不搬 -->
+<!-- Station V・Architecture (工法) — "won't fight your CSS". Three REAL demos
+     prove the claim on THIS page: (1) a user rule beats the framework because
+     han-semantics wraps every selector in :where() (zero specificity); (2) the
+     four cascade layers map 1:1 to the console's four module switches; (3) one
+     custom property on a container re-scopes a feature via inheritance /
+     @container style(). -->
+<section data-revealed id="station-craft" data-station="craft" data-wm="零">
+  <hgroup>
+    <p>伍・工法</p>
+    <h2>輕如鴻毛的排版框架</h2>
+  </hgroup>
+
+  <p>一百一十六個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。</p>
+
+  <!-- The three equations read as one plate: 5.1 spans the top, a rule under
+       it, then the two corollaries side by side. Split across the section they
+       read as three asides; together they are what they actually are — the
+       framework's whole contract in three lines. The worked example follows,
+       so the reader meets the claim before the proof of it. -->
+  <!-- The three axioms are real MathML (Core — Baseline 2023), not spans
+       dressed as maths. Overkill for three one-line statements, yes; but the
+       station's argument IS that these are identities rather than slogans,
+       and marking them up as identities is the one way to say so to a screen
+       reader, a copy-paste, or a search index. `<mtext>` for the prose runs
+       so the CJK stays upright and unstyled by the italic default `<mi>`
+       carries; `<mi>` only for the bound variables the theorem quantifies
+       over. The equation numbers stay OUTSIDE the <math> — they number the
+       statement, they are not part of it. -->
+  <p class="AxLede">漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要權重大於零或位於後方，就能輕鬆覆蓋（式5.1）。</p>
+
+  <div class="Axioms">
+    <div class="Ax Ax-lead">
+      <p class="Formula" lang="en">
+        <math display="block">
+          <mrow>
+            <!-- Both sides wrapped in their own <mrow>: a top-level <mrow>'s
+                 children are where MathML is allowed to break the line, so a
+                 flat list drops「權重」onto a line of its own the moment the
+                 measure gets tight. Nested, each side is one atom. -->
+            <mrow>
+              <mi class="Fn">:where</mi>
+              <mo class="Fn" stretchy="false">(</mo><mi>s</mi><mo class="Fn" stretchy="false">)</mo>
+            </mrow>
+            <mo>≡</mo>
+            <mrow>
+              <mi>s</mi>
+              <mtext class="Term">，權重</mtext>
+              <mo>→</mo>
+              <mn class="Zero">0</mn>
+            </mrow>
+          </mrow>
+        </math>
+        <small class="EqNo">（式5.1）</small>
+      </p>
+      <p class="AxNote">其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。</p>
+    </div>
+
+    <div class="Ax">
+      <p class="Formula">
+        <math display="block">
+          <mrow>
+            <mtext>未分層</mtext>
+            <mo>≻</mo>
+            <mtext class="Code">@layer</mtext>
+          </mrow>
+        </math>
+        <small class="EqNo">（式5.2）</small>
+      </p>
+      <p class="AxNote">未分層的宣告永遠蓋過分層的——你的一條規則就贏。</p>
+    </div>
+
+    <div class="Ax">
+      <p class="Formula">
+        <math display="block">
+          <mrow>
+            <mtext>機能</mtext>
+            <mo>=</mo>
+            <mi>f</mi>
+            <mo stretchy="false">(</mo><mtext>容器變數</mtext><mo stretchy="false">)</mo>
+          </mrow>
+        </math>
+        <small class="EqNo">（式5.3）</small>
+      </p>
+      <p class="AxNote">容器上寫一個變數，那片子樹的機能就跟著改。</p>
+    </div>
+  </div>
+
+  <p class="AxTail">配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。</p>
+
+  <!-- 例5.1 — the worked example, set as a CASCADE STACK, the way devtools
+       shows one: han.css's real rule, then the reader's rule underneath, and
+       the framework declaration struck through because it lost. The claim
+       「不跟你的 CSS 打架」is abstract until you have seen the loser crossed
+       out, and every pair here is real — the selector, the property and the
+       value are what ships in dist/han.*.css.
+
+       The「任意選擇器」quantifier is made visible by cycling five of them,
+       one per module and deliberately unalike in shape (a :has() pair, a
+       ten-branch heading rule, a JS-marked subtree, a ruby list, a :lang()
+       negation). They range from (0,0,2) to (0,2,2) and lose to the reader
+       every time — which is the point the roster is making.
+
+       READER-DRIVEN, never automatic. This is an equation to be read, not a
+       marquee; a line that moves on its own while you are parsing it is a
+       worse version of the same line.
+
+       Neither weight is typed in: vite computes both from the selectors' own
+       text (manual/_specificity.js) into `data-spec` / `data-mine-spec`, so
+       editing a selector can never leave a stale triple beside it. The first
+       item's pair is also baked into the <b>s, so the plate is correct with
+       JS off — home/carousel.js only takes it from there. -->
+  <div class="Theorem">
+    <div class="Example">
+      <ul class="SelRing">
+        <li>
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">Layer <b>han-semantics</b></p>
+              <p class="RuleTag" data-brand><span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark"><svg class="BrandGlyph" viewBox="0 0 1000 1000" fill-rule="evenodd" aria-hidden="true"><path d="M103.1 49.3Q156.7 58.0 190.8 73.7Q224.8 89.5 242.0 108.7Q259.2 127.8 262.7 145.4Q266.3 163.0 259.5 175.8Q252.8 188.6 238.9 192.4Q225.1 196.1 206.7 186.6Q198.3 163.9 179.6 139.7Q160.9 115.4 138.4 93.7Q116.0 71.9 94.5 57.4Z" /><path d="M45.8 274.0Q96.8 281.4 128.8 296.1Q160.8 310.8 176.4 328.8Q192.0 346.8 195.0 364.1Q198 381.4 190.6 393.4Q183.1 405.5 169.4 408.3Q155.6 411.2 137.9 401.0Q128.0 369.3 97.8 336.4Q67.7 303.5 36.2 283.0Z" /><path d="M94.7 675.3Q103.6 675.3 107.6 672.4Q111.6 669.5 119.1 654.3Q124.5 644.1 129.4 633.7Q134.3 623.4 144.1 601.7Q153.9 580.0 172.7 537.1Q191.4 494.2 224.0 419.4Q256.5 344.7 308.0 226.6L326.7 231.4Q314.2 268.4 297.8 315.2Q281.4 362.0 264.3 410.9Q247.1 459.8 231.3 504.4Q215.6 549.0 204.5 581.9Q193.4 614.9 188.6 629.5Q181.8 652.3 178.0 674.9Q174.2 697.4 174.4 715.1Q174.6 732.3 179.0 749.9Q183.3 767.5 188.3 788.2Q193.4 808.9 197.1 833.4Q200.9 857.9 199.1 888.9Q198.1 921.1 184.0 939.4Q169.9 957.8 144.7 957.8Q131.3 957.8 122.9 944.8Q114.6 931.7 112.9 908.0Q120.0 856.6 120.4 814.5Q120.8 772.4 115.8 745.3Q110.8 718.3 99.4 711.1Q89.4 703.8 77.9 701.0Q66.3 698.2 50.3 697.2L50.3 675.3Q50.3 675.3 58.9 675.3Q67.5 675.3 78.6 675.3Q89.7 675.3 94.7 675.3Z" /><path d="M284.9 143.5L833.8 143.5L878.9 86.6Q878.9 86.6 893.0 97.6Q907.1 108.7 926.3 125.0Q945.6 141.2 961.4 157.1Q957.4 173.1 935.2 173.1L292.9 173.1Z" /><path d="M454.7 41.6L553.0 51.6Q551.2 61.6 543.3 69.1Q535.4 76.6 516.0 78.8L516.0 288.9Q516.0 291.1 508.8 294.0Q501.6 296.9 490.7 299.2Q479.8 301.5 468.3 301.5L454.7 301.5ZM476.4 244.2L730.3 244.2L730.3 273.0L476.4 273.0Z" /><path d="M695.0 41.6L794.0 51.6Q792.2 61.6 784.2 69.1Q776.2 76.6 757.8 78.8L757.8 283.9Q757.8 286.1 750.5 289.0Q743.2 291.9 731.8 294.2Q720.5 296.5 708.7 296.5L695.0 296.5Z" /><path d="M344.1 348.1L344.1 317.8L344.1 317.8L411.1 348.1L833.5 348.1L833.5 376.9L405.9 376.9L405.9 543.0Q405.9 545.6 398.1 550.7Q390.3 555.9 378.0 559.3Q365.8 562.8 353.2 562.8L344.1 562.8ZM392.9 490.0L830.4 490.0L830.4 518.7L392.9 518.7Z" /><path d="M810.5 348.1L800.7 348.1L834.8 310.0L914.5 369.5Q909.7 374.5 898.7 379.9Q887.6 385.3 873.8 388.3L873.8 533.2Q873.8 536.2 864.2 540.9Q854.6 545.5 842.4 549.5Q830.2 553.5 820.3 553.5L810.5 553.5Z" /><path d="M319.3 604.6L789.9 604.6L834.7 548.9Q834.7 548.9 849.1 559.9Q863.5 570.8 883.4 587.0Q903.3 603.1 918.9 618.2Q915.2 634.2 893.5 634.2L327.3 634.2Z" /><path d="M277.9 715.1L828.0 715.1L874.5 657.5Q874.5 657.5 883.0 664.2Q891.6 671.0 905.2 682.0Q918.7 693.1 933.4 705.3Q948.1 717.6 960.4 728.6Q957.2 744.6 933.9 744.6L285.9 744.6Z" /><path d="M572.8 244.2L637.3 244.2L637.3 555.8Q637.3 612.8 628.9 663.5Q620.6 714.3 598.0 758.0Q575.5 801.8 534.1 838.6Q492.7 875.3 426.5 904.9Q360.4 934.4 265.1 956.6L256.1 941.3Q355.1 908.6 417.2 870.3Q479.3 832.1 513.4 786.0Q547.4 739.9 560.1 683.3Q572.8 626.8 572.8 557.6Z" /><path d="M639.1 715.1Q668.9 762.1 718.8 796.8Q768.7 831.5 831.9 852.7Q895.1 873.9 964.1 882.7L963.9 892.9Q917.1 904.4 907.7 955.8Q805.6 927.5 734.8 870.9Q664.0 814.3 624.6 723.0Z" /></svg>漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span></p>
+            </div>
+            <p class="At" lang="en">@container style(--han-semantics: on) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@container style(--han-cite-title-marks: wavy) {</p>
+            <div class="Nest">
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: .125em;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>未分層</p>
+              <p class="RuleTag">開發者的樣式</p>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">Layer <b>han-prose</b></p>
+              <p class="RuleTag" data-brand><span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark"><svg class="BrandGlyph" viewBox="0 0 1000 1000" fill-rule="evenodd" aria-hidden="true"><path d="M103.1 49.3Q156.7 58.0 190.8 73.7Q224.8 89.5 242.0 108.7Q259.2 127.8 262.7 145.4Q266.3 163.0 259.5 175.8Q252.8 188.6 238.9 192.4Q225.1 196.1 206.7 186.6Q198.3 163.9 179.6 139.7Q160.9 115.4 138.4 93.7Q116.0 71.9 94.5 57.4Z" /><path d="M45.8 274.0Q96.8 281.4 128.8 296.1Q160.8 310.8 176.4 328.8Q192.0 346.8 195.0 364.1Q198 381.4 190.6 393.4Q183.1 405.5 169.4 408.3Q155.6 411.2 137.9 401.0Q128.0 369.3 97.8 336.4Q67.7 303.5 36.2 283.0Z" /><path d="M94.7 675.3Q103.6 675.3 107.6 672.4Q111.6 669.5 119.1 654.3Q124.5 644.1 129.4 633.7Q134.3 623.4 144.1 601.7Q153.9 580.0 172.7 537.1Q191.4 494.2 224.0 419.4Q256.5 344.7 308.0 226.6L326.7 231.4Q314.2 268.4 297.8 315.2Q281.4 362.0 264.3 410.9Q247.1 459.8 231.3 504.4Q215.6 549.0 204.5 581.9Q193.4 614.9 188.6 629.5Q181.8 652.3 178.0 674.9Q174.2 697.4 174.4 715.1Q174.6 732.3 179.0 749.9Q183.3 767.5 188.3 788.2Q193.4 808.9 197.1 833.4Q200.9 857.9 199.1 888.9Q198.1 921.1 184.0 939.4Q169.9 957.8 144.7 957.8Q131.3 957.8 122.9 944.8Q114.6 931.7 112.9 908.0Q120.0 856.6 120.4 814.5Q120.8 772.4 115.8 745.3Q110.8 718.3 99.4 711.1Q89.4 703.8 77.9 701.0Q66.3 698.2 50.3 697.2L50.3 675.3Q50.3 675.3 58.9 675.3Q67.5 675.3 78.6 675.3Q89.7 675.3 94.7 675.3Z" /><path d="M284.9 143.5L833.8 143.5L878.9 86.6Q878.9 86.6 893.0 97.6Q907.1 108.7 926.3 125.0Q945.6 141.2 961.4 157.1Q957.4 173.1 935.2 173.1L292.9 173.1Z" /><path d="M454.7 41.6L553.0 51.6Q551.2 61.6 543.3 69.1Q535.4 76.6 516.0 78.8L516.0 288.9Q516.0 291.1 508.8 294.0Q501.6 296.9 490.7 299.2Q479.8 301.5 468.3 301.5L454.7 301.5ZM476.4 244.2L730.3 244.2L730.3 273.0L476.4 273.0Z" /><path d="M695.0 41.6L794.0 51.6Q792.2 61.6 784.2 69.1Q776.2 76.6 757.8 78.8L757.8 283.9Q757.8 286.1 750.5 289.0Q743.2 291.9 731.8 294.2Q720.5 296.5 708.7 296.5L695.0 296.5Z" /><path d="M344.1 348.1L344.1 317.8L344.1 317.8L411.1 348.1L833.5 348.1L833.5 376.9L405.9 376.9L405.9 543.0Q405.9 545.6 398.1 550.7Q390.3 555.9 378.0 559.3Q365.8 562.8 353.2 562.8L344.1 562.8ZM392.9 490.0L830.4 490.0L830.4 518.7L392.9 518.7Z" /><path d="M810.5 348.1L800.7 348.1L834.8 310.0L914.5 369.5Q909.7 374.5 898.7 379.9Q887.6 385.3 873.8 388.3L873.8 533.2Q873.8 536.2 864.2 540.9Q854.6 545.5 842.4 549.5Q830.2 553.5 820.3 553.5L810.5 553.5Z" /><path d="M319.3 604.6L789.9 604.6L834.7 548.9Q834.7 548.9 849.1 559.9Q863.5 570.8 883.4 587.0Q903.3 603.1 918.9 618.2Q915.2 634.2 893.5 634.2L327.3 634.2Z" /><path d="M277.9 715.1L828.0 715.1L874.5 657.5Q874.5 657.5 883.0 664.2Q891.6 671.0 905.2 682.0Q918.7 693.1 933.4 705.3Q948.1 717.6 960.4 728.6Q957.2 744.6 933.9 744.6L285.9 744.6Z" /><path d="M572.8 244.2L637.3 244.2L637.3 555.8Q637.3 612.8 628.9 663.5Q620.6 714.3 598.0 758.0Q575.5 801.8 534.1 838.6Q492.7 875.3 426.5 904.9Q360.4 934.4 265.1 956.6L256.1 941.3Q355.1 908.6 417.2 870.3Q479.3 832.1 513.4 786.0Q547.4 739.9 560.1 683.3Q572.8 626.8 572.8 557.6Z" /><path d="M639.1 715.1Q668.9 762.1 718.8 796.8Q768.7 831.5 831.9 852.7Q895.1 873.9 964.1 882.7L963.9 892.9Q917.1 904.4 907.7 955.8Q805.6 927.5 734.8 870.9Q664.0 814.3 624.6 723.0Z" /></svg>漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span></p>
+            </div>
+            <p class="At" lang="en">@container style(--han-prose: on) {</p>
+            <div class="Nest">
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>未分層</p>
+              <p class="RuleTag">開發者的樣式</p>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">Layer <b>han-semantics</b></p>
+              <p class="RuleTag" data-brand><span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark"><svg class="BrandGlyph" viewBox="0 0 1000 1000" fill-rule="evenodd" aria-hidden="true"><path d="M103.1 49.3Q156.7 58.0 190.8 73.7Q224.8 89.5 242.0 108.7Q259.2 127.8 262.7 145.4Q266.3 163.0 259.5 175.8Q252.8 188.6 238.9 192.4Q225.1 196.1 206.7 186.6Q198.3 163.9 179.6 139.7Q160.9 115.4 138.4 93.7Q116.0 71.9 94.5 57.4Z" /><path d="M45.8 274.0Q96.8 281.4 128.8 296.1Q160.8 310.8 176.4 328.8Q192.0 346.8 195.0 364.1Q198 381.4 190.6 393.4Q183.1 405.5 169.4 408.3Q155.6 411.2 137.9 401.0Q128.0 369.3 97.8 336.4Q67.7 303.5 36.2 283.0Z" /><path d="M94.7 675.3Q103.6 675.3 107.6 672.4Q111.6 669.5 119.1 654.3Q124.5 644.1 129.4 633.7Q134.3 623.4 144.1 601.7Q153.9 580.0 172.7 537.1Q191.4 494.2 224.0 419.4Q256.5 344.7 308.0 226.6L326.7 231.4Q314.2 268.4 297.8 315.2Q281.4 362.0 264.3 410.9Q247.1 459.8 231.3 504.4Q215.6 549.0 204.5 581.9Q193.4 614.9 188.6 629.5Q181.8 652.3 178.0 674.9Q174.2 697.4 174.4 715.1Q174.6 732.3 179.0 749.9Q183.3 767.5 188.3 788.2Q193.4 808.9 197.1 833.4Q200.9 857.9 199.1 888.9Q198.1 921.1 184.0 939.4Q169.9 957.8 144.7 957.8Q131.3 957.8 122.9 944.8Q114.6 931.7 112.9 908.0Q120.0 856.6 120.4 814.5Q120.8 772.4 115.8 745.3Q110.8 718.3 99.4 711.1Q89.4 703.8 77.9 701.0Q66.3 698.2 50.3 697.2L50.3 675.3Q50.3 675.3 58.9 675.3Q67.5 675.3 78.6 675.3Q89.7 675.3 94.7 675.3Z" /><path d="M284.9 143.5L833.8 143.5L878.9 86.6Q878.9 86.6 893.0 97.6Q907.1 108.7 926.3 125.0Q945.6 141.2 961.4 157.1Q957.4 173.1 935.2 173.1L292.9 173.1Z" /><path d="M454.7 41.6L553.0 51.6Q551.2 61.6 543.3 69.1Q535.4 76.6 516.0 78.8L516.0 288.9Q516.0 291.1 508.8 294.0Q501.6 296.9 490.7 299.2Q479.8 301.5 468.3 301.5L454.7 301.5ZM476.4 244.2L730.3 244.2L730.3 273.0L476.4 273.0Z" /><path d="M695.0 41.6L794.0 51.6Q792.2 61.6 784.2 69.1Q776.2 76.6 757.8 78.8L757.8 283.9Q757.8 286.1 750.5 289.0Q743.2 291.9 731.8 294.2Q720.5 296.5 708.7 296.5L695.0 296.5Z" /><path d="M344.1 348.1L344.1 317.8L344.1 317.8L411.1 348.1L833.5 348.1L833.5 376.9L405.9 376.9L405.9 543.0Q405.9 545.6 398.1 550.7Q390.3 555.9 378.0 559.3Q365.8 562.8 353.2 562.8L344.1 562.8ZM392.9 490.0L830.4 490.0L830.4 518.7L392.9 518.7Z" /><path d="M810.5 348.1L800.7 348.1L834.8 310.0L914.5 369.5Q909.7 374.5 898.7 379.9Q887.6 385.3 873.8 388.3L873.8 533.2Q873.8 536.2 864.2 540.9Q854.6 545.5 842.4 549.5Q830.2 553.5 820.3 553.5L810.5 553.5Z" /><path d="M319.3 604.6L789.9 604.6L834.7 548.9Q834.7 548.9 849.1 559.9Q863.5 570.8 883.4 587.0Q903.3 603.1 918.9 618.2Q915.2 634.2 893.5 634.2L327.3 634.2Z" /><path d="M277.9 715.1L828.0 715.1L874.5 657.5Q874.5 657.5 883.0 664.2Q891.6 671.0 905.2 682.0Q918.7 693.1 933.4 705.3Q948.1 717.6 960.4 728.6Q957.2 744.6 933.9 744.6L285.9 744.6Z" /><path d="M572.8 244.2L637.3 244.2L637.3 555.8Q637.3 612.8 628.9 663.5Q620.6 714.3 598.0 758.0Q575.5 801.8 534.1 838.6Q492.7 875.3 426.5 904.9Q360.4 934.4 265.1 956.6L256.1 941.3Q355.1 908.6 417.2 870.3Q479.3 832.1 513.4 786.0Q547.4 739.9 560.1 683.3Q572.8 626.8 572.8 557.6Z" /><path d="M639.1 715.1Q668.9 762.1 718.8 796.8Q768.7 831.5 831.9 852.7Q895.1 873.9 964.1 882.7L963.9 892.9Q917.1 904.4 907.7 955.8Q805.6 927.5 734.8 870.9Q664.0 814.3 624.6 723.0Z" /></svg>漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span></p>
+            </div>
+            <p class="At" lang="en">@container style(--han-semantics: on) {</p>
+            <div class="Nest">
+            <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
+            <div class="Nest">
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: initial;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>未分層</p>
+              <p class="RuleTag">開發者的樣式</p>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-inline-end: .25em;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">Layer <b>han-semantics</b></p>
+              <p class="RuleTag" data-brand><span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark"><svg class="BrandGlyph" viewBox="0 0 1000 1000" fill-rule="evenodd" aria-hidden="true"><path d="M103.1 49.3Q156.7 58.0 190.8 73.7Q224.8 89.5 242.0 108.7Q259.2 127.8 262.7 145.4Q266.3 163.0 259.5 175.8Q252.8 188.6 238.9 192.4Q225.1 196.1 206.7 186.6Q198.3 163.9 179.6 139.7Q160.9 115.4 138.4 93.7Q116.0 71.9 94.5 57.4Z" /><path d="M45.8 274.0Q96.8 281.4 128.8 296.1Q160.8 310.8 176.4 328.8Q192.0 346.8 195.0 364.1Q198 381.4 190.6 393.4Q183.1 405.5 169.4 408.3Q155.6 411.2 137.9 401.0Q128.0 369.3 97.8 336.4Q67.7 303.5 36.2 283.0Z" /><path d="M94.7 675.3Q103.6 675.3 107.6 672.4Q111.6 669.5 119.1 654.3Q124.5 644.1 129.4 633.7Q134.3 623.4 144.1 601.7Q153.9 580.0 172.7 537.1Q191.4 494.2 224.0 419.4Q256.5 344.7 308.0 226.6L326.7 231.4Q314.2 268.4 297.8 315.2Q281.4 362.0 264.3 410.9Q247.1 459.8 231.3 504.4Q215.6 549.0 204.5 581.9Q193.4 614.9 188.6 629.5Q181.8 652.3 178.0 674.9Q174.2 697.4 174.4 715.1Q174.6 732.3 179.0 749.9Q183.3 767.5 188.3 788.2Q193.4 808.9 197.1 833.4Q200.9 857.9 199.1 888.9Q198.1 921.1 184.0 939.4Q169.9 957.8 144.7 957.8Q131.3 957.8 122.9 944.8Q114.6 931.7 112.9 908.0Q120.0 856.6 120.4 814.5Q120.8 772.4 115.8 745.3Q110.8 718.3 99.4 711.1Q89.4 703.8 77.9 701.0Q66.3 698.2 50.3 697.2L50.3 675.3Q50.3 675.3 58.9 675.3Q67.5 675.3 78.6 675.3Q89.7 675.3 94.7 675.3Z" /><path d="M284.9 143.5L833.8 143.5L878.9 86.6Q878.9 86.6 893.0 97.6Q907.1 108.7 926.3 125.0Q945.6 141.2 961.4 157.1Q957.4 173.1 935.2 173.1L292.9 173.1Z" /><path d="M454.7 41.6L553.0 51.6Q551.2 61.6 543.3 69.1Q535.4 76.6 516.0 78.8L516.0 288.9Q516.0 291.1 508.8 294.0Q501.6 296.9 490.7 299.2Q479.8 301.5 468.3 301.5L454.7 301.5ZM476.4 244.2L730.3 244.2L730.3 273.0L476.4 273.0Z" /><path d="M695.0 41.6L794.0 51.6Q792.2 61.6 784.2 69.1Q776.2 76.6 757.8 78.8L757.8 283.9Q757.8 286.1 750.5 289.0Q743.2 291.9 731.8 294.2Q720.5 296.5 708.7 296.5L695.0 296.5Z" /><path d="M344.1 348.1L344.1 317.8L344.1 317.8L411.1 348.1L833.5 348.1L833.5 376.9L405.9 376.9L405.9 543.0Q405.9 545.6 398.1 550.7Q390.3 555.9 378.0 559.3Q365.8 562.8 353.2 562.8L344.1 562.8ZM392.9 490.0L830.4 490.0L830.4 518.7L392.9 518.7Z" /><path d="M810.5 348.1L800.7 348.1L834.8 310.0L914.5 369.5Q909.7 374.5 898.7 379.9Q887.6 385.3 873.8 388.3L873.8 533.2Q873.8 536.2 864.2 540.9Q854.6 545.5 842.4 549.5Q830.2 553.5 820.3 553.5L810.5 553.5Z" /><path d="M319.3 604.6L789.9 604.6L834.7 548.9Q834.7 548.9 849.1 559.9Q863.5 570.8 883.4 587.0Q903.3 603.1 918.9 618.2Q915.2 634.2 893.5 634.2L327.3 634.2Z" /><path d="M277.9 715.1L828.0 715.1L874.5 657.5Q874.5 657.5 883.0 664.2Q891.6 671.0 905.2 682.0Q918.7 693.1 933.4 705.3Q948.1 717.6 960.4 728.6Q957.2 744.6 933.9 744.6L285.9 744.6Z" /><path d="M572.8 244.2L637.3 244.2L637.3 555.8Q637.3 612.8 628.9 663.5Q620.6 714.3 598.0 758.0Q575.5 801.8 534.1 838.6Q492.7 875.3 426.5 904.9Q360.4 934.4 265.1 956.6L256.1 941.3Q355.1 908.6 417.2 870.3Q479.3 832.1 513.4 786.0Q547.4 739.9 560.1 683.3Q572.8 626.8 572.8 557.6Z" /><path d="M639.1 715.1Q668.9 762.1 718.8 796.8Q768.7 831.5 831.9 852.7Q895.1 873.9 964.1 882.7L963.9 892.9Q917.1 904.4 907.7 955.8Q805.6 927.5 734.8 870.9Q664.0 814.3 624.6 723.0Z" /></svg>漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span></p>
+            </div>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>未分層</p>
+              <p class="RuleTag">開發者的樣式</p>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>ruby.zhuyin</code> {</p>
+            <p class="RuleDecl" lang="en"><code>ruby-position: over;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li>
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">Layer <b>han-semantics</b></p>
+              <p class="RuleTag" data-brand><span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark"><svg class="BrandGlyph" viewBox="0 0 1000 1000" fill-rule="evenodd" aria-hidden="true"><path d="M103.1 49.3Q156.7 58.0 190.8 73.7Q224.8 89.5 242.0 108.7Q259.2 127.8 262.7 145.4Q266.3 163.0 259.5 175.8Q252.8 188.6 238.9 192.4Q225.1 196.1 206.7 186.6Q198.3 163.9 179.6 139.7Q160.9 115.4 138.4 93.7Q116.0 71.9 94.5 57.4Z" /><path d="M45.8 274.0Q96.8 281.4 128.8 296.1Q160.8 310.8 176.4 328.8Q192.0 346.8 195.0 364.1Q198 381.4 190.6 393.4Q183.1 405.5 169.4 408.3Q155.6 411.2 137.9 401.0Q128.0 369.3 97.8 336.4Q67.7 303.5 36.2 283.0Z" /><path d="M94.7 675.3Q103.6 675.3 107.6 672.4Q111.6 669.5 119.1 654.3Q124.5 644.1 129.4 633.7Q134.3 623.4 144.1 601.7Q153.9 580.0 172.7 537.1Q191.4 494.2 224.0 419.4Q256.5 344.7 308.0 226.6L326.7 231.4Q314.2 268.4 297.8 315.2Q281.4 362.0 264.3 410.9Q247.1 459.8 231.3 504.4Q215.6 549.0 204.5 581.9Q193.4 614.9 188.6 629.5Q181.8 652.3 178.0 674.9Q174.2 697.4 174.4 715.1Q174.6 732.3 179.0 749.9Q183.3 767.5 188.3 788.2Q193.4 808.9 197.1 833.4Q200.9 857.9 199.1 888.9Q198.1 921.1 184.0 939.4Q169.9 957.8 144.7 957.8Q131.3 957.8 122.9 944.8Q114.6 931.7 112.9 908.0Q120.0 856.6 120.4 814.5Q120.8 772.4 115.8 745.3Q110.8 718.3 99.4 711.1Q89.4 703.8 77.9 701.0Q66.3 698.2 50.3 697.2L50.3 675.3Q50.3 675.3 58.9 675.3Q67.5 675.3 78.6 675.3Q89.7 675.3 94.7 675.3Z" /><path d="M284.9 143.5L833.8 143.5L878.9 86.6Q878.9 86.6 893.0 97.6Q907.1 108.7 926.3 125.0Q945.6 141.2 961.4 157.1Q957.4 173.1 935.2 173.1L292.9 173.1Z" /><path d="M454.7 41.6L553.0 51.6Q551.2 61.6 543.3 69.1Q535.4 76.6 516.0 78.8L516.0 288.9Q516.0 291.1 508.8 294.0Q501.6 296.9 490.7 299.2Q479.8 301.5 468.3 301.5L454.7 301.5ZM476.4 244.2L730.3 244.2L730.3 273.0L476.4 273.0Z" /><path d="M695.0 41.6L794.0 51.6Q792.2 61.6 784.2 69.1Q776.2 76.6 757.8 78.8L757.8 283.9Q757.8 286.1 750.5 289.0Q743.2 291.9 731.8 294.2Q720.5 296.5 708.7 296.5L695.0 296.5Z" /><path d="M344.1 348.1L344.1 317.8L344.1 317.8L411.1 348.1L833.5 348.1L833.5 376.9L405.9 376.9L405.9 543.0Q405.9 545.6 398.1 550.7Q390.3 555.9 378.0 559.3Q365.8 562.8 353.2 562.8L344.1 562.8ZM392.9 490.0L830.4 490.0L830.4 518.7L392.9 518.7Z" /><path d="M810.5 348.1L800.7 348.1L834.8 310.0L914.5 369.5Q909.7 374.5 898.7 379.9Q887.6 385.3 873.8 388.3L873.8 533.2Q873.8 536.2 864.2 540.9Q854.6 545.5 842.4 549.5Q830.2 553.5 820.3 553.5L810.5 553.5Z" /><path d="M319.3 604.6L789.9 604.6L834.7 548.9Q834.7 548.9 849.1 559.9Q863.5 570.8 883.4 587.0Q903.3 603.1 918.9 618.2Q915.2 634.2 893.5 634.2L327.3 634.2Z" /><path d="M277.9 715.1L828.0 715.1L874.5 657.5Q874.5 657.5 883.0 664.2Q891.6 671.0 905.2 682.0Q918.7 693.1 933.4 705.3Q948.1 717.6 960.4 728.6Q957.2 744.6 933.9 744.6L285.9 744.6Z" /><path d="M572.8 244.2L637.3 244.2L637.3 555.8Q637.3 612.8 628.9 663.5Q620.6 714.3 598.0 758.0Q575.5 801.8 534.1 838.6Q492.7 875.3 426.5 904.9Q360.4 934.4 265.1 956.6L256.1 941.3Q355.1 908.6 417.2 870.3Q479.3 832.1 513.4 786.0Q547.4 739.9 560.1 683.3Q572.8 626.8 572.8 557.6Z" /><path d="M639.1 715.1Q668.9 762.1 718.8 796.8Q768.7 831.5 831.9 852.7Q895.1 873.9 964.1 882.7L963.9 892.9Q917.1 904.4 907.7 955.8Q805.6 927.5 734.8 870.9Q664.0 814.3 624.6 723.0Z" /></svg>漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span></p>
+            </div>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>未分層</p>
+              <p class="RuleTag">開發者的樣式</p>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.hanja :lang(ko)</code> {</p>
+            <p class="RuleDecl" lang="en"><code>--han-quotes: 「 」 『 』;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+      </ul>
+      <!-- The whole comparison in one plate: the framework's own weight goes
+           into `:where()` and comes out zero; the reader's sits under it,
+           in the same column, so the two are read against each other without
+           a word of prose doing the comparing. Both triples are the carousel
+           item's own (`data-spec-out` / `data-mine-out`), so they travel with
+           the pair in the pane. -->
+      <!-- The comparison, split into two lines so each can sit level with the
+           rule it describes in the pane beside it (CSS subgrid — see
+           station-craft.css § .Example). Line one is the framework's weight
+           going into `:where()` and coming out zero; line two is the reader's.
+           The chevron between them opens DOWNWARD: it is a `≻` turned a
+           quarter-turn, and it says the lower of the two is the greater. -->
+      <p class="Formula Applied Eq-lib" lang="en">
+        <math display="block">
+          <mrow>
+            <!-- The triple's OWN parentheses stand in for the function's:
+                 `:where(0,2,2)` rather than `:where((0,2,2))`, which is what
+                 a double set reads as. -->
+            <mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn>
+            <mo>→</mo>
+            <mn class="Zero">(0,0,0)</mn>
+          </mrow>
+        </math>
+        <small class="EqNo">（例5.1）</small>
+      </p>
+      <p class="Formula Applied Eq-mine" lang="en">
+        <math display="block">
+          <mrow>
+            <!-- `<mphantom>` takes the space its content would occupy and
+                 paints nothing — the element MathML has for exactly this. It
+                 mirrors the line above, so this line is the same width, and
+                 two centred lines of equal width put the two triples in one
+                 column with nothing measured or hard-coded.
+                 The mirrored token carries `data-spec-out` too, so the
+                 carousel rewrites it along with the real one and the widths
+                 can never drift apart. -->
+            <mphantom><mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn><mo>→</mo></mphantom>
+            <mn data-mine-out>(0,1,1)</mn>
+          </mrow>
+        </math>
+      </p>
+      <p class="EgNote">漢.css樣式表中的選擇器權重全數經<code>:where()</code>函數歸零，任何權重大於<code>(0,0,0)</code>的選擇器都能隨意覆蓋，一如UA樣式。</p>
+      <nav class="SelNav" hidden>
+        <!-- The shared icon primitive (common/icons.css), not a 「‹」 glyph:
+             one chevron drawing, one stroke weight, and the same optical
+             centring every other button on the page gets. `data-dir="right"`
+             is the mirrored twin — the primitive already carries it. -->
+        <button type="button" data-sel-step="-1" aria-label="上一個選擇器"><span data-icon="chevron" aria-hidden="true"></span></button>
+        <output data-sel-count aria-live="polite"></output>
+        <button type="button" data-sel-step="1" aria-label="下一個選擇器"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
+      </nav>
+    </div>
+  </div>
+
+
+  <!-- ── The books ────────────────────────────────────────────────────
+       Everything above argues「it won't fight your CSS」; everything below
+       prices it. Two sets of books, in that order: the framework (styles ＋
+       its own JS, added up in one column) and then the webfonts, which are
+       megabytes and would swallow the claim if they shared a plate. -->
+  <!-- The addition — ONE plate, because that is the thing the reader wants:
+       not「the modules weigh this, and separately the scripts weigh that」but
+       「the build I just configured costs THIS」. Style modules and script
+       parts are line items in the same column and the footing is their sum.
+
+       Every figure is MEASURED. The four CSS rows come from vite's
+       computeModuleLedger (dist/han.*.min.css); the script rows come from
+       dist/pass-sizes.json, which build/pass-sizes.js produces by bundling
+       every one of the 63 possible selections for real — no marginal model,
+       no estimate, so the column adds up to a bundle that actually exists.
+
+       Two kinds of script row, mutually exclusive, gated on the console's
+       送法 select:
+         · auto   — one row, han.auto.js, load-and-go.
+         · manual — the hyperly floor plus one row per named import. The
+           floor gets its own row on purpose: it dwarfs every marginal, and
+           without it a reader would read「+0.4KB」as the whole price of a
+           pass and conclude that unticking one saves most of the file.
+       The rows for BOTH modes ship in the markup and home/ledger.js hides
+       the set that does not apply — so the page is correct on first paint
+       and with JS off, and switching modes never waits on a fetch.
+       `data-off` on the manual rows encodes the console's default (auto). -->
+  <h3 class="LedgerHead">文件也輕如鴻毛</h3>
+  <figure class="Sum">
+    <div data-plate="items">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">項目</th>
+            <th scope="col">minified</th>
+            <th scope="col" data-col="gz">gzip</th>
+            <th scope="col" class="Lead">brotli</th>
+          </tr>
+        </thead>
+        <tbody data-group="css">
+          <tr class="GroupHead"><th scope="rowgroup" colspan="4">CSS</th></tr>
+          <tr data-cfg="semantics"><th scope="row"><label><input type="checkbox" data-toggle checked>han-semantics</label><small>語意樣式標準化</small></th><td>{{ sizeSemanticsRaw }}</td><td data-col="gz">{{ sizeSemanticsGzip }}</td><td>{{ sizeSemantics }}</td></tr>
+          <tr data-cfg="lines"><th scope="row"><label><input type="checkbox" data-toggle checked>han-lines</label><small>行的調整</small></th><td>{{ sizeLinesRaw }}</td><td data-col="gz">{{ sizeLinesGzip }}</td><td>{{ sizeLines }}</td></tr>
+          <tr data-cfg="prose"><th scope="row"><label><input type="checkbox" data-toggle checked>han-prose</label><small>段落間距調整</small></th><td>{{ sizeProseRaw }}</td><td data-col="gz">{{ sizeProseGzip }}</td><td>{{ sizeProse }}</td></tr>
+          <tr data-cfg="fonts"><th scope="row"><label><input type="checkbox" data-toggle checked>han-fonts</label><small>字體</small></th><td>{{ sizeFontsRaw }}</td><td data-col="gz">{{ sizeFontsGzip }}</td><td>{{ sizeFonts }}</td></tr>
+        </tbody>
+        <tbody data-group="js">
+          <tr class="GroupHead"><th scope="rowgroup" colspan="4">han.js</th></tr>
+          <tr data-js-row="auto" data-cfg="fallbacks"><th scope="row"><label><input type="checkbox" data-toggle checked>han.auto.js</label><small>載入後自動套用</small></th><td>{{ sizeJsAutoRaw }}</td><td data-col="gz">{{ sizeJsAutoGzip }}</td><td>{{ sizeJsAuto }}</td></tr>
+          <tr hidden data-js-row="pass" data-pass="punctuation"><th scope="row"><label><input type="checkbox" data-toggle>refinePunctuation</label><small>{{ arSumFnPunct }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="iss"><th scope="row"><label><input type="checkbox" data-toggle>applyISSWithProbe</label><small>{{ arSumFnIss }}</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="adjacentLines"><th scope="row"><label><input type="checkbox" data-toggle>markAdjacentLines</label><small>鄰行間距</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="ruby"><th scope="row"><label><input type="checkbox" data-toggle>transpileRuby</label><small>注音ruby轉寫</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+          <tr hidden data-js-row="pass" data-pass="uninstall"><th scope="row"><label><input type="checkbox" data-toggle>uninstallFallbacks</label><small>還原</small></th><td>—</td><td data-col="gz">—</td><td>—</td></tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">合計</th>
+            <td data-total="raw">{{ sizeDefaultTotalRaw }}</td>
+            <td data-col="gz" data-total="gzip">{{ sizeDefaultTotalGzip }}</td>
+            <td data-total="brotli">{{ sizeDefaultTotal }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <figcaption>
+      <p class="SumProse">四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。</p>
+      <!-- The footing again, as the three lines a reader would say out loud —
+           an ALIGNED EQUATION ARRAY, which is the one thing `<mtable>` is
+           for: `+` and `=` stack into columns, so the three compressions can
+           be compared straight down instead of hunted for across a table.
+
+           Order is compression strength — none → gzip → brotli — which puts
+           brotli last, in an arithmetic sum's answer position, under a rule.
+           That is where the emphasis comes from: the strongest number is
+           also the concluding one, and the two above it are the working. No
+           badge, no colour trick; the arrangement says it.
+
+           home/ledger.js rewrites all nine <mn>s from the same printed
+           column the tfoot sums, so these lines can never disagree with the
+           table above them. -->
+      <math display="block" class="SumEq">
+        <mtable>
+          <mtr class="Head">
+            <mtd></mtd><mtd></mtd>
+            <mtd><mtext>minified</mtext></mtd>
+            <mtd data-col="gz"><mtext>gzip</mtext></mtd>
+            <mtd class="Lead"><mtext>brotli</mtext></mtd><mtd></mtd>
+          </mtr>
+          <mtr>
+            <mtd></mtd>
+            <mtd class="Term"><mtext>CSS</mtext></mtd>
+            <mtd><mn data-sum="raw-css">{{ sizeTotalRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-css">{{ sizeTotalGzipNum }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-css">{{ sizeTotalNum }}</mn></mtd><mtd></mtd>
+          </mtr>
+          <mtr>
+            <mtd class="Op"><mo>+</mo></mtd>
+            <mtd class="Term"><mtext>JS</mtext></mtd>
+            <mtd><mn data-sum="raw-js">{{ sizeJsAutoRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-js">{{ sizeJsAutoGzipNum }}</mn></mtd>
+            <mtd class="Lead"><mn data-sum="br-js">{{ sizeJsAutoNum }}</mn></mtd><mtd></mtd>
+          </mtr>
+          <mtr class="Total">
+            <mtd class="Op"><mo>=</mo></mtd>
+            <mtd></mtd>
+            <mtd><mn data-sum="raw-all">{{ sizeDefaultTotalRawNum }}</mn></mtd>
+            <mtd data-col="gz"><mn data-sum="gz-all">{{ sizeDefaultTotalGzipNum }}</mn></mtd>
+            <!-- The unit, ONCE. Repeating KB in every cell turned the sum
+                 into a wall of the same two letters; a sum states its unit
+                 at the answer and the columns read as figures again. It is
+                 a sibling <mtext>, not part of the <mn>, so ledger.js can
+                 keep writing bare numbers into every cell alike. -->
+            <mtd class="Lead"><mn data-sum="br-all" class="Zero">{{ sizeDefaultTotalNum }}</mn></mtd>
+            <mtd class="Unit"><mtext>KB</mtext></mtd>
+          </mtr>
+        </mtable>
+      </math>
+      <p class="SumEqNote">brotli是當前最普及的高壓縮編碼，列於末欄；部分服務商目前僅支援gzip，二者差距不大，一併列出供開發者參考。</p>
+      <p class="SsrNote">雖然漢.css的JS文件可按需加載且體積甚小，但在客戶端安裝JS增強必然有swap現象。最佳做法是透過SSR或CLI工具，在伺服端預先將HTML轉換為<code>*.with-js.css</code>可以直接套用樣式的格式，減少請求數及JS執行時差。惟React、Vue等需要重渲染的前端框架，仍需在mount後執行JS方能正確顯示。</p>
+    </figcaption>
+  </figure>
+
+  <!-- SSR footnote — three sentences, because the station's job here is
+       「it is small, use it without worrying」, not a treatment of the SSR
+       path; the manual (§ api-js) carries that. Sources for the two caveats,
+       so nobody has to re-derive them to edit the copy: the SSR branch of
+       `installFallbacks` (src/ts/fallbacks.ts) has no `CSS.supports` to gate
+       on, and the UA probe rides inside `applyISSWithProbe`, browser-only. -->
+
+  <!-- Font ledger — a SECOND, separate set of books. The four-module figure
+       above is the framework's own weight; webfonts are megabytes and would
+       swallow that claim if merged into one table, so they get their own
+       figure, their own heading and their own unit (M vs k).
+       ⚠ These numbers are CONSTANTS, not build-computed: the fonts live on
+       the CDN / in the sibling repos, not in this repo, so vite cannot
+       measure them the way it measures dist/han.*.min.css. They drift slowly
+       (a re-subset moves them by a percent or two), which is why a constant
+       is acceptable here. TO REFRESH THEM (measure — never estimate):
+         ziano families — in the ziano repo,
+           python3 -c "import os,glob,statistics;from collections import defaultdict; …"
+           over dist/<family>/files/*.woff2. Filenames are
+           `<family>.<weight>.<n>.woff2` for static instances and
+           `<family>.<n>.woff2` for variable ones, so group by weight:
+           avg slice = mean of ALL slices; 切片數 = 每字重片數×字重數;
+           全家 = sum of every slice.
+         diantenjeom — `stat -f "%z %N" diantenjeom/dist/fonts/*.woff2`.
+         zhuyin / em-space — `stat -f "%z %N"` on
+           han/manual/public/han/{zhuyin.serif,em-space}.woff2.
+         Without the repos checked out, jsDelivr's data API reports the same
+         byte counts and needs no font download:
+           https://data.jsdelivr.com/v1/packages/npm/@hanzi.pro/<pkg>@<version>?structure=flat
+       k = /1024, M = /1048576, both to the same precision as below.
+       Measured 2026-08-02 against the local ziano / diantenjeom dist trees.
+       The eight text families are exactly the roster codegen.js offers
+       (home/codegen.js § HERITAGE / CURSIVE_HANT) — keep the two in sync. -->
+  <!-- Folded away by default. The webfont figures are a second, quite
+       different set of books — megabytes where the framework is kilobytes —
+       and left open they made the station read as one long ledger with no end.
+       A native `<details>`: it works with no JS, it is a real disclosure
+       widget to a screen reader, and the browser's own find-in-page opens it.
+       The summary states the fact; opening it only supplies the numbers. -->
+  <details class="FontDetails">
+    <summary class="LedgerHead">字體體積另計，展開詳情</summary>
+  <figure class="FontLedger">
+    <div data-plate="print">
+      <table>
+        <caption>印刷字體・按需切片</caption>
+        <thead>
+          <tr>
+            <th scope="col">字體</th>
+            <th scope="col">平均切片</th>
+            <th scope="col">片數×字重</th>
+            <th scope="col">全家</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">尚古黑體</th>  <td>44.0KB</td><td>109×1</td>   <td>4.68MB</td></tr>
+          <tr><th scope="row">尚古明體</th> <td>61.3KB</td><td>109×1</td>   <td>6.53MB</td></tr>
+          <tr><th scope="row">源起黑體</th>  <td>25.7KB</td><td>108×6</td><td>16.3MB</td></tr>
+          <tr><th scope="row">源起明體</th>     <td>32.7KB</td><td>108×7</td><td>24.1MB</td></tr>
+          <tr><th scope="row">霞鶩文楷<abbr class="acronym">TC</abbr></th>       <td>44.7KB</td><td>103×3</td><td>13.5MB</td></tr>
+          <tr><th scope="row">霞鶩文楷</th>         <td>39.0KB</td><td>107×3</td><td>12.2MB</td></tr>
+          <tr><th scope="row">芫荽</th>       <td>37.3KB</td><td>101×1</td><td>3.68MB</td></tr>
+          <tr><th scope="row">Klee One</th>         <td>32.8KB</td><td>120×2</td><td>7.69MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div data-plate="punct">
+      <table>
+        <caption>標點字體・整檔載入</caption>
+        <thead>
+          <tr>
+            <th scope="col">慣例</th>
+            <th scope="col">黑體</th>
+            <th scope="col">明體</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><abbr class="acronym">JIS</abbr></th><td>10.6KB</td><td>11.6KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">MOE</abbr></th><td>13.4KB</td><td>14.8KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">GB</abbr></th> <td>13.1KB</td><td>14.3KB</td></tr>
+          <tr><th scope="row"><abbr class="acronym">KLR</abbr></th><td>10.5KB</td><td>11.6KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div data-plate="patch">
+      <table>
+        <caption>補綴字體</caption>
+        <thead>
+          <tr>
+            <th scope="col">用途</th>
+            <th scope="col">體積</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- the first two ship inside han.css itself (@font-face in
+               han.fonts.css, woff2 beside it); 著重號 comes from DTJ, hence
+               last — the figcaption draws exactly that line. -->
+          <tr><th scope="row">注音符號</th>  <td>26.3KB</td></tr>
+          <tr><th scope="row">全形空格</th> <td>0.4KB</td></tr>
+          <tr><th scope="row">著重號</th><td>1.1KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figcaption>
+      <p>瀏覽器會按需加載命中的字體切片，單篇文章一般命中16–31個切片（中位24），每個切片約44KB。罕用字只在命中時才會下載，縮短頁面加載時間。
+      <p>尚古系列及Diantenjeom標點字體採用Variable Font可變字體技術，一個切片即涵蓋250-900全部字重。係漢.css首選推薦。其餘字體的每個字重各有一份切片，即表中的「片數×字重」。
+    </figcaption>
+  </figure>
+  </details>
+
+</section>
+
+<!-- Station V・Playground — the user types their OWN Markdown / HTML and
+     watches han.css typeset it. Two radio tabs (preview default) mirror
+     station④'s ViewTabs; `.Preview` supplies the framed-panel primitive,
+     `.Playground` the editor-specific children. The preview is a plain
+     <article> INSIDE main.han, so the console's `--han-*` config vars and the
+     metric sliders reach it with zero wiring (prose layer auto-scopes to
+     <article>). Render pipeline lives in home/playground.js:
+     marked(Markdown, inline HTML passes through) → DOMPurify(sanitize) →
+     article.innerHTML. The <textarea> ships the default sample; the module
+     restores localStorage over it on boot (console Reset never touches it — it
+     is content, not config). -->
+<section data-revealed id="station-playground" class="Station Playground" data-station="playground" data-wm="樂">
+  <!-- The 認真模式 switch rides in the station head, on the <h2>'s line.
+       It sits AFTER the lede in source so `h2 + p` (frame.css's lede rule)
+       still matches; the grid in station-playground.css puts it back on
+       the heading row. -->
+  <hgroup>
+    <p>陸・試玩</p>
+    <h2>遊樂場</h2>
+    <p>編寫Markdown或HTML，用你的文字預覽漢.css的講究。</p>
+    <!-- One control strip for the station: which text is being typeset on
+         the left, the focus switch on the right. -->
+    <div class="PgControls">
+      <fieldset class="ViewTabs" data-pg-content-tabs>
+        <legend class="sr-only">內容</legend>
+        <label><input type="radio" name="pg-content" value="story" checked>報導</label>
+        <label><input type="radio" name="pg-content" value="custom">自訂內容</label>
+      </fieldset>
+
+      <!-- Still a checkbox (checked ⇒ in the studio, so the switch and the
+           reality can't drift), but its face is a button: entering is an
+           action, and a switch would promise a way back the modal doesn't
+           give. The input is visually hidden — the `for=`/`id=` pair is what
+           makes the label操作得動 it, and `:focus-visible` on the input
+           paints the ring on the label. -->
+      <input type="checkbox" id="pg-focus" class="sr-only" data-pg-focus>
+      <label class="PgFocus" for="pg-focus">進入認真模式</label>
+    </div>
+  </hgroup>
+
+  <div class="Preview Playground" data-playground>
+    <header>
+      <fieldset class="ViewTabs" data-pg-editor-views>
+        <legend class="sr-only">編輯器分頁</legend>
+        <label><input type="radio" name="pg-editor-view" value="preview" checked>預覽</label>
+        <label><input type="radio" name="pg-editor-view" value="code">原始碼</label>
+      </fieldset>
+    </header>
+
+    <!-- code tab = raw source, preview tab = typeset result; CSS
+         (:has(:checked)) shows one at a time. The textarea value is
+         RCDATA, so the sample's <ruby>/<em> tags sit here literally. -->
+    <!-- 自訂內容's default lives in raw-text element content, not in a
+         `data-*`: an attribute placeholder gets its markup stripped and its
+         line breaks collapsed by the templating, and this default is
+         multi-line Markdown with inline HTML in it. `type="text/plain"`
+         keeps the browser from executing or rendering anything. -->
+    <!-- 兩塊窗格自成一個盒：窄站台下它就是那條可以左右滑的軌（吸附一格一
+         格走，home/playground.js § swipe 讓藥丸與滑到哪裡互相對齊），寬站台
+         下它是那張兩欄的網格。認真模式把兩塊窗格借走時，它們離開這個盒，
+         所以借出期間所有 `[data-pg-panes] >` 的規則自動失效。 -->
+    <div class="PgPanes" data-pg-panes>
+    <textarea data-pg-src spellcheck="false" aria-label="原始碼編輯區"><!-- 這是《太陽中文報》的一篇報導，當作範本。整篇刪掉，換你的字上場。 -->
+
+# 咀嚼二十二秒驚覺人間美味　巴拉克・川普與第一先生手牽手掃光魚生　唯海膽二人齊搖頭
+
+> <u>美國</u>總統<u>巴拉克・川普</u>於本屆<u>日內瓦</u>峰會「廚道輪席宴」首嚐生魚片，咀嚼<em>二十二秒</em>後驚呼<q>很好吃</q>。第一先生<u>卡里姆</u>率先示範破冰，二人隨即牽手將餐桌魚生與握壽司逐一掃盡，互相餵食，甜蜜入鏡。唯海膽一道，總統<ruby class="zhuyin">蹙<rt>ㄘㄨˋ</rt></ruby>眉：<q>只有這個我不明白。</q>笑稱晚了六十多年是一輩子遺憾。本次甜蜜同框，亦無聲打破近月「第三者介入」離婚傳言。
+
+## 第一先生出馬　大局底定
+
+【本報<u>日內瓦</u>特派員　<u>劉爭予</u>　專電】<u>美國</u>總統<u>巴拉克・川普</u>與第一先生<u>卡里姆</u>，昨日<ruby class="zhuyin">聯<rt>ㄌㄧㄢˊ</rt></ruby><ruby class="zhuyin">袂<rt>ㄇㄟˋ</rt></ruby>出席本屆「廚道輪席宴」。宴席第三道，本鮪生魚片——那道<u>巴拉克・川普</u>六十餘載人生從未碰觸過的東西。
+
+（編按：「<dfn>廚道輪席宴</dfn>」為<u>日內瓦</u>和平峰會行之卅餘年之傳統環節，各國元首依序輪值，呈獻本國代表料理，並品嚐對席元首所上菜式。本屆<u>川普</u>總統抽籤輪值<u>日本</u>料理——以生食聞名於世，消息一出，已在各方觀察員間引發廣泛討論。）
+
+自幼以漢堡牛排為主食的總統，面對那一片<ruby class="zhuyin">瑩<rt>ㄧㄥˊ</rt></ruby>白的鮪魚腹，沉默了整整<em>十七秒</em>。十二名幕僚已在側嚴陣以待（幕僚長、食安沙皇、<u>白宮</u>主廚<u>富－僑・博庫斯</u>、官銜為「<dfn>生食翻譯官</dfn>」之專員，及不斷低聲呢喃<q>沒事的、沒事的</q>的<u>海野博士</u>等），大氣不敢多出一口。
+
+<u>卡里姆</u>先生不發一語，不疾不徐地夾起一片，一口吃下，側過臉來，對身為總統的丈夫溫和説了一句：<q>還不錯。</q>
+
+現場觀察員事後評述：<q>那句話，比<u>白宮</u>十二名幕僚的全部準備工作加起來還管用。</q>
+
+## 二十二秒　歷史定格
+
+午後一時十七分，總統夾起一片本鮪，緩緩送入口中。在場記者一律屏息，懷錶秒針聲清晰可聞。咀嚼整整<em>二十二秒</em>（多家媒體交叉計時為證），總統嚥下，舉<ruby class="zhuyin">箸<rt>ㄓㄨˋ</rt></ruby>微顫，以其苦學八載之華語徐徐吐出：<q>我覺得⋯⋯還不錯？</q>
+
+隨即，表情一變。
+
+<q>——<em>很好吃</em>！</q>
+
+幕僚長率先鼓掌，餘者跟進，掌聲一度蓋過鄰桌的外交對話。<u>海野博士</u>將急救包悄悄收回包內。總統側身低喃，這句話是説給丈夫聽的，不是幕僚：<q>你早就知道吧。</q><u>卡里姆</u>微微一笑，不置可否。
+
+## 牽手掃盤　魚生告罄
+
+此後半小時，堪稱本屆輪席宴最意外的外交奇景。<u>巴拉克・川普</u>牽起<u>卡里姆</u>的手，二人肩並肩坐定，將餐桌上的魚生逐一品嚐：鮪魚腹、鮭魚、<ruby class="zhuyin">鰤<rt>ㄕ</rt></ruby>魚、干貝，再試了握壽司一輪，從玉子燒吃到海蝦，總統每吃一樣便轉頭看向<u>卡里姆</u>，<u>卡里姆</u>便點一次頭，二人合拍程度令旁觀的十二名幕僚目瞪口呆。席間二人亦多次互相夾菜餵食，甜蜜之態令現場攝影師快門聲此起彼落。
+
+唯有一樣，總統停箸不前。
+
+他以筷子遙指那一小盅金黃，<ruby class="zhuyin">蹙<rt>ㄘㄨˋ</rt></ruby>眉道：<q>只有這個，我不明白。</q>
+
+是海膽。
+
+<q>其他都好美味，</q>他説，<q>但這個⋯⋯</q>他搖搖頭，沒有繼續。<u>卡里姆</u>亦搖搖頭，二人難得意見一致，引發周遭一陣善意的笑聲。
+
+席間，本報記者側身採訪第一先生。<u>卡里姆</u>淡然一笑，以流利普通話回應：<q>我本來就不像小巴一樣挑食，只要是清真認證（<i lang="ar-Latn">halal</i>，<bdi lang="ar">حلال</bdi>）的，我通常不會猶豫下肚。</q>「小巴（<i lang="en">Barnie</i>）」二字一出，旁側幕僚明顯繃緊，而總統本人渾然未覺，正全神貫注地盯著那盅海膽——顯然，「小巴」並非新名詞。
+
+## 六十年遺憾　離婚傳言俱消
+
+記者會上，有人追問感想，總統正色道：<q>晚了六十多年才吃下第一口魚生，是我這輩子<em>最大的遺憾</em>。</q>語畢長嘆，又補上一句：<q>比大麥克好吃。</q>掌聲再起。
+
+總統隨即收起笑容，神情一肅，進入官腔模式：<q>食物，是超越語言、超越意識形態的最佳媒介。一口好的料理，往往能達成數十年外交斡旋所無法完成的事。</q>
+
+話音<ruby class="zhuyin">甫<rt>ㄈㄨˇ</rt></ruby>落，全場掌聲。
+
+有記者在掌聲中舉手追問：<q>總統閣下，那海膽呢？</q>
+
+總統微微一頓，轉頭瞥了丈夫一眼。
+
+<q>海膽，</q>他説，<q>需要更多的跨文明對話時間。</q>
+
+<u>彭博</u>、<u>BBC</u>及<u>廣場</u>同步直播的鏡頭，將那幕交握的手定格在全球四十億個螢幕上。數日來沸沸揚揚的「第三者介入」離婚傳言，在此刻無聲瓦解——沒有任何公關聲明，沒有官方否認，只有兩個丈夫交握的手，以及一盤始終未被碰觸的海膽。
+
+#TrumpChews標籤兩小時內衝上全球熱搜第一，<u>東京</u><u>豐洲市場</u>本鮪當日成交價漲百分之七，連帶醬油業股票同步攀升。第一先生<u>卡里姆</u>列同日熱搜第三，關鍵字為「卡里姆的筷子」；另有一條意外竄升至第七的標籤：#海膽他們都不吃。<u>白宮</u>新聞官事後表示，總統晚餐已預約鮭魚卵丼，<q>這次不需要翻譯官了</q>。</textarea>
+    <!-- The paper card: masthead + dateline are CHROME, outside the editable
+         article — the date is computed fresh every load (playground.js ←
+         papers-dateline.js), so it can never be pickled into a reader's
+         localStorage draft. The baked text below is the no-JS face, same
+         arrangement as station①'s .Papers. -->
+    <!-- The sheet unit: the paper plus the loupe's switch. They are one grid
+         item so the switch always sits directly under the sheet — the card
+         is `translate`d and the grid's own rows are sized by the taller
+         editor, so nothing else keeps the two together. -->
+    <div class="PgSheet" data-pg-sheet>
+    <div class="PgPaper" data-pg-paper data-lens="live">
+      <p class="Masthead">太陽中文報</p>
+      <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
+      <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
+           scrollable region the keyboard can't reach is a serious axe
+           violation (scrollable-region-focusable). In tab mode it's one
+           extra tab stop with an accessible name — a fair price. -->
+      <article class="PgGalley" data-pg-preview tabindex="0" aria-label="人物特寫"></article>
+    </div>
+    </div>
+    </div>
+    <p class="LensHint">雙擊樣張開關放大鏡，拖動可移動。</p>
+
+    <!-- 認真模式 — a fullscreen modal studio. Opening MOVES the two live
+         panes (textarea + paper) into the dialog body and back: same nodes,
+         so the draft, its listeners and the rendered preview survive the
+         trip untouched. Exit is the ✕ only (Esc is cancelled in JS) — the
+         whole point is that nothing scrolls out from under you. -->
+    <dialog class="PgStudio" data-pg-studio aria-label="認真模式">
+      <!-- The content tabs are MOVED in here on open (playground.js) — the
+           same fieldset, so switching 報導／自訂內容 works identically inside
+           and out, with no second copy of the state to keep in step. -->
+      <header data-pg-studio-head>
+        <span>認真模式</span>
+        <button type="button" data-pg-studio-close aria-label="退出認真模式">
+          <span data-icon="close" aria-hidden="true"></span>
+        </button>
+      </header>
+      <div data-pg-studio-body></div>
+    </dialog>
+  </div>
+</section>
+
+<!-- Station IV・Snippet — the reference-code generator (data-out-*/ViewTabs). -->
+<section data-revealed id="station-snippet" class="Station Snippet" data-station="snippet" data-wm="碼">
+  <hgroup>
+    <p>柒・引用碼</p>
+    <h2>生成引用碼</h2>
+    <p>在左方的console裡更改配置，此處生成的代碼也會相應調整，按需載入。npm、CDN、內嵌等三種形式，擇一使用即可啓用漢.css。</p>
+  </hgroup>
+
+  <div class="Preview">
+    <header>
+      <!-- radio value stays `bundler` (matches codegen.js's renderBundler
+           export) — only the visible label was renamed to "npm". -->
+      <fieldset class="ViewTabs" data-pg-views>
+        <legend class="sr-only">引用碼形式</legend>
+        <label><input type="radio" name="pg-view" value="bundler" checked>npm</label>
+        <label><input type="radio" name="pg-view" value="cdn">CDN</label>
+        <label><input type="radio" name="pg-view" value="inline">內嵌</label>
+      </fieldset>
+    </header>
+
+    <!-- snippet.js renders one <figure class="CodePane"> per codegen.js
+         pane here — see buildPane() there. It subscribes to <han-console>'s
+         han-config-change event (the future <han-snippet>). -->
+    <div data-out-panes></div>
+  </div>
+
+  <p class="BrowserSupport">支援現代常青瀏覽器。</p>
+  <!-- 兩張樣張的入口。放在這一站而不是導覽列：讀者剛拿到一段可以複製走的碼，
+       「那它長什麼樣」正是下一個問題。 -->
+  <p class="TrySpecimen">想看這套配置落在一張沒有頁面樣式的文檔上是什麼樣子，樣張有兩份——<a href="/specimen.html">瀏覽器端排版</a>與<a href="/specimen.ssr.html">伺服器端排版</a>。內容相同，差別只在han.css的JS跑在哪一端。</p>
+</section>
+
 <!-- Closing — install one-liner, sibling-project links, version. -->
 <section class="Closing" data-wm="漢">
   <nav class="Siblings">
