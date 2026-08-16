@@ -1,0 +1,203 @@
+@charset "UTF-8";
+
+/**
+ * Design tokens — shared by the homepage (`home.css`) and the manual
+ * (`manual.css`).
+ *
+ * Two tiers (web-style.md): appearance-named `--palette-*` PRIMITIVES,
+ * theme-invariant, never consumed by a component → role-named
+ * `--ui-*` SEMANTICS via `light-dark()`, which is all a component
+ * may read. Plus the type ramp, radii, layout measures and the icon
+ * `shape()` paths.
+ *
+ * Type itself comes from Han.css's own `--han-font-*` composites (the
+ * site dogfoods the framework); `--font-mono` is the one site-local
+ * stack, since the framework has no mono slot.
+ *
+ * The dark trigger is NOT here — each entry declares its own (both flip
+ * the same `color-scheme`, so every `light-dark()` below re-resolves).
+ * See `home/root.css` / `manual/root.css`.
+ *
+ * `components/tokens.css` mirrors the palette as literal fallbacks for
+ * the console's shadow root; change a colour here and echo it there.
+ */
+
+:root {
+  /* Mono is the one site-local type stack (the framework has no mono
+     slot); everything else comes from Han.css's `--han-font-*` vars. */
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ── colour primitives ──────────────────────────────────────────
+   * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
+   * by a component — only the `--ui-*` layer below does that
+   * (web-style.md two-tier token rule; mirrors ziano variables.css). */
+  --palette-white:      #ffffff;
+  --palette-paper-deep: #fafaf7; /* warm off-white — panels */
+  --palette-snow:       #f3f3f0;
+  --palette-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
+  --palette-console:       #fafafa; /* 中性的近白 — 主控台地色（淺）*/
+  --palette-console-night: #151515; /* 中性的暗 — 主控台地色（深）*/
+  --palette-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
+  --palette-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
+  --palette-cloud:      #ececea; /* hairline grey — grid / rule */
+  --palette-silver:     #d2d2cd;
+  --palette-ash:        #8c8c87;
+  --palette-slate:      #666666; /* muted grey — supplement text */
+  --palette-charcoal:   #2a2a2c;
+  --palette-graphite:   #1f1f22;
+  --palette-ink-deep:   #18171a;
+  --palette-ink:        #0e0e10; /* body-text ink; doubles as dark-mode paper */
+  --palette-black:      #111111; /* shadow base only */
+  /* neutral cool greys — the mark diagram's «engine» register, i.e. what
+     the browser hands you before han.css touches it. Cool on purpose: the
+     diagram's whole colour argument is steel (the engine's) → ink (the
+     text's own) → green (what han.css gives it). */
+  --palette-steel:      #98a0ac;
+  --palette-steel-deep: #5d6572;
+  /* syntax blue — for the mark diagram's tag labels. Deliberately NOT the
+     accent: the diagram already spends green on «what han.css gives the
+     text», and a tag name is a different kind of thing (what you WROTE), so
+     it gets its own hue rather than a third weight of the same one. */
+  --palette-lapis:        #4a56b8;
+  --palette-lapis-bright: #939bea;
+  /* postal red — the page's one deliberate off-palette hue. Was inlined in
+     the envelope's 郵遞區號 frame; promoted to a primitive once the mark
+     diagram's angle annotation needed the same ink. */
+  --palette-seal:        #b0342c;
+  --palette-seal-bright: #d96a5f;
+  --palette-green:        #0a8754; /* the one accent (light) */
+  --palette-green-bright: #3f9d6f; /* the one accent (dark — lifted for contrast on ink) */
+  --palette-mint:         #e8f5ec; /* accent wash (light) */
+  --palette-pine:         #163322; /* accent wash (dark) */
+
+  /* ── semantic palette ────────────────────────────────────────────
+   * Role names, each referencing a primitive. A flipping token carries
+   * BOTH values inline via light-dark(); color-scheme (below) picks. A
+   * single-value token is theme-invariant on purpose. The -3q/-2q/-1q
+   * alphas (75/50/25 %) are color-mix of their own base, so a flipped
+   * base re-tints them automatically.
+   * (light-dark(): Baseline 2024 · color-mix(): Baseline 2023.) */
+  --ui-accent:    light-dark(var(--palette-green), var(--palette-green-bright));
+  /* one step deeper than --ui-accent — small solid marks (badges,
+     flags, checks) need the extra contrast that body-size text doesn't. */
+  --ui-accent-deep: light-dark(#066b3f, #5cc090);
+  --ui-accent-bg: light-dark(var(--palette-mint), var(--palette-pine));
+  --ui-text:      light-dark(var(--palette-ink), var(--palette-mist));
+  --ui-grid:      light-dark(var(--palette-cloud), var(--palette-charcoal));
+
+  --ui-bg: light-dark(var(--palette-white), var(--palette-ink));
+  --ui-bg-3q:
+    light-dark(
+      color-mix(in srgb, var(--palette-white) 75%, transparent),
+      color-mix(in srgb, var(--palette-ink) 82%, transparent)
+    )
+  ;
+  --ui-bg-2q: color-mix(in srgb, var(--ui-bg) 50%, transparent);
+
+  --ui-supplement-text:    light-dark(var(--palette-slate), var(--palette-ash));
+  --ui-supplement-text-3q: color-mix(in srgb, var(--ui-supplement-text) 75%, transparent);
+  --ui-supplement-text-2q: color-mix(in srgb, var(--ui-supplement-text) 50%, transparent);
+  --ui-supplement-text-1q: color-mix(in srgb, var(--ui-supplement-text) 25%, transparent);
+
+  --ui-panel:    light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
+  --ui-ink:      var(--palette-ink);
+  --ui-ink-grey: light-dark(var(--palette-graphite), var(--palette-silver));
+  --ui-rule:     light-dark(var(--palette-cloud), var(--palette-charcoal));
+
+  /* 標記原理圖 (home/station-semantics.css § .MarkDiagram). Two inks and a
+     proof red: the mock glyphs ride `-ink-off` → `-ink` as they straighten,
+     so posture and colour temperature correct in one motion, while every
+     mark han.css ADDS arrives in `--ui-accent`. */
+  --ui-diagram-ink:     light-dark(var(--palette-ink), var(--palette-mist));
+  --ui-diagram-ink-off: light-dark(var(--palette-steel), var(--palette-steel-deep));
+  --ui-proof:           light-dark(var(--palette-seal), var(--palette-seal-bright));
+  --ui-syntax-tag:      light-dark(var(--palette-lapis), var(--palette-lapis-bright));
+
+  /* ── station grounds & watermark ──────────────────────────────────
+   * The station-plate system (stations.css) alternates two section
+   * grounds and floats a giant watermark glyph behind the copy. Both
+   * flip with the theme via light-dark() over EXISTING primitives — no
+   * new hues. `-a` is the warm-paper (raised-ink in dark) base, `-b` a
+   * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
+   * Baseline 2023) that lifts to the paper side on dark so it still
+   * reads. Consumed only by `[data-station]` / `.Closing`. */
+  /* 主控台的地色。它曾經直接用 --ui-panel——而 panel 與站台 a 同值
+     （paper-deep／ink-deep），於是「工具」與「內容」同色，只隔一條髮線。
+     兩側各用一種分野，因為暗處讀不出溫差：
+       · 淺色 #fafafa 是**純溫差**——與 paper-deep（250,250,247，偏黃）同明度，
+         差的只是中性 vs 暖。交界是一道溫差而不是一道階，兩邊都不顯「脏」。
+       · 深色 #151515 只能走**明度**——比 ink-deep（24,23,26）再暗三階，工具
+         往頁面最深的墨靠、自己退到後面去。
+     存檔的彎路都是在淺色側動明度：#eeece5（加深＋加暖＝土色）、#eceff2（明顯
+     冷調，脫離暖紙家族）、#eeeeea（同階梯再降一格，像第三種站台）。
+     只有 <han-console> 的 host 用它；--ui-panel 那個角色還有一堆面板在
+     用，不動。 */
+  --ui-console: light-dark(var(--palette-console), var(--palette-console-night));
+  --ui-station-a: light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
+  --ui-station-b: light-dark(var(--palette-snow), var(--palette-graphite));
+  /* 柒站（引用碼）的專屬地色——全站唯一不是灰白的站台底。它曾是「兩個
+     主題都恆黑」，淺色模式下整片墨黑太搶戲；改成隨主題走，淺色一側是
+     **稿紙的米黃**。取米黃而不是某個強調色的淡洗：這一站給的是你要抄回
+     自己專案的那段碼，而 pane 裡的終端機是恆黑的——黑落在米黃紙上就是
+     墨落在紙上，關係自己成立，不必再借一個色相來說。（試過 lapis 的淡洗
+     #eef0fa，太紫。）深色一側是同一張紙的夜色，暖墨，不是又一塊
+     --palette-ink。 */
+  --ui-station-code: light-dark(var(--palette-buff), var(--palette-buff-night));
+  --ui-wm:
+    light-dark(
+      color-mix(in srgb, var(--palette-ink) 4%, transparent),
+      color-mix(in srgb, var(--palette-paper-deep) 6%, transparent)
+    )
+  ;
+
+
+  /* ── type ramp — 沒有代號，直接寫值 ────────────────────────────────
+   * 級數還是這七級，寫規則時照這張表挑；但 `font-size` 一律寫字面 rem，
+   * 不再經過 `--fs-*` 一層（2026-08-05 廢除，見
+   * docs/plans/home-css-station-ownership.md 一·丙）。`.875rem` 自己就說得
+   * 清楚，`--fs-small` 還要回頭查表；而字級沒有換主題／換模式要整批翻轉的
+   * 需求——那是顏色才有的事，所以 `--ui-*` 留著。參考實作 ziano/demo 本來
+   * 就是這樣寫的，級數還逐一相同。
+   *
+   *   1.5rem     section h2
+   *   1.125rem   Manifesto lede
+   *   1rem       prose, body copy
+   *   0.875rem   captions, supplement, nav
+   *   0.8125rem  dense controls, code terminal
+   *   0.75rem    mono labels, chips, fine print
+   *   0.625rem   console micro group labels
+   *
+   * 每個 rem 值都是 0.125rem 的倍數（css-naming rule 13），新增一級也照辦。
+   * 元件那層的 `--_fs-*`（components/tokens.css）留著：它是可被覆寫的旋鈕
+   * ——站③④ 就各自把 `--_fs-compact` 調成正文級——只是預設值現在也寫死。 */
+
+  /* radii (subtle, print-feel) */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 6px;
+
+  /* layout — ziano's calmer measure + fluid gutter */
+  --max-w-layout: 68rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --h-header: 4rem;
+  --w-console: 17.5rem;
+
+  /* Terminal-dark code panel — theme-INVARIANT in both modes (owner-
+     approved, mirrors ziano's --ui-ink usage). Needs a fixed faint
+     hairline so it doesn't go edgeless once the page bg is also dark
+     (web-style.md dark-mode gotcha). */
+  --code-bg: var(--palette-ink);
+  --code-fg: color-mix(in srgb, var(--palette-mist) 90%, transparent);
+
+  /* Single source of truth: the masthead checkbox
+     (`input[name="dark-mode"]`). Default light; the `:has()` below flips
+     the whole page's `light-dark()` tokens at once. The checkbox's
+     initial state is restored by a pre-paint inline script placed right
+     after it (see `_home.html`) — no flash. Same `localStorage` key
+     ('theme') as the docs toggle, so the preference carries over. */
+  color-scheme: light;
+
+  /* 圖標一律住 `common/icons.css`（mask ＋ data URI），連主題切換的
+     日／月都在那裡——這裡曾有 `--path-sun`／`--path-moon` 兩顆
+     `clip-path: shape()`，理由與去向見該檔 § 主題切換。 */
+}

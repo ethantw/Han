@@ -1,5 +1,6 @@
 packages:
   - manual
+  - home
   - ssr-demo
   - packages/fonts
 allowBuilds:

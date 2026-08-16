@@ -1,0 +1,142 @@
+@charset "UTF-8";
+
+/**
+ * Homepage page base + top chrome.
+ *
+ * The dark trigger, `body.home`'s own type/colour base, and the Topbar
+ * (collapse handle · brand · nav · lang switcher · theme toggle · version).
+ *
+ * (This file absorbed `home/layout.css`, 2026-08-05: the two carried a
+ * verbatim copy of the theme trigger and of the `body.home` base between
+ * them — layout.css won on import order, so editing the copy here changed
+ * nothing on screen. The base below is the UNION of the two, and the Topbar
+ * came over unchanged. The old header also claimed a floating writing-mode
+ * pill; that markup is gone from `_home.html`.)
+ */
+
+/* ─── theme + base ──────────────────────────────────────────────────
+ * The masthead checkbox (`input[name="dark-mode"]`) is the single
+ * source of truth: this one rule flips every `light-dark()` token in
+ * `common/variables.css` at once. Its initial state is restored by a
+ * pre-paint inline script placed right after it (`_home.html`) — no
+ * flash. Same `localStorage` key ('theme') as the docs toggle. */
+
+:root:has(input[name='dark-mode']:checked) {
+  color-scheme: dark;
+}
+
+body.home {
+  & {
+    margin: 0;
+    line-height: 1.8;
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img, svg { display: block; max-width: 100%; }
+}
+
+/* ─── Topbar ─────────────────────────────────────────────────────── */
+
+body > header {
+  & {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-inline-start: -1px;
+    padding-inline: var(--gutter);
+    block-size: var(--h-header);
+    background-color: var(--ui-bg);
+    border-inline-start: 1px solid var(--ui-rule);
+    border-block-end: 1px solid var(--ui-rule);
+  }
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ui-bg);
+  }
+  .Logo {
+    & {
+      display: flex;
+      align-items: baseline;
+      font-size: 1.5rem;
+      /* header 現在有三件東西（收合開關・logo・nav）。space-between 會把
+         三件平均攤開，開關與 logo 就分了家——讓 logo 自己吃掉中間所有
+         餘白，前兩件貼左、nav 貼右，回到原本的兩端配置。 */
+      margin-inline-end: auto;
+      translate: -.875rem -.125rem;
+    }
+    small {
+      color: var(--ui-supplement-text);
+      margin-inline: 1em -.125em;
+      padding-inline-start: 1em;
+      font-size: .5em;
+      line-height: 1;
+      letter-spacing: .125em;
+      border-inline-start: 1px solid var(--ui-rule);
+    }
+    .version {
+      letter-spacing: -.05em;
+    }
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+
+    > a {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+
+      &:hover { color: var(--ui-accent); }
+    }
+
+    /* the divider between the text links and the tools cluster is a
+       hairline on the LangSwitcher (upward relationship, css-naming
+       rule 1) — no decorative `<span>` in the DOM. */
+    .LangSwitcher::before {
+      content: '';
+      display: inline-block;
+      inline-size: 1px;
+      block-size: 0.875rem;
+      margin-inline-end: 1rem;
+      background: var(--ui-rule);
+      vertical-align: middle;
+    }
+  }
+
+  /* 窄視窗——這條帽子的 min-content 是 465px，所以 30rem 以下總得讓出點
+     什麼。先讓的是品牌鋪陳與裝飾，不是功能：標誌的兩枚 small 合計 112px（版本
+     號在頁尾還有一份，撤掉不損資訊），加上那道分隔線的 19px，min-content 落到
+     371px；nav 四項全留，只是站近一點。360px 仍然差一截——那一格另議。
+
+     鍵在視窗寬而不是容器：這條帽子是視窗 chrome，不隨主控台的收合變寬。 */
+  @media (width < 30rem) {
+    .Logo small { display: none; }
+    nav { gap: 0.875em; }
+    /* 那道分隔線是裝飾，不是內容——這一格的 19px（線＋左右留白）換回來，
+       390px 才有餘裕，「使用手冊」四個字不必折行。 */
+    nav .LangSwitcher::before { display: none; }
+  }
+
+  /* 360–389 — 再讓一步，這次讓的是兩個文字連結。owner 的話：rc.0 本來就還
+     不上使用手冊，GitHub 也不急著在這一格。留下的兩顆是圖標控件（語言、
+     主題），帽子因此在 360px 排得開。 */
+  @media (width < 24.375rem) {
+    nav > a { display: none; }
+  }
+
+  @media (width <= 20rem) {
+    & { padding: 0.875rem var(--gutter); flex-wrap: wrap; gap: 0.75rem; }
+    nav { gap: 0.875rem; flex-wrap: wrap; }
+  }
+}
