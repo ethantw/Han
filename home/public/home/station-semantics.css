@@ -307,19 +307,29 @@ figure.Papers {
         }
       }
 
-      /* lightbox。版心 32 字——全文要的行長比長帶上的摘要長，這正是把兩件事
-         拆開的理由：並排時誰都拿不到這個行長。 */
+      /* lightbox：對話框**自己就是整個畫面**——滿版、透明、自己捲、不畫捲軸。
+         版心是浮在裡面的一張紙，於是捲動看起來是整片畫面在走，而不是一個小
+         盒子裡的捲軸，文章就這樣一路往下延伸。
+
+         模態對話框是釘在視窗上的，頁面捲軸帶不動它（實測：頁面捲了 500px，
+         對話框的 top 一動不動），所以「捲在外面」只能這樣做到——把「外面」
+         做成對話框本身。 */
       &[open] {
-        margin: auto;
-        inline-size: min(32em + 2 * 2rem, 92vw);
-        max-block-size: 86dvh;
+        margin: 0;
         padding: 0;
-        overflow: hidden auto;
+        inline-size: 100dvw;
+        block-size: 100dvh;
+        max-inline-size: none;
+        max-block-size: none;
+        border: 0;
+        background: none;
+        overflow: auto;
         overscroll-behavior: contain;
-        background: var(--ui-bg);
-        border: 1px solid var(--ui-rule);
-        border-radius: var(--r-3);
-        box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 28%, transparent);
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
 
       &::backdrop {
@@ -327,51 +337,72 @@ figure.Papers {
       }
     }
 
-    /* 續版的頁眉：三顆控件貼著上緣，捲動時不走。 */
+    /* 頁眉不成一條——三組控件各自釘在畫面上：換版在兩側、關閉與行向在右上。
+       `display: contents` 讓 `<form>` 只保留「按下去就關」的語意，不佔版面。 */
     .ReaderChrome {
-      position: sticky;
-      inset-block-start: 0;
-      z-index: 1;
-      display: flex;
-      justify-content: end;
-      gap: 0.25rem;
-      margin: 0;
-      padding: 0.5rem;
-      background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
-      backdrop-filter: blur(6px);
-      border-block-end: 1px solid var(--ui-rule);
+      display: contents;
 
       button {
+        position: fixed;
+        z-index: 1;
         display: grid;
         place-content: center;
-        inline-size: 2.25rem;
-        block-size: 2.25rem;
-        padding: 0;
         color: var(--ui-supplement-text);
-        background: none;
-        border: 0;
+        background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
+        backdrop-filter: blur(6px);
+        border: 1px solid var(--ui-rule);
         border-radius: var(--r-3);
         cursor: pointer;
       }
 
       button:hover {
         color: var(--ui-text);
-        background: var(--ui-supplement-bg);
+        background: var(--ui-bg);
       }
 
-      /* 上一版／下一版共用同一枚 chevron，方向由旋轉說——圖示只畫一個，兩個
-         方向就不會有一天長得不像一對。原圖朝行首，所以「上一版」不必轉。 */
+      .ReaderStep {
+        inset-block-start: 50%;
+        translate: 0 -50%;
+        inline-size: 3rem;
+        block-size: 3rem;
+      }
+
+      /* 兩側用物理 `left`／`right`：這兩顆是**畫面**上的位置，不是文本流裡的
+         位置——版心切直排時左右不該跟著翻。 */
+      [data-reader="prev"] { left: 1.5rem; }
+      [data-reader="next"] { right: 1.5rem; }
+
+      /* 上一版／下一版共用同一枚 chevron，方向由旋轉說；原圖朝行首。 */
       [data-reader="next"] [data-icon] {
         rotate: 180deg;
       }
 
+      .ReaderWriting,
       .ReaderClose {
-        margin-inline-start: auto;
+        inset-block-start: 1.5rem;
+        block-size: 2.5rem;
+      }
+
+      .ReaderWriting {
+        right: 5rem;
+        padding-inline: 0.75rem;
+        font-size: 0.8125rem;
+      }
+
+      .ReaderClose {
+        right: 1.5rem;
+        inline-size: 2.5rem;
       }
     }
 
     .ReaderSheet {
-      padding: 1.5rem 2rem 2rem;
+      inline-size: min(36rem, 92dvw);
+      margin: 4rem auto 6rem;
+      padding: 2.5rem 2rem 3rem;
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 22%, transparent);
 
       /* 續版的接排線，與摘要那頭的「（下轉第七版）」成對。 */
       .ReaderFrom {
@@ -382,6 +413,17 @@ figure.Papers {
       h3 {
         margin-block: 0 0.75em;
       }
+    }
+
+    /* 直排。版心一轉，文章就往行首那頭長，於是捲動也跟著轉九十度——`vertical-rl`
+       的 `inline-size` 是它在畫面上的**高**，所以高由這裡封頂、寬交給內容。 */
+    [data-writing="vertical"] .ReaderSheet {
+      writing-mode: vertical-rl;
+      inline-size: min(76dvh, 56rem);
+      block-size: auto;
+      max-inline-size: none;
+      margin: 3rem;
+      padding: 2rem 2.5rem 2rem 2rem;
     }
 
     /* 接排線。「（下轉第七版）」是真報紙的接排慣例，這裡讓它兼任「展開全文」

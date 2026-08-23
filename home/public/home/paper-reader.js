@@ -47,6 +47,20 @@ const step = ($dialog, by) => {
   open(next)
 }
 
+/* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
+   都要知道現在是哪一種，而它們是對話框的直接子元素。按鈕上寫的是**要切去的
+   那一種**，不是現在這一種——一顆按鈕只有一句話的空間，寫「按了會變成什麼」
+   比寫「現在是什麼」有用。 */
+const flip = ($dialog, $button) => {
+  const vertical = $dialog.dataset.writing !== 'vertical'
+  $dialog.dataset.writing = vertical ? 'vertical' : ''
+  $button.textContent = vertical ? '橫排' : '直排'
+  $button.setAttribute('aria-pressed', String(vertical))
+  /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。直排是
+     右起，所以「開頭」在行首那端，交給瀏覽器自己算。 */
+  $dialog.scrollTo({ top: 0, left: vertical ? $dialog.scrollWidth : 0 })
+}
+
 export const initPaperReader = () => {
   /* The jump line stays a real link — we only intercept it when we can offer
      something better, and `preventDefault` runs only on that branch, so a
@@ -63,8 +77,9 @@ export const initPaperReader = () => {
 
   document.querySelectorAll('dialog.Full').forEach(($dialog) => {
     $dialog.addEventListener('click', (event) => {
-      const $step = event.target.closest?.('[data-reader]')
-      if ($step) return step($dialog, $step.dataset.reader === 'next' ? 1 : -1)
+      const $control = event.target.closest?.('[data-reader]')
+      if ($control?.dataset.reader === 'writing') return flip($dialog, $control)
+      if ($control) return step($dialog, $control.dataset.reader === 'next' ? 1 : -1)
       /* Click on the backdrop closes. The dialog's own box is the sheet, so
          a hit that lands on the dialog element itself — not on anything
          inside it — is a hit on the backdrop. */
