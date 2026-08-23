@@ -16,8 +16,8 @@ const OUT = 'home'
 const LOCALE = 'hant'
 
 /* 搬進來的區塊，順序即 `<main>` 的順序。清單以外的都在 HTML 裡留註解佔位。 */
-const SECTIONS = ['manifesto', 'station-semantics', 'station-craft', 'station-playground',
-  'station-snippet', 'closing']
+const SECTIONS = ['manifesto', 'station-semantics', 'station-fonts', 'station-craft',
+  'station-playground', 'station-snippet', 'closing']
 
 /* 搬進來的 `home/*.css`。入口裡其餘的 `@import` 會被註解掉。
    前六份是版框與主控台，其後是各站及它們用到的組件：
@@ -25,12 +25,12 @@ const SECTIONS = ['manifesto', 'station-semantics', 'station-craft', 'station-pl
 const STYLES = [
   'root', 'frame', 'manifesto', 'closing', 'console', 'console-loader',
   'station-semantics', 'semantics-specimen', 'envelope', 'gate',
+  'station-fonts', 'lead-forme', 'dash-fuse',
   'station-craft', 'station-playground', 'station-snippet', 'ledger', 'lens',
 ]
 
 /* 舊模版裡出現、但這一輪不搬的區塊 token，照原順序留註解。 */
 const PARKED = [
-  ['stationFontsSection', ''],
   ['stationLinesSection', ''],
   ['stationProseSection', ''],
 ]
@@ -119,8 +119,15 @@ html = html.replace('</head>', [
    `frame.css` 在 `prefers-reduced-motion: no-preference` 底下給
    `[data-station] > *` 一個 `opacity: 0` 的起始態，只有 `reveal.js` 蓋上
    `data-revealed` 才會落定——所以沒有 JS 的頁面，每一站都是空白的（舊站在
-   讀者停用 JS 時亦然）。這一輪不搬 JS，就由標記自己說它已經就位。 */
-html = html.replace(/<section\b(?=[^>]*\bdata-station=)/g, '<section data-revealed')
+   讀者停用 JS 時亦然）。這一輪不搬 `reveal.js`，就由標記自己說它已經就位。
+
+   兩種來源都要蓋：站台（`data-station`），以及自己掛了 `data-reveal-at`
+   的元件。後者是另一套門檻——站②的鉛字盤就在自己身上等這顆標記，少蓋一種，
+   那座字盤畫得出來卻停在 `opacity: 0`（實測 1,847 個節點全在，畫面全白）。 */
+html = html.replace(
+  /<(\w+)\b(?=[^>]*\b(?:data-station|data-reveal-at)=)/g,
+  (all, tag) => `<${tag} data-revealed`,
+)
 
 
 writeFileSync(`${OUT}/index.html`, html)
@@ -142,6 +149,8 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
 const SCRIPTS = [
   'home/fonts-gate.js',
   'home/snap.js',
+  'home/lead-forme.js',
+  'home/punct-lang.js',
   'components/han-console.js',
   'components/console-config.js',
   'components/console-metrics.js',

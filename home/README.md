@@ -12,8 +12,8 @@
 | --- | --- |
 | Vite 設定 | 二十行，只指定 port 7770 |
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
-| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 14 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
-| 區塊 | manifesto、語意、工法、遊樂場、引用碼、closing；其餘三站在 HTML 裡留註解佔位 |
+| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 18 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
+| 區塊 | manifesto、語意、字體、工法、遊樂場、引用碼、closing；其餘兩站在 HTML 裡留註解佔位 |
 | JS | 字體閘門 ＋ `<han-console>` 那一支模組圖。舊站其餘的 `home/*.js` 都沒搬 |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
@@ -85,7 +85,9 @@ console-metrics}.js` ＋ 兩份 shadow 樣式表、`common/icon.js`、
 
 ## 沒有 JS 就是空的（預期內）
 
-搬進來的站是靜態外殼，內容由各自的模組填：遊樂場的預覽窗（`playground.js`）、
+站②的鉛字盤與標點示範已經連同它們的模組搬進來了（`lead-forme.js`、
+`punct-lang.js`，在 `_boot.js` 裡各叫一次）。其餘搬進來的站仍是靜態外殼，
+內容由各自的模組填：遊樂場的預覽窗（`playground.js`）、
 引用碼的代碼窗（`snippet.js`＋`codegen.js`，連元素都是執行時建的，所以那顆
 「JS 後備」開關也還不在）、工法的字體帳（`ledger.js`）。標題、公式、範例與
 報紙樣張是寫死的標記，都在。

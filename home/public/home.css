@@ -35,7 +35,7 @@
 @import url('./home/manifesto.css');
 @import url('./home/station-semantics.css');
 @import url('./home/semantics-specimen.css');
-/* @import url('./home/station-fonts.css'); */
+@import url('./home/station-fonts.css');
 /* @import url('./home/station-lines.css'); */
 /* @import url('./home/station-prose.css'); */
 @import url('./home/station-craft.css');
@@ -45,8 +45,8 @@
 
 /* ── 例外：自帶 JS 的圖示組件，與主控台 ── */
 @import url('./home/lens.css');
-/* @import url('./home/lead-forme.css'); */
-/* @import url('./home/dash-fuse.css'); */
+@import url('./home/lead-forme.css');
+@import url('./home/dash-fuse.css');
 @import url('./home/envelope.css');
 @import url('./home/ledger.css');
 @import url('./home/console-loader.css');

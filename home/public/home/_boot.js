@@ -8,8 +8,17 @@
  * 經過這裡。搬完之後這一份跟著搬運腳本一起刪，換成真正的入口。
  */
 import { initSnapStrips } from './snap.js'
+import { initLeadForme } from './lead-forme.js'
+import { initPunctLang } from './punct-lang.js'
 
 /* 藥丸只該動 X 軸。`<a href="#paper-…">` 的預設行為會把整頁捲到那一版的
    頂端——讀者要的是換一版，不是換一個捲動位置；`snap.js` 攔下預設行為，改
    用 `scrollIntoView({ inline: 'start', block: 'nearest' })`，只推長帶自己。 */
 initSnapStrips()
+
+/* 站②的鉛字盤：整座等角字盤是這一支建出來的，沒有它那個 figure 是空的。 */
+initLeadForme()
+
+/* 站②的標點語言示範：四顆 <select> 是主控台對應控件的遙控器，狀態的唯一
+   真相在主控台，這一支只做雙向鏡射。 */
+initPunctLang()
