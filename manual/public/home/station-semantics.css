@@ -337,7 +337,9 @@ figure.Papers {
       }
     }
 
-    /* 頁眉不成一條——三組控件各自釘在畫面上：換版在兩側、關閉與行向在右上。
+    /* 頁眉不成一條——三顆控件各自釘在畫面上：換版在兩側、關閉在右上。三顆都
+       是圓的：它們浮在版面之上、不屬於任何一段文字，圓形說得清楚這件事，也
+       跟版心那張方正的紙分得開。
        `display: contents` 讓 `<form>` 只保留「按下去就關」的語意，不佔版面。 */
     .ReaderChrome {
       display: contents;
@@ -351,7 +353,7 @@ figure.Papers {
         background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
         backdrop-filter: blur(6px);
         border: 1px solid var(--ui-rule);
-        border-radius: var(--r-3);
+        border-radius: 50%;
         cursor: pointer;
       }
 
@@ -377,21 +379,41 @@ figure.Papers {
         rotate: 180deg;
       }
 
-      .ReaderWriting,
       .ReaderClose {
         inset-block-start: 1.5rem;
-        block-size: 2.5rem;
-      }
-
-      .ReaderWriting {
-        right: 5rem;
-        padding-inline: 0.75rem;
-        font-size: 0.8125rem;
-      }
-
-      .ReaderClose {
         right: 1.5rem;
-        inline-size: 2.5rem;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+      }
+    }
+
+    /* 版心的頁眉：續版行在行首，行向的開關在行尾。它住在紙上、不在畫面上，
+       因為行向是**這篇文章**的排法，不是這個彈窗的選項——所以切直排時它跟著
+       轉，正如報頭跟著轉。 */
+    .ReaderHead {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-block-end: 0.5em;
+
+      .ReaderFrom {
+        margin: 0;
+      }
+    }
+
+    .ReaderWriting {
+      padding: 0.25em 0.75em;
+      color: var(--ui-supplement-text);
+      font-size: 0.8125rem;
+      background: none;
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      cursor: pointer;
+
+      &:hover {
+        color: var(--ui-text);
+        border-color: var(--ui-text);
       }
     }
 
