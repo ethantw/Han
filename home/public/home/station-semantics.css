@@ -390,6 +390,12 @@ figure.Papers {
     /* 版心的頁眉：續版行在行首，行向的開關在行尾。它住在紙上、不在畫面上，
        因為行向是**這篇文章**的排法，不是這個彈窗的選項——所以切直排時它跟著
        轉，正如報頭跟著轉。 */
+    /* 頁眉與大標橫跨所有欄——它們是這一版的抬頭，不是某一欄的開頭。 */
+    .ReaderHead,
+    .ReaderSheet > h3 {
+      column-span: all;
+    }
+
     .ReaderHead {
       display: flex;
       align-items: baseline;
@@ -418,7 +424,33 @@ figure.Papers {
     }
 
     .ReaderSheet {
-      inline-size: min(36rem, 92dvw);
+      /* 21em ＝ 每欄 21 字。報紙的欄比正文窄，因為窄欄才追得上眼睛回行的
+         節奏；20–24 字是那個範圍，取中。窄畫面時欄跟著縮，一欄就是全部。
+
+         版心的寬度**量化**成欄寬的整數倍，這一步不能省：`column-width` 說的
+         是「一欄最少要多寬」，多出來的寬度會攤進各欄裡——實測 1024px 下量到
+         每行 26 字、768px 下 40 字，正好把窄欄的好處賠光。`round(down, …)`
+         （Baseline 2024）把可用寬度砍到「N 欄 ＋ (N−1) 道欄距」，於是每一欄
+         都剛好是 21em，欄數放得下幾欄就是幾欄。
+
+         `content-box`：量化算的是欄的總寬，版心的內距不該混進那個數。
+
+         高度仍是 auto，所以多欄會**平衡**：內容分進各欄、整塊往下長。三欄
+         把一篇 1,700 字的報導壓成原本三分之一高。 */
+      --reader-col: min(21em, 100dvw - 8rem);
+      --reader-gap: 2.5rem;
+
+      box-sizing: content-box;
+      inline-size: max(
+        var(--reader-col),
+        calc(
+          round(down, min(76rem, 100dvw - 8rem) + var(--reader-gap), var(--reader-col) + var(--reader-gap))
+          - var(--reader-gap)
+        )
+      );
+      columns: var(--reader-col);
+      column-gap: var(--reader-gap);
+
       margin: 4rem auto 6rem;
       padding: 2.5rem 2rem 3rem;
       background: var(--ui-bg);
@@ -441,11 +473,26 @@ figure.Papers {
        的 `inline-size` 是它在畫面上的**高**，所以高由這裡封頂、寬交給內容。 */
     [data-writing="vertical"] .ReaderSheet {
       writing-mode: vertical-rl;
-      inline-size: min(76dvh, 56rem);
-      block-size: auto;
+
+      /* 直排的欄與橫排的欄長得一樣，只是整組轉了九十度：`column-width` 給的
+         是**每行幾個字**（直排的行是縱的），`block-size` 給的是**每欄幾行**
+         （直排的行往左疊，所以那是水平方向）。
+
+         `block-size` 一封住，內容就沒辦法在同一欄裡一路往左長，只能開下一欄
+         ——而多欄的欄沿行內軸走，直排的行內軸是縱的，於是欄往**下**疊。這正是
+         要的：文章沿 Y 延伸，捲動仍然是往下捲，和橫排同一個手勢。
+
+         `inline-size: max-content` 是讓它成立的那一半：不寫的話版心的行內尺寸
+         會被畫面撐滿、欄數就此封頂，多出來的內容無處可去。 */
+      --reader-col: min(21em, 100dvh - 10rem);
+
+      block-size: min(52em, 92dvw);
+      inline-size: max-content;
+      column-fill: auto;
       max-inline-size: none;
-      margin: 3rem;
-      padding: 2rem 2.5rem 2rem 2rem;
+      columns: var(--reader-col);
+      margin: 3rem auto 5rem;
+      padding: 2rem 2.5rem;
     }
 
     /* 接排線。「（下轉第七版）」是真報紙的接排慣例，這裡讓它兼任「展開全文」

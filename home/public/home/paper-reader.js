@@ -34,6 +34,7 @@ const open = (key) => {
   if (!$dialog?.showModal) return
   pillOf(key)?.click()
   if (!$dialog.open) $dialog.showModal()
+  fitColumns($dialog)
 }
 
 const step = ($dialog, by) => {
@@ -47,6 +48,45 @@ const step = ($dialog, by) => {
   open(next)
 }
 
+/* 直排時的欄數要算，這是 CSS 說不出來的那一句。
+ *
+ * 多欄的欄沿**行內軸**排，而直排的行內軸是縱的——所以 `block-size` 一封住
+ * 每欄的行數，欄就會往下疊，文章沿 Y 延伸（owner call：不要攤成一條往左長
+ * 的帶子）。問題在於「要幾欄」：欄數由容器的行內尺寸決定，而直排的行內尺寸
+ * 是**高**，一寫 `auto` 就被畫面撐滿、欄數就此封頂，多出來的內容無處可去。
+ * `max-content` 也不行，它算的是「不用分欄也放得下」的尺寸，實測給出十七欄。
+ *
+ * 所以量兩次：先讓它單欄不封行數，看這篇直排起來有多長；再除以一欄的行數，
+ * 得到欄數，寫回行內尺寸。開啟、換向、改視窗各算一次，代價是兩次版面。
+ */
+const fitColumns = ($dialog) => {
+  const $sheet = $dialog.querySelector('.ReaderSheet')
+  if (!$sheet) return
+  $sheet.style.removeProperty('inline-size')
+  if ($dialog.dataset.writing !== 'vertical') return
+
+  const style = getComputedStyle($sheet)
+  const column = parseFloat(style.columnWidth)
+  const gap = parseFloat(style.columnGap)
+  /* 內距在兩種量法裡都各算一次，扣掉才比得準。 */
+  const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+
+  const perColumn = $sheet.getBoundingClientRect().width - padding
+
+  /* 量「這篇直排起來有多長」：關掉多欄、放開行數，**並且**把行內尺寸明寫成
+     一欄的行長。少了最後這一句它會退回 CSS 的 `max-content`，自己又分成好幾
+     欄，量到的就只是其中一欄（實測因此只得出一欄）。 */
+  $sheet.style.columns = 'auto'
+  $sheet.style.blockSize = 'auto'
+  $sheet.style.inlineSize = `${column}px`
+  const natural = $sheet.getBoundingClientRect().width - padding
+  $sheet.style.removeProperty('columns')
+  $sheet.style.removeProperty('block-size')
+
+  const count = Math.max(1, Math.ceil(natural / perColumn))
+  $sheet.style.inlineSize = `${count * (column + gap) - gap}px`
+}
+
 /* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
    都要知道現在是哪一種，而它們是對話框的直接子元素。按鈕上寫的是**要切去的
    那一種**，不是現在這一種——一顆按鈕只有一句話的空間，寫「按了會變成什麼」
@@ -56,12 +96,17 @@ const flip = ($dialog, $button) => {
   $dialog.dataset.writing = vertical ? 'vertical' : ''
   $button.textContent = vertical ? '橫排' : '直排'
   $button.setAttribute('aria-pressed', String(vertical))
-  /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。直排是
-     右起，所以「開頭」在行首那端，交給瀏覽器自己算。 */
-  $dialog.scrollTo({ top: 0, left: vertical ? $dialog.scrollWidth : 0 })
+  fitColumns($dialog)
+  /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。 */
+  $dialog.scrollTo({ top: 0, left: 0 })
 }
 
 export const initPaperReader = () => {
+  /* 改視窗會改變每欄的行數上限，欄數得跟著重算。 */
+  addEventListener('resize', () => {
+    document.querySelectorAll('dialog.Full[open]').forEach(fitColumns)
+  }, { passive: true })
+
   /* The jump line stays a real link — we only intercept it when we can offer
      something better, and `preventDefault` runs only on that branch, so a
      browser without `<dialog>` still follows the href to `:target`. */
