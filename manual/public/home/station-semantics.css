@@ -83,7 +83,9 @@ figure.Papers {
     /* 軌道寬度交給版面自己（下面的 `inline-size`）：亮版與沒亮的版寬不同，
        單一的 `grid-auto-columns` 說不出這件事。 */
     grid-auto-columns: auto;
-    gap: 1.5rem;
+    gap: var(--paper-gap);
+
+    --paper-gap: 1.5rem;
 
     /* 版寬寫成變數，因為行尾的捲動餘裕要拿它算（見下）。
 
@@ -119,9 +121,11 @@ figure.Papers {
        改它（實測 gutter 32px、站台實際 36px，差那 4px 就露餡了）。 */
     margin-inline: calc(-1 * var(--plate-pad));
 
-    /* 對齊線仍是正文欄：`scroll-padding` 決定 snap 停在哪，與上面那半個可視段
-       是兩回事——沒有它，每一版會停在盒子的邊、也就是貼著視窗。 */
-    scroll-padding-inline-start: var(--plate-pad);
+    /* 停靠線 ＝ 可視段的中線。這條線是這座長帶的閱讀位：一版捲到這裡就算
+       輪到它（`snap.js` 的亮燈也判在同一條線上），藥丸也把選中的那一版送到
+       這裡。第一版的靜止位置正好是它的停格點（`scrollLeft: 0`），所以載入
+       當下就從中線開始往右擺，不必為此放棄 `mandatory`。 */
+    scroll-padding-inline-start: 50cqi;
 
     /* 行首的內距讓第一版與正文對齊；行尾留到「末版也能捲到最前面」為止，
        否則它永遠拿不到亮燈權（判準是「整版露出 ＋ 起邊落在前半段」）。 */
@@ -139,7 +143,10 @@ figure.Papers {
        永遠釘在最左邊（owner call）。 */
     &::before {
       content: "";
-      inline-size: 50cqi;
+      /* 目標是**第一版的左緣**落在可視段的中線，不是空白格本身佔半段：它前面
+         還隔著行首的裝訂線與一道間距，兩個都要從半段裡扣掉，否則第一版會被
+         推過中線（實測 921 vs 中線 861，多出來的正是 36 ＋ 24）。 */
+      inline-size: calc(50cqi - var(--plate-pad) - var(--paper-gap));
     }
 
     /* 捲軸不畫（owner call，參照 apple.com）：這一條長帶的「還有更多」是靠

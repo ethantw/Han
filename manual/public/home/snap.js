@@ -76,22 +76,27 @@ const mount = ($pills) => {
   }
 
   /* Which pane is showing is the strip's own business, so read it from the
-     strip. The rule (owner call): a pane earns the light only if it is
-     showing its FULL width and its start edge sits in the leading half of
-     the run; of those, the one nearest the start wins.
+     strip. The rule (owner call): the run has a READING LINE down the middle
+     of the visible span — the panes start half a span in, so the first one
+     already sits on it — and a pane takes the light the moment it reaches
+     that line. When several have passed it, the last one to arrive wins,
+     i.e. the one nearest the line from the left.
 
-     Ratio alone can't say this. At the end of the run the strip stops with
-     the last two panes both entirely visible — both at ratio 1, so the
-     winner came down to which entry the observer happened to list first, and
-     pressing 日 lit 한. Fullness answers「這一版讀得完嗎」and the leading-half
-     test answers「是這一版，還是它右邊那個」; together they name exactly one.
+     Ratio can't say this. At the end of the run the strip stops with the last
+     two panes both entirely visible — both at ratio 1, so the winner came
+     down to which entry the observer happened to list first, and pressing 日
+     lit 한. One line answers it for every position, including the two panes
+     that share the last screen.
 
-     Fallback: a pane wider than the run can never be fully visible, and a
-     light that goes out reads as broken — so if nobody qualifies, the pane
-     showing the most wins. `aria-current` is the state, CSS dresses it. */
-  /* 標記兩處：藥丸掛 `aria-current`（它是控件，那是它的狀態），版面自己掛
-     `data-current`（樣式要據此放大縮小，而 `aria-current` 在版面上沒有那個
-     意思）。 */
+     It only holds because the pills park a pane ON that line too
+     (`scroll-padding-inline-start` in the CSS): park them anywhere else and
+     the pane to the right of the chosen one has also passed the line, and
+     being further right it would take the light instead.
+
+     Fallback: before anything reaches the line (a run scrolled back to its
+     very start), the first pane holds it — a light that goes out reads as
+     broken. `aria-current` is the pill's state, `data-current` the pane's;
+     CSS dresses both. */
   const light = ($current) => {
     for (const [$pane, $a] of panes) {
       $a.toggleAttribute('aria-current', $pane === $current)
@@ -101,27 +106,23 @@ const mount = ($pills) => {
 
   const vertical = () => getComputedStyle($strip).writingMode.startsWith('vertical')
 
-  /* 沿長帶的**行內軸**取起點、終點與長度：直排時那條軸是螢幕的縱軸。 */
+  /* 沿長帶的**行內軸**取起點與長度：直排時那條軸是螢幕的縱軸。 */
   const span = (rect, isVertical) => isVertical
-    ? { start: rect.top, end: rect.bottom, size: rect.height }
-    : { start: rect.left, end: rect.right, size: rect.width }
+    ? { start: rect.top, size: rect.height }
+    : { start: rect.left, size: rect.width }
 
   const current = () => {
     const isVertical = vertical()
     const run = span($strip.getBoundingClientRect(), isVertical)
-    const middle = run.start + run.size / 2
+    const line = run.start + run.size / 2
     let winner = null
-    let widest = null
     for (const $pane of panes.keys()) {
       const pane = span($pane.getBoundingClientRect(), isVertical)
       /* 1px 的寬容：捲動位置與版寬都可能落在次像素上。 */
-      const whole = pane.start >= run.start - 1 && pane.end <= run.end + 1
-      const shown = Math.max(0, Math.min(pane.end, run.end) - Math.max(pane.start, run.start))
-      if (!widest || shown > widest.shown) widest = { $pane, shown }
-      if (!whole || pane.start >= middle) continue
-      if (!winner || pane.start < winner.start) winner = { $pane, start: pane.start }
+      if (pane.start > line + 1) continue
+      if (!winner || pane.start > winner.start) winner = { $pane, start: pane.start }
     }
-    return (winner ?? widest)?.$pane
+    return (winner ?? { $pane: [...panes.keys()][0] }).$pane
   }
 
   let queued = false
