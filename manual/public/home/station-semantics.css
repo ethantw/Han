@@ -25,32 +25,32 @@
    where the strip actually scrolls; wider than that all four are visible and
    there is nothing to navigate. */
 .PaperPills {
-  & { display: none; }
+  /* 版面永遠是橫向捲動的一條（見 figure.Papers），所以跳版的藥丸也永遠在
+     ——它不再是窄視窗的補救，而是這條長帶唯一的目錄。 */
+  & {
+    display: flex;
+    justify-content: center;
+    gap: 0.375rem;
+    margin-block: 2rem -1.25rem;
+  }
 
-  @container (inline-size < 34rem) {
-    & {
-      display: flex;
-      justify-content: center;
-      gap: 0.375rem;
-      margin-block: 2rem -1.25rem;
-    }
-    a {
-      /* 44px 的觸控目標，字自己小一級 */
-      display: grid;
-      place-content: center;
-      inline-size: 2.75rem;
-      block-size: 2.75rem;
-      font-family: var(--han-font-alternative);
-      font-size: 0.875rem;
-      color: var(--ui-supplement-text);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-3);
-    }
-    a[aria-current] {
-      color: var(--ui-bg);
-      background: var(--ui-accent);
-      border-color: var(--ui-accent);
-    }
+  a {
+    /* 44px 的觸控目標，字自己小一級 */
+    display: grid;
+    place-content: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    font-family: var(--han-font-alternative);
+    font-size: 0.875rem;
+    color: var(--ui-supplement-text);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+  }
+
+  a[aria-current] {
+    color: var(--ui-bg);
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
   }
 }
 
@@ -68,48 +68,64 @@
 }
 
 figure.Papers {
+  /* 四版並排的格子改成**一條橫向捲動的長帶**（owner call，參照 Apple 的
+     產品頁）。四欄等分在寬視窗上把每一版壓到二十來字一行，讀起來像四張窄
+     報條；改成長帶之後每一版都拿到接近正文的行長，下一版只露一角，讀者一
+     眼就知道還有東西。窄視窗本來就是這個形狀，現在只是所有寬度一致。
+
+     版寬鍵在**容器**而不是視窗：主控台一收，閱讀欄寬 280px，一頁能露幾版
+     是那一欄的事。 */
   & {
     margin: 2rem 0 3rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: min(28rem, 82%);
     gap: 0.75rem;
 
-    /* Keyed on the CONTAINER, not the window: the console collapses, the
-       reading column widens by 280px, and how many editions fit beside each
-       other is a fact about that column. */
-    @container (inline-size < 64rem) {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    overflow-inline: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    /* the sheet keeps a margin at the end of the run, like a page */
+    padding-inline-end: 0.75rem;
 
-    /* Below two columns the four DON'T stack — they stay in a row and the row
-       scrolls. Stacking would put 繁 and 日 three screens apart, and what this
-       figure is for is「同一行，四種寫法」: 著重號 vs 圏点 vs 傍點,《》vs「」,
-       注音／拼音／振り仮名／한글 루비. Comparison is the specimen, so the
-       comparison is what survives the narrow column — the same reason the
-       loupe's host is the whole figure (§ the loupe).
-
-       Panes stay at a readable measure and the row snaps, so a swipe lands on
-       one edition rather than between two. (`scroll-snap`: Baseline 2021.) */
+    /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
+       接近整欄的行長。 */
     @container (inline-size < 34rem) {
-      grid-auto-flow: column;
-      grid-template-columns: none;
-      /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
-         接近整欄的行長。 */
       grid-auto-columns: min(92%, 24rem);
-      overflow-inline: auto;
-      overscroll-behavior-inline: contain;
-      scroll-snap-type: inline mandatory;
-      /* the sheet keeps a margin at the end of the run, like a page */
-      padding-inline-end: 0.75rem;
-
-      article {
-        scroll-snap-align: start;
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        scroll-behavior: smooth;
-      }
     }
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* 誰排第一，看讀者讀的是哪一版：本地版打頭，其餘依親疏。日韓兩版互為近鄰
+     （同屬 CJK 的非漢語圈排版傳統），所以彼此緊跟；繁簡同理。DOM 順序固定為
+     繁簡日韓，這裡只翻視覺順序——藥丸用 id 跳版，不受影響。 */
+  article { scroll-snap-align: start; }
+
+  #paper-hant { order: 1; }
+  #paper-hans { order: 2; }
+  #paper-ja   { order: 3; }
+  #paper-ko   { order: 4; }
+
+  :where(body[data-locale="hans"]) & {
+    #paper-hans { order: 1; }
+    #paper-hant { order: 2; }
+  }
+
+  :where(body[data-locale="ja"]) & {
+    #paper-ja   { order: 1; }
+    #paper-ko   { order: 2; }
+    #paper-hant { order: 3; }
+    #paper-hans { order: 4; }
+  }
+
+  :where(body[data-locale="ko"]) & {
+    #paper-ko   { order: 1; }
+    #paper-ja   { order: 2; }
+    #paper-hant { order: 3; }
+    #paper-hans { order: 4; }
   }
 
   article {
