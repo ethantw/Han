@@ -178,7 +178,9 @@ figure.Papers {
   /* 誰排第一，看讀者讀的是哪一版：本地版打頭，其餘依親疏。日韓兩版互為近鄰
      （同屬 CJK 的非漢語圈排版傳統），所以彼此緊跟；繁簡同理。DOM 順序固定為
      繁簡日韓，這裡只翻視覺順序——藥丸用 id 跳版，不受影響。 */
-  article {
+  /* `>` 是必要的：續版的版心也是一個 `<article>`（`.ReaderSheet`），沒有這個
+     子代限定就會被下面的版寬抓走，在 lightbox 裡縮成 350px、右邊空一大塊。 */
+  > article {
     scroll-snap-align: start;
 
     /* 四版同一個字級。版寬由字級算出來——版心 20em、內距 em、報頭與標題也
@@ -280,17 +282,105 @@ figure.Papers {
       margin: 0;
       text-indent: 1em;
     }
-    /* 長帶只登摘要，全文收著。`display: none` 不參與版面，所以四份全文躺在
-       DOM 裡不花排版——這一站原本是整頁最貴的一塊。
+    /* 長帶只登摘要，全文收在 `<dialog>` 裡。關著的 `<dialog>` 不參與版面，
+       所以四份全文躺在 DOM 裡不花排版——這一站原本是整頁最貴的一塊。
 
-       `:target` 讓接排線**現在就是真的**：那是一個貨真價實的頁內連結，按下去
-       全文就在原地展開，一行 JS 都不必。之後的 lightbox 是把這條路升級，不是
-       取代它——沒有 JS 的讀者仍然讀得完整篇。 */
+       同一個元素身兼兩態，這是它值得是 `<dialog>` 的原因：沒有 JS 時 `:target`
+       讓它在原地展開，接排線就已經是一條能用的頁內連結；有 JS 時
+       `showModal()` 把**同一個元素**升到頂層變成 lightbox，沒有複製品
+       （放大鏡的複本教過我們這四份複製一次要多少錢）。 */
     .Full {
-      display: none;
+      &:not([open]) {
+        display: none;
+      }
 
-      &:target {
+      /* 無 JS 的那一態：原地展開，就是續版接在摘要後面，chrome 用不上。 */
+      &:target:not([open]) {
         display: block;
+        margin-block-start: 1em;
+        border: 0;
+        padding: 0;
+        max-inline-size: none;
+
+        .ReaderChrome {
+          display: none;
+        }
+      }
+
+      /* lightbox。版心 32 字——全文要的行長比長帶上的摘要長，這正是把兩件事
+         拆開的理由：並排時誰都拿不到這個行長。 */
+      &[open] {
+        margin: auto;
+        inline-size: min(32em + 2 * 2rem, 92vw);
+        max-block-size: 86dvh;
+        padding: 0;
+        overflow: hidden auto;
+        overscroll-behavior: contain;
+        background: var(--ui-bg);
+        border: 1px solid var(--ui-rule);
+        border-radius: var(--r-3);
+        box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 28%, transparent);
+      }
+
+      &::backdrop {
+        background: color-mix(in srgb, var(--palette-black) 45%, transparent);
+      }
+    }
+
+    /* 續版的頁眉：三顆控件貼著上緣，捲動時不走。 */
+    .ReaderChrome {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: end;
+      gap: 0.25rem;
+      margin: 0;
+      padding: 0.5rem;
+      background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
+      backdrop-filter: blur(6px);
+      border-block-end: 1px solid var(--ui-rule);
+
+      button {
+        display: grid;
+        place-content: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        padding: 0;
+        color: var(--ui-supplement-text);
+        background: none;
+        border: 0;
+        border-radius: var(--r-3);
+        cursor: pointer;
+      }
+
+      button:hover {
+        color: var(--ui-text);
+        background: var(--ui-supplement-bg);
+      }
+
+      /* 上一版／下一版共用同一枚 chevron，方向由旋轉說——圖示只畫一個，兩個
+         方向就不會有一天長得不像一對。原圖朝行首，所以「上一版」不必轉。 */
+      [data-reader="next"] [data-icon] {
+        rotate: 180deg;
+      }
+
+      .ReaderClose {
+        margin-inline-start: auto;
+      }
+    }
+
+    .ReaderSheet {
+      padding: 1.5rem 2rem 2rem;
+
+      /* 續版的接排線，與摘要那頭的「（下轉第七版）」成對。 */
+      .ReaderFrom {
+        margin-block: 0 0.5em;
+        color: var(--ui-supplement-text);
+      }
+
+      h3 {
+        margin-block: 0 0.75em;
       }
     }
 

@@ -10,6 +10,7 @@
 import { initSnapStrips } from './snap.js'
 import { initLeadForme } from './lead-forme.js'
 import { initPunctLang } from './punct-lang.js'
+import { initPaperReader } from './paper-reader.js'
 
 /* 藥丸只該動 X 軸。`<a href="#paper-…">` 的預設行為會把整頁捲到那一版的
    頂端——讀者要的是換一版，不是換一個捲動位置；`snap.js` 攔下預設行為，改
@@ -22,3 +23,7 @@ initLeadForme()
 /* 站②的標點語言示範：四顆 <select> 是主控台對應控件的遙控器，狀態的唯一
    真相在主控台，這一支只做雙向鏡射。 */
 initPunctLang()
+
+/* 站①的四語全文閱讀器：把接排線升級成 lightbox。沒有它，那條連結仍然靠
+   `:target` 原地展開全文——這一支只是讓它更好讀。 */
+initPaperReader()
