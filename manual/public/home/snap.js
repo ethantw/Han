@@ -68,6 +68,9 @@ const mount = ($pills) => {
   for (const [$pane, $a] of panes) {
     $a.addEventListener('click', (e) => {
       e.preventDefault()
+      /* 先點亮，再捲。燈是「你按的是這一顆」的回覆，不該等平滑捲動走完才
+         亮；捲完之後觀察器會自己再算一次，結論相同。 */
+      light($pane)
       $strip.scrollTo({ ...inlineTarget($pane), behavior: 'smooth' })
     })
   }
@@ -86,10 +89,13 @@ const mount = ($pills) => {
      Fallback: a pane wider than the run can never be fully visible, and a
      light that goes out reads as broken — so if nobody qualifies, the pane
      showing the most wins. `aria-current` is the state, CSS dresses it. */
+  /* 標記兩處：藥丸掛 `aria-current`（它是控件，那是它的狀態），版面自己掛
+     `data-current`（樣式要據此放大縮小，而 `aria-current` 在版面上沒有那個
+     意思）。 */
   const light = ($current) => {
     for (const [$pane, $a] of panes) {
-      if ($pane === $current) $a.setAttribute('aria-current', 'true')
-      else $a.removeAttribute('aria-current')
+      $a.toggleAttribute('aria-current', $pane === $current)
+      $pane.toggleAttribute('data-current', $pane === $current)
     }
   }
 
