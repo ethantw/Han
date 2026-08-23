@@ -35,19 +35,28 @@
   }
 
   a {
-    /* 44px 的觸控目標，字自己小一級 */
+    /* 盒子固定 2.75rem ＝ 44px 的觸控目標，字級變動不影響它——縮的是字，
+       不是可以按到的範圍。 */
     display: grid;
     place-content: center;
     inline-size: 2.75rem;
     block-size: 2.75rem;
     font-family: var(--han-font-alternative);
-    font-size: 0.875rem;
+    /* 沒亮的一律 8px（owner call）：它們此刻的職責只是「還有這幾版」，字級
+       退到能認出是哪一個文種就夠；亮著的那顆放到 16px，一眼就知道現在讀的
+       是誰。差兩倍，遠比顏色差一階好認。 */
+    font-size: 0.5rem;
     color: var(--ui-supplement-text);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: font-size 160ms ease;
+    }
   }
 
   a[aria-current] {
+    font-size: 1rem;
     color: var(--ui-bg);
     background: var(--ui-accent);
     border-color: var(--ui-accent);
@@ -79,8 +88,17 @@ figure.Papers {
     margin: 2rem 0 3rem;
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: min(28rem, 82%);
-    gap: 0.75rem;
+    grid-auto-columns: var(--paper);
+    gap: 1.5rem;
+
+    /* 版寬寫成變數，因為行尾的捲動餘裕要拿它算（見下）。
+
+       單位是 `cqi` 而不是 `%`：百分比對的是**格線容器的內容盒**，而行尾的
+       餘裕就開在那個盒子上——餘裕一大，內容盒變窄，版跟著變窄，餘裕又得再
+       大，兩者互相追著跑。實測那一版把版寬從 448 拉到 367，末版永遠差最後
+       八十幾像素進不了前半段。`cqi` 量的是 `main`，與這條長帶自己的內距
+       無關，迴圈就斷了。 */
+    --paper: min(28rem, 82cqi);
 
     overflow-inline: auto;
     overscroll-behavior-inline: contain;
@@ -100,8 +118,24 @@ figure.Papers {
        用 `--plate-pad` 而不是 `--gutter`：站台的內距是前者，各站可以自己
        改它（實測 gutter 32px、站台實際 36px，差那 4px 就露餡了）。 */
     margin-inline: calc(-1 * var(--plate-pad));
-    padding-inline: var(--plate-pad);
+    padding-inline-start: var(--plate-pad);
     scroll-padding-inline-start: var(--plate-pad);
+
+    /* 行尾要留到「最後一版也能捲到最前面」為止，否則它永遠拿不到亮燈權：
+       亮燈判在「整版露出 ＋ 起邊落在前半段」，而長帶捲到底時最後兩版是並排
+       停住的，末版的起邊只能停在後半段。要讓它進得了前半段，行尾就得有
+       「一個可視段減一個版寬」的餘裕。
+
+       行首不跟著加。行首的內距**就是**第一版拿到亮燈權的原因（靜止在
+       scrollLeft 0 時它整版露出、起邊在最前），加寬只會把它往中線推，反而
+       弄丟那盞燈——兩端要的是同一件事，做法卻是相反的。
+
+       `100cqi` 是 `main` 的行內尺寸（`frame.css` 在那裡開的容器），也就是
+       這條長帶的可視段。 */
+    padding-inline-end: max(
+      var(--plate-pad),
+      calc(100cqi - var(--paper) - var(--plate-pad))
+    );
 
     /* 捲軸不畫（owner call，參照 apple.com）：這一條長帶的「還有更多」是靠
        版面在邊界上被切斷說的，一條橫槓只是把那句話再說一次，還在四份報紙
@@ -120,7 +154,7 @@ figure.Papers {
     /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
        接近整欄的行長。 */
     @container (inline-size < 34rem) {
-      grid-auto-columns: min(92%, 24rem);
+      --paper: min(92cqi, 24rem);
     }
 
     @media (prefers-reduced-motion: no-preference) {
