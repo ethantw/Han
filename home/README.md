@@ -86,8 +86,8 @@ console-metrics}.js` ＋ 兩份 shadow 樣式表、`common/icon.js`、
 ## 沒有 JS 就是空的（預期內）
 
 站②的鉛字盤與標點示範、站①的四語全文閱讀器已經連同它們的模組搬進來了
-（`lead-forme.js`、`punct-lang.js`、`snap.js`、`paper-reader.js`，在
-`_boot.js` 裡各叫一次）。其餘搬進來的站仍是靜態外殼，
+（`lead-forme.js`、`punct-lang.js`、`paper-reader.js`，在 `_boot.js` 裡各叫
+一次）。其餘搬進來的站仍是靜態外殼，
 內容由各自的模組填：遊樂場的預覽窗（`playground.js`）、
 引用碼的代碼窗（`snippet.js`＋`codegen.js`，連元素都是執行時建的，所以那顆
 「JS 後備」開關也還不在）、工法的字體帳（`ledger.js`）。標題、公式、範例與

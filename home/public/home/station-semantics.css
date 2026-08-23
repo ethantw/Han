@@ -24,36 +24,6 @@
    (home/snap.js keeps `aria-current` on whichever is showing). Only on stage
    where the strip actually scrolls; wider than that all four are visible and
    there is nothing to navigate. */
-.PaperPills {
-  /* 版面永遠是橫向捲動的一條（見 figure.Papers），所以跳版的藥丸也永遠在
-     ——它不再是窄視窗的補救，而是這條長帶唯一的目錄。 */
-  & {
-    display: flex;
-    justify-content: center;
-    gap: 0.375rem;
-    margin-block: 2rem -1.25rem;
-  }
-
-  a {
-    /* 盒子固定 2.75rem ＝ 44px 的觸控目標，字級變動不影響它——縮的是字，
-       不是可以按到的範圍。 */
-    display: grid;
-    place-content: center;
-    inline-size: 2.75rem;
-    block-size: 2.75rem;
-    font-family: var(--han-font-alternative);
-    font-size: 0.875rem;
-    color: var(--ui-supplement-text);
-    border: 1px solid var(--ui-rule);
-    border-radius: var(--r-3);
-  }
-
-  a[aria-current] {
-    color: var(--ui-bg);
-    background: var(--ui-accent);
-    border-color: var(--ui-accent);
-  }
-}
 
 /* The loupe over the four editions (home/lens.css). Its host is the WHOLE
    figure, not one pane: the four are here to be compared line by line, and
@@ -69,125 +39,82 @@
 }
 
 figure.Papers {
-  /* 四版並排的格子改成**一條橫向捲動的長帶**（owner call，參照 Apple 的
-     產品頁）。四欄等分在寬視窗上把每一版壓到二十來字一行，讀起來像四張窄
-     報條；改成長帶之後每一版都拿到接近正文的行長，下一版只露一角，讀者一
-     眼就知道還有東西。窄視窗本來就是這個形狀，現在只是所有寬度一致。
+  /* 四版**一字排開**——這一站的目的是逐行對照（著重號 vs 圏点 vs 傍點、
+     《》vs「」、注音／拼音／振り仮名／한글 루비），四份同時在眼前才成立。
+     卡片上只登摘要之後它們就放得下了；全文另有去處（見接排線與 lightbox）。
 
-     版寬鍵在**容器**而不是視窗：主控台一收，閱讀欄寬 280px，一頁能露幾版
-     是那一欄的事。 */
+     版寬交給 `1fr`：四欄分掉閱讀欄，行長跟著容器走。實測 1440px 下每欄約
+     18 字——報紙的導言本來就比內文窄一級。 */
   & {
+    --paper-gap: 0.75rem;
+
     margin: 2rem 0 3rem;
     display: grid;
-    grid-auto-flow: column;
-    /* 軌道寬度交給版面自己（下面的 `inline-size`）：亮版與沒亮的版寬不同，
-       單一的 `grid-auto-columns` 說不出這件事。 */
-    grid-auto-columns: auto;
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--paper-gap);
+  }
 
-    --paper-gap: 1.5rem;
+  /* 四欄擠到讀不了就改成長帶，一次露 2.5 版。半版被邊界切斷是這條長帶唯一
+     的說明書：讀者看見它就知道右邊還有，不必再給一排目錄。
 
-    /* 版寬寫成變數，因為行尾的捲動餘裕要拿它算（見下）。
+     版寬用 `cqi` 不用 `%`：百分比對的是格線容器自己的內容盒，而長帶為了收在
+     網頁邊界破出了兩道裝訂線，兩者會互相追著跑。 */
+  @container (inline-size < 66rem) {
+    & {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: calc((100cqi - 2 * var(--paper-gap)) / 2.5);
 
-       版寬由**每段 20 字**回推（owner call）。漢字滿角即一個 em，所以版心
-       是 20em、加上兩側 0.875em 的內距與 1px 框線——全部用 em，於是版寬跟著
-       那一版自己的字級走：亮著的 16px 版是 350px，沒亮的 8px 版是 176px，
-       兩者的行長都仍是 20 字。報紙的行長是它讀起來像不像報紙的第一件事，
-       所以先定行長、再由行長定版寬，不是反過來挑一個好看的寬度。
+      overflow-inline: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
 
-       `--paper` 只剩一個用途：行尾餘裕要拿**亮版**的寬度來算（末版亮起來時
-       是那個寬度）。上限單位是 `cqi` 而不是 `%`：百分比對的是**格線容器的
-       內容盒**，而行尾的餘裕就開在那個盒子上——餘裕一大，內容盒變窄，版跟著
-       變窄，餘裕又得再大，兩者互相追著跑。`cqi` 量的是 `main`，與這條長帶
-       自己的內距無關，迴圈就斷了。 */
-    --paper: min(calc(21.75rem + 2px), 92cqi);
+      /* 兩側破出站台的裝訂線，長帶收在網頁邊界；內距把裝訂線補回捲動範圍
+         **內側**，所以靜止時第一版仍與正文對齊。`scroll-padding` 是第三件
+         事，少了它 snap 會讓每一版貼著視窗、與正文差一個裝訂線。 */
+      margin-inline: calc(-1 * var(--plate-pad));
+      padding-inline: var(--plate-pad);
+      scroll-padding-inline-start: var(--plate-pad);
 
-    overflow-inline: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
+      /* 捲軸不畫：長帶的「還有更多」是靠半版被切斷說的，一條橫槓只是把同一
+         句話再說一次。捲動本身沒被拿掉——觸控板、滾輪、觸控、鍵盤都照常。 */
+      scrollbar-width: none;
 
-    /* 兩側都破出站台的裝訂線，長帶收在**網頁邊界**（owner call，參照
-       apple.com 的輪播）。留一道空白像是版面沒排完，而它其實是捲的——版面
-       要在邊界上被切斷，讀者才讀得出「還有」。
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
-       破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
-       **內側**，所以靜止時第一版仍與正文對齊，捲到底時最後一版仍有頁邊。
-
-       `scroll-padding-inline-start` 是第三件事，少了它前兩件就白做：snap
-       對齊的是**捲動口**，而捲動口不理會 padding。沒有它，捲到第二版時那一
-       版會貼著盒子的邊、也就是貼著視窗，與正文差一個裝訂線。
-
-       用 `--plate-pad` 而不是 `--gutter`：站台的內距是前者，各站可以自己
-       改它（實測 gutter 32px、站台實際 36px，差那 4px 就露餡了）。 */
-    margin-inline: calc(-1 * var(--plate-pad));
-
-    /* 停靠線 ＝ 可視段的中線。這條線是這座長帶的閱讀位：一版捲到這裡就算
-       輪到它（`snap.js` 的亮燈也判在同一條線上），藥丸也把選中的那一版送到
-       這裡。第一版的靜止位置正好是它的停格點（`scrollLeft: 0`），所以載入
-       當下就從中線開始往右擺，不必為此放棄 `mandatory`。 */
-    scroll-padding-inline-start: 50cqi;
-
-    /* 行首的內距讓第一版與正文對齊；行尾留到「末版也能捲到最前面」為止，
-       否則它永遠拿不到亮燈權（判準是「整版露出 ＋ 起邊落在前半段」）。 */
-    padding-inline-start: var(--plate-pad);
-    padding-inline-end: max(
-      var(--plate-pad),
-      calc(100cqi - var(--paper) - var(--plate-pad))
-    );
-
-    /* 行首再多留半個可視段——但用**空白格**而不是加大內距：內距會回頭把這個
-       捲動容器自己撐寬（實測可視段 1159 → 1245 → 1847），而行尾的餘裕又是照
-       可視段算的，兩者互相追著跑。空白格是內容，只長在捲動範圍裡。
-
-       這半格讓第一版和最後一版一樣前後都有退路，可以推到畫面中段去讀，而不是
-       永遠釘在最左邊（owner call）。 */
-    &::before {
-      content: "";
-      /* 目標是**第一版的左緣**落在可視段的中線，不是空白格本身佔半段：它前面
-         還隔著行首的裝訂線與一道間距，兩個都要從半段裡扣掉，否則第一版會被
-         推過中線（實測 921 vs 中線 861，多出來的正是 36 ＋ 24）。 */
-      inline-size: calc(50cqi - var(--plate-pad) - var(--paper-gap));
+      @media (prefers-reduced-motion: no-preference) {
+        scroll-behavior: smooth;
+      }
     }
 
-    /* 捲軸不畫（owner call，參照 apple.com）：這一條長帶的「還有更多」是靠
-       版面在邊界上被切斷說的，一條橫槓只是把那句話再說一次，還在四份報紙
-       底下多壓一道與版面無關的線。捲動本身不受影響——觸控板、滾輪、觸控、
-       鍵盤都照常，藥丸也仍然是能點的目錄，所以沒有任何一種輸入被拿掉。
-
-       `scrollbar-width`（Baseline 2024）在支援的地方就夠了；`::-webkit-
-       scrollbar` 留給還沒跟上的 WebKit。macOS 本來就是覆蓋式捲軸，這條主要
-       影響 Windows／Linux——那裡捲軸會佔掉版面寬度，順帶少一次位移。 */
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
-       接近整欄的行長。 */
+    /* 手機上 2.5 版會把行長壓到七個字（實測 390px），那不是報紙是紙條。
+       窄到這裡就一次一版，下一版只露一線——同樣一句「還有更多」，用一線說。 */
     @container (inline-size < 34rem) {
-      /* 窄欄放棄 20 字，改讓版面佔滿——行長遷就欄寬是報紙自己也會做的事。 */
-      --paper: min(92cqi, 24rem);
+      & {
+        grid-auto-columns: min(92cqi, 24rem);
+      }
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      scroll-behavior: smooth;
+    > article {
+      scroll-snap-align: start;
     }
   }
+
 
   /* 誰排第一，看讀者讀的是哪一版：本地版打頭，其餘依親疏。日韓兩版互為近鄰
      （同屬 CJK 的非漢語圈排版傳統），所以彼此緊跟；繁簡同理。DOM 順序固定為
-     繁簡日韓，這裡只翻視覺順序——藥丸用 id 跳版，不受影響。 */
+     繁簡日韓，這裡只翻視覺順序——接排線用 id 指向全文，不受影響。 */
   /* `>` 是必要的：續版的版心也是一個 `<article>`（`.ReaderSheet`），沒有這個
-     子代限定就會被下面的版寬抓走，在 lightbox 裡縮成 350px、右邊空一大塊。 */
+     子代限定就會被下面的規則抓走。 */
   > article {
-    scroll-snap-align: start;
-
-    /* 四版同一個字級。版寬由字級算出來——版心 20em、內距 em、報頭與標題也
-       都是 em——所以「每段 20 字」是靠版式自己成立的，不是挑出來的寬度。 */
-    font-size: 1rem;
-    inline-size: calc(20em + 2 * 0.875em + 2px);
+    /* 四版同一個字級，而且與 lightbox 裡的續版同級——同一份報紙的續版本來就
+       跟首版同一套字級，不一致就像換了一份報。版內的報頭、日期、標題全部是
+       em，所以整版只有這一顆 font-size。 */
+    font-size: 0.875rem;
   }
+
 
   #paper-hant { order: 1; }
   #paper-hans { order: 2; }

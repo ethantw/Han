@@ -148,7 +148,6 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
    所以 han.js 也就一起活過來了，而且是讀者的開關說了算。 */
 const SCRIPTS = [
   'home/fonts-gate.js',
-  'home/snap.js',
   'home/lead-forme.js',
   'home/punct-lang.js',
   'home/paper-reader.js',

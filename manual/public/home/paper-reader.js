@@ -10,29 +10,29 @@
  * element to the top layer, so nothing is cloned and nothing is duplicated
  * (the loupe already taught us what a second copy of these four costs).
  *
- * Which edition you are on is ONE piece of state, and the pills already own
- * it: stepping to the next edition clicks its pill rather than reaching into
- * the strip, so the strip scrolls, the pill lights, and closing the reader
- * leaves the page on the edition you ended on. No second source of truth.
+ * Stepping to another edition brings its card into view behind the reader, so
+ * closing leaves the page on the edition you ended on. Where the four fit in
+ * one row that is a no-op; only the narrow strip actually scrolls.
  */
 
 /** The editions, in the order they sit in the markup (繁簡日韓). */
 const EDITIONS = ['hant', 'hans', 'ja', 'ko']
 
 const dialogOf = (key) => document.querySelector(`#paper-${key}-full`)
-const pillOf = (key) => document.querySelector(`.PaperPills a[href="#paper-${key}"]`)
+const paneOf = (key) => document.querySelector(`#paper-${key}`)
 
 const keyOf = ($dialog) => {
   const match = /^paper-(.+)-full$/.exec($dialog.id ?? '')
   return match ? match[1] : null
 }
 
-/* Open one edition and leave the page on it. The pill click is what moves the
-   strip — see the note above about one piece of state. */
+/* Open one edition and leave the page on it. `block: 'nearest'` keeps the page
+   still when the card is already on screen — the reader asked for a different
+   edition, not for a different scroll position. */
 const open = (key) => {
   const $dialog = dialogOf(key)
   if (!$dialog?.showModal) return
-  pillOf(key)?.click()
+  paneOf(key)?.scrollIntoView({ inline: 'start', block: 'nearest' })
   if (!$dialog.open) $dialog.showModal()
   fitColumns($dialog)
 }
