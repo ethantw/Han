@@ -86,17 +86,22 @@ figure.Papers {
     overscroll-behavior-inline: contain;
     scroll-snap-type: inline mandatory;
 
-    /* 往行尾破出站台的裝訂線，長帶收在**網頁邊界**（owner call，參照
-       apple.com 的輪播）。行首不破：第一版要與正文對齊，讀者才看得出這是
-       同一欄裡的東西；行尾留一道空白則像是版面沒排完，而它其實是捲的。
+    /* 兩側都破出站台的裝訂線，長帶收在**網頁邊界**（owner call，參照
+       apple.com 的輪播）。留一道空白像是版面沒排完，而它其實是捲的——版面
+       要在邊界上被切斷，讀者才讀得出「還有」。
 
-       破出去的是盒子，不是內容——`padding-inline-end` 把裝訂線補回捲動範圍
-       的**內側**，所以捲到底時最後一版仍有頁邊，而不是貼著視窗切齊。
+       破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
+       **內側**，所以靜止時第一版仍與正文對齊，捲到底時最後一版仍有頁邊。
+
+       `scroll-padding-inline-start` 是第三件事，少了它前兩件就白做：snap
+       對齊的是**捲動口**，而捲動口不理會 padding。沒有它，捲到第二版時那一
+       版會貼著盒子的邊、也就是貼著視窗，與正文差一個裝訂線。
 
        用 `--plate-pad` 而不是 `--gutter`：站台的內距是前者，各站可以自己
        改它（實測 gutter 32px、站台實際 36px，差那 4px 就露餡了）。 */
-    margin-inline-end: calc(-1 * var(--plate-pad));
-    padding-inline-end: var(--plate-pad);
+    margin-inline: calc(-1 * var(--plate-pad));
+    padding-inline: var(--plate-pad);
+    scroll-padding-inline-start: var(--plate-pad);
 
     /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
        接近整欄的行長。 */

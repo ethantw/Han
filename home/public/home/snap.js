@@ -45,14 +45,24 @@ const mount = ($pills) => {
      their sum is immune, because whatever the animation has done so far is
      already inside both terms.
 
+     The reference edge is the SNAPPORT's, not the box's: a strip that bleeds
+     past the plate's gutter carries a `scroll-padding` so every pane still
+     stops on the text column's line, and that inset is exactly what the box
+     edge doesn't know about. Leaving it out is off by one gutter — mandatory
+     snapping happens to absorb an error that small, which is luck, not
+     correctness: widen the gutter or narrow the panes and it lands a pane
+     over.
+
      `scrollTo` takes physical axes, so read the strip's own writing mode:
      in 直排 the strip's inline axis IS the block axis of the screen. */
   const inlineTarget = ($pane) => {
+    const style = getComputedStyle($strip)
     const strip = $strip.getBoundingClientRect()
     const pane = $pane.getBoundingClientRect()
-    return getComputedStyle($strip).writingMode.startsWith('vertical')
-      ? { top: $strip.scrollTop + (pane.top - strip.top) }
-      : { left: $strip.scrollLeft + (pane.left - strip.left) }
+    const inset = (value) => parseFloat(value) || 0    /* `auto` ⇒ 0 */
+    return style.writingMode.startsWith('vertical')
+      ? { top: $strip.scrollTop + (pane.top - strip.top) - inset(style.scrollPaddingTop) }
+      : { left: $strip.scrollLeft + (pane.left - strip.left) - inset(style.scrollPaddingLeft) }
   }
 
   for (const [$pane, $a] of panes) {
@@ -63,8 +73,19 @@ const mount = ($pills) => {
   }
 
   /* Which pane is showing is the strip's own business, so read it from the
-     strip: the pane covering most of the visible run wins. `aria-current` is
-     the state, and CSS dresses it — no class bookkeeping. */
+     strip. The rule (owner call): a pane earns the light only if it is
+     showing its FULL width and its start edge sits in the leading half of
+     the run; of those, the one nearest the start wins.
+
+     Ratio alone can't say this. At the end of the run the strip stops with
+     the last two panes both entirely visible — both at ratio 1, so the
+     winner came down to which entry the observer happened to list first, and
+     pressing 日 lit 한. Fullness answers「這一版讀得完嗎」and the leading-half
+     test answers「是這一版，還是它右邊那個」; together they name exactly one.
+
+     Fallback: a pane wider than the run can never be fully visible, and a
+     light that goes out reads as broken — so if nobody qualifies, the pane
+     showing the most wins. `aria-current` is the state, CSS dresses it. */
   const light = ($current) => {
     for (const [$pane, $a] of panes) {
       if ($pane === $current) $a.setAttribute('aria-current', 'true')
@@ -72,17 +93,45 @@ const mount = ($pills) => {
     }
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const best = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-      if (best) light(best.target)
-    },
-    { root: $strip, threshold: [0.5, 0.75, 1] },
-  )
-  for (const $pane of panes.keys()) observer.observe($pane)
-  light([...panes.keys()][0])
+  const vertical = () => getComputedStyle($strip).writingMode.startsWith('vertical')
+
+  /* 沿長帶的**行內軸**取起點、終點與長度：直排時那條軸是螢幕的縱軸。 */
+  const span = (rect, isVertical) => isVertical
+    ? { start: rect.top, end: rect.bottom, size: rect.height }
+    : { start: rect.left, end: rect.right, size: rect.width }
+
+  const current = () => {
+    const isVertical = vertical()
+    const run = span($strip.getBoundingClientRect(), isVertical)
+    const middle = run.start + run.size / 2
+    let winner = null
+    let widest = null
+    for (const $pane of panes.keys()) {
+      const pane = span($pane.getBoundingClientRect(), isVertical)
+      /* 1px 的寬容：捲動位置與版寬都可能落在次像素上。 */
+      const whole = pane.start >= run.start - 1 && pane.end <= run.end + 1
+      const shown = Math.max(0, Math.min(pane.end, run.end) - Math.max(pane.start, run.start))
+      if (!widest || shown > widest.shown) widest = { $pane, shown }
+      if (!whole || pane.start >= middle) continue
+      if (!winner || pane.start < winner.start) winner = { $pane, start: pane.start }
+    }
+    return (winner ?? widest)?.$pane
+  }
+
+  let queued = false
+  const sync = () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(() => {
+      queued = false
+      const $now = current()
+      if ($now) light($now)
+    })
+  }
+
+  $strip.addEventListener('scroll', sync, { passive: true })
+  addEventListener('resize', sync, { passive: true })
+  sync()
 }
 
 export const initSnapStrips = () => {
