@@ -24,7 +24,7 @@ const SECTIONS = ['manifesto', 'station-semantics', 'station-craft', 'station-pl
    ledger（station-craft 的 .FontLedger）、lens（station-playground 的 .LensHint）。 */
 const STYLES = [
   'root', 'frame', 'manifesto', 'closing', 'console', 'console-loader',
-  'station-semantics', 'semantics-specimen', 'envelope',
+  'station-semantics', 'semantics-specimen', 'envelope', 'gate',
   'station-craft', 'station-playground', 'station-snippet', 'ledger', 'lens',
 ]
 
@@ -100,18 +100,30 @@ html = html.replace(/[ \t]*<script(?![^>]*type="text\/x-i18n")[\s\S]*?<\/script>
 
 /* 掛回來的腳本只有兩行，而且都不是「頁面的」JS。
  *
- * 一是主控台元件：`<han-console>` 連上 DOM 就自己起來（採用 shadow 樣式表 →
- * 注入模板 → 接上 `main` → 發第一次 `han-config-change`）。舊站是在字體閘門
- * 開啟後才動態 import 它，那是為了把它的模組圖挪出開場；這裡沒有閘門，直接
- * 靜態載入。
+ * 一是字體閘門，**放在最前面**。module script 依文件順序執行，排在主控台後面
+ * 會先繼承它整張模組圖的網路等待（舊站量過，3G 上是好幾秒），而閘門的節拍器
+ * 必須在第一趟描線將盡時醒來才接得上第二趟。它自啟動，也順便把 manifesto 的
+ * 漢 水印**建出來**——輪廓是從商標的 `.BrandGlyph` 複製筆畫來的，所以整份
+ * HTML 裡那個字形只有一處源頭。沒有它，`.Outline` 就是個空的 span。
  *
- * 二是 CDN 版本號。`codegen.js` 從 `window.__hanCdn` 讀，缺了會退回
+ * 配套的是 `<html data-fonts-gate="loading">` 這個 pre-paint 印記：`gate.css`
+ * 靠它把正文先設成透明，字體落地才放行。少了印記，閘門會走「沒有典禮」那條
+ * 路——水印照建，但不描線、不等字體。所以印記與腳本要嘛一起在，要嘛一起不在。
+ *
+ * 二是主控台元件：`<han-console>` 連上 DOM 就自己起來（採用 shadow 樣式表 →
+ * 注入模板 → 接上 `main` → 發第一次 `han-config-change`）。舊站是在閘門開啟後
+ * 才動態 import 它，為的是把它的模組圖挪出開場；這裡順序已經由上面那條保證，
+ * 直接靜態載入。
+ *
+ * 三是 CDN 版本號。`codegen.js` 從 `window.__hanCdn` 讀，缺了會退回
  * `latest`——那會讓引用碼站產出與本頁不一致的版本，所以照舊站補上。
  *
  * **不掛 `han.auto.js`**：回落層由主控台呼叫 `installFallbacks`，讀者的
  * 「JS 後備」開關才算話（`console-config.js` 的 applyFallbacks 就是那條路，
  * 它自己 `import('/han/han.js')`）。auto 版會在元件之外先套一次，兩邊打架。 */
 html = html.replace('</head>', [
+  '<script>document.documentElement.dataset.fontsGate = \'loading\'</script>',
+  '<script type="module" src="/home/fonts-gate.js"></script>',
   `<script>window.__hanCdn = { ziano: '${CDN}', diantenjeom: '${CDN}' }</script>`,
   '<script type="module" src="/components/han-console.js"></script>',
   '</head>',
@@ -141,6 +153,7 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
    （`console-config.js` 動態 `import('/han/han.js')` 再 `installFallbacks`），
    所以 han.js 也就一起活過來了，而且是讀者的開關說了算。 */
 const SCRIPTS = [
+  'home/fonts-gate.js',
   'components/han-console.js',
   'components/console-config.js',
   'components/console-metrics.js',

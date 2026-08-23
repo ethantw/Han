@@ -14,7 +14,7 @@
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
 | CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 14 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
 | 區塊 | manifesto、語意、工法、遊樂場、引用碼、closing；其餘三站在 HTML 裡留註解佔位 |
-| JS | 只有 `<han-console>` 那一支模組圖。舊站的 `home/*.js` 一支都沒搬 |
+| JS | 字體閘門 ＋ `<han-console>` 那一支模組圖。舊站其餘的 `home/*.js` 都沒搬 |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
 取 `hant`，`<script type="text/x-i18n">` 區塊與所有 `<script>` 一併移除，CDN
@@ -30,9 +30,28 @@
 light DOM 的載入中字徽會畫出來。收合仍然有效，因為那一路本來就是
 `body:has(.ConsoleToggle input:checked)`，不經過 JS。
 
+## 字體閘門與 漢 水印
+
+`<head>` 的第一支 module script 是 `/home/fonts-gate.js`，**位置就是它的一半
+功能**：module script 依文件順序執行，排在主控台後面會先繼承它整張模組圖的
+網路等待（舊站量過，3G 上是好幾秒），而閘門的節拍器必須在第一趟描線將盡時
+醒來才接得上第二趟。
+
+它同時把 manifesto 的 漢 水印**建出來**：輪廓是從商標的 `.BrandGlyph` 複製
+筆畫來的，所以整份 HTML 裡那個字形只有一處源頭。沒有它，`.Outline` 就是個
+空的 span。
+
+配套是 `<html data-fonts-gate="loading">` 的 pre-paint 印記，`gate.css` 靠它
+把正文先設成透明、字體落地才放行。少了印記，閘門會走「沒有典禮」那條路——
+水印照建，但不描線、不等字體。所以印記、`gate.css`、腳本三者要嘛一起在，
+要嘛一起不在。
+
+實測一次冷載：DCL 時 `gate=loading`、12 條筆畫已建、正文透明；4.5 秒字體落地
+`gate=ready`、正文現形；8.5 秒第二趟描完，蓋上 `data-han-traced`，筆畫 24 條。
+
 ## 主控台，以及 han.js 走的那條路
 
-`<head>` 掛兩行：`<han-console>` 元件，以及 `window.__hanCdn` 的版本號
+`<head>` 另外掛兩行：`<han-console>` 元件，以及 `window.__hanCdn` 的版本號
 （`codegen.js` 讀它，缺了會退回 `latest`，引用碼站就會印出與本頁不一致的
 版本）。元件連上 DOM 就自己起來——採用 shadow 樣式表、注入模板、接上
 `main`、發第一次 `han-config-change`。舊站是在字體閘門開啟後才動態 import
@@ -81,10 +100,6 @@ console-metrics}.js` ＋ 兩份 shadow 樣式表、`common/icon.js`、
 
 ## 沒搬的東西，與為什麼
 
-- **字體閘門**（`home/gate.css` ＋ `fonts-gate.js`）。閘門靠 JS 打開，沒有
-  JS 就永遠不開，正文會一直是透明的。整組不搬。
-- **manifesto 的 漢 水印**。`.Outline` 的輪廓由 `fonts-gate.js` 執行時複製
-  SVG 進去，所以現在那個 span 是空的——版面位置留著，圖沒有。
 - **語言切換**。要 JS，這一輪不搬。
 - **其餘七站的 CSS**。`public/home.css` 裡的 `@import` 留成註解，搬回哪一站
   就把哪一行的註解拿掉。

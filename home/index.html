@@ -47,6 +47,8 @@
      after first paint) to start the loading encore. One file, no
      imports, dedupe-shared with home.js's import of the same URL. -->
 
+<script>document.documentElement.dataset.fontsGate = 'loading'</script>
+<script type="module" src="/home/fonts-gate.js"></script>
 <script>window.__hanCdn = { ziano: '0.2.0-rc.0', diantenjeom: '0.2.0-rc.0' }</script>
 <script type="module" src="/components/han-console.js"></script>
 </head>
