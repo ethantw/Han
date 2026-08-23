@@ -36,20 +36,29 @@ const mount = ($pills) => {
      first pill press). Nudging the strip's own scroll offset touches one
      axis of one box, which is the whole ask.
 
-     `scrollBy` takes physical axes, so read the strip's own writing mode:
+     And an ABSOLUTE target, not a relative nudge. `scrollBy` adds a measured
+     difference to wherever the strip happens to be — and while a smooth
+     scroll or a mandatory-snap settle is still in flight, that is a moving
+     target, so the sum overshoots and the strip lands a pane too far. It is
+     intermittent by nature: it needs a press to arrive during motion. Reading
+     the offset and the current position in the SAME instant and scrolling to
+     their sum is immune, because whatever the animation has done so far is
+     already inside both terms.
+
+     `scrollTo` takes physical axes, so read the strip's own writing mode:
      in 直排 the strip's inline axis IS the block axis of the screen. */
-  const inlineDelta = ($pane) => {
+  const inlineTarget = ($pane) => {
     const strip = $strip.getBoundingClientRect()
     const pane = $pane.getBoundingClientRect()
     return getComputedStyle($strip).writingMode.startsWith('vertical')
-      ? { top: pane.top - strip.top }
-      : { left: pane.left - strip.left }
+      ? { top: $strip.scrollTop + (pane.top - strip.top) }
+      : { left: $strip.scrollLeft + (pane.left - strip.left) }
   }
 
   for (const [$pane, $a] of panes) {
     $a.addEventListener('click', (e) => {
       e.preventDefault()
-      $strip.scrollBy({ ...inlineDelta($pane), behavior: 'smooth' })
+      $strip.scrollTo({ ...inlineTarget($pane), behavior: 'smooth' })
     })
   }
 

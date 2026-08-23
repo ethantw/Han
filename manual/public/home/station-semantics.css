@@ -85,8 +85,18 @@ figure.Papers {
     overflow-inline: auto;
     overscroll-behavior-inline: contain;
     scroll-snap-type: inline mandatory;
-    /* the sheet keeps a margin at the end of the run, like a page */
-    padding-inline-end: 0.75rem;
+
+    /* 往行尾破出站台的裝訂線，長帶收在**網頁邊界**（owner call，參照
+       apple.com 的輪播）。行首不破：第一版要與正文對齊，讀者才看得出這是
+       同一欄裡的東西；行尾留一道空白則像是版面沒排完，而它其實是捲的。
+
+       破出去的是盒子，不是內容——`padding-inline-end` 把裝訂線補回捲動範圍
+       的**內側**，所以捲到底時最後一版仍有頁邊，而不是貼著視窗切齊。
+
+       用 `--plate-pad` 而不是 `--gutter`：站台的內距是前者，各站可以自己
+       改它（實測 gutter 32px、站台實際 36px，差那 4px 就露餡了）。 */
+    margin-inline-end: calc(-1 * var(--plate-pad));
+    padding-inline-end: var(--plate-pad);
 
     /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
        接近整欄的行長。 */
