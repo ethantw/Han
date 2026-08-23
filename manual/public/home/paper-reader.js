@@ -29,23 +29,27 @@ const keyOf = ($dialog) => {
 /* Open one edition and leave the page on it. `block: 'nearest'` keeps the page
    still when the card is already on screen — the reader asked for a different
    edition, not for a different scroll position. */
-const open = (key) => {
+const open = (key, vertical = false) => {
   const $dialog = dialogOf(key)
   if (!$dialog?.showModal) return
   paneOf(key)?.scrollIntoView({ inline: 'start', block: 'nearest' })
   if (!$dialog.open) $dialog.showModal()
+  setWriting($dialog, vertical)
   fitColumns($dialog)
 }
 
 const step = ($dialog, by) => {
   const at = EDITIONS.indexOf(keyOf($dialog))
   if (at < 0) return
+  /* 行向跟著讀者走，不跟著文章走：直排讀到一半換一版，換來的還是直排。
+     每一版有自己的 `<dialog>`，所以這件事得交手，不會自己過去。 */
+  const vertical = $dialog.dataset.writing === 'vertical'
   /* Wrap around: four editions in a ring is what the two arrows imply, and a
      dead arrow on the last one would be the only place on this page where a
      control is present but inert. */
   const next = EDITIONS[(at + by + EDITIONS.length) % EDITIONS.length]
   $dialog.close()
-  open(next)
+  open(next, vertical)
 }
 
 /* 直排時的欄數要算，這是 CSS 說不出來的那一句。
@@ -61,8 +65,11 @@ const step = ($dialog, by) => {
  */
 const fitColumns = ($dialog) => {
   const $sheet = $dialog.querySelector('.ReaderSheet')
-  if (!$sheet) return
+  const $last = $sheet?.lastElementChild
+  if (!$sheet || !$last) return
+
   $sheet.style.removeProperty('inline-size')
+  $sheet.style.removeProperty('column-count')
   if ($dialog.dataset.writing !== 'vertical') return
 
   const style = getComputedStyle($sheet)
@@ -70,12 +77,11 @@ const fitColumns = ($dialog) => {
   const gap = parseFloat(style.columnGap)
   /* 內距在兩種量法裡都各算一次，扣掉才比得準。 */
   const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
-
   const perColumn = $sheet.getBoundingClientRect().width - padding
 
-  /* 量「這篇直排起來有多長」：關掉多欄、放開行數，**並且**把行內尺寸明寫成
-     一欄的行長。少了最後這一句它會退回 CSS 的 `max-content`，自己又分成好幾
-     欄，量到的就只是其中一欄（實測因此只得出一欄）。 */
+  /* 起點：這篇直排起來有多長，除以一欄裝得下多少。量的時候必須明寫行內尺寸
+     為一欄的行長，否則它退回 CSS 的 `max-content`，自己又分成好幾欄，量到的
+     只是其中一欄。 */
   $sheet.style.columns = 'auto'
   $sheet.style.blockSize = 'auto'
   $sheet.style.inlineSize = `${column}px`
@@ -83,19 +89,35 @@ const fitColumns = ($dialog) => {
   $sheet.style.removeProperty('columns')
   $sheet.style.removeProperty('block-size')
 
-  const count = Math.max(1, Math.ceil(natural / perColumn))
-  $sheet.style.inlineSize = `${count * (column + gap) - gap}px`
+  /* 這個起點一定偏小：多欄只在段落邊界斷，每欄都裝不滿，所以「總長÷欄容量」
+     系統性地少算，末欄就溢出紙外。所以往上加到裝得下為止——四語的段落長度
+     不同，欄數本來就不會一樣（實測繁簡日韓各異）。
+     判準是最後一段的行內終點有沒有越過版心：直排的行內軸朝下，越過就是溢出。 */
+  let count = Math.max(1, Math.ceil(natural / perColumn))
+  for (let guard = 0; guard < 12; guard++) {
+    $sheet.style.columnCount = String(count)
+    $sheet.style.inlineSize = `${count * (column + gap) - gap}px`
+    if ($last.getBoundingClientRect().bottom <= $sheet.getBoundingClientRect().bottom + 1) break
+    count += 1
+  }
 }
 
 /* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
    都要知道現在是哪一種，而它們是對話框的直接子元素。按鈕上寫的是**要切去的
    那一種**，不是現在這一種——一顆按鈕只有一句話的空間，寫「按了會變成什麼」
    比寫「現在是什麼」有用。 */
-const flip = ($dialog, $button) => {
-  const vertical = $dialog.dataset.writing !== 'vertical'
+const setWriting = ($dialog, vertical) => {
+  const $button = $dialog.querySelector('[data-reader="writing"]')
   $dialog.dataset.writing = vertical ? 'vertical' : ''
-  $button.textContent = vertical ? '橫排' : '直排'
-  $button.setAttribute('aria-pressed', String(vertical))
+  if ($button) {
+    $button.textContent = vertical ? '橫排' : '直排'
+    $button.setAttribute('aria-pressed', String(vertical))
+  }
+}
+
+const flip = ($dialog) => {
+  const vertical = $dialog.dataset.writing !== 'vertical'
+  setWriting($dialog, vertical)
   fitColumns($dialog)
   /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。 */
   $dialog.scrollTo({ top: 0, left: 0 })
@@ -123,7 +145,7 @@ export const initPaperReader = () => {
   document.querySelectorAll('dialog.Full').forEach(($dialog) => {
     $dialog.addEventListener('click', (event) => {
       const $control = event.target.closest?.('[data-reader]')
-      if ($control?.dataset.reader === 'writing') return flip($dialog, $control)
+      if ($control?.dataset.reader === 'writing') return flip($dialog)
       if ($control) return step($dialog, $control.dataset.reader === 'next' ? 1 : -1)
       /* Click on the backdrop closes. The dialog's own box is the sheet, so
          a hit that lands on the dialog element itself — not on anything
