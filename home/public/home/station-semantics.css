@@ -103,6 +103,20 @@ figure.Papers {
     padding-inline: var(--plate-pad);
     scroll-padding-inline-start: var(--plate-pad);
 
+    /* 捲軸不畫（owner call，參照 apple.com）：這一條長帶的「還有更多」是靠
+       版面在邊界上被切斷說的，一條橫槓只是把那句話再說一次，還在四份報紙
+       底下多壓一道與版面無關的線。捲動本身不受影響——觸控板、滾輪、觸控、
+       鍵盤都照常，藥丸也仍然是能點的目錄，所以沒有任何一種輸入被拿掉。
+
+       `scrollbar-width`（Baseline 2024）在支援的地方就夠了；`::-webkit-
+       scrollbar` 留給還沒跟上的 WebKit。macOS 本來就是覆蓋式捲軸，這條主要
+       影響 Windows／Linux——那裡捲軸會佔掉版面寬度，順帶少一次位移。 */
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     /* 版面寬一點：92% 讓下一版只露一線，讀者知道還有東西，而這一版拿到
        接近整欄的行長。 */
     @container (inline-size < 34rem) {
