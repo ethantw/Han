@@ -19,3 +19,55 @@
   font-size: 0.8125rem;
   text-align: center;
 }
+
+/* ── 非 retina：20px 以下一律黑體 ──────────────────────────────
+   Windows 的小字襯線渲染太糟（owner call）。判準取裝置像素密度而不是作業
+   系統：1x 螢幕上沒有多餘的像素給襯線的細節，糊掉的是筆畫本身，不是喜好。
+
+   只換 token，不在任何元素上宣告 `font-family`——`--han-font-alternative`
+   在 han.css 裡就是 `var(--han-serif)`，改它一處，用它的地方全部跟著改。
+
+   選擇器是 `:where(*)` 而不是 `body`，這一點不是隨手寫的：han.css 把那幾個
+   複合 token **宣告在每一個元素上**，而且是刻意的（`src/css/fonts.css` 的
+   註解：`var()` 在宣告它的元素上就完成代換，掛在 `:root` 會把 HanNone 哨兵
+   值凍進字串，逐語言的 `@container` 槽位就再也套不上）。元素上的宣告一律
+   贏過繼承，與特異性無關，所以掛在 `body` 的版本會被每個後代原地推翻——實測
+   `body` 是黑體、`main` 以下全部還是襯線。跟著它走同一層，宣告依然只有一處。
+
+   例外＝實測 ≥20px 的那些容器。CSS 沒辦法「選出小於 20px 的字」，所以反過來
+   做：預設全黑體，大字逐個容器豁免，清單是量出來的不是猜的。例外要連後代
+   一起寫（`:is(…) *`），否則容器內的字被 `:where(*)` 原地推翻回黑體——同一
+   個道理。
+
+   `--han-font-default` 不動：那是主控台「默認字體」控件寫的東西，讀者在字體
+   遊樂場裡挑了襯線當正文，就該看到襯線。 */
+
+@media (resolution <= 1x) {
+  :where(*) {
+    --han-font-alternative: var(--han-sans);
+  }
+
+  /* 標題 72px／hero・站名 24px・wordmark 的 漢 32px・展示式的 MathML 22–23px */
+  :is(h1, h2, .Brand, .Formula),
+  :is(h1, h2, .Brand, .Formula) * {
+    --han-font-alternative: var(--han-serif);
+  }
+
+  /* 直排詩 24px。分開寫、而且包 `:where()`：`:is()` 的特異性取它**最寬的那個
+     參數**，把這條帶 ID 的選擇器混進上面那組，整條就升到 (1,1,1)，下面的反
+     例外壓不過——實測式號因此一直留在襯線。`:where()` 歸零，與上面同級。 */
+  :where(#station-semantics figure.semantic-elements article),
+  :where(#station-semantics figure.semantic-elements article) * {
+    --han-font-alternative: var(--han-serif);
+  }
+
+  /* 反例外：豁免的容器裡自己又縮小的東西——式號 12px、注音／假名 7px。
+     這裡必須直接寫 `font-family`，換 token 沒有用：`font-family` 繼承的是
+     **算好的字串**，容器上早就把 `var(--han-font-alternative)` 解成襯線了，
+     子元素沒有重新宣告 `font-family` 就只是繼承那個字串，改它自己的 token
+     不會回頭重算。 */
+  :is(.EqNo, rt),
+  :is(.EqNo, rt) * {
+    font-family: var(--han-sans);
+  }
+}
