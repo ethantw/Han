@@ -64,7 +64,7 @@ const step = ($dialog, by) => {
  * 得到欄數，寫回行內尺寸。開啟、換向、改視窗各算一次，代價是兩次版面。
  */
 const fitColumns = ($dialog) => {
-  const $sheet = $dialog.querySelector('.ReaderSheet')
+  const $sheet = $dialog.querySelector('.ReaderBody')
   const $last = $sheet?.lastElementChild
   if (!$sheet || !$last) return
 

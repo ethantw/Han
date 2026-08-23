@@ -350,76 +350,168 @@ figure.Papers {
       }
     }
 
+    /* 版心＝一張報紙的一版。報頭、續版列、內文三層，多欄只開在內文層——報頭
+       得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
+       欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
     .ReaderSheet {
-      /* 21em ＝ 每欄 21 字。報紙的欄比正文窄，因為窄欄才追得上眼睛回行的
-         節奏；20–24 字是那個範圍，取中。窄畫面時欄跟著縮，一欄就是全部。
+      inline-size: min(76rem, 100dvw - 8rem);
+      margin: 4rem auto 6rem;
+      padding: 2rem 2rem 3rem;
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 22%, transparent);
+    }
 
-         版心的寬度**量化**成欄寬的整數倍，這一步不能省：`column-width` 說的
-         是「一欄最少要多寬」，多出來的寬度會攤進各欄裡——實測 1024px 下量到
-         每行 26 字、768px 下 40 字，正好把窄欄的好處賠光。`round(down, …)`
-         （Baseline 2024）把可用寬度砍到「N 欄 ＋ (N−1) 道欄距」，於是每一欄
-         都剛好是 21em，欄數放得下幾欄就是幾欄。
+    /* 報頭：期號在行首、報名居中、日期在行尾，底下一道粗細雙線——舊報紙的
+       報頭就是這個排法（參照《中央日報》民六七、《興南新聞》昭一八）。
+       **永遠橫排**：直排的報紙報頭也是橫的，只有正文轉。 */
+    .ReaderMasthead {
+      writing-mode: horizontal-tb;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: baseline;
+      gap: 1rem;
+      padding-block-end: 0.5rem;
+      border-block-end: 3px solid var(--ui-text);
+      box-shadow: 0 4px 0 -3px var(--ui-text);
 
-         `content-box`：量化算的是欄的總寬，版心的內距不該混進那個數。
+      p {
+        margin: 0;
+        font-size: 0.8125rem;
+        color: var(--ui-supplement-text);
+      }
 
-         高度仍是 auto，所以多欄會**平衡**：內容分進各欄、整塊往下長。三欄
-         把一篇 1,700 字的報導壓成原本三分之一高。 */
-      --reader-col: min(21em, 100dvw - 8rem);
+      .ReaderName {
+        font-family: var(--han-font-alternative);
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: 0.25em;
+        text-indent: 0.25em;
+        color: var(--ui-text);
+      }
+
+      .ReaderDate {
+        text-align: end;
+      }
+    }
+
+    /* 續版列：版次 ＋「（上接第一版）」在行首，行向的開關在行尾。 */
+    .ReaderHead {
+      writing-mode: horizontal-tb;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-block: 0.75rem 1.25rem;
+
+      .ReaderFrom {
+        margin: 0;
+        color: var(--ui-supplement-text);
+      }
+
+      .ReaderPage {
+        margin-inline-end: 0.75em;
+        padding: 0.1em 0.5em;
+        color: var(--ui-bg);
+        background: var(--ui-text);
+        font-weight: 400;
+      }
+    }
+
+    .ReaderWriting {
+      padding: 0.25em 0.75em;
+      color: var(--ui-supplement-text);
+      font-size: 0.8125rem;
+      background: none;
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-3);
+      cursor: pointer;
+
+      &:hover {
+        color: var(--ui-text);
+        border-color: var(--ui-text);
+      }
+    }
+
+    /* 內文層：多欄開在這裡。21em ＝ 每欄 21 字；版寬量化成欄寬的整數倍，否則
+       多出來的寬度會攤進各欄（實測 1024px 下每行 26 字、768px 下 40 字，窄欄
+       的好處全賠光）。`round(down, …)` 是 Baseline 2024。 */
+    .ReaderBody {
+      --reader-col: min(21em, 100dvw - 12rem);
       --reader-gap: 2.5rem;
 
       box-sizing: content-box;
       inline-size: max(
         var(--reader-col),
         calc(
-          round(down, min(76rem, 100dvw - 8rem) + var(--reader-gap), var(--reader-col) + var(--reader-gap))
+          round(down, min(72rem, 100dvw - 12rem) + var(--reader-gap), var(--reader-col) + var(--reader-gap))
           - var(--reader-gap)
         )
       );
+      margin-inline: auto;
       columns: var(--reader-col);
       column-gap: var(--reader-gap);
+      column-rule: 1px solid var(--ui-rule);
 
-      margin: 4rem auto 6rem;
-      padding: 2.5rem 2rem 3rem;
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-3);
-      box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 22%, transparent);
+      /* 大標橫跨所有欄——它是這一則的抬頭，不是某一欄的開頭。直排時不跨：
+         直排報紙的大標本來就佔著第一欄的頂端。 */
+      > h3 {
+        column-span: all;
+        margin-block: 0 0.75em;
+      }
+    }
 
-      /* 續版的接排線，與摘要那頭的「（下轉第七版）」成對。 */
-      .ReaderFrom {
-        margin-block: 0 0.5em;
-        color: var(--ui-supplement-text);
+    /* 附圖。圖版先用色塊佔位，圖說是真的。 */
+    .ReaderCut {
+      margin: 0 0 1em;
+      break-inside: avoid;
+
+      .ReaderCutPlate {
+        aspect-ratio: 4 / 3;
+        background:
+          repeating-linear-gradient(
+            135deg,
+            var(--ui-supplement-bg) 0 6px,
+            transparent 6px 12px
+          ),
+          var(--ui-rule)
+        ;
+        border: 1px solid var(--ui-rule);
       }
 
-      h3 {
-        margin-block: 0 0.75em;
+      figcaption {
+        margin-block-start: 0.5em;
+        font-size: 0.857em;
+        color: var(--ui-supplement-text);
       }
     }
 
     /* 直排。版心一轉，文章就往行首那頭長，於是捲動也跟著轉九十度——`vertical-rl`
        的 `inline-size` 是它在畫面上的**高**，所以高由這裡封頂、寬交給內容。 */
+    /* 直排：轉的是內文層，報頭與續版列留在橫排。`block-size` 封住每欄的行數，
+       欄就只能往行內軸開新的——直排的行內軸是縱的，所以欄往**下**疊，文章沿
+       Y 延伸，捲動仍是往下捲。欄數由 `paper-reader.js` 量到不溢出為止。 */
+    /* 直排時版心收到內文那麼寬。內文自己的 `margin-inline: auto` 幫不上忙：
+       直排的行內軸是縱的，那條 auto 是縱向置中。改讓外層收——版心是橫排的
+       普通塊，`fit-content` ＋ auto 邊距就是一般的水平置中。 */
     [data-writing="vertical"] .ReaderSheet {
+      inline-size: fit-content;
+    }
+
+    [data-writing="vertical"] .ReaderBody {
       writing-mode: vertical-rl;
 
-      /* 直排的欄與橫排的欄長得一樣，只是整組轉了九十度：`column-width` 給的
-         是**每行幾個字**（直排的行是縱的），`block-size` 給的是**每欄幾行**
-         （直排的行往左疊，所以那是水平方向）。
+      --reader-col: min(21em, 100dvh - 12rem);
 
-         `block-size` 一封住，內容就沒辦法在同一欄裡一路往左長，只能開下一欄
-         ——而多欄的欄沿行內軸走，直排的行內軸是縱的，於是欄往**下**疊。這正是
-         要的：文章沿 Y 延伸，捲動仍然是往下捲，和橫排同一個手勢。
-
-         `inline-size: max-content` 是讓它成立的那一半：不寫的話版心的行內尺寸
-         會被畫面撐滿、欄數就此封頂，多出來的內容無處可去。 */
-      --reader-col: min(21em, 100dvh - 10rem);
-
-      block-size: min(52em, 92dvw);
+      block-size: min(52em, 100dvw - 12rem);
       inline-size: max-content;
-      column-fill: auto;
       max-inline-size: none;
-      columns: var(--reader-col);
-      margin: 3rem auto 5rem;
-      padding: 2rem 2.5rem;
+      column-fill: auto;
+
+      > h3 {
+        column-span: none;
+      }
     }
 
     /* 接排線。「（下轉第七版）」是真報紙的接排慣例，這裡讓它兼任「展開全文」
