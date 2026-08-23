@@ -54,26 +54,12 @@ const camel = (name) => name.replace(/-(\w)/g, (_, c) => c.toUpperCase())
 /* CDN 版本本來由 vite 從 `manual/.env` 代入；這裡沒有那條管線，寫死。 */
 const CDN = '0.2.0-rc.0'
 
-/* 四份報紙只留繁體那一份，其餘三份收成佔位。
-   留下 `<header>`（報頭與報眉）與 `<h3>`：欄還是四欄、藥丸還有得跳，版面
-   形狀不變——被拿掉的正是正文那幾段，也就是量到最貴的那一塊。三段佔位各用
-   自己那一版的語言寫，才不會在 `lang` 上說謊。 */
-const PAPER_PLACEHOLDER = {
-  hans: '（简体版报导・待搬）',
-  ja: '（日本語版・移植待ち）',
-  ko: '（한국어판・移植 待機）',
-}
-const placeholderPapers = (html) => html.replace(
-  /(<article id="paper-(hans|ja|ko)"[^>]*>\s*<header>[\s\S]*?<\/header>\s*)([\s\S]*?)(<\/article>)/g,
-  (all, head, which, _body, tail) =>
-    `${head}<p class="PaperPlaceholder">${PAPER_PLACEHOLDER[which]}</p>\n    ${tail}`,
-)
 
 const shared = pick(readI18n(readFileSync(`${SRC}/home/_shared.html`, 'utf8')))
 const render = (name) => {
   const raw = readFileSync(`${SRC}/home/${name}.html`, 'utf8')
   const out = fill(stripI18n(raw), { ...shared, ...pick(readI18n(raw)) })
-  return name === 'station-semantics' ? placeholderPapers(out) : out
+  return out
 }
 
 /* ── 版面 ── */
@@ -126,6 +112,7 @@ html = html.replace('</head>', [
   '<script type="module" src="/home/fonts-gate.js"></script>',
   `<script>window.__hanCdn = { ziano: '${CDN}', diantenjeom: '${CDN}' }</script>`,
   '<script type="module" src="/components/han-console.js"></script>',
+  '<script type="module" src="/home/_boot.js"></script>',
   '</head>',
 ].join('\n'))
 /* 入場揭示的**已就位**態直接寫進標記。
@@ -154,6 +141,7 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
    所以 han.js 也就一起活過來了，而且是讀者的開關說了算。 */
 const SCRIPTS = [
   'home/fonts-gate.js',
+  'home/snap.js',
   'components/han-console.js',
   'components/console-config.js',
   'components/console-metrics.js',

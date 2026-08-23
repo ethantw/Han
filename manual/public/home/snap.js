@@ -25,14 +25,31 @@ const mount = ($pills) => {
   const panes = new Map(links.map(($a) => [paneOf($strip, $a), $a]).filter(([$p]) => $p))
   if (!panes.size) return
 
-  /* Scroll rather than jump: `scrollIntoView` moves the STRIP, while
-     following the link would move the page to the pane's top as well — the
-     reader asked for a different edition, not for a different scroll
-     position. */
+  /* Scroll rather than jump: following the link would move the page to the
+     pane's top as well — the reader asked for a different edition, not for a
+     different scroll position.
+
+     And scroll the STRIP by hand rather than via `scrollIntoView`. `block:
+     'nearest'` is only a no-op while the pane already fits the viewport; a
+     full edition is taller than one screen, so `nearest` still had to scroll
+     the page to bring it into view (measured: the page moved 120px on the
+     first pill press). Nudging the strip's own scroll offset touches one
+     axis of one box, which is the whole ask.
+
+     `scrollBy` takes physical axes, so read the strip's own writing mode:
+     in 直排 the strip's inline axis IS the block axis of the screen. */
+  const inlineDelta = ($pane) => {
+    const strip = $strip.getBoundingClientRect()
+    const pane = $pane.getBoundingClientRect()
+    return getComputedStyle($strip).writingMode.startsWith('vertical')
+      ? { top: pane.top - strip.top }
+      : { left: pane.left - strip.left }
+  }
+
   for (const [$pane, $a] of panes) {
     $a.addEventListener('click', (e) => {
       e.preventDefault()
-      $pane.scrollIntoView({ inline: 'start', block: 'nearest', behavior: 'smooth' })
+      $strip.scrollBy({ ...inlineDelta($pane), behavior: 'smooth' })
     })
   }
 

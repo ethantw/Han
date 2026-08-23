@@ -11,14 +11,6 @@
  * 匯入順序是入口的最後一行，所以這裡的規則永遠壓得過搬進來的那些。
  */
 
-/* 尚未搬進來的三份報導。留下報頭與標題，欄還是四欄、藥丸還有得跳，只有正文
-   換成一行說明——那正是量起來最貴的一塊。 */
-.PaperPlaceholder {
-  margin-block: 1.5rem;
-  color: var(--ui-supplement-text-3q);
-  font-size: 0.8125rem;
-  text-align: center;
-}
 
 /* ── 非 retina：20px 以下一律黑體 ──────────────────────────────
    Windows 的小字襯線渲染太糟（owner call）。判準取裝置像素密度而不是作業
