@@ -42,6 +42,35 @@ const hanLibrary = () => ({
 })
 
 /**
+ * `/vendor/*` — 遊樂場要的兩個第三方模組，直接從 `node_modules` 送。
+ *
+ * 不複製進 `public/`，理由同 `/han/*`：那是別人的建置產物，複製等於把它提交
+ * 進版本控制，而且會與 `package.json` 裡寫的版本悄悄分岔。名字是白名單，
+ * 所以 `/vendor/` 底下不會意外暴露整個 `node_modules`。
+ */
+const VENDOR = {
+  'marked.esm.js': 'marked/lib/marked.esm.js',
+  'purify.esm.js': 'dompurify/dist/purify.es.mjs',
+}
+
+const serveVendor = (server) => {
+  server.middlewares.use('/vendor', (req, res, next) => {
+    const name = path.basename(req.url?.split('?')[0] ?? '')
+    const rel = VENDOR[name]
+    const file = rel && path.resolve(here, 'node_modules', rel)
+    if (!file || !fs.existsSync(file)) return next()
+    res.setHeader('Content-Type', TYPES['.js'])
+    fs.createReadStream(file).pipe(res)
+  })
+}
+
+const vendor = () => ({
+  name: 'han-vendor',
+  configureServer: serveVendor,
+  configurePreviewServer: serveVendor,
+})
+
+/**
  * han.css 首頁——重寫版的開發設定。
  *
  * 這一份刻意只有幾十行。`manual/vite.config.js` 有一千五百行，因為它同時是
@@ -54,7 +83,7 @@ const hanLibrary = () => ({
  * 搬過來不必改一個字。
  */
 export default defineConfig({
-  plugins: [hanLibrary()],
+  plugins: [hanLibrary(), vendor()],
   server: {
     port: 7770,
     strictPort: true,

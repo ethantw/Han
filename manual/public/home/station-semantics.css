@@ -69,18 +69,6 @@
   }
 }
 
-/* The loupe over the four editions (home/lens.css). Its host is the WHOLE
-   figure, not one pane: the four are here to be compared line by line, and
-   the differences are the size of a diacritic — 著重號 vs 圏点 vs 傍點,
-   《》 vs 「」, 注音 vs 拼音 vs 振り仮名 vs 한글 루비. A circle that can
-   cross from one edition into the next is the comparison.
-
-   1.5×, not the playground's 1.75×: this copy is already at reading size, so
-   the loupe is here to show detail, not to lift the type into legibility. */
-#station-semantics .Lens {
-  --lens-zoom: 1.5;
-  --lens-size: min(20rem, 85cqi);
-}
 
 figure.Papers {
   /* 四版**一字排開**——這一站的目的是逐行對照（著重號 vs 圏点 vs 傍點、

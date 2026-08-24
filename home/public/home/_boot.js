@@ -14,6 +14,7 @@ import { initLeadForme } from './lead-forme.js'
 import { initPunctLang } from './punct-lang.js'
 import { initPaperReader } from './paper-reader.js'
 import { initStripNav } from './strip-nav.js'
+import { initPlayground } from './playground.js'
 
 /* 站台裡的模組開關是主控台對應開關的代理，狀態的唯一真相在主控台。四站都有
    （語意、行的調整、散文、遊樂場），少了它那些開關撥了沒反應。 */
@@ -39,3 +40,8 @@ initPaperReader()
 
 /* 四語長帶的左右箭頭：一按捲三分之一個可視段，到底就 disabled。 */
 initStripNav()
+
+/* 站⑤的遊樂場。預覽每次重繪都是一棵新子樹，han.js 的包裹得重跑，
+   `*.with-js.css` 才有東西可選——走主控台的 `reapplyFallbacks` 而不是直接
+   叫 `installFallbacks`，讀者的「JS 後備」開關才算話。 */
+initPlayground(($target) => document.querySelector('han-console')?.reapplyFallbacks($target))

@@ -155,6 +155,8 @@ const SCRIPTS = [
   'home/punct-lang.js',
   'home/paper-reader.js',
   'home/strip-nav.js',
+  'home/papers-dateline.js',
+  'home/playground.js',
   'components/han-console.js',
   'components/console-config.js',
   'components/console-metrics.js',
