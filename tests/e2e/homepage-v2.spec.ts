@@ -212,13 +212,22 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
 
   // Within a few px — the panels carry a border and the lines do not, so the
   // two centres round apart by a pixel or two; anything more means the
-  // subgrid stopped applying and the rows collapsed.
+  // subgrid stopped applying and the rows collapsed (which would be tens).
+  //
+  // 8, not 4: the old 4 was calibrated against a page that was only HALF
+  // typeset. `<main>` carries a source comment above each station, and the
+  // chunker used to read a comment as inline flow — so main was never
+  // divisible, went into hyperly's recursive walk whole, and overflowed
+  // PARTWAY (helpers/chunk.ts). These equation lines were past the blow-up
+  // point and never got their wrappers. With the chunker fixed they do, and
+  // one centre moved by a pixel. Measured before/after: the whole suite
+  // passes at 4 with the old chunker and reports 5 with the new one.
   for (const [line, panel] of [['lib', 'framework'], ['mine', 'mine']] as const) {
     const drift = Math.abs(
       (await mid(`#station-craft .Eq-${line}`))
       - (await mid(`#station-craft li[data-current] [data-role="${panel}"]`)),
     )
-    expect(drift).toBeLessThan(4)
+    expect(drift).toBeLessThan(8)
   }
 
   // Reader-driven: the nav is hidden in the markup and only carousel.js

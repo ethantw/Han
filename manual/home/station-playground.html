@@ -167,7 +167,7 @@
          格走，home/playground.js § swipe 讓藥丸與滑到哪裡互相對齊），寬站台
          下它是那張兩欄的網格。認真模式把兩塊窗格借走時，它們離開這個盒，
          所以借出期間所有 `[data-pg-panes] >` 的規則自動失效。 -->
-    <div class="PgPanes" data-pg-panes>
+    <div class="PgPanes" data-pg-panes data-strip="playground">
     <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
          article — the date is computed fresh every load (playground.js ←
@@ -210,4 +210,12 @@
       <div data-pg-studio-body></div>
     </dialog>
   </div>
+    <nav class="PgNav" data-strip-nav="playground" aria-label="工作區平移">
+      <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+      <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+    </nav>
 </section>

@@ -208,6 +208,11 @@
 
      `overflow-inline`, not `overflow-x`: 直排預覽把整頁的行向轉直，而「一次
      一格」問的是**行向**上的下一格。 */
+  /* 窄視窗一次一格，有分頁可按，不需要平移鈕。 */
+  .PgNav {
+    display: none;
+  }
+
   [data-pg-panes] {
     display: flex;
     overflow-inline: auto;
@@ -268,18 +273,75 @@
       box-shadow: none;
     }
 
-    /* Two SEPARATE cards side by side — the pane box is the grid. */
+    /* 兩張卡片並排，而且**整條可以左右平移**（owner call）。
+       一版報紙的欄本來就比半個閱讀欄寬；先前是讓校樣卡自己往視窗右緣破出去
+       再自己內捲，於是頁面裡有兩層捲動，而且編輯區永遠釘在左邊。改成整條
+       面板是捲動容器、兩張卡片都在捲動範圍內，讀者要並排、要整張校樣，自己
+       framing。
+
+       **不吸附**：吸附是「一次一格」，這裡要的正是「停在你要的地方」。窄視窗
+       那條路仍然吸附，因為它一次只給一格。
+
+       仍然是 `grid`：`playground.js § fitSheet` 的第一行就是「面板不是 grid
+       就整支 return」，那 150 行的版面幾何（破出、切欄、欄寬釘定）是為舊模型
+       寫的。留著 grid，它照常執行，而卡片各自定寬之後校樣卡不再溢出自己，
+       fitSheet 走到 `if (!overflowing()) return` 就收手——舊規則自己讓位，
+       不必拆它。 */
     [data-pg-panes] {
       display: grid;
-      /* The galley takes the wider track: it is the thing being read, and
-         its column count comes out of that width. `minmax(0, …)` on both
-         so neither pane's intrinsic content can floor a track. */
-      grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
+      grid-auto-flow: column;
+      grid-auto-columns: auto;
       gap: var(--gutter);
       align-items: start;
-      /* the strip's own regime is off up here */
-      overflow: visible;
+
+      overflow-inline: auto;
+      overscroll-behavior-inline: contain;
       scroll-snap-type: none;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        scroll-behavior: smooth;
+      }
+    }
+
+    /* 平移用的左右鈕。只在寬視窗出現——窄視窗一次一格，那裡有分頁可以按。
+       擺在工作區右下，與四語長帶同一個位置與同一個模組（`strip-nav.js`）：
+       同一種「還有更多」就該用同一種手勢與同一個角落回答。 */
+    .PgNav {
+      display: flex;
+      justify-content: end;
+      gap: 0.5rem;
+      margin-block-start: 0.75rem;
+
+      button {
+        display: grid;
+        place-content: center;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        color: var(--ui-supplement-text);
+        background: var(--ui-supplement-bg);
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        color: var(--ui-bg);
+        background: var(--ui-accent);
+      }
+
+      button:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+
+      [data-scroll="next"] [data-icon] {
+        rotate: 180deg;
+      }
     }
 
     /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
@@ -297,6 +359,9 @@
          都把行寫死，順序就管不著它們了。 */
       grid-row: 1;
       grid-column: 1;
+      /* 編輯區只要放得下一行 Markdown，不必與校樣等寬——它讓出來的寬度正是
+         校樣拿去排欄的。 */
+      inline-size: min(34rem, 92cqi);
       block-size: var(--pg-pane-h);
       overflow: auto;
       resize: none;
@@ -345,6 +410,9 @@
     [data-pg-panes] > [data-pg-sheet] {
       grid-row: 1;
       grid-column: 2;
+      /* 校樣拿一整版報紙該有的寬度，而不是閱讀欄的一半。放不下就往右邊去，
+         那是捲動範圍的一部分，不是被切掉。 */
+      inline-size: min(56rem, 92cqi);
       /* the switch tucks under the sheet's right edge. NOT `align-items:
          flex-end` — that would align the bled card by its RIGHT edge, so the
          extra width would grow leftward and the sheet would never reach the
