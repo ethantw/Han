@@ -154,6 +154,7 @@ const SCRIPTS = [
   'home/lead-forme.js',
   'home/punct-lang.js',
   'home/paper-reader.js',
+  'home/strip-nav.js',
   'components/han-console.js',
   'components/console-config.js',
   'components/console-metrics.js',

@@ -25,6 +25,50 @@
    where the strip actually scrolls; wider than that all four are visible and
    there is nothing to navigate. */
 
+/* 長帶的左右箭頭。只在長帶真的會捲時出現——四欄一字排開的寬度下它們必然
+   兩顆都是 disabled，那就不該在場。位置沿用 apple.com 的擺法：貼在長帶右下，
+   讓「還有更多」與「怎麼看更多」在同一個角落。 */
+.PaperNav {
+  display: none;
+}
+
+@container (inline-size < 66rem) {
+  .PaperNav {
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+    margin-block: 0.75rem 0;
+
+    button {
+      display: grid;
+      place-content: center;
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+      color: var(--ui-supplement-text);
+      background: var(--ui-supplement-bg);
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      color: var(--ui-bg);
+      background: var(--ui-accent);
+    }
+
+    /* 到底了就說出來：能按卻不動，比按不下去更難懂。 */
+    button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    /* 兩顆共用同一枚 chevron，方向由旋轉說；原圖朝行首。 */
+    [data-scroll="next"] [data-icon] {
+      rotate: 180deg;
+    }
+  }
+}
+
 /* The loupe over the four editions (home/lens.css). Its host is the WHOLE
    figure, not one pane: the four are here to be compared line by line, and
    the differences are the size of a diacritic — 著重號 vs 圏点 vs 傍點,

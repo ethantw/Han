@@ -13,6 +13,7 @@ import { initLens } from './lens.js'
 import { initLeadForme } from './lead-forme.js'
 import { initPunctLang } from './punct-lang.js'
 import { initPaperReader } from './paper-reader.js'
+import { initStripNav } from './strip-nav.js'
 
 /* 站台裡的模組開關是主控台對應開關的代理，狀態的唯一真相在主控台。四站都有
    （語意、行的調整、散文、遊樂場），少了它那些開關撥了沒反應。 */
@@ -35,3 +36,6 @@ initPunctLang()
 /* 站①的四語全文閱讀器：把接排線升級成 lightbox。沒有它，那條連結仍然靠
    `:target` 原地展開全文——這一支只是讓它更好讀。 */
 initPaperReader()
+
+/* 四語長帶的左右箭頭：一按捲三分之一個可視段，到底就 disabled。 */
+initStripNav()

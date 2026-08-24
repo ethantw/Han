@@ -410,7 +410,7 @@
        上面那排藥丸是**導覽不是篩選**——四份始終在場，藥丸只是快速捲過去
        （home/snap.js；無 JS 時它們就是普通的頁內連結）。字面是文種標記，
        不是文案，所以不進 i18n。 -->
-  <figure class="Papers" data-lens style="--han-cite-title-marks: bracket">
+  <figure class="Papers" data-strip="papers" data-lens style="--han-cite-title-marks: bracket">
     <article id="paper-hant" lang="zh-Hant">
       <header>
         <p class="Masthead">太陽中文報</p>
@@ -664,5 +664,13 @@
       </dialog>
     </article>
   </figure>
+  <nav class="PaperNav" data-strip-nav="papers" aria-label="四版捲動">
+    <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+      <span data-icon="chevron" aria-hidden="true"></span>
+    </button>
+    <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+      <span data-icon="chevron" aria-hidden="true"></span>
+    </button>
+  </nav>
   <p class="LensHint">{{ lensHint }}</p>
 </section>
