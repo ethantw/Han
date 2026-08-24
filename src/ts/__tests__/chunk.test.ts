@@ -88,6 +88,18 @@ test('element-only layers descend until each chunk fits', () => {
   assert.ok(seen.every((chunk) => chunk.tagName === 'SECTION'))
 })
 
+test('source comments between sections do not make a layer indivisible', () => {
+  // 手寫的文檔會在每個區塊上面放一行註解說明它是什麼。註解不是行內流，
+  // 卻曾經讓這一層被判成「不可切」——han.css 自己的首頁就是這樣，
+  // <main> 因此整棵 12,843 個節點一次餵進去，正是本檔要防的那個爆棧。
+  const section = `<!-- Station -->\n<section>${'<p>字。</p>'.repeat(500)}</section>`
+  const el = element(`<main>${section.repeat(8)}</main>`)
+  const seen: Element[] = []
+  forEachChunk(el, (chunk) => seen.push(chunk))
+  assert.equal(seen.length, 8)
+  assert.ok(seen.every((chunk) => chunk.tagName === 'SECTION'))
+})
+
 test('countNodes: early exit at limit', () => {
   const el = element(`<main>${'<p>字</p>'.repeat(100)}</main>`)
   assert.equal(countNodes(el, 10), 10)

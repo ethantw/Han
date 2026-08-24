@@ -1073,8 +1073,168 @@
   </figure>
 </section>
 
-<!-- {{ stationLinesSection }} — 這一輪先不搬 -->
-<!-- {{ stationProseSection }} — 這一輪先不搬 -->
+<!-- Station III・Line adjustments — squeeze/hang, mixed-script, zhuyin ruby. -->
+<section data-revealed id="station-lines" data-station="lines">
+  <hgroup>
+    <p>叁・行的調整</p>
+    <h2>行的呼吸</h2>
+  </hgroup>
+
+  <p>擠壓收其內，懸掛出其外，分寸勻乎文種之間。</p>
+
+  <!-- REAL hanging comparison — the SAME kind of sentence, hang off vs on.
+       Column A sets `--han-punctuation-refinement: compress` on the <p>
+       (an ancestor of the sample text; the JS resolves the mode from the
+       element's computed value): squeeze kept, hang OFF, so a line-end
+       「，」/「。」 jams in and the margin turns ragged. Column B inherits
+       the page config (hang on) on a mint ground: the mark hangs past the
+       grid and the block stays square. The measure is tuned so the marks
+       really land at a line edge. No fake hang animation. -->
+  <figure>
+    <blockquote>
+      <p>「所以以前的人，去別的地方，不能⋯⋯就直接去嗎？」來自板門店的男孩李奕哲（리혁철），盯著博物館櫥窗裡那本廿世紀的香港護照問道。在<time datetime="" data-plus-100>〇〇〇〇年</time>的今天，邊境制度已廢止一甲子。年逾八十的導覽員雷真娜・柯志打仍記憶猶新，半晌方答：「這種小冊子，哪個國家issue的都不一樣——你在什麼地方出生，注定了你拿哪本護照。有的幾乎可以去任何國家，有的哪兒也去不了。」
+    </blockquote>
+    <figcaption>
+      <p>「世界，你好。」「你好，世界！」相鄰標點擠去多餘的半格，緊收而不空洞；句讀行至末端，懸而不入，字距不因禁則換行而鬆動。</p>
+      <p>漢字與Latin、與Ελληνικά、與кириллица字母，與0-9的數字相遇，其間自動勻出髮絲之隙。不寬不窄，恰是跨文種間的優雅分寸。間隙由CSS自動生成。</p>
+    </figcaption>
+  </figure>
+
+  <!-- 呼吸開關與那條注移出 figcaption，落在站台右半邊的空白裡。左欄本來
+       就疊了樣張、兩段說明與一顆控件，資訊過密；右邊除了背後那張放大的
+       樣張以外是空的。分欄靠 section 自己的 grid（見 station-lines.css），
+       不加包裝用的 div——DOM 仍是「樣張＋旁註」兩件事，不是三層盒子。 -->
+  <aside class="Breath">
+    <!-- 呼吸開關 — 不是本站自己的開關，是 console 那顆「行的調整」模組
+         開關的分身，由 home/module-state.js 雙向綁定（`data-han-module-
+         proxy`，站①的語意樣式開關同一套）：這顆按下去按的是 console 的
+         按鈕，console 廣播回來再把這顆撥正。所以它跟站外的狀態永遠一致，
+         不可能出現「這裡開、那裡關」的自相矛盾。
+
+         擺在 figcaption 裡而不是樣張裡，理由同站①：它一撥就把整頁的
+         han.lines.css 帶走，說明文字必須在兩種狀態下都讀得到。撥動的
+         報酬也在這裡最大——前景樣張與背後那張放大九倍的樣張同時換氣，
+         懸掛的句讀縮回版口內，剩下一條空的懸掛區。 -->
+    <label class="Toggle for-lines">
+      <input type="checkbox" name="lines" data-han-module-proxy="lines" checked />
+      <span>順暢呼吸模式</span>
+    </label>
+    <!-- 懸掛的閘不只這一個。lines.with-js.css 的
+         `--han-state-hanging-punctuation` 是逐文種算的：某個文種選了
+         MOE（點居於字身正中）就自己關掉，因為居中的點懸出去只會浮在
+         版邊，不貼欄口。ko 沒有對應的居中選項，無從關起。
+
+         值得寫進頁面而不只是註解，是因為本頁的 hant 預設就是 MOE ——
+         讀者若照預設看，這一站本來一個字都不會懸。上面兩段樣張各自把
+         `--han-punctuation-hant` 撥到 JIS 才有戲看；那是元素上的宣告，
+         console 的文種設定蓋不過去，所以這條規則在此地示範不出來，只
+         能明說。
+
+         文案裡不用（）括住 MOE：這條注只佔三行，又繼承頁面的兩端對齊，
+         而「（」不得居行末——禁則把斷點往前推一格，短掉的那行就被撐開，
+         字距肉眼可見地鬆掉。正文才剛說完「字距不因禁則換行而鬆動」，
+         注腳自己鬆給人看說不過去。改用破折號帶出，斷點就自由了。 -->
+    <small>注：標點懸掛會在標點字體Diantenjeom選用MOE式時自動關閉。因其居中的標點會在懸掛後偏離版邊過多，效果不佳。使用JIS、GB等偏倚式標點方可懸掛。</small>
+  </aside>
+
+  <!-- 背後那張放大九倍的樣張。`data-breath` 是視窗閘的 opt-in（home/breath.js）：
+       它那口氣動的是變體字重，每幀一記全文件重排，捲出畫面就該停下來。 -->
+  <div role="presentation" data-breath>
+    <p>「所以以前的人，去別的地方，不能⋯⋯就直接去嗎？」來自板門店的男孩李奕哲（리혁철），盯著博物館櫥窗裡那本廿世紀的香港護照問道。在<time datetime="" data-plus-100>〇〇〇〇年</time>的今天，邊境制度已廢止一甲子。年逾八十的導覽員雷真娜・柯志打仍記憶猶新，半晌方答：「這種小冊子，哪個國家issue的都不一樣——你在什麼地方出生，注定了你拿哪本護照。有的幾乎可以去任何國家，有的哪兒也去不了。」</p>
+  </div>
+</section>
+
+<!-- Station IV・Prose — block-axis rhythm, live. The specimen is a fixed
+     zh-Hant mini-dispatch (太陽中文報 earth-moon-aoe, treaty section) whose
+     structure is natively h1+h2+p+ol+h2+blockquote — consecutive headings,
+     heading→paragraph, paragraph→list, list→heading, quote: every block
+     seam the prose module tunes, in one article. prose.css auto-scopes to
+     <article>, so the console's prose switch reflows exactly this dispatch.
+     The <ol> is presentation-layer structure: the source clause list is
+     semicolon-separated prose (sanctioned, docs/plans/homepage-specimens.md). -->
+<section data-revealed id="station-prose" data-station="prose" data-wm="段">
+  <hgroup>
+    <p>肆・段落</p>
+    <h2>疏密有致的段落調配</h2>
+  </hgroup>
+  <p>標點擠壓掌管主軸的留白，交叉軸的節奏由prose模組指揮——大標緊接次標，間距收攏聚合，標題接段落、段落接清單，以字為尺橫縱有序。閱讀下面的報導，並撥動模組開關，體驗優化前後的不同章法。</p>
+
+  <!-- prose 開關 — 與站①的語意開關、站③的呼吸開關同一套：不是本站自己的
+       控件，是 console 那顆「prose」模組開關的分身（`data-han-module-proxy`，
+       雙向綁定見 home/module-state.js）。所以站內站外永遠同一個狀態，不會
+       出現「這裡開、那裡關」。
+
+       擺在樣張之上而不是之下：一撥就把兩張樣張的塊軸間距全部重算，版面高度
+       隨之伸縮——擺在下面的話，讀者剛按下的那顆鈕會被自己引發的重排推走。
+       說明文字也留在開關之外（同站①），兩種狀態下都讀得到。
+
+       prose 的旗標種在 `:where(article)` 上，`:root` 撥不到，實際的
+       `article { --han-prose: off }` 在 common/module-state.css；這顆按下去
+       只是把 `<html>` 的狀態屬性與 console 的設定一起翻面。 -->
+  <label class="Toggle for-prose">
+    <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
+    <span>疏密有致模式</span>
+    <small>取消勾選，使用瀏覽器原生的間距</small>
+  </label>
+
+  <!-- 一顆放大鏡管兩張卡（`data-lens` 在容器上，不在各卡上）：兩顆圓疊在一起
+       只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->
+  <div class="Prose" data-lens>
+    <article class="Dispatch" lang="zh-Hant">
+      <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
+      <h2>一根手指，一道法條</h2>
+      <p>四月十七日，地月太空電梯「天柱一號」梯艙，高度十七萬公里。來自中彰投大墩特別市的乘客陳大鈞正以食指探入左鼻孔，斜對面的月球居民小倩-七七九出示本月甫通過的《公共衛生精緻化法案》第十三條：三人以上之密閉公共空間，禁止任何形式之鼻腔自行清潔行為。爭論四十分鐘，雙方各有援軍——地球方兩人加入後隨即各自探入鼻腔，神情泰然；而全艙為無塵環境，理論上無屑可挖。</p>
+      <p>爭執隨即從鼻孔轉向主權。梯艙懸掛月球城邦旗幟，月球法律顧問據此認定「精神上屬月球管轄」；地球顧問反指旗幟不等於主權，「否則地球旗在月球上插了六十年，月球早就是地球的了」。而依《地月交通共管框架協議》，該高度正落在雙方均不強制執法的「共管緩衝區」——法理上，誰也管不著那根手指。</p>
+      <h2>《地月共榮協定》主要內容</h2>
+      <p>十一輪資源談判早已僵持，梯艙影片一上廣場，兩地軍艦便在拉格朗日點列陣。最後是地球代表團一名年輕顧問（本報姑且稱之為「Y君」）遞出便條：「用《世紀帝國》解決如何？」九天二十場，四十七億人同時在線；地球隊七號選手、環境部次長梁慶以龜船艦隊迂迴奇襲，四分鐘逆轉戰局，留言區第一名維持整整兩分鐘：「次長我愛你。」比分十比十，雙方氣消，重回桌面。</p>
+      <p>簽署儀式僅十九分鐘——簽字前又臨時加開一局「加賽」，打了四十分鐘，地球勝；月球代表稱「手感不對」，要求明年重賽。地球方同意，表示屆時仍選韓國。月球方表示「這次我們準備了維京人」。</p>
+      <p>協定核心條款：</p>
+      <ol>
+        <li>月球城邦可自由取用地球南太平洋指定海域海水，年度配額三十億立方公尺；</li>
+        <li>地球可在限額內採購月球鈦鐵礦及氦-3，分潤比例七三比二七；</li>
+        <li>地月邊境醫療隔離時間自兩小時縮短為象徵性的四十五分鐘。</li>
+      </ol>
+      <h2>梯艙屬地問題</h2>
+      <p>至於太空電梯梯艙的法律屬地問題，協定附件第七條簡短寫道：</p>
+      <blockquote>
+        <p>
+          共管緩衝區內，各方個人衛生習慣，以不打擾他人為原則，雙方均不主動執法。<br />
+          <cite>——協定附件第七條</cite>
+        </p>
+      </blockquote>
+      <p>陳大鈞表示對此結果感到滿意。小倩-七七九表示「尊重協議精神，但個人仍覺得隨地挖鼻屎很噁心，不過至少不必再忍受過長的二小時醫療隔離了。」</p>
+    </article>
+
+    <article class="Dispatch vertical" lang="zh-Hant">
+      <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
+      <h2>一根手指，一道法條</h2>
+      <p>四月十七日，地月太空電梯「天柱一號」梯艙，高度十七萬公里。來自中彰投大墩特別市的乘客陳大鈞正以食指探入左鼻孔，斜對面的月球居民小倩-七七九出示本月甫通過的《公共衛生精緻化法案》第十三條：三人以上之密閉公共空間，禁止任何形式之鼻腔自行清潔行為。爭論四十分鐘，雙方各有援軍——地球方兩人加入後隨即各自探入鼻腔，神情泰然；而全艙為無塵環境，理論上無屑可挖。</p>
+      <p>爭執隨即從鼻孔轉向主權。梯艙懸掛月球城邦旗幟，月球法律顧問據此認定「精神上屬月球管轄」；地球顧問反指旗幟不等於主權，「否則地球旗在月球上插了六十年，月球早就是地球的了」。而依《地月交通共管框架協議》，該高度正落在雙方均不強制執法的「共管緩衝區」——法理上，誰也管不著那根手指。</p>
+      <h2>《地月共榮協定》主要內容</h2>
+      <p>十一輪資源談判早已僵持，梯艙影片一上廣場，兩地軍艦便在拉格朗日點列陣。最後是地球代表團一名年輕顧問（本報姑且稱之為「Y君」）遞出便條：「用《世紀帝國》解決如何？」九天二十場，四十七億人同時在線；地球隊七號選手、環境部次長梁慶以龜船艦隊迂迴奇襲，四分鐘逆轉戰局，留言區第一名維持整整兩分鐘：「次長我愛你。」比分十比十，雙方氣消，重回桌面。</p>
+      <p>簽署儀式僅十九分鐘——簽字前又臨時加開一局「加賽」，打了四十分鐘，地球勝；月球代表稱「手感不對」，要求明年重賽。地球方同意，表示屆時仍選韓國。月球方表示「這次我們準備了維京人」。</p>
+      <p>協定核心條款：</p>
+      <ol>
+        <li>月球城邦可自由取用地球南太平洋指定海域海水，年度配額三十億立方公尺；</li>
+        <li>地球可在限額內採購月球鈦鐵礦及氦-3，分潤比例七三比二七；</li>
+        <li>地月邊境醫療隔離時間自兩小時縮短為象徵性的四十五分鐘。</li>
+      </ol>
+      <h2>梯艙屬地問題</h2>
+      <p>至於太空電梯梯艙的法律屬地問題，協定附件第七條簡短寫道：</p>
+      <blockquote>
+        <p>
+          共管緩衝區內，各方個人衛生習慣，以不打擾他人為原則，雙方均不主動執法。<br />
+          <cite>——協定附件第七條</cite>
+        </p>
+      </blockquote>
+      <p>陳大鈞表示對此結果感到滿意。小倩-七七九表示「尊重協議精神，但個人仍覺得隨地挖鼻屎很噁心，不過至少不必再忍受過長的二小時醫療隔離了。」</p>
+    </article>
+  </div>
+  <!-- outside .Prose deliberately: in there `.Prose > p` owns the type, and
+       this line is chrome, not specimen copy. -->
+  <p class="LensHint">雙擊樣張開關放大鏡，拖動可移動。</p>
+</section>
+
 <!-- Station V・Architecture (工法) — "won't fight your CSS". Three REAL demos
      prove the claim on THIS page: (1) a user rule beats the framework because
      han-semantics wraps every selector in :where() (zero specificity); (2) the

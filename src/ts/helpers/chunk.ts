@@ -38,10 +38,15 @@ export const countNodes = (root: Node, limit: number): number => {
 
 /** Are the children all elements (a level safe to cut through)?
  *  Whitespace-only text nodes don't count — they are indentation, not
- *  inline flow. */
+ *  inline flow. Neither do comments: source comments sit between block
+ *  children all over a hand-written document, and treating one as inline
+ *  flow condemns its whole level to a single call. That is not theoretical
+ *  — han.css's own homepage puts a `<!-- Station … -->` above each section,
+ *  so `<main>` was never divisible and went in whole at 12,843 nodes, which
+ *  is exactly the overflow this file exists to prevent. */
 const childrenAllElements = (el: Node): boolean => {
   for (const child of el.childNodes) {
-    if (child.nodeType === 1) continue
+    if (child.nodeType === 1 || child.nodeType === 8) continue
     if (child.nodeType === 3 && /^[ \t\n\r\f]*$/.test((child as Text).data)) continue
     return false
   }

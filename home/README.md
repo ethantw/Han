@@ -12,8 +12,8 @@
 | --- | --- |
 | Vite 設定 | 二十行，只指定 port 7770 |
 | HTML | `index.html`，繁體一種語言，靜態展開，無模版引擎 |
-| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 18 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
-| 區塊 | manifesto、語意、字體、工法、遊樂場、引用碼、closing；其餘兩站在 HTML 裡留註解佔位 |
+| CSS | `public/home.css` 串起 `common/` 12 份 ＋ `home/` 20 份 ＋ `_port.css`；`/han/*.css` 由設定檔直餵倉庫根的 `dist/` |
+| 區塊 | 九個區塊全部搬完（manifesto、語意、字體、行、散文、工法、遊樂場、引用碼、closing） |
 | JS | 字體閘門 ＋ `<han-console>` 那一支模組圖。舊站其餘的 `home/*.js` 都沒搬 |
 
 `index.html` 由 `scripts/port-from-manual.mjs` 從舊模版展開而來：`{{ token }}`
@@ -96,8 +96,9 @@ console-metrics}.js` ＋ 兩份 shadow 樣式表、`common/icon.js`、
 ## 沒搬的東西，與為什麼
 
 - **語言切換**。要 JS，這一輪不搬。
-- **其餘七站的 CSS**。`public/home.css` 裡的 `@import` 留成註解，搬回哪一站
-  就把哪一行的註解拿掉。
+- **舊站其餘的 `home/*.js`**（`reveal.js`、`playground.js`、`snippet.js`、
+  `ledger.js`、`carousel.js`、`highlight.js`…）。搬進來的站因此仍有幾處是
+  靜態外殼，見上一節。
 
 ## 搬回一站的作法
 

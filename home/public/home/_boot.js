@@ -7,9 +7,23 @@
  * 人呼叫一次」的模組：自啟動的（`fonts-gate.js`）與自己註冊的（元件）都不
  * 經過這裡。搬完之後這一份跟著搬運腳本一起刪，換成真正的入口。
  */
+import { initModuleState } from './module-state.js'
+import { initBreath } from './breath.js'
+import { initLens } from './lens.js'
 import { initLeadForme } from './lead-forme.js'
 import { initPunctLang } from './punct-lang.js'
 import { initPaperReader } from './paper-reader.js'
+
+/* 站台裡的模組開關是主控台對應開關的代理，狀態的唯一真相在主控台。四站都有
+   （語意、行的調整、散文、遊樂場），少了它那些開關撥了沒反應。 */
+initModuleState()
+
+/* 站③的呼吸：捲到才播，離開就停。 */
+initBreath()
+
+/* 放大鏡。四份報紙、散文、遊樂場的樣張都掛了 `data-lens`，`.LensHint` 那句
+   「雙擊樣張開關放大鏡」在它沒搬進來之前是句空話。 */
+initLens()
 
 /* 站②的鉛字盤：整座等角字盤是這一支建出來的，沒有它那個 figure 是空的。 */
 initLeadForme()

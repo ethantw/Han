@@ -16,8 +16,8 @@ const OUT = 'home'
 const LOCALE = 'hant'
 
 /* 搬進來的區塊，順序即 `<main>` 的順序。清單以外的都在 HTML 裡留註解佔位。 */
-const SECTIONS = ['manifesto', 'station-semantics', 'station-fonts', 'station-craft',
-  'station-playground', 'station-snippet', 'closing']
+const SECTIONS = ['manifesto', 'station-semantics', 'station-fonts', 'station-lines',
+  'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing']
 
 /* 搬進來的 `home/*.css`。入口裡其餘的 `@import` 會被註解掉。
    前六份是版框與主控台，其後是各站及它們用到的組件：
@@ -26,14 +26,13 @@ const STYLES = [
   'root', 'frame', 'manifesto', 'closing', 'console', 'console-loader',
   'station-semantics', 'semantics-specimen', 'envelope', 'gate',
   'station-fonts', 'lead-forme', 'dash-fuse',
+  'station-lines', 'station-prose',
   'station-craft', 'station-playground', 'station-snippet', 'ledger', 'lens',
 ]
 
-/* 舊模版裡出現、但這一輪不搬的區塊 token，照原順序留註解。 */
-const PARKED = [
-  ['stationLinesSection', ''],
-  ['stationProseSection', ''],
-]
+/* 全部搬完了，這張清單空著——留著是因為搬運腳本還在，哪天又要暫時停掉一站，
+   把它的 token 加回來就行。 */
+const PARKED = []
 
 /* ── i18n：每個模版自帶一塊 `<script type="text/x-i18n">`，內容是物件字面量，
    或是一段以 `return` 收尾的函式體（`_shared.html` 那種）。 ── */
@@ -148,6 +147,10 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
    所以 han.js 也就一起活過來了，而且是讀者的開關說了算。 */
 const SCRIPTS = [
   'home/fonts-gate.js',
+  'home/measure.js',
+  'home/breath.js',
+  'home/module-state.js',
+  'home/lens.js',
   'home/lead-forme.js',
   'home/punct-lang.js',
   'home/paper-reader.js',
