@@ -1,9 +1,9 @@
-# CSS 靜默失效四則——寫錯了不報錯，只是「看起來沒生效」
+# CSS 靜默失效五則——寫錯了不報錯，只是「看起來沒生效」
 
-**日期**：2026-08-07（從已完成的計畫裡打撈出來，原文散在
-`docs/plans/` 的四份檔案）
+**日期**：2026-08-07（前四則從已完成的計畫裡打撈出來，原文散在
+`docs/plans/` 的四份檔案）；第五則 2026-08-12 補入
 
-這四條的共同點：**瀏覽器不會抗議**。宣告被丟棄、規則被吞掉、值解析成
+這幾條的共同點：**瀏覽器不會抗議**。宣告被丟棄、規則被吞掉、值解析成
 另一個意思，畫面照樣渲染，只是少了你要的效果。除錯時最容易的誤判是
 「這個特性瀏覽器沒支援」或「選擇器沒中」，往下追很久才發現東西根本沒
 進 CSSOM。
@@ -68,6 +68,41 @@ CDP 的 `CSS.getMatchedStylesForNode` 回來的 `matchedCSSRules` 裡沒有那
 `dark`——因為 `color-scheme` 會跨 shadow 邊界繼承。配方見
 `hanzi.pro/web-style.md` § Dark mode；那裡給的是**正確**寫法，這裡補的
 是寫錯時會怎麼**靜默**失效。
+
+## 5. `@property` 的 `initial-value` 不能是 `em`；註冊 `<length>` 會凍住 `em`
+
+做 `--han-structural-indent`（引文／圖表／清單共用的縮排格線，見
+`src/css/semantics.css` § Grouping content）時想用 `@property` 把值的形狀
+（單一長度）鎖起來，兩條路都不通，而且**兩條都不報錯**。
+
+**一、`initial-value` 必須 computationally independent。** 寫
+`@property --x { syntax: "<length>"; inherits: true; initial-value: 2em }`
+整條 `@property` 規則會被丟棄——`em` 依賴 font-size，不合規。後果不是
+「初始值變別的」，而是**這個變數從未被註冊過**：所有 `var(--x)` 成為
+未定義，凡是把它拼進組合值的宣告全部 IACVT，非繼承屬性歸 initial。實測
+畫面就是縮排整片變 0。
+
+**二、就算改用合法的 `initial-value: 0` 再靠 `:root` 補 `2em`，也不能註冊。**
+註冊過的 `<length>` 在**宣告處**就絕對化，`:root` 的 `2em` 算成 32px 之後
+以計算值往下繼承，縮排從此不隨元素字級縮放。未註冊的自訂屬性繼承的是
+token stream，`em` 要到消費點才解析——那才是縮排該有的行為。
+
+實測（元素 `font-size: 32px`，量 `margin-inline-start`）：
+
+| 寫法 | 量到 |
+|---|---|
+| 註冊 ＋ `initial-value: 2em` | **0px**（註冊整條被丟棄） |
+| 註冊 `<length>` ＋ `:root { --x: 2em }` | **32px**（凍在根的 16px） |
+| 未註冊 ＋ `:root { --x: 2em }` | **64px** ✓ |
+
+同一份檔案裡的 `text-underline-offset` 是這條的近親：它是繼承屬性、以
+計算值繼承，所以 `.125em` 只在 `:root` 宣告一次也會凍成 px——那邊的解法
+是在 `:where(*)` 上逐元素重宣告。註冊屬性等於讓**任何**自訂屬性都染上
+這個性質。
+
+推論：**凡是想保留 `em`／`ch` 等字級相對行為的自訂屬性，就不能註冊。**
+`@property` 的型別檢查與 `em` 的延遲解析在現行規格下不可兼得，代價要
+付在哪一邊得自己選。
 
 ## 同族
 
