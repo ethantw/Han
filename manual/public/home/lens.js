@@ -199,14 +199,31 @@ const mountOne = ($host, { live }) => {
     return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]
   }
 
-  /* The clone must occupy the host's exact geometry or its layout re-folds
-     and the lens shows a different page. */
-  const readGeometry = () => ({
-    host: $host.getBoundingClientRect(),
-    size: $lens.getBoundingClientRect().width,
-    zoom: zoomOf($lens),
-    opening: readerDriving ? null : openingPoint(),
-  })
+  /* The clone must occupy the host's exact geometry or its layout re-folds and
+     the lens shows a different page — but the host's *border box* is the wrong
+     measure once the host is a scroll container. `.Prose` is 1,159px wide and
+     scrolls 1,826px of content; a copy cut to 1,159 clips the rest, and since
+     `positionAt` translates the copy rather than scrolling it (a copy refuses
+     `scrollLeft`), everything past that edge is simply gone. That is what「橫排
+     只看得到第一欄的一半」was: the 橫排 dispatch starts at x=1,788 inside the
+     copy, 629px beyond its own clip edge, so the circle showed the sliver that
+     happened to reach inside.
+     So: the scroll size, and `overflow: visible` on the copy (home/lens.css).
+     Clipping is the circle's job, not the copy's. Widening changes nothing
+     inside — both dispatches size off `calc(var(--size) * N)`, independent of
+     their container (measured: 768×710 and 970×576 either way). */
+  const readGeometry = () => {
+    const rect = $host.getBoundingClientRect()
+    return {
+      host: {
+        width: Math.max(rect.width, $host.scrollWidth),
+        height: Math.max(rect.height, $host.scrollHeight),
+      },
+      size: $lens.getBoundingClientRect().width,
+      zoom: zoomOf($lens),
+      opening: readerDriving ? null : openingPoint(),
+    }
+  }
 
   const writeGeometry = (g) => {
     if (!on || !$clone || !g) return

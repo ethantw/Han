@@ -77,9 +77,16 @@
     transform-origin: 0 0;
     pointer-events: none;
     user-select: none;
-    /* JS sizes it to the host's BORDER box, so it must measure the same way
-       or every offset inside drifts by the padding. */
+    /* JS sizes it to the host's box, so it must measure the same way or every
+       offset inside drifts by the padding. */
     box-sizing: border-box;
+    /* And it must not clip: the copy of a scroll container inherits that
+       container's `overflow`, and the loupe TRANSLATES the copy instead of
+       scrolling it — so whatever the translate pushes past the copy's own
+       scrollport would be clipped away by the copy itself (station④'s 橫排
+       dispatch sits 629px beyond it and all but vanished). The circle is the
+       only thing that should be cropping anything here. */
+    overflow: visible;
     margin: 0;
     min-block-size: 0;
   }
