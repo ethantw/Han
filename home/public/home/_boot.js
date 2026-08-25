@@ -7,6 +7,7 @@
  * 人呼叫一次」的模組：自啟動的（`fonts-gate.js`）與自己註冊的（元件）都不
  * 經過這裡。搬完之後這一份跟著搬運腳本一起刪，換成真正的入口。
  */
+import { initSettle } from './settle.js'
 import { initModuleState } from './module-state.js'
 import { initBreath } from './breath.js'
 import { initLens } from './lens.js'
@@ -15,6 +16,10 @@ import { initPunctLang } from './punct-lang.js'
 import { initPaperReader } from './paper-reader.js'
 import { initStripNav } from './strip-nav.js'
 import { initPlayground } from './playground.js'
+
+/* 入場動畫演完就退場：`fill: both` 的動畫結束後仍持有合成層，而疊在上面的
+   站台會被連帶提升（實測合成層 35 → 14）。掛在最前面，才收得到最早演完的。 */
+initSettle()
 
 /* 站台裡的模組開關是主控台對應開關的代理，狀態的唯一真相在主控台。四站都有
    （語意、行的調整、散文、遊樂場），少了它那些開關撥了沒反應。 */

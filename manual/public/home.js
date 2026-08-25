@@ -40,6 +40,7 @@ import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
+import { initSettle } from '/home/settle.js'
 import { initBreath } from '/home/breath.js'
 import { gateOpened } from '/home/fonts-gate.js'
 
@@ -118,6 +119,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // and flies in the instant it opens, instead of missing its stamp
   // forever (found on real 3G).
   initReveal(gateOpened)
+  /* 演完就退場。`fill: both` 的入場動畫結束後仍持有合成層，疊在上面的站台
+     被連帶提升——實測合成層 35 → 14、光柵磚 92 → 43 MB、渲染行程的
+     private footprint 636 → 444 MB。掛在 reveal 之後：它負責開演，這一支
+     負責收場。 */
+  initSettle()
   // 循環動畫的視窗閘（`[data-breath]`）：站③浮水印那口氣動的是變體字重，
   // 每幀一記全文件重排（實測主執行緒 68%），捲出畫面就暫停。不過 gate ——
   // 它管的是「別算」，愈早裝上愈好，字幕還沒開之前尤其該省。

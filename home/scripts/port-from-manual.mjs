@@ -148,6 +148,7 @@ for (const f of readdirSync(`${SRC}/public/img`)) copyFileSync(`${SRC}/public/im
 const SCRIPTS = [
   'home/fonts-gate.js',
   'home/measure.js',
+  'home/settle.js',
   'home/breath.js',
   'home/module-state.js',
   'home/lens.js',

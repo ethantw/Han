@@ -41,15 +41,31 @@ import { settled } from '/home/measure.js'
 const zoomOf = ($lens) =>
   Number.parseFloat(getComputedStyle($lens).getPropertyValue('--lens-zoom')) || 2
 
-/** A picture of the host, not a second one: strip every hook an observer, a
- *  query or a test could trip over. `data-*` goes wholesale — on this page
- *  every one of them is a pipeline's or a test's handle, while the face is
- *  keyed on classes and `lang`, both of which the clone keeps. */
+/** A picture of the host, not a second one: strip the hooks that must stay
+ *  unique — the ones an observer, a query or a test would trip over.
+ *
+ *  It is a DENYLIST, and it used to be「every `data-*`」. That was true when
+ *  the face was keyed on classes alone; it stopped being true the day the
+ *  specimens started keying LAYOUT on data attributes. `data-prose` is the
+ *  switch between the abridged and the full dispatch, so wiping it showed
+ *  BOTH at once and the copy stood 954px where the host stands 710 — the
+ *  loupe was magnifying a page that exists nowhere. Same trap waits in the
+ *  playground (`data-pg-*`) and in han.css's own output (`data-punct`,
+ *  `data-followed-by*`), all of which CSS selects on.
+ *
+ *  So: drop identity (`id`, `tabindex`) and the hooks that address a single
+ *  live instance (the loupe's own, the strips' scroll wiring, the stations'
+ *  reveal gate). Everything else is part of the picture and stays. */
+const DENY = new Set([
+  'id', 'tabindex',
+  'data-lens', 'data-mag-lens',
+  'data-strip', 'data-strip-start', 'data-strip-nav',
+  'data-station', 'data-revealed', 'data-reveal-at',
+])
+
 const depersonalise = ($el) => {
   for (const { name } of [...$el.attributes]) {
-    if (name.startsWith('data-') || name === 'id' || name === 'tabindex') {
-      $el.removeAttribute(name)
-    }
+    if (DENY.has(name)) $el.removeAttribute(name)
   }
 }
 
@@ -115,6 +131,11 @@ const mountOne = ($host, { live }) => {
 
   let lastX = 0
   let lastY = 0
+  /* 指標最後一次的**視窗**座標。宿主相對座標（lastX/lastY）在宿主底下的內容
+     平移時就過期了——長帶一捲，同一個螢幕位置對到的是別的字。要重算就得留著
+     這一份，因為捲動不會送 pointermove。 */
+  let clientX = null
+  let clientY = null
   let lensSize = 0
   let zoom = 2
   /* A fine pointer just moves over the page, so the loupe can be on from the
@@ -154,8 +175,18 @@ const mountOne = ($host, { live }) => {
        circle then sat one scroll offset away from the pointer. */
     $lens.style.insetInlineStart = `${h.left - f.left + $frame.scrollLeft + cx}px`
     $lens.style.insetBlockStart = `${h.top - f.top + $frame.scrollTop + cy}px`
+    /* The copy is never scrolled — it is translated. cx/cy are where the
+       pointer is over the host's VIEWPORT, so the host's own scroll offset
+       turns them into where that is in its CONTENT, which is the copy's own
+       coordinate system (the copy lays its full content out; nothing clips it
+       but the circle). Zero for a host that doesn't scroll, so this is the
+       same formula it always was — but the strips scroll, and programmatic
+       `scrollLeft` on the copy does not take, so mirroring the scroll was
+       never going to work. */
+    const sx = cx + $host.scrollLeft
+    const sy = cy + $host.scrollTop
     $clone.style.transform =
-      `translate(${lensSize / 2 - cx * zoom}px, ${lensSize / 2 - cy * zoom}px) scale(${zoom})`
+      `translate(${lensSize / 2 - sx * zoom}px, ${lensSize / 2 - sy * zoom}px) scale(${zoom})`
   }
 
   /** Host-relative centre of its first block (an empty draft has none, and
@@ -194,10 +225,10 @@ const mountOne = ($host, { live }) => {
     writeGeometry(readGeometry())
   }
 
-  /* A host can be its own scroll container (a sheet wider than its card, a
-   * 直排 card scrolling along its block axis), and a clone starts at offset
-   * 0 — mirror both axes, or the loupe shows column one while the reader is
-   * looking at column five. */
+  /* Best-effort only: the copy's own scroll offset is NOT what aligns it any
+   * more (`positionAt` folds the host's scroll into the translate instead —
+   * a programmatic `scrollLeft` on the copy is silently refused). This stays
+   * for descendants that scroll on their own account. */
   const syncScroll = () => {
     if (!$clone) return
     $clone.scrollLeft = $host.scrollLeft
@@ -207,12 +238,39 @@ const mountOne = ($host, { live }) => {
     syncScroll()
     positionAt(lastX, lastY)
   })
+  /* 宿主**自己**不捲、但它整塊被平移的情形：遊樂場的兩塊面板住在可平移的長帶
+     裡，捲的是長帶。宿主收不到 scroll，指標也沒動，於是鏡片停在原地顯示舊
+     內容——那正是它「定死」的樣子。
+     掛在 document 的**捕獲**階段：scroll 不冒泡，但捕獲階段會經過 document，
+     所以這一條收得到任何祖先（包含視窗）的捲動；掛在「最近的定位祖先」上是
+     不夠的——長帶不一定是定位元素（實測 `[data-pg-panes]` 就不是）。
+     `refollow` 自己會在鏡片關著時直接返回，`passive` 表示不攔捲動。 */
+  document.addEventListener('scroll', () => refollow(), { capture: true, passive: true })
 
   const follow = (e) => {
     readerDriving = true
+    clientX = e.clientX
+    clientY = e.clientY
     const r = $host.getBoundingClientRect()
     lastX = e.clientX - r.left
     lastY = e.clientY - r.top
+    positionAt(lastX, lastY)
+  }
+
+  /** 指標沒動而宿主動了（長帶被平移、或視窗捲動）：同一個螢幕位置現在對到
+   *  宿主裡的另一點，所以從留下來的視窗座標重算一次。夾回宿主之內——內容捲
+   *  走之後那個點可能已經在外面，而鏡片停在邊界比跳掉合理。 */
+  const refollow = () => {
+    if (!on || !$clone) return
+    /* 有視窗座標就重算：同一個螢幕位置現在對到宿主裡的另一點。夾回宿主之內
+       ——內容捲走之後那個點可能已經在外面，鏡片停在邊界比跳掉合理。 */
+    if (clientX !== null) {
+      const r = $host.getBoundingClientRect()
+      lastX = Math.min(Math.max(clientX - r.left, 0), r.width)
+      lastY = Math.min(Math.max(clientY - r.top, 0), r.height)
+    }
+    /* 沒有視窗座標（讀者還沒動過指標，鏡片停在開場那一段）也要重排一次：
+       長帶一平移，宿主整塊都走了，而鏡片的定位祖先不一定跟著走。 */
     positionAt(lastX, lastY)
   }
 
@@ -238,6 +296,8 @@ const mountOne = ($host, { live }) => {
      leave event's own coordinates are already outside it. */
   $host.addEventListener('pointerleave', (e) => {
     if (!on) return
+    clientX = e.clientX
+    clientY = e.clientY
     const r = $host.getBoundingClientRect()
     lastX = Math.min(Math.max(e.clientX - r.left, 0), r.width)
     lastY = Math.min(Math.max(e.clientY - r.top, 0), r.height)
