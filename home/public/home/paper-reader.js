@@ -29,9 +29,26 @@ const keyOf = ($dialog) => {
 /* Open one edition and leave the page on it. `block: 'nearest'` keeps the page
    still when the card is already on screen — the reader asked for a different
    edition, not for a different scroll position. */
+/** 第一次要用的時候才把續版建出來。
+ *
+ *  四份續版合計 1,943 個節點，佔整頁的 22%，而 `display: none` 並不能讓它們
+ *  免費——被隱藏的元素照樣有計算樣式，而這一頁的計算樣式每個節點要 20 KB
+ *  （見 docs/notes/2026-08-25-computed-style-memory.md）。`<template>` 的內容
+ *  不在文件樹裡，一份樣式都不算。
+ *
+ *  `append(content)` 是**搬**不是複製，所以模板一次就空了；建完就把空殼移除，
+ *  下次 `querySelector` 找不到它，這支函式自然變成 no-op。 */
+const hydrate = ($dialog) => {
+  const $template = $dialog.querySelector(':scope > template[data-reader-sheet]')
+  if (!$template) return
+  $dialog.append($template.content)
+  $template.remove()
+}
+
 const open = (key, vertical = false) => {
   const $dialog = dialogOf(key)
   if (!$dialog?.showModal) return
+  hydrate($dialog)
   paneOf(key)?.scrollIntoView({ inline: 'start', block: 'nearest' })
   if (!$dialog.open) $dialog.showModal()
   setWriting($dialog, vertical)
