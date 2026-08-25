@@ -141,10 +141,9 @@ figure.Papers {
   /* `>` 是必要的：續版的版心也是一個 `<article>`（`.ReaderSheet`），沒有這個
      子代限定就會被下面的規則抓走。 */
   > article {
-    /* 四版同一個字級，而且與 lightbox 裡的續版同級——同一份報紙的續版本來就
-       跟首版同一套字級，不一致就像換了一份報。版內的報頭、日期、標題全部是
-       em，所以整版只有這一顆 font-size。 */
-    font-size: 0.875rem;
+    /* 字級在下面的 `article` 那一塊統一定義——那一條同時罩得到長帶上的卡片
+       與燈箱裡的續版（`.ReaderSheet` 也是 `article`），而同一份報紙的續版
+       本來就跟首版同一套字級，不一致就像換了一份報。 */
   }
 
 
@@ -173,6 +172,19 @@ figure.Papers {
   }
 
   article {
+    /* 版內每一級都是 rem，不是 em。理由是刻度：`0.125rem` 的級距
+       （SKILL § 13）只有 rem 保證得了——0.875rem 的版心配一個合法的 em 比例
+       仍會乘出 11.998px 這種值，而 11.998 與別處的 12 在 Blink 眼裡是**兩種
+       字體描述**，各要一份 fallback list（見
+       docs/notes/2026-08-25-font-fallback-list-memory.md）。四顆 token 讓
+       版內只有一處要改，也讓這些值與頁面其餘部分合流。 */
+    --paper-body: 0.875rem;
+    --paper-small: 0.75rem;
+    --paper-masthead: 1rem;
+    --paper-headline: 1.125rem;
+
+    font-size: var(--paper-body);
+
     & {
       margin: 0;
       align-self: start;
@@ -190,7 +202,7 @@ figure.Papers {
       text-align: center;
       font-family: var(--han-font-alternative);
       font-weight: 700;
-      font-size: 1.143em;
+      font-size: var(--paper-masthead);
       /* tracked-out logotype — trailing tracking rebalanced by indent */
       letter-spacing: 0.25em;
       text-indent: 0.25em;
@@ -206,7 +218,7 @@ figure.Papers {
         padding-block: 0.25em;
         /* …and the thin half */
         border-block-end: 1px solid var(--ui-rule);
-        font-size: 0.857em;
+        font-size: var(--paper-small);
         color: var(--ui-supplement-text);
       }
 
@@ -229,12 +241,12 @@ figure.Papers {
     h3 {
       margin: .5rem 0 0.625rem;
       font-family: var(--han-font-alternative);
-      font-size: 1.286em;
+      font-size: var(--paper-headline);
       line-height: 1.5;
     }
     p.author {
       margin-block-start: -.5em;
-      font-size: 0.857em;
+      font-size: var(--paper-small);
       text-indent: 0;
     }
     h3 ~ p {
@@ -514,7 +526,7 @@ figure.Papers {
 
       figcaption {
         margin-block-start: 0.5em;
-        font-size: 0.857em;
+        font-size: var(--paper-small);
         color: var(--ui-supplement-text);
       }
     }
@@ -567,9 +579,9 @@ figure.Papers {
 
     p {
       margin: .25em 0;
-      /* 正文即 1em：整版的字級由 `article` 那一顆決定（見 § 亮版放大），
-         這裡跟著它走，20 字的行長才會在兩種尺寸下都成立。 */
-      font-size: 1em;
+      /* 正文走 token，兩種版心各自對齊刻度（見 § 版心的四顆 token）；
+         20 字的行長在兩種尺寸下都成立。 */
+      font-size: var(--paper-body);
       line-height: 2;
 
       &:last-child {
