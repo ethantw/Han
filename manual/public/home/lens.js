@@ -28,7 +28,7 @@
  * reading size).
  */
 
-import { settled } from '/home/measure.js'
+import { onRendered, settled } from '/home/measure.js'
 
 /* Geometry belongs to CSS (home/lens.css + each host's two tokens): the
  * diameter is derived from the host's own measure and this zoom, so the two
@@ -341,6 +341,15 @@ const mountOne = ($host, { live }) => {
      rect——拖著窗邊改大小時那是每幀一次同步版面，而拖曳中沒有人在讀鏡子。 */
   new ResizeObserver(settled({ read: readGeometry, write: writeGeometry, watch: $host }))
     .observe($host)
+  /* 而「看不到不算」那條紀律有個尾巴：站台被 `content-visibility` 跳過時，上面
+     那個觀察者的回呼會被整個跳掉——版面在那期間改了（收起主控台就會改，版心
+     重新置中），鏡片的 inset 卻還是舊的，於是站台推回畫面時圓圈落在別處
+     （實測收合後散文那顆跑到 -472→-88，整顆在畫面外）。推回畫面的那一刻補算
+     一次，這正是 `onRendered` 存在的理由。
+     掛在**站台**上而不是宿主：`contentvisibilityautostatechange` 在帶著
+     `content-visibility` 的那個元素上發，宿主只是它的後代（playground.js 也是
+     掛 `$station`）。 */
+  onRendered($host.closest('[data-station]'), sync)
   // apply() builds the first copy if the loupe starts on (a fine pointer);
   // a coarse one starts off and pays nothing until it is asked.
   apply()

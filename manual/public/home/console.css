@@ -3,12 +3,21 @@
 
 body:has(han-console) {
   & {
-    padding-inline-start: var(--w-console);
+    /* 主控台**此刻**佔掉的行首寬度——收起時是 0。半打規則要從主控台的寬導出
+       自己的量（見 § 為什麼是 --w-console），而它們分兩種：
+       **裝飾尺寸**（鉛字盤的框、破折號柱、站③的巨型底字）刻意讀常數
+       `--w-console` 凍住，開合不重排；**版面**（plate 的置中）必須讀這一顆，
+       否則收起時版心不會重新置中——實測 1440px 下 section 從 1159 長到 1439，
+       而內距還停在 36，讀行寬度從 68rem 撐到 1367px，所有取消 plate-pad 的
+       滿版元素也跟著算錯。 */
+    --console-gutter: var(--w-console);
+
+    padding-inline-start: var(--console-gutter);
     transition: .25s padding-inline-start ease-in;
     will-change: padding-inline-start;
   }
   &:has(.ConsoleToggle input:checked) {
-    padding-inline-start: 0;
+    --console-gutter: 0px;
   }
   han-console {
     position: fixed;
