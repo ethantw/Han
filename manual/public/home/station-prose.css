@@ -167,7 +167,26 @@
  * paragraph→list and blockquote seams all belong to the han-prose layer.
  * Chrome only sets the frame and the type SCALE — never block margins,
  * which are exactly what the console's prose switch reflows. */
+/* 同一張卡裡兩份展品，寬窄各取一份——**由 CSS 決定，不由 JS**。
+   兩份都是編過的：刪減版用更少的段落展示同一組接縫（大標接次標、標題接段落、
+   段落接清單、段落接引文），全文則讓大螢幕看得出長文裡的節奏。這一站要看的是
+   段落的排法，不是這一篇寫了什麼，所以依寬度換文本沒有「讀者會看到另一篇」的
+   問題——換的是尺度，不是內容。 */
 article.Dispatch {
+  > [data-prose="full"] {
+    display: none;
+  }
+
+  @container (inline-size >= 52rem) {
+    > [data-prose="brief"] {
+      display: none;
+    }
+
+    > [data-prose="full"] {
+      display: block;
+    }
+  }
+
   & {
     --size: 24em;
     padding: 1em 1.5em;
@@ -210,21 +229,20 @@ article.Dispatch {
     &:not(.vertical) {
       inline-size: min(100%, calc(var(--size) * 2));
     }
-    /* 直排卡走另一條路：**先離開多欄**，再封頂塊軸、沿塊軸捲。
+    /* 窄視窗一樣分欄。
 
-       兩件事都不能照橫排卡的寫法抄。一，`inline-size` 在這張卡上是欄長
-       （物理高度），百分比要對父層的 auto 高度解析＝不定值，`min(100%, …)`
-       在這裡是靜默失效。二，多欄盒的塊軸一旦封頂，裝不下的內容不會溢出，
-       而是**多裂出幾欄**——欄沿 inline 軸（直排時是垂直）疊下去，於是卡片
-       裡多一條縱向捲軸，跟頁面的縱捲打架。退出多欄，封頂才真的變成溢出。
+       這裡原本是另一條路：離開多欄、封頂塊軸、卡片自己縱捲——因為多欄盒的塊軸
+       一旦封頂，裝不下的內容不會溢出，而是**多裂出幾欄**，於是卡片裡多一條縱向
+       捲軸，跟頁面的縱捲打架。那條理由整個建立在「卡片要放得進窄站台」上，而
+       那個前提已經沒了：整條 `.Prose` 現在是可平移的長帶，卡片不必放得下，放
+       不下就往旁邊去。既然不必封頂，就不必離開多欄——直排的欄本來就是這張卡
+       要演的東西，窄視窗尤其不該只剩一欄。
 
-       代價說明白：窄站台下這張卡只有一欄。雙欄的節奏由旁邊那張橫排卡繼續
-       演；直排卡在這裡要證明的是行向本身，而橫著捲正是直排頁面的手勢。 */
+       `inline-size` 在這張卡上是欄長（物理高度），所以照樣明寫，不用百分比：
+       百分比要對父層的 auto 高度解析＝不定值，在這裡是靜默失效。 */
     &.vertical {
-      columns: auto;
-      max-block-size: 100%;
-      overflow-block: auto;
-      overscroll-behavior-block: contain;
+      inline-size: calc(var(--size) * 2);
+      column-count: 2;
     }
   }
   h1 {

@@ -436,7 +436,10 @@
 
     [data-pg-sheet] > [data-pg-paper] {
       inline-size: 100%;
-      translate: 0 -7rem;
+      /* 原本這裡是 `translate: 0 -7rem`，把校樣往上提去對齊編輯區的工具列。
+         面板改成可平移的長帶之後那一提就把報頭與大標的第一行推到上方那排分頁
+         底下——它們有版面、`checkVisibility()` 也回報可見，只是被蓋住，看起來
+         就像「標題不見了」。對齊改由 `align-items: start` 負責，不必再位移。 */
       box-shadow: 0 1px 0 var(--ui-bg-2q);
       cursor: zoom-in;
 
@@ -465,12 +468,15 @@
       }
     }
 
-    /* The paper's head stays while the body pans — a masthead sliding out
-       of view would make one sheet read as two unrelated pages. */
-    [data-pg-paper] > :is(.Masthead, .Dateline) {
-      position: sticky;
-      inset-inline-start: 0;
-    }
+    /* 報頭不再 sticky。
+
+       它原本要解的是「卡片自己橫捲時，報頭別跟著滑走」——那個前提沒了：整條
+       面板才是捲動容器，卡片只是裡面的一張。而 sticky 找的是**最近的捲動祖
+       先**，於是它改黏到面板的捲動口上，也就是編輯區那一頭，整個離開卡片：
+       畫面上報頭消失、大標的第一行留在原位卻沒被畫出來（實測那一行的行框還
+       在 910,319，只是空的）。
+
+       黏在整條面板上也沒有意義——那條長帶上有兩張卡，報頭不屬於它。 */
 
     /* ── the galley face: a PAGE, not a stream ─────────────────────────
        Definite height ＋ `column-fill: auto` ＝ columns fill top-to-bottom

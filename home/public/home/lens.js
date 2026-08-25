@@ -145,8 +145,15 @@ const mountOne = ($host, { live }) => {
     // cx/cy are host-relative; the lens is positioned in the frame.
     const h = $host.getBoundingClientRect()
     const f = $frame.getBoundingClientRect()
-    $lens.style.insetInlineStart = `${h.left - f.left + cx}px`
-    $lens.style.insetBlockStart = `${h.top - f.top + cy}px`
+    /* …and the frame's own scroll offset, because an absolutely positioned
+       child of a SCROLL CONTAINER is placed in that container's scrolled
+       content, not against the box you can see. `f.left` is the visible edge,
+       so adding `scrollLeft` converts viewport space into content space. Zero
+       for a frame that doesn't scroll, so the formula is the same one — but it
+       stopped being zero the day the specimens became pannable strips, and the
+       circle then sat one scroll offset away from the pointer. */
+    $lens.style.insetInlineStart = `${h.left - f.left + $frame.scrollLeft + cx}px`
+    $lens.style.insetBlockStart = `${h.top - f.top + $frame.scrollTop + cy}px`
     $clone.style.transform =
       `translate(${lensSize / 2 - cx * zoom}px, ${lensSize / 2 - cy * zoom}px) scale(${zoom})`
   }
