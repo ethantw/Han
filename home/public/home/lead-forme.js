@@ -296,13 +296,13 @@ const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
   const c2 = add(c1, e2, sy);
   const c3 = add(O, e2, sy);
   const spec = PUNCT.has(char)
-    ? `<text class="lbl-var dtj dtj-serif" x="0" y="0" font-size="15" text-anchor="middle">Serif</text>
-       <text class="lbl-var dtj dtj-sans" x="0" y="0" font-size="15" text-anchor="middle">Sans</text>
-       <text class="lbl-sub" x="0" y="13" font-size="7.5" text-anchor="middle">Diantenjeom</text>`
+    ? `<text class="lbl-var dtj dtj-serif" x="0" y="0" font-size="16" text-anchor="middle">Serif</text>
+       <text class="lbl-var dtj dtj-sans" x="0" y="0" font-size="16" text-anchor="middle">Sans</text>
+       <text class="lbl-sub" x="0" y="13" font-size="8" text-anchor="middle">Diantenjeom</text>`
     : `<text class="lbl-num" x="0" y="0" font-size="20" text-anchor="middle">${SLICE[char]}</text>
-       <text class="nm nm-m" x="0" y="14" font-size="8.5" text-anchor="middle">尚古明體</text>
-       <text class="nm nm-h" x="0" y="14" font-size="8.5" text-anchor="middle">尚古黑體</text>
-       <text class="nm nm-k" x="0" y="14" font-size="8.5" text-anchor="middle">霞鶩文楷</text>`;
+       <text class="nm nm-m" x="0" y="14" font-size="8" text-anchor="middle">尚古明體</text>
+       <text class="nm nm-h" x="0" y="14" font-size="8" text-anchor="middle">尚古黑體</text>
+       <text class="nm nm-k" x="0" y="14" font-size="8" text-anchor="middle">霞鶩文楷</text>`;
   const faceLabel = (anchor, tx) =>
     `<g transform="matrix(${tx[0].toFixed(4)} ${tx[1].toFixed(4)} 0 1 ${anchor[0].toFixed(2)} ${(anchor[1] + H * 0.3).toFixed(2)})">${spec}</g>`;
   // FACE[1] (right, mid c1-c2) spans e2=sy → cramped to half on the squeezed 「;

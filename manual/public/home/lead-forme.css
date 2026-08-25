@@ -711,5 +711,5 @@
   line-height: 1.66667;
   color: var(--ui-supplement-text);
 
-  code { font-size: 0.875em; }
+  code { font-size: 0.75rem; }
 }

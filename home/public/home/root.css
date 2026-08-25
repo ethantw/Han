@@ -25,6 +25,14 @@
   color-scheme: dark;
 }
 
+/* 表單控件的字級要自己講。UA 的預設是 `13.3333px`（Chrome 對
+   input/button/select 的 -webkit-small-control 字身），落在 0.125rem 的刻度外
+   （SKILL § 13），而且與版面上任何一級都對不上——那不是設計選擇，是漏寫。
+   包 `:where()` 讓特異性歸零，任何一條自己指定過字級的規則都壓得過它。 */
+:where(input, button, select, textarea, optgroup, option) {
+  font-size: 0.875rem;
+}
+
 body.home {
   & {
     margin: 0;

@@ -382,7 +382,7 @@ figure.Papers {
     .ReaderWriting {
       padding: 0.25em 0.75em;
       color: var(--ui-supplement-text);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       background: none;
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
@@ -422,7 +422,7 @@ figure.Papers {
 
       p {
         margin: 0;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
         color: var(--ui-supplement-text);
       }
 
@@ -466,7 +466,7 @@ figure.Papers {
     .ReaderWriting {
       padding: 0.25em 0.75em;
       color: var(--ui-supplement-text);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       background: none;
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);

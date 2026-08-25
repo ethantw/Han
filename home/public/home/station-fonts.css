@@ -41,6 +41,8 @@
     h3 {
       margin-block: 2.5em 0;
       font-family: var(--han-sans);
+      /* 顯式指定，不吃 UA 的 `1.17em`——那個乘出來是 18.72px，落在刻度外。 */
+      font-size: 1.125rem;
       font-weight: 400;
     }
     h3 + p {

@@ -257,7 +257,7 @@
       /* The galley's two geometry numbers live here, on the common
          ancestor, because the lens is a SIBLING of the galley and sizes
          itself from the same two (see § the loupe). */
-      --pg-galley-fs: 0.5625rem;
+      --pg-galley-fs: 0.5rem;
       --pg-galley-col: 14;   /* column measure, in galley em */
       /* Both panes stand this tall — one token, so the editor and the sheet
          can never drift apart. Short of the full viewport on purpose: a pane
@@ -534,7 +534,7 @@
        included: they are part of the page being proofed).
 
        Only the two geometry tokens are the station's business. 1.75× lifts
-       the 9px galley to ~16px — reading size, the same ballpark as the
+       the 8px galley to ~16px — reading size, the same ballpark as the
        studio — and the diameter is 1.75 × the MAGNIFIED column, because a
        circle only offers its full width across the middle.
 

@@ -102,7 +102,10 @@
        （station-lines.css § div[role=presentation] 的 `--fs-bg-text`），
        而 `cqi` 在這裡會落到別的容器上（實測只給到 7rem 的下限）。
        1440px 下約 129px，與舊版（柱高的 0.693，約 142px）同一個級。 */
-    font-size: clamp(7rem, calc((100vw - var(--w-console)) / 9), 10rem);
+    /* 外面包一層 `round()`：`vw` 算出來的是任意小數（1440px 下 128.889px），
+       而每一個相異的字級都要 Blink 建一份 fallback list——刻度是
+       0.125rem（SKILL § 13），流體字級也照收。（round()：Baseline 2024） */
+    font-size: round(clamp(7rem, calc((100vw - var(--w-console)) / 9), 10rem), 0.125rem);
     line-height: 1;
     color: var(--df-face);
     -webkit-text-stroke: 0.5px var(--df-edge);

@@ -471,7 +471,7 @@
          **句數一改就要回來改這裡**：16 是八句，不是常數。 */
       @container (inline-size < 34rem) {
         & {
-          font-size: min(1.5rem, calc((100vw - 2 * var(--plate-pad) - 0.5rem) / 16));
+          font-size: round(min(1.5rem, calc((100vw - 2 * var(--plate-pad) - 0.5rem) / 16)), 0.125rem);
         }
       }
 
@@ -501,7 +501,7 @@
     address {
       & {
         position: relative;
-        font-size: .75em;
+        font-size: 0.75rem;
         /* 直排: the right-hand margin. 橫排: the space above. Either way,
            the room the label sits in. */
         padding-block-start: 1.5em;
@@ -600,7 +600,7 @@
 
       [data-mark] > text {
         font-family: var(--font-mono);
-        font-size: 7px;
+        font-size: 8px;
         fill: var(--ui-supplement-text);
         text-anchor: end;
       }
@@ -809,7 +809,7 @@
         font-family: 'Diantenjeom Serif MOE', var(--han-font-alternative), serif;
         /* sized to the mock characters — 書名號 is a character among
            characters, not a display ornament */
-        font-size: 13px;
+        font-size: 14px;
         fill: var(--ui-accent);
       }
 

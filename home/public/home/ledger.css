@@ -376,19 +376,19 @@
        to keep the column, the unit can have the margin. */
     .Unit {
       padding-inline: 0.25rem 0;
-      font-size: 0.75em;
+      font-size: 0.875rem;
     }
 
     /* which operand this row is */
     .Term {
       padding-inline-end: 1rem;
-      font-size: 0.875em;
+      font-size: 1rem;
     }
 
     /* the compression heads — the quietest row on the plate, told apart by
        ink rather than size (see the note on one size, above) */
     .Head {
-      font-size: 0.75em;
+      font-size: 0.875rem;
     }
 
     /* The answer: a rule across every column, then the total. Border on the

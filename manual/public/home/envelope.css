@@ -227,7 +227,7 @@
     /* 「鈞啓」 rides the same column, a size down */
     & [data-honorific] {
       margin-inline-start: 1.1em;
-      font-size: 0.625em;
+      font-size: 1rem;
       letter-spacing: .12em;
     }
   }
