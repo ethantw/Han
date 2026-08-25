@@ -299,6 +299,17 @@
       scroll-snap-type: none;
       scrollbar-width: none;
 
+      /* 兩側破出站台的裝訂線，工作區收在**網頁邊界**（與四語長帶同一組做法）：
+         平移到邊時卡片是在頁面邊緣被切斷的，而不是停在一道留白之前——留白會
+         讀成「排完了」，但它其實是捲的。
+
+         破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
+         **內側**，所以靜止時編輯區仍與正文對齊。`scroll-padding` 是第三件事，
+         少了它捲回開頭時編輯區會貼著視窗，與正文差一個裝訂線。 */
+      margin-inline: calc(-1 * var(--plate-pad));
+      padding-inline: var(--plate-pad);
+      scroll-padding-inline-start: var(--plate-pad);
+
       &::-webkit-scrollbar {
         display: none;
       }
