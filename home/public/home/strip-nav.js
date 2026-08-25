@@ -12,6 +12,16 @@
  * `[data-strip-nav="name"]` finds `[data-strip="name"]`. No-JS degrades to
  * what the markup already is: the strip still scrolls and snaps, and these
  * two buttons simply do nothing (they carry no href to break).
+ *
+ * `[data-strip-start="seam"]` parks the strip with the GAP between its two
+ * halves in the middle of the view, instead of at the start. One place wants
+ * that: two prose specimens that read OUTWARD from the seam (直排 by 右→左,
+ * 橫排 by 左→右), so the seam is where both first lines are.
+ *
+ * The seam, not the scroll range's midpoint: those coincide only when the two
+ * halves are equally wide, and these are not (measured 647 vs 768 — the range
+ * midpoint left the gap 68px off centre). Set on mount and on resize — never
+ * on scroll, or it would haul the reader back every time they moved.
  */
 
 /** How much of the visible run one press moves. */
@@ -19,6 +29,11 @@ const STEP = 1 / 3
 
 /* The strip's own writing mode decides which axis is "along the run":
    in 直排 the inline axis is the screen's vertical one. */
+/* 沿長帶行內軸的起點、終點與長度。 */
+const span = (rect, axis) => axis.key === 'top'
+  ? { start: rect.top, end: rect.bottom, size: rect.height }
+  : { start: rect.left, end: rect.right, size: rect.width }
+
 const axisOf = ($strip) =>
   getComputedStyle($strip).writingMode.startsWith('vertical')
     ? { pos: 'scrollTop', size: 'clientHeight', full: 'scrollHeight', key: 'top' }
@@ -59,9 +74,33 @@ const mount = ($nav) => {
     })
   }
 
+  const center = () => {
+    if ($strip.dataset.stripStart !== 'seam') return
+    const axis = axisOf($strip)
+    /* 依**視覺**順序取兩半，不是 DOM 順序：直排那張用 `order` 排到了前面。 */
+    const halves = [...$strip.children]
+      .map(($el) => span($el.getBoundingClientRect(), axis))
+      .sort((a, c) => a.start - c.start)
+    if (halves.length !== 2) return
+    const run = span($strip.getBoundingClientRect(), axis)
+    const seam = (halves[0].end + halves[1].start) / 2
+    /* `instant`：這是版面的起始位置，不是一次捲動。平滑捲會讓頁面自己動起來，
+       讀者會以為是他碰到了什麼。 */
+    $strip.scrollBy({ [axis.key]: seam - (run.start + run.size / 2), behavior: 'instant' })
+  }
+
   $strip.addEventListener('scroll', schedule, { passive: true })
-  addEventListener('resize', schedule, { passive: true })
+  addEventListener('resize', () => {
+    center()
+    schedule()
+  }, { passive: true })
+  center()
   sync()
+  /* 字型落地之後卡片會重排，掛載時對的縫就偏了（實測 14px）。等它一次。 */
+  document.fonts?.ready?.then(() => {
+    center()
+    sync()
+  })
 }
 
 export const initStripNav = () => {

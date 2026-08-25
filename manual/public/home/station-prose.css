@@ -64,17 +64,73 @@
   --lens-size: min(24rem, 85cqi);
 }
 
+/* 平移鈕，與四語長帶、遊樂場同一支模組、同一個角落。 */
+.ProseNav {
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
+  margin-block-start: 0.75rem;
+
+  button {
+    display: grid;
+    place-content: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    color: var(--ui-supplement-text);
+    background: var(--ui-supplement-bg);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  button:hover:not(:disabled) {
+    color: var(--ui-bg);
+    background: var(--ui-accent);
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  [data-scroll="next"] [data-icon] {
+    rotate: 180deg;
+  }
+}
+
 /* ─── Prose (running specimen copy — measure ~38em for readability) */
 
+/* 兩篇**並排成一條可以左右平移的長帶**（owner call）。8px 之下讀不了字，看的
+   是塊的節奏——段落間距、直橫排各自的紋理、行堆出來的灰度；這一站的展品本來
+   就是那個，不是字面。
+
+   直排在左、橫排在右，這個順序不是隨手排的：直排的行由**右**往左走，起點在
+   它的右緣；橫排的起點在左緣。於是兩篇的開頭都朝著中間那道 gap，而長帶的靜止
+   點就停在 gap 上（`strip-nav.js` 的 `data-strip-start="center"`）——一眼同時
+   落在兩篇的第一行，再往左右各自讀出去。
+
+   不吸附：這是連續的一片，不是一格一格。 */
 .Prose {
   & {
     display: flex;
     gap: 1rem;
-    justify-content: space-between;
     align-items: flex-start;
-    /* 並排要 96em；容器裝不下就疊起來，一張一行。用 `flex-wrap` 而不是斷點
-       ——主控台一收合內容欄就變寬，該不該並排是容器的事，不是視窗的事。 */
-    flex-wrap: wrap;
+
+    overflow-inline: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+
+    /* 兩側破出站台的裝訂線，長帶收在網頁邊界；內距把裝訂線補回捲動範圍內側。 */
+    margin-inline: calc(-1 * var(--plate-pad));
+    padding-inline: var(--plate-pad);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
     /* the loupes are absolute siblings of the two cards, so this is the box
        they anchor in */
     position: relative;
@@ -115,17 +171,31 @@ article.Dispatch {
   & {
     --size: 24em;
     padding: 1em 1.5em;
-    inline-size: calc(var(--size) * 2);
-    column-count: 2;
+    /* 8px 之下一張卡要撐出「一整頁」的感覺，靠的是**欄數**不是行長：欄長
+       維持 24em（約二十四字），多給幾欄，整篇的形狀才看得出來，也才有東西
+       可以平移。 */
+    inline-size: calc(var(--size) * 4);
+    column-count: 4;
     column-gap: 2em;
     font-family: var(--han-font-alternative);
-    font-size: .75rem;
+    /* 8px：小到讀不了，正好看得見整篇的形狀。 */
+    font-size: .5rem;
+    flex: none;
     background: var(--ui-bg);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
   }
   &.vertical {
     writing-mode: vertical-rl;
+    /* 直排在左：它的起點在右緣，朝著中間那道 gap。 */
+    order: -1;
+
+    /* 直排的 `inline-size` 是**欄長**，也就是這張卡在畫面上的高；欄沿行內軸
+       （縱向）疊，所以卡的寬 ＝ 內容長度 ÷ 欄數。換句話說，這裡的欄數與橫排那
+       張的意義相反：橫排多給欄就變寬，直排多給欄反而變窄。全文夠長，三欄仍
+       撐得出平移的餘裕。 */
+    inline-size: calc(var(--size) * 3);
+    column-count: 3;
   }
 
   /* 疊起來之後各吃滿一行——但兩張卡的軸向相反，一條規則服務不了兩個行向。
