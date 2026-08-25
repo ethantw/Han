@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css — per-language font slots fixture</title>
+<link rel="stylesheet" href="/dist/han.css">
+<style>
+  body { margin: 2rem; }
+  /* The heritage webfont is ON for zh-Hant by default and OFF for the other
+     three — so this page is exactly the shape that leaked: foreign-language
+     copy nested inside a Traditional Chinese document. */
+</style>
+</head>
+<body>
+<p id="hant" lang="zh-Hant">漢字直骨</p>
+<p id="hans" lang="zh-Hans">汉字直骨</p>
+<p id="ja" lang="ja">漢字の直骨</p>
+<p id="ko" lang="ko">漢字의 直骨</p>
+</body>
+</html>

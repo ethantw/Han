@@ -387,6 +387,30 @@
   }
 }
 
+/* `off` has to be WRITTEN OUT, for every locale — leaving it to "no block
+ * matches" was a leak. The slots are inherited custom properties, so a
+ * `:lang(ja)` subtree inside a `:lang(zh-Hant)` document does not fall back
+ * to its own `initial` when its own mode is off: it inherits whatever the
+ * ancestor's block resolved, i.e. the TC heritage stack. Measured on a
+ * zh-Hant page with the four-language specimen: the ja copy rendered 112
+ * glyphs in Shanggu Sans and the ko copy 35 — the exact glyph forms the
+ * mode-property doc above says are wrong for those languages (骨・直・漢),
+ * with every locale's own system font sitting unused behind them. The
+ * ancestor's tail is the fingerprint: `Hiragino Sans GB` only ever appears
+ * in the hant blocks.
+ *
+ * `initial` (not `revert`/`unset`) resets a registered property to the
+ * HanNone sentinel — see the slot-registration doc above — which is what
+ * "no heritage layer" means: the composite keeps resolving, and font
+ * matching falls through to the generic, i.e. the reader's own CJK system
+ * font for that language. */
+@container style(--han-use-heritage-glyphs-for-hant: off) {
+  :where(:lang(zh-Hant)) {
+    --han-font-cjk-sans: initial;
+    --han-font-cjk-serif: initial;
+  }
+}
+
 /* Simplified Chinese / Japanese / Korean heritage layer (default off →
  * no block matches → CJK slots stay HanNone → generic → OS font). `webfont`
  * puts the heritage face first, then that locale's own system fonts as the
@@ -405,6 +429,13 @@
   }
 }
 
+@container style(--han-use-heritage-glyphs-for-hans: off) {
+  :where(:lang(zh-Hans)) {
+    --han-font-cjk-sans: initial;
+    --han-font-cjk-serif: initial;
+  }
+}
+
 @container style(--han-use-heritage-glyphs-for-ja: webfont) {
   :where(:lang(ja)) {
     --han-font-cjk-sans:
@@ -418,6 +449,13 @@
   }
 }
 
+@container style(--han-use-heritage-glyphs-for-ja: off) {
+  :where(:lang(ja)) {
+    --han-font-cjk-sans: initial;
+    --han-font-cjk-serif: initial;
+  }
+}
+
 @container style(--han-use-heritage-glyphs-for-ko: webfont) {
   :where(:lang(ko)) {
     --han-font-cjk-sans:
@@ -428,6 +466,13 @@
       var(--han-webfont-heritage-glyphs-serif),
       'Apple Myungjo', 'Batang', 'Noto Serif CJK KR'
     ;
+  }
+}
+
+@container style(--han-use-heritage-glyphs-for-ko: off) {
+  :where(:lang(ko)) {
+    --han-font-cjk-sans: initial;
+    --han-font-cjk-serif: initial;
   }
 }
 
@@ -446,6 +491,12 @@
   :where(:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
   }
+  /* Korean has no cursive layer of its own (KLReq wants none), so without
+     this it inherits the zh stack from an ancestor — same leak as the
+     heritage slots above. */
+  :where(:lang(ko)) {
+    --han-font-cjk-cursive: initial;
+  }
 }
 
 @container style(--han-use-cursive: system) {
@@ -461,6 +512,12 @@
   }
   :where(:lang(ja)) {
     --han-font-cjk-cursive: Klee, 'Klee One';
+  }
+  /* Korean has no cursive layer of its own (KLReq wants none), so without
+     this it inherits the zh stack from an ancestor — same leak as the
+     heritage slots above. */
+  :where(:lang(ko)) {
+    --han-font-cjk-cursive: initial;
   }
 }
 
