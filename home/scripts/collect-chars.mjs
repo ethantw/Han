@@ -96,6 +96,22 @@ const collect = async () => {
   })
   await page.waitForTimeout(1500)
 
+  /* 把 `<template>` 裡的續版先建出來：四份全文平常不在文件樹裡（見
+     `paper-reader.js` 的 `hydrate()`），不建的話字表會漏掉它們的字——而讀者
+     一打開那些字就要排出來，漏了就掉系統字。這一步只影響收字，不影響頁面
+     怎麼跑。 */
+  const hydrated = await page.evaluate(() => {
+    let n = 0
+    for (const $t of document.querySelectorAll('dialog > template[data-reader-sheet]')) {
+      $t.parentElement.append($t.content)
+      $t.remove()
+      n++
+    }
+    return n
+  })
+  if (hydrated) console.log(`（先實例化 ${hydrated} 份 <template> 續版，否則字表會漏掉它們的字）`)
+  await page.waitForTimeout(800)
+
   const result = await page.evaluate(({ FAMILIES, wantedSrc }) => {
     const wanted = new Function('cp', `return (${wantedSrc})(cp)`)
     const bags = {}
