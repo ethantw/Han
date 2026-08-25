@@ -45,7 +45,11 @@ body.home {
   }
 
   a { color: inherit; text-decoration: none; }
-  img, svg { display: block; max-width: 100%; }
+  /* `:where()` 而不是裸選擇器：這是一條 reset，它的職責是「給個合理的預設」，
+     不是「壓過後面的規則」。裸寫的話它是 (0,1,2)，比任何 `.Class svg` 都硬——
+     鉛字盤要讓圖溢出父盒時就被它擋住（實測寬度卡在父盒的 1099）。歸零之後
+     任何一條作者規則都蓋得過它，這才是 reset 該有的行為。 */
+  :where(img, svg) { display: block; max-width: 100%; }
 }
 
 /* ─── Topbar ─────────────────────────────────────────────────────── */
