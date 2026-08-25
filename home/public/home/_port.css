@@ -63,3 +63,64 @@
     font-family: var(--han-sans);
   }
 }
+
+
+/* ── 首頁專用的字體子集 ────────────────────────────────────────────
+   han.css 的三個 swap 槽位改指子集，而不是 ziano 的完整切片套件。
+
+   為什麼：Blink 為每一種**字體描述**（字族串 × 字級 × 字重 × 字形）建一份
+   fallback list，字族串裡每一族的每一條 `@font-face` 都要列進去。ziano 的
+   套件各切 109 片是為了讓讀者只下載碰到的桶——對任意文字是對的取捨，對
+   字集已知的一頁是錯的：實測這一頁 121 種描述、兩族各 109 片，樣式記憶體
+   406 MB；兩族各併成 1 片是 334 MB。而宣告本身幾乎不花錢（229 條 face
+   ＋5 MB），下載更是無關（把所有 woff2 攔掉，記憶體不變）。
+
+   所以完整套件留在頁面上沒有代價，**只要沒有任何字族串點名它**。遊樂場的
+   UGC 仍然需要它（見 station-playground 的 `data-pg-fonts`）。
+
+   子集怎麼來：`home/scripts/collect-chars.mjs` 渲染頁面讀回實際排出來的字，
+   `home/scripts/build-subsets.mjs` 叫 ziano 的 `pagesubset` 切出來。字族名
+   與 ziano 的任何套件都不同名——同名會合併成一族，省的全還回去。 */
+
+:root {
+  --han-webfont-heritage-glyphs-sans: 'Han Home Sans';
+  --han-webfont-heritage-glyphs-serif: 'Han Home Serif';
+  --han-webfont-cursive-hant: 'Han Home Kai';
+}
+
+/* 行書堆疊要整條換掉，不能只換 swap 槽位：han.fonts.css 的 `:lang(zh)` 行書
+   堆疊在 `--han-webfont-cursive-hant` 之後**寫死了 `'Klee One'`**，那是另一個
+   240 片的 ziano 套件，於是那幾種描述照樣要列 240 條 face。實測它一個字都沒
+   畫（CDP 問過實際畫字的字體：霞鶩文楷 TC 畫掉全部，Klee One 零），因為它只是
+   前者缺字時的後備——而子集的覆蓋率是建置時就驗過的，本來就不會缺。
+
+   包在同一個 `@container` 條件裡，而不是無條件覆寫：讀者在主控台把行書關成
+   `off` 時，han.css 那條 `off` 區塊在來源順序上排在這一份前面，無條件的覆寫
+   會把 webfont 硬拉回來。 */
+@container style(--han-use-cursive: webfont) {
+  :where(:lang(zh)) {
+    --han-font-cjk-cursive:
+      'Han Home Kai',
+      Klee,
+      BiauKai, DFKai-SB, 'Kaiti TC',
+      'Hiragino Mincho ProN', 'Yu Mincho'
+    ;
+  }
+}
+
+/* 鉛字盤的字面：`lead-forme.css` 直接點名三個完整字族（那一站是字體樣張，
+   點名是它的本意）。子集畫的是同一批輪廓——同一個來源、同一次 `subset` 出來
+   的字形——所以換過來畫面不變，而那幾種描述就不必再列 500 多條 face。
+   `:where()` 保持零特異性，與原規則同級，靠來源順序取勝。 */
+:where(.LeadForme[data-face='m']) text.g { font-family: var(--dtj-serif), 'Han Home Serif', serif; }
+:where(.LeadForme[data-face='h']) text.g { font-family: var(--dtj-sans), 'Han Home Sans', sans-serif; }
+:where(.LeadForme[data-face='k']) text.g { font-family: var(--dtj-serif), 'Han Home Kai', cursive, serif; }
+
+/* 讀者在遊樂場打出子集沒有的字時，`_boot.js` 蓋上這顆屬性，那一子樹的槽位
+   換回 ziano 的完整切片。只有真的在編輯的讀者付這筆帳（那一子樹的字體描述
+   會開始列 109 片）；其餘讀者連這幾條 `@font-face` 都只是躺著，不花錢。 */
+#station-playground[data-pg-fonts='ziano'] {
+  --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans Yue';
+  --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif Yue';
+  --han-webfont-cursive-hant: 'LXGW WenKai TC';
+}

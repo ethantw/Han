@@ -35,6 +35,38 @@ const serveLibrary = (server) => {
   })
 }
 
+/**
+ * `/subset/*` — 首頁專用的字體子集，直接從 `home/.fonts/` 送。
+ *
+ * 理由同 `/han/*`：那是 `home/scripts/build-subsets.mjs` 叫 ziano 產的東西，
+ * 複製進 `public/` 等於把別的 repo 的建置產物提交進版本控制，而且會與 ziano
+ * 的字體版本悄悄分岔。路徑是 `<id>/<file>`，兩段都用 `path.basename` 切掉任何
+ * 穿越，副檔名走同一張白名單（`.css` 與 `.woff2` 都在裡面）。
+ */
+const serveSubsets = (server) => {
+  const dir = path.resolve(here, '.fonts')
+  server.middlewares.use('/subset', (req, res, next) => {
+    const parts = (req.url?.split('?')[0] ?? '').split('/').filter(Boolean)
+    if (parts.length < 2) return next()
+    const name = path.basename(parts.at(-1))
+    const pkg = path.basename(parts[0])
+    const type = TYPES[path.extname(name)]
+    /* 套件裡的 woff2 住在 `files/` 底下，CSS 在根；兩層都只有這兩種形狀。 */
+    const file = parts.length > 2
+      ? path.join(dir, pkg, 'files', name)
+      : path.join(dir, pkg, name)
+    if (!type || !fs.existsSync(file)) return next()
+    res.setHeader('Content-Type', type)
+    fs.createReadStream(file).pipe(res)
+  })
+}
+
+const subsets = () => ({
+  name: 'han-font-subsets',
+  configureServer: serveSubsets,
+  configurePreviewServer: serveSubsets,
+})
+
 const hanLibrary = () => ({
   name: 'han-library',
   configureServer: serveLibrary,
@@ -83,7 +115,7 @@ const vendor = () => ({
  * 搬過來不必改一個字。
  */
 export default defineConfig({
-  plugins: [hanLibrary(), vendor()],
+  plugins: [hanLibrary(), subsets(), vendor()],
   server: {
     port: 7770,
     strictPort: true,

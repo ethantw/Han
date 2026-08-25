@@ -106,6 +106,16 @@ html = html.replace(/[ \t]*<script(?![^>]*type="text\/x-i18n")[\s\S]*?<\/script>
  * **不掛 `han.auto.js`**：回落層由主控台呼叫 `installFallbacks`，讀者的
  * 「JS 後備」開關才算話（`console-config.js` 的 applyFallbacks 就是那條路，
  * 它自己 `import('/han/han.js')`）。auto 版會在元件之外先套一次，兩邊打架。 */
+/* 首頁專用字體子集的三份 CSS。掛 `data-han-webfont` 與 CDN 那幾份同列，讀者
+ * 在主控台關掉 webfont 時一起停用（`console-config.js` 靠這個屬性）。
+ * 由 `home/scripts/build-subsets.mjs` 產在 `home/.fonts/`，`vite.config.js`
+ * 的 `/subset/*` 中介層直接餵——產物不進版控，理由同 `/han/*`。 */
+html = html.replace('</head>', [
+  ...['shanggu-serif', 'shanggu-sans', 'lxgw-wenkai-tc'].map((id) =>
+    `<link rel="stylesheet" href="/subset/${id}-han-home/swap.css" data-han-webfont>`),
+  '</head>',
+].join('\n'))
+
 html = html.replace('</head>', [
   '<script>document.documentElement.dataset.fontsGate = \'loading\'</script>',
   '<script type="module" src="/home/fonts-gate.js"></script>',
