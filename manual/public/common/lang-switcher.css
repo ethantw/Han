@@ -50,14 +50,14 @@
       [data-glyph="la"] {
         font-family: var(--han-font-latin-sans), sans-serif;
         font-weight: 600;
-        font-size: 0.85em;
+        font-size: 0.875em;
         transform: translateY(3px);
       }
     }
 
     /* 圖標盒是實打實的 1em 方塊，不像 ▾ 字符只佔字面的一小塊——
        0.5rem 的字級換成圖標會大一圈，改用 0.7rem 才是原來的視覺量。 */
-    [data-part="caret"] { font-size: 0.7rem; color: var(--ui-supplement-text-2q); }
+    [data-part="caret"] { font-size: 0.75rem; color: var(--ui-supplement-text-2q); }
   }
 
   > ul {
@@ -105,7 +105,7 @@
       padding: 0.5rem 0.875rem;
       text-align: start;
       font-family: var(--han-font-default);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       color: var(--ui-text);
 
       &:hover     { background: var(--ui-panel); }
@@ -126,7 +126,7 @@
         gap: 1px;
       }
 
-      [data-part="full"]  { color: var(--ui-text); font-size: 0.8125rem; }
+      [data-part="full"]  { color: var(--ui-text); font-size: 0.875rem; }
       [data-part="code"]  { font-family: var(--font-mono); font-size: 0.625rem; color: var(--ui-supplement-text-2q); letter-spacing: 0.05em; }
       [data-part="check"] { color: var(--ui-accent); font-size: 0.75rem; }
     }

@@ -220,14 +220,14 @@
     & [data-name] {
       margin-block-start: 1.2em;
       padding-inline-start: 2.2em;
-      font-size: 1.6rem;
+      font-size: 1.625rem;
       letter-spacing: .1em;
     }
 
     /* 「鈞啓」 rides the same column, a size down */
     & [data-honorific] {
       margin-inline-start: 1.1em;
-      font-size: .58em;
+      font-size: 0.625em;
       letter-spacing: .12em;
     }
   }

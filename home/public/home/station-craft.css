@@ -35,7 +35,7 @@
 
   code {
     font-family: var(--font-mono);
-    font-size: 0.85em;
+    font-size: 0.875em;
   }
 }
 
@@ -186,14 +186,14 @@
   .Code,
   code {
     font-family: var(--font-mono);
-    font-size: 0.8em;
+    font-size: 0.75em;
     color: var(--ui-text);
   }
 
   /* bound variables: MathML already italicises a single-char `<mi>`, so this
      only sets the size relationship the surrounding CJK needs */
   mi {
-    font-size: 0.95em;
+    font-size: 1em;
   }
 
   /* CJK runs inside the maths — upright, never the italic `<mi>` default */
@@ -205,7 +205,7 @@
      reading face gives them, and at body scale ≻ reads as a stray `>`. */
   mo {
     margin-inline: 0.5rem;
-    font-size: 0.9em;
+    font-size: 0.875em;
     color: var(--ui-supplement-text);
   }
 
@@ -383,7 +383,7 @@
       padding: 0;
       background: none;
       border: 0;
-      font-size: 0.9em;
+      font-size: 0.875em;
     }
   }
 

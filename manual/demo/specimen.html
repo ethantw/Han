@@ -68,9 +68,9 @@
   :root:not([data-han-ssr='request']) [data-ssr-mode='request'],
   :root:not([data-han-ssr='build']) [data-ssr-mode='build'] { display: none; }
 
-  /* 兩端對齊。han 的 prose 本來只把 <article> 裡的 <p> 兩端對齊
-     （--han-prose-alignment-for-article-p），這顆開關把整份內容一起拉齊，
-     好看行尾懸掛與擠壓在對齊壓力下的表現。預設不勾。 */
+  /* 兩端對齊。han.css 自己不設 text-align——齊行與否是各站的美術決定。
+     這顆開關把整份內容拉齊，好看行尾懸掛與擠壓在對齊壓力下的表現。
+     預設不勾。 */
   :root[data-demo-justify] main { text-align: justify; }
 
   /* 行長，自成一顆開關——與結構標註分家：一個是「看骨架」，一個是

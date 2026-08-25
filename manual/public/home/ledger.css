@@ -157,7 +157,7 @@
      magnitudes stack into columns you can read down. */
   td {
     font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-variant-numeric: tabular-nums lining-nums;
     color: var(--ui-accent);
     text-align: end;
@@ -234,7 +234,7 @@
   &.Sum tbody th {
     & {
       font-family: var(--font-mono);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
     }
 
     /* The whole name is the hit area — a bare 13px box is a poor target and
@@ -376,19 +376,19 @@
        to keep the column, the unit can have the margin. */
     .Unit {
       padding-inline: 0.25rem 0;
-      font-size: 0.7em;
+      font-size: 0.75em;
     }
 
     /* which operand this row is */
     .Term {
       padding-inline-end: 1rem;
-      font-size: 0.85em;
+      font-size: 0.875em;
     }
 
     /* the compression heads — the quietest row on the plate, told apart by
        ink rather than size (see the note on one size, above) */
     .Head {
-      font-size: 0.8em;
+      font-size: 0.75em;
     }
 
     /* The answer: a rule across every column, then the total. Border on the

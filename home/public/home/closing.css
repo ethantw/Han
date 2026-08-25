@@ -50,7 +50,7 @@
 
     a {
       padding-block-end: 1px;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       border-block-end: 1px solid var(--ui-rule);
 
       &:hover { color: var(--ui-accent); border-block-end-color: var(--ui-accent); }

@@ -29,8 +29,8 @@ v3的樣式要先用Sass把`$han-*`變量編譯成CSS；語意與段落層CSS即
 | `$han-text-emphasis-mark: circle` | `--han-em-symbol: circle` | 直接吃`text-emphasis`合法值 |
 | `$han-text-emphasis-posi: under`（`-ja: over`） | `--han-em-dot-position: under right` | 日文自動`over right` |
 | `$han-text-emphasis-shape` / `-skip` | —（併入上者／交原生） | `filled`/`open`折進符號值 |
-| `$han-indent: 2em` | `--han-prose-indent: 2em` | |
-| `$han-article-justify: true` | `--han-prose-alignment-for-article-p: justify` | 關＝`start` |
+| `$han-indent: 2em` | `--han-structural-indent: 2em` | 移入`han-semantics`，凡中日韓容器皆套，不再限`<article>` |
+| `$han-article-justify: true` | 無對應 | v4不設`text-align`；要齊行請自行在容器上寫 |
 | `$han-hanging-hant/hans/ja`（布林） | `--han-punctuation-refinement: auto` | 不再逐語言布林；改自動判準（見[行的調整](./lines.html)） |
 | `$han-biaodian-hant: CNS` / `-hans: GB` | `--han-punctuation-hant/hans/ja: MOE｜GB｜JIS｜off` | CNS≈MOE |
 | `$han-glyph-set-hant: default` | `--han-use-heritage-glyphs-for-hant: webfont｜system｜off` | |

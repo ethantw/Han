@@ -1195,14 +1195,14 @@ export default defineConfig({
   plugins: [hanManualPlugin()],
   appType: 'mpa',
   server: {
-    port: 7776,
+    port: 7700,
     hmr: false,
     fs: {
       allow: [path.resolve(here, '..')],
     },
   },
   // `vite preview` serves the built output — same port story.
-  preview: { port: 7777 },
+  preview: { port: 7700 },
   build: {
     outDir: path.resolve(here, 'dist'),
     emptyOutDir: true,

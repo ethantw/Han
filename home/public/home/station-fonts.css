@@ -412,12 +412,12 @@
     align-items: center;
     gap: 0.4rem;
     color: var(--ui-supplement-text);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   /* 盒的長相交給 common/controls.css § Customizable <select>；這裡只留
      這一格自己要的字級。 */
   select {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   figcaption {
     margin-inline-start: auto;

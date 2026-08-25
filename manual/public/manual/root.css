@@ -118,7 +118,7 @@ body.ManualPage {
     @media (min-width: 78em) {
       & {
         padding-inline-start: 0;
-        transition: .25s padding-inline-start ease-out;
+        /* transition: .125s padding-inline-start ease-out; */
       }
       &:has(.ConsoleToggle input:checked) {
         padding-inline-start: var(--w-console);
@@ -157,7 +157,7 @@ han-console:not(:defined) { visibility: hidden; }
     overflow-y: auto;
     background: var(--paper);
     border-inline-end: 1px solid var(--rule);
-    transition: .25s inset-inline-start ease-out;
+    /* transition: .125s inset-inline-start ease-out; */
   }
   body.ManualPage:has(.ConsoleToggle input:checked) han-console {
     inset-inline-start: 0;
@@ -172,7 +172,7 @@ han-console:not(:defined) { visibility: hidden; }
     max-block-size: 0;
     overflow: hidden;
     background: color-mix(in srgb, var(--paper) 92%, transparent);
-    transition: max-block-size 260ms ease;
+    /* transition: .125s max-block-size ease-out; */
   }
   body.ManualPage:has(.ConsoleToggle input:checked) han-console {
     max-block-size: min(60vh, 32rem);

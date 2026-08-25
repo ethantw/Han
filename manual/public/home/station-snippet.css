@@ -147,7 +147,7 @@ figure.CodePane {
     text-align: start;
     padding: 4px 16px 14px;
     background: transparent;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     line-height: 1.55;
     color: var(--code-fg);
   }
