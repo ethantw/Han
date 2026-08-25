@@ -59,6 +59,20 @@ jobs:
         env:
           CI: 'true'
 
+      # 首頁的字體子集只裝這一頁排得出來的字。字表落後於頁面時，多出來的字會
+      # 安靜地掉到系統字——畫面不會壞，只是傳承字形裡混進一個蘋方。安靜的失敗
+      # 要用閘門擋。這一關只驗「字表跟得上頁面」；另一半「字體蓋得住字表」由
+      # ziano 建置時的 --require-full-coverage 保證，所以這裡不必有字體檔，也
+      # 不必有 ziano。
+      - name: Home font-subset charset is up to date
+        run: |
+          pnpm --filter han-home exec vite --port 7770 --strictPort &
+          for i in $(seq 60); do
+            curl -sf -o /dev/null http://localhost:7770/ && break
+            sleep 1
+          done
+          node home/scripts/collect-chars.mjs --check
+
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4

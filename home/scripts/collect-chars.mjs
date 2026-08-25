@@ -17,28 +17,53 @@
  * 字族的用法裡，有 11 種出現在遊樂場）。讀者不打字就永遠不必載。
  * 統計欄位保留「只在遊樂場出現」的數字，因為那正是這個決定多付的字數。
  *
- * 用法：`node home/scripts/collect-chars.mjs [http://localhost:7770/]`
- * 產出：`home/chars/<family-id>.txt`（NFC、去重、按碼位排序，一行一字）
+ * 兩種模式：
+ *   `node home/scripts/collect-chars.mjs [url]`          → 寫出字表
+ *   `node home/scripts/collect-chars.mjs --check [url]`  → 只比對，落後就 exit 1
+ *
+ * `--check` 是 CI 的閘門，守的是「字表跟得上頁面」。另一半——「字體蓋得住
+ * 字表」——由 ziano 的 `--require-full-coverage` 在建置時保證，所以這一支不需要
+ * 字體檔，也不需要 ziano，在 CI 裡就跑得動。漏掉一個字不會壞畫面，只會安靜地
+ * 變成系統字混在傳承字形裡，所以要用閘門而不是提醒。
+ *
+ * 產出：`home/chars/<family-id>.txt`（去重、按碼位排序，一行一字）
  */
 import { chromium } from '@playwright/test'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
-const URL_ = process.argv[2] ?? 'http://localhost:7770/'
+const CHECK = process.argv.includes('--check')
+const URL_ = process.argv.find((a) => a.startsWith('http')) ?? 'http://localhost:7770/'
 const OUT = 'home/chars'
 
 /* 要收的字族，以及輸出的檔名。鍵是 `font-family` 字串裡出現的名字（子字串
    比對），所以 `Shanggu Serif` 不會誤中 `Shanggu Serif Yue`——後者本來就該
    一起進同一份子集，因為它們是同一族的兩個變體。 */
+/* 兩組名字都要認：頁面接上子集之後，計算出來的字族串寫的是子集的名字；
+   而遊樂場切回完整切片、或這一支在還沒接子集的環境跑時，寫的是 ziano 的
+   名字。兩者對同一份字表。 */
 const FAMILIES = {
   'Shanggu Serif': 'shanggu-serif',
+  'Han Home Serif': 'shanggu-serif',
   'Shanggu Sans': 'shanggu-sans',
+  'Han Home Sans': 'shanggu-sans',
   'LXGW WenKai TC': 'lxgw-wenkai-tc',
+  'Han Home Kai': 'lxgw-wenkai-tc',
   'Klee One': 'klee-one',
 }
 
 /* 只收字體真的要畫的東西：漢字、假名、諺文、注音、以及全形標點與符號。
-   拉丁與數字交給堆疊前面的西文字體，但**全形**數字與字母要收（樣張裡有）。 */
+   拉丁與數字交給堆疊前面的西文字體，但**全形**數字與字母要收（樣張裡有）。
+
+   空白一律不收——U+3000 全形空格首當其衝。它在管線兩端都會被當成空白剝掉
+   （JS 的 `\s` 與 Python 的 `str.isspace()` 都認它），所以字表根本留不住它；
+   而它缺了也無害：任何 CJK 字體給的都是同一個 1em 空白。與其讓它在管線裡被
+   靜靜吃掉、每次比對都報一次「字表落後」，不如在這裡明講它不收。
+
+   這支函式**必須自給自足**：它是用 `toString()` 送進頁面重建的，引用外面的
+   任何東西在那邊都是 ReferenceError。所以空白的判斷內聯在這裡。 */
 const wanted = (cp) =>
+  !(cp === 0x3000 || cp === 0x0020 || cp === 0x00a0 || (cp >= 0x2000 && cp <= 0x200f))
+  && (
   (cp >= 0x2e80 && cp <= 0x2fff)      // 部首補充・康熙部首・表意文字描述符
   || (cp >= 0x3000 && cp <= 0x303f)   // CJK 標點
   || (cp >= 0x3040 && cp <= 0x30ff)   // 假名
@@ -52,6 +77,7 @@ const wanted = (cp) =>
   || (cp >= 0xfe10 && cp <= 0xfe4f)   // 直排標點・相容形式
   || (cp >= 0xff00 && cp <= 0xffef)   // 全形
   || (cp >= 0x20000 && cp <= 0x3ffff) // 擴充 B 以上
+)
 
 const collect = async () => {
   const browser = await chromium.launch()
@@ -125,6 +151,28 @@ const collect = async () => {
 const BYTES_PER_CHAR = 476 // ziano 切片抽樣六片實測（382,484 B / 804 字）
 
 const result = await collect()
+
+if (CHECK) {
+  let stale = false
+  for (const [id, { chars }] of Object.entries(result)) {
+    const path = `${OUT}/${id}.txt`
+    const committed = new Set(existsSync(path) ? readFileSync(path, 'utf8').replace(/\s/g, '') : '')
+    const extra = [...chars].filter((ch) => !committed.has(ch))
+    if (!extra.length) {
+      console.log(`${id.padEnd(16)} ✓ ${chars.length} 字都在字表裡`)
+      continue
+    }
+    stale = true
+    console.log(`${id.padEnd(16)} ✗ 字表少了 ${extra.length} 個字：${extra.join('')}`)
+  }
+  if (stale) {
+    console.log('\n字表落後於頁面。跑 `node home/scripts/collect-chars.mjs` 重收，'
+      + '再跑 `node home/scripts/build-subsets.mjs` 重建子集。')
+    process.exit(1)
+  }
+  process.exit(0)
+}
+
 mkdirSync(OUT, { recursive: true })
 for (const [id, { chars, playgroundOnly }] of Object.entries(result)) {
   writeFileSync(`${OUT}/${id}.txt`, `${chars}\n`)
