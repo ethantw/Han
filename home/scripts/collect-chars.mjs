@@ -11,8 +11,11 @@
  * 它有沒有被那一族排過。繁中頁的日韓簡報導走系統字（han.fonts.css 的語言閘），
  * 所以它們的字**不該**進尚古的子集。
  *
- * 遊樂場另計：那一站的內容是 UGC，字表沒有意義，它留給完整的 ziano。所以
- * 「只在遊樂場出現過」的字不進子集。
+ * 遊樂場的**預設稿**照收，UGC 才留給 ziano。理由是那一站載入時排的就是預設
+ * 稿——把它併進子集，ziano 的切片就可以延後到「讀者打出子集沒有的字」才載，
+ * 於是載入當下沒有任何一種字體用法點名那 109 片（實測：全頁 66 種點名切片
+ * 字族的用法裡，有 11 種出現在遊樂場）。讀者不打字就永遠不必載。
+ * 統計欄位保留「只在遊樂場出現」的數字，因為那正是這個決定多付的字數。
  *
  * 用法：`node home/scripts/collect-chars.mjs [http://localhost:7770/]`
  * 產出：`home/chars/<family-id>.txt`（NFC、去重、按碼位排序，一行一字）
@@ -88,6 +91,7 @@ const collect = async () => {
         const style = getComputedStyle($el)
         const ids = idsFor(style.fontFamily ?? '')
         if (!ids.length) continue
+        /* 預設稿也收（見檔頭）。這個旗標只用來統計「多付了幾個字」。 */
         const pg = inPlayground || !!$el.closest?.('#station-playground')
         /* 只吃自己的文字節點，不吃 textContent——後者會把後代的字算進祖先的
            字族，而後代往往是別的字族。 */
@@ -105,8 +109,9 @@ const collect = async () => {
     const out = {}
     for (const [id, bag] of Object.entries(bags)) {
       const only = [...bag.pgOnly].filter((ch) => !bag.all.has(ch))
+      const merged = new Set([...bag.all, ...bag.pgOnly])
       out[id] = {
-        chars: [...bag.all].sort((a, c) => a.codePointAt(0) - c.codePointAt(0)).join(''),
+        chars: [...merged].sort((a, c) => a.codePointAt(0) - c.codePointAt(0)).join(''),
         playgroundOnly: only.length,
       }
     }
@@ -126,6 +131,6 @@ for (const [id, { chars, playgroundOnly }] of Object.entries(result)) {
   const kb = Math.round((chars.length * BYTES_PER_CHAR) / 1024)
   console.log(
     `${id.padEnd(16)} ${String(chars.length).padStart(5)} 字  約 ${String(kb).padStart(4)} KB`
-    + `  （另有 ${playgroundOnly} 字只在遊樂場出現，留給 ziano）`,
+    + `  （其中 ${playgroundOnly} 字只出現在遊樂場的預設稿）`,
   )
 }
