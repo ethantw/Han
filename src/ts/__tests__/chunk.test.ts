@@ -100,6 +100,30 @@ test('source comments between sections do not make a layer indivisible', () => {
   assert.ok(seen.every((chunk) => chunk.tagName === 'SECTION'))
 })
 
+test('an oversized svg is skipped, not descended into', () => {
+  // 分塊只在「這棵太大」時才下探，所以這個洞要一棵夠大的 svg 才看得見：
+  // 切點一旦落在 <svg> **裡面**，pass 的 ignore 就再也遇不到那顆 <svg>，
+  // 標點被包成 <h-char>，而 SVG 不畫未知子元素——圖上的標點直接消失。
+  // （首頁站②的鉛字盤就是這樣掉了一顆逗號。）
+  const slug = '<g><text>，</text></g>'
+  const el = element(`<main><svg>${slug.repeat(CHUNK_NODE_LIMIT)}</svg></main>`)
+  const seen: Element[] = []
+  forEachChunk(el, (chunk) => seen.push(chunk))
+  assert.equal(seen.length, 0)
+})
+
+test('installFallbacks writes no wrapper into an oversized svg', () => {
+  const slug = '<g><text>，</text></g>'
+  const out = html(installFallbacks(
+    `<main><p>句。</p><svg>${slug.repeat(CHUNK_NODE_LIMIT)}</svg></main>`,
+  ))
+  // 段落照排（證明整趟真的跑了），svg 裡一顆包裹都不許有。
+  assert.match(out, /<h-layer>。<\/h-layer>/)
+  const svg = out.slice(out.indexOf('<svg'))
+  assert.ok(!svg.includes('<h-char'))
+  assert.ok(!svg.includes('<h-layer'))
+})
+
 test('countNodes: early exit at limit', () => {
   const el = element(`<main>${'<p>字</p>'.repeat(100)}</main>`)
   assert.equal(countNodes(el, 10), 10)

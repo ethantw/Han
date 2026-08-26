@@ -20,7 +20,18 @@
  * A mixed level that still exceeds the limit (a single 7,000-node
  * paragraph) is processed whole and the risk accepted — more honest than
  * silently mis-splitting it, and real documents don't have such paragraphs.
+ *
+ * 3. Skipped subtrees (`isCodeLike`) are dropped here as well, not only by
+ *    the passes. A pass enforces that list on the nodes it WALKS, and its
+ *    walk starts at the chunk root — hand it a chunk from inside an `<svg>`
+ *    and there is no `<svg>` left to recognise. Only oversized subtrees get
+ *    descended into, so this went unnoticed until one appeared: an
+ *    illustration built of thousands of `<text>` elements had `<h-char>`
+ *    wrappers written into it, and SVG does not paint unknown children —
+ *    the marks simply vanished from the picture.
  */
+
+import { isCodeLike } from './skip.ts'
 
 /** Safety threshold: half the measured ~7,500 blow-up point — stack
  *  headroom varies by engine and call depth. */
@@ -55,7 +66,8 @@ const childrenAllElements = (el: Node): boolean => {
 
 /**
  * Apply `fn` over `root`, chunking when needed. Every node handed to `fn`
- * is (a) within the node limit, or (b) not safely divisible any further.
+ * is (a) within the node limit, or (b) not safely divisible any further,
+ * and never inside a subtree the passes must not touch.
  */
 export const forEachChunk = (root: Element, fn: (el: Element) => void): void => {
   // Iterative descent with an explicit stack — this function exists
@@ -63,6 +75,7 @@ export const forEachChunk = (root: Element, fn: (el: Element) => void): void => 
   const queue: Element[] = [root]
   while (queue.length > 0) {
     const el = queue.shift()!
+    if (isCodeLike(el)) continue
     if (countNodes(el, CHUNK_NODE_LIMIT) < CHUNK_NODE_LIMIT || !childrenAllElements(el)) {
       fn(el)
       continue
