@@ -103,25 +103,45 @@ const spacer = (O, sx, sy, d, solid) =>
 
 
 // Line layout in body units. Unsqueezed: uniform 1-body slugs. Squeezed at a
-// ：「 pair: ： keeps a full em, 「 becomes a half slug (its front-half
-// whitespace trimmed), and the freed half is spread as small justify blocks
-// between every other pair — so the line keeps its full justified length.
+// mark＋「 pair: the mark keeps a full em, 「 becomes a half slug (its
+// front-half whitespace trimmed), and the freed half is spread as small
+// justify blocks between every other pair — so the line keeps its full
+// justified length.
 //
-// WHEN it squeezes differs by direction. 直排: JIS only — MOE／GB／KLR seat ：
-// clear of 「's leading space, so nothing meets it. 橫排: ALL FOUR — ：'s
-// trailing half-space abuts 「's leading half-space under every convention.
+// WHICH pairs squeeze, per direction, is measured off the four Diantenjeom
+// Serif cuts (outline against outline — ：「 2026-08-02, 。「 2026-08-26), not
+// assumed. The criterion is the mark's own ink: a squeeze needs its trailing
+// half empty, so its white meets 「's leading white.
 //
-// KLR 跟 MOE／GB 同一套（owner 定案 2026-07-31），而且理由與那兩者不同：MOE／
-// GB 是把 ： 坐低在字身裡，KLR 是讓它**正立**——KLReq cl7 把 ：；· 歸為不隨直排
-// 旋轉的一類（diantenjeom build.py 的 `upright_cps=(0xFF1A,)` 就是這條）。兩條
-// 路殊途同歸：正立居中的 ： 一樣不會把半個空鉛送到 「 的門口。所以下面那個判定
-// 仍然只點名 jis，四個公約裡也只有它會擠。
+//   ：「 直排: JIS only — it turns ： and the turned ink clears the tail.
+//        MOE／GB／KLR seat ： clear of 「's leading space, so nothing meets
+//        it. KLR 跟 MOE／GB 同一套（owner 定案 2026-07-31），理由卻不同：
+//        MOE／GB 是把 ： 坐低在字身裡，KLR 是讓它**正立**——KLReq cl7 把
+//        ：；· 歸為不隨直排旋轉的一類（diantenjeom build.py 的
+//        `upright_cps=(0xFF1A,)` 就是這條）。正立居中的 ： 一樣不會把半個
+//        空鉛送到 「 的門口。
+//        橫排: ALL FOUR — ：'s trailing half abuts 「's leading half under
+//        every convention.
+//   。「 both axes: JIS／GB／KLR — all three corner-seat 。 (vert ink
+//        y∈[525,804] of the em's [-120,880], horizontal ink x≤322), so the
+//        trailing half is free either way. MOE squeezes NEITHER: its 。 is
+//        居中 (vert y∈[240,519] straddles the 380 centre), full body in both
+//        directions — note this differs from MOE's ：「, which does squeeze
+//        橫排.
+const SQUEEZE = {
+  '：「': { v: new Set(['jis']), h: new Set(['jis', 'moe', 'gb', 'klr']) },
+  '。「': { v: new Set(['jis', 'gb', 'klr']), h: new Set(['jis', 'gb', 'klr']) },
+};
+
 const lineLayout = (col, punct, orient) => {
   const n = col.length;
   let sq = -1;
-  for (let i = 0; i < n - 1; i++) if (col[i] === '：' && col[i + 1] === '「') sq = i;
-  // 只有 jis 會在直排擠壓；moe／gb／klr 三者同一套（見上）。
-  const squeezes = orient === 'h' || punct === 'jis';
+  let rule;
+  for (let i = 0; i < n - 1; i++) {
+    const r = SQUEEZE[col[i] + col[i + 1]];
+    if (r) { sq = i; rule = r; }
+  }
+  const squeezes = rule?.[orient === 'h' ? 'h' : 'v'].has(punct) ?? false;
   if (!squeezes || sq < 0) return col.map((ch, i) => ({ char: ch, aStart: i, size: 1 }));
   const half = 0.5;
   // freed 0.5 is shared by every 字距 gap EXCEPT the tight ：「 pair and the gap
@@ -190,7 +210,7 @@ const VERT_FORM = {
 };
 const vertForm = (char, punct) => VERT_FORM[punct]?.[char] ?? VERT_FORM.common[char];
 
-const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
+const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct, slice = SLICE }) => {
   const { S, H, r, sw, emCentre } = GEO;
   const fs = S;                                       // 字面 ＝ 字身（§ GEO）
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
@@ -299,7 +319,7 @@ const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
     ? `<text class="lbl-var dtj dtj-serif" x="0" y="0" font-size="16" text-anchor="middle">Serif</text>
        <text class="lbl-var dtj dtj-sans" x="0" y="0" font-size="16" text-anchor="middle">Sans</text>
        <text class="lbl-sub" x="0" y="13" font-size="8" text-anchor="middle">Diantenjeom</text>`
-    : `<text class="lbl-num" x="0" y="0" font-size="20" text-anchor="middle">${SLICE[char]}</text>
+    : `<text class="lbl-num" x="0" y="0" font-size="20" text-anchor="middle">${slice[char]}</text>
        <text class="nm nm-m" x="0" y="14" font-size="8" text-anchor="middle">尚古明體</text>
        <text class="nm nm-h" x="0" y="14" font-size="8" text-anchor="middle">尚古黑體</text>
        <text class="nm nm-k" x="0" y="14" font-size="8" text-anchor="middle">霞鶩文楷</text>`;
@@ -326,10 +346,12 @@ const STAGGER = 0.07;
  *  a fixed gutter would be generous at 900px and mean at 1600px. */
 const AIR = 34;
 
-const buildForme = (punct, orient, spin) => {
+export const buildForme = (punct, orient, spin, data = {}) => {
   const { S, H, r, leadEm } = GEO;
+  const cols = data.cols ?? COLS;
+  const slice = data.slice ?? SLICE;
   const cell = S;                    // 字身相接 — 沒有間距（§ GEO）
-  const rows = COLS[0].length;
+  const rows = cols[0].length;
   const colStep = S * (1 + leadEm);          // 行高 — 字身 ＋ 行距，欄與欄的間距
   // Generation order IS the paint order — COLUMN-MAJOR: a column top-to-bottom,
   // then its 行距鉛條, then the next column. That's a valid painter's sort here
@@ -344,7 +366,7 @@ const buildForme = (punct, orient, spin) => {
   // separates is re-laid.
   const cells = [];
   let read = 0;
-  COLS.forEach((col, b) => {
+  cols.forEach((col, b) => {
     const bx = b * colStep;
     lineLayout(col, punct, orient).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
@@ -355,7 +377,7 @@ const buildForme = (punct, orient, spin) => {
       else
         cells.push({ kind: 'char', line: b, O, char: it.char, sy: it.size * S, d: read++ * STAGGER, half: it.size < 1 });
     });
-    if (b < COLS.length - 1)                   // 行距鉛條 — ONE whole box (the
+    if (b < cols.length - 1)                   // 行距鉛條 — ONE whole box (the
       // column-major order above makes a rows-spanning piece sort cleanly),
       // half-opacity like the 空鉛 quads: a single group composites plain
       // `opacity` with no seams, and the furniture behind ghosts through.
@@ -409,7 +431,7 @@ const buildForme = (punct, orient, spin) => {
 
   const markup = cells
     .map((c) => (c.kind === 'char'
-      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct })
+      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct, slice })
       : spacer(c.O, c.sx, c.sy, c.d, c.solid)))
     .join('');
   return {
@@ -597,9 +619,19 @@ const GEOMETRY = [
   ['--lf-gap-top', 'gapTop'],
 ];
 
-export const initLeadForme = ($root = document) => {
+/**
+ * @param config  optional per-forme data — `cols` (the sentence, laid out as
+ *   columns of body-unit slots) and `slice` (engraving numbers for chars the
+ *   default zh table doesn't carry; merged over it). The homepage passes
+ *   nothing; demo/lead-forme.html sets the ja／ko sentences with it.
+ */
+export const initLeadForme = ($root = document, config = {}) => {
   const $forme = $root.querySelector('.LeadForme');
   if (!$forme) return;
+  const data = {
+    cols: config.cols ?? COLS,
+    slice: config.slice ? { ...SLICE, ...config.slice } : SLICE,
+  };
   const $svg = $forme.querySelector('svg');
   /* Turn the class-R marks ourselves instead of asking for `vert`? Only if the
      engine won't run it (§ surveyEngine). Answered again once the fonts are
@@ -611,7 +643,7 @@ export const initLeadForme = ($root = document) => {
   // the build currently on screen — § reset diffs the next one against it.
   let built;
   const render = () => {
-    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v', spin);
+    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v', spin, data);
     const { viewBox, markup, lastDelay } = built;
     $svg.setAttribute('viewBox', viewBox);
     $svg.innerHTML = markup;
@@ -684,7 +716,7 @@ export const initLeadForme = ($root = document) => {
     el.addEventListener('change', () => {
       const moved = reset(
         built.cells,
-        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin).cells,
+        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin, data).cells,
       );
       reslot(
         (half) => moved[half].map((i) => $slugs()[i]),

@@ -67,6 +67,11 @@
 /* 平移鈕，與四語長帶、遊樂場同一支模組、同一個角落。 */
 .ProseNav {
   display: flex;
+
+  /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉 UA 的
+     `[hidden]`，所以要自己認一次。 */
+  &[hidden] { display: none; }
+
   justify-content: end;
   gap: 0.5rem;
   margin-block-start: 0.75rem;

@@ -71,6 +71,11 @@ const mount = ($nav) => {
     const end = $strip[axis.full] - $strip[axis.size] - 1
     if ($prev) $prev.disabled = at <= 0
     if ($next) $next.disabled = at >= end
+    /* 捲不動就整條收起來：兩顆都 disabled 的箭頭什麼也不說，只是佔一行。
+       版面的斷點決定不了這件事——同一個寬度下，長帶會不會溢出還要看字體
+       落地後的重排。所以由這裡量，CSS 只負責認 `[hidden]`（display 有值的
+       規則會蓋掉 UA 的 `[hidden]`，四條長帶的樣式都補了那一行）。 */
+    $nav.hidden = end < 0
   }
 
   const by = (sign) => {

@@ -35,6 +35,11 @@
 @container (inline-size < 66rem) {
   .PaperNav {
     display: flex;
+
+  /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉 UA 的
+     `[hidden]`，所以要自己認一次。 */
+  &[hidden] { display: none; }
+
     justify-content: end;
     gap: 0.5rem;
     margin-block: 0.75rem 0;

@@ -86,8 +86,10 @@
   /* 縮寫在直排裡要站直——`text-orientation: upright` 讓每個字母各佔一格、
      不側倒。掛在 forme 這一層而不是只在藥丸裡：圖說也是直排（§ pocket 的
      牌記），同一條規矩兩處都該吃到。橫排時 `text-orientation` 本來就是 no-op，
-     所以不必用查詢把兩種行向分開寫。 */
-  abbr.acronym {
+     所以不必用查詢把兩種行向分開寫。
+     `.upright` 是同一件事給數字用的門：牌記裡的「120」不是縮寫，掛 `abbr`
+     會是假的語義，但它一樣不該躺著。 */
+  :is(abbr.acronym, .upright) {
     text-orientation: upright;
   }
 }
@@ -949,7 +951,17 @@
        彈性方向——`row-reverse` 會把它翻到左邊去（實測兩顆跑到版心左緣）。 */
     justify-content: end;
     gap: 0.5rem;
-    margin-block-start: 0.75rem;
+    /* 貼著它捲的東西，離開下一段。負的起始邊界是把兩顆提進圖的留白裡——那圈
+       `--lf-air` 是外框的空氣，不是內容，箭頭壓進去才像是這座字盤的配件；
+       末邊界則要撐開，否則緊接著的 `.PunctFix` 自己沒有上邊界（實測 0px），
+       箭頭會像那一段的標頭。 */
+    margin-block: -0.75rem 2rem;
+
+    /* 由 `strip-nav.js` 量出來的「這條長帶捲不動」。`display` 有值的規則會蓋掉
+       UA 樣式表的 `[hidden] { display: none }`，所以要自己認一次。 */
+    &[hidden] {
+      display: none;
+    }
 
     button {
       display: grid;
