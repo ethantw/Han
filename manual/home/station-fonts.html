@@ -262,7 +262,7 @@
             才帶得動新東西（多一個標點軸）。
         代價是 .Faces 那行（超迴路增停台北）與這句（乘客抱怨同一條超迴路）的
         報導↔民眾反應對仗被隔開一段——stHeritageP 只有一句，梗接得住。 -->
-  <figure class="LeadForme" data-face="m" data-punct="jis" data-orient="v" data-reveal-at="0.6">
+  <figure class="LeadForme" data-strip="forme" data-face="m" data-punct="jis" data-orient="v" data-reveal-at="0.6">
     <svg role="img" aria-hidden="true"></svg>
     <form class="Controls" aria-label="{{ ltControls }}">
       <fieldset aria-labelledby="lf-lg-face">
@@ -286,6 +286,16 @@
     </form>
     <figcaption>{{ stTrayNote }}</figcaption>
   </figure>
+  <!-- 站①站④同一支模組、同一個角落。只在窄站台出現——寬螢幕的字盤整座都在
+       畫面裡，沒有東西可以平移（lead-forme.css § 窄站台）。 -->
+  <nav class="FormeNav" data-strip-nav="forme" aria-label="鉛字盤平移">
+    <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+      <span data-icon="chevron" aria-hidden="true"></span>
+    </button>
+    <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+      <span data-icon="chevron" aria-hidden="true"></span>
+    </button>
+  </nav>
 
   <!-- 拂歧歸正——先講「修好」（碼位被西文字體搶走的破折號／刪節號／
         間隔號），再講「可選」（stPunctP 現在是 Diantenjeom 4×2 標點字體

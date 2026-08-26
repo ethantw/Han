@@ -833,6 +833,13 @@
       /* 下限見上面 § pocket 的算式：再窄牌記就擠不下。 */
       --lf-c: 768px;
 
+      /* 圖寬**就是** `--lf-c`（見下面的 svg）：窄站台沒有留白的外框，長帶自己
+         就貼著邊界捲。所以要把「圖寬」這個量對齊事實，否則 § pocket 那條從圖寬
+         算出來的牌記高度仍按扣掉留白的 729 算，圖卻有 768 寬的斜邊——牌記底部
+         會離圖的地板空出一截（實測高 245，該有 259）。內距讀的 `--lf-air` 也
+         跟著這個值走，兩處同一個基準。 */
+      --lf-w: var(--lf-c);
+
       /* 長帶的**外框**是版心寬，不是圖寬——上面那段「凍住的量」把 figure 自己
          設成 `inline-size: var(--lf-c)`，在這裡要還原，否則框跟著圖一起變成
          768，根本不會捲（實測 figure 寬 768、可捲 66）。圖的寬度改由 svg 自己
@@ -920,6 +927,55 @@
            實測 JIS 變成「$」、MOE 變成「MŒ」、KLR 變成「KR」。 */
         abbr.acronym { letter-spacing: normal; }
       }
+    }
+  }
+}
+
+/* ─── 長帶的左右箭頭（只在窄站台） ───
+ * 與四語報、散文、遊樂場同一支模組（`strip-nav.js`）、同一個角落：貼在長帶的
+ * 右下，讓「還有更多」與「怎麼看更多」在同一處。寬螢幕整座字盤都在畫面裡，
+ * 兩顆必然都是 disabled，那就不該在場。
+ *
+ * 圖示的指向與另外三條**相反**：這條長帶 `direction: rtl`，起點在右緣，往內容
+ * 深處是往左。所以 `prev` 指右、`next` 指左，並用 `row-reverse` 把 DOM 序
+ * prev→next 排成視覺上的 ←→——按鈕的位置與它要去的方向這才對得上。 */
+.FormeNav { display: none; }
+
+@container (inline-size < 56rem) {
+  :where(main:not([data-writing='vertical'])) .FormeNav {
+    display: flex;
+    flex-direction: row-reverse;
+    /* `end`，不是 `flex-end`：前者依書寫模式（ltr 下就是物理的右），後者依
+       彈性方向——`row-reverse` 會把它翻到左邊去（實測兩顆跑到版心左緣）。 */
+    justify-content: end;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
+
+    button {
+      display: grid;
+      place-content: center;
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+      color: var(--ui-supplement-text);
+      background: var(--ui-supplement-bg);
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      color: var(--ui-bg);
+      background: var(--ui-accent);
+    }
+
+    /* 到底了就說出來：能按卻不動，比按不下去更難懂。 */
+    button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    [data-scroll="prev"] [data-icon] {
+      rotate: 180deg;
     }
   }
 }

@@ -9,6 +9,10 @@
  * disabled — a control that cannot do anything should say so, not fail
  * silently.
  *
+ * Which way is "forward" is asked of the strip, not assumed: a strip whose
+ * scroll origin sits at its right edge runs its scroll position the other way,
+ * so both the jump and the end-of-run test are signed (see `axisOf`).
+ *
  * `[data-strip-nav="name"]` finds `[data-strip="name"]`. No-JS degrades to
  * what the markup already is: the strip still scrolls and snaps, and these
  * two buttons simply do nothing (they carry no href to break).
@@ -34,10 +38,23 @@ const span = (rect, axis) => axis.key === 'top'
   ? { start: rect.top, end: rect.bottom, size: rect.height }
   : { start: rect.left, end: rect.right, size: rect.width }
 
-const axisOf = ($strip) =>
-  getComputedStyle($strip).writingMode.startsWith('vertical')
-    ? { pos: 'scrollTop', size: 'clientHeight', full: 'scrollHeight', key: 'top' }
-    : { pos: 'scrollLeft', size: 'clientWidth', full: 'scrollWidth', key: 'left' }
+/* `way` 是「內容深處」在這根軸上的正負號。捲位不一定從 0 往正走：靠右對齊的
+   長帶（站②的鉛字盤用 `direction: rtl` 把起點放在右緣）在 Chrome 底下
+   `scrollLeft` 是從 0 走到負的可捲量。一個號同時修「按鈕往哪邊捲」與「到底了
+   沒」，兩件事就不會各自為政。直排那根軸沒有這回事——`vertical-rl` 翻的是
+   區塊軸，`scrollTop` 量的行內軸照樣從 0 往正走。 */
+const axisOf = ($strip) => {
+  const { writingMode, direction } = getComputedStyle($strip)
+  return writingMode.startsWith('vertical')
+    ? { pos: 'scrollTop', size: 'clientHeight', full: 'scrollHeight', key: 'top', way: 1 }
+    : {
+      pos: 'scrollLeft',
+      size: 'clientWidth',
+      full: 'scrollWidth',
+      key: 'left',
+      way: direction === 'rtl' ? -1 : 1,
+    }
+}
 
 const mount = ($nav) => {
   const $strip = document.querySelector(`[data-strip="${$nav.dataset.stripNav}"]`)
@@ -48,7 +65,7 @@ const mount = ($nav) => {
 
   const sync = () => {
     const axis = axisOf($strip)
-    const at = $strip[axis.pos]
+    const at = $strip[axis.pos] * axis.way
     /* 1px 的寬容：捲動位置與內容尺寸都可能落在次像素上，差一點點就把「到底了」
        判成「還沒到」，那顆按鈕會停在能按卻不動的狀態。 */
     const end = $strip[axis.full] - $strip[axis.size] - 1
@@ -58,7 +75,10 @@ const mount = ($nav) => {
 
   const by = (sign) => {
     const axis = axisOf($strip)
-    $strip.scrollBy({ [axis.key]: sign * $strip[axis.size] * STEP, behavior: 'smooth' })
+    $strip.scrollBy({
+      [axis.key]: sign * axis.way * $strip[axis.size] * STEP,
+      behavior: 'smooth',
+    })
   }
 
   $prev?.addEventListener('click', () => by(-1))
