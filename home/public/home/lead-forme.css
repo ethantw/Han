@@ -727,13 +727,22 @@
         content: '';
         float: left;
         width: 100%;
-        height: calc(var(--lf-cap-w) / 1.732);
-        shape-outside: polygon(0 0, 100% 0, 0 100%);
-        /* 0.5rem 時每一欄的頭幾乎貼著鉛字（owner 2026-08-26：「不要蓋到鉛字，
-           要留出美美的 gap」）。`shape-margin` 把整條斜邊往外推，三角形的空氣
-           因此在文字與鉛字之間留出一條等寬的白——而且它是**沿著斜邊**等寬的，
-           換成 padding 或 margin 都做不到這件事（那些只會推整個盒子）。 */
-        shape-margin: 1.75rem;
+        /* 斜邊的落差：寬 × tan30，與等角投影的 e2 同斜率。 */
+        --lf-cap-tri: calc(var(--lf-cap-w) / 1.732);
+        /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
+           白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。 */
+        --lf-cap-gap: 1.75rem;
+
+        /* 盒子要**比三角形高一截**，否則撐開的部分會被裁掉。
+           `shape-outside` 的排除區被 float 的邊界盒剪裁：盒高只有三角形本身時，
+           `shape-margin` 往左下撐出去的那一段落在盒外，左端的排除深度因此頂到
+           盒底就不再增加——實測最後兩欄（「頻」「事」）落在同一高度，階梯變平。
+           斜邊每往法線推 m，垂直方向就多 m / cos30 = m × 1.1547。 */
+        height: calc(var(--lf-cap-tri) + var(--lf-cap-gap) * 1.1547);
+        /* 第三個頂點用**三角形自己的高**，不是 `100%`——盒子加高之後 100% 會把
+           斜邊一起拉緩，斜率就不再是 tan30 了。 */
+        shape-outside: polygon(0 0, 100% 0, 0 var(--lf-cap-tri));
+        shape-margin: var(--lf-cap-gap);
       }
       & {
         grid-area: 1 / 3;
