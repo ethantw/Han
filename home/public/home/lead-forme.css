@@ -625,7 +625,21 @@
          尺的十分之一：意思不變（仍是版心的一成），只是量的是「開著時的版
          心」，與 --lf-w 同源，抬升與圖從此一起靜止。 */
       --lf-graze: clamp(3rem, calc(0.1 * var(--lf-c)), 8rem);
-      margin-block-start: calc(-1 * clamp(0px, var(--lf-void) + var(--lf-graze), 24rem));
+
+      /* owner 2026-08-26：鉛字與樣張那一行貼得太近，拉開。
+       *
+       * 上面那段「graze」的原意是**往上多騎一段**，讓斜邊壓過樣張卡的角——
+       * 「一副鉛字壓在校樣上」是當時要的梗。現在改成反過來：抬到斜邊剛好走到
+       * 卡片下緣（`--lf-void`）之後，再**讓回**一段，兩者之間就有一條看得見的
+       * 空氣。`--lf-graze` 留著沒有刪，因為那段推導（void 的算式、10cqw 為什麼
+       * 換成凍住的尺）仍然是這一段的地基，只是不再加在抬升上。
+       *
+       * 讓回的量跟著圖走而不是寫死：`--lf-c` 的 6% ≈ 70px（1440 下），與原本
+       * 騎上去的 116px 加起來，鉛字比先前低了將近 190px。上下夾住是為了窄站台
+       * ——太小看不出是刻意留的白，太大就退回「圖上面一條空帶」那個原本要
+       * 避免的樣子。 */
+      --lf-gap: clamp(1.5rem, calc(0.06 * var(--lf-c)), 5rem);
+      margin-block-start: calc(-1 * clamp(0px, var(--lf-void) - var(--lf-gap), 24rem));
     }
 
     /* ── § pocket — pills and the note move INTO the forme's other air ──
@@ -657,18 +671,29 @@
       grid-area: 1 / 1 / 2 / 4;
     }
 
+    /* 藥丸與圖說分居對角（owner 2026-08-26：「不然好擠」）。兩者原本並排在
+       右下那一塊空氣裡，各自只剩 140px 寬、中間 16px——實測 141×316 與
+       140×392 擠在 296px 的口袋裡。
+       藥丸搬到**block-start／inline-start** 那塊楔子（樣張卡下方），圖說獨佔
+       右下，寬度從 140 放到約 296。
+
+       為什麼是藥丸搬、不是圖說搬：控制項該貼著它控制的東西——這三組改的正是
+       樣張卡裡的字與圖上的鉛字，而卡片在左上；圖說是讀完圖之後的註腳，留在
+       視線離開圖的地方才順，何況它那個 `shape-outside` 的斜邊只有在右下的
+       楔子裡才成立。
+
+       藥丸維持直排：那是刻意的（見上面 § Controls——像鉛字上刻的規格，而且
+       `vertical-rl` 下在 fieldset 上，頁面轉直排時它們仍然站著）。
+       但**對齊要翻面**：`align-items` 原本是 `flex-end`，讓三組的頭順著右下
+       那條往下走的斜邊錯開；左上這塊楔子的斜邊走向相反，所以改成
+       `flex-start`，階梯才跟著新的斜邊走。 */
     .Controls {
-      grid-area: 1 / 2;
-      align-self: end;
-      /* afloat in the pocket: feet held off the forme's bottom edge so the
-         pill rack hugs the slug diagonal above it rather than the ground. That
-         hold-off used to be a margin of the box's own bottom air; the figure's
-         padding is that air now (§ air), so the grid's block-end edge already
-         sits one air above the lowest slug and the rack floats by construction.
-         (Drop the padding's worth back on as a negative margin if you ever want
-         the rack sitting ON the lowest slug instead.) */
+      grid-area: 1 / 1;
+      align-self: start;
+      justify-self: start;
+      align-items: flex-start;
       margin-block: 0;
-      padding-block-end: .5rem;
+      padding-block-start: .5rem;
     }
 
     figcaption {
