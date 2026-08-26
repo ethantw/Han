@@ -134,8 +134,9 @@
     /* 上緣切在樣張卡的下緣（見 § 上緣的切線）。 */
     clip-path: inset(var(--df-clip-top) 0 0 0);
 
-    /* 手的兩個狀態都在這裡過場，不在格上：摸文案也算摸破折號（下面那條
-       `.PunctFix:has()`），過場若分散在兩個元素上，同一次動作會被平滑兩次。 */
+    /* 手的兩個狀態都在這裡過場，不在格上：狀態鍵在柱身（`:has()`），而讀那些
+       值的是格裡的 rect 與 stop——過場分散在兩個元素上，同一次動作會被平滑
+       兩次。 */
     transition:
       --df-hold 320ms cubic-bezier(.22, .61, .36, 1),
       --df-weld 240ms cubic-bezier(.22, .61, .36, 1)
@@ -172,8 +173,7 @@
    * 「中間斷開的破折號……精準爲讀者拂偏歸正」，讀到那句話的人本來就在看它。
    * 按住是另一回事：焊上，而且不管捲到哪裡都焊滿（`--df-weld` 蓋過捲動進度，
    * 見 § 破折號那兩格的 --df-gap），放開才回到捲動說的話。 */
-  &:has(.DashCell:hover),
-  .PunctFix:has(> p:not(.DashColumn):hover) & {
+  &:has(.DashCell:hover) {
     /* 摸著不放，它就一直開開合合——修好了又壞、壞了又修，這一站講的就是這件事。
        節奏見 `df-snap`／`df-pulse`：摸到先一口拉開，再轉成站③「行的呼吸」那口
        氣，而且一直不完全合上。離手兩支都沒了，`--df-hold` 回到 1，過場把最後
@@ -190,8 +190,7 @@
 
   /* 按住 ＝ 焊上，蓋過捲動也蓋過循環（節拍照跑，只是 `--df-weld` 把縫乘成 0），
      放開就回到循環。 */
-  &:has(.DashCell:active),
-  .PunctFix:has(> p:not(.DashColumn):active) & {
+  &:has(.DashCell:active) {
     --df-weld: 1;
     /* 按下去要立刻焊上（110ms），放開回到基準的 240ms——焊得快、鬆得柔。
        規則一不匹配，過場就換回上面那條，不必寫第二個狀態。 */
@@ -410,9 +409,6 @@
     max-inline-size: 36em;
     font-family: var(--han-font-alternative);
     color: var(--ui-supplement-text);
-    /* 這兩段也是破折號的把手（見 .DashColumn § 手）：摸它就散、按住就焊。
-       游標跟著說出來，否則那個互動只有滑過去才會被發現。 */
-    cursor: pointer;
   }
 
   /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的
