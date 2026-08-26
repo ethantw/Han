@@ -82,6 +82,14 @@
   figcaption {
     pointer-events: auto;
   }
+
+  /* 縮寫在直排裡要站直——`text-orientation: upright` 讓每個字母各佔一格、
+     不側倒。掛在 forme 這一層而不是只在藥丸裡：圖說也是直排（§ pocket 的
+     牌記），同一條規矩兩處都該吃到。橫排時 `text-orientation` 本來就是 no-op，
+     所以不必用查詢把兩種行向分開寫。 */
+  abbr.acronym {
+    text-orientation: upright;
+  }
 }
 /* 直排: `inline-size` is the VERTICAL axis there, so a plain 100% would scale
    the forme up to the station's whole measure (thousands of px wide). Cap it
@@ -349,7 +357,8 @@
     box-shadow: 0 2px 10px color-mix(in srgb, var(--palette-black) 12%, transparent);
 
     abbr.acronym {
-      text-orientation: upright;
+      /* 藥丸專用的收緊：那裡的字級只有 10px 上下，站直之後字母之間會鬆得像
+         被拆開。圖說不吃這一條（它 14px，收得太緊反而黏在一起）。 */
       letter-spacing: -.35em;
     }
   }
