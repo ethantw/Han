@@ -890,17 +890,22 @@
          才是物理的左。（`> * { direction: ltr }` 只翻孩子內部的行向，不翻它們
          在格線裡的擺放。） */
       justify-self: end;
-      flex-direction: row;
-      align-items: flex-start;
       padding-block: 0 .75rem;
 
-      /* 收到版心寬並允許換行。橫排的三組合計 662px，比手機的捲動口還寬——而
-         `position: sticky` 推不出自己的格線區，所以盒子一寬就只能停在圖的左段、
-         跟著捲走（實測左緣 −293）。`100cqw` 量的是 main（查詢容器就是它），
-         也就是這條長帶的捲動口寬度。 */
+      /* 一組一列，**長中短由上到下**（owner）。靠 `flex-wrap` 讓它自己斷行的話，
+         斷點跟著版心寬跑——某些寬度會擠成一列或二列，長短不齊，看起來像沒排過。
+         直接 `column` 就固定成三列，而 DOM 順序（字體→標點→行向）正好是長中短。 */
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: .4rem;
+
+      /* 收到版心寬：橫排的一組最寬約 380px，而 `position: sticky` 推不出自己的
+         格線區——盒子一超過捲動口就只能停在圖的左段、跟著捲走（實測左緣 −293）。
+         `100cqw` 量的是 main，也就是這條長帶的捲動口寬度。 */
       max-inline-size: 100cqw;
-      flex-wrap: wrap;
-      row-gap: .5rem;
+
+      /* 縮一號（owner）：三列疊起來會把圖往下推，字級小一點列高也跟著矮。 */
+      font-size: .8125rem;
 
       /* 橫排（owner）。基礎規則把 `vertical-rl` 下在 fieldset 上——那是為了讓
          藥丸像鉛字上刻的規格、頁面轉直排時仍站著。窄站台這一列有整個版心的寬
