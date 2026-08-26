@@ -39,6 +39,7 @@ import { initPapersDateline } from '/home/papers-dateline.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
+import { initStripNav } from '/home/strip-nav.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { initSettle } from '/home/settle.js'
@@ -107,6 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initLedger()
   // …and 例5.1 cycles through real library selectors, reader-driven
   initCarousel()
+  // 四條長帶的左右箭頭（站①四版、站②鉛字盤、站③兩篇、站肆工作區），外加
+  // 站③那條的起始位置：兩篇都朝著中間那道縫讀出去，所以停在縫上而不是頭上
+  // （strip-nav.js § data-strip-start）。掛在 DCL 而不是 gate 後：縫的位置是
+  // 版面的一部分，讀者滾到那一站之前就該對好。
+  initStripNav()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
   // (station-craft's Override etc.); the panes get theirs when station④

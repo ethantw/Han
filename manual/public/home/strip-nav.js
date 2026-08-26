@@ -24,8 +24,15 @@
  *
  * The seam, not the scroll range's midpoint: those coincide only when the two
  * halves are equally wide, and these are not (measured 647 vs 768 — the range
- * midpoint left the gap 68px off centre). Set on mount and on resize — never
- * on scroll, or it would haul the reader back every time they moved.
+ * midpoint left the gap 68px off centre).
+ *
+ * Re-aimed whenever either half changes size, and NOT on `document.fonts.ready`
+ * alone: that promise settles while the cards are still moving — han.js wraps
+ * the prose in `<h-char>` at gate-open and the subset faces land later still,
+ * and either one re-wraps a card (measured: the seam sat 21px off, and a
+ * one-pixel window resize snapped it back to 0). Never on scroll, though, and
+ * never again once the reader has moved the strip themselves — the aim is the
+ * layout's starting point, not a leash.
  */
 
 /** How much of the visible run one press moves. */
@@ -71,12 +78,23 @@ const mount = ($nav) => {
     const end = $strip[axis.full] - $strip[axis.size] - 1
     if ($prev) $prev.disabled = at <= 0
     if ($next) $next.disabled = at >= end
-    /* 捲不動就整條收起來：兩顆都 disabled 的箭頭什麼也不說，只是佔一行。
-       版面的斷點決定不了這件事——同一個寬度下，長帶會不會溢出還要看字體
-       落地後的重排。所以由這裡量，CSS 只負責認 `[hidden]`（display 有值的
-       規則會蓋掉 UA 的 `[hidden]`，四條長帶的樣式都補了那一行）。 */
-    $nav.hidden = end < 0
+    /* 捲不動就整條收起來：兩顆都 disabled 的箭頭什麼也不說，只是佔一行。判準
+       就寫成「兩顆都廢了」，不另外算一次可捲量——量出 1px 的餘裕時兩顆都會是
+       disabled，而那一行仍舊會留在版面上（實測站①四版就是這樣：餘裕 1px、
+       兩顆皆廢、整條卻還在）。
+       版面的斷點決定不了這件事——同一個寬度下，長帶會不會溢出還要看字體落地後
+       的重排。所以由這裡量，CSS 只負責認 `[hidden]`（display 有值的規則會蓋掉
+       UA 的 `[hidden]`，四條長帶的樣式都補了那一行）。 */
+    $nav.hidden = ($prev?.disabled ?? true) && ($next?.disabled ?? true)
   }
+
+  /* 讀者自己動過這條長帶之後就不再自動歸位（見檔頭）。程式自己捲的那一下也會
+     發 scroll 事件，所以先舉旗再捲，由**收到的那個事件**把旗放下——不能用
+     rAF 放旗：scroll 事件是非同步派送的，旗子先落地，那一下就被記成讀者動的，
+     後面的重排也就再也不歸位了（實測縫停在 22px 偏差）。旗只在真的捲得動時
+     才舉，否則沒有事件來收它，會吃掉讀者的下一次捲動。 */
+  let touched = false
+  let selfScroll = false
 
   const by = (sign) => {
     const axis = axisOf($strip)
@@ -86,6 +104,7 @@ const mount = ($nav) => {
     })
   }
 
+  /* 箭頭也算讀者動過：他按了，就別再把他拉回縫上。 */
   $prev?.addEventListener('click', () => by(-1))
   $next?.addEventListener('click', () => by(1))
 
@@ -111,21 +130,43 @@ const mount = ($nav) => {
     const seam = (halves[0].end + halves[1].start) / 2
     /* `instant`：這是版面的起始位置，不是一次捲動。平滑捲會讓頁面自己動起來，
        讀者會以為是他碰到了什麼。 */
-    $strip.scrollBy({ [axis.key]: seam - (run.start + run.size / 2), behavior: 'instant' })
+    const by = seam - (run.start + run.size / 2)
+    if (!Math.round(by)) return
+    selfScroll = true
+    $strip.scrollBy({ [axis.key]: by, behavior: 'instant' })
   }
 
-  $strip.addEventListener('scroll', schedule, { passive: true })
-  addEventListener('resize', () => {
-    center()
+  $strip.addEventListener('scroll', () => {
+    if (selfScroll) selfScroll = false
+    else touched = true
     schedule()
   }, { passive: true })
+  addEventListener('resize', () => {
+    if (!touched) center()
+    schedule()
+  }, { passive: true })
+
+  const aim = () => {
+    if (!touched) center()
+    schedule()
+  }
+
+  /* 卡片自己會變：han.js 在開幕時把正文包成 `<h-char>`、子集字體又更晚落地，
+     兩者都會讓一張卡重排（實測直排那張 984 → 991 → 970，縫因此偏 22px）。
+     ResizeObserver 掛了也接不到那一下——那張卡是 `vertical-rl`，變的是它的
+     block 軸，而長帶自己的盒一動也沒動（實測整段開機只收到掛載時那一次回呼）
+     ⇒ 不能只靠它。真正管用的是**進畫面時再對一次**：讀者看不見的時候縫偏多少
+     都無妨，而他捲到這一站時版面早已落定（實測進場後偏差 0）。 */
+  const watch = new ResizeObserver(aim)
+  watch.observe($strip)
+  for (const $half of $strip.children) watch.observe($half)
+
+  new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting)) aim()
+  }).observe($strip)
+
   center()
   sync()
-  /* 字型落地之後卡片會重排，掛載時對的縫就偏了（實測 14px）。等它一次。 */
-  document.fonts?.ready?.then(() => {
-    center()
-    sync()
-  })
 }
 
 export const initStripNav = () => {
