@@ -23,26 +23,67 @@
  * 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
  * position: relative 把契約寫明。
  *
- * 破折號的動畫（漂移／較勁／首播熔接／按住不讓它修好）2026-08-14 整組撤下，
- * 互動要重新設計；兩塊 <rect> 留在原地，`@property` 的 initial-value 就是
- * 「已經熔接好」的樣子。時序與六支 keyframes 都在 git 裡。
+ * 破折號的動畫 2026-08-14 整組撤下（那一版一直在跑，站②停在畫面上每 3 秒
+ * 613ms 的 style recalc 全記在它頭上），2026-08-26 以**捲動驅動**重做：從畫面
+ * 底部進場時是斷的，捲到正中央剛好接上，之後才上色——時間不再是它的自變數，
+ * 讀者的捲動才是，所以停著不動就不耗算力。互動的部分見 § 破折號那兩格。
+ * 舊版的六支 keyframes（漂移／較勁／首播熔接）都在 git 裡。
  */
 
-@property --df-fuse { syntax: "<number>"; inherits: true; initial-value: 1; }
-@property --df-ink { syntax: "<number>"; inherits: true; initial-value: .35; }
-@property --df-press { syntax: "<number>"; inherits: true; initial-value: 0; }
-@property --df-red { syntax: "<number>"; inherits: true; initial-value: 0; }
+/* 熔接的進度：0 ＝ 大斷開，1 ＝ 兩截同歸中點。捲動時間軸把它從 0 推到 1，
+   到畫面正中央剛好是 1（見 § 破折號那兩格的 animation-range）。initial-value
+   是 1，所以不支援捲動時間軸、或使用者要求減少動態時，柱以「已經熔接好」的
+   靜止態示人——那本來就是它的基態。 */
+@property --df-arrive { syntax: "<number>"; inherits: true; initial-value: 1; }
+/* 讀者的手：1 ＝ 放著讓它接合，0 ＝ 拆開。hover 拆、按住合（見 § 手），與
+   --df-arrive 相乘，所以「還沒接合的時候 hover 不會讓它更糟」。 */
+@property --df-hold { syntax: "<number>"; inherits: true; initial-value: 1; }
+/* 上色的濃度。**它是縫的函數，不是捲動的函數**（算式見 § 破折號那兩格）：
+   離得遠就是這頁本來的墨色，快合上時淺淺上一層，真的合上才全彩。捲動、呼吸、
+   按住三種力量都只改縫，顏色自己跟上——所以三者的顏色語彙天生一致。 */
+@property --df-tint { syntax: "<number>"; inherits: true; initial-value: 1; }
+/* 緞帶的起點色相。破折號不是一色，而是一條沿線走 153° 的漸層（藍→紫→洋紅→
+   赭→橙，五個停點，見 § 破折號那兩格的 stop）；這個角度是整條的**起點**。
+   它**不隨捲動轉**：轉滿一圈的版本會把緞帶帶進黃綠，那就不是這條緞帶了——
+   顏色的識別在色序，會動的是濃度（`--df-tint`，跟著縫走）。要換整條的調子改
+   這一個值。 */
+@property --df-hue { syntax: "<angle>"; inherits: true; initial-value: 262deg; }
+/* 按住 ＝ 焊上。1 就是「不管捲到哪裡都給我接起來」，描邊同時加粗一點回應手指。 */
+@property --df-weld { syntax: "<number>"; inherits: true; initial-value: 0; }
 
-/* 由節拍算出的接縫兩緣。註冊為 <number>：computed-value time 即收斂成
-   數值 token，代入 scale() 不必再包 calc()。 */
-@property --df-a1 { syntax: "<number>"; inherits: true; initial-value: 3420; }
-@property --df-b0 { syntax: "<number>"; inherits: true; initial-value: 3420; }
+/* ── 捲動驅動的兩個相位 ──────────────────────────────────────────────
+ * 兩支都掛在 `.DashCell` 這一個盒上，不掛柱根：柱根底下有六十個字節點，而
+ * 它們一個都不讀這些變數，宣告掛上去只是讓它們陪著重算（2026-08-14 撤下整組
+ * 動畫的直接原因，613 → 130ms，見檔頭）。掛在格上，波及範圍就只有格裡的
+ * `<svg>` 與兩塊 `<rect>`——真正的消費者。
+ */
+@keyframes df-arrive {
+  from { --df-arrive: 0; }
+  to { --df-arrive: 1; }
+}
+/* 摸著不放時的呼吸（見 § 手）。只在 hover 期間跑，離手就停——這不是
+   2026-08-14 撤掉的那種「一直在跑」，它要有人摸著才活。
 
+   兩支接力：手一放上去，`df-snap` 用 220ms 把它一口拉到全開（摸到就散，回應
+   不能慢）；接力棒交給 `df-pulse` 平靜地呼吸下去。所以 `df-pulse` 的相位從
+   **全開**起算（0% ＝ 開，55% ＝ 剩一線，100% ＝ 又開滿），`animation-delay`
+   正好是 snap 的 220ms，兩支在同一個值上交棒，看不出接縫。
 
+   節奏借站③「行的呼吸」那一口：7s、`ease-in-out`（station-lines.css §
+   lines-tide／lines-mask 同款，只是相位相反）。同一頁上兩處呼吸該是同一個人在
+   呼吸，錯開的節奏會讓兩邊互相打拍子。
 
-
-
-
+   **永遠不完全合上**：吐到底停在 `--df-hold` .88（縫 1.5px 的一線），下一口氣
+   又拉開。摸著它的時候它就是修不好的，手放開才真的接上（`--df-hold` 回到 1）
+   ——這一站講的正是這件事。 */
+@keyframes df-snap {
+  from { --df-hold: 1; }
+  to { --df-hold: 0; }
+}
+@keyframes df-pulse {
+  0%, 100% { --df-hold: 0; }
+  55% { --df-hold: .88; }
+}
 /* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
 @keyframes df-copy-in {
   from { opacity: 0; translate: 0 1rem; }
@@ -81,11 +122,24 @@
        （同檔 § address::before 早有同一條註）。
 
        縱向：破折號是句中第 34 格，所以整柱往上推 34 格，它就落在文案上緣往下
-       1.5rem——位置跟著字級走，不必量任何東西。
-       橫向：原位往右一點，不是換邊（owner 2026-08-04 圈點）。 */
-    top: calc(1.5rem - var(--df-dash-cell) * 1em);
+       4.5rem——位置跟著字級走，不必量任何東西（4.5rem ＝ 文案自己的
+       padding-block-start 3rem ＋ 1.5rem，見 § .PunctFix：加大鉛字與樣張卡之間
+       的空氣時，這個數字要跟著走，破折號才留在文案的同一個相對位置上）。
+       橫向：原位往右一點，不是換邊（owner 2026-08-04 圈點）。
+ */
+    top: calc(4.5rem - var(--df-dash-cell) * 1em);
     left: min(13rem, 26%);
     translate: -50% 0;
+
+    /* 上緣切在樣張卡的下緣（見 § 上緣的切線）。 */
+    clip-path: inset(var(--df-clip-top) 0 0 0);
+
+    /* 手的兩個狀態都在這裡過場，不在格上：摸文案也算摸破折號（下面那條
+       `.PunctFix:has()`），過場若分散在兩個元素上，同一次動作會被平滑兩次。 */
+    transition:
+      --df-hold 320ms cubic-bezier(.22, .61, .36, 1),
+      --df-weld 240ms cubic-bezier(.22, .61, .36, 1)
+    ;
 
     margin: 0;
     writing-mode: vertical-rl;
@@ -113,10 +167,60 @@
     user-select: none;
   }
 
+  /* ── 手 ──────────────────────────────────────────────────────────
+   * 摸破折號那一格，它就散開一點；**摸這一欄的兩段文案也算**——那兩段講的正是
+   * 「中間斷開的破折號……精準爲讀者拂偏歸正」，讀到那句話的人本來就在看它。
+   * 按住是另一回事：焊上，而且不管捲到哪裡都焊滿（`--df-weld` 蓋過捲動進度，
+   * 見 § 破折號那兩格的 --df-gap），放開才回到捲動說的話。 */
+  &:has(.DashCell:hover),
+  .PunctFix:has(> p:not(.DashColumn):hover) & {
+    /* 摸著不放，它就一直開開合合——修好了又壞、壞了又修，這一站講的就是這件事。
+       節奏見 `df-snap`／`df-pulse`：摸到先一口拉開，再轉成站③「行的呼吸」那口
+       氣，而且一直不完全合上。離手兩支都沒了，`--df-hold` 回到 1，過場把最後
+       那一下接回去。 */
+    @media (prefers-reduced-motion: no-preference) {
+      animation:
+        df-snap 220ms cubic-bezier(.1, .9, .2, 1) both,
+        df-pulse 7s ease-in-out 220ms infinite
+      ;
+    }
+    /* 要求減少動態的人只給一次回應：斷開，不循環。 */
+    @media (prefers-reduced-motion: reduce) { --df-hold: 0; }
+  }
+
+  /* 按住 ＝ 焊上，蓋過捲動也蓋過循環（節拍照跑，只是 `--df-weld` 把縫乘成 0），
+     放開就回到循環。 */
+  &:has(.DashCell:active),
+  .PunctFix:has(> p:not(.DashColumn):active) & {
+    --df-weld: 1;
+    /* 按下去要立刻焊上（110ms），放開回到基準的 240ms——焊得快、鬆得柔。
+       規則一不匹配，過場就換回上面那條，不必寫第二個狀態。 */
+    transition: --df-weld 110ms cubic-bezier(.1, .9, .2, 1);
+  }
+
   /* 頁面直排時收掉：本圖的「起自樣張卡、收在站尾」是縱向文案流的講法，行向
      一轉，錨點全散。 */
   main[data-writing="vertical"] & { display: none; }
 }
+
+/* ── 上緣的切線 ─────────────────────────────────────────────────────
+ * 柱有 62 格，往上長到頁面之外；攔它的只有站台的 `overflow: clip`，切在站台
+ * 上緣，於是最上面那幾個字會爬過「超迴路運行廿載」那張樣張卡。要切在那張卡的
+ * **下緣**——是卡片自己的下緣，不是那個 `<figure>` 的（figure 還罩著護眼模式那
+ * 塊 figcaption，比卡片低 167px，切在那裡讀起來像少了一行）。切的是字不是句子：
+ * 半個字被切在卡片下緣，正是「這句話還在上面繼續」的講法。
+ *
+ * 那條線的位置由**內容**決定（卡片下緣到本欄上緣之間隔著整座鉛字盤），CSS 算
+ * 不出來，所以由 dash-clip.js 量一次、publish 成 `--df-clip-top`。錨定定位
+ * （anchor positioning）看起來該能免掉這支 JS，實測**做不到**：裁切要生效，裁切
+ * 盒必須是柱的包含塊；而 `anchor()` 只接受**包含塊的後代**當錨點，樣張卡在裁切
+ * 盒外面 → 整條宣告在 computed-value time 作廢，柱掉回 static position。兩個條件
+ * 互斥，與支援度無關（實測 Chromium 已支援 anchor()，同一頁上兩種擺法一成一敗）
+ * → docs/notes/2026-08-26-anchor-positioning-vs-clipping.md。
+ *
+ * 沒有 JS 時 initial-value 0 ⇒ 不裁切，就是 2026-08-26 之前的樣子。
+ */
+@property --df-clip-top { syntax: "<length>"; inherits: false; initial-value: 0px; }
 
 /* ── 破折號那兩格 ───────────────────────────────────────────────────
  * 空的 inline-block 站位置，`<svg>` 絕對定位在它裡面畫——inline `<svg>` 的基線
@@ -125,6 +229,9 @@
  *
  * 直排下 inline 軸是**垂直**的：兩格長 ＝ `inline-size: 2em`，一格寬 ＝
  * `block-size: 1em`。寫反了會得到一條橫躺的破折號。
+ *
+ * 這一格也是全柱唯一可按的地方（柱本身 pointer-events: none）：hover 把接好的
+ * 破折號拆開、按住才接得回去，放開又散。
  */
 .DashCell {
   & {
@@ -132,7 +239,63 @@
     display: inline-block;
     inline-size: 2em;
     block-size: 1em;
+    /* `middle` ＝「基線 ＋ 半個 x-height」。直排下中央基線本來就在 em 盒正中，
+       那半個 x-height 於是成了純粹的多餘位移，破折號會偏出字欄（實測 128px
+       字級偏 34.75px ＝ 0.2715em ＝ 0.5ex）。補回一個 `-0.5ex` 就歸位，且補的
+       正是 `middle` 自己用的那把尺——字體無關，Chromium 與 WebKit 兩家實測
+       同值。其餘的 vertical-align 值（baseline／top／bottom／text-*／長度）
+       一律偏 0.1357em，沒有一個落在字欄上。 */
     vertical-align: middle;
+    translate: -0.5ex 0;
+
+    /* 讀者的手。柱是底圖、pointer-events: none，這一格例外——z-index: -1 不
+       影響命中（實測 elementsFromPoint 最上層就是這兩塊 rect）。狀態本身收在柱
+       上（見 § 手），這裡只負責可命中。 */
+    pointer-events: auto;
+    cursor: pointer;
+
+    /* 縫、濃度、墨都宣告在格上，不在 rect 上——`<defs>` 裡的 stop 也要讀，而它們
+       不是 rect 的後代。
+
+       縫（以 unit 計，1em ＝ 100 unit）：三個理由取最大的那個，也就是「最斷的
+       那個理由勝出」。捲動 35（0.7em，要讀得出這是壞的）、手 10（0.2em，摸一下
+       的回應要輕），按住則把兩者一起乘成 0。
+
+       顏色跟著縫走，不跟著捲動走：
+         `--df-near` 只在最後 8 unit 內起作用 ⇒ 開著的時候就是這頁的墨色；
+         `--df-shut` 只有最後 1 unit 才拉起來 ⇒ 真的合上那一瞬間才全彩。
+       兩者取大：快合上時淺絢彩（呼吸最合的那一刻約 .38），合上即滿。
+       墨隨濃度一起提——這柱是 7% 墨的底圖，不提墨的彩度只會糊成一片灰。 */
+    --df-gap:
+      calc(
+        (1 - var(--df-weld)) *
+        max(35 * (1 - var(--df-arrive)), 10 * (1 - var(--df-hold)))
+      )
+    ;
+    --df-near: clamp(0, calc((8 - var(--df-gap)) / 8), 1);
+    --df-shut: clamp(0, calc(1 - var(--df-gap)), 1);
+    --df-tint: max(calc(.45 * var(--df-near)), var(--df-shut));
+    --df-ink: calc(.35 + .65 * var(--df-tint));
+  }
+
+  /* 捲動熔接。從畫面底部進場時是大斷開，捲到正中央剛好接上（cover 50% ＝ 本
+     盒中心對齊視窗中心）；顏色不必另開一支動畫，它是縫的函數（見上），所以
+     接近時自然淺淺上色、接上那一刻滿彩。回捲自動反向——
+     這是位置的函數，不是時間的函數，所以不需要任何 JS，停著也不耗一分算力
+     （整組動畫 2026-08-14 撤下的正是「一直在跑」那筆帳，見檔頭）。
+
+     `@supports` 不是保險而是必要：認不得 `animation-timeline` 的引擎會把這兩支
+     當成**時間軸**動畫照跑，一路跑成當初撤下的那個樣子。
+     `animation` 簡寫會把 timeline／range 重設回 auto，所以兩者一定寫在簡寫
+     之後（同一個坑 f690653 踩過）。（scroll-driven animations：Baseline 2025） */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      & {
+        animation: df-arrive linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 50%;
+      }
+    }
   }
 
   svg {
@@ -145,36 +308,48 @@
 
   /* 兩截。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化 Firefox 尚未跟上）；
      transform-box 釘在 view-box 原點，座標才照字面生效。vector-effect 讓描邊在
-     非等比 scale() 下不變形，也擋掉兩塊相接時描邊疊出的橫槓。
-
-     縫的真值是 0.1em ＝ 10 unit（1em ＝ 100 unit，兩格 ＝ 200）：`--df-fuse` 1
-     時兩截同歸 y=100，0 時各退 5 unit。基態是**已經熔接好**（`@property` 的
-     initial-value 就是 1）——動畫 2026-08-14 撤下，這兩塊留在原地等新的互動。
-
-     **邊走滿、面只走六成**：這張圖的可讀性來自輪廓，接合時若讓面積跟著滿，整條
-     線會從「線」變成「棒」，語彙就換掉了。 */
+     非等比 scale() 下不變形，也擋掉兩塊相接時描邊疊出的橫槓。縫（`--df-gap`）
+     繼承自格，算式見上。 */
   rect {
-    --df-gap: calc(5 * (1 - var(--df-fuse)));
-
-    fill:
-      color-mix(
-        in srgb,
-        var(--ui-proof) calc(var(--df-red) * 55%),
-        color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 60%), var(--df-face))
-      )
-    ;
     stroke:
       color-mix(
-        in srgb,
-        var(--ui-proof) calc(var(--df-red) * 100%),
+        in oklab,
+        oklch(62% .26 calc(var(--df-hue) + 78deg)) calc(var(--df-tint) * 100%),
         color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 100%), var(--df-edge))
       )
     ;
-    stroke-width: calc(.5 + .4 * var(--df-press));
+    stroke-width: calc(.5 + .4 * var(--df-weld));
     vector-effect: non-scaling-stroke;
     transform-box: view-box;
     transform-origin: 0 0;
   }
+
+  /* ── 緞帶 ─────────────────────────────────────────────────────────
+   * 面是一條**沿線走的漸層**，不是一色：五個停點從 `--df-hue` 起算 0°／38°／
+   * 78°／123°／153°（藍→紫→洋紅→赭→橙），上半截吃前三個、下半截吃後三個，
+   * 接縫那一點兩邊同色（78°），所以兩截接上時整條是連續的。
+   *
+   * 兩塊 rect 各給一支 `objectBoundingBox` 漸層，不是共用一支 userSpaceOnUse：
+   * 這兩塊的 user space 被自己的 `scale()` 拉過（單位矩形放大成整截），共用一
+   * 支的座標會跟著變形；bbox 版本量的是「畫出來的那一截」，縮放多少都對。
+   *
+   * 停點的顏色是**混進基色**的：`--df-tint` 0 時五個停點同歸那片 7% 的墨，
+   * 與上色之前一模一樣，所以不必在兩套 paint 之間切換。 */
+  stop {
+    --df-stop: 0deg;
+    stop-color:
+      color-mix(
+        in oklab,
+        oklch(62% .26 calc(var(--df-hue) + var(--df-stop))) calc(var(--df-tint) * 100%),
+        color-mix(in srgb, var(--df-flash) calc(var(--df-ink) * 60%), var(--df-face))
+      )
+    ;
+  }
+  [data-stop="1"] { --df-stop: 38deg; }
+  [data-stop="2"] { --df-stop: 78deg; }
+  [data-stop="3"] { --df-stop: 123deg; }
+  [data-stop="4"] { --df-stop: 153deg; }
+
   /* 上半截：從頂端長到中點前 --df-gap。橫向 48 ＝ 欄軸 50 減半個線寬。 */
   rect[data-seg="a"] {
     transform:
@@ -196,7 +371,9 @@
   & {
     /* 柱的包含塊契約寫明（見檔頭——階梯入場的 translate 其實已保證） */
     position: relative;
-    padding-block: 0 4rem;
+    /* 鉛字盤與樣張卡之間的空氣。上下都給，兩段文案才不是夾在中間的填充物；
+       上緣加多少，柱的 top 就要加多少（見 § 柱的 4.5rem）。 */
+    padding-block: 3rem 8rem;
     /* 6rem → 12.75rem：與柱同步右移 6.75rem（見上 § 柱的錨點），兩者的
        相對關係不變，整欄一起往右挪。 */
     padding-inline-start: 15rem;
@@ -233,6 +410,9 @@
     max-inline-size: 36em;
     font-family: var(--han-font-alternative);
     color: var(--ui-supplement-text);
+    /* 這兩段也是破折號的把手（見 .DashColumn § 手）：摸它就散、按住就焊。
+       游標跟著說出來，否則那個互動只有滑過去才會被發現。 */
+    cursor: pointer;
   }
 
   /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的
