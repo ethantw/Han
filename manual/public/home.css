@@ -52,3 +52,6 @@
 @import url('./home/console-loader.css');
 @import url('./home/console.css');
 @import url('./home/gate.css');
+
+/* ── 首頁專用字體子集：槽位覆寫，排最後才壓得過上面每一份 ── */
+@import url('./home/subset-fonts.css');

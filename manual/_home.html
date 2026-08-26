@@ -59,7 +59,7 @@
 }
 </script>
 <!doctype html>
-<html lang="{{ htmlLang }}">
+<html lang="{{ htmlLang }}" {{ subsetFlag }}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -92,6 +92,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css" data-han-webfont>
+<!-- 首頁專用的字體子集——只裝這五頁排得出來的字，一族一片。上面 ziano 的兩份
+     完整切片留著不動：宣告本身幾乎不花錢，貴的是被字族串點名，而點名的那幾條
+     由 `home/subset-fonts.css` 換成這裡的三族。遊樂場的 UGC 仍然要完整切片，
+     缺字時 `home/playground.js` 會把那一子樹的槽位換回去。
+     這三行由 `vite.config.js` 依「套件建了沒」注入（見 syncSubsets）。 -->
+{{ subsetFonts }}
 <!-- per-module bundles — the console's module switches toggle link.disabled
      (a stylesheet's *applied* state, not its download: the CSS file is still
      fetched by the preload scanner; disabling only drops it from the cascade). -->

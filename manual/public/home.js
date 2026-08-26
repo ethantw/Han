@@ -146,6 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 子樹，han.js 的 `<h-char>`／`<h-iss>` 包裹得重跑，*.with-js.css 才有東西
     // 可選。走主控台而不是直接 import installFallbacks，讀者的開關才算話。
     initPlayground(($target) => $console?.reapplyFallbacks($target))
+    // 讀者打出子集沒有的字時，把預覽那一子樹的字族槽位換回 ziano 的完整
+    // 切片——子集只裝這五頁排得出來的字，UGC 管不到（home/subset-fonts.css）。
+    const { initPlaygroundFonts } = await import('/home/playground-fonts.js')
+    initPlaygroundFonts()
     // 站①的四版橫捲：藥丸與捲動位置互相對齊（CSS 管捲與吸附）
     const { initSnapStrips } = await import('/home/snap.js')
     initSnapStrips()

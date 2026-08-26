@@ -1,6 +1,8 @@
 node_modules/
 dist/
 public/han/
+public/subset/
+.fonts/
 .cache/
 public/brand-lockup*.html
 

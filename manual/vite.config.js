@@ -349,6 +349,48 @@ async function syncFramework() {
   }
 }
 
+/**
+ * 首頁專用的字體子集 — `manual/.fonts/` → `public/subset/`。
+ *
+ * 為什麼要子集：Blink 為每一種**字體描述**（字族串 × 字級 × 字重 × 字形）建
+ * 一份 fallback list，字族串裡每一族的每一條 `@font-face` 都要列進去。ziano
+ * 的套件各切 109 片是為了讓讀者只下載碰到的桶——對任意文字是對的取捨，對字集
+ * 已知的一頁是錯的（實測首頁 462 → 306 MB）。完整套件留在頁面上不必移除，
+ * 宣告本身幾乎不花錢，貴的是被字族串**點名**。
+ *
+ * 產物不進版控，理由同 `public/han/`：那是別的 repo（ziano）的建置輸出，複製
+ * 等於把產物提交，而且會與 ziano 的字體版本悄悄分岔。跟著同一條 `syncX()` 的
+ * 路走，dev、build、preview 三邊就都是同一份。
+ *
+ * **沒建也要能跑**：`manual/scripts/build-subsets.mjs` 要 ziano ＋ uv，CI 與
+ * 只想看文件的人都沒有。所以整條是可選的——套件不在，`renderHomepage()` 就
+ * 不注入那三個 `<link>` 也不蓋 `data-han-subset`，`subset-fonts.css` 整份
+ * 因此不作用，頁面回到完整切片。要的是「沒有子集」，不是「指著不存在的字族」。
+ */
+const SUBSET_SRC = path.resolve(here, '.fonts')
+const PUBLIC_SUBSET = path.resolve(here, 'public', 'subset')
+const SUBSET_IDS = [
+  'shanggu-serif-han-home',
+  'shanggu-sans-han-home',
+  'lxgw-wenkai-tc-han-home',
+]
+
+const subsetsBuilt = () =>
+  SUBSET_IDS.every(id => existsSync(path.join(SUBSET_SRC, id, 'swap.css')))
+
+async function syncSubsets() {
+  if (!subsetsBuilt()) return
+  for (const id of SUBSET_IDS) {
+    const from = path.join(SUBSET_SRC, id)
+    const to = path.join(PUBLIC_SUBSET, id)
+    await fs.mkdir(path.join(to, 'files'), { recursive: true })
+    await fs.copyFile(path.join(from, 'swap.css'), path.join(to, 'swap.css'))
+    for (const f of await fs.readdir(path.join(from, 'files'))) {
+      await fs.copyFile(path.join(from, 'files', f), path.join(to, 'files', f))
+    }
+  }
+}
+
 // Vendored runtime ESM — station-playground's Markdown parser (marked)
 // and HTML sanitizer (DOMPurify). Both are single-file, zero-dep browser
 // builds; we copy them out of node_modules so `public/` never carries a
@@ -741,6 +783,15 @@ async function renderHomepage() {
       ...t,
       ...ledger,
       htmlLang: HOME_HTML_LANG[locale] ?? locale,
+      // 子集在場才掛（見 syncSubsets 的檔頭）。`data-han-webfont` 讓讀者在
+      // 主控台關掉 webfont 時，這三份跟 CDN 那幾份一起停用。
+      subsetFonts: subsetsBuilt()
+        ? SUBSET_IDS.map(id =>
+          `<link rel="stylesheet" href="/subset/${id}/swap.css" data-han-webfont>`).join('\n')
+        : '',
+      // 值不帶前導空白：`applySubs` 認出這顆 token 在標籤**裡面**，會把值
+      // 過一次 `stripMarkup()`（連空白一起修掉），所以空格寫在模版上。
+      subsetFlag: subsetsBuilt() ? 'data-han-subset' : '',
       locale,
       homeUrl,
       docsUrl,
@@ -973,6 +1024,7 @@ function hanManualPlugin() {
 
     async buildStart() {
       await syncFramework()
+      await syncSubsets()
       await renderMarkdownTree()
       await renderHomepage()
       await render404()

@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+/**
+ * 首頁專用字體子集的槽位覆寫。
+ *
+ * han.css 的三個 webfont 槽位改指子集，而不是 ziano 的完整切片套件。
+ *
+ * 為什麼：Blink 為每一種**字體描述**（字族串 × 字級 × 字重 × 字形）建一份
+ * fallback list，字族串裡每一族的每一條 `@font-face` 都要列進去。ziano 的
+ * 套件各切 109 片是為了讓讀者只下載碰到的桶——對任意文字是對的取捨，對字集
+ * 已知的一頁是錯的：實測這一頁 121 種描述、兩族各 109 片，記憶體 462 MB；
+ * 兩族各併成 1 片是 306 MB。而宣告本身幾乎不花錢（229 條 face ＋5 MB），
+ * 下載更是無關（把所有 woff2 攔掉，記憶體不變）。
+ *
+ * 所以完整套件留在頁面上沒有代價，**只要沒有任何字族串點名它**。遊樂場的
+ * UGC 仍然需要它（見 `home/playground.js` 的 `data-pg-fonts`）。
+ *
+ * 整份掛在 `[data-han-subset]` 之下：那顆屬性由 `vite.config.js` 依「子集
+ * 套件建了沒」蓋在 `<html>` 上（`manual/scripts/build-subsets.mjs` 要 ziano
+ * ＋ uv，CI 沒有）。沒建就整份不作用，頁面回到完整切片——要的是「沒有子集」，
+ * 不是「指著一個不存在的字族」。
+ *
+ * 子集怎麼來：`manual/scripts/collect-chars.mjs` 渲染五種語言的首頁、讀回實際
+ * 排出來的字，`manual/scripts/build-subsets.mjs` 叫 ziano 的 `pagesubset`
+ * 切出來。字族名與 ziano 的任何套件都不同名——同名會合併成一族，省的全還回去。
+ */
+
+:root[data-han-subset] {
+  --han-webfont-heritage-glyphs-sans: 'Han Home Sans';
+  --han-webfont-heritage-glyphs-serif: 'Han Home Serif';
+  --han-webfont-cursive-hant: 'Han Home Kai';
+}
+
+/* 行書堆疊要整條換掉，不能只換 swap 槽位：han.fonts.css 的 `:lang(zh)` 行書
+   堆疊在 `--han-webfont-cursive-hant` 之後**寫死了 `'Klee One'`**，那是另一個
+   240 片的 ziano 套件，於是那幾種描述照樣要列 240 條 face。實測它一個字都沒
+   畫（CDP 問過實際畫字的字體：霞鶩文楷 TC 畫掉全部，Klee One 零），因為它只是
+   前者缺字時的後備——而子集的覆蓋率是建置時就驗過的，本來就不會缺。
+
+   包在同一個 `@container` 條件裡，而不是無條件覆寫：讀者在主控台把行書關成
+   `off` 時，han.css 那條 `off` 區塊在來源順序上排在這一份前面，無條件的覆寫
+   會把 webfont 硬拉回來。
+
+   兩個選擇器：`lang` 掛在 `<html>` 自己身上（首頁如此），與掛在後代身上
+   （`<main lang>`）——後代組合子選不到自己那一顆。 */
+@container style(--han-use-cursive: webfont) {
+  :where(:root[data-han-subset]:lang(zh), :root[data-han-subset] :lang(zh)) {
+    --han-font-cjk-cursive:
+      'Han Home Kai',
+      Klee,
+      BiauKai, DFKai-SB, 'Kaiti TC',
+      'Hiragino Mincho ProN', 'Yu Mincho'
+    ;
+  }
+}
+
+/* 鉛字盤的字面：`lead-forme.css` 直接點名三個完整字族（那一站是字體樣張，
+   點名是它的本意）。子集畫的是同一批輪廓——同一個來源、同一次 `subset` 出來
+   的字形——所以換過來畫面不變，而那幾種描述就不必再列 500 多條 face。
+   `:where()` 保持零特異性，與原規則同級，靠來源順序取勝。 */
+:where([data-han-subset] .LeadForme[data-face='m']) text.g {
+  font-family: var(--dtj-serif), 'Han Home Serif', serif;
+}
+
+:where([data-han-subset] .LeadForme[data-face='h']) text.g {
+  font-family: var(--dtj-sans), 'Han Home Sans', sans-serif;
+}
+
+:where([data-han-subset] .LeadForme[data-face='k']) text.g {
+  font-family: var(--dtj-serif), 'Han Home Kai', cursive, serif;
+}
+
+/* 讀者在遊樂場打出子集沒有的字時，`home/playground.js` 蓋上這顆屬性，那一
+   子樹的槽位換回 ziano 的完整切片。只有真的在編輯的讀者付這筆帳（那一子樹的
+   字體描述會開始列 109 片）；其餘讀者連這幾條 `@font-face` 都只是躺著。 */
+[data-han-subset] #station-playground[data-pg-fonts='ziano'] {
+  --han-webfont-heritage-glyphs-sans: 'Shanggu Sans', 'Shanggu Sans Yue';
+  --han-webfont-heritage-glyphs-serif: 'Shanggu Serif', 'Shanggu Serif Yue';
+  --han-webfont-cursive-hant: 'LXGW WenKai TC';
+}
