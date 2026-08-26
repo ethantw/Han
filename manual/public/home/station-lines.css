@@ -54,6 +54,8 @@
     & {
       position: relative;
       z-index: 10;
+      /* 背後那張放大的樣張以這張卡的中線為支點鏡射（見下 § 巨型背景樣張）。 */
+      anchor-name: --lines-card;
       margin: 0 0;
       padding: 1em 1.5em;
       /* 24em 是「一行幾個字」的定寬。 */
@@ -199,6 +201,30 @@
       margin-block-start: 0;
     }
   }
+
+  /* **寬到放不下也一樣疊回一欄。** 版心從 72rem 起置中，兩側留白
+     `--plate-pad` ＝ (版心 − 68rem) / 2 跟著視窗長大；而背景那一柱的版口線是
+     樣張中線的鏡射（見上），鏡射點因此一路右移，74rem 起就穿進右欄——開關與
+     那條注會壓在放大的字上。前景居中是這一站的主張，右欄只是旁註，所以讓旁註
+     讓位（owner 2026-08-26：「右邊放不下，收到下面」）。
+
+     74rem 是算出來的，不是試出來的：`--plate-pad` 超過欄間距 3rem 的那一刻，
+     即 版心 > 68rem + 6rem。量的是**版心**而不是視窗，所以主控台收起時
+     （`--console-gutter: 0`，版心＝視窗寬）門檻自己跟著走。
+
+     四條宣告與上面那一段逐字相同——同一個版面的兩個成因，合不進一個查詢
+     （一個是下限、一個是上限，中間那段才是兩欄）。改動時兩邊要一起改。 */
+  @container (inline-size >= 74rem) {
+    & {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    > aside {
+      grid-column: 1;
+      justify-self: start;
+      inline-size: min(100%, 28em);
+      margin-block-start: 0;
+    }
+  }
   /* 巨型背景樣張 — 把前景 figure 的論點放大一遍：行末的句讀越過版口懸
      出去。
 
@@ -269,8 +295,39 @@
       --_wm-hang: 3em;
 
       position: absolute;
-      inset: -1.4em auto auto -16.75em;
       z-index: 0;
+      inset-block-start: -1.4em;
+      /* 橫向：**前景要落在背景的正中央**。這一柱的左半邊長在站台外、由站台的
+         `overflow: clip` 收掉，所以讀者看到的是「站台左緣 → 版口線」這一段；
+         要它以樣張卡為中心，版口線就得落在卡的中線鏡射到另一側的位置，也就是
+         `2 × 中線`（座標原點正是站台的邊框盒左緣，即那道剪裁線）。
+
+         用錨定定位讀那條中線，不自己換算：卡的寬（24em × 1.25rem）與站台的
+         `--plate-pad` 各自會動，寫死的常數只在某一個寬度對得上（舊值 −16.75em
+         實測 1440 剛好、1680 就偏左 129px）。這裡錨得到——`anchor()` 只認
+         **包含塊的後代**當錨點，而這張卡正是站台的後代（同一條規則在破折號那邊
+         行不通，理由見 docs/notes/2026-08-26-anchor-positioning-vs-clipping.md）。
+         實測 1440 版口線 552 ＝ 2 × 276、1680 792 ＝ 2 × 396，兩邊都齊。
+         寬視窗下版心置中、`--plate-pad` 長大，鏡射點會一路右移到右欄底下——那時
+         右欄整個收到樣張下方（見下 § 版心 ≥ 74rem）。
+
+         （anchor positioning 尚未 Baseline：Chromium 125／Safari 26 起支援。認不
+         得的引擎吃上面那條退路常數，位置與 2026-08-26 之前相同。） */
+      inset-inline-start: -16.75em;
+
+      @supports (inset-inline-start: anchor(--lines-card center)) {
+        /* 窄站台上鏡射點會落到站台右緣之外，懸掛出去的句讀——這一段唯一的
+           論據——就整批被剪掉。所以再壓一道上限：版口線最多到站台右緣往內
+           1.25em，讓那 1em 的懸掛墨連一點餘裕留在畫面內（實測 390px 下鏡射
+           點 389、站台寬 389；壓過之後版口線 334、墨收在 378）。窄站台的左半邊
+           因此比右半邊的呼吸帶長，那是刻意的：論據優先於對稱。 */
+        inset-inline-start:
+          calc(
+            min(2 * anchor(--lines-card center), 100% - 1.25em)
+            - var(--_wm-col)
+          )
+        ;
+      }
 
       /* 頁面是 border-box，所以欄外那 3em 要加進來，文字欄才還是 21em。 */
       inline-size: calc(var(--_wm-col) + var(--_wm-hang));
