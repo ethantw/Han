@@ -694,6 +694,19 @@
       align-items: flex-start;
       margin-block: 0;
       padding-block-start: .5rem;
+
+      /* 三組的高度不一樣（行向兩個選項、標點四個、字體三個但標籤最長），所以
+         頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線與楔子平行，高的
+         必須在左。
+
+         楔子往右變窄，這是算出來的不是看出來的：上方的空氣是
+         `void(x) = --lf-air + --lf-pad·W + (--lf-air + --lf-apex·W − x)·tan30`
+         （見上 § the lift），x 越往右、void 越小。
+
+         基礎規則是 `row-reverse`，那是為了舊的右下口袋調的（腳底對齊、頭部
+         錯開，順著那邊往下走的斜邊）。這塊楔子的斜邊走向相反，所以翻回 `row`：
+         DOM 順序是字體、標點、行向，正好由高到矮。 */
+      flex-direction: row;
     }
 
     figcaption {
@@ -716,7 +729,11 @@
         width: 100%;
         height: calc(var(--lf-cap-w) / 1.732);
         shape-outside: polygon(0 0, 100% 0, 0 100%);
-        shape-margin: 0.5rem;
+        /* 0.5rem 時每一欄的頭幾乎貼著鉛字（owner 2026-08-26：「不要蓋到鉛字，
+           要留出美美的 gap」）。`shape-margin` 把整條斜邊往外推，三角形的空氣
+           因此在文字與鉛字之間留出一條等寬的白——而且它是**沿著斜邊**等寬的，
+           換成 padding 或 margin 都做不到這件事（那些只會推整個盒子）。 */
+        shape-margin: 1.75rem;
       }
       & {
         grid-area: 1 / 3;
