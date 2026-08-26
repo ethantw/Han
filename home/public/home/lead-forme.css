@@ -737,7 +737,21 @@
       }
       & {
         grid-area: 1 / 3;
-        align-self: end;
+        /* 頂端**釘在頂點的腳**上，不是貼底。
+         *
+         * 原本是 `align-self: end`：盒子貼著格線的底，頂端則隨內容高度浮動。
+         * 那讓「頭部離斜邊多遠」變成剩餘空間的副產品——圖越矮、頂端越往上浮、
+         * 餘裕越小。實測（每一欄的頭 vs 斜邊 `--lf-foot + (vertexX − x)·tan30`）：
+         * 1920 剩 207px、1680 剩 137px、1440 剩 39px、**1280 正好貼上 0px**，
+         * 再窄就壓進鉛字裡。
+         *
+         * 釘住之後，頭部與斜邊的距離**由構造保證**等於 `shape-margin`：三角形
+         * 的高本來就是 `寬 × tan30`（斜率與等角投影的 e2 相同），頂端一旦落在
+         * 頂點的腳上，整條斜邊就與鉛字的下緣平行且等距——與視窗多寬無關。
+         *
+         * 兩個 `--lf-air`：一個是 figure 的 padding（圖的左上角不在 figure 的
+         * 原點），另一個已含在 `--lf-foot` 的定義裡（它量的是 svg 座標）。 */
+        align-self: start;
         /* A FLAT width, not a cqw fraction: how many columns the note needs
            is a function of the text and the font size, and neither scales
            with the forme. (Capacity ≈ width × height, and the height already
@@ -745,17 +759,40 @@
            narrow plates and rattle around on wide ones.) */
         --lf-cap-w: 10em;
 
-        /* flush with the padding box on both the fore-edge and the floor — which
-           IS the ink's right edge and its bottom (§ air), the two lines the note
+        /* flush with the padding box on the fore-edge and the floor — which IS
+           the ink's right edge and its bottom (§ air), the two lines the note
            used to hold itself off with `--lf-air-right`/`-bottom`. */
         margin: 0;
+        /* …and the top is **computed from the forme**, not left to the grid.
+         *
+         * `align-self: end` 讓盒子貼底、頂端隨內容浮動，於是「頭部離斜邊多遠」
+         * 變成剩餘空間的副產品：圖越矮、頂端越往上浮、餘裕越小。實測（每欄的頭
+         * vs 斜邊 `foot + (vertexX − x)·tan30`）1920 剩 207px、1440 剩 39px、
+         * **1280 正好貼上 0**，再窄就壓進鉛字。
+         *
+         * 釘在頂點的腳上之後，頭與斜邊的距離**由構造保證**等於 `shape-margin`
+         * ——三角形的高本來就是 `寬 × tan30`（與等角投影 e2 同斜率），頂端一落
+         * 在腳上，整條邊就與鉛字下緣平行等距，與視窗多寬無關。
+         *
+         * **物理 `margin-top`**，不是 `margin-block-start`：這個盒子是
+         * `vertical-rl`，邏輯屬性照它自己的書寫模式翻面（block-start 在那裡是
+         * 「右」——本節開頭那條警告記的正是這類事故；實測寫成邏輯屬性時圖說
+         * 整個貼到圖的頂端）。而且要排在 `margin: 0` **之後**，否則被簡寫重設。
+         *
+         * 不加 `--lf-air`：格線區的起點就是 figure 的**內容盒**頂端，也就是
+         * svg 的頂端，而 `--lf-foot` 量的正是從那裡往下（多加一個 air 會讓盒底
+         * 多出約 50px，掉到圖的地板以下）。 */
+        margin-top: calc(var(--lf-foot, 0.3391) * var(--lf-w));
         padding-bottom: 1rem;
         width: var(--lf-cap-w);
-        /* a DEFINITE height on purpose — the run from just under the vertex's
-           foot to the forme's bottom edge. The colophon is an orthogonal flow,
-           and with an auto height the grid track would have to guess its
-           column count. */
-        height: 28em;
+        /* 高度同樣是算的：從頂點的腳到圖的底緣。`--lf-ratio` 是圖的高/寬，
+           `--lf-foot` 是腳的 y/寬，兩者相減再乘寬就是那一段。
+           原本寫死 `28em`（14px 下 392px），只在 1440 附近碰巧等於它——實測那時
+           的空間是 767 − 373 = 394。定值在別的寬度就會超出圖的底或短一截。
+           仍然是 DEFINITE 而不是 auto：這是正交流，auto 會讓格線去猜欄數。
+           扣掉 `padding-bottom`：`height` 設的是內容盒，不扣的話盒底會超出
+           圖的地板一個內距。 */
+        height: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
         /* PHYSICAL width/height above on purpose, and this to match: the box
            is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
            base rule's 38em cap is the stacked note's measure, and here it
