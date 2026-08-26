@@ -525,29 +525,6 @@
     padding: var(--lf-air);
   }
 
-  /* ── 窄視窗：圖溢出視窗兩側 ──────────────────────────────────────
-   * owner 2026-08-25：640px 以下給 120vw，兩側各切 10vw——圖看起來還往兩邊
-   * 延伸出去，那是這一站在小螢幕上唯一還撐得住的震撼感。
-   * （同一天先試過寬螢幕也滿窗，owner 看過覺得太大，收回；上面那段
-   * 「為什麼不是純 100vw」的推理因此仍然成立，寬螢幕維持原樣。）
-   *
-   * 只放大 `<svg>`，不碰 `figure`：figure 是牌記、藥丸、圖說、破折號柱的
-   * 座標系，圖只是它裡面的一張畫，所以那幾樣東西在窄視窗的排法一個字都不用
-   * 改。算式用檔案自己的詞彙——figure 的右緣就是視窗右緣、寬是 --lf-c，所以
-   * 圖距視窗左緣 ＝ 100vw − --lf-c + --lf-air，再往左多推 10vw 就居中了。
-   *
-   * 溢出交給 plate 的 `overflow: clip`：實測 390px 與 560px 下
-   * `documentElement.scrollWidth == clientWidth`，頁面不會橫向捲。這一段
-   * 主控台已經是零佔位的浮動面板（< 52rem），沒有要避讓的東西，所以居中裁。 */
-  @media (width < 40rem) {
-    & svg {
-      /* reset 的 `img, svg { max-width: 100% }` 會把它壓回父盒（實測卡在父盒
-         寬度），而這裡要的正是溢出父盒。只解除這一張圖的。 */
-      max-inline-size: none;
-      inline-size: 120vw;
-      margin-inline-start: calc(var(--lf-c) - 110vw - var(--lf-air));
-    }
-  }
 
   /* the bleed is for the forme, not for its note — hand the gutter back so
      the caption starts where the copy does, the figure's own padding included.
@@ -651,174 +628,292 @@
       margin-block-start: calc(-1 * clamp(0px, var(--lf-void) - var(--lf-gap), 24rem));
     }
 
-    /* ── § pocket — pills and the note move INTO the forme's other air ──
-     * Beyond the parallelogram's inline-end vertex the box is pure air: the
-     * bottom edge recedes inline-start-ward from that vertex at the
-     * projection's own slope, so the whole strip below and to the right of
-     * it is free. The figure becomes a grid — the SVG spans all three
-     * columns, and the two later siblings sit in the last two, painting
-     * above the SVG's void by plain document order (no z-index).
-     *
-     * The note is a 直排 colophon down the fore-edge — a 牌記, which is what
-     * the text is. Its head clears the vertex's foot by `--lf-foot`,
-     * published by lead-forme.js (§ buildForme) like --lf-apex, because the
-     * vertex moves when 直排／橫排 re-lay the sentence; scaled by `--lf-w`,
-     * the SVG's own rendered width (§ showpiece).
-     *
-     * PHYSICAL height/margins on the note on purpose: the box is
-     * `vertical-rl`, so logical properties map through ITS writing mode and
-     * flip (measured in the previous wedge layout: `inset-inline-end`
-     * resolved to `bottom` and threw the caption across the station). The
-     * enclosing rule is 橫排-only by construction. */
-    & {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      column-gap: 1rem;
+  }
+
+  /* ── § pocket 不再受 56rem 的查詢管 ───────────────────────────────
+   * 抬升（上一段）與這一段原本包在同一個 `@container (inline-size >= 56rem)`
+   * 裡，因為當時兩者的前提相同：站台夠寬，樣張卡才在圖旁邊、右下角才是空的。
+   *
+   * 窄螢幕現在走另一條路（owner 2026-08-26）：鉛字盤的量有 768px 的下限，比
+   * 版心寬時 figure 自己變成可平移的長帶。於是右下的楔子**在任何寬度都存在**，
+   * 牌記照樣有地方站——所以 pocket 不必再被寬度管。抬升仍然要管：窄螢幕的樣張
+   * 卡是堆在圖上方的整條，圖往上騎就撞上去。
+   *
+   * 768 是算的不是挑的：牌記約 100 字 × 14px × 21px 行進 ≈ 29,400px²，而寬 140
+   * 的楔子可用面積 ＝ `140 × (ratio − foot)·w − tan30 × 140²/2`；w = 768/1.0542
+   * 時是 30,900px²，只餘 5%。再窄就擠不下。 */
+  /* ── § pocket — pills and the note move INTO the forme's other air ──
+   * Beyond the parallelogram's inline-end vertex the box is pure air: the
+   * bottom edge recedes inline-start-ward from that vertex at the
+   * projection's own slope, so the whole strip below and to the right of
+   * it is free. The figure becomes a grid — the SVG spans all three
+   * columns, and the two later siblings sit in the last two, painting
+   * above the SVG's void by plain document order (no z-index).
+   *
+   * The note is a 直排 colophon down the fore-edge — a 牌記, which is what
+   * the text is. Its head clears the vertex's foot by `--lf-foot`,
+   * published by lead-forme.js (§ buildForme) like --lf-apex, because the
+   * vertex moves when 直排／橫排 re-lay the sentence; scaled by `--lf-w`,
+   * the SVG's own rendered width (§ showpiece).
+   *
+   * PHYSICAL height/margins on the note on purpose: the box is
+   * `vertical-rl`, so logical properties map through ITS writing mode and
+   * flip (measured in the previous wedge layout: `inset-inline-end`
+   * resolved to `bottom` and threw the caption across the station). The
+   * enclosing rule is 橫排-only by construction. */
+  & {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 1rem;
+  }
+
+  svg {
+    grid-area: 1 / 1 / 2 / 4;
+  }
+
+  /* 藥丸與圖說分居對角（owner 2026-08-26：「不然好擠」）。兩者原本並排在
+     右下那一塊空氣裡，各自只剩 140px 寬、中間 16px——實測 141×316 與
+     140×392 擠在 296px 的口袋裡。
+     藥丸搬到**block-start／inline-start** 那塊楔子（樣張卡下方），圖說獨佔
+     右下，寬度從 140 放到約 296。
+
+     為什麼是藥丸搬、不是圖說搬：控制項該貼著它控制的東西——這三組改的正是
+     樣張卡裡的字與圖上的鉛字，而卡片在左上；圖說是讀完圖之後的註腳，留在
+     視線離開圖的地方才順，何況它那個 `shape-outside` 的斜邊只有在右下的
+     楔子裡才成立。
+
+     藥丸維持直排：那是刻意的（見上面 § Controls——像鉛字上刻的規格，而且
+     `vertical-rl` 下在 fieldset 上，頁面轉直排時它們仍然站著）。
+     但**對齊要翻面**：`align-items` 原本是 `flex-end`，讓三組的頭順著右下
+     那條往下走的斜邊錯開；左上這塊楔子的斜邊走向相反，所以改成
+     `flex-start`，階梯才跟著新的斜邊走。 */
+  .Controls {
+    grid-area: 1 / 1;
+    align-self: start;
+    justify-self: start;
+    align-items: flex-start;
+    margin-block: 0;
+    padding-block-start: .5rem;
+
+    /* 三組的高度不一樣（行向兩個選項、標點四個、字體三個但標籤最長），所以
+       頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線與楔子平行，高的
+       必須在左。
+
+       楔子往右變窄，這是算出來的不是看出來的：上方的空氣是
+       `void(x) = --lf-air + --lf-pad·W + (--lf-air + --lf-apex·W − x)·tan30`
+       （見上 § the lift），x 越往右、void 越小。
+
+       基礎規則是 `row-reverse`，那是為了舊的右下口袋調的（腳底對齊、頭部
+       錯開，順著那邊往下走的斜邊）。這塊楔子的斜邊走向相反，所以翻回 `row`：
+       DOM 順序是字體、標點、行向，正好由高到矮。 */
+    flex-direction: row;
+  }
+
+  figcaption {
+    /* the diagonal head. The forme's block-end／inline-end edge runs from
+       the inline-end vertex DOWN-inline-start along e2 = [−cos30, 0.5] —
+       √3 of run per unit of rise — so a float carrying `shape-outside`
+       (Baseline 2020) cut to that slope drops every column's head onto
+       that edge: the first falls from the vertex itself, each one further
+       inline-start starts lower, and their feet stay on the forme's bottom
+       line. The note then reads as ink resting IN the 空鉛 wedge rather
+       than in a rectangle that happens to sit near it. `float: left` is
+       line-left — the TOP in vertical-rl (measured) — which is what puts
+       the exclusion at the columns' heads.
+       The triangle is sized off the caption's WIDTH, not its height: the
+       box's height is the pocket's and scales with the forme, while the
+       slope must stay √3 at every viewport. */
+    &::before {
+      content: '';
+      float: left;
+      width: 100%;
+      /* 斜邊的落差：寬 × tan30，與等角投影的 e2 同斜率。 */
+      --lf-cap-tri: calc(var(--lf-cap-w) / 1.732);
+      /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
+         白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。 */
+      --lf-cap-gap: 1.75rem;
+
+      /* 盒子要**比三角形高一截**，否則撐開的部分會被裁掉。
+         `shape-outside` 的排除區被 float 的邊界盒剪裁：盒高只有三角形本身時，
+         `shape-margin` 往左下撐出去的那一段落在盒外，左端的排除深度因此頂到
+         盒底就不再增加——實測最後兩欄（「頻」「事」）落在同一高度，階梯變平。
+         斜邊每往法線推 m，垂直方向就多 m / cos30 = m × 1.1547。 */
+      height: calc(var(--lf-cap-tri) + var(--lf-cap-gap) * 1.1547);
+      /* 第三個頂點用**三角形自己的高**，不是 `100%`——盒子加高之後 100% 會把
+         斜邊一起拉緩，斜率就不再是 tan30 了。 */
+      shape-outside: polygon(0 0, 100% 0, 0 var(--lf-cap-tri));
+      shape-margin: var(--lf-cap-gap);
     }
+    & {
+      grid-area: 1 / 3;
+      /* 頂端**釘在頂點的腳**上，不是貼底。
+       *
+       * 原本是 `align-self: end`：盒子貼著格線的底，頂端則隨內容高度浮動。
+       * 那讓「頭部離斜邊多遠」變成剩餘空間的副產品——圖越矮、頂端越往上浮、
+       * 餘裕越小。實測（每一欄的頭 vs 斜邊 `--lf-foot + (vertexX − x)·tan30`）：
+       * 1920 剩 207px、1680 剩 137px、1440 剩 39px、**1280 正好貼上 0px**，
+       * 再窄就壓進鉛字裡。
+       *
+       * 釘住之後，頭部與斜邊的距離**由構造保證**等於 `shape-margin`：三角形
+       * 的高本來就是 `寬 × tan30`（斜率與等角投影的 e2 相同），頂端一旦落在
+       * 頂點的腳上，整條斜邊就與鉛字的下緣平行且等距——與視窗多寬無關。
+       *
+       * 兩個 `--lf-air`：一個是 figure 的 padding（圖的左上角不在 figure 的
+       * 原點），另一個已含在 `--lf-foot` 的定義裡（它量的是 svg 座標）。 */
+      align-self: start;
+      /* A FLAT width, not a cqw fraction: how many columns the note needs
+         is a function of the text and the font size, and neither scales
+         with the forme. (Capacity ≈ width × height, and the height already
+         grows with the plate — a proportional width would overflow on
+         narrow plates and rattle around on wide ones.) */
+      --lf-cap-w: 10em;
+
+      /* flush with the padding box on the fore-edge and the floor — which IS
+         the ink's right edge and its bottom (§ air), the two lines the note
+         used to hold itself off with `--lf-air-right`/`-bottom`. */
+      margin: 0;
+      /* …and the top is **computed from the forme**, not left to the grid.
+       *
+       * `align-self: end` 讓盒子貼底、頂端隨內容浮動，於是「頭部離斜邊多遠」
+       * 變成剩餘空間的副產品：圖越矮、頂端越往上浮、餘裕越小。實測（每欄的頭
+       * vs 斜邊 `foot + (vertexX − x)·tan30`）1920 剩 207px、1440 剩 39px、
+       * **1280 正好貼上 0**，再窄就壓進鉛字。
+       *
+       * 釘在頂點的腳上之後，頭與斜邊的距離**由構造保證**等於 `shape-margin`
+       * ——三角形的高本來就是 `寬 × tan30`（與等角投影 e2 同斜率），頂端一落
+       * 在腳上，整條邊就與鉛字下緣平行等距，與視窗多寬無關。
+       *
+       * **物理 `margin-top`**，不是 `margin-block-start`：這個盒子是
+       * `vertical-rl`，邏輯屬性照它自己的書寫模式翻面（block-start 在那裡是
+       * 「右」——本節開頭那條警告記的正是這類事故；實測寫成邏輯屬性時圖說
+       * 整個貼到圖的頂端）。而且要排在 `margin: 0` **之後**，否則被簡寫重設。
+       *
+       * 不加 `--lf-air`：格線區的起點就是 figure 的**內容盒**頂端，也就是
+       * svg 的頂端，而 `--lf-foot` 量的正是從那裡往下（多加一個 air 會讓盒底
+       * 多出約 50px，掉到圖的地板以下）。 */
+      margin-top: calc(var(--lf-foot, 0.3391) * var(--lf-w));
+      padding-bottom: 1rem;
+      width: var(--lf-cap-w);
+      /* 高度同樣是算的：從頂點的腳到圖的底緣。`--lf-ratio` 是圖的高/寬，
+         `--lf-foot` 是腳的 y/寬，兩者相減再乘寬就是那一段。
+         原本寫死 `28em`（14px 下 392px），只在 1440 附近碰巧等於它——實測那時
+         的空間是 767 − 373 = 394。定值在別的寬度就會超出圖的底或短一截。
+         仍然是 DEFINITE 而不是 auto：這是正交流，auto 會讓格線去猜欄數。
+         扣掉 `padding-bottom`：`height` 設的是內容盒，不扣的話盒底會超出
+         圖的地板一個內距。 */
+      height: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
+      /* PHYSICAL width/height above on purpose, and this to match: the box
+         is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
+         base rule's 38em cap is the stacked note's measure, and here it
+         would crop the columns to a fraction of the pocket. */
+      max-inline-size: none;
+      font-size: .875rem;
+      writing-mode: vertical-rl;
+      text-align: justify;
+    }
+
+  }
+
+  /* ── 窄站台：鉛字盤變成可平移的長帶 ─────────────────────────────
+   * owner 2026-08-26：窄視窗不要再用 120vw 兩側裁掉，改成**下限 768px 的長帶**，
+   * 初始對齊最右，讓右下的楔子永遠放得下直排的牌記；讀者往左回滾就看得到鉛字
+   * 全貌。（同一天先試過 120vw 居中裁，看得到的只有中段，牌記沒地方站。）
+   *
+   * 「初始對齊最右」用 `direction: rtl` 而不是 JS：捲動範圍從右端起算是這個
+   * 屬性的定義，不必等腳本、不怕 resize 或轉向，也不會跟讀者的手勢打架。
+   * 孩子一律轉回 `ltr`——只有捲動的原點要翻，內容的行向不翻。
+   * 代價記著：Chrome 在 rtl 容器下 `scrollLeft` 走負值，之後若要給這條長帶配
+   * 左右箭頭，`strip-nav.js` 的 disabled 判斷得改成雙向。
+   *
+   * 藥丸脫離長帶：自己一列在圖的上方（樣張卡的正下方——控制項貼著它控制的
+   * 東西，與寬螢幕同一個道理），`position: sticky` ＋ **物理** `left: 0` 讓它
+   * 不隨圖平移。改橫排，因為這一列現在有整個版心的寬。 */
+  @container (inline-size < 56rem) {
+    & {
+      /* 下限見上面 § pocket 的算式：再窄牌記就擠不下。 */
+      --lf-c: 768px;
+
+      /* 長帶的**外框**是版心寬，不是圖寬——上面那段「凍住的量」把 figure 自己
+         設成 `inline-size: var(--lf-c)`，在這裡要還原，否則框跟著圖一起變成
+         768，根本不會捲（實測 figure 寬 768、可捲 66）。圖的寬度改由 svg 自己
+         宣告（見下）。同理，那一段給 figure 的負 margin 是為了貼版心外緣，
+         窄站台沒有那回事。 */
+      inline-size: auto;
+      /* 邊界在 main 上，不在版心的內距上（owner）：長帶兩側破出站台的內距，
+         鉛字盤因此貼著網頁邊緣捲，跟四語報與散文那兩條長帶同一個做法。
+         不補 `padding-inline`——那兩條補回內距是為了讓卡片有裝訂線，這裡要的
+         正是圖直接切齊邊界。 */
+      margin-inline: calc(-1 * var(--plate-pad));
+
+      overflow-inline: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: none;
+      direction: rtl;
+
+      /* 兩列：藥丸一列、圖一列。圖與牌記同列，所以牌記的 `margin-top` 仍然是
+         從 svg 的頂端起算（見 § pocket）。 */
+      grid-template-rows: auto 1fr;
+
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    > * { direction: ltr; }
 
     svg {
-      grid-area: 1 / 1 / 2 / 4;
-    }
-
-    /* 藥丸與圖說分居對角（owner 2026-08-26：「不然好擠」）。兩者原本並排在
-       右下那一塊空氣裡，各自只剩 140px 寬、中間 16px——實測 141×316 與
-       140×392 擠在 296px 的口袋裡。
-       藥丸搬到**block-start／inline-start** 那塊楔子（樣張卡下方），圖說獨佔
-       右下，寬度從 140 放到約 296。
-
-       為什麼是藥丸搬、不是圖說搬：控制項該貼著它控制的東西——這三組改的正是
-       樣張卡裡的字與圖上的鉛字，而卡片在左上；圖說是讀完圖之後的註腳，留在
-       視線離開圖的地方才順，何況它那個 `shape-outside` 的斜邊只有在右下的
-       楔子裡才成立。
-
-       藥丸維持直排：那是刻意的（見上面 § Controls——像鉛字上刻的規格，而且
-       `vertical-rl` 下在 fieldset 上，頁面轉直排時它們仍然站著）。
-       但**對齊要翻面**：`align-items` 原本是 `flex-end`，讓三組的頭順著右下
-       那條往下走的斜邊錯開；左上這塊楔子的斜邊走向相反，所以改成
-       `flex-start`，階梯才跟著新的斜邊走。 */
-    .Controls {
-      grid-area: 1 / 1;
-      align-self: start;
-      justify-self: start;
-      align-items: flex-start;
-      margin-block: 0;
-      padding-block-start: .5rem;
-
-      /* 三組的高度不一樣（行向兩個選項、標點四個、字體三個但標籤最長），所以
-         頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線與楔子平行，高的
-         必須在左。
-
-         楔子往右變窄，這是算出來的不是看出來的：上方的空氣是
-         `void(x) = --lf-air + --lf-pad·W + (--lf-air + --lf-apex·W − x)·tan30`
-         （見上 § the lift），x 越往右、void 越小。
-
-         基礎規則是 `row-reverse`，那是為了舊的右下口袋調的（腳底對齊、頭部
-         錯開，順著那邊往下走的斜邊）。這塊楔子的斜邊走向相反，所以翻回 `row`：
-         DOM 順序是字體、標點、行向，正好由高到矮。 */
-      flex-direction: row;
+      grid-area: 2 / 1 / 3 / 4;
+      max-inline-size: none;
+      inline-size: var(--lf-c);
+      margin-inline-start: 0;
     }
 
     figcaption {
-      /* the diagonal head. The forme's block-end／inline-end edge runs from
-         the inline-end vertex DOWN-inline-start along e2 = [−cos30, 0.5] —
-         √3 of run per unit of rise — so a float carrying `shape-outside`
-         (Baseline 2020) cut to that slope drops every column's head onto
-         that edge: the first falls from the vertex itself, each one further
-         inline-start starts lower, and their feet stay on the forme's bottom
-         line. The note then reads as ink resting IN the 空鉛 wedge rather
-         than in a rectangle that happens to sit near it. `float: left` is
-         line-left — the TOP in vertical-rl (measured) — which is what puts
-         the exclusion at the columns' heads.
-         The triangle is sized off the caption's WIDTH, not its height: the
-         box's height is the pocket's and scales with the forme, while the
-         slope must stay √3 at every viewport. */
-      &::before {
-        content: '';
-        float: left;
-        width: 100%;
-        /* 斜邊的落差：寬 × tan30，與等角投影的 e2 同斜率。 */
-        --lf-cap-tri: calc(var(--lf-cap-w) / 1.732);
-        /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
-           白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。 */
-        --lf-cap-gap: 1.75rem;
+      /* rtl 下第一欄在視覺右側——牌記要跟著圖的右端走。 */
+      grid-area: 2 / 1;
+      /* 再寬一點：12px 下 10em ＝ 120px，量到仍溢出 20px。加到 12em（144px）
+         換來的欄數剛好收住——加寬會讓頭部沿斜邊再降 24×tan30 ≈ 14px，這一點
+         已算進下面的量測。 */
+      --lf-cap-w: 12em;
+      /* 小一號：768 的楔子從頂點的腳到地板只有 245px（1280 時是 324），同一段
+         文字在 14px 下溢出 47px。牌記本來就是牌記，不是正文，縮到 12px 讀得動
+         而且**面積夠**——需要的面積隨字級平方縮小，可用面積不變。
+         `--lf-cap-w` 是 em，所以盒子跟著窄，兩者一起縮。 */
+      font-size: .75rem;
+    }
 
-        /* 盒子要**比三角形高一截**，否則撐開的部分會被裁掉。
-           `shape-outside` 的排除區被 float 的邊界盒剪裁：盒高只有三角形本身時，
-           `shape-margin` 往左下撐出去的那一段落在盒外，左端的排除深度因此頂到
-           盒底就不再增加——實測最後兩欄（「頻」「事」）落在同一高度，階梯變平。
-           斜邊每往法線推 m，垂直方向就多 m / cos30 = m × 1.1547。 */
-        height: calc(var(--lf-cap-tri) + var(--lf-cap-gap) * 1.1547);
-        /* 第三個頂點用**三角形自己的高**，不是 `100%`——盒子加高之後 100% 會把
-           斜邊一起拉緩，斜率就不再是 tan30 了。 */
-        shape-outside: polygon(0 0, 100% 0, 0 var(--lf-cap-tri));
-        shape-margin: var(--lf-cap-gap);
-      }
-      & {
-        grid-area: 1 / 3;
-        /* 頂端**釘在頂點的腳**上，不是貼底。
-         *
-         * 原本是 `align-self: end`：盒子貼著格線的底，頂端則隨內容高度浮動。
-         * 那讓「頭部離斜邊多遠」變成剩餘空間的副產品——圖越矮、頂端越往上浮、
-         * 餘裕越小。實測（每一欄的頭 vs 斜邊 `--lf-foot + (vertexX − x)·tan30`）：
-         * 1920 剩 207px、1680 剩 137px、1440 剩 39px、**1280 正好貼上 0px**，
-         * 再窄就壓進鉛字裡。
-         *
-         * 釘住之後，頭部與斜邊的距離**由構造保證**等於 `shape-margin`：三角形
-         * 的高本來就是 `寬 × tan30`（斜率與等角投影的 e2 相同），頂端一旦落在
-         * 頂點的腳上，整條斜邊就與鉛字的下緣平行且等距——與視窗多寬無關。
-         *
-         * 兩個 `--lf-air`：一個是 figure 的 padding（圖的左上角不在 figure 的
-         * 原點），另一個已含在 `--lf-foot` 的定義裡（它量的是 svg 座標）。 */
-        align-self: start;
-        /* A FLAT width, not a cqw fraction: how many columns the note needs
-           is a function of the text and the font size, and neither scales
-           with the forme. (Capacity ≈ width × height, and the height already
-           grows with the plate — a proportional width would overflow on
-           narrow plates and rattle around on wide ones.) */
-        --lf-cap-w: 10em;
+    .Controls {
+      grid-area: 1 / 1 / 2 / 4;
+      position: sticky;
+      /* 物理 `left`：這是「不隨長帶平移」，與行向無關。 */
+      left: 0;
+      align-self: start;
+      /* `justify-self` 解析在**格線容器**的方向上，而這裡是 rtl——所以要 `end`
+         才是物理的左。（`> * { direction: ltr }` 只翻孩子內部的行向，不翻它們
+         在格線裡的擺放。） */
+      justify-self: end;
+      flex-direction: row;
+      align-items: flex-start;
+      padding-block: 0 .75rem;
 
-        /* flush with the padding box on the fore-edge and the floor — which IS
-           the ink's right edge and its bottom (§ air), the two lines the note
-           used to hold itself off with `--lf-air-right`/`-bottom`. */
-        margin: 0;
-        /* …and the top is **computed from the forme**, not left to the grid.
-         *
-         * `align-self: end` 讓盒子貼底、頂端隨內容浮動，於是「頭部離斜邊多遠」
-         * 變成剩餘空間的副產品：圖越矮、頂端越往上浮、餘裕越小。實測（每欄的頭
-         * vs 斜邊 `foot + (vertexX − x)·tan30`）1920 剩 207px、1440 剩 39px、
-         * **1280 正好貼上 0**，再窄就壓進鉛字。
-         *
-         * 釘在頂點的腳上之後，頭與斜邊的距離**由構造保證**等於 `shape-margin`
-         * ——三角形的高本來就是 `寬 × tan30`（與等角投影 e2 同斜率），頂端一落
-         * 在腳上，整條邊就與鉛字下緣平行等距，與視窗多寬無關。
-         *
-         * **物理 `margin-top`**，不是 `margin-block-start`：這個盒子是
-         * `vertical-rl`，邏輯屬性照它自己的書寫模式翻面（block-start 在那裡是
-         * 「右」——本節開頭那條警告記的正是這類事故；實測寫成邏輯屬性時圖說
-         * 整個貼到圖的頂端）。而且要排在 `margin: 0` **之後**，否則被簡寫重設。
-         *
-         * 不加 `--lf-air`：格線區的起點就是 figure 的**內容盒**頂端，也就是
-         * svg 的頂端，而 `--lf-foot` 量的正是從那裡往下（多加一個 air 會讓盒底
-         * 多出約 50px，掉到圖的地板以下）。 */
-        margin-top: calc(var(--lf-foot, 0.3391) * var(--lf-w));
-        padding-bottom: 1rem;
-        width: var(--lf-cap-w);
-        /* 高度同樣是算的：從頂點的腳到圖的底緣。`--lf-ratio` 是圖的高/寬，
-           `--lf-foot` 是腳的 y/寬，兩者相減再乘寬就是那一段。
-           原本寫死 `28em`（14px 下 392px），只在 1440 附近碰巧等於它——實測那時
-           的空間是 767 − 373 = 394。定值在別的寬度就會超出圖的底或短一截。
-           仍然是 DEFINITE 而不是 auto：這是正交流，auto 會讓格線去猜欄數。
-           扣掉 `padding-bottom`：`height` 設的是內容盒，不扣的話盒底會超出
-           圖的地板一個內距。 */
-        height: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
-        /* PHYSICAL width/height above on purpose, and this to match: the box
-           is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
-           base rule's 38em cap is the stacked note's measure, and here it
-           would crop the columns to a fraction of the pocket. */
-        max-inline-size: none;
-        font-size: .875rem;
-        writing-mode: vertical-rl;
-        text-align: justify;
+      /* 收到版心寬並允許換行。橫排的三組合計 662px，比手機的捲動口還寬——而
+         `position: sticky` 推不出自己的格線區，所以盒子一寬就只能停在圖的左段、
+         跟著捲走（實測左緣 −293）。`100cqw` 量的是 main（查詢容器就是它），
+         也就是這條長帶的捲動口寬度。 */
+      max-inline-size: 100cqw;
+      flex-wrap: wrap;
+      row-gap: .5rem;
+
+      /* 橫排（owner）。基礎規則把 `vertical-rl` 下在 fieldset 上——那是為了讓
+         藥丸像鉛字上刻的規格、頁面轉直排時仍站著。窄站台這一列有整個版心的寬
+         而沒有高，直排的三根柱子會被站台頂端切掉，所以轉回橫排。
+         `.acronym` 的 `text-orientation` 在橫排是 no-op，不必另外處理。 */
+      fieldset {
+        writing-mode: horizontal-tb;
+        gap: .35rem;
+
+        /* 縮寫的收緊要跟著還原：`-.35em` 是為**直排站立**的字母調的（每個字母
+           各佔一格，不收就鬆得像被拆開），橫排下同一個值會讓字母疊在一起——
+           實測 JIS 變成「$」、MOE 變成「MŒ」、KLR 變成「KR」。 */
+        abbr.acronym { letter-spacing: normal; }
       }
     }
   }
