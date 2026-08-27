@@ -168,6 +168,10 @@ const mountOne = ($host, { live }) => {
   let clientY = null
   let lensSize = 0
   let zoom = 2
+  /* 複本的尺寸（＝宿主的捲動尺寸）。取樣的夾限要用它，不能用可視框：長帶捲起
+     來的部分也在複本裡。 */
+  let hostW = 0
+  let hostH = 0
   /* A fine pointer just moves over the page, so the loupe can be on from the
      start; a coarse one has to DRAG it, and dragging is how that reader
      scrolls — so there it waits to be asked (the host stops scrolling while
@@ -199,8 +203,12 @@ const mountOne = ($host, { live }) => {
     }
   }
 
-  const positionAt = (cx, cy) => {
+  const positionAt = (rawX, rawY) => {
     if (!lensSize || !$clone) return
+    /* 擺放與取樣分家：圓的位置夾在「最多探出邊緣 2.5rem」之內，取樣仍用**原始
+       的那一點**（見下方 sx/sy）。兩者共用一個點的話，宿主邊上那 20 幾個 px
+       就永遠落在圓外，讀者怎麼移都看不到第一行（owner 2026-08-27）。 */
+    const [cx, cy] = clampToHost(rawX, rawY)
     // cx/cy are host-relative; the lens is positioned in the frame.
     const h = $host.getBoundingClientRect()
     const f = $frame.getBoundingClientRect()
@@ -221,8 +229,18 @@ const mountOne = ($host, { live }) => {
        same formula it always was — but the strips scroll, and programmatic
        `scrollLeft` on the copy does not take, so mirroring the scroll was
        never going to work. */
-    const sx = cx + $host.scrollLeft
-    const sy = cy + $host.scrollTop
+    /* 取樣點與擺放點分開。
+     *
+     * 圓的**位置**已經被夾在「最多探出邊緣 2.5rem」之內（見 clampToHost），若
+     * 連取樣也用同一個點，圓的視野就跟著往內縮——宿主最上面那 22px 永遠落在圓
+     * 外，讀者怎麼移都看不到第一行（owner 2026-08-27）。所以取樣另外夾：讓**視
+     * 野**貼著宿主的邊，圓因此永遠是滿的，邊上的字出現在圓的上緣而不是消失。
+     * 代價是靠邊時圓心不再精確等於游標下的那一點，差最多半個視野——放大鏡貼著
+     * 框走本來就是這個樣子。 */
+    const half = lensSize / (2 * (zoom || 1))
+    const fit = (v, size) => (size <= 2 * half ? size / 2 : Math.min(Math.max(v, half), size - half))
+    const sx = fit(rawX, hostW || $host.clientWidth) + $host.scrollLeft
+    const sy = fit(rawY, hostH || $host.clientHeight) + $host.scrollTop
     $clone.style.transform =
       `translate(${lensSize / 2 - sx * zoom}px, ${lensSize / 2 - sy * zoom}px) scale(${zoom})`
   }
@@ -313,6 +331,8 @@ const mountOne = ($host, { live }) => {
     if (!on || !$clone || !g) return
     $clone.style.inlineSize = `${g.host.width}px`
     $clone.style.blockSize = `${g.host.height}px`
+    hostW = g.host.width
+    hostH = g.host.height
     lensSize = g.size
     zoom = g.zoom
     syncScroll()
@@ -367,12 +387,21 @@ const mountOne = ($host, { live }) => {
     return [span(x, r.width), span(y, r.height)]
   }
 
-  /** 開場的圓心：報導的起始角落**往內縮**一點（起點落在圓的起始邊，後面幾行
-   *  才填得滿圓），再吃同一條夾限——起點常常就在卡片的角上，不夾的話圓有一半
-   *  掛在樣張外面（實測站③那顆整個騎到站台上緣）。 */
+  /** 開場的圓心：報導的起始角落**往內縮**一點——起點落在圓的起始邊，後面幾行才
+   *  填得滿圓。夾限不在這裡，在 positionAt（圓的位置與取樣點各夾各的）。 */
   const restingAt = ([x, y, dx, dy]) => {
     const inset = 0.35 * (lensSize / (zoom || 1))
-    return clampToHost(x + dx * inset, y + dy * inset)
+    return inHost(x + dx * inset, y + dy * inset)
+  }
+
+  /* 存的是**原始**的宿主相對座標（只夾在宿主盒內，免得取樣到紙外面）；圓的位置
+     由 positionAt 自己夾。 */
+  const inHost = (x, y) => {
+    const r = $host.getBoundingClientRect()
+    return [
+      Math.min(Math.max(x, 0), hostW || r.width),
+      Math.min(Math.max(y, 0), hostH || r.height),
+    ]
   }
 
   const follow = (e) => {
@@ -380,7 +409,7 @@ const mountOne = ($host, { live }) => {
     clientX = e.clientX
     clientY = e.clientY
     const r = $host.getBoundingClientRect()
-    ;[lastX, lastY] = clampToHost(e.clientX - r.left, e.clientY - r.top)
+    ;[lastX, lastY] = inHost(e.clientX - r.left, e.clientY - r.top)
     positionAt(lastX, lastY)
   }
 
@@ -398,7 +427,7 @@ const mountOne = ($host, { live }) => {
       ;[lastX, lastY] = restingAt(openingPoint())
     } else if (clientX !== null) {
       const r = $host.getBoundingClientRect()
-      ;[lastX, lastY] = clampToHost(clientX - r.left, clientY - r.top)
+      ;[lastX, lastY] = inHost(clientX - r.left, clientY - r.top)
     }
     /* 沒有視窗座標（讀者還沒動過指標，鏡片停在開場那一段）也要重排一次：
        長帶一平移，宿主整塊都走了，而鏡片的定位祖先不一定跟著走。 */
@@ -430,7 +459,7 @@ const mountOne = ($host, { live }) => {
     clientX = e.clientX
     clientY = e.clientY
     const r = $host.getBoundingClientRect()
-    ;[lastX, lastY] = clampToHost(e.clientX - r.left, e.clientY - r.top)
+    ;[lastX, lastY] = inHost(e.clientX - r.left, e.clientY - r.top)
     positionAt(lastX, lastY)
   })
 
