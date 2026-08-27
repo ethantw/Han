@@ -35,6 +35,8 @@
  * layout's starting point, not a leash.
  */
 
+import { settled } from './measure.js'
+
 /** How much of the visible run one press moves. */
 const STEP = 1 / 3
 
@@ -114,42 +116,52 @@ const mount = ($nav) => {
     queued = true
     requestAnimationFrame(() => {
       queued = false
+      /* 畫面外的站台沒有版面，量到的是 `contain-intrinsic-size` 的佔位尺寸
+         ——既錯又貴（measure.js § 看不到不算）。 */
+      if ($strip.checkVisibility?.({ contentVisibilityAuto: true }) === false) return
       sync()
     })
   }
 
-  const center = () => {
-    if ($strip.dataset.stripStart !== 'seam') return
-    const axis = axisOf($strip)
-    /* 依**視覺**順序取兩半，不是 DOM 順序：直排那張用 `order` 排到了前面。 */
-    const halves = [...$strip.children]
-      .map(($el) => span($el.getBoundingClientRect(), axis))
-      .sort((a, c) => a.start - c.start)
-    if (halves.length !== 2) return
-    const run = span($strip.getBoundingClientRect(), axis)
-    const seam = (halves[0].end + halves[1].start) / 2
+  /* 對縫走 measure.js 的紀律（放手才算、看不到不算、先讀再寫）：讀 rect 這件事
+     從觀察器的回呼裡直接做會逼出一次同步版面，而這一頁的版面很貴——收合主控台
+     那一下（版心的寬真的在變）曾經讓這支每幀跑一次。量測與捲動因此拆成 read／
+     write 兩半交給同一口時鐘。 */
+  const center = settled({
+    watch: $strip,
+    read: () => {
+      if ($strip.dataset.stripStart !== 'seam') return 0
+      const axis = axisOf($strip)
+      /* 依**視覺**順序取兩半，不是 DOM 順序：直排那張用 `order` 排到了前面。 */
+      const halves = [...$strip.children]
+        .map(($el) => span($el.getBoundingClientRect(), axis))
+        .sort((a, c) => a.start - c.start)
+      if (halves.length !== 2) return 0
+      const run = span($strip.getBoundingClientRect(), axis)
+      const seam = (halves[0].end + halves[1].start) / 2
+      return Math.round(seam - (run.start + run.size / 2))
+    },
     /* `instant`：這是版面的起始位置，不是一次捲動。平滑捲會讓頁面自己動起來，
        讀者會以為是他碰到了什麼。 */
-    const by = seam - (run.start + run.size / 2)
-    if (!Math.round(by)) return
-    selfScroll = true
-    $strip.scrollBy({ [axis.key]: by, behavior: 'instant' })
-  }
+    write: (by) => {
+      if (!by || touched) return
+      selfScroll = true
+      $strip.scrollBy({ [axisOf($strip).key]: by, behavior: 'instant' })
+    },
+  })
 
   $strip.addEventListener('scroll', () => {
     if (selfScroll) selfScroll = false
     else touched = true
     schedule()
   }, { passive: true })
-  addEventListener('resize', () => {
-    if (!touched) center()
-    schedule()
-  }, { passive: true })
 
   const aim = () => {
-    if (!touched) center()
+    center()
     schedule()
   }
+
+  addEventListener('resize', aim, { passive: true })
 
   /* 卡片自己會變：han.js 在開幕時把正文包成 `<h-char>`、子集字體又更晚落地，
      兩者都會讓一張卡重排（實測直排那張 984 → 991 → 970，縫因此偏 22px）。

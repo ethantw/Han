@@ -12,9 +12,15 @@ body:has(han-console) {
        滿版元素也跟著算錯。 */
     --console-gutter: var(--w-console);
 
+    /* **不給過場。** 這是版面屬性：滑一次 250ms 的 padding，等於整份文件重排
+       二十幾次，而這一頁重排很貴（站③那根破折號柱單獨一次就 86ms）。實測一次
+       收合：25 次 Layout／173ms、最長一幀 117ms；拿掉過場之後 5 次／10ms、最長
+       一幀 18ms、零掉幀（2026-08-27 trace）。
+       用 `translate` 滑再補上 padding（FLIP）也不行：版心是真的變寬，裡面每一
+       段都要重新斷行，位移動畫給不出那個結果。收合本來就是版面切換，不是動效。
+       順帶撤掉 `will-change: padding-inline-start`——版面屬性上不了合成執行緒，
+       那條提示從來沒有作用。 */
     padding-inline-start: var(--console-gutter);
-    transition: .25s padding-inline-start ease-in;
-    will-change: padding-inline-start;
   }
   &:has(.ConsoleToggle input:checked) {
     --console-gutter: 0px;
