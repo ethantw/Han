@@ -79,17 +79,34 @@ main > section {
     padding-inline: var(--plate-pad);
     border-block-start: 1px solid var(--ui-grid);
     background: var(--ui-station-a);
+  }
 
-    /* 畫面外的站台不參與版面。這一頁的 layout 成本大半不在節點數，而在**字體
-       匹配**：正文的字族有 14 層，其中兩層是各 109 片 `unicode-range` 的傳承
-       webfont，每一段文字都得走一遍（實測把字族覆蓋成 `system-ui`，改一次視窗
-       寬從 923ms 掉到 404ms）。看不見的站連匹配都不必做——實測整頁一次 resize
-       1031 → 736ms，畫面外的動畫也一起停（那是 idle 時 WindowServer 的那份）。
+  /* 畫面外的站台不參與版面。這一頁的 layout 成本大半不在節點數，而在**字體
+     匹配**：正文的字族有 14 層，其中兩層是各 109 片 `unicode-range` 的傳承
+     webfont，每一段文字都得走一遍（實測把字族覆蓋成 `system-ui`，改一次視窗
+     寬從 923ms 掉到 404ms）。看不見的站連匹配都不必做——實測整頁一次 resize
+     1031 → 736ms，畫面外的動畫也一起停（那是 idle 時 WindowServer 的那份）。
 
-       han.js 的後備層不受影響（實測 `h-char` 695 個一個不少）：它是 DOM 手術，
-       不等版面。`auto` 的內在尺寸記住上一次算過的高度，捲軸長度因此不跳；
-       60rem 只是第一次的估值。裁切沒有變化——站台本來就有 `overflow: clip`。
-       （content-visibility：Baseline 2024） */
+     han.js 的後備層不受影響（實測 `h-char` 695 個一個不少）：它是 DOM 手術，
+     不等版面。`auto` 的內在尺寸記住上一次算過的高度，捲軸長度因此不跳；
+     60rem 只是第一次的估值。裁切沒有變化——站台本來就有 `overflow: clip`。
+     （content-visibility：Baseline 2024）
+
+     ——但首屏不跳過。這條規則寫的是「站台」，選擇器卻是 `main > section`，
+     於是把 `.Manifesto` 也收了進來，而首屏是**唯一一個跳過它毫無收益**的
+     section：它一定在初始視窗裡，省不到什麼版面。代價卻是兩樁，都只在
+     「捲到中段再刷新」時發作（瀏覽器先還原捲動位置，才輪到 DCL）：
+
+       · 被跳過的子樹量不到東西——剛插進去的節點根本沒有盒，回報全零的
+         rect，而舊節點仍回報上一次排完的離屏座標。兩者相減得到的是捲動
+         位移，不是基線。字標的 漢 因此被推到一頁半以外，再被 `overflow:
+         clip` 吞掉（詳見 home/brand-glyph.js 的守門）。
+       · 被跳過的子樹不跑動畫，於是浮水印「漢」一筆未落，
+         `fonts-gate.js` 等的那個 `animationend` 永遠不來——`data-pass`
+         留在筆畫上、`data-han-traced` 不被標上，站①的信封就一直摺著。
+
+     兩者的根都在這裡，所以在這裡斷。 */
+  &:not(.Manifesto) {
     content-visibility: auto;
     contain-intrinsic-size: auto 60rem;
   }

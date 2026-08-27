@@ -100,3 +100,55 @@ test('the glyph sits on the baseline in both font states', async ({ page }) => {
     expect(Math.abs(glyphOffBaselinePx), `webfont ${sel}`).toBeLessThan(1)
   }
 })
+
+/**
+ * Regression: the hero used to be measured while its own section's rendering
+ * was being SKIPPED. `main > section` carries `content-visibility: auto` for
+ * the stations (home/frame.css), and it caught `.Manifesto` too — so on any
+ * load that starts below the fold (a reload with a restored scroll, or a
+ * `#station` deep link) the hero was skipped when brand-glyph.js measured. In
+ * a skipped subtree a node inserted just now has no box and reports an
+ * all-zero rect, while the mark still reports the off-screen one it was last
+ * laid out at: their difference is the scroll offset, not a baseline. It was
+ * written out as `128.2294em` and threw the 漢 a page and a half down, where
+ * the section's `overflow: clip` swallowed it. The gap looked normal — the
+ * width belongs to the transparent real 漢, not to the SVG.
+ *
+ * The same skip silences the subtree's animations, which is why this also
+ * checks the opening ceremony: the strokes never ran, so the `animationend`
+ * fonts-gate.js waits on never came, `data-pass` stayed on all twelve strokes
+ * (an undrawn watermark) and `data-han-traced` was never stamped — leaving
+ * station①'s envelope folded for the life of the page.
+ */
+test('a load that starts below the fold still measures the hero', async ({ page }) => {
+  await page.goto('/#station-fonts')
+  await page.waitForFunction(() => (document as any).fonts.status === 'loaded')
+
+  /* The ceremony is asserted FIRST, while the page is still parked down at
+     the station: scrolling back up un-skips the hero and lets the pass finish
+     after all — what a reader would do, and it would hide the very thing this
+     test is here for.
+
+     The deadline matters as much as the assertion. A real pass lands well
+     under 8s (measured 5–8s for all twelve strokes) and fonts-gate.js's
+     backstop only fires at 12s, so a 9s window is what separates「描完了」from
+    「靠保底收的場」. Skipped, this read 12 strokes still writing and no stamp
+     at all, for the life of the page. */
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() => ({
+          traced: document.documentElement.dataset.hanTraced,
+          writing: [...document.querySelectorAll('.Manifesto .Outline .Stroke')]
+            .filter(($s) => $s.hasAttribute('data-pass')).length,
+        })),
+      { timeout: 9_000 },
+    )
+    .toEqual({ traced: '', writing: 0 })
+
+  // and the glyph itself is where the wordmark's baseline puts it
+  await page.evaluate(() => scrollTo(0, 0))
+  await page.waitForTimeout(300)
+  const [hero] = (await geometry(page)).filter((g) => g.sel === '.Manifesto h1 .Brand')
+  expect(Math.abs(hero.glyphOffBaselinePx), 'hero glyph off its baseline').toBeLessThan(1)
+})

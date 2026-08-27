@@ -146,6 +146,19 @@ const fontsSettled = () =>
    at DCL — on a slow network the pass may already be over when we
    wake, its animationend fired into the void (found on real 3G), so a
    `finished` animation counts as the completed pass. */
+/* Backstop for a pass that never runs at all. `animationend` only fires if
+   the animation STARTED, and a subtree whose rendering is skipped runs no
+   animations — `content-visibility: auto` on the hero did exactly that on any
+   reload that restored a mid-page scroll (frame.css now exempts `.Manifesto`,
+   and a backgrounded tab can still throttle the pass away). Without this the
+   promise hangs for the life of the page: `data-pass` never comes off the
+   strokes and `data-han-traced` is never stamped, so station①'s envelope
+   stays folded (envelope.css). Resolving late is harmless — the sheet lands
+   on its settled `animation: none` frame, a fully written 漢, which is where
+   the pass was headed anyway. Well clear of the longest legitimate pass
+   (PASS_TOTAL_S plus the per-stroke floors plus the 0.7s head start). */
+const PASS_BACKSTOP_MS = 12_000
+
 const firstPass = () =>
   new Promise((resolve) => {
     const $strokes = Array.from(
@@ -159,6 +172,7 @@ const firstPass = () =>
       done()
     } else {
       $finalStroke.addEventListener('animationend', done, { once: true })
+      setTimeout(done, PASS_BACKSTOP_MS)
     }
   })
 
