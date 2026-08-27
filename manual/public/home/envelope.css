@@ -1,354 +1,141 @@
 @charset "UTF-8";
 
 /**
- * 站①右上角的直式信封 — 兩份 <address> 樣張貼在信封面上。
+ * 站①的信封——詩的浮水印。
  *
- * 自成一檔：它有自己的三拍（進場鍵在 `data-han-traced`、開封鍵在站台的
- * `[data-revealed]`、hover 重播），而且不與詩行／圖解共用任何選擇器——整塊
- * 可以搬到別頁去。獨立展示頁見 manual/demo/envelope.html（那份自帶 token，
- * 不吃本頁的 CSS）。
+ * 詩的第一句是「古騰堡來信」，這是那封信。它從 2026-08-28 起是**背景**，
+ * 不是道具：以前它釘在站台右上角、靠 `overflow-clip-margin` 頂進 manifesto
+ * 當首屏預告，還會進場、開封、hover 重播，是全頁最沒有解說卻聲量最大的
+ * 物件。讀者要細讀詩的第一句才知道它為什麼在那裡，而它出現在版面上的順序
+ * 恰好是解謎的反方向。
  *
- * 唯一的外部相依：`semantics-settle` 這支 keyframes 定義在
- * semantics-specimen.css（動畫名全域，不重複定義）。
+ * 降到浮水印層之後用意不必解釋：前面幾站已經用段、零、樂、碼、漢教會讀者
+ *「那一層是氣氛」，而詩壓在信封口上，構圖自己把「來信」講完。整支檔案因此
+ * 從 354 行縮到這裡——三拍動畫、hover 重播、窄版改走文流、裁切餘量全部
+ * 沒有了，浮水印不需要它們。也不再依賴 semantics-specimen.css 的
+ * `semantics-settle`／`semantics-straighten`。
  *
- * （2026-08-06 自 station-semantics.css 切出。）
+ * 錨點是詩的 `<article>`，不是站台：article 就是詩塊，所以信封永遠襯著它
+ * 要襯的東西，主控台的字級一動也不會走位（`article` 的 `position: relative`
+ * 寫在 semantics-specimen.css，與字級同一區）。
+ *
+ * **零 JS，零量測**：尺寸全部由 `em` 導出，而 `em` 在這裡就是詩的字級。
+ * 直排的 `<article>` 以 `inline-size: 17em` 定出它的**物理高**，所以
+ * `17em × 倍率` 就是信封該有的高，容器查詢把字級調小時它自己跟著縮。
+ * 刻意不用 `cq*` 單位：直排子樹裡它們不可靠（實測 Chrome 退回視窗、又按
+ * 元素自己的軸算，semantics-specimen.css § 直排 記過同一個坑）。
+ *
+ * 數值來自 demo/envelope-watermark.html 的旋鈕，逐格試出來的。
  */
-
-/* ── the envelope ────────────────────────────────────────────────────
-   Station ①'s letterheads made literal: a 長形 envelope pinned to the
-   STATION's top-right corner, carrying the two <address> specimens on
-   its face. Geometry and the occlusion model come from
-   manual/demo/envelope.html — the flap belongs to the envelope's BACK,
-   so it must NEVER paint over the face: flap first in DOM, both parts
-   positioned, no z-index anywhere ⇒ paint order alone guarantees the
-   face wins, and the flap only ever shows past the top edge.
-
-   Line-drawn, not shaded: the flap is the same paper as everything
-   around it, so tone can't carry it — a crisp contour does (the
-   reference 直式信封 diagrams are line art too). The open flap crosses
-   the section border into the manifesto's space; `main > section`
-   clips (`overflow: clip`, station-frame.css), so the escape runs
-   through `overflow-clip-margin` — safe HERE because this station has
-   no `data-wm` watermark waiting outside the box to be un-cropped.
-
-   Three beats, three signals: the ENTRANCE keys on `data-han-traced`
-   (fonts-gate.js — the 漢 tracing's last stroke), the OPENING on the
-   station's `[data-revealed]` (reveal.js) through a 1s
-   transition-delay, the hover replay on :hover. The envelope owns no
-   JS of its own. No-JS ⇒ no stamps ⇒ visible, settled, sealed;
-   everything lives on the face, so nothing is ever hidden. */
-#station-semantics {
-  /* let the envelope out of the section clip — just far enough that
-     its 郵遞區號 frame (and only that — no 大宋) rides above the
-     section border into the manifesto, a red teaser on the first
-     screen. 15rem still covers the open, hover-scaled flap tip.
-     Chrome 90 / FF 102; no Safari — the @supports below keeps the
-     envelope fully inside there, so nothing is ever half-cropped. */
-  overflow-clip-margin: 15rem;
-}
-
-/* 進場：等「漢」第一次描邊收筆——除非讀者先到。fonts-gate.js stamps
-   `data-han-traced` on <html> the moment the pale pass's last stroke
-   lands; until then the envelope waits below, sunk and transparent,
-   then rises out of the fold with the fade. But a reader who has
-   ALREADY scrolled to the station (reveal.js stamped its
-   `[data-revealed]`) shouldn't stare at a hole where the envelope
-   belongs while a ceremony they can't even see finishes upstairs —
-   either signal releases the entrance, whichever lands first.
-   The hidden FROM state is keyed on `html[data-fonts-gate]` — an
-   attribute only JS ever sets — so no-JS never hides the envelope;
-   reduced-motion skips the whole entrance via the media gate (base
-   state = settled, as everywhere else on this page). */
-@media (prefers-reduced-motion: no-preference) {
-  html[data-fonts-gate]:not([data-han-traced])
-    #station-semantics:not([data-revealed]) .Envelope {
-    opacity: 0;
-    translate: 0 3.5rem;
-  }
-  html[data-han-traced] #station-semantics .Envelope,
-  #station-semantics[data-revealed] .Envelope {
-    /* scale rides along — this list outweighs the hover block's, and
-       dropping scale here would snap the hover lift */
-    transition:
-      scale 450ms ease,
-      opacity 900ms ease-out,
-      translate 900ms cubic-bezier(.22, .7, .3, 1)
-    ;
-  }
-}
 
 #station-semantics .Envelope {
   & {
-    --_env-b: 30rem;                          /* 信封高 — 唯一自由變數 */
-    --_env-i: calc(var(--_env-b) * 120 / 235);
-    --_env-flap: calc(var(--_env-b) * .09);
-    --_env-shadow: color-mix(in srgb, var(--palette-black) 18%, transparent);
-    /* the contour — stronger than --ui-rule, which vanished into
-       the station ground */
-    --_env-line: color-mix(in srgb, var(--ui-text) 44%, transparent);
-    /* 郵遞區號框 red — postal convention. Tokenised as --ui-proof now
-       that the diagram's corrector-red annotation shares the hue. */
-    --_env-frame: var(--ui-proof);
+    /* 唯一的自由變數：信封高 ＝ 詩塊高 × 1.8。其餘（寬、地址級數）全由它導出。
+       自訂屬性帶長度時**在宣告它的元素上就算成絕對值**，所以底下的地址即使
+       自己改了字級，讀到的仍是這個 em 算出來的 px——不會遞迴縮。 */
+    --_env-b: calc(17em * 1.8);
+    /* 線稿吃虧：站台浮水印 `--ui-wm` 的 4% 是為**一塊實心字面**調的，一條
+       hairline 在同樣的 alpha 下幾乎不存在（實測 4% 時只剩地址小字讀得出來）。
+       所以這裡自己配，不共用那顆 token。 */
+    --_env-ink: color-mix(in srgb, var(--ui-text) 10%, transparent);
+    /* 紅又比墨吃虧一層：同 alpha 下有色相的細線看起來更淡，給它 2.5 倍。 */
+    --_env-red: color-mix(in srgb, var(--ui-proof) 25%, transparent);
 
+    /* 直排盒裡一律寫**物理**方向：邏輯屬性照元素自己的書寫模式解析，在
+       `vertical-rl` 的 <article> 裡 `inset-block-start` 是「右」不是「上」。
+       兩種書寫模式相遇時物理才是誠實的寫法（同 semantics-specimen.css
+       § 信頭標籤）。 */
     position: absolute;
-    inset-block-start: 3.4rem;  /* flap fully inside the clip (Safari) */
-    inset-inline-end: var(--gutter);
-    inline-size: var(--_env-i);
-    block-size: var(--_env-b);
+    z-index: -1;
+    top: 75%;          /* 信封口落在詩的下四分之一 —— 信紙壓住封口 */
+    left: 50%;
+    transform: translateX(-50%);
+    height: var(--_env-b);
+    aspect-ratio: 120 / 235;   /* 長形三號 */
+    color: var(--_env-ink);
+    pointer-events: none;
 
-    /* the station fly-in (station-frame.css `[data-station] > *`,
-       opacity + translate) must NOT touch the envelope — it is
-       first-screen furniture, simply THERE from the moment the page
-       paints, sealed until the reader reaches the station. The
-       heavier selector un-fades it. */
-    opacity: 1;
-    translate: none;
+    /* 退成印象，不是圖說。模糊與濃度是同一件事的兩半——blur 把同樣的墨攤到
+       更大的面積，看起來就更淡，所以這兩個數只能一起調。
+       `filter` 在這裡安全，但值得記一筆：舊版的信封刻意避開它，因為被
+       layerize 之後 Chromium 用區塊原本的裁切邊裁那一層，`overflow-clip-margin`
+       到不了，掀開的封口整片消失（實測 2026-07-28）。現在浮水印整個待在版心
+       裡，沒有東西要溢出站台，那個衝突就不存在了。 */
+    filter: blur(1.5px);
+
+    /* 下緣淡出。信封比詩高，錨在詩塊上就一定往下伸進圖說那幾行；與其縮小到
+       認不出是信封，不如讓它在碰到文字之前先沒了。浮水印不需要收邊——一條
+       硬邊反而在宣告「我是一個物件」，那正是這次要拆掉的東西。 */
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
   }
 
-  /* hover 拿起這封信：放大與闔蓋同拍起步、同拍落定（450ms），
-     闔好停 100ms 就重新掀開。scale 的擴張全數落在 15rem 的 clip
-     餘量與 gutter 之內。 */
-  @media (prefers-reduced-motion: no-preference) {
-    & {
-      transition: scale 450ms ease;
-    }
-    &:hover {
-      scale: 1.1;
-    }
-    &:hover [data-face] {
-      box-shadow:
-        0 2px 4px var(--_env-shadow),
-        0 2rem 3rem -.9rem var(--_env-shadow)
-      ;
-    }
-  }
-
-  /* …and where the clip can stretch, the letter peeks over the
-     section border into the manifesto — exactly the 郵遞區號 band
-     (frame bottom sits ~2.9rem below the face top) and not a hair of
-     the 大宋 column (which starts 4.4rem down), sealed until the
-     reader reaches the station */
-  @supports (overflow-clip-margin: 1rem) {
-    & { inset-block-start: -3.2rem; }
-  }
-
-  /* 蓋 — anchored above the face, hinge = the envelope's top edge.
-     Sealed: rotateX(-180deg), folded flat behind the face (invisible).
-     `perspective` stays INSIDE the transform: putting it on a parent
-     creates a stacking context and breaks the tree-order occlusion. */
-  [data-flap] {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 100%;
-    block-size: var(--_env-flap);
-    transform-origin: 50% 100%;
-    transform: perspective(1600px) rotateX(-180deg);
-    clip-path: polygon(17% 0, 83% 0, 100% 100%, 0 100%);
-    /* interior + contour, WITHOUT `filter`: a filtered element gets
-       layerized and Chromium clips that layer at the section's plain
-       clip edge — `overflow-clip-margin` never reaches it, and the
-       open flap (fully outside the box) vanished wholesale (measured
-       2026-07-28: red background painted, red drop-shadow didn't).
-       The line is an SVG stroke in the background stack instead —
-       background painting stays in the element's own layer, which the
-       clip margin does cover. Stroke colour is theme-neutral grey so
-       one data-URI serves both schemes; the box's 567:100 viewBox
-       matches the flap's fixed aspect (i : flap = (120/235) : .09),
-       so the stroke never distorts. */
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 567 100' preserveAspectRatio='none'%3E%3Cpath d='M97.9 1.5 L469.1 1.5 L565.5 98.5 L1.5 98.5 Z' fill='none' stroke='rgb(119 114 106 / 0.8)' stroke-width='3'/%3E%3C/svg%3E")
-        center / 100% 100% no-repeat,
-      var(--ui-bg)
-    ;
-    transition: transform 950ms cubic-bezier(.62, .02, .3, 1) 1s;
-  }
-
-  /* 正面 — later in DOM, opaque, covers the body ⇒ paints over the flap */
-  [data-face] {
-    position: relative;  /* same paint phase as the flap; tree order decides */
+  /* 封口畫在 viewBox 之外（負 y），所以不能讓 svg 自己裁掉——viewBox 就是
+     信封正面，正面才是地址排字用的座標系。 */
+  svg {
+    overflow: visible;
+    inline-size: 100%;
     block-size: 100%;
-    background: var(--ui-bg);
-    border: 1px solid var(--_env-line);
-    box-shadow:
-      0 1px 2px var(--_env-shadow),
-      0 1.25rem 2rem -.9rem var(--_env-shadow)
-    ;
-    transition: box-shadow 450ms ease;  /* 影子與 scale 同拍 */
   }
 
-  /* 郵遞區號框 — top-right, kanji numerals, red by convention */
-  [data-postal] {
-    position: absolute;
-    inset-block-start: 1.4rem;
-    inset-inline-end: 1.2rem;
-    display: flex;
-    margin: 0;
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-
-    & span {
-      display: grid;
-      place-content: center;
-      inline-size: 1.6em;
-      block-size: 1.9em;
-      border: 1px solid var(--_env-frame);
-      color: var(--_env-frame);
-      line-height: 1;
-    }
-    & span + span { margin-inline-start: -1px; }
+  /* `non-scaling-stroke`：線稿當浮水印時，筆畫粗細就是它的音量，不能讓
+     信封的大小連帶改了它。 */
+  .Line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
   }
 
-  /* 宛名 — the Song letterhead, 直排 down the face. Element-own logical
-     axes (vertical-rl): block = right→left, inline = top→bottom. The
-     block-end padding reserves the left flank for the German sender;
-     inline-start clears the 郵遞區號框. */
-  address:not([lang]) {
+  .Postal {
+    stroke: var(--_env-red);   /* 郵遞區號框，紅是郵政慣例 */
+  }
+
+  /* 宛名／差出人。百分比是舊版的 rem 值換算來的，**分母一律是信封的寬**：
+     padding 與 inset 的百分比都對包含塊的 inline 尺寸解析，而包含塊
+    （.Envelope 本身）是橫排的——它的 inline 尺寸就是寬。直排的是這兩個盒子
+     自己，不是它們的包含塊。 */
+  [data-part="recipient"],
+  [data-part="sender"] {
     position: absolute;
-    inset: 0;
     writing-mode: vertical-rl;
-    padding-block: 1.5rem 7rem;     /* 右／左（左は差出人の欄） */
-    padding-inline: 4.4rem 1.4rem;  /* 上（枠の下から）／下 */
-    font-size: 0.875rem;
-    line-height: 2.1;
+    margin: 0;
     text-align: start;
-    word-break: keep-all;  /* 欄は全角空白でだけ折り返す — 語が千切れない */
+    word-break: keep-all;   /* 欄只在全形空白處折 */
+  }
 
-    & p { margin: 0; }
+  [data-part="recipient"] {
+    & {
+      inset: 0;
+      padding-block: 9.8% 45.7%;   /* 右／左（左邊留給差出人） */
+      padding-inline: 28.7% 9.1%;  /* 上（郵遞區號框之下）／下 */
+      font-size: calc(var(--_env-b) * .0292);
+      line-height: 2.1;
+    }
 
-    /* 收件人欄 — the big column, dropped from the head like the
-       reference envelope's 山田太郎様 */
-    & [data-name] {
+    p { margin: 0; }
+
+    /* 收件人欄——像參考信封的「山田太郎様」那樣從頭上掉下來 */
+    [data-name] {
       margin-block-start: 1.2em;
       padding-inline-start: 2.2em;
-      font-size: 1.625rem;
+      font-size: calc(var(--_env-b) * .0542);
       letter-spacing: .1em;
     }
 
-    /* 「鈞啓」 rides the same column, a size down */
-    & [data-honorific] {
+    /* 「台啓」騎同一欄，小一號 */
+    [data-honorific] {
       margin-inline-start: 1.1em;
-      font-size: 1rem;
+      font-size: calc(var(--_env-b) * .0333);
       letter-spacing: .12em;
     }
   }
 
-  /* 差出人 — Mainz, 直排 like the 宛名: each <br>-line becomes a column
-     of sideways Latin (a 直排 column rotates Latin onto its side — the
-     figure's own footnote). Italic as the UA wills: han.css only cancels
-     the slant for CJK — the station's point, now set vertically.
-     Element-own logical axes again: block-end＝左, inline-end＝下. */
-  address[lang] {
-    position: absolute;
-    writing-mode: vertical-rl;
-    inset-block-end: 1.1rem;  /* 左 */
-    inset-inline-end: 1.3rem; /* 下 */
-    font-size: 0.75rem;
+  /* 差出人維持斜體——han.css 只為 CJK 取消偽斜體，這一塊是那條規則的另一半，
+     現在只當紋理看，不再當樣張（可讀的那一份該去文件頁，見 docs/TODO.md）。 */
+  [data-part="sender"] {
+    inset-block-end: 7.2%;    /* 直排下 ＝ 左 */
+    inset-inline-end: 4.3%;   /* 直排下 ＝ 下 */
+    font-size: calc(var(--_env-b) * .025);
     line-height: 1.6;
-    text-align: start;
   }
 }
-
-/* The envelope opens on the STATION's reveal stamp. It once observed
-   its own box (the tall station used to stamp while the envelope sat
-   below the fold, and the flap finished opening unseen) — but now the
-   envelope rides above the fold from load, so the station's stamp
-   fires while it is guaranteed on screen, and «scroll to station ①»
-   is exactly the beat the opening should play on. */
-#station-semantics[data-revealed] .Envelope [data-flap] {
-  /* the ID rides along for cascade weight — the sealed base rule lives
-     under `#station-semantics` too, and an ID outguns any class pile */
-  transform: perspective(1600px) rotateX(-18deg);
-}
-
-/* hover replay — 闔上、只停 100ms、馬上再開。An ANIMATION, not a
-   transition: one hover state has to visit two transform values and
-   come back. Gated on the station's [data-revealed] (a sealed
-   envelope has nothing to replay) and on no-preference (it is pure
-   motion). Leaving mid-run cancels the animation and the computed
-   transform snaps back to the base (open) value — no transition
-   fires, since that value never changed.
-
-   The clock is 1.5s so the beats land where the hover choreography
-   wants them: 0–30% ＝ 450ms shut, in step with the 450ms scale-up
-   (lid closes exactly as the lift finishes); 30–37% ＝ ~100ms of
-   rest; 37–100% ＝ ~945ms re-opening on the demo's own easing. */
-@keyframes semantics-envelope-replay {
-  0% {
-    transform: perspective(1600px) rotateX(-18deg);
-    animation-timing-function: cubic-bezier(.45, 0, .55, 1);
-  }
-  30%, 37% {
-    transform: perspective(1600px) rotateX(-180deg);
-    animation-timing-function: cubic-bezier(.62, .02, .3, 1);
-  }
-  100% {
-    transform: perspective(1600px) rotateX(-18deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  #station-semantics[data-revealed] .Envelope:hover [data-flap] {
-    animation: semantics-envelope-replay 1.5s;
-  }
-}
-
-/* The letterheads keep the correction walk (settle + straighten),
-   keyed to the envelope's own stamp now that they live outside the
-   figure's `[data-revealed] &` scope. The German twin only settles —
-   it is SUPPOSED to stay italic. */
-@media (prefers-reduced-motion: no-preference) {
-  #station-semantics[data-revealed] .Envelope {
-    address:not([lang]) {
-      animation:
-        semantics-settle 520ms step-end var(--row-cue) both,
-        semantics-straighten 520ms ease-out var(--row-cue);
-    }
-    address[lang] {
-      animation: semantics-settle 520ms step-end var(--row-cue) both;
-    }
-  }
-  #station-semantics .Envelope {
-    address:not([lang]) { --row-cue: 0ms; }
-    address[lang]       { --row-cue: 200ms; }
-  }
-}
-
-/* The 前／後 switch covers the envelope too — its letterheads are
-   specimens (the pseudo-italic case) even in decoration dress. */
-:root[data-han-module-semantics='off'] #station-semantics .Envelope {
-  & {
-    animation: none;
-    --han-semantics: off;
-  }
-  & * {
-    animation: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #station-semantics .Envelope [data-flap] {
-    transition-duration: 1ms;
-    transition-delay: 0s;
-  }
-}
-
-/* Below the width where the band and the envelope can share the row,
-   the decoration steps into the flow above the poem instead — it holds
-   real content (the two address specimens), so it can't just be hidden. */
-@media (max-width: 52rem) {
-  #station-semantics .Envelope {
-    /* `relative`, not `static`: everything drawn on the face — 郵遞區號框,
-       the letterheads, the flap — is absolutely positioned against this box.
-       Made static, they escape to the nearest positioned ancestor (the
-       station), and one of them stretched to the station's full width: a
-       ~3px horizontal scroll on the whole document at 360px, and a red
-       postal frame that was no longer on the envelope. In flow it must
-       still be a containing block; only its POSITIONING changes. */
-    position: relative;
-    /* the flap opens UPWARD out of the box — the escape room goes above */
-    margin-block-start: calc(var(--_env-flap) + .5rem);
-    margin-block-end: 2rem;
-    margin-inline: auto;
-  }
-}
-

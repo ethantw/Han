@@ -20,8 +20,9 @@
   沒補的：報紙帶的日期改寫與左右箭頭（papers-dateline.js／strip-nav.js）。那兩支
   不影響這裡要判斷的東西，日期就停在 HTML 裡的靜態值。
 
-  旋鈕全部作用在浮水印上，站台本身一個字不改。「現況」勾起來就換回真信封，
-  同一頁對照。
+  旋鈕全部作用在自己那份浮水印上，站台本身一個字不改。抓進來的站①自己也帶著
+  浮水印（2026-08-28 起實裝），「站上定值」就是拿它來對照——要再調一輪，滑到
+  滿意再把數字抄回 home/envelope.css。
 
   版號釘 0.2.0-rc.0 不用 @latest：這頁在判斷易讀性，字體換一版度量就變。
   工作台，dev-only。打磨完把結論搬回 station-semantics，這頁就可以刪。
@@ -170,11 +171,13 @@ for (const $input of document.querySelectorAll('[data-var]')) {
   --wm-shown: block;
 }
 
-/* 現況對照。真信封原本就在站台裡，這裡只是把它藏起來又放回來——不改它一個
-   宣告，對照才算數。互斥的一對值由**同一個 checkbox** 推導（`:has()`，站上
-   主題開關的同一套配方），而不是兩個各自發佈的變數：CSS 反相不了一個布林，
-   兩個變數就會有一種「兩個都開」的狀態存在。 */
-:root:has(input[name='real-envelope']:checked) {
+/* 站上定值 vs 旋鈕。抓進來的站①自己就帶著浮水印（2026-08-28 起實裝），所以
+   勾起來 ＝ 看站上那組寫死的數，放開 ＝ 看旋鈕現在的數，同一頁對照。要再調
+   一輪就是這樣用：滑到滿意，把數字抄回 home/envelope.css。
+   互斥的一對值由**同一個 checkbox** 推導（`:has()`，站上主題開關的同一套
+   配方），而不是兩個各自發佈的變數：CSS 反相不了一個布林，兩個變數就會有
+   一種「兩個都開」的狀態存在。 */
+:root:has(input[name='shipped']:checked) {
   --wm-real: block;
   --wm-shown: none;
 }
@@ -333,7 +336,7 @@ for (const $input of document.querySelectorAll('[data-var]')) {
 <div class="DemoChrome">
 <header class="DemoHead">
   <h1>信封當浮水印——整站①預覽</h1>
-  <p>站①原樣從首頁抓來，只有信封換成了背景。詩壓在信封口上，構圖自己把首句的「來信」講完。旋鈕只動浮水印；「現況」勾起來換回真信封，同一頁對照。</p>
+  <p>站①原樣從首頁抓來，只有信封換成了背景。詩壓在信封口上，構圖自己把首句的「來信」講完。旋鈕只動浮水印；「站上定值」勾起來換成 home/envelope.css 寫死的那一組，同一頁對照。</p>
 </header>
 
 <form class="Knobs">
@@ -375,8 +378,8 @@ for (const $input of document.querySelectorAll('[data-var]')) {
     信紙底
   </label>
   <label>
-    <input type="checkbox" name="real-envelope">
-    現況
+    <input type="checkbox" name="shipped">
+    站上定值
   </label>
   <label>
     <input type="checkbox" name="dark-mode">

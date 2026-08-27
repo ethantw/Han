@@ -87,74 +87,6 @@
        flag lands on the <article> and not the <figure>: a style query reads
        an ANCESTOR, so the caption (and everything outside the poem) has to
        stay out of the subtree it switches. -->
-  <!-- The two letterheads used to stand as the band's first and last
-       columns; now they literally ride an ENVELOPE — the letter arrives
-       addressed to 畢昇 himself, signed from Mainz (the sender columns,
-       lower left). The poem keeps its place; the envelope is an
-       absolutely-positioned decoration pinned to the STATION's top-right
-       corner, peeking over the section border into the manifesto by
-       exactly its red 郵遞區號 band — no 大宋, just the frame as a
-       first-screen teaser (`overflow-clip-margin`, @supports-gated —
-       browsers without it keep the whole envelope inside the clip).
-       It ENTERS when the 「漢」 tracing's first pass lands its last
-       stroke: fonts-gate.js stamps `data-han-traced` on <html>, and
-       the envelope rises out of the fold with a fade. The flap then
-       lifts one second after `reveal.js` stamps the STATION's
-       `[data-revealed]` — a pure CSS `transition-delay`; the envelope
-       owns no JS of its own. Envelope model (paint-order occlusion: flap FIRST in
-       DOM, both parts positioned, no z-index anywhere, so the face
-       always covers it and it only ever shows past the top edge — the
-       flap lives on the BACK of a real envelope) is documented in
-       manual/demo/envelope.html. No tag labels here, unlike the band:
-       the envelope reads as a LETTER, and a mono `<address>` floating
-       on the paper broke that reading.
-
-       <address> is the pseudo-italic case at its purest — the UA
-       italicises it by default and han.css cancels that for
-       :lang(zh|ja|ko) ONLY, so Gutenberg's German twin stays italic,
-       exactly as it should. One rule, opposite outcomes.
-
-       The recipient line: 道兄 — a brother on the same Way. The two
-       invented movable type INDEPENDENTLY, four centuries apart, so
-       any master-and-disciple address (祖師, 先師…) would claim a
-       lineage that never existed; 道兄 honours the elder (畢 is the
-       senior by ~480 years) while keeping them exactly what the poem
-       makes them: peers on one road, each walking it alone. 台啓 is
-       the matching opening-formula between respected equals — not
-       鈞啓, which bows to a superior. Both are filed
-       under postal systems that wouldn't exist for centuries, and both
-       postcodes are real: 55116 is Mainz's, and 438712 is 草盤地鎮's,
-       英山縣, Hubei — the hillside where Bi Sheng's tombstone was
-       unearthed in 1990 (authenticated 1995; the attribution has its
-       sceptics, but it is the official line) and where the 畢昇紀念園
-       with its memorial hall opened in 2023. Gutenberg's letter is
-       addressed, quite literally, to the Bi Sheng museum. The Song-era
-       address is period-correct too: 蘄州蘄水縣直河鄉 sat in 淮南路
-       all of Bi Sheng's life — the 東/西 split only came in 1071,
-       twenty years after his death. The postcode rides in the red
-       郵遞區號 frame, in kanji numerals — a 直排 column rotates Latin
-       digits onto their side, and Chinese numerals are what a vertical
-       address would have used anyway. Gutenberg really did print in
-       the Hof zum Humbrecht. -->
-  <div class="Envelope" role="presentation">
-    <span data-flap></span>
-    <div data-face>
-      <p data-postal aria-label="郵遞區號 438712">
-        <span>四</span><span>三</span><span>八</span><span>七</span><span>一</span><span>二</span>
-      </p>
-      <address>
-        <p>大宋　淮南路　蘄州蘄水縣　直河鄉五桂墩</p>
-        <p data-name>畢昇道兄<span data-honorific>台啓</span></p>
-      </address>
-      <address lang="de">
-        Johannes Gutenberg<br />
-        Hof zum Humbrecht, Schustergasse 12<br />
-        55116 Mainz<br />
-        Heiliges Römisches Reich
-      </address>
-    </div>
-  </div>
-
   <figure class="semantic-elements" style="--han-cite-title-marks: bracket">
     <article>
       <!-- Every line is wrapped in a bare <span>, and that is structural, not
@@ -264,6 +196,54 @@
            and the truest: the problem is older than both correspondents
            and outlived them both. -->
         <span>終無定論，另見<cite>真實字符論</cite></span>
+
+      <!-- 那封信。詩的第一句是「古騰堡來信」，這是那封信的信封：收件人畢昇，
+           寄件人 Mainz，兩個郵遞區號都是真的——55116 是 Mainz，438712 是湖北
+           英山縣草盤地鎮，1990 年掘出畢昇墓碑、2023 年開了畢昇紀念園的那面
+           山坡。宋代的地址也對得上：蘄州蘄水縣直河鄉終畢昇一生都在淮南路，
+           東西分路是他死後二十年（1071）的事。收件人稱「道兄」而不是祖師或
+           先師——兩人各自發明活字，相隔四百年，沒有師承可攀；「台啓」是平輩
+           敬語，不是對上位者的鈞啓。
+
+           它是**背景**，不是道具。以前它釘在站台右上角、頂進 manifesto 當
+           首屏預告，是全頁最沒有解說卻聲量最大的物件——讀者要細讀詩的第一句
+           才知道它為什麼在那裡，而它出現在版面上的順序恰好是解謎的反方向。
+           降到浮水印層之後用意不必解釋：前面幾站已經用段、零、樂、碼、漢教會
+           讀者「那一層是氣氛」，而詩壓在信封口上，構圖自己把「來信」講完。
+
+           位置錨在詩的 <article> 上，不是站台上：article 就是詩塊，所以信封
+           永遠襯著它要襯的東西，主控台的字級一動也不會走位。
+
+           不再用 <address>。規範上那是「本文件的聯絡資訊」，而這是收件人與
+           一位虛構寄件人的郵政地址——正是規範點名不得使用的那一種，何況兩塊
+           並置等於宣告了兩份互相矛盾的聯絡資訊。當背景之後它整塊是插圖，所以
+           aria-hidden，郵遞區號也不再需要那個 <p> 上讀不到的 aria-label
+           （paragraph 這個角色不支援 author 命名）。
+
+           線稿是一張 inline SVG，不是四個 DOM 元素堆出來的信封：浮水印要能
+           染色、遮罩、任意縮放，這三件事在一張 SVG 上是屬性。座標 ＝ 長形三號
+           120×235mm，1 單位 ＝ 1mm。 -->
+      <div class="Envelope" aria-hidden="true">
+        <svg viewBox="0 0 120 235">
+          <g class="Line">
+            <rect x="0.5" y="0.5" width="119" height="234" />
+            <path d="M 20.4 -20.6 L 99.6 -20.6 L 119.5 -0.5 L 0.5 -0.5 Z" />
+            <g class="Postal">
+              <rect x="54.2" y="11" width="9.4" height="11.2" />
+              <rect x="63.6" y="11" width="9.4" height="11.2" />
+              <rect x="73.0" y="11" width="9.4" height="11.2" />
+              <rect x="82.4" y="11" width="9.4" height="11.2" />
+              <rect x="91.8" y="11" width="9.4" height="11.2" />
+              <rect x="101.2" y="11" width="9.4" height="11.2" />
+            </g>
+          </g>
+        </svg>
+        <div data-part="recipient">
+          <p>大宋　淮南路　蘄州蘄水縣　直河鄉五桂墩</p>
+          <p data-name>畢昇道兄<span data-honorific>台啓</span></p>
+        </div>
+        <p data-part="sender" lang="de">Johannes Gutenberg<br />Hof zum Humbrecht, Schustergasse 12<br />55116 Mainz<br />Heiliges Römisches Reich</p>
+      </div>
     </article>
     <!-- 標記原理圖 — the whole lookup table, abstracted. Six bars: the same
          input (a slanted, bare block of text) and six outputs. It exists
@@ -618,7 +598,7 @@
         </article>
       </dialog>
     </article>
-    <article id="paper-ko" lang="ko-Hant">
+    <article id="paper-ko" lang="ko-Kore">
       <header>
         <p class="Masthead">太陽中文報</p>
         <p class="Dateline"><time datetime="2126-07-29"><ruby>西紀<rt>서기</rt></ruby> 2126年 7月 29日</time>・<ruby>科技<rt>과기</rt></ruby> <ruby>考古<rt>고고</rt></ruby></p>

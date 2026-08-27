@@ -9,9 +9,9 @@
  * `#station-semantics:has(.MarkDiagram [data-mark]:hover, .poem-like u:hover)`
  * 同時管兩邊，誰單獨搬走都要拆散那套編排。
  *
- * 站台自己的版面（以及四版報頭）留在 station-semantics.css；信封另成一檔。
- * `semantics-settle` 這支 keyframes 由本檔定義，envelope.css 也用它（動畫名是
- * 全域的，重複定義只會互相覆蓋，所以放在主要使用者這邊）。
+ * 站台自己的版面（以及四版報頭）留在 station-semantics.css；信封另成一檔
+ *（home/envelope.css——2026-08-28 起它是浮水印，不再有動畫，也不再借本檔的
+ * keyframes；它只跟這裡共用一件事：詩的 <article> 是它的包含塊）。
  *
  * （2026-08-06 自 station-semantics.css 切出。）
  */
@@ -37,46 +37,6 @@
 @keyframes semantics-settle {
   from { --han-semantics: off; }
   to   { --han-semantics: on; }
-}
-
-/* THE PSEUDO-ITALIC STANDING UP — and a warning, because this does LESS
-   than it looks like it does.
-
-   The computed value really does interpolate: sampled frame by frame it
-   walks 10deg → 9.75deg → … → normal. THE PAINT DOES NOT FOLLOW.
-   Measured in Chromium 141 by drawing 「版」 at 160px and comparing the ink's
-   shear (leftmost lit pixel near the top minus near the bottom):
-
-     normal / oblique 0deg ............ 10px   (the glyph's own asymmetry)
-     oblique 4/8/10/14/20deg, italic ... 41px  — every one identical
-
-   A font with no oblique face gets a FIXED synthetic shear; the <angle>
-   only ever reaches font matching, never rasterisation. So this run is a
-   cut, not a rotation, and no amount of easing changes that. It is kept
-   because it costs nothing and is correct where an engine does honour the
-   angle (a real oblique face, a `slnt` axis); it is NOT the station's
-   argument. The argument moved to `.MarkDiagram`, where the slant is
-   geometry and therefore actually continuous — see
-   docs/plans/semantics-mark-diagram.md and manual/demo/oblique-straighten.html.
-
-   Do not "fix" this with `transform: skewX()`: transform does nothing to an
-   inline box, `display: inline-block` would be needed, and in the 直排 band
-   a skew shears the whole run sideways (measured: 1.28 characters at 12deg
-   over six glyphs) instead of slanting each glyph — every run slides out of
-   its own column.
-
-   No fill mode, and that is load-bearing at both ends: before the delay the
-   UA's own italic shows (the row is still `--han-semantics: off`), and after
-   the run the cascade takes back over — by then the flag has flipped and
-   han.css's `font-style: inherit` holds it upright.
-
-   詩行已經不用這一支了（改整段 skewY，見 semantics-slant-settle）——只剩
-   宛名還掛著。它是一整塊多欄的 <address>，剪切的驅動軸會跨過所有欄而累積，
-   不能照搬詩行那招；而 Chrome 又不畫 `oblique <角度>`，所以那裡的「扶正」
-   目前等於在旗標翻轉的瞬間瞬跳。要補得先把宛名的斜體收進行級的 run。 */
-@keyframes semantics-straighten {
-  from { font-style: oblique 12deg; }
-  to   { font-style: oblique 0deg; }
 }
 
 /* A tint on the three elements whose mark actually arrives — 書名號,
@@ -439,6 +399,9 @@
       & {
         margin: 0;
         padding: 0;
+        /* 詩塊同時是信封浮水印的包含塊——那封信襯的就是這一塊，錨在它身上
+           才不會被主控台的字級甩開（home/envelope.css）。 */
+        position: relative;
         inline-size: 17em;   /* ＝ the longest line, with a character to spare */
 
         --han-punctuation-refinement: compress;
@@ -1049,25 +1012,12 @@
            marks land on a row that is already standing.
 
            A «row» is whatever carries the flag: one <span> per line of the
-           poem (the two letterheads run their own cues in the .Envelope
-           block). `--row-cue` inherits, so every mark inside a row reads
-           its row's beat without being told. */
-        .poem-like > span,
-        address[lang] {
+           poem. `--row-cue` inherits, so every mark inside a row reads its
+           row's beat without being told. (Two letterheads used to run their
+           own cues out of the envelope; the envelope is a watermark now and
+           runs nothing — home/envelope.css.) */
+        .poem-like > span {
           animation: semantics-settle 520ms step-end var(--row-cue) both;
-        }
-        /* The Chinese letterhead is BOTH a row and an italicised run, so its
-           two animations must ride one declaration — `animation` is a
-           shorthand, and a second rule would have replaced the settle rather
-           than joined it. Fill modes are per-item in the list, which is how
-           the settle keeps its `both` while the straighten stays unfilled.
-           The German twin is excluded throughout: it is SUPPOSED to stay
-           italic, and would otherwise straighten and snap back the instant
-           the animation let go. */
-        address:not([lang]) {
-          animation:
-            semantics-settle 520ms step-end var(--row-cue) both,
-            semantics-straighten 520ms ease-out var(--row-cue);
         }
 
         /* 墨色一閃，甲乙兩式與 i／var／em 同款（dfn 本就無墨色一閃，字重
@@ -1092,8 +1042,7 @@
           .poem-like :is(i, var, em, dfn, cite) {
             display: inline-block;
           }
-          /* 同 specificity 的第二條 animation 簡寫會整組取代（同
-             address:not([lang]) 那條的 shorthand 陷阱註），所以每一層都要
+          /* 同 specificity 的第二條 animation 簡寫會整組取代，所以每一層都要
              把前面的重列一次；動畫按名字與位置續跑不重啟，mark-cue 不會被
              翻旗打斷重來——重列的順序因此不能動。
              dfn 不在 mark-cue 名單（本就無墨色一閃），單獨一條。 */
@@ -1203,8 +1152,6 @@
          4 字重、6 甲式、8 乙式；5（`<i>`）與 7（`<var>`）同取楷體那一拍
          ——兩者在 han.css 是同一條規則，圖解那條 bar 因此掛兩個標籤而不是
          多開一列。同亮即是配對，不必靠版面相鄰（同 1、3 行的作法）。 */
-      /* 兩幅信箋的拍點不在這條階梯上——信封已移出 figure，0ms／200ms
-         寫在檔尾 .Envelope 區。 */
       .poem-like > span:nth-of-type(1) { --row-cue: var(--cue-proper); }
       .poem-like > span:nth-of-type(2) { --row-cue: var(--cue-emphasis); }
       .poem-like > span:nth-of-type(3) { --row-cue: var(--cue-proper); }
