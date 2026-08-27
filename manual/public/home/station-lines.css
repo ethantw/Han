@@ -45,8 +45,15 @@
        鏡射（＝ 2×`--plate-pad` ＋ 卡寬，見 § 巨型背景樣張），而右欄本來從
        「卡寬 ＋ 3rem」起——差額正好是 `--plate-pad` − 3rem。撐欄間距而不是給
        右欄加左邊界：邊界不會縮小它的 `100%`（軌寬照舊），右欄會整條溢出版心
-       （實測 1680 下溢 28px）。 */
-    column-gap: max(3rem, var(--plate-pad));
+       （實測 1680 下溢 28px）。
+
+       **上限 19.25rem（308px）**：卡右緣到版心右緣恆為 608px（＝ 68rem 版口
+       減去 30rem 的卡寬，版心再寬也不變，因為卡與右緣一起外移），所以右欄
+       ＝ 608 − 欄間距。要右欄永遠 ≥ 300px（owner 2026-08-28 的規則：右邊大於
+       300px 就放右邊），欄間距就不能超過 308px。超過那條線之後，開關寧可壓進
+       背景樣張的懸掛區——那片底字只有 6% 的墨——也好過整塊掉到樣張下方，
+       右邊空著六百像素。 */
+    column-gap: clamp(3rem, var(--plate-pad), 19.25rem);
   }
   > hgroup,
   > p {
@@ -194,7 +201,12 @@
   }
 
   /* 窄到放不下兩欄就疊回一欄，開關接回樣張下方。`main` 是 inline-size
-     容器（station-frame.css），量的是版心而非視窗。 */
+     容器（station-frame.css），量的是版心而非視窗。
+
+     **只剩這一條**：原本上頭還有一條「寬到某個程度也疊回一欄」（版心 >
+     101.5rem），成因是欄間距跟著 `--plate-pad` 長、右欄一路變窄。現在欄間距
+     有上限（見上），右欄不會再窄下去，那條查詢也就沒有存在的理由
+     （2026-08-28 拿掉）。 */
   @container (inline-size < 62rem) {
     & {
       grid-template-columns: minmax(0, 1fr);
@@ -207,33 +219,6 @@
     }
   }
 
-  /* **寬到放不下也一樣疊回一欄——但先讓它撐到不能撐。** 版心從 72rem 起置中，
-     兩側留白 `--plate-pad` ＝ (版心 − 68rem) / 2 跟著視窗長大；背景那一柱的版口
-     線是樣張中線的鏡射（見上），於是線一路右移、右欄能用的寬一路變窄（上面那條
-     margin 讓這一欄永遠從線上起算）。剩不到 **340px** 就收到樣張下方——那是這
-     一欄還讀得像一段話的下限；還撐得住就留在右邊（owner 2026-08-26）。
-
-     101.5rem 是算出來的，不是試出來的：這一欄從版口線（＝ 2 pad ＋ 30rem，卡寬
-     24em × 1.25rem）起，到站台的內容右緣（＝ 版心 − pad）止，餘裕 ＝
-     版心 − 3 pad − 30rem；把 pad ＝ (版心 − 68rem) / 2 代進去得 **72rem −
-     版心 / 2**。要它 ≥ 340px（21.25rem）⇒ 版心 ≤ 101.5rem。
-     （版心 < 72rem 時 pad 是 gutter 的 2rem，餘裕寬得多，由下限那條查詢管。）
-     量的是**版心**而不是視窗，所以主控台收起時
-     （`--console-gutter: 0`，版心＝視窗寬）門檻自己跟著走。
-
-     五條宣告與上面那一段逐字相同——同一個版面的兩個成因，合不進一個查詢
-     （一個是下限、一個是上限，中間那段才是兩欄）。改動時兩邊要一起改。 */
-  @container (inline-size > 101.5rem) {
-    & {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    > aside {
-      grid-column: 1;
-      justify-self: start;
-      inline-size: min(100%, 28em);
-      margin-block-start: 0;
-    }
-  }
   /* 巨型背景樣張 — 把前景 figure 的論點放大一遍：行末的句讀越過版口懸
      出去。
 
@@ -264,17 +249,17 @@
       --w-main: calc(100vw - var(--w-console));
       /* `round()` 收到刻度上：容器寬除出來的是任意小數，而每一個相異字級
          都要 Blink 建一份 fallback list（SKILL § 13；round()：Baseline 2024）。 */
-      --fs-bg-text: round(calc(var(--w-main) / 9), 0.125rem);
+      --fs-bg-text: round(calc(var(--w-main) / 6), 0.125rem);
       /* 樣張自己的行高。呼吸的波長要按這個算——::before 不是 <p> 的子孫，
          `lh` 在它身上取到的是繼承來的正文行高（1.75），拿來當「幾行」會
          多算三成。 */
-      --_wm-lh: 1.25;
+      --_wm-lh: .75;
 
       /* 滿版文字。比裝飾用的 --ui-wm（4 %）再實一點：那個是純紋理，
          這裡的字得看得出「行」，行末才有話可說。 */
       --_wm-text:
         light-dark(
-          color-mix(in srgb, var(--palette-ink) 7%, transparent),
+          color-mix(in srgb, var(--palette-ink) 6%, transparent),
           color-mix(in srgb, var(--palette-paper-deep) 9%, transparent)
         )
       ;
@@ -292,7 +277,7 @@
          挑第幾個，也不必知道哪一個真的落在行末。 */
       --_wm-punct:
         light-dark(
-          color-mix(in srgb, var(--palette-ink) 13%, transparent),
+          color-mix(in srgb, var(--palette-ink) 8%, transparent),
           color-mix(in srgb, var(--palette-paper-deep) 16%, transparent)
         )
       ;
@@ -508,7 +493,7 @@
           animation-play-state: paused;
         }
         p {
-          font-variation-settings: 'wght' calc(round(500 + var(--lines-tide) * 400, 25));
+          font-variation-settings: 'wght' calc(round(300 + var(--lines-tide) * 600, 10));
         }
       }
     }
