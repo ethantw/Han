@@ -17,12 +17,19 @@
  * explains nothing), and when the pointer leaves it stays where it left
  * rather than snapping home.
  *
- * **The gesture is the switch**: a double-click (double-tap) on the specimen
- * turns its loupe off and on again, so the page needs no chrome for it — each
- * station says so in a line of small print. A fine pointer gets it on from
- * the first frame; a coarse one does not, because there it is DRAGGED, and a
- * drag that starts on the page has to keep meaning「scroll」until the reader
- * asks for something else.
+ * **The gesture is the switch**, and which gesture depends on the pointer.
+ *
+ * A hovering pointer gets three states and one click between them: the loupe
+ * rests at three-quarter aperture (`zoom-in` cursor — 「按了會放大」), a click
+ * opens it to full (`zoom-out` — 「再按就收起來」), another click puts it away,
+ * and only then is the specimen's text selectable again. Selection and the
+ * loupe cannot share a drag: the copy sits over the host, so a selection made
+ * under it is invisible.
+ *
+ * A coarse pointer keeps the old double-tap toggle. There is no hover to rest
+ * in, the loupe is DRAGGED, and a drag that starts on the page has to keep
+ * meaning「scroll」until the reader asks for something else — so it starts off
+ * and pays nothing until it is asked.
  *
  * The keyboard path stays in CSS (`:focus-visible` flips the galley itself to
  * reading size).
@@ -38,6 +45,11 @@ import { onRendered, settled } from '/home/measure.js'
  * style, and with it whatever layout is pending — owner's trace caught this
  * one inside `follow()`, i.e. once per mousemove, forcing a layout of a page
  * whose full layout costs half a second on their machine. */
+/* 「有 hover 的指標」——兩套互動的分水嶺（見檔頭）。用 matchMedia 而不是
+   `pointer: coarse` 的否定：混合機器兩者皆有，而這一頁的判準是「能不能停在
+   一個點上」。 */
+const FINE = matchMedia('(hover: hover) and (pointer: fine)')
+
 const zoomOf = ($lens) =>
   Number.parseFloat(getComputedStyle($lens).getPropertyValue('--lens-zoom')) || 2
 
@@ -142,7 +154,12 @@ const mountOne = ($host, { live }) => {
      start; a coarse one has to DRAG it, and dragging is how that reader
      scrolls — so there it waits to be asked (the host stops scrolling while
      the loupe is on, which is exactly the trade the double-tap toggles). */
-  let on = matchMedia('(hover: hover) and (pointer: fine)').matches
+  let on = FINE.matches
+  /* …and how wide it is open. `small` is the resting aperture (three quarters
+     of `--lens-size`); the first click opens it to full. Both levels magnify
+     the same — what opens is the field of view, not the zoom.
+     粗指標沒有那一格：它是雙擊叫出來的，叫出來就給全口徑。 */
+  let wide = !FINE.matches
   const dragging = new Set()
   // Until the reader takes over, the lens belongs to the host's opening
   // block — and it re-finds it after every re-render, so it never ends up
@@ -153,7 +170,10 @@ const mountOne = ($host, { live }) => {
      the host and the circle: one attribute dresses the lens and tells the
      host to stop scrolling while a drag belongs to the loupe. */
   const apply = () => {
-    $frame.toggleAttribute('data-lens-on', on)
+    /* 態寫成屬性**值**（`small`／`large`），不是兩個旗標：CSS 那頭要的正是
+       「哪一級」——口徑、游標、能不能反白，三條規則各取所需。 */
+    if (on) $frame.setAttribute('data-lens-on', wide ? 'large' : 'small')
+    else $frame.removeAttribute('data-lens-on')
     if (on && !$clone) recloneNow()
     else if (!on && $clone) {
       $clone.remove()
@@ -189,11 +209,41 @@ const mountOne = ($host, { live }) => {
       `translate(${lensSize / 2 - sx * zoom}px, ${lensSize / 2 - sy * zoom}px) scale(${zoom})`
   }
 
-  /** Host-relative centre of its first block (an empty draft has none, and
-   *  the host's middle is the honest answer there). */
+  /** Host-relative centre of the block the loupe should open on: the
+   *  specimen's TITLE (owner 2026-08-27 — that is where a reader starts, and
+   *  a loupe parked mid-paragraph reads as「it landed somewhere」).
+   *
+   *  Visually first, not first in the DOM: station③'s strip puts the 直排
+   *  dispatch ahead of the 橫排 one with `order`, so DOM order picks the wrong
+   *  headline. Taking the smallest `left` picks the leftmost card's heading and
+   *  degrades to「the first heading」in single-column content, where every
+   *  heading shares one line-start edge. An empty draft has no blocks at all,
+   *  and the host's middle is the honest answer there. */
   const openingPoint = () => {
     const box = $host.getBoundingClientRect()
-    const $first = $host.querySelector('h1, h2, h3, p, blockquote')
+    /* 先挑**視覺上**排在最前面的那一張卡，再在它裡面挑第一個標題。兩步是必要
+       的：站③那條長帶把直排那張用 `order` 排到了前面，DOM 序會挑到橫排那張；
+       而「整個宿主裡 left 最小的標題」會挑到直排卡中段某個捲到左邊的小標
+       （實測選到「積怨引爆」，圓心落在 x = −51，整顆在畫面外）。只有一張卡時
+       第一步退化成宿主自己。 */
+    const kids = [...$host.children].filter(($el) => $el.getBoundingClientRect().width)
+    const $card = kids.length > 1
+      ? kids.reduce((a, b) => (
+        b.getBoundingClientRect().left < a.getBoundingClientRect().left ? b : a
+      ))
+      : $host
+    /* 看得見的才算：兩張卡都各帶一份**節錄版**（`data-prose` 那個開關），關著的
+       那一份仍在 DOM 裡，`querySelector` 一問就先挑到它——量出來是 0×0 的盒，
+       圓心於是落在宿主的左上角（實測 [0, 1]）。 */
+    const shown = ($scope, sel) => [...$scope.querySelectorAll(sel)]
+      .find(($el) => $el.getBoundingClientRect().width)
+    /* 標題優先於「那張卡裡的第一塊」：遊樂場那張紙的第一個子元素是報頭
+       （`p.Masthead`，沒有標題），照卡片找會停在報頭上——那是刊名，不是這篇
+       報導的開頭。所以先在卡裡找標題，再退到整張紙找標題，最後才輪到段落。 */
+    const $first = shown($card, 'h1, h2, h3')
+      ?? shown($host, 'h1, h2, h3')
+      ?? shown($card, 'p, blockquote')
+      ?? shown($host, 'p, blockquote')
     if (!$first) return [box.width / 2, box.height / 2]
     const r = $first.getBoundingClientRect()
     return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]
@@ -281,7 +331,14 @@ const mountOne = ($host, { live }) => {
     if (!on || !$clone) return
     /* 有視窗座標就重算：同一個螢幕位置現在對到宿主裡的另一點。夾回宿主之內
        ——內容捲走之後那個點可能已經在外面，鏡片停在邊界比跳掉合理。 */
-    if (clientX !== null) {
+    if (!readerDriving) {
+      /* 讀者還沒接手：鏡片的家是**開場那一段**，不是上次算出來的座標。長帶一
+         平移（站③的縫居中就會捲 434px），同一個宿主相對座標對到的已經是別的
+         字，鏡片會離開大標——所以這裡重新問一次它在哪。 */
+      const [x, y] = openingPoint()
+      lastX = x
+      lastY = y
+    } else if (clientX !== null) {
       const r = $host.getBoundingClientRect()
       lastX = Math.min(Math.max(clientX - r.left, 0), r.width)
       lastY = Math.min(Math.max(clientY - r.top, 0), r.height)
@@ -321,11 +378,34 @@ const mountOne = ($host, { live }) => {
     positionAt(lastX, lastY)
   })
 
-  /* Put it down and pick it up again: a double-click (double-tap) toggles.
-     Coming back is a fresh look at the page, so it goes home to the opening
-     block rather than reappearing wherever it was left. */
+  /* 有 hover 的指標：一次點擊走一格——四分之三口徑 → 全口徑 → 收起 → 再回四分
+     之三。回來是重新看一次，所以回到開場那一段，而不是回到上次離手的地方。 */
+  $host.addEventListener('click', () => {
+    if (!FINE.matches) return
+    /* 拖出來的選取不算「點一下」：放開滑鼠時瀏覽器照樣送 click，若它也翻一格，
+       讀者反白到一半就被鏡片收走。鏡片關著時才選得到字，所以只需要在這裡問。 */
+    if (!getSelection()?.isCollapsed) return
+    if (!on) {
+      on = true
+      wide = false
+      readerDriving = false
+    } else if (!wide) {
+      wide = true
+    } else {
+      on = false
+      wide = false
+    }
+    apply()
+    /* 口徑換了級，`lensSize` 得重讀一次，複本的平移才對得準中心。 */
+    if (on) sync()
+  })
+
+  /* 粗指標：維持雙擊（雙指點兩下）開關。那裡沒有 hover 可以停，鏡片是拖出來
+     的，所以只有「開／關」兩態，沒有口徑那一格。 */
   $host.addEventListener('dblclick', () => {
+    if (FINE.matches) return
     on = !on
+    wide = true
     if (on) {
       readerDriving = false
       sync()

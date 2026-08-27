@@ -445,7 +445,8 @@
          底下——它們有版面、`checkVisibility()` 也回報可見，只是被蓋住，看起來
          就像「標題不見了」。對齊改由 `align-items: start` 負責，不必再位移。 */
       box-shadow: 0 1px 0 var(--ui-bg-2q);
-      cursor: zoom-in;
+      /* 游標由放大鏡自己說（home/lens.css § 有 hover 的指標）：這裡寫死
+         `zoom-in` 會在鏡片張開或關掉之後說謊，而且與那條同權重、只靠檔序取勝。 */
 
       /* ── the sheet runs off the page to the right ─────────────────────
          When the galley needs more columns than the track holds, the card
@@ -461,7 +462,11 @@
       inline-size: calc(100% + var(--pg-bleed, 0px));
       overflow-x: auto;
       overflow-y: hidden;
-      overscroll-behavior-inline: contain;
+      /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半
+         根本沒有橫向溢出（實測 scrollWidth ＝ clientWidth ＝ 894），於是 contain
+         把滾輪整個吃掉——讀者在預覽區橫捲什麼也不動，只有編輯區與預覽之間那道
+         縫捲得動長帶（owner 2026-08-27）。巢狀捲動的預設行為正好是要的：先捲
+         這張紙，捲到底再帶著長帶走。 */
       scrollbar-width: thin;
 
       /* bled to the window edge, the right side is a cut, not an edge */

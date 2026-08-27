@@ -20,10 +20,14 @@
        than the page it is held over. */
     --lens-zoom: 1.75;
     --lens-size: min(22rem, 85cqi);
+    /* 口徑分兩級。靜置時只開四分之三——鏡片一直跟著游標，全尺寸的圓在版面上
+       是個很大的東西，讀者還沒說要細看就先擋住了三段字。點一下才張到 `--lens-size`
+       全尺寸（lens.js § 三態），放大倍率兩級相同：張的是**視野**，不是倍數。 */
+    --lens-aperture: 0.75;
 
     position: absolute;
-    inline-size: var(--lens-size);
-    block-size: var(--lens-size);
+    inline-size: calc(var(--lens-size) * var(--lens-aperture));
+    block-size: calc(var(--lens-size) * var(--lens-aperture));
     /* The module puts the lens's CENTRE on the cursor by writing the inset
        pair; this pulls the box back onto that point. */
     transform: translate(-50%, -50%);
@@ -57,6 +61,12 @@
     opacity: 1;
     visibility: visible;
     content-visibility: visible;
+  }
+  /* 點開的那一級。不給過場：圓的尺寸一動，模組就得重讀 `lensSize` 才對得準
+     複本的平移，逐幀重讀＝逐幀一次同步版面（home/measure.js 那五條紀律的第一
+     條就是為了這個）。一步到位，讀者的手也不必等。 */
+  [data-lens-on="large"] > & {
+    --lens-aperture: 1;
   }
 
   /* 拖曳期間收起來，而且要排在 on 態後面才壓得過它。滑鼠環境下鏡片從第一幀
@@ -94,12 +104,39 @@
 
 /* The line that says how the loupe works. It is the only place the page
    mentions it, since the gesture replaced the switch — so it is on stage for
-   both pointers, not just for touch. Copy lives in the markup (`lensHint`,
-   home/_shared.html); this only dresses it. */
+   both pointers, not just for touch. Copy lives in the markup (`lensHintHover`
+   ／`lensHint`, home/_shared.html); this only dresses it, and picks the one
+   that matches the pointer: the two gestures are genuinely different now
+   （點一下張開／雙擊開關），so one sentence cannot cover both. */
 .LensHint {
-  margin-block: 0.75rem 0;
-  font-size: 0.75rem;
-  color: var(--ui-supplement-text-3q);
+  & {
+    margin-block: 0.75rem 0;
+    font-size: 0.75rem;
+    color: var(--ui-supplement-text-3q);
+  }
+
+  [data-pointer="fine"] { display: none; }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-pointer="fine"] { display: inline; }
+    [data-pointer="coarse"] { display: none; }
+  }
+}
+
+/* 有 hover 的指標：游標自己就是說明書。小口徑時是放大鏡（`zoom-in`，「按了會
+   放大」），張開之後換成縮小鏡（`zoom-out`，「再按就收起來」），關掉才回到
+   一般游標——那也正是**唯一反白得了字**的狀態：鏡片開著時複本疊在上面，拖出來
+   的選取看不見，索性讓它選不到（lens.js § 三態）。 */
+@media (hover: hover) and (pointer: fine) {
+  [data-lens-on] [data-lens] {
+    user-select: none;
+  }
+  [data-lens-on="small"] [data-lens] {
+    cursor: zoom-in;
+  }
+  [data-lens-on="large"] [data-lens] {
+    cursor: zoom-out;
+  }
 }
 
 /* While the loupe is on, a drag on the specimen belongs to the loupe, not to
