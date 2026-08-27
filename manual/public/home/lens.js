@@ -81,6 +81,24 @@ const depersonalise = ($el) => {
   }
 }
 
+/** The box of a heading's FIRST LINE, not the heading's own box: station③'s
+ *  vertical headline runs several columns, and the block's centre lands in the
+ *  middle of it — the loupe opened on 「梯艙屬地之爭延…」 instead of the top of
+ *  the headline (owner 2026-08-27). A Range over the opening characters answers
+ *  in whatever direction the line actually runs, so this needs no writing-mode
+ *  branch. Falls back to the element for a heading with no text of its own. */
+const LINE_ONE = 12
+
+const lineOneOf = ($el) => {
+  const $text = document.createTreeWalker($el, NodeFilter.SHOW_TEXT).nextNode()
+  if (!$text) return $el.getBoundingClientRect()
+  const range = document.createRange()
+  range.setStart($text, 0)
+  range.setEnd($text, Math.min($text.length, LINE_ONE))
+  const r = range.getBoundingClientRect()
+  return r.width || r.height ? r : $el.getBoundingClientRect()
+}
+
 /** The box the lens is positioned in: the nearest POSITIONED ancestor, not
  *  simply the parent. The lens is `position: absolute`, so the browser
  *  resolves its insets against that ancestor — mounting it on a static parent
@@ -245,7 +263,7 @@ const mountOne = ($host, { live }) => {
       ?? shown($card, 'p, blockquote')
       ?? shown($host, 'p, blockquote')
     if (!$first) return [box.width / 2, box.height / 2]
-    const r = $first.getBoundingClientRect()
+    const r = lineOneOf($first)
     return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]
   }
 

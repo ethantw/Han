@@ -75,7 +75,13 @@
       text-align: center;
       font-family: var(--han-font-alternative);
       font-weight: 700;
-      font-size: 1rem;
+      /* 刊名跟著版面長大。原本寫死 1rem：欄一多、紙又向右出血之後，那五個字
+         在一條通欄的粗線上只是一小撮，居中就顯得它掉在中間（owner 2026-08-27）。
+         真報紙的報頭本來就與版面等比——這裡綁**版心寬**（視窗減去主控台，與這張紙
+         的寬同一個來源），兩端封住：窄站台不讓它壓過內文，寬站台不讓它變成招牌。
+         用 `vw` 而不是 `cqi`：容器單位寫在 `font-size` 上量到的不是這張紙
+         （實測 2.25cqi 收斂成下限 1rem，等於沒寫）。 */
+      font-size: clamp(1rem, calc((100vw - var(--w-console)) / 40), 1.75rem);
       letter-spacing: 0.25em;
       text-indent: 0.25em;
     }
