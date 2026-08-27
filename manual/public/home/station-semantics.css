@@ -338,26 +338,33 @@ figure.Papers {
       align-items: center;
       gap: 0.5rem;
       padding: 0.5rem 0.75rem;
-      background: color-mix(in srgb, var(--ui-bg) 92%, var(--ui-text));
+      /* 與主控台同一塊底色（`--ui-panel`）：這一頁上「浮在內容之上的操作面」只有
+         這兩個，同色就讀成同一類東西。 */
+      background: var(--ui-panel);
       border-block-end: 1px solid var(--ui-rule);
-      backdrop-filter: blur(6px);
 
+      /* 按鈕就長成按鈕：框線、底色、圓角一應俱全。原本的「透明底＋hover 才顯形」
+         在這條貼邊的工具條上看起來像四個字，不像四顆鍵。 */
       button {
         display: grid;
         place-content: center;
         inline-size: 2.25rem;
         block-size: 2.25rem;
-        color: var(--ui-supplement-text);
-        background: none;
-        border: 1px solid transparent;
+        color: var(--ui-text);
+        background: var(--ui-bg);
+        border: 1px solid var(--ui-rule);
         border-radius: var(--r-2);
+        box-shadow: 0 1px 0 color-mix(in srgb, var(--ui-text) 8%, transparent);
         cursor: pointer;
       }
 
       button:hover {
-        color: var(--ui-text);
-        border-color: var(--ui-rule);
-        background: var(--ui-bg);
+        border-color: var(--ui-text);
+      }
+
+      button:active {
+        box-shadow: none;
+        translate: 0 1px;
       }
 
       /* 上一版／下一版共用同一枚 chevron，方向由旋轉說；原圖朝行首。 */
@@ -377,8 +384,7 @@ figure.Papers {
       }
     }
 
-    /* 頁眉與大標橫跨所有欄——它們是這一版的抬頭，不是某一欄的開頭。 */
-    .ReaderHead,
+    /* 大標橫跨所有欄——它是這一版的抬頭，不是某一欄的開頭。 */
     .ReaderSheet > h3 {
       column-span: all;
     }
@@ -394,7 +400,9 @@ figure.Papers {
       /* 寬度不自己定，交給內文那一層（三欄寫死）：紙就是內容那麼寬。內距也收
          ——這一版要的是「地月電梯」那張樣張的緊湊感，不是海報的留白。 */
       inline-size: fit-content;
-      margin: 3.5rem auto 3rem;
+      /* 大留白：紙與工具條、與畫面邊緣都要隔開一段，才有翻報紙的呼吸感（owner
+         2026-08-28）。上下各三成畫面高，左右置中。 */
+      margin: 30vh auto;
       padding: 1.25rem 1.5rem 1.75rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
@@ -419,28 +427,6 @@ figure.Papers {
 
     /* 續版列：版次 ＋「（上接第一版）」在行首，行向的開關在行尾。行向不寫死
        ——直排時它跟著報頭一起轉。 */
-    /* 續版列：現在只剩版次與「（上接第一版）」——行向開關 2026-08-27 搬進了
-       畫面邊上的控件條。 */
-    .ReaderHead {
-      display: flex;
-      align-items: baseline;
-      gap: 1rem;
-      margin-block: 0.75rem 1.25rem;
-
-      .ReaderFrom {
-        margin: 0;
-        color: var(--ui-supplement-text);
-      }
-
-      .ReaderPage {
-        margin-inline-end: 0.75em;
-        padding: 0.1em 0.5em;
-        color: var(--ui-bg);
-        background: var(--ui-text);
-        font-weight: 400;
-      }
-    }
-
     /* 內文層：多欄開在這裡。**三欄寫死、每欄 18 字**——不隨視窗增減（owner
        2026-08-27）。一份報紙的欄數是它的版式，不是它的響應式行為；放不下就捲，
        兩個方向都可以（燈箱那層 `overflow: auto`）。
@@ -527,8 +513,10 @@ figure.Papers {
     [data-writing="vertical"] {
       .ReaderSheet {
         writing-mode: vertical-rl;
+        /* 紙就是文章那麼寬，**不封頂**：直排的文章往左長，封了寬度紙就停在那裡、
+           文字照樣往左走，於是整段跑到紙外（owner 2026-08-28 的截圖）。裝不下不是
+           紙的問題，是畫面的問題——交給燈箱那層捲。 */
         width: fit-content;
-        max-width: calc(100dvw - 3rem);
       }
 
       .ReaderBody {
@@ -564,8 +552,10 @@ figure.Papers {
         }
       }
 
+      /* 直排的紙用**物理**邊距：它自己是 `vertical-rl`，邏輯邊距會轉九十度。
+         右邊留得多一些——工具條在那一側。 */
       .ReaderSheet {
-        margin: 2rem 4rem 2rem 2rem;
+        margin: 20vh 26vw 20vh 12vw;
       }
     }
 

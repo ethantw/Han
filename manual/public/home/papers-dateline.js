@@ -146,7 +146,10 @@ export function initPapersDateline() {
      同一個瞬間。標記裡各自帶著靜態退路，這裡把它換成今天＋100 年。 */
   document.querySelectorAll('time[data-era-line]').forEach(fillEraLine)
 
-  for (const $time of document.querySelectorAll('.Papers .Dateline time')) {
+  /* `:not([data-era-line])`：全文版的報頭要的是**四紀年一次寫齊**（那一份是
+     同一天的四種讀法，不是四份報紙），它已經在上面填過了；不排除的話這一圈會
+     把它蓋回單一紀年。 */
+  for (const $time of document.querySelectorAll('.Papers .Dateline time:not([data-era-line])')) {
     /* `closest('[lang]')`，不是 `closest('article')`：全文版的燈箱裡還有一層
        `<article class="ReaderSheet">`，它沒有 lang，往上問才問得到那一版的語言
        （四份報紙各有自己的紀年，問錯就整個跳過）。 */

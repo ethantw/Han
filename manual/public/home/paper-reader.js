@@ -18,12 +18,12 @@
 /** The editions, in the order they sit in the markup (繁簡日韓). */
 const EDITIONS = ['hant', 'hans', 'ja', 'ko']
 
-/* 讀者自己調字級：點一下紙就換一段，14 → 16 → 12 → 14…（px，`--reader-fs`）。
+/* 讀者自己調字級：點一下紙就換一段，14 → 16 → 10 → 14…（px，`--reader-fs`）。
    放大鏡與縮小鏡的游標由 CSS 依 `data-size` 決定，所以這個環的順序也是那兩枚
-   游標的順序：14 與 12 是「還能更大」（zoom-in），16 是「該收回去了」
+   游標的順序：14 與 10 是「還能更大」（zoom-in），16 是「該收回去了」
    （zoom-out）。整張紙一起變——報頭的尺寸全是 `em`（station-semantics.css §
    .ReaderSheet）。 */
-const SIZES = [14, 16, 12]
+const SIZES = [14, 16, 10]
 
 const setSize = ($dialog, px) => {
   $dialog.dataset.size = String(px)
