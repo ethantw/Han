@@ -18,6 +18,34 @@
 /** The editions, in the order they sit in the markup (繁簡日韓). */
 const EDITIONS = ['hant', 'hans', 'ja', 'ko']
 
+/* 讀者自己調字級：點一下紙就換一段，14 → 16 → 12 → 14…（px，`--reader-fs`）。
+   放大鏡與縮小鏡的游標由 CSS 依 `data-size` 決定，所以這個環的順序也是那兩枚
+   游標的順序：14 與 12 是「還能更大」（zoom-in），16 是「該收回去了」
+   （zoom-out）。整張紙一起變——報頭的尺寸全是 `em`（station-semantics.css §
+   .ReaderSheet）。 */
+const SIZES = [14, 16, 12]
+
+const setSize = ($dialog, px) => {
+  $dialog.dataset.size = String(px)
+  $dialog.style.setProperty('--reader-fs', `${px}px`)
+}
+
+const cycleSize = ($dialog) => {
+  const at = SIZES.indexOf(Number($dialog.dataset.size))
+  setSize($dialog, SIZES[(at + 1) % SIZES.length])
+}
+
+/* 開場的捲動位置：文章的**起點**。橫排在左上，直排在右上——直排的紙往左長，
+   起點因此在最右邊（燈箱自己是捲動容器）。 */
+const toStart = ($dialog) => {
+  const vertical = $dialog.dataset.writing === 'vertical'
+  $dialog.scrollTo({
+    top: 0,
+    left: vertical ? $dialog.scrollWidth - $dialog.clientWidth : 0,
+    behavior: 'instant',
+  })
+}
+
 const dialogOf = (key) => document.querySelector(`#paper-${key}-full`)
 const paneOf = (key) => document.querySelector(`#paper-${key}`)
 
@@ -29,12 +57,14 @@ const keyOf = ($dialog) => {
 /* Open one edition and leave the page on it. `block: 'nearest'` keeps the page
    still when the card is already on screen — the reader asked for a different
    edition, not for a different scroll position. */
-const open = (key, vertical = false) => {
+const open = (key, vertical = false, size = SIZES[0]) => {
   const $dialog = dialogOf(key)
   if (!$dialog?.showModal) return
   paneOf(key)?.scrollIntoView({ inline: 'start', block: 'nearest' })
   if (!$dialog.open) $dialog.showModal()
+  setSize($dialog, size)
   setWriting($dialog, vertical)
+  toStart($dialog)
 }
 
 const step = ($dialog, by) => {
@@ -43,12 +73,14 @@ const step = ($dialog, by) => {
   /* 行向跟著讀者走，不跟著文章走：直排讀到一半換一版，換來的還是直排。
      每一版有自己的 `<dialog>`，所以這件事得交手，不會自己過去。 */
   const vertical = $dialog.dataset.writing === 'vertical'
+  /* 字級同理：讀者調過的大小要跟著他走到下一版。 */
+  const size = Number($dialog.dataset.size) || SIZES[0]
   /* Wrap around: four editions in a ring is what the two arrows imply, and a
      dead arrow on the last one would be the only place on this page where a
      control is present but inert. */
   const next = EDITIONS[(at + by + EDITIONS.length) % EDITIONS.length]
   $dialog.close()
-  open(next, vertical)
+  open(next, vertical, size)
 }
 
 /* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
@@ -72,8 +104,8 @@ const setWriting = ($dialog, vertical) => {
 const flip = ($dialog) => {
   const vertical = $dialog.dataset.writing !== 'vertical'
   setWriting($dialog, vertical)
-  /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。 */
-  $dialog.scrollTo({ top: 0, left: 0 })
+  /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到文章的起點。 */
+  toStart($dialog)
 }
 
 export const initPaperReader = () => {
@@ -106,6 +138,12 @@ export const initPaperReader = () => {
       const $control = event.target.closest?.('[data-reader]')
       if ($control?.dataset.reader === 'writing') return flip($dialog)
       if ($control) return step($dialog, $control.dataset.reader === 'next' ? 1 : -1)
+      /* 點在紙上就換一段字級。拖出來的選取不算——放開滑鼠時瀏覽器照樣送 click，
+         若它也換一段，讀者反白到一半整張報紙就跳一次大小（同 lens.js 的作法）。 */
+      if (event.target.closest?.('.ReaderSheet')) {
+        if (getSelection()?.isCollapsed === false) return
+        return cycleSize($dialog)
+      }
       /* Click on the backdrop closes. The dialog's own box is the sheet, so
          a hit that lands on the dialog element itself — not on anything
          inside it — is a hit on the backdrop. */

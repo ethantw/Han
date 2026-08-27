@@ -322,102 +322,79 @@ figure.Papers {
       }
     }
 
-    /* 頁眉不成一條——三顆控件各自釘在畫面上：換版在兩側、關閉在右上。三顆都
-       是圓的：它們浮在版面之上、不屬於任何一段文字，圓形說得清楚這件事，也
-       跟版心那張方正的紙分得開。
-       `display: contents` 讓 `<form>` 只保留「按下去就關」的語意，不佔版面。 */
+    /* ── 控件條 ──────────────────────────────────────────────────────
+       四顆控件（上一版・下一版・行向・關閉）收成**一條**釘在畫面邊上的工具條，
+       不再各自浮在版面上：這一版的紙會往兩個方向捲（見下），浮鈕會一直壓在正文
+       上，而一條貼邊的條子讀者一眼就知道那不是報紙的一部分。橫排時在頂上一條
+       （100vw），直排時在右緣一直條（100vh）——都是行首那一側。
+
+       `<form method="dialog">` 的語意不變（按下 `value="close"` 就關），只是它
+       現在也是版面上的一個盒。 */
     .ReaderChrome {
-      display: contents;
+      position: fixed;
+      z-index: 1;
+      inset: 0 0 auto 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: color-mix(in srgb, var(--ui-bg) 92%, var(--ui-text));
+      border-block-end: 1px solid var(--ui-rule);
+      backdrop-filter: blur(6px);
 
       button {
-        position: fixed;
-        z-index: 1;
         display: grid;
         place-content: center;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
         color: var(--ui-supplement-text);
-        background: color-mix(in srgb, var(--ui-bg) 88%, transparent);
-        backdrop-filter: blur(6px);
-        border: 1px solid var(--ui-rule);
-        border-radius: 50%;
+        background: none;
+        border: 1px solid transparent;
+        border-radius: var(--r-2);
         cursor: pointer;
       }
 
       button:hover {
         color: var(--ui-text);
+        border-color: var(--ui-rule);
         background: var(--ui-bg);
       }
-
-      .ReaderStep {
-        inset-block-start: 50%;
-        translate: 0 -50%;
-        inline-size: 3rem;
-        block-size: 3rem;
-      }
-
-      /* 兩側用物理 `left`／`right`：這兩顆是**畫面**上的位置，不是文本流裡的
-         位置——版心切直排時左右不該跟著翻。 */
-      [data-reader="prev"] { left: 1.5rem; }
-      [data-reader="next"] { right: 1.5rem; }
 
       /* 上一版／下一版共用同一枚 chevron，方向由旋轉說；原圖朝行首。 */
       [data-reader="next"] [data-icon] {
         rotate: 180deg;
       }
 
+      /* 關閉推到另一端：它是這一條裡唯一「離開」的動作。 */
       .ReaderClose {
-        inset-block-start: 1.5rem;
-        right: 1.5rem;
-        inline-size: 2.75rem;
-        block-size: 2.75rem;
+        margin-inline-start: auto;
+      }
+
+      .ReaderWriting {
+        inline-size: auto;
+        padding-inline: 0.75rem;
+        font-size: 0.875rem;
       }
     }
 
-    /* 版心的頁眉：續版行在行首，行向的開關在行尾。它住在紙上、不在畫面上，
-       因為行向是**這篇文章**的排法，不是這個彈窗的選項——所以切直排時它跟著
-       轉，正如報頭跟著轉。 */
     /* 頁眉與大標橫跨所有欄——它們是這一版的抬頭，不是某一欄的開頭。 */
     .ReaderHead,
     .ReaderSheet > h3 {
       column-span: all;
     }
 
-    .ReaderHead {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-block-end: 0.5em;
-
-      .ReaderFrom {
-        margin: 0;
-      }
-    }
-
-    .ReaderWriting {
-      padding: 0.25em 0.75em;
-      color: var(--ui-supplement-text);
-      font-size: 0.875rem;
-      background: none;
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-3);
-      cursor: pointer;
-
-      &:hover {
-        color: var(--ui-text);
-        border-color: var(--ui-text);
-      }
-    }
-
     /* 版心＝一張報紙的一版。報頭、續版列、內文三層，多欄只開在內文層——報頭
        得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
        欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
     .ReaderSheet {
-      /* 寬度不自己定，交給內文那一層（`.ReaderBody` 已經把欄數量化過了）：紙
-         就是內容那麼寬，不多留一條白邊。內距也收——這一版要的是「地月電梯」那
-         張樣張的緊湊感，不是海報的留白（owner 2026-08-27）。 */
+      /* 整張紙的字級——報頭是 `em` 寫的，所以它跟著一起變大變小，變的是**整份
+         報紙**而不只是正文（paper-reader.js § SIZES：12／14／16px 三段循環，
+         點紙就換一段）。 */
+      font-size: var(--reader-fs, 14px);
+      /* 寬度不自己定，交給內文那一層（三欄寫死）：紙就是內容那麼寬。內距也收
+         ——這一版要的是「地月電梯」那張樣張的緊湊感，不是海報的留白。 */
       inline-size: fit-content;
-      max-inline-size: calc(100dvw - 3rem);
-      margin: 2rem auto 3rem;
+      margin: 3.5rem auto 3rem;
       padding: 1.25rem 1.5rem 1.75rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
@@ -432,19 +409,21 @@ figure.Papers {
        右上角，其餘沿行內軸往下），版式在共用零件的 `[data-vertical]` 一節，開關
        由 paper-reader.js 掛上。
 
-       字級：報頭排得下的最小行內尺寸約是自己字級的 32 倍。橫排時那是紙的寬
-       （最寬四欄約 1400px），直排時是紙的高（同樣四欄）——兩邊都容得下
-       1.125rem（18px），刊名 40.5px。 */
+       字級用 `em`，不是 `rem`：讀者一放大，變的要是整張報紙，報頭當然也跟著長
+       （owner 2026-08-27）。倍率照老規矩驗算：報頭排得下的最小行內尺寸約是自己
+       字級的 32 倍，而紙是三欄（18em × 3 ＋ 兩道 2em 的欄距 ＝ 58em），
+       58 ÷ 1.5 ≈ 38 > 32，三段字級都排得下。 */
     .PaperHead {
-      font-size: 1.125rem;
+      font-size: 1.5em;
     }
 
     /* 續版列：版次 ＋「（上接第一版）」在行首，行向的開關在行尾。行向不寫死
        ——直排時它跟著報頭一起轉。 */
+    /* 續版列：現在只剩版次與「（上接第一版）」——行向開關 2026-08-27 搬進了
+       畫面邊上的控件條。 */
     .ReaderHead {
       display: flex;
       align-items: baseline;
-      justify-content: space-between;
       gap: 1rem;
       margin-block: 0.75rem 1.25rem;
 
@@ -462,40 +441,24 @@ figure.Papers {
       }
     }
 
-    .ReaderWriting {
-      padding: 0.25em 0.75em;
-      color: var(--ui-supplement-text);
-      font-size: 0.875rem;
-      background: none;
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-3);
-      cursor: pointer;
+    /* 內文層：多欄開在這裡。**三欄寫死、每欄 18 字**——不隨視窗增減（owner
+       2026-08-27）。一份報紙的欄數是它的版式，不是它的響應式行為；放不下就捲，
+       兩個方向都可以（燈箱那層 `overflow: auto`）。
 
-      &:hover {
-        color: var(--ui-text);
-        border-color: var(--ui-text);
-      }
-    }
-
-    /* 內文層：多欄開在這裡。21em ＝ 每欄 21 字，**最多四欄**——再多，一行讀完
-       要橫掃半個畫面，四欄已經是報紙的極限（owner 2026-08-27）。行內尺寸寫成
-       「四欄」與「視窗」取小：橫排時那是寬（窗一窄就自己少一欄，塊軸往下長 ⇒
-       上下捲），直排時是高（四欄疊滿就往左長 ⇒ 水平捲，見下）。
-
-       欄寬用 `columns` 的 `column-width` 語意，不是欄數：容器窄於四欄時瀏覽器
-       自己少開一欄，欄寬始終是那 21 字。 */
+       `--reader-col` 用 `em`：欄寬是「十八個字」，字一大欄就跟著寬，整張紙於是
+       等比長大。 */
     .ReaderBody {
-      --reader-col: 21em;
-      --reader-gap: 2rem;
-      --reader-cols: 4;
+      --reader-col: 18em;
+      --reader-gap: 2em;
+      --reader-cols: 3;
       --reader-span: calc(
         var(--reader-cols) * (var(--reader-col) + var(--reader-gap)) - var(--reader-gap)
       );
 
       box-sizing: content-box;
-      inline-size: min(var(--reader-span), 100dvw - 6rem);
+      inline-size: var(--reader-span);
       margin-inline: auto;
-      columns: var(--reader-col);
+      column-count: var(--reader-cols);
       column-gap: var(--reader-gap);
       column-rule: 1px solid var(--ui-rule);
 
@@ -532,6 +495,24 @@ figure.Papers {
       }
     }
 
+    /* 游標就是說明書：紙上是放大鏡（12／14px，「按了會更大」）或縮小鏡（16px，
+       「按了會收回去」），字上讓位給 I 型——反白讀者永遠做得到，這裡沒有鏡片
+       擋著。列的是會排字的區塊元素，不是 `*`：整片給 `text` 的話，紙的留白與
+       圖也都成了 I 型（同 home/lens.css 的作法）。 */
+    @media (hover: hover) and (pointer: fine) {
+      [data-size] .ReaderSheet {
+        cursor: zoom-in;
+      }
+
+      [data-size="16"] .ReaderSheet {
+        cursor: zoom-out;
+      }
+
+      .ReaderSheet :is(p, h3, li, blockquote, cite, figcaption, time, b, q) {
+        cursor: text;
+      }
+    }
+
     /* ── 直排 ────────────────────────────────────────────────────────
        轉的是**整張紙**，不只是內文：報頭與續版列都跟著轉，那才是直排報紙的樣子
        （2026-08-27 改；先前只轉內文，報頭硬留在橫排）。
@@ -559,34 +540,32 @@ figure.Papers {
         column-span: none;
       }
 
-      /* 續版列的兩件事都收到行首：`space-between` 在直排是「一個貼頂、一個貼
-         底」，而這張紙有四欄高（約 1300px），貼底的那顆行向開關就掉到畫面外，
-         讀者按不回橫排。 */
-      .ReaderHead {
-        justify-content: flex-start;
-        gap: 1.5rem;
+      /* 控件條改到**右緣**，直的一條：直排的行首在右，工具條貼著行首那一側，
+         與橫排時貼著頂上是同一句話。 */
+      .ReaderChrome {
+        inset: 0 0 0 auto;
+        flex-direction: column;
+        padding: 0.75rem 0.5rem;
+        border-block-end: 0;
+        border-inline-start: 1px solid var(--ui-rule);
+
+        .ReaderClose {
+          margin-inline-start: 0;
+          margin-block-start: auto;
+        }
+
+        /* 箭頭轉 90°：直排時「上一版／下一版」在畫面上是上下關係。 */
+        .ReaderStep [data-icon] {
+          rotate: 90deg;
+        }
+
+        [data-reader="next"] [data-icon] {
+          rotate: 270deg;
+        }
       }
 
-      /* 換版鈕改成一疊，擺在畫面底下正中——直排時左右兩側是文章的**前後**，
-         把「上一版／下一版」放在那裡會與讀者正在走的方向打架。箭頭跟著轉 90°。 */
-      .ReaderStep {
-        inset-block-start: auto;
-        inset-block-end: 1.5rem;
-        left: 50%;
-        right: auto;
-        translate: -50% 0;
-      }
-
-      [data-reader="prev"] {
-        margin-block-end: 3.5rem;
-      }
-
-      .ReaderStep [data-icon] {
-        rotate: 90deg;
-      }
-
-      [data-reader="next"] [data-icon] {
-        rotate: 270deg;
+      .ReaderSheet {
+        margin: 2rem 4rem 2rem 2rem;
       }
     }
 
