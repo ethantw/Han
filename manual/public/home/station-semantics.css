@@ -368,6 +368,10 @@ figure.Papers {
       button {
         display: grid;
         place-content: center;
+        /* 工具條是**控件**，不是報紙：一律黑體，四顆版別鈕與行向鈕同一張臉
+           （原本版別鈕跟著 `--han-font-alternative` 走成襯線，四顆裡三顆襯線
+           一顆黑體，看起來像兩組東西）。 */
+        font-family: var(--han-sans);
         inline-size: 2.25rem;
         block-size: 2.25rem;
         color: var(--ui-text);
@@ -390,7 +394,6 @@ figure.Papers {
       /* 四語導覽：一版一顆，字面就是那一版的版別標記（同卡片右上角那一個字）。
          現在讀的那一版填成反白——它不是「按了會去哪裡」，是「你在這裡」。 */
       .ReaderEdition {
-        font-family: var(--han-font-alternative);
         font-size: 1rem;
       }
 
