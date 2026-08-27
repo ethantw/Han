@@ -197,9 +197,11 @@
       justify-self: start;
     }
 
+    /* 標語緊貼刊名，不在自己那一格裡置中：那一格由 1fr 分得，比標語寬得多，
+       置中會讓它飄到刊名與氣象之間的空地上。直排報紙的標語就貼在報標底下。 */
     .Slogan {
       grid-column: 2;
-      justify-self: center;
+      justify-self: start;
     }
 
     .Forecast {
