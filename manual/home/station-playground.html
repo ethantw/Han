@@ -21,27 +21,6 @@
     ja: 'MarkdownやHTMLを書けば、あなたの文字で漢.cssの心配りをその場で試せる。',
     ko: 'Markdown이나 HTML을 <ruby>作成<rt>작성</rt></ruby>하면、당신의 글로 漢.css의 <ruby>精誠<rt>정성</rt></ruby>을 <ruby>卽時<rt>즉시</rt></ruby> 미리볼 수 있다。',
   },
-  pgStationViewsLegend: {
-    hant: '編輯器分頁',
-    hans: '编辑器页签',
-    en: 'Editor view',
-    ja: 'エディタのタブ',
-    ko: '에디터 탭',
-  },
-  pgStationTabPreview: {
-    hant: '預覽',
-    hans: '预览',
-    en: 'Preview',
-    ja: 'プレビュー',
-    ko: '미리보기',
-  },
-  pgStationTabCode: {
-    hant: '原始碼',
-    hans: '源码',
-    en: 'Code',
-    ja: 'ソース',
-    ko: '소스 코드',
-  },
   pgStationCodeLabel: {
     hant: '原始碼編輯區',
     hans: '源码编辑区',
@@ -119,11 +98,6 @@
 
   <div class="Preview Playground" data-playground>
     <header>
-      <fieldset class="ViewTabs" data-pg-editor-views>
-        <legend class="sr-only">{{ pgStationViewsLegend }}</legend>
-        <label><input type="radio" name="pg-editor-view" value="preview" checked>{{ pgStationTabPreview }}</label>
-        <label><input type="radio" name="pg-editor-view" value="code">{{ pgStationTabCode }}</label>
-      </fieldset>
     </header>
 
     <!-- code tab = raw source, preview tab = typeset result; CSS

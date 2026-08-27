@@ -15,27 +15,11 @@ const KEY = 'han-playground-src'
 
 const $preview = (page: Page) => page.locator('#station-playground [data-pg-preview]')
 const $src = (page: Page) => page.locator('#station-playground [data-pg-src]')
-const $tabs = (page: Page) => page.locator('#station-playground [data-pg-editor-views]')
-
-/** Tab clicks are only a thing in the NARROW panel. From 48rem of panel width
- *  the editor is two-pane (playground.css § 夠寬就不必分頁): both source and
- *  preview are on screen at once and the whole tab strip is `display: none`,
- *  so clicking it would just hang. The default e2e viewport (1280) IS
- *  two-pane — measured: 936px of panel — hence the guard rather than a
- *  narrow-only assumption. */
-const showTab = async (page: Page, value: 'code' | 'preview') => {
-  if (!(await $tabs(page).isVisible())) return
-  await $tabs(page).locator(`label:has(input[value="${value}"])`).click()
-}
-const showCode = (page: Page) => showTab(page, 'code')
-const showPreview = (page: Page) => showTab(page, 'preview')
-
-/** Type source into the (hidden-under-Preview) textarea: reveal Code, fill,
- *  back to Preview so assertions see the rendered result. */
+/** Type source into the textarea. Both panes are always on stage now — the
+ *  narrow panel's 預覽／原始碼 tabs went away with the one-pane-at-a-time
+ *  layout (2026-08-28), so there is nothing to reveal first. */
 const setSource = async (page: Page, src: string) => {
-  await showCode(page)
   await $src(page).fill(src)
-  await showPreview(page)
 }
 
 /** 配置群組是 shadow 內的 <details> 手風琴——收合組裡的控件先展開。 */

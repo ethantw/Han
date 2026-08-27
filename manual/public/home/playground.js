@@ -104,30 +104,6 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   const $sheet = $editor.querySelector('[data-pg-sheet]')
   const $panes = $editor.querySelector('[data-pg-panes]')
 
-  /* ── 手勢與分頁互相對齊 ──────────────────────────────────────────
-   * 窄站台下兩塊窗格並排在一條吸附軌上，於是「哪一塊在看」有兩個入口，兩
-   * 邊必須讀出同一件事：撥分頁就把軌捲過去，滑軌就把分頁勾過來。
-   *
-   * 鍵在 `scrollend`（Baseline 2024）而不是每一幀的 scroll：滑到哪一格這件
-   * 事，要等手勢停下來才有答案，中途每幀都去改勾選只會讓控件跳。 */
-  const paneOfView = (value) => (value === 'code' ? $src : $sheet)
-  const stripMode = () => $panes && getComputedStyle($panes).display !== 'grid'
-  if ($panes) {
-    for (const $radio of $editor.querySelectorAll('[name="pg-editor-view"]')) {
-      $radio.addEventListener('change', () => {
-        if (!$radio.checked || !stripMode()) return
-        paneOfView($radio.value).scrollIntoView({ inline: 'start', block: 'nearest' })
-      })
-    }
-    $panes.addEventListener('scrollend', () => {
-      if (!stripMode()) return
-      // 預覽在軌首（CSS 的 `order: -1`），所以過了半格就是原始碼那一格
-      const view = $panes.scrollLeft > $panes.clientWidth / 2 ? 'code' : 'preview'
-      const $radio = $editor.querySelector(`[name="pg-editor-view"][value="${view}"]`)
-      if ($radio && !$radio.checked) $radio.checked = true
-    })
-  }
-
   /* 報頭的日期不在這裡寫：它是 `<time data-era-line>`，與站④那兩張樣張同一個
      鉤子，由 papers-dateline.js 在 DCL 一併填掉（2026-08-27 起報頭是共用零件）。 */
 

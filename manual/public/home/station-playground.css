@@ -200,380 +200,332 @@
     > :last-child { margin-block-end: 0; }
   }
 
-  /* radio-driven tab swap — preview default, so hide the code pane until
-     its tab is checked, and hide the preview when code is. (:has() —
-     Baseline 2023.) */
-  /* Direct children ONLY (`>`): the studio (dialog) borrows these same
-     panes by reparenting them into its body — one combinator exempts them
-     from the whole tab/grid regime while they're on loan. */
-  /* Both panes stay on stage and the box scrolls between them: a swipe moves
-     one pane per gesture (`scroll-snap-type: inline mandatory`), and the tabs
-     above are the same control the pills are in station① — they take you
-     there, they don't hide the other one. The two halves are kept in step by
-     `home/playground.js § swipe`: a tab scrolls the strip, the strip checks
-     the tab. (`scroll-snap`: Baseline 2021.)
+  /* 面板不再是一只框：原始碼與校樣各自成卡，掛在一條可平移的軌上。
 
-     `overflow-inline`, not `overflow-x`: 直排預覽把整頁的行向轉直，而「一次
-     一格」問的是**行向**上的下一格。 */
-  /* 窄視窗一次一格，有分頁可按，不需要平移鈕。 */
-  .PgNav {
-    display: none;
+     站台仍然宣告成容器（`pg-station`）——雖然版面本身不再問它，站內別處還在
+     問（見下方幾條 `@container`）。 */
+  &:where(section) {
+    container: pg-station / inline-size;
   }
 
+  /* ── 兩張卡片並排在一條可平移的軌上（不分寬窄） ──────────────────
+     2026-08-28：窄視窗原本另走一條「分頁 ＋ 一次一格」的路，現在拿掉了——
+     同一條軌在窄視窗照樣讀得好，而兩套版面就是兩套要維護的東西（owner）。
+     `@container pg-station (min-width: 48rem)` 那層條件因此整個解開；下面的
+     規則從此無條件生效。 */
+  &[data-playground] {
+    /* The galley's two geometry numbers live here, on the common
+       ancestor, because the lens is a SIBLING of the galley and sizes
+       itself from the same two (see § the loupe). */
+    --pg-galley-fs: 0.5rem;
+    --pg-galley-col: 14;   /* column measure, in galley em */
+    /* Both panes stand this tall — one token, so the editor and the sheet
+       can never drift apart. Short of the full viewport on purpose: a pane
+       that ends before the fold shows there is a page around it. */
+    --pg-pane-h: calc(0.85 * (100dvh - var(--h-header)));
+
+    /* shed the `.Preview` frame — the wrapper is pure layout now, the
+       cards below carry their own chrome */
+    overflow: visible;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* 兩張卡片並排，而且**整條可以左右平移**（owner call）。
+     一版報紙的欄本來就比半個閱讀欄寬；先前是讓校樣卡自己往視窗右緣破出去
+     再自己內捲，於是頁面裡有兩層捲動，而且編輯區永遠釘在左邊。改成整條
+     面板是捲動容器、兩張卡片都在捲動範圍內，讀者要並排、要整張校樣，自己
+     framing。
+
+     **不吸附**：吸附是「一次一格」，這裡要的正是「停在你要的地方」。窄視窗
+     那條路仍然吸附，因為它一次只給一格。
+
+     仍然是 `grid`：`playground.js § fitSheet` 的第一行就是「面板不是 grid
+     就整支 return」，那 150 行的版面幾何（破出、切欄、欄寬釘定）是為舊模型
+     寫的。留著 grid，它照常執行，而卡片各自定寬之後校樣卡不再溢出自己，
+     fitSheet 走到 `if (!overflowing()) return` 就收手——舊規則自己讓位，
+     不必拆它。 */
   [data-pg-panes] {
-    display: flex;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    gap: var(--gutter);
+    align-items: start;
+
     overflow-inline: auto;
     overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
+    scroll-snap-type: none;
+    scrollbar-width: none;
 
-    > * {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
+    /* 兩側破出站台的裝訂線，工作區收在**網頁邊界**（與四語長帶同一組做法）：
+       平移到邊時卡片是在頁面邊緣被切斷的，而不是停在一道留白之前——留白會
+       讀成「排完了」，但它其實是捲的。
+
+       破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
+       **內側**，所以靜止時編輯區仍與正文對齊。`scroll-padding` 是第三件事，
+       少了它捲回開頭時編輯區會貼著視窗，與正文差一個裝訂線。 */
+    margin-inline: calc(-1 * var(--plate-pad));
+    padding-inline: var(--plate-pad);
+    scroll-padding-inline-start: var(--plate-pad);
+
+    &::-webkit-scrollbar {
+      display: none;
     }
-
-    /* 預覽在前，因為它是預設的那一格：捲動位置 0 與勾選的分頁從第一帧就
-       一致，不必靠 JS 先把軌推過去。DOM 序不動（編輯區仍是第一個），焦點
-       序因此還是「先寫再看」。 */
-    > [data-pg-sheet] { order: -1; }
 
     @media (prefers-reduced-motion: no-preference) {
       scroll-behavior: smooth;
     }
   }
 
-  /* ── Wide enough: no tabs — two SEPARATE cards side by side ────────
-     From 48rem of station width the panel stops being one framed box and
-     dissolves into an invisible grid; source and preview each become their
-     own card, unbound from each other's height.
+  /* 平移用的左右鈕。只在寬視窗出現——窄視窗一次一格，那裡有分頁可以按。
+     擺在工作區右下，與四語長帶同一個位置與同一個模組（`strip-nav.js`）：
+     同一種「還有更多」就該用同一種手勢與同一個角落回答。 */
+  .PgNav {
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
 
-     The query asks the CONTAINER (the station's content box = the panel's
-     width; gutters and the docked console make the viewport a bad proxy),
-     via `min-width` on purpose: containers contain the inline axis only,
-     so in vertical writing the block-axis width is unqueryable, the
-     condition is unknown, and the station falls back to tabs — which is
-     what a vertical preview wants anyway. Named (`pg-station`) so every
-     rule below flips on the same box; the panel itself also carries
-     `.Playground`, and an unnamed query would re-anchor nested subjects to
-     the panel's content box, one border-width apart. */
-  &:where(section) {
-    container: pg-station / inline-size;
-  }
+    /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉
+       UA 的 `[hidden]`，所以要自己認一次。 */
+    &[hidden] { display: none; }
 
-  @container pg-station (min-width: 48rem) {
-    &[data-playground] {
-      /* The galley's two geometry numbers live here, on the common
-         ancestor, because the lens is a SIBLING of the galley and sizes
-         itself from the same two (see § the loupe). */
-      --pg-galley-fs: 0.5rem;
-      --pg-galley-col: 14;   /* column measure, in galley em */
-      /* Both panes stand this tall — one token, so the editor and the sheet
-         can never drift apart. Short of the full viewport on purpose: a pane
-         that ends before the fold shows there is a page around it. */
-      --pg-pane-h: calc(0.85 * (100dvh - var(--h-header)));
-
-      /* shed the `.Preview` frame — the wrapper is pure layout now, the
-         cards below carry their own chrome */
-      overflow: visible;
-      background: none;
-      border: 0;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    /* 兩張卡片並排，而且**整條可以左右平移**（owner call）。
-       一版報紙的欄本來就比半個閱讀欄寬；先前是讓校樣卡自己往視窗右緣破出去
-       再自己內捲，於是頁面裡有兩層捲動，而且編輯區永遠釘在左邊。改成整條
-       面板是捲動容器、兩張卡片都在捲動範圍內，讀者要並排、要整張校樣，自己
-       framing。
-
-       **不吸附**：吸附是「一次一格」，這裡要的正是「停在你要的地方」。窄視窗
-       那條路仍然吸附，因為它一次只給一格。
-
-       仍然是 `grid`：`playground.js § fitSheet` 的第一行就是「面板不是 grid
-       就整支 return」，那 150 行的版面幾何（破出、切欄、欄寬釘定）是為舊模型
-       寫的。留著 grid，它照常執行，而卡片各自定寬之後校樣卡不再溢出自己，
-       fitSheet 走到 `if (!overflowing()) return` 就收手——舊規則自己讓位，
-       不必拆它。 */
-    [data-pg-panes] {
+    button {
       display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: auto;
-      gap: var(--gutter);
-      align-items: start;
-
-      overflow-inline: auto;
-      overscroll-behavior-inline: contain;
-      scroll-snap-type: none;
-      scrollbar-width: none;
-
-      /* 兩側破出站台的裝訂線，工作區收在**網頁邊界**（與四語長帶同一組做法）：
-         平移到邊時卡片是在頁面邊緣被切斷的，而不是停在一道留白之前——留白會
-         讀成「排完了」，但它其實是捲的。
-
-         破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
-         **內側**，所以靜止時編輯區仍與正文對齊。`scroll-padding` 是第三件事，
-         少了它捲回開頭時編輯區會貼著視窗，與正文差一個裝訂線。 */
-      margin-inline: calc(-1 * var(--plate-pad));
-      padding-inline: var(--plate-pad);
-      scroll-padding-inline-start: var(--plate-pad);
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        scroll-behavior: smooth;
-      }
+      place-content: center;
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+      color: var(--ui-supplement-text);
+      background: var(--ui-supplement-bg);
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
     }
 
-    /* 平移用的左右鈕。只在寬視窗出現——窄視窗一次一格，那裡有分頁可以按。
-       擺在工作區右下，與四語長帶同一個位置與同一個模組（`strip-nav.js`）：
-       同一種「還有更多」就該用同一種手勢與同一個角落回答。 */
-    .PgNav {
-      display: flex;
-      justify-content: end;
-      gap: 0.5rem;
-      margin-block-start: 0.75rem;
-
-      /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉
-         UA 的 `[hidden]`，所以要自己認一次。 */
-      &[hidden] { display: none; }
-
-      button {
-        display: grid;
-        place-content: center;
-        inline-size: 2.75rem;
-        block-size: 2.75rem;
-        color: var(--ui-supplement-text);
-        background: var(--ui-supplement-bg);
-        border: 0;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      button:hover:not(:disabled) {
-        color: var(--ui-bg);
-        background: var(--ui-accent);
-      }
-
-      button:disabled {
-        opacity: 0.35;
-        cursor: default;
-      }
-
-      [data-scroll="next"] [data-icon] {
-        rotate: 180deg;
-      }
+    button:hover:not(:disabled) {
+      color: var(--ui-bg);
+      background: var(--ui-accent);
     }
 
-    /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
-    > header {
-      display: none;
+    button:disabled {
+      opacity: 0.35;
+      cursor: default;
     }
 
-    /* ── The editor card: a terminal, one pane tall ────────────────────
-       Scrolls inside; sticky, so it stays at hand when the sheet grows past
-       a viewport (long user content is allowed to). */
-    [data-pg-panes] > textarea {
-      /* 明寫**列與行**。窄站台給校樣卡的 `order: -1`（把預設那一格排在軌首）
-         在網格裡照樣算——它改的是自動佈局的順序，於是定了欄的編輯區只能被
-         擠到第二列去（實測 1440／1900 下編輯區掉到 y≈1069，整站錯位）。兩塊
-         都把行寫死，順序就管不著它們了。 */
-      grid-row: 1;
-      grid-column: 1;
-      /* 編輯區只要放得下一行 Markdown，不必與校樣等寬——它讓出來的寬度正是
-         校樣拿去排欄的。 */
-      inline-size: min(34rem, 92cqi);
-      block-size: var(--pg-pane-h);
-      overflow: auto;
-      resize: none;
-      position: sticky;
-      inset-block-start: calc(var(--h-header) + 1rem);
-      /* its own card edge — fixed faint mist, legible on the terminal
-         ground in both themes (web-style.md dark-surface gotcha) */
-      border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
-      border-radius: var(--r-3);
+    [data-scroll="next"] [data-icon] {
+      rotate: 180deg;
     }
-
-    /* ── The galley card (校樣) ───────────────────────────────────────
-       A newspaper proof: the WHOLE text at a glance — tiny type, balanced
-       columns, natural height, no scrollbar. Hover (or keyboard focus)
-       trades overview for reading: type up to legible, height capped to
-       the viewport, scrolling inside. Column width is in em, so the
-       column keeps its character measure across both states and the
-       galley re-folds like a paper rather than reflowing into a blog. */
-    /* The card face — the real paper AND the loupe's copy of it. This must
-       include the LAYOUT, not just the paint: the galley's height comes from
-       flexing against the card, and a clone that laid out as a plain block
-       gave its galley an auto height, so the copy fragmented into different
-       columns than the page it was supposed to be magnifying. */
-    [data-pg-sheet] > [data-pg-paper],
-    .Lens .PgPaper {
-      padding: 1.25rem 1rem;
-      background: var(--ui-bg);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-3);
-      block-size: var(--pg-pane-h);
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* The copy clips instead of scrolling — the module mirrors the source's
-       scroll offset onto it, and a scrollbar inside the circle would be a
-       control nobody can reach. */
-    .Lens .PgPaper {
-      overflow: hidden;
-    }
-
-    /* The sheet unit owns the track; the LIFT belongs to its two children,
-       not to the wrapper. A `translate` on the wrapper would make it a
-       stacking context, trapping the switch's z-index inside it — and the
-       switch has to be able to paint above the loupe (see below). */
-    [data-pg-panes] > [data-pg-sheet] {
-      grid-row: 1;
-      grid-column: 2;
-      /* 校樣拿一整版報紙該有的寬度，而不是閱讀欄的一半。放不下就往右邊去，
-         那是捲動範圍的一部分，不是被切掉。 */
-      inline-size: min(56rem, 92cqi);
-      /* the switch tucks under the sheet's right edge. NOT `align-items:
-         flex-end` — that would align the bled card by its RIGHT edge, so the
-         extra width would grow leftward and the sheet would never reach the
-         window. The card keeps the start edge; only the switch shifts. */
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      padding: 0;
-    }
-
-    [data-pg-sheet] > [data-pg-paper] {
-      inline-size: 100%;
-      /* 原本這裡是 `translate: 0 -7rem`，把校樣往上提去對齊編輯區的工具列。
-         面板改成可平移的長帶之後那一提就把報頭與大標的第一行推到上方那排分頁
-         底下——它們有版面、`checkVisibility()` 也回報可見，只是被蓋住，看起來
-         就像「標題不見了」。對齊改由 `align-items: start` 負責，不必再位移。 */
-      box-shadow: 0 1px 0 var(--ui-bg-2q);
-      /* 游標由放大鏡自己說（home/lens.css § 有 hover 的指標）：這裡寫死
-         `zoom-in` 會在鏡片張開或關掉之後說謊，而且與那條同權重、只靠檔序取勝。 */
-
-      /* ── the sheet runs off the page to the right ─────────────────────
-         When the galley needs more columns than the track holds, the card
-         stops obeying that track and widens to the WINDOW's right edge,
-         with the last visible column cut in half: a page that ends
-         mid-column is telling you there is more of it. Both numbers are
-         solved in playground.js § fitSheet — they need the viewport and the
-         used column metrics. No JS: the card keeps its track and scrolls,
-         columns filling it whole.
-
-         The CARD is the scroll container, so the whole sheet pans (and the
-         masthead stays put — it is sticky, below). */
-      /* `--pg-paper-w`：內容用不到整張紙時，紙自己也收窄到內容那裡
-         （playground.js § trimEmptyColumns）——不收的話欄規是不畫了，右邊仍留著
-         一片與欄同寬的白，讀起來還是「多了一欄」（owner 2026-08-27）。版面因此
-         是「短稿一張小報」，而不是「大報右邊空著」。 */
-      inline-size: calc(var(--pg-paper-w, 100%) + var(--pg-bleed, 0px));
-      /* 收窄有地板：報頭那三格（標語｜刊名｜天氣）比一欄正文寬得多，短稿的紙若
-         照內容收，報頭就被擠成三條細長條（實測 en／ja 的預設稿只有一欄，紙收到
-         165px、報頭溢出 315px）。`min-content` 讓紙最窄也還排得下自己的頭。 */
-      min-inline-size: min-content;
-      overflow-x: auto;
-      overflow-y: hidden;
-      /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半
-         根本沒有橫向溢出（實測 scrollWidth ＝ clientWidth ＝ 894），於是 contain
-         把滾輪整個吃掉——讀者在預覽區橫捲什麼也不動，只有編輯區與預覽之間那道
-         縫捲得動長帶（owner 2026-08-27）。巢狀捲動的預設行為正好是要的：先捲
-         這張紙，捲到底再帶著長帶走。 */
-      scrollbar-width: thin;
-
-      /* bled to the window edge, the right side is a cut, not an edge */
-      &[data-pg-bled] {
-        border-start-end-radius: 0;
-        border-end-end-radius: 0;
-        border-inline-end: 0;
-      }
-    }
-
-    /* 報頭不再 sticky。
-
-       它原本要解的是「卡片自己橫捲時，報頭別跟著滑走」——那個前提沒了：整條
-       面板才是捲動容器，卡片只是裡面的一張。而 sticky 找的是**最近的捲動祖
-       先**，於是它改黏到面板的捲動口上，也就是編輯區那一頭，整個離開卡片：
-       畫面上報頭消失、大標的第一行留在原位卻沒被畫出來（實測那一行的行框還
-       在 910,319，只是空的）。
-
-       黏在整條面板上也沒有意義——那條長帶上有兩張卡，報頭不屬於它。 */
-
-    /* ── the galley face: a PAGE, not a stream ─────────────────────────
-       Definite height ＋ `column-fill: auto` ＝ columns fill top-to-bottom
-       and then continue RIGHTWARD, the way a broadsheet does: a short draft
-       sits in column one and leaves the rest of the sheet white (balancing
-       would ration three lines across three columns), and long copy grows
-       the page sideways into overflow columns you scroll to.
-
-       The scroll lives on the CARD (above), never on the page: a sheet may
-       be wider than the window, the site's layout may not. */
-    .PgGalley {
-      font-size: var(--pg-galley-fs);
-      flex: 1 1 auto;
-      min-block-size: 0;
-      /* Width and column measure are SOLVED (fitSheet), and pinned to a
-         WHOLE number of columns so the columns keep their measure instead of
-         stretching to fill the box — stretching is exactly what makes every
-         visible column complete, and a complete last column signals
-         nothing. The 14em below is a FLOOR: the solve may hand the columns
-         more, never less. */
-      inline-size: var(--pg-galley-w, 100%);
-      columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
-      column-gap: 2em;
-      column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
-      column-fill: auto;
-    }
-
-    /* The narrower measure wants a narrower indent. On the CLASS: this is
-       part of the galley's face, and the loupe's copy has to indent the same
-       or it breaks its lines somewhere else and stops being a copy. */
-    .PgGalley {
-      --han-prose-indent: 1em;
-    }
-
-    [data-pg-preview] {
-      /* Keyboard reading mode (`:focus-visible`, not :hover/:focus — the
-         mouse gets the lens, and a click-to-select must not reflow the
-         card): unfold the page into ONE vertical column at reading size.
-         A keyboard scrolls a column happily; chasing a sideways page with
-         arrow keys is no way to read. */
-      &:focus-visible {
-        font-size: 0.875rem;
-        inline-size: 100%;
-        columns: auto;
-        column-rule: none;
-        overflow-x: hidden;
-        overflow-y: auto;
-        cursor: auto;
-      }
-    }
-
-
-    /* ── The loupe (home/lens.css + home/lens.js) — a circular window
-       painting a live copy of the WHOLE paper card (masthead and dateline
-       included: they are part of the page being proofed).
-
-       Only the two geometry tokens are the station's business. 1.75× lifts
-       the 8px galley to ~16px — reading size, the same ballpark as the
-       studio — and the diameter is 1.75 × the MAGNIFIED column, because a
-       circle only offers its full width across the middle.
-
-       On stage from the first frame, except while the writer is IN the
-       editor: typing is the one moment the proof isn't being read, and a
-       loupe hanging over the page then is furniture in the way. `:has()` on
-       the panel, keyed on the textarea's own focus. */
-    .Lens {
-      display: block;
-      --lens-zoom: 1.75;
-      --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
-    }
-
-    &[data-playground]:has([data-pg-panes] > textarea:focus) .Lens { opacity: 0; }
   }
+
+  /* …and the toolbar holds nothing but the tabs, so it leaves whole. */
+  > header {
+    display: none;
+  }
+
+  /* ── The editor card: a terminal, one pane tall ────────────────────
+     Scrolls inside; sticky, so it stays at hand when the sheet grows past
+     a viewport (long user content is allowed to). */
+  [data-pg-panes] > textarea {
+    /* 明寫**列與行**。窄站台給校樣卡的 `order: -1`（把預設那一格排在軌首）
+       在網格裡照樣算——它改的是自動佈局的順序，於是定了欄的編輯區只能被
+       擠到第二列去（實測 1440／1900 下編輯區掉到 y≈1069，整站錯位）。兩塊
+       都把行寫死，順序就管不著它們了。 */
+    grid-row: 1;
+    grid-column: 1;
+    /* 編輯區只要放得下一行 Markdown，不必與校樣等寬——它讓出來的寬度正是
+       校樣拿去排欄的。 */
+    inline-size: min(34rem, 92cqi);
+    block-size: var(--pg-pane-h);
+    overflow: auto;
+    resize: none;
+    position: sticky;
+    inset-block-start: calc(var(--h-header) + 1rem);
+    /* its own card edge — fixed faint mist, legible on the terminal
+       ground in both themes (web-style.md dark-surface gotcha) */
+    border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+    border-radius: var(--r-3);
+  }
+
+  /* ── The galley card (校樣) ───────────────────────────────────────
+     A newspaper proof: the WHOLE text at a glance — tiny type, balanced
+     columns, natural height, no scrollbar. Hover (or keyboard focus)
+     trades overview for reading: type up to legible, height capped to
+     the viewport, scrolling inside. Column width is in em, so the
+     column keeps its character measure across both states and the
+     galley re-folds like a paper rather than reflowing into a blog. */
+  /* The card face — the real paper AND the loupe's copy of it. This must
+     include the LAYOUT, not just the paint: the galley's height comes from
+     flexing against the card, and a clone that laid out as a plain block
+     gave its galley an auto height, so the copy fragmented into different
+     columns than the page it was supposed to be magnifying. */
+  [data-pg-sheet] > [data-pg-paper],
+  .Lens .PgPaper {
+    padding: 1.25rem 1rem;
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    block-size: var(--pg-pane-h);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The copy clips instead of scrolling — the module mirrors the source's
+     scroll offset onto it, and a scrollbar inside the circle would be a
+     control nobody can reach. */
+  .Lens .PgPaper {
+    overflow: hidden;
+  }
+
+  /* The sheet unit owns the track; the LIFT belongs to its two children,
+     not to the wrapper. A `translate` on the wrapper would make it a
+     stacking context, trapping the switch's z-index inside it — and the
+     switch has to be able to paint above the loupe (see below). */
+  [data-pg-panes] > [data-pg-sheet] {
+    grid-row: 1;
+    grid-column: 2;
+    /* 校樣拿一整版報紙該有的寬度，而不是閱讀欄的一半。放不下就往右邊去，
+       那是捲動範圍的一部分，不是被切掉。 */
+    inline-size: min(56rem, 92cqi);
+    /* the switch tucks under the sheet's right edge. NOT `align-items:
+       flex-end` — that would align the bled card by its RIGHT edge, so the
+       extra width would grow leftward and the sheet would never reach the
+       window. The card keeps the start edge; only the switch shifts. */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0;
+  }
+
+  [data-pg-sheet] > [data-pg-paper] {
+    inline-size: 100%;
+    /* 原本這裡是 `translate: 0 -7rem`，把校樣往上提去對齊編輯區的工具列。
+       面板改成可平移的長帶之後那一提就把報頭與大標的第一行推到上方那排分頁
+       底下——它們有版面、`checkVisibility()` 也回報可見，只是被蓋住，看起來
+       就像「標題不見了」。對齊改由 `align-items: start` 負責，不必再位移。 */
+    box-shadow: 0 1px 0 var(--ui-bg-2q);
+    /* 游標由放大鏡自己說（home/lens.css § 有 hover 的指標）：這裡寫死
+       `zoom-in` 會在鏡片張開或關掉之後說謊，而且與那條同權重、只靠檔序取勝。 */
+
+    /* ── the sheet runs off the page to the right ─────────────────────
+       When the galley needs more columns than the track holds, the card
+       stops obeying that track and widens to the WINDOW's right edge,
+       with the last visible column cut in half: a page that ends
+       mid-column is telling you there is more of it. Both numbers are
+       solved in playground.js § fitSheet — they need the viewport and the
+       used column metrics. No JS: the card keeps its track and scrolls,
+       columns filling it whole.
+
+       The CARD is the scroll container, so the whole sheet pans (and the
+       masthead stays put — it is sticky, below). */
+    /* `--pg-paper-w`：內容用不到整張紙時，紙自己也收窄到內容那裡
+       （playground.js § trimEmptyColumns）——不收的話欄規是不畫了，右邊仍留著
+       一片與欄同寬的白，讀起來還是「多了一欄」（owner 2026-08-27）。版面因此
+       是「短稿一張小報」，而不是「大報右邊空著」。 */
+    inline-size: calc(var(--pg-paper-w, 100%) + var(--pg-bleed, 0px));
+    /* 收窄有地板：報頭那三格（標語｜刊名｜天氣）比一欄正文寬得多，短稿的紙若
+       照內容收，報頭就被擠成三條細長條（實測 en／ja 的預設稿只有一欄，紙收到
+       165px、報頭溢出 315px）。`min-content` 讓紙最窄也還排得下自己的頭。 */
+    min-inline-size: min-content;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半
+       根本沒有橫向溢出（實測 scrollWidth ＝ clientWidth ＝ 894），於是 contain
+       把滾輪整個吃掉——讀者在預覽區橫捲什麼也不動，只有編輯區與預覽之間那道
+       縫捲得動長帶（owner 2026-08-27）。巢狀捲動的預設行為正好是要的：先捲
+       這張紙，捲到底再帶著長帶走。 */
+    scrollbar-width: thin;
+
+    /* bled to the window edge, the right side is a cut, not an edge */
+    &[data-pg-bled] {
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+      border-inline-end: 0;
+    }
+  }
+
+  /* 報頭不再 sticky。
+
+     它原本要解的是「卡片自己橫捲時，報頭別跟著滑走」——那個前提沒了：整條
+     面板才是捲動容器，卡片只是裡面的一張。而 sticky 找的是**最近的捲動祖
+     先**，於是它改黏到面板的捲動口上，也就是編輯區那一頭，整個離開卡片：
+     畫面上報頭消失、大標的第一行留在原位卻沒被畫出來（實測那一行的行框還
+     在 910,319，只是空的）。
+
+     黏在整條面板上也沒有意義——那條長帶上有兩張卡，報頭不屬於它。 */
+
+  /* ── the galley face: a PAGE, not a stream ─────────────────────────
+     Definite height ＋ `column-fill: auto` ＝ columns fill top-to-bottom
+     and then continue RIGHTWARD, the way a broadsheet does: a short draft
+     sits in column one and leaves the rest of the sheet white (balancing
+     would ration three lines across three columns), and long copy grows
+     the page sideways into overflow columns you scroll to.
+
+     The scroll lives on the CARD (above), never on the page: a sheet may
+     be wider than the window, the site's layout may not. */
+  .PgGalley {
+    font-size: var(--pg-galley-fs);
+    flex: 1 1 auto;
+    min-block-size: 0;
+    /* Width and column measure are SOLVED (fitSheet), and pinned to a
+       WHOLE number of columns so the columns keep their measure instead of
+       stretching to fill the box — stretching is exactly what makes every
+       visible column complete, and a complete last column signals
+       nothing. The 14em below is a FLOOR: the solve may hand the columns
+       more, never less. */
+    inline-size: var(--pg-galley-w, 100%);
+    columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
+    column-gap: 2em;
+    column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
+    column-fill: auto;
+  }
+
+  /* The narrower measure wants a narrower indent. On the CLASS: this is
+     part of the galley's face, and the loupe's copy has to indent the same
+     or it breaks its lines somewhere else and stops being a copy. */
+  .PgGalley {
+    --han-prose-indent: 1em;
+  }
+
+  [data-pg-preview] {
+    /* Keyboard reading mode (`:focus-visible`, not :hover/:focus — the
+       mouse gets the lens, and a click-to-select must not reflow the
+       card): unfold the page into ONE vertical column at reading size.
+       A keyboard scrolls a column happily; chasing a sideways page with
+       arrow keys is no way to read. */
+    &:focus-visible {
+      font-size: 0.875rem;
+      inline-size: 100%;
+      columns: auto;
+      column-rule: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+      cursor: auto;
+    }
+  }
+
+
+  /* ── The loupe (home/lens.css + home/lens.js) — a circular window
+     painting a live copy of the WHOLE paper card (masthead and dateline
+     included: they are part of the page being proofed).
+
+     Only the two geometry tokens are the station's business. 1.75× lifts
+     the 8px galley to ~16px — reading size, the same ballpark as the
+     studio — and the diameter is 1.75 × the MAGNIFIED column, because a
+     circle only offers its full width across the middle.
+
+     On stage from the first frame, except while the writer is IN the
+     editor: typing is the one moment the proof isn't being read, and a
+     loupe hanging over the page then is furniture in the way. `:has()` on
+     the panel, keyed on the textarea's own focus. */
+  .Lens {
+    display: block;
+    --lens-zoom: 1.75;
+    --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
+  }
+
+  &[data-playground]:has([data-pg-panes] > textarea:focus) .Lens { opacity: 0; }
 }
 
 
