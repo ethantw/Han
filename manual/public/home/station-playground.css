@@ -73,10 +73,10 @@
        粗線；下排：版面名（左）與日期（中）。位置與角色都照《紐約時報》頭版：
        那一格放的是紐約天氣，我們的太陽系版就放太陽風與黑子（owner 2026-08-27）。
 
-       粗線由 `::after` 佔一整列畫出來，不加裝飾用的元素；上排的兩側小字貼**頂**
-       站、刊名貼**底**站（`align-items: start` ＋ 刊名 `align-self: end`）：三格
-       都貼底的話，報頭的重量會全壓在那條粗線上，上緣一片空——紐時的標語框與
-       天氣也都在上緣。 */
+       粗線由 `::after` 佔一整列畫出來，不加裝飾用的元素；三格一律**垂直居中**
+       （`align-items: center`）：貼底站的話報頭的重量全壓在那條粗線上、上緣一片
+       空，貼頂站則反過來——刊名是五個大字，兩側是幾行小字，只有各自對中，這一
+       排的重心才落在自己身上。 */
     .PaperHead {
       & {
         display: grid;
@@ -94,7 +94,7 @@
           auto
           minmax(var(--_side), 1fr)
         ;
-        align-items: start;
+        align-items: center;
         column-gap: 1.25rem;
         row-gap: 0.35rem;
         margin-block-end: 0.75rem;
@@ -163,7 +163,6 @@
         margin: 0;
         grid-row: 1;
         grid-column: 2;
-        align-self: end;
         /* 刊名要與兩側的小字擺得下：這張紙是內容寬（短稿約 600px），五個字加
            0.25em 字距，2.25rem 約 225px，左右各留得下標語（max-content）與天氣
            （14em）。窄站台疊回一欄時另給小一號。 */
@@ -187,9 +186,10 @@
       .Price {
         grid-row: 3;
         margin: 0;
-        font-size: 0.5625rem;
+        /* 與日期同一級：這一列三件事是同一排註腳，字級不同會讓它讀成兩排。
+           也是那句售價註記塞得進 `--_side` 的條件（0.5625rem 下它折成兩行）。 */
+        font-size: 0.5rem;
         line-height: 1.4;
-        white-space: nowrap;
         color: var(--ui-supplement-text);
       }
 
@@ -206,15 +206,13 @@
       /* 日期。**自己一行**、置中，四紀年一氣排下（民國在前）——紐時把日期擺在
          刊名底下那條線的正中，我們照辦。字比卷號再小一號：報頭的註腳。 */
       .Dateline {
-        /* 自己一列，不與卷號、售價同列：紐時的 folio 三者同行，是因為它的日期
-           只有一個紀年；我們四個紀年一氣排下 376px，加上兩端的卷號與售價就超出
-           這張紙（570px）——擠同一列的結果是互相疊字（實測疊 29px）。 */
-        grid-row: 4;
-        /* 橫跨整條、置中：四紀年一氣排下大約 47 個字，中間那格只有刊名那麼寬
-           （約 225px），放不下就折成兩行、報頭立刻歪掉。跨滿整條，左邊的版面名
-           在同一列的最左端各據一方——實測 604px 的紙上日期 376px、版面名 70px，
-           兩者不相犯。 */
-        grid-column: 1 / -1;
+        /* 與卷號、售價同一列，佔中間那一格——紐時的 folio 就是這三件事一行。
+           不用「橫跨整條再置中」：那樣兩端的卷號與售價會被日期壓過去（實測疊
+           29px）。中間這一格由兩側等寬的 `--_side` 夾出來，本來就在紙的正中，
+           所以置中不必跨欄。紙窄到這一格容不下時，日期自己折成兩行，仍舊置中
+           ——版面會擠，但不會疊字。 */
+        grid-row: 3;
+        grid-column: 2;
         justify-self: center;
         margin: 0;
         font-size: 0.5rem;
@@ -227,8 +225,10 @@
          分界，不是第四個並列項，所以不用頓號（見 papers-dateline.js §
          plus100EraLine）。線用左框線畫，前後各留一個字的空。 */
       .Dateline .Lunar {
-        margin-inline-start: 0.75em;
-        padding-inline-start: 0.75em;
+        /* 前後各留半個字：這一列三件事並排（卷號・日期・售價），中間那一格是
+           剩下的寬度，一個字的空就足以把日期擠成兩行。 */
+        margin-inline-start: 0.5em;
+        padding-inline-start: 0.5em;
         border-inline-start: 1px solid currentColor;
       }
 
