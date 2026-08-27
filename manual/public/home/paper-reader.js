@@ -35,7 +35,6 @@ const open = (key, vertical = false) => {
   paneOf(key)?.scrollIntoView({ inline: 'start', block: 'nearest' })
   if (!$dialog.open) $dialog.showModal()
   setWriting($dialog, vertical)
-  fitColumns($dialog)
 }
 
 const step = ($dialog, by) => {
@@ -52,56 +51,6 @@ const step = ($dialog, by) => {
   open(next, vertical)
 }
 
-/* 直排時的欄數要算，這是 CSS 說不出來的那一句。
- *
- * 多欄的欄沿**行內軸**排，而直排的行內軸是縱的——所以 `block-size` 一封住
- * 每欄的行數，欄就會往下疊，文章沿 Y 延伸（owner call：不要攤成一條往左長
- * 的帶子）。問題在於「要幾欄」：欄數由容器的行內尺寸決定，而直排的行內尺寸
- * 是**高**，一寫 `auto` 就被畫面撐滿、欄數就此封頂，多出來的內容無處可去。
- * `max-content` 也不行，它算的是「不用分欄也放得下」的尺寸，實測給出十七欄。
- *
- * 所以量兩次：先讓它單欄不封行數，看這篇直排起來有多長；再除以一欄的行數，
- * 得到欄數，寫回行內尺寸。開啟、換向、改視窗各算一次，代價是兩次版面。
- */
-const fitColumns = ($dialog) => {
-  const $sheet = $dialog.querySelector('.ReaderBody')
-  const $last = $sheet?.lastElementChild
-  if (!$sheet || !$last) return
-
-  $sheet.style.removeProperty('inline-size')
-  $sheet.style.removeProperty('column-count')
-  if ($dialog.dataset.writing !== 'vertical') return
-
-  const style = getComputedStyle($sheet)
-  const column = parseFloat(style.columnWidth)
-  const gap = parseFloat(style.columnGap)
-  /* 內距在兩種量法裡都各算一次，扣掉才比得準。 */
-  const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
-  const perColumn = $sheet.getBoundingClientRect().width - padding
-
-  /* 起點：這篇直排起來有多長，除以一欄裝得下多少。量的時候必須明寫行內尺寸
-     為一欄的行長，否則它退回 CSS 的 `max-content`，自己又分成好幾欄，量到的
-     只是其中一欄。 */
-  $sheet.style.columns = 'auto'
-  $sheet.style.blockSize = 'auto'
-  $sheet.style.inlineSize = `${column}px`
-  const natural = $sheet.getBoundingClientRect().width - padding
-  $sheet.style.removeProperty('columns')
-  $sheet.style.removeProperty('block-size')
-
-  /* 這個起點一定偏小：多欄只在段落邊界斷，每欄都裝不滿，所以「總長÷欄容量」
-     系統性地少算，末欄就溢出紙外。所以往上加到裝得下為止——四語的段落長度
-     不同，欄數本來就不會一樣（實測繁簡日韓各異）。
-     判準是最後一段的行內終點有沒有越過版心：直排的行內軸朝下，越過就是溢出。 */
-  let count = Math.max(1, Math.ceil(natural / perColumn))
-  for (let guard = 0; guard < 12; guard++) {
-    $sheet.style.columnCount = String(count)
-    $sheet.style.inlineSize = `${count * (column + gap) - gap}px`
-    if ($last.getBoundingClientRect().bottom <= $sheet.getBoundingClientRect().bottom + 1) break
-    count += 1
-  }
-}
-
 /* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
    都要知道現在是哪一種，而它們是對話框的直接子元素。按鈕上寫的是**要切去的
    那一種**，不是現在這一種——一顆按鈕只有一句話的空間，寫「按了會變成什麼」
@@ -109,6 +58,11 @@ const fitColumns = ($dialog) => {
 const setWriting = ($dialog, vertical) => {
   const $button = $dialog.querySelector('[data-reader="writing"]')
   $dialog.dataset.writing = vertical ? 'vertical' : ''
+  /* 報頭跟著轉：直排報紙的報頭也是直排的（《朝日新聞》《聯合報》的報標都在
+     右上角，其餘沿行內軸往下排）。那一套版式住在共用零件裡，開關是標記上的
+     `data-vertical`（home/paper-head.css § 直排）。 */
+  const $head = $dialog.querySelector('.PaperHead')
+  if ($head) $head.toggleAttribute('data-vertical', vertical)
   if ($button) {
     $button.textContent = vertical ? '橫排' : '直排'
     $button.setAttribute('aria-pressed', String(vertical))
@@ -118,17 +72,11 @@ const setWriting = ($dialog, vertical) => {
 const flip = ($dialog) => {
   const vertical = $dialog.dataset.writing !== 'vertical'
   setWriting($dialog, vertical)
-  fitColumns($dialog)
   /* 轉向之後捲軸換了一個軸，原本的捲動位置沒有意義——回到開頭。 */
   $dialog.scrollTo({ top: 0, left: 0 })
 }
 
 export const initPaperReader = () => {
-  /* 改視窗會改變每欄的行數上限，欄數得跟著重算。 */
-  addEventListener('resize', () => {
-    document.querySelectorAll('dialog.Full[open]').forEach(fitColumns)
-  }, { passive: true })
-
   /* The jump line stays a real link — we only intercept it when we can offer
      something better, and `preventDefault` runs only on that branch, so a
      browser without `<dialog>` still follows the href to `:target`. */
@@ -141,6 +89,17 @@ export const initPaperReader = () => {
       if (key) open(key)
     })
   })
+
+  /* 網址帶著 `#paper-*-full` 進來（分享出去的連結、重新整理）時，`:target`
+     的無 JS 退路會就地展開那一份全文——有 JS 的時候那看起來就是「彈窗漏餡」，
+     半份報紙攤在長帶底下。所以開機先問一次：認得的話就升成燈箱，並把 hash
+     從網址上收掉，`:target` 才不再命中（`replaceState`，不留一筆歷史）。 */
+  const booted = document.querySelector(`dialog.Full${location.hash || '#none'}`)
+  if (booted?.showModal) {
+    history.replaceState(null, '', location.pathname + location.search)
+    const key = keyOf(booted)
+    if (key) open(key)
+  }
 
   document.querySelectorAll('dialog.Full').forEach(($dialog) => {
     $dialog.addEventListener('click', (event) => {

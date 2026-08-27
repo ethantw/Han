@@ -412,9 +412,13 @@ figure.Papers {
        得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
        欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
     .ReaderSheet {
-      inline-size: min(76rem, 100dvw - 8rem);
-      margin: 4rem auto 6rem;
-      padding: 2rem 2rem 3rem;
+      /* 寬度不自己定，交給內文那一層（`.ReaderBody` 已經把欄數量化過了）：紙
+         就是內容那麼寬，不多留一條白邊。內距也收——這一版要的是「地月電梯」那
+         張樣張的緊湊感，不是海報的留白（owner 2026-08-27）。 */
+      inline-size: fit-content;
+      max-inline-size: calc(100dvw - 3rem);
+      margin: 2rem auto 3rem;
+      padding: 1.25rem 1.5rem 1.75rem;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
@@ -422,22 +426,22 @@ figure.Papers {
     }
 
     /* 報頭用共用零件（home/paper-head.css）——標語框、刊名、太陽系氣象，粗線
-       底下卷號・日期・售價。這裡只給它這張紙的尺度與兩件本地的事：
+       底下卷號・日期・售價。這裡只給它字級。
 
-       **永遠橫排**：直排的報紙報頭也是橫的，只有正文轉（`writing-mode` 明寫在
-       這裡，因為整張 sheet 會被 `.ReaderWriting` 翻成 `vertical-rl`）。
+       **跟著正文轉**：直排的報紙報頭也是直排的（《朝日新聞》《聯合報》的報標在
+       右上角，其餘沿行內軸往下），版式在共用零件的 `[data-vertical]` 一節，開關
+       由 paper-reader.js 掛上。
 
-       字級是算出來的：報頭排得下的最小寬度約是自己字級的 32 倍，這張紙寬
-       `min(76rem, 100dvw - 8rem)` 減去左右內距約 1150px ⇒ 上限約 36px。取
-       1.375rem（22px），刊名於是 49.5px——一個頭版該有的大小，又還留著餘裕。 */
+       字級：報頭排得下的最小行內尺寸約是自己字級的 32 倍。橫排時那是紙的寬
+       （最寬四欄約 1400px），直排時是紙的高（同樣四欄）——兩邊都容得下
+       1.125rem（18px），刊名 40.5px。 */
     .PaperHead {
-      writing-mode: horizontal-tb;
-      font-size: 1.375rem;
+      font-size: 1.125rem;
     }
 
-    /* 續版列：版次 ＋「（上接第一版）」在行首，行向的開關在行尾。 */
+    /* 續版列：版次 ＋「（上接第一版）」在行首，行向的開關在行尾。行向不寫死
+       ——直排時它跟著報頭一起轉。 */
     .ReaderHead {
-      writing-mode: horizontal-tb;
       display: flex;
       align-items: baseline;
       justify-content: space-between;
@@ -473,21 +477,23 @@ figure.Papers {
       }
     }
 
-    /* 內文層：多欄開在這裡。21em ＝ 每欄 21 字；版寬量化成欄寬的整數倍，否則
-       多出來的寬度會攤進各欄（實測 1024px 下每行 26 字、768px 下 40 字，窄欄
-       的好處全賠光）。`round(down, …)` 是 Baseline 2024。 */
+    /* 內文層：多欄開在這裡。21em ＝ 每欄 21 字，**最多四欄**——再多，一行讀完
+       要橫掃半個畫面，四欄已經是報紙的極限（owner 2026-08-27）。行內尺寸寫成
+       「四欄」與「視窗」取小：橫排時那是寬（窗一窄就自己少一欄，塊軸往下長 ⇒
+       上下捲），直排時是高（四欄疊滿就往左長 ⇒ 水平捲，見下）。
+
+       欄寬用 `columns` 的 `column-width` 語意，不是欄數：容器窄於四欄時瀏覽器
+       自己少開一欄，欄寬始終是那 21 字。 */
     .ReaderBody {
-      --reader-col: min(21em, 100dvw - 12rem);
-      --reader-gap: 2.5rem;
+      --reader-col: 21em;
+      --reader-gap: 2rem;
+      --reader-cols: 4;
+      --reader-span: calc(
+        var(--reader-cols) * (var(--reader-col) + var(--reader-gap)) - var(--reader-gap)
+      );
 
       box-sizing: content-box;
-      inline-size: max(
-        var(--reader-col),
-        calc(
-          round(down, min(72rem, 100dvw - 12rem) + var(--reader-gap), var(--reader-col) + var(--reader-gap))
-          - var(--reader-gap)
-        )
-      );
+      inline-size: min(var(--reader-span), 100dvw - 6rem);
       margin-inline: auto;
       columns: var(--reader-col);
       column-gap: var(--reader-gap);
@@ -526,30 +532,61 @@ figure.Papers {
       }
     }
 
-    /* 直排。版心一轉，文章就往行首那頭長，於是捲動也跟著轉九十度——`vertical-rl`
-       的 `inline-size` 是它在畫面上的**高**，所以高由這裡封頂、寬交給內容。 */
-    /* 直排：轉的是內文層，報頭與續版列留在橫排。`block-size` 封住每欄的行數，
-       欄就只能往行內軸開新的——直排的行內軸是縱的，所以欄往**下**疊，文章沿
-       Y 延伸，捲動仍是往下捲。欄數由 `paper-reader.js` 量到不溢出為止。 */
-    /* 直排時版心收到內文那麼寬。內文自己的 `margin-inline: auto` 幫不上忙：
-       直排的行內軸是縱的，那條 auto 是縱向置中。改讓外層收——版心是橫排的
-       普通塊，`fit-content` ＋ auto 邊距就是一般的水平置中。 */
-    [data-writing="vertical"] .ReaderSheet {
-      inline-size: fit-content;
-    }
+    /* ── 直排 ────────────────────────────────────────────────────────
+       轉的是**整張紙**，不只是內文：報頭與續版列都跟著轉，那才是直排報紙的樣子
+       （2026-08-27 改；先前只轉內文，報頭硬留在橫排）。
 
-    [data-writing="vertical"] .ReaderBody {
-      writing-mode: vertical-rl;
+       紙自己的盒仍活在燈箱的橫排流裡，所以它的寬高用**物理**屬性寫：`inline-size`
+       在 `vertical-rl` 的元素上指的是高，寫邏輯屬性反而會把「紙多寬」說成「紙多
+       高」。
 
-      --reader-col: min(21em, 100dvh - 12rem);
+       欄沿行內軸（縱）疊，四欄 ＝ 紙的高；文章因此往左長，長過畫面就水平捲，
+       而四欄本身多半高過畫面，於是也上下捲——兩個方向都由燈箱那層的
+       `overflow: auto` 接住。 */
+    [data-writing="vertical"] {
+      .ReaderSheet {
+        writing-mode: vertical-rl;
+        width: fit-content;
+        max-width: calc(100dvw - 3rem);
+      }
 
-      block-size: min(52em, 100dvw - 12rem);
-      inline-size: max-content;
-      max-inline-size: none;
-      column-fill: auto;
+      .ReaderBody {
+        inline-size: var(--reader-span);
+      }
 
-      > h3 {
+      /* 直排的大標本來就佔著第一欄的頂端，不跨欄。 */
+      .ReaderBody > h3 {
         column-span: none;
+      }
+
+      /* 續版列的兩件事都收到行首：`space-between` 在直排是「一個貼頂、一個貼
+         底」，而這張紙有四欄高（約 1300px），貼底的那顆行向開關就掉到畫面外，
+         讀者按不回橫排。 */
+      .ReaderHead {
+        justify-content: flex-start;
+        gap: 1.5rem;
+      }
+
+      /* 換版鈕改成一疊，擺在畫面底下正中——直排時左右兩側是文章的**前後**，
+         把「上一版／下一版」放在那裡會與讀者正在走的方向打架。箭頭跟著轉 90°。 */
+      .ReaderStep {
+        inset-block-start: auto;
+        inset-block-end: 1.5rem;
+        left: 50%;
+        right: auto;
+        translate: -50% 0;
+      }
+
+      [data-reader="prev"] {
+        margin-block-end: 3.5rem;
+      }
+
+      .ReaderStep [data-icon] {
+        rotate: 90deg;
+      }
+
+      [data-reader="next"] [data-icon] {
+        rotate: 270deg;
       }
     }
 
