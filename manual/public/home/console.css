@@ -26,11 +26,28 @@ body:has(han-console) {
     --console-gutter: 0px;
   }
   han-console {
-    position: fixed;
-    inset: 0 auto auto 0;
-    inline-size: var(--w-console);
-    block-size: 100vh;
-    /* border-inline-end: 1px solid var(--ui-rule); */
+    & {
+      position: fixed;
+      inset: 0 auto auto 0;
+      inline-size: var(--w-console);
+      block-size: 100vh;
+      /* border-inline-end: 1px solid var(--ui-rule); */
+      /* 收合時它得**畫在版面之上**才滑得出去。原本沒有 z-index，收起來的樣子
+         其實不是「它走了」，是版心的底色蓋住了它（`position: fixed` 不自成
+         堆疊脈絡，站台的不透明底色照 DOM 順序畫在它上面）。開著的時候這一格
+         本來就由 body 的行首內距讓出來，抬階不改變任何畫面。 */
+      z-index: 50;
+    }
+
+    /* 唯一還在動的東西：面板自己滑走，走的是 `translate` ⇒ 合成執行緒，零重排。
+       版心的寬則是一次到位（見上）。讀者看到的是「面板滑開、文字重排一次」，
+       而不是「文字被逐幀推著走」。 */
+    @media (prefers-reduced-motion: no-preference) {
+      transition: translate .28s cubic-bezier(.4, 0, .2, 1);
+    }
+  }
+  &:has(.ConsoleToggle input:checked) han-console {
+    translate: -100% 0;
   }
   /* 收合開關 — header 裡的一顆一般控件，不是浮在交界上的藥丸。
      為什麼在 header：見 _home.html 該處的註（一句話：邊界由主執行緒的
