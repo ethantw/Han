@@ -270,6 +270,13 @@
     padding-inline: var(--plate-pad);
     scroll-padding-inline-start: var(--plate-pad);
 
+    /* 末尾那一格再補一道**外距**：捲到底時容器的 `padding-inline-end` 不算進
+       可捲範圍（實測 620px 下捲到底，校樣卡的右緣正好落在視窗邊上，最後一欄
+       貼著螢幕、放大鏡也照不到），而格線項目的 margin 算。 */
+    > :last-child {
+      margin-inline-end: var(--plate-pad);
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -387,7 +394,14 @@
     grid-column: 2;
     /* 校樣拿一整版報紙該有的寬度，而不是閱讀欄的一半。放不下就往右邊去，
        那是捲動範圍的一部分，不是被切掉。 */
-    inline-size: min(56rem, 92cqi);
+    /* 紙比這一格寬時，格子跟著長：`--pg-paper-w` 由 playground.js 寫在這一格
+       上（見那裡的註）。不跟的話紙會溢出格子，而溢出的那一截不算進長帶的可捲
+       範圍——捲到底時紙的右緣正好貼著視窗，最後一欄看不全。 */
+    inline-size: max(min(56rem, 92cqi), var(--pg-paper-w, 0px));
+    /* 紙自己有個寬度地板（報頭排得下的最小寬 ＝ 五欄，見 § .PgPaper），格子沒有
+       的話紙就從格子裡溢出去，而那截溢出不算進長帶的可捲範圍——捲到底時紙的右緣
+       正好貼著視窗，最後一欄看不全（owner 2026-08-28 的截圖）。 */
+    min-inline-size: min-content;
     /* the switch tucks under the sheet's right edge. NOT `align-items:
        flex-end` — that would align the bled card by its RIGHT edge, so the
        extra width would grow leftward and the sheet would never reach the

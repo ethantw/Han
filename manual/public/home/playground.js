@@ -244,13 +244,17 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       const ps = getComputedStyle($paper)
       const pads = Number.parseFloat(ps.paddingInlineStart) + Number.parseFloat(ps.paddingInlineEnd)
       const edges = Number.parseFloat(ps.borderInlineStartWidth) + Number.parseFloat(ps.borderInlineEndWidth)
-      $paper.style.setProperty('--pg-paper-w', `${Math.ceil(w) + pads + edges}px`)
+      /* 寫在**外層那一格**上，不是紙上：自訂屬性會繼承，紙照樣讀得到，而那一格
+         也才知道自己該多寬——不知道的話它停在 `92cqi`，紙比它寬就整片溢出，而
+         那截溢出不算進長帶的可捲範圍，捲到底時最後一欄正好卡在視窗邊上（owner
+         2026-08-28 的截圖）。 */
+      ;($sheet ?? $paper).style.setProperty('--pg-paper-w', `${Math.ceil(w) + pads + edges}px`)
     }
 
     // Start from the honest default: the track, columns filling it whole.
     const reset = () => {
       $paper.style.setProperty('--pg-bleed', '0px')
-      $paper.style.removeProperty('--pg-paper-w')
+      ;($sheet ?? $paper).style.removeProperty('--pg-paper-w')
       $paper.removeAttribute('data-pg-bled')
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')

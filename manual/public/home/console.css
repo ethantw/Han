@@ -195,6 +195,14 @@ body:has(han-console) {
     }
   }
 
+  /* **把「滑走」那一招關掉。** 停靠成一欄時勾選＝收起，面板 `translate: -100%`
+     滑出畫面；窄視窗下同一顆勾選卻是**打開浮動面板**，那一條於是把內容整片推到
+     畫面左外——面板還在，裡面空白一片（實測宿主 x ＝ −308，而面板 x ＝ 25，
+     owner 2026-08-28 的截圖）。選擇器寫足與上面那條同形，才壓得過它。 */
+  body:has(han-console):has(.ConsoleToggle input:checked) han-console {
+    translate: none;
+  }
+
   .ConsolePanel {
     & {
       position: fixed;
