@@ -40,6 +40,7 @@ import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
 import { initStripNav } from '/home/strip-nav.js'
+import { initDevReset } from '/home/dev-reset.js'
 import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { initSettle } from '/home/settle.js'
@@ -113,6 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // （strip-nav.js § data-strip-start）。掛在 DCL 而不是 gate 後：縫的位置是
   // 版面的一部分，讀者滾到那一站之前就該對好。
   initStripNav()
+  /* Shift+M：把放大鏡與四條長帶送回開場位置（開發用，見 home/dev-reset.js）。
+     掛在這裡而不是各模組自己聽鍵盤：一個手勢只該有一處定義。 */
+  initDevReset()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
   // (station-craft's Override etc.); the panes get theirs when station④

@@ -44,6 +44,10 @@
        貼頂站則反過來——刊名是五個大字，兩側是幾行小字，只有各自對中，這一排的
        重心才落在自己身上。 */
     align-items: center;
+    /* 報頭的「其他」都是黑體：氣象、卷號、日期、售價是**告示**，不是正文，黑體
+       在小字級上也認得出來（朝日、聯合報的欄目字與資訊欄同理）。刊名與標語另給
+       明體，見下。 */
+    font-family: var(--han-sans);
     column-gap: 1.25em;
     row-gap: 0.35em;
     margin-block-end: 0.75em;
@@ -75,6 +79,11 @@
     margin: 0;
     padding: 0.45em 0.9em;
     border: 1px solid var(--ui-text);
+    /* 標語與刊名是這份報紙的**題字**，明體；其餘報頭元素黑體（見 `.PaperHead`）。
+       明暗兩體都直接取合成堆疊 `--han-serif`／`--han-sans`，不走
+       `--han-font-alternative`——那個槽位由讀者在主控台指定，這一頁的預設值
+       實測就等於 `--han-sans`，寫它等於什麼都沒寫。 */
+    font-family: var(--han-serif);
     font-size: 0.8125em;
     line-height: 1.5;
     /* 兩行等寬：兩行都是四個字，`justify` 把它們撐到框寬，末行也要撐
@@ -114,6 +123,7 @@
     margin: 0;
     grid-row: 1;
     grid-column: 2;
+    font-family: var(--han-serif);
     font-size: 2.25em;
     line-height: 1;
     /* 刊名不折行：它是字標，不是一句話。也因此它的 min-content 是整條寬度，
@@ -121,7 +131,6 @@
        （實測 ja／ko 的短稿把刊名壓成一字一行、報頭高 186／222px）。 */
     white-space: nowrap;
     text-align: center;
-    font-family: var(--han-font-alternative);
     font-weight: 700;
     letter-spacing: 0.25em;
     text-indent: 0.25em;
@@ -164,6 +173,53 @@
     line-height: 1.4;
     color: var(--ui-supplement-text);
     text-align: center;
+  }
+
+  /* ── 直排：報標在右上角 ────────────────────────────────────────────
+     直排報紙的報標不居中——《朝日新聞》《聯合報》都在右上角，居中是**橫排**報紙
+     的作法。直排的行內軸由上而下、塊軸由右而左，所以報頭這一條橫躺在卡的右緣，
+     而「右上角」就是行內軸的起點那一格：刊名排第一，其次標語，再其次氣象，正是
+     讀者的視線順序。
+
+     刊名那一格因此改成 `max-content`（它與日期是這一條最寬的兩件），兩側的 1fr
+     分剩下的。粗線底下那一排跟著同一個順序走：日期排在刊名底下那一格（《朝日》
+     《聯合報》的日期也緊貼題字），然後卷號、售價。日期不留在中間那一格是量出來
+     的——那格由兩側的 1fr 分得，只有 203px，日期要 300px，會被折成兩行。 */
+  &[data-vertical] {
+    grid-template-columns:
+      max-content
+      minmax(var(--paper-side), 1fr)
+      minmax(var(--paper-side), 1fr)
+    ;
+
+    .Masthead {
+      grid-column: 1;
+      justify-self: start;
+    }
+
+    .Slogan {
+      grid-column: 2;
+      justify-self: center;
+    }
+
+    .Forecast {
+      grid-column: 3;
+    }
+
+    .Dateline {
+      grid-column: 1;
+      justify-self: start;
+      text-align: start;
+    }
+
+    .Folio {
+      grid-column: 2;
+      justify-self: center;
+    }
+
+    .Price {
+      grid-column: 3;
+    }
   }
 
   /* 夏曆那一段。與前面的陽曆三紀年之間空一個全形空格——它是「換一套曆法」的

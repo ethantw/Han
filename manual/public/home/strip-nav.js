@@ -36,6 +36,7 @@
  */
 
 import { settled } from './measure.js'
+import { DEV_RESET } from '/home/dev-reset.js'
 
 /** How much of the visible run one press moves. */
 const STEP = 1 / 3
@@ -176,6 +177,15 @@ const mount = ($nav) => {
   new IntersectionObserver((entries) => {
     if (entries.some((entry) => entry.isIntersecting)) aim()
   }).observe($strip)
+
+  /* Shift+M（home/dev-reset.js）：回到起點——捲回 0，並且把「讀者動過」那面旗
+     放下，起始對位（縫居中）才會再算一次。 */
+  document.addEventListener(DEV_RESET, () => {
+    touched = false
+    selfScroll = true
+    $strip.scrollTo({ [axisOf($strip).key]: 0, behavior: 'instant' })
+    aim()
+  })
 
   center()
   sync()

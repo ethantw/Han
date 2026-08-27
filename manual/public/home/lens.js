@@ -36,6 +36,7 @@
  */
 
 import { onRendered, settled } from '/home/measure.js'
+import { DEV_RESET } from '/home/dev-reset.js'
 
 /* Geometry belongs to CSS (home/lens.css + each host's two tokens): the
  * diameter is derived from the host's own measure and this zoom, so the two
@@ -522,6 +523,21 @@ const mountOne = ($host, { live }) => {
   onRendered($host.closest('[data-station]'), sync)
   // apply() builds the first copy if the loupe starts on (a fine pointer);
   // a coarse one starts off and pays nothing until it is asked.
+  /* Shift+M（home/dev-reset.js）：回到開場的那一格——口徑、開關、以及**停在開場
+     那一段**這件事。連關著的鏡片也要收到：讀者關掉它之後再開，開場位置得是新的
+     那一個，而不是上一輪留下的座標。 */
+  document.addEventListener(DEV_RESET, () => {
+    on = FINE.matches
+    wide = !FINE.matches
+    readerDriving = false
+    clientX = null
+    clientY = null
+    apply()
+    if (on) sync()
+    ;[lastX, lastY] = restingAt(openingPoint())
+    positionAt(lastX, lastY)
+  })
+
   apply()
 }
 
