@@ -1,62 +1,84 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-locale="hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>信封當浮水印——五種構圖</title>
+<title>信封當浮水印——整站①預覽</title>
 
 <!--
-  站①的信封要從「釘在右上角的道具」降成「詩的背景」。這頁把候選構圖並排，
-  用**真的詩**（直排、真 han.css、真尚古）壓在上面看，因為要判斷的不是信封
-  好不好看——它已經好看了——而是**字壓上去還讀不讀得下去**。
+  站①的信封從「釘在右上角的道具」降成「詩的背景」。上一版並排五種構圖，選定了
+  ④ 開封抽信；這一版只做那一個，但把**整座站①**放進來——單看一塊詩塊判斷不了
+  它跟報紙帶、標記原理圖、站名擠在一起是什麼樣子。
 
-  分工刻意切成兩層：
-    · 五個 case ＝ 構圖（整封／裁半／開封／極簡，外加現況當對照組）。
-    · 上方控件 ＝ 連續旋鈕（濃度、尺寸、紅、小字、信紙底）。
-  旋鈕是全域的，所以任何構圖都能在同一組數值下比較；構圖之間的差別就只剩
- 「擺哪裡、露多少」，那正是滑桿表達不了的部分。
+  站①不是抄過來的，是**跑時抓的**：fetch 首頁、取出 `#station-semantics`、原樣
+  植入。所以樣張永遠是站上那一份，不會有第二份要維護的複本。代價是首頁的模組
+  腳本沒跟著跑，兩處要自己補：
+    · `[data-station] > *` 的入場態要靠 `[data-revealed]` 解除，reveal.js 不在，
+      所以自己蓋章；`html[data-han-traced]` 同理（信封的進場鍵）。
+    · han.js 的後備層在 DCL 就掃過一遍，那時 main 還是空的——植入之後補叫一次
+      `installFallbacks()`。
+  沒補的：報紙帶的日期改寫與左右箭頭（papers-dateline.js／strip-nav.js）。那兩支
+  不影響這裡要判斷的東西，日期就停在 HTML 裡的靜態值。
 
-  兩件已知會咬人的事，這頁就是為了量它們：
-    ① `--ui-wm` 的 4%／6% 是為**單一實心字面**調的，信封是線稿。同樣的 alpha
-       落在細線上和落在一塊墨色字面上，視覺重量不一樣。
-    ② 信封是直式（120∶235），詩塊約 16em × 17em（1.5rem 下 384×408px）——
-       **信封比詩窄**。要當背景襯住整首詩，它得放大到比詩高得多，於是「整封
-       在後」實際上永遠只有一段在詩後面。裁切不是風格選擇，是幾何結果。
+  旋鈕全部作用在浮水印上，站台本身一個字不改。「現況」勾起來就換回真信封，
+  同一頁對照。
 
-  信封改用一張 inline SVG 線稿，不再是生產環境那棵 DOM（正面／封口／郵遞區號
-  各一個元素）。理由：浮水印要能**染色、遮罩、任意縮放**，這三件事在一張 SVG
-  上是屬性，在那棵 DOM 上是三處各自的規則。`<use>` 取一份定義，逐 case 靠自訂
-  屬性上色——CSS 選擇器進不了 use 的影子樹，但**自訂屬性會繼承進去**。
-
-  版號釘死不用 @latest：這頁在判斷易讀性，字體換一版度量就變，量到的就不是
-  站上那一份。跟 manual/.env 同步。
-
-  工作台，dev-only（`/demo/*.html` 由 vite.config.js 直接讀 demo/ 出去，不進
-  build）。打磨完把結論搬回 station-semantics，這頁就可以刪。
+  版號釘 0.2.0-rc.0 不用 @latest：這頁在判斷易讀性，字體換一版度量就變。
+  工作台，dev-only。打磨完把結論搬回 station-semantics，這頁就可以刪。
 -->
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.2.0-rc.0/swap.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.2.0-rc.0/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.2.0-rc.0/swap.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@0.2.0-rc.0/dist/diantenjeom.css">
-<link rel="stylesheet" href="/han/han.css">
+<!-- 四支分開掛，順序照首頁：han 的模組在前、home.css 在後，串接順序就是
+     層疊順序，合成一支 han.css 會把這個關係弄丟。 -->
+<link rel="stylesheet" href="/han/han.semantics.css">
+<link rel="stylesheet" href="/han/han.lines.css">
+<link rel="stylesheet" href="/han/han.prose.css">
+<link rel="stylesheet" href="/han/han.fonts.css">
+<link rel="stylesheet" href="/home.css">
 
-<!-- 這支排在 han.js 前面，順序是有意義的：兩支都是 deferred module，照文件
-     順序執行，而詩與信封是從 <template> 複製進五個 case 的。先複製、後讓
-     han.js 掃，五份才都拿得到後備層；反過來就只有 template 裡那份原稿被處理。 -->
 <script type="module">
-/* Poem and envelope are each written ONCE and cloned into every case — five
-   readings of one specimen, not five specimens. Envelope first, poem second:
-   both sit at `z-index: -1` in the plate's stacking context, so DOM order is
-   what puts the letter behind the letter-sheet. */
-const clone = (id) => document.querySelector(id).content.cloneNode(true)
-for (const $plate of document.querySelectorAll('.Plate')) {
-  $plate.append(clone('#envelope'), clone('#poem'))
-}
+import { installFallbacks } from '/han/han.js'
 
-/* A control's only job is to publish a value onto `:root`; every case reads
-   the same variables, so one knob moves all five. `data-var` names the
-   property and `data-unit` the suffix, so adding a knob is an HTML edit with
-   no matching JS. */
+/* Pull station ① out of the live homepage. Fetching beats copying: the
+   specimen has one home, and a workbench that quietly forks it stops telling
+   the truth the first time the poem is edited. */
+const $main = document.querySelector('main')
+const html = await (await fetch('/', { cache: 'no-store' })).text()
+const $station = new DOMParser().parseFromString(html, 'text/html')
+  .querySelector('#station-semantics')
+$main.append(document.importNode($station, true))
+
+/* The two stamps the homepage's own modules would have made. Without them the
+   station is invisible (`[data-station] > *` holds its entrance FROM state
+   until reveal.js stamps) and the envelope never rises out of the fold. */
+document.documentElement.dataset.hanTraced = ''
+$main.querySelector('#station-semantics').dataset.revealed = ''
+
+/* han.js installed its fallback layer at DCL, when `main` was still empty. */
+installFallbacks()
+
+/* ── the watermark ────────────────────────────────────────────────────
+   It goes INSIDE the poem's <article>, not beside it: the article is the
+   poem block, so an abspos child is anchored to the thing the envelope is
+   supposed to be behind — no measuring, and the console's 字級 can move the
+   poem without the letter drifting off it. */
+const $poem = $main.querySelector('.semantic-elements article')
+$poem.append(document.querySelector('#envelope').content.cloneNode(true))
+
+/* One number CSS can't reach: the poem block's height. Everything on the
+   envelope — its own height, the address type sizes — is a ratio of it, so it
+   is published in px and re-published whenever the block resizes (the station
+   is container-queried; the poem's 字級 changes with the plate's width). */
+const $section = $main.querySelector('#station-semantics')
+new ResizeObserver(([entry]) => {
+  $section.style.setProperty('--poem-b', `${entry.contentRect.height}px`)
+}).observe($poem)
+
+/* A control's only job is to publish a value onto `:root`. `data-var` names
+   the property and `data-unit` the suffix, so adding a knob is an HTML edit
+   with no matching JS. */
 const publish = ($input) => {
   const value = $input.type === 'checkbox'
     ? ($input.checked ? $input.dataset.on : $input.dataset.off)
@@ -70,108 +92,49 @@ for (const $input of document.querySelectorAll('[data-var]')) {
   $input.addEventListener('input', () => publish($input))
 }
 </script>
-<script type="module" src="/han/han.js"></script>
 
 <style>
-/* ─── tokens ─────────────────────────────────────────────────────────
-   站上那組的子集（common/variables.css），照抄不改值——這頁比的是信封在
-   **真實地面上**的樣子，換一組好看的色票就白比了。 */
+/* ═══ demo chrome ════════════════════════════════════════════════════
+   站台的樣式全部來自 /home.css。這裡只加三樣：控件、浮水印，以及把真信封
+   讓開的那一條。 */
 
-:root {
-  color-scheme: light;
-
-  /* primitives */
-  --palette-white:      #ffffff;
-  --palette-paper-deep: #fafaf7;
-  --palette-cloud:      #ececea;
-  --palette-mist:       #e8e8e3;
-  --palette-slate:      #666666;
-  --palette-ash:        #8c8c87;
-  --palette-charcoal:   #2a2a2c;
-  --palette-ink:        #0e0e10;
-  --palette-ink-deep:   #18171a;
-  --palette-black:      #111111;
-  --palette-seal:        #b0342c;
-  --palette-seal-bright: #d96a5f;
-  --palette-green:        #0a8754;
-  --palette-green-bright: #3f9d6f;
-
-  /* semantic */
-  --ui-bg:              light-dark(var(--palette-white), var(--palette-ink));
-  --ui-text:            light-dark(var(--palette-ink), var(--palette-mist));
-  --ui-supplement-text: light-dark(var(--palette-slate), var(--palette-ash));
-  --ui-rule:            light-dark(var(--palette-cloud), var(--palette-charcoal));
-  --ui-station-a:       light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
-  --ui-accent:          light-dark(var(--palette-green), var(--palette-green-bright));
-  --ui-proof:           light-dark(var(--palette-seal), var(--palette-seal-bright));
-  --ui-shadow:          color-mix(in srgb, var(--palette-black) 18%, transparent);
-
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  /* ── the knobs ────────────────────────────────────────────────────
-     JS publishes over these; the values here are what the page opens on.
-     濃度從 4% 起步，因為那是站上 `--ui-wm` 的明色值——「跟其他站一致」的
-     起點。線稿八成撐不住這麼淡，而那正是要看的事。
-
-     這裡只放**輸入**，不放算出來的顏色：帶 `var()` 的自訂屬性在**宣告它的
-     那個元素上就完成代換**，所以把 `--wm-ink` 寫在 `:root` 會把 :root 的
-     alpha 凍進去，逐 case 覆寫 `--wm-alpha` 再也改不動它（workspace ledger
-     的「:root 代換定型」）。算式一律下放到 .Wm。 */
-  --wm-alpha: 4%;
-  --wm-scale: 1.6;                 /* × 詩塊高 */
-  --wm-red-hue: var(--ui-proof);   /* 去色時換成 --ui-text */
-  --wm-fine: 1;                    /* 地址小字 */
-  --wm-sheet: 0;                   /* 信紙底 */
-
-  /* 詩塊：八句 × 2em 行高 ＝ 16em 寬，最長句 17em ＝ 直排下的高
-     （semantics-specimen.css § 直排）。信封尺寸掛在這上面而不是 vw——
-     要判斷的是兩者的比例，不是它在視窗裡多大。 */
-  --poem-b: calc(17em * 1.5);
+/* 外面這層 <div> 不是裝飾：`body > header` 是首頁 Topbar 的選擇器
+   （home/root.css），一個直接掛在 body 下的 <header> 會原地變成 sticky flex
+   的站名列。包一層，本頁的頁首就退回一般的頁首。 */
+.DemoChrome {
+  position: relative;
+  z-index: 3;
 }
 
-:root:has(input[name='dark-mode']:checked) { color-scheme: dark; }
+.DemoHead {
+  & {
+    max-inline-size: 46em;
+    padding: 2rem 1.5rem 0;
+    font-family: var(--han-font-alternative);
+  }
 
-/* ─── reset / page ───────────────────────────────────────────────── */
-
-*, *::before, *::after { box-sizing: border-box; }
-:where(body, h1, h2, p, figure, ul) { margin: 0; padding: 0; }
-:where(svg) { display: block; }
-
-body {
-  padding: 2rem 1.5rem 6rem;
-  background: var(--ui-bg);
-  color: var(--ui-text);
-  font-family: var(--han-font-alternative);
-  line-height: 1.7;
+  h1 { margin: 0; font-size: 1.375rem; font-weight: 600; }
+  p  { margin: .5rem 0 0; color: var(--ui-supplement-text); font-size: .9375rem; line-height: 1.7; }
 }
-
-.PageHead {
-  max-inline-size: 46em;
-  margin-block-end: 2rem;
-
-  h1 { font-size: 1.5rem; font-weight: 600; }
-  p  { margin-block-start: .5rem; color: var(--ui-supplement-text); font-size: .9375rem; }
-}
-
-/* ─── controls ───────────────────────────────────────────────────── */
 
 .Knobs {
   & {
     position: sticky;
     inset-block-start: 0;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     flex-wrap: wrap;
-    gap: .5rem 1.75rem;
+    gap: .5rem 1.5rem;
     align-items: center;
-    margin-block-end: 2.5rem;
-    padding: .875rem 1.125rem;
+    margin: 1.5rem 1.5rem 0;
+    padding: .75rem 1rem;
     background: color-mix(in srgb, var(--ui-bg) 92%, transparent);
     backdrop-filter: blur(6px);
     border: 1px solid var(--ui-rule);
     border-radius: .5rem;
     font-family: var(--font-mono);
     font-size: .8125rem;
+    color: var(--ui-text);
   }
 
   label {
@@ -186,81 +149,51 @@ body {
     color: var(--ui-accent);
   }
 
-  input[type='range'] { inline-size: 8rem; }
+  input[type='range'] { inline-size: 7rem; }
 }
 
-/* ─── one case ───────────────────────────────────────────────────── */
-
-.Case {
-  & { margin-block-end: 3.5rem; }
-
-  h2 { font-size: 1.0625rem; font-weight: 600; }
-
-  .Note {
-    max-inline-size: 44em;
-    margin-block: .25rem 1rem;
-    color: var(--ui-supplement-text);
-    font-size: .875rem;
-  }
+/* ═══ the knobs' defaults ════════════════════════════════════════════
+   只放**輸入**，不放算出來的顏色：帶 `var()` 的自訂屬性在宣告它的那個元素上
+   就完成代換，把 `--wm-ink` 寫在 `:root` 會把 :root 的 alpha 凍進去，之後再
+   覆寫 `--wm-alpha` 也改不動它（workspace ledger 的「:root 代換定型」）。
+   算式一律下放到 .Wm。 */
+:root {
+  --wm-alpha: 7%;
+  --wm-blur: 1.5px;
+  --wm-scale: 1.35;                /* × 詩塊高 */
+  --wm-top: 62%;                   /* 信封口在詩的第幾成高處 */
+  --wm-fade: 55%;                  /* 下緣從第幾成開始淡出 */
+  --wm-red-hue: var(--ui-proof);   /* 去色時換成 --ui-text */
+  --wm-fine: 1;                    /* 地址小字 */
+  --wm-sheet: 0;                   /* 信紙底 */
+  --wm-real: none;                 /* 「現況」＝ 真信封回來、浮水印讓位 */
+  --wm-shown: block;
 }
 
-/* 站台地面。`isolation: isolate` ＋ `overflow: clip` 照抄 frame.css：浮水印
-   靠 `z-index: -1` 落在地面之上、內容之下，這兩條就是讓那個負值有意義的
-   東西。少一條，比出來的層次就不是站上的層次。 */
-.Plate {
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
-  display: grid;
-  place-items: center;
-  min-block-size: calc(var(--poem-b) + 8rem);
-  padding: 3rem;
-  background: var(--ui-station-a);
-  border: 1px solid var(--ui-rule);
+/* 現況對照。真信封原本就在站台裡，這裡只是把它藏起來又放回來——不改它一個
+   宣告，對照才算數。互斥的一對值由**同一個 checkbox** 推導（`:has()`，站上
+   主題開關的同一套配方），而不是兩個各自發佈的變數：CSS 反相不了一個布林，
+   兩個變數就會有一種「兩個都開」的狀態存在。 */
+:root:has(input[name='real-envelope']:checked) {
+  --wm-real: block;
+  --wm-shown: none;
 }
 
-/* ─── the poem（站①的原稿，逐字照搬）─────────────────────────────── */
+#station-semantics .Envelope { display: var(--wm-real); }
+.Wm { display: var(--wm-shown); }
 
-.semantic-elements {
-  /* 讓「信紙底」貼著詩塊，而不是貼版面 */
-  position: relative;
-
-  article {
-    inline-size: 17em;
-    margin: 0;
-
-    --han-punctuation-refinement: compress;
-    font-family: var(--han-font-alternative);
-    font-size: 1.5rem;
-    line-height: 2;
-    writing-mode: vertical-rl;
-    text-align: start;
-  }
-
-  /* 信紙底——只有「詩就是那封信」那一版點得亮。落在詩之後、信封之前：一張
-     抽出來的信紙本來就該壓在信封上。同為 -1 時由 DOM 順序決勝，所以詩要
-     排在信封後面（見上方 script）。 */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: -1.5rem -1.25rem;
-    z-index: -1;
-    opacity: var(--wm-sheet);
-    background: var(--ui-bg);
-    box-shadow: 0 .75rem 2rem -1rem var(--ui-shadow);
-  }
-}
-
-/* ─── the envelope, as line art ──────────────────────────────────── */
+/* ═══ the envelope, as line art ══════════════════════════════════════
+   浮水印住在直排的 <article> 裡，所以位置一律寫**物理**方向：邏輯屬性會照
+   元素自己的書寫模式解析，在這個 vertical-rl 的盒子裡 `inset-block-start`
+   是「右」不是「上」。兩種書寫模式相遇時，物理才是誠實的寫法（同
+   semantics-specimen.css § 信頭標籤）。 */
+.semantic-elements article { position: relative; }
 
 .Wm {
   & {
-    /* 高是唯一自由變數，其餘（寬、字級、內距）全部由它推導——逐 case 換
-       `--wm-b` 一個數，版面關係不變。 */
-    --wm-b: calc(var(--poem-b) * var(--wm-scale));
+    --wm-b: calc(var(--poem-b, 26rem) * var(--wm-scale));
     --wm-ink: color-mix(in srgb, var(--ui-text) var(--wm-alpha), transparent);
-    /* 紅比墨吃虧：同樣 alpha 下有色相的細線看起來更淡，所以給它 2.5 倍。
-       `min()` 是給對照組用的——它把 alpha 開到 100%。 */
+    /* 紅比墨吃虧：同 alpha 下有色相的細線看起來更淡，給它 2.5 倍。 */
     --wm-red: color-mix(
       in srgb,
       var(--wm-red-hue) min(100%, calc(var(--wm-alpha) * 2.5)),
@@ -268,14 +201,29 @@ body {
     );
 
     position: absolute;
-    /* 預設對準詩塊中心；逐 case 再改。 */
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    translate: -50% -50%;
-    block-size: var(--wm-b);
+    z-index: -1;
+    top: var(--wm-top);
+    left: 50%;
+    transform: translateX(-50%);
+    height: var(--wm-b);
     aspect-ratio: 120 / 235;   /* 長形三號 */
     color: var(--wm-ink);
     pointer-events: none;
+
+    /* 模糊讓它退成一個「印象」而不是一張圖說。注意它和濃度是**同一個旋鈕的
+       兩半**：blur 把同樣的墨攤到更大面積，看起來就更淡，所以調完 blur 通常
+       要把 alpha 補回去一點。
+       生產環境的信封刻意避開 `filter`（被 layerize 之後 Chromium 用區塊原本
+       的裁切邊裁那一層，`overflow-clip-margin` 到不了，掀開的封口整片消失，
+       實測 2026-07-28）。這裡安全，因為浮水印整個待在版心裡，沒有東西要溢出
+       站台去——搬回去的時候這一條要一起帶著看。 */
+    filter: blur(var(--wm-blur));
+
+    /* 下緣淡出。信封比詩高，所以錨在詩塊上的它一定會往下伸進圖說那幾行——
+       實測 1.35 倍時輪廓正好橫過 figcaption。與其縮小（那會讓信封小到認不出
+       是信封），不如讓它在碰到文字之前就沒了：浮水印不需要收邊，一條硬邊反而
+       會宣告「我是一個物件」。100% ＝ 幾乎不淡出，留給要看完整輪廓的時候。 */
+    mask-image: linear-gradient(to bottom, #000 var(--wm-fade), transparent);
   }
 
   /* 封口畫在 viewBox 之外（負 y），所以不能讓 svg 自己裁掉——viewBox 就是
@@ -287,10 +235,20 @@ body {
   }
 }
 
+/* 信紙底——「詩就是那封信」的那一半。落在詩之後、信封之前。 */
+.Wm-sheet {
+  position: absolute;
+  z-index: -1;
+  inset: -1.5rem -1.25rem;
+  opacity: var(--wm-sheet);
+  background: var(--ui-bg);
+  box-shadow: 0 .75rem 2rem -1rem color-mix(in srgb, var(--palette-black) 18%, transparent);
+}
+
 /* 宛名／差出人。比例是生產值換算來的（envelope.css 的 rem ÷ 生產尺寸
-   245×480px），但**分母一律是信封的寬**：padding 與 inset 的百分比都對
-   包含塊的 inline 尺寸解析，而包含塊 .Wm 是橫排的——它的 inline 尺寸就是
-   寬。直排的是這兩個盒子自己，不是它們的包含塊。 */
+   245×480px），但**分母一律是信封的寬**：padding 與 inset 的百分比都對包含塊
+   的 inline 尺寸解析，而包含塊 .Wm 是橫排的——它的 inline 尺寸就是寬。直排的
+   是這兩個盒子自己，不是它們的包含塊。 */
 .Wm-addr,
 .Wm-sender {
   position: absolute;
@@ -327,110 +285,43 @@ body {
   }
 }
 
-/* 差出人保持斜體——han.css 只為 CJK 取消偽斜體，這裡就是那條規則的另一半。
-   留著它，是因為要看的正是「這半邊在浮水印濃度下還看不看得出來」。 */
+/* 差出人保持斜體——han.css 只為 CJK 取消偽斜體，這裡是那條規則的另一半。 */
 .Wm-sender {
   inset-block-end: 7.2%;    /* 直排下 ＝ 左 */
   inset-inline-end: 4.3%;   /* 直排下 ＝ 下 */
   font-size: calc(var(--wm-b) * .025);
   line-height: 1.6;
 }
-
-/* ─── 五種構圖 ──────────────────────────────────────────────────── */
-
-/* ① 對照組：現況。滿墨、紙面、影子，擺在詩的行首那側，不在後面。
-      唯一一個把濃度旋鈕擋掉的 case——它是基準，不該跟著滑。 */
-[data-variant='today'] .Wm {
-  --wm-alpha: 100%;
-  --wm-b: calc(var(--poem-b) * 1.18);
-  --wm-face-fill: var(--ui-bg);
-  --wm-flap: 1;
-
-  z-index: auto;
-  inset-block-start: 2rem;
-  inset-inline: auto 2rem;
-  translate: none;
-  filter: drop-shadow(0 1rem 1.5rem var(--ui-shadow));
-}
-
-/* ② 整封在後：最小動作——同一封信降到浮水印層，置中對齊詩塊，封口收起。 */
-[data-variant='whole'] .Wm {
-  --wm-flap: 0;
-}
-
-/* ③ 裁上半：封口、紅框、收件人頭三樣留著——那是一眼認得出「這是一封信」
-      的最小集合——下緣溶進地面，不給它一條收邊。信封頂與詩的起筆同一條線。 */
-[data-variant='crop'] .Wm {
-  --wm-flap: 1;
-
-  inset-block-start: 2.5rem;
-  translate: -50% 0;
-  mask-image: linear-gradient(to bottom, #000 34%, transparent 68%);
-}
-
-/* ④ 開封抽信：詩就是那封信。封口掀開、信封下沉，詩壓在信封口上——構圖自己
-      把首句的「來信」講完，不必任何標籤。搭「信紙底」一起看。 */
-[data-variant='opened'] .Wm {
-  --wm-b: calc(var(--poem-b) * var(--wm-scale) * .85);
-  --wm-flap: 1;
-
-  /* 信封口落在詩的下三分之一：信紙壓住封口約三分之一張，才讀得出「抽出來」
-     而不是「疊在一起」。再往上，掀開的封口就橫過詩的中段變成一個無名三角形
-     （實測 42% 時正是如此）。下半截被站台裁掉是對的——信封本來就沉在版心外。 */
-  inset-block-start: 62%;
-  translate: -50% 0;
-}
-
-/* ⑤ 極簡：正面的框不畫，只留紅色郵遞區號框與封口的摺線，縮到站台浮水印的
-      級距、貼右上角。最安靜的一版，也最接近段／零／樂／碼那條既有文法。 */
-[data-variant='minimal'] .Wm {
-  --wm-b: calc(var(--poem-b) * var(--wm-scale) * .7);
-  --wm-flap: 1;
-  --wm-face: 0;
-  --wm-fine: 0;
-
-  inset-block-start: -2rem;
-  inset-inline: auto 1rem;
-  translate: none;
-}
 </style>
 </head>
-<body>
+<body class="home">
 
-<!-- 信封線稿的唯一定義。`<use>` 逐 case 取一份；CSS 選擇器進不了影子樹，
-     但自訂屬性繼承得進去，所以上色與顯隱全部走 var()——這也是改用 SVG 而不
-     沿用生產那棵 DOM 的理由。
-     座標 ＝ 長形三號 120×235mm，1 單位 ＝ 1mm。郵遞區號框的數字是生產值換算
+<!-- 信封線稿。`<use>` 取一份定義，上色與顯隱全部走自訂屬性——CSS 選擇器進不了
+     use 的影子樹，但自訂屬性繼承得進去，這也是改用 SVG 而不沿用生產那棵 DOM
+     的理由（浮水印要能染色、遮罩、任意縮放）。
+     座標 ＝ 長形三號 120×235mm，1 單位 ＝ 1mm；郵遞區號框的數字是生產值換算
      來的（cell 19.2×22.8px 於 245px 寬的面 ⇒ 9.4×11.2mm）。
-     `vector-effect: non-scaling-stroke`：線稿當浮水印時，筆畫粗細就是它的
-     音量，不能讓尺寸旋鈕連帶改了它。（生產環境避開的是 `filter` 造成的
-     layer 裁切，與這個無關。） -->
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position: absolute">
-  <defs>
-    <g id="env"
-       style="fill: none; stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke">
-      <rect style="opacity: var(--wm-face, 1); fill: var(--wm-face-fill, none)"
-            x="0.5" y="0.5" width="119" height="234" />
-      <path style="opacity: var(--wm-flap, 0)"
-            d="M 20.4 -20.6 L 99.6 -20.6 L 119.5 -0.5 L 0.5 -0.5 Z" />
-      <g style="stroke: var(--wm-red)">
-        <rect x="54.2" y="11" width="9.4" height="11.2" />
-        <rect x="63.6" y="11" width="9.4" height="11.2" />
-        <rect x="73.0" y="11" width="9.4" height="11.2" />
-        <rect x="82.4" y="11" width="9.4" height="11.2" />
-        <rect x="91.8" y="11" width="9.4" height="11.2" />
-        <rect x="101.2" y="11" width="9.4" height="11.2" />
-      </g>
-    </g>
-  </defs>
-</svg>
-
-<!-- 信封：一份，複製五次。地址不再用 <address>——它的規範意思是「本文件的
-     聯絡資訊」，而這是收件人與虛構寄件人的郵政地址，正是規範點名不得使用的
-     那一種。當背景之後它整塊是插圖，所以 aria-hidden。 -->
+     `vector-effect: non-scaling-stroke`：線稿當浮水印時筆畫粗細就是它的音量，
+     不能讓尺寸旋鈕連帶改了它。
+     地址不再包 <address>——規範上那是「本文件的聯絡資訊」，不是郵政地址；當
+     背景之後它整塊是插圖，所以 aria-hidden。 -->
 <template id="envelope">
+  <div class="Wm-sheet" aria-hidden="true"></div>
   <div class="Wm" aria-hidden="true">
-    <svg viewBox="0 0 120 235"><use href="#env"></use></svg>
+    <svg viewBox="0 0 120 235">
+      <g style="fill: none; stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke">
+        <rect x="0.5" y="0.5" width="119" height="234" />
+        <path d="M 20.4 -20.6 L 99.6 -20.6 L 119.5 -0.5 L 0.5 -0.5 Z" />
+        <g style="stroke: var(--wm-red)">
+          <rect x="54.2" y="11" width="9.4" height="11.2" />
+          <rect x="63.6" y="11" width="9.4" height="11.2" />
+          <rect x="73.0" y="11" width="9.4" height="11.2" />
+          <rect x="82.4" y="11" width="9.4" height="11.2" />
+          <rect x="91.8" y="11" width="9.4" height="11.2" />
+          <rect x="101.2" y="11" width="9.4" height="11.2" />
+        </g>
+      </g>
+    </svg>
     <div class="Wm-addr">
       <p>大宋　淮南路　蘄州蘄水縣　直河鄉五桂墩</p>
       <p data-name>畢昇道兄<span data-honorific>台啓</span></p>
@@ -439,46 +330,36 @@ body {
   </div>
 </template>
 
-<!-- 詩：站①的原稿，逐字照搬（home/station-semantics.html）。改這裡等於改
-     樣張，兩邊要一起動。 -->
-<template id="poem">
-  <figure class="semantic-elements" style="--han-cite-title-marks: bracket">
-    <article>
-      <p class="poem-like">
-        <span><u>美因茲</u><u>古騰堡</u>來信談編碼</span>
-        <br />
-        <span>「<u>拉丁</u>二十三字，<em>三百枚足矣。</em>」</span>
-        <br />
-        <span><u>畢昇</u>答：<u>華夏</u>文字，三萬枚猶不足</span>
-        <br />
-        <span>幸有<dfn>統一碼</dfn>，天下文字共一表</span>
-        <br />
-        <span>他心想：<i>百萬碼位猶空</i>，便不再說</span>
-        <br />
-        <span style="--han-cite-title-marks: wavy">同讀<cite>武經總要</cite><cite>字驗</cite>一篇</span>
-        <br />
-        <span><var>甲</var>事書一字，其字非<var>甲</var></span>
-        <br />
-        <span>終無定論，另見<cite>真實字符論</cite></span>
-      </p>
-    </article>
-  </figure>
-</template>
-
-<header class="PageHead">
-  <h1>信封當浮水印——五種構圖</h1>
-  <p>同一封信、同一首詩、同一組旋鈕，差別只在擺哪裡、露多少。地面與層級照站①原樣，所以看到的濃度就是站上的濃度。</p>
+<div class="DemoChrome">
+<header class="DemoHead">
+  <h1>信封當浮水印——整站①預覽</h1>
+  <p>站①原樣從首頁抓來，只有信封換成了背景。詩壓在信封口上，構圖自己把首句的「來信」講完。旋鈕只動浮水印；「現況」勾起來換回真信封，同一頁對照。</p>
 </header>
 
 <form class="Knobs">
   <label>
     濃度
-    <input type="range" data-var="--wm-alpha" data-unit="%" min="0" max="16" step="0.5" value="4">
+    <input type="range" data-var="--wm-alpha" data-unit="%" min="0" max="20" step="0.5" value="7">
+    <output></output>
+  </label>
+  <label>
+    模糊
+    <input type="range" data-var="--wm-blur" data-unit="px" min="0" max="8" step="0.25" value="1.5">
+    <output></output>
+  </label>
+  <label>
+    淡出
+    <input type="range" data-var="--wm-fade" data-unit="%" min="20" max="100" step="1" value="55">
     <output></output>
   </label>
   <label>
     尺寸
-    <input type="range" data-var="--wm-scale" min="0.6" max="2.8" step="0.05" value="1.6">
+    <input type="range" data-var="--wm-scale" min="0.7" max="2.4" step="0.05" value="1.35">
+    <output></output>
+  </label>
+  <label>
+    高低
+    <input type="range" data-var="--wm-top" data-unit="%" min="20" max="95" step="1" value="62">
     <output></output>
   </label>
   <label>
@@ -494,40 +375,17 @@ body {
     信紙底
   </label>
   <label>
+    <input type="checkbox" name="real-envelope">
+    現況
+  </label>
+  <label>
     <input type="checkbox" name="dark-mode">
     暗色
   </label>
 </form>
+</div>
 
-<section class="Case">
-  <h2>① 現況（對照組）</h2>
-  <p class="Note">滿墨、有紙面與影子，擺在詩的行首那側。濃度旋鈕對它無效——基準不該跟著滑。要看的是：它現在跟詩是「兩個並排的物件」，不是一個帶著一個。</p>
-  <div class="Plate" data-variant="today"></div>
-</section>
-
-<section class="Case">
-  <h2>② 整封在後</h2>
-  <p class="Note">最小動作：同一封信降到浮水印層，置中對齊詩塊，封口收起。把尺寸推過 1.4 就看得到那個幾何事實——信封比詩窄，要襯得住詩的寬度就得高出一大截。</p>
-  <div class="Plate" data-variant="whole"></div>
-</section>
-
-<section class="Case">
-  <h2>③ 裁上半</h2>
-  <p class="Note">封口、紅框、收件人——一眼認得出「這是一封信」的最小集合——留著，下緣溶進地面，不給它收邊。信封頂與詩的起筆同一條線。</p>
-  <div class="Plate" data-variant="crop"></div>
-</section>
-
-<section class="Case">
-  <h2>④ 開封抽信</h2>
-  <p class="Note">詩就是那封信。封口掀開、信封下沉，詩壓在信封口上——構圖自己把首句的「來信」講完，不必任何標籤。配「信紙底」一起看。</p>
-  <div class="Plate" data-variant="opened"></div>
-</section>
-
-<section class="Case">
-  <h2>⑤ 極簡</h2>
-  <p class="Note">正面的框不畫，只留紅色郵遞區號框與封口的摺線，縮到站台浮水印的級距、貼右上角。最安靜的一版，也最接近段／零／樂／碼那條既有文法。</p>
-  <div class="Plate" data-variant="minimal"></div>
-</section>
+<main></main>
 
 </body>
 </html>
