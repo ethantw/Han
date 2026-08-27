@@ -221,15 +221,14 @@
         text-align: center;
       }
 
-      /* 夏曆那一段。與前面的陽曆三紀年之間畫一道細線——它是「換一套曆法」的
+      /* 夏曆那一段。與前面的陽曆三紀年之間空兩個全形空格——它是「換一套曆法」的
          分界，不是第四個並列項，所以不用頓號（見 papers-dateline.js §
-         plus100EraLine）。線用左框線畫，前後各留一個字的空。 */
+         plus100EraLine）；也不畫線，一條豎線在這一排註腳裡太搶戲。空白用 margin
+         而不是空白字元：`2em` 在這一段就是兩個全形空格的寬，而且不會被排版
+         （斷行、空白摺疊）動到。一個字，不是兩個：中間那一格只剩約 290px，兩個
+         全形空格就把日期擠成兩行（實測 297px）。 */
       .Dateline .Lunar {
-        /* 前後各留半個字：這一列三件事並排（卷號・日期・售價），中間那一格是
-           剩下的寬度，一個字的空就足以把日期擠成兩行。 */
-        margin-inline-start: 0.5em;
-        padding-inline-start: 0.5em;
-        border-inline-start: 1px solid currentColor;
+        margin-inline-start: 1em;
       }
 
       /* 窄到擺不下三格就疊回一欄：刊名在上、日期在下，標語、天氣與版面名收起來
