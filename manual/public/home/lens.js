@@ -465,7 +465,7 @@ const mountOne = ($host, { live }) => {
 
   /* 有 hover 的指標：一次點擊走一格——四分之三口徑 → 全口徑 → 收起 → 再回四分
      之三。回來是重新看一次，所以回到開場那一段，而不是回到上次離手的地方。 */
-  $host.addEventListener('click', () => {
+  $host.addEventListener('click', (e) => {
     if (!FINE.matches) return
     /* 拖出來的選取不算「點一下」：放開滑鼠時瀏覽器照樣送 click，若它也翻一格，
        讀者反白到一半就被鏡片收走。鏡片關著時才選得到字，所以只需要在這裡問。 */
@@ -473,7 +473,12 @@ const mountOne = ($host, { live }) => {
     if (!on) {
       on = true
       wide = false
-      readerDriving = false
+      /* 重開就開在**游標當下這一點**，不是開場那一段：讀者是為了看某個地方才
+         把它叫回來的（owner 2026-08-27）。`follow` 順手把 readerDriving 舉起來。 */
+      apply()
+      sync()
+      follow(e)
+      return
     } else if (!wide) {
       wide = true
     } else {
