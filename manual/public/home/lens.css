@@ -137,6 +137,20 @@
   [data-lens-on="large"] [data-lens] {
     cursor: zoom-out;
   }
+
+  /* 關著的時候（樣張上沒有任何祖先掛 `data-lens-on`）游標分成兩種：落在字上是
+     I 型，落在別處是放大鏡。兩件事同時為真——這是唯一反白得了字的狀態，也是
+     一按就把鏡片叫回來的狀態，游標各自說各自的話。字上那條列的是**會排字的
+     區塊元素**，不是 `*`：整片給 `text` 的話，卡片的留白與圖也都成了 I 型。 */
+  [data-lens]:not([data-lens-on] *) {
+    & {
+      cursor: zoom-in;
+    }
+
+    :is(p, h1, h2, h3, h4, h5, h6, li, blockquote, cite, dt, dd, td, th, figcaption, pre) {
+      cursor: text;
+    }
+  }
 }
 
 /* While the loupe is on, a drag on the specimen belongs to the loupe, not to
