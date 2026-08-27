@@ -21,8 +21,8 @@
  *
  * Also the one place that owns the date itself: `plus100()` is private,
  * and `plus100EraLine()` hands station⑥'s playground sample the same
- * instant with all four eras on one line (see its own note). Nobody adds
- * a hundred years twice.
+ * instant with all four eras (see its own note). Nobody adds a hundred
+ * years twice.
  */
 
 const DIGITS = '〇一二三四五六七八九'
@@ -101,24 +101,29 @@ const format = {
 }
 
 /**
- * 四套紀年並排的一行，給遊樂場的範本用：中華民國・夏曆・天皇・西元。
+ * 四套紀年，給遊樂場的報頭用：中華民國・弘宙・西元，外加夏曆。
  * 站①的報頭是一版一紀年（四份報紙各講自己的話），這裡相反——同一個瞬間
  * 四種讀法擺在一起，範本要展示的正是這件事。
+ *
+ * 分兩段回傳，不回傳一整串：陽曆的三個紀年共用同一個月日，只有**最後一個**
+ * 需要把月日寫出來（前兩個只報年號與年），四段各寫一次月日就長到 47 個字、
+ * 撐破那張紙；夏曆是另一套曆法，月日與前三者對不上，只能自成一段。中間那道
+ * 分界因此是「換一套曆法」的意思，交給 CSS 畫一條細線，不借用標點——頓號在
+ * 這裡會讀成第四個並列項。
  *
  * 日期不另算：與報頭同一支 `plus100()`，所以遊樂場與站①永遠是同一天。
  * 夏曆取繁體 locale（月名的閏字要正體）；天皇紀年沿用報頭那個虛構的弘宙
  * 元年；西元用報頭的逐字讀法（二一二六年，不是二千一百二十六年）。
- * 引擎沒有農曆時那一段自己缺席，另三段照舊。
+ * 引擎沒有農曆時 `lunar` 回 null，陽曆那一段照舊。
  */
 export const plus100EraLine = () => {
   const { date, y, m, d, iso } = plus100()
-  const text = [
-    format['zh-Hant'](date, y, m, d),
-    lunarEra(date, 'zh-Hant-u-ca-chinese', '夏曆'),
-    format['ja'](date, y, m, d),
+  const solar = [
+    `中華民國${digitwise(y - 1911)}年`,
+    '弘宙元年',
     `西元${digitwise(y)}年${decimal(m)}月${zhDay(d)}日`,
-  ].filter(Boolean).join('・')
-  return { iso, text }
+  ].join('・')
+  return { iso, solar, lunar: lunarEra(date, 'zh-Hant-u-ca-chinese', '夏曆') }
 }
 
 export function initPapersDateline() {

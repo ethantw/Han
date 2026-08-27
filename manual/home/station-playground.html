@@ -113,6 +113,24 @@
     ja: '太陽風強まる。黒点第十二群が通過中。水星逆行は廿九日まで、星間通信に雑音の恐れ。ホロ天気図は第廿三面。',
     ko: '<ruby>太陽風<rt>태양풍</rt></ruby> 강해지고 <ruby>黑子<rt>흑자</rt></ruby> 第十二群 통과 중。<ruby>水星<rt>수성</rt></ruby> 역행은 廿九日까지、<ruby>星間<rt>성간</rt></ruby> 통신에 잡음 우려。홀로 <ruby>天圖<rt>천도</rt></ruby>는 第廿三面。',
   },
+  /* 粗線底下那一排的左右兩端，照抄紐時 folio 的兩個角色：左邊「VOL. CLXXIV
+     … No. 60,123」的卷號期號，右邊「Higher price outside the greater New York
+     metropolitan area」那句售價註記。銀河尺度上，那句就從「紐約都會區以外」
+     變成「人馬座α星以遠」。 */
+  pgPaperVolume: {
+    hant: '第一〇二萬卷　第六〇一二三號',
+    hans: '第一〇二万卷　第六〇一二三号',
+    en: 'VOL. 1,020,000 . . . No. 60,123',
+    ja: '第一〇二万巻　第六〇一二三号',
+    ko: '第一〇二萬<ruby>卷<rt>권</rt></ruby>　第六〇一二三<ruby>號<rt>호</rt></ruby>',
+  },
+  pgPaperPrice: {
+    hant: '人馬座α星以遠售價較高',
+    hans: '人马座α星以远售价较高',
+    en: 'Higher price beyond Alpha Sagittarii',
+    ja: 'いて座α星以遠は価格が高くなります',
+    ko: '<ruby>人馬座<rt>인마좌</rt></ruby> α星 <ruby>以遠<rt>이원</rt></ruby>은 값이 더 비쌉니다',
+  },
   pgPaperColumn: {
     hant: '人物特寫', hans: '人物特写', en: 'Profiles',
     ja: '人物特集', ko: '<ruby>人物<rt>인물</rt></ruby> <ruby>特寫<rt>특사</rt></ruby>',
@@ -210,8 +228,9 @@
         <p class="Slogan">{{ pgPaperSlogan }}</p>
         <p class="Masthead">{{ pgPaperMasthead }}</p>
         <p class="Forecast"><b>{{ pgPaperForecastLabel }}</b>{{ pgPaperForecast }}</p>
-        <p class="Folio">{{ pgPaperColumn }}</p>
-        <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
+        <p class="Folio">{{ pgPaperVolume }}</p>
+        <p class="Price">{{ pgPaperPrice }}</p>
+        <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年・弘宙元年・西元二一二六年八月十日<span class="Lunar">夏曆丙戌年六月廿二</span></time></p>
       </header>
       <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
            scrollable region the keyboard can't reach is a serious axe

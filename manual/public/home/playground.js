@@ -188,11 +188,19 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   // date), so it can never go stale inside a saved draft.
   const $dateline = $editor.querySelector('[data-pg-dateline]')
   if ($dateline) {
-    const { iso, text } = plus100EraLine()
+    const { iso, solar, lunar } = plus100EraLine()
     $dateline.dateTime = iso
-    /* 四紀年一氣排下（民國在前），自己一行——報頭改成紐時式之後，日期回到刊名
-       底下那條線的正中，不再是左格那一疊（owner 2026-08-27）。 */
-    $dateline.textContent = text
+    /* 四紀年自己一行、置中——報頭改成紐時式之後，日期回到刊名底下那條線的正中，
+       不再是左格那一疊。陽曆三紀年與夏曆分成兩段，中間那道分界是 `.Lunar` 的
+       左框線（station-playground.css）：換曆法不是換並列項，畫一條線比借一顆
+       標點誠實（owner 2026-08-27）。 */
+    $dateline.replaceChildren(solar)
+    if (lunar) {
+      const $lunar = document.createElement('span')
+      $lunar.className = 'Lunar'
+      $lunar.textContent = lunar
+      $dateline.append($lunar)
+    }
   }
 
   /* ── the two content buffers ──
