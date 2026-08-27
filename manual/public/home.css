@@ -31,6 +31,10 @@
 @import url('./home/root.css');
 @import url('./home/frame.css');
 
+/* ── 跨區塊的共用零件 ── */
+/* 《太陽中文報》的報頭：站④的兩張樣張與站⑦的那張紙戴同一頂。 */
+@import url('./home/paper-head.css');
+
 /* ── 各區塊，依 <main> 裡的出現順序 ── */
 @import url('./home/manifesto.css');
 @import url('./home/station-semantics.css');

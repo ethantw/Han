@@ -74,6 +74,20 @@
        只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->
   <div class="Prose" data-lens data-strip="prose" data-strip-start="seam">
     <article class="Dispatch" lang="zh-Hant">
+      <!-- 這張樣張是《太陽中文報》的一整頁，所以它戴著這份報紙的報頭
+           （版式 home/paper-head.css，文案 _shared.html § PAPER，與站⑦那張紙
+           同一份）。文案用 `*Hant` 那一組：這篇報導是**固定的**繁體樣張，報頭
+           跟著頁面語言翻成日文的話，就成了日文刊名壓著中文報導。
+           報頭橫跨所有欄（`column-span: all`，同 h1），直排那張也一樣——直排時
+           跨的是縱向的欄，報頭於是橫躺在卡的右緣，正是直排報紙的樣子。 -->
+      <header class="PaperHead">
+        <p class="Slogan">{{ paperSloganHant }}</p>
+        <p class="Masthead">{{ paperMastheadHant }}</p>
+        <p class="Forecast"><b>{{ paperForecastLabelHant }}</b>{{ paperForecastHant }}</p>
+        <p class="Folio">{{ paperVolumeHant }}</p>
+        <p class="Price">{{ paperPriceHant }}</p>
+        <p class="Dateline"><time data-era-line datetime="2126-08-10">中華民國二一五年・弘宙元年・西元二一二六年八月十日<span class="Lunar">夏曆丙戌年六月廿二</span></time></p>
+      </header>
       <div data-prose="brief">
         <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
         <h2>一根手指，一道法條</h2>
@@ -166,6 +180,20 @@
     </article>
 
     <article class="Dispatch vertical" lang="zh-Hant">
+      <!-- 這張樣張是《太陽中文報》的一整頁，所以它戴著這份報紙的報頭
+           （版式 home/paper-head.css，文案 _shared.html § PAPER，與站⑦那張紙
+           同一份）。文案用 `*Hant` 那一組：這篇報導是**固定的**繁體樣張，報頭
+           跟著頁面語言翻成日文的話，就成了日文刊名壓著中文報導。
+           報頭橫跨所有欄（`column-span: all`，同 h1），直排那張也一樣——直排時
+           跨的是縱向的欄，報頭於是橫躺在卡的右緣，正是直排報紙的樣子。 -->
+      <header class="PaperHead">
+        <p class="Slogan">{{ paperSloganHant }}</p>
+        <p class="Masthead">{{ paperMastheadHant }}</p>
+        <p class="Forecast"><b>{{ paperForecastLabelHant }}</b>{{ paperForecastHant }}</p>
+        <p class="Folio">{{ paperVolumeHant }}</p>
+        <p class="Price">{{ paperPriceHant }}</p>
+        <p class="Dateline"><time data-era-line datetime="2126-08-10">中華民國二一五年・弘宙元年・西元二一二六年八月十日<span class="Lunar">夏曆丙戌年六月廿二</span></time></p>
+      </header>
       <div data-prose="brief">
         <h1>太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負</h1>
         <h2>一根手指，一道法條</h2>

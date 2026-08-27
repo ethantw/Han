@@ -21,7 +21,6 @@
 import { marked } from '/vendor/marked.esm.js'
 import { settled, onRendered } from '/home/measure.js'
 import DOMPurify from '/vendor/purify.esm.js'
-import { plus100EraLine } from '/home/papers-dateline.js'
 
 const STORAGE_KEY = 'han-playground-src'
 const DEBOUNCE_MS = 200
@@ -183,25 +182,8 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     })
   }
 
-  // The paper's dateline is card chrome, not editable content — refreshed
-  // to «today + 100 years» on every load (papers-dateline.js owns the
-  // date), so it can never go stale inside a saved draft.
-  const $dateline = $editor.querySelector('[data-pg-dateline]')
-  if ($dateline) {
-    const { iso, solar, lunar } = plus100EraLine()
-    $dateline.dateTime = iso
-    /* 四紀年自己一行、置中——報頭改成紐時式之後，日期回到刊名底下那條線的正中，
-       不再是左格那一疊。陽曆三紀年與夏曆分成兩段，中間那道分界是 `.Lunar` 的
-       左框線（station-playground.css）：換曆法不是換並列項，畫一條線比借一顆
-       標點誠實（owner 2026-08-27）。 */
-    $dateline.replaceChildren(solar)
-    if (lunar) {
-      const $lunar = document.createElement('span')
-      $lunar.className = 'Lunar'
-      $lunar.textContent = lunar
-      $dateline.append($lunar)
-    }
-  }
+  /* 報頭的日期不在這裡寫：它是 `<time data-era-line>`，與站④那兩張樣張同一個
+     鉤子，由 papers-dateline.js 在 DCL 一併填掉（2026-08-27 起報頭是共用零件）。 */
 
   /* ── the two content buffers ──
    * Defaults come from the DOM, not from JS: 報導 is the server-rendered

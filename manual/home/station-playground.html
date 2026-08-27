@@ -88,52 +88,6 @@
     hant: '退出認真模式', hans: '退出认真模式', en: 'Exit serious mode',
     ja: '本気モードを終了', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드 나가기',
   },
-  pgPaperMasthead: {
-    hant: '太陽中文報', hans: '太阳中文报', en: 'Acta Taisolis Sinensis',
-    ja: '太陽新聞', ko: '太陽中文報',
-  },
-  /* 報頭左上的標語（仿《紐約時報》「All the News That's Fit to Print」的位置與
-     語氣，內容是我們自己的排版誓詞）。「眾星之下／字字皆新」翻的是〈傳道書〉
-     「日光之下，並無新事」——反著說，而且把日光換成列宿（二十八宿）：刊名已經
-     是太陽，右上還有太陽系氣象，標語再說一次太陽就三次了），與右上的「太陽系天氣」——紐時那格放的是
-     紐約天氣，我們的太陽系版放太陽風與黑子。兩者都是報頭的一部分，不是報導。 */
-  pgPaperSlogan: {
-    hant: '列宿之下<br />字字皆新',
-    hans: '列宿之下<br />字字皆新',
-    en: "All the Type<br />That's Fit to Set",
-    ja: '列宿のもとに<br />文字みな新し',
-    ko: '<ruby>列宿<rt>열수</rt></ruby> 아래<br /><ruby>字<rt>자</rt></ruby>마다 새롭다',
-  },
-  pgPaperForecastLabel: {
-    hant: '太陽系氣象', hans: '太阳系气象', en: 'THE SOLAR WEATHER',
-    ja: '太陽系の気象', ko: '<ruby>太陽系<rt>태양계</rt></ruby> <ruby>氣象<rt>기상</rt></ruby>',
-  },
-  pgPaperForecast: {
-    hant: '太陽風轉強，黑子第十二群過境。水星逆行至廿九日，星際通訊恐有雜訊。全息天圖見第廿三版。',
-    hans: '太阳风转强，黑子第十二群过境。水星逆行至廿九日，星际通讯恐有杂讯。全息天图见第廿三版。',
-    en: 'Solar wind rising. Sunspot group 12 in transit. Mercury retrograde through the 29th — expect static on interplanetary links. Holo-chart, page 23.',
-    ja: '太陽風強まる。黒点第十二群が通過中。水星逆行は廿九日まで、星間通信に雑音の恐れ。ホロ天気図は第廿三面。',
-    ko: '<ruby>太陽風<rt>태양풍</rt></ruby> 강해지고 <ruby>黑子<rt>흑자</rt></ruby> 第十二群 통과 중。<ruby>水星<rt>수성</rt></ruby> 역행은 廿九日까지、<ruby>星間<rt>성간</rt></ruby> 통신에 잡음 우려。홀로 <ruby>天圖<rt>천도</rt></ruby>는 第廿三面。',
-  },
-  /* 粗線底下那一排的左右兩端，照抄紐時 folio 的兩個角色：左邊「VOL. CLXXIV
-     … No. 60,123」的卷號期號，右邊「Higher price outside the greater New York
-     metropolitan area」那句售價註記。星際尺度上，「紐約都會區以外」就是「南門二
-     以外」——南門二是離太陽最近的一個恆星系，正對應紐時那句「都會區以外」的
-     距離感。不寫「星系」：那是 galaxy，尺度大了十萬倍，玩笑就不準了。 */
-  pgPaperVolume: {
-    hant: '第一〇二萬卷',
-    hans: '第一〇二万卷',
-    en: 'VOL. 1,020,000',
-    ja: '第一〇二万巻',
-    ko: '第一〇二萬<ruby>卷<rt>권</rt></ruby>',
-  },
-  pgPaperPrice: {
-    hant: '南門二以外，發行售價可能較高',
-    hans: '南门二以外，发行售价可能较高',
-    en: 'Higher price for editions beyond Alpha Centauri',
-    ja: 'ケンタウルス座α星より遠方では発行価格が高くなる場合があります',
-    ko: '南門二 밖에서는 <ruby>發行<rt>발행</rt></ruby> 값이 더 비쌀 수 있습니다',
-  },
   pgPaperColumn: {
     hant: '人物特寫', hans: '人物特写', en: 'Profiles',
     ja: '人物特集', ko: '<ruby>人物<rt>인물</rt></ruby> <ruby>特寫<rt>특사</rt></ruby>',
@@ -228,12 +182,12 @@
            DOM 序仍是「刊名 → 日期 → 版面」——先報刊名才是這張紙的自我介紹；
            左右由 grid 擺（station-playground.css § .PaperHead）。 -->
       <header class="PaperHead">
-        <p class="Slogan">{{ pgPaperSlogan }}</p>
-        <p class="Masthead">{{ pgPaperMasthead }}</p>
-        <p class="Forecast"><b>{{ pgPaperForecastLabel }}</b>{{ pgPaperForecast }}</p>
-        <p class="Folio">{{ pgPaperVolume }}</p>
-        <p class="Price">{{ pgPaperPrice }}</p>
-        <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年・弘宙元年・西元二一二六年八月十日<span class="Lunar">夏曆丙戌年六月廿二</span></time></p>
+        <p class="Slogan">{{ paperSlogan }}</p>
+        <p class="Masthead">{{ paperMasthead }}</p>
+        <p class="Forecast"><b>{{ paperForecastLabel }}</b>{{ paperForecast }}</p>
+        <p class="Folio">{{ paperVolume }}</p>
+        <p class="Price">{{ paperPrice }}</p>
+        <p class="Dateline"><time data-era-line datetime="2126-08-10">中華民國二一五年・弘宙元年・西元二一二六年八月十日<span class="Lunar">夏曆丙戌年六月廿二</span></time></p>
       </header>
       <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
            scrollable region the keyboard can't reach is a serious axe

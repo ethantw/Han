@@ -69,170 +69,15 @@
      into a reader's localStorage draft. Mirrors station①'s .Papers head. */
   .PgPaper {
     /* ── 報頭：紐約時報式 ─────────────────────────────────────────────
-       上排三格——左：標語（框起來的排版誓詞）、中：刊名、右：太陽系天氣；一條
-       粗線；下排：版面名（左）與日期（中）。位置與角色都照《紐約時報》頭版：
-       那一格放的是紐約天氣，我們的太陽系版就放太陽風與黑子（owner 2026-08-27）。
-
-       粗線由 `::after` 佔一整列畫出來，不加裝飾用的元素；三格一律**垂直居中**
-       （`align-items: center`）：貼底站的話報頭的重量全壓在那條粗線上、上緣一片
-       空，貼頂站則反過來——刊名是五個大字，兩側是幾行小字，只有各自對中，這一
-       排的重心才落在自己身上。 */
+       版式本身是共用零件（home/paper-head.css）——站④的兩張樣張也戴同一頂
+       報頭。這裡只給它這張紙的**尺度**與這張紙特有的窄版退路。 */
     .PaperHead {
-      & {
-        display: grid;
-        /* 兩側**共用同一個下限**（`--_side`），刊名才永遠在紙的正中。`1fr` 的
-           預設下限是 `auto`，會跟著各自的內容走，寬的那側把中間那格推離中線
-           （實測 en／ja 偏 12～13px）；壓成 `0` 則另一頭出事——報頭的
-           min-content 只剩刊名，紙縮到擺不下兩側小字，卷號與售價疊在一起
-           （實測 ja 版的紙縮到 229px、疊 49px）。同一個下限兩件事都解決：
-           對稱，而且這個數字經 min-content 往上傳，就是這張紙的寬度地板。單位用
-           `rem` 不用 `em`：`em` 在這裡是報頭自己的字級（16px），不是天氣那格的
-           小字級，寫 `15em` 會變成 240px、把紙撐爆（實測報頭 754px、紙 593px）。 */
-        --_side: 7.5rem;
-        grid-template-columns:
-          minmax(var(--_side), 1fr)
-          auto
-          minmax(var(--_side), 1fr)
-        ;
-        align-items: center;
-        column-gap: 1.25rem;
-        row-gap: 0.35rem;
-        margin-block-end: 0.75rem;
-        padding-block-end: 0.35rem;
-        border-block-end: 1px solid var(--ui-text);
-      }
+      /* 報頭的每個尺寸都是 `em`：給它一個字級，整頂帽子照比例長出來。這張紙
+         是正常字級的紙，所以就是 1rem。 */
+      font-size: 1rem;
 
-      &::after {
-        content: '';
-        grid-row: 2;
-        grid-column: 1 / -1;
-        block-size: 2px;
-        background: var(--ui-text);
-      }
-
-      /* 標語。框起來的一小塊，兩行——紐時那塊也是框住的：它是報頭的識別，不是
-         一句說明，所以給它框線與內距，不給它變成標題的機會。 */
-      .Slogan {
-        grid-row: 1;
-        grid-column: 1;
-        justify-self: start;
-        /* 由**自己的斷行**定寬（文案裡的 `<br>`），不讓格子把它擠成三個字一行
-           ——這張紙收窄之後兩側的 `1fr` 只剩百來像素（實測擠成四行）。 */
-        inline-size: max-content;
-        /* 兩行由文案裡的 `<br>` 決定，每一行都不再折——同刊名，理由見下。 */
-        white-space: nowrap;
-        margin: 0;
-        padding: 0.375rem 0.75rem;
-        border: 1px solid var(--ui-text);
-        font-size: 0.8125rem;
-        line-height: 1.5;
-        /* 兩行等寬：兩行都是四個字，`justify` 把它們撐到框寬，末行也要撐
-           （`text-align-last`），否則只有第一行齊。 */
-        text-align: justify;
-        text-align-last: justify;
-      }
-
-      /* 太陽系天氣。標籤一行、內文三四行，靠右——與紐時的 THE WEATHER 同一個
-         位置、同一種讀法：先看標籤，再看那幾行小字。 */
-      .Forecast {
-        & {
-          grid-row: 1;
-          grid-column: 3;
-          /* 寬度就是那個共用下限，靠右——不讓它隨 `1fr` 一起長：紙一寬，這幾行
-             小字就從四行拉成兩行，報頭右上那塊灰版的形狀跟著紙變（實測 120～
-             212px）。上限而不是定寬，是為了它永遠塞得進自己那一格。 */
-          justify-self: end;
-          max-inline-size: var(--_side);
-          margin: 0;
-          font-size: 0.5rem;
-          line-height: 1.5;
-          color: var(--ui-supplement-text);
-          /* 兩端對齊：這一格是報頭右上的一塊「灰版」，右緣參差會讓報頭看起來歪。 */
-          text-align: justify;
-        }
-
-        b {
-          display: block;
-          font-size: 0.5625rem;
-          letter-spacing: 0.08em;
-          color: var(--ui-text);
-        }
-      }
-
-      .Masthead {
-        margin: 0;
-        grid-row: 1;
-        grid-column: 2;
-        /* 刊名要與兩側的小字擺得下：這張紙是內容寬（短稿約 600px），五個字加
-           0.25em 字距，2.25rem 約 225px，左右各留得下標語（max-content）與天氣
-           （14em）。窄站台疊回一欄時另給小一號。 */
-        font-size: 2.25rem;
-        line-height: 1;
-        /* 刊名不折行：它是字標，不是一句話。也因此它的 min-content 是整條寬度，
-           上面那道 `min-inline-size: min-content` 的地板才擋得住紙收得太窄
-           （實測 ja／ko 的短稿把刊名壓成一字一行、報頭高 186／222px）。 */
-        white-space: nowrap;
-        text-align: center;
-        font-family: var(--han-font-alternative);
-        font-weight: 700;
-        letter-spacing: 0.25em;
-        text-indent: 0.25em;
-      }
-
-      /* 粗線底下那一排，整排照紐時的 folio：左卷號期號、中日期、右售價與
-         「某某以遠售價較高」那句小字。三者同列，中間那格橫跨整條、置中，所以
-         左右兩句都得短——量過 604px 的紙，三者各據一端，不相犯。 */
-      .Folio,
-      .Price {
-        grid-row: 3;
-        margin: 0;
-        /* 與日期同一級：這一列三件事是同一排註腳，字級不同會讓它讀成兩排。
-           也是那句售價註記塞得進 `--_side` 的條件（0.5625rem 下它折成兩行）。 */
-        font-size: 0.5rem;
-        line-height: 1.4;
-        color: var(--ui-supplement-text);
-      }
-
-      .Folio {
-        grid-column: 1;
-        justify-self: start;
-      }
-
-      .Price {
-        grid-column: 3;
-        justify-self: end;
-      }
-
-      /* 日期。**自己一行**、置中，四紀年一氣排下（民國在前）——紐時把日期擺在
-         刊名底下那條線的正中，我們照辦。字比卷號再小一號：報頭的註腳。 */
-      .Dateline {
-        /* 與卷號、售價同一列，佔中間那一格——紐時的 folio 就是這三件事一行。
-           不用「橫跨整條再置中」：那樣兩端的卷號與售價會被日期壓過去（實測疊
-           29px）。中間這一格由兩側等寬的 `--_side` 夾出來，本來就在紙的正中，
-           所以置中不必跨欄。紙窄到這一格容不下時，日期自己折成兩行，仍舊置中
-           ——版面會擠，但不會疊字。 */
-        grid-row: 3;
-        grid-column: 2;
-        justify-self: center;
-        margin: 0;
-        font-size: 0.5rem;
-        line-height: 1.4;
-        color: var(--ui-supplement-text);
-        text-align: center;
-      }
-
-      /* 夏曆那一段。與前面的陽曆三紀年之間空兩個全形空格——它是「換一套曆法」的
-         分界，不是第四個並列項，所以不用頓號（見 papers-dateline.js §
-         plus100EraLine）；也不畫線，一條豎線在這一排註腳裡太搶戲。空白用 margin
-         而不是空白字元：`2em` 在這一段就是兩個全形空格的寬，而且不會被排版
-         （斷行、空白摺疊）動到。一個字，不是兩個：中間那一格只剩約 290px，兩個
-         全形空格就把日期擠成兩行（實測 297px）。 */
-      .Dateline .Lunar {
-        margin-inline-start: 1em;
-      }
-
-      /* 窄到擺不下三格就疊回一欄：刊名在上、日期在下，標語、天氣與版面名收起來
-         ——報頭的趣味擺在寬版就好，窄站台先讓正文有位置。 */
+      /* 窄到擺不下三格就疊回一欄：刊名在上、日期在下，標語、氣象、卷號與售價
+         都收起來——報頭的趣味擺在寬版就好，窄站台先讓正文有位置。 */
       @container (inline-size < 34rem) {
         & {
           grid-template-columns: 1fr;
@@ -246,7 +91,7 @@
         .Masthead {
           grid-row: auto;
           grid-column: 1;
-          font-size: 1.5rem;
+          font-size: 1.5em;
         }
         .Dateline {
           grid-row: auto;

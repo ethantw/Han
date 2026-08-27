@@ -126,8 +126,25 @@ export const plus100EraLine = () => {
   return { iso, solar, lunar: lunarEra(date, 'zh-Hant-u-ca-chinese', '夏曆') }
 }
 
+/** 把四紀年那一行寫進一顆 `<time data-era-line>`——陽曆三紀年一段、夏曆一段，
+    夏曆包在 `.Lunar` 裡，中間那個全形空格由 CSS 給（home/paper-head.css）。 */
+const fillEraLine = ($time) => {
+  const { iso, solar, lunar } = plus100EraLine()
+  $time.dateTime = iso
+  $time.replaceChildren(solar)
+  if (!lunar) return
+  const $lunar = document.createElement('span')
+  $lunar.className = 'Lunar'
+  $lunar.textContent = lunar
+  $time.append($lunar)
+}
+
 export function initPapersDateline() {
   const { date, y, m, d, iso } = plus100()
+
+  /* 戴著《太陽中文報》報頭的每一張紙——站④的兩張樣張與站⑦遊樂場那張——共用
+     同一個瞬間。標記裡各自帶著靜態退路，這裡把它換成今天＋100 年。 */
+  document.querySelectorAll('time[data-era-line]').forEach(fillEraLine)
 
   for (const $time of document.querySelectorAll('.Papers .Dateline time')) {
     const html = format[$time.closest('article').lang]?.(date, y, m, d)
