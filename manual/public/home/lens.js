@@ -239,6 +239,7 @@ const mountOne = ($host, { live }) => {
    *  and the host's middle is the honest answer there. */
   const openingPoint = () => {
     const box = $host.getBoundingClientRect()
+
     /* 先挑**視覺上**排在最前面的那一張卡，再在它裡面挑第一個標題。兩步是必要
        的：站③那條長帶把直排那張用 `order` 排到了前面，DOM 序會挑到橫排那張；
        而「整個宿主裡 left 最小的標題」會挑到直排卡中段某個捲到左邊的小標
@@ -262,9 +263,24 @@ const mountOne = ($host, { live }) => {
       ?? shown($host, 'h1, h2, h3')
       ?? shown($card, 'p, blockquote')
       ?? shown($host, 'p, blockquote')
-    if (!$first) return [box.width / 2, box.height / 2]
+    if (!$first) return [box.width / 2, box.height / 2, 0, 0]
     const r = lineOneOf($first)
-    return [r.left - box.left + r.width / 2, r.top - box.top + r.height / 2]
+    /* 讀者的目光從哪個角落起算：橫排 ltr 是左上，直排 vertical-rl 是右上。
+       行向要問**那個標題**，不是宿主——站③的宿主是一條橫排長帶，直排那張卡才
+       是 `vertical-rl`（問錯了圓心會跑到別的角落，實測差 99px）。 */
+    const wm = getComputedStyle($first)
+    const rtl = wm.writingMode.startsWith('vertical')
+      ? !wm.writingMode.endsWith('lr')
+      : wm.direction === 'rtl'
+    /* 圓心不放在那一行的**正中**，放在報導的**起始角落往內縮一點**：大標的
+       起點該落在圓的起始邊，後面幾行才填得滿圓（owner 2026-08-27 的期望圖）。
+       縮多少由 writeGeometry 算——它才知道圓在宿主座標裡有多大（`size / zoom`）。 */
+    return [
+      (rtl ? r.right : r.left) - box.left,
+      r.top - box.top,
+      rtl ? -1 : 1,
+      1,
+    ]
   }
 
   /* The clone must occupy the host's exact geometry or its layout re-folds and
@@ -300,7 +316,11 @@ const mountOne = ($host, { live }) => {
     lensSize = g.size
     zoom = g.zoom
     syncScroll()
-    if (g.opening) [lastX, lastY] = g.opening
+    if (g.opening) {
+      /* 內縮 0.35 個「圓在宿主座標裡的直徑」——起始角落因此落在圓的起始邊內側
+         一點，而不是圓心。 */
+      ;[lastX, lastY] = restingAt(g.opening)
+    }
     positionAt(lastX, lastY)
   }
 
@@ -332,13 +352,35 @@ const mountOne = ($host, { live }) => {
      `refollow` 自己會在鏡片關著時直接返回，`passive` 表示不攔捲動。 */
   document.addEventListener('scroll', () => refollow(), { capture: true, passive: true })
 
+  /* 圓心的活動範圍：圓最多探出宿主邊緣 `OVERHANG`。
+   *
+   * 不夾的話，游標走到樣張角落時整顆圓有一半懸在版面外，讀者看到的是半個空圓
+   * （owner 2026-08-27）。夾住之後游標仍可以走出去，圓就停在邊上——邊上的字看
+   * 得清清楚楚，那正是他要的。宿主比圓還小時（窄站台）夾不出區間，取正中。 */
+  const OVERHANG_REM = 2.5
+
+  const clampToHost = (x, y) => {
+    const r = $host.getBoundingClientRect()
+    const over = OVERHANG_REM * Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
+    const edge = lensSize / 2 - over
+    const span = (v, size) => (size <= 2 * edge ? size / 2 : Math.min(Math.max(v, edge), size - edge))
+    return [span(x, r.width), span(y, r.height)]
+  }
+
+  /** 開場的圓心：報導的起始角落**往內縮**一點（起點落在圓的起始邊，後面幾行
+   *  才填得滿圓），再吃同一條夾限——起點常常就在卡片的角上，不夾的話圓有一半
+   *  掛在樣張外面（實測站③那顆整個騎到站台上緣）。 */
+  const restingAt = ([x, y, dx, dy]) => {
+    const inset = 0.35 * (lensSize / (zoom || 1))
+    return clampToHost(x + dx * inset, y + dy * inset)
+  }
+
   const follow = (e) => {
     readerDriving = true
     clientX = e.clientX
     clientY = e.clientY
     const r = $host.getBoundingClientRect()
-    lastX = e.clientX - r.left
-    lastY = e.clientY - r.top
+    ;[lastX, lastY] = clampToHost(e.clientX - r.left, e.clientY - r.top)
     positionAt(lastX, lastY)
   }
 
@@ -353,13 +395,10 @@ const mountOne = ($host, { live }) => {
       /* 讀者還沒接手：鏡片的家是**開場那一段**，不是上次算出來的座標。長帶一
          平移（站③的縫居中就會捲 434px），同一個宿主相對座標對到的已經是別的
          字，鏡片會離開大標——所以這裡重新問一次它在哪。 */
-      const [x, y] = openingPoint()
-      lastX = x
-      lastY = y
+      ;[lastX, lastY] = restingAt(openingPoint())
     } else if (clientX !== null) {
       const r = $host.getBoundingClientRect()
-      lastX = Math.min(Math.max(clientX - r.left, 0), r.width)
-      lastY = Math.min(Math.max(clientY - r.top, 0), r.height)
+      ;[lastX, lastY] = clampToHost(clientX - r.left, clientY - r.top)
     }
     /* 沒有視窗座標（讀者還沒動過指標，鏡片停在開場那一段）也要重排一次：
        長帶一平移，宿主整塊都走了，而鏡片的定位祖先不一定跟著走。 */
@@ -391,8 +430,7 @@ const mountOne = ($host, { live }) => {
     clientX = e.clientX
     clientY = e.clientY
     const r = $host.getBoundingClientRect()
-    lastX = Math.min(Math.max(e.clientX - r.left, 0), r.width)
-    lastY = Math.min(Math.max(e.clientY - r.top, 0), r.height)
+    ;[lastX, lastY] = clampToHost(e.clientX - r.left, e.clientY - r.top)
     positionAt(lastX, lastY)
   })
 

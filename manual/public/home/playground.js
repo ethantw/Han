@@ -190,7 +190,13 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   if ($dateline) {
     const { iso, text } = plus100EraLine()
     $dateline.dateTime = iso
-    $dateline.textContent = text
+    /* 報眉只登**首尾兩曆**（民國與西元）。四曆全登是站①那四版的排場，在這條
+       對開式報眉的左格裡要折成兩行，刊名於是與第一行對基線、整條報眉歪一邊
+       （owner 2026-08-27 的版）。中間兩曆是趣味，不是資訊。 */
+    const eras = text.split('・')
+    $dateline.textContent = eras.length > 2
+      ? `${eras[0]}・${eras[eras.length - 1]}`
+      : text
   }
 
   /* ── the two content buffers ──
@@ -314,6 +320,39 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       return
     }
 
+    /* 內容真正用到幾欄，就把盒收到那裡。
+     *
+     * 多欄盒的欄數是**盒寬**算出來的，與內容用掉幾欄無關：一篇短稿排完第四欄
+     * 就沒了，第五、六欄照樣存在，而且欄規（`column-rule`）會在它們前面畫線——
+     * 那片本來只是「紙還沒用完」的白，讀起來就成了「多了一整欄」（owner
+     * 2026-08-27）。設計本來就允許短稿留白（見 CSS § the galley face），要修的
+     * 是那幾條線，也就是盒的寬。
+     *
+     * 欄數照規格算，不用猜：`N = floor((盒寬 + 欄距) / (column-width + 欄距))`，
+     * 而實際欄寬是盒寬均分的結果（多欄盒一定把欄撐滿自己）。用掉幾欄則由**最
+     * 右邊那一塊的右緣**回推——不能數「相異的左緣」，縮排的塊會在同一欄裡多出
+     * 一個左緣（實測 [0, 16, 146, 293, 439]，16 是縮排不是新欄）。 */
+    const trimEmptyColumns = () => {
+      const gs = getComputedStyle($preview)
+      const gap = Number.parseFloat(gs.columnGap) || 0
+      const colWidth = Number.parseFloat(gs.columnWidth)
+      const box = $preview.getBoundingClientRect()
+      if (!Number.isFinite(colWidth) || colWidth <= 0 || !(box.width > 0)) return
+      const total = Math.max(1, Math.floor((box.width + gap) / (colWidth + gap)))
+      if (total < 2) return
+      const c = (box.width - (total - 1) * gap) / total
+      const rights = [...$preview.children]
+        .map(($el) => $el.getBoundingClientRect())
+        .filter((r) => r.width && r.height)
+        .map((r) => r.right - box.left)
+      if (!rights.length) return
+      /* 半像素的寬容：欄的右緣是浮點數，量到的塊常常差個 0.5px，不放寬就會
+         多算一欄。 */
+      const used = Math.min(total, Math.max(1, Math.ceil((Math.max(...rights) - 0.5 + gap) / (c + gap))))
+      if (used >= total) return
+      $preview.style.setProperty('--pg-galley-w', `${used * c + (used - 1) * gap}px`)
+    }
+
     // Start from the honest default: the track, columns filling it whole.
     const reset = () => {
       $paper.style.setProperty('--pg-bleed', '0px')
@@ -324,7 +363,11 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     const overflowing = () => $paper.scrollWidth > $paper.clientWidth + 1
 
     reset()
-    if (!overflowing()) return                  // one sheet, no scroll, no cut
+    if (!overflowing()) {
+      // one sheet, no scroll, no cut — but no empty column at the end either
+      trimEmptyColumns()
+      return
+    }
 
     const cs = getComputedStyle($paper)
     const pad = Number.parseFloat(cs.paddingInlineStart) + Number.parseFloat(cs.paddingInlineEnd)
@@ -352,6 +395,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     if (!overflowing()) {
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')
+      trimEmptyColumns()
       return
     }
     coverColumns(c, gap)

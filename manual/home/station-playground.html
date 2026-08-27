@@ -180,8 +180,16 @@
          editor, so nothing else keeps the two together. -->
     <div class="PgSheet" data-pg-sheet>
     <div class="PgPaper" data-pg-paper data-lens="live">
-      <p class="Masthead">{{ pgPaperMasthead }}</p>
-      <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
+      <!-- 對開式報眉（owner 2026-08-27）：日期在左、刊名居中、版面名在右，一條
+           橫線收在底下。刊名居中而兩側空著，在一張分了五六欄的紙上讀起來像掉在
+           中間；把那條線兩端各放一件該有的東西，居中就站得住了。
+           DOM 序仍是「刊名 → 日期 → 版面」——先報刊名才是這張紙的自我介紹；
+           左右由 grid 擺（station-playground.css § .PaperHead）。 -->
+      <header class="PaperHead">
+        <p class="Masthead">{{ pgPaperMasthead }}</p>
+        <p class="Dateline"><time data-pg-dateline datetime="2126-08-10">中華民國二一五年八月十日・夏曆丙戌年六月廿二・弘宙元年八月十日・西元二一二六年八月十日</time></p>
+        <p class="Folio">{{ pgPaperColumn }}</p>
+      </header>
       <!-- `tabindex="0"`: in the wide layout the reading mode scrolls, and a
            scrollable region the keyboard can't reach is a serious axe
            violation (scrollable-region-focusable). In tab mode it's one
