@@ -36,6 +36,7 @@ import { initLeadForme } from '/home/lead-forme.js'
 import { initDashClip } from '/home/dash-clip.js'
 import { initPunctLang } from '/home/punct-lang.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
+import { initPaperReader } from '/home/paper-reader.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
@@ -101,6 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsoleCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
+  /* 站①的「（下轉第七版）」——把跳版連結升級成 `<dialog>` 燈箱（全文、可換版、
+     可轉直排）。沒有這一支，那條連結只會把 `:target` 的退路展開在版面裡，整份
+     全文就攤在卡片下面（2026-08-27 補接：這支模組寫好了卻從來沒有人叫過它）。 */
+  initPaperReader()
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()

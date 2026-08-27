@@ -101,62 +101,8 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   const $preview = $editor.querySelector('[data-pg-preview]')
   if (!$src || !$preview) return
 
-  /* ── 專心編輯模式 ──
-   * The studio borrows the LIVE panes: moving nodes keeps the draft, its
-   * input listeners and the rendered preview intact — nothing re-renders,
-   * nothing re-mounts. On exit they return in front of the lens (the `~`
-   * reveal rule needs the lens last).
-   *
-   * Esc closes — EXCEPT while the caret is in the editor, where the key is
-   * an editing reflex (leave insert mode, dismiss a completion) and losing
-   * the whole mode to it would be a nasty surprise. Everywhere else, the
-   * usual dialog contract stands.
-   *
-   * Teardown hangs off the dialog's own `close` event, not off the ✕, so
-   * every way out — button, Esc, `close()` from anywhere — puts the panes
-   * back and re-solves the page geometry exactly once. */
-  const $studio = $editor.querySelector('[data-pg-studio]')
-  const $studioBody = $editor.querySelector('[data-pg-studio-body]')
-  const $studioHead = $editor.querySelector('[data-pg-studio-head]')
-  // the switch sits in the station head, outside [data-playground]
-  const $focusBtn = $editor.closest('section')?.querySelector('[data-pg-focus]')
   const $sheet = $editor.querySelector('[data-pg-sheet]')
   const $panes = $editor.querySelector('[data-pg-panes]')
-  if ($studio && $studioBody && $focusBtn && $sheet) {
-    // The switch is a checkbox: checked ⇒ in the studio. While the modal is
-    // up the switch is inert behind it, so the ✕ is the only way back —
-    // it closes AND unchecks, keeping switch and reality in step.
-    $focusBtn.addEventListener('change', () => {
-      if (!$focusBtn.checked) return
-      // The content tabs travel WITH the panes — same element, so the same
-      // listener and the same buffers; a second set of radios in here would
-      // be two writers on one piece of state.
-      // …before the ✕, which owns the far end of that row.
-      if ($tabs && $studioHead) {
-        $studioHead.insertBefore($tabs, $studioHead.querySelector('[data-pg-studio-close]'))
-      }
-      $studioBody.append($src, $sheet)
-      $studio.showModal()
-      // AFTER showModal: a closed dialog is `display: none`, so anything
-      // measured before it opens reads zero (the columns came back as one).
-      fitSheet()
-      $src.focus()
-    })
-    $studio.addEventListener('cancel', (e) => {
-      if (document.activeElement === $src) e.preventDefault()
-    })
-    $studio.querySelector('[data-pg-studio-close]')
-      .addEventListener('click', () => $studio.close())
-    $studio.addEventListener('close', () => {
-      // back into the box they came from, in their own order — the strip's
-      // rules and the wide grid both select through it.
-      $panes.append($src, $sheet)
-      // …and the tabs go back to the head, ahead of the focus switch.
-      if ($tabs) $focusBtn.closest('.PgControls')?.prepend($tabs)
-      $focusBtn.checked = false
-      fitSheet()
-    })
-  }
 
   /* ── 手勢與分頁互相對齊 ──────────────────────────────────────────
    * 窄站台下兩塊窗格並排在一條吸附軌上，於是「哪一塊在看」有兩個入口，兩
@@ -253,8 +199,6 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     if ($panes && getComputedStyle($panes).display !== 'grid') return
     const $paper = $editor.querySelector('[data-pg-paper]')
     if (!$paper) return
-    const inStudio = !!$paper.closest('[data-pg-studio]')
-
     /* Widen the multicol box to cover every column it produced.
      *
      * Overflow columns spill straight THROUGH the card's end padding — a
@@ -277,36 +221,6 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       $preview.style.setProperty('--pg-galley-w', `${n * c + (n - 1) * gap}px`)
     }
 
-    /** Columns of at least the token measure, stretched to fill `visible`
-     *  exactly — no half column, because in here there is no cut to signal. */
-    const fillMeasure = (visible, floorC, gap) => {
-      const k = Math.max(1, Math.floor((visible + gap) / (floorC + gap)))
-      return (visible - (k - 1) * gap) / k
-    }
-
-    // In 認真模式 the sheet is on loan to the dialog, which lays it out its
-    // own way; solving page geometry there would write a bleed measured
-    // against a layout the sheet isn't in. The columns still need covering.
-    if (inStudio) {
-      $paper.style.removeProperty('--pg-bleed')
-      $paper.style.removeProperty('--pg-paper-w')
-      $paper.removeAttribute('data-pg-bled')
-      $preview.style.removeProperty('--pg-galley-w')
-      $preview.style.removeProperty('--pg-galley-col-used')
-      const scs = getComputedStyle($paper)
-      const sgs = getComputedStyle($preview)
-      const gap = Number.parseFloat(sgs.columnGap) || 0
-      const floorC =
-        Number.parseFloat(sgs.fontSize) * Number.parseFloat(sgs.getPropertyValue('--pg-galley-col'))
-      const visible = $paper.clientWidth
-        - Number.parseFloat(scs.paddingInlineStart) - Number.parseFloat(scs.paddingInlineEnd)
-      if (!Number.isFinite(floorC) || floorC <= 0 || !(visible > 0)) return
-      const c = fillMeasure(visible, floorC, gap)
-      $preview.style.setProperty('--pg-galley-col-used', `${c}px`)
-      coverColumns(c, gap)
-      return
-    }
-
     /* 內容真正用到幾欄，就把盒收到那裡。
      *
      * 多欄盒的欄數是**盒寬**算出來的，與內容用掉幾欄無關：一篇短稿排完第四欄
@@ -319,6 +233,12 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
      * 而實際欄寬是盒寬均分的結果（多欄盒一定把欄撐滿自己）。用掉幾欄則由**最
      * 右邊那一塊的右緣**回推——不能數「相異的左緣」，縮排的塊會在同一欄裡多出
      * 一個左緣（實測 [0, 16, 146, 293, 439]，16 是縮排不是新欄）。 */
+    /* 紙最窄也要有五欄。收到內容那裡是對的（見下），但收過頭這張紙就不再是一份
+       報紙了：報頭那一排——標語｜刊名｜氣象，粗線底下卷號・日期・售價——要五欄
+       左右才擺得開，短稿收成一兩欄時它會被擠成幾條細長條。五欄是那一排的下限，
+       不是版面的偏好（owner 2026-08-27）。 */
+    const MIN_COLUMNS = 5
+
     const trimEmptyColumns = () => {
       const gs = getComputedStyle($preview)
       const gap = Number.parseFloat(gs.columnGap) || 0
@@ -335,7 +255,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       if (!rights.length) return
       /* 半像素的寬容：欄的右緣是浮點數，量到的塊常常差個 0.5px，不放寬就會
          多算一欄。 */
-      const used = Math.min(total, Math.max(1, Math.ceil((Math.max(...rights) - 0.5 + gap) / (c + gap))))
+      const used = Math.min(total, Math.max(MIN_COLUMNS, Math.ceil((Math.max(...rights) - 0.5 + gap) / (c + gap))))
       if (used >= total) return
       const w = used * c + (used - 1) * gap
       $preview.style.setProperty('--pg-galley-w', `${w}px`)

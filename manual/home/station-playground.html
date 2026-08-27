@@ -76,18 +76,6 @@
   },
   /* The strip's control is an ACTION — 進入…; the dialog's own head names
      the mode it put you in. Two strings, two jobs. */
-  pgFocusEnter: {
-    hant: '進入認真模式', hans: '进入认真模式', en: 'Enter serious mode',
-    ja: '本気モードに入る', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드로',
-  },
-  pgFocusTitle: {
-    hant: '認真模式', hans: '认真模式', en: 'Serious mode',
-    ja: '本気モード', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드',
-  },
-  pgFocusClose: {
-    hant: '退出認真模式', hans: '退出认真模式', en: 'Exit serious mode',
-    ja: '本気モードを終了', ko: '<ruby>眞劍<rt>진검</rt></ruby> 모드 나가기',
-  },
   pgPaperColumn: {
     hant: '人物特寫', hans: '人物特写', en: 'Profiles',
     ja: '人物特集', ko: '<ruby>人物<rt>인물</rt></ruby> <ruby>特寫<rt>특사</rt></ruby>',
@@ -113,10 +101,6 @@
      restores localStorage over it on boot (console Reset never touches it — it
      is content, not config). -->
 <section id="station-playground" class="Station Playground" data-station="playground" data-wm="樂">
-  <!-- The 認真模式 switch rides in the station head, on the <h2>'s line.
-       It sits AFTER the lede in source so `h2 + p` (frame.css's lede rule)
-       still matches; the grid in station-playground.css puts it back on
-       the heading row. -->
   <hgroup>
     <p>{{ pgStationEyebrow }}</p>
     <h2>{{ pgStationH2 }}</h2>
@@ -130,14 +114,6 @@
         <label><input type="radio" name="pg-content" value="custom">{{ pgContentCustom }}</label>
       </fieldset>
 
-      <!-- Still a checkbox (checked ⇒ in the studio, so the switch and the
-           reality can't drift), but its face is a button: entering is an
-           action, and a switch would promise a way back the modal doesn't
-           give. The input is visually hidden — the `for=`/`id=` pair is what
-           makes the label操作得動 it, and `:focus-visible` on the input
-           paints the ring on the label. -->
-      <input type="checkbox" id="pg-focus" class="sr-only" data-pg-focus>
-      <label class="PgFocus" for="pg-focus">{{ pgFocusEnter }}</label>
     </div>
   </hgroup>
 
@@ -161,8 +137,7 @@
     <script type="text/plain" data-pg-custom-default>{{ pgCustomSample }}</script>
     <!-- 兩塊窗格自成一個盒：窄站台下它就是那條可以左右滑的軌（吸附一格一
          格走，home/playground.js § swipe 讓藥丸與滑到哪裡互相對齊），寬站台
-         下它是那張兩欄的網格。認真模式把兩塊窗格借走時，它們離開這個盒，
-         所以借出期間所有 `[data-pg-panes] >` 的規則自動失效。 -->
+         下它是那張兩欄的網格。 -->
     <div class="PgPanes" data-pg-panes data-strip="playground">
     <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
@@ -198,24 +173,6 @@
     </div>
     </div>
     <p class="LensHint"><span data-pointer="fine">{{ lensHintHover }}</span><span data-pointer="coarse">{{ lensHint }}</span></p>
-
-    <!-- 認真模式 — a fullscreen modal studio. Opening MOVES the two live
-         panes (textarea + paper) into the dialog body and back: same nodes,
-         so the draft, its listeners and the rendered preview survive the
-         trip untouched. Exit is the ✕ only (Esc is cancelled in JS) — the
-         whole point is that nothing scrolls out from under you. -->
-    <dialog class="PgStudio" data-pg-studio aria-label="{{ pgFocusTitle }}">
-      <!-- The content tabs are MOVED in here on open (playground.js) — the
-           same fieldset, so switching 報導／自訂內容 works identically inside
-           and out, with no second copy of the state to keep in step. -->
-      <header data-pg-studio-head>
-        <span>{{ pgFocusTitle }}</span>
-        <button type="button" data-pg-studio-close aria-label="{{ pgFocusClose }}">
-          <span data-icon="close" aria-hidden="true"></span>
-        </button>
-      </header>
-      <div data-pg-studio-body></div>
-    </dialog>
   </div>
     <nav class="PgNav" data-strip-nav="playground" aria-label="工作區平移">
       <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">

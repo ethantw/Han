@@ -433,10 +433,17 @@
           </button>
         </form>
         <article class="ReaderSheet">
-          <header class="ReaderMasthead">
-            <p class="ReaderIssue">第四三八七號</p>
-            <p class="ReaderName">太陽中文報</p>
-            <p class="ReaderDate"><time datetime="2126-07-29">中華民國二一五年七月廿九日</time></p>
+          <!-- 全文版的報頭用共用零件（home/paper-head.css ＋ _shared.html § PAPER）：
+               標語框、刊名、太陽系氣象，粗線底下卷號・日期・售價。文案取
+               `paper*Hant` 那一組——這四份是**同一天的四個語版**，各說各的話，
+               所以不跟頁面語言走。日期仍是各版自己的紀年（papers-dateline.js）。 -->
+          <header class="PaperHead">
+            <p class="Slogan">{{ paperSloganHant }}</p>
+            <p class="Masthead">太陽中文報</p>
+            <p class="Forecast"><b>{{ paperForecastLabelHant }}</b>{{ paperForecastHant }}</p>
+            <p class="Folio">{{ paperVolumeHant }}</p>
+            <p class="Dateline"><time datetime="2126-07-29">中華民國二一五年七月廿九日</time></p>
+            <p class="Price">{{ paperPriceHant }}</p>
           </header>
           <header class="ReaderHead">
             <p class="ReaderFrom"><b class="ReaderPage">第七版</b>（上接第一版）</p>
@@ -496,10 +503,17 @@
           </button>
         </form>
         <article class="ReaderSheet">
-          <header class="ReaderMasthead">
-            <p class="ReaderIssue">第四三八七号</p>
-            <p class="ReaderName">太阳中文报</p>
-            <p class="ReaderDate"><time datetime="2126-07-29">夏历丙戌年六月初十</time></p>
+          <!-- 全文版的報頭用共用零件（home/paper-head.css ＋ _shared.html § PAPER）：
+               標語框、刊名、太陽系氣象，粗線底下卷號・日期・售價。文案取
+               `paper*Hans` 那一組——這四份是**同一天的四個語版**，各說各的話，
+               所以不跟頁面語言走。日期仍是各版自己的紀年（papers-dateline.js）。 -->
+          <header class="PaperHead">
+            <p class="Slogan">{{ paperSloganHans }}</p>
+            <p class="Masthead">太阳中文报</p>
+            <p class="Forecast"><b>{{ paperForecastLabelHans }}</b>{{ paperForecastHans }}</p>
+            <p class="Folio">{{ paperVolumeHans }}</p>
+            <p class="Dateline"><time datetime="2126-07-29">夏历丙戌年六月初十</time></p>
+            <p class="Price">{{ paperPriceHans }}</p>
           </header>
           <header class="ReaderHead">
             <p class="ReaderFrom"><b class="ReaderPage">第三版</b>（接第一版）</p>
@@ -559,10 +573,17 @@
           </button>
         </form>
         <article class="ReaderSheet">
-          <header class="ReaderMasthead">
-            <p class="ReaderIssue">第四三八七號</p>
-            <p class="ReaderName">太陽中文報</p>
-            <p class="ReaderDate"><time datetime="2126-07-29">弘宙元年七月二十九日（水曜日）</time></p>
+          <!-- 全文版的報頭用共用零件（home/paper-head.css ＋ _shared.html § PAPER）：
+               標語框、刊名、太陽系氣象，粗線底下卷號・日期・售價。文案取
+               `paper*Ja` 那一組——這四份是**同一天的四個語版**，各說各的話，
+               所以不跟頁面語言走。日期仍是各版自己的紀年（papers-dateline.js）。 -->
+          <header class="PaperHead">
+            <p class="Slogan">{{ paperSloganJa }}</p>
+            <p class="Masthead">太陽中文報</p>
+            <p class="Forecast"><b>{{ paperForecastLabelJa }}</b>{{ paperForecastJa }}</p>
+            <p class="Folio">{{ paperVolumeJa }}</p>
+            <p class="Dateline"><time datetime="2126-07-29">弘宙元年七月二十九日（水曜日）</time></p>
+            <p class="Price">{{ paperPriceJa }}</p>
           </header>
           <header class="ReaderHead">
             <p class="ReaderFrom"><b class="ReaderPage">一一面</b>（一面より続く）</p>
@@ -622,10 +643,17 @@
           </button>
         </form>
         <article class="ReaderSheet">
-          <header class="ReaderMasthead">
-            <p class="ReaderIssue">第四三八七號</p>
-            <p class="ReaderName">太陽中文報</p>
-            <p class="ReaderDate"><time datetime="2126-07-29">西紀 2126年 7月 29日</time></p>
+          <!-- 全文版的報頭用共用零件（home/paper-head.css ＋ _shared.html § PAPER）：
+               標語框、刊名、太陽系氣象，粗線底下卷號・日期・售價。文案取
+               `paper*Ko` 那一組——這四份是**同一天的四個語版**，各說各的話，
+               所以不跟頁面語言走。日期仍是各版自己的紀年（papers-dateline.js）。 -->
+          <header class="PaperHead">
+            <p class="Slogan">{{ paperSloganKo }}</p>
+            <p class="Masthead">太陽中文報</p>
+            <p class="Forecast"><b>{{ paperForecastLabelKo }}</b>{{ paperForecastKo }}</p>
+            <p class="Folio">{{ paperVolumeKo }}</p>
+            <p class="Dateline"><time datetime="2126-07-29">西紀 2126年 7月 29日</time></p>
+            <p class="Price">{{ paperPriceKo }}</p>
           </header>
           <header class="ReaderHead">
             <p class="ReaderFrom"><b class="ReaderPage">5면</b>（1면에서 계속）</p>

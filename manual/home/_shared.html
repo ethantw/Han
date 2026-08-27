@@ -46,11 +46,16 @@ const PAPER = {
      卷（一年一卷）、第 60×365 ＝ 21,900 號。原本寫「第一〇二萬卷」——一天一卷
      的話那是三千年，比報上的紀年還老。
 
-     售價那句用「半人馬座α星」而不是傳統星名「南門二」：這一行是報頭的**小字
-     公告**，笑點全靠它讀起來像真的發行須知，讀者得**當場**認出那是個地方。
-     「南門二」雅，但認得的人不多，更糟的是它會被讀成地名（台北就有南門市場）。
-     「以外地區」的「地區」也是為此而加——紐時原句是「greater New York
+     售價那句用「比鄰星」，不用傳統星名「南門二」：這一行是報頭的**小字公告**，
+     笑點全靠它讀起來像真的發行須知，讀者得**當場**認出那是個地方。「南門二」雅，
+     但認得的人不多，更糟的是它會被讀成地名（台北就有南門市場）；「比鄰星」帶著
+     「星」字，一眼看得出是天體，而且「比鄰」本身就是「隔壁」——隔壁那顆星，正好
+     是這句話要的距離感。「地區」也是為此而加：紐時原句是「greater New York
      metropolitan area」，那個 area 一樣是在說「這是個地理範圍」。
+
+     句式取的是紐時另一句「Higher price in Canada」——**指名一個地方貴**，不是
+     「某地以外貴」。寫成「以外」有歧義：太陽系也在那顆星以外，那就變成全宇宙都
+     貴、只有那一顆便宜，笑點反了。
      metropolitan area」那句售價註記。星際尺度上，「紐約都會區以外」就是「南門二
      以外」——南門二是離太陽最近的一個恆星系，正對應紐時那句「都會區以外」的
      距離感。不寫「星系」：那是 galaxy，尺度大了十萬倍，玩笑就不準了。 */
@@ -62,11 +67,11 @@ const PAPER = {
     ko: '第六十<ruby>卷<rt>권</rt></ruby> 第二一九〇〇<ruby>號<rt>호</rt></ruby>',
   },
   price: {
-    hant: '半人馬座α星以外地區，發行售價可能較高',
-    hans: '半人马座α星以外地区，发行售价可能较高',
-    en: 'Higher price for editions beyond Alpha Centauri',
-    ja: 'ケンタウルス座α星より遠方では発行価格が高くなる場合があります',
-    ko: '<ruby>半人馬座<rt>반인마좌</rt></ruby> α星 밖 <ruby>地域<rt>지역</rt></ruby>에서는 <ruby>發行<rt>발행</rt></ruby> 값이 더 비쌀 수 있습니다',
+    hant: '比鄰星地區，發行售價可能較高',
+    hans: '比邻星地区，发行售价可能较高',
+    en: 'Higher price in the Proxima region',
+    ja: 'プロキシマ星域では発行価格が高くなる場合があります',
+    ko: '<ruby>比鄰星<rt>비린성</rt></ruby> <ruby>地域<rt>지역</rt></ruby>에서는 <ruby>發行<rt>발행</rt></ruby> 값이 더 비쌀 수 있습니다',
   },
 }
 
@@ -96,18 +101,21 @@ return {
      兩套出口：`paper*` 跟著頁面語言走（遊樂場的樣稿本來就是讀者當下那一版），
      `paper*Hant` 恆為繁體——站④那兩張樣張的內文是**固定的**繁體報導，報頭跟著
      頁面翻成日文，就會出現日文刊名壓著中文報導。 */
-  paperMasthead: PAPER.masthead,
-  paperMastheadHant: { '*': PAPER.masthead.hant },
-  paperSlogan: PAPER.slogan,
-  paperSloganHant: { '*': PAPER.slogan.hant },
-  paperForecastLabel: PAPER.forecastLabel,
-  paperForecastLabelHant: { '*': PAPER.forecastLabel.hant },
-  paperForecast: PAPER.forecast,
-  paperForecastHant: { '*': PAPER.forecast.hant },
-  paperVolume: PAPER.volume,
-  paperVolumeHant: { '*': PAPER.volume.hant },
-  paperPrice: PAPER.price,
-  paperPriceHant: { '*': PAPER.price.hant },
+  /* 兩套出口，見上：`paper*` 跟著頁面語言走；`paper*<語版>` 恆為該語版——站①
+     的四份報紙各說各的話（繁・簡・日・韓四版並排就是那一站的展品），站④的兩張
+     樣張是固定的繁體報導。逐個手寫十二乘五個鍵太蠢，就地展開。 */
+  ...Object.fromEntries(
+    Object.entries(PAPER).flatMap(([key, value]) => {
+      const name = 'paper' + key[0].toUpperCase() + key.slice(1)
+      return [
+        [name, value],
+        ...['hant', 'hans', 'en', 'ja', 'ko'].map((locale) => [
+          name + locale[0].toUpperCase() + locale.slice(1),
+          { '*': value[locale] },
+        ]),
+      ]
+    }),
+  ),
   logo: {
     "*": `<span class="Brand"><svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="20" cy="28" r="6.5" opacity=".55" /><circle cx="20" cy="50" r="9.5" /><circle cx="20" cy="78" r="12.5" opacity=".85" /><path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" /><polygon class="dun" points="58,45 43,50 58,55" /></svg><span data-part="mark">${HAN_SVG}漢</span><span data-part="dot">.</span><span data-part="ext">css</span></span>`,
   },

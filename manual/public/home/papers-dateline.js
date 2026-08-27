@@ -96,7 +96,7 @@ const format = {
   'zh-Hans': (date) => lunarEra(date, 'zh-Hans-u-ca-chinese', '夏历'),
   'ja': (date, y, m, d) =>
     `弘宙元年${decimal(m)}月${decimal(d)}日`,
-  'ko-Hant': (date, y, m, d) =>
+  'ko-Kore': (date, y, m, d) =>
     `<ruby>西紀<rt>서기</rt></ruby> ${y}年 ${m}月 ${d}日`,
 }
 
@@ -147,7 +147,10 @@ export function initPapersDateline() {
   document.querySelectorAll('time[data-era-line]').forEach(fillEraLine)
 
   for (const $time of document.querySelectorAll('.Papers .Dateline time')) {
-    const html = format[$time.closest('article').lang]?.(date, y, m, d)
+    /* `closest('[lang]')`，不是 `closest('article')`：全文版的燈箱裡還有一層
+       `<article class="ReaderSheet">`，它沒有 lang，往上問才問得到那一版的語言
+       （四份報紙各有自己的紀年，問錯就整個跳過）。 */
+    const html = format[$time.closest('[lang]')?.lang]?.(date, y, m, d)
     if (!html) continue
     $time.dateTime = iso
     $time.innerHTML = html
