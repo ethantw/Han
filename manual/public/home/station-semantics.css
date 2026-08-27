@@ -208,15 +208,31 @@ figure.Papers {
        這條 `article > header > .Masthead`。而且贏的一定是這裡——CSS 巢狀的 `&`
        帶著**整條上層選擇器**的特異性，本站的上層是 `#station-semantics`，一個 ID
        壓過共用零件的兩個類別。要擋就得指名擋。 */
+    /* 卡片報頭的漢字層也換成尚古，四語皆同——理由與寫法同 home/paper-head.css
+       檔頭那一段（覆寫 `--han-font-cjk-*` 而不是插隊到堆疊最前面；連後代一起寫，
+       否則子元素會把它推翻回各語預設）。 */
+    > header:not(.PaperHead),
+    > header:not(.PaperHead) * {
+      --han-font-cjk-serif:
+        var(--han-webfont-heritage-glyphs-serif),
+        'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP'
+      ;
+      --han-font-cjk-sans:
+        var(--han-webfont-heritage-glyphs-sans),
+        'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP'
+      ;
+    }
+
     > header:not(.PaperHead) > .Masthead {
       margin: 0;
       padding-block-end: 0.25em;
       /* the thick half of the classic masthead double rule */
       border-block-end: 2px solid var(--ui-text);
       text-align: center;
-      /* 刊名一律尚古明，不隨語言改臉——四份是同一份報紙的四個語版，招牌相同
-         （home/paper-head.css § --paper-*，全文版的報頭同一套）。 */
-      font-family: var(--paper-serif);
+      /* 刊名一律尚古明，不隨語言改臉——四份是同一份報紙的四個語版，招牌相同。
+         漢字層的替換在下面那條 `> header:not(.PaperHead)`，與全文版的報頭同一套
+         作法（home/paper-head.css 檔頭）。 */
+      font-family: var(--han-serif);
       font-weight: 700;
       font-size: var(--paper-masthead);
       /* tracked-out logotype — trailing tracking rebalanced by indent */
@@ -227,7 +243,7 @@ figure.Papers {
     > header:not(.PaperHead) > .Dateline {
       & {
         /* 日期與欄目是報頭的告示，尚古黑（同全文版報頭的分工）。 */
-        font-family: var(--paper-sans);
+        font-family: var(--han-sans);
         /* flex, but NO gap: the era prefix, <time> and ・欄目 are separate
          * flex items that must read as one continuous line */
         display: flex;

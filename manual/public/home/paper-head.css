@@ -20,14 +20,28 @@
    算好的 px。 */
 /* 報頭的兩張臉：**尚古明**與**尚古黑**，不隨語言改。四份報紙是同一份報紙的四個
    語版，報頭是它的招牌——招牌不該在日文版換成日文明朝、在韓文版換成韓文黑體
-   （owner 2026-08-28）。所以這裡例外地**點名傳承字形的槽位**（`--han-webfont-
-   heritage-glyphs-*`，同 lead-forme.css 那一站點名字族的理由：這是字體樣張本身
-   要展示的東西），後面才接各語的合成堆疊——尚古只管漢字，假名與諺文自然落到
-   後面那一段。槽位的值由頁面決定（首頁子集是 `Han Home *`、遊樂場的 UGC 換回
-   ziano 的完整切片），所以點的是槽位，不是字族名。 */
-:root {
-  --paper-serif: var(--han-webfont-heritage-glyphs-serif), var(--han-serif);
-  --paper-sans: var(--han-webfont-heritage-glyphs-sans), var(--han-sans);
+   （owner 2026-08-28）。
+
+   改的是**漢字那一層**，不是整條堆疊：四層的順序是「標點（DTJ）→ 西文 → 漢字 →
+   generic」，把尚古插到最前面等於同時搶走標點與西文（owner 2026-08-28 抓到）。
+   所以照 han.css 自己的作法覆寫 `--han-font-cjk-*` 槽位，尚古之後接各語的系統
+   字（同 `src/css/fonts.css` § heritage-glyphs-for-hant 那一段的寫法），合成堆疊
+   `--han-serif`／`--han-sans` 於是自動長成正確的四層。
+
+   選擇器要連後代一起寫（`.PaperHead *`）：han.css 把這些槽位**宣告在每一個元素
+   上**（`src/css/fonts.css` 有交代為什麼），而元素上的宣告一律贏過繼承——只掛在
+   容器上，容器裡的每個子元素會原地把它推翻回各語的預設（同 home/root.css § 非
+   retina 那一段踩過的坑）。 */
+.PaperHead,
+.PaperHead * {
+  --han-font-cjk-serif:
+    var(--han-webfont-heritage-glyphs-serif),
+    'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP'
+  ;
+  --han-font-cjk-sans:
+    var(--han-webfont-heritage-glyphs-sans),
+    'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP'
+  ;
 }
 
 @property --paper-side {
@@ -58,8 +72,8 @@
     align-items: center;
     /* 報頭的「其他」都是黑體：氣象、卷號、日期、售價是**告示**，不是正文，黑體
        在小字級上也認得出來（朝日、聯合報的欄目字與資訊欄同理）。刊名與標語另給
-       明體，見下。兩者都是尚古（見檔頭 `--paper-*`）。 */
-    font-family: var(--paper-sans);
+       明體，見下。兩者的漢字層都換成了尚古（見檔頭）。 */
+    font-family: var(--han-sans);
     column-gap: 1.25em;
     row-gap: 0.35em;
     margin-block-end: 0.75em;
@@ -94,7 +108,7 @@
     /* 標語與刊名是這份報紙的**題字**，明體；其餘報頭元素黑體（見 `.PaperHead`）。
        不走 `--han-font-alternative`——那個槽位由讀者在主控台指定，這一頁的預設值
        實測就等於 `--han-sans`，寫它等於什麼都沒寫。 */
-    font-family: var(--paper-serif);
+    font-family: var(--han-serif);
     font-size: 0.8125em;
     line-height: 1.5;
     /* 兩行等寬：兩行都是四個字，`justify` 把它們撐到框寬，末行也要撐
@@ -134,7 +148,7 @@
     margin: 0;
     grid-row: 1;
     grid-column: 2;
-    font-family: var(--paper-serif);
+    font-family: var(--han-serif);
     font-size: 2.25em;
     line-height: 1;
     /* 刊名不折行：它是字標，不是一句話。也因此它的 min-content 是整條寬度，

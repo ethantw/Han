@@ -13,7 +13,7 @@
  * 在隔壁；`ZIANO=../ziano` 可以覆寫）。
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
 const ZIANO = process.env.ZIANO ?? '../ziano'
@@ -58,3 +58,25 @@ for (const { base, family, zh } of SUBSETS) {
   ], { cwd: ZIANO, encoding: 'utf8' })
   process.stdout.write(out)
 }
+
+/* 建完就同步到 `manual/public/subset/`。
+ *
+ * 那個目錄是這裡的**副本**（`vite.config.js` § syncSubsets），而同步只在開發
+ * 伺服器啟動時跑一次：伺服器開著的時候重建子集，瀏覽器拿到的還是舊字體檔——
+ * CSS 是新的、`unicode-range` 也是新的，就只有字形沒跟上，於是新加的字安靜地
+ * 掉到系統字。那正是 2026-08-28 的「報頭字體不對」：字表對、`--check` 也過，
+ * 錯的是沒人重新複製。既然這裡知道自己剛剛動了什麼，就由這裡收尾。 */
+const PUBLIC_SUBSET = path.resolve('manual/public/subset')
+
+for (const { base } of SUBSETS) {
+  const id = `${base}-${ID_SUFFIX}`
+  const from = path.join(OUT, id)
+  const to = path.join(PUBLIC_SUBSET, id)
+  if (!existsSync(from)) continue
+  mkdirSync(path.join(to, 'files'), { recursive: true })
+  copyFileSync(path.join(from, 'swap.css'), path.join(to, 'swap.css'))
+  for (const f of readdirSync(path.join(from, 'files'))) {
+    copyFileSync(path.join(from, 'files', f), path.join(to, 'files', f))
+  }
+}
+console.log(`同步到 ${PUBLIC_SUBSET}（開發伺服器開著也吃得到）`)
