@@ -526,7 +526,11 @@
 
          The CARD is the scroll container, so the whole sheet pans (and the
          masthead stays put — it is sticky, below). */
-      inline-size: calc(100% + var(--pg-bleed, 0px));
+      /* `--pg-paper-w`：內容用不到整張紙時，紙自己也收窄到內容那裡
+         （playground.js § trimEmptyColumns）——不收的話欄規是不畫了，右邊仍留著
+         一片與欄同寬的白，讀起來還是「多了一欄」（owner 2026-08-27）。版面因此
+         是「短稿一張小報」，而不是「大報右邊空著」。 */
+      inline-size: calc(var(--pg-paper-w, 100%) + var(--pg-bleed, 0px));
       overflow-x: auto;
       overflow-y: hidden;
       /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半

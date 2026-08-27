@@ -304,6 +304,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     // against a layout the sheet isn't in. The columns still need covering.
     if (inStudio) {
       $paper.style.removeProperty('--pg-bleed')
+      $paper.style.removeProperty('--pg-paper-w')
       $paper.removeAttribute('data-pg-bled')
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')
@@ -351,12 +352,19 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
          多算一欄。 */
       const used = Math.min(total, Math.max(1, Math.ceil((Math.max(...rights) - 0.5 + gap) / (c + gap))))
       if (used >= total) return
-      $preview.style.setProperty('--pg-galley-w', `${used * c + (used - 1) * gap}px`)
+      const w = used * c + (used - 1) * gap
+      $preview.style.setProperty('--pg-galley-w', `${w}px`)
+      /* 紙跟著收：只把欄規收掉還不夠，右邊那片與欄同寬的白留著，讀起來仍是
+         「多了一欄」。收窄之後報眉、底線與版面名也一起退到內容的邊上。 */
+      const ps = getComputedStyle($paper)
+      const pads = Number.parseFloat(ps.paddingInlineStart) + Number.parseFloat(ps.paddingInlineEnd)
+      $paper.style.setProperty('--pg-paper-w', `${Math.ceil(w + pads)}px`)
     }
 
     // Start from the honest default: the track, columns filling it whole.
     const reset = () => {
       $paper.style.setProperty('--pg-bleed', '0px')
+      $paper.style.removeProperty('--pg-paper-w')
       $paper.removeAttribute('data-pg-bled')
       $preview.style.removeProperty('--pg-galley-w')
       $preview.style.removeProperty('--pg-galley-col-used')
