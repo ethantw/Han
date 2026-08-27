@@ -39,28 +39,34 @@
        `margin-block-start: -2rem`（station-frame.css）在流式排版裡會塌陷
        成 0.5rem，而 grid 不塌陷、直接相加也是 0.5rem——同一個數。p 與
        figure 之間同理（2.75rem + 0）。 */
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    /* **不用 grid，也不用門檻查詢：換不換行讓版面引擎自己算。**
+       `flex-wrap: wrap` ＋ 右欄 `flex: 1 1 300px` ＝「右邊放得下 300px 就並排，
+       放不下就自己一行」——那就是規則本身。先前把它翻譯成一個 rem 門檻
+       （62rem／101.5rem／56rem），而那道翻譯依賴留白、欄間距、卡寬三個會變的
+       數，改一個就算錯一次（2026-08-28，錯兩次）。翻譯拿掉。 */
+    display: flex;
+    flex-wrap: wrap;
     /* 欄間距至少 3rem，但寬版心下要讓開放大樣張的版口線：那條線是樣張卡中線的
        鏡射（＝ 2×`--plate-pad` ＋ 卡寬，見 § 巨型背景樣張），而右欄本來從
        「卡寬 ＋ 3rem」起——差額正好是 `--plate-pad` − 3rem。撐欄間距而不是給
        右欄加左邊界：邊界不會縮小它的 `100%`（軌寬照舊），右欄會整條溢出版心
        （實測 1680 下溢 28px）。
 
-       **上限 19.25rem（308px）**：卡右緣到版心右緣恆為 608px（＝ 68rem 版口
-       減去 30rem 的卡寬，版心再寬也不變，因為卡與右緣一起外移），所以右欄
-       ＝ 608 − 欄間距。要右欄永遠 ≥ 300px（owner 2026-08-28 的規則：右邊大於
-       300px 就放右邊），欄間距就不能超過 308px。超過那條線之後，開關寧可壓進
-       背景樣張的懸掛區——那片底字只有 6% 的墨——也好過整塊掉到樣張下方，
-       右邊空著六百像素。 */
-    column-gap: clamp(3rem, var(--plate-pad), 19.25rem);
+       **上限 18.75rem（300px）**：卡右緣到版心右緣恆為 608px（＝ 68rem 版口減
+       30rem 的卡寬；版心再寬也不變，因為卡與右緣一起外移），所以右欄 ＝ 608 −
+       欄間距。右欄要留得住 300px（換行的判準，見下），欄間距就不能超過 308px；
+       取 300px，留 8px 餘裕給次像素——貼著算的話 flex 會在整數邊界上換行（實測
+       版心 1920 剛好翻掉）。超過那條線之後，開關寧可壓進背景樣張的懸掛區——那片
+       底字只有 6% 的墨——也好過整塊掉到樣張下方、右邊空著六百像素。 */
+    column-gap: clamp(3rem, var(--plate-pad), 18.75rem);
   }
   > hgroup,
   > p {
-    grid-column: 1 / -1;
+    flex: 0 0 100%;
   }
+  /* 卡片定寬（24em，見下），不伸不縮。 */
   > figure {
-    grid-column: 1;
+    flex: none;
   }
   figure {
     & {
@@ -129,15 +135,17 @@
     & {
       position: relative;
       z-index: 20;
-      grid-column: 2;
-      align-self: start;
+      /* 300px 是這一欄還讀得像一段話的下限，也就是「放不下就換行」的判準
+         （owner 2026-08-28）。換行之後它自己一整行，30em 收住行長。 */
+      flex: 1 1 300px;
+      max-inline-size: 30em;
+      /* 這一欄自己也是容器：左內距要跟著**它自己的寬**走（見下），而容器查不到
+         自己，所以查詢的主體是它的子代。 */
+      container-type: inline-size;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding-inline-start: 5rem;
       padding-block: 1rem;
-      inline-size: min(100%, 30em);
-      block-size: 100%;
 
       /* 這一塊只有一條文字左緣，開關自己吊在緣外——懸掛的排法，正好是本
          站在講的事。緣的位置＝軌寬＋軌與標籤的間距；兩個值都由這裡發出
@@ -186,6 +194,22 @@
       }
     }
 
+    /* 左內距掛在**子代**上，不在這一欄自己身上：它要跟著這一欄的寬走，寬裕時
+       5rem（讓開背景樣張的懸掛區、也讓這一欄不貼著卡片），窄時收到 1rem，
+       不然三百像素的欄再切掉五分之一就只剩十來個字（owner 2026-08-28）。
+       容器查不到自己，所以查詢寫在這裡、主體是子代。 */
+    > * {
+      padding-inline-start: 1rem;
+    }
+
+    @container (inline-size >= 24rem) {
+      > * { padding-inline-start: 3rem; }
+    }
+
+    @container (inline-size >= 28rem) {
+      > * { padding-inline-start: 5rem; }
+    }
+
     /* MOE 注。直接子代：`.Toggle` 裡也有一個 small（開關的提示行），
        那個歸開關管。 */
     > small {
@@ -197,30 +221,6 @@
       font-size: 0.875rem;
       line-height: 1.5;
       color: var(--ui-supplement-text-3q);
-    }
-  }
-
-  /* 窄到右欄不足 300px 才疊回一欄，開關接回樣張下方。`main` 是 inline-size
-     容器（station-frame.css），量的是版心而非視窗。
-
-     **56rem 是算出來的**：版心 < 72rem 時兩側留白是 gutter 的 2rem，所以
-     右欄 ＝ 版心 − 2×2rem − 30rem（卡寬）− 3rem（欄間距）＝ 版心 − 37rem。
-     要它 ≥ 300px（18.75rem）⇒ 版心 ≥ 55.75rem，取 56rem（右欄 304px）。
-     原本寫 62rem，於是版心 880–960 之間右欄明明有 287–367px 也照樣疊回去
-     ——owner 2026-08-28 的截圖就是 920px 那一格。
-
-     **上限那條沒了**：原本上頭還有一條「寬到某個程度也疊回一欄」（版心 >
-     101.5rem），成因是欄間距跟著 `--plate-pad` 長、右欄一路變窄。現在欄間距
-     有上限（見上），右欄不會再窄下去，那條查詢也就沒有存在的理由。 */
-  @container (inline-size < 56rem) {
-    & {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    > aside {
-      grid-column: 1;
-      justify-self: start;
-      inline-size: min(100%, 28em);
-      margin-block-start: 0;
     }
   }
 
@@ -258,7 +258,7 @@
       /* 樣張自己的行高。呼吸的波長要按這個算——::before 不是 <p> 的子孫，
          `lh` 在它身上取到的是繼承來的正文行高（1.75），拿來當「幾行」會
          多算三成。 */
-      --_wm-lh: .75;
+      --_wm-lh: 1;
 
       /* 滿版文字。比裝飾用的 --ui-wm（4 %）再實一點：那個是純紋理，
          這裡的字得看得出「行」，行末才有話可說。 */
@@ -295,7 +295,7 @@
 
       position: absolute;
       z-index: 0;
-      inset-block-start: -1.4em;
+      inset-block-start: -1.125em;
       /* 橫向：**前景要落在背景的正中央**。這一柱的左半邊長在站台外、由站台的
          `overflow: clip` 收掉，所以讀者看到的是「站台左緣 → 版口線」這一段；
          要它以樣張卡為中心，版口線就得落在卡的中線鏡射到另一側的位置，也就是
