@@ -354,11 +354,16 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       if (used >= total) return
       const w = used * c + (used - 1) * gap
       $preview.style.setProperty('--pg-galley-w', `${w}px`)
-      /* 紙跟著收：只把欄規收掉還不夠，右邊那片與欄同寬的白留著，讀起來仍是
-         「多了一欄」。收窄之後報眉、底線與版面名也一起退到內容的邊上。 */
+    /* 紙跟著收：只把欄規收掉還不夠，右邊那片與欄同寬的白留著，讀起來仍是
+       「多了一欄」。收窄之後報眉、底線與版面名也一起退到內容的邊上。
+
+       寬度要**進位**再加上內距與框線：`inline-size` 是邊框盒（本頁 border-box），
+       而欄寬解出來是小數（569.33），照原值收會讓內容比可視區寬一個像素——紙就
+       長出一條莫名其妙的水平捲軸（實測溢出 1px，owner 2026-08-27）。 */
       const ps = getComputedStyle($paper)
       const pads = Number.parseFloat(ps.paddingInlineStart) + Number.parseFloat(ps.paddingInlineEnd)
-      $paper.style.setProperty('--pg-paper-w', `${Math.ceil(w + pads)}px`)
+      const edges = Number.parseFloat(ps.borderInlineStartWidth) + Number.parseFloat(ps.borderInlineEndWidth)
+      $paper.style.setProperty('--pg-paper-w', `${Math.ceil(w) + pads + edges}px`)
     }
 
     // Start from the honest default: the track, columns filling it whole.
