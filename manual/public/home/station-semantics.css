@@ -446,6 +446,10 @@ figure.Papers {
        `--reader-col` 用 `em`：欄寬是「十八個字」，字一大欄就跟著寬，整張紙於是
        等比長大。 */
     .ReaderBody {
+      /* 正文明體——非 retina 螢幕自動換黑體：`--han-font-alternative` 就是那條
+         開關（home/root.css § 非 retina），全站的小字襯線都跟著同一個判準走，
+         這一版沒有理由自成一格。 */
+      font-family: var(--han-font-alternative);
       --reader-col: 18em;
       --reader-gap: 2em;
       --reader-cols: 3;
