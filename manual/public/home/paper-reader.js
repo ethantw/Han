@@ -67,20 +67,15 @@ const open = (key, vertical = false, size = SIZES[0]) => {
   toStart($dialog)
 }
 
-const step = ($dialog, by) => {
-  const at = EDITIONS.indexOf(keyOf($dialog))
-  if (at < 0) return
-  /* 行向跟著讀者走，不跟著文章走：直排讀到一半換一版，換來的還是直排。
-     每一版有自己的 `<dialog>`，所以這件事得交手，不會自己過去。 */
+/* 換版。工具條上四語各一顆，所以這裡只是「去那一版」——不再是上一版／下一版的
+   環（2026-08-28：箭頭換成四語導覽，讀者要哪一版就按哪一版，不必數幾下）。
+   行向與字級跟著讀者走：他把報紙轉直、把字調大，換一版不該把這兩件事忘掉。 */
+const goTo = ($dialog, key) => {
+  if (!EDITIONS.includes(key) || key === keyOf($dialog)) return
   const vertical = $dialog.dataset.writing === 'vertical'
-  /* 字級同理：讀者調過的大小要跟著他走到下一版。 */
   const size = Number($dialog.dataset.size) || SIZES[0]
-  /* Wrap around: four editions in a ring is what the two arrows imply, and a
-     dead arrow on the last one would be the only place on this page where a
-     control is present but inert. */
-  const next = EDITIONS[(at + by + EDITIONS.length) % EDITIONS.length]
   $dialog.close()
-  open(next, vertical, size)
+  open(key, vertical, size)
 }
 
 /* 直排／橫排。狀態掛在 `<dialog>` 上而不是版心上：兩側的換版鈕與右上的控件
@@ -137,7 +132,8 @@ export const initPaperReader = () => {
     $dialog.addEventListener('click', (event) => {
       const $control = event.target.closest?.('[data-reader]')
       if ($control?.dataset.reader === 'writing') return flip($dialog)
-      if ($control) return step($dialog, $control.dataset.reader === 'next' ? 1 : -1)
+      if ($control?.dataset.reader === 'edition') return goTo($dialog, $control.dataset.edition)
+      if ($control) return
       /* 點在紙上就換一段字級。拖出來的選取不算——放開滑鼠時瀏覽器照樣送 click，
          若它也換一段，讀者反白到一半整張報紙就跳一次大小（同 lens.js 的作法）。 */
       if (event.target.closest?.('.ReaderSheet')) {
