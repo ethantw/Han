@@ -190,14 +190,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   if ($dateline) {
     const { iso, text } = plus100EraLine()
     $dateline.dateTime = iso
-    /* 四紀年各佔一行（民國／夏曆／弘宙／西元）：那一疊正好把報眉撐出高度，刊名
-       再照著那個高度定字級（station-playground.css § .PaperHead）。用元素分行而
-       不是靠折行——折行的位置隨欄寬跑，這四行是四件事，不能由寬度決定斷在哪。
-       字串是本地產生的（plus100EraLine），沒有外來內容進 innerHTML。 */
-    $dateline.innerHTML = text
-      .split('・')
-      .map((era) => `<span>${era}</span>`)
-      .join('')
+    /* 四紀年一氣排下（民國在前），自己一行——報頭改成紐時式之後，日期回到刊名
+       底下那條線的正中，不再是左格那一疊（owner 2026-08-27）。 */
+    $dateline.textContent = text
   }
 
   /* ── the two content buffers ──
