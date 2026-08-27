@@ -76,7 +76,9 @@
       & {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
-        align-items: baseline;
+        /* 三件東西**貼著底線**站，不是對基線：日期是四行一疊、刊名是一個大字，
+           對基線會讓刊名掉到第一行的高度上，整條報眉歪一邊。 */
+        align-items: end;
         /* 三件東西**同一列**。只寫 grid-column 是不夠的：自動排版是稀疏的，
            刊名先佔了第一列第二格，之後的日期指名第一格時游標已經過去了，於是
            它掉到第二列——報眉就成了兩行（實測 1440 與 1100 都是）。 */
@@ -100,7 +102,7 @@
           grid-row: auto;
           grid-column: 1;
         }
-        .Dateline { justify-content: center; }
+        .Masthead { font-size: 1.5rem; }
         .Folio { display: none; }
       }
     }
@@ -109,6 +111,11 @@
       margin: 0;
       grid-row: 1;
       grid-column: 2;
+      /* 刊名的高度就是那疊紀年的高度：四行 × 0.6875rem × 1.35 ＝ 3.71rem，扣掉
+         漢字在 em 盒裡的留白（字面約佔 0.86），字級取 3rem 剛好把那片空間撐住。
+         窄站台疊回一欄時另給小一號（見下）。 */
+      font-size: 3rem;
+      line-height: 1;
       text-align: center;
       font-family: var(--han-font-alternative);
       font-weight: 700;
@@ -118,31 +125,38 @@
          的寬同一個來源），兩端封住：窄站台不讓它壓過內文，寬站台不讓它變成招牌。
          用 `vw` 而不是 `cqi`：容器單位寫在 `font-size` 上量到的不是這張紙
          （實測 2.25cqi 收斂成下限 1rem，等於沒寫）。 */
-      font-size: clamp(1rem, calc((100vw - var(--w-console)) / 40), 1.75rem);
       letter-spacing: 0.25em;
       text-indent: 0.25em;
     }
 
-    /* 版面名（右）。與日期同級同色——報眉的兩端是同一種聲音，中間那個才是刊名。 */
+    /* 版面名（右）。與日期同級同色——報眉的兩端是同一種聲音，中間那個才是刊名。
+       貼著報眉底線，與那疊紀年的最後一行同一條線上（`align-items: end` 已經
+       這麼說，這裡寫明是因為它只有一行，飄在中間會很明顯）。 */
     .Folio {
       grid-row: 1;
       grid-column: 3;
       justify-self: end;
+      align-self: end;
       margin: 0;
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
+      line-height: 1.35;
       color: var(--ui-supplement-text);
     }
 
     .Dateline {
       & {
-        display: flex;
-        flex-wrap: wrap;
         grid-row: 1;
         grid-column: 1;
         margin: 0;
-        font-size: 0.75rem;
+        /* 比正文再小一號：報眉上它是註記，不是內容。 */
+        font-size: 0.6875rem;
+        line-height: 1.35;
         color: var(--ui-supplement-text);
       }
+
+      /* 四紀年各一行（playground.js 分的 span）。 */
+      time { display: block; }
+      span { display: block; }
 
 
     }

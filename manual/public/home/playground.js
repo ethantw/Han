@@ -190,13 +190,14 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
   if ($dateline) {
     const { iso, text } = plus100EraLine()
     $dateline.dateTime = iso
-    /* 報眉只登**首尾兩曆**（民國與西元）。四曆全登是站①那四版的排場，在這條
-       對開式報眉的左格裡要折成兩行，刊名於是與第一行對基線、整條報眉歪一邊
-       （owner 2026-08-27 的版）。中間兩曆是趣味，不是資訊。 */
-    const eras = text.split('・')
-    $dateline.textContent = eras.length > 2
-      ? `${eras[0]}・${eras[eras.length - 1]}`
-      : text
+    /* 四紀年各佔一行（民國／夏曆／弘宙／西元）：那一疊正好把報眉撐出高度，刊名
+       再照著那個高度定字級（station-playground.css § .PaperHead）。用元素分行而
+       不是靠折行——折行的位置隨欄寬跑，這四行是四件事，不能由寬度決定斷在哪。
+       字串是本地產生的（plus100EraLine），沒有外來內容進 innerHTML。 */
+    $dateline.innerHTML = text
+      .split('・')
+      .map((era) => `<span>${era}</span>`)
+      .join('')
   }
 
   /* ── the two content buffers ──
