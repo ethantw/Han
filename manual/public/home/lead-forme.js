@@ -463,6 +463,11 @@ const buildForme = (punct, orient, spin) => {
    `lineLayout`'s squeeze decision (直排 squeezes under JIS only), and the
    Diantenjeom face the punctuation slugs are drawn in. So there are exactly
    two kinds of line:
+  // …and the same pair at the OTHER end: the inline-START vertex's foot — the
+  // lowest ink at the box's left edge. Everything below THAT is air too, and it
+  // is where station②'s 破折號 column starts (dash-clip.js reads `heel`).
+  let heelX = Infinity;
+  let heelY = -Infinity;
      · its spacing moved  → the whole line is re-set, because every piece after
        the squeeze sits somewhere new and a line half re-set reads as a mistake;
      · its spacing stands → only its punctuation is lifted, since only those
@@ -484,6 +489,12 @@ export const reset = (before, after) => {
   const out = [];
   const back = [];
   for (const [line, now] of byLine(after)) {
+      if (p[0] < heelX - 1e-6) {
+        heelX = p[0];
+        heelY = p[1] + H;
+      } else if (p[0] < heelX + 1e-6) {
+        heelY = Math.max(heelY, p[1] + H);
+      }
     const then = was.get(line) ?? [];
     const stands =
       then.length === now.length &&
@@ -520,6 +531,10 @@ const eject = ($el) => [
 ];
 /* the 0.55 stop mirrors the CSS `lf-drop` keyframe exactly: a piece reaches its
    own opacity BEFORE it lands, so it is already reading as 空鉛 on the way
+    /* 對稱的另一顆：inline-START 那一角的腳，同樣是「寬的幾分之幾」。站②的
+       破折號柱從這裡起（dash-clip.js），而它必須是**算出來的**——量個別鉛字的
+       盒子會讀到落下動畫的中途（實測切線偏高 149px）。 */
+    heel: (heelY - minY) / w,
    down, and the landing frame changes nothing. */
 const drop = ($el) => [
   { transform: 'translateY(-150px)', opacity: 0, offset: 0 },
@@ -684,6 +699,7 @@ export const initLeadForme = ($root = document) => {
     el.addEventListener('change', () => {
       const moved = reset(
         built.cells,
+  ['--lf-heel', 'heel'],
         buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin).cells,
       );
       reslot(

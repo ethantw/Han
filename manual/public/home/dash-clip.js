@@ -35,17 +35,20 @@ export const initDashClip = ($root = document) => {
   const $forme = $root.querySelector('#station-fonts .LeadForme svg')
   if (!$col || !$forme) return
 
-  /* 切線落在鉛字盤**左下角那顆鉛字**的下緣。不是整張盤的下緣：盤是等軸投影，
-     最低點在正中那一顆，左下角那顆的底比它高一截，而讀者看到的「盤的左下角」
-     正是這一顆。挑法是量出來的，不是寫死的索引——鉛字的顆數與排法會隨語言、
-     字面、直橫排而變（lead-forme.js 每次重建整盤）：取最靠左那一欄（容差 40px，
-     等軸投影下同一欄的鉛字 x 有幾像素差），再取其中最低的一顆。 */
-  const bottomLeftSlug = () => {
-    const slugs = [...$forme.querySelectorAll('.Slug')]
-    if (!slugs.length) return null
-    const boxes = slugs.map(($s) => $s.getBoundingClientRect())
-    const minX = Math.min(...boxes.map((b) => b.x))
-    return Math.max(...boxes.filter((b) => b.x < minX + 40).map((b) => b.bottom))
+  /* 切線落在鉛字盤 **inline-start 那一角的腳**上——版框左下那個角。
+     它是**算出來的**，不是挑出來的：lead-forme.js 在排版時就知道那個角在哪，
+     把它發成寬的幾分之幾（`--lf-heel`，同 `--lf-apex`／`--lf-foot` 那一套，
+     § buildForme），這裡照著乘回去就是。
+
+     為什麼不去量鉛字：鉛字是 transform 落下的，量個別鉛字會讀到落下動畫的中途
+     ——實測「主控台收著開機、再捲到這一站」時切線偏高 149px，柱就從盤的上方
+     露了出來（owner 2026-08-28 的截圖）。SVG 的盒不動，這條算式因此在任何時刻
+     都成立。 */
+  const heelCut = () => {
+    const box = $forme.getBoundingClientRect()
+    const heel = Number.parseFloat(getComputedStyle($forme).getPropertyValue('--lf-heel'))
+    if (!box.width || !Number.isFinite(heel)) return null
+    return box.top + heel * box.width
   }
 
   /* Both ends move for their own reasons: the forme reflows with the viewport,
@@ -53,17 +56,27 @@ export const initDashClip = ($root = document) => {
      station covers the forme between them growing or shrinking as well. */
   const $station = $col.closest('[data-station]') ?? $forme
 
+  /* 柱的**橫向**也照算：左緣對齊版框的左緣（＝ SVG 盒的左緣），柱就站在左下那塊
+     空氣的最左邊。`.TwoEmDashes` 與 `.LeadForme` 都是站台的子元素，但 figure 自己
+     還有一圈 `--lf-air` 的內距，所以兩者的行首差幾個像素——量一次比猜一次準。 */
   const sync = settled({
     watch: $station,
     read: () => {
-      const cut = bottomLeftSlug()
-      return cut === null ? 0 : cut - $col.getBoundingClientRect().top
+      const cut = heelCut()
+      const col = $col.getBoundingClientRect()
+      return {
+        top: cut === null ? 0 : cut - col.top,
+        left: $forme.getBoundingClientRect().left - ($col.offsetParent?.getBoundingClientRect().left ?? col.left),
+      }
     },
     /* `clip-path` moves no layout box, so this write cannot feed the observer
        that scheduled it — but it does re-style the column (measured 10ms before
        the next rect read comes back clean), and the other loops on this page
        share the flush, so it belongs on the write side all the same. */
-    write: (cut) => $col.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(cut))}px`),
+    write: ({ top, left }) => {
+      $col.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
+      $col.style.setProperty('--df-col-left', `${Math.round(left)}px`)
+    },
   })
 
   const watch = new ResizeObserver(sync)
