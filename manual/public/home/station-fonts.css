@@ -375,10 +375,10 @@
    JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
 :where(.PunctLang) {
   & {
-    /* 上邊界是**破折號柱的容身之處**（dash-fuse.css § .TwoEmDashes）：那一對括號
-       的第二顆落在兩段文案與這四格之間，這段空氣少了它就沒有地方排
-       （owner 2026-08-28）。下邊界照舊。 */
-    margin-block: clamp(36rem, 72vw, 66rem) clamp(1.5rem, 4vw, 2.5rem);
+    /* 上邊界 0：第二顆破折號的下緣就切在這一格的上緣（`.TwoEmDashes` 自己撐到
+       那個高度，見 dash-fuse.css § .TwoEmDashes 的 `min-block-size`）。空氣由那
+       一格出，不由這裡出。 */
+    margin-block: 0 clamp(1.5rem, 4vw, 2.5rem);
   }
   ul {
     list-style: none;

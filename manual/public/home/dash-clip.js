@@ -78,6 +78,19 @@ export const initDashClip = ($root = document) => {
      1440), which is exactly the trigger this needs. */
   const $plate = $col.closest('main')
   if ($plate) watch.observe($plate)
+  /* 鉛字是 **transform** 落下的（lead-forme.css § lf-drop），而 ResizeObserver
+     看不到 transform：先收起主控台、再捲到這一站，量到的就是半空中的鉛字——切線
+     偏高 149px，柱從鉛字上方露了出來（owner 2026-08-28 的截圖）。三個補算的時機
+     一起掛上，`settled` 會把它們併成一次：鉛字落地（動畫結束，每顆各自送）、
+     讀者停手（`scrollend`，Baseline 2024——落下正是捲到它時才開始的），以及停手
+     之後一秒（整盤四十幾顆，最後一顆落得比 `scrollend` 晚）。 */
+  $forme.addEventListener('animationend', sync)
+  $forme.addEventListener('transitionend', sync)
+  addEventListener('scrollend', () => {
+    sync()
+    setTimeout(sync, 1000)
+  }, { passive: true })
+
   /* 站台被 `content-visibility` 跳過時量到的是佔位尺寸，推回畫面要補算一次。 */
   onRendered($station, sync)
   sync()
