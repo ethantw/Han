@@ -3,27 +3,9 @@
 
 body:has(han-console) {
   & {
-    /* 主控台**此刻**佔掉的行首寬度——收起時是 0。半打規則要從主控台的寬導出
-       自己的量（見 § 為什麼是 --w-console），而它們分兩種：
-       **裝飾尺寸**（鉛字盤的框、破折號柱、站③的巨型底字）刻意讀常數
-       `--w-console` 凍住，開合不重排；**版面**（plate 的置中）必須讀這一顆，
-       否則收起時版心不會重新置中——實測 1440px 下 section 從 1159 長到 1439，
-       而內距還停在 36，讀行寬度從 68rem 撐到 1367px，所有取消 plate-pad 的
-       滿版元素也跟著算錯。 */
-    --console-gutter: var(--w-console);
-
-    /* **不給過場。** 這是版面屬性：滑一次 250ms 的 padding，等於整份文件重排
-       二十幾次，而這一頁重排很貴（站③那根破折號柱單獨一次就 86ms）。實測一次
-       收合：25 次 Layout／173ms、最長一幀 117ms；拿掉過場之後 5 次／10ms、最長
-       一幀 18ms、零掉幀（2026-08-27 trace）。
-       用 `translate` 滑再補上 padding（FLIP）也不行：版心是真的變寬，裡面每一
-       段都要重新斷行，位移動畫給不出那個結果。收合本來就是版面切換，不是動效。
-       順帶撤掉 `will-change: padding-inline-start`——版面屬性上不了合成執行緒，
-       那條提示從來沒有作用。 */
-    padding-inline-start: var(--console-gutter);
-  }
-  &:has(.ConsoleToggle input:checked) {
-    --console-gutter: 0px;
+    /* 桌面版心的 measure 永遠按「console 在場」計算。開合只換位置、不換
+       寬度，正文因此不重新斷行；header／main 共用半欄位移。 */
+    --main-console-shift: calc(var(--w-console) / 2);
   }
   han-console {
     & {
@@ -48,6 +30,60 @@ body:has(han-console) {
   }
   &:has(.ConsoleToggle input:checked) han-console {
     translate: -100% 0;
+  }
+
+  @media (min-width: 52rem) {
+    /* The side console is the topmost left-hand surface. It covers the
+       viewport-wide header beneath it; the translated toggle remains just
+       outside the console edge, so the close path stays reachable. */
+    han-console {
+      z-index: 110;
+      border-inline-end: 1px solid var(--ui-rule);
+    }
+
+    > main {
+      translate: var(--main-console-shift) 0;
+    }
+
+    > header {
+      inline-size: 100vw;
+      margin-inline: 0;
+
+      /* Header 不換 measure，也不整條移動：右半的 nav 永遠釘在 viewport
+         inline-end；左半兩件 chrome 在 console 開著時讓出整欄。Logo 自己已有
+         optical `translate`，所以這一層用 transform 與它相乘，不覆蓋。 */
+      > .ConsoleToggle,
+      > .Logo {
+        transform: translateX(var(--w-console));
+      }
+    }
+
+    > main {
+      inline-size: min(var(--max-w-layout), calc(100vw - var(--w-console)));
+      margin-inline: auto;
+    }
+
+    &:has(.ConsoleToggle input:checked) > main {
+      translate: 0 0;
+    }
+
+    &:has(.ConsoleToggle input:checked) > header {
+      > .ConsoleToggle,
+      > .Logo {
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      > main {
+        transition: translate .28s cubic-bezier(.4, 0, .2, 1);
+      }
+
+      > header > .ConsoleToggle,
+      > header > .Logo {
+        transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+      }
+    }
   }
   /* 收合開關 — header 裡的一顆一般控件，不是浮在交界上的藥丸。
      為什麼在 header：見 _home.html 該處的註（一句話：邊界由主執行緒的
@@ -179,8 +215,6 @@ body:has(han-console) {
   :root { --w-console: 0px; }
 
   body:has(han-console) {
-    padding-inline-start: 0;
-
     han-console {
       position: static;
       inline-size: 100%;

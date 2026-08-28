@@ -101,7 +101,7 @@ han.css不替你接這條線，是因為`font-family`無法「在繼承來的堆
 | `--han-cite-title-marks` | `none`｜`bracket`｜`wavy` | `none` |
 | `--han-title-marks` | 書名號字符序列（open/close成對，可巢狀兩層） | `《》〈〉` |
 
-- `bracket`（乙式）：以`《》`包夾書名，透過`quotes`＋`::before`／`::after`的`open-quote`／`close-quote`實現；巢狀深度決定用外層`《》`或內層`〈〉`。日文與韓文（漢字混寫，`ko-Hant`）語境下，`--han-title-marks`自動改指向該語言的`--han-quotes`，即`「」`／`『』`，因為日韓以引號、非`《》`標書名。
+- `bracket`（乙式）：以`《》`包夾書名，透過`quotes`＋`::before`／`::after`的`open-quote`／`close-quote`實現；巢狀深度決定用外層`《》`或內層`〈〉`。日文與韓文（漢字混寫，`ko-Kore`）語境下，`--han-title-marks`自動改指向該語言的`--han-quotes`，即`「」`／`『』`，因為日韓以引號、非`《》`標書名。
 - `wavy`（甲式）：字下曲線專名號式（台灣教科書、古籍復刻本用法），抑制引號、改上波浪底線。此式僅限中文，非日韓慣例。
 - `none`：兩者皆不加。
 
@@ -123,11 +123,11 @@ article { --han-cite-title-marks: bracket; }
 |------|---------|
 | 預設／`en`／`zh-Hans`／`ko`（非漢字混寫） | `“ ”` |
 | `en-GB` | `‘ ’` |
-| `zh`／`ja`／`ko-Hant` | `「 」` |
+| `zh`／`ja`／`ko-Kore` | `「 」` |
 
 內層引號隨之配對（如中文`「」`內用`『』`）。任一語境都可用`--han-quotes`自訂覆寫。
 
-> `ko`與`ko-Hant`分屬兩途：純韓文（`ko`）不混漢字、走西式引號；漢字混寫的韓文（`ko-Hant`）連書名號都跟日文一樣用`「」`／`『』`。這是引號系統本就畫下的分界。
+> `ko`與`ko-Kore`分屬兩途：純韓文（`ko`）不混漢字、走西式引號；漢字混寫的韓文（`ko-Kore`）連書名號都跟日文一樣用`「」`／`『』`。這是引號系統本就畫下的分界。
 
 ## 區塊縮排——一條格線
 

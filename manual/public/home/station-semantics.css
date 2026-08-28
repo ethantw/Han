@@ -109,9 +109,9 @@ figure.Papers {
       /* 兩側破出站台的裝訂線，長帶收在網頁邊界；內距把裝訂線補回捲動範圍
          **內側**，所以靜止時第一版仍與正文對齊。`scroll-padding` 是第三件
          事，少了它 snap 會讓每一版貼著視窗、與正文差一個裝訂線。 */
-      margin-inline: calc(-1 * var(--plate-pad));
-      padding-inline: var(--plate-pad);
-      scroll-padding-inline-start: var(--plate-pad);
+      margin-inline: calc(-1 * var(--rail-pad));
+      padding-inline: var(--rail-pad);
+      scroll-padding-inline-start: var(--rail-pad);
 
       /* 捲軸不畫：長帶的「還有更多」是靠半版被切斷說的，一條橫槓只是把同一
          句話再說一次。捲動本身沒被拿掉——觸控板、滾輪、觸控、鍵盤都照常。 */
@@ -269,7 +269,7 @@ figure.Papers {
      * unmarked, the way a paper's domestic edition carries no flag */
     &[lang="zh-Hans"] > header:not(.PaperHead) > .Dateline::after { content: "简"; }
     &[lang="ja"] > header:not(.PaperHead) > .Dateline::after      { content: "日"; }
-    /* prefix match — the hanja-mixed pane is lang="ko-Hant" */
+    /* prefix match — the hanja-mixed pane is lang="ko-Kore" */
     &[lang^="ko"] > header:not(.PaperHead) > .Dateline::after     { content: "한"; }
 
     h3 {

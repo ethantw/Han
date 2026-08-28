@@ -109,7 +109,7 @@ Work through these only on request; otherwise apply the listed default:
 han.css keys everything off `:lang()`. Before any install:
 
 - Root element must carry the right tag: `zh-Hant` / `zh-Hans` / `ja` /
-  `ko` (Hanja-mixed Korean: `ko-Hant`). `lang="en"` or missing on a CJK
+  `ko` (Hanja-mixed Korean: `ko-Kore`). `lang="en"` or missing on a CJK
   site = han.css silently inert. **Fix it and tell the user why.**
 - Multilingual pages: tag inline foreign runs (`<span lang="ja">`).
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;

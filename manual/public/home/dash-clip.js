@@ -1,22 +1,11 @@
 /**
- * dash-clip.js — publishes where station②'s 破折號 column gets cut off.
+ * dash-clip.js — publishes station②'s 破折號 column and copy anchors.
  *
- * The column (`.DashColumn`, dash-fuse.css) is 52 cells of ~82px type and runs
- * far above the page's top edge; only the station's own `overflow: clip` stops
- * it, and that cuts at the station's top — so the topmost characters crawl over
- * the specimen card and the whole lead-type forme. The cut belongs at the
- * forme's BOTTOM-LEFT slug (owner 2026-08-28: 「從鉛字盤左下角的三角形開始」),
- * and the distance from there down to the column's top is decided by content,
- * so CSS cannot express it.
- *
- * Anchor positioning looks like it should retire this module and doesn't: for a
- * clip to bite, the clipping box has to be the column's containing block, while
- * `anchor()` only accepts anchors that are DESCENDANTS of that containing block
- * — mutually exclusive here, and nothing to do with support
- * (docs/notes/2026-08-26-anchor-positioning-vs-clipping.md).
- *
- * One number, republished when the geometry settles; with no JS the registered
- * initial value of 0 means「don't clip」, which is how the page looked before.
+ * The column is deliberately not clipped: it paints below the lead forme, so
+ * the type itself hides the opening glyph. This module only measures anchors
+ * that CSS cannot relate across the forme, the vertical sentence and sticky
+ * copy: the column's left edge, the first dash, 交換 and 體量. The same
+ * anchors drive the DTJ specimen sequence without reading layout on scroll.
  *
  * It goes through `measure.js` rather than measuring in the observer callback,
  * and that is not a nicety: reading a rect straight from a `ResizeObserver`
@@ -29,26 +18,75 @@
 
 import { onRendered, settled } from './measure.js'
 
-/** Cut station②'s dash column off at the specimen card above it. */
+/** Align station②'s dash column and publish its sticky-copy timeline. */
 export const initDashClip = ($root = document) => {
   const $col = $root.querySelector('.DashColumn')
+  const $problem = $root.querySelector('.DashNote')
+  const $noteStage = $problem?.closest('.DashNoteStage')
+  const $noteEnd = $col?.querySelector('.DashNoteEnd')
+  const $copy = $root.querySelector('.TwoEmDashes')
+  const $specimenStage = $root.querySelector('[data-dash-specimens]')
+  const specimenCards = [...($specimenStage?.querySelectorAll('[data-specimen]') ?? [])]
+  const $punctLang = $root.querySelector('.PunctLang')
   const $forme = $root.querySelector('#station-fonts .LeadForme svg')
-  if (!$col || !$forme) return
+  const $page = $col?.closest('main')
+  if (!$col || !$problem || !$copy || !$forme) return
 
-  /* 切線落在鉛字盤 **inline-start 那一角的腳**上——版框左下那個角。
-     它是**算出來的**，不是挑出來的：lead-forme.js 在排版時就知道那個角在哪，
-     把它發成寬的幾分之幾（`--lf-heel`，同 `--lf-apex`／`--lf-foot` 那一套，
-     § buildForme），這裡照著乘回去就是。
+  let specimenStart = 0
+  let specimenEnd = 0
+  let specimenFrame = 0
+  let specimenOffsets = []
 
-     為什麼不去量鉛字：鉛字是 transform 落下的，量個別鉛字會讀到落下動畫的中途
-     ——實測「主控台收著開機、再捲到這一站」時切線偏高 149px，柱就從盤的上方
-     露了出來（owner 2026-08-28 的截圖）。SVG 的盒不動，這條算式因此在任何時刻
-     都成立。 */
-  const heelCut = () => {
-    const box = $forme.getBoundingClientRect()
-    const heel = Number.parseFloat(getComputedStyle($forme).getPropertyValue('--lf-heel'))
-    if (!box.width || !Number.isFinite(heel)) return null
-    return box.top + heel * box.width
+  const paintSpecimens = () => {
+    specimenFrame = 0
+    if (!$specimenStage || specimenEnd <= specimenStart) return
+
+    const progress = (scrollY - specimenStart) / (specimenEnd - specimenStart)
+    /* The measured timeline owns both edges. Keeping the final card alive past
+       its endpoint made the flow linger over the following punctuation rail. */
+    const active = progress >= -.002 && progress <= 1.002
+    if (active) $specimenStage.dataset.active = ''
+    else delete $specimenStage.dataset.active
+
+    const clamped = Math.max(0, Math.min(1, progress))
+    const cardProgress = clamped * Math.max(0, specimenCards.length - 1)
+    const before = Math.floor(cardProgress)
+    const after = Math.min(before + 1, specimenCards.length - 1)
+    const fraction = cardProgress - before
+    const offset = specimenOffsets[before]
+      + (specimenOffsets[after] - specimenOffsets[before]) * fraction
+    const center = Math.round(cardProgress)
+    $specimenStage.style.setProperty('--dtj-progress', String(clamped))
+    if (Number.isFinite(offset)) {
+      $specimenStage.style.setProperty('--dtj-offset', `${offset}px`)
+    }
+    specimenCards.forEach(($card, index) => {
+      if (active && index === center) $card.dataset.center = ''
+      else delete $card.dataset.center
+    })
+  }
+
+  const queueSpecimenPaint = () => {
+    if (!$specimenStage || specimenFrame) return
+    specimenFrame = requestAnimationFrame(paintSpecimens)
+  }
+
+  const measureSpecimenTimeline = () => {
+    if (!$specimenStage || !$noteStage || !$punctLang) return
+    const note = $noteStage.getBoundingClientRect()
+    const punctuation = $punctLang.getBoundingClientRect()
+    const coverBlockSize = Math.max(0, ...specimenCards.map(($card) => $card.offsetHeight))
+    /* Start exactly when the copy reaches its CSS sticky inset (30vh).
+       Finish one rendered cover before the next rail reaches the viewport,
+       leaving a measured hand-off gap instead of an arbitrary scroll delay. */
+    specimenStart = scrollY + note.top - innerHeight * .3
+    specimenEnd = scrollY + punctuation.top - innerHeight - coverBlockSize
+    /* Cards 4–6 are deliberately double width.  Equal-width arithmetic would
+       centre their left half and progressively drift every later card.  Read
+       each rendered centre once per settled layout, then interpolate between
+       those real centres during scrolling (the scroll handler remains read-free). */
+    specimenOffsets = specimenCards.map(($card) => $card.offsetLeft + $card.offsetWidth / 2)
+    paintSpecimens()
   }
 
   /* Both ends move for their own reasons: the forme reflows with the viewport,
@@ -62,23 +100,39 @@ export const initDashClip = ($root = document) => {
   const sync = settled({
     watch: $station,
     read: () => {
-      const cut = heelCut()
       const col = $col.getBoundingClientRect()
+      const copy = $copy.getBoundingClientRect()
+      const page = $page?.getBoundingClientRect()
+      const forme = $forme.getBoundingClientRect()
+      const noteEnd = $noteEnd?.getBoundingClientRect()
+      const offsetLeft = $col.offsetParent?.getBoundingClientRect().left ?? col.left
+      const geometry = getComputedStyle($forme.closest('.LeadForme'))
       return {
-        top: cut === null ? 0 : cut - col.top,
-        left: $forme.getBoundingClientRect().left - ($col.offsetParent?.getBoundingClientRect().left ?? col.left),
+        formeLeft: forme.left - offsetLeft,
+        formeTop: forme.top - copy.top,
+        formeWidth: forme.width,
+        pageLeft: (page?.left ?? 0) - offsetLeft,
+        columnAnchor: Number.parseFloat(geometry.getPropertyValue('--lf-column-anchor')) || 0,
+        columnStart: Number.parseFloat(geometry.getPropertyValue('--lf-column-start')) || 0,
+        problemSize: $problem.getBoundingClientRect().height,
+        noteEnd: noteEnd ? noteEnd.top + noteEnd.height / 2 - copy.top : null,
       }
     },
-    /* `clip-path` moves no layout box, so this write cannot feed the observer
-       that scheduled it — but it does re-style the column (measured 10ms before
-       the next rect read comes back clean), and the other loops on this page
-       share the flush, so it belongs on the write side all the same. */
-    write: ({ top, left }) => {
-      $col.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
+    write: ({ formeLeft, formeTop, formeWidth, pageLeft, columnAnchor, columnStart, problemSize, noteEnd }) => {
       /* 橫向那個數寫在**包含塊**上，不寫在柱上：柱讀得到（自訂屬性會繼承），而
          那一格自己也要用它——文案的欄從柱的右緣起算（dash-fuse.css §
          .TwoEmDashes 的 `padding-inline-start`）。 */
-      ;($col.offsetParent ?? $col).style.setProperty('--df-col-left', `${Math.round(left)}px`)
+      const $owner = $col.offsetParent ?? $col
+      $owner.style.setProperty('--df-forme-left', `${formeLeft}px`)
+      $owner.style.setProperty('--df-forme-top', `${formeTop}px`)
+      $owner.style.setProperty('--df-forme-width', `${formeWidth}px`)
+      $owner.style.setProperty('--df-page-left', `${pageLeft}px`)
+      $owner.style.setProperty('--df-column-anchor', String(columnAnchor))
+      $owner.style.setProperty('--df-column-start', String(columnStart))
+      $copy.style.setProperty('--df-problem-size', `${Math.round(problemSize)}px`)
+      if (noteEnd != null) $copy.style.setProperty('--df-note-end', `${noteEnd}px`)
+      $copy.dataset.dashMeasured = ''
+      requestAnimationFrame(measureSpecimenTimeline)
     },
   })
 
@@ -88,15 +142,14 @@ export const initDashClip = ($root = document) => {
   /* …and the plate, because what actually moves is a POSITION, not a size.
      Collapsing the console re-centres the plate: the station's content box and
      the card both keep their 1087px, the station keeps its height — and yet
-     `.TwoEmDashes` (the column's containing block) slid 81px up the page, so the
-     cut was 81px stale with nothing in the observed boxes to say so. `main` is
+     `.TwoEmDashes` (the column's containing block) slid 81px up the page, so its
+     anchors were stale with nothing in the observed boxes to say so. `main` is
      the nearest box whose SIZE says "the page's geometry changed" (1160 →
      1440), which is exactly the trigger this needs. */
-  const $plate = $col.closest('main')
+  const $plate = $page
   if ($plate) watch.observe($plate)
   /* 鉛字是 **transform** 落下的（lead-forme.css § lf-drop），而 ResizeObserver
-     看不到 transform：先收起主控台、再捲到這一站，量到的就是半空中的鉛字——切線
-     偏高 149px，柱從鉛字上方露了出來（owner 2026-08-28 的截圖）。三個補算的時機
+     看不到 transform。三個補算的時機
      一起掛上，`settled` 會把它們併成一次：鉛字落地（動畫結束，每顆各自送）、
      讀者停手（`scrollend`，Baseline 2024——落下正是捲到它時才開始的），以及停手
      之後一秒（整盤四十幾顆，最後一顆落得比 `scrollend` 晚）。 */
@@ -106,6 +159,7 @@ export const initDashClip = ($root = document) => {
     sync()
     setTimeout(sync, 1000)
   }, { passive: true })
+  addEventListener('scroll', queueSpecimenPaint, { passive: true })
 
   /* 站台被 `content-visibility` 跳過時量到的是佔位尺寸，推回畫面要補算一次。 */
   onRendered($station, sync)

@@ -79,23 +79,32 @@
      article.innerHTML. The <textarea> ships the default sample; the module
      restores localStorage over it on boot (console Reset never touches it — it
      is content, not config). -->
-<section id="station-playground" class="Station Playground" data-station="playground" data-wm="樂">
+<section id="station-playground" class="Station Playground" data-station="playground">
   <hgroup>
     <p>{{ pgStationEyebrow }}</p>
     <h2>{{ pgStationH2 }}</h2>
     <p>{{ pgStationLede }}</p>
-    <!-- One control strip for the station: which text is being typeset on
-         the left, the focus switch on the right. -->
+  </hgroup>
+
+  <!-- One control strip for the station: content choice at the left, rail
+       navigation at the right, both kept inside the normal page measure. -->
+  <div class="PgRailControls">
     <div class="PgControls">
       <fieldset class="ViewTabs" data-pg-content-tabs>
         <legend class="sr-only">{{ pgContentLegend }}</legend>
         <label><input type="radio" name="pg-content" value="story" checked>{{ pgContentStory }}</label>
         <label><input type="radio" name="pg-content" value="custom">{{ pgContentCustom }}</label>
       </fieldset>
-
     </div>
-  </hgroup>
-
+    <nav class="PgNav PgNav--top" data-strip-nav="playground" aria-label="工作區平移（上方）">
+      <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+      <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
   <div class="Preview Playground" data-playground>
     <header>
     </header>

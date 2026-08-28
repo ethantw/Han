@@ -65,6 +65,8 @@ const watch = async (page: Page, ms: number) => {
 
 test('punctuation moves as one forme, not piece by piece', async ({ page }) => {
   await ready(page)
+  // KLR → MOE: no 直排 squeeze either side, so the swap is font-only — the
+  // cleanest stage for the one-motion assertion.
   await page.locator('.LeadForme .Controls label', { hasText: 'MOE' }).click()
   const { spread } = await watch(page, 1400)
   await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'moe')
@@ -74,9 +76,10 @@ test('punctuation moves as one forme, not piece by piece', async ({ page }) => {
 
 test('直排: the re-spaced line goes back whole, its neighbours keep their type', async ({ page }) => {
   await ready(page)
-  // 直排 squeezes under JIS only, so JIS → MOE re-lays line 1 (the ：「 pair
-  // loses its squeeze and everything after it shifts) and nothing else.
-  await page.locator('.LeadForme .Controls label', { hasText: 'MOE' }).click()
+  // 直排 squeezes the hant ：「 under JIS only, so KLR (the hant home
+  // default) → JIS re-lays line 1 (the pair gains its squeeze and everything
+  // after it shifts) and nothing else.
+  await page.locator('.LeadForme .Controls label', { hasText: 'JIS' }).click()
   const { moved } = await watch(page, 1400)
 
   // line 1 entire — plain type, not just the marks that were re-cut
@@ -98,6 +101,23 @@ test('橫排: nothing is re-spaced, so only the punctuation is lifted', async ({
   // way — the swap is font-only and must touch nothing but the marks.
   expect(moved.size).toBeGreaterThan(0)
   for (const glyph of moved) expect(PUNCT.has(glyph)).toBe(true)
+})
+
+test('the language pill re-sets the sentence and brings its home convention', async ({ page }) => {
+  await ready(page)
+  await page.locator('.LeadForme .Controls label', { hasText: '日' }).click()
+  await page.waitForTimeout(5000)   // full re-set, one piece at a time
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-lang', 'ja')
+  // punct follows the picked language's home convention (hant KLR → ja JIS)
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'jis')
+  const glyphs = await page.locator('.LeadForme').evaluate(($f) =>
+    [...$f.querySelectorAll('text.g')].map((el) => el.textContent).join(''))
+  expect(glyphs).toContain('叱')
+  expect(glyphs).not.toContain('臉')
+  // the reader's own punct override survives until the next language pick
+  await page.locator('.LeadForme .Controls label', { hasText: '繁' }).click()
+  await page.waitForTimeout(5000)
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'klr')
 })
 
 test('direction is the one switch that sets one piece at a time', async ({ page }) => {

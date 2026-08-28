@@ -109,7 +109,21 @@ const collect = async (url) => {
   })
   await page.waitForTimeout(1500)
 
-  const result = await page.evaluate(({ FAMILIES, wantedSrc }) => {
+  /* 鉛字盤的字面在**字體軸**上有三種狀態，而頁面只載入其中一種。那一軸不像
+     語言軸——各語言首頁預設自己的鉛字，逐 locale 跑就覆蓋得到——它預設永遠是
+     明體，於是黑體與楷體的字面無論重收幾次都收不到，補進字表也會在下次重收時
+     消失。所以這裡把那一軸走完。
+     撥 `data-face` 而不是點藥丸：字族串只看這顆屬性，改完立刻生效，不必等
+     換版的動畫；`text.g` 的內容本來就不隨字體變。
+     韓文跳過楷體：那一格沒有楷體層（藥丸在 ko 下是藏著的），強收只會把諺文
+     塞進一份用不到的子集。 */
+  const faces = await page.evaluate(() => {
+    const $f = document.querySelector('.LeadForme')
+    if (!$f) return []
+    return $f.dataset.lang === 'ko' ? ['h'] : ['h', 'k']
+  })
+
+  const readBags = () => page.evaluate(({ FAMILIES, wantedSrc }) => {
     const wanted = new Function('cp', `return (${wantedSrc})(cp)`)
     const bags = {}
     for (const id of Object.values(FAMILIES)) bags[id] = { all: new Set(), pgOnly: new Set() }
@@ -156,6 +170,17 @@ const collect = async (url) => {
     }
     return out
   }, { FAMILIES, wantedSrc: wanted.toString() })
+
+  const result = await readBags()
+  for (const face of faces) {
+    await page.evaluate((f) => { document.querySelector('.LeadForme').dataset.face = f }, face)
+    await page.waitForTimeout(300)
+    const more = await readBags()
+    for (const [id, bag] of Object.entries(more)) {
+      const merged = new Set([...result[id].chars, ...bag.chars])
+      result[id].chars = [...merged].sort((a, c) => a.codePointAt(0) - c.codePointAt(0)).join('')
+    }
+  }
 
   await browser.close()
   return result

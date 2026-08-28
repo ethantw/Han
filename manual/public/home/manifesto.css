@@ -57,6 +57,14 @@
     line-height: 1.85;
   }
 
+  .WritingModes {
+    margin: 0 0 0.375rem;
+    max-inline-size: 38em;
+    font-family: var(--han-font-alternative);
+    font-size: 1rem;
+    color: var(--ui-accent);
+  }
+
   .dogfood {
     margin: 0 0 2.25rem;
     max-inline-size: 38em;
@@ -82,10 +90,9 @@
     }
   }
 
-  /* The 漢 watermark: inline SVG stroke paths (generated into
-     manifesto.html by scripts/stroke-animation/), sized like the text
-     watermark it replaced — font-size became inline-size, em-insets
-     became size-derived. */
+  /* The 漢 outline is built at DCL from the canonical BrandGlyph paths by
+     fonts-gate.js. Keeping this host empty lets construction and animation
+     start together without a paint-vs-JS race. */
   .Outline {
     & {
       --size: clamp(14rem, 90vh, 72rem);
@@ -106,13 +113,6 @@
       overflow: visible;
     }
 
-    /* Stroke width is in USER UNITS, deliberately NOT
-       `vector-effect: non-scaling-stroke`: that forces per-frame
-       screen-space re-tessellation and janks the dash-draw below
-       (measured ~73fps vs 120fps on a 120Hz display). Below the clamp
-       ceiling the hairline thins slightly — a 12%-alpha watermark
-       absorbs that. Fully drawn is the BASE state; the draw-in is gated
-       on no-preference. (color-mix — Baseline 2023.) */
     .Stroke {
       fill: none;
       stroke: color-mix(in srgb, var(--ui-text) 12%, transparent);
@@ -133,19 +133,19 @@
   @media (prefers-reduced-motion: no-preference) {
     h1,
     h1 + p,
+    .WritingModes,
     .dogfood,
     .InstallChip {
       animation: manifesto-rise .6s ease-out 1s both;
     }
     h1           { animation-delay: 0.08s; }
     h1 + p       { animation-delay: 0.16s; }
-    .dogfood     { animation-delay: 0.24s; }
-    .InstallChip { animation-delay: 0.32s; }
+    .WritingModes { animation-delay: 0.24s; }
+    .dogfood     { animation-delay: 0.32s; }
+    .InstallChip { animation-delay: 0.40s; }
 
-    /* The watermark writes itself in stroke by stroke, in real stroke
-       order (`--i` is stamped per path by the generator). The 0.7s head
-       start clears the load-time congestion — the copy entrance plus webfont
-       arrival — so the first strokes don't compete with it. */
+    /* no-JS fallback; fonts-gate.js overrides this with measured per-stroke
+       timing whenever it builds the loading ceremony. */
     .Outline .Stroke {
       stroke-dasharray: 1;
       animation: wm-draw 0.7s ease-in-out calc(0.7s + var(--i) * 0.28s) both;

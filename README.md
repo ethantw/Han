@@ -42,9 +42,9 @@ Three things, and you know the library.
 
 | Module | Cascade layer | What it does |
 |--------|---------------|--------------|
-| **Semantics** | `han-semantics` | How semantic elements should look under Han typography — emphasis dots, title marks, proper-noun marks, ruby; and no fake italics |
+| **Semantics** | `han-semantics` | How semantic elements should look under Han typography — emphasis dots, title marks, proper-noun marks, ruby, the shared indent grid for quotes and lists (`--han-structural-indent`); and no fake italics |
 | **Lines** | `han-lines` | The measure within a line — punctuation compression, end-of-line hanging, inter-script spacing |
-| **Prose** | `han-prose` | Block-axis rhythm — spacing between headings, paragraphs and lists; indentation measured in characters |
+| **Prose** | `han-prose` | Block-axis rhythm — spacing between headings and the text they belong to; the cursive blockquote face |
 | **Fonts** | `han-fonts` | Font stacks and webfonts — heritage glyph forms, punctuation faces, cursive families |
 
 Each lives in its own cascade layer and can be used alone. Import the whole set

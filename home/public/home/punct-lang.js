@@ -14,7 +14,7 @@
  */
 
 // demo cell lang → console config key (config.punct.* / [data-cfg-key="punct.*"])
-const KEY = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', 'ko-Hant': 'ko' }
+const KEY = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', 'ko-Kore': 'ko' }
 
 export const initPunctLang = ($root = document) => {
   const $cells = [...$root.querySelectorAll('.PunctLang li[lang]')]

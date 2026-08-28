@@ -33,8 +33,17 @@ install.
   quotes and font stack.
 - Selector groups used internally: `:lang(zh)` (matches both scripts; used
   where Traditional is the umbrella), `:lang(zh-Hans)`, `:lang(ja)`,
-  `:lang(ko)`, and `:lang(ko-Hant)` for Hanja-mixed Korean (opts into CJK
+  `:lang(ko)`, and `:lang(ko-Kore)` for Hanja-mixed Korean (opts into CJK
   brackets/quotes; plain `ko` gets Western quotes).
+- **Write `ko-Kore`, not a Han-flavoured subtag,** for Hanja-mixed Korean.
+  `Kore` names the writing system as Korean, so system font fallback keeps
+  handing the Han characters to Korean faces; a subtag that names only the
+  script (`Hant`, `Hani`) leaves the engine to guess the locale from it, and
+  the Hanja arrive in some other CJK locale's font while the Hangul beside
+  them stays Korean — measured in
+  `docs/notes/2026-08-27-lang-subtag-font-fallback.md`. BCP 47 would let the
+  subtag be dropped (Korean suppresses `Kore`); han.css spells it out because
+  it is what opts the run in. Bare `ko` reads as modern, Hangul-only Korean.
 - Content in a language han.css doesn't target (`en`, …) is untouched — safe
   to install on multilingual sites.
 
@@ -104,15 +113,15 @@ no single master kill-switch. The JS side scopes naturally:
 ## 3. Bundles
 
 CSS (each also as `.min` with source map). Figures are min+gzip, measured
-2026-08-11 — the homepage's 工法站 ledger prints the same files brotli'd, from
+2026-08-12 — the homepage's 工法站 ledger prints the same files brotli'd, from
 the build, so treat that as the live number and this table as a snapshot:
 
 | File | Contents | min+gzip |
 |---|---|---|
 | `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.6 KB |
-| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.3 KB |
+| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.4 KB |
 | `han.lines.css` | Lines module (incl. JS-companion styles) | 1.1 KB |
-| `han.prose.css` | Prose module | 0.6 KB |
+| `han.prose.css` | Prose module | 0.4 KB |
 | `han.fonts.css` | Fonts module + font assets | 1.4 KB |
 | `han.basic.css` | Lean bundle: semantics + lines + prose, **CSS-only** — no fonts module, no JS-companion styles, no font assets | 1.7 KB |
 
@@ -197,15 +206,20 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 |---|---|---|---|
 | `--han-em-symbol` | any `text-emphasis` value (`circle \| dot \| sesame \| triangle` …) | `circle` | `<em>` emphasis marks (著重號) |
 | `--han-em-dot-position` | any `text-emphasis-position` value | `under right` (ja: `over right`) | `<em>` |
-| `--han-cite-title-marks` | `none \| bracket \| wavy` | `none` | `<cite>` title marks (書名號): `bracket` = 《》/〈〉 via quotes (ja/ko-Hant: 「」/『』); `wavy` = wavy underline (甲式, zh only) |
-| `--han-title-marks` | quote-char sequence | `《》〈〉` (ja/ko-Hant: re-pointed to `--han-quotes`) | `<cite>` bracket glyphs |
+| `--han-cite-title-marks` | `none \| bracket \| wavy` | `none` | `<cite>` title marks (書名號): `bracket` = 《》/〈〉 via quotes (ja/ko-Kore: 「」/『』); `wavy` = wavy underline (甲式, zh only) |
+| `--han-title-marks` | quote-char sequence | `《》〈〉` (ja/ko-Kore: re-pointed to `--han-quotes`) | `<cite>` bracket glyphs |
 | `--han-q-quotes` | `on \| off` | `on` | `<q>` quotation marks (引號): whether they are drawn at all. The switch half of the pair `--han-quotes` completes — glyphs there, on/off here. Prefer it over `q { quotes: none }`: only a queryable value keeps the hanging-punctuation pass in step (a mark ending a `<q>` stops hanging because a close bracket follows it) |
-| `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Hant: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
+| `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Kore: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
 | `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | **Library-wide writing-mode mirror** (see §1 prerequisite) — declare alongside every `writing-mode`, same value. Consumed by direction-dependent behavior (zhuyin, below); retires when arbitrary-property style queries ship |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
 | `--han-underline-offset` | `<length>` | `.125em` | all underlined elements |
 | `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines (native path, Firefox only today) |
 | `--han-adjacent-lines-skip-gap-fallback` | `<length>` | `.125em` | gap between adjacent underlined/struck elements on engines without `text-decoration-inset` |
+| `--han-structural-indent` | `<length>`, **one value** | `2em` | Shared start-edge grid for `<blockquote>`, `<figure>`, `<ol>`/`<ul>` and `.poem-like` (縮二字). Applied when the **parent** is CJK, not the element — a grid belongs to its container, so an `<ol lang="zh">` inside an English section keeps the UA's indent. Setting `0` keeps the rules and zeroes them; `--han-semantics: off` hands the UA's 40px back. Deliberately unregistered: a registered `<length>` absolutises where it is declared and the indent would stop scaling with font-size |
+| `--han-structural-indent-blockquote` | 1–2 `<length>` | falls back to the grid, symmetric | Per-element override. Its point is the language gate: an author's own `blockquote {…}` rule cannot inherit "only when the container is CJK" without restating it |
+| `--han-structural-indent-figure` | 1–2 `<length>` | falls back to the grid, symmetric | |
+| `--han-structural-indent-list` | 1–2 `<length>` | falls back to the grid, **start edge only** | `<ol>`/`<ul>`, via `padding-inline` |
+| `--han-structural-indent-poem` | 1–2 `<length>` | falls back to the grid, **start edge only** | `.poem-like` paragraphs |
 
 Non-configurable behaviors under `--han-semantics: on` (opt out only via the
 module toggle): pseudo-italic cancellation on all CJK text (`font-style:
@@ -217,6 +231,13 @@ bolder, `<i>`/`<var>` cursive family, zhuyin ruby font/orientation
 fallback elsewhere), document font-family (unconditional; declared at
 `:root`, `body`, and every `[lang]` boundary so per-locale stacks
 re-resolve at each language switch — see §4.4 role vars).
+
+Overriding a per-element knob with a *single* value indents both edges, even
+where the default indents only the start — that is what a one-value
+`margin-inline` / `padding-inline` means. Write `2em 0` to keep the
+start-only shape. The shared grid value takes one length only: each consumer
+splices it into its own shorthand, so a second length expands to `2em 0 0` at
+the start-only sites and silently drops those declarations.
 
 ### 4.4 Fonts
 
@@ -303,19 +324,20 @@ generic-only fallbacks for the composites and role vars on `:root`.
 
 | Property | Values | Default |
 |---|---|---|
-| `--han-prose-indent` | `<length>` | `2em` |
-| `--han-prose-alignment-for-article-p` | `text-align` value | `justify` |
 | `--han-prose-consecutive-headings-a-block-end` | `<length>` | `0` |
 | `--han-prose-consecutive-headings-b-block-start` | `<length>` | `0` |
 
 Applied inside any `--han-prose: on` container: consecutive-heading margin
-collapse, `<p>` justification, `<blockquote>`/`<figure>`/list indentation
-(logical properties — vertical-writing safe), `.poem-like` paragraph indent,
-blockquote cursive swap (gated by `--han-prose-fonts`).
+collapse, and the blockquote cursive swap (gated by `--han-prose-fonts`).
+Both are block-axis rhythm, and both are article-scoped on purpose.
 
-> Prose sets `text-align: justify` on `<p>`. If a `<pre>` inside prose is
-> switched to `pre-wrap`, give it `text-align: start` (justify stretches
-> inter-token gaps in wrapped code).
+Block indentation is **not** here — it is a semantics-module grid, gated by
+`--han-semantics` and applied wherever the container is CJK. See
+`--han-structural-indent` in §4.3.
+
+han.css sets no `text-align`. If you justify your own prose, give any
+`pre-wrap` `<pre>` inside it `text-align: start` — justify stretches
+inter-token gaps in wrapped code.
 
 ### 4.6 Internal — not API
 
@@ -509,7 +531,8 @@ the fix).
 | Emphasis marks `<em>` | ✔ | — | optional (`Diantenjeom Emphasis`) | `text-emphasis` (universal) |
 | Zhuyin ruby (`over` default / `inter-character` opt-in; tone-mark form auto via `salt`/`vert`) | ✔ | optional `transpileRuby` for `<rtc>`/tabular sources | bundled `zhuyin.serif.woff2` | inter-character mode: `ruby-position: inter-character` (Safari 18.2+; CSS fallback elsewhere); vertical needs the `--han-writing-mode` mirror |
 | Underline offset / adjacent-lines gap | ✔ | optional (`markAdjacentLines` refines) | — | `text-decoration-inset` (Firefox) |
-| Prose spacing/indent/justify | ✔ | — | — | — |
+| Prose block-axis rhythm (headings, blockquote font) | ✔ | — | — | — |
+| Structural indent grid (blockquote/figure/lists) | ✔ | — | — | — |
 | Inter-script spacing | ✔ (modern engines) | long-tail UAs + `replace`/`strict` modes + Safari seam bug | bundled em-space fonts (for JS path) | `text-autospace` (Chromium/WebKit/Gecko modern) |
 | Punctuation compress 擠壓 | ✔ (Chromium) | engines without `text-spacing-trim` | bundled em-space fonts (JS path) | `text-spacing-trim` |
 | Punctuation hanging 懸掛 | ✘ | **always JS** | bundled em-space fonts | none shipped (property exists in spec only) |
@@ -528,7 +551,9 @@ browsers; features degrade individually per the matrix.
   trim-start` on `:root` halves a full-width opening bracket that begins
   such a box. Fix per box: `text-spacing-trim: space-first`. Applies to any
   inline element you promote for transforms/decoration.
-- **`text-align: justify` + wrapped `<pre>`**: see §4.5 note.
+- **`text-align: justify` + wrapped `<pre>`**: han.css sets no alignment, but
+  if you justify prose yourself, wrapped code needs `text-align: start` —
+  see §4.5.
 - **Hanging + `::first-line`**: the hang layer is an atomic inline, and
   first-line styles don't inherit into atomic inline contents — so
   `::first-line` styling won't reach a hung mark. (`::selection`,

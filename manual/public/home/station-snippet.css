@@ -28,7 +28,7 @@
 
 .Snippet {
   & {
-    background: var(--ui-station-code);
+    --station-ground: var(--ui-station-code);
     /* 上緣的髮線交還給共用的 --ui-grid（main > section）——地色不再
        是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
        mist 髮線防「深色疊深色沒有邊」。 */

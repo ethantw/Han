@@ -102,13 +102,14 @@ JavaScript (though it sharpens the finer details).**
 - **Four independent CSS modules, one cascade layer each.**
   - `han-semantics` — semantic elements under Han typography: emphasis
     dots (`--han-em-symbol`, `--han-em-dot-position`), title marks on
-    `<cite>` (`--han-cite-title-marks`), proper-noun marks, ruby, and no
-    fake italics.
+    `<cite>` (`--han-cite-title-marks`), proper-noun marks, ruby, the
+    shared start-edge indent grid for blockquotes, figures and lists
+    (`--han-structural-indent`), and no fake italics.
   - `han-lines` — the measure within a line: punctuation compression and
     end-of-line hanging (`--han-punctuation-refinement`), inter-script
     spacing (`--han-text-autospace`).
-  - `han-prose` — block-axis rhythm: heading / paragraph / list spacing
-    and character-measured indentation (`--han-prose`, `--han-prose-indent`,
+  - `han-prose` — block-axis rhythm: spacing between a heading and the
+    text it belongs to, and the cursive blockquote face (`--han-prose`,
     scoped to `<article>` by default).
   - `han-fonts` — font stacks and webfonts: heritage glyph forms
     (`--han-use-heritage-glyphs-for-hant`), punctuation faces, cursive

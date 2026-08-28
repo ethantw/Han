@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四語鉛字盤——繁簡日韓同一塊版</title>
+
+<!--
+  首頁鉛字盤（station-fonts）的四語並排工作台。首頁的鉛字盤自己就有語言
+  藥丸（同一副版切換重排）；這頁的價值是**並排**——繁簡日韓四副同時在畫
+  面上，逐格對位、逐公約比較。句子與格律的單一來源在 /home/lead-forme.js
+  的 FORME_LANGS（figure 以 data-lang 點名），譯文照格律裁（六字頭保住「
+  的欄位），出處都是 taisol/hyperloop-12sec 那位暴怒通勤族。韓文版空格照
+  1948-09-01 官報（制憲憲法公布版，直排活字）的句組慣例，不是現代橫排的
+  逐文節標準——查證見該處註解。
+
+  這頁存在的理由是首頁擺不下的比較：
+    · 三語並排，watch 同一顆 slug（石田二字三版同位）換不同字體切片編號；
+    · `。「` 的擠壓表與 `：「` 不同（MOE 兩軸都不擠；JIS／GB／KLR 直橫都擠）
+      ——量測 2026-08-26，寫在 lead-forme.js § SQUEEZE；
+    · 韓文版刻意沒有楷體藥丸：KLReq 不給韓文楷體層，霞鶩文楷也無諺文。
+
+  SVG 與交互全部來自首頁的 /home/lead-forme.js（句子資料由本頁餵入）與
+  /home/lead-forme.css——那支 CSS 的首頁版面段全部鎖在 `main` 選擇器裡，
+  本頁不用 <main> 正是為了只取字體、入場、藥丸那半。
+
+  字體走 CDN 的完整 120 切片，不接本站的 /subset/ 子集：子集的字表收自
+  首頁實排的字（collect-chars.mjs），日韓句的假名、諺文、変叱怒都不在
+  裡面，接了就是一盤系統字。CDN 版本照 index.html 的寫法寫死。
+
+  這頁由 manual/vite.config.js 的 /demo/ middleware 端出（dev-only），
+  %VITE_% 版本由它替換；/home/lead-forme.js 與 .css 走 public/ 原樣檔，
+  瀏覽器原生 import。
+-->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css">
+<link rel="stylesheet" href="/common/variables.css">
+<link rel="stylesheet" href="/home/lead-forme.css">
+<script type="module" src="./lead-forme.js"></script>
+
+<style>
+  :root {
+    color-scheme: light dark;
+  }
+
+  :where(body) {
+    margin: 0;
+    padding-block: 3rem 8rem;
+    padding-inline: max(1.5rem, 50vw - 36rem);
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    /* 4-layer stack（ziano/docs/usage.md）：web-safe 西文先行、傳承字體接漢字、
+       日文系統字整包備援、generic 收尾。 */
+    font-family:
+      Georgia, 'Times New Roman',
+      'Shanggu Serif',
+      YuMincho, 'Hiragino Mincho ProN',
+      serif;
+    font-size: 1rem;
+    line-height: 1.9;
+    text-autospace: normal;
+  }
+
+  :where(h1) {
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+  }
+  :where(h2) {
+    margin-block: 0 .25rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ui-supplement-text);
+  }
+  :where(p.intro) {
+    max-inline-size: 44em;
+    color: var(--ui-supplement-text);
+  }
+
+  :where(section.Verse) {
+    margin-block-start: 4.5rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--ui-rule);
+  }
+  /* 句子本文——真文字，供選取比對；圖上那份是 aria-hidden 的裝飾鏡像 */
+  :where(.Verse > blockquote) {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  :where(.Verse .Note) {
+    font-size: .85rem;
+    color: var(--ui-supplement-text);
+    max-inline-size: 46em;
+  }
+
+  /* 首頁版面段（§ showpiece／pocket）被 main 選擇器擋在外面，這裡給
+     demo 自己的簡單擺位：圖滿欄、藥丸與圖說順流。 */
+  :where(.LeadForme) {
+    margin-block: 2rem 0;
+  }
+  :where(.LeadForme svg) {
+    max-inline-size: 640px;
+    margin-inline: auto;
+  }
+  :where(.LeadForme figcaption) {
+    max-inline-size: 46em;
+    margin-block-start: 1rem;
+    font-size: .85rem;
+    color: var(--ui-supplement-text);
+  }
+</style>
+</head>
+<body>
+
+<h1>四語鉛字盤</h1>
+<p class="intro">同一副4×10的版框，排繁、簡、日、韓四句話——內容都是《太陽中文報》超迴路報導裡那位暴怒通勤族。譯文照格律裁：首欄六字頭讓<b>「</b>落在倒數第二格（禁則），<b>石田</b>兩顆鉛字四版穿版同位。字體是尚古明體／黑體（簡體字、假名、諺文都下載自同一套TC 120切片——編號刻在鉛字側面，懸停即見）；標點是點填鉗四個地域公約，各版預設自己首頁的公約：繁<abbr class="acronym">KLR</abbr>、簡<abbr class="acronym">GB</abbr>、日<abbr class="acronym">JIS</abbr>、韓<abbr class="acronym">KLR</abbr>。</p>
+<p class="intro">擠壓的看點：中文的冒號連上引號（<b>：「</b>）直排只有JIS擠——繁簡兩版預設（KLR／GB）都不擠，各切到JIS立見；日文的句號連上引號（<b>。「</b>）在JIS／GB／KLR直橫都擠（。是角落標點，尾半空），MOE兩軸都不擠——同一塊版，換個公約，鉛條就重新下料。韓文版另有一課：空格的慣例。1948年9月1日官報公布制憲憲法，直排國漢混用活字，<b>不逐文節空、只在句組邊界下一顆整格空鉛</b>（前文「悠久한歷史와傳統에빛나는」四文節連排）；現代標準的逐文節空格是橫排的慣例。版框照官報排，上方瀏覽器排的引文照現代標準排——兩種空白並陳。</p>
+
+<section class="Verse" data-verse="zh" lang="zh-Hant">
+  <h2>中文——原文</h2>
+  <blockquote>石田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！」</blockquote>
+  <figure class="LeadForme" data-lang="hant" data-face="m" data-punct="klr" data-orient="v">
+    <svg role="img" aria-hidden="true"></svg>
+    <form class="Controls" aria-label="字體、標點與行向">
+      <fieldset aria-labelledby="zh-lg-face">
+        <span class="PillHead" id="zh-lg-face">字體</span>
+        <label><input type="radio" name="lf-face" value="m" checked /> 尚古明體</label>
+        <label><input type="radio" name="lf-face" value="h" /> 尚古黑體</label>
+        <label><input type="radio" name="lf-face" value="k" /> 霞鶩文楷<abbr class="acronym">TC</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="zh-lg-punct">
+        <span class="PillHead" id="zh-lg-punct">標點</span>
+        <label><input type="radio" name="lf-punct" value="jis" /><abbr class="acronym">JIS</abbr></label>
+        <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
+        <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
+        <label><input type="radio" name="lf-punct" value="klr" checked /><abbr class="acronym">KLR</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="zh-lg-orient">
+        <span class="PillHead" id="zh-lg-orient">行向</span>
+        <label><input type="radio" name="lf-orient" value="v" checked /> 直排</label>
+        <label><input type="radio" name="lf-orient" value="h" /> 橫排</label>
+      </fieldset>
+    </form>
+    <figcaption>與首頁同一塊版。預設<abbr class="acronym">KLR</abbr>——：正立居中（KLReq cl7把：；·歸為直排不旋轉的一類）、不擠壓；切到<abbr class="acronym">JIS</abbr>看直排的冒號連上引號（<b>：「</b>）相擠——「縮成半顆鉛字，省下的半字身化作字距小鉛塊填回版框。</figcaption>
+  </figure>
+</section>
+
+<section class="Verse" data-verse="hans" lang="zh-Hans">
+  <h2 lang="zh-Hant">簡中</h2>
+  <blockquote>石田脸色铁青：「我特地放弃瞬移舱改搭超回路，就是因为快十二秒！」</blockquote>
+  <figure class="LeadForme" data-lang="hans" data-face="m" data-punct="gb" data-orient="v">
+    <svg role="img" aria-hidden="true"></svg>
+    <form class="Controls" aria-label="字體、標點與行向" lang="zh-Hant">
+      <fieldset aria-labelledby="hans-lg-face">
+        <span class="PillHead" id="hans-lg-face">字體</span>
+        <label><input type="radio" name="lf-face" value="m" checked /> 尚古明體</label>
+        <label><input type="radio" name="lf-face" value="h" /> 尚古黑體</label>
+        <label><input type="radio" name="lf-face" value="k" /> 霞鶩文楷<abbr class="acronym">TC</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="hans-lg-punct">
+        <span class="PillHead" id="hans-lg-punct">標點</span>
+        <label><input type="radio" name="lf-punct" value="jis" /><abbr class="acronym">JIS</abbr></label>
+        <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
+        <label><input type="radio" name="lf-punct" value="gb" checked /><abbr class="acronym">GB</abbr></label>
+        <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="hans-lg-orient">
+        <span class="PillHead" id="hans-lg-orient">行向</span>
+        <label><input type="radio" name="lf-orient" value="v" checked /> 直排</label>
+        <label><input type="radio" name="lf-orient" value="h" /> 橫排</label>
+      </fieldset>
+    </form>
+    <figcaption lang="zh-Hant">與繁版逐格同構（脸铁弃舱为回六字換形不換位）。預設<abbr class="acronym">GB</abbr>：標點落角、直排的：坐低在字身裡——與「的空隙錯開，所以不擠（切JIS對照）。簡體字下載自同一套尚古TC切片：脸舱在42、铁在27、弃在71、为在106——簡繁不同片，側面編號可對照繁版。引號用「」不用GB橫排的“”：四版共用同一副括號鉛字，標點軸才逐格可比；直排的彎引號也本非此地之物。</figcaption>
+  </figure>
+</section>
+
+<section class="Verse" data-verse="ja" lang="ja">
+  <h2 lang="zh-Hant">日文</h2>
+  <blockquote>石田は叱った。「わざわざ超回路に変えたのは，十二秒速いからだ！」</blockquote>
+  <figure class="LeadForme" data-lang="ja" data-face="m" data-punct="jis" data-orient="v">
+    <svg role="img" aria-hidden="true"></svg>
+    <form class="Controls" aria-label="字體、標點與行向" lang="zh-Hant">
+      <fieldset aria-labelledby="ja-lg-face">
+        <span class="PillHead" id="ja-lg-face">字體</span>
+        <label><input type="radio" name="lf-face" value="m" checked /> 尚古明體</label>
+        <label><input type="radio" name="lf-face" value="h" /> 尚古黑體</label>
+        <label><input type="radio" name="lf-face" value="k" /> 霞鶩文楷<abbr class="acronym">TC</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="ja-lg-punct">
+        <span class="PillHead" id="ja-lg-punct">標點</span>
+        <label><input type="radio" name="lf-punct" value="jis" checked /><abbr class="acronym">JIS</abbr></label>
+        <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
+        <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
+        <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="ja-lg-orient">
+        <span class="PillHead" id="ja-lg-orient">行向</span>
+        <label><input type="radio" name="lf-orient" value="v" checked /> 直排</label>
+        <label><input type="radio" name="lf-orient" value="h" /> 橫排</label>
+      </fieldset>
+    </form>
+    <figcaption lang="zh-Hant">六字頭「石田は叱った」保住「的欄位；わざわざ正對原文的「特地」。句號連上引號（<b>。「</b>）在<abbr class="acronym">JIS</abbr>／<abbr class="acronym">GB</abbr>／<abbr class="acronym">KLR</abbr>直橫都擠（。是角落標點，尾半空）、<abbr class="acronym">MOE</abbr>居中而兩軸都不擠——與中文版冒號那一對的表不同。叱取U+53F1：常用漢字表的正字𠮟另有碼位，Web字體覆蓋率低，刻意不用。</figcaption>
+  </figure>
+</section>
+
+<section class="Verse" data-verse="ko" lang="ko">
+  <h2 lang="zh-Hant">韓文——國漢混用</h2>
+  <blockquote>石田가 怒했다。「瞬移艙 버리고 하이퍼루프 탄 건，十二秒 빨라서였다！」</blockquote>
+  <!-- 上行是瀏覽器排的現代標準（橫排、逐文節 U+0020）；版框裡是官報慣例
+       （直排、句組整格空鉛）。兩者刻意不同，圖說有講。 -->
+  <figure class="LeadForme" data-lang="ko" data-face="m" data-punct="klr" data-orient="v">
+    <svg role="img" aria-hidden="true"></svg>
+    <form class="Controls" aria-label="字體與標點" lang="zh-Hant">
+      <fieldset aria-labelledby="ko-lg-face">
+        <span class="PillHead" id="ko-lg-face">字體</span>
+        <label><input type="radio" name="lf-face" value="m" checked /> 尚古明體</label>
+        <label><input type="radio" name="lf-face" value="h" /> 尚古黑體</label>
+      </fieldset>
+      <fieldset aria-labelledby="ko-lg-punct">
+        <span class="PillHead" id="ko-lg-punct">標點</span>
+        <label><input type="radio" name="lf-punct" value="jis" /><abbr class="acronym">JIS</abbr></label>
+        <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
+        <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
+        <label><input type="radio" name="lf-punct" value="klr" checked /><abbr class="acronym">KLR</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="ko-lg-orient">
+        <span class="PillHead" id="ko-lg-orient">行向</span>
+        <label><input type="radio" name="lf-orient" value="v" checked /> 直排</label>
+        <label><input type="radio" name="lf-orient" value="h" /> 橫排</label>
+      </fieldset>
+    </form>
+    <figcaption lang="zh-Hant">空格照1948官報的直排慣例：句組邊界才下空鉛，整格一顆（本句唯一落在버리고之後）；逐文節的現代標準空格屬於橫排，上方引文就是——瀏覽器用字體自鑄的U+0020，尚古實測僅0.22–0.26em，跟整格空鉛是兩種材料。KLReq則不定死詞空寬度，只當作齊行時可伸縮的量。諺文與漢字下載自同一套尚古120切片（側面編號是實查的，가在19、이在101）。<b>楷體藥丸刻意不存在</b>：KLReq不給韓文楷體層，霞鶩文楷亦無諺文——這不是漏做，是規格。</figcaption>
+  </figure>
+</section>
+
+</body>
+</html>

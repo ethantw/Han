@@ -25,6 +25,10 @@
   color-scheme: dark;
 }
 
+html:has(body.home) {
+  overflow-x: clip;
+}
+
 /* 表單控件的字級要自己講。UA 的預設是 `13.3333px`（Chrome 對
    input/button/select 的 -webkit-small-control 字身），落在 0.125rem 的刻度外
    （SKILL § 13），而且與版面上任何一級都對不上——那不是設計選擇，是漏寫。
@@ -42,6 +46,9 @@ body.home {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     font-feature-settings: "kern", "liga", "calt";
+    /* Station grounds deliberately exceed the fixed copy measure. Clip only
+       the document edge; rail tracks own their scrolling locally. */
+    overflow-x: clip;
   }
 
   a { color: inherit; text-decoration: none; }

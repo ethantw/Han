@@ -66,12 +66,17 @@ const axisOf = ($strip) => {
     }
 }
 
-const mount = ($nav) => {
-  const $strip = document.querySelector(`[data-strip="${$nav.dataset.stripNav}"]`)
+const mount = ($navs) => {
+  const name = $navs[0]?.dataset.stripNav
+  const $strip = name && document.querySelector(`[data-strip="${name}"]`)
   if (!$strip) return
+  const $visibilityRoot = $strip.closest('[data-station]') ?? $strip
 
-  const $prev = $nav.querySelector('[data-scroll="prev"]')
-  const $next = $nav.querySelector('[data-scroll="next"]')
+  const controls = $navs.map(($nav) => ({
+    $nav,
+    $prev: $nav.querySelector('[data-scroll="prev"]'),
+    $next: $nav.querySelector('[data-scroll="next"]'),
+  }))
 
   const sync = () => {
     const axis = axisOf($strip)
@@ -79,8 +84,9 @@ const mount = ($nav) => {
     /* 1px 的寬容：捲動位置與內容尺寸都可能落在次像素上，差一點點就把「到底了」
        判成「還沒到」，那顆按鈕會停在能按卻不動的狀態。 */
     const end = $strip[axis.full] - $strip[axis.size] - 1
-    if ($prev) $prev.disabled = at <= 0
-    if ($next) $next.disabled = at >= end
+    for (const { $nav, $prev, $next } of controls) {
+      if ($prev) $prev.disabled = at <= 0
+      if ($next) $next.disabled = at >= end
     /* 捲不動就整條收起來：兩顆都 disabled 的箭頭什麼也不說，只是佔一行。判準
        就寫成「兩顆都廢了」，不另外算一次可捲量——量出 1px 的餘裕時兩顆都會是
        disabled，而那一行仍舊會留在版面上（實測站①四版就是這樣：餘裕 1px、
@@ -88,7 +94,8 @@ const mount = ($nav) => {
        版面的斷點決定不了這件事——同一個寬度下，長帶會不會溢出還要看字體落地後
        的重排。所以由這裡量，CSS 只負責認 `[hidden]`（display 有值的規則會蓋掉
        UA 的 `[hidden]`，四條長帶的樣式都補了那一行）。 */
-    $nav.hidden = ($prev?.disabled ?? true) && ($next?.disabled ?? true)
+      $nav.hidden = ($prev?.disabled ?? true) && ($next?.disabled ?? true)
+    }
   }
 
   /* 讀者自己動過這條長帶之後就不再自動歸位（見檔頭）。程式自己捲的那一下也會
@@ -108,8 +115,10 @@ const mount = ($nav) => {
   }
 
   /* 箭頭也算讀者動過：他按了，就別再把他拉回縫上。 */
-  $prev?.addEventListener('click', () => by(-1))
-  $next?.addEventListener('click', () => by(1))
+  for (const { $prev, $next } of controls) {
+    $prev?.addEventListener('click', () => by(-1))
+    $next?.addEventListener('click', () => by(1))
+  }
 
   let queued = false
   const schedule = () => {
@@ -119,7 +128,10 @@ const mount = ($nav) => {
       queued = false
       /* 畫面外的站台沒有版面，量到的是 `contain-intrinsic-size` 的佔位尺寸
          ——既錯又貴（measure.js § 看不到不算）。 */
-      if ($strip.checkVisibility?.({ contentVisibilityAuto: true }) === false) return
+      /* A sticky descendant can be painted while its own very tall containing
+         block reports skipped. The station is the content-visibility boundary
+         and therefore the reliable visibility key for all of its strips. */
+      if ($visibilityRoot.checkVisibility?.({ contentVisibilityAuto: true }) === false) return
       sync()
     })
   }
@@ -162,6 +174,11 @@ const mount = ($nav) => {
     schedule()
   }
 
+  /* Some strips acquire overflow by changing their internal track layout
+     while their own border box stays the same. ResizeObserver cannot see that
+     scroll-range-only change, so the layout owner announces it explicitly. */
+  $strip.addEventListener('han-strip-layout', aim)
+
   addEventListener('resize', aim, { passive: true })
 
   /* 卡片自己會變：han.js 在開幕時把正文包成 `<h-char>`、子集字體又更晚落地，
@@ -192,5 +209,11 @@ const mount = ($nav) => {
 }
 
 export const initStripNav = () => {
-  document.querySelectorAll('[data-strip-nav]').forEach(mount)
+  const groups = new Map()
+  document.querySelectorAll('[data-strip-nav]').forEach(($nav) => {
+    const name = $nav.dataset.stripNav
+    if (!groups.has(name)) groups.set(name, [])
+    groups.get(name).push($nav)
+  })
+  groups.forEach(mount)
 }

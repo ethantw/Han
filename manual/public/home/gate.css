@@ -144,7 +144,7 @@
      the base hero-rise above re-applies, and the stagger counts from
      the reveal. no-JS never stamps → hero-rise greets on load, as
      always. */
-  :root[data-fonts-gate='loading'] .Manifesto :is(h1, h1 + p, .dogfood, .InstallChip) {
+  :root[data-fonts-gate='loading'] .Manifesto :is(h1, h1 + p, .WritingModes, .dogfood, .InstallChip) {
     opacity: 0;
     animation: none;
   }

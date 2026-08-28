@@ -36,7 +36,7 @@ import '@hanzi.pro/han.css/auto'     // 선택적 JS 보조(폴백)
 |------|--------------|--------|
 | **<ruby>意味<rt>의미</rt></ruby> 스타일** | `han-semantics` | 漢字 組版에서 意味 <ruby>要素<rt>요소</rt></ruby>가 갖춰야 할 모습——傍點(`--han-em-symbol`, `--han-em-dot-position`), `<cite>`의 書名號(`--han-cite-title-marks`), <ruby>固有名詞<rt>고유명사</rt></ruby> <ruby>標示<rt>표시</rt></ruby>, 루비. 그리고 가짜 기울임의 <ruby>廢止<rt>폐지</rt></ruby> |
 | **행의 <ruby>調整<rt>조정</rt></ruby>** | `han-lines` | 줄 안의 <ruby>均衡<rt>균형</rt></ruby>——文章 符號의 壓縮과 줄 끝 내어쓰기(`--han-punctuation-refinement`), 文字 種類 사이 間隙(`--han-text-autospace`) |
-| **<ruby>段落<rt>단락</rt></ruby> 짜임** | `han-prose` | 블록 축의 리듬——<ruby>題目<rt>제목</rt></ruby>·段落·<ruby>目錄<rt>목록</rt></ruby> 사이 <ruby>餘白<rt>여백</rt></ruby>과, 글자를 단위로 하는 들여쓰기(`--han-prose`, `--han-prose-indent`. 기본은 `<article>`에만 미친다) |
+| **<ruby>段落<rt>단락</rt></ruby> 짜임** | `han-prose` | 블록 축의 리듬——<ruby>題目<rt>제목</rt></ruby>과 그 本文 사이의 <ruby>餘白<rt>여백</rt></ruby>, 引用의 <ruby>楷書<rt>해서</rt></ruby>(`--han-prose`. 기본은 `<article>`에만 미친다) |
 | **<ruby>書體<rt>서체</rt></ruby>** | `han-fonts` | 書體 스택과 웹폰트——傳承 字形(`--han-use-heritage-glyphs-for-hant`), 文章 符號 書體, <ruby>楷書體<rt>해서체</rt></ruby> 계열(`--han-use-cursive`) |
 
 네 모듈은 서로 獨立이라, 전부 넣어도 되고 하나만 골라도 된다. 저마다 자기 캐스케이드 레이어에 살며, 당신의 스타일과 <ruby>干涉<rt>간섭</rt></ruby>하지 않는다. 모듈 단위로 고르려면——

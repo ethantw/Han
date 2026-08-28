@@ -27,8 +27,6 @@
  * ========================================================================== */
 
 :where(:root) {
-  --han-prose-indent: 2em;
-  --han-prose-alignment-for-article-p: justify;
   --han-prose-consecutive-headings-a-block-end: 0;
   --han-prose-consecutive-headings-b-block-start: 0;
 }
@@ -78,37 +76,6 @@
   :where(h5) + :where(h5, h6, blockquote, p, ol, ul),
   :where(h6) + :where(h6, blockquote, p, ol, ul) {
     margin-block-start: var(--han-prose-consecutive-headings-b-block-start);
-  }
-
-  :where(p) {
-    text-align: var(--han-prose-alignment-for-article-p);
-  }
-
-  :where(blockquote) {
-    & {
-      margin-inline: var(--han-prose-indent) 0;
-    }
-    :where(figure) {
-      margin-inline: initial;
-    }
-    :where(blockquote) {
-      margin-inline: calc(var(--han-prose-indent) / 2) 0;
-    }
-  }
-
-  :where(figure) {
-    margin-inline: var(--han-prose-indent);
-  }
-
-  :where(ol, ul) {
-    padding-inline-start: var(--han-prose-indent);
-  }
-
-  :where(.poem-like) {
-    :where(p)&,
-    & :where(p) {
-      margin-inline-start: var(--han-prose-indent);
-    }
   }
 
   /**

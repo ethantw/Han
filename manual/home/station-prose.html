@@ -15,8 +15,8 @@
     ko: '<ruby>疏密<rt>소밀</rt></ruby>을 아는 <ruby>段落<rt>단락</rt></ruby> <ruby>按排<rt>안배</rt></ruby>',
   },
   prP1: {
-    hant: '標點擠壓掌管主軸的留白，交叉軸的節奏由prose模組指揮——大標緊接次標，間距收攏聚合，標題接段落、段落接清單，以字為尺橫縱有序。閱讀下面的報導，並撥動模組開關，體驗優化前後的不同章法。',
-    hans: '标点挤压掌管主轴的留白，交叉轴的节奏由prose模块指挥——大标紧接次标，间距收拢聚合，标题接段落、段落接清单，以字为尺横纵有序。阅读下面的报导，并拨动模块开关，体验优化前后的不同章法。',
+    hant: '標點擠壓掌管主軸的留白，交叉軸的節奏由prose模組指揮——大標緊接次標，間距收攏聚合，標題接段落、段落接清單，以字為尺橫縱有序；同一套節奏，橫排直排皆可沿用。閱讀下面的報導，並撥動模組開關，體驗優化前後的不同章法。',
+    hans: '标点挤压掌管主轴的留白，交叉轴的节奏由prose模块指挥——大标紧接次标，间距收拢聚合，标题接段落、段落接清单，以字为尺横纵有序；同一套节奏，横排直排皆可沿用。阅读下面的报导，并拨动模块开关，体验优化前后的不同章法。',
     en: 'Squeeze governs the main axis; the prose module conducts the cross axis — a headline stacked straight onto a subheading closes up into one piece, while headings, paragraphs and lists keep a character-measured distance, set horizontally or vertically alike. Read the dispatch below, flip the module switch, and compare the two.',
     ja: '約物詰めが主軸の余白を司り、交差軸のリズムはproseモジュールが指揮する——大見出しに小見出しが続けば間隔は締まって一体となり、見出し・段落・箇条書きは字を物差しに間合いを取る。縦組でも横組でも変わらない。下の記事を読みながらモジュール切替を操れば、前後の章法の違いが見て取れる。',
     ko: '<ruby>符號<rt>부호</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>이 <ruby>主軸<rt>주축</rt></ruby>의 여백을 맡고、<ruby>交叉軸<rt>교차축</rt></ruby>의 리듬은 prose 모듈이 <ruby>指揮<rt>지휘</rt></ruby>한다——큰 <ruby>標題<rt>표제</rt></ruby>에 작은 <ruby>標題<rt>표제</rt></ruby>가 이어지면 <ruby>間隔<rt>간격</rt></ruby>은 하나로 여며지고、<ruby>標題<rt>표제</rt></ruby>와 <ruby>段落<rt>단락</rt></ruby>과 <ruby>目錄<rt>목록</rt></ruby>은 <ruby>字<rt>자</rt></ruby>를 자로 삼아 사이를 둔다。세로로 짜든 가로로 짜든 마찬가지다。아래 <ruby>記事<rt>기사</rt></ruby>를 읽으며 모듈 스위치를 젖히면、앞뒤 <ruby>組版<rt>조판</rt></ruby>이 어떻게 다른지 한눈에 드러난다。',
@@ -45,7 +45,7 @@
      <article>, so the console's prose switch reflows exactly this dispatch.
      The <ol> is presentation-layer structure: the source clause list is
      semicolon-separated prose (sanctioned, docs/plans/homepage-specimens.md). -->
-<section id="station-prose" data-station="prose" data-wm="段">
+<section id="station-prose" data-station="prose">
   <hgroup>
     <p>{{ prEyebrow }}</p>
     <h2>{{ prH2 }}</h2>
@@ -64,11 +64,22 @@
        prose 的旗標種在 `:where(article)` 上，`:root` 撥不到，實際的
        `article { --han-prose: off }` 在 common/module-state.css；這顆按下去
        只是把 `<html>` 的狀態屬性與 console 的設定一起翻面。 -->
-  <label class="Toggle for-prose">
-    <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
-    <span>{{ prProseToggle }}</span>
-    <small>{{ prProseHint }}</small>
-  </label>
+  <div class="ProseControls">
+    <label class="Toggle for-prose">
+      <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
+      <span>{{ prProseToggle }}</span>
+      <small>{{ prProseHint }}</small>
+    </label>
+
+    <nav class="ProseNav ProseNav--top" data-strip-nav="prose" aria-label="兩篇平移（上方）">
+      <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+      <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+        <span data-icon="chevron" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
 
   <!-- 一顆放大鏡管兩張卡（`data-lens` 在容器上，不在各卡上）：兩顆圓疊在一起
        只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->

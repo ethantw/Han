@@ -17,7 +17,15 @@
      接上之後開關自帶「開＝綠」的語彙（`.Toggle:has(input:checked)` 連
      標題一起轉綠），正好就是這顆開關要表達的狀態，不另外做；只把提示
      壓回輔助色，免得整行都在喊。 */
-  > .Toggle {
+  > .ProseControls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block: -1em 2em;
+  }
+
+  > .ProseControls > .Toggle {
     & {
       --_rule: var(--ui-rule);
       --_bg: var(--ui-bg);
@@ -32,7 +40,7 @@
       grid-template-rows: 1.5em auto;
       grid-gap: .125em .5em;
 
-      margin-block: -1em 2em;
+      margin: 0;
       inline-size: fit-content;
 
     }
@@ -76,6 +84,11 @@
   gap: 0.5rem;
   margin-block-start: 0.75rem;
 
+  &.ProseNav--top {
+    flex: none;
+    margin: 0;
+  }
+
   button {
     display: grid;
     place-content: center;
@@ -103,6 +116,7 @@
   }
 }
 
+
 /* ─── Prose (running specimen copy — measure ~38em for readability) */
 
 /* 兩篇**並排成一條可以左右平移的長帶**（owner call）。8px 之下讀不了字，看的
@@ -126,8 +140,8 @@
     scrollbar-width: none;
 
     /* 兩側破出站台的裝訂線，長帶收在網頁邊界；內距把裝訂線補回捲動範圍內側。 */
-    margin-inline: calc(-1 * var(--plate-pad));
-    padding-inline: var(--plate-pad);
+    margin-inline: calc(-1 * var(--rail-pad));
+    padding-inline: var(--rail-pad);
 
     &::-webkit-scrollbar {
       display: none;

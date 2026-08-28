@@ -150,9 +150,11 @@ export const initLedger = ($root = document) => {
   const $css = [...$table.querySelectorAll('tbody tr[data-cfg]:not([data-js-row])')]
   const $auto = $table.querySelector('tr[data-js-row="auto"]')
   const $passes = [...$table.querySelectorAll('tr[data-js-row="pass"]')]
-  const $totals = new Map(
-    [...$table.querySelectorAll('[data-total]')].map(($el) => [$el.dataset.total, $el]),
-  )
+  const $totals = new Map()
+  for (const $el of $root.querySelectorAll('[data-total]')) {
+    const key = $el.dataset.total
+    $totals.set(key, [...($totals.get(key) ?? []), $el])
+  }
   // The caption's `CSS a + JS b = c` equation array (MathML) — outside the
   // table, hence its own lookup off the figure. Keys are `<col>-<part>`,
   // e.g. `br-all`, so one flat map covers all nine cells.
@@ -258,8 +260,9 @@ export const initLedger = ($root = document) => {
     const js = keptIn('tbody[data-group="js"]')
 
     COLS.forEach((col, i) => {
-      const $el = $totals.get({ raw: 'raw', br: 'brotli', gz: 'gzip' }[col])
-      if ($el) $el.textContent = fmtK(sumOf([...css, ...js].map((f) => f[i])))
+      const $els = $totals.get({ raw: 'raw', br: 'brotli', gz: 'gzip' }[col]) ?? []
+      const text = fmtK(sumOf([...css, ...js].map((f) => f[i])))
+      $els.forEach(($el) => { $el.textContent = text })
     })
 
     // The caption's equation array restates the footing as CSS + JS = total,

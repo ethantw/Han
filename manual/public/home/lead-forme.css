@@ -56,18 +56,27 @@
      grid on wide 橫排, where margins can't escape anyway. */
   display: flow-root;
 
-  margin-block: clamp(1.5rem, 4vw, 3rem) 0;
+  /* 版在最上。這一層要壓過兩樣東西，而兩樣都與版心多寬無關，所以它不跟著
+     抬升那支查詢走（曾經跟過，於是中等寬度的螢幕上鉛字與藥丸被底圖穿過）：
+     樣張卡自己的 1（station-fonts.css § 三體樣張，那是為了在命中測試裡贏過
+     包裹層的塌陷盒），以及站台底圖那根柱——它寫著負值，但關在自己的堆疊
+     脈絡裡，對外只是個尋常的後續兄弟。
+     只動繪製順序：版是 `pointer-events: none`，卡片裡可選取的文字照樣穿過
+     上方的鉛字回應指標。 */
+  position: relative;
+  z-index: 2;
+
+  /* 三體樣張與鉛字盤是兩件展品；盒與盒之間永遠至少留 3rem。 */
+  margin-block: 3rem 0;
   margin-inline: 0;
 
   /* the forme's box is mostly EMPTY — three of the parallelogram's four corners
      are void, and § showpiece lifts the block-start/inline-start one up over
      the specimen card on purpose. Element boxes (and an SVG root) swallow
-     pointer events across that whole void, so whatever the wedge covers — the
-     card's 護眼模式 toggle, the specimen text you might want to select —
-     becomes unclickable even though nothing is painted there. Turn the void
+     pointer events across that whole void, so specimen text under the wedge
+     becomes unselectable even though nothing is painted there. Turn the void
      transparent to the pointer and hand it back to the three parts that
-     actually react. Measured: without this, the toggle is unreachable at ≥1440px
-     (Playwright: "<figure class=LeadForme> intercepts pointer events"). */
+     actually react. */
   pointer-events: none;
 
   & svg {
@@ -86,18 +95,51 @@
   /* 縮寫在直排裡要站直——`text-orientation: upright` 讓每個字母各佔一格、
      不側倒。掛在 forme 這一層而不是只在藥丸裡：圖說也是直排（§ pocket 的
      牌記），同一條規矩兩處都該吃到。橫排時 `text-orientation` 本來就是 no-op，
-     所以不必用查詢把兩種行向分開寫。
-     `.upright` 是同一件事給數字用的門：牌記裡的「120」不是縮寫，掛 `abbr`
-     會是假的語義，但它一樣不該躺著。 */
-  :is(abbr.acronym, .upright) {
+     所以不必用查詢把兩種行向分開寫。 */
+  abbr.acronym {
     text-orientation: upright;
+    letter-spacing: -.25em;
+  }
+
+  /* 牌記裡的「120」走**縱中橫**（owner）：三位數擠進一格橫著讀，不是三個
+     數字各站一格。`text-combine-upright: all`（Baseline 2022）自動壓縮到
+     1em；規格說它只在直排生效，橫排（窄站台的圖說是橫排段落）自然失效，
+     不必查詢分行向。數字要用半形——全形數字不參與壓縮。
+     它不是縮寫，掛 `abbr` 會是假的語義，所以是自己的 class。 */
+  .tcy {
+    text-combine-upright: all;
   }
 }
-/* 直排: `inline-size` is the VERTICAL axis there, so a plain 100% would scale
-   the forme up to the station's whole measure (thousands of px wide). Cap it
-   back to a picture-sized slug tray. */
-:where(main[data-writing='vertical']) .LeadForme svg {
-  inline-size: min(100%, 620px);
+/* ── § 直排預覽 — 楔子退場，牌記回到文流 ──────────────────────────
+ * 直排預覽把站台的 `container-type` 關掉（frame.css），所以本檔所有的容器
+ * 查詢一律不成立；而楔子那整套幾何又是照著橫排的版心算的（`--lf-w` 只在
+ * 橫排那條選擇器裡有定義）。兩件事湊在一起，牌記會拿不到任何一個長度：
+ * `calc()` 整條無效、頂端掉回 0、格線區掉回 auto，於是它從圖的頂端排起、
+ * 蓋住整片鉛字。
+ *
+ * 與其在直排下重建一套楔子，不如讓它明白退場：預覽態要的是「看得到直排的
+ * 樣子」，牌記就當一般圖說擺在圖下方。寫成明文而不是靠 `calc()` 失效落到
+ * 預設值——後者看起來像壞掉，而且下一個人改動任何一個變數都會再中一次。
+ *
+ * `inline-size` 在那裡是**垂直**軸，所以圖的 100% 會長成整個站台那麼高，
+ * 一併收回成一盤圖片大小的字盤。 */
+:where(main[data-writing='vertical']) .LeadForme {
+  svg {
+    inline-size: min(100%, 620px);
+  }
+
+  figcaption {
+    writing-mode: horizontal-tb;
+    inline-size: auto;
+    block-size: auto;
+    margin: 1rem 0 0;
+    padding: 0;
+
+    /* 楔子的斜邊沒有了，讓路的三角形也不該留著。 */
+    &::before {
+      content: none;
+    }
+  }
 }
 :where(.LeadForme[data-punct='moe']) {
   --dtj-serif: 'Diantenjeom Serif MOE';
@@ -113,6 +155,16 @@
 :where(.LeadForme[data-punct='klr']) {
   --dtj-serif: 'Diantenjeom Serif KLR';
   --dtj-sans: 'Diantenjeom Sans KLR';
+}
+
+/* ko has no kai layer — KLReq gives Korean none, and LXGW WenKai TC carries
+   no hangul (measured off its swap.css unicode-ranges), so under the ko cut
+   the 楷 pill would paint hangul in a fallback face. The radio disappears
+   rather than disables: a control whose every use would be wrong is not a
+   choice. lead-forme.js bounces an already-selected 楷 back to 明 when the
+   language pill lands on ko. */
+:where(.LeadForme[data-lang='ko']) .Controls label:has(input[name='lf-face'][value='k']) {
+  display: none;
 }
 
 /* current typeface — punctuation-first stack, heritage Han (Ziano) behind */
@@ -254,7 +306,7 @@
   }
 
   /* per fieldset, not on the <form>: the pills then arrive in reading order
-     (字體 → 標點 → 行向, which `row-reverse` also lays inline-end-first), and
+     (字體 → 標點 → 語言 → 行向, which `row-reverse` also lays inline-end-first), and
      the form's own box never moves, so nothing around it shifts. */
   :where(.LeadForme[data-revealed]:not(.settled)) .Controls fieldset {
     animation: lf-chrome-in 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
@@ -264,6 +316,7 @@
 
     &:nth-child(2) { --lf-pill: 0.09s; }
     &:nth-child(3) { --lf-pill: 0.18s; }
+    &:nth-child(4) { --lf-pill: 0.27s; }
   }
 }
 /* one keyframe for both — the pills and the note now arrive by the same move,
@@ -330,7 +383,7 @@
    pills, the forme's own writing mode, so the switches read as part of the
    plate: the label at the head, options running down it, the selected one in
    the accent lozenge. `row-reverse` keeps the DOM's reading order (字體 →
-   標點 → 行向) while laying them inline-end-first, i.e. read right-to-left
+   標點 → 語言 → 行向) while laying them inline-end-first, i.e. read right-to-left
    like the 直排 text they switch. Latin values (JIS／MOE／GB) lie rotated,
    like the slugs' engraved specs — owner's call: one chrome, every locale,
    費脖子 included. The pills stay upright even should the PAGE go 直排:
@@ -483,12 +536,74 @@
  * 代價說清楚：主控台**收起**時，版心變寬 280px 而這張圖不再跟著長大
  * （原本 1231→1511）。右緣多出來的是空氣，不是破圖——圖說仍在圖自己的
  * 角落裡，座標系整套是同一把尺量的，不會錯位。 */
+/* The rail owns the changing viewport; the heavy figure below is a frozen
+   track. Open: reserve the console column. Closed: expand to 100vw. */
+:where(main:not([data-writing='vertical'])) .FormeRail {
+  --forme-scroll-pad: 0px;
+  /* `.FormeRail` 與後面的 `.TwoEmDashes` 才是 station 的直接兄弟。
+     LeadForme 自己的 z-index 無法穿出 rail 的 stacking context；層級必須寫在
+     這一層，SVG 鉛字才會真的壓在 TED 柱上。 */
+  position: relative;
+  z-index: 2;
+  margin-inline: calc(-1 * var(--rail-pad) + var(--w-console) / 2);
+  padding-inline: var(--forme-scroll-pad);
+  scroll-padding-inline: var(--forme-scroll-pad);
+  overflow: visible;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  direction: ltr;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+body:has(.ConsoleToggle input:checked)
+  :where(main:not([data-writing='vertical'])) .FormeRail {
+  margin-inline: calc(-1 * var(--rail-pad));
+}
+
+/* Below 768px the closed rail is narrower than the frozen track. In side-panel
+   mode the same happens while open below 768px + one console column. */
+@media (width < 48rem) {
+  :where(main:not([data-writing='vertical'])) .FormeRail {
+    --forme-scroll-pad: 2rem;
+    overflow-inline: auto;
+    direction: rtl;
+  }
+
+}
+
+/* 52–64rem uses the compact 15rem console: 48rem + 15rem = 63rem. */
+@media (52rem <= width < 63rem) {
+  body:not(:has(.ConsoleToggle input:checked))
+    :where(main:not([data-writing='vertical'])) .FormeRail {
+    --forme-scroll-pad: 2rem;
+    overflow-inline: auto;
+    direction: rtl;
+  }
+}
+
+/* Above 64rem the console returns to 17.5rem: 48rem + 17.5rem = 65.5rem. */
+@media (64.0625rem <= width < 65.5rem) {
+  body:not(:has(.ConsoleToggle input:checked))
+    :where(main:not([data-writing='vertical'])) .FormeRail {
+    --forme-scroll-pad: 2rem;
+    overflow-inline: auto;
+    direction: rtl;
+  }
+}
+
 :where(main:not([data-writing='vertical'])) .LeadForme {
   & {
     /* 版心寬，凍在「主控台開著」那一態。減的 1px 是 main 自己的
        `border-inline-start`（station-frame.css § main）——plate 的內容寬少
        掉那一條，圖要與 plate 的右緣齊平就得跟著減。 */
-    --lf-c: calc(100vw - var(--w-console) - 1px);
+    /* Freeze the forme to the viewport space left after reserving one console
+       column. This reservation is unconditional: collapsing the console only
+       translates main; it must not grow the forme back to 100vw. */
+    --lf-c: max(
+      768px,
+      calc(100vw - var(--w-console) - 2 * var(--plate-pad) - 1px)
+    );
     /* 右對齊之後，圖的左緣離版心左緣有多遠。抬升的算式量的是「樣張欄的
        行末邊緣在**圖的座標系**裡的 x」，圖一往右挪，那個 x 就得減掉這段
        位移，否則抬升會多算一截、鉛字爬進樣張卡。主控台開著時是 0。
@@ -522,8 +637,7 @@
        自動落到左邊。圖在畫面上的位置兩態相同（版心右緣本來就不動），變的
        只是它相對於內容盒左緣的距離——所以這支 cqw 只讓 margin 重算，不碰
        圖的寬，那 1805 個節點仍然不必重排（見下方實測）。 */
-    margin-inline-start: calc(100cqw - var(--plate-pad) - var(--lf-c));
-    margin-inline-end: calc(-1 * var(--plate-pad));
+    margin-inline: auto;
     padding: var(--lf-air);
   }
 
@@ -588,20 +702,19 @@
    * Gated on the same container width that puts the note beside the card
    * (station-fonts.css § 三體樣張): stacked, the copy above runs the full
    * measure and the corner is not free. */
-  @container (inline-size >= 56rem) {
+/* ── § 門檻 — 藥丸的直柱／橫列改看視窗，不看容器 ────────────────────
+   * 圖的寬度是**凍住**的（§ 凍住量尺：讀常數 `--w-console`，主控台開合不重排
+   * 那 1805 個節點），但容器查詢讀的是版心的**實況**寬，主控台一收就變。兩把
+   * 尺不同步，於是收起主控台會跨過門檻進到直柱那一支，而圖並沒有跟著變寬——
+   * 楔子還是小的，最高的兩柱直接壓進版框（實測腳落在斜邊下方 54、64px）。
+   *
+   * 所以門檻改讀視窗，與 `--lf-c` 同一個來源。數值是算的：楔子在最左端的高
+   * ＝ (pad + apex×tan30) × W，而 W ＝ (100vw − 主控台 − 1) ÷ (1 + 2×bleed)，
+   * 合起來約 0.348 ×(100vw − 281)。最高一柱連內距 308px，留一點餘裕要 338，
+   * 於是 100vw ≥ 1252px ≈ 78rem。
+   * 換句話說：**直柱要等到楔子放得下它才登場**，而不是等版心夠寬。 */
+    @media (width >= 85rem) {
     & {
-      /* ON the specimen card, not under it. The lift used to graze the card's
-         corner and stop; owner's call is that the slugs print over the
-         specimen line — a forme laid down on the proof, which is the gag the
-         whole lift is reaching for. z-index 2 clears the card's own 1
-         (station-fonts.css § 三體樣張), which is there to beat the WRAPPER's
-         collapsed box in hit-testing. Paint order is all this changes: the
-         forme is `pointer-events: none` (§ base), so the card's toggle and
-         its selectable text still answer the pointer straight through the
-         slugs above them. */
-      position: relative;
-      z-index: 2;
-
       --lf-void: calc(
         var(--lf-air)
         + var(--lf-pad, 0.0086) * var(--lf-w)
@@ -614,20 +727,9 @@
          心」，與 --lf-w 同源，抬升與圖從此一起靜止。 */
       --lf-graze: clamp(3rem, calc(0.1 * var(--lf-c)), 8rem);
 
-      /* owner 2026-08-26：鉛字與樣張那一行貼得太近，拉開。
-       *
-       * 上面那段「graze」的原意是**往上多騎一段**，讓斜邊壓過樣張卡的角——
-       * 「一副鉛字壓在校樣上」是當時要的梗。現在改成反過來：抬到斜邊剛好走到
-       * 卡片下緣（`--lf-void`）之後，再**讓回**一段，兩者之間就有一條看得見的
-       * 空氣。`--lf-graze` 留著沒有刪，因為那段推導（void 的算式、10cqw 為什麼
-       * 換成凍住的尺）仍然是這一段的地基，只是不再加在抬升上。
-       *
-       * 讓回的量跟著圖走而不是寫死：`--lf-c` 的 6% ≈ 70px（1440 下），與原本
-       * 騎上去的 116px 加起來，鉛字比先前低了將近 190px。上下夾住是為了窄站台
-       * ——太小看不出是刻意留的白，太大就退回「圖上面一條空帶」那個原本要
-       * 避免的樣子。 */
-      --lf-gap: clamp(1.5rem, calc(0.06 * var(--lf-c)), 5rem);
-      margin-block-start: calc(-1 * clamp(0px, var(--lf-void) - var(--lf-gap), 24rem));
+      /* owner 2026-08-29：撤掉「鉛字壓在校樣上」的舊梗。不能再用負 margin
+         回收左上楔形空氣；三體樣張盒底到鉛字 figure 盒頂明確留 3rem。 */
+      margin-block-start: 3rem;
     }
 
   }
@@ -697,9 +799,9 @@
     margin-block: 0;
     padding-block-start: .5rem;
 
-    /* 三組的高度不一樣（行向兩個選項、標點四個、字體三個但標籤最長），所以
-       頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線與楔子平行，高的
-       必須在左。
+    /* 四組的高度不一樣（字體標籤最長、標點四個縮寫、語言四個單字、行向
+       兩個選項），所以頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線
+       與楔子平行，高的必須在左。
 
        楔子往右變窄，這是算出來的不是看出來的：上方的空氣是
        `void(x) = --lf-air + --lf-pad·W + (--lf-air + --lf-apex·W − x)·tan30`
@@ -707,7 +809,7 @@
 
        基礎規則是 `row-reverse`，那是為了舊的右下口袋調的（腳底對齊、頭部
        錯開，順著那邊往下走的斜邊）。這塊楔子的斜邊走向相反，所以翻回 `row`：
-       DOM 順序是字體、標點、行向，正好由高到矮。 */
+       DOM 順序是字體、標點、語言、行向，正好由高到矮。 */
     flex-direction: row;
   }
 
@@ -731,9 +833,6 @@
       width: 100%;
       /* 斜邊的落差：寬 × tan30，與等角投影的 e2 同斜率。 */
       --lf-cap-tri: calc(var(--lf-cap-w) / 1.732);
-      /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
-         白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。 */
-      --lf-cap-gap: 1.75rem;
 
       /* 盒子要**比三角形高一截**，否則撐開的部分會被裁掉。
          `shape-outside` 的排除區被 float 的邊界盒剪裁：盒高只有三角形本身時，
@@ -747,7 +846,10 @@
       shape-margin: var(--lf-cap-gap);
     }
     & {
-      grid-area: 1 / 3;
+      /* 跨滿整條格線再靠行末對齊，而不是佔第三欄：盒子現在有楔子那麼寬，
+         擺進一個 auto 欄會把欄寬撐開、連帶擠掉圖自己的格線區。 */
+      grid-area: 1 / 1 / 2 / 4;
+      justify-self: end;
       /* 頂端**釘在頂點的腳**上，不是貼底。
        *
        * 原本是 `align-self: end`：盒子貼著格線的底，頂端則隨內容高度浮動。
@@ -763,12 +865,21 @@
        * 兩個 `--lf-air`：一個是 figure 的 padding（圖的左上角不在 figure 的
        * 原點），另一個已含在 `--lf-foot` 的定義裡（它量的是 svg 座標）。 */
       align-self: start;
-      /* A FLAT width, not a cqw fraction: how many columns the note needs
-         is a function of the text and the font size, and neither scales
-         with the forme. (Capacity ≈ width × height, and the height already
-         grows with the plate — a proportional width would overflow on
-         narrow plates and rattle around on wide ones.) */
-      --lf-cap-w: 10em;
+      /* 盒子就是楔子本身，兩條邊都從圖量：高是頂點的腳到地板，底是那個高
+         除以 tan30——等角投影的下緣斜率。於是斜邊與鉛字的下緣重合，牌記有
+         整片空氣可用，而不是縮在右緣的一條窄帶裡（原本是寫死的 10em，只佔
+         楔子底的兩成，文字擠成一疊、左邊那一大片斜坡空著）。
+         底一旦等於高×1.732，`::before` 的三角形（寬÷1.732）就正好是楔子的
+         高，兩者不必各自對答案。 */
+      /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
+         白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。
+         定義在這一層而不是 `::before` 裡：底的算式要扣掉它。 */
+      --lf-cap-gap: 1.75rem;
+      --lf-cap-h: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
+      /* 底扣掉那條白沿垂直方向佔掉的一段（法線推 m ⇒ 垂直吃掉 m ÷ cos30），
+         否則三角形連同它的白會比內容盒還高，最左端被擋死、文字擠出盒底。
+         扣完之後三者剛好收斂：三角形高 ＝ 盒高 − 白，加回白 ＝ 盒高。 */
+      --lf-cap-w: calc((var(--lf-cap-h) - var(--lf-cap-gap) * 1.1547) * 1.732);
 
       /* flush with the padding box on the fore-edge and the floor — which IS
          the ink's right edge and its bottom (§ air), the two lines the note
@@ -803,7 +914,7 @@
          仍然是 DEFINITE 而不是 auto：這是正交流，auto 會讓格線去猜欄數。
          扣掉 `padding-bottom`：`height` 設的是內容盒，不扣的話盒底會超出
          圖的地板一個內距。 */
-      height: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
+      height: var(--lf-cap-h);
       /* PHYSICAL width/height above on purpose, and this to match: the box
          is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
          base rule's 38em cap is the stacked note's measure, and here it
@@ -830,13 +941,18 @@
    * 藥丸脫離長帶：自己一列在圖的上方（樣張卡的正下方——控制項貼著它控制的
    * 東西，與寬螢幕同一個道理），`position: sticky` ＋ **物理** `left: 0` 讓它
    * 不隨圖平移。改橫排，因為這一列現在有整個版心的寬。 */
-  @container (inline-size < 56rem) {
+  @media (width < 85rem) {
     & {
       /* 768 是**下限**，不是尺寸（owner 2026-08-28：「怎麼變這麼小」）：版心比它
          寬時，圖照樣是「版心寬」——與寬螢幕那一支同一個量。原本寫死 768，於是
          1200–1360px 之間的視窗上，版心有 919–1079 卻只畫 768，右邊空一大塊。
          下限的理由見上面 § pocket 的算式：再窄牌記就擠不下。 */
-      --lf-c: max(768px, calc(100vw - var(--w-console) - 1px));
+      /* SVG 本身以 console 開啟後剩下的 viewport 為上限，768px 是保住牌記
+         幾何的下限；若 rail 的可視口放不下，就交給下面的 inline scroll 展示。 */
+      --lf-c: max(
+        768px,
+        calc(100vw - var(--w-console) - 2 * var(--plate-pad) - 1px)
+      );
 
       /* 圖寬**就是** `--lf-c`（見下面的 svg）：窄站台沒有留白的外框，長帶自己
          就貼著邊界捲。所以要把「圖寬」這個量對齊事實，否則 § pocket 那條從圖寬
@@ -850,23 +966,19 @@
          768，根本不會捲（實測 figure 寬 768、可捲 66）。圖的寬度改由 svg 自己
          宣告（見下）。同理，那一段給 figure 的負 margin 是為了貼版心外緣，
          窄站台沒有那回事。 */
-      inline-size: auto;
-      /* 邊界在 main 上，不在版心的內距上（owner）：長帶兩側破出站台的內距，
-         鉛字盤因此貼著網頁邊緣捲，跟四語報與散文那兩條長帶同一個做法。
-         不補 `padding-inline`——那兩條補回內距是為了讓卡片有裝訂線，這裡要的
-         正是圖直接切齊邊界。 */
-      margin-inline: calc(-1 * var(--plate-pad));
-
-      overflow-inline: auto;
-      overscroll-behavior-inline: contain;
-      scrollbar-width: none;
+      inline-size: var(--lf-c);
+      margin-inline: auto;
+      /* This branch gives the SVG the full frozen measure directly. Keeping
+         the wide-layout air as figure padding would make the SVG wider than
+         its grid content box; RTL would place all of that excess on the left
+         and shift the painted forme off main's centre. */
+      padding: 0;
       direction: rtl;
 
       /* 兩列：藥丸一列、圖一列。圖與牌記同列，所以牌記的 `margin-top` 仍然是
          從 svg 的頂端起算（見 § pocket）。 */
       grid-template-rows: auto 1fr;
 
-      &::-webkit-scrollbar { display: none; }
     }
 
     > * { direction: ltr; }
@@ -881,10 +993,11 @@
     figcaption {
       /* rtl 下第一欄在視覺右側——牌記要跟著圖的右端走。 */
       grid-area: 2 / 1;
-      /* 再寬一點：12px 下 10em ＝ 120px，量到仍溢出 20px。加到 12em（144px）
-         換來的欄數剛好收住——加寬會讓頭部沿斜邊再降 24×tan30 ≈ 14px，這一點
-         已算進下面的量測。 */
-      --lf-cap-w: 12em;
+      /* 寬不再寫死：底由楔子自己算（見上），長帶的楔子比寬站台小一號，算式
+         跟著縮。
+         `justify-self` 要翻面：這條格線是 rtl，`end` 解析成物理左，而牌記
+         要跟著圖的右端走。 */
+      justify-self: start;
       /* 小一號：768 的楔子從頂點的腳到地板只有 245px（1280 時是 324），同一段
          文字在 14px 下溢出 47px。牌記本來就是牌記，不是正文，縮到 12px 讀得動
          而且**面積夠**——需要的面積隨字級平方縮小，可用面積不變。
@@ -893,9 +1006,15 @@
     }
 
     .Controls {
-      grid-area: 1 / 1 / 2 / 4;
+      /* 與圖同一格，不自成一列：等角投影的版框頂點在中段，左右兩側是大片
+         空氣，藥丸自己佔一列的話會浮在那片空氣**之上**，與版框隔著它的高度
+         （實測腳離斜邊 400–500px，看起來像兩個不相干的東西）。疊進同一格、
+         貼著格線的起角，藥丸就落在空氣裡，與鉛字讀作一體。 */
+      grid-area: 2 / 1 / 3 / 4;
       position: sticky;
       /* 物理 `left`：這是「不隨長帶平移」，與行向無關。 */
+      /* The rail's padding box is already 2rem in scrolling states; sticky
+         left:0 lands on that inset. Adding the gutter again would make 4rem. */
       left: 0;
       align-self: start;
       /* `justify-self` 解析在**格線容器**的方向上，而這裡是 rtl——所以要 `end`
@@ -906,7 +1025,8 @@
 
       /* 一組一列，**長中短由上到下**（owner）。靠 `flex-wrap` 讓它自己斷行的話，
          斷點跟著版心寬跑——某些寬度會擠成一列或二列，長短不齊，看起來像沒排過。
-         直接 `column` 就固定成三列，而 DOM 順序（字體→標點→行向）正好是長中短。 */
+         直接 `column` 就固定成一組一列，而 DOM 順序（字體→標點→語言→行向）
+         正好由長到短。 */
       flex-direction: column;
       align-items: flex-start;
       row-gap: .4rem;
@@ -916,7 +1036,7 @@
          `100cqw` 量的是 main，也就是這條長帶的捲動口寬度。 */
       max-inline-size: 100cqw;
 
-      /* 縮一號（owner）：三列疊起來會把圖往下推，字級小一點列高也跟著矮。 */
+      /* 縮一號（owner）：四列疊起來會把圖往下推，字級小一點列高也跟著矮。 */
       font-size: .8125rem;
 
       /* 橫排（owner）。基礎規則把 `vertical-rl` 下在 fieldset 上——那是為了讓
@@ -936,6 +1056,45 @@
   }
 }
 
+@media (width < 48rem) {
+  :where(main:not([data-writing='vertical'])) .LeadForme .Controls {
+    /* The upper-right void is a 30deg triangle whose base runs from the
+       published apex to the SVG's right edge. The rows already descend from
+       longest to shortest, matching the pocket as it narrows downward. */
+    --lf-controls-pocket: calc(
+      (1 - var(--lf-apex, 0.6303)) * var(--lf-w) - 2rem
+    );
+    grid-area: 2 / 1 / 3 / 4;
+    position: relative;
+    left: auto;
+    align-self: start;
+    justify-self: start;
+    align-items: flex-end;
+    row-gap: 3px;
+    inline-size: max-content;
+    max-inline-size: var(--lf-controls-pocket);
+    margin: calc(var(--lf-pad, 0.0086) * var(--lf-w) + 0.5rem) 0 0;
+    padding: 0;
+    font-size: 0.75rem;
+
+    fieldset {
+      gap: 1px;
+      padding: 1px;
+    }
+
+    .PillHead {
+      padding-inline: 0.5em 0.25em;
+      font-size: 0.625rem;
+    }
+
+    label {
+      padding-block: 0.5px;
+      padding-inline: 5px;
+      font-size: 0.625rem;
+    }
+  }
+}
+
 /* ─── 長帶的左右箭頭（只在窄站台） ───
  * 與四語報、散文、遊樂場同一支模組（`strip-nav.js`）、同一個角落：貼在長帶的
  * 右下，讓「還有更多」與「怎麼看更多」在同一處。寬螢幕整座字盤都在畫面裡，
@@ -946,9 +1105,8 @@
  * prev→next 排成視覺上的 ←→——按鈕的位置與它要去的方向這才對得上。 */
 .FormeNav { display: none; }
 
-@container (inline-size < 56rem) {
+@media (width < 65.5rem) {
   :where(main:not([data-writing='vertical'])) .FormeNav {
-    display: flex;
     flex-direction: row-reverse;
     /* `end`，不是 `flex-end`：前者依書寫模式（ltr 下就是物理的右），後者依
        彈性方向——`row-reverse` 會把它翻到左邊去（實測兩顆跑到版心左緣）。 */
@@ -958,7 +1116,7 @@
        `--lf-air` 是外框的空氣，不是內容，箭頭壓進去才像是這座字盤的配件；
        末邊界則要撐開，否則緊接著的 `.TwoEmDashes` 自己沒有上邊界（實測 0px），
        箭頭會像那一段的標頭。 */
-    margin-block: -0.75rem 2rem;
+    margin-block: -0.25rem 2rem;
 
     /* 由 `strip-nav.js` 量出來的「這條長帶捲不動」。`display` 有值的規則會蓋掉
        UA 樣式表的 `[hidden] { display: none }`，所以要自己認一次。 */
@@ -992,6 +1150,20 @@
     [data-scroll="prev"] [data-icon] {
       rotate: 180deg;
     }
+  }
+}
+
+@media (width < 48rem) {
+  :where(main:not([data-writing='vertical'])) .FormeNav {
+    display: flex;
+  }
+}
+
+@media (52rem <= width < 63rem),
+       (64.0625rem <= width < 65.5rem) {
+  body:not(:has(.ConsoleToggle input:checked))
+    :where(main:not([data-writing='vertical'])) .FormeNav {
+    display: flex;
   }
 }
 

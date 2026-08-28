@@ -26,7 +26,7 @@
 .AxTail {
   & {
     margin-inline: 0;
-    max-inline-size: 42em;
+    max-inline-size: 38em;
     font-family: var(--han-font-alternative);
     font-size: 1rem;
     line-height: 1.9;
@@ -58,14 +58,13 @@
 .Axioms {
   & {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin: 0 0 2rem;
     border-block: 1px solid var(--ui-rule);
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
 
-    @media (min-width: 40rem) {
-      grid-template-columns: 1fr 1fr;
-    }
+    @media (max-width: 52rem) { grid-template-columns: 1fr; }
   }
 
   .Ax {
@@ -73,39 +72,22 @@
     padding-inline: 1.5rem;
   }
 
-  /* 窄螢幕：三格直疊，縫在每一格的上緣（第一格靠容器的 border-block）。 */
   .Ax + .Ax {
-    border-block-start: 1px solid var(--ui-rule);
+    border-inline-start: 1px solid var(--ui-rule);
 
-    /* 寬螢幕：5.2 與 5.3 並排成一列，橫縫交還給通欄的 5.1（見下），
-       這裡只留兩格之間那一道直縫——畫在後一格的行首側。 */
-    @media (min-width: 40rem) {
-      border-block-start: 0;
-
-      & + .Ax {
-        border-inline-start: 1px solid var(--ui-rule);
-      }
+    @media (max-width: 52rem) {
+      border-block-start: 1px solid var(--ui-rule);
+      border-inline-start: 0;
     }
   }
 
   /* 式5.1 spans the pair below it — the theorem the corollaries hang off */
   .Ax-lead {
-    padding-block: 2rem;
-
-    @media (min-width: 40rem) {
-      grid-column: 1 / -1;
-      /* 通欄那條橫縫改由通欄的格子自己畫——下面兩格並排，各自畫上緣會
-         畫成兩截（中間那道直縫剛好把它切開），看得出接痕。 */
-      border-block-end: 1px solid var(--ui-rule);
-    }
-
-    .Formula {
-      font-size: 1.5rem;
-    }
+    padding-block: 1.5rem;
   }
 
   .Formula {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
   }
 
   .AxNote {
@@ -187,7 +169,7 @@
   code {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    color: var(--ui-text);
+    color: var(--ui-accent);
   }
 
   /* bound variables: MathML already italicises a single-char `<mi>`, so this
@@ -270,39 +252,20 @@
    annotation), which is also the order a screen reader gets either way. */
 .Example {
   & {
-    margin-block: 1.75rem;
-    padding-block-start: 1.25rem;
-    border-block-start: 1px solid var(--ui-rule);
+    margin-block: 2.5rem 0;
 
     @media (min-width: 60rem) {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      /* Two equation rows, each level with the rule it describes. The pane
-         hands its own two panel heights up through `grid-template-rows:
-         subgrid` (Baseline 2023), so rows 1 and 2 of THIS grid are exactly
-         the two panels' heights — and `align-self: center` then puts each
-         line on its panel's middle. Nothing measures anything in JS. */
+      grid-template-columns: 1fr .8fr;
       grid-template-areas:
-        "eqa   rules"
-        "eqb   rules"
-        "note  nav";
-      /* The nav belongs UNDER THE PANE, not under the prose: it pages the
-         pane, and a control sitting under the thing it does not control is
-         the kind of small wrongness a reader feels without being able to name.
-         So the pane spans the first two rows and the nav takes the third,
-         still in the pane's column.
-         `1fr` on the middle row (with `align-items: start`) parks the slack
-         BELOW the equation instead of sharing it out between the two blocks,
-         which is what pulled them apart. */
-      grid-template-rows: auto auto auto;
-      align-items: start;
-      column-gap: 2.5rem;
+        "note rules"
+        ".    nav";
+      align-items: stretch;
+      gap: 1.5rem 3rem;
     }
   }
 
   .SelRing { grid-area: rules; }
-  .Eq-lib  { grid-area: eqa; }
-  .Eq-mine { grid-area: eqb; }
   .EgNote  { grid-area: note; }
   .SelNav  { grid-area: nav; }
 
@@ -379,6 +342,17 @@
       color: var(--ui-supplement-text);
     }
 
+    @media (min-width: 60rem) {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-self: end;
+      min-block-size: 22rem;
+      margin-block-start: 0;
+      padding-block: 1.5rem;
+      font-size: 1rem;
+    }
+
     code {
       padding: 0;
       background: none;
@@ -404,6 +378,10 @@
 
     > li {
       grid-area: 1 / 1;
+      /* 五張卡共同撐出最高的 rail，外框與 nav 因而不隨切換跳動。第一段框架
+         規則只取內容高度，第二段開發者規則承接所有剩餘空間：留白於是集中在
+         最後一個權重之後，不會被 grid 平分到兩段規則之間。 */
+      grid-template-rows: max-content 1fr;
       visibility: hidden;
       display: grid;
       gap: 1px;                     /* hairline seam, as in the ledgers */
@@ -466,7 +444,7 @@
        而讓署名浮在外面，讀起來像兩件東西恰好對齊，而不是一列。 */
     .RuleHead {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: baseline;
       gap: 0 0.75rem;
       margin-block-end: 0.5rem;
@@ -486,6 +464,17 @@
     .RuleLayer b {
       font-weight: 400;
       color: var(--ui-supplement-text);
+    }
+
+    .RuleSpec {
+      display: block;
+      margin-block-start: 0.25rem;
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      font-weight: 600;
+      text-align: end;
+      color: var(--ui-accent);
+      white-space: nowrap;
     }
 
     /* The conditions the rule actually sits under. Off-topic for a plate
@@ -620,36 +609,6 @@
     }
   }
 
-  /* ── Each equation level with the rule it describes ──────────────────
-   * LAST in this block on purpose: the carousel's own `> li { grid-area:
-   * 1 / 1 }` (above) would otherwise win on source order and collapse the
-   * two panels back into one cell.
-   *
-   * The pane hands its two panel heights up through `grid-template-rows:
-   * subgrid` (Baseline 2023) — twice, since the panels are a generation
-   * further down (.SelRing → li → .Rule). Rows 1 and 2 of `.Example` then
-   * ARE the two panels, and `align-self: center` puts each line on its
-   * panel's middle. Nothing is measured in JS, and it survives the carousel
-   * swapping items of different heights. */
-  @media (min-width: 60rem) {
-    .SelRing {
-      grid-row: 1 / span 2;
-      grid-template-rows: subgrid;
-    }
-
-    .SelRing > li {
-      grid-area: 1 / 1 / span 2 / span 1;
-      grid-template-rows: subgrid;
-    }
-
-    .Rule[data-role="framework"] { grid-row: 1; }
-    .Rule[data-role="mine"]      { grid-row: 2; }
-
-    .Eq-lib,
-    .Eq-mine {
-      align-self: center;
-    }
-  }
 }
 
 

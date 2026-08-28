@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>輕如鴻毛的排版框架——簡化提案</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.2.0-rc.0/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.2.0-rc.0/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@0.2.0-rc.0/dist/diantenjeom.css">
+<link rel="stylesheet" href="/han/han.css">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: light-dark(#f8f8f5, #171816);
+    --ink: light-dark(#0e0e10, #e8e8e3);
+    --dim: light-dark(#666, #8c8c87);
+    --rule: light-dark(#1b211b20, #e8eee826);
+    --mint: light-dark(#0a8754, #3f9d6f);
+    --panel: light-dark(#fff, #1e211e);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  main {
+    inline-size: min(68rem, calc(100% - 2rem));
+    margin-inline: auto;
+    padding-block: clamp(4rem, 10vw, 8rem);
+  }
+
+  hgroup { margin-block-end: 2.5rem; }
+  hgroup p {
+    margin: 0 0 .45rem;
+    color: var(--dim);
+    font-size: .78rem;
+    letter-spacing: .24em;
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+  .Summary {
+    max-inline-size: 38rem;
+    margin: 1.25rem 0 0;
+    color: var(--dim);
+    font-size: 1.05rem;
+  }
+
+  article {
+    padding-block: 2.75rem;
+    border-block-start: 1px solid var(--rule);
+  }
+  h2 { margin: 0; font-size: 1.55rem; }
+  article > p { max-inline-size: 42rem; color: var(--dim); }
+
+  .Axioms {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-block: 2rem;
+    border-block: 1px solid var(--rule);
+  }
+  .Axiom {
+    padding: 1.6rem;
+    text-align: center;
+  }
+  .Axiom + .Axiom { border-inline-start: 1px solid var(--rule); }
+  math {
+    font-family: var(--han-font-alternative);
+    font-size: 1.25rem;
+    math-style: normal;
+  }
+  math .Code { font-family: var(--mono); color: var(--mint); }
+  .Axiom p {
+    margin: .7rem 0 0;
+    color: var(--dim);
+    font-size: .78rem;
+    line-height: 1.6;
+  }
+
+  .Proof {
+    display: grid;
+    grid-template-columns: 1fr .8fr;
+    gap: 1.5rem 3rem;
+    align-items: stretch;
+    margin: 2.5rem 0 0;
+  }
+  .Applied {
+    display: grid;
+    place-content: end start;
+    min-block-size: 22rem;
+    padding-block: 1.5rem;
+    color: var(--dim);
+    font-size: 1rem;
+    line-height: 1.9;
+    text-align: start;
+  }
+  .Applied p { margin: 0; max-inline-size: 34em; }
+  .CaseNav {
+    display: flex;
+    grid-column: 2;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .CaseNav button {
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--dim);
+    font: 1.25rem/1 inherit;
+    cursor: pointer;
+  }
+  .Devtools {
+    overflow: clip;
+    border: 1px solid var(--rule);
+    border-radius: .45rem;
+    background: var(--panel);
+    box-shadow: 0 .75rem 2.5rem color-mix(in srgb, var(--ink) 5%, transparent);
+    font: .82rem/1.7 var(--mono);
+  }
+  .CascadeRule {
+    min-block-size: 11rem;
+    padding: 1.25rem;
+  }
+  .CascadeRule + .CascadeRule { border-block-start: 1px solid var(--rule); }
+  .RuleSource {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: -.35rem -.35rem 1rem;
+    padding: .6rem .75rem;
+    background: var(--paper);
+    color: var(--dim);
+    font-size: .72rem;
+    line-height: 1.5;
+  }
+  .RuleSource :is(code, output, b) {
+    font-family: var(--mono);
+  }
+  .RuleSource b { color: var(--mint); font-weight: 500; }
+  .Selector { margin: 0; color: var(--mint); }
+  .Declaration { margin: 0; padding-inline-start: 1.5rem; }
+  .Declaration.is-overridden {
+    color: var(--dim);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  figcaption {
+    max-inline-size: 34em;
+    margin: 0;
+    color: var(--dim);
+    font-size: .8rem;
+    text-align: start;
+  }
+
+  .WeightIntro {
+    margin-block-end: 1.5rem;
+  }
+  .SizeLedger {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .7fr);
+    border: 1px solid var(--rule);
+    border-radius: .45rem;
+    overflow: clip;
+  }
+  .SizeTable {
+    padding: 1.5rem 2rem;
+    background: var(--panel);
+  }
+  .BundleSum {
+    display: grid;
+    grid-template-columns: 1.2rem 3.5rem 4.5rem 4.5rem 2.75rem;
+    align-items: baseline;
+    justify-content: center;
+    color: var(--dim);
+    font-family: var(--han-font-default);
+    font-size: 1.125rem;
+    font-variant-numeric: tabular-nums lining-nums;
+    line-height: 1.6;
+    text-align: end;
+    align-content: end;
+    padding: 2rem;
+    border-inline-start: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .BundleSum .Head { font-size: .875rem; }
+  .BundleSum .Op { text-align: start; }
+  .BundleSum .Lead { color: var(--mint); }
+  .BundleSum .SumRule {
+    grid-column: 1 / -1;
+    border-block-start: 1px solid var(--rule);
+  }
+  .BundleSum .TotalCell {
+    padding-block-start: .15rem;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .BundleSum .TotalCell.Lead { color: var(--mint); font-weight: 600; }
+  .BundleSum .Unit { color: var(--ink); font-size: .875rem; }
+  table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    background: transparent;
+  }
+  th, td {
+    padding: .75rem 1rem;
+    border-block-end: 1px solid var(--rule);
+    text-align: start;
+  }
+  thead th:not(:first-child),
+  td { text-align: end; font-family: var(--mono); }
+  thead th {
+    color: var(--dim);
+    font-size: .75rem;
+    font-weight: 300;
+  }
+  tbody th,
+  tbody td {
+    font-size: .875rem;
+    font-weight: 300;
+  }
+  tbody th { color: var(--ink); }
+  td {
+    color: var(--mint);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+  .SizeTable > table :is(tbody, tfoot) td:not(:last-child),
+  .DetailsGrid section:not(:last-child) td:not(:last-child) {
+    color: var(--dim);
+  }
+  tfoot th,
+  tfoot td { font-weight: 400; }
+  .Group th {
+    padding-block-start: 1.2rem;
+    color: var(--dim);
+    font-size: .72rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: .12em;
+  }
+  tr:has(input:not(:checked)) :is(th, td) {
+    color: var(--dim);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  input { accent-color: var(--mint); }
+  .LedgerOpen {
+    margin-block-start: 1rem;
+    padding: .6rem .85rem;
+    border: 1px solid var(--rule);
+    border-radius: .3rem;
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  .LedgerDialog {
+    inline-size: min(62rem, calc(100% - 2rem));
+    max-inline-size: none;
+    max-block-size: calc(100dvb - 2rem);
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: .5rem;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1.5rem 5rem #0004;
+  }
+  .LedgerDialog::backdrop {
+    background: #1118;
+    backdrop-filter: blur(3px);
+  }
+  .DialogHead {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-block-end: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .DialogHead h2 { margin: 0; font-size: 1.15rem; font-weight: 400; }
+  .DialogHead button {
+    inline-size: 2rem;
+    block-size: 2rem;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font: 1.25rem/1 inherit;
+    cursor: pointer;
+  }
+  .DetailsGrid {
+    display: grid;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+  .DetailsGrid h3 {
+    margin: 0 0 .5rem;
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  .DetailsGrid table { font-size: .82rem; }
+  .DetailsGrid caption {
+    margin-block-end: .45rem;
+    color: var(--dim);
+    font-size: .75rem;
+    line-height: 1.5;
+    text-align: start;
+  }
+  .DetailsGrid :is(th, td) { padding: .5rem .7rem; }
+  .DetailsGrid :is(th, td):not(:first-child) { text-align: end; font-family: var(--mono); }
+  .FontTables {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  @media (max-width: 64rem) {
+    .SizeLedger { grid-template-columns: 1fr; }
+    .BundleSum {
+      min-block-size: 16rem;
+      border-block-start: 1px solid var(--rule);
+      border-inline-start: 0;
+    }
+  }
+
+  @media (max-width: 52rem) {
+    .Proof { grid-template-columns: 1fr; }
+    .Applied {
+      min-block-size: auto;
+      gap: 1.5rem;
+      padding-block: 2rem;
+    }
+    .CaseNav { grid-column: 1; }
+  }
+
+  @media (max-width: 42rem) {
+    .Axioms { grid-template-columns: 1fr; }
+    .Axiom + .Axiom {
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--rule);
+    }
+    .RuleSource { align-items: start; }
+    .SizeTable {
+      padding: 1rem .75rem;
+      overflow-x: auto;
+    }
+    .BundleSum {
+      min-block-size: 13rem;
+      padding: 1.25rem .75rem;
+    }
+    .FontTables { grid-template-columns: 1fr; }
+    table { font-size: .78rem; }
+    th, td { padding-inline: .45rem; }
+    .DetailsGrid section { min-inline-size: 0; }
+    .DetailsGrid table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <hgroup>
+    <p>伍・工法</p>
+    <h1>輕如鴻毛的排版框架</h1>
+    <p class="Summary">一百一十六個〇，仍然是「〇」——隨意覆寫，後來者的樣式說了算。</p>
+  </hgroup>
+
+  <article>
+    <p>漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要權重大於零或位於後方，就能輕鬆覆蓋。</p>
+
+    <div class="Axioms">
+      <section class="Axiom">
+        <math display="block"><mrow><mtext class="Code">:where(s)</mtext><mo>≡</mo><mi>s</mi><mtext>　權重</mtext><mo>→</mo><mn>0</mn></mrow></math>
+        <p>其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。</p>
+      </section>
+      <section class="Axiom">
+        <math display="block"><mrow><mtext>未分層</mtext><mspace width=".3em"></mspace><mo stretchy="false">&gt;</mo><mspace width=".3em"></mspace><mtext class="Code">@layer han-*</mtext></mrow></math>
+        <p>漢.css的樣式皆置於<code>han-*</code>分層中。開發者未分層的樣式自然優先。</p>
+      </section>
+      <section class="Axiom">
+        <math display="block"><mrow><mtext>機能</mtext><mo>=</mo><mi>f</mi><mo>(</mo><mtext>容器變數</mtext><mo>)</mo></mrow></math>
+        <p>容器上寫一個變數，那片子樹的機能就跟著改。</p>
+      </section>
+    </div>
+
+    <p><code>@layer</code>讓開發者自由排列樣式模塊。未分層或排在後方的樣式優先。CSS變量配合style query <code>@container</code>，則可在任意範圍內開關、調校機能。</p>
+
+    <figure class="Proof">
+      <div class="Applied">
+        <p>漢.css樣式表中的選擇器權重全數經<code>:where()</code>函數歸零，任何權重大於<code>(0,0,0)</code>的選擇器都能隨意覆蓋，一如UA樣式。</p>
+      </div>
+      <div class="Devtools">
+        <section class="CascadeRule">
+          <p class="RuleSource"><span data-framework-layer>Layer han-semantics</span><span>漢.css・<code>:where</code><output data-framework-spec>(0,2,2)</output>→<b>(0,0,0)</b></span></p>
+          <p class="Selector">:where(<span data-framework-selector>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</span>) {</p>
+          <p class="Declaration is-overridden" data-framework-declaration>margin-inline-end: .125em;</p>
+          <p class="Selector">}</p>
+        </section>
+        <section class="CascadeRule">
+          <p class="RuleSource"><span>未分層</span><span>開發者的樣式・<output data-author-spec>(0,1,1)</output></span></p>
+          <p class="Selector"><span data-author-selector>.notes cite</span> {</p>
+          <p class="Declaration" data-author-declaration>margin-inline-end: 0;</p>
+          <p class="Selector">}</p>
+        </section>
+      </div>
+      <nav class="CaseNav" aria-label="選擇器案例">
+        <button type="button" data-case-step="-1" aria-label="上一個選擇器">‹</button>
+        <button type="button" data-case-step="1" aria-label="下一個選擇器">›</button>
+      </nav>
+    </figure>
+  </article>
+
+  <article>
+    <div class="WeightIntro">
+      <div>
+        <h2>文件也輕如鴻毛</h2>
+        <p>四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。</p>
+      </div>
+    </div>
+
+    <div class="SizeLedger">
+      <div class="SizeTable">
+        <table>
+        <thead><tr><th scope="col">項目</th><th scope="col">minified</th><th scope="col">brotli</th></tr></thead>
+        <tbody>
+          <tr class="Group"><th scope="rowgroup" colspan="3">CSS</th></tr>
+          <tr data-raw="5.7" data-gzip="1.4" data-size="1.2"><th scope="row"><label><input type="checkbox" checked> 語意樣式</label></th><td>5.7KB</td><td>1.2KB</td></tr>
+          <tr data-raw="5.4" data-gzip="1.1" data-size="0.9"><th scope="row"><label><input type="checkbox" checked> 行的調整</label></th><td>5.4KB</td><td>0.9KB</td></tr>
+          <tr data-raw="1.3" data-gzip="0.4" data-size="0.3"><th scope="row"><label><input type="checkbox" checked> 段落間距</label></th><td>1.3KB</td><td>0.3KB</td></tr>
+          <tr data-raw="11.1" data-gzip="1.4" data-size="1.3"><th scope="row"><label><input type="checkbox" checked> 字體</label></th><td>11.1KB</td><td>1.3KB</td></tr>
+          <tr class="Group"><th scope="rowgroup" colspan="3">JAVASCRIPT・可選補全</th></tr>
+          <tr data-raw="33.7" data-gzip="12.0" data-size="10.8" data-js><th scope="row"><label><input type="checkbox" checked> JavaScript補全優化</label></th><td>33.7KB</td><td>10.8KB</td></tr>
+        </tbody>
+          <tfoot><tr><th scope="row">合計</th><td><output data-table-raw>57.2KB</output></td><td><output data-table-total>14.5KB</output></td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="BundleSum" aria-label="CSS與JavaScript的minified及brotli體積加總">
+        <span></span><span></span><span class="Head">minified</span><span class="Head Lead">brotli</span><span></span>
+        <span></span><span>CSS</span><output data-sum="raw-css">23.5</output><output class="Lead" data-sum="br-css">3.7</output><span></span>
+        <span class="Op">＋</span><span>JS</span><output data-sum="raw-js">33.7</output><output class="Lead" data-sum="br-js">10.8</output><span></span>
+        <span class="SumRule" aria-hidden="true"></span>
+        <span class="Op TotalCell">＝</span><span class="TotalCell"></span><output class="TotalCell" data-sum="raw-all">57.2</output><output class="TotalCell Lead" data-sum="br-all">14.5</output><span class="TotalCell Unit">KB</span>
+      </div>
+    </div>
+
+    <p>minified記錄原始碼縮減後的體積。brotli則是當前最普及的伺服端高壓縮編碼。</p>
+
+    <button class="LedgerOpen" type="button" data-open-ledger>查看完整文件體積</button>
+    <dialog class="LedgerDialog" data-ledger-dialog aria-labelledby="ledger-dialog-title">
+      <header class="DialogHead">
+        <h2 id="ledger-dialog-title">完整文件體積</h2>
+        <form method="dialog"><button type="submit" aria-label="關閉">×</button></form>
+      </header>
+      <div class="DetailsGrid">
+        <section>
+          <h3>完整傳輸尺寸</h3>
+          <table>
+            <thead><tr><th scope="col">目前選取</th><th scope="col">minified</th><th scope="col">gzip</th><th scope="col">brotli</th></tr></thead>
+            <tbody><tr><th scope="row">CSS＋可選JS</th><td><output data-detail="raw">57.2KB</output></td><td><output data-detail="gzip">16.3KB</output></td><td><output data-detail="brotli">14.5KB</output></td></tr></tbody>
+          </table>
+        </section>
+
+        <section>
+          <h3>JavaScript逐項引入</h3>
+          <table>
+            <caption>每列是單獨引入該pass後的完整bundle，已包含共用的hyperly底座，彼此不可直接相加。</caption>
+            <thead><tr><th scope="col">pass</th><th scope="col">minified</th><th scope="col">gzip</th><th scope="col">brotli</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">refinePunctuation</th><td>19.0KB</td><td>7.1KB</td><td>6.4KB</td></tr>
+              <tr><th scope="row">applyISSWithProbe</th><td>21.6KB</td><td>7.7KB</td><td>7.0KB</td></tr>
+              <tr><th scope="row">markAdjacentLines</th><td>13.7KB</td><td>5.3KB</td><td>4.8KB</td></tr>
+              <tr><th scope="row">transpileRuby</th><td>16.3KB</td><td>6.2KB</td><td>5.6KB</td></tr>
+              <tr><th scope="row">uninstallFallbacks</th><td>14.0KB</td><td>5.3KB</td><td>4.8KB</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h3>字體體積另計</h3>
+          <div class="FontTables">
+            <table>
+              <caption>傳承字形：瀏覽器只下載正文命中的切片，不是整個字族。</caption>
+              <thead><tr><th scope="col">字族</th><th scope="col">平均切片</th><th scope="col">全家</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">尚古黑體</th><td>44.0KB</td><td>4.68MB</td></tr>
+                <tr><th scope="row">尚古明體</th><td>61.3KB</td><td>6.53MB</td></tr>
+                <tr><th scope="row">源起黑體</th><td>25.7KB</td><td>16.3MB</td></tr>
+                <tr><th scope="row">源起明體</th><td>32.7KB</td><td>24.1MB</td></tr>
+                <tr><th scope="row">霞鶩文楷TC</th><td>44.7KB</td><td>13.5MB</td></tr>
+                <tr><th scope="row">霞鶩文楷</th><td>39.0KB</td><td>12.2MB</td></tr>
+                <tr><th scope="row">芫荽</th><td>37.3KB</td><td>3.68MB</td></tr>
+                <tr><th scope="row">Klee One</th><td>32.8KB</td><td>7.69MB</td></tr>
+              </tbody>
+            </table>
+            <table>
+              <caption>標點與內建輔助字體。</caption>
+              <thead><tr><th scope="col">字體</th><th scope="col">黑體</th><th scope="col">明體</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">JIS標點</th><td>10.6KB</td><td>11.6KB</td></tr>
+                <tr><th scope="row">MOE標點</th><td>13.4KB</td><td>14.8KB</td></tr>
+                <tr><th scope="row">GB標點</th><td>13.1KB</td><td>14.3KB</td></tr>
+                <tr><th scope="row">KLR標點</th><td>10.5KB</td><td>11.6KB</td></tr>
+                <tr><th scope="row">注音符號</th><td colspan="2">26.3KB</td></tr>
+                <tr><th scope="row">全形空格</th><td colspan="2">0.4KB</td></tr>
+                <tr><th scope="row">著重號</th><td colspan="2">1.1KB</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </dialog>
+  </article>
+</main>
+<script type="module">
+  const $rows = [...document.querySelectorAll('tr[data-size]')]
+  const $tableTotal = document.querySelector('[data-table-total]')
+  const $tableRaw = document.querySelector('[data-table-raw]')
+  const $bundleSums = Object.fromEntries(
+    [...document.querySelectorAll('[data-sum]')].map(($output) => [$output.dataset.sum, $output]),
+  )
+  const $detailTotals = Object.fromEntries(
+    [...document.querySelectorAll('[data-detail]')].map(($output) => [$output.dataset.detail, $output]),
+  )
+  const $ledgerDialog = document.querySelector('[data-ledger-dialog]')
+  const cases = [
+    {
+      layer: 'han-semantics',
+      frameworkSelector: ':is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))',
+      frameworkDeclaration: 'margin-inline-end: .125em;',
+      frameworkSpec: '(0,2,2)',
+      authorSelector: '.notes cite',
+      authorDeclaration: 'margin-inline-end: 0;',
+      authorSpec: '(0,1,1)',
+    },
+    {
+      layer: 'han-prose',
+      frameworkSelector: 'h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)',
+      frameworkDeclaration: 'margin-block-end: 0;',
+      frameworkSpec: '(0,0,2)',
+      authorSelector: 'article h1',
+      authorDeclaration: 'margin-block-end: 2rem;',
+      authorSpec: '(0,0,2)',
+    },
+    {
+      layer: 'han-semantics',
+      frameworkSelector: '[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])',
+      frameworkDeclaration: 'margin-inline-end: initial;',
+      frameworkSpec: '(0,2,1)',
+      authorSelector: '.tight u',
+      authorDeclaration: 'margin-inline-end: .25em;',
+      authorSpec: '(0,1,1)',
+    },
+    {
+      layer: 'han-semantics',
+      frameworkSelector: 'ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))',
+      frameworkDeclaration: 'ruby-position: inter-character;',
+      frameworkSpec: '(0,1,2)',
+      authorSelector: 'ruby.zhuyin',
+      authorDeclaration: 'ruby-position: over;',
+      authorSpec: '(0,1,1)',
+    },
+    {
+      layer: 'han-semantics',
+      frameworkSelector: ':lang(ko):not(:lang(ko-Kore))',
+      frameworkDeclaration: '--han-quotes: “ ” ‘ ’;',
+      frameworkSpec: '(0,2,0)',
+      authorSelector: '.hanja :lang(ko)',
+      authorDeclaration: '--han-quotes: 「 」 『 』;',
+      authorSpec: '(0,2,0)',
+    },
+  ]
+  const caseFields = {
+    frameworkSelector: document.querySelector('[data-framework-selector]'),
+    frameworkDeclaration: document.querySelector('[data-framework-declaration]'),
+    frameworkSpec: document.querySelector('[data-framework-spec]'),
+    authorSelector: document.querySelector('[data-author-selector]'),
+    authorDeclaration: document.querySelector('[data-author-declaration]'),
+    authorSpec: document.querySelector('[data-author-spec]'),
+  }
+  const $frameworkLayer = document.querySelector('[data-framework-layer]')
+  let caseIndex = 0
+
+  const renderCase = () => {
+    const current = cases[caseIndex]
+    Object.entries(caseFields).forEach(([key, $field]) => { $field.textContent = current[key] })
+    $frameworkLayer.textContent = `Layer ${current.layer}`
+  }
+
+  const renderTotal = () => {
+    const selected = $rows.filter(($row) => $row.querySelector('input').checked)
+    const cssRows = selected.filter(($row) => !$row.hasAttribute('data-js'))
+    const jsRows = selected.filter(($row) => $row.hasAttribute('data-js'))
+    const sum = (rows, key) => rows.reduce((total, $row) => total + Number($row.dataset[key]), 0)
+    const total = sum(selected, 'size')
+    const value = `${total.toFixed(1)}KB`
+
+    $tableTotal.value = value
+    $tableRaw.value = `${sum(selected, 'raw').toFixed(1)}KB`
+    const bundleValues = {
+      'raw-css': sum(cssRows, 'raw'),
+      'br-css': sum(cssRows, 'size'),
+      'raw-js': sum(jsRows, 'raw'),
+      'br-js': sum(jsRows, 'size'),
+      'raw-all': sum(selected, 'raw'),
+      'br-all': sum(selected, 'size'),
+    }
+    Object.entries(bundleValues).forEach(([key, number]) => { $bundleSums[key].value = number.toFixed(1) })
+    for (const [kind, $output] of Object.entries($detailTotals)) {
+      const key = kind === 'brotli' ? 'size' : kind
+      const sum = selected.reduce((total, $row) => total + Number($row.dataset[key]), 0)
+      $output.value = `${sum.toFixed(1)}KB`
+    }
+  }
+
+  $rows.forEach(($row) => $row.querySelector('input').addEventListener('change', renderTotal))
+  document.querySelectorAll('[data-case-step]').forEach(($button) => {
+    $button.addEventListener('click', () => {
+      caseIndex = (caseIndex + Number($button.dataset.caseStep) + cases.length) % cases.length
+      renderCase()
+    })
+  })
+  document.querySelector('[data-open-ledger]').addEventListener('click', () => $ledgerDialog.showModal())
+  $ledgerDialog.addEventListener('click', (event) => {
+    if (event.target === $ledgerDialog) $ledgerDialog.close()
+  })
+</script>
+</body>
+</html>

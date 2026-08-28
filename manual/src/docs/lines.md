@@ -48,7 +48,7 @@ title: 行的調整
 
 - **繁中（`:lang(zh)`）**：除MOE（教育部置中）外皆懸掛。標點設`off`（Diantenjeom不畫、字形回落到CJK正文字體）時再依`--han-use-heritage-glyphs-for-hant`細分：`webfont`（尚古／源起，置中）不懸掛、`system-ja`（日文系統字體，偏倚）懸掛、`off`（國標系統字體，置中）不懸掛。
 - **簡中（`:lang(zh-Hans)`）／日文（`:lang(ja)`）**：除MOE外皆懸掛（`off`亦視為偏倚而懸掛）。
-- **韓文漢字混寫（`:lang(ko-Hant)`）**：與其他語言同一條規則——`--han-punctuation-ko`除MOE外皆懸掛（KLR的`。、`貼角、偏倚，照懸）。標點慣例開放給四語言之前，ko只有`KLR｜off`兩值、無置中選項而一律懸掛；現在可設MOE，便也跟着不懸掛。
+- **韓文漢字混寫（`:lang(ko-Kore)`）**：與其他語言同一條規則——`--han-punctuation-ko`除MOE外皆懸掛（KLR的`。、`貼角、偏倚，照懸）。標點慣例開放給四語言之前，ko只有`KLR｜off`兩值、無置中選項而一律懸掛；現在可設MOE，便也跟着不懸掛。
 
 要繞過整套自動判準，直接指定`hang`或`compress`。
 

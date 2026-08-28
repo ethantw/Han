@@ -36,7 +36,7 @@ import '@hanzi.pro/han.css/auto'     // 任意のJSコンパニオン（フォ�
 |------|--------------|--------|
 | **セマンティクス** | `han-semantics` | 漢字組版における意味要素の見え方——圏点（`--han-em-symbol`、`--han-em-dot-position`）、`<cite>`の書名号（`--han-cite-title-marks`）、固有名詞の傍線、ルビ。そして擬似斜体の廃止 |
 | **行の調整** | `han-lines` | 行内の按配——約物の詰めと行末のぶら下げ（`--han-punctuation-refinement`）、文字種間の間隙（`--han-text-autospace`） |
-| **段落組み** | `han-prose` | ブロック方向のリズム——見出し・段落・リスト間の余白と、文字を単位とする字下げ（`--han-prose`、`--han-prose-indent`。既定では`<article>`のみに作用） |
+| **段落組み** | `han-prose` | ブロック方向のリズム——見出しとその本文のあいだの余白、引用の楷書（`--han-prose`。既定では`<article>`のみに作用） |
 | **フォント** | `han-fonts` | 書体スタックとWebフォント——伝承字形（`--han-use-heritage-glyphs-for-hant`）、約物書体、楷書体の系統（`--han-use-cursive`） |
 
 四つのモジュールは互いに独立し、全部入れても一つだけ選んでもよい。それぞれ自分のカスケードレイヤーに住み、あなたのスタイルと干渉しない。モジュール単位で選ぶには——

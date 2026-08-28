@@ -35,9 +35,9 @@ import '@hanzi.pro/han.css/auto'     // 可選的JS補全（回落）
 
 | 模組 | cascade layer | 管什麼 |
 |------|--------------|--------|
-| **語意樣式標準化** | `han-semantics` | 語意元素在漢字排版下應有的樣式：著重號（`--han-em-symbol`、`--han-em-dot-position`）、書名號（`--han-cite-title-marks`）、專名號、注音，並取消偽斜體 |
+| **語意樣式標準化** | `han-semantics` | 語意元素在漢字排版下應有的樣式：著重號（`--han-em-symbol`、`--han-em-dot-position`）、書名號（`--han-cite-title-marks`）、專名號、注音、引文與清單共用的縮排格線（`--han-structural-indent`），並取消偽斜體 |
 | **行的調整** | `han-lines` | 行內的分寸：標點擠壓與行尾懸掛（`--han-punctuation-refinement`）、跨文種間隙（`--han-text-autospace`） |
-| **段落間距調整** | `han-prose` | 塊軸的節奏：標題、段落、清單之間的留白，以字為尺的縮排（`--han-prose`、`--han-prose-indent`，預設只作用在`<article>`） |
+| **段落間距調整** | `han-prose` | 塊軸的節奏：標題與所屬內文之間的留白、引文的楷體（`--han-prose`，預設只作用在`<article>`） |
 | **字體** | `han-fonts` | 字體堆疊與Web字體：傳承字形（`--han-use-heritage-glyphs-for-hant`）、標點字體、楷體家族（`--han-use-cursive`） |
 
 四個模組互相獨立，可以全裝、也可以只挑一個。每個住在自己的cascade layer裡，與你的樣式互不干涉。按模組挑選：

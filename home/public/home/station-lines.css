@@ -229,7 +229,7 @@
       --w-main: calc(100vw - var(--w-console));
       /* `round()` 收到刻度上：容器寬除出來的是任意小數，而每一個相異字級
          都要 Blink 建一份 fallback list（SKILL § 13；round()：Baseline 2024）。 */
-      --fs-bg-text: round(calc(var(--w-main) / 9), 0.125rem);
+      --fs-bg-text: round(calc(var(--w-main) / 8), 0.125rem);
       /* 樣張自己的行高。呼吸的波長要按這個算——::before 不是 <p> 的子孫，
          `lh` 在它身上取到的是繼承來的正文行高（1.75），拿來當「幾行」會
          多算三成。 */

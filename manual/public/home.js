@@ -35,11 +35,13 @@ import { initSnippet } from '/home/snippet.js'
 import { initLeadForme } from '/home/lead-forme.js'
 import { initDashClip } from '/home/dash-clip.js'
 import { initPunctLang } from '/home/punct-lang.js'
+import { initPunctLangLayout } from '/home/punct-lang-layout.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
 import { initPaperReader } from '/home/paper-reader.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
+import { initSizeDialog } from '/home/size-dialog.js'
 import { initStripNav } from '/home/strip-nav.js'
 import { initDevReset } from '/home/dev-reset.js'
 import { highlightAll } from '/home/highlight.js'
@@ -99,6 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // station②'s per-language punctuation demo — its selects mirror the console's
   // per-language punctuation controls (single source of truth = console config).
   initPunctLang()
+  // The four-language specimen stays 2×2 only when its measured cards plus
+  // its controls and caption all fit below the sticky header. Short viewports
+  // become a horizontal rail; no height breakpoint is guessed in CSS.
+  initPunctLangLayout()
   initConsoleCollapse()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
@@ -112,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // station 伍's addition prices what the console is actually configuring:
   // unchecked parts go grey and drop out of the footing
   initLedger()
+  initSizeDialog()
   // …and 例5.1 cycles through real library selectors, reader-driven
   initCarousel()
   // 四條長帶的左右箭頭（站①四版、站②鉛字盤、站③兩篇、站肆工作區），外加

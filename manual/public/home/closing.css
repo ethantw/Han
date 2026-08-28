@@ -12,34 +12,27 @@
   & {
     position: relative;
     isolation: isolate;
-    overflow: clip;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.75rem;
     padding: 3.5rem var(--gutter);
     border-block-start: 1px solid var(--ui-rule);
-    background: var(--ui-panel);
+    background: transparent;
     text-align: center;
   }
 
-  /* the mirror watermark — a single 漢 centred behind the sign-off. Same
-     mechanism as `[data-station]::before` (z-index:-1 under an isolate context),
-     centred rather than corner-anchored. Always in its settled state (the
-     Closing isn't a reveal target). */
+  /* Closing follows the same fixed-measure/full-viewport-ground contract as
+     the stations above it. */
   &::before {
-    content: attr(data-wm);
+    content: '';
     position: absolute;
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    translate: -50% -50%;
+    inset-block: 0;
+    inset-inline-start: calc((100vw - 100%) / -2 - var(--main-console-shift, 0px));
+    inline-size: calc(100vw + var(--main-console-shift, 0px));
     z-index: -1;
-    font-family: var(--han-font-alternative);
-    font-size: clamp(12rem, 40vw, 20rem);
-    line-height: 1;
-    color: var(--ui-wm);
+    background: var(--ui-panel);
     pointer-events: none;
-    user-select: none;
   }
 
   .Siblings {

@@ -6,9 +6,9 @@ import { test, expect, type Page } from '@playwright/test'
  *
  * Collapse: the `.ConsoleToggle` handle is a real checkbox (dark-mode
  * recipe): checked = collapsed, layout is pure CSS via
- * `body:has(.ConsoleToggle input:checked)` — the body grid animates its
- * left column to 0 so header + main slide LEFT to fill (never an
- * overlay). The choice persists to `localStorage['han-console-collapsed']`
+ * `body:has(.ConsoleToggle input:checked)`. Main keeps a fixed measure and
+ * translates half a console-width between centres. Header stays 100vw: its
+ * right nav is fixed while its toggle/logo move one full console-width.
  * and is restored pre-paint by an inline script in `_home.html`.
  *
  * 字體 group: zhuyinWebfont + punct.hant live in the FLAT 繁體專項
@@ -27,7 +27,7 @@ const box = (page: Page, selector: string) =>
   })
 
 test.describe('Task B — collapsible side console', () => {
-  test('handle closes the aside column; main shifts left + widens; console never overlays main', async ({ page }) => {
+  test('handle closes the aside column; main shifts half while only header left chrome shifts a full column', async ({ page }) => {
     await page.goto('/')
 
     const $console = page.locator('han-console')
@@ -38,25 +38,32 @@ test.describe('Task B — collapsible side console', () => {
     await expect(checkbox).not.toBeChecked()
 
     const mainBefore = await box(page, 'main')
+    const headerBefore = await box(page, 'body > header')
+    const logoBefore = await box(page, 'body > header > .Logo')
+    const navBefore = await box(page, 'body > header > nav')
     expect(mainBefore.x).toBeGreaterThan(100) // console column occupies the left
 
     // the input is visually hidden — click the label
     await toggle.click()
     await expect(checkbox).toBeChecked()
 
-    // Column animates to 0 → main slides left and widens. Poll past the
-    // 250ms transition.
+    // Both fixed-measure columns move left by half the 280px console.
     await expect
       .poll(async () => (await box(page, 'main')).x)
-      .toBeLessThan(2)
+      .toBeCloseTo(mainBefore.x - 140, 0)
     const mainAfter = await box(page, 'main')
-    expect(mainAfter.width).toBeGreaterThan(mainBefore.width)
+    const headerAfter = await box(page, 'body > header')
+    const logoAfter = await box(page, 'body > header > .Logo')
+    const navAfter = await box(page, 'body > header > nav')
+    expect(mainAfter.width).toBeCloseTo(mainBefore.width, 5)
+    expect(headerAfter.width).toBeCloseTo(headerBefore.width, 5)
+    expect(headerAfter.width).toBeCloseTo(1280, 0)
+    expect(headerAfter.x).toBeCloseTo(headerBefore.x, 0)
+    expect(logoAfter.x).toBeCloseTo(logoBefore.x - 280, 0)
+    expect(navAfter.x).toBeCloseTo(navBefore.x, 0)
 
-    // Not an overlay — but the mechanism changed (d4bb37a): the console is a
-    // FIXED panel that stays put at 0..280; collapsing removes the body's
-    // padding so header + main slide left OVER it. The invariant that
-    // matters is z-order: anywhere in the old console column, hit-testing
-    // must reach main's content, never the console.
+    // Once collapsed, hit-testing in the old console column must reach page
+    // content, never the off-stage console.
     const covered = await page.evaluate(() => {
       const hits = [200, 400, 600].map((y) => document.elementFromPoint(140, y))
       return hits.every(($el) => $el !== null && !$el.closest('han-console'))
@@ -76,9 +83,8 @@ test.describe('Task B — collapsible side console', () => {
     // The pre-paint inline script restores the checkbox synchronously as
     // it's parsed, so the page lays out collapsed with no flash.
     await expect(page.locator('.ConsoleToggle input')).toBeChecked()
-    await expect
-      .poll(async () => (await box(page, 'main')).x)
-      .toBeLessThan(2)
+    const collapsed = await box(page, 'main')
+    expect(collapsed.x).toBeGreaterThan(0)
 
     // reopening clears the stored flag
     await page.locator('.ConsoleToggle').click()

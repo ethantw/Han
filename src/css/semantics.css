@@ -64,7 +64,20 @@
  *   Examples: `--han-em-symbol`, `--han-em-dot-position`,
  *   `--han-font-default`, `--han-quotes`.
  *
- * Short form: **own enum → register; transparent proxy → don't.**
+ * **CANNOT REGISTER**, whatever the heuristic says, when the value is a
+ *   font-relative length meant to keep scaling. Registration takes two things
+ *   away at once: an `initial-value` must be computationally independent, so
+ *   `2em` is rejected and the whole `@property` rule is dropped; and a
+ *   registered `<length>` is absolutised where it is declared, so a `:root`
+ *   value inherits as the root's px and stops answering to the element's own
+ *   font-size. Measured: 2em on a 32px element gives 0 registered with an
+ *   `em` initial value, 32px registered with a `:root` declaration, and 64px
+ *   unregistered — only the last is the indent behaving like an indent.
+ *   `--han-structural-indent` is why this paragraph exists; the same reasoning
+ *   already shapes `text-underline-offset` further down.
+ *
+ * Short form: **own enum → register; transparent proxy → don't; font-relative
+ * length → cannot, it would freeze.**
  */
 
 @property --han-semantics {
@@ -186,6 +199,14 @@
  * ========================================================================== */
 
 :where(:root) {
+  /* Shared start-edge grid for structural blocks — 縮二字. Unregistered on
+   * purpose: registering a `<length>` would absolutise it here and the indent
+   * would stop scaling with the element's font-size (see the registration
+   * heuristic at the top of this file). Single value only — each consumer
+   * splices it into its own shorthand, and a second length would expand to
+   * `2em 0 0` at the start-only sites and drop those declarations there. */
+  --han-structural-indent: 2em;
+
   /* Decoration lines refinements */
   --han-underline-offset: .125em;
   --han-adjacent-lines-skip-gap-fallback: .125em;
@@ -224,7 +245,7 @@
   --han-quotes: '\2018' '\2019' '\201C' '\201D';
 }
 
-:where(:lang(zh), :lang(ja), :lang(ko-Hant)) {
+:where(:lang(zh), :lang(ja), :lang(ko-Kore)) {
   --han-quotes: '\300C' '\300D' '\300E' '\300F';
 }
 
@@ -237,22 +258,37 @@
   --han-em-dot-position: over right;
 }
 
-/* ko-Hant (Hanja-mixed Korean) titles books with 「」／『』, same as ja —
+/* ko-Kore (Hanja-mixed Korean) titles books with 「」／『』, same as ja —
  * reuses its own --han-quotes (already 「」『』 from the rule above). Plain
  * :lang(ko) deliberately stays out of this: no Hanja mixing, no CJK-bracket
- * title marks, same split the quotes system already draws. */
-:where(:lang(ko-Hant)) {
+ * title marks, same split the quotes system already draws.
+ *
+ * `Kore` is the script subtag for Hangul-with-Han, which is what mixed
+ * Korean IS — and, being a script the browser recognises as Korean, it also
+ * leaves system font fallback pointing at Korean faces. A Han-flavoured
+ * subtag would name the writing system without naming the language, and the
+ * engine then guesses the locale from the script instead: it hands the Han
+ * characters to some other CJK locale's font while the Hangul beside them
+ * stays Korean. BCP 47 lets the subtag be dropped here (Korean suppresses
+ * `Kore`), but it is what marks this branch, so it is spelled out on
+ * purpose — see docs/notes/2026-08-27-lang-subtag-font-fallback.md. */
+:where(:lang(ko-Kore)) {
   --han-title-marks: var(--han-quotes);
 }
 
 /* Explicit Western quotes for plain :lang(ko) — functionally identical to
  * falling through to :root's default, but spelled out so it doesn't rely on
  * silent inheritance (and doesn't quietly break if :root's default ever
- * changes for an unrelated reason). `:not(:lang(ko-Hant))` is load-bearing:
- * bare `:lang(ko)` also matches `ko-Hant` (prefix match), and both rules
+ * changes for an unrelated reason). `:not(:lang(ko-Kore))` is load-bearing:
+ * bare `:lang(ko)` also matches `ko-Kore` (prefix match), and both rules
  * are zero-specificity `:where()`, so without the exclusion this would win
- * on source order and clobber the ko-Hant override above. */
-:where(:lang(ko)):where(:not(:lang(ko-Hant))) {
+ * on source order and clobber the ko-Kore override above.
+ *
+ * Note this reads bare `ko` as modern (Hangul-only) Korean, which is the
+ * living convention rather than the letter of BCP 47 — there, Korean's
+ * suppressed script already implies the mixed form. Mixing is therefore
+ * opt-in via the tag above, never inferred. */
+:where(:lang(ko)):where(:not(:lang(ko-Kore))) {
   --han-quotes: '\201C' '\201D' '\2018' '\2019';
 }
 
@@ -316,6 +352,104 @@
  */
 :where(*):where(:lang(zh), :lang(ja), :lang(ko)) {
   text-decoration-inset: var(--han-text-decoration-inset);
+}
+
+/* ========================================================================== *
+ * Grouping content・區塊縮排格線
+ * ========================================================================== */
+
+/**
+ * One indent value, shared by every structural block, so their start edges
+ * line up. The convention behind the value is 縮二字 (indent by two Han
+ * characters); the grid is what decides who lines up against it.
+ *
+ * `<figure>` has no convention of its own — it joins for alignment. The three
+ * routinely sit next to each other in an article, and a start edge off by the
+ * 8px between `2em` and the UA's `40px` reads as wrong without reading as
+ * anything in particular.
+ *
+ * None of these rules ADDS an indent: the UA already indents all four
+ * (measured, no author styles: `blockquote` / `figure` `margin-inline:
+ * 40px 40px`, lists `padding-inline-start: 40px`). They restate an existing
+ * indent against the font size. So `<nav>` menus and breadcrumbs are
+ * unaffected in the way that matters — whatever zeroed the UA's 40px still
+ * zeroes this.
+ *
+ * `blockquote` keeps the UA's symmetric shape (`2em 2em`, not `2em 0`).
+ * Indenting only the start edge would be us changing what a blockquote IS,
+ * which needs a sourced convention behind it; restating 40px as 2em needs
+ * nothing. Authors wanting the one-sided form set `margin-inline-end: 0`.
+ *
+ * Turning the grid off is `--han-semantics: off`, and it needs no
+ * counter-value — `margin` / `padding` don't inherit, so with our declaration
+ * gone the UA's 40px comes back on its own. (Contrast the
+ * `text-underline-offset` block below, which inherits and therefore does need
+ * one.) Note the two knobs differ: `--han-structural-indent: 0` keeps our
+ * rules and sets them to zero; `--han-semantics: off` returns the UA's 40px.
+ *
+ * Each element also takes a per-element override — `-blockquote`, `-figure`,
+ * `-list`, `-poem` — which is what lets a single edge move WITHOUT giving up
+ * the language gate below; an author's own rule would have to restate that
+ * gate to match. They accept the full 1–2 value shorthand, hence the
+ * shorthand properties throughout even where only the start edge is set by
+ * default: `padding-inline-start: 2em 0` is invalid at computed-value time
+ * and would drop the whole declaration, silently.
+ *
+ * The fallback is composed per site rather than declared once, so each
+ * element keeps its own default shape — symmetric for the quoted blocks,
+ * start-only for lists and verse — off ONE shared length. Overriding with a
+ * single value therefore reads as symmetric everywhere, including where the
+ * default was not.
+ */
+@container style(--han-semantics: on) {
+  /**
+   * Gated on the PARENT's language, the only rule in this file that reads an
+   * ancestor rather than the element itself — deliberate, because a grid is a
+   * property of the container, not of the items. An English container holding
+   * an `<ol lang="zh">` beside an `<ol lang="de">` would otherwise indent them
+   * 2em and 40px, which reads as ragged. The container wins: that `zh` list
+   * keeps the UA's 40px.
+   *
+   * The child combinator is load-bearing. A descendant combinator matches when
+   * ANY ancestor is CJK, so a `<section lang="en">` inside a zh document would
+   * fail to hold its own. `:lang()` resolves through inheritance, so unmarked
+   * wrapper elements need no special handling.
+   */
+  :where(:is(:lang(zh), :lang(ja), :lang(ko)) > blockquote) {
+    margin-inline: var(--han-structural-indent-blockquote, var(--han-structural-indent));
+  }
+
+  :where(:is(:lang(zh), :lang(ja), :lang(ko)) > figure) {
+    margin-inline: var(--han-structural-indent-figure, var(--han-structural-indent));
+  }
+
+  :where(:is(:lang(zh), :lang(ja), :lang(ko)) > :is(ol, ul)) {
+    padding-inline: var(--han-structural-indent-list, var(--han-structural-indent) 0);
+  }
+
+  /* Cancels the grid inside the grid — without it a figure inside a
+   * blockquote compounds to 4em and falls off the line the grid exists to
+   * hold. `initial` is 0 here (margin's initial value), NOT the UA's 40px,
+   * which is exactly what's wanted.
+   *
+   * Descendant, not child: the grid above fires on whatever the figure's
+   * PARENT is, so a figure one wrapper deep inside the blockquote is
+   * indented too and needs the same cancelling. Not language-gated either,
+   * for the matching reason — it offsets our own declaration, so it has to
+   * reach everywhere that one reached. */
+  :where(blockquote figure) {
+    margin-inline: initial;
+  }
+
+  /* A class, and unlike everything around it not language-gated: the author
+   * opted in by writing it, and verse is set the same way whichever CJK
+   * language it is. */
+  :where(.poem-like) {
+    :where(p)&,
+    & :where(p) {
+      margin-inline: var(--han-structural-indent-poem, var(--han-structural-indent) 0);
+    }
+  }
 }
 
 /* ========================================================================== *
@@ -392,7 +526,7 @@
    * per-property conditions readable on the `<cite>` ITSELF (today the mode
    * must sit on an ancestor). The wavy skip-gap below migrates together.
    */
-  :where(cite:is(:lang(zh), :lang(ja), :lang(ko-Hant))) {
+  :where(cite:is(:lang(zh), :lang(ja), :lang(ko-Kore))) {
     & {
       quotes: var(--han-title-marks);
     }
@@ -418,11 +552,12 @@
         quotes: none;
         text-decoration-line: underline;
         text-decoration-style: wavy;
+        text-decoration-thickness: .0625rem;
       }
     }
 
     @container style(--han-cite-title-marks: none) {
-      &:where(:lang(zh), :lang(ja), :lang(ko-Hant)) {
+      &:where(:lang(zh), :lang(ja), :lang(ko-Kore)) {
         quotes: none;
       }
       &:where(:lang(zh)) {

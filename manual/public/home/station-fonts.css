@@ -19,16 +19,9 @@
        lift) that margin is NEGATIVE — a positive margin here would collapse
        into it and silently eat part of the lift. */
     margin: 0;
-    /* the forme below is lifted so its corner rides up over this card
-       (lead-forme.css § showpiece · the lift). That negative margin collapses
-       out of the forme's wrapper <div>, so the WRAPPER's box — not just the
-       forme — starts up here and, being a later sibling, wins every hit test
-       over the card. Raise the card and the card's own content answers the
-       pointer again (the 護眼模式 toggle, selecting the specimen line).
-       This is a fight with the WRAPPER, not with the forme: the forme itself
-       sits a layer higher still (lead-forme.css § the lift) so its slugs
-       print ON the specimen line, and it stays out of the pointer's way by
-       being `pointer-events: none` rather than by being underneath. */
+    /* The forme below is lifted so its corner rides up over this card. Raise
+       the specimen above the wrapper that owns that negative margin; the
+       forme itself remains higher still and ignores pointer events. */
     position: relative;
     z-index: 1;
   }
@@ -60,79 +53,7 @@
     }
 
     .Faces { grid-area: 1 / 1; }
-    .Toggle { grid-area: 3 / 1; }
-    figcaption { grid-area: 1 / 2 / span 3; }
-  }
-
-  /* 護眼模式 — the two 對照組 rows drop out of the card. `display: none`, not
-     `visibility`/opacity: the row must give its height back so the three
-     heritage faces close ranks, which is the whole point of the toggle. The
-     `:last-child { border-block-end: 0 }` rule below still lands right —
-     楷 is last either way, and the hidden rows were never last. */
-  &:has(input[name="face-eyecare"]:checked) .Faces > li:is(
-    [data-face="system"],
-    [data-face="system-ming"]
-  ) {
-    display: none;
-  }
-}
-
-/* 護眼模式's switch — the shared `.Toggle` primitive (common/controls.css).
-   That primitive consumes the console's `--_*` token layer, which is adopted
-   into the shadow root only, so a light-DOM `.Toggle` has to re-point those
-   tokens at the page palette. Same five lines as station①'s 語意樣式 switch
-   (station-semantics.css § 前／後 switch) — the switches look identical
-   because they ARE the same component. */
-.Toggle.for-eyecare {
-  --_rule: var(--ui-rule);
-  --_bg: var(--ui-bg);
-  --_accent: var(--ui-accent);
-  --_supplement-text: var(--ui-supplement-text);
-
-  & {
-    /* `.Toggle` is inline-flex; as a grid item it would still stretch to the
-      card's full 30rem, making the click target a mostly-empty strip. */
-    justify-self: start;
-    margin-inline-start: .25rem;
-    /* 開關連同它的標籤不參與收縮：ja 的「目にやさしいモード」被壓到 120px
-      就從詞中間斷開（實測「目にやさし／いモード」），而這是一個點擊目標，
-      斷成兩行既難點也難讀。讓後半句去換行就好。 */
-    flex-shrink: 0;
-
-    font-size: .875rem;
-  }
-
-  p:has(&) {
-    & {
-      display: flex;
-      margin-block: 1.5em 1em;
-      align-items: center;
-      font-family: var(--han-sans);
-      /* 這一截不跟版心同調兩端對齊（頁面的 justify 來自 station-frame.css
-         § main，那是給 30em 以上欄寬用的）。開關佔掉一半，剩給句子的只有
-         十來字，一換行就被撐開——實測 en 的「to hide those frightful」
-         字間肉眼可見地鬆。同 station-lines.css § aside 的取捨。 */
-      text-align: start;
-    }
-    /* 這一句被開關切成兩截，而兩截的長度隨語言差三倍：hant 是「，隱藏驚悚
-       的國字標準字體」十二個字，ja/ko 的整句都壓在標籤之後，en 則是前後
-       各一截。只有句尾那截該讓步：flex item 的最小尺寸預設是 min-content，
-       量到的是整句，把卡片撐破；歸零之後長句在自己的欄位裡換行。
-
-       前綴（開啓／Turn on）反過來一格都不能收：它只有兩三個字，又用
-       `&nbsp;` 綁住不斷行，收縮的結果不是換行而是溢出——實測 en 的
-       「Turn on」被開關壓在身上。 */
-    > span {
-      flex-shrink: 0;
-    }
-    > span.note {
-      flex-shrink: 1;
-      min-inline-size: 0;
-    }
-    &:has(input:checked) .to-turn-on,
-    &:has(input:not(:checked)) .to-turn-off {
-      display: none;
-    }
+    figcaption { grid-area: 1 / 2; }
   }
 }
 
@@ -166,44 +87,6 @@
     &[data-face="serif"]   { font-family: var(--han-serif); }
     &[data-face="cursive"] { font-family: var(--han-cursive); }
 
-    /* 對照組 rows — the visitor's own national-standard system faces, each
-       set immediately before its heritage answer. Deliberately NOT
-       --han-sans/--han-serif (those resolve to the heritage webfonts) and
-       NOT bare sans-serif/serif (a JP-font fallback would draw non-standard
-       forms and the contrast would lie); the explicit TC stacks hit the
-       MOE-standard faces on all three platforms. Stacks copied from ziano
-       demo src/css/why.css § .compare .standard / .standard-ming. Smaller
-       and grey but the SAME weight — the comparison's evidence is the
-       letterforms, never the styling. Punctuation refinement off + native
-       trim back to the UA default (:root sets trim-start): the rows show
-       the untreated out-of-the-box rendering, marks included. */
-    &[data-face="system"],
-    &[data-face="system-ming"] {
-      padding-block: .125rem;
-      background-color: var(--palette-cloud);
-      color: var(--ui-supplement-text-2q);
-      --han-punctuation-refinement: none;
-      text-spacing-trim: normal;
-
-      b {
-        color: var(--ui-supplement-text);
-        font-weight: inherit;
-      }
-    }
-    &[data-face="system"] {
-      font-family:
-        'PingFang TC', 'Microsoft JhengHei',
-        'Noto Sans TC',
-        sans-serif
-      ;
-    }
-    &[data-face="system-ming"] {
-      font-family:
-        'Songti TC', PMingLiU,
-        'Noto Serif TC',
-        serif
-      ;
-    }
     &:last-child { border-block-end: 0; }
 
     small {
@@ -373,6 +256,19 @@
    punctuation <select>. The selected value drives the han punctuation
    variable on the cell's own <li> via :has(option:checked) — pure CSS, no
    JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
+#station-fonts {
+  /* 本站的鉛字盤、破折號柱與 sticky 樣張會在切 writing-mode 時一起重排。
+     只禁 `.PunctLang` 不夠：Chrome 會改挑同站的底圖當替代 scroll anchor，矮
+     視窗下仍把頁面拉走數千像素。本站的幾何已有自己的量測管線，整站退出 UA
+     scroll anchoring 才是一個 writer。 */
+  overflow-anchor: none;
+  /* Its sticky specimen legitimately paints across the following station's
+     transparent section box until this station's own boundary releases it.
+     Keep the owning station in front during that overlap so hit testing
+     matches the pixels the reader sees. */
+  z-index: 1;
+}
+
 :where(.PunctLang) {
   & {
     /* 這四格現在住在 `.TwoEmDashes` 裡（2026-08-28），而且**釘在畫面上**：讀者
@@ -383,22 +279,31 @@
        .TwoEmDashes 的 `min-block-size`），所以釘住的距離剛好是兩顆之間。
        頂距讀 `--h-header`：頁首是固定的，樣張不能躲到它下面。 */
     position: sticky;
+    /* writing-mode 切換會徹底重排四張卡；若讓 Chrome 從卡內挑 scroll anchor，
+       它會為了保住某一行文字而把整頁捲動數千像素，藥丸便像「消失」了一樣。
+       本 figure 自己有 sticky＋量測定位，不需要瀏覽器再替它補償。 */
+    overflow-anchor: none;
     inset-block-start: calc(var(--h-header) + 1.5rem);
+    /* 第三列，但**不拉伸**：那一列有幾千像素高（柱的長度），拉伸之後這一格
+       比視窗還高，sticky 就只是普通的捲動。 */
+    grid-row: 3;
+    align-self: start;
     /* 與上面兩段文案至少隔 120px（owner 2026-08-28：貼太近）。 */
     margin-block: 7.5rem clamp(1.5rem, 4vw, 2.5rem);
   }
+  /* DOM 的四語順序保持不變；實際呈現固定由下面的 rail 規則接管。 */
   ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1px;
     background: var(--ui-rule);
     border: 1px solid var(--ui-rule);
     border-radius: 0.6rem;
-    overflow: clip;
   }
+
   li {
     display: flex;
     flex-direction: column;
@@ -438,8 +343,201 @@
     font-size: .875rem;
   }
 }
-@media (width < 34rem) {
-  :where(.PunctLang) ul { grid-template-columns: 1fr; }
+
+/* 同站①四語報：四語永遠留在一列 rail，邊緣切到下一張就是可捲提示。 */
+:where(.PunctLang[data-layout="rail"]) {
+  /* RTL implicit tracks must not feed their intrinsic width back into the
+     parent grid. The rail may bleed; the figure (and therefore pills/caption)
+     keeps the exact width measured in horizontal state. */
+  inline-size: var(--pl-figure-inline-size);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+
+  ul {
+    /* 同 `.Prose`：破出版心的是捲動帶自己，不是包著藥丸與 figcaption 的 figure。
+       左緣仍在正文欄，右緣由 punct-lang-layout.js 算到 main 的實際頁緣。 */
+    /* `inline-size` 不能直接寫成頁面寬：這是 grid item，指定寬會反過來參與
+       intrinsic track sizing，把父 figure（連同藥丸、圖說）一起撐出去。
+
+       完整照 `.Prose` 的 stage：負 margin 向**兩側**破到 main 邊緣；start padding
+       再把第一張送回原正文欄。初始畫面仍對齊，捲動後卡片則能穿過這段 padding，
+       直到頁面邊緣才被裁掉——不是在原版心裡消失。 */
+    box-sizing: border-box;
+    inline-size: auto;
+    /* Physical on purpose: the stage turns RTL in vertical mode, while these
+       two values were measured from the page's physical left/right edges. */
+    margin-left: calc(-1 * var(--pl-rail-inline-start));
+    margin-right: calc(-1 * var(--pl-rail-inline-end));
+    padding-left: var(--pl-rail-inline-start);
+    padding-right: var(--plate-pad);
+    scroll-padding-left: var(--pl-rail-inline-start);
+    /* Apple-style stage：軌道本身沒有「一只大容器」的外觀，卡片才是物件。
+       共同框只屬於上面的 2×2 table 狀態；rail 讓卡片帶著自己的框越出版心。 */
+    --pl-rail-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    gap: var(--pl-rail-gap);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    grid-template-columns: none;
+    grid-template-rows: minmax(0, auto);
+    grid-auto-flow: column;
+    /* Stage 可以 full-bleed，卡片不跟著膨脹：寬度沿用原 2×2 figure 的半欄。
+       所以 grid→rail 只是排法改變，不是卡片忽然長成頁面的一半。 */
+    grid-auto-columns:
+      calc((100cqi - 3 * var(--pl-rail-gap)) / var(--pl-visible-count, 2.5));
+    block-size: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    /* 同段落長帶：卡片在頁緣被切與外部箭頭已經說明「可以捲」，原生 scrollbar
+       留在卡片裡只會被讀成另一層容器。 */
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  li {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    align-self: start;
+    block-size: fit-content;
+    border: 1px solid var(--ui-rule);
+    border-radius: 0.6rem;
+    overflow: clip;
+    scroll-snap-align: start;
+  }
+
+  p {
+    /* Shrink when a long language reaches the measured ceiling, but never
+       grow merely to equal the tallest sibling; that growth was the large
+       white hole between copy and its language selector. */
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    min-block-size: 0;
+    overflow: clip;
+  }
+
+}
+
+/* 四張都保有可讀行長時不假裝成 carousel：同一列完整比較，沒有捲動 chrome。 */
+:where(.PunctLang[data-layout="grid"]) {
+  inline-size: calc(100% + var(--df-copy-inset));
+  max-inline-size: none;
+  margin-inline-start: calc(-1 * var(--df-copy-inset));
+
+  ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--pl-rail-gap, clamp(0.75rem, 1.5vw, 1.25rem));
+    background: transparent;
+    border: 0;
+    overflow: visible;
+  }
+
+  li {
+    align-self: start;
+    border: 1px solid var(--ui-rule);
+    border-radius: 0.6rem;
+    overflow: clip;
+  }
+
+  .PunctLangNav { display: none; }
+}
+
+/* 直排永遠是由右向左的 rail。DOM 順序不動（繁、簡、日、韓），RTL 的 implicit
+   grid columns 讓繁在最右，往左依次是簡、日、韓；每張卡的內容方向另行扶正。 */
+#station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
+  .PunctLang[data-layout="rail"] ul {
+  direction: rtl;
+  /* In vertical writing the physical card width is the specimen's block
+     size.  Do not reuse the horizontal half-column width: each language owns
+     as many columns as its actual glyph/ruby run needs (Korean notably needs
+     more than Japanese), and the outer rail handles the resulting length. */
+  grid-auto-columns: max-content;
+  block-size: auto;
+  max-block-size: none;
+  /* Each wheel delta is projected to RTL scrollLeft by JS. Mandatory snap
+     would round small trackpad deltas straight back to the first card before
+     the next delta arrives, making the text area feel immovable. */
+  scroll-snap-type: none;
+  /* RTL's first card (繁) aligns with the original column's right edge. */
+  padding-left: var(--plate-pad);
+  padding-right: var(--pl-rail-inline-end);
+  scroll-padding-left: 0;
+  scroll-padding-right: var(--pl-rail-inline-end);
+
+  li { direction: ltr; }
+  /* `<p>` used to be a nested horizontal scroller.  Wheel events over the
+     glyphs consequently stopped there instead of driving the four-card rail.
+     The rail is the only scroll owner in this mode. */
+  p {
+    flex: 0 1 auto;
+    block-size: auto;
+    max-block-size: none;
+    overflow: clip;
+    overscroll-behavior: auto;
+  }
+}
+
+.PunctLangNav {
+  display: none;
+}
+
+:where(.PunctLang[data-layout="rail"]) .PunctLangNav {
+  display: flex;
+  /* 箭頭是正文 chrome，不是會流出頁緣的卡片：留在正常 figure 版心內。 */
+  justify-content: end;
+  gap: 0.5rem;
+  margin-block: 0.75rem 0;
+  max-inline-size: 100%;
+
+  &[hidden] { display: none; }
+
+  button {
+    display: grid;
+    place-content: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    color: var(--ui-supplement-text);
+    background: var(--ui-supplement-bg);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  button:hover:not(:disabled) {
+    color: var(--ui-bg);
+    background: var(--ui-accent);
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* 同四報、散文與工作區：原圖朝行首，LTR 的 next 才旋轉。鉛字盤那條是
+     direction:rtl 的特例，不能把它的 prev 規則借過來。 */
+  [data-scroll="next"] [data-icon] { rotate: 180deg; }
+}
+
+/* These are figure chrome, not rail contents.  They may wrap within the
+   measured copy column but must never inherit the rail's full-bleed extent. */
+:where(.PunctLang[data-layout="rail"]) > .SpecimenSwitch {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+}
+
+:where(.PunctLang[data-layout="rail"]) > figcaption {
+  box-sizing: border-box;
+  max-inline-size: min(100%, 18em);
+}
+
+/* RTL rail 的「內容深處」在左邊，沿用鉛字盤 FormeNav 的按鈕順序與圖示規則。 */
+#station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
+  :where(.PunctLang[data-layout="rail"]) .PunctLangNav {
+  flex-direction: row-reverse;
+
+  [data-scroll="next"] [data-icon] { rotate: none; }
+  [data-scroll="prev"] [data-icon] { rotate: 180deg; }
 }
 /* No local punctuation override here: each cell's <select> is bound to the
    console (punct-lang.js) — the console applies --han-punctuation-* to <main> and

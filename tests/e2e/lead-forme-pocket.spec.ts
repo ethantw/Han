@@ -42,12 +42,11 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   // …foot inside the forme, and the whole column right of the pills
   expect(geo.cap.bottom).toBeLessThanOrEqual(geo.forme.bottom + 1)
   expect(geo.cap.left).toBeGreaterThanOrEqual(geo.ctl.right)
-  // pills stand on the LOWEST SLUG, not on the figure's floor. The SVG's box
-  // hugs the ink now (§ air), so the ink's bottom line IS svg.bottom and the
-  // rack lands on it by construction — where the old `--lf-air-bottom` margin
-  // used to hold it, one air above a padded viewBox's edge.
-  expect(Math.abs(geo.ctl.bottom - geo.svg.bottom)).toBeLessThan(2)
-  expect(geo.ctl.bottom).toBeLessThan(geo.forme.bottom)
+  // pills ride the block-start／inline-start wedge (藥丸與圖說分居對角,
+  // owner 2026-08-26) — their head is flush with the SVG's box top, and the
+  // rack ends well above the ink's floor instead of standing on it.
+  expect(Math.abs(geo.ctl.top - geo.svg.top)).toBeLessThan(2)
+  expect(geo.ctl.bottom).toBeLessThan(geo.svg.bottom)
 
   // § air — the SVG's box HUGS the 活字版 and the void around it is the
   // figure's own padding. Three sides are flush with the ink by construction
@@ -135,10 +134,8 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   // 未達門檻、經兩輪內容改動一路惡化，是個週期性假紅的美學量
   //（docs/notes/2026-08-06-pocket-cut-erosion.md）。哏成不成立由人眼驗收。
   //
-  // 真正該守的功能性不變量另有人守：鉛字版疊上去之後，卡片自己的互動
-  // 不能被吃掉——eye-care.spec.ts 在同一個視口用**真的點擊**（非
-  // force，Playwright 的 actionability 檢查會擋下任何攔截）驗護眼模式
-  // 開關，並另有一個測試驗鉛字版的 slug 自己接得到指標。
+  // 真正該守的功能性不變量另有人守：heritage-faces.spec.ts 驗三列尚古樣張
+  // 沒有被鉛字版吃掉，並另驗鉛字版的 slug 自己接得到指標。
 
   // the radios still answer the pointer through the rotated labels. Settle the
   // entrance first — the pills hold `visibility: hidden` until the drop is over
@@ -153,7 +150,7 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'gb')
 })
 
-test('stacked fallback: below the pocket width everything returns to flow', async ({ page }) => {
+test('narrow strip: the forme keeps a 768px measure and the pills go to horizontal rows', async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 900 })
   await page.goto('/')
   await page.locator('.LeadForme .Slug').first().waitFor()
@@ -162,16 +159,22 @@ test('stacked fallback: below the pocket width everything returns to flow', asyn
     display: getComputedStyle($f).display,
     capWm: getComputedStyle($f.querySelector('figcaption')!).writingMode,
     pillWm: getComputedStyle($f.querySelector('.Controls fieldset')!).writingMode,
-    svgBottom: $f.querySelector('svg')!.getBoundingClientRect().bottom,
-    ctlTop: $f.querySelector('.Controls')!.getBoundingClientRect().top,
-    capTop: $f.querySelector('figcaption')!.getBoundingClientRect().top,
+    svgW: $f.querySelector('svg')!.getBoundingClientRect().width,
+    figW: $f.getBoundingClientRect().width,
+    svgTop: $f.querySelector('svg')!.getBoundingClientRect().top,
+    ctlBottom: $f.querySelector('.Controls')!.getBoundingClientRect().bottom,
   }))
 
-  expect(geo.display).not.toBe('grid')
-  // the caption reads as a plain paragraph again; the pills stay 直排 lozenges
-  expect(geo.capWm).toBe('horizontal-tb')
-  expect(geo.pillWm).toBe('vertical-rl')
-  // stacked: forme, then pills, then note
-  expect(geo.ctlTop).toBeGreaterThanOrEqual(geo.svgBottom)
-  expect(geo.capTop).toBeGreaterThanOrEqual(geo.ctlTop)
+  // 窄站台是長帶（e2f7002），不再退回文流：grid 留著，量有 768 的下限，
+  // 圖比版心寬就平移著看。
+  expect(geo.display).toBe('grid')
+  // 1024 的版心（~783px）還寬於下限，長帶取 768、尚不平移；再窄下去
+  // svg 守住 768 而版心繼續縮，就開始捲。這裡守的是下限本身。
+  expect(geo.svgW).toBeGreaterThanOrEqual(767)
+  // the colophon keeps its 直排 station in the strip's wedge（長帶的存在
+  // 理由之一就是牌記有地方站）; the pills turn horizontal, one group a row,
+  // stacked ABOVE the strip (85a59a5)
+  expect(geo.capWm).toBe('vertical-rl')
+  expect(geo.pillWm).toBe('horizontal-tb')
+  expect(geo.ctlBottom).toBeLessThanOrEqual(geo.svgTop + 1)
 })

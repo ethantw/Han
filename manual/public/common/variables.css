@@ -113,14 +113,9 @@
   --ui-proof:           light-dark(var(--palette-seal), var(--palette-seal-bright));
   --ui-syntax-tag:      light-dark(var(--palette-lapis), var(--palette-lapis-bright));
 
-  /* ── station grounds & watermark ──────────────────────────────────
-   * The station-plate system (stations.css) alternates two section
-   * grounds and floats a giant watermark glyph behind the copy. Both
-   * flip with the theme via light-dark() over EXISTING primitives — no
-   * new hues. `-a` is the warm-paper (raised-ink in dark) base, `-b` a
-   * half-step deeper; the watermark is a 4 %/6 % ink wash (color-mix,
-   * Baseline 2023) that lifts to the paper side on dark so it still
-   * reads. Consumed only by `[data-station]` / `.Closing`. */
+  /* ── station grounds ───────────────────────────────────────────────
+   * The station-plate system alternates two full-viewport grounds. Both
+   * flip with the theme via light-dark() over existing primitives. */
   /* 主控台的地色。它曾經直接用 --ui-panel——而 panel 與站台 a 同值
      （paper-deep／ink-deep），於是「工具」與「內容」同色，只隔一條髮線。
      兩側各用一種分野，因為暗處讀不出溫差：
@@ -143,14 +138,6 @@
      #eef0fa，太紫。）深色一側是同一張紙的夜色，暖墨，不是又一塊
      --palette-ink。 */
   --ui-station-code: light-dark(var(--palette-buff), var(--palette-buff-night));
-  --ui-wm:
-    light-dark(
-      color-mix(in srgb, var(--palette-ink) 4%, transparent),
-      color-mix(in srgb, var(--palette-paper-deep) 6%, transparent)
-    )
-  ;
-
-
   /* ── type ramp — 沒有代號，直接寫值 ────────────────────────────────
    * 級數還是這七級，寫規則時照這張表挑；但 `font-size` 一律寫字面 rem，
    * 不再經過 `--fs-*` 一層（2026-08-05 廢除，見

@@ -96,7 +96,7 @@ const format = {
   'zh-Hans': (date) => lunarEra(date, 'zh-Hans-u-ca-chinese', '夏历'),
   'ja': (date, y, m, d) =>
     `弘宙元年${decimal(m)}月${decimal(d)}日`,
-  'ko-Hant': (date, y, m, d) =>
+  'ko-Kore': (date, y, m, d) =>
     `<ruby>西紀<rt>서기</rt></ruby> ${y}年 ${m}月 ${d}日`,
 }
 

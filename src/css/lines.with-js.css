@@ -97,7 +97,7 @@
  * hangables are excluded here — the hang block below owns them.
  */
 @supports not (text-spacing-trim: trim-start) {
-  h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not([data-punct~="hangable"]) {
+  h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
     &[data-punct~="open"] {
       margin-inline-start: -.5em;
       &::before {
@@ -204,10 +204,10 @@
 }
 
 @container not style(--han-punctuation-ko: MOE) {
-  :where(:lang(ko-Hant)) { --han-state-hanging-punctuation: on; }
+  :where(:lang(ko-Kore)) { --han-state-hanging-punctuation: on; }
 }
 @container style(--han-punctuation-ko: MOE) {
-  :where(:lang(ko-Hant)) { --han-state-hanging-punctuation: off; }
+  :where(:lang(ko-Kore)) { --han-state-hanging-punctuation: off; }
 }
 
 /* Master override — off whenever refinement isn't auto/hang, regardless of
@@ -248,8 +248,8 @@
        * ::after placeholder. `overflow` must stay `visible` (default):
        * anything else moves an inline-block's baseline to its bottom
        * margin edge and the alignment is gone.
-       * `text-indent: 0`: inline-block is a block container, so an
-       * inherited indent (prose `.poem-like` etc.) would push the mark. */
+       * `text-indent: 0`: inline-block is a block container, so a
+       * first-line indent inherited from the page would push the mark. */
       display: inline-block;
       inline-size: 0;
       text-indent: 0;
@@ -328,7 +328,7 @@
  * hangables. Deliberate: the only thing that trim buys is a flush glyph at a
  * line end, and `。」` never breaks between the two. */
 @container style(--han-state-hanging-punctuation: on) and style(--han-q-quotes: on) {
-  h-char[data-punct~="hangable"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans)) {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)) {
     &::after {
       content: none;
     }
@@ -340,7 +340,7 @@
 }
 
 @container style(--han-state-hanging-punctuation: on) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
-  h-char[data-punct~="hangable"][data-followed-by-quote~="close-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)) {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="close-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
     &::after {
       content: none;
     }
@@ -358,24 +358,24 @@
   /* FOLLOWING side (`，「`): the generated opening bracket is even less
    * reachable than a bare text node, so the hangable pays with the same ½em
    * filler face. */
-  h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans))::after {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
     font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
   }
 
   /* PRECEDING side (`」，`): here the squeezer IS the pseudo, so it can pay
    * directly — no wrapper needed, and `letter-spacing` on a one-character
    * `content` lands entirely after the bracket. */
-  q[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Hant)):not(:lang(zh-Hans))::after {
+  q[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
     letter-spacing: -.5em;
   }
 }
 
 @container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
-  h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Hant))::after {
+  h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
     font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
   }
 
-  cite[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Hant))::after {
+  cite[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
     letter-spacing: -.5em;
   }
 }

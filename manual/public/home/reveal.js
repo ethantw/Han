@@ -3,8 +3,8 @@
  *
  * An IntersectionObserver stamps `data-revealed` on each target the first
  * time it scrolls into view, then unobserves it — no looping (direction-doc
- * rule). The CSS keys the watermark fade/rise and the kicker-hairline
- * scaleX off `[data-revealed]`, all inside `@media (prefers-reduced-motion:
+ * rule). The CSS keys the copy rise and kicker-hairline scaleX off
+ * `[data-revealed]`, all inside `@media (prefers-reduced-motion:
  * no-preference)`, so the SETTLED state is the default: content is never
  * hidden when JS / IO is absent.
  *

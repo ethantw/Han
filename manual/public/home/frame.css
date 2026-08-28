@@ -4,8 +4,8 @@
  * The station plate — the frame every `[data-station]` section shares,
  * plus the running-copy primitives that sit inside one.
  *
- * Six stations alternate two grounds and float a giant watermark glyph
- * behind the copy; `reveal.js` stamps `[data-revealed]` as each scrolls
+ * Six stations alternate two full-viewport grounds behind a fixed-measure
+ * copy column; `reveal.js` stamps `[data-revealed]` as each scrolls
  * in and the entrance below plays once. Station INTERIORS live in
  * `station-*.css`（一站一檔）.
  */
@@ -37,7 +37,12 @@ main {
   line-height: var(--console-metric-leading, inherit);
   font-weight: var(--console-metric-weight, inherit);
   text-align: justify;
-  border-inline-start: 1px solid var(--ui-rule);
+  /* Full-bleed rails are the one class of content allowed past the fixed
+     measure. Centring a 100vw rail against main keeps it full-width when the
+     console is closed; when open, main's half-console translate moves the
+     rail under the fixed console and the viewport clips the far side. */
+  --rail-bleed: calc((100vw - 100cqw) / 2);
+  --rail-pad: calc(var(--plate-pad, var(--gutter)) + var(--rail-bleed));
 }
 
 /* 直排預覽下必須解除容器化：inline 軸隨行向轉——vertical-rl 的 inline 軸是
@@ -58,17 +63,14 @@ main[data-writing="vertical"] {
  * Each station is a centred column carrying an alternating ground
  * (`data-ground="a|b"` — an EXPLICIT hook, robust where `:nth-of-type`
  * would miscount the `<section>` siblings inside `<main>`), a giant serif
- * watermark set from `data-wm`, and a 1×/1.5× block-padding rhythm. The
- * watermark is a `::before` sitting BELOW the copy: `isolation:isolate`
+ * background is a `::before` sitting BELOW the copy: `isolation:isolate`
  * gives the station its own stacking context so a `z-index:-1` pseudo
- * lands above the ground but under the (non-positioned) content, and
- * `overflow:clip` (Baseline 2023) crops the oversized glyph to the box. */
+ * lands above the page ground but under the content. */
 
 main > section {
   & {
     position: relative;
     isolation: isolate;
-    overflow: clip;
     /* max-inline-size: var(--max-w-layout); */
     margin-inline: auto;
     padding-block: 4rem 6rem;
@@ -77,70 +79,41 @@ main > section {
        § showpiece). Overridden by the 72rem container query below. */
     --plate-pad: var(--gutter);
     padding-inline: var(--plate-pad);
-    border-block-start: 1px solid var(--ui-grid);
-    background: var(--ui-station-a);
+    --station-ground: var(--ui-station-a);
+    background: transparent;
   }
 
-  /* 畫面外的站台不參與版面。這一頁的 layout 成本大半不在節點數，而在**字體
-     匹配**：正文的字族有 14 層，其中兩層是各 109 片 `unicode-range` 的傳承
-     webfont，每一段文字都得走一遍（實測把字族覆蓋成 `system-ui`，改一次視窗
-     寬從 923ms 掉到 404ms）。看不見的站連匹配都不必做——實測整頁一次 resize
-     1031 → 736ms，畫面外的動畫也一起停（那是 idle 時 WindowServer 的那份）。
-
-     han.js 的後備層不受影響（實測 `h-char` 695 個一個不少）：它是 DOM 手術，
-     不等版面。`auto` 的內在尺寸記住上一次算過的高度，捲軸長度因此不跳；
-     60rem 只是第一次的估值。裁切沒有變化——站台本來就有 `overflow: clip`。
-     （content-visibility：Baseline 2024）
-
-     ——但首屏不跳過。這條規則寫的是「站台」，選擇器卻是 `main > section`，
-     於是把 `.Manifesto` 也收了進來，而首屏是**唯一一個跳過它毫無收益**的
-     section：它一定在初始視窗裡，省不到什麼版面。代價卻是兩樁，都只在
-     「捲到中段再刷新」時發作（瀏覽器先還原捲動位置，才輪到 DCL）：
-
-       · 被跳過的子樹量不到東西——剛插進去的節點根本沒有盒，回報全零的
-         rect，而舊節點仍回報上一次排完的離屏座標。兩者相減得到的是捲動
-         位移，不是基線。字標的 漢 因此被推到一頁半以外，再被 `overflow:
-         clip` 吞掉（詳見 home/brand-glyph.js 的守門）。
-       · 被跳過的子樹不跑動畫，於是浮水印「漢」一筆未落，
-         `fonts-gate.js` 等的那個 `animationend` 永遠不來——`data-pass`
-         留在筆畫上、`data-han-traced` 不被標上，站①的信封就一直摺著。
-
-     兩者的根都在這裡，所以在這裡斷。 */
-  &:not(.Manifesto) {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 60rem;
-  }
-
-  &:first-of-type {
-    border-block-start: 0;
-  }
+  /* Do not put `content-visibility:auto` here. Its implicit paint containment
+     clips the full-viewport `::before` back to main's fixed measure, leaving
+     white gutters on both sides. Background continuity is the plate contract. */
 
   /* the `-b` ground breathes 1.5× wider (the alternating rhythm) */
   &:nth-of-type(2n+3) {
-    background: var(--ui-station-b);
+    --station-ground: var(--ui-station-b);
   }
 
-  /* giant watermark glyph — content from `data-wm`, aria-hidden by nature
-     of the pseudo. Anchored to the block-start / inline-end corner. */
-  &::before {
-    content: attr(data-wm);
+  /* The copy column has a fixed measure, but each station ground still spans
+     the viewport. The extra half-console width covers both endpoints while
+     main translates, so neither edge flashes the body ground mid-transition. */
+  &[data-station]::before {
+    content: '';
     position: absolute;
-    inset-block-start: -0.1em;
-    inset-inline-end: 0.05em;
+    inset-block: 0;
+    inset-inline-start: calc((100vw - 100%) / -2 - var(--main-console-shift, 0px));
+    inline-size: calc(100vw + var(--main-console-shift, 0px));
     z-index: -1;
-    font-family: var(--han-font-alternative);
-    font-size: clamp(12rem, 28vw, 22rem);
-    line-height: 1;
-    color: var(--ui-wm);
+    background: var(--station-ground);
+    border-block-start: 1px solid var(--ui-grid);
     pointer-events: none;
-    user-select: none;
+  }
+
+  &:first-of-type[data-station]::before {
+    border-block-start: 0;
   }
 
   @container (inline-size >= 72rem) {
     & {
-      /* `--console-gutter` 而不是 `--w-console`：前者是主控台**此刻**佔掉的
-         寬（收起時 0），後者是常數。版心的置中必須跟著實況走。 */
-      --plate-pad: calc((100vw - var(--console-gutter, 0px) - var(--max-w-layout)) / 2);
+      --plate-pad: calc((100% - var(--max-w-layout)) / 2);
     }
   }
 
@@ -210,22 +183,6 @@ main > section {
 
 @media (prefers-reduced-motion: no-preference) {
   [data-station] {
-    /* watermark fades and rises into place. `translate` is a physical
-       transform (CSS has no logical translate) — the rise reads the same
-       in vertical mode, so it stays. */
-    &::before {
-      opacity: 0;
-      translate: 0 1.5rem;
-      transition:
-        opacity   400ms ease-out,
-        translate 400ms ease-out
-      ;
-    }
-    &[data-revealed]::before {
-      opacity: 1;
-      translate: 0 0;
-    }
-
     /* the kicker hairline unrolls from the eyebrow outward.
        `transform-origin` takes no logical keyword, so `left` is the
        LTR line-start; a vertical / RTL build would flip it (documented
@@ -239,12 +196,11 @@ main > section {
       transform: scaleX(1);
     }
 
-    /* the copy itself rises with the watermark — each direct child
+    /* the copy rises in — each direct child
        (hgroup, then the content blocks) lifts in on a short stagger,
        the station-side sibling of the hero's hero-rise (owner call,
        2026-07-19: the hero copy flies at gate-open, the stations' on
-       first scroll). Same one-shot transition idiom as the watermark
-       above; `translate` is physical, same note as there. */
+       first scroll). `translate` is physical. */
     > * {
       opacity: 0;
       translate: 0 1rem;

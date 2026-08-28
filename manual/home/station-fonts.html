@@ -8,11 +8,11 @@
     ko: '<ruby>黑體<rt>흑체</rt></ruby>·<ruby>明體<rt>명체</rt></ruby>·<ruby>楷體<rt>해체</rt></ruby>、세 <ruby>書體<rt>서체</rt></ruby>가 저마다 <ruby>所任<rt>소임</rt></ruby>을 맡는다。',
   },
   stTrayNote: {
-    hant: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為<span class="upright">120</span>個切片，取字的差事交給瀏覽器與<abbr class="acronym">CSS</abbr>。',
-    hans: '活字印刷时代，排版工人凭记忆在字盘中拣取文章所需的活字，填入版框；Web字体时代，数万字的汉字字体依使用频率分割为<span class="upright">120</span>个切片，取字的差事交给浏览器与<abbr class="acronym">CSS</abbr>。',
+    hant: '活字印刷時代，排版工人憑記憶在字盤中揀取文章所需的活字，填入版框；Web字體時代，數萬字的漢字字體依使用頻率分割為<span class="tcy">120</span>個切片，取字的差事交給瀏覽器與<abbr class="acronym">CSS</abbr>。',
+    hans: '活字印刷时代，排版工人凭记忆在字盘中拣取文章所需的活字，填入版框；Web字体时代，数万字的汉字字体依使用频率分割为<span class="tcy">120</span>个切片，取字的差事交给浏览器与<abbr class="acronym">CSS</abbr>。',
     en: 'Type is cut in reverse; only on paper does it read true — a CSS variable is the type case of this era: nudge one slug and the whole page resets.',
-    ja: '活版印刷の時代、植字工は記憶を頼りに文選箱から必要な活字を拾い、版に収めた。Webフォントの時代、数万字の漢字書体は使用頻度に応じて<span class="upright">120</span>の切片に分かれ、字を拾う仕事はブラウザと<abbr class="acronym">CSS</abbr>に委ねられる。',
-    ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>、<ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다。웹폰트 <ruby>時代<rt>시대</rt></ruby>、<ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 <span class="upright">120</span>개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고、<ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <abbr class="acronym">CSS</abbr>에 맡겨진다。',
+    ja: '活版印刷の時代、植字工は記憶を頼りに文選箱から必要な活字を拾い、版に収めた。Webフォントの時代、数万字の漢字書体は使用頻度に応じて<span class="tcy">120</span>の切片に分かれ、字を拾う仕事はブラウザと<abbr class="acronym">CSS</abbr>に委ねられる。',
+    ko: '<ruby>活版<rt>활판</rt></ruby> <ruby>印刷<rt>인쇄</rt></ruby> <ruby>時代<rt>시대</rt></ruby>、<ruby>植字工<rt>식자공</rt></ruby>은 <ruby>記憶<rt>기억</rt></ruby>에 기대어 <ruby>活字<rt>활자</rt></ruby> 상자에서 <ruby>必要<rt>필요</rt></ruby>한 것을 골라 <ruby>版<rt>판</rt></ruby>에 앉혔다。웹폰트 <ruby>時代<rt>시대</rt></ruby>、<ruby>數萬<rt>수만</rt></ruby> <ruby>字<rt>자</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby> <ruby>書體<rt>서체</rt></ruby>는 <ruby>使用<rt>사용</rt></ruby> <ruby>頻度<rt>빈도</rt></ruby>에 따라 <span class="tcy">120</span>개 <ruby>切片<rt>절편</rt></ruby>으로 나뉘고、<ruby>字<rt>자</rt></ruby>를 고르는 일은 브라우저와 <abbr class="acronym">CSS</abbr>에 맡겨진다。',
   },
   ltControls: {
     hant: '字體、標點與行向', hans: '字体、标点与行向',
@@ -39,6 +39,33 @@
     hant: '標點', hans: '标点', en: 'Punctuation', ja: '約物',
     ko: '<ruby>符號<rt>부호</rt></ruby>',
   },
+  ltLangLegend: {
+    hant: '語言', hans: '语言', en: 'Language', ja: '言語',
+    ko: '<ruby>言語<rt>언어</rt></ruby>',
+  },
+  /* 單字標籤：直排藥丸一字一格，四種語文都認得漢字。en 用兩字碼，與
+     JIS／MOE 同樣以 abbr.acronym 站直。 */
+  ltLangHant: {
+    hant: '繁', hans: '繁', en: '<abbr class="acronym">TC</abbr>', ja: '繁', ko: '繁',
+  },
+  ltLangHans: {
+    hant: '簡', hans: '简', en: '<abbr class="acronym">SC</abbr>', ja: '簡', ko: '簡',
+  },
+  ltLangJa: {
+    hant: '日', hans: '日', en: '<abbr class="acronym">JA</abbr>', ja: '日', ko: '日',
+  },
+  ltLangKo: {
+    hant: '韓', hans: '韩', en: '<abbr class="acronym">KO</abbr>', ja: '韓', ko: '韓',
+  },
+  /* 各語言首頁的鉛字預設：自己語言的句子、自己的標點公約（owner：繁 KLR、
+     簡 GB、日 JIS、韓 KLR；en 頁跟繁）。值進 figure 的 data-*，藥丸的
+     checked 由 lead-forme.js 開機時對著 data-* 補上。 */
+  lfHomeLang: {
+    hant: 'hant', hans: 'hans', en: 'hant', ja: 'ja', ko: 'ko',
+  },
+  lfHomePunct: {
+    hant: 'klr', hans: 'gb', en: 'klr', ja: 'jis', ko: 'klr',
+  },
   ltOrientLegend: {
     hant: '行向', hans: '行向', en: 'Direction', ja: '行方向',
     ko: '<ruby>行向<rt>행향</rt></ruby>',
@@ -50,50 +77,6 @@
   ltOrientH: {
     hant: '橫排', hans: '横排', en: 'Horizontal', ja: '横組',
     ko: '<ruby>橫組<rt>횡조</rt></ruby>',
-  },
-  ltEyeCare: {
-    hant: '護眼模式',
-    hans: '护眼模式',
-    en: 'Eye-care mode',
-    ja: '目にやさしいモード',
-    ko: '눈 <ruby>保護<rt>보호</rt></ruby> 모드',
-  },
-  /* 護眼開關的前後兩截——句子被開關切成兩半，而語序各語不同：漢語把動詞
-     放前面（開啓／關閉＋標籤），日韓的「をオンにすれば」「를 켜면」得跟在
-     標籤後面，英語則是 Turn on ＋ 標籤 ＋ to…。所以前綴在 ja/ko 是空字串
-     （`??` 只擋 null／undefined，空字串是有效值，不會回退到 hant），整句
-     重量落在後綴。
-
-     那一排是 flex（station-fonts.css），元素之間的空白文字節點不生成
-     flex item——西文的詞間空隙塞不進去，所以 en 的兩截自帶 `&nbsp;`。
-     漢語不需要，本來就該貼齊。 */
-  ltEyeCareOn: {
-    hant: '開啓',
-    hans: '开启',
-    en: 'Turn&nbsp;on&nbsp;',
-    ja: '',
-    ko: '',
-  },
-  ltEyeCareOff: {
-    hant: '關閉',
-    hans: '关闭',
-    en: 'Turn&nbsp;off&nbsp;',
-    ja: '',
-    ko: '',
-  },
-  ltEyeCareOnNote: {
-    hant: '——隱藏驚悚的國字標準字體',
-    hans: '——隐藏惊悚的国字标准字体',
-    en: '&nbsp;to hide those frightful national-standard forms',
-    ja: 'をオンにすれば、あの驚くべき国字標準字体は姿を消す',
-    ko: '를 켜면 소름 끼치는 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>가 사라진다',
-  },
-  ltEyeCareOffNote: {
-    hant: '——體驗國字標準字體的糟粕',
-    hans: '——体验国字标准字体的糟粕',
-    en: '&nbsp;to taste the national-standard dregs for yourself',
-    ja: 'をオフにすれば、国字標準字体の粗悪さを味わえる',
-    ko: '를 끄면 <ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby>의 <ruby>粗惡<rt>조악</rt></ruby>함을 맛본다',
   },
   /* 四語樣張的切換。行向與字體都沿用鉛字盤那組的詞（ltOrient*／ltFaceLegend）
      ——同一件事就用同一個詞；三顆字體另立，因為這裡撥的是**通用類**（黑／明／
@@ -133,18 +116,18 @@
     ko: '<ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>、비뚤어짐을 바로잡는 <ruby>符號<rt>부호</rt></ruby>',
   },
   stHeritageH3: {
-    hant: '學究式楷化的<strong>國字標準字體</strong> = 新世代的美學降級',
-    hans: '学究式楷化的<strong>国字标准字体</strong> = 新世代的美学降级',
-    en: 'Pedantically kai-fied <strong>國字標準字體</strong> = a new generation’s aesthetic downgrade',
-    ja: '衒学的に楷書化された<strong>国字標準字体</strong> = 新世代の美学退化',
-    ko: '<ruby>衒學<rt>현학</rt></ruby>的으로 <ruby>楷書<rt>해서</rt></ruby>化한 <strong><ruby>國字<rt>국자</rt></ruby> <ruby>標準<rt>표준</rt></ruby> <ruby>書體<rt>서체</rt></ruby></strong> = 새 <ruby>世代<rt>세대</rt></ruby>의 <ruby>美學<rt>미학</rt></ruby>的 <ruby>退化<rt>퇴화</rt></ruby>',
+    hant: '取法百年活字，重塑螢幕上的漢字風骨',
+    hans: '尚古重现百年字形，风骨远非系统字体所能企及',
+    en: 'Shanggu brings century-old forms back with a quality system fonts cannot approach',
+    ja: '尚古は百年の字形を甦らせ、システム書体の及ばぬ風骨を画面に宿す',
+    ko: '尚古는 百年 字形을 되살려、시스템 글꼴이 미치지 못할 風骨을 畵面에 담는다',
   },
   stHeritageP: {
-    hant: '——透過Google Fonts同源的Woff2字體切片技術及CDN的毫秒級遞送，在顯示器上重現百年傳承的字形，填補千萬終端上系統字體的美學空缺。',
-    hans: '——透过Google Fonts同源的Woff2字体切片技术及CDN的毫秒级递送，在显示器上重现百年传承的字形，填补千万终端上系统字体的美学空缺。',
-    en: '— woff2 subsets sliced the way Google Fonts slices them, delivered from a CDN in milliseconds: century-old letterforms return to the screen, filling the aesthetic gap the system faces leave on tens of millions of devices.',
-    ja: '——Google Fontsと同じ仕組みのwoff2切片技術と、CDNのミリ秒単位の配信で、百年を継ぐ字形を画面上に甦らせ、幾千万の端末に欠けたままの書体の美を補う。',
-    ko: '——Google Fonts와 <ruby>同一<rt>동일</rt></ruby>한 woff2 <ruby>切片<rt>절편</rt></ruby> <ruby>技術<rt>기술</rt></ruby>과 CDN의 밀리초 <ruby>單位<rt>단위</rt></ruby> <ruby>傳送<rt>전송</rt></ruby>으로、<ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>을 <ruby>畵面<rt>화면</rt></ruby> 위에 되살리고、<ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다。',
+    hant: '——承續刊本與鉛字的骨架、筆意與分寸，再以同源於Google Fonts的Woff2字體切片技術及CDN毫秒級遞送，讓千萬終端都能讀到遠勝系統字體的漢字品質。',
+    hans: '——承续刊本与铅字的骨架、笔意与分寸，再以同源于Google Fonts的Woff2字体切片技术及CDN毫秒级递送，让千万终端都能读到远胜系统字体的汉字品质。',
+    en: '— It preserves the structure, stroke character and proportion of printed books and metal type, then uses Google Fonts-style Woff2 subsetting and millisecond CDN delivery to put exceptional Han letterforms on every screen.',
+    ja: '——版本と活字が培った骨格、筆意、節度を受け継ぎ、Google Fontsと同系統のWoff2分割技術とCDNのミリ秒配信によって、システム書体を大きく凌ぐ漢字品質をあらゆる画面へ届ける。',
+    ko: '——刊本과 活字의 骨格、筆意、節度를 이어받고、Google Fonts와 같은 Woff2 切片 技術 및 CDN의 밀리초 傳送으로 시스템 글꼴을 훨씬 뛰어넘는 漢字 品質을 모든 畵面에 전한다。',
   },
   stTwoEmDashesP: {
     hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，皆起自Unicode共用碼位的歷史問題，透過OpenType + CSS <code>unicode-range</code>字體技術，精準為讀者拂偏歸正。',
@@ -170,10 +153,6 @@
 }
 </script>
 <!-- Station II・Typography — three-face specimen + heritage/punctuation copy. -->
-<!-- no `data-wm` here on purpose: station②'s spectacle is the lead-type forme,
-     and a giant watermark glyph behind it would be one background pattern too
-     many. The forme itself is NOT a watermark — it sits in flow, full-bleed,
-     with nothing painted over it (home/lead-forme.css § showpiece). -->
 <section id="station-fonts" data-station="type">
   <hgroup>
     <p>{{ stEyebrow }}</p>
@@ -183,35 +162,12 @@
 
   <figure class="Illust" data-variant="faces">
     <ul class="Faces" lang="zh-Hant">
-      <!-- 對照組 rows — the SAME line in the visitor's own national-standard
-           system faces, small and grey (station-fonts.css § .Faces), each
-           IMMEDIATELY before its heritage answer (灰黑/墨黑、灰明/墨明 —
-           ziano demo's pairing): the reader sees their screen's daily
-           default first, so the「降級」plays in reverse. The sentence
-           already carries the tells: 廿/戶/北/美/爭 and three 辶 (迴/運).
-           楷 gets no grey twin — the standard IS a handwriting spec, kai is
-           the one place it belongs (ziano § why makes the same call). -->
       <li data-face="sans">
         超迴路運行廿載，即將增停台北，<br />萬戶爭睹雲軌美景
         <small>黑</small>
       </li>
-      <li data-face="system">
-        超<b>迴</b>路<b>運</b>行廿載，即將增停<b>台</b><b>北</b>，<br /><b>萬</b><b>戶</b>爭睹<b>雲</b>軌<b>美</b>景
-        <small>黑</small>
-      </li>
-
-      <!-- Songti TC caveat (ziano why.css § .compare): that face quietly
-           leans HERITAGE for a few chars (北 among our tells) — ziano blanks
-           those cells per-char via document.fonts.check; a full-line
-           specimen can't, so on the Mac this row understates the damage a
-           little. PMingLiU / Noto Serif TC elsewhere follow the standard
-           faithfully. -->
       <li data-face="serif">
         超迴路運行廿載，即將增停台北，<br />萬戶爭睹雲軌美景
-        <small>明</small>
-      </li>
-      <li data-face="system-ming">
-        超<b>迴</b>路<b>運</b>行廿載，即將增停<b>台</b><b>北</b>，<br /><b>萬</b><b>戶</b>爭睹<b>雲</b>軌<b>美</b>景
         <small>明</small>
       </li>
       <li data-face="cursive">
@@ -219,26 +175,7 @@
         <small>楷</small>
       </li>
     </ul>
-    <!-- 護眼模式 — hides the two 對照組 rows. A real control, not a gag: once
-         the reader has SEEN the standard forms, the grey rows are just noise
-         between 黑 and 明, and the three heritage faces read better shoulder
-         to shoulder. `.Toggle` is the shared switch primitive
-         (common/controls.css), the same one station①'s 語意樣式 switch uses.
-         Pure CSS (:has + :checked, station-fonts.css § 護眼模式) — no JS, and
-         unlike station①'s this is NOT a console proxy: it changes nothing
-         about the page's typography, only which rows of this one specimen
-         are shown. -->
     <figcaption>
-      <p>
-        <span class="to-turn-on">{{ ltEyeCareOn }}</span>
-        <span class="to-turn-off">{{ ltEyeCareOff }}</span>
-        <label class="Toggle for-eyecare">
-          <input type="checkbox" name="face-eyecare" />
-          <span>{{ ltEyeCare }}</span>
-        </label>
-        <span class="to-turn-on note">{{ ltEyeCareOnNote }}</span>
-        <span class="to-turn-off note">{{ ltEyeCareOffNote }}</span>
-
       <h3>{{ stHeritageH3 }}</h3>
       <p>{{ stHeritageP }}
     </figcaption>
@@ -262,7 +199,8 @@
             才帶得動新東西（多一個標點軸）。
         代價是 .Faces 那行（超迴路增停台北）與這句（乘客抱怨同一條超迴路）的
         報導↔民眾反應對仗被隔開一段——stHeritageP 只有一句，梗接得住。 -->
-  <figure class="LeadForme" data-strip="forme" data-face="m" data-punct="jis" data-orient="v" data-reveal-at="0.6">
+  <div class="FormeRail" data-strip="forme">
+  <figure class="LeadForme" data-face="m" data-lang="{{ lfHomeLang }}" data-punct="{{ lfHomePunct }}" data-orient="v" data-reveal-at="0.6">
     <svg role="img" aria-hidden="true"></svg>
     <form class="Controls" aria-label="{{ ltControls }}">
       <fieldset aria-labelledby="lf-lg-face">
@@ -273,10 +211,19 @@
       </fieldset>
       <fieldset aria-labelledby="lf-lg-punct">
         <span class="PillHead" id="lf-lg-punct">{{ ltPunctLegend }}</span>
-        <label><input type="radio" name="lf-punct" value="jis" checked /><abbr class="acronym">JIS</abbr></label>
+        <!-- 無 checked：預設逐語言不同（lfHomePunct），靜態模版寫不動 checked
+             的落點，lead-forme.js 開機時照 data-punct 補。語言組同理。 -->
+        <label><input type="radio" name="lf-punct" value="jis" /><abbr class="acronym">JIS</abbr></label>
         <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
         <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
         <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
+      </fieldset>
+      <fieldset aria-labelledby="lf-lg-lang">
+        <span class="PillHead" id="lf-lg-lang">{{ ltLangLegend }}</span>
+        <label><input type="radio" name="lf-lang" value="hant" /> {{ ltLangHant }}</label>
+        <label><input type="radio" name="lf-lang" value="hans" /> {{ ltLangHans }}</label>
+        <label><input type="radio" name="lf-lang" value="ja" /> {{ ltLangJa }}</label>
+        <label><input type="radio" name="lf-lang" value="ko" /> {{ ltLangKo }}</label>
       </fieldset>
       <fieldset aria-labelledby="lf-lg-orient">
         <span class="PillHead" id="lf-lg-orient">{{ ltOrientLegend }}</span>
@@ -286,6 +233,7 @@
     </form>
     <figcaption>{{ stTrayNote }}</figcaption>
   </figure>
+  </div>
   <!-- 站①站④同一支模組、同一個角落。只在窄站台出現——寬螢幕的字盤整座都在
        畫面裡，沒有東西可以平移（lead-forme.css § 窄站台）。 -->
   <nav class="FormeNav" data-strip-nav="forme" aria-label="鉛字盤平移">
@@ -337,10 +285,47 @@
 
          這句話因此成了 han.css 排的正文：背景那句裡的破折號與逗號由自家模組經手，
          比畫出來更有說服力。 -->
-    <p class="DashColumn" aria-hidden="true">他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>這個時間足夠三體人交換一部《三體通史十萬年》體量的知識<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
-    <p>{{ stTwoEmDashesP }}</p>
-    <p>{{ stPunctP }}</p>
-  </div>
+    <p class="DashColumn" aria-hidden="true">他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>這個時間足夠三體人<span class="DashRelease">交換</span>一部《三體通史十萬<span class="DashNoteEnd">年》</span>體量的知識<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
+    <!-- 兩段文案包一層：它們要**整塊**與第一顆破折號垂直居中，而「整塊」得先
+         是一個盒（dash-fuse.css § .TwoEmDashes 的格線：破折號那一列 ＋
+         `align-self: center`，高度交給引擎算）。 -->
+    <!-- 外層提供捲動時間長度，內層是唯一必要的 sticky 裁切面；標本本身就是
+         一份有次序的內容清單，不另造 stage／flow／card wrapper class。 -->
+    <div role="presentation" data-dash-specimens aria-hidden="true">
+      <div role="presentation" data-specimen-viewport>
+        <ul data-specimen-flow>
+          <li data-specimen="interpunct" data-kind="punctuation">・</li>
+          <li data-specimen="ideographic-comma-pair" data-kind="conventions" data-span="2">
+            <span data-convention="moe">、</span>
+            <span data-convention="klr">、</span>
+          </li>
+          <li data-specimen="comma-pair" data-kind="conventions" data-span="2">
+            <span data-convention="moe">，</span>
+            <span data-convention="klr">，</span>
+          </li>
+          <li data-specimen="full-stop-pair" data-kind="conventions" data-span="2">
+            <span data-convention="moe">。</span>
+            <span data-convention="klr">。</span>
+          </li>
+          <li data-specimen="dash" data-kind="punctuation" data-span="2">——</li>
+          <li data-specimen="ellipsis" data-kind="punctuation" data-span="2">……</li>
+          <li data-specimen="bone" data-kind="glyph">骨</li>
+          <li data-specimen="door" data-kind="glyph">戶</li>
+          <li data-specimen="beauty" data-kind="glyph">美</li>
+          <li data-specimen="walk" data-kind="glyph">⻍</li>
+          <li data-specimen="tai" data-kind="glyph">台</li>
+          <li data-specimen="rain" data-kind="glyph">雨</li>
+          <li data-specimen="hall" data-kind="glyph">館</li>
+          <li data-specimen="nurture" data-kind="glyph">育</li>
+        </ul>
+      </div>
+    </div>
+    <div class="DashNoteStage">
+      <div class="DashNote">
+        <p>{{ stTwoEmDashesP }}</p>
+        <p>{{ stPunctP }}</p>
+      </div>
+    </div>
 
     <!-- 四語標點樣張**搬進這一格**（2026-08-28）：它 `position: sticky` 釘在畫面
          上，讀者往下捲時左邊那根柱一路走到第二顆破折號，而樣張留在原地——一句話的
@@ -356,8 +341,8 @@
           --han-punctuation-* the console applies to <main>, no local override.
           Options mirror the console's sets — 慣例與文種已解耦，四格同款
           五選一：JIS·MOE·GB·KLR·off。 -->
-    <figure class="PunctLang">
-      <ul>
+    <figure class="PunctLang" data-layout="rail">
+      <ul data-strip="punct-lang">
         <li lang="zh-Hant">
           <p>輪到富察・福慶發言。作為地球移民後代、出生在三體定居區的他，三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識——然後說：「我想說的是……不，『說』這個詞本身就太慢了……你們、你們地球人真的還在用嘴巴？」</p>
           <label>繁<select>
@@ -388,7 +373,7 @@
             <option value="off">off</option>
           </select></label>
         </li>
-        <li lang="ko-Hant">
+        <li lang="ko-Kore">
           <p><ruby>富察<rt>부찰</rt></ruby>·<ruby>福慶<rt>복경</rt></ruby>의 <ruby>次例<rt>차례</rt></ruby>가 됐다。<ruby>地球<rt>지구</rt></ruby> <ruby>移民<rt>이민</rt></ruby>의 <ruby>後裔<rt>후예</rt></ruby>로 <ruby>三體<rt>삼체</rt></ruby> <ruby>移住區<rt>이주구</rt></ruby>에서 태어난 그는 세 살에 <ruby>神經<rt>신경</rt></ruby> <ruby>共振<rt>공진</rt></ruby> 칩을 넣었고，<ruby>地球<rt>지구</rt></ruby> 땅을 밟은 것은 지난해가 처음이다。일어나서 4.7<ruby>秒<rt>초</rt></ruby>를 <ruby>沈默<rt>침묵</rt></ruby>한다——이 <ruby>時間<rt>시간</rt></ruby>이면 <ruby>三體人<rt>삼체인</rt></ruby>이 『<ruby>三體通史<rt>삼체통사</rt></ruby> <ruby>十萬年<rt>십만년</rt></ruby>』한 <ruby>部<rt>부</rt></ruby> <ruby>分量<rt>분량</rt></ruby>의 <ruby>知識<rt>지식</rt></ruby>을 주고받기에 <ruby>充分<rt>충분</rt></ruby>하다——그러고는 말했다。「말하고 싶은 건……아니，『말한다』는 <ruby>單語<rt>단어</rt></ruby> <ruby>自體<rt>자체</rt></ruby>가 이미 너무 느려요……여러분，여러분 <ruby>地球人<rt>지구인</rt></ruby>은 정말 아직도 입을 쓰나요？」</p>
           <label>韓<select>
             <option value="JIS">JIS</option>
@@ -399,6 +384,15 @@
           </select></label>
         </li>
       </ul>
+
+      <nav class="PunctLangNav" data-strip-nav="punct-lang" aria-label="四語標點樣張平移">
+        <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
+          <span data-icon="chevron" aria-hidden="true"></span>
+        </button>
+        <button type="button" data-scroll="next" title="向後捲" aria-label="向後捲">
+          <span data-icon="chevron" aria-hidden="true"></span>
+        </button>
+      </nav>
 
       <!-- 樣張切換 — 只管上面那四格四語樣張（.PunctLang），不動整頁。收在擠壓
           那段之後，因為那段講的正是「行首行尾、連續標點，一次到位」：撥成直排，
@@ -411,25 +405,27 @@
           控件擺在樣張之外、DOM 順序在後，靠 :has() 從共同祖先反選——擺回樣張
           裡面也行，那是一行的事。
 
-        楷體那顆不必特別配標點：han.css 的 `--han-font-punctuation-cursive`
-        本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
-        這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
-    <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
-      <fieldset aria-labelledby="pl-lg-writing">
-        <span class="PillHead" id="pl-lg-writing">{{ ltOrientLegend }}</span>
-        <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
-        <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
-      </fieldset>
-      <fieldset aria-labelledby="pl-lg-face">
-        <span class="PillHead" id="pl-lg-face">{{ ltFaceLegend }}</span>
-        <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
-        <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
-        <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>
-      </fieldset>
-    </form>
+          楷體那顆不必特別配標點：han.css 的 `--han-font-punctuation-cursive`
+          本來就指向 Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive`
+          這一支拿到的就是 DTJ serif 標點＋楷體漢字。 -->
+      <form class="SpecimenSwitch" aria-label="{{ stSpecimenControls }}">
+        <fieldset aria-labelledby="pl-lg-writing">
+          <span class="PillHead" id="pl-lg-writing">{{ ltOrientLegend }}</span>
+          <label><input type="radio" name="pl-writing" value="horizontal" checked /> {{ ltOrientH }}</label>
+          <label><input type="radio" name="pl-writing" value="vertical" /> {{ ltOrientV }}</label>
+        </fieldset>
+        <fieldset aria-labelledby="pl-lg-face">
+          <span class="PillHead" id="pl-lg-face">{{ ltFaceLegend }}</span>
+          <label><input type="radio" name="pl-face" value="sans" /> {{ stBodySans }}</label>
+          <label><input type="radio" name="pl-face" value="serif" checked /> {{ stBodySerif }}</label>
+          <label><input type="radio" name="pl-face" value="cursive" /> {{ stBodyCursive }}</label>
+        </fieldset>
+      </form>
 
-    <figcaption>
-      {{ stSqueezeP }}
-    </figcaption>
-  </figure>
+      <figcaption>
+        {{ stSqueezeP }}
+      </figcaption>
+    </figure>
+  </div>
+
 </section>

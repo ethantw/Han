@@ -34,27 +34,97 @@ const RELIEF = 'var(--forme-relief)';
 const HI = 'var(--forme-hi)';
 
 const PUNCT = new Set(['，', '、', '。', '：', '；', '？', '！', '「', '」', '『', '』', '（', '）', '—', '…', '·', '．']);
-// the real Ziano frequency slice each glyph downloads from (120-way partition)
+// the real Ziano frequency slice each glyph downloads from (120-way
+// partition) — the TC packages serve every locale, so hans／kana／hangul
+// engrave the TC slice they actually download from. Looked up, not
+// invented: parse `ziano/data/slices.traditional-chinese.json`'s
+// unicode_range against the codepoint (山:117／田:114 cross-check the
+// method against the numbers already here). Kana all land in 111; hangul
+// in 12–19 except the high-frequency 이 alone in 101 — copied as-is.
 const SLICE = {
   石: 115, 田: 114, 臉: 115, 色: 118, 鐵: 115, 青: 116,
   我: 119, 特: 118, 地: 119, 放: 117, 棄: 113, 瞬: 109, 移: 114, 艙: 105,
   改: 117, 搭: 115, 超: 118, 迴: 112, 路: 118, 就: 118, 是: 119,
   因: 118, 為: 119, 快: 118, 十: 117, 二: 118, 秒: 113,
+  // hans（脸铁弃舱为回 differ from the hant cuts above）
+  脸: 42, 铁: 27, 弃: 71, 舱: 42, 为: 106, 回: 118,
+  // ja（叱 U+53F1 deliberately — the Jōyō chart's 𠮟 U+20B9F has poor
+  // webfont coverage; 変 is shinjitai, covered by the TC packages）
+  叱: 80, 変: 76, 速: 117, 怒: 111,
+  い: 111, え: 111, か: 111, ざ: 111, た: 111, だ: 111,
+  っ: 111, に: 111, の: 111, は: 111, ら: 111, わ: 111,
+  // ko
+  가: 19, 건: 19, 고: 19, 다: 18, 라: 17, 루: 17, 리: 17,
+  버: 16, 빨: 16, 서: 15, 였: 15, 이: 101, 탄: 13, 퍼: 13,
+  프: 13, 하: 12, 했: 12,
 };
 
-// 太陽中文報 hyperloop-3min — the furious commuter's opening line, set 直排右起
-// (under mirror the first reading column sits on the LEFT). Proper vertical
-// typesetting: a 1-em 段首縮排 opens column 1, 10 slugs per column, and 禁則
-// (kinsoku) holds — 「 lands 2nd-from-tail (never line-end), 「，！」」never at
-// a line-head. The short last column is packed out with 空鉛 (quads) to fill
-// the 版框 — real justification locks the forme so the type can't shift.
+// 太陽中文報 hyperloop-12sec — the furious commuter's opening line, set 直排
+// 右起 (under mirror the first reading column sits on the LEFT), in FOUR
+// language cuts of the same 4×10 forme. Proper vertical typesetting: a 1-em
+// 段首縮排 opens column 1, 10 slugs per column, and 禁則 (kinsoku) holds —
+// 「 lands 2nd-from-tail (never line-end), 「，！」」never at a line-head. The
+// short last column is packed out with 空鉛 (quads) to fill the 版框 — real
+// justification locks the forme so the type can't shift.
+//
+// The ja／ko translations are cut to the same metre, not merely translated:
+// a six-character head keeps 「 in the same slot, and hant／hans／ja share
+// every punctuation position. ko differs by design — its spacing follows the
+// 1948-09-01 官報 (the gazette that promulgated the constitution, vertical
+// hanja-mixed movable type): spaces fall at PHRASE boundaries only, one full
+// quad each, never between every 어절 — that per-word spacing is the modern
+// HORIZONTAL standard. In the gazette's preamble 悠久한歷史와傳統에빛나는
+// runs four 어절 unspaced. This sentence's one phrase boundary lands after
+// 버리고 (the '　' entry; '' is structural — indent and tail quads).
 //   石田臉色鐵青：「我特地放棄瞬移艙改搭超迴路，就是因為快十二秒！」
+//   石田脸色铁青：「我特地放弃瞬移舱改搭超回路，就是因为快十二秒！」
+//   石田は叱った。「わざわざ超回路に変えたのは，十二秒速いからだ！」
+//   石田가怒했다。「瞬移艙버리고　하이퍼루프탄건，十二秒빨라서였다！」
 const COLS = [
   ['', '石', '田', '臉', '色', '鐵', '青', '：', '「', '我'],
   ['特', '地', '放', '棄', '瞬', '移', '艙', '改', '搭', '超'],
   ['迴', '路', '，', '就', '是', '因', '為', '快', '十', '二'],
   ['秒', '！', '」', '', '', '', '', '', '', ''],
 ];
+const COLS_HANS = [
+  ['', '石', '田', '脸', '色', '铁', '青', '：', '「', '我'],
+  ['特', '地', '放', '弃', '瞬', '移', '舱', '改', '搭', '超'],
+  ['回', '路', '，', '就', '是', '因', '为', '快', '十', '二'],
+  ['秒', '！', '」', '', '', '', '', '', '', ''],
+];
+const COLS_JA = [
+  ['', '石', '田', 'は', '叱', 'っ', 'た', '。', '「', 'わ'],
+  ['ざ', 'わ', 'ざ', '超', '回', '路', 'に', '変', 'え', 'た'],
+  ['の', 'は', '，', '十', '二', '秒', '速', 'い', 'か', 'ら'],
+  ['だ', '！', '」', '', '', '', '', '', '', ''],
+];
+const COLS_KO = [
+  ['', '石', '田', '가', '怒', '했', '다', '。', '「', '瞬'],
+  ['移', '艙', '버', '리', '고', '　', '하', '이', '퍼', '루'],
+  ['프', '탄', '건', '，', '十', '二', '秒', '빨', '라', '서'],
+  ['였', '다', '！', '」', '', '', '', '', '', ''],
+];
+
+/** The forme's language axis: sentence, the convention that language's own
+ *  homepage sets by default (owner: hant KLR・hans GB・ja JIS・ko KLR), and
+ *  the tag the type itself is set in.
+ *
+ *  Picking a language on the pill re-sets the forme AND resets the punct pill
+ *  to that home convention — the reader can still override it after.
+ *
+ *  `tag` goes on the <svg>, never on the <figure>: the caption and the pills
+ *  around it are written in the READER's language, and only the type between
+ *  them changes. Nothing reads it aloud (the graphic is decorative) and the
+ *  faces carry no locale-specific substitutions — it is there because a tag
+ *  is what decides which locale's font catches a character the stacks miss,
+ *  and that coverage is only ever guaranteed for the states a collector
+ *  thought to visit. */
+export const FORME_LANGS = {
+  hant: { cols: COLS, punct: 'klr', tag: 'zh-Hant' },
+  hans: { cols: COLS_HANS, punct: 'gb', tag: 'zh-Hans' },
+  ja: { cols: COLS_JA, punct: 'jis', tag: 'ja' },
+  ko: { cols: COLS_KO, punct: 'klr', tag: 'ko-Kore' },
+};
 /* `S` is the type body's footprint AND the glyph's em — a piece of type has one
  * square measure, and the 字面 (printing face) is that square. There used to be
  * a separate `fs: 60`, i.e. a 90-unit body carrying a 60-unit face: 0.667em of
@@ -103,25 +173,45 @@ const spacer = (O, sx, sy, d, solid) =>
 
 
 // Line layout in body units. Unsqueezed: uniform 1-body slugs. Squeezed at a
-// ：「 pair: ： keeps a full em, 「 becomes a half slug (its front-half
-// whitespace trimmed), and the freed half is spread as small justify blocks
-// between every other pair — so the line keeps its full justified length.
+// mark＋「 pair: the mark keeps a full em, 「 becomes a half slug (its
+// front-half whitespace trimmed), and the freed half is spread as small
+// justify blocks between every other pair — so the line keeps its full
+// justified length.
 //
-// WHEN it squeezes differs by direction. 直排: JIS only — MOE／GB／KLR seat ：
-// clear of 「's leading space, so nothing meets it. 橫排: ALL FOUR — ：'s
-// trailing half-space abuts 「's leading half-space under every convention.
+// WHICH pairs squeeze, per direction, is measured off the four Diantenjeom
+// Serif cuts (outline against outline — ：「 2026-08-02, 。「 2026-08-26), not
+// assumed. The criterion is the mark's own ink: a squeeze needs its trailing
+// half empty, so its white meets 「's leading white.
 //
-// KLR 跟 MOE／GB 同一套（owner 定案 2026-07-31），而且理由與那兩者不同：MOE／
-// GB 是把 ： 坐低在字身裡，KLR 是讓它**正立**——KLReq cl7 把 ：；· 歸為不隨直排
-// 旋轉的一類（diantenjeom build.py 的 `upright_cps=(0xFF1A,)` 就是這條）。兩條
-// 路殊途同歸：正立居中的 ： 一樣不會把半個空鉛送到 「 的門口。所以下面那個判定
-// 仍然只點名 jis，四個公約裡也只有它會擠。
+//   ：「 直排: JIS only — it turns ： and the turned ink clears the tail.
+//        MOE／GB／KLR seat ： clear of 「's leading space, so nothing meets
+//        it. KLR 跟 MOE／GB 同一套（owner 定案 2026-07-31），理由卻不同：
+//        MOE／GB 是把 ： 坐低在字身裡，KLR 是讓它**正立**——KLReq cl7 把
+//        ：；· 歸為不隨直排旋轉的一類（diantenjeom build.py 的
+//        `upright_cps=(0xFF1A,)` 就是這條）。正立居中的 ： 一樣不會把半個
+//        空鉛送到 「 的門口。
+//        橫排: ALL FOUR — ：'s trailing half abuts 「's leading half under
+//        every convention.
+//   。「 both axes: JIS／GB／KLR — all three corner-seat 。 (vert ink
+//        y∈[525,804] of the em's [-120,880], horizontal ink x≤322), so the
+//        trailing half is free either way. MOE squeezes NEITHER: its 。 is
+//        居中 (vert y∈[240,519] straddles the 380 centre), full body in both
+//        directions — note this differs from MOE's ：「, which does squeeze
+//        橫排.
+const SQUEEZE = {
+  '：「': { v: new Set(['jis']), h: new Set(['jis', 'moe', 'gb', 'klr']) },
+  '。「': { v: new Set(['jis', 'gb', 'klr']), h: new Set(['jis', 'gb', 'klr']) },
+};
+
 const lineLayout = (col, punct, orient) => {
   const n = col.length;
   let sq = -1;
-  for (let i = 0; i < n - 1; i++) if (col[i] === '：' && col[i + 1] === '「') sq = i;
-  // 只有 jis 會在直排擠壓；moe／gb／klr 三者同一套（見上）。
-  const squeezes = orient === 'h' || punct === 'jis';
+  let rule;
+  for (let i = 0; i < n - 1; i++) {
+    const r = SQUEEZE[col[i] + col[i + 1]];
+    if (r) { sq = i; rule = r; }
+  }
+  const squeezes = rule?.[orient === 'h' ? 'h' : 'v'].has(punct) ?? false;
   if (!squeezes || sq < 0) return col.map((ch, i) => ({ char: ch, aStart: i, size: 1 }));
   const half = 0.5;
   // freed 0.5 is shared by every 字距 gap EXCEPT the tight ：「 pair and the gap
@@ -190,7 +280,7 @@ const VERT_FORM = {
 };
 const vertForm = (char, punct) => VERT_FORM[punct]?.[char] ?? VERT_FORM.common[char];
 
-const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
+const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct, slice = SLICE }) => {
   const { S, H, r, sw, emCentre } = GEO;
   const fs = S;                                       // 字面 ＝ 字身（§ GEO）
   const cc = add(add(O, e1, S / 2), e2, sy / 2);      // top-face centre
@@ -299,7 +389,7 @@ const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct }) => {
     ? `<text class="lbl-var dtj dtj-serif" x="0" y="0" font-size="16" text-anchor="middle">Serif</text>
        <text class="lbl-var dtj dtj-sans" x="0" y="0" font-size="16" text-anchor="middle">Sans</text>
        <text class="lbl-sub" x="0" y="13" font-size="8" text-anchor="middle">Diantenjeom</text>`
-    : `<text class="lbl-num" x="0" y="0" font-size="20" text-anchor="middle">${SLICE[char]}</text>
+    : `<text class="lbl-num" x="0" y="0" font-size="20" text-anchor="middle">${slice[char]}</text>
        <text class="nm nm-m" x="0" y="14" font-size="8" text-anchor="middle">尚古明體</text>
        <text class="nm nm-h" x="0" y="14" font-size="8" text-anchor="middle">尚古黑體</text>
        <text class="nm nm-k" x="0" y="14" font-size="8" text-anchor="middle">霞鶩文楷</text>`;
@@ -326,10 +416,12 @@ const STAGGER = 0.07;
  *  a fixed gutter would be generous at 900px and mean at 1600px. */
 const AIR = 34;
 
-const buildForme = (punct, orient, spin) => {
+export const buildForme = (punct, orient, spin, data = {}) => {
   const { S, H, r, leadEm } = GEO;
+  const cols = data.cols ?? COLS;
+  const slice = data.slice ?? SLICE;
   const cell = S;                    // 字身相接 — 沒有間距（§ GEO）
-  const rows = COLS[0].length;
+  const rows = cols[0].length;
   const colStep = S * (1 + leadEm);          // 行高 — 字身 ＋ 行距，欄與欄的間距
   // Generation order IS the paint order — COLUMN-MAJOR: a column top-to-bottom,
   // then its 行距鉛條, then the next column. That's a valid painter's sort here
@@ -344,7 +436,7 @@ const buildForme = (punct, orient, spin) => {
   // separates is re-laid.
   const cells = [];
   let read = 0;
-  COLS.forEach((col, b) => {
+  cols.forEach((col, b) => {
     const bx = b * colStep;
     lineLayout(col, punct, orient).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
@@ -355,7 +447,7 @@ const buildForme = (punct, orient, spin) => {
       else
         cells.push({ kind: 'char', line: b, O, char: it.char, sy: it.size * S, d: read++ * STAGGER, half: it.size < 1 });
     });
-    if (b < COLS.length - 1)                   // 行距鉛條 — ONE whole box (the
+    if (b < cols.length - 1)                   // 行距鉛條 — ONE whole box (the
       // column-major order above makes a rows-spanning piece sort cleanly),
       // half-opacity like the 空鉛 quads: a single group composites plain
       // `opacity` with no seams, and the furniture behind ghosts through.
@@ -371,6 +463,11 @@ const buildForme = (punct, orient, spin) => {
   // colophon hangs (lead-forme.css § pocket).
   let footX = -Infinity;
   let footY = -Infinity;
+  // …and the same pair at the OTHER end: the inline-START vertex's foot — the
+  // lowest ink at the box's left edge. Everything below THAT is air too, and it
+  // is where station②'s 破折號 column starts (dash-clip.js reads `heel`).
+  let heelX = Infinity;
+  let heelY = -Infinity;
   // the highest DRAWN point. Not `min(ys)`: the fit reserves the relief's rise
   // `r` above every piece, but only type carries relief — a 空鉛 quad's top face
   // IS its top. The origin piece happens to be the 段首 quad, so the box's own
@@ -392,6 +489,12 @@ const buildForme = (punct, orient, spin) => {
       } else if (p[0] > footX - 1e-6) {
         footY = Math.max(footY, p[1] + H);
       }
+      if (p[0] < heelX - 1e-6) {
+        heelX = p[0];
+        heelY = p[1] + H;
+      } else if (p[0] < heelX + 1e-6) {
+        heelY = Math.max(heelY, p[1] + H);
+      }
     }
   }
   // The box HUGS the forme: no fit pad. It used to carry one (34 units a side),
@@ -406,10 +509,22 @@ const buildForme = (punct, orient, spin) => {
   const minY = Math.min(...ys);
   const w = Math.max(...xs) - minX;
   const h = Math.max(...ys) - minY;
+  /* 第一閱讀欄最末一顆的欄軸；繁中狀態就是「我」。一顆正方鉛字的 e1/e2
+     水平分量互相抵消，所以頂面中心的 x 正是 O.x。發布成 SVG 寬度比例，CSS
+     便能把後面的「他沉默」柱精確壓在同一條欄軸上。 */
+  const firstColumnLast = cells.filter((c) => c.kind === 'char' && c.line === 0).at(-1);
+  const firstColumnLastBottom = firstColumnLast
+    ? Math.max(
+        firstColumnLast.O[1],
+        add(firstColumnLast.O, e1, S)[1],
+        add(firstColumnLast.O, e2, firstColumnLast.sy)[1],
+        add(add(firstColumnLast.O, e1, S), e2, firstColumnLast.sy)[1],
+      ) + H
+    : minY;
 
   const markup = cells
     .map((c) => (c.kind === 'char'
-      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct })
+      ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct, slice })
       : spacer(c.O, c.sx, c.sy, c.d, c.solid)))
     .join('');
   return {
@@ -428,6 +543,12 @@ const buildForme = (punct, orient, spin) => {
     // down the box (the caption may start below it), and the box's own
     // height — both over width, because one length is all CSS has to scale by.
     foot: (footY - minY) / w,
+    /* 對稱的另一顆：inline-START 那一角的腳，同樣是「寬的幾分之幾」。站②的
+       破折號柱從這裡起（dash-clip.js），而它必須是**算出來的**——量個別鉛字的
+       盒子會讀到落下動畫的中途（實測切線偏高 149px）。 */
+    heel: (heelY - minY) / w,
+    columnAnchor: ((firstColumnLast?.O[0] ?? minX) - minX) / w,
+    columnStart: (firstColumnLastBottom - minY) / w,
     ratio: h / w,
     /* The air, as a fraction of the forme's own width — the length CSS turns
        into the <figure>'s `padding` (lead-forme.css § air). It used to be a fit
@@ -463,11 +584,6 @@ const buildForme = (punct, orient, spin) => {
    `lineLayout`'s squeeze decision (直排 squeezes under JIS only), and the
    Diantenjeom face the punctuation slugs are drawn in. So there are exactly
    two kinds of line:
-  // …and the same pair at the OTHER end: the inline-START vertex's foot — the
-  // lowest ink at the box's left edge. Everything below THAT is air too, and it
-  // is where station②'s 破折號 column starts (dash-clip.js reads `heel`).
-  let heelX = Infinity;
-  let heelY = -Infinity;
      · its spacing moved  → the whole line is re-set, because every piece after
        the squeeze sits somewhere new and a line half re-set reads as a mistake;
      · its spacing stands → only its punctuation is lifted, since only those
@@ -489,12 +605,6 @@ export const reset = (before, after) => {
   const out = [];
   const back = [];
   for (const [line, now] of byLine(after)) {
-      if (p[0] < heelX - 1e-6) {
-        heelX = p[0];
-        heelY = p[1] + H;
-      } else if (p[0] < heelX + 1e-6) {
-        heelY = Math.max(heelY, p[1] + H);
-      }
     const then = was.get(line) ?? [];
     const stands =
       then.length === now.length &&
@@ -531,10 +641,6 @@ const eject = ($el) => [
 ];
 /* the 0.55 stop mirrors the CSS `lf-drop` keyframe exactly: a piece reaches its
    own opacity BEFORE it lands, so it is already reading as 空鉛 on the way
-    /* 對稱的另一顆：inline-START 那一角的腳，同樣是「寬的幾分之幾」。站②的
-       破折號柱從這裡起（dash-clip.js），而它必須是**算出來的**——量個別鉛字的
-       盒子會讀到落下動畫的中途（實測切線偏高 149px）。 */
-    heel: (heelY - minY) / w,
    down, and the landing frame changes nothing. */
 const drop = ($el) => [
   { transform: 'translateY(-150px)', opacity: 0, offset: 0 },
@@ -607,14 +713,41 @@ const GEOMETRY = [
   ['--lf-apex', 'apex'],
   ['--lf-pad', 'pad'],
   ['--lf-foot', 'foot'],
+  ['--lf-heel', 'heel'],
+  ['--lf-column-anchor', 'columnAnchor'],
+  ['--lf-column-start', 'columnStart'],
   ['--lf-ratio', 'ratio'],
   ['--lf-bleed', 'bleed'],
   ['--lf-gap-top', 'gapTop'],
 ];
 
-export const initLeadForme = ($root = document) => {
+/**
+ * @param config  optional per-forme data — `cols` (the sentence, laid out as
+ *   columns of body-unit slots) and `slice` (engraving numbers for chars the
+ *   default zh table doesn't carry; merged over it). The homepage passes
+ *   nothing; demo/lead-forme.html sets the ja／ko sentences with it.
+ */
+export const initLeadForme = ($root = document, config = {}) => {
   const $forme = $root.querySelector('.LeadForme');
   if (!$forme) return;
+  /* The sentence: an explicit config wins (the workbench feeds its own),
+     otherwise the figure's `data-lang` picks a cut — the locale template
+     stamps each homepage with its own language. */
+  const slice = config.slice ? { ...SLICE, ...config.slice } : SLICE;
+  const data = () => ({
+    cols: config.cols ?? FORME_LANGS[$forme.dataset.lang]?.cols ?? COLS,
+    slice,
+  });
+  /* The pills carry no hard-coded `checked` for the axes whose default is
+     per-locale (punct, language) — the figure's data-* is the single source
+     and the radios are set to match here. Static HTML can't vary a checked
+     attribute by template value without four copies of the input. */
+  const check = (name, value) => {
+    const $r = value && $forme.querySelector(`input[name="${name}"][value="${value}"]`);
+    if ($r) $r.checked = true;
+  };
+  check('lf-punct', $forme.dataset.punct);
+  check('lf-lang', $forme.dataset.lang);
   const $svg = $forme.querySelector('svg');
   /* Turn the class-R marks ourselves instead of asking for `vert`? Only if the
      engine won't run it (§ surveyEngine). Answered again once the fonts are
@@ -626,9 +759,11 @@ export const initLeadForme = ($root = document) => {
   // the build currently on screen — § reset diffs the next one against it.
   let built;
   const render = () => {
-    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v', spin);
+    built = buildForme($forme.dataset.punct || 'jis', $forme.dataset.orient || 'v', spin, data());
     const { viewBox, markup, lastDelay } = built;
     $svg.setAttribute('viewBox', viewBox);
+    const tag = FORME_LANGS[$forme.dataset.lang]?.tag;
+    if (tag) $svg.setAttribute('lang', tag);
     $svg.innerHTML = markup;
     // hand the drop's tail to CSS — it adds --lf-drop-dur for the caption's cue
     $forme.style.setProperty('--lf-last-slug', `${lastDelay.toFixed(2)}s`);
@@ -699,8 +834,7 @@ export const initLeadForme = ($root = document) => {
     el.addEventListener('change', () => {
       const moved = reset(
         built.cells,
-  ['--lf-heel', 'heel'],
-        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin).cells,
+        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin, data()).cells,
       );
       reslot(
         (half) => moved[half].map((i) => $slugs()[i]),
@@ -712,33 +846,61 @@ export const initLeadForme = ($root = document) => {
       );
     }));
 
+  /* The LONG ceremony — the whole forme lifts at once (as in the face/punct
+     swaps), then is set again ONE PIECE AT A TIME, the only swaps that do.
+     The asymmetry is the point: breaking a forme up is quick, setting one is
+     not. Two switches earn it, for the same reason — every glyph is re-cut:
+     direction turns each a quarter; language replaces the sentence itself. */
+  const recompose = async (mutate) => {
+    $forme.classList.add('settled');
+    if (reduced || busy) { mutate(); render(); return; }
+    busy = true;
+    await Promise.all($slugs()
+      .map(($el) => $el.animate(eject($el), {
+        duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards',
+      }))
+      .map((a) => a.finished));
+    mutate();
+    render();
+    // re-set at the entrance's own pace, reading order = drop order
+    await Promise.all($slugs()
+      .map(($el, i) => $el.animate(drop($el), {
+        duration: 720, delay: i * (STAGGER * 1000), easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards',
+      }))
+      .map((a) => a.finished));
+    busy = false;
+  };
+
   // Direction change re-engraves EVERY piece (the glyph turns a quarter) and,
   // under MOE／GB, re-lays line 1 as well. So the whole forme comes apart and is
   // set again — which is what changing direction actually means in a type shop.
   // The grid itself is unchanged, so nothing moves; only the faces do.
   $forme.querySelectorAll('input[name="lf-orient"]').forEach((el) =>
-    el.addEventListener('change', async () => {
-      $forme.classList.add('settled');
-      if (reduced || busy) { $forme.dataset.orient = picked('lf-orient'); render(); return; }
-      busy = true;
-      // the whole forme lifts at once (as in the face/punct swaps), then is set
-      // again ONE PIECE AT A TIME — the only swap that does. The asymmetry is
-      // the point, and so is the exception: breaking a forme up is quick,
-      // setting one is not, and turning the direction re-engraves every glyph
-      // rather than re-slotting a few, so it earns the long ceremony.
-      await Promise.all($slugs()
-        .map(($el) => $el.animate(eject($el), {
-          duration: 240, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards',
-        }))
-        .map((a) => a.finished));
+    el.addEventListener('change', () => recompose(() => {
       $forme.dataset.orient = picked('lf-orient');
-      render();
-      // re-set at the entrance's own pace, reading order = drop order
-      await Promise.all($slugs()
-        .map(($el, i) => $el.animate(drop($el), {
-          duration: 720, delay: i * (STAGGER * 1000), easing: 'cubic-bezier(.28,1.12,.44,1)', fill: 'backwards',
-        }))
-        .map((a) => a.finished));
-      busy = false;
-    }));
+    })));
+
+  // Language change replaces the whole sentence — the other full re-set. It
+  // also RESETS the punct pill to the picked language's home convention
+  // (FORME_LANGS): each locale's homepage opens on its own pairing, and the
+  // pill switch is defined as "show me that locale's forme", conventions
+  // included. The reader can still override punct afterwards. Face is left
+  // alone with one exception: ko has no kai layer (KLReq gives Korean none,
+  // and LXGW WenKai TC carries no hangul — lead-forme.css hides that radio
+  // under data-lang=ko), so a selected 楷 falls back to 明 rather than
+  // painting hangul in a fallback face.
+  $forme.querySelectorAll('input[name="lf-lang"]').forEach((el) =>
+    el.addEventListener('change', () => recompose(() => {
+      const lang = picked('lf-lang');
+      $forme.dataset.lang = lang;
+      const punct = FORME_LANGS[lang]?.punct;
+      if (punct) {
+        $forme.dataset.punct = punct;
+        check('lf-punct', punct);
+      }
+      if (lang === 'ko' && picked('lf-face') === 'k') {
+        $forme.dataset.face = 'm';
+        check('lf-face', 'm');
+      }
+    })));
 };

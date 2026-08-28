@@ -37,7 +37,7 @@
   }
 
   /* The wavy family. `cite:lang(zh)` matches the 甲式 rule's condition —
-     only zh cites draw a line under wavy (ja/ko-Hant use quotes). `u`/`ins`
+     only zh cites draw a line under wavy (ja/ko-Kore use quotes). `u`/`ins`
      are subjects too: a 專名號 right before a wavy title yields the gap. */
   @container style(--han-cite-title-marks: wavy) {
     :where(u, ins, cite:lang(zh)):where([data-followed-by-adjacent-wavy]) {

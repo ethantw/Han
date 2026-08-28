@@ -60,8 +60,10 @@
     grid-template-columns: 1fr;
 
     @media (min-width: 64rem) {
-      grid-template-columns: minmax(0, 1.3fr) minmax(20rem, 1fr);
+      grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .8fr);
     }
+
+    [data-col="gz"] { display: none; }
   }
 
   /* Three plates, TWO columns of them: 印刷字體 is eight rows deep and the
@@ -443,6 +445,8 @@
   &.Sum figcaption {
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    min-block-size: 16rem;
   }
 
   &.Sum figcaption .SsrNote {
@@ -454,7 +458,7 @@
       grid-column: 1 / -1;
       padding-block: 1.125rem;
       padding-inline: 1.25rem;
-      background: var(--ui-panel);
+      background: var(--ui-bg);
 
       /* Beside the plates, not under them — see the two grid rules above.
          `1 / -1` stays the narrow-screen behaviour. */
@@ -482,4 +486,226 @@
       color: var(--ui-accent);
     }
   }
+}
+
+#station-craft > .SumProse {
+  max-inline-size: none;
+  margin: 0 0 1.5rem;
+  font-family: var(--han-font-alternative);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--ui-supplement-text);
+}
+
+#station-craft > .SumEqNote {
+  margin: -1.5rem 0 1rem;
+  font-family: var(--han-font-default);
+  font-size: .75rem;
+  color: var(--ui-supplement-text);
+}
+
+.SizeDialogOpen {
+  margin-block: 0 2.5rem;
+  padding: .6rem .85rem;
+  font: inherit;
+  color: var(--ui-text);
+  background: transparent;
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--r-3);
+  cursor: pointer;
+}
+
+.SizeDialog {
+  /* 與新聞全文同一模型：dialog 是滿版、透明的 mask／scroll surface；真正的小
+     彈窗是裡面的 `.SizeDialogPanel`。內容長時整張 panel 跟著外層走，scrollbar
+     留在 viewport 邊緣，不會關在小卡片裡。 */
+  inset: 0;
+  inline-size: 100dvi;
+  block-size: 100dvb;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ui-text);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      display 220ms allow-discrete,
+      overlay 220ms allow-discrete;
+  }
+}
+
+.SizeDialogPanel {
+  inline-size: min(40rem, calc(100% - 2rem));
+  margin: 8dvb auto;
+  overflow: clip;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--r-3);
+  box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--palette-black) 28%, transparent);
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    translate: 0 1.5rem;
+    transition:
+      opacity 220ms ease,
+      translate 220ms cubic-bezier(.2, .75, .25, 1);
+  }
+}
+
+.SizeDialog[open] > .SizeDialogPanel {
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 1;
+    translate: 0 0;
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 1.5rem;
+    }
+  }
+}
+
+.SizeDialog::backdrop {
+  background: color-mix(in srgb, var(--palette-black) 55%, transparent);
+  backdrop-filter: blur(3px);
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transition:
+      opacity 220ms ease,
+      display 220ms allow-discrete,
+      overlay 220ms allow-discrete;
+  }
+}
+
+.SizeDialog[open]::backdrop {
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 1;
+
+    @starting-style { opacity: 0; }
+  }
+}
+
+.SizeDialogHead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  background: color-mix(in srgb, var(--ui-bg) 92%, transparent);
+  border-block-end: 1px solid var(--ui-rule);
+  backdrop-filter: blur(10px);
+}
+
+.SizeDialogHead h3,
+.SizeDialogBody h4 {
+  margin: 0;
+  font-family: var(--han-font-alternative);
+  font-weight: 500;
+}
+
+.SizeDialogHead h3 { font-size: 1rem; }
+
+.SizeDialogHead button {
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  color: var(--ui-supplement-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.SizeDialogHead [data-icon] { vertical-align: initial; }
+
+.SizeDialogBody {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.125rem;
+}
+
+.TransferDetails h4,
+.DialogLedgerHead { margin-block-end: .75rem; }
+
+.TransferDetails table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.TransferDetails caption {
+  margin-block-end: .5rem;
+  font-family: var(--han-font-alternative);
+  font-size: .75rem;
+  line-height: 1.6;
+  color: var(--ui-supplement-text);
+  text-align: start;
+}
+
+.TransferDetails :is(th, td) {
+  padding: .375rem .5rem;
+  border-block-end: 1px solid var(--ui-rule);
+}
+
+.TransferDetails th {
+  font-family: var(--han-font-alternative);
+  font-size: .875rem;
+  font-weight: 400;
+  text-align: start;
+}
+
+.TransferDetails thead th {
+  font-size: .75rem;
+  color: var(--ui-supplement-text);
+}
+
+.TransferDetails :is(th, td):not(:first-child) {
+  font-family: var(--font-mono);
+  text-align: end;
+}
+
+.TransferDetails td {
+  font-size: .875rem;
+  color: var(--ui-accent);
+}
+
+.SizeDialog .SsrNote {
+  margin: 0;
+  max-inline-size: 60em;
+  font-family: var(--han-font-default);
+  font-size: .875rem;
+  line-height: 1.65;
+  color: var(--ui-supplement-text);
+}
+
+.SizeDialog .FontLedger {
+  margin: 0;
+  grid-template-columns: 1fr;
+  grid-template-areas: none;
+
+  > :is([data-plate], figcaption) {
+    grid-area: auto;
+  }
+
+  > div,
+  > figcaption {
+    padding: .875rem;
+  }
+}
+
+@media (max-width: 42rem) {
+  .SizeDialogBody { padding: 1rem; }
+  .TransferDetails { min-inline-size: 0; overflow-x: auto; }
+  .TransferDetails table { min-inline-size: 30rem; }
 }

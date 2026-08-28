@@ -6,8 +6,7 @@ import { test, expect } from '@playwright/test'
  *
  * Contract: docs/plans/homepage-v2-implementation.md. These are smoke-level
  * structural checks (not pixel baselines): the content stations carry a
- * watermark glyph rendered from `data-wm` — six of the seven, since
- * station②・字體排印 hands its corner to the lead-type forme instead;
+ * full-viewport ground rendered by `::before`, with no watermark glyphs;
  * the var-name marginalia is a ≥68rem-only console (hidden where it would only
  * repeat names); station 柒・引用碼 sits on the one non-grey station ground
  * (稿紙米黃, following the page theme); and reveal.js must hand every station
@@ -15,29 +14,11 @@ import { test, expect } from '@playwright/test'
  * (settled state, no animation), so nothing is ever left hidden.
  */
 
-// The seven stations in document order — Closing (data-wm="漢") is not a
-// `[data-station]`, so it is deliberately excluded. Three stations carry NO
-// watermark, each because its corner belongs to a spectacle of its own:
-// station①・語意（1c26740 的六列 mark diagram）、station②・字體排印
-// （lead-type forme，lead-forme.css § corner）、station③・行文（破折號
-// 熔接底圖）。playground 的字改「樂」（ab6210b）。四entries for seven.
-const STATION_WM = ['段', '零', '樂', '碼']
-
-test('the stations carry their watermark glyphs 段零樂碼 (①②③ have none)', async ({ page }) => {
+test('the stations and closing carry no watermark data', async ({ page }) => {
   await page.goto('/')
 
   await expect(page.locator('main [data-station]')).toHaveCount(7)
-  await expect(page.locator('main #station-fonts[data-wm]')).toHaveCount(0)
-  await expect(page.locator('main #station-semantics[data-wm]')).toHaveCount(0)
-  await expect(page.locator('main #station-lines[data-wm]')).toHaveCount(0)
-
-  const stations = page.locator('main [data-station][data-wm]')
-  await expect(stations).toHaveCount(4)
-
-  const marks = await stations.evaluateAll((els) =>
-    els.map((el) => el.getAttribute('data-wm')),
-  )
-  expect(marks).toEqual(STATION_WM)
+  await expect(page.locator('main [data-wm]')).toHaveCount(0)
 })
 
 test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the page theme', async ({ page }) => {
@@ -51,7 +32,9 @@ test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the 
   // paper-coloured station plate, --ui-station-code = --palette-buff (#f8f4ea).
   const snippet = page.locator('#station-snippet')
   await expect(snippet).toHaveCSS('color-scheme', 'light')
-  await expect(snippet).toHaveCSS('background-color', 'rgb(248, 244, 234)')
+  await expect.poll(() => snippet.evaluate((el) =>
+    getComputedStyle(el, '::before').backgroundColor,
+  )).toBe('rgb(248, 244, 234)')
 
   // The code panes stay terminal-dark in BOTH themes — that part IS constant
   // (--code-bg = --palette-ink). A light station with a dark terminal on it is
@@ -67,7 +50,9 @@ test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the 
   await page.locator('label.for-theme').click()
   await expect(page.locator('input[name="dark-mode"]')).toBeChecked()
   await expect(snippet).toHaveCSS('color-scheme', 'dark')
-  await expect(snippet).toHaveCSS('background-color', 'rgb(25, 23, 18)')
+  await expect.poll(() => snippet.evaluate((el) =>
+    getComputedStyle(el, '::before').backgroundColor,
+  )).toBe('rgb(25, 23, 18)')
 })
 
 test('reduced-motion: every station is revealed immediately (settled, not animated)', async ({ page }) => {
@@ -397,4 +382,3 @@ test('station 伍・工法: the plate\u2019s own boxes drive the console', async
   await expect(table.locator('tr[data-cfg="prose"][data-off]')).toHaveCount(0)
   await expect(table.locator('tr[data-cfg="prose"] input[data-toggle]')).toBeChecked()
 })
-

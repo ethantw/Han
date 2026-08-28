@@ -178,16 +178,20 @@ test.describe('module switches · off is a flag, not an unloaded sheet', () => {
     // common/module-state.css keying on the mirrored root attribute — this
     // asserts the pair works end to end, since the flag alone would silently
     // do nothing.
-    const align = () =>
-      page.$eval('article p', (el) => getComputedStyle(el).textAlign)
+    // Observable: the heading-rhythm rule, which welds a heading to the text
+    // it introduces (`--han-prose-consecutive-headings-b-block-start: 0`).
+    // Measured rather than read off `--han-prose`, because the flag alone
+    // proves nothing about whether any rule saw it.
+    const gap = () =>
+      page.$eval('article h2 + p', (el) => getComputedStyle(el).marginBlockStart)
 
-    expect(await align()).toBe('justify')
+    expect(await gap()).toBe('0px')
     await page.locator('[data-cfg-key="prose"]').uncheck()
-    await expect.poll(align).not.toBe('justify')
+    await expect.poll(gap).not.toBe('0px')
     expect(await moduleLinkDisabled(page, 'prose')).toBe(false)
 
     await page.locator('[data-cfg-key="prose"]').check()
-    await expect.poll(align).toBe('justify')
+    await expect.poll(gap).toBe('0px')
   })
 
   test('only fonts unloads its stylesheet', async ({ page }) => {

@@ -31,18 +31,18 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要權重大於零或位於後方，就能輕鬆覆蓋（式5.1）。',
-    hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要权重大于零或位于后方，就能轻松覆盖（式5.1）。',
-    en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>. Yours only has to carry a specificity above zero, or come later, to override it (5.1).',
-    ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>によって詳細度がすべて零になる。開発者の様式は、詳細度が零より大きいか、あとに置かれてさえいれば、難なく上書きできる（式5.1）。',
-    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code>로 優先順位가 모두 零이 된다。開發者의 스타일은 優先順位가 零보다 크거나 뒤에 놓이기만 하면 손쉽게 덮어쓸 수 있다（式5.1）。',
+    hant: '漢.css以<code>:where()</code>歸零權重，開發者樣式可直接覆蓋。',
+    hans: '汉.css以<code>:where()</code>归零权重，开发者样式可直接覆盖。',
+    en: '<code>:where()</code> zeroes han.css specificity, so author styles override it directly.',
+    ja: '漢.cssは<code>:where()</code>で詳細度をゼロにし、開発者の様式で直接上書きできる。',
+    ko: '漢.css는 <code>:where()</code>로 優先順位를 零으로 만들어 開發者 스타일이 바로 덮어쓴다。',
   },
   arAxTail: {
-    hant: '配合可自由定義樣式模塊順序的<code>@layer</code>，未分層或後來的分層樣式權重較大，提供更大的層級排列自由度（式5.2）；開發者更可透過CSS變量及style query <code>@container</code>，在任何選擇器上開關、調校機能（式5.3）。',
-    hans: '配合可自由定义样式模块顺序的<code>@layer</code>，未分层或后来的分层样式权重较大，提供更大的层级排列自由度（式5.2）；开发者更可透过CSS变量及style query <code>@container</code>，在任何选择器上开关、调校机能（式5.3）。',
-    en: 'With <code>@layer</code>, whose order you define yourself, anything unlayered — or in a later layer — outranks what came before, which is as much freedom over the cascade as CSS has to give (5.2); and with custom properties and the <code>@container</code> style query, any selector can switch a feature on, off or sideways (5.3).',
-    ja: '様式モジュールの順序を自由に定められる<code>@layer</code>と組み合わせれば、層に入れていないもの、あるいは後の層にあるものが優先される——層の並べ方をそれだけ自由にできる（式5.2）。さらにCSS変数とstyle query <code>@container</code>で、任意のセレクタ上で機能を切り替え、調整できる（式5.3）。',
-    ko: '스타일 모듈 順序를 마음대로 定義할 수 있는 <code>@layer</code>와 함께라면、層에 넣지 않은 것—또는 뒤쪽 層에 있는 것—이 앞선다。層을 배열하는 自由가 그만큼 넓다（式5.2）。게다가 CSS 變數와 style query <code>@container</code>로 어떤 셀렉터 위에서든 機能을 켜고 끄고 調律할 수 있다（式5.3）。',
+    hant: '<code>@layer</code>排列模塊；CSS變量與style query負責開關、調校機能。',
+    hans: '<code>@layer</code>排列模块；CSS变量与style query负责开关、调校机能。',
+    en: '<code>@layer</code> orders modules; variables and style queries switch and tune features.',
+    ja: '<code>@layer</code>でモジュールを並べ、CSS変数とstyle queryで機能を調整する。',
+    ko: '<code>@layer</code>로 모듈을 배열하고 CSS 變數와 style query로 機能을 조정한다。',
   },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
@@ -83,11 +83,11 @@
     ja: '次のセレクタ', ko: '다음 셀렉터',
   },
   arEq52Note: {
-    hant: '未分層的宣告永遠蓋過分層的——你的一條規則就贏。',
-    hans: '未分层的宣告永远盖过分层的——你的一条规则就赢。',
-    en: 'An unlayered declaration always outranks a layered one — one rule of yours is enough.',
-    ja: '未分層の宣言はつねに分層されたものを上書きする——あなたの一行で勝つ。',
-    ko: '層에 넣지 않은 <ruby>宣言<rt>선언</rt></ruby>은 늘 層에 든 것을 이긴다——당신의 한 줄이면 된다。',
+    hant: '漢.css的樣式皆置於<code>han-*</code>分層中。開發者未分層的樣式自然優先。',
+    hans: '汉.css的样式皆置于<code>han-*</code>分层中。开发者未分层的样式自然优先。',
+    en: 'Every han.css rule sits in a <code>han-*</code> layer. Your unlayered styles naturally take priority.',
+    ja: '漢.cssの様式はすべて<code>han-*</code>層に置かれる。開発者の未分層様式が自然に優先される。',
+    ko: '漢.css 스타일은 모두 <code>han-*</code> 層에 놓인다。開發者의 未分層 스타일이 자연스럽게 우선한다。',
   },
   arEq53Note: {
     hant: '容器上寫一個變數，那片子樹的機能就跟著改。',
@@ -163,18 +163,18 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   arSumEqNote: {
-    hant: 'brotli是當前最普及的高壓縮編碼，列於末欄；部分服務商目前僅支援gzip，二者差距不大，一併列出供開發者參考。',
-    hans: 'brotli是当前最普及的高压缩编码，列于末栏；部分服务商目前仅支援gzip，二者差距不大，一并列出供开发者参考。',
-    en: 'Three transfer encodings of the same minified file, not three files. brotli is the most widely deployed of the strong encodings, so it takes the last column; some hosts still serve only gzip, and the two are close enough that both are worth having here.',
-    ja: '三列は同一のminifiedファイルを三通りの転送エンコーディングで量ったもので、三つのファイルではない。brotliは強い圧縮のなかで最も普及しているため最終列に置いた。gzipしか送れない事業者もまだあり、両者の差は小さいので併記する。',
-    ko: '세 열은 같은 minified 파일의 세 가지 傳送 인코딩이지、세 개의 파일이 아니다。brotli는 强한 壓縮 中 가장 널리 쓰이므로 마지막 열에 두었다。아직 gzip만 보내는 業體도 있고 둘의 差는 크지 않아 함께 싣는다。',
+    hant: 'minified記錄原始碼縮減後的體積。brotli則是當前最普及的伺服端高壓縮編碼。',
+    hans: 'minified记录原始码缩减后的体积。brotli则是当前最普及的伺服端高压缩编码。',
+    en: 'minified records the size after source reduction. brotli is currently the most widely deployed high-compression server encoding.',
+    ja: 'minifiedはソースコードを縮小した後の容量を示す。brotliは現在もっとも普及している、サーバ側の高圧縮エンコーディングである。',
+    ko: 'minified는 原始 코드 축소 뒤의 容量을 기록한다。brotli는 현재 가장 널리 쓰이는 서버 高壓縮 인코딩이다。',
   },
   arSumNote: {
-    hant: '四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸，包含minified及二種主流的伺服端壓縮編碼。',
-    hans: '四个样式模块与相关的JS增强皆可按需选配，下方实时计算汉.css打包后的档案尺寸，包含minified及二种主流的伺服端压缩编码。',
-    en: 'The four style modules and the JS passes that go with them are all optional. Below, the size of the han.css you have just configured, bundled and weighed live — minified, and under the two server encodings in common use.',
-    ja: '四つの様式モジュールと、それに連なるJSの各パスは、すべて任意である。下段は、いま組んだ漢.cssを実際に束ねて量った大きさ——minifiedと、広く使われている二つのサーバ側エンコーディング。',
-    ko: '네 樣式 모듈과 그에 딸린 JS 패스는 모두 選擇 事項이다。아래는 지금 고른 漢.css를 實際로 번들해 잰 크기다——minified、그리고 널리 쓰이는 두 가지 서버 인코딩。',
+    hant: '四個樣式模組與相關的JS增強皆可按需選配，下方實時計算漢.css打包後的文件尺寸。',
+    hans: '四个样式模块与相关的JS增强皆可按需选配，下方实时计算汉.css打包后的文件尺寸。',
+    en: 'The four style modules and their related JS enhancements are optional. The file size of the configured han.css build is calculated live below.',
+    ja: '四つの様式モジュールと関連するJS拡張は、すべて必要に応じて選べる。下段では、設定した漢.cssのビルド容量をリアルタイムで計算する。',
+    ko: '네 樣式 모듈과 관련 JS 增强은 모두 必要에 따라 고를 수 있다。아래에서 설정한 漢.css 빌드의 파일 크기를 실시간으로 계산한다。',
   },
   /* The identity-encoded column. Named for the MINIFICATION, not for the
      absence of compression: 「未壓」 alone reads as「the un-minified source」,
@@ -208,6 +208,36 @@
     en: 'Webfonts are billed separately — open for the figures',
     ja: '字体の容量は別勘定——詳細を開く',
     ko: '字體 容量은 <ruby>別途<rt>별도</rt></ruby>——<ruby>詳細<rt>상세</rt></ruby> 펼치기',
+  },
+  arSizeOpen: {
+    hant: '查看完整文件體積', hans: '查看完整文件体积', en: 'View full file sizes',
+    ja: 'ファイル容量の詳細を見る', ko: '전체 파일 크기 보기',
+  },
+  arSizeTitle: {
+    hant: '完整文件體積', hans: '完整文件体积', en: 'Full file sizes',
+    ja: 'ファイル容量の詳細', ko: '전체 파일 크기',
+  },
+  arSizeTransfer: {
+    hant: '完整傳輸尺寸', hans: '完整传输尺寸', en: 'Full transfer sizes',
+    ja: '転送容量の詳細', ko: '전체 전송 크기',
+  },
+  arSizeCurrent: {
+    hant: '目前選取', hans: '目前选取', en: 'Current selection',
+    ja: '現在の選択', ko: '현재 선택',
+  },
+  arSizeClose: {
+    hant: '關閉', hans: '关闭', en: 'Close', ja: '閉じる', ko: '닫기',
+  },
+  arSizeJs: {
+    hant: 'JavaScript逐項引入', hans: 'JavaScript逐项引入', en: 'JavaScript by import',
+    ja: 'JavaScriptの個別導入', ko: 'JavaScript 개별 불러오기',
+  },
+  arSizeJsNote: {
+    hant: '每列是單獨引入該pass後的完整bundle，已包含共用的hyperly底座，彼此不可直接相加。',
+    hans: '每列是单独引入该pass后的完整bundle，已包含共用的hyperly底座，彼此不可直接相加。',
+    en: 'Each row is the complete bundle after importing that pass alone, including the shared hyperly base. The rows cannot be added together.',
+    ja: '各行はそのpassだけを導入した完全なbundleで、共通のhyperly基盤を含む。行どうしを直接足すことはできない。',
+    ko: '각 행은 해당 pass만 불러온 전체 bundle이며 공용 hyperly 기반을 포함한다。행끼리 직접 더할 수는 없다。',
   },
   /**
    * ⚠ 切片命中數是**量出來的**，不是估的。語料：taisol 的 23 篇繁中報導
@@ -339,7 +369,7 @@
      four cascade layers map 1:1 to the console's four module switches; (3) one
      custom property on a container re-scopes a feature via inheritance /
      @container style(). -->
-<section id="station-craft" data-station="craft" data-wm="零">
+<section id="station-craft" data-station="craft">
   <hgroup>
     <p>{{ arEyebrow }}</p>
     <h2>{{ arH2 }}</h2>
@@ -379,13 +409,12 @@
             <mo>≡</mo>
             <mrow>
               <mi>s</mi>
-              <mtext class="Term">，權重</mtext>
+              <mtext class="Term">　權重</mtext>
               <mo>→</mo>
               <mn class="Zero">0</mn>
             </mrow>
           </mrow>
         </math>
-        <small class="EqNo">（式5.1）</small>
       </p>
       <p class="AxNote">{{ arThmNote }}</p>
     </div>
@@ -395,11 +424,10 @@
         <math display="block">
           <mrow>
             <mtext>{{ arEqUnlayered }}</mtext>
-            <mo>≻</mo>
-            <mtext class="Code">@layer</mtext>
+            <mspace width=".3em"></mspace><mo stretchy="false">&gt;</mo><mspace width=".3em"></mspace>
+            <mtext class="Code">@layer han-*</mtext>
           </mrow>
         </math>
-        <small class="EqNo">（式5.2）</small>
       </p>
       <p class="AxNote">{{ arEq52Note }}</p>
     </div>
@@ -414,7 +442,6 @@
             <mo stretchy="false">(</mo><mtext>{{ arEqContainerVar }}</mtext><mo stretchy="false">)</mo>
           </mrow>
         </math>
-        <small class="EqNo">（式5.3）</small>
       </p>
       <p class="AxNote">{{ arEq53Note }}</p>
     </div>
@@ -557,7 +584,7 @@
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
             </div>
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Hant))</code><span class="Fn">)</span> {</p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Kore))</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
             <p class="RuleEnd">}</p>
           </div>
@@ -572,55 +599,13 @@
           </div>
         </li>
       </ul>
-      <!-- The whole comparison in one plate: the framework's own weight goes
-           into `:where()` and comes out zero; the reader's sits under it,
-           in the same column, so the two are read against each other without
-           a word of prose doing the comparing. Both triples are the carousel
-           item's own (`data-spec-out` / `data-mine-out`), so they travel with
-           the pair in the pane. -->
-      <!-- The comparison, split into two lines so each can sit level with the
-           rule it describes in the pane beside it (CSS subgrid — see
-           station-craft.css § .Example). Line one is the framework's weight
-           going into `:where()` and coming out zero; line two is the reader's.
-           The chevron between them opens DOWNWARD: it is a `≻` turned a
-           quarter-turn, and it says the lower of the two is the greater. -->
-      <p class="Formula Applied Eq-lib" lang="en">
-        <math display="block">
-          <mrow>
-            <!-- The triple's OWN parentheses stand in for the function's:
-                 `:where(0,2,2)` rather than `:where((0,2,2))`, which is what
-                 a double set reads as. -->
-            <mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn>
-            <mo>→</mo>
-            <mn class="Zero">(0,0,0)</mn>
-          </mrow>
-        </math>
-        <small class="EqNo">（例5.1）</small>
-      </p>
-      <p class="Formula Applied Eq-mine" lang="en">
-        <math display="block">
-          <mrow>
-            <!-- `<mphantom>` takes the space its content would occupy and
-                 paints nothing — the element MathML has for exactly this. It
-                 mirrors the line above, so this line is the same width, and
-                 two centred lines of equal width put the two triples in one
-                 column with nothing measured or hard-coded.
-                 The mirrored token carries `data-spec-out` too, so the
-                 carousel rewrites it along with the real one and the widths
-                 can never drift apart. -->
-            <mphantom><mi class="Fn">:where</mi><mn data-spec-out>(0,2,2)</mn><mo>→</mo></mphantom>
-            <mn data-mine-out>(0,1,1)</mn>
-          </mrow>
-        </math>
-      </p>
-      <p class="EgNote">{{ arEgNote }}</p>
+      <p class="EgNote"><span>{{ arEgNote }}</span></p>
       <nav class="SelNav" hidden>
         <!-- The shared icon primitive (common/icons.css), not a 「‹」 glyph:
              one chevron drawing, one stroke weight, and the same optical
              centring every other button on the page gets. `data-dir="right"`
              is the mirrored twin — the primitive already carries it. -->
         <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}"><span data-icon="chevron" aria-hidden="true"></span></button>
-        <output data-sel-count aria-live="polite"></output>
         <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
       </nav>
     </div>
@@ -655,6 +640,7 @@
        and with JS off, and switching modes never waits on a fetch.
        `data-off` on the manual rows encodes the console's default (auto). -->
   <h3 class="LedgerHead">{{ arSumHead }}</h3>
+  <p class="SumProse">{{ arSumNote }}</p>
   <figure class="Sum">
     <div data-plate="items">
       <table>
@@ -694,7 +680,6 @@
     </div>
 
     <figcaption>
-      <p class="SumProse">{{ arSumNote }}</p>
       <!-- The footing again, as the three lines a reader would say out loud —
            an ALIGNED EQUATION ARRAY, which is the one thing `<mtable>` is
            for: `+` and `=` stack into columns, so the three compressions can
@@ -746,10 +731,9 @@
           </mtr>
         </mtable>
       </math>
-      <p class="SumEqNote">{{ arSumEqNote }}</p>
-      <p class="SsrNote">{{ arSsrNote }}</p>
     </figcaption>
   </figure>
+  <p class="SumEqNote">{{ arSumEqNote }}</p>
 
   <!-- SSR footnote — three sentences, because the station's job here is
        「it is small, use it without worrying」, not a treatment of the SSR
@@ -790,8 +774,39 @@
        A native `<details>`: it works with no JS, it is a real disclosure
        widget to a screen reader, and the browser's own find-in-page opens it.
        The summary states the fact; opening it only supplies the numbers. -->
-  <details class="FontDetails">
-    <summary class="LedgerHead">{{ arFlHead }}</summary>
+  <button class="SizeDialogOpen" type="button" data-size-dialog-open>{{ arSizeOpen }}</button>
+  <dialog class="SizeDialog" data-size-dialog aria-labelledby="size-dialog-title">
+    <div class="SizeDialogPanel">
+    <header class="SizeDialogHead">
+      <h3 id="size-dialog-title">{{ arSizeTitle }}</h3>
+      <form method="dialog">
+        <button type="submit" aria-label="{{ arSizeClose }}"><span data-icon="close" aria-hidden="true"></span></button>
+      </form>
+    </header>
+    <div class="SizeDialogBody">
+      <section class="TransferDetails">
+        <h4>{{ arSizeTransfer }}</h4>
+        <table>
+          <thead><tr><th scope="col">{{ arSizeCurrent }}</th><th scope="col">{{ arScColRaw }}</th><th scope="col">gzip</th><th scope="col">brotli</th></tr></thead>
+          <tbody><tr><th scope="row">CSS＋JS</th><td data-total="raw">{{ sizeDefaultTotalRaw }}</td><td data-total="gzip">{{ sizeDefaultTotalGzip }}</td><td data-total="brotli">{{ sizeDefaultTotal }}</td></tr></tbody>
+        </table>
+      </section>
+      <section class="TransferDetails">
+        <h4>{{ arSizeJs }}</h4>
+        <table>
+          <caption>{{ arSizeJsNote }}</caption>
+          <thead><tr><th scope="col">pass</th><th scope="col">{{ arScColRaw }}</th><th scope="col">gzip</th><th scope="col">brotli</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">refinePunctuation</th><td>19.0KB</td><td>7.1KB</td><td>6.4KB</td></tr>
+            <tr><th scope="row">applyISSWithProbe</th><td>21.6KB</td><td>7.7KB</td><td>7.0KB</td></tr>
+            <tr><th scope="row">markAdjacentLines</th><td>13.7KB</td><td>5.3KB</td><td>4.8KB</td></tr>
+            <tr><th scope="row">transpileRuby</th><td>16.3KB</td><td>6.2KB</td><td>5.6KB</td></tr>
+            <tr><th scope="row">uninstallFallbacks</th><td>14.0KB</td><td>5.3KB</td><td>4.8KB</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="SsrNote">{{ arSsrNote }}</p>
+      <h4 class="DialogLedgerHead">{{ arFlHead }}</h4>
   <figure class="FontLedger">
     <div data-plate="print">
       <table>
@@ -861,6 +876,8 @@
       <p>{{ arFlNote2 }}
     </figcaption>
   </figure>
-  </details>
+    </div>
+    </div>
+  </dialog>
 
 </section>

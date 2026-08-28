@@ -44,6 +44,19 @@ export const initCarousel = ($root = document) => {
       const spec = $items[i].querySelector(`[${attr}]`)?.dataset[prop]
       if (spec) $root.querySelectorAll(`[${out}]`).forEach(($b) => ($b.textContent = spec))
     }
+    const $item = $items[i]
+    for (const [role, attr] of [['framework', 'data-spec'], ['mine', 'data-mine-spec']]) {
+      const $rule = $item.querySelector(`.Rule[data-role="${role}"]`)
+      const spec = $rule?.querySelector(`[${attr}]`)?.getAttribute(attr)
+      if (!$rule || !spec) continue
+      let $out = $rule.querySelector(':scope > .RuleSpec')
+      if (!$out) {
+        $out = document.createElement('output')
+        $out.className = 'RuleSpec'
+        $rule.append($out)
+      }
+      $out.textContent = role === 'framework' ? `:where${spec}→(0,0,0)` : spec
+    }
     if ($count) $count.textContent = `${i + 1}／${$items.length}`
   }
 

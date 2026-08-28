@@ -92,6 +92,9 @@
   :is(abbr.acronym, .upright) {
     text-orientation: upright;
   }
+  :is(abbr.acronym) {
+    letter-spacing: -.125em;
+  }
 }
 /* 直排: `inline-size` is the VERTICAL axis there, so a plain 100% would scale
    the forme up to the station's whole measure (thousands of px wide). Cap it

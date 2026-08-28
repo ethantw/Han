@@ -240,7 +240,7 @@ figure.Papers {
      * unmarked, the way a paper's domestic edition carries no flag */
     &[lang="zh-Hans"] .Dateline::after { content: "简"; }
     &[lang="ja"] .Dateline::after      { content: "日"; }
-    /* prefix match — the hanja-mixed pane is lang="ko-Hant" */
+    /* prefix match — the hanja-mixed pane is lang="ko-Kore" */
     &[lang^="ko"] .Dateline::after     { content: "한"; }
 
     h3 {
