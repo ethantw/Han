@@ -375,9 +375,15 @@
    JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
 :where(.PunctLang) {
   & {
-    /* 上邊界 0：第二顆破折號的下緣就切在這一格的上緣（`.TwoEmDashes` 自己撐到
-       那個高度，見 dash-fuse.css § .TwoEmDashes 的 `min-block-size`）。空氣由那
-       一格出，不由這裡出。 */
+    /* 這四格現在住在 `.TwoEmDashes` 裡（2026-08-28），而且**釘在畫面上**：讀者
+       往下捲時左邊那根柱一路走到第二顆破折號、停在站台邊界，樣張則留在原地——
+       一句話的兩個括號夾著同一份樣張，正是這一站要說的事。
+
+       sticky 黏的是包含塊，而那一格的高就是那一對括號的長度（dash-fuse.css §
+       .TwoEmDashes 的 `min-block-size`），所以釘住的距離剛好是兩顆之間。
+       頂距讀 `--h-header`：頁首是固定的，樣張不能躲到它下面。 */
+    position: sticky;
+    inset-block-start: calc(var(--h-header) + 1.5rem);
     margin-block: 0 clamp(1.5rem, 4vw, 2.5rem);
   }
   ul {
