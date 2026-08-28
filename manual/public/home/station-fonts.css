@@ -375,7 +375,10 @@
    JS (:has() · Baseline 2023). han.css reads the var from the ancestor. */
 :where(.PunctLang) {
   & {
-    margin-block: clamp(1.5rem, 4vw, 2.5rem);
+    /* 上邊界是**破折號柱的容身之處**（dash-fuse.css § .TwoEmDashes）：那一對括號
+       的第二顆落在兩段文案與這四格之間，這段空氣少了它就沒有地方排
+       （owner 2026-08-28）。下邊界照舊。 */
+    margin-block: clamp(20rem, 36vw, 34rem) clamp(1.5rem, 4vw, 2.5rem);
   }
   ul {
     list-style: none;

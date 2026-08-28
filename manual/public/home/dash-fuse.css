@@ -1,5 +1,5 @@
 /*
- * dash-fuse.css — station②'s 破折號底圖（`.DashColumn` ＋ `.PunctFix`）。
+ * dash-fuse.css — station②'s 破折號底圖（`.DashColumn` ＋ `.TwoEmDashes`）。
  *
  * 一柱直排「三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七
  * 秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識」，畫在站台的
@@ -19,7 +19,7 @@
  * 那句話因此成了 han.css 排的正文——背景那句裡的破折號與逗號由自家模組經手，
  * 比畫出來更有說服力。
  *
- * `.PunctFix` 是包含塊這件事由 station-frame 的階梯入場保證——它給每個 section
+ * `.TwoEmDashes` 是包含塊這件事由 station-frame 的階梯入場保證——它給每個 section
  * 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
  * position: relative 把契約寫明。
  *
@@ -84,7 +84,7 @@
   0%, 100% { --df-hold: 0; }
   55% { --df-hold: .88; }
 }
-/* 文案的入場：.PunctFix 的兩段一起飛入，時機是本欄自己的 reveal。 */
+/* 文案的入場：.TwoEmDashes 的兩段一起飛入，時機是本欄自己的 reveal。 */
 @keyframes df-copy-in {
   from { opacity: 0; translate: 0 1rem; }
   to { opacity: 1; translate: 0 0; }
@@ -96,7 +96,7 @@
  *
  * 位置由**字級**決定，不由量測決定：破折號是句中第 34 格，所以把整柱往上推
  * 34 格，它就落在文案上緣附近；其餘的字沿柱伸出兩端，由站台的 `overflow: clip`
- * 收掉。舊版把柱錨在 `.PunctFix` 高度的 −2342%，那個百分比隨 lede 換行而變，
+ * 收掉。舊版把柱錨在 `.TwoEmDashes` 高度的 −2342%，那個百分比隨 lede 換行而變，
  * 於是每次改視窗都要量一次卡片上緣（實測每次 250ms，見 git 記錄）。
  * 對位是近似的，本來就不求像素配準。
  */
@@ -109,8 +109,10 @@
     --df-face: color-mix(in srgb, var(--ui-text) 7%, var(--ui-station-b));
     --df-edge: color-mix(in srgb, var(--ui-text) 12%, var(--ui-station-b));
     --df-flash: var(--ui-ink-grey);
-    /* 破折號在句中的字序。位置與字級的唯一連結，改句子時跟著改。 */
-    --df-dash-cell: 34;
+    /* **第一顆**破折號在句中的字序（它前面有幾格）。位置與字級的唯一連結，改句子
+       時跟著改。第二顆不必另記：它自己排在後面，位置由句子決定。
+       句子：起身後，他沉默了四點七秒（12）——足夠交換十萬年的知識（10）——然後說⋯⋯ */
+    --df-dash-cell: 12;
 
     position: absolute;
     /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section 裡，
@@ -121,17 +123,14 @@
        推到版面右外側 3,648px（實測 x=4463）。兩種行向相遇時物理才是誠實的拼法
        （同檔 § address::before 早有同一條註）。
 
-       縱向：破折號是句中第 34 格，所以整柱往上推 34 格，它就落在文案上緣往下
-       4.5rem——位置跟著字級走，不必量任何東西（4.5rem ＝ 文案自己的
-       padding-block-start 3rem ＋ 1.5rem，見 § .PunctFix：加大鉛字與樣張卡之間
-       的空氣時，這個數字要跟著走，破折號才留在文案的同一個相對位置上）。再加
-       0.375em（owner 2026-08-26 圈點）：對的是破折號自己的中線與**那兩段文案整塊**
-       的中線——那兩段講的就是「中間斷開的破折號……」，該齊的是這兩者。1440px 下
-       實測差 2px；這個修正量跟著字級走（文案的高度是 rem 的事），所以各寬度只求
-       「差不多在中間」，不求配準。
+       縱向：整柱往上推「第一顆破折號的字序」格，於是那一顆落在 `.TwoEmDashes`
+       上緣**往上 2em** 處——也就是鉛字盤下緣那一帶，緊接在柱的切線（鉛字盤左下角
+       那顆鉛字，見 § 上緣的切線）之下。第二顆自己排在十二格之後，落在兩段文案
+       與四語標點之間的空氣裡。位置全跟著字級走，不必量任何東西
+       （2026-08-28 改：起點從樣張卡換成鉛字盤，句子換成有一對破折號的那句）。
        橫向：原位往右一點，不是換邊（owner 2026-08-04 圈點）。
  */
-    top: calc(4.5rem + .375em - var(--df-dash-cell) * 1em);
+    top: calc(-2em - var(--df-dash-cell) * 1em);
     left: min(13rem, 26%);
     translate: -50% 0;
 
@@ -151,20 +150,22 @@
     /* 一整句排成**一欄**。直排下 inline 軸是垂直的，而絕對定位的元素若讓那個
        軸自己決定，它會被包含塊的高度夾住——`auto` 折成 33 欄、`max-content`
        仍折成 2 欄（Chrome 對絕對定位的 shrink-to-fit 會夾在可用空間上）。所以
-       寫死格數：句子 60 格 ＋ 破折號 2 格 ＝ 62 格，與 `--df-dash-cell` 同一套
+       寫死格數：句子 48 格 ＋ 兩顆破折號各 2 格 ＝ 52 格，與 `--df-dash-cell` 同一套
        「以格計數」的講法，改句子時兩個一起改。 */
-    --df-cells: 62;
+    --df-cells: 52;
     inline-size: calc(var(--df-cells) * 1em);
     font-family: var(--han-font-alternative);
     /* 隨版心走，兩端封住：太小讀不出「這是一句話」，太大會把破折號推出畫面。
        量的是版心而不是 `cqi`——站③的巨型樣張用的是同一把尺
        （station-lines.css § div[role=presentation] 的 `--fs-bg-text`），
        而 `cqi` 在這裡會落到別的容器上（實測只給到 7rem 的下限）。
-       1440px 下約 129px，與舊版（柱高的 0.693，約 142px）同一個級。 */
+       2026-08-28 由 /9 收成 /14（1440px 下 129 → 82px）：一句話裡的**一對**破折號
+       要能被讀成一對，兩顆的距離就不能超過一個螢幕——12 格 × 82px ＝ 984px，
+       正好一屏；129px 的話是 1,548px，捲到第二顆時第一顆早出畫面了。 */
     /* 外面包一層 `round()`：`vw` 算出來的是任意小數（1440px 下 128.889px），
        而每一個相異的字級都要 Blink 建一份 fallback list——刻度是
        0.125rem（SKILL § 13），流體字級也照收。（round()：Baseline 2024） */
-    font-size: round(clamp(7rem, calc((100vw - var(--w-console)) / 9), 10rem), 0.125rem);
+    font-size: round(clamp(4rem, calc((100vw - var(--w-console)) / 14), 6.5rem), 0.125rem);
     line-height: 1;
     color: var(--df-face);
     -webkit-text-stroke: 0.5px var(--df-edge);
@@ -370,13 +371,17 @@
 }
 
 
-.PunctFix {
+.TwoEmDashes {
   & {
     /* 柱的包含塊契約寫明（見檔頭——階梯入場的 translate 其實已保證） */
     position: relative;
-    /* 鉛字盤與樣張卡之間的空氣。上下都給，兩段文案才不是夾在中間的填充物；
-       上緣加多少，柱的 top 就要加多少（見 § 柱的 4.5rem）。 */
-    padding-block: 3rem 8rem;
+    /* 鉛字盤與四語標點之間的空氣。柱要在這一段裡把**一對**破折號都排出來：
+       第一顆落在鉛字盤下緣那一帶，第二顆在十二格之後（≈ 一屏），所以這裡給的
+       不是裝飾性的留白，是那一對括號的容身之處（owner 2026-08-28）。
+       上緣 16rem：兩段文案往下讓，第一顆破折號因此排在文案之上。
+       下緣 8rem 不動；四語標點自己另有上邊界（station-fonts.css § .PunctLang），
+       第二顆落在那一段空氣裡。 */
+    padding-block: 16rem 8rem;
     /* 6rem → 12.75rem：與柱同步右移 6.75rem（見上 § 柱的錨點），兩者的
        相對關係不變，整欄一起往右挪。 */
     padding-inline-start: 15rem;
@@ -393,14 +398,14 @@
      就長成三倍，柱跟著脹三倍（實測 12,502px），要對的那兩樣東西也早已不在
      原來的位置。它是這一站的底圖，不是展品——三體卡、鉛字盤、標點樣張都還在。
 
-     選擇器連著 .PunctFix 寫，不是為了讀起來清楚：`svg[data-name=…]` 自己是
+     選擇器連著 .TwoEmDashes 寫，不是為了讀起來清楚：`svg[data-name=…]` 自己是
      (0,1,1)，與頁面基底的 `body.home svg { display: block }` 同權重而輸給它
      ——實測 flat 選擇器不生效，加一個祖先就生效。 */
   @container (inline-size < 52rem) {
     .DashColumn { display: none; }
   }
 
-  /* 兩段文案。包進 .PunctFix 之後不再是 hgroup 的兄弟，station-frame.css
+  /* 兩段文案。包進 .TwoEmDashes 之後不再是 hgroup 的兄弟，station-frame.css
      的 `> hgroup & ~ p` 措手不及——此處逐字複製那條規則（margin 的 -2rem
      頂縮也照舊：第一段頂著鉛字盤的下緣、第二段咬進第一段的 2.75rem）。
      改動時兩邊要一起改。 */
@@ -423,7 +428,7 @@
      讀起來太慢：讀者早滾過來了，話還沒說。破折號的節奏是柱自己的事，文案
      不該被它扣住——兩者從此各自計時。
 
-     station-frame 的階梯入場管的是站台整欄的 reveal（它讓 .PunctFix 這個
+     station-frame 的階梯入場管的是站台整欄的 reveal（它讓 .TwoEmDashes 這個
      div 現身）；這條規則管的是 div 裡面的兩段話，所以兩者不打架。 */
   @media (prefers-reduced-motion: no-preference) {
     &:not([data-revealed]) p:not(.DashColumn) { opacity: 0; }

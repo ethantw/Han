@@ -1,13 +1,13 @@
 /**
  * dash-clip.js — publishes where station②'s 破折號 column gets cut off.
  *
- * The column (`.DashColumn`, dash-fuse.css) is 62 cells of 128px type and runs
+ * The column (`.DashColumn`, dash-fuse.css) is 52 cells of ~82px type and runs
  * far above the page's top edge; only the station's own `overflow: clip` stops
  * it, and that cuts at the station's top — so the topmost characters crawl over
- * the「超迴路運行廿載」specimen card. The cut belongs at that card's BOTTOM
- * edge (the card itself — see the selector below), and the distance from there
- * down to the column's top is decided by content (a whole lead-type forme sits
- * in between), so CSS cannot express it.
+ * the specimen card and the whole lead-type forme. The cut belongs at the
+ * forme's BOTTOM-LEFT slug (owner 2026-08-28: 「從鉛字盤左下角的三角形開始」),
+ * and the distance from there down to the column's top is decided by content,
+ * so CSS cannot express it.
  *
  * Anchor positioning looks like it should retire this module and doesn't: for a
  * clip to bite, the clipping box has to be the column's containing block, while
@@ -32,20 +32,33 @@ import { onRendered, settled } from './measure.js'
 /** Cut station②'s dash column off at the specimen card above it. */
 export const initDashClip = ($root = document) => {
   const $col = $root.querySelector('.DashColumn')
-  /* The card, not the <figure>: station②'s faces figure carries a figcaption
-     (the 護眼模式 switch) that stretches the whole figure box 167px past the
-     white card's bottom edge, and the card's edge is the one a reader sees. */
-  const $ceiling = $root.querySelector('#station-fonts .Illust[data-variant="faces"] .Faces')
-  if (!$col || !$ceiling) return
+  const $forme = $root.querySelector('#station-fonts .LeadForme svg')
+  if (!$col || !$forme) return
 
-  /* Both ends move for their own reasons: the card reflows with the viewport,
+  /* 切線落在鉛字盤**左下角那顆鉛字**的下緣。不是整張盤的下緣：盤是等軸投影，
+     最低點在正中那一顆，左下角那顆的底比它高一截，而讀者看到的「盤的左下角」
+     正是這一顆。挑法是量出來的，不是寫死的索引——鉛字的顆數與排法會隨語言、
+     字面、直橫排而變（lead-forme.js 每次重建整盤）：取最靠左那一欄（容差 40px，
+     等軸投影下同一欄的鉛字 x 有幾像素差），再取其中最低的一顆。 */
+  const bottomLeftSlug = () => {
+    const slugs = [...$forme.querySelectorAll('.Slug')]
+    if (!slugs.length) return null
+    const boxes = slugs.map(($s) => $s.getBoundingClientRect())
+    const minX = Math.min(...boxes.map((b) => b.x))
+    return Math.max(...boxes.filter((b) => b.x < minX + 40).map((b) => b.bottom))
+  }
+
+  /* Both ends move for their own reasons: the forme reflows with the viewport,
      and the column's top follows its own font-size (a `vw` clamp). Watching the
      station covers the forme between them growing or shrinking as well. */
-  const $station = $col.closest('[data-station]') ?? $ceiling
+  const $station = $col.closest('[data-station]') ?? $forme
 
   const sync = settled({
     watch: $station,
-    read: () => $ceiling.getBoundingClientRect().bottom - $col.getBoundingClientRect().top,
+    read: () => {
+      const cut = bottomLeftSlug()
+      return cut === null ? 0 : cut - $col.getBoundingClientRect().top
+    },
     /* `clip-path` moves no layout box, so this write cannot feed the observer
        that scheduled it — but it does re-style the column (measured 10ms before
        the next rect read comes back clean), and the other loops on this page
@@ -55,11 +68,11 @@ export const initDashClip = ($root = document) => {
 
   const watch = new ResizeObserver(sync)
   watch.observe($station)
-  watch.observe($ceiling)
+  watch.observe($forme)
   /* …and the plate, because what actually moves is a POSITION, not a size.
      Collapsing the console re-centres the plate: the station's content box and
      the card both keep their 1087px, the station keeps its height — and yet
-     `.PunctFix` (the column's containing block) slid 81px up the page, so the
+     `.TwoEmDashes` (the column's containing block) slid 81px up the page, so the
      cut was 81px stale with nothing in the observed boxes to say so. `main` is
      the nearest box whose SIZE says "the page's geometry changed" (1160 →
      1440), which is exactly the trigger this needs. */

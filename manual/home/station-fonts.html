@@ -146,7 +146,7 @@
     ja: '——Google Fontsと同じ仕組みのwoff2切片技術と、CDNのミリ秒単位の配信で、百年を継ぐ字形を画面上に甦らせ、幾千万の端末に欠けたままの書体の美を補う。',
     ko: '——Google Fonts와 <ruby>同一<rt>동일</rt></ruby>한 woff2 <ruby>切片<rt>절편</rt></ruby> <ruby>技術<rt>기술</rt></ruby>과 CDN의 밀리초 <ruby>單位<rt>단위</rt></ruby> <ruby>傳送<rt>전송</rt></ruby>으로、<ruby>百年<rt>백년</rt></ruby>을 잇는 <ruby>字形<rt>자형</rt></ruby>을 <ruby>畵面<rt>화면</rt></ruby> 위에 되살리고、<ruby>數千萬<rt>수천만</rt></ruby> <ruby>端末<rt>단말</rt></ruby>에 빠진 <ruby>書體<rt>서체</rt></ruby>의 아름다움을 채운다。',
   },
-  stPunctFixP: {
+  stTwoEmDashesP: {
     hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，皆起自Unicode共用碼位的歷史問題，透過OpenType + CSS <code>unicode-range</code>字體技術，精準為讀者拂偏歸正。',
     hans: '中间断开的破折号、落在基线上的删节号、尺寸太小的间隔号，皆起自Unicode共用码位的历史问题，透过OpenType + CSS <code>unicode-range</code>字体技术，精准为读者拂偏归正。',
     en: 'Em dashes, ellipses and interpuncts share their codepoints with Western scripts — whichever font sits first in the stack has the final say, so “—” snaps in half and “…” sinks to the baseline. A punctuation-only font sits at the very front and puts every mark back where it belongs.',
@@ -256,7 +256,7 @@
         (1) 那句話是標點濃度極高的一句（`：「`…`，`…`！」`，加上直排禁則、
             段首空鉛、末欄小鉛塊填版框），不是為傳承字形挑的字——挑傳承 tell
             的是上面 .Faces 那行（美/戶/情/紀/運/廿）。所以它開啟標點那半，
-            stPunctFixP 緊接著回答它讓人玩出來的疑問（「咦『」形狀變了」）。
+            stTwoEmDashesP 緊接著回答它讓人玩出來的疑問（「咦『」形狀變了」）。
         (2) 擺在 .Faces 之後會讓黑／明／楷這條軸連著出現兩次——樣張剛並排完
             三體，鉛字盤第一個 fieldset 又是同三體。隔一段字形論述，它再出現
             才帶得動新東西（多一個標點軸）。
@@ -303,16 +303,14 @@
         收在最後——標點擠壓是獨立於「選哪種標點」的加分項，跟前面的
         地域公約／自訂選擇沒有因果關係，放在示範之後單獨收尾。
 
-        .PunctFix 也載著破折號熔接底圖（dash-fuse.css）：一柱直排
-        「三歲即植入神經共振晶片……他沉默了四點七秒——這個時間足夠三體人
-        交換一部《三體通史十萬年》體量的知識」畫在 z-index:-1（站台早有的
-        底圖層，同 watermark）。柱以 .PunctFix 為包含塊，上緣切在「超迴路運行
-        廿載」樣張卡的上緣（clip-path，切線由 dash-fuse.js 量），穿過鉛字盤與
-        這兩段文案，一路排到站尾——柱高由上下 inset 撐出，字級隨之縮放（SVG
-        固有比例）。破折號那兩格落在鉛字盤下緣～文案一帶。動畫（兩截 rect
-        熔成一條，一輩子演一次）由 dash-fuse.js 蓋 data-play 起跑：鉛字盤的
-        入場先落完，且本欄已被 reveal.js 蓋章（data-reveal-at）之後；兩段
-        文案作一個整體，在本欄自己的 reveal 上飛入——不等破折號。
+        .TwoEmDashes 也載著破折號底圖（dash-fuse.css）：一柱直排
+        「起身後，他沉默了四點七秒——足夠交換十萬年的知識——然後說⋯⋯」畫在
+        z-index:-1（站台早有的底圖層，同 watermark）。這句話裡有**一對**破折號，
+        兩顆都是 `.DashCell`，都吃同一套 scroll 開合（`animation-timeline: view()`
+        各自算自己的進度）。柱以 .TwoEmDashes 為包含塊，上緣切在**鉛字盤左下角
+        那顆鉛字**的下緣（clip-path，切線由 dash-clip.js 量），第一顆破折號緊接
+        在切線之下、兩段文案之上，第二顆在十二格之後、落在文案與四語標點之間的
+        空氣裡（2026-08-28 改；先前是從樣張卡下緣起、單一破折號）。
         破折號兩態都用 <rect> 畫，不掛 DTJ 字體：兩態本來就是同一組幾何的
         兩個值，交給字體反而要照著引擎擺放 R-class 字符的規矩走（那 5.25
         的 hhea 偏移），而且得把 `——` 與漢字塞進同一個 <text> 才能讓 ccmp
@@ -322,7 +320,7 @@
        不能省掉這個屬性——reveal.js 的目標選擇器是
        `.Manifesto, [data-station], [data-reveal-at]`，拿掉它本欄就不再是
        reveal 目標，data-revealed 永遠不會蓋，柱的首播也就跟著卡死。 -->
-  <div class="PunctFix" data-reveal-at="0.15">
+  <div class="TwoEmDashes" data-reveal-at="0.15">
     <!-- 底圖那一柱：一句直排的話，中間一個破折號。
 
          **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15 改）。原本整柱都在
@@ -339,8 +337,9 @@
 
          這句話因此成了 han.css 排的正文：背景那句裡的破折號與逗號由自家模組經手，
          比畫出來更有說服力。 -->
-    <p class="DashColumn" aria-hidden="true">三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b)" /></svg></span>這個時間足夠三體人交換一部《三體通史十萬年》體量的知識</p>
-    <p>{{ stPunctFixP }}</p>
+    <svg class="DashDefs" aria-hidden="true" focusable="false" width="0" height="0"><defs><linearGradient id="df-ribbon-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs></svg>
+    <p class="DashColumn" aria-hidden="true">起身後，他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b)" /></svg></span>足夠交換十萬年的知識<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b)" /></svg></span>然後說：「我想說的是……不，『說』這個詞本身就太慢了</p>
+    <p>{{ stTwoEmDashesP }}</p>
     <p>{{ stPunctP }}</p>
   </div>
 
