@@ -75,7 +75,10 @@ export const initDashClip = ($root = document) => {
        share the flush, so it belongs on the write side all the same. */
     write: ({ top, left }) => {
       $col.style.setProperty('--df-clip-top', `${Math.max(0, Math.round(top))}px`)
-      $col.style.setProperty('--df-col-left', `${Math.round(left)}px`)
+      /* 橫向那個數寫在**包含塊**上，不寫在柱上：柱讀得到（自訂屬性會繼承），而
+         那一格自己也要用它——文案的欄從柱的右緣起算（dash-fuse.css §
+         .TwoEmDashes 的 `padding-inline-start`）。 */
+      ;($col.offsetParent ?? $col).style.setProperty('--df-col-left', `${Math.round(left)}px`)
     },
   })
 
