@@ -176,43 +176,21 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
     items.first().locator('[data-role="framework"] .RuleDecl'),
   ).toHaveCSS('text-decoration-line', 'line-through')
 
-  // Each equation line sits level with the rule it describes — the pane
-  // hands its two panel heights up through subgrid, so this holds however
-  // tall the item is. (Centre-to-centre, to the pixel.)
-  const mid = async (sel: string) =>
-    Math.round(await page.locator(sel).evaluate((el) => {
-      const r = el.getBoundingClientRect()
-      return r.y + r.height / 2
-    }))
-  // The reader's triple sits in the framework zero's COLUMN — that alignment
-  // IS the comparison, so it is worth an assertion. Exact: `<mphantom>`
-  // mirrors the line above (including its italic `:where`, which is what put
-  // it 3px out the first time), so the two lines are the same width and both
-  // are centred.
-  const left = async (sel: string) =>
-    page.locator(sel).evaluate((el) => el.getBoundingClientRect().x)
-  expect(await left('#station-craft .Eq-mine [data-mine-out]'))
-    .toBeCloseTo(await left('#station-craft .Eq-lib .Zero'), 1)
-
-  // Within a few px — the panels carry a border and the lines do not, so the
-  // two centres round apart by a pixel or two; anything more means the
-  // subgrid stopped applying and the rows collapsed (which would be tens).
-  //
-  // 8, not 4: the old 4 was calibrated against a page that was only HALF
-  // typeset. `<main>` carries a source comment above each station, and the
-  // chunker used to read a comment as inline flow — so main was never
-  // divisible, went into hyperly's recursive walk whole, and overflowed
-  // PARTWAY (helpers/chunk.ts). These equation lines were past the blow-up
-  // point and never got their wrappers. With the chunker fixed they do, and
-  // one centre moved by a pixel. Measured before/after: the whole suite
-  // passes at 4 with the old chunker and reports 5 with the new one.
-  for (const [line, panel] of [['lib', 'framework'], ['mine', 'mine']] as const) {
-    const drift = Math.abs(
-      (await mid(`#station-craft .Eq-${line}`))
-      - (await mid(`#station-craft li[data-current] [data-role="${panel}"]`)),
-    )
-    expect(drift).toBeLessThan(8)
-  }
+  // The checkbox is not decorative DevTools chrome: it switches the real
+  // declaration applied to the witness.  The first case is deliberately easy
+  // to measure—the author's 2rem heading margin wins while checked, then the
+  // zero-specificity framework rule takes back its 0 when unchecked.
+  const author = items.first().locator('[data-author-toggle]')
+  const heading = page.locator('#station-craft .DemoRing > li[data-current] h1')
+  await expect(author).toBeChecked()
+  await expect(heading).toHaveCSS('margin-bottom', '32px')
+  await author.uncheck()
+  await expect(items.first().locator('[data-role="framework"] .RuleDecl'))
+    .toHaveCSS('text-decoration-line', 'none')
+  await expect(items.first().locator('[data-role="mine"] .RuleDecl'))
+    .toHaveCSS('text-decoration-line', 'line-through')
+  await expect(heading).toHaveCSS('margin-bottom', '0px')
+  await author.check()
 
   // Reader-driven: the nav is hidden in the markup and only carousel.js
   // unhides it, so a no-JS page never offers a button that does nothing.
@@ -221,28 +199,24 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   const shown = page.locator('#station-craft .SelRing > li[data-current]')
   await expect(shown).toHaveCount(1)
 
-  // …and BOTH printed triples travel with the pair, for EVERY item — the
-  // equation on the left is a caption for the rules on the right, so a stale
-  // triple there is the plate quietly lying about the pane beside it.
-  // The phantom that does the column alignment is checked too: it mirrors the
-  // framework weight, and if it ever stopped tracking, the two lines would
-  // drift apart in width without any figure looking wrong.
+  // …and BOTH printed triples travel with the pair, for EVERY item.  The
+  // framework output must visibly show :where() erasing its original weight;
+  // the author's output must remain the actual non-zero selector weight.
   for (let i = 0; i < 5; i++) {
     const state = await page.evaluate(() => {
-      const li = document.querySelector('#station-craft li[data-current]')!
-      const t = (s: string, root: ParentNode = document) =>
+      const li = document.querySelector('#station-craft .SelRing > li[data-current]')!
+      const t = (s: string, root: ParentNode = li) =>
         root.querySelector(s)?.textContent?.trim()
       return {
         panelLib: li.querySelector<HTMLElement>('[data-role="framework"] code[data-spec]')!.dataset.spec,
         panelMine: li.querySelector<HTMLElement>('[data-role="mine"] code[data-mine-spec]')!.dataset.mineSpec,
-        eqLib: t('#station-craft .Eq-lib [data-spec-out]'),
-        eqMine: t('#station-craft .Eq-mine [data-mine-out]'),
-        phantom: t('#station-craft .Eq-mine mphantom [data-spec-out]'),
+        shownLib: t('[data-role="framework"] .RuleSpec'),
+        shownMine: t('[data-role="mine"] .RuleSpec'),
       }
     })
-    expect(state.eqLib, `item ${i + 1}: framework weight`).toBe(state.panelLib)
-    expect(state.eqMine, `item ${i + 1}: your weight`).toBe(state.panelMine)
-    expect(state.phantom, `item ${i + 1}: the alignment phantom`).toBe(state.panelLib)
+    expect(state.shownLib, `item ${i + 1}: erased framework weight`)
+      .toBe(`:where${state.panelLib}→(0,0,0)`)
+    expect(state.shownMine, `item ${i + 1}: author weight`).toBe(state.panelMine)
     await next.click()
   }
 })

@@ -22,8 +22,17 @@ for (const { name, path, mobile } of ROUTES) {
     if (mobile) await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(path)
     // Allow the chrome handlers + Hero scripts a tick to attach
-    // aria-expanded etc. before scanning.
+    // aria-expanded etc. before scanning.  The shared Brand enters after a
+    // one-second delay; scanning its translucent middle frame invents a
+    // contrast failure that does not exist in the settled interface (the
+    // docs version badge is the smallest descendant, so axe names it first).
     await page.waitForLoadState('networkidle')
+    const brand = page.locator('.Brand').first()
+    if (await brand.count()) {
+      await brand.evaluate((element) => Promise.all(
+        element.getAnimations({ subtree: true }).map((animation) => animation.finished),
+      ))
+    }
 
     const axeBuilder = new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

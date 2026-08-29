@@ -152,7 +152,15 @@ body > header {
      the hero and the version returns in the footer. The wordmark itself must
      remain intact and gets the released width. */
   @media (width < 40rem) {
-    .Logo small { display: none; }
+    .Logo {
+      /* The desktop optical pull assumes the opener is an icon-sized cell.
+         On a first mobile visit that cell also spells out「調整排版」; the
+         full -.875rem pull crossed the two real boxes by 2px at 390px. Keep
+         a quiet half-rem tuck without eating the flex gap. */
+      translate: -.5rem -.125rem;
+
+      small { display: none; }
+    }
     nav { gap: 0.875em; }
   }
 

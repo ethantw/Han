@@ -19,7 +19,11 @@ const DOCS_ROUTES = [
 
 for (const { path, htmlLang, heading } of DOCS_ROUTES) {
   test(`${path} renders with html[lang="${htmlLang}"]`, async ({ page }) => {
-    const response = await page.goto(path)
+    // This contract is the server-rendered document (status, lang, heading),
+    // not the completion time of every font and deferred asset. Waiting for
+    // full `load` made one route randomly consume the whole 30s test budget
+    // under the four-worker homepage suite even though its HTML had arrived.
+    const response = await page.goto(path, { waitUntil: 'domcontentloaded' })
     expect(response?.status()).toBe(200)
 
     await expect(page.locator('html')).toHaveAttribute('lang', htmlLang)

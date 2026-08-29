@@ -5,18 +5,12 @@
 
 ## RC 前（阻塞）
 
-- [ ] **e2e 11 敗歸零（首頁部分）。** ⏸ 用戶指示暫緩首頁 e2e 修正。
-  分類備查：
-  - 首頁重設計後測試漂移（4）：`homepage-v2.spec:24`（水印站數期待
-    6、實際 4）、`lead-forme-swap` ×2（橫排 moved=0，疑字面填滿改掉
-    letter-spacing 後判定失效）、`lead-forme-pocket`。逐一 triage
-    「測試過時 vs 真回歸」。
-  - markup 未接（2）：`home.spec:209` demo-lang chips、`:232`
-    writing switch——JS 都在、`_home.html` 無控件 markup。writing
-    switch 那條**已明示延後到 Phase 2**（見下），紅著是預期的。
-  - 既有 C 類（3）：`home:155` per-group ↺、`home:266` h-iss、
-    `demo:24` zh-Hans off-cell 懸掛未關。
-  - `demo:11` cell 計數過時——併入 demo re-sync 一起修。
+- [x] **首頁 E2E 回歸歸零。** 2026-08-30 依新版 DOM 與互動契約重驗；
+  全套 148 項為 147 通過、1 項預期略過（WebKit 專用 probe）。舊清單中的
+  水印站數、鉛字盤、群組重設、fallback 與 demo 計數漂移均已在重構期間
+  修正或由新版測試取代；全頁直排入口仍按原決議留在 Phase 2，不以一條
+  永紅測試假裝當前已有該功能。本輪另補 320／390／768／1440px 的 header、
+  TOC、hero、dialog、rail 幾何回歸。
 - [ ] **console.html ja/ko 約 70 個 i18n key 補譯**（pgGrp*/pgEm*/
   pgPunct*/pgTog* 全滅）＋零星：`_home.html` consoleCollapse（ja/ko）、
   station-craft arEyebrow（ja）、station-prose prEyebrow（ja）、

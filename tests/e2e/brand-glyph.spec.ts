@@ -114,22 +114,22 @@ test('the glyph sits on the baseline in both font states', async ({ page }) => {
  * the section's `overflow: clip` swallowed it. The gap looked normal — the
  * width belongs to the transparent real 漢, not to the SVG.
  *
- * The trace-complete compatibility stamp is now immediate because the former
- * watermark ceremony has been removed; it must still be present so station①'s
- * envelope is not left folded.
+ * The handwriting ceremony is deliberately independent and may still be in
+ * flight here.  Its `data-han-traced` stamp therefore says nothing about
+ * whether the wordmark itself was measured; this regression only waits for
+ * the derived outline to exist, then checks the glyph against its baseline.
  */
 test('a load that starts below the fold still measures the hero', async ({ page }) => {
   await page.goto('/#station-fonts')
   await page.waitForFunction(() => (document as any).fonts.status === 'loaded')
 
   await expect.poll(() => page.evaluate(() => ({
-    traced: document.documentElement.dataset.hanTraced,
     outlines: document.querySelectorAll('.Manifesto .Outline').length,
     fill: (() => {
       const path = document.querySelector('.Manifesto .Outline svg path')
       return path ? getComputedStyle(path).fill : null
     })(),
-  }))).toEqual({ traced: '', outlines: 1, fill: 'none' })
+  }))).toEqual({ outlines: 1, fill: 'none' })
 
   // and the glyph itself is where the wordmark's baseline puts it
   await page.evaluate(() => scrollTo(0, 0))
