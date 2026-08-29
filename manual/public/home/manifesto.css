@@ -49,12 +49,67 @@
     }
   }
 
-  h1 + p {
+  .ProductDefinition {
+    margin: 0 0 1.5rem;
+    max-inline-size: 34em;
+    font-family: var(--han-font-alternative);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.65;
+    text-align: start;
+    text-wrap: balance;
+  }
+
+  .HeroActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin: 0 0 2.25rem;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: 2.75rem;
+      padding-inline: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ui-text);
+      background: var(--ui-panel);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-2);
+
+      &:hover {
+        border-color: var(--ui-accent);
+        color: var(--ui-accent);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ui-accent);
+        outline-offset: 3px;
+      }
+
+      &.Primary {
+        color: var(--ui-bg);
+        background: var(--ui-text);
+        border-color: var(--ui-text);
+
+        &:hover {
+          color: var(--ui-bg);
+          background: var(--ui-accent-deep);
+          border-color: var(--ui-accent-deep);
+        }
+      }
+    }
+  }
+
+  .Lede {
     margin: 0 0 1.25rem;
-    max-inline-size: 28em;
+    max-inline-size: 32em;
     font-family: var(--han-font-alternative);
     font-size: 1.125rem;
     line-height: 1.85;
+    text-align: start;
   }
 
   .WritingModes {
@@ -66,15 +121,38 @@
   }
 
   .dogfood {
-    margin: 0 0 2.25rem;
+    margin: 0 0 2rem;
     max-inline-size: 38em;
     font-size: 0.875rem;
     color: var(--ui-supplement-text);
   }
 
+  .Quickstart {
+    & {
+      max-inline-size: 52rem;
+      scroll-margin-block-start: calc(var(--h-header) + 1rem);
+    }
+
+    h2 {
+      margin: 0 0 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ui-supplement-text);
+    }
+  }
+
+  .QuickstartCode {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.625rem;
+  }
+
   .InstallChip {
     & {
-      margin-block-end: 2.5rem;
       font-size: 1.25rem;
 
       /* 窄欄裡降一級：1.25rem 下這行指令折在空格處，等於把「要複製的東西」
@@ -84,9 +162,63 @@
         font-size: 1rem;
       }
     }
+  }
+
+  .ImportCode {
+    flex: 1 1 22rem;
+    margin: 0;
+    padding: 0.625rem 0.875rem;
+    overflow: auto hidden;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    text-align: start;
+    color: var(--ui-text);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-2);
+
     code {
-      all: revert-layer;
-      color: var(--ui-accent);
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
+    }
+
+    span { color: var(--ui-supplement-text); }
+  }
+
+  .QuickFacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0.75rem 0 2.5rem;
+    padding: 0;
+    font-size: 0.75rem;
+    color: var(--ui-supplement-text);
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::before {
+        content: '';
+        inline-size: 0.375rem;
+        block-size: 0.375rem;
+        background: var(--ui-accent);
+        border-radius: 50%;
+      }
+    }
+
+    code {
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 0;
     }
   }
 
@@ -132,17 +264,21 @@
      crown is excluded on purpose: it's the logo, lit from first paint. */
   @media (prefers-reduced-motion: no-preference) {
     h1,
-    h1 + p,
+    .ProductDefinition,
+    .HeroActions,
+    .Lede,
     .WritingModes,
     .dogfood,
-    .InstallChip {
+    .Quickstart {
       animation: manifesto-rise .6s ease-out 1s both;
     }
-    h1           { animation-delay: 0.08s; }
-    h1 + p       { animation-delay: 0.16s; }
-    .WritingModes { animation-delay: 0.24s; }
-    .dogfood     { animation-delay: 0.32s; }
-    .InstallChip { animation-delay: 0.40s; }
+    h1                 { animation-delay: 0.08s; }
+    .ProductDefinition { animation-delay: 0.16s; }
+    .HeroActions       { animation-delay: 0.24s; }
+    .Lede              { animation-delay: 0.32s; }
+    .WritingModes      { animation-delay: 0.40s; }
+    .dogfood           { animation-delay: 0.48s; }
+    .Quickstart        { animation-delay: 0.56s; }
 
     /* no-JS fallback; fonts-gate.js overrides this with measured per-stroke
        timing whenever it builds the loading ceremony. */

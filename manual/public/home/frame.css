@@ -107,6 +107,14 @@ main > section {
     pointer-events: none;
   }
 
+  /* A station's own block padding already clears the 4rem sticky masthead.
+     One extra rem is enough breathing room for direct links; adding the full
+     header height here would count that clearance twice and strand the
+     heading far below the top of the viewport. */
+  &[data-station] {
+    scroll-margin-block-start: 1rem;
+  }
+
   &:first-of-type[data-station]::before {
     border-block-start: 0;
   }

@@ -11,6 +11,41 @@
     ja: 'ピクセルの間の活字美学、<br />画面に並ぶ漢字へ。',
     ko: '<ruby>픽셀<rt>pixel</rt></ruby> 사이의 <ruby>活字<rt>활자</rt></ruby> <ruby>美學<rt>미학</rt></ruby>、<br /><ruby>畵面<rt>화면</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby>에게。',
   },
+  productDefinition: {
+    hant: '一套讓普通語意HTML自動得到繁簡日韓專業排版的CSS框架。',
+    hans: '一套让普通语义HTML自动得到繁简日韩专业排版的CSS框架。',
+    en: 'A CSS framework that gives ordinary semantic HTML professional Chinese, Japanese and Korean typography.',
+    ja: '普通のセマンティックHTMLに、繁体字・簡体字・日本語・韓国語の本格的な組版を自動で与えるCSSフレームワーク。',
+    ko: '평범한 시맨틱 HTML에 번체·간체 중국어、일본어와 한국어의 전문 조판을 자동으로 입히는 CSS 프레임워크。',
+  },
+  heroActionsLabel: {
+    hant: '開始使用漢.css', hans: '开始使用汉.css', en: 'Get started with Han.css',
+    ja: '漢.cssを使い始める', ko: '漢.css 시작하기',
+  },
+  quickstartCta: {
+    hant: '30秒開始', hans: '30秒开始', en: 'Start in 30 seconds',
+    ja: '30秒で始める', ko: '30초 만에 시작',
+  },
+  specimenCta: {
+    hant: '看看它改了什麼', hans: '看看它改了什么', en: 'See what it changes',
+    ja: '何が変わるかを見る', ko: '무엇이 달라지는지 보기',
+  },
+  quickstartHeading: {
+    hant: '最小安裝', hans: '最小安装', en: 'Minimum setup',
+    ja: '最小構成', ko: '최소 설치',
+  },
+  cssCoreFact: {
+    hant: 'CSS是核心', hans: 'CSS是核心', en: 'CSS at the core',
+    ja: '中核はCSS', ko: '핵심은 CSS',
+  },
+  optionalJsFact: {
+    hant: 'JavaScript補全可選', hans: 'JavaScript补全可选', en: 'Optional JavaScript companion',
+    ja: 'JavaScript補完は任意', ko: 'JavaScript 보완은 선택 사항',
+  },
+  browserFact: {
+    hant: '支援現代常青瀏覽器', hans: '支持现代常青浏览器', en: 'Modern evergreen browsers',
+    ja: 'モダンなエバーグリーンブラウザ', ko: '최신 에버그린 브라우저',
+  },
   lede: {
     hant: '或擠壓或懸掛的標點、強調文本旁的著重號、為漢字標上的注音與拼音、文種之間的分寸、專名之間的斷點——鉛字時代的匠人工藝，透過CSS自訂屬性與少量JavaScript回落，在螢幕上一一重現。',
     hans: '或挤压或悬挂的标点、强调文本旁的着重号、为汉字标上的注音与拼音、文种之间的分寸、专名之间的断点——铅字时代的匠人工艺，通过CSS自定义属性与少量JavaScript回落，在屏幕上一一重现。',
@@ -50,12 +85,32 @@
     {{ h1 }}
   </h1>
 
-  <p>{{ lede }}</p>
+  <p class="ProductDefinition">{{ productDefinition }}</p>
+
+  <nav class="HeroActions" aria-label="{{ heroActionsLabel }}">
+    <a class="Primary" href="#quickstart">{{ quickstartCta }}</a>
+    <a href="#station-semantics">{{ specimenCta }}</a>
+  </nav>
+
+  <p class="Lede">{{ lede }}</p>
   <p class="WritingModes">{{ writingModes }}</p>
   <p class="dogfood">{{ dogfood }}</p>
 
-  <label class="InstallChip">
-    <code>pnpm add @hanzi.pro/han.css</code>
-    <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
-  </label>
+  <section class="Quickstart" id="quickstart" aria-labelledby="quickstart-title">
+    <h2 id="quickstart-title">{{ quickstartHeading }}</h2>
+    <div class="QuickstartCode">
+      <div class="InstallChip">
+        <code>pnpm add @hanzi.pro/han.css</code>
+        <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
+      </div>
+      <pre class="ImportCode"><code>import '@hanzi.pro/han.css/styles'
+import '@hanzi.pro/han.css/auto' <span>// optional</span></code></pre>
+    </div>
+    <ul class="QuickFacts">
+      <li>{{ cssCoreFact }}</li>
+      <li>{{ optionalJsFact }}</li>
+      <li>{{ browserFact }}</li>
+      <li><code>v4.0.0-rc.1</code></li>
+    </ul>
+  </section>
 </section>
