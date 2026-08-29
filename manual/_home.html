@@ -49,12 +49,26 @@
     ja: '組版コンソール',
     ko: '<ruby>組版<rt>조판</rt></ruby> 콘솔',
   },
-  consoleCollapse: {
-    hant: '收合面板',
-    hans: '收合面板',
-    en: 'Collapse panel',
-    ja: 'パネルを畳む',
-    ko: '패널 접기',
+  consoleOpen: {
+    hant: '打開排版面板',
+    hans: '打开排版面板',
+    en: 'Open typesetting panel',
+    ja: '組版パネルを開く',
+    ko: '조판 패널 열기',
+  },
+  consoleClose: {
+    hant: '關閉排版面板',
+    hans: '关闭排版面板',
+    en: 'Close typesetting panel',
+    ja: '組版パネルを閉じる',
+    ko: '조판 패널 닫기',
+  },
+  consoleAdjust: {
+    hant: '調整排版',
+    hans: '调整排版',
+    en: 'Adjust typography',
+    ja: '組版を調整',
+    ko: '조판 조정',
   },
 }
 </script>
@@ -139,10 +153,10 @@
 <body class="home" data-locale="{{ locale }}" data-pagefind-ignore="all">
 <header>
   <!-- Collapse handle — page chrome, the only way back once the console is
-       collapsed. A real checkbox (same recipe as the dark-mode toggle): the
-       LAYOUT is pure CSS via `body:has(.ConsoleToggle input:checked)`
-       (home/console.css); console-collapse.js only persists. checked =
-       collapsed. Hidden <52rem and for form="top" (home/console.css).
+       collapsed. A hidden checkbox remains the single layout bit read by
+       `body:has(#console-collapsed:checked)`; the adjacent real button owns
+       pointer, keyboard and disclosure semantics. checked = collapsed on
+       desktop, open on mobile (home/console-collapse.js).
 
        它住在 header 裡，而不是浮在主控台與內容的交界上——那個位置是
        2026-08-04 的錯位事故現場：藥丸靠 `translate` 貼著邊界走，而邊界由
@@ -159,13 +173,26 @@
 
        不拿 .Logo 兼差：那是回首頁的連結，一個元素身兼導覽與開關，鍵盤與
        輔助技術都說不清它按下去會發生什麼。 -->
-  <label class="ConsoleToggle" title="{{ consoleCollapse }}">
-    <input type="checkbox" id="console-collapsed" name="console-collapsed" aria-label="{{ consoleCollapse }}">
+  <input type="checkbox"
+         id="console-collapsed"
+         name="console-collapsed"
+         tabindex="-1"
+         aria-hidden="true">
+  <button class="ConsoleToggle"
+          type="button"
+          aria-controls="typesetting-console"
+          aria-expanded="true"
+          aria-label="{{ consoleClose }}"
+          title="{{ consoleClose }}"
+          data-label-open="{{ consoleOpen }}"
+          data-label-close="{{ consoleClose }}">
     <!-- 圖標走 common/icons.css 的 mask 盒原語（那份檔頭寫得明白：不用
          inline `<svg>`，因為 inline SVG 的基線在 Chrome 不等於它的下緣）。
          行不指向任何方向，開合兩態共用一張圖——方向由 title／aria-label
          說。 -->
     <span data-icon="console" aria-hidden="true"></span>
+    <span class="ConsoleToggleLabel" aria-hidden="true">{{ consoleAdjust }}</span>
+  </button>
     <!--
       Restore the collapsed state the instant the checkbox is parsed —
       before first paint — so `body:has(input:checked)` lays out collapsed
@@ -180,13 +207,29 @@
         // collapsed the column would otherwise arrive on a phone with the
         // panel sitting over the page. Default differs too — the column is
         // open, the panel is not. Mirrored in home/console-collapse.js.
-        document.querySelector('input[name="console-collapsed"]').checked =
-          matchMedia('(min-width: 52rem)').matches
-            ? localStorage.getItem('han-console-collapsed') === '1'
-            : localStorage.getItem('han-console-panel-open') === '1'
+        const box = document.querySelector('input[name="console-collapsed"]')
+        const toggle = document.querySelector('.ConsoleToggle')
+        const side = matchMedia('(min-width: 52rem)').matches
+        box.checked = side
+          ? localStorage.getItem('han-console-collapsed') === '1'
+          : localStorage.getItem('han-console-panel-open') === '1'
+
+        // The bit reverses meaning between forms. Stamp the accessible state
+        // before first paint from VISIBILITY, never directly from `checked`.
+        const open = side ? !box.checked : box.checked
+        toggle.setAttribute('aria-expanded', String(open))
+        toggle.setAttribute('aria-label', open ? toggle.dataset.labelClose : toggle.dataset.labelOpen)
+        toggle.title = toggle.getAttribute('aria-label')
+
+        // Existing console users should not be treated as first-time visitors
+        // merely because this one-time discovery key was introduced later.
+        const discovered = localStorage.getItem('han-console-discovered') === '1'
+          || localStorage.getItem('han-console-collapsed') !== null
+          || localStorage.getItem('han-console-panel-open') !== null
+          || localStorage.getItem('han-console-config') !== null
+        if (discovered) document.documentElement.dataset.consoleDiscovered = ''
       })
     </script>
-  </label>
   <a class="Logo" href="{{ homeUrl }}">
     {{ logo }}
     <small class="full-name">漢字標準格式</small>
@@ -241,15 +284,15 @@
      stage (home/console.css § <52rem). That also keeps no-JS honest — the
      panel is there without a single line running. At 52rem and up the element
      is `display: contents`, so the column inside is the box, unchanged. -->
-<dialog class="ConsolePanel" open>
+<dialog class="ConsolePanel" id="typesetting-console" open>
   <header>
     <span>{{ consoleTitle }}</span>
     <!-- the ✕ is a second face for the collapse checkbox: a non-modal dialog
          has no backdrop to dismiss, and the handle that opened it sits in the
          header behind the panel. -->
-    <label class="ConsolePanelClose" for="console-collapsed" title="{{ consoleCollapse }}">
+    <button type="button" class="ConsolePanelClose" title="{{ consoleClose }}" aria-label="{{ consoleClose }}">
       <span data-icon="close" aria-hidden="true"></span>
-    </label>
+    </button>
   </header>
 <han-console lang="{{ htmlLang }}" target="main" form="side">
   <div class="ConsoleLoading" role="status" aria-label="工具欄載入中">

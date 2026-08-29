@@ -35,6 +35,13 @@
     ja: 'チェックを外せば、ブラウザ本来の間隔で組まれる',
     ko: '체크를 풀면 브라우저 <ruby>本來<rt>본래</rt></ruby>의 <ruby>間隔<rt>간격</rt></ruby>으로 짜인다',
   },
+  prRailLabel: {
+    hant: '橫向捲動比較兩篇文章',
+    hans: '横向卷动比较两篇文章',
+    en: 'Horizontally scroll to compare the two articles',
+    ja: '横スクロールで二つの記事を比較',
+    ko: '가로로 스크롤하여 두 <ruby>記事<rt>기사</rt></ruby> 비교',
+  },
 }
 </script>
 <!-- Station IV・Prose — block-axis rhythm, live. The specimen is a fixed
@@ -83,7 +90,12 @@
 
   <!-- 一顆放大鏡管兩張卡（`data-lens` 在容器上，不在各卡上）：兩顆圓疊在一起
        只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->
-  <div class="Prose" data-lens data-strip="prose" data-strip-start="seam">
+  <div class="Prose"
+       data-lens
+       data-strip="prose"
+       data-strip-start="seam"
+       tabindex="0"
+       aria-label="{{ prRailLabel }}">
     <article class="Dispatch" lang="zh-Hant">
       <!-- 這張樣張是《太陽中文報》的一整頁，所以它戴著這份報紙的報頭
            （版式 home/paper-head.css，文案 _shared.html § PAPER，與站⑦那張紙

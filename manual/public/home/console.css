@@ -28,7 +28,7 @@ body:has(han-console) {
       transition: translate .28s cubic-bezier(.4, 0, .2, 1);
     }
   }
-  &:has(.ConsoleToggle input:checked) han-console {
+  &:has(#console-collapsed:checked) han-console {
     translate: -100% 0;
   }
 
@@ -63,11 +63,11 @@ body:has(han-console) {
       margin-inline: auto;
     }
 
-    &:has(.ConsoleToggle input:checked) > main {
+    &:has(#console-collapsed:checked) > main {
       translate: 0 0;
     }
 
-    &:has(.ConsoleToggle input:checked) > header {
+    &:has(#console-collapsed:checked) > header {
       > .ConsoleToggle,
       > .Logo {
         transform: none;
@@ -119,17 +119,22 @@ body:has(han-console) {
         padding-inline: 0.625rem;
         margin-inline-end: 0.75rem;
       }
-      border-inline-end: 1px solid var(--ui-rule);
       /* 明式：不是繼承來的（收合把手在 <header> 底下，繼承到的是正文色）。
          inherit-audit 曾把它報成冗餘，baseline 抓到——工具的判讀對這一條是錯的。 */
       color: var(--ui-supplement-text);
+      background: transparent;
+      border: 0;
+      border-inline-end: 1px solid var(--ui-rule);
       cursor: pointer;
       transition: .25s color ease-out;
     }
-    input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
+    .ConsoleToggleLabel {
+      display: none;
+      font-family: var(--han-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1;
+      white-space: nowrap;
     }
     /* mask 盒的邊長 ＝ 自己的 font-size（common/icons.css § 原語）。
        原語替行內用法留的 `vertical-align: -0.09em` 在這裡不作用——label
@@ -163,12 +168,24 @@ body:has(han-console) {
     &:hover {
       color: var(--ui-accent);
     }
-    /* 鍵盤焦點看得見：input 是 opacity:0 的真控件，焦點環得由 label 代畫 */
-    &:has(input:focus-visible) {
+    /* 真 checkbox 只保留 CSS 狀態；鍵盤焦點在對外的 button 上。 */
+    &:focus-visible {
       outline: 2px solid var(--ui-accent);
       outline-offset: 2px;
     }
   }
+}
+
+/* CSS layout state only; the adjacent button is the sole interactive and
+   accessible control. Keep the bit inspectable without putting it in either
+   the tab order or accessibility tree. */
+#console-collapsed {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
 }
 
 /**
@@ -214,6 +231,20 @@ body:has(han-console) {
      `body`'s padding. */
   :root { --w-console: 0px; }
 
+  /* First mobile visit: make the otherwise cryptic icon name its job. Once
+     the reader opens the panel, console-collapse.js stamps discovery and the
+     header returns to its compact, persistent form. The two text nav links
+     temporarily yield their width; language and theme controls remain. */
+  :root:not([data-console-discovered]) {
+    .ConsoleToggle {
+      gap: 0.5rem;
+
+      .ConsoleToggleLabel { display: inline; }
+    }
+
+    body > header nav > a { display: none; }
+  }
+
   body:has(han-console) {
     han-console {
       position: static;
@@ -233,7 +264,7 @@ body:has(han-console) {
      滑出畫面；窄視窗下同一顆勾選卻是**打開浮動面板**，那一條於是把內容整片推到
      畫面左外——面板還在，裡面空白一片（實測宿主 x ＝ −308，而面板 x ＝ 25，
      owner 2026-08-28 的截圖）。選擇器寫足與上面那條同形，才壓得過它。 */
-  body:has(han-console):has(.ConsoleToggle input:checked) han-console {
+  body:has(han-console):has(#console-collapsed:checked) han-console {
     translate: none;
   }
 
@@ -270,7 +301,7 @@ body:has(han-console) {
     /* checked ＝ on stage. The bit means the opposite of what it means at
        52rem and up (there it collapses the column), which is why the two
        forms remember it under their own keys — see home/console-collapse.js. */
-    body:has(.ConsoleToggle input:not(:checked)) & {
+    body:has(#console-collapsed:not(:checked)) & {
       display: none;
     }
 
@@ -283,9 +314,9 @@ body:has(han-console) {
       border-block-end: 1px solid var(--ui-rule);
     }
 
-    /* The ✕ is a second face for the same checkbox, not a button of its own:
-       a non-modal dialog has no backdrop to dismiss, and the handle that
-       opened it is up in the header behind the panel. */
+    /* The ✕ is a second native button for the same disclosure state: a
+       non-modal dialog has no backdrop to dismiss, and the handle that opened
+       it is up in the header behind the panel. */
     .ConsolePanelClose {
       display: flex;
       align-items: center;
@@ -293,10 +324,18 @@ body:has(han-console) {
       inline-size: 1.5rem;
       block-size: 1.5rem;
       margin-inline-end: -0.25rem;
+      padding: 0;
       color: var(--ui-supplement-text);
+      background: transparent;
+      border: 0;
       cursor: pointer;
 
       &:hover { color: var(--ui-accent); }
+
+      &:focus-visible {
+        outline: 2px solid var(--ui-accent);
+        outline-offset: 2px;
+      }
     }
   }
 }

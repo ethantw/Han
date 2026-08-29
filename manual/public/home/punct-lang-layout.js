@@ -44,7 +44,7 @@ export const initPunctLangLayout = ($root = document) => {
          what scrolls, while its controls remain visible inside the viewport. */
       const sideConsole = matchMedia('(min-width: 52rem)').matches
       const consoleOpen = sideConsole
-        && !document.querySelector('.ConsoleToggle input')?.checked
+        && !document.querySelector('#console-collapsed')?.checked
       /* Read the painted console edge, not `--w-console`: custom properties
          preserve the authored `rem` token, so parseFloat('17.5rem') yields
          17.5 rather than the rendered 280px and misses the canvas edge. */
@@ -123,7 +123,7 @@ export const initPunctLangLayout = ($root = document) => {
      quiet because no box changes size, but this rail is viewport-anchored and
      therefore must refresh its physical bleed once main lands. */
   const $main = $figure.closest('main')
-  const $consoleToggle = document.querySelector('.ConsoleToggle input')
+  const $consoleToggle = document.querySelector('#console-collapsed')
   $consoleToggle?.addEventListener('change', sync)
   $main?.addEventListener('transitionend', (event) => {
     if (event.propertyName === 'translate') sync()

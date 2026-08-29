@@ -16,8 +16,8 @@
  *           on; the CSS side does NOT ride it, see below) · form
  *           (side|top, pure-CSS in the shadow)
  *           (page-level collapse is NOT component API — the page's
- *           `.ConsoleToggle` checkbox + `body:has(input:checked)` own it,
- *           dark-mode recipe; see home.css § han-console.)
+ *           page chrome + its `:has()` state bit own it; see home.css
+ *           § han-console.)
  *   event   `han-config-change` — bubbles + composed, detail
  *           `{ config, vars, source }`; config is a shallow-frozen copy
  *           (with `punct` and `metrics` cloned), vars is `cssVars(config)`,

@@ -556,7 +556,7 @@
   &::-webkit-scrollbar { display: none; }
 }
 
-body:has(.ConsoleToggle input:checked)
+body:has(#console-collapsed:checked)
   :where(main:not([data-writing='vertical'])) .FormeRail {
   margin-inline: calc(-1 * var(--rail-pad));
 }
@@ -574,7 +574,7 @@ body:has(.ConsoleToggle input:checked)
 
 /* 52–64rem uses the compact 15rem console: 48rem + 15rem = 63rem. */
 @media (52rem <= width < 63rem) {
-  body:not(:has(.ConsoleToggle input:checked))
+  body:not(:has(#console-collapsed:checked))
     :where(main:not([data-writing='vertical'])) .FormeRail {
     --forme-scroll-pad: 2rem;
     overflow-inline: auto;
@@ -584,7 +584,7 @@ body:has(.ConsoleToggle input:checked)
 
 /* Above 64rem the console returns to 17.5rem: 48rem + 17.5rem = 65.5rem. */
 @media (64.0625rem <= width < 65.5rem) {
-  body:not(:has(.ConsoleToggle input:checked))
+  body:not(:has(#console-collapsed:checked))
     :where(main:not([data-writing='vertical'])) .FormeRail {
     --forme-scroll-pad: 2rem;
     overflow-inline: auto;
@@ -1161,7 +1161,7 @@ body:has(.ConsoleToggle input:checked)
 
 @media (52rem <= width < 63rem),
        (64.0625rem <= width < 65.5rem) {
-  body:not(:has(.ConsoleToggle input:checked))
+  body:not(:has(#console-collapsed:checked))
     :where(main:not([data-writing='vertical'])) .FormeNav {
     display: flex;
   }

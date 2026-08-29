@@ -4,9 +4,9 @@ import { test, expect, type Page } from '@playwright/test'
  * Task B — the collapsible full-height side console — and Task A — the
  * restructured 字體 group.
  *
- * Collapse: the `.ConsoleToggle` handle is a real checkbox (dark-mode
- * recipe): checked = collapsed, layout is pure CSS via
- * `body:has(.ConsoleToggle input:checked)`. Main keeps a fixed measure and
+ * Collapse: `#console-collapsed` is the CSS state bit; `.ConsoleToggle` is
+ * the native disclosure button. On desktop checked = collapsed, and layout
+ * is pure CSS via `body:has(#console-collapsed:checked)`. Main keeps a fixed measure and
  * translates half a console-width between centres. Header stays 100vw: its
  * right nav is fixed while its toggle/logo move one full console-width.
  * and is restored pre-paint by an inline script in `_home.html`.
@@ -32,10 +32,13 @@ test.describe('Task B — collapsible side console', () => {
 
     const $console = page.locator('han-console')
     const toggle = page.locator('.ConsoleToggle')
-    const checkbox = toggle.locator('input[type="checkbox"]')
+    const checkbox = page.locator('#console-collapsed')
     await expect($console).toBeVisible()
     await expect(toggle).toBeVisible()
     await expect(checkbox).not.toBeChecked()
+    await expect(toggle).toHaveRole('button')
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    await expect(toggle).toHaveAttribute('aria-label', '關閉排版面板')
 
     const mainBefore = await box(page, 'main')
     const headerBefore = await box(page, 'body > header')
@@ -43,9 +46,12 @@ test.describe('Task B — collapsible side console', () => {
     const navBefore = await box(page, 'body > header > nav')
     expect(mainBefore.x).toBeGreaterThan(100) // console column occupies the left
 
-    // the input is visually hidden — click the label
+    // the input is state-only — click the visible disclosure button
     await toggle.click()
     await expect(checkbox).toBeChecked()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await expect(toggle).toHaveAttribute('aria-label', '打開排版面板')
+    await expect(page.locator('#typesetting-console')).toHaveAttribute('inert', '')
 
     // Both fixed-measure columns move left by half the 280px console.
     await expect
@@ -82,13 +88,13 @@ test.describe('Task B — collapsible side console', () => {
 
     // The pre-paint inline script restores the checkbox synchronously as
     // it's parsed, so the page lays out collapsed with no flash.
-    await expect(page.locator('.ConsoleToggle input')).toBeChecked()
+    await expect(page.locator('#console-collapsed')).toBeChecked()
     const collapsed = await box(page, 'main')
     expect(collapsed.x).toBeGreaterThan(0)
 
     // reopening clears the stored flag
     await page.locator('.ConsoleToggle').click()
-    await expect(page.locator('.ConsoleToggle input')).not.toBeChecked()
+    await expect(page.locator('#console-collapsed')).not.toBeChecked()
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem('han-console-collapsed')))
       .toBe('0')
@@ -102,18 +108,60 @@ test.describe('the floating panel form (<52rem)', () => {
 
     const $panel = page.locator('.ConsolePanel')
     const $toggle = page.locator('.ConsoleToggle')
+    const $box = page.locator('#console-collapsed')
+    const $hint = $toggle.locator('.ConsoleToggleLabel')
     // 面板預設關著——一支蓋在正文上的面板不能是初見的第一印象。而不管開沒開，
     // 版面都不該讓位：整個窗寬都是站台的。
     await expect($panel).toBeHidden()
+    await expect($hint).toBeVisible()
+    await expect($hint).toHaveText('調整排版')
+    await expect($toggle).toHaveAttribute('aria-expanded', 'false')
+    await expect($toggle).toHaveAttribute('aria-label', '打開排版面板')
     const full = await box(page, 'main')
     expect(full.x).toBeLessThan(2)
 
     await $toggle.click()
     await expect($panel).toBeVisible()
+    await expect($hint).toBeHidden()
+    await expect($toggle).toHaveAttribute('aria-expanded', 'true')
+    await expect($toggle).toHaveAttribute('aria-label', '關閉排版面板')
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem('han-console-discovered')))
+      .toBe('1')
     expect((await box(page, 'main')).width).toBe(full.width)
 
+    await page.locator('.ConsolePanelClose').focus()
     await page.keyboard.press('Escape')
     await expect($panel).toBeHidden()
+    await expect($toggle).toHaveAttribute('aria-expanded', 'false')
+    await expect($toggle).toBeFocused()
+
+    // Discovery is permanent: returning visitors get the compact icon even
+    // though the floating panel itself still defaults to closed.
+    await page.reload()
+    await expect(page.locator('.ConsoleToggleLabel')).toBeHidden()
+    await expect(page.locator('.ConsoleToggle')).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('close button closes the panel and returns focus to its trigger', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+    await page.locator('.ConsoleToggle').click()
+    await page.locator('.ConsolePanelClose').click()
+    await expect(page.locator('.ConsolePanel')).toBeHidden()
+    await expect(page.locator('.ConsoleToggle')).toBeFocused()
+  })
+
+  test('keyboard activation opens and closes from the visible trigger', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+    const $toggle = page.locator('.ConsoleToggle')
+    await $toggle.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('.ConsolePanel')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('.ConsolePanel')).toBeHidden()
+    await expect($toggle).toBeFocused()
   })
 })
 

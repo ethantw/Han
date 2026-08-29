@@ -465,7 +465,7 @@
     z-index: 0;
   }
 
-  body:has(.ConsoleToggle input:checked) & [data-dash-specimens] {
+  body:has(#console-collapsed:checked) & [data-dash-specimens] {
     inset-inline-end: calc(-1 * var(--rail-pad));
   }
 
