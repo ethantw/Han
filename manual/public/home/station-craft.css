@@ -490,7 +490,7 @@
         text-emphasis-position: over right;
       }
       .reading ruby { ruby-position: under; }
-      .quotation q { quotes: '【' '】' '〖' '〗'; }
+      .quotation q { quotes: '〖' '〗' '【' '】'; }
     }
   }
 
