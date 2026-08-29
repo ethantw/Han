@@ -28,7 +28,10 @@ body.home {
     line-height: 1.6;
     color: var(--ui-text);
   }
-  code:not(pre code) {
+  /* Component-owned code carries its own chrome. `:where()` keeps exclusions
+     from raising this generic rule's specificity (an InstallChip class inside
+     `:not()` otherwise made it unexpectedly beat station-craft's `.Rule code`). */
+  code:not(:where(pre code, .InstallChip code, .Rule code)) {
     padding: .125rem .5em;
     background: var(--ui-panel);
     border: 1px solid var(--ui-grid);

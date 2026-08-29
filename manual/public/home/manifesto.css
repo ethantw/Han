@@ -54,7 +54,7 @@
     max-inline-size: 34em;
     font-family: var(--han-sans);
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1.65;
     text-align: start;
     text-wrap: balance;
@@ -63,8 +63,8 @@
   .HeroActions {
     display: flex;
     flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 0.625rem;
+    align-items: center;
+    gap: 1rem;
     margin: 0 0 2.25rem;
 
     .InstallChip {
@@ -77,36 +77,27 @@
     a {
       display: inline-flex;
       align-items: center;
+      flex: 0 0 auto;
       min-block-size: 2.75rem;
-      padding-inline: 1rem;
       font-size: 0.875rem;
       font-weight: 600;
-      text-decoration: none;
+      line-height: 1.4;
+      text-decoration-line: underline;
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.3em;
+      text-decoration-color: var(--ui-supplement-text);
       color: var(--ui-text);
-      background: var(--ui-panel);
-      border: 1px solid var(--ui-rule);
-      border-radius: var(--r-2);
+      background: transparent;
+      border: 0;
 
       &:hover {
-        border-color: var(--ui-accent);
         color: var(--ui-accent);
+        text-decoration-color: currentColor;
       }
 
       &:focus-visible {
         outline: 2px solid var(--ui-accent);
         outline-offset: 3px;
-      }
-
-      &.Primary {
-        color: var(--ui-bg);
-        background: var(--ui-text);
-        border-color: var(--ui-text);
-
-        &:hover {
-          color: var(--ui-bg);
-          background: var(--ui-accent-deep);
-          border-color: var(--ui-accent-deep);
-        }
       }
     }
 
@@ -123,7 +114,6 @@
 
       a {
         min-block-size: 2.5rem;
-        padding-inline: 0.5rem;
         font-size: 0.75rem;
       }
     }
@@ -487,6 +477,10 @@
     background: transparent;
     border: 0;
     font: inherit;
+
+    /* This is the homepage's sole highlighted inline-code specimen. The
+       bash lexer marks only `pnpm` and `add`; the package name stays text. */
+    &::highlight(code-keyword) { color: var(--ui-accent); }
   }
 
   button {
