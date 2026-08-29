@@ -47,8 +47,8 @@ const getPath = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj)
 
 const readControl = ($el) => ($el.type === 'checkbox' ? $el.checked : $el.value)
 
-/* 所有可能被 cssVars() 寫入的自訂屬性；換 config 前先清空，
-   讓未偏差的值交還給 @property 的 initial-value。 */
+/* 所有可能被 cssVars() 寫入的自訂屬性；初次掛載用來清理舊實例的殘值，
+   後續更新則由 effectiveVars 的前後 map 差量收回。 */
 const ALL_VARS = [
   '--han-semantics', '--han-prose', '--han-punctuation-refinement',
   '--han-text-autospace',
@@ -59,8 +59,22 @@ const ALL_VARS = [
   '--han-punctuation-hant', '--han-punctuation-hans',
   '--han-punctuation-ja', '--han-punctuation-ko',
   '--han-font-zhuyin-serif',
+  '--han-zhuyin-ruby-position',
   '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
 ]
+
+// han.js 只會把這三個解析後的模式寫回 install root；設定改變時先收回它們，
+// 讓 :root 的新值立刻穿透，不必等排在下一幀的 DOM fallback 重建。
+const FALLBACK_SYNCED_VARS = [
+  '--han-punctuation-refinement',
+  '--han-text-autospace',
+  '--han-text-decoration-inset',
+]
+
+const clearFallbackModes = ($target) => {
+  if (!$target || $target === document.documentElement) return
+  for (const prop of FALLBACK_SYNCED_VARS) $target.style.removeProperty(prop)
+}
 
 /* ── apply：config → 文件變數 ──
  *
@@ -82,27 +96,35 @@ const ALL_VARS = [
  * 這一層，且落在這裡才讀得到 `:root` 剛寫上的模式變數。
  *
  * 元件的 `target` 屬性管的是另一件事（han.js JS 後備的作用範圍），與此無關。 */
-const applyTarget = (config, $fallbackScope) => {
+const applyTarget = (config, state) => {
   const $root = document.documentElement
   const $body = document.body
-  for (const prop of ALL_VARS) $root.style.removeProperty(prop)
-  /* han.js 的 JS 後備會把它解析出來的模式**回寫**成 `$fallbackScope` 上的行內
-     值（punctuation.ts § setPunctuationRefinementMode，autospace 同理）。那份
-     回寫是宣告值，會蓋掉從 `:root` 繼承下來的新設定——上一輪停在 `auto`，這一
-     輪 :root 改成 `hang`，整個 scope 仍讀到自己身上那個舊 `auto`，連 han.js
-     下一輪重讀 computed 都只讀得到自己的舊值，就此鎖死。所以每輪先把這批變數
-     從 scope 上掃掉，讓它重新繼承 `:root`，han.js 再據以回寫。CSS 落點統一到
-     `:root` 之前，這裡寫的就是 scope 本身，覆寫順手就把舊值蓋掉了，不必額外掃。 */
-  if ($fallbackScope && $fallbackScope !== $root)
-    for (const prop of ALL_VARS) $fallbackScope.style.removeProperty(prop)
-  for (const [prop, value] of cssVars(config)) $root.style.setProperty(prop, value)
+  const next = effectiveVars(config)
+
+  // 首輪清掉 SSR／上一個元件實例可能留下的值；之後只碰真正變動的屬性。
+  const previous = state.vars
+  if (!previous) {
+    for (const prop of ALL_VARS) $root.style.removeProperty(prop)
+  } else {
+    for (const prop of previous.keys()) {
+      if (!next.has(prop)) $root.style.removeProperty(prop)
+    }
+  }
+  for (const [prop, value] of next) {
+    if (previous?.get(prop) !== value) $root.style.setProperty(prop, value)
+  }
+  state.vars = next
+
   // 預覽恆走 CDN link（不管 webfontDelivery 生成碼要不要走 npm）。
   for (const id of packages(config).ziano) ensureFont(id, config.webfontCdnSource)
   // baseGeneric：serif 時把 body 的 font-family 換上 --han-font-alternative
   // （鏡射生成碼的 `body { … }`）；RESET 靠 removeProperty 收回。
-  config.baseGeneric === 'serif'
-    ? ($body.style.fontFamily = 'var(--han-font-alternative)')
-    : $body.style.removeProperty('font-family')
+  if (state.baseGeneric !== config.baseGeneric) {
+    config.baseGeneric === 'serif'
+      ? ($body.style.fontFamily = 'var(--han-font-alternative)')
+      : $body.style.removeProperty('font-family')
+    state.baseGeneric = config.baseGeneric
+  }
 }
 
 /* ── apply：模組／webfont 開關（頁面側 DOM 寫入，與 ensureFont 同邊界）──
@@ -166,36 +188,40 @@ const MODULE_MECHANISM = {
   fonts: 'link',
 }
 
+/**
+ * 最終真正寫到 :root 的變數。模組 off 旗標也在同一張 map 裡，讓一次差量
+ * 寫入同時處理「偏差值」與「模組狀態」，不再先把整批變數清空、寫回，然後
+ * 又由 applyModules 覆寫一次。後者會讓 8k+ 節點的首頁在每次 input 都做兩輪
+ * 無謂的 style invalidation。
+ */
+const effectiveVars = (config) => {
+  const vars = new Map(cssVars(config))
+  for (const [name, mechanism] of Object.entries(MODULE_MECHANISM)) {
+    if (config[name] !== false || mechanism === 'link') continue
+    for (const [prop, value] of Object.entries(mechanism)) vars.set(prop, value)
+  }
+  return vars
+}
+
 const applyModules = (config) => {
-  const { style, dataset } = document.documentElement
+  const { dataset } = document.documentElement
   for (const [name, mechanism] of Object.entries(MODULE_MECHANISM)) {
     const on = config[name] !== false
-    /* 只**寫** off 旗標，不負責收回——收回由 applyTarget 的 ALL_VARS 掃除
-       統一做（三個旗標 `--han-semantics` / `--han-text-autospace` /
-       `--han-punctuation-refinement` 都在那張表裡）。自從 CSS 落點統一到
-       `:root`（applyTarget），兩邊寫的是同一個元素的同一批屬性：這裡若還帶
-       removeProperty，模組重新開啟那一輪就會把 applyTarget 剛寫上的偏差值
-       一併抹掉（sync 的順序是 applyTarget → applyModules）。反向也安全：
-       cssVars() 對關掉的模組本就不輸出任何變數，所以掃除完只剩這裡的 off
-       旗標，兩者不會爭同一個值。 */
-    if (mechanism !== 'link') {
-      for (const [prop, offValue] of Object.entries(mechanism)) {
-        if (!on) style.setProperty(prop, offValue)
-      }
-    }
     /* 狀態鏡射到 `<html>`：頁面 CSS 有東西可以選（prose 的 article 規則、
        站①的 `[data-han-module-semantics='off']`），且四個模組一致，不管該
        模組走的是 link 還是旗標。 */
     const key = `hanModule${name[0].toUpperCase()}${name.slice(1)}`
-    if (on) delete dataset[key]
-    else dataset[key] = 'off'
+    if (on && key in dataset) delete dataset[key]
+    else if (!on && dataset[key] !== 'off') dataset[key] = 'off'
   }
   document.querySelectorAll('link[data-han-module]').forEach(($link) => {
     if (MODULE_MECHANISM[$link.dataset.hanModule] !== 'link') return
-    $link.disabled = !config[$link.dataset.hanModule]
+    const disabled = !config[$link.dataset.hanModule]
+    if ($link.disabled !== disabled) $link.disabled = disabled
   })
   document.querySelectorAll('link[data-han-webfont]').forEach(($link) => {
-    $link.disabled = config.webfontDelivery === 'none'
+    const disabled = config.webfontDelivery === 'none'
+    if ($link.disabled !== disabled) $link.disabled = disabled
   })
 }
 
@@ -210,13 +236,19 @@ const applyModules = (config) => {
  * 每次重繪本來就先 uninstall 一次的預覽裡跑它，等於把整組勾選歸零，讀者只會
  * 看到畫面突然沒有排版。它出現在清單上是為了讓加法式替它計價。 */
 const modRef = { current: null }
-const applyFallbacks = async (config, $target) => {
-  if (!$target) return
+const applyFallbacks = async (config, $target, isCurrent = () => true) => {
+  if (!$target || !isCurrent()) return
+  /* han.js 會把解析後的行調整模式寫回 scope。只有真的要重跑 fallback 時才掃；
+     純字體／語意變數變動若也掃，既破壞快取又迫使整棵 main 重新算 style。 */
+  clearFallbackModes($target)
   if (!config.fallbacks) {
     modRef.current?.uninstallFallbacks($target)
     return
   }
   const mod = modRef.current ??= await import('/han/han.js')
+  // Initial import may finish after the reader has already changed config.
+  // Never let that stale snapshot overwrite the newer scheduled run.
+  if (!isCurrent()) return
   mod.uninstallFallbacks($target)
   if (config.jsMode !== 'manual') {
     mod.installFallbacks($target)
@@ -229,6 +261,84 @@ const applyFallbacks = async (config, $target) => {
     .forEach((p) => mod.runPassChunked($target, ($chunk) => mod[p.fn]($chunk)))
 }
 
+/* Autospace mode changes own only <h-iss>. Re-running punctuation, quote
+ * boundaries and adjacent-line marking for this dropdown was the remaining
+ * 600ms stall after the broad invalidation was fixed. Restore/remove its
+ * nodes locally, then run that one pass. */
+const applyISSFallback = async (config, $target, isCurrent = () => true) => {
+  if (!$target || !isCurrent()) return
+  const mod = modRef.current ??= await import('/han/han.js')
+  if (!isCurrent()) return
+
+  $target.querySelectorAll('h-iss').forEach(($iss) => {
+    $iss.dataset.mode === 'replace' ? $iss.replaceWith(' ') : $iss.remove()
+  })
+
+  const enabled = config.fallbacks
+    && config.lines
+    && (config.jsMode !== 'manual' || config.fn.iss)
+  if (!enabled) return
+  mod.runPassChunked($target, ($chunk) => mod.applyISSWithProbe($chunk))
+}
+
+/** 一次實際 fallback run 能留下的 DOM 能力。關掉某項時 wrapper 可以靠
+ * cascade 休眠，毋須拆除；之後重新打開，只要上一次實際 run 已經建過那種
+ * wrapper，也毋須再走 8k 節點。只有新增尚未建過的能力才重跑。 */
+const fallbackPlan = (config) => ({
+  core: JSON.stringify({
+    fallbacks: config.fallbacks,
+    jsMode: config.jsMode,
+    fn: config.jsMode === 'manual' ? config.fn : undefined,
+  }),
+  fallbacks: config.fallbacks,
+  lines: config.lines,
+  hang: config.lines && config.hang,
+  squeeze: config.lines && config.squeeze,
+  autospace: config.lines ? config.autospace : 'off',
+})
+
+const fallbackRunKind = (next, applied) => {
+  if (!applied || next.core !== applied.core) return 'full'
+  if (!next.fallbacks || !next.lines) return null
+  if (!applied.lines) return 'full'
+  if (next.hang && !applied.hang) return 'full'
+  if (next.squeeze && !applied.squeeze) return 'full'
+  return next.autospace !== 'off' && next.autospace !== applied.autospace
+    ? 'iss'
+    : null
+}
+
+const sameFallbackPlan = (a, b) =>
+  a?.core === b?.core
+  && a?.lines === b?.lines
+  && a?.hang === b?.hang
+  && a?.squeeze === b?.squeeze
+  && a?.autospace === b?.autospace
+
+/**
+ * 重建 fallback DOM 是首頁唯一還可能超過一幀的工作。設定本身（CSS 變數與
+ * module flag）先同步落地，fallback 等瀏覽器畫出這一幀後再在 idle slot
+ * 對齊；快速連撥只執行最後一份 config。這不是把回應延後——恰好相反：使用者
+ * 先立即看到 cascade 的結果，不再被一輪 8k 節點的 tree walk 擋在 input 裡。
+ */
+const scheduleFallbacks = (config, $target, kind, generationRef, onApplied) => {
+  const generation = ++generationRef.current
+  const snapshot = structuredClone(config)
+  requestAnimationFrame(() => {
+    const run = async () => {
+      if (generation !== generationRef.current) return
+      const apply = kind === 'iss' ? applyISSFallback : applyFallbacks
+      await apply(snapshot, $target, () => generation === generationRef.current)
+      if (generation === generationRef.current) onApplied()
+    }
+    if ('requestIdleCallback' in globalThis) {
+      requestIdleCallback(run, { timeout: 180 })
+    } else {
+      setTimeout(run, 0)
+    }
+  })
+}
+
 /* ── 進場 ──
  * `root` = shadowRoot（控件所在）；`target` = **han.js JS 後備的作用範圍**
  * （light DOM，可 null——CSS 那側的落點固定是 `:root` ＋ `body`，見
@@ -237,6 +347,10 @@ const applyFallbacks = async (config, $target) => {
  * 狀態；預設 DEFAULTS）。 */
 export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
   const configRef = { current: structuredClone(initial ?? DEFAULTS) }
+  const appliedRef = { current: { vars: null, baseGeneric: null } }
+  const fallbackAppliedRef = { current: null }
+  const fallbackDesiredRef = { current: null }
+  const fallbackGenerationRef = { current: 0 }
 
   /* webfontDelivery='none' 級聯的兩格一格可變單元（ts-style §3）。進入 none
    * 時 memo 記下 heritage／cursive／punct 原值、config 強制為無外部 webfont 的
@@ -385,9 +499,53 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
       autospace: $autospaceOn().checked ? jsMode : 'off',
     }
 
-    applyTarget(configRef.current, target)
+    // Homepage may freeze off-screen specimens before an inherited root/body
+    // change. The component stays generic: pages without that performance
+    // hook simply have no listener for this event.
+    if (source !== 'init') {
+      document.dispatchEvent(new CustomEvent('han-config-will-apply', {
+        detail: { source },
+      }))
+    }
+
+    applyTarget(configRef.current, appliedRef.current)
     applyModules(configRef.current)
-    applyFallbacks(configRef.current, target)
+    const plan = fallbackPlan(configRef.current)
+    const fallbackConfigChanged = !sameFallbackPlan(plan, fallbackDesiredRef.current)
+    fallbackDesiredRef.current = plan
+    if (fallbackConfigChanged) clearFallbackModes(target)
+
+    const runKind = fallbackConfigChanged
+      ? fallbackRunKind(plan, fallbackAppliedRef.current)
+      : null
+    if (fallbackConfigChanged && !runKind) {
+      // A cheaper cascade-only state superseded a queued rebuild.
+      fallbackGenerationRef.current += 1
+    }
+
+    if (runKind) {
+      clearFallbackModes(target)
+      if (source === 'init') {
+        const generation = ++fallbackGenerationRef.current
+        const snapshot = structuredClone(configRef.current)
+        applyFallbacks(
+          snapshot,
+          target,
+          () => generation === fallbackGenerationRef.current,
+        ).then(() => {
+          if (generation === fallbackGenerationRef.current)
+            fallbackAppliedRef.current = plan
+        })
+      } else {
+        scheduleFallbacks(
+          configRef.current,
+          target,
+          runKind,
+          fallbackGenerationRef,
+          () => { fallbackAppliedRef.current = plan },
+        )
+      }
+    }
     applyVisibility()
     updateDefaultButtons()
     dispatch(configRef.current, source)

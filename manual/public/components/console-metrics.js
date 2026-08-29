@@ -49,6 +49,9 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
 
   // config core 通知回呼——快照傳出（呼叫端不得動我方 state）。
   const notify = () => onChange?.({ ...stateRef.current })
+  const prepare = () => document.dispatchEvent(
+    new CustomEvent('han-config-will-apply', { detail: { source: 'metrics' } }),
+  )
 
   const apply = () => {
     if (!target) return
@@ -103,13 +106,14 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
       apply()
     }
     // 使用者拖動：sync 後通知「一次」。mount-time 的 sync() 不通知（下）。
-    $input.addEventListener('input', () => { sync(); notify() })
+    $input.addEventListener('input', () => { prepare(); sync(); notify() })
     syncBySlider.set($slider, sync)
     sync()
   })
 
   // 群組 ↺：三支滑桿一併回預設再「通知一次」（不是每支各發一次）。
   $groupDefault.addEventListener('click', () => {
+    prepare()
     $sliders.forEach(($slider) => {
       const $input = $slider.querySelector('input[type="range"]')
       $input.value = String(METRIC_DEFAULTS[$slider.dataset.metric])
@@ -119,6 +123,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
   })
 
   const reset = () => {
+    prepare()
     stateRef.current = { ...METRIC_DEFAULTS }
     $sliders.forEach(($slider) => {
       const $input = $slider.querySelector('input[type="range"]')

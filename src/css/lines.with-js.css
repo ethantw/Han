@@ -53,6 +53,16 @@
   }
 }
 
+/* Dynamic opt-out must neutralise spacers before a caller gets around to
+ * uninstalling the fallback DOM. The custom property is the public switch;
+ * requiring a synchronous tree rewrite before it looks off makes a local
+ * cascade change behave like an application-wide transaction. */
+@container style(--han-text-autospace: no-autospace) {
+  :where(h-iss) {
+    display: none;
+  }
+}
+
 @supports (text-autospace: normal) {
   /* Safari (≤ WebKit 18.x) skips autospace at any Han ↔ Western seam
    * where an inline element sits — including `display:none` h-iss.
@@ -97,35 +107,37 @@
  * hangables are excluded here — the hang block below owns them.
  */
 @supports not (text-spacing-trim: trim-start) {
-  h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
-    &[data-punct~="open"] {
-      margin-inline-start: -.5em;
-      &::before {
-        content: ' ';
-        font-family: Han Em Space, Han Em Space Fallback, monospace;
-        font-size-adjust: ic-width 0.5;
-        visibility: hidden;
+  @container style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress) {
+    h-char[data-punct]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
+      &[data-punct~="open"] {
+        margin-inline-start: -.5em;
+        &::before {
+          content: ' ';
+          font-family: Han Em Space, Han Em Space Fallback, monospace;
+          font-size-adjust: ic-width 0.5;
+          visibility: hidden;
+        }
       }
-    }
 
-    &:is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
-      margin-inline-end: -.5em;
-      &::after {
-        content: ' ';
-        font-family: Han Em Space, Han Em Space Fallback, monospace;
-        font-size-adjust: ic-width 0.5;
-        visibility: hidden;
+      &:is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
+        margin-inline-end: -.5em;
+        &::after {
+          content: ' ';
+          font-family: Han Em Space, Han Em Space Fallback, monospace;
+          font-size-adjust: ic-width 0.5;
+          visibility: hidden;
+        }
       }
-    }
 
-    /* Cancel inner edges of a consecutive run. */
-    &[data-punct~="consecutive"]:not([data-consecutive-pos='start'])[data-punct~="open"] {
-      margin-inline-start: 0;
-      &::before { content: none }
-    }
-    &[data-punct~="consecutive"]:not([data-consecutive-pos='end']):is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
-      margin-inline-end: 0;
-      &::after { content: none }
+      /* Cancel inner edges of a consecutive run. */
+      &[data-punct~="consecutive"]:not([data-consecutive-pos='start'])[data-punct~="open"] {
+        margin-inline-start: 0;
+        &::before { content: none }
+      }
+      &[data-punct~="consecutive"]:not([data-consecutive-pos='end']):is([data-punct~="close"], [data-punct~="end"], [data-punct~="middle"]) {
+        margin-inline-end: 0;
+        &::after { content: none }
+      }
     }
   }
 }

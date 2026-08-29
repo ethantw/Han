@@ -30,10 +30,34 @@
    ——macOS 拖窗邊每秒送 60 次以上，這個窗口足以把整段吃掉。 */
 const SETTLE_MS = 120
 
+/* `checkVisibility({ contentVisibilityAuto:true })` only says whether Blink
+ * has chosen to render a `content-visibility:auto` subtree. Its look-ahead is
+ * deliberately generous: at station III it still returned true for the
+ * preceding 7,200px-tall font station (whose bottom was already above the
+ * viewport) and the following prose station. A line-toggle ResizeObserver
+ * therefore woke their lens/rail measurements 120ms later; one forced
+ * geometry read alone cost ~100ms.
+ *
+ * Keep a compositor-fed viewport truth alongside that engine hint. No rect
+ * is read here—the whole point is not to force layout merely to decide
+ * whether layout is worth measuring. When a skipped watch enters the
+ * viewport, the observer requeues its job so correctness catches up before
+ * the reader can interact with it. */
+const viewportState = new WeakMap()
+const viewportJobs = new WeakMap()
+const viewportObserver = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    viewportState.set(entry.target, entry.isIntersecting)
+    if (!entry.isIntersecting) continue
+    for (const trigger of viewportJobs.get(entry.target) ?? []) trigger()
+  }
+})
+
 const rendered = ($watch) =>
   !$watch
-  || typeof $watch.checkVisibility !== 'function'
-  || $watch.checkVisibility({ contentVisibilityAuto: true })
+  || (viewportState.get($watch) !== false
+    && (typeof $watch.checkVisibility !== 'function'
+      || $watch.checkVisibility({ contentVisibilityAuto: true })))
 
 /* 同一次 flush 的工作表。以 job 物件本身作鍵：同一個來源連按多次只留一份，
    而順序照第一次登記的先後——`write` 沒有先後之分，只有「都在讀完之後」。 */
@@ -54,10 +78,19 @@ const flush = () => {
  * （例如多趟解算）就整支放進 `write`，它會排在所有讀之後。
  * 回傳一個可以任意頻率呼叫的觸發器。
  */
-export const settled = (job) => () => {
-  pending.add(job)
-  clearTimeout(timer)
-  timer = setTimeout(flush, SETTLE_MS)
+export const settled = (job) => {
+  const trigger = () => {
+    pending.add(job)
+    clearTimeout(timer)
+    timer = setTimeout(flush, SETTLE_MS)
+  }
+  if (job.watch) {
+    const triggers = viewportJobs.get(job.watch) ?? new Set()
+    triggers.add(trigger)
+    viewportJobs.set(job.watch, triggers)
+    viewportObserver.observe(job.watch)
+  }
+  return trigger
 }
 
 /* 拖曳中：`<html data-resizing>`。
@@ -97,6 +130,21 @@ const HOLD_MS = SETTLE_MS + 2600
 const PARK_DEPTH = 3
 const parked = []
 
+/* `contain-intrinsic-size` substitutes the CONTENT box, whereas
+ * getBoundingClientRect() reports the border box. Feeding the latter back
+ * adds every station's padding a second time and moves the page while it is
+ * frozen. Keep this read helper shared by resize parking and config parking. */
+const contentBoxSize = ($el, rect) => {
+  const css = getComputedStyle($el)
+  const inline = rect.width
+    - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight)
+    - parseFloat(css.borderLeftWidth) - parseFloat(css.borderRightWidth)
+  const block = rect.height
+    - parseFloat(css.paddingTop) - parseFloat(css.paddingBottom)
+    - parseFloat(css.borderTopWidth) - parseFloat(css.borderBottomWidth)
+  return [Math.max(0, inline), Math.max(0, block)]
+}
+
 const parkBelowFold = () => {
   const vh = innerHeight
   const found = []
@@ -105,7 +153,7 @@ const parkBelowFold = () => {
     for (const $child of $el.children) {
       const rect = $child.getBoundingClientRect()
       if (!rect.height || rect.bottom <= 0) continue
-      if (rect.top >= vh) found.push([$child, rect.width, rect.height])
+      if (rect.top >= vh) found.push([$child, ...contentBoxSize($child, rect)])
       else if (depth > 1) scan($child, depth - 1)
     }
   }
@@ -118,6 +166,84 @@ const parkBelowFold = () => {
     $child.setAttribute('data-park', '')
   }
 }
+
+/* Console controls often change an inherited custom property on :root. On
+ * this page that used to turn 55 dirty objects into a full 11,003-object
+ * layout, because every off-screen station still participated in document
+ * flow. Freeze far-away blocks at their exact current size before the write;
+ * they inherit the new config while skipped and are thawed when they reach
+ * the viewport. The visible station remains live. Using a look-ahead margin
+ * here is deceptively expensive: station III sits between a 7,200px font
+ * station and the prose station, so keeping either neighbour warm turns one
+ * line-variable write back into a 100–250ms whole-document layout.
+ *
+ * Unlike resize parking, these blocks stay frozen until approached. Thawing
+ * them all after a timer would merely move the same 300ms layout a few frames
+ * later—the exact failure this path exists to remove. */
+const CONFIG_MARGIN = 0
+const configParked = new Map()
+const configParkAnchor = { y: NaN, width: 0, height: 0 }
+
+const unparkConfig = ($el) => {
+  const prior = configParked.get($el)
+  if (!prior) return
+  $el.style.containIntrinsicSize = prior.containIntrinsicSize
+  $el.style.contentVisibility = prior.contentVisibility
+  configParked.delete($el)
+  configObserver.unobserve($el)
+}
+
+const configObserver = new IntersectionObserver(
+  (entries) => entries.forEach((entry) => {
+    if (entry.isIntersecting) unparkConfig(entry.target)
+  }),
+  { rootMargin: '0px' },
+)
+
+export const parkForConfigChange = () => {
+  const $main = document.querySelector('main')
+  if (!$main) return
+  // A drag/select burst shares one viewport workset. Re-reading geometry
+  // after the first inherited write would force exactly the layout we are
+  // trying to avoid (range inputs can fire >60 input events per second).
+  const sameWorkset = configParked.size > 0
+    && Math.abs(scrollY - configParkAnchor.y) < innerHeight / 2
+    && innerWidth === configParkAnchor.width
+    && innerHeight === configParkAnchor.height
+  if (sameWorkset) return
+
+  const found = []
+  const top = -CONFIG_MARGIN
+  const bottom = innerHeight + CONFIG_MARGIN
+
+  // Reads first, writes second: same no-layout-thrashing contract as resize.
+  const scan = ($el, depth) => {
+    for (const $child of $el.children) {
+      if (configParked.has($child)) continue
+      const rect = $child.getBoundingClientRect()
+      if (!rect.height) continue
+      if (rect.bottom < top || rect.top > bottom) {
+        found.push([$child, ...contentBoxSize($child, rect)])
+      } else if (depth > 1) {
+        scan($child, depth - 1)
+      }
+    }
+  }
+  scan($main, PARK_DEPTH)
+  Object.assign(configParkAnchor, { y: scrollY, width: innerWidth, height: innerHeight })
+
+  for (const [$el, inline, block] of found) {
+    configParked.set($el, {
+      containIntrinsicSize: $el.style.containIntrinsicSize,
+      contentVisibility: $el.style.contentVisibility,
+    })
+    $el.style.containIntrinsicSize = `${inline}px ${block}px`
+    $el.style.contentVisibility = 'hidden'
+    configObserver.observe($el)
+  }
+}
+
+document.addEventListener('han-config-will-apply', parkForConfigChange)
 
 const unpark = () => {
   for (const [$child, previous] of parked) {

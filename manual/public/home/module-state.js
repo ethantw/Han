@@ -1,6 +1,5 @@
 /**
- * Two-way-bind a page-side checkbox to a `<han-console>` module switch, and
- * keep the expensive half of the flip out of the animation's way.
+ * Two-way-bind a page-side checkbox to a `<han-console>` module switch.
  *
  * The root attributes this file used to write (`data-han-module-*`) now come
  * from `components/console-config.js` § applyModules — the console's own apply
@@ -58,32 +57,13 @@ export const initModuleState = () => {
     }
   })
 
-  // …and push the other way, but NOT in the same frame as the local
-  // animation.
-  //
-  // Flipping a module is expensive even now that semantics rides a flag
-  // instead of `link.disabled`: 439ms → 123ms of blocked main thread
-  // (`longtask` observer, medians —
-  // docs/plans/module-switch-css-vars.md §5; an attribute-only flip for
-  // comparison costs 81). 123ms is still four dropped frames, and fired on
-  // `change` they land squarely on the diagram's 520ms correction.
-  //
-  // So the cheap half goes first and the expensive half waits: set the root
-  // attribute immediately — that is all the diagram reads, and it costs one
-  // small restyle — let the animation play out, and only then press the
-  // console's button. The hitch still happens; it just no longer happens
-  // during motion, where it is the only place anyone can see it.
-  //
-  // The attribute written here is the same one applyModules owns. Writing it
-  // early is not a second source of truth: applyModules re-asserts the exact
-  // same value when `press()` lands, so the two can only ever agree.
-  //
-  // Only when switching OFF. Coming back on there is nothing local to
-  // protect: removing the attribute hands `--settle` straight back to the
-  // entrance animation's filled 1, with no run of its own to interrupt.
+  // …and push the other way immediately. The old implementation deliberately
+  // waited for station①'s 520ms animation before pressing the real control,
+  // because every switch used to synchronously rebuild the whole fallback
+  // tree. The config core now applies cascade state first and schedules only
+  // a genuinely necessary fallback rebuild after paint, so that timeout is
+  // both obsolete and user-visible input lag.
   proxies().forEach(($box) => {
-    let pending = null
-
     const press = () => {
       const $control = consoleControl($box.dataset.hanModuleProxy)
       if (!$control) return
@@ -92,21 +72,7 @@ export const initModuleState = () => {
     }
 
     $box.addEventListener('change', () => {
-      clearTimeout(pending)
-      const key = `hanModule${$box.dataset.hanModuleProxy[0].toUpperCase()}${$box.dataset.hanModuleProxy.slice(1)}`
-
-      if ($box.checked) {
-        delete document.documentElement.dataset[key]
-        press()
-        return
-      }
-
-      document.documentElement.dataset[key] = 'off'
-      // read the wait off the CSS rather than repeat it here — the animation
-      // that has to finish is the one the attribute just started
-      const $bar = document.querySelector('.MarkDiagram [data-mark]')
-      const secs = $bar ? parseFloat(getComputedStyle($bar).animationDuration) : 0
-      pending = setTimeout(press, Number.isFinite(secs) ? secs * 1000 : 0)
+      press()
     })
   })
 }
