@@ -61,6 +61,13 @@
 
     @media (min-width: 64rem) {
       grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .8fr);
+      gap: 0;
+      /* The vertical equation is intentionally NOT a second white plate.
+         It belongs to the station ground; only the line-item table is a
+         sheet. Keep the figure itself transparent too, otherwise a
+         transparent figcaption merely reveals the old seam colour and looks
+         filled again. The caption draws its own divider below. */
+      background: transparent;
     }
 
     [data-col="gz"] { display: none; }
@@ -447,6 +454,11 @@
     flex-direction: column;
     justify-content: flex-end;
     min-block-size: 16rem;
+
+    @media (min-width: 64rem) {
+      background: transparent;
+      border-inline-start: 1px solid var(--ui-rule);
+    }
   }
 
   &.Sum figcaption .SsrNote {
