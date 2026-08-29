@@ -97,6 +97,10 @@
   <p class="ProductDefinition">{{ productDefinition }}</p>
 
   <div class="HeroActions">
+    <div class="InstallChip">
+      <code class="language-bash">pnpm add @hanzi.pro/han.css</code>
+      <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
+    </div>
     <a class="Primary" href="{{ installUrl }}" data-quickstart-open>{{ quickstartCta }}</a>
   </div>
 
@@ -120,13 +124,13 @@
           <li>
             <h3>{{ installStep }}</h3>
             <div class="InstallChip">
-              <code>pnpm add @hanzi.pro/han.css</code>
+              <code class="language-bash">pnpm add @hanzi.pro/han.css</code>
               <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
             </div>
           </li>
           <li>
             <h3>{{ importStep }}</h3>
-            <pre class="ImportCode"><code>import '@hanzi.pro/han.css/styles'
+            <pre class="ImportCode"><code class="language-js">import '@hanzi.pro/han.css/styles'
 import '@hanzi.pro/han.css/auto'</code></pre>
           </li>
         </ol>

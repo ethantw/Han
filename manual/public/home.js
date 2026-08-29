@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // change — the highlighter's registries are global and cleared wholesale
   // per call, so both paths MUST scan the same set of live <code> or one
   // wipes the other. Feature-detect + lang-resolution live inside.
-  highlightAll('main pre > code')
+  highlightAll('main pre > code, main .InstallChip > code')
   // The fonts gate (pre-paint stamp → 漢-stroke ceremony → reveal) runs
   // as its own early-mounted module (_home.html); reveal.js starts
   // OBSERVING now but routes every data-revealed stamp through the
