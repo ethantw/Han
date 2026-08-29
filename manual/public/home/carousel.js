@@ -27,6 +27,8 @@ export const initCarousel = ($root = document) => {
   // and a half-swapped state would show a property being overridden by a
   // declaration that does not mention it.
   const $items = [...$ring.children]
+  const $demos = [...($root.querySelector('.DemoRing')?.children ?? [])]
+  const $authorToggles = [...$ring.querySelectorAll('[data-author-toggle]')]
   const $nav = $root.querySelector('.SelNav')
   const $count = $nav?.querySelector('[data-sel-count]')
   if ($items.length < 2 || !$nav) return
@@ -40,6 +42,8 @@ export const initCarousel = ($root = document) => {
 
   const show = (i) => {
     $items.forEach(($el, n) => $el.toggleAttribute('data-current', n === i))
+    const name = $items[i].dataset.case
+    $demos.forEach(($el) => $el.toggleAttribute('data-current', $el.dataset.case === name))
     for (const [attr, prop, out] of OUTS) {
       const spec = $items[i].querySelector(`[${attr}]`)?.dataset[prop]
       if (spec) $root.querySelectorAll(`[${out}]`).forEach(($b) => ($b.textContent = spec))
@@ -61,6 +65,12 @@ export const initCarousel = ($root = document) => {
   }
 
   const index = { current: 0 }
+  $ring.addEventListener('change', (e) => {
+    const $toggle = e.target.closest?.('[data-author-toggle]')
+    if (!$toggle) return
+    $authorToggles.forEach(($input) => ($input.checked = $toggle.checked))
+  })
+
   $nav.addEventListener('click', (e) => {
     const step = Number(e.target.closest('[data-sel-step]')?.dataset.selStep)
     if (!step) return

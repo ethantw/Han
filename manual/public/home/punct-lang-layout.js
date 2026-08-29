@@ -25,7 +25,6 @@ export const initPunctLangLayout = ($root = document) => {
     watch: $station,
     read: () => {
       const figureRect = $figure.getBoundingClientRect()
-      const pageRect = $page.getBoundingClientRect()
       const containingRect = $figure.parentElement.getBoundingClientRect()
       const containingStyle = getComputedStyle($figure.parentElement)
       const containingInlineEnd = containingRect.right
@@ -43,12 +42,33 @@ export const initPunctLangLayout = ($root = document) => {
          main's right edge (especially after the specimen turns vertical).
          A rail must end exactly at the page edge: content beyond that point is
          what scrolls, while its controls remain visible inside the viewport. */
-      const railInlineStart = Math.max(0, figureRect.left - pageRect.left)
-      const railInlineEnd = Math.max(0, pageRect.right - figureRect.right)
+      const sideConsole = matchMedia('(min-width: 52rem)').matches
+      const consoleOpen = sideConsole
+        && !document.querySelector('.ConsoleToggle input')?.checked
+      /* Read the painted console edge, not `--w-console`: custom properties
+         preserve the authored `rem` token, so parseFloat('17.5rem') yields
+         17.5 rather than the rendered 280px and misses the canvas edge. */
+      const consoleInlineEnd = document.querySelector('han-console')
+        ?.getBoundingClientRect().right ?? 0
+      const consoleToken = getComputedStyle(document.documentElement)
+        .getPropertyValue('--w-console').trim()
+      const consoleNumber = Number.parseFloat(consoleToken) || 0
+      const declaredConsoleInlineSize = consoleToken.endsWith('rem')
+        ? consoleNumber * (Number.parseFloat(
+          getComputedStyle(document.documentElement).fontSize,
+        ) || 16)
+        : consoleNumber
+      const canvasInlineStart = consoleOpen
+        ? Math.max(0, consoleInlineEnd, declaredConsoleInlineSize)
+        : 0
+      const canvasInlineEnd = visualViewport?.width ?? innerWidth
+      const railInlineStart = Math.max(0, figureRect.left - canvasInlineStart)
+      const railInlineEnd = Math.max(0, canvasInlineEnd - figureRect.right)
 
       return {
         railInlineStart,
         railInlineEnd,
+        railCanvasInlineSize: Math.max(0, canvasInlineEnd - canvasInlineStart),
         figureInlineSize,
         stageInlineSize: Math.max(0, containingRect.width),
       }
@@ -56,6 +76,7 @@ export const initPunctLangLayout = ($root = document) => {
     write: ({
       railInlineStart,
       railInlineEnd,
+      railCanvasInlineSize,
       figureInlineSize,
       stageInlineSize,
     }) => {
@@ -63,15 +84,21 @@ export const initPunctLangLayout = ($root = document) => {
       const gap = Math.min(20, Math.max(12, innerWidth * 0.015))
       const readableCard = 14 * rootSize
       const fitsFour = stageInlineSize >= 4 * readableCard + 3 * gap
+      const vertical = $switch
+        ?.querySelector('input[name="pl-writing"][value="vertical"]')?.checked
       const visibleCount = stageInlineSize >= 3.5 * readableCard
         ? 3.5
         : stageInlineSize >= 2.5 * readableCard
           ? 2.5
           : 1.5
-      $figure.dataset.layout = fitsFour ? 'grid' : 'rail'
+      /* Vertical copy needs its natural column measure, so it is always a
+         rail. Horizontal copy may use the calmer four-up grid when all four
+         readable cards genuinely fit without scrolling. */
+      $figure.dataset.layout = vertical || !fitsFour ? 'rail' : 'grid'
       $figure.style.setProperty('--pl-visible-count', String(visibleCount))
       $figure.style.setProperty('--pl-rail-inline-start', `${Math.round(railInlineStart)}px`)
       $figure.style.setProperty('--pl-rail-inline-end', `${Math.round(railInlineEnd)}px`)
+      $figure.style.setProperty('--pl-rail-canvas-inline-size', `${Math.round(railCanvasInlineSize)}px`)
       $figure.style.setProperty('--pl-figure-inline-size', `${Math.round(figureInlineSize)}px`)
       $strip.dispatchEvent(new Event('han-strip-layout'))
     },

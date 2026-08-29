@@ -19,12 +19,12 @@ test.describe('Shanggu three-face specimen', () => {
     await page.goto('/')
 
     const cards = page.locator('[data-specimen-flow] > [data-specimen]')
-    await expect(cards).toHaveCount(14)
+    await expect(cards).toHaveCount(15)
     expect(await cards.evaluateAll(nodes => nodes.map(node => (node as HTMLElement).dataset.specimen)))
       .toEqual([
         'interpunct', 'ideographic-comma-pair', 'comma-pair', 'full-stop-pair',
         'dash', 'ellipsis',
-        'bone', 'door', 'beauty', 'walk', 'tai', 'rain', 'hall', 'nurture',
+        'bone', 'door', 'beauty', 'walk', 'tai', 'north', 'rain', 'hall', 'nurture',
       ])
     await expect(page.locator('[data-convention="moe"]').first())
       .toHaveCSS('font-family', /Diantenjeom Serif MOE/)
@@ -42,6 +42,53 @@ test.describe('Shanggu three-face specimen', () => {
       '[data-specimen][data-kind="punctuation"] > span, '
       + '[data-specimen][data-kind="glyph"] > span',
     )).toHaveCount(0)
+    await expect(page.locator('[data-specimen][data-kind="glyph"]').first())
+      .toHaveCSS('background-clip', /text/)
+  })
+
+  test('vertical four-language specimen always becomes one carousel rail', async ({ page }) => {
+    await page.setViewportSize({ width: 1728, height: 1000 })
+    await page.goto('/')
+
+    const figure = page.locator('.PunctLang')
+    await page.locator('input[name="pl-writing"][value="vertical"]').evaluate((input: HTMLInputElement) => {
+      input.checked = true
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await expect(figure).toHaveAttribute('data-layout', 'rail')
+    await expect(figure.locator(':scope > ul')).toHaveCSS('overflow-x', 'auto')
+    await expect(figure.locator(':scope > ul > li').first()).toHaveCSS('overflow', 'visible')
+    await expect(figure.locator(':scope > ul > li > p').first()).toHaveCSS('overflow', 'visible')
+    const [figureBox, railBox] = await Promise.all([
+      figure.boundingBox(),
+      figure.locator(':scope > ul').boundingBox(),
+    ])
+    expect(figureBox && railBox && railBox.x < figureBox.x).toBeTruthy()
+    const consoleEdge = await page.locator('han-console').evaluate((node) => (
+      node.getBoundingClientRect().right
+    ))
+    expect(railBox && Math.abs(railBox.x - consoleEdge)).toBeLessThan(1)
+    expect(railBox && Math.abs(railBox.x + railBox.width - 1728)).toBeLessThan(1)
+  })
+
+  test('four-language punctuation follows the newspaper locale order', async ({ page }) => {
+    const cases = [
+      ['/', ['zh-Hant', 'zh-Hans', 'ja', 'ko-Kore']],
+      ['/hans/', ['zh-Hans', 'zh-Hant', 'ja', 'ko-Kore']],
+      ['/ja/', ['ja', 'ko-Kore', 'zh-Hant', 'zh-Hans']],
+      ['/ko/', ['ko-Kore', 'ja', 'zh-Hant', 'zh-Hans']],
+    ] as const
+
+    for (const [url, expected] of cases) {
+      await page.goto(url)
+      const order = await page.locator('.PunctLang > ul > li').evaluateAll((cards) => (
+        cards
+          .map((card) => ({ lang: card.getAttribute('lang'), order: Number(getComputedStyle(card).order) }))
+          .sort((a, b) => a.order - b.order)
+          .map(({ lang }) => lang)
+      ))
+      expect(order).toEqual(expected)
+    }
   })
 
   test('the forme still answers the pointer on its slugs', async ({ page }) => {

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工法站・公理與證明的組合提案</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@0.2.0-rc.0/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@0.2.0-rc.0/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@0.2.0-rc.0/dist/diantenjeom.css">
+<link rel="stylesheet" href="/han/han.css">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: light-dark(#f8f8f5, #171816);
+    --ink: light-dark(#0e0e10, #e8e8e3);
+    --dim: light-dark(#666, #999994);
+    --rule: light-dark(#1b211b20, #e8eee826);
+    --mint: light-dark(#0a8754, #43ad78);
+    --panel: light-dark(#fff, #1e211e);
+    --wash: light-dark(#f2f3ef, #20231f);
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  main {
+    inline-size: min(76rem, calc(100% - 2rem));
+    margin-inline: auto;
+    padding-block: clamp(3rem, 7vw, 6rem);
+  }
+
+  hgroup {
+    margin-block-end: 4rem;
+
+    > p {
+      max-inline-size: 44rem;
+      margin: .8rem 0 0;
+      color: var(--dim);
+    }
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  article {
+    padding-block: 3.5rem;
+    border-block-start: 1px solid var(--rule);
+
+    > header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-block-end: 2rem;
+
+      p {
+        margin: 0;
+        color: var(--dim);
+        font-size: .8rem;
+      }
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.45rem;
+  }
+
+  code,
+  output {
+    font-family: var(--mono);
+  }
+
+  code { color: var(--mint); }
+
+  .Axioms {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .Axiom {
+    h3 {
+      margin: 0;
+      font-family: var(--han-font-alternative);
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    p {
+      margin: .5rem 0 0;
+      color: var(--dim);
+      font-size: .8rem;
+      line-height: 1.65;
+    }
+  }
+
+  .Equation {
+    color: var(--mint);
+    font-family: var(--han-font-alternative);
+    font-style: italic;
+  }
+
+  .Proof {
+    margin: 0;
+  }
+
+  .Applied {
+    color: var(--dim);
+    line-height: 1.9;
+
+    p { margin: 0; }
+  }
+
+  .Devtools {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    overflow: clip;
+    border: 1px solid var(--rule);
+    border-radius: .5rem;
+    background: var(--panel);
+    box-shadow: 0 .75rem 2.5rem color-mix(in srgb, var(--ink) 5%, transparent);
+    font: .78rem/1.7 var(--mono);
+  }
+
+  .Rule {
+    display: grid;
+    grid-template-rows: max-content 1fr max-content;
+    min-block-size: 12rem;
+    padding: 1.25rem;
+
+    + .Rule { border-block-start: 1px solid var(--rule); }
+
+    p { margin: 0; }
+  }
+
+  .RuleHead {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: -.35rem -.35rem 1rem !important;
+    padding: .6rem .75rem;
+    background: var(--wash);
+    color: var(--dim);
+    font-size: .72rem;
+  }
+
+  .Selector { color: var(--mint); }
+
+  .Declaration {
+    padding-inline-start: 1.5rem;
+
+    &[data-overridden] {
+      color: var(--dim);
+      text-decoration: line-through;
+    }
+  }
+
+  .Weight {
+    justify-self: end;
+    color: var(--mint);
+    font-weight: 650;
+  }
+
+  /* A・公理是 proof 的表頭；讀完三欄，視線自然落到同一張證明板。 */
+  [data-option="a"] .Proof {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(25rem, .9fr);
+    border-block: 1px solid var(--rule);
+  }
+
+  [data-option="a"] .Axioms {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, 1fr);
+    border-block-end: 1px solid var(--rule);
+
+    li {
+      padding: 1.5rem;
+      text-align: center;
+
+      + li { border-inline-start: 1px solid var(--rule); }
+    }
+  }
+
+  [data-option="a"] .Applied {
+    display: grid;
+    align-content: end;
+    padding: 2rem 3rem 2rem 1.5rem;
+
+    p { max-inline-size: 34em; }
+  }
+
+  [data-option="a"] .Devtools {
+    margin: 2rem 1.5rem 2rem 0;
+  }
+
+  /* B・左欄是框架索引，右欄是一次讀完的實證；最緊湊。 */
+  [data-option="b"] .Proof {
+    display: grid;
+    grid-template-columns: minmax(18rem, .7fr) minmax(28rem, 1.3fr);
+    gap: 3rem;
+    align-items: stretch;
+  }
+
+  [data-option="b"] .Axioms {
+    border-block: 1px solid var(--rule);
+
+    li {
+      padding: 1.35rem 0;
+
+      + li { border-block-start: 1px solid var(--rule); }
+    }
+  }
+
+  [data-option="b"] .Applied {
+    margin-block-start: 2rem;
+  }
+
+  [data-option="b"] .Devtools {
+    min-block-size: 31rem;
+  }
+
+  /* C・主命題與直接證據相鄰，另外兩式降為由主命題推出的底欄。 */
+  [data-option="c"] .Proof {
+    display: grid;
+    grid-template-columns: minmax(18rem, .8fr) minmax(27rem, 1.2fr);
+    border-block: 1px solid var(--rule);
+  }
+
+  [data-option="c"] .LeadProof {
+    display: grid;
+    align-content: space-between;
+    padding: 2rem 3rem 2rem 1.5rem;
+
+    .Axiom p { max-inline-size: 30em; }
+    .Applied { margin-block-start: 5rem; }
+  }
+
+  [data-option="c"] .Devtools {
+    margin-block: 2rem;
+    margin-inline-end: 1.5rem;
+  }
+
+  [data-option="c"] .Axioms {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, 1fr);
+    border-block-start: 1px solid var(--rule);
+
+    li {
+      padding: 1.5rem;
+
+      + li { border-inline-start: 1px solid var(--rule); }
+    }
+  }
+
+  @media (max-width: 50rem) {
+    [data-option] .Proof { grid-template-columns: 1fr; }
+    [data-option] .Axioms { grid-template-columns: 1fr; }
+    [data-option] .Axioms li + li {
+      border-block-start: 1px solid var(--rule);
+      border-inline-start: 0;
+    }
+    [data-option="a"] .Devtools,
+    [data-option="c"] .Devtools { margin-inline: 1rem; }
+    [data-option="b"] .Devtools { min-block-size: auto; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <hgroup>
+    <h1>公理與證明，怎麼合成一件事</h1>
+    <p>三個方案只改資訊結構；文案、公式與 DevTools 證明完全相同。建議先看 A，再比較 B 的緊湊與 C 的論證層級。</p>
+  </hgroup>
+
+  <article data-option="a">
+    <header>
+      <h2>方案 A・證明板</h2>
+      <p>推薦：保留三欄辨識度，消除上下斷裂</p>
+    </header>
+    <figure class="Proof">
+      <ol class="Axioms">
+        <li class="Axiom">
+          <h3><span class="Equation">:where(s)</span> ≡ <i>s</i>　權重 → 0</h3>
+          <p>其中 <i>s</i> 為任意選擇器。前者權重歸零；任何較重的規則皆可覆蓋。</p>
+        </li>
+        <li class="Axiom">
+          <h3>未分層 &gt; <span class="Equation">@layer han-*</span></h3>
+          <p>漢.css 置於 han-* 分層；開發者未分層的樣式自然優先。</p>
+        </li>
+        <li class="Axiom">
+          <h3>機能 = <i>f</i>(容器變數)</h3>
+          <p>容器上寫一個變數，那片子樹的機能就跟著改。</p>
+        </li>
+      </ol>
+      <figcaption class="Applied">
+        <p>漢.css 樣式表中的選擇器權重全數經 <code>:where()</code> 函數歸零，任何權重大於 <code>(0,0,0)</code> 的選擇器都能隨意覆蓋，一如 UA 樣式。</p>
+      </figcaption>
+      <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
+        <section class="Rule">
+          <p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p>
+          <div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div>
+          <output class="Weight">:where(0,2,2)→(0,0,0)</output>
+        </section>
+        <section class="Rule">
+          <p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p>
+          <div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div>
+          <output class="Weight">(0,1,1)</output>
+        </section>
+      </div>
+    </figure>
+  </article>
+
+  <article data-option="b">
+    <header>
+      <h2>方案 B・左註右證</h2>
+      <p>最省高度，三條公理像目錄</p>
+    </header>
+    <figure class="Proof">
+      <div>
+        <ol class="Axioms">
+          <li class="Axiom"><h3><span class="Equation">:where(s)</span> ≡ <i>s</i>　權重 → 0</h3><p>選中相同，前者權重歸零。</p></li>
+          <li class="Axiom"><h3>未分層 &gt; <span class="Equation">@layer han-*</span></h3><p>開發者未分層的樣式自然優先。</p></li>
+          <li class="Axiom"><h3>機能 = <i>f</i>(容器變數)</h3><p>變數沿子樹繼承，機能跟著改。</p></li>
+        </ol>
+        <figcaption class="Applied"><p>漢.css 的選擇器經 <code>:where()</code> 歸零，開發者規則可直接覆蓋；分層與容器變數再負責排序、開關與調校。</p></figcaption>
+      </div>
+      <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
+        <section class="Rule"><p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
+        <section class="Rule"><p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
+      </div>
+    </figure>
+  </article>
+
+  <article data-option="c">
+    <header>
+      <h2>方案 C・主證明＋推論</h2>
+      <p>論證最清楚，但三式不再同級</p>
+    </header>
+    <figure class="Proof">
+      <div class="LeadProof">
+        <section class="Axiom">
+          <h3><span class="Equation">:where(s)</span> ≡ <i>s</i>　權重 → 0</h3>
+          <p>其中 <i>s</i> 為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。</p>
+        </section>
+        <figcaption class="Applied"><p>任何權重大於 <code>(0,0,0)</code> 的選擇器都能覆蓋漢.css；右側把這件事直接畫成一勝一負的層疊結果。</p></figcaption>
+      </div>
+      <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
+        <section class="Rule"><p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
+        <section class="Rule"><p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
+      </div>
+      <ol class="Axioms">
+        <li class="Axiom"><h3>推論一　未分層 &gt; <span class="Equation">@layer han-*</span></h3><p>所有框架規則置於分層中，開發者未分層的樣式自然優先。</p></li>
+        <li class="Axiom"><h3>推論二　機能 = <i>f</i>(容器變數)</h3><p>容器上寫一個變數，那片子樹的機能就跟著改。</p></li>
+      </ol>
+    </figure>
+  </article>
+</main>
+</body>
+</html>

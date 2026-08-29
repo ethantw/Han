@@ -28,4 +28,3 @@ manual/tests/.baseline/
 
 # wrangler pages dev 的本機狀態（miniflare 的快取／追蹤 sqlite）
 .wrangler/
-home/.fonts/

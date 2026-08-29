@@ -31,18 +31,11 @@
      introduces the statements; the second reads them back and is the only
      place 式5.2 / 式5.3 are named in prose. */
   arAxLede: {
-    hant: '漢.css以<code>:where()</code>歸零權重，開發者樣式可直接覆蓋。',
-    hans: '汉.css以<code>:where()</code>归零权重，开发者样式可直接覆盖。',
-    en: '<code>:where()</code> zeroes han.css specificity, so author styles override it directly.',
-    ja: '漢.cssは<code>:where()</code>で詳細度をゼロにし、開発者の様式で直接上書きできる。',
-    ko: '漢.css는 <code>:where()</code>로 優先順位를 零으로 만들어 開發者 스타일이 바로 덮어쓴다。',
-  },
-  arAxTail: {
-    hant: '<code>@layer</code>排列模塊；CSS變量與style query負責開關、調校機能。',
-    hans: '<code>@layer</code>排列模块；CSS变量与style query负责开关、调校机能。',
-    en: '<code>@layer</code> orders modules; variables and style queries switch and tune features.',
-    ja: '<code>@layer</code>でモジュールを並べ、CSS変数とstyle queryで機能を調整する。',
-    ko: '<code>@layer</code>로 모듈을 배열하고 CSS 變數와 style query로 機能을 조정한다。',
+    hant: '漢.css樣式表的選擇器權重全數經<code>:where()</code>歸零，開發者的樣式只要權重大於零或位於後方，就能輕鬆覆蓋。',
+    hans: '汉.css样式表的选择器权重全数经<code>:where()</code>归零，开发者的样式只要权重大于零或位于后方，就能轻松覆盖。',
+    en: 'Every han.css selector has its specificity zeroed by <code>:where()</code>; an author rule with any weight, or one later in the cascade, overrides it with ease.',
+    ja: '漢.cssのセレクタはすべて<code>:where()</code>で詳細度が零になるため、詳細度を持つか後方に置かれた開発者様式なら容易に上書きできる。',
+    ko: '漢.css의 모든 셀렉터는 <code>:where()</code>로 優先順位가 零이 되므로、무게가 있거나 뒤에 놓인 開發者 스타일이 손쉽게 덮어쓴다。',
   },
   arThmNote: {
     hant: '其中<var>s</var>為任意選擇器。左式與右式選中的元素相同，惟前者權重歸零。任意規則只要權重在(0,0,1)以上，不論先後皆可覆蓋。',
@@ -67,12 +60,63 @@
     ja: '開発者の様式',
     ko: '<ruby>開發者<rt>개발자</rt></ruby>의 스타일',
   },
-  arEgNote: {
-    hant: '漢.css樣式表中的選擇器權重全數經<code>:where()</code>函數歸零，任何權重大於<code>(0,0,0)</code>的選擇器都能隨意覆蓋，一如UA樣式。',
-    hans: '汉.css样式表中的选择器权重全数经<code>:where()</code>函数归零，任何权重大于<code>(0,0,0)</code>的选择器都能随意覆盖，一如UA样式。',
-    en: 'Every selector in the han.css stylesheet has its specificity zeroed by <code>:where()</code>, so anything of yours weighing more than <code>(0,0,0)</code> overrides it at will — exactly as it would a UA stylesheet.',
-    ja: '漢.cssの様式表にあるセレクタは、<code>:where()</code>関数によって詳細度がすべて零になる。<code>(0,0,0)</code>より重いセレクタであれば、UA様式と同じように、思うままに上書きできる。',
-    ko: '漢.css 스타일시트의 셀렉터는 <code>:where()</code> 函數로 優先順位가 모두 零이 된다。<code>(0,0,0)</code>보다 무거운 셀렉터라면 UA 스타일시트를 덮어쓰듯 마음대로 덮어쓸 수 있다。',
+  arDemoLabel: {
+    hant: '實際元素結果', hans: '实际元素结果', en: 'Rendered result',
+    ja: '実際の要素結果', ko: '실제 요소 결과',
+  },
+  arDemoCite: {
+    hant: '智慧型自動判例陪審團査完<cite>民法</cite><cite>冬眠非預期中斷補償準則</cite>核准賠償：新台幣一點四三元。',
+    hans: '智能自动判例陪审团查完<cite>民法</cite><cite>冬眠非预期中断补偿准则</cite>核准赔偿：新台币一点四三元。',
+    en: 'The Intelligent Automated Case-Law Jury checked <cite>Civil Code</cite><cite>Unexpected Hibernation Interruption Compensation Rules</cite> and approved NT$1.43 in compensation.',
+    ja: '知能型自動判例陪審団は<cite>民法</cite><cite>冬眠予期せぬ中断補償基準</cite>を調べ賠償一・四三元を認めた。',
+    ko: '지능형 자동 판례 배심단은 <cite>민법</cite><cite>동면 비예기 중단 보상 준칙</cite>을 검토해 1.43원의 배상을 승인했다。',
+  },
+  arDemoHeading: {
+    hant: '冬眠第四十七年，他醒來了', hans: '冬眠第四十七年，他醒来了',
+    en: 'In the forty-seventh year of hibernation, he woke up',
+    ja: '冬眠四十七年目、彼は目を覚ました', ko: '동면 47년째、그는 깨어났다',
+  },
+  arDemoHeadingNote: {
+    hant: '伴睡型機器貓在他身邊伸了伸懶腰，輕聲道：「距目的地尚有五十三年，請保持冷靜。」他保持冷靜了零點三秒。',
+    hans: '伴睡型机器猫在他身边伸了伸懒腰，轻声道：“距目的地尚有五十三年，请保持冷静。”他保持冷静了零点三秒。',
+    en: 'The hibernation-companion robot cat stretched beside him and said softly: “Fifty-three years remain. Please stay calm.” He stayed calm for 0.3 seconds.',
+    ja: '添い寝型ロボット猫は彼のそばで伸びをし、静かに告げた。「目的地まであと五十三年です。冷静に。」彼は〇・三秒間、冷静を保った。',
+    ko: '동면 동반 로봇 고양이가 그의 곁에서 기지개를 켜고 나직이 말했다。「목적지까지 53년 남았습니다。침착하십시오。」그는 0.3초 동안 침착했다。',
+  },
+  arDemoLine: {
+    hant: '<u>太陽系</u><u>歐羅巴居住域</u><u>深海採礦局</u>發言人<u>大木憲</u>於昨日凌晨召開緊急記者會。',
+    hans: '<u>太阳系</u><u>欧罗巴居住域</u><u>深海采矿局</u>发言人<u>大木宪</u>于昨日凌晨召开紧急记者会。',
+    en: '<u>Solar System</u><u>Europa Settlement</u><u>Deep-Sea Mining Bureau</u> spokesperson <u>Ōki Ken</u> held an emergency press conference before dawn yesterday.',
+    ja: '<u>太陽系</u><u>エウロパ居住域</u><u>深海採掘局</u>の報道官、<u>大木憲</u>は昨日未明に緊急記者会見を開いた。',
+    ko: '<u>태양계</u><u>에우로파 거주역</u><u>심해 채굴국</u> 대변인 <u>오키 켄</u>은 어제 새벽 긴급 기자회견을 열었다。',
+  },
+  arDemoEmphasis: {
+    hant: '原產地查了三次：<em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>——都不在選單。',
+    hans: '原产地查了三次：<em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>——都不在选单。',
+    en: 'The origin was checked three times: <em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>, <em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>, <em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>—none appeared in the menu.',
+    ja: '原産地を三度調べた：<em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>——どれも選択肢にない。',
+    ko: '원산지를 세 번 검색했다：<em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>——모두 선택지에 없었다。',
+  },
+  arDemoQuoteCry: {
+    hant: '一定是瑪那！',
+    hans: '一定是吗哪！',
+    en: 'It must be manna!',
+    ja: 'マナに違いない！',
+    ko: '만나가 <ruby>分明<rt>분명</rt></ruby>합니다！',
+  },
+  arDemoQuoteBy: {
+    hant: '安東・董科夫説：',
+    hans: '安东・董科夫说：',
+    en: ' Anton Donkov said: ',
+    ja: 'アントン・ドンコフは言った。',
+    ko: '안톤 돈코프는 말했다。',
+  },
+  arDemoQuoteClaim: {
+    hant: '地球上的植物，出現在木衛二——這只能是神蹟。',
+    hans: '地球上的植物，出现在木卫二——这只能是神迹。',
+    en: 'A plant from Earth, on Europa—this can only be a miracle.',
+    ja: '地球の植物がエウロパに存在している——これは奇跡以外の何ものでもない。',
+    ko: '<ruby>地球<rt>지구</rt></ruby>의 <ruby>植物<rt>식물</rt></ruby>이 에우로파에 있습니다——이건 <ruby>奇蹟<rt>기적</rt></ruby>밖에 <ruby>説明<rt>설명</rt></ruby>할 수 없습니다。',
   },
   arSelPrev: {
     hant: '上一個選擇器', hans: '上一个选择器', en: 'Previous selector',
@@ -393,16 +437,17 @@
        statement, they are not part of it. -->
   <p class="AxLede">{{ arAxLede }}</p>
 
+  <div class="Theorem">
   <div class="Axioms">
-    <div class="Ax Ax-lead">
-      <p class="Formula" lang="en">
+    <section class="Ax Ax-lead">
+      <div lang="en">
         <math display="block">
           <mrow>
             <!-- Both sides wrapped in their own <mrow>: a top-level <mrow>'s
                  children are where MathML is allowed to break the line, so a
                  flat list drops「權重」onto a line of its own the moment the
                  measure gets tight. Nested, each side is one atom. -->
-            <mrow>
+            <mrow class="Fn">
               <mi class="Fn">:where</mi>
               <mo class="Fn" stretchy="false">(</mo><mi>s</mi><mo class="Fn" stretchy="false">)</mo>
             </mrow>
@@ -415,25 +460,25 @@
             </mrow>
           </mrow>
         </math>
-      </p>
+      </div>
       <p class="AxNote">{{ arThmNote }}</p>
-    </div>
+    </section>
 
-    <div class="Ax">
-      <p class="Formula">
+    <section class="Ax">
+      <div>
         <math display="block">
           <mrow>
             <mtext>{{ arEqUnlayered }}</mtext>
             <mspace width=".3em"></mspace><mo stretchy="false">&gt;</mo><mspace width=".3em"></mspace>
-            <mtext class="Code">@layer han-*</mtext>
+            <mtext class="Fn">@layer han-*</mtext>
           </mrow>
         </math>
-      </p>
+      </div>
       <p class="AxNote">{{ arEq52Note }}</p>
-    </div>
+    </section>
 
-    <div class="Ax">
-      <p class="Formula">
+    <section class="Ax">
+      <div>
         <math display="block">
           <mrow>
             <mtext>{{ arEqFeature }}</mtext>
@@ -442,12 +487,10 @@
             <mo stretchy="false">(</mo><mtext>{{ arEqContainerVar }}</mtext><mo stretchy="false">)</mo>
           </mrow>
         </math>
-      </p>
+      </div>
       <p class="AxNote">{{ arEq53Note }}</p>
-    </div>
+    </section>
   </div>
-
-  <p class="AxTail">{{ arAxTail }}</p>
 
   <!-- 例5.1 — the worked example, set as a CASCADE STACK, the way devtools
        shows one: han.css's real rule, then the reader's rule underneath, and
@@ -471,10 +514,73 @@
        editing a selector can never leave a stale triple beside it. The first
        item's pair is also baked into the <b>s, so the plate is correct with
        JS off — home/carousel.js only takes it from there. -->
-  <div class="Theorem">
     <div class="Example">
+      <ul class="DemoRing">
+        <li data-case="heading">
+          <figure class="ElementDemo">
+            <figcaption>{{ arDemoLabel }}</figcaption>
+            <article class="DemoCanvas"><h1>{{ arDemoHeading }}</h1><p>{{ arDemoHeadingNote }}</p></article>
+          </figure>
+        </li>
+        <li data-case="cite">
+          <figure class="ElementDemo">
+            <figcaption>{{ arDemoLabel }}</figcaption>
+            <div class="DemoCanvas notes"><p>{{ arDemoCite }}</p></div>
+          </figure>
+        </li>
+        <li data-case="adjacent-line">
+          <figure class="ElementDemo">
+            <figcaption>{{ arDemoLabel }}</figcaption>
+            <div class="DemoCanvas tight" data-adjacent-lines-refined><p>{{ arDemoLine }}</p></div>
+          </figure>
+        </li>
+        <li data-case="emphasis">
+          <figure class="ElementDemo">
+            <figcaption>{{ arDemoLabel }}</figcaption>
+            <div class="DemoCanvas reading"><p>{{ arDemoEmphasis }}</p></div>
+          </figure>
+        </li>
+        <li data-case="quotes">
+          <figure class="ElementDemo">
+            <figcaption>{{ arDemoLabel }}</figcaption>
+            <blockquote class="DemoCanvas quotation"><p><q>{{ arDemoQuoteCry }}</q>{{ arDemoQuoteBy }}<q>{{ arDemoQuoteClaim }}</q></p></blockquote>
+          </figure>
+        </li>
+      </ul>
+      <nav class="SelNav" hidden>
+        <!-- This pages the rendered witness and its matching cascade pair as
+             one example. It therefore sits immediately after the witness in
+             both DOM and visual order, rather than looking like chrome that
+             belongs only to the rule pane. -->
+        <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}"><span data-icon="chevron" aria-hidden="true"></span></button>
+        <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
+      </nav>
       <ul class="SelRing">
-        <li>
+        <li data-case="heading">
+          <div class="Rule" data-role="framework">
+            <div class="RuleHead">
+              <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
+              <p class="RuleTag" data-brand>{{ logo }}</p>
+            </div>
+            <p class="At" lang="en">@container style(--han-prose: on) {</p>
+            <div class="Nest">
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
+            <p class="RuleEnd">}</p>
+          </div>
+          <div class="Rule" data-role="mine">
+            <div class="RuleHead">
+              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            </div>
+            <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
+            <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
+            <p class="RuleEnd">}</p>
+          </div>
+        </li>
+        <li data-case="cite">
           <div class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
@@ -499,38 +605,14 @@
           <div class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <p class="RuleTag">{{ arRoleMine }}</p>
+              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline-end: 0;</code></p>
+            <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
             <p class="RuleEnd">}</p>
           </div>
         </li>
-        <li>
-          <div class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
-            </div>
-            <p class="At" lang="en">@container style(--han-prose: on) {</p>
-            <div class="Nest">
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
-            <p class="RuleEnd">}</p>
-            </div>
-            <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <p class="RuleTag">{{ arRoleMine }}</p>
-            </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
-            <p class="RuleEnd">}</p>
-          </div>
-        </li>
-        <li>
+        <li data-case="adjacent-line">
           <div class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
@@ -551,67 +633,66 @@
           <div class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <p class="RuleTag">{{ arRoleMine }}</p>
+              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
             <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline-end: .25em;</code></p>
+            <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
             <p class="RuleEnd">}</p>
           </div>
         </li>
-        <li>
+        <li data-case="emphasis">
           <div class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
             </div>
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>ruby:is(.zhuyin, .mps), ruby:has(&gt; rt:is(.zhuyin, .mps))</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>ruby-position: inter-character;</code></p>
+            <p class="At" lang="en">@container style(--han-semantics: on) {</p>
+            <div class="Nest">
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>em:is(:lang(zh), :lang(ja), :lang(ko))</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>text-emphasis: var(--han-em-symbol);</code></p>
+            <p class="RuleDecl" lang="en"><code>text-emphasis-position: var(--han-em-dot-position);</code></p>
+            <p class="RuleEnd">}</p>
+            </div>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <p class="RuleTag">{{ arRoleMine }}</p>
+              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>ruby.zhuyin</code> {</p>
-            <p class="RuleDecl" lang="en"><code>ruby-position: over;</code></p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.reading em</code> {</p>
+            <p class="RuleDecl" lang="en"><code>text-emphasis-style: triangle;</code></p>
+            <p class="RuleDecl" lang="en"><code>text-emphasis-color: #e6007e;</code></p>
+            <p class="RuleDecl" lang="en"><code>text-emphasis-position: over right;</code></p>
+            <p class="RuleEnd">}</p>
+            <p class="RuleSel" lang="en"><code>.reading ruby</code> {</p>
+            <p class="RuleDecl" lang="en"><code>ruby-position: under;</code></p>
             <p class="RuleEnd">}</p>
           </div>
         </li>
-        <li>
+        <li data-case="quotes">
           <div class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
             </div>
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:lang(ko):not(:lang(ko-Kore))</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>--han-quotes: “ ” ‘ ’;</code></p>
+            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>q</code><span class="Fn">)</span> {</p>
+            <p class="RuleDecl" lang="en"><code>quotes: var(--han-quotes);</code></p>
             <p class="RuleEnd">}</p>
           </div>
           <div class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <p class="RuleTag">{{ arRoleMine }}</p>
+              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>.hanja :lang(ko)</code> {</p>
-            <p class="RuleDecl" lang="en"><code>--han-quotes: 「 」 『 』;</code></p>
+            <p class="RuleSel" lang="en"><code data-mine-spec>.quotation q</code> {</p>
+            <p class="RuleDecl" lang="en"><code>quotes: '【' '】' '〖' '〗';</code></p>
             <p class="RuleEnd">}</p>
           </div>
         </li>
       </ul>
-      <p class="EgNote"><span>{{ arEgNote }}</span></p>
-      <nav class="SelNav" hidden>
-        <!-- The shared icon primitive (common/icons.css), not a 「‹」 glyph:
-             one chevron drawing, one stroke weight, and the same optical
-             centring every other button on the page gets. `data-dir="right"`
-             is the mirrored twin — the primitive already carries it. -->
-        <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}"><span data-icon="chevron" aria-hidden="true"></span></button>
-        <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
-      </nav>
     </div>
   </div>
-
-
   <!-- ── The books ────────────────────────────────────────────────────
        Everything above argues「it won't fight your CSS」; everything below
        prices it. Two sets of books, in that order: the framework (styles ＋

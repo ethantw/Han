@@ -291,6 +291,32 @@
     /* 與上面兩段文案至少隔 120px（owner 2026-08-28：貼太近）。 */
     margin-block: 7.5rem clamp(1.5rem, 4vw, 2.5rem);
   }
+  /* Match station ①'s four-edition reading order: put the page locale first,
+     keep the paired CJK locale beside it, then the other pair. The DOM remains
+     the canonical 繁簡日韓 roster; CSS order changes presentation only. */
+  li[lang="zh-Hant"] { order: 1; }
+  li[lang="zh-Hans"] { order: 2; }
+  li[lang="ja"]      { order: 3; }
+  li[lang|="ko"]     { order: 4; }
+
+  :where(body[data-locale="hans"]) & {
+    li[lang="zh-Hans"] { order: 1; }
+    li[lang="zh-Hant"] { order: 2; }
+  }
+
+  :where(body[data-locale="ja"]) & {
+    li[lang="ja"]      { order: 1; }
+    li[lang|="ko"]     { order: 2; }
+    li[lang="zh-Hant"] { order: 3; }
+    li[lang="zh-Hans"] { order: 4; }
+  }
+
+  :where(body[data-locale="ko"]) & {
+    li[lang|="ko"]     { order: 1; }
+    li[lang="ja"]      { order: 2; }
+    li[lang="zh-Hant"] { order: 3; }
+    li[lang="zh-Hans"] { order: 4; }
+  }
   /* DOM 的四語順序保持不變；實際呈現固定由下面的 rail 規則接管。 */
   ul {
     list-style: none;
@@ -363,11 +389,13 @@
        再把第一張送回原正文欄。初始畫面仍對齊，捲動後卡片則能穿過這段 padding，
        直到頁面邊緣才被裁掉——不是在原版心裡消失。 */
     box-sizing: border-box;
-    inline-size: auto;
+    position: relative;
+    transform: translateX(calc(-1 * var(--pl-rail-inline-start)));
+    inline-size: var(--pl-rail-canvas-inline-size);
     /* Physical on purpose: the stage turns RTL in vertical mode, while these
        two values were measured from the page's physical left/right edges. */
-    margin-left: calc(-1 * var(--pl-rail-inline-start));
-    margin-right: calc(-1 * var(--pl-rail-inline-end));
+    margin-left: 0;
+    margin-right: 0;
     padding-left: var(--pl-rail-inline-start);
     padding-right: var(--plate-pad);
     scroll-padding-left: var(--pl-rail-inline-start);
@@ -461,19 +489,24 @@
   scroll-snap-type: none;
   /* RTL's first card (繁) aligns with the original column's right edge. */
   padding-left: var(--plate-pad);
-  padding-right: var(--pl-rail-inline-end);
+  padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
   scroll-padding-left: 0;
-  scroll-padding-right: var(--pl-rail-inline-end);
+  scroll-padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
 
   li { direction: ltr; }
-  /* `<p>` used to be a nested horizontal scroller.  Wheel events over the
-     glyphs consequently stopped there instead of driving the four-card rail.
-     The rail is the only scroll owner in this mode. */
+  /* Rail ownership contract: cards take their natural content width and may
+     hang beyond the copy measure; only the outer rail clips at the page-canvas
+     edge and owns horizontal scrolling. Never clip a language inside its card
+     or size the card to the copy column — doing either recreates a cramped
+     nested scroller instead of a full-bleed carousel. */
+  li {
+    overflow: visible;
+  }
   p {
     flex: 0 1 auto;
-    block-size: auto;
+    block-size: max-content;
     max-block-size: none;
-    overflow: clip;
+    overflow: visible;
     overscroll-behavior: auto;
   }
 }

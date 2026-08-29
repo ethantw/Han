@@ -17,20 +17,17 @@
  * asides; presented together they are the framework's whole contract, and
  * the plate is the argument. */
 
-/* The way in, and the way out. The plate is notation; without a sentence
-   either side it reads as decoration and gets skipped.
-   Set at the station's own measure and RANGED LEFT, not centred: these are
-   paragraphs now, and a three-line centred paragraph reads as a poster. The
-   plate between them stays centred — that one IS a display. */
-.AxLede,
-.AxTail {
+/* The way in. Set at the station's own measure and ranged left, not centred:
+   this is prose introducing the proof board, not another display formula. */
+.AxLede {
   & {
     margin-inline: 0;
-    max-inline-size: 38em;
+    max-inline-size: 42rem;
     font-family: var(--han-font-alternative);
     font-size: 1rem;
-    line-height: 1.9;
-    color: var(--ui-text);
+    line-height: 1.75;
+    color: var(--ui-supplement-text);
+    text-align: start;
   }
 
   code {
@@ -39,14 +36,7 @@
   }
 }
 
-.AxLede {
-  margin-block: 0 1.25rem;
-}
-
-.AxTail {
-  margin-block: 1.25rem 0;
-  color: var(--ui-supplement-text);
-}
+.AxLede { margin-block: 0 2rem; }
 
 /* 無底色，只有線。原本是帳本那招「gap 露出容器底色當縫」——那要求格子本身
    是實心的（`--ui-bg`），於是三個式子成了浮在站台底色上的一塊白版，
@@ -59,8 +49,8 @@
   & {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin: 0 0 2rem;
-    border-block: 1px solid var(--ui-rule);
+    margin: 0;
+    border-block-end: 1px solid var(--ui-rule);
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
 
@@ -97,6 +87,44 @@
     color: var(--ui-supplement-text);
     text-align: center;
   }
+
+  /* These are display equations, not the numbered `.Formula` component.
+     Keeping their styles local avoids inheriting that component's 5em slot
+     for an equation number that this three-cell header does not have. */
+  .Ax > div {
+    font-family: var(--han-font-alternative);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--ui-text);
+    text-align: center;
+  }
+
+  math {
+    font-family: inherit;
+    math-style: normal;
+  }
+
+  .Fn {
+    color: var(--ui-accent);
+    font-style: italic;
+  }
+
+  mo {
+    margin-inline: 0.5rem;
+    font-size: 1rem;
+    color: var(--ui-supplement-text);
+
+    &.Fn,
+    &[stretchy="false"] { margin-inline: 0; }
+  }
+
+  .Zero { color: var(--ui-accent); }
+
+  .Term {
+    font-family: var(--han-font-alternative);
+    font-size: 1rem;
+    white-space: nowrap;
+  }
 }
 
 
@@ -114,6 +142,7 @@
 .Theorem {
   & {
     margin: 0 0 2.5rem;
+    border-block: 1px solid var(--ui-rule);
   }
 
 }
@@ -252,21 +281,50 @@
    annotation), which is also the order a screen reader gets either way. */
 .Example {
   & {
-    margin-block: 2.5rem 0;
+    container-type: inline-size;
+    --craft-author-demo: on;
+    margin: 0;
+    padding-block: 2rem;
 
     @media (min-width: 60rem) {
       display: grid;
       grid-template-columns: 1fr .8fr;
       grid-template-areas:
-        "note rules"
-        ".    nav";
+        "demo rules"
+        "nav  rules";
+      grid-template-rows: 1fr auto;
       align-items: stretch;
       gap: 1.5rem 3rem;
     }
+
+    /* With JS, data-current names the visible card. No-JS keeps the checked
+       first card and the default `on`, so the static proof remains true. */
+    &:has(.SelRing > li[data-current] [data-author-toggle]:not(:checked)) {
+      --craft-author-demo: off;
+
+      .SelRing > li[data-current] {
+        .Rule[data-role="framework"] .RuleDecl {
+          color: var(--ui-accent);
+          text-decoration: none;
+        }
+
+        .Rule[data-role="mine"] {
+          .RuleDecl {
+            color: var(--ui-supplement-text);
+            text-decoration: line-through;
+            text-decoration-thickness: 1px;
+          }
+
+          .RuleSpec {
+            color: var(--ui-supplement-text);
+          }
+        }
+      }
+    }
   }
 
+  .DemoRing { grid-area: demo; }
   .SelRing { grid-area: rules; }
-  .EgNote  { grid-area: note; }
   .SelNav  { grid-area: nav; }
 
   .Applied {
@@ -331,33 +389,109 @@
     margin-block-start: 0;
   }
 
-  /* the one sentence that says what the two rows are */
-  .EgNote {
+  /* The rendered witness and the cascade pair share a named case. The
+     carousel switches both from the DOM's `data-case`; no sample text or
+     selector is duplicated in JS. Like SelRing, every item occupies one grid
+     cell so changing cases never changes the proof board's dimensions. */
+  .DemoRing {
     & {
-      margin: 1rem 0 0;
-      max-inline-size: 34em;
-      font-family: var(--han-font-alternative);
-      font-size: 0.875rem;
-      line-height: 1.9;
-      color: var(--ui-supplement-text);
-    }
-
-    @media (min-width: 60rem) {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-self: end;
-      min-block-size: 22rem;
-      margin-block-start: 0;
-      padding-block: 1.5rem;
-      font-size: 1rem;
-    }
-
-    code {
+      display: grid;
+      min-block-size: 14rem;
+      margin: 0;
       padding: 0;
-      background: none;
-      border: 0;
-      font-size: 0.75rem;
+      list-style: none;
+    }
+
+    > li {
+      grid-area: 1 / 1;
+      visibility: hidden;
+    }
+
+    > li:first-child,
+    > li[data-current] { visibility: visible; }
+
+    &:has(> li[data-current]) > li:first-child:not([data-current]) {
+      visibility: hidden;
+    }
+  }
+
+  .ElementDemo {
+    & {
+      display: grid;
+      grid-template-rows: max-content 1fr;
+      block-size: 100%;
+      margin: 0;
+      --han-semantics: on;
+      --han-cite-title-marks: wavy;
+    }
+
+    figcaption {
+      color: var(--ui-supplement-text);
+      font-size: .75rem;
+      letter-spacing: .08em;
+    }
+
+    .DemoCanvas {
+      display: grid;
+      place-content: center;
+      min-inline-size: 0;
+      margin: 0;
+      padding: 1.5rem;
+      font-family: var(--han-font-alternative);
+      font-size: clamp(1.25rem, 2.4vw, 2rem);
+      line-height: 1.8;
+      text-align: center;
+
+      p { margin: 0; }
+    }
+
+    article.DemoCanvas {
+      h1 {
+        margin-block-start: 0;
+        font-family: var(--han-font-alternative);
+        font-size: 1.75rem;
+        line-height: 1.2;
+      }
+
+      p { font-size: 1rem; }
+    }
+
+    .reading em {
+      font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    }
+
+    /* `lang="zh"` makes han.css resolve its per-language font token again on
+       both text-level boxes.  This specimen is about emphasis/ruby position,
+       not a face change: keep the base glyphs in the reading face already
+       resolved on `.DemoCanvas`; only the small annotations keep their own
+       sans stack. */
+    .reading :is(em, ruby) {
+      font-family: inherit;
+    }
+
+    .reading rt {
+      font-family: var(--han-sans);
+    }
+
+  }
+
+  /* The scope limits these author rules to the live specimens without adding
+     specificity. Inside it, every selector and declaration is byte-for-byte
+     the rule printed in the matching DevTools card. The framework rule and
+     the author's winner now genuinely match the same rendered element.
+     `@scope`: Baseline 2025. */
+  @container style(--craft-author-demo: on) {
+    @scope (.ElementDemo) {
+      .notes cite { margin-inline: .25em; }
+      article h1 { margin-block-end: 2rem; }
+      .tight u { margin-inline: .25em; }
+      .reading em {
+        text-emphasis-style: triangle;
+        text-emphasis-color: #e6007e;
+        text-emphasis-position: over right;
+      }
+      .reading ruby { ruby-position: under; }
+      .quotation q { quotes: '【' '】' '〖' '〗'; }
     }
   }
 
@@ -445,7 +579,7 @@
     .RuleHead {
       display: flex;
       flex-wrap: nowrap;
-      align-items: baseline;
+      align-items: center;
       gap: 0 0.75rem;
       margin-block-end: 0.5rem;
       padding-block: 0.25rem;
@@ -517,10 +651,21 @@
        on top of it. */
     .RuleTag {
       & {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
         margin-block: 0;
         font-size: .875rem;
         color: var(--ui-supplement-text);
         text-align: end;
+      }
+
+      [data-author-toggle] {
+        inline-size: 0.9rem;
+        block-size: 0.9rem;
+        margin: 0;
+        accent-color: var(--ui-accent);
+        cursor: pointer;
       }
 
       /* han.css's own rule is signed with the WORDMARK (the `logo` token from
@@ -570,7 +715,7 @@
       justify-content: center;
       align-items: center;
       gap: 0.75rem;
-      margin-block-start: 1rem;
+      margin-block: 0.75rem 1rem;
     }
 
     /* `grid` + `place-items` rather than a line-height guess: the button

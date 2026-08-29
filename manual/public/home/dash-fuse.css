@@ -480,7 +480,7 @@
     mask-image: linear-gradient(to right, transparent 0, #000 5rem);
   }
 
-  /* Cover Flow：十四張卡真的排在同一條 track 上。捲動只改一個 0…1 的進度，
+  /* Cover Flow：十五張卡真的排在同一條 track 上。捲動只改一個 0…1 的進度，
      track 連續滑行；最近中央的卡由 JS 蓋 data-center，提高濃度與尺寸。 */
   [data-specimen-flow] {
     --flow-card: round(clamp(8rem, 14vw, 12rem), 2px);
@@ -553,6 +553,7 @@
 
     &[data-kind="glyph"] {
       background:
+        var(--flow-gradient),
         linear-gradient(
           45deg,
           transparent calc(50% - .5px),
@@ -567,6 +568,9 @@
         ),
         color-mix(in srgb, var(--ui-station-b) 88%, transparent)
       ;
+      background-clip: text, border-box, border-box;
+      -webkit-background-clip: text, border-box, border-box;
+      -webkit-text-fill-color: transparent;
 
       font-family: var(--han-serif);
       font-size: var(--flow-card);
@@ -587,6 +591,7 @@
   [data-specimen]:nth-child(12) { --flow-hue: 210deg; }
   [data-specimen]:nth-child(13) { --flow-hue: 238deg; }
   [data-specimen]:nth-child(14) { --flow-hue: 266deg; }
+  [data-specimen]:nth-child(15) { --flow-hue: 294deg; }
 
   [data-specimen][data-kind="punctuation"] {
     font-family: var(--han-font-punctuation-serif), var(--han-serif);
@@ -595,6 +600,7 @@
     line-height: 1;
     white-space: nowrap;
     background:
+      var(--flow-gradient),
       linear-gradient(
         to bottom,
         transparent calc(50% - .5px),
@@ -610,9 +616,13 @@
         transparent calc(50% + .5px)
       )
     ;
+    background-clip: text, border-box, border-box;
+    -webkit-background-clip: text, border-box, border-box;
+    -webkit-text-fill-color: transparent;
 
     &[data-span="2"] {
       background:
+        var(--flow-gradient),
         linear-gradient(
           to bottom,
           transparent calc(50% - .5px),
@@ -621,6 +631,8 @@
           transparent calc(50% + .5px)
         )
       ;
+      background-clip: text, border-box;
+      -webkit-background-clip: text, border-box;
     }
 
   }
@@ -669,6 +681,10 @@
       block-size: 100%;
       font-size: calc(.48 * var(--flow-card));
       line-height: 1;
+      color: transparent;
+      background-image: var(--flow-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
 
       &[data-convention="moe"] {
         font-family: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
