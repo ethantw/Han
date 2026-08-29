@@ -405,6 +405,20 @@
   arFlEmSpace: {
     hant: '全形空格', hans: '全形空格', en: 'Full-width space', ja: '全角空白', ko: '<ruby>全形<rt>전형</rt></ruby> <ruby>空白<rt>공백</rt></ruby>',
   },
+  arAdoptState: {
+    hant: '配置已在全頁生效',
+    hans: '配置已在全页生效',
+    en: 'Your configuration is already live across the page',
+    ja: '設定はページ全体に反映済み',
+    ko: '<ruby>設定<rt>설정</rt></ruby>이 이미 페이지 <ruby>全體<rt>전체</rt></ruby>에 <ruby>適用<rt>적용</rt></ruby>됐다',
+  },
+  arAdoptAction: {
+    hant: '依目前配置生成引用碼',
+    hans: '按当前配置生成引用代码',
+    en: 'Generate code from this configuration',
+    ja: '現在の設定から導入コードを生成',
+    ko: '이 <ruby>設定<rt>설정</rt></ruby>으로 <ruby>導入<rt>도입</rt></ruby> 코드를 만든다',
+  },
 }
 </script>
 <!-- Station V・Architecture (工法) — "won't fight your CSS". Three REAL demos
@@ -960,5 +974,10 @@
     </div>
     </div>
   </dialog>
+
+  <div class="AdoptPrompt">
+    <p>{{ arAdoptState }}</p>
+    <a href="#station-snippet">{{ arAdoptAction }}<span aria-hidden="true">→</span></a>
+  </div>
 
 </section>

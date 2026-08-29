@@ -3,27 +3,22 @@
 /**
  * Closing — the footer band under the last station.
  *
- * Not a `[data-station]`: a full-bleed panel with centred content and no
- * eyebrow/measure rhythm, so it shares none of the station plate's frame.
- * (Moved out of `station-frame.css`, 2026-08-05 — one section, one file.)
+ * Three primary routes close the adoption story. Related type projects stay
+ * visible, but live in the quiet metadata row rather than competing with the
+ * framework's own next steps.
  */
 
 .Closing {
   & {
     position: relative;
     isolation: isolate;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.75rem;
-    padding: 3.5rem var(--gutter);
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 4.5rem 3rem;
+    padding-inline: var(--gutter);
     border-block-start: 1px solid var(--ui-rule);
-    background: transparent;
-    text-align: center;
   }
 
-  /* Closing follows the same fixed-measure/full-viewport-ground contract as
-     the stations above it. */
   &::before {
     content: '';
     position: absolute;
@@ -35,28 +30,90 @@
     pointer-events: none;
   }
 
-  .Siblings {
+  .ClosingHead {
     display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: baseline;
+    gap: 1rem;
 
-    a {
-      padding-block-end: 1px;
-      font-size: 0.875rem;
-      border-block-end: 1px solid var(--ui-rule);
+    p {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      color: var(--ui-accent);
+    }
 
-      &:hover { color: var(--ui-accent); border-block-end-color: var(--ui-accent); }
+    h2 {
+      margin: 0;
+      font-family: var(--han-font-alternative);
+      font-weight: 400;
+      line-height: 1.35;
     }
   }
 
-  .Foot {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--font-mono);
+  .ClosingRoutes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block: 1px solid var(--ui-rule);
+
+    a {
+      display: grid;
+      align-content: start;
+      gap: 0.45rem;
+      min-block-size: 8rem;
+      padding: 1.5rem;
+      color: inherit;
+      text-decoration: none;
+
+      & + a { border-inline-start: 1px solid var(--ui-rule); }
+
+      &::after {
+        content: '→';
+        align-self: end;
+        margin-block-start: auto;
+        color: var(--ui-accent);
+        transition: translate 160ms ease-out;
+      }
+
+      &:hover::after,
+      &:focus-visible::after {
+        translate: 0.25em 0;
+      }
+    }
+
+    strong {
+      font-family: var(--han-font-alternative);
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+
+    span {
+      max-inline-size: 24em;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--ui-supplement-text);
+    }
+  }
+
+  .ClosingMeta {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 1rem 1.5rem;
     font-size: 0.75rem;
     color: var(--ui-supplement-text-2q);
+
+    > p {
+      margin: 0;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+    }
+  }
+
+  .Siblings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
 
     a {
       color: var(--ui-supplement-text);
@@ -64,5 +121,57 @@
 
       &:hover { color: var(--ui-accent); }
     }
+  }
+
+  .Foot { font-family: var(--font-mono); }
+
+  @container (inline-size >= 72rem) {
+    & { padding-inline: calc((100% - var(--max-w-layout)) / 2); }
+  }
+
+  @media (max-width: 44rem) {
+    & { gap: 2rem; }
+
+    .ClosingHead {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ClosingRoutes {
+      grid-template-columns: 1fr;
+
+      a {
+        min-block-size: auto;
+        grid-template-columns: minmax(7em, auto) 1fr auto;
+        align-items: baseline;
+        gap: 1rem;
+        padding-inline: 0;
+
+        & + a {
+          border-inline-start: 0;
+          border-block-start: 1px solid var(--ui-rule);
+        }
+
+        &::after { margin-block-start: 0; }
+      }
+    }
+
+    .ClosingMeta {
+      grid-template-columns: 1fr auto;
+
+      > p { grid-column: 1 / -1; }
+    }
+  }
+
+  @media (max-width: 28rem) {
+    .ClosingRoutes a {
+      grid-template-columns: 1fr auto;
+
+      span { grid-column: 1 / -1; }
+      &::after { grid-column: 2; grid-row: 1; }
+    }
+
+    .ClosingMeta { grid-template-columns: 1fr; }
   }
 }

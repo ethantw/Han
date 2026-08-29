@@ -228,6 +228,49 @@ main > section {
 }
 
 
+/* Craft and playground end in the same hand-off: the live console state is
+   already shared with station VII, so a native fragment link is enough to
+   carry the reader there. This is a quiet station footer, not another card. */
+.AdoptPrompt {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-block-start: 4rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--ui-rule);
+  font-family: var(--han-font-alternative);
+
+  p {
+    margin: 0;
+    color: var(--ui-supplement-text);
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65em;
+    color: var(--ui-accent);
+    text-decoration: none;
+
+    span { transition: translate 160ms ease-out; }
+
+    &:hover span,
+    &:focus-visible span {
+      translate: 0.25em 0;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    & {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+  }
+}
+
+
 
 /* ═══ Vertical writing mode (度量 group's 直排 radio — preview-state,
    `console-metrics.js` sets `main.dataset.writing`) ═══════════════

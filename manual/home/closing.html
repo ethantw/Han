@@ -1,5 +1,35 @@
 <script type="text/x-i18n">
 {
+  clEyebrow: {
+    hant: '排好了', hans: '排好了', en: 'Typeset', ja: '組み上がったら', ko: '<ruby>組版<rt>조판</rt></ruby>이 끝났다면',
+  },
+  clTitle: {
+    hant: '現在，讓它上線', hans: '现在，让它上线', en: 'Now, ship it', ja: '次は、公開しよう', ko: '이제、<ruby>公開<rt>공개</rt></ruby>하자',
+  },
+  clRoutesLabel: {
+    hant: '開始使用漢.css', hans: '开始使用汉.css', en: 'Start using 漢.css', ja: '漢.cssを使い始める', ko: '漢.css <ruby>開始<rt>시작</rt></ruby>',
+  },
+  clUseTitle: {
+    hant: '現在使用', hans: '现在使用', en: 'Use it now', ja: '今すぐ使う', ko: '지금 <ruby>使用<rt>사용</rt></ruby>',
+  },
+  clUseNote: {
+    hant: '依目前配置生成引用碼', hans: '按当前配置生成引用代码', en: 'Generate code from your current configuration', ja: '現在の設定から導入コードを生成', ko: '<ruby>現在<rt>현재</rt></ruby> <ruby>設定<rt>설정</rt></ruby>으로 코드를 만든다',
+  },
+  clDocsTitle: {
+    hant: '使用手冊', hans: '使用手册', en: 'Manual', ja: '使用手冊', ko: '<ruby>使用<rt>사용</rt></ruby> <ruby>手冊<rt>수책</rt></ruby>',
+  },
+  clDocsNote: {
+    hant: '查閱模組、元素與配置細節', hans: '查阅模块、元素与配置细节', en: 'Browse modules, elements and configuration', ja: 'モジュール・要素・設定を調べる', ko: '<ruby>模組<rt>모듈</rt></ruby>、<ruby>要素<rt>요소</rt></ruby>와 <ruby>設定<rt>설정</rt></ruby>을 살핀다',
+  },
+  clContributeTitle: {
+    hant: '參與開發', hans: '参与开发', en: 'Contribute', ja: '開発に参加', ko: '<ruby>開發<rt>개발</rt></ruby>에 <ruby>參與<rt>참여</rt></ruby>',
+  },
+  clContributeNote: {
+    hant: '回報問題、閱讀原始碼或提出改進', hans: '报告问题、阅读源码或提出改进', en: 'Report issues, read the source or propose an improvement', ja: '問題報告・ソース閲覧・改善提案', ko: '<ruby>問題<rt>문제</rt></ruby> <ruby>報告<rt>보고</rt></ruby>、소스 읽기、<ruby>改善<rt>개선</rt></ruby> <ruby>提案<rt>제안</rt></ruby>',
+  },
+  clRelatedLabel: {
+    hant: '相關專案', hans: '相关项目', en: 'Related projects', ja: '関連プロジェクト', ko: '<ruby>關聯<rt>관련</rt></ruby> 프로젝트',
+  },
   clZianoLabel: {
     hant: 'ziano・傳承字形Web字體',
     hans: 'ziano・传承字形Web字体',
@@ -16,15 +46,38 @@
   },
 }
 </script>
-<!-- Closing — install one-liner, sibling-project links, version. -->
-<section class="Closing">
-  <nav class="Siblings">
-    <a href="https://github.com/ethantw/Han">GitHub</a>
-    <a href="https://hanzipro.github.io/ziano/">{{ clZianoLabel }}</a>
-    <a href="https://hanzipro.github.io/diantenjeom/">{{ clDiantenjeomLabel }}</a>
+<!-- Closing — three ways forward; sibling projects are supporting context,
+     deliberately below the primary adoption routes. -->
+<section class="Closing" aria-labelledby="closing-title">
+  <header class="ClosingHead">
+    <p>{{ clEyebrow }}</p>
+    <h2 id="closing-title">{{ clTitle }}</h2>
+  </header>
+
+  <nav class="ClosingRoutes" aria-label="{{ clRoutesLabel }}">
+    <a href="#station-snippet">
+      <strong>{{ clUseTitle }}</strong>
+      <span>{{ clUseNote }}</span>
+    </a>
+    <a href="{{ docsUrl }}">
+      <strong>{{ clDocsTitle }}</strong>
+      <span>{{ clDocsNote }}</span>
+    </a>
+    <a href="https://github.com/hanzipro/han.css">
+      <strong>{{ clContributeTitle }}</strong>
+      <span>{{ clContributeNote }}</span>
+    </a>
   </nav>
 
-  <div class="Foot">
-    <span class="version">肆・〇</span>
+  <div class="ClosingMeta">
+    <p>{{ clRelatedLabel }}</p>
+    <nav class="Siblings" aria-label="{{ clRelatedLabel }}">
+      <a href="https://hanzipro.github.io/ziano/">{{ clZianoLabel }}</a>
+      <a href="https://hanzipro.github.io/diantenjeom/">{{ clDiantenjeomLabel }}</a>
+    </nav>
+
+    <div class="Foot">
+      <span class="version">肆・〇</span>
+    </div>
   </div>
 </section>

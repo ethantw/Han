@@ -44,6 +44,20 @@
   pgContentCustom: {
     hant: '自訂內容', hans: '自订内容', en: 'Your own', ja: '自分の文', ko: '<ruby>自作<rt>자작</rt></ruby>',
   },
+  pgAdoptState: {
+    hant: '文字試得合意了',
+    hans: '文字试得合意了',
+    en: 'Happy with how your words look?',
+    ja: 'この組み上がりでよければ',
+    ko: '이 <ruby>組版<rt>조판</rt></ruby>이 마음에 든다면',
+  },
+  pgAdoptAction: {
+    hant: '帶著目前配置生成引用碼',
+    hans: '带着当前配置生成引用代码',
+    en: 'Take this configuration to the code generator',
+    ja: 'この設定を導入コードにする',
+    ko: '이 <ruby>設定<rt>설정</rt></ruby>으로 <ruby>導入<rt>도입</rt></ruby> 코드를 만든다',
+  },
   /* The 自訂內容 buffer's starting text — also what it returns to when the
      reader empties it. A prompt, not a specimen: this tab is their page. */
   pgCustomSample: {
@@ -165,4 +179,8 @@
         <span data-icon="chevron" aria-hidden="true"></span>
       </button>
     </nav>
+    <div class="AdoptPrompt">
+      <p>{{ pgAdoptState }}</p>
+      <a href="#station-snippet">{{ pgAdoptAction }}<span aria-hidden="true">→</span></a>
+    </div>
 </section>
