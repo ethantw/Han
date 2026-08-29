@@ -31,6 +31,7 @@ import { initBrandGlyph } from '/home/brand-glyph.js'
 // with the main content / the stroke ceremony's thread. Until it upgrades,
 // its light-DOM `.ConsoleLoading` fallback shows the 字徽 loader (home.css).
 import { initConsoleCollapse } from '/home/console-collapse.js'
+import { initStationMap } from '/home/station-map.js'
 import { initSnippet } from '/home/snippet.js'
 import { initLeadForme } from '/home/lead-forme.js'
 import { initDashClip } from '/home/dash-clip.js'
@@ -107,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // become a horizontal rail; no height breakpoint is guessed in CSS.
   initPunctLangLayout()
   initConsoleCollapse()
+  initStationMap()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
   /* 站①的「（下轉第七版）」——把跳版連結升級成 `<dialog>` 燈箱（全文、可換版、

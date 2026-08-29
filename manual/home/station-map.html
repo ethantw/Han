@@ -1,0 +1,104 @@
+<script type="text/x-i18n">
+{
+  stationMapLabel: {
+    hant: '七站導覽', hans: '七站导览', en: 'Seven-station guide',
+    ja: '七つのステーション', ko: '일곱 정거장 안내',
+  },
+  stationMapOpen: {
+    hant: '打開七站目錄', hans: '打开七站目录', en: 'Open station directory',
+    ja: 'ステーション目次を開く', ko: '정거장 목차 열기',
+  },
+  stationMapClose: {
+    hant: '關閉七站目錄', hans: '关闭七站目录', en: 'Close station directory',
+    ja: 'ステーション目次を閉じる', ko: '정거장 목차 닫기',
+  },
+  station1No: { hant: '壹', hans: '壹', en: 'I', ja: '一', ko: '1' },
+  station2No: { hant: '貳', hans: '贰', en: 'II', ja: '二', ko: '2' },
+  station3No: { hant: '叁', hans: '叁', en: 'III', ja: '三', ko: '3' },
+  station4No: { hant: '肆', hans: '肆', en: 'IV', ja: '四', ko: '4' },
+  station5No: { hant: '伍', hans: '伍', en: 'V', ja: '五', ko: '5' },
+  station6No: { hant: '陸', hans: '陆', en: 'VI', ja: '六', ko: '6' },
+  station7No: { hant: '柒', hans: '柒', en: 'VII', ja: '七', ko: '7' },
+  station1Name: { hant: '語意', hans: '语意', en: 'Semantics', ja: 'セマンティクス', ko: '의미' },
+  station1Task: {
+    hant: '以語意HTML排出著重、專名與引文',
+    hans: '以语意HTML排出着重、专名与引文',
+    en: 'Typeset emphasis, proper names and citations from semantic HTML',
+    ja: '意味に沿ったHTMLから圦点・固有名・引用を組む',
+    ko: '의미 있는 HTML로 방점·고유명·인용을 조판',
+  },
+  station2Name: { hant: '字體', hans: '字体', en: 'Type', ja: '字体', ko: '글꼴' },
+  station2Task: {
+    hant: '比較傳承字形、標點公約與直橫排',
+    hans: '比较传承字形、标点公约与直横排',
+    en: 'Compare regional glyphs, punctuation conventions and writing modes',
+    ja: '地域字形・約物・縦横の組み方を比べる',
+    ko: '지역 글자꼴·문장부호 규약·세로와 가로쓰기를 비교',
+  },
+  station3Name: { hant: '行', hans: '行', en: 'Lines', ja: '行組み', ko: '행' },
+  station3Task: {
+    hant: '調整標點擠壓、懸掛與文種間距',
+    hans: '调整标点挤压、悬挂与文种间距',
+    en: 'Tune punctuation squeezing, hanging and mixed-script spacing',
+    ja: '約物の詰め・ぶら下げ・文字体系間の字間を調整',
+    ko: '문장부호 압축·내어쓰기·문자 체계 간격을 조정',
+  },
+  station4Name: { hant: '段落', hans: '段落', en: 'Prose', ja: '段落', ko: '단락' },
+  station4Task: {
+    hant: '比較段落節奏與完整文章',
+    hans: '比较段落节奏与完整文章',
+    en: 'Compare paragraph rhythm across complete articles',
+    ja: '完結した記事で段落のリズムを比べる',
+    ko: '완결된 기사에서 단락 리듬을 비교',
+  },
+  station5Name: { hant: '工法', hans: '工法', en: 'Architecture', ja: '工法', ko: '구조' },
+  station5Task: {
+    hant: '驗證低權重、分層與可覆蓋性',
+    hans: '验证低权重、分层与可覆盖性',
+    en: 'Verify low specificity, cascade layers and easy overrides',
+    ja: '低い詳細度・レイヤー・上書きのしやすさを検証',
+    ko: '낮은 명시도·캐스케이드 레이어·덮어쓰기를 검증',
+  },
+  station6Name: { hant: '試玩', hans: '试玩', en: 'Playground', ja: '試遊', ko: '놀이터' },
+  station6Task: {
+    hant: '用自己的Markdown或HTML即時試排',
+    hans: '用自己的Markdown或HTML即时试排',
+    en: 'Typeset your own Markdown or HTML live',
+    ja: '自分のMarkdownまたはHTMLをその場で組む',
+    ko: '자신의 Markdown 또는 HTML을 즉시 조판',
+  },
+  station7Name: { hant: '引用碼', hans: '引用码', en: 'Setup code', ja: '導入コード', ko: '인용 코드' },
+  station7Task: {
+    hant: '依目前配置生成引用碼',
+    hans: '依当前配置生成引用码',
+    en: 'Generate setup code from the current configuration',
+    ja: '現在の設定から導入コードを生成',
+    ko: '현재 설정으로 인용 코드를 생성',
+  },
+}
+</script>
+<!-- This ordered list is the one station map: index, short name, fragment ID
+     and task summary live here. The station headings keep their editorial
+     titles; navigation code reads no parallel JavaScript table. -->
+<div class="StationMap" role="navigation" aria-label="{{ stationMapLabel }}" data-station-map>
+  <button class="StationMapCurrent"
+          type="button"
+          aria-expanded="false"
+          aria-controls="station-map-list"
+          data-label-open="{{ stationMapOpen }}"
+          data-label-close="{{ stationMapClose }}">
+    <span class="StationMapCurrentNo" aria-hidden="true">{{ station1No }}／{{ station7No }}</span>
+    <span aria-hidden="true">・</span>
+    <span class="StationMapCurrentName" aria-hidden="true">{{ station1Name }}</span>
+    <span data-icon="chevron" aria-hidden="true"></span>
+  </button>
+  <ol class="StationMapList" id="station-map-list">
+    <li><a href="#station-semantics" data-number="{{ station1No }}" data-name="{{ station1Name }}" data-summary="{{ station1Task }}" aria-current="location"><b>{{ station1No }}</b><span>{{ station1Name }}</span><small>{{ station1Task }}</small></a></li>
+    <li><a href="#station-fonts" data-number="{{ station2No }}" data-name="{{ station2Name }}" data-summary="{{ station2Task }}"><b>{{ station2No }}</b><span>{{ station2Name }}</span><small>{{ station2Task }}</small></a></li>
+    <li><a href="#station-lines" data-number="{{ station3No }}" data-name="{{ station3Name }}" data-summary="{{ station3Task }}"><b>{{ station3No }}</b><span>{{ station3Name }}</span><small>{{ station3Task }}</small></a></li>
+    <li><a href="#station-prose" data-number="{{ station4No }}" data-name="{{ station4Name }}" data-summary="{{ station4Task }}"><b>{{ station4No }}</b><span>{{ station4Name }}</span><small>{{ station4Task }}</small></a></li>
+    <li><a href="#station-craft" data-number="{{ station5No }}" data-name="{{ station5Name }}" data-summary="{{ station5Task }}"><b>{{ station5No }}</b><span>{{ station5Name }}</span><small>{{ station5Task }}</small></a></li>
+    <li><a href="#station-playground" data-number="{{ station6No }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
+    <li><a href="#station-snippet" data-number="{{ station7No }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
+  </ol>
+</div>
