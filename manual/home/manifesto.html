@@ -12,39 +12,48 @@
     ko: '<ruby>픽셀<rt>pixel</rt></ruby> 사이의 <ruby>活字<rt>활자</rt></ruby> <ruby>美學<rt>미학</rt></ruby>、<br /><ruby>畵面<rt>화면</rt></ruby>의 <ruby>漢字<rt>한자</rt></ruby>에게。',
   },
   productDefinition: {
-    hant: '一套讓普通語意HTML自動得到繁簡日韓專業排版的CSS框架。',
-    hans: '一套让普通语义HTML自动得到繁简日韩专业排版的CSS框架。',
-    en: 'A CSS framework that gives ordinary semantic HTML professional Chinese, Japanese and Korean typography.',
-    ja: '普通のセマンティックHTMLに、繁体字・簡体字・日本語・韓国語の本格的な組版を自動で与えるCSSフレームワーク。',
-    ko: '평범한 시맨틱 HTML에 번체·간체 중국어、일본어와 한국어의 전문 조판을 자동으로 입히는 CSS 프레임워크。',
-  },
-  heroActionsLabel: {
-    hant: '開始使用漢.css', hans: '开始使用汉.css', en: 'Get started with Han.css',
-    ja: '漢.cssを使い始める', ko: '漢.css 시작하기',
+    hant: '讓普通的超文本網頁，升級為中日韓專業排版的CSS框架',
+    hans: '让普通的超文本网页，升级为中日韩专业排版的CSS框架',
+    en: 'A CSS framework that upgrades ordinary hypertext pages with professional Chinese, Japanese and Korean typography',
+    ja: '普通のハイパーテキストを、中日韓の本格的な組版へ引き上げるCSSフレームワーク',
+    ko: '평범한 하이퍼텍스트 웹페이지를 중일한 전문 조판으로 끌어올리는 CSS 프레임워크',
   },
   quickstartCta: {
     hant: '30秒開始', hans: '30秒开始', en: 'Start in 30 seconds',
     ja: '30秒で始める', ko: '30초 만에 시작',
   },
-  specimenCta: {
-    hant: '看看它改了什麼', hans: '看看它改了什么', en: 'See what it changes',
-    ja: '何が変わるかを見る', ko: '무엇이 달라지는지 보기',
+  quickstartIntro: {
+    hant: '先載入樣式表；瀏覽器尚未具備的行內排版能力，再交給可選的JavaScript補全。',
+    hans: '先加载样式表；浏览器尚未具备的行内排版能力，再交给可选的JavaScript补全。',
+    en: 'Load the stylesheet first. Add the optional JavaScript companion only for inline typography the browser does not yet provide.',
+    ja: 'まずスタイルシートを読み込む。ブラウザにまだないインライン組版だけを、任意のJavaScriptコンパニオンで補う。',
+    ko: '먼저 스타일시트를 불러온다。브라우저가 아직 제공하지 않는 인라인 조판만 선택적인 JavaScript 보완에 맡긴다。',
   },
-  quickstartHeading: {
-    hant: '最小安裝', hans: '最小安装', en: 'Minimum setup',
-    ja: '最小構成', ko: '최소 설치',
+  installStep: {
+    hant: '安裝套件', hans: '安装套件', en: 'Install the package',
+    ja: 'パッケージをインストール', ko: '패키지 설치',
   },
-  cssCoreFact: {
-    hant: 'CSS是核心', hans: 'CSS是核心', en: 'CSS at the core',
-    ja: '中核はCSS', ko: '핵심은 CSS',
+  importStep: {
+    hant: '在專案入口引入', hans: '在项目入口引入', en: 'Import at your app entry',
+    ja: 'プロジェクトの入口で読み込む', ko: '프로젝트 진입점에서 불러오기',
   },
-  optionalJsFact: {
-    hant: 'JavaScript補全可選', hans: 'JavaScript补全可选', en: 'Optional JavaScript companion',
-    ja: 'JavaScript補完は任意', ko: 'JavaScript 보완은 선택 사항',
+  optionalNote: {
+    hant: '只用CSS也能工作；第二行只在需要跨瀏覽器補齊標點擠壓、文種間距等能力時載入。',
+    hans: '只用CSS也能工作；第二行只在需要跨浏览器补齐标点挤压、文种间距等能力时加载。',
+    en: 'CSS works on its own. Keep the second line only when you need cross-browser fallbacks for punctuation trimming, mixed-script spacing and related features.',
+    ja: 'CSSだけでも動作する。2行目は、約物の詰めや文字体系間の字間など、ブラウザ間の差を埋めるときだけ読み込む。',
+    ko: 'CSS만으로도 동작한다。두 번째 줄은 문장부호 조정과 문자 체계 사이 간격 등 브라우저 차이를 메울 때만 불러온다。',
   },
-  browserFact: {
+  browserSupport: {
     hant: '支援現代常青瀏覽器', hans: '支持现代常青浏览器', en: 'Modern evergreen browsers',
     ja: 'モダンなエバーグリーンブラウザ', ko: '최신 에버그린 브라우저',
+  },
+  fullInstallGuide: {
+    hant: '完整安裝方式', hans: '完整安装方式', en: 'Full installation guide',
+    ja: '詳しいインストール手順', ko: '전체 설치 안내',
+  },
+  closeLabel: {
+    hant: '關閉', hans: '关闭', en: 'Close', ja: '閉じる', ko: '닫기',
   },
   lede: {
     hant: '或擠壓或懸掛的標點、強調文本旁的著重號、為漢字標上的注音與拼音、文種之間的分寸、專名之間的斷點——鉛字時代的匠人工藝，透過CSS自訂屬性與少量JavaScript回落，在螢幕上一一重現。',
@@ -87,30 +96,46 @@
 
   <p class="ProductDefinition">{{ productDefinition }}</p>
 
-  <nav class="HeroActions" aria-label="{{ heroActionsLabel }}">
-    <a class="Primary" href="#quickstart">{{ quickstartCta }}</a>
-    <a href="#station-semantics">{{ specimenCta }}</a>
-  </nav>
+  <div class="HeroActions">
+    <a class="Primary" href="{{ installUrl }}" data-quickstart-open>{{ quickstartCta }}</a>
+  </div>
 
   <p class="Lede">{{ lede }}</p>
   <p class="WritingModes">{{ writingModes }}</p>
   <p class="dogfood">{{ dogfood }}</p>
 
-  <section class="Quickstart" id="quickstart" aria-labelledby="quickstart-title">
-    <h2 id="quickstart-title">{{ quickstartHeading }}</h2>
-    <div class="QuickstartCode">
-      <div class="InstallChip">
-        <code>pnpm add @hanzi.pro/han.css</code>
-        <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
+  <dialog class="QuickstartDialog" data-quickstart-dialog aria-labelledby="quickstart-title">
+    <section class="QuickstartPanel">
+      <header>
+        <h2 id="quickstart-title">{{ quickstartCta }}</h2>
+        <form method="dialog">
+          <button value="close" title="{{ closeLabel }}" aria-label="{{ closeLabel }}">
+            <span data-icon="close" aria-hidden="true"></span>
+          </button>
+        </form>
+      </header>
+      <div class="QuickstartBody">
+        <p>{{ quickstartIntro }}</p>
+        <ol>
+          <li>
+            <h3>{{ installStep }}</h3>
+            <div class="InstallChip">
+              <code>pnpm add @hanzi.pro/han.css</code>
+              <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
+            </div>
+          </li>
+          <li>
+            <h3>{{ importStep }}</h3>
+            <pre class="ImportCode"><code>import '@hanzi.pro/han.css/styles'
+import '@hanzi.pro/han.css/auto'</code></pre>
+          </li>
+        </ol>
+        <p class="OptionalNote">{{ optionalNote }}</p>
+        <footer>
+          <span>{{ browserSupport }}・<code>v4.0.0-rc.1</code></span>
+          <a href="{{ installUrl }}">{{ fullInstallGuide }}</a>
+        </footer>
       </div>
-      <pre class="ImportCode"><code>import '@hanzi.pro/han.css/styles'
-import '@hanzi.pro/han.css/auto' <span>// optional</span></code></pre>
-    </div>
-    <ul class="QuickFacts">
-      <li>{{ cssCoreFact }}</li>
-      <li>{{ optionalJsFact }}</li>
-      <li>{{ browserFact }}</li>
-      <li><code>v4.0.0-rc.1</code></li>
-    </ul>
-  </section>
+    </section>
+  </dialog>
 </section>

@@ -42,6 +42,7 @@ import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
 import { initSizeDialog } from '/home/size-dialog.js'
+import { initQuickstartDialog } from '/home/quickstart-dialog.js'
 import { initStripNav } from '/home/strip-nav.js'
 import { initDevReset } from '/home/dev-reset.js'
 import { highlightAll } from '/home/highlight.js'
@@ -119,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // unchecked parts go grey and drop out of the footing
   initLedger()
   initSizeDialog()
+  initQuickstartDialog()
   // …and 例5.1 cycles through real library selectors, reader-driven
   initCarousel()
   // 四條長帶的左右箭頭（站①四版、站②鉛字盤、站③兩篇、站肆工作區），外加

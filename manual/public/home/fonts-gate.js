@@ -238,7 +238,7 @@ const performEncore = (encore) =>
     setEncore(encore, 'drawing')
   }).then(() => setEncore(encore, ''))
 
-const COPY_REVEAL_S = 1.25  // manifesto-rise .6s + the last stagger .56s + slack
+const COPY_REVEAL_S = 1.2   // manifesto-rise .6s + the last stagger .48s + slack
 
 const initFontsGate = () => {
   // Build the watermark first — the ceremony (and the settled hero

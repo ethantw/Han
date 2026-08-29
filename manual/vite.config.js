@@ -778,6 +778,7 @@ async function renderHomepage() {
       : locale === 'ko'   ? 'hant'
       : locale
     const docsUrl = urlFor('index', docsLocale)
+    const installUrl = urlFor('install', docsLocale)
 
     const ctx = {
       ...t,
@@ -795,6 +796,7 @@ async function renderHomepage() {
       locale,
       homeUrl,
       docsUrl,
+      installUrl,
       langSwitcher: renderHomeLangSwitcher(locale, HOME_LOCALE_SLUGS, HOME_LOCALE_LABELS, t),
     }
 
