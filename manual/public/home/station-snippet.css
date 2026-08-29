@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * 站④・引用碼 — 稿紙米黃的參考碼站台。
+ * 站柒・引用碼 — 參考碼站台。
  *
  * 本站的地色與那行說明，加上 pane 裡的 `figure.CodePane` 展品。框本身
  * （`.Preview`）是站④與站⑦共用的原生零件，住在 common/panel.css。
@@ -14,26 +14,15 @@
  * 原在 preview.css——這一站原本是全站唯一沒有自己檔案的一站。）
  */
 
-/* ═══ Station VII・Snippet — the 稿紙米黃 reference-code station ══════
+/* ═══ Station VII・Snippet — the reference-code station ══════════════
    `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
    `controls.css`; this block styles the station's own ground and the one
    line left under the pane.
 
-   前身是「兩個主題都恆黑」（`color-scheme: dark` ＋ --ui-ink）：淺
-   色模式下一整片墨黑太搶戲，一個站台把半頁變成夜間。現在它跟著主題走，
-   只是地色是全站唯一不是灰白的那一塊——`--ui-station-code`，稿紙的
-   米黃（取色的理由見 variables.css 該 token 的註）。恆黑因此只剩下
-   pane 裡的 `--code-bg` 終端機：淺色模式是「亮紙上的一台黑終端」，那正
-   是這一站要給的東西，而不是整站陪著它黑。 */
+   站台回到共用的 A/B 灰白節奏；可複製程式碼的角色已由 pane 裡恆黑的
+   `--code-bg` 終端機充分表達，不再用另一層帶色地面重複比喻。 */
 
 .Snippet {
-  & {
-    --station-ground: var(--ui-station-code);
-    /* 上緣的髮線交還給共用的 --ui-grid（main > section）——地色不再
-       是墨黑，深色模式下 charcoal 對這塊暖墨仍分得出邊，不必再釘死一條
-       mist 髮線防「深色疊深色沒有邊」。 */
-  }
-
   /* `.Bridge`（薄荷過場帶）與 `.Finish`（收尾句）的規則跟著它們的 markup 一起
      退場——owner 在 station-snippet.html 裡刪掉了那兩塊，留著規則就是死碼。
      剩下的 `.BrowserSupport` 自己承接原本共用的那幾行。 */
@@ -71,9 +60,8 @@ figure.CodePane {
     overflow: hidden;
     background: var(--code-bg);
     border-radius: var(--r-2);
-    /* 卡緣。淺色模式下這張卡落在米黃紙上，靠底色差就分得開；深色模式下紙
-       也暗，卡緣得自己說話——固定的 mist 微光，不隨主題翻（web-style.md
-       深色面 gotcha）。 */
+    /* 卡緣。淺色模式靠黑卡與站台的底色差；深色模式兩者都暗，卡緣得自己
+       說話——固定的 mist 微光，不隨主題翻（web-style.md 深色面 gotcha）。 */
     border: 1px solid color-mix(in srgb, var(--palette-mist) 12%, transparent);
   }
 

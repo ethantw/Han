@@ -37,8 +37,6 @@
   --palette-mist:       #e8e8e3; /* pale warm grey — dark-mode text */
   --palette-console:       #fafafa; /* 中性的近白 — 主控台地色（淺）*/
   --palette-console-night: #151515; /* 中性的暗 — 主控台地色（深）*/
-  --palette-buff:       #f8f4ea; /* 稿紙的米黃 — 柒站地色（淺）*/
-  --palette-buff-night: #191712; /* 同一張紙的夜色 — 柒站地色（深）*/
   --palette-cloud:      #ececea; /* hairline grey — grid / rule */
   --palette-silver:     #d2d2cd;
   --palette-ash:        #8c8c87;
@@ -130,14 +128,6 @@
   --ui-console: light-dark(var(--palette-console), var(--palette-console-night));
   --ui-station-a: light-dark(var(--palette-paper-deep), var(--palette-ink-deep));
   --ui-station-b: light-dark(var(--palette-snow), var(--palette-graphite));
-  /* 柒站（引用碼）的專屬地色——全站唯一不是灰白的站台底。它曾是「兩個
-     主題都恆黑」，淺色模式下整片墨黑太搶戲；改成隨主題走，淺色一側是
-     **稿紙的米黃**。取米黃而不是某個強調色的淡洗：這一站給的是你要抄回
-     自己專案的那段碼，而 pane 裡的終端機是恆黑的——黑落在米黃紙上就是
-     墨落在紙上，關係自己成立，不必再借一個色相來說。（試過 lapis 的淡洗
-     #eef0fa，太紫。）深色一側是同一張紙的夜色，暖墨，不是又一塊
-     --palette-ink。 */
-  --ui-station-code: light-dark(var(--palette-buff), var(--palette-buff-night));
   /* ── type ramp — 沒有代號，直接寫值 ────────────────────────────────
    * 級數還是這七級，寫規則時照這張表挑；但 `font-size` 一律寫字面 rem，
    * 不再經過 `--fs-*` 一層（2026-08-05 廢除，見

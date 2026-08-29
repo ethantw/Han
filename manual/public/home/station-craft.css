@@ -1,10 +1,9 @@
 @charset "UTF-8";
 
 /**
- * Station 伍・工法 and station VII・Snippet — the "how it behaves in your
- * codebase" half: three equations set as display maths, a selector ring,
- * the addition that prices the reader's own configuration, the font ledger,
- * and the reference-code panel on its own 稿紙米黃 ground.
+ * Station 伍・工法 — the "how it behaves in your codebase" half: three
+ * equations set as display maths, a selector ring, the addition that prices
+ * the reader's own configuration, and the font ledger.
  *
  * The features the station EXPLAINS live in han.css, not here: `:where()`
  * (Baseline 2021), `@layer` (Baseline 2022) and `@container style()` style
