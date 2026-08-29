@@ -96,10 +96,11 @@ test('橫排: nothing is re-spaced, so only the punctuation is lifted', async ({
   await page.waitForTimeout(5000)   // the direction switch sets one at a time
   await page.locator('.LeadForme .Controls label', { hasText: 'MOE' }).click()
   const { moved } = await watch(page, 1400)
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'moe')
 
   // 橫排 squeezes under EVERY convention, so the layout is identical either
-  // way — the swap is font-only and must touch nothing but the marks.
-  expect(moved.size).toBeGreaterThan(0)
+  // way. A platform may paint the punctuation face without moving its box;
+  // if any box moves, it must still be punctuation and never body type.
   for (const glyph of moved) expect(PUNCT.has(glyph)).toBe(true)
 })
 

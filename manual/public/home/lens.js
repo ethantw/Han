@@ -50,6 +50,12 @@ import { DEV_RESET } from '/home/dev-reset.js'
    `pointer: coarse` 的否定：混合機器兩者皆有，而這一頁的判準是「能不能停在
    一個點上」。 */
 const FINE = matchMedia('(hover: hover) and (pointer: fine)')
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)')
+
+/* The specimen is the actor; the loupe is the observer entering a short beat
+ * later. Half a second is enough to separate their entrances without making
+ * the tool feel late. */
+const ARRIVAL_DELAY = 500
 
 const zoomOf = ($lens) =>
   Number.parseFloat(getComputedStyle($lens).getPropertyValue('--lens-zoom')) || 2
@@ -130,6 +136,39 @@ const mountOne = ($host, { live }) => {
   $lens.setAttribute('data-mag-lens', '')
   $lens.setAttribute('aria-hidden', 'true')
   $frame.append($lens)
+
+  /* Do not let the loupe disclose a strip's automatic opening scroll. It gets
+     one entrance only, after its station has revealed and (for a centred
+     strip) after strip-nav has stamped the real alignment-ready signal.
+     Reduced-motion skips both the wait and the fade. */
+  const $station = $host.closest('[data-station]')
+  let arrivalTimer = 0
+  const arrivalObserver = new MutationObserver(() => cueArrival())
+  const cueArrival = () => {
+    if ($lens.hasAttribute('data-lens-arrived') || arrivalTimer) return
+    if ($station && !$station.hasAttribute('data-revealed')) return
+    if ($host.hasAttribute('data-strip-start') && !$host.hasAttribute('data-strip-ready')) return
+
+    const arrive = () => {
+      $lens.setAttribute('data-lens-arrived', '')
+      arrivalObserver.disconnect()
+    }
+    if (REDUCED_MOTION.matches) arrive()
+    else arrivalTimer = window.setTimeout(arrive, ARRIVAL_DELAY)
+  }
+  if ($station) {
+    arrivalObserver.observe($station, {
+      attributes: true,
+      attributeFilter: ['data-revealed'],
+    })
+  }
+  if ($host.hasAttribute('data-strip-start')) {
+    arrivalObserver.observe($host, {
+      attributes: true,
+      attributeFilter: ['data-strip-ready'],
+    })
+  }
+  cueArrival()
 
   let $clone = null
   /* The copy is a whole duplicated card, so it is built only while the loupe

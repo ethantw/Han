@@ -87,12 +87,15 @@
   <form class="SiteSearch" role="search" data-search onsubmit="return false">
     <span data-part="icon" data-icon="search" aria-hidden="true"></span>
     <input type="search"
+           role="combobox"
            autocomplete="off"
            spellcheck="false"
            placeholder="{{ searchPlaceholder }}"
            aria-label="{{ searchPlaceholder }}"
            aria-controls="search-panel"
            aria-expanded="false"
+           aria-haspopup="listbox"
+           aria-autocomplete="list"
            data-search-input>
     <kbd aria-hidden="true">⌘K</kbd>
     <div id="search-panel"

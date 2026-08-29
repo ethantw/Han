@@ -29,7 +29,11 @@ test.describe('adoption path', () => {
     const routes = page.locator('.ClosingRoutes > a')
     await expect(routes).toHaveCount(3)
     await expect(routes.nth(0)).toHaveAttribute('href', '#station-snippet')
-    await expect(routes.nth(1)).toHaveAttribute('href', '/manual/')
+    await expect(routes.nth(1)).toHaveAttribute(
+      'href',
+      'https://github.com/hanzipro/han.css/blob/main/skills/han-setup/SKILL.md',
+    )
+    await expect(routes.nth(1)).toContainText('完整設定指南Skill')
     await expect(routes.nth(2)).toHaveAttribute('href', 'https://github.com/hanzipro/han.css')
 
     await expect(page.locator('.Closing .Siblings > a')).toHaveCount(2)
@@ -42,5 +46,22 @@ test.describe('adoption path', () => {
       .toHaveAttribute('href', repository)
     await expect(page.locator('.ClosingRoutes > a').nth(2))
       .toHaveAttribute('href', repository)
+  })
+
+  test('the masthead sheds secondary routes before labels wrap', async ({ page }) => {
+    const manual = page.locator('body > header .ManualLink')
+    const repository = page.locator('body > header .GitHubLink')
+    const brandDetails = page.locator('body > header .Logo small')
+
+    await expect(manual).toBeHidden()
+    await expect(repository).toBeVisible()
+    await expect(brandDetails.first()).toBeVisible()
+
+    await page.setViewportSize({ width: 800, height: 800 })
+    await expect(repository).toBeHidden()
+    await expect(brandDetails.first()).toBeVisible()
+
+    await page.setViewportSize({ width: 600, height: 800 })
+    await expect(brandDetails.first()).toBeHidden()
   })
 })

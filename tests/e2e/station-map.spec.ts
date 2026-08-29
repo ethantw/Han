@@ -11,6 +11,15 @@ const stationIds = [
 ]
 
 test.describe('seven-station route map', () => {
+  test('starts closed before JavaScript runs', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false })
+    const page = await context.newPage()
+    await page.goto('/')
+    await expect(page.locator('.StationMapCurrent')).toHaveAttribute('aria-expanded', 'false')
+    await expect(page.locator('.StationMapList')).toBeHidden()
+    await context.close()
+  })
+
   test('one ordered metadata list owns all seven native fragment links', async ({ page }) => {
     await page.goto('/')
     const links = page.locator('.StationMapList a')
@@ -25,14 +34,16 @@ test.describe('seven-station route map', () => {
     await page.locator('#station-craft').evaluate(el => el.scrollIntoView())
     await expect(page.locator('.StationMapList a[href="#station-craft"]'))
       .toHaveAttribute('aria-current', 'location')
-    await expect(page.locator('.StationMapCurrentNo')).toHaveText('伍／柒')
+    await expect(page.locator('.StationMapCurrentNo')).toHaveText('七之五')
     await expect(page.locator('.StationMapCurrentName')).toHaveText('工法')
   })
 
   test('native hashes survive reload and browser Back', async ({ page }) => {
     await page.goto('/')
+    await page.locator('.StationMapCurrent').click()
     await page.locator('.StationMapList a[href="#station-craft"]').click()
     await expect(page).toHaveURL(/#station-craft$/)
+    await page.locator('.StationMapCurrent').click()
     await page.locator('.StationMapList a[href="#station-snippet"]').click()
     await expect(page).toHaveURL(/#station-snippet$/)
 
@@ -47,25 +58,30 @@ test.describe('seven-station route map', () => {
       .toHaveAttribute('aria-current', 'location')
   })
 
-  test('compact map discloses the task directory and closes on Escape', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto('/')
-    const toggle = page.locator('.StationMapCurrent')
-    const list = page.locator('.StationMapList')
-    await expect(toggle).toBeVisible()
-    await expect(toggle.locator('.StationMapCurrentNo')).toHaveText('壹／柒')
-    await expect(toggle.locator('.StationMapCurrentName')).toHaveText('語意')
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    await expect(list).toBeHidden()
+  for (const viewport of [
+    { name: 'desktop', width: 1280, height: 720 },
+    { name: 'mobile', width: 390, height: 844 },
+  ]) {
+    test(`the same task directory discloses on ${viewport.name} and closes on Escape`, async ({ page }) => {
+      await page.setViewportSize(viewport)
+      await page.goto('/')
+      const toggle = page.locator('.StationMapCurrent')
+      const list = page.locator('.StationMapList')
+      await expect(toggle).toBeVisible()
+      await expect(toggle.locator('.StationMapCurrentNo')).toHaveText('七之一')
+      await expect(toggle.locator('.StationMapCurrentName')).toHaveText('語意')
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+      await expect(list).toBeHidden()
 
-    await toggle.click()
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
-    await expect(list).toBeVisible()
-    await expect(list.locator('small')).toHaveCount(7)
+      await toggle.click()
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+      await expect(list).toBeVisible()
+      await expect(list.locator('small')).toHaveCount(7)
 
-    await page.keyboard.press('Escape')
-    await expect(list).toBeHidden()
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    await expect(toggle).toBeFocused()
-  })
+      await page.keyboard.press('Escape')
+      await expect(list).toBeHidden()
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+      await expect(toggle).toBeFocused()
+    })
+  }
 })

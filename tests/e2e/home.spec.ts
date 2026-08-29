@@ -47,6 +47,12 @@ const openGroupOf = (page: Page, cfgKey: string) =>
     .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
     .click()
 
+const chooseSnippetView = async (page: Page, value: string) => {
+  const station = page.locator('#station-snippet')
+  await station.scrollIntoViewIfNeeded()
+  await station.locator(`label:has(input[value="${value}"])`).click()
+}
+
 for (const { path, htmlLang, label } of LOCALES) {
   test(`${label}: homepage renders — topbar, console, all six stations`, async ({ page }) => {
     const response = await page.goto(path)
@@ -126,7 +132,7 @@ test.describe('whole-page configuration', () => {
     await expect.poll(() => refinementOnRoot(page)).toBe('hang')
 
     // Radios in the ViewTabs are sr-only — click the label, not the input.
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     await expect(page.locator('[data-out-panes] pre[data-lang="css"] code'))
       .toContainText('--han-punctuation-refinement: hang')
   })

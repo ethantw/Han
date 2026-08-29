@@ -235,10 +235,9 @@
     <small class="full-name">漢字標準格式</small>
     <small class="version">肆・〇</small>
   </a>
-  {{ stationMapSection }}
   <nav>
-    <a href="{{ docsUrl }}">{{ manual }}</a>
-    <a href="https://github.com/hanzipro/han.css">GitHub</a>
+    <a class="ManualLink" href="{{ docsUrl }}">{{ manual }}</a>
+    <a class="GitHubLink" href="https://github.com/hanzipro/han.css">GitHub</a>
     {{ langSwitcher }}
     <label class="Toggle for-theme">
       <input type="checkbox" name="dark-mode" />
@@ -261,6 +260,12 @@
     </label>
   </nav>
 </header>
+
+<!-- The station directory is page chrome, but no longer masthead chrome:
+     seven routes beside the logo, manual, GitHub, locale and theme made the
+     header read like a control panel. One floating disclosure now serves
+     every viewport from the same markup and interaction. -->
+{{ stationMapSection }}
 
 <!-- The playground console is now a shadow-DOM web component. Its inner
      template (locale-expanded from home/console.html) is generated into

@@ -30,7 +30,11 @@
     font-size: var(--_fs-micro);
     font-weight: 500;
     text-transform: uppercase;
-    color: var(--_supplement-text-2q);
+    /* Micro text still has to clear AA. The old 50%-alpha token resolved to
+       roughly #b0b0ae on the console ground (≈2.1:1), so the two flat group
+       labels disappeared for low-vision readers. Full supplement ink stays
+       visually subordinate while clearing the contrast floor. */
+    color: var(--_supplement-text);
     margin-block-end: 14px;
 
     /* the group's ↺ 使用預設値 (JS-injected) — the auto margin absorbs
@@ -280,7 +284,7 @@
     small {
       font-family: var(--_font-mono);
       font-size: var(--_fs-micro);
-      color: var(--_supplement-text-2q);
+      color: var(--_supplement-text);
     }
 
     &:has(input:checked) { color: var(--_text); }
@@ -364,7 +368,7 @@
     small {
       font-family: var(--_font-mono);
       font-size: var(--_fs-micro);
-      color: var(--_supplement-text-2q);
+      color: var(--_supplement-text);
     }
 
     /* value readout — the loudest thing in the row (ziano's playground
@@ -489,7 +493,7 @@
       display: block;
       font-family: var(--_font-mono);
       font-size: var(--_fs-micro);
-      color: var(--_supplement-text-2q);
+      color: var(--_supplement-text);
     }
   }
 

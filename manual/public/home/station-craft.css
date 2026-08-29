@@ -53,7 +53,11 @@
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
 
-    @media (max-width: 52rem) { grid-template-columns: 1fr; }
+    /* The console can narrow the station without narrowing the viewport.
+       This composition therefore responds to its theorem, not to @media. */
+    @container theorem (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .Ax {
@@ -64,7 +68,7 @@
   .Ax + .Ax {
     border-inline-start: 1px solid var(--ui-rule);
 
-    @media (max-width: 52rem) {
+    @container theorem (max-width: 767px) {
       border-block-start: 1px solid var(--ui-rule);
       border-inline-start: 0;
     }
@@ -140,6 +144,7 @@
  * way display maths sits in a page of prose. */
 .Theorem {
   & {
+    container: theorem / inline-size;
     margin: 0 0 2.5rem;
     border-block: 1px solid var(--ui-rule);
   }
@@ -276,8 +281,9 @@
    rules wrap: a real styles pane wraps these selectors too, and a pane wide
    enough not to would stop looking like one.
 
-   Below the breakpoint it is one column in DOM order (rules, then the
-   annotation), which is also the order a screen reader gets either way. */
+   Below the breakpoint the ORIGINAL two-column board remains intact; only
+   its outer viewport becomes a rail. Do not split the witness and rules into
+   cards: they are one comparison and must share the same block-start plane. */
 .Example {
   & {
     container-type: inline-size;
@@ -285,15 +291,16 @@
     margin: 0;
     padding-block: 2rem;
 
-    @media (min-width: 60rem) {
-      display: grid;
-      grid-template-columns: 1fr .8fr;
-      grid-template-areas:
-        "demo rules"
-        "nav  rules";
-      grid-template-rows: 1fr auto;
-      align-items: stretch;
-      gap: 1.5rem 3rem;
+    @media (max-width: 59.999rem) {
+      margin-inline: calc(-1 * var(--rail-pad));
+      padding-inline: var(--rail-pad);
+      overflow-inline: auto;
+      overscroll-behavior-inline: contain;
+      scroll-padding-inline-start: var(--rail-pad);
+      scroll-snap-type: none;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar { display: none; }
     }
 
     /* With JS, data-current names the visible card. No-JS keeps the checked
@@ -319,6 +326,28 @@
           }
         }
       }
+    }
+  }
+
+  .ExampleBoard {
+    display: grid;
+    grid-template-columns: 1fr .8fr;
+    grid-template-areas:
+      "demo rules"
+      "nav  rules";
+    grid-template-rows: 1fr auto;
+    align-items: stretch;
+    gap: 1.5rem 3rem;
+    inline-size: 100%;
+
+    @media (max-width: 59.999rem) {
+      /* Keep a real slice of the rules pane visible at the rail's initial
+         position. Its 80px peek is an affordance, not an accidental crop. */
+      grid-template-columns:
+        calc(100cqi - 3rem - 80px)
+        28rem;
+      inline-size: max-content;
+      margin-inline-end: var(--rail-pad);
     }
   }
 

@@ -53,10 +53,10 @@
 
 ## 5. 無障礙與回歸驗收
 
-- [ ] 鍵盤可操作 console、carousel、rail 與 dialog。
-- [ ] 動態 `aria-label`、目前站及 carousel 狀態正確宣告。
-- [ ] 手機 sticky UI 不遮擋內容或互相爭奪捲動。
-- [ ] 首頁敘事與 DOM 穩定後補 E2E 覆蓋。
+- [x] 鍵盤可操作 console、carousel、rail 與 dialog。
+- [x] 動態 `aria-label`、目前站及 carousel 狀態正確宣告。
+- [x] 手機 sticky UI 不遮擋內容或互相爭奪捲動。
+- [x] 首頁敘事與 DOM 穩定後補 E2E 覆蓋。
 
 ## 暫停清單
 

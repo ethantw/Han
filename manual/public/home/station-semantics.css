@@ -287,13 +287,10 @@ figure.Papers {
       margin: 0;
       text-indent: 1em;
     }
-    /* 長帶只登摘要，全文收在 `<dialog>` 裡。關著的 `<dialog>` 不參與版面，
-       所以四份全文躺在 DOM 裡不花排版——這一站原本是整頁最貴的一塊。
-
-       同一個元素身兼兩態，這是它值得是 `<dialog>` 的原因：沒有 JS 時 `:target`
-       讓它在原地展開，接排線就已經是一條能用的頁內連結；有 JS 時
-       `showModal()` 把**同一個元素**升到頂層變成 lightbox，沒有複製品
-       （放大鏡的複本教過我們這四份複製一次要多少錢）。 */
+    /* 長帶只登摘要。第一枚報紙 icon 被按下後，共用閱讀器才建立 dialog，
+       再向 `/articles/` 取那一篇、那一語版的靜態 fragment；七篇全文與閱讀器
+       行為都不跟首頁首屏同行。dialog 掛在第一張報紙之下，只是為了沿用這組
+       站內排版選擇器；升上 top layer 後，視覺與 DOM 所在的卡片無關。 */
     .Full {
       &:not([open]) {
         display: none;
@@ -320,16 +317,6 @@ figure.Papers {
          對話框的 top 一動不動），所以「捲在外面」只能這樣做到——把「外面」
          做成對話框本身。 */
       &[open] {
-        margin: 0;
-        padding: 0;
-        inline-size: 100dvw;
-        block-size: 100dvh;
-        max-inline-size: none;
-        max-block-size: none;
-        border: 0;
-        background: none;
-        overflow: auto;
-        overscroll-behavior: contain;
         scrollbar-width: none;
 
         &::-webkit-scrollbar {
@@ -337,9 +324,6 @@ figure.Papers {
         }
       }
 
-      &::backdrop {
-        background: color-mix(in srgb, var(--palette-black) 45%, transparent);
-      }
     }
 
     /* ── 控件條 ──────────────────────────────────────────────────────
@@ -586,22 +570,35 @@ figure.Papers {
       }
     }
 
-    /* 接排線。「（下轉第七版）」是真報紙的接排慣例，這裡讓它兼任「展開全文」
-       的入口——互動本身就是排版慣例，不是把 UI 隱喻貼在版面上。各語各版次
-       各自照自己的寫法，四報也各有各的版面，所以頁碼不一樣。 */
-    .Jump {
-      margin-block: 0.5em 0;
-      text-align: end;
+    /* The newspaper mark opens the full dispatch. Its link remains a real hash
+       target, so the article is still reachable when dialog enhancement is absent. */
+    .Abstract {
+      position: relative;
 
-      a {
-        color: var(--ui-supplement-text);
-        text-decoration-line: none;
-        border-block-end: 1px solid var(--ui-rule);
+      &::after {
+        content: '';
+        display: inline-block;
+        inline-size: 1.75rem;
+        block-size: 1px;
+      }
+    }
+
+    a.Jump {
+      position: absolute;
+      inset-inline-end: 0;
+      inset-block-end: 0.2em;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 0.25rem;
+
+      &:hover {
+        opacity: 0.72;
       }
 
-      a:hover {
-        color: var(--ui-accent);
-        border-block-end-color: currentColor;
+      img {
+        display: block;
+        inline-size: 1em;
+        block-size: auto;
       }
     }
 

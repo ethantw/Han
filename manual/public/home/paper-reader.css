@@ -1,0 +1,69 @@
+/* One quiet, legible mark for every excerpt that has a Taisol full report. */
+:where(a.ArticleJump) {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-start: 0.2em;
+  vertical-align: -0.2em;
+  border-radius: 0.2rem;
+}
+
+:where(a.ArticleJump) img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* 報尾入口留在最後一行的行末；float 使用邏輯方向，橫直排共用。 */
+:where(a.ArticleJump--inline-end) {
+  float: inline-end;
+}
+
+:where(a.ArticleJump):is(:hover, :focus-visible) {
+  background: var(--ui-supplement-bg);
+  outline: 1px solid var(--ui-rule);
+  outline-offset: 2px;
+}
+
+/* Markdown fragments use an h1; the old hand-authored KOI-8 continuation
+   used h3. In the reader they are the same newspaper headline role. */
+:where(.ArticleReader .ReaderBody) > h1 {
+  column-span: all;
+  margin-block: 0 0.75em;
+  max-inline-size: none;
+  font-family: var(--han-font-alternative);
+  font-size: 2em;
+  line-height: 1.3;
+}
+
+:where(.ArticleReader[data-writing="vertical"] .ReaderBody) > h1 {
+  column-span: none;
+}
+
+:where(.ArticleReader .ReaderBody[aria-busy="true"]):empty::before {
+  content: '讀取全文⋯';
+  color: var(--ui-supplement-text);
+}
+
+/* 報紙正文以段首一字辨段，不在段間另外墊白。邏輯縮排會隨 writing-mode
+   自動轉到直排的行首；摘要引文、圖說等不是新聞正文，不套這條。 */
+:where(.ArticleReader .ReaderBody) > p {
+  margin-block: 0;
+  text-indent: 1em;
+}
+
+:where(.ArticleReader .ReaderBody) > :is(h1, h2, h3, figure, blockquote) + p {
+  /* 新的小節仍是新段，照樣空一格；明寫在這裡是避免共用 prose 樣式用
+     相鄰選擇器把標題後首段的縮排取消。 */
+  text-indent: 1em;
+}
+
+:where(.ArticleReader .ReaderBody) :is(blockquote, figcaption) p {
+  text-indent: 0;
+}
+
+:where(.ArticleReader .ReaderChrome button:disabled) {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

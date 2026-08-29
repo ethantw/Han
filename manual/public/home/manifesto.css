@@ -184,26 +184,7 @@
      therefore grows with its content instead of acquiring a cramped inner
      scrollbar on a narrow screen. */
   .QuickstartDialog {
-    inset: 0;
-    inline-size: 100dvi;
-    block-size: 100dvb;
-    max-inline-size: none;
-    max-block-size: none;
-    padding: 0;
-    margin: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    color: var(--ui-text);
-    background: none;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-
-    @media (prefers-reduced-motion: no-preference) {
-      transition:
-        display 220ms allow-discrete,
-        overlay 220ms allow-discrete;
-    }
+    /* Full-viewport mask and motion live in home/dialog.css. */
   }
 
   .QuickstartPanel {
@@ -216,46 +197,6 @@
     border-radius: var(--r-3);
     box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--palette-black) 28%, transparent);
 
-    @media (prefers-reduced-motion: no-preference) {
-      opacity: 0;
-      translate: 0 1.5rem;
-      transition:
-        opacity 220ms ease,
-        translate 220ms cubic-bezier(.2, .75, .25, 1);
-    }
-  }
-
-  .QuickstartDialog[open] > .QuickstartPanel {
-    @media (prefers-reduced-motion: no-preference) {
-      opacity: 1;
-      translate: 0 0;
-
-      @starting-style {
-        opacity: 0;
-        translate: 0 1.5rem;
-      }
-    }
-  }
-
-  .QuickstartDialog::backdrop {
-    background: color-mix(in srgb, var(--palette-black) 55%, transparent);
-    backdrop-filter: blur(3px);
-
-    @media (prefers-reduced-motion: no-preference) {
-      opacity: 0;
-      transition:
-        opacity 220ms ease,
-        display 220ms allow-discrete,
-        overlay 220ms allow-discrete;
-    }
-  }
-
-  .QuickstartDialog[open]::backdrop {
-    @media (prefers-reduced-motion: no-preference) {
-      opacity: 1;
-
-      @starting-style { opacity: 0; }
-    }
   }
 
   .QuickstartPanel > header {

@@ -21,20 +21,20 @@ test('the stations and closing carry no watermark data', async ({ page }) => {
   await expect(page.locator('main [data-wm]')).toHaveCount(0)
 })
 
-test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the page theme', async ({ page }) => {
+test('station 柒・引用碼 returns to the shared neutral ground and follows the page theme', async ({ page }) => {
   await page.goto('/')
 
   // Page defaults to light (no dark-mode checkbox) …
   await expect(page.locator('input[name="dark-mode"]')).not.toBeChecked()
 
-  // … and the station is light with it. It used to be constant-dark in both
-  // themes (`color-scheme: dark` + --ui-ink); the ground is now the one
-  // paper-coloured station plate, --ui-station-code = --palette-buff (#f8f4ea).
+  // … and the station is light with it. It used to be constant-dark, then
+  // briefly carried a one-off buff ground. The terminal already supplies the
+  // code metaphor, so the station now rejoins the shared A/B neutral rhythm.
   const snippet = page.locator('#station-snippet')
   await expect(snippet).toHaveCSS('color-scheme', 'light')
   await expect.poll(() => snippet.evaluate((el) =>
     getComputedStyle(el, '::before').backgroundColor,
-  )).toBe('rgb(248, 244, 234)')
+  )).toBe('rgb(250, 250, 247)')
 
   // The code panes stay terminal-dark in BOTH themes — that part IS constant
   // (--code-bg = --palette-ink). A light station with a dark terminal on it is
@@ -43,8 +43,7 @@ test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the 
   await expect(snippet.locator('figure.CodePane').first())
     .toHaveCSS('background-color', 'rgb(14, 14, 16)')
 
-  // Dark theme: the same token's dark side, the same paper at night
-  // (--palette-buff-night = #191712) — NOT a second slab of plain --palette-ink.
+  // Dark theme: the same shared station token's dark side.
   // via the label: the checkbox itself is a visually-hidden `.Toggle` input,
   // so a direct .check() has nothing to hit.
   await page.locator('label.for-theme').click()
@@ -52,7 +51,7 @@ test('station 柒・引用碼 takes the 稿紙米黃 ground, and it follows the 
   await expect(snippet).toHaveCSS('color-scheme', 'dark')
   await expect.poll(() => snippet.evaluate((el) =>
     getComputedStyle(el, '::before').backgroundColor,
-  )).toBe('rgb(25, 23, 18)')
+  )).toBe('rgb(24, 23, 26)')
 })
 
 test('reduced-motion: every station is revealed immediately (settled, not animated)', async ({ page }) => {
@@ -161,7 +160,7 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   const specs = await items
     .locator('[data-role="framework"] code[data-spec]')
     .evaluateAll((els) => els.map((el) => (el as HTMLElement).dataset.spec))
-  expect(specs).toEqual(['(0,2,2)', '(0,0,2)', '(0,2,1)', '(0,1,2)', '(0,2,0)'])
+  expect(specs).toEqual(['(0,0,2)', '(0,2,2)', '(0,2,1)', '(0,1,1)', '(0,0,1)'])
 
   // The reader's selector must actually outrank zero in every pair — the
   // claim the whole plate is making.
@@ -248,26 +247,22 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   }
 })
 
-test('station 伍・工法: the font ledger is a second, separate set of books', async ({ page }) => {
+test('station 伍・工法: full transfer and font ledgers live in the lightweight dialog', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
   await page.locator('#station-craft').scrollIntoViewIfNeeded()
 
-  // The webfont figures are constants (the fonts live on the CDN, not in
-  // this repo — see the markup comment), so this only guards the SHAPE: the
-  // ledger stays out of the framework's four-card figure, and every cell is
-  // a real 'N.Nk' / 'N.NNM' / slice-count figure rather than an empty
-  // placeholder left behind by a mustache token that never resolved.
-  // Folded away by default (owner call — the station read as one endless
-   // ledger with it open), so the summary has to carry the point on its own
-   // and the figures only exist once a reader asks for them.
-  const details = page.locator('#station-craft .FontDetails')
-  await expect(details).not.toHaveAttribute('open', '')
-  await expect(details.locator('summary')).toContainText('字體體積另計')
-  await details.locator('summary').click()
+  // The old inline <details> made the station read like an endless ledger.
+  // The same real figures now live in the small modal, while its mask owns
+  // any page-length scroll.
+  await expect(page.locator('#station-craft .FontDetails')).toHaveCount(0)
+  await page.locator('#station-craft [data-size-dialog-open]').click()
+  const dialog = page.locator('#station-craft [data-size-dialog]')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.locator('.TransferDetails table')).toHaveCount(2)
 
-  const ledger = page.locator('#station-craft .FontLedger')
+  const ledger = dialog.locator('.FontLedger')
   await expect(ledger.locator('table')).toHaveCount(3)
   await expect(ledger.locator('tbody tr')).toHaveCount(8 + 4 + 3)
 

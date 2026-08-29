@@ -34,7 +34,7 @@ export const HERITAGE = {
     sans:  { stack: "'Shanggu Sans', 'Shanggu Sans Yue'",   pkgs: ['shanggu-sans'] },
     serif: { stack: "'Shanggu Serif', 'Shanggu Serif Yue'", pkgs: ['shanggu-serif'] },
   },
-  // genyo（源樣）不提供：與源起同設計，源起的字型技術較新。
+  // genyo（源樣）不提供：與源起同設計，源起的字體技術較新。
   genki: {
     sans:  { stack: "'Genki Sans Yue', 'Genki Sans'",   pkgs: ['genki-sans-yue'] },
     serif: { stack: "'Genki Serif Yue', 'Genki Serif'", pkgs: ['genki-serif-yue'] },

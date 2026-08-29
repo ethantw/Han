@@ -299,6 +299,8 @@ const I18N_FILE = path.resolve(here, '_i18n.js')
 // template carries its own i18n block (see extractHomeI18n above).
 const HOME_DIR = path.resolve(here, 'home')
 const HOME_LAYOUT = path.resolve(here, '_home.html')
+const SETUP_SKILL_URL = 'https://github.com/hanzipro/han.css/blob/main/skills/han-setup/SKILL.md'
+const TAISOL_DIR = path.resolve(here, '..', '..', 'taisol')
 // Cross-template i18n (the brand `logo` wordmark) — merged into every
 // homepage template's ctx. Not a section, not a per-file dict.
 const HOME_SHARED = path.resolve(HOME_DIR, '_shared.html')
@@ -324,6 +326,34 @@ const md = new MarkdownIt({
   linkify: true,
   typographer: true,
 }).use(cjkEmphasis).use(headings)
+
+/* Homepage newspaper reader. The Markdown remains the single source in
+ * taisol/; build emits small, cacheable HTML fragments and dev renders the
+ * requested fragment directly. The homepage therefore pays for neither the
+ * full articles nor a client-side Markdown parser before somebody asks to
+ * read one. `hans` deliberately derives from the traditional source for now;
+ * the homepage already applies the same glyph-only policy elsewhere. */
+const HOME_ARTICLES = [
+  'passport-museum',
+  'hyperloop-12sec',
+  'hypersleep-drunk',
+  'ark-europa-customs',
+  'standard-glyph-revival',
+  'telepathy-speech-rehab',
+  'soviet-koi8-nuke',
+]
+const ARTICLE_LANG_DIR = { hant: 'zh', hans: 'zh', ja: 'ja', ko: 'ko' }
+
+async function renderArticleFragment(slug, edition) {
+  if (!HOME_ARTICLES.includes(slug) || !Object.hasOwn(ARTICLE_LANG_DIR, edition)) return null
+  const langDir = ARTICLE_LANG_DIR[edition]
+  const file = path.join(TAISOL_DIR, langDir, `${slug}.md`)
+  if (!existsSync(file)) return null
+  const raw = await fs.readFile(file, 'utf-8')
+  const { meta, body } = splitFrontmatter(raw)
+  const title = String(meta.title ?? slug).replace(/^['"]|['"]$/g, '')
+  return `<h1>${md.renderInline(title)}</h1>\n${md.render(stripLeadingH1(body))}`
+}
 
 const FRAMEWORK_ASSETS = [
   'han.css', 'han.min.css', 'han.basic.css', 'han.basic.min.css',
@@ -797,6 +827,7 @@ async function renderHomepage() {
       homeUrl,
       docsUrl,
       installUrl,
+      setupSkillUrl: SETUP_SKILL_URL,
       langSwitcher: renderHomeLangSwitcher(locale, HOME_LOCALE_SLUGS, HOME_LOCALE_LABELS, t),
     }
 
@@ -810,6 +841,21 @@ async function renderHomepage() {
     let html = applySubs(layout.body, { ...ctx, ...sections })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
     html = fillSpecificity(html)
+    // Keep only the shared newspaper mastheads from the old four-edition
+    // continuations. They are tiny inert templates; the reader clones the
+    // matching one on demand, while every full body still arrives separately
+    // from /articles/. This reuses PaperHead's real DOM component instead of
+    // rebuilding a second, almost-the-same masthead in JavaScript.
+    const readerHeads = [...html.matchAll(
+      /<dialog class="Full" id="paper-(hant|hans|ja|ko)-full"[\s\S]*?(<header class="PaperHead">[\s\S]*?<\/header>)/g,
+    )].map(([, edition, head]) =>
+      `<template id="paper-reader-head-${edition}">${head}</template>`,
+    ).join('')
+    html = html.replace('</body>', `${readerHeads}</body>`)
+
+    // Never ship the four legacy full copies: all reports now arrive through
+    // /articles/ on demand.
+    html = html.replace(/\s*<dialog class="Full"[\s\S]*?<\/dialog>/g, '')
 
     const outPath = locale === HOME_DEFAULT_LOCALE
       ? path.join(HTML_ROOT, 'index.html')
@@ -1031,6 +1077,17 @@ function hanManualPlugin() {
       await renderHomepage()
       await render404()
       await renderSpecimenPages()
+      for (const slug of HOME_ARTICLES) {
+        for (const edition of Object.keys(ARTICLE_LANG_DIR)) {
+          const source = await renderArticleFragment(slug, edition)
+          if (!source) continue
+          this.emitFile({
+            type: 'asset',
+            fileName: `articles/${slug}/${edition}.html`,
+            source,
+          })
+        }
+      }
     },
 
     // `dist/` exists only after the bundle is written; emit the
@@ -1102,6 +1159,21 @@ function hanManualPlugin() {
         res.end(await renderConsoleTemplatesSource())
       })
 
+      // Full newspaper reports stay outside the homepage document. Render a
+      // fragment only when the shared reader requests one; production gets
+      // the same paths as emitted Rollup assets in buildStart().
+      server.middlewares.use(async (req, res, next) => {
+        const match = /^\/articles\/([^/]+)\/(hant|hans|ja|ko)\.html$/.exec(
+          (req.url ?? '').split('?')[0],
+        )
+        if (!match) return next()
+        const source = await renderArticleFragment(match[1], match[2])
+        if (!source) return next()
+        res.setHeader('content-type', 'text/html; charset=utf-8')
+        res.setHeader('cache-control', 'no-store')
+        res.end(source)
+      })
+
       // Serve the vendored runtime ESM (marked / DOMPurify) straight from
       // node_modules — the files never exist in the source tree, so
       // nothing shadows them. Build emits them to `dist/vendor/` in
@@ -1119,7 +1191,7 @@ function hanManualPlugin() {
       // Files outside `root` (= SRC) need explicit registration; vite's
       // watcher won't pick them up otherwise. esbuild-style: build is
       // fresh on each change, you decide when to refresh the browser.
-      server.watcher.add([HAN_DIST, NAV_FILE, I18N_FILE, LAYOUT, NOT_FOUND_LAYOUT, HOME_LAYOUT, HOME_DIR, DEMO_DIR])
+      server.watcher.add([HAN_DIST, NAV_FILE, I18N_FILE, LAYOUT, NOT_FOUND_LAYOUT, HOME_LAYOUT, HOME_DIR, DEMO_DIR, TAISOL_DIR])
 
       // Workbench pages (`demo/*.html`) — dev-only, and outside `root`, so
       // nothing serves them by default. Most are self-contained and open

@@ -19,6 +19,13 @@
   station5No: { hant: '伍', hans: '伍', en: 'V', ja: '五', ko: '5' },
   station6No: { hant: '陸', hans: '陆', en: 'VI', ja: '六', ko: '6' },
   station7No: { hant: '柒', hans: '柒', en: 'VII', ja: '七', ko: '7' },
+  station1Progress: { hant: '七之一', hans: '七之一', en: '1 of 7', ja: '七の一', ko: '7 중 1' },
+  station2Progress: { hant: '七之二', hans: '七之二', en: '2 of 7', ja: '七の二', ko: '7 중 2' },
+  station3Progress: { hant: '七之三', hans: '七之三', en: '3 of 7', ja: '七の三', ko: '7 중 3' },
+  station4Progress: { hant: '七之四', hans: '七之四', en: '4 of 7', ja: '七の四', ko: '7 중 4' },
+  station5Progress: { hant: '七之五', hans: '七之五', en: '5 of 7', ja: '七の五', ko: '7 중 5' },
+  station6Progress: { hant: '七之六', hans: '七之六', en: '6 of 7', ja: '七の六', ko: '7 중 6' },
+  station7Progress: { hant: '七之七', hans: '七之七', en: '7 of 7', ja: '七の七', ko: '7 중 7' },
   station1Name: { hant: '語意', hans: '语意', en: 'Semantics', ja: 'セマンティクス', ko: '의미' },
   station1Task: {
     hant: '以語意HTML排出著重、專名與引文',
@@ -87,18 +94,18 @@
           aria-controls="station-map-list"
           data-label-open="{{ stationMapOpen }}"
           data-label-close="{{ stationMapClose }}">
-    <span class="StationMapCurrentNo" aria-hidden="true">{{ station1No }}／{{ station7No }}</span>
+    <span class="StationMapCurrentNo" aria-hidden="true">{{ station1Progress }}</span>
     <span aria-hidden="true">・</span>
     <span class="StationMapCurrentName" aria-hidden="true">{{ station1Name }}</span>
     <span data-icon="chevron" aria-hidden="true"></span>
   </button>
-  <ol class="StationMapList" id="station-map-list">
-    <li><a href="#station-semantics" data-number="{{ station1No }}" data-name="{{ station1Name }}" data-summary="{{ station1Task }}" aria-current="location"><b>{{ station1No }}</b><span>{{ station1Name }}</span><small>{{ station1Task }}</small></a></li>
-    <li><a href="#station-fonts" data-number="{{ station2No }}" data-name="{{ station2Name }}" data-summary="{{ station2Task }}"><b>{{ station2No }}</b><span>{{ station2Name }}</span><small>{{ station2Task }}</small></a></li>
-    <li><a href="#station-lines" data-number="{{ station3No }}" data-name="{{ station3Name }}" data-summary="{{ station3Task }}"><b>{{ station3No }}</b><span>{{ station3Name }}</span><small>{{ station3Task }}</small></a></li>
-    <li><a href="#station-prose" data-number="{{ station4No }}" data-name="{{ station4Name }}" data-summary="{{ station4Task }}"><b>{{ station4No }}</b><span>{{ station4Name }}</span><small>{{ station4Task }}</small></a></li>
-    <li><a href="#station-craft" data-number="{{ station5No }}" data-name="{{ station5Name }}" data-summary="{{ station5Task }}"><b>{{ station5No }}</b><span>{{ station5Name }}</span><small>{{ station5Task }}</small></a></li>
-    <li><a href="#station-playground" data-number="{{ station6No }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
-    <li><a href="#station-snippet" data-number="{{ station7No }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
+  <ol class="StationMapList" id="station-map-list" hidden>
+    <li><a href="#station-semantics" data-number="{{ station1No }}" data-progress="{{ station1Progress }}" data-name="{{ station1Name }}" data-summary="{{ station1Task }}" aria-current="location"><b>{{ station1No }}</b><span>{{ station1Name }}</span><small>{{ station1Task }}</small></a></li>
+    <li><a href="#station-fonts" data-number="{{ station2No }}" data-progress="{{ station2Progress }}" data-name="{{ station2Name }}" data-summary="{{ station2Task }}"><b>{{ station2No }}</b><span>{{ station2Name }}</span><small>{{ station2Task }}</small></a></li>
+    <li><a href="#station-lines" data-number="{{ station3No }}" data-progress="{{ station3Progress }}" data-name="{{ station3Name }}" data-summary="{{ station3Task }}"><b>{{ station3No }}</b><span>{{ station3Name }}</span><small>{{ station3Task }}</small></a></li>
+    <li><a href="#station-prose" data-number="{{ station4No }}" data-progress="{{ station4Progress }}" data-name="{{ station4Name }}" data-summary="{{ station4Task }}"><b>{{ station4No }}</b><span>{{ station4Name }}</span><small>{{ station4Task }}</small></a></li>
+    <li><a href="#station-craft" data-number="{{ station5No }}" data-progress="{{ station5Progress }}" data-name="{{ station5Name }}" data-summary="{{ station5Task }}"><b>{{ station5No }}</b><span>{{ station5Name }}</span><small>{{ station5Task }}</small></a></li>
+    <li><a href="#station-playground" data-number="{{ station6No }}" data-progress="{{ station6Progress }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
+    <li><a href="#station-snippet" data-number="{{ station7No }}" data-progress="{{ station7Progress }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
   </ol>
 </div>

@@ -13,7 +13,13 @@ import { test, expect, type Page } from '@playwright/test'
 
 const KEY = 'han-playground-src'
 
-const $preview = (page: Page) => page.locator('#station-playground [data-pg-preview]')
+/* The loupe carries an aria-hidden visual clone of the paper. Tests exercise
+ * the source document, never that magnified copy. Keep this selector tied to
+ * the sheet's direct, non-clone paper so a new lens cannot double every
+ * assertion again. */
+const $paper = (page: Page) =>
+  page.locator('#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)')
+const $preview = (page: Page) => $paper(page).locator('[data-pg-preview]')
 const $src = (page: Page) => page.locator('#station-playground [data-pg-src]')
 /** Type source into the textarea. Both panes are always on stage now — the
  *  narrow panel's 預覽／原始碼 tabs went away with the one-pane-at-a-time
@@ -55,7 +61,7 @@ test.describe('station⑤ playground', () => {
     // 100 years» — the same instant station①'s newspaper datelines carry
     // (home/papers-dateline.js owns the date; the playground borrows it).
     const plus100 = new Date().getFullYear() + 100
-    const $time = page.locator('#station-playground [data-pg-dateline]')
+    const $time = $paper(page).locator('.PaperHead time[data-era-line]')
     await expect($time).toHaveAttribute('datetime', new RegExp(`^${plus100}-`))
     await expect($time).toContainText('中華民國')
     await expect($time).toContainText('夏曆')
@@ -147,47 +153,30 @@ test.describe('station⑤ playground', () => {
     await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
   })
 
-  test('the galley is a page: short copy stays in column one, long copy runs off the right edge', async ({ page }) => {
+  test('the galley is a page: long copy grows the outer rail, never an inner scroller', async ({ page }) => {
     // Definite height + `column-fill: auto`: columns fill downward, then
-    // continue rightward. A short draft must NOT be balanced across columns
-    // (that reads as if the text were rationed), and a page that outgrows
-    // its track bleeds to the window edge with its last column cut in half
-    // — the signal that there is more to the right.
+    // continue rightward. The current two-card composition gives horizontal
+    // movement to PgPanes; the paper itself grows with its columns. This is
+    // deliberately different from the old bled-card model, where PgPaper
+    // became a second, cramped scroll container inside the rail.
     const sheet = () =>
       page.evaluate(() => {
-        const $card = document.querySelector('#station-playground [data-pg-paper]')!
-        const $g = document.querySelector('#station-playground [data-pg-preview]')!
-        const cs = getComputedStyle($card)
+        const $rail = document.querySelector('#station-playground [data-pg-panes]')!
+        const $card = document.querySelector(
+          '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+        )!
+        const $g = $card.querySelector('[data-pg-preview]')!
         const gs = getComputedStyle($g)
-        const pad =
-          Number.parseFloat(cs.paddingInlineStart) + Number.parseFloat(cs.paddingInlineEnd)
         const used = Number.parseFloat(gs.getPropertyValue('--pg-galley-col-used'))
         const em = Number.parseFloat(gs.fontSize)
         return {
           fill: gs.columnFill,
           colEm: (used || Number.parseFloat(gs.columnWidth)) / em,
           bled: $card.hasAttribute('data-pg-bled'),
-          gap: Math.round(Number.parseFloat(gs.columnGap)),
-          right: Math.round($card.getBoundingClientRect().right),
-          winRight: document.documentElement.clientWidth,
-          scrolls: $card.scrollWidth > $card.clientWidth + 1,
-          // The card's edge must fall on a column's midpoint: whatever the
-          // visible width has left over after whole columns is half of one.
-          tail: Math.round(($card.clientWidth - pad) % (used + Number.parseFloat(gs.columnGap))),
-          half: Math.round(used / 2),
-          // scrolled to the end, the sheet keeps its margin: the last column
-          // stops short of the card's edge (overflow columns would spill
-          // straight through the padding — hence the covering box)
-          endGap: (() => {
-            const before = $card.scrollLeft
-            $card.scrollLeft = $card.scrollWidth
-            const gap = Math.round(
-              $card.getBoundingClientRect().right - $g.getBoundingClientRect().right,
-            )
-            $card.scrollLeft = before
-            return gap
-          })(),
-          padEnd: Math.round(Number.parseFloat(cs.paddingInlineEnd)),
+          paperWidth: Math.round($card.getBoundingClientRect().width),
+          paperScrolls: $card.scrollWidth > $card.clientWidth + 1,
+          railWidth: $rail.scrollWidth,
+          railScrolls: $rail.scrollWidth > $rail.clientWidth + 1,
         }
       })
 
@@ -196,32 +185,35 @@ test.describe('station⑤ playground', () => {
     await tab('自訂內容')
     const short = await sheet()
     expect(short.fill).toBe('auto')
-    expect(short.bled, 'a sheet that fits stays in its track').toBe(false)
-    expect(short.scrolls).toBe(false)
+    expect(short.bled).toBe(false)
+    expect(short.paperScrolls).toBe(false)
 
     await setSource(page, '# 長\n\n' + '把校樣撐出好幾欄來看看橫向捲動。'.repeat(300))
-    await expect.poll(async () => (await sheet()).bled).toBe(true)
+    await expect.poll(async () => (await sheet()).paperWidth).toBeGreaterThan(short.paperWidth)
 
     const long = await sheet()
-    expect(long.scrolls).toBe(true)
+    expect(long.bled).toBe(false)
+    expect(long.paperScrolls).toBe(false)
+    expect(long.railScrolls).toBe(true)
+    expect(long.railWidth).toBeGreaterThan(short.railWidth)
     // the design measure is a FLOOR — the solve may widen, never narrow
     expect(long.colEm).toBeGreaterThanOrEqual(14)
-    // right edge on the window's edge, and the cut is half a column wide
-    expect(Math.abs(long.right - long.winRight)).toBeLessThanOrEqual(2)
-    expect(Math.abs(long.tail - long.half)).toBeLessThanOrEqual(2)
-    expect(long.endGap).toBe(long.padEnd)
   })
 
-  test('the loupe is on stage from the first frame, and follows the cursor', async ({ page }) => {
-    // No switch: in a hover environment the loupe is simply there (owner's
-    // call). It parks on the host's opening block so it never has to be
+  test('the loupe follows the specimen onto the stage, then follows the cursor', async ({ page }) => {
+    // No switch: in a hover environment the loupe arrives after the specimen's
+    // own entrance. It parks on the host's opening block so it never has to be
     // discovered, and from then on the reader drives it.
     const $lens = page.locator('#station-playground .Lens')
+    await $paper(page).scrollIntoViewIfNeeded()
+    await expect($lens).toHaveAttribute('data-lens-arrived', '')
     await expect($lens).toBeVisible()
 
     const centre = () =>
       page.evaluate(() => {
-        const c = document.querySelector('#station-playground [data-pg-paper]')!.getBoundingClientRect()
+        const c = document.querySelector(
+          '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+        )!.getBoundingClientRect()
         const l = document.querySelector('#station-playground .Lens')!.getBoundingClientRect()
         return Math.round(l.y + l.height / 2 - c.y)
       })
@@ -229,7 +221,7 @@ test.describe('station⑤ playground', () => {
     // `hover` with an explicit position, not raw mouse coordinates: the card
     // is `translate`d and taller than this viewport, so a computed page
     // coordinate can land outside it.
-    await page.locator('#station-playground [data-pg-paper]').hover({ position: { x: 200, y: 320 } })
+    await $paper(page).hover({ position: { x: 200, y: 320 } })
     await expect.poll(centre).not.toBe(parked)
 
     // …and it lands ON the cursor, not merely somewhere else. The circle is
@@ -244,9 +236,11 @@ test.describe('station⑤ playground', () => {
     // an integer while the card's origin is fractional — exact equality is not
     // the claim, being ON the cursor rather than a column away is.
     await page.waitForTimeout(250)
-    await page.locator('#station-playground [data-pg-paper]').hover({ position: { x: 200, y: 320 } })
+    await $paper(page).hover({ position: { x: 200, y: 320 } })
     const off = await page.evaluate(() => {
-      const $h = document.querySelector('#station-playground [data-pg-paper]')!
+      const $h = document.querySelector(
+        '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+      )!
       let $frame = $h.parentElement!
       while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
       const l = $frame.querySelector(':scope > .Lens')!.getBoundingClientRect()
@@ -282,7 +276,6 @@ test.describe('station⑤ playground', () => {
         }),
       ),
     ).toEqual([
-      ['Papers', true, 0],
       // ONE circle for the pair of dispatches, not one each: two would overlap
       // where the cards stack, and a loupe that crosses from the 橫排 card into
       // the 直排 one magnifies the comparison this station is making.
@@ -306,7 +299,9 @@ test.describe('station⑤ playground', () => {
           return `${el.textContent!.slice(0, 3)}|${Math.round((r.x - g.x) / scale)},${Math.round((r.y - g.y) / scale)}`
         })
       }
-      const $src = document.querySelector('#station-playground [data-pg-preview]')!
+      const $src = document.querySelector(
+        '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone) [data-pg-preview]',
+      )!
       const $copy = document.querySelector('#station-playground .is-lens-clone .PgGalley')!
       const zoom = Number.parseFloat(
         getComputedStyle(document.querySelector('#station-playground .Lens')!)
@@ -336,7 +331,9 @@ test.describe('station⑤ playground', () => {
     const main = page.locator('main')
 
     // The preview must be a descendant of main (so it inherits config).
-    expect(await main.locator('[data-pg-preview]').count()).toBe(1)
+    expect(await main.locator(
+      '.PgSheet > [data-pg-paper]:not(.is-lens-clone) [data-pg-preview]',
+    ).count()).toBe(1)
 
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()

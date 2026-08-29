@@ -94,6 +94,7 @@ function initSearch(root) {
       const li = document.createElement('li')
       const a = document.createElement('a')
       a.className = 'Result'
+      a.id = `search-result-${i}`
       a.href = it.url
       a.setAttribute('role', 'option')
       a.dataset.idx = String(i)
@@ -116,8 +117,9 @@ function initSearch(root) {
     activeIdx = idx
     resultEls.forEach((el, i) => el.classList.toggle('is-active', i === idx))
     if (idx >= 0 && resultEls[idx]) {
+      input.setAttribute('aria-activedescendant', resultEls[idx].id)
       resultEls[idx].scrollIntoView({ block: 'nearest' })
-    }
+    } else input.removeAttribute('aria-activedescendant')
   }
 
   /* ── search execution ───────────────────────────────────────── */

@@ -366,7 +366,7 @@
     const rows = styles.map((s) => [s, shear(s)])
     const upright = rows[0][1]
     document.querySelector('.Probe').textContent = [
-      `字型：${family}`,
+      `字體：${family}`,
       '',
       ...rows.map(([s, v]) =>
         `${s.padEnd(14)} 上緣−下緣 = ${String(v).padStart(4)}px  ${v === upright ? '← 直立' : ''}`),
@@ -423,8 +423,8 @@
       拿 canvas 逐角度量實際墨跡的剪切量（同一個「版」字，上緣最左 − 下緣最左）：
       <code>normal</code> 與 <code>oblique 0deg</code> 都是 10px（字本身的不對稱），
       而 <code>4deg / 8deg / 10deg / 14deg / 20deg / italic</code> <strong>全部都是
-      41px</strong>。字型沒有斜體字面時，Chromium 用的是一個<strong>固定</strong>的
-      合成剪切矩陣，<code>&lt;角度&gt;</code> 只影響字型比對、不影響上漆。
+      41px</strong>。字體沒有斜體字面時，Chromium 用的是一個<strong>固定</strong>的
+      合成剪切矩陣，<code>&lt;角度&gt;</code> 只影響字體比對、不影響上漆。
     </dd>
 
     <dt>所以計算值在補間，畫面卻是二元的。</dt>

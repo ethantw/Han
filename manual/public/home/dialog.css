@@ -1,0 +1,77 @@
+/**
+ * One modal model for the homepage.
+ *
+ * The native dialog is only the full-viewport mask and scroll surface. Each
+ * feature owns the layout of its direct panel; this layer owns opening and
+ * closing motion for quickstart, transfer size, and newspaper readers alike.
+ */
+:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full) {
+  inset: 0;
+  inline-size: 100dvi;
+  block-size: 100dvb;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  color: var(--ui-text);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)::backdrop {
+  background: color-mix(in srgb, var(--palette-black) 55%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full) {
+    transition:
+      display 420ms allow-discrete,
+      overlay 420ms allow-discrete;
+  }
+
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)
+    > :where(.QuickstartPanel, .SizeDialogPanel, .ReaderSheet) {
+    opacity: 0;
+    /* Start a full viewport below, rather than merely nudging the panel. */
+    translate: 0 100dvb;
+    transition:
+      opacity 280ms ease,
+      translate 420ms cubic-bezier(.2, .75, .25, 1);
+  }
+
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]
+    > :where(.QuickstartPanel, .SizeDialogPanel, .ReaderSheet) {
+    opacity: 1;
+    translate: 0 0;
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 100dvb;
+    }
+  }
+
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)::backdrop {
+    opacity: 0;
+    transition:
+      opacity 280ms ease,
+      display 420ms allow-discrete,
+      overlay 420ms allow-discrete;
+  }
+
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]::backdrop {
+    opacity: 1;
+
+    @starting-style { opacity: 0; }
+  }
+
+  /* The old hash fallback is an in-flow continuation, not a lightbox. */
+  dialog.Full:target:not([open]) > .ReaderSheet {
+    opacity: 1;
+    translate: none;
+  }
+}

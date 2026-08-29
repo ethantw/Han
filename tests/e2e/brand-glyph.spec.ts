@@ -125,7 +125,10 @@ test('a load that starts below the fold still measures the hero', async ({ page 
   await expect.poll(() => page.evaluate(() => ({
     traced: document.documentElement.dataset.hanTraced,
     outlines: document.querySelectorAll('.Manifesto .Outline').length,
-    fill: getComputedStyle(document.querySelector('.Manifesto .Outline .BrandGlyph path')).fill,
+    fill: (() => {
+      const path = document.querySelector('.Manifesto .Outline svg path')
+      return path ? getComputedStyle(path).fill : null
+    })(),
   }))).toEqual({ traced: '', outlines: 1, fill: 'none' })
 
   // and the glyph itself is where the wordmark's baseline puts it

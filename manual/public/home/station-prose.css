@@ -180,6 +180,20 @@
   }
 }
 
+/* The station's generic entrance starts as soon as its top edge reaches the
+   fold, but this rail's initial seam is measured only when the rail itself is
+   rendered. Keep the newspapers on the entrance's first frame until
+   strip-nav.js has applied that instant scroll; then the existing fly-in
+   takes over. This is readiness, not a guessed delay, so slow fonts and slow
+   devices cannot expose the automatic horizontal correction. */
+@media (prefers-reduced-motion: no-preference) {
+  #station-prose[data-revealed]
+    > .Prose[data-strip-start='seam']:not([data-strip-ready]) {
+    opacity: 0;
+    translate: 0 1rem;
+  }
+}
+
 /* ─── Dispatch (station④'s living specimen — a 太陽中文報 mini-article) ──
  * The card frames a REAL <article> so prose.css auto-scopes to it: the
  * consecutive-headings collapse (h1 straight onto h2), heading→paragraph,

@@ -28,6 +28,12 @@ const openGroupOf = (page: Page, cfgKey: string) =>
 const pane = (page: Page, lang: string) =>
   page.locator(`[data-out-panes] pre[data-lang="${lang}"] code`)
 
+const chooseSnippetView = async (page: Page, value: string) => {
+  const station = page.locator('#station-snippet')
+  await station.scrollIntoViewIfNeeded()
+  await station.locator(`label:has(input[value="${value}"])`).click()
+}
+
 const moduleLinkDisabled = (page: Page, mod: string) =>
   page.evaluate(
     (m) =>
@@ -70,7 +76,7 @@ test.describe('module switches', () => {
   test('unchecking semantics switches the snippet to per-module imports (cdn html pane)', async ({ page }) => {
     // module toggles sit in the non-collapsible block — nothing to open.
     await page.locator('[data-cfg-key="semantics"]').uncheck()
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
 
     const html = pane(page, 'html')
     // enabled three, in bundle order (semantics dropped).
@@ -88,7 +94,7 @@ test.describe('module switches', () => {
 
   test('css pane never emits the deleted --han-semantics var after toggling semantics off', async ({ page }) => {
     await page.locator('[data-cfg-key="semantics"]').uncheck()
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     // off is the import's absence now, not a `--han-semantics: off` flag.
     await expect(page.locator('[data-out-panes]')).not.toContainText('--han-semantics')
   })

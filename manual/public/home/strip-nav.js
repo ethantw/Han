@@ -157,9 +157,16 @@ const mount = ($navs) => {
     /* `instant`：這是版面的起始位置，不是一次捲動。平滑捲會讓頁面自己動起來，
        讀者會以為是他碰到了什麼。 */
     write: (by) => {
-      if (!by || touched) return
-      selfScroll = true
-      $strip.scrollBy({ [axisOf($strip).key]: by, behavior: 'instant' })
+      if (by && !touched) {
+        selfScroll = true
+        $strip.scrollBy({ [axisOf($strip).key]: by, behavior: 'instant' })
+      }
+      /* Seam-centred strips may be waiting off-paint for this exact write.
+         Stamp readiness only AFTER the instant scroll has been applied, so
+         their entrance can never expose the automatic journey to the seam.
+         A zero correction is still ready: the geometry happened to land at
+         the right place without needing a write. */
+      if ($strip.dataset.stripStart === 'seam') $strip.dataset.stripReady = ''
     },
   })
 

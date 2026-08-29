@@ -43,7 +43,10 @@
   kbd {
     font-family: var(--font-mono);
     font-size: 0.625rem;
-    color: var(--ink-faint);
+    /* A keycap is compact but still real text. `--ink-faint` measured below
+       AA on the paper ground; the standard muted ink keeps it secondary
+       without making the shortcut illegible. */
+    color: var(--ink-mute);
     border: 1px solid var(--rule);
     padding: 1px 5px;
     border-radius: 3px;

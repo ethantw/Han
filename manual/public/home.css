@@ -33,8 +33,11 @@
 @import url('./home/frame.css');
 
 /* ── 跨區塊的共用零件 ── */
+/* 所有 modal 共用同一套 mask、fly-in 與離場時序。 */
+@import url('./home/dialog.css');
 /* 《太陽中文報》的報頭：站④的兩張樣張與站⑦的那張紙戴同一頂。 */
 @import url('./home/paper-head.css');
+@import url('./home/paper-reader.css');
 
 /* ── 各區塊，依 <main> 裡的出現順序 ── */
 @import url('./home/manifesto.css');

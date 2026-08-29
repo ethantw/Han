@@ -40,10 +40,17 @@ export const initCarousel = ($root = document) => {
     ['data-mine-spec', 'mineSpec', 'data-mine-out'],
   ]
 
+  const expose = ($el, current) => {
+    $el.toggleAttribute('data-current', current)
+    $el.toggleAttribute('inert', !current)
+    if (current) $el.removeAttribute('aria-hidden')
+    else $el.setAttribute('aria-hidden', 'true')
+  }
+
   const show = (i) => {
-    $items.forEach(($el, n) => $el.toggleAttribute('data-current', n === i))
+    $items.forEach(($el, n) => expose($el, n === i))
     const name = $items[i].dataset.case
-    $demos.forEach(($el) => $el.toggleAttribute('data-current', $el.dataset.case === name))
+    $demos.forEach(($el) => expose($el, $el.dataset.case === name))
     for (const [attr, prop, out] of OUTS) {
       const spec = $items[i].querySelector(`[${attr}]`)?.dataset[prop]
       if (spec) $root.querySelectorAll(`[${out}]`).forEach(($b) => ($b.textContent = spec))

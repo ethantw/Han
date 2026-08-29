@@ -162,6 +162,8 @@ test('narrow strip: the forme keeps a 768px measure and the pills go to horizont
     svgW: $f.querySelector('svg')!.getBoundingClientRect().width,
     figW: $f.getBoundingClientRect().width,
     svgTop: $f.querySelector('svg')!.getBoundingClientRect().top,
+    svgBottom: $f.querySelector('svg')!.getBoundingClientRect().bottom,
+    ctlTop: $f.querySelector('.Controls')!.getBoundingClientRect().top,
     ctlBottom: $f.querySelector('.Controls')!.getBoundingClientRect().bottom,
   }))
 
@@ -173,8 +175,10 @@ test('narrow strip: the forme keeps a 768px measure and the pills go to horizont
   expect(geo.svgW).toBeGreaterThanOrEqual(767)
   // the colophon keeps its 直排 station in the strip's wedge（長帶的存在
   // 理由之一就是牌記有地方站）; the pills turn horizontal, one group a row,
-  // stacked ABOVE the strip (85a59a5)
+  // stacked inside the upper void of the strip rather than floating in a
+  // detached row above it.
   expect(geo.capWm).toBe('vertical-rl')
   expect(geo.pillWm).toBe('horizontal-tb')
-  expect(geo.ctlBottom).toBeLessThanOrEqual(geo.svgTop + 1)
+  expect(geo.ctlTop).toBeGreaterThanOrEqual(geo.svgTop - 1)
+  expect(geo.ctlBottom).toBeLessThanOrEqual(geo.svgBottom + 1)
 })

@@ -34,7 +34,7 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 3;
-    transition: opacity 220ms ease;
+    transition: opacity 420ms ease-out;
     border-radius: 50%;
     background: var(--ui-bg);
     /* rim: ink line + paper inset + soft drop — a loupe on paper */
@@ -57,7 +57,11 @@
      out too; this is for the frame before it gets there. */
   content-visibility: hidden;
 
-  [data-lens-on] > & {
+  /* `data-lens-on` describes the interaction state; `data-lens-arrived` is a
+     one-shot stage cue from lens.js. Keeping those two facts separate means
+     the first entrance can trail the specimen without making every later
+     click wait through the introduction again. */
+  [data-lens-on] > &[data-lens-arrived] {
     opacity: 1;
     visibility: visible;
     content-visibility: visible;

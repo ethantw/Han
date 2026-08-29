@@ -38,6 +38,12 @@ const openGroupOf = async (page: Page, cfgKey: string) => {
 const pane = (page: Page, lang: string) =>
   page.locator(`[data-out-panes] pre[data-lang="${lang}"] code`)
 
+const chooseSnippetView = async (page: Page, value: string) => {
+  const station = page.locator('#station-snippet')
+  await station.scrollIntoViewIfNeeded()
+  await station.locator(`label:has(input[value="${value}"])`).click()
+}
+
 test.describe('playground configurator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
@@ -51,7 +57,7 @@ test.describe('playground configurator', () => {
         document.documentElement.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
 
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     await expect(pane(page, 'css')).toContainText('--han-punctuation-refinement: hang')
   })
 
@@ -77,7 +83,7 @@ test.describe('playground configurator', () => {
   test('勾後備 → CDN 頁 html pane 出現 han.auto script 行', async ({ page }) => {
     await openGroupOf(page, 'fallbacks')
     await page.locator('[data-cfg-key="fallbacks"]').check()
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     await expect(pane(page, 'html')).toContainText('han.auto.min.js')
   })
 
@@ -188,7 +194,7 @@ test.describe('度量 slider → body 規則', () => {
 
   test('拖字級到 18 → cdn css pane body 規則含 font-size: 18px；群組 ↺ 後消失', async ({ page }) => {
     await setSize(page, '18')
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     await expect(pane(page, 'css')).toContainText('font-size: 18px')
     await expect(pane(page, 'css')).toContainText('body {')
 
@@ -198,7 +204,7 @@ test.describe('度量 slider → body 規則', () => {
 
   test('lang 切換保留偏差的滑桿值與 body 規則', async ({ page }) => {
     await setSize(page, '18')
-    await page.locator('[data-pg-views] label:has(input[value="cdn"])').click()
+    await chooseSnippetView(page, 'cdn')
     await expect(pane(page, 'css')).toContainText('font-size: 18px')
 
     // 換內文語言 → 重渲染 shadow 模板；config.metrics 狀態應補水保留。

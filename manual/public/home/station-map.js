@@ -8,7 +8,7 @@
  * or repeated whole-page geometry reads.
  */
 
-const COMPACT = '(max-width: 71.9375rem)'
+const FLOATING_CONSOLE = '(max-width: 51.9375rem)'
 
 export const initStationMap = () => {
   const $map = document.querySelector('[data-station-map]')
@@ -22,13 +22,13 @@ export const initStationMap = () => {
     $link,
     $station: document.querySelector($link.hash),
     number: $link.dataset.number,
+    progress: $link.dataset.progress,
     name: $link.dataset.name,
     summary: $link.dataset.summary,
   })).filter(({ $station }) => $station)
   if (!entries.length) return
 
-  const compact = matchMedia(COMPACT)
-  const totalNumber = entries.at(-1).number
+  const floatingConsole = matchMedia(FLOATING_CONSOLE)
   const initialHashIndex = entries.findIndex(({ $link }) => $link.hash === location.hash)
   let current = Math.max(0, initialHashIndex)
   let waitingForFragment = initialHashIndex >= 0 && document.readyState !== 'complete'
@@ -37,14 +37,14 @@ export const initStationMap = () => {
   const accessibleLabel = (open) => {
     const entry = entries[current]
     const action = open ? $toggle.dataset.labelClose : $toggle.dataset.labelOpen
-    return `${action}：${entry.number}／${totalNumber}・${entry.name}—${entry.summary}`
+    return `${action}：${entry.progress}・${entry.name}—${entry.summary}`
   }
 
   const setOpen = (open, { focus = false } = {}) => {
-    const next = compact.matches && open
-    $map.toggleAttribute('data-open', next)
-    $toggle.setAttribute('aria-expanded', String(next))
-    $toggle.setAttribute('aria-label', accessibleLabel(next))
+    $map.toggleAttribute('data-open', open)
+    $list.hidden = !open
+    $toggle.setAttribute('aria-expanded', String(open))
+    $toggle.setAttribute('aria-label', accessibleLabel(open))
     if (focus) $toggle.focus()
   }
 
@@ -53,7 +53,7 @@ export const initStationMap = () => {
     current = index
     const entry = entries[index]
     $map.dataset.current = String(index + 1)
-    $toggle.querySelector('.StationMapCurrentNo').textContent = `${entry.number}／${totalNumber}`
+    $toggle.querySelector('.StationMapCurrentNo').textContent = entry.progress
     $toggle.querySelector('.StationMapCurrentName').textContent = entry.name
     entries.forEach(({ $link }, i) => {
       if (i === index) $link.setAttribute('aria-current', 'location')
@@ -62,7 +62,6 @@ export const initStationMap = () => {
     $toggle.setAttribute('aria-label', accessibleLabel($map.hasAttribute('data-open')))
   }
 
-  $map.dataset.enhanced = ''
   setCurrent(current)
   setOpen(false)
 
@@ -76,9 +75,8 @@ export const initStationMap = () => {
   addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && $map.hasAttribute('data-open')) setOpen(false, { focus: true })
   })
-  compact.addEventListener('change', () => setOpen(false))
   document.querySelector('#console-collapsed')?.addEventListener('change', (event) => {
-    if (compact.matches && event.target.checked) setOpen(false)
+    if (floatingConsole.matches && event.target.checked) setOpen(false)
   })
   addEventListener('hashchange', () => {
     const index = entries.findIndex(({ $link }) => $link.hash === location.hash)

@@ -540,10 +540,10 @@
      studio — and the diameter is 1.75 × the MAGNIFIED column, because a
      circle only offers its full width across the middle.
 
-     On stage from the first frame, except while the writer is IN the
-     editor: typing is the one moment the proof isn't being read, and a
-     loupe hanging over the page then is furniture in the way. `:has()` on
-     the panel, keyed on the textarea's own focus. */
+     It follows the proof onto the stage after a short beat (lens.js), except
+     while the writer is IN the editor: typing is the one moment the proof
+     isn't being read, and a loupe hanging over the page then is furniture in
+     the way. `:has()` on the panel, keyed on the textarea's own focus. */
   .Lens {
     display: block;
     --lens-zoom: 1.75;

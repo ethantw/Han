@@ -100,6 +100,7 @@ body > header {
       font-size: .5em;
       line-height: 1;
       letter-spacing: .125em;
+      white-space: nowrap;
       border-inline-start: 1px solid var(--ui-rule);
     }
     .version {
@@ -115,9 +116,15 @@ body > header {
       font-size: 0.75rem;
       letter-spacing: 0.05em;
       text-decoration: none;
+      white-space: nowrap;
 
       &:hover { color: var(--ui-accent); }
     }
+
+    /* The manual is not part of this release yet. Keep its canonical route
+       in the markup for the eventual launch, but do not advertise a route
+       that is intentionally offline. */
+    > .ManualLink { display: none; }
 
     /* the divider between the text links and the tools cluster is a
        hairline on the LangSwitcher (upward relationship, css-naming
@@ -133,25 +140,20 @@ body > header {
     }
   }
 
-  /* 窄視窗——這條帽子的 min-content 是 465px，所以 30rem 以下總得讓出點
-     什麼。先讓的是品牌鋪陳與裝飾，不是功能：標誌的兩枚 small 合計 112px（版本
-     號在頁尾還有一份，撤掉不損資訊），加上那道分隔線的 19px，min-content 落到
-     371px；nav 四項全留，只是站近一點。360px 仍然差一截——那一格另議。
-
-     鍵在視窗寬而不是容器：這條帽子是視窗 chrome，不隨主控台的收合變寬。 */
-  @media (width < 30rem) {
-    .Logo small { display: none; }
-    nav { gap: 0.875em; }
-    /* 那道分隔線是裝飾，不是內容——這一格的 19px（線＋左右留白）換回來，
-       390px 才有餘裕，「使用手冊」四個字不必折行。 */
+  /* The repository remains available in the closing routes. On a narrow
+     masthead, the locale and theme controls are the useful persistent tools;
+     a third text route only makes every label wrap vertically. */
+  @media (width < 52rem) {
+    nav > .GitHubLink { display: none; }
     nav .LangSwitcher::before { display: none; }
   }
 
-  /* 360–389 — 再讓一步，這次讓的是兩個文字連結。owner 的話：rc.0 本來就還
-     不上使用手冊，GitHub 也不急著在這一格。留下的兩顆是圖標控件（語言、
-     主題），帽子因此在 360px 排得開。 */
-  @media (width < 24.375rem) {
-    nav > a { display: none; }
+  /* Brand expansions are redundant below tablet width: the full name is in
+     the hero and the version returns in the footer. The wordmark itself must
+     remain intact and gets the released width. */
+  @media (width < 40rem) {
+    .Logo small { display: none; }
+    nav { gap: 0.875em; }
   }
 
   @media (width <= 20rem) {

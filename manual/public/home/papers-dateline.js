@@ -139,12 +139,21 @@ const fillEraLine = ($time) => {
   $time.append($lunar)
 }
 
+/** Refresh four-era masthead dates inside a newly inserted subtree.
+ * The shared article reader clones its PaperHead after homepage boot, so the
+ * initial document scan cannot see it. Exporting the same formatter keeps
+ * those late mastheads on the one true today-plus-100 clock. */
+export const refreshEraLines = (root = document) => {
+  if (root.matches?.('time[data-era-line]')) fillEraLine(root)
+  root.querySelectorAll?.('time[data-era-line]').forEach(fillEraLine)
+}
+
 export function initPapersDateline() {
   const { date, y, m, d, iso } = plus100()
 
   /* 戴著《太陽中文報》報頭的每一張紙——站④的兩張樣張與站⑦遊樂場那張——共用
      同一個瞬間。標記裡各自帶著靜態退路，這裡把它換成今天＋100 年。 */
-  document.querySelectorAll('time[data-era-line]').forEach(fillEraLine)
+  refreshEraLines()
 
   /* `:not([data-era-line])`：全文版的報頭要的是**四紀年一次寫齊**（那一份是
      同一天的四種讀法，不是四份報紙），它已經在上面填過了；不排除的話這一圈會

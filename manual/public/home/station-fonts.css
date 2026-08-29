@@ -269,6 +269,11 @@
   z-index: 1;
 }
 
+.FormeRail:focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 0.25rem;
+}
+
 :where(.PunctLang) {
   & {
     /* 這四格現在住在 `.TwoEmDashes` 裡（2026-08-28），而且**釘在畫面上**：讀者
@@ -331,15 +336,15 @@
   }
 
   li {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, auto) auto;
     gap: .75rem;
     padding: clamp(.875rem, 2vw, 1.375rem);
     background: var(--ui-panel);
   }
   p {
-    flex: 1;
+    grid-area: 1 / 1;
     margin: 0;
     inline-size: round(100%, 1em);
     /* MUST declare a han font stack here: font-family inherits as an already-
@@ -349,8 +354,24 @@
        on whatever punctuation font :root resolved. Serif reads the marks big. */
     font-family: var(--han-serif);
   }
+  /* 全文 icon 是正文的接排線，不是第三列控件。與 KOI-8 摘要同一個做法：
+     疊在文案格的行尾，`::after` 在最後一行留出一枚圖標的空位；語言 select
+     自己待在下一列。這套用 grid 疊位而非 absolute 座標，橫排、直排會沿各自
+     的 inline-end 自然換邊。 */
+  p::after {
+    content: '';
+    display: inline-block;
+    inline-size: 1.25em;
+    block-size: 1px;
+  }
+  li > a.ArticleJump {
+    grid-area: 1 / 1;
+    place-self: end;
+    z-index: 1;
+    margin: 0;
+  }
   label {
-    align-self: end;
+    justify-self: end;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;

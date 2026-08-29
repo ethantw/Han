@@ -126,6 +126,10 @@
     hant: '下一個選擇器', hans: '下一个选择器', en: 'Next selector',
     ja: '次のセレクタ', ko: '다음 셀렉터',
   },
+  arSelNav: {
+    hant: '選擇器覆蓋範例', hans: '选择器覆盖示例', en: 'Selector override examples',
+    ja: 'セレクタ上書き例', ko: '셀렉터 <ruby>再定義<rt>재정의</rt></ruby> <ruby>例示<rt>예시</rt></ruby>',
+  },
   arEq52Note: {
     hant: '漢.css的樣式皆置於<code>han-*</code>分層中。開發者未分層的樣式自然優先。',
     hans: '汉.css的样式皆置于<code>han-*</code>分层中。开发者未分层的样式自然优先。',
@@ -529,44 +533,46 @@
        item's pair is also baked into the <b>s, so the plate is correct with
        JS off — home/carousel.js only takes it from there. -->
     <div class="Example">
+      <div class="ExampleBoard">
       <ul class="DemoRing">
         <li data-case="heading">
           <figure class="ElementDemo">
             <figcaption>{{ arDemoLabel }}</figcaption>
-            <article class="DemoCanvas"><h1>{{ arDemoHeading }}</h1><p>{{ arDemoHeadingNote }}</p></article>
+            <article class="DemoCanvas"><h1>{{ arDemoHeading }}</h1><p>{{ arDemoHeadingNote }} <a class="ArticleJump" href="/articles/hypersleep-drunk/hant.html" data-article="hypersleep-drunk" aria-label="閱讀完整報導" title="閱讀完整報導"><img src="/home/paper-open.svg" alt="" /></a></p></article>
           </figure>
         </li>
         <li data-case="cite">
           <figure class="ElementDemo">
             <figcaption>{{ arDemoLabel }}</figcaption>
-            <div class="DemoCanvas notes"><p>{{ arDemoCite }}</p></div>
+            <div class="DemoCanvas notes"><p>{{ arDemoCite }} <a class="ArticleJump ArticleJump--inline-end" href="/articles/hypersleep-drunk/hant.html" data-article="hypersleep-drunk" aria-label="閱讀完整報導" title="閱讀完整報導"><img src="/home/paper-open.svg" alt="" /></a></p></div>
           </figure>
         </li>
         <li data-case="adjacent-line">
           <figure class="ElementDemo">
             <figcaption>{{ arDemoLabel }}</figcaption>
-            <div class="DemoCanvas tight" data-adjacent-lines-refined><p>{{ arDemoLine }}</p></div>
+            <div class="DemoCanvas tight" data-adjacent-lines-refined><p>{{ arDemoLine }} <a class="ArticleJump" href="/articles/ark-europa-customs/hant.html" data-article="ark-europa-customs" aria-label="閱讀完整報導" title="閱讀完整報導"><img src="/home/paper-open.svg" alt="" /></a></p></div>
           </figure>
         </li>
         <li data-case="emphasis">
           <figure class="ElementDemo">
             <figcaption>{{ arDemoLabel }}</figcaption>
-            <div class="DemoCanvas reading"><p>{{ arDemoEmphasis }}</p></div>
+            <div class="DemoCanvas reading"><p>{{ arDemoEmphasis }} <a class="ArticleJump" href="/articles/ark-europa-customs/hant.html" data-article="ark-europa-customs" aria-label="閱讀完整報導" title="閱讀完整報導"><img src="/home/paper-open.svg" alt="" /></a></p></div>
           </figure>
         </li>
         <li data-case="quotes">
           <figure class="ElementDemo">
             <figcaption>{{ arDemoLabel }}</figcaption>
-            <blockquote class="DemoCanvas quotation"><p><q>{{ arDemoQuoteCry }}</q>{{ arDemoQuoteBy }}<q>{{ arDemoQuoteClaim }}</q></p></blockquote>
+            <blockquote class="DemoCanvas quotation"><p><q>{{ arDemoQuoteCry }}</q>{{ arDemoQuoteBy }}<q>{{ arDemoQuoteClaim }}</q> <a class="ArticleJump" href="/articles/standard-glyph-revival/hant.html" data-article="standard-glyph-revival" data-edition="hant" aria-label="閱讀完整報導" title="閱讀完整報導"><img src="/home/paper-open.svg" alt="" /></a></p></blockquote>
           </figure>
         </li>
       </ul>
-      <nav class="SelNav" hidden>
+      <nav class="SelNav" hidden aria-label="{{ arSelNav }}">
         <!-- This pages the rendered witness and its matching cascade pair as
              one example. It therefore sits immediately after the witness in
              both DOM and visual order, rather than looking like chrome that
              belongs only to the rule pane. -->
         <button type="button" data-sel-step="-1" aria-label="{{ arSelPrev }}"><span data-icon="chevron" aria-hidden="true"></span></button>
+        <output data-sel-count aria-live="polite">1／5</output>
         <button type="button" data-sel-step="1" aria-label="{{ arSelNext }}"><span data-icon="chevron" data-dir="right" aria-hidden="true"></span></button>
       </nav>
       <ul class="SelRing">
@@ -705,6 +711,7 @@
           </div>
         </li>
       </ul>
+      </div>
     </div>
   </div>
   <!-- ── The books ────────────────────────────────────────────────────
@@ -736,6 +743,7 @@
        `data-off` on the manual rows encodes the console's default (auto). -->
   <h3 class="LedgerHead">{{ arSumHead }}</h3>
   <p class="SumProse">{{ arSumNote }}</p>
+  <div class="SumRail">
   <figure class="Sum">
     <div data-plate="items">
       <table>
@@ -828,6 +836,7 @@
       </math>
     </figcaption>
   </figure>
+  </div>
   <p class="SumEqNote">{{ arSumEqNote }}</p>
 
   <!-- SSR footnote — three sentences, because the station's job here is

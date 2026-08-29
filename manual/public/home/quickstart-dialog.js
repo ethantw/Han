@@ -1,4 +1,4 @@
-/** Hero quickstart: the link remains a real manual URL when JS is absent. */
+/** Hero quickstart: without JS, the link still reaches the canonical setup skill. */
 export const initQuickstartDialog = ($root = document) => {
   const $dialog = $root.querySelector('[data-quickstart-dialog]')
   const $open = $root.querySelector('[data-quickstart-open]')

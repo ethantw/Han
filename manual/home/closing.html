@@ -15,11 +15,14 @@
   clUseNote: {
     hant: '依目前配置生成引用碼', hans: '按当前配置生成引用代码', en: 'Generate code from your current configuration', ja: '現在の設定から導入コードを生成', ko: '<ruby>現在<rt>현재</rt></ruby> <ruby>設定<rt>설정</rt></ruby>으로 코드를 만든다',
   },
-  clDocsTitle: {
-    hant: '使用手冊', hans: '使用手册', en: 'Manual', ja: '使用手冊', ko: '<ruby>使用<rt>사용</rt></ruby> <ruby>手冊<rt>수책</rt></ruby>',
+  clSetupTitle: {
+    hant: '完整設定指南Skill', hans: '完整设置指南Skill', en: 'Complete setup skill',
+    ja: '完全セットアップSkill', ko: '<ruby>完整<rt>완전</rt></ruby> <ruby>設定<rt>설정</rt></ruby> Skill',
   },
-  clDocsNote: {
-    hant: '查閱模組、元素與配置細節', hans: '查阅模块、元素与配置细节', en: 'Browse modules, elements and configuration', ja: 'モジュール・要素・設定を調べる', ko: '<ruby>模組<rt>모듈</rt></ruby>、<ruby>要素<rt>요소</rt></ruby>와 <ruby>設定<rt>설정</rt></ruby>을 살핀다',
+  clSetupNote: {
+    hant: '讓程式代理依專案現況完成安裝與配置', hans: '让编程代理按项目现况完成安装与配置',
+    en: 'Let your coding agent install and configure it for your project',
+    ja: 'コーディングエージェントがプロジェクトに合わせて導入・設定', ko: '코딩 에이전트가 프로젝트에 맞춰 설치하고 설정한다',
   },
   clContributeTitle: {
     hant: '參與開發', hans: '参与开发', en: 'Contribute', ja: '開発に参加', ko: '<ruby>開發<rt>개발</rt></ruby>에 <ruby>參與<rt>참여</rt></ruby>',
@@ -38,8 +41,8 @@
     ko: 'ziano・<ruby>傳承<rt>전승</rt></ruby> <ruby>字形<rt>자형</rt></ruby> 웹폰트',
   },
   clDiantenjeomLabel: {
-    hant: 'diantenjeom・標點符號字型',
-    hans: 'diantenjeom・标点符号字型',
+    hant: 'diantenjeom・標點符號字體',
+    hans: 'diantenjeom・标点符号字体',
     en: 'diantenjeom・punctuation font',
     ja: 'diantenjeom・約物フォント',
     ko: 'diantenjeom・<ruby>符號<rt>부호</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
@@ -59,9 +62,12 @@
       <strong>{{ clUseTitle }}</strong>
       <span>{{ clUseNote }}</span>
     </a>
-    <a href="{{ docsUrl }}">
-      <strong>{{ clDocsTitle }}</strong>
-      <span>{{ clDocsNote }}</span>
+    <!-- The manual route returns when the manual ships:
+    <a href="{{ docsUrl }}">…</a>
+    -->
+    <a href="{{ setupSkillUrl }}">
+      <strong>{{ clSetupTitle }}</strong>
+      <span>{{ clSetupNote }}</span>
     </a>
     <a href="https://github.com/hanzipro/han.css">
       <strong>{{ clContributeTitle }}</strong>

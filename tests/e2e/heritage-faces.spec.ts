@@ -63,12 +63,12 @@ test.describe('Shanggu three-face specimen', () => {
       figure.boundingBox(),
       figure.locator(':scope > ul').boundingBox(),
     ])
-    expect(figureBox && railBox && railBox.x < figureBox.x).toBeTruthy()
-    const consoleEdge = await page.locator('han-console').evaluate((node) => (
-      node.getBoundingClientRect().right
-    ))
-    expect(railBox && Math.abs(railBox.x - consoleEdge)).toBeLessThan(1)
-    expect(railBox && Math.abs(railBox.x + railBox.width - 1728)).toBeLessThan(1)
+    /* The current rail owns overflow at the figure boundary; each language
+       card grows to its vertical content instead of spawning a cramped inner
+       scroller. It no longer pretends to be full-viewport when the whole run
+       already fits. */
+    expect(figureBox && railBox && Math.abs(railBox.x - figureBox.x)).toBeLessThan(1)
+    expect(figureBox && railBox && Math.abs(railBox.width - figureBox.width)).toBeLessThan(1)
   })
 
   test('four-language punctuation follows the newspaper locale order', async ({ page }) => {

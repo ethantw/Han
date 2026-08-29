@@ -49,8 +49,8 @@
     ja: 'モダンなエバーグリーンブラウザ', ko: '최신 에버그린 브라우저',
   },
   fullInstallGuide: {
-    hant: '完整安裝方式', hans: '完整安装方式', en: 'Full installation guide',
-    ja: '詳しいインストール手順', ko: '전체 설치 안내',
+    hant: '完整設定指南（英語）', hans: '完整设置指南（英语）', en: 'Full setup guide',
+    ja: '詳しいセットアップ手順（英語）', ko: '전체 설정 안내（영어）',
   },
   closeLabel: {
     hant: '關閉', hans: '关闭', en: 'Close', ja: '閉じる', ko: '닫기',
@@ -101,7 +101,7 @@
       <code class="language-bash">pnpm add @hanzi.pro/han.css</code>
       <button type="button" aria-label="{{ copyLabel }}"><span data-icon="copy" aria-hidden="true"></span></button>
     </div>
-    <a href="{{ installUrl }}" data-quickstart-open>{{ quickstartCta }}</a>
+    <a href="{{ setupSkillUrl }}" data-quickstart-open>{{ quickstartCta }}</a>
   </div>
 
   <p class="Lede">{{ lede }}</p>
@@ -137,7 +137,7 @@ import '@hanzi.pro/han.css/auto'</code></pre>
         <p class="OptionalNote">{{ optionalNote }}</p>
         <footer>
           <span>{{ browserSupport }}・<code>v4.0.0-rc.1</code></span>
-          <a href="{{ installUrl }}">{{ fullInstallGuide }}</a>
+          <a href="{{ setupSkillUrl }}">{{ fullInstallGuide }}</a>
         </footer>
       </div>
     </section>

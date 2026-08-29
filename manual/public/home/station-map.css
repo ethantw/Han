@@ -1,169 +1,131 @@
 /**
- * Seven-station route map — compact page chrome, not another specimen.
- * Desktop keeps all seven anchors in the masthead. Narrow viewports move one
- * current-station disclosure just below it and reveal task summaries on ask.
+ * Seven-station route map — one floating task directory at every width.
+ * It sits below, not inside, the masthead: the header keeps global site
+ * controls while this disclosure follows the long homepage narrative.
  */
 
 .StationMap {
   --_map-bg: color-mix(in srgb, var(--ui-bg) 94%, transparent);
-  position: relative;
-  flex: none;
-  margin-inline-end: 1.25rem;
+  position: fixed;
+  inset-block-start: calc(var(--h-header) + 0.5rem);
+  inset-inline-end: var(--gutter);
+  z-index: 90;
+  max-inline-size: calc(100vw - 2 * var(--gutter));
   font-family: var(--han-sans);
   line-height: 1.25;
+  transition: opacity 140ms ease-out;
 }
 
 .StationMapCurrent {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-inline-start: auto;
+  padding: 0.4375rem 0.625rem;
+  color: var(--ui-supplement-text);
+  background: var(--_map-bg);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--r-2);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--palette-black) 8%, transparent);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+
+  span {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  [data-icon] {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+    margin-inline-start: 0.25rem;
+    rotate: 90deg;
+    transition: rotate 160ms ease-out;
+  }
+
+  &[aria-expanded='true'] [data-icon] { rotate: -90deg; }
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
 }
 
 .StationMapList {
-  display: flex;
-  align-items: stretch;
-  gap: 0.125rem;
+  position: absolute;
+  inset-block-start: calc(100% + 0.375rem);
+  inset-inline-end: 0;
+  display: grid;
+  inline-size: min(22rem, calc(100vw - 2 * var(--gutter)));
   margin: 0;
-  padding: 0;
+  padding: 0.375rem;
   list-style: none;
+  background: var(--_map-bg);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--r-2);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--palette-black) 14%, transparent);
+  backdrop-filter: blur(16px);
 
-  li { display: contents; }
+  li { display: block; }
 
   a {
-    display: flex;
-    align-items: baseline;
-    gap: 0.25rem;
-    padding: 0.375rem 0.4375rem;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 0.125rem 0.5rem;
+    padding: 0.75rem 0.5rem;
     color: var(--ui-supplement-text);
     background: transparent;
-    border-block-end: 1px solid transparent;
-    transition: color 160ms ease-out, border-color 160ms ease-out;
+    transition: color 160ms ease-out;
 
     b {
-      font-family: var(--font-mono);
-      font-size: 0.625rem;
-      font-weight: 400;
+      display: grid;
+      grid-row: 1 / span 2;
+      place-items: center;
+      align-self: stretch;
+      font-family: var(--han-font-alternative);
+      font-size: 2.5rem;
+      font-weight: 300;
+      line-height: 1;
+      opacity: 0.35;
     }
 
     span {
-      font-size: 0.6875rem;
-      white-space: nowrap;
+      font-size: 0.8125rem;
+      line-height: 1.2;
     }
 
-    small { display: none; }
+    small {
+      display: block;
+      grid-column: 2;
+      color: var(--ui-supplement-text);
+      font-size: 0.6875rem;
+      line-height: 1.25;
+    }
 
     &:hover,
-    &:focus-visible {
+    &:focus-visible,
+    &[aria-current='location'] {
       color: var(--ui-text);
-      border-color: var(--ui-grid);
     }
 
     &[aria-current='location'] {
       color: var(--ui-accent);
-      border-color: currentColor;
     }
   }
 }
 
-@media (max-width: 71.9375rem) {
-  .StationMap {
-    position: fixed;
-    inset-block-start: calc(var(--h-header) + 0.5rem);
-    inset-inline-end: var(--gutter);
-    z-index: 90;
-    max-inline-size: calc(100vw - 2 * var(--gutter));
-    margin: 0;
-    transition: opacity 140ms ease-out;
-  }
+.StationMapList[hidden] { display: none; }
 
-  /* The floating Console owns this corner while open. Two pieces of global
-     chrome must never overlap or compete for the same pointer target. */
+/* The floating console owns this corner while open. Side-console state uses
+   the same checkbox with the opposite meaning, so this rule must stay below
+   the actual panel breakpoint instead of hiding the directory on desktop. */
+@media (max-width: 51.9375rem) {
   body:has(#console-collapsed:checked) .StationMap {
     opacity: 0;
     pointer-events: none;
   }
-
-  .StationMapCurrent {
-    display: flex;
-    align-items: center;
-    gap: 0.125rem;
-    margin-inline-start: auto;
-    padding: 0.4375rem 0.625rem;
-    color: var(--ui-supplement-text);
-    background: var(--_map-bg);
-    border: 1px solid var(--ui-rule);
-    border-radius: var(--r-2);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--palette-black) 8%, transparent);
-    cursor: pointer;
-    backdrop-filter: blur(12px);
-
-    span {
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-
-    [data-icon] {
-      inline-size: 0.75rem;
-      block-size: 0.75rem;
-      margin-inline-start: 0.25rem;
-      rotate: 90deg;
-      transition: rotate 160ms ease-out;
-    }
-
-    &[aria-expanded='true'] [data-icon] { rotate: -90deg; }
-
-    &:focus-visible {
-      outline: 2px solid var(--ui-accent);
-      outline-offset: 2px;
-    }
-  }
-
-  .StationMapList {
-    position: absolute;
-    inset-block-start: calc(100% + 0.375rem);
-    inset-inline-end: 0;
-    display: grid;
-    inline-size: min(22rem, calc(100vw - 2 * var(--gutter)));
-    padding: 0.375rem;
-    background: var(--_map-bg);
-    border: 1px solid var(--ui-rule);
-    border-radius: var(--r-2);
-    box-shadow: 0 12px 32px color-mix(in srgb, var(--palette-black) 14%, transparent);
-    backdrop-filter: blur(16px);
-
-    li { display: block; }
-
-    a {
-      display: grid;
-      grid-template-columns: 1.5rem minmax(0, 1fr);
-      gap: 0.125rem 0.5rem;
-      padding: 0.625rem 0.75rem;
-      border-block-end: 0;
-      border-inline-start: 2px solid transparent;
-
-      b {
-        grid-row: 1 / span 2;
-        padding-block-start: 0.0625rem;
-      }
-
-      span { font-size: 0.8125rem; }
-
-      small {
-        display: block;
-        grid-column: 2;
-        color: var(--ui-supplement-text);
-        font-size: 0.6875rem;
-        line-height: 1.45;
-      }
-
-      &:hover,
-      &:focus-visible,
-      &[aria-current='location'] {
-        border-inline-start-color: currentColor;
-        border-block-end-color: transparent;
-      }
-    }
-  }
-
-  .StationMap[data-enhanced]:not([data-open]) .StationMapList { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

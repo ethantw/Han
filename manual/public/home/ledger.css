@@ -20,6 +20,14 @@
   font-weight: 500;
 }
 
+/* The sum is decorative support for the ledger, not content worth forcing
+   through a narrow rail. Small containers show the full-width table only. */
+.SumRail {
+  margin-block-end: 2.5rem;
+
+  > .Sum { margin-block-end: 0; }
+}
+
 :is(.Sum, .FontLedger) {
   /* Explicit track counts, NOT `repeat(auto-fit, …)`: the figcaption spans
      `1 / -1`, which makes every track occupied, so auto-fit has no empty
@@ -57,17 +65,14 @@
   }
 
   &.Sum {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    /* One board, not two cards. The vertical equation is deliberately on the
+       station ground; this must stay transparent at EVERY viewport width. */
+    background: transparent;
 
     @media (min-width: 64rem) {
       grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .8fr);
-      gap: 0;
-      /* The vertical equation is intentionally NOT a second white plate.
-         It belongs to the station ground; only the line-item table is a
-         sheet. Keep the figure itself transparent too, otherwise a
-         transparent figcaption merely reveals the old seam colour and looks
-         filled again. The caption draws its own divider below. */
-      background: transparent;
     }
 
     [data-col="gz"] { display: none; }
@@ -450,14 +455,16 @@
   }
 
   &.Sum figcaption {
+    grid-column: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     min-block-size: 16rem;
+    background: transparent;
+    border-inline-start: 1px solid var(--ui-rule);
 
-    @media (min-width: 64rem) {
-      background: transparent;
-      border-inline-start: 1px solid var(--ui-rule);
+    @media (max-width: 63.999rem) {
+      display: none;
     }
   }
 
@@ -531,26 +538,7 @@
   /* 與新聞全文同一模型：dialog 是滿版、透明的 mask／scroll surface；真正的小
      彈窗是裡面的 `.SizeDialogPanel`。內容長時整張 panel 跟著外層走，scrollbar
      留在 viewport 邊緣，不會關在小卡片裡。 */
-  inset: 0;
-  inline-size: 100dvi;
-  block-size: 100dvb;
-  max-inline-size: none;
-  max-block-size: none;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  color: var(--ui-text);
-  background: none;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-
-  @media (prefers-reduced-motion: no-preference) {
-    transition:
-      display 220ms allow-discrete,
-      overlay 220ms allow-discrete;
-  }
+  /* Full-viewport mask and motion live in home/dialog.css. */
 }
 
 .SizeDialogPanel {
@@ -562,46 +550,6 @@
   border-radius: var(--r-3);
   box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--palette-black) 28%, transparent);
 
-  @media (prefers-reduced-motion: no-preference) {
-    opacity: 0;
-    translate: 0 1.5rem;
-    transition:
-      opacity 220ms ease,
-      translate 220ms cubic-bezier(.2, .75, .25, 1);
-  }
-}
-
-.SizeDialog[open] > .SizeDialogPanel {
-  @media (prefers-reduced-motion: no-preference) {
-    opacity: 1;
-    translate: 0 0;
-
-    @starting-style {
-      opacity: 0;
-      translate: 0 1.5rem;
-    }
-  }
-}
-
-.SizeDialog::backdrop {
-  background: color-mix(in srgb, var(--palette-black) 55%, transparent);
-  backdrop-filter: blur(3px);
-
-  @media (prefers-reduced-motion: no-preference) {
-    opacity: 0;
-    transition:
-      opacity 220ms ease,
-      display 220ms allow-discrete,
-      overlay 220ms allow-discrete;
-  }
-}
-
-.SizeDialog[open]::backdrop {
-  @media (prefers-reduced-motion: no-preference) {
-    opacity: 1;
-
-    @starting-style { opacity: 0; }
-  }
 }
 
 .SizeDialogHead {
