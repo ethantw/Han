@@ -34,7 +34,7 @@
 }
 
 
-.DashColumn {
+.TwoEmDashes .Column {
   & {
 
     --df-face: color-mix(in srgb, var(--ui-text) 7%, var(--ui-station-b));
@@ -76,7 +76,7 @@
     user-select: none;
   }
 
-  &:has(.DashCell:hover) {
+  &:has(.Cell:hover) {
 
     @media (prefers-reduced-motion: no-preference) {
       animation:
@@ -89,7 +89,7 @@
   }
 
 
-  &:has(.DashCell:active) {
+  &:has(.Cell:active) {
     --df-weld: 1;
 
     transition: --df-weld 110ms cubic-bezier(.1, .9, .2, 1);
@@ -100,7 +100,7 @@
 }
 
 
-.DashCell {
+.TwoEmDashes .Cell {
   & {
     position: relative;
     display: inline-block;
@@ -269,13 +269,13 @@
 
 
 
-  [data-part="dash-note-stage"] {
+  .NoteStage {
     grid-row: 2;
     align-self: center;
   }
 
 
-  [data-dash-specimens] {
+  .Specimens {
     position: absolute;
     inset-block-start: calc(var(--df-note-start) - 30dvh);
     inset-inline-start: var(--df-copy-inset);
@@ -286,11 +286,11 @@
     z-index: 0;
   }
 
-  body:has(#console-collapsed:checked) & [data-dash-specimens] {
+  body:has(#console-collapsed:checked) & .Specimens {
     inset-inline-end: calc(-1 * var(--rail-pad));
   }
 
-  [data-specimen-viewport] {
+  .Specimens > .Viewport {
     position: sticky;
     inset-block-start: 0;
     block-size: 100dvh;
@@ -301,7 +301,7 @@
   }
 
 
-  [data-specimen-flow] {
+  .Specimens > .Viewport > ul {
     --flow-card: round(clamp(8rem, 14vw, 12rem), 2px);
     --flow-gap: clamp(1rem, 2.5vw, 2rem);
     position: absolute;
@@ -324,7 +324,7 @@
     ;
   }
 
-  [data-dash-specimens][data-active] [data-specimen-flow] {
+  .Specimens.Active > .Viewport > ul {
     opacity: 1;
     translate:
       calc(-1 * var(--dtj-offset, .5 * var(--flow-card)))
@@ -363,7 +363,7 @@
       --han-punctuation-refinement: compress;
     }
 
-    &[data-center] {
+    &.Center {
       opacity: 1;
       scale: 1;
       color: oklch(62% .22 var(--flow-hue));
@@ -518,7 +518,7 @@
   }
 
 
-  &[data-dash-measured] [data-part="dash-note-stage"] {
+  &[data-dash-measured] .NoteStage {
     position: absolute;
     grid-row: auto;
     inset-block-start: var(--df-note-start);
@@ -533,22 +533,22 @@
   }
 
   @media (height < 46rem) {
-    [data-specimen-flow] {
+    .Specimens > .Viewport > ul {
       --flow-card: round(clamp(6rem, 15vw, 8rem), 2px);
       inset-block-end: 1rem;
     }
   }
 
-  main[data-writing="vertical"] & [data-dash-specimens] { display: none; }
+  main[data-writing="vertical"] & .Specimens { display: none; }
 
   @container (inline-size < 52rem) {
-    &[data-dash-measured] [data-part="dash-note-stage"] {
+    &[data-dash-measured] .NoteStage {
       inset-inline: var(--df-copy-inset) 0;
     }
   }
 
 
-  [data-part="dash-note"] {
+  .Note {
     position: sticky;
     inset-block-start: 30vh;
     translate: 0 -50%;
@@ -558,7 +558,7 @@
      Since the note is translated upward by half its measured height, include
      that half-height in the sticky inset and preserve a 0.9375rem clearance. */
   @container (inline-size < 48rem) {
-    [data-part="dash-note"] {
+    .Note {
       font-size: .875rem;
       inset-block-start: max(
         30vh,
@@ -573,7 +573,7 @@
     margin-block: 0 clamp(1.5rem, 4vw, 2.5rem);
   }
 
-  p:not(.DashColumn) {
+  p:not(.Column) {
     margin: 0 0 1em;
     max-inline-size: 36em;
     color: var(--ui-supplement-text);
@@ -581,13 +581,13 @@
 
 
   @media (prefers-reduced-motion: no-preference) {
-    &:not([data-revealed]) p:not(.DashColumn) { opacity: 0; }
-    &[data-revealed] p:not(.DashColumn) {
+    &:not([data-revealed]) p:not(.Column) { opacity: 0; }
+    &[data-revealed] p:not(.Column) {
       animation: df-copy-in 520ms ease-out both;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :is([data-specimen-flow], [data-specimen]) { transition: none; }
+    :is(.Specimens > .Viewport > ul, [data-specimen]) { transition: none; }
   }
 }

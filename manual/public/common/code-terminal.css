@@ -16,12 +16,12 @@
  * KEEP_STANDALONE，否則 inline 後會被 prune）。
  */
 
-:where(figure[data-component="code-pane"], .CodeTerminal) {
+:where(figure.CodePane, .CodeTerminal) {
   background: var(--code-bg, #0e0e10);
   color: var(--code-fg, color-mix(in srgb, #e8e8e3 90%, transparent));
 }
 
-:where(figure[data-component="code-pane"], .CodeTerminal) pre {
+:where(figure.CodePane, .CodeTerminal) pre {
   /* 碼不折行——長行橫向捲。`overflow-x` 要下在 `<pre>` 這個區塊上而不是裡面的
      `<code>`：非替換的行內盒吃不到 overflow。 */
   overflow-x: auto;
@@ -30,10 +30,10 @@
      的洞。碼一律左齊，當防呆留著。 */
   text-align: start;
   color: var(--code-fg, color-mix(in srgb, #e8e8e3 90%, transparent));
-  font-family: var(--font-mono, var(--han-monospace, ui-monospace, monospace));
+  font-family: var(--han-monospace);
 }
 
-:where(figure[data-component="code-pane"], .CodeTerminal) code {
+:where(figure.CodePane, .CodeTerminal) code {
   background: transparent;
   padding: 0;
 }
@@ -44,7 +44,7 @@
      · 紅  = seal，全頁唯一的離群色，留給數字這種要一眼跳出來的量
    其餘交給 mist 的三個濃度：正文、註解、標點各一階。色相都取 `-bright` 那一
    支：盒是恆黑的，深色側的值才有對比。 */
-:where(figure[data-component="code-pane"], .CodeTerminal) code {
+:where(figure.CodePane, .CodeTerminal) code {
   &::highlight(code-comment) { color: var(--code-comment, color-mix(in srgb, #e8e8e3 38%, transparent)); }
   &::highlight(code-punct)   { color: var(--code-punct, color-mix(in srgb, #e8e8e3 55%, transparent)); }
   &::highlight(code-keyword) { color: var(--code-keyword, #3f9d6f); }

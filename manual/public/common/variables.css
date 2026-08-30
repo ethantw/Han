@@ -10,9 +10,9 @@
  * may read. Plus the type ramp, radii, layout measures and the icon
  * `shape()` paths.
  *
- * Type itself comes from Han.css's own `--han-font-*` composites (the
- * site dogfoods the framework); `--font-mono` is the one site-local
- * stack, since the framework has no mono slot.
+ * Type itself comes from Han.css's own composites, including
+ * `--han-monospace`; the site dogfoods the framework rather than maintaining
+ * a parallel font stack.
  *
  * The dark trigger is NOT here — each entry declares its own (both flip
  * the same `color-scheme`, so every `light-dark()` below re-resolves).
@@ -23,10 +23,6 @@
  */
 
 :root {
-  /* Mono is the one site-local type stack (the framework has no mono
-     slot); everything else comes from Han.css's `--han-font-*` vars. */
-  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-
   /* ── colour primitives ──────────────────────────────────────────
    * Raw swatches, named by appearance, theme-INVARIANT. NEVER consumed
    * by a component — only the `--ui-*` layer below does that

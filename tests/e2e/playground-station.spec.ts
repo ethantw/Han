@@ -18,7 +18,7 @@ const KEY = 'han-playground-src'
  * the sheet's direct, non-clone paper so a new lens cannot double every
  * assertion again. */
 const $paper = (page: Page) =>
-  page.locator('#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])')
+  page.locator('#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone])')
 const $preview = (page: Page) => $paper(page).locator('[data-pg-preview]')
 const $src = (page: Page) => page.locator('#station-playground [data-pg-src]')
 /** Type source into the textarea. Both panes are always on stage now — the
@@ -186,7 +186,7 @@ test.describe('station⑤ playground', () => {
       page.evaluate(() => {
         const $rail = document.querySelector('#station-playground [data-pg-panes]')!
         const $card = document.querySelector(
-          '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
+          '#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone])',
         )!
         const $g = $card.querySelector('[data-pg-preview]')!
         const gs = getComputedStyle($g)
@@ -248,7 +248,7 @@ test.describe('station⑤ playground', () => {
     const small = await $lens.evaluate((lens) => {
       const style = getComputedStyle(lens)
       const galley = getComputedStyle(document.querySelector(
-        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
+        '#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
       )!)
       const magnifiedColumn = Number.parseFloat(galley.columnWidth)
         * Number.parseFloat(style.getPropertyValue('--lens-zoom'))
@@ -265,7 +265,7 @@ test.describe('station⑤ playground', () => {
     const centre = () =>
       page.evaluate(() => {
         const c = document.querySelector(
-          '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
+          '#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone])',
         )!.getBoundingClientRect()
         const l = document.querySelector('#station-playground [data-mag-lens]')!.getBoundingClientRect()
         return Math.round(l.y + l.height / 2 - c.y)
@@ -292,7 +292,7 @@ test.describe('station⑤ playground', () => {
     await $paper(page).hover({ position: { x: 200, y: 320 } })
     const off = await page.evaluate(() => {
       const $h = document.querySelector(
-        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
+        '#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone])',
       )!
       let $frame = $h.parentElement!
       while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
@@ -333,7 +333,7 @@ test.describe('station⑤ playground', () => {
       // where the cards stack, and a loupe that crosses from the 橫排 card into
       // the 直排 one magnifies the comparison this station is making.
       ['Prose', true, 0],
-      ['PgPaper', true, 0],
+      ['Paper', true, 0],
     ])
   })
 
@@ -353,9 +353,9 @@ test.describe('station⑤ playground', () => {
         })
       }
       const $src = document.querySelector(
-        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
+        '#station-playground .Sheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
       )!
-      const $copy = document.querySelector('#station-playground [data-lens-clone] .PgGalley')!
+      const $copy = document.querySelector('#station-playground [data-lens-clone] .Galley')!
       const zoom = Number.parseFloat(
         getComputedStyle(document.querySelector('#station-playground [data-mag-lens]')!)
           .getPropertyValue('--lens-zoom'),
@@ -385,7 +385,7 @@ test.describe('station⑤ playground', () => {
 
     // The preview must be a descendant of main (so it inherits config).
     expect(await main.locator(
-      '.PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
+      '.Sheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
     ).count()).toBe(1)
 
     await openGroupOf(page, 'squeeze')

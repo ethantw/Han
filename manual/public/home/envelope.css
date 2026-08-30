@@ -94,8 +94,8 @@
      padding 與 inset 的百分比都對包含塊的 inline 尺寸解析，而包含塊
     （.Envelope 本身）是橫排的——它的 inline 尺寸就是寬。直排的是這兩個盒子
      自己，不是它們的包含塊。 */
-  [data-part="recipient"],
-  [data-part="sender"] {
+  .Recipient,
+  .Sender {
     position: absolute;
     writing-mode: vertical-rl;
     margin: 0;
@@ -103,7 +103,7 @@
     word-break: keep-all;   /* 欄只在全形空白處折 */
   }
 
-  [data-part="recipient"] {
+  .Recipient {
     & {
       inset: 0;
       padding-block: 9.8% 45.7%;   /* 右／左（左邊留給差出人） */
@@ -112,7 +112,7 @@
       line-height: 2.1;
     }
 
-    p { margin: 0; }
+    > span { display: block; }
 
     /* 收件人欄——像參考信封的「山田太郎様」那樣從頭上掉下來 */
     [data-name] {
@@ -132,7 +132,7 @@
 
   /* 差出人維持斜體——han.css 只為 CJK 取消偽斜體，這一塊是那條規則的另一半，
      現在只當紋理看，不再當樣張（可讀的那一份該去文件頁，見 docs/TODO.md）。 */
-  [data-part="sender"] {
+  .Sender {
     inset-block-end: 7.2%;    /* 直排下 ＝ 左 */
     inset-inline-end: 4.3%;   /* 直排下 ＝ 下 */
     font-size: calc(var(--_env-b) * .025);

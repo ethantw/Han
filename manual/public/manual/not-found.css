@@ -14,7 +14,7 @@ body.NotFoundPage {
     text-align: center;
   }
 
-  [data-part="code"] {
+  .Code {
     margin-block: 0;
     font-family: var(--han-font-latin-sans), sans-serif;
     font-size: 5rem;
@@ -37,7 +37,7 @@ body.NotFoundPage {
     line-height: 1.7;
   }
 
-  [data-part="actions"] {
+  .Actions {
     & {
       display: flex;
       flex-wrap: wrap;

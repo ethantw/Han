@@ -44,6 +44,22 @@ test('docs chrome ships sidebar / crumbs / pager / page-toc / colophon', async (
   await expect(page.locator('footer.Colophon')).toBeVisible()
 })
 
+test('search results use content elements and keep keyboard dismissal', async ({ page }) => {
+  await page.goto('/manual/')
+  const search = page.locator('.SiteSearch input[type="search"]')
+  await search.fill('標點')
+
+  const result = page.locator('.SiteSearch .Result').first()
+  await expect(result).toBeVisible()
+  await expect(result.locator(':scope > strong.Title')).toHaveCount(1)
+  await expect(result.locator(':scope > p.Snippet')).toHaveCount(1)
+  await expect(page.locator('.SiteSearch .Status')).toHaveAttribute('role', 'status')
+  await expect(page.locator('.SiteSearch footer.Foot')).toHaveCount(1)
+
+  await page.keyboard.press('Escape')
+  await expect(page.locator('.SiteSearch > .Panel')).toBeHidden()
+})
+
 test('active sidebar entry on /manual/ has aria-current="page"', async ({ page }) => {
   await page.goto('/manual/')
   const active = page.locator('nav.Sidebar a[aria-current="page"]')

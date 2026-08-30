@@ -4,6 +4,7 @@ import { html } from 'hyperly/fp'
 import {
   refinePunctuation,
   refinePunctuationWithMode,
+  isCompressiblePair,
   wrapHangable,
 } from '../line-adjustments/punctuation.ts'
 
@@ -66,6 +67,18 @@ test('mode "compress" matches the legacy compressPunctuation shape', () => {
   )
 })
 
+test('pair classifier includes CJK marks/interpuncts and excludes fullwidth symbols', () => {
+  for (const pair of ['》《', '。」', '。？', '》，', '，「', '。・', '，·'])
+    assert.equal(isCompressiblePair(...[...pair] as [string, string]), true, pair)
+  for (const pair of ['。／', '、－', '，＼', '。ー', '。漢'])
+    assert.equal(isCompressiblePair(...[...pair] as [string, string]), false, pair)
+})
+
+test('compress: only a genuinely compressible inner seam gets a marker', () => {
+  assert.match(refine('compress')('<p>》《。／</p>'), /data-squeeze-next="open"/)
+  assert.doesNotMatch(refine('compress')('<p>。／</p>'), /data-squeeze-next/)
+})
+
 test('mode "hang" matches the legacy hangPunctuation shape', () => {
   assert.equal(
     refine('hang')('<p>句子。</p>'),
@@ -100,7 +113,7 @@ test('auto: 「字。」 — 。 followed by 」 (close) → NOT hangable', () =
     '<p>'
       + '<h-char data-punct="open">「</h-char>'
       + '字'
-      + '<h-char data-punct="end consecutive" data-consecutive-pos="start">。</h-char>'
+      + '<h-char data-punct="end consecutive" data-consecutive-pos="start" data-squeeze-next="close">。</h-char>'
       + '<h-char data-punct="close end consecutive" data-consecutive-pos="end">」</h-char>'
       + '</p>',
   )
@@ -113,7 +126,7 @@ test('auto: 字。「字 — 。 inside a run, next char is open → STILL hanga
   assert.equal(
     refine('auto')('<p>句。「字</p>'),
     '<p>句'
-      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open" data-squeeze-next="open"><h-layer>。</h-layer></h-char>'
       + '<h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char>'
       + '字</p>',
   )
@@ -125,7 +138,7 @@ test('auto: 」、 at paragraph end — 、 is run-end + EOS, hangable', () => {
   assert.equal(
     refine('auto')('<p>字」、</p>'),
     '<p>字'
-      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start">」</h-char>'
+      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start" data-followed-by="hangable" data-squeeze-next="hangable">」</h-char>'
       + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="end"><h-layer>、</h-layer></h-char>'
       + '</p>',
   )
@@ -137,7 +150,7 @@ test('auto: cross-element run with a hangable end', () => {
   assert.equal(
     refine('auto')('<p>字。<b>「</b>字</p>'),
     '<p>字'
-      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open" data-squeeze-next="open"><h-layer>。</h-layer></h-char>'
       + '<b><h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char></b>'
       + '字</p>',
   )
@@ -150,10 +163,10 @@ test('auto: 「『字』」 — depth-2 quotes, no hangable mark involved', () =
   assert.equal(
     refine('auto')('<p>「『字』」</p>'),
     '<p>'
-      + '<h-char data-punct="open consecutive" data-consecutive-pos="start">「</h-char>'
+      + '<h-char data-punct="open consecutive" data-consecutive-pos="start" data-squeeze-next="open">「</h-char>'
       + '<h-char data-punct="open consecutive" data-consecutive-pos="end">『</h-char>'
       + '字'
-      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start">』</h-char>'
+      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start" data-squeeze-next="close">』</h-char>'
       + '<h-char data-punct="close end consecutive" data-consecutive-pos="end">」</h-char>'
       + '</p>',
   )
@@ -226,7 +239,7 @@ test('auto: ，(in <em>) + 。(outside) form a single consecutive run', () => {
   assert.equal(
     refine('auto')('<p><em>字，</em>。</p>'),
     '<p><em>字'
-      + '<h-char data-punct="end consecutive" data-consecutive-pos="start">，</h-char>'
+      + '<h-char data-punct="end consecutive" data-consecutive-pos="start" data-followed-by="hangable" data-squeeze-next="hangable">，</h-char>'
       + '</em>'
       + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="end"><h-layer>。</h-layer></h-char>'
       + '</p>',
@@ -415,7 +428,7 @@ test('followed-by: auto reports it too, on the hangable mark only', () => {
   assert.equal(
     refine('auto')('<p>字。「字</p>'),
     '<p>字'
-      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open"><h-layer>。</h-layer></h-char>'
+      + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="start" data-followed-by="open" data-squeeze-next="open"><h-layer>。</h-layer></h-char>'
       + '<h-char data-punct="open consecutive" data-consecutive-pos="end">「</h-char>'
       + '字</p>',
   )
@@ -451,6 +464,16 @@ test('preceded-by: an end mark 。 before hangable ， is a squeezer too', () =>
     refineSqueeze('<p>。，要</p>'),
     '<p>'
       + '<h-char data-punct="end" data-followed-by="hangable">。</h-char>'
+      + '<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>'
+      + '要</p>',
+  )
+})
+
+test('preceded-by: browser native path uses the complete pair table', () => {
+  assert.equal(
+    refineSqueeze('<p>？，要</p>'),
+    '<p>'
+      + '<h-char data-punct="end" data-followed-by="hangable">？</h-char>'
       + '<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>'
       + '要</p>',
   )

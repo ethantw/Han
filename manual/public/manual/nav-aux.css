@@ -30,7 +30,7 @@
 
   [aria-current='page'] { color: var(--ink) }
 
-  [data-part="sep"] { color: var(--ink-faint) }
+  .Sep { color: var(--ink-faint) }
 }
 
 
@@ -65,18 +65,18 @@
     }
   }
 
-  a[data-direction="next"] { text-align: end }
+  a[rel="next"] { text-align: end }
 
   /* Empty cell that keeps the grid balanced when only one direction
      exists. */
-  [data-part="spacer"] { /* placeholder — its only job is to occupy a column */ }
+  .Spacer { /* placeholder — its only job is to occupy a column */ }
 
-  [data-part="hint"] {
+  .Hint {
     font-size: 0.75rem;
     color: var(--ink-mute);
   }
 
-  [data-part="title"] {
+  .Title {
     font-family: var(--han-font-alternative);
     font-size: 0.875rem;
     color: var(--accent-deep);

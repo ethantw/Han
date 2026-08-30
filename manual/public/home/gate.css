@@ -38,13 +38,13 @@
    fallback face renders perfectly, no webfont needed. The Topbar's
    `漢字標準格式` subtitle is NOT re-lit: it's CJK, and showing it in a
    system face is exactly the ugliness the gate exists to hide. */
-:root[data-fonts-gate='loading'] .Brand [data-part="dot"] {
+:root[data-fonts-gate='loading'] .Brand .Dot {
   &,
   &::first-line {
     color: var(--ui-accent) !important;
   }
 }
-:root[data-fonts-gate='loading'] .Brand [data-part="ext"] {
+:root[data-fonts-gate='loading'] .Brand .Ext {
   &,
   &::first-line {
     color: var(--ui-text) !important;

@@ -106,27 +106,6 @@
   }
 }
 
-/* The line that says how the loupe works. It is the only place the page
-   mentions it, since the gesture replaced the switch — so it is on stage for
-   both pointers, not just for touch. Copy lives in the markup (`lensHintHover`
-   ／`lensHint`, home/_shared.html); this only dresses it, and picks the one
-   that matches the pointer: the two gestures are genuinely different now
-   （點一下張開／雙擊開關），so one sentence cannot cover both. */
-.LensHint {
-  & {
-    margin-block: 0.75rem 0;
-    font-size: 0.75rem;
-    color: var(--ui-supplement-text-3q);
-  }
-
-  [data-pointer="fine"] { display: none; }
-
-  @media (hover: hover) and (pointer: fine) {
-    [data-pointer="fine"] { display: inline; }
-    [data-pointer="coarse"] { display: none; }
-  }
-}
-
 /* 有 hover 的指標：游標自己就是說明書。小口徑時是放大鏡（`zoom-in`，「按了會
    放大」），張開之後換成縮小鏡（`zoom-out`，「再按就收起來」），關掉才回到
    一般游標——那也正是**唯一反白得了字**的狀態：鏡片開著時複本疊在上面，拖出來

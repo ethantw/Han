@@ -13,8 +13,8 @@ import { test, expect, type Page } from '@playwright/test'
  * consume this one event). Kept in sync by hand here on purpose: a drift
  * fails this test loudly.
  *
- * These are the 23 config-object keys (what the event carries), not the
- * 26 `data-cfg-key` DOM controls — `punct` is one config key spread over
+ * These are the 25 config-object keys (what the event carries), not the
+ * 35 `data-cfg-key` DOM controls — `punct` is one config key spread over
  * four selects (hant/hans/ja/ko), `autospace` is one key behind the
  * autospaceOn + autospaceMode pair, and `metrics` (size/leading/weight)
  * rides in from the 度量 sliders with no `data-cfg-key` control at all.
@@ -28,7 +28,7 @@ const DEFAULT_KEYS = [
   'semantics', 'citeTitleMarks', 'emSymbol', 'emPosition',
   'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
-  'zhuyinWebfont', 'zhuyinPosition', 'baseGeneric', 'fallbacks', 'jsMode',
+  'zhuyinWebfont', 'zhuyinPosition', 'fallbacks', 'jsMode',
   // 逐函式取捨（jsMode='manual' 時才有意義），掛在 fallbacks 底下。與
   // heritage／punct 同樣是一個巢狀物件，控件用 `fn.<id>` 的點路徑對應。
   'fn',
@@ -76,6 +76,19 @@ test.describe('bare fixture — no home.css', () => {
       .poll(() => page.evaluate(() =>
         document.documentElement.style.getPropertyValue('--han-punctuation-refinement')))
       .toBe('hang')
+  })
+
+  test('metric ranges own their visual tracks without decorative light DOM', async ({ page }) => {
+    await page.goto('/tests/e2e/fixtures/console-fixture.html')
+
+    const slider = page.locator('.MetricSlider').first()
+    const range = slider.locator(':scope > input[type="range"]')
+    await expect(range).toHaveCount(1)
+    await expect(slider.locator('[role="presentation"], [data-pg-slider-fill]')).toHaveCount(0)
+
+    await range.fill('24')
+    await expect.poll(() => slider.evaluate(el =>
+      (el as HTMLElement).style.getPropertyValue('--metric-fill'))).toBe('100%')
   })
 })
 

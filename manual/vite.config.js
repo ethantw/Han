@@ -12,6 +12,7 @@ import { cjkEmphasis } from './_md-cjk-emphasis.js'
 import { specificity, splitTopLevel } from './_specificity.js'
 import { headings, renderPageToc } from './_md-headings.js'
 import { ssrSpecimen } from './ssr-specimen.js'
+import { renderPunctuationSqueezePage } from './punctuation-squeeze-page.js'
 import {
   DEFAULT_LOCALE as HOME_DEFAULT_LOCALE,
   ALL_LOCALES as HOME_LOCALE_SLUGS,
@@ -320,6 +321,7 @@ const HOME_CONSOLE = path.resolve(HOME_DIR, 'console.html')
 // 對照表。刪了：太醜、示例意義不大，樣張頁承擔得了同一件事，owner 拍板。）
 const DEMO_DIR = path.resolve(here, 'demo')
 const SPECIMEN_FILE = 'specimen.html'
+const PUNCTUATION_SQUEEZE_FILE = 'punctuation-squeeze.html'
 const RUBY_ZHUYIN_CONFIG_FILE = 'ruby-zhuyin-config.html'
 
 const md = new MarkdownIt({
@@ -367,8 +369,8 @@ const FRAMEWORK_ASSETS = [
   // home/ledger.js as the console's switches move (build/pass-sizes.js).
   'pass-sizes.json',
   'em-space.woff2',
-  'zhuyin.serif.woff2',
   'metrics.woff2',
+  'zhuyin.serif.woff2',
 ]
 
 async function syncFramework() {
@@ -675,23 +677,23 @@ async function renderMarkdownTree() {
     const parts = []
     if (meta.prev) {
       parts.push(
-        `<a data-direction="prev" href="${urlFor(meta.prev.id, locale)}">` +
-        `<span data-part="hint">${escapeHtml(prevLabel)}</span>` +
-        `<span data-part="title">${escapeHtml(meta.prev.title)}</span>` +
+        `<a rel="prev" href="${urlFor(meta.prev.id, locale)}">` +
+        `<span class="Hint">${escapeHtml(prevLabel)}</span>` +
+        `<span class="Title">${escapeHtml(meta.prev.title)}</span>` +
         `</a>`,
       )
     } else {
-      parts.push('<span data-part="spacer"></span>')
+      parts.push('<span class="Spacer" aria-hidden="true"></span>')
     }
     if (meta.next) {
       parts.push(
-        `<a data-direction="next" href="${urlFor(meta.next.id, locale)}">` +
-        `<span data-part="hint">${escapeHtml(nextLabel)}</span>` +
-        `<span data-part="title">${escapeHtml(meta.next.title)}</span>` +
+        `<a rel="next" href="${urlFor(meta.next.id, locale)}">` +
+        `<span class="Hint">${escapeHtml(nextLabel)}</span>` +
+        `<span class="Title">${escapeHtml(meta.next.title)}</span>` +
         `</a>`,
       )
     } else {
-      parts.push('<span data-part="spacer"></span>')
+      parts.push('<span class="Spacer" aria-hidden="true"></span>')
     }
     return (meta.prev || meta.next) ? `<nav class="Pager">${parts.join('')}</nav>` : ''
   }
@@ -855,22 +857,6 @@ async function renderHomepage() {
     let html = applySubs(layout.body, { ...ctx, ...sections })
     html = html.replace(/\{\{\s*[\w-]+\s*\}\}/g, '')
     html = fillSpecificity(html)
-    // Keep only the shared newspaper mastheads from the old four-edition
-    // continuations. They are tiny inert templates; the reader clones the
-    // matching one on demand, while every full body still arrives separately
-    // from /articles/. This reuses PaperHead's real DOM component instead of
-    // rebuilding a second, almost-the-same masthead in JavaScript.
-    const readerHeads = [...html.matchAll(
-      /<dialog class="Full" id="paper-(hant|hans|ja|ko)-full"[\s\S]*?(<header class="PaperHead">[\s\S]*?<\/header>)/g,
-    )].map(([, edition, head]) =>
-      `<template id="paper-reader-head-${edition}">${head}</template>`,
-    ).join('')
-    html = html.replace('</body>', `${readerHeads}</body>`)
-
-    // Never ship the four legacy full copies: all reports now arrive through
-    // /articles/ on demand.
-    html = html.replace(/\s*<dialog class="Full"[\s\S]*?<\/dialog>/g, '')
-
     const outPath = locale === HOME_DEFAULT_LOCALE
       ? path.join(HTML_ROOT, 'index.html')
       : path.join(HTML_ROOT, locale, 'index.html')
@@ -1000,6 +986,17 @@ async function renderSpecimenPages() {
   await fs.writeFile(path.join(HTML_ROOT, 'specimen.ssr.prebuilt.html'), prerendered)
 }
 
+/** Focused punctuation fixture: one source, with its SSR column produced by
+ * the real Node fallback pass for both build and dev requests. */
+async function renderPunctuationSqueezeFixture() {
+  const src = await fs.readFile(path.join(DEMO_DIR, PUNCTUATION_SQUEEZE_FILE), 'utf-8')
+  await fs.mkdir(HTML_ROOT, { recursive: true })
+  await fs.writeFile(
+    path.join(HTML_ROOT, PUNCTUATION_SQUEEZE_FILE),
+    await renderPunctuationSqueezePage(src),
+  )
+}
+
 /** Public zhuyin-ruby configurator. Keep its production URL equal to the dev
  * workbench URL so shared links and saved instructions do not change at ship. */
 async function renderShippedDemoPages() {
@@ -1066,24 +1063,24 @@ function renderHomeLangSwitcher(active, slugs, labels, t) {
     const href = slug === 'hant' ? '/' : `/${slug}/`
     const isActive = slug === active
     return `<li><a href="${href}"${isActive ? ' class="is-active"' : ''} data-lang="${slug}">
-      <span data-part="flag">${escapeHtml(lab.flag)}</span>
-      <span data-part="texts">
-        <span data-part="full">${escapeHtml(lab.full)}</span>
-        <span data-part="code">${slug}</span>
+      <span class="Flag">${escapeHtml(lab.flag)}</span>
+      <span class="Texts">
+        <span class="Full">${escapeHtml(lab.full)}</span>
+        <span class="Code">${slug}</span>
       </span>
-      ${isActive ? '<span data-part="check" data-icon="check" aria-hidden="true"></span>' : ''}
+      ${isActive ? '<span class="Check" data-icon="check" aria-hidden="true"></span>' : ''}
     </a></li>`
   }).join('')
 
-  return `<div class="LangSwitcher" data-lang-switcher>
+  return `<div class="LangSwitcher">
     <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="${escapeAttr(t.langSwitcherLabel)}">
-      <span data-part="icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
-      <span data-part="caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
+      <span class="Icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
+      <span class="Caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
     </button>
     <ul hidden>
-      <li data-part="label">${escapeHtml(t.langSwitcherLabel)}</li>
+      <li class="Label">${escapeHtml(t.langSwitcherLabel)}</li>
       ${items}
-      <li data-part="foot">
+      <li class="Foot">
         <span aria-hidden="true">※</span>
         <span>${escapeHtml(t.langSwitcherFoot)}</span>
       </li>
@@ -1102,6 +1099,7 @@ function hanManualPlugin() {
       await renderHomepage()
       await render404()
       await renderSpecimenPages()
+      await renderPunctuationSqueezeFixture()
       await renderShippedDemoPages()
       for (const slug of HOME_ARTICLES) {
         for (const edition of Object.keys(ARTICLE_LANG_DIR)) {
@@ -1238,7 +1236,9 @@ function hanManualPlugin() {
         // `path.resolve` collapses `..`, so the prefix check is what keeps a
         // crafted URL inside the directory.
         if (!type || !file.startsWith(DEMO_DIR + path.sep) || !existsSync(file)) return next()
-        const body = await fs.readFile(file, 'utf-8')
+        let body = await fs.readFile(file, 'utf-8')
+        if (pathname === `/demo/${PUNCTUATION_SQUEEZE_FILE}`)
+          body = await renderPunctuationSqueezePage(body)
         res.setHeader('content-type', type)
         res.setHeader('cache-control', 'no-store')
         res.end(type.startsWith('text/html') ? substituteEnv(body) : body)
@@ -1375,6 +1375,7 @@ async function collectHtmlEntries() {
   await renderHomepage()
   await render404()
   await renderSpecimenPages()
+  await renderPunctuationSqueezeFixture()
   await renderShippedDemoPages()
   const inputs = {}
   for await (const file of glob('**/*.html', { cwd: HTML_ROOT })) {

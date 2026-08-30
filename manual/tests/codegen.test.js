@@ -194,19 +194,6 @@ test('emPosition under → under right', () => {
   )
 })
 
-test('baseGeneric serif → cdn／bundler 的 css pane 皆含 body 覆寫規則', () => {
-  const c = cfg({ baseGeneric: 'serif' })
-  const rule = 'body { font-family: var(--han-font-alternative); }'
-  assert.ok(paneCode(renderCDN(c), 'css').includes(rule))
-  assert.ok(paneCode(renderBundler(c, 'pnpm'), 'css').includes(rule))
-})
-
-test('baseGeneric 預設 sans-serif → 兩分頁皆無 body 覆寫規則（css pane 缺席）', () => {
-  const rule = 'body { font-family: var(--han-font-alternative); }'
-  assert.ok(!paneCode(renderCDN(DEFAULTS), 'css').includes(rule))
-  assert.ok(!pane(renderBundler(DEFAULTS, 'pnpm'), 'css'))
-})
-
 test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', () => {
   const css = paneCode(renderCDN(cfg({ proseScope: 'main.doc<{};>' })), 'css')
   assert.ok(css.includes('main.doc { --han-prose: on; }'))
@@ -215,8 +202,8 @@ test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', 
 })
 
 /* ── 度量 slider → body 規則 ──────────────────────────────────
- * 字級/行高/字重只在偏離出廠基準時進生成碼，合成單一 body { }（baseGeneric
- * serif 的 font-family 也併入同一條）。無偏差 → 無 body 規則。 */
+ * 字級/行高/字重只在偏離出廠基準時進生成碼，合成單一 body { }。
+ * 無偏差 → 無 body 規則。 */
 
 test('度量偏差（size 18／leading 1.6）→ css pane 含 body 塊，無 :root（無變數偏差）', () => {
   const c = cfg({ metrics: { size: 18, leading: 1.6, weight: 400 } })
@@ -232,15 +219,6 @@ test('度量 leading 整數/小數格式（2 → "2"、1.8 → "1.8"）', () => 
     .includes('line-height: 2;'))
   assert.ok(paneCode(renderCDN(cfg({ metrics: { size: 16, leading: 1.8, weight: 400 } })), 'css')
     .includes('line-height: 1.8;'))
-})
-
-test('度量偏差 ＋ baseGeneric serif → 單一 body 規則含 font-family 與度量行（不重複 body）', () => {
-  const c = cfg({ baseGeneric: 'serif', metrics: { size: 18, leading: 1.75, weight: 700 } })
-  const css = paneCode(renderCDN(c), 'css')
-  assert.ok(css.includes('font-family: var(--han-font-alternative)'))
-  assert.ok(css.includes('font-size: 18px'))
-  assert.ok(css.includes('font-weight: 700'))
-  assert.equal((css.match(/body \{/g) ?? []).length, 1)
 })
 
 test('全預設度量 → 無 body 規則（cdn／bundler 皆同）', () => {
@@ -306,13 +284,10 @@ test('全模組 off 但勾 fallbacks → bash pane 仍列 han.css（JS 需要）
 
 test('cdn：panes 順序固定 html→css；全預設只有 html（css 缺席）', () => {
   assert.deepEqual(langs(renderCDN(DEFAULTS)), ['html'])
-  assert.deepEqual(langs(renderCDN(cfg({ baseGeneric: 'serif' }))), ['html', 'css'])
 })
 
 test('bundler：panes 順序固定 bash→js→css→html；全預設 webfontDelivery=cdn 已含 html（css 仍缺席）', () => {
   assert.deepEqual(langs(renderBundler(DEFAULTS, 'pnpm')), ['bash', 'js', 'html'])
-  const full = cfg({ baseGeneric: 'serif' })
-  assert.deepEqual(langs(renderBundler(full, 'pnpm')), ['bash', 'js', 'css', 'html'])
 })
 
 test('bundler：字體全關（heritage/cursive/punct off）webfontDelivery=cdn 也不生 html pane', () => {

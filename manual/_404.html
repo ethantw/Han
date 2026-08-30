@@ -34,8 +34,8 @@
 <body class="NotFoundPage" data-locale="{{ locale }}">
 <header class="Masthead">
   <a class="Brand" data-size="md" href="{{ homeUrl }}">
-    <span data-part="mark">漢</span><span data-part="dot">.</span><span data-part="ext">css</span>
-    <span data-part="ver">v{{ version }}</span>
+    <span class="Mark">漢</span><span class="Dot">.</span><span class="Ext">css</span>
+    <span class="Version">v{{ version }}</span>
   </a>
   <nav>
     <a href="{{ homeUrl }}">{{ homeLink }}</a>
@@ -65,12 +65,12 @@
   </nav>
 </header>
 <main class="NotFound">
-  <p data-part="code" aria-hidden="true">404</p>
+  <p class="Code" aria-hidden="true">404</p>
   <h1>{{ notFoundTitle }}</h1>
   <p>{{ notFoundBody }}</p>
-  <p data-part="actions">
-    <a href="{{ homeUrl }}" data-action="home">{{ notFoundBackHome }}</a>
-    <a href="{{ docsUrl }}" data-action="docs">{{ notFoundBackDocs }}</a>
+  <p class="Actions">
+    <a href="{{ homeUrl }}">{{ notFoundBackHome }}</a>
+    <a href="{{ docsUrl }}">{{ notFoundBackDocs }}</a>
   </p>
 </main>
 </body>

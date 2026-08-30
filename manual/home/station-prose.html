@@ -71,14 +71,14 @@
        prose 的旗標種在 `:where(article)` 上，`:root` 撥不到，實際的
        `article { --han-prose: off }` 在 common/module-state.css；這顆按下去
        只是把 `<html>` 的狀態屬性與 console 的設定一起翻面。 -->
-  <header class="ProseControls">
+  <header class="Controls">
     <label class="Toggle for-prose">
       <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
       <span>{{ prProseToggle }}</span>
       <small>{{ prProseHint }}</small>
     </label>
 
-    <nav class="ProseNav ProseNav--top" data-strip-nav="prose" aria-label="兩篇平移（上方）">
+    <nav class="Nav Top" data-strip-nav="prose" aria-label="兩篇平移（上方）">
       <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
         <span data-icon="chevron" aria-hidden="true"></span>
       </button>
@@ -309,7 +309,7 @@
   </div>
   <!-- outside .Prose deliberately: in there `.Prose > p` owns the type, and
        this line is chrome, not specimen copy. -->
-  <nav class="ProseNav" data-strip-nav="prose" aria-label="兩篇平移">
+  <nav class="Nav" data-strip-nav="prose" aria-label="兩篇平移">
     <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
       <span data-icon="chevron" aria-hidden="true"></span>
     </button>
@@ -317,5 +317,4 @@
       <span data-icon="chevron" aria-hidden="true"></span>
     </button>
   </nav>
-  <p class="LensHint"><span data-pointer="fine">{{ lensHintHover }}</span><span data-pointer="coarse">{{ lensHint }}</span></p>
 </section>

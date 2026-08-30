@@ -16,16 +16,16 @@ const MAX_RESULTS = 8
 const PAGEFIND_URL = '/pagefind/pagefind.js'
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.querySelector('[data-search]')
+  const root = document.querySelector('.SiteSearch')
   if (!root) return
   initSearch(root)
 })
 
 function initSearch(root) {
-  const input    = root.querySelector('[data-search-input]')
-  const panel    = root.querySelector('[data-search-panel]')
-  const statusEl = root.querySelector('[data-search-status]')
-  const resultsEl = root.querySelector('[data-search-results]')
+  const input = root.querySelector('input[type="search"]')
+  const panel = root.querySelector(':scope > .Panel')
+  const statusEl = panel?.querySelector(':scope > .Status')
+  const resultsEl = panel?.querySelector(':scope > ol')
   if (!input || !panel || !resultsEl) return
 
   const i18n = {
@@ -98,11 +98,11 @@ function initSearch(root) {
       a.href = it.url
       a.setAttribute('role', 'option')
       a.dataset.idx = String(i)
-      const crumbs = it.crumbs ? `<div data-part="crumbs">${escape(it.crumbs)}</div>` : ''
-      const title  = `<div data-part="title">${escape(it.title)}</div>`
+      const crumbs = it.crumbs ? `<small class="Crumbs">${escape(it.crumbs)}</small>` : ''
+      const title  = `<strong class="Title">${escape(it.title)}</strong>`
       // Pagefind excerpt is HTML with <mark> tags already in it.
       const snippet = it.excerpt
-        ? `<div data-part="snippet">${it.excerpt}</div>`
+        ? `<p class="Snippet">${it.excerpt}</p>`
         : ''
       a.innerHTML = crumbs + title + snippet
       a.addEventListener('mouseenter', () => setActive(i))

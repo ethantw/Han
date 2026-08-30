@@ -261,7 +261,7 @@
         .TwoEmDashes 也載著破折號底圖（dash-fuse.css）：一柱直排
         「起身後，他沉默了四點七秒——足夠交換十萬年的知識——然後說⋯⋯」畫在
         z-index:-1（站台早有的底圖層，同 watermark）。這句話裡有**一對**破折號，
-        兩顆都是 `.DashCell`，都吃同一套 scroll 開合（`animation-timeline: view()`
+        兩顆都是 `.Cell`，都吃同一套 scroll 開合（`animation-timeline: view()`
         各自算自己的進度）。柱以 .TwoEmDashes 為包含塊，上緣切在**鉛字盤左下角
         那顆鉛字**的下緣（clip-path，切線由 dash-clip.js 量），第一顆破折號緊接
         在切線之下、兩段文案之上，第二顆在十二格之後、落在文案與四語標點之間的
@@ -292,15 +292,15 @@
 
          這句話因此成了 han.css 排的正文：背景那句裡的破折號與逗號由自家模組經手，
          比畫出來更有說服力。 -->
-    <p class="DashColumn" aria-hidden="true">他沉默了四點七秒<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>這個時間足夠三體人<span class="DashRelease">交換</span>一部《三體通史十萬<span class="DashNoteEnd">年》</span>體量的知識<span class="DashCell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
+    <p class="Column" aria-hidden="true">他沉默了四點七秒<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>這個時間足夠三體人<span class="Release">交換</span>一部《三體通史十萬<span class="NoteEnd">年》</span>體量的知識<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
     <!-- 兩段文案包一層：它們要**整塊**與第一顆破折號垂直居中，而「整塊」得先
          是一個盒（dash-fuse.css § .TwoEmDashes 的格線：破折號那一列 ＋
          `align-self: center`，高度交給引擎算）。 -->
-    <!-- 外層提供捲動時間長度，內層是唯一必要的 sticky 裁切面；標本本身就是
-         一份有次序的內容清單，不另造 stage／flow／card wrapper class。 -->
-    <div role="presentation" data-dash-specimens aria-hidden="true">
-      <div role="presentation" data-specimen-viewport>
-        <ul data-specimen-flow>
+    <!-- 外層提供捲動時間長度，內層是唯一必要的 sticky 裁切面；兩個必要盒只用
+         `.TwoEmDashes` namespace 下的短 class，標本次序則直接由內容清單表達。 -->
+    <div class="Specimens" role="presentation" aria-hidden="true">
+      <div class="Viewport" role="presentation">
+        <ul>
           <li data-specimen="interpunct" data-kind="punctuation">・</li>
           <li data-specimen="ideographic-comma-pair" data-kind="conventions" data-span="2">
             <span data-convention="moe">、</span>
@@ -328,8 +328,8 @@
         </ul>
       </div>
     </div>
-    <div data-part="dash-note-stage" role="presentation">
-      <aside data-part="dash-note">
+    <div class="NoteStage" role="presentation">
+      <aside class="Note">
         <p>{{ stTwoEmDashesP }}</p>
         <p>{{ stPunctP }}</p>
       </aside>
@@ -349,8 +349,8 @@
           --han-punctuation-* the console applies to <main>, no local override.
           Options mirror the console's sets — 慣例與文種已解耦，四格同款
           五選一：JIS·MOE·GB·KLR·off。 -->
-    <figure class="PunctLang" data-layout="rail">
-      <ul data-strip="punct-lang">
+    <figure class="PunctLang Rail">
+      <ul>
         <li lang="zh-Hant">
           <p>輪到富察・福慶發言。作為地球移民後代、出生在三體定居區的他，三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識——然後說：「我想說的是……不，『說』這個詞本身就太慢了……你們、你們地球人真的還在用嘴巴？」 <a class="PaperJump" href="/articles/telepathy-speech-rehab/hant.html" data-article="telepathy-speech-rehab" data-edition="hant" title="閱讀完整報導">閱讀完整報導</a></p>
           <label>繁<select>
@@ -393,7 +393,7 @@
         </li>
       </ul>
 
-      <nav class="PunctLangNav" data-strip-nav="punct-lang" aria-label="四語標點樣張平移">
+      <nav class="Nav" data-strip-nav="punct-lang" aria-label="四語標點樣張平移">
         <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
           <span data-icon="chevron" aria-hidden="true"></span>
         </button>

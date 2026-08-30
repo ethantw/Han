@@ -280,7 +280,7 @@
      而不是空白字元：`1em` 在這一段就是一個全形空格的寬，而且不會被排版
      （斷行、空白摺疊）動到。一個字，不是兩個：中間那一格只剩約 290px，兩個
      全形空格就把日期擠成兩行（實測 297px）。 */
-  .Dateline [data-part="lunar-era"] {
+  .Dateline .Lunar {
     margin-inline-start: 1em;
   }
 }

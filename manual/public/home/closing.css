@@ -30,7 +30,7 @@
     pointer-events: none;
   }
 
-  .ClosingHead {
+  .Head {
     & {
       display: flex;
       align-items: baseline;
@@ -39,7 +39,7 @@
 
     p {
       margin: 0;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.75rem;
       letter-spacing: 0.18em;
       color: var(--ui-accent);
@@ -53,7 +53,7 @@
     }
   }
 
-  .ClosingRoutes {
+  .Routes {
     & {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -101,7 +101,7 @@
     }
   }
 
-  .ClosingMeta {
+  .Meta {
     & {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -113,7 +113,7 @@
 
     > p {
       margin: 0;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       letter-spacing: 0.12em;
     }
   }
@@ -135,7 +135,7 @@
     }
   }
 
-  .Foot { font-family: var(--font-mono); }
+  .Foot { font-family: var(--han-monospace); }
 
   @container (inline-size >= 72rem) {
     & { padding-inline: calc((100% - var(--max-w-layout)) / 2); }
@@ -145,7 +145,7 @@
      to the side console, fold by the actual content width rather than the
      viewport width. */
   @container (inline-size < 64rem) {
-    .ClosingRoutes {
+    .Routes {
       & { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
       a:nth-child(2n + 1) { border-inline-start: 0; }
@@ -154,7 +154,7 @@
   }
 
   @container (inline-size < 44rem) {
-    .ClosingRoutes {
+    .Routes {
       & { grid-template-columns: 1fr; }
 
       a {
@@ -179,13 +179,13 @@
   @media (max-width: 44rem) {
     & { gap: 2rem; }
 
-    .ClosingHead {
+    .Head {
       align-items: flex-start;
       flex-direction: column;
       gap: 0.5rem;
     }
 
-    .ClosingMeta {
+    .Meta {
       & {
         grid-template-columns: 1fr auto;
       }
@@ -195,11 +195,11 @@
   }
 
   @media (max-width: 28rem) {
-    .ClosingMeta { grid-template-columns: 1fr; }
+    .Meta { grid-template-columns: 1fr; }
   }
 
   @container (inline-size < 28rem) {
-    .ClosingRoutes a {
+    .Routes a {
       & { grid-template-columns: 1fr auto; }
 
       span { grid-column: 1 / -1; }

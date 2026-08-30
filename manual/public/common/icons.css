@@ -6,7 +6,7 @@
  * 一顆圖標 ＝ 一個空盒 ＋ 一張 mask。**不用 inline `<svg>`**：inline SVG 的
  * 基線在 Chrome 不等於它的下緣，`vertical-align` 對它失效（實測見
  * docs/notes/2026-07-21-svg-glyph-baseline-alignment.md），而本檔的圖標全部
- * 貼著文字排，對齊就是主要需求。`brand.css` § BrandGlyph 為同一個理由已經
+ * 貼著文字排，對齊就是主要需求。`brand.css` § Brand .Glyph 為同一個理由已經
  * 走 mask 盒，這裡沿用，不新增第二種做法。
  * 順帶拿到的：`background: currentColor` 讓深淺模式、`:hover` 的 accent、
  * 停用態的 `opacity` 全部跟著既有的 `--ui-*`／`--_*` 走，圖標不必另開
@@ -14,7 +14,7 @@
  *
  * 形制（一整套，不是十來個地方各撿一顆字符）：24×24 grid、`stroke-width: 2`、
  * `fill: none`、**square 端點 ＋ miter 接角**。方頭方角的依據是本站自己的
- * 品牌記號（`_layout.html` 的 `.BrandMark` 用的正是 square/miter）——那是活字
+ * 品牌記號（`_layout.html` 的 `.Device` 用的正是 square/miter）——那是活字
  * 與明體的收筆感，圓角圖標會跟它打架。
  *
  * ── 哪些 Unicode 字符**不**換成圖標 ─────────────────────────────────

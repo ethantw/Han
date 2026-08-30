@@ -137,7 +137,7 @@
     padding: 1.25rem;
   }
   .CascadeRule + .CascadeRule { border-block-start: 1px solid var(--rule); }
-  .RuleSource {
+  .CascadeRule > .Source {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
@@ -148,10 +148,10 @@
     font-size: .72rem;
     line-height: 1.5;
   }
-  .RuleSource :is(code, output, b) {
+  .CascadeRule > .Source :is(code, output, b) {
     font-family: var(--mono);
   }
-  .RuleSource b { color: var(--mint); font-weight: 500; }
+  .CascadeRule > .Source b { color: var(--mint); font-weight: 500; }
   .Selector { margin: 0; color: var(--mint); }
   .Declaration { margin: 0; padding-inline-start: 1.5rem; }
   .Declaration.is-overridden {
@@ -362,7 +362,7 @@
       border-inline-start: 0;
       border-block-start: 1px solid var(--rule);
     }
-    .RuleSource { align-items: start; }
+    .CascadeRule > .Source { align-items: start; }
     .SizeTable {
       padding: 1rem .75rem;
       overflow-x: auto;
@@ -416,13 +416,13 @@
       </div>
       <div class="Devtools">
         <section class="CascadeRule">
-          <p class="RuleSource"><span data-framework-layer>Layer han-semantics</span><span>漢.css・<code>:where</code><output data-framework-spec>(0,2,2)</output>→<b>(0,0,0)</b></span></p>
+          <p class="Source"><span data-framework-layer>Layer han-semantics</span><span>漢.css・<code>:where</code><output data-framework-spec>(0,2,2)</output>→<b>(0,0,0)</b></span></p>
           <p class="Selector">:where(<span data-framework-selector>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</span>) {</p>
           <p class="Declaration is-overridden" data-framework-declaration>margin-inline-end: .125em;</p>
           <p class="Selector">}</p>
         </section>
         <section class="CascadeRule">
-          <p class="RuleSource"><span>未分層</span><span>開發者的樣式・<output data-author-spec>(0,1,1)</output></span></p>
+          <p class="Source"><span>未分層</span><span>開發者的樣式・<output data-author-spec>(0,1,1)</output></span></p>
           <p class="Selector"><span data-author-selector>.notes cite</span> {</p>
           <p class="Declaration" data-author-declaration>margin-inline-end: 0;</p>
           <p class="Selector">}</p>

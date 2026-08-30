@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant" data-writing="horizontal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>標點擠壓幾何測試</title>
+<link rel="stylesheet" href="/han/han.css">
+<style>
+  @font-face {
+    font-family: 'Han Punctuation Metrics';
+    src: url('/test/punctuation-metrics.woff2') format('woff2');
+    font-display: block;
+  }
+
+  :root {
+    color-scheme: light dark;
+    --han-punctuation-refinement: auto;
+    --han-punctuation-hant: JIS;
+    --han-use-heritage-glyphs-for-hant: system-ja;
+    --han-q-quotes: on;
+    --han-cite-title-marks: bracket;
+    --han-semantics: on;
+    font-family: system-ui, sans-serif;
+  }
+
+  body { margin: 0; padding: 2rem; background: Canvas; color: CanvasText; }
+  h1 { margin: 0 0 .25rem; font-size: 1.5rem; }
+  p { max-inline-size: 68rem; }
+  code, pre, output { font-family: ui-monospace, monospace; }
+  .Toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  #engine { white-space: pre-wrap; font-size: .78rem; opacity: .8; }
+  table { inline-size: 100%; border-collapse: collapse; margin-block-start: 1.5rem; }
+  th, td { border: 1px solid color-mix(in srgb, CanvasText 18%, transparent); padding: .55rem; vertical-align: top; }
+  th { text-align: start; font-size: .78rem; }
+  td:first-child { inline-size: 10rem; font-size: .8rem; }
+  tr[data-config="q-off"] [data-path] { --han-q-quotes: off; }
+  tr[data-config="cite-none"] [data-path] { --han-cite-title-marks: none; }
+  tr[data-config="cite-wavy"] [data-path] { --han-cite-title-marks: wavy; }
+  [data-path] { min-inline-size: 8rem; }
+  .Measure {
+    display: inline;
+    font-family: 'Han Punctuation Metrics';
+    font-size: 64px;
+    font-weight: 400;
+    font-style: normal;
+    font-kerning: normal;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  @supports not (text-spacing-trim: trim-start) {
+    .Measure {
+      font-kerning: none;
+      font-feature-settings: 'kern' 0;
+    }
+  }
+  html[data-writing="vertical"] .Measure { writing-mode: vertical-rl; }
+  [data-probe] {
+    display: inline-block;
+    inline-size: 0;
+    block-size: 0;
+    margin: 0;
+    padding: 0;
+  }
+  output { display: block; margin-block-start: .4rem; font-size: .72rem; }
+  .Pass output { color: light-dark(#16713a, #77dc9e); }
+  .Fail output { color: light-dark(#a22636, #ff8796); }
+  details { margin-block-start: .35rem; font-size: .68rem; }
+  details pre { max-inline-size: 25rem; max-block-size: 12rem; overflow: auto; white-space: pre-wrap; }
+  .Raw output { opacity: .7; }
+</style>
+</head>
+<body>
+<h1>標點擠壓幾何測試</h1>
+<p>同一張頁同時供 browser runtime、Node SSR、Playwright 與實機 Safari。raw 只作引擎基線；runtime／SSR 必須命中目標寬度。所有數值以固定 1em 測試字體正規化。</p>
+<div class="Toolbar">
+  <label><input id="vertical" type="checkbox"> vertical-rl</label>
+  <button id="rerun" type="button">重新跑 browser pass</button>
+</div>
+<pre id="engine"></pre>
+
+<table>
+<thead><tr><th>case</th><th>raw</th><th>browser runtime</th><th>Node SSR</th><th>literal reference</th></tr></thead>
+<tbody>
+  <tr data-case="line-start-open" data-measure="line-start" data-expected="0.5">
+    <td>行首「後的漢字起點 <code>「漢</code><script type="text/x-han-source" data-source>「<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>「<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="mid-open" data-expected="3">
+    <td>行中 <code>漢「漢</code><script type="text/x-han-source" data-source>漢「漢</script><script type="text/x-han-source" data-reference>漢「漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="close-open" data-expected="1.5">
+    <td><code>》《</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>》《<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>》《<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="end-close" data-expected="1.5">
+    <td><code>。」</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>。」<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>。」<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="ssr-close-hangable" data-expected="1.5">
+    <td><code>》，</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>》，<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>》，<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="end-hangable" data-expected="1.5">
+    <td><code>？，</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>？，<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>？，<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="hangable-open" data-expected="1.5">
+    <td><code>，「</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>，「<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>，「<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="interpunct" data-expected="1.5">
+    <td><code>。・</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>。・<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>。・<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="noncompressible" data-expected="2">
+    <td><code>。／</code>（負例）<script type="text/x-han-source" data-source>漢<i data-probe="start"></i>。／<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>。／<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="q-dom-open" data-expected="1.5">
+    <td>DOM→<code>q::before</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>、<q><i data-probe="end"></i>漢</q></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>、「<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="q-inner-close" data-expected="1.5">
+    <td>DOM inside→<code>q::after</code><script type="text/x-han-source" data-source><q>漢<i data-probe="start"></i>。</q><i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>。」<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="q-close-dom" data-expected="1.5">
+    <td><code>q::after</code>→DOM<script type="text/x-han-source" data-source><q>漢<i data-probe="start"></i></q>，<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>」，<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="q-off" data-config="q-off" data-expected="1">
+    <td><code>q</code> off（負例）<script type="text/x-han-source" data-source>漢<i data-probe="start"></i>、<q><i data-probe="end"></i>漢</q></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>、<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="cite-dom-open" data-expected="1.5">
+    <td>DOM→<code>cite::before</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i>、<cite><i data-probe="end"></i>漢</cite></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>、《<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="cite-inner-close" data-expected="1.5">
+    <td>DOM inside→<code>cite::after</code><script type="text/x-han-source" data-source><cite>漢<i data-probe="start"></i>。</cite><i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>。》<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="cite-close-dom" data-expected="1.5">
+    <td><code>cite::after</code>→DOM<script type="text/x-han-source" data-source><cite>漢<i data-probe="start"></i></cite>，<i data-probe="end"></i>漢</script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>》，<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="cite-none" data-config="cite-none" data-expected="1">
+    <td><code>cite</code> none（負例）<script type="text/x-han-source" data-source>漢<i data-probe="start"></i>、<cite><i data-probe="end"></i>漢</cite></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>、<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="q-cite-pseudo" data-expected="1.5">
+    <td><code>q::after</code>→<code>cite::before</code><script type="text/x-han-source" data-source><q>漢<i data-probe="start"></i></q><cite><i data-probe="end"></i>漢</cite></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>」《<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+  <tr data-case="nested-open-pseudos" data-expected="1.5">
+    <td><code>q::before</code>→<code>cite::before</code><script type="text/x-han-source" data-source>漢<i data-probe="start"></i><q><cite><i data-probe="end"></i>漢</cite></q></script><script type="text/x-han-source" data-reference>漢<i data-probe="start"></i>「《<i data-probe="end"></i>漢</script></td><td data-path="raw"></td><td data-path="runtime"></td><td data-path="ssr"></td><td data-path="reference"></td>
+  </tr>
+</tbody>
+</table>
+
+<script type="module">
+  const {
+    uninstallFallbacks,
+    refinePunctuation,
+    markQuoteBoundaries,
+  } = await import(/* @vite-ignore */ '/han/han.js')
+
+  const rows = [...document.querySelectorAll('[data-case]')]
+  const nativeTrim = CSS.supports('text-spacing-trim', 'trim-start')
+  const sourceOf = (row, kind = 'source') =>
+    row.querySelector(`script[data-${kind}]`).textContent.trim()
+
+  const mount = (cell, source) => {
+    cell.innerHTML = `<span class="Measure">${source}</span>`
+    return cell.querySelector('.Measure')
+  }
+
+  const refine = (measure) => {
+    uninstallFallbacks(measure)
+    refinePunctuation(measure)
+    markQuoteBoundaries(measure)
+  }
+
+  const setup = () => {
+    for (const row of rows) {
+      mount(row.querySelector('[data-path="raw"]'), sourceOf(row))
+      const runtime = mount(row.querySelector('[data-path="runtime"]'), sourceOf(row))
+      refine(runtime)
+      const reference = mount(row.querySelector('[data-path="reference"]'), sourceOf(row, 'reference'))
+      refine(reference)
+    }
+  }
+
+  const widthInEm = (measure) => {
+    const start = measure.querySelector('[data-probe="start"]')
+    const end = measure.querySelector('[data-probe="end"]')
+    const vertical = document.documentElement.dataset.writing === 'vertical'
+    const lineStart = measure.closest('tr').dataset.measure === 'line-start'
+    const px = lineStart && end
+      ? Math.abs((vertical ? end.getBoundingClientRect().top : end.getBoundingClientRect().left)
+        - (vertical ? measure.getBoundingClientRect().top : measure.getBoundingClientRect().left))
+      : start && end
+      ? Math.abs((vertical ? end.getBoundingClientRect().top : end.getBoundingClientRect().left)
+        - (vertical ? start.getBoundingClientRect().top : start.getBoundingClientRect().left))
+      : (vertical ? measure.getBoundingClientRect().height : measure.getBoundingClientRect().width)
+    return px / parseFloat(getComputedStyle(measure).fontSize)
+  }
+
+  const diagnostics = (measure) => {
+    const char = measure.querySelector('h-char')
+    const layer = measure.querySelector('h-layer')
+    const generator = measure.querySelector('q, cite')
+    const style = (el, pseudo) => el ? getComputedStyle(el, pseudo) : null
+    const pick = (s) => s && ({
+      display: s.display,
+      inlineSize: s.inlineSize,
+      marginInlineStart: s.marginInlineStart,
+      marginInlineEnd: s.marginInlineEnd,
+      letterSpacing: s.letterSpacing,
+      fontFamily: s.fontFamily,
+      content: s.content,
+    })
+    return JSON.stringify({
+      html: measure.innerHTML,
+      hChar: pick(style(char)),
+      hLayer: pick(style(layer)),
+      before: pick(style(generator, '::before')),
+      after: pick(style(generator, '::after')),
+    }, null, 2)
+  }
+
+  const report = async () => {
+    await document.fonts.ready
+    await new Promise(requestAnimationFrame)
+    for (const row of rows) {
+      const expected = Number(row.dataset.expected)
+      for (const cell of row.querySelectorAll('[data-path]')) {
+        const measure = cell.querySelector('.Measure')
+        const width = widthInEm(measure)
+        const judgedPath = cell.dataset.path === 'runtime' || cell.dataset.path === 'ssr'
+        // The synthetic metrics font has no OpenType feature equivalent to
+        // trim-start. Native engines are covered here for adjacent pairs; the
+        // line-start case is asserted only on the JS fallback path.
+        const judged = judgedPath && !(nativeTrim && row.dataset.measure === 'line-start')
+        const pass = Math.abs(width - expected) <= .02
+        cell.classList.toggle('Pass', judged && pass)
+        cell.classList.toggle('Fail', judged && !pass)
+        cell.classList.toggle('Raw', !judged)
+        let output = cell.querySelector('output')
+        if (!output) {
+          output = document.createElement('output')
+          cell.append(output)
+        }
+        output.textContent = `${width.toFixed(3)}em${judged ? pass ? '  ✓' : `  ✗ expected ${expected.toFixed(2)}` : ''}`
+        let details = cell.querySelector('details')
+        if (!details) {
+          details = document.createElement('details')
+          details.innerHTML = '<summary>markup / used style</summary><pre></pre>'
+          cell.append(details)
+        }
+        details.querySelector('pre').textContent = diagnostics(measure)
+      }
+    }
+    document.body.dataset.ready = ''
+  }
+
+  const engine = document.querySelector('#engine')
+  engine.textContent = [
+    `text-spacing-trim: ${CSS.supports('text-spacing-trim', 'trim-start')}`,
+    `hanging allow-end: ${CSS.supports('hanging-punctuation', 'allow-end')}`,
+    `hanging last: ${CSS.supports('hanging-punctuation', 'last')}`,
+  ].join('\n')
+
+  document.querySelector('#vertical').addEventListener('change', (event) => {
+    document.documentElement.dataset.writing = event.target.checked ? 'vertical' : 'horizontal'
+    report()
+  })
+  document.querySelector('#rerun').addEventListener('click', () => { setup(); report() })
+  setup()
+  report()
+</script>
+</body>
+</html>

@@ -30,7 +30,7 @@
   }
 
   code {
-    font-family: var(--font-mono);
+    font-family: var(--han-monospace);
     font-size: 0.75rem;
   }
 }
@@ -204,7 +204,7 @@
      rather than `<mi>` so no engine italicises it */
   .Code,
   code {
-    font-family: var(--font-mono);
+    font-family: var(--han-monospace);
     font-size: 0.875rem;
     color: var(--ui-accent);
   }
@@ -243,7 +243,7 @@
   /* the specificity triple, and 「權重」 — one token each, never broken */
   mn,
   .Term {
-    font-family: var(--font-mono);
+    font-family: var(--han-monospace);
     font-variant-numeric: tabular-nums lining-nums;
     white-space: nowrap;
   }
@@ -316,19 +316,19 @@
       }
 
       .SelRing > li[data-current] {
-        .Rule[data-role="framework"] .RuleDecl {
+        .Rule[data-role="framework"] .Decl {
           color: var(--ui-accent);
           text-decoration: none;
         }
 
         .Rule[data-role="mine"] {
-          .RuleDecl {
+          .Decl {
             color: var(--ui-supplement-text);
             text-decoration: line-through;
             text-decoration-thickness: 1px;
           }
 
-          [data-part="rule-spec"] {
+          .Spec {
             color: var(--ui-supplement-text);
           }
         }
@@ -386,7 +386,7 @@
   .Applied {
     mtable {
       /* tokens sized against each other, not against the prose */
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-variant-numeric: tabular-nums lining-nums;
     }
 
@@ -586,7 +586,7 @@
       padding-block: 0.875rem;
       padding-inline: 1rem;
       background: var(--ui-bg);
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.75rem;
       line-height: 1.8;
       text-align: start;
@@ -613,9 +613,9 @@
        something you can see in the plate rather than something the prose has
        to assert. */
     /* 一列兩件，**共用一塊底**：層帶與署名同屬「這條規則的出身」——在哪一層、
-       誰寫的——所以底色畫在列上（.RuleHead），不是畫在層帶上。底只包住層名
+       誰寫的——所以底色畫在列上（.Head），不是畫在層帶上。底只包住層名
        而讓署名浮在外面，讀起來像兩件東西恰好對齊，而不是一列。 */
-    .RuleHead {
+    .Head {
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
@@ -627,22 +627,22 @@
       border-radius: var(--r-1);
     }
 
-    .RuleLayer {
+    .Layer {
       flex: 1;
       margin-block: 0;
       font-size: .75rem;
       color: var(--ui-supplement-text);
     }
 
-    .RuleLayer b {
+    .Layer b {
       font-weight: 400;
       color: var(--ui-supplement-text);
     }
 
-    [data-part="rule-spec"] {
+    .Spec {
       display: block;
       margin-block-start: 0.25rem;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: .75rem;
       font-weight: 600;
       text-align: end;
@@ -664,31 +664,31 @@
       padding-inline-start: 1em;
     }
 
-    .RuleSel {
+    .Selector {
       /* `break-word`, not `anywhere`: the selectors carry spaces after every
          comma, so the line breaks at a comma before it will break mid-token.
          A pane this narrow has to wrap somewhere; better at the joints. */
       overflow-wrap: break-word;
     }
 
-    .RuleDecl {
+    .Decl {
       padding-inline-start: 1.5em;
       color: var(--ui-accent);
     }
 
-    .RuleEnd {
+    .End {
       color: var(--ui-supplement-text);
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
        file, which is not a thing this page can point at. It rides the LAYER
-       band's row (`.RuleHead`), right-aligned: two one-word labels that used
+       band's row (`.Head`), right-aligned: two one-word labels that used
        to cost two lines each now cost one, ten times over.
        Still not absolutely positioned — the old note about that stands, only
        the collision moved: in a narrow pane the row simply wraps and the
        signature drops under the band, where an abspos label would have sat
        on top of it. */
-    .RuleTag {
+    .Tag {
       & {
         display: inline-flex;
         align-items: center;
@@ -724,7 +724,7 @@
          fault rather than a logo. The wordmark alone is a whole brand atom
          (home/_shared.html calls mark/dot/ext exactly that), so drop the
          device and keep the name. */
-      .BrandMark {
+      .Device {
         display: none;
       }
     }
@@ -733,7 +733,7 @@
        devtools uses, and the whole point of showing the pair. `line-through`
        on the declaration only: the selector still matched, it is the
        declaration that was outranked. */
-    &[data-role="framework"] .RuleDecl {
+    &[data-role="framework"] .Decl {
       color: var(--ui-supplement-text);
       text-decoration: line-through;
       text-decoration-thickness: 1px;
@@ -786,7 +786,7 @@
     }
 
     output {
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.75rem;
       font-variant-numeric: tabular-nums lining-nums;
       color: var(--ui-supplement-text);

@@ -12,9 +12,9 @@ const FLOATING_CONSOLE = '(max-width: 51.9375rem)'
 
 export const initStationMap = () => {
   const $map = document.querySelector('[data-station-map]')
-  const $toggle = $map?.querySelector('.StationMapCurrent')
-  const $list = $map?.querySelector('.StationMapList')
-  const links = [...($map?.querySelectorAll('.StationMapList a[href^="#"]') ?? [])]
+  const $toggle = $map?.querySelector('.Current')
+  const $list = $map?.querySelector('.List')
+  const links = [...($map?.querySelectorAll('.List a[href^="#"]') ?? [])]
   if (!$map || !$toggle || !$list || !links.length) return
 
   const entries = links.map(($link, index) => ({
@@ -53,8 +53,8 @@ export const initStationMap = () => {
     current = index
     const entry = entries[index]
     $map.dataset.current = String(index + 1)
-    $toggle.querySelector('.StationMapCurrentNo').textContent = entry.progress
-    $toggle.querySelector('.StationMapCurrentName').textContent = entry.name
+    $toggle.querySelector('.No').textContent = entry.progress
+    $toggle.querySelector('.Name').textContent = entry.name
     entries.forEach(({ $link }, i) => {
       if (i === index) $link.setAttribute('aria-current', 'location')
       else $link.removeAttribute('aria-current')

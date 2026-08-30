@@ -109,7 +109,7 @@ test.describe('the floating panel form (<52rem)', () => {
     const $panel = page.locator('.ConsolePanel')
     const $toggle = page.locator('.ConsoleToggle')
     const $box = page.locator('#console-collapsed')
-    const $hint = $toggle.locator('.ConsoleToggleLabel')
+    const $hint = $toggle.locator('.Label')
     // 面板預設關著——一支蓋在正文上的面板不能是初見的第一印象。而不管開沒開，
     // 版面都不該讓位：整個窗寬都是站台的。
     await expect($panel).toBeHidden()
@@ -130,7 +130,7 @@ test.describe('the floating panel form (<52rem)', () => {
       .toBe('1')
     expect((await box(page, 'main')).width).toBe(full.width)
 
-    await page.locator('.ConsolePanelClose').focus()
+    await page.locator('.ConsolePanel .Close').focus()
     await page.keyboard.press('Escape')
     await expect($panel).toBeHidden()
     await expect($toggle).toHaveAttribute('aria-expanded', 'false')
@@ -139,7 +139,7 @@ test.describe('the floating panel form (<52rem)', () => {
     // Discovery is permanent: returning visitors get the compact icon even
     // though the floating panel itself still defaults to closed.
     await page.reload()
-    await expect(page.locator('.ConsoleToggleLabel')).toBeHidden()
+    await expect(page.locator('.ConsoleToggle .Label')).toBeHidden()
     await expect(page.locator('.ConsoleToggle')).toHaveAttribute('aria-expanded', 'false')
   })
 
@@ -147,7 +147,7 @@ test.describe('the floating panel form (<52rem)', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/')
     await page.locator('.ConsoleToggle').click()
-    await page.locator('.ConsolePanelClose').click()
+    await page.locator('.ConsolePanel .Close').click()
     await expect(page.locator('.ConsolePanel')).toBeHidden()
     await expect(page.locator('.ConsoleToggle')).toBeFocused()
   })

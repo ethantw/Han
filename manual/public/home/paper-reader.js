@@ -50,7 +50,7 @@ const storeWriting = (vertical) => {
 const rootRem = () => Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
 const headerHeight = () => document.querySelector('body > header')?.getBoundingClientRect().height || 0
 const readerInlineGutter = () => {
-  const value = getComputedStyle(dialog.querySelector('[data-part="reader-stage"]'))
+  const value = getComputedStyle(dialog.querySelector('.Stage'))
     .getPropertyValue('--reader-inline-gutter').trim()
   const number = Number.parseFloat(value)
   if (!Number.isFinite(number)) return rootRem()
@@ -58,7 +58,7 @@ const readerInlineGutter = () => {
 }
 
 const naturalSheetSize = () => {
-  const sheet = dialog.querySelector('[data-part="reader-sheet"]')
+  const sheet = dialog.querySelector('.Sheet')
   return {
     width: sheet.offsetWidth - readerTrim.width,
     height: sheet.offsetHeight - readerTrim.height,
@@ -71,9 +71,9 @@ const naturalSheetSize = () => {
  * wrappers are installed, then let the stage crop only that empty tail while
  * retaining the sheet's own physical padding. No text is reflowed. */
 const measureReaderTrim = () => {
-  const stage = dialog.querySelector('[data-part="reader-stage"]')
-  const sheet = dialog.querySelector('[data-part="reader-sheet"]')
-  const body = dialog.querySelector('[data-part="reader-body"]')
+  const stage = dialog.querySelector('.Stage')
+  const sheet = dialog.querySelector('.Sheet')
+  const body = dialog.querySelector('.Body')
   readerTrim = { width: 0, height: 0 }
 
   if (!CSS.supports('column-height', '1em') || !sheet.offsetWidth || !sheet.offsetHeight) {
@@ -96,7 +96,7 @@ const measureReaderTrim = () => {
     range.selectNodeContents(text)
     ;[...range.getClientRects()].forEach(include)
   }
-  body.querySelectorAll('img, svg, canvas, video, .ReaderCutPlate').forEach((element) => {
+  body.querySelectorAll('img, svg, canvas, video').forEach((element) => {
     include(element.getBoundingClientRect())
   })
 
@@ -133,8 +133,8 @@ const fittedScale = () => {
 const applyScale = (scale) => {
   const rounded = Math.round(scale * 1000) / 1000
   const { width, height } = naturalSheetSize()
-  const stage = dialog.querySelector('[data-part="reader-stage"]')
-  const select = dialog.querySelector('[data-reader="scale"]')
+  const stage = dialog.querySelector('.Stage')
+  const select = dialog.querySelector('.Scale')
   dialog.style.setProperty('--reader-scale', String(rounded))
   stage.style.setProperty('--reader-stage-width', `${width * rounded}px`)
   stage.style.setProperty('--reader-stage-height', `${height * rounded}px`)
@@ -181,7 +181,7 @@ const layoutReader = ({ resetScroll = false, preserveScroll = false } = {}) => {
 const setWriting = (vertical, { persist = true, fit = true } = {}) => {
   dialog.dataset.writing = vertical ? 'vertical' : ''
   dialog.querySelector('.PaperHead')?.toggleAttribute('data-vertical', vertical)
-  const button = dialog.querySelector('[data-reader="writing"]')
+  const button = dialog.querySelector('.Writing')
   button.textContent = vertical ? '橫排' : '直排'
   button.setAttribute('aria-pressed', String(vertical))
   if (persist) storeWriting(vertical)
@@ -190,8 +190,8 @@ const setWriting = (vertical, { persist = true, fit = true } = {}) => {
 }
 
 const setReaderConsole = (open, { restoreFocus = false } = {}) => {
-  const panel = dialog?.querySelector('[data-console-context="reader"]')
-  const trigger = dialog?.querySelector('[data-reader="console"]')
+  const panel = dialog?.querySelector(':scope > .ConsolePanel')
+  const trigger = dialog?.querySelector('.Console')
   if (!panel || !trigger) return false
   const wasOpen = !panel.hidden
   panel.hidden = !open
@@ -212,7 +212,6 @@ const cloneConsoleForReader = () => {
   if (!source) return null
   const panel = source.cloneNode(true)
   panel.id = 'typesetting-console-reader'
-  panel.dataset.consoleContext = 'reader'
   panel.hidden = true
   panel.setAttribute('inert', '')
   panel.setAttribute('aria-hidden', 'true')
@@ -223,11 +222,11 @@ const cloneConsoleForReader = () => {
 }
 
 const ensureReaderConsole = () => {
-  let panel = dialog.querySelector('[data-console-context="reader"]')
+  let panel = dialog.querySelector(':scope > .ConsolePanel')
   if (panel) return panel
   panel = cloneConsoleForReader()
   if (!panel) return null
-  panel.querySelector('.ConsolePanelClose')?.addEventListener('click', () => {
+  panel.querySelector('.Close')?.addEventListener('click', () => {
     setReaderConsole(false, { restoreFocus: true })
   })
   dialog.append(panel)
@@ -237,32 +236,33 @@ const ensureReaderConsole = () => {
 const shell = () => {
   if (dialog) return dialog
   dialog = document.createElement('dialog')
-  dialog.className = 'Full'
-  dialog.dataset.component = 'article-reader'
+  dialog.className = 'Reader'
   dialog.setAttribute('aria-label', '全文閱讀器')
   dialog.innerHTML = `
-    <form method="dialog" data-part="reader-chrome">
-      <div data-part="reader-controls">
-        <div role="group" aria-label="閱讀工具" data-reader-group="tools">
-          <button type="button" data-reader="console" aria-expanded="false"><span data-icon="console" aria-hidden="true"></span></button>
-          <button type="button" data-reader="writing" aria-pressed="false">直排</button>
-          <select data-reader="scale" aria-label="顯示倍率">
+    <form method="dialog" class="Chrome">
+      <div class="Controls">
+        <fieldset class="Tools">
+          <legend class="sr-only">閱讀工具</legend>
+          <button type="button" class="Console" aria-expanded="false"><span data-icon="console" aria-hidden="true"></span></button>
+          <button type="button" class="Writing" aria-pressed="false">直排</button>
+          <select class="Scale" aria-label="顯示倍率">
             <option value="auto">適合・100%</option>
             ${SCALES.map((scale) => `<option value="${scale}">${Math.round(scale * 100)}%</option>`).join('')}
           </select>
-        </div>
-        <div role="group" aria-label="語言版本" data-reader-group="editions">
-          ${EDITIONS.map((edition) => `<button type="button" data-reader="edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
-        </div>
+        </fieldset>
+        <fieldset class="Editions">
+          <legend class="sr-only">語言版本</legend>
+          ${EDITIONS.map((edition) => `<button type="button" class="Edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
+        </fieldset>
       </div>
-      <div role="group" aria-label="關閉閱讀器" data-reader-group="actions">
-        <button value="close" data-reader="close" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
+      <div class="Actions">
+        <button value="close" class="Close" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
       </div>
     </form>
-    <div data-part="reader-stage">
-      <article data-part="reader-sheet" aria-live="polite"><div data-part="reader-row-field"><div data-part="reader-body"></div></div></article>
+    <div class="Stage">
+      <article class="Sheet" aria-live="polite"><div class="RowField"><div class="Body"></div></div></article>
     </div>`
-  const consoleButton = dialog.querySelector('[data-reader="console"]')
+  const consoleButton = dialog.querySelector('.Console')
   const pageConsoleButton = document.querySelector('.ConsoleToggle')
   const openLabel = pageConsoleButton?.dataset.labelOpen ?? '打開排版面板'
   const closeLabel = pageConsoleButton?.dataset.labelClose ?? '關閉排版面板'
@@ -273,10 +273,10 @@ const shell = () => {
   ;(document.querySelector('figure.Papers > article') ?? document.body).append(dialog)
   setWriting(storedWriting(), { persist: false, fit: false })
   dialog.addEventListener('click', (event) => {
-    const control = event.target.closest?.('[data-reader]')
-    if (control?.dataset.reader === 'edition') return show(current.slug, control.dataset.edition)
-    if (control?.dataset.reader === 'writing') return setWriting(dialog.dataset.writing !== 'vertical')
-    if (control?.dataset.reader === 'console') {
+    const control = event.target.closest?.('.Edition, .Writing, .Console')
+    if (control?.matches('.Edition')) return show(current.slug, control.dataset.edition)
+    if (control?.matches('.Writing')) return setWriting(dialog.dataset.writing !== 'vertical')
+    if (control?.matches('.Console')) {
       const panel = ensureReaderConsole()
       return setReaderConsole(panel?.hidden ?? true, { restoreFocus: true })
     }
@@ -299,7 +299,7 @@ const shell = () => {
   }, true)
   dialog.addEventListener('close', () => setReaderConsole(false, { restoreFocus: false }))
   dialog.addEventListener('change', (event) => {
-    if (!event.target.matches?.('[data-reader="scale"]')) return
+    if (!event.target.matches?.('.Scale')) return
     const scale = Number(event.target.value)
     if (!SCALES.includes(scale)) return
     scaleMode = scale
@@ -313,13 +313,13 @@ const shell = () => {
 
 const setEditionState = (edition) => {
   dialog.lang = LANGS[edition]
-  const sheet = dialog.querySelector('[data-part="reader-sheet"]')
+  const sheet = dialog.querySelector('.Sheet')
   sheet.querySelector(':scope > .PaperHead')?.remove()
   const template = document.querySelector(`#paper-reader-head-${edition}`)
   if (template) sheet.prepend(template.content.cloneNode(true))
   refreshEraLines(sheet)
   sheet.querySelector('.PaperHead')?.toggleAttribute('data-vertical', dialog.dataset.writing === 'vertical')
-  dialog.querySelectorAll('[data-reader="edition"]').forEach((button) => {
+  dialog.querySelectorAll('.Edition').forEach((button) => {
     button.toggleAttribute('aria-current', button.dataset.edition === edition)
     button.disabled = !(AVAILABLE[current.slug] ?? EDITIONS).includes(button.dataset.edition)
   })
@@ -330,7 +330,7 @@ const show = async (slug, edition) => {
   shell()
   current = { slug, edition }
   setEditionState(edition)
-  const body = dialog.querySelector('[data-part="reader-body"]')
+  const body = dialog.querySelector('.Body')
   body.setAttribute('aria-busy', 'true')
   if (!dialog.open) {
     scaleMode = 'auto'
@@ -350,7 +350,7 @@ const show = async (slug, edition) => {
     if (generation !== loadGeneration) return
   } catch (error) {
     if (generation !== loadGeneration) return
-    body.innerHTML = `<p data-part="reader-error">全文載入失敗。<a href="${articleURL(slug, edition)}">直接開啟報導</a></p>`
+    body.innerHTML = `<p class="Error">全文載入失敗。<a href="${articleURL(slug, edition)}">直接開啟報導</a></p>`
     console.error(error)
   } finally {
     if (generation !== loadGeneration) return

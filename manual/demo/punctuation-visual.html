@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-Hant" data-writing="horizontal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>標點擠壓與懸掛——實際排版樣張</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css" data-dtj>
+<link rel="stylesheet" href="/han/han.css">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: light-dark(#f7f4ed, #181817);
+    --ink: light-dark(#24211d, #ebe7de);
+    --dim: light-dark(#6e675d, #aaa398);
+    --rule: light-dark(#29241c24, #fff3d426);
+    --panel: light-dark(#fffdf8, #222220);
+    --accent: light-dark(#aa2947, #ff829b);
+    --measure: 10em;
+    --han-punctuation-hant: JIS;
+    --han-use-heritage-glyphs-for-hant: system-ja;
+    --han-q-quotes: on;
+    --han-cite-title-marks: bracket;
+    --han-semantics: on;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--han-font-default);
+    line-height: 1.75;
+  }
+
+  main {
+    inline-size: min(86rem, calc(100% - 2rem));
+    margin-inline: auto;
+    padding-block: clamp(2.5rem, 7vw, 6rem) 8rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--han-font-alternative);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .Lede {
+    max-inline-size: 48rem;
+    margin-block: .8rem 2rem;
+    color: var(--dim);
+  }
+
+  code, output, select, button {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .Toolbar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+    align-items: center;
+    margin-block: 0 2rem;
+    padding-block: .75rem;
+    border-block: 1px solid var(--rule);
+    background: color-mix(in oklab, var(--paper) 90%, transparent);
+    backdrop-filter: blur(10px);
+    font-size: .8rem;
+  }
+
+  .Toolbar label { display: flex; gap: .45rem; align-items: center; }
+  .Toolbar select { font: inherit; }
+  #engine { margin-inline-start: auto; color: var(--dim); }
+  #engine[data-font-failed] { color: var(--accent); font-weight: 700; }
+
+  .Modes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .Mode {
+    min-inline-size: 0;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
+    border: 1px solid var(--rule);
+    border-radius: .4rem;
+    background: var(--panel);
+  }
+
+  .Mode > header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    margin-block-end: 1.5rem;
+    padding-block-end: .75rem;
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .Mode h2 { margin: 0; font-size: 1rem; }
+  .Mode output { color: var(--dim); font-size: .67rem; }
+
+  .Case + .Case {
+    margin-block-start: 2.25rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .Case h3 {
+    margin: 0 0 .7rem;
+    color: var(--dim);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+  }
+
+  .Specimen {
+    /* Explicit on this diagnostic specimen: DTJ must really own punctuation;
+       its unicode-range lets Han glyphs continue into the system stack. */
+    font-family:
+      'Diantenjeom Sans JIS',
+      'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto,
+      'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',
+      'Noto Sans CJK JP', system-ui, sans-serif;
+    font-size: clamp(1.25rem, 2.15vw, 1.7rem);
+    line-height: 1.8;
+  }
+
+  .Measure {
+    inline-size: var(--measure);
+    margin: 0;
+    border-inline-end: 2px solid var(--accent);
+    text-align: start;
+  }
+
+  .Measure + .Measure { margin-block-start: .9rem; }
+
+  .ForcedLine { display: block; }
+
+  .PairMatrix {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .PairGroup h4 {
+    margin: 0 0 .35rem;
+    color: var(--dim);
+    font-size: .64rem;
+    font-weight: 500;
+  }
+
+  .PairSet {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45em .75em;
+    align-items: start;
+    margin: 0;
+    font-size: 1.25em;
+  }
+
+  .PairSet span {
+    display: inline-block;
+    white-space: nowrap;
+    background-image: repeating-linear-gradient(
+      to right,
+      transparent 0 calc(1em - 1px),
+      var(--rule) calc(1em - 1px) 1em
+    );
+    box-shadow: inset 0 -1px var(--rule);
+  }
+
+  .Prose { margin: 0; text-align: justify; }
+  .Prose + .Prose { margin-block-start: .75rem; }
+
+  html[data-writing="vertical"] .Measure,
+  html[data-writing="vertical"] .PairSet span {
+    writing-mode: vertical-rl;
+  }
+
+  html[data-writing="vertical"] .Case .Measure {
+    block-size: 5.5em;
+  }
+
+  html[data-writing="vertical"] .PairSet span {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(1em - 1px),
+      var(--rule) calc(1em - 1px) 1em
+    );
+  }
+
+  html[data-reveal] h-char[data-punct] {
+    outline: 1px dotted color-mix(in oklab, var(--accent) 65%, transparent);
+  }
+
+  html[data-reveal] h-char[data-punct~="hangable"] h-layer {
+    color: var(--accent);
+    text-shadow: 0 0 .01px var(--accent);
+  }
+
+  .Legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.25rem;
+    margin-block: 1.5rem 0;
+    color: var(--dim);
+    font-size: .76rem;
+  }
+
+  .Legend i {
+    display: inline-block;
+    block-size: 1em;
+    border-inline-end: 2px solid var(--accent);
+  }
+
+  @media (max-width: 62rem) {
+    .Modes { grid-template-columns: 1fr; }
+    #engine { inline-size: 100%; margin-inline-start: 0; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>標點擠壓與懸掛</h1>
+  <p class="Lede">
+    這是看實際排版的樣張，不是數字測試。三欄文字完全相同；比較相鄰標點占幾格，
+    再看逗號、句號是否越過紅色行尾。<code>q</code>／<code>cite</code> 的括號由
+    <code>::before</code>／<code>::after</code> 生成，也放在正文裡一起看。
+  </p>
+
+  <form class="Toolbar" id="toolbar">
+    <label>欄寬
+      <select name="measure">
+        <option value="8">8em</option>
+        <option value="10" selected>10em</option>
+        <option value="12">12em</option>
+      </select>
+    </label>
+    <label><input type="checkbox" name="vertical">直排</label>
+    <label><input type="checkbox" name="reveal">顯示 JS wrapper／hangable</label>
+    <output id="engine">檢查引擎與 DTJ…</output>
+  </form>
+
+  <p class="Legend"><span><i></i> 紅線＝行尾</span><span>紅色標點＝JS 判定為 hangable（開啟顯示後）</span></p>
+
+  <div class="Modes">
+    <article class="Mode" data-mode="none">
+      <header><h2>none</h2><output></output></header>
+      <div class="Specimen"></div>
+    </article>
+    <article class="Mode" data-mode="compress">
+      <header><h2>compress</h2><output></output></header>
+      <div class="Specimen"></div>
+    </article>
+    <article class="Mode" data-mode="auto">
+      <header><h2>auto</h2><output></output></header>
+      <div class="Specimen"></div>
+    </article>
+  </div>
+</main>
+
+<template id="specimen-source">
+  <section class="Case">
+    <h3>相鄰標點：每條淡線是一個 em；最後一組是不可擠壓的負例</h3>
+    <div class="PairMatrix">
+      <div class="PairGroup">
+        <h4>開 → 開</h4>
+        <p class="PairSet"><span>「『</span><span>『「</span><span>《〈</span><span>〈《</span><span>（「</span><span>【《</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>閉 → 開</h4>
+        <p class="PairSet"><span>」「</span><span>》《</span><span>〉〈</span><span>）「</span><span>】《</span><span>』『</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>閉 → 閉</h4>
+        <p class="PairSet"><span>」』</span><span>』」</span><span>》〉</span><span>〉》</span><span>）」</span><span>】》</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>句讀 → 開</h4>
+        <p class="PairSet"><span>。「</span><span>，『</span><span>、《</span><span>？「</span><span>！《</span><span>：〈</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>句讀 → 閉</h4>
+        <p class="PairSet"><span>。」</span><span>，』</span><span>、》</span><span>？》</span><span>！〉</span><span>；」</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>句讀 → 句讀（含 atomic hang seam）</h4>
+        <p class="PairSet"><span>》，</span><span>？，</span><span>。，</span><span>，。</span><span>、，</span><span>？！</span><span>！？</span><span>：；</span><span>；：</span><span>．，</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>中點接縫</h4>
+        <p class="PairSet"><span>。・</span><span>，·</span><span>・「</span><span>》・</span><span>·《</span><span>！·</span></p>
+      </div>
+      <div class="PairGroup">
+        <h4>不可擠壓：全形符號／長音</h4>
+        <p class="PairSet"><span>。／</span><span>、－</span><span>，＼</span><span>。ー</span><span>，＆</span><span>。＿</span><span>、゠</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="Case">
+    <h3>行首 trim：比較開括號後的字從哪裡開始</h3>
+    <div class="Measure">
+      <span class="ForcedLine">「天地玄黃，宇宙洪荒。</span>
+      <span class="ForcedLine">《日月盈昃，辰宿列張》</span>
+    </div>
+  </section>
+
+  <section class="Case">
+    <h3>行尾 hanging：欄尾的逗號／句號應伸過紅線</h3>
+    <p class="Measure">天地玄黃宇宙洪荒日，月盈昃辰宿列張。</p>
+    <p class="Measure">寒來暑往秋收冬藏閏，餘成歲律呂調陽。</p>
+  </section>
+
+  <section class="Case">
+    <h3>實際正文與生成括號</h3>
+    <div class="Measure">
+      <p class="Prose">她說<q>今日讀了<cite>太陽中文報</cite>，甚好。</q>，隨後又寫下：「標點應當呼吸，卻不該鬆散。」</p>
+      <p class="Prose">編者按、<q>這一段前後都有標點。</q>，也包含<q><cite>巢狀書名</cite></q>與《實體書名號》。</p>
+    </div>
+  </section>
+</template>
+
+<script type="module" src="./punctuation-visual.js"></script>
+</body>
+</html>

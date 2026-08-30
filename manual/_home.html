@@ -190,7 +190,7 @@
          行不指向任何方向，開合兩態共用一張圖——方向由 title／aria-label
          說。 -->
     <span data-icon="console" aria-hidden="true"></span>
-    <span class="ConsoleToggleLabel" aria-hidden="true">{{ consoleAdjust }}</span>
+    <span class="Label" aria-hidden="true">{{ consoleAdjust }}</span>
   </button>
     <!--
       Restore the collapsed state the instant the checkbox is parsed —
@@ -295,7 +295,7 @@
     <!-- the ✕ is a second face for the collapse checkbox: a non-modal dialog
          has no backdrop to dismiss, and the handle that opened it sits in the
          header behind the panel. -->
-    <button type="button" class="ConsolePanelClose" title="{{ consoleClose }}" aria-label="{{ consoleClose }}">
+    <button type="button" class="Close" title="{{ consoleClose }}" aria-label="{{ consoleClose }}">
       <span data-icon="close" aria-hidden="true"></span>
     </button>
   </header>
@@ -339,7 +339,6 @@
     const body = document.body
     if (Array.isArray(vars)) {
       for (const [k, v] of vars) root.style.setProperty(k, v)
-      if (config.baseGeneric === 'serif') body.style.fontFamily = 'var(--han-font-alternative)'
       const m = config.metrics
       if (m) {
         if (m.size && m.size !== 16) body.style.setProperty('--console-metric-size', `${m.size}px`)

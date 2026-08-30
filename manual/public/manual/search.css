@@ -26,7 +26,7 @@
     background: var(--paper);
   }
 
-  [data-part="icon"] { color: var(--ink-faint); font-size: 1rem; line-height: 1 }
+  .Icon { color: var(--ink-faint); font-size: 1rem; line-height: 1 }
 
   input[type="search"] {
     & {
@@ -43,7 +43,7 @@
   }
 
   kbd {
-    font-family: var(--font-mono);
+    font-family: var(--han-monospace);
     font-size: 0.625rem;
     /* A keycap is compact but still real text. `--ink-faint` measured below
        AA on the paper ground; the standard muted ink keeps it secondary
@@ -81,10 +81,11 @@
 
     &[hidden] { display: none }
 
-    [data-part="status"] {
+    .Status {
       & {
+        margin: 0;
         padding: 0.55rem 0.9rem;
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.75rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -114,7 +115,7 @@
         padding: 0.45rem 0.9rem;
         background: var(--paper-deep);
         border-block-start: 1px solid var(--rule);
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.625rem;
         color: var(--ink-faint);
         letter-spacing: 0.04em;
@@ -153,11 +154,12 @@
       border-inline-start-color: var(--accent);
     }
 
-    &.is-active [data-part="title"] { color: var(--accent-deep) }
+    &.is-active .Title { color: var(--accent-deep) }
 
-    [data-part="crumbs"] {
+    .Crumbs {
       & {
-        font-family: var(--font-mono);
+        display: block;
+        font-family: var(--han-monospace);
         font-size: 0.625rem;
         color: var(--ink-faint);
         letter-spacing: 0.08em;
@@ -168,7 +170,8 @@
       &:empty { display: none }
     }
 
-    [data-part="title"] {
+    .Title {
+      display: block;
       font-family: var(--han-font-alternative);
       font-weight: 500;
       font-size: 0.875rem;
@@ -177,8 +180,9 @@
       margin-block-end: 2px;
     }
 
-    [data-part="snippet"] {
+    .Snippet {
       & {
+        margin: 0;
         font-size: 0.75rem;
         color: var(--ink-mute);
         line-height: 1.55;

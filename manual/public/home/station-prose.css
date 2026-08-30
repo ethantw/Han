@@ -17,7 +17,7 @@
      接上之後開關自帶「開＝綠」的語彙（`.Toggle:has(input:checked)` 連
      標題一起轉綠），正好就是這顆開關要表達的狀態，不另外做；只把提示
      壓回輔助色，免得整行都在喊。 */
-  > .ProseControls {
+  > .Controls {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -25,7 +25,7 @@
     margin-block: -1em 2em;
   }
 
-  > .ProseControls > .Toggle {
+  > .Controls > .Toggle {
     & {
       --_rule: var(--ui-rule);
       --_bg: var(--ui-bg);
@@ -72,8 +72,11 @@
   --lens-size: min(24rem, 85cqi);
 }
 
-/* 平移鈕，與四語長帶、遊樂場同一支模組、同一個角落。 */
-.ProseNav {
+/* 平移鈕，與四語長帶、遊樂場同一支模組、同一個角落。
+   兩組導覽都是 `.Prose` 的控制介面，不是它的後代：上方一組在 `.Controls`
+   裡，末端一組是 `.Prose` 的相鄰兄弟。由站台根節點作 namespace，兩組共用
+   同一張臉，也不會把泛用的 `.Nav` 樣式漏到別站。 */
+#station-prose .Nav {
   & {
     display: flex;
     justify-content: end;
@@ -85,7 +88,7 @@
      `[hidden]`，所以要自己認一次。 */
   &[hidden] { display: none; }
 
-  &.ProseNav--top {
+  &.Top {
     flex: none;
     margin: 0;
   }

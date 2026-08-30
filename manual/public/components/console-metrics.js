@@ -71,7 +71,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange, passiveIn
   // 文案讀模板的 data-label-default。
   const $groupDefault = document.createElement('button')
   $groupDefault.type = 'button'
-  $groupDefault.dataset.action = 'restore-defaults'
+  $groupDefault.className = 'RestoreDefaults'
   const defaultLabel = root.querySelector('.Controls')?.dataset.labelDefault ?? 'Use default'
   $groupDefault.append(icon('reset'), defaultLabel)
   $groupDefault.title = defaultLabel
@@ -91,7 +91,6 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange, passiveIn
     const unit      = $slider.dataset.unit ?? ''
     const precision = +($slider.dataset.precision ?? 0)
     const $input    = $slider.querySelector('input[type="range"]')
-    const $fill     = $slider.querySelector('[data-pg-slider-fill]')
     const $val      = $slider.querySelector('[data-pg-slider-val]')
     const min       = +$input.min
     const max       = +$input.max
@@ -101,7 +100,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange, passiveIn
       stateRef.current = { ...stateRef.current, [metric]: v }
       const fmt = v.toFixed(precision)
       $val.textContent = unit ? `${fmt}${unit}` : fmt
-      $fill.style.width = `${((v - min) / (max - min)) * 100}%`
+      $slider.style.setProperty('--metric-fill', `${((v - min) / (max - min)) * 100}%`)
       updateGroupDefault()
       if (applyRuntime) apply()
     }

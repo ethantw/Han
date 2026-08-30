@@ -7,7 +7,7 @@
  * `.Specimen` markup that no longer exists on this page).
  */
 export const initLangSwitcher = () => {
-  const $root = document.querySelector('[data-lang-switcher]')
+  const $root = document.querySelector('.LangSwitcher')
   if (!$root) return
   const $trigger = $root.querySelector('button')
   const $menu    = $root.querySelector('ul')

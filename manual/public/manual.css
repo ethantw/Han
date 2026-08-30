@@ -8,11 +8,9 @@
  * theme switching). Tokens follow Claude Design's "方向 B v2" — 青翠綠
  * accent, ivory white paper, deep ink — matching the v4 homepage.
  *
- * Conforms to the css-naming SKILL: PascalCase component identity +
- * `data-part` for atomic spans + `data-variant` for variants +
- * `is-` for JS-toggled state, scoped under its component. Native
- * nesting throughout; `@media`/`@container` nested inside the rule
- * they affect (not at the top level).
+ * Component roots establish class namespaces; descendants use short local
+ * classes or structure, while data attributes carry real configuration and
+ * state. Native nesting keeps media and container rules with their owner.
  *
  * `.Brand` is intentionally a local block here (option 1 in the docs-
  * chrome plan): manual.css is a separate stylesheet from the homepage,

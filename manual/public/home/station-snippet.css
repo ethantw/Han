@@ -56,7 +56,7 @@
    --code-bg/--code-fg). The copy button is the only button in the
    figcaption, so an element selector carries it — no data-* hook. */
 
-figure[data-component="code-pane"] {
+figure.CodePane {
   & {
     margin: 0;
     overflow: hidden;
@@ -73,7 +73,7 @@ figure[data-component="code-pane"] {
       align-items: center;
       justify-content: space-between;
       padding: 10px 16px 2px;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.625rem;
       font-weight: 500;
       text-transform: uppercase;
@@ -86,7 +86,7 @@ figure[data-component="code-pane"] {
 
     /* label + (CLI pane only) the pm select, grouped so the copy button
        stays the only thing space-between pushes to the far end. */
-    [data-part="label"] {
+    .Label {
       display: flex;
       align-items: center;
       gap: 8px;

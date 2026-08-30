@@ -4,7 +4,7 @@
  * <han-console> shadow token layer — the `--_*` indirection.
  *
  * Custom properties pierce the shadow boundary and inherit, so on the
- * homepage the outer `--ui-*` / `--fs-*` / `--font-mono` tokens
+ * homepage the outer `--ui-*` / `--fs-*` / `--han-monospace` tokens
  * (home.css) flow straight in and WIN. On a bare page (docs, a plain
  * fixture) those tokens don't exist, so each `--_*` falls back to a
  * literal — a `light-dark()` pair, so dark mode still flips when the
@@ -41,7 +41,7 @@
   --_shadow-ink: var(--ui-shadow-ink, #111111);
 
   /* type + metrics — theme-invariant single-value fallbacks (home.css ramp) */
-  --_font-mono:  var(--font-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);
+  --_font-mono:  var(--han-monospace, ui-monospace, monospace);
   --_fs-compact: 0.8125rem;
   --_fs-fine:    0.75rem;
   --_fs-micro:   0.625rem;

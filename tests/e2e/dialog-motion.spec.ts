@@ -12,19 +12,19 @@ const cases: DialogCase[] = [
     name: 'quickstart',
     opener: '[data-quickstart-open]',
     dialog: '[data-quickstart-dialog]',
-    panel: '.QuickstartPanel',
+    panel: '.Panel',
   },
   {
     name: 'transfer size',
-    opener: '[data-size-dialog-open]',
-    dialog: '[data-size-dialog]',
-    panel: '[data-part="size-dialog-panel"]',
+    opener: '.OpenSizeDialog',
+    dialog: '.SizeDialog',
+    panel: '.Panel',
   },
   {
     name: 'article reader',
     opener: '[data-article]',
-    dialog: 'dialog.Full',
-    panel: '[data-part="reader-stage"]',
+    dialog: 'dialog.Reader',
+    panel: '.Stage',
   },
 ]
 
@@ -49,9 +49,9 @@ for (const item of cases) {
     // Keep the transition alive long enough for the test to inspect its
     // generated keyframes after asynchronous reader/module setup.
     await page.addStyleTag({ content: `
-      dialog:is(.QuickstartDialog, .SizeDialog, .Full) >
-        :is(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]),
-      dialog:is(.QuickstartDialog, .SizeDialog, .Full)::backdrop {
+      dialog:is(.QuickstartDialog, .SizeDialog, .Reader) >
+        :is(.Panel, .Stage),
+      dialog:is(.QuickstartDialog, .SizeDialog, .Reader)::backdrop {
         transition-duration: 10s !important;
       }
     ` })
@@ -81,7 +81,7 @@ test('the vertical article reader flies from left to right', async ({ page }) =>
   await page.goto('/')
   await page.evaluate(() => localStorage.setItem('han-paper-reader-writing', 'vertical'))
   await page.addStyleTag({ content: `
-    dialog.Full > [data-part="reader-stage"] { transition-duration: 10s !important; }
+    dialog.Reader > .Stage { transition-duration: 10s !important; }
   ` })
 
   const { panel } = await open(page, cases[2])
@@ -98,11 +98,11 @@ test('the article toolbar drops in quickly without overshooting the mask', async
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto('/')
   await page.addStyleTag({ content: `
-    dialog.Full > [data-part="reader-chrome"] { transition-duration: 10s !important; }
+    dialog.Reader > .Chrome { transition-duration: 10s !important; }
   ` })
 
   const { dialog } = await open(page, cases[2])
-  const chrome = dialog.locator('[data-part="reader-chrome"]')
+  const chrome = dialog.locator('.Chrome')
   const chromeFrames = await frames(chrome)
   expect(chromeFrames.some((frame) => {
     const value = String(frame.translate)

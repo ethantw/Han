@@ -44,13 +44,6 @@
   pgContentCustom: {
     hant: '自訂內容', hans: '自订内容', en: 'Your own', ja: '自分の文', ko: '<ruby>自作<rt>자작</rt></ruby>',
   },
-  pgAdoptState: {
-    hant: '文字試得合意了',
-    hans: '文字试得合意了',
-    en: 'Happy with how your words look?',
-    ja: 'この組み上がりでよければ',
-    ko: '이 <ruby>組版<rt>조판</rt></ruby>이 마음에 든다면',
-  },
   pgAdoptAction: {
     hant: '帶著目前配置生成引用碼',
     hans: '带着当前配置生成引用代码',
@@ -102,13 +95,13 @@
 
   <!-- One control strip for the station: content choice at the left, rail
        navigation at the right, both kept inside the normal page measure. -->
-  <header class="PgRailControls">
+  <header class="RailControls">
     <fieldset class="ViewTabs" data-pg-content-tabs>
       <legend class="sr-only">{{ pgContentLegend }}</legend>
       <label><input type="radio" name="pg-content" value="story" checked>{{ pgContentStory }}</label>
       <label><input type="radio" name="pg-content" value="custom">{{ pgContentCustom }}</label>
     </fieldset>
-    <nav class="PgNav PgNav--top" data-strip-nav="playground" aria-label="工作區平移（上方）">
+    <nav class="Nav Top" data-strip-nav="playground" aria-label="工作區平移（上方）">
       <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
         <span data-icon="chevron" aria-hidden="true"></span>
       </button>
@@ -133,7 +126,7 @@
     <!-- 兩塊窗格自成一個盒：窄站台下它就是那條可以左右滑的軌（吸附一格一
          格走，home/playground.js § swipe 讓藥丸與滑到哪裡互相對齊），寬站台
          下它是那張兩欄的網格。 -->
-    <div class="PgPanes" data-pg-panes data-strip="playground">
+    <div class="Panes" data-pg-panes data-strip="playground">
     <textarea data-pg-src spellcheck="false" aria-label="{{ pgStationCodeLabel }}">{{ pgStationSample }}</textarea>
     <!-- The paper card: masthead + dateline are CHROME, outside the editable
          article — the date is computed fresh every load (playground.js ←
@@ -144,8 +137,8 @@
          item so the switch always sits directly under the sheet — the card
          is `translate`d and the grid's own rows are sized by the taller
          editor, so nothing else keeps the two together. -->
-    <div class="PgSheet" data-pg-sheet>
-    <div class="PgPaper" data-pg-paper data-lens="live">
+    <div class="Sheet" data-pg-sheet>
+    <div class="Paper" data-pg-paper data-lens="live">
       <!-- 對開式報眉（owner 2026-08-27）：日期在左、刊名居中、版面名在右，一條
            橫線收在底下。刊名居中而兩側空著，在一張分了五六欄的紙上讀起來像掉在
            中間；把那條線兩端各放一件該有的東西，居中就站得住了。
@@ -163,13 +156,12 @@
            scrollable region the keyboard can't reach is a serious axe
            violation (scrollable-region-focusable). In tab mode it's one
            extra tab stop with an accessible name — a fair price. -->
-      <article class="PgGalley" data-pg-preview tabindex="0" aria-label="{{ pgPaperColumn }}"></article>
+      <article class="Galley" data-pg-preview tabindex="0" aria-label="{{ pgPaperColumn }}"></article>
     </div>
     </div>
     </div>
-    <p class="LensHint"><span data-pointer="fine">{{ lensHintHover }}</span><span data-pointer="coarse">{{ lensHint }}</span></p>
   </div>
-    <nav class="PgNav" data-strip-nav="playground" aria-label="工作區平移">
+    <nav class="Nav" data-strip-nav="playground" aria-label="工作區平移">
       <button type="button" data-scroll="prev" title="向前捲" aria-label="向前捲">
         <span data-icon="chevron" aria-hidden="true"></span>
       </button>
@@ -178,7 +170,6 @@
       </button>
     </nav>
     <div class="AdoptPrompt">
-      <p>{{ pgAdoptState }}</p>
       <a href="#station-snippet">{{ pgAdoptAction }}<span aria-hidden="true">→</span></a>
     </div>
 </section>

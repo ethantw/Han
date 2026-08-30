@@ -1,5 +1,5 @@
 /**
- * `.BrandGlyph` baseline alignment — the one measurement CSS can't do.
+ * `.Glyph` baseline alignment — the one measurement CSS can't do.
  *
  * The wordmark's 漢 is an absolutely-positioned inline `<svg>` overlaying the
  * (transparent) real text, and abspos can only anchor BOX EDGES. Where the
@@ -76,7 +76,7 @@ const alignOne = ($mark) => {
 }
 
 export const initBrandGlyph = ($root = document) => {
-  const $marks = [...$root.querySelectorAll('.Brand [data-part="mark"]:has(.BrandGlyph)')]
+  const $marks = [...$root.querySelectorAll('.Brand .Mark:has(.Glyph)')]
   const alignAll = () => $marks.forEach(alignOne)
 
   alignAll()

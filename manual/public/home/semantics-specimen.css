@@ -245,7 +245,7 @@
 
         inset: 0 0 auto auto;
         writing-mode: horizontal-tb;
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
 
         font-size: 0.75rem;
         font-style: normal;
@@ -292,7 +292,7 @@
       }
 
       [data-mark] > text {
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 8px;
         fill: var(--ui-supplement-text);
         text-anchor: end;
@@ -457,7 +457,7 @@
         [data-arc]   { stroke-width: 0.8; }
 
         text {
-          font-family: var(--font-mono);
+          font-family: var(--han-monospace);
           font-size: 8px;
           font-weight: 600;
           fill: var(--ui-proof);

@@ -113,9 +113,9 @@
         margin-inline-start: -.5em;
         &::before {
           content: ' ';
-          font-family: Han Em Space, Han Em Space Fallback, monospace;
-          font-size-adjust: ic-width 0.5;
+          font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
           visibility: hidden;
+          line-height: 1;
         }
       }
 
@@ -123,9 +123,9 @@
         margin-inline-end: -.5em;
         &::after {
           content: ' ';
-          font-family: Han Em Space, Han Em Space Fallback, monospace;
-          font-size-adjust: ic-width 0.5;
+          font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
           visibility: hidden;
+          line-height: 1;
         }
       }
 
@@ -138,6 +138,32 @@
         margin-inline-end: 0;
         &::after { content: none }
       }
+    }
+
+    /* A consecutive run has TWO independent jobs: the rules above trim its
+     * outer line edges, while this marker removes exactly one half-em at each
+     * compressible inner seam. JS omits the marker for `＼／－゠＆＿` and `ー`,
+     * so broad `middle` classification can never over-squeeze them. */
+    h-char[data-squeeze-next]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  /* When hanging is inactive, a wrapper that happens to carry the structural
+   * `hangable` token is an ordinary inline box; it pays pair squeeze exactly
+   * like every other predecessor. */
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-state-hanging-punctuation: off) {
+    h-char[data-punct~="hangable"][data-squeeze-next]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  /* With hanging active the mark itself has zero advance and its collapsible
+   * filler owns the width. Swap that filler from 1em to ½em instead of using
+   * a negative margin (which would distort justification). */
+  @container style(--han-punctuation-refinement: auto) and style(--han-state-hanging-punctuation: on) {
+    h-char[data-punct~="hangable"][data-squeeze-next]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
     }
   }
 }
@@ -277,21 +303,113 @@
  * hanging without squeeze, so `」，`/`，「` stay full-width; and on the
  * derived hanging state — where hanging isn't active there is nothing
  * to repair. */
-@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-q-quotes: on) {
-  /* FOLLOWING side (`，「`): the follower is a bare text node we can't
-   * style, so the hangable pays the ½em itself — its 1em filler swaps to
-   * a ½em face. Not a negative margin: under `justify` that drags the
-   * text before the mark; a filler is layout-honest content. */
-  h-char[data-punct~="hangable"]:is([data-followed-by="open"], [data-followed-by="middle"])::after {
-    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+@supports (text-spacing-trim: trim-start) {
+  @container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
+    /* FOLLOWING side (`，「`): the follower is a bare text node we can't
+     * style, so the hangable pays the ½em itself — its 1em filler swaps to
+     * a ½em face. Not a negative margin: under `justify` that drags the
+     * text before the mark; a filler is layout-honest content. */
+    h-char[data-punct~="hangable"]:is([data-followed-by="open"], [data-followed-by="middle"])::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+    }
+
+    /* PRECEDING side (`」，`): the squeezer before the hangable stays in
+     * flow and pays its ½em with `letter-spacing` — trimmed at line end so
+     * hanging is untouched, and no `justify` drift. SSR's `wrapBoth` emits
+     * the same marker as browser-side `wrapHangablePairs`. */
+    h-char[data-followed-by="hangable"] {
+      letter-spacing: -.5em;
+    }
+  }
+}
+
+/* Safari / other fallback engines do not pair-squeeze generated punctuation
+ * for us. The quote-boundary pass records every visual neighbour, including
+ * pseudo→pseudo nesting, and this branch makes exactly the first glyph at a
+ * seam pay ½em. Every rule is gated by the switch that actually generates the
+ * pseudo, so `q` off and `cite` none/wavy leave no phantom compensation. */
+@supports not (text-spacing-trim: trim-start) {
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-q-quotes: on) {
+    /* DOM punctuation → q pseudo (both the opening and the closing boundary). */
+    h-char[data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="hangable"]),
+    h-char[data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)) {
+      letter-spacing: -.5em;
+    }
+
+    /* q closing/opening pseudo → wrapped DOM punctuation. */
+    q[data-followed-by]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after,
+    q:is(
+      [data-open-followed-by="open"],
+      [data-open-followed-by="close"],
+      [data-open-followed-by="end"],
+      [data-open-followed-by="middle"],
+      [data-open-followed-by="hangable"]
+    ):is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::before {
+      letter-spacing: -.5em;
+    }
+
+    /* q pseudo → q pseudo, adjacent or nested. */
+    q:is([data-followed-by-quote~="open-q"], [data-followed-by-quote~="close-q"]):is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after,
+    q[data-open-followed-by~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::before {
+      letter-spacing: -.5em;
+    }
   }
 
-  /* PRECEDING side (`」，`): the squeezer before the hangable stays in
-   * flow (wrapped by `wrapHangablePairs`) and pays its ½em with
-   * `letter-spacing` — trimmed at line end so hanging is untouched, and
-   * no `justify` drift. */
-  h-char[data-followed-by="hangable"] {
-    letter-spacing: -.5em;
+  @container style(--han-punctuation-refinement: auto) and style(--han-state-hanging-punctuation: on) and style(--han-q-quotes: on) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+    }
+  }
+
+  @container style(--han-punctuation-refinement: auto) and style(--han-state-hanging-punctuation: off) and style(--han-q-quotes: on) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+    h-char[data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]),
+    h-char[data-followed-by-quote~="close-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
+      letter-spacing: -.5em;
+    }
+
+    cite[data-followed-by]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after,
+    cite:is(
+      [data-open-followed-by="open"],
+      [data-open-followed-by="close"],
+      [data-open-followed-by="end"],
+      [data-open-followed-by="middle"],
+      [data-open-followed-by="hangable"]
+    ):is(:lang(zh), :lang(ja), :lang(ko-Kore))::before {
+      letter-spacing: -.5em;
+    }
+
+    cite:is([data-followed-by-quote~="open-cite"], [data-followed-by-quote~="close-cite"]):is(:lang(zh), :lang(ja), :lang(ko-Kore))::after,
+    cite[data-open-followed-by~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::before {
+      letter-spacing: -.5em;
+    }
+  }
+
+  @container style(--han-punctuation-refinement: auto) and style(--han-state-hanging-punctuation: on) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+    }
+  }
+
+  @container style(--han-punctuation-refinement: auto) and style(--han-state-hanging-punctuation: off) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  /* Mixed q↔cite pseudo seams need both generators to be live. */
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-q-quotes: on) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+    q:is([data-followed-by-quote~="open-cite"], [data-followed-by-quote~="close-cite"]):is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after,
+    q[data-open-followed-by~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::before,
+    cite:is([data-followed-by-quote~="open-q"], [data-followed-by-quote~="close-q"]):is(:lang(zh), :lang(ja), :lang(ko-Kore))::after,
+    cite[data-open-followed-by~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::before {
+      letter-spacing: -.5em;
+    }
   }
 }
 
@@ -363,31 +481,27 @@
   }
 }
 
-/* The two seam repairs, extended to a bracket that lives in a pseudo. Same
- * gates as their DOM-neighbour twins — declared `auto` only, because an
- * explicit `hang` wants 」，／，「 full-width. */
-@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) {
-  /* FOLLOWING side (`，「`): the generated opening bracket is even less
-   * reachable than a bare text node, so the hangable pays with the same ½em
-   * filler face. */
-  h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
-    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+/* Native engines pair-squeeze across pseudo content by themselves. Only an
+ * atomic hanging layer at one side needs repair. Keep this branch capability-
+ * gated so Safari fallback never stacks it with the complete pair recipe. */
+@supports (text-spacing-trim: trim-start) {
+  @container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-q-quotes: on) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+    }
+    q[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after,
+    q[data-open-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::before {
+      letter-spacing: -.5em;
+    }
   }
 
-  /* PRECEDING side (`」，`): here the squeezer IS the pseudo, so it can pay
-   * directly — no wrapper needed, and `letter-spacing` on a one-character
-   * `content` lands entirely after the bracket. */
-  q[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans))::after {
-    letter-spacing: -.5em;
-  }
-}
-
-@container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
-  h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
-    font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
-  }
-
-  cite[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
-    letter-spacing: -.5em;
+  @container style(--han-state-hanging-punctuation: on) and style(--han-punctuation-refinement: auto) and style(--han-semantics: on) and style(--han-cite-title-marks: bracket) {
+    h-char[data-punct~="hangable"][data-followed-by-quote~="open-cite"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after {
+      font-family: Han Half Em Space, Han Half Em Space Fallback, monospace;
+    }
+    cite[data-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::after,
+    cite[data-open-followed-by="hangable"]:is(:lang(zh), :lang(ja), :lang(ko-Kore))::before {
+      letter-spacing: -.5em;
+    }
   }
 }

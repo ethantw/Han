@@ -16,7 +16,7 @@
   transition: opacity 140ms ease-out;
 }
 
-.StationMapCurrent {
+.StationMap .Current {
   & {
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@
   }
 }
 
-.StationMapList {
+.StationMap .List {
   & {
     position: absolute;
     inset-block-start: calc(100% + 0.375rem);
@@ -122,7 +122,7 @@
   }
 }
 
-.StationMapList[hidden] { display: none; }
+.StationMap .List[hidden] { display: none; }
 
 /* The floating console owns this corner while open. Side-console state uses
    the same checkbox with the opposite meaning, so this rule must stay below
@@ -135,7 +135,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .StationMapCurrent [data-icon],
-  .StationMapList a,
+  .StationMap .Current [data-icon],
+  .StationMap .List a,
   .StationMap { transition: none; }
 }

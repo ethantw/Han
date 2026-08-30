@@ -5,6 +5,15 @@
 
 ## RC 前（阻塞）
 
+- [x] **修正標點擠壓 fallback 與 SSR/native 接縫。** 2026-08-30 完工：
+  half-em filler 改用校準 face；JS 以明確 pair table 寫
+  `data-squeeze-next`；SSR 的 `》，`／`？，` 同時攜帶 native atomic-seam 與
+  fallback marker；native/fallback CSS capability 分流；`<q>`／`<cite>`
+  `::before`／`::after` 的 DOM→pseudo、pseudo→DOM、pseudo→pseudo 接縫及
+  on/off 負例均補齊。共用 demo／Node SSR／E2E 量測頁含 19 組案例；Chromium、
+  Playwright WebKit 與實機 Safari 26.5 橫排全綠，兩個 fallback 引擎直排亦全綠。
+  詳見
+  [`docs/plans/punctuation-squeeze-fallback-and-ssr.md`](plans/punctuation-squeeze-fallback-and-ssr.md)。
 - [x] **首頁 E2E 回歸歸零。** 2026-08-30 依新版 DOM 與互動契約重驗；
   全套 148 項為 147 通過、1 項預期略過（WebKit 專用 probe）。舊清單中的
   水印站數、鉛字盤、群組重設、fallback 與 demo 計數漂移均已在重構期間

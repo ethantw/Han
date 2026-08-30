@@ -37,6 +37,17 @@ export const PUNCT_MIDDLE_CHARS = '·＼／－゠＆・＿'
  */
 export const PUNCT_INTERPUNCT_CHARS = '·・'
 
+/**
+ * Punctuation whose adjoining half-em side bearing may be removed when two
+ * marks meet. Fullwidth symbols in the broad `middle` bucket and the long
+ * sound mark have no such side bearing, so they deliberately stay out.
+ */
+export const PUNCT_PAIR_CHARS =
+  PUNCT_OPEN_CHARS
+  + PUNCT_CLOSE_CHARS
+  + PUNCT_END_EXTRA.replace('ー', '')
+  + PUNCT_INTERPUNCT_CHARS
+
 /** Every character the punctuation passes classify. */
 export const ALL_PUNCT = PUNCT_OPEN_CHARS + PUNCT_CLOSE_CHARS + PUNCT_END_EXTRA + PUNCT_MIDDLE_CHARS
 
@@ -93,16 +104,12 @@ export const HANG_BLOCKING_CHARS = new Set([...PUNCT_CLOSE_CHARS, ...PUNCT_END_E
  * pay the half em back with `letter-spacing: -.5em` (han v3's recipe — trimmed
  * at the line end, no `justify` drift, unlike a negative margin).
  *
- * Conservative set: the ten closing brackets + the comma/period family
- * (`、，。．`, i.e. the hangable marks themselves), which unambiguously tsume
- * against a following mark. The other sentence-enders (`：；？！︰`) are left
- * OUT pending a proper pair-width measurement — a preceder that does NOT
- * actually squeeze would be over-squeezed by half an em (the `PUNCT_
- * INTERPUNCT_CHARS` lesson), so under-fixing a rare pair (`？，`) is the safe
- * side. `ー` (長音符) has no side space and is excluded. See
- * `docs/plans/hangable-after-close-bracket.md` § measurement.
+ * This is now the same explicit table used by the fallback pair marker. The
+ * broad `middle` bucket is not used: fullwidth symbols and `ー` remain out.
+ * Keeping the two paths on one table prevents browser-runtime and SSR markup
+ * from disagreeing on seams such as `？，`.
  */
-export const SQUEEZE_BEFORE_HANGABLE = PUNCT_CLOSE_CHARS + '、，。．'
+export const SQUEEZE_BEFORE_HANGABLE = PUNCT_PAIR_CHARS
 
 /**
  * Attribute naming the subtype of whatever sits immediately after this mark.
@@ -111,6 +118,44 @@ export const SQUEEZE_BEFORE_HANGABLE = PUNCT_CLOSE_CHARS + '、，。．'
  * which classifies the character itself.
  */
 export const FOLLOWED_BY = 'data-followed-by'
+
+/**
+ * Structural marker for a compressible punctuation pair. Unlike
+ * `data-consecutive-pos`, this says the specific inner seam is allowed to
+ * lose ½em; the distinction matters for `＼／－゠＆＿` and `ー`, which are
+ * wrapped as punctuation but do not pair-squeeze.
+ */
+export const SQUEEZE_NEXT = 'data-squeeze-next'
+
+export type PairFollowerSubtype = PunctSubtype | 'hangable'
+
+/** Whether the boundary between two literal punctuation characters squeezes. */
+export const isCompressiblePair = (current: string, next: string): boolean =>
+  !!current
+  && !!next
+  && PUNCT_PAIR_CHARS.includes(current)
+  && PUNCT_PAIR_CHARS.includes(next)
+
+/** Value written to `data-squeeze-next`; close wins over its secondary end token. */
+export const pairFollowerSubtype = (
+  next: string,
+  nextIsHangable = false,
+): PairFollowerSubtype | '' =>
+  !next
+  ? ''
+  : nextIsHangable
+  ? 'hangable'
+  : classifyPunctuation(next)[0] ?? ''
+
+const squeezeNextAttr = (
+  current: string,
+  next: string,
+  nextIsHangable = false,
+): string => {
+  if (!isCompressiblePair(current, next)) return ''
+  const subtype = pairFollowerSubtype(next, nextIsHangable)
+  return subtype ? ` ${SQUEEZE_NEXT}="${subtype}"` : ''
+}
 
 /**
  * Subtype of the character after a hangable mark, for `data-followed-by`.
@@ -234,6 +279,20 @@ const wrapBoth =
           // only hangable marks carry it — it exists to repair the spacing
           // their own `<h-layer>` breaks
           + (hangable ? followedByAttr(next) : '')
+          // SSR runs this all-in-one recipe without knowing the eventual UA.
+          // Preserve the native atomic-seam hook as well as the fallback pair
+          // fact so either CSS capability branch can consume the same markup.
+          + (!hangable && isCompressiblePair(ch, next)
+            && HANGABLE_CHARS.has(next)
+            && !HANG_BLOCKING_CHARS.has(i + 1 < runLen - 1 ? runText[i + 2] ?? '' : nextAfterRun)
+            ? ` ${FOLLOWED_BY}="hangable"`
+            : '')
+          + squeezeNextAttr(
+            ch,
+            next,
+            HANGABLE_CHARS.has(next)
+              && !HANG_BLOCKING_CHARS.has(i + 1 < runLen - 1 ? runText[i + 2] ?? '' : nextAfterRun),
+          )
         const inner = hangable ? `<h-layer>${ch}</h-layer>` : ch
         return `<h-char data-punct="${punctValues.join(' ')}"${attrs}>${inner}</h-char>`
       })
@@ -254,8 +313,10 @@ const wrapCompressible =
           ...(isRun ? ['consecutive'] : []),
         ]
         const pos = portion.indexInMatch + j
+        const next = pos < runLen - 1 ? match.captures[0][pos + 1] ?? '' : ''
         const attrs = isRun
           ? ` data-consecutive-pos="${pos === 0 ? 'start' : pos === runLen - 1 ? 'end' : 'inner'}"`
+            + squeezeNextAttr(ch, next)
           : ''
         return `<h-char data-punct="${punctValues.join(' ')}"${attrs}>${ch}</h-char>`
       }).join('')

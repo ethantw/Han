@@ -148,7 +148,7 @@
     p { margin: 0; }
   }
 
-  .RuleHead {
+  .Rule > .Head {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
@@ -314,12 +314,12 @@
       </figcaption>
       <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
         <section class="Rule">
-          <p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p>
+          <p class="Head"><span>Layer han-semantics</span><span>漢.css</span></p>
           <div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div>
           <output class="Weight">:where(0,2,2)→(0,0,0)</output>
         </section>
         <section class="Rule">
-          <p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p>
+          <p class="Head"><span>未分層</span><span>開發者的樣式</span></p>
           <div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div>
           <output class="Weight">(0,1,1)</output>
         </section>
@@ -342,8 +342,8 @@
         <figcaption class="Applied"><p>漢.css 的選擇器經 <code>:where()</code> 歸零，開發者規則可直接覆蓋；分層與容器變數再負責排序、開關與調校。</p></figcaption>
       </div>
       <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
-        <section class="Rule"><p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
-        <section class="Rule"><p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
+        <section class="Rule"><p class="Head"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
+        <section class="Rule"><p class="Head"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
       </div>
     </figure>
   </article>
@@ -362,8 +362,8 @@
         <figcaption class="Applied"><p>任何權重大於 <code>(0,0,0)</code> 的選擇器都能覆蓋漢.css；右側把這件事直接畫成一勝一負的層疊結果。</p></figcaption>
       </div>
       <div class="Devtools" aria-label="瀏覽器開發工具中的層疊規則示例">
-        <section class="Rule"><p class="RuleHead"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
-        <section class="Rule"><p class="RuleHead"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
+        <section class="Rule"><p class="Head"><span>Layer han-semantics</span><span>漢.css</span></p><div><p class="Selector">:where(:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))) {</p><p class="Declaration" data-overridden>margin-inline-end: .125em;</p><p>}</p></div><output class="Weight">:where(0,2,2)→(0,0,0)</output></section>
+        <section class="Rule"><p class="Head"><span>未分層</span><span>開發者的樣式</span></p><div><p>.notes cite {</p><p class="Declaration Selector">margin-inline-end: 0;</p><p>}</p></div><output class="Weight">(0,1,1)</output></section>
       </div>
       <ol class="Axioms">
         <li class="Axiom"><h3>推論一　未分層 &gt; <span class="Equation">@layer han-*</span></h3><p>所有框架規則置於分層中，開發者未分層的樣式自然優先。</p></li>

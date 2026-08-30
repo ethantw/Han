@@ -33,3 +33,22 @@ test('server specimen never loads han.js in the browser', async ({ page }) => {
   await expect(page.locator('han-console')).toHaveAttribute('no-fallbacks', '')
   expect(urls.some((u) => /\/han\/han(\.auto)?\.js/.test(u))).toBe(false)
 })
+
+test('demo default typeface switches --han-font-default on both specimens', async ({ page }) => {
+  for (const url of ['/specimen.html', '/specimen.ssr.html']) {
+    await page.goto(url)
+    const $select = page.locator('han-console [data-demo-key="default-font"]')
+    const $sample = page.locator('main [data-lang-pack][lang="zh-Hant"]')
+
+    await expect($select).toHaveValue('sans')
+    await expect(page.locator('html')).toHaveAttribute('data-demo-default-font', 'sans')
+    const sans = await $sample.evaluate(($el) => getComputedStyle($el).fontFamily)
+    expect(sans.trim()).toMatch(/sans-serif$/)
+
+    await $select.selectOption('serif')
+    await expect(page.locator('html')).toHaveAttribute('data-demo-default-font', 'serif')
+    const serif = await $sample.evaluate(($el) => getComputedStyle($el).fontFamily)
+    expect(serif.trim()).toMatch(/serif$/)
+    expect(serif).not.toContain('sans-serif')
+  }
+})

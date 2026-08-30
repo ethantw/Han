@@ -53,91 +53,62 @@
     }
   }
 
-  /* The track is a visual element behind the native range input. The
-     fill span is JS-driven (`console-metrics.js` sets its width); the
-     native input handles pointer events. */
-  [data-part="range-track"] {
+  /* The browser's native track pseudo-elements carry both the rail and
+     the JS-driven fill; no decorative light-DOM wrapper is needed. */
+  > input[type="range"] {
     & {
-      position: relative;
-      display: flex;
-      align-items: center;
-      block-size: 16px;
+      inline-size: 100%;
+      block-size: 18px;
+      margin: 0;
+      background: transparent;
+      -webkit-appearance: none;
+         -moz-appearance: none;
+              appearance: none;
+      cursor: pointer;
     }
 
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 50% 0 auto 0;
-      margin-block-start: -2px;
+    &:focus { outline: none; }
+
+    &::-webkit-slider-runnable-track {
       block-size: 4px;
-      background: var(--_rule);
+      border: 0;
       border-radius: 4px;
+      background: linear-gradient(to right,
+        var(--_accent) 0 var(--metric-fill, 0%),
+        var(--_rule) var(--metric-fill, 0%) 100%);
     }
-
-    [data-pg-slider-fill] {
-      position: absolute;
-      inset-block-start: 50%;
-      inset-inline-start: 0;
-      margin-block-start: -2px;
-      inline-size: 0;
+    &::-moz-range-track {
       block-size: 4px;
-      background: var(--_accent);
+      border: 0;
       border-radius: 4px;
-      pointer-events: none;
+      background: linear-gradient(to right,
+        var(--_accent) 0 var(--metric-fill, 0%),
+        var(--_rule) var(--metric-fill, 0%) 100%);
     }
-
-    input[type="range"] {
-      & {
-        position: absolute;
-        inset: 0;
-        inline-size: 100%;
-        block-size: 100%;
-        margin: 0;
-        background: transparent;
-        -webkit-appearance: none;
-           -moz-appearance: none;
-                appearance: none;
-        cursor: pointer;
-      }
-
-      &:focus { outline: none; }
-
-      &::-webkit-slider-runnable-track {
-        block-size: 16px;
-        background: transparent;
-        border: 0;
-      }
-      &::-moz-range-track {
-        block-size: 16px;
-        background: transparent;
-        border: 0;
-      }
-      &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-                appearance: none;
-        box-sizing: border-box;
-        inline-size: 18px;
-        block-size: 18px;
-        /* centre the 18px thumb on the 4px fill within the 16px track box */
-        margin-block-start: -1px;
-        border-radius: 50%;
-        background: var(--_bg);
-        border: 2px solid var(--_accent);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-        cursor: grab;
-      }
-      &::-moz-range-thumb {
-        box-sizing: border-box;
-        inline-size: 18px;
-        block-size: 18px;
-        border-radius: 50%;
-        background: var(--_bg);
-        border: 2px solid var(--_accent);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-        cursor: grab;
-      }
-      &:active::-webkit-slider-thumb { cursor: grabbing; }
-      &:active::-moz-range-thumb     { cursor: grabbing; }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+              appearance: none;
+      box-sizing: border-box;
+      inline-size: 18px;
+      block-size: 18px;
+      margin-block-start: -7px;
+      border-radius: 50%;
+      background: var(--_bg);
+      border: 2px solid var(--_accent);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      cursor: grab;
     }
+    &::-moz-range-thumb {
+      box-sizing: border-box;
+      inline-size: 18px;
+      block-size: 18px;
+      border-radius: 50%;
+      background: var(--_bg);
+      border: 2px solid var(--_accent);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      cursor: grab;
+    }
+    &:active::-webkit-slider-thumb { cursor: grabbing; }
+    &:active::-moz-range-thumb     { cursor: grabbing; }
   }
 }

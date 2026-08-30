@@ -8,10 +8,10 @@ import { test, expect } from '@playwright/test'
  *   1. `.Brand` is a baseline-aligned flex line, so the baseline's offset
  *      inside the box is `max(ascent)` over its atoms — which JUMPED at swap
  *      (measured: the 「.」 and `css` sat 0.1875em / 6px lower before it).
- *      `[data-part="mark"]` now declares the always-available `'Brand
+ *      `.Mark` now declares the always-available `'Brand
  *      Metrics'` face first, pinning the largest ascent in the line to a
  *      constant, so the baseline can't move (`common/brand.css`).
- *   2. `.BrandGlyph` (the 漢 overlay) is absolutely positioned, and abspos can
+ *   2. `.Glyph` (the 漢 overlay) is absolutely positioned, and abspos can
  *      only anchor box edges — where the baseline sits inside that box is a
  *      font metric CSS cannot read. `home/brand-glyph.js` measures it and pins
  *      the glyph to `baseline − 0.88em` (its em box's ascent, Shanggu sTypoAsc
@@ -30,7 +30,7 @@ const geometry = (page) =>
   page.evaluate((sels: string[]) =>
     sels.map((sel) => {
       const $brand = document.querySelector(sel) as HTMLElement
-      const $mark = $brand.querySelector('[data-part="mark"]') as HTMLElement
+      const $mark = $brand.querySelector('.Mark') as HTMLElement
       const em = parseFloat(getComputedStyle($mark).fontSize)
       const box = $brand.getBoundingClientRect()
       const at = (child: string) => {
@@ -48,12 +48,12 @@ const geometry = (page) =>
       return {
         sel,
         blockSize: +(box.height / em).toFixed(3),
-        glyph: at('.BrandGlyph'),
-        dot: at('[data-part="dot"]'),
-        ext: at('[data-part="ext"]'),
-        zihui: at('.BrandMark'),
+        glyph: at('.Glyph'),
+        dot: at('.Dot'),
+        ext: at('.Ext'),
+        zihui: at('.Device'),
         // px between the glyph's top edge and where its em box belongs
-        glyphOffBaselinePx: $brand.querySelector('.BrandGlyph')!.getBoundingClientRect().top - (baseline - em * 0.88),
+        glyphOffBaselinePx: $brand.querySelector('.Glyph')!.getBoundingClientRect().top - (baseline - em * 0.88),
       }
     }),
   BRANDS)

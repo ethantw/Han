@@ -73,18 +73,18 @@
   <a class="Brand" data-size="md" href="{{ homeUrl }}">
     <!-- G3 字徽（favicon 同款）——fill/stroke 走 docs token（--accent／
          --ink），隨主題明暗自動切。 -->
-    <svg class="BrandMark" viewBox="0 0 100 100" aria-hidden="true">
+    <svg class="Device" viewBox="0 0 100 100" aria-hidden="true">
       <circle cx="20" cy="28" r="6.5" opacity=".55" />
       <circle cx="20" cy="50" r="9.5" />
       <circle cx="20" cy="78" r="12.5" opacity=".85" />
       <path class="brace" d="M 82 14 H 57 V 86 H 82" fill="none" stroke-width="6.5" stroke-linecap="square" stroke-linejoin="miter" />
       <polygon class="dun" points="58,45 43,50 58,55" />
     </svg>
-    <span data-part="mark">漢</span><span data-part="dot">.</span><span data-part="ext">css</span>
-    <span data-part="ver">v{{ version }}</span>
+    <span class="Mark">漢</span><span class="Dot">.</span><span class="Ext">css</span>
+    <span class="Version">v{{ version }}</span>
   </a>
-  <form class="SiteSearch" role="search" data-search onsubmit="return false">
-    <span data-part="icon" data-icon="search" aria-hidden="true"></span>
+  <form class="SiteSearch" role="search" onsubmit="return false">
+    <span class="Icon" data-icon="search" aria-hidden="true"></span>
     <input type="search"
            role="combobox"
            autocomplete="off"
@@ -94,25 +94,23 @@
            aria-controls="search-panel"
            aria-expanded="false"
            aria-haspopup="listbox"
-           aria-autocomplete="list"
-           data-search-input>
+           aria-autocomplete="list">
     <kbd aria-hidden="true">⌘K</kbd>
     <div id="search-panel"
          class="Panel"
          role="listbox"
          aria-label="{{ searchPlaceholder }}"
-         data-search-panel
          data-empty-msg="{{ searchEmpty }}"
          data-loading-msg="{{ searchLoading }}"
          data-unready-msg="{{ searchUnready }}"
          hidden>
-      <div data-part="status" data-search-status></div>
-      <ol data-search-results></ol>
-      <div class="Foot">
+      <p class="Status" role="status" aria-live="polite"></p>
+      <ol></ol>
+      <footer class="Foot">
         <span><kbd>↑</kbd><kbd>↓</kbd> {{ searchHintNav }}</span>
         <span><kbd>↵</kbd> {{ searchHintOpen }}</span>
         <span><kbd>esc</kbd> {{ searchHintClose }}</span>
-      </div>
+      </footer>
     </div>
   </form>
   <nav>

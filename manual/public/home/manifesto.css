@@ -169,7 +169,7 @@
       margin: 0;
       padding: 0.625rem 0.875rem;
       overflow: auto hidden;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.75rem;
       line-height: 1.7;
       text-align: start;
@@ -197,7 +197,7 @@
     /* Full-viewport mask and motion live in home/dialog.css. */
   }
 
-  .QuickstartPanel {
+  .Panel {
     inline-size: min(38rem, calc(100% - 2rem));
     margin: 8dvb auto;
     overflow: clip;
@@ -209,7 +209,7 @@
 
   }
 
-  .QuickstartPanel > header {
+  .Panel > header {
     & {
       display: flex;
       align-items: center;
@@ -249,7 +249,7 @@
     }
   }
 
-  .QuickstartBody {
+  .Body {
     & {
       display: grid;
       gap: 1.25rem;
@@ -291,7 +291,7 @@
 
       &::before {
         content: '0' counter(quickstart);
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.75rem;
         font-weight: 400;
         color: var(--ui-accent);
@@ -339,7 +339,7 @@
     }
   }
 
-  /* The 漢 outline is built at DCL from the canonical BrandGlyph paths by
+  /* The 漢 outline is built at DCL from the canonical Brand .Glyph paths by
      fonts-gate.js. Keeping this host empty lets construction and animation
      start together without a paint-vs-JS race. */
   .Outline {
@@ -416,7 +416,7 @@
     align-items: center;
     gap: 0.625rem;
     padding: 0.625rem 0.875rem;
-    font-family: var(--font-mono);
+    font-family: var(--han-monospace);
     /* 碼一律不兩端對齊。`main` 是 justify（CJK 正文要的），而這是一行指令：
        折行之後 justify 會去撐 token 之間的空隙，讀起來像被剪過（首頁站柒的
        `<pre>` 同一條防呆）。 */

@@ -11,7 +11,7 @@ export const initPunctLangLayout = ($root = document) => {
   const $strip = $figure?.querySelector(':scope > ul')
   const $switch = $figure?.querySelector(':scope > .SpecimenSwitch')
   const $caption = $figure?.querySelector(':scope > figcaption')
-  const $nav = $figure?.querySelector(':scope > .PunctLangNav')
+  const $nav = $figure?.querySelector(':scope > .Nav')
   const $station = $figure?.closest('[data-station]') ?? $figure
   const $page = $figure?.closest('main') ?? document.documentElement
   const $cards = $strip ? [...$strip.children] : []
@@ -94,7 +94,9 @@ export const initPunctLangLayout = ($root = document) => {
       /* Vertical copy needs its natural column measure, so it is always a
          rail. Horizontal copy may use the calmer four-up grid when all four
          readable cards genuinely fit without scrolling. */
-      $figure.dataset.layout = vertical || !fitsFour ? 'rail' : 'grid'
+      const rail = vertical || !fitsFour
+      $figure.classList.toggle('Rail', rail)
+      $figure.classList.toggle('Grid', !rail)
       $figure.style.setProperty('--pl-visible-count', String(visibleCount))
       $figure.style.setProperty('--pl-rail-inline-start', `${Math.round(railInlineStart)}px`)
       $figure.style.setProperty('--pl-rail-inline-end', `${Math.round(railInlineEnd)}px`)
@@ -154,7 +156,7 @@ export const initPunctLangLayout = ($root = document) => {
   addEventListener('wheel', (event) => {
     const vertical = $switch
       ?.querySelector('input[name="pl-writing"][value="vertical"]')?.checked
-    if (!vertical || $figure.dataset.layout !== 'rail') return
+    if (!vertical || !$figure.classList.contains('Rail')) return
     /* Sticky specimens can visibly overlap a later station whose transparent
        box wins DOM hit testing.  Ownership therefore follows the painted rail
        rectangle, not event.target. */

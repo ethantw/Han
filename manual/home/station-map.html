@@ -87,19 +87,19 @@
 <!-- This ordered list is the one station map: index, short name, fragment ID
      and task summary live here. The station headings keep their editorial
      titles; navigation code reads no parallel JavaScript table. -->
-<div class="StationMap" role="navigation" aria-label="{{ stationMapLabel }}" data-station-map>
-  <button class="StationMapCurrent"
+<nav class="StationMap" aria-label="{{ stationMapLabel }}" data-station-map>
+  <button class="Current"
           type="button"
           aria-expanded="false"
           aria-controls="station-map-list"
           data-label-open="{{ stationMapOpen }}"
           data-label-close="{{ stationMapClose }}">
-    <span class="StationMapCurrentNo" aria-hidden="true">{{ station1Progress }}</span>
+    <span class="No" aria-hidden="true">{{ station1Progress }}</span>
     <span aria-hidden="true">・</span>
-    <span class="StationMapCurrentName" aria-hidden="true">{{ station1Name }}</span>
+    <span class="Name" aria-hidden="true">{{ station1Name }}</span>
     <span data-icon="chevron" aria-hidden="true"></span>
   </button>
-  <ol class="StationMapList" id="station-map-list" hidden>
+  <ol class="List" id="station-map-list" hidden>
     <li><a href="#station-semantics" data-number="{{ station1No }}" data-progress="{{ station1Progress }}" data-name="{{ station1Name }}" data-summary="{{ station1Task }}" aria-current="location"><b>{{ station1No }}</b><span>{{ station1Name }}</span><small>{{ station1Task }}</small></a></li>
     <li><a href="#station-fonts" data-number="{{ station2No }}" data-progress="{{ station2Progress }}" data-name="{{ station2Name }}" data-summary="{{ station2Task }}"><b>{{ station2No }}</b><span>{{ station2Name }}</span><small>{{ station2Task }}</small></a></li>
     <li><a href="#station-lines" data-number="{{ station3No }}" data-progress="{{ station3Progress }}" data-name="{{ station3Name }}" data-summary="{{ station3Task }}"><b>{{ station3No }}</b><span>{{ station3Name }}</span><small>{{ station3Task }}</small></a></li>
@@ -108,4 +108,4 @@
     <li><a href="#station-playground" data-number="{{ station6No }}" data-progress="{{ station6Progress }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
     <li><a href="#station-snippet" data-number="{{ station7No }}" data-progress="{{ station7Progress }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
   </ol>
-</div>
+</nav>

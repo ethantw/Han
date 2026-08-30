@@ -26,7 +26,7 @@
  *           `metrics { size, leading, weight }` — codegen turns any
  *           deviation into a `body { }` rule. Fired once on connect.
  *   methods reset() · reapplyFallbacks($target?) · setDemoSwitch(key, on)
- *   attr    demo — 顯示示例頁專屬開關，狀態鏡射到 <html data-demo-*>
+ *   attr    demo — 顯示示例頁專屬控件，狀態鏡射到 <html data-demo-*>
  *   prop    config (the frozen copy)
  */
 import { cssVars, DEFAULTS } from '/home/codegen.js'
@@ -69,12 +69,17 @@ const readStored = () => {
     if (!raw) return undefined
     const { config } = JSON.parse(raw)
     if (!config || typeof config !== 'object') return undefined
+    // `baseGeneric` used to be a persisted config field. It is now a
+    // specimen-only demo control, so do not leak the legacy key back into
+    // the public event shape when restoring an older saved payload.
+    const stored = { ...config }
+    delete stored.baseGeneric
     return {
       ...DEFAULTS,
-      ...config,
-      heritage: migrateHeritage(config.heritage),
-      punct: { ...DEFAULTS.punct, ...config.punct },
-      metrics: { ...DEFAULTS.metrics, ...config.metrics },
+      ...stored,
+      heritage: migrateHeritage(stored.heritage),
+      punct: { ...DEFAULTS.punct, ...stored.punct },
+      metrics: { ...DEFAULTS.metrics, ...stored.metrics },
     }
   } catch {
     return undefined
@@ -289,12 +294,12 @@ class HanConsole extends HTMLElement {
         passiveInit: this.hasAttribute('mirror'),
       },
     )
-    this.#mountDemoSwitches()
+    this.#mountDemoControls()
     this.#ready = true
   }
 
   /**
-   * 示例頁專屬開關（`<han-console demo>`；模板裡的 `[data-demo-key]`）。
+   * 示例頁專屬控件（`<han-console demo>`；模板裡的 `[data-demo-key]`）。
    *
    * 它們不進 config、不進生成碼——調的是示例頁自己的呈現。狀態鏡射成
    * `<html>` 上的 `data-demo-<key>` 屬性，因為 **`:has()` 跨不過影界**：
@@ -302,20 +307,33 @@ class HanConsole extends HTMLElement {
    * console-config.js 已經替模組開關走過（`data-han-module-*`）。
    *
    * 方向是**屬性 → 控件**：頁面可以在 <html> 上先寫好初值（深色的
-   * pre-paint 還原就靠這個，免 FOUC），元件掛載時照著把 checkbox 撥對，
+   * pre-paint 還原就靠這個，免 FOUC），元件掛載時照著把控件撥對，
    * 而不是反過來讓晚到的元件把畫面推翻一次。
    */
-  #mountDemoSwitches() {
+  #mountDemoControls() {
     const $root = document.documentElement
     for (const $el of this.shadowRoot.querySelectorAll('[data-demo-key]')) {
       const attr = `data-demo-${$el.dataset.demoKey}`
-      if ($root.hasAttribute(attr) !== $el.checked) $el.checked = $root.hasAttribute(attr)
+      const toggle = $el instanceof HTMLInputElement && $el.type === 'checkbox'
+      if (toggle) {
+        if ($root.hasAttribute(attr) !== $el.checked) $el.checked = $root.hasAttribute(attr)
+      } else {
+        const initial = $root.getAttribute(attr)
+        if (initial !== null && [...$el.options].some(($option) => $option.value === initial)) {
+          $el.value = initial
+        } else {
+          $root.setAttribute(attr, $el.value)
+        }
+      }
       $el.addEventListener('input', () => {
-        $root.toggleAttribute(attr, $el.checked)
+        if (toggle) $root.toggleAttribute(attr, $el.checked)
+        else $root.setAttribute(attr, $el.value)
         this.dispatchEvent(new CustomEvent('han-demo-change', {
           bubbles: true,
           composed: true,
-          detail: { key: $el.dataset.demoKey, on: $el.checked },
+          detail: toggle
+            ? { key: $el.dataset.demoKey, on: $el.checked }
+            : { key: $el.dataset.demoKey, value: $el.value },
         }))
       })
     }

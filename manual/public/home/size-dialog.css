@@ -1,0 +1,179 @@
+@charset "UTF-8";
+
+/* Complete-transfer ledger dialog. Shared mask and motion live in dialog.css;
+   ledger.css owns the reusable tables that this component presents. */
+
+.OpenSizeDialog {
+  margin-block: 0 2.5rem;
+  padding: .6rem .85rem;
+  font: inherit;
+  color: var(--ui-accent-deep);
+  background: var(--ui-accent-bg);
+  border: 1px solid color-mix(in srgb, var(--ui-accent) 48%, var(--ui-bg));
+  border-radius: var(--r-3);
+  box-shadow: 0 .2rem .65rem color-mix(in srgb, var(--ui-accent) 12%, transparent);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    translate 160ms ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--ui-accent-bg) 72%, var(--ui-accent));
+    border-color: var(--ui-accent);
+    box-shadow: 0 .3rem .9rem color-mix(in srgb, var(--ui-accent) 20%, transparent);
+    translate: 0 -1px;
+  }
+
+  &:active {
+    box-shadow: 0 .1rem .35rem color-mix(in srgb, var(--ui-accent) 14%, transparent);
+    translate: 0 0;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 3px;
+  }
+}
+
+.SizeDialog {
+  box-sizing: border-box;
+  padding-block: max(20vh, 6rem) 10rem;
+  font-family: var(--han-sans);
+  overflow-anchor: none;
+}
+
+.SizeDialog > .Panel {
+  inline-size: min(40rem, calc(100% - 2rem));
+  margin: 0 auto;
+  overflow: clip;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-rule);
+  border-radius: var(--r-3);
+  box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--ui-shadow-ink) 28%, transparent);
+}
+
+.SizeDialog .Head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  background: var(--ui-bg);
+  border-block-end: 1px solid var(--ui-rule);
+}
+
+.SizeDialog .Head h3,
+.SizeDialog .Body h4 {
+  margin: 0;
+  font-family: var(--han-sans);
+  font-weight: 500;
+}
+
+.SizeDialog .Head h3 { font-size: 1rem; }
+
+.SizeDialog .Head button {
+  display: grid;
+  place-items: center;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  padding: 0;
+  color: var(--ui-supplement-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.SizeDialog .Head [data-icon] { vertical-align: initial; }
+
+.SizeDialog .Body {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.125rem;
+}
+
+.TransferDetails h4,
+.SizeDialog .LedgerHead { margin-block-end: .75rem; }
+
+.TransferDetails table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.TransferDetails caption {
+  margin-block-end: .5rem;
+  font-family: var(--han-sans);
+  font-size: .75rem;
+  line-height: 1.6;
+  color: var(--ui-supplement-text);
+  text-align: start;
+}
+
+.TransferDetails :is(th, td) {
+  padding: .375rem .5rem;
+  border-block-end: 1px solid var(--ui-rule);
+}
+
+.TransferDetails th {
+  font-family: var(--han-sans);
+  font-size: .875rem;
+  font-weight: 400;
+  text-align: start;
+}
+
+.TransferDetails thead th {
+  font-size: .75rem;
+  color: var(--ui-supplement-text);
+}
+
+.TransferDetails :is(th, td):not(:first-child) {
+  font-family: var(--han-monospace);
+  text-align: end;
+}
+
+.TransferDetails td {
+  font-size: .875rem;
+  color: var(--ui-accent);
+}
+
+.SizeDialog .SsrNote {
+  margin: 0;
+  max-inline-size: 60em;
+  font-family: var(--han-sans);
+  font-size: .875rem;
+  line-height: 1.65;
+  color: var(--ui-supplement-text);
+}
+
+.SizeDialog .FontLedger {
+  margin: 0;
+  grid-template-columns: 1fr;
+  grid-template-areas: none;
+}
+
+.SizeDialog .FontLedger > :is([data-plate], figcaption) { grid-area: auto; }
+
+.SizeDialog .FontLedger > :is(div, figcaption) { padding: .875rem; }
+
+.SizeDialog .FontLedger :is(caption, thead th:first-child, tbody th, figcaption) {
+  font-family: var(--han-sans);
+}
+
+.SizeDialog .TransferDetails :is(th, td, caption) code {
+  padding: 0;
+  font-family: var(--han-monospace);
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+}
+
+@media (max-width: 42rem) {
+  .SizeDialog .Body { padding: 1rem; }
+  .TransferDetails { min-inline-size: 0; overflow-x: auto; }
+  .TransferDetails table { min-inline-size: 30rem; }
+}

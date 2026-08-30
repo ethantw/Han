@@ -422,44 +422,35 @@
   .size-sample[data-size='min'] .diagnostic-copy { font-size: 12px; }
   .size-sample[data-size='max'] .diagnostic-copy { font-size: 60px; }
 
-  /* A zero-size inline-block records the real baseline of the ruby line. */
-  .GuideOrigin {
-    position: relative;
-    display: inline-block;
-    inline-size: 0;
-    block-size: 0;
-    vertical-align: baseline;
-    pointer-events: none;
-  }
-
-  .GuideOrigin i {
+  /* The ruby fallback already owns an empty anchored baseline fragment.
+   * Reuse it for the guides.  A separate inline marker looked harmless, but
+   * its baseline participation changed Chrome's anchor resolution for every
+   * following ruby in this diagnostic line. */
+  .diagnostic-copy ruby:first-of-type::after {
+    content: '';
     position: absolute;
     z-index: 4;
+    position-anchor: --han-ruby-baseline;
+    inset-block-start: calc(
+      anchor(--han-ruby-baseline top)
+      - var(--han-ruby-zhuyin-used-ideographic-ink-descent)
+    );
     inset-inline-start: 0;
     inline-size: 20em;
     block-size: 0;
+    pointer-events: none;
+  }
+
+  :root[data-base-baseline] .diagnostic-copy ruby:first-of-type::after {
     border-block-start: 1px solid var(--guide-baseline);
     opacity: .78;
   }
 
-  :root:not([data-base-baseline]) .GuideOrigin > i { display: none; }
-
-  /* The public value is a base-em length, so the guide scales at 12/current/
-   * 60px but does not move when the annotation font-size changes. */
-  .GuideOrigin::after {
-    content: '';
-    position: absolute;
-    z-index: 4;
-    inset-block-start: var(--demo-ideographic-ink-descent);
-    inset-inline-start: 0;
-    inline-size: 20em;
-    block-size: 0;
-    border-block-start: 1px solid var(--guide-ideographic-ink);
-    opacity: .85;
-    pointer-events: none;
+  /* The public value is a base-em length, so the ink guide scales at
+   * 12/current/60px but not with the annotation font-size. */
+  :root[data-ideographic-ink] .diagnostic-copy ruby:first-of-type::after {
+    box-shadow: 0 var(--demo-ideographic-ink-descent) 0 var(--guide-ideographic-ink);
   }
-
-  :root:not([data-ideographic-ink]) .GuideOrigin::after { display: none; }
 
   /* Zhuyin is vertical-rl in horizontal text, so its central baseline is a
    * vertical logical baseline. The pseudo-element is absolute and cannot
@@ -570,6 +561,13 @@
 
   :root:has(#font-source-off:checked) main {
     --han-use-heritage-glyphs-for-hant: off;
+  }
+
+  /* Keep the baseline strut independently switchable from the CJK glyph
+   * source. `HanNone` is deliberately unresolvable, so the composite stacks
+   * fall through to the same real faces without the metrics-only space face. */
+  :root:has(#han-metrics:not(:checked)) main {
+    --han-font-metrics: HanNone;
   }
 
   :root:has(#font-sans:checked) .copy { font-family: var(--han-sans); }
@@ -859,6 +857,8 @@
         <label><input id="font-source-off" type="radio" name="font-source" value="off">off</label>
       </fieldset>
 
+      <label class="check-toggle"><input id="han-metrics" name="han-metrics" type="checkbox" checked>Han Metrics</label>
+
       <fieldset aria-labelledby="font-label">
         <span id="font-label">字體</span>
         <label><input id="font-serif" type="radio" name="font" value="serif" checked>明體</label>
@@ -965,15 +965,15 @@
       <div class="size-comparison">
         <figure class="size-sample" data-size="min">
           <figcaption>min · 12px</figcaption>
-          <div class="copy diagnostic-copy" lang="zh-Hant"><i class="GuideOrigin" aria-hidden="true"><i></i></i><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
+          <div class="copy diagnostic-copy" lang="zh-Hant"><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
         </figure>
         <figure class="size-sample" data-size="current">
           <figcaption>current · <span data-current-size>16px</span></figcaption>
-          <div class="copy diagnostic-copy" lang="zh-Hant"><i class="GuideOrigin" aria-hidden="true"><i></i></i><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin" data-measure-ruby>究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
+          <div class="copy diagnostic-copy" lang="zh-Hant"><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin" data-measure-ruby>究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
         </figure>
         <figure class="size-sample" data-size="max">
           <figcaption>max · 60px</figcaption>
-          <div class="copy diagnostic-copy" lang="zh-Hant"><i class="GuideOrigin" aria-hidden="true"><i></i></i><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
+          <div class="copy diagnostic-copy" lang="zh-Hant"><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">永<rt>ㄩㄥˇ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">二<rt>ㄦˋ</rt></ruby><ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">十<rt>ㄕˊ</rt></ruby><ruby class="zhuyin">啊<rt>˙ㄚ</rt></ruby><ruby class="zhuyin">瓜<rt>˙ㄍㄨㄚ</rt></ruby></div>
         </figure>
       </div>
       <div class="legend" aria-label="參考線圖例">

@@ -67,7 +67,7 @@
      page computes fresh on every load (playground.js ← papers-dateline.js).
      Living OUTSIDE the editable article, the date can never be pickled
      into a reader's localStorage draft. Mirrors station①'s .Papers head. */
-  .PgPaper {
+  .Paper {
     /* ── 報頭：紐約時報式 ─────────────────────────────────────────────
        版式本身是共用零件（home/paper-head.css）——站④的兩張樣張也戴同一頂
        報頭。這裡只給它這張紙的**尺度**與這張紙特有的窄版退路。 */
@@ -109,7 +109,7 @@
       resize: vertical;
       background: var(--code-bg);
       border: 0;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.875rem;
       color: var(--code-fg);
       tab-size: 2;
@@ -125,7 +125,7 @@
      render pipeline and the tests select by, and the magnifier's live copy
      must not answer to any of them — it keeps the classes (its face) and
      drops every data-*. */
-  .PgGalley {
+  .Galley {
     & {
       background: var(--ui-bg);
       font-family: var(--han-font-alternative);
@@ -160,7 +160,7 @@
     /* inline code — the fenced-block <pre> case is handled separately */
     :not(pre) > code {
       padding: 0.1em 0.35em;
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.875em;
       background: var(--ui-panel);
       border: 1px solid var(--ui-rule);
@@ -175,7 +175,7 @@
         background: var(--code-bg);
         border-radius: var(--r-2);
         color: var(--code-fg);
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.8125em;
       }
 
@@ -297,7 +297,7 @@
   /* 平移用的左右鈕。只在寬視窗出現——窄視窗一次一格，那裡有分頁可以按。
      擺在工作區右下，與四語長帶同一個位置與同一個模組（`strip-nav.js`）：
      同一種「還有更多」就該用同一種手勢與同一個角落回答。 */
-  .PgNav {
+  .Nav {
     & {
       display: flex;
       justify-content: end;
@@ -305,7 +305,7 @@
       margin-block-start: 0.75rem;
     }
 
-    &.PgNav--top {
+    &.Top {
       flex: none;
       margin: 0;
     }
@@ -384,13 +384,13 @@
      gave its galley an auto height, so the copy fragmented into different
      columns than the page it was supposed to be magnifying. */
   [data-pg-sheet] > [data-pg-paper],
-  [data-mag-lens] .PgPaper {
+  [data-mag-lens] .Paper {
     padding: 1.25rem 1rem;
     padding-block-end: 0.5em;
     background: var(--ui-bg);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
-    /* 紙只包住實際欄列；與編輯器等高的展示軌由外層 PgSheet 承擔。若把這裡也
+    /* 紙只包住實際欄列；與編輯器等高的展示軌由外層 Sheet 承擔。若把這裡也
        撐到 `--pg-pane-h`，短於視窗的末欄會在紙尾留下大片假留白。放大鏡裡的
        副本吃同一條，紙邊與原稿才會一致。 */
     min-block-size: 0;
@@ -401,7 +401,7 @@
   /* The copy clips instead of scrolling — the module mirrors the source's
      scroll offset onto it, and a scrollbar inside the circle would be a
      control nobody can reach. */
-  [data-mag-lens] .PgPaper {
+  [data-mag-lens] .Paper {
     overflow: hidden;
   }
 
@@ -418,7 +418,7 @@
        上（見那裡的註）。不跟的話紙會溢出格子，而溢出的那一截不算進長帶的可捲
        範圍——捲到底時紙的右緣正好貼著視窗，最後一欄看不全。 */
     inline-size: max(min(56rem, 92cqi), var(--pg-paper-w, 0px));
-    /* 紙自己有個寬度地板（報頭排得下的最小寬 ＝ 五欄，見 § .PgPaper），格子沒有
+    /* 紙自己有個寬度地板（報頭排得下的最小寬 ＝ 五欄，見 § .Paper），格子沒有
        的話紙就從格子裡溢出去，而那截溢出不算進長帶的可捲範圍——捲到底時紙的右緣
        正好貼著視窗，最後一欄看不全（owner 2026-08-28 的截圖）。 */
     min-inline-size: min-content;
@@ -503,7 +503,7 @@
 
      The scroll lives on the CARD (above), never on the page: a sheet may
      be wider than the window, the site's layout may not. */
-  .PgGalley {
+  .Galley {
     font-size: var(--pg-galley-fs);
     flex: 0 0 auto;
     min-block-size: 0;
@@ -546,13 +546,13 @@
   /* The narrower measure wants a narrower indent. On the CLASS: this is
      part of the galley's face, and the loupe's copy has to indent the same
      or it breaks its lines somewhere else and stops being a copy. */
-  .PgGalley {
+  .Galley {
     --han-prose-indent: 1em;
   }
 
   /* 報導的首題是整個版面的主標，先橫跨當前欄列再讓正文入欄；只取第一個 h1，
      使用者在後文另下的一級標題仍留在正文流裡。 */
-  .PgGalley > h1:first-of-type {
+  .Galley > h1:first-of-type {
     column-span: all;
   }
 
@@ -610,7 +610,7 @@
   margin-block-end: 1rem;
   max-inline-size: clamp(18rem, 45%, 40rem);
 }
-.Playground:where(section) > .PgRailControls {
+.Playground:where(section) > .RailControls {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -621,7 +621,7 @@
   position: relative;
   z-index: 4;
 }
-.Playground:where(section) > .PgRailControls > .ViewTabs {
+.Playground:where(section) > .RailControls > .ViewTabs {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

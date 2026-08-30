@@ -47,7 +47,7 @@
   /* devtools puts the cascade layer above each rule block; so do we — and
      the developer's block says 「未分層」 in the same slot, which is 式5.2
      made visible instead of merely asserted. */
-  arRuleLayer: {
+  arLayer: {
     hant: 'Layer ', hans: 'Layer ', en: 'Layer ', ja: 'Layer ', ko: 'Layer ',
   },
   arRuleUnlayered: {
@@ -578,33 +578,33 @@
       <ul class="SelRing">
         <li data-case="heading">
           <article class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
+            <div class="Head">
+              <p class="Layer">{{ arLayer }}<b>han-prose</b></p>
+              <p class="Tag" data-brand>{{ logo }}</p>
             </div>
             <p class="At" lang="en">@container style(--han-prose: on) {</p>
             <div class="Nest">
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-block-end: 0;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><span class="Fn">:where(</span><code data-spec>h1:has(+ h2, + h3, + h4, + h5, + h6, + blockquote, + p, + ol, + ul, + section)</code><span class="Fn">)</span> {</p>
+            <p class="Decl" lang="en"><code>margin-block-end: 0;</code></p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
           </article>
           <article class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            <div class="Head">
+              <p class="Layer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="Tag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><code data-mine-spec>article h1</code> {</p>
+            <p class="Decl" lang="en"><code>margin-block-end: 2rem;</code></p>
+            <p class="End">}</p>
           </article>
         </li>
         <li data-case="cite">
           <article class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
+            <div class="Head">
+              <p class="Layer">{{ arLayer }}<b>han-semantics</b></p>
+              <p class="Tag" data-brand>{{ logo }}</p>
             </div>
             <p class="At" lang="en">@container style(--han-semantics: on) {</p>
             <div class="Nest">
@@ -612,102 +612,102 @@
             <div class="Nest">
             <p class="At" lang="en">@container style(--han-cite-title-marks: wavy) {</p>
             <div class="Nest">
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline-end: .125em;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><span class="Fn">:where(</span><code data-spec>:is(u, ins, cite:lang(zh)):has(+ u, + ins, + cite:lang(zh))</code><span class="Fn">)</span> {</p>
+            <p class="Decl" lang="en"><code>margin-inline-end: .125em;</code></p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
           </article>
           <article class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            <div class="Head">
+              <p class="Layer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="Tag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><code data-mine-spec>.notes cite</code> {</p>
+            <p class="Decl" lang="en"><code>margin-inline: .25em;</code></p>
+            <p class="End">}</p>
           </article>
         </li>
         <li data-case="adjacent-line">
           <article class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
+            <div class="Head">
+              <p class="Layer">{{ arLayer }}<b>han-semantics</b></p>
+              <p class="Tag" data-brand>{{ logo }}</p>
             </div>
             <p class="At" lang="en">@container style(--han-semantics: on) {</p>
             <div class="Nest">
             <p class="At" lang="en">@supports not (text-decoration-inset: auto) {</p>
             <div class="Nest">
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline-end: initial;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><span class="Fn">:where(</span><code data-spec>[data-adjacent-lines-refined] :is(u, ins, s, del, cite):not([data-followed-by-adjacent-line])</code><span class="Fn">)</span> {</p>
+            <p class="Decl" lang="en"><code>margin-inline-end: initial;</code></p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
           </article>
           <article class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            <div class="Head">
+              <p class="Layer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="Tag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
-            <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><code data-mine-spec>.tight u</code> {</p>
+            <p class="Decl" lang="en"><code>margin-inline: .25em;</code></p>
+            <p class="End">}</p>
           </article>
         </li>
         <li data-case="emphasis">
           <article class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
+            <div class="Head">
+              <p class="Layer">{{ arLayer }}<b>han-semantics</b></p>
+              <p class="Tag" data-brand>{{ logo }}</p>
             </div>
             <p class="At" lang="en">@container style(--han-semantics: on) {</p>
             <div class="Nest">
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>em:is(:lang(zh), :lang(ja), :lang(ko))</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>text-emphasis: var(--han-em-symbol);</code></p>
-            <p class="RuleDecl" lang="en"><code>text-emphasis-position: var(--han-em-dot-position);</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><span class="Fn">:where(</span><code data-spec>em:is(:lang(zh), :lang(ja), :lang(ko))</code><span class="Fn">)</span> {</p>
+            <p class="Decl" lang="en"><code>text-emphasis: var(--han-em-symbol);</code></p>
+            <p class="Decl" lang="en"><code>text-emphasis-position: var(--han-em-dot-position);</code></p>
+            <p class="End">}</p>
             </div>
-            <p class="RuleEnd">}</p>
+            <p class="End">}</p>
           </article>
           <article class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            <div class="Head">
+              <p class="Layer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="Tag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>.reading em</code> {</p>
-            <p class="RuleDecl" lang="en"><code>text-emphasis-style: triangle;</code></p>
-            <p class="RuleDecl" lang="en"><code>text-emphasis-color: #e6007e;</code></p>
-            <p class="RuleDecl" lang="en"><code>text-emphasis-position: over right;</code></p>
-            <p class="RuleEnd">}</p>
-            <p class="RuleSel" lang="en"><code>.reading ruby</code> {</p>
-            <p class="RuleDecl" lang="en"><code>ruby-position: under;</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><code data-mine-spec>.reading em</code> {</p>
+            <p class="Decl" lang="en"><code>text-emphasis-style: triangle;</code></p>
+            <p class="Decl" lang="en"><code>text-emphasis-color: #e6007e;</code></p>
+            <p class="Decl" lang="en"><code>text-emphasis-position: over right;</code></p>
+            <p class="End">}</p>
+            <p class="Selector" lang="en"><code>.reading ruby</code> {</p>
+            <p class="Decl" lang="en"><code>ruby-position: under;</code></p>
+            <p class="End">}</p>
           </article>
         </li>
         <li data-case="quotes">
           <article class="Rule" data-role="framework">
-            <div class="RuleHead">
-              <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
-              <p class="RuleTag" data-brand>{{ logo }}</p>
+            <div class="Head">
+              <p class="Layer">{{ arLayer }}<b>han-semantics</b></p>
+              <p class="Tag" data-brand>{{ logo }}</p>
             </div>
-            <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>q</code><span class="Fn">)</span> {</p>
-            <p class="RuleDecl" lang="en"><code>quotes: var(--han-quotes);</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><span class="Fn">:where(</span><code data-spec>q</code><span class="Fn">)</span> {</p>
+            <p class="Decl" lang="en"><code>quotes: var(--han-quotes);</code></p>
+            <p class="End">}</p>
           </article>
           <article class="Rule" data-role="mine">
-            <div class="RuleHead">
-              <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
-              <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
+            <div class="Head">
+              <p class="Layer" data-unlayered>{{ arRuleUnlayered }}</p>
+              <label class="Tag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
             </div>
-            <p class="RuleSel" lang="en"><code data-mine-spec>.quotation q</code> {</p>
-            <p class="RuleDecl" lang="en"><code>quotes: '〖' '〗' '【' '】';</code></p>
-            <p class="RuleEnd">}</p>
+            <p class="Selector" lang="en"><code data-mine-spec>.quotation q</code> {</p>
+            <p class="Decl" lang="en"><code>quotes: '〖' '〗' '【' '】';</code></p>
+            <p class="End">}</p>
           </article>
         </li>
       </ul>
@@ -878,16 +878,16 @@
        A native `<details>`: it works with no JS, it is a real disclosure
        widget to a screen reader, and the browser's own find-in-page opens it.
        The summary states the fact; opening it only supplies the numbers. -->
-  <button class="SizeDialogOpen" type="button" data-size-dialog-open>{{ arSizeOpen }}</button>
-  <dialog class="SizeDialog" data-size-dialog aria-labelledby="size-dialog-title">
-    <section data-part="size-dialog-panel" aria-labelledby="size-dialog-title">
-    <header class="SizeDialogHead">
+  <button class="OpenSizeDialog" type="button">{{ arSizeOpen }}</button>
+  <dialog class="SizeDialog" aria-labelledby="size-dialog-title">
+    <section class="Panel" aria-labelledby="size-dialog-title">
+    <header class="Head">
       <h3 id="size-dialog-title">{{ arSizeTitle }}</h3>
       <form method="dialog">
         <button type="submit" aria-label="{{ arSizeClose }}"><span data-icon="close" aria-hidden="true"></span></button>
       </form>
     </header>
-    <div data-part="size-dialog-body">
+    <div class="Body">
       <section class="TransferDetails">
         <h4>{{ arSizeTransfer }}</h4>
         <table>
@@ -910,7 +910,7 @@
         </table>
       </section>
       <p class="SsrNote">{{ arSsrNote }}</p>
-      <h4 class="DialogLedgerHead">{{ arFlHead }}</h4>
+      <h4 class="LedgerHead">{{ arFlHead }}</h4>
   <figure class="FontLedger">
     <div data-plate="print">
       <table>

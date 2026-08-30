@@ -134,7 +134,7 @@ const fillEraLine = ($time) => {
   $time.replaceChildren(solar)
   if (!lunar) return
   const $lunar = document.createElement('span')
-  $lunar.dataset.part = 'lunar-era'
+  $lunar.className = 'Lunar'
   $lunar.textContent = lunar
   $time.append($lunar)
 }
@@ -160,7 +160,7 @@ export function initPapersDateline() {
      把它蓋回單一紀年。 */
   for (const $time of document.querySelectorAll('.Papers .Dateline time:not([data-era-line])')) {
     /* `closest('[lang]')`，不是 `closest('article')`：全文版的燈箱裡還有一層
-       `<article data-part="reader-sheet">`，它沒有 lang，往上問才問得到那一版的語言
+       `<article class="Sheet">`，它沒有 lang，往上問才問得到那一版的語言
        （四份報紙各有自己的紀年，問錯就整個跳過）。 */
     const html = format[$time.closest('[lang]')?.lang]?.(date, y, m, d)
     if (!html) continue

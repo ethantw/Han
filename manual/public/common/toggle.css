@@ -121,7 +121,7 @@
  * group was touched" marker. Accent-coloured 「↺ 使用預設値」 with a
  * visible text label (JS reads it from data-label-default; title kept). */
 
-[data-action="restore-defaults"] {
+.ControlGroup .RestoreDefaults {
   & {
     flex: none;
     /* 圖標 ＋ 文字：inline-flex 才能給它們一道 gap，且圖標不吃行高 */

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant" data-demo-measure data-demo-chrome>
+<html lang="zh-Hant" data-demo-default-font="sans" data-demo-measure data-demo-chrome>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,6 +55,18 @@
     --rule: light-dark(#e4dfd7, #322f2c);
   }
   :root[data-demo-dark] { color-scheme: dark; }
+
+  /* 示例頁的正文書體。Han 的複合字體角色在每個元素上重新代換，才能吃到各
+     文種自己的字形槽；所以這裡也逐元素改 `--han-font-default`，不能只寫在
+     :root。範圍限於 main，控制台與工具 chrome 不跟著換字體。 */
+  :root[data-demo-default-font='sans'] main,
+  :root[data-demo-default-font='sans'] main :where(*) {
+    --han-font-default: var(--han-sans);
+  }
+  :root[data-demo-default-font='serif'] main,
+  :root[data-demo-default-font='serif'] main :where(*) {
+    --han-font-default: var(--han-serif);
+  }
 
   /* 兩張樣張共用這一份標記，只有 `[data-runtime]` 那一對句子不同——`data-han-ssr`
      由生成端掛上（vite.config.js § ssrSpecimen），這裡擇一顯示。屬性選擇器而不是
@@ -355,7 +367,7 @@
 <!--
   唯一一支 pre-paint script（web-style 的既定例外）：第一幀之前就把深色偏好
   寫成 <html> 上的屬性，畫面不閃白。控制台是後到的，掛載時照這個屬性把開關
-  撥對（han-console § mountDemoSwitches），而不是反過來推翻已經畫好的畫面。
+  撥對（han-console § mountDemoControls），而不是反過來推翻已經畫好的畫面。
 -->
 <script>
   try {

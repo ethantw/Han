@@ -9,18 +9,18 @@
  * `.Brand` — the 漢.css wordmark, shared by the homepage (Topbar + hero
  * crown) and the docs masthead.
  *
- * `<a class="Brand" data-size="lg|sm"><svg class="BrandMark">…</svg>
- *  <span data-part="mark">漢<svg class="BrandGlyph">…</svg></span>
- *  <span data-part="dot">.</span><span data-part="ext">css</span>
+ * `<a class="Brand" data-size="lg|sm"><svg class="Device">…</svg>
+ *  <span class="Mark">漢<svg class="Glyph">…</svg></span>
+ *  <span class="Dot">.</span><span class="Ext">css</span>
  *  <small>漢字標準格式</small></a>`
  *
- * mark/dot/ext are wordmark atoms — no element expresses a wordmark
- * fragment, so `data-*` is right here; the subtitle is a real `<small>`,
+ * Mark/Dot/Ext are local wordmark atoms under the Brand namespace; the
+ * subtitle is a real `<small>`,
  * divided from the mark by a `::before` hairline rather than a
  * decorative span.
  *
  * The 漢 is drawn TWICE on purpose: the real text stays for a11y and
- * selection but paints transparent, and `.BrandGlyph` overlays the
+ * selection but paints transparent, and `.Glyph` overlays the
  * heritage stroke outline (the same Shanggu paths as the hero
  * watermark). So the logo shows the correct form before the webfont
  * lands — `fill` is not `color`, so the fonts gate never blanks it —
@@ -34,7 +34,7 @@
  * the box is `max(ascent)` over its atoms — and that JUMPED when the webfont
  * swapped in (measured at the hero's 32px: the 「.」 and `css` sat 0.1875em /
  * 6px lower before the swap, and the whole wordmark re-settled). Declaring an
- * always-available local face FIRST on `[data-part="mark"]` makes it that
+ * always-available local face FIRST on `.Mark` makes it that
  * atom's "first available font", pinning its ascent at a constant 1.151em —
  * the largest in the line at every size — so `max(ascent)`, and with it the
  * baseline, can no longer move.
@@ -72,7 +72,7 @@
   & {
     /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
      * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
-     * per-font 常數，故絕對定位的 .BrandGlyph 要靠這幾個值換算（見該規則）。 */
+     * per-font 常數，故絕對定位的 .Glyph 要靠這幾個值換算（見該規則）。 */
     --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880；基線以下 0.12em） */
     /* 行盒度量 hhea（fontTools 讀 Shanggu／Diantenjeom 同值）。此字
      * USE_TYPO_METRICS 未設 → 瀏覽器排版用 hhea/win，非 sTypo。⚠ 勿用 canvas
@@ -93,7 +93,7 @@
   /* G3 字徽——favicon 同款符號，字標左側。fill/stroke 走 palette，隨主題
      明暗自動切（暗色 --ui-text → 淺，括號跟著變亮）。字面高度 ~1em、
      視覺置中對齊字標。 */
-  .BrandMark {
+  .Device {
     & {
       /* 基線錨定，不用 align-self: center——後者在 flex 交叉盒置中，而交叉盒由
        * 相鄰「透明漢字」的字體度量撐開；尚古行盒度量非對稱（上緣 1.151 ＞ 下緣
@@ -121,13 +121,13 @@
      漢 stays for a11y / selection, rendered invisible; the SVG overlays
      its em box on the baseline. Both wordmarks (Topbar + hero) share
      this. */
-  [data-part="mark"] {
+  .Mark {
     position: relative;
     font-family: 'Brand Metrics', var(--han-font-alternative);
     font-weight: 600;
     color: transparent;
   }
-  .BrandGlyph {
+  .Glyph {
     /* 絕對定位只能錨盒邊，吃不到 vertical-align；且 inline <svg> 的基線被
      * Chrome 定在下緣上方 ~0.066em（非 replaced 的下緣邊），vertical-align
      * 對它也失效——只能用實測度量把 SVG 頂錨到「文字基線 − 0.88em」：
@@ -156,13 +156,13 @@
     inline-size: 1em;
     fill: var(--ui-text);
   }
-  [data-part="dot"] {
+  .Dot {
     padding-inline: .125rem;
     font-family: var(--han-font-alternative);
     font-weight: 600;
     color: var(--ui-accent);
   }
-  [data-part="ext"] {
+  .Ext {
     font-family: var(--han-font-default);
     color: var(--ui-text);
   }
@@ -183,15 +183,15 @@
   }
 
   &[data-size="lg"] {
-    [data-part="mark"], [data-part="dot"] { font-size: 1.5rem; }
-    [data-part="ext"]                     { font-size: 1.125rem; }
+    .Mark, .Dot { font-size: 1.5rem; }
+    .Ext                     { font-size: 1.125rem; }
     small        { font-size: 0.75rem; }
     small::before { block-size: 0.875rem; margin-inline: 0.875rem; }
   }
 
   &[data-size="sm"] {
-    [data-part="mark"], [data-part="dot"] { font-size: 1.125rem; }
-    [data-part="ext"]                     { font-size: 0.875rem; }
+    .Mark, .Dot { font-size: 1.125rem; }
+    .Ext                     { font-size: 0.875rem; }
     small        { font-size: 0.625rem; }
     small::before { block-size: 0.75rem; margin-inline: 0.625rem; }
   }
@@ -203,7 +203,7 @@
    styled — but none exists now (the console's toggles live in the shadow;
    /old.html carries its own frozen copy). */
 
-/* The docs masthead's own lockup: no `.BrandGlyph` overlay (the 漢 is
+/* The docs masthead's own lockup: no `.Glyph` overlay (the 漢 is
    plain text there), a version badge instead of the 漢字標準格式
    subtitle, and fixed sizes rather than ramp steps — it sits in a
    3-column sticky grid whose height must not move with the ramp. */
@@ -221,7 +221,7 @@
   }
 
   /* G3 字徽——字標左側，dots ＝ accent、括號 ＝ ink（隨主題明暗切）。 */
-  .BrandMark {
+  .Device {
     & {
       flex: 0 0 auto;
       align-self: center;
@@ -236,14 +236,14 @@
     .dun { fill: var(--ui-text); }   /* 明體頓點 ＝ 括號同色 */
   }
 
-  [data-part="mark"] {
+  .Mark {
     font-family: var(--han-font-alternative);
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--ui-text);
   }
 
-  [data-part="dot"] {
+  .Dot {
     /* no `padding-inline` here, unlike the base rule — the docs lockup
        is tighter and its 漢 is plain text, not an SVG overlay. */
     padding-inline: 0;
@@ -252,7 +252,7 @@
     color: var(--ui-accent);
   }
 
-  [data-part="ext"] {
+  .Ext {
     font-family: var(--han-font-latin-serif), serif;
     font-size: 1.125rem;
     font-weight: 500;
@@ -260,8 +260,8 @@
     margin-inline-start: 1px;
   }
 
-  [data-part="ver"] {
-    font-family: var(--font-mono);
+  .Version {
+    font-family: var(--han-monospace);
     font-size: 0.625rem;
     color: var(--ui-accent-deep);
     background: var(--ui-accent-bg);

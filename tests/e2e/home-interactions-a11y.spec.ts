@@ -69,6 +69,32 @@ test.describe('homepage keyboard and scroll contracts', () => {
     await expect(lens).toBeVisible()
   })
 
+  test('both prose strip controls keep the shared circular navigation style', async ({ page }) => {
+    await page.goto('/')
+    const controls = await page.locator('#station-prose .Nav').evaluateAll((navs) =>
+      navs.map((nav) => {
+        const previous = nav.querySelector<HTMLElement>('[data-scroll="prev"]')!
+        const nextIcon = nav.querySelector<HTMLElement>('[data-scroll="next"] [data-icon]')!
+        const style = getComputedStyle(previous)
+        return {
+          width: style.inlineSize,
+          height: style.blockSize,
+          borderRadius: style.borderRadius,
+          borderWidth: style.borderWidth,
+          nextRotation: getComputedStyle(nextIcon).rotate,
+        }
+      }),
+    )
+
+    expect(controls).toHaveLength(2)
+    expect(controls.every((control) =>
+      control.width === '44px'
+      && control.height === '44px'
+      && control.borderRadius === '50%'
+      && control.borderWidth === '0px'
+      && control.nextRotation === '180deg')).toBe(true)
+  })
+
   test('the quickstart dialog opens and closes from the keyboard, restoring focus', async ({ page }) => {
     await page.goto('/')
 

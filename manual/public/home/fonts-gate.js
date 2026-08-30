@@ -26,7 +26,7 @@
  * writes the 漢 once in dark ink and fades back to the pale outline.
  *
  * The watermark itself is BUILT here, by cloning the brand logo's
- * stroke paths (`.BrandGlyph`, the single source in `_shared.html`'s
+ * stroke paths (`.Glyph`, the single source in `_shared.html`'s
  * `logo` token) into `.Outline` — so the 漢 outline lives in exactly
  * one place in the shipped HTML and everything else derives from it.
  * Building it in JS also means this module creates AND starts the
@@ -92,7 +92,7 @@ const PASS_MIN_S = 0.25
    gen_partials.py), so the array index IS the draw order (--i). */
 const buildWatermark = () => {
   const $outline = document.querySelector('.Manifesto .Outline')
-  const $glyph = document.querySelector('.BrandGlyph')
+  const $glyph = document.querySelector('.Glyph')
   if (!$outline || !$glyph || $outline.querySelector('svg')) return
   const $svg = document.createElementNS(SVGNS, 'svg')
   $svg.setAttribute('viewBox', $glyph.getAttribute('viewBox'))

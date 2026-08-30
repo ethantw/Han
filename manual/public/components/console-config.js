@@ -43,7 +43,7 @@ const readControl = ($el) => ($el.type === "checkbox" ? $el.checked : $el.value)
 /** Mounts the configuration console and applies its state to the target document. */
 export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveInit = false }) => {
   const configRef = { current: structuredClone(initial ?? DEFAULTS) }
-  const appliedRef = { current: { vars: null, baseGeneric: null } }
+  const appliedRef = { current: { vars: null } }
   const fallbackAppliedRef = { current: null }
   const fallbackDesiredRef = { current: null }
   const fallbackGenerationRef = { current: 0 }
@@ -93,7 +93,7 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveIni
     groups().forEach(({ $group, $head }) => {
       const $btn = document.createElement('button')
       $btn.type = 'button'
-      $btn.dataset.action = 'restore-defaults'
+      $btn.className = 'RestoreDefaults'
       $btn.append(icon('reset'), label)
       $btn.title = label
       $btn.hidden = true
@@ -115,7 +115,7 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveIni
 
   const updateDefaultButtons = () => {
     groups().forEach(({ $group, $head }) => {
-      const $btn = $head.querySelector(':scope > [data-action="restore-defaults"]')
+      const $btn = $head.querySelector(':scope > .RestoreDefaults')
       if (!$btn) return
       $btn.hidden = groupControls($group)
         .every(($el) => readControl($el) === defaultFor($el.dataset.cfgKey))
@@ -300,7 +300,6 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveIni
     updateDefaultButtons()
     appliedRef.current = {
       vars: effectiveVars(configRef.current),
-      baseGeneric: configRef.current.baseGeneric,
     }
     const plan = fallbackPlan(configRef.current)
     fallbackDesiredRef.current = plan

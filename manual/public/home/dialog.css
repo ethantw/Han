@@ -5,7 +5,7 @@
  * feature owns the layout of its direct panel; this layer owns opening and
  * closing motion for quickstart, transfer size, and newspaper readers alike.
  */
-:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full) {
+:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader) {
   inset: 0;
   inline-size: 100dvi;
   block-size: 100dvb;
@@ -22,20 +22,20 @@
   box-shadow: none;
 }
 
-:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)::backdrop {
+:where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)::backdrop {
   background: var(--ui-scrim);
   backdrop-filter: blur(3px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full) {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader) {
     transition:
       display 420ms allow-discrete,
       overlay 420ms allow-discrete;
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)
-    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]) {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)
+    > :where(.Panel, .Stage) {
     opacity: 0;
     /* Start a full viewport below, rather than merely nudging the panel. */
     translate: 0 100dvb;
@@ -44,8 +44,8 @@
       translate 420ms cubic-bezier(.2, .75, .25, 1);
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]
-    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]) {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)[open]
+    > :where(.Panel, .Stage) {
     & {
       opacity: 1;
       translate: 0 0;
@@ -59,12 +59,12 @@
 
   /* 工具欄從 masthead 上方落下。短促的 emphasized ease-out 很快離開起點，
      但全程單調到位、不越過終點，避免 top-layer 的底色短暫露出 mask。 */
-  dialog.Full > [data-part="reader-chrome"] {
+  dialog.Reader > .Chrome {
     translate: 0 -100%;
     transition: translate 320ms cubic-bezier(.16, 1, .3, 1);
   }
 
-  dialog.Full[open] > [data-part="reader-chrome"] {
+  dialog.Reader[open] > .Chrome {
     & {
       translate: 0 0;
     }
@@ -75,11 +75,11 @@
   }
 
   /* 直排的紙由左側進場，沿著閱讀方向滑到右側定位；其餘 dialog 仍由下往上。 */
-  dialog.Full[data-writing="vertical"] > [data-part="reader-stage"] {
+  dialog.Reader[data-writing="vertical"] > .Stage {
     translate: -100dvw 0;
   }
 
-  dialog.Full[data-writing="vertical"][open] > [data-part="reader-stage"] {
+  dialog.Reader[data-writing="vertical"][open] > .Stage {
     & {
       translate: 0 0;
     }
@@ -89,7 +89,7 @@
     }
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)::backdrop {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)::backdrop {
     opacity: 0;
     transition:
       opacity 280ms ease,
@@ -97,15 +97,9 @@
       overlay 420ms allow-discrete;
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]::backdrop {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)[open]::backdrop {
     opacity: 1;
 
     @starting-style { opacity: 0; }
-  }
-
-  /* The old hash fallback is an in-flow continuation, not a lightbox. */
-  dialog.Full:target:not([open]) > :is([data-part="reader-stage"], [data-part="reader-sheet"]) {
-    opacity: 1;
-    translate: none;
   }
 }

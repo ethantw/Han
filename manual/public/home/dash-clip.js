@@ -20,12 +20,12 @@ import { onRendered, settled } from './measure.js'
 
 /** Align station②'s dash column and publish its sticky-copy timeline. */
 export const initDashClip = ($root = document) => {
-  const $col = $root.querySelector('.DashColumn')
-  const $problem = $root.querySelector('[data-part="dash-note"]')
-  const $noteStage = $problem?.closest('[data-part="dash-note-stage"]')
-  const $noteEnd = $col?.querySelector('.DashNoteEnd')
+  const $col = $root.querySelector('.Column')
+  const $problem = $root.querySelector('.TwoEmDashes .Note')
+  const $noteStage = $problem?.closest('.NoteStage')
+  const $noteEnd = $col?.querySelector('.NoteEnd')
   const $copy = $root.querySelector('.TwoEmDashes')
-  const $specimenStage = $root.querySelector('[data-dash-specimens]')
+  const $specimenStage = $root.querySelector('.TwoEmDashes .Specimens')
   const specimenCards = [...($specimenStage?.querySelectorAll('[data-specimen]') ?? [])]
   const $punctLang = $root.querySelector('.PunctLang')
   const $forme = $root.querySelector('#station-fonts .LeadForme svg')
@@ -45,8 +45,7 @@ export const initDashClip = ($root = document) => {
     /* The measured timeline owns both edges. Keeping the final card alive past
        its endpoint made the flow linger over the following punctuation rail. */
     const active = progress >= -.002 && progress <= 1.002
-    if (active) $specimenStage.dataset.active = ''
-    else delete $specimenStage.dataset.active
+    $specimenStage.classList.toggle('Active', active)
 
     const clamped = Math.max(0, Math.min(1, progress))
     const cardProgress = clamped * Math.max(0, specimenCards.length - 1)
@@ -61,8 +60,7 @@ export const initDashClip = ($root = document) => {
       $specimenStage.style.setProperty('--dtj-offset', `${offset}px`)
     }
     specimenCards.forEach(($card, index) => {
-      if (active && index === center) $card.dataset.center = ''
-      else delete $card.dataset.center
+      $card.classList.toggle('Center', active && index === center)
     })
   }
 

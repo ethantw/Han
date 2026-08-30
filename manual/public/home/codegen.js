@@ -86,7 +86,6 @@ export const DEFAULTS = {
   cursiveHant: 'lxgw',
   punct: { hant: 'MOE', hans: 'GB', ja: 'JIS', ko: 'KLR' },
   zhuyinWebfont: true,
-  baseGeneric: 'sans-serif',
   fallbacks: true,
 
 
@@ -206,7 +205,6 @@ const configCSS = (c, indent = '  ') => {
 
   const m = c.metrics
   const bodyDecls = [
-    ...(c.fonts && c.baseGeneric === 'serif' ? ['font-family: var(--han-font-alternative);'] : []),
     ...(m.size !== 16 ? [`font-size: ${m.size}px;`] : []),
     ...(m.leading !== 1.75 ? [`line-height: ${String(m.leading)};`] : []),
     ...(m.weight !== 400 ? [`font-weight: ${m.weight};`] : []),

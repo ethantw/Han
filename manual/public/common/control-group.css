@@ -27,7 +27,7 @@
          the free space, parking ↺ against the ＋/－ (or the row end);
          when hidden, space-between takes back over. */
     }
-    > [data-action="restore-defaults"] { margin-inline-start: auto; }
+    > .RestoreDefaults { margin-inline-start: auto; }
   }
 
   /* config groups fold as native <details>. Unlike the non-collapsible

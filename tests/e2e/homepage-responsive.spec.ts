@@ -63,7 +63,7 @@ for (const viewport of viewports) {
     }
 
     for (const selector of [
-      '.StationMapCurrent',
+      '.Current',
       '.Manifesto h1',
       '.Manifesto .ProductDefinition',
       '.Manifesto .HeroActions',
@@ -73,21 +73,21 @@ for (const viewport of viewports) {
 
     // The route map is one disclosure at every width; its sheet may be tall,
     // but it must never fall off the inline edge of a narrow phone.
-    await page.locator('.StationMapCurrent').click()
-    await expect(page.locator('.StationMapList')).toBeVisible()
-    await expectInsideViewport(page, page.locator('.StationMapList'))
+    await page.locator('.Current').click()
+    await expect(page.locator('.List')).toBeVisible()
+    await expectInsideViewport(page, page.locator('.List'))
     await page.keyboard.press('Escape')
 
     // The full viewport dialog owns scrolling.  Its light panel stays a
     // normal document fragment rather than becoming a cramped inner scroller.
     await page.locator('[data-quickstart-open]').click()
     const dialog = page.locator('[data-quickstart-dialog]')
-    const panel = dialog.locator('.QuickstartPanel')
+    const panel = dialog.locator('.Panel')
     await expect(dialog).toBeVisible()
     await expectInsideViewport(page, panel)
     const scrolling = await page.evaluate(() => {
       const dialog = document.querySelector<HTMLElement>('[data-quickstart-dialog]')!
-      const panel = dialog.querySelector<HTMLElement>('.QuickstartPanel')!
+      const panel = dialog.querySelector<HTMLElement>('.Panel')!
       return {
         dialog: getComputedStyle(dialog).overflowY,
         panel: getComputedStyle(panel).overflowY,
@@ -125,9 +125,9 @@ test('the narrow dash sequence keeps all three hand-offs visible', async ({ page
   await expect(page.locator('.TwoEmDashes')).toHaveAttribute('data-dash-measured', '')
   await expect.poll(() => page.locator('.TwoEmDashes').evaluate((copy) => {
     const punctuation = copy.querySelector<HTMLElement>('.PunctLang')!
-    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!
+    const note = copy.querySelector<HTMLElement>('.Note')!
       .getBoundingClientRect()
-    const stage = copy.querySelector<HTMLElement>('[data-part="dash-note-stage"]')!
+    const stage = copy.querySelector<HTMLElement>('.NoteStage')!
       .getBoundingClientRect()
     const copyBox = copy.getBoundingClientRect()
     return Math.round(
@@ -139,21 +139,21 @@ test('the narrow dash sequence keeps all three hand-offs visible', async ({ page
 
   const geometry = await page.locator('.TwoEmDashes').evaluate((copy) => {
     const main = document.querySelector<HTMLElement>('main')!.getBoundingClientRect()
-    const columnElement = copy.querySelector<HTMLElement>('.DashColumn')!
+    const columnElement = copy.querySelector<HTMLElement>('.Column')!
     const column = columnElement.getBoundingClientRect()
-    const cells = copy.querySelectorAll<HTMLElement>('.DashCell')
+    const cells = copy.querySelectorAll<HTMLElement>('.Cell')
     const firstDash = cells[0].getBoundingClientRect()
     const lastDash = cells[cells.length - 1].getBoundingClientRect()
     const closingText = cells[cells.length - 1].previousSibling!
     const closingRange = document.createRange()
     closingRange.selectNodeContents(closingText)
     const closingTextBox = closingRange.getBoundingClientRect()
-    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!.getBoundingClientRect()
-    const noteStage = copy.querySelector<HTMLElement>('[data-part="dash-note-stage"]')!
+    const note = copy.querySelector<HTMLElement>('.Note')!.getBoundingClientRect()
+    const noteStage = copy.querySelector<HTMLElement>('.NoteStage')!
       .getBoundingClientRect()
     const punctuation = copy.querySelector<HTMLElement>('.PunctLang')!
     const copyBox = copy.getBoundingClientRect()
-    const cover = copy.querySelector<HTMLElement>('[data-dash-specimens]')!
+    const cover = copy.querySelector<HTMLElement>('.Specimens')!
     return {
       columnAtMain: column.left - main.left,
       colourClearance: note.left - firstDash.right,
@@ -184,25 +184,25 @@ test('the narrow dash sequence keeps all three hand-offs visible', async ({ page
   // Once sticky, the copy stays below the floating station directory. Its
   // left edge may cover pale dash glyphs, but neither floating UI may cover
   // the copy itself.
-  const stickyProbe = await page.locator('[data-part="dash-note-stage"]').evaluate((stage) => {
+  const stickyProbe = await page.locator('.TwoEmDashes .NoteStage').evaluate((stage) => {
     const box = stage.getBoundingClientRect()
     return scrollY + box.top + 1000
   })
   await page.evaluate((top) => scrollTo(0, top), stickyProbe)
-  await expect.poll(() => page.locator('[data-part="dash-note"]').evaluate((note) => {
+  await expect.poll(() => page.locator('.TwoEmDashes .Note').evaluate((note) => {
     const noteBox = note.getBoundingClientRect()
-    const mapBox = document.querySelector<HTMLElement>('.StationMapCurrent')!
+    const mapBox = document.querySelector<HTMLElement>('.Current')!
       .getBoundingClientRect()
     return Math.round(noteBox.top - mapBox.bottom)
   })).toBeGreaterThanOrEqual(15)
 
-  const specimenStart = await page.locator('[data-part="dash-note-stage"]').evaluate((stage) => {
+  const specimenStart = await page.locator('.TwoEmDashes .NoteStage').evaluate((stage) => {
     const box = stage.getBoundingClientRect()
     return scrollY + box.top - innerHeight * 0.3
   })
   await page.evaluate((top) => scrollTo(0, top), specimenStart)
-  await expect(page.locator('[data-dash-specimens]')).toHaveAttribute('data-active', '')
-  await expect(page.locator('[data-specimen][data-center]')).toBeVisible()
+  await expect(page.locator('.TwoEmDashes .Specimens')).toHaveClass(/\bActive\b/)
+  await expect(page.locator('[data-specimen].Center')).toBeVisible()
 })
 
 test('a roomy narrow dash rail spends its spare width on copy clearance', async ({ page }) => {
@@ -213,8 +213,8 @@ test('a roomy narrow dash rail spends its spare width on copy clearance', async 
   await expect(page.locator('.TwoEmDashes')).toHaveAttribute('data-dash-measured', '')
 
   const geometry = await page.locator('.TwoEmDashes').evaluate((copy) => {
-    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!
-    const dash = copy.querySelector<HTMLElement>('.DashCell')!
+    const note = copy.querySelector<HTMLElement>('.Note')!
+    const dash = copy.querySelector<HTMLElement>('.Cell')!
     return {
       clearance: note.getBoundingClientRect().left - dash.getBoundingClientRect().right,
       fontSize: getComputedStyle(note).fontSize,

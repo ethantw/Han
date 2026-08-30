@@ -35,7 +35,7 @@ test('SSR: opening + closing brackets compress, sentence-final period gets combi
     '<p data-adjacent-lines-refined="">'
       + '<h-char data-punct="open">「</h-char>'
       + '漢字'
-      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start">」</h-char>'
+      + '<h-char data-punct="close end consecutive" data-consecutive-pos="start" data-followed-by="hangable" data-squeeze-next="hangable">」</h-char>'
       + '<h-char data-punct="end consecutive hangable" data-consecutive-pos="end"><h-layer>。</h-layer></h-char>'
       + '</p>',
   )
@@ -156,6 +156,14 @@ test('SSR: a <q> whose close bracket meets a hangable mark is marked on the elem
   )
 })
 
+test('SSR: predecessor marker survives delivery to a native trim engine', () => {
+  const out = html(installFallbacks('<p>對》，要</p>'))
+  assert.match(
+    out,
+    /data-followed-by="hangable" data-squeeze-next="hangable">》<\/h-char><h-char data-punct="end consecutive hangable"/,
+  )
+})
+
 test('Browser: the quote-boundary pass runs on the browser path too', async () => {
   const { win, teardown } = await withBrowserGlobals()
   try {
@@ -171,7 +179,7 @@ test('Browser: the quote-boundary pass runs on the browser path too', async () =
   }
 })
 
-test('uninstallFallbacks: removes both quote-boundary markers', async () => {
+test('uninstallFallbacks: removes every quote-boundary marker', async () => {
   const { Window } = await import('happy-dom')
   const win = new Window()
   win.document.body.innerHTML = '<p><q>今天真好。</q>、然後</p>'
@@ -183,6 +191,7 @@ test('uninstallFallbacks: removes both quote-boundary markers', async () => {
 
   uninstallFallbacks(body)
   assert.equal(body.querySelector('[data-followed-by-quote]'), null)
+  assert.equal(body.querySelector('[data-open-followed-by]'), null)
   assert.equal(body.querySelector('q[data-followed-by]'), null)
 })
 
@@ -324,7 +333,8 @@ test('SSR: fragment output ≡ Element output, container aside', () => {
 
 test('adjacent cites are paired with the wavy marker, not the plain one', () => {
   const out = html(installFallbacks('<p>同讀<cite>武經總要</cite><cite>字驗</cite>一篇</p>'))
-  assert.match(out, /<cite data-followed-by-adjacent-wavy="">武經總要<\/cite>/)
+  assert.match(out, /<cite[^>]*data-followed-by-adjacent-wavy=""[^>]*>武經總要<\/cite>/)
+  assert.match(out, /<cite[^>]*data-followed-by-quote="open-cite"/)
   assert.doesNotMatch(out, /<cite data-followed-by-adjacent-line/)
 })
 

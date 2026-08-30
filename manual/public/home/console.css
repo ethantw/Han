@@ -130,7 +130,7 @@ body:has(han-console) {
       cursor: pointer;
       transition: .25s color ease-out;
     }
-    .ConsoleToggleLabel {
+    .Label {
       display: none;
       font-family: var(--han-sans);
       font-size: 0.75rem;
@@ -243,7 +243,7 @@ body:has(han-console) {
         gap: 0.5rem;
       }
 
-      .ConsoleToggleLabel { display: inline; }
+      .Label { display: inline; }
     }
 
     body > header nav > a { display: none; }
@@ -321,7 +321,7 @@ body:has(han-console) {
     /* The ✕ is a second native button for the same disclosure state: a
        non-modal dialog has no backdrop to dismiss, and the handle that opened
        it is up in the header behind the panel. */
-    .ConsolePanelClose {
+    .Close {
       & {
         display: flex;
         align-items: center;
@@ -362,7 +362,7 @@ body:has(han-console) {
    The modal owns a second view of the shared console config. The homepage
    side console stays exactly where it is; this copy answers the toolbar's
    start-side button from the same edge. */
-.ConsolePanel[data-console-context="reader"] {
+.Reader > .ConsolePanel {
   & {
     position: fixed;
     inset-block-start: calc(var(--h-header) + 0.5rem);
@@ -394,7 +394,7 @@ body:has(han-console) {
     border-block-end: 1px solid var(--ui-rule);
   }
 
-  .ConsolePanelClose {
+  .Close {
     & {
       display: flex;
       align-items: center;
@@ -422,13 +422,13 @@ body:has(han-console) {
    reader entry has its own explicit state, independent of that remembered
    page bit, so it must remain visible even when the side entry was closed. */
 body:has(#console-collapsed:not(:checked))
-  .ConsolePanel[data-console-context="reader"] {
+  .Reader > .ConsolePanel {
   display: flex;
 }
 
 /* Author display rules beat the UA's `[hidden]`; keep the reader copy truly
    absent until its own toolbar button opens it. */
-.ConsolePanel[data-console-context="reader"][hidden] {
+.Reader > .ConsolePanel[hidden] {
   display: none !important;
 }
 
@@ -436,7 +436,7 @@ body:has(#console-collapsed:not(:checked))
    wrapper owns placement instead, and the console is simply its one flexible,
    internally scrolling child. The specificity deliberately beats both the
    desktop side rule and the narrow-panel checked-state rule. */
-body:has(han-console) .ConsolePanel[data-console-context="reader"] han-console {
+body:has(han-console) .Reader > .ConsolePanel han-console {
   position: static;
   inset: auto;
   z-index: auto;

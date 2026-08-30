@@ -6,10 +6,8 @@
  * inline in `_layout.html` to avoid a flash of light on dark-saved
  * sessions.
  *
- * Selectors target `data-*` hooks rather than ids, mirroring the
- * SiteSearch / Toggle conventions elsewhere in the project. The body
- * owns the sidebar-open state under the scoped `.ManualPage.is-nav-open`
- * pair (CSS rule 8 — never a global `.nav-open` class).
+ * Shared chrome is selected through component namespaces. The body owns the
+ * sidebar-open state under the scoped `.ManualPage.is-nav-open` pair.
  */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('[data-nav-toggle]')?.addEventListener('click', e => {
@@ -33,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // (manual/public/home/lang-switcher.js). Trigger toggles the `<ul hidden>`;
   // outside-click and Escape close it. Same shape as home so the CSS
   // and behaviour stay in sync.
-  const langRoot = document.querySelector('[data-lang-switcher]')
+  const langRoot = document.querySelector('.LangSwitcher')
   if (langRoot) {
     const trigger = langRoot.querySelector('button')
     const menu    = langRoot.querySelector('ul')

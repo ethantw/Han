@@ -105,6 +105,11 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   const cols = await page.locator('.LeadForme figcaption').evaluate(($c) => {
     const range = document.createRange()
     range.selectNodeContents($c)
+    // PaperJump deliberately floats at inline-end of the final text column.
+    // Its generated icon has its own rect and is not part of the colophon's
+    // shaped text-column slope.
+    const jump = $c.querySelector('.PaperJump')
+    if (jump) range.setEndBefore(jump)
     // one column can yield several rects, and the note's inline <code> is set
     // a size down so its rect sits a few px off the column's own edge —
     // cluster by position (half a column's advance) and keep each head.

@@ -9,6 +9,7 @@ import {
   markQuoteBoundaries,
   FOLLOWED_BY_QUOTE,
   FOLLOWED_BY as FOLLOWED_BY_ON_QUOTE,
+  OPEN_FOLLOWED_BY,
   QUOTE_GENERATOR_TAGS,
 } from './line-adjustments/quote-boundary.ts'
 
@@ -170,6 +171,9 @@ export function uninstallFallbacks(root?: Hyperly) {
   // is punctuation.ts's, and a blanket sweep would strip that too.
   $root.querySelectorAll(`[${FOLLOWED_BY_QUOTE}]`)
     .forEach(el => el.removeAttribute(FOLLOWED_BY_QUOTE))
+
+  $root.querySelectorAll(`[${OPEN_FOLLOWED_BY}]`)
+    .forEach(el => el.removeAttribute(OPEN_FOLLOWED_BY))
 
   $root.querySelectorAll([...QUOTE_GENERATOR_TAGS].join(', ').toLowerCase())
     .forEach(el => el.removeAttribute(FOLLOWED_BY_ON_QUOTE))

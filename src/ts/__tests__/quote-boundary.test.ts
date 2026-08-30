@@ -21,10 +21,12 @@ import { markQuoteBoundaries } from '../line-adjustments/quote-boundary.ts'
  *                            when one mark ends a `<cite>` inside a `<q>`.
  *                            Reads like the existing `data-followed-by`: a
  *                            fact about what comes NEXT.
- *   data-followed-by         on the `<q>` / `<cite>` itself, value `hangable`
- *                            — the mirror of `wrapHangablePairs`' squeezer
- *                            marking, except the squeezer here is a pseudo,
- *                            so CSS pays the half em on `q::after` directly.
+ *   data-followed-by         on the `<q>` / `<cite>` itself — subtype of the
+ *                            wrapped punctuation after its closing pseudo.
+ *   data-open-followed-by    on the generator — subtype/token immediately
+ *                            after its opening pseudo.
+ *   data-followed-by-quote   may also sit on a generator when its closing
+ *                            pseudo meets another generated bracket.
  */
 
 const boundaries =
@@ -66,7 +68,7 @@ test('auto: 。 ending a <cite> nested at the end of a <q> reports BOTH generato
   // has to carry every layer, not just the innermost.
   assert.equal(
     auto('<p><q>他讀<cite>紅樓夢。</cite></q></p>'),
-    '<p><q>他讀<cite>紅樓夢'
+    '<p><q>他讀<cite data-followed-by-quote="close-q">紅樓夢'
       + '<h-char data-punct="end hangable" data-followed-by-quote="close-cite close-q">'
       + '<h-layer>。</h-layer></h-char>'
       + '</cite></q></p>',
@@ -135,10 +137,10 @@ test('auto: a hangable mark after </q> marks the <q> itself (renders as 」、 �
   )
 })
 
-test('auto: a NON-hangable mark after </q> leaves the <q> unmarked — the repair only exists for hangables', () => {
+test('auto: a non-hangable mark after </q> records its pair subtype for fallback', () => {
   assert.equal(
     auto('<p><q>好</q>「引」</p>'),
-    '<p><q>好</q>'
+    '<p><q data-followed-by="open">好</q>'
       + '<h-char data-punct="open">「</h-char>引'
       + '<h-char data-punct="close end">」</h-char></p>',
   )
@@ -197,7 +199,7 @@ test('auto: on the open side too — <em>…、</em>然後<q> is not a boundary'
 test('auto: only the OUTER cite is marked — the inner one\'s 〉 is followed by the outer 》', () => {
   assert.equal(
     auto('<p>他讀了<cite>太陽中文報<cite>社論</cite></cite>、然後</p>'),
-    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite>社論</cite></cite>'
+    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite data-followed-by-quote="close-cite">社論</cite></cite>'
       + '<h-char data-punct="end hangable"><h-layer>、</h-layer></h-char>'
       + '然後</p>',
   )
@@ -217,7 +219,7 @@ test('auto: both traversals at once — ancestor climb inside, forward climb out
   // pass's own markers are unaffected, which is what is asserted here.
   assert.equal(
     auto('<p>他讀了<cite>太陽中文報<cite>社論。</cite></cite>、然後</p>'),
-    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite>社論'
+    '<p>他讀了<cite data-followed-by="hangable">太陽中文報<cite data-followed-by-quote="close-cite">社論'
       + '<h-char data-punct="end consecutive" data-consecutive-pos="start"'
       + ' data-followed-by-quote="close-cite close-cite">。</h-char>'
       + '</cite></cite>'
@@ -227,23 +229,41 @@ test('auto: both traversals at once — ancestor climb inside, forward climb out
   )
 })
 
-test('auto: a mark ending a <q> is NOT open-q for the next <q> — its own 」 is in between', () => {
+test('auto: the mark is not open-q for the next q; the closing pseudo owns that seam', () => {
   assert.equal(
     auto('<p><q>今天真好。</q><q>明天也是</q></p>'),
-    '<p><q>今天真好'
+    '<p><q data-followed-by-quote="open-q">今天真好'
       + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
       + '<h-layer>。</h-layer></h-char>'
       + '</q><q>明天也是</q></p>',
   )
 })
 
-test('auto: same across kinds — 」《 is a pseudo-to-pseudo seam, not the mark\'s business', () => {
+test('auto: same across kinds — 」《 is marked on the q pseudo, not the inner mark', () => {
   assert.equal(
     auto('<p><q>今天真好，</q><cite>太陽中文報</cite></p>'),
-    '<p><q>今天真好'
+    '<p><q data-followed-by-quote="open-cite">今天真好'
       + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
       + '<h-layer>，</h-layer></h-char>'
       + '</q><cite>太陽中文報</cite></p>',
+  )
+})
+
+test('auto: opening pseudo records a wrapped punctuation follower', () => {
+  assert.equal(
+    auto('<p><q>、好</q></p>'),
+    '<p><q data-open-followed-by="hangable">'
+      + '<h-char data-punct="end hangable"><h-layer>、</h-layer></h-char>'
+      + '好</q></p>',
+  )
+})
+
+test('auto: nested opening pseudos are marked on the outer generator', () => {
+  assert.equal(
+    auto('<p><q><cite>書</cite></q></p>'),
+    '<p><q data-open-followed-by="open-cite">'
+      + '<cite data-followed-by-quote="close-q">書</cite>'
+      + '</q></p>',
   )
 })
 

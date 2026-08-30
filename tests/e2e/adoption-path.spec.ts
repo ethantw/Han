@@ -26,7 +26,7 @@ test.describe('adoption path', () => {
   }
 
   test('footer separates the four primary routes from related projects', async ({ page }) => {
-    const routes = page.locator('.ClosingRoutes > a')
+    const routes = page.locator('.Routes > a')
     await expect(routes).toHaveCount(4)
     await expect(routes.nth(0)).toHaveAttribute('href', '#station-snippet')
     await expect(routes.nth(1)).toHaveAttribute('href', '/specimen.html')
@@ -46,7 +46,7 @@ test.describe('adoption path', () => {
     const repository = 'https://github.com/hanzipro/han.css'
     await expect(page.locator('body > header nav > a', { hasText: 'GitHub' }))
       .toHaveAttribute('href', repository)
-    await expect(page.locator('.ClosingRoutes > a').nth(3))
+    await expect(page.locator('.Routes > a').nth(3))
       .toHaveAttribute('href', repository)
   })
 

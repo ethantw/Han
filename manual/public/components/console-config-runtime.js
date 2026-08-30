@@ -23,10 +23,9 @@ export const clearFallbackModes = ($target) => {
   FALLBACK_SYNCED_VARS.forEach((property) => $target.style.removeProperty(property))
 }
 
-/** Applies variables, font delivery and the base generic family. */
+/** Applies variables and font delivery. */
 export const applyConfigTarget = (config, state) => {
   const $root = document.documentElement
-  const $body = document.body
   const next = effectiveVars(config)
   const previous = state.vars
 
@@ -43,12 +42,6 @@ export const applyConfigTarget = (config, state) => {
   state.vars = next
 
   packages(config).ziano.forEach((id) => ensureFont(id, config.webfontCdnSource))
-  if (state.baseGeneric !== config.baseGeneric) {
-    config.baseGeneric === 'serif'
-      ? ($body.style.fontFamily = 'var(--han-font-alternative)')
-      : $body.style.removeProperty('font-family')
-    state.baseGeneric = config.baseGeneric
-  }
 }
 
 /** Applies module and webfont availability to document-owned resources. */

@@ -21,6 +21,12 @@
 
 import { element, hype, type Hyperly, type Hype } from 'hyperly/fp'
 
+import {
+  PUNCT_PAIR_CHARS,
+  SQUEEZE_NEXT,
+  pairFollowerSubtype,
+} from './punctuation.ts'
+
 const ELEMENT_NODE_TYPE = 1
 const TEXT_NODE_TYPE = 3
 const COMMENT_NODE_TYPE = 8
@@ -37,6 +43,10 @@ export const FOLLOWED_BY_QUOTE = 'data-followed-by-quote'
  *  pseudo-element: CSS pays the half em on `q::after` itself. Same attribute
  *  name as punctuation.ts's, on a different kind of element. */
 export const FOLLOWED_BY = 'data-followed-by'
+
+/** What the generator's opening pseudo is immediately followed by. This is
+ *  the pseudo→DOM / pseudo→pseudo mirror of `FOLLOWED_BY`. */
+export const OPEN_FOLLOWED_BY = 'data-open-followed-by'
 
 /** Elements whose pseudo-elements can generate CJK brackets. */
 export const QUOTE_GENERATOR_TAGS = new Set(['Q', 'CITE'])
@@ -133,27 +143,56 @@ const openTokens = ($char: Element): string[] => {
   return tokens
 }
 
-/**
- * Is a hangable mark painted right after `$generator`'s close bracket? Unlike
- * `openTokens` this stops at a nested generator — its own bracket would come
- * between. Narrow on purpose: the attribute drives `letter-spacing: -.5em`,
- * so marking anything that does not actually squeeze costs half an em
- * (the conservative side `SQUEEZE_BEFORE_HANGABLE` already takes).
- */
-const isFollowedByHangable = ($generator: Element): boolean => {
-  let node: Node | null = nextRealNode($generator)
+/** Classify a wrapped, genuinely pair-compressible punctuation follower. */
+const punctuationSubtypeAt = (start: Node | null): string => {
+  let node = start
   while (isElement(node) && !isGenerator(node)) {
-    if (node.matches('h-char[data-punct~="hangable"]')) return true
+    if (node.matches('h-char[data-punct]')) {
+      const ch = [...(node.textContent ?? '')][0] ?? ''
+      if (!PUNCT_PAIR_CHARS.includes(ch)) return ''
+      return pairFollowerSubtype(
+        ch,
+        node.matches('h-char[data-punct~="hangable"]'),
+      )
+    }
     node = firstRealChild(node)
   }
-  return false
+  return ''
+}
+
+/** Punctuation painted right after a generator's closing pseudo. */
+const followedByPunctuation = ($generator: Element): string =>
+  punctuationSubtypeAt(nextRealNode($generator))
+
+/** Generated bracket(s) painted right after a generator's closing pseudo.
+ *  Closing ancestors win over later siblings because their pseudo sits in
+ *  between; when there is no such ancestor, descend into the next generator. */
+const quoteTokensAfter = ($generator: Element): string[] => {
+  const closes = closeTokens($generator)
+  return closes.length > 0 ? closes : openTokens($generator)
+}
+
+/** What the generator's opening pseudo immediately meets inside itself. */
+const afterOpeningPseudo = ($generator: Element): string => {
+  const tokens: string[] = []
+  let node: Node | null = firstRealChild($generator)
+  while (isElement(node)) {
+    if (isGenerator(node)) tokens.push(`open-${node.tagName.toLowerCase()}`)
+    else {
+      const subtype = punctuationSubtypeAt(node)
+      if (subtype) return subtype
+    }
+    node = firstRealChild(node)
+  }
+  return tokens.join(' ')
 }
 
 /**
  * Mark every punctuation wrapper that touches a `<q>` / `<cite>` boundary, and
- * every such element whose close bracket touches a hangable mark. Runs AFTER
- * `refinePunctuation` — the wrappers it marks are that pass's output — and is
- * idempotent: both attributes are recomputed from the DOM, never accumulated.
+ * every generator pseudo that touches wrapped punctuation or another
+ * generator. Runs AFTER `refinePunctuation` — the wrappers it marks are that
+ * pass's output — and is idempotent: all attributes are recomputed from the
+ * DOM, never accumulated.
  */
 export const markQuoteBoundaries = (src: Hyperly): Hype => {
   // ONE parse: `element(src)` and `hype(src)` each parse a string source into
@@ -164,13 +203,33 @@ export const markQuoteBoundaries = (src: Hyperly): Hype => {
 
   $root.querySelectorAll('h-char[data-punct]').forEach(($char) => {
     const tokens = [...closeTokens($char), ...openTokens($char)]
-    if (tokens.length > 0) $char.setAttribute(FOLLOWED_BY_QUOTE, tokens.join(' '))
-    else $char.removeAttribute(FOLLOWED_BY_QUOTE)
+    if (tokens.length > 0) {
+      $char.setAttribute(FOLLOWED_BY_QUOTE, tokens.join(' '))
+      // hyperly matches punctuation runs over flattened text. A generated
+      // bracket at this boundary means that apparent DOM neighbour is not the
+      // visual neighbour, so discard the ordinary pair/seam claims and let
+      // the quote marker own the real boundary.
+      $char.removeAttribute(SQUEEZE_NEXT)
+      $char.removeAttribute(FOLLOWED_BY)
+    } else {
+      $char.removeAttribute(FOLLOWED_BY_QUOTE)
+    }
   })
 
   $root.querySelectorAll('q, cite').forEach(($generator) => {
-    if (isFollowedByHangable($generator)) $generator.setAttribute(FOLLOWED_BY, 'hangable')
+    const punct = followedByPunctuation($generator)
+    if (punct) $generator.setAttribute(FOLLOWED_BY, punct)
     else $generator.removeAttribute(FOLLOWED_BY)
+
+    const quoteTokens = quoteTokensAfter($generator)
+    if (quoteTokens.length > 0)
+      $generator.setAttribute(FOLLOWED_BY_QUOTE, quoteTokens.join(' '))
+    else
+      $generator.removeAttribute(FOLLOWED_BY_QUOTE)
+
+    const openingFollower = afterOpeningPseudo($generator)
+    if (openingFollower) $generator.setAttribute(OPEN_FOLLOWED_BY, openingFollower)
+    else $generator.removeAttribute(OPEN_FOLLOWED_BY)
   })
 
   return h

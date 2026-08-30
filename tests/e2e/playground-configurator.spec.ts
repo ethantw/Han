@@ -214,7 +214,7 @@ test.describe('度量 slider → body 規則', () => {
     await expect(pane(page, 'css')).toContainText('font-size: 18px')
     await expect(pane(page, 'css')).toContainText('body {')
 
-    await page.locator('.ControlGroup:has([data-pg-sliders]) [data-action="restore-defaults"]').click()
+    await page.locator('.ControlGroup:has([data-pg-sliders]) .RestoreDefaults').click()
     await expect(page.locator('[data-out-panes]')).not.toContainText('font-size: 18px')
   })
 

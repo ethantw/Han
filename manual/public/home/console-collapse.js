@@ -40,7 +40,7 @@ export const initConsoleCollapse = () => {
   if (!$box || !$toggle) return
 
   const $panel = document.querySelector('.ConsolePanel')
-  const $close = $panel?.querySelector('.ConsolePanelClose')
+  const $close = $panel?.querySelector('.Close')
   const side = matchMedia(SIDE_FORM)
   const keyNow = () => (side.matches ? KEY.side : KEY.panel)
   const isOpen = () => (side.matches ? !$box.checked : $box.checked)

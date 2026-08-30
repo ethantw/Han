@@ -80,7 +80,7 @@ for (const { path, htmlLang, label } of LOCALES) {
 test('lang switcher: button opens menu, outside click closes', async ({ page }) => {
   await page.goto('/')
 
-  const switcher = page.locator('[data-lang-switcher]').first()
+  const switcher = page.locator('.LangSwitcher').first()
   const button = switcher.locator('button[aria-haspopup="true"]')
 
   await expect(button).toHaveAttribute('aria-expanded', 'false')
@@ -94,7 +94,7 @@ test('lang switcher: button opens menu, outside click closes', async ({ page }) 
 
 test('lang switcher menu lists all 5 locales (with the active one flagged)', async ({ page }) => {
   await page.goto('/')
-  const switcher = page.locator('[data-lang-switcher]').first()
+  const switcher = page.locator('.LangSwitcher').first()
   await switcher.locator('button[aria-haspopup="true"]').click()
 
   const links = switcher.locator('a[data-lang]')
@@ -146,7 +146,7 @@ test.describe('per-group 使用預設値 buttons', () => {
     await page.goto('/')
     const main = page.locator('main')
     const linesDefault = page.locator(
-      'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary [data-action="restore-defaults"]',
+      'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary .RestoreDefaults',
     )
 
     await openGroupOf(page, 'squeeze')
@@ -174,7 +174,7 @@ test.describe('per-group 使用預設値 buttons', () => {
   test('metrics group button restores all three sliders', async ({ page }) => {
     await page.goto('/')
     const main = page.locator('main')
-    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header [data-action="restore-defaults"]')
+    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header .RestoreDefaults')
     const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
 
     await expect(metricsDefault).toBeHidden()

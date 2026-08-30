@@ -18,7 +18,7 @@ test.describe('Shanggu three-face specimen', () => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto('/')
 
-    const cards = page.locator('[data-specimen-flow] > [data-specimen]')
+    const cards = page.locator('.TwoEmDashes .Specimens ul > [data-specimen]')
     await expect(cards).toHaveCount(15)
     expect(await cards.evaluateAll(nodes => nodes.map(node => (node as HTMLElement).dataset.specimen)))
       .toEqual([
@@ -55,7 +55,8 @@ test.describe('Shanggu three-face specimen', () => {
       input.checked = true
       input.dispatchEvent(new Event('change', { bubbles: true }))
     })
-    await expect(figure).toHaveAttribute('data-layout', 'rail')
+    await expect(figure).toHaveClass(/\bRail\b/)
+    await expect(figure.locator(':scope > ul')).not.toHaveAttribute('data-strip')
     await expect(figure.locator(':scope > ul')).toHaveCSS('overflow-x', 'auto')
     await expect(figure.locator(':scope > ul > li').first()).toHaveCSS('overflow', 'visible')
     await expect(figure.locator(':scope > ul > li > p').first()).toHaveCSS('overflow', 'visible')

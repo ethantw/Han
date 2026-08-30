@@ -40,7 +40,7 @@ test('station 柒・引用碼 returns to the shared neutral ground and follows t
   // (--code-bg = --palette-ink). A light station with a dark terminal on it is
   // the point; the station no longer goes dark to keep the terminal company.
   // (the ground is painted by `figure.CodePane`, not the `<pre>` inside it)
-  await expect(snippet.locator('figure[data-component="code-pane"]').first())
+  await expect(snippet.locator('figure.CodePane').first())
     .toHaveCSS('background-color', 'rgb(14, 14, 16)')
 
   // Dark theme: the same shared station token's dark side.
@@ -98,6 +98,21 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
     .toEqual(['han-semantics', 'han-lines', 'han-prose', 'han-fonts'])
   const human = await styleRows.locator('th small').allInnerTexts()
   expect(human.every((t) => t.trim().length > 0)).toBe(true)
+
+  // Code identifiers use Han's public monospace composite (including Han
+  // Metrics), while the trailing explanations share one start edge instead
+  // of drifting with each identifier's length.
+  const itemTypography = await styleRows.evaluateAll((rows) => rows.map((row) => {
+    const label = row.querySelector<HTMLElement>('th label')!
+    const description = row.querySelector<HTMLElement>('th small')!
+    return {
+      fontFamily: getComputedStyle(label).fontFamily,
+      descriptionLeft: description.getBoundingClientRect().left,
+    }
+  }))
+  expect(itemTypography.every(({ fontFamily }) => fontFamily.includes('Han Metrics'))).toBe(true)
+  expect(Math.max(...itemTypography.map(({ descriptionLeft }) => descriptionLeft))
+    - Math.min(...itemTypography.map(({ descriptionLeft }) => descriptionLeft))).toBeLessThanOrEqual(0.5)
 
   // Three columns a row — raw, brotli, gzip — and compression has to make
   // the file smaller, or the columns were measured against different files.
@@ -173,7 +188,7 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   // The framework declaration is struck through — it lost, and that is the
   // signal a devtools reader already knows how to read.
   await expect(
-    items.first().locator('[data-role="framework"] .RuleDecl'),
+    items.first().locator('[data-role="framework"] .Decl'),
   ).toHaveCSS('text-decoration-line', 'line-through')
 
   // The checkbox is not decorative DevTools chrome: it switches the real
@@ -185,9 +200,9 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   await expect(author).toBeChecked()
   await expect(heading).toHaveCSS('margin-bottom', '32px')
   await author.uncheck()
-  await expect(items.first().locator('[data-role="framework"] .RuleDecl'))
+  await expect(items.first().locator('[data-role="framework"] .Decl'))
     .toHaveCSS('text-decoration-line', 'none')
-  await expect(items.first().locator('[data-role="mine"] .RuleDecl'))
+  await expect(items.first().locator('[data-role="mine"] .Decl'))
     .toHaveCSS('text-decoration-line', 'line-through')
   await expect(heading).toHaveCSS('margin-bottom', '0px')
   await author.check()
@@ -210,8 +225,8 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
       return {
         panelLib: li.querySelector<HTMLElement>('[data-role="framework"] code[data-spec]')!.dataset.spec,
         panelMine: li.querySelector<HTMLElement>('[data-role="mine"] code[data-mine-spec]')!.dataset.mineSpec,
-        shownLib: t('[data-role="framework"] [data-part="rule-spec"]'),
-        shownMine: t('[data-role="mine"] [data-part="rule-spec"]'),
+        shownLib: t('[data-role="framework"] .Spec'),
+        shownMine: t('[data-role="mine"] .Spec'),
       }
     })
     expect(state.shownLib, `item ${i + 1}: erased framework weight`)
@@ -231,15 +246,15 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
   // The same real figures now live in the small modal, while its mask owns
   // any page-length scroll.
   await expect(page.locator('#station-craft .FontDetails')).toHaveCount(0)
-  await page.locator('#station-craft [data-size-dialog-open]').click()
-  const dialog = page.locator('#station-craft [data-size-dialog]')
+  await page.locator('#station-craft .OpenSizeDialog').click()
+  const dialog = page.locator('#station-craft .SizeDialog')
   await expect(dialog).toBeVisible()
   await expect(dialog.locator('.TransferDetails table')).toHaveCount(2)
-  await dialog.locator('[data-part="size-dialog-panel"]').evaluate((panel) =>
+  await dialog.locator('.Panel').evaluate((panel) =>
     Promise.all(panel.getAnimations().map((animation) => animation.finished.catch(() => undefined))))
 
   const breathingRoom = await dialog.evaluate((element) => {
-    const panel = element.querySelector<HTMLElement>('[data-part="size-dialog-panel"]')!
+    const panel = element.querySelector<HTMLElement>('.Panel')!
     const style = getComputedStyle(element)
     return {
       viewportHeight: innerHeight,
@@ -260,10 +275,10 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
   expect(breathingRoom.roomAfterPanel).toBe(160)
 
   await dialog.evaluate((element) => {
-    const panel = element.querySelector<HTMLElement>('[data-part="size-dialog-panel"]')!
+    const panel = element.querySelector<HTMLElement>('.Panel')!
     element.scrollTo({ top: panel.offsetTop + 200, behavior: 'instant' })
   })
-  await expect.poll(() => dialog.locator('.SizeDialogHead').evaluate((header) =>
+  await expect.poll(() => dialog.locator('.Head').evaluate((header) =>
     header.getBoundingClientRect().bottom)).toBeLessThan(0)
 
   const typography = await dialog.evaluate((element) => {
@@ -272,8 +287,8 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
     return {
       sans: getComputedStyle(element).fontFamily,
       prose: [
-        family('.SizeDialogHead h3'),
-        family('[data-part="size-dialog-body"] h4'),
+        family('.Head h3'),
+        family('.Body h4'),
         family('.TransferDetails caption'),
         family('.SsrNote'),
         family('.FontLedger tbody th'),

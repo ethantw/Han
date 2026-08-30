@@ -143,7 +143,7 @@ main > section {
         align-items: center;
         gap: 0.875rem;
         margin: 0 0 1.125rem;
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.75rem;
         font-weight: 500;
         letter-spacing: 0.4em;
@@ -255,6 +255,7 @@ main > section {
       display: inline-flex;
       align-items: center;
       gap: 0.65em;
+      margin-inline-start: auto;
       color: var(--ui-accent);
       text-decoration: none;
     }

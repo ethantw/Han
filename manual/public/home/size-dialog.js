@@ -1,7 +1,7 @@
 /** Native file-size dialog for station 伍. */
 export const initSizeDialog = ($root = document) => {
-  const $dialog = $root.querySelector('[data-size-dialog]')
-  const $open = $root.querySelector('[data-size-dialog-open]')
+  const $dialog = $root.querySelector('.SizeDialog')
+  const $open = $root.querySelector('.OpenSizeDialog')
   if (!$dialog || !$open) return
 
   $open.addEventListener('click', () => {

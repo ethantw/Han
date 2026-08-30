@@ -133,7 +133,7 @@ export function renderSidebar(activeId, locale, sidebarLabel, availableIds, nav 
  */
 export function renderBreadcrumb(navMeta, locale, docsLabel) {
   const homeHref = urlFor('index', locale)
-  const sep = '<span data-part="sep" aria-hidden="true">/</span>'
+  const sep = '<span class="Sep" aria-hidden="true">/</span>'
   const escape = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
   const crumbs = [`<a href="${homeHref}">${escape(docsLabel)}</a>`]
   if (navMeta?.sectionTitle) crumbs.push(`<span>${escape(navMeta.sectionTitle)}</span>`)
@@ -143,7 +143,7 @@ export function renderBreadcrumb(navMeta, locale, docsLabel) {
 
 /**
  * Render the language switcher (header chrome). Compact button + dropdown
- * matching the homepage's `[data-lang-switcher]` shape, so the docs and
+ * matching the homepage's `.LangSwitcher` shape, so the docs and
  * home share the same component CSS and JS handler.
  *
  * Lists every locale that has at least one available page, including the
@@ -163,27 +163,27 @@ export function renderLangSwitcher(activeLocale, availableByLocale, i18n) {
     const lab = LOCALE_LABELS[slug]
     const isActive = slug === activeLocale
     return `<li><a href="${urlFor('index', slug)}" lang="${HTML_LANG[slug]}" hreflang="${HTML_LANG[slug]}"${isActive ? ' class="is-active" aria-current="true"' : ''} data-lang="${slug}">
-      <span data-part="flag">${escape(lab.flag)}</span>
-      <span data-part="texts">
-        <span data-part="full">${escape(lab.full)}</span>
-        <span data-part="code">${slug}</span>
+      <span class="Flag">${escape(lab.flag)}</span>
+      <span class="Texts">
+        <span class="Full">${escape(lab.full)}</span>
+        <span class="Code">${slug}</span>
       </span>
-      ${isActive ? '<span data-part="check" data-icon="check" aria-hidden="true"></span>' : ''}
+      ${isActive ? '<span class="Check" data-icon="check" aria-hidden="true"></span>' : ''}
     </a></li>`
   }).join('')
 
   const labelText = i18n?.langSwitcherLabel ?? 'Switch language・LANGUAGE'
   const footText  = i18n?.langSwitcherFoot  ?? ''
 
-  return `<div class="LangSwitcher" data-lang-switcher>
+  return `<div class="LangSwitcher">
     <button type="button" aria-haspopup="true" aria-expanded="false" aria-label="${escape(labelText)}">
-      <span data-part="icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
-      <span data-part="caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
+      <span class="Icon" aria-hidden="true"><span data-glyph="zh">文</span><span data-glyph="la">A</span></span>
+      <span class="Caret" data-icon="chevron" data-dir="down" aria-hidden="true"></span>
     </button>
     <ul hidden>
-      <li data-part="label">${escape(labelText)}</li>
+      <li class="Label">${escape(labelText)}</li>
       ${items}
-      ${footText ? `<li data-part="foot"><span aria-hidden="true">※</span><span>${escape(footText)}</span></li>` : ''}
+      ${footText ? `<li class="Foot"><span aria-hidden="true">※</span><span>${escape(footText)}</span></li>` : ''}
     </ul>
   </div>`
 }

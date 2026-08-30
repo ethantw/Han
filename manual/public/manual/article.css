@@ -117,7 +117,7 @@ main {
         position: absolute;
         inset-inline-start: -1.25em;
         color: var(--ink-faint);
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-weight: 400;
         opacity: 0;
         transition: opacity 150ms;
@@ -154,7 +154,7 @@ main {
 
     /* Inline code — light pill, distinct from dark code blocks. */
     code {
-      font-family: var(--font-mono);
+      font-family: var(--han-monospace);
       font-size: 0.875em;
       padding: 1px 6px;
       background: var(--paper-deep);
@@ -172,7 +172,7 @@ main {
         border: 0;
         border-radius: 6px;
         overflow-x: auto;
-        font-family: var(--font-mono);
+        font-family: var(--han-monospace);
         font-size: 0.875rem;
         line-height: 1.7;
       }
@@ -224,16 +224,6 @@ main {
         background: currentColor;
         /* mask 簡寫 · Baseline 2023 */
         mask: var(--icon-bulb) center / contain no-repeat;
-      }
-
-      [data-part="title"] {
-        display: block;
-        font-family: var(--font-mono);
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        color: var(--accent-deep);
-        margin-block-end: 4px;
       }
 
       :first-child { margin-block-start: 0 }

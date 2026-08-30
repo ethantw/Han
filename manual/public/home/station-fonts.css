@@ -386,7 +386,7 @@
 }
 
 /* 同站①四語報：四語永遠留在一列 rail，邊緣切到下一張就是可捲提示。 */
-:where(.PunctLang[data-layout="rail"]) {
+:where(.PunctLang.Rail) {
   & {
     /* RTL implicit tracks must not feed their intrinsic width back into the
        parent grid. The rail may bleed; the figure (and therefore pills/caption)
@@ -467,7 +467,7 @@
 }
 
 /* 四張都保有可讀行長時不假裝成 carousel：同一列完整比較，沒有捲動 chrome。 */
-:where(.PunctLang[data-layout="grid"]) {
+:where(.PunctLang.Grid) {
   & {
     inline-size: calc(100% + var(--df-copy-inset));
     max-inline-size: none;
@@ -489,13 +489,13 @@
     overflow: clip;
   }
 
-  .PunctLangNav { display: none; }
+  .Nav { display: none; }
 }
 
 /* 直排永遠是由右向左的 rail。DOM 順序不動（繁、簡、日、韓），RTL 的 implicit
    grid columns 讓繁在最右，往左依次是簡、日、韓；每張卡的內容方向另行扶正。 */
 #station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
-  .PunctLang[data-layout="rail"] ul {
+  .PunctLang.Rail ul {
   & {
     direction: rtl;
     /* In vertical writing the physical card width is the specimen's block
@@ -534,11 +534,11 @@
   }
 }
 
-.PunctLangNav {
+.PunctLang > .Nav {
   display: none;
 }
 
-:where(.PunctLang[data-layout="rail"]) .PunctLangNav {
+:where(.PunctLang.Rail) > .Nav {
   & {
     display: flex;
     /* 箭頭是正文 chrome，不是會流出頁緣的卡片：留在正常 figure 版心內。 */
@@ -579,19 +579,19 @@
 
 /* These are figure chrome, not rail contents.  They may wrap within the
    measured copy column but must never inherit the rail's full-bleed extent. */
-:where(.PunctLang[data-layout="rail"]) > .SpecimenSwitch {
+:where(.PunctLang.Rail) > .SpecimenSwitch {
   box-sizing: border-box;
   max-inline-size: 100%;
 }
 
-:where(.PunctLang[data-layout="rail"]) > figcaption {
+:where(.PunctLang.Rail) > figcaption {
   box-sizing: border-box;
   max-inline-size: min(100%, 18em);
 }
 
 /* RTL rail 的「內容深處」在左邊，沿用鉛字盤 FormeNav 的按鈕順序與圖示規則。 */
 #station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
-  :where(.PunctLang[data-layout="rail"]) .PunctLangNav {
+  :where(.PunctLang.Rail) > .Nav {
   & {
     flex-direction: row-reverse;
   }
