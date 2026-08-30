@@ -1,25 +1,50 @@
-/* 報紙入口接在文字之後。inline-block 讓盒底成為可預期的基線，避免
-   inline-grid 自身的基線把圖示額外抬高。 */
+/* Source text remains the fallback and accessible name. Reset inherited
+   paragraph indentation, then scale the SVG's 16px intrinsic box to 1em. */
 :where(a.PaperJump) {
   & {
     display: inline-block;
     inline-size: 1em;
     block-size: 1em;
     margin-inline-start: 0.2em;
+    overflow: hidden;
+    color: transparent;
+    text-decoration-color: transparent;
+    text-indent: 0;
+    white-space: nowrap;
     vertical-align: var(--inline-icon-baseline);
     border-radius: 0.2rem;
   }
 
-  img {
+  &::before {
+    content: url('/home/paper-open.svg') / '';
     display: block;
-    inline-size: 100%;
-    block-size: 100%;
+    inline-size: 16px;
+    block-size: 16px;
+    line-height: 0;
+    transform-origin: 0 0;
+    scale: calc(1em / 16px);
   }
 
   &:is(:hover, :focus-visible) {
     background: var(--ui-supplement-bg);
     outline: 1px solid var(--ui-rule);
     outline-offset: 2px;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(a.PaperJump) {
+    & {
+      inline-size: auto;
+      block-size: auto;
+      overflow: visible;
+      color: LinkText;
+      text-decoration-color: currentcolor;
+    }
+
+    &::before {
+      display: none;
+    }
   }
 }
 

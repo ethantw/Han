@@ -479,6 +479,7 @@ async function bundleHomeCss() {
       bundle: true,
       outfile: path.join(MANUAL_DIST, entry),
       allowOverwrite: true,
+      external: ['/home/paper-open.svg'],
       loader: { '.woff2': 'file' },
       assetNames: '[name]',
       logLevel: 'warning',

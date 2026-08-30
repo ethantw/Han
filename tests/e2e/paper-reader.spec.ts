@@ -15,14 +15,21 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('every newspaper jump follows the text on one shared inline baseline', async ({ page }) => {
-  const audit = await page.locator('img[src="/home/paper-open.svg"]').evaluateAll((images) =>
-    images.map((image) => {
-      const jump = image.closest('a')!
+  const audit = await page.locator('a.PaperJump').evaluateAll((jumps) =>
+    jumps.map((jump) => {
       const style = getComputedStyle(jump)
+      const generated = getComputedStyle(jump, '::before')
       const parent = jump.parentElement!
       return {
         component: jump.classList.contains('PaperJump'),
         bemModifier: [...jump.classList].some((name) => name.includes('--')),
+        sourceText: jump.textContent?.trim(),
+        title: jump.getAttribute('title'),
+        ariaLabel: jump.getAttribute('aria-label'),
+        childImages: jump.querySelectorAll('img').length,
+        generatedIcon: generated.content,
+        generatedLineHeight: generated.lineHeight,
+        generatedScale: Number.parseFloat(generated.scale),
         parent: parent.localName,
         lastInParent: parent.lastElementChild === jump,
         hasText: Boolean(parent.textContent?.trim()),
@@ -30,6 +37,8 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
         position: style.position,
         float: style.cssFloat,
         translate: style.translate,
+        textIndent: style.textIndent,
+        expectedScale: Number.parseFloat(style.fontSize) / 16,
         baselineRatio: Number.parseFloat(style.verticalAlign) / Number.parseFloat(style.fontSize),
       }
     }))
@@ -37,13 +46,28 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
   expect(audit).toHaveLength(16)
   expect(audit.every(({ component }) => component)).toBe(true)
   expect(audit.every((jump) => !jump.bemModifier
+    && Boolean(jump.sourceText)
+    && jump.sourceText === jump.title
+    && jump.ariaLabel === null
+    && jump.childImages === 0
+    && jump.generatedIcon.includes('/home/paper-open.svg')
+    && jump.generatedLineHeight === '0px'
     && jump.lastInParent
     && jump.hasText
     && jump.display === 'inline-block'
     && jump.position === 'static'
     && jump.float === 'none'
     && jump.translate === 'none'
+    && jump.textIndent === '0px'
+    && Math.abs(jump.generatedScale - jump.expectedScale) < 0.001
     && Math.abs(jump.baselineRatio - (-0.125)) < 0.001)).toBe(true)
+
+  const iconIntrinsicSize = await page.evaluate(async () => {
+    const source = await fetch('/home/paper-open.svg').then((response) => response.text())
+    const svg = new DOMParser().parseFromString(source, 'image/svg+xml').documentElement
+    return [svg.getAttribute('width'), svg.getAttribute('height')]
+  })
+  expect(iconIntrinsicSize).toEqual(['16', '16'])
 
   const punctLang = await page.locator('.PunctLang .PaperJump').evaluateAll((jumps) =>
     jumps.map((jump) => {
