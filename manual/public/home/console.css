@@ -358,6 +358,96 @@ body:has(han-console) {
   }
 }
 
+/* ── Newspaper reader entry point ───────────────────────────────────────
+   The modal owns a second view of the shared console config. The homepage
+   side console stays exactly where it is; this copy answers the toolbar's
+   start-side button from the same edge. */
+.ConsolePanel[data-console-context="reader"] {
+  & {
+    position: fixed;
+    inset-block-start: calc(var(--h-header) + 0.5rem);
+    inset-inline: var(--gutter) auto;
+    z-index: 2;
+    inline-size: min(21rem, calc(100dvi - 2 * var(--gutter)));
+    max-block-size: min(calc(100dvb - var(--h-header) - 1rem), 46rem);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: var(--ui-text);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    box-shadow:
+      0 12px 32px color-mix(in srgb, var(--ui-shadow-ink) 18%, transparent)
+    ;
+  }
+
+  > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 0.875rem;
+    font-family: var(--han-sans);
+    font-size: 0.75rem;
+    border-block-end: 1px solid var(--ui-rule);
+  }
+
+  .ConsolePanelClose {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 1.5rem;
+      block-size: 1.5rem;
+      margin-inline-end: -0.25rem;
+      padding: 0;
+      color: var(--ui-supplement-text);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    &:hover { color: var(--ui-accent); }
+
+    &:focus-visible {
+      outline: 2px solid var(--ui-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* In the narrow page form an unchecked state normally hides the panel. The
+   reader entry has its own explicit state, independent of that remembered
+   page bit, so it must remain visible even when the side entry was closed. */
+body:has(#console-collapsed:not(:checked))
+  .ConsolePanel[data-console-context="reader"] {
+  display: flex;
+}
+
+/* Author display rules beat the UA's `[hidden]`; keep the reader copy truly
+   absent until its own toolbar button opens it. */
+.ConsolePanel[data-console-context="reader"][hidden] {
+  display: none !important;
+}
+
+/* The page form makes the host fixed and full-height. Inside the reader the
+   wrapper owns placement instead, and the console is simply its one flexible,
+   internally scrolling child. The specificity deliberately beats both the
+   desktop side rule and the narrow-panel checked-state rule. */
+body:has(han-console) .ConsolePanel[data-console-context="reader"] han-console {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  flex: 1 1 auto;
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 0;
+  translate: none;
+  border-inline-end: 0;
+}
+
 /* Pre-upgrade skeleton — the console's panel + hairline, painted from the
    LIGHT DOM while the 字徽 loader runs, so the loading state is a real
    console-shaped box rather than a hole: only the FORM is allowed to arrive

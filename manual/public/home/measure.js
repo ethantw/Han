@@ -206,6 +206,13 @@ export const parkForConfigChange = () => {
   const $main = document.querySelector('main')
   if (!$main) return
 
+  // A top-layer dialog keeps its DOM ancestry. The newspaper reader lives in
+  // station①, so parking that otherwise-offscreen station would collapse the
+  // visible modal to a 0×0 box while the console applies a setting. Keep the
+  // branch containing the active modal rendered; every other offscreen branch
+  // remains eligible for the same layout-saving park.
+  const $activeModal = document.querySelector('dialog:modal')
+
 
 
   const sameWorkset = configParked.size > 0
@@ -222,6 +229,7 @@ export const parkForConfigChange = () => {
   const scan = ($el, depth) => {
     for (const $child of $el.children) {
       if (configParked.has($child)) continue
+      if ($activeModal && $child.contains($activeModal)) continue
       const rect = $child.getBoundingClientRect()
       if (!rect.height) continue
       if (rect.bottom < top || rect.top > bottom) {

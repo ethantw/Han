@@ -3,7 +3,7 @@
 /**
  * Closing — the footer band under the last station.
  *
- * Three primary routes close the adoption story. Related type projects stay
+ * Four primary routes close the adoption story. Related type projects stay
  * visible, but live in the quiet metadata row rather than competing with the
  * framework's own next steps.
  */
@@ -56,7 +56,7 @@
   .ClosingRoutes {
     & {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       border-block: 1px solid var(--ui-rule);
     }
 
@@ -141,19 +141,21 @@
     & { padding-inline: calc((100% - var(--max-w-layout)) / 2); }
   }
 
-  @media (max-width: 44rem) {
-    & { gap: 2rem; }
-
-    .ClosingHead {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
+  /* Four cards need more than the old three-card row. When main loses room
+     to the side console, fold by the actual content width rather than the
+     viewport width. */
+  @container (inline-size < 64rem) {
     .ClosingRoutes {
-      & {
-        grid-template-columns: 1fr;
-      }
+      & { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+      a:nth-child(2n + 1) { border-inline-start: 0; }
+      a:nth-child(n + 3) { border-block-start: 1px solid var(--ui-rule); }
+    }
+  }
+
+  @container (inline-size < 44rem) {
+    .ClosingRoutes {
+      & { grid-template-columns: 1fr; }
 
       a {
         & {
@@ -172,6 +174,16 @@
         &::after { margin-block-start: 0; }
       }
     }
+  }
+
+  @media (max-width: 44rem) {
+    & { gap: 2rem; }
+
+    .ClosingHead {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
     .ClosingMeta {
       & {
@@ -183,15 +195,15 @@
   }
 
   @media (max-width: 28rem) {
+    .ClosingMeta { grid-template-columns: 1fr; }
+  }
+
+  @container (inline-size < 28rem) {
     .ClosingRoutes a {
-      & {
-        grid-template-columns: 1fr auto;
-      }
+      & { grid-template-columns: 1fr auto; }
 
       span { grid-column: 1 / -1; }
       &::after { grid-column: 2; grid-row: 1; }
     }
-
-    .ClosingMeta { grid-template-columns: 1fr; }
   }
 }

@@ -167,6 +167,10 @@ the generated setup — live at **[hanzi.pro](https://hanzi.pro)**. The referenc
 manual is currently authoritative in Traditional Chinese; English covers the
 introduction and install, with Japanese and Korean on the way.
 
+For the typesetting result on its own, open the
+**[complete browser specimen](https://hanzi.pro/specimen.html)**: it carries no
+site-specific page styling, only Han.css.
+
 ## License
 
 [MIT](./LICENSE) © 2012–2026 Chen Yijun. The bundled 注音 webfont is a

@@ -49,6 +49,13 @@ const storeWriting = (vertical) => {
 
 const rootRem = () => Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
 const headerHeight = () => document.querySelector('body > header')?.getBoundingClientRect().height || 0
+const readerInlineGutter = () => {
+  const value = getComputedStyle(dialog.querySelector('[data-part="reader-stage"]'))
+    .getPropertyValue('--reader-inline-gutter').trim()
+  const number = Number.parseFloat(value)
+  if (!Number.isFinite(number)) return rootRem()
+  return value.endsWith('rem') ? number * rootRem() : number
+}
 
 const naturalSheetSize = () => {
   const sheet = dialog.querySelector('[data-part="reader-sheet"]')
@@ -119,7 +126,7 @@ const fittedScale = () => {
     const availableHeight = innerHeight - headerHeight() - 4 * rootRem()
     return Math.min(1, Math.max(0.1, availableHeight / size.height))
   }
-  const availableWidth = innerWidth - 2 * rootRem()
+  const availableWidth = innerWidth - 2 * readerInlineGutter()
   return Math.min(1, Math.max(0.1, availableWidth / size.width))
 }
 
@@ -182,6 +189,51 @@ const setWriting = (vertical, { persist = true, fit = true } = {}) => {
   layoutReader({ resetScroll: true })
 }
 
+const setReaderConsole = (open, { restoreFocus = false } = {}) => {
+  const panel = dialog?.querySelector('[data-console-context="reader"]')
+  const trigger = dialog?.querySelector('[data-reader="console"]')
+  if (!panel || !trigger) return false
+  const wasOpen = !panel.hidden
+  panel.hidden = !open
+  panel.toggleAttribute('inert', !open)
+  panel.setAttribute('aria-hidden', String(!open))
+  trigger.setAttribute('aria-expanded', String(open))
+  const label = open ? trigger.dataset.labelClose : trigger.dataset.labelOpen
+  if (label) {
+    trigger.setAttribute('aria-label', label)
+    trigger.title = label
+  }
+  if (!open && wasOpen && restoreFocus) trigger.focus()
+  return wasOpen
+}
+
+const cloneConsoleForReader = () => {
+  const source = document.querySelector('body > .ConsolePanel')
+  if (!source) return null
+  const panel = source.cloneNode(true)
+  panel.id = 'typesetting-console-reader'
+  panel.dataset.consoleContext = 'reader'
+  panel.hidden = true
+  panel.setAttribute('inert', '')
+  panel.setAttribute('aria-hidden', 'true')
+  const console = panel.querySelector('han-console')
+  console?.setAttribute('mirror', '')
+  console?.removeAttribute('data-ready')
+  return panel
+}
+
+const ensureReaderConsole = () => {
+  let panel = dialog.querySelector('[data-console-context="reader"]')
+  if (panel) return panel
+  panel = cloneConsoleForReader()
+  if (!panel) return null
+  panel.querySelector('.ConsolePanelClose')?.addEventListener('click', () => {
+    setReaderConsole(false, { restoreFocus: true })
+  })
+  dialog.append(panel)
+  return panel
+}
+
 const shell = () => {
   if (dialog) return dialog
   dialog = document.createElement('dialog')
@@ -190,25 +242,62 @@ const shell = () => {
   dialog.setAttribute('aria-label', '全文閱讀器')
   dialog.innerHTML = `
     <form method="dialog" data-part="reader-chrome">
-      ${EDITIONS.map((edition) => `<button type="button" data-reader="edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
-      <button type="button" data-reader="writing" aria-pressed="false">直排</button>
-      <select data-reader="scale" aria-label="顯示倍率">
-        <option value="auto">適合・100%</option>
-        ${SCALES.map((scale) => `<option value="${scale}">${Math.round(scale * 100)}%</option>`).join('')}
-      </select>
-      <button value="close" data-reader="close" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
+      <div data-part="reader-controls">
+        <div role="group" aria-label="閱讀工具" data-reader-group="tools">
+          <button type="button" data-reader="console" aria-expanded="false"><span data-icon="console" aria-hidden="true"></span></button>
+          <button type="button" data-reader="writing" aria-pressed="false">直排</button>
+          <select data-reader="scale" aria-label="顯示倍率">
+            <option value="auto">適合・100%</option>
+            ${SCALES.map((scale) => `<option value="${scale}">${Math.round(scale * 100)}%</option>`).join('')}
+          </select>
+        </div>
+        <div role="group" aria-label="語言版本" data-reader-group="editions">
+          ${EDITIONS.map((edition) => `<button type="button" data-reader="edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
+        </div>
+      </div>
+      <div role="group" aria-label="關閉閱讀器" data-reader-group="actions">
+        <button value="close" data-reader="close" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
+      </div>
     </form>
     <div data-part="reader-stage">
-      <article data-part="reader-sheet" aria-live="polite"><div data-part="reader-body"></div></article>
+      <article data-part="reader-sheet" aria-live="polite"><div data-part="reader-row-field"><div data-part="reader-body"></div></div></article>
     </div>`
+  const consoleButton = dialog.querySelector('[data-reader="console"]')
+  const pageConsoleButton = document.querySelector('.ConsoleToggle')
+  const openLabel = pageConsoleButton?.dataset.labelOpen ?? '打開排版面板'
+  const closeLabel = pageConsoleButton?.dataset.labelClose ?? '關閉排版面板'
+  consoleButton.dataset.labelOpen = openLabel
+  consoleButton.dataset.labelClose = closeLabel
+  consoleButton.setAttribute('aria-label', openLabel)
+  consoleButton.title = openLabel
   ;(document.querySelector('figure.Papers > article') ?? document.body).append(dialog)
   setWriting(storedWriting(), { persist: false, fit: false })
   dialog.addEventListener('click', (event) => {
     const control = event.target.closest?.('[data-reader]')
     if (control?.dataset.reader === 'edition') return show(current.slug, control.dataset.edition)
     if (control?.dataset.reader === 'writing') return setWriting(dialog.dataset.writing !== 'vertical')
-    if (!control && event.target === dialog) return dialog.close()
+    if (control?.dataset.reader === 'console') {
+      const panel = ensureReaderConsole()
+      return setReaderConsole(panel?.hidden ?? true, { restoreFocus: true })
+    }
+    if (!control && event.target === dialog) {
+      if (setReaderConsole(false, { restoreFocus: false })) return
+      dialog.close()
+    }
   })
+  dialog.addEventListener('cancel', (event) => {
+    if (!setReaderConsole(false, { restoreFocus: true })) return
+    event.preventDefault()
+  })
+  dialog.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !setReaderConsole(false, { restoreFocus: true })) return
+    /* A nested non-modal <dialog open> can consume Escape before the parent
+       modal emits `cancel`; catch it at the reader boundary so the first
+       press always dismisses only the console copy. */
+    event.preventDefault()
+    event.stopPropagation()
+  }, true)
+  dialog.addEventListener('close', () => setReaderConsole(false, { restoreFocus: false }))
   dialog.addEventListener('change', (event) => {
     if (!event.target.matches?.('[data-reader="scale"]')) return
     const scale = Number(event.target.value)

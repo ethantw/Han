@@ -31,7 +31,7 @@ import { icon } from '../common/icon.js'
 
 const METRIC_DEFAULTS = DEFAULTS.metrics
 
-export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
+export const mountConsoleMetrics = ({ root, target, initial, onChange, passiveInit = false }) => {
   const $sliders = [...root.querySelectorAll('[data-pg-sliders] .MetricSlider')]
   const stateRef = { current: { ...METRIC_DEFAULTS } }
   const syncBySlider = new Map()
@@ -96,19 +96,19 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
     const min       = +$input.min
     const max       = +$input.max
 
-    const sync = () => {
+    const sync = ({ applyRuntime = true } = {}) => {
       const v = +$input.value
       stateRef.current = { ...stateRef.current, [metric]: v }
       const fmt = v.toFixed(precision)
       $val.textContent = unit ? `${fmt}${unit}` : fmt
       $fill.style.width = `${((v - min) / (max - min)) * 100}%`
       updateGroupDefault()
-      apply()
+      if (applyRuntime) apply()
     }
     // 使用者拖動：sync 後通知「一次」。mount-time 的 sync() 不通知（下）。
     $input.addEventListener('input', () => { prepare(); sync(); notify() })
     syncBySlider.set($slider, sync)
-    sync()
+    sync({ applyRuntime: !passiveInit })
   })
 
   // 群組 ↺：三支滑桿一併回預設再「通知一次」（不是每支各發一次）。
@@ -134,7 +134,17 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
     notify()
   }
 
-  apply()
+  /* Mirror a peer console without dispatching another config event. */
+  const replace = (metrics) => {
+    stateRef.current = { ...metrics }
+    $sliders.forEach(($slider) => {
+      const $input = $slider.querySelector('input[type="range"]')
+      $input.value = String(metrics[$slider.dataset.metric])
+      syncBySlider.get($slider)?.({ applyRuntime: false })
+    })
+  }
 
-  return { reset }
+  if (!passiveInit) apply()
+
+  return { reset, replace }
 }

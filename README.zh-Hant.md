@@ -133,6 +133,8 @@ v3的class同路退役——`.han-init`→`/auto`入口、`.pn`→直接用`<u>`
 
 完整文檔與互動遊樂場——貼上你的文字、調整面板、複製生成的引用碼——都在 **[hanzi.pro](https://hanzi.pro)**。參考手冊目前以繁體中文為準，英文涵蓋簡介與安裝，日文、韓文陸續補上。
 
+若想先看純粹的排版結果，可直接打開**[完整示例頁](https://hanzi.pro/specimen.html)**：它不帶本站的版面樣式，只呈現漢.css本身。
+
 ## 授權
 
 [MIT](./LICENSE) © 2012–2026 Chen Yijun。內建注音字體改封裝自BopomofoRuby1909（© 2018 But Ko），採OFL 1.1——見[LICENSE-FONTS](./LICENSE-FONTS)。傳承字形Web字體另行遞送，各自沿用上游授權，詳見各字體套件。

@@ -94,6 +94,30 @@ export const applyFallbacks = async (config, $target, isCurrent = () => true) =>
     .forEach((pass) => module.runPassChunked($target, ($chunk) => module[pass.fn]($chunk)))
 }
 
+/** Applies fallbacks to freshly inserted content without pinning the pass's
+ * resolved modes on that nested install root. The pass must see the local
+ * cascade while it builds its wrappers, but afterwards the subtree should
+ * keep inheriting future config changes from the canonical page target.
+ * Preserve an author's pre-existing inline override, if there was one. */
+export const applyFallbacksPreservingCascade = async (config, $target) => {
+  if (!$target) return
+  const style = $target.style
+  const prior = style
+    ? FALLBACK_SYNCED_VARS.map((property) => ({
+        property,
+        value: style.getPropertyValue(property),
+        priority: style.getPropertyPriority(property),
+      }))
+    : []
+
+  await applyFallbacks(config, $target)
+
+  for (const { property, value, priority } of prior) {
+    if (value) style.setProperty(property, value, priority)
+    else style.removeProperty(property)
+  }
+}
+
 const applyISSFallback = async (config, $target, isCurrent = () => true) => {
   if (!$target || !isCurrent()) return
   const module = moduleRef.current ??= await import('/han/han.js')

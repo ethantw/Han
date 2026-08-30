@@ -25,16 +25,18 @@ test.describe('adoption path', () => {
     })
   }
 
-  test('footer separates the three primary routes from related projects', async ({ page }) => {
+  test('footer separates the four primary routes from related projects', async ({ page }) => {
     const routes = page.locator('.ClosingRoutes > a')
-    await expect(routes).toHaveCount(3)
+    await expect(routes).toHaveCount(4)
     await expect(routes.nth(0)).toHaveAttribute('href', '#station-snippet')
-    await expect(routes.nth(1)).toHaveAttribute(
+    await expect(routes.nth(1)).toHaveAttribute('href', '/specimen.html')
+    await expect(routes.nth(1)).toContainText('查看完整示例')
+    await expect(routes.nth(2)).toHaveAttribute(
       'href',
       'https://github.com/hanzipro/han.css/blob/main/skills/han-setup/SKILL.md',
     )
-    await expect(routes.nth(1)).toContainText('完整設定指南Skill')
-    await expect(routes.nth(2)).toHaveAttribute('href', 'https://github.com/hanzipro/han.css')
+    await expect(routes.nth(2)).toContainText('完整設定指南Skill')
+    await expect(routes.nth(3)).toHaveAttribute('href', 'https://github.com/hanzipro/han.css')
 
     await expect(page.locator('.Closing .Siblings > a')).toHaveCount(2)
     await expect(page.locator('.Closing .Siblings')).not.toContainText('GitHub')
@@ -44,7 +46,7 @@ test.describe('adoption path', () => {
     const repository = 'https://github.com/hanzipro/han.css'
     await expect(page.locator('body > header nav > a', { hasText: 'GitHub' }))
       .toHaveAttribute('href', repository)
-    await expect(page.locator('.ClosingRoutes > a').nth(2))
+    await expect(page.locator('.ClosingRoutes > a').nth(3))
       .toHaveAttribute('href', repository)
   })
 

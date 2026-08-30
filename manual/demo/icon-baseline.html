@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>報紙圖標 Baseline 工作台</title>
+
+<!--
+  重現首頁 paper-reader.css 的結構：PaperJump 是 1em × 1em 的
+  inline-block，img 填滿它，目前 vertical-align 為 -.125em。
+  SVG 是 116 × 140；方形 img box 不會拉扁圖面，SVG 仍等比縮放。
+-->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="/common/variables.css">
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: light-dark(#fbfaf7, #151515);
+    --panel: light-dark(#fff, #1d1d1d);
+    --ink: light-dark(#171719, #ecece8);
+    --dim: light-dark(#686866, #aaa9a4);
+    --rule: light-dark(#17171922, #ffffff26);
+    --accent: light-dark(#087d4d, #55ba85);
+    --baseline: #e43d30;
+    --xheight: #1688c8;
+    --ink-guide: light-dark(#6e6a655f, #d5d0c85f);
+    --icon-guide: #9a42d2;
+    --demo-font: 'Shanggu Serif', 'Shanggu Serif Yue', serif;
+    --demo-size: 16px;
+    --demo-icon: 1em;
+    --demo-align: var(--inline-icon-baseline);
+    --demo-leading: 1.75;
+    --demo-weight: 400;
+    --ink-ascent: .88em;
+    --ink-descent: .12em;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 2rem max(1rem, calc(50vw - 38rem)) 8rem;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: system-ui, sans-serif;
+  }
+
+  header {
+    max-inline-size: 48rem;
+    margin-block-end: 1.5rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--demo-font);
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 500;
+  }
+
+  header p {
+    margin: .5rem 0 0;
+    color: var(--dim);
+    font-size: .9375rem;
+    line-height: 1.7;
+  }
+
+  code,
+  output,
+  .Metrics,
+  .CandidateLabel {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+
+  .Controls {
+    position: sticky;
+    inset-block-start: .75rem;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: .75rem 1.25rem;
+    margin-block: 1.5rem 2rem;
+    padding: 1rem;
+    border: 1px solid var(--rule);
+    border-radius: .75rem;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    box-shadow: 0 .5rem 2rem light-dark(#0000000c, #0000002e);
+    backdrop-filter: blur(14px);
+  }
+
+  .Control {
+    display: grid;
+    grid-template-columns: minmax(6rem, auto) 1fr;
+    gap: .25rem .75rem;
+    align-items: center;
+    font-size: .8125rem;
+  }
+
+  .Control > span { color: var(--dim); }
+
+  .Control output {
+    justify-self: end;
+    min-inline-size: 8.75em;
+    color: var(--accent);
+    text-align: end;
+    font-size: .75rem;
+  }
+
+  .Control input[type='range'] {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    accent-color: var(--accent);
+  }
+
+  .Control select {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    padding: .4rem .5rem;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: .35rem;
+    font: inherit;
+  }
+
+  .Control[data-choice] {
+    grid-template-columns: auto 1fr;
+    align-self: end;
+  }
+
+  .Control[data-choice] input { accent-color: var(--accent); }
+
+  main {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  section { min-inline-size: 0; }
+
+  h2 {
+    margin: 0 0 .25rem;
+    font-size: 1rem;
+  }
+
+  .SectionNote {
+    margin: 0 0 1rem;
+    color: var(--dim);
+    font-size: .8125rem;
+    line-height: 1.6;
+  }
+
+  .Panel {
+    padding: clamp(1rem, 3vw, 2rem);
+    overflow: clip;
+    border: 1px solid var(--rule);
+    border-radius: .75rem;
+    background: var(--panel);
+  }
+
+  .SpecimenLine {
+    position: relative;
+    min-block-size: calc(var(--demo-size) * var(--demo-leading) + 2rem);
+    padding: 1rem .5rem;
+    overflow: clip;
+    font-family: var(--demo-font);
+    font-size: var(--demo-size);
+    font-weight: var(--demo-weight);
+    line-height: var(--demo-leading);
+  }
+
+  .SpecimenLine + .SpecimenLine { border-block-start: 1px solid var(--rule); }
+  .SpecimenLine[data-wrap] { max-inline-size: 24em; }
+
+  /* This zero-size inline-block sits on the real CSS baseline. */
+  .GuideOrigin {
+    position: relative;
+    display: inline-block;
+    inline-size: 0;
+    block-size: 0;
+    vertical-align: baseline;
+    pointer-events: none;
+  }
+
+  .GuideOrigin i {
+    position: absolute;
+    z-index: 4;
+    inset-inline-start: -4rem;
+    inline-size: 90rem;
+    block-size: 0;
+    border-block-start: 1px solid;
+    opacity: .72;
+  }
+
+  .GuideOrigin [data-guide='baseline'] {
+    inset-block-start: 0;
+    color: var(--baseline);
+  }
+
+  .GuideOrigin [data-guide='xheight'] {
+    inset-block-start: -1ex;
+    color: var(--xheight);
+  }
+
+  .GuideOrigin [data-guide='ink-top'] {
+    inset-block-start: calc(-1 * var(--ink-ascent));
+    color: var(--ink-guide);
+    border-block-start-style: dashed;
+  }
+
+  .GuideOrigin [data-guide='ink-bottom'] {
+    inset-block-start: var(--ink-descent);
+    color: var(--ink-guide);
+    border-block-start-style: dashed;
+  }
+
+  :root:not([data-guides]) .GuideOrigin { display: none; }
+
+  .InlineIcon {
+    display: inline-block;
+    inline-size: var(--local-icon, var(--demo-icon));
+    block-size: var(--local-icon, var(--demo-icon));
+    margin-inline-start: .2em;
+    vertical-align: var(--local-align, var(--demo-align));
+    border-radius: .2rem;
+  }
+
+  .InlineIcon img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  :root[data-icon-box] .InlineIcon {
+    outline: 1px solid var(--icon-guide);
+    background: color-mix(in srgb, var(--icon-guide) 8%, transparent);
+  }
+
+  .Legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1rem;
+    margin-block-start: 1rem;
+    color: var(--dim);
+    font-size: .75rem;
+  }
+
+  .Legend span::before {
+    content: '';
+    display: inline-block;
+    inline-size: 1.5rem;
+    margin-inline-end: .35rem;
+    vertical-align: .2em;
+    border-block-start: 1px solid;
+  }
+
+  .Legend [data-key='baseline']::before { color: var(--baseline); }
+  .Legend [data-key='xheight']::before { color: var(--xheight); }
+  .Legend [data-key='ink']::before {
+    color: var(--ink-guide);
+    border-block-start-style: dashed;
+  }
+  .Legend [data-key='icon']::before {
+    block-size: .7rem;
+    vertical-align: -.1em;
+    border: 1px solid var(--icon-guide);
+  }
+
+  .Metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1px;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: .75rem;
+    background: var(--rule);
+    font-size: .75rem;
+  }
+
+  .Metrics div {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .75rem;
+    padding: .75rem;
+    background: var(--panel);
+  }
+
+  .Metrics dt { color: var(--dim); }
+  .Metrics dd { margin: 0; color: var(--accent); }
+
+  .Candidates {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: .75rem;
+  }
+
+  .Candidate {
+    display: grid;
+    place-items: center;
+    min-block-size: 7rem;
+    padding: .75rem;
+    border: 1px solid var(--rule);
+    border-radius: .625rem;
+    background: var(--panel);
+  }
+
+  .Candidate[data-current] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  .Candidate .SpecimenLine {
+    min-block-size: 0;
+    padding: .75rem 0;
+    white-space: nowrap;
+  }
+
+  .CandidateLabel {
+    color: var(--dim);
+    font-size: .6875rem;
+  }
+
+  .CssResult {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .75rem;
+    align-items: start;
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    border: 1px solid var(--rule);
+    border-radius: .75rem;
+    background: light-dark(#161616, #080808);
+    color: #e9e9e4;
+    font: .8125rem/1.65 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    white-space: pre;
+  }
+
+  button {
+    padding: .45rem .65rem;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: .4rem;
+    font: .75rem system-ui, sans-serif;
+    cursor: pointer;
+  }
+
+  @media (max-width: 32rem) {
+    body { padding-block-start: 1rem; }
+    .Controls { inset-block-start: .25rem; }
+    .SpecimenLine { padding-inline: 0; }
+    .CssResult { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>報紙圖標 Baseline 工作台</h1>
+  <p>
+    直接量首頁使用的 <code>/home/paper-open.svg</code>。先調到視覺舒服，再讀下面
+    的精確數字；紅線是 CSS baseline，紫框是 icon 的 <code>1em × 1em</code>
+    inline box。
+  </p>
+</header>
+
+<form class="Controls" id="controls">
+  <label class="Control">
+    <span>字體</span>
+    <select name="font">
+      <option value="'Shanggu Serif', 'Shanggu Serif Yue', serif" selected>尚古明體</option>
+      <option value="'Shanggu Sans', 'Shanggu Sans Yue', sans-serif">尚古黑體</option>
+      <option value="Georgia, 'Times New Roman', serif">西文襯線</option>
+      <option value="system-ui, sans-serif">系統黑體</option>
+    </select>
+  </label>
+
+  <label class="Control">
+    <span>正文字號</span>
+    <output for="font-size" data-output="font-size"></output>
+    <input id="font-size" name="font-size" type="range" min="12" max="32" step="1" value="16">
+  </label>
+
+  <label class="Control">
+    <span>icon 大小</span>
+    <output for="icon-size" data-output="icon-size"></output>
+    <input id="icon-size" name="icon-size" type="range" min=".5" max="2" step=".01" value="1">
+  </label>
+
+  <label class="Control">
+    <span>icon baseline</span>
+    <output for="baseline" data-output="baseline"></output>
+    <input id="baseline" name="baseline" type="range" min="-.5" max=".3" step=".005" value="-.125">
+  </label>
+
+  <label class="Control">
+    <span>行高</span>
+    <output for="line-height" data-output="line-height"></output>
+    <input id="line-height" name="line-height" type="range" min="1" max="2.5" step=".05" value="1.75">
+  </label>
+
+  <label class="Control">
+    <span>字重</span>
+    <output for="weight" data-output="weight"></output>
+    <input id="weight" name="weight" type="range" min="250" max="900" step="50" value="400">
+  </label>
+
+  <label class="Control" data-choice>
+    <input name="guides" type="checkbox" checked>
+    <span>顯示 baseline／字形線</span>
+  </label>
+
+  <label class="Control" data-choice>
+    <input name="icon-box" type="checkbox" checked>
+    <span>顯示 icon inline box</span>
+  </label>
+</form>
+
+<main>
+  <section>
+    <h2>實際正文</h2>
+    <p class="SectionNote">第一行是固定不換行的量測行；所有樣本都使用控制台的實際字號。</p>
+    <div class="Panel">
+      <div class="SpecimenLine" data-measure-line>
+        <i class="GuideOrigin" aria-hidden="true">
+          <i data-guide="baseline"></i><i data-guide="xheight"></i>
+          <i data-guide="ink-top"></i><i data-guide="ink-bottom"></i>
+        </i>
+        漢汉日한，讀完整報導<a class="InlineIcon" href="#metrics" aria-label="閱讀完整報導"><img src="/home/paper-open.svg" alt=""></a>
+      </div>
+      <div class="SpecimenLine">
+        <i class="GuideOrigin" aria-hidden="true">
+          <i data-guide="baseline"></i><i data-guide="xheight"></i>
+          <i data-guide="ink-top"></i><i data-guide="ink-bottom"></i>
+        </i>
+        中間斷開的破折號，精準為讀者拂偏歸正。<a class="InlineIcon" href="#metrics" aria-label="閱讀完整報導"><img src="/home/paper-open.svg" alt=""></a>
+      </div>
+      <div class="SpecimenLine" data-wrap>
+        <i class="GuideOrigin" aria-hidden="true">
+          <i data-guide="baseline"></i><i data-guide="xheight"></i>
+          <i data-guide="ink-top"></i><i data-guide="ink-bottom"></i>
+        </i>
+        無論是遵循地區標點規範，或在簡中文本使用居中標點、在繁中文本使用偏倚式標點，任意搭配，玩出排版新花樣。<a class="InlineIcon" href="#metrics" aria-label="閱讀完整報導"><img src="/home/paper-open.svg" alt=""></a>
+      </div>
+    </div>
+    <div class="Legend" aria-label="參考線圖例">
+      <span data-key="baseline">CSS baseline</span>
+      <span data-key="xheight">1ex</span>
+      <span data-key="ink">Canvas 字形墨跡上下緣</span>
+      <span data-key="icon">icon inline box</span>
+    </div>
+  </section>
+
+  <section id="metrics">
+    <h2>量測值</h2>
+    <p class="SectionNote">
+      正負方向以 baseline 為零：負值在上、正值在下。「光學中心建議」只對齊
+      繁、簡、日、韓四種代表字的平均墨跡中心，仍應以正文觀感為準。
+    </p>
+    <dl class="Metrics">
+      <div><dt>icon 上緣</dt><dd data-metric="icon-top">—</dd></div>
+      <div><dt>icon 下緣</dt><dd data-metric="icon-bottom">—</dd></div>
+      <div><dt>icon box</dt><dd data-metric="icon-box">—</dd></div>
+      <div><dt>文字墨跡上緣</dt><dd data-metric="ink-top">—</dd></div>
+      <div><dt>文字墨跡下緣</dt><dd data-metric="ink-bottom">—</dd></div>
+      <div><dt>兩者中心差</dt><dd data-metric="center-delta">—</dd></div>
+      <div><dt>光學中心建議</dt><dd data-metric="suggested-align">—</dd></div>
+      <div><dt>SVG 圖面比例</dt><dd>116 × 140</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>baseline 候選排排看</h2>
+    <p class="SectionNote">目前滑桿最接近的一格會以綠框標示；每格只改 <code>vertical-align</code>。</p>
+    <div class="Candidates" data-candidates></div>
+  </section>
+
+  <section>
+    <h2>多語正文</h2>
+    <p class="SectionNote">同一組幾何，觀察不同文字輪廓是否仍顯得穩定。</p>
+    <div class="Panel">
+      <div class="SpecimenLine" lang="zh-Hant">繁體：全文刊載於《太陽中文報》。<a class="InlineIcon" href="#metrics" aria-label="閱讀全文"><img src="/home/paper-open.svg" alt=""></a></div>
+      <div class="SpecimenLine" lang="zh-Hans">简体：全文刊载于《太阳中文报》。<a class="InlineIcon" href="#metrics" aria-label="阅读全文"><img src="/home/paper-open.svg" alt=""></a></div>
+      <div class="SpecimenLine" lang="ja">日本語：全文を『太陽新聞』で読む。<a class="InlineIcon" href="#metrics" aria-label="全文を読む"><img src="/home/paper-open.svg" alt=""></a></div>
+      <div class="SpecimenLine" lang="ko">한국어：『太陽中文報』에서 전문 읽기。<a class="InlineIcon" href="#metrics" aria-label="전문 읽기"><img src="/home/paper-open.svg" alt=""></a></div>
+      <div class="SpecimenLine" lang="en">English: Read the complete newspaper report.<a class="InlineIcon" href="#metrics" aria-label="Read the complete report"><img src="/home/paper-open.svg" alt=""></a></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>可回填的 CSS</h2>
+    <p class="SectionNote">這就是首頁共用報紙入口要採用的兩個值。</p>
+    <pre class="CssResult"><code data-css-result></code><button type="button" data-copy>複製</button></pre>
+  </section>
+</main>
+
+<script type="module">
+const root = document.documentElement
+const form = document.querySelector('#controls')
+const candidateValues = [-.30, -.25, -.20, -.175, -.15, -.125, -.10, -.075, -.05, 0]
+const savedBaseline = Number.parseFloat(
+  getComputedStyle(root).getPropertyValue('--inline-icon-baseline'),
+)
+if (Number.isFinite(savedBaseline)) form.elements.baseline.value = savedBaseline
+const guideMarkup = [
+  '<i class="GuideOrigin" aria-hidden="true">',
+  '<i data-guide="baseline"></i><i data-guide="xheight"></i>',
+  '<i data-guide="ink-top"></i><i data-guide="ink-bottom"></i>',
+  '</i>',
+].join('')
+
+document.querySelector('[data-candidates]').innerHTML = candidateValues.map(function (align) {
+  return [
+    '<div class="Candidate" data-align="' + align + '">',
+    '<div class="SpecimenLine" style="--local-align:' + align + 'em">',
+    guideMarkup,
+    '漢汉日한<a class="InlineIcon" href="#metrics" aria-label="閱讀完整報導">',
+    '<img src="/home/paper-open.svg" alt=""></a></div>',
+    '<span class="CandidateLabel">vertical-align: ' + align.toFixed(3) + 'em</span>',
+    '</div>',
+  ].join('')
+}).join('')
+
+function signed(value, digits) {
+  const places = digits === undefined ? 1 : digits
+  const result = Number(value).toFixed(places)
+  return Number(value) > 0 ? '+' + result : result
+}
+
+function setMetric(name, value) {
+  document.querySelector('[data-metric="' + name + '"]').textContent = value
+}
+
+const canvas = document.createElement('canvas')
+const context = canvas.getContext('2d')
+
+function measure() {
+  const line = document.querySelector('[data-measure-line]')
+  const icon = line.querySelector('.InlineIcon')
+  const origin = line.querySelector('.GuideOrigin')
+  const lineStyle = getComputedStyle(line)
+  const fontSize = Number.parseFloat(lineStyle.fontSize)
+  const baseline = origin.getBoundingClientRect().top
+  const iconBox = icon.getBoundingClientRect()
+
+  context.font = lineStyle.fontWeight + ' ' + lineStyle.fontSize + ' ' + lineStyle.fontFamily
+  /* This is a CJK article icon. A mixed `漢Hg` sample is wrong here: the
+     Latin g descender lowers the measured ink centre by about .075em, which
+     was exactly the false correction seen in the craft specimen. Average one
+     representative glyph per supported CJK script instead. */
+  const ink = [...'漢汉日한'].map(function (glyph) {
+    return context.measureText(glyph)
+  })
+  const ascent = ink.reduce(function (sum, value) {
+    return sum + value.actualBoundingBoxAscent
+  }, 0) / ink.length
+  const descent = ink.reduce(function (sum, value) {
+    return sum + value.actualBoundingBoxDescent
+  }, 0) / ink.length
+  line.style.setProperty('--ink-ascent', ascent + 'px')
+  line.style.setProperty('--ink-descent', descent + 'px')
+  root.style.setProperty('--ink-ascent', (ascent / fontSize) + 'em')
+  root.style.setProperty('--ink-descent', (descent / fontSize) + 'em')
+
+  const top = iconBox.top - baseline
+  const bottom = iconBox.bottom - baseline
+  const iconCenter = (top + bottom) / 2
+  const inkCenter = (-ascent + descent) / 2
+  const delta = iconCenter - inkCenter
+  const currentAlign = Number(form.elements.baseline.value)
+  const suggested = currentAlign + delta / fontSize
+
+  setMetric('icon-top', signed(top) + 'px')
+  setMetric('icon-bottom', signed(bottom) + 'px')
+  setMetric('icon-box', iconBox.width.toFixed(1) + ' × ' + iconBox.height.toFixed(1) + 'px')
+  setMetric('ink-top', signed(-ascent) + 'px')
+  setMetric('ink-bottom', signed(descent) + 'px')
+  setMetric('center-delta', signed(delta) + 'px')
+  setMetric('suggested-align', signed(suggested, 3) + 'em')
+}
+
+function update() {
+  const fontSize = Number(form.elements['font-size'].value)
+  const iconSize = Number(form.elements['icon-size'].value)
+  const align = Number(form.elements.baseline.value)
+  const leading = Number(form.elements['line-height'].value)
+  const weight = Number(form.elements.weight.value)
+
+  root.style.setProperty('--demo-font', form.elements.font.value)
+  root.style.setProperty('--demo-size', fontSize + 'px')
+  root.style.setProperty('--demo-icon', iconSize + 'em')
+  root.style.setProperty('--demo-align', align + 'em')
+  root.style.setProperty('--demo-leading', leading)
+  root.style.setProperty('--demo-weight', weight)
+  root.toggleAttribute('data-guides', form.elements.guides.checked)
+  root.toggleAttribute('data-icon-box', form.elements['icon-box'].checked)
+
+  document.querySelector('[data-output="font-size"]').textContent = fontSize + 'px'
+  document.querySelector('[data-output="icon-size"]').textContent =
+    iconSize.toFixed(2) + 'em · ' + (iconSize * fontSize).toFixed(1) + 'px'
+  document.querySelector('[data-output="baseline"]').textContent =
+    signed(align, 3) + 'em · ' + signed(align * fontSize) + 'px'
+  document.querySelector('[data-output="line-height"]').textContent = leading.toFixed(2)
+  document.querySelector('[data-output="weight"]').textContent = weight
+
+  document.querySelectorAll('.Candidate').forEach(function (candidate) {
+    candidate.toggleAttribute(
+      'data-current',
+      Math.abs(Number(candidate.dataset.align) - align) < .013,
+    )
+  })
+
+  document.querySelector('[data-css-result]').textContent = [
+    ':root {',
+    '  --inline-icon-baseline: ' + signed(align, 3) + 'em;',
+    '}',
+    '',
+    ':where(a.PaperJump) {',
+    '  inline-size: ' + iconSize.toFixed(2) + 'em;',
+    '  block-size: ' + iconSize.toFixed(2) + 'em;',
+    '  vertical-align: var(--inline-icon-baseline);',
+    '}',
+  ].join('\n')
+
+  requestAnimationFrame(measure)
+}
+
+form.addEventListener('input', update)
+document.fonts.ready.then(update)
+window.addEventListener('resize', measure)
+update()
+
+document.querySelector('[data-copy]').addEventListener('click', async function (event) {
+  await navigator.clipboard.writeText(document.querySelector('[data-css-result]').textContent)
+  event.currentTarget.textContent = '已複製'
+  setTimeout(function () { event.currentTarget.textContent = '複製' }, 1200)
+})
+</script>
+</body>
+</html>

@@ -25,6 +25,10 @@
 
 /* Markdown fragments use an h1; the old hand-authored KOI-8 continuation
    used h3. In the reader they are the same newspaper headline role. */
+:where([data-component="article-reader"] [data-part="reader-body"]) :is(h1, h2, h3, h4, h5, h6) {
+  break-after: avoid-column;
+}
+
 :where([data-component="article-reader"] [data-part="reader-body"]) > h1 {
   column-span: all;
   margin-block: 0 0.75em;

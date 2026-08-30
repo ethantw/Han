@@ -43,6 +43,7 @@ const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
 // store { config, vars }: `vars` is the precomputed cssVars() output the
 // inline script stamps without any codegen logic.
 const STORAGE_KEY = 'han-console-config'
+const connectedConsoles = new Set()
 
 /** Migrate `config.heritage` across the scalar → per-locale schema change.
  *  Pre-expansion it was a string (`webfont|system|off`) applying to hant only;
@@ -151,14 +152,24 @@ class HanConsole extends HTMLElement {
   #target = null
   #detail = null
   #ready = false
+  #rendering = null
   #warned = false
 
   connectedCallback() {
+    connectedConsoles.add(this)
+    // A reconnect is not a remount: retain the live controls and config, and
+    // prevent duplicate async renders if an element moves while its shared
+    // stylesheets are still loading.
+    if (this.#ready || this.#rendering) return
     // NB: the shadow is attached inside #render, AFTER the async sheet
     // fetch — not here. Until it attaches, the element has no shadow root,
     // so its light-DOM fallback (the 字徽 loader) keeps rendering. That's
     // what lets the loader cover the whole load, not just the paint gap.
-    this.#render()
+    this.#rendering = this.#render().finally(() => { this.#rendering = null })
+  }
+
+  disconnectedCallback() {
+    connectedConsoles.delete(this)
   }
 
   attributeChangedCallback() {
@@ -181,6 +192,18 @@ class HanConsole extends HTMLElement {
     // replays what's already stored or writes untouched DEFAULTS). 'reset'
     // persists too — so a returning visitor gets the reset-to-default state.
     if (source !== 'init' && !this.hasAttribute('stateless')) persist(detail.config, detail.vars)
+    /* The reader owns a second view of the same saved config. Mirror it
+       directly (without another event) so either surface can be edited and
+       subscribers still receive exactly one change. A mirror's passive init
+       is intentionally private: opening the reader must not rerun Han's
+       fallback pipeline or announce a duplicate init. */
+    const passiveInit = source === 'init' && this.hasAttribute('mirror')
+    if (!passiveInit && !this.hasAttribute('stateless')) {
+      connectedConsoles.forEach(($peer) => {
+        if ($peer !== this && !$peer.hasAttribute('stateless')) $peer.syncConfig(detail.config)
+      })
+    }
+    if (passiveInit) return
     this.dispatchEvent(
       new CustomEvent(
         'han-config-change',
@@ -248,6 +271,7 @@ class HanConsole extends HTMLElement {
         target: this.#target,
         dispatch: this.#dispatch,
         initial,
+        passiveInit: this.hasAttribute('mirror'),
       },
     )
     this.#metrics = mountConsoleMetrics(
@@ -262,6 +286,7 @@ class HanConsole extends HTMLElement {
         // onChange 把滑桿快照寫回 config core，由它廣播 source:'metrics'。
         initial: this.#config.config.metrics,
         onChange: (m) => this.#config.setMetrics(m),
+        passiveInit: this.hasAttribute('mirror'),
       },
     )
     this.#mountDemoSwitches()
@@ -317,6 +342,18 @@ class HanConsole extends HTMLElement {
 
   reapplyFallbacks($target) {
     return this.#config?.reapplyFallbacks($target)
+  }
+
+  /** Silently adopt another console's canonical config. */
+  syncConfig(config) {
+    if (!config || !this.#config) return
+    this.#config.replace(config)
+    this.#metrics?.replace(config.metrics)
+    this.#detail = Object.freeze({
+      ...structuredClone(config),
+      punct: { ...config.punct },
+      metrics: { ...config.metrics },
+    })
   }
 
   get config() {

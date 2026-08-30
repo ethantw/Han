@@ -193,6 +193,12 @@ figure.Papers {
       font-size: var(--paper-body);
     }
 
+    /* 標題不可留在欄尾，讓緊接的正文至少跟它進同一欄。全文閱讀器另有獨立
+       範圍（見 paper-reader.css），不依賴 dialog 恰好掛在第一張摘要報紙裡。 */
+    > :is(h1, h2, h3, h4, h5, h6) {
+      break-after: avoid-column;
+    }
+
     & {
       margin: 0;
       align-self: start;
@@ -351,7 +357,7 @@ figure.Papers {
         box-sizing: border-box;
         block-size: var(--h-header);
         padding: 0.5rem var(--gutter);
-        overflow-x: auto;
+        overflow: hidden;
         /* 與主控台同一塊底色（`--ui-panel`）：這一頁上「浮在內容之上的操作面」只有
            這兩個，同色就讀成同一類東西。 */
         background: var(--ui-panel);
@@ -360,6 +366,69 @@ figure.Papers {
         /* 按鈕就長成按鈕：框線、底色、圓角一應俱全。原本的「透明底＋hover 才顯形」
            在這條貼邊的工具條上看起來像四個字，不像四顆鍵。 */
       }
+
+      /* 小窗口把左側閱讀工具與中央語言切換收進同一條可捲帶；右側關閉永遠留在畫面。
+         寬窗口再於下方三欄規則拆成左／中／右。 */
+      [data-part="reader-controls"] {
+        display: flex;
+        align-items: center;
+        flex: 1 1 auto;
+        min-inline-size: 0;
+        gap: 0.375rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar { display: none; }
+      }
+
+      [data-reader-group] {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        gap: 0.375rem;
+      }
+
+      [data-reader-group="actions"] {
+        margin-inline-start: auto;
+      }
+
+      /* 小視窗先只留閱讀必需工具；四語切換等之後有更合適的 compact UI 再回來。
+         `display:none` 同時退出視覺與可及性樹，不留下捲帶裡摸不到的按鈕。 */
+      @media (max-width: 39.999rem) {
+        [data-reader-group="editions"] {
+          display: none;
+        }
+      }
+
+      /* 640px 起有足夠空間維持真正的三區：外側兩欄等寬，所以四語組的中心
+         是 viewport 中心，不會因左邊工具較多而被推歪。 */
+      @media (min-width: 40rem) {
+        & {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        }
+
+        [data-part="reader-controls"] {
+          display: contents;
+        }
+
+        [data-reader-group="tools"] {
+          grid-column: 1;
+          justify-self: start;
+        }
+
+        [data-reader-group="editions"] {
+          grid-column: 2;
+          justify-self: center;
+        }
+
+        [data-reader-group="actions"] {
+          grid-column: 3;
+          justify-self: end;
+          margin-inline-start: 0;
+        }
+      }
+
       button {
         display: grid;
         place-content: center;
@@ -398,9 +467,20 @@ figure.Papers {
         border-color: var(--ui-text);
       }
 
-      /* 關閉推到另一端：它是這一條裡唯一「離開」的動作。 */
+      /* Console 與行向、倍率同在行首。閱讀器渲染自己的控制面，但與側欄共用
+         同一份 config；面板因此從這顆按鈕所在的起始側展開。 */
+      [data-reader="console"] {
+        margin-inline-start: 0;
+
+        [data-icon] {
+          inline-size: 1.125rem;
+          block-size: 1.5rem;
+        }
+      }
+
+      /* 右欄只有離開動作。 */
       [data-reader="close"] {
-        margin-inline-start: auto;
+        margin-inline-start: 0;
       }
 
       [data-reader="writing"] {
@@ -428,14 +508,24 @@ figure.Papers {
        得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
        欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
     [data-part="reader-stage"] {
+      --reader-inline-gutter: 1rem;
+      --reader-inline-margin: max(
+        var(--reader-inline-gutter),
+        calc((100dvi - var(--reader-stage-width, 0px)) / 2)
+      );
+
       position: relative;
       inline-size: var(--reader-stage-width, 0px);
       block-size: var(--reader-stage-height, 0px);
       margin:
         max(27.5dvh, calc(var(--h-header) + 1rem))
-        auto
+        var(--reader-inline-margin)
         max(10rem, 40dvh)
       ;
+
+      @media (min-width: 48rem) {
+        --reader-inline-gutter: 1.5rem;
+      }
     }
 
     /* The spec keeps a fixed `column-height` even on a short final row. JS
@@ -537,25 +627,15 @@ figure.Papers {
         @supports (column-height: 1em) {
           column-height: 44em;
           column-wrap: wrap;
+          /* 最後一個欄列照正文順序填：先把第一欄走到底，再進下一欄；不要把
+             剩下幾段平均攤成三支同高的短欄。 */
+          column-fill: auto;
           row-gap: 4rem;
 
           @supports (row-rule: 1px solid) {
             row-rule: 1px solid var(--ui-row-rule);
           }
 
-          /* Chromium ships column wrapping before CSS gap decorations. Paint
-             the same rule in the middle of each 4rem row gap until native
-             `row-rule` arrives. */
-          @supports not (row-rule: 1px solid) {
-            background-image: linear-gradient(
-              to bottom,
-              transparent calc(44em + 2rem - 0.5px),
-              var(--ui-row-rule) 0 calc(44em + 2rem + 0.5px),
-              transparent 0
-            );
-            background-size: 100% calc(44em + 4rem);
-            background-repeat: repeat-y;
-          }
         }
 
         /* 大標橫跨整個欄列——它是這一則的抬頭，不是某一欄的開頭。 */
@@ -564,6 +644,27 @@ figure.Papers {
       > h3 {
         column-span: all;
         margin-block: 0 0.75em;
+      }
+    }
+
+    /* Chromium 尚未畫 `row-rule`。背景若放在 multicol 元素上，也會被切成
+       單欄寬的 fragment；因此由外面這個實際元素承接完整版心尺寸，再於每個
+       4rem 欄列間隙中央畫線。 */
+    [data-part="reader-row-field"] {
+      inline-size: fit-content;
+      margin-inline: auto;
+
+      @supports (column-height: 1em) {
+        @supports not (row-rule: 1px solid) {
+          background-image: linear-gradient(
+            to bottom,
+            transparent calc(44em + 2rem - 0.5px),
+            var(--ui-row-rule) 0 calc(44em + 2rem + 0.5px),
+            transparent 0
+          );
+          background-size: 100% calc(44em + 4rem);
+          background-repeat: repeat-y;
+        }
       }
     }
 
@@ -616,7 +717,9 @@ figure.Papers {
 
       [data-part="reader-body"] {
         inline-size: var(--reader-span);
+      }
 
+      [data-part="reader-row-field"] {
         @supports (column-height: 1em) {
           @supports not (row-rule: 1px solid) {
             background-image: linear-gradient(

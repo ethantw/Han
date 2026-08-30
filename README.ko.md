@@ -132,6 +132,8 @@ v3의 class도 같은 길을 갔다——`.han-init`→`/auto` 엔트리, `.pn`�
 
 완전한 문서와 <ruby>對話型<rt>대화형</rt></ruby> 플레이그라운드——글을 붙이고, 패널을 바꾸고, <ruby>生成<rt>생성</rt></ruby>된 設定 코드를 복사한다——는 **[hanzi.pro](https://hanzi.pro)**에 있다. <ruby>參考<rt>참고</rt></ruby> 매뉴얼은 지금 <ruby>繁體<rt>번체</rt></ruby> <ruby>中國語<rt>중국어</rt></ruby>를 <ruby>基準<rt>기준</rt></ruby>으로 하고, 영어가 <ruby>紹介<rt>소개</rt></ruby>와 設置를 다루며, 일본어·한국어는 차례로 <ruby>準備<rt>준비</rt></ruby> 중이다.
 
+조판 결과만 먼저 보려면 **[브라우저판 전체 견본](https://hanzi.pro/specimen.html)**을 열면 된다. 이 사이트 고유의 페이지 스타일 없이 漢.css 자체만 보여 준다.
+
 ## 라이선스
 
 [MIT](./LICENSE) © 2012–2026 Chen Yijun. 內藏 注音 웹폰트는 BopomofoRuby1909(© 2018 But Ko)를 다시 꾸린 것으로 OFL 1.1을 따른다——[LICENSE-FONTS](./LICENSE-FONTS)를 보라. 傳承 字形 웹폰트는 따로 <ruby>配布<rt>배포</rt></ruby>되며 저마다 <ruby>上流<rt>상류</rt></ruby> 라이선스를 따른다. 各 폰트 패키지를 보라.

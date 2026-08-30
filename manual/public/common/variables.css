@@ -173,9 +173,10 @@
   --r-2: 4px;
   --r-3: 6px;
 
-  /* Optical baseline for square inline-block icons beside body text. Kept as
-     an em ratio so the alignment survives every text size. */
-  --inline-icon-baseline: -0.2em;
+  /* Optical baseline for square inline-block icons beside CJK body text.
+     Averaging the actual ink centres of 繁／簡／日／韓 in both reading faces
+     gives -0.126em; use the nearest eighth-em grid value everywhere. */
+  --inline-icon-baseline: -0.125em;
 
   /* layout — ziano's calmer measure + fluid gutter */
   --max-w-layout: 68rem;

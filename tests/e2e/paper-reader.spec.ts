@@ -29,6 +29,7 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
         display: style.display,
         position: style.position,
         float: style.cssFloat,
+        translate: style.translate,
         baselineRatio: Number.parseFloat(style.verticalAlign) / Number.parseFloat(style.fontSize),
       }
     }))
@@ -41,7 +42,8 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
     && jump.display === 'inline-block'
     && jump.position === 'static'
     && jump.float === 'none'
-    && Math.abs(jump.baselineRatio - (-0.2)) < 0.001)).toBe(true)
+    && jump.translate === 'none'
+    && Math.abs(jump.baselineRatio - (-0.125)) < 0.001)).toBe(true)
 
   const punctLang = await page.locator('.PunctLang .PaperJump').evaluateAll((jumps) =>
     jumps.map((jump) => {
@@ -57,6 +59,59 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
     parent === 'p'
     && lastInParent
     && float === 'none')).toBe(true)
+})
+
+test('newspaper headings avoid a column break on both the homepage and reader', async ({ page }) => {
+  const homepageBreak = await page.locator('figure.Papers > article > h3').first()
+    .evaluate((heading) => getComputedStyle(heading).breakAfter)
+  const dialog = await openArticle(page)
+  const readerBreak = await dialog.locator('[data-part="reader-body"] > h1').first()
+    .evaluate((heading) => getComputedStyle(heading).breakAfter)
+
+  expect(homepageBreak).toBe('avoid-column')
+  expect(readerBreak).toBe('avoid-column')
+})
+
+test('turning reader punctuation hanging off restores ordinary punctuation boxes', async ({ page }) => {
+  const dialog = await openArticle(page)
+  const body = dialog.locator('[data-part="reader-body"]')
+  const hangables = body.locator('h-char[data-punct~="hangable"]')
+  const count = await hangables.count()
+  expect(count).toBeGreaterThan(0)
+
+  await dialog.locator('[data-reader="console"]').click()
+  const mirror = dialog.locator('han-console[mirror]')
+  await expect(mirror).toHaveAttribute('data-ready', '')
+  await mirror.locator('[data-cfg-key="hang"]').evaluate((input: HTMLInputElement) => {
+    input.checked = false
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await expect.poll(() => body.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue('--han-punctuation-refinement').trim(),
+  )).toBe('compress')
+
+  const audit = await body.evaluate((element) => {
+    const chars = [...element.querySelectorAll('h-char[data-punct~="hangable"]')]
+    return {
+      refinement: getComputedStyle(element).getPropertyValue('--han-punctuation-refinement').trim(),
+      chars: chars.length,
+      layers: element.querySelectorAll('h-char[data-punct~="hangable"] h-layer').length,
+      samples: chars.map((char) => {
+        const layer = char.querySelector('h-layer')!
+        return {
+          state: getComputedStyle(char).getPropertyValue('--han-state-hanging-punctuation').trim(),
+          layerDisplay: getComputedStyle(layer).display,
+          after: getComputedStyle(char, '::after').content,
+        }
+      }),
+    }
+  })
+
+  expect(audit.refinement).toBe('compress')
+  expect(audit.chars).toBe(count)
+  expect(audit.layers).toBe(count)
+  expect(audit.samples.every(({ state, layerDisplay, after }) =>
+    state === 'off' && layerDisplay !== 'inline-block' && after === 'none')).toBe(true)
 })
 
 test('the three homepage broadsheets use writing-aware capped column rows', async ({ page }) => {
@@ -126,10 +181,16 @@ test('horizontal reader opens fitted at 100% or less with the masthead-sized too
       columnWrap: getComputedStyle(
         element.querySelector('[data-part="reader-body"]')!,
       ).columnWrap,
-      rowSeparator: CSS.supports('row-rule', '1px solid')
-        ? getComputedStyle(element.querySelector('[data-part="reader-body"]')!)
-          .getPropertyValue('row-rule')
-        : getComputedStyle(element.querySelector('[data-part="reader-body"]')!).backgroundImage,
+      rowSeparator: (() => {
+        const body = element.querySelector('[data-part="reader-body"]')!
+        const field = element.querySelector('[data-part="reader-row-field"]')!
+        const native = getComputedStyle(body).getPropertyValue('row-rule')
+        return native && native !== 'none'
+          ? native
+          : getComputedStyle(field).backgroundImage
+      })(),
+      rowFieldWidth: rect('[data-part="reader-row-field"]').width,
+      bodyWidth: rect('[data-part="reader-body"]').width,
       trimmed: element.querySelector('[data-part="reader-stage"]')!
         .hasAttribute('data-reader-trimmed'),
       headlineSpan: getComputedStyle(
@@ -153,6 +214,7 @@ test('horizontal reader opens fitted at 100% or less with the masthead-sized too
   expect(geometry.columnHeightInEm).toBe(44)
   expect(geometry.columnWrap).toBe('wrap')
   expect(geometry.rowSeparator).not.toBe('none')
+  expect(geometry.rowFieldWidth).toBeCloseTo(geometry.bodyWidth, 1)
   expect(geometry.trimmed).toBe(true)
   expect(geometry.headlineSpan).toBe('all')
   expect(geometry.paperPaddingEnd / geometry.scale).toBeCloseTo(48, 1)
@@ -185,6 +247,164 @@ test('the toolbar scale select transforms the sheet and clicking the paper does 
   await expect(select).toHaveValue('1.5')
 })
 
+test('an oversized horizontal paper keeps an outer gutter at both scroll edges', async ({ page }) => {
+  const width = 390
+  await page.setViewportSize({ width, height: 844 })
+  const dialog = await openArticle(page)
+  await dialog.locator('[data-reader="scale"]').selectOption('1')
+
+  const geometry = await dialog.evaluate((element) => {
+    const stage = element.querySelector('[data-part="reader-stage"]')!
+    const style = getComputedStyle(stage)
+    const gutterValue = style.getPropertyValue('--reader-inline-gutter').trim()
+    const gutter = Number.parseFloat(gutterValue)
+      * (gutterValue.endsWith('rem')
+        ? Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
+        : 1)
+    return {
+      gutter,
+      stageWidth: stage.getBoundingClientRect().width,
+      startSpace: stage.offsetLeft,
+      endSpace: element.scrollWidth - stage.offsetLeft - stage.offsetWidth,
+    }
+  })
+
+  expect(geometry.stageWidth).toBeGreaterThan(width)
+  expect(geometry.gutter).toBe(16)
+  expect(geometry.startSpace).toBeGreaterThanOrEqual(geometry.gutter - 1)
+  expect(geometry.endSpace).toBeGreaterThanOrEqual(geometry.gutter - 1)
+})
+
+test('reader chrome places tools left, editions in the viewport centre, and only close right', async ({ page }) => {
+  const dialog = await openArticle(page)
+  const geometry = await dialog.locator('[data-part="reader-chrome"]').evaluate((chrome) => {
+    const rect = (selector: string) => chrome.querySelector(selector)!.getBoundingClientRect()
+    return {
+      tools: rect('[data-reader-group="tools"]'),
+      editions: rect('[data-reader-group="editions"]'),
+      actions: rect('[data-reader-group="actions"]'),
+      close: rect('[data-reader="close"]'),
+      actionCount: chrome.querySelectorAll('[data-reader-group="actions"] > *').length,
+    }
+  })
+
+  expect(geometry.tools.right).toBeLessThan(geometry.editions.left)
+  expect(geometry.editions.left + geometry.editions.width / 2).toBeCloseTo(1280 / 2, 0)
+  expect(geometry.actions.left).toBeGreaterThan(geometry.editions.right)
+  expect(geometry.actionCount).toBe(1)
+  expect(1280 - geometry.close.right).toBeCloseTo(32, 0)
+})
+
+test('reader editions are visible and viewport-centred from 640px', async ({ page }) => {
+  const width = 640
+  await page.setViewportSize({ width, height: 800 })
+  const dialog = await openArticle(page)
+  const editions = dialog.locator('[data-reader-group="editions"]')
+  const geometry = await editions.evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    return {
+      display: getComputedStyle(element).display,
+      centre: rect.left + rect.width / 2,
+    }
+  })
+
+  expect(geometry.display).toBe('flex')
+  expect(geometry.centre).toBeCloseTo(width / 2, 0)
+})
+
+test('compact reader chrome hides editions while tools and close stay available', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const dialog = await openArticle(page)
+  const geometry = await dialog.locator('[data-part="reader-chrome"]').evaluate((chrome) => {
+    const rect = (selector: string) => chrome.querySelector(selector)!.getBoundingClientRect()
+    const controls = chrome.querySelector('[data-part="reader-controls"]')!
+    const actions = rect('[data-reader-group="actions"]')
+    const consoleButton = rect('[data-reader="console"]')
+    const close = rect('[data-reader="close"]')
+    return {
+      controlsOverflow: controls.scrollWidth > controls.clientWidth,
+      editionsDisplay: getComputedStyle(
+        chrome.querySelector('[data-reader-group="editions"]')!,
+      ).display,
+      controlsRight: controls.getBoundingClientRect().right,
+      actionsLeft: actions.left,
+      closeRight: close.right,
+      consoleHit: chrome.querySelector('[data-reader="console"]')!.contains(
+        document.elementFromPoint(consoleButton.left + consoleButton.width / 2, consoleButton.top + consoleButton.height / 2),
+      ),
+      closeHit: chrome.querySelector('[data-reader="close"]')!.contains(
+        document.elementFromPoint(close.left + close.width / 2, close.top + close.height / 2),
+      ),
+    }
+  })
+
+  expect(geometry.controlsOverflow).toBe(false)
+  expect(geometry.editionsDisplay).toBe('none')
+  expect(geometry.controlsRight).toBeLessThanOrEqual(geometry.actionsLeft)
+  expect(390 - geometry.closeRight).toBeCloseTo(16, 0)
+  expect(geometry.consoleHit).toBe(true)
+  expect(geometry.closeHit).toBe(true)
+})
+
+test('the reader toolbar opens a left-anchored console copy sharing the side config', async ({ page }) => {
+  const sideConsole = page.locator('body > .ConsolePanel han-console')
+  const sideSize = sideConsole.locator('.MetricSlider[data-metric="size"] input')
+  await expect(sideSize).toHaveValue('16')
+  const dialog = await openArticle(page)
+  const toggle = dialog.locator('[data-reader="console"]')
+
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await toggle.click()
+  const panel = dialog.locator('.ConsolePanel[data-console-context="reader"]')
+  const readerConsole = panel.locator('han-console[mirror]')
+  const readerSize = readerConsole.locator('.MetricSlider[data-metric="size"] input')
+  const sideGeneric = sideConsole.locator('[data-cfg-key="baseGeneric"]')
+  const readerGeneric = readerConsole.locator('[data-cfg-key="baseGeneric"]')
+  await expect(panel).toBeVisible()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('han-console')).toHaveCount(2)
+  await expect(sideConsole).toHaveCount(1)
+  await expect(readerConsole).toHaveCount(1)
+  const anchors = await Promise.all([
+    toggle.boundingBox(),
+    panel.boundingBox(),
+  ])
+  expect(anchors[1]!.x).toBeCloseTo(anchors[0]!.x, 0)
+
+  await readerSize.evaluate((input: HTMLInputElement) => {
+    input.value = '18'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await expect(sideSize).toHaveValue('18')
+  await sideSize.evaluate((input: HTMLInputElement) => {
+    input.value = '19'
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await expect(readerSize).toHaveValue('19')
+  await readerGeneric.selectOption('serif')
+  await expect(sideGeneric).toHaveValue('serif')
+  await sideGeneric.selectOption('sans-serif')
+  await expect(readerGeneric).toHaveValue('sans-serif')
+  await panel.locator('.ConsolePanelClose').click()
+
+  await expect(panel).toBeHidden()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(sideConsole).toHaveCount(1)
+  await expect(sideSize).toHaveValue('19')
+
+  // The toolbar trigger itself toggles the panel both ways.
+  await toggle.click()
+  await expect(panel).toBeVisible()
+  await toggle.click()
+  await expect(panel).toBeHidden()
+
+  // Escape dismisses only the console on its first press; the report remains.
+  await toggle.click()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeVisible()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
 test('full articles omit the listing abstract and Hans uses its own simplified Markdown', async ({ page }) => {
   await page.route('**/articles/ark-europa-customs/hant.html', (route) => route.fulfill({
     contentType: 'text/html',
@@ -206,6 +426,18 @@ test('full articles omit the listing abstract and Hans uses its own simplified M
   await expect.poll(() => body.locator('h-char').count()).toBeGreaterThan(0)
 })
 
+test('the Hans homepage opens generic newspaper links in the Hans edition', async ({ page }) => {
+  await page.goto('/hans/')
+  const dialog = await openArticle(page, 'hyperloop-12sec')
+  const body = dialog.locator('[data-part="reader-body"]')
+
+  await expect(dialog).toHaveAttribute('lang', 'zh-Hans')
+  await expect(dialog.locator('[data-reader="edition"][data-edition="hans"]'))
+    .toHaveAttribute('aria-current', '')
+  await expect(body).toContainText('超回路台北段今晨通车')
+  await expect(body).not.toContainText('超迴路台北段今晨通車')
+})
+
 test('vertical reader auto-fits with reserved edges and persists its writing mode', async ({ page }) => {
   const width = 900
   const height = 700
@@ -216,7 +448,6 @@ test('vertical reader auto-fits with reserved edges and persists its writing mod
   await expect(dialog).toHaveAttribute('data-writing', 'vertical')
   await expect.poll(() => page.evaluate(() =>
     localStorage.getItem('han-paper-reader-writing'))).toBe('vertical')
-
   const geometry = await dialog.evaluate((element) => {
     const sheet = element.querySelector('[data-part="reader-sheet"]')!.getBoundingClientRect()
     const stage = element.querySelector('[data-part="reader-stage"]')!.getBoundingClientRect()
@@ -235,10 +466,11 @@ test('vertical reader auto-fits with reserved edges and persists its writing mod
   expect(geometry.sheet.top).toBeGreaterThanOrEqual(geometry.chrome.height + 32 - 1)
   expect(height - geometry.sheet.bottom).toBeGreaterThanOrEqual(32 - 1)
   expect(width - geometry.sheet.right).toBeGreaterThanOrEqual(width * 0.30 - 1)
-  expect(geometry.stage.width).toBeLessThan(
-    await dialog.locator('[data-part="reader-sheet"]').evaluate((element) =>
-      element.getBoundingClientRect().width),
-  )
+  const sheetWidth = await dialog.locator('[data-part="reader-sheet"]')
+    .evaluate((element) => element.getBoundingClientRect().width)
+  /* With no empty final column to crop, the stage adds only its deliberate
+     3rem paper tail; with empty columns it is narrower than the sheet. */
+  expect(geometry.stage.width).toBeLessThanOrEqual(sheetWidth + 48 * geometry.scale + 1)
   expect(geometry.chrome.top).toBe(geometry.masthead.top)
   expect(geometry.chrome.height).toBe(geometry.masthead.height)
 

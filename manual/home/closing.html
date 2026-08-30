@@ -15,6 +15,15 @@
   clUseNote: {
     hant: '依目前配置生成引用碼', hans: '按当前配置生成引用代码', en: 'Generate code from your current configuration', ja: '現在の設定から導入コードを生成', ko: '<ruby>現在<rt>현재</rt></ruby> <ruby>設定<rt>설정</rt></ruby>으로 코드를 만든다',
   },
+  clSpecimenTitle: {
+    hant: '查看完整示例', hans: '查看完整示例', en: 'View the full specimen',
+    ja: '完全な見本を見る', ko: '<ruby>全體<rt>전체</rt></ruby> <ruby>見本<rt>견본</rt></ruby> 보기',
+  },
+  clSpecimenNote: {
+    hant: '在沒有多餘裝飾性樣式的網頁中體驗漢.css', hans: '在没有多余装饰性样式的网页中体验汉.css',
+    en: 'Try Han.css on a page without extra decorative styling',
+    ja: '余分な装飾スタイルのないページで漢.cssを試す', ko: '<ruby>多餘<rt>불필요</rt></ruby>한 <ruby>裝飾<rt>장식</rt></ruby> 스타일 없는 웹페이지에서 漢.css를 <ruby>體驗<rt>체험</rt></ruby>한다',
+  },
   clSetupTitle: {
     hant: '完整設定指南Skill', hans: '完整设置指南Skill', en: 'Complete setup skill',
     ja: '完全セットアップSkill', ko: '<ruby>完整<rt>완전</rt></ruby> <ruby>設定<rt>설정</rt></ruby> Skill',
@@ -49,7 +58,7 @@
   },
 }
 </script>
-<!-- Closing — three ways forward; sibling projects are supporting context,
+<!-- Closing — four ways forward; sibling projects are supporting context,
      deliberately below the primary adoption routes. -->
 <section class="Closing" aria-labelledby="closing-title">
   <header class="ClosingHead">
@@ -61,6 +70,10 @@
     <a href="#station-snippet">
       <strong>{{ clUseTitle }}</strong>
       <span>{{ clUseNote }}</span>
+    </a>
+    <a href="/specimen.html">
+      <strong>{{ clSpecimenTitle }}</strong>
+      <span>{{ clSpecimenNote }}</span>
     </a>
     <!-- The manual route returns when the manual ships:
     <a href="{{ docsUrl }}">…</a>

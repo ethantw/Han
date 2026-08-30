@@ -20,6 +20,7 @@ import { icon } from '../common/icon.js'
 import {
   fallbackPlan,
   fallbackRunKind,
+  effectiveVars,
   getConfigPath,
   sameFallbackPlan,
   setConfigPath,
@@ -28,6 +29,7 @@ import {
   applyConfigModules,
   applyConfigTarget,
   applyFallbacks,
+  applyFallbacksPreservingCascade,
   clearFallbackModes,
   scheduleFallbacks,
 } from './console-config-runtime.js'
@@ -39,7 +41,7 @@ import {
 const readControl = ($el) => ($el.type === "checkbox" ? $el.checked : $el.value)
 
 /** Mounts the configuration console and applies its state to the target document. */
-export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
+export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveInit = false }) => {
   const configRef = { current: structuredClone(initial ?? DEFAULTS) }
   const appliedRef = { current: { vars: null, baseGeneric: null } }
   const fallbackAppliedRef = { current: null }
@@ -157,7 +159,7 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
       ?.toggleAttribute('hidden', !c.fallbacks)
   }
 
-  const sync = (source) => {
+  const sync = (source, { applyRuntime = true } = {}) => {
 
 
     const delivery = configRef.current.webfontDelivery
@@ -196,48 +198,49 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
 
 
 
-    if (source !== 'init') {
+    if (applyRuntime && source !== 'init') {
       document.dispatchEvent(new CustomEvent('han-config-will-apply', {
         detail: { source },
       }))
     }
 
-    applyConfigTarget(configRef.current, appliedRef.current)
-    applyConfigModules(configRef.current)
-    const plan = fallbackPlan(configRef.current)
-    const fallbackConfigChanged = !sameFallbackPlan(plan, fallbackDesiredRef.current)
-    fallbackDesiredRef.current = plan
-    if (fallbackConfigChanged) clearFallbackModes(target)
+    if (applyRuntime) {
+      applyConfigTarget(configRef.current, appliedRef.current)
+      applyConfigModules(configRef.current)
+      const plan = fallbackPlan(configRef.current)
+      const fallbackConfigChanged = !sameFallbackPlan(plan, fallbackDesiredRef.current)
+      fallbackDesiredRef.current = plan
+      if (fallbackConfigChanged) clearFallbackModes(target)
 
-    const runKind = fallbackConfigChanged
-      ? fallbackRunKind(plan, fallbackAppliedRef.current)
-      : null
-    if (fallbackConfigChanged && !runKind) {
+      const runKind = fallbackConfigChanged
+        ? fallbackRunKind(plan, fallbackAppliedRef.current)
+        : null
+      if (fallbackConfigChanged && !runKind) {
+        fallbackGenerationRef.current += 1
+      }
 
-      fallbackGenerationRef.current += 1
-    }
-
-    if (runKind) {
-      clearFallbackModes(target)
-      if (source === 'init') {
-        const generation = ++fallbackGenerationRef.current
-        const snapshot = structuredClone(configRef.current)
-        applyFallbacks(
-          snapshot,
-          target,
-          () => generation === fallbackGenerationRef.current,
-        ).then(() => {
-          if (generation === fallbackGenerationRef.current)
-            fallbackAppliedRef.current = plan
-        })
-      } else {
-        scheduleFallbacks(
-          configRef.current,
-          target,
-          runKind,
-          fallbackGenerationRef,
-          () => { fallbackAppliedRef.current = plan },
-        )
+      if (runKind) {
+        clearFallbackModes(target)
+        if (source === 'init') {
+          const generation = ++fallbackGenerationRef.current
+          const snapshot = structuredClone(configRef.current)
+          applyFallbacks(
+            snapshot,
+            target,
+            () => generation === fallbackGenerationRef.current,
+          ).then(() => {
+            if (generation === fallbackGenerationRef.current)
+              fallbackAppliedRef.current = plan
+          })
+        } else {
+          scheduleFallbacks(
+            configRef.current,
+            target,
+            runKind,
+            fallbackGenerationRef,
+            () => { fallbackAppliedRef.current = plan },
+          )
+        }
       }
     }
     applyVisibility()
@@ -284,11 +287,35 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial }) => {
     sync('reset')
   }
 
-  sync('init')
+  /* A second console can render the same config without becoming a second
+     runtime owner. Its peer calls this after a real user change: refresh the
+     controls and internal baselines silently, then let the originating
+     instance remain the sole broadcaster. */
+  const replace = (config) => {
+    configRef.current = structuredClone(config)
+    deliveryRef.current = configRef.current.webfontDelivery
+    webfontMemo.current = null
+    writeControls(configRef.current)
+    applyVisibility()
+    updateDefaultButtons()
+    appliedRef.current = {
+      vars: effectiveVars(configRef.current),
+      baseGeneric: configRef.current.baseGeneric,
+    }
+    const plan = fallbackPlan(configRef.current)
+    fallbackDesiredRef.current = plan
+    fallbackAppliedRef.current = plan
+  }
+
+  sync('init', { applyRuntime: !passiveInit })
+  if (passiveInit) replace(configRef.current)
 
   return {
     reset,
-    reapplyFallbacks: ($t) => applyFallbacks(configRef.current, $t ?? target),
+    replace,
+    reapplyFallbacks: ($t) => $t
+      ? applyFallbacksPreservingCascade(configRef.current, $t)
+      : applyFallbacks(configRef.current, target),
     get config() { return configRef.current },
 
 
