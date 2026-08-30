@@ -144,6 +144,34 @@ test('Han composite stacks use Han Metrics before DTJ or fallback glyph fonts', 
   }
 })
 
+test('Han Metrics can be disabled with the public metrics mode', async ({ page }) => {
+  const result = await page.evaluate(() => {
+    const host = document.createElement('section')
+    host.lang = 'zh-Hant'
+    host.innerHTML = `
+      <span data-mode="default" style="font-family:var(--han-serif)">知</span>
+      <section style="--han-use-metrics:off">
+        <span data-mode="off" style="font-family:var(--han-serif)">知</span>
+      </section>
+    `
+    document.body.append(host)
+    const family = (mode: string) => getComputedStyle(
+      host.querySelector(`[data-mode="${mode}"]`) as HTMLElement,
+    ).fontFamily
+    const result = {
+      default: family('default'),
+      off: family('off'),
+      modes: getComputedStyle(host).getPropertyValue('--han-use-metrics').trim(),
+    }
+    host.remove()
+    return result
+  })
+
+  expect(result.modes).toBe('on')
+  expect(result.default).toMatch(/^"Han Metrics"/)
+  expect(result.off).toMatch(/^HanNone/)
+})
+
 test('Han Metrics supplies only the strut and never paints Latin or digits', async ({ page }) => {
   const result = await page.evaluate(async () => {
     const host = document.createElement('div')
@@ -238,31 +266,22 @@ test('public zhuyin variables expose defaults and tune fallback geometry', async
     const style = getComputedStyle(root)
     return Object.fromEntries([
       'font-size',
-      'track-size',
-      'ideographic-ink-descent',
       'baseline-shift',
       'over-gap',
-      'inter-character-spacing',
       'letter-spacing',
     ].map((name) => [name, style.getPropertyValue(`--han-ruby-zhuyin-${name}`).trim()]))
   })
 
   expect(defaults).toEqual({
     'font-size': '.3em',
-    'track-size': '3em',
-    'ideographic-ink-descent': '.075em',
     'baseline-shift': '0em',
     'over-gap': '.25em',
-    'inter-character-spacing': '.5em',
     'letter-spacing': '-.05em',
   })
 
   await target.evaluate((element: HTMLElement) => {
     element.style.setProperty('--han-ruby-zhuyin-font-size', '.4em')
-    element.style.setProperty('--han-ruby-zhuyin-track-size', '2.5em')
-    element.style.setProperty('--han-ruby-zhuyin-ideographic-ink-descent', '.05em')
     element.style.setProperty('--han-ruby-zhuyin-baseline-shift', '.25em')
-    element.style.setProperty('--han-ruby-zhuyin-inter-character-spacing', '.7em')
     element.style.setProperty('--han-ruby-zhuyin-letter-spacing', '-.05em')
   })
 
@@ -287,10 +306,10 @@ test('public zhuyin variables expose defaults and tune fallback geometry', async
   })
 
   expect(geometry.sizeRatio).toBeCloseTo(.4, 4)
-  expect(geometry.trackRatio).toBeCloseTo(1, 3)
-  expect(geometry.sideGap).toBeCloseTo(.1, 2)
-  expect(geometry.bottomFromBaseline).toBeCloseTo(-.05, 3)
-  expect(geometry.rubySpacing).toBeCloseTo(.7, 3)
+  expect(geometry.trackRatio).toBeCloseTo(1.2, 3)
+  expect(geometry.sideGap).toBeCloseTo(.0667, 2)
+  expect(geometry.bottomFromBaseline).toBeCloseTo(-.025, 3)
+  expect(geometry.rubySpacing).toBeCloseTo(2 / 3, 3)
   expect(geometry.rtSpacing).toBeCloseTo(-.05, 3)
   expect(geometry.lineHeight).toBeCloseTo(1, 3)
 })

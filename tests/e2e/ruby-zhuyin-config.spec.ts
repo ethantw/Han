@@ -12,10 +12,8 @@ test('ships with calibrated defaults and no redundant CSS output', async ({ page
   await expect(page.locator('#type-size')).toHaveValue('16')
   await expect(page.locator('#type-weight')).toHaveValue('400')
   await expect(page.locator('#zhuyin-size')).toHaveValue('0.3')
-  await expect(page.locator('#ideographic-ink-descent')).toHaveValue('0.075')
   await expect(page.locator('#zhuyin-baseline')).toHaveValue('0')
   await expect(page.locator('#over-gap')).toHaveValue('0.25')
-  await expect(page.locator('#ruby-spacing')).toHaveValue('0.5')
   await expect(page.locator('#rt-letter-spacing')).toHaveValue('-0.05')
   await expect(page.locator('[data-css-result]')).toHaveText('')
   await expect(page.locator('[data-css-panel]')).toBeHidden()
@@ -75,13 +73,11 @@ test('generates only ruby variables that differ from defaults', async ({ page })
   await expect(page.locator('[data-css-result]')).toHaveText('')
 
   await page.locator('#zhuyin-size').fill('0.31')
-  await page.locator('#ideographic-ink-descent').fill('0.08')
   await page.locator('#over-gap').fill('0.65')
   await page.locator('#rt-letter-spacing').fill('-0.0625')
   await expect(page.locator('[data-css-result]')).toHaveText([
     ':root {',
     '  --han-ruby-zhuyin-font-size: .31em;',
-    '  --han-ruby-zhuyin-ideographic-ink-descent: .08em;',
     '  --han-ruby-zhuyin-over-gap: .65em;',
     '  --han-ruby-zhuyin-letter-spacing: -.0625em;',
     '}',
@@ -90,7 +86,6 @@ test('generates only ruby variables that differ from defaults', async ({ page })
   await expect(page.locator('[data-css-empty]')).toBeHidden()
 
   await page.locator('#zhuyin-size').fill('0.3')
-  await page.locator('#ideographic-ink-descent').fill('0.075')
   await page.locator('#over-gap').fill('0.25')
   await page.locator('#rt-letter-spacing').fill('-0.05')
   await expect(page.locator('[data-css-result]')).toHaveText('')

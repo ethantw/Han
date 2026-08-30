@@ -143,7 +143,7 @@ self-hosting.
 
 ## 4. CSS custom properties
 
-51 public properties. Conventions:
+49 public properties. Conventions:
 
 - **Set control properties on an ancestor** (usually `:root`), never on the
   element you want them to affect. Mode switches are read via
@@ -214,11 +214,8 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | **Library-wide writing-mode mirror** (see §1 prerequisite) — declare alongside every `writing-mode`, same value. Consumed by direction-dependent behavior (zhuyin, below); retires when arbitrary-property style queries ship |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
 | `--han-ruby-zhuyin-font-size` | `<length>` | `.3em` | 注音字級；`em` 在 `<rt>` 上解析 |
-| `--han-ruby-zhuyin-track-size` | `<length>` | `3em` | 字間注的直排軌道長度，以 rt-em 表示 |
-| `--han-ruby-zhuyin-ideographic-ink-descent` | `<length>` | `.075em` | 字間注柱底由 alphabetic baseline 往下至漢字 `ideographic-ink-under` 的距離，以 base-em 表示；在每個 ruby 上解析，不隨注音字級改變 |
-| `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對 `ideographic-ink-under` 的光學微調；正值向上、負值向下，以 rt-em 表示 |
+| `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對合成的 ideographic ink seat 的光學微調；正值向上、負值向下，以 rt-em 表示。此 seat 是 Han Metrics 校準的基準，非目前字體每個 glyph 的實際墨跡下緣。 |
 | `--han-ruby-zhuyin-over-gap` | `<length>` | `.25em` | 行間注與基文的 block-end 留白，以 rt-em 表示 |
-| `--han-ruby-zhuyin-inter-character-spacing` | `<length>` | `.5em` | 字間注在基文 inline flow 中預留的字距 |
 | `--han-ruby-zhuyin-letter-spacing` | `<length>` | `-.05em` | 注音 `<rt>` 本身的 letter-spacing |
 | `--han-underline-offset` | `<length>` | `.125em` | all underlined elements |
 | `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines (native path, Firefox only today) |
@@ -263,6 +260,7 @@ the start-only sites and silently drops those declarations.
 | `--han-use-heritage-glyphs-for-ko` | `webfont \| off` | `off` | `:lang(ko)` |
 | `--han-webfont-heritage-family` | `shanggu \| genki` | `shanggu` | global; use `shanggu` whenever Korean is present (genki hangul: 2350 KS X 1001 only, no Jamo) |
 | `--han-use-cursive` | `webfont \| system \| off` | `webfont` | Kaiti layer of `--han-font-accent` |
+| `--han-use-metrics` | `on \| off` | `on` | All Han composite stacks. `on` places the metrics-only Han Metrics U+0020 strut before DTJ and glyph faces, stabilising the CJK inline box; `off` is a compatibility/diagnostic opt-out that retains the native font metrics. |
 
 Punctuation conventions are decoupled from locale — any convention is legal
 for any language (JIS = sentence-end marks trailing-edge; MOE = all centered;

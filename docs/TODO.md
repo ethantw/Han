@@ -126,6 +126,12 @@
   `ideographic-ink-under`；不注入 U+2060，故 ruby formatting context 與標點避頭尾
   均保持正常。`Han Metrics` 的 U+0020 strut 固定所有 Han composite stack 在
   DTJ／系統 fallback 之前的基線度量。
+- **CSS Inline `text-box-edge: ideographic-ink` 跟進。** 現行字間注的
+  `.075em` 是 Han Metrics 校準的合成 ink seat；CSS Inline 3 若落地並由主流引擎
+  實作，可評估以字體級 ideographic-ink under baseline 取代此常數。規格目前仍是
+  early draft，不可出貨依賴；即使可用，也只會是 font-level reference，無法取得
+  宋體-繁等每一個 glyph 的真實 outline ink-under，故仍需保留
+  `--han-ruby-zhuyin-baseline-shift` 的光學補償與跨字體回歸樣本。
 - **注音字體的「ㄧ」直排 pair spacing。** 2026-08-30 在
   `manual/demo/ruby-zhuyin-config.html` 的字間注幾何工作台定位：全域
   `--han-ruby-zhuyin-letter-spacing: 0` 時，含介音「ㄧ」的

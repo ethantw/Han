@@ -194,9 +194,11 @@
   initial-value: over;
 }
 
-/* Internal used length. The public ideographic-ink value is authored in
- * base-em; assigning it on each ruby makes the registered length compute
- * against the base character before the smaller rt inherits it. */
+/* Internal used length. Assign it on each ruby so this base-em calibration
+ * computes against the base character before the zero-font-size anchor pseudo
+ * inherits it. CSS Inline 3's proposed `text-box-edge: ideographic-ink` may
+ * eventually supply a font-level ink seat instead; it remains an early draft
+ * and would not expose each glyph outline's actual ink bounds. */
 @property --han-ruby-zhuyin-used-ideographic-ink-descent {
   syntax: "<length>";
   inherits: true;
@@ -250,18 +252,12 @@
   --han-font-accent: var(--han-cursive);
   --han-font-zhuyin-serif: var(--han-cursive);
 
-  /* Horizontal inter-character zhuyin geometry. These remain unregistered:
-   * their em values must resolve against each ruby/rt at the consumption
-   * site instead of being absolutised on :root. Together they are the public
-   * tuning surface for textbook-style side annotations. */
+  /* Public zhuyin tuning surface. These remain unregistered: their em values
+   * must resolve against each ruby/rt at the consumption site instead of
+   * being absolutised on :root. */
   --han-ruby-zhuyin-font-size: .3em;
-  --han-ruby-zhuyin-track-size: 3em;
-  /* Synthesized lower face edge of 永 across the default CJK stacks. This
-   * is a base-em value; it must not move when the annotation size changes. */
-  --han-ruby-zhuyin-ideographic-ink-descent: .075em;
   --han-ruby-zhuyin-baseline-shift: 0em;
   --han-ruby-zhuyin-over-gap: .25em;
-  --han-ruby-zhuyin-inter-character-spacing: .5em;
   --han-ruby-zhuyin-letter-spacing: -.05em;
 }
 
@@ -695,9 +691,11 @@
  * descendant matching `:scope > rt`」and never matches. Verified against
  * Chromium / WebKit / Firefox. */
 :where(ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))) {
+  /* Resolve this internal base-em constant before the zero-font-size anchor
+   * pseudo inherits it; never expose the calibration as author API. See the
+   * nearby `text-box-edge: ideographic-ink` future-path note. */
   & {
-    --han-ruby-zhuyin-used-ideographic-ink-descent:
-      var(--han-ruby-zhuyin-ideographic-ink-descent);
+    --han-ruby-zhuyin-used-ideographic-ink-descent: .075em;
   }
 
   :where(& > rt) {
@@ -729,7 +727,10 @@
     @supports not (ruby-position: inter-character) {
       & {
         position: relative;
-        letter-spacing: var(--han-ruby-zhuyin-inter-character-spacing);
+        /* The base-flow reservation follows the annotation scale: .5em at
+         * the default .3em annotation size, or 5/3 of that size generally.
+         * This is fallback machinery, not a cross-engine author control. */
+        letter-spacing: calc(var(--han-ruby-zhuyin-font-size) * 5 / 3);
       }
       :where(& > rt) {
         position: absolute;
@@ -741,7 +742,7 @@
         /* The three-em track becomes one base em at the scale above. Tone
          * glyphs have effectively zero vertical advance in the bundled font,
          * so they may overhang without lengthening or shifting the column. */
-        inline-size: var(--han-ruby-zhuyin-track-size);
+        inline-size: 3em;
         writing-mode: vertical-rl;
       }
 

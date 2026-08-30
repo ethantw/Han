@@ -5,6 +5,23 @@
  * ========================================================================== */
 
 /**
+ * Metrics-strut mode. Han Metrics contains U+0020 only: it establishes a
+ * stable CJK inline box before DTJ and the real glyph fonts, but never paints
+ * visible text. Keep it on by default. `off` is an explicit compatibility /
+ * diagnostic escape hatch for a subtree that must retain its native font
+ * metrics.
+ *
+ * Set this on an ANCESTOR. Like the other font modes it is read by an
+ * `@container style()` query, so the element carrying the composite stack
+ * cannot query its own value.
+ */
+@property --han-use-metrics {
+  syntax: "on | off";
+  inherits: true;
+  initial-value: on;
+}
+
+/**
  * Diantenjeom punctuation convention per locale (標點慣例).
  * Each property selects a Diantenjeom font variant for its target language;
  * all four share the same value set.
@@ -355,6 +372,15 @@
   --han-font-alternative: var(--han-serif);
   --han-font-accent: var(--han-cursive);
   --han-font-zhuyin-serif: 'Han Zhuyin Serif', cursive, serif;
+}
+
+/* `HanNone` is the registered no-op family used by every composite slot.
+ * Do not expose `--han-font-metrics` itself: it is the implementation slot;
+ * authors opt out through the registered on/off control above. */
+@container style(--han-use-metrics: off) {
+  :where(*) {
+    --han-font-metrics: HanNone;
+  }
 }
 
 /* JP system fonts as the heritage-ish fallback, style-matched, Mac →

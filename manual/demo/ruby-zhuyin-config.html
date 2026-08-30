@@ -49,6 +49,7 @@
 
   button,
   input,
+  select,
   output { font: inherit; }
 
   .page-header {
@@ -283,6 +284,27 @@
     border: 1px solid var(--ui-rule);
   }
 
+  .select-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 2rem;
+    padding-inline: .65rem .4rem;
+    border: 1px solid var(--ui-rule);
+    border-radius: .3rem;
+    font-size: .85rem;
+  }
+
+  .select-control select {
+    min-block-size: 1.55rem;
+    padding-inline: .3rem;
+    border: 0;
+    border-radius: .2rem;
+    color: var(--ui-ink);
+    background: transparent;
+    cursor: pointer;
+  }
+
   .guide-switches {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -433,7 +455,7 @@
     position-anchor: --han-ruby-baseline;
     inset-block-start: calc(
       anchor(--han-ruby-baseline top)
-      - var(--han-ruby-zhuyin-used-ideographic-ink-descent)
+      - .075em
     );
     inset-inline-start: 0;
     inline-size: 20em;
@@ -446,10 +468,10 @@
     opacity: .78;
   }
 
-  /* The public value is a base-em length, so the ink guide scales at
-   * 12/current/60px but not with the annotation font-size. */
+  /* The internal ink seat scales at 12/current/60px but not with the
+   * annotation font-size. */
   :root[data-ideographic-ink] .diagnostic-copy ruby:first-of-type::after {
-    box-shadow: 0 var(--demo-ideographic-ink-descent) 0 var(--guide-ideographic-ink);
+    box-shadow: 0 .075em 0 var(--guide-ideographic-ink);
   }
 
   /* Zhuyin is vertical-rl in horizontal text, so its central baseline is a
@@ -564,10 +586,10 @@
   }
 
   /* Keep the baseline strut independently switchable from the CJK glyph
-   * source. `HanNone` is deliberately unresolvable, so the composite stacks
-   * fall through to the same real faces without the metrics-only space face. */
+   * source. The library's registered control selects the no-op metrics slot
+   * when off, leaving the same real glyph faces underneath. */
   :root:has(#han-metrics:not(:checked)) main {
-    --han-font-metrics: HanNone;
+    --han-use-metrics: off;
   }
 
   :root:has(#font-sans:checked) .copy { font-family: var(--han-sans); }
@@ -704,11 +726,8 @@
 
   const rubyVariables = [
     ['zhuyin-size', '--han-ruby-zhuyin-font-size', 'em'],
-    ['zhuyin-track', '--han-ruby-zhuyin-track-size', 'em'],
-    ['ideographic-ink-descent', '--han-ruby-zhuyin-ideographic-ink-descent', 'em'],
     ['zhuyin-baseline', '--han-ruby-zhuyin-baseline-shift', 'em'],
     ['over-gap', '--han-ruby-zhuyin-over-gap', 'em'],
-    ['ruby-spacing', '--han-ruby-zhuyin-inter-character-spacing', 'em'],
     ['rt-letter-spacing', '--han-ruby-zhuyin-letter-spacing', 'em'],
   ]
 
@@ -774,23 +793,18 @@
     const typeSize = Number(form.elements['type-size'].value)
     const typeWeight = Number(form.elements['type-weight'].value)
     const zhuyinSize = Number(form.elements['zhuyin-size'].value)
-    const track = Number(form.elements['zhuyin-track'].value)
-    const ideographicInkDescent = Number(form.elements['ideographic-ink-descent'].value)
     const baseline = Number(form.elements['zhuyin-baseline'].value)
     const overGap = Number(form.elements['over-gap'].value)
-    const rubySpacing = Number(form.elements['ruby-spacing'].value)
     const rtLetterSpacing = Number(form.elements['rt-letter-spacing'].value)
+    const punctuationHant = form.elements['punctuation-hant'].value
 
     root.style.setProperty('--demo-type-size', `${typeSize}px`)
     root.style.setProperty('--demo-type-weight', typeWeight)
     root.style.setProperty('--han-ruby-zhuyin-font-size', `${zhuyinSize}em`)
-    root.style.setProperty('--han-ruby-zhuyin-track-size', `${track}em`)
-    root.style.setProperty('--han-ruby-zhuyin-ideographic-ink-descent', `${ideographicInkDescent}em`)
     root.style.setProperty('--han-ruby-zhuyin-baseline-shift', `${baseline}em`)
-    root.style.setProperty('--demo-ideographic-ink-descent', `${ideographicInkDescent}em`)
     root.style.setProperty('--han-ruby-zhuyin-over-gap', `${overGap}em`)
-    root.style.setProperty('--han-ruby-zhuyin-inter-character-spacing', `${rubySpacing}em`)
     root.style.setProperty('--han-ruby-zhuyin-letter-spacing', `${rtLetterSpacing}em`)
+    root.style.setProperty('--han-punctuation-hant', punctuationHant)
 
     root.toggleAttribute('data-base-baseline', form.elements['base-baseline'].checked)
     root.toggleAttribute('data-ideographic-ink', form.elements['ideographic-ink'].checked)
@@ -801,11 +815,8 @@
     setOutput('type-size', `${typeSize}px`)
     setOutput('type-weight', typeWeight)
     setOutput('zhuyin-size', `${zhuyinSize.toFixed(3)}em · ${(zhuyinSize * typeSize).toFixed(1)}px`)
-    setOutput('zhuyin-track', `${track.toFixed(2)} rt-em · ${(track * zhuyinSize).toFixed(3)}em`)
-    setOutput('ideographic-ink-descent', `${ideographicInkDescent.toFixed(3)} base-em`)
     setOutput('zhuyin-baseline', `${signed(baseline, 2)} rt-em · ${signed(baseline * zhuyinSize)}em`)
     setOutput('over-gap', `${overGap.toFixed(2)} rt-em · ${(overGap * zhuyinSize).toFixed(3)}em`)
-    setOutput('ruby-spacing', `${rubySpacing.toFixed(2)}em`)
     setOutput('rt-letter-spacing', `${signed(rtLetterSpacing, 4)}em`)
     document.querySelector('[data-current-size]').textContent = `${typeSize}px`
     syncRangeMetadata()
@@ -858,6 +869,15 @@
       </fieldset>
 
       <label class="check-toggle"><input id="han-metrics" name="han-metrics" type="checkbox" checked>Han Metrics</label>
+      <label class="select-control">DTJ（繁中）
+        <select id="punctuation-hant" name="punctuation-hant">
+          <option value="JIS">JIS</option>
+          <option value="MOE" selected>MOE</option>
+          <option value="GB">GB</option>
+          <option value="KLR">KLR</option>
+          <option value="off">off</option>
+        </select>
+      </label>
 
       <fieldset aria-labelledby="font-label">
         <span id="font-label">字體</span>
@@ -881,7 +901,7 @@
       <label class="check-toggle"><input id="ruby-visibility" name="ruby-visibility" type="checkbox" checked>顯示注音</label>
       <div class="guide-switches">
         <label class="check-toggle"><input name="base-baseline" type="checkbox" checked>主字 baseline</label>
-        <label class="check-toggle"><input name="ideographic-ink" type="checkbox" checked>漢字 ink-under</label>
+        <label class="check-toggle"><input name="ideographic-ink" type="checkbox" checked>合成 ink seat</label>
         <label class="check-toggle"><input name="rt-baseline" type="checkbox" checked>注音 baseline</label>
         <label class="check-toggle"><input name="ruby-outline" type="checkbox" checked>ruby outline</label>
         <label class="check-toggle"><input name="rt-outline" type="checkbox" checked>rt outline</label>
@@ -910,18 +930,6 @@
     </label>
 
     <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-track-size">注音軌道</span>
-      <output for="zhuyin-track" data-output="zhuyin-track"></output>
-      <input id="zhuyin-track" name="zhuyin-track" type="range" min="2" max="4.5" step=".05" value="3" data-unit="rt-em">
-    </label>
-
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-ideographic-ink-descent">漢字 ink-under</span>
-      <output for="ideographic-ink-descent" data-output="ideographic-ink-descent"></output>
-      <input id="ideographic-ink-descent" name="ideographic-ink-descent" type="range" min=".03" max=".12" step=".001" value=".075" data-unit="base-em">
-    </label>
-
-    <label class="parameter-control">
       <span data-variable="--han-ruby-zhuyin-baseline-shift">注音 baseline</span>
       <output for="zhuyin-baseline" data-output="zhuyin-baseline"></output>
       <input id="zhuyin-baseline" name="zhuyin-baseline" type="range" min="-.5" max=".5" step=".025" value="0" data-unit="rt-em">
@@ -931,12 +939,6 @@
       <span data-variable="--han-ruby-zhuyin-over-gap">行間注留白</span>
       <output for="over-gap" data-output="over-gap"></output>
       <input id="over-gap" name="over-gap" type="range" min="0" max="1.5" step=".05" value=".25" data-unit="rt-em">
-    </label>
-
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-inter-character-spacing">字間注留白</span>
-      <output for="ruby-spacing" data-output="ruby-spacing"></output>
-      <input id="ruby-spacing" name="ruby-spacing" type="range" min=".2" max="1.2" step=".01" value=".5" data-unit="em">
     </label>
 
     <label class="parameter-control">
@@ -960,7 +962,7 @@
 <main>
   <section class="inspection" aria-labelledby="inspection-heading">
     <h2 id="inspection-heading">字間注幾何</h2>
-    <p class="inspection-note">紅線落在主字的 alphabetic baseline；橙線是由「永」合成的 ideographic ink-under，rt 柱底預設坐在橙線；藍線是直排注音的中央 baseline。同一組變量同步套用到 12px、目前字級與 60px。</p>
+    <p class="inspection-note">紅線落在主字的 alphabetic baseline；橙線是依「永」校準的合成 ideographic ink seat，作為 rt 柱底的預設落點，不代表目前字體每個字的實際墨跡下緣；藍線是直排注音的中央 baseline。同一組變量同步套用到 12px、目前字級與 60px。</p>
     <div class="inspection-panel">
       <div class="size-comparison">
         <figure class="size-sample" data-size="min">
@@ -978,7 +980,7 @@
       </div>
       <div class="legend" aria-label="參考線圖例">
         <span data-key="base">主字 CSS baseline</span>
-        <span data-key="ideographic-ink">漢字 ideographic ink-under</span>
+        <span data-key="ideographic-ink">合成 ideographic ink seat</span>
         <span data-key="rt-baseline">注音中央 baseline</span>
         <span data-key="ruby">ruby box</span>
         <span data-key="rt">rt box</span>
