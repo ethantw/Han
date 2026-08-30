@@ -224,6 +224,12 @@ article.Dispatch {
     }
   }
 
+  /* Keep section headings with the copy that follows in both the brief and
+     full newspaper specimens, regardless of writing mode. */
+  > [data-prose] :is(h1, h2, h3, h4, h5, h6) {
+    break-after: avoid-column;
+  }
+
   & {
     --size: 24em;
     padding: 1em 1.5em;

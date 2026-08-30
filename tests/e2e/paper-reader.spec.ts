@@ -88,11 +88,16 @@ test('every newspaper jump follows the text on one shared inline baseline', asyn
 test('newspaper headings avoid a column break on both the homepage and reader', async ({ page }) => {
   const homepageBreak = await page.locator('figure.Papers > article > h3').first()
     .evaluate((heading) => getComputedStyle(heading).breakAfter)
+  const stationProseBreaks = await page
+    .locator('#station-prose article.Dispatch > [data-prose] :is(h1, h2, h3, h4, h5, h6)')
+    .evaluateAll((headings) => headings.map((heading) => getComputedStyle(heading).breakAfter))
   const dialog = await openArticle(page)
   const readerBreak = await dialog.locator('.Body > h1').first()
     .evaluate((heading) => getComputedStyle(heading).breakAfter)
 
   expect(homepageBreak).toBe('avoid-column')
+  expect(stationProseBreaks.length).toBeGreaterThan(0)
+  expect(stationProseBreaks.every((value) => value === 'avoid-column')).toBe(true)
   expect(readerBreak).toBe('avoid-column')
 })
 
