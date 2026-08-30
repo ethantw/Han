@@ -314,12 +314,13 @@ const HOME_SECTIONS = [
 // `<name>Section` one derived from the HOME_SECTIONS list.
 const HOME_CONSOLE = path.resolve(HOME_DIR, 'console.html')
 // 示例頁。`specimen.html` 是 shipped 的樣張（renderSpecimenPages 由它生出
-// /specimen.html 與 /specimen.ssr.html 兩份）；同目錄其餘 .html 是 dev-only
-// 的工作台頁，首頁站台以連結指過去。
+// /specimen.html 與 /specimen.ssr.html 兩份）；`ruby-zhuyin-config.html` 是 shipped
+// 的注音 ruby 配置器。其餘 .html 是 dev-only 工作台頁。
 // （2026-08-08：原本還有一頁 `/demo`——`index.html` ＋ 十八個 `.md` 分節拼成的
 // 對照表。刪了：太醜、示例意義不大，樣張頁承擔得了同一件事，owner 拍板。）
 const DEMO_DIR = path.resolve(here, 'demo')
 const SPECIMEN_FILE = 'specimen.html'
+const RUBY_ZHUYIN_CONFIG_FILE = 'ruby-zhuyin-config.html'
 
 const md = new MarkdownIt({
   html: true,
@@ -367,6 +368,7 @@ const FRAMEWORK_ASSETS = [
   'pass-sizes.json',
   'em-space.woff2',
   'zhuyin.serif.woff2',
+  'metrics.woff2',
 ]
 
 async function syncFramework() {
@@ -577,8 +579,8 @@ async function hashLinkedSheets() {
     const src = path.join(MANUAL_DIST, rel)
     if (!existsSync(src)) continue
     // A copied sheet resolves its relative url() against ITS OWN URL — moved
-    // under /assets/, `url("./zhuyin.serif.woff2")` starts asking for
-    // /assets/zhuyin.serif.woff2, a file that must not exist there (the
+    // under /assets/, `url("./metrics.woff2")` starts asking for
+    // /assets/metrics.woff2, a file that must not exist there (the
     // /assets/ prefix is immutable-cached and content-hashed ONLY). Anchor
     // every relative url() to the sheet's original directory instead; the
     // fonts stay single copies at their plain, must-revalidate paths.
@@ -998,6 +1000,17 @@ async function renderSpecimenPages() {
   await fs.writeFile(path.join(HTML_ROOT, 'specimen.ssr.prebuilt.html'), prerendered)
 }
 
+/** Public zhuyin-ruby configurator. Keep its production URL equal to the dev
+ * workbench URL so shared links and saved instructions do not change at ship. */
+async function renderShippedDemoPages() {
+  const outDir = path.join(HTML_ROOT, 'demo')
+  await fs.mkdir(outDir, { recursive: true })
+  await fs.copyFile(
+    path.join(DEMO_DIR, RUBY_ZHUYIN_CONFIG_FILE),
+    path.join(outDir, RUBY_ZHUYIN_CONFIG_FILE),
+  )
+}
+
 /**
  * 樣張頁的伺服器端變體、以及那五處變換的說明，全在 `manual/ssr-specimen.js`
  * ——本檔（建置時）、dev middleware（每個請求）與生產的邊緣函式（每個請求）
@@ -1089,6 +1102,7 @@ function hanManualPlugin() {
       await renderHomepage()
       await render404()
       await renderSpecimenPages()
+      await renderShippedDemoPages()
       for (const slug of HOME_ARTICLES) {
         for (const edition of Object.keys(ARTICLE_LANG_DIR)) {
           const source = await renderArticleFragment(slug, edition)
@@ -1361,6 +1375,7 @@ async function collectHtmlEntries() {
   await renderHomepage()
   await render404()
   await renderSpecimenPages()
+  await renderShippedDemoPages()
   const inputs = {}
   for await (const file of glob('**/*.html', { cwd: HTML_ROOT })) {
     const id = file.replace(/\.html$/, '').replace(/\\/g, '/')

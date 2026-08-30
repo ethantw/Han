@@ -271,6 +271,11 @@
  *   `unset` resolve differently for registered properties).
  */
 :where(:root) {
+  /* A blank U+0020 strut with a fixed 0.925 / 0.075 CJK baseline box.
+   * Every Han composite puts it before DTJ and real glyph faces, so the
+   * inline baseline cannot jump when a base glyph falls from Shanggu to a
+   * system font with different hhea metrics. */
+  --han-font-metrics: 'Han Metrics';
   --han-font-latin-sans: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto;
   --han-font-latin-serif: Palatino, Cambria;
   --han-font-latin-cursive: var(--han-font-latin-serif);
@@ -308,24 +313,28 @@
  */
 :where(*) {
   --han-system-ui:
+    var(--han-font-metrics),
     var(--han-font-punctuation-sans),
     var(--han-font-latin-sans),
     var(--han-font-cjk-sans),
     system-ui, sans-serif
   ;
   --han-sans:
+    var(--han-font-metrics),
     var(--han-font-punctuation-sans),
     var(--han-font-latin-sans),
     var(--han-font-cjk-sans),
     sans-serif
   ;
   --han-serif:
+    var(--han-font-metrics),
     var(--han-font-punctuation-serif),
     var(--han-font-latin-serif),
     var(--han-font-cjk-serif),
     serif
   ;
   --han-cursive:
+    var(--han-font-metrics),
     var(--han-font-punctuation-cursive),
     var(--han-font-latin-cursive),
     var(--han-font-cjk-cursive),
@@ -336,6 +345,7 @@
      sample. The CJK layer borrows the sans slot — no monospace CJK webfont
      exists, so Han glyphs at least follow the site's heritage choice. */
   --han-monospace:
+    var(--han-font-metrics),
     var(--han-font-latin-mono),
     var(--han-font-cjk-sans),
     monospace

@@ -4,4 +4,13 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
+  /* Annotation glyphs use the source face's native metrics. Base text never
+   * puts this family in its composite stack; Han Metrics owns that job. */
+  unicode-range:
+    U+30-39,
+    U+41-5A,
+    U+61-7A,
+    U+2C7, U+2C9-2CB, U+2D9, U+2EA-2EB,
+    U+3105-312F,
+    U+31A0-31BB;
 }

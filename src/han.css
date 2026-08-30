@@ -41,8 +41,10 @@
  * you.
  *
  * 1. The Em Space font for typesetting usage.
- * 2. Enhanced Zhuyin fonts for <ruby>.
+ * 2. Invisible baseline metrics strut.
+ * 3. Enhanced Zhuyin fonts for <ruby>.
  *
  */
 @import url(./css/fonts/em-space.css); /* 1 */
-@import url(./css/fonts/zhuyin.css); /* 2 */
+@import url(./css/fonts/metrics.css); /* 2 */
+@import url(./css/fonts/zhuyin.css); /* 3 */

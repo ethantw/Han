@@ -112,8 +112,21 @@
   hangable 只落在收尾標點、結構上不可能是段首字，實際永不相撞（文件
   可直說「不受影響」＋順帶原因）；`::selection`、`::highlight()`、
   DOM 結構型選擇器皆不受影響（查的是渲染樹之外的東西）。
-- **Zhuyin `<rt>` 定位 workaround**（semantics.css 的 `[TODO]`
-  transform translate）——等 containing-block 方案，非 bug。
+- [x] **Zhuyin `<rt>` baseline anchor。** 2026-08-31 完工：空、零尺寸
+  pseudo-element ＋ CSS Anchor Positioning 取得基文 baseline，再下降至合成的
+  `ideographic-ink-under`；不注入 U+2060，故 ruby formatting context 與標點避頭尾
+  均保持正常。`Han Metrics` 的 U+0020 strut 固定所有 Han composite stack 在
+  DTJ／系統 fallback 之前的基線度量。
+- **注音字體的「ㄧ」直排 pair spacing。** 2026-08-30 在
+  `manual/demo/ruby-zhuyin-config.html` 的字間注幾何工作台定位：全域
+  `--han-ruby-zhuyin-letter-spacing: 0` 時，含介音「ㄧ」的
+  `ㄧㄢ`／`ㄐㄧㄡ`／`ㄑㄩㄝ` 等組合因「ㄧ」墨跡薄、vertical advance
+  仍完整而顯得鬆；收緊 letter-spacing 後這些組合正常，其他 pair 卻過擠。
+  這不是 ruby box／baseline 幾何問題，不能再用全域 CSS tracking 補。
+  後續應在注音字體試作 OpenType GPOS `vkrn`（針對「ㄧ」前後 pair
+  分配負位移），並比較直接縮短「ㄧ」的 `vmtx` vertical advance／重分上下
+  side bearing；用工作台的 12／目前／60px，以及一、二、三符號與輕聲樣本
+  做回歸，確認單獨「一／ㄧ」不被拉偏後再定案。
 - **`TODO(css-if)` 三處**（semantics/fonts/lines）——`if()` 落地後
   的遷移註記，跟引擎走。
 - **原生 `hanging-punctuation` 佈線**——等 2/3 引擎出貨。

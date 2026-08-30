@@ -5,6 +5,9 @@
  * ========================================================================== */
 
 @import url(./css/semantics.css) layer(han-semantics);
+/* Ruby's baseline strut is semantic geometry, not the optional font module. */
+@import url(./css/fonts/metrics.css);
+@import url(./css/fonts/zhuyin.css);
 
 /* ========================================================================== *
  * Line adjustments

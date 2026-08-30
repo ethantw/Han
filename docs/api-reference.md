@@ -118,12 +118,12 @@ the build, so treat that as the live number and this table as a snapshot:
 
 | File | Contents | min+gzip |
 |---|---|---|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space calibration fonts, zhuyin font) | 3.6 KB |
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 3.6 KB |
 | `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.4 KB |
 | `han.lines.css` | Lines module (incl. JS-companion styles) | 1.1 KB |
 | `han.prose.css` | Prose module | 0.4 KB |
 | `han.fonts.css` | Fonts module + font assets | 1.4 KB |
-| `han.basic.css` | Lean bundle: semantics + lines + prose, **CSS-only** — no fonts module, no JS-companion styles, no font assets | 1.7 KB |
+| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics and zhuyin assets required by ruby | 1.7 KB |
 
 Sum of the four single-module bundles ≡ `han.css`.
 
@@ -136,7 +136,8 @@ has no `browser` condition, whenever a bundler processes server-side code):
 | `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 11.9 KB full, less shaken |
 | `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.0 KB |
 
-Assets shipped alongside: `em-space.woff2` (420 B), `zhuyin.serif.woff2`.
+Assets shipped alongside: `em-space.woff2` (420 B), `metrics.woff2` (408 B),
+`zhuyin.serif.woff2`.
 The CSS references them by relative URL — keep `dist/` file layout when
 self-hosting.
 
@@ -212,6 +213,13 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Kore: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
 | `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | **Library-wide writing-mode mirror** (see §1 prerequisite) — declare alongside every `writing-mode`, same value. Consumed by direction-dependent behavior (zhuyin, below); retires when arbitrary-property style queries ship |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
+| `--han-ruby-zhuyin-font-size` | `<length>` | `.3em` | 注音字級；`em` 在 `<rt>` 上解析 |
+| `--han-ruby-zhuyin-track-size` | `<length>` | `3em` | 字間注的直排軌道長度，以 rt-em 表示 |
+| `--han-ruby-zhuyin-ideographic-ink-descent` | `<length>` | `.075em` | 字間注柱底由 alphabetic baseline 往下至漢字 `ideographic-ink-under` 的距離，以 base-em 表示；在每個 ruby 上解析，不隨注音字級改變 |
+| `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對 `ideographic-ink-under` 的光學微調；正值向上、負值向下，以 rt-em 表示 |
+| `--han-ruby-zhuyin-over-gap` | `<length>` | `.25em` | 行間注與基文的 block-end 留白，以 rt-em 表示 |
+| `--han-ruby-zhuyin-inter-character-spacing` | `<length>` | `.5em` | 字間注在基文 inline flow 中預留的字距 |
+| `--han-ruby-zhuyin-letter-spacing` | `<length>` | `-.05em` | 注音 `<rt>` 本身的 letter-spacing |
 | `--han-underline-offset` | `<length>` | `.125em` | all underlined elements |
 | `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines (native path, Firefox only today) |
 | `--han-adjacent-lines-skip-gap-fallback` | `<length>` | `.125em` | gap between adjacent underlined/struck elements on engines without `text-decoration-inset` |
@@ -295,6 +303,13 @@ layer → Latin layer → CJK layer → generic):
 | `--han-serif` | `serif` |
 | `--han-cursive` | `cursive, serif` |
 | `--han-monospace` | `monospace` |
+
+Every composite begins with the U+0020-only `Han Metrics` face. Its strut
+fixes the inline CJK baseline at `.075em` below the
+alphabetic baseline before Diantenjeom or a system fallback is considered;
+this keeps inline and ruby geometry stable across font fallback. Because the
+face covers no letters, digits, punctuation, CJK, or phonetic symbols, it can
+never paint visible text. Its outline-free space advances one quarter em.
 
 `--han-monospace` deliberately has **no punctuation layer** (code must show
 characters verbatim — punctuation-face glyph swaps would tamper with the

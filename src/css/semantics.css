@@ -194,6 +194,15 @@
   initial-value: over;
 }
 
+/* Internal used length. The public ideographic-ink value is authored in
+ * base-em; assigning it on each ruby makes the registered length compute
+ * against the base character before the smaller rt inherits it. */
+@property --han-ruby-zhuyin-used-ideographic-ink-descent {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 /* ========================================================================== *
  * Variables
  * ========================================================================== */
@@ -229,16 +238,31 @@
    * these same four vars again, per-element, and wins on every element but
    * `:root` itself (only `:where(*)` matches non-root elements at all) —
    * that's the version that actually resolves the per-lang webfont slots. */
-  --han-system-ui: system-ui, sans-serif;
-  --han-sans: sans-serif;
-  --han-serif: serif;
-  --han-cursive: cursive, serif;
-  --han-monospace: ui-monospace, monospace;
+  --han-font-metrics: 'Han Metrics';
+  --han-system-ui: var(--han-font-metrics), system-ui, sans-serif;
+  --han-sans: var(--han-font-metrics), sans-serif;
+  --han-serif: var(--han-font-metrics), serif;
+  --han-cursive: var(--han-font-metrics), cursive, serif;
+  --han-monospace: var(--han-font-metrics), ui-monospace, monospace;
 
   --han-font-default: var(--han-system-ui);
   --han-font-alternative: var(--han-serif);
   --han-font-accent: var(--han-cursive);
   --han-font-zhuyin-serif: var(--han-cursive);
+
+  /* Horizontal inter-character zhuyin geometry. These remain unregistered:
+   * their em values must resolve against each ruby/rt at the consumption
+   * site instead of being absolutised on :root. Together they are the public
+   * tuning surface for textbook-style side annotations. */
+  --han-ruby-zhuyin-font-size: .3em;
+  --han-ruby-zhuyin-track-size: 3em;
+  /* Synthesized lower face edge of 永 across the default CJK stacks. This
+   * is a base-em value; it must not move when the annotation size changes. */
+  --han-ruby-zhuyin-ideographic-ink-descent: .075em;
+  --han-ruby-zhuyin-baseline-shift: 0em;
+  --han-ruby-zhuyin-over-gap: .25em;
+  --han-ruby-zhuyin-inter-character-spacing: .5em;
+  --han-ruby-zhuyin-letter-spacing: -.05em;
 }
 
 :where(:lang(en-GB)) {
@@ -671,8 +695,18 @@
  * descendant matching `:scope > rt`」and never matches. Verified against
  * Chromium / WebKit / Firefox. */
 :where(ruby:is(.zhuyin, .mps), ruby:has(> rt:is(.zhuyin, .mps))) {
+  & {
+    --han-ruby-zhuyin-used-ideographic-ink-descent:
+      var(--han-ruby-zhuyin-ideographic-ink-descent);
+  }
+
   :where(& > rt) {
     font-family: var(--han-font-zhuyin-serif);
+    font-size: var(--han-ruby-zhuyin-font-size);
+    letter-spacing: var(--han-ruby-zhuyin-letter-spacing);
+    line-height: 1;
+    margin-block-end: var(--han-ruby-zhuyin-over-gap);
+    ruby-align: center;
     text-orientation: upright;
   }
 
@@ -695,25 +729,53 @@
     @supports not (ruby-position: inter-character) {
       & {
         position: relative;
-        letter-spacing: .6em;
+        letter-spacing: var(--han-ruby-zhuyin-inter-character-spacing);
       }
       :where(& > rt) {
         position: absolute;
         /* out of annotation flow; display: ruby preserved */
-        inset-inline-start: 50%;
-        transform: translate(-133%, -40%);
-        transform-origin: center;
+        inset-block-start: .5em;
         display: inline-flex;
         justify-content: center;
         block-size: 1em;
-        inline-size: 3em;
-        font-size: .4em;
-        letter-spacing: 0;
-        line-height: .95;
+        /* The three-em track becomes one base em at the scale above. Tone
+         * glyphs have effectively zero vertical advance in the bundled font,
+         * so they may overhang without lengthening or shifting the column. */
+        inline-size: var(--han-ruby-zhuyin-track-size);
         writing-mode: vertical-rl;
-        /* [TODO] top / inset-inline-start to position rt to the right of its base.
-        * containing block = nearest positioned ancestor (not the ruby itself).
-        * Alternative: use transform: translate() to avoid containing-block issues. */
+      }
+
+      /* Absolute positioning normally exposes only the ruby box edges, not
+       * its inline baseline. An empty, zero-size pseudo creates the required
+       * inline anchor fragment without injecting a Unicode character into
+       * line-breaking/shaping; U+2060 looked invisible but changed both the
+       * ruby's geometry and CJK avoidance at line edges. Han Metrics is
+       * first in all Han composite stacks, so this baseline now comes from
+       * its fixed CJK strut rather than DTJ or the particular fallback that
+       * paints the base glyph. Scope the repeated anchor name to each ruby,
+       * then resolve the annotation's inline-end (its physical bottom in
+       * vertical-rl) from the marker, then descend to the synthesized CJK ink
+       * edge. Anchor positioning is the baseline path; no legacy top-based
+       * geometry is retained here. */
+      & {
+        anchor-scope: --han-ruby-baseline;
+      }
+      &::before {
+        content: '';
+        position: relative;
+        inset-block-start: var(--han-ruby-zhuyin-used-ideographic-ink-descent);
+        font-size: 0;
+        line-height: 0;
+        anchor-name: --han-ruby-baseline;
+      }
+      :where(& > rt) {
+        position-anchor: --han-ruby-baseline;
+        inset-inline-start: auto;
+        inset-inline-end: calc(
+          anchor(--han-ruby-baseline top)
+          + var(--han-ruby-zhuyin-baseline-shift)
+        );
+        margin-inline-start: 0;
       }
     }
   }
