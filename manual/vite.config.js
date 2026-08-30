@@ -492,11 +492,10 @@ async function bundleHomeCss() {
  * dead weight — drop every `.css` under `common/` and `home/` except the
  * ones something still fetches by URL:
  *
- *   • `common/controls.css` — dual-homed, `<han-console>` fetches it into its
- *     shadow root (constructed stylesheets can't resolve `@import`, so it
- *     must stay a standalone file).
+ *   • the four `common/*` control-family sheets — dual-homed; `<han-console>`
+ *     fetches each into its shadow root in the same order as `home.css`.
  *   • `common/icons.css` — dual-homed for the same reason: the console's
- *     ↺ 使用預設值 buttons and controls.css's ＋/－ read `--icon-*` and the
+ *     ↺ 使用預設值 buttons and control-group.css's ＋/－ read `--icon-*` and the
  *     `[data-icon]` primitive from it.
  *
  * Its bytes therefore ship twice: inlined here for the light DOM's
@@ -505,7 +504,10 @@ async function bundleHomeCss() {
  * waterfall on first paint.
  */
 const KEEP_STANDALONE = new Set([
-  'common/controls.css',
+  'common/control-group.css',
+  'common/toggle.css',
+  'common/metric-slider.css',
+  'common/field.css',
   'common/icons.css',
   // `common/select.css` — 同樣 dual-homed：<han-console> 要 fetch 它進 shadow，
   // 而 `specimen.html` 也直接 <link> 它（那一頁不載 home.css，沒有 inline 的那份）。
@@ -544,8 +546,8 @@ async function pruneInlinedPartials() {
  * never outlive a deploy.
  *
  * Deliberately NOT hashed: anything a URL string inside JS points at —
- * `/han/han.js` (console-config lazy-imports it), `/common/controls.css` and
- * `/common/icons.css` (the console fetches both into its shadow root),
+ * `/han/han.js` (console-config lazy-imports it), the `/common/*` control
+ * family and `/common/icons.css` (the console fetches them into its shadow),
  * `/home/console-templates.js`,
  * `/vendor/*`. Hashing those means rewriting module specifiers, which is a
  * bundler's job, not a rename step's.

@@ -49,6 +49,22 @@ test.describe('playground configurator', () => {
     await page.goto('/')
   })
 
+  test('具名 CDN metadata 與頁面、生成碼使用同一版本', async ({ page }) => {
+    const versions = await page.locator('meta[name="han-cdn-version"]').evaluateAll(($meta) =>
+      Object.fromEntries($meta.map(($el) => [
+        ($el as HTMLElement).dataset.package,
+        ($el as HTMLMetaElement).content,
+      ]))) as Record<string, string>
+
+    expect(await page.evaluate(() => (window as Window & { __hanCdn?: unknown }).__hanCdn))
+      .toBeUndefined()
+    await expect(page.locator('link[data-han-webfont][href*="webfonts-shanggu-sans"]'))
+      .toHaveAttribute('href', new RegExp(`@${versions.ziano}/`))
+    await chooseSnippetView(page, 'bundler')
+    await expect(pane(page, 'html')).toContainText(`webfonts-shanggu-sans@${versions.ziano}`)
+    await expect(pane(page, 'html')).toContainText(`diantenjeom@${versions.diantenjeom}`)
+  })
+
   test('掛標點開關 → 頁面變數 + 生成碼同步', async ({ page }) => {
     await openGroupOf(page, 'squeeze')
     await page.locator('[data-cfg-key="squeeze"]').uncheck()
@@ -198,7 +214,7 @@ test.describe('度量 slider → body 規則', () => {
     await expect(pane(page, 'css')).toContainText('font-size: 18px')
     await expect(pane(page, 'css')).toContainText('body {')
 
-    await page.locator('.ControlGroup:has([data-pg-sliders]) .Default').click()
+    await page.locator('.ControlGroup:has([data-pg-sliders]) [data-action="restore-defaults"]').click()
     await expect(page.locator('[data-out-panes]')).not.toContainText('font-size: 18px')
   })
 

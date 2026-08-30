@@ -8,7 +8,7 @@
  * the rest of the two-page furniture.
  *
  * LIGHT DOM only, so it consumes `--ui-*` directly rather than the console's
- * `--_*` indirection. It sat in `controls.css` once — the sheet <han-console>
+ * `--_*` indirection. It sat in the shared control family once — <han-console>
  * adopts into its shadow — and was split out so the shadow stopped carrying
  * rules that could never match there; 2026-08-05 it moved the last step, out
  * of `preview.css` (now dissolved) into `common/`.
@@ -26,7 +26,7 @@
     border-radius: var(--r-3);
     box-shadow:
       0 1px 0 var(--ui-bg-2q),
-      0 28px 70px -36px color-mix(in srgb, var(--palette-black) 18%, transparent)
+      0 28px 70px -36px color-mix(in srgb, var(--ui-shadow-ink) 18%, transparent)
     ;
   }
   &:not(.Playground) {
@@ -60,11 +60,13 @@
    playground's content switch (in the station head, outside any panel)
    all wear it, so it lives at the top level of this file. ── */
 .ViewTabs {
-  display: flex;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  border: 0;
+  & {
+    display: flex;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
 
   input {
     position: absolute;
@@ -73,20 +75,22 @@
   }
 
   label {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    background: var(--ui-bg);
-    border: 1px solid var(--ui-rule);
-    border-radius: var(--r-1);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--ui-supplement-text);
-    cursor: pointer;
-    transition:
-      background-color 150ms ease,
-      border-color    150ms ease,
-      color           150ms ease;
+    & {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      background: var(--ui-bg);
+      border: 1px solid var(--ui-rule);
+      border-radius: var(--r-1);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ui-supplement-text);
+      cursor: pointer;
+      transition:
+        background-color 150ms ease,
+        border-color    150ms ease,
+        color           150ms ease;
+    }
 
     &:hover { border-color: var(--ui-text); color: var(--ui-text); }
 

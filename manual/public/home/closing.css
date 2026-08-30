@@ -31,9 +31,11 @@
   }
 
   .ClosingHead {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
+    & {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
 
     p {
       margin: 0;
@@ -52,18 +54,22 @@
   }
 
   .ClosingRoutes {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-block: 1px solid var(--ui-rule);
+    & {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-block: 1px solid var(--ui-rule);
+    }
 
     a {
-      display: grid;
-      align-content: start;
-      gap: 0.45rem;
-      min-block-size: 8rem;
-      padding: 1.5rem;
-      color: inherit;
-      text-decoration: none;
+      & {
+        display: grid;
+        align-content: start;
+        gap: 0.45rem;
+        min-block-size: 8rem;
+        padding: 1.5rem;
+        color: inherit;
+        text-decoration: none;
+      }
 
       & + a { border-inline-start: 1px solid var(--ui-rule); }
 
@@ -96,12 +102,14 @@
   }
 
   .ClosingMeta {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: baseline;
-    gap: 1rem 1.5rem;
-    font-size: 0.75rem;
-    color: var(--ui-supplement-text-2q);
+    & {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: baseline;
+      gap: 1rem 1.5rem;
+      font-size: 0.75rem;
+      color: var(--ui-supplement-text-2q);
+    }
 
     > p {
       margin: 0;
@@ -111,13 +119,17 @@
   }
 
   .Siblings {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+    }
 
     a {
-      color: var(--ui-supplement-text);
-      text-decoration: none;
+      & {
+        color: var(--ui-supplement-text);
+        text-decoration: none;
+      }
 
       &:hover { color: var(--ui-accent); }
     }
@@ -139,14 +151,18 @@
     }
 
     .ClosingRoutes {
-      grid-template-columns: 1fr;
+      & {
+        grid-template-columns: 1fr;
+      }
 
       a {
-        min-block-size: auto;
-        grid-template-columns: minmax(7em, auto) 1fr auto;
-        align-items: baseline;
-        gap: 1rem;
-        padding-inline: 0;
+        & {
+          min-block-size: auto;
+          grid-template-columns: minmax(7em, auto) 1fr auto;
+          align-items: baseline;
+          gap: 1rem;
+          padding-inline: 0;
+        }
 
         & + a {
           border-inline-start: 0;
@@ -158,7 +174,9 @@
     }
 
     .ClosingMeta {
-      grid-template-columns: 1fr auto;
+      & {
+        grid-template-columns: 1fr auto;
+      }
 
       > p { grid-column: 1 / -1; }
     }
@@ -166,7 +184,9 @@
 
   @media (max-width: 28rem) {
     .ClosingRoutes a {
-      grid-template-columns: 1fr auto;
+      & {
+        grid-template-columns: 1fr auto;
+      }
 
       span { grid-column: 1 / -1; }
       &::after { grid-column: 2; grid-row: 1; }

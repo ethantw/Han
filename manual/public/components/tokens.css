@@ -11,7 +11,7 @@
  * host page's inherited `color-scheme` is dark (color-scheme inherits
  * across the shadow boundary; light-dark() re-resolves inside).
  *
- * Shadow-internal styles (console.css + controls.css's console clusters)
+ * Shadow-internal styles (console.css + the shared control-family sheets)
  * consume `--_*` ONLY — never `--ui-*` directly, and NEVER declare
  * `--ui-*` here (that would beat the homepage's inherited values
  * and break its theming).
@@ -38,7 +38,7 @@
   ;
 
   /* shadow ink base for the sheet drop-shadow */
-  --_shadow-ink: var(--palette-black, #111111);
+  --_shadow-ink: var(--ui-shadow-ink, #111111);
 
   /* type + metrics — theme-invariant single-value fallbacks (home.css ramp) */
   --_font-mono:  var(--font-mono, ui-monospace, 'SF Mono', Menlo, Consolas, monospace);

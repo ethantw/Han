@@ -18,7 +18,7 @@ const KEY = 'han-playground-src'
  * the sheet's direct, non-clone paper so a new lens cannot double every
  * assertion again. */
 const $paper = (page: Page) =>
-  page.locator('#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)')
+  page.locator('#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])')
 const $preview = (page: Page) => $paper(page).locator('[data-pg-preview]')
 const $src = (page: Page) => page.locator('#station-playground [data-pg-src]')
 /** Type source into the textarea. Both panes are always on stage now — the
@@ -163,7 +163,7 @@ test.describe('station⑤ playground', () => {
       page.evaluate(() => {
         const $rail = document.querySelector('#station-playground [data-pg-panes]')!
         const $card = document.querySelector(
-          '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+          '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
         )!
         const $g = $card.querySelector('[data-pg-preview]')!
         const gs = getComputedStyle($g)
@@ -204,7 +204,7 @@ test.describe('station⑤ playground', () => {
     // No switch: in a hover environment the loupe arrives after the specimen's
     // own entrance. It parks on the host's opening block so it never has to be
     // discovered, and from then on the reader drives it.
-    const $lens = page.locator('#station-playground .Lens')
+    const $lens = page.locator('#station-playground [data-mag-lens]')
     await $paper(page).scrollIntoViewIfNeeded()
     await expect($lens).toHaveAttribute('data-lens-arrived', '')
     await expect($lens).toBeVisible()
@@ -212,9 +212,9 @@ test.describe('station⑤ playground', () => {
     const centre = () =>
       page.evaluate(() => {
         const c = document.querySelector(
-          '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+          '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
         )!.getBoundingClientRect()
-        const l = document.querySelector('#station-playground .Lens')!.getBoundingClientRect()
+        const l = document.querySelector('#station-playground [data-mag-lens]')!.getBoundingClientRect()
         return Math.round(l.y + l.height / 2 - c.y)
       })
     const parked = await centre()
@@ -239,11 +239,11 @@ test.describe('station⑤ playground', () => {
     await $paper(page).hover({ position: { x: 200, y: 320 } })
     const off = await page.evaluate(() => {
       const $h = document.querySelector(
-        '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone)',
+        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone])',
       )!
       let $frame = $h.parentElement!
       while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
-      const l = $frame.querySelector(':scope > .Lens')!.getBoundingClientRect()
+      const l = $frame.querySelector(':scope > [data-mag-lens]')!.getBoundingClientRect()
       const h = $h.getBoundingClientRect()
       // hovered at 200,320 inside the card
       return [
@@ -270,8 +270,8 @@ test.describe('station⑤ playground', () => {
           while ($frame && getComputedStyle($frame).position === 'static') $frame = $frame.parentElement!
           return [
             $h.className,
-            !!$frame.querySelector(':scope > .Lens'),
-            $h.querySelectorAll('.Lens').length,
+            !!$frame.querySelector(':scope > [data-mag-lens]'),
+            $h.querySelectorAll('[data-mag-lens]').length,
           ]
         }),
       ),
@@ -300,11 +300,11 @@ test.describe('station⑤ playground', () => {
         })
       }
       const $src = document.querySelector(
-        '#station-playground .PgSheet > [data-pg-paper]:not(.is-lens-clone) [data-pg-preview]',
+        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
       )!
-      const $copy = document.querySelector('#station-playground .is-lens-clone .PgGalley')!
+      const $copy = document.querySelector('#station-playground [data-lens-clone] .PgGalley')!
       const zoom = Number.parseFloat(
-        getComputedStyle(document.querySelector('#station-playground .Lens')!)
+        getComputedStyle(document.querySelector('#station-playground [data-mag-lens]')!)
           .getPropertyValue('--lens-zoom'),
       )
       const a = sig($src, 1)
@@ -332,7 +332,7 @@ test.describe('station⑤ playground', () => {
 
     // The preview must be a descendant of main (so it inherits config).
     expect(await main.locator(
-      '.PgSheet > [data-pg-paper]:not(.is-lens-clone) [data-pg-preview]',
+      '.PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
     ).count()).toBe(1)
 
     await openGroupOf(page, 'squeeze')

@@ -35,8 +35,10 @@
   padding-block: 2.5rem;
 }
 .ConsoleLoaderMark {
-  display: block;
-  overflow: visible;
+  & {
+    display: block;
+    overflow: visible;
+  }
 
   & circle {
     fill: var(--l-muted);

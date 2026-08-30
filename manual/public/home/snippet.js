@@ -9,7 +9,7 @@
  * event, so it can be lifted into its own element with zero rewiring.
  *
  * Rendering stays pure: codegen.js turns config into `{ lang, code }[]`,
- * `buildPane` turns each into a `<figure class="CodePane">` (textContent
+ * `buildPane` turns each into a `<figure data-component="code-pane">` (textContent
  * for code — never innerHTML with interpolated code), and highlight.js
  * colours them via the Custom Highlight API.
  *
@@ -23,7 +23,7 @@ import {
 import { highlightAll } from '/home/highlight.js'
 import { icon } from '/common/icon.js'
 
-/* ── pane[] → <figure class="CodePane"> ──
+/* ── pane[] → <figure data-component="code-pane"> ──
  * figcaption 是語言徽章（CLI/HTML/JS/CSS）＋ 唯一的 <button> 複製鍵
  * （元素選擇器承載，不需 data-* hook），鏡射 InstallChip 的複製鍵慣例。CLI
  * pane 額外把 pm select 塞進標籤旁邊——package manager 只對這一格有意義，
@@ -32,7 +32,7 @@ const LANG_LABEL = { bash: 'CLI', html: 'HTML', js: 'JS', css: 'CSS' }
 
 const buildPane = ({ lang, code }, $pm) => {
   const $figure = document.createElement('figure')
-  $figure.className = 'CodePane'
+  $figure.dataset.component = 'code-pane'
 
   const $figcaption = document.createElement('figcaption')
 
@@ -189,7 +189,7 @@ export const initSnippet = ($root = document) => {
   $panes.addEventListener(
     'click',
     async (event) => {
-      const $btn = event.target.closest('figure.CodePane button')
+      const $btn = event.target.closest('figure[data-component="code-pane"] button')
       if (!$btn) return
       const $code = $btn.closest('figure')?.querySelector('pre code')
       if (!$code) return

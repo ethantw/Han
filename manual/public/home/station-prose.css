@@ -8,7 +8,7 @@
  */
 
 #station-prose {
-  /* prose 開關。`.Toggle` 是 controls.css 的共用零件，但那張表消費的是
+  /* prose 開關。`.Toggle` 是 toggle.css 的共用零件，但那張表消費的是
      console 的 `--_*` token 層，而那層只被 adopt 進影子 DOM——在本頁的
      light DOM 裡 `var(--_rule)` 沒有值，整顆開關會靜靜地畫成一片透明
      （`background: var(--_rule)` 在 computed-value time 失效，退成
@@ -67,22 +67,23 @@
    per card: the cards stay miniatures on purpose（整篇一眼 is what this station
    demonstrates), and a loupe that can cross from the 橫排 card into the 直排 one
    magnifies the comparison itself. */
-#station-prose .Lens {
+#station-prose [data-mag-lens] {
   --lens-zoom: 1.75;
   --lens-size: min(24rem, 85cqi);
 }
 
 /* 平移鈕，與四語長帶、遊樂場同一支模組、同一個角落。 */
 .ProseNav {
-  display: flex;
+  & {
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
+  }
 
   /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉 UA 的
      `[hidden]`，所以要自己認一次。 */
   &[hidden] { display: none; }
-
-  justify-content: end;
-  gap: 0.5rem;
-  margin-block-start: 0.75rem;
 
   &.ProseNav--top {
     flex: none;

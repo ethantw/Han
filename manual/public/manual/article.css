@@ -48,12 +48,14 @@ main {
   }
 
   > article {
-    max-inline-size: var(--m-content-w);
-    margin: 0 auto;
-    /* font-family: var(--han-font-alternative); */
-    font-size: 1rem;
-    line-height: 1.95;
-    color: var(--ink-soft);
+    & {
+      max-inline-size: var(--m-content-w);
+      margin: 0 auto;
+      /* font-family: var(--han-font-alternative); */
+      font-size: 1rem;
+      line-height: 1.95;
+      color: var(--ink-soft);
+    }
 
     > h1 {
       margin: 0 0 8px;
@@ -106,7 +108,9 @@ main {
        `id`, so we just decorate. Always-on at low opacity, full on
        hover for affordance. */
     h2[id], h3[id], h4[id] {
-      scroll-margin-top: calc(var(--m-header-h) + 1em);
+      & {
+        scroll-margin-top: calc(var(--m-header-h) + 1em);
+      }
 
       &::before {
         content: '#';
@@ -126,10 +130,12 @@ main {
 
     /* Body links — accent-deep with a soft underline. */
     a:link, a:visited {
-      color: var(--accent-deep);
-      text-decoration: none;
-      border-block-end: 1px solid var(--accent-soft);
-      transition: border-color 150ms;
+      & {
+        color: var(--accent-deep);
+        text-decoration: none;
+        border-block-end: 1px solid var(--accent-soft);
+        transition: border-color 150ms;
+      }
 
       &:hover { border-block-end-color: var(--accent) }
     }
@@ -159,15 +165,17 @@ main {
 
     /* Code blocks — dark inverted (terminal-style) in BOTH themes. */
     pre {
-      padding: 18px 22px;
-      background: var(--m-code-bg);
-      color: var(--m-code-fg);
-      border: 0;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      line-height: 1.7;
+      & {
+        padding: 18px 22px;
+        background: var(--m-code-bg);
+        color: var(--m-code-fg);
+        border: 0;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: var(--font-mono);
+        font-size: 0.875rem;
+        line-height: 1.7;
+      }
 
       code {
         background: transparent;
@@ -181,7 +189,7 @@ main {
     /* Highlight-API token colours — the homepage highlighter (loaded by a
        module tag in _layout.html) colours the fenced blocks via the Custom
        Highlight API. Code blocks are terminal-dark in BOTH themes here, so
-       one light-on-dark palette serves both (matches controls.css's set). */
+       one light-on-dark palette serves both (matches common/code.css). */
     pre code::highlight(code-comment) { color: #6f7b8b; }
     pre code::highlight(code-string)  { color: #b8d39a; }
     pre code::highlight(code-keyword) { color: #88aaff; }
@@ -236,12 +244,14 @@ main {
 
     /* Markdown blockquote → soft callout (kept for legacy markdown). */
     blockquote {
-      margin-inline: 0;
-      padding: 14px 18px;
-      background: var(--paper-deep);
-      border-inline-start: 3px solid var(--accent-soft);
-      border-radius: 0 6px 6px 0;
-      color: var(--ink-soft);
+      & {
+        margin-inline: 0;
+        padding: 14px 18px;
+        background: var(--paper-deep);
+        border-inline-start: 3px solid var(--accent-soft);
+        border-radius: 0 6px 6px 0;
+        color: var(--ink-soft);
+      }
 
       :first-child { margin-block-start: 0 }
       :last-child  { margin-block-end: 0 }
@@ -258,9 +268,11 @@ main {
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 1rem;
+      & {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1rem;
+      }
 
       th, td {
         text-align: start;

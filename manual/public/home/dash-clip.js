@@ -21,8 +21,8 @@ import { onRendered, settled } from './measure.js'
 /** Align station②'s dash column and publish its sticky-copy timeline. */
 export const initDashClip = ($root = document) => {
   const $col = $root.querySelector('.DashColumn')
-  const $problem = $root.querySelector('.DashNote')
-  const $noteStage = $problem?.closest('.DashNoteStage')
+  const $problem = $root.querySelector('[data-part="dash-note"]')
+  const $noteStage = $problem?.closest('[data-part="dash-note-stage"]')
   const $noteEnd = $col?.querySelector('.DashNoteEnd')
   const $copy = $root.querySelector('.TwoEmDashes')
   const $specimenStage = $root.querySelector('[data-dash-specimens]')

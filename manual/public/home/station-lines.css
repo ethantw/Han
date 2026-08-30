@@ -162,7 +162,7 @@
       text-align: start;
     }
 
-    /* 呼吸開關。`.Toggle` 是 controls.css 的共用零件，但那張表消費的是
+    /* 呼吸開關。`.Toggle` 是 toggle.css 的共用零件，但那張表消費的是
        console 的 `--_*` token 層，而那層只被 adopt 進影子 DOM——在本頁
        的 light DOM 裡 `var(--_rule)` 沒有值，整顆開關會靜靜地畫成一片
        透明（`background: var(--_rule)` 在 computed-value time 失效，
@@ -264,8 +264,8 @@
          這裡的字得看得出「行」，行末才有話可說。 */
       --_wm-text:
         light-dark(
-          color-mix(in srgb, var(--palette-ink) 6%, transparent),
-          color-mix(in srgb, var(--palette-paper-deep) 9%, transparent)
+          color-mix(in srgb, var(--ui-paper-fibre-ink) 6%, transparent),
+          color-mix(in srgb, var(--ui-paper-fibre-paper) 9%, transparent)
         )
       ;
       /* 懸掛區與它的版口線。深色地上綠掉得快，淡側各補一級。 */
@@ -282,8 +282,8 @@
          挑第幾個，也不必知道哪一個真的落在行末。 */
       --_wm-punct:
         light-dark(
-          color-mix(in srgb, var(--palette-ink) 8%, transparent),
-          color-mix(in srgb, var(--palette-paper-deep) 16%, transparent)
+          color-mix(in srgb, var(--ui-paper-fibre-ink) 8%, transparent),
+          color-mix(in srgb, var(--ui-paper-fibre-paper) 16%, transparent)
         )
       ;
 
@@ -530,8 +530,8 @@
   :root[data-han-module-lines="off"] & div[role="presentation"] {
     --_wm-zone:
       light-dark(
-        color-mix(in srgb, var(--palette-ink) 4%, transparent),
-        color-mix(in srgb, var(--palette-paper-deep) 6%, transparent)
+        color-mix(in srgb, var(--ui-paper-fibre-ink) 4%, transparent),
+        color-mix(in srgb, var(--ui-paper-fibre-paper) 6%, transparent)
       )
     ;
     --_wm-rule: color-mix(in srgb, var(--ui-supplement-text) 30%, transparent);

@@ -19,7 +19,7 @@ const ready = async (page: Page) => {
   await page.locator('.LeadForme .Slug').first().waitFor()
   await page.locator('.LeadForme').evaluate(($f) => {
     $f.setAttribute('data-revealed', '')
-    $f.classList.add('settled')
+    $f.dataset.settled = ''
     $f.scrollIntoView({ block: 'center' })
   })
   await page.waitForTimeout(600)

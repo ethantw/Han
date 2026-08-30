@@ -21,7 +21,7 @@
  *     but removing it from the source moved the computed colour on every
  *     variant. Treat "redundant" as "worth checking", never as proof.
  *   • It only sees the homepage. `common/*` also serves the docs page and
- *     `common/controls.css` is adopted into <han-console>'s shadow, where the
+ *     the `common/*` control-family sheets are adopted into <han-console>'s shadow, where the
  *     ancestor chain — and therefore what is inherited — is different.
  *   • And the plan's own keep-cases still apply (a declaration that exists to
  *     guard against a variable override, or to say "back to the default" among

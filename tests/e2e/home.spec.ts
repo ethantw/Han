@@ -146,7 +146,7 @@ test.describe('per-group 使用預設値 buttons', () => {
     await page.goto('/')
     const main = page.locator('main')
     const linesDefault = page.locator(
-      'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary .Default',
+      'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary [data-action="restore-defaults"]',
     )
 
     await openGroupOf(page, 'squeeze')
@@ -174,7 +174,7 @@ test.describe('per-group 使用預設値 buttons', () => {
   test('metrics group button restores all three sliders', async ({ page }) => {
     await page.goto('/')
     const main = page.locator('main')
-    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header .Default')
+    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header [data-action="restore-defaults"]')
     const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
 
     await expect(metricsDefault).toBeHidden()

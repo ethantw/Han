@@ -3,7 +3,7 @@
  * Highlight API (Baseline 2025: Chrome 105 / Safari 17.2 / Firefox 140).
  * No DOM mutation — each `<code>` stays a single pure-text node; we
  * register a Range per token under one Highlight per category and
- * colour them with `::highlight(code-*)` in `controls.css`.
+ * colour them with `::highlight(code-*)` in `common/code.css`.
  * Feature-detected: where the API is missing, the code just stays
  * plain light-on-dark text — still perfectly readable, just uncoloured.
  *

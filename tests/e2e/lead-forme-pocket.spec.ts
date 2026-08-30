@@ -142,7 +142,7 @@ test('pocket: 直排 pills + fore-edge colophon, clear of the vertex foot', asyn
   // (§ entrance · lf-chrome-in), so an un-revealed forme has nothing to click.
   await page.locator('.LeadForme').evaluate(($f) => {
     $f.setAttribute('data-revealed', '')
-    $f.classList.add('settled')
+    $f.dataset.settled = ''
   })
   await page.locator('.LeadForme .Controls label', { hasText: '黑體' }).click()
   await expect(page.locator('.LeadForme')).toHaveAttribute('data-face', 'h')

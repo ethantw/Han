@@ -71,7 +71,7 @@
        prose 的旗標種在 `:where(article)` 上，`:root` 撥不到，實際的
        `article { --han-prose: off }` 在 common/module-state.css；這顆按下去
        只是把 `<html>` 的狀態屬性與 console 的設定一起翻面。 -->
-  <div class="ProseControls">
+  <header class="ProseControls">
     <label class="Toggle for-prose">
       <input type="checkbox" name="prose" data-han-module-proxy="prose" checked />
       <span>{{ prProseToggle }}</span>
@@ -86,7 +86,7 @@
         <span data-icon="chevron" aria-hidden="true"></span>
       </button>
     </nav>
-  </div>
+  </header>
 
   <!-- 一顆放大鏡管兩張卡（`data-lens` 在容器上，不在各卡上）：兩顆圓疊在一起
        只是噪音，而一顆能從橫排卡跨到直排卡的鏡子，正好是這一站要人比的東西。 -->

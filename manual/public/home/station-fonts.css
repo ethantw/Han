@@ -27,9 +27,11 @@
   }
 
   figcaption {
-    max-inline-size: 32em;
-    font-family: var(--han-font-alternative);
-    line-height: 1.9;
+    & {
+      max-inline-size: 32em;
+      font-family: var(--han-font-alternative);
+      line-height: 1.9;
+    }
 
     h3 {
       margin-block: 2.5em 0;
@@ -76,12 +78,14 @@
      the same sentence reads down the column. The old design was three
      1:1 cells with a single 字 each — one char showed nothing. */
   > li {
-    position: relative;
-    padding: 1.125rem 2rem 1rem 1rem;
-    line-height: 1.5;
-    background: var(--ui-bg);
-    border-block-end: 1px solid var(--ui-rule);
-    --han-punctuation-refinement: compress;
+    & {
+      position: relative;
+      padding: 1.125rem 2rem 1rem 1rem;
+      line-height: 1.5;
+      background: var(--ui-bg);
+      border-block-end: 1px solid var(--ui-rule);
+      --han-punctuation-refinement: compress;
+    }
 
     &[data-face="sans"]    { font-family: var(--han-sans); }
     &[data-face="serif"]   { font-family: var(--han-serif); }
@@ -126,14 +130,16 @@
   }
 
   fieldset {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin: 0;
-    padding: 3px;
-    border: 1px solid var(--ui-rule);
-    border-radius: 999px;
-    background: var(--ui-bg);
+    & {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: 0;
+      padding: 3px;
+      border: 1px solid var(--ui-rule);
+      border-radius: 999px;
+      background: var(--ui-bg);
+    }
 
     &:hover { border-color: var(--ui-supplement-text); }
   }
@@ -161,11 +167,13 @@
   }
 
   label {
-    padding-block: 4px;
-    padding-inline: 12px;
-    border-radius: 40px;
-    font-size: .875rem;
-    cursor: pointer;
+    & {
+      padding-block: 4px;
+      padding-inline: 12px;
+      border-radius: 40px;
+      font-size: .875rem;
+      cursor: pointer;
+    }
 
     &:has(input:checked) {
       background: var(--ui-accent-bg);
@@ -197,14 +205,16 @@
   font-family: var(--han-sans);
 }
 #station-fonts:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
-  font-family: var(--han-cursive);
+  & {
+    font-family: var(--han-cursive);
 
-  /* 韓文那格例外，楷體時仍走明體（owner 定案）。不是覆蓋率的問題——實測
-     '한' 在 "LXGW WenKai TC" 下的字寬與 serif 不同（259.5 vs 299.7／100px），
-     它自己畫得出諺文——是美學取捨：楷體是漢字書寫傳統的字體，諺文沒有對應的
-     傳承楷，混排出來的諺文不是同一套骨架。標點仍是 DTJ Serif（`--han-serif`
-     與 `--han-cursive` 兩支的標點層本來就都指向 Diantenjeom Serif），所以這
-     一格換的只有漢字與諺文的字面，標點的公約不動。 */
+    /* 韓文那格例外，楷體時仍走明體（owner 定案）。不是覆蓋率的問題——實測
+       '한' 在 "LXGW WenKai TC" 下的字寬與 serif 不同（259.5 vs 299.7／100px），
+       它自己畫得出諺文——是美學取捨：楷體是漢字書寫傳統的字體，諺文沒有對應的
+       傳承楷，混排出來的諺文不是同一套骨架。標點仍是 DTJ Serif（`--han-serif`
+       與 `--han-cursive` 兩支的標點層本來就都指向 Diantenjeom Serif），所以這
+       一格換的只有漢字與諺文的字面，標點的公約不動。 */
+  }
   &:where(li[lang|="ko"] p) {
     font-family: var(--han-serif);
   }
@@ -378,7 +388,7 @@
     color: var(--ui-supplement-text);
     font-size: 0.75rem;
   }
-  /* 盒的長相交給 common/controls.css § Customizable <select>；這裡只留
+  /* 盒的長相交給 common/select.css § Customizable <select>；這裡只留
      這一格自己要的字級。 */
   select {
     font-size: 0.75rem;
@@ -393,55 +403,59 @@
 
 /* 同站①四語報：四語永遠留在一列 rail，邊緣切到下一張就是可捲提示。 */
 :where(.PunctLang[data-layout="rail"]) {
-  /* RTL implicit tracks must not feed their intrinsic width back into the
-     parent grid. The rail may bleed; the figure (and therefore pills/caption)
-     keeps the exact width measured in horizontal state. */
-  inline-size: var(--pl-figure-inline-size);
-  min-inline-size: 0;
-  max-inline-size: 100%;
+  & {
+    /* RTL implicit tracks must not feed their intrinsic width back into the
+       parent grid. The rail may bleed; the figure (and therefore pills/caption)
+       keeps the exact width measured in horizontal state. */
+    inline-size: var(--pl-figure-inline-size);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
 
   ul {
-    /* 同 `.Prose`：破出版心的是捲動帶自己，不是包著藥丸與 figcaption 的 figure。
-       左緣仍在正文欄，右緣由 punct-lang-layout.js 算到 main 的實際頁緣。 */
-    /* `inline-size` 不能直接寫成頁面寬：這是 grid item，指定寬會反過來參與
-       intrinsic track sizing，把父 figure（連同藥丸、圖說）一起撐出去。
+    & {
+      /* 同 `.Prose`：破出版心的是捲動帶自己，不是包著藥丸與 figcaption 的 figure。
+         左緣仍在正文欄，右緣由 punct-lang-layout.js 算到 main 的實際頁緣。 */
+      /* `inline-size` 不能直接寫成頁面寬：這是 grid item，指定寬會反過來參與
+         intrinsic track sizing，把父 figure（連同藥丸、圖說）一起撐出去。
 
-       完整照 `.Prose` 的 stage：負 margin 向**兩側**破到 main 邊緣；start padding
-       再把第一張送回原正文欄。初始畫面仍對齊，捲動後卡片則能穿過這段 padding，
-       直到頁面邊緣才被裁掉——不是在原版心裡消失。 */
-    box-sizing: border-box;
-    position: relative;
-    transform: translateX(calc(-1 * var(--pl-rail-inline-start)));
-    inline-size: var(--pl-rail-canvas-inline-size);
-    /* Physical on purpose: the stage turns RTL in vertical mode, while these
-       two values were measured from the page's physical left/right edges. */
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: var(--pl-rail-inline-start);
-    padding-right: var(--plate-pad);
-    scroll-padding-left: var(--pl-rail-inline-start);
-    /* Apple-style stage：軌道本身沒有「一只大容器」的外觀，卡片才是物件。
-       共同框只屬於上面的 2×2 table 狀態；rail 讓卡片帶著自己的框越出版心。 */
-    --pl-rail-gap: clamp(0.75rem, 1.5vw, 1.25rem);
-    gap: var(--pl-rail-gap);
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    grid-template-columns: none;
-    grid-template-rows: minmax(0, auto);
-    grid-auto-flow: column;
-    /* Stage 可以 full-bleed，卡片不跟著膨脹：寬度沿用原 2×2 figure 的半欄。
-       所以 grid→rail 只是排法改變，不是卡片忽然長成頁面的一半。 */
-    grid-auto-columns:
-      calc((100cqi - 3 * var(--pl-rail-gap)) / var(--pl-visible-count, 2.5));
-    block-size: auto;
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: inline mandatory;
-    /* 同段落長帶：卡片在頁緣被切與外部箭頭已經說明「可以捲」，原生 scrollbar
-       留在卡片裡只會被讀成另一層容器。 */
-    scrollbar-width: none;
+         完整照 `.Prose` 的 stage：負 margin 向**兩側**破到 main 邊緣；start padding
+         再把第一張送回原正文欄。初始畫面仍對齊，捲動後卡片則能穿過這段 padding，
+         直到頁面邊緣才被裁掉——不是在原版心裡消失。 */
+      box-sizing: border-box;
+      position: relative;
+      transform: translateX(calc(-1 * var(--pl-rail-inline-start)));
+      inline-size: var(--pl-rail-canvas-inline-size);
+      /* Physical on purpose: the stage turns RTL in vertical mode, while these
+         two values were measured from the page's physical left/right edges. */
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: var(--pl-rail-inline-start);
+      padding-right: var(--plate-pad);
+      scroll-padding-left: var(--pl-rail-inline-start);
+      /* Apple-style stage：軌道本身沒有「一只大容器」的外觀，卡片才是物件。
+         共同框只屬於上面的 2×2 table 狀態；rail 讓卡片帶著自己的框越出版心。 */
+      --pl-rail-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+      gap: var(--pl-rail-gap);
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      grid-template-columns: none;
+      grid-template-rows: minmax(0, auto);
+      grid-auto-flow: column;
+      /* Stage 可以 full-bleed，卡片不跟著膨脹：寬度沿用原 2×2 figure 的半欄。
+         所以 grid→rail 只是排法改變，不是卡片忽然長成頁面的一半。 */
+      grid-auto-columns:
+        calc((100cqi - 3 * var(--pl-rail-gap)) / var(--pl-visible-count, 2.5));
+      block-size: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
+      /* 同段落長帶：卡片在頁緣被切與外部箭頭已經說明「可以捲」，原生 scrollbar
+         留在卡片裡只會被讀成另一層容器。 */
+      scrollbar-width: none;
+    }
     &::-webkit-scrollbar { display: none; }
   }
 
@@ -470,9 +484,11 @@
 
 /* 四張都保有可讀行長時不假裝成 carousel：同一列完整比較，沒有捲動 chrome。 */
 :where(.PunctLang[data-layout="grid"]) {
-  inline-size: calc(100% + var(--df-copy-inset));
-  max-inline-size: none;
-  margin-inline-start: calc(-1 * var(--df-copy-inset));
+  & {
+    inline-size: calc(100% + var(--df-copy-inset));
+    max-inline-size: none;
+    margin-inline-start: calc(-1 * var(--df-copy-inset));
+  }
 
   ul {
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -496,23 +512,25 @@
    grid columns 讓繁在最右，往左依次是簡、日、韓；每張卡的內容方向另行扶正。 */
 #station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
   .PunctLang[data-layout="rail"] ul {
-  direction: rtl;
-  /* In vertical writing the physical card width is the specimen's block
-     size.  Do not reuse the horizontal half-column width: each language owns
-     as many columns as its actual glyph/ruby run needs (Korean notably needs
-     more than Japanese), and the outer rail handles the resulting length. */
-  grid-auto-columns: max-content;
-  block-size: auto;
-  max-block-size: none;
-  /* Each wheel delta is projected to RTL scrollLeft by JS. Mandatory snap
-     would round small trackpad deltas straight back to the first card before
-     the next delta arrives, making the text area feel immovable. */
-  scroll-snap-type: none;
-  /* RTL's first card (繁) aligns with the original column's right edge. */
-  padding-left: var(--plate-pad);
-  padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
-  scroll-padding-left: 0;
-  scroll-padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
+  & {
+    direction: rtl;
+    /* In vertical writing the physical card width is the specimen's block
+       size.  Do not reuse the horizontal half-column width: each language owns
+       as many columns as its actual glyph/ruby run needs (Korean notably needs
+       more than Japanese), and the outer rail handles the resulting length. */
+    grid-auto-columns: max-content;
+    block-size: auto;
+    max-block-size: none;
+    /* Each wheel delta is projected to RTL scrollLeft by JS. Mandatory snap
+       would round small trackpad deltas straight back to the first card before
+       the next delta arrives, making the text area feel immovable. */
+    scroll-snap-type: none;
+    /* RTL's first card (繁) aligns with the original column's right edge. */
+    padding-left: var(--plate-pad);
+    padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
+    scroll-padding-left: 0;
+    scroll-padding-right: max(var(--plate-pad), var(--pl-rail-inline-end));
+  }
 
   li { direction: ltr; }
   /* Rail ownership contract: cards take their natural content width and may
@@ -537,12 +555,14 @@
 }
 
 :where(.PunctLang[data-layout="rail"]) .PunctLangNav {
-  display: flex;
-  /* 箭頭是正文 chrome，不是會流出頁緣的卡片：留在正常 figure 版心內。 */
-  justify-content: end;
-  gap: 0.5rem;
-  margin-block: 0.75rem 0;
-  max-inline-size: 100%;
+  & {
+    display: flex;
+    /* 箭頭是正文 chrome，不是會流出頁緣的卡片：留在正常 figure 版心內。 */
+    justify-content: end;
+    gap: 0.5rem;
+    margin-block: 0.75rem 0;
+    max-inline-size: 100%;
+  }
 
   &[hidden] { display: none; }
 
@@ -588,7 +608,9 @@
 /* RTL rail 的「內容深處」在左邊，沿用鉛字盤 FormeNav 的按鈕順序與圖示規則。 */
 #station-fonts:has(input[name="pl-writing"][value="vertical"]:checked)
   :where(.PunctLang[data-layout="rail"]) .PunctLangNav {
-  flex-direction: row-reverse;
+  & {
+    flex-direction: row-reverse;
+  }
 
   [data-scroll="next"] [data-icon] { rotate: none; }
   [data-scroll="prev"] [data-icon] { rotate: 180deg; }

@@ -69,15 +69,17 @@
 }
 
 .Brand {
-  /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
-   * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
-   * per-font 常數，故絕對定位的 .BrandGlyph 要靠這幾個值換算（見該規則）。 */
-  --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880；基線以下 0.12em） */
-  /* 行盒度量 hhea（fontTools 讀 Shanggu／Diantenjeom 同值）。此字
-   * USE_TYPO_METRICS 未設 → 瀏覽器排版用 hhea/win，非 sTypo。⚠ 勿用 canvas
-   * fontBoundingBox：被 Chrome 捨入成整數 px，多 ~0.005em 誤差。 */
-  --brand-line-ascent: 1.151em;          /* hhea ascender 1151 / upem 1000 */
-  --brand-line-descent: 0.286em;         /* hhea |descender| 286 / upem 1000 */
+  & {
+    /* SVG「漢」定位度量。em box / typo（sTypoAsc 880）給 SVG 內部基線；
+     * 行盒度量（fontBoundingBox，canvas 實測）給瀏覽器排版基線。兩套差一個
+     * per-font 常數，故絕對定位的 .BrandGlyph 要靠這幾個值換算（見該規則）。 */
+    --brand-glyph-baseline: 0.88em;        /* 字母基線距字形頂端（em box / sTypoAsc 880；基線以下 0.12em） */
+    /* 行盒度量 hhea（fontTools 讀 Shanggu／Diantenjeom 同值）。此字
+     * USE_TYPO_METRICS 未設 → 瀏覽器排版用 hhea/win，非 sTypo。⚠ 勿用 canvas
+     * fontBoundingBox：被 Chrome 捨入成整數 px，多 ~0.005em 誤差。 */
+    --brand-line-ascent: 1.151em;          /* hhea ascender 1151 / upem 1000 */
+    --brand-line-descent: 0.286em;         /* hhea |descender| 286 / upem 1000 */
+  }
 
   & {
     display: inline-flex;
@@ -92,16 +94,18 @@
      明暗自動切（暗色 --ui-text → 淺，括號跟著變亮）。字面高度 ~1em、
      視覺置中對齊字標。 */
   .BrandMark {
-    /* 基線錨定，不用 align-self: center——後者在 flex 交叉盒置中，而交叉盒由
-     * 相鄰「透明漢字」的字體度量撐開；尚古行盒度量非對稱（上緣 1.151 ＞ 下緣
-     * 0.286），webfont 一載入就把交叉盒中心往上推，字徽跟著上飄，卻與實測錨定、
-     * 不動的漢 SVG 錯開。改錨到基線（與漢 SVG 同一參考），再以視覺置中量位移，
-     * 兩套字體下都穩定。位移＝把 1em 高的字徽中心對到漢字面光學中心。 */
-    flex: 0 0 auto;
-    align-self: baseline;
-    translate: 0 var(--brand-mark-shift, 0.16em);
-    block-size: 1em;
-    inline-size: 1em;
+    & {
+      /* 基線錨定，不用 align-self: center——後者在 flex 交叉盒置中，而交叉盒由
+       * 相鄰「透明漢字」的字體度量撐開；尚古行盒度量非對稱（上緣 1.151 ＞ 下緣
+       * 0.286），webfont 一載入就把交叉盒中心往上推，字徽跟著上飄，卻與實測錨定、
+       * 不動的漢 SVG 錯開。改錨到基線（與漢 SVG 同一參考），再以視覺置中量位移，
+       * 兩套字體下都穩定。位移＝把 1em 高的字徽中心對到漢字面光學中心。 */
+      flex: 0 0 auto;
+      align-self: baseline;
+      translate: 0 var(--brand-mark-shift, 0.16em);
+      block-size: 1em;
+      inline-size: 1em;
+    }
 
     circle { fill: var(--ui-accent); }
     .brace { stroke: var(--ui-text); }
@@ -163,9 +167,11 @@
     color: var(--ui-text);
   }
   small {
-    font-family: var(--han-font-default);
-    color: var(--ui-supplement-text);
-    letter-spacing: 0.3em;
+    & {
+      font-family: var(--han-font-default);
+      color: var(--ui-supplement-text);
+      letter-spacing: 0.3em;
+    }
 
     &::before {
       content: '';
@@ -191,9 +197,9 @@
   }
 }
 
-/* The `.Toggle` switch component moved to `common/controls.css` so it's
+/* The `.Toggle` switch component moved to `common/toggle.css` so it's
    adopted into the <han-console> shadow (home.css isn't). The homepage
-   still links controls.css, so any light-DOM `.Toggle` would still be
+   still links toggle.css, so any light-DOM `.Toggle` would still be
    styled — but none exists now (the console's toggles live in the shadow;
    /old.html carries its own frozen copy). */
 
@@ -216,12 +222,14 @@
 
   /* G3 字徽——字標左側，dots ＝ accent、括號 ＝ ink（隨主題明暗切）。 */
   .BrandMark {
-    flex: 0 0 auto;
-    align-self: center;
-    block-size: 1.35rem;
-    inline-size: 1.35rem;
-    margin-inline-end: 0.25rem;
-    translate: 0 0.03em;
+    & {
+      flex: 0 0 auto;
+      align-self: center;
+      block-size: 1.35rem;
+      inline-size: 1.35rem;
+      margin-inline-end: 0.25rem;
+      translate: 0 0.03em;
+    }
 
     circle { fill: var(--ui-accent); }
     .brace { stroke: var(--ui-text); }

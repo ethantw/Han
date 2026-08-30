@@ -23,7 +23,7 @@
 }
 
 :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)::backdrop {
-  background: color-mix(in srgb, var(--palette-black) 55%, transparent);
+  background: var(--ui-scrim);
   backdrop-filter: blur(3px);
 }
 
@@ -35,7 +35,7 @@
   }
 
   :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)
-    > :where(.QuickstartPanel, .SizeDialogPanel, .ReaderSheet) {
+    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-sheet"]) {
     opacity: 0;
     /* Start a full viewport below, rather than merely nudging the panel. */
     translate: 0 100dvb;
@@ -45,9 +45,11 @@
   }
 
   :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]
-    > :where(.QuickstartPanel, .SizeDialogPanel, .ReaderSheet) {
-    opacity: 1;
-    translate: 0 0;
+    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-sheet"]) {
+    & {
+      opacity: 1;
+      translate: 0 0;
+    }
 
     @starting-style {
       opacity: 0;
@@ -70,7 +72,7 @@
   }
 
   /* The old hash fallback is an in-flow continuation, not a lightbox. */
-  dialog.Full:target:not([open]) > .ReaderSheet {
+  dialog.Full:target:not([open]) > [data-part="reader-sheet"] {
     opacity: 1;
     translate: none;
   }

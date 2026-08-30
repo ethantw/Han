@@ -131,7 +131,7 @@ body.ManualPage {
 /* ─── <han-console> configurator (form="side" column) ─────────────────────
  * A full-viewport-height column pinned to the inline start, with its own
  * scroll. `:not(:defined)` hides it until the component upgrades (no
- * FOUC). Its shadow owns the control styling (tokens.css + controls.css +
+ * FOUC). Its shadow owns the control styling (tokens.css + control-family sheets +
  * console.css, fetched on connect); this rule only places the host box.
  *
  * 收著的時候整根滑到版外，**動的是 `inset-inline-start` 而不是

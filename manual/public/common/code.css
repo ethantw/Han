@@ -19,7 +19,7 @@ body.home {
 
   /* generic light code chrome — station④'s `.CodePane` terminal panel
      opts out via :where() (zero specificity, no cascade fight). */
-  pre:where(:not(.CodePane pre)) {
+  pre:where(:not([data-component="code-pane"] pre)) {
     background: var(--ui-panel);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-2);
@@ -44,16 +44,16 @@ body.home {
      so the tokens flip with the theme via light-dark() (color-scheme is set
      by the dark-mode recipe; light-dark(): Baseline 2024). Station④'s
      terminal-dark `.CodePane` keeps its own light-on-dark palette
-     (controls.css); the `:where(:not(.CodePane pre))` guard keeps this rule
+     (common/code-terminal.css); the code-pane guard keeps this rule
      level in specificity yet never matches a pane, so the two never fight.
      Dark-mode values reuse the CodePane palette; light-mode values are
      darkened to stay legible on the near-white panel. */
-  pre:where(:not(.CodePane pre)) code::highlight(code-comment) { color: light-dark(#6b7280, #6f7b8b); }
-  pre:where(:not(.CodePane pre)) code::highlight(code-string)  { color: light-dark(#4a7a2e, #b8d39a); }
-  pre:where(:not(.CodePane pre)) code::highlight(code-keyword) { color: light-dark(#2b57c9, #88aaff); }
-  pre:where(:not(.CodePane pre)) code::highlight(code-attr)    { color: light-dark(#9a6a00, #e8c275); }
-  pre:where(:not(.CodePane pre)) code::highlight(code-number)  { color: light-dark(#b3502f, #f2997a); }
-  pre:where(:not(.CodePane pre)) code::highlight(code-punct)   { color: light-dark(#6b7280, #8b94a3); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-comment) { color: light-dark(#6b7280, #6f7b8b); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-string)  { color: light-dark(#4a7a2e, #b8d39a); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-keyword) { color: light-dark(#2b57c9, #88aaff); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-attr)    { color: light-dark(#9a6a00, #e8c275); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-number)  { color: light-dark(#b3502f, #f2997a); }
+  pre:where(:not([data-component="code-pane"] pre)) code::highlight(code-punct)   { color: light-dark(#6b7280, #8b94a3); }
 }
 
 /* ─── selection ─────────────────────────────────────────────────── */

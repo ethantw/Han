@@ -38,16 +38,20 @@ body.NotFoundPage {
   }
 
   [data-part="actions"] {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
-    justify-content: center;
-    margin-block: 2.5rem 0;
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      justify-content: center;
+      margin-block: 2.5rem 0;
+    }
 
     a {
-      color: var(--accent-deep);
-      text-decoration: underline;
-      text-underline-offset: 0.25em;
+      & {
+        color: var(--accent-deep);
+        text-decoration: underline;
+        text-underline-offset: 0.25em;
+      }
 
       &:hover { color: var(--accent) }
     }

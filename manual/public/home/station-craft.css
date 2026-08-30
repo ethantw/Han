@@ -49,6 +49,8 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     margin: 0;
+    padding: 0;
+    list-style: none;
     border-block-end: 1px solid var(--ui-rule);
     --han-punctuation-hant: KLR;
     --han-punctuation-refinement: compress;
@@ -66,7 +68,9 @@
   }
 
   .Ax + .Ax {
-    border-inline-start: 1px solid var(--ui-rule);
+    & {
+      border-inline-start: 1px solid var(--ui-rule);
+    }
 
     @container theorem (max-width: 767px) {
       border-block-start: 1px solid var(--ui-rule);
@@ -113,9 +117,11 @@
   }
 
   mo {
-    margin-inline: 0.5rem;
-    font-size: 1rem;
-    color: var(--ui-supplement-text);
+    & {
+      margin-inline: 0.5rem;
+      font-size: 1rem;
+      color: var(--ui-supplement-text);
+    }
 
     &.Fn,
     &[stretchy="false"] { margin-inline: 0; }
@@ -143,11 +149,9 @@
  * read. It sits in the flow and is held together by rules and rhythm, the
  * way display maths sits in a page of prose. */
 .Theorem {
-  & {
-    container: theorem / inline-size;
-    margin: 0 0 2.5rem;
-    border-block: 1px solid var(--ui-rule);
-  }
+  container: theorem / inline-size;
+  margin: 0 0 2.5rem;
+  border-block: 1px solid var(--ui-rule);
 
 }
 
@@ -291,9 +295,10 @@
     margin: 0;
     padding-block: 2rem;
 
-    @media (max-width: 59.999rem) {
+    @container theorem (max-width: 959px) {
       margin-inline: calc(-1 * var(--rail-pad));
       padding-inline: var(--rail-pad);
+      overflow-x: auto;
       overflow-inline: auto;
       overscroll-behavior-inline: contain;
       scroll-padding-inline-start: var(--rail-pad);
@@ -306,7 +311,9 @@
     /* With JS, data-current names the visible card. No-JS keeps the checked
        first card and the default `on`, so the static proof remains true. */
     &:has(.SelRing > li[data-current] [data-author-toggle]:not(:checked)) {
-      --craft-author-demo: off;
+      & {
+        --craft-author-demo: off;
+      }
 
       .SelRing > li[data-current] {
         .Rule[data-role="framework"] .RuleDecl {
@@ -321,7 +328,7 @@
             text-decoration-thickness: 1px;
           }
 
-          .RuleSpec {
+          [data-part="rule-spec"] {
             color: var(--ui-supplement-text);
           }
         }
@@ -330,17 +337,19 @@
   }
 
   .ExampleBoard {
-    display: grid;
-    grid-template-columns: 1fr .8fr;
-    grid-template-areas:
-      "demo rules"
-      "nav  rules";
-    grid-template-rows: 1fr auto;
-    align-items: stretch;
-    gap: 1.5rem 3rem;
-    inline-size: 100%;
+    & {
+      display: grid;
+      grid-template-columns: 1fr .8fr;
+      grid-template-areas:
+        "demo rules"
+        "nav  rules";
+      grid-template-rows: 1fr auto;
+      align-items: stretch;
+      gap: 1.5rem 3rem;
+      inline-size: 100%;
+    }
 
-    @media (max-width: 59.999rem) {
+    @container theorem (max-width: 959px) {
       /* Keep a real slice of the rules pane visible at the rail's initial
          position. Its 80px peek is an affordance, not an accidental crop. */
       grid-template-columns:
@@ -460,15 +469,17 @@
     }
 
     .DemoCanvas {
-      display: grid;
-      place-content: center;
-      min-inline-size: 0;
-      margin: 0;
-      padding: 1.5rem;
-      font-family: var(--han-font-alternative);
-      font-size: clamp(1.25rem, 2.4vw, 2rem);
-      line-height: 1.8;
-      text-align: center;
+      & {
+        display: grid;
+        place-content: center;
+        min-inline-size: 0;
+        margin: 0;
+        padding: 1.5rem;
+        font-family: var(--han-font-alternative);
+        font-size: clamp(1.25rem, 2.4vw, 2rem);
+        line-height: 1.8;
+        text-align: center;
+      }
 
       p { margin: 0; }
     }
@@ -628,7 +639,7 @@
       color: var(--ui-supplement-text);
     }
 
-    .RuleSpec {
+    [data-part="rule-spec"] {
       display: block;
       margin-block-start: 0.25rem;
       font-family: var(--font-mono);
@@ -845,7 +856,7 @@
  * grid row on `::details-content`, NOT a height transition. The full
  * reasoning, the three engines it was measured on, and why the alternatives
  * (`block-size: auto`, `max-block-size`) both lose, are written once in
- * common/controls.css § details transition; this is that rule applied to the
+ * common/control-group.css § details transition; this is that rule applied to the
  * one `<details>` outside the console.
  *
  * Same accepted caveat: opening eases everywhere, closing eases in Chromium

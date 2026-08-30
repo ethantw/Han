@@ -101,6 +101,11 @@
   --ui-ink:      var(--palette-ink);
   --ui-ink-grey: light-dark(var(--palette-graphite), var(--palette-silver));
   --ui-rule:     light-dark(var(--palette-cloud), var(--palette-charcoal));
+  /* Elevation roles are invariant pigments whose opacity is chosen by each
+     component's physical depth. The modal scrim is shared as a complete
+     colour because every homepage dialog is the same interaction layer. */
+  --ui-shadow-ink: var(--palette-black);
+  --ui-scrim: color-mix(in srgb, var(--ui-shadow-ink) 55%, transparent);
 
   /* 標記原理圖 (home/station-semantics.css § .MarkDiagram). Two inks and a
      proof red: the mock glyphs ride `-ink-off` → `-ink` as they straighten,
@@ -110,6 +115,19 @@
   --ui-diagram-ink-off: light-dark(var(--palette-steel), var(--palette-steel-deep));
   --ui-proof:           light-dark(var(--palette-seal), var(--palette-seal-bright));
   --ui-syntax-tag:      light-dark(var(--palette-lapis), var(--palette-lapis-bright));
+  /* Fixed-pigment roles. Code samples stay terminal-dark in both themes;
+     the paper-fibre pair belongs to the lines illustration, not its page. */
+  --ui-paper-fibre-ink:   var(--palette-ink);
+  --ui-paper-fibre-paper: var(--palette-paper-deep);
+
+  --code-comment: color-mix(in srgb, var(--palette-mist) 38%, transparent);
+  --code-punct:   color-mix(in srgb, var(--palette-mist) 55%, transparent);
+  --code-keyword: var(--palette-green-bright);
+  --code-string:  var(--palette-lapis-bright);
+  --code-attr:    color-mix(in srgb, var(--palette-mist) 78%, transparent);
+  --code-number:  var(--palette-seal-bright);
+  --code-rule:    color-mix(in srgb, var(--palette-mist) 16%, transparent);
+  --code-rule-soft: color-mix(in srgb, var(--palette-mist) 12%, transparent);
 
   /* ── station grounds ───────────────────────────────────────────────
    * The station-plate system alternates two full-viewport grounds. Both

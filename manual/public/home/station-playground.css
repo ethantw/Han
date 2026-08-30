@@ -25,7 +25,7 @@
   &[data-playground] > header {
     color-scheme: dark;
     background: var(--ui-ink);
-    border-block-end-color: color-mix(in srgb, var(--palette-mist) 16%, transparent);
+    border-block-end-color: var(--code-rule);
   }
 
   /* the editor may bleed one gutter past the station measure — a wider
@@ -47,7 +47,7 @@
   /* the loupe belongs to the two-card layout only — in tab mode the proof is
      already at reading size and the pane may be the editor, so a circle over
      it would magnify a stray copy. The wide rules turn it on. */
-  .Lens { display: none; }
+  [data-mag-lens] { display: none; }
 
   /* both panes share one box so the tab swap never jumps the panel height */
   textarea,
@@ -72,12 +72,14 @@
        版式本身是共用零件（home/paper-head.css）——站④的兩張樣張也戴同一頂
        報頭。這裡只給它這張紙的**尺度**與這張紙特有的窄版退路。 */
     .PaperHead {
-      /* 報頭的每個尺寸都是 `em`：給它一個字級，整頂帽子照比例長出來。這張紙
-         是正常字級的紙，所以就是 1rem。 */
-      font-size: 1rem;
+      & {
+        /* 報頭的每個尺寸都是 `em`：給它一個字級，整頂帽子照比例長出來。這張紙
+           是正常字級的紙，所以就是 1rem。 */
+        font-size: 1rem;
 
-      /* 窄到擺不下三格就疊回一欄：刊名在上、日期在下，標語、氣象、卷號與售價
-         都收起來——報頭的趣味擺在寬版就好，窄站台先讓正文有位置。 */
+        /* 窄到擺不下三格就疊回一欄：刊名在上、日期在下，標語、氣象、卷號與售價
+           都收起來——報頭的趣味擺在寬版就好，窄站台先讓正文有位置。 */
+      }
       @container (inline-size < 34rem) {
         & {
           grid-template-columns: 1fr;
@@ -251,31 +253,33 @@
      fitSheet 走到 `if (!overflowing()) return` 就收手——舊規則自己讓位，
      不必拆它。 */
   [data-pg-panes] {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: auto;
-    gap: var(--gutter);
-    align-items: start;
+    & {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: auto;
+      gap: var(--gutter);
+      align-items: start;
 
-    overflow-inline: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: none;
-    scrollbar-width: none;
+      overflow-inline: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: none;
+      scrollbar-width: none;
 
-    /* 兩側破出站台的裝訂線，工作區收在**網頁邊界**（與四語長帶同一組做法）：
-       平移到邊時卡片是在頁面邊緣被切斷的，而不是停在一道留白之前——留白會
-       讀成「排完了」，但它其實是捲的。
+      /* 兩側破出站台的裝訂線，工作區收在**網頁邊界**（與四語長帶同一組做法）：
+         平移到邊時卡片是在頁面邊緣被切斷的，而不是停在一道留白之前——留白會
+         讀成「排完了」，但它其實是捲的。
 
-       破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
-       **內側**，所以靜止時編輯區仍與正文對齊。`scroll-padding` 是第三件事，
-       少了它捲回開頭時編輯區會貼著視窗，與正文差一個裝訂線。 */
-    margin-inline: calc(-1 * var(--rail-pad));
-    padding-inline: var(--rail-pad);
-    scroll-padding-inline-start: var(--rail-pad);
+         破出去的是盒子，不是內容：`padding-inline` 把裝訂線補回捲動範圍的
+         **內側**，所以靜止時編輯區仍與正文對齊。`scroll-padding` 是第三件事，
+         少了它捲回開頭時編輯區會貼著視窗，與正文差一個裝訂線。 */
+      margin-inline: calc(-1 * var(--rail-pad));
+      padding-inline: var(--rail-pad);
+      scroll-padding-inline-start: var(--rail-pad);
 
-    /* 末尾那一格再補一道**外距**：捲到底時容器的 `padding-inline-end` 不算進
-       可捲範圍（實測 620px 下捲到底，校樣卡的右緣正好落在視窗邊上，最後一欄
-       貼著螢幕、放大鏡也照不到），而格線項目的 margin 算。 */
+      /* 末尾那一格再補一道**外距**：捲到底時容器的 `padding-inline-end` 不算進
+         可捲範圍（實測 620px 下捲到底，校樣卡的右緣正好落在視窗邊上，最後一欄
+         貼著螢幕、放大鏡也照不到），而格線項目的 margin 算。 */
+    }
     > :last-child {
       margin-inline-end: var(--rail-pad);
     }
@@ -293,10 +297,12 @@
      擺在工作區右下，與四語長帶同一個位置與同一個模組（`strip-nav.js`）：
      同一種「還有更多」就該用同一種手勢與同一個角落回答。 */
   .PgNav {
-    display: flex;
-    justify-content: end;
-    gap: 0.5rem;
-    margin-block-start: 0.75rem;
+    & {
+      display: flex;
+      justify-content: end;
+      gap: 0.5rem;
+      margin-block-start: 0.75rem;
+    }
 
     &.PgNav--top {
       flex: none;
@@ -360,7 +366,7 @@
     position: relative;
     /* its own card edge — fixed faint mist, legible on the terminal
        ground in both themes (web-style.md dark-surface gotcha) */
-    border: 1px solid color-mix(in srgb, var(--palette-mist) 16%, transparent);
+    border: 1px solid var(--code-rule);
     border-radius: var(--r-3);
   }
 
@@ -377,7 +383,7 @@
      gave its galley an auto height, so the copy fragmented into different
      columns than the page it was supposed to be magnifying. */
   [data-pg-sheet] > [data-pg-paper],
-  .Lens .PgPaper {
+  [data-mag-lens] .PgPaper {
     padding: 1.25rem 1rem;
     background: var(--ui-bg);
     border: 1px solid var(--ui-rule);
@@ -390,7 +396,7 @@
   /* The copy clips instead of scrolling — the module mirrors the source's
      scroll offset onto it, and a scrollbar inside the circle would be a
      control nobody can reach. */
-  .Lens .PgPaper {
+  [data-mag-lens] .PgPaper {
     overflow: hidden;
   }
 
@@ -425,44 +431,46 @@
   }
 
   [data-pg-sheet] > [data-pg-paper] {
-    inline-size: 100%;
-    translate: 0 var(--pg-preview-offset);
-    /* 明確製造 editor 高、preview 低的階差；正值只往下，不會重演舊版 -7rem
-       把報頭推到 controls 底下的問題。 */
-    box-shadow: 0 1px 0 var(--ui-bg-2q);
-    /* 游標由放大鏡自己說（home/lens.css § 有 hover 的指標）：這裡寫死
-       `zoom-in` 會在鏡片張開或關掉之後說謊，而且與那條同權重、只靠檔序取勝。 */
+    & {
+      inline-size: 100%;
+      translate: 0 var(--pg-preview-offset);
+      /* 明確製造 editor 高、preview 低的階差；正值只往下，不會重演舊版 -7rem
+         把報頭推到 controls 底下的問題。 */
+      box-shadow: 0 1px 0 var(--ui-bg-2q);
+      /* 游標由放大鏡自己說（home/lens.css § 有 hover 的指標）：這裡寫死
+         `zoom-in` 會在鏡片張開或關掉之後說謊，而且與那條同權重、只靠檔序取勝。 */
 
-    /* ── the sheet runs off the page to the right ─────────────────────
-       When the galley needs more columns than the track holds, the card
-       stops obeying that track and widens to the WINDOW's right edge,
-       with the last visible column cut in half: a page that ends
-       mid-column is telling you there is more of it. Both numbers are
-       solved in playground.js § fitSheet — they need the viewport and the
-       used column metrics. No JS: the card keeps its track and scrolls,
-       columns filling it whole.
+      /* ── the sheet runs off the page to the right ─────────────────────
+         When the galley needs more columns than the track holds, the card
+         stops obeying that track and widens to the WINDOW's right edge,
+         with the last visible column cut in half: a page that ends
+         mid-column is telling you there is more of it. Both numbers are
+         solved in playground.js § fitSheet — they need the viewport and the
+         used column metrics. No JS: the card keeps its track and scrolls,
+         columns filling it whole.
 
-       The CARD is the scroll container, so the whole sheet pans (and the
-       masthead stays put — it is sticky, below). */
-    /* `--pg-paper-w`：內容用不到整張紙時，紙自己也收窄到內容那裡
-       （playground.js § trimEmptyColumns）——不收的話欄規是不畫了，右邊仍留著
-       一片與欄同寬的白，讀起來還是「多了一欄」（owner 2026-08-27）。版面因此
-       是「短稿一張小報」，而不是「大報右邊空著」。 */
-    inline-size: calc(var(--pg-paper-w, 100%) + var(--pg-bleed, 0px));
-    /* 收窄有地板：報頭那三格（標語｜刊名｜天氣）比一欄正文寬得多，短稿的紙若
-       照內容收，報頭就被擠成三條細長條（實測 en／ja 的預設稿只有一欄，紙收到
-       165px、報頭溢出 315px）。`min-content` 讓紙最窄也還排得下自己的頭。 */
-    min-inline-size: min-content;
-    overflow-x: auto;
-    overflow-y: hidden;
-    /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半
-       根本沒有橫向溢出（實測 scrollWidth ＝ clientWidth ＝ 894），於是 contain
-       把滾輪整個吃掉——讀者在預覽區橫捲什麼也不動，只有編輯區與預覽之間那道
-       縫捲得動長帶（owner 2026-08-27）。巢狀捲動的預設行為正好是要的：先捲
-       這張紙，捲到底再帶著長帶走。 */
-    scrollbar-width: thin;
+         The CARD is the scroll container, so the whole sheet pans (and the
+         masthead stays put — it is sticky, below). */
+      /* `--pg-paper-w`：內容用不到整張紙時，紙自己也收窄到內容那裡
+         （playground.js § trimEmptyColumns）——不收的話欄規是不畫了，右邊仍留著
+         一片與欄同寬的白，讀起來還是「多了一欄」（owner 2026-08-27）。版面因此
+         是「短稿一張小報」，而不是「大報右邊空著」。 */
+      inline-size: calc(var(--pg-paper-w, 100%) + var(--pg-bleed, 0px));
+      /* 收窄有地板：報頭那三格（標語｜刊名｜天氣）比一欄正文寬得多，短稿的紙若
+         照內容收，報頭就被擠成三條細長條（實測 en／ja 的預設稿只有一欄，紙收到
+         165px、報頭溢出 315px）。`min-content` 讓紙最窄也還排得下自己的頭。 */
+      min-inline-size: min-content;
+      overflow-x: auto;
+      overflow-y: hidden;
+      /* **不擋鏈接**（原本是 `overscroll-behavior-inline: contain`）：這張紙多半
+         根本沒有橫向溢出（實測 scrollWidth ＝ clientWidth ＝ 894），於是 contain
+         把滾輪整個吃掉——讀者在預覽區橫捲什麼也不動，只有編輯區與預覽之間那道
+         縫捲得動長帶（owner 2026-08-27）。巢狀捲動的預設行為正好是要的：先捲
+         這張紙，捲到底再帶著長帶走。 */
+      scrollbar-width: thin;
 
-    /* bled to the window edge, the right side is a cut, not an edge */
+      /* bled to the window edge, the right side is a cut, not an edge */
+    }
     &[data-pg-bled] {
       border-start-end-radius: 0;
       border-end-end-radius: 0;
@@ -544,13 +552,13 @@
      while the writer is IN the editor: typing is the one moment the proof
      isn't being read, and a loupe hanging over the page then is furniture in
      the way. `:has()` on the panel, keyed on the textarea's own focus. */
-  .Lens {
+  [data-mag-lens] {
     display: block;
     --lens-zoom: 1.75;
     --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
   }
 
-  &[data-playground]:has([data-pg-panes] > textarea:focus) .Lens { opacity: 0; }
+  &[data-playground]:has([data-pg-panes] > textarea:focus) [data-mag-lens] { opacity: 0; }
 }
 
 
@@ -575,7 +583,7 @@
   position: relative;
   z-index: 4;
 }
-.Playground:where(section) > .PgRailControls > .PgControls {
+.Playground:where(section) > .PgRailControls > .ViewTabs {
   display: flex;
   align-items: center;
   flex-wrap: wrap;

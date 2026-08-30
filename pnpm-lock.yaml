@@ -24,6 +24,9 @@ importers:
       esbuild:
         specifier: ^0.28.0
         version: 0.28.0
+      postcss:
+        specifier: ^8.5.13
+        version: 8.5.13
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

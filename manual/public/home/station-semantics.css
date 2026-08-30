@@ -34,15 +34,16 @@
 
 @container (inline-size < 66rem) {
   .PaperNav {
-    display: flex;
+    & {
+      display: flex;
+      justify-content: end;
+      gap: 0.5rem;
+      margin-block: 0.75rem 0;
+    }
 
   /* 捲不動時 `strip-nav.js` 會蓋上 `hidden`；`display` 有值的規則會蓋掉 UA 的
      `[hidden]`，所以要自己認一次。 */
   &[hidden] { display: none; }
-
-    justify-content: end;
-    gap: 0.5rem;
-    margin-block: 0.75rem 0;
 
     button {
       display: grid;
@@ -177,18 +178,20 @@ figure.Papers {
   }
 
   article {
-    /* 版內每一級都是 rem，不是 em。理由是刻度：`0.125rem` 的級距
-       （SKILL § 13）只有 rem 保證得了——0.875rem 的版心配一個合法的 em 比例
-       仍會乘出 11.998px 這種值，而 11.998 與別處的 12 在 Blink 眼裡是**兩種
-       字體描述**，各要一份 fallback list（見
-       docs/notes/2026-08-25-font-fallback-list-memory.md）。四顆 token 讓
-       版內只有一處要改，也讓這些值與頁面其餘部分合流。 */
-    --paper-body: 0.875rem;
-    --paper-small: 0.75rem;
-    --paper-masthead: 1rem;
-    --paper-headline: 1.125rem;
+    & {
+      /* 版內每一級都是 rem，不是 em。理由是刻度：`0.125rem` 的級距
+         （SKILL § 13）只有 rem 保證得了——0.875rem 的版心配一個合法的 em 比例
+         仍會乘出 11.998px 這種值，而 11.998 與別處的 12 在 Blink 眼裡是**兩種
+         字體描述**，各要一份 fallback list（見
+         docs/notes/2026-08-25-font-fallback-list-memory.md）。四顆 token 讓
+         版內只有一處要改，也讓這些值與頁面其餘部分合流。 */
+      --paper-body: 0.875rem;
+      --paper-small: 0.75rem;
+      --paper-masthead: 1rem;
+      --paper-headline: 1.125rem;
 
-    font-size: var(--paper-body);
+      font-size: var(--paper-body);
+    }
 
     & {
       margin: 0;
@@ -298,13 +301,15 @@ figure.Papers {
 
       /* 無 JS 的那一態：原地展開，就是續版接在摘要後面，chrome 用不上。 */
       &:target:not([open]) {
-        display: block;
-        margin-block-start: 1em;
-        border: 0;
-        padding: 0;
-        max-inline-size: none;
+        & {
+          display: block;
+          margin-block-start: 1em;
+          border: 0;
+          padding: 0;
+          max-inline-size: none;
+        }
 
-        .ReaderChrome {
+        [data-part="reader-chrome"] {
           display: none;
         }
       }
@@ -317,7 +322,9 @@ figure.Papers {
          對話框的 top 一動不動），所以「捲在外面」只能這樣做到——把「外面」
          做成對話框本身。 */
       &[open] {
-        scrollbar-width: none;
+        & {
+          scrollbar-width: none;
+        }
 
         &::-webkit-scrollbar {
           display: none;
@@ -334,21 +341,23 @@ figure.Papers {
 
        `<form method="dialog">` 的語意不變（按下 `value="close"` 就關），只是它
        現在也是版面上的一個盒。 */
-    .ReaderChrome {
-      position: fixed;
-      z-index: 1;
-      inset: 0 0 auto 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.75rem;
-      /* 與主控台同一塊底色（`--ui-panel`）：這一頁上「浮在內容之上的操作面」只有
-         這兩個，同色就讀成同一類東西。 */
-      background: var(--ui-panel);
-      border-block-end: 1px solid var(--ui-rule);
+    [data-part="reader-chrome"] {
+      & {
+        position: fixed;
+        z-index: 1;
+        inset: 0 0 auto 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        /* 與主控台同一塊底色（`--ui-panel`）：這一頁上「浮在內容之上的操作面」只有
+           這兩個，同色就讀成同一類東西。 */
+        background: var(--ui-panel);
+        border-block-end: 1px solid var(--ui-rule);
 
-      /* 按鈕就長成按鈕：框線、底色、圓角一應俱全。原本的「透明底＋hover 才顯形」
-         在這條貼邊的工具條上看起來像四個字，不像四顆鍵。 */
+        /* 按鈕就長成按鈕：框線、底色、圓角一應俱全。原本的「透明底＋hover 才顯形」
+           在這條貼邊的工具條上看起來像四個字，不像四顆鍵。 */
+      }
       button {
         display: grid;
         place-content: center;
@@ -377,22 +386,22 @@ figure.Papers {
 
       /* 四語導覽：一版一顆，字面就是那一版的版別標記（同卡片右上角那一個字）。
          現在讀的那一版填成反白——它不是「按了會去哪裡」，是「你在這裡」。 */
-      .ReaderEdition {
+      [data-reader="edition"] {
         font-size: 1rem;
       }
 
-      .ReaderEdition[aria-current] {
+      [data-reader="edition"][aria-current] {
         color: var(--ui-bg);
         background: var(--ui-text);
         border-color: var(--ui-text);
       }
 
       /* 關閉推到另一端：它是這一條裡唯一「離開」的動作。 */
-      .ReaderClose {
+      [data-reader="close"] {
         margin-inline-start: auto;
       }
 
-      .ReaderWriting {
+      [data-reader="writing"] {
         inline-size: auto;
         padding-inline: 0.75rem;
         font-size: 0.875rem;
@@ -400,14 +409,14 @@ figure.Papers {
     }
 
     /* 大標橫跨所有欄——它是這一版的抬頭，不是某一欄的開頭。 */
-    .ReaderSheet > h3 {
+    [data-part="reader-sheet"] > h3 {
       column-span: all;
     }
 
     /* 版心＝一張報紙的一版。報頭、續版列、內文三層，多欄只開在內文層——報頭
        得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
        欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
-    .ReaderSheet {
+    [data-part="reader-sheet"] {
       /* 整張紙的字級——報頭是 `em` 寫的，所以它跟著一起變大變小，變的是**整份
          報紙**而不只是正文（paper-reader.js § SIZES：12／14／16px 三段循環，
          點紙就換一段）。 */
@@ -422,7 +431,7 @@ figure.Papers {
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
-      box-shadow: 0 24px 64px color-mix(in srgb, var(--palette-black) 22%, transparent);
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--ui-shadow-ink) 22%, transparent);
     }
 
     /* 報頭用共用零件（home/paper-head.css）——標語框、刊名、太陽系氣象，粗線
@@ -448,27 +457,29 @@ figure.Papers {
 
        `--reader-col` 用 `em`：欄寬是「十八個字」，字一大欄就跟著寬，整張紙於是
        等比長大。 */
-    .ReaderBody {
-      /* 正文明體——非 retina 螢幕自動換黑體：`--han-font-alternative` 就是那條
-         開關（home/root.css § 非 retina），全站的小字襯線都跟著同一個判準走，
-         這一版沒有理由自成一格。 */
-      font-family: var(--han-font-alternative);
-      --reader-col: 18em;
-      --reader-gap: 2em;
-      --reader-cols: 3;
-      --reader-span: calc(
-        var(--reader-cols) * (var(--reader-col) + var(--reader-gap)) - var(--reader-gap)
-      );
+    [data-part="reader-body"] {
+      & {
+        /* 正文明體——非 retina 螢幕自動換黑體：`--han-font-alternative` 就是那條
+           開關（home/root.css § 非 retina），全站的小字襯線都跟著同一個判準走，
+           這一版沒有理由自成一格。 */
+        font-family: var(--han-font-alternative);
+        --reader-col: 18em;
+        --reader-gap: 2em;
+        --reader-cols: 3;
+        --reader-span: calc(
+          var(--reader-cols) * (var(--reader-col) + var(--reader-gap)) - var(--reader-gap)
+        );
 
-      box-sizing: content-box;
-      inline-size: var(--reader-span);
-      margin-inline: auto;
-      column-count: var(--reader-cols);
-      column-gap: var(--reader-gap);
-      column-rule: 1px solid var(--ui-rule);
+        box-sizing: content-box;
+        inline-size: var(--reader-span);
+        margin-inline: auto;
+        column-count: var(--reader-cols);
+        column-gap: var(--reader-gap);
+        column-rule: 1px solid var(--ui-rule);
 
-      /* 大標橫跨所有欄——它是這一則的抬頭，不是某一欄的開頭。直排時不跨：
-         直排報紙的大標本來就佔著第一欄的頂端。 */
+        /* 大標橫跨所有欄——它是這一則的抬頭，不是某一欄的開頭。直排時不跨：
+           直排報紙的大標本來就佔著第一欄的頂端。 */
+      }
       > h3 {
         column-span: all;
         margin-block: 0 0.75em;
@@ -477,8 +488,10 @@ figure.Papers {
 
     /* 附圖。圖版先用色塊佔位，圖說是真的。 */
     .ReaderCut {
-      margin: 0 0 1em;
-      break-inside: avoid;
+      & {
+        margin: 0 0 1em;
+        break-inside: avoid;
+      }
 
       .ReaderCutPlate {
         aspect-ratio: 4 / 3;
@@ -505,15 +518,15 @@ figure.Papers {
        擋著。列的是會排字的區塊元素，不是 `*`：整片給 `text` 的話，紙的留白與
        圖也都成了 I 型（同 home/lens.css 的作法）。 */
     @media (hover: hover) and (pointer: fine) {
-      [data-size] .ReaderSheet {
+      [data-size] [data-part="reader-sheet"] {
         cursor: zoom-in;
       }
 
-      [data-size="16"] .ReaderSheet {
+      [data-size="16"] [data-part="reader-sheet"] {
         cursor: zoom-out;
       }
 
-      .ReaderSheet :is(p, h3, li, blockquote, cite, figcaption, time, b, q) {
+      [data-part="reader-sheet"] :is(p, h3, li, blockquote, cite, figcaption, time, b, q) {
         cursor: text;
       }
     }
@@ -530,7 +543,7 @@ figure.Papers {
        而四欄本身多半高過畫面，於是也上下捲——兩個方向都由燈箱那層的
        `overflow: auto` 接住。 */
     [data-writing="vertical"] {
-      .ReaderSheet {
+      [data-part="reader-sheet"] {
         writing-mode: vertical-rl;
         /* 紙就是文章那麼寬，**不封頂**：直排的文章往左長，封了寬度紙就停在那裡、
            文字照樣往左走，於是整段跑到紙外（owner 2026-08-28 的截圖）。裝不下不是
@@ -538,25 +551,28 @@ figure.Papers {
         width: fit-content;
       }
 
-      .ReaderBody {
+      [data-part="reader-body"] {
         inline-size: var(--reader-span);
       }
 
       /* 直排的大標本來就佔著第一欄的頂端，不跨欄。 */
-      .ReaderBody > h3 {
+      [data-part="reader-body"] > h3 {
         column-span: none;
       }
 
       /* 控件條改到**右緣**，直的一條：直排的行首在右，工具條貼著行首那一側，
          與橫排時貼著頂上是同一句話。 */
-      .ReaderChrome {
-        inset: 0 0 0 auto;
-        flex-direction: column;
-        padding: 0.75rem 0.5rem;
-        border-block-end: 0;
-        border-inline-start: 1px solid var(--ui-rule);
+      [data-part="reader-chrome"] {
+        & {
+          inset-inline: 0;
+          inset-block: 0 auto;
+          flex-direction: column;
+          padding: 0.75rem 0.5rem;
+          border-block-end: 0;
+          border-inline-start: 1px solid var(--ui-rule);
+        }
 
-        .ReaderClose {
+        [data-reader="close"] {
           margin-inline-start: 0;
           margin-block-start: auto;
         }
@@ -565,7 +581,7 @@ figure.Papers {
 
       /* 直排的紙用**物理**邊距：它自己是 `vertical-rl`，邏輯邊距會轉九十度。
          右邊留得多一些——工具條在那一側。 */
-      .ReaderSheet {
+      [data-part="reader-sheet"] {
         margin: 20vh 26vw 20vh 12vw;
       }
     }
@@ -573,7 +589,9 @@ figure.Papers {
     /* The newspaper mark opens the full dispatch. Its link remains a real hash
        target, so the article is still reachable when dialog enhancement is absent. */
     .Abstract {
-      position: relative;
+      & {
+        position: relative;
+      }
 
       &::after {
         content: '';
@@ -584,12 +602,14 @@ figure.Papers {
     }
 
     a.Jump {
-      position: absolute;
-      inset-inline-end: 0;
-      inset-block-end: 0.2em;
-      display: inline-grid;
-      place-items: center;
-      border-radius: 0.25rem;
+      & {
+        position: absolute;
+        inset-inline-end: 0;
+        inset-block-end: 0.2em;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 0.25rem;
+      }
 
       &:hover {
         opacity: 0.72;
@@ -603,11 +623,13 @@ figure.Papers {
     }
 
     p {
-      margin: .25em 0;
-      /* 正文走 token，兩種版心各自對齊刻度（見 § 版心的四顆 token）；
-         20 字的行長在兩種尺寸下都成立。 */
-      font-size: var(--paper-body);
-      line-height: 2;
+      & {
+        margin: .25em 0;
+        /* 正文走 token，兩種版心各自對齊刻度（見 § 版心的四顆 token）；
+           20 字的行長在兩種尺寸下都成立。 */
+        font-size: var(--paper-body);
+        line-height: 2;
+      }
 
       &:last-child {
         margin-block-end: 0;

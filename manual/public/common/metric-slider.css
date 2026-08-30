@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+/* Shared metric-slider primitives. Kept standalone because the
+ * light DOM and <han-console> shadow root adopt the same cascade. */
+
+/* ─── MetricSliders — three live <input type="range"> sliders ──── */
+
+.MetricSliders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+/* ─── MetricSlider — a single labelled, value-displaying slider ── */
+
+.MetricSlider {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  > header {
+    & {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      block-size: 14px;
+    }
+
+    span {
+      font-family: var(--han-font-default);
+      font-size: var(--_fs-compact);
+      font-weight: 500;
+      color: var(--_text);
+    }
+
+    small {
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-micro);
+      color: var(--_supplement-text);
+    }
+
+    /* value readout — the loudest thing in the row (ziano's playground
+       slider look, no pill): full-strength text, medium weight. */
+    output {
+      margin-inline-start: auto;
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-compact);
+      font-weight: 500;
+      color: var(--_text);
+    }
+  }
+
+  /* The track is a visual element behind the native range input. The
+     fill span is JS-driven (`console-metrics.js` sets its width); the
+     native input handles pointer events. */
+  [data-part="range-track"] {
+    & {
+      position: relative;
+      display: flex;
+      align-items: center;
+      block-size: 16px;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 50% 0 auto 0;
+      margin-block-start: -2px;
+      block-size: 4px;
+      background: var(--_rule);
+      border-radius: 4px;
+    }
+
+    [data-pg-slider-fill] {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 0;
+      margin-block-start: -2px;
+      inline-size: 0;
+      block-size: 4px;
+      background: var(--_accent);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    input[type="range"] {
+      & {
+        position: absolute;
+        inset: 0;
+        inline-size: 100%;
+        block-size: 100%;
+        margin: 0;
+        background: transparent;
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+        cursor: pointer;
+      }
+
+      &:focus { outline: none; }
+
+      &::-webkit-slider-runnable-track {
+        block-size: 16px;
+        background: transparent;
+        border: 0;
+      }
+      &::-moz-range-track {
+        block-size: 16px;
+        background: transparent;
+        border: 0;
+      }
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+                appearance: none;
+        box-sizing: border-box;
+        inline-size: 18px;
+        block-size: 18px;
+        /* centre the 18px thumb on the 4px fill within the 16px track box */
+        margin-block-start: -1px;
+        border-radius: 50%;
+        background: var(--_bg);
+        border: 2px solid var(--_accent);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        cursor: grab;
+      }
+      &::-moz-range-thumb {
+        box-sizing: border-box;
+        inline-size: 18px;
+        block-size: 18px;
+        border-radius: 50%;
+        background: var(--_bg);
+        border: 2px solid var(--_accent);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+        cursor: grab;
+      }
+      &:active::-webkit-slider-thumb { cursor: grabbing; }
+      &:active::-moz-range-thumb     { cursor: grabbing; }
+    }
+  }
+}

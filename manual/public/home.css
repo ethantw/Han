@@ -23,7 +23,11 @@
 @import url('./common/theme-toggle.css');
 @import url('./common/module-state.css');
 @import url('./common/panel.css');
-@import url('./common/controls.css');
+/* Shared control-family cascade: grouping → toggles/actions → metrics → fields. */
+@import url('./common/control-group.css');
+@import url('./common/toggle.css');
+@import url('./common/metric-slider.css');
+@import url('./common/field.css');
 @import url('./common/select.css');
 @import url('./common/code-terminal.css');
 

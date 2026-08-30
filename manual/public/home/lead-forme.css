@@ -1,87 +1,44 @@
-/*
- * lead-forme.css — station②'s isometric movable-type forme (lead-forme.js).
- *
- * Theme-aware line-art: dark mode keeps the 字談字暢 white-on-black look;
- * light mode inverts to ink lines on paper. Every colour resolves through
- * `--forme-*` tokens (light-dark() · Baseline 2024) so the SVG builder can
- * stay colour-agnostic — it only ever emits `var(--forme-*)`. State lives on
- * the figure's own `data-face` / `data-punct`, so nothing here touches :root.
- *
- * 明／黑 fonts + Diantenjeom already load in _home.html; 楷 (WenKai) is only
- * needed here, so it's pulled in locally.
- */
+
 
 :where(.LeadForme) {
-  /* two-tier: primitives → semantic --forme-* (mirrors home.css § palette).
-     No --forme-bg: the SVG is backgroundless — the forme sits directly on the
-     station's ground, a plaything in the copy rather than a framed picture. */
-  --forme-ink: var(--ui-text);
-  --forme-face-1: light-dark(#eceae4, #050507);
-  --forme-face-2: light-dark(#f1efe9, #0c0c10);
-  --forme-face-3: light-dark(#f7f5f0, #14141b);
-  /* the RELIEF — the two surfaces of a raised stroke, and the one place the
-     lighting has to be right or the type reads inside out. `relief` is a
-     stroke's top: a horizontal surface like the face it stands on, only higher,
-     so it is the LIGHTEST thing on the piece. `wall` is a stroke's side: a
-     vertical surface in its own shadow, like the body's own two walls, so it is
-     the darkest. They used to be the other way round (top #d6d4cc = 84%, wall
-     #e2e0d9 = 89%, against a face of #f7f5f0 = 97%) — a stroke darker than the
-     surface it rises out of, which is what an INCISED stroke looks like. The
-     type read as a rubbing off an engraved plate, the exact opposite of raised
-     movable type, and only the hairline outline said otherwise.
-     Light keeps the 素凸 (blind-emboss) idiom the rest of the figure is in —
-     paper on paper, no ink — so the step is small on the lit side (+2pt over the
-     face) and carried on the shadow side (−11pt), where a band of it rings every
-     stroke. Dark had the order right already and only wanted the range: the
-     stroke tops come up ~9pt so they read against a near-black face.
-     The three `--forme-face-*` above are the BODY's faces and are deliberately
-     untouched — this is a relief fix, not a re-colour of the forme. */
-  --forme-wall: light-dark(#dbd6c9, #26262f);
-  --forme-relief: light-dark(#fdfcf9, #4b4b58);
-  --forme-hi: light-dark(#ffffff, #ffffff);
-  --forme-spec: var(--ui-supplement-text);
-  --forme-spec-dim: var(--ui-supplement-text-2q);
 
-  /* Diantenjeom punctuation family — flips JIS ⇄ MOE on the figure */
-  --dtj-serif: 'Diantenjeom Serif JIS';
-  --dtj-sans: 'Diantenjeom Sans JIS';
+  & {
+    --forme-ink: var(--ui-text);
+    --forme-face-1: light-dark(#eceae4, #050507);
+    --forme-face-2: light-dark(#f1efe9, #0c0c10);
+    --forme-face-3: light-dark(#f7f5f0, #14141b);
 
-  /* one slug's fall. Shared by the entrance keyframe and the caption's cue,
-     which is timed off the LAST slug's start (--lf-last-slug, set by
-     lead-forme.js) plus this. */
-  --lf-drop-dur: 0.72s;
+    --forme-wall: light-dark(#dbd6c9, #26262f);
+    --forme-relief: light-dark(#fdfcf9, #4b4b58);
+    --forme-hi: light-dark(#ffffff, #ffffff);
+    --forme-spec: var(--ui-supplement-text);
+    --forme-spec-dim: var(--ui-supplement-text-2q);
 
-  /* a BFC, so the children's block margins stay inside the figure in the
-     STACKED layouts (narrow ／ page-直排) — § pocket replaces this with a
-     grid on wide 橫排, where margins can't escape anyway. */
-  display: flow-root;
 
-  /* 版在最上。這一層要壓過兩樣東西，而兩樣都與版心多寬無關，所以它不跟著
-     抬升那支查詢走（曾經跟過，於是中等寬度的螢幕上鉛字與藥丸被底圖穿過）：
-     樣張卡自己的 1（station-fonts.css § 三體樣張，那是為了在命中測試裡贏過
-     包裹層的塌陷盒），以及站台底圖那根柱——它寫著負值，但關在自己的堆疊
-     脈絡裡，對外只是個尋常的後續兄弟。
-     只動繪製順序：版是 `pointer-events: none`，卡片裡可選取的文字照樣穿過
-     上方的鉛字回應指標。 */
-  position: relative;
-  z-index: 2;
+    --dtj-serif: 'Diantenjeom Serif JIS';
+    --dtj-sans: 'Diantenjeom Sans JIS';
 
-  /* 三體樣張與鉛字盤是兩件展品；盒與盒之間永遠至少留 3rem。 */
-  margin-block: 3rem 0;
-  margin-inline: 0;
 
-  /* the forme's box is mostly EMPTY — three of the parallelogram's four corners
-     are void, and § showpiece lifts the block-start/inline-start one up over
-     the specimen card on purpose. Element boxes (and an SVG root) swallow
-     pointer events across that whole void, so specimen text under the wedge
-     becomes unselectable even though nothing is painted there. Turn the void
-     transparent to the pointer and hand it back to the three parts that
-     actually react. */
-  pointer-events: none;
+    --lf-drop-dur: 0.72s;
+
+
+    display: flow-root;
+
+
+    position: relative;
+    z-index: 2;
+
+
+    margin-block: 3rem 0;
+    margin-inline: 0;
+
+
+    pointer-events: none;
+  }
 
   & svg {
     display: block;
-    inline-size: 100%;   /* full column width — the forme is the spectacle */
+    inline-size: 100%;
     block-size: auto;
     overflow: visible;
   }
@@ -92,50 +49,33 @@
     pointer-events: auto;
   }
 
-  /* 縮寫在直排裡要站直——`text-orientation: upright` 讓每個字母各佔一格、
-     不側倒。掛在 forme 這一層而不是只在藥丸裡：圖說也是直排（§ pocket 的
-     牌記），同一條規矩兩處都該吃到。橫排時 `text-orientation` 本來就是 no-op，
-     所以不必用查詢把兩種行向分開寫。 */
+
   abbr.acronym {
     text-orientation: upright;
     letter-spacing: -.25em;
   }
 
-  /* 牌記裡的「120」走**縱中橫**（owner）：三位數擠進一格橫著讀，不是三個
-     數字各站一格。`text-combine-upright: all`（Baseline 2022）自動壓縮到
-     1em；規格說它只在直排生效，橫排（窄站台的圖說是橫排段落）自然失效，
-     不必查詢分行向。數字要用半形——全形數字不參與壓縮。
-     它不是縮寫，掛 `abbr` 會是假的語義，所以是自己的 class。 */
+
   .tcy {
     text-combine-upright: all;
   }
 }
-/* ── § 直排預覽 — 楔子退場，牌記回到文流 ──────────────────────────
- * 直排預覽把站台的 `container-type` 關掉（frame.css），所以本檔所有的容器
- * 查詢一律不成立；而楔子那整套幾何又是照著橫排的版心算的（`--lf-w` 只在
- * 橫排那條選擇器裡有定義）。兩件事湊在一起，牌記會拿不到任何一個長度：
- * `calc()` 整條無效、頂端掉回 0、格線區掉回 auto，於是它從圖的頂端排起、
- * 蓋住整片鉛字。
- *
- * 與其在直排下重建一套楔子，不如讓它明白退場：預覽態要的是「看得到直排的
- * 樣子」，牌記就當一般圖說擺在圖下方。寫成明文而不是靠 `calc()` 失效落到
- * 預設值——後者看起來像壞掉，而且下一個人改動任何一個變數都會再中一次。
- *
- * `inline-size` 在那裡是**垂直**軸，所以圖的 100% 會長成整個站台那麼高，
- * 一併收回成一盤圖片大小的字盤。 */
+
 :where(main[data-writing='vertical']) .LeadForme {
   svg {
     inline-size: min(100%, 620px);
   }
 
   figcaption {
-    writing-mode: horizontal-tb;
-    inline-size: auto;
-    block-size: auto;
-    margin: 1rem 0 0;
-    padding: 0;
+    & {
+      writing-mode: horizontal-tb;
+      inline-size: auto;
+      block-size: auto;
+      margin: 1rem 0 0;
+      padding: 0;
+    }
 
-    /* 楔子的斜邊沒有了，讓路的三角形也不該留著。 */
+
     &::before {
       content: none;
     }
@@ -149,25 +89,18 @@
   --dtj-serif: 'Diantenjeom Serif GB';
   --dtj-sans: 'Diantenjeom Sans GB';
 }
-/* KLR ＝ W3C KLReq，Requirements for Hangul Text Layout and Typography。
-   `… KV` 的並列 fallback 拆掉了：那是「上游已改名、npm 上還是舊名」的過渡，
-   0.2.0-rc.0 起 npm 上就是 KLR。 */
+
 :where(.LeadForme[data-punct='klr']) {
   --dtj-serif: 'Diantenjeom Serif KLR';
   --dtj-sans: 'Diantenjeom Sans KLR';
 }
 
-/* ko has no kai layer — KLReq gives Korean none, and LXGW WenKai TC carries
-   no hangul (measured off its swap.css unicode-ranges), so under the ko cut
-   the 楷 pill would paint hangul in a fallback face. The radio disappears
-   rather than disables: a control whose every use would be wrong is not a
-   choice. lead-forme.js bounces an already-selected 楷 back to 明 when the
-   language pill lands on ko. */
+
 :where(.LeadForme[data-lang='ko']) .Controls label:has(input[name='lf-face'][value='k']) {
   display: none;
 }
 
-/* current typeface — punctuation-first stack, heritage Han (Ziano) behind */
+
 :where(.LeadForme[data-face='m']) text.g {
   font-family:
     var(--dtj-serif),
@@ -188,20 +121,12 @@
     serif;
 }
 
-/* 直排標點的落點補償。`--lf-vshift` 由 lead-forme.js 量出來（§
-   measureVerticalShift）：Chromium 是 0，WebKit 因為把直排字塞進 hhea 的框
-   （1.437em）而不是字身框，字沿閱讀軸掉了約 .05em，這裡加回去。em 在此解析
-   為 <text> 自己的 font-size（＝字身 S），所以這條規則不必知道字級。
 
-   注意這隻補的是**位置**，不是字形：WebKit 在 SVG 裡根本不套 `vert`／
-   `vrt2`（連 `font-feature-settings` 明寫也沒用），所以 Safari 上「」：仍是
-   橫排字形。那要等 Diantenjeom 把 U+FE10–FE44 這些直排形碼位補進 cmap，字形
-   才點得到——見 docs/plans/safari-fixes-and-dash-fuse-clip.md § 二。 */
 :where(.LeadForme) text.g.vert {
   translate: 0 calc(var(--lf-vshift, 0) * -1em);
 }
 
-/* engraved side-face spec: Han → slice № + typeface name; punct → Diantenjeom */
+
 :where(.LeadForme) text.lbl-num,
 :where(.LeadForme) text.lbl-var {
   font-family: ui-monospace, 'SF Mono', monospace;
@@ -220,124 +145,70 @@
 :where(.LeadForme[data-face='k']) text.nm-k {
   display: inline;
 }
-/* punctuation font follows the typeface: Serif for 明／楷, Sans for 黑 */
+
 :where(.LeadForme[data-face='m']) text.dtj-serif,
 :where(.LeadForme[data-face='k']) text.dtj-serif,
 :where(.LeadForme[data-face='h']) text.dtj-sans {
   display: inline;
 }
 
-/* entrance — settled is the default; the slugs drop in only once the FORME
-   itself is revealed, so an off-screen build stays settled and the ceremony
-   plays when it's seen. The gate is the forme's OWN `[data-revealed]`, not the
-   station's: station② is three screenfuls (三體樣張 · 鉛字盤 · 標點), and the
-   station-wide cue fires while the reader is still on the specimen card — the
-   whole drop would be over before the forme scrolled into view. The figure
-   carries `data-reveal-at="0.6"` and reveal.js holds its stamp until three
-   fifths of it is on screen. The face／punct swap is a separate WAA sequence
-   in lead-forme.js. */
-/* blank slugs (空鉛 spacing) sit back at half opacity. The drop animation is
-   `both`, so its landing frame wins over a plain `opacity` — both the settled
-   default here AND the keyframe below read --slug-o, so 0.5 holds with or
-   without motion (and glyph slugs fall back to 1). */
+
+
 :where(.LeadForme) .Slug:not(.has-glyph) {
   --slug-o: 0.5;
   opacity: 0.5;
 }
-/* justify 小鉛塊 are solid, so they read as spacing material rather than a
-   ghost of the empty 空鉛 quads. (行距鉛條 stay half-opacity with the quads —
-   one whole box each, so plain group opacity composites seam-free.) */
+
 :where(.LeadForme) .Slug.solid {
   --slug-o: 1;
   opacity: 1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  /* the FROM state, and the reason the 60% cue needs one: at the moment it
-     fires, most of the forme is already on screen — without this the
-     reader would watch a finished forme for a second and then see it re-drop.
-     Hidden on the <svg>, not on .Slug: the slugs' own opacity rules above are
-     more specific than an ancestor-scoped one would be. Safe to hide behind
-     JS — the <svg> ships EMPTY and lead-forme.js draws it, so no-JS has
-     nothing to hide, and the pills below are inert without it anyway. */
-  :where(.LeadForme:not([data-revealed]):not(.settled)) svg,
-  :where(.LeadForme:not([data-revealed]):not(.settled)) figcaption,
-  :where(.LeadForme:not([data-revealed]):not(.settled)) .Controls fieldset {
+
+  :where(.LeadForme:not([data-revealed]):not([data-settled])) svg,
+  :where(.LeadForme:not([data-revealed]):not([data-settled])) figcaption,
+  :where(.LeadForme:not([data-revealed]):not([data-settled])) .Controls fieldset {
     opacity: 0;
   }
-  /* …and the pills, being real form controls, must be out of the tab order
-     while they are invisible, not merely transparent — same reasoning as the
-     `visibility` in `lf-chrome-in` below, which takes over once the cue fires. */
-  :where(.LeadForme:not([data-revealed]):not(.settled)) .Controls fieldset {
+
+  :where(.LeadForme:not([data-revealed]):not([data-settled])) .Controls fieldset {
     visibility: hidden;
   }
 
-  /* :not(.settled) — the full staggered entrance plays once; after the first
-     punct swap the forme is `.settled` and only the changed pieces re-drop
-     (lead-forme.js drives those with the Web Animations API). */
-  :where(.LeadForme[data-revealed]:not(.settled)) .Slug {
-    transform-box: view-box; /* translateY animates in user units · Baseline 2023 */
+
+  :where(.LeadForme[data-revealed]:not([data-settled])) .Slug {
+    transform-box: view-box;
     animation: lf-drop var(--lf-drop-dur) cubic-bezier(0.34, 1.24, 0.5, 1) both;
     animation-delay: var(--d, 0s);
   }
 }
-/* the note and the pills are both things that belong to a FINISHED forme, so
-   both wait out the whole drop and only then ease in. The note is the
-   compositor's note written ON the set forme; the pills are the tools you
-   reach for once it is set — offering them mid-ceremony invites a click that
-   would cut the entrance short, and a control that appears before the thing it
-   controls has nothing to point at.
 
-   The cue is derived, not typed twice: lead-forme.js publishes --lf-last-slug
-   (when the LAST slug starts falling) and CSS adds the drop's own duration plus
-   a beat of silence — re-lay the sentence with more pieces and both still
-   arrive after the last one lands.
-
-   Both rise from BELOW, whatever they are set in. The note is 直排 in the
-   pocket, and it used to slide in along its own block axis (off the fore-edge,
-   inline-end → inline-start) to match; owner's call is that it shouldn't. The
-   forme is a thing laid on a table, and everything that belongs to it — pills
-   into the 空鉛 tray, the note onto the finished plate — arrives the same way
-   the reader's eye does: up off the ground. One direction reads as one
-   gesture; two read as two unrelated animations that happen to share a cue. */
 @media (prefers-reduced-motion: no-preference) {
-  :where(.LeadForme[data-revealed]:not(.settled)) figcaption {
+  :where(.LeadForme[data-revealed]:not([data-settled])) figcaption {
     animation: lf-chrome-in 0.9s cubic-bezier(0.22, 0.9, 0.3, 1) both;
     animation-delay: calc(var(--lf-last-slug, 2.9s) + var(--lf-drop-dur) + 0.2s);
   }
 
-  /* per fieldset, not on the <form>: the pills then arrive in reading order
-     (字體 → 標點 → 語言 → 行向, which `row-reverse` also lays inline-end-first), and
-     the form's own box never moves, so nothing around it shifts. */
-  :where(.LeadForme[data-revealed]:not(.settled)) .Controls fieldset {
-    animation: lf-chrome-in 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
-    animation-delay: calc(
-      var(--lf-last-slug, 2.9s) + var(--lf-drop-dur) + 0.2s + var(--lf-pill, 0s)
-    );
+
+  :where(.LeadForme[data-revealed]:not([data-settled])) .Controls fieldset {
+    & {
+      animation: lf-chrome-in 0.6s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+      animation-delay: calc(
+        var(--lf-last-slug, 2.9s) + var(--lf-drop-dur) + 0.2s + var(--lf-pill, 0s)
+      );
+    }
 
     &:nth-child(2) { --lf-pill: 0.09s; }
     &:nth-child(3) { --lf-pill: 0.18s; }
     &:nth-child(4) { --lf-pill: 0.27s; }
   }
 }
-/* one keyframe for both — the pills and the note now arrive by the same move,
-   so two would be the same six declarations kept in step by hand.
-   `visibility` is here for the PILLS: they are real form controls, and opacity
-   0 alone would leave three radio groups tabbable and clickable for the ~3.8s
-   they are invisible — a focus ring on nothing, and a click that lands on a
-   face you cannot see. Its animation behaviour is exactly what's wanted:
-   `hidden` holds through the DELAY (the animation is `both`, so the 0% frame
-   fills backwards), then any t > 0 resolves to `visible` per spec, so a piece
-   goes live the instant it starts fading in. `.settled` drops the animation
-   entirely and CSS's own default is visible, so a swapped forme is unaffected.
-   The note doesn't need it and isn't harmed: it is unreadable at opacity 0
-   either way, and this keeps it out of the a11y tree while it is. */
+
 @keyframes lf-chrome-in {
   from {
     opacity: 0;
     visibility: hidden;
-    /* independent transform property · Baseline 2022 — no `transform` on these
-       boxes to compose with, and it keeps the offset a plain pair of lengths.
-       PHYSICAL, so the rise is up off the ground for the 直排 note too. */
+
     translate: 0 1.25rem;
   }
   to {
@@ -361,12 +232,9 @@
   }
 }
 
-/* hover any slug → it lifts. Type slugs reveal their engraved side-face spec
-   (slice №/typeface name); spacing blocks (行距/字距/縮進/段末補空) just rise to
-   show they're real furniture. The lift rides the inner .SlugLift so it composes
-   with the drop transform on .Slug instead of being overridden by its `both` fill. */
+
 :where(.LeadForme) .SlugLift {
-  transform-box: view-box; /* translateY in user units · Baseline 2023 */
+  transform-box: view-box;
 }
 :where(.LeadForme) .Slug:hover .SlugLift {
   transform: translateY(-46px);
@@ -377,56 +245,39 @@
   }
 }
 
-/* controls — reader picks the current face + punctuation convention.
-   Same fieldset/radio semantics as before (the head label is a `<span>` +
-   `aria-labelledby`, see § .PillHead); the LOOK is three 直排
-   pills, the forme's own writing mode, so the switches read as part of the
-   plate: the label at the head, options running down it, the selected one in
-   the accent lozenge. `row-reverse` keeps the DOM's reading order (字體 →
-   標點 → 語言 → 行向) while laying them inline-end-first, i.e. read right-to-left
-   like the 直排 text they switch. Latin values (JIS／MOE／GB) lie rotated,
-   like the slugs' engraved specs — owner's call: one chrome, every locale,
-   費脖子 included. The pills stay upright even should the PAGE go 直排:
-   the vertical-rl is on the fieldsets, not inherited. */
+
 :where(.LeadForme) .Controls {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
-  /* feet on a line; the heads stagger by content (行向 is one option short),
-     which is the step the pocket placement leans into. */
-  align-items: flex-end;
-  gap: 0.6rem;
-  margin-block: 1.25rem .5rem;
-  position: relative;  /* paint above the SVG's overflowing strokes */
+  & {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+
+    align-items: flex-end;
+    gap: 0.6rem;
+    margin-block: 1.25rem .5rem;
+    position: relative;
+  }
 
   fieldset {
-    writing-mode: vertical-rl;
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    margin: 0;
-    padding: 3px;
-    border: 1px solid var(--ui-rule);
-    border-radius: 999px;
-    background: var(--ui-bg);
-    box-shadow: 0 2px 10px color-mix(in srgb, var(--palette-black) 12%, transparent);
+    & {
+      writing-mode: vertical-rl;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: 0;
+      padding: 3px;
+      border: 1px solid var(--ui-rule);
+      border-radius: 999px;
+      background: var(--ui-bg);
+      box-shadow: 0 2px 10px color-mix(in srgb, var(--ui-shadow-ink) 12%, transparent);
+    }
 
     abbr.acronym {
-      /* 藥丸專用的收緊：那裡的字級只有 10px 上下，站直之後字母之間會鬆得像
-         被拆開。圖說不吃這一條（它 14px，收得太緊反而黏在一起）。 */
+
       letter-spacing: -.35em;
     }
   }
-  /* The head label is a `<span>`, not a `<legend>` — the fieldset takes its
-     accessible name from `aria-labelledby` instead (markup in
-     station-fonts.html). It used to be a `<legend>` de-legended with
-     `float: inline-start`, which **WebKit does not implement**: measured on
-     Safari 26, the legend stays the rendered legend pinned to the fieldset's
-     block-start, growing the pill from 40 to 60px and dropping the label
-     outside it (physical `float: left` behaves identically, so it is not the
-     logical keyword). A span has no such special layout, and both engines
-     agree. Station②'s `.SpecimenSwitch` carries the same change — keep the
-     two in step. */
+
   .PillHead {
     padding-inline: 0.65em 0.35em;
     color: var(--ui-supplement-text);
@@ -439,12 +290,14 @@
     pointer-events: none;
   }
   label {
-    padding-block: 4px;
-    padding-inline: 10px;
-    border-radius: 40px;
-    font-size: .875rem;
-    color: var(--ui-supplement-text);
-    cursor: pointer;
+    & {
+      padding-block: 4px;
+      padding-inline: 10px;
+      border-radius: 40px;
+      font-size: .875rem;
+      color: var(--ui-supplement-text);
+      cursor: pointer;
+    }
 
     &:has(input:checked) {
       background: var(--ui-accent-bg);
@@ -460,98 +313,23 @@
   }
 }
 
-/* ── § showpiece — the forme is the station's centrepiece, not its wallpaper
- * It used to be absolutely positioned into station②'s watermark corner with
- * the SVG pushed to `z-index:-1`, i.e. it read as a background the copy ran
- * over. Owner call: this is the best animation on the page, so it gets to be
- * the thing you look at — in flow, nothing on top of it, and as wide as the
- * station will give.
- *
- * "As wide as the station will give" = cancel the section's own
- * `padding-inline` exactly, so the forme runs plate edge to plate edge at
- * every width. The station publishes that padding as `--plate-pad`
- * (station-frame.css § plate) precisely so this can be its negative rather
- * than a second copy of the centring calc — the two can't drift apart, and
- * the bleed can never overshoot into a scrollbar (the plate is
- * `overflow: clip` anyway).
- *
- * Which makes `--lf-w` — the SVG's rendered width — the length every published
- * fraction scales by (§ buildForme hands them over as fractions of the rendered
- * width precisely so CSS needs exactly one length and no resize listener).
- *
- * ── § air — the void around the ink, now the figure's own padding ─────
- * The viewBox used to carry a 34-unit fit pad, so the SVG's box was bigger than
- * the 活字版 on all four sides: a band of dead space CSS could not reclaim,
- * because a viewBox pad is INSIDE the graphic. The box hugs the ink now
- * (§ buildForme) and the air is this figure's `padding` instead — the same void,
- * on the outside, where it can be laid out against.
- *
- * Which is why `--lf-w` is no longer just `100cqw`. The padding is a fraction
- * of the SVG's rendered width (`--lf-bleed`, published), and the SVG's width is
- * what is left of the plate after the padding — so the two define each other.
- * Solve it once instead of iterating:
- *
- *     W = C − 2P   and   P = bleed·W    ⇒    W = C / (1 + 2·bleed)
- *
- * with C the plate's measure (`100cqw`, the figure's padding box after the
- * bleed above). At a 1160px plate: W = 1101.7px, P = 29.1px — and 1286/1101.7
- * is the same units-per-pixel the padded box rendered at, i.e. the ink lands
- * exactly where it did. Removing the pad was a refactor, not a re-layout.
- *
- * Only ONE side is not flush with the ink: the box reserves the relief's rise
- * above the topmost piece (`--lf-gap-top`, § buildForme). Left, right and
- * bottom are the ink's own extremes, so the three per-side air lengths that
- * used to be published there are gone — they would all be zero, and the boxes
- * that used to hold themselves off the ink with them now simply sit on the
- * padding box's edge, which is the same line.
- *
- * 直排 keeps the capped in-flow size from § base — there the inline axis is
- * vertical, so "full width" would mean a thousands-of-px-tall forme, and this
- * whole section (physical properties throughout) does not apply. It gets no
- * padding either: with no `--lf-w` there is nothing to take a fraction of, and
- * a forme capped at 620px has the plate's own gutter around it already. */
-/* ── § 凍住量尺 — 為什麼 C 不再是 `100cqw`（2026-08-04）─────────────
- * 這張圖有 **1805 個節點**，佔全頁 4160 的 43%。`100cqw` 量的是 main，而
- * main 的寬在主控台開合的那 250ms 裡每一幀都在變 ⇒ SVG 自己的框每一幀都要
- * 重解一次 ⇒ 那 1805 個節點整棵陪著重排。實測（開合四次的 layout 均攤）：
- *
- *     現況（cqw）            6.6ms／次      ← 每一幀都超過 16.7ms 的預算
- *     SVG 寬不吃容器          3.0ms／次
- *     圖與 SVG 都不吃容器      1.7ms／次     ← 與「整張圖刪掉」相同（1.7）
- *     content-visibility     8.0ms／次     ← 圖在畫面內時形同無效
- *     contain: strict／layout 8.4／9.3ms    ← 完全無效
- *
- * containment 擋不住「元素自己的框變了」，所以唯一的解是讓框不變。
- *
- * C 取 `100vw − --w-console` ——「主控台開著時的版心寬」，也就是本頁的預設
- * 態。這不是新發明的量法：`--plate-pad` 在 ≥72rem 早就寫著
- * `calc((100vw - var(--w-console) - var(--max-w-layout)) / 2)`，同一個「以
- * 開著的版心為準」的凍法，這裡只是把它推到 C。
- *
- * 為什麼不是純 `100vw`（讓圖比版心寬、交給 plate 的 `overflow: clip` 裁）：
- * 那會**裁掉圖說**。牌記與 figcaption 住在 forme 自己右下角的空氣裡
- * （§ pocket），x 落在 1340——已經在 1231 的版心之外，plate 一裁就連它們
- * 一起裁掉。owner 的條件是圖說與破折號動畫不可以亂，所以 C 往內取。
- *
- * 代價說清楚：主控台**收起**時，版心變寬 280px 而這張圖不再跟著長大
- * （原本 1231→1511）。右緣多出來的是空氣，不是破圖——圖說仍在圖自己的
- * 角落裡，座標系整套是同一把尺量的，不會錯位。 */
-/* The rail owns the changing viewport; the heavy figure below is a frozen
-   track. Open: reserve the console column. Closed: expand to 100vw. */
+
+
+
 :where(main:not([data-writing='vertical'])) .FormeRail {
-  --forme-scroll-pad: 0px;
-  /* `.FormeRail` 與後面的 `.TwoEmDashes` 才是 station 的直接兄弟。
-     LeadForme 自己的 z-index 無法穿出 rail 的 stacking context；層級必須寫在
-     這一層，SVG 鉛字才會真的壓在 TED 柱上。 */
-  position: relative;
-  z-index: 2;
-  margin-inline: calc(-1 * var(--rail-pad) + var(--w-console) / 2);
-  padding-inline: var(--forme-scroll-pad);
-  scroll-padding-inline: var(--forme-scroll-pad);
-  overflow: visible;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  direction: ltr;
+  & {
+    --forme-scroll-pad: 0px;
+
+    position: relative;
+    z-index: 2;
+    margin-inline: calc(-1 * var(--rail-pad) + var(--w-console) / 2);
+    padding-inline: var(--forme-scroll-pad);
+    scroll-padding-inline: var(--forme-scroll-pad);
+    overflow: visible;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    direction: ltr;
+  }
 
   &::-webkit-scrollbar { display: none; }
 }
@@ -561,8 +339,7 @@ body:has(#console-collapsed:checked)
   margin-inline: calc(-1 * var(--rail-pad));
 }
 
-/* Below 768px the closed rail is narrower than the frozen track. In side-panel
-   mode the same happens while open below 768px + one console column. */
+
 @media (width < 48rem) {
   :where(main:not([data-writing='vertical'])) .FormeRail {
     --forme-scroll-pad: 2rem;
@@ -572,7 +349,7 @@ body:has(#console-collapsed:checked)
 
 }
 
-/* 52–64rem uses the compact 15rem console: 48rem + 15rem = 63rem. */
+
 @media (52rem <= width < 63rem) {
   body:not(:has(#console-collapsed:checked))
     :where(main:not([data-writing='vertical'])) .FormeRail {
@@ -582,7 +359,7 @@ body:has(#console-collapsed:checked)
   }
 }
 
-/* Above 64rem the console returns to 17.5rem: 48rem + 17.5rem = 65.5rem. */
+
 @media (64.0625rem <= width < 65.5rem) {
   body:not(:has(#console-collapsed:checked))
     :where(main:not([data-writing='vertical'])) .FormeRail {
@@ -594,125 +371,33 @@ body:has(#console-collapsed:checked)
 
 :where(main:not([data-writing='vertical'])) .LeadForme {
   & {
-    /* 版心寬，凍在「主控台開著」那一態。減的 1px 是 main 自己的
-       `border-inline-start`（station-frame.css § main）——plate 的內容寬少
-       掉那一條，圖要與 plate 的右緣齊平就得跟著減。 */
-    /* Freeze the forme to the viewport space left after reserving one console
-       column. This reservation is unconditional: collapsing the console only
-       translates main; it must not grow the forme back to 100vw. */
+
+
     --lf-c: max(
       768px,
       calc(100vw - var(--w-console) - 2 * var(--plate-pad) - 1px)
     );
-    /* 右對齊之後，圖的左緣離版心左緣有多遠。抬升的算式量的是「樣張欄的
-       行末邊緣在**圖的座標系**裡的 x」，圖一往右挪，那個 x 就得減掉這段
-       位移，否則抬升會多算一截、鉛字爬進樣張卡。主控台開著時是 0。
-       這一支只餵抬升（一個 margin），不進圖的寬——所以 cqw 回到這裡不會
-       把那 1805 個節點叫醒。 */
+
     --lf-shift: calc(100cqw - var(--lf-c));
     --lf-w: calc(var(--lf-c) / (1 + 2 * var(--lf-bleed, 0.0264)));
     --lf-air: calc(var(--lf-bleed, 0.0264) * var(--lf-w));
 
-    /* 顯式寬度是這一節的重點：圖的框從此不由父層推導，主控台一開一合就
-       碰不到它，那 1805 個節點也就不必重排。 */
+
     inline-size: var(--lf-c);
 
-    /* **靠版心的行末對齊**（owner 2026-08-04：「全頁的重心都在左邊」）。
-       主控台佔著版面左緣，鉛字盤再從左緣起排，整頁的墨就全壓在同一側；
-       貼右緣排，兩塊重物才分踞兩端。
 
-       主控台**開著**時（本頁預設）--lf-c 正好等於版心寬，左右對齊是同一
-       個位置——這一條只在收起時才看得出來：多出來的 280px 空氣從右邊換到
-       左邊。貼的仍是版心的**外緣**（負的 --plate-pad 那條線），與原本貼左
-       緣時同一條線。
-
-       start 邊是算出來的，不是 `auto`：圖比版心的內容盒寬（寬了兩個
-       --plate-pad），剩餘空間是負的，而**負剩餘空間下 `margin: auto` 一律
-       解析成 0**——實測圖因此貼在內容盒左緣、再被 end 的負 margin 推出版心
-       右緣 72px，連圖說都跑到版外去了。改成明寫：
-
-           左緣 ＝ 版心外緣的右端 − 圖寬 ＝ 100cqw − --plate-pad − --lf-c
-
-       主控台開著時它等於 −--plate-pad（＝原本那條），收起時多出來的 280px
-       自動落到左邊。圖在畫面上的位置兩態相同（版心右緣本來就不動），變的
-       只是它相對於內容盒左緣的距離——所以這支 cqw 只讓 margin 重算，不碰
-       圖的寬，那 1805 個節點仍然不必重排（見下方實測）。 */
     margin-inline: auto;
     padding: var(--lf-air);
   }
 
 
-  /* the bleed is for the forme, not for its note — hand the gutter back so
-     the caption starts where the copy does, the figure's own padding included.
-     (Superseded below once the note moves into the forme's own corner.) */
+
   figcaption {
     margin-inline: calc(var(--plate-pad) - var(--lf-air));
   }
 
-  /* ── the lift — the specimen sits IN the forme's empty corner ────────
-   * An isometric parallelogram hung in a rectangular box leaves four wedges
-   * of air, and the block-start／inline-start one is big: the top vertex is
-   * the FIRST slug, and everything to its inline-start descends along e2, so
-   * that whole corner is empty. The specimen card and its legend are exactly
-   * the width of that corner, so the forme rides up under them instead of
-   * starting below a band of nothing.
-   *
-   * How far up is arithmetic, not a guessed number. lead-forme.js publishes
-   * the vertex as two fractions of the rendered width (§ buildForme):
-   * `--lf-apex` = how far across the box it sits, `--lf-pad` = the air above
-   * it. The e2 edge falls at tan30 ≈ 0.5774 per unit travelled
-   * inline-start-ward, so the air above the forme at any inline offset x is
-   *
-   *     void(x) = --lf-air + --lf-pad·--lf-w + (--lf-air + --lf-apex·--lf-w − x)·tan30
-   *
-   * `--lf-pad` measures the box's top edge to the origin, and the lift is a
-   * negative margin on the MARGIN box, so both terms have to clear the figure's
-   * own padding as well — hence the two `--lf-air`s. They are exactly what the
-   * viewBox pad used to contribute before § air moved it outside, which is why
-   * this reads as two added terms rather than as a re-tuning: the sum is the
-   * same distance it always was.
-   *
-   * and the x that matters is the specimen column's inline-end edge — one
-   * plate padding plus the card's own track (§ 三體樣張 in station-fonts.css).
-   * Lift by that and the diagonal runs just under the card and its legend;
-   * inline-end of that edge the forme climbs higher still, into the air below
-   * the two-line heritage note, which is where the extra height comes from.
-   *
-   * `--lf-graze` is the one tuned number: how far PAST that edge the forme is
-   * allowed to ride, so its diagonal clips the card's block-end／inline-end
-   * corner instead of stopping under it (owner's call — grazing the card is
-   * the point, covering a glyph is not). It is `cqw`-based, not a flat rem,
-   * because everything else here scales with the forme: a fixed 5rem would be
-   * a graze at 1600px and a bite at 900px. `10cqw` rather than `0.1·--lf-w`,
-   * because the graze is a distance across the PLATE and `--lf-w` is now the
-   * plate minus the figure's padding — taking a tenth of that would quietly
-   * shorten the lift by 6px. The ceiling it must not reach is
-   * the face label (`.Faces small`, centred against the last row's
-   * inline-end), which the clamp's upper bound is set against.
-   * The `clamp` bounds both ends. `0px`, because the specimen column can be
-   * wider than the vertex is far across (narrow stations) — there the wedge
-   * is behind the card and there is nothing to reclaim. `18rem`, because the
-   * wedge keeps growing with the station while the copy above it does NOT:
-   * the note stays two lines whatever the width, so the vertex would climb
-   * into it. Rise above the specimen block works out to ≈0.0715·W + 37px +
-   * the graze, and the note leaves ≈278px — i.e. it runs out at a ~2100px
-   * reading area. The ceiling only bites past that; below it the arithmetic
-   * above is untouched.
-   *
-   * Gated on the same container width that puts the note beside the card
-   * (station-fonts.css § 三體樣張): stacked, the copy above runs the full
-   * measure and the corner is not free. */
-/* ── § 門檻 — 藥丸的直柱／橫列改看視窗，不看容器 ────────────────────
-   * 圖的寬度是**凍住**的（§ 凍住量尺：讀常數 `--w-console`，主控台開合不重排
-   * 那 1805 個節點），但容器查詢讀的是版心的**實況**寬，主控台一收就變。兩把
-   * 尺不同步，於是收起主控台會跨過門檻進到直柱那一支，而圖並沒有跟著變寬——
-   * 楔子還是小的，最高的兩柱直接壓進版框（實測腳落在斜邊下方 54、64px）。
-   *
-   * 所以門檻改讀視窗，與 `--lf-c` 同一個來源。數值是算的：楔子在最左端的高
-   * ＝ (pad + apex×tan30) × W，而 W ＝ (100vw − 主控台 − 1) ÷ (1 + 2×bleed)，
-   * 合起來約 0.348 ×(100vw − 281)。最高一柱連內距 308px，留一點餘裕要 338，
-   * 於是 100vw ≥ 1252px ≈ 78rem。
-   * 換句話說：**直柱要等到楔子放得下它才登場**，而不是等版心夠寬。 */
+
+
     @media (width >= 85rem) {
     & {
       --lf-void: calc(
@@ -721,50 +406,17 @@ body:has(#console-collapsed:checked)
         + (var(--lf-air) + var(--lf-apex, 0.6303) * var(--lf-w)
            - (var(--plate-pad) + 30rem - var(--lf-shift))) * 0.5774
       );
-      /* `10cqw` 的原意是「一段跨過版心的距離」（見上），但 cqw 量的是 main，
-         主控台一開合就變 ⇒ 抬升量跟著變 ⇒ 圖又被碰一次。改成同一把凍住的
-         尺的十分之一：意思不變（仍是版心的一成），只是量的是「開著時的版
-         心」，與 --lf-w 同源，抬升與圖從此一起靜止。 */
+
       --lf-graze: clamp(3rem, calc(0.1 * var(--lf-c)), 8rem);
 
-      /* owner 2026-08-29：撤掉「鉛字壓在校樣上」的舊梗。不能再用負 margin
-         回收左上楔形空氣；三體樣張盒底到鉛字 figure 盒頂明確留 3rem。 */
+
       margin-block-start: 3rem;
     }
 
   }
 
-  /* ── § pocket 不再受 56rem 的查詢管 ───────────────────────────────
-   * 抬升（上一段）與這一段原本包在同一個 `@container (inline-size >= 56rem)`
-   * 裡，因為當時兩者的前提相同：站台夠寬，樣張卡才在圖旁邊、右下角才是空的。
-   *
-   * 窄螢幕現在走另一條路（owner 2026-08-26）：鉛字盤的量有 768px 的下限，比
-   * 版心寬時 figure 自己變成可平移的長帶。於是右下的楔子**在任何寬度都存在**，
-   * 牌記照樣有地方站——所以 pocket 不必再被寬度管。抬升仍然要管：窄螢幕的樣張
-   * 卡是堆在圖上方的整條，圖往上騎就撞上去。
-   *
-   * 768 是算的不是挑的：牌記約 100 字 × 14px × 21px 行進 ≈ 29,400px²，而寬 140
-   * 的楔子可用面積 ＝ `140 × (ratio − foot)·w − tan30 × 140²/2`；w = 768/1.0542
-   * 時是 30,900px²，只餘 5%。再窄就擠不下。 */
-  /* ── § pocket — pills and the note move INTO the forme's other air ──
-   * Beyond the parallelogram's inline-end vertex the box is pure air: the
-   * bottom edge recedes inline-start-ward from that vertex at the
-   * projection's own slope, so the whole strip below and to the right of
-   * it is free. The figure becomes a grid — the SVG spans all three
-   * columns, and the two later siblings sit in the last two, painting
-   * above the SVG's void by plain document order (no z-index).
-   *
-   * The note is a 直排 colophon down the fore-edge — a 牌記, which is what
-   * the text is. Its head clears the vertex's foot by `--lf-foot`,
-   * published by lead-forme.js (§ buildForme) like --lf-apex, because the
-   * vertex moves when 直排／橫排 re-lay the sentence; scaled by `--lf-w`,
-   * the SVG's own rendered width (§ showpiece).
-   *
-   * PHYSICAL height/margins on the note on purpose: the box is
-   * `vertical-rl`, so logical properties map through ITS writing mode and
-   * flip (measured in the previous wedge layout: `inset-inline-end`
-   * resolved to `bottom` and threw the caption across the station). The
-   * enclosing rule is 橫排-only by construction. */
+
+
   & {
     display: grid;
     grid-template-columns: 1fr auto auto;
@@ -775,22 +427,7 @@ body:has(#console-collapsed:checked)
     grid-area: 1 / 1 / 2 / 4;
   }
 
-  /* 藥丸與圖說分居對角（owner 2026-08-26：「不然好擠」）。兩者原本並排在
-     右下那一塊空氣裡，各自只剩 140px 寬、中間 16px——實測 141×316 與
-     140×392 擠在 296px 的口袋裡。
-     藥丸搬到**block-start／inline-start** 那塊楔子（樣張卡下方），圖說獨佔
-     右下，寬度從 140 放到約 296。
 
-     為什麼是藥丸搬、不是圖說搬：控制項該貼著它控制的東西——這三組改的正是
-     樣張卡裡的字與圖上的鉛字，而卡片在左上；圖說是讀完圖之後的註腳，留在
-     視線離開圖的地方才順，何況它那個 `shape-outside` 的斜邊只有在右下的
-     楔子裡才成立。
-
-     藥丸維持直排：那是刻意的（見上面 § Controls——像鉛字上刻的規格，而且
-     `vertical-rl` 下在 fieldset 上，頁面轉直排時它們仍然站著）。
-     但**對齊要翻面**：`align-items` 原本是 `flex-end`，讓三組的頭順著右下
-     那條往下走的斜邊錯開；左上這塊楔子的斜邊走向相反，所以改成
-     `flex-start`，階梯才跟著新的斜邊走。 */
   .Controls {
     grid-area: 1 / 1;
     align-self: start;
@@ -799,126 +436,47 @@ body:has(#console-collapsed:checked)
     margin-block: 0;
     padding-block-start: .5rem;
 
-    /* 四組的高度不一樣（字體標籤最長、標點四個縮寫、語言四個單字、行向
-       兩個選項），所以頂端對齊之後**腳底自然排成一條斜線**——要讓那條斜線
-       與楔子平行，高的必須在左。
 
-       楔子往右變窄，這是算出來的不是看出來的：上方的空氣是
-       `void(x) = --lf-air + --lf-pad·W + (--lf-air + --lf-apex·W − x)·tan30`
-       （見上 § the lift），x 越往右、void 越小。
-
-       基礎規則是 `row-reverse`，那是為了舊的右下口袋調的（腳底對齊、頭部
-       錯開，順著那邊往下走的斜邊）。這塊楔子的斜邊走向相反，所以翻回 `row`：
-       DOM 順序是字體、標點、語言、行向，正好由高到矮。 */
     flex-direction: row;
   }
 
   figcaption {
-    /* the diagonal head. The forme's block-end／inline-end edge runs from
-       the inline-end vertex DOWN-inline-start along e2 = [−cos30, 0.5] —
-       √3 of run per unit of rise — so a float carrying `shape-outside`
-       (Baseline 2020) cut to that slope drops every column's head onto
-       that edge: the first falls from the vertex itself, each one further
-       inline-start starts lower, and their feet stay on the forme's bottom
-       line. The note then reads as ink resting IN the 空鉛 wedge rather
-       than in a rectangle that happens to sit near it. `float: left` is
-       line-left — the TOP in vertical-rl (measured) — which is what puts
-       the exclusion at the columns' heads.
-       The triangle is sized off the caption's WIDTH, not its height: the
-       box's height is the pocket's and scales with the forme, while the
-       slope must stay √3 at every viewport. */
+
     &::before {
       content: '';
       float: left;
       width: 100%;
-      /* 斜邊的落差：寬 × tan30，與等角投影的 e2 同斜率。 */
+
       --lf-cap-tri: calc(var(--lf-cap-w) / 1.732);
 
-      /* 盒子要**比三角形高一截**，否則撐開的部分會被裁掉。
-         `shape-outside` 的排除區被 float 的邊界盒剪裁：盒高只有三角形本身時，
-         `shape-margin` 往左下撐出去的那一段落在盒外，左端的排除深度因此頂到
-         盒底就不再增加——實測最後兩欄（「頻」「事」）落在同一高度，階梯變平。
-         斜邊每往法線推 m，垂直方向就多 m / cos30 = m × 1.1547。 */
+
       height: calc(var(--lf-cap-tri) + var(--lf-cap-gap) * 1.1547);
-      /* 第三個頂點用**三角形自己的高**，不是 `100%`——盒子加高之後 100% 會把
-         斜邊一起拉緩，斜率就不再是 tan30 了。 */
+
       shape-outside: polygon(0 0, 100% 0, 0 var(--lf-cap-tri));
       shape-margin: var(--lf-cap-gap);
     }
     & {
-      /* 跨滿整條格線再靠行末對齊，而不是佔第三欄：盒子現在有楔子那麼寬，
-         擺進一個 auto 欄會把欄寬撐開、連帶擠掉圖自己的格線區。 */
+
       grid-area: 1 / 1 / 2 / 4;
       justify-self: end;
-      /* 頂端**釘在頂點的腳**上，不是貼底。
-       *
-       * 原本是 `align-self: end`：盒子貼著格線的底，頂端則隨內容高度浮動。
-       * 那讓「頭部離斜邊多遠」變成剩餘空間的副產品——圖越矮、頂端越往上浮、
-       * 餘裕越小。實測（每一欄的頭 vs 斜邊 `--lf-foot + (vertexX − x)·tan30`）：
-       * 1920 剩 207px、1680 剩 137px、1440 剩 39px、**1280 正好貼上 0px**，
-       * 再窄就壓進鉛字裡。
-       *
-       * 釘住之後，頭部與斜邊的距離**由構造保證**等於 `shape-margin`：三角形
-       * 的高本來就是 `寬 × tan30`（斜率與等角投影的 e2 相同），頂端一旦落在
-       * 頂點的腳上，整條斜邊就與鉛字的下緣平行且等距——與視窗多寬無關。
-       *
-       * 兩個 `--lf-air`：一個是 figure 的 padding（圖的左上角不在 figure 的
-       * 原點），另一個已含在 `--lf-foot` 的定義裡（它量的是 svg 座標）。 */
+
       align-self: start;
-      /* 盒子就是楔子本身，兩條邊都從圖量：高是頂點的腳到地板，底是那個高
-         除以 tan30——等角投影的下緣斜率。於是斜邊與鉛字的下緣重合，牌記有
-         整片空氣可用，而不是縮在右緣的一條窄帶裡（原本是寫死的 10em，只佔
-         楔子底的兩成，文字擠成一疊、左邊那一大片斜坡空著）。
-         底一旦等於高×1.732，`::before` 的三角形（寬÷1.732）就正好是楔子的
-         高，兩者不必各自對答案。 */
-      /* 文字與鉛字之間那條白。`shape-margin` 把整條斜邊**沿法線**往外推，所以
-         白是沿著斜邊等寬的——padding 或 margin 做不到（那些只會推整個盒子）。
-         定義在這一層而不是 `::before` 裡：底的算式要扣掉它。 */
+
+
       --lf-cap-gap: 1.75rem;
       --lf-cap-h: calc((var(--lf-ratio, 0.6977) - var(--lf-foot, 0.3391)) * var(--lf-w) - 1rem);
-      /* 底扣掉那條白沿垂直方向佔掉的一段（法線推 m ⇒ 垂直吃掉 m ÷ cos30），
-         否則三角形連同它的白會比內容盒還高，最左端被擋死、文字擠出盒底。
-         扣完之後三者剛好收斂：三角形高 ＝ 盒高 − 白，加回白 ＝ 盒高。 */
+
       --lf-cap-w: calc((var(--lf-cap-h) - var(--lf-cap-gap) * 1.1547) * 1.732);
 
-      /* flush with the padding box on the fore-edge and the floor — which IS
-         the ink's right edge and its bottom (§ air), the two lines the note
-         used to hold itself off with `--lf-air-right`/`-bottom`. */
+
       margin: 0;
-      /* …and the top is **computed from the forme**, not left to the grid.
-       *
-       * `align-self: end` 讓盒子貼底、頂端隨內容浮動，於是「頭部離斜邊多遠」
-       * 變成剩餘空間的副產品：圖越矮、頂端越往上浮、餘裕越小。實測（每欄的頭
-       * vs 斜邊 `foot + (vertexX − x)·tan30`）1920 剩 207px、1440 剩 39px、
-       * **1280 正好貼上 0**，再窄就壓進鉛字。
-       *
-       * 釘在頂點的腳上之後，頭與斜邊的距離**由構造保證**等於 `shape-margin`
-       * ——三角形的高本來就是 `寬 × tan30`（與等角投影 e2 同斜率），頂端一落
-       * 在腳上，整條邊就與鉛字下緣平行等距，與視窗多寬無關。
-       *
-       * **物理 `margin-top`**，不是 `margin-block-start`：這個盒子是
-       * `vertical-rl`，邏輯屬性照它自己的書寫模式翻面（block-start 在那裡是
-       * 「右」——本節開頭那條警告記的正是這類事故；實測寫成邏輯屬性時圖說
-       * 整個貼到圖的頂端）。而且要排在 `margin: 0` **之後**，否則被簡寫重設。
-       *
-       * 不加 `--lf-air`：格線區的起點就是 figure 的**內容盒**頂端，也就是
-       * svg 的頂端，而 `--lf-foot` 量的正是從那裡往下（多加一個 air 會讓盒底
-       * 多出約 50px，掉到圖的地板以下）。 */
+
       margin-top: calc(var(--lf-foot, 0.3391) * var(--lf-w));
       padding-bottom: 1rem;
       width: var(--lf-cap-w);
-      /* 高度同樣是算的：從頂點的腳到圖的底緣。`--lf-ratio` 是圖的高/寬，
-         `--lf-foot` 是腳的 y/寬，兩者相減再乘寬就是那一段。
-         原本寫死 `28em`（14px 下 392px），只在 1440 附近碰巧等於它——實測那時
-         的空間是 767 − 373 = 394。定值在別的寬度就會超出圖的底或短一截。
-         仍然是 DEFINITE 而不是 auto：這是正交流，auto 會讓格線去猜欄數。
-         扣掉 `padding-bottom`：`height` 設的是內容盒，不扣的話盒底會超出
-         圖的地板一個內距。 */
+
       height: var(--lf-cap-h);
-      /* PHYSICAL width/height above on purpose, and this to match: the box
-         is vertical-rl, so `max-inline-size` is its COLUMN LENGTH — the
-         base rule's 38em cap is the stacked note's measure, and here it
-         would crop the columns to a fraction of the pocket. */
+
       max-inline-size: none;
       font-size: .875rem;
       writing-mode: vertical-rl;
@@ -927,56 +485,27 @@ body:has(#console-collapsed:checked)
 
   }
 
-  /* ── 窄站台：鉛字盤變成可平移的長帶 ─────────────────────────────
-   * owner 2026-08-26：窄視窗不要再用 120vw 兩側裁掉，改成**下限 768px 的長帶**，
-   * 初始對齊最右，讓右下的楔子永遠放得下直排的牌記；讀者往左回滾就看得到鉛字
-   * 全貌。（同一天先試過 120vw 居中裁，看得到的只有中段，牌記沒地方站。）
-   *
-   * 「初始對齊最右」用 `direction: rtl` 而不是 JS：捲動範圍從右端起算是這個
-   * 屬性的定義，不必等腳本、不怕 resize 或轉向，也不會跟讀者的手勢打架。
-   * 孩子一律轉回 `ltr`——只有捲動的原點要翻，內容的行向不翻。
-   * 代價記著：Chrome 在 rtl 容器下 `scrollLeft` 走負值，之後若要給這條長帶配
-   * 左右箭頭，`strip-nav.js` 的 disabled 判斷得改成雙向。
-   *
-   * 藥丸脫離長帶：自己一列在圖的上方（樣張卡的正下方——控制項貼著它控制的
-   * 東西，與寬螢幕同一個道理），`position: sticky` ＋ **物理** `left: 0` 讓它
-   * 不隨圖平移。改橫排，因為這一列現在有整個版心的寬。 */
+
   @media (width < 85rem) {
     & {
-      /* 768 是**下限**，不是尺寸（owner 2026-08-28：「怎麼變這麼小」）：版心比它
-         寬時，圖照樣是「版心寬」——與寬螢幕那一支同一個量。原本寫死 768，於是
-         1200–1360px 之間的視窗上，版心有 919–1079 卻只畫 768，右邊空一大塊。
-         下限的理由見上面 § pocket 的算式：再窄牌記就擠不下。 */
-      /* SVG 本身以 console 開啟後剩下的 viewport 為上限，768px 是保住牌記
-         幾何的下限；若 rail 的可視口放不下，就交給下面的 inline scroll 展示。 */
+
+
       --lf-c: max(
         768px,
         calc(100vw - var(--w-console) - 2 * var(--plate-pad) - 1px)
       );
 
-      /* 圖寬**就是** `--lf-c`（見下面的 svg）：窄站台沒有留白的外框，長帶自己
-         就貼著邊界捲。所以要把「圖寬」這個量對齊事實，否則 § pocket 那條從圖寬
-         算出來的牌記高度仍按扣掉留白的 729 算，圖卻有 768 寬的斜邊——牌記底部
-         會離圖的地板空出一截（實測高 245，該有 259）。內距讀的 `--lf-air` 也
-         跟著這個值走，兩處同一個基準。 */
+
       --lf-w: var(--lf-c);
 
-      /* 長帶的**外框**是版心寬，不是圖寬——上面那段「凍住的量」把 figure 自己
-         設成 `inline-size: var(--lf-c)`，在這裡要還原，否則框跟著圖一起變成
-         768，根本不會捲（實測 figure 寬 768、可捲 66）。圖的寬度改由 svg 自己
-         宣告（見下）。同理，那一段給 figure 的負 margin 是為了貼版心外緣，
-         窄站台沒有那回事。 */
+
       inline-size: var(--lf-c);
       margin-inline: auto;
-      /* This branch gives the SVG the full frozen measure directly. Keeping
-         the wide-layout air as figure padding would make the SVG wider than
-         its grid content box; RTL would place all of that excess on the left
-         and shift the painted forme off main's centre. */
+
       padding: 0;
       direction: rtl;
 
-      /* 兩列：藥丸一列、圖一列。圖與牌記同列，所以牌記的 `margin-top` 仍然是
-         從 svg 的頂端起算（見 § pocket）。 */
+
       grid-template-rows: auto 1fr;
 
     }
@@ -991,65 +520,47 @@ body:has(#console-collapsed:checked)
     }
 
     figcaption {
-      /* rtl 下第一欄在視覺右側——牌記要跟著圖的右端走。 */
+
       grid-area: 2 / 1;
-      /* 寬不再寫死：底由楔子自己算（見上），長帶的楔子比寬站台小一號，算式
-         跟著縮。
-         `justify-self` 要翻面：這條格線是 rtl，`end` 解析成物理左，而牌記
-         要跟著圖的右端走。 */
+
       justify-self: start;
-      /* 小一號：768 的楔子從頂點的腳到地板只有 245px（1280 時是 324），同一段
-         文字在 14px 下溢出 47px。牌記本來就是牌記，不是正文，縮到 12px 讀得動
-         而且**面積夠**——需要的面積隨字級平方縮小，可用面積不變。
-         `--lf-cap-w` 是 em，所以盒子跟著窄，兩者一起縮。 */
+
       font-size: .75rem;
     }
 
     .Controls {
-      /* 與圖同一格，不自成一列：等角投影的版框頂點在中段，左右兩側是大片
-         空氣，藥丸自己佔一列的話會浮在那片空氣**之上**，與版框隔著它的高度
-         （實測腳離斜邊 400–500px，看起來像兩個不相干的東西）。疊進同一格、
-         貼著格線的起角，藥丸就落在空氣裡，與鉛字讀作一體。 */
-      grid-area: 2 / 1 / 3 / 4;
-      position: sticky;
-      /* 物理 `left`：這是「不隨長帶平移」，與行向無關。 */
-      /* The rail's padding box is already 2rem in scrolling states; sticky
-         left:0 lands on that inset. Adding the gutter again would make 4rem. */
-      left: 0;
-      align-self: start;
-      /* `justify-self` 解析在**格線容器**的方向上，而這裡是 rtl——所以要 `end`
-         才是物理的左。（`> * { direction: ltr }` 只翻孩子內部的行向，不翻它們
-         在格線裡的擺放。） */
-      justify-self: end;
-      padding-block: 0 .75rem;
 
-      /* 一組一列，**長中短由上到下**（owner）。靠 `flex-wrap` 讓它自己斷行的話，
-         斷點跟著版心寬跑——某些寬度會擠成一列或二列，長短不齊，看起來像沒排過。
-         直接 `column` 就固定成一組一列，而 DOM 順序（字體→標點→語言→行向）
-         正好由長到短。 */
-      flex-direction: column;
-      align-items: flex-start;
-      row-gap: .4rem;
+      & {
+        grid-area: 2 / 1 / 3 / 4;
+        position: sticky;
 
-      /* 收到版心寬：橫排的一組最寬約 380px，而 `position: sticky` 推不出自己的
-         格線區——盒子一超過捲動口就只能停在圖的左段、跟著捲走（實測左緣 −293）。
-         `100cqw` 量的是 main，也就是這條長帶的捲動口寬度。 */
-      max-inline-size: 100cqw;
 
-      /* 縮一號（owner）：四列疊起來會把圖往下推，字級小一點列高也跟著矮。 */
-      font-size: .8125rem;
+        left: 0;
+        align-self: start;
 
-      /* 橫排（owner）。基礎規則把 `vertical-rl` 下在 fieldset 上——那是為了讓
-         藥丸像鉛字上刻的規格、頁面轉直排時仍站著。窄站台這一列有整個版心的寬
-         而沒有高，直排的三根柱子會被站台頂端切掉，所以轉回橫排。
-         `.acronym` 的 `text-orientation` 在橫排是 no-op，不必另外處理。 */
+        justify-self: end;
+        padding-block: 0 .75rem;
+
+
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: .4rem;
+
+
+        max-inline-size: 100cqw;
+
+
+        font-size: .8125rem;
+      }
+
+
       fieldset {
-        writing-mode: horizontal-tb;
-        gap: .35rem;
+        & {
+          writing-mode: horizontal-tb;
+          gap: .35rem;
+        }
 
-        /* 縮寫的收緊要跟著還原：`-.35em` 是為**直排站立**的字母調的（每個字母
-           各佔一格，不收就鬆得像被拆開），橫排下同一個值會讓字母疊在一起——
-           實測 JIS 變成「$」、MOE 變成「MŒ」、KLR 變成「KR」。 */
+
         abbr.acronym { letter-spacing: normal; }
       }
     }
@@ -1058,24 +569,24 @@ body:has(#console-collapsed:checked)
 
 @media (width < 48rem) {
   :where(main:not([data-writing='vertical'])) .LeadForme .Controls {
-    /* The upper-right void is a 30deg triangle whose base runs from the
-       published apex to the SVG's right edge. The rows already descend from
-       longest to shortest, matching the pocket as it narrows downward. */
-    --lf-controls-pocket: calc(
-      (1 - var(--lf-apex, 0.6303)) * var(--lf-w) - 2rem
-    );
-    grid-area: 2 / 1 / 3 / 4;
-    position: relative;
-    left: auto;
-    align-self: start;
-    justify-self: start;
-    align-items: flex-end;
-    row-gap: 3px;
-    inline-size: max-content;
-    max-inline-size: var(--lf-controls-pocket);
-    margin: calc(var(--lf-pad, 0.0086) * var(--lf-w) + 0.5rem) 0 0;
-    padding: 0;
-    font-size: 0.75rem;
+
+    & {
+      --lf-controls-pocket: calc(
+        (1 - var(--lf-apex, 0.6303)) * var(--lf-w) - 2rem
+      );
+      grid-area: 2 / 1 / 3 / 4;
+      position: relative;
+      left: auto;
+      align-self: start;
+      justify-self: start;
+      align-items: flex-end;
+      row-gap: 3px;
+      inline-size: max-content;
+      max-inline-size: var(--lf-controls-pocket);
+      margin: calc(var(--lf-pad, 0.0086) * var(--lf-w) + 0.5rem) 0 0;
+      padding: 0;
+      font-size: 0.75rem;
+    }
 
     fieldset {
       gap: 1px;
@@ -1095,31 +606,21 @@ body:has(#console-collapsed:checked)
   }
 }
 
-/* ─── 長帶的左右箭頭（只在窄站台） ───
- * 與四語報、散文、遊樂場同一支模組（`strip-nav.js`）、同一個角落：貼在長帶的
- * 右下，讓「還有更多」與「怎麼看更多」在同一處。寬螢幕整座字盤都在畫面裡，
- * 兩顆必然都是 disabled，那就不該在場。
- *
- * 圖示的指向與另外三條**相反**：這條長帶 `direction: rtl`，起點在右緣，往內容
- * 深處是往左。所以 `prev` 指右、`next` 指左，並用 `row-reverse` 把 DOM 序
- * prev→next 排成視覺上的 ←→——按鈕的位置與它要去的方向這才對得上。 */
+
 .FormeNav { display: none; }
 
 @media (width < 65.5rem) {
   :where(main:not([data-writing='vertical'])) .FormeNav {
-    flex-direction: row-reverse;
-    /* `end`，不是 `flex-end`：前者依書寫模式（ltr 下就是物理的右），後者依
-       彈性方向——`row-reverse` 會把它翻到左邊去（實測兩顆跑到版心左緣）。 */
-    justify-content: end;
-    gap: 0.5rem;
-    /* 貼著它捲的東西，離開下一段。負的起始邊界是把兩顆提進圖的留白裡——那圈
-       `--lf-air` 是外框的空氣，不是內容，箭頭壓進去才像是這座字盤的配件；
-       末邊界則要撐開，否則緊接著的 `.TwoEmDashes` 自己沒有上邊界（實測 0px），
-       箭頭會像那一段的標頭。 */
-    margin-block: -0.25rem 2rem;
+    & {
+      flex-direction: row-reverse;
 
-    /* 由 `strip-nav.js` 量出來的「這條長帶捲不動」。`display` 有值的規則會蓋掉
-       UA 樣式表的 `[hidden] { display: none }`，所以要自己認一次。 */
+      justify-content: end;
+      gap: 0.5rem;
+
+      margin-block: -0.25rem 2rem;
+    }
+
+
     &[hidden] {
       display: none;
     }
@@ -1141,7 +642,7 @@ body:has(#console-collapsed:checked)
       background: var(--ui-accent);
     }
 
-    /* 到底了就說出來：能按卻不動，比按不下去更難懂。 */
+
     button:disabled {
       opacity: 0.35;
       cursor: default;
@@ -1167,13 +668,14 @@ body:has(#console-collapsed:checked)
   }
 }
 
-/* the compositor's note: a caption, not body copy — kept to the copy
-   column's measure however wide the forme above it runs. */
+
 :where(.LeadForme) figcaption {
-  max-inline-size: 38em;
-  font-size: 0.75rem;
-  line-height: 1.66667;
-  color: var(--ui-supplement-text);
+  & {
+    max-inline-size: 38em;
+    font-size: 0.75rem;
+    line-height: 1.66667;
+    color: var(--ui-supplement-text);
+  }
 
   code { font-size: 0.75rem; }
 }

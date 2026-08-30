@@ -52,7 +52,7 @@ test.describe('homepage keyboard and scroll contracts', () => {
   test('the prose newspapers align their shared seam before entering', async ({ page }) => {
     await page.goto('/')
     const strip = page.locator('#station-prose .Prose[data-strip-start="seam"]')
-    const lens = page.locator('#station-prose .Lens')
+    const lens = page.locator('#station-prose [data-mag-lens]')
     await strip.scrollIntoViewIfNeeded()
     await expect(strip).toHaveAttribute('data-strip-ready', '')
 

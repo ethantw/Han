@@ -367,20 +367,25 @@ test('cdn：dtj 連結隨 webfontCdnSource（unpkg → unpkg.com），han.css �
   assert.ok(html.includes('https://cdn.jsdelivr.net/npm/@hanzi.pro/han.css@latest'))
 })
 
-test('cdn：套件版本讀 window.__hanCdn，讀不到才退回 latest', () => {
-  // _layout.html 從 manual/.env 注入這個全域。codegen.js 在 public/ 底下、Vite
-  // 不處理它，所以拿不到 import.meta.env——這是版本號唯一的傳遞路徑。片段若與
-  // 讀者眼前那一頁載入的版本不同，這頁的存在意義就沒了。
-  const before = globalThis.__hanCdn
+test('cdn：套件版本讀具名 meta，讀不到才退回 latest', () => {
+  const before = globalThis.document
   try {
-    globalThis.__hanCdn = { ziano: '9.9.9-test', diantenjeom: '8.8.8-test' }
+    const versions = { ziano: '9.9.9-test', diantenjeom: '8.8.8-test' }
+    globalThis.document = {
+      querySelector(selector) {
+        const pkg = selector.match(/data-package="([^"]+)"/)?.[1]
+        return pkg in versions
+          ? { getAttribute: (name) => name === 'content' ? versions[pkg] : null }
+          : null
+      },
+    }
     const html = paneCode(renderCDN(cfg({})), 'html')
     assert.ok(html.includes('@hanzi.pro/webfonts-shanggu-sans@9.9.9-test'))
     assert.ok(html.includes('@hanzi.pro/diantenjeom@8.8.8-test'))
     // han.css 是這個 repo 自己，不隨附屬套件的版本走
     assert.ok(html.includes('@hanzi.pro/han.css@latest'))
   } finally {
-    globalThis.__hanCdn = before
+    globalThis.document = before
   }
 })
 

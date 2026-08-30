@@ -3,7 +3,7 @@
 /**
  * Customizable <select> — 一顆自己的下拉，全站共用。
  *
- * 獨立成一張表（不併進 controls.css）是為了**可單獨掛載**：`demo/specimen.html`
+ * 獨立成一張表（不併進 control-family sheets）是為了**可單獨掛載**：`demo/specimen.html`
  * 那種「內容區零樣式」的頁面只想要這一顆控件的長相，不需要 .Toggle／.Field／
  * 滑桿那一整套。同一個理由讓它三層回退（見下），所以這張表丟到任何頁面上都
  * 站得住——同 ziano/demo/src/css/select.css 的定位。
@@ -54,25 +54,27 @@
    有 base-select 的瀏覽器在下面把這顆三角換成描邊的角標（開合會轉），兩條路
    各自完整；讀者一次只看得到一種引擎，不會並排比較。 */
 select {
-  appearance: none;
-  padding-block: 0.2em;
-  padding-inline: 0.5em calc(0.5em + 1.1em);
-  font: inherit;
-  font-size: var(--_sel-fs);
-  color: var(--_sel-ink);
-  border: 1px solid var(--_sel-rule);
-  border-radius: var(--_sel-radius);
-  cursor: pointer;
-  transition: border-color 150ms ease-out, color 150ms ease-out;
+  & {
+    appearance: none;
+    padding-block: 0.2em;
+    padding-inline: 0.5em calc(0.5em + 1.1em);
+    font: inherit;
+    font-size: var(--_sel-fs);
+    color: var(--_sel-ink);
+    border: 1px solid var(--_sel-rule);
+    border-radius: var(--_sel-radius);
+    cursor: pointer;
+    transition: border-color 150ms ease-out, color 150ms ease-out;
 
-  /* 兩道 45° 的斜切拼成一顆實心三角，收在行尾 */
-  background:
-    linear-gradient(45deg, transparent 50%, var(--_sel-dim) 50%)
-      calc(100% - 1.05em) 50% / 0.32em 0.32em no-repeat,
-    linear-gradient(135deg, var(--_sel-dim) 50%, transparent 50%)
-      calc(100% - 0.73em) 50% / 0.32em 0.32em no-repeat,
-    var(--_sel-bg)
-  ;
+    /* 兩道 45° 的斜切拼成一顆實心三角，收在行尾 */
+    background:
+      linear-gradient(45deg, transparent 50%, var(--_sel-dim) 50%)
+        calc(100% - 1.05em) 50% / 0.32em 0.32em no-repeat,
+      linear-gradient(135deg, var(--_sel-dim) 50%, transparent 50%)
+        calc(100% - 0.73em) 50% / 0.32em 0.32em no-repeat,
+      var(--_sel-bg)
+    ;
+  }
 
   &:hover:not(:disabled) { border-color: var(--_sel-dim); }
   &:focus-visible {

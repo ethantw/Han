@@ -98,11 +98,10 @@
 <meta name="twitter:description" content="{{ description }}">
 <meta name="twitter:image" content="https://hanzi.pro/img/typeset.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<!-- codegen.js lives in public/, which Vite copies verbatim, so it cannot read
-     import.meta.env. These are the same two names as the links below and as
-     manual/.env — the file it generates snippets from must not disagree with
-     the page the reader is looking at. -->
-<script>window.__hanCdn = { ziano: '%VITE_ZIANO_VERSION%', diantenjeom: '%VITE_DIANTENJEOM_VERSION%' }</script>
+<!-- codegen.js is copied verbatim and cannot read import.meta.env. Named inert
+     metadata keeps generated snippets on the versions loaded by this page. -->
+<meta name="han-cdn-version" data-package="ziano" content="%VITE_ZIANO_VERSION%">
+<meta name="han-cdn-version" data-package="diantenjeom" content="%VITE_DIANTENJEOM_VERSION%">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css" data-han-webfont>

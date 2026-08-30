@@ -71,7 +71,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange }) => {
   // 文案讀模板的 data-label-default。
   const $groupDefault = document.createElement('button')
   $groupDefault.type = 'button'
-  $groupDefault.className = 'Default'
+  $groupDefault.dataset.action = 'restore-defaults'
   const defaultLabel = root.querySelector('.Controls')?.dataset.labelDefault ?? 'Use default'
   $groupDefault.append(icon('reset'), defaultLabel)
   $groupDefault.title = defaultLabel

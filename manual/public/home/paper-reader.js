@@ -48,22 +48,23 @@ const setWriting = (vertical) => {
 const shell = () => {
   if (dialog) return dialog
   dialog = document.createElement('dialog')
-  dialog.className = 'Full ArticleReader'
+  dialog.className = 'Full'
+  dialog.dataset.component = 'article-reader'
   dialog.setAttribute('aria-label', '全文閱讀器')
   dialog.innerHTML = `
-    <form method="dialog" class="ReaderChrome">
-      ${EDITIONS.map((edition) => `<button type="button" class="ReaderEdition" data-reader="edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
-      <button type="button" class="ReaderWriting" data-reader="writing" aria-pressed="false">直排</button>
-      <button value="close" class="ReaderClose" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
+    <form method="dialog" data-part="reader-chrome">
+      ${EDITIONS.map((edition) => `<button type="button" data-reader="edition" data-edition="${edition}" lang="${LANGS[edition]}">${LABELS[edition]}</button>`).join('')}
+      <button type="button" data-reader="writing" aria-pressed="false">直排</button>
+      <button value="close" data-reader="close" title="關閉" aria-label="關閉"><span data-icon="close" aria-hidden="true"></span></button>
     </form>
-    <article class="ReaderSheet" aria-live="polite"><div class="ReaderBody"></div></article>`
+    <article data-part="reader-sheet" aria-live="polite"><div data-part="reader-body"></div></article>`
   ;(document.querySelector('figure.Papers > article') ?? document.body).append(dialog)
   dialog.addEventListener('click', (event) => {
     const control = event.target.closest?.('[data-reader]')
     if (control?.dataset.reader === 'edition') return show(current.slug, control.dataset.edition)
     if (control?.dataset.reader === 'writing') return setWriting(dialog.dataset.writing !== 'vertical')
     if (!control && event.target === dialog) return dialog.close()
-    if (!control && event.target.closest?.('.ReaderSheet') && getSelection()?.isCollapsed !== false) {
+    if (!control && event.target.closest?.('[data-part="reader-sheet"]') && getSelection()?.isCollapsed !== false) {
       const at = SIZES.indexOf(Number(dialog.dataset.size))
       setSize(SIZES[(at + 1) % SIZES.length])
     }
@@ -73,7 +74,7 @@ const shell = () => {
 
 const setEditionState = (edition) => {
   dialog.lang = LANGS[edition]
-  const sheet = dialog.querySelector('.ReaderSheet')
+  const sheet = dialog.querySelector('[data-part="reader-sheet"]')
   sheet.querySelector(':scope > .PaperHead')?.remove()
   const template = document.querySelector(`#paper-reader-head-${edition}`)
   if (template) sheet.prepend(template.content.cloneNode(true))
@@ -89,7 +90,7 @@ const show = async (slug, edition) => {
   shell()
   current = { slug, edition }
   setEditionState(edition)
-  const body = dialog.querySelector('.ReaderBody')
+  const body = dialog.querySelector('[data-part="reader-body"]')
   body.setAttribute('aria-busy', 'true')
   if (!dialog.open) {
     dialog.showModal()
@@ -99,7 +100,7 @@ const show = async (slug, edition) => {
   try {
     body.innerHTML = await load(slug, edition)
   } catch (error) {
-    body.innerHTML = `<p class="ReaderError">全文載入失敗。<a href="${articleURL(slug, edition)}">直接開啟報導</a></p>`
+    body.innerHTML = `<p data-part="reader-error">全文載入失敗。<a href="${articleURL(slug, edition)}">直接開啟報導</a></p>`
     console.error(error)
   } finally {
     body.removeAttribute('aria-busy')

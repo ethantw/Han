@@ -16,7 +16,7 @@
 
 /* ═══ Station VII・Snippet — the reference-code station ══════════════
    `.Preview`/`.ViewTabs`/`[data-out-*]` are shared primitives from
-   `controls.css`; this block styles the station's own ground and the one
+   `common/code-terminal.css`; this block styles the station's own ground and the one
    line left under the pane.
 
    站台回到共用的 A/B 灰白節奏；可複製程式碼的角色已由 pane 裡恆黑的
@@ -35,10 +35,12 @@
   /* 樣張入口。與上一行同級的小字，只有連結上墨——不給框、不給底色、不給
      側邊線：這是一句補充，不是呼出框。 */
   .TrySpecimen {
-    margin: .375rem 0 0;
-    max-inline-size: 34em;
-    font-size: .875rem;
-    color: var(--ui-supplement-text);
+    & {
+      margin: .375rem 0 0;
+      max-inline-size: 34em;
+      font-size: .875rem;
+      color: var(--ui-supplement-text);
+    }
 
     a {
       color: var(--ui-accent);
@@ -54,7 +56,7 @@
    --code-bg/--code-fg). The copy button is the only button in the
    figcaption, so an element selector carries it — no data-* hook. */
 
-figure.CodePane {
+figure[data-component="code-pane"] {
   & {
     margin: 0;
     overflow: hidden;
@@ -62,7 +64,7 @@ figure.CodePane {
     border-radius: var(--r-2);
     /* 卡緣。淺色模式靠黑卡與站台的底色差；深色模式兩者都暗，卡緣得自己
        說話——固定的 mist 微光，不隨主題翻（web-style.md 深色面 gotcha）。 */
-    border: 1px solid color-mix(in srgb, var(--palette-mist) 12%, transparent);
+    border: 1px solid var(--code-rule-soft);
   }
 
   figcaption {
@@ -91,15 +93,15 @@ figure.CodePane {
     }
 
     /* 這張卡是恆黑的，所以那顆 <select> 不能吃頁面的淺色色票——把
-       common/controls.css § Customizable <select> 那組區域變數整組換成終端機
+       common/select.css § Customizable <select> 那組區域變數整組換成終端機
        的色，按鈕、角標、下拉、勾號就一起跟著變深，不必逐條複寫。 */
     [data-out-pm] {
       --_sel-ink:    var(--code-fg);
       --_sel-dim:    color-mix(in srgb, var(--code-fg) 60%, transparent);
       --_sel-bg:     var(--code-bg);
-      --_sel-panel:  color-mix(in srgb, var(--palette-mist) 12%, transparent);
+      --_sel-panel:  var(--code-rule-soft);
       --_sel-rule:   color-mix(in srgb, var(--code-fg) 30%, transparent);
-      --_sel-accent: var(--palette-green-bright);
+      --_sel-accent: var(--code-keyword);
 
       padding-block: 2px;
       padding-inline: 4px;
@@ -109,14 +111,16 @@ figure.CodePane {
     /* 複製鍵平時是幽靈，指標一過才上墨——它是「需要時才在」的東西，不該
        跟標籤搶同一行的注意力。 */
     button {
-      padding: 0 2px;
-      font: inherit;
-      color: inherit;
-      background: transparent;
-      border: 0;
-      cursor: pointer;
-      opacity: 0.55;
-      transition: opacity 150ms ease, color 150ms ease;
+      & {
+        padding: 0 2px;
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        opacity: 0.55;
+        transition: opacity 150ms ease, color 150ms ease;
+      }
 
       &:hover, &:focus-visible { opacity: 1; color: var(--code-fg); }
     }

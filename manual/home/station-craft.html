@@ -98,11 +98,11 @@
     ko: '원산지를 세 번 검색했다：<em lang="zh"><ruby>迦南<rt lang="he" dir="rtl">כנען</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ja">カナン</rt></ruby></em>、<em lang="zh"><ruby>迦南<rt lang="ko">가나안</rt></ruby></em>——모두 선택지에 없었다。',
   },
   arDemoQuoteCry: {
-    hant: '我們沒有想到',
-    hans: '我们没有想到',
-    en: 'We did not expect this',
-    ja: 'そこまでは考えていなかった',
-    ko: '미처 생각하지 못했습니다',
+    hant: '我們沒有想到，',
+    hans: '我们没有想到，',
+    en: 'We did not expect this, ',
+    ja: 'そこまでは考えていなかった。',
+    ko: '미처 생각하지 못했습니다。',
   },
   arDemoQuoteBy: {
     hant: '美術設計智能體NY-500説：',
@@ -456,8 +456,8 @@
   <p class="AxLede">{{ arAxLede }}</p>
 
   <div class="Theorem">
-  <div class="Axioms">
-    <section class="Ax Ax-lead">
+  <ol class="Axioms">
+    <li class="Ax Ax-lead">
       <div lang="en">
         <math display="block">
           <mrow>
@@ -480,9 +480,9 @@
         </math>
       </div>
       <p class="AxNote">{{ arThmNote }}</p>
-    </section>
+    </li>
 
-    <section class="Ax">
+    <li class="Ax">
       <div>
         <math display="block">
           <mrow>
@@ -493,9 +493,9 @@
         </math>
       </div>
       <p class="AxNote">{{ arEq52Note }}</p>
-    </section>
+    </li>
 
-    <section class="Ax">
+    <li class="Ax">
       <div>
         <math display="block">
           <mrow>
@@ -507,8 +507,8 @@
         </math>
       </div>
       <p class="AxNote">{{ arEq53Note }}</p>
-    </section>
-  </div>
+    </li>
+  </ol>
 
   <!-- 例5.1 — the worked example, set as a CASCADE STACK, the way devtools
        shows one: han.css's real rule, then the reader's rule underneath, and
@@ -577,7 +577,7 @@
       </nav>
       <ul class="SelRing">
         <li data-case="heading">
-          <div class="Rule" data-role="framework">
+          <article class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-prose</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
@@ -589,8 +589,8 @@
             <p class="RuleEnd">}</p>
             </div>
             <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
+          </article>
+          <article class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
               <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
@@ -598,10 +598,10 @@
             <p class="RuleSel" lang="en"><code data-mine-spec>article h1</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-block-end: 2rem;</code></p>
             <p class="RuleEnd">}</p>
-          </div>
+          </article>
         </li>
         <li data-case="cite">
-          <div class="Rule" data-role="framework">
+          <article class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
@@ -621,8 +621,8 @@
             <p class="RuleEnd">}</p>
             </div>
             <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
+          </article>
+          <article class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
               <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
@@ -630,10 +630,10 @@
             <p class="RuleSel" lang="en"><code data-mine-spec>.notes cite</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
             <p class="RuleEnd">}</p>
-          </div>
+          </article>
         </li>
         <li data-case="adjacent-line">
-          <div class="Rule" data-role="framework">
+          <article class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
@@ -649,8 +649,8 @@
             <p class="RuleEnd">}</p>
             </div>
             <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
+          </article>
+          <article class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
               <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
@@ -658,10 +658,10 @@
             <p class="RuleSel" lang="en"><code data-mine-spec>.tight u</code> {</p>
             <p class="RuleDecl" lang="en"><code>margin-inline: .25em;</code></p>
             <p class="RuleEnd">}</p>
-          </div>
+          </article>
         </li>
         <li data-case="emphasis">
-          <div class="Rule" data-role="framework">
+          <article class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
@@ -674,8 +674,8 @@
             <p class="RuleEnd">}</p>
             </div>
             <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
+          </article>
+          <article class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
               <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
@@ -688,10 +688,10 @@
             <p class="RuleSel" lang="en"><code>.reading ruby</code> {</p>
             <p class="RuleDecl" lang="en"><code>ruby-position: under;</code></p>
             <p class="RuleEnd">}</p>
-          </div>
+          </article>
         </li>
         <li data-case="quotes">
-          <div class="Rule" data-role="framework">
+          <article class="Rule" data-role="framework">
             <div class="RuleHead">
               <p class="RuleLayer">{{ arRuleLayer }}<b>han-semantics</b></p>
               <p class="RuleTag" data-brand>{{ logo }}</p>
@@ -699,8 +699,8 @@
             <p class="RuleSel" lang="en"><span class="Fn">:where(</span><code data-spec>q</code><span class="Fn">)</span> {</p>
             <p class="RuleDecl" lang="en"><code>quotes: var(--han-quotes);</code></p>
             <p class="RuleEnd">}</p>
-          </div>
-          <div class="Rule" data-role="mine">
+          </article>
+          <article class="Rule" data-role="mine">
             <div class="RuleHead">
               <p class="RuleLayer" data-unlayered>{{ arRuleUnlayered }}</p>
               <label class="RuleTag"><input type="checkbox" data-author-toggle checked><span>{{ arRoleMine }}</span></label>
@@ -708,7 +708,7 @@
             <p class="RuleSel" lang="en"><code data-mine-spec>.quotation q</code> {</p>
             <p class="RuleDecl" lang="en"><code>quotes: '〖' '〗' '【' '】';</code></p>
             <p class="RuleEnd">}</p>
-          </div>
+          </article>
         </li>
       </ul>
       </div>
@@ -880,14 +880,14 @@
        The summary states the fact; opening it only supplies the numbers. -->
   <button class="SizeDialogOpen" type="button" data-size-dialog-open>{{ arSizeOpen }}</button>
   <dialog class="SizeDialog" data-size-dialog aria-labelledby="size-dialog-title">
-    <div class="SizeDialogPanel">
+    <section data-part="size-dialog-panel" aria-labelledby="size-dialog-title">
     <header class="SizeDialogHead">
       <h3 id="size-dialog-title">{{ arSizeTitle }}</h3>
       <form method="dialog">
         <button type="submit" aria-label="{{ arSizeClose }}"><span data-icon="close" aria-hidden="true"></span></button>
       </form>
     </header>
-    <div class="SizeDialogBody">
+    <div data-part="size-dialog-body">
       <section class="TransferDetails">
         <h4>{{ arSizeTransfer }}</h4>
         <table>
@@ -981,7 +981,7 @@
     </figcaption>
   </figure>
     </div>
-    </div>
+    </section>
   </dialog>
 
   <div class="AdoptPrompt">

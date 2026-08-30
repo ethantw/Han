@@ -138,16 +138,18 @@ main > section {
     }
     /* eyebrow — mono label whose trailing hairline fills the line */
     p:first-child {
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-      margin: 0 0 1.125rem;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--ui-supplement-text);
+      & {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        margin: 0 0 1.125rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--ui-supplement-text);
+      }
 
       &::after {
         content: '';
@@ -232,14 +234,16 @@ main > section {
    already shared with station VII, so a native fragment link is enough to
    carry the reader there. This is a quiet station footer, not another card. */
 .AdoptPrompt {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-block-start: 4rem;
-  padding-block-start: 1rem;
-  border-block-start: 1px solid var(--ui-rule);
-  font-family: var(--han-font-alternative);
+  & {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-block-start: 4rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid var(--ui-rule);
+    font-family: var(--han-font-alternative);
+  }
 
   p {
     margin: 0;
@@ -247,11 +251,13 @@ main > section {
   }
 
   a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65em;
-    color: var(--ui-accent);
-    text-decoration: none;
+    & {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65em;
+      color: var(--ui-accent);
+      text-decoration: none;
+    }
 
     span { transition: translate 160ms ease-out; }
 

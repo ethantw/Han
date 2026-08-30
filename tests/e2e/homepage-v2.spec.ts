@@ -40,7 +40,7 @@ test('station 柒・引用碼 returns to the shared neutral ground and follows t
   // (--code-bg = --palette-ink). A light station with a dark terminal on it is
   // the point; the station no longer goes dark to keep the terminal company.
   // (the ground is painted by `figure.CodePane`, not the `<pre>` inside it)
-  await expect(snippet.locator('figure.CodePane').first())
+  await expect(snippet.locator('figure[data-component="code-pane"]').first())
     .toHaveCSS('background-color', 'rgb(14, 14, 16)')
 
   // Dark theme: the same shared station token's dark side.
@@ -210,8 +210,8 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
       return {
         panelLib: li.querySelector<HTMLElement>('[data-role="framework"] code[data-spec]')!.dataset.spec,
         panelMine: li.querySelector<HTMLElement>('[data-role="mine"] code[data-mine-spec]')!.dataset.mineSpec,
-        shownLib: t('[data-role="framework"] .RuleSpec'),
-        shownMine: t('[data-role="mine"] .RuleSpec'),
+        shownLib: t('[data-role="framework"] [data-part="rule-spec"]'),
+        shownMine: t('[data-role="mine"] [data-part="rule-spec"]'),
       }
     })
     expect(state.shownLib, `item ${i + 1}: erased framework weight`)

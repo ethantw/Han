@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+/* Shared field primitives. Kept standalone because the light DOM and
+ * <han-console> shadow root adopt the same cascade. */
+
+/* ─── Field — labelled select/text control (configurator groups) ── */
+
+.Field {
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    inline-size: 100%;
+    gap: 0.75rem;
+    padding: 0.375rem 0.25rem;
+  }
+
+  > span {
+    & {
+      flex: none;
+      font-size: var(--_fs-compact);
+      color: var(--_text);
+    }
+
+    small {
+      display: block;
+      font-family: var(--_font-mono);
+      font-size: var(--_fs-micro);
+      color: var(--_supplement-text);
+    }
+  }
+
+  /* 只留這一欄自己的事——盒的長相（邊框／圓角／字級／色）由下面
+     § Customizable <select> 那組統一給，兩處各寫一份必然會走岔。
+     `input[type="text"]` 不吃那組（它沒有下拉），所以留著它自己的一份。 */
+  & select {
+    inline-size: 9.5em;
+  }
+
+  & input[type="text"] {
+    inline-size: 9.5em;
+    padding-block: 0.2em;
+    padding-inline: 0.5em;
+    font: inherit;
+    font-size: var(--_fs-compact);
+    color: var(--_text);
+    background: var(--_bg);
+    border: 1px solid var(--_rule);
+    border-radius: var(--_r-1);
+  }
+
+  &[hidden] { display: none; }
+}

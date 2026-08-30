@@ -52,14 +52,16 @@
   }
 
   a {
-    display: block;
-    padding: 5px 10px;
-    font-family: var(--han-font-default);
-    font-size: 0.875rem;
-    color: var(--ink-mute);
-    text-decoration: none;
-    border-radius: 4px;
-    transition: all 150ms;
+    & {
+      display: block;
+      padding: 5px 10px;
+      font-family: var(--han-font-default);
+      font-size: 0.875rem;
+      color: var(--ink-mute);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 150ms;
+    }
 
     &:hover {
       background: var(--paper-deep);

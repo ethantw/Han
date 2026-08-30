@@ -26,7 +26,7 @@
 }
 
 html:has(body.home) {
-  overflow-x: clip;
+  overflow-inline: clip;
 }
 
 /* 表單控件的字級要自己講。UA 的預設是 `13.3333px`（Chrome 對
@@ -48,7 +48,7 @@ body.home {
     font-feature-settings: "kern", "liga", "calt";
     /* Station grounds deliberately exceed the fixed copy measure. Clip only
        the document edge; rail tracks own their scrolling locally. */
-    overflow-x: clip;
+    overflow-inline: clip;
   }
 
   a { color: inherit; text-decoration: none; }
@@ -56,7 +56,7 @@ body.home {
      不是「壓過後面的規則」。裸寫的話它是 (0,1,2)，比任何 `.Class svg` 都硬——
      鉛字盤要讓圖溢出父盒時就被它擋住（實測寬度卡在父盒的 1099）。歸零之後
      任何一條作者規則都蓋得過它，這才是 reset 該有的行為。 */
-  :where(img, svg) { display: block; max-width: 100%; }
+  :where(img, svg) { display: block; max-inline-size: 100%; }
 }
 
 /* ─── Topbar ─────────────────────────────────────────────────────── */
@@ -64,7 +64,7 @@ body.home {
 body > header {
   & {
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
     z-index: 100;
     display: flex;
     justify-content: space-between;
@@ -108,15 +108,19 @@ body > header {
     }
   }
   nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5em;
+    & {
+      display: flex;
+      align-items: center;
+      gap: 1.5em;
+    }
 
     > a {
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      text-decoration: none;
-      white-space: nowrap;
+      & {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        white-space: nowrap;
+      }
 
       &:hover { color: var(--ui-accent); }
     }
@@ -153,11 +157,13 @@ body > header {
      remain intact and gets the released width. */
   @media (width < 40rem) {
     .Logo {
-      /* The desktop optical pull assumes the opener is an icon-sized cell.
-         On a first mobile visit that cell also spells out「調整排版」; the
-         full -.875rem pull crossed the two real boxes by 2px at 390px. Keep
-         a quiet half-rem tuck without eating the flex gap. */
-      translate: -.5rem -.125rem;
+      & {
+        /* The desktop optical pull assumes the opener is an icon-sized cell.
+           On a first mobile visit that cell also spells out「調整排版」; the
+           full -.875rem pull crossed the two real boxes by 2px at 390px. Keep
+           a quiet half-rem tuck without eating the flex gap. */
+        translate: -.5rem -.125rem;
+      }
 
       small { display: none; }
     }

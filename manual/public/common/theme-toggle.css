@@ -18,8 +18,8 @@
     display: inline-flex;
     align-items: center;
     padding: 0.25em;
-    /* 下面三條在首頁是重複的——`.Toggle` 基底（common/controls.css）已經給了
-       ——但 docs 那側**沒有載 controls.css**（manual.css 的 @import 清單裡沒有
+    /* 下面三條在首頁是重複的——`.Toggle` 基底（common/toggle.css）已經給了
+       ——但 docs 那側**沒有載 toggle.css**（manual.css 的 @import 清單裡沒有
        它），這裡是唯一的來源。inherit-audit 只量首頁，會把它們報成冗餘；
        別刪。 */
     line-height: 0;

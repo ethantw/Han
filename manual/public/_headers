@@ -21,16 +21,16 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 # Same reasoning for the un-hashed runtime files: their URLs are baked into
-# JS (the console fetches `common/controls.css` into its shadow root and imports
+# JS (the console fetches the `common/*` control family into its shadow root and imports
 # `home/console-templates.js`; `home.js` pulls the `home/*.js` modules and
 # `vendor/*`), so they can't be hashed without a bundler rewriting module
 # specifiers. Revalidate instead.
 /home/*
   Cache-Control: public, max-age=0, must-revalidate
 # `common/*` is here for the same reason: the console fetches
-# `common/controls.css` and `common/icons.css` into its shadow root, and
+# the control-family sheets and `common/icons.css` into its shadow root, and
 # `bare.html` links `common/module-state.css` by URL. (They were falling
-# through to the default before controls.css moved here — a stale copy could
+# through to the default before these sheets moved here — a stale copy could
 # have outlived a deploy.)
 /common/*
   Cache-Control: public, max-age=0, must-revalidate

@@ -29,13 +29,15 @@
   [data-part="icon"] { color: var(--ink-faint); font-size: 1rem; line-height: 1 }
 
   input[type="search"] {
-    flex: 1;
-    border: 0;
-    background: transparent;
-    outline: none;
-    font: inherit;
-    color: var(--ink);
-    min-inline-size: 0;
+    & {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      outline: none;
+      font: inherit;
+      color: var(--ink);
+      min-inline-size: 0;
+    }
 
     &::placeholder { color: var(--ink-mute) }
   }
@@ -80,23 +82,27 @@
     &[hidden] { display: none }
 
     [data-part="status"] {
-      padding: 0.55rem 0.9rem;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink-faint);
-      border-block-end: 1px dashed var(--rule);
+      & {
+        padding: 0.55rem 0.9rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        border-block-end: 1px dashed var(--rule);
+      }
 
       &:empty { display: none }
     }
 
     > ol {
-      list-style: none;
-      margin: 0;
-      padding: 4px 0;
-      max-block-size: 22rem;
-      overflow-y: auto;
+      & {
+        list-style: none;
+        margin: 0;
+        padding: 4px 0;
+        max-block-size: 22rem;
+        overflow-y: auto;
+      }
 
       &:empty { display: none }
     }
@@ -150,12 +156,14 @@
     &.is-active [data-part="title"] { color: var(--accent-deep) }
 
     [data-part="crumbs"] {
-      font-family: var(--font-mono);
-      font-size: 0.625rem;
-      color: var(--ink-faint);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-block-end: 2px;
+      & {
+        font-family: var(--font-mono);
+        font-size: 0.625rem;
+        color: var(--ink-faint);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-block-end: 2px;
+      }
 
       &:empty { display: none }
     }
@@ -170,9 +178,11 @@
     }
 
     [data-part="snippet"] {
-      font-size: 0.75rem;
-      color: var(--ink-mute);
-      line-height: 1.55;
+      & {
+        font-size: 0.75rem;
+        color: var(--ink-mute);
+        line-height: 1.55;
+      }
 
       mark {
         background: transparent;

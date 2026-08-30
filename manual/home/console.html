@@ -697,8 +697,8 @@
             <small>{{ pgSliderSizeEn }}</small>
             <output data-pg-slider-val>16px</output>
           </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
+          <div data-part="range-track" role="presentation">
+            <span data-pg-slider-fill aria-hidden="true"></span>
             <input type="range" min="12" max="24" step="1" value="16"
                    aria-label="{{ pgSliderSize }} {{ pgSliderSizeEn }}">
           </div>
@@ -710,8 +710,8 @@
             <small>{{ pgSliderLeadingEn }}</small>
             <output data-pg-slider-val>1.75</output>
           </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
+          <div data-part="range-track" role="presentation">
+            <span data-pg-slider-fill aria-hidden="true"></span>
             <input type="range" min="1" max="2.5" step="0.05" value="1.75"
                    aria-label="{{ pgSliderLeading }} {{ pgSliderLeadingEn }}">
           </div>
@@ -723,8 +723,8 @@
             <small>{{ pgSliderWeightEn }}</small>
             <output data-pg-slider-val>400</output>
           </header>
-          <div class="Track">
-            <span data-pg-slider-fill></span>
+          <div data-part="range-track" role="presentation">
+            <span data-pg-slider-fill aria-hidden="true"></span>
             <input type="range" min="250" max="900" step="25" value="400"
                    aria-label="{{ pgSliderWeight }} {{ pgSliderWeightEn }}">
           </div>

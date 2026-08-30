@@ -1,81 +1,24 @@
-/*
- * dash-fuse.css — station②'s 破折號底圖（`.DashColumn` ＋ `.TwoEmDashes`）。
- *
- * 一柱直排「三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七
- * 秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識」，畫在站台的
- * z-index:-1 底圖層（section 早有 isolation:isolate，watermark 用的同一層）。
- * 主角是「秒——這」那四格：卡在鉛字盤左下角與本欄文案之間的梯形空格裡。層序：
- * 鉛字最上（.LeadForme 的 lift 自帶 z-index 2）、文案居中、本圖最底；鉛字的
- * 半透明面自然透出柱上的字。
- *
- * **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15）。整柱原本都在一個
- * `<svg>` 裡，為的是讓兩截破折號以次像素精度開合；那台戲 2026-08-14 撤下之後，
- * SVG 的代價就只剩壞處——WebKit 的 SVG 直排文字不能用（字距讀 hhea 的 asc+desc
- * 而不是 vmtx 的 1em，且不套 vert／vrt2；HTML 直排兩家都對，只有 SVG 壞 →
- * docs/notes/2026-08-02-webkit-svg-vertical-text.md），所以那六十個字得由 JS
- * 逐格算座標擺，柱頂還得再量一次卡片上緣才知道裁在哪。交還 HTML 之後那支 JS
- * 整個不必存在：直排由引擎排，位置由字級決定（見 § 柱）。
- *
- * 那句話因此成了 han.css 排的正文——背景那句裡的破折號與逗號由自家模組經手，
- * 比畫出來更有說服力。
- *
- * `.TwoEmDashes` 是包含塊這件事由 station-frame 的階梯入場保證——它給每個 section
- * 子元素蓋 translate（非 none ⇒ 成為 abs-pos 的包含塊）；再補一個
- * position: relative 把契約寫明。
- *
- * 破折號的動畫 2026-08-14 整組撤下（那一版一直在跑，站②停在畫面上每 3 秒
- * 613ms 的 style recalc 全記在它頭上），2026-08-26 以**捲動驅動**重做：從畫面
- * 底部進場時是斷的，捲到正中央剛好接上，之後才上色——時間不再是它的自變數，
- * 讀者的捲動才是，所以停著不動就不耗算力。互動的部分見 § 破折號那兩格。
- * 舊版的六支 keyframes（漂移／較勁／首播熔接）都在 git 裡。
- */
 
-/* 熔接的進度：0 ＝ 大斷開，1 ＝ 兩截同歸中點。捲動時間軸把它從 0 推到 1，
-   到畫面正中央剛好是 1（見 § 破折號那兩格的 animation-range）。initial-value
-   是 1，所以不支援捲動時間軸、或使用者要求減少動態時，柱以「已經熔接好」的
-   靜止態示人——那本來就是它的基態。 */
+/* Scroll-driven dash column and specimen cover flow.
+   Geometry constraints: docs/notes/homepage-motion-constraints.md. */
+
+/* Scroll arrival: 0 is open; 1 is fused and is the static fallback. */
 @property --df-arrive { syntax: "<number>"; inherits: true; initial-value: 1; }
-/* 讀者的手：1 ＝ 放著讓它接合，0 ＝ 拆開。hover 拆、按住合（見 § 手），與
-   --df-arrive 相乘，所以「還沒接合的時候 hover 不會讓它更糟」。 */
+/* Pointer release: 0 opens the seam; 1 leaves scroll progress unchanged. */
 @property --df-hold { syntax: "<number>"; inherits: true; initial-value: 1; }
-/* 上色的濃度。**它是縫的函數，不是捲動的函數**（算式見 § 破折號那兩格）：
-   離得遠就是這頁本來的墨色，快合上時淺淺上一層，真的合上才全彩。捲動、呼吸、
-   按住三種力量都只改縫，顏色自己跟上——所以三者的顏色語彙天生一致。 */
+/* Ink intensity derived from the resulting seam, not directly from scroll. */
 @property --df-tint { syntax: "<number>"; inherits: true; initial-value: 1; }
-/* 緞帶的起點色相。破折號不是一色，而是一條沿線走 153° 的漸層（藍→紫→洋紅→
-   赭→橙，五個停點，見 § 破折號那兩格的 stop）；這個角度是整條的**起點**。
-   它**不隨捲動轉**：轉滿一圈的版本會把緞帶帶進黃綠，那就不是這條緞帶了——
-   顏色的識別在色序，會動的是濃度（`--df-tint`，跟著縫走）。要換整條的調子改
-   這一個值。 */
+/* Fixed starting hue for the multicolour dash ribbon. */
 @property --df-hue { syntax: "<angle>"; inherits: true; initial-value: 262deg; }
-/* 按住 ＝ 焊上。1 就是「不管捲到哪裡都給我接起來」，描邊同時加粗一點回應手指。 */
+/* Press override: 1 forces the seam fully closed. */
 @property --df-weld { syntax: "<number>"; inherits: true; initial-value: 0; }
 
-/* ── 捲動驅動的兩個相位 ──────────────────────────────────────────────
- * 兩支都掛在 `.DashCell` 這一個盒上，不掛柱根：柱根底下有六十個字節點，而
- * 它們一個都不讀這些變數，宣告掛上去只是讓它們陪著重算（2026-08-14 撤下整組
- * 動畫的直接原因，613 → 130ms，見檔頭）。掛在格上，波及範圍就只有格裡的
- * `<svg>` 與兩塊 `<rect>`——真正的消費者。
- */
+
 @keyframes df-arrive {
   from { --df-arrive: 0; }
   to { --df-arrive: 1; }
 }
-/* 摸著不放時的呼吸（見 § 手）。只在 hover 期間跑，離手就停——這不是
-   2026-08-14 撤掉的那種「一直在跑」，它要有人摸著才活。
 
-   兩支接力：手一放上去，`df-snap` 用 220ms 把它一口拉到全開（摸到就散，回應
-   不能慢）；接力棒交給 `df-pulse` 平靜地呼吸下去。所以 `df-pulse` 的相位從
-   **全開**起算（0% ＝ 開，55% ＝ 剩一線，100% ＝ 又開滿），`animation-delay`
-   正好是 snap 的 220ms，兩支在同一個值上交棒，看不出接縫。
-
-   節奏借站③「行的呼吸」那一口：7s、`ease-in-out`（station-lines.css §
-   lines-tide／lines-mask 同款，只是相位相反）。同一頁上兩處呼吸該是同一個人在
-   呼吸，錯開的節奏會讓兩邊互相打拍子。
-
-   **永遠不完全合上**：吐到底停在 `--df-hold` .88（縫 1.5px 的一線），下一口氣
-   又拉開。摸著它的時候它就是修不好的，手放開才真的接上（`--df-hold` 回到 1）
-   ——這一站講的正是這件事。 */
 @keyframes df-snap {
   from { --df-hold: 1; }
   to { --df-hold: 0; }
@@ -84,66 +27,34 @@
   0%, 100% { --df-hold: 0; }
   55% { --df-hold: .88; }
 }
-/* 文案的入場：.TwoEmDashes 的兩段一起飛入，時機是本欄自己的 reveal。 */
+
 @keyframes df-copy-in {
   from { opacity: 0; translate: 0 1rem; }
   to { opacity: 1; translate: 0 0; }
 }
 
-/* ── 柱 ─────────────────────────────────────────────────────────────
- * 一句直排的話，中間一個破折號。句子是 HTML（`.DashColumn`），只有破折號那
- * 兩格是 SVG（`.DashCell`）——分界的理由見 station-fonts.html 該處的註。
- *
- * 位置由**字級**決定，不由量測決定：破折號是句中第 34 格，所以把整柱往上推
- * 34 格，它就落在文案上緣附近；其餘的字沿柱伸出兩端，由站台的 `overflow: clip`
- * 收掉。舊版把柱錨在 `.TwoEmDashes` 高度的 −2342%，那個百分比隨 lede 換行而變，
- * 於是每次改視窗都要量一次卡片上緣（實測每次 250ms，見 git 記錄）。
- * 對位是近似的，本來就不求像素配準。
- */
+
 .DashColumn {
   & {
-    /* 面與邊。加深的目標色 --df-flash 用 --ui-ink-grey 而不是 --ui-text：正文
-       墨色在亮色主題下是 #0e0e10，全黑壓在這片近底色上太硬；graphite 是深灰，
-       暗色主題那頭則是 silver（該主題的站台底就是 graphite，方向自動反過來）。
-       走墨、不走光——這是印刷的頁面，不是儀表板。 */
+
     --df-face: color-mix(in srgb, var(--ui-text) 7%, var(--ui-station-b));
     --df-edge: color-mix(in srgb, var(--ui-text) 12%, var(--ui-station-b));
     --df-flash: var(--ui-ink-grey);
-    /* **第一顆**破折號在句中的字序（它前面有幾格）。位置與字級的唯一連結，改句子
-       時跟著改。第二顆不必另記：它自己排在後面，位置由句子決定。
-       句子：他沉默了四點七秒（8）——這個時間足夠三體人交換一部《三體通史十萬年》
-       體量的知識（27）——，共 8 ＋ 2 ＋ 27 ＋ 2 ＝ 39 格。 */
+
     --df-dash-cell: 8;
 
     position: absolute;
-    /* 站台底圖層（同 watermark ::before）：isolation:isolate 的 section 裡，
-       −1 落在 station-b 底色之上、一切普通流內容之下。 */
-    z-index: -1;
-    /* **物理 inset，刻意的**：這個盒是 vertical-rl，而邏輯 inset 照**元素自己
-       的行向**解析——`inset-block-start` 在這裡是「離右緣多遠」，寫上去柱會被
-       推到版面右外側 3,648px（實測 x=4463）。兩種行向相遇時物理才是誠實的拼法
-       （同檔 § address::before 早有同一條註）。
 
-       縱向：整柱往上推「第一顆破折號的字序」格，於是那一顆落在 `.TwoEmDashes`
-       上緣**往下 4.25em** 處。這個數字是為了讓切線與破折號之間留得下「沉默了四點
-       七秒」（owner 2026-08-28）：切線在包含塊上緣往上約 2.8em（鉛字盤左下角那顆
-       鉛字的下緣，見 § 上緣的切線），4.25 ＋ 2.8 ≈ 7 格。第二顆因此落在
-       `4.25 + 2 + 27 = 33.25em` 處、下緣 35.25em——那也正是 `.TwoEmDashes` 的高
-       （見該節的 `min-block-size`），所以它「正好結束在四語標點的容器上」。第二顆自己排在十二格之後，落在兩段文案
-       與四語標點之間的空氣裡。位置全跟著字級走，不必量任何東西
-       （2026-08-28 改：起點從樣張卡換成鉛字盤，句子換成有一對破折號的那句）。
-       橫向：`--df-col-left` 是第一閱讀欄最末一顆鉛字（繁中為「我」）的欄軸；
-       SVG 產生器發布其寬度比例，CSS 乘回實際 SVG 寬度。`left` 再減半個 em，
-       讓「他」的字格中心而非盒子左緣落在該欄軸上。 */
+    z-index: -1;
+
+    /* Physical axes align vertical text with page and SVG coordinates. */
     top: var(--df-column-top);
     left: calc(var(--df-col-left, min(10rem, 20%)) - .5em);
     translate: 0 0;
 
-    /* 不裁文字：柱在鉛字盤下層，開頭讓鉛字自然遮住。 */
 
-    /* 手的兩個狀態都在這裡過場，不在格上：狀態鍵在柱身（`:has()`），而讀那些
-       值的是格裡的 rect 與 stop——過場分散在兩個元素上，同一次動作會被平滑
-       兩次。 */
+
+
     transition:
       --df-hold 320ms cubic-bezier(.22, .61, .36, 1),
       --df-weld 240ms cubic-bezier(.22, .61, .36, 1)
@@ -151,23 +62,12 @@
 
     margin: 0;
     writing-mode: vertical-rl;
-    /* 一整句排成**一欄**。直排下 inline 軸是垂直的，而絕對定位的元素若讓那個
-       軸自己決定，它會被包含塊的高度夾住——`auto` 折成 33 欄、`max-content`
-       仍折成 2 欄（Chrome 對絕對定位的 shrink-to-fit 會夾在可用空間上）。所以
-       寫死格數：句子 35 格 ＋ 兩顆破折號各 2 格 ＝ 39 格，與 `--df-dash-cell` 同一套
-       「以格計數」的講法，改句子時兩個一起改。 */
+
     --df-cells: 39;
     inline-size: calc(var(--df-cells) * 1em);
     font-family: var(--han-font-alternative);
-    /* 隨版心走，兩端封住：太小讀不出「這是一句話」，太大會把破折號推出畫面。
-       量的是版心而不是 `cqi`——站③的巨型樣張用的是同一把尺
-       （station-lines.css § div[role=presentation] 的 `--fs-bg-text`），
-       而 `cqi` 在這裡會落到別的容器上（實測只給到 7rem 的下限）。
-       字級住在 `.TwoEmDashes` 上（`--df-fs`），不在柱上：那一格的高度要由它算出來
-       （見該節），兩處讀同一個值才不會各說各的。 */
-    /* 外面包一層 `round()`：`vw` 算出來的是任意小數（1440px 下 128.889px），
-       而每一個相異的字級都要 Blink 建一份 fallback list——刻度是
-       0.125rem（SKILL § 13），流體字級也照收。（round()：Baseline 2024） */
+
+
     font-size: var(--df-fs);
     line-height: 1;
     color: var(--df-face);
@@ -176,84 +76,46 @@
     user-select: none;
   }
 
-  /* ── 手 ──────────────────────────────────────────────────────────
-   * 摸破折號那一格，它就散開一點；**摸這一欄的兩段文案也算**——那兩段講的正是
-   * 「中間斷開的破折號……精準爲讀者拂偏歸正」，讀到那句話的人本來就在看它。
-   * 按住是另一回事：焊上，而且不管捲到哪裡都焊滿（`--df-weld` 蓋過捲動進度，
-   * 見 § 破折號那兩格的 --df-gap），放開才回到捲動說的話。 */
+
   &:has(.DashCell:hover) {
-    /* 摸著不放，它就一直開開合合——修好了又壞、壞了又修，這一站講的就是這件事。
-       節奏見 `df-snap`／`df-pulse`：摸到先一口拉開，再轉成站③「行的呼吸」那口
-       氣，而且一直不完全合上。離手兩支都沒了，`--df-hold` 回到 1，過場把最後
-       那一下接回去。 */
+
     @media (prefers-reduced-motion: no-preference) {
       animation:
         df-snap 220ms cubic-bezier(.1, .9, .2, 1) both,
         df-pulse 7s ease-in-out 220ms infinite
       ;
     }
-    /* 要求減少動態的人只給一次回應：斷開，不循環。 */
+
     @media (prefers-reduced-motion: reduce) { --df-hold: 0; }
   }
 
-  /* 按住 ＝ 焊上，蓋過捲動也蓋過循環（節拍照跑，只是 `--df-weld` 把縫乘成 0），
-     放開就回到循環。 */
+
   &:has(.DashCell:active) {
     --df-weld: 1;
-    /* 按下去要立刻焊上（110ms），放開回到基準的 240ms——焊得快、鬆得柔。
-       規則一不匹配，過場就換回上面那條，不必寫第二個狀態。 */
+
     transition: --df-weld 110ms cubic-bezier(.1, .9, .2, 1);
   }
 
-  /* 頁面直排時收掉：本圖的「起自樣張卡、收在站尾」是縱向文案流的講法，行向
-     一轉，錨點全散。 */
+
   main[data-writing="vertical"] & { display: none; }
 }
 
-/* ── 破折號那兩格 ───────────────────────────────────────────────────
- * 空的 inline-block 站位置，`<svg>` 絕對定位在它裡面畫——inline `<svg>` 的基線
- * 在 Chrome 不等於它的下緣，直接放進行內對不齊
- * （docs/notes/2026-07-21-svg-glyph-baseline-alignment.md）。
- *
- * 直排下 inline 軸是**垂直**的：兩格長 ＝ `inline-size: 2em`，一格寬 ＝
- * `block-size: 1em`。寫反了會得到一條橫躺的破折號。
- *
- * 這一格也是全柱唯一可按的地方（柱本身 pointer-events: none）：hover 把接好的
- * 破折號拆開、按住才接得回去，放開又散。
- */
+
 .DashCell {
   & {
     position: relative;
     display: inline-block;
     inline-size: 2em;
     block-size: 1em;
-    /* `middle` ＝「基線 ＋ 半個 x-height」。直排下中央基線本來就在 em 盒正中，
-       那半個 x-height 於是成了純粹的多餘位移，破折號會偏出字欄（實測 128px
-       字級偏 34.75px ＝ 0.2715em ＝ 0.5ex）。補回一個 `-0.5ex` 就歸位，且補的
-       正是 `middle` 自己用的那把尺——字體無關，Chromium 與 WebKit 兩家實測
-       同值。其餘的 vertical-align 值（baseline／top／bottom／text-*／長度）
-       一律偏 0.1357em，沒有一個落在字欄上。 */
+
     vertical-align: middle;
     translate: -0.5ex 0;
 
-    /* 讀者的手。柱是底圖、pointer-events: none，這一格例外——z-index: -1 不
-       影響命中（實測 elementsFromPoint 最上層就是這兩塊 rect）。狀態本身收在柱
-       上（見 § 手），這裡只負責可命中。 */
+
     pointer-events: auto;
     cursor: pointer;
 
-    /* 縫、濃度、墨都宣告在格上，不在 rect 上——`<defs>` 裡的 stop 也要讀，而它們
-       不是 rect 的後代。
 
-       縫（以 unit 計，1em ＝ 100 unit）：三個理由取最大的那個，也就是「最斷的
-       那個理由勝出」。捲動 35（0.7em，要讀得出這是壞的）、手 10（0.2em，摸一下
-       的回應要輕），按住則把兩者一起乘成 0。
-
-       顏色跟著縫走，不跟著捲動走：
-         `--df-near` 只在最後 8 unit 內起作用 ⇒ 開著的時候就是這頁的墨色；
-         `--df-shut` 只有最後 1 unit 才拉起來 ⇒ 真的合上那一瞬間才全彩。
-       兩者取大：快合上時淺絢彩（呼吸最合的那一刻約 .38），合上即滿。
-       墨隨濃度一起提——這柱是 7% 墨的底圖，不提墨的彩度只會糊成一片灰。 */
     --df-gap:
       calc(
         (1 - var(--df-weld)) *
@@ -266,16 +128,7 @@
     --df-ink: calc(.35 + .65 * var(--df-tint));
   }
 
-  /* 捲動熔接。從畫面底部進場時是大斷開，捲到正中央剛好接上（cover 50% ＝ 本
-     盒中心對齊視窗中心）；顏色不必另開一支動畫，它是縫的函數（見上），所以
-     接近時自然淺淺上色、接上那一刻滿彩。回捲自動反向——
-     這是位置的函數，不是時間的函數，所以不需要任何 JS，停著也不耗一分算力
-     （整組動畫 2026-08-14 撤下的正是「一直在跑」那筆帳，見檔頭）。
 
-     `@supports` 不是保險而是必要：認不得 `animation-timeline` 的引擎會把這兩支
-     當成**時間軸**動畫照跑，一路跑成當初撤下的那個樣子。
-     `animation` 簡寫會把 timeline／range 重設回 auto，所以兩者一定寫在簡寫
-     之後（同一個坑 f690653 踩過）。（scroll-driven animations：Baseline 2025） */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       & {
@@ -294,10 +147,7 @@
     overflow: visible;
   }
 
-  /* 兩截。單位矩形 ＋ CSS transform（rect 幾何屬性的 CSS 化 Firefox 尚未跟上）；
-     transform-box 釘在 view-box 原點，座標才照字面生效。vector-effect 讓描邊在
-     非等比 scale() 下不變形，也擋掉兩塊相接時描邊疊出的橫槓。縫（`--df-gap`）
-     繼承自格，算式見上。 */
+
   rect {
     stroke:
       color-mix(
@@ -312,22 +162,7 @@
     transform-origin: 0 0;
   }
 
-  /* ── 緞帶 ─────────────────────────────────────────────────────────
-   * 面是一條**沿線走的漸層**，不是一色：五個停點從 `--df-hue` 起算 0°／38°／
-   * 78°／123°／153°（藍→紫→洋紅→赭→橙），上半截吃前三個、下半截吃後三個，
-   * 接縫那一點兩邊同色（78°），所以兩截接上時整條是連續的。
-   *
-   * **每一格自己一組漸層**（`#df-ribbon-a1/b1`、`a2/b2`）：停點的顏色讀的是那一
-   * 格自己的 `--df-tint`／`--df-ink`（各自的 scroll 進度），兩格共用一組就只有
-   * 一種顏色；而漸層若搬到柱外面的共用 `<defs>`，那些自訂屬性根本繼承不到，停點
-   * 掉回初始值——畫出來就是一條黑柱（2026-08-28 踩過）。
-   *
-   * 兩塊 rect 各給一支 `objectBoundingBox` 漸層，不是共用一支 userSpaceOnUse：
-   * 這兩塊的 user space 被自己的 `scale()` 拉過（單位矩形放大成整截），共用一
-   * 支的座標會跟著變形；bbox 版本量的是「畫出來的那一截」，縮放多少都對。
-   *
-   * 停點的顏色是**混進基色**的：`--df-tint` 0 時五個停點同歸那片 7% 的墨，
-   * 與上色之前一模一樣，所以不必在兩套 paint 之間切換。 */
+
   stop {
     --df-stop: 0deg;
     stop-color:
@@ -343,14 +178,14 @@
   [data-stop="3"] { --df-stop: 123deg; }
   [data-stop="4"] { --df-stop: 153deg; }
 
-  /* 上半截：從頂端長到中點前 --df-gap。橫向 48 ＝ 欄軸 50 減半個線寬。 */
+
   rect[data-seg="a"] {
     transform:
       translate(48px, 0)
       scale(4, calc(100 - var(--df-gap)))
     ;
   }
-  /* 下半截：從中點後 --df-gap 長到底。 */
+
   rect[data-seg="b"] {
     transform:
       translate(48px, calc((100 + var(--df-gap)) * 1px))
@@ -360,29 +195,22 @@
 }
 
 
-/* 站台的下內距在這一站收掉：這一格的底就是第二顆破折號的底，而站台自己還有 96px
-   的內距墊在後面，破折號於是停在離站台邊界 96px 的地方。owner 2026-08-28 要它「緊
-   緊貼在 station 底部」——兩顆括號夾住的正好是整段站台的下半截。 */
+
 #station-fonts:has(.TwoEmDashes) {
   padding-block-end: 0;
 }
 
 .TwoEmDashes {
   & {
-    /* 柱的包含塊契約寫明（見檔頭——階梯入場的 translate 其實已保證） */
+
     position: relative;
-    /* 柱的字級住在這裡：這一格的高度要由它算出來（見下），而柱自己讀同一個值
-       （`.DashColumn { font-size: var(--df-fs) }`）。20vw ＝ owner 2026-08-28 指定
-       的量級（2026-08-28 由 20vw 收成 11vw：20vw 下兩顆相距 8,352px、站台高
-       12,520px，太遠了），`round(…, 2px)` 收成偶數像素（每一個相異字級都要 Blink
-       建一份 fallback list，見 SKILL § 13 的刻度理由）。 */
+
     --df-fs: round(clamp(5rem, 11vw, 12rem), 2px);
     --df-col-left: calc(
       var(--df-forme-left, 0px)
       + var(--df-column-anchor, 0.0667) * var(--df-forme-width, 0px)
     );
-    /* 「他」的中心壓在第一閱讀欄末顆鉛字（繁中為「我」）的底緣：鉛字位於
-       上層，自然遮住上半字，不需要 clip-path。 */
+
     --df-column-top: calc(
       var(--df-forme-top, 0px)
       + var(--df-column-start, 0.515) * var(--df-forme-width, 0px)
@@ -390,10 +218,9 @@
     );
     --df-cue-center: calc(var(--df-column-top) + 9 * var(--df-fs));
     --df-release-center: calc(var(--df-column-top) + 20 * var(--df-fs));
-    /* 中央文案比 Cover Flow 早四格起步：四點七秒從第 4 格開始。 */
+
     --df-note-start: calc(var(--df-column-top) + 4 * var(--df-fs));
-    /* 四語樣張延至「體量」才接棒：它是第 32 格，比原本的《多九格，留給
-       DTJ 標點與傳承部件完成三拍輪替。 */
+
     --df-punct-start: calc(var(--df-column-top) + 32 * var(--df-fs));
     --df-second-dash-end: calc(var(--df-column-top) + 39 * var(--df-fs));
 
@@ -401,64 +228,40 @@
       --df-col-left: calc(var(--df-page-left, 0px) + .5 * var(--df-fs));
     }
 
-    /* **這一格的高就是那一對括號的長度。** 第一顆破折號落在上緣往下 4.25em，
-       第二顆的下緣在 4.25 ＋ 2 ＋ 27 ＋ 2 ＝ 35.25em——把這一格撐到那麼高，四語
-       標點就緊接在第二顆的下緣開始，也就是 owner 要的「第二個破折號正好結束在
-       『輪到富察・福慶發言。』容器上」。柱是絕對定位、撐不出高度，所以這一格得
-       自己說。`border-box`：這個高度指的是**盒子**，不是內容區。 */
+
     box-sizing: border-box;
     min-block-size: var(--df-second-dash-end);
 
-    /* 格線分三列，全部由字級算出來，一個猜的數都沒有：
-         1. 第一顆破折號**之前**的空氣 ＝ 4.25 × 字級（柱上「他沉默了四點七秒」
-            那幾個字走的就是這一段）；
-         2. 破折號那一列 ＝ 2 × 字級（一顆破折號正好兩格）——兩段文案放在這一列，
-            `align-self: center` 讓它**整塊**與破折號垂直居中（高度交給引擎算，
-            owner 2026-08-28：不要用猜的）；
-         3. 其餘 ＝ 四語標點那一格，`auto`。
-       下內距 0：那條線就是第二顆破折號的下緣。 */
+
     display: grid;
     grid-template-rows: var(--df-punct-start) auto;
     padding-block: 0;
-    /* 文案這一欄從**柱的右緣**再退四分之一個字起算：柱貼著版框的左緣站
-       （`--df-col-left`，見 § 柱的錨點），而版框在窄一點的視窗裡會往右挪——鉛字盤
-       有 768px 的下限，放不下就自己變成可平移的長帶。寫死 15rem 的話，1300px 下
-       柱落在 491–675 而文案從 553 起，字就壓在破折號上（owner 2026-08-28 的截圖）。
-       兩者從此綁在一起：柱往哪挪，文案跟著讓開。 */
+
     --df-copy-inset: max(15rem, calc(var(--df-col-left, 0px) + 1.25 * var(--df-fs)));
     padding-inline-start: var(--df-copy-inset);
 
-    /* 窄站台：這 15rem 是留給柱的欄，而 390px 下它吃掉 240、只剩 117 給
-       文案。柱撤，欄也就沒有理由留著。 */
+
     @container (inline-size < 52rem) {
       --df-copy-inset: calc(1.25 * var(--df-fs));
     }
   }
 
-  /* 小視窗仍保留這句底圖；量測器會把它的左緣改錨到 main 的頁緣。 */
 
-  /* 兩段文案。包進 .TwoEmDashes 之後不再是 hgroup 的兄弟，station-frame.css
-     的 `> hgroup & ~ p` 措手不及——此處逐字複製那條規則（margin 的 -2rem
-     頂縮也照舊：第一段頂著鉛字盤的下緣、第二段咬進第一段的 2.75rem）。
-     改動時兩邊要一起改。 */
-  /* 兩段文案——**柱不算**：它也是這一欄裡的 `<p>`（一句直排的話），但它是底圖，
-     不吃這裡的行長、字族與顏色。不寫 `:not()` 的話它會被這條的 36em 夾住（實測
-     整句折成兩欄），而 (0,1,1) 也壓得過 `.DashColumn` 的 (0,1,0)。 */
-  /* 兩段文案整塊落在破折號那一列的正中。 */
-  .DashNoteStage {
+
+
+
+
+  [data-part="dash-note-stage"] {
     grid-row: 2;
     align-self: center;
   }
 
-  /* DTJ 舞台與文案共用第一顆破折號的起點，但延伸到「體量」才交棒給四語
-     標點。它是 absolute layer，不參與格線，也不替過場虛構任何頁面高度。 */
+
   [data-dash-specimens] {
     position: absolute;
     inset-block-start: calc(var(--df-note-start) - 30dvh);
     inset-inline-start: var(--df-copy-inset);
-    /* 與 FormeRail 共用同一套 breakout 幾何：main 開著側欄時已平移半欄，
-       右側只須越過 plate padding；側欄收起、main 回中間後，則再補半欄空氣。
-       因此硬裁切邊落在頁面右緣，不是 main／版心右緣。 */
+
     inset-inline-end: calc(-1 * var(--rail-pad) + var(--w-console) / 2);
     block-size: calc(var(--df-punct-start) - var(--df-note-start) + 100dvh);
     pointer-events: none;
@@ -474,14 +277,12 @@
     inset-block-start: 0;
     block-size: 100dvh;
     overflow: clip;
-    /* 軌道在右側精確收於頁面邊界；左側則讓離場 cover 消進空氣，而不是被
-       viewport 一刀切斷。只淡 inline-start，右端刻意保持不透明硬邊。 */
+
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 5rem);
     mask-image: linear-gradient(to right, transparent 0, #000 5rem);
   }
 
-  /* Cover Flow：十五張卡真的排在同一條 track 上。捲動只改一個 0…1 的進度，
-     track 連續滑行；最近中央的卡由 JS 蓋 data-center，提高濃度與尺寸。 */
+
   [data-specimen-flow] {
     --flow-card: round(clamp(8rem, 14vw, 12rem), 2px);
     --flow-gap: clamp(1rem, 2.5vw, 2rem);
@@ -514,34 +315,35 @@
   }
 
   [data-specimen] {
-    position: relative;
-    display: grid;
-    place-items: center;
-    flex: 0 0 var(--flow-card);
-    inline-size: var(--flow-card);
-    block-size: var(--flow-card);
-    box-sizing: border-box;
-    border: 1px dashed var(--ui-supplement-text-2q);
-    background-color: color-mix(in srgb, var(--ui-station-b) 88%, transparent);
-    --flow-hue: 262deg;
-    --flow-gradient: linear-gradient(
-      to bottom,
-      oklch(62% .22 var(--flow-hue)) 0%,
-      oklch(62% .22 calc(var(--flow-hue) + 14deg)) 50%,
-      oklch(62% .22 calc(var(--flow-hue) + 28deg)) 100%
-    );
-    color: color-mix(in oklab, var(--ui-text) 35%, oklch(62% .14 var(--flow-hue)));
-    opacity: .28;
-    scale: .82;
-    transition:
-      opacity 220ms ease,
-      scale 300ms cubic-bezier(.22, .61, .36, 1),
-      border-color 220ms ease
-    ;
+    & {
+      position: relative;
+      display: grid;
+      place-items: center;
+      flex: 0 0 var(--flow-card);
+      inline-size: var(--flow-card);
+      block-size: var(--flow-card);
+      box-sizing: border-box;
+      border: 1px dashed var(--ui-supplement-text-2q);
+      background-color: color-mix(in srgb, var(--ui-station-b) 88%, transparent);
+      --flow-hue: 262deg;
+      --flow-gradient: linear-gradient(
+        to bottom,
+        oklch(62% .22 var(--flow-hue)) 0%,
+        oklch(62% .22 calc(var(--flow-hue) + 14deg)) 50%,
+        oklch(62% .22 calc(var(--flow-hue) + 28deg)) 100%
+      );
+      color: color-mix(in oklab, var(--ui-text) 35%, oklch(62% .14 var(--flow-hue)));
+      opacity: .28;
+      scale: .82;
+      transition:
+        opacity 220ms ease,
+        scale 300ms cubic-bezier(.22, .61, .36, 1),
+        border-color 220ms ease
+      ;
 
-    /* 這條展示軌只呈現字面字形，不參與正文的行尾懸掛。若 Han 在這裡
-       產生 hangable wrapper，佔位空格會令標點看起來比字格少一號。 */
-    --han-punctuation-refinement: compress;
+
+      --han-punctuation-refinement: compress;
+    }
 
     &[data-center] {
       opacity: 1;
@@ -594,31 +396,33 @@
   [data-specimen]:nth-child(15) { --flow-hue: 294deg; }
 
   [data-specimen][data-kind="punctuation"] {
-    font-family: var(--han-font-punctuation-serif), var(--han-serif);
-    font-size: var(--flow-card);
-    font-weight: 400;
-    line-height: 1;
-    white-space: nowrap;
-    background:
-      var(--flow-gradient),
-      linear-gradient(
-        to bottom,
-        transparent calc(50% - .5px),
-        color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% - .5px),
-        color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% + .5px),
-        transparent calc(50% + .5px)
-      ),
-      linear-gradient(
-        to right,
-        transparent calc(50% - .5px),
-        color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% - .5px),
-        color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% + .5px),
-        transparent calc(50% + .5px)
-      )
-    ;
-    background-clip: text, border-box, border-box;
-    -webkit-background-clip: text, border-box, border-box;
-    -webkit-text-fill-color: transparent;
+    & {
+      font-family: var(--han-font-punctuation-serif), var(--han-serif);
+      font-size: var(--flow-card);
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+      background:
+        var(--flow-gradient),
+        linear-gradient(
+          to bottom,
+          transparent calc(50% - .5px),
+          color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% - .5px),
+          color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% + .5px),
+          transparent calc(50% + .5px)
+        ),
+        linear-gradient(
+          to right,
+          transparent calc(50% - .5px),
+          color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% - .5px),
+          color-mix(in srgb, var(--ui-rule) 65%, transparent) calc(50% + .5px),
+          transparent calc(50% + .5px)
+        )
+      ;
+      background-clip: text, border-box, border-box;
+      -webkit-background-clip: text, border-box, border-box;
+      -webkit-text-fill-color: transparent;
+    }
 
     &[data-span="2"] {
       background:
@@ -637,14 +441,13 @@
 
   }
 
-  /* 兩個 em 的內容就站兩個 cell，外框直接跟內容格數走。 */
+
   [data-specimen][data-span="2"] {
     flex-basis: calc(2 * var(--flow-card));
     inline-size: calc(2 * var(--flow-card));
   }
 
-  /* JS 可能在切進本站以前已經包好 h-char；除了關掉狀態，也把既有的
-     hangable 結構還原成普通 inline，避免隱形的 1em filler 參與置中。 */
+
   [data-specimen]:is(
     [data-specimen="dash"],
     [data-specimen="ellipsis"],
@@ -660,31 +463,34 @@
   }
 
   [data-specimen][data-kind="conventions"] {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-    padding: 0;
-    /* 分隔線是卡片的版面，不是第二個字元的裝飾。用一像素寬的重複漸層
-       畫在正中央，DOM 裡的兩個 span 只負責各自不同的標點字體。 */
-    background-image: repeating-linear-gradient(
-      to bottom,
-      var(--ui-supplement-text-2q) 0 .3rem,
-      transparent .3rem .6rem
-    );
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 1px 100%;
+    & {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      padding: 0;
+
+      background-image: repeating-linear-gradient(
+        to bottom,
+        var(--ui-supplement-text-2q) 0 .3rem,
+        transparent .3rem .6rem
+      );
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 1px 100%;
+    }
 
     > span {
-      display: grid;
-      place-items: center;
-      inline-size: 100%;
-      block-size: 100%;
-      font-size: calc(.48 * var(--flow-card));
-      line-height: 1;
-      color: transparent;
-      background-image: var(--flow-gradient);
-      background-clip: text;
-      -webkit-background-clip: text;
+      & {
+        display: grid;
+        place-items: center;
+        inline-size: 100%;
+        block-size: 100%;
+        font-size: calc(.48 * var(--flow-card));
+        line-height: 1;
+        color: transparent;
+        background-image: var(--flow-gradient);
+        background-clip: text;
+        -webkit-background-clip: text;
+      }
 
       &[data-convention="moe"] {
         font-family: 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
@@ -693,10 +499,8 @@
     }
   }
 
-  /* JS 量到第一顆 DashCell 的實際中心後才升級：理論格線仍是無 JS 退路，實際
-     排版則直接以渲染後的破折號為準。transform 的 -50% 讀文案自己的真實高度，
-     且不與入場動畫使用的 individual `translate` 屬性互搶。 */
-  &[data-dash-measured] .DashNoteStage {
+
+  &[data-dash-measured] [data-part="dash-note-stage"] {
     position: absolute;
     grid-row: auto;
     inset-block-start: var(--df-note-start);
@@ -717,21 +521,20 @@
   }
 
   @container (inline-size < 38rem) {
-    /* 這個寬度下中央文案已吃滿安全區；標本讓位，不壓字。 */
+
     [data-dash-specimens] { display: none; }
   }
 
   main[data-writing="vertical"] & [data-dash-specimens] { display: none; }
 
   @container (inline-size < 52rem) {
-    &[data-dash-measured] .DashNoteStage {
+    &[data-dash-measured] [data-part="dash-note-stage"] {
       inset-inline: var(--df-copy-inset) 0;
     }
   }
 
-  /* 問題文案先釘在視窗中央，第一顆破折號抵達同一條中線時由包含塊收回；
-     後段規範文案留在四語樣張前，交棒後不再跟著前段黏住。 */
-  .DashNote {
+
+  [data-part="dash-note"] {
     position: sticky;
     inset-block-start: 30vh;
     translate: 0 -50%;
@@ -744,23 +547,12 @@
   }
 
   p:not(.DashColumn) {
-    /* margin: -4rem 0 5rem; */
-    margin: 0 0 0;
+    margin: 0 0 1em;
     max-inline-size: 36em;
-    font-family: var(--han-font-alternative);
     color: var(--ui-supplement-text);
   }
 
-  /* 兩段文案作一個整體飛入，鍵在本欄自己的 data-revealed（reveal.js 的
-     淺門檻 0.15，見 station-fonts.html）——本欄緊接鉛字盤之下，露臉就等於
-     已滾到鉛字以下。
 
-     曾經鍵在 data-play 上（等鉛字落完＋首輪破折號接合完，延遲 2s），實際
-     讀起來太慢：讀者早滾過來了，話還沒說。破折號的節奏是柱自己的事，文案
-     不該被它扣住——兩者從此各自計時。
-
-     station-frame 的階梯入場管的是站台整欄的 reveal（它讓 .TwoEmDashes 這個
-     div 現身）；這條規則管的是 div 裡面的兩段話，所以兩者不打架。 */
   @media (prefers-reduced-motion: no-preference) {
     &:not([data-revealed]) p:not(.DashColumn) { opacity: 0; }
     &[data-revealed] p:not(.DashColumn) {

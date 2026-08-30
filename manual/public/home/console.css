@@ -46,12 +46,14 @@ body:has(han-console) {
     }
 
     > header {
-      inline-size: 100vw;
-      margin-inline: 0;
+      & {
+        inline-size: 100vw;
+        margin-inline: 0;
 
-      /* Header 不換 measure，也不整條移動：右半的 nav 永遠釘在 viewport
-         inline-end；左半兩件 chrome 在 console 開著時讓出整欄。Logo 自己已有
-         optical `translate`，所以這一層用 transform 與它相乘，不覆蓋。 */
+        /* Header 不換 measure，也不整條移動：右半的 nav 永遠釘在 viewport
+           inline-end；左半兩件 chrome 在 console 開著時讓出整欄。Logo 自己已有
+           optical `translate`，所以這一層用 transform 與它相乘，不覆蓋。 */
+      }
       > .ConsoleToggle,
       > .Logo {
         transform: translateX(var(--w-console));
@@ -237,7 +239,9 @@ body:has(han-console) {
      temporarily yield their width; language and theme controls remain. */
   :root:not([data-console-discovered]) {
     .ConsoleToggle {
-      gap: 0.5rem;
+      & {
+        gap: 0.5rem;
+      }
 
       .ConsoleToggleLabel { display: inline; }
     }
@@ -294,7 +298,7 @@ body:has(han-console) {
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
       box-shadow:
-        0 12px 32px color-mix(in srgb, var(--palette-black) 18%, transparent)
+        0 12px 32px color-mix(in srgb, var(--ui-shadow-ink) 18%, transparent)
       ;
     }
 
@@ -318,17 +322,19 @@ body:has(han-console) {
        non-modal dialog has no backdrop to dismiss, and the handle that opened
        it is up in the header behind the panel. */
     .ConsolePanelClose {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      inline-size: 1.5rem;
-      block-size: 1.5rem;
-      margin-inline-end: -0.25rem;
-      padding: 0;
-      color: var(--ui-supplement-text);
-      background: transparent;
-      border: 0;
-      cursor: pointer;
+      & {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        margin-inline-end: -0.25rem;
+        padding: 0;
+        color: var(--ui-supplement-text);
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+      }
 
       &:hover { color: var(--ui-accent); }
 
@@ -344,7 +350,9 @@ body:has(han-console) {
    `display: contents` so the element has no geometry of its own to reset. */
 @media (min-width: 52rem) {
   .ConsolePanel {
-    display: contents;
+    & {
+      display: contents;
+    }
 
     > header { display: none; }
   }
@@ -365,7 +373,9 @@ body:has(han-console) {
    flips long before the sheets land and would leave the loader sitting in
    that hole for the rest of the fetch. */
 han-console:not([data-ready]) {
-  background: var(--ui-panel);
+  & {
+    background: var(--ui-panel);
+  }
 
   @media (min-width: 52rem) {
     border-inline-end: 1px solid var(--ui-rule);

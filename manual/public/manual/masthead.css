@@ -104,16 +104,20 @@
 
   /* Right cluster of links + lang switcher + theme toggle. */
   > nav {
-    display: flex;
-    gap: 1.375rem;
-    align-items: center;
-    font-family: var(--han-font-default);
-    font-size: 0.875rem;
+    & {
+      display: flex;
+      gap: 1.375rem;
+      align-items: center;
+      font-family: var(--han-font-default);
+      font-size: 0.875rem;
+    }
 
     > a {
-      color: var(--ink-soft);
-      text-decoration: none;
-      transition: color 150ms;
+      & {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 150ms;
+      }
 
       &:hover { color: var(--accent-deep) }
     }
@@ -129,15 +133,17 @@
 /* ─── Nav toggle (mobile-only "目錄" button) ───────────────────────── */
 
 button[data-nav-toggle] {
-  display: none;
-  appearance: none;
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 0.25em;
-  padding: 0.15em 0.6em;
-  color: var(--ink-mute);
-  font: inherit;
-  cursor: pointer;
+  & {
+    display: none;
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 0.25em;
+    padding: 0.15em 0.6em;
+    color: var(--ink-mute);
+    font: inherit;
+    cursor: pointer;
+  }
 
   @media (max-width: 49.99em) {
     display: inline-block;

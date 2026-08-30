@@ -113,7 +113,7 @@ const collect = (props) => {
 
   /* The whole light DOM, not just `<main>`: the Topbar is `body > header` and
      the refactor moves rules that reach it. Shadow roots are walked too —
-     `common/controls.css` is adopted by <han-console>'s shadow, so a move
+     the `common/*` control-family sheets are adopted by <han-console>'s shadow, so a move
      there has to be provable as well. */
   const walk = function* ($root) {
     for (const $el of $root.querySelectorAll('*')) {

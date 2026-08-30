@@ -10,7 +10,7 @@
  * station①'s four editions, station④'s two miniature dispatches.
  */
 
-.Lens {
+[data-mag-lens] {
   & {
     /* Diameter is the host's business, but it is never just「as wide as the
        column」: a circle only offers its full width across the middle, so a
@@ -41,22 +41,22 @@
     border: 2px solid color-mix(in srgb, var(--ui-text) 70%, transparent);
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--ui-bg) 60%, transparent) inset,
-      0 12px 32px color-mix(in srgb, var(--palette-black) 22%, transparent)
+      0 12px 32px color-mix(in srgb, var(--ui-shadow-ink) 22%, transparent)
     ;
+
+    opacity: 0;
+    visibility: hidden;
+    content-visibility: hidden;
   }
 
   /* Off is the resting state in the markup, so a page with no JS never shows a
      circle nothing can move. The module turns it on (a fine pointer from the
      first frame, a coarse one on double-tap) and the reader toggles it with a
      double-click on the specimen — hence no chrome for it anywhere. */
-  opacity: 0;
-  visibility: hidden;
   /* …and while it is off the copy inside costs nothing: `content-visibility`
      skips its layout entirely, where `visibility: hidden` would still lay the
      duplicated card out on every resize. The module drops the copy on the way
      out too; this is for the frame before it gets there. */
-  content-visibility: hidden;
-
   /* `data-lens-on` describes the interaction state; `data-lens-arrived` is a
      one-shot stage cue from lens.js. Keeping those two facts separate means
      the first entrance can trail the specimen without making every later
@@ -84,7 +84,7 @@
     content-visibility: hidden;
   }
 
-  .is-lens-clone {
+  [data-lens-clone] {
     position: absolute;
     inset-block-start: 0;
     inset-inline-start: 0;

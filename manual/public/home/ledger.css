@@ -23,7 +23,9 @@
 /* The sum is decorative support for the ledger, not content worth forcing
    through a narrow rail. Small containers show the full-width table only. */
 .SumRail {
-  margin-block-end: 2.5rem;
+  & {
+    margin-block-end: 2.5rem;
+  }
 
   > .Sum { margin-block-end: 0; }
 }
@@ -65,11 +67,13 @@
   }
 
   &.Sum {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-    /* One board, not two cards. The vertical equation is deliberately on the
-       station ground; this must stay transparent at EVERY viewport width. */
-    background: transparent;
+    & {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      /* One board, not two cards. The vertical equation is deliberately on the
+         station ground; this must stay transparent at EVERY viewport width. */
+      background: transparent;
+    }
 
     @media (min-width: 64rem) {
       grid-template-columns: minmax(0, 1.3fr) minmax(16rem, .8fr);
@@ -408,8 +412,10 @@
     /* The answer: a rule across every column, then the total. Border on the
        cells, not the row — a row's own border is not painted in every engine. */
     .Total {
-      font-weight: 500;
-      color: var(--ui-text);
+      & {
+        font-weight: 500;
+        color: var(--ui-text);
+      }
 
       mtd {
         padding-block-start: 0.5rem;
@@ -455,13 +461,15 @@
   }
 
   &.Sum figcaption {
-    grid-column: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-block-size: 16rem;
-    background: transparent;
-    border-inline-start: 1px solid var(--ui-rule);
+    & {
+      grid-column: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-block-size: 16rem;
+      background: transparent;
+      border-inline-start: 1px solid var(--ui-rule);
+    }
 
     @media (max-width: 63.999rem) {
       display: none;
@@ -541,14 +549,14 @@
   /* Full-viewport mask and motion live in home/dialog.css. */
 }
 
-.SizeDialogPanel {
+[data-part="size-dialog-panel"] {
   inline-size: min(40rem, calc(100% - 2rem));
   margin: 8dvb auto;
   overflow: clip;
   background: var(--ui-bg);
   border: 1px solid var(--ui-rule);
   border-radius: var(--r-3);
-  box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--palette-black) 28%, transparent);
+  box-shadow: 0 1.5rem 5rem color-mix(in srgb, var(--ui-shadow-ink) 28%, transparent);
 
 }
 
@@ -567,7 +575,7 @@
 }
 
 .SizeDialogHead h3,
-.SizeDialogBody h4 {
+[data-part="size-dialog-body"] h4 {
   margin: 0;
   font-family: var(--han-font-alternative);
   font-weight: 500;
@@ -590,7 +598,7 @@
 
 .SizeDialogHead [data-icon] { vertical-align: initial; }
 
-.SizeDialogBody {
+[data-part="size-dialog-body"] {
   display: grid;
   gap: 1.25rem;
   padding: 1.125rem;
@@ -650,9 +658,11 @@
 }
 
 .SizeDialog .FontLedger {
-  margin: 0;
-  grid-template-columns: 1fr;
-  grid-template-areas: none;
+  & {
+    margin: 0;
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+  }
 
   > :is([data-plate], figcaption) {
     grid-area: auto;
@@ -665,7 +675,7 @@
 }
 
 @media (max-width: 42rem) {
-  .SizeDialogBody { padding: 1rem; }
+  [data-part="size-dialog-body"] { padding: 1rem; }
   .TransferDetails { min-inline-size: 0; overflow-x: auto; }
   .TransferDetails table { min-inline-size: 30rem; }
 }

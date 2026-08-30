@@ -3,7 +3,7 @@
 /**
  * <han-console> shadow skeleton — the console's OWN box, whichever form the
  * page puts it in. Adopted into the shadow root alongside
- * `tokens.css` (the `--_*` layer this file consumes) and `controls.css`
+ * `tokens.css` (the `--_*` layer this file consumes) and the control-family sheets
  * (the `.ControlGroup` / `.Field` / `.Toggle` / `.MetricSlider`
  * primitives).
  *
@@ -98,11 +98,13 @@
      gap; drop the vertical margins/closing hairline of the side stack. */
   @media (min-width: 64rem) {
     :host([form="top"]) & {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 24px;
-      overflow-x: auto;
-      padding-inline: var(--_gutter);
+      & {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 24px;
+        overflow-x: auto;
+        padding-inline: var(--_gutter);
+      }
 
       > .ControlGroup {
         min-inline-size: 220px;

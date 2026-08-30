@@ -60,10 +60,10 @@ export const initCarousel = ($root = document) => {
       const $rule = $item.querySelector(`.Rule[data-role="${role}"]`)
       const spec = $rule?.querySelector(`[${attr}]`)?.getAttribute(attr)
       if (!$rule || !spec) continue
-      let $out = $rule.querySelector(':scope > .RuleSpec')
+      let $out = $rule.querySelector(':scope > [data-part="rule-spec"]')
       if (!$out) {
         $out = document.createElement('output')
-        $out.className = 'RuleSpec'
+        $out.dataset.part = 'rule-spec'
         $rule.append($out)
       }
       $out.textContent = role === 'framework' ? `:where${spec}→(0,0,0)` : spec
