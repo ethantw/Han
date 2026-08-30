@@ -76,7 +76,6 @@
     user-select: none;
   }
 
-
   &:has(.DashCell:hover) {
 
     @media (prefers-reduced-motion: no-preference) {
@@ -205,7 +204,7 @@
 
     position: relative;
 
-    --df-fs: round(clamp(5rem, 11vw, 12rem), 2px);
+    --df-fs: round(clamp(8rem, 11vw, 12rem), 2px);
     --df-col-left: calc(
       var(--df-forme-left, 0px)
       + var(--df-column-anchor, 0.0667) * var(--df-forme-width, 0px)
@@ -224,7 +223,9 @@
     --df-punct-start: calc(var(--df-column-top) + 32 * var(--df-fs));
     --df-second-dash-end: calc(var(--df-column-top) + 39 * var(--df-fs));
 
-    @media (width < 48rem) {
+    /* The side console can narrow main below the forme's 768px floor while
+       the viewport itself is still wide; the column then belongs to main. */
+    @container (inline-size < 48rem) {
       --df-col-left: calc(var(--df-page-left, 0px) + .5 * var(--df-fs));
     }
 
@@ -243,6 +244,23 @@
 
     @container (inline-size < 52rem) {
       --df-copy-inset: calc(1.25 * var(--df-fs));
+    }
+
+    /* The pale glyph faces are wider than the one-em colour cell. A phone
+       needs nearly all of the remaining measure, so it keeps only 1px beyond
+       the colour dash; a roomier narrow rail spends its spare width on up to
+       2rem of breathing room instead of pinning the copy to the effect. */
+    @container (inline-size < 48rem) {
+      --df-colour-clearance: clamp(
+        1px,
+        calc((100cqw - 24rem) * .125),
+        2rem
+      );
+      --df-copy-inset: calc(
+        var(--df-fs)
+        + var(--df-page-left, 0px)
+        + var(--df-colour-clearance)
+      );
     }
   }
 
@@ -506,9 +524,10 @@
     inset-block-start: var(--df-note-start);
     inset-inline: var(--df-copy-inset) 0;
     block-size: calc(
-      var(--df-note-end, var(--df-punct-start))
+      var(--df-punct-start-measured, var(--df-note-end, var(--df-punct-start)))
       - var(--df-note-start)
-      + var(--df-problem-size, 0px)
+      + .5 * var(--df-problem-size, 0px)
+      - 7.5rem
     );
     transform: none;
   }
@@ -518,11 +537,6 @@
       --flow-card: round(clamp(6rem, 15vw, 8rem), 2px);
       inset-block-end: 1rem;
     }
-  }
-
-  @container (inline-size < 38rem) {
-
-    [data-dash-specimens] { display: none; }
   }
 
   main[data-writing="vertical"] & [data-dash-specimens] { display: none; }
@@ -538,6 +552,19 @@
     position: sticky;
     inset-block-start: 30vh;
     translate: 0 -50%;
+  }
+
+  /* The floating station map occupies the first 2.5625rem below the header.
+     Since the note is translated upward by half its measured height, include
+     that half-height in the sticky inset and preserve a 0.9375rem clearance. */
+  @container (inline-size < 48rem) {
+    [data-part="dash-note"] {
+      font-size: .875rem;
+      inset-block-start: max(
+        30vh,
+        calc(var(--h-header) + 3.5rem + .5 * var(--df-problem-size, 0px))
+      );
+    }
   }
 
   .PunctLang {

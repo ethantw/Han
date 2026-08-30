@@ -364,22 +364,6 @@
        on whatever punctuation font :root resolved. Serif reads the marks big. */
     font-family: var(--han-serif);
   }
-  /* 全文 icon 是正文的接排線，不是第三列控件。與 KOI-8 摘要同一個做法：
-     疊在文案格的行尾，`::after` 在最後一行留出一枚圖標的空位；語言 select
-     自己待在下一列。這套用 grid 疊位而非 absolute 座標，橫排、直排會沿各自
-     的 inline-end 自然換邊。 */
-  p::after {
-    content: '';
-    display: inline-block;
-    inline-size: 1.25em;
-    block-size: 1px;
-  }
-  li > a.ArticleJump {
-    grid-area: 1 / 1;
-    place-self: end;
-    z-index: 1;
-    margin: 0;
-  }
   label {
     justify-self: end;
     display: inline-flex;

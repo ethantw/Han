@@ -50,11 +50,36 @@ test.describe('station⑤ playground', () => {
     await expect($preview(page).locator('h1')).toHaveCount(1)
     await expect($preview(page).locator('h2')).toHaveCount(4)
     await expect($preview(page).locator('em').first()).toBeVisible()
+    await expect($preview(page).locator(':scope > h1:first-of-type')).toHaveCSS('column-span', 'all')
 
     // …and it exercises the elements han.semantics.css actually styles, which
     // is the whole point of shipping a real article rather than a snippet.
-    for (const sel of ['u', 'q', 'dfn', 'i[lang]', 'ruby.zhuyin > rt', 'blockquote'])
+    for (const sel of ['u', 'q', 'dfn', 'i[lang]', 'ruby.zhuyin > rt'])
       expect(await $preview(page).locator(sel).count()).toBeGreaterThan(0)
+    await expect($preview(page).locator(':scope > blockquote')).toHaveCount(0)
+    await expect($paper(page)).toHaveCSS('padding-block-end', '8px')
+    await expect($paper(page)).toHaveCSS('min-block-size', '0px')
+    await expect($preview(page)).toHaveCSS('width', '720px')
+    await expect($preview(page)).toHaveCSS('column-width', '168px')
+
+    // At the owner's wide desktop size the story actually reaches the fourth
+    // column in each of the two 50em rows. A computed four-column box alone
+    // can still hide an empty final column, which was the regression here.
+    await page.setViewportSize({ width: 1920, height: 1200 })
+    await expect.poll(() => $preview(page).evaluate((el) => {
+      const s = getComputedStyle(el)
+      const gap = Number.parseFloat(s.columnGap)
+      const box = el.getBoundingClientRect()
+      const column = Number.parseFloat(s.columnWidth)
+      const lastInk = Math.max(...[...el.children]
+        .filter((child) => getComputedStyle(child).columnSpan !== 'all')
+        .map((child) => child.getBoundingClientRect().right - box.left))
+      return {
+        usedColumns: Math.ceil((lastInk - 0.5 + gap) / (column + gap)),
+        rows: Math.ceil((box.height + gap) /
+          (Number.parseFloat(s.columnHeight) + Number.parseFloat(s.rowGap))),
+      }
+    })).toEqual({ usedColumns: 4, rows: 2 })
 
     // The dateline is card CHROME above the editable article (so it can't
     // be pickled into a localStorage draft), rewritten on boot to «today +
@@ -153,12 +178,10 @@ test.describe('station⑤ playground', () => {
     await expect($src(page)).toHaveValue(/在這裡寫你自己的字/)
   })
 
-  test('the galley is a page: long copy grows the outer rail, never an inner scroller', async ({ page }) => {
-    // Definite height + `column-fill: auto`: columns fill downward, then
-    // continue rightward. The current two-card composition gives horizontal
-    // movement to PgPanes; the paper itself grows with its columns. This is
-    // deliberately different from the old bled-card model, where PgPaper
-    // became a second, cramped scroll container inside the rail.
+  test('the galley is a page: long copy adds column rows and grows the paper', async ({ page }) => {
+    // `column-height` caps one row; long copy wraps into another row and the
+    // paper grows in the page flow. The paper must never turn into a clipped
+    // inner scroller merely because its proof acquired another row.
     const sheet = () =>
       page.evaluate(() => {
         const $rail = document.querySelector('#station-playground [data-pg-panes]')!
@@ -174,7 +197,16 @@ test.describe('station⑤ playground', () => {
           colEm: (used || Number.parseFloat(gs.columnWidth)) / em,
           bled: $card.hasAttribute('data-pg-bled'),
           paperWidth: Math.round($card.getBoundingClientRect().width),
+          paperHeight: Math.round($card.getBoundingClientRect().height),
+          paperScrollHeight: $card.scrollHeight,
           paperScrolls: $card.scrollWidth > $card.clientWidth + 1,
+          columnHeightInEm: Number.parseFloat(gs.columnHeight) / em,
+          columnWrap: gs.columnWrap,
+          rowGapInRem: Number.parseFloat(gs.rowGap) /
+            Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+          rowSeparator: CSS.supports('row-rule', '1px solid')
+            ? gs.getPropertyValue('row-rule')
+            : gs.backgroundImage,
           railWidth: $rail.scrollWidth,
           railScrolls: $rail.scrollWidth > $rail.clientWidth + 1,
         }
@@ -185,19 +217,23 @@ test.describe('station⑤ playground', () => {
     await tab('自訂內容')
     const short = await sheet()
     expect(short.fill).toBe('auto')
+    expect(short.columnHeightInEm).toBe(50)
+    expect(short.columnWrap).toBe('wrap')
+    expect(short.rowGapInRem).toBe(1)
+    expect(short.rowSeparator).not.toBe('none')
     expect(short.bled).toBe(false)
     expect(short.paperScrolls).toBe(false)
 
     await setSource(page, '# 長\n\n' + '把校樣撐出好幾欄來看看橫向捲動。'.repeat(300))
-    await expect.poll(async () => (await sheet()).paperWidth).toBeGreaterThan(short.paperWidth)
+    await expect.poll(async () => (await sheet()).paperHeight).toBeGreaterThan(short.paperHeight)
 
     const long = await sheet()
     expect(long.bled).toBe(false)
     expect(long.paperScrolls).toBe(false)
     expect(long.railScrolls).toBe(true)
-    expect(long.railWidth).toBeGreaterThan(short.railWidth)
+    expect(long.paperScrollHeight).toBeLessThanOrEqual(long.paperHeight + 1)
     // the design measure is a FLOOR — the solve may widen, never narrow
-    expect(long.colEm).toBeGreaterThanOrEqual(14)
+    expect(long.colEm).toBeGreaterThanOrEqual(21)
   })
 
   test('the loupe follows the specimen onto the stage, then follows the cursor', async ({ page }) => {
@@ -208,6 +244,23 @@ test.describe('station⑤ playground', () => {
     await $paper(page).scrollIntoViewIfNeeded()
     await expect($lens).toHaveAttribute('data-lens-arrived', '')
     await expect($lens).toBeVisible()
+
+    const small = await $lens.evaluate((lens) => {
+      const style = getComputedStyle(lens)
+      const galley = getComputedStyle(document.querySelector(
+        '#station-playground .PgSheet > [data-pg-paper]:not([data-lens-clone]) [data-pg-preview]',
+      )!)
+      const magnifiedColumn = Number.parseFloat(galley.columnWidth)
+        * Number.parseFloat(style.getPropertyValue('--lens-zoom'))
+      const width = lens.getBoundingClientRect().width
+      return { width, ratio: width / magnifiedColumn }
+    })
+    expect(small.ratio).toBeCloseTo(1.05, 2)
+
+    await $paper(page).click({ position: { x: 80, y: 100 } })
+    await expect($lens.locator('..')).toHaveAttribute('data-lens-on', 'large')
+    const large = await $lens.evaluate((lens) => lens.getBoundingClientRect().width)
+    expect(large / small.width).toBeCloseTo(1.25, 2)
 
     const centre = () =>
       page.evaluate(() => {

@@ -101,6 +101,8 @@
   --ui-ink:      var(--palette-ink);
   --ui-ink-grey: light-dark(var(--palette-graphite), var(--palette-silver));
   --ui-rule:     light-dark(var(--palette-cloud), var(--palette-charcoal));
+  /* 欄列之間的分版線要比一般卡框再清楚一階，但仍退在正文後面。 */
+  --ui-row-rule: color-mix(in srgb, var(--ui-text) 20%, var(--ui-bg));
   /* Elevation roles are invariant pigments whose opacity is chosen by each
      component's physical depth. The modal scrim is shared as a complete
      colour because every homepage dialog is the same interaction layer. */
@@ -170,6 +172,10 @@
   --r-1: 2px;
   --r-2: 4px;
   --r-3: 6px;
+
+  /* Optical baseline for square inline-block icons beside body text. Kept as
+     an em ratio so the alignment survives every text size. */
+  --inline-icon-baseline: -0.2em;
 
   /* layout — ziano's calmer measure + fluid gutter */
   --max-w-layout: 68rem;

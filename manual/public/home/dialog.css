@@ -35,7 +35,7 @@
   }
 
   :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)
-    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-sheet"]) {
+    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]) {
     opacity: 0;
     /* Start a full viewport below, rather than merely nudging the panel. */
     translate: 0 100dvb;
@@ -45,7 +45,7 @@
   }
 
   :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Full)[open]
-    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-sheet"]) {
+    > :where(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]) {
     & {
       opacity: 1;
       translate: 0 0;
@@ -54,6 +54,38 @@
     @starting-style {
       opacity: 0;
       translate: 0 100dvb;
+    }
+  }
+
+  /* 工具欄從 masthead 上方落下。短促的 emphasized ease-out 很快離開起點，
+     但全程單調到位、不越過終點，避免 top-layer 的底色短暫露出 mask。 */
+  dialog.Full > [data-part="reader-chrome"] {
+    translate: 0 -100%;
+    transition: translate 320ms cubic-bezier(.16, 1, .3, 1);
+  }
+
+  dialog.Full[open] > [data-part="reader-chrome"] {
+    & {
+      translate: 0 0;
+    }
+
+    @starting-style {
+      translate: 0 -100%;
+    }
+  }
+
+  /* 直排的紙由左側進場，沿著閱讀方向滑到右側定位；其餘 dialog 仍由下往上。 */
+  dialog.Full[data-writing="vertical"] > [data-part="reader-stage"] {
+    translate: -100dvw 0;
+  }
+
+  dialog.Full[data-writing="vertical"][open] > [data-part="reader-stage"] {
+    & {
+      translate: 0 0;
+    }
+
+    @starting-style {
+      translate: -100dvw 0;
     }
   }
 
@@ -72,7 +104,7 @@
   }
 
   /* The old hash fallback is an in-flow continuation, not a lightbox. */
-  dialog.Full:target:not([open]) > [data-part="reader-sheet"] {
+  dialog.Full:target:not([open]) > :is([data-part="reader-stage"], [data-part="reader-sheet"]) {
     opacity: 1;
     translate: none;
   }

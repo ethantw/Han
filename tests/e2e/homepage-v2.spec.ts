@@ -235,6 +235,57 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
   const dialog = page.locator('#station-craft [data-size-dialog]')
   await expect(dialog).toBeVisible()
   await expect(dialog.locator('.TransferDetails table')).toHaveCount(2)
+  await dialog.locator('[data-part="size-dialog-panel"]').evaluate((panel) =>
+    Promise.all(panel.getAnimations().map((animation) => animation.finished.catch(() => undefined))))
+
+  const breathingRoom = await dialog.evaluate((element) => {
+    const panel = element.querySelector<HTMLElement>('[data-part="size-dialog-panel"]')!
+    const style = getComputedStyle(element)
+    return {
+      viewportHeight: innerHeight,
+      paddingStart: Number.parseFloat(style.paddingBlockStart),
+      paddingEnd: Number.parseFloat(style.paddingBlockEnd),
+      scrollTop: element.scrollTop,
+      panelOffset: panel.offsetTop,
+      panelTop: panel.getBoundingClientRect().top,
+      roomAfterPanel: element.scrollHeight - panel.offsetTop - panel.offsetHeight,
+    }
+  })
+  expect(breathingRoom.paddingStart)
+    .toBe(Math.max(breathingRoom.viewportHeight * 0.2, 96))
+  expect(breathingRoom.scrollTop).toBe(0)
+  expect(breathingRoom.panelOffset).toBe(breathingRoom.paddingStart)
+  expect(breathingRoom.panelTop).toBe(breathingRoom.paddingStart)
+  expect(breathingRoom.paddingEnd).toBe(160)
+  expect(breathingRoom.roomAfterPanel).toBe(160)
+
+  await dialog.evaluate((element) => {
+    const panel = element.querySelector<HTMLElement>('[data-part="size-dialog-panel"]')!
+    element.scrollTo({ top: panel.offsetTop + 200, behavior: 'instant' })
+  })
+  await expect.poll(() => dialog.locator('.SizeDialogHead').evaluate((header) =>
+    header.getBoundingClientRect().bottom)).toBeLessThan(0)
+
+  const typography = await dialog.evaluate((element) => {
+    const family = (selector: string) =>
+      getComputedStyle(element.querySelector(selector)!).fontFamily
+    return {
+      sans: getComputedStyle(element).fontFamily,
+      prose: [
+        family('.SizeDialogHead h3'),
+        family('[data-part="size-dialog-body"] h4'),
+        family('.TransferDetails caption'),
+        family('.SsrNote'),
+        family('.FontLedger tbody th'),
+        family('.FontLedger figcaption'),
+      ],
+      code: family('.TransferDetails tbody code'),
+      codeCount: element.querySelectorAll('code').length,
+    }
+  })
+  expect(typography.prose.every((family) => family === typography.sans)).toBe(true)
+  expect(typography.code).not.toBe(typography.sans)
+  expect(typography.codeCount).toBe(18)
 
   const ledger = dialog.locator('.FontLedger')
   await expect(ledger.locator('table')).toHaveCount(3)
@@ -248,6 +299,10 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
   // sets of books stay separate, which is the reason there are two.
   const sumCells = await page.locator('#station-craft .Sum td').allInnerTexts()
   expect(sumCells.some((t) => t.includes('MB'))).toBe(false)
+
+  await dialog.evaluate((element) =>
+    element.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+  await expect(dialog).toBeHidden()
 })
 
 test('station 伍・工法: the addition follows the console, auto ⇄ manual', async ({ page }) => {

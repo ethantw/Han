@@ -117,6 +117,117 @@ for (const viewport of viewports) {
   })
 }
 
+test('the narrow dash sequence keeps all three hand-offs visible', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.locator('#station-fonts').scrollIntoViewIfNeeded()
+  await expect(page.locator('.TwoEmDashes')).toHaveAttribute('data-dash-measured', '')
+  await expect.poll(() => page.locator('.TwoEmDashes').evaluate((copy) => {
+    const punctuation = copy.querySelector<HTMLElement>('.PunctLang')!
+    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!
+      .getBoundingClientRect()
+    const stage = copy.querySelector<HTMLElement>('[data-part="dash-note-stage"]')!
+      .getBoundingClientRect()
+    const copyBox = copy.getBoundingClientRect()
+    return Math.round(
+      punctuation.offsetTop
+      - (stage.bottom - copyBox.top)
+      + note.height / 2,
+    )
+  })).toBe(120)
+
+  const geometry = await page.locator('.TwoEmDashes').evaluate((copy) => {
+    const main = document.querySelector<HTMLElement>('main')!.getBoundingClientRect()
+    const columnElement = copy.querySelector<HTMLElement>('.DashColumn')!
+    const column = columnElement.getBoundingClientRect()
+    const cells = copy.querySelectorAll<HTMLElement>('.DashCell')
+    const firstDash = cells[0].getBoundingClientRect()
+    const lastDash = cells[cells.length - 1].getBoundingClientRect()
+    const closingText = cells[cells.length - 1].previousSibling!
+    const closingRange = document.createRange()
+    closingRange.selectNodeContents(closingText)
+    const closingTextBox = closingRange.getBoundingClientRect()
+    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!.getBoundingClientRect()
+    const noteStage = copy.querySelector<HTMLElement>('[data-part="dash-note-stage"]')!
+      .getBoundingClientRect()
+    const punctuation = copy.querySelector<HTMLElement>('.PunctLang')!
+    const copyBox = copy.getBoundingClientRect()
+    const cover = copy.querySelector<HTMLElement>('[data-dash-specimens]')!
+    return {
+      columnAtMain: column.left - main.left,
+      colourClearance: note.left - firstDash.right,
+      dashSize: Number.parseFloat(getComputedStyle(columnElement).fontSize),
+      closingJoin: lastDash.top - closingTextBox.bottom,
+      closingGap: copyBox.bottom - lastDash.bottom,
+      releaseGap:
+        punctuation.offsetTop
+        - (noteStage.bottom - copyBox.top)
+        + note.height / 2,
+      coverDisplay: getComputedStyle(cover).display,
+      coverWidth: cover.getBoundingClientRect().width,
+      documentWidth: document.documentElement.scrollWidth,
+    }
+  })
+
+  expect(Math.abs(geometry.columnAtMain)).toBeLessThanOrEqual(1)
+  expect(geometry.colourClearance).toBeGreaterThanOrEqual(1)
+  expect(geometry.colourClearance).toBeLessThanOrEqual(2)
+  expect(geometry.dashSize).toBe(128)
+  expect(Math.abs(geometry.closingJoin)).toBeLessThanOrEqual(1)
+  expect(Math.abs(geometry.closingGap)).toBeLessThanOrEqual(1)
+  expect(Math.abs(geometry.releaseGap - 120)).toBeLessThanOrEqual(1)
+  expect(geometry.coverDisplay).not.toBe('none')
+  expect(geometry.coverWidth).toBeGreaterThan(0)
+  expect(geometry.documentWidth).toBe(390)
+
+  // Once sticky, the copy stays below the floating station directory. Its
+  // left edge may cover pale dash glyphs, but neither floating UI may cover
+  // the copy itself.
+  const stickyProbe = await page.locator('[data-part="dash-note-stage"]').evaluate((stage) => {
+    const box = stage.getBoundingClientRect()
+    return scrollY + box.top + 1000
+  })
+  await page.evaluate((top) => scrollTo(0, top), stickyProbe)
+  await expect.poll(() => page.locator('[data-part="dash-note"]').evaluate((note) => {
+    const noteBox = note.getBoundingClientRect()
+    const mapBox = document.querySelector<HTMLElement>('.StationMapCurrent')!
+      .getBoundingClientRect()
+    return Math.round(noteBox.top - mapBox.bottom)
+  })).toBeGreaterThanOrEqual(15)
+
+  const specimenStart = await page.locator('[data-part="dash-note-stage"]').evaluate((stage) => {
+    const box = stage.getBoundingClientRect()
+    return scrollY + box.top - innerHeight * 0.3
+  })
+  await page.evaluate((top) => scrollTo(0, top), specimenStart)
+  await expect(page.locator('[data-dash-specimens]')).toHaveAttribute('data-active', '')
+  await expect(page.locator('[data-specimen][data-center]')).toBeVisible()
+})
+
+test('a roomy narrow dash rail spends its spare width on copy clearance', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 640, height: 900 })
+  await page.goto('/')
+  await page.locator('#station-fonts').scrollIntoViewIfNeeded()
+  await expect(page.locator('.TwoEmDashes')).toHaveAttribute('data-dash-measured', '')
+
+  const geometry = await page.locator('.TwoEmDashes').evaluate((copy) => {
+    const note = copy.querySelector<HTMLElement>('[data-part="dash-note"]')!
+    const dash = copy.querySelector<HTMLElement>('.DashCell')!
+    return {
+      clearance: note.getBoundingClientRect().left - dash.getBoundingClientRect().right,
+      fontSize: getComputedStyle(note).fontSize,
+      documentWidth: document.documentElement.scrollWidth,
+    }
+  })
+
+  expect(geometry.clearance).toBeGreaterThanOrEqual(31)
+  expect(geometry.clearance).toBeLessThanOrEqual(33)
+  expect(geometry.fontSize).toBe('14px')
+  expect(geometry.documentWidth).toBe(640)
+})
+
 test('craft responds to its container and keeps the DevTools pane inside its rail', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 1200, height: 900 })

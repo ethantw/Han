@@ -91,6 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // console's `config` getter as a belt-and-suspenders against the boot race).
   // playground（gate 後才 import）借它的 reapplyFallbacks，先取好引用。
   const $console = document.querySelector('han-console')
+  const reapplyReaderFallbacks = async ($target) => {
+    await customElements.whenDefined('han-console')
+    if (!$console?.config) {
+      await new Promise((resolve) =>
+        $console?.addEventListener('han-config-change', resolve, { once: true }))
+    }
+    await $console?.reapplyFallbacks($target)
+  }
   initSnippet()
   // station②'s isometric lead-type forme (builds its SVG + wires its face／
   // punctuation form). Settled is the CSS default; the drop plays on reveal.
@@ -117,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!$link?.dataset.article) return
     event.preventDefault()
     const { openPaperReader } = await import('/home/paper-reader.js')
-    openPaperReader($link)
+    openPaperReader($link, reapplyReaderFallbacks)
   })
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it

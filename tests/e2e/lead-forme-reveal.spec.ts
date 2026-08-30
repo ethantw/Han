@@ -65,6 +65,32 @@ for (const [width, height, label] of [
   })
 }
 
+test('a 640px window flies the whole forme in without staggered slugs', async ({ page }) => {
+  const entranceNames = async (width: number) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    const forme = page.locator('.LeadForme')
+    await expect(forme.locator('.Slug').first()).toBeAttached()
+    return forme.evaluate(($f) => {
+      $f.setAttribute('data-revealed', '')
+      return {
+        svg: getComputedStyle($f.querySelector('svg')!).animationName,
+        slug: getComputedStyle($f.querySelector('.Slug')!).animationName,
+        captionDelay: getComputedStyle($f.querySelector('figcaption')!).animationDelay,
+      }
+    })
+  }
+
+  const narrow = await entranceNames(640)
+  expect(narrow.svg).toBe('lf-forme-in')
+  expect(narrow.slug).toBe('none')
+  expect(narrow.captionDelay).toBe('0.12s')
+
+  const wide = await entranceNames(641)
+  expect(wide.svg).toBe('none')
+  expect(wide.slug).toBe('lf-drop')
+})
+
 test('the pills and the note wait out the whole drop, then fly in', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 })
   await page.goto('/')

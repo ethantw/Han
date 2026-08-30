@@ -156,7 +156,7 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
    * whose solved measure still clears it, so the columns come out at or
    * above the design measure and never below it. Three demands meet here —
    * the right edge on the window, the cut exactly half a column, the measure
-   * at least 14em — and only one of them can absorb the remainder; the
+   * at least the 21em design measure — and only one of them can absorb the remainder; the
    * measure is the one that can grow without lying about anything.
    *
    *     c ≥ floor  ⟺  k ≤ (visible − floor/2) / (floor + g)
@@ -209,11 +209,9 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
      * 而實際欄寬是盒寬均分的結果（多欄盒一定把欄撐滿自己）。用掉幾欄則由**最
      * 右邊那一塊的右緣**回推——不能數「相異的左緣」，縮排的塊會在同一欄裡多出
      * 一個左緣（實測 [0, 16, 146, 293, 439]，16 是縮排不是新欄）。 */
-    /* 紙最窄也要有五欄。收到內容那裡是對的（見下），但收過頭這張紙就不再是一份
-       報紙了：報頭那一排——標語｜刊名｜氣象，粗線底下卷號・日期・售價——要五欄
-       左右才擺得開，短稿收成一兩欄時它會被擠成幾條細長條。五欄是那一排的下限，
-       不是版面的偏好（owner 2026-08-27）。 */
-    const MIN_COLUMNS = 5
+    /* 川普報導的版式固定一個欄列四欄；內容再長就由 column-wrap 長出下一個欄列，
+       不在同一列尾端添一根幾乎沒字的欄。 */
+    const MIN_COLUMNS = 4
 
     const trimEmptyColumns = () => {
       const gs = getComputedStyle($preview)
@@ -221,10 +219,30 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
       const colWidth = Number.parseFloat(gs.columnWidth)
       const box = $preview.getBoundingClientRect()
       if (!Number.isFinite(colWidth) || colWidth <= 0 || !(box.width > 0)) return
+      const count = Number.parseInt(gs.columnCount, 10)
+
+      /* 明寫的欄數是報紙版式，不是建議值。CSS 同時拿到 column-count 與
+         column-width 時，盒子若稍窄仍可少排一欄；川普文因此在某些視窗退成
+         三欄。直接按「四欄＋三道欄距」釘住版心與紙寬；只有真正超出 50em ×
+         四欄容量的內容才由 column-wrap 換到下一欄列。 */
+      if (Number.isFinite(count)) {
+        const w = count * colWidth + (count - 1) * gap
+        $preview.style.setProperty('--pg-galley-w', `${w}px`)
+        $preview.style.setProperty('--pg-galley-col-used', `${colWidth}px`)
+        const ps = getComputedStyle($paper)
+        const pads = Number.parseFloat(ps.paddingInlineStart) + Number.parseFloat(ps.paddingInlineEnd)
+        const edges = Number.parseFloat(ps.borderInlineStartWidth) + Number.parseFloat(ps.borderInlineEndWidth)
+        ;($sheet ?? $paper).style.setProperty('--pg-paper-w', `${Math.ceil(w) + pads + edges}px`)
+        return
+      }
+
       const total = Math.max(1, Math.floor((box.width + gap) / (colWidth + gap)))
       if (total < 2) return
       const c = (box.width - (total - 1) * gap) / total
       const rights = [...$preview.children]
+        /* 跨欄主標的盒本來就與整個 multicol 等寬，不能拿它判斷正文用到幾欄；
+           否則第一個 h1 一設 column-span: all，空尾欄便永遠收不掉。 */
+        .filter(($el) => getComputedStyle($el).columnSpan !== 'all')
         .map(($el) => $el.getBoundingClientRect())
         .filter((r) => r.width && r.height)
         .map((r) => r.right - box.left)
@@ -300,7 +318,12 @@ export const initPlayground = (reapplyFallbacks, $root = document) => {
     coverColumns(c, gap)
   }
 
-  const render = () => { $preview.innerHTML = renderHtml($src.value) }
+  const render = () => {
+    $preview.innerHTML = renderHtml($src.value)
+    /* 報導開頭的第一個引文是列表摘要，不是正文。原始碼仍保留它，讓範本也能
+       示範／供列表取用；只有完整報紙預覽省略。自訂內容的 blockquote 不碰。 */
+    if (tab === 'story') $preview.querySelector(':scope > blockquote:first-of-type')?.remove()
+  }
 
   // Debounced + rAF-aligned re-render; persistence is immediate so a fast
   // reload never loses keystrokes.

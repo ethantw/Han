@@ -24,7 +24,7 @@ const cases: DialogCase[] = [
     name: 'article reader',
     opener: '[data-article]',
     dialog: 'dialog.Full',
-    panel: '[data-part="reader-sheet"]',
+    panel: '[data-part="reader-stage"]',
   },
 ]
 
@@ -50,7 +50,7 @@ for (const item of cases) {
     // generated keyframes after asynchronous reader/module setup.
     await page.addStyleTag({ content: `
       dialog:is(.QuickstartDialog, .SizeDialog, .Full) >
-        :is(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-sheet"]),
+        :is(.QuickstartPanel, [data-part="size-dialog-panel"], [data-part="reader-stage"]),
       dialog:is(.QuickstartDialog, .SizeDialog, .Full)::backdrop {
         transition-duration: 10s !important;
       }
@@ -73,6 +73,47 @@ for (const item of cases) {
     expect(backdropFrames.some((frame) => frame.opacity === '1')).toBe(true)
   })
 }
+
+test('the vertical article reader flies from left to right', async ({ page }) => {
+  const width = 900
+  await page.setViewportSize({ width, height: 700 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  await page.evaluate(() => localStorage.setItem('han-paper-reader-writing', 'vertical'))
+  await page.addStyleTag({ content: `
+    dialog.Full > [data-part="reader-stage"] { transition-duration: 10s !important; }
+  ` })
+
+  const { panel } = await open(page, cases[2])
+  const panelFrames = await frames(panel)
+  expect(panelFrames.some((frame) => {
+    const distance = /^-([\d.]+)px(?: 0px)?$/.exec(String(frame.translate))?.[1]
+    return Number(distance) >= width - 1
+  })).toBe(true)
+  expect(panelFrames.some((frame) => frame.translate === '0px')).toBe(true)
+})
+
+test('the article toolbar drops in quickly without overshooting the mask', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 700 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  await page.addStyleTag({ content: `
+    dialog.Full > [data-part="reader-chrome"] { transition-duration: 10s !important; }
+  ` })
+
+  const { dialog } = await open(page, cases[2])
+  const chrome = dialog.locator('[data-part="reader-chrome"]')
+  const chromeFrames = await frames(chrome)
+  expect(chromeFrames.some((frame) => {
+    const value = String(frame.translate)
+    const distance = /^0px -([\d.]+)px$/.exec(value)?.[1]
+    return value === '0px -100%' || Number(distance) >= 63
+  })).toBe(true)
+  expect(chromeFrames.some((frame) => frame.translate === '0px')).toBe(true)
+
+  const timing = await chrome.evaluate((element) => getComputedStyle(element).transitionTimingFunction)
+  expect(timing).toContain('cubic-bezier(0.16, 1, 0.3, 1)')
+})
 
 test('shared dialogs remain immediately usable with reduced motion', async ({ page }) => {
   await page.setViewportSize({ width: 900, height: 700 })

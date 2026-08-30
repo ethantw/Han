@@ -204,6 +204,24 @@
   }
 }
 
+/* On a phone-sized rail only part of the 768px forme is visible. A staggered
+   drop therefore reads as an unfinished load: most of the pieces land outside
+   the viewport. Bring the whole forme in as one object, and let its caption
+   follow immediately. Wider stages keep the per-slug composing ceremony. */
+@media (prefers-reduced-motion: no-preference) and (width <= 40rem) {
+  :where(.LeadForme[data-revealed]:not([data-settled])) .Slug {
+    animation: none;
+  }
+
+  :where(.LeadForme[data-revealed]:not([data-settled])) svg {
+    animation: lf-forme-in 0.72s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+  }
+
+  :where(.LeadForme[data-revealed]:not([data-settled])) figcaption {
+    animation: lf-chrome-in 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) 0.12s both;
+  }
+}
+
 @keyframes lf-chrome-in {
   from {
     opacity: 0;
@@ -214,6 +232,17 @@
   to {
     opacity: 1;
     visibility: visible;
+    translate: none;
+  }
+}
+
+@keyframes lf-forme-in {
+  from {
+    opacity: 0;
+    translate: 0 2.5rem;
+  }
+  to {
+    opacity: 1;
     translate: none;
   }
 }
@@ -580,7 +609,7 @@ body:has(#console-collapsed:checked)
       align-self: start;
       justify-self: start;
       align-items: flex-end;
-      row-gap: 3px;
+      row-gap: 0.625rem;
       inline-size: max-content;
       max-inline-size: var(--lf-controls-pocket);
       margin: calc(var(--lf-pad, 0.0086) * var(--lf-w) + 0.5rem) 0 0;
@@ -589,20 +618,26 @@ body:has(#console-collapsed:checked)
     }
 
     fieldset {
-      gap: 1px;
-      padding: 1px;
+      gap: 0.25rem;
+      padding: 3px;
     }
 
     .PillHead {
-      padding-inline: 0.5em 0.25em;
-      font-size: 0.625rem;
+      padding-inline: 0.625em 0.375em;
+      font-size: 0.75rem;
     }
 
     label {
-      padding-block: 0.5px;
-      padding-inline: 5px;
-      font-size: 0.625rem;
+      padding-block: 3px;
+      padding-inline: 8px;
+      font-size: 0.75rem;
     }
+  }
+}
+
+@media (width <= 40rem) {
+  :where(main:not([data-writing='vertical'])) .LeadForme .Controls {
+    display: none;
   }
 }
 

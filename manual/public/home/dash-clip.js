@@ -115,10 +115,11 @@ export const initDashClip = ($root = document) => {
         columnAnchor: Number.parseFloat(geometry.getPropertyValue('--lf-column-anchor')) || 0,
         columnStart: Number.parseFloat(geometry.getPropertyValue('--lf-column-start')) || 0,
         problemSize: $problem.getBoundingClientRect().height,
+        punctStart: $punctLang?.offsetTop ?? null,
         noteEnd: noteEnd ? noteEnd.top + noteEnd.height / 2 - copy.top : null,
       }
     },
-    write: ({ formeLeft, formeTop, formeWidth, pageLeft, columnAnchor, columnStart, problemSize, noteEnd }) => {
+    write: ({ formeLeft, formeTop, formeWidth, pageLeft, columnAnchor, columnStart, problemSize, punctStart, noteEnd }) => {
       /* 橫向那個數寫在**包含塊**上，不寫在柱上：柱讀得到（自訂屬性會繼承），而
          那一格自己也要用它——文案的欄從柱的右緣起算（dash-fuse.css §
          .TwoEmDashes 的 `padding-inline-start`）。 */
@@ -130,6 +131,9 @@ export const initDashClip = ($root = document) => {
       $owner.style.setProperty('--df-column-anchor', String(columnAnchor))
       $owner.style.setProperty('--df-column-start', String(columnStart))
       $copy.style.setProperty('--df-problem-size', `${Math.round(problemSize)}px`)
+      if (punctStart != null) {
+        $copy.style.setProperty('--df-punct-start-measured', `${Math.round(punctStart)}px`)
+      }
       if (noteEnd != null) $copy.style.setProperty('--df-note-end', `${noteEnd}px`)
       $copy.dataset.dashMeasured = ''
       requestAnimationFrame(measureSpecimenTimeline)

@@ -220,7 +220,8 @@
        ancestor, because the lens is a SIBLING of the galley and sizes
        itself from the same two (see § the loupe). */
     --pg-galley-fs: 0.5rem;
-    --pg-galley-col: 14;   /* column measure, in galley em */
+    --pg-galley-col: 21;
+    --pg-galley-w: 720px; /* 四欄 × 21em ＋ 三道 2em 欄距，剛好 720px */
     /* Both panes stand this tall — one token, so the editor and the sheet
        can never drift apart. Short of the full viewport on purpose: a pane
        that ends before the fold shows there is a page around it. */
@@ -385,10 +386,14 @@
   [data-pg-sheet] > [data-pg-paper],
   [data-mag-lens] .PgPaper {
     padding: 1.25rem 1rem;
+    padding-block-end: 0.5em;
     background: var(--ui-bg);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
-    block-size: var(--pg-pane-h);
+    /* 紙只包住實際欄列；與編輯器等高的展示軌由外層 PgSheet 承擔。若把這裡也
+       撐到 `--pg-pane-h`，短於視窗的末欄會在紙尾留下大片假留白。放大鏡裡的
+       副本吃同一條，紙邊與原稿才會一致。 */
+    min-block-size: 0;
     display: flex;
     flex-direction: column;
   }
@@ -425,9 +430,10 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0;
-    /* `translate` 不參與 grid track 尺寸；先替位移後的紙保留完整高度，才不會與
-       下方 controls 相撞。 */
-    min-block-size: calc(var(--pg-pane-h) + var(--pg-preview-offset));
+    /* `translate` 不參與 grid track 尺寸；尾端 padding 替位移留位。它與固定
+       高度不同：column-height 排出更多欄列、紙張長高時，這段留白仍接在紙後。 */
+    min-block-size: var(--pg-pane-h);
+    padding-block-end: var(--pg-preview-offset);
   }
 
   [data-pg-sheet] > [data-pg-paper] {
@@ -499,19 +505,42 @@
      be wider than the window, the site's layout may not. */
   .PgGalley {
     font-size: var(--pg-galley-fs);
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-block-size: 0;
     /* Width and column measure are SOLVED (fitSheet), and pinned to a
        WHOLE number of columns so the columns keep their measure instead of
        stretching to fill the box — stretching is exactly what makes every
        visible column complete, and a complete last column signals
-       nothing. The 14em below is a FLOOR: the solve may hand the columns
+       nothing. The 21em below is a FLOOR: the solve may hand the columns
        more, never less. */
     inline-size: var(--pg-galley-w, 100%);
-    columns: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
+    column-count: 4;
+    column-width: var(--pg-galley-col-used, calc(var(--pg-galley-col) * 1em));
     column-gap: 2em;
     column-rule: 1px solid color-mix(in srgb, var(--ui-rule) 60%, transparent);
     column-fill: auto;
+    /* 川普文以 50em 為一個欄列；galley 不撐滿紙高，只有內容真的溢出四欄
+       才長出第二欄列與分隔線。 */
+    @supports (column-height: 1em) {
+      column-height: 50em;
+      column-wrap: wrap;
+      row-gap: 2em;
+
+      @supports (row-rule: 1px solid) {
+        row-rule: 1px solid var(--ui-row-rule);
+      }
+
+      @supports not (row-rule: 1px solid) {
+        background-image: linear-gradient(
+          to bottom,
+          transparent calc(50em + 1em - 0.5px),
+          var(--ui-row-rule) 0 calc(50em + 1em + 0.5px),
+          transparent 0
+        );
+        background-size: 100% calc(50em + 2em);
+        background-repeat: repeat-y;
+      }
+    }
   }
 
   /* The narrower measure wants a narrower indent. On the CLASS: this is
@@ -519,6 +548,12 @@
      or it breaks its lines somewhere else and stops being a copy. */
   .PgGalley {
     --han-prose-indent: 1em;
+  }
+
+  /* 報導的首題是整個版面的主標，先橫跨當前欄列再讓正文入欄；只取第一個 h1，
+     使用者在後文另下的一級標題仍留在正文流裡。 */
+  .PgGalley > h1:first-of-type {
+    column-span: all;
   }
 
   [data-pg-preview] {
@@ -543,10 +578,10 @@
      painting a live copy of the WHOLE paper card (masthead and dateline
      included: they are part of the page being proofed).
 
-     Only the two geometry tokens are the station's business. 1.75× lifts
-     the 8px galley to ~16px — reading size, the same ballpark as the
-     studio — and the diameter is 1.75 × the MAGNIFIED column, because a
-     circle only offers its full width across the middle.
+     Only the geometry tokens are the station's business. 1.75× lifts the
+     8px galley to reading size. The small aperture is 1.05 × one magnified
+     column—just enough air around it; the large aperture is exactly 1.25 ×
+     that small one. Both sizes retain the same magnification.
 
      It follows the proof onto the stage after a short beat (lens.js), except
      while the writer is IN the editor: typing is the one moment the proof
@@ -555,7 +590,10 @@
   [data-mag-lens] {
     display: block;
     --lens-zoom: 1.75;
-    --lens-size: calc(1.75 * var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
+    --lens-column-size: calc(var(--pg-galley-col) * var(--pg-galley-fs) * var(--lens-zoom));
+    --lens-small-size: calc(1.05 * var(--lens-column-size));
+    --lens-size: calc(1.25 * var(--lens-small-size));
+    --lens-aperture: 0.8;
   }
 
   &[data-playground]:has([data-pg-panes] > textarea:focus) [data-mag-lens] { opacity: 0; }

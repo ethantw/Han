@@ -331,8 +331,8 @@ const md = new MarkdownIt({
  * taisol/; build emits small, cacheable HTML fragments and dev renders the
  * requested fragment directly. The homepage therefore pays for neither the
  * full articles nor a client-side Markdown parser before somebody asks to
- * read one. `hans` deliberately derives from the traditional source for now;
- * the homepage already applies the same glyph-only policy elsewhere. */
+ * read one. Every edition has its own Markdown source; in particular, Hans
+ * is copy rather than a glyph-only rendering of the traditional article. */
 const HOME_ARTICLES = [
   'passport-museum',
   'hyperloop-12sec',
@@ -342,7 +342,7 @@ const HOME_ARTICLES = [
   'telepathy-speech-rehab',
   'soviet-koi8-nuke',
 ]
-const ARTICLE_LANG_DIR = { hant: 'zh', hans: 'zh', ja: 'ja', ko: 'ko' }
+const ARTICLE_LANG_DIR = { hant: 'zh', hans: 'hans', ja: 'ja', ko: 'ko' }
 
 async function renderArticleFragment(slug, edition) {
   if (!HOME_ARTICLES.includes(slug) || !Object.hasOwn(ARTICLE_LANG_DIR, edition)) return null
@@ -352,7 +352,7 @@ async function renderArticleFragment(slug, edition) {
   const raw = await fs.readFile(file, 'utf-8')
   const { meta, body } = splitFrontmatter(raw)
   const title = String(meta.title ?? slug).replace(/^['"]|['"]$/g, '')
-  return `<h1>${md.renderInline(title)}</h1>\n${md.render(stripLeadingH1(body))}`
+  return `<h1>${md.renderInline(title)}</h1>\n${md.render(stripLeadingAbstract(stripLeadingH1(body)))}`
 }
 
 const FRAMEWORK_ASSETS = [
@@ -626,6 +626,15 @@ function splitFrontmatter(text) {
  */
 function stripLeadingH1(body) {
   return body.replace(/^\s*#\s+.+\n+/, '')
+}
+
+/**
+ * Taisol's first blockquote is the card/list abstract. The full reader already
+ * has a headline and begins with the dispatch itself, so only that leading
+ * quote is omitted; later blockquotes remain real article content.
+ */
+function stripLeadingAbstract(body) {
+  return body.replace(/^\s*(?:>[^\n]*(?:\n|$))+\s*/, '')
 }
 
 function escapeHtml(s) {

@@ -224,17 +224,40 @@ article.Dispatch {
   & {
     --size: 24em;
     padding: 1em 1.5em;
+    padding-block-end: 0.5em;
     /* 8px 之下一張卡要撐出「一整頁」的感覺，靠的是**欄數**不是行長：欄長
        維持 24em（約二十四字），多給幾欄，整篇的形狀才看得出來，也才有東西
        可以平移。 */
     inline-size: calc(var(--size) * 4);
     column-count: 4;
     column-gap: 2em;
+    /* `column-height` 是邏輯 block-size：同一個數字會在橫排限制紙高、直排
+       限制紙寬。換列而不讓額外欄溢出卡框；不支援時仍是原來的平衡多欄。 */
+    @supports (column-height: 1em) {
+      column-height: 54em;
+      column-wrap: wrap;
+      row-gap: 2em;
+
+      @supports (row-rule: 1px solid) {
+        row-rule: 1px solid var(--ui-row-rule);
+      }
+
+      @supports not (row-rule: 1px solid) {
+        background-image: linear-gradient(
+          to bottom,
+          transparent calc(54em + 1em - 0.5px),
+          var(--ui-row-rule) 0 calc(54em + 1em + 0.5px),
+          transparent 0
+        );
+        background-size: 100% calc(54em + 2em);
+        background-repeat: repeat-y;
+      }
+    }
     font-family: var(--han-font-alternative);
     /* 8px：小到讀不了，正好看得見整篇的形狀。 */
     font-size: .5rem;
     flex: none;
-    background: var(--ui-bg);
+    background-color: var(--ui-bg);
     border: 1px solid var(--ui-rule);
     border-radius: var(--r-3);
   }
@@ -267,6 +290,20 @@ article.Dispatch {
        尺寸（2026-08-27：直排原本三欄，四欄之後兩張卡的行內尺寸一致）。 */
     inline-size: calc(var(--size) * 4);
     column-count: 4;
+
+    @supports (column-height: 1em) {
+      @supports not (row-rule: 1px solid) {
+        background-image: linear-gradient(
+          to left,
+          transparent calc(54em + 1em - 0.5px),
+          var(--ui-row-rule) 0 calc(54em + 1em + 0.5px),
+          transparent 0
+        );
+        background-position: right top;
+        background-size: calc(54em + 2em) 100%;
+        background-repeat: repeat-x;
+      }
+    }
   }
 
   /* 疊起來之後各吃滿一行——但兩張卡的軸向相反，一條規則服務不了兩個行向。

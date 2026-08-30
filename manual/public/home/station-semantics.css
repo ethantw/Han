@@ -334,10 +334,9 @@ figure.Papers {
     }
 
     /* ── 控件條 ──────────────────────────────────────────────────────
-       四顆控件（上一版・下一版・行向・關閉）收成**一條**釘在畫面邊上的工具條，
-       不再各自浮在版面上：這一版的紙會往兩個方向捲（見下），浮鈕會一直壓在正文
-       上，而一條貼邊的條子讀者一眼就知道那不是報紙的一部分。橫排時在頂上一條
-       （100vw），直排時在右緣一直條（100vh）——都是行首那一側。
+       版別、行向、倍率、關閉收成**一條**釘在畫面頂端的工具條，不再各自浮在
+       版面上。橫直排共用同一位置與首頁 masthead 的高度；dialog 在 top layer，
+       正好以自己的工具條蓋住底下那條，不會露出兩層 chrome。
 
        `<form method="dialog">` 的語意不變（按下 `value="close"` 就關），只是它
        現在也是版面上的一個盒。 */
@@ -348,8 +347,11 @@ figure.Papers {
         inset: 0 0 auto 0;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 0.75rem;
+        gap: 0.375rem;
+        box-sizing: border-box;
+        block-size: var(--h-header);
+        padding: 0.5rem var(--gutter);
+        overflow-x: auto;
         /* 與主控台同一塊底色（`--ui-panel`）：這一頁上「浮在內容之上的操作面」只有
            這兩個，同色就讀成同一類東西。 */
         background: var(--ui-panel);
@@ -406,6 +408,15 @@ figure.Papers {
         padding-inline: 0.75rem;
         font-size: 0.875rem;
       }
+
+      [data-reader="scale"] {
+        flex: 0 0 auto;
+        min-inline-size: 5.5rem;
+        block-size: 2.25rem;
+        font-family: var(--han-sans);
+        font-size: 0.875rem;
+        background-color: var(--ui-bg);
+      }
     }
 
     /* 大標橫跨所有欄——它是這一版的抬頭，不是某一欄的開頭。 */
@@ -416,18 +427,61 @@ figure.Papers {
     /* 版心＝一張報紙的一版。報頭、續版列、內文三層，多欄只開在內文層——報頭
        得橫跨整版而且在直排時仍留在頂上，`column-span` 說不出這件事（直排的
        欄沿縱軸排，跨欄就變成跨整個高度）。分層之後兩種行向共用同一套規則。 */
+    [data-part="reader-stage"] {
+      position: relative;
+      inline-size: var(--reader-stage-width, 0px);
+      block-size: var(--reader-stage-height, 0px);
+      margin:
+        max(27.5dvh, calc(var(--h-header) + 1rem))
+        auto
+        max(10rem, 40dvh)
+      ;
+    }
+
+    /* The spec keeps a fixed `column-height` even on a short final row. JS
+       measures that row's last ink edge and shortens only the stage: the
+       multicol layout stays untouched beneath this crop. The stage redraws
+       the paper edge and shadow at the new boundary. */
+    [data-part="reader-stage"][data-reader-trimmed] {
+      box-sizing: content-box;
+      padding: 0 0 calc(3rem * var(--reader-scale, 1));
+      overflow: clip;
+      /* 裁尾後 stage 就是讀者看見的紙邊：它親自畫紙色與 3rem 尾白，不再把
+         padding 留在會被裁切的絕對定位 sheet 裡。 */
+      background: var(--ui-bg);
+      border-radius: var(--r-3);
+      box-shadow: 0 24px 64px color-mix(in srgb, var(--ui-shadow-ink) 22%, transparent);
+
+      &::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        border: 1px solid var(--ui-rule);
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      [data-part="reader-sheet"] {
+        border-color: transparent;
+        box-shadow: none;
+      }
+    }
+
     [data-part="reader-sheet"] {
-      /* 整張紙的字級——報頭是 `em` 寫的，所以它跟著一起變大變小，變的是**整份
-         報紙**而不只是正文（paper-reader.js § SIZES：12／14／16px 三段循環，
-         點紙就換一段）。 */
-      font-size: var(--reader-fs, 14px);
+      /* 固定一套排版尺寸，再由外層 stage 以 `scale` 做整張紙的視覺倍率；縮放不會
+         觸發多欄重排。stage 由 JS 寫入縮放後的實際佔位，捲動範圍仍與畫面一致。 */
+      position: absolute;
+      inset: 0 auto auto 0;
+      scale: var(--reader-scale, 1);
+      transform-origin: top left;
+      font-size: 14px;
       /* 寬度不自己定，交給內文那一層（三欄寫死）：紙就是內容那麼寬。內距也收
          ——這一版要的是「地月電梯」那張樣張的緊湊感，不是海報的留白。 */
       inline-size: fit-content;
-      /* 大留白：紙與工具條、與畫面邊緣都要隔開一段，才有翻報紙的呼吸感（owner
-         2026-08-28）。上下各三成畫面高，左右置中。 */
-      margin: 30vh auto;
+      margin: 0;
       padding: 1.25rem 1.5rem 1.75rem;
+      padding-block-end: 0;
       background: var(--ui-bg);
       border: 1px solid var(--ui-rule);
       border-radius: var(--r-3);
@@ -477,9 +531,36 @@ figure.Papers {
         column-gap: var(--reader-gap);
         column-rule: 1px solid var(--ui-rule);
 
-        /* 大標橫跨所有欄——它是這一則的抬頭，不是某一欄的開頭。直排時不跨：
-           直排報紙的大標本來就佔著第一欄的頂端。 */
+        /* 一列不要長成無底洞：固定欄的邏輯 block-size，橫排限制高度、直排便
+           自動限制寬度。固定 column-height 時把換列意圖明寫出來；舊瀏覽器不
+           認得這組實驗屬性，就保留上面的既有平衡多欄版面。 */
+        @supports (column-height: 1em) {
+          column-height: 44em;
+          column-wrap: wrap;
+          row-gap: 4rem;
+
+          @supports (row-rule: 1px solid) {
+            row-rule: 1px solid var(--ui-row-rule);
+          }
+
+          /* Chromium ships column wrapping before CSS gap decorations. Paint
+             the same rule in the middle of each 4rem row gap until native
+             `row-rule` arrives. */
+          @supports not (row-rule: 1px solid) {
+            background-image: linear-gradient(
+              to bottom,
+              transparent calc(44em + 2rem - 0.5px),
+              var(--ui-row-rule) 0 calc(44em + 2rem + 0.5px),
+              transparent 0
+            );
+            background-size: 100% calc(44em + 4rem);
+            background-repeat: repeat-y;
+          }
+        }
+
+        /* 大標橫跨整個欄列——它是這一則的抬頭，不是某一欄的開頭。 */
       }
+      > h1:first-of-type,
       > h3 {
         column-span: all;
         margin-block: 0 0.75em;
@@ -513,24 +594,6 @@ figure.Papers {
       }
     }
 
-    /* 游標就是說明書：紙上是放大鏡（12／14px，「按了會更大」）或縮小鏡（16px，
-       「按了會收回去」），字上讓位給 I 型——反白讀者永遠做得到，這裡沒有鏡片
-       擋著。列的是會排字的區塊元素，不是 `*`：整片給 `text` 的話，紙的留白與
-       圖也都成了 I 型（同 home/lens.css 的作法）。 */
-    @media (hover: hover) and (pointer: fine) {
-      [data-size] [data-part="reader-sheet"] {
-        cursor: zoom-in;
-      }
-
-      [data-size="16"] [data-part="reader-sheet"] {
-        cursor: zoom-out;
-      }
-
-      [data-part="reader-sheet"] :is(p, h3, li, blockquote, cite, figcaption, time, b, q) {
-        cursor: text;
-      }
-    }
-
     /* ── 直排 ────────────────────────────────────────────────────────
        轉的是**整張紙**，不只是內文：報頭與續版列都跟著轉，那才是直排報紙的樣子
        （2026-08-27 改；先前只轉內文，報頭硬留在橫排）。
@@ -553,72 +616,42 @@ figure.Papers {
 
       [data-part="reader-body"] {
         inline-size: var(--reader-span);
+
+        @supports (column-height: 1em) {
+          @supports not (row-rule: 1px solid) {
+            background-image: linear-gradient(
+              to left,
+              transparent calc(44em + 2rem - 0.5px),
+              var(--ui-row-rule) 0 calc(44em + 2rem + 0.5px),
+              transparent 0
+            );
+            background-position: right top;
+            background-size: calc(44em + 4rem) 100%;
+            background-repeat: repeat-x;
+          }
+        }
       }
 
-      /* 直排的大標本來就佔著第一欄的頂端，不跨欄。 */
-      [data-part="reader-body"] > h3 {
-        column-span: none;
+      [data-part="reader-stage"][data-reader-trimmed] [data-part="reader-sheet"] {
+        inset: 0 0 auto auto;
+        transform-origin: top right;
       }
 
-      /* 控件條改到**右緣**，直的一條：直排的行首在右，工具條貼著行首那一側，
-         與橫排時貼著頂上是同一句話。 */
-      [data-part="reader-chrome"] {
-        & {
-          inset-inline: 0;
-          inset-block: 0 auto;
-          flex-direction: column;
-          padding: 0.75rem 0.5rem;
-          border-block-end: 0;
-          border-inline-start: 1px solid var(--ui-rule);
+      /* stage 仍在 dialog 的橫排流中，故物理 margin 不會跟著紙轉向。最右端保留
+         30vw；上方避開同高工具欄後再留 2rem，下方至少 2rem。報紙自己的
+         block-end 在左側，再留 max(10rem, 40vw) 作為讀完後的空白。 */
+      [data-part="reader-stage"] {
+        /* stage 本身仍是橫排盒；直排紙的 block-end 在物理左側。 */
+        &[data-reader-trimmed] {
+          padding: 0 0 0 calc(3rem * var(--reader-scale, 1));
         }
 
-        [data-reader="close"] {
-          margin-inline-start: 0;
-          margin-block-start: auto;
-        }
-
-      }
-
-      /* 直排的紙用**物理**邊距：它自己是 `vertical-rl`，邏輯邊距會轉九十度。
-         右邊留得多一些——工具條在那一側。 */
-      [data-part="reader-sheet"] {
-        margin: 20vh 26vw 20vh 12vw;
-      }
-    }
-
-    /* The newspaper mark opens the full dispatch. Its link remains a real hash
-       target, so the article is still reachable when dialog enhancement is absent. */
-    .Abstract {
-      & {
-        position: relative;
-      }
-
-      &::after {
-        content: '';
-        display: inline-block;
-        inline-size: 1.75rem;
-        block-size: 1px;
-      }
-    }
-
-    a.Jump {
-      & {
-        position: absolute;
-        inset-inline-end: 0;
-        inset-block-end: 0.2em;
-        display: inline-grid;
-        place-items: center;
-        border-radius: 0.25rem;
-      }
-
-      &:hover {
-        opacity: 0.72;
-      }
-
-      img {
-        display: block;
-        inline-size: 1em;
-        block-size: auto;
+        margin:
+          calc(var(--h-header) + 2rem)
+          30vw
+          2rem
+          max(10rem, 40vw)
+        ;
       }
     }
 

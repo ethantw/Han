@@ -182,3 +182,12 @@ test('narrow strip: the forme keeps a 768px measure and the pills go to horizont
   expect(geo.ctlTop).toBeGreaterThanOrEqual(geo.svgTop - 1)
   expect(geo.ctlBottom).toBeLessThanOrEqual(geo.svgBottom + 1)
 })
+
+test('the forme pills stay hidden through the 640px breakpoint', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 900 })
+  await page.goto('/')
+  await expect(page.locator('.LeadForme .Controls')).toBeHidden()
+
+  await page.setViewportSize({ width: 641, height: 900 })
+  await expect(page.locator('.LeadForme .Controls')).toBeVisible()
+})
