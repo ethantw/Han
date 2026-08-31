@@ -695,9 +695,10 @@ main {
 #station-readings[data-writing='vertical'] .NumberStory,
 #station-readings[data-writing='vertical'] .ElementAtlas { direction: ltr; }
 
-#station-readings[data-writing='vertical'] .NumberStory {
-  flex-basis: max-content;
-  min-inline-size: max-content;
+#station-readings[data-writing='vertical'] .NumberStory,
+#station-readings[data-writing='vertical'] .ElementAtlas {
+  flex: 0 0 min(44rem, calc(100cqi - 2 * var(--station-pad)));
+  min-inline-size: min(44rem, calc(100cqi - 2 * var(--station-pad)));
 }
 
 #station-readings[data-writing='vertical'] .Dispatch {
@@ -748,11 +749,13 @@ main {
 }
 
 #station-readings[data-writing='vertical'] .ElementCell {
+  direction: ltr;
   grid-column: var(--vertical-column);
   grid-row: var(--vertical-grid-row);
 }
 
 #station-readings[data-writing='vertical'] .PeriodLabel {
+  direction: ltr;
   display: block;
   grid-column: var(--vertical-column);
   grid-row: 1;
@@ -771,6 +774,7 @@ main {
 #station-readings[data-writing='vertical'] .LanthanideLabel { display: none; }
 
 #station-readings[data-writing='vertical'] .MaterialCallout {
+  direction: ltr;
   grid-column: 7;
   grid-row: 1 / -1;
   align-self: stretch;
@@ -792,6 +796,15 @@ main {
 }
 
 #station-readings[data-writing='vertical'] .MaterialCallout span { display: inline; }
+
+#station-readings[data-writing='vertical'] .ElementAtlas .MaterialField {
+  margin-inline: auto;
+}
+
+#station-readings[data-writing='vertical'] .NumberStory .Dispatch {
+  margin-right: auto;
+  margin-left: auto;
+}
 
 #station-readings[data-writing='vertical'] .ElementTile {
   inline-size: 100%;
@@ -897,6 +910,20 @@ button[data-speaking] > [data-icon] {
   .Dispatch { min-block-size: 0; }
   .DispatchCopy { font-size: 1.05rem; }
   .ElementMeta { align-items: start; }
+  #station-readings[data-writing='vertical'] .MaterialGrid {
+    grid-template-columns: repeat(6, 2.9rem) 2.25rem;
+    grid-template-rows: 3rem repeat(7, 3rem);
+    gap: .16rem .2rem;
+    padding: .3rem .35rem .4rem;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 3.1rem,
+        var(--ui-grid) 3.1rem calc(3.1rem + 1px)
+      );
+  }
+  #station-readings[data-writing='vertical'] .AtomicRuby { font-size: 1.15rem; }
+  #station-readings[data-writing='vertical'] .ElementCell:not([data-featured]) .AtomicRuby { font-size: 1rem; }
   .ModeSummary {
     flex-basis: 100%;
     margin-inline-start: 0;
