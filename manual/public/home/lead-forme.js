@@ -63,6 +63,9 @@ export const FORME_LANGS = {
   ko: { cols: COLS_KO, punct: 'klr', tag: 'ko-Kore' },
 };
 
+const normalizePunct = (value) => typeof value === 'string' ? value.toLowerCase() : null;
+const consolePunctValue = (value) => value === 'off' ? value : value?.toUpperCase();
+
 const GEO = { S: 90, H: 140, r: 11, sw: 2, leadEm: 0.7, emCentre: 0.38 };
 
 const faces3 = (O, sx, sy, bodyH = GEO.H) => {
@@ -370,6 +373,7 @@ const GEOMETRY = [
 export const initLeadForme = ($root = document, config = {}) => {
   const $forme = $root.querySelector('.LeadForme');
   if (!$forme) return;
+  const $console = document.querySelector('han-console');
 
   const slice = config.slice ? { ...SLICE, ...config.slice } : SLICE;
   const data = () => ({
@@ -378,9 +382,12 @@ export const initLeadForme = ($root = document, config = {}) => {
   });
 
   const check = (name, value) => {
-    const $r = value && $forme.querySelector(`input[name="${name}"][value="${value}"]`);
-    if ($r) $r.checked = true;
+    $forme.querySelectorAll(`input[name="${name}"]`).forEach(($radio) => {
+      $radio.checked = $radio.value === value;
+    });
   };
+  const punctFor = (lang, punct = $console?.config?.punct) =>
+    normalizePunct(punct?.[lang]) ?? FORME_LANGS[lang]?.punct;
   check('lf-punct', $forme.dataset.punct);
   check('lf-lang', $forme.dataset.lang);
   const $svg = $forme.querySelector('svg');
@@ -435,6 +442,39 @@ export const initLeadForme = ($root = document, config = {}) => {
 
   const picked = (name) => $forme.querySelector(`input[name="${name}"]:checked`)?.value;
 
+  /* The console owns punctuation.  This form is only a second remote for the
+     currently selected language; data-punct remains the geometry input for
+     buildForme(), while the actual DTJ family comes from han.css's
+     --han-font-punctuation-* token on each SVG text node. */
+  const applyPunct = (punct) => {
+    punct = normalizePunct(punct);
+    if (!punct) return;
+    check('lf-punct', punct);
+    if (punct === $forme.dataset.punct) return;
+    const moved = reset(
+      built.cells,
+      buildForme(punct, $forme.dataset.orient || 'v', spin, data()).cells,
+    );
+    reslot(
+      (half) => moved[half].map((i) => $slugs()[i]),
+      () => {
+        $forme.dataset.settled = '';
+        $forme.dataset.punct = punct;
+        render();
+      },
+    );
+  };
+  const pushPunct = (punct) => {
+    const lang = $forme.dataset.lang;
+    const $control = $console?.shadowRoot
+      ?.querySelector(`[data-cfg-key="punct.${lang}"]`);
+    const value = consolePunctValue(punct);
+    if (!$control || !value || $control.value === value) return;
+    $control.value = value;
+    $control.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  const pullPunct = (punct) => applyPunct(punctFor($forme.dataset.lang, punct));
+
   $forme.querySelectorAll('input[name="lf-face"]').forEach((el) =>
     el.addEventListener('change', () => reslot(
       () => [...$svg.querySelectorAll('.has-glyph')],
@@ -442,18 +482,9 @@ export const initLeadForme = ($root = document, config = {}) => {
     )));
   $forme.querySelectorAll('input[name="lf-punct"]').forEach((el) =>
     el.addEventListener('change', () => {
-      const moved = reset(
-        built.cells,
-        buildForme(picked('lf-punct'), $forme.dataset.orient || 'v', spin, data()).cells,
-      );
-      reslot(
-        (half) => moved[half].map((i) => $slugs()[i]),
-        () => {
-          $forme.dataset.settled = '';
-          $forme.dataset.punct = picked('lf-punct');
-          render();
-        },
-      );
+      const punct = picked('lf-punct');
+      applyPunct(punct);
+      pushPunct(punct);
     }));
 
 
@@ -485,7 +516,7 @@ export const initLeadForme = ($root = document, config = {}) => {
     el.addEventListener('change', () => recompose(() => {
       const lang = picked('lf-lang');
       $forme.dataset.lang = lang;
-      const punct = FORME_LANGS[lang]?.punct;
+      const punct = punctFor(lang);
       if (punct) {
         $forme.dataset.punct = punct;
         check('lf-punct', punct);
@@ -495,4 +526,8 @@ export const initLeadForme = ($root = document, config = {}) => {
         check('lf-face', 'm');
       }
     })));
+
+  document.addEventListener('han-config-change', (event) =>
+    pullPunct(event.detail?.config?.punct));
+  pullPunct($console?.config?.punct);
 };

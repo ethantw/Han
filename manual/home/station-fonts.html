@@ -136,6 +136,28 @@
     ja: '——版本と活字が培った骨格、筆意、節度を受け継ぎ、Google Fontsと同系統のWoff2分割技術とCDNのミリ秒配信によって、システム書体を大きく凌ぐ漢字品質をあらゆる画面へ届ける。',
     ko: '——刊本과 活字의 骨格、筆意、節度를 이어받고、Google Fonts와 같은 Woff2 切片 技術 및 CDN의 밀리초 傳送으로 시스템 글꼴을 훨씬 뛰어넘는 漢字 品質을 모든 畵面에 전한다。',
   },
+  /* 破折號柱是特效文案，與下方四語報紙樣張的原文分開維護。
+     中段保留量測錨點的 markup；日韓語序中 NoteEnd 在 Release 之前。 */
+  stDashLang: {
+    hant: 'zh-Hant', ja: 'ja', ko: 'ko-Kore',
+  },
+  stDashLead: {
+    hant: '他沉默了四點七秒',
+    ja: '彼は四点七秒沈黙した',
+    ko: '그는 四點七秒 동안 沈默했다',
+  },
+  stDashMiddle: {
+    hant: '這個時間足夠三體人<span class="Release">交換</span>一部《三體通史十萬<span class="NoteEnd">年》</span>體量的知識',
+    ja: 'この時間で三体人が『三体通史十万<span class="NoteEnd">年』</span>の知識<span class="Release">交換</span>に足りる',
+    ko: '이 時間이면 三體人이 『三體通史十萬<span class="NoteEnd">年』</span>의 知識<span class="Release">交換</span>에 充分하다',
+  },
+  /* 韓文混排的垂直字幅不是單純一字一格；下列 em 值來自實際字幅。 */
+  stDashPunctCell: {
+    hant: '32', ja: '30', ko: '33.554',
+  },
+  stDashCells: {
+    hant: '39', ja: '41', ko: '46.072',
+  },
   stTwoEmDashesP: {
     hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，皆起自Unicode共用碼位的歷史問題，透過漢.css提供的Diantenjeom標點字體與CSS複合字體技術，精準為讀者拂偏歸正。',
     hans: '中间断开的破折号、落在基线上的删节号、尺寸太小的间隔号，皆起自Unicode共用码位的历史问题，通过汉.css提供的Diantenjeom标点字体与CSS复合字体技术，精准为读者拂偏归正。',
@@ -224,6 +246,7 @@
         <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
         <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
         <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
+        <label><input type="radio" name="lf-punct" value="off" /><abbr class="acronym">off</abbr></label>
       </fieldset>
       <fieldset aria-labelledby="lf-lg-lang">
         <span class="PillHead" id="lf-lg-lang">{{ ltLangLegend }}</span>
@@ -275,7 +298,7 @@
        不能省掉這個屬性——reveal.js 的目標選擇器是
        `.Manifesto, [data-station], [data-reveal-at]`，拿掉它本欄就不再是
        reveal 目標，data-revealed 永遠不會蓋，柱的首播也就跟著卡死。 -->
-  <div class="TwoEmDashes" data-reveal-at="0.15">
+  <div class="TwoEmDashes" data-reveal-at="0.15" style="--df-copy-cells: {{ stDashCells }}; --df-punct-cell: {{ stDashPunctCell }}">
     <!-- 底圖那一柱：一句直排的話，中間一個破折號。
 
          **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15 改）。原本整柱都在
@@ -292,7 +315,7 @@
 
          這句話因此成了 han.css 排的正文：背景那句裡的破折號與逗號由自家模組經手，
          比畫出來更有說服力。 -->
-    <p class="Column" aria-hidden="true">他沉默了四點七秒<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>這個時間足夠三體人<span class="Release">交換</span>一部《三體通史十萬<span class="NoteEnd">年》</span>體量的知識<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
+    <p class="Column" lang="{{ stDashLang }}" aria-hidden="true">{{ stDashLead }}<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a1)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b1)" /></svg></span>{{ stDashMiddle }}<span class="Cell"><svg viewBox="0 0 100 200" aria-hidden="true" focusable="false"><defs><linearGradient id="df-ribbon-a2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="0" /><stop offset=".5" data-stop="1" /><stop offset="1" data-stop="2" /></linearGradient><linearGradient id="df-ribbon-b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" data-stop="2" /><stop offset=".5" data-stop="3" /><stop offset="1" data-stop="4" /></linearGradient></defs><rect data-seg="a" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-a2)" /><rect data-seg="b" x="0" y="0" width="1" height="1" fill="url(#df-ribbon-b2)" /></svg></span></p>
     <!-- 兩段文案包一層：它們要**整塊**與第一顆破折號垂直居中，而「整塊」得先
          是一個盒（dash-fuse.css § .TwoEmDashes 的格線：破折號那一列 ＋
          `align-self: center`，高度交給引擎算）。 -->

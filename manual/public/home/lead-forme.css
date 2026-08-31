@@ -14,11 +14,6 @@
     --forme-spec: var(--ui-supplement-text);
     --forme-spec-dim: var(--ui-supplement-text-2q);
 
-
-    --dtj-serif: 'Diantenjeom Serif JIS';
-    --dtj-sans: 'Diantenjeom Sans JIS';
-
-
     --lf-drop-dur: 0.72s;
 
 
@@ -81,41 +76,29 @@
     }
   }
 }
-:where(.LeadForme[data-punct='moe']) {
-  --dtj-serif: 'Diantenjeom Serif MOE';
-  --dtj-sans: 'Diantenjeom Sans MOE';
-}
-:where(.LeadForme[data-punct='gb']) {
-  --dtj-serif: 'Diantenjeom Serif GB';
-  --dtj-sans: 'Diantenjeom Sans GB';
-}
-
-:where(.LeadForme[data-punct='klr']) {
-  --dtj-serif: 'Diantenjeom Serif KLR';
-  --dtj-sans: 'Diantenjeom Sans KLR';
-}
-
-
 :where(.LeadForme[data-lang='ko']) .Controls label:has(input[name='lf-face'][value='k']) {
   display: none;
 }
 
 
+/* 鉛字盤是尚古／霞鶩的展示，字面不隨頁面文種改用系統字體。
+   標點是另一條軸：`--han-font-punctuation-*` 來自 console 對當前
+   `data-lang` 文種的 Diantenjeom 配置，lead-forme.js 同步排列幾何。 */
 :where(.LeadForme[data-face='m']) text.g {
   font-family:
-    var(--dtj-serif),
+    var(--han-font-punctuation-serif),
     'Shanggu Serif',
     serif;
 }
 :where(.LeadForme[data-face='h']) text.g {
   font-family:
-    var(--dtj-sans),
+    var(--han-font-punctuation-sans),
     'Shanggu Sans',
     sans-serif;
 }
 :where(.LeadForme[data-face='k']) text.g {
   font-family:
-    var(--dtj-serif),
+    var(--han-font-punctuation-cursive),
     'LXGW WenKai TC',
     cursive,
     serif;

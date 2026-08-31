@@ -190,34 +190,64 @@
    `#station-fonts` 用 `:has()` 反選（:has() · Baseline 2023，同 .PunctLang
    每格那顆標點 <select> 的作法）。純 CSS，沒有 JS。
 
-   字體宣告落在 `p` 上而不是圖說根上，理由同 lead-forme.css § .PunctLang 那
+   字體宣告落在 `p` 上而不是圖說根上，理由同下方 .PunctLang 那
    條註解：font-family 繼承的是**已解析的字串**，不在樣張本身重讀一次變數，
    標點字體的切換（han.css 依地域公約設的 --han-font-punctuation-*）就到不了
-   樣張。三顆都是通用類，落到哪個家族由 console 的字體設定決定。
-
-   楷體不必另配標點：han.css 的 `--han-font-punctuation-cursive` 本來就指向
-   Diantenjeom **Serif**（han.fonts.css），所以 `--han-cursive` 這一支拿到的
-   就是 DTJ serif 標點＋楷體漢字，正是要的搭配。
-
-   明體那顆不必寫規則：`:where(.PunctLang) p` 的基態就是 `var(--han-serif)`
-   （lead-forme.css），所以它是預設值，也是取消其餘兩條時的落點。 */
+   樣張。字面則是這一站的展品，因此直接點名尚古／霞鶩／Klee，
+   不跟簡日韓的系統字體模式走；只有標點層繼續以 console 為單一來源。 */
 #station-fonts:has(input[name="pl-face"][value="sans"]:checked) .PunctLang p {
-  font-family: var(--han-sans);
+  font-family:
+    var(--han-font-punctuation-sans),
+    var(--han-font-latin-sans),
+    'Han Home Sans',
+    'Shanggu Sans', 'Shanggu Sans Yue',
+    'Han Home Kai',
+    'LXGW WenKai TC',
+    sans-serif
+  ;
 }
 #station-fonts:has(input[name="pl-face"][value="cursive"]:checked) .PunctLang p {
-  & {
-    font-family: var(--han-cursive);
-
-    /* 韓文那格例外，楷體時仍走明體（owner 定案）。不是覆蓋率的問題——實測
-       '한' 在 "LXGW WenKai TC" 下的字寬與 serif 不同（259.5 vs 299.7／100px），
-       它自己畫得出諺文——是美學取捨：楷體是漢字書寫傳統的字體，諺文沒有對應的
-       傳承楷，混排出來的諺文不是同一套骨架。標點仍是 DTJ Serif（`--han-serif`
-       與 `--han-cursive` 兩支的標點層本來就都指向 Diantenjeom Serif），所以這
-       一格換的只有漢字與諺文的字面，標點的公約不動。 */
-  }
-  &:where(li[lang|="ko"] p) {
-    font-family: var(--han-serif);
-  }
+  font-family:
+    var(--han-font-punctuation-cursive),
+    var(--han-font-latin-cursive),
+    'Han Home Kai',
+    'LXGW WenKai TC',
+    cursive,
+    serif
+  ;
+}
+#station-fonts:has(input[name="pl-face"][value="cursive"]:checked)
+  .PunctLang p:lang(zh-Hans) {
+  font-family:
+    var(--han-font-punctuation-cursive),
+    var(--han-font-latin-cursive),
+    'LXGW WenKai',
+    cursive,
+    serif
+  ;
+}
+#station-fonts:has(input[name="pl-face"][value="cursive"]:checked)
+  .PunctLang p:lang(ja) {
+  font-family:
+    var(--han-font-punctuation-cursive),
+    var(--han-font-latin-cursive),
+    Klee, 'Klee One',
+    cursive,
+    serif
+  ;
+}
+/* 韓文沒有對應的傳承楷，楷體模式仍用尚古明畫漢字，諺文缺字由霞鶩補齊。 */
+#station-fonts:has(input[name="pl-face"][value="cursive"]:checked)
+  .PunctLang p:lang(ko) {
+  font-family:
+    var(--han-font-punctuation-serif),
+    var(--han-font-latin-serif),
+    'Han Home Serif',
+    'Shanggu Serif', 'Shanggu Serif Yue',
+    'Han Home Kai',
+    'LXGW WenKai TC',
+    serif
+  ;
 }
 
 /* 直排只翻樣張。整頁的容器化不受影響——翻的是格子裡的 <p>，不是 main
@@ -357,12 +387,17 @@
     grid-area: 1 / 1;
     margin: 0;
     inline-size: round(100%, 1em);
-    /* MUST declare a han font stack here: font-family inherits as an already-
-       resolved string, so unless the var is re-read AT the sample, the
-       punctuation-font swap (--han-font-punctuation-* set by han.css's
-       convention container-query) never reaches it — the sample would freeze
-       on whatever punctuation font :root resolved. Serif reads the marks big. */
-    font-family: var(--han-serif);
+    /* 明體展品固定用尚古，缺字才交給霞鶩；標點 token 必須在各語 `p`
+       上重讀，才會取到 console 為該文種設的 Diantenjeom。 */
+    font-family:
+      var(--han-font-punctuation-serif),
+      var(--han-font-latin-serif),
+      'Han Home Serif',
+      'Shanggu Serif', 'Shanggu Serif Yue',
+      'Han Home Kai',
+      'LXGW WenKai TC',
+      serif
+    ;
   }
   label {
     justify-self: end;

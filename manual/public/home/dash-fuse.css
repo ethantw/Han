@@ -62,10 +62,22 @@
 
     margin: 0;
     writing-mode: vertical-rl;
+    white-space: nowrap;
 
-    --df-cells: 39;
+    --df-cells: var(--df-copy-cells, 39);
     inline-size: calc(var(--df-cells) * 1em);
-    font-family: var(--han-font-alternative);
+    /* 這柱就是字體展示：不跟簡日韓的系統字體模式走。漢字用
+       尚古明，諺文等尚古缺字由霞鶩文楷補；標點層仍讀取該文種在
+       console 中的 Diantenjeom 配置。 */
+    font-family:
+      var(--han-font-punctuation-serif),
+      var(--han-font-latin-serif),
+      'Han Home Serif',
+      'Shanggu Serif', 'Shanggu Serif Yue',
+      'Han Home Kai',
+      'LXGW WenKai TC',
+      serif
+    ;
 
 
     font-size: var(--df-fs);
@@ -220,8 +232,8 @@
 
     --df-note-start: calc(var(--df-column-top) + 4 * var(--df-fs));
 
-    --df-punct-start: calc(var(--df-column-top) + 32 * var(--df-fs));
-    --df-second-dash-end: calc(var(--df-column-top) + 39 * var(--df-fs));
+    --df-punct-start: calc(var(--df-column-top) + var(--df-punct-cell, 32) * var(--df-fs));
+    --df-second-dash-end: calc(var(--df-column-top) + var(--df-copy-cells, 39) * var(--df-fs));
 
     /* The side console can narrow main below the forme's 768px floor while
        the viewport itself is still wide; the column then belongs to main. */
@@ -392,7 +404,15 @@
       -webkit-background-clip: text, border-box, border-box;
       -webkit-text-fill-color: transparent;
 
-      font-family: var(--han-serif);
+      font-family:
+        var(--han-font-punctuation-serif),
+        var(--han-font-latin-serif),
+        'Han Home Serif',
+        'Shanggu Serif', 'Shanggu Serif Yue',
+        'Han Home Kai',
+        'LXGW WenKai TC',
+        serif
+      ;
       font-size: var(--flow-card);
       line-height: 1;
     }

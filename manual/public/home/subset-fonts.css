@@ -59,15 +59,15 @@
    的字形——所以換過來畫面不變，而那幾種描述就不必再列 500 多條 face。
    `:where()` 保持零特異性，與原規則同級，靠來源順序取勝。 */
 :where([data-han-subset] .LeadForme[data-face='m']) text.g {
-  font-family: var(--dtj-serif), 'Han Home Serif', serif;
+  font-family: var(--han-font-punctuation-serif), 'Han Home Serif', serif;
 }
 
 :where([data-han-subset] .LeadForme[data-face='h']) text.g {
-  font-family: var(--dtj-sans), 'Han Home Sans', sans-serif;
+  font-family: var(--han-font-punctuation-sans), 'Han Home Sans', sans-serif;
 }
 
 :where([data-han-subset] .LeadForme[data-face='k']) text.g {
-  font-family: var(--dtj-serif), 'Han Home Kai', cursive, serif;
+  font-family: var(--han-font-punctuation-cursive), 'Han Home Kai', cursive, serif;
 }
 
 /* 讀者在遊樂場打出子集沒有的字時，`home/playground.js` 蓋上這顆屬性，那一
