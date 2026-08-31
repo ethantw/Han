@@ -46,7 +46,7 @@ const directional = (horizontal, vertical) => ({ directional: { horizontal, vert
 const readingSystems = {
   minnan: {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
-    summary: '方音・臺羅字間注', kicker: '閩南語・雙重ruby', title: '球際採礦軍團喜馬拉雅一六八七師第十艦隻', groupLabel: '讀全篇捷報',
+    summary: '方音・臺羅字間注', kicker: '閩南語・雙重ruby', title: ['球際採礦軍團', '喜馬拉雅一六八七師第十艦隻'], groupLabel: '讀全篇捷報',
     paragraphs: [
       [
         annotated('半世紀前', 'ㄅㄨㆩ˫ ㄙㆤ˪ ㄍㄧˋ ㄗㄧㄥˊ', 'puànn sè-kí tsîng'),
@@ -77,7 +77,7 @@ const readingSystems = {
   },
   mandarin: {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
-    summary: '注音・拼音字間注', kicker: '國語・雙重ruby', title: '球際採礦軍團喜馬拉雅一六八七師第十艦隻', groupLabel: '國語讀全篇',
+    summary: '注音・拼音字間注', kicker: '國語・雙重ruby', title: ['球際採礦軍團', '喜馬拉雅一六八七師第十艦隻'], groupLabel: '國語讀全篇',
     paragraphs: [
       [
         annotated('半世紀前甫出航的', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ ㄑㄧㄢˊ ㄈㄨˇ ㄔㄨ ㄏㄤˊ ˙ㄉㄜ', 'bàn shìjì qián fǔ chūháng de'),
@@ -106,22 +106,22 @@ const readingSystems = {
   },
   japanese: {
     name: '日文', lang: 'ja-JP', listLang: 'ja', nativeLang: 'ja-Kana', romanLang: 'ja-Latn',
-    summary: '假名・Hepburn字間注', kicker: '日文・雙重ruby', title: '惑星間採鉱軍団ヒマラヤ一六八七師団第十艦', groupLabel: '日文讀全篇',
+    summary: '假名・Hepburn字間注', kicker: '日文・雙重ruby', title: ['惑星間採鉱軍団', 'ヒマラヤ一六八七師団第十艦'], groupLabel: '日文讀全篇',
     paragraphs: [
       [
         annotated('半世紀前に', 'はんせいきまえに', 'hanseiki mae ni'),
         annotated('出航したばかりの', 'しゅっこうしたばかりの', 'shukkō shita bakari no'),
         annotated('惑星間採鉱軍団', 'わくせいかんさいこうぐんだん', 'wakuseikan saikō gundan'),
         annotated('ヒマラヤ', 'ひまらや', 'Himaraya'),
-        annotated('一六八七', 'いちろくはちなな', 'ichi-roku-hachi-nana', 'id'),
+        annotated('一六八七', 'イチロクハチシチ', 'ichi-roku-hachi-shichi', 'id'),
         annotated('師団第', 'しだんだい', 'shidan dai'),
-        annotated('十', 'じゅう', 'jū', 'id'),
+        annotated('十', 'ジフ', 'jifu', 'id'),
         annotated('艦', 'かん', 'kan'), bare('から、'),
         annotated('バーナード星系での', 'ばーなーどせいけいでの', 'Bānādo seikei de no'),
         annotated('成功報告が届いた', 'せいこうほうこくがとどいた', 'seikō hōkoku ga todoita'), bare('。'),
         annotated('百年後', 'ひゃくねんご', 'hyakunen go'), bare('、'),
         annotated('地球と太陽系へ', 'ちきゅうとたいようけいへ', 'Chikyū to Taiyōkei e'),
-        annotated('十垓トン', 'じゅうがいとん', 'jū-gai ton', 'cargo'),
+        annotated('十垓トン', 'ジフガイトン', 'jifu-gai ton', 'cargo'),
         annotated('の希少元素を持ち帰る', 'のきしょうげんそをもちかえる', 'no kishō genso o mochikaeru'), bare('。'),
         directional(
           annotated('右のとおり', 'みぎのとおり', 'migi no tōri'),
@@ -142,7 +142,7 @@ const readingSystems = {
   },
   korean: {
     name: '韓文', lang: 'ko-KR', listLang: 'ko', nativeLang: 'ko-Hani', romanLang: 'ko-Latn',
-    summary: '韓字・修訂式字間注', kicker: '韓文・雙重ruby', title: '행성간 채광 군단 히말라야 일육팔칠 사단 제십 함정', groupLabel: '韓文讀全篇',
+    summary: '韓字・修訂式字間注', kicker: '韓文・雙重ruby', title: ['행성간 채광 군단', '히말라야 일육팔칠 사단 제십 함정'], groupLabel: '韓文讀全篇',
     paragraphs: [
       [
         annotated('반세기 전에', '半世紀前', 'bansegi jeone'), bare(' '),
@@ -225,84 +225,84 @@ const fillParagraph = (element, system, parts) => {
   }
 }
 
-const material = (atomic, symbol, hant, hans, common, aboard) => ({ atomic, symbol, hant, hans, common, aboard })
+const material = (atomic, symbol, hant, hans, aboard) => ({ atomic, symbol, hant, hans, aboard })
 
 const missionModules = [
   {
     name: '囚籠・低溫', code: 'TRAP',
     note: '先別讓反質子碰壁',
     items: [
-      material(4, 'Be', '鈹', '铍', '航太構件、X光窗', '以鈹離子協同冷卻正電子'),
-      material(2, 'He', '氦', '氦', '低溫冷媒、檢漏', '冷卻超導磁體'),
-      material(41, 'Nb', '鈮', '铌', '超導磁體、耐熱合金', '製作鈮鈦與鈮錫線圈'),
-      material(22, 'Ti', '鈦', '钛', '輕量耐蝕結構', '與鈮組成低溫超導體'),
-      material(50, 'Sn', '錫', '锡', '焊料、鍍層', '形成高磁場用 Nb₃Sn'),
+      material(4, 'Be', '鈹', '铍', '正電子離子協同冷卻陣列'),
+      material(2, 'He', '氦', '氦', '超流體低溫磁籠'),
+      material(41, 'Nb', '鈮', '铌', '超導磁囚籠主線圈'),
+      material(21, 'Sc', '鈧', '钪', '鋁鈧外骨骼承力桁架'),
+      material(49, 'In', '銦', '铟', '極低溫真空密封與量子接點'),
     ],
   },
   {
     name: '磁喉・導流', code: 'NOZZLE',
     note: '把帶電產物送往船尾',
     items: [
-      material(39, 'Y', '釔', '钇', '陶瓷、雷射、超導體', '高溫超導帶材成分'),
-      material(56, 'Ba', '鋇', '钡', '真空吸氣劑、陶瓷', '高溫超導帶材成分'),
-      material(29, 'Cu', '銅', '铜', '導線、散熱器', '超導帶材與磁體的導體'),
-      material(59, 'Pr', '鐠', '镨', '高強度永久磁鐵', '精密致動與磁場校正'),
-      material(60, 'Nd', '釹', '钕', '高強度永久磁鐵', '精密致動與磁場校正'),
+      material(39, 'Y', '釔', '钇', '高溫超導磁帶晶格'),
+      material(56, 'Ba', '鋇', '钡', '真空吸氣陶瓷與超導相'),
+      material(67, 'Ho', '鈥', '钬', '超高磁矩磁場整形極'),
+      material(59, 'Pr', '鐠', '镨', '永久磁致動器'),
+      material(60, 'Nd', '釹', '钕', '高磁能積姿控轉子'),
     ],
   },
   {
     name: '時計・姿控', code: 'GUIDANCE',
     note: '一百五十年也毋通行差',
     items: [
-      material(66, 'Dy', '鏑', '镝', '耐高溫永久磁鐵', '穩住致動器的磁性'),
-      material(62, 'Sm', '釤', '钐', '釤鈷耐熱磁鐵', '高溫馬達與姿態控制'),
-      material(27, 'Co', '鈷', '钴', '高溫合金、磁鐵', '釤鈷磁體與耐熱機件'),
-      material(37, 'Rb', '銣', '铷', '原子鐘、感測器', '長航程的時間與導航基準'),
-      material(55, 'Cs', '銫', '铯', '原子鐘、光電元件', '校準全船時間基準'),
+      material(66, 'Dy', '鏑', '镝', '耐熱永磁穩場摻質'),
+      material(62, 'Sm', '釤', '钐', '高溫釤鈷姿控磁體'),
+      material(27, 'Co', '鈷', '钴', '釤鈷磁體與熱端超合金'),
+      material(37, 'Rb', '銣', '铷', '長航程原子鐘'),
+      material(55, 'Cs', '銫', '铯', '全艦主時間基準'),
     ],
   },
   {
     name: '熱膽・噴嘴', code: 'THERMAL',
     note: '磁場擋得住粒子，擋袂牢熱',
     items: [
-      material(74, 'W', '鎢', '钨', '高溫工具、輻射屏蔽', '耐高溫核心與熱盾'),
-      material(42, 'Mo', '鉬', '钼', '高溫合金、電極', '承受熱循環的結構'),
-      material(75, 'Re', '錸', '铼', '渦輪葉片高溫合金', '強化高溫噴嘴合金'),
-      material(73, 'Ta', '鉭', '钽', '電容器、耐蝕設備', '耐蝕高溫內襯'),
-      material(72, 'Hf', '鉿', '铪', '控制棒、耐熱陶瓷', '超高溫熱障材料'),
+      material(74, 'W', '鎢', '钨', '湮滅熱盾與噴嘴喉襯'),
+      material(42, 'Mo', '鉬', '钼', '抗熱循環噴嘴骨架'),
+      material(75, 'Re', '錸', '铼', '超高溫噴嘴合金'),
+      material(73, 'Ta', '鉭', '钽', '耐蝕高溫內襯'),
+      material(72, 'Hf', '鉿', '铪', '超高溫陶瓷熱障'),
     ],
   },
   {
     name: '屏蔽・感測', code: 'SENSORS',
     note: '看見看袂著的輻射',
     items: [
-      material(5, 'B', '硼', '硼', '硼矽玻璃、半導體', '以含硼材料吸收中子'),
-      material(64, 'Gd', '釓', '钆', '磁性材料、醫學造影', '中子吸收與輻射偵測'),
-      material(51, 'Sb', '銻', '锑', '阻燃劑、半導體', '紅外與高能粒子感測'),
-      material(70, 'Yb', '鐿', '镱', '光纖雷射、原子鐘', '光學診斷與精密計時'),
-      material(71, 'Lu', '鎦', '镥', '閃爍晶體、催化劑', '高能輻射偵測'),
+      material(5, 'B', '硼', '硼', '中子吸收複合屏蔽'),
+      material(64, 'Gd', '釓', '钆', '中子俘獲輻射陣列'),
+      material(51, 'Sb', '銻', '锑', '紅外與高能粒子感測層'),
+      material(70, 'Yb', '鐿', '镱', '飛秒光纖診斷與光鐘'),
+      material(71, 'Lu', '鎦', '镥', '高能輻射閃爍晶體'),
     ],
   },
   {
     name: '骨架・電極', code: 'HARDWARE',
     note: '引擎以外，猶原愛有一條船',
     items: [
-      material(40, 'Zr', '鋯', '锆', '耐蝕合金、陶瓷', '真空腔與耐熱構件'),
-      material(23, 'V', '釩', '钒', '高強度鋼、儲能', '輕量高強合金'),
-      material(77, 'Ir', '銥', '铱', '耐蝕電極、火星塞', '高溫耐蝕接點'),
-      material(76, 'Os', '鋨', '锇', '耐磨合金、精密接點', '極端環境的耐磨接觸件'),
-      material(78, 'Pt', '鉑', '铂', '催化劑、電極', '輔助電力與化學循環'),
+      material(40, 'Zr', '鋯', '锆', '超高真空耐熱艙壁'),
+      material(23, 'V', '釩', '钒', '輕質高強艦體合金'),
+      material(77, 'Ir', '銥', '铱', '極端高溫耐蝕接點'),
+      material(76, 'Os', '鋨', '锇', '超硬耐磨微機電軸承'),
+      material(44, 'Ru', '釕', '钌', '耐磨電極與催化循環'),
     ],
   },
 ]
 
 const elementReadings = new Map([
-  ['Be', ['ㄆㄧˊ', 'pí']], ['He', ['ㄏㄞˋ', 'hài']], ['Nb', ['ㄋㄧˊ', 'ní']], ['Ti', ['ㄊㄞˋ', 'tài']], ['Sn', ['ㄒㄧˊ', 'xí']],
-  ['Y', ['ㄧˇ', 'yǐ']], ['Ba', ['ㄅㄟˋ', 'bèi']], ['Cu', ['ㄊㄨㄥˊ', 'tóng']], ['Pr', ['ㄆㄨˇ', 'pǔ']], ['Nd', ['ㄋㄩˇ', 'nǚ']],
+  ['Be', ['ㄆㄧˊ', 'pí']], ['He', ['ㄏㄞˋ', 'hài']], ['Nb', ['ㄋㄧˊ', 'ní']], ['Sc', ['ㄎㄤˋ', 'kàng']], ['In', ['ㄧㄣ', 'yīn']],
+  ['Y', ['ㄧˇ', 'yǐ']], ['Ba', ['ㄅㄟˋ', 'bèi']], ['Ho', ['ㄏㄨㄛˇ', 'huǒ']], ['Pr', ['ㄆㄨˇ', 'pǔ']], ['Nd', ['ㄋㄩˇ', 'nǚ']],
   ['Dy', ['ㄉㄧ', 'dī']], ['Sm', ['ㄕㄢ', 'shān']], ['Co', ['ㄍㄨ', 'gū']], ['Rb', ['ㄖㄨˊ', 'rú']], ['Cs', ['ㄙㄜˋ', 'sè']],
   ['W', ['ㄨ', 'wū']], ['Mo', ['ㄇㄨˋ', 'mù']], ['Re', ['ㄌㄞˊ', 'lái']], ['Ta', ['ㄉㄢˋ', 'dàn']], ['Hf', ['ㄏㄚ', 'hā']],
   ['B', ['ㄆㄥˊ', 'péng']], ['Gd', ['ㄍㄚˊ', 'gá']], ['Sb', ['ㄊㄧˋ', 'tì']], ['Yb', ['ㄧˋ', 'yì']], ['Lu', ['ㄌㄧㄡˊ', 'liú']],
-  ['Zr', ['ㄍㄠˋ', 'gào']], ['V', ['ㄈㄢˊ', 'fán']], ['Ir', ['ㄧ', 'yī']], ['Os', ['ㄜˊ', 'é']], ['Pt', ['ㄅㄛˊ', 'bó']],
+  ['Zr', ['ㄍㄠˋ', 'gào']], ['V', ['ㄈㄢˊ', 'fán']], ['Ir', ['ㄧ', 'yī']], ['Os', ['ㄜˊ', 'é']], ['Ru', ['ㄌㄧㄠˇ', 'liǎo']],
 ])
 
 const spokenElementSymbols = new Set(['Mo', 'Sb', 'V', 'Be', 'Rb', 'Cs', 'Zr', 'Hf', 'Re', 'Ir', 'Os', 'Pr', 'Nd', 'Dy', 'Yb', 'Lu'])
@@ -361,7 +361,7 @@ const renderMaterialGrid = () => {
       const tile = document.createElement(speakable ? 'button' : 'span')
       tile.className = 'ElementTile'
       tile.append(createElementRuby(element, reading))
-      tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・常見：${element.common}・本艦：${element.aboard}`
+      tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・艦載：${element.aboard}`
 
       if (speakable) {
         tile.type = 'button'
@@ -369,19 +369,19 @@ const renderMaterialGrid = () => {
         tile.dataset.lang = 'zh-TW'
         tile.dataset.speech = element.hant
         tile.dataset.reading = reading[1]
-        tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；常見用途：${element.common}；本艦候選用途：${element.aboard}`)
+        tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；艦載用途：${element.aboard}`)
         const icon = document.createElement('span')
         icon.dataset.icon = 'volume'
         icon.setAttribute('aria-hidden', 'true')
         tile.append(icon)
       } else {
         tile.tabIndex = 0
-        tile.setAttribute('aria-label', `${element.atomic}號元素${element.hant}；常見用途：${element.common}；本艦候選用途：${element.aboard}`)
+        tile.setAttribute('aria-label', `${element.atomic}號元素${element.hant}；艦載用途：${element.aboard}`)
       }
 
       const hint = document.createElement('small')
       hint.className = 'MaterialHint'
-      hint.innerHTML = `<b>常見</b>${element.common}<br><b>本艦</b>${element.aboard}`
+      hint.innerHTML = `<b>艦載</b>${element.aboard}`
       tile.append(hint)
       item.append(tile)
       list.append(item)
@@ -448,7 +448,7 @@ const renderReadingSystem = (mode) => {
   dispatch.lang = system.listLang
   modeSummary.textContent = system.summary
   readingKicker.textContent = system.kicker
-  storyTitle.textContent = system.title
+  storyTitle.replaceChildren(system.title[0], document.createElement('br'), system.title[1])
   groupLabel.textContent = system.groupLabel
   numbersGroup.dataset.lang = system.lang
   fillParagraph(document.querySelector('[data-dispatch-copy]'), system, system.paragraphs[0])

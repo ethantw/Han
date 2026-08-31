@@ -159,6 +159,10 @@ main {
   line-height: 1.25;
 }
 
+#story-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
 .SpeakAll {
   display: inline-flex;
   flex: 0 0 auto;
