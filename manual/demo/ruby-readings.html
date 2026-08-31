@@ -22,6 +22,22 @@
     </hgroup>
     <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的三十格材料清單。</p>
 
+    <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
+      <fieldset class="ViewTabs">
+        <legend>注文</legend>
+        <label><input type="radio" name="reading-mode" value="minnan" checked> 閩南語</label>
+        <label><input type="radio" name="reading-mode" value="mandarin"> 國語</label>
+        <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
+        <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
+      </fieldset>
+      <fieldset class="ViewTabs LayoutTabs">
+        <legend>排版方向</legend>
+        <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
+        <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
+      </fieldset>
+      <output class="ModeSummary" data-mode-summary aria-live="polite">方音・臺羅字間注</output>
+    </form>
+
     <nav class="RailNav StationRailNav" data-strip-nav="readings" aria-label="移動讀音樣張">
       <span>五聲公報／三十格材料艙</span>
       <span class="RailButtons">
@@ -43,22 +59,6 @@
           </button>
         </header>
 
-        <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
-          <fieldset class="ViewTabs">
-            <legend>注文</legend>
-            <label><input type="radio" name="reading-mode" value="minnan" checked> 閩南語</label>
-            <label><input type="radio" name="reading-mode" value="mandarin"> 國語</label>
-            <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
-            <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
-          </fieldset>
-          <fieldset class="ViewTabs LayoutTabs">
-            <legend>排版方向</legend>
-            <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
-            <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
-          </fieldset>
-          <output class="ModeSummary" data-mode-summary aria-live="polite">方音為主・臺羅並列</output>
-        </form>
-
         <div class="Dispatch Numbers" lang="nan-Hant-TW" aria-label="以五個入聲數字寫成的球際採礦捷報">
           <p class="DispatchStamp">BARNARD STAR・INCOMING 01687</p>
           <p class="DispatchCopy" data-dispatch-copy></p>
@@ -67,8 +67,8 @@
         </div>
 
         <footer class="StoryFoot">
-          <span><i data-tone="yin" aria-hidden="true"></i>陰入：七<code>tshit</code>、八<code>peh</code></span>
-          <span><i data-tone="yang" aria-hidden="true"></i>陽入：一<code>tsi̍t</code>、六<code>la̍k</code>、十<code>tsa̍p</code></span>
+          <span><i data-tone="yin" aria-hidden="true"></i>陰入：一<code>it</code>、八<code>peh</code>、七<code>tshit</code></span>
+          <span><i data-tone="yang" aria-hidden="true"></i>陽入：六<code>lio̍k</code>、十<code>tsa̍p</code></span>
         </footer>
       </article>
 

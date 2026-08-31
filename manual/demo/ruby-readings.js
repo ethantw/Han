@@ -41,6 +41,7 @@ const status = document.querySelector('[data-speech-status]')
 
 const annotated = (base, native, roman, emphasis) => ({ base, native, roman, emphasis })
 const bare = (text) => ({ text })
+const directional = (horizontal, vertical) => ({ directional: { horizontal, vertical } })
 
 const readingSystems = {
   minnan: {
@@ -52,14 +53,17 @@ const readingSystems = {
         annotated('拄仔出航的', 'ㄉㄨˋ ㄚˋ ㄘㄨㆵ ㄏㄤˊ ㆤˊ', 'tú-á tshut-hâng ê'),
         annotated('球際採礦隊', 'ㄍㄧㄨˊ ㄗㆤ˪ ㄘㄞˋ ㄎㆲ˪ ㄉㄨㄧ˫', 'kiû-tsè tshái-khòng-tuī'), bare('「'),
         annotated('喜馬拉雅', 'ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ', 'Hí-má-la̍h-ngá'),
-        annotated('一六八七號', 'ㄐㄧㆵ̇ ㄌㄚㆶ̇ ㄅㆤㆷ ㄑㄧㆵ ㄏㄜ˫', 'tsi̍t-la̍k-peh-tshit hō', 'id'),
+        annotated('一六八七號', 'ㄧㆵ ㄌㄧㆦㆶ̇ ㄅㆤㆷ ㄑㄧㆵ ㄏㄜ˫', 'it-lio̍k-peh-tshit hō', 'id'),
         annotated('小分隊', 'ㄒㄧㄜˋ ㄏㄨㄣ ㄉㄨㄧ˫', 'sió-hun-tuī'), bare('」，'),
         annotated('佇巴納德星系傳來捷報', 'ㄉㄧ˫ ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㆶ̇ ㄑㆥ ㄏㆤ˫ ㄊㄨㄢˊ ㄌㄞˊ ㄗㄧㄚㆵ̇ ㄅㄜ˪', 'tī Pa-na̍p-tik tshenn-hē thuân-lâi tsia̍t-pò'), bare('；'),
         annotated('閣過百冬', 'ㄍㆦㆷ ㄍㄨㆤ˪ ㄅㄚㆷ ㄉㄤ', 'koh kuè pah tang'), bare('，'),
         annotated('欲替地球佮太陽系載轉來', 'ㄅㆤㆷ ㄊㆤ˪ ㄉㆤ˫ ㄍㄧㄨˊ ㄍㄚㆷ ㄊㄞ˪ ㄧㆲˊ ㄏㆤ˫ ㄗㄞ˪ ㄉㄫˋ ㄌㄞˊ', 'beh thè tē-kiû kah thài-iông-hē tsài tńg-lâi'),
         annotated('十垓噸', 'ㄗㄚㆴ̇ ㄍㄞ ㄉㆲ˪', 'tsa̍p kai tòng', 'cargo'),
         annotated('的稀有元素', 'ㆤˊ ㄏㄧ ㄧㄨ˫ ㄍㄨㄢˊ ㄙㆦ˪', 'ê hi-iú guân-sòo'), bare('，'),
-        annotated('如下', 'ㆡㄨˊ ㄏㄚ˫', 'jû-hā'), bare('：'),
+        directional(
+          annotated('如右', 'ㆡㄨˊ ㄧㄨ˫', 'jû-iū'),
+          annotated('如左', 'ㆡㄨˊ ㄗㄜˋ', 'jû-tsó'),
+        ), bare('：'),
       ],
       [
         annotated('這批材料會予地球佮太陽系有機會', 'ㄐㄧㆵ ㄆㄨㆤ ㄗㄞˊ ㄌㄧㄠ˫ ㆤ˫ ㄏㆦ˫ ㄉㆤ˫ ㄍㄧㄨˊ ㄍㄚㆷ ㄊㄞ˪ ㄧㆲˊ ㄏㆤ˫ ㄨ˫ ㄍㄧ ㄏㄨㆤ˫', 'tsit phue tsâi-liāu ē hōo tē-kiû kah thài-iông-hē ū ki-huē'),
@@ -74,7 +78,7 @@ const readingSystems = {
     summary: '注音・拼音字間注', kicker: '國語・雙重ruby', title: '喜馬拉雅一六八七號', groupLabel: '國語讀全篇',
     paragraphs: [
       [
-        annotated('半世紀前出航的星際採礦隊', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ ㄑㄧㄢˊ ㄔㄨ ㄏㄤˊ ˙ㄉㄜ ㄒㄧㄥ ㄐㄧˋ ㄘㄞˇ ㄎㄨㄤˋ ㄉㄨㄟˋ', 'bàn shìjì qián chūháng de xīngjì cǎikuàngduì'), bare('「'),
+        annotated('半世紀前甫出航的星際採礦隊', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ ㄑㄧㄢˊ ㄈㄨˇ ㄔㄨ ㄏㄤˊ ˙ㄉㄜ ㄒㄧㄥ ㄐㄧˋ ㄘㄞˇ ㄎㄨㄤˋ ㄉㄨㄟˋ', 'bàn shìjì qián fǔ chūháng de xīngjì cǎikuàngduì'), bare('「'),
         annotated('喜馬拉雅', 'ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ', 'Xǐmǎlāyǎ'),
         annotated('一六八七號', 'ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ ㄏㄠˋ', 'yī-liù-bā-qī hào', 'id'),
         annotated('小分隊', 'ㄒㄧㄠˇ ㄈㄣ ㄉㄨㄟˋ', 'xiǎofēnduì'), bare('」，'),
@@ -83,7 +87,10 @@ const readingSystems = {
         annotated('他們將為地球與太陽系帶回', 'ㄊㄚ ㄇㄣ˙ ㄐㄧㄤ ㄨㄟˋ ㄉㄧˋ ㄑㄧㄡˊ ㄩˇ ㄊㄞˋ ㄧㄤˊ ㄒㄧˋ ㄉㄞˋ ㄏㄨㄟˊ', 'tāmen jiāng wèi Dìqiú yǔ Tàiyángxì dàihuí'),
         annotated('十垓噸', 'ㄕˊ ㄍㄞ ㄉㄨㄣˋ', 'shí gāi dūn', 'cargo'),
         annotated('稀有元素', 'ㄒㄧ ㄧㄡˇ ㄩㄢˊ ㄙㄨˋ', 'xīyǒu yuánsù'), bare('，'),
-        annotated('如下', 'ㄖㄨˊ ㄒㄧㄚˋ', 'rúxià'), bare('：'),
+        directional(
+          annotated('如右', 'ㄖㄨˊ ㄧㄡˋ', 'rú yòu'),
+          annotated('如左', 'ㄖㄨˊ ㄗㄨㄛˇ', 'rú zuǒ'),
+        ), bare('：'),
       ],
       [
         annotated('這批材料將讓電磁阱超導磁噴嘴熱盾與探測器', 'ㄓㄜˋ ㄆㄧ ㄘㄞˊ ㄌㄧㄠˋ ㄐㄧㄤ ㄖㄤˋ ㄉㄧㄢˋ ㄘˊ ㄐㄧㄥˇ ㄔㄠ ㄉㄠˇ ㄘˊ ㄆㄣ ㄗㄨㄟˇ ㄖㄜˋ ㄉㄨㄣˋ ㄩˇ ㄊㄢˋ ㄘㄜˋ ㄑㄧˋ', 'zhè pī cáiliào jiāng ràng diàncíjǐng chāodǎo cípēnzuǐ rèdùn yǔ tàncèqì'),
@@ -97,19 +104,31 @@ const readingSystems = {
     summary: '假名・Hepburn字間注', kicker: '日文・雙重ruby', title: 'ヒマラヤ一六八七号', groupLabel: '日文讀全篇',
     paragraphs: [
       [
-        annotated('半世紀前に出航した恒星間採鉱隊', 'はんせいきまえにしゅっこうしたこうせいかんさいこうたい', 'hanseiki mae ni shukkō shita kōseikan saikōtai'), bare('「'),
+        annotated('半世紀前に', 'はんせいきまえに', 'hanseiki mae ni'),
+        annotated('出航したばかりの', 'しゅっこうしたばかりの', 'shukkō shita bakari no'),
+        annotated('恒星間採鉱隊', 'こうせいかんさいこうたい', 'kōseikan saikōtai'), bare('「'),
         annotated('ヒマラヤ', 'ひまらや', 'Himaraya'),
         annotated('一六八七号', 'いちろくはちななごう', 'ichi-roku-hachi-nana-gō', 'id'),
         annotated('小隊', 'しょうたい', 'shōtai'), bare('」から、'),
-        annotated('バーナード星系での成功報告が届いた', 'ばーなーどせいけいでのせいこうほうこくがとどいた', 'Bānādo seikei de no seikō hōkoku ga todoita'), bare('。'),
+        annotated('バーナード星系での', 'ばーなーどせいけいでの', 'Bānādo seikei de no'),
+        annotated('成功報告が届いた', 'せいこうほうこくがとどいた', 'seikō hōkoku ga todoita'), bare('。'),
         annotated('百年後', 'ひゃくねんご', 'hyakunen go'), bare('、'),
         annotated('地球と太陽系へ', 'ちきゅうとたいようけいへ', 'Chikyū to Taiyōkei e'),
         annotated('十垓トン', 'じゅうがいとん', 'jū-gai ton', 'cargo'),
         annotated('の希少元素を持ち帰る', 'のきしょうげんそをもちかえる', 'no kishō genso o mochikaeru'), bare('。'),
+        directional(
+          annotated('右のとおり', 'みぎのとおり', 'migi no tōri'),
+          annotated('左のとおり', 'ひだりのとおり', 'hidari no tōri'),
+        ), bare('：'),
       ],
       [
-        annotated('これらの材料は電磁トラップ超伝導磁気ノズル熱遮蔽と検出器を', 'これらのざいりょうはでんじとらっぷちょうでんどうじきのずるねつしゃへいとけんしゅつきを', 'Korera no zairyō wa denji torappu chōdendō jiki nozuru netsu shahei to kenshutsuki o'),
-        annotated('設計図から深宇宙の造船所へ運ぶ', 'せっけいずからしんうちゅうのぞうせんじょへはこぶ', 'sekkeizu kara shin-uchū no zōsenjo e hakobu'), bare('。'),
+        annotated('これらの材料は', 'これらのざいりょうは', 'Korera no zairyō wa'),
+        annotated('電磁トラップ', 'でんじとらっぷ', 'denji torappu'),
+        annotated('超伝導磁気ノズル', 'ちょうでんどうじきのずる', 'chōdendō jiki nozuru'),
+        annotated('熱遮蔽と検出器を', 'ねつしゃへいとけんしゅつきを', 'netsu shahei to kenshutsuki o'),
+        annotated('設計図から', 'せっけいずから', 'sekkeizu kara'),
+        annotated('深宇宙の造船所へ', 'しんうちゅうのぞうせんじょへ', 'shin-uchū no zōsenjo e'),
+        annotated('運ぶ', 'はこぶ', 'hakobu'), bare('。'),
       ],
     ],
     note: '十垓トンは地球質量のおよそ六分の一。星間広報の会計部は、この数字への署名を拒否した。',
@@ -119,19 +138,31 @@ const readingSystems = {
     summary: '韓字・修訂式字間注', kicker: '韓文・雙重ruby', title: '히말라야 일육팔칠호', groupLabel: '韓文讀全篇',
     paragraphs: [
       [
-        annotated('반세기 전에 출항한 성간 채광대', '半世紀前 出航 星間 採鑛隊', 'bansegi jeone chulhanghan seonggan chaegwangdae'), bare(' ‘'),
+        annotated('반세기 전에', '半世紀前', 'bansegi jeone'), bare(' '),
+        annotated('막 출항한 성간 채광대', '甫 出航 星間 採鑛隊', 'mak chulhanghan seonggan chaegwangdae'), bare(' ‘'),
         annotated('히말라야', '喜馬拉雅', 'Himallaya'), bare(' '),
         annotated('일육팔칠호', '一六八七號', 'il-yuk-pal-chil-ho', 'id'), bare(' '),
         annotated('소분대', '小分隊', 'sobundae'), bare('’가 '),
-        annotated('바너드 항성계에서 승전보를 보내왔다', 'Barnard 恒星系 勝戰報', 'Baneodeu hangseonggyeeseo seungjeonboreul bonaewatda'), bare('. '),
+        annotated('바너드 항성계에서', 'Barnard 恒星系', 'Baneodeu hangseonggyeeseo'), bare(' '),
+        annotated('승전보를 보내왔다', '勝戰報', 'seungjeonboreul bonaewatda'), bare('. '),
         annotated('백 년 뒤', '百年後', 'baeng nyeon dwi'), bare(', '),
         annotated('지구와 태양계로', '地球 太陽系', 'jiguwa taeyanggye-ro'), bare(' '),
         annotated('십 해 톤', '十垓', 'sip hae ton', 'cargo'),
-        annotated('의 희귀 원소를 가져올 예정이다', '稀貴元素', 'ui higwi wonsoreul gajyeool yejeongida'), bare('.'),
+        annotated('의 희귀 원소를', '稀貴元素', 'ui higwi wonsoreul'), bare(' '),
+        annotated('가져올 예정이다', '持歸 豫定', 'gajyeool yejeongida'), bare('. '),
+        directional(
+          annotated('오른쪽과 같다', '右側同', 'oreunjjokgwa gatda'),
+          annotated('왼쪽과 같다', '左側同', 'oenjjokgwa gatda'),
+        ), bare(': '),
       ],
       [
-        annotated('이 재료들은 전자기 트랩 초전도 자기 노즐 열 차폐와 검출기를', '電磁阱 超傳導 磁氣噴口 熱遮蔽 檢出器', 'i jaeryodeureun jeonjagi teuraep chojeondo jagi nojeul yeol chapyewa geomchulgireul'), bare(' '),
-        annotated('설계도에서 심우주 조선소로 옮길 것이다', '設計圖 深宇宙 造船所', 'seolgyedoeseo simuju joseonsoro omgigil geosida'), bare('.'),
+        annotated('이 재료들은', '材料', 'i jaeryodeureun'), bare(' '),
+        annotated('전자기 트랩', '電磁阱', 'jeonjagi teuraep'), bare(' '),
+        annotated('초전도 자기 노즐', '超傳導 磁氣噴口', 'chojeondo jagi nojeul'), bare(' '),
+        annotated('열 차폐와 검출기를', '熱遮蔽 檢出器', 'yeol chapyewa geomchulgireul'), bare(' '),
+        annotated('설계도에서', '設計圖', 'seolgyedoeseo'), bare(' '),
+        annotated('심우주 조선소로', '深宇宙 造船所', 'simuju joseonsoro'), bare(' '),
+        annotated('옮길 것이다', '移送', 'omgigil geosida'), bare('.'),
       ],
     ],
     note: '십 해 톤은 지구 질량의 약 6분의 1이다. 성간 홍보부 회계팀은 이 숫자에 서명하기를 거부했다.',
@@ -143,26 +174,46 @@ const PUNCTUATION = /[\p{P}\p{S}]/u
 const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   if (PUNCTUATION.test(base)) throw new TypeError(`注文基文不可含標點：${base}`)
   const outer = document.createElement('ruby')
-  outer.className = 'DispatchRuby InterCharacterDual'
+  outer.className = 'DispatchRuby ComplexReading'
   if (emphasis) outer.dataset.emphasis = emphasis
-  const inner = document.createElement('ruby')
-  inner.className = 'InterCharacterReading'
-  if (system.nativeLang.includes('Bopo')) inner.classList.add('zhuyin')
-  const nativeReading = document.createElement('rt')
-  nativeReading.lang = system.nativeLang
-  nativeReading.textContent = native
+  const baseUnits = [...base]
+  const nativeUnits = native.trim().split(/\s+/)
+  const isBopomofo = system.nativeLang.includes('Bopo')
+
+  if (isBopomofo && baseUnits.length === nativeUnits.length) {
+    baseUnits.forEach((character, index) => {
+      const inner = document.createElement('ruby')
+      inner.className = 'InterCharacterReading zhuyin'
+      const nativeReading = document.createElement('rt')
+      nativeReading.lang = system.nativeLang
+      nativeReading.textContent = nativeUnits[index]
+      inner.append(character, nativeReading)
+      outer.append(inner)
+    })
+  } else {
+    const inner = document.createElement('ruby')
+    inner.className = 'GroupReading'
+    const nativeReading = document.createElement('rt')
+    nativeReading.lang = system.nativeLang
+    nativeReading.textContent = native
+    inner.append(base, nativeReading)
+    outer.append(inner)
+  }
+
   const romanization = document.createElement('rt')
   romanization.className = 'Romanization'
   romanization.lang = system.romanLang
   romanization.textContent = roman
-  inner.append(base, nativeReading)
-  outer.append(inner, romanization)
+  outer.append(romanization)
   return outer
 }
 
 const fillParagraph = (element, system, parts) => {
   element.replaceChildren()
-  for (const part of parts) element.append(part.text ? document.createTextNode(part.text) : createDispatchRuby(system, part))
+  for (const part of parts) {
+    const resolved = part.directional?.[station.dataset.writing] ?? part
+    element.append(resolved.text ? document.createTextNode(resolved.text) : createDispatchRuby(system, resolved))
+  }
 }
 
 const material = (atomic, symbol, hant, hans, common, aboard) => ({ atomic, symbol, hant, hans, common, aboard })
@@ -396,7 +447,10 @@ const renderReadingSystem = (mode) => {
   document.querySelector('.Dispatch > small').textContent = system.note
   numbersGroup.dataset.speech = system.paragraphs
     .flat()
-    .map((part) => part.base ?? part.text)
+    .map((part) => {
+      const resolved = part.directional?.[station.dataset.writing] ?? part
+      return resolved.base ?? resolved.text
+    })
     .join('')
   storyFoot.hidden = mode !== 'minnan'
   refreshVoices()
@@ -409,6 +463,7 @@ const setWritingMode = (mode) => {
   const rail = document.querySelector('[data-strip="readings"]')
   rail.scrollLeft = 0
   rail.scrollTop = 0
+  renderReadingSystem(currentMode)
   requestAnimationFrame(() => rail.dispatchEvent(new Event('han-strip-layout')))
 }
 

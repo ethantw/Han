@@ -181,10 +181,12 @@ main {
 }
 
 .ReadingSwitch {
-  display: grid;
-  gap: .625rem;
-  padding: .875rem clamp(1rem, 2.5vw, 1.75rem);
-  border-block-end: 1px solid var(--ui-row-rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  align-items: center;
+  margin: 0 0 .75rem;
+  padding: 0;
 }
 
 .ViewTabs {
@@ -241,6 +243,7 @@ main {
 }
 
 .ModeSummary {
+  margin-inline-start: auto;
   color: var(--ui-supplement-text);
   font-size: .6875rem;
 }
@@ -267,13 +270,14 @@ main {
   font-family: 'Shanggu Serif', 'Shanggu Serif Yue', var(--han-serif);
   font-size: clamp(1.15rem, 2.4vw, 1.55rem);
   font-weight: 500;
-  line-height: 3.15;
+  line-height: 2.8;
 }
 
 .DispatchRuby { margin-inline: .06em; }
 
-.InterCharacterDual,
+.ComplexReading { ruby-position: under; }
 .InterCharacterReading { ruby-position: inter-character; }
+.GroupReading { ruby-position: over; }
 
 .DispatchRuby > .Romanization {
   color: var(--ui-supplement-text);
@@ -281,31 +285,33 @@ main {
   font-size: .36em;
   font-weight: 500;
   line-height: 1;
-  text-orientation: mixed;
   white-space: nowrap;
-  writing-mode: vertical-rl;
+  writing-mode: horizontal-tb;
 }
 
 .InterCharacterReading > rt {
   color: var(--ui-accent);
-  font-size: .36em;
-  font-family: var(--han-sans);
   font-weight: 600;
-  line-height: 1;
   text-emphasis: none;
-  text-orientation: upright;
-  white-space: nowrap;
-  writing-mode: vertical-rl;
 }
 
-.DispatchRuby[data-emphasis] > .InterCharacterReading {
+.GroupReading > rt {
+  color: var(--ui-accent);
+  font-family: var(--han-sans);
+  font-size: .36em;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.DispatchRuby[data-emphasis] > :is(.InterCharacterReading, .GroupReading) {
   color: var(--ui-accent);
   text-emphasis: filled dot;
   text-emphasis-color: currentColor;
   text-emphasis-position: under right;
 }
 
-.DispatchRuby[data-emphasis='cargo'] > .InterCharacterReading {
+.DispatchRuby[data-emphasis='cargo'] > :is(.InterCharacterReading, .GroupReading) {
   color: var(--ui-proof);
 }
 
@@ -619,6 +625,11 @@ main {
 
 #station-readings[data-writing='vertical'] .DispatchCopy { line-height: 3; }
 
+#station-readings[data-writing='vertical'] .DispatchRuby > .Romanization {
+  text-orientation: mixed;
+  writing-mode: vertical-rl;
+}
+
 #station-readings[data-writing='vertical'] .DispatchStamp {
   margin: 0 0 0 1.25rem;
   text-orientation: mixed;
@@ -723,6 +734,10 @@ button[data-speaking] > [data-icon] {
   .Dispatch { min-block-size: 0; }
   .DispatchCopy { font-size: 1.05rem; }
   .ElementMeta { align-items: start; }
+  .ModeSummary {
+    flex-basis: 100%;
+    margin-inline-start: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
