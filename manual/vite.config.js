@@ -323,6 +323,8 @@ const DEMO_DIR = path.resolve(here, 'demo')
 const SPECIMEN_FILE = 'specimen.html'
 const PUNCTUATION_SQUEEZE_FILE = 'punctuation-squeeze.html'
 const RUBY_ZHUYIN_CONFIG_FILE = 'ruby-zhuyin-config.html'
+const RUBY_READINGS_FILE = 'ruby-readings.html'
+const RUBY_READINGS_ASSETS = ['ruby-readings.css', 'ruby-readings.js']
 
 const md = new MarkdownIt({
   html: true,
@@ -1002,10 +1004,20 @@ async function renderPunctuationSqueezeFixture() {
 async function renderShippedDemoPages() {
   const outDir = path.join(HTML_ROOT, 'demo')
   await fs.mkdir(outDir, { recursive: true })
-  await fs.copyFile(
-    path.join(DEMO_DIR, RUBY_ZHUYIN_CONFIG_FILE),
-    path.join(outDir, RUBY_ZHUYIN_CONFIG_FILE),
-  )
+  await Promise.all([
+    fs.copyFile(
+      path.join(DEMO_DIR, RUBY_ZHUYIN_CONFIG_FILE),
+      path.join(outDir, RUBY_ZHUYIN_CONFIG_FILE),
+    ),
+    fs.copyFile(
+      path.join(DEMO_DIR, RUBY_READINGS_FILE),
+      path.join(outDir, RUBY_READINGS_FILE),
+    ),
+    ...RUBY_READINGS_ASSETS.map((file) => fs.copyFile(
+      path.join(DEMO_DIR, file),
+      path.join(outDir, file),
+    )),
+  ])
 }
 
 /**

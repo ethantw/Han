@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讀音站——外行星採礦公報</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css">
+<link rel="stylesheet" href="/han/han.css">
+<link rel="stylesheet" href="/common/variables.css">
+<link rel="stylesheet" href="/common/icons.css">
+<link rel="stylesheet" href="/demo/ruby-readings.css">
+<script type="module" src="/demo/ruby-readings.js"></script>
+</head>
+<body>
+<main>
+  <section id="station-readings" data-station="readings" data-reading-mode="minnan" data-writing="horizontal">
+    <hgroup>
+      <p>STATION・讀音</p>
+      <h1>一字，三層注文</h1>
+    </hgroup>
+    <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的三十格材料清單。</p>
+
+    <nav class="RailNav StationRailNav" data-strip-nav="readings" aria-label="移動讀音樣張">
+      <span>五聲公報／三十格材料艙</span>
+      <span class="RailButtons">
+        <button type="button" data-scroll="prev" aria-label="向前移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
+        <button type="button" data-scroll="next" aria-label="向後移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
+      </span>
+    </nav>
+
+    <div class="StationColumns" data-strip="readings" tabindex="0" aria-label="可橫向捲動的數字公報與元素材料清單">
+      <article class="NumberStory" aria-labelledby="story-title">
+        <header class="ColumnHead">
+          <div>
+            <p class="Kicker" data-reading-kicker>閩南語・雙重ruby</p>
+            <h2 id="story-title">喜馬拉雅一六八七號</h2>
+          </div>
+          <button class="SpeakAll" type="button" data-speak-group="numbers" data-lang="nan-TW" data-speech="一、六、七、八、十">
+            <span data-icon="volume" aria-hidden="true"></span>
+            <span data-speak-group-label>讀五個數字</span>
+          </button>
+        </header>
+
+        <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
+          <fieldset class="ViewTabs">
+            <legend>注文</legend>
+            <label><input type="radio" name="reading-mode" value="minnan" checked> 閩南語</label>
+            <label><input type="radio" name="reading-mode" value="mandarin"> 國語</label>
+            <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
+            <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
+          </fieldset>
+          <fieldset class="ViewTabs LayoutTabs">
+            <legend>排版方向</legend>
+            <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
+            <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
+          </fieldset>
+          <output class="ModeSummary" data-mode-summary aria-live="polite">方音為主・臺羅並列</output>
+        </form>
+
+        <div class="Dispatch Numbers" lang="nan-Hant-TW" aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p class="DispatchStamp">BARNARD STAR・INCOMING 01687</p>
+          <p class="DispatchCopy" data-dispatch-copy></p>
+          <p class="DispatchPromise">這批材料會予地球佮太陽系有機會共電磁囚籠、超導磁喉、熱盾佮偵測器，對圖紙搬入深空船塢。</p>
+          <small>十垓噸約是一個地球質量的六分之一；球際公報的會計部門拒絕對這个數字負責。</small>
+        </div>
+
+        <footer class="StoryFoot">
+          <span><i data-tone="yin" aria-hidden="true"></i>陰入：七<code>tshit</code>、八<code>peh</code></span>
+          <span><i data-tone="yang" aria-hidden="true"></i>陽入：一<code>tsi̍t</code>、六<code>la̍k</code>、十<code>tsa̍p</code></span>
+        </footer>
+      </article>
+
+      <figure class="ElementAtlas" aria-labelledby="elements-title">
+        <header class="ColumnHead">
+          <div>
+            <p class="Kicker">國語・三重ruby</p>
+            <h2 id="elements-title">反物質引擎材料艙</h2>
+          </div>
+          <button class="SpeakAll" type="button" data-speak-group="elements" data-lang="zh-TW" data-speech="鉬、銻、釩、鈹、銣、銫、鋯、鉿、錸、銥、鋨、鐠、釹、鏑、鐿、鎦">
+            <span data-icon="volume" aria-hidden="true"></span>
+            精選讀音
+          </button>
+        </header>
+
+        <div class="ElementMeta">
+          <p>六個子系統、每艙五格。上為元素符號，右為注音，下為原子序；綠框可播放讀音。</p>
+        </div>
+
+        <div class="MaterialViewport">
+          <div class="MaterialGrid" data-material-grid aria-label="三十種反物質引擎候選材料"></div>
+        </div>
+
+        <figcaption>
+          <small class="CoverageBrag">這次不硬撐全表：本盤30個繁體元素字，尚古黑實測30/30；簡體對應字是12/30。先誠實 brag 前者。</small>
+          <small>這是有科學骨架的概念艦，不是現成藍圖：反物質需以電磁場與極高真空隔離；帶電湮滅產物可由磁噴嘴導流。材料角色參考 <a href="https://home.cern/science/physics/antimatter/">CERN</a>、<a href="https://ntrs.nasa.gov/citations/20060043411">NASA NTRS</a> 與 <a href="https://www.energy.gov/cmm/what-are-critical-minerals-and-materials">DOE 關鍵材料表</a>；讀音核對自<a href="https://www.moedict.tw/">萌典</a>。</small>
+        </figcaption>
+      </figure>
+    </div>
+
+    <footer class="StationFoot">
+      <p class="SpeechStatus"><span class="StatusLight" aria-hidden="true"></span><output data-speech-status role="status" aria-live="polite">正在尋找本機語音……</output></p>
+      <p>聲音由本機 <code>SpeechSynthesis</code> 提供；閩南語語音是否可用取決於瀏覽器與作業系統。</p>
+    </footer>
+  </section>
+</main>
+</body>
+</html>

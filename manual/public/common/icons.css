@@ -77,6 +77,9 @@
   --icon-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M6.9 6.9 5.1 5.1M17.1 6.9 18.9 5.1M6.9 17.1 5.1 18.9M17.1 17.1 18.9 18.9'/%3E%3C/svg%3E");
   --icon-moon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z'/%3E%3C/svg%3E");
 
+  /* Audio playback. The two detached waves remain legible at body-text size. */
+  --icon-volume: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M4 10v4h4l5 4V6L8 10H4zM17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11'/%3E%3C/svg%3E");
+
   /* 主控台。四條推桿，其中兩條掛著長方的鈕——一台調音台的樣子。
      這一顆是本檔唯一的例外，三處破格都是故意的（2026-08-04 定案）：
 
@@ -134,6 +137,7 @@
   &[data-icon='bulb']    { mask-image: var(--icon-bulb); }
   &[data-icon='sun']     { mask-image: var(--icon-sun); }
   &[data-icon='moon']    { mask-image: var(--icon-moon); }
+  &[data-icon='volume']  { mask-image: var(--icon-volume); }
   &[data-icon='console'] { mask-image: var(--icon-console); }
 
   /* 角標的四向。`rotate`／`scale` 個別 transform 屬性 · Baseline 2022。 */
