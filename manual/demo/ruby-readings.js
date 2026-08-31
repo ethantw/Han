@@ -266,6 +266,15 @@ const elementReadings = new Map([
 
 const spokenElementSymbols = new Set(['Mo', 'Sb', 'V', 'Be', 'Rb', 'Cs', 'Zr', 'Hf', 'Re', 'Ir', 'Os', 'Pr', 'Nd', 'Dy', 'Yb', 'Lu'])
 
+const verticalVolumes = [
+  { row: 1, column: 1, label: '第一週期' },
+  { row: 2, column: 2, label: '第二週期' },
+  { row: 4, column: 3, label: '第四週期' },
+  { row: 5, column: 4, label: '第五週期' },
+  { row: 6, column: 5, label: '第六週期' },
+  { row: 8, column: 6, label: '鑭系別卷' },
+]
+
 const createElementRuby = (element, reading) => {
   const atomicRuby = document.createElement('ruby')
   atomicRuby.className = 'AtomicRuby'
@@ -311,7 +320,18 @@ const renderMaterialGrid = () => {
   lanthanideLabel.className = 'LanthanideLabel'
   lanthanideLabel.setAttribute('aria-hidden', 'true')
   lanthanideLabel.textContent = '姿控與感測／鑭系'
-  grid.replaceChildren(callout, lanthanideLabel)
+
+  const periodLabels = verticalVolumes.map((volume) => {
+    const label = document.createElement('li')
+    label.className = 'PeriodLabel'
+    label.setAttribute('aria-hidden', 'true')
+    label.style.setProperty('--vertical-column', volume.column)
+    label.textContent = volume.label
+    return label
+  })
+  grid.replaceChildren(callout, lanthanideLabel, ...periodLabels)
+
+  const verticalIndexes = new Map()
 
   for (const element of missionElements) {
     const reading = elementReadings.get(element.symbol)
@@ -322,8 +342,14 @@ const renderMaterialGrid = () => {
     item.dataset.hans = element.hans
     item.dataset.hintBlock = element.row >= 6 ? 'before' : 'after'
     item.dataset.hintInline = element.column >= 15 ? 'end' : 'start'
+    item.dataset.group = element.row === 8 ? '鑭' : `${element.column}族`
     item.style.setProperty('--element-column', element.column)
     item.style.setProperty('--element-row', element.row)
+    const volume = verticalVolumes.find((candidate) => candidate.row === element.row)
+    const verticalIndex = (verticalIndexes.get(element.row) ?? 0) + 1
+    verticalIndexes.set(element.row, verticalIndex)
+    item.style.setProperty('--vertical-column', volume.column)
+    item.style.setProperty('--vertical-grid-row', verticalIndex + 1)
     if (speakable) item.dataset.featured = ''
 
     const tile = document.createElement(speakable ? 'button' : 'span')
@@ -352,7 +378,11 @@ const renderMaterialGrid = () => {
     const system = document.createElement('b')
     system.textContent = element.system
     hint.append(system, element.aboard)
-    tile.append(hint)
+    const groupMark = document.createElement('span')
+    groupMark.className = 'GroupMark'
+    groupMark.setAttribute('aria-hidden', 'true')
+    groupMark.textContent = item.dataset.group
+    tile.append(groupMark, hint)
     item.append(tile)
     grid.append(item)
   }

@@ -23,17 +23,17 @@
     <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的二十四格材料清單。</p>
 
     <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
-      <fieldset class="ViewTabs">
-        <legend>注文</legend>
+      <fieldset class="ViewTabs LayoutTabs" aria-labelledby="reading-direction-label">
+        <span class="PillHead" id="reading-direction-label">行向</span>
+        <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
+        <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
+      </fieldset>
+      <fieldset class="ViewTabs" aria-labelledby="reading-language-label">
+        <span class="PillHead" id="reading-language-label">注文</span>
         <label><input type="radio" name="reading-mode" value="minnan" checked> 閩南語</label>
         <label><input type="radio" name="reading-mode" value="mandarin"> 國語</label>
         <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
         <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
-      </fieldset>
-      <fieldset class="ViewTabs LayoutTabs">
-        <legend>排版方向</legend>
-        <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
-        <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
       </fieldset>
       <output class="ModeSummary" data-mode-summary aria-live="polite">方音・臺羅字間注</output>
     </form>
@@ -85,7 +85,10 @@
         </header>
 
         <div class="ElementMeta">
-          <p>位置循週期與族，顏色循元素分類。上為元素符號，右為注音，下為原子序；綠線可播放讀音。</p>
+          <p>
+            <span class="MetaHorizontal">位置循週期與族，顏色循元素分類。上為元素符號，右為注音，下為原子序；綠線可播放讀音。</span>
+            <span class="MetaVertical">直排改作右起分卷元素譜：每一週期成一卷，元素由上而下，旁記族序；箋色分元素類別。</span>
+          </p>
           <ul class="ElementLegend" aria-label="元素分類色">
             <li data-category="alkali">鹼金</li>
             <li data-category="alkaline">鹼土</li>
