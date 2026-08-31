@@ -251,6 +251,7 @@ main {
 .Dispatch {
   min-block-size: 27rem;
   padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.25rem);
+  --han-zhuyin-ruby-position: inter-character;
   background:
     linear-gradient(var(--ui-grid) 1px, transparent 1px),
     var(--ui-bg);
@@ -624,6 +625,10 @@ main {
 }
 
 #station-readings[data-writing='vertical'] .DispatchCopy { line-height: 3; }
+
+#station-readings[data-writing='vertical'] .InterCharacterReading {
+  ruby-position: over;
+}
 
 #station-readings[data-writing='vertical'] .DispatchRuby > .Romanization {
   text-orientation: mixed;

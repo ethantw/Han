@@ -46,15 +46,17 @@ const directional = (horizontal, vertical) => ({ directional: { horizontal, vert
 const readingSystems = {
   minnan: {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
-    summary: '方音・臺羅字間注', kicker: '閩南語・雙重ruby', title: '喜馬拉雅一六八七號', groupLabel: '讀全篇捷報',
+    summary: '方音・臺羅字間注', kicker: '閩南語・雙重ruby', title: '喜馬拉雅一六八七分隊第十艦隻', groupLabel: '讀全篇捷報',
     paragraphs: [
       [
         annotated('半世紀前', 'ㄅㄨㆩ˫ ㄙㆤ˪ ㄍㄧˋ ㄗㄧㄥˊ', 'puànn sè-kí tsîng'),
         annotated('拄仔出航的', 'ㄉㄨˋ ㄚˋ ㄘㄨㆵ ㄏㄤˊ ㆤˊ', 'tú-á tshut-hâng ê'),
         annotated('球際採礦隊', 'ㄍㄧㄨˊ ㄗㆤ˪ ㄘㄞˋ ㄎㆲ˪ ㄉㄨㄧ˫', 'kiû-tsè tshái-khòng-tuī'), bare('「'),
         annotated('喜馬拉雅', 'ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ', 'Hí-má-la̍h-ngá'),
-        annotated('一六八七號', 'ㄧㆵ ㄌㄧㆦㆶ̇ ㄅㆤㆷ ㄑㄧㆵ ㄏㄜ˫', 'it-lio̍k-peh-tshit hō', 'id'),
-        annotated('小分隊', 'ㄒㄧㄜˋ ㄏㄨㄣ ㄉㄨㄧ˫', 'sió-hun-tuī'), bare('」，'),
+        annotated('一六八七', 'ㄧㆵ ㄌㄧㆦㆶ̇ ㄅㆤㆷ ㄑㄧㆵ', 'it-lio̍k-peh-tshit', 'id'),
+        annotated('分隊第', 'ㄏㄨㄣ ㄉㄨㄧ˫ ㄉㆤ˫', 'hun-tuī tē'),
+        annotated('十', 'ㄒㄧㆴ̇', 'si̍p', 'id'),
+        annotated('艦隻', 'ㄌㄚㆬ˫ ㄗㄧㄚㆷ', 'lām-tsiah'), bare('」，'),
         annotated('佇巴納德星系傳來捷報', 'ㄉㄧ˫ ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㆶ̇ ㄑㆥ ㄏㆤ˫ ㄊㄨㄢˊ ㄌㄞˊ ㄗㄧㄚㆵ̇ ㄅㄜ˪', 'tī Pa-na̍p-tik tshenn-hē thuân-lâi tsia̍t-pò'), bare('；'),
         annotated('閣過百冬', 'ㄍㆦㆷ ㄍㄨㆤ˪ ㄅㄚㆷ ㄉㄤ', 'koh kuè pah tang'), bare('，'),
         annotated('欲替地球佮太陽系載轉來', 'ㄅㆤㆷ ㄊㆤ˪ ㄉㆤ˫ ㄍㄧㄨˊ ㄍㄚㆷ ㄊㄞ˪ ㄧㆲˊ ㄏㆤ˫ ㄗㄞ˪ ㄉㄫˋ ㄌㄞˊ', 'beh thè tē-kiû kah thài-iông-hē tsài tńg-lâi'),
@@ -75,13 +77,15 @@ const readingSystems = {
   },
   mandarin: {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
-    summary: '注音・拼音字間注', kicker: '國語・雙重ruby', title: '喜馬拉雅一六八七號', groupLabel: '國語讀全篇',
+    summary: '注音・拼音字間注', kicker: '國語・雙重ruby', title: '喜馬拉雅一六八七分隊第十艦隻', groupLabel: '國語讀全篇',
     paragraphs: [
       [
         annotated('半世紀前甫出航的星際採礦隊', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ ㄑㄧㄢˊ ㄈㄨˇ ㄔㄨ ㄏㄤˊ ˙ㄉㄜ ㄒㄧㄥ ㄐㄧˋ ㄘㄞˇ ㄎㄨㄤˋ ㄉㄨㄟˋ', 'bàn shìjì qián fǔ chūháng de xīngjì cǎikuàngduì'), bare('「'),
         annotated('喜馬拉雅', 'ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ', 'Xǐmǎlāyǎ'),
-        annotated('一六八七號', 'ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ ㄏㄠˋ', 'yī-liù-bā-qī hào', 'id'),
-        annotated('小分隊', 'ㄒㄧㄠˇ ㄈㄣ ㄉㄨㄟˋ', 'xiǎofēnduì'), bare('」，'),
+        annotated('一六八七', 'ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ', 'yī-liù-bā-qī', 'id'),
+        annotated('分隊第', 'ㄈㄣ ㄉㄨㄟˋ ㄉㄧˋ', 'fēnduì dì'),
+        annotated('十', 'ㄕˊ', 'shí', 'id'),
+        annotated('艦隻', 'ㄐㄧㄢˋ ㄓ', 'jiànzhī'), bare('」，'),
         annotated('從巴納德星系傳來捷報', 'ㄘㄨㄥˊ ㄅㄚ ㄋㄚˋ ㄉㄜˊ ㄒㄧㄥ ㄒㄧˋ ㄔㄨㄢˊ ㄌㄞˊ ㄐㄧㄝˊ ㄅㄠˋ', 'cóng Bānàdé xīngxì chuánlái jiébào'), bare('；'),
         annotated('一百年後', 'ㄧˋ ㄅㄞˇ ㄋㄧㄢˊ ㄏㄡˋ', 'yìbǎi nián hòu'), bare('，'),
         annotated('他們將為地球與太陽系帶回', 'ㄊㄚ ㄇㄣ˙ ㄐㄧㄤ ㄨㄟˋ ㄉㄧˋ ㄑㄧㄡˊ ㄩˇ ㄊㄞˋ ㄧㄤˊ ㄒㄧˋ ㄉㄞˋ ㄏㄨㄟˊ', 'tāmen jiāng wèi Dìqiú yǔ Tàiyángxì dàihuí'),
@@ -101,15 +105,17 @@ const readingSystems = {
   },
   japanese: {
     name: '日文', lang: 'ja-JP', listLang: 'ja', nativeLang: 'ja-Kana', romanLang: 'ja-Latn',
-    summary: '假名・Hepburn字間注', kicker: '日文・雙重ruby', title: 'ヒマラヤ一六八七号', groupLabel: '日文讀全篇',
+    summary: '假名・Hepburn字間注', kicker: '日文・雙重ruby', title: 'ヒマラヤ一六八七分隊第十艦', groupLabel: '日文讀全篇',
     paragraphs: [
       [
         annotated('半世紀前に', 'はんせいきまえに', 'hanseiki mae ni'),
         annotated('出航したばかりの', 'しゅっこうしたばかりの', 'shukkō shita bakari no'),
         annotated('恒星間採鉱隊', 'こうせいかんさいこうたい', 'kōseikan saikōtai'), bare('「'),
         annotated('ヒマラヤ', 'ひまらや', 'Himaraya'),
-        annotated('一六八七号', 'いちろくはちななごう', 'ichi-roku-hachi-nana-gō', 'id'),
-        annotated('小隊', 'しょうたい', 'shōtai'), bare('」から、'),
+        annotated('一六八七', 'いちろくはちなな', 'ichi-roku-hachi-nana', 'id'),
+        annotated('分隊第', 'ぶんたいだい', 'buntai dai'),
+        annotated('十', 'じゅう', 'jū', 'id'),
+        annotated('艦', 'かん', 'kan'), bare('」から、'),
         annotated('バーナード星系での', 'ばーなーどせいけいでの', 'Bānādo seikei de no'),
         annotated('成功報告が届いた', 'せいこうほうこくがとどいた', 'seikō hōkoku ga todoita'), bare('。'),
         annotated('百年後', 'ひゃくねんご', 'hyakunen go'), bare('、'),
@@ -135,14 +141,16 @@ const readingSystems = {
   },
   korean: {
     name: '韓文', lang: 'ko-KR', listLang: 'ko', nativeLang: 'ko-Hani', romanLang: 'ko-Latn',
-    summary: '韓字・修訂式字間注', kicker: '韓文・雙重ruby', title: '히말라야 일육팔칠호', groupLabel: '韓文讀全篇',
+    summary: '韓字・修訂式字間注', kicker: '韓文・雙重ruby', title: '히말라야 일육팔칠 분대 제십 함정', groupLabel: '韓文讀全篇',
     paragraphs: [
       [
         annotated('반세기 전에', '半世紀前', 'bansegi jeone'), bare(' '),
         annotated('막 출항한 성간 채광대', '甫 出航 星間 採鑛隊', 'mak chulhanghan seonggan chaegwangdae'), bare(' ‘'),
         annotated('히말라야', '喜馬拉雅', 'Himallaya'), bare(' '),
-        annotated('일육팔칠호', '一六八七號', 'il-yuk-pal-chil-ho', 'id'), bare(' '),
-        annotated('소분대', '小分隊', 'sobundae'), bare('’가 '),
+        annotated('일육팔칠', '一六八七', 'il-yuk-pal-chil', 'id'), bare(' '),
+        annotated('분대 제', '分隊 第', 'bundae je'),
+        annotated('십', '十', 'sip', 'id'), bare(' '),
+        annotated('함정', '艦艇', 'hamjeong'), bare('’이 '),
         annotated('바너드 항성계에서', 'Barnard 恒星系', 'Baneodeu hangseonggyeeseo'), bare(' '),
         annotated('승전보를 보내왔다', '勝戰報', 'seungjeonboreul bonaewatda'), bare('. '),
         annotated('백 년 뒤', '百年後', 'baeng nyeon dwi'), bare(', '),
