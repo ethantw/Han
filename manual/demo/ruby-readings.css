@@ -5,10 +5,6 @@
   --reading-yin: var(--ui-proof);
   --reading-yang: var(--ui-accent);
   --han-zhuyin-ruby-position: inter-character;
-  --period-s: color-mix(in srgb, var(--ui-accent) 10%, var(--ui-bg));
-  --period-p: color-mix(in srgb, var(--ui-proof) 8%, var(--ui-bg));
-  --period-d: color-mix(in srgb, #c99100 10%, var(--ui-bg));
-  --period-f: color-mix(in srgb, #7566c9 10%, var(--ui-bg));
 }
 
 * { box-sizing: border-box; }
@@ -115,12 +111,12 @@ main {
 .ElementAtlas {
   min-inline-size: 0;
   margin: 0;
-  overflow: clip;
-  border: 1px solid var(--ui-row-rule);
-  border-radius: var(--r-3);
-  background: var(--ui-bg-3q);
-  box-shadow: 0 1rem 3rem color-mix(in srgb, var(--ui-shadow-ink) 7%, transparent);
-  backdrop-filter: blur(12px);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .NumberStory {
@@ -138,7 +134,7 @@ main {
   justify-content: space-between;
   align-items: end;
   min-block-size: 8.5rem;
-  padding: clamp(1rem, 2.5vw, 1.75rem);
+  padding: clamp(1rem, 2.5vw, 1.75rem) 0;
   border-block-end: 1px solid var(--ui-row-rule);
 }
 
@@ -254,11 +250,10 @@ main {
 
 .Dispatch {
   min-block-size: 27rem;
-  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.25rem);
+  padding: clamp(1.25rem, 3vw, 2rem) 0;
   --han-zhuyin-ruby-position: inter-character;
   background:
-    linear-gradient(var(--ui-grid) 1px, transparent 1px),
-    var(--ui-bg);
+    linear-gradient(var(--ui-grid) 1px, transparent 1px);
   background-size: 100% 2rem;
 }
 
@@ -339,7 +334,7 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: .35rem 1rem;
-  padding: .75rem clamp(1rem, 2.5vw, 1.75rem);
+  padding: .75rem 0;
   color: var(--ui-supplement-text);
   border-block-start: 1px solid var(--ui-row-rule);
   font-size: .6875rem;
@@ -367,7 +362,7 @@ main {
   justify-content: space-between;
   align-items: center;
   min-block-size: 3.5rem;
-  padding: .625rem clamp(1rem, 2.5vw, 1.75rem);
+  padding: .625rem 0;
   border-block-end: 1px solid var(--ui-row-rule);
 }
 
@@ -375,6 +370,33 @@ main {
   margin: 0;
   color: var(--ui-supplement-text);
   font-size: .6875rem;
+}
+
+.ElementLegend {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: .25rem .6rem;
+  margin: 0;
+  padding: 0;
+  color: var(--ui-supplement-text);
+  font-family: var(--han-monospace);
+  font-size: .575rem;
+  list-style: none;
+}
+
+.ElementLegend li {
+  display: inline-flex;
+  gap: .25rem;
+  align-items: center;
+}
+
+.ElementLegend li::before {
+  inline-size: .55rem;
+  block-size: .55rem;
+  background: var(--element-color);
+  border: 1px solid color-mix(in srgb, var(--element-color) 55%, var(--ui-text));
+  content: '';
 }
 
 .RailNav {
@@ -424,92 +446,147 @@ main {
 
 .RailNav [data-scroll='next'] [data-icon] { rotate: 180deg; }
 
-.MaterialViewport { padding: 1rem; }
+.MaterialViewport { padding: 1rem 0; }
 
-.MaterialGrid {
-  display: grid;
-  grid-template-columns: repeat(6, 10.75rem);
-  gap: .5rem;
+.MaterialField {
+  position: relative;
   inline-size: max-content;
 }
 
-.MaterialModule {
-  --module-color: var(--ui-accent);
-  --module-ink: color-mix(in srgb, var(--module-color) 55%, var(--ui-text));
-  padding: .5rem;
-  border: 1px solid var(--ui-row-rule);
-  border-radius: .5rem;
-  background: color-mix(in srgb, var(--module-color) 4%, var(--ui-bg));
+.BarnardMap {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  color: color-mix(in srgb, var(--ui-proof) 72%, #b45f46);
+  pointer-events: none;
 }
 
-.MaterialModule:nth-child(2) { --module-color: var(--ui-proof); }
-.MaterialModule:nth-child(3) { --module-color: #c99100; }
-.MaterialModule:nth-child(4) { --module-color: #7566c9; }
-.MaterialModule:nth-child(5) { --module-color: #287f91; }
-.MaterialModule:nth-child(6) { --module-color: #9a5d78; }
-
-.MaterialModule h3 {
-  display: grid;
-  gap: .1rem;
-  margin: 0;
-  padding: .35rem .35rem .15rem;
-  color: var(--ui-text);
-  font-family: var(--han-font-alternative);
-  font-size: .875rem;
-  font-weight: 600;
+.BarnardGrid {
+  fill: none;
+  stroke: var(--ui-grid);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-.MaterialModule h3 span {
-  color: var(--module-ink);
+.BarnardOrbit {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-opacity: .34;
+  vector-effect: non-scaling-stroke;
+}
+
+.BarnardOrbit ellipse { stroke-dasharray: 5 10; }
+.BarnardOrbit path:first-of-type {
+  stroke-width: 1.75;
+  stroke-dasharray: 3 8;
+}
+.BarnardOrbit .BarnardCore {
+  fill: currentColor;
+  stroke: none;
+  opacity: .72;
+}
+
+.BarnardStars {
+  fill: var(--ui-supplement-text);
+  opacity: .38;
+}
+
+.BarnardMap text {
+  fill: currentColor;
   font-family: var(--han-monospace);
-  font-size: .575rem;
-  font-weight: 700;
-  letter-spacing: .12em;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .16em;
+  opacity: .62;
 }
 
-.MaterialModule > p {
-  min-block-size: 2.6em;
-  margin: 0;
-  padding: 0 .35rem .5rem;
-  color: var(--ui-supplement-text);
-  font-family: var(--han-font-alternative);
-  font-size: .625rem;
-  line-height: 1.3;
-}
-
-.MaterialModule ol {
+.MaterialGrid {
+  position: relative;
   display: grid;
+  grid-template-columns: repeat(18, 4.55rem);
+  grid-template-rows: repeat(8, 4.55rem);
   gap: .25rem;
+  inline-size: max-content;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.ElementCell { min-inline-size: 0; }
+.MaterialCallout {
+  grid-column: 7 / 12;
+  grid-row: 1 / 3;
+  align-self: center;
+  max-inline-size: 14rem;
+  padding-inline-start: .75rem;
+  color: var(--ui-supplement-text);
+  border-inline-start: 2px solid var(--ui-proof);
+  font-family: var(--han-font-alternative);
+  font-size: .6875rem;
+  line-height: 1.5;
+}
+
+.MaterialCallout strong {
+  display: block;
+  color: var(--ui-proof);
+  font-family: var(--han-monospace);
+  font-size: 1.25rem;
+  letter-spacing: .08em;
+}
+
+.MaterialCallout span { display: block; }
+
+.LanthanideLabel {
+  grid-column: 2 / 6;
+  grid-row: 8;
+  align-self: center;
+  color: var(--ui-supplement-text);
+  font-family: var(--han-monospace);
+  font-size: .625rem;
+  letter-spacing: .08em;
+  text-align: end;
+}
+
+.ElementCell {
+  --element-color: #ffc0c0;
+  grid-column: var(--element-column);
+  grid-row: var(--element-row);
+  min-inline-size: 0;
+}
+
+:is(.ElementCell, .ElementLegend li)[data-category='alkali'] { --element-color: #ff6666; }
+:is(.ElementCell, .ElementLegend li)[data-category='alkaline'] { --element-color: #ffddac; }
+:is(.ElementCell, .ElementLegend li)[data-category='transition'] { --element-color: #ffc0c0; }
+:is(.ElementCell, .ElementLegend li)[data-category='post-transition'] { --element-color: #cccccc; }
+:is(.ElementCell, .ElementLegend li)[data-category='metalloid'] { --element-color: #cbcb98; }
+:is(.ElementCell, .ElementLegend li)[data-category='lanthanide'] { --element-color: #ffbfff; }
+:is(.ElementCell, .ElementLegend li)[data-category='noble'] { --element-color: #c0ffff; }
 
 .ElementCell .ElementTile {
   position: relative;
   display: grid;
   place-items: center;
   inline-size: 100%;
-  block-size: 5.25rem;
+  block-size: 100%;
   padding: .65rem .2rem .45rem;
-  color: inherit;
-  border: 1px solid var(--ui-row-rule);
-  border-radius: .25rem;
-  background: var(--ui-bg);
+  color: #18171a;
+  border: 1px solid color-mix(in srgb, var(--element-color) 55%, var(--ui-text));
+  border-radius: 0;
+  background: color-mix(in srgb, var(--element-color) 58%, #fafaf7);
   cursor: default;
 }
 
 .ElementCell[data-featured] .ElementTile {
-  border-color: var(--ui-accent);
-  box-shadow: inset 0 0 0 1px var(--ui-accent);
+  border-block-end-color: var(--ui-accent);
+  box-shadow: inset 0 -2px 0 var(--ui-accent);
   cursor: pointer;
 }
 
 .ElementCell .ElementTile:is(:hover, :focus-visible) {
   z-index: 2;
-  background: var(--ui-accent-bg);
+  background: color-mix(in srgb, var(--element-color) 82%, #fafaf7);
   outline: 2px solid var(--ui-accent);
   outline-offset: 1px;
 }
@@ -523,7 +600,7 @@ main {
 }
 
 .AtomicRuby > .AtomicNumber {
-  color: var(--ui-supplement-text);
+  color: #4a4a4a;
   font-family: var(--han-monospace);
   font-size: .33em;
   font-weight: 500;
@@ -535,7 +612,7 @@ main {
 }
 
 .ElementRuby > .Symbol {
-  color: var(--ui-text);
+  color: currentColor;
   font-family: var(--han-sans);
   font-size: .34em;
   font-weight: 700;
@@ -548,7 +625,7 @@ main {
 }
 
 .ElementCell:not([data-featured]) .ElementRuby > .Symbol {
-  color: var(--ui-supplement-text);
+  color: #4a4a4a;
 }
 
 .ElementCell [data-icon] {
@@ -583,7 +660,7 @@ main {
   display: inline-block;
   min-inline-size: 2.6em;
   margin-inline-end: .45rem;
-  color: var(--module-ink);
+  color: color-mix(in srgb, var(--element-color) 45%, var(--ui-text));
   font-family: var(--han-monospace);
   font-size: .8em;
   letter-spacing: .06em;
@@ -591,18 +668,18 @@ main {
 
 .ElementTile:is(:hover, :focus-visible) .MaterialHint { display: block; }
 
-.ElementCell:nth-child(n + 4) .MaterialHint {
+.ElementCell[data-hint-block='before'] .MaterialHint {
   inset-block: auto calc(100% + .35rem);
 }
 
-.MaterialModule:nth-child(n + 5) .MaterialHint {
+.ElementCell[data-hint-inline='end'] .MaterialHint {
   inset-inline: auto -.35rem;
 }
 
 .ElementAtlas figcaption {
   display: grid;
   gap: .25rem;
-  padding: .8rem clamp(1rem, 2.5vw, 1.75rem) 1rem;
+  padding: .8rem 0 1rem;
   color: var(--ui-supplement-text);
   border-block-start: 1px solid var(--ui-row-rule);
 }
@@ -649,14 +726,13 @@ main {
   padding-block-start: 1rem;
 }
 
-#station-readings[data-writing='vertical'] .MaterialGrid { direction: rtl; }
-#station-readings[data-writing='vertical'] .MaterialModule { direction: ltr; }
+#station-readings[data-writing='vertical'] .MaterialGrid { direction: ltr; }
 
 #station-readings[data-writing='vertical'] .ElementTile {
-  inline-size: auto;
-  block-size: auto;
+  inline-size: 100%;
+  block-size: 100%;
   width: 100%;
-  height: 5.25rem;
+  height: 100%;
   --han-writing-mode: vertical-rl;
   writing-mode: vertical-rl;
 }

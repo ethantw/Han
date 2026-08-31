@@ -20,7 +20,7 @@
       <p>STATION・讀音</p>
       <h1>一字，三層注文</h1>
     </hgroup>
-    <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的三十格材料清單。</p>
+    <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的二十四格材料清單。</p>
 
     <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
       <fieldset class="ViewTabs">
@@ -39,7 +39,7 @@
     </form>
 
     <nav class="RailNav StationRailNav" data-strip-nav="readings" aria-label="移動讀音樣張">
-      <span>五聲公報／三十格材料艙</span>
+      <span>五聲公報／二十四格材料艙</span>
       <span class="RailButtons">
         <button type="button" data-scroll="prev" aria-label="向前移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
         <button type="button" data-scroll="next" aria-label="向後移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
@@ -76,7 +76,7 @@
         <header class="ColumnHead">
           <div>
             <p class="Kicker">國語・三重ruby</p>
-            <h2 id="elements-title">反物質引擎材料艙</h2>
+            <h2 id="elements-title">巴納德任務元素表</h2>
           </div>
           <button class="SpeakAll" type="button" data-speak-group="elements" data-lang="zh-TW" data-speech="鉬、銻、釩、鈹、銣、銫、鋯、鉿、錸、銥、鋨、鐠、釹、鏑、鐿、鎦">
             <span data-icon="volume" aria-hidden="true"></span>
@@ -85,15 +85,57 @@
         </header>
 
         <div class="ElementMeta">
-          <p>六個子系統、每艙五格。上為元素符號，右為注音，下為原子序；綠框可播放讀音。</p>
+          <p>位置循週期與族，顏色循元素分類。上為元素符號，右為注音，下為原子序；綠線可播放讀音。</p>
+          <ul class="ElementLegend" aria-label="元素分類色">
+            <li data-category="alkali">鹼金</li>
+            <li data-category="alkaline">鹼土</li>
+            <li data-category="transition">過渡</li>
+            <li data-category="post-transition">貧金</li>
+            <li data-category="metalloid">類金</li>
+            <li data-category="lanthanide">鑭系</li>
+            <li data-category="noble">惰性</li>
+          </ul>
         </div>
 
         <div class="MaterialViewport">
-          <div class="MaterialGrid" data-material-grid aria-label="三十種反物質引擎候選材料"></div>
+          <div class="MaterialField">
+            <svg class="BarnardMap" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <radialGradient id="barnard-glow">
+                  <stop offset="0" stop-color="currentColor" stop-opacity=".42" />
+                  <stop offset=".2" stop-color="currentColor" stop-opacity=".18" />
+                  <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+                </radialGradient>
+                <marker id="barnard-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+                </marker>
+              </defs>
+              <g class="BarnardGrid">
+                <path d="M90 94H1360M60 256H1390M110 470H1340" />
+                <path d="M240 24V590M720 10V610M1160 30V584" />
+              </g>
+              <g class="BarnardOrbit">
+                <ellipse cx="930" cy="215" rx="310" ry="128" />
+                <ellipse cx="930" cy="215" rx="188" ry="77" />
+                <circle cx="930" cy="215" r="92" fill="url(#barnard-glow)" />
+                <circle class="BarnardCore" cx="930" cy="215" r="18" />
+                <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
+                <path d="M900 215h60M930 185v60" />
+              </g>
+              <g class="BarnardStars">
+                <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
+                <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
+                <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
+              </g>
+              <text x="970" y="195">BARNARD STAR</text>
+              <text x="970" y="226">INCOMING 01687</text>
+            </svg>
+            <ol class="MaterialGrid" data-material-grid aria-label="二十四種反物質引擎候選材料"></ol>
+          </div>
         </div>
 
         <figcaption>
-          <small class="CoverageBrag">這次不硬撐全表：本盤30個繁體元素字，尚古黑實測30/30；簡體對應字是9/30。先誠實 brag 前者。</small>
+          <small class="CoverageBrag">這次不硬撐全表：本盤24個繁體元素字，尚古黑實測24/24；簡體對應字是6/24。先誠實 brag 前者。</small>
           <small>這是有科學骨架的概念艦，不是現成藍圖：反物質需以電磁場與極高真空隔離；帶電湮滅產物可由磁噴嘴導流。材料角色參考 <a href="https://home.cern/science/physics/antimatter/">CERN</a>、<a href="https://ntrs.nasa.gov/citations/20060043411">NASA NTRS</a> 與 <a href="https://www.energy.gov/cmm/what-are-critical-minerals-and-materials">DOE 關鍵材料表</a>；讀音核對自<a href="https://www.moedict.tw/">萌典</a>。</small>
         </figcaption>
       </figure>

@@ -225,82 +225,41 @@ const fillParagraph = (element, system, parts) => {
   }
 }
 
-const material = (atomic, symbol, hant, hans, aboard) => ({ atomic, symbol, hant, hans, aboard })
+const material = (atomic, symbol, hant, hans, category, column, row, system, aboard) => ({
+  atomic, symbol, hant, hans, category, column, row, system, aboard,
+})
 
-const missionModules = [
-  {
-    name: '囚籠・低溫', code: 'TRAP',
-    note: '先別讓反質子碰壁',
-    items: [
-      material(4, 'Be', '鈹', '铍', '正電子離子協同冷卻陣列'),
-      material(2, 'He', '氦', '氦', '超流體低溫磁籠'),
-      material(41, 'Nb', '鈮', '铌', '超導磁囚籠主線圈'),
-      material(21, 'Sc', '鈧', '钪', '鋁鈧外骨骼承力桁架'),
-      material(49, 'In', '銦', '铟', '極低溫真空密封與量子接點'),
-    ],
-  },
-  {
-    name: '磁喉・導流', code: 'NOZZLE',
-    note: '把帶電產物送往船尾',
-    items: [
-      material(39, 'Y', '釔', '钇', '高溫超導磁帶晶格'),
-      material(56, 'Ba', '鋇', '钡', '真空吸氣陶瓷與超導相'),
-      material(67, 'Ho', '鈥', '钬', '超高磁矩磁場整形極'),
-      material(59, 'Pr', '鐠', '镨', '永久磁致動器'),
-      material(60, 'Nd', '釹', '钕', '高磁能積姿控轉子'),
-    ],
-  },
-  {
-    name: '時計・姿控', code: 'GUIDANCE',
-    note: '一百五十年也毋通行差',
-    items: [
-      material(66, 'Dy', '鏑', '镝', '耐熱永磁穩場摻質'),
-      material(62, 'Sm', '釤', '钐', '高溫釤鈷姿控磁體'),
-      material(27, 'Co', '鈷', '钴', '釤鈷磁體與熱端超合金'),
-      material(37, 'Rb', '銣', '铷', '長航程原子鐘'),
-      material(55, 'Cs', '銫', '铯', '全艦主時間基準'),
-    ],
-  },
-  {
-    name: '熱膽・噴嘴', code: 'THERMAL',
-    note: '磁場擋得住粒子，擋袂牢熱',
-    items: [
-      material(74, 'W', '鎢', '钨', '湮滅熱盾與噴嘴喉襯'),
-      material(42, 'Mo', '鉬', '钼', '抗熱循環噴嘴骨架'),
-      material(75, 'Re', '錸', '铼', '超高溫噴嘴合金'),
-      material(73, 'Ta', '鉭', '钽', '耐蝕高溫內襯'),
-      material(72, 'Hf', '鉿', '铪', '超高溫陶瓷熱障'),
-    ],
-  },
-  {
-    name: '屏蔽・感測', code: 'SENSORS',
-    note: '看見看袂著的輻射',
-    items: [
-      material(5, 'B', '硼', '硼', '中子吸收複合屏蔽'),
-      material(64, 'Gd', '釓', '钆', '中子俘獲輻射陣列'),
-      material(51, 'Sb', '銻', '锑', '紅外與高能粒子感測層'),
-      material(70, 'Yb', '鐿', '镱', '飛秒光纖診斷與光鐘'),
-      material(71, 'Lu', '鎦', '镥', '高能輻射閃爍晶體'),
-    ],
-  },
-  {
-    name: '骨架・電極', code: 'HARDWARE',
-    note: '引擎以外，猶原愛有一條船',
-    items: [
-      material(40, 'Zr', '鋯', '锆', '超高真空耐熱艙壁'),
-      material(23, 'V', '釩', '钒', '輕質高強艦體合金'),
-      material(77, 'Ir', '銥', '铱', '極端高溫耐蝕接點'),
-      material(76, 'Os', '鋨', '锇', '超硬耐磨微機電軸承'),
-      material(44, 'Ru', '釕', '钌', '耐磨電極與催化循環'),
-    ],
-  },
+const missionElements = [
+  material(2, 'He', '氦', '氦', 'noble', 18, 1, '低溫', '超流體低溫磁籠'),
+  material(4, 'Be', '鈹', '铍', 'alkaline', 2, 2, '囚籠', '正電子離子協同冷卻陣列'),
+  material(5, 'B', '硼', '硼', 'metalloid', 13, 2, '屏蔽', '中子吸收複合屏蔽'),
+  material(21, 'Sc', '鈧', '钪', 'transition', 3, 4, '骨架', '鋁鈧外骨骼承力桁架'),
+  material(23, 'V', '釩', '钒', 'transition', 5, 4, '骨架', '輕質高強艦體合金'),
+  material(37, 'Rb', '銣', '铷', 'alkali', 1, 5, '時計', '長航程原子鐘'),
+  material(40, 'Zr', '鋯', '锆', 'transition', 4, 5, '骨架', '超高真空耐熱艙壁'),
+  material(41, 'Nb', '鈮', '铌', 'transition', 5, 5, '囚籠', '超導磁囚籠主線圈'),
+  material(42, 'Mo', '鉬', '钼', 'transition', 6, 5, '熱膽', '抗熱循環噴嘴骨架'),
+  material(44, 'Ru', '釕', '钌', 'transition', 8, 5, '電極', '耐磨電極與催化循環'),
+  material(49, 'In', '銦', '铟', 'post-transition', 13, 5, '接點', '極低溫真空密封與量子接點'),
+  material(51, 'Sb', '銻', '锑', 'metalloid', 15, 5, '感測', '紅外與高能粒子感測層'),
+  material(55, 'Cs', '銫', '铯', 'alkali', 1, 6, '時計', '全艦主時間基準'),
+  material(72, 'Hf', '鉿', '铪', 'transition', 4, 6, '熱膽', '超高溫陶瓷熱障'),
+  material(74, 'W', '鎢', '钨', 'transition', 6, 6, '熱盾', '湮滅熱盾與噴嘴喉襯'),
+  material(75, 'Re', '錸', '铼', 'transition', 7, 6, '噴嘴', '超高溫噴嘴合金'),
+  material(76, 'Os', '鋨', '锇', 'transition', 8, 6, '機件', '超硬耐磨微機電軸承'),
+  material(77, 'Ir', '銥', '铱', 'transition', 9, 6, '接點', '極端高溫耐蝕接點'),
+  material(59, 'Pr', '鐠', '镨', 'lanthanide', 6, 8, '姿控', '永久磁致動器'),
+  material(60, 'Nd', '釹', '钕', 'lanthanide', 7, 8, '姿控', '高磁能積姿控轉子'),
+  material(64, 'Gd', '釓', '钆', 'lanthanide', 11, 8, '感測', '中子俘獲輻射陣列'),
+  material(66, 'Dy', '鏑', '镝', 'lanthanide', 13, 8, '姿控', '耐熱永磁穩場摻質'),
+  material(70, 'Yb', '鐿', '镱', 'lanthanide', 17, 8, '光鐘', '飛秒光纖診斷與光鐘'),
+  material(71, 'Lu', '鎦', '镥', 'lanthanide', 18, 8, '感測', '高能輻射閃爍晶體'),
 ]
 
 const elementReadings = new Map([
   ['Be', ['ㄆㄧˊ', 'pí']], ['He', ['ㄏㄞˋ', 'hài']], ['Nb', ['ㄋㄧˊ', 'ní']], ['Sc', ['ㄎㄤˋ', 'kàng']], ['In', ['ㄧㄣ', 'yīn']],
-  ['Y', ['ㄧˇ', 'yǐ']], ['Ba', ['ㄅㄟˋ', 'bèi']], ['Ho', ['ㄏㄨㄛˇ', 'huǒ']], ['Pr', ['ㄆㄨˇ', 'pǔ']], ['Nd', ['ㄋㄩˇ', 'nǚ']],
-  ['Dy', ['ㄉㄧ', 'dī']], ['Sm', ['ㄕㄢ', 'shān']], ['Co', ['ㄍㄨ', 'gū']], ['Rb', ['ㄖㄨˊ', 'rú']], ['Cs', ['ㄙㄜˋ', 'sè']],
-  ['W', ['ㄨ', 'wū']], ['Mo', ['ㄇㄨˋ', 'mù']], ['Re', ['ㄌㄞˊ', 'lái']], ['Ta', ['ㄉㄢˋ', 'dàn']], ['Hf', ['ㄏㄚ', 'hā']],
+  ['Pr', ['ㄆㄨˇ', 'pǔ']], ['Nd', ['ㄋㄩˇ', 'nǚ']], ['Dy', ['ㄉㄧ', 'dī']], ['Rb', ['ㄖㄨˊ', 'rú']], ['Cs', ['ㄙㄜˋ', 'sè']],
+  ['W', ['ㄨ', 'wū']], ['Mo', ['ㄇㄨˋ', 'mù']], ['Re', ['ㄌㄞˊ', 'lái']], ['Hf', ['ㄏㄚ', 'hā']],
   ['B', ['ㄆㄥˊ', 'péng']], ['Gd', ['ㄍㄚˊ', 'gá']], ['Sb', ['ㄊㄧˋ', 'tì']], ['Yb', ['ㄧˋ', 'yì']], ['Lu', ['ㄌㄧㄡˊ', 'liú']],
   ['Zr', ['ㄍㄠˋ', 'gào']], ['V', ['ㄈㄢˊ', 'fán']], ['Ir', ['ㄧ', 'yī']], ['Os', ['ㄜˊ', 'é']], ['Ru', ['ㄌㄧㄠˇ', 'liǎo']],
 ])
@@ -339,56 +298,63 @@ const createElementRuby = (element, reading) => {
 
 const renderMaterialGrid = () => {
   const grid = document.querySelector('[data-material-grid]')
-  for (const [moduleIndex, module] of missionModules.entries()) {
-    const section = document.createElement('section')
-    section.className = 'MaterialModule'
-    section.style.setProperty('--module-index', moduleIndex)
+  const callout = document.createElement('li')
+  callout.className = 'MaterialCallout'
+  callout.setAttribute('aria-hidden', 'true')
+  const count = document.createElement('strong')
+  count.textContent = '24 / 118'
+  const joke = document.createElement('span')
+  joke.textContent = '其餘九十四種未獲軍團登艦許可'
+  callout.append(count, joke)
 
-    const heading = document.createElement('h3')
-    heading.innerHTML = `<span>${module.code}</span>${module.name}`
-    const note = document.createElement('p')
-    note.textContent = module.note
-    const list = document.createElement('ol')
+  const lanthanideLabel = document.createElement('li')
+  lanthanideLabel.className = 'LanthanideLabel'
+  lanthanideLabel.setAttribute('aria-hidden', 'true')
+  lanthanideLabel.textContent = '姿控與感測／鑭系'
+  grid.replaceChildren(callout, lanthanideLabel)
 
-    for (const element of module.items) {
-      const reading = elementReadings.get(element.symbol)
-      const speakable = spokenElementSymbols.has(element.symbol)
-      const item = document.createElement('li')
-      item.className = 'ElementCell'
-      item.dataset.hans = element.hans
-      if (speakable) item.dataset.featured = ''
+  for (const element of missionElements) {
+    const reading = elementReadings.get(element.symbol)
+    const speakable = spokenElementSymbols.has(element.symbol)
+    const item = document.createElement('li')
+    item.className = 'ElementCell'
+    item.dataset.category = element.category
+    item.dataset.hans = element.hans
+    item.dataset.hintBlock = element.row >= 6 ? 'before' : 'after'
+    item.dataset.hintInline = element.column >= 15 ? 'end' : 'start'
+    item.style.setProperty('--element-column', element.column)
+    item.style.setProperty('--element-row', element.row)
+    if (speakable) item.dataset.featured = ''
 
-      const tile = document.createElement(speakable ? 'button' : 'span')
-      tile.className = 'ElementTile'
-      tile.append(createElementRuby(element, reading))
-      tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・艦載：${element.aboard}`
+    const tile = document.createElement(speakable ? 'button' : 'span')
+    tile.className = 'ElementTile'
+    tile.append(createElementRuby(element, reading))
+    tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・${element.system}：${element.aboard}`
 
-      if (speakable) {
-        tile.type = 'button'
-        tile.dataset.speak = ''
-        tile.dataset.lang = 'zh-TW'
-        tile.dataset.speech = element.hant
-        tile.dataset.reading = reading[1]
-        tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；艦載用途：${element.aboard}`)
-        const icon = document.createElement('span')
-        icon.dataset.icon = 'volume'
-        icon.setAttribute('aria-hidden', 'true')
-        tile.append(icon)
-      } else {
-        tile.tabIndex = 0
-        tile.setAttribute('aria-label', `${element.atomic}號元素${element.hant}；艦載用途：${element.aboard}`)
-      }
-
-      const hint = document.createElement('small')
-      hint.className = 'MaterialHint'
-      hint.innerHTML = `<b>艦載</b>${element.aboard}`
-      tile.append(hint)
-      item.append(tile)
-      list.append(item)
+    if (speakable) {
+      tile.type = 'button'
+      tile.dataset.speak = ''
+      tile.dataset.lang = 'zh-TW'
+      tile.dataset.speech = element.hant
+      tile.dataset.reading = reading[1]
+      tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；${element.system}用途：${element.aboard}`)
+      const icon = document.createElement('span')
+      icon.dataset.icon = 'volume'
+      icon.setAttribute('aria-hidden', 'true')
+      tile.append(icon)
+    } else {
+      tile.tabIndex = 0
+      tile.setAttribute('aria-label', `${element.atomic}號元素${element.hant}；${element.system}用途：${element.aboard}`)
     }
 
-    section.append(heading, note, list)
-    grid.append(section)
+    const hint = document.createElement('small')
+    hint.className = 'MaterialHint'
+    const system = document.createElement('b')
+    system.textContent = element.system
+    hint.append(system, element.aboard)
+    tile.append(hint)
+    item.append(tile)
+    grid.append(item)
   }
 }
 
