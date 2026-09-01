@@ -48,6 +48,7 @@ const readingSystems = {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
     groupLabel: '讀全篇捷報',
     headlineSpeech: '巴納德星採礦團告捷。超導磁喉有望成真。',
+    elementsHeadlineSpeech: '巴納德任務元素表。',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄨㆩ˫ ㄙㆤ˪ ㄍㄧˋ', 'puànn sè-kí'),
@@ -120,6 +121,7 @@ const readingSystems = {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
     groupLabel: '國語讀全篇',
     headlineSpeech: '巴納德星採礦團告捷。超導磁喉有望成真。',
+    elementsHeadlineSpeech: '巴納德任務元素表。',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ', 'bàn shìjì'),
@@ -187,6 +189,7 @@ const readingSystems = {
     name: '日文', lang: 'ja-JP', listLang: 'ja', nativeLang: 'ja-Kana', romanLang: 'ja-Latn',
     roman: false, groupLabel: '日文讀全篇',
     headlineSpeech: 'バーナード星採鉱団、任務成功。超伝導磁気ノズル実現へ。',
+    elementsHeadlineSpeech: 'バーナード任務元素表。',
     paragraphs: [
       [
         annotated('半世紀', 'はんせいき', ''),
@@ -239,6 +242,7 @@ const readingSystems = {
     name: '韓文', lang: 'ko-KR', listLang: 'ko', nativeLang: 'ko-Hani', romanLang: 'ko-Latn',
     groupLabel: '韓文讀全篇',
     headlineSpeech: '바너드성 채광단 임무 성공. 초전도 자기 노즐 실현 눈앞.',
+    elementsHeadlineSpeech: '바너드 임무 원소표. ',
     paragraphs: [
       [
         annotated('반세기', '半世紀', 'bansegi'), bare(' '),
@@ -518,7 +522,7 @@ const renderElementSpeechMode = (mode) => {
     speeches.push(localized.speech)
   })
   $elementsGroup.dataset.lang = readingSystems[mode].lang
-  $elementsGroup.dataset.speech = speeches.join('、')
+  $elementsGroup.dataset.speech = `${readingSystems[mode].elementsHeadlineSpeech}${speeches.join('、')}`
 }
 
 const renderMaterialGrid = () => {

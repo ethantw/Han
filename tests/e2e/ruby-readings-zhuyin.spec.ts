@@ -38,3 +38,20 @@ test('read-all speech begins with each localized headline', async ({ page }) => 
     )
   }
 })
+
+test('element speech begins with each localized table title', async ({ page }) => {
+  await page.goto('/demo/ruby-readings.html')
+
+  const expected = [
+    ['minnan', '巴納德任務元素表。'],
+    ['mandarin', '巴納德任務元素表。'],
+    ['japanese', 'バーナード任務元素表。'],
+    ['korean', '바너드 임무 원소표. '],
+  ] as const
+
+  for (const [mode, title] of expected) {
+    await page.locator(`[name="reading-mode"][value="${mode}"]`).check({ force: true })
+    const speech = await page.locator('button[name="speak"][value="elements"]').getAttribute('data-speech')
+    expect(speech?.startsWith(title), mode).toBe(true)
+  }
+})
