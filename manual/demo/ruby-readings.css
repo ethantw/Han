@@ -447,7 +447,6 @@ main {
 
     & > ruby {
       --han-zhuyin-ruby-position: inter-character;
-      --han-ruby-zhuyin-font-size: .2em;
       position: relative;
       display: grid;
       place-items: center;
@@ -473,35 +472,39 @@ main {
       line-height: 1;
       text-overflow: clip;
       white-space: nowrap;
-      writing-mode: horizontal-tb;
     }
 
-    /* This specimen names physical faces of a square, not flow-relative
-       edges. Reset the inter-character fallback above, then pin each direct
-       rt to the requested face: 閩右、國左、日上、韓下. */
-    & > ruby > rt[lang='nan-Bopo-TW'],
-    & > ruby > rt[lang='zh-Bopo-TW'] {
+    & > ruby > ruby.zhuyin {
+      position: relative;
+      display: grid;
+      place-items: center;
+      inline-size: 100%;
+      block-size: 100%;
+    }
+
+    /* The inner ruby gets its font, scale, orientation and tone-mark
+       features from han.css. This square specimen only assigns its two rt
+       boxes to named physical faces. */
+    & > ruby > ruby.zhuyin > rt {
+      position: absolute;
+      inset: auto;
       top: 50%;
-      font-size: var(--han-ruby-zhuyin-font-size);
-      text-orientation: upright;
+      margin: 0;
       translate: 0 -50%;
-      writing-mode: vertical-rl;
     }
 
-    & > ruby > rt[lang='nan-Bopo-TW'] { right: .35rem; }
-    & > ruby > rt[lang='zh-Bopo-TW'] { left: .35rem; }
+    & > ruby > ruby.zhuyin > rt[lang='nan-Bopo-TW'] { right: .35rem; }
+    & > ruby > ruby.zhuyin > rt[lang='zh-Bopo-TW'] { left: .35rem; }
 
     & > ruby > rt[lang='ja'] {
       top: .35rem;
       left: 50%;
-      font-family: var(--han-sans);
       translate: -50% 0;
     }
 
     & > ruby > rt[lang='ko'] {
       bottom: .35rem;
       left: 50%;
-      font-family: var(--han-sans);
       translate: -50% 0;
     }
 
@@ -585,12 +588,12 @@ main {
 }
 
 .ReadingStation:has([name='reading-mode'][value='mandarin']:checked) {
-  & .Rail figure ol rt[lang='nan-Bopo-TW'] {
+  & .Rail figure ol ruby.zhuyin > rt[lang='nan-Bopo-TW'] {
     right: auto;
     left: .35rem;
   }
 
-  & .Rail figure ol rt[lang='zh-Bopo-TW'] {
+  & .Rail figure ol ruby.zhuyin > rt[lang='zh-Bopo-TW'] {
     right: .35rem;
     left: auto;
   }

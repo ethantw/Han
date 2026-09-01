@@ -447,13 +447,13 @@ const renderPhoneticLabels = () => {
 const createElementAnnotation = (lang, text, child) => {
   const annotation = document.createElement('rt')
   annotation.lang = lang
-  if (lang.includes('Bopo')) annotation.className = 'zhuyin'
   annotation.append(child ?? text)
   return annotation
 }
 
 const createElementRuby = (element) => {
   const ruby = document.createElement('ruby')
+  const phonetic = document.createElement('ruby')
   const minnan = elementMinnanReadings.get(element.symbol)
   const mandarin = elementMandarinReadings.get(element.symbol)
   const symbol = document.createElement('abbr')
@@ -463,10 +463,15 @@ const createElementRuby = (element) => {
   atomic.value = element.atomic
   atomic.textContent = element.atomic
 
-  ruby.append(
+  phonetic.className = 'zhuyin'
+  phonetic.append(
     element.hant,
     createElementAnnotation('nan-Bopo-TW', minnan[0]),
     createElementAnnotation('zh-Bopo-TW', mandarin[0]),
+  )
+
+  ruby.append(
+    phonetic,
     createElementAnnotation('ja', elementJapaneseReadings.get(element.symbol)),
     createElementAnnotation('ko', elementKoreanReadings.get(element.symbol)),
     createElementAnnotation('en', '', symbol),
