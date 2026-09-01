@@ -517,8 +517,8 @@ applies, which are `(src: Hyperly) => Hype`.
 `applyISSWithProbe` = `applyISS` + memoized Safari boundary-bug probe
 (`detectAutospaceBoundaryBug`) — prefer it in browsers.
 
-Per-pass calls do NOT chunk internally — on documents that may exceed
-~7,500 nodes wrap them: `runPassChunked(root, pass)` (§9).
+Per-pass calls do NOT chunk internally — on large documents wrap them with
+`runPassChunked(root, pass)` (§9).
 
 Exported constants (advanced): `PUNCT_OPEN_CHARS`, `PUNCT_CLOSE_CHARS`,
 `PUNCT_END_EXTRA`, `PUNCT_MIDDLE_CHARS`, `PUNCT_INTERPUNCT_CHARS`,
@@ -602,10 +602,10 @@ individually per the matrix.
 - **`installFallbacks` is one-shot**: no MutationObserver; dynamically
   inserted content needs an explicit call.
 - **Large documents: `installFallbacks` chunks automatically.** The DOM
-  walk recurses per node and a single straight call over roughly **7,500+
-  nodes** would throw `RangeError: Maximum call stack size exceeded`
-  (measured 2026-08-05, Chromium; threshold is node COUNT, not nesting
-  depth) — and fail *partially*, leaving the page merely under-refined.
+  walk recurses per node, so a sufficiently large straight call can throw
+  `RangeError: Maximum call stack size exceeded`. The risk follows node count,
+  not nesting depth, and failure can be *partial*, leaving the page merely
+  under-refined.
   `installFallbacks` therefore splits the work internally at element-only
   tree levels (never inside inline flow, so punctuation look-ahead and
   `markAdjacentLines` sibling pairs stay intact; `src/ts/helpers/chunk.ts`).
@@ -634,8 +634,6 @@ individually per the matrix.
   `<cite>`, leaves that element's own pseudo-elements unchanged (the query
   reads the container) while descendants — including the punctuation
   wrappers inside it — do see the new value, so the two halves disagree.
-- **Style queries in Firefox**: toggle-gated CSS inert until Gecko ships
-  `@container style()`.
 - **`<rtc>`/tabular ruby**: not rendered by any engine; run `transpileRuby`.
 - **Unmirrored vertical subtrees**: han.css cannot read `writing-mode` and
   assumes horizontal — zhuyin tone marks get the horizontal `salt` form and
