@@ -284,7 +284,7 @@ main {
   }
 
   & > article {
-    inline-size: min(37rem, calc(100vw - 2 * var(--station-gutter)));
+    inline-size: min(25rem, calc(100vw - 2 * var(--station-gutter)));
 
     & > header { border-block-end: 0; }
   }
@@ -295,7 +295,7 @@ main {
     display: flex;
     gap: 1rem;
     justify-content: space-between;
-    align-items: end;
+    align-items: start;
     min-block-size: 7.5rem;
     padding-block: 1.5rem;
     border-block-end: 1px solid var(--ui-row-rule);
@@ -491,6 +491,10 @@ main {
       position: absolute;
       inset: auto;
       top: 50%;
+      display: inline-flex;
+      justify-content: center;
+      inline-size: 3em;
+      block-size: 1em;
       margin: 0;
       translate: 0 -50%;
       writing-mode: vertical-rl;
@@ -500,13 +504,13 @@ main {
     & > ruby > ruby.zhuyin > rt[lang='zh-Bopo-TW'] { left: .35rem; }
 
     & > ruby > rt[lang='ja'] {
-      top: .35rem;
+      top: .875rem;
       left: 50%;
       translate: -50% 0;
     }
 
     & > ruby > rt[lang='ko'] {
-      bottom: .35rem;
+      bottom: .875rem;
       left: 50%;
       translate: -50% 0;
     }
@@ -605,11 +609,11 @@ main {
 .ReadingStation:has([name='reading-mode'][value='korean']:checked) {
   & .Rail figure ol rt[lang='ja'] {
     top: auto;
-    bottom: .35rem;
+    bottom: .875rem;
   }
 
   & .Rail figure ol rt[lang='ko'] {
-    top: .35rem;
+    top: .875rem;
     bottom: auto;
   }
 }
@@ -619,7 +623,7 @@ main {
   & > nav button[value='next']::before { scale: 1 1; }
 
   & .Rail {
-    gap: 1.5rem;
+    gap: .75rem;
     direction: rtl;
   }
 
@@ -629,10 +633,6 @@ main {
     grid-template-columns: 1fr auto;
     grid-template-rows: 1fr;
     block-size: min(38rem, 72vh);
-  }
-
-  & .Rail > article {
-    inline-size: min(40rem, calc(100vw - 2 * var(--station-gutter)));
   }
 
   & .Rail > figure {
@@ -701,7 +701,7 @@ main {
       grid-template-columns: repeat(6, 6.25rem);
       grid-template-rows: repeat(4, 6.25rem);
       grid-auto-flow: column;
-      align-self: center;
+      align-self: start;
       justify-self: center;
       padding: 0 1rem;
     }
