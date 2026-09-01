@@ -32,7 +32,6 @@ const station = document.querySelector('[data-station="readings"]')
 const dispatch = document.querySelector('.Dispatch')
 const numbersGroup = document.querySelector('[data-speak-group="numbers"]')
 const groupLabel = document.querySelector('[data-speak-group-label]')
-const storyTitle = document.querySelector('#story-title')
 const statusBar = document.querySelector('.SpeechStatus')
 const status = document.querySelector('[data-speech-status]')
 
@@ -43,7 +42,7 @@ const directional = (horizontal, vertical) => ({ directional: { horizontal, vert
 const readingSystems = {
   minnan: {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
-    title: ['球際採礦軍團', '喜馬拉雅一六八七師第十艦隻'], groupLabel: '讀全篇捷報',
+    groupLabel: '讀全篇捷報',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄨㆩ˫ ㄙㆤ˪ ㄍㄧˋ', 'puànn sè-kí'),
@@ -114,7 +113,7 @@ const readingSystems = {
   },
   mandarin: {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
-    title: ['球際採礦軍團', '喜馬拉雅一六八七師第十艦隻'], groupLabel: '國語讀全篇',
+    groupLabel: '國語讀全篇',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ', 'bàn shìjì'),
@@ -180,7 +179,7 @@ const readingSystems = {
   },
   japanese: {
     name: '日文', lang: 'ja-JP', listLang: 'ja', nativeLang: 'ja-Kana', romanLang: 'ja-Latn',
-    roman: false, title: ['惑星間採鉱軍団', 'ヒマラヤ一六八七師団第十艦'], groupLabel: '日文讀全篇',
+    roman: false, groupLabel: '日文讀全篇',
     paragraphs: [
       [
         annotated('半世紀', 'はんせいき', ''),
@@ -231,7 +230,7 @@ const readingSystems = {
   },
   korean: {
     name: '韓文', lang: 'ko-KR', listLang: 'ko', nativeLang: 'ko-Hani', romanLang: 'ko-Latn',
-    title: ['행성간 채광 군단', '히말라야 일육팔칠 사단 제십 함정'], groupLabel: '韓文讀全篇',
+    groupLabel: '韓文讀全篇',
     paragraphs: [
       [
         annotated('반세기', '半世紀', 'bansegi'), bare(' '),
@@ -367,16 +366,22 @@ const elementReadings = new Map([
   ['Zr', ['ㄍㄠˋ', 'gào']], ['V', ['ㄈㄢˊ', 'fán']], ['Ir', ['ㄧ', 'yī']], ['Os', ['ㄜˊ', 'é']], ['Ru', ['ㄌㄧㄠˇ', 'liǎo']],
 ])
 
-const spokenElementSymbols = new Set(['Mo', 'Sb', 'V', 'Be', 'Rb', 'Cs', 'Zr', 'Hf', 'Re', 'Ir', 'Os', 'Pr', 'Nd', 'Dy', 'Yb', 'Lu'])
-
-const verticalVolumes = [
-  { row: 1, column: 1, label: '第一週期' },
-  { row: 2, column: 2, label: '第二週期' },
-  { row: 4, column: 3, label: '第四週期' },
-  { row: 5, column: 4, label: '第五週期' },
-  { row: 6, column: 5, label: '第六週期' },
-  { row: 8, column: 6, label: '鑭系別卷' },
-]
+const renderPhoneticLabels = () => {
+  document.querySelectorAll('.PhoneticLabel[data-zhuyin]').forEach((label) => {
+    const characters = [...label.textContent]
+    const readings = label.dataset.zhuyin.split(' ')
+    label.classList.add('ComplexReading')
+    label.replaceChildren(...characters.map((character, index) => {
+      const ruby = document.createElement('ruby')
+      ruby.className = 'InterCharacterReading zhuyin'
+      const rt = document.createElement('rt')
+      rt.lang = 'zh-Bopo-TW'
+      rt.textContent = readings[index]
+      ruby.append(character, rt)
+      return ruby
+    }))
+  })
+}
 
 const createElementRuby = (element, reading) => {
   const atomicRuby = document.createElement('ruby')
@@ -410,35 +415,10 @@ const createElementRuby = (element, reading) => {
 
 const renderMaterialGrid = () => {
   const grid = document.querySelector('[data-material-grid]')
-  const callout = document.createElement('li')
-  callout.className = 'MaterialCallout'
-  callout.setAttribute('aria-hidden', 'true')
-  const count = document.createElement('strong')
-  count.textContent = '24 / 118'
-  const joke = document.createElement('span')
-  joke.textContent = '其餘九十四種未獲軍團登艦許可'
-  callout.append(count, joke)
-
-  const lanthanideLabel = document.createElement('li')
-  lanthanideLabel.className = 'LanthanideLabel'
-  lanthanideLabel.setAttribute('aria-hidden', 'true')
-  lanthanideLabel.textContent = '姿控與感測／鑭系'
-
-  const periodLabels = verticalVolumes.map((volume) => {
-    const label = document.createElement('li')
-    label.className = 'PeriodLabel'
-    label.setAttribute('aria-hidden', 'true')
-    label.style.setProperty('--vertical-column', volume.column)
-    label.textContent = volume.label
-    return label
-  })
-  grid.replaceChildren(callout, lanthanideLabel, ...periodLabels)
-
-  const verticalIndexes = new Map()
+  grid.replaceChildren()
 
   for (const element of missionElements) {
     const reading = elementReadings.get(element.symbol)
-    const speakable = spokenElementSymbols.has(element.symbol)
     const item = document.createElement('li')
     item.className = 'ElementCell'
     item.dataset.category = element.category
@@ -446,35 +426,21 @@ const renderMaterialGrid = () => {
     item.dataset.hintBlock = element.row >= 6 ? 'before' : 'after'
     item.dataset.hintInline = element.column >= 15 ? 'end' : 'start'
     item.dataset.group = element.row === 8 ? '鑭' : `${element.column}族`
-    item.style.setProperty('--element-column', element.column)
-    item.style.setProperty('--element-row', element.row)
-    const volume = verticalVolumes.find((candidate) => candidate.row === element.row)
-    const verticalIndex = (verticalIndexes.get(element.row) ?? 0) + 1
-    verticalIndexes.set(element.row, verticalIndex)
-    item.style.setProperty('--vertical-column', volume.column)
-    item.style.setProperty('--vertical-grid-row', verticalIndex + 1)
-    if (speakable) item.dataset.featured = ''
-
-    const tile = document.createElement(speakable ? 'button' : 'span')
+    const tile = document.createElement('button')
     tile.className = 'ElementTile'
     tile.append(createElementRuby(element, reading))
     tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・${element.system}：${element.aboard}`
 
-    if (speakable) {
-      tile.type = 'button'
-      tile.dataset.speak = ''
-      tile.dataset.lang = 'zh-TW'
-      tile.dataset.speech = element.hant
-      tile.dataset.reading = reading[1]
-      tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；${element.system}用途：${element.aboard}`)
-      const icon = document.createElement('span')
-      icon.dataset.icon = 'volume'
-      icon.setAttribute('aria-hidden', 'true')
-      tile.append(icon)
-    } else {
-      tile.tabIndex = 0
-      tile.setAttribute('aria-label', `${element.atomic}號元素${element.hant}；${element.system}用途：${element.aboard}`)
-    }
+    tile.type = 'button'
+    tile.dataset.speak = ''
+    tile.dataset.lang = 'zh-TW'
+    tile.dataset.speech = element.hant
+    tile.dataset.reading = reading[1]
+    tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；${element.system}用途：${element.aboard}`)
+    const icon = document.createElement('span')
+    icon.dataset.icon = 'volume'
+    icon.setAttribute('aria-hidden', 'true')
+    tile.append(icon)
 
     const hint = document.createElement('small')
     hint.className = 'MaterialHint'
@@ -545,7 +511,6 @@ const renderReadingSystem = (mode) => {
   currentMode = mode
   station.dataset.readingMode = mode
   dispatch.lang = system.listLang
-  storyTitle.replaceChildren(system.title[0], document.createElement('br'), system.title[1])
   groupLabel.textContent = system.groupLabel
   numbersGroup.dataset.lang = system.lang
   fillParagraph(document.querySelector('[data-dispatch-copy]'), system, system.paragraphs[0])
@@ -617,6 +582,7 @@ const speak = (button) => {
   synth.speak(utterance)
 }
 
+renderPhoneticLabels()
 renderMaterialGrid()
 renderReadingSystem(currentMode)
 
