@@ -146,13 +146,11 @@
 }
 
 /**
- * Writing-mode mirror (書寫方向鏡射) — library-wide infrastructure. CSS
- * cannot condition on `writing-mode` itself (style queries read custom
- * properties only), so every direction-dependent behaviour reads this
- * mirror instead, and declaring it alongside every `writing-mode` — same
- * element, same value — is a documented prerequisite for vertical text.
- * Undeclared vertical = assumed horizontal = wrong output. Retires when
- * arbitrary-property style queries ship.
+ * Writing-mode hint (書寫方向提示) for features that need to branch on an
+ * ancestor's direction. CSS cannot condition on `writing-mode` itself (style
+ * queries read custom properties only), so vertical zhuyin ruby mirrors the
+ * native value here. Ordinary vertical text does not need this property.
+ * Retires when arbitrary-property style queries ship.
  */
 @property --han-writing-mode {
   syntax: "horizontal-tb | vertical-rl | vertical-lr";

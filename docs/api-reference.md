@@ -84,9 +84,10 @@ install.
 - Content in a language han.css doesn't target (`en`, …) is untouched — safe
   to install on multilingual sites.
 
-**Vertical writing prerequisite.** CSS cannot condition on `writing-mode`
-(style queries read custom properties only), so han.css cannot see your
-vertical subtrees. Wherever you declare `writing-mode`, mirror its value:
+**Vertical zhuyin ruby.** Ordinary vertical text needs only `writing-mode`.
+If a vertical subtree contains `ruby.zhuyin` or `ruby.mps`, also mirror that
+value into `--han-writing-mode`: CSS cannot query the computed
+`writing-mode`, while the zhuyin treatment needs to choose its vertical form.
 
 ```css
 .tategaki {
@@ -95,9 +96,9 @@ vertical subtrees. Wherever you declare `writing-mode`, mirror its value:
 }
 ```
 
-Horizontal documents never touch this. An unmirrored vertical subtree is
-assumed horizontal and direction-dependent behavior (zhuyin tone marks,
-inter-character geometry) renders wrong there. See §4.3.
+Pages without vertical zhuyin ruby can omit the custom property. Within
+vertical zhuyin, an omitted mirror is assumed horizontal, so tone marks and
+inter-character fallback geometry can render incorrectly. See §4.3.
 
 ## 2. Install & load order
 
@@ -247,7 +248,7 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-title-marks` | quote-char sequence | `《》〈〉` (ja/ko-Kore: re-pointed to `--han-quotes`) | `<cite>` bracket glyphs |
 | `--han-q-quotes` | `on \| off` | `on` | `<q>` quotation marks (引號): whether they are drawn at all. The switch half of the pair `--han-quotes` completes — glyphs there, on/off here. Prefer it over `q { quotes: none }`: only a queryable value keeps the hanging-punctuation pass in step (a mark ending a `<q>` stops hanging because a close bracket follows it) |
 | `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Kore: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
-| `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | **Library-wide writing-mode mirror** (see §1 prerequisite) — declare alongside every `writing-mode`, same value. Consumed by direction-dependent behavior (zhuyin, below); retires when arbitrary-property style queries ship |
+| `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | Optional writing-mode hint for zhuyin ruby. Set it alongside `writing-mode` when a vertical subtree contains zhuyin; ordinary vertical text does not need it. Retires when arbitrary-property style queries ship |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
 | `--han-ruby-zhuyin-font-size` | `<length>` | `.3em` | 注音字級；`em` 在 `<rt>` 上解析 |
 | `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對合成的 ideographic ink seat 的光學微調；正值向上、負值向下，以 rt-em 表示。此 seat 是 Han Metrics 校準的基準，非目前字體每個 glyph 的實際墨跡下緣。 |
@@ -628,17 +629,18 @@ individually per the matrix.
   `open-quote`/`close-quote` keyword either way. The mark then stops hanging
   with nothing after it. `--han-quotes: none` is not an off switch either —
   han.css re-declares that variable per element under `:where(:lang(zh), …)`,
-  so an ancestor's value never reaches the `<q>` (measured 2026-08-11).
+  so an ancestor's value never reaches the `<q>`.
 - **Style-query switches must be set on an ANCESTOR**, never the element
   they govern: `--han-q-quotes` on a `<q>`, or `--han-cite-title-marks` on a
   `<cite>`, leaves that element's own pseudo-elements unchanged (the query
   reads the container) while descendants — including the punctuation
   wrappers inside it — do see the new value, so the two halves disagree.
 - **`<rtc>`/tabular ruby**: not rendered by any engine; run `transpileRuby`.
-- **Unmirrored vertical subtrees**: han.css cannot read `writing-mode` and
-  assumes horizontal — zhuyin tone marks get the horizontal `salt` form and
-  the inter-character fallback geometry doesn't stand down. Not detectable,
-  not repairable from CSS; declare the `--han-writing-mode` mirror (§1).
+- **Vertical zhuyin without `--han-writing-mode`**: han.css cannot read the
+  computed `writing-mode` and assumes horizontal — tone marks get the
+  horizontal `salt` form and the inter-character fallback geometry doesn't
+  stand down. Ordinary vertical text is unaffected; when a vertical subtree
+  contains zhuyin ruby, declare the mirror described in §1.
 
 ## 10. Versioning & migration
 

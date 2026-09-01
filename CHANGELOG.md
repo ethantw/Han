@@ -19,11 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   self-neutralize in vertical writing (native engines do, per CSS Ruby L1).
 
 - **`--han-writing-mode`** (`horizontal-tb | vertical-rl | vertical-lr`,
-  default `horizontal-tb`) — library-wide writing-mode mirror. CSS style
-  queries can't read native properties, so vertical subtrees must
-  redeclare their `writing-mode` value into this variable (copy-paste,
-  same rule). Consumed by zhuyin ruby today; retires once CSS
-  Conditional 5 arbitrary-property style queries ship.
+  default `horizontal-tb`) — optional writing-mode hint for vertical zhuyin
+  ruby. CSS style queries can't read native properties, so a subtree that
+  combines vertical writing with zhuyin mirrors its `writing-mode` value into
+  this variable (copy-paste, same rule). Ordinary vertical text does not need
+  it; retires once CSS Conditional 5 arbitrary-property style queries ship.
 
 - **`--han-monospace`** composite font stack (+ its `--han-font-latin-mono`
   swap slot, default `ui-monospace, Menlo, Consolas`) — for authors to put
@@ -76,10 +76,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Breaking: vertical-writing pages must declare the
-  `--han-writing-mode` mirror** on their vertical subtrees; unmirrored
-  vertical content is assumed horizontal and renders zhuyin wrong.
-  Horizontal pages are unaffected.
+- **Breaking: vertical zhuyin ruby must declare the `--han-writing-mode`
+  mirror** on its vertical subtree; otherwise its direction-dependent
+  treatment assumes horizontal. Vertical text without zhuyin and all
+  horizontal pages are unaffected.
 - **Breaking: zhuyin ruby now defaults to `over` (interlinear), not
   `inter-character`.** The previous hard-wired inter-character rendering
   is behind the opt-in above. Rationale: `over` is correct in both

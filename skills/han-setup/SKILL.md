@@ -160,17 +160,19 @@ han.css keys everything off `:lang()`. Before any install:
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;
   Astro → layout `<html lang>`; i18n routing → per-locale lang.
 
-**Writing-mode mirror (same class of obligation).** han.css cannot read
-`writing-mode` from CSS. For every `writing-mode: vertical-*` declaration
-detection found, add the mirror on the same rule — copy-paste the value:
+**Writing-mode mirror (only for vertical zhuyin).** Ordinary vertical text
+does not need `--han-writing-mode`. When detection finds `ruby.zhuyin` or
+`ruby.mps` inside a `writing-mode: vertical-*` subtree, add the mirror on that
+same rule — copy-paste the value:
 
 ```css
 writing-mode: vertical-rl;
 --han-writing-mode: vertical-rl;
 ```
 
-Do this unprompted and tell the user why. An unmirrored vertical subtree
-renders zhuyin (and future direction-dependent features) wrong.
+Do this unprompted only for a vertical subtree that contains zhuyin ruby, and
+tell the user why. Otherwise omit it; do not present the variable as a general
+vertical-writing requirement.
 
 ## Step 3 — Generate
 
