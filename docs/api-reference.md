@@ -384,10 +384,6 @@ Block indentation is **not** here — it is a semantics-module grid, gated by
 `--han-semantics` and applied wherever the container is CJK. See
 `--han-structural-indent` in §4.3.
 
-han.css sets no `text-align`. If you justify your own prose, give any
-`pre-wrap` `<pre>` inside it `text-align: start` — justify stretches
-inter-token gaps in wrapped code.
-
 ### 4.6 Internal — not API
 
 `--han-probe-autospace`, `--han-state-hanging-punctuation`. Written by the
@@ -600,9 +596,6 @@ browsers; features degrade individually per the matrix.
   trim-start` on `:root` halves a full-width opening bracket that begins
   such a box. Fix per box: `text-spacing-trim: space-first`. Applies to any
   inline element you promote for transforms/decoration.
-- **`text-align: justify` + wrapped `<pre>`**: han.css sets no alignment, but
-  if you justify prose yourself, wrapped code needs `text-align: start` —
-  see §4.5.
 - **Hanging + `::first-line`**: the hang layer is an atomic inline, and
   first-line styles don't inherit into atomic inline contents — so
   `::first-line` styling won't reach a hung mark. (`::selection`,
