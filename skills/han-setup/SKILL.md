@@ -143,11 +143,7 @@ han.css keys everything off `:lang()`. Before any install:
   ```css
   h2 {
     &,
-    & :where(
-      [lang]:lang(zh),
-      [lang]:lang(ja),
-      [lang]:lang(ko)
-    ) {
+    & [lang]:where(:lang(zh), :lang(ja), :lang(ko)) {
       font-family: var(--han-font-alternative);
     }
   }
