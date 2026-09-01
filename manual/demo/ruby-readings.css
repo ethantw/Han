@@ -356,6 +356,7 @@ main {
 }
 
 .Dispatch {
+  inline-size: 25em;
   padding-block: 1.5rem;
   font-family: var(--han-font-alternative);
   font-size: 1em;
