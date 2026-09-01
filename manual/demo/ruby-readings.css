@@ -717,8 +717,8 @@ main {
       direction: rtl;
       grid-column: 1;
       grid-row: 1;
-      grid-template-columns: repeat(6, 6.25rem);
-      grid-template-rows: repeat(4, 6.25rem);
+      grid-template-columns: repeat(4, 6.25rem);
+      grid-template-rows: repeat(6, 6.25rem);
       grid-auto-flow: column;
       align-self: start;
       justify-self: center;
