@@ -55,13 +55,13 @@ const readingSystems = {
         annotated('採礦', 'ㄘㄞˋ ㄎㆲ˪', 'tshái-khòng'),
         annotated('軍團', 'ㄍㄨㄣ ㄊㄨㄢˊ', 'kun-thuân'),
         annotated('喜馬拉雅', 'ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ', 'Hí-má-la̍h-ngá'),
-        annotated('一六八七', 'ㄧㆵ ㄌㄧㆦㆶ̇ ㄅㆤㆷ ㄑㄧㆵ', 'it-lio̍k-peh-tshit', 'id'),
+        annotated('一六八七', 'ㄧㆵ ㄌㄧㆦㄍ̇ ㄅㆤㆷ ㄑㄧㆵ', 'it-lio̍k-peh-tshit', 'id'),
         annotated('師', 'ㄙㄨ', 'su'),
         annotated('第', 'ㄉㆤ˫', 'tē'),
         annotated('十', 'ㄒㄧㆴ̇', 'si̍p', 'id'),
         annotated('艦隻', 'ㄌㄚㆬ˫ ㄗㄧㄚㆷ', 'lām-tsiah'), bare('，'),
         annotated('佇', 'ㄉㄧ˫', 'tī'),
-        annotated('巴納德', 'ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㆶ̇', 'Pa-na̍p-tik'),
+        annotated('巴納德', 'ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㄍ̇', 'Pa-na̍p-tik'),
         annotated('星系', 'ㄑㆥ ㄏㆤ˫', 'tshenn-hē'),
         annotated('傳來', 'ㄊㄨㄢˊ ㄌㄞˊ', 'thuân-lâi'),
         annotated('捷報', 'ㄗㄧㄚㆵ̇ ㄅㄜ˪', 'tsia̍t-pò'), bare('；'),
@@ -102,7 +102,7 @@ const readingSystems = {
         annotated('磁喉', 'ㄗㄨˊ ㄠˊ', 'tsû-âu'),
         annotated('熱盾', 'ㄖㄨㄚㆵ̇ ㄉㄨㄣ˫', 'jua̍t-tūn'),
         annotated('佮', 'ㄍㄚㆷ', 'kah'),
-        annotated('偵測器', 'ㄐㄧㄥ ㄑㄧㆶ ㄎㄧ˪', 'tsing-tshik-khì'), bare('，'),
+        annotated('偵測器', 'ㄐㄧㄥ ㄑㄧㄍ ㄎㄧ˪', 'tsing-tshik-khì'), bare('，'),
         annotated('對', 'ㄉㄨㄧ˪', 'tuì'),
         annotated('圖紙', 'ㄉㆦˊ ㄗㄨㄚˋ', 'tôo-tsuá'),
         annotated('搬入', 'ㄅㄨㄢ ㄖㄧㆴ̇', 'puann-ji̍p'),
@@ -378,10 +378,10 @@ const elementMandarinReadings = new Map([
 const elementMinnanReadings = new Map([
   ['He', ['ㄏㄞ˫', 'hāi']], ['Be', ['ㄆㄧˊ', 'phî']], ['B', ['ㄆㄧㄥˊ', 'phîng']], ['Sc', ['ㄎㆲ˪', 'khòng']],
   ['V', ['ㄏㄨㄢˊ', 'huân']], ['Rb', ['ㆡㄨˊ', 'jû']], ['Zr', ['ㄍㄜ˪', 'kò']], ['Nb', ['ㄋㄧˊ', 'nî']],
-  ['Mo', ['ㆠㆦㆶ̇', 'bo̍k']], ['Ru', ['ㄌㄧㄠˋ', 'liáu']], ['In', ['ㄧㄣ', 'in']], ['Sb', ['ㄉㆤ˫', 'tē']],
-  ['Cs', ['ㄒㄧㆶ', 'sik']], ['Hf', ['ㄏㄚㆴ', 'hap']], ['W', ['ㄜ', 'oo']], ['Re', ['ㄌㄞˊ', 'lâi']],
+  ['Mo', ['ㆠㆦㄍ̇', 'bo̍k']], ['Ru', ['ㄌㄧㄠˋ', 'liáu']], ['In', ['ㄧㄣ', 'in']], ['Sb', ['ㄉㆤ˫', 'tē']],
+  ['Cs', ['ㄒㄧㄍ', 'sik']], ['Hf', ['ㄏㄚㆴ', 'hap']], ['W', ['ㄜ', 'oo']], ['Re', ['ㄌㄞˊ', 'lâi']],
   ['Os', ['ㆣㄜˊ', 'gô']], ['Ir', ['ㄧ', 'i']], ['Pr', ['ㄆㄜˋ', 'phóo']], ['Nd', ['ㄌㄨˊ', 'lú']],
-  ['Gd', ['ㄍㄚㆵ', 'kat']], ['Dy', ['ㄉㄧㆶ', 'tik']], ['Yb', ['ㄧ˪', 'ì']], ['Lu', ['ㄌㄧㄨˊ', 'liû']],
+  ['Gd', ['ㄍㄚㆵ', 'kat']], ['Dy', ['ㄉㄧㄍ', 'tik']], ['Yb', ['ㄧ˪', 'ì']], ['Lu', ['ㄌㄧㄨˊ', 'liû']],
 ])
 
 const elementJapaneseReadings = new Map([
