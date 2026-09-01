@@ -323,7 +323,6 @@ main {
 
     & h2 {
       margin: 0;
-      --han-font-role: alternative;
       font-family: var(--han-font-alternative);
       font-size: 1.75em;
       font-weight: 550;

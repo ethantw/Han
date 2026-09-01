@@ -252,11 +252,6 @@
   --han-font-accent: var(--han-cursive);
   --han-font-zhuyin-serif: var(--han-cursive);
 
-  /* Font-role provenance for fonts.css's locale-boundary re-resolution.
-   * Static in han.basic.css; registered and consumed only when the fonts
-   * module is present. See fonts.css § Font role propagation. */
-  --han-font-role: default;
-
   /* Public zhuyin tuning surface. These remain unregistered: their em values
    * must resolve against each ruby/rt at the consumption site instead of
    * being absolutised on :root. */
@@ -335,14 +330,27 @@
  *   get a CJK default from somewhere, and this is the only candidate.
  * • Root-relative font units (`ch`, `ex`) resolve against the root's own
  *   font, so moving this declaration to `<body>` would silently shift them.
- *
- * Keep this module's declaration on `:root` only. `han.basic.css` has no
- * locale-varying font slots, so re-declaring a default family on `body` or
- * `[lang]` would only clobber an inherited serif, cursive, or author stack.
- * When fonts.css is present it owns the body unfreezer and role-aware
- * language-boundary declarations, next to the composites they re-resolve.
  */
-:where(:root):where(:lang(zh), :lang(ja), :lang(ko)) {
+/**
+ * Declared at THREE anchors, not `:root` alone — each is load-bearing:
+ *
+ *   :root   ch/ex root-relative units resolve against the root's own font,
+ *           so the root must carry the stack itself (see the block above).
+ *   body    THE UNFREEZER. `:root` is the one element style queries cannot
+ *           reach (no ancestor), so its composite bakes the `HanNone`
+ *           sentinels and — font-family inheriting as the COMPUTED string —
+ *           the whole page inherits that frozen stack. `<body>`'s ancestor
+ *           IS queryable (initial values → the default @container branches
+ *           fire), so re-declaring here re-substitutes the composite with
+ *           real slot values and every descendant inherits a working stack.
+ *           Without this line, han.css alone (no page CSS re-declaring
+ *           font-family anywhere) never delivers the webfont layers —
+ *           found by the bare-page demo, where nothing else declares fonts.
+ *   [lang]  every explicit language boundary re-resolves with ITS OWN
+ *           per-locale slots — a `<section lang="ja">` inside a zh page
+ *           gets the ja stacks instead of inheriting zh's resolved string.
+ */
+:where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
   font-family: var(--han-font-default);
 }
 
@@ -593,7 +601,6 @@
    * Use cursive generic family for `i` elements instead.
    */
   :where(i:is(:lang(zh), :lang(ja), :lang(ko))) {
-    --han-font-role: accent;
     font-family: var(--han-font-accent);
   }
 
@@ -609,7 +616,6 @@
    * Use cursive generic family for `var` elements instead.
    */
   :where(var:is(:lang(zh), :lang(ja), :lang(ko))) {
-    --han-font-role: accent;
     font-family: var(--han-font-accent);
   }
 }
@@ -690,10 +696,6 @@
    * nearby `text-box-edge: ideographic-ink` future-path note. */
   & {
     --han-ruby-zhuyin-used-ideographic-ink-descent: .075em;
-    /* Zhuyin owns a dedicated annotation face.  Keep an explicit language
-     * boundary on its rt from redispatching the surrounding text role over
-     * that face in the fonts module. */
-    --han-font-role: custom;
   }
 
   :where(& > rt) {

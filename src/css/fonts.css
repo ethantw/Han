@@ -216,35 +216,6 @@
 }
 
 /**
- * Font role carried across explicit language boundaries.
- *
- * `font-family` inherits as an already-computed string, so a `[lang]`
- * descendant cannot discover whether its ancestor selected
- * `--han-font-default`, `--han-font-alternative`, `--han-font-accent`, or an
- * unrelated author stack. Authors selecting one of Han.css's three roles on
- * a container therefore mirror that choice here:
- *
- *   .headline {
- *     --han-font-role: alternative;
- *     font-family: var(--han-font-alternative);
- *   }
- *
- * Language descendants then re-substitute the same role with their own
- * punctuation/CJK slots. `custom` deliberately disables that re-declaration
- * and preserves an arbitrary inherited stack verbatim; CSS cannot splice
- * locale slots into an opaque computed `font-family`.
- *
- * Like other style-query controls, set this on an ANCESTOR of the `[lang]`
- * boundary. The element carrying the role still needs its own `font-family`
- * declaration; style queries cannot query the subject itself.
- */
-@property --han-font-role {
-  syntax: "default | alternative | accent | custom";
-  inherits: true;
-  initial-value: default;
-}
-
-/**
  * Slot registrations・the composite-stack contract
  *
  * `--han-font-default / -alternative / -accent` comma-join these six slot
@@ -409,48 +380,6 @@
 @container style(--han-use-metrics: off) {
   :where(*) {
     --han-font-metrics: HanNone;
-  }
-}
-
-/* ========================================================================== *
- * Font role propagation across language boundaries
- * ========================================================================== */
-
-/**
- * `<body>` is the unconditional document unfreezer. `:root` cannot match the
- * ancestor-based font mode style queries, so its composites contain HanNone
- * sentinels; re-declaring the default role on body substitutes the slots that
- * are live there. Keep this unconditional for bare pages with no author CSS.
- *
- * Explicit `[lang]` boundaries are different: they must preserve the role
- * selected by their ancestor while re-substituting that role's composite with
- * their own locale slots. The inherited enum above is provenance that native
- * `font-family` does not retain. `custom` intentionally has no block, so the
- * author's already-computed stack inherits untouched.
- *
- * Engines without custom-property style queries keep the inherited computed
- * stack. They therefore preserve the role but cannot re-resolve locale slots,
- * matching the fonts module's existing degradation for all mode-driven slots.
- */
-:where(body):where(:lang(zh), :lang(ja), :lang(ko)) {
-  font-family: var(--han-font-default);
-}
-
-@container style(--han-font-role: default) {
-  :where([lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
-    font-family: var(--han-font-default);
-  }
-}
-
-@container style(--han-font-role: alternative) {
-  :where([lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
-    font-family: var(--han-font-alternative);
-  }
-}
-
-@container style(--han-font-role: accent) {
-  :where([lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
-    font-family: var(--han-font-accent);
   }
 }
 
