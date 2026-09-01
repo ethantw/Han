@@ -429,7 +429,7 @@ main {
 
   & ol {
     display: grid;
-    grid-template-columns: repeat(8, 6.25rem);
+    grid-template-columns: repeat(6, 6.25rem);
     gap: .25rem;
     inline-size: max-content;
     margin: 0;
@@ -717,8 +717,8 @@ main {
       direction: rtl;
       grid-column: 1;
       grid-row: 1;
-      grid-template-columns: repeat(3, 6.25rem);
-      grid-template-rows: repeat(8, 6.25rem);
+      grid-template-columns: repeat(6, 6.25rem);
+      grid-template-rows: repeat(4, 6.25rem);
       grid-auto-flow: column;
       align-self: start;
       justify-self: center;
