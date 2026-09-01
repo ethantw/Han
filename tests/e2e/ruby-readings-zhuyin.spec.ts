@@ -24,10 +24,10 @@ test('read-all speech begins with each localized headline', async ({ page }) => 
   await page.goto('/demo/ruby-readings.html')
 
   const expected = [
-    ['minnan', '巴納德星採礦團告捷。超導磁喉有望成真。'],
-    ['mandarin', '巴納德星採礦團告捷。超導磁喉有望成真。'],
-    ['japanese', 'バーナード星採鉱団、任務成功。超伝導磁気ノズル実現へ。'],
-    ['korean', '바너드성 채광단 임무 성공. 초전도 자기 노즐 실현 눈앞.'],
+    ['minnan', '巴星採礦告捷。超導磁喉有望成真。'],
+    ['mandarin', '巴星採礦告捷。超導磁喉有望成真。'],
+    ['japanese', 'バーナード星採鉱成功。超伝導磁気ノズル実現へ。'],
+    ['korean', '바너드성 채광 성공. 초전도 자기 노즐 실현 눈앞.'],
   ] as const
 
   for (const [mode, headline] of expected) {
