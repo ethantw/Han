@@ -15,14 +15,14 @@
 </head>
 <body>
 <main>
-  <section id="station-readings" data-station="readings" data-reading-mode="minnan" data-writing="horizontal" data-annotation="inter-character">
+  <section class="ReadingStation">
     <hgroup>
       <p>伍・標音</p>
       <h1>一字，多層注文</h1>
     </hgroup>
-    <p class="StationLede">一個字，可以同時承載本字、四方讀音與邊界資訊。這一站以閩南語方音、國語注音及日韓注文，展示多層 ruby 如何循詞界與方位落位，並在橫排與直排之間保持秩序。</p>
+    <p>一個字，可以同時承載本字、四方讀音與邊界資訊。這一站以閩南語方音、國語注音及日韓注文，展示多層ruby如何循詞界與方位落位，並在橫排與直排之間保持秩序。</p>
 
-    <svg class="BarnardMap StationSky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <svg class="Sky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
         <radialGradient id="barnard-glow">
           <stop offset="0" stop-color="var(--barnard-core)" stop-opacity=".52" />
@@ -33,110 +33,95 @@
           <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
         </marker>
       </defs>
-      <g class="BarnardGrid">
+      <g class="Grid">
         <path d="M90 94H1360M60 256H1390M110 470H1340" />
         <path d="M240 24V590M720 10V610M1160 30V584" />
       </g>
-      <g class="BarnardOrbit">
+      <g class="Orbit">
         <ellipse cx="930" cy="215" rx="310" ry="128" />
         <ellipse cx="930" cy="215" rx="188" ry="77" />
         <circle cx="930" cy="215" r="92" fill="url(#barnard-glow)" />
-        <circle class="BarnardCore" cx="930" cy="215" r="18" />
+        <circle class="Core" cx="930" cy="215" r="18" />
         <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
         <path d="M900 215h60M930 185v60" />
       </g>
-      <g class="BarnardStars">
+      <g class="Stars">
         <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
         <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
         <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
       </g>
     </svg>
 
-    <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
-      <fieldset class="ViewTabs LayoutTabs" aria-labelledby="reading-direction-label">
-        <span class="PillHead" id="reading-direction-label">行向</span>
-        <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
-        <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
-      </fieldset>
-      <fieldset class="ViewTabs AnnotationTabs" aria-labelledby="reading-position-label">
-        <span class="PillHead" id="reading-position-label">注位</span>
-        <label><input type="radio" name="annotation-position" value="inter-character" checked> 字間注</label>
-        <label><input type="radio" name="annotation-position" value="over"> 行間注</label>
-      </fieldset>
-      <fieldset class="ViewTabs" aria-labelledby="reading-language-label">
-        <span class="PillHead" id="reading-language-label">注文</span>
+    <form class="Switches" aria-label="切換捷報語言與排版方向">
+      <fieldset aria-labelledby="reading-language-label">
+        <span id="reading-language-label">語言</span>
         <label><input type="radio" name="reading-mode" value="minnan" checked> 閩南語</label>
         <label><input type="radio" name="reading-mode" value="mandarin"> 國語</label>
         <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
         <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
       </fieldset>
+      <fieldset aria-labelledby="reading-direction-label">
+        <span id="reading-direction-label">行向</span>
+        <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
+        <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
+      </fieldset>
+      <fieldset aria-labelledby="reading-position-label">
+        <span id="reading-position-label">注音位置</span>
+        <label><input type="radio" name="annotation-position" value="inter-character" checked> 字間注</label>
+        <label><input type="radio" name="annotation-position" value="over"> 行間注</label>
+      </fieldset>
     </form>
 
-    <nav class="RailNav StationRailNav" data-strip-nav="readings" aria-label="移動讀音樣張">
-      <span class="RailButtons">
-        <button type="button" data-scroll="prev" aria-label="向前移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
-        <button type="button" data-scroll="next" aria-label="向後移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
-      </span>
+    <nav aria-label="移動讀音樣張">
+      <button type="button" name="scroll" value="previous">向前移動讀音樣張</button>
+      <button type="button" name="scroll" value="next">向後移動讀音樣張</button>
     </nav>
 
-    <div class="StationColumns" data-strip="readings" tabindex="0" aria-label="可橫向捲動的數字公報與元素材料清單">
-      <article class="NumberStory" aria-labelledby="story-title">
-        <header class="ColumnHead">
-          <div>
-            <h2 id="story-title">
-              <ruby class="PhoneticLabel" data-zhuyin="ㄑㄧㄡˊ ㄐㄧˋ">球際</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄘㄞˇ ㄎㄨㄤˋ">採礦</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄐㄩㄣ ㄊㄨㄢˊ">軍團</ruby><br>
-              <ruby class="PhoneticLabel" data-zhuyin="ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ">喜馬拉雅</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ">一六八七</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄕ">師</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄉㄧˋ">第</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄕˊ">十</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄐㄧㄢˋ ㄓ">艦隻</ruby>
-            </h2>
-          </div>
-          <button class="SpeakAll" type="button" data-speak-group="numbers" data-lang="nan-TW" data-speech="一、六、七、八、十">
-            <span data-icon="volume" aria-hidden="true"></span>
-            <span class="SpeakLabel" data-speak-group-label>讀全篇捷報</span>
-          </button>
+    <div class="Rail" tabindex="0" aria-label="可橫向捲動的數字公報與元素材料清單">
+      <article aria-labelledby="story-title">
+        <header>
+          <h2 id="story-title">
+            <span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ">喜馬拉雅</ruby><ruby data-zhuyin="ㄍㄧㄨˊ ㄗㆤ˪">球際</ruby><ruby data-zhuyin="ㄘㄞˋ ㄎㆲ˪">採礦</ruby><ruby data-zhuyin="ㄍㄨㄣ ㄊㄨㄢˊ">軍團</ruby><br><ruby data-zhuyin="ㄧㆵ ㄌㄧㆦㆻ̇ ㄅㆤㆷ ㄑㄧㆵ">一六八七</ruby><ruby data-zhuyin="ㄙㄨ">師</ruby><ruby data-zhuyin="ㄉㆤ˫">第</ruby><ruby data-zhuyin="ㄧㆵ">一</ruby><ruby data-zhuyin="ㄌㄚㆬ˫ ㄗㄧㄚㆷ">艦隻</ruby></span>
+            <span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ">喜馬拉雅</ruby><ruby data-zhuyin="ㄑㄧㄡˊ ㄐㄧˋ">球際</ruby><ruby data-zhuyin="ㄘㄞˇ ㄎㄨㄤˋ">採礦</ruby><ruby data-zhuyin="ㄐㄩㄣ ㄊㄨㄢˊ">軍團</ruby><br><ruby data-zhuyin="ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ">一六八七</ruby><ruby data-zhuyin="ㄕ">師</ruby><ruby data-zhuyin="ㄉㄧˋ">第</ruby><ruby data-zhuyin="ㄧ">一</ruby><ruby data-zhuyin="ㄐㄧㄢˋ ㄓ">艦隻</ruby></span>
+            <span lang="ja" data-language="japanese" hidden>ヒマラヤ<ruby>惑星間<rt>わくせいかん</rt></ruby><ruby>採鉱<rt>さいこう</rt></ruby><ruby>軍団<rt>ぐんだん</rt></ruby><br><ruby>一六八七<rt>いちろくはちしち</rt></ruby><ruby>師団<rt>しだん</rt></ruby><ruby>第一艦<rt>だいいちかん</rt></ruby></span>
+            <span lang="ko" data-language="korean" hidden><ruby>히말라야<rt>喜馬拉雅</rt></ruby> <ruby>행성간<rt>行星間</rt></ruby> <ruby>채광<rt>採鑛</rt></ruby> <ruby>군단<rt>軍團</rt></ruby><br><ruby>일육팔칠<rt>一六八七</rt></ruby> <ruby>사단<rt>師團</rt></ruby> <ruby>제일 함정<rt>第一 艦艇</rt></ruby></span>
+          </h2>
+          <button type="button" name="speak" value="story" data-lang="nan-TW" data-speech="喜馬拉雅球際採礦軍團一六八七師第一艦隻">讀全篇捷報</button>
         </header>
 
-        <div class="Dispatch Numbers" lang="nan-Hant-TW" aria-label="以五個入聲數字寫成的球際採礦捷報">
-          <p class="DispatchCopy" data-dispatch-copy></p>
-          <p class="DispatchPromise">這批材料會予地球佮太陽系有機會共電磁囚籠、超導磁喉、熱盾佮偵測器，對圖紙搬入深空船塢。</p>
+        <section class="Dispatch" lang="nan-Hant-TW" aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p></p>
+          <p>這批材料會予地球佮太陽系有機會共電磁囚籠、超導磁喉、熱盾佮偵測器，對圖紙搬入深空船塢。</p>
           <small>十垓噸約是一個地球質量的六分之一；球際公報的會計部門拒絕對這个數字負責。</small>
-        </div>
+        </section>
       </article>
 
-      <figure class="ElementAtlas" aria-labelledby="elements-title">
-        <header class="ColumnHead">
-          <div>
-            <h2 id="elements-title"><ruby class="PhoneticLabel" data-zhuyin="ㄅㄚ ㄋㄚˋ ㄉㄜˊ">巴納德</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄖㄣˋ ㄨˋ">任務</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄩㄢˊ ㄙㄨˋ">元素</ruby><ruby class="PhoneticLabel" data-zhuyin="ㄅㄧㄠˇ">表</ruby></h2>
-          </div>
-          <button class="SpeakAll" type="button" data-speak-group="elements" data-lang="zh-TW" data-speech="氦、鈹、硼、鈧、釩、銣、鋯、鈮、鉬、釕、銦、銻、銫、鉿、鎢、錸、鋨、銥、鐠、釹、釓、鏑、鐿、鎦">
-            <span data-icon="volume" aria-hidden="true"></span>
-            <span class="SpeakLabel">全部元素讀音</span>
-          </button>
+      <figure aria-labelledby="elements-title">
+        <header>
+          <h2 id="elements-title">
+            <span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㆻ̇">巴納德</ruby><ruby data-zhuyin="ㄖㄧㆬ˫ ㆠㄨ˫">任務</ruby><ruby data-zhuyin="ㄍㄨㄢˊ ㄙㆦ˪">元素</ruby><ruby data-zhuyin="ㄅㄧㄠˋ">表</ruby></span>
+            <span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄅㄚ ㄋㄚˋ ㄉㄜˊ">巴納德</ruby><ruby data-zhuyin="ㄖㄣˋ ㄨˋ">任務</ruby><ruby data-zhuyin="ㄩㄢˊ ㄙㄨˋ">元素</ruby><ruby data-zhuyin="ㄅㄧㄠˇ">表</ruby></span>
+            <span lang="ja" data-language="japanese" hidden>バーナード<ruby>任務<rt>にんむ</rt></ruby><ruby>元素表<rt>げんそひょう</rt></ruby></span>
+            <span lang="ko" data-language="korean" hidden>바너드 <ruby>임무<rt>任務</rt></ruby> <ruby>원소표<rt>元素表</rt></ruby></span>
+          </h2>
+          <button type="button" name="speak" value="elements" data-lang="zh-TW" data-speech="氦、鈹、硼、鈧、釩、銣、鋯、鈮、鉬、釕、銦、銻、銫、鉿、鎢、錸、鋨、銥、鐠、釹、釓、鏑、鐿、鎦">全部元素讀音</button>
         </header>
 
-        <div class="ElementMeta">
-          <ul class="ElementLegend" aria-label="元素分類色">
-            <li data-category="alkali"><ruby class="PhoneticLabel" data-zhuyin="ㄐㄧㄢˇ ㄐㄧㄣ">鹼金</ruby></li>
-            <li data-category="alkaline"><ruby class="PhoneticLabel" data-zhuyin="ㄐㄧㄢˇ ㄊㄨˇ">鹼土</ruby></li>
-            <li data-category="transition"><ruby class="PhoneticLabel" data-zhuyin="ㄍㄨㄛˋ ㄉㄨˋ">過渡</ruby></li>
-            <li data-category="post-transition"><ruby class="PhoneticLabel" data-zhuyin="ㄆㄧㄣˊ ㄐㄧㄣ">貧金</ruby></li>
-            <li data-category="metalloid"><ruby class="PhoneticLabel" data-zhuyin="ㄌㄟˋ ㄐㄧㄣ">類金</ruby></li>
-            <li data-category="lanthanide"><ruby class="PhoneticLabel" data-zhuyin="ㄌㄢˊ ㄒㄧˋ">鑭系</ruby></li>
-            <li data-category="noble"><ruby class="PhoneticLabel" data-zhuyin="ㄉㄨㄛˋ ㄒㄧㄥˋ">惰性</ruby></li>
+        <figcaption>
+          <ul aria-label="元素分類色">
+            <li data-category="alkali"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄍㄧㆰˋ ㄍㄧㆬ">鹼金</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄐㄧㄢˇ ㄐㄧㄣ">鹼金</ruby></span><span lang="ja" data-language="japanese" hidden>アルカリ<ruby>金属<rt>きんぞく</rt></ruby></span><span lang="ko" data-language="korean" hidden>알칼리 <ruby>금속<rt>金屬</rt></ruby></span></li>
+            <li data-category="alkaline"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄍㄧㆰˋ ㄊㆦˋ">鹼土</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄐㄧㄢˇ ㄊㄨˇ">鹼土</ruby></span><span lang="ja" data-language="japanese" hidden>アルカリ<ruby>土類<rt>どるい</rt></ruby></span><span lang="ko" data-language="korean" hidden>알칼리 <ruby>토금속<rt>土金屬</rt></ruby></span></li>
+            <li data-category="transition"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄍㄨㆤ˪ ㄉㆦ˫">過渡</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄍㄨㄛˋ ㄉㄨˋ">過渡</ruby></span><span lang="ja" data-language="japanese" hidden><ruby>遷移<rt>せんい</rt></ruby></span><span lang="ko" data-language="korean" hidden><ruby>전이<rt>轉移</rt></ruby></span></li>
+            <li data-category="post-transition"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄅㄧㄣˊ ㄍㄧㆬ">貧金</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄆㄧㄣˊ ㄐㄧㄣ">貧金</ruby></span><span lang="ja" data-language="japanese" hidden><ruby>貧金属<rt>ひんきんぞく</rt></ruby></span><span lang="ko" data-language="korean" hidden><ruby>빈금속<rt>貧金屬</rt></ruby></span></li>
+            <li data-category="metalloid"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄌㄨㄧ˫ ㄍㄧㆬ">類金</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄌㄟˋ ㄐㄧㄣ">類金</ruby></span><span lang="ja" data-language="japanese" hidden><ruby>類金属<rt>るいきんぞく</rt></ruby></span><span lang="ko" data-language="korean" hidden><ruby>준금속<rt>準金屬</rt></ruby></span></li>
+            <li data-category="lanthanide"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄌㄢˊ ㄏㆤ˫">鑭系</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄌㄢˊ ㄒㄧˋ">鑭系</ruby></span><span lang="ja" data-language="japanese" hidden>ランタノイド</span><span lang="ko" data-language="korean" hidden><ruby>란타넘족<rt>族</rt></ruby></span></li>
+            <li data-category="noble"><span lang="nan-Hant-TW" data-language="minnan"><ruby data-zhuyin="ㄉㄜ˫ ㄒㄧㄥ˪">惰性</ruby></span><span lang="zh-Hant-TW" data-language="mandarin" hidden><ruby data-zhuyin="ㄉㄨㄛˋ ㄒㄧㄥˋ">惰性</ruby></span><span lang="ja" data-language="japanese" hidden><ruby>貴<rt>き</rt></ruby>ガス</span><span lang="ko" data-language="korean" hidden><ruby>비활성<rt>非活性</rt></ruby> <ruby>기체<rt>氣體</rt></ruby></span></li>
           </ul>
-        </div>
-
-        <div class="MaterialViewport">
-          <div class="MaterialField">
-            <ol class="MaterialGrid" data-material-grid aria-label="二十四種反物質引擎候選材料"></ol>
-          </div>
-        </div>
-
+        </figcaption>
+        <ol aria-label="二十四種反物質引擎候選材料"></ol>
       </figure>
     </div>
 
-    <footer class="StationFoot">
-      <p class="SpeechStatus"><span class="StatusLight" aria-hidden="true"></span><output data-speech-status role="status" aria-live="polite">正在尋找本機語音……</output></p>
-      <p>聲音由本機 <code>SpeechSynthesis</code> 提供；閩南語語音是否可用取決於瀏覽器與作業系統。</p>
-    </footer>
   </section>
 </main>
 </body>

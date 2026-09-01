@@ -1,40 +1,41 @@
-const initStripNav = () => {
-  document.querySelectorAll('[data-strip-nav]').forEach((nav) => {
-    const rail = document.querySelector(`[data-strip="${nav.dataset.stripNav}"]`)
-    const previous = nav.querySelector('[data-scroll="prev"]')
-    const next = nav.querySelector('[data-scroll="next"]')
-    if (!rail || !previous || !next) return
+const $ = (selector, root = document) => root.querySelector(selector)
+const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector))
 
-    const sync = () => {
-      const way = getComputedStyle(rail).direction === 'rtl' ? -1 : 1
-      const position = rail.scrollLeft * way
-      const end = rail.scrollWidth - rail.clientWidth - 1
-      previous.disabled = position <= 0
-      next.disabled = position >= end
-      nav.hidden = previous.disabled && next.disabled
-    }
-    const move = (sign) => {
-      const way = getComputedStyle(rail).direction === 'rtl' ? -1 : 1
-      rail.scrollBy({ left: sign * way * rail.clientWidth / 3, behavior: 'smooth' })
-    }
+const initRailNav = () => {
+  const $nav = $('.ReadingStation > nav')
+  const $rail = $('.ReadingStation > .Rail')
+  const $previous = $('button[value="previous"]', $nav)
+  const $next = $('button[value="next"]', $nav)
+  if (!$nav || !$rail || !$previous || !$next) return
 
-    previous.addEventListener('click', () => move(-1))
-    next.addEventListener('click', () => move(1))
-    rail.addEventListener('scroll', sync, { passive: true })
-    rail.addEventListener('han-strip-layout', sync)
-    new ResizeObserver(sync).observe(rail)
-    sync()
-  })
+  const sync = () => {
+    const way = getComputedStyle($rail).direction === 'rtl' ? -1 : 1
+    const position = $rail.scrollLeft * way
+    const end = $rail.scrollWidth - $rail.clientWidth - 1
+    $previous.disabled = position <= 0
+    $next.disabled = position >= end
+    $nav.hidden = $previous.disabled && $next.disabled
+  }
+  const move = (sign) => {
+    const way = getComputedStyle($rail).direction === 'rtl' ? -1 : 1
+    $rail.scrollBy({ left: sign * way * $rail.clientWidth / 3, behavior: 'smooth' })
+  }
+
+  $previous.addEventListener('click', () => move(-1))
+  $next.addEventListener('click', () => move(1))
+  $rail.addEventListener('scroll', sync, { passive: true })
+  $rail.addEventListener('han-rail-layout', sync)
+  new ResizeObserver(sync).observe($rail)
+  sync()
 }
 
 const synth = window.speechSynthesis
-const station = document.querySelector('[data-station="readings"]')
-const dispatch = document.querySelector('.Dispatch')
-const numbersGroup = document.querySelector('[data-speak-group="numbers"]')
-const elementsGroup = document.querySelector('[data-speak-group="elements"]')
-const groupLabel = document.querySelector('[data-speak-group-label]')
-const statusBar = document.querySelector('.SpeechStatus')
-const status = document.querySelector('[data-speech-status]')
+const $station = $('.ReadingStation')
+const $dispatch = $('.Dispatch')
+const $numbersGroup = $('button[name="speak"][value="story"]')
+const $elementsGroup = $('button[name="speak"][value="elements"]')
+
+const selectedValue = (name) => $(`[name="${name}"]:checked`).value
 
 const annotated = (base, native, roman, emphasis) => ({ base, native, roman, emphasis })
 const bare = (text) => ({ text })
@@ -51,14 +52,14 @@ const readingSystems = {
         annotated('拄仔', 'ㄉㄨˋ ㄚˋ', 'tú-á'),
         annotated('出航', 'ㄘㄨㆵ ㄏㄤˊ', 'tshut-hâng'),
         annotated('的', 'ㆤˊ', 'ê'),
+        annotated('喜馬拉雅', 'ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ', 'Hí-má-la̍h-ngá'),
         annotated('球際', 'ㄍㄧㄨˊ ㄗㆤ˪', 'kiû-tsè'),
         annotated('採礦', 'ㄘㄞˋ ㄎㆲ˪', 'tshái-khòng'),
         annotated('軍團', 'ㄍㄨㄣ ㄊㄨㄢˊ', 'kun-thuân'),
-        annotated('喜馬拉雅', 'ㄏㄧˋ ㄇㄚˋ ㄌㄚㆷ̇ ㆣㄚˋ', 'Hí-má-la̍h-ngá'),
         annotated('一六八七', 'ㄧㆵ ㄌㄧㆦㆻ̇ ㄅㆤㆷ ㄑㄧㆵ', 'it-lio̍k-peh-tshit', 'id'),
         annotated('師', 'ㄙㄨ', 'su'),
         annotated('第', 'ㄉㆤ˫', 'tē'),
-        annotated('十', 'ㄒㄧㆴ̇', 'si̍p', 'id'),
+        annotated('一', 'ㄧㆵ', 'it', 'id'),
         annotated('艦隻', 'ㄌㄚㆬ˫ ㄗㄧㄚㆷ', 'lām-tsiah'), bare('，'),
         annotated('佇', 'ㄉㄧ˫', 'tī'),
         annotated('巴納德', 'ㄅㄚ ㄋㄚㆴ̇ ㄉㄧㆻ̇', 'Pa-na̍p-tik'),
@@ -122,14 +123,14 @@ const readingSystems = {
         annotated('甫', 'ㄈㄨˇ', 'fǔ'),
         annotated('出航', 'ㄔㄨ ㄏㄤˊ', 'chūháng'),
         annotated('的', '˙ㄉㄜ', 'de'),
+        annotated('喜馬拉雅', 'ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ', 'Xǐmǎlāyǎ'),
         annotated('球際', 'ㄑㄧㄡˊ ㄐㄧˋ', 'qiújì'),
         annotated('採礦', 'ㄘㄞˇ ㄎㄨㄤˋ', 'cǎikuàng'),
         annotated('軍團', 'ㄐㄩㄣ ㄊㄨㄢˊ', 'jūntuán'),
-        annotated('喜馬拉雅', 'ㄒㄧˇ ㄇㄚˇ ㄌㄚ ㄧㄚˇ', 'Xǐmǎlāyǎ'),
         annotated('一六八七', 'ㄧ ㄌㄧㄡˋ ㄅㄚ ㄑㄧ', 'yī-liù-bā-qī', 'id'),
         annotated('師', 'ㄕ', 'shī'),
         annotated('第', 'ㄉㄧˋ', 'dì'),
-        annotated('十', 'ㄕˊ', 'shí', 'id'),
+        annotated('一', 'ㄧ', 'yī', 'id'),
         annotated('艦隻', 'ㄐㄧㄢˋ ㄓ', 'jiànzhī'), bare('，'),
         annotated('從', 'ㄘㄨㄥˊ', 'cóng'),
         annotated('巴納德', 'ㄅㄚ ㄋㄚˋ ㄉㄜˊ', 'Bānàdé'),
@@ -186,13 +187,13 @@ const readingSystems = {
         annotated('半世紀', 'はんせいき', ''),
         annotated('前', 'まえ', ''), bare('に'),
         annotated('出航', 'しゅっこう', ''), bare('したばかりの'),
+        bare('ヒマラヤ'),
         annotated('惑星間', 'わくせいかん', ''),
         annotated('採鉱', 'さいこう', ''),
-        annotated('軍団', 'ぐんだん', ''), bare('ヒマラヤ'),
+        annotated('軍団', 'ぐんだん', ''),
         annotated('一六八七', 'イチロクハチシチ', 'ichi-roku-hachi-shichi', 'id'),
         annotated('師団', 'しだん', ''),
-        annotated('第', 'だい', ''),
-        annotated('十', 'ジフ', 'jifu', 'id'),
+        annotated('第一', 'だいいち', '', 'id'),
         annotated('艦', 'かん', ''), bare('から、バーナード'),
         annotated('星系', 'せいけい', ''), bare('での'),
         annotated('成功', 'せいこう', ''),
@@ -237,14 +238,13 @@ const readingSystems = {
         annotated('반세기', '半世紀', 'bansegi'), bare(' '),
         annotated('전', '前', 'jeon'), bare('에 막 '),
         annotated('출항', '出航', 'chulhang'), bare('한 '),
+        annotated('히말라야', '喜馬拉雅', 'Himallaya'), bare(' '),
         annotated('행성간', '行星間', 'haengseonggan'), bare(' '),
         annotated('채광', '採鑛', 'chaegwang'), bare(' '),
         annotated('군단', '軍團', 'gundan'), bare(' '),
-        annotated('히말라야', '喜馬拉雅', 'Himallaya'), bare(' '),
         annotated('일육팔칠', '一六八七', 'il-yuk-pal-chil', 'id'), bare(' '),
         annotated('사단', '師團', 'sadan'), bare(' '),
-        annotated('제', '第', 'je'),
-        annotated('십', '十', 'sip', 'id'), bare(' '),
+        annotated('제일', '第一', 'jeil', 'id'), bare(' '),
         annotated('함정', '艦艇', 'hamjeong'), bare('이 바너드 '),
         annotated('항성계', '恒星系', 'hangseonggye'), bare('에서 '),
         annotated('승전보', '勝戰報', 'seungjeonbo'), bare('를 보내왔다. '),
@@ -284,15 +284,13 @@ const PUNCTUATION = /[\p{P}\p{S}]/u
 const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   if (PUNCTUATION.test(base)) throw new TypeError(`注文基文不可含標點：${base}`)
   const outer = document.createElement('ruby')
-  outer.className = 'DispatchRuby ComplexReading'
-  if (emphasis) outer.dataset.emphasis = emphasis
   const baseUnits = [...base]
   const nativeUnits = native.trim().split(/\s+/)
   const isBopomofo = system.nativeLang.includes('Bopo')
 
-  if (isBopomofo && station.dataset.annotation === 'over') {
+  if (isBopomofo && selectedValue('annotation-position') === 'over') {
     const inner = document.createElement('ruby')
-    inner.className = 'InterlinearReading zhuyin'
+    inner.className = 'zhuyin'
     const nativeReading = document.createElement('rt')
     nativeReading.lang = system.nativeLang
     nativeReading.textContent = native
@@ -301,7 +299,7 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   } else if (isBopomofo && baseUnits.length === nativeUnits.length) {
     baseUnits.forEach((character, index) => {
       const inner = document.createElement('ruby')
-      inner.className = 'InterCharacterReading zhuyin'
+      inner.className = 'zhuyin'
       const nativeReading = document.createElement('rt')
       nativeReading.lang = system.nativeLang
       nativeReading.textContent = nativeUnits[index]
@@ -310,7 +308,6 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
     })
   } else {
     const inner = document.createElement('ruby')
-    inner.className = 'GroupReading'
     const nativeReading = document.createElement('rt')
     nativeReading.lang = system.nativeLang
     nativeReading.textContent = native
@@ -318,53 +315,65 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
     outer.append(inner)
   }
 
+  if (system.roman === false) {
+    const inner = outer.firstElementChild
+    if (!emphasis) return inner
+    const wrapper = document.createElement('em')
+    wrapper.dataset.emphasis = emphasis
+    wrapper.append(inner)
+    return wrapper
+  }
+
   if (system.roman !== false) {
     const romanization = document.createElement('rt')
-    romanization.className = 'Romanization'
     romanization.lang = system.romanLang
     romanization.textContent = roman
     outer.append(romanization)
   }
-  return outer
+  if (!emphasis) return outer
+  const wrapper = document.createElement('em')
+  wrapper.dataset.emphasis = emphasis
+  wrapper.append(outer)
+  return wrapper
 }
 
 const fillParagraph = (element, system, parts) => {
   element.replaceChildren()
   for (const part of parts) {
-    const resolved = part.directional?.[station.dataset.writing] ?? part
+    const resolved = part.directional?.[selectedValue('writing-mode')] ?? part
     element.append(resolved.text ? document.createTextNode(resolved.text) : createDispatchRuby(system, resolved))
   }
 }
 
-const material = (atomic, symbol, hant, hans, category, column, row, system, aboard) => ({
-  atomic, symbol, hant, hans, category, column, row, system, aboard,
+const material = (atomic, symbol, hant, hans, category, system, aboard) => ({
+  atomic, symbol, hant, hans, category, system, aboard,
 })
 
 const missionElements = [
-  material(2, 'He', '氦', '氦', 'noble', 18, 1, '低溫', '超流體低溫磁籠'),
-  material(4, 'Be', '鈹', '铍', 'alkaline', 2, 2, '囚籠', '正電子離子協同冷卻陣列'),
-  material(5, 'B', '硼', '硼', 'metalloid', 13, 2, '屏蔽', '中子吸收複合屏蔽'),
-  material(21, 'Sc', '鈧', '钪', 'transition', 3, 4, '骨架', '鋁鈧外骨骼承力桁架'),
-  material(23, 'V', '釩', '钒', 'transition', 5, 4, '骨架', '輕質高強艦體合金'),
-  material(37, 'Rb', '銣', '铷', 'alkali', 1, 5, '時計', '長航程原子鐘'),
-  material(40, 'Zr', '鋯', '锆', 'transition', 4, 5, '骨架', '超高真空耐熱艙壁'),
-  material(41, 'Nb', '鈮', '铌', 'transition', 5, 5, '囚籠', '超導磁囚籠主線圈'),
-  material(42, 'Mo', '鉬', '钼', 'transition', 6, 5, '熱膽', '抗熱循環噴嘴骨架'),
-  material(44, 'Ru', '釕', '钌', 'transition', 8, 5, '電極', '耐磨電極與催化循環'),
-  material(49, 'In', '銦', '铟', 'post-transition', 13, 5, '接點', '極低溫真空密封與量子接點'),
-  material(51, 'Sb', '銻', '锑', 'metalloid', 15, 5, '感測', '紅外與高能粒子感測層'),
-  material(55, 'Cs', '銫', '铯', 'alkali', 1, 6, '時計', '全艦主時間基準'),
-  material(72, 'Hf', '鉿', '铪', 'transition', 4, 6, '熱膽', '超高溫陶瓷熱障'),
-  material(74, 'W', '鎢', '钨', 'transition', 6, 6, '熱盾', '湮滅熱盾與噴嘴喉襯'),
-  material(75, 'Re', '錸', '铼', 'transition', 7, 6, '噴嘴', '超高溫噴嘴合金'),
-  material(76, 'Os', '鋨', '锇', 'transition', 8, 6, '機件', '超硬耐磨微機電軸承'),
-  material(77, 'Ir', '銥', '铱', 'transition', 9, 6, '接點', '極端高溫耐蝕接點'),
-  material(59, 'Pr', '鐠', '镨', 'lanthanide', 6, 8, '姿控', '永久磁致動器'),
-  material(60, 'Nd', '釹', '钕', 'lanthanide', 7, 8, '姿控', '高磁能積姿控轉子'),
-  material(64, 'Gd', '釓', '钆', 'lanthanide', 11, 8, '感測', '中子俘獲輻射陣列'),
-  material(66, 'Dy', '鏑', '镝', 'lanthanide', 13, 8, '姿控', '耐熱永磁穩場摻質'),
-  material(70, 'Yb', '鐿', '镱', 'lanthanide', 17, 8, '光鐘', '飛秒光纖診斷與光鐘'),
-  material(71, 'Lu', '鎦', '镥', 'lanthanide', 18, 8, '感測', '高能輻射閃爍晶體'),
+  material(2, 'He', '氦', '氦', 'noble', '低溫', '超流體低溫磁籠'),
+  material(4, 'Be', '鈹', '铍', 'alkaline', '囚籠', '正電子離子協同冷卻陣列'),
+  material(5, 'B', '硼', '硼', 'metalloid', '屏蔽', '中子吸收複合屏蔽'),
+  material(21, 'Sc', '鈧', '钪', 'transition', '骨架', '鋁鈧外骨骼承力桁架'),
+  material(23, 'V', '釩', '钒', 'transition', '骨架', '輕質高強艦體合金'),
+  material(37, 'Rb', '銣', '铷', 'alkali', '時計', '長航程原子鐘'),
+  material(40, 'Zr', '鋯', '锆', 'transition', '骨架', '超高真空耐熱艙壁'),
+  material(41, 'Nb', '鈮', '铌', 'transition', '囚籠', '超導磁囚籠主線圈'),
+  material(42, 'Mo', '鉬', '钼', 'transition', '熱膽', '抗熱循環噴嘴骨架'),
+  material(44, 'Ru', '釕', '钌', 'transition', '電極', '耐磨電極與催化循環'),
+  material(49, 'In', '銦', '铟', 'post-transition', '接點', '極低溫真空密封與量子接點'),
+  material(51, 'Sb', '銻', '锑', 'metalloid', '感測', '紅外與高能粒子感測層'),
+  material(55, 'Cs', '銫', '铯', 'alkali', '時計', '全艦主時間基準'),
+  material(72, 'Hf', '鉿', '铪', 'transition', '熱膽', '超高溫陶瓷熱障'),
+  material(74, 'W', '鎢', '钨', 'transition', '熱盾', '湮滅熱盾與噴嘴喉襯'),
+  material(75, 'Re', '錸', '铼', 'transition', '噴嘴', '超高溫噴嘴合金'),
+  material(76, 'Os', '鋨', '锇', 'transition', '機件', '超硬耐磨微機電軸承'),
+  material(77, 'Ir', '銥', '铱', 'transition', '接點', '極端高溫耐蝕接點'),
+  material(59, 'Pr', '鐠', '镨', 'lanthanide', '姿控', '永久磁致動器'),
+  material(60, 'Nd', '釹', '钕', 'lanthanide', '姿控', '高磁能積姿控轉子'),
+  material(64, 'Gd', '釓', '钆', 'lanthanide', '感測', '中子俘獲輻射陣列'),
+  material(66, 'Dy', '鏑', '镝', 'lanthanide', '姿控', '耐熱永磁穩場摻質'),
+  material(70, 'Yb', '鐿', '镱', 'lanthanide', '光鐘', '飛秒光纖診斷與光鐘'),
+  material(71, 'Lu', '鎦', '镥', 'lanthanide', '感測', '高能輻射閃爍晶體'),
 ]
 
 const elementMandarinReadings = new Map([
@@ -398,28 +407,34 @@ const elementKoreanReadings = new Map([
   ['Pr', '프라세오디뮴'], ['Nd', '네오디뮴'], ['Gd', '가돌리늄'], ['Dy', '디스프로슘'], ['Yb', '이터븀'], ['Lu', '루테튬'],
 ])
 
+const phoneticBases = new WeakMap()
+
+const renderLocalizedChrome = (mode) => {
+  $$('[data-language]', $station).forEach((element) => {
+    element.hidden = element.dataset.language !== mode
+  })
+}
+
 const renderPhoneticLabels = () => {
-  document.querySelectorAll('.PhoneticLabel[data-zhuyin]').forEach((label) => {
-    const base = label.dataset.base ?? label.textContent
-    label.dataset.base = base
+  $$('ruby[data-zhuyin]', $station).forEach((label) => {
+    const base = phoneticBases.get(label) ?? label.textContent
+    phoneticBases.set(label, base)
     const characters = [...base]
     const readings = label.dataset.zhuyin.split(' ')
 
-    if (station.dataset.annotation === 'over') {
+    if (selectedValue('annotation-position') === 'over') {
       const rt = document.createElement('rt')
       rt.lang = 'zh-Bopo-TW'
       rt.textContent = label.dataset.zhuyin
-      label.classList.remove('ComplexReading')
-      label.classList.add('InterlinearPhoneticLabel', 'zhuyin')
+      label.className = 'zhuyin'
       label.replaceChildren(base, rt)
       return
     }
 
-    label.classList.remove('InterlinearPhoneticLabel', 'zhuyin')
-    label.classList.add('ComplexReading')
+    label.removeAttribute('class')
     label.replaceChildren(...characters.map((character, index) => {
       const ruby = document.createElement('ruby')
-      ruby.className = 'InterCharacterReading zhuyin'
+      ruby.className = 'zhuyin'
       const rt = document.createElement('rt')
       rt.lang = 'zh-Bopo-TW'
       rt.textContent = readings[index]
@@ -429,31 +444,33 @@ const renderPhoneticLabels = () => {
   })
 }
 
-const createElementAnnotation = (className, lang, text) => {
+const createElementAnnotation = (lang, text, child) => {
   const annotation = document.createElement('rt')
-  annotation.className = className
   annotation.lang = lang
-  annotation.textContent = text
+  if (lang.includes('Bopo')) annotation.className = 'zhuyin'
+  annotation.append(child ?? text)
   return annotation
 }
 
 const createElementRuby = (element) => {
   const ruby = document.createElement('ruby')
-  ruby.className = 'ElementCompass'
-  const glyph = document.createElement('span')
-  glyph.className = 'ElementGlyph'
-  glyph.textContent = element.hant
   const minnan = elementMinnanReadings.get(element.symbol)
   const mandarin = elementMandarinReadings.get(element.symbol)
+  const symbol = document.createElement('abbr')
+  const atomic = document.createElement('data')
+  symbol.setAttribute('aria-label', `元素符號${element.symbol}`)
+  symbol.textContent = element.symbol
+  atomic.value = element.atomic
+  atomic.textContent = element.atomic
 
   ruby.append(
-    glyph,
-    createElementAnnotation('ElementReading ElementMinnan zhuyin', 'nan-Bopo-TW', minnan[0]),
-    createElementAnnotation('ElementReading ElementMandarin zhuyin', 'zh-Bopo-TW', mandarin[0]),
-    createElementAnnotation('ElementReading ElementJapanese', 'ja', elementJapaneseReadings.get(element.symbol)),
-    createElementAnnotation('ElementReading ElementKorean', 'ko', elementKoreanReadings.get(element.symbol)),
-    createElementAnnotation('ElementBoundary ElementSymbol', 'en', element.symbol),
-    createElementAnnotation('ElementBoundary AtomicNumber', 'en', element.atomic),
+    element.hant,
+    createElementAnnotation('nan-Bopo-TW', minnan[0]),
+    createElementAnnotation('zh-Bopo-TW', mandarin[0]),
+    createElementAnnotation('ja', elementJapaneseReadings.get(element.symbol)),
+    createElementAnnotation('ko', elementKoreanReadings.get(element.symbol)),
+    createElementAnnotation('en', '', symbol),
+    createElementAnnotation('en', '', atomic),
   )
   return ruby
 }
@@ -477,8 +494,8 @@ const elementSpeech = (element, mode) => {
 
 const renderElementSpeechMode = (mode) => {
   const speeches = []
-  document.querySelectorAll('.ElementTile[data-symbol]').forEach((tile) => {
-    const element = missionElements.find(({ symbol }) => symbol === tile.dataset.symbol)
+  $$('button[name="speak-element"]', $station).forEach((tile) => {
+    const element = missionElements.find(({ symbol }) => symbol === tile.value)
     const localized = elementSpeech(element, mode)
     tile.dataset.lang = localized.lang
     tile.dataset.speech = localized.speech
@@ -486,53 +503,41 @@ const renderElementSpeechMode = (mode) => {
     tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}的${localized.language}讀音：${localized.reading}；${element.system}用途：${element.aboard}`)
     speeches.push(localized.speech)
   })
-  elementsGroup.dataset.lang = readingSystems[mode].lang
-  elementsGroup.dataset.speech = speeches.join('、')
+  $elementsGroup.dataset.lang = readingSystems[mode].lang
+  $elementsGroup.dataset.speech = speeches.join('、')
 }
 
 const renderMaterialGrid = () => {
-  const grid = document.querySelector('[data-material-grid]')
-  grid.replaceChildren()
-
-  for (const element of missionElements) {
+  const $grid = $('.Rail > figure > ol', $station)
+  $grid.replaceChildren(...missionElements.map((element) => {
     const reading = elementMandarinReadings.get(element.symbol)
     const item = document.createElement('li')
-    item.className = 'ElementCell'
     item.dataset.category = element.category
     item.dataset.hans = element.hans
-    item.dataset.hintBlock = element.row >= 6 ? 'before' : 'after'
-    item.dataset.hintInline = element.column >= 15 ? 'end' : 'start'
-    item.dataset.group = element.row === 8 ? '鑭' : `${element.column}族`
     const tile = document.createElement('button')
-    tile.className = 'ElementTile'
     tile.append(createElementRuby(element))
     tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・${element.system}：${element.aboard}`
 
     tile.type = 'button'
-    tile.dataset.symbol = element.symbol
-    tile.dataset.speak = ''
+    tile.name = 'speak-element'
+    tile.value = element.symbol
     tile.dataset.lang = 'zh-TW'
     tile.dataset.speech = element.hant
     tile.dataset.reading = reading[1]
     tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}，${reading[1]}，的國語讀音；${element.system}用途：${element.aboard}`)
-    const icon = document.createElement('span')
-    icon.dataset.icon = 'volume'
-    icon.setAttribute('aria-hidden', 'true')
-    tile.append(icon)
 
     const hint = document.createElement('small')
-    hint.className = 'MaterialHint'
     const system = document.createElement('b')
     system.textContent = element.system
     hint.append(system, element.aboard)
     tile.append(hint)
     item.append(tile)
-    grid.append(item)
-  }
+    return item
+  }))
 }
 
 let voices = []
-let activeButton = null
+let $activeButton = null
 let activeUtterance = null
 let currentMode = 'minnan'
 
@@ -555,72 +560,51 @@ const matchingVoice = (lang) => {
     ?? null
 }
 
-const setStatus = (message, state = 'ready', floating = false) => {
-  status.textContent = message
-  statusBar.toggleAttribute('data-ready', state === 'ready')
-  statusBar.toggleAttribute('data-error', state === 'error')
-  statusBar.toggleAttribute('data-floating', floating)
-}
-
 const refreshVoices = () => {
   voices = synth?.getVoices() ?? []
   if (!synth) {
-    document.querySelectorAll('[data-speak], [data-speak-group]').forEach((button) => { button.disabled = true })
-    setStatus('這個瀏覽器不支援 SpeechSynthesis。', 'error')
-    return
+    $$('button:is([name="speak"], [name="speak-element"])').forEach((button) => { button.disabled = true })
   }
-
-  const system = readingSystems[currentMode]
-  const voice = matchingVoice(system.lang)
-  setStatus(voice
-    ? `${system.name}：${voice.name}`
-    : system.lang === 'nan-TW'
-      ? '閩南語：未安裝相符語音；注文切換仍可使用'
-      : `${system.name}：使用系統預設語音`)
 }
 
 const renderReadingSystem = (mode) => {
   const system = readingSystems[mode]
   if (!system) return
   currentMode = mode
-  station.dataset.readingMode = mode
-  dispatch.lang = system.listLang
-  groupLabel.textContent = system.groupLabel
-  numbersGroup.dataset.lang = system.lang
+  renderLocalizedChrome(mode)
+  $dispatch.lang = system.listLang
+  $numbersGroup.textContent = system.groupLabel
+  $numbersGroup.dataset.lang = system.lang
   renderElementSpeechMode(mode)
-  fillParagraph(document.querySelector('[data-dispatch-copy]'), system, system.paragraphs[0])
-  fillParagraph(document.querySelector('.DispatchPromise'), system, system.paragraphs[1])
-  document.querySelector('.Dispatch > small').textContent = system.note
-  numbersGroup.dataset.speech = system.paragraphs
+  fillParagraph($('p:first-of-type', $dispatch), system, system.paragraphs[0])
+  fillParagraph($('p:nth-of-type(2)', $dispatch), system, system.paragraphs[1])
+  $('small', $dispatch).textContent = system.note
+  $numbersGroup.dataset.speech = system.paragraphs
     .flat()
     .map((part) => {
-      const resolved = part.directional?.[station.dataset.writing] ?? part
+      const resolved = part.directional?.[selectedValue('writing-mode')] ?? part
       return resolved.base ?? resolved.text
     })
     .join('')
   refreshVoices()
 }
 
-const setWritingMode = (mode) => {
-  const vertical = mode === 'vertical'
-  station.dataset.writing = vertical ? 'vertical' : 'horizontal'
-  station.style.setProperty('--han-writing-mode', vertical ? 'vertical-rl' : 'horizontal-tb')
-  const rail = document.querySelector('[data-strip="readings"]')
-  rail.scrollLeft = 0
-  rail.scrollTop = 0
+const setWritingMode = () => {
+  const $rail = $('.Rail', $station)
+  $rail.scrollLeft = 0
+  $rail.scrollTop = 0
   renderReadingSystem(currentMode)
-  requestAnimationFrame(() => rail.dispatchEvent(new Event('han-strip-layout')))
+  requestAnimationFrame(() => $rail.dispatchEvent(new Event('han-rail-layout')))
 }
 
-const setAnnotationPosition = (position) => {
-  station.dataset.annotation = position
+const setAnnotationPosition = () => {
   renderPhoneticLabels()
   renderReadingSystem(currentMode)
 }
 
 const clearActive = () => {
-  activeButton?.removeAttribute('data-speaking')
-  activeButton = null
+  $activeButton?.removeAttribute('aria-busy')
+  $activeButton = null
   activeUtterance = null
 }
 
@@ -630,26 +614,15 @@ const speak = (button) => {
   const lang = button.dataset.lang
   const voice = matchingVoice(lang)
   synth.cancel()
-  if (lang.startsWith('nan') && !voice) {
-    clearActive()
-    setStatus('找不到閩南語語音；請先在作業系統安裝閩南語語音。', 'error', true)
-    return
-  }
-
   clearActive()
   const utterance = new SpeechSynthesisUtterance(button.dataset.speech)
   utterance.lang = lang
   utterance.rate = lang.startsWith('nan') ? .78 : .82
   if (voice) utterance.voice = voice
-  activeButton = button
+  $activeButton = button
   activeUtterance = utterance
-  button.setAttribute('data-speaking', '')
+  button.setAttribute('aria-busy', 'true')
 
-  utterance.addEventListener('start', () => {
-    if (activeUtterance !== utterance) return
-    const reading = button.dataset.reading ? `・${button.dataset.reading}` : ''
-    setStatus(`正在播放：${button.dataset.speech}${reading}・${voice?.name ?? '系統預設語音'}`, 'ready', true)
-  })
   utterance.addEventListener('end', () => {
     if (activeUtterance !== utterance) return
     clearActive()
@@ -658,7 +631,6 @@ const speak = (button) => {
   utterance.addEventListener('error', (event) => {
     if (activeUtterance !== utterance || ['canceled', 'interrupted'].includes(event.error)) return
     clearActive()
-    setStatus(`語音播放失敗：${event.error}`, 'error', true)
   })
   synth.speak(utterance)
 }
@@ -667,29 +639,29 @@ renderPhoneticLabels()
 renderMaterialGrid()
 renderReadingSystem(currentMode)
 
-document.querySelectorAll('[data-speak], [data-speak-group]').forEach((button) => {
+$$('button:is([name="speak"], [name="speak-element"])').forEach((button) => {
   button.addEventListener('click', () => speak(button))
 })
 
-document.querySelectorAll('[name="reading-mode"]').forEach((input) => {
+$$('[name="reading-mode"]').forEach((input) => {
   input.addEventListener('change', () => {
     if (input.checked) renderReadingSystem(input.value)
   })
 })
 
-document.querySelectorAll('[name="writing-mode"]').forEach((input) => {
+$$('[name="writing-mode"]').forEach((input) => {
   input.addEventListener('change', () => {
-    if (input.checked) setWritingMode(input.value)
+    if (input.checked) setWritingMode()
   })
 })
 
-document.querySelectorAll('[name="annotation-position"]').forEach((input) => {
+$$('[name="annotation-position"]').forEach((input) => {
   input.addEventListener('change', () => {
-    if (input.checked) setAnnotationPosition(input.value)
+    if (input.checked) setAnnotationPosition()
   })
 })
 
-initStripNav()
+initRailNav()
 if (synth) synth.addEventListener('voiceschanged', refreshVoices)
 refreshVoices()
 window.addEventListener('pagehide', () => synth?.cancel())
