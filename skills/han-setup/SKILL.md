@@ -227,8 +227,6 @@ Then hand the user this checklist — "installed correctly looks like":
 - [ ] `<q>` quotes match the locale (「」 for zh-Hant/ja; “” for zh-Hans)
 - [ ] No console errors; woff2 requests return 200 (webfonts) and only the
       slices actually used were downloaded
-- [ ] Copy-paste of processed text yields clean original characters (no
-      wrapper artifacts)
 
 If a check fails, the first three suspects in order: `lang` attributes,
 CSS load order (reset loaded after han.css), missing JS entry (`/auto` not
