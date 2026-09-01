@@ -584,6 +584,18 @@ main {
   --element-fill: color-mix(in srgb, var(--ui-accent) 13%, var(--ui-station-a));
 }
 
+.ReadingStation:has([name='reading-mode'][value='mandarin']:checked) {
+  & .Rail figure ol rt[lang='nan-Bopo-TW'] {
+    right: auto;
+    left: .35rem;
+  }
+
+  & .Rail figure ol rt[lang='zh-Bopo-TW'] {
+    right: .35rem;
+    left: auto;
+  }
+}
+
 .ReadingStation:has([name='reading-mode'][value='korean']:checked) {
   & .Rail figure ol rt[lang='ja'] {
     top: auto;
