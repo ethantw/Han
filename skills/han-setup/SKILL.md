@@ -118,14 +118,12 @@ han.css keys everything off `:lang()`. Before any install:
   `zh-nan-Hant-TW`, `zh-mnp-Hant`, `zh-yue-Hant-HK`,
   `zh-hak-Hant-TW`, and `zh-wuu-Hans-CN`. These are valid BCP 47 extlang
   forms, though general-purpose BCP 47 guidance usually prefers the shorter
-  primary-language form. Never invent `zh-min-nan-Hant`: the deprecated
-  grandfathered tag is exactly `zh-min-nan` and cannot take additional
-  script or region subtags. Phonetic-script runs keep their own tags, such as
-  `nan-Bopo-TW` and `nan-Latn-TW`. Scope this convention to DOM `lang` and
-  CSS targeting. For `Intl`, speech, locale negotiation, and tools whose
-  Unicode locale grammar rejects extlang, use the primary form (`nan-TW`,
-  `yue-HK`, etc.); verify that the rendered DOM preserves the `zh-<extlang>`
-  attribute instead of normalizing or rejecting it.
+  primary-language form. Phonetic-script runs keep their own tags, such as
+  `nan-Bopo-TW` and `nan-Latn-TW`. Scope this convention to DOM `lang` and CSS
+  targeting. For `Intl`, speech, locale negotiation, and tools whose Unicode
+  locale grammar rejects extlang, use the primary form (`nan-TW`, `yue-HK`,
+  etc.); verify that the rendered DOM preserves the `zh-<extlang>` attribute
+  instead of normalizing or rejecting it.
 - Every explicit element matching `:lang(zh)`, `:lang(ja)` or `:lang(ko)`
   deliberately receives a local zero-specificity
   `font-family: var(--han-font-default)` so locale font slots re-resolve.
