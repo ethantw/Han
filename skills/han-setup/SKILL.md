@@ -124,16 +124,18 @@ han.css keys everything off `:lang()`. Before any install:
   locale grammar rejects extlang, use the primary form (`nan-TW`, `yue-HK`,
   etc.); verify that the rendered DOM preserves the `zh-<extlang>` attribute
   instead of normalizing or rejecting it.
-- Every explicit element matching `:lang(zh)`, `:lang(ja)` or `:lang(ko)`
-  deliberately receives a local zero-specificity
-  `font-family: var(--han-font-default)` so locale font slots re-resolve.
-  Audit existing non-default font choices: if `font-family` is set only on an
-  ancestor of such a boundary, make the author's selector match the boundary
-  too, or—when translations are alternate block content—move `lang` onto each
-  semantic block that already matches the component selector. Reapply
-  `var(--han-font-alternative)`, `var(--han-font-accent)`, or the author's
-  literal stack as appropriate. Do not remove or override the library's
-  global boundary rule as a setup shortcut.
+- Every element that carries its own `[lang]` attribute and also matches
+  `:lang(zh)`, `:lang(ja)` or `:lang(ko)` deliberately receives a local
+  zero-specificity `font-family: var(--han-font-default)` so locale font slots
+  re-resolve. Merely matching `:lang()` through an ancestor's language does
+  not trigger this boundary reset. Audit existing non-default font choices: if
+  `font-family` is set only on an ancestor of such a boundary, make the
+  author's selector match the boundary too, or—when translations are alternate
+  block content—move `lang` onto each semantic block that already matches the
+  component selector. Reapply `var(--han-font-alternative)`,
+  `var(--han-font-accent)`, or the author's literal stack as appropriate. Do
+  not remove or override the library's global boundary rule as a setup
+  shortcut.
 - Multilingual pages: tag inline foreign runs (`<span lang="ja">`) and apply
   the font-boundary rule above when their ancestor uses a non-default stack.
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;

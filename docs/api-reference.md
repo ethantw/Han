@@ -33,13 +33,15 @@ install.
   quotes and font stack. When several translations are alternate block
   content, put `lang` on each semantic block (`<h2 lang="zh-Hant">`,
   `<h2 lang="ja">`) rather than wrapping their contents in language spans.
-- **han.css font-boundary contract:** every explicit element matching
-  `:lang(zh)`, `:lang(ja)` or `:lang(ko)` receives a local zero-specificity
-  `font-family: var(--han-font-default)`. This is deliberate: the boundary
-  must rebuild its punctuation/CJK slots for its own locale instead of
-  inheriting an already-resolved stack from its parent. To use another role or
-  an author stack, declare it again on the element carrying `lang`; any normal
-  author selector wins han.css's `:where()` rule:
+- **han.css font-boundary contract:** every element that carries its own
+  `[lang]` attribute and also matches `:lang(zh)`, `:lang(ja)` or `:lang(ko)`
+  receives a local zero-specificity
+  `font-family: var(--han-font-default)`. Merely matching `:lang()` through an
+  ancestor's language does not trigger this boundary reset. The local reset is
+  deliberate: the boundary must rebuild its punctuation/CJK slots for its own
+  locale instead of inheriting an already-resolved stack from its parent. To
+  use another role or an author stack, declare it again on the element carrying
+  `lang`; any normal author selector wins han.css's `:where()` rule:
 
   ```html
   <h2 class="story-title" lang="zh-Hant">中文標題</h2>
@@ -66,13 +68,11 @@ install.
   `zh-nan-Hant-TW` (Min Nan), `zh-mnp-Hant` (Min Bei),
   `zh-yue-Hant-HK` (Cantonese), `zh-hak-Hant-TW` (Hakka), and
   `zh-wuu-Hans-CN` (Wu). These are valid BCP 47 extlang forms even though BCP
-  47 generally prefers the shorter primary-language forms. Do not write
-  `zh-min-nan-Hant`: the deprecated grandfathered tag is exactly
-  `zh-min-nan` and cannot take additional script or region subtags. Keep
-  script-specific annotations on their own tags, e.g. `nan-Bopo-TW` and
-  `nan-Latn-TW`. This `zh-<extlang>` convention is for DOM `lang` and CSS
-  targeting; use the primary form (`nan-TW`, `yue-HK`, …) for `Intl`, speech,
-  locale negotiation, and tools whose Unicode locale grammar rejects extlang.
+  47 generally prefers the shorter primary-language forms. Keep script-specific
+  annotations on their own tags, e.g. `nan-Bopo-TW` and `nan-Latn-TW`. This
+  `zh-<extlang>` convention is for DOM `lang` and CSS targeting; use the primary
+  form (`nan-TW`, `yue-HK`, …) for `Intl`, speech, locale negotiation, and tools
+  whose Unicode locale grammar rejects extlang.
 - Selector groups used internally: `:lang(zh)` (matches both scripts; used
   where Traditional is the umbrella), `:lang(zh-Hans)`, `:lang(ja)`,
   `:lang(ko)`, and `:lang(ko-Kore)` for Hanja-mixed Korean (opts into CJK
