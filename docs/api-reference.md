@@ -53,13 +53,19 @@ install.
   ```
 
   If `lang` must live on a nested inline run, the ancestor's computed
-  `font-family` does not override that local boundary declaration; match the
-  run as well:
+  `font-family` does not override that local boundary declaration. Make the
+  component's font role include its explicit CJK language boundaries:
 
   ```css
-  .story-title,
-  .story-title :where([lang]) {
-    font-family: var(--han-font-alternative);
+  h2 {
+    &,
+    & :where(
+      [lang]:lang(zh),
+      [lang]:lang(ja),
+      [lang]:lang(ko)
+    ) {
+      font-family: var(--han-font-alternative);
+    }
   }
   ```
 - **han.css Chinese-variety convention:** Han-character content uses the

@@ -136,6 +136,22 @@ han.css keys everything off `:lang()`. Before any install:
   `var(--han-font-accent)`, or the author's literal stack as appropriate. Do
   not remove or override the library's global boundary rule as a setup
   shortcut.
+
+  Prefer a nested component rule that keeps the role and all explicit CJK
+  boundaries together; replace `h2` and the role with the detected component:
+
+  ```css
+  h2 {
+    &,
+    & :where(
+      [lang]:lang(zh),
+      [lang]:lang(ja),
+      [lang]:lang(ko)
+    ) {
+      font-family: var(--han-font-alternative);
+    }
+  }
+  ```
 - Multilingual pages: tag inline foreign runs (`<span lang="ja">`) and apply
   the font-boundary rule above when their ancestor uses a non-default stack.
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;
