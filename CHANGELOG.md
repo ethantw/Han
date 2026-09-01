@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`--han-font-role`** (`default | alternative | accent | custom`, default
+  `default`) carries a container's Han.css font role across explicit language
+  boundaries. Pair it with a role `font-family` declaration; descendant
+  `[lang]` elements then rebuild the same role from their own locale slots.
+  `custom` preserves an opaque author stack without Han.css resetting it.
+
 - **`--han-zhuyin-ruby-position`** (`over | inter-character`, default
   `over`) — zhuyin ruby position is now configurable. `inter-character`
   (side-run bopomofo, the Taiwan-textbook convention, recommended for
@@ -33,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   carries a generic-only fallback.
 
 ### Fixed
+
+- **Language boundaries no longer turn serif or cursive containers back into
+  the default sans role.** Locale re-resolution now lives in `fonts.css` and
+  dispatches through `--han-font-role`; the bare-page `body` unfreezer remains
+  intact. `han.basic.css`, which has no locale slots to rebuild, no longer
+  resets inherited role or author stacks on `[lang]` at all.
 
 - **`installFallbacks` no longer overflows the call stack on large
   documents.** The recursive DOM walk threw

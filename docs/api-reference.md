@@ -324,11 +324,42 @@ document between sans and serif):
 | `--han-font-alternative` | `var(--han-serif)` | serif/Mincho counterpart |
 | `--han-font-accent` | `var(--han-cursive)` | `<i>`, `<var>`, prose blockquote |
 | `--han-font-zhuyin-serif` | `'Han Zhuyin Serif', cursive, serif` | zhuyin `<rt>` |
+| `--han-font-role` | `default` | inherited role provenance for locale boundaries (`default \| alternative \| accent \| custom`) |
 
 ```css
 /* Mincho (serif) as the document default: */
 :root { --han-font-default: var(--han-serif); }
 ```
+
+`--han-font-role` carries the provenance that native `font-family`
+inheritance discards. Its values are `default | alternative | accent |
+custom` (default `default`). When a container chooses a Han.css role and may
+contain explicit `lang` boundaries, mirror the choice in the same rule:
+
+```css
+.headline {
+  --han-font-role: alternative;
+  font-family: var(--han-font-alternative);
+}
+```
+
+With the fonts module, each descendant `[lang]` re-substitutes that role using
+its own punctuation and CJK slots. Use `custom` beside an unrelated author
+stack to preserve that already-computed stack verbatim:
+
+```css
+.product-name {
+  --han-font-role: custom;
+  font-family: 'Brand Serif', serif;
+}
+```
+
+CSS cannot infer a role from a computed `font-family`, nor splice locale slots
+into an opaque author stack. The role signal is therefore required for
+cross-language role re-resolution. Set it on an ancestor of the `[lang]`
+element; style queries cannot query the subject itself. `han.basic.css` has no
+locale font slots and never resets `[lang]`, so it simply inherits all four
+roles as static stacks.
 
 Without the fonts module (`han.basic.css`), semantics.css declares safe
 generic-only fallbacks for the composites and role vars on `:root`.

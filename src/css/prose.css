@@ -90,9 +90,11 @@
   @container style(--han-prose-fonts: on) {
     :where(blockquote):where(:lang(zh), :lang(ja), :lang(ko)) {
       & {
+        --han-font-role: accent;
         font-family: var(--han-font-accent);
       }
       :where(dfn, i, var) {
+        --han-font-role: default;
         font-family: var(--han-font-default);
       }
     }

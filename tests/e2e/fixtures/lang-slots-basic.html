@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css — basic-bundle font role fixture</title>
+<link rel="stylesheet" href="/dist/han.basic.css">
+<style>
+  .alternative {
+    --han-font-role: alternative;
+    font-family: var(--han-font-alternative);
+  }
+  .accent {
+    --han-font-role: accent;
+    font-family: var(--han-font-accent);
+  }
+  .custom {
+    --han-font-role: custom;
+    font-family: 'Author Face', fantasy;
+  }
+</style>
+</head>
+<body>
+<section id="default">
+  <span id="default-hant" lang="zh-Hant">繁</span>
+  <span id="default-ja" lang="ja">日</span>
+  <span id="default-ko" lang="ko">韓</span>
+</section>
+<section id="alternative" class="alternative">
+  <span id="alternative-hant" lang="zh-Hant">繁</span>
+  <span id="alternative-ja" lang="ja">日</span>
+  <span id="alternative-ko" lang="ko">韓</span>
+</section>
+<section id="accent" class="accent">
+  <span id="accent-hant" lang="zh-Hant">繁</span>
+  <span id="accent-ja" lang="ja">日</span>
+  <span id="accent-ko" lang="ko">韓</span>
+</section>
+<section id="nested" class="alternative">
+  <span id="nested-hant" lang="zh-Hant">繁
+    <span id="nested-ja" lang="ja">日
+      <span id="nested-ko" lang="ko">韓</span>
+    </span>
+  </span>
+</section>
+<section id="custom" class="custom">
+  <span id="custom-hant" lang="zh-Hant">繁</span>
+  <span id="custom-ja" lang="ja">日</span>
+  <span id="custom-ko" lang="ko">韓</span>
+</section>
+</body>
+</html>
