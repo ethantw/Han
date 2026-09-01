@@ -45,7 +45,7 @@ const directional = (horizontal, vertical) => ({ directional: { horizontal, vert
 
 const readingSystems = {
   minnan: {
-    name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
+    name: '閩南語', lang: 'nan-TW', listLang: 'zh-nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
     groupLabel: '讀全篇捷報',
     headlineSpeech: '巴星採礦告捷。超導磁噴嘴有望成真。',
     elementsHeadlineSpeech: '巴納德任務元素表。',
@@ -438,7 +438,7 @@ const renderPhoneticLabels = () => {
     phoneticBases.set(label, base)
     const characters = [...base]
     const readings = label.dataset.zhuyin.split(' ')
-    const annotationLang = label.closest('[lang]')?.lang.startsWith('nan')
+    const annotationLang = label.closest('[lang]')?.lang.startsWith('zh-nan')
       ? 'nan-Bopo-TW'
       : 'zh-Bopo-TW'
 

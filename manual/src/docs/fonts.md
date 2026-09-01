@@ -53,7 +53,7 @@ han.css的這條規則包在`:where()`裡，權重為零。需要明體、楷體
 }
 ```
 
-閩南語漢字內容使用BCP 47正規寫法`nan-Hant`（需要地區時可寫`nan-Hant-TW`）；注音與羅馬字分別標`nan-Bopo-TW`、`nan-Latn-TW`。不要寫`zh-min-nan-Hant`：只有完整的舊tag `zh-min-nan`曾被登錄，現已deprecated並以`nan`為Preferred-Value，不能再接script／region subtag。CSS的`:lang()`也不會依macrolanguage關係把`nan`視為`zh`；目前han.css的`:lang(zh)`規則不會自動命中`nan`，正式納入哪些繁中排版規則須另案處理。
+han.css對漢字書寫的漢語地方語種採用`zh-<extlang>-<script>[-region]`約定，使閩南、閩北、廣州、客家、吳語等內容共同進入`:lang(zh)`排版規則，不必在每條selector逐一列舉。例如閩南語寫`zh-nan-Hant-TW`、閩北語`zh-mnp-Hant`、粵語`zh-yue-Hant-HK`、客語`zh-hak-Hant-TW`、吳語`zh-wuu-Hans-CN`。這些是合法的BCP 47 extlang形式，儘管通用BCP 47指南通常偏好較短的primary-language形式。不要寫`zh-min-nan-Hant`：deprecated grandfathered tag只有完整的`zh-min-nan`，不能再接script／region subtag。這項`zh-<extlang>`約定只用於DOM `lang`與CSS targeting；`Intl`、語音、locale negotiation及只接受Unicode locale grammar的工具仍使用`nan-TW`、`yue-HK`等primary形式。注音與羅馬字分別標`nan-Bopo-TW`、`nan-Latn-TW`。
 
 ## 標點字體
 

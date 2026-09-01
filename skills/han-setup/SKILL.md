@@ -111,14 +111,21 @@ han.css keys everything off `:lang()`. Before any install:
 - Root element must carry the right tag: `zh-Hant` / `zh-Hans` / `ja` /
   `ko` (Hanja-mixed Korean: `ko-Kore`). `lang="en"` or missing on a CJK
   site = han.css silently inert. **Fix it and tell the user why.**
-- Min Nan written in Han characters uses canonical BCP 47 `nan-Hant`
-  (optionally `-TW`); phonetic scripts keep their own tags (`nan-Bopo-TW`,
-  `nan-Latn-TW`). Never invent `zh-min-nan-Hant`: the deprecated
-  grandfathered tag is exactly `zh-min-nan`, its preferred value is `nan`,
-  and it cannot take additional script or region subtags. Also flag that
-  `:lang(nan)` does not syntactically match han.css's current `:lang(zh)`
-  selector family; do not promise first-class Min Nan targeting or disguise
-  the gap with a non-standard tag.
+- Han-character content in Chinese varieties follows the han.css convention
+  `zh-<registered-extlang>-<script>[-region]`, so Min Nan, Min Bei,
+  Cantonese, Hakka, Wu, and other Chinese varieties all enter the shared
+  `:lang(zh)` rules without duplicating every selector. Examples:
+  `zh-nan-Hant-TW`, `zh-mnp-Hant`, `zh-yue-Hant-HK`,
+  `zh-hak-Hant-TW`, and `zh-wuu-Hans-CN`. These are valid BCP 47 extlang
+  forms, though general-purpose BCP 47 guidance usually prefers the shorter
+  primary-language form. Never invent `zh-min-nan-Hant`: the deprecated
+  grandfathered tag is exactly `zh-min-nan` and cannot take additional
+  script or region subtags. Phonetic-script runs keep their own tags, such as
+  `nan-Bopo-TW` and `nan-Latn-TW`. Scope this convention to DOM `lang` and
+  CSS targeting. For `Intl`, speech, locale negotiation, and tools whose
+  Unicode locale grammar rejects extlang, use the primary form (`nan-TW`,
+  `yue-HK`, etc.); verify that the rendered DOM preserves the `zh-<extlang>`
+  attribute instead of normalizing or rejecting it.
 - Every explicit element matching `:lang(zh)`, `:lang(ja)` or `:lang(ko)`
   deliberately receives a local zero-specificity
   `font-family: var(--han-font-default)` so locale font slots re-resolve.

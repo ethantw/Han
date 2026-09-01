@@ -46,8 +46,8 @@ accent 或自訂 stack。
 
 - [x] 保留 `[lang]` default reset，不改核心 cascade。
 - [x] `ruby-readings` 的四個互斥標題改成四個各自帶 `lang` 的 `<h2>`。
-- [x] 閩南語使用正規 BCP 47 `nan-Hant-TW`；不使用非法的
-  `zh-min-nan-Hant-TW`。
+- [x] 漢語地方語種使用 han.css 的合法 extlang 約定；閩南語為
+  `zh-nan-Hant-TW`，不使用非法的 `zh-min-nan-Hant-TW`。
 - [x] API reference 與字體手冊明載 boundary reset、同元素覆寫方式與 nested
   inline recipe。
 - [x] 安裝 Skill 加入同一項 audit obligation。
@@ -64,17 +64,18 @@ accent 或自訂 stack。
 - 不用 JavaScript 同步字體角色。
 - 不把提高 demo selector specificity 當修復；關鍵是 declaration 與 `lang` 位於
   同一元素，普通 cascade 即足夠。
-- 不在本案擴張完整 `:lang(nan)` 支援。`nan` 不會因 macrolanguage 關係匹配
-  `:lang(zh)`；需另行盤點 semantics／fonts／lines／prose。
+- 不逐一擴張 `:lang(nan)`／`:lang(yue)`／`:lang(hak)` 等 selectors；漢字內容以
+  `zh-<extlang>` 統一進入既有 `:lang(zh)` 規則。
 
 ## 驗證結果
 
-- Chromium／WebKit：zh-Hant、ja、ko 的 alternative headings 分別取得
-  MOE／JIS／KLR serif stacks；`nan-Hant-TW` 在繁中頁面繼承 MOE slots。
+- Chromium／WebKit：zh-nan-Hant、zh-Hant、ja、ko 的 alternative headings 分別
+  取得 MOE／MOE／JIS／KLR serif stacks。
 - Firefox：角色仍是 serif，但現行 font mode 的 container-style-query 路徑得到
   `HanNone … serif`；這是既有跨引擎 degradation，另案處理。
-- `nan-Hant-TW` 匹配 `:lang(nan)`，不匹配 `:lang(zh)`；
-  `zh-min-nan-Hant` 由 `Intl.getCanonicalLocales()` 拒絕。
+- `zh-nan-Hant-TW` 是合法 BCP 47 extlang form，DOM 中匹配 `:lang(zh)`；ECMA-402
+  `Intl` 不接受 extlang，因此語音與 locale APIs 使用 `nan-TW`。
+- 非法的 `zh-min-nan-Hant` 同樣由 `Intl.getCanonicalLocales()` 拒絕。
 - production build、typecheck、Skill validation 與相關 9 個 E2E 通過。
 - 全 repo unit 有 2 個與本案無關的既存 punctuation expectation 失敗：`：` 的實際
   token 已含 `dividing`，舊 expectation 仍只接受 `end`。

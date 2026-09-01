@@ -147,18 +147,13 @@
   需要 alternative／accent／作者 stack 時，作者在帶 `lang` 的同一元素重申；若是
   真正的 nested inline language run，component selector 也要命中該 boundary。
   已否決移除 reset 與新增 `--han-font` API；demo 改成每個翻譯各自帶 `lang` 的
-  semantic heading。閩南語維持正規 `nan-Hant[-TW]`，不使用非法的
-  `zh-min-nan-Hant` 偷渡 zh selector。full／basic、
+  semantic heading。漢語地方語種依 han.css 約定使用合法的
+  `zh-<extlang>-<script>[-region]`，閩南語為 `zh-nan-Hant-TW`，而非非法的
+  `zh-min-nan-Hant`。full／basic、
   default／alternative／accent／custom、nested 與 bare-body regressions 已補；
   Chromium／WebKit 的 production stack 正確，Firefox 仍有既知 `HanNone` slots
   degradation，歸入 fonts architecture 的跨引擎 fallback 後續。
   [完整調查](notes/2026-09-01-lang-boundary-font-role.md)。
-- [ ] **決定 `nan-Hant` 的 first-class selector support。** BCP 47 推薦
-  `nan-Hant[-TW]`；deprecated grandfathered `zh-min-nan` 不能再接 script／region，
-  而合法但非首選的 extlang 形式 `zh-nan-Hant[-TW]` 不應成為 han.css workaround。
-  盤點 semantics／fonts／lines／prose 裡哪些 `:lang(zh)` 應同步接受 `:lang(nan)`，
-  尤其 MOE punctuation、Hant heritage faces、quotes、emphasis 與 line processing；
-  定案前文件不得宣稱 `nan` 會自動進入 zh rules。
 - **`TODO(css-if)` 三處**（semantics/fonts/lines）——Chrome 152 已支援
   `if(style(--custom-property: …))`，仍未執行 `style(font-family: …)` 等標準
   property condition；`CSS.supports()` 只驗 parse，不能當此能力的 gate。

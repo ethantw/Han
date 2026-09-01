@@ -42,12 +42,13 @@ han.css 的 `[lang]` font rule 是零 specificity；`.story-title` 在同一元�
 }
 ```
 
-原始閩南語標記 `nan-Hant-TW` 沒進 `:lang(zh)`，才看似「剛好正常」；但這個 tag
-本身是正確的。曾考慮用 `zh-min-nan-Hant-TW` 強迫它進 zh rules，查核 BCP 47 後
-否決：`zh-min-nan` 是已 deprecated 的完整 grandfathered tag，Preferred-Value
-是 `nan`，不能再附加 `Hant`／`TW`。因此漢字、Bopomofo、Latin 分別保留
-`nan-Hant-TW`、`nan-Bopo-TW`、`nan-Latn-TW`；是否讓 han.css 明確支援
-`:lang(nan)` 另案設計。
+原始閩南語標記 `nan-Hant-TW` 沒進 `:lang(zh)`，才看似「剛好正常」。han.css
+不可能在所有 Chinese rules 逐一列出閩南、閩北、粵、客、吳等語種，因此漢字
+內容採合法的 `zh-<extlang>-<script>[-region]` 約定：本例改為
+`zh-nan-Hant-TW`，使它統一進入 `:lang(zh)`。不能寫
+`zh-min-nan-Hant-TW`；`zh-min-nan` 是已 deprecated 的完整 grandfathered tag，
+不能再附加 `Hant`／`TW`。Bopomofo／Latin 仍使用
+`nan-Bopo-TW`／`nan-Latn-TW`。
 
 下方 computed-value 與 `if()` 實驗仍是有效的機制研究，但其中「移除 `[lang]`
 reset」與「導入 `--han-font`」的設計提案均已否決，不是 implementation plan。
@@ -130,16 +131,23 @@ Custom property 裡的 `var()` 在**宣告該 property 的元素**進入 compute
 `h2` 已解析的繁中 MOE serif stack，恰好同時符合這個 demo 想要的角色與字形。
 
 這不是閩南語已有獨立的 locale 重算機制，而是 `:lang()` 不會依 IANA 的
-macrolanguage metadata 推論 `nan` 屬於 `zh`。`nan-Hant[-TW]` 是正規推薦寫法，
-但它不匹配 `:lang(zh)`；若 han.css 要把它當作繁中排版目標，必須在規則中明寫
-`:lang(nan)`，不能改造 language tag 來配合 selector。
+macrolanguage metadata 推論 `nan` 屬於 `zh`。Han.css 選擇 IANA 已登錄、prefix
+為 `zh` 的 extlang 形式 `zh-nan-Hant[-TW]`，讓所有漢語地方語種以同一個
+`:lang(zh)` umbrella 取得漢字排版規則，而不在 CSS 複製每一個語言代碼。
 
 IANA registry 同時記錄：`zh-min-nan` 已於 2009-07-29 deprecated，Preferred-Value
 為 `nan`；`nan` 可作 primary language，另有 prefix 為 `zh` 的 extlang 記錄。
-因此 `zh-nan-Hant-TW` 是可解析的相容形式，但 RFC 5646 與 W3C 都優先推薦較短的
-primary form `nan-Hant-TW`。參考 [IANA Language Subtag Registry](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)、
+RFC 5646 與 W3C 的通用建議優先採較短的 primary form `nan-Hant-TW`；han.css
+則為 selector interoperability 明確約定採同樣合法的 extlang form
+`zh-nan-Hant-TW`。這是 library convention，不是假稱 BCP 47 的普遍首選。參考
+[IANA Language Subtag Registry](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)、
 [RFC 5646 §2.2.2](https://www.rfc-editor.org/rfc/rfc5646.html#section-2.2.2) 與
 [W3C Choosing a Language Tag](https://www.w3.org/International/questions/qa-choosing-language-tags#extlangsubtag)。
+
+這個約定只屬於 DOM `lang`／CSS targeting。ECMA-402 的 Unicode locale grammar
+不接受 `zh-nan-Hant-TW`，本機 `Intl.getCanonicalLocales()` 會丟 `RangeError`；
+語音、`Intl` 與 locale negotiation 仍用 `nan-TW`。Demo 也刻意分開：HTML 漢字
+使用 `zh-nan-Hant-TW`，`SpeechSynthesisUtterance.lang` 使用 `nan-TW`。
 
 ## 影響範圍
 
@@ -192,13 +200,13 @@ production build 以每個翻譯各自帶 `lang` 的 `<h2>`、並由同一條 `h
 alternative。Chromium 152 與 Playwright WebKit 實測一致：
 
 ```text
-nan-Hant-TW → Diantenjeom Serif MOE … Shanggu Serif … serif（繼承繁中環境的 slots）
-zh-Hant-TW  → Diantenjeom Serif MOE … Shanggu Serif … serif
-ja          → Diantenjeom Serif JIS … serif
-ko          → Diantenjeom Serif KLR … serif
+zh-nan-Hant-TW → Diantenjeom Serif MOE … Shanggu Serif … serif
+zh-Hant-TW     → Diantenjeom Serif MOE … Shanggu Serif … serif
+ja             → Diantenjeom Serif JIS … serif
+ko             → Diantenjeom Serif KLR … serif
 ```
 
-Firefox 同樣保留 serif 角色；`nan-Hant-TW` 在三個引擎都**不**匹配 `:lang(zh)`。
+Firefox 同樣保留 serif 角色，且 `zh-nan-Hant-TW` 同樣匹配 `:lang(zh)`。
 Firefox 四語的低階 slots 都成為 `HanNone … serif`，是上段所述的既有
 container-style-query 支援落差，不是 `[lang]` 把 alternative 改回 default。它需要
 由 fonts architecture 的跨引擎 feature fallback 另案處理，不能在本案報告成已解決。
@@ -441,8 +449,8 @@ v4。`fonts.if.css` 僅保留為語法與未來 mode mapping 的研究樣本，�
    selector 在同一元素套 alternative stack。
 3. 文件與安裝 Skill 明載：需要 alternative／accent／作者 stack 時，在帶 `lang`
    的元素重新指定；真正的 nested inline run 讓 component selector 一併命中。
-4. 閩南語維持正規 `nan-Hant[-TW]`；不用非法的 `zh-min-nan-Hant` 規避 selector
-   能力邊界。正式 `:lang(nan)` 支援另案盤點。
+4. 漢語地方語種依 han.css 約定採合法 `zh-<extlang>-<script>[-region]`；閩南語為
+   `zh-nan-Hant[-TW]`，不用非法的 `zh-min-nan-Hant`。
 5. 不新增 `--han-font`／role marker／class／attribute API。`if()` 研究保留，但不構成
    implementation plan。
 
@@ -450,9 +458,8 @@ v4。`fonts.if.css` 僅保留為語法與未來 mode mapping 的研究樣本，�
 
 固定以下契約：
 
-- `han.css`：同一元素帶 component class 與 nan-Hant／zh-Hant／ja／ko 時，
-  alternative declaration維持 serif；zh／ja／ko 分別重組 MOE／JIS／KLR，nan
-  目前繼承所在 Hant 環境的 MOE slots。
+- `han.css`：同一元素帶 component class 與 zh-nan-Hant／zh-Hant／ja／ko 時，
+  alternative declaration 分別重組 MOE／MOE／JIS／KLR serif slots。
 - `han.css`：未另指定字體的 zh／ja／ko boundary 分別命中 locale default sans slots。
 - 同一 boundary 上的 accent 或任意作者 selector 勝過 zero-specificity library rule。
 - 巢狀 language boundary 未重申非 default role 時，依公開契約回到各自 locale

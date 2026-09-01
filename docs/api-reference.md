@@ -60,14 +60,19 @@ install.
     font-family: var(--han-font-alternative);
   }
   ```
-- **Min Nan tags:** use the canonical BCP 47 form `nan-Hant` or
-  `nan-Hant-TW` for Han-character content; use `nan-Bopo-TW` and
-  `nan-Latn-TW` for Bopomofo and romanization. Do not use `zh-min-nan-Hant`:
-  the exact grandfathered tag `zh-min-nan` is deprecated in favour of `nan`
-  and cannot be extended with script or region subtags. `:lang()` matches tag
-  syntax, not the IANA macrolanguage relation, so `:lang(nan)` does not match
-  the current `:lang(zh)` selector family; first-class Min Nan targeting is a
-  separate compatibility decision.
+- **han.css Chinese-variety convention:** Han-character content uses the
+  registered `zh-<extlang>-<script>[-region]` form so every Chinese variety
+  participates in the shared `:lang(zh)` typography rules. Examples:
+  `zh-nan-Hant-TW` (Min Nan), `zh-mnp-Hant` (Min Bei),
+  `zh-yue-Hant-HK` (Cantonese), `zh-hak-Hant-TW` (Hakka), and
+  `zh-wuu-Hans-CN` (Wu). These are valid BCP 47 extlang forms even though BCP
+  47 generally prefers the shorter primary-language forms. Do not write
+  `zh-min-nan-Hant`: the deprecated grandfathered tag is exactly
+  `zh-min-nan` and cannot take additional script or region subtags. Keep
+  script-specific annotations on their own tags, e.g. `nan-Bopo-TW` and
+  `nan-Latn-TW`. This `zh-<extlang>` convention is for DOM `lang` and CSS
+  targeting; use the primary form (`nan-TW`, `yue-HK`, …) for `Intl`, speech,
+  locale negotiation, and tools whose Unicode locale grammar rejects extlang.
 - Selector groups used internally: `:lang(zh)` (matches both scripts; used
   where Traditional is the umbrella), `:lang(zh-Hans)`, `:lang(ja)`,
   `:lang(ko)`, and `:lang(ko-Kore)` for Hanja-mixed Korean (opts into CJK
