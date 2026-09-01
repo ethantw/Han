@@ -448,6 +448,7 @@ main {
     }
 
     & > ruby {
+      --han-writing-mode: horizontal-tb;
       --han-zhuyin-ruby-position: inter-character;
       position: relative;
       display: grid;
@@ -482,6 +483,7 @@ main {
       place-items: center;
       inline-size: 100%;
       block-size: 100%;
+      letter-spacing: 0;
     }
 
     /* The inner ruby gets its font, scale, orientation and tone-mark
@@ -632,7 +634,7 @@ main {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: 1fr;
-    block-size: min(38rem, 72vh);
+    block-size: min(25rem, 72vh);
   }
 
   & .Rail > figure {
