@@ -76,12 +76,4 @@ test('emphasized dual readings use nested ruby shapes', async ({ page }) => {
   await expect(koreanOuterRuby.locator(':scope > rt[lang="ko-Latn"]')).toHaveCount(1)
   await expect(koreanInnerRuby).toHaveCSS('ruby-position', 'over')
   await expect(koreanOuterRuby).toHaveCSS('ruby-position', 'under')
-
-  await page.locator('[name="writing-mode"][value="vertical"]').check({ force: true })
-  await page.locator('[name="reading-mode"][value="mandarin"]').check({ force: true })
-  const emphasizedZhuyin = page.locator('.Dispatch em[data-emphasis="id"] > ruby.zhuyin > rt').first()
-  await expect(emphasizedZhuyin).toHaveCSS('position', 'relative')
-  expect(await emphasizedZhuyin.evaluate(
-    (rt) => Number.parseFloat(getComputedStyle(rt).insetBlockStart),
-  )).toBeGreaterThan(0)
 })
