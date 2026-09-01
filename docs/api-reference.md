@@ -584,10 +584,9 @@ the fix).
 | Per-locale punctuation conventions | ✔ | — | Diantenjeom | — |
 | Heritage glyphs / Kaiti | ✔ | — | ziano slices (or `system-ja` escape hatch) | — |
 
-Style queries (`@container style()`) gate most CSS behavior; Firefox
-doesn't support them yet, so toggle-gated styles simply don't fire there —
-graceful degradation, not breakage. han.css targets modern evergreen
-browsers; features degrade individually per the matrix.
+Style queries (`@container style()`) gate most CSS behavior. han.css targets
+modern evergreen browsers; on older engines, unsupported features degrade
+individually per the matrix.
 
 ## 9. Known limitations (rc0)
 
