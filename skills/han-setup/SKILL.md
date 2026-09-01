@@ -128,17 +128,13 @@ han.css keys everything off `:lang()`. Before any install:
   `:lang(zh)`, `:lang(ja)` or `:lang(ko)` deliberately receives a local
   zero-specificity `font-family: var(--han-font-default)` so locale font slots
   re-resolve. Merely matching `:lang()` through an ancestor's language does
-  not trigger this boundary reset. Audit existing non-default font choices: if
-  `font-family` is set only on an ancestor of such a boundary, make the
-  author's selector match the boundary too, or—when translations are alternate
-  block content—move `lang` onto each semantic block that already matches the
-  component selector. Reapply `var(--han-font-alternative)`,
-  `var(--han-font-accent)`, or the author's literal stack as appropriate. Do
-  not remove or override the library's global boundary rule as a setup
-  shortcut.
+  not trigger this boundary reset.
 
-  Prefer a nested component rule that keeps the role and all explicit CJK
-  boundaries together; replace `h2` and the role with the detected component:
+  When it is known that an element setting its own `font-family` may contain
+  descendants with their own zh/ja/ko `lang` attributes, it may include those
+  boundaries in the same nested component rule. This is optional; do not add
+  it speculatively to components that cannot contain such descendants. Replace
+  `h2` and the role below with the detected component:
 
   ```css
   h2 {
@@ -148,6 +144,17 @@ han.css keys everything off `:lang()`. Before any install:
     }
   }
   ```
+
+  Use this as a debugging path too. If a font looks wrong, inspect the affected
+  element's matched and computed `font-family`. When the element carries
+  `[lang]`, matches `:lang(zh)`, `:lang(ja)` or `:lang(ko)`, and han.css's
+  boundary declaration is the confirmed reset, extend the author's component
+  rule with the same pattern and reapply `var(--han-font-alternative)`,
+  `var(--han-font-accent)`, or the author's literal stack. When translations
+  are alternate block content, moving `lang` onto each semantic block that
+  already matches the component selector is another appropriate solution. Do
+  not remove or override the library's global boundary rule as a setup
+  shortcut.
 - Multilingual pages: tag inline foreign runs (`<span lang="ja">`) and apply
   the font-boundary rule above when their ancestor uses a non-default stack.
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;
