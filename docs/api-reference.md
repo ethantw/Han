@@ -28,9 +28,46 @@ install.
 <html lang="zh-Hant">   <!-- or zh-Hans / ja / ko -->
 ```
 
-- Tag the root with the page's primary language. Tag inline foreign-language
-  runs (`<span lang="ja">`) so each run gets its own punctuation convention,
-  quotes and font stack.
+- Tag the root with the page's primary language. Tag explicit
+  foreign-language boundaries so each run gets its own punctuation convention,
+  quotes and font stack. When several translations are alternate block
+  content, put `lang` on each semantic block (`<h2 lang="zh-Hant">`,
+  `<h2 lang="ja">`) rather than wrapping their contents in language spans.
+- **han.css font-boundary contract:** every explicit element matching
+  `:lang(zh)`, `:lang(ja)` or `:lang(ko)` receives a local zero-specificity
+  `font-family: var(--han-font-default)`. This is deliberate: the boundary
+  must rebuild its punctuation/CJK slots for its own locale instead of
+  inheriting an already-resolved stack from its parent. To use another role or
+  an author stack, declare it again on the element carrying `lang`; any normal
+  author selector wins han.css's `:where()` rule:
+
+  ```html
+  <h2 class="story-title" lang="zh-Hant">中文標題</h2>
+  <h2 class="story-title" lang="ja">日本語の見出し</h2>
+  ```
+
+  ```css
+  .story-title { font-family: var(--han-font-alternative); }
+  ```
+
+  If `lang` must live on a nested inline run, the ancestor's computed
+  `font-family` does not override that local boundary declaration; match the
+  run as well:
+
+  ```css
+  .story-title,
+  .story-title :where([lang]) {
+    font-family: var(--han-font-alternative);
+  }
+  ```
+- **Min Nan tags:** use the canonical BCP 47 form `nan-Hant` or
+  `nan-Hant-TW` for Han-character content; use `nan-Bopo-TW` and
+  `nan-Latn-TW` for Bopomofo and romanization. Do not use `zh-min-nan-Hant`:
+  the exact grandfathered tag `zh-min-nan` is deprecated in favour of `nan`
+  and cannot be extended with script or region subtags. `:lang()` matches tag
+  syntax, not the IANA macrolanguage relation, so `:lang(nan)` does not match
+  the current `:lang(zh)` selector family; first-class Min Nan targeting is a
+  separate compatibility decision.
 - Selector groups used internally: `:lang(zh)` (matches both scripts; used
   where Traditional is the umbrella), `:lang(zh-Hans)`, `:lang(ja)`,
   `:lang(ko)`, and `:lang(ko-Kore)` for Hanja-mixed Korean (opts into CJK

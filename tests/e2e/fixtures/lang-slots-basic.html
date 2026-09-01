@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css basic — language font boundary fixture</title>
+<link rel="stylesheet" href="/dist/han.basic.css">
+<style>
+  .alternative { font-family: var(--han-font-alternative); }
+  .author-stack { font-family: "Boundary Author Test", serif; }
+</style>
+</head>
+<body>
+<p id="default-ja" lang="ja">日本語預設</p>
+<p id="alternative-ja" class="alternative" lang="ja">日本語明朝</p>
+<p id="author-ja" class="author-stack" lang="ja">作者指定書体</p>
+</body>
+</html>

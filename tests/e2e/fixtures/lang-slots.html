@@ -10,6 +10,13 @@
   /* The heritage webfont is ON for zh-Hant by default and OFF for the other
      three — so this page is exactly the shape that leaked: foreign-language
      copy nested inside a Traditional Chinese document. */
+  .alternative,
+  .alternative-boundaries,
+  .alternative-boundaries :where([lang]) {
+    font-family: var(--han-font-alternative);
+  }
+  .accent { font-family: var(--han-font-accent); }
+  .author-stack { font-family: "Boundary Author Test", serif; }
 </style>
 </head>
 <body>
@@ -17,5 +24,21 @@
 <p id="hans" lang="zh-Hans">汉字直骨</p>
 <p id="ja" lang="ja">漢字の直骨</p>
 <p id="ko" lang="ko">漢字의 直骨</p>
+
+<p id="alternative-hant" class="alternative" lang="zh-Hant">繁體明體</p>
+<p id="alternative-ja" class="alternative" lang="ja">日本語明朝</p>
+<p id="alternative-ko" class="alternative" lang="ko">한국어 명조</p>
+<p id="accent-ja" class="accent" lang="ja">日本語アクセント</p>
+<p id="author-ja" class="author-stack" lang="ja">作者指定書体</p>
+
+<div id="nested-unreapplied" class="alternative" lang="zh-Hant">
+  繁體明體 <span id="nested-unreapplied-ja" lang="ja">日本語預設</span>
+</div>
+<div id="nested-reapplied" class="alternative-boundaries" lang="zh-Hant">
+  繁體明體
+  <span id="nested-reapplied-ja" lang="ja">
+    日本語明朝 <span id="nested-reapplied-ko" lang="ko">한국어 명조</span>
+  </span>
+</div>
 </body>
 </html>

@@ -1,0 +1,278 @@
+@charset "UTF-8";
+
+/**
+ * EXPERIMENTAL・future `if()` sketch
+ *
+ * This file is deliberately NOT imported by any bundle. It is a runnable
+ * companion to `fonts.css`, not a shipping module: load it after `fonts.css`
+ * in a browser that implements custom-property `style()` conditions in
+ * `if()`. It demonstrates one change only: mode → locale-slot mapping can
+ * collapse from many `@container` blocks into one declaration per locale.
+ *
+ * In other words, `if(style())` reads the font controls (the present names
+ * are `--han-punctuation-*`, `--han-use-heritage-glyphs-for-*`,
+ * `--han-webfont-heritage-family`, and `--han-use-cursive`) and writes the
+ * six `--han-font-{punctuation,cjk}-*` slots. It never reads computed
+ * `font-family`, and it introduces no font-selection / role API.
+ *
+ * This rewrite is orthogonal to the public `lang` font-boundary contract. It
+ * makes slot generation shorter and removes the ancestor-query gap, but
+ * cannot infer whether an already-computed inherited stack was default,
+ * alternative, accent, or author-defined. The shipping design keeps the
+ * zero-specificity boundary default and asks a component selector to
+ * re-declare any non-default stack on that same boundary.
+ */
+
+/* ========================================================================== *
+ * Mode mapping: future replacement for fonts.css's @container matrices
+ * ========================================================================== */
+
+/**
+ * Unlike `@container style()`, `if(style())` reads the value on the element
+ * whose declaration contains it. That removes the ancestor-only restriction
+ * and lets :root resolve its real defaults instead of its HanNone sentinels.
+ *
+ * The target slot properties remain registered in fonts.css. `else: initial`
+ * therefore means their registered HanNone initial value, i.e. "this layer is
+ * off", while keeping every composite syntactically valid.
+ */
+
+:where(*) {
+  --han-webfont-heritage-glyphs-sans: if(
+    style(--han-webfont-heritage-family: genki): 'Genki Sans Yue', 'Genki Sans';
+    else: 'Shanggu Sans', 'Shanggu Sans Yue'
+  );
+  --han-webfont-heritage-glyphs-serif: if(
+    style(--han-webfont-heritage-family: genki): 'Genki Serif Yue', 'Genki Serif';
+    else: 'Shanggu Serif', 'Shanggu Serif Yue'
+  );
+}
+
+:where(:lang(zh-Hant)) {
+  --han-font-cjk-sans: if(
+    style(--han-use-heritage-glyphs-for-hant: webfont):
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP';
+    style(--han-use-heritage-glyphs-for-hant: system-ja):
+      'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic', 'Noto Sans CJK JP';
+    else: initial
+  );
+  --han-font-cjk-serif: if(
+    style(--han-use-heritage-glyphs-for-hant: webfont):
+      var(--han-webfont-heritage-glyphs-serif),
+      'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
+    style(--han-use-heritage-glyphs-for-hant: system-ja):
+      'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
+    else: initial
+  );
+}
+
+:where(:lang(zh-Hans)) {
+  --han-font-cjk-sans: if(
+    style(--han-use-heritage-glyphs-for-hans: webfont):
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans GB', 'Noto Sans CJK SC';
+    else: initial
+  );
+  --han-font-cjk-serif: if(
+    style(--han-use-heritage-glyphs-for-hans: webfont):
+      var(--han-webfont-heritage-glyphs-serif),
+      'Songti SC', 'Noto Serif CJK SC';
+    else: initial
+  );
+}
+
+:where(:lang(ja)) {
+  --han-font-cjk-sans: if(
+    style(--han-use-heritage-glyphs-for-ja: webfont):
+      var(--han-webfont-heritage-glyphs-sans),
+      'Hiragino Sans', 'Yu Gothic', 'Noto Sans CJK JP';
+    else: initial
+  );
+  --han-font-cjk-serif: if(
+    style(--han-use-heritage-glyphs-for-ja: webfont):
+      var(--han-webfont-heritage-glyphs-serif),
+      'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP';
+    else: initial
+  );
+}
+
+:where(:lang(ko)) {
+  --han-font-cjk-sans: if(
+    style(--han-use-heritage-glyphs-for-ko: webfont):
+      var(--han-webfont-heritage-glyphs-sans),
+      'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans CJK KR';
+    else: initial
+  );
+  --han-font-cjk-serif: if(
+    style(--han-use-heritage-glyphs-for-ko: webfont):
+      var(--han-webfont-heritage-glyphs-serif),
+      'Apple Myungjo', Batang, 'Noto Serif CJK KR';
+    else: initial
+  );
+}
+
+/* One locale rule replaces the current webfont / system / off blocks. */
+:where(:lang(zh)) {
+  --han-font-cjk-cursive: if(
+    style(--han-use-cursive: webfont):
+      var(--han-webfont-cursive-hant),
+      Klee, 'Klee One', BiauKai, DFKai-SB, 'Kaiti TC',
+      'Hiragino Mincho ProN', 'Yu Mincho';
+    style(--han-use-cursive: system):
+      Klee, 'Klee One', BiauKai, DFKai-SB, 'Kaiti TC',
+      'Hiragino Mincho ProN', 'Yu Mincho';
+    else: initial
+  );
+}
+
+:where(:lang(zh-Hans)) {
+  --han-font-cjk-cursive: if(
+    style(--han-use-cursive: webfont): 'LXGW WenKai', 'Kaiti SC';
+    style(--han-use-cursive: system): 'Kaiti SC';
+    else: initial
+  );
+}
+
+:where(:lang(ja)) {
+  --han-font-cjk-cursive: if(
+    style(--han-use-cursive: webfont): Klee, 'Klee One';
+    style(--han-use-cursive: system): Klee, 'Klee One';
+    else: initial
+  );
+}
+
+:where(:lang(ko)) {
+  --han-font-cjk-cursive: initial;
+}
+
+/* Four locale rules replace 4 × (JIS / MOE / GB / KLR / off) blocks. */
+:where(:lang(zh)) {
+  --han-font-punctuation-sans: if(
+    style(--han-punctuation-hant: JIS): 'Diantenjeom Sans JIS';
+    style(--han-punctuation-hant: MOE): 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    style(--han-punctuation-hant: GB): 'Diantenjeom Sans GB';
+    style(--han-punctuation-hant: KLR): 'Diantenjeom Sans KLR';
+    else: initial
+  );
+  --han-font-punctuation-serif: if(
+    style(--han-punctuation-hant: JIS): 'Diantenjeom Serif JIS';
+    style(--han-punctuation-hant: MOE): 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    style(--han-punctuation-hant: GB): 'Diantenjeom Serif GB';
+    style(--han-punctuation-hant: KLR): 'Diantenjeom Serif KLR';
+    else: initial
+  );
+  --han-font-punctuation-cursive: var(--han-font-punctuation-serif);
+}
+
+:where(:lang(zh-Hans)) {
+  --han-font-punctuation-sans: if(
+    style(--han-punctuation-hans: JIS): 'Diantenjeom Sans JIS';
+    style(--han-punctuation-hans: MOE): 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    style(--han-punctuation-hans: GB): 'Diantenjeom Sans GB';
+    style(--han-punctuation-hans: KLR): 'Diantenjeom Sans KLR';
+    else: initial
+  );
+  --han-font-punctuation-serif: if(
+    style(--han-punctuation-hans: JIS): 'Diantenjeom Serif JIS';
+    style(--han-punctuation-hans: MOE): 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    style(--han-punctuation-hans: GB): 'Diantenjeom Serif GB';
+    style(--han-punctuation-hans: KLR): 'Diantenjeom Serif KLR';
+    else: initial
+  );
+  --han-font-punctuation-cursive: var(--han-font-punctuation-serif);
+}
+
+:where(:lang(ja)) {
+  --han-font-punctuation-sans: if(
+    style(--han-punctuation-ja: JIS): 'Diantenjeom Sans JIS';
+    style(--han-punctuation-ja: MOE): 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    style(--han-punctuation-ja: GB): 'Diantenjeom Sans GB';
+    style(--han-punctuation-ja: KLR): 'Diantenjeom Sans KLR';
+    else: initial
+  );
+  --han-font-punctuation-serif: if(
+    style(--han-punctuation-ja: JIS): 'Diantenjeom Serif JIS';
+    style(--han-punctuation-ja: MOE): 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    style(--han-punctuation-ja: GB): 'Diantenjeom Serif GB';
+    style(--han-punctuation-ja: KLR): 'Diantenjeom Serif KLR';
+    else: initial
+  );
+  --han-font-punctuation-cursive: var(--han-font-punctuation-serif);
+}
+
+:where(:lang(ko)) {
+  --han-font-punctuation-sans: if(
+    style(--han-punctuation-ko: JIS): 'Diantenjeom Sans JIS';
+    style(--han-punctuation-ko: MOE): 'Diantenjeom Sans MOE', 'Diantenjeom Sans MOE Fullstop';
+    style(--han-punctuation-ko: GB): 'Diantenjeom Sans GB';
+    style(--han-punctuation-ko: KLR): 'Diantenjeom Sans KLR';
+    else: initial
+  );
+  --han-font-punctuation-serif: if(
+    style(--han-punctuation-ko: JIS): 'Diantenjeom Serif JIS';
+    style(--han-punctuation-ko: MOE): 'Diantenjeom Serif MOE', 'Diantenjeom Serif MOE Fullstop';
+    style(--han-punctuation-ko: GB): 'Diantenjeom Serif GB';
+    style(--han-punctuation-ko: KLR): 'Diantenjeom Serif KLR';
+    else: initial
+  );
+  --han-font-punctuation-cursive: var(--han-font-punctuation-serif);
+}
+
+/* ========================================================================== *
+ * REJECTED API EXPERIMENT: one-property font dispatcher
+ * ========================================================================== */
+
+/**
+ * This section is NOT part of the mode → slot rewrite above. It is included
+ * only to make the possible future selection API runnable in the same
+ * unshipped file.
+ *
+ * `--han-font` is the missing provenance: unlike computed `font-family`, its
+ * keyword remains a keyword while it inherits. Each element can therefore
+ * combine that same selection with its own locale-resolved slots.
+ *
+ * Try it with:
+ *
+ *   .default-copy { --han-font: default; }
+ *   .book-title   { --han-font: alternative; }
+ *   .voice        { --han-font: accent; }
+ *   .brand        { --han-font: "Brand Serif", serif; }
+ *
+ *   <div class="book-title" lang="zh-Hant">
+ *     中文
+ *     <span lang="ja">日本語</span>
+ *     <span lang="ko">한국어</span>
+ *   </div>
+ *
+ * The three runs select MOE / JIS / KLR serif respectively. The author does
+ * not repeat `font-family`, and a nested language boundary needs no selector.
+ */
+@property --han-font {
+  syntax: "*";
+  inherits: true;
+  initial-value: default;
+}
+
+:where(*) {
+  font-family: if(
+    style(--han-font: default): var(--han-font-default);
+    style(--han-font: alternative): var(--han-font-alternative);
+    style(--han-font: accent): var(--han-font-accent);
+    style(--han-font: sans): var(--han-sans);
+    style(--han-font: serif): var(--han-serif);
+    style(--han-font: cursive): var(--han-cursive);
+    style(--han-font: monospace): var(--han-monospace);
+    else: var(--han-font)
+  );
+}
+
+/**
+ * Literal stacks use the `else` arm. Quote a family whose name collides with
+ * a keyword (`"alternative"`) to distinguish it from the role token.
+ *
+ * A native `font-family` written only on an ancestor cannot participate:
+ * descendants have their own dispatcher declaration, and CSS still cannot
+ * infer where the ancestor's computed value came from. Use `--han-font` for
+ * a subtree governed by this experiment, or do not load this section.
+ */

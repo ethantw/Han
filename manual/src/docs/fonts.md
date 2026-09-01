@@ -26,6 +26,35 @@ title: 字體
 
 模組把這套堆疊在**每個元素**上組裝（`:where(*)`而非只在`:root`）：因為自訂屬性在宣告它的元素上一次算定、之後只繼承那個定字串；若只在`:root`宣告，各層槽位就凍結在根的值，子樹再改也沒用。逐元素重組，才能讓任何子樹替換某一層（如某個`<li>`單獨換標點慣例）真正生效。
 
+### `lang`邊界會重新套用預設字體
+
+每一個明示`lang`、且語言匹配`:lang(zh)`／`:lang(ja)`／`:lang(ko)`的元素，都會在該元素本地取得`font-family: var(--han-font-default)`。這是**刻意的設計**，不是UA stylesheet：字體堆疊裡的標點與CJK槽位必須在語言邊界重新解析，否則日文／韓文子元素只會繼承父元素已算好的繁中字體串。
+
+han.css的這條規則包在`:where()`裡，權重為零。需要明體、楷體或自訂字體時，在**同一個帶`lang`的元素**重新指定即可；一般作者選擇器自然勝出：
+
+```html
+<h2 class="story-title" lang="zh-Hant">中文標題</h2>
+<h2 class="story-title" lang="ja">日本語の見出し</h2>
+<h2 class="story-title" lang="ko">한국어 제목</h2>
+```
+
+```css
+.story-title {
+  font-family: var(--han-font-alternative);
+}
+```
+
+若內容結構確實是「祖先選字體、內層`span`才帶`lang`」，祖先的`font-family`只是繼承值，不能與子元素的local declaration競爭；必須讓選擇器也命中那些邊界：
+
+```css
+.story-title,
+.story-title :where([lang]) {
+  font-family: var(--han-font-alternative);
+}
+```
+
+閩南語漢字內容使用BCP 47正規寫法`nan-Hant`（需要地區時可寫`nan-Hant-TW`）；注音與羅馬字分別標`nan-Bopo-TW`、`nan-Latn-TW`。不要寫`zh-min-nan-Hant`：只有完整的舊tag `zh-min-nan`曾被登錄，現已deprecated並以`nan`為Preferred-Value，不能再接script／region subtag。CSS的`:lang()`也不會依macrolanguage關係把`nan`視為`zh`；目前han.css的`:lang(zh)`規則不會自動命中`nan`，正式納入哪些繁中排版規則須另案處理。
+
 ## 標點字體
 
 同一組Unicode標點碼位，各地慣例的字形與位置不同。四個模式變量按語言選慣例：

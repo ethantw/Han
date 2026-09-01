@@ -32,3 +32,59 @@ test('foreign-language subtrees do not inherit the TC heritage stack', async ({ 
   // 韓文沒有自己的行書層，也不該撿到中文的
   expect(await page.evaluate(slot('ko', '--han-font-cjk-cursive'))).toBe('HanNone')
 })
+
+test('font roles declared on a lang boundary rebuild with that boundary locale', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots.html')
+
+  const expected = [
+    ['hant', 'Diantenjeom Sans MOE'],
+    ['ja', 'Diantenjeom Sans JIS'],
+    ['ko', 'Diantenjeom Sans KLR'],
+    ['alternative-hant', 'Diantenjeom Serif MOE'],
+    ['alternative-ja', 'Diantenjeom Serif JIS'],
+    ['alternative-ko', 'Diantenjeom Serif KLR'],
+    ['accent-ja', 'Diantenjeom Serif JIS'],
+  ] as const
+
+  for (const [id, family] of expected) {
+    await expect(page.locator(`#${id}`)).toHaveCSS('font-family', new RegExp(family))
+  }
+
+  await expect(page.locator('#author-ja'))
+    .toHaveCSS('font-family', /Boundary Author Test.*serif/)
+  await expect(page.locator('body')).toHaveCSS('font-family', /Diantenjeom Sans MOE/)
+  expect(await page.locator('body').evaluate(
+    element => getComputedStyle(element).fontFamily.startsWith('HanNone'),
+  )).toBe(false)
+})
+
+test('nested lang boundaries default locally unless the component reapplies its role', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots.html')
+
+  await expect(page.locator('#nested-unreapplied')).toHaveCSS(
+    'font-family',
+    /Diantenjeom Serif MOE/,
+  )
+  await expect(page.locator('#nested-unreapplied-ja')).toHaveCSS(
+    'font-family',
+    /Diantenjeom Sans JIS/,
+  )
+
+  await expect(page.locator('#nested-reapplied-ja')).toHaveCSS(
+    'font-family',
+    /Diantenjeom Serif JIS/,
+  )
+  await expect(page.locator('#nested-reapplied-ko')).toHaveCSS(
+    'font-family',
+    /Diantenjeom Serif KLR/,
+  )
+})
+
+test('basic bundle keeps the boundary contract without locale webfont slots', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots-basic.html')
+
+  await expect(page.locator('#default-ja')).toHaveCSS('font-family', /system-ui.*sans-serif/)
+  await expect(page.locator('#alternative-ja')).toHaveCSS('font-family', 'serif')
+  await expect(page.locator('#author-ja'))
+    .toHaveCSS('font-family', /Boundary Author Test.*serif/)
+})

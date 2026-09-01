@@ -142,8 +142,29 @@
   分配負位移），並比較直接縮短「ㄧ」的 `vmtx` vertical advance／重分上下
   side bearing；用工作台的 12／目前／60px，以及一、二、三符號與輕聲樣本
   做回歸，確認單獨「一／ㄧ」不被拉偏後再定案。
-- **`TODO(css-if)` 三處**（semantics/fonts/lines）——`if()` 落地後
-  的遷移註記，跟引擎走。
+- [x] **固定並驗證 `lang` 字體邊界契約。** 保留零 specificity 的全域 `[lang]`
+  default reset：顯式 zh／ja／ko boundary 必須用自己的 locale slots 重組正文字體。
+  需要 alternative／accent／作者 stack 時，作者在帶 `lang` 的同一元素重申；若是
+  真正的 nested inline language run，component selector 也要命中該 boundary。
+  已否決移除 reset 與新增 `--han-font` API；demo 改成每個翻譯各自帶 `lang` 的
+  semantic heading。閩南語維持正規 `nan-Hant[-TW]`，不使用非法的
+  `zh-min-nan-Hant` 偷渡 zh selector。full／basic、
+  default／alternative／accent／custom、nested 與 bare-body regressions 已補；
+  Chromium／WebKit 的 production stack 正確，Firefox 仍有既知 `HanNone` slots
+  degradation，歸入 fonts architecture 的跨引擎 fallback 後續。
+  [完整調查](notes/2026-09-01-lang-boundary-font-role.md)。
+- [ ] **決定 `nan-Hant` 的 first-class selector support。** BCP 47 推薦
+  `nan-Hant[-TW]`；deprecated grandfathered `zh-min-nan` 不能再接 script／region，
+  而合法但非首選的 extlang 形式 `zh-nan-Hant[-TW]` 不應成為 han.css workaround。
+  盤點 semantics／fonts／lines／prose 裡哪些 `:lang(zh)` 應同步接受 `:lang(nan)`，
+  尤其 MOE punctuation、Hant heritage faces、quotes、emphasis 與 line processing；
+  定案前文件不得宣稱 `nan` 會自動進入 zh rules。
+- **`TODO(css-if)` 三處**（semantics/fonts/lines）——Chrome 152 已支援
+  `if(style(--custom-property: …))`，仍未執行 `style(font-family: …)` 等標準
+  property condition；`CSS.supports()` 只驗 parse，不能當此能力的 gate。
+  既有三處 custom-property mode mapping 等 2/3 引擎後可遷移；`fonts.if.css`
+  只保留研究樣本。字體角色不新增 dispatcher API；標準屬性 style query 即使
+  可比較祖先 computed stack，也無法從相等 values 恢復 declaration provenance。
 - **原生 `hanging-punctuation` 佈線**——等 2/3 引擎出貨。
 - **偽斜體的中／德對照沒地方看了**（2026-08-28）。站①的信封降成浮水印
   之後，德文寄件人那一塊只剩紋理的濃度，不再是讀得出來的樣張——而

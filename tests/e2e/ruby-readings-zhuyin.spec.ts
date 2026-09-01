@@ -1,5 +1,29 @@
 import { test, expect } from '@playwright/test'
 
+test('each localized heading resolves the alternative stack on its own lang boundary', async ({ page }) => {
+  await page.goto('/demo/ruby-readings.html')
+
+  const expected = [
+    ['minnan', 'nan-Hant-TW', 'Diantenjeom Serif MOE'],
+    ['mandarin', 'zh-Hant-TW', 'Diantenjeom Serif MOE'],
+    ['japanese', 'ja', 'Diantenjeom Serif JIS'],
+    ['korean', 'ko', 'Diantenjeom Serif KLR'],
+  ] as const
+
+  for (const [mode, lang, family] of expected) {
+    await page.locator(`[name="reading-mode"][value="${mode}"]`).check({ force: true })
+    const heading = page.locator(`#story-title > h2[data-language="${mode}"]`)
+
+    await expect(heading).toHaveAttribute('lang', lang)
+    await expect(heading).toBeVisible()
+    await expect(heading).toHaveCSS('font-family', new RegExp(family))
+  }
+
+  const minnan = page.locator('#story-title > h2[data-language="minnan"]')
+  expect(await minnan.evaluate(element => element.matches(':lang(nan)'))).toBe(true)
+  expect(await minnan.evaluate(element => element.matches(':lang(zh)'))).toBe(false)
+})
+
 test('localized headline annotations retain the Han Zhuyin face', async ({ page }) => {
   await page.goto('/demo/ruby-readings.html')
 
