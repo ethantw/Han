@@ -611,7 +611,7 @@ const setAnnotationPosition = () => {
 
 const setFontSize = () => {
   const value = Number($fontSize.value)
-  $station.style.setProperty('--reading-font-size', `${value}px`)
+  $station.style.setProperty('--font-size-handle', `${value}px`)
   $fontSizeOutput.value = `${value}px`
 }
 

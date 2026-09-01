@@ -24,7 +24,7 @@ main {
 
 .ReadingStation {
   --station-gutter: clamp(1rem, 5vw, 4rem);
-  --reading-font-size: 14px;
+  --font-size-handle: 16px;
   --barnard-orbit: color-mix(in srgb, var(--ui-accent) 48%, var(--ui-supplement-text));
   --barnard-core: color-mix(in srgb, var(--ui-proof) 42%, var(--ui-accent));
   --barnard-grid: color-mix(in srgb, var(--ui-accent) 18%, transparent);
@@ -289,6 +289,7 @@ main {
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
+  font-size: var(--font-size-handle);
 
   &::-webkit-scrollbar { display: none; }
 
@@ -323,7 +324,7 @@ main {
     & h2 {
       margin: 0;
       font-family: var(--han-font-alternative);
-      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-size: 1.75em;
       font-weight: 550;
       line-height: 1.9;
     }
@@ -355,10 +356,9 @@ main {
 }
 
 .Dispatch {
-  min-block-size: 24rem;
   padding-block: 1.5rem;
   font-family: var(--han-font-alternative);
-  font-size: var(--reading-font-size);
+  font-size: 1em;
   line-height: 1.9;
 
   & p { margin-block: 0 1rem; }
@@ -371,7 +371,7 @@ main {
   & small {
     display: block;
     color: var(--ui-supplement-text);
-    font-size: .625rem;
+    font-size: .625em;
     line-height: 1.6;
   }
 
@@ -409,7 +409,7 @@ main {
     margin: 0;
     padding: 0;
     color: var(--ui-supplement-text);
-    font-size: .625rem;
+    font-size: .625em;
     list-style: none;
   }
 
@@ -464,7 +464,7 @@ main {
       inset-block-end: .3rem;
       inset-inline-start: .3rem;
       color: var(--ui-supplement-text-3q);
-      font-size: .875rem;
+      font-size: .875em;
     }
 
     & > ruby {
@@ -476,7 +476,7 @@ main {
       inline-size: 100%;
       block-size: 100%;
       font-family: var(--han-sans);
-      font-size: 3rem;
+      font-size: min(3em, 80px);
       font-weight: 500;
       letter-spacing: 0;
       line-height: 1;
@@ -570,7 +570,7 @@ main {
       background: var(--ui-bg);
       box-shadow: 0 .75rem 2rem color-mix(in srgb, var(--ui-shadow-ink) 16%, transparent);
       font-family: var(--han-sans);
-      font-size: .625rem;
+      font-size: .625em;
       font-weight: 400;
       line-height: 1.55;
       text-align: start;
@@ -582,7 +582,7 @@ main {
       display: block;
       margin-block-end: .125rem;
       font-family: var(--han-monospace);
-      font-size: .625rem;
+      font-size: 1em;
       letter-spacing: .08em;
     }
   }
@@ -651,12 +651,14 @@ main {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: 1fr;
-    block-size: min(25rem, 72vh);
   }
 
   & .Rail > figure {
     inline-size: min(50rem, calc(100vw - 2 * var(--station-gutter)));
+    block-size: min(25rem, 72vh);
   }
+
+  & .Rail > article { inline-size: max-content; }
 
   & .Rail header {
     grid-column: 2;
@@ -674,11 +676,10 @@ main {
   & .Dispatch {
     grid-column: 1;
     grid-row: 1;
-    inline-size: 100%;
+    inline-size: min(25rem, 72vh);
     block-size: auto;
     min-block-size: 0;
     padding: 1rem;
-    overflow: hidden;
     writing-mode: vertical-rl;
 
     & p { margin-block: 0 1rem; }
