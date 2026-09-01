@@ -558,7 +558,7 @@ shipping the license text too (packages include it; see each package's
 |---|---|---|
 | Heritage CJK (尚古) | `@hanzi.pro/webfonts-shanggu-{sans,serif}` + `…-yue` variant | ziano `unicode-range` slices; frequency-ordered, on-demand download |
 | Heritage CJK (源起) | `@hanzi.pro/webfonts-genki-{sans,serif}` + `…-yue` | smaller; weak hangul — not for Korean |
-| Punctuation | `@hanzi.pro/diantenjeom` **≥ 0.2.0** | 0.1.0 family names end in `… KV`, mismatching v4's `… KLR` → silent fallback. Whole bundle or per-convention (`dist/moe.css` etc.) |
+| Punctuation | `@hanzi.pro/diantenjeom` | Whole bundle or per-convention (`dist/moe.css` etc.) |
 | Kaiti | `@hanzi.pro/webfonts-lxgw-wenkai-tc` (zh-Hant), `…-lxgw-wenkai` (zh-Hans), `…-iansui`, `…-klee-one` | zh/ja cursive layer; swap via `--han-webfont-cursive-hant` |
 | Emphasis marks | `Diantenjeom Emphasis` (in diantenjeom) | no `unicode-range`; must be placed **first** in the `<em>` font stack by the author — browsers don't per-glyph-fallback emphasis-mark fonts |
 
@@ -566,7 +566,7 @@ shipping the license text too (packages include it; see each package's
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@latest/swap.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans-yue@latest/swap.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@0.2.0/dist/diantenjeom.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@latest/dist/diantenjeom.css">
 ```
 
 Self-hosting: copy the packages' `dist/`, keep relative layout, serve woff2
@@ -575,8 +575,8 @@ on another origin (fonts are CORS-gated). No webfonts at all is a valid
 configuration: `--han-use-heritage-glyphs-for-hant: system-ja` +
 punctuation `off`.
 
-Vertical-baseline note: ziano & diantenjeom ≥ 0.2.0 normalize hhea/usWin so
-the vertical central baseline lands at 0.380em uniformly. Don't add
+Vertical-baseline note: ziano and diantenjeom normalize hhea/usWin so the
+vertical central baseline lands at 0.380em uniformly. Don't add
 `ascent-override` on top (Safari ignores it; the font files already carry
 the fix).
 
@@ -593,7 +593,7 @@ the fix).
 | Inter-script spacing | ✔ (modern engines) | long-tail UAs + `replace`/`strict` modes + Safari seam bug | bundled em-space fonts (for JS path) | `text-autospace` (Chromium/WebKit/Gecko modern) |
 | Punctuation compress 擠壓 | ✔ (Chromium) | engines without `text-spacing-trim` | bundled em-space fonts (JS path) | `text-spacing-trim` |
 | Punctuation hanging 懸掛 | ✘ | **always JS** | bundled em-space fonts | none shipped (property exists in spec only) |
-| Per-locale punctuation conventions | ✔ | — | **Diantenjeom ≥ 0.2.0 required** | — |
+| Per-locale punctuation conventions | ✔ | — | Diantenjeom | — |
 | Heritage glyphs / Kaiti | ✔ | — | ziano slices (or `system-ja` escape hatch) | — |
 
 Style queries (`@container style()`) gate most CSS behavior; Firefox
