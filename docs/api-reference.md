@@ -79,15 +79,8 @@ install.
   where Traditional is the umbrella), `:lang(zh-Hans)`, `:lang(ja)`,
   `:lang(ko)`, and `:lang(ko-Kore)` for Hanja-mixed Korean (opts into CJK
   brackets/quotes; plain `ko` gets Western quotes).
-- **Write `ko-Kore`, not a Han-flavoured subtag,** for Hanja-mixed Korean.
-  `Kore` names the writing system as Korean, so system font fallback keeps
-  handing the Han characters to Korean faces; a subtag that names only the
-  script (`Hant`, `Hani`) leaves the engine to guess the locale from it, and
-  the Hanja arrive in some other CJK locale's font while the Hangul beside
-  them stays Korean — measured in
-  `docs/notes/2026-08-27-lang-subtag-font-fallback.md`. BCP 47 would let the
-  subtag be dropped (Korean suppresses `Kore`); han.css spells it out because
-  it is what opts the run in. Bare `ko` reads as modern, Hangul-only Korean.
+- Use `ko-Kore` for Hanja-mixed Korean; bare `ko` denotes modern, Hangul-only
+  Korean.
 - Content in a language han.css doesn't target (`en`, …) is untouched — safe
   to install on multilingual sites.
 
