@@ -56,7 +56,7 @@ test('element speech begins with each localized table title', async ({ page }) =
   }
 })
 
-test('emphasized dual readings expose the requested experimental ruby shapes', async ({ page }) => {
+test('emphasized dual readings use nested ruby shapes', async ({ page }) => {
   await page.goto('/demo/ruby-readings.html')
 
   for (const mode of ['minnan', 'mandarin']) {
@@ -68,9 +68,20 @@ test('emphasized dual readings expose the requested experimental ruby shapes', a
   }
 
   await page.locator('[name="reading-mode"][value="korean"]').check({ force: true })
-  const koreanRuby = page.locator('.Dispatch em[data-emphasis="id"] > ruby').first()
-  await expect(koreanRuby.locator(':scope > ruby')).toHaveCount(0)
-  await expect(koreanRuby.locator(':scope > rt')).toHaveCount(2)
-  await expect(koreanRuby.locator(':scope > rt:first-child')).toHaveCSS('ruby-position', 'over')
-  await expect(koreanRuby.locator(':scope > rt:last-child')).toHaveCSS('ruby-position', 'under')
+  const koreanEmphasis = page.locator('.Dispatch em[data-emphasis="id"]').first()
+  const koreanInnerRuby = koreanEmphasis.locator(':scope > ruby')
+  const koreanOuterRuby = koreanEmphasis.locator('xpath=..')
+  await expect(koreanInnerRuby.locator(':scope > rt[lang="ko-Hani"]')).toHaveCount(1)
+  await expect(koreanOuterRuby).toHaveJSProperty('tagName', 'RUBY')
+  await expect(koreanOuterRuby.locator(':scope > rt[lang="ko-Latn"]')).toHaveCount(1)
+  await expect(koreanInnerRuby).toHaveCSS('ruby-position', 'over')
+  await expect(koreanOuterRuby).toHaveCSS('ruby-position', 'under')
+
+  await page.locator('[name="writing-mode"][value="vertical"]').check({ force: true })
+  await page.locator('[name="reading-mode"][value="mandarin"]').check({ force: true })
+  const emphasizedZhuyin = page.locator('.Dispatch em[data-emphasis="id"] > ruby.zhuyin > rt').first()
+  await expect(emphasizedZhuyin).toHaveCSS('position', 'relative')
+  expect(await emphasizedZhuyin.evaluate(
+    (rt) => Number.parseFloat(getComputedStyle(rt).insetBlockStart),
+  )).toBeGreaterThan(0)
 })

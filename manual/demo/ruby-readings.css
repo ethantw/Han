@@ -387,9 +387,7 @@ main {
     white-space: nowrap;
   }
 
-  & ruby > rt[lang='ko-Hani']:first-child { ruby-position: over; }
-
-  & ruby > rt[lang='ko-Latn']:last-child { ruby-position: under; }
+  & ruby:has(> rt[lang='ko-Hani']) { ruby-position: over; }
 
   & em {
     color: var(--ui-accent);
@@ -697,6 +695,15 @@ main {
 
     & ruby:has(> ruby) > ruby,
     & ruby:has(> em > ruby) > em > ruby { ruby-position: over; }
+
+    /* Native emphasis avoidance follows the annotation box, while the
+       Zhuyin font's zero-advance GPOS tone marks may ink beyond that box.
+       Pull only the emphasized annotation ink inward so the reserved outer
+       edge becomes a visible gap before the emphasis dots. */
+    & em > ruby.zhuyin > rt {
+      position: relative;
+      inset-block-start: var(--han-ruby-zhuyin-over-gap);
+    }
   }
 
   & .Rail figure {

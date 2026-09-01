@@ -317,11 +317,6 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
       inner.append(character, nativeReading)
       outer.append(inner)
     })
-  } else if (isKorean) {
-    const nativeReading = document.createElement('rt')
-    nativeReading.lang = system.nativeLang
-    nativeReading.textContent = native
-    outer.append(base, nativeReading)
   } else {
     const inner = document.createElement('ruby')
     const nativeReading = document.createElement('rt')
@@ -340,7 +335,7 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
     return wrapper
   }
 
-  if (isBopomofo && emphasis) {
+  if ((isBopomofo || isKorean) && emphasis) {
     const wrapper = document.createElement('em')
     wrapper.dataset.emphasis = emphasis
     wrapper.append(...outer.childNodes)
@@ -352,7 +347,7 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   romanization.textContent = roman
   outer.append(romanization)
 
-  if (!emphasis || isBopomofo) return outer
+  if (!emphasis || isBopomofo || isKorean) return outer
   const wrapper = document.createElement('em')
   wrapper.dataset.emphasis = emphasis
   wrapper.append(outer)
