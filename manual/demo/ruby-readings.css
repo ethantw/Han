@@ -285,6 +285,8 @@ main {
 
   & > article {
     inline-size: min(37rem, calc(100vw - 2 * var(--station-gutter)));
+
+    & > header { border-block-end: 0; }
   }
 
   & > figure { inline-size: max-content; }
@@ -491,6 +493,7 @@ main {
       top: 50%;
       margin: 0;
       translate: 0 -50%;
+      writing-mode: vertical-rl;
     }
 
     & > ruby > ruby.zhuyin > rt[lang='nan-Bopo-TW'] { right: .35rem; }
@@ -615,15 +618,25 @@ main {
   & > nav button[value='previous']::before { scale: -1 1; }
   & > nav button[value='next']::before { scale: 1 1; }
 
-  & .Rail { direction: rtl; }
+  & .Rail {
+    gap: 1.5rem;
+    direction: rtl;
+  }
 
   & .Rail > :is(article, figure) {
     direction: ltr;
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: 1fr;
-    inline-size: min(52rem, calc(100vw - 2 * var(--station-gutter)));
     block-size: min(38rem, 72vh);
+  }
+
+  & .Rail > article {
+    inline-size: min(40rem, calc(100vw - 2 * var(--station-gutter)));
+  }
+
+  & .Rail > figure {
+    inline-size: min(50rem, calc(100vw - 2 * var(--station-gutter)));
   }
 
   & .Rail header {
@@ -635,7 +648,7 @@ main {
     min-block-size: 0;
     padding: 1rem;
     border-block-end: 0;
-    border-inline-end: 1px solid var(--ui-row-rule);
+    border-inline-end: 0;
     writing-mode: vertical-rl;
   }
 
@@ -672,7 +685,7 @@ main {
       grid-row: 1;
       padding: 1rem .75rem;
       border-block-end: 0;
-      border-inline-end: 1px solid var(--ui-row-rule);
+      border-inline-end: 0;
       writing-mode: vertical-rl;
     }
 
