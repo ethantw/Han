@@ -22,6 +22,38 @@
     </hgroup>
     <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的二十四格材料清單。</p>
 
+    <svg class="BarnardMap StationSky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="barnard-glow">
+          <stop offset="0" stop-color="var(--barnard-core)" stop-opacity=".52" />
+          <stop offset=".2" stop-color="var(--barnard-core)" stop-opacity=".2" />
+          <stop offset="1" stop-color="var(--barnard-core)" stop-opacity="0" />
+        </radialGradient>
+        <marker id="barnard-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+        </marker>
+      </defs>
+      <g class="BarnardGrid">
+        <path d="M90 94H1360M60 256H1390M110 470H1340" />
+        <path d="M240 24V590M720 10V610M1160 30V584" />
+      </g>
+      <g class="BarnardOrbit">
+        <ellipse cx="930" cy="215" rx="310" ry="128" />
+        <ellipse cx="930" cy="215" rx="188" ry="77" />
+        <circle cx="930" cy="215" r="92" fill="url(#barnard-glow)" />
+        <circle class="BarnardCore" cx="930" cy="215" r="18" />
+        <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
+        <path d="M900 215h60M930 185v60" />
+      </g>
+      <g class="BarnardStars">
+        <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
+        <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
+        <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
+      </g>
+      <text x="970" y="195">BARNARD STAR</text>
+      <text x="970" y="226">INCOMING 01687</text>
+    </svg>
+
     <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
       <fieldset class="ViewTabs LayoutTabs" aria-labelledby="reading-direction-label">
         <span class="PillHead" id="reading-direction-label">行向</span>
@@ -102,37 +134,6 @@
 
         <div class="MaterialViewport">
           <div class="MaterialField">
-            <svg class="BarnardMap" viewBox="0 0 1440 620" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <radialGradient id="barnard-glow">
-                  <stop offset="0" stop-color="currentColor" stop-opacity=".42" />
-                  <stop offset=".2" stop-color="currentColor" stop-opacity=".18" />
-                  <stop offset="1" stop-color="currentColor" stop-opacity="0" />
-                </radialGradient>
-                <marker id="barnard-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
-                </marker>
-              </defs>
-              <g class="BarnardGrid">
-                <path d="M90 94H1360M60 256H1390M110 470H1340" />
-                <path d="M240 24V590M720 10V610M1160 30V584" />
-              </g>
-              <g class="BarnardOrbit">
-                <ellipse cx="930" cy="215" rx="310" ry="128" />
-                <ellipse cx="930" cy="215" rx="188" ry="77" />
-                <circle cx="930" cy="215" r="92" fill="url(#barnard-glow)" />
-                <circle class="BarnardCore" cx="930" cy="215" r="18" />
-                <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
-                <path d="M900 215h60M930 185v60" />
-              </g>
-              <g class="BarnardStars">
-                <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
-                <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
-                <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
-              </g>
-              <text x="970" y="195">BARNARD STAR</text>
-              <text x="970" y="226">INCOMING 01687</text>
-            </svg>
             <ol class="MaterialGrid" data-material-grid aria-label="二十四種反物質引擎候選材料"></ol>
           </div>
         </div>

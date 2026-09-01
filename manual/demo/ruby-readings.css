@@ -23,6 +23,8 @@ body {
 
 button { font: inherit; }
 
+#station-readings rt { color: inherit; }
+
 code {
   font-family: var(--han-monospace);
   font-size: .875em;
@@ -36,6 +38,11 @@ main {
 
 #station-readings {
   --station-pad: clamp(1rem, 5vw, 4rem);
+  --barnard-orbit: light-dark(#6f9f91, #72aa98);
+  --barnard-core: light-dark(#c8955e, #d2a06a);
+  --barnard-grid: light-dark(#bdd6ce, #35584e);
+  --barnard-ink: light-dark(#47796b, #8fc4b2);
+  --barnard-dust: light-dark(#73968d, #719c8f);
   position: relative;
   isolation: isolate;
   min-block-size: 100vh;
@@ -44,6 +51,11 @@ main {
     radial-gradient(circle at 86% 8%, var(--ui-accent-bg), transparent 32rem),
     var(--ui-station-a);
   border-inline: 1px solid var(--ui-grid);
+}
+
+#station-readings > :not(.StationSky) {
+  position: relative;
+  z-index: 1;
 }
 
 #station-readings > hgroup {
@@ -279,7 +291,7 @@ main {
 .GroupReading { ruby-position: over; }
 
 .DispatchRuby > .Romanization {
-  color: var(--ui-supplement-text);
+  color: inherit;
   font-family: var(--han-sans);
   font-size: .36em;
   font-weight: 500;
@@ -289,13 +301,13 @@ main {
 }
 
 .InterCharacterReading > rt {
-  color: var(--ui-accent);
+  color: inherit;
   font-weight: 600;
   text-emphasis: none;
 }
 
 .GroupReading > rt {
-  color: var(--ui-accent);
+  color: inherit;
   font-family: var(--han-sans);
   font-size: .36em;
   font-weight: 600;
@@ -303,16 +315,15 @@ main {
   white-space: nowrap;
 }
 
+.DispatchRuby[data-emphasis] { color: var(--ui-accent); }
+
 .DispatchRuby[data-emphasis] > :is(.InterCharacterReading, .GroupReading) {
-  color: var(--ui-accent);
   text-emphasis: filled dot;
   text-emphasis-color: currentColor;
   text-emphasis-position: under right;
 }
 
-.DispatchRuby[data-emphasis='cargo'] > :is(.InterCharacterReading, .GroupReading) {
-  color: var(--ui-proof);
-}
+.DispatchRuby[data-emphasis='cargo'] { color: var(--ui-proof); }
 
 .DispatchPromise {
   margin: 1.5rem 0 .75rem;
@@ -453,18 +464,26 @@ main {
 }
 
 .BarnardMap {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  overflow: visible;
-  color: color-mix(in srgb, var(--ui-proof) 72%, #b45f46);
+  color: var(--barnard-orbit);
   pointer-events: none;
+}
+
+.StationSky {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: -1.5rem;
+  inset-inline-end: 0;
+  inline-size: min(64rem, 74vw);
+  block-size: 34rem;
+  overflow: hidden;
+  opacity: .78;
+  -webkit-mask-image: radial-gradient(ellipse 68% 62% at 72% 30%, #000 0 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 68% 62% at 72% 30%, #000 0 50%, transparent 100%);
 }
 
 .BarnardGrid {
   fill: none;
-  stroke: var(--ui-grid);
+  stroke: var(--barnard-grid);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
@@ -473,7 +492,7 @@ main {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.25;
-  stroke-opacity: .34;
+  stroke-opacity: .48;
   vector-effect: non-scaling-stroke;
 }
 
@@ -483,23 +502,23 @@ main {
   stroke-dasharray: 3 8;
 }
 .BarnardOrbit .BarnardCore {
-  fill: currentColor;
+  fill: var(--barnard-core);
   stroke: none;
-  opacity: .72;
+  opacity: .88;
 }
 
 .BarnardStars {
-  fill: var(--ui-supplement-text);
-  opacity: .38;
+  fill: var(--barnard-dust);
+  opacity: .52;
 }
 
 .BarnardMap text {
-  fill: currentColor;
+  fill: var(--barnard-ink);
   font-family: var(--han-monospace);
   font-size: 12px;
   font-weight: 650;
   letter-spacing: .16em;
-  opacity: .62;
+  opacity: .78;
 }
 
 .MaterialGrid {
@@ -603,7 +622,7 @@ main {
 }
 
 .AtomicRuby > .AtomicNumber {
-  color: #4a4a4a;
+  color: inherit;
   font-family: var(--han-monospace);
   font-size: .33em;
   font-weight: 500;
@@ -615,7 +634,7 @@ main {
 }
 
 .ElementRuby > .Symbol {
-  color: currentColor;
+  color: inherit;
   font-family: var(--han-sans);
   font-size: .34em;
   font-weight: 700;
@@ -628,7 +647,7 @@ main {
 }
 
 .ElementCell:not([data-featured]) .ElementRuby > .Symbol {
-  color: #4a4a4a;
+  color: inherit;
 }
 
 .ElementCell [data-icon] {
@@ -901,6 +920,16 @@ button[data-speaking] > [data-icon] {
 
 @media (max-width: 34rem) {
   #station-readings { --station-pad: .75rem; }
+
+  .StationSky {
+    inset-block-start: -1rem;
+    inset-inline-end: 0;
+    inline-size: 100%;
+    block-size: 25rem;
+    opacity: .4;
+  }
+
+  .StationSky text { display: none; }
 
   .ColumnHead {
     align-items: start;
