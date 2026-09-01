@@ -70,6 +70,11 @@
         <label><input type="radio" name="annotation-position" value="inter-character" checked> 字間注</label>
         <label><input type="radio" name="annotation-position" value="over"> 行間注</label>
       </fieldset>
+      <fieldset class="FontSize" aria-labelledby="reading-font-size-label">
+        <span id="reading-font-size-label">字級</span>
+        <input id="reading-font-size" type="range" name="font-size" min="12" max="48" step="2" value="14" aria-labelledby="reading-font-size-label">
+        <output for="reading-font-size">14px</output>
+      </fieldset>
     </form>
 
     <nav aria-label="移動讀音樣張">

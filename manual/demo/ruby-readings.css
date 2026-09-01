@@ -24,6 +24,7 @@ main {
 
 .ReadingStation {
   --station-gutter: clamp(1rem, 5vw, 4rem);
+  --reading-font-size: 14px;
   --barnard-orbit: color-mix(in srgb, var(--ui-accent) 48%, var(--ui-supplement-text));
   --barnard-core: color-mix(in srgb, var(--ui-proof) 42%, var(--ui-accent));
   --barnard-grid: color-mix(in srgb, var(--ui-accent) 18%, transparent);
@@ -182,7 +183,7 @@ main {
     letter-spacing: .08em;
   }
 
-  & input {
+  & input[type='radio'] {
     position: absolute;
     opacity: 0;
     pointer-events: none;
@@ -208,6 +209,25 @@ main {
     &:has(input:checked) {
       color: var(--ui-accent-deep);
       background: var(--ui-accent-bg);
+    }
+  }
+
+  & .FontSize {
+    padding-inline-end: .75rem;
+
+    & input {
+      inline-size: clamp(5rem, 9vw, 8rem);
+      accent-color: var(--ui-accent);
+      cursor: ew-resize;
+    }
+
+    & output {
+      min-inline-size: 3.5ch;
+      color: var(--ui-supplement-text);
+      font-family: var(--han-monospace);
+      font-size: .75rem;
+      font-variant-numeric: tabular-nums;
+      text-align: end;
     }
   }
 }
@@ -338,7 +358,7 @@ main {
   min-block-size: 24rem;
   padding-block: 1.5rem;
   font-family: var(--han-font-alternative);
-  font-size: .875rem;
+  font-size: var(--reading-font-size);
   line-height: 1.9;
 
   & p { margin-block: 0 1rem; }
@@ -621,9 +641,6 @@ main {
 }
 
 .ReadingStation:has([name='writing-mode'][value='vertical']:checked) {
-  & > nav button[value='previous']::before { scale: -1 1; }
-  & > nav button[value='next']::before { scale: 1 1; }
-
   & .Rail {
     gap: .75rem;
     direction: rtl;
@@ -675,6 +692,8 @@ main {
       text-orientation: mixed;
       writing-mode: vertical-rl;
     }
+
+    & ruby:has(> ruby) > ruby { ruby-position: over; }
   }
 
   & .Rail figure {

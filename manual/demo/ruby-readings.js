@@ -34,6 +34,8 @@ const $station = $('.ReadingStation')
 const $dispatch = $('.Dispatch')
 const $numbersGroup = $('button[name="speak"][value="story"]')
 const $elementsGroup = $('button[name="speak"][value="elements"]')
+const $fontSize = $('[name="font-size"]')
+const $fontSizeOutput = $('output[for="reading-font-size"]')
 
 const selectedValue = (name) => $(`[name="${name}"]:checked`).value
 
@@ -607,6 +609,12 @@ const setAnnotationPosition = () => {
   renderReadingSystem(currentMode)
 }
 
+const setFontSize = () => {
+  const value = Number($fontSize.value)
+  $station.style.setProperty('--reading-font-size', `${value}px`)
+  $fontSizeOutput.value = `${value}px`
+}
+
 const clearActive = () => {
   $activeButton?.removeAttribute('aria-busy')
   $activeButton = null
@@ -665,6 +673,9 @@ $$('[name="annotation-position"]').forEach((input) => {
     if (input.checked) setAnnotationPosition()
   })
 })
+
+$fontSize.addEventListener('input', setFontSize)
+setFontSize()
 
 initRailNav()
 if (synth) synth.addEventListener('voiceschanged', refreshVoices)
