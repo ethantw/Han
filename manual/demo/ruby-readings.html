@@ -17,10 +17,10 @@
 <main>
   <section id="station-readings" data-station="readings" data-reading-mode="minnan" data-writing="horizontal">
     <hgroup>
-      <p>STATION・讀音</p>
+      <p>伍・標音</p>
       <h1>一字，三層注文</h1>
     </hgroup>
-    <p class="StationLede">反物質不是礦。這份小行星帶公報把五個入聲數字藏進一紙跨星系捷報，再攤開製造囚籠、磁喉與熱盾的二十四格材料清單。</p>
+    <p class="StationLede">一個字，可以同時承載本字、在地讀音與羅馬字轉寫。這一站以閩南語方音／臺羅、國語注音／拼音及日韓注文，展示複層 ruby 如何循詞界落位，並在橫排與直排之間保持秩序。</p>
 
     <svg class="BarnardMap StationSky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
@@ -50,8 +50,6 @@
         <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
         <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
       </g>
-      <text x="970" y="195">BARNARD STAR</text>
-      <text x="970" y="226">INCOMING 01687</text>
     </svg>
 
     <form class="ReadingSwitch" aria-label="切換捷報語言與排版方向">
@@ -67,11 +65,9 @@
         <label><input type="radio" name="reading-mode" value="japanese"> 日文</label>
         <label><input type="radio" name="reading-mode" value="korean"> 韓文</label>
       </fieldset>
-      <output class="ModeSummary" data-mode-summary aria-live="polite">方音・臺羅字間注</output>
     </form>
 
     <nav class="RailNav StationRailNav" data-strip-nav="readings" aria-label="移動讀音樣張">
-      <span>五聲公報／二十四格材料艙</span>
       <span class="RailButtons">
         <button type="button" data-scroll="prev" aria-label="向前移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
         <button type="button" data-scroll="next" aria-label="向後移動讀音樣張"><span data-icon="chevron" aria-hidden="true"></span></button>
@@ -82,12 +78,11 @@
       <article class="NumberStory" aria-labelledby="story-title">
         <header class="ColumnHead">
           <div>
-            <p class="Kicker" data-reading-kicker>閩南語・雙重ruby</p>
             <h2 id="story-title">球際採礦軍團<br>喜馬拉雅一六八七師第十艦隻</h2>
           </div>
           <button class="SpeakAll" type="button" data-speak-group="numbers" data-lang="nan-TW" data-speech="一、六、七、八、十">
             <span data-icon="volume" aria-hidden="true"></span>
-            <span data-speak-group-label>讀五個數字</span>
+            <span class="SpeakLabel" data-speak-group-label>讀全篇捷報</span>
           </button>
         </header>
 
@@ -97,30 +92,20 @@
           <p class="DispatchPromise">這批材料會予地球佮太陽系有機會共電磁囚籠、超導磁喉、熱盾佮偵測器，對圖紙搬入深空船塢。</p>
           <small>十垓噸約是一個地球質量的六分之一；球際公報的會計部門拒絕對這个數字負責。</small>
         </div>
-
-        <footer class="StoryFoot">
-          <span><i data-tone="yin" aria-hidden="true"></i>陰入：一<code>it</code>、八<code>peh</code>、七<code>tshit</code></span>
-          <span><i data-tone="yang" aria-hidden="true"></i>陽入：六<code>lio̍k</code>、十<code>si̍p</code></span>
-        </footer>
       </article>
 
       <figure class="ElementAtlas" aria-labelledby="elements-title">
         <header class="ColumnHead">
           <div>
-            <p class="Kicker">國語・三重ruby</p>
             <h2 id="elements-title">巴納德任務元素表</h2>
           </div>
           <button class="SpeakAll" type="button" data-speak-group="elements" data-lang="zh-TW" data-speech="鉬、銻、釩、鈹、銣、銫、鋯、鉿、錸、銥、鋨、鐠、釹、鏑、鐿、鎦">
             <span data-icon="volume" aria-hidden="true"></span>
-            精選讀音
+            <span class="SpeakLabel">精選讀音</span>
           </button>
         </header>
 
         <div class="ElementMeta">
-          <p>
-            <span class="MetaHorizontal">位置循週期與族，顏色循元素分類。上為元素符號，右為注音，下為原子序；綠線可播放讀音。</span>
-            <span class="MetaVertical">直排改作右起分卷元素譜：每一週期成一卷，元素由上而下，旁記族序；箋色分元素類別。</span>
-          </p>
           <ul class="ElementLegend" aria-label="元素分類色">
             <li data-category="alkali">鹼金</li>
             <li data-category="alkaline">鹼土</li>
@@ -138,10 +123,6 @@
           </div>
         </div>
 
-        <figcaption>
-          <small class="CoverageBrag">這次不硬撐全表：本盤24個繁體元素字，尚古黑實測24/24；簡體對應字是6/24。先誠實 brag 前者。</small>
-          <small>這是有科學骨架的概念艦，不是現成藍圖：反物質需以電磁場與極高真空隔離；帶電湮滅產物可由磁噴嘴導流。材料角色參考 <a href="https://home.cern/science/physics/antimatter/">CERN</a>、<a href="https://ntrs.nasa.gov/citations/20060043411">NASA NTRS</a> 與 <a href="https://www.energy.gov/cmm/what-are-critical-minerals-and-materials">DOE 關鍵材料表</a>；讀音核對自<a href="https://www.moedict.tw/">萌典</a>。</small>
-        </figcaption>
       </figure>
     </div>
 

@@ -41,7 +41,6 @@ main {
   --barnard-orbit: light-dark(#6f9f91, #72aa98);
   --barnard-core: light-dark(#c8955e, #d2a06a);
   --barnard-grid: light-dark(#bdd6ce, #35584e);
-  --barnard-ink: light-dark(#47796b, #8fc4b2);
   --barnard-dust: light-dark(#73968d, #719c8f);
   position: relative;
   isolation: isolate;
@@ -145,22 +144,13 @@ main {
   gap: 1rem;
   justify-content: space-between;
   align-items: end;
-  min-block-size: 8.5rem;
+  min-block-size: 6.5rem;
   padding: clamp(1rem, 2.5vw, 1.75rem) 0;
   border-block-end: 1px solid var(--ui-row-rule);
 }
 
-.Kicker {
-  margin: 0;
-  color: var(--ui-accent);
-  font-family: var(--han-monospace);
-  font-size: .6875rem;
-  font-weight: 600;
-  letter-spacing: .08em;
-}
-
 .ColumnHead h2 {
-  margin: .125rem 0 0;
+  margin: 0;
   font-family: var(--han-font-alternative);
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   font-weight: 550;
@@ -174,16 +164,26 @@ main {
 .SpeakAll {
   display: inline-flex;
   flex: 0 0 auto;
-  gap: .4rem;
+  justify-content: center;
   align-items: center;
-  min-block-size: 2.25rem;
-  padding: .3rem .75rem;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0;
   color: var(--ui-accent);
   border: 1px solid currentColor;
   border-radius: 999px;
   background: transparent;
   cursor: pointer;
   font-size: .75rem;
+}
+
+.SpeakLabel {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .SpeakAll:is(:hover, :focus-visible) {
@@ -253,19 +253,11 @@ main {
   background: var(--ui-accent-bg);
 }
 
-.ModeSummary {
-  margin-inline-start: auto;
-  color: var(--ui-supplement-text);
-  font-size: .6875rem;
-}
-
 .Dispatch {
   min-block-size: 27rem;
   padding: clamp(1.25rem, 3vw, 2rem) 0;
   --han-zhuyin-ruby-position: inter-character;
-  background:
-    linear-gradient(var(--ui-grid) 1px, transparent 1px);
-  background-size: 100% 2rem;
+  background: none;
 }
 
 .DispatchStamp {
@@ -340,46 +332,14 @@ main {
   font-size: .625rem;
 }
 
-.StoryFoot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .35rem 1rem;
-  padding: .75rem 0;
-  color: var(--ui-supplement-text);
-  border-block-start: 1px solid var(--ui-row-rule);
-  font-size: .6875rem;
-}
-
-.StoryFoot[hidden] { display: none; }
-
-.StoryFoot span {
-  display: inline-flex;
-  gap: .3rem;
-  align-items: center;
-}
-
-.StoryFoot i {
-  inline-size: .7rem;
-  block-size: 3px;
-  background: var(--reading-yang);
-}
-
-.StoryFoot [data-tone='yin'] { background: var(--reading-yin); }
-
 .ElementMeta {
   display: flex;
   gap: 1rem;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  min-block-size: 3.5rem;
+  min-block-size: 2.75rem;
   padding: .625rem 0;
   border-block-end: 1px solid var(--ui-row-rule);
-}
-
-.ElementMeta p {
-  margin: 0;
-  color: var(--ui-supplement-text);
-  font-size: .6875rem;
 }
 
 .ElementLegend {
@@ -404,8 +364,8 @@ main {
 .ElementLegend li::before {
   inline-size: .55rem;
   block-size: .55rem;
-  background: var(--element-color);
-  border: 1px solid color-mix(in srgb, var(--element-color) 55%, var(--ui-text));
+  background: color-mix(in srgb, var(--element-color) 28%, #fafaf7);
+  border: 1px solid color-mix(in srgb, var(--element-color) 38%, #aaa9a5);
   content: '';
 }
 
@@ -416,7 +376,7 @@ main {
 }
 
 .StationRailNav {
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-block-end: .5rem;
   color: var(--ui-supplement-text);
@@ -512,21 +472,12 @@ main {
   opacity: .52;
 }
 
-.BarnardMap text {
-  fill: var(--barnard-ink);
-  font-family: var(--han-monospace);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: .16em;
-  opacity: .78;
-}
-
 .MaterialGrid {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(18, 3.85rem);
-  grid-template-rows: repeat(8, 3.85rem);
-  gap: .2rem;
+  grid-template-columns: repeat(18, 3.35rem);
+  grid-template-rows: repeat(8, 3.35rem);
+  gap: .15rem;
   inline-size: max-content;
   margin: 0;
   padding: 0;
@@ -542,7 +493,7 @@ main {
   color: var(--ui-supplement-text);
   border-inline-start: 2px solid var(--ui-proof);
   font-family: var(--han-font-alternative);
-  font-size: .6875rem;
+  font-size: .625rem;
   line-height: 1.5;
 }
 
@@ -550,7 +501,7 @@ main {
   display: block;
   color: var(--ui-proof);
   font-family: var(--han-monospace);
-  font-size: 1.25rem;
+  font-size: 1rem;
   letter-spacing: .08em;
 }
 
@@ -568,8 +519,7 @@ main {
 }
 
 .PeriodLabel,
-.GroupMark,
-.MetaVertical { display: none; }
+.GroupMark { display: none; }
 
 .ElementCell {
   --element-color: #ffc0c0;
@@ -592,23 +542,23 @@ main {
   place-items: center;
   inline-size: 100%;
   block-size: 100%;
-  padding: .5rem .15rem .35rem;
+  padding: .35rem .1rem .25rem;
   color: #18171a;
-  border: 1px solid color-mix(in srgb, var(--element-color) 55%, var(--ui-text));
+  border: 1px solid color-mix(in srgb, var(--element-color) 38%, #aaa9a5);
   border-radius: 0;
-  background: color-mix(in srgb, var(--element-color) 58%, #fafaf7);
+  background: color-mix(in srgb, var(--element-color) 28%, #fafaf7);
   cursor: default;
 }
 
 .ElementCell[data-featured] .ElementTile {
   border-block-end-color: var(--ui-accent);
-  box-shadow: inset 0 -2px 0 var(--ui-accent);
+  box-shadow: inset 0 -1px 0 var(--ui-accent);
   cursor: pointer;
 }
 
 .ElementCell .ElementTile:is(:hover, :focus-visible) {
   z-index: 2;
-  background: color-mix(in srgb, var(--element-color) 82%, #fafaf7);
+  background: color-mix(in srgb, var(--element-color) 48%, #fafaf7);
   outline: 2px solid var(--ui-accent);
   outline-offset: 1px;
 }
@@ -616,8 +566,8 @@ main {
 .AtomicRuby {
   ruby-position: under;
   font-family: var(--han-sans);
-  font-size: 1.3rem;
-  font-weight: 650;
+  font-size: 1.1rem;
+  font-weight: 580;
   line-height: 1.45;
 }
 
@@ -642,8 +592,8 @@ main {
 }
 
 .ElementCell:not([data-featured]) .AtomicRuby {
-  font-size: 1.08rem;
-  font-weight: 550;
+  font-size: .95rem;
+  font-weight: 500;
 }
 
 .ElementCell:not([data-featured]) .ElementRuby > .Symbol {
@@ -698,17 +648,6 @@ main {
   inset-inline: auto -.35rem;
 }
 
-.ElementAtlas figcaption {
-  display: grid;
-  gap: .25rem;
-  padding: .8rem 0 1rem;
-  color: var(--ui-supplement-text);
-  border-block-start: 1px solid var(--ui-row-rule);
-}
-
-.ElementAtlas figcaption small { font-size: .6875rem; }
-.ElementAtlas figcaption a { color: var(--ui-accent); }
-
 #station-readings[data-writing='vertical'] .StationColumns { direction: rtl; }
 
 #station-readings[data-writing='vertical'] .NumberStory,
@@ -749,21 +688,18 @@ main {
   padding-block-start: 1rem;
 }
 
-#station-readings[data-writing='vertical'] .MetaHorizontal { display: none; }
-#station-readings[data-writing='vertical'] .MetaVertical { display: inline; }
-
 #station-readings[data-writing='vertical'] .MaterialGrid {
   direction: rtl;
-  grid-template-columns: repeat(6, 3.35rem) 2.65rem;
-  grid-template-rows: 3.2rem repeat(7, 3.35rem);
-  gap: .22rem .3rem;
-  padding: .4rem .5rem .55rem;
+  grid-template-columns: repeat(6, 2.9rem) 2.35rem;
+  grid-template-rows: 2.9rem repeat(7, 2.9rem);
+  gap: .16rem .22rem;
+  padding: .35rem .4rem .45rem;
   border-block: 1px solid var(--ui-row-rule);
   background:
     repeating-linear-gradient(
       90deg,
-      transparent 0 3.55rem,
-      var(--ui-grid) 3.55rem calc(3.55rem + 1px)
+      transparent 0 3.12rem,
+      var(--ui-grid) 3.12rem calc(3.12rem + 1px)
     );
 }
 
@@ -782,7 +718,7 @@ main {
   align-self: center;
   color: var(--ui-supplement-text);
   font-family: var(--han-font-alternative);
-  font-size: .625rem;
+  font-size: .575rem;
   font-weight: 600;
   letter-spacing: .08em;
   line-height: 1;
@@ -800,7 +736,7 @@ main {
   max-inline-size: none;
   padding: .35rem .4rem;
   border-inline-start: 1px solid var(--ui-proof);
-  font-size: .575rem;
+  font-size: .525rem;
   letter-spacing: .08em;
   text-orientation: upright;
   writing-mode: vertical-rl;
@@ -809,7 +745,7 @@ main {
 #station-readings[data-writing='vertical'] .MaterialCallout strong {
   display: inline;
   margin-block-end: .35rem;
-  font-size: .75rem;
+  font-size: .6875rem;
   letter-spacing: .04em;
   text-orientation: mixed;
 }
@@ -841,7 +777,7 @@ main {
   display: block;
   color: #4a4a4a;
   font-family: var(--han-monospace);
-  font-size: .42rem;
+  font-size: .36rem;
   font-weight: 500;
   line-height: 1;
   text-orientation: upright;
@@ -855,11 +791,6 @@ main {
 #station-readings[data-writing='vertical'] .RailButtons { flex-direction: row-reverse; }
 #station-readings[data-writing='vertical'] .RailNav [data-scroll='next'] [data-icon] { rotate: none; }
 #station-readings[data-writing='vertical'] .RailNav [data-scroll='prev'] [data-icon] { rotate: 180deg; }
-
-.CoverageBrag {
-  color: var(--ui-text);
-  font-family: var(--han-font-alternative);
-}
 
 .StationFoot {
   display: flex;
@@ -940,23 +871,19 @@ button[data-speaking] > [data-icon] {
   .DispatchCopy { font-size: 1.05rem; }
   .ElementMeta { align-items: start; }
   #station-readings[data-writing='vertical'] .MaterialGrid {
-    grid-template-columns: repeat(6, 2.9rem) 2.25rem;
-    grid-template-rows: 3rem repeat(7, 3rem);
-    gap: .16rem .2rem;
+    grid-template-columns: repeat(6, 2.55rem) 2.1rem;
+    grid-template-rows: 2.7rem repeat(7, 2.65rem);
+    gap: .12rem .16rem;
     padding: .3rem .35rem .4rem;
     background:
       repeating-linear-gradient(
         90deg,
-        transparent 0 3.1rem,
-        var(--ui-grid) 3.1rem calc(3.1rem + 1px)
+        transparent 0 2.71rem,
+        var(--ui-grid) 2.71rem calc(2.71rem + 1px)
       );
   }
-  #station-readings[data-writing='vertical'] .AtomicRuby { font-size: 1.15rem; }
-  #station-readings[data-writing='vertical'] .ElementCell:not([data-featured]) .AtomicRuby { font-size: 1rem; }
-  .ModeSummary {
-    flex-basis: 100%;
-    margin-inline-start: 0;
-  }
+  #station-readings[data-writing='vertical'] .AtomicRuby { font-size: 1rem; }
+  #station-readings[data-writing='vertical'] .ElementCell:not([data-featured]) .AtomicRuby { font-size: .875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
