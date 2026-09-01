@@ -47,6 +47,7 @@ const readingSystems = {
   minnan: {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
     groupLabel: '讀全篇捷報',
+    headlineSpeech: '巴納德星採礦團告捷。超導磁喉有望成真。',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄨㆩ˫ ㄙㆤ˪ ㄍㄧˋ', 'puànn sè-kí'),
@@ -118,6 +119,7 @@ const readingSystems = {
   mandarin: {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
     groupLabel: '國語讀全篇',
+    headlineSpeech: '巴納德星採礦團告捷。超導磁喉有望成真。',
     paragraphs: [
       [
         annotated('半世紀', 'ㄅㄢˋ ㄕˋ ㄐㄧˋ', 'bàn shìjì'),
@@ -184,6 +186,7 @@ const readingSystems = {
   japanese: {
     name: '日文', lang: 'ja-JP', listLang: 'ja', nativeLang: 'ja-Kana', romanLang: 'ja-Latn',
     roman: false, groupLabel: '日文讀全篇',
+    headlineSpeech: 'バーナード星採鉱団、任務成功。超伝導磁気ノズル実現へ。',
     paragraphs: [
       [
         annotated('半世紀', 'はんせいき', ''),
@@ -235,6 +238,7 @@ const readingSystems = {
   korean: {
     name: '韓文', lang: 'ko-KR', listLang: 'ko', nativeLang: 'ko-Hani', romanLang: 'ko-Latn',
     groupLabel: '韓文讀全篇',
+    headlineSpeech: '바너드성 채광단 임무 성공. 초전도 자기 노즐 실현 눈앞.',
     paragraphs: [
       [
         annotated('반세기', '半世紀', 'bansegi'), bare(' '),
@@ -423,10 +427,13 @@ const renderPhoneticLabels = () => {
     phoneticBases.set(label, base)
     const characters = [...base]
     const readings = label.dataset.zhuyin.split(' ')
+    const annotationLang = label.closest('[lang]')?.lang.startsWith('nan')
+      ? 'nan-Bopo-TW'
+      : 'zh-Bopo-TW'
 
     if (selectedValue('annotation-position') === 'over') {
       const rt = document.createElement('rt')
-      rt.lang = 'zh-Bopo-TW'
+      rt.lang = annotationLang
       rt.textContent = label.dataset.zhuyin
       label.className = 'zhuyin'
       label.replaceChildren(base, rt)
@@ -438,7 +445,7 @@ const renderPhoneticLabels = () => {
       const ruby = document.createElement('ruby')
       ruby.className = 'zhuyin'
       const rt = document.createElement('rt')
-      rt.lang = 'zh-Bopo-TW'
+      rt.lang = annotationLang
       rt.textContent = readings[index]
       ruby.append(character, rt)
       return ruby
@@ -586,13 +593,14 @@ const renderReadingSystem = (mode) => {
   fillParagraph($('p:first-of-type', $dispatch), system, system.paragraphs[0])
   fillParagraph($('p:nth-of-type(2)', $dispatch), system, system.paragraphs[1])
   $('small', $dispatch).textContent = system.note
-  $numbersGroup.dataset.speech = system.paragraphs
+  const dispatchSpeech = system.paragraphs
     .flat()
     .map((part) => {
       const resolved = part.directional?.[selectedValue('writing-mode')] ?? part
       return resolved.base ?? resolved.text
     })
     .join('')
+  $numbersGroup.dataset.speech = `${system.headlineSpeech}${dispatchSpeech}`
   refreshVoices()
 }
 

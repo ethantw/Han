@@ -690,6 +690,10 @@
    * nearby `text-box-edge: ideographic-ink` future-path note. */
   & {
     --han-ruby-zhuyin-used-ideographic-ink-descent: .075em;
+    /* Zhuyin owns a dedicated annotation face.  Keep an explicit language
+     * boundary on its rt from redispatching the surrounding text role over
+     * that face in the fonts module. */
+    --han-font-role: custom;
   }
 
   :where(& > rt) {
