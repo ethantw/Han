@@ -456,12 +456,14 @@ main {
       font-family: var(--han-sans);
       font-size: 3rem;
       font-weight: 500;
+      letter-spacing: 0;
       line-height: 1;
       writing-mode: horizontal-tb;
     }
 
     & > ruby > rt {
       position: absolute;
+      inset: auto;
       display: block;
       margin: 0;
       max-inline-size: calc(100% - 1.75rem);
@@ -471,30 +473,34 @@ main {
       line-height: 1;
       text-overflow: clip;
       white-space: nowrap;
+      writing-mode: horizontal-tb;
     }
 
+    /* This specimen names physical faces of a square, not flow-relative
+       edges. Reset the inter-character fallback above, then pin each direct
+       rt to the requested face: 閩右、國左、日上、韓下. */
     & > ruby > rt[lang='nan-Bopo-TW'],
     & > ruby > rt[lang='zh-Bopo-TW'] {
-      inset-block-start: 50%;
+      top: 50%;
       font-size: var(--han-ruby-zhuyin-font-size);
       text-orientation: upright;
       translate: 0 -50%;
       writing-mode: vertical-rl;
     }
 
-    & > ruby > rt[lang='nan-Bopo-TW'] { inset-inline-end: .35rem; }
-    & > ruby > rt[lang='zh-Bopo-TW'] { inset-inline-start: .35rem; }
+    & > ruby > rt[lang='nan-Bopo-TW'] { right: .35rem; }
+    & > ruby > rt[lang='zh-Bopo-TW'] { left: .35rem; }
 
     & > ruby > rt[lang='ja'] {
-      inset-block-start: .35rem;
-      inset-inline-start: 50%;
+      top: .35rem;
+      left: 50%;
       font-family: var(--han-sans);
       translate: -50% 0;
     }
 
     & > ruby > rt[lang='ko'] {
-      inset-block-end: .35rem;
-      inset-inline-start: 50%;
+      bottom: .35rem;
+      left: 50%;
       font-family: var(--han-sans);
       translate: -50% 0;
     }
@@ -509,13 +515,13 @@ main {
     }
 
     & > ruby > rt:has(abbr) {
-      inset-block-start: .18rem;
-      inset-inline-start: .22rem;
+      top: .18rem;
+      left: .22rem;
     }
 
     & > ruby > rt:has(data) {
-      inset-block-end: .18rem;
-      inset-inline-end: .22rem;
+      right: .22rem;
+      bottom: .18rem;
     }
 
     & abbr { text-decoration: none; }
@@ -580,11 +586,13 @@ main {
 
 .ReadingStation:has([name='reading-mode'][value='korean']:checked) {
   & .Rail figure ol rt[lang='ja'] {
-    inset-block: auto .35rem;
+    top: auto;
+    bottom: .35rem;
   }
 
   & .Rail figure ol rt[lang='ko'] {
-    inset-block: .35rem auto;
+    top: .35rem;
+    bottom: auto;
   }
 }
 
