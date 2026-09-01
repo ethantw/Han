@@ -387,6 +387,10 @@ main {
     white-space: nowrap;
   }
 
+  & ruby > rt[lang='ko-Hani']:first-child { ruby-position: over; }
+
+  & ruby > rt[lang='ko-Latn']:last-child { ruby-position: under; }
+
   & em {
     color: var(--ui-accent);
     font-style: normal;

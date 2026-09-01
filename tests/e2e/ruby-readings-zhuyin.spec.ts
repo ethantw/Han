@@ -71,4 +71,6 @@ test('emphasized dual readings expose the requested experimental ruby shapes', a
   const koreanRuby = page.locator('.Dispatch em[data-emphasis="id"] > ruby').first()
   await expect(koreanRuby.locator(':scope > ruby')).toHaveCount(0)
   await expect(koreanRuby.locator(':scope > rt')).toHaveCount(2)
+  await expect(koreanRuby.locator(':scope > rt:first-child')).toHaveCSS('ruby-position', 'over')
+  await expect(koreanRuby.locator(':scope > rt:last-child')).toHaveCSS('ruby-position', 'under')
 })
