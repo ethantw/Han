@@ -149,16 +149,17 @@ no single master kill-switch. The JS side scopes naturally:
 
 ## 3. Bundles
 
-CSS (each also as `.min` with source map; figures are min+gzip):
+CSS (each also as `.min` with source map; figures measure compressed minified
+files):
 
-| File | Contents | min+gzip |
-|---|---|---|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 3.6 KB |
-| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.4 KB |
-| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.1 KB |
-| `han.prose.css` | Prose module | 0.4 KB |
-| `han.fonts.css` | Fonts module + font assets | 1.4 KB |
-| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics and zhuyin assets required by ruby | 1.7 KB |
+| File | Contents | gzip | Brotli |
+|---|---|---:|---:|
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 4.2 KB | 3.7 KB |
+| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.6 KB | 1.4 KB |
+| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.3 KB | 1.2 KB |
+| `han.prose.css` | Prose module | 0.4 KB | 0.3 KB |
+| `han.fonts.css` | Fonts module + font assets | 1.6 KB | 1.4 KB |
+| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics and zhuyin assets required by ruby | 2.1 KB | 1.8 KB |
 
 Sum of the four single-module bundles ≡ `han.css`.
 
