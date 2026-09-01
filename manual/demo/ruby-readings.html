@@ -15,12 +15,12 @@
 </head>
 <body>
 <main>
-  <section id="station-readings" data-station="readings" data-reading-mode="minnan" data-writing="horizontal">
+  <section id="station-readings" data-station="readings" data-reading-mode="minnan" data-writing="horizontal" data-annotation="inter-character">
     <hgroup>
       <p>伍・標音</p>
-      <h1>一字，三層注文</h1>
+      <h1>一字，多層注文</h1>
     </hgroup>
-    <p class="StationLede">一個字，可以同時承載本字、在地讀音與羅馬字轉寫。這一站以閩南語方音／臺羅、國語注音／拼音及日韓注文，展示複層 ruby 如何循詞界落位，並在橫排與直排之間保持秩序。</p>
+    <p class="StationLede">一個字，可以同時承載本字、四方讀音與邊界資訊。這一站以閩南語方音、國語注音及日韓注文，展示多層 ruby 如何循詞界與方位落位，並在橫排與直排之間保持秩序。</p>
 
     <svg class="BarnardMap StationSky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
@@ -57,6 +57,11 @@
         <span class="PillHead" id="reading-direction-label">行向</span>
         <label><input type="radio" name="writing-mode" value="horizontal" checked> 橫排</label>
         <label><input type="radio" name="writing-mode" value="vertical"> 直排</label>
+      </fieldset>
+      <fieldset class="ViewTabs AnnotationTabs" aria-labelledby="reading-position-label">
+        <span class="PillHead" id="reading-position-label">注位</span>
+        <label><input type="radio" name="annotation-position" value="inter-character" checked> 字間注</label>
+        <label><input type="radio" name="annotation-position" value="over"> 行間注</label>
       </fieldset>
       <fieldset class="ViewTabs" aria-labelledby="reading-language-label">
         <span class="PillHead" id="reading-language-label">注文</span>

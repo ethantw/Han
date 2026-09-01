@@ -31,6 +31,7 @@ const synth = window.speechSynthesis
 const station = document.querySelector('[data-station="readings"]')
 const dispatch = document.querySelector('.Dispatch')
 const numbersGroup = document.querySelector('[data-speak-group="numbers"]')
+const elementsGroup = document.querySelector('[data-speak-group="elements"]')
 const groupLabel = document.querySelector('[data-speak-group-label]')
 const statusBar = document.querySelector('.SpeechStatus')
 const status = document.querySelector('[data-speech-status]')
@@ -289,7 +290,15 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   const nativeUnits = native.trim().split(/\s+/)
   const isBopomofo = system.nativeLang.includes('Bopo')
 
-  if (isBopomofo && baseUnits.length === nativeUnits.length) {
+  if (isBopomofo && station.dataset.annotation === 'over') {
+    const inner = document.createElement('ruby')
+    inner.className = 'InterlinearReading zhuyin'
+    const nativeReading = document.createElement('rt')
+    nativeReading.lang = system.nativeLang
+    nativeReading.textContent = native
+    inner.append(base, nativeReading)
+    outer.append(inner)
+  } else if (isBopomofo && baseUnits.length === nativeUnits.length) {
     baseUnits.forEach((character, index) => {
       const inner = document.createElement('ruby')
       inner.className = 'InterCharacterReading zhuyin'
@@ -358,7 +367,7 @@ const missionElements = [
   material(71, 'Lu', '鎦', '镥', 'lanthanide', 18, 8, '感測', '高能輻射閃爍晶體'),
 ]
 
-const elementReadings = new Map([
+const elementMandarinReadings = new Map([
   ['Be', ['ㄆㄧˊ', 'pí']], ['He', ['ㄏㄞˋ', 'hài']], ['Nb', ['ㄋㄧˊ', 'ní']], ['Sc', ['ㄎㄤˋ', 'kàng']], ['In', ['ㄧㄣ', 'yīn']],
   ['Pr', ['ㄆㄨˇ', 'pǔ']], ['Nd', ['ㄋㄩˇ', 'nǚ']], ['Dy', ['ㄉㄧ', 'dī']], ['Rb', ['ㄖㄨˊ', 'rú']], ['Cs', ['ㄙㄜˋ', 'sè']],
   ['W', ['ㄨ', 'wū']], ['Mo', ['ㄇㄨˋ', 'mù']], ['Re', ['ㄌㄞˊ', 'lái']], ['Hf', ['ㄏㄚ', 'hā']],
@@ -366,10 +375,47 @@ const elementReadings = new Map([
   ['Zr', ['ㄍㄠˋ', 'gào']], ['V', ['ㄈㄢˊ', 'fán']], ['Ir', ['ㄧ', 'yī']], ['Os', ['ㄜˊ', 'é']], ['Ru', ['ㄌㄧㄠˇ', 'liǎo']],
 ])
 
+const elementMinnanReadings = new Map([
+  ['He', ['ㄏㄞ˫', 'hāi']], ['Be', ['ㄆㄧˊ', 'phî']], ['B', ['ㄆㄧㄥˊ', 'phîng']], ['Sc', ['ㄎㆲ˪', 'khòng']],
+  ['V', ['ㄏㄨㄢˊ', 'huân']], ['Rb', ['ㆡㄨˊ', 'jû']], ['Zr', ['ㄍㄜ˪', 'kò']], ['Nb', ['ㄋㄧˊ', 'nî']],
+  ['Mo', ['ㆠㆦㆶ̇', 'bo̍k']], ['Ru', ['ㄌㄧㄠˋ', 'liáu']], ['In', ['ㄧㄣ', 'in']], ['Sb', ['ㄉㆤ˫', 'tē']],
+  ['Cs', ['ㄒㄧㆶ', 'sik']], ['Hf', ['ㄏㄚㆴ', 'hap']], ['W', ['ㄜ', 'oo']], ['Re', ['ㄌㄞˊ', 'lâi']],
+  ['Os', ['ㆣㄜˊ', 'gô']], ['Ir', ['ㄧ', 'i']], ['Pr', ['ㄆㄜˋ', 'phóo']], ['Nd', ['ㄌㄨˊ', 'lú']],
+  ['Gd', ['ㄍㄚㆵ', 'kat']], ['Dy', ['ㄉㄧㆶ', 'tik']], ['Yb', ['ㄧ˪', 'ì']], ['Lu', ['ㄌㄧㄨˊ', 'liû']],
+])
+
+const elementJapaneseReadings = new Map([
+  ['He', 'ヘリウム'], ['Be', 'ベリリウム'], ['B', '硼素／ホウ素'], ['Sc', 'スカンジウム'], ['V', 'バナジウム'], ['Rb', 'ルビジウム'],
+  ['Zr', 'ジルコニウム'], ['Nb', 'ニオブ'], ['Mo', 'モリブデン'], ['Ru', 'ルテニウム'], ['In', 'インジウム'], ['Sb', 'アンチモン'],
+  ['Cs', 'セシウム'], ['Hf', 'ハフニウム'], ['W', 'タングステン'], ['Re', 'レニウム'], ['Os', 'オスミウム'], ['Ir', 'イリジウム'],
+  ['Pr', 'プラセオジム'], ['Nd', 'ネオジム'], ['Gd', 'ガドリニウム'], ['Dy', 'ジスプロシウム'], ['Yb', 'イッテルビウム'], ['Lu', 'ルテチウム'],
+])
+
+const elementKoreanReadings = new Map([
+  ['He', '헬륨'], ['Be', '베릴륨'], ['B', '硼素／붕소'], ['Sc', '스칸듐'], ['V', '바나듐'], ['Rb', '루비듐'],
+  ['Zr', '지르코늄'], ['Nb', '나이오븀'], ['Mo', '몰리브데넘'], ['Ru', '루테늄'], ['In', '인듐'], ['Sb', '안티모니'],
+  ['Cs', '세슘'], ['Hf', '하프늄'], ['W', '重石／텅스텐'], ['Re', '레늄'], ['Os', '오스뮴'], ['Ir', '이리듐'],
+  ['Pr', '프라세오디뮴'], ['Nd', '네오디뮴'], ['Gd', '가돌리늄'], ['Dy', '디스프로슘'], ['Yb', '이터븀'], ['Lu', '루테튬'],
+])
+
 const renderPhoneticLabels = () => {
   document.querySelectorAll('.PhoneticLabel[data-zhuyin]').forEach((label) => {
-    const characters = [...label.textContent]
+    const base = label.dataset.base ?? label.textContent
+    label.dataset.base = base
+    const characters = [...base]
     const readings = label.dataset.zhuyin.split(' ')
+
+    if (station.dataset.annotation === 'over') {
+      const rt = document.createElement('rt')
+      rt.lang = 'zh-Bopo-TW'
+      rt.textContent = label.dataset.zhuyin
+      label.classList.remove('ComplexReading')
+      label.classList.add('InterlinearPhoneticLabel', 'zhuyin')
+      label.replaceChildren(base, rt)
+      return
+    }
+
+    label.classList.remove('InterlinearPhoneticLabel', 'zhuyin')
     label.classList.add('ComplexReading')
     label.replaceChildren(...characters.map((character, index) => {
       const ruby = document.createElement('ruby')
@@ -383,34 +429,65 @@ const renderPhoneticLabels = () => {
   })
 }
 
-const createElementRuby = (element, reading) => {
-  const atomicRuby = document.createElement('ruby')
-  atomicRuby.className = 'AtomicRuby'
-  const elementRuby = document.createElement('ruby')
-  elementRuby.className = 'ElementRuby'
+const createElementAnnotation = (className, lang, text) => {
+  const annotation = document.createElement('rt')
+  annotation.className = className
+  annotation.lang = lang
+  annotation.textContent = text
+  return annotation
+}
 
-  if (reading) {
-    const zhuyin = document.createElement('ruby')
-    zhuyin.className = 'zhuyin'
-    const phonetic = document.createElement('rt')
-    phonetic.textContent = reading[0]
-    zhuyin.append(element.hant, phonetic)
-    elementRuby.append(zhuyin)
-  } else {
-    elementRuby.append(element.hant)
+const createElementRuby = (element) => {
+  const ruby = document.createElement('ruby')
+  ruby.className = 'ElementCompass'
+  const glyph = document.createElement('span')
+  glyph.className = 'ElementGlyph'
+  glyph.textContent = element.hant
+  const minnan = elementMinnanReadings.get(element.symbol)
+  const mandarin = elementMandarinReadings.get(element.symbol)
+
+  ruby.append(
+    glyph,
+    createElementAnnotation('ElementReading ElementMinnan zhuyin', 'nan-Bopo-TW', minnan[0]),
+    createElementAnnotation('ElementReading ElementMandarin zhuyin', 'zh-Bopo-TW', mandarin[0]),
+    createElementAnnotation('ElementReading ElementJapanese', 'ja', elementJapaneseReadings.get(element.symbol)),
+    createElementAnnotation('ElementReading ElementKorean', 'ko', elementKoreanReadings.get(element.symbol)),
+    createElementAnnotation('ElementBoundary ElementSymbol', 'en', element.symbol),
+    createElementAnnotation('ElementBoundary AtomicNumber', 'en', element.atomic),
+  )
+  return ruby
+}
+
+const elementSpeech = (element, mode) => {
+  if (mode === 'minnan') {
+    const reading = elementMinnanReadings.get(element.symbol)
+    return { lang: 'nan-TW', speech: element.hant, reading: reading[1], language: '閩南語' }
   }
+  if (mode === 'japanese') {
+    const speech = elementJapaneseReadings.get(element.symbol).split('／')[0]
+    return { lang: 'ja-JP', speech, reading: speech, language: '日文' }
+  }
+  if (mode === 'korean') {
+    const speech = elementKoreanReadings.get(element.symbol).split('／')[0]
+    return { lang: 'ko-KR', speech, reading: speech, language: '韓文' }
+  }
+  const reading = elementMandarinReadings.get(element.symbol)
+  return { lang: 'zh-TW', speech: element.hant, reading: reading[1], language: '國語' }
+}
 
-  const symbol = document.createElement('rt')
-  symbol.className = 'Symbol'
-  symbol.lang = 'en'
-  symbol.textContent = element.symbol
-  elementRuby.append(symbol)
-
-  const atomicNumber = document.createElement('rt')
-  atomicNumber.className = 'AtomicNumber'
-  atomicNumber.textContent = element.atomic
-  atomicRuby.append(elementRuby, atomicNumber)
-  return atomicRuby
+const renderElementSpeechMode = (mode) => {
+  const speeches = []
+  document.querySelectorAll('.ElementTile[data-symbol]').forEach((tile) => {
+    const element = missionElements.find(({ symbol }) => symbol === tile.dataset.symbol)
+    const localized = elementSpeech(element, mode)
+    tile.dataset.lang = localized.lang
+    tile.dataset.speech = localized.speech
+    tile.dataset.reading = localized.reading
+    tile.setAttribute('aria-label', `播放${element.atomic}號元素${element.hant}的${localized.language}讀音：${localized.reading}；${element.system}用途：${element.aboard}`)
+    speeches.push(localized.speech)
+  })
+  elementsGroup.dataset.lang = readingSystems[mode].lang
+  elementsGroup.dataset.speech = speeches.join('、')
 }
 
 const renderMaterialGrid = () => {
@@ -418,7 +495,7 @@ const renderMaterialGrid = () => {
   grid.replaceChildren()
 
   for (const element of missionElements) {
-    const reading = elementReadings.get(element.symbol)
+    const reading = elementMandarinReadings.get(element.symbol)
     const item = document.createElement('li')
     item.className = 'ElementCell'
     item.dataset.category = element.category
@@ -428,10 +505,11 @@ const renderMaterialGrid = () => {
     item.dataset.group = element.row === 8 ? '鑭' : `${element.column}族`
     const tile = document.createElement('button')
     tile.className = 'ElementTile'
-    tile.append(createElementRuby(element, reading))
+    tile.append(createElementRuby(element))
     tile.title = `${element.atomic}號元素・${element.hant}／${element.hans}・${element.system}：${element.aboard}`
 
     tile.type = 'button'
+    tile.dataset.symbol = element.symbol
     tile.dataset.speak = ''
     tile.dataset.lang = 'zh-TW'
     tile.dataset.speech = element.hant
@@ -447,11 +525,7 @@ const renderMaterialGrid = () => {
     const system = document.createElement('b')
     system.textContent = element.system
     hint.append(system, element.aboard)
-    const groupMark = document.createElement('span')
-    groupMark.className = 'GroupMark'
-    groupMark.setAttribute('aria-hidden', 'true')
-    groupMark.textContent = item.dataset.group
-    tile.append(groupMark, hint)
+    tile.append(hint)
     item.append(tile)
     grid.append(item)
   }
@@ -513,6 +587,7 @@ const renderReadingSystem = (mode) => {
   dispatch.lang = system.listLang
   groupLabel.textContent = system.groupLabel
   numbersGroup.dataset.lang = system.lang
+  renderElementSpeechMode(mode)
   fillParagraph(document.querySelector('[data-dispatch-copy]'), system, system.paragraphs[0])
   fillParagraph(document.querySelector('.DispatchPromise'), system, system.paragraphs[1])
   document.querySelector('.Dispatch > small').textContent = system.note
@@ -535,6 +610,12 @@ const setWritingMode = (mode) => {
   rail.scrollTop = 0
   renderReadingSystem(currentMode)
   requestAnimationFrame(() => rail.dispatchEvent(new Event('han-strip-layout')))
+}
+
+const setAnnotationPosition = (position) => {
+  station.dataset.annotation = position
+  renderPhoneticLabels()
+  renderReadingSystem(currentMode)
 }
 
 const clearActive = () => {
@@ -599,6 +680,12 @@ document.querySelectorAll('[name="reading-mode"]').forEach((input) => {
 document.querySelectorAll('[name="writing-mode"]').forEach((input) => {
   input.addEventListener('change', () => {
     if (input.checked) setWritingMode(input.value)
+  })
+})
+
+document.querySelectorAll('[name="annotation-position"]').forEach((input) => {
+  input.addEventListener('change', () => {
+    if (input.checked) setAnnotationPosition(input.value)
   })
 })
 

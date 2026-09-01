@@ -4,7 +4,6 @@
   color-scheme: light dark;
   --reading-yin: var(--ui-proof);
   --reading-yang: var(--ui-accent);
-  --han-zhuyin-ruby-position: inter-character;
 }
 
 * { box-sizing: border-box; }
@@ -51,6 +50,9 @@ main {
     var(--ui-station-a);
   border-inline: 1px solid var(--ui-grid);
 }
+
+#station-readings[data-annotation='inter-character'] { --han-zhuyin-ruby-position: inter-character; }
+#station-readings[data-annotation='over'] { --han-zhuyin-ruby-position: over; }
 
 #station-readings > :not(.StationSky) {
   position: relative;
@@ -163,7 +165,6 @@ main {
 
 .PhoneticLabel {
   margin-inline: .025em;
-  --han-zhuyin-ruby-position: inter-character;
 }
 
 .SpeakAll {
@@ -261,23 +262,26 @@ main {
 .Dispatch {
   min-block-size: 27rem;
   padding: clamp(1.25rem, 3vw, 2rem) 0;
-  --han-zhuyin-ruby-position: inter-character;
   background: none;
 }
 
 .DispatchCopy {
   margin: 0;
   font-family: 'Shanggu Serif', 'Shanggu Serif Yue', var(--han-serif);
-  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
-  font-weight: 500;
-  line-height: 2.8;
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  font-weight: 450;
+  line-height: 2.15;
 }
 
 .DispatchRuby { margin-inline: .06em; }
 
 .ComplexReading { ruby-position: under; }
 .InterCharacterReading { ruby-position: inter-character; }
+.InterlinearReading,
+.InterlinearPhoneticLabel { ruby-position: over; }
 .GroupReading { ruby-position: over; }
+
+#station-readings[data-annotation='over'] .InterCharacterReading { ruby-position: over; }
 
 .DispatchRuby > .Romanization {
   color: inherit;
@@ -290,6 +294,13 @@ main {
 }
 
 .InterCharacterReading > rt {
+  color: inherit;
+  font-weight: 600;
+  text-emphasis: none;
+}
+
+.InterlinearReading > rt,
+.InterlinearPhoneticLabel > rt {
   color: inherit;
   font-weight: 600;
   text-emphasis: none;
@@ -472,8 +483,8 @@ main {
 .MaterialGrid {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(6, 3.35rem);
-  grid-template-rows: repeat(4, 3.35rem);
+  grid-template-columns: repeat(6, 5.75rem);
+  grid-template-rows: repeat(4, 5.75rem);
   grid-auto-flow: row;
   gap: .15rem;
   inline-size: max-content;
@@ -481,8 +492,6 @@ main {
   padding: 0;
   list-style: none;
 }
-
-.GroupMark { display: none; }
 
 .ElementCell {
   --element-color: #ffc0c0;
@@ -498,12 +507,13 @@ main {
 :is(.ElementCell, .ElementLegend li)[data-category='noble'] { --element-color: #c0ffff; }
 
 .ElementCell .ElementTile {
+  --han-zhuyin-ruby-position: inter-character;
   position: relative;
   display: grid;
   place-items: center;
   inline-size: 100%;
   block-size: 100%;
-  padding: .35rem .1rem .25rem;
+  padding: 0;
   color: #18171a;
   border: 1px solid color-mix(in srgb, var(--element-color) 38%, #aaa9a5);
   border-radius: 0;
@@ -519,49 +529,100 @@ main {
   outline-offset: 1px;
 }
 
-.AtomicRuby {
-  ruby-position: under;
-  font-family: var(--han-sans);
-  font-size: 1.1rem;
-  font-weight: 580;
-  line-height: 1.45;
-}
-
-.AtomicRuby > .AtomicNumber {
+.ElementCompass {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
   color: inherit;
-  font-family: var(--han-monospace);
-  font-size: .33em;
-  font-weight: 500;
-}
-
-.ElementRuby {
   ruby-position: over;
-  font-family: var(--han-sans);
+  writing-mode: horizontal-tb;
 }
 
-.ElementRuby > .Symbol {
+.ElementGlyph {
+  font-family: var(--han-sans);
+  font-size: 3rem;
+  font-weight: 580;
+  line-height: 1;
+}
+
+.ElementCompass > rt {
+  position: absolute;
+  display: block;
+  margin: 0;
   color: inherit;
-  font-family: var(--han-sans);
-  font-size: .34em;
-  font-weight: 700;
-  letter-spacing: .03em;
+  line-height: 1;
 }
 
-.ElementCell .AtomicRuby {
-  font-size: .95rem;
+.ElementReading {
+  font-size: .55rem;
   font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
-.ElementCell .ElementRuby > .Symbol {
-  color: inherit;
+.ElementMinnan,
+.ElementMandarin {
+  top: 50%;
+  font-family: var(--han-font-zhuyin-serif);
+  font-size: .62rem;
+  text-orientation: upright;
+  translate: 0 -50%;
+  writing-mode: vertical-rl;
+}
+
+.ElementMinnan { right: .42rem; }
+.ElementMandarin { left: .42rem; }
+
+.ElementJapanese,
+.ElementKorean {
+  left: 50%;
+  max-inline-size: calc(100% - 2.25rem);
+  overflow: hidden;
+  font-family: var(--han-sans);
+  font-size: .46rem;
+  text-overflow: clip;
+  translate: -50% 0;
+}
+
+.ElementJapanese { top: .42rem; }
+.ElementKorean { bottom: .42rem; }
+
+#station-readings[data-reading-mode='korean'] .ElementJapanese {
+  top: auto;
+  bottom: .42rem;
+}
+
+#station-readings[data-reading-mode='korean'] .ElementKorean {
+  top: .42rem;
+  bottom: auto;
+}
+
+.ElementBoundary {
+  font-family: var(--han-monospace);
+  font-size: .54rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+
+.ElementSymbol {
+  top: .25rem;
+  left: .3rem;
+}
+
+.AtomicNumber {
+  right: .3rem;
+  bottom: .25rem;
 }
 
 .ElementCell [data-icon] {
   position: absolute;
-  inset-inline-end: .3rem;
-  inset-block-end: .3rem;
+  z-index: 1;
+  top: .3rem;
+  right: .3rem;
   color: var(--ui-supplement-text-2q);
-  font-size: .6rem;
+  font-size: .55rem;
 }
 
 .MaterialHint {
@@ -643,11 +704,7 @@ main {
   writing-mode: vertical-rl;
 }
 
-#station-readings[data-writing='vertical'] .DispatchCopy { line-height: 3; }
-
-#station-readings[data-writing='vertical'] .InterCharacterReading {
-  ruby-position: over;
-}
+#station-readings[data-writing='vertical'] .DispatchCopy { line-height: 2.2; }
 
 #station-readings[data-writing='vertical'] .DispatchRuby > .Romanization {
   text-orientation: mixed;
@@ -661,8 +718,8 @@ main {
 
 #station-readings[data-writing='vertical'] .MaterialGrid {
   direction: rtl;
-  grid-template-columns: repeat(4, 2.9rem);
-  grid-template-rows: repeat(6, 2.9rem);
+  grid-template-columns: repeat(4, 5.75rem);
+  grid-template-rows: repeat(6, 5.75rem);
   grid-auto-flow: column;
   gap: .16rem .22rem;
   padding: .35rem .4rem .45rem;
@@ -708,21 +765,8 @@ main {
   block-size: 100%;
   width: 100%;
   height: 100%;
-  --han-writing-mode: vertical-rl;
-  writing-mode: vertical-rl;
-}
-
-#station-readings[data-writing='vertical'] .GroupMark {
-  position: absolute;
-  inset-inline-start: .2rem;
-  inset-block-start: .14rem;
-  display: block;
-  color: #4a4a4a;
-  font-family: var(--han-monospace);
-  font-size: .36rem;
-  font-weight: 500;
-  line-height: 1;
-  text-orientation: upright;
+  --han-writing-mode: horizontal-tb;
+  writing-mode: horizontal-tb;
 }
 
 #station-readings[data-writing='vertical'] .MaterialHint {
@@ -788,7 +832,7 @@ button[data-speaking] > [data-icon] {
 @keyframes reading-pulse { to { scale: 1.25; } }
 
 @container (inline-size < 58rem) {
-  .DispatchCopy { line-height: 3.5; }
+  .DispatchCopy { line-height: 2.25; }
 }
 
 @media (max-width: 34rem) {
@@ -810,16 +854,15 @@ button[data-speaking] > [data-icon] {
   }
 
   .Dispatch { min-block-size: 0; }
-  .DispatchCopy { font-size: 1.05rem; }
+  .DispatchCopy { font-size: .95rem; }
   .ElementMeta { align-items: start; }
   #station-readings[data-writing='vertical'] .MaterialGrid {
-    grid-template-columns: repeat(4, 2.55rem);
-    grid-template-rows: repeat(6, 2.65rem);
+    grid-template-columns: repeat(4, 5.25rem);
+    grid-template-rows: repeat(6, 5.25rem);
     gap: .12rem .16rem;
     padding: .3rem .35rem .4rem;
   }
-  #station-readings[data-writing='vertical'] .AtomicRuby { font-size: 1rem; }
-  #station-readings[data-writing='vertical'] .ElementCell .AtomicRuby { font-size: .875rem; }
+  #station-readings[data-writing='vertical'] .ElementGlyph { font-size: 2.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
