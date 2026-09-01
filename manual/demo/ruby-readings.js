@@ -297,6 +297,7 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
   const baseUnits = [...base]
   const nativeUnits = native.trim().split(/\s+/)
   const isBopomofo = system.nativeLang.includes('Bopo')
+  const isKorean = system.listLang === 'ko'
 
   if (isBopomofo && selectedValue('annotation-position') === 'over') {
     const inner = document.createElement('ruby')
@@ -316,6 +317,11 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
       inner.append(character, nativeReading)
       outer.append(inner)
     })
+  } else if (isKorean) {
+    const nativeReading = document.createElement('rt')
+    nativeReading.lang = system.nativeLang
+    nativeReading.textContent = native
+    outer.append(base, nativeReading)
   } else {
     const inner = document.createElement('ruby')
     const nativeReading = document.createElement('rt')
@@ -334,13 +340,19 @@ const createDispatchRuby = (system, { base, native, roman, emphasis }) => {
     return wrapper
   }
 
-  if (system.roman !== false) {
-    const romanization = document.createElement('rt')
-    romanization.lang = system.romanLang
-    romanization.textContent = roman
-    outer.append(romanization)
+  if (isBopomofo && emphasis) {
+    const wrapper = document.createElement('em')
+    wrapper.dataset.emphasis = emphasis
+    wrapper.append(...outer.childNodes)
+    outer.append(wrapper)
   }
-  if (!emphasis) return outer
+
+  const romanization = document.createElement('rt')
+  romanization.lang = system.romanLang
+  romanization.textContent = roman
+  outer.append(romanization)
+
+  if (!emphasis || isBopomofo) return outer
   const wrapper = document.createElement('em')
   wrapper.dataset.emphasis = emphasis
   wrapper.append(outer)

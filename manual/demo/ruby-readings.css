@@ -378,9 +378,9 @@ main {
 
   /* The inner ruby is the native reading; the outer ruby carries the
      second, romanised reading. Han.css owns every Zhuyin rule. */
-  & ruby:has(> ruby) { ruby-position: under; }
+  & ruby:has(> ruby, > em > ruby) { ruby-position: under; }
 
-  & ruby:has(> ruby) > rt {
+  & ruby:has(> ruby, > em > ruby) > rt {
     font-family: var(--han-sans);
     font-size: .45em;
     line-height: 1;
@@ -686,12 +686,13 @@ main {
       border-block-start: 1px solid var(--ui-row-rule);
     }
 
-    & ruby:has(> ruby) > rt {
+    & ruby:has(> ruby, > em > ruby) > rt {
       text-orientation: mixed;
       writing-mode: vertical-rl;
     }
 
-    & ruby:has(> ruby) > ruby { ruby-position: over; }
+    & ruby:has(> ruby) > ruby,
+    & ruby:has(> em > ruby) > em > ruby { ruby-position: over; }
   }
 
   & .Rail figure {

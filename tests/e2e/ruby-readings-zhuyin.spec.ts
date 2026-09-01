@@ -55,3 +55,20 @@ test('element speech begins with each localized table title', async ({ page }) =
     expect(speech?.startsWith(title), mode).toBe(true)
   }
 })
+
+test('emphasized dual readings expose the requested experimental ruby shapes', async ({ page }) => {
+  await page.goto('/demo/ruby-readings.html')
+
+  for (const mode of ['minnan', 'mandarin']) {
+    await page.locator(`[name="reading-mode"][value="${mode}"]`).check({ force: true })
+    const emphasis = page.locator('.Dispatch em[data-emphasis="id"]').first()
+    await expect(emphasis.locator(':scope > ruby.zhuyin')).toHaveCount(4)
+    await expect(emphasis.locator('xpath=..')).toHaveJSProperty('tagName', 'RUBY')
+    await expect(emphasis.locator('xpath=../rt')).toHaveCount(1)
+  }
+
+  await page.locator('[name="reading-mode"][value="korean"]').check({ force: true })
+  const koreanRuby = page.locator('.Dispatch em[data-emphasis="id"] > ruby').first()
+  await expect(koreanRuby.locator(':scope > ruby')).toHaveCount(0)
+  await expect(koreanRuby.locator(':scope > rt')).toHaveCount(2)
+})
