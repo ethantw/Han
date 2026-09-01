@@ -149,9 +149,7 @@ no single master kill-switch. The JS side scopes naturally:
 
 ## 3. Bundles
 
-CSS (each also as `.min` with source map). Figures are min+gzip, measured
-2026-08-12 — the homepage's 工法站 ledger prints the same files brotli'd, from
-the build, so treat that as the live number and this table as a snapshot:
+CSS (each also as `.min` with source map; figures are min+gzip):
 
 | File | Contents | min+gzip |
 |---|---|---|
