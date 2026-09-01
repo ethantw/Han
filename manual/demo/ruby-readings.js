@@ -47,7 +47,7 @@ const readingSystems = {
   minnan: {
     name: '閩南語', lang: 'nan-TW', listLang: 'nan-Hant-TW', nativeLang: 'nan-Bopo-TW', romanLang: 'nan-Latn-TW',
     groupLabel: '讀全篇捷報',
-    headlineSpeech: '巴星採礦告捷。超導磁喉有望成真。',
+    headlineSpeech: '巴星採礦告捷。超導磁噴嘴有望成真。',
     elementsHeadlineSpeech: '巴納德任務元素表。',
     paragraphs: [
       [
@@ -120,7 +120,7 @@ const readingSystems = {
   mandarin: {
     name: '國語', lang: 'zh-TW', listLang: 'zh-Hant-TW', nativeLang: 'zh-Bopo-TW', romanLang: 'zh-Latn-pinyin',
     groupLabel: '國語讀全篇',
-    headlineSpeech: '巴星採礦告捷。超導磁喉有望成真。',
+    headlineSpeech: '巴星採礦告捷。超導磁噴嘴有望成真。',
     elementsHeadlineSpeech: '巴納德任務元素表。',
     paragraphs: [
       [
