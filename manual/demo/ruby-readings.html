@@ -24,27 +24,26 @@
 
     <svg class="Sky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
-        <radialGradient id="barnard-glow">
-          <stop offset="0" stop-color="var(--barnard-core)" stop-opacity=".52" />
-          <stop offset=".2" stop-color="var(--barnard-core)" stop-opacity=".2" />
-          <stop offset="1" stop-color="var(--barnard-core)" stop-opacity="0" />
-        </radialGradient>
         <marker id="barnard-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
         </marker>
+        <path id="barnard-orbit-outer" d="M620 215a310 128 0 1 0 620 0a310 128 0 1 0-620 0" />
+        <path id="barnard-orbit-middle" d="M700 215a230 95 0 1 0 460 0a230 95 0 1 0-460 0" />
+        <path id="barnard-orbit-inner" d="M780 215a150 62 0 1 0 300 0a150 62 0 1 0-300 0" />
       </defs>
       <g class="Grid">
         <path d="M90 94H1360M60 256H1390M110 470H1340" />
         <path d="M240 24V590M720 10V610M1160 30V584" />
       </g>
       <g class="Orbit">
-        <ellipse cx="930" cy="215" rx="310" ry="128" />
-        <ellipse cx="930" cy="215" rx="188" ry="77" />
-        <circle cx="930" cy="215" r="92" fill="url(#barnard-glow)" />
-        <circle class="Core" cx="930" cy="215" r="18" />
         <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
-        <path d="M900 215h60M930 185v60" />
       </g>
+      <g class="ScriptOrbits">
+        <g class="ScriptOrbit BopomofoTrack" data-orbit-path="#barnard-orbit-outer" data-orbit-duration="120" data-orbit-glyphs="ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㆠㆡㆣㆤㆥㆦㆧㆩ"></g>
+        <g class="ScriptOrbit KatakanaTrack" data-orbit-path="#barnard-orbit-middle" data-orbit-duration="96" data-orbit-glyphs="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"></g>
+        <g class="ScriptOrbit HangulTrack" data-orbit-path="#barnard-orbit-inner" data-orbit-duration="72" data-orbit-glyphs="가나다라마바사아자차카타파하거너더러머버서어저처"></g>
+      </g>
+      <g class="HunminStar" data-star-text="國之語音異乎中國與文字不相流通故愚民有所欲言而終不得伸其情者多矣予爲此憫然新制二十八字欲使人人易習便於日用耳"></g>
       <g class="Stars">
         <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
         <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />

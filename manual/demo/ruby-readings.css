@@ -137,18 +137,44 @@ main {
     stroke-opacity: .48;
     vector-effect: non-scaling-stroke;
 
-    & ellipse { stroke-dasharray: 5 10; }
-
     & path:first-of-type {
       stroke-width: 1.75;
       stroke-dasharray: 3 8;
     }
   }
 
-  & .Core {
-    fill: var(--barnard-core);
+  & .HunminStar {
+    color: var(--barnard-core);
+    text-anchor: middle;
+
+    & text {
+      fill: currentColor;
+      stroke: none;
+      font-family: var(--han-serif);
+      font-size: 9px;
+      font-weight: 650;
+      dominant-baseline: middle;
+      animation: barnard-twinkle var(--twinkle-duration) ease-in-out var(--twinkle-delay) infinite;
+    }
+  }
+
+  & .ScriptOrbits {
+    fill: currentColor;
     stroke: none;
-    opacity: .88;
+    opacity: .32;
+    font-family: var(--han-sans);
+    font-weight: 500;
+    text-anchor: middle;
+
+    & .ScriptOrbit text { dominant-baseline: middle; }
+
+    & .HangulTrack {
+      font-size: 10px;
+    }
+
+    & .KatakanaTrack { font-size: 10.5px; }
+
+    & .BopomofoTrack { font-size: 11px; }
   }
 
   & .Stars {
@@ -736,6 +762,13 @@ main {
 
 @keyframes reading-pulse { to { scale: 1.2; } }
 
+@keyframes barnard-twinkle {
+  0%, 100% { fill-opacity: var(--twinkle-floor); }
+  42% { fill-opacity: 1; }
+  68% { fill-opacity: var(--twinkle-mid); }
+  82% { fill-opacity: .96; }
+}
+
 @media (max-width: 40rem) {
   .ReadingStation {
     --station-gutter: .75rem;
@@ -774,4 +807,5 @@ main {
 
 @media (prefers-reduced-motion: reduce) {
   .ReadingStation button[aria-busy='true']::after { animation: none; }
+  .Sky .HunminStar text { animation: none; }
 }

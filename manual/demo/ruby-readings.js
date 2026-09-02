@@ -29,6 +29,20 @@ const initRailNav = () => {
   sync()
 }
 
+const initSkyMotion = () => {
+  const $sky = $('.Sky')
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+  if (!$sky?.pauseAnimations || !$sky?.unpauseAnimations) return
+
+  const sync = () => {
+    if (reducedMotion.matches) $sky.pauseAnimations()
+    else $sky.unpauseAnimations()
+  }
+
+  reducedMotion.addEventListener('change', sync)
+  sync()
+}
+
 const synth = window.speechSynthesis
 const $station = $('.ReadingStation')
 const $dispatch = $('.Dispatch')
@@ -36,6 +50,101 @@ const $numbersGroup = $('button[name="speak"][value="story"]')
 const $elementsGroup = $('button[name="speak"][value="elements"]')
 const $fontSize = $('[name="font-size"]')
 const $fontSizeOutput = $('output[for="reading-font-size"]')
+
+const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
+
+const renderScriptOrbits = () => {
+  $$('[data-orbit-glyphs]', $station).forEach((orbit) => {
+    const glyphs = [...orbit.dataset.orbitGlyphs]
+    const duration = Number(orbit.dataset.orbitDuration)
+    const path = orbit.dataset.orbitPath
+    orbit.replaceChildren(...glyphs.map((glyph, index) => {
+      const text = document.createElementNS(SVG_NAMESPACE, 'text')
+      const motion = document.createElementNS(SVG_NAMESPACE, 'animateMotion')
+      const motionPath = document.createElementNS(SVG_NAMESPACE, 'mpath')
+      motion.setAttribute('dur', `${duration}s`)
+      motion.setAttribute('begin', `${(-duration * index / glyphs.length).toFixed(3)}s`)
+      motion.setAttribute('repeatCount', 'indefinite')
+      motion.setAttribute('rotate', 'auto')
+      motionPath.setAttribute('href', path)
+      motion.append(motionPath)
+      text.append(glyph, motion)
+      return text
+    }))
+  })
+}
+
+const renderHunminStar = () => {
+  const star = $('[data-star-text]', $station)
+  if (!star) return
+
+  const source = [...star.dataset.starText]
+  const radius = 72
+  const perspective = 260
+  const meridianCount = 12
+  const latitudeCount = 9
+  const glyphs = Array.from(
+    { length: meridianCount * latitudeCount },
+    (_, index) => source[index % source.length],
+  )
+  const meridians = Array.from({ length: meridianCount }, (_, index) => {
+    const group = document.createElementNS(SVG_NAMESPACE, 'g')
+    star.append(group)
+    return {
+      group,
+      longitude: index / meridianCount * Math.PI * 2,
+      points: [],
+    }
+  })
+
+  glyphs.forEach((glyph, index) => {
+    const meridian = meridians[Math.floor(index / latitudeCount)]
+    const row = index % latitudeCount
+    const latitude = (-.4 + .8 * row / (latitudeCount - 1)) * Math.PI
+    const ring = Math.cos(latitude)
+    const text = document.createElementNS(SVG_NAMESPACE, 'text')
+    const variation = ((index * 41 + 17) % 109) / 108
+    const phase = (index * 67 % 109) / 108
+    const duration = 3.4 + variation * 5.2
+    text.textContent = glyph
+    text.style.setProperty('--twinkle-duration', `${duration.toFixed(2)}s`)
+    text.style.setProperty('--twinkle-delay', `${(-phase * duration).toFixed(2)}s`)
+    text.style.setProperty('--twinkle-floor', (.42 + variation * .28).toFixed(2))
+    text.style.setProperty('--twinkle-mid', (.58 + variation * .24).toFixed(2))
+    meridian.group.append(text)
+    meridian.points.push({
+      text,
+      latitude,
+      x: ring * Math.sin(meridian.longitude),
+      y: Math.sin(latitude),
+      z: ring * Math.cos(meridian.longitude),
+    })
+  })
+
+  const draw = (rotation) => {
+    const sine = Math.sin(rotation)
+    const cosine = Math.cos(rotation)
+    meridians.forEach((meridian) => {
+      meridian.depth = Math.cos(meridian.longitude + rotation)
+      meridian.points.forEach((point) => {
+        const x = point.x * cosine + point.z * sine
+        const z = point.z * cosine - point.x * sine
+        const depth = (z + 1) / 2
+        const projection = perspective / (perspective - z * radius)
+        const latitudeScale = .48 + Math.cos(point.latitude) * .72
+        const scale = latitudeScale * (.76 + depth * .28) * projection
+        const opacity = .12 + depth ** 1.55 * .82
+        const screenX = 930 + x * radius * projection
+        const screenY = 215 + point.y * radius * projection
+        point.text.setAttribute('transform', `translate(${screenX.toFixed(2)} ${screenY.toFixed(2)}) scale(${scale.toFixed(3)})`)
+        point.text.setAttribute('opacity', opacity.toFixed(3))
+      })
+    })
+    meridians.toSorted((a, b) => a.depth - b.depth).forEach(({ group }) => star.append(group))
+  }
+
+  draw(Math.PI / meridianCount)
+}
 
 const selectedValue = (name) => $(`[name="${name}"]:checked`).value
 
@@ -667,6 +776,8 @@ const speak = (button) => {
   synth.speak(utterance)
 }
 
+renderScriptOrbits()
+renderHunminStar()
 renderPhoneticLabels()
 renderMaterialGrid()
 renderReadingSystem(currentMode)
@@ -697,6 +808,7 @@ $fontSize.addEventListener('input', setFontSize)
 setFontSize()
 
 initRailNav()
+initSkyMotion()
 if (synth) synth.addEventListener('voiceschanged', refreshVoices)
 refreshVoices()
 window.addEventListener('pagehide', () => synth?.cancel())
