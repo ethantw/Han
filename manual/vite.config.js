@@ -303,7 +303,11 @@ const I18N_FILE = path.resolve(here, '_i18n.js')
 const HOME_DIR = path.resolve(here, 'home')
 const HOME_LAYOUT = path.resolve(here, '_home.html')
 const SETUP_SKILL_URL = 'https://github.com/hanzipro/han.css/blob/main/skills/han-setup/SKILL.md'
-const TAISOL_DIR = path.resolve(here, '..', '..', 'taisol')
+// Versioned snapshot of the seven reports used by the homepage. `taisol` is
+// still the editorial source, refreshed explicitly with
+// `pnpm --filter han-manual sync:taisol-home`; normal builds must never depend
+// on a sibling checkout that CI/deploy environments do not have.
+const TAISOL_DIR = path.resolve(here, 'data', 'taisol')
 // Cross-template i18n (the brand `logo` wordmark) — merged into every
 // homepage template's ctx. Not a section, not a per-file dict.
 const HOME_SHARED = path.resolve(HOME_DIR, '_shared.html')
@@ -335,8 +339,8 @@ const md = new MarkdownIt({
   typographer: true,
 }).use(cjkEmphasis).use(headings)
 
-/* Homepage newspaper reader. The Markdown remains the single source in
- * taisol/; build emits small, cacheable HTML fragments and dev renders the
+/* Homepage newspaper reader. The Markdown snapshot is synced from taisol/;
+ * build emits small, cacheable HTML fragments and dev renders the
  * requested fragment directly. The homepage therefore pays for neither the
  * full articles nor a client-side Markdown parser before somebody asks to
  * read one. Every edition has its own Markdown source; in particular, Hans
@@ -1620,7 +1624,7 @@ function hanManualPlugin() {
 
         if (file.startsWith(TAISOL_DIR)) {
           await renderHomepage()
-          console.log(`[han-manual] ${path.basename(file)} → homepage excerpts re-rendered (refresh browser)`)
+          console.log(`[han-manual] ${path.basename(file)} → homepage data snapshot re-rendered (refresh browser)`)
           return
         }
 

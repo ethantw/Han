@@ -7,6 +7,7 @@
   "scripts": {
     "build": "vite build && pnpm run build:search",
     "build:search": "pagefind --site dist --output-subdir pagefind",
+    "sync:taisol-home": "node scripts/sync-taisol-home-data.js",
     "dev": "vite",
     "preview": "vite preview",
     "clean": "rm -rf dist src/*.html public/han",
