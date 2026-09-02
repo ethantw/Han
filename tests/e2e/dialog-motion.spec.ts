@@ -34,6 +34,9 @@ const open = async (page: Page, item: DialogCase) => {
   await opener.evaluate((element: HTMLElement) => element.click())
   const dialog = page.locator(item.dialog)
   await expect(dialog).toBeVisible()
+  if (item.name === 'article reader') {
+    await expect(dialog).toHaveAttribute('data-stage-visible', '')
+  }
   return { dialog, panel: dialog.locator(item.panel) }
 }
 
@@ -113,6 +116,90 @@ test('the article toolbar drops in quickly without overshooting the mask', async
 
   const timing = await chrome.evaluate((element) => getComputedStyle(element).transitionTimingFunction)
   expect(timing).toContain('cubic-bezier(0.16, 1, 0.3, 1)')
+})
+
+test('the article shell shows a viewport-wide loading pulse and its mask can cancel the fetch', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 700 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  let releaseArticle!: () => void
+  const articleGate = new Promise<void>((resolve) => { releaseArticle = resolve })
+  await page.route('**/articles/**', async (route) => {
+    await articleGate
+    await route.continue()
+  })
+  await page.goto('/')
+
+  await page.locator('[data-article]').first().evaluate((element: HTMLElement) => element.click())
+  const dialog = page.locator('dialog.Reader')
+  const loading = dialog.locator('.Loading')
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toHaveAttribute('data-chrome-visible', '')
+  await expect(dialog).toHaveAttribute('data-reader-loading', '')
+  await expect(dialog).not.toHaveAttribute('data-stage-visible', '')
+  await expect(loading).toHaveAttribute('aria-hidden', 'false')
+  const geometry = await loading.evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    return {
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+      animation: getComputedStyle(element, '::after').animationName,
+    }
+  })
+  expect(geometry).toEqual({ top: 0, width: 900, height: 3, animation: 'reader-loading' })
+
+  await dialog.evaluate((element: HTMLElement) => element.click())
+  await expect(dialog).toBeHidden()
+  releaseArticle()
+})
+
+test('a cached article still waits 250ms after the shell before flying in', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const link = page.locator('[data-article]').first()
+  await link.evaluate((element: HTMLElement) => element.click())
+  const dialog = page.locator('dialog.Reader')
+  await expect(dialog).toHaveAttribute('data-stage-visible', '')
+  await dialog.locator('.Close').click()
+  await expect(dialog).toBeHidden()
+
+  const elapsed = await page.evaluate(async () => {
+    const reader = document.querySelector('dialog.Reader')!
+    const jump = document.querySelector<HTMLElement>('[data-article]')!
+    const stageVisible = new Promise<number>((resolve) => {
+      const observer = new MutationObserver(() => {
+        if (!reader.hasAttribute('data-stage-visible')) return
+        observer.disconnect()
+        resolve(performance.now())
+      })
+      observer.observe(reader, { attributes: true, attributeFilter: ['data-stage-visible'] })
+    })
+    const started = performance.now()
+    jump.click()
+    return (await stageVisible) - started
+  })
+  expect(elapsed).toBeGreaterThanOrEqual(240)
+})
+
+test('the article leaves before its toolbar and mask retract', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 700 })
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  await page.addStyleTag({ content: `
+    dialog.Reader > .Stage,
+    dialog.Reader > .Chrome,
+    dialog.Reader::backdrop { transition-duration: 100ms !important; }
+  ` })
+  const { dialog } = await open(page, cases[2])
+
+  await dialog.locator('.Close').click({ noWaitAfter: true })
+  await expect(dialog).not.toHaveAttribute('data-stage-visible', '')
+  await expect(dialog).toHaveAttribute('data-chrome-visible', '')
+  await expect(dialog).toHaveAttribute('open', '')
+
+  await expect(dialog).not.toHaveAttribute('data-chrome-visible', '')
+  await expect(dialog).toHaveAttribute('open', '')
+  await expect(dialog).toBeHidden()
 })
 
 test('shared dialogs remain immediately usable with reduced motion', async ({ page }) => {

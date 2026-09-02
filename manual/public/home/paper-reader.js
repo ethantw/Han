@@ -7,6 +7,7 @@ const LANGS = { hant: 'zh-Hant', hans: 'zh-Hans', ja: 'ja', ko: 'ko-Kore' }
 const AVAILABLE = { 'standard-glyph-revival': ['hant', 'hans'] }
 const SCALES = [0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2]
 const WRITING_STORAGE_KEY = 'han-paper-reader-writing'
+const MIN_STAGE_DELAY = 250
 const cache = new Map()
 let dialog
 let current = { slug: '', edition: 'hant' }
@@ -15,6 +16,28 @@ let layoutFrame = 0
 let readerTrim = { width: 0, height: 0 }
 let reapplyFallbacks
 let loadGeneration = 0
+let closePromise
+
+const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
+const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration))
+
+const transitionMilliseconds = (element, pseudo) => {
+  const style = getComputedStyle(element, pseudo)
+  const times = (value) => value.split(',').map((part) => {
+    const number = Number.parseFloat(part)
+    return part.trim().endsWith('ms') ? number : number * 1000
+  })
+  const durations = times(style.transitionDuration)
+  const delays = times(style.transitionDelay)
+  return Math.max(0, ...durations.map((duration, index) =>
+    duration + (delays[index % delays.length] ?? 0)))
+}
+
+const waitForTransition = async (element, pseudo) => {
+  const duration = transitionMilliseconds(element, pseudo)
+  if (!duration) return
+  await wait(duration + 34)
+}
 
 const editionFrom = ($link) => {
   if (EDITIONS.includes($link?.dataset.edition)) return $link.dataset.edition
@@ -239,6 +262,7 @@ const shell = () => {
   dialog.className = 'Reader'
   dialog.setAttribute('aria-label', '全文閱讀器')
   dialog.innerHTML = `
+    <div class="Loading" role="progressbar" aria-label="正在載入報導" aria-hidden="true"></div>
     <form method="dialog" class="Chrome">
       <div class="Controls">
         <fieldset class="Tools">
@@ -282,12 +306,13 @@ const shell = () => {
     }
     if (!control && event.target === dialog) {
       if (setReaderConsole(false, { restoreFocus: false })) return
-      dialog.close()
+      closeReader()
     }
   })
   dialog.addEventListener('cancel', (event) => {
-    if (!setReaderConsole(false, { restoreFocus: true })) return
     event.preventDefault()
+    if (setReaderConsole(false, { restoreFocus: true })) return
+    closeReader()
   })
   dialog.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || !setReaderConsole(false, { restoreFocus: true })) return
@@ -297,7 +322,18 @@ const shell = () => {
     event.preventDefault()
     event.stopPropagation()
   }, true)
-  dialog.addEventListener('close', () => setReaderConsole(false, { restoreFocus: false }))
+  dialog.addEventListener('submit', (event) => {
+    event.preventDefault()
+    closeReader(event.submitter?.value)
+  })
+  dialog.addEventListener('close', () => {
+    setReaderConsole(false, { restoreFocus: false })
+    dialog.querySelector('.Body').removeAttribute('aria-busy')
+    dialog.querySelector('.Loading').setAttribute('aria-hidden', 'true')
+    dialog.removeAttribute('data-stage-visible')
+    dialog.removeAttribute('data-chrome-visible')
+    dialog.removeAttribute('data-reader-loading')
+  })
   dialog.addEventListener('change', (event) => {
     if (!event.target.matches?.('.Scale')) return
     const scale = Number(event.target.value)
@@ -309,6 +345,33 @@ const shell = () => {
     if (dialog.open) layoutReader({ preserveScroll: true })
   })
   return dialog
+}
+
+/* Closing is deliberately the inverse of opening: let the newspaper leave
+ * first, then retract the toolbar and mask, and only then leave the top layer.
+ * While an article is still loading there is no newspaper phase to wait for,
+ * so clicking the mask dismisses the shell immediately. */
+const closeReader = (returnValue = '') => {
+  if (!dialog?.open) return Promise.resolve()
+  if (closePromise) return closePromise
+  const generation = ++loadGeneration
+  closePromise = (async () => {
+    setReaderConsole(false, { restoreFocus: false })
+    dialog.removeAttribute('data-reader-loading')
+    dialog.querySelector('.Loading').setAttribute('aria-hidden', 'true')
+    const stageWasVisible = dialog.hasAttribute('data-stage-visible')
+    dialog.removeAttribute('data-stage-visible')
+    if (stageWasVisible) await waitForTransition(dialog.querySelector('.Stage'))
+    if (generation !== loadGeneration || !dialog.open) return
+
+    dialog.removeAttribute('data-chrome-visible')
+    await Promise.all([
+      waitForTransition(dialog.querySelector('.Chrome')),
+      waitForTransition(dialog, '::backdrop'),
+    ])
+    if (generation === loadGeneration && dialog.open) dialog.close(returnValue)
+  })().finally(() => { closePromise = null })
+  return closePromise
 }
 
 const setEditionState = (edition) => {
@@ -332,9 +395,15 @@ const show = async (slug, edition) => {
   setEditionState(edition)
   const body = dialog.querySelector('.Body')
   body.setAttribute('aria-busy', 'true')
+  dialog.setAttribute('data-reader-loading', '')
+  dialog.querySelector('.Loading').setAttribute('aria-hidden', 'false')
+  let stageDue = performance.now()
   if (!dialog.open) {
     scaleMode = 'auto'
+    dialog.removeAttribute('data-stage-visible')
+    dialog.setAttribute('data-chrome-visible', '')
     dialog.showModal()
+    stageDue = performance.now() + MIN_STAGE_DELAY
   }
   try {
     const source = await load(slug, edition)
@@ -356,6 +425,14 @@ const show = async (slug, edition) => {
     if (generation !== loadGeneration) return
     body.removeAttribute('aria-busy')
     layoutReader({ resetScroll: true })
+    await Promise.all([
+      nextFrame(),
+      wait(Math.max(0, stageDue - performance.now())),
+    ])
+    if (generation !== loadGeneration || !dialog.open) return
+    dialog.removeAttribute('data-reader-loading')
+    dialog.querySelector('.Loading').setAttribute('aria-hidden', 'true')
+    dialog.setAttribute('data-stage-visible', '')
   }
 }
 

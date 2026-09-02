@@ -44,8 +44,19 @@
       translate 420ms cubic-bezier(.2, .75, .25, 1);
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)[open]
-    > :where(.Panel, .Stage) {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog)[open] > .Panel {
+    & {
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    @starting-style {
+      opacity: 0;
+      translate: 0 100dvb;
+    }
+  }
+
+  dialog.Reader[open][data-stage-visible] > .Stage {
     & {
       opacity: 1;
       translate: 0 0;
@@ -64,7 +75,7 @@
     transition: translate 320ms cubic-bezier(.16, 1, .3, 1);
   }
 
-  dialog.Reader[open] > .Chrome {
+  dialog.Reader[open][data-chrome-visible] > .Chrome {
     & {
       translate: 0 0;
     }
@@ -79,7 +90,7 @@
     translate: -100dvw 0;
   }
 
-  dialog.Reader[data-writing="vertical"][open] > .Stage {
+  dialog.Reader[data-writing="vertical"][open][data-stage-visible] > .Stage {
     & {
       translate: 0 0;
     }
@@ -97,7 +108,8 @@
       overlay 420ms allow-discrete;
   }
 
-  :where(dialog.QuickstartDialog, dialog.SizeDialog, dialog.Reader)[open]::backdrop {
+  :where(dialog.QuickstartDialog, dialog.SizeDialog)[open]::backdrop,
+  dialog.Reader[open][data-chrome-visible]::backdrop {
     opacity: 1;
 
     @starting-style { opacity: 0; }

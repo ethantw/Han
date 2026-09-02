@@ -234,6 +234,45 @@
     }
   }
 
+  /* The shell arrives before the newspaper. Keep this indeterminate strip on
+     the viewport edge above the toolbar so a slow article fetch has a visible
+     pulse without stealing space from the controls. */
+  .Loading {
+    position: fixed;
+    z-index: 2;
+    inset: 0 0 auto;
+    inline-size: 100vw;
+    block-size: 3px;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    background: color-mix(in srgb, var(--ui-accent) 18%, transparent);
+    transition: opacity 120ms ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      inline-size: 38vw;
+      min-inline-size: 8rem;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ui-accent) 35% 65%,
+        transparent
+      );
+      translate: -100% 0;
+    }
+  }
+
+  &[data-reader-loading] .Loading {
+    opacity: 1;
+
+    &::after {
+      animation: reader-loading 900ms cubic-bezier(.4, 0, .2, 1) infinite;
+    }
+  }
+
   /* 大標橫跨所有欄——它是這一版的抬頭，不是某一欄的開頭。 */
   .Sheet > h3 {
     column-span: all;
@@ -479,6 +518,29 @@
     &:last-child {
       margin-block-end: 0;
     }
+  }
+}
+
+@keyframes reader-loading {
+  to { translate: calc(100vw + 100%) 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Reader[data-reader-loading] .Loading::after {
+    inset-inline: 0;
+    inline-size: auto;
+    min-inline-size: 0;
+    translate: none;
+    animation: none;
+    background: var(--ui-accent);
+  }
+}
+
+@media (forced-colors: active) {
+  .Reader .Loading {
+    background: Canvas;
+
+    &::after { background: Highlight; }
   }
 }
 
