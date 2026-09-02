@@ -63,9 +63,9 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 無須記憶任何class、無須呼叫JavaScript API：選擇器就是作用域，變量就是開關。style query讀的是**祖先**，所以請把變量設在目標內容的祖先（或`:root`）上。各模組的完整變量清單見文檔站。
 
-### 三、選擇器權重是〇
+### 三、公共樣式易於覆寫
 
-漢.css所有樣式都包在`:where()`裡，選擇器權重歸零。你的任何規則，哪怕只是一個元素選擇器，都能覆寫框架提供的樣式；配合`@layer`，模組順序也由你定：
+公共預設與語意目標通常以零權重的`:where()`編寫。pseudo-element仍保留自己的type specificity，作者要改同一個pseudo時本來就會打平這部分；`<h-char>`／`<h-layer>`是私有fallback markup。更關鍵的是框架規則全在layer內，普通未分層的作者CSS自然位於其上：
 
 ```css
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
@@ -73,7 +73,7 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 ## JavaScript補全是可選的
 
-**不引JS也完全可用。** 四模組的核心機能是純CSS；`installFallbacks`只做引擎尚未原生支援的部分——標點擠壓與懸掛的DOM層回落、`text-autospace`未實作時的跨文種間隙、相鄰行底線間距的標記。每一項都以`CSS.supports`與環境探針逐項把關，待引擎原生支援便自動讓位。
+**不引JS也完全可用。** 四模組的核心機能是純CSS；`installFallbacks`補上標點擠壓與懸掛的DOM層回落、跨文種間隙及相鄰行底線間距。原生擠壓與autospace以feature check和環境探針選擇；Safari雖宣稱支援原生`hanging-punctuation`，目前實作實際不可用，因此懸掛在所有引擎仍走JS。
 
 ```js
 import '@hanzi.pro/han.css/auto'                 // 載入即在DOMContentLoaded執行
@@ -101,9 +101,10 @@ installFallbacks(document.body)                  // 或自行控制時機與範�
 |------|------|
 | `han.css` | 整包：四模組＋JS配套樣式＋內建字體資產（全形空格校準字體、注音字體） |
 | `han.{semantics,lines,prose,fonts}.css` | 單模組包，各住自己的cascade layer，總和＝整包 |
-| `han.basic.css` | 精簡包：semantics＋lines＋prose三模組的純CSS部分；無fonts模組、無JS配套樣式、無字體資產 |
+| `han.basic.css` | 精簡包：semantics＋lines＋prose三模組的純CSS部分；無fonts模組、無JS配套樣式、無注音字體 |
+| `han.zhuyin.css` | 搭配`han.basic.css`選用的注音`@font-face` |
 | `han.js` | JS主入口（ESM），純named exports，不自動執行 |
-| `han.auto.js` | 自動安裝入口，載入即補全並re-export全部API |
+| `han.auto.js` | 自動安裝入口，載入即補全並re-export主API |
 
 各檔皆有`.min`版與source map。
 
@@ -119,7 +120,7 @@ v4整套退役了v3的JavaScript runtime——每一項機能都改由瀏覽器�
 |----|------|
 | `Han.init()`／`Han(ctx).render()` | 無需啓動——CSS載入即生效；要JS回落時才`installFallbacks()`（或`/auto`入口） |
 | `renderHWS()`——跨文種間隙 | 原生`text-autospace`；`installFallbacks()`的`<h-iss>`回落 |
-| `renderJiya()`／`renderHanging()`——標點擠壓／懸掛 | 原生`text-spacing-trim`／`hanging-punctuation`；過渡期由JS回落 |
+| `renderJiya()`／`renderHanging()`——標點擠壓／懸掛 | 原生`text-spacing-trim`可取代擠壓JS。Safari雖宣稱支援`hanging-punctuation`，目前實作實際不可用，因此懸掛在所有引擎仍走JS |
 | `renderEm()`／`renderElem()` | 純CSS——語意模組 |
 | `renderDecoLine()` | `text-decoration-inset`＋CSS／JS相鄰行回落 |
 | `renderRuby()`／`substCombLigaWithPUA` | 原生`ruby-position`＋注音字體GPOS；舊式`<rb>`／`<rtc>`標記跑`transpileRuby()`降級 |

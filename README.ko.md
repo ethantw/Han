@@ -62,9 +62,9 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 외울 클래스 이름도, 부를 JavaScript API도 없다. 셀렉터가 곧 範圍이고, 프로퍼티가 곧 스위치다. 스타일 쿼리는 **<ruby>祖上<rt>조상</rt></ruby>**을 읽으므로, 겨냥하는 내용의 祖上(또는 `:root`)에 프로퍼티를 設定하라. 각 모듈의 프로퍼티 전체 목록은 문서를 보라.
 
-### 三, <ruby>明示度<rt>명시도</rt></ruby>는 〇
+### 三, 공개 스타일은 덮어쓰기 쉽다
 
-모든 규칙은 `:where()` 안에 담겨 나가므로 明示度가 零이다. 당신의 규칙은——그저 素의 要素 셀렉터라도——프레임워크를 덮어쓸 수 있다. `@layer`를 쓰면 모듈 <ruby>順序<rt>순서</rt></ruby>도 당신의 것이다.
+공개 기본값과 의미 요소 대상은 대체로 明示度가 0인 `:where()`를 쓴다. pseudo-element는 자체 type specificity를 유지하지만, 같은 pseudo를 바꾸는 작성자 규칙도 그 부분을 충족한다. `<h-char>`／`<h-layer>`는 비공개 fallback markup이다. 더 중요한 점은 프레임워크 규칙이 모두 layer 안에 있어, 일반적인 비레이어 작성자 CSS가 그 위에 놓인다는 것이다.
 
 ```css
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
@@ -72,7 +72,7 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 ## JavaScript 보조는 선택이다
 
-**JavaScript 없이도 온전히 쓸 수 있다.** 네 모듈의 <ruby>核心<rt>핵심</rt></ruby> 機能은 <ruby>純粹<rt>순수</rt></ruby>한 CSS다. `installFallbacks`가 맡는 것은 엔진이 아직 네이티브로 하지 못하는 부분뿐이다——文章 符號 壓縮·내어쓰기의 DOM 층위 폴백, `text-autospace` 미구현 환경에서의 文字 種類 사이 間隙, 이웃한 줄의 밑줄 간격 <ruby>標示<rt>표시</rt></ruby>. 모두 `CSS.supports`와 런타임 프로브로 하나씩 <ruby>檢査<rt>검사</rt></ruby>하며, 엔진이 <ruby>支援<rt>지원</rt></ruby>하면 저절로 물러난다.
+**JavaScript 없이도 온전히 쓸 수 있다.** 네 모듈의 核心 機能은 純粹한 CSS다. `installFallbacks`는 文章 符號 壓縮·내어쓰기의 DOM 폴백, 文字 種類 사이 間隙, 이웃한 줄의 밑줄 간격을 보완한다. 네이티브 압축과 autospace는 feature check와 런타임 프로브로 고른다. Safari는 네이티브 `hanging-punctuation` 지원을 표방하지만 현재 구현은 han.css에서 실제로 쓸 수 없어, 내어쓰기는 모든 엔진에서 계속 JS를 사용한다.
 
 ```js
 import '@hanzi.pro/han.css/auto'                 // 로드 시 DOMContentLoaded에서 실행
@@ -100,9 +100,10 @@ installFallbacks(document.body)                  // 또는 타이밍과 範圍�
 |------|------|
 | `han.css` | 전체 묶음——네 모듈＋JS 보조용 스타일＋<ruby>內藏<rt>내장</rt></ruby> 書體 <ruby>資産<rt>자산</rt></ruby>(<ruby>全角<rt>전각</rt></ruby> <ruby>空白<rt>공백</rt></ruby> <ruby>校正<rt>교정</rt></ruby> 書體, 注音 書體) |
 | `han.{semantics,lines,prose,fonts}.css` | 모듈별 묶음. 저마다 캐스케이드 레이어에 살며, 넷의 <ruby>總和<rt>총화</rt></ruby>＝전체 묶음 |
-| `han.basic.css` | <ruby>簡潔<rt>간결</rt></ruby>판——semantics＋lines＋prose 세 모듈의 純粹 CSS 부분만. fonts 모듈·JS 보조용 스타일·書體 資産은 없다 |
+| `han.basic.css` | <ruby>簡潔<rt>간결</rt></ruby>판——semantics＋lines＋prose 세 모듈의 純粹 CSS 부분만. fonts 모듈·JS 보조용 스타일·注音 書體는 없다 |
+| `han.zhuyin.css` | `han.basic.css`와 함께 선택할 수 있는 注音용 `@font-face` |
 | `han.js` | JS 진입점(ESM). 이름 붙은 익스포트만이며, <ruby>自動<rt>자동</rt></ruby>으로 <ruby>實行<rt>실행</rt></ruby>하지 않는다 |
-| `han.auto.js` | 자동 설치 진입점. 로드하면 폴백을 넣고 전체 API를 다시 익스포트한다 |
+| `han.auto.js` | 자동 설치 진입점. 로드하면 폴백을 넣고 메인 API를 다시 익스포트한다 |
 
 각 파일에 `.min`판과 소스 맵이 붙는다.
 
@@ -118,7 +119,7 @@ v4는 v3의 JavaScript 런타임을 통째로 <ruby>退役<rt>퇴역</rt></ruby>
 |----|------|
 | `Han.init()`／`Han(ctx).render()` | <ruby>起動<rt>기동</rt></ruby>이 필요 없다——CSS는 읽히는 즉시 듣는다. JS 폴백이 필요할 때만 `installFallbacks()`(또는 `/auto` 엔트리) |
 | `renderHWS()`——<ruby>文種<rt>문종</rt></ruby> 사이 간격 | 네이티브 `text-autospace`. `installFallbacks()`의 `<h-iss>` 폴백 |
-| `renderJiya()`／`renderHanging()`——<ruby>約物<rt>약물</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>／내어쓰기 | 네이티브 `text-spacing-trim`／`hanging-punctuation`. 과도기는 JS 폴백이 맡는다 |
+| `renderJiya()`／`renderHanging()`——<ruby>約物<rt>약물</rt></ruby> <ruby>壓縮<rt>압축</rt></ruby>／내어쓰기 | 네이티브 `text-spacing-trim`은 압축 JS를 대체할 수 있다. Safari는 `hanging-punctuation` 지원을 표방하지만 현재 구현은 han.css에서 실제로 쓸 수 없어, 내어쓰기는 모든 엔진에서 계속 JS를 사용한다 |
 | `renderEm()`／`renderElem()` | 순수 CSS——<ruby>意味<rt>의미</rt></ruby> 모듈 |
 | `renderDecoLine()` | `text-decoration-inset`＋CSS／JS <ruby>隣接<rt>인접</rt></ruby> 줄 폴백 |
 | `renderRuby()`／`substCombLigaWithPUA` | 네이티브 `ruby-position`＋<ruby>注音<rt>주음</rt></ruby> 폰트의 GPOS. 옛 `<rb>`／`<rtc>` 마크업은 `transpileRuby()`로 다운레벨 |

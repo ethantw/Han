@@ -4,6 +4,7 @@ import { html } from 'hyperly/fp'
 import {
   refinePunctuation,
   refinePunctuationWithMode,
+  classifyPunctuation,
   isCompressiblePair,
   wrapHangable,
 } from '../line-adjustments/punctuation.ts'
@@ -72,6 +73,11 @@ test('pair classifier includes CJK marks/interpuncts and excludes fullwidth symb
     assert.equal(isCompressiblePair(...[...pair] as [string, string]), true, pair)
   for (const pair of ['。／', '、－', '，＼', '。ー', '。漢'])
     assert.equal(isCompressiblePair(...[...pair] as [string, string]), false, pair)
+})
+
+test('colon, semicolon, question and exclamation marks carry the regional dividing subtype', () => {
+  for (const mark of '：；？！')
+    assert.deepEqual(classifyPunctuation(mark), ['end', 'dividing'])
 })
 
 test('compress: only a genuinely compressible inner seam gets a marker', () => {
@@ -473,7 +479,7 @@ test('preceded-by: browser native path uses the complete pair table', () => {
   assert.equal(
     refineSqueeze('<p>？，要</p>'),
     '<p>'
-      + '<h-char data-punct="end" data-followed-by="hangable">？</h-char>'
+      + '<h-char data-punct="end dividing" data-followed-by="hangable">？</h-char>'
       + '<h-char data-punct="hangable"><h-layer>，</h-layer></h-char>'
       + '要</p>',
   )

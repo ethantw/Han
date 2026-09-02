@@ -43,8 +43,8 @@
  * `lines.with-js.css` can take over when native is missing.
  *   auto      Browser: let native `text-spacing-trim` own compression when
  *             available, but always JS-render hanging. In particular, a
- *             positive Safari `hanging-punctuation` support claim is not
- *             sufficient for this library's required result. Node SSR:
+ *             Safari claims `hanging-punctuation` support, but its current
+ *             implementation is not usable for this library. Node SSR:
  *             render both compress + hang wrappers in one pass.
  *   compress  Force compress-only wrappers, regardless of native support.
  *   hang      Force hang-only wrappers, regardless of native support.

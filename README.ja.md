@@ -62,9 +62,9 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 覚えるべきクラス名も、呼び出すべきJavaScript APIもない。セレクタが作用域、プロパティが切り替えである。スタイルクエリは**祖先**を読むので、対象とする内容の祖先（または`:root`）にプロパティを設定すること。各モジュールの全プロパティ一覧はドキュメントを参照。
 
-### 三、詳細度はゼロ
+### 三、公開スタイルは上書きしやすい
 
-すべての規則は`:where()`の内側で出荷され、詳細度はゼロである。あなたの規則は——たとえ素の要素セレクタであっても——フレームワークを上書きできる。`@layer`を使えばモジュールの順序もあなたのものだ。
+公開デフォルトと意味要素の対象には、通常、詳細度ゼロの`:where()`を使う。擬似要素は自身のtype specificityを保つが、同じ擬似要素を変更する作者規則もその分を満たす。`<h-char>`／`<h-layer>`は非公開のフォールバックmarkupである。さらに、フレームワーク規則はすべてlayer内にあるため、通常の非レイヤー作者CSSがその上に位置する。
 
 ```css
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
@@ -72,7 +72,7 @@ import '@hanzi.pro/han.css/styles/fonts'
 
 ## JavaScriptコンパニオンは任意
 
-**JavaScriptなしでも完全に使える。** 四モジュールの中核機能は純粋なCSSである。`installFallbacks`が担うのは、エンジンがまだネイティブに実装していない部分だけ——約物の詰めとぶら下げのDOMレベルのフォールバック、`text-autospace`未実装環境での文字種間の間隙、隣接行の下線間隔のマーキング。いずれも`CSS.supports`と実行時プローブで一つずつ見極め、エンジンが対応すれば自動的に道を譲る。
+**JavaScriptなしでも完全に使える。** 四モジュールの中核機能は純粋なCSSである。`installFallbacks`は、約物の詰めとぶら下げのDOMフォールバック、文字種間の間隙、隣接行の下線間隔を補う。ネイティブの詰めとautospaceはfeature checkと実行時プローブで選ぶ。Safariはネイティブ`hanging-punctuation`対応をうたうが、現状の実装はhan.cssでは実用にならないため、ぶら下げは全エンジンでJSを使う。
 
 ```js
 import '@hanzi.pro/han.css/auto'                 // 読み込み時にDOMContentLoadedで実行
@@ -100,9 +100,10 @@ installFallbacks(document.body)                  // または時機と範囲を�
 |------|------|
 | `han.css` | フルセット——四モジュール＋JSコンパニオン用スタイル＋内蔵フォント資産（全角空白の校正書体、注音書体） |
 | `han.{semantics,lines,prose,fonts}.css` | モジュール単位のバンドル。各自のカスケードレイヤーに住み、四つの総和＝フルセット |
-| `han.basic.css` | スリム版——semantics＋lines＋proseの純CSS部分のみ。fontsモジュール・JSコンパニオン用スタイル・フォント資産は含まない |
+| `han.basic.css` | スリム版——semantics＋lines＋proseの純CSS部分のみ。fontsモジュール・JSコンパニオン用スタイル・注音書体は含まない |
+| `han.zhuyin.css` | `han.basic.css`と併用できる注音用`@font-face` |
 | `han.js` | JSエントリ（ESM）。名前付きエクスポートのみで、自動実行しない |
-| `han.auto.js` | 自動インストールのエントリ。読み込みでフォールバックを導入し、全APIを再エクスポートする |
+| `han.auto.js` | 自動インストールのエントリ。読み込みでフォールバックを導入し、メインAPIを再エクスポートする |
 
 各ファイルに`.min`版とソースマップが付く。
 
@@ -118,7 +119,7 @@ v4はv3のJavaScriptランタイムを丸ごと退役させた——各機能は
 |----|------|
 | `Han.init()`／`Han(ctx).render()` | 起動は不要——CSSは読み込み即座に効く。JSフォールバックが要るときだけ`installFallbacks()`（または`/auto`エントリ） |
 | `renderHWS()`——文種間スペース | ネイティブ`text-autospace`。`installFallbacks()`の`<h-iss>`フォールバック |
-| `renderJiya()`／`renderHanging()`——約物の詰め／ぶら下げ | ネイティブ`text-spacing-trim`／`hanging-punctuation`。過渡期はJSフォールバックが受け持つ |
+| `renderJiya()`／`renderHanging()`——約物の詰め／ぶら下げ | ネイティブ`text-spacing-trim`は詰めのJSを置き換えられる。Safariは`hanging-punctuation`対応をうたうが、現状の実装はhan.cssでは実用にならないため、ぶら下げは全エンジンでJSを使う |
 | `renderEm()`／`renderElem()` | 純CSS——セマンティクスモジュール |
 | `renderDecoLine()` | `text-decoration-inset`＋CSS／JSの隣接行フォールバック |
 | `renderRuby()`／`substCombLigaWithPUA` | ネイティブ`ruby-position`＋注音フォントのGPOS。旧式`<rb>`／`<rtc>`マークアップは`transpileRuby()`でダウンレベル |

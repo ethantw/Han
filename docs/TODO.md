@@ -160,7 +160,9 @@
   既有三處 custom-property mode mapping 等 2/3 引擎後可遷移；`fonts.if.css`
   只保留研究樣本。字體角色不新增 dispatcher API；標準屬性 style query 即使
   可比較祖先 computed stack，也無法從相等 values 恢復 declaration provenance。
-- **原生 `hanging-punctuation` 佈線**——等 2/3 引擎出貨。
+- **原生 `hanging-punctuation` 佈線**——Safari 雖宣稱支援，目前實作實際
+  不可用。下一版 Safari 出貨後重新實測；只有實際效果通過 han.css 的懸掛
+  contract，且至少 2/3 引擎可用，auto path 才從 JS yield 給原生實作。
 - **偽斜體的中／德對照沒地方看了**（2026-08-28）。站①的信封降成浮水印
   之後，德文寄件人那一塊只剩紋理的濃度，不再是讀得出來的樣張——而
   「同一條規則、相反結果」（`:lang(zh|ja|ko)` 取消偽斜體、德文照舊斜著）

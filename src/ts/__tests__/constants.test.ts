@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import {
   CJK_PUNCT_RUN,
   HANGABLE_PUNCT,
+  PUNCT_DIVIDING_CHARS,
+  PUNCT_END_EXTRA,
   classifyPunctuation,
 } from '../line-adjustments/punctuation.ts'
 
@@ -21,8 +23,14 @@ test('classifyPunctuation: closing brackets get close + end', () => {
 })
 
 test('classifyPunctuation: sentence-ending punctuation gets end only', () => {
-  for (const ch of '︰．、，。：；？！ー') {
+  for (const ch of PUNCT_END_EXTRA.replaceAll(new RegExp(`[${PUNCT_DIVIDING_CHARS}]`, 'g'), '')) {
     assert.deepEqual(classifyPunctuation(ch), ['end'], `mis-classified "${ch}"`)
+  }
+})
+
+test('classifyPunctuation: GB dividing marks get end + dividing', () => {
+  for (const ch of PUNCT_DIVIDING_CHARS) {
+    assert.deepEqual(classifyPunctuation(ch), ['end', 'dividing'], `mis-classified "${ch}"`)
   }
 })
 

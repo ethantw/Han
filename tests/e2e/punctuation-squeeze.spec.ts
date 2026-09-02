@@ -58,3 +58,56 @@ test('vertical geometry passes on the JS fallback path', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-writing', 'vertical')
   await expect(page.locator('.Fail')).toHaveCount(0)
 })
+
+test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ page }) => {
+  const nativeTrim = await page.evaluate(() =>
+    CSS.supports('text-spacing-trim', 'trim-start'),
+  )
+  test.skip(nativeTrim, 'the regional JS fallback matrix applies only without native trim')
+
+  await page.locator('body').evaluate(async (body) => {
+    const { refinePunctuationWithMode } = await import('/han/han.js')
+    const host = document.createElement('div')
+    host.id = 'dividing-close-matrix'
+    host.lang = 'zh-Hant'
+    host.innerHTML = '<span>：」</span><span>；」</span><span>？》</span><span>！》</span>'
+    body.append(host)
+    for (const pair of host.querySelectorAll('span'))
+      refinePunctuationWithMode('compress')(pair)
+  })
+
+  const cases = [
+    ['MOE', 'horizontal-tb', false],
+    ['MOE', 'vertical-rl', false],
+    ['JIS', 'horizontal-tb', false],
+    ['JIS', 'vertical-rl', false],
+    ['GB', 'horizontal-tb', true],
+    ['GB', 'vertical-rl', false],
+    ['KLR', 'horizontal-tb', false],
+    ['KLR', 'vertical-rl', false],
+  ] as const
+
+  for (const [convention, writingMode, squeezes] of cases) {
+    await page.locator('#dividing-close-matrix').evaluate((host, config) => {
+      host.style.setProperty('--han-punctuation-hant', config.convention)
+      host.style.setProperty('--han-writing-mode', config.writingMode)
+      host.style.writingMode = config.writingMode
+    }, { convention, writingMode })
+
+    const spacings = await page
+      .locator('#dividing-close-matrix span > h-char:first-child')
+      .evaluateAll((chars) => chars.map((char) => {
+        const style = getComputedStyle(char)
+        return {
+          letterSpacing: style.letterSpacing,
+          fontSize: Number.parseFloat(style.fontSize),
+        }
+      }))
+    for (const { letterSpacing, fontSize } of spacings) {
+      if (squeezes)
+        expect(Number.parseFloat(letterSpacing) / fontSize, `${convention} ${writingMode}`).toBeCloseTo(-.5)
+      else
+        expect(letterSpacing, `${convention} ${writingMode}`).toBe('normal')
+    }
+  }
+})

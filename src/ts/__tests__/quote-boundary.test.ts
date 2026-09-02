@@ -44,7 +44,7 @@ test('auto: 。 ending a <q> is marked close-q (renders as 。」 — must not h
     // The colon is at the open boundary itself — 他說：「今天真好。」 is the
     // canonical shape, and `：「` is a genuine squeeze pair.
     '<p>他說'
-      + '<h-char data-punct="end" data-followed-by-quote="open-q">：</h-char>'
+      + '<h-char data-punct="end dividing" data-followed-by-quote="open-q">：</h-char>'
       + '<q>今天真好'
       + '<h-char data-punct="end hangable" data-followed-by-quote="close-q">'
       + '<h-layer>。</h-layer></h-char>'

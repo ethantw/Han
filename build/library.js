@@ -76,12 +76,21 @@ const CSS_BUNDLE_CONFIG = {
   loader: { '.woff2': 'file' },
   assetNames: '[name]',
 
-  sourcemap: 'external',
+  sourcemap: 'linked',
 }
 
 const MODULE_CSS_BUNDLE_CONFIG = {
   ...CSS_BUNDLE_CONFIG,
   entryPoints: MODULE_CSS_FILES,
+}
+
+/**
+ * Optional Zhuyin face for `han.basic.css` users. Build it separately because
+ * the full and fonts bundles emit the same `zhuyin.serif.woff2` asset.
+ */
+const ZHUYIN_CSS_BUNDLE_CONFIG = {
+  ...CSS_BUNDLE_CONFIG,
+  entryPoints: [{ in: 'src/css/fonts/zhuyin.css', out: 'han.zhuyin' }],
 }
 
 const TS_BUNDLE_CONFIG = {
@@ -94,7 +103,7 @@ const TS_BUNDLE_CONFIG = {
   format: 'esm',
   outdir: 'dist',
 
-  sourcemap: 'external',
+  sourcemap: 'linked',
 
   /**
    * `happy-dom` is hyperly's optional SSR peer; gated by a runtime
@@ -132,6 +141,7 @@ if (watch) {
   const ctxs = await Promise.all([
     esbuild.context({ ...CSS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...MODULE_CSS_BUNDLE_CONFIG, logLevel: 'info' }),
+    esbuild.context({ ...ZHUYIN_CSS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...TS_BUNDLE_CONFIG, logLevel: 'info' }),
     esbuild.context({ ...BROWSER_TS_BUNDLE_CONFIG, logLevel: 'info' }),
   ])
@@ -149,6 +159,12 @@ if (watch) {
     esbuild.build(MODULE_CSS_BUNDLE_CONFIG),
     esbuild.build({
       ...MODULE_CSS_BUNDLE_CONFIG,
+      minify: true,
+      outExtension: { '.css': '.min.css' },
+    }),
+    esbuild.build(ZHUYIN_CSS_BUNDLE_CONFIG),
+    esbuild.build({
+      ...ZHUYIN_CSS_BUNDLE_CONFIG,
       minify: true,
       outExtension: { '.css': '.min.css' },
     }),

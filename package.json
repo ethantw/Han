@@ -28,17 +28,18 @@
     "./styles/lines": "./dist/han.lines.css",
     "./styles/prose": "./dist/han.prose.css",
     "./styles/fonts": "./dist/han.fonts.css",
+    "./styles/zhuyin": "./dist/han.zhuyin.css",
     "./basic-styles": "./dist/han.basic.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
-    "!dist/**/*.map",
     "!dist/pass-sizes.json",
     "README.md",
     "README.zh-Hant.md",
     "README.ja.md",
     "README.ko.md",
+    "docs/api-reference.md",
     "LICENSE",
     "LICENSE-FONTS"
   ],

@@ -76,11 +76,13 @@ scope, the property is the switch. Style queries read **ancestors**, so set
 these on an ancestor (or `:root`) of the content you are targeting. Each
 module's page lists its full property table.
 
-### 3. Specificity is zero
+### 3. Public styles stay easy to override
 
-Every rule ships inside `:where()`, so its specificity is zero. Any rule of
-yours — even a bare element selector — overrides the framework; with `@layer`,
-module ordering is yours as well:
+Public defaults and semantic targets generally use zero-specificity `:where()`.
+Pseudo-elements retain their own type specificity, which an author targeting
+the same pseudo-element already matches; `<h-char>` / `<h-layer>` are private
+fallback markup. More importantly, all framework rules live in layers, so
+ordinary unlayered author CSS outranks them:
 
 ```css
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
@@ -92,8 +94,9 @@ The library is fully usable without it. The four modules' core features are
 pure CSS; `installFallbacks` only covers what engines do not yet do natively —
 the DOM-level fallback for punctuation compression and hanging, inter-script
 spacing where `text-autospace` is unimplemented, and adjacent-underline
-marking. Each transform is gated by `CSS.supports` and runtime probes, and
-steps aside as engines catch up.
+marking. Native compression and autospace are selected through feature checks
+and runtime probes. Hanging remains on the JS path on every engine because
+Safari's claimed native support is not currently usable for han.css.
 
 ```js
 import '@hanzi.pro/han.css/auto'                 // auto-install on DOMContentLoaded
@@ -125,11 +128,19 @@ system fonts.
 |------|----------|
 | `han.css` | The full set — four modules + JS-companion styles + bundled font assets (em-space, metrics, zhuyin faces) |
 | `han.{semantics,lines,prose,fonts}.css` | Per-module bundles, each in its own cascade layer; the four sum to the full set |
-| `han.basic.css` | Slim — semantics + lines + prose; no fonts module or JS-companion styles. It keeps the existing zhuyin font for ruby baseline calibration. |
+| `han.basic.css` | Slim — semantics + lines + prose; no fonts module or JS-companion styles; does not load the Zhuyin face |
+| `han.zhuyin.css` | Optional bundled Zhuyin `@font-face` for use with `han.basic.css` |
 | `han.js` | JS entry (ESM), named exports only, no auto-run |
-| `han.auto.js` | Auto-install entry; re-exports the full API |
+| `han.auto.js` | Auto-install entry; re-exports the main API |
 
 Every file ships a `.min` variant and a source map.
+
+When using `basic-styles`, pages with Zhuyin ruby may add the bundled face:
+
+```js
+import '@hanzi.pro/han.css/basic-styles'
+import '@hanzi.pro/han.css/styles/zhuyin'
+```
 
 ## Browser support
 
@@ -148,7 +159,7 @@ only what engines still lack. The dropped API, and what replaces it:
 |----|---------------|
 | `Han.init()` / `Han(ctx).render()` | Nothing to boot — the CSS applies on load; `installFallbacks()` (or the `/auto` entry) only if you want the JS fallbacks |
 | `renderHWS()` — inter-script spacing | Native `text-autospace`; `<h-iss>` fallback via `installFallbacks()` |
-| `renderJiya()` / `renderHanging()` — punctuation squeeze / hanging | Native `text-spacing-trim` / `hanging-punctuation`; JS fallback meanwhile |
+| `renderJiya()` / `renderHanging()` — punctuation squeeze / hanging | Native `text-spacing-trim` can replace squeeze JS. Safari claims `hanging-punctuation` support, but its current implementation is not usable for han.css, so hanging remains JS on every engine |
 | `renderEm()` / `renderElem()` | Pure CSS — the semantics module |
 | `renderDecoLine()` | `text-decoration-inset`, with CSS / JS adjacent-lines fallbacks |
 | `renderRuby()` / `substCombLigaWithPUA` | Native `ruby-position` + the zhuyin font's GPOS; `transpileRuby()` down-levels legacy `<rb>` / `<rtc>` markup |

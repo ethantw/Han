@@ -85,5 +85,8 @@ test('hashed sheets carry no sheet-relative url() — fonts must resolve from /a
     for (const [, , url] of css.matchAll(/url\((['"]?)(\/[^'")]+)\1\)/g)) {
       expect((await request.get(url)).status(), `${url} referenced by ${href}`).toBe(200)
     }
+    for (const [, url] of css.matchAll(/sourceMappingURL=(\/[^*\s]+)/g)) {
+      expect((await request.get(url)).status(), `${url} referenced by ${href}`).toBe(200)
+    }
   }
 })

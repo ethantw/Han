@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Standalone Zhuyin font bundle.** `han.zhuyin.css` (package export
+  `@hanzi.pro/han.css/styles/zhuyin`) ships the `Han Zhuyin Serif`
+  `@font-face` and its WOFF2 for pages that choose `han.basic.css`; the basic
+  bundle itself now keeps only the family placeholder and does not load that
+  face.
+
+- **Linked source maps in the npm package.** Every generated CSS and JS
+  bundle now points to its published `.map`, including minified and optional
+  entry points.
+
+- **Writing-aware GB dividing-mark compression.** The JS fallback now marks
+  `：；？！` separately and compresses them before a closing bracket only for
+  horizontal GB composition. Vertical GB, MOE, JIS, and KLR keep the pair
+  full-width; vertical GB users mirror `writing-mode` through
+  `--han-writing-mode`.
+
 - **`--han-zhuyin-ruby-position`** (`over | inter-character`, default
   `over`) — zhuyin ruby position is now configurable. `inter-character`
   (side-run bopomofo, the Taiwan-textbook convention, recommended for

@@ -10,7 +10,7 @@ import { isCodeLike } from '../helpers/skip.ts'
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 /** Subtype tokens emitted into `data-punct`. Combine with `consecutive`
  *  and `hangable` (added by the wrapper logic) for the full value set. */
-export type PunctSubtype = 'open' | 'close' | 'end' | 'middle'
+export type PunctSubtype = 'open' | 'close' | 'end' | 'middle' | 'dividing'
 export type RefineMode = 'auto' | 'compress' | 'hang' | 'none'
 
 export const isValidMode = (mode: any): mode is RefineMode =>
@@ -24,6 +24,9 @@ export const PUNCT_OPEN_CHARS   = '「『《〈（〔［｛【〖'
 export const PUNCT_CLOSE_CHARS  = '」』》〉）〕］｝】〗'
 /** Sentence-ending marks that are not closing brackets (句末點號). */
 export const PUNCT_END_EXTRA    = '︰．、，。：；？！ー'
+/** Dividing marks whose spacing before a close bracket is convention- and
+ * writing-mode-dependent (GB horizontal only). */
+export const PUNCT_DIVIDING_CHARS = '：；？！'
 /** Fullwidth middle symbols (中點與全形符號). */
 export const PUNCT_MIDDLE_CHARS = '·＼／－゠＆・＿'
 
@@ -212,6 +215,9 @@ export const classifyPunctuation = (ch: string): readonly PunctSubtype[] =>
 
   : PUNCT_CLOSE_CHARS.includes(ch)
   ? ['close', 'end']
+
+  : PUNCT_DIVIDING_CHARS.includes(ch)
+  ? ['end', 'dividing']
 
   : PUNCT_END_EXTRA.includes(ch)
   ? ['end']

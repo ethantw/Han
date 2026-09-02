@@ -1,6 +1,7 @@
 # han.css v4 — API Reference
 
-**Status: rc0 frozen surface.** Everything listed here is the v4.0.0-rc API.
+**Status: v4 release-candidate surface.** Everything listed here is part of
+the v4 RC API.
 Until 4.0.0 final, changes to anything in this file go through the changelog
 with a migration note — nothing listed here changes silently. Anything *not*
 listed here (build internals, `dist/pass-sizes.json`, source-file layout)
@@ -84,10 +85,12 @@ install.
 - Content in a language han.css doesn't target (`en`, …) is untouched — safe
   to install on multilingual sites.
 
-**Vertical zhuyin ruby.** Ordinary vertical text needs only `writing-mode`.
-If a vertical subtree contains `ruby.zhuyin` or `ruby.mps`, also mirror that
-value into `--han-writing-mode`: CSS cannot query the computed
-`writing-mode`, while the zhuyin treatment needs to choose its vertical form.
+**Writing-mode mirror.** Ordinary vertical text needs only `writing-mode`
+unless it contains Zhuyin ruby or uses GB punctuation compression. In either
+case, mirror that value into `--han-writing-mode`: CSS cannot query the
+computed `writing-mode`, while Zhuyin needs to choose its vertical form and
+the GB `：；？！` + closing-bracket seam must squeeze only in horizontal text.
+This includes vertical `zh-Hans`, whose default punctuation convention is GB.
 
 ```css
 .tategaki {
@@ -96,9 +99,10 @@ value into `--han-writing-mode`: CSS cannot query the computed
 }
 ```
 
-Pages without vertical zhuyin ruby can omit the custom property. Within
-vertical zhuyin, an omitted mirror is assumed horizontal, so tone marks and
-inter-character fallback geometry can render incorrectly. See §4.3.
+Pages without vertical Zhuyin ruby or vertical GB punctuation compression can
+omit the custom property. An omitted mirror is assumed horizontal, so the
+affected Zhuyin geometry or GB punctuation seam can render incorrectly. See
+§4.2–4.3.
 
 ## 2. Install & load order
 
@@ -115,6 +119,9 @@ import '@hanzi.pro/han.css/styles/semantics'
 import '@hanzi.pro/han.css/styles/lines'
 import '@hanzi.pro/han.css/styles/prose'
 import '@hanzi.pro/han.css/styles/fonts'
+// or use the lean bundle, optionally adding its Zhuyin face:
+import '@hanzi.pro/han.css/basic-styles'
+import '@hanzi.pro/han.css/styles/zhuyin'
 // optional JS enhancement (see §6):
 import '@hanzi.pro/han.css/auto'            // auto-install on DOMContentLoaded
 // or manual:
@@ -128,9 +135,15 @@ import { installFallbacks } from '@hanzi.pro/han.css'
 ```
 
 **Cascade layers.** The four modules live in `han-semantics` / `han-lines` /
-`han-prose` / `han-fonts`. Every selector is zero-specificity (`:where()`),
-so author CSS always wins even without layer management. For explicit
-ordering against your own layers, declare before importing:
+`han-prose` / `han-fonts`. Public defaults and semantic targets generally use
+zero-specificity `:where()` selectors. A `::before` or `::after` still
+contributes its own type specificity, but an author overriding that generated
+content necessarily targets the same pseudo-element and therefore matches at
+least that part; at equal specificity the later declaration wins. The
+`<h-char>` / `<h-layer>` selectors address private fallback markup rather than
+a public styling surface, though they remain overridable through the normal
+cascade. Unlayered author CSS outranks all four library layers. If the
+application also uses layers, declare their order before importing:
 
 ```css
 @layer han-semantics, han-lines, han-prose, han-fonts, app;
@@ -139,9 +152,10 @@ ordering against your own layers, declare before importing:
 When importing single-module bundles, import order = layer order;
 recommended: semantics → lines → prose → fonts (matches `han.css`).
 
-**Coexistence.** Zero-specificity selectors mean any reset/preflight loaded
-*after* han.css that sets e.g. `font-family` on `:root` at normal specificity
-overrides han.css. Load han.css after resets, before your own styles.
+**Coexistence.** An unlayered reset/preflight outranks layered han.css rules
+regardless of specificity; one that sets e.g. `font-family` on `:root` can
+therefore replace the library default. Load han.css after resets, before your
+own styles, or put the reset in a layer ordered before the han.css layers.
 
 **Scoping.** han.css installs document-wide by default. To exempt a subtree,
 use each feature's own off switch on an ancestor (see §4 toggles); there is
@@ -153,14 +167,15 @@ no single master kill-switch. The JS side scopes naturally:
 CSS (each also as `.min` with source map; figures measure compressed minified
 files):
 
-| File | Contents | gzip | Brotli |
+| File | Contents | gzip (KiB) | Brotli (KiB) |
 |---|---|---:|---:|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 4.2 KB | 3.7 KB |
-| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.6 KB | 1.4 KB |
-| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.3 KB | 1.2 KB |
-| `han.prose.css` | Prose module | 0.4 KB | 0.3 KB |
-| `han.fonts.css` | Fonts module + font assets | 1.6 KB | 1.4 KB |
-| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics and zhuyin assets required by ruby | 2.1 KB | 1.8 KB |
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 4.3 | 3.9 |
+| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.7 | 1.4 |
+| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.5 | 1.3 |
+| `han.prose.css` | Prose module | 0.5 | 0.4 |
+| `han.fonts.css` | Fonts module + font assets | 1.6 | 1.4 |
+| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics asset but not the Zhuyin face | 2.0 | 1.8 |
+| `han.zhuyin.css` | Optional `Han Zhuyin Serif` face for Zhuyin ruby in `han.basic.css` | 0.2 | 0.2 |
 
 Sum of the four single-module bundles ≡ `han.css`.
 
@@ -168,19 +183,20 @@ JS (ESM; `browser` condition in `exports` picks the `.browser` builds, which
 stub out the SSR DOM dependency — import from `@hanzi.pro/han.css/ssr`, which
 has no `browser` condition, whenever a bundler processes server-side code):
 
-| File | Contents | min+gzip |
+| File | Contents | min+gzip (KiB) |
 |---|---|---|
-| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 11.9 KB full, less shaken |
-| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.0 KB |
+| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 12.3 full, less shaken |
+| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.3 |
 
 Assets shipped alongside: `em-space.woff2` (420 B), `metrics.woff2` (408 B),
 `zhuyin.serif.woff2`.
-The CSS references them by relative URL — keep `dist/` file layout when
-self-hosting.
+`han.zhuyin.css` contains the Zhuyin `@font-face`; the full `han.css` and
+`han.fonts.css` already include it. These stylesheets reference assets by
+relative URL — keep the `dist/` file layout when self-hosting.
 
 ## 4. CSS custom properties
 
-49 public properties. Conventions:
+Public properties are grouped below. Conventions:
 
 - **Set control properties on an ancestor** (usually `:root`), never on the
   element you want them to affect. Mode switches are read via
@@ -190,7 +206,8 @@ self-hosting.
   don't have this restriction, but setting on an ancestor is always safe.)
 - Enum-valued control properties are registered via `@property` with a closed
   syntax — typos are rejected at parse time and the default is restored.
-- All zero-specificity: override any of this from ordinary author CSS.
+- Configuration defaults use zero-specificity selectors. Keep author
+  overrides unlayered, or place their layer after the han.css layers.
 
 ### 4.1 Module toggles
 
@@ -209,7 +226,7 @@ an off value (`--han-text-autospace: no-autospace`,
 | Property | Values | Default | Needs JS |
 |---|---|---|---|
 | `--han-text-autospace` | `normal \| insert \| replace \| strict \| no-autospace` | `normal` | `replace`/`strict` yes; `normal`/`insert` only on engines without native `text-autospace` |
-| `--han-punctuation-refinement` | `auto \| compress \| hang \| none` | `auto` | hang always (no shipped native `hanging-punctuation`); compress only where `text-spacing-trim` is missing |
+| `--han-punctuation-refinement` | `auto \| compress \| hang \| none` | `auto` | Hanging currently uses JS on every engine. Safari claims native `hanging-punctuation` support, but its current implementation is not usable for han.css; re-test when the next Safari version ships. Compression uses JS only where `text-spacing-trim` is missing |
 
 Value semantics:
 
@@ -219,14 +236,17 @@ Value semantics:
   CSS-Text-4 insert semantic; `replace` = JS consumes author-typed spaces
   and substitutes a fixed-width `<h-iss>`; `strict` = insert + replace, all
   JS, native suppressed; `no-autospace` = off.
-  Safari ≤ 18.x skips native autospace at seams containing inline elements;
-  an install-time probe (`detectAutospaceBoundaryBug`) detects this and
+  Safari can skip native autospace at seams containing inline elements; an
+  install-time probe (`detectAutospaceBoundaryBug`) detects the behavior and
   upgrades `normal` to the strict path automatically
   (root gets `--han-probe-autospace: broken`, internal).
 - `--han-punctuation-refinement` — which markup the JS fallback emits.
-  `auto` = fill only what the engine lacks (per `CSS.supports`); SSR emits
-  both compress + hang wrappers in one pass. `compress` / `hang` = force one
-  kind regardless of native. `none` = no JS punctuation work.
+  `auto` = use native `text-spacing-trim` for compression when available,
+  fill missing compression with JS, and always emit JS hanging; Safari's
+  positive `CSS.supports()` result for `hanging-punctuation` is deliberately
+  ignored because the current implementation is not usable. SSR emits both
+  compress + hang wrappers in one pass. `compress` / `hang` = force one kind
+  regardless of native support. `none` = no JS punctuation work.
   Native baseline set by the module: `text-spacing-trim: trim-start` on
   `:root`; `none`/`hang` flip it to `space-all` (the un-squeezed baseline).
 
@@ -248,14 +268,14 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-title-marks` | quote-char sequence | `《》〈〉` (ja/ko-Kore: re-pointed to `--han-quotes`) | `<cite>` bracket glyphs |
 | `--han-q-quotes` | `on \| off` | `on` | `<q>` quotation marks (引號): whether they are drawn at all. The switch half of the pair `--han-quotes` completes — glyphs there, on/off here. Prefer it over `q { quotes: none }`: only a queryable value keeps the hanging-punctuation pass in step (a mark ending a `<q>` stops hanging because a close bracket follows it) |
 | `--han-quotes` | quote-char sequence (outer pair, inner pair) | `“”‘’`; `en-GB`: `‘’“”`; zh/ja/ko-Kore: `「」『』`; zh-Hans & plain ko: `“”‘’` | `<q>` |
-| `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | Optional writing-mode hint for zhuyin ruby. Set it alongside `writing-mode` when a vertical subtree contains zhuyin; ordinary vertical text does not need it. Retires when arbitrary-property style queries ship |
+| `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | Mirror `writing-mode` on a vertical subtree when it contains Zhuyin ruby or uses GB punctuation compression (including default `zh-Hans`). Other vertical text does not need it. Retires when style queries can read the computed `writing-mode` property |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
 | `--han-ruby-zhuyin-font-size` | `<length>` | `.3em` | 注音字級；`em` 在 `<rt>` 上解析 |
 | `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對合成的 ideographic ink seat 的光學微調；正值向上、負值向下，以 rt-em 表示。此 seat 是 Han Metrics 校準的基準，非目前字體每個 glyph 的實際墨跡下緣。 |
 | `--han-ruby-zhuyin-over-gap` | `<length>` | `.25em` | 行間注與基文的 block-end 留白，以 rt-em 表示 |
 | `--han-ruby-zhuyin-letter-spacing` | `<length>` | `-.05em` | 注音 `<rt>` 本身的 letter-spacing |
 | `--han-underline-offset` | `<length>` | `.125em` | all underlined elements |
-| `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines (native path, Firefox only today) |
+| `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines; native path where supported |
 | `--han-adjacent-lines-skip-gap-fallback` | `<length>` | `.125em` | gap between adjacent underlined/struck elements on engines without `text-decoration-inset` |
 | `--han-structural-indent` | `<length>`, **one value** | `2em` | Shared start-edge grid for `<blockquote>`, `<figure>`, `<ol>`/`<ul>` and `.poem-like` (縮二字). Applied when the **parent** is CJK, not the element — a grid belongs to its container, so an `<ol lang="zh">` inside an English section keeps the UA's indent. Setting `0` keeps the rules and zeroes them; `--han-semantics: off` hands the UA's 40px back. Deliberately unregistered: a registered `<length>` absolutises where it is declared and the indent would stop scaling with font-size |
 | `--han-structural-indent-blockquote` | 1–2 `<length>` | falls back to the grid, symmetric | Per-element override. Its point is the language gate: an author's own `blockquote {…}` rule cannot inherit "only when the container is CJK" without restating it |
@@ -269,8 +289,9 @@ inherit` — synthesized skew died, author-intended italics survive), `<dfn>`
 bolder, `<i>`/`<var>` cursive family, zhuyin ruby font/orientation
 (`ruby.zhuyin` / `ruby.mps` — position IS configurable, see
 `--han-zhuyin-ruby-position` above; `inter-character` mode uses native
-`ruby-position: inter-character` on Safari 18.2+, absolute-positioning
-fallback elsewhere), document font-family (unconditional; declared at
+native `ruby-position: inter-character` where supported, with an
+absolute-positioning fallback elsewhere), document font-family
+(unconditional; declared at
 `:root`, `body`, and every `[lang]` boundary so per-locale stacks
 re-resolve at each language switch — see §4.4 role vars).
 
@@ -352,8 +373,7 @@ sample) and borrows the **sans** CJK slot (no monospace CJK webfont exists;
 Han glyphs at least follow the site's heritage choice). Not consumed by any
 library rule — style your own `code`/`pre` with it.
 
-**Role vars** (what elements actually consume; re-point these to switch the
-document between sans and serif):
+**Role vars** (resolved stacks consumed by `font-family`):
 
 | Property | Default | Used by |
 |---|---|---|
@@ -362,13 +382,31 @@ document between sans and serif):
 | `--han-font-accent` | `var(--han-cursive)` | `<i>`, `<var>`, prose blockquote |
 | `--han-font-zhuyin-serif` | `'Han Zhuyin Serif', cursive, serif` | zhuyin `<rt>` |
 
+With the fonts module, these roles are rebuilt on every element so their
+punctuation and CJK slots resolve for that element's locale. They are outputs,
+not inherited global mode switches: assigning `--han-font-default` only on
+`:root` does not re-point the roles that descendants rebuild for themselves.
+Choose a role through `font-family`, and include explicit CJK language
+boundaries when the choice is document-wide:
+
 ```css
 /* Mincho (serif) as the document default: */
-:root { --han-font-default: var(--han-serif); }
+:where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
+  font-family: var(--han-font-alternative);
+}
 ```
 
+Each matched boundary then resolves `--han-font-alternative` with its own
+MOE／GB／JIS／KLR and CJK slots. For a component-only role, target the component
+and its possible explicit `[lang]` descendants with the nested pattern in §1.
+Use the same selector shape with an author's literal stack when locale-specific
+han.css slots are not wanted.
+
 Without the fonts module (`han.basic.css`), semantics.css declares safe
-generic-only fallbacks for the composites and role vars on `:root`.
+generic-only fallbacks for the composites and role vars on `:root`. Its
+Zhuyin role still names `'Han Zhuyin Serif'` first, but does not load the face;
+add `han.zhuyin.css` (package export `styles/zhuyin`) to use the bundled font,
+or leave the name unresolved and let the following cursive stack render it.
 
 ### 4.5 Prose
 
@@ -440,10 +478,11 @@ it once against the newly-mounted container
 rendered *after* install is not watched — there is no MutationObserver; new
 content needs its own call.
 
-**SSR.** Every transform runs in Node against a string/DOM source and
-returns a `Hype` (from `hyperly`) that serializes back to HTML. In SSR,
-transforms run unconditionally (browser CSS decides at delivery time which
-wrappers become load-bearing). The browser build stubs the DOM dependency —
+**SSR.** The DOM refinement transforms exported from the main and `/ssr`
+entries run in Node against a string/DOM source and return a `Hype` (from
+`hyperly`) that serializes back to HTML. In SSR, those transforms run
+unconditionally (browser CSS decides at delivery time which wrappers become
+load-bearing). The browser build stubs the DOM dependency —
 bundle size stays JS-only.
 
 Import from **`@hanzi.pro/han.css/ssr`** in anything a bundler processes. The
@@ -453,12 +492,9 @@ stubbed DOM and a throw on first call. The `/ssr` subpath has no `browser`
 condition, so every resolver lands on the Node build. Plain `node` needs no
 special path; `/ssr` is simply always correct.
 
-Requires Node: the DOM is parsed by happy-dom, which needs
-`vm.Script.runInContext`. That rules out workerd today — Cloudflare Workers /
-Pages Functions throw `[unenv] Script.runInContext is not implemented yet!`,
-and the wall is in the dependency chain, not the framework, so a Next.js app on
-workerd hits it too. Vercel Functions (Node runtime) and ordinary Node servers
-are fine.
+Requires a Node-compatible runtime: happy-dom parses the DOM and depends on
+`vm.Script.runInContext`. Worker runtimes that do not provide that capability
+cannot run the SSR transforms; select the platform's Node runtime instead.
 
 **Where the "refined" stamp lands.** `[data-adjacent-lines-refined]` is read off
 an ANCESTOR, and hyperly serializes a fragment source as its container's
@@ -575,13 +611,13 @@ the fix).
 |---|---|---|---|---|
 | Pseudo-italic cancel, `<dfn>`/`<i>`/`<var>`, quotes, title marks | ✔ | — | — | — |
 | Emphasis marks `<em>` | ✔ | — | optional (`Diantenjeom Emphasis`) | `text-emphasis` (universal) |
-| Zhuyin ruby (`over` default / `inter-character` opt-in; tone-mark form auto via `salt`/`vert`) | ✔ | optional `transpileRuby` for `<rtc>`/tabular sources | bundled `zhuyin.serif.woff2` | inter-character mode: `ruby-position: inter-character` (Safari 18.2+; CSS fallback elsewhere); vertical needs the `--han-writing-mode` mirror |
-| Underline offset / adjacent-lines gap | ✔ | optional (`markAdjacentLines` refines) | — | `text-decoration-inset` (Firefox) |
+| Zhuyin ruby (`over` default / `inter-character` opt-in; tone-mark form auto via `salt`/`vert`) | ✔ | optional `transpileRuby` for `<rtc>`/tabular sources | included by `han.css`/`han.fonts.css`; optional `han.zhuyin.css` with basic | inter-character mode: native `ruby-position: inter-character` where supported, CSS fallback elsewhere; vertical needs the `--han-writing-mode` mirror |
+| Underline offset / adjacent-lines gap | ✔ | optional (`markAdjacentLines` refines) | — | `text-decoration-inset` where supported |
 | Prose block-axis rhythm (headings, blockquote font) | ✔ | — | — | — |
 | Structural indent grid (blockquote/figure/lists) | ✔ | — | — | — |
 | Inter-script spacing | ✔ (modern engines) | long-tail UAs + `replace`/`strict` modes + Safari seam bug | bundled em-space fonts (for JS path) | `text-autospace` (Chromium/WebKit/Gecko modern) |
 | Punctuation compress 擠壓 | ✔ (Chromium) | engines without `text-spacing-trim` | bundled em-space fonts (JS path) | `text-spacing-trim` |
-| Punctuation hanging 懸掛 | ✘ | **always JS** | bundled em-space fonts | none shipped (property exists in spec only) |
+| Punctuation hanging 懸掛 | Safari claims the native property, but its current implementation is not usable for han.css | **currently always JS** | bundled em-space fonts | `hanging-punctuation` (re-test in the next Safari release) |
 | Per-locale punctuation conventions | ✔ | — | Diantenjeom | — |
 | Heritage glyphs / Kaiti | ✔ | — | ziano slices (or `system-ja` escape hatch) | — |
 
@@ -589,7 +625,7 @@ Style queries (`@container style()`) gate most CSS behavior. han.css targets
 modern evergreen browsers; on older engines, unsupported features degrade
 individually per the matrix.
 
-## 9. Known limitations (rc0)
+## 9. Known limitations (v4 RC)
 
 - **Atomic inline boxes** (`inline-block`/`inline-flex`/`inline-grid`):
   Chrome treats the box start as a line start — `text-spacing-trim:
@@ -636,18 +672,21 @@ individually per the matrix.
   reads the container) while descendants — including the punctuation
   wrappers inside it — do see the new value, so the two halves disagree.
 - **`<rtc>`/tabular ruby**: not rendered by any engine; run `transpileRuby`.
-- **Vertical zhuyin without `--han-writing-mode`**: han.css cannot read the
-  computed `writing-mode` and assumes horizontal — tone marks get the
-  horizontal `salt` form and the inter-character fallback geometry doesn't
-  stand down. Ordinary vertical text is unaffected; when a vertical subtree
-  contains zhuyin ruby, declare the mirror described in §1.
+- **Vertical Zhuyin or GB punctuation without `--han-writing-mode`**: han.css
+  cannot read the computed `writing-mode` and assumes horizontal. Zhuyin tone
+  marks and inter-character fallback geometry can be wrong; GB
+  `：；？！` + closing-bracket seams can receive horizontal compression in
+  vertical text. Declare the mirror described in §1. Other vertical text is
+  unaffected.
 
 ## 10. Versioning & migration
 
 - rc period: **pin exact versions**. Breaking changes land only in rc bumps,
   each with a changelog migration note.
-- From v3: see `manual/src/docs/migration.md` (auto-install became opt-in
+- From v3: see the [migration guide](https://hanzi.pro/manual/migration.html)
+  (auto-install became opt-in
   via the `/auto` entry; `Han.init()` → `installFallbacks`; class-based
   toggles → `--han-*` custom properties; …).
-- The install Skill records its choices in a committed config file; re-run
-  it after upgrading to migrate a configuration.
+- The install Skill records its choices in a project-owned config file suitable
+  for version control; it stages or commits only when the user explicitly asks.
+  Re-run it after upgrading to migrate a configuration.

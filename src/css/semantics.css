@@ -248,7 +248,7 @@
   --han-font-default: var(--han-system-ui);
   --han-font-alternative: var(--han-serif);
   --han-font-accent: var(--han-cursive);
-  --han-font-zhuyin-serif: var(--han-cursive);
+  --han-font-zhuyin-serif: 'Han Zhuyin Serif', var(--han-cursive);
 
   /* Public zhuyin tuning surface. These remain unregistered: their em values
    * must resolve against each ruby/rt at the consumption site instead of

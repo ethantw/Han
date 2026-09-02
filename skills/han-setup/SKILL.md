@@ -22,7 +22,8 @@ description: >-
 You are configuring **han.css v4** (`@hanzi.pro/han.css`) into the user's
 project. Work detection-first: inspect the repo before asking anything, ask
 only what you cannot detect, and record every decision — with its reason —
-in a committed config file so this setup can be reviewed and re-run.
+in a project-owned config file suitable for version control so this setup can
+be reviewed and re-run. Stage or commit only when the user explicitly asks.
 
 **Single source of truth:** `docs/api-reference.md` in the han.css repo
 (also shipped in the npm package). Every variable name, value, default,
@@ -81,6 +82,14 @@ fires — doesn't count against the three):
   `over` there automatically. Vertical-only sites: skip the question, the
   `over` default is already correct.
 
+- **Basic bundle + Zhuyin ruby detected** — once `han.basic.css` is selected,
+  ask: "Load han.css's bundled Zhuyin font too?" If yes, also import
+  `@hanzi.pro/han.css/styles/zhuyin`; it ships the `@font-face` and WOFF2. If
+  no, do not import it: semantics keeps `'Han Zhuyin Serif'` as an unresolved
+  family placeholder and falls through to the configured cursive/system
+  stack. Do not ask this question when no Zhuyin content was detected.
+
+
 **Everything else gets a default, not a question.** Offer at the end:
 "I used recommended defaults for punctuation conventions, hanging, spacing
 and ruby — each is recorded with its reason in `han.config.css` and can be
@@ -96,7 +105,7 @@ Work through these only on request; otherwise apply the listed default:
 | Punctuation convention per locale | Library defaults (hant MOE / hans GB / ja JIS / ko KLR) — each locale's national/standing convention |
 | Punctuation compress + hang | `--han-punctuation-refinement: auto` — compress + hang where the convention warrants it (recommended); `compress` if the user dislikes hanging; never suggest hang-without-compress unprompted |
 | Inter-script spacing | `normal` (native first, JS long-tail). Offer `strict` only if detection found manual spaces the user wants consumed → then `replace`/`strict` + content cleanup |
-| JS enhancement | Include `/auto` when: punctuation hanging wanted (always JS), or Safari autospace coverage matters, or `<ruby>` tabular sources exist. Skip for pure semantic-styles use |
+| JS enhancement | Include `/auto` when punctuation hanging is wanted (Safari claims native support, but its current implementation is not usable for han.css, so hanging remains JS on every engine), or Safari autospace coverage matters. Tabular ruby is separate: `/auto` never runs `transpileRuby`; wire that named export explicitly when detected. Skip for pure semantic-styles use |
 | Heritage glyphs for hans/ja/ko | `off` (national-standard shapes differ; heritage forms are a deliberate aesthetic choice). Ask only if the user asked for a unified mixed-script look |
 | Kaiti / cursive layer | Library default (`webfont`) when webfonts chosen, `system` otherwise |
 | Zhuyin ruby | Position already handled by the detection-triggered question in Step 1 — nothing further here unless the user wants per-subtree mixing |
@@ -160,19 +169,20 @@ han.css keys everything off `:lang()`. Before any install:
 - Framework notes: Next.js → `<Html lang>` in `_document` or root layout;
   Astro → layout `<html lang>`; i18n routing → per-locale lang.
 
-**Writing-mode mirror (only for vertical zhuyin).** Ordinary vertical text
-does not need `--han-writing-mode`. When detection finds `ruby.zhuyin` or
-`ruby.mps` inside a `writing-mode: vertical-*` subtree, add the mirror on that
-same rule — copy-paste the value:
+**Writing-mode mirror.** Ordinary vertical text does not need
+`--han-writing-mode` unless the subtree contains Zhuyin ruby or uses GB
+punctuation compression. The latter includes vertical `zh-Hans`, whose default
+convention is GB. When either case is detected, add the mirror on the same rule
+as `writing-mode` — copy-paste the value:
 
 ```css
 writing-mode: vertical-rl;
 --han-writing-mode: vertical-rl;
 ```
 
-Do this unprompted only for a vertical subtree that contains zhuyin ruby, and
-tell the user why. Otherwise omit it; do not present the variable as a general
-vertical-writing requirement.
+Do this unprompted only for those two cases, and tell the user whether Zhuyin
+geometry or the horizontal-only GB punctuation seam requires it. Otherwise
+omit it; do not present the variable as a general vertical-writing requirement.
 
 ## Step 3 — Generate
 
@@ -182,16 +192,32 @@ locations, import style, formatting):
 1. **Install code** — npm import(s) or CDN `<link>`/`<script>` per
    detection. Module selection: all four modules by default; drop `fonts`
    only when the user explicitly wants their existing font stack untouched;
-   `han.basic.css` only for the minimal no-JS-no-fonts case. Load order:
+   `han.basic.css` only for the minimal no-JS-no-fonts case. With basic and
+   detected Zhuyin, include `styles/zhuyin` only when the user chose it in
+   Step 1; otherwise leave the family placeholder unresolved. Load order:
    after resets/preflight, before the user's own styles. If the project
    uses `@layer`, declare
    `@layer han-semantics, han-lines, han-prose, han-fonts, <their-layers>`.
-2. **`han.config.css`** — one committed file holding every `--han-*`
-   override, **each with a one-line comment: what it does + why this
+2. **`han.config.css`** — one project-owned file holding every `--han-*`
+   override and font-role selector, **each with a one-line comment: what it does + why this
    value was chosen** (detection fact or user answer). Values that equal
    the library default are omitted (note in the header that defaults rule)
    — except decisions the user explicitly made, which are written out even
    at default value so re-runs know they were deliberate.
+   Role vars are per-element resolved outputs, not inherited global switches:
+   never implement a serif-body choice as
+   `:root { --han-font-default: var(--han-serif) }`. For a serif choice emit:
+
+   ```css
+   :where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
+     font-family: var(--han-font-alternative);
+   }
+   ```
+
+   This deliberately includes every explicit CJK language boundary so each
+   one rebuilds its own locale serif stack. For the default sans choice, emit
+   no declaration and record the explicit decision in a comment. Component
+   roles use the optional nested boundary pattern from Step 2 instead.
    Header comment: han.css version, date, "generated by han-setup — re-run
    after upgrading to migrate".
 3. **Webfont links** (if chosen) — heritage slices + Diantenjeom, with
@@ -207,7 +233,8 @@ locations, import style, formatting):
    strings/DOM and return serializable output), skip client re-run on
    hydrated content. `transpileRuby` is NOT auto-run — wire it only if
    tabular ruby was detected.
-5. **Content fixes** (only with user confirmation, as a separate commit):
+5. **Content fixes** (only with user confirmation, as a separate change set;
+   commit only when explicitly requested):
    strip manual CJK↔Latin spaces (autospace replaces them) or switch to
    `replace` mode instead; flag U+3000 alignment padding.
 

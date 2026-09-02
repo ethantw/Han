@@ -147,6 +147,39 @@
     h-char[data-squeeze-next]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
       letter-spacing: -.5em;
     }
+
+    /* `：；？！` before a closing bracket is not a universal CJK squeeze seam.
+     * MOE, JIS and KLR keep the pair full-width in both writing modes; GB
+     * compresses it only in horizontal composition. Start from the safe
+     * no-squeeze form here, then let the convention-aware blocks below opt
+     * the single valid matrix cell back in. */
+    h-char[data-punct~="dividing"][data-squeeze-next="close"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
+      letter-spacing: normal;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hant: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next="close"]:lang(zh):not(:lang(zh-Hans)) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hans: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next="close"]:lang(zh-Hans) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ja: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next="close"]:lang(ja) {
+      letter-spacing: -.5em;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ko: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next="close"]:lang(ko-Kore) {
+      letter-spacing: -.5em;
+    }
   }
 
   /* When hanging is inactive, a wrapper that happens to carry the structural

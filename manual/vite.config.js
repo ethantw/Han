@@ -366,6 +366,7 @@ const FRAMEWORK_ASSETS = [
   'han.lines.css', 'han.lines.min.css',
   'han.prose.css', 'han.prose.min.css',
   'han.fonts.css', 'han.fonts.min.css',
+  'han.zhuyin.css', 'han.zhuyin.min.css',
   'han.js', 'han.min.js', 'han.auto.js', 'han.auto.min.js',
   // The addition ledger's measured figures — read at runtime by
   // home/ledger.js as the console's switches move (build/pass-sizes.js).
@@ -375,10 +376,14 @@ const FRAMEWORK_ASSETS = [
   'zhuyin.serif.woff2',
 ]
 
+const FRAMEWORK_ASSETS_WITH_MAPS = FRAMEWORK_ASSETS.flatMap((file) =>
+  /\.(?:css|js)$/.test(file) ? [file, `${file}.map`] : [file],
+)
+
 async function syncFramework() {
   await fs.mkdir(PUBLIC_HAN, { recursive: true })
 
-  for (const f of FRAMEWORK_ASSETS) {
+  for (const f of FRAMEWORK_ASSETS_WITH_MAPS) {
     const src = path.join(HAN_DIST, f)
     if (!existsSync(src)) continue
     await fs.copyFile(src, path.join(PUBLIC_HAN, f))
@@ -589,10 +594,15 @@ async function hashLinkedSheets() {
     // every relative url() to the sheet's original directory instead; the
     // fonts stay single copies at their plain, must-revalidate paths.
     const dir = path.posix.dirname(`/${rel}`)
-    const css = (await fs.readFile(src, 'utf-8')).replace(
-      /url\((['"]?)\.\/([^'")]+)\1\)/g,
-      (_, q, file) => `url(${q}${path.posix.join(dir, file)}${q})`,
-    )
+    const css = (await fs.readFile(src, 'utf-8'))
+      .replace(
+        /url\((['"]?)\.\/([^'")]+)\1\)/g,
+        (_, q, file) => `url(${q}${path.posix.join(dir, file)}${q})`,
+      )
+      .replace(
+        /\/\*# sourceMappingURL=([^*\s]+) \*\//g,
+        (_, file) => `/*# sourceMappingURL=${path.posix.join(dir, file)} */`,
+      )
     const hash = createHash('sha256').update(css).digest('hex').slice(0, 8)
     const name = path.basename(rel).replace(/\.css$/, `.${hash}.css`)
     await fs.writeFile(path.join(assetsDir, name), css)

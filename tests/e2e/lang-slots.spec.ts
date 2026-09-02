@@ -80,6 +80,25 @@ test('nested lang boundaries default locally unless the component reapplies its 
   )
 })
 
+test('document serif recipe reapplies the role and resolves every locale boundary', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots.html')
+  await page.addStyleTag({ content: `
+    :where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
+      font-family: var(--han-font-alternative);
+    }
+  ` })
+
+  const expected = [
+    ['hant', 'Diantenjeom Serif MOE'],
+    ['hans', 'Diantenjeom Serif GB'],
+    ['ja', 'Diantenjeom Serif JIS'],
+    ['ko', 'Diantenjeom Serif KLR'],
+  ] as const
+  for (const [id, family] of expected) {
+    await expect(page.locator(`#${id}`)).toHaveCSS('font-family', new RegExp(family))
+  }
+})
+
 test('basic bundle keeps the boundary contract without locale webfont slots', async ({ page }) => {
   await page.goto('/tests/e2e/fixtures/lang-slots-basic.html')
 
@@ -87,4 +106,16 @@ test('basic bundle keeps the boundary contract without locale webfont slots', as
   await expect(page.locator('#alternative-ja')).toHaveCSS('font-family', 'serif')
   await expect(page.locator('#author-ja'))
     .toHaveCSS('font-family', /Boundary Author Test.*serif/)
+})
+
+test('document serif recipe is portable to the basic bundle', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots-basic.html')
+  await page.addStyleTag({ content: `
+    :where(:root, body, [lang]):where(:lang(zh), :lang(ja), :lang(ko)) {
+      font-family: var(--han-font-alternative);
+    }
+  ` })
+
+  await expect(page.locator('body')).toHaveCSS('font-family', 'serif')
+  await expect(page.locator('#default-ja')).toHaveCSS('font-family', 'serif')
 })
