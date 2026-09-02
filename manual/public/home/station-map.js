@@ -1,5 +1,5 @@
 /**
- * Seven-station route map.
+ * Eight-station route map.
  *
  * The ordered links in home/station-map.html are the sole metadata source.
  * This module only derives current state from those links and their fragment
@@ -31,7 +31,7 @@ export const initStationMap = () => {
   const floatingConsole = matchMedia(FLOATING_CONSOLE)
   const initialHashIndex = entries.findIndex(({ $link }) => $link.hash === location.hash)
   let current = Math.max(0, initialHashIndex)
-  let waitingForFragment = initialHashIndex >= 0 && document.readyState !== 'complete'
+  let waitingForFragment = initialHashIndex >= 0
   const intersecting = new Set()
 
   const accessibleLabel = (open) => {
@@ -78,18 +78,29 @@ export const initStationMap = () => {
   document.querySelector('#console-collapsed')?.addEventListener('change', (event) => {
     if (floatingConsole.matches && event.target.checked) setOpen(false)
   })
+  // A history traversal or reload can restore an old pixel offset before the
+  // homepage fonts and preceding stations settle. Keep the native fragment as
+  // the authority, resolve its target on the next frame, then let the reading
+  // band take over again after that scroll has painted.
+  const restoreFragment = (index) => {
+    waitingForFragment = true
+    setCurrent(index)
+    requestAnimationFrame(() => {
+      entries[index].$station.scrollIntoView({ block: 'start' })
+      requestAnimationFrame(() => {
+        waitingForFragment = false
+        setCurrent(index)
+      })
+    })
+  }
   addEventListener('hashchange', () => {
     const index = entries.findIndex(({ $link }) => $link.hash === location.hash)
-    if (index >= 0) setCurrent(index)
+    if (index >= 0) restoreFragment(index)
   })
   if (waitingForFragment) {
-    // Fragment scrolling is applied during load, after DCL. Do not let the
-    // observer's initial "top of document" delivery overwrite that explicit
-    // route; restamp it once the browser has restored the anchor position.
-    addEventListener('load', () => {
-      waitingForFragment = false
-      setCurrent(initialHashIndex)
-    }, { once: true })
+    const restoreInitialFragment = () => restoreFragment(initialHashIndex)
+    if (document.readyState === 'complete') restoreInitialFragment()
+    else addEventListener('load', restoreInitialFragment, { once: true })
   }
 
   if (!('IntersectionObserver' in window)) return

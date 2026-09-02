@@ -63,6 +63,16 @@ const watch = async (page: Page, ms: number) => {
   return { moved, held, spread, quadMax }
 }
 
+test('the punctuation pill offers the four DTJ conventions without off', async ({ page }) => {
+  await ready(page)
+  const options = page.locator('.LeadForme input[name="lf-punct"]')
+
+  await expect(options).toHaveCount(4)
+  expect(await options.evaluateAll((inputs) => inputs.map(input => input.value)))
+    .toEqual(['jis', 'moe', 'gb', 'klr'])
+  await expect(page.locator('.LeadForme input[name="lf-punct"][value="off"]')).toHaveCount(0)
+})
+
 test('punctuation moves as one forme, not piece by piece', async ({ page }) => {
   await ready(page)
   // KLR → MOE: no 直排 squeeze either side, so the swap is font-only — the
@@ -109,7 +119,7 @@ test('the language pill re-sets the sentence and brings its home convention', as
   await page.locator('.LeadForme .Controls label', { hasText: '日' }).click()
   await page.waitForTimeout(5000)   // full re-set, one piece at a time
   await expect(page.locator('.LeadForme')).toHaveAttribute('data-lang', 'ja')
-  // punct follows the picked language's home convention (hant KLR → ja JIS)
+  // punct follows the picked language's home convention (hant MOE → ja JIS)
   await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'jis')
   const glyphs = await page.locator('.LeadForme').evaluate(($f) =>
     [...$f.querySelectorAll('text.g')].map((el) => el.textContent).join(''))
@@ -118,7 +128,7 @@ test('the language pill re-sets the sentence and brings its home convention', as
   // the reader's own punct override survives until the next language pick
   await page.locator('.LeadForme .Controls label', { hasText: '繁' }).click()
   await page.waitForTimeout(5000)
-  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'klr')
+  await expect(page.locator('.LeadForme')).toHaveAttribute('data-punct', 'moe')
 })
 
 test('direction is the one switch that sets one piece at a time', async ({ page }) => {

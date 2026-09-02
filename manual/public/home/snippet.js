@@ -1,5 +1,5 @@
 /**
- * Station④ snippet panel — the reference-code generator.
+ * Station⑧ snippet panel — the reference-code generator.
  *
  * The OUTPUT half of the old `configurator.js`, now a page-side
  * SUBSCRIBER: it listens for `<han-console>`'s `han-config-change` event
@@ -138,7 +138,7 @@ const createPmSelect = () => {
 /* ── 進場 ──
  * 訂閱 han-config-change（在 document 上聽——事件 composed 冒泡上來）；
  * ViewTabs / pm select 是本面板自有的 UI 狀態（config 不變時也可重繪）。
- * `$root` 預設 document——面板活在 station④（light DOM）。 */
+ * `$root` 預設 document——面板活在 station⑧（light DOM）。 */
 export const initSnippet = ($root = document) => {
   const $panes = $root.querySelector('[data-out-panes]')
   if (!$panes) return

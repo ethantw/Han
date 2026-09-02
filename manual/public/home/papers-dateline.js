@@ -20,7 +20,7 @@
  * write would flatten into plain prose.
  *
  * Also the one place that owns the date itself: `plus100()` is private,
- * and `plus100EraLine()` hands station⑥'s playground sample the same
+ * and `plus100EraLine()` hands station⑦'s playground sample the same
  * instant with all four eras (see its own note). Nobody adds a hundred
  * years twice.
  */

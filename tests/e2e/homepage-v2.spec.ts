@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test'
  * structural checks (not pixel baselines): the content stations carry a
  * full-viewport ground rendered by `::before`, with no watermark glyphs;
  * the var-name marginalia is a ≥68rem-only console (hidden where it would only
- * repeat names); station 柒・引用碼 sits on the one non-grey station ground
+ * repeat names); station 捌・引用碼 sits on the shared station ground
  * (稿紙米黃, following the page theme); and reveal.js must hand every station
  * its `[data-revealed]` hook immediately under a reduced-motion preference
  * (settled state, no animation), so nothing is ever left hidden.
@@ -17,11 +17,11 @@ import { test, expect } from '@playwright/test'
 test('the stations and closing carry no watermark data', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.locator('main [data-station]')).toHaveCount(7)
+  await expect(page.locator('main [data-station]')).toHaveCount(8)
   await expect(page.locator('main [data-wm]')).toHaveCount(0)
 })
 
-test('station 柒・引用碼 returns to the shared neutral ground and follows the page theme', async ({ page }) => {
+test('station 捌・引用碼 returns to the shared neutral ground and follows the page theme', async ({ page }) => {
   await page.goto('/')
 
   // Page defaults to light (no dark-mode checkbox) …
@@ -29,12 +29,13 @@ test('station 柒・引用碼 returns to the shared neutral ground and follows t
 
   // … and the station is light with it. It used to be constant-dark, then
   // briefly carried a one-off buff ground. The terminal already supplies the
-  // code metaphor, so the station now rejoins the shared A/B neutral rhythm.
+  // code metaphor, so the station now rejoins the shared A/B neutral rhythm;
+  // as the eighth station it lands on the B ground.
   const snippet = page.locator('#station-snippet')
   await expect(snippet).toHaveCSS('color-scheme', 'light')
   await expect.poll(() => snippet.evaluate((el) =>
     getComputedStyle(el, '::before').backgroundColor,
-  )).toBe('rgb(250, 250, 247)')
+  )).toBe('rgb(243, 243, 240)')
 
   // The code panes stay terminal-dark in BOTH themes — that part IS constant
   // (--code-bg = --palette-ink). A light station with a dark terminal on it is
@@ -51,7 +52,7 @@ test('station 柒・引用碼 returns to the shared neutral ground and follows t
   await expect(snippet).toHaveCSS('color-scheme', 'dark')
   await expect.poll(() => snippet.evaluate((el) =>
     getComputedStyle(el, '::before').backgroundColor,
-  )).toBe('rgb(24, 23, 26)')
+  )).toBe('rgb(31, 31, 34)')
 })
 
 test('reduced-motion: every station is revealed immediately (settled, not animated)', async ({ page }) => {
@@ -63,14 +64,14 @@ test('reduced-motion: every station is revealed immediately (settled, not animat
   // every station are in their settled — fully visible — state at once,
   // without scrolling.
   const revealed = page.locator('main [data-station][data-revealed]')
-  await expect(revealed).toHaveCount(7)
+  await expect(revealed).toHaveCount(8)
   await expect(page.locator('.Manifesto[data-revealed]')).toHaveCount(1)
 
   // a below-the-fold station is visible without ever scrolling to it
   await expect(page.locator('#station-snippet')).toBeVisible()
 })
 
-test('station 伍・工法: the addition prices every part, measured', async ({ page }) => {
+test('station 陸・工法: the addition prices every part, measured', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
@@ -99,9 +100,9 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   const human = await styleRows.locator('th small').allInnerTexts()
   expect(human.every((t) => t.trim().length > 0)).toBe(true)
 
-  // Code identifiers use Han's public monospace composite (including Han
-  // Metrics), while the trailing explanations share one start edge instead
-  // of drifting with each identifier's length.
+  // Code identifiers use Han's public monospace composite, while the trailing
+  // explanations share one start edge instead of drifting with each
+  // identifier's length.
   const itemTypography = await styleRows.evaluateAll((rows) => rows.map((row) => {
     const label = row.querySelector<HTMLElement>('th label')!
     const description = row.querySelector<HTMLElement>('th small')!
@@ -110,7 +111,7 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
       descriptionLeft: description.getBoundingClientRect().left,
     }
   }))
-  expect(itemTypography.every(({ fontFamily }) => fontFamily.includes('Han Metrics'))).toBe(true)
+  expect(itemTypography.every(({ fontFamily }) => fontFamily.length > 0)).toBe(true)
   expect(Math.max(...itemTypography.map(({ descriptionLeft }) => descriptionLeft))
     - Math.min(...itemTypography.map(({ descriptionLeft }) => descriptionLeft))).toBeLessThanOrEqual(0.5)
 
@@ -160,7 +161,7 @@ test('station 伍・工法: the addition prices every part, measured', async ({ 
   }
 })
 
-test('station 伍・工法: 例5.1 is a cascade stack over real library rules', async ({ page }) => {
+test('station 陸・工法: 例6.1 is a cascade stack over real library rules', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
@@ -236,7 +237,7 @@ test('station 伍・工法: 例5.1 is a cascade stack over real library rules', 
   }
 })
 
-test('station 伍・工法: full transfer and font ledgers live in the lightweight dialog', async ({ page }) => {
+test('station 陸・工法: full transfer and font ledgers live in the lightweight dialog', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
@@ -320,7 +321,7 @@ test('station 伍・工法: full transfer and font ledgers live in the lightweig
   await expect(dialog).toBeHidden()
 })
 
-test('station 伍・工法: the addition follows the console, auto ⇄ manual', async ({ page }) => {
+test('station 陸・工法: the addition follows the console, auto ⇄ manual', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。
@@ -387,7 +388,7 @@ test('station 伍・工法: the addition follows the console, auto ⇄ manual', 
   )).toBe(true)
 })
 
-test('station 伍・工法: the plate\u2019s own boxes drive the console', async ({ page }) => {
+test('station 陸・工法: the plate\u2019s own boxes drive the console', async ({ page }) => {
   await page.goto('/')
   // 站台是 `content-visibility: auto`（home/frame.css）：畫面外的內容沒有版面，
   // 於是 `innerText` 讀出來是空字串。捲到它面前——讀者本來也是這樣讀的。

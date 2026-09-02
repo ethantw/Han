@@ -1,4 +1,4 @@
-/** Native file-size dialog for station 伍. */
+/** Native file-size dialog for station 陸. */
 export const initSizeDialog = ($root = document) => {
   const $dialog = $root.querySelector('.SizeDialog')
   const $open = $root.querySelector('.OpenSizeDialog')

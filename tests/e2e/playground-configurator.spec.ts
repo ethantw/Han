@@ -7,7 +7,7 @@ import { test, expect, type Page } from '@playwright/test'
  * open a collapsed group before touching its controls),
  * the CSS lands on `:root` ＋ `body` — the same two rules the generated
  * snippet emits (there's no more boxed preview
- * `<article>`), and the output pane is station④'s ViewTabs
+ * `<article>`), and the output pane is station⑧'s ViewTabs
  * (`[data-pg-views]` / `[data-out-panes]`) — no "live preview" tab
  * anymore, since the whole page is the preview.
  *

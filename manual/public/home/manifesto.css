@@ -418,7 +418,7 @@
     padding: 0.625rem 0.875rem;
     font-family: var(--han-monospace);
     /* 碼一律不兩端對齊。`main` 是 justify（CJK 正文要的），而這是一行指令：
-       折行之後 justify 會去撐 token 之間的空隙，讀起來像被剪過（首頁站柒的
+       折行之後 justify 會去撐 token 之間的空隙，讀起來像被剪過（首頁站捌的
        `<pre>` 同一條防呆）。 */
     text-align: start;
     background: var(--ui-panel);

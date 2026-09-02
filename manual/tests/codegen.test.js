@@ -426,7 +426,7 @@ test('內嵌：legacyRuby on ＋ assets.hanJs → Blob 動態 import，呼叫 mo
 
 // ── 逐函式取捨（jsMode='manual'）────────────────────────────────────
 // 這裡改的是**體積**：勾了才 import，沒勾的交給打包器搖掉。所以測的是生成碼
-// 到底 import 了誰、呼叫了誰，以及 bitmask（站伍加法式的查表鍵）對不對。
+// 到底 import 了誰、呼叫了誰，以及 bitmask（站陸加法式的查表鍵）對不對。
 
 test('selectedPasses：auto 模式一律空；manual 依 fn 取捨，順序照 PASSES', () => {
   assert.deepEqual(selectedPasses(DEFAULTS), [])

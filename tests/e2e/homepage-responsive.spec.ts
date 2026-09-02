@@ -117,6 +117,53 @@ for (const viewport of viewports) {
   })
 }
 
+test('station IV keeps the full four-column newspapers at every width', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+
+  const station = page.locator('#station-prose')
+  await station.scrollIntoViewIfNeeded()
+  const newspapers = station.locator(':scope > .Prose > article.Dispatch')
+
+  await expect(newspapers).toHaveCount(2)
+  await expect(newspapers.locator(':scope > [data-prose]')).toHaveCount(2)
+  await expect(newspapers.locator('[data-prose="brief"], [data-prose="full"]')).toHaveCount(0)
+  await expect(newspapers.locator('p', { hasText: '【本報地月特派員　柳康豪　日內瓦─月城連線報導】' })).toHaveCount(2)
+  await expect(newspapers.locator('h1', { hasText: '太空電梯挖鼻屎引爆地月危機　二十場《世紀帝國》定勝負' })).toHaveCount(0)
+
+  const newspaperStyle = () => newspapers.first().evaluate((article) => {
+    const articleStyle = getComputedStyle(article)
+    const headStyle = getComputedStyle(article.querySelector('.PaperHead')!)
+    const rail = article.parentElement!
+    return {
+      fontSize: articleStyle.fontSize,
+      inlineSize: articleStyle.inlineSize,
+      columns: articleStyle.columnCount,
+      headSize: headStyle.fontSize,
+      railScrolls: rail.scrollWidth > rail.clientWidth + 1,
+    }
+  })
+
+  const narrow = await newspaperStyle()
+  expect(narrow).toMatchObject({
+    fontSize: '8px',
+    inlineSize: '768px',
+    columns: '4',
+    headSize: '20px',
+    railScrolls: true,
+  })
+
+  await page.setViewportSize({ width: 1440, height: 900 })
+  const wide = await newspaperStyle()
+  expect(wide).toMatchObject({
+    fontSize: narrow.fontSize,
+    inlineSize: narrow.inlineSize,
+    columns: narrow.columns,
+    headSize: narrow.headSize,
+  })
+})
+
 test('the narrow dash sequence keeps all three hand-offs visible', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 390, height: 844 })

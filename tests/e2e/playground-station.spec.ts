@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 
 /**
- * Station⑤ playground (user-content editor) e2e.
+ * Station⑦ playground (user-content editor) e2e.
  *
  * The station (`#station-playground`) hosts a `<textarea data-pg-src>`
  * (Code tab) whose Markdown/HTML is rendered — marked → DOMPurify →
@@ -34,7 +34,7 @@ const openGroupOf = (page: Page, cfgKey: string) =>
     .locator(`details.ControlGroup:not([open]):has([data-cfg-key="${cfgKey}"]) > summary`)
     .click()
 
-test.describe('station⑤ playground', () => {
+test.describe('station⑦ playground', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
     // Playground boots after the fonts gate opens (perf: its 190KB

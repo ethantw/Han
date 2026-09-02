@@ -283,7 +283,7 @@ main > section {
    `console-metrics.js` sets `main.dataset.writing`) ═══════════════
    Flips the WHOLE page vertical-rl — dramatic by design (owner
    request). Bounded block-size + horizontal scroll so it doesn't blow
-   out the viewport; station④'s interactive snippet panel stays
+   out the viewport; station⑧'s interactive snippet panel stays
    horizontal-tb inside it. */
 
 main[data-writing="vertical"] {
@@ -303,7 +303,7 @@ main[data-writing="vertical"] {
   #station-playground textarea {
     writing-mode: horizontal-tb;
   }
-  /* station⑤'s preview <article> deliberately stays vertical — it IS the
+  /* station⑦'s preview <article> deliberately stays vertical — it IS the
      content the 直排 switch is meant to typeset. */
 }
 

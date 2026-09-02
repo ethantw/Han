@@ -1,5 +1,5 @@
 /**
- * carousel.js — station 伍's selector ring (例5.1).
+ * carousel.js — station 陸's selector ring (例6.1).
  *
  * 式5.1 says「for ANY selector s」. A universal quantifier with one witness
  * beside it reads like a special case, so the example cycles through five real

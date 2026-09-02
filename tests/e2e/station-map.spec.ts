@@ -5,12 +5,13 @@ const stationIds = [
   'station-fonts',
   'station-lines',
   'station-prose',
+  'station-readings',
   'station-craft',
   'station-playground',
   'station-snippet',
 ]
 
-test.describe('seven-station route map', () => {
+test.describe('eight-station route map', () => {
   test('starts closed before JavaScript runs', async ({ browser }) => {
     const context = await browser.newContext({ javaScriptEnabled: false })
     const page = await context.newPage()
@@ -20,12 +21,12 @@ test.describe('seven-station route map', () => {
     await context.close()
   })
 
-  test('one ordered metadata list owns all seven native fragment links', async ({ page }) => {
+  test('one ordered metadata list owns all eight native fragment links', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('nav.StationMap')).toHaveCount(1)
     await expect(page.locator('div.StationMap')).toHaveCount(0)
     const links = page.locator('.List a')
-    await expect(links).toHaveCount(7)
+    await expect(links).toHaveCount(8)
     expect(await links.evaluateAll(els => els.map(el => el.getAttribute('href'))))
       .toEqual(stationIds.map(id => `#${id}`))
     for (const id of stationIds) await expect(page.locator(`#${id}`)).toHaveCount(1)
@@ -36,7 +37,7 @@ test.describe('seven-station route map', () => {
     await page.locator('#station-craft').evaluate(el => el.scrollIntoView())
     await expect(page.locator('.List a[href="#station-craft"]'))
       .toHaveAttribute('aria-current', 'location')
-    await expect(page.locator('.No')).toHaveText('七之五')
+    await expect(page.locator('.No')).toHaveText('八之六')
     await expect(page.locator('.Name')).toHaveText('工法')
   })
 
@@ -70,7 +71,7 @@ test.describe('seven-station route map', () => {
       const toggle = page.locator('.Current')
       const list = page.locator('.List')
       await expect(toggle).toBeVisible()
-      await expect(toggle.locator('.No')).toHaveText('七之一')
+      await expect(toggle.locator('.No')).toHaveText('八之一')
       await expect(toggle.locator('.Name')).toHaveText('語意')
       await expect(toggle).toHaveAttribute('aria-expanded', 'false')
       await expect(list).toBeHidden()
@@ -78,7 +79,7 @@ test.describe('seven-station route map', () => {
       await toggle.click()
       await expect(toggle).toHaveAttribute('aria-expanded', 'true')
       await expect(list).toBeVisible()
-      await expect(list.locator('small')).toHaveCount(7)
+      await expect(list.locator('small')).toHaveCount(8)
 
       await page.keyboard.press('Escape')
       await expect(list).toBeHidden()

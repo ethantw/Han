@@ -1,5 +1,5 @@
 /**
- * ledger.js — station 伍's addition ⇄ the console's switches.
+ * ledger.js — station 陸's addition ⇄ the console's switches.
  *
  * The plate is not decoration: it prices the build the reader is actually
  * configuring in the left column. Every row names the console key that ships

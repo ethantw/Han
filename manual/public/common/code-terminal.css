@@ -1,14 +1,14 @@
 @charset "UTF-8";
 
 /**
- * 終端機色的碼區塊 — 首頁站柒的 `figure.CodePane` 與 `demo/specimen.html` 的
+ * 終端機色的碼區塊 — 首頁站捌的 `figure.CodePane` 與 `demo/specimen.html` 的
  * 生成碼共用。
  *
  * 只管**兩件事**：黑底白字的盒，與 Highlight API 的六個 token 色。卡片自己的
  * chrome（圓角、卡緣、標籤列、複製鍵）留在各自的樣式表，因為那是版面，不是
  * 「碼長什麼樣」。
  *
- * 選擇器一律 `:where()`（零權重），所以站柒那邊要覆寫任何一條都不必加重量。
+ * 選擇器一律 `:where()`（零權重），所以站捌那邊要覆寫任何一條都不必加重量。
  * 色值帶字面 fallback：`specimen.html` 不載 variables.css，缺了語義 token 時
  * 仍須維持同一套終端機配色。
  *

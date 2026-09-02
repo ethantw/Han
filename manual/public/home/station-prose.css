@@ -204,28 +204,11 @@
  * paragraph→list and blockquote seams all belong to the han-prose layer.
  * Chrome only sets the frame and the type SCALE — never block margins,
  * which are exactly what the console's prose switch reflows. */
-/* 同一張卡裡兩份展品，寬窄各取一份——**由 CSS 決定，不由 JS**。
-   兩份都是編過的：刪減版用更少的段落展示同一組接縫（大標接次標、標題接段落、
-   段落接清單、段落接引文），全文則讓大螢幕看得出長文裡的節奏。這一站要看的是
-   段落的排法，不是這一篇寫了什麼，所以依寬度換文本沒有「讀者會看到另一篇」的
-   問題——換的是尺度，不是內容。 */
+/* 橫排、直排各自只保留同一份長稿。窄容器不再換成刪節稿：下方的 carousel
+   rail 本來就負責承接卡片超出的行內尺寸，長文因此在所有視窗都能完整展示。 */
 article.Dispatch {
-  > [data-prose="full"] {
-    display: none;
-  }
-
-  @container (inline-size >= 52rem) {
-    > [data-prose="brief"] {
-      display: none;
-    }
-
-    > [data-prose="full"] {
-      display: block;
-    }
-  }
-
-  /* Keep section headings with the copy that follows in both the brief and
-     full newspaper specimens, regardless of writing mode. */
+  /* Keep section headings with the copy that follows, regardless of writing
+     mode. */
   > [data-prose] :is(h1, h2, h3, h4, h5, h6) {
     break-after: avoid-column;
   }
@@ -315,43 +298,8 @@ article.Dispatch {
     }
   }
 
-  /* 疊起來之後各吃滿一行——但兩張卡的軸向相反，一條規則服務不了兩個行向。
-     卡刻意維持 0.75rem 雙欄的「整篇一眼」（那就是這一站的展品），要讀哪一段
-     交給放大鏡。 */
-  @container (inline-size < 52rem) {
-    & {
-      /* 再降一級。窄欄裡「整篇一眼」的價值更高，而讀得清楚這件事已經交給
-         放大鏡了——那正是它存在的理由。0.625rem 是字級階梯的最後一級。 */
-      font-size: 0.625rem;
-    }
-    &:not(.vertical) {
-      inline-size: min(100%, calc(var(--size) * 2));
-    }
-    /* 窄視窗一樣分欄。
-
-       這裡原本是另一條路：離開多欄、封頂塊軸、卡片自己縱捲——因為多欄盒的塊軸
-       一旦封頂，裝不下的內容不會溢出，而是**多裂出幾欄**，於是卡片裡多一條縱向
-       捲軸，跟頁面的縱捲打架。那條理由整個建立在「卡片要放得進窄站台」上，而
-       那個前提已經沒了：整條 `.Prose` 現在是可平移的長帶，卡片不必放得下，放
-       不下就往旁邊去。既然不必封頂，就不必離開多欄——直排的欄本來就是這張卡
-       要演的東西，窄視窗尤其不該只剩一欄。
-
-       `inline-size` 在這張卡上是欄長（物理高度），所以照樣明寫，不用百分比：
-       百分比要對父層的 auto 高度解析＝不定值，在這裡是靜默失效。 */
-    &.vertical {
-      inline-size: calc(var(--size) * 2);
-      column-count: 2;
-    }
-    /* 兩張卡都只剩兩欄（48em），報頭跟著收（見上面那道算式）。直排那張要連
-       `&.vertical` 一起寫：上面那條 `.vertical > .PaperHead` 比單寫 `>` 多一個
-       類別，不同層的 `@container` 贏不過它。 */
-    &,
-    &.vertical {
-      > .PaperHead {
-        font-size: 1.25em;
-      }
-    }
-  }
+  /* 卡片在所有容器尺寸都維持同一份四欄版式、8px 正文與 2.5em 報頭。
+     窄視窗只裁出 rail 的一段可見範圍，不再改造報紙本身。 */
   h1 {
     line-height: 1.5;
     column-span: all;

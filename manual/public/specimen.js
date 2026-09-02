@@ -7,7 +7,7 @@
  */
 import '/components/han-console.js'
 import { renderCDN } from '/home/codegen.js'
-// 首頁站柒同一支高亮器（Highlight API，不動 DOM——碼仍是純文字，複製得到原樣）
+// 首頁站捌同一支高亮器（Highlight API，不動 DOM——碼仍是純文字，複製得到原樣）
 import { highlightAll } from '/home/highlight.js'
 
 const CONSOLE_LANG = { 'zh-Hant': 'hant', 'zh-Hans': 'hans', ja: 'ja', ko: 'ko' }

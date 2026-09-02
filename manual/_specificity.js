@@ -1,5 +1,5 @@
 /**
- * Selector specificity, computed — station 伍's carousel prints a weight
+ * Selector specificity, computed — station 陸's carousel prints a weight
  * beside each selector, and a typed-in triple is exactly the kind of figure
  * that goes stale the first time somebody edits the selector next to it.
  *
@@ -120,5 +120,5 @@ export const specificity = (selector) => {
   return spec
 }
 
-/** `(0,2,2)` — the form station 伍 prints, matching the CSS spec's own. */
+/** `(0,2,2)` — the form station 陸 prints, matching the CSS spec's own. */
 export const formatSpecificity = (selector) => `(${specificity(selector).join(',')})`

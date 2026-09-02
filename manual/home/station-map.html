@@ -1,15 +1,15 @@
 <script type="text/x-i18n">
 {
   stationMapLabel: {
-    hant: '七站導覽', hans: '七站导览', en: 'Seven-station guide',
-    ja: '七つのステーション', ko: '일곱 정거장 안내',
+    hant: '八站導覽', hans: '八站导览', en: 'Eight-station guide',
+    ja: '八つのステーション', ko: '여덟 정거장 안내',
   },
   stationMapOpen: {
-    hant: '打開七站目錄', hans: '打开七站目录', en: 'Open station directory',
+    hant: '打開八站目錄', hans: '打开八站目录', en: 'Open station directory',
     ja: 'ステーション目次を開く', ko: '정거장 목차 열기',
   },
   stationMapClose: {
-    hant: '關閉七站目錄', hans: '关闭七站目录', en: 'Close station directory',
+    hant: '關閉八站目錄', hans: '关闭八站目录', en: 'Close station directory',
     ja: 'ステーション目次を閉じる', ko: '정거장 목차 닫기',
   },
   station1No: { hant: '壹', hans: '壹', en: 'I', ja: '一', ko: '1' },
@@ -19,13 +19,15 @@
   station5No: { hant: '伍', hans: '伍', en: 'V', ja: '五', ko: '5' },
   station6No: { hant: '陸', hans: '陆', en: 'VI', ja: '六', ko: '6' },
   station7No: { hant: '柒', hans: '柒', en: 'VII', ja: '七', ko: '7' },
-  station1Progress: { hant: '七之一', hans: '七之一', en: '1 of 7', ja: '七の一', ko: '7 중 1' },
-  station2Progress: { hant: '七之二', hans: '七之二', en: '2 of 7', ja: '七の二', ko: '7 중 2' },
-  station3Progress: { hant: '七之三', hans: '七之三', en: '3 of 7', ja: '七の三', ko: '7 중 3' },
-  station4Progress: { hant: '七之四', hans: '七之四', en: '4 of 7', ja: '七の四', ko: '7 중 4' },
-  station5Progress: { hant: '七之五', hans: '七之五', en: '5 of 7', ja: '七の五', ko: '7 중 5' },
-  station6Progress: { hant: '七之六', hans: '七之六', en: '6 of 7', ja: '七の六', ko: '7 중 6' },
-  station7Progress: { hant: '七之七', hans: '七之七', en: '7 of 7', ja: '七の七', ko: '7 중 7' },
+  station8No: { hant: '捌', hans: '捌', en: 'VIII', ja: '八', ko: '8' },
+  station1Progress: { hant: '八之一', hans: '八之一', en: '1 of 8', ja: '八の一', ko: '8 중 1' },
+  station2Progress: { hant: '八之二', hans: '八之二', en: '2 of 8', ja: '八の二', ko: '8 중 2' },
+  station3Progress: { hant: '八之三', hans: '八之三', en: '3 of 8', ja: '八の三', ko: '8 중 3' },
+  station4Progress: { hant: '八之四', hans: '八之四', en: '4 of 8', ja: '八の四', ko: '8 중 4' },
+  station5Progress: { hant: '八之五', hans: '八之五', en: '5 of 8', ja: '八の五', ko: '8 중 5' },
+  station6Progress: { hant: '八之六', hans: '八之六', en: '6 of 8', ja: '八の六', ko: '8 중 6' },
+  station7Progress: { hant: '八之七', hans: '八之七', en: '7 of 8', ja: '八の七', ko: '8 중 7' },
+  station8Progress: { hant: '八之八', hans: '八之八', en: '8 of 8', ja: '八の八', ko: '8 중 8' },
   station1Name: { hant: '語意', hans: '语意', en: 'Semantics', ja: 'セマンティクス', ko: '의미' },
   station1Task: {
     hant: '以語意HTML排出著重、專名與引文',
@@ -58,24 +60,32 @@
     ja: '完結した記事で段落のリズムを比べる',
     ko: '완결된 기사에서 단락 리듬을 비교',
   },
-  station5Name: { hant: '工法', hans: '工法', en: 'Architecture', ja: '工法', ko: '구조' },
+  station5Name: { hant: '標音', hans: '标音', en: 'Readings', ja: 'ルビ', ko: '읽기' },
   station5Task: {
+    hant: '比較閩南、國、日、韓讀音與直橫排ruby',
+    hans: '比较闽南、国、日、韩读音与直横排ruby',
+    en: 'Compare four reading systems in horizontal and vertical ruby',
+    ja: '四つの読みを横組み・縦組みのルビで比べる',
+    ko: '네 언어의 읽기를 가로쓰기와 세로쓰기 루비로 비교',
+  },
+  station6Name: { hant: '工法', hans: '工法', en: 'Architecture', ja: '工法', ko: '구조' },
+  station6Task: {
     hant: '驗證低權重、分層與可覆蓋性',
     hans: '验证低权重、分层与可覆盖性',
     en: 'Verify low specificity, cascade layers and easy overrides',
     ja: '低い詳細度・レイヤー・上書きのしやすさを検証',
     ko: '낮은 명시도·캐스케이드 레이어·덮어쓰기를 검증',
   },
-  station6Name: { hant: '試玩', hans: '试玩', en: 'Playground', ja: '試遊', ko: '놀이터' },
-  station6Task: {
+  station7Name: { hant: '試玩', hans: '试玩', en: 'Playground', ja: '試遊', ko: '놀이터' },
+  station7Task: {
     hant: '用自己的Markdown或HTML即時試排',
     hans: '用自己的Markdown或HTML即时试排',
     en: 'Typeset your own Markdown or HTML live',
     ja: '自分のMarkdownまたはHTMLをその場で組む',
     ko: '자신의 Markdown 또는 HTML을 즉시 조판',
   },
-  station7Name: { hant: '引用碼', hans: '引用码', en: 'Setup code', ja: '導入コード', ko: '인용 코드' },
-  station7Task: {
+  station8Name: { hant: '引用碼', hans: '引用码', en: 'Setup code', ja: '導入コード', ko: '인용 코드' },
+  station8Task: {
     hant: '依目前配置生成引用碼',
     hans: '依当前配置生成引用码',
     en: 'Generate setup code from the current configuration',
@@ -104,8 +114,9 @@
     <li><a href="#station-fonts" data-number="{{ station2No }}" data-progress="{{ station2Progress }}" data-name="{{ station2Name }}" data-summary="{{ station2Task }}"><b>{{ station2No }}</b><span>{{ station2Name }}</span><small>{{ station2Task }}</small></a></li>
     <li><a href="#station-lines" data-number="{{ station3No }}" data-progress="{{ station3Progress }}" data-name="{{ station3Name }}" data-summary="{{ station3Task }}"><b>{{ station3No }}</b><span>{{ station3Name }}</span><small>{{ station3Task }}</small></a></li>
     <li><a href="#station-prose" data-number="{{ station4No }}" data-progress="{{ station4Progress }}" data-name="{{ station4Name }}" data-summary="{{ station4Task }}"><b>{{ station4No }}</b><span>{{ station4Name }}</span><small>{{ station4Task }}</small></a></li>
-    <li><a href="#station-craft" data-number="{{ station5No }}" data-progress="{{ station5Progress }}" data-name="{{ station5Name }}" data-summary="{{ station5Task }}"><b>{{ station5No }}</b><span>{{ station5Name }}</span><small>{{ station5Task }}</small></a></li>
-    <li><a href="#station-playground" data-number="{{ station6No }}" data-progress="{{ station6Progress }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
-    <li><a href="#station-snippet" data-number="{{ station7No }}" data-progress="{{ station7Progress }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
+    <li><a href="#station-readings" data-number="{{ station5No }}" data-progress="{{ station5Progress }}" data-name="{{ station5Name }}" data-summary="{{ station5Task }}"><b>{{ station5No }}</b><span>{{ station5Name }}</span><small>{{ station5Task }}</small></a></li>
+    <li><a href="#station-craft" data-number="{{ station6No }}" data-progress="{{ station6Progress }}" data-name="{{ station6Name }}" data-summary="{{ station6Task }}"><b>{{ station6No }}</b><span>{{ station6Name }}</span><small>{{ station6Task }}</small></a></li>
+    <li><a href="#station-playground" data-number="{{ station7No }}" data-progress="{{ station7Progress }}" data-name="{{ station7Name }}" data-summary="{{ station7Task }}"><b>{{ station7No }}</b><span>{{ station7Name }}</span><small>{{ station7Task }}</small></a></li>
+    <li><a href="#station-snippet" data-number="{{ station8No }}" data-progress="{{ station8Progress }}" data-name="{{ station8Name }}" data-summary="{{ station8Task }}"><b>{{ station8No }}</b><span>{{ station8Name }}</span><small>{{ station8Task }}</small></a></li>
   </ol>
 </nav>

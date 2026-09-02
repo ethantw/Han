@@ -15,6 +15,8 @@ const MIME = {
   '.json': 'application/json; charset=utf-8',
   '.map':  'application/json; charset=utf-8',
   '.woff2': 'font/woff2',
+  '.mp3':  'audio/mpeg',
+  '.wav':  'audio/wav',
   '.svg':  'image/svg+xml',
 }
 

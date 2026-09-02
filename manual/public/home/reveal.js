@@ -35,8 +35,8 @@ const REVEAL_SELECTOR = '.Manifesto, [data-station], [data-reveal-at]'
    the TARGET, so a station taller than the viewport can never reach a
    fractional threshold at all. It read 0.1 until 2026-08-05, which meant
    that at 390px wide station①（17,075px tall, ratio ≤ 0.053）, station②
-   （0.071）and station⑦（0.029）never fired, and `[data-station] > * {
-   opacity: 0 }` stood forever — three of seven stations blank on a phone.
+   （0.071）and station⑧（0.029）never fired, and `[data-station] > * {
+   opacity: 0 }` stood forever — three of eight stations blank on a phone.
    The callback only ever asks `isIntersecting`, which is exactly what
    「a sliver」means, so 0 is also the honest spelling of the intent.
    (The same trap is already documented for `data-reveal-at` below, which

@@ -219,7 +219,7 @@ async function compressedSizeKb(file, compress) {
 }
 
 /**
- * Fill station 伍's cascade pairs with computed specificity: han.css's own
+ * Fill station 陸's cascade pairs with computed specificity: han.css's own
  * selector (`data-spec`) and the reader's overriding one (`data-mine-spec`),
  * plus the annotation line's two `<b>`s.
  *
@@ -309,7 +309,8 @@ const TAISOL_DIR = path.resolve(here, '..', '..', 'taisol')
 const HOME_SHARED = path.resolve(HOME_DIR, '_shared.html')
 const HOME_SECTIONS = [
   'station-map', 'manifesto', 'station-semantics', 'station-fonts', 'station-lines',
-  'station-prose', 'station-craft', 'station-playground', 'station-snippet', 'closing',
+  'station-prose', 'station-readings', 'station-craft', 'station-playground',
+  'station-snippet', 'closing',
 ]
 // The console is chrome, not a station — it sits OUTSIDE <main class="han">
 // (mounted into `<aside data-console-mount>`), so it stays out of
@@ -327,8 +328,6 @@ const PUNCTUATION_SQUEEZE_FILE = 'punctuation-squeeze.html'
 const PUNCTUATION_VISUAL_FILE = 'punctuation-visual.html'
 const PUNCTUATION_VISUAL_SCRIPT = 'punctuation-visual.js'
 const RUBY_ZHUYIN_CONFIG_FILE = 'ruby-zhuyin-config.html'
-const RUBY_READINGS_FILE = 'ruby-readings.html'
-const RUBY_READINGS_ASSETS = ['ruby-readings.css', 'ruby-readings.js']
 
 const md = new MarkdownIt({
   html: true,
@@ -1298,14 +1297,6 @@ async function renderShippedDemoPages() {
     renderDemoBrandPage(rubyZhuyin),
   )
   await Promise.all([
-    fs.copyFile(
-      path.join(DEMO_DIR, RUBY_READINGS_FILE),
-      path.join(outDir, RUBY_READINGS_FILE),
-    ),
-    ...RUBY_READINGS_ASSETS.map((file) => fs.copyFile(
-      path.join(DEMO_DIR, file),
-      path.join(outDir, file),
-    )),
     fs.writeFile(
       path.join(outDir, PUNCTUATION_VISUAL_FILE),
       renderPunctuationVisualPage(punctuationVisual),

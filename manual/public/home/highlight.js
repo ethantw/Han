@@ -1,5 +1,5 @@
 /**
- * Syntax highlighting for station④'s output panes, via the CSS Custom
+ * Syntax highlighting for station⑧'s output panes, via the CSS Custom
  * Highlight API (Baseline 2025: Chrome 105 / Safari 17.2 / Firefox 140).
  * No DOM mutation — each `<code>` stays a single pure-text node; we
  * register a Range per token under one Highlight per category and
@@ -51,7 +51,7 @@ const RULES = {
 
 const CATS = ['comment', 'string', 'keyword', 'attr', 'number', 'punct']
 
-// Language token → RULES key. station④'s panes carry the canonical name on
+// Language token → RULES key. station⑧'s panes carry the canonical name on
 // `pre[data-lang]`; markdown-it fences write a `language-XXX` class on the
 // <code> with looser aliases (ts/typescript, sh/console…). Anything unmapped
 // falls through to plain text.
@@ -126,7 +126,7 @@ const textNodesOf = (root) => {
 }
 
 // (Re)highlight every matching <code>. Ranges live in the shared Highlight
-// registries, so we clear them first — station④ rewrites every pane's text
+// registries, so we clear them first — station⑧ rewrites every pane's text
 // on each config change, which invalidates the old ranges; clearing +
 // re-tokenising keeps them in sync.
 export const highlightAll = (selector = 'pre > code') => {

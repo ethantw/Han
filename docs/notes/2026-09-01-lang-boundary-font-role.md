@@ -4,7 +4,7 @@
 
 **分支**：`v4/main-rewrite`
 
-**起點**：`manual/demo/ruby-readings.html` 的四語標題
+**起點**：首頁讀音站的四語標題
 
 ## 結論
 

@@ -84,7 +84,7 @@ export const initBrandGlyph = ($root = document) => {
   document.fonts?.ready.then(alignAll)
 
   /* Both passes above can land while a mark is inside a skipped subtree, and
-     then neither of them measures anything (see the guard) — station④'s five
+     then neither of them measures anything (see the guard) — station⑧'s five
      wordmarks are off screen at load by construction, and the hero's is too
      on any reload that restores a mid-page scroll. Measure again the first
      time each mark is genuinely on screen, which is also the first moment its

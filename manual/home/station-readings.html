@@ -1,0 +1,211 @@
+<script type="text/x-i18n">
+{
+  rrEyebrow: {
+    hant: '伍・標音', hans: '伍・标音', en: 'V・Readings',
+    ja: '伍・ルビ', ko: '伍・<ruby>讀音<rt>독음</rt></ruby>',
+  },
+  rrH2: {
+    hant: '一字，多層注文', hans: '一字，多层注文',
+    en: 'One character, layered readings', ja: '一字に、幾層ものルビ',
+    ko: '한 글자에 여러 겹의 <ruby>讀音<rt>독음</rt></ruby>',
+  },
+  rrLede: {
+    hant: '一個字，可以同時承載多方讀音與meta資訊。本節以閩南語方音、國語注音符號、假名和諺文，展示多層ruby如何循詞界與方位落位，並在橫排與直排之間保持易讀性。',
+    hans: '一个字，可以同时承载多方读音与meta信息。本节以闽南语方音、国语注音符号、假名和谚文，展示多层ruby如何循词界与方位落位，并在横排与直排之间保持易读性。',
+    en: 'One character can carry several readings and layers of metadata at once. Minnan and Mandarin Zhuyin, Japanese kana and Korean Hangul show how nested ruby follows word boundaries and placement while staying legible in horizontal and vertical type.',
+    ja: '一つの文字に、複数の読みとメタ情報を同時に載せられる。閩南語の方音、国語の注音符号、日本語の仮名、韓国語のハングルを使い、多層ルビが語境界と配置に沿って収まり、横組みでも縦組みでも読みやすさを保つ様子を示す。',
+    ko: '한 글자에 여러 언어의 읽기와 메타 정보를 함께 담을 수 있다。민난어 방음、국어 주음부호、일본어 가나、한국어 한글로 여러 겹의 루비가 낱말 경계와 위치에 맞춰 놓이고、가로쓰기와 세로쓰기에서 모두 읽기 쉬운 모습을 보인다。',
+  },
+  rrControlsLabel: {
+    hant: '切換捷報語言與排版方向', hans: '切换捷报语言与排版方向',
+    en: 'Change dispatch language and typesetting direction',
+    ja: '速報の言語と組方向を切り替える', ko: '속보 언어와 조판 방향 바꾸기',
+  },
+  rrLanguage: { hant: '語言', hans: '语言', en: 'Language', ja: '言語', ko: '언어' },
+  rrMinnan: { hant: '閩南語', hans: '闽南语', en: 'Minnan', ja: '閩南語', ko: '민난어' },
+  rrMandarin: { hant: '國語', hans: '国语', en: 'Mandarin', ja: '国語', ko: '국어' },
+  rrJapanese: { hant: '日文', hans: '日文', en: 'Japanese', ja: '日本語', ko: '일본어' },
+  rrKorean: { hant: '韓文', hans: '韩文', en: 'Korean', ja: '韓国語', ko: '한국어' },
+  rrDirection: { hant: '行向', hans: '行向', en: 'Direction', ja: '組方向', ko: '방향' },
+  rrHorizontal: { hant: '橫排', hans: '横排', en: 'Horizontal', ja: '横組み', ko: '가로쓰기' },
+  rrVertical: { hant: '直排', hans: '直排', en: 'Vertical', ja: '縦組み', ko: '세로쓰기' },
+  rrPosition: { hant: '注音位置', hans: '注音位置', en: 'Zhuyin position', ja: '注音位置', ko: '주음 위치' },
+  rrInterCharacter: { hant: '字間注', hans: '字间注', en: 'Beside', ja: '字間注', ko: '글자 사이' },
+  rrOver: { hant: '行間注', hans: '行间注', en: 'Over', ja: '行間注', ko: '행 사이' },
+  rrFontSize: { hant: '字級', hans: '字号', en: 'Size', ja: '文字サイズ', ko: '글자 크기' },
+  rrNavLabel: {
+    hant: '移動讀音樣張', hans: '移动读音样张', en: 'Move through the reading specimens',
+    ja: '読みの見本を移動', ko: '읽기 견본 이동',
+  },
+  rrPrevious: {
+    hant: '向前移動讀音樣張', hans: '向前移动读音样张', en: 'Previous reading specimen',
+    ja: '前の読み見本へ', ko: '이전 읽기 견본',
+  },
+  rrNext: {
+    hant: '向後移動讀音樣張', hans: '向后移动读音样张', en: 'Next reading specimen',
+    ja: '次の読み見本へ', ko: '다음 읽기 견본',
+  },
+  rrRailLabel: {
+    hant: '可橫向捲動的數字公報與元素材料清單', hans: '可横向滚动的数字公报与元素材料清单',
+    en: 'Scrollable dispatch and element-material list',
+    ja: '横スクロールできる数字速報と元素材料一覧', ko: '가로로 스크롤할 수 있는 숫자 속보와 원소 재료 목록',
+  },
+}
+</script>
+<!-- Station V・Readings — one authored ruby source, four reading systems. -->
+<section id="station-readings" class="ReadingStation" data-station="readings">
+    <hgroup>
+      <p>{{ rrEyebrow }}</p>
+      <h2>{{ rrH2 }}</h2>
+    </hgroup>
+    <p>{{ rrLede }}</p>
+
+    <svg class="Sky" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <marker id="barnard-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+        </marker>
+        <path id="barnard-orbit-outer" d="M620 215a310 128 0 1 0 620 0a310 128 0 1 0-620 0" />
+        <path id="barnard-orbit-middle" d="M700 215a230 95 0 1 0 460 0a230 95 0 1 0-460 0" />
+        <path id="barnard-orbit-inner" d="M780 215a150 62 0 1 0 300 0a150 62 0 1 0-300 0" />
+      </defs>
+      <g class="Grid">
+        <path d="M90 94H1360M60 256H1390M110 470H1340" />
+        <path d="M240 24V590M720 10V610M1160 30V584" />
+      </g>
+      <g class="Orbit">
+        <path d="M1330 70C1170 88 1065 133 930 215S650 395 378 530" marker-end="url(#barnard-arrow)" />
+      </g>
+      <g class="ScriptOrbits">
+        <g class="ScriptOrbit BopomofoTrack" data-orbit-path="#barnard-orbit-outer" data-orbit-duration="120" data-orbit-glyphs="ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㆠㆡㆣㆤㆥㆦㆧㆩ"></g>
+        <g class="ScriptOrbit KatakanaTrack" data-orbit-path="#barnard-orbit-middle" data-orbit-duration="96" data-orbit-glyphs="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"></g>
+        <g class="ScriptOrbit HangulTrack" data-orbit-path="#barnard-orbit-inner" data-orbit-duration="72" data-orbit-glyphs="가나다라마바사아자차카타파하거너더러머버서어저처"></g>
+      </g>
+      <g class="HunminStar" data-star-text="國之語音異乎中國與文字不相流通故愚民有所欲言而終不得伸其情者多矣予爲此憫然新制二十八字欲使人人易習便於日用耳"></g>
+      <g class="Stars">
+        <circle cx="170" cy="150" r="2" /><circle cx="350" cy="82" r="3" />
+        <circle cx="525" cy="320" r="2" /><circle cx="1180" cy="385" r="2.5" />
+        <circle cx="1290" cy="525" r="2" /><circle cx="780" cy="525" r="1.5" />
+      </g>
+    </svg>
+
+    <form class="Switches" aria-label="{{ rrControlsLabel }}">
+      <fieldset aria-labelledby="reading-language-label">
+        <span id="reading-language-label">{{ rrLanguage }}</span>
+        <label><input type="radio" name="reading-mode" value="minnan" checked> {{ rrMinnan }}</label>
+        <label><input type="radio" name="reading-mode" value="mandarin"> {{ rrMandarin }}</label>
+        <label><input type="radio" name="reading-mode" value="japanese"> {{ rrJapanese }}</label>
+        <label><input type="radio" name="reading-mode" value="korean"> {{ rrKorean }}</label>
+      </fieldset>
+      <fieldset aria-labelledby="reading-direction-label">
+        <span id="reading-direction-label">{{ rrDirection }}</span>
+        <label><input type="radio" name="writing-mode" value="horizontal" checked> {{ rrHorizontal }}</label>
+        <label><input type="radio" name="writing-mode" value="vertical"> {{ rrVertical }}</label>
+      </fieldset>
+      <fieldset aria-labelledby="reading-position-label">
+        <span id="reading-position-label">{{ rrPosition }}</span>
+        <label><input type="radio" name="annotation-position" value="inter-character" checked> {{ rrInterCharacter }}</label>
+        <label><input type="radio" name="annotation-position" value="over"> {{ rrOver }}</label>
+      </fieldset>
+      <fieldset class="FontSize" aria-labelledby="reading-font-size-label">
+        <span id="reading-font-size-label">{{ rrFontSize }}</span>
+        <input id="reading-font-size" type="range" name="font-size" min="12" max="48" step="2" value="16" aria-labelledby="reading-font-size-label">
+        <output for="reading-font-size">16px</output>
+      </fieldset>
+    </form>
+
+    <nav aria-label="{{ rrNavLabel }}">
+      <button type="button" name="scroll" value="previous">{{ rrPrevious }}</button>
+      <button type="button" name="scroll" value="next">{{ rrNext }}</button>
+    </nav>
+
+    <div class="Rail" tabindex="0" aria-label="{{ rrRailLabel }}">
+      <article aria-labelledby="story-title">
+        <header>
+          <div id="story-title">
+            <h2 lang="zh-nan-Hant-TW"><ruby class="zhuyin">巴<rt lang="nan-Bopo-TW" aria-label="Pa">ㄅㄚ</rt></ruby><ruby class="zhuyin">星<rt lang="nan-Bopo-TW" aria-label="tshenn">ㄑㆥ</rt></ruby><ruby class="zhuyin">採<rt lang="nan-Bopo-TW" aria-label="tshái">ㄘㄞˋ</rt></ruby><ruby class="zhuyin">礦<rt lang="nan-Bopo-TW" aria-label="khòng">ㄎㆲ˪</rt></ruby><ruby class="zhuyin">告<rt lang="nan-Bopo-TW" aria-label="kò">ㄍㄜ˪</rt></ruby><ruby class="zhuyin">捷<rt lang="nan-Bopo-TW" aria-label="tsia̍t">ㄗㄧㄚㆵ̇</rt></ruby><span class="SpeechOnly">。</span><br><ruby class="zhuyin">超<rt lang="nan-Bopo-TW" aria-label="tshiau">ㄑㄧㄠ</rt></ruby><ruby class="zhuyin">導<rt lang="nan-Bopo-TW" aria-label="tō">ㄉㄜ˫</rt></ruby><ruby class="zhuyin">磁<rt lang="nan-Bopo-TW" aria-label="tsû">ㄗㄨˊ</rt></ruby><ruby class="zhuyin">噴<rt lang="nan-Bopo-TW" aria-label="phùn">ㄆㄨㄣ˪</rt></ruby><ruby class="zhuyin">嘴<rt lang="nan-Bopo-TW" aria-label="tshuì">ㄘㄨㄧ˪</rt></ruby><ruby class="zhuyin">有<rt lang="nan-Bopo-TW" aria-label="ū">ㄨ˫</rt></ruby><ruby class="zhuyin">望<rt lang="nan-Bopo-TW" aria-label="bāng">ㆠㄤ˫</rt></ruby><ruby class="zhuyin">成<rt lang="nan-Bopo-TW" aria-label="sîng">ㄒㄧㄥˊ</rt></ruby><ruby class="zhuyin">真<rt lang="nan-Bopo-TW" aria-label="tsin">ㄐㄧㄣ</rt></ruby><span class="SpeechOnly">。</span></h2>
+            <h2 lang="zh-Hant-TW" hidden><ruby class="zhuyin">巴<rt lang="zh-Bopo-TW">ㄅㄚ</rt></ruby><ruby class="zhuyin">星<rt lang="zh-Bopo-TW">ㄒㄧㄥ</rt></ruby><ruby class="zhuyin">採<rt lang="zh-Bopo-TW">ㄘㄞˇ</rt></ruby><ruby class="zhuyin">礦<rt lang="zh-Bopo-TW">ㄎㄨㄤˋ</rt></ruby><ruby class="zhuyin">告<rt lang="zh-Bopo-TW">ㄍㄠˋ</rt></ruby><ruby class="zhuyin">捷<rt lang="zh-Bopo-TW">ㄐㄧㄝˊ</rt></ruby><span class="SpeechOnly">。</span><br><ruby class="zhuyin">超<rt lang="zh-Bopo-TW">ㄔㄠ</rt></ruby><ruby class="zhuyin">導<rt lang="zh-Bopo-TW">ㄉㄠˇ</rt></ruby><ruby class="zhuyin">磁<rt lang="zh-Bopo-TW">ㄘˊ</rt></ruby><ruby class="zhuyin">噴<rt lang="zh-Bopo-TW">ㄆㄣ</rt></ruby><ruby class="zhuyin">嘴<rt lang="zh-Bopo-TW">ㄗㄨㄟˇ</rt></ruby><ruby class="zhuyin">有<rt lang="zh-Bopo-TW">ㄧㄡˇ</rt></ruby><ruby class="zhuyin">望<rt lang="zh-Bopo-TW">ㄨㄤˋ</rt></ruby><ruby class="zhuyin">成<rt lang="zh-Bopo-TW">ㄔㄥˊ</rt></ruby><ruby class="zhuyin">真<rt lang="zh-Bopo-TW">ㄓㄣ</rt></ruby><span class="SpeechOnly">。</span></h2>
+            <h2 lang="ja" hidden>バーナード<ruby>星<rt lang="ja-Kana">せい</rt></ruby><ruby>採鉱<rt lang="ja-Kana">さいこう</rt></ruby><ruby>成功<rt lang="ja-Kana">せいこう</rt></ruby><span class="SpeechOnly">。</span><br><ruby>超伝導<rt lang="ja-Kana">ちょうでんどう</rt></ruby><ruby>磁気<rt lang="ja-Kana">じき</rt></ruby>ノズル<ruby>実現<rt lang="ja-Kana">じつげん</rt></ruby>へ<span class="SpeechOnly">。</span></h2>
+            <h2 lang="ko" hidden>바너드<ruby>성<rt lang="ko-Hani">星</rt></ruby> <ruby>채광<rt lang="ko-Hani">採鑛</rt></ruby> <ruby>성공<rt lang="ko-Hani">成功</rt></ruby><span class="SpeechOnly">。</span><br><ruby>초전도<rt lang="ko-Hani">超傳導</rt></ruby> <ruby>자기<rt lang="ko-Hani">磁氣</rt></ruby> 노즐 <ruby>실현<rt lang="ko-Hani">實現</rt></ruby> 눈앞<span class="SpeechOnly">。</span></h2>
+          </div>
+          <button type="button" name="speak" value="story">讀全篇捷報</button>
+        </header>
+
+        <div class="Dispatch" lang="zh-nan-Hant-TW" aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p><ruby><ruby class="zhuyin">半<rt lang="nan-Bopo-TW">ㄅㄨㆩ˫</rt></ruby><ruby class="zhuyin">世<rt lang="nan-Bopo-TW">ㄙㆤ˪</rt></ruby><ruby class="zhuyin">紀<rt lang="nan-Bopo-TW">ㄍㄧˋ</rt></ruby><rt lang="nan-Latn-TW">puànn sè-kí</rt></ruby><ruby><ruby class="zhuyin">前<rt lang="nan-Bopo-TW">ㄗㄧㄥˊ</rt></ruby><rt lang="nan-Latn-TW">tsîng</rt></ruby><ruby><ruby class="zhuyin">拄<rt lang="nan-Bopo-TW">ㄉㄨˋ</rt></ruby><ruby class="zhuyin">仔<rt lang="nan-Bopo-TW">ㄚˋ</rt></ruby><rt lang="nan-Latn-TW">tú-á</rt></ruby><ruby><ruby class="zhuyin">出<rt lang="nan-Bopo-TW">ㄘㄨㆵ</rt></ruby><ruby class="zhuyin">航<rt lang="nan-Bopo-TW">ㄏㄤˊ</rt></ruby><rt lang="nan-Latn-TW">tshut-hâng</rt></ruby><ruby><ruby class="zhuyin">的<rt lang="nan-Bopo-TW">ㆤˊ</rt></ruby><rt lang="nan-Latn-TW">ê</rt></ruby><ruby><ruby class="zhuyin">喜<rt lang="nan-Bopo-TW">ㄏㄧˋ</rt></ruby><ruby class="zhuyin">馬<rt lang="nan-Bopo-TW">ㄇㄚˋ</rt></ruby><ruby class="zhuyin">拉<rt lang="nan-Bopo-TW">ㄌㄚㆷ̇</rt></ruby><ruby class="zhuyin">雅<rt lang="nan-Bopo-TW">ㆣㄚˋ</rt></ruby><rt lang="nan-Latn-TW">Hí-má-la̍h-ngá</rt></ruby><ruby><ruby class="zhuyin">球<rt lang="nan-Bopo-TW">ㄍㄧㄨˊ</rt></ruby><ruby class="zhuyin">際<rt lang="nan-Bopo-TW">ㄗㆤ˪</rt></ruby><rt lang="nan-Latn-TW">kiû-tsè</rt></ruby><ruby><ruby class="zhuyin">採<rt lang="nan-Bopo-TW">ㄘㄞˋ</rt></ruby><ruby class="zhuyin">礦<rt lang="nan-Bopo-TW">ㄎㆲ˪</rt></ruby><rt lang="nan-Latn-TW">tshái-khòng</rt></ruby><ruby><ruby class="zhuyin">軍<rt lang="nan-Bopo-TW">ㄍㄨㄣ</rt></ruby><ruby class="zhuyin">團<rt lang="nan-Bopo-TW">ㄊㄨㄢˊ</rt></ruby><rt lang="nan-Latn-TW">kun-thuân</rt></ruby><ruby><em class="Identifier"><ruby class="zhuyin">一<rt lang="nan-Bopo-TW">ㄧㆵ</rt></ruby><ruby class="zhuyin">六<rt lang="nan-Bopo-TW">ㄌㄧㆦㆻ̇</rt></ruby><ruby class="zhuyin">八<rt lang="nan-Bopo-TW">ㄅㆤㆷ</rt></ruby><ruby class="zhuyin">七<rt lang="nan-Bopo-TW">ㄑㄧㆵ</rt></ruby></em><rt lang="nan-Latn-TW">it-lio̍k-peh-tshit</rt></ruby><ruby><ruby class="zhuyin">師<rt lang="nan-Bopo-TW">ㄙㄨ</rt></ruby><rt lang="nan-Latn-TW">su</rt></ruby><ruby><ruby class="zhuyin">第<rt lang="nan-Bopo-TW">ㄉㆤ˫</rt></ruby><rt lang="nan-Latn-TW">tē</rt></ruby><ruby><em class="Identifier"><ruby class="zhuyin">十<rt lang="nan-Bopo-TW">ㄒㄧㆴ̇</rt></ruby></em><rt lang="nan-Latn-TW">si̍p</rt></ruby><ruby><ruby class="zhuyin">艦<rt lang="nan-Bopo-TW">ㄌㄚㆬ˫</rt></ruby><ruby class="zhuyin">隻<rt lang="nan-Bopo-TW">ㄗㄧㄚㆷ</rt></ruby><rt lang="nan-Latn-TW">lām-tsiah</rt></ruby>，<ruby><ruby class="zhuyin">佇<rt lang="nan-Bopo-TW">ㄉㄧ˫</rt></ruby><rt lang="nan-Latn-TW">tī</rt></ruby><ruby><ruby class="zhuyin">巴<rt lang="nan-Bopo-TW">ㄅㄚ</rt></ruby><ruby class="zhuyin">納<rt lang="nan-Bopo-TW">ㄋㄚㆴ̇</rt></ruby><ruby class="zhuyin">德<rt lang="nan-Bopo-TW">ㄉㄧㆻ̇</rt></ruby><rt lang="nan-Latn-TW">Pa-na̍p-tik</rt></ruby><ruby><ruby class="zhuyin">星<rt lang="nan-Bopo-TW">ㄑㆥ</rt></ruby><ruby class="zhuyin">系<rt lang="nan-Bopo-TW">ㄏㆤ˫</rt></ruby><rt lang="nan-Latn-TW">tshenn-hē</rt></ruby><ruby><ruby class="zhuyin">傳<rt lang="nan-Bopo-TW">ㄊㄨㄢˊ</rt></ruby><ruby class="zhuyin">來<rt lang="nan-Bopo-TW">ㄌㄞˊ</rt></ruby><rt lang="nan-Latn-TW">thuân-lâi</rt></ruby><ruby><ruby class="zhuyin">捷<rt lang="nan-Bopo-TW">ㄗㄧㄚㆵ̇</rt></ruby><ruby class="zhuyin">報<rt lang="nan-Bopo-TW">ㄅㄜ˪</rt></ruby><rt lang="nan-Latn-TW">tsia̍t-pò</rt></ruby>；<ruby><ruby class="zhuyin">閣<rt lang="nan-Bopo-TW">ㄍㆦㆷ</rt></ruby><ruby class="zhuyin">過<rt lang="nan-Bopo-TW">ㄍㄨㆤ˪</rt></ruby><rt lang="nan-Latn-TW">koh kuè</rt></ruby><ruby><ruby class="zhuyin">百<rt lang="nan-Bopo-TW">ㄅㄚㆷ</rt></ruby><ruby class="zhuyin">冬<rt lang="nan-Bopo-TW">ㄉㄤ</rt></ruby><rt lang="nan-Latn-TW">pah tang</rt></ruby>，<ruby><ruby class="zhuyin">欲<rt lang="nan-Bopo-TW">ㄅㆤㆷ</rt></ruby><rt lang="nan-Latn-TW">beh</rt></ruby><ruby><ruby class="zhuyin">替<rt lang="nan-Bopo-TW">ㄊㆤ˪</rt></ruby><rt lang="nan-Latn-TW">thè</rt></ruby><ruby><ruby class="zhuyin">地<rt lang="nan-Bopo-TW">ㄉㆤ˫</rt></ruby><ruby class="zhuyin">球<rt lang="nan-Bopo-TW">ㄍㄧㄨˊ</rt></ruby><rt lang="nan-Latn-TW">tē-kiû</rt></ruby><ruby><ruby class="zhuyin">佮<rt lang="nan-Bopo-TW">ㄍㄚㆷ</rt></ruby><rt lang="nan-Latn-TW">kah</rt></ruby><ruby><ruby class="zhuyin">太<rt lang="nan-Bopo-TW">ㄊㄞ˪</rt></ruby><ruby class="zhuyin">陽<rt lang="nan-Bopo-TW">ㄧㆲˊ</rt></ruby><ruby class="zhuyin">系<rt lang="nan-Bopo-TW">ㄏㆤ˫</rt></ruby><rt lang="nan-Latn-TW">thài-iông-hē</rt></ruby><ruby><ruby class="zhuyin">載<rt lang="nan-Bopo-TW">ㄗㄞ˪</rt></ruby><ruby class="zhuyin">轉<rt lang="nan-Bopo-TW">ㄉㄫˋ</rt></ruby><ruby class="zhuyin">來<rt lang="nan-Bopo-TW">ㄌㄞˊ</rt></ruby><rt lang="nan-Latn-TW">tsài tńg-lâi</rt></ruby><ruby><em class="Cargo"><ruby class="zhuyin">十<rt lang="nan-Bopo-TW">ㄗㄚㆴ̇</rt></ruby></em><rt lang="nan-Latn-TW">tsa̍p</rt></ruby><ruby><em class="Cargo"><ruby class="zhuyin">垓<rt lang="nan-Bopo-TW">ㄍㄞ</rt></ruby></em><rt lang="nan-Latn-TW">kai</rt></ruby><ruby><em class="Cargo"><ruby class="zhuyin">噸<rt lang="nan-Bopo-TW">ㄉㆲ˪</rt></ruby></em><rt lang="nan-Latn-TW">tòng</rt></ruby><ruby><ruby class="zhuyin">的<rt lang="nan-Bopo-TW">ㆤˊ</rt></ruby><rt lang="nan-Latn-TW">ê</rt></ruby><ruby><ruby class="zhuyin">稀<rt lang="nan-Bopo-TW">ㄏㄧ</rt></ruby><ruby class="zhuyin">有<rt lang="nan-Bopo-TW">ㄧㄨ˫</rt></ruby><rt lang="nan-Latn-TW">hi-iú</rt></ruby><ruby><ruby class="zhuyin">元<rt lang="nan-Bopo-TW">ㄍㄨㄢˊ</rt></ruby><ruby class="zhuyin">素<rt lang="nan-Bopo-TW">ㄙㆦ˪</rt></ruby><rt lang="nan-Latn-TW">guân-sòo</rt></ruby>，<span class="HorizontalOnly"><ruby><ruby class="zhuyin">如<rt lang="nan-Bopo-TW">ㆡㄨˊ</rt></ruby><ruby class="zhuyin">右<rt lang="nan-Bopo-TW">ㄧㄨ˫</rt></ruby><rt lang="nan-Latn-TW">jû-iū</rt></ruby></span><span class="VerticalOnly"><ruby><ruby class="zhuyin">如<rt lang="nan-Bopo-TW">ㆡㄨˊ</rt></ruby><ruby class="zhuyin">左<rt lang="nan-Bopo-TW">ㄗㄜˋ</rt></ruby><rt lang="nan-Latn-TW">jû-tsó</rt></ruby></span>：</p>
+          <p><ruby><ruby class="zhuyin">這<rt lang="nan-Bopo-TW">ㄐㄧㆵ</rt></ruby><rt lang="nan-Latn-TW">tsit</rt></ruby><ruby><ruby class="zhuyin">批<rt lang="nan-Bopo-TW">ㄆㄨㆤ</rt></ruby><rt lang="nan-Latn-TW">phue</rt></ruby><ruby><ruby class="zhuyin">材<rt lang="nan-Bopo-TW">ㄗㄞˊ</rt></ruby><ruby class="zhuyin">料<rt lang="nan-Bopo-TW">ㄌㄧㄠ˫</rt></ruby><rt lang="nan-Latn-TW">tsâi-liāu</rt></ruby><ruby><ruby class="zhuyin">會<rt lang="nan-Bopo-TW">ㆤ˫</rt></ruby><rt lang="nan-Latn-TW">ē</rt></ruby><ruby><ruby class="zhuyin">予<rt lang="nan-Bopo-TW">ㄏㆦ˫</rt></ruby><rt lang="nan-Latn-TW">hōo</rt></ruby><ruby><ruby class="zhuyin">地<rt lang="nan-Bopo-TW">ㄉㆤ˫</rt></ruby><ruby class="zhuyin">球<rt lang="nan-Bopo-TW">ㄍㄧㄨˊ</rt></ruby><rt lang="nan-Latn-TW">tē-kiû</rt></ruby><ruby><ruby class="zhuyin">佮<rt lang="nan-Bopo-TW">ㄍㄚㆷ</rt></ruby><rt lang="nan-Latn-TW">kah</rt></ruby><ruby><ruby class="zhuyin">太<rt lang="nan-Bopo-TW">ㄊㄞ˪</rt></ruby><ruby class="zhuyin">陽<rt lang="nan-Bopo-TW">ㄧㆲˊ</rt></ruby><ruby class="zhuyin">系<rt lang="nan-Bopo-TW">ㄏㆤ˫</rt></ruby><rt lang="nan-Latn-TW">thài-iông-hē</rt></ruby><ruby><ruby class="zhuyin">有<rt lang="nan-Bopo-TW">ㄨ˫</rt></ruby><rt lang="nan-Latn-TW">ū</rt></ruby><ruby><ruby class="zhuyin">機<rt lang="nan-Bopo-TW">ㄍㄧ</rt></ruby><ruby class="zhuyin">會<rt lang="nan-Bopo-TW">ㄏㄨㆤ˫</rt></ruby><rt lang="nan-Latn-TW">ki-huē</rt></ruby><ruby><ruby class="zhuyin">共<rt lang="nan-Bopo-TW">ㄍㄚ˫</rt></ruby><rt lang="nan-Latn-TW">kā</rt></ruby><ruby><ruby class="zhuyin">電<rt lang="nan-Bopo-TW">ㄉㄧㄢ˫</rt></ruby><ruby class="zhuyin">磁<rt lang="nan-Bopo-TW">ㄗㄨˊ</rt></ruby><rt lang="nan-Latn-TW">tiān-tsû</rt></ruby><ruby><ruby class="zhuyin">囚<rt lang="nan-Bopo-TW">ㄑㄧㄨˊ</rt></ruby><ruby class="zhuyin">籠<rt lang="nan-Bopo-TW">ㄌㆲˊ</rt></ruby><rt lang="nan-Latn-TW">tshiû-lông</rt></ruby><ruby><ruby class="zhuyin">超<rt lang="nan-Bopo-TW">ㄑㄧㄠ</rt></ruby><ruby class="zhuyin">導<rt lang="nan-Bopo-TW">ㄉㄜ˫</rt></ruby><rt lang="nan-Latn-TW">tshiau-tō</rt></ruby><ruby><ruby class="zhuyin">磁<rt lang="nan-Bopo-TW">ㄗㄨˊ</rt></ruby><ruby class="zhuyin">喉<rt lang="nan-Bopo-TW">ㄠˊ</rt></ruby><rt lang="nan-Latn-TW">tsû-âu</rt></ruby><ruby><ruby class="zhuyin">熱<rt lang="nan-Bopo-TW">ㄖㄨㄚㆵ̇</rt></ruby><ruby class="zhuyin">盾<rt lang="nan-Bopo-TW">ㄉㄨㄣ˫</rt></ruby><rt lang="nan-Latn-TW">jua̍t-tūn</rt></ruby><ruby><ruby class="zhuyin">佮<rt lang="nan-Bopo-TW">ㄍㄚㆷ</rt></ruby><rt lang="nan-Latn-TW">kah</rt></ruby><ruby><ruby class="zhuyin">偵<rt lang="nan-Bopo-TW">ㄐㄧㄥ</rt></ruby><ruby class="zhuyin">測<rt lang="nan-Bopo-TW">ㄑㄧㆻ</rt></ruby><ruby class="zhuyin">器<rt lang="nan-Bopo-TW">ㄎㄧ˪</rt></ruby><rt lang="nan-Latn-TW">tsing-tshik-khì</rt></ruby>，<ruby><ruby class="zhuyin">對<rt lang="nan-Bopo-TW">ㄉㄨㄧ˪</rt></ruby><rt lang="nan-Latn-TW">tuì</rt></ruby><ruby><ruby class="zhuyin">圖<rt lang="nan-Bopo-TW">ㄉㆦˊ</rt></ruby><ruby class="zhuyin">紙<rt lang="nan-Bopo-TW">ㄗㄨㄚˋ</rt></ruby><rt lang="nan-Latn-TW">tôo-tsuá</rt></ruby><ruby><ruby class="zhuyin">搬<rt lang="nan-Bopo-TW">ㄅㄨㄢ</rt></ruby><ruby class="zhuyin">入<rt lang="nan-Bopo-TW">ㄖㄧㆴ̇</rt></ruby><rt lang="nan-Latn-TW">puann-ji̍p</rt></ruby><ruby><ruby class="zhuyin">深<rt lang="nan-Bopo-TW">ㄑㄧㆬ</rt></ruby><ruby class="zhuyin">空<rt lang="nan-Bopo-TW">ㄎㆲ</rt></ruby><rt lang="nan-Latn-TW">tshim-khong</rt></ruby><ruby><ruby class="zhuyin">船<rt lang="nan-Bopo-TW">ㄗㄨㄣˊ</rt></ruby><ruby class="zhuyin">塢<rt lang="nan-Bopo-TW">ㄜ</rt></ruby><rt lang="nan-Latn-TW">tsûn-oo</rt></ruby>。</p>
+          <small>十垓噸約是地球質量的六分之一，球際公報的會計部門拒絕對這个數字負責。</small>
+        </div>
+
+        <div class="Dispatch" lang="zh-Hant-TW" hidden aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p><ruby><ruby class="zhuyin">半<rt lang="zh-Bopo-TW">ㄅㄢˋ</rt></ruby><ruby class="zhuyin">世<rt lang="zh-Bopo-TW">ㄕˋ</rt></ruby><ruby class="zhuyin">紀<rt lang="zh-Bopo-TW">ㄐㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">bàn shìjì</rt></ruby><ruby><ruby class="zhuyin">前<rt lang="zh-Bopo-TW">ㄑㄧㄢˊ</rt></ruby><rt lang="zh-Latn-pinyin">qián</rt></ruby><ruby><ruby class="zhuyin">甫<rt lang="zh-Bopo-TW">ㄈㄨˇ</rt></ruby><rt lang="zh-Latn-pinyin">fǔ</rt></ruby><ruby><ruby class="zhuyin">出<rt lang="zh-Bopo-TW">ㄔㄨ</rt></ruby><ruby class="zhuyin">航<rt lang="zh-Bopo-TW">ㄏㄤˊ</rt></ruby><rt lang="zh-Latn-pinyin">chūháng</rt></ruby><ruby><ruby class="zhuyin">的<rt lang="zh-Bopo-TW">˙ㄉㄜ</rt></ruby><rt lang="zh-Latn-pinyin">de</rt></ruby><ruby><ruby class="zhuyin">喜<rt lang="zh-Bopo-TW">ㄒㄧˇ</rt></ruby><ruby class="zhuyin">馬<rt lang="zh-Bopo-TW">ㄇㄚˇ</rt></ruby><ruby class="zhuyin">拉<rt lang="zh-Bopo-TW">ㄌㄚ</rt></ruby><ruby class="zhuyin">雅<rt lang="zh-Bopo-TW">ㄧㄚˇ</rt></ruby><rt lang="zh-Latn-pinyin">Xǐmǎlāyǎ</rt></ruby><ruby><ruby class="zhuyin">球<rt lang="zh-Bopo-TW">ㄑㄧㄡˊ</rt></ruby><ruby class="zhuyin">際<rt lang="zh-Bopo-TW">ㄐㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">qiújì</rt></ruby><ruby><ruby class="zhuyin">採<rt lang="zh-Bopo-TW">ㄘㄞˇ</rt></ruby><ruby class="zhuyin">礦<rt lang="zh-Bopo-TW">ㄎㄨㄤˋ</rt></ruby><rt lang="zh-Latn-pinyin">cǎikuàng</rt></ruby><ruby><ruby class="zhuyin">軍<rt lang="zh-Bopo-TW">ㄐㄩㄣ</rt></ruby><ruby class="zhuyin">團<rt lang="zh-Bopo-TW">ㄊㄨㄢˊ</rt></ruby><rt lang="zh-Latn-pinyin">jūntuán</rt></ruby><ruby><em class="Identifier"><ruby class="zhuyin">一<rt lang="zh-Bopo-TW">ㄧ</rt></ruby><ruby class="zhuyin">六<rt lang="zh-Bopo-TW">ㄌㄧㄡˋ</rt></ruby><ruby class="zhuyin">八<rt lang="zh-Bopo-TW">ㄅㄚ</rt></ruby><ruby class="zhuyin">七<rt lang="zh-Bopo-TW">ㄑㄧ</rt></ruby></em><rt lang="zh-Latn-pinyin">yī-liù-bā-qī</rt></ruby><ruby><ruby class="zhuyin">師<rt lang="zh-Bopo-TW">ㄕ</rt></ruby><rt lang="zh-Latn-pinyin">shī</rt></ruby><ruby><ruby class="zhuyin">第<rt lang="zh-Bopo-TW">ㄉㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">dì</rt></ruby><ruby><em class="Identifier"><ruby class="zhuyin">十<rt lang="zh-Bopo-TW">ㄕˊ</rt></ruby></em><rt lang="zh-Latn-pinyin">shí</rt></ruby><ruby><ruby class="zhuyin">艦<rt lang="zh-Bopo-TW">ㄐㄧㄢˋ</rt></ruby><ruby class="zhuyin">隻<rt lang="zh-Bopo-TW">ㄓ</rt></ruby><rt lang="zh-Latn-pinyin">jiànzhī</rt></ruby>，<ruby><ruby class="zhuyin">從<rt lang="zh-Bopo-TW">ㄘㄨㄥˊ</rt></ruby><rt lang="zh-Latn-pinyin">cóng</rt></ruby><ruby><ruby class="zhuyin">巴<rt lang="zh-Bopo-TW">ㄅㄚ</rt></ruby><ruby class="zhuyin">納<rt lang="zh-Bopo-TW">ㄋㄚˋ</rt></ruby><ruby class="zhuyin">德<rt lang="zh-Bopo-TW">ㄉㄜˊ</rt></ruby><rt lang="zh-Latn-pinyin">Bānàdé</rt></ruby><ruby><ruby class="zhuyin">星<rt lang="zh-Bopo-TW">ㄒㄧㄥ</rt></ruby><ruby class="zhuyin">系<rt lang="zh-Bopo-TW">ㄒㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">xīngxì</rt></ruby><ruby><ruby class="zhuyin">傳<rt lang="zh-Bopo-TW">ㄔㄨㄢˊ</rt></ruby><ruby class="zhuyin">來<rt lang="zh-Bopo-TW">ㄌㄞˊ</rt></ruby><rt lang="zh-Latn-pinyin">chuánlái</rt></ruby><ruby><ruby class="zhuyin">捷<rt lang="zh-Bopo-TW">ㄐㄧㄝˊ</rt></ruby><ruby class="zhuyin">報<rt lang="zh-Bopo-TW">ㄅㄠˋ</rt></ruby><rt lang="zh-Latn-pinyin">jiébào</rt></ruby>；<ruby><ruby class="zhuyin">一<rt lang="zh-Bopo-TW">ㄧˋ</rt></ruby><ruby class="zhuyin">百<rt lang="zh-Bopo-TW">ㄅㄞˇ</rt></ruby><ruby class="zhuyin">年<rt lang="zh-Bopo-TW">ㄋㄧㄢˊ</rt></ruby><rt lang="zh-Latn-pinyin">yìbǎi nián</rt></ruby><ruby><ruby class="zhuyin">後<rt lang="zh-Bopo-TW">ㄏㄡˋ</rt></ruby><rt lang="zh-Latn-pinyin">hòu</rt></ruby>，<ruby><ruby class="zhuyin">他<rt lang="zh-Bopo-TW">ㄊㄚ</rt></ruby><ruby class="zhuyin">們<rt lang="zh-Bopo-TW">ㄇㄣ˙</rt></ruby><rt lang="zh-Latn-pinyin">tāmen</rt></ruby><ruby aria-label="江"><ruby class="zhuyin">將<rt lang="zh-Bopo-TW">ㄐㄧㄤ</rt></ruby><rt lang="zh-Latn-pinyin">jiāng</rt></ruby><ruby><ruby class="zhuyin">為<rt lang="zh-Bopo-TW">ㄨㄟˋ</rt></ruby><rt lang="zh-Latn-pinyin">wèi</rt></ruby><ruby><ruby class="zhuyin">地<rt lang="zh-Bopo-TW">ㄉㄧˋ</rt></ruby><ruby class="zhuyin">球<rt lang="zh-Bopo-TW">ㄑㄧㄡˊ</rt></ruby><rt lang="zh-Latn-pinyin">Dìqiú</rt></ruby><ruby><ruby class="zhuyin">與<rt lang="zh-Bopo-TW">ㄩˇ</rt></ruby><rt lang="zh-Latn-pinyin">yǔ</rt></ruby><ruby><ruby class="zhuyin">太<rt lang="zh-Bopo-TW">ㄊㄞˋ</rt></ruby><ruby class="zhuyin">陽<rt lang="zh-Bopo-TW">ㄧㄤˊ</rt></ruby><ruby class="zhuyin">系<rt lang="zh-Bopo-TW">ㄒㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">Tàiyángxì</rt></ruby><ruby><ruby class="zhuyin">帶<rt lang="zh-Bopo-TW">ㄉㄞˋ</rt></ruby><ruby class="zhuyin">回<rt lang="zh-Bopo-TW">ㄏㄨㄟˊ</rt></ruby><rt lang="zh-Latn-pinyin">dàihuí</rt></ruby><ruby><em class="Cargo"><ruby class="zhuyin">十<rt lang="zh-Bopo-TW">ㄕˊ</rt></ruby></em><rt lang="zh-Latn-pinyin">shí</rt></ruby><ruby><em class="Cargo"><ruby class="zhuyin">垓<rt lang="zh-Bopo-TW">ㄍㄞ</rt></ruby></em><rt lang="zh-Latn-pinyin">gāi</rt></ruby><ruby aria-label="頓"><em class="Cargo"><ruby class="zhuyin">噸<rt lang="zh-Bopo-TW">ㄉㄨㄣˋ</rt></ruby></em><rt lang="zh-Latn-pinyin">dūn</rt></ruby><ruby><ruby class="zhuyin">稀<rt lang="zh-Bopo-TW">ㄒㄧ</rt></ruby><ruby class="zhuyin">有<rt lang="zh-Bopo-TW">ㄧㄡˇ</rt></ruby><rt lang="zh-Latn-pinyin">xīyǒu</rt></ruby><ruby><ruby class="zhuyin">元<rt lang="zh-Bopo-TW">ㄩㄢˊ</rt></ruby><ruby class="zhuyin">素<rt lang="zh-Bopo-TW">ㄙㄨˋ</rt></ruby><rt lang="zh-Latn-pinyin">yuánsù</rt></ruby>，<span class="HorizontalOnly"><ruby><ruby class="zhuyin">如<rt lang="zh-Bopo-TW">ㄖㄨˊ</rt></ruby><ruby class="zhuyin">右<rt lang="zh-Bopo-TW">ㄧㄡˋ</rt></ruby><rt lang="zh-Latn-pinyin">rú yòu</rt></ruby></span><span class="VerticalOnly"><ruby><ruby class="zhuyin">如<rt lang="zh-Bopo-TW">ㄖㄨˊ</rt></ruby><ruby class="zhuyin">左<rt lang="zh-Bopo-TW">ㄗㄨㄛˇ</rt></ruby><rt lang="zh-Latn-pinyin">rú zuǒ</rt></ruby></span>：</p>
+          <p><ruby><ruby class="zhuyin">這<rt lang="zh-Bopo-TW">ㄓㄜˋ</rt></ruby><rt lang="zh-Latn-pinyin">zhè</rt></ruby><ruby><ruby class="zhuyin">批<rt lang="zh-Bopo-TW">ㄆㄧ</rt></ruby><rt lang="zh-Latn-pinyin">pī</rt></ruby><ruby><ruby class="zhuyin">材<rt lang="zh-Bopo-TW">ㄘㄞˊ</rt></ruby><ruby class="zhuyin">料<rt lang="zh-Bopo-TW">ㄌㄧㄠˋ</rt></ruby><rt lang="zh-Latn-pinyin">cáiliào</rt></ruby><ruby aria-label="江"><ruby class="zhuyin">將<rt lang="zh-Bopo-TW">ㄐㄧㄤ</rt></ruby><rt lang="zh-Latn-pinyin">jiāng</rt></ruby><ruby><ruby class="zhuyin">讓<rt lang="zh-Bopo-TW">ㄖㄤˋ</rt></ruby><rt lang="zh-Latn-pinyin">ràng</rt></ruby><ruby><ruby class="zhuyin">電<rt lang="zh-Bopo-TW">ㄉㄧㄢˋ</rt></ruby><ruby class="zhuyin">磁<rt lang="zh-Bopo-TW">ㄘˊ</rt></ruby><ruby class="zhuyin">阱<rt lang="zh-Bopo-TW">ㄐㄧㄥˇ</rt></ruby><rt lang="zh-Latn-pinyin">diàncíjǐng</rt></ruby><ruby><ruby class="zhuyin">超<rt lang="zh-Bopo-TW">ㄔㄠ</rt></ruby><ruby class="zhuyin">導<rt lang="zh-Bopo-TW">ㄉㄠˇ</rt></ruby><rt lang="zh-Latn-pinyin">chāodǎo</rt></ruby><ruby><ruby class="zhuyin">磁<rt lang="zh-Bopo-TW">ㄘˊ</rt></ruby><ruby class="zhuyin">噴<rt lang="zh-Bopo-TW">ㄆㄣ</rt></ruby><ruby class="zhuyin">嘴<rt lang="zh-Bopo-TW">ㄗㄨㄟˇ</rt></ruby><rt lang="zh-Latn-pinyin">cípēnzuǐ</rt></ruby><ruby><ruby class="zhuyin">熱<rt lang="zh-Bopo-TW">ㄖㄜˋ</rt></ruby><ruby class="zhuyin">盾<rt lang="zh-Bopo-TW">ㄉㄨㄣˋ</rt></ruby><rt lang="zh-Latn-pinyin">rèdùn</rt></ruby><ruby><ruby class="zhuyin">與<rt lang="zh-Bopo-TW">ㄩˇ</rt></ruby><rt lang="zh-Latn-pinyin">yǔ</rt></ruby><ruby><ruby class="zhuyin">探<rt lang="zh-Bopo-TW">ㄊㄢˋ</rt></ruby><ruby class="zhuyin">測<rt lang="zh-Bopo-TW">ㄘㄜˋ</rt></ruby><ruby class="zhuyin">器<rt lang="zh-Bopo-TW">ㄑㄧˋ</rt></ruby><rt lang="zh-Latn-pinyin">tàncèqì</rt></ruby><ruby><ruby class="zhuyin">有<rt lang="zh-Bopo-TW">ㄧㄡˇ</rt></ruby><rt lang="zh-Latn-pinyin">yǒu</rt></ruby><ruby><ruby class="zhuyin">機<rt lang="zh-Bopo-TW">ㄐㄧ</rt></ruby><ruby class="zhuyin">會<rt lang="zh-Bopo-TW">ㄏㄨㄟˋ</rt></ruby><rt lang="zh-Latn-pinyin">jīhuì</rt></ruby><ruby><ruby class="zhuyin">從<rt lang="zh-Bopo-TW">ㄘㄨㄥˊ</rt></ruby><rt lang="zh-Latn-pinyin">cóng</rt></ruby><ruby><ruby class="zhuyin">圖<rt lang="zh-Bopo-TW">ㄊㄨˊ</rt></ruby><ruby class="zhuyin">紙<rt lang="zh-Bopo-TW">ㄓˇ</rt></ruby><rt lang="zh-Latn-pinyin">túzhǐ</rt></ruby><ruby><ruby class="zhuyin">走<rt lang="zh-Bopo-TW">ㄗㄡˇ</rt></ruby><ruby class="zhuyin">入<rt lang="zh-Bopo-TW">ㄖㄨˋ</rt></ruby><rt lang="zh-Latn-pinyin">zǒurù</rt></ruby><ruby><ruby class="zhuyin">深<rt lang="zh-Bopo-TW">ㄕㄣ</rt></ruby><ruby class="zhuyin">空<rt lang="zh-Bopo-TW">ㄎㄨㄥ</rt></ruby><rt lang="zh-Latn-pinyin">shēnkōng</rt></ruby><ruby><ruby class="zhuyin">船<rt lang="zh-Bopo-TW">ㄔㄨㄢˊ</rt></ruby><ruby class="zhuyin">塢<rt lang="zh-Bopo-TW">ㄨˋ</rt></ruby><rt lang="zh-Latn-pinyin">chuánwù</rt></ruby>。</p>
+          <small>十垓噸約等於地球質量的六分之一；星際公報的會計部門拒絕為這個數字背書。</small>
+        </div>
+
+        <div class="Dispatch" lang="ja" hidden aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p><ruby>半世紀<rt lang="ja-Kana">はんせいき</rt></ruby><ruby>前<rt lang="ja-Kana">まえ</rt></ruby>に<ruby>出航<rt lang="ja-Kana">しゅっこう</rt></ruby>したばかりのヒマラヤ<ruby>惑星間<rt lang="ja-Kana">わくせいかん</rt></ruby><ruby>採鉱<rt lang="ja-Kana">さいこう</rt></ruby><ruby>軍団<rt lang="ja-Kana">ぐんだん</rt></ruby><em class="Identifier"><ruby aria-label="イチロクハチシチ">一六八七<rt lang="ja-Kana">イチロクハチシチ</rt></ruby></em><ruby>師団<rt lang="ja-Kana">しだん</rt></ruby><em class="Identifier"><ruby aria-label="ダイジプ">第十<rt lang="ja-Kana">だいジフ</rt></ruby></em><ruby>艦<rt lang="ja-Kana">かん</rt></ruby>から、バーナード<ruby>星系<rt lang="ja-Kana">せいけい</rt></ruby>での<ruby>成功<rt lang="ja-Kana">せいこう</rt></ruby><ruby>報告<rt lang="ja-Kana">ほうこく</rt></ruby>が<ruby>届<rt lang="ja-Kana">とど</rt></ruby>いた。<ruby>百年<rt lang="ja-Kana">ひゃくねん</rt></ruby><ruby>後<rt lang="ja-Kana">ご</rt></ruby>、<ruby>地球<rt lang="ja-Kana">ちきゅう</rt></ruby>と<ruby>太陽系<rt lang="ja-Kana">たいようけい</rt></ruby>へ<em class="Cargo"><ruby aria-label="ジプ">十<rt lang="ja-Kana">ジフ</rt></ruby></em><em class="Cargo"><ruby aria-label="ガイ">垓<rt lang="ja-Kana">ガイ</rt></ruby></em>トンの<ruby>希少<rt lang="ja-Kana">きしょう</rt></ruby><ruby>元素<rt lang="ja-Kana">げんそ</rt></ruby>を<ruby>持<rt lang="ja-Kana">も</rt></ruby>ち<ruby>帰<rt lang="ja-Kana">かえ</rt></ruby>る。<span class="HorizontalOnly"><ruby>右<rt lang="ja-Kana">みぎ</rt></ruby></span><span class="VerticalOnly"><ruby>左<rt lang="ja-Kana">ひだり</rt></ruby></span>のとおり<span aria-label="。">：</span></p>
+          <p>これらの<ruby>材料<rt lang="ja-Kana">ざいりょう</rt></ruby>は<ruby>電磁<rt lang="ja-Kana">でんじ</rt></ruby>トラップ、<ruby>超伝導<rt lang="ja-Kana">ちょうでんどう</rt></ruby><ruby>磁気<rt lang="ja-Kana">じき</rt></ruby>ノズル、<ruby>熱<rt lang="ja-Kana">ねつ</rt></ruby><ruby>遮蔽<rt lang="ja-Kana">しゃへい</rt></ruby>と<ruby>検出器<rt lang="ja-Kana">けんしゅつき</rt></ruby>を<ruby>設計図<rt lang="ja-Kana">せっけいず</rt></ruby>から<ruby>深宇宙<rt lang="ja-Kana">しんうちゅう</rt></ruby>の<ruby>造船所<rt lang="ja-Kana">ぞうせんじょ</rt></ruby>へ<ruby>運<rt lang="ja-Kana">はこ</rt></ruby>ぶ。</p>
+          <small>十垓トンは地球質量のおよそ六分の一。星間広報の会計部は、この数字への署名を拒否した。</small>
+        </div>
+
+        <div class="Dispatch" lang="ko" hidden aria-label="以五個入聲數字寫成的球際採礦捷報">
+          <p><ruby><ruby>반세기<rt lang="ko-Hani">半世紀</rt></ruby><rt lang="ko-Latn">bansegi</rt></ruby> <ruby><ruby>전<rt lang="ko-Hani">前</rt></ruby><rt lang="ko-Latn">jeon</rt></ruby>에 막 <ruby><ruby>출항<rt lang="ko-Hani">出航</rt></ruby><rt lang="ko-Latn">chulhang</rt></ruby>한 <ruby><ruby>히말라야<rt lang="ko-Hani">喜馬拉雅</rt></ruby><rt lang="ko-Latn">Himallaya</rt></ruby> <ruby><ruby>행성간<rt lang="ko-Hani">行星間</rt></ruby><rt lang="ko-Latn">haengseonggan</rt></ruby> <ruby><ruby>채광<rt lang="ko-Hani">採鑛</rt></ruby><rt lang="ko-Latn">chaegwang</rt></ruby> <ruby><ruby>군단<rt lang="ko-Hani">軍團</rt></ruby><rt lang="ko-Latn">gundan</rt></ruby> <ruby><em class="Identifier"><ruby>일육팔칠<rt lang="ko-Hani">一六八七</rt></ruby></em><rt lang="ko-Latn">il-yuk-pal-chil</rt></ruby> <ruby><ruby>사단<rt lang="ko-Hani">師團</rt></ruby><rt lang="ko-Latn">sadan</rt></ruby> <ruby><em class="Identifier"><ruby>제십<rt lang="ko-Hani">第十</rt></ruby></em><rt lang="ko-Latn">jesip</rt></ruby> <ruby><ruby>함정<rt lang="ko-Hani">艦艇</rt></ruby><rt lang="ko-Latn">hamjeong</rt></ruby>이 바너드 <ruby><ruby>항성계<rt lang="ko-Hani">恒星系</rt></ruby><rt lang="ko-Latn">hangseonggye</rt></ruby>에서 <ruby><ruby>승전보<rt lang="ko-Hani">勝戰報</rt></ruby><rt lang="ko-Latn">seungjeonbo</rt></ruby>를 보내왔다. <ruby><ruby>백년<rt lang="ko-Hani">百年</rt></ruby><rt lang="ko-Latn">baengnyeon</rt></ruby> <ruby><ruby>후<rt lang="ko-Hani">後</rt></ruby><rt lang="ko-Latn">hu</rt></ruby>, <ruby><ruby>지구<rt lang="ko-Hani">地球</rt></ruby><rt lang="ko-Latn">jigu</rt></ruby>와 <ruby><ruby>태양계<rt lang="ko-Hani">太陽系</rt></ruby><rt lang="ko-Latn">taeyanggye</rt></ruby>로 <ruby><em class="Cargo"><ruby>십<rt lang="ko-Hani">十</rt></ruby></em><rt lang="ko-Latn">sip</rt></ruby> <ruby><em class="Cargo"><ruby>해<rt lang="ko-Hani">垓</rt></ruby></em><rt lang="ko-Latn">hae</rt></ruby> 톤의 <ruby><ruby>희귀<rt lang="ko-Hani">稀貴</rt></ruby><rt lang="ko-Latn">higwi</rt></ruby> <ruby><ruby>원소<rt lang="ko-Hani">元素</rt></ruby><rt lang="ko-Latn">wonso</rt></ruby>를 가져올 <ruby><ruby>예정<rt lang="ko-Hani">豫定</rt></ruby><rt lang="ko-Latn">yejeong</rt></ruby>이다. <span class="HorizontalOnly">오른쪽과 같다</span><span class="VerticalOnly">왼쪽과 같다</span>: </p>
+          <p>이 <ruby><ruby>재료<rt lang="ko-Hani">材料</rt></ruby><rt lang="ko-Latn">jaeryo</rt></ruby>들은 <ruby><ruby>전자기<rt lang="ko-Hani">電磁</rt></ruby><rt lang="ko-Latn">jeonjagi</rt></ruby> 트랩, <ruby><ruby>초전도<rt lang="ko-Hani">超傳導</rt></ruby><rt lang="ko-Latn">chojeondo</rt></ruby> <ruby><ruby>자기<rt lang="ko-Hani">磁氣</rt></ruby><rt lang="ko-Latn">jagi</rt></ruby> 노즐, <ruby><ruby>열<rt lang="ko-Hani">熱</rt></ruby><rt lang="ko-Latn">yeol</rt></ruby> <ruby><ruby>차폐<rt lang="ko-Hani">遮蔽</rt></ruby><rt lang="ko-Latn">chapye</rt></ruby>와 <ruby><ruby>검출기<rt lang="ko-Hani">檢出器</rt></ruby><rt lang="ko-Latn">geomchulgi</rt></ruby>를 <ruby><ruby>설계도<rt lang="ko-Hani">設計圖</rt></ruby><rt lang="ko-Latn">seolgyedo</rt></ruby>에서 <ruby><ruby>심우주<rt lang="ko-Hani">深宇宙</rt></ruby><rt lang="ko-Latn">simuju</rt></ruby> <ruby><ruby>조선소<rt lang="ko-Hani">造船所</rt></ruby><rt lang="ko-Latn">joseonso</rt></ruby>로 옮길 것이다.</p>
+          <small>십 해 톤은 지구 질량의 약 6분의 1이다. 성간 홍보부 회계팀은 이 숫자에 서명하기를 거부했다.</small>
+        </div>
+      </article>
+
+      <figure aria-labelledby="elements-title">
+        <header>
+          <div id="elements-title">
+            <h2 lang="zh-nan-Hant-TW"><ruby class="zhuyin">巴<rt lang="nan-Bopo-TW" aria-label="Pa">ㄅㄚ</rt></ruby><ruby class="zhuyin">納<rt lang="nan-Bopo-TW" aria-label="na̍p">ㄋㄚㆴ̇</rt></ruby><ruby class="zhuyin">德<rt lang="nan-Bopo-TW" aria-label="tik">ㄉㄧㆻ̇</rt></ruby><ruby class="zhuyin">任<rt lang="nan-Bopo-TW" aria-label="jīm">ㄖㄧㆬ˫</rt></ruby><ruby class="zhuyin">務<rt lang="nan-Bopo-TW" aria-label="bū">ㆠㄨ˫</rt></ruby><ruby class="zhuyin">元<rt lang="nan-Bopo-TW" aria-label="guân">ㄍㄨㄢˊ</rt></ruby><ruby class="zhuyin">素<rt lang="nan-Bopo-TW" aria-label="sòo">ㄙㆦ˪</rt></ruby><ruby class="zhuyin">表<rt lang="nan-Bopo-TW" aria-label="pió">ㄅㄧㄠˋ</rt></ruby><span class="SpeechOnly">。</span></h2>
+            <h2 lang="zh-Hant-TW" hidden><ruby class="zhuyin">巴<rt lang="zh-Bopo-TW">ㄅㄚ</rt></ruby><ruby class="zhuyin">納<rt lang="zh-Bopo-TW">ㄋㄚˋ</rt></ruby><ruby class="zhuyin">德<rt lang="zh-Bopo-TW">ㄉㄜˊ</rt></ruby><ruby class="zhuyin">任<rt lang="zh-Bopo-TW">ㄖㄣˋ</rt></ruby><ruby class="zhuyin">務<rt lang="zh-Bopo-TW">ㄨˋ</rt></ruby><ruby class="zhuyin">元<rt lang="zh-Bopo-TW">ㄩㄢˊ</rt></ruby><ruby class="zhuyin">素<rt lang="zh-Bopo-TW">ㄙㄨˋ</rt></ruby><ruby class="zhuyin">表<rt lang="zh-Bopo-TW">ㄅㄧㄠˇ</rt></ruby><span class="SpeechOnly">。</span></h2>
+            <h2 lang="ja" hidden>バーナード<ruby>任務<rt lang="ja-Kana">にんむ</rt></ruby><ruby>元素表<rt lang="ja-Kana">げんそひょう</rt></ruby><span class="SpeechOnly">。</span></h2>
+            <h2 lang="ko" hidden>바너드 <ruby>임무<rt lang="ko-Hani">任務</rt></ruby> <ruby>원소표<rt lang="ko-Hani">元素表</rt></ruby><span class="SpeechOnly">。</span></h2>
+          </div>
+          <button type="button" name="speak" value="elements">全部元素讀音</button>
+        </header>
+
+        <div class="ElementReport">
+          <section class="ElementPrimer" aria-labelledby="element-primer-title">
+            <p>元素小百科</p>
+            <h3 id="element-primer-title">磁噴嘴，不是一只金屬漏斗</h3>
+            <p class="PrimerLead">高溫電漿由磁場轉向並加速。NASA的一項「脈衝融合磁噴嘴」概念設計，以超導線圈建立種子磁場，再由耐高溫主線圈承接壓縮磁通與推力。以下四種元素，分別對應兩種超導磁體路線，以及主線圈複合材料的兩種材料相。</p>
+            <dl>
+              <div class="Transition">
+                <dt><button title="39號元素・釔／钇・種子場：YBCO超導種子線圈" type="button" name="speak-element" value="Y" aria-label="播放39號元素釔的閩南語讀音：it；種子場用途：YBCO超導種子線圈"><ruby><ruby class="zhuyin">釔<rt lang="nan-Bopo-TW" aria-label="it">ㄧㆵ</rt><rt lang="zh-Bopo-TW" aria-label="yǐ">ㄧˇ</rt></ruby><rt lang="ja">イットリウム</rt><rt lang="ko">이트륨</rt><rt lang="en"><abbr aria-label="元素符號Y">Y</abbr></rt><rt lang="en"><data value="39">39</data></rt></ruby></button></dt>
+                <dd>YBa₂Cu₃O₇超導線圈先建立種子磁場，讓噴發的電漿有磁力線可循。</dd>
+                <dd>YBCO可在液氮溫區保持超導，以低損耗維持強磁場。</dd>
+              </div>
+              <div class="Transition">
+                <dt><button title="41號元素・鈮／铌・磁體：鈮系高場超導線材" type="button" name="speak-element" value="Nb" aria-label="播放41號元素鈮的閩南語讀音：nî；磁體用途：鈮系高場超導線材"><ruby><ruby class="zhuyin">鈮<rt lang="nan-Bopo-TW" aria-label="nî">ㄋㄧˊ</rt><rt lang="zh-Bopo-TW" aria-label="ní">ㄋㄧˊ</rt></ruby><rt lang="ja">ニオブ</rt><rt lang="ko">나이오븀</rt><rt lang="en"><abbr aria-label="元素符號Nb">Nb</abbr></rt><rt lang="en"><data value="41">41</data></rt></ruby></button></dt>
+                <dd>鈮鈦與鈮三錫是成熟的超導線材，可把線圈做成穩定的高場磁體。</dd>
+                <dd>它代表與YBCO不同的低溫工程路線，可依磁場、冷卻與成本取捨。</dd>
+              </div>
+              <div class="Transition">
+                <dt><button title="42號元素・鉬／钼・推力環：TiB₂–Mo耐熱主線圈" type="button" name="speak-element" value="Mo" aria-label="播放42號元素鉬的閩南語讀音：bo̍k；推力環用途：TiB₂–Mo耐熱主線圈"><ruby><ruby class="zhuyin">鉬<rt lang="nan-Bopo-TW" aria-label="bo̍k">ㄅㆦㆻ̇</rt><rt lang="zh-Bopo-TW" aria-label="mù">ㄇㄨˋ</rt></ruby><rt lang="ja">モリブデン</rt><rt lang="ko">몰리브데넘</rt><rt lang="en"><abbr aria-label="元素符號Mo">Mo</abbr></rt><rt lang="en"><data value="42">42</data></rt></ruby></button></dt>
+                <dd>鉬構成TiB₂–Mo金屬基複材的導電相，讓主線圈承接電漿壓縮磁場產生的巨量電流。</dd>
+                <dd>它既要導電、耐熱，也要把電磁力傳回船體，不能只追求熔點。</dd>
+              </div>
+              <div class="Metalloid">
+                <dt><button title="5號元素・硼／硼・陶瓷相：TiB₂耐熱導電骨架" type="button" name="speak-element" value="B" aria-label="播放5號元素硼的閩南語讀音：phîng；陶瓷相用途：TiB₂耐熱導電骨架"><ruby><ruby class="zhuyin">硼<rt lang="nan-Bopo-TW" aria-label="phîng">ㄆㄧㄥˊ</rt><rt lang="zh-Bopo-TW" aria-label="péng">ㄆㄥˊ</rt></ruby><rt lang="ja">ホウ素</rt><rt lang="ko">붕소</rt><rt lang="en"><abbr aria-label="元素符號B">B</abbr></rt><rt lang="en"><data value="5">5</data></rt></ruby></button></dt>
+                <dd>硼與鈦形成二硼化鈦陶瓷相，替同一組主線圈補上高溫強度。</dd>
+                <dd>陶瓷耐熱卻難承受所有機械與導電任務，因此和鉬組成複合材料。</dd>
+              </div>
+            </dl>
+            <ul class="Legend" aria-label="元素分類色">
+              <li class="Transition"><span lang="zh-nan-Hant-TW"><ruby class="zhuyin">過<rt lang="nan-Bopo-TW">ㄍㄨㆤ˪</rt></ruby><ruby class="zhuyin">渡<rt lang="nan-Bopo-TW">ㄉㆦ˫</rt></ruby></span><span lang="zh-Hant-TW" hidden><ruby class="zhuyin">過<rt lang="zh-Bopo-TW">ㄍㄨㄛˋ</rt></ruby><ruby class="zhuyin">渡<rt lang="zh-Bopo-TW">ㄉㄨˋ</rt></ruby></span><span lang="ja" hidden><ruby>遷移<rt lang="ja-Kana">せんい</rt></ruby></span><span lang="ko" hidden><ruby>전이<rt lang="ko-Hani">轉移</rt></ruby></span></li>
+              <li class="Metalloid"><span lang="zh-nan-Hant-TW"><ruby class="zhuyin">類<rt lang="nan-Bopo-TW">ㄌㄨㄧ˫</rt></ruby><ruby class="zhuyin">金<rt lang="nan-Bopo-TW">ㄍㄧㆬ</rt></ruby></span><span lang="zh-Hant-TW" hidden><ruby class="zhuyin">類<rt lang="zh-Bopo-TW">ㄌㄟˋ</rt></ruby><ruby class="zhuyin">金<rt lang="zh-Bopo-TW">ㄐㄧㄣ</rt></ruby></span><span lang="ja" hidden><ruby>半金属<rt lang="ja-Kana">はんきんぞく</rt></ruby></span><span lang="ko" hidden><ruby>준금속<rt lang="ko-Hani">準金屬</rt></ruby></span></li>
+            </ul>
+            <footer>資料：<a href="https://ntrs.nasa.gov/citations/20030061179">NASA磁化靶融合推進設計</a>、<a href="https://home.cern/science/engineering/pulling-together-superconducting-electromagnets">CERN超導電磁鐵</a></footer>
+          </section>
+        </div>
+      </figure>
+    </div>
+
+    <footer class="AudioCredit" aria-label="語音授權">
+      <p>閩南語捷報與元素讀音由Meta的<a href="https://huggingface.co/facebook/mms-tts-nan"><code>facebook/mms-tts-nan</code></a>語音模型生成，採<a href="https://creativecommons.org/licenses/by-nc/4.0/" rel="license">創用CC BY-NC 4.0</a>授權；其他語言則由瀏覽器內建語音API朗讀。</p>
+    </footer>
+
+</section>

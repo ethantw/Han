@@ -89,6 +89,24 @@ fires — doesn't count against the three):
   family placeholder and falls through to the configured cursive/system
   stack. Do not ask this question when no Zhuyin content was detected.
 
+- **Zhuyin ruby font-position check** (`ruby.zhuyin`/`.mps` or bopomofo
+  content) — ask: "Will zhuyin ruby inherit a custom body font? If so, do
+  you want an optical-position check for its glyph ink bounds?" Skip this
+  question only when detection confirms the base stack is one of the
+  verified-compatible choices: Diantenjeom (DTJ), Shanggu, or Hiragino.
+  Those faces share the default `.075em` synthetic ink seat closely enough
+  for the CSS-only default. Any user-provided webfont, system font not on
+  that list, or unknown fallback chain must be treated as needing the
+  confirmation. Explain that the check is opt-in: it measures a representative
+  Han glyph (default `永`) after fonts load and produces
+  `--han-ruby-zhuyin-baseline-shift`. Import
+  `calibrateZhuyinRuby` from the optional
+  `@hanzi.pro/han.css/zhuyin-calibration` entry, run it once during development,
+  and write its `cssDeclaration` to `han.config.css`; keep the runtime helper
+  only when the effective font cannot be known until the client renders. Variable fonts
+  whose optical-size axis changes the outline require
+  `{ fontSizeSensitive: true }`. This corrects conspicuous whole-font optical
+  drift; it is not a promise to normalize every glyph outline.
 
 **Everything else gets a default, not a question.** Offer at the end:
 "I used recommended defaults for punctuation conventions, hanging, spacing
@@ -254,6 +272,12 @@ Then hand the user this checklist — "installed correctly looks like":
 - [ ] A Han↔Latin seam like `列印CSS樣式` shows a thin gap without any
       space character in the DOM
 - [ ] `<q>` quotes match the locale (「」 for zh-Hant/ja; “” for zh-Hans)
+- [ ] If zhuyin ruby uses a custom/unverified base font: compare its rt
+      position with Shanggu/Hiragino at the intended text sizes; run the
+      opt-in ink-position check only when the user requested it, then write
+      the generated variable instead of leaving a per-reader measurement when
+      the font is stable. DTJ, Shanggu, and Hiragino need no such check under
+      the default CSS seat.
 - [ ] No console errors; woff2 requests return 200 (webfonts) and only the
       slices actually used were downloaded
 

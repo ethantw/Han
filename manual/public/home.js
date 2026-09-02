@@ -10,7 +10,7 @@
  * `console-metrics.js`). It wires the page-side chrome the component
  * doesn't own:
  *
- *   • `initSnippet` — station④'s code panes, now a SUBSCRIBER to the
+ *   • `initSnippet` — station⑧'s code panes, now a SUBSCRIBER to the
  *     console's `han-config-change` event (the future <han-snippet>).
  *   • `initConsoleCollapse` — the `.ConsoleToggle` handle that opens/closes the
  *     side console's column (`<han-console collapsed>`, a page-LAYOUT hook).
@@ -38,6 +38,7 @@ import { initDashClip } from '/home/dash-clip.js'
 import { initPunctLang } from '/home/punct-lang.js'
 import { initPunctLangLayout } from '/home/punct-lang-layout.js'
 import { initPapersDateline } from '/home/papers-dateline.js'
+import { initStationReadings } from '/home/station-readings.js'
 import { initModuleState } from '/home/module-state.js'
 import { initLedger } from '/home/ledger.js'
 import { initCarousel } from '/home/carousel.js'
@@ -118,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStationMap()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
+  initStationReadings()
   /* 閱讀器與七篇正文都不進首屏：第一枚報紙 icon 被按下才 import 行為模組，
      模組再依 slug／語版抓取建置好的 HTML fragment。 */
   document.addEventListener('click', async (event) => {
@@ -130,12 +132,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // reflect <han-console>'s module switches onto <html> — page CSS can't see
   // a <link>'s disabled state, and station①'s specimen has to follow it
   initModuleState()
-  // station 伍's addition prices what the console is actually configuring:
+  // station 陸's addition prices what the console is actually configuring:
   // unchecked parts go grey and drop out of the footing
   initLedger()
   initSizeDialog()
   initQuickstartDialog()
-  // …and 例5.1 cycles through real library selectors, reader-driven
+  // …and 例6.1 cycles through real library selectors, reader-driven
   initCarousel()
   // 四條長帶的左右箭頭（站①四版、站②鉛字盤、站③兩篇、站肆工作區），外加
   // 站③那條的起始位置：兩篇都朝著中間那道縫讀出去，所以停在縫上而不是頭上
@@ -147,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDevReset()
   initInstallChips()
   // Seed syntax-highlighting for the hand-written prose code blocks
-  // (station-craft's Override etc.); the panes get theirs when station④
+  // (station-craft's Override etc.); the panes get theirs when station⑧
   // renders. Same stable selector snippet.js re-runs on every config
   // change — the highlighter's registries are global and cleared wholesale
   // per call, so both paths MUST scan the same set of live <code> or one

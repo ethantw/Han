@@ -583,8 +583,8 @@
     ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   pgNoteFns: {
-    hant: '勾了才匯入，沒勾的由你的打包器搖掉。站伍的加法式即時算出這套組合有多大。',
-    hans: '勾了才导入，没勾的由你的打包器摇掉。站伍的加法式实时算出这套组合有多大。',
+    hant: '勾了才匯入，沒勾的由你的打包器搖掉。站陸的加法式即時算出這套組合有多大。',
+    hans: '勾了才导入，没勾的由你的打包器摇掉。站陆的加法式实时算出这套组合有多大。',
     en: 'Only what you tick gets imported; your bundler shakes off the rest. Station ⑤’s addition prices this exact selection.',
     ja: 'チェックしたものだけを読み込み、残りはバンドラが落とす。第五站の加算式がこの組み合わせの大きさを即座に示す。',
     ko: '고른 것만 import되고 나머지는 번들러가 떨어낸다。第五站의 덧셈식이 이 조합의 크기를 즉시 보여준다。',
@@ -650,7 +650,7 @@
   `console-config.js` queries `[data-cfg] [data-cfg-key]` inside the shadow
   and applies deviations to the `target` (`main.han`); `console-metrics.js`
   owns the sliders. No sample chips, no custom-Markdown mode, no preview
-  ViewTab — the page itself is the sample and station④ owns the output
+  ViewTab — the page itself is the sample and station⑧ owns the output
   tabs (a `han-config-change` subscriber, snippet.js).
 
   The shadow root's top-level children are siblings — `SheetToggle` /
@@ -1067,7 +1067,7 @@
              模板是一份，狀態歸屬性所有。 -->
         <p class="SubNote" data-ssr-note>{{ pgNoteSsr }}</p>
         <!-- 送法：auto ＝ 一行匯入、載入即全套安裝；manual ＝ 自己具名匯入
-             要用的那幾支，打包器把其餘搖掉。這對**體積**是有差的，站伍的
+             要用的那幾支，打包器把其餘搖掉。這對**體積**是有差的，站陸的
              加法式即時把差額算給讀者看。 -->
         <label class="Field">
           <span>{{ pgFldJsMode }}</span>

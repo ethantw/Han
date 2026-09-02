@@ -488,6 +488,27 @@ test('the Hans homepage opens generic newspaper links in the Hans edition', asyn
   await expect(body).not.toContainText('超迴路台北段今晨通車')
 })
 
+test('standard-glyph report exposes its Japanese and Korean editions with ruby', async ({ page }) => {
+  const dialog = await openArticle(page, 'standard-glyph-revival')
+  const body = dialog.locator('.Body')
+  const japanese = dialog.locator('.Edition[data-edition="ja"]')
+  const korean = dialog.locator('.Edition[data-edition="ko"]')
+
+  await expect(japanese).toBeEnabled()
+  await expect(korean).toBeEnabled()
+
+  await japanese.click()
+  await expect(dialog).toHaveAttribute('lang', 'ja')
+  await expect(body).toContainText('名誉回復されたのではありません')
+  await expect(body.locator('ruby')).not.toHaveCount(0)
+
+  await korean.click()
+  await expect(dialog).toHaveAttribute('lang', 'ko-Kore')
+  await expect(body).toContainText('명예가 회복된 게 아닙니다')
+  await expect(body.locator('ruby')).not.toHaveCount(0)
+  await expect(body.locator('ruby > rt')).not.toHaveCount(0)
+})
+
 test('vertical reader auto-fits with reserved edges and persists its writing mode', async ({ page }) => {
   const width = 900
   const height = 700
@@ -503,8 +524,11 @@ test('vertical reader auto-fits with reserved edges and persists its writing mod
     const stage = element.querySelector('.Stage')!.getBoundingClientRect()
     const chrome = element.querySelector('.Chrome')!.getBoundingClientRect()
     const masthead = document.querySelector('body > header')!.getBoundingClientRect()
+    const sheetStyle = getComputedStyle(element.querySelector('.Sheet')!)
     return {
       scale: Number.parseFloat(getComputedStyle(element).getPropertyValue('--reader-scale')),
+      writingMode: sheetStyle.writingMode,
+      hanWritingMode: sheetStyle.getPropertyValue('--han-writing-mode').trim(),
       headlineSpan: getComputedStyle(
         element.querySelector('.Body > h1:first-of-type')!,
       ).columnSpan,
@@ -516,6 +540,8 @@ test('vertical reader auto-fits with reserved edges and persists its writing mod
   })
 
   expect(geometry.scale).toBeLessThanOrEqual(1)
+  expect(geometry.writingMode).toBe('vertical-rl')
+  expect(geometry.hanWritingMode).toBe('vertical-rl')
   expect(geometry.headlineSpan).toBe('all')
   expect(geometry.sheet.top).toBeGreaterThanOrEqual(geometry.chrome.height + 32 - 1)
   expect(height - geometry.sheet.bottom).toBeGreaterThanOrEqual(32 - 1)

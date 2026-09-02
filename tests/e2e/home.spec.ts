@@ -6,8 +6,8 @@ import { test, expect, type Page } from '@playwright/test'
  * `/` is a whole-page playground: topbar + the `<han-console>` configurator
  * web component (shadow DOM; `form="side"|"top"` attr, <52rem
  * bottom-sheet) + `<main
- * class="han">` with six stations (Manifesto, station-semantics,
- * station-fonts, station-lines, station-snippet, Closing). Station④
+ * class="han">` with eight stations between the Manifesto and Closing.
+ * Station⑧
  * hosts the snippet generator (`[data-pg-views]` / `[data-out-pm]` /
  * `[data-out-panes]`, one `<figure class="CodePane">` per codegen.js
  * pane — no more global `[data-out-copy]`/single `[data-out-code]`);
@@ -54,7 +54,7 @@ const chooseSnippetView = async (page: Page, value: string) => {
 }
 
 for (const { path, htmlLang, label } of LOCALES) {
-  test(`${label}: homepage renders — topbar, console, all six stations`, async ({ page }) => {
+  test(`${label}: homepage renders — topbar, console, all eight stations`, async ({ page }) => {
     const response = await page.goto(path)
     expect(response?.status()).toBe(200)
 
@@ -66,14 +66,10 @@ for (const { path, htmlLang, label } of LOCALES) {
     // The console is now the <han-console> web component (shadow DOM).
     await expect(page.locator('han-console')).toBeVisible()
 
-    // Six stations, in document order: Manifesto, semantics, type,
-    // lines, snippet, Closing.
-    await expect(page.locator('main > .Manifesto')).toBeVisible()
-    await expect(page.locator('#station-semantics')).toBeVisible()
-    await expect(page.locator('#station-fonts')).toBeVisible()
-    await expect(page.locator('#station-lines')).toBeVisible()
-    await expect(page.locator('#station-snippet')).toBeVisible()
-    await expect(page.locator('main > .Closing')).toBeVisible()
+    // The full page frame and all eight task stations ship in every edition.
+    await expect(page.locator('main > .Manifesto')).toHaveCount(1)
+    await expect(page.locator('main > [data-station]')).toHaveCount(8)
+    await expect(page.locator('main > .Closing')).toHaveCount(1)
   })
 }
 
@@ -124,7 +120,7 @@ test.describe('console form attribute', () => {
 })
 
 test.describe('whole-page configuration', () => {
-  test('console toggle drives inline var on :root; station④ snippet reflects it', async ({ page }) => {
+  test('console toggle drives inline var on :root; station⑧ snippet reflects it', async ({ page }) => {
     await page.goto('/')
 
     await openGroupOf(page, 'squeeze')

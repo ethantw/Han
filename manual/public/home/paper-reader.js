@@ -4,7 +4,7 @@ import { refreshEraLines } from '/home/papers-dateline.js'
 const EDITIONS = ['hant', 'hans', 'ja', 'ko']
 const LABELS = { hant: '繁', hans: '简', ja: '日', ko: '한' }
 const LANGS = { hant: 'zh-Hant', hans: 'zh-Hans', ja: 'ja', ko: 'ko-Kore' }
-const AVAILABLE = { 'standard-glyph-revival': ['hant', 'hans'] }
+const AVAILABLE = { 'standard-glyph-revival': ['hant', 'hans', 'ja', 'ko'] }
 const SCALES = [0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2]
 const WRITING_STORAGE_KEY = 'han-paper-reader-writing'
 const MIN_STAGE_DELAY = 250

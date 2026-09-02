@@ -1,0 +1,45 @@
+{
+  "language": "nan-TW",
+  "model": "facebook/mms-tts-nan",
+  "license": "CC BY-NC 4.0",
+  "combinedPrefix": {
+    "hant": "巴納德任務元素表",
+    "tailo": "Pa-na̍p-tik-jīm-bū-guân-sòo-pió"
+  },
+  "order": [
+    "Y",
+    "Nb",
+    "Mo",
+    "B"
+  ],
+  "elements": [
+    {
+      "atomic": 39,
+      "symbol": "Y",
+      "hant": "釔",
+      "hans": "钇",
+      "tailo": "it"
+    },
+    {
+      "atomic": 41,
+      "symbol": "Nb",
+      "hant": "鈮",
+      "hans": "铌",
+      "tailo": "nî"
+    },
+    {
+      "atomic": 42,
+      "symbol": "Mo",
+      "hant": "鉬",
+      "hans": "钼",
+      "tailo": "bo̍k"
+    },
+    {
+      "atomic": 5,
+      "symbol": "B",
+      "hant": "硼",
+      "hans": "硼",
+      "tailo": "phîng"
+    }
+  ]
+}

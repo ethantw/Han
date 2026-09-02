@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /**
- * Station 伍・工法 — the "how it behaves in your codebase" half: three
+ * Station 陸・工法 — the "how it behaves in your codebase" half: three
  * equations set as display maths, a selector ring, the addition that prices
  * the reader's own configuration, and the font ledger.
  *
@@ -10,8 +10,8 @@
  * queries (Chrome/Edge 111 + Safari 18; Firefox trailing) — the same query
  * the whole framework already rides on. */
 
-/* ─── Station 伍・工法 — the three equations, one plate ───────────────
- * 式5.1 spans the top; 5.2 and 5.3 sit under it, side by side, divided by
+/* ─── Station 陸・工法 — the three equations, one plate ───────────────
+ * 式6.1 spans the top; 6.2 and 6.3 sit under it, side by side, divided by
  * the same hairline the ledgers use. Presented apart they read as three
  * asides; presented together they are the framework's whole contract, and
  * the plate is the argument. */
@@ -78,7 +78,7 @@
     }
   }
 
-  /* 式5.1 spans the pair below it — the theorem the corollaries hang off */
+  /* 式6.1 spans the pair below it — the theorem the corollaries hang off */
   .Ax-lead {
     padding-block: 1.5rem;
   }
@@ -137,7 +137,7 @@
 }
 
 
-/* ─── Station 伍・工法 — §④ set as a theorem ──────────────────────────
+/* ─── Station 陸・工法 — §④ set as a theorem ──────────────────────────
  * The claim is an identity, so it is typeset as one: statement, then a
  * worked example over a ring of real library selectors. Display maths in CJK
  * prose wants the reading face for words and mono for code — never a maths
@@ -255,7 +255,7 @@
 
   /* The equation number rides the end of the line, quiet — print style.
      Absolute at the axioms' width, where the plate is centred and there is
-     margin to ride in; but INLINE inside 例5.1's left column, where ranging
+     margin to ride in; but INLINE inside 例6.1's left column, where ranging
      the equation left leaves the number stranded half a column away from
      what it numbers. */
   .EqNo {
@@ -278,7 +278,7 @@
 
 }
 
-/* 例 5.1 — the real selector fed through the theorem, laid out the way a
+/* 例 6.1 — the real selector fed through the theorem, laid out the way a
    browser's devtools lays out the same information: the argument on the left
    with the room to be read, and the STYLES PANE down the right at a third of
    the width. That proportion is the whole reference — it is also why the
@@ -378,7 +378,7 @@
     }
   }
 
-  /* 例5.1's own plate: `:where(w) → 0` on one line and the reader's weight
+  /* 例6.1's own plate: `:where(w) → 0` on one line and the reader's weight
      directly beneath the zero, same column, so the comparison is made by the
      LAYOUT and the sentence underneath only has to name what is being
      compared. Two rows of an `<mtable>`; the second is empty but for its last
@@ -400,7 +400,7 @@
     }
 
     /* `:where(` … `)` is notation here, not code to copy — italic and dimmed,
-       as in the axioms above (the CD's spec for 式5.1). */
+       as in the axioms above (the CD's spec for 式6.1). */
     .Fn {
       opacity: 0.7;
     }
@@ -797,7 +797,7 @@
 }
 
 
-/* ─── Station 伍・工法 — the addition, and the font ledger ─────────────
+/* ─── Station 陸・工法 — the addition, and the font ledger ─────────────
  * TWO sets of books, not one: the framework (styles ＋ its own JS, added up
  * in a single column, `.Sum`) and the webfonts. Webfonts are megabytes where
  * the framework is kilobytes — merged into one plate they would swallow the
