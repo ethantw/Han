@@ -398,8 +398,6 @@ test('compact reader chrome hides editions while tools and close stay available'
 
 test('the reader toolbar opens a left-anchored console copy sharing the side config', async ({ page }) => {
   const sideConsole = page.locator('body > .ConsolePanel han-console')
-  const sideSize = sideConsole.locator('.MetricSlider[data-metric="size"] input')
-  await expect(sideSize).toHaveValue('16')
   const dialog = await openArticle(page)
   const toggle = dialog.locator('.Console')
 
@@ -407,7 +405,6 @@ test('the reader toolbar opens a left-anchored console copy sharing the side con
   await toggle.click()
   const panel = dialog.locator(':scope > .ConsolePanel')
   const readerConsole = panel.locator('han-console[mirror]')
-  const readerSize = readerConsole.locator('.MetricSlider[data-metric="size"] input')
   const sideFamily = sideConsole.locator('[data-cfg-key="heritageFamily"]')
   const readerFamily = readerConsole.locator('[data-cfg-key="heritageFamily"]')
   await expect(panel).toBeVisible()
@@ -421,16 +418,8 @@ test('the reader toolbar opens a left-anchored console copy sharing the side con
   ])
   expect(anchors[1]!.x).toBeCloseTo(anchors[0]!.x, 0)
 
-  await readerSize.evaluate((input: HTMLInputElement) => {
-    input.value = '18'
-    input.dispatchEvent(new Event('input', { bubbles: true }))
-  })
-  await expect(sideSize).toHaveValue('18')
-  await sideSize.evaluate((input: HTMLInputElement) => {
-    input.value = '19'
-    input.dispatchEvent(new Event('input', { bubbles: true }))
-  })
-  await expect(readerSize).toHaveValue('19')
+  await expect(sideConsole.locator('[data-console-metrics]')).toBeHidden()
+  await expect(readerConsole.locator('[data-console-metrics]')).toBeHidden()
   await readerFamily.selectOption('genki')
   await expect(sideFamily).toHaveValue('genki')
   await sideFamily.selectOption('shanggu')
@@ -440,7 +429,6 @@ test('the reader toolbar opens a left-anchored console copy sharing the side con
   await expect(panel).toBeHidden()
   await expect(toggle).toHaveAttribute('aria-expanded', 'false')
   await expect(sideConsole).toHaveCount(1)
-  await expect(sideSize).toHaveValue('19')
 
   // The toolbar trigger itself toggles the panel both ways.
   await toggle.click()

@@ -319,3 +319,95 @@ test('emphasized dual readings use nested ruby shapes authored in HTML', async (
   await expect(koreanInnerRuby).toHaveCSS('ruby-position', 'over')
   await expect(koreanOuterRuby).toHaveCSS('ruby-position', 'under')
 })
+
+test('the offscreen sky suspends continuous layout and style animation work', async ({ page, context }) => {
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  const station = page.locator('#station-readings')
+
+  const state = () => station.evaluate((element) => {
+    const sky = element.querySelector('.Sky') as SVGSVGElement
+    const cssAnimations = element.getAnimations({ subtree: true })
+    return {
+      active: element.hasAttribute('data-sky-active'),
+      smilPaused: sky.animationsPaused(),
+      cssCount: cssAnimations.length,
+      cssRunning: cssAnimations.every(animation => animation.playState === 'running'),
+    }
+  })
+
+  await expect.poll(state).toMatchObject({
+    active: false,
+    smilPaused: true,
+    cssCount: 0,
+  })
+
+  await station.scrollIntoViewIfNeeded()
+  await expect.poll(state).toMatchObject({
+    active: true,
+    smilPaused: false,
+    cssCount: 108,
+    cssRunning: true,
+  })
+
+  await page.evaluate(() => scrollTo(0, 0))
+  await expect.poll(state).toMatchObject({ active: false, smilPaused: true, cssCount: 0 })
+  await page.waitForTimeout(1_000)
+
+  const cdp = await context.newCDPSession(page)
+  await cdp.send('Performance.enable')
+  const metrics = async () => Object.fromEntries(
+    (await cdp.send('Performance.getMetrics')).metrics.map(({ name, value }) => [name, value]),
+  ) as Record<string, number>
+  const before = await metrics()
+  await page.waitForTimeout(1_000)
+  const after = await metrics()
+
+  // Before the visibility lifecycle the SVG motion alone forced about 120
+  // layouts per second while thousands of pixels below the viewport. The CSS
+  // half is covered above by asserting that no station animation exists while
+  // inactive; RecalcStyleCount is page-global and includes other stations.
+  expect(after.LayoutCount - before.LayoutCount).toBeLessThan(10)
+
+  // Re-entering the station recreates the CSS animations, but must not retain
+  // their animation objects, DOM nodes, documents, or listeners after exit.
+  await cdp.send('HeapProfiler.collectGarbage')
+  const memoryBefore = await cdp.send('Memory.getDOMCounters')
+  await page.evaluate(async () => {
+    const station = document.querySelector('#station-readings') as HTMLElement
+    const wait = (duration: number) => new Promise(resolve => setTimeout(resolve, duration))
+    for (let index = 0; index < 10; index++) {
+      station.scrollIntoView()
+      await wait(40)
+      scrollTo(0, 0)
+      await wait(40)
+    }
+  })
+  await page.waitForTimeout(250)
+  await cdp.send('HeapProfiler.collectGarbage')
+  const memoryAfter = await cdp.send('Memory.getDOMCounters')
+  expect(memoryAfter.documents).toBe(memoryBefore.documents)
+  expect(memoryAfter.jsEventListeners).toBe(memoryBefore.jsEventListeners)
+  expect(memoryAfter.nodes - memoryBefore.nodes).toBeLessThan(32)
+  await expect.poll(state).toMatchObject({ active: false, smilPaused: true, cssCount: 0 })
+})
+
+test('writing-direction input does not synchronously force rail layout', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('#station-readings').scrollIntoViewIfNeeded()
+
+  const durations = await page.locator('#station-readings').evaluate((station) => {
+    const values = ['vertical', 'horizontal']
+    return Array.from({ length: 20 }, (_, index) => {
+      const input = station.querySelector(
+        `[name="writing-mode"][value="${values[index % values.length]}"]`,
+      ) as HTMLInputElement
+      const start = performance.now()
+      input.checked = true
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+      return performance.now() - start
+    })
+  })
+  durations.sort((a, b) => a - b)
+  expect(durations[Math.floor(durations.length * 0.95)]).toBeLessThan(10)
+})

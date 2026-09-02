@@ -12,8 +12,10 @@ export const initStationReadings = () => {
     const $next = $('button[value="next"]', $nav)
     if (!$nav || !$rail || !$previous || !$next) return
 
+    const scrollWay = () =>
+      $('[name="writing-mode"][value="vertical"]', $station).checked ? -1 : 1
     const sync = () => {
-      const way = getComputedStyle($rail).direction === 'rtl' ? -1 : 1
+      const way = scrollWay()
       const position = $rail.scrollLeft * way
       const end = $rail.scrollWidth - $rail.clientWidth - 1
       $previous.disabled = position <= 0
@@ -21,7 +23,7 @@ export const initStationReadings = () => {
       $nav.hidden = $previous.disabled && $next.disabled
     }
     const move = (sign) => {
-      const way = getComputedStyle($rail).direction === 'rtl' ? -1 : 1
+      const way = scrollWay()
       $rail.scrollBy({ left: (sign * way * $rail.clientWidth) / 3, behavior: 'smooth' })
     }
 
@@ -38,12 +40,25 @@ export const initStationReadings = () => {
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
     if (!$sky?.pauseAnimations || !$sky?.unpauseAnimations) return
 
+    let nearby = !('IntersectionObserver' in window)
+
     const sync = () => {
-      if (reducedMotion.matches) $sky.pauseAnimations()
-      else $sky.unpauseAnimations()
+      const active = nearby && !reducedMotion.matches
+      $station.toggleAttribute('data-sky-active', active)
+      if (active) $sky.unpauseAnimations()
+      else $sky.pauseAnimations()
     }
 
     reducedMotion.addEventListener('change', sync)
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        nearby = entry.isIntersecting
+        sync()
+      }, { rootMargin: '50% 0px' }).observe($station)
+    }
+    // The station begins far below the fold. Pause before the observer's first
+    // asynchronous delivery so neither SMIL nor CSS animations burn through
+    // the initial page load.
     sync()
   }
 
@@ -191,6 +206,7 @@ export const initStationReadings = () => {
   let activeUtterance = null
   let activeRecording = null
   let currentMode = 'minnan'
+  let railLayoutFrame = 0
 
   const localizedSelectors = [
     '#story-title > h2[lang]',
@@ -389,9 +405,17 @@ export const initStationReadings = () => {
 
   const requestRailLayout = () => {
     const rail = $('.Rail', $station)
-    rail.scrollLeft = 0
-    rail.scrollTop = 0
-    requestAnimationFrame(() => rail.dispatchEvent(new Event('han-rail-layout')))
+    cancelAnimationFrame(railLayoutFrame)
+    railLayoutFrame = requestAnimationFrame(() => {
+      // Let the radio's :has() branch resolve before touching scroll geometry.
+      // A second frame announces the new range to the nav after the reset,
+      // keeping style/layout reads out of the input event itself.
+      rail.scrollTo({ left: 0, top: 0, behavior: 'auto' })
+      railLayoutFrame = requestAnimationFrame(() => {
+        railLayoutFrame = 0
+        rail.dispatchEvent(new Event('han-rail-layout'))
+      })
+    })
   }
 
   const setFontSize = () => {
@@ -483,5 +507,8 @@ export const initStationReadings = () => {
   initSkyMotion()
   if (synth) synth.addEventListener('voiceschanged', refreshVoices)
   refreshVoices()
-  window.addEventListener('pagehide', stopActive)
+  window.addEventListener('pagehide', () => {
+    cancelAnimationFrame(railLayoutFrame)
+    stopActive()
+  })
 }

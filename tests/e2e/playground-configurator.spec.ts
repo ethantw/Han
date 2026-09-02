@@ -192,45 +192,6 @@ test.describe('webfont delivery (Request B)', () => {
   })
 })
 
-test.describe('度量 slider → body 規則', () => {
-  // 字級/行高/字重 sliders now ride config.metrics into the snippet: a
-  // deviation emits a `body { }` rule; the 度量 群組 ↺ clears it. Range
-  // inputs don't take .fill() reliably — set value + dispatch 'input'.
-  const setSize = (page: Page, value: string) =>
-    page
-      .locator('[data-metric="size"] input[type="range"]')
-      .evaluate((el: HTMLInputElement, v: string) => {
-        el.value = v
-        el.dispatchEvent(new Event('input', { bubbles: true }))
-      }, value)
-
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/')
-  })
-
-  test('拖字級到 18 → cdn css pane body 規則含 font-size: 18px；群組 ↺ 後消失', async ({ page }) => {
-    await setSize(page, '18')
-    await chooseSnippetView(page, 'cdn')
-    await expect(pane(page, 'css')).toContainText('font-size: 18px')
-    await expect(pane(page, 'css')).toContainText('body {')
-
-    await page.locator('.ControlGroup:has([data-pg-sliders]) .RestoreDefaults').click()
-    await expect(page.locator('[data-out-panes]')).not.toContainText('font-size: 18px')
-  })
-
-  test('lang 切換保留偏差的滑桿值與 body 規則', async ({ page }) => {
-    await setSize(page, '18')
-    await chooseSnippetView(page, 'cdn')
-    await expect(pane(page, 'css')).toContainText('font-size: 18px')
-
-    // 換內文語言 → 重渲染 shadow 模板；config.metrics 狀態應補水保留。
-    await page.locator('han-console').evaluate((el) => el.setAttribute('lang', 'hans'))
-
-    await expect(page.locator('[data-metric="size"] input[type="range"]')).toHaveValue('18')
-    await expect(pane(page, 'css')).toContainText('font-size: 18px')
-  })
-})
-
 test.describe('syntax highlight', () => {
   test('render 後 CSS Custom Highlight registry 非空', async ({ page }) => {
     await page.goto('/')

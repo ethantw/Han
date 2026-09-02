@@ -25,3 +25,21 @@ test('homepage taisol snapshot is complete and self-contained', async () => {
     }
   }
 })
+
+test('Chinese KOI-8 reports mark proper names without mis-marking the agreement title', async () => {
+  for (const [languageDir, names] of Object.entries({
+    zh: ['中蘇暗碼', '循尼亞・薛', '蘇聯'],
+    hans: ['中苏暗码', '循尼亚・薛', '苏联'],
+  })) {
+    const article = await fs.readFile(path.join(root, languageDir, 'soviet-koi8-nuke.md'), 'utf8')
+    const excerpt = await fs.readFile(
+      path.join(root, 'home-excerpts', languageDir, 'soviet-koi8-nuke.md'),
+      'utf8',
+    )
+    assert.match(excerpt, new RegExp(`<u>${names[0]}</u>`))
+    assert.match(excerpt, new RegExp(`<u>${names[1]}</u>`))
+    assert.match(article, new RegExp(`<u>${names[2]}</u>`))
+    assert.doesNotMatch(article, /<u>地球(?:無核武協議|无核武协议)<\/u>/)
+    assert.doesNotMatch(excerpt, /<u>地球(?:無核武協議|无核武协议)<\/u>/)
+  }
+})

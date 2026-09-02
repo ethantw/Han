@@ -128,8 +128,18 @@ const collect = async (url) => {
     const bags = {}
     for (const id of Object.values(FAMILIES)) bags[id] = { all: new Set(), pgOnly: new Set() }
 
-    const idsFor = (fontFamily) =>
-      Object.entries(FAMILIES).filter(([name]) => fontFamily.includes(name)).map(([, id]) => id)
+    /* 一條 stack 可能同時列出受管的正文族與末端備援族，例如韓文報紙先列
+       Han Home Serif，後面才繼承到 Han Home Kai。前者已由本次建置要求完整
+       覆蓋，後者實際不會畫到這段文字；若把同一段餵給兩者，反而會要求不含
+       諺文的 LXGW WenKai TC 收進整篇韓文。依 stack 的實際順序，只歸給最先
+       出現的受管字族。別依 FAMILIES 的物件順序，因為同族的新舊名稱會並存。 */
+    const idsFor = (fontFamily) => {
+      const first = Object.entries(FAMILIES)
+        .map(([name, id]) => ({ id, at: fontFamily.indexOf(name) }))
+        .filter(({ at }) => at >= 0)
+        .sort((a, b) => a.at - b.at)[0]
+      return first ? [first.id] : []
+    }
 
     const eat = (text, ids, inPlayground) => {
       for (const ch of text) {

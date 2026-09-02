@@ -109,8 +109,6 @@ main > .ReadingStation[data-station]::before {
         font-size: 9px;
         font-weight: 650;
         dominant-baseline: middle;
-        animation: readings-star-twinkle var(--readings-twinkle-duration)
-          ease-in-out var(--readings-twinkle-delay) infinite;
       }
     }
   }
@@ -145,6 +143,15 @@ main > .ReadingStation[data-station]::before {
   & .Stars {
     & { fill: var(--readings-stars); opacity: 0.8; }
   }
+}
+
+.ReadingStation[data-sky-active] > .Sky .HunminStar text {
+  /* Removing the animation outside the observer margin matters here. Chromium
+     still samples a large field of paused SVG text animations once per frame,
+     even though their play state says "paused". Recreate them only while this
+     station is near enough to be seen. */
+  animation: readings-star-twinkle var(--readings-twinkle-duration)
+    ease-in-out var(--readings-twinkle-delay) infinite;
 }
 
 /* The homepage's low-density-screen treatment makes generic small rt sans.

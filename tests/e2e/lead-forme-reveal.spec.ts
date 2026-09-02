@@ -73,7 +73,12 @@ test('a 640px window flies the whole forme in without staggered slugs', async ({
     await expect(forme.locator('.Slug').first()).toBeAttached()
     return forme.evaluate(($f) => {
       $f.setAttribute('data-revealed', '')
+      document.dispatchEvent(new CustomEvent('han-config-change', {
+        detail: { config: { punct: { hant: 'JIS' } }, source: 'init' },
+      }))
       return {
+        punct: $f.getAttribute('data-punct'),
+        settled: $f.hasAttribute('data-settled'),
         svg: getComputedStyle($f.querySelector('svg')!).animationName,
         slug: getComputedStyle($f.querySelector('.Slug')!).animationName,
         captionDelay: getComputedStyle($f.querySelector('figcaption')!).animationDelay,
@@ -82,13 +87,43 @@ test('a 640px window flies the whole forme in without staggered slugs', async ({
   }
 
   const narrow = await entranceNames(640)
+  expect(narrow.punct).toBe('jis')
+  expect(narrow.settled).toBe(false)
   expect(narrow.svg).toBe('lf-forme-in')
   expect(narrow.slug).toBe('none')
   expect(narrow.captionDelay).toBe('0.12s')
 
   const wide = await entranceNames(641)
+  expect(wide.punct).toBe('jis')
+  expect(wide.settled).toBe(false)
   expect(wide.svg).toBe('none')
   expect(wide.slug).toBe('lf-drop')
+})
+
+test('a saved punctuation sync cannot cancel the desktop composing ceremony', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 })
+  await page.goto('/')
+  const forme = page.locator('.LeadForme')
+  await expect(forme.locator('.Slug').first()).toBeAttached()
+
+  const entrance = await forme.evaluate(($f) => {
+    $f.setAttribute('data-revealed', '')
+    document.dispatchEvent(new CustomEvent('han-config-change', {
+      detail: { config: { punct: { hant: 'JIS' } }, source: 'init' },
+    }))
+    const slugs = [...$f.querySelectorAll('.Slug')]
+    return {
+      punct: $f.getAttribute('data-punct'),
+      settled: $f.hasAttribute('data-settled'),
+      names: slugs.map(($slug) => getComputedStyle($slug).animationName),
+      delays: new Set(slugs.map(($slug) => getComputedStyle($slug).animationDelay)).size,
+    }
+  })
+
+  expect(entrance.punct).toBe('jis')
+  expect(entrance.settled).toBe(false)
+  expect(entrance.names.every((name) => name === 'lf-drop')).toBe(true)
+  expect(entrance.delays).toBeGreaterThan(10)
 })
 
 test('the pills and the note wait out the whole drop, then fly in', async ({ page }) => {

@@ -707,8 +707,11 @@
       </fieldset>
     </section>
 
-    <!-- 度量 sliders (3) — act on <main class="han"> whole-page -->
-    <section class="ControlGroup">
+    <!-- 度量 sliders (3) — act on <main class="han"> whole-page.
+         The homepage currently mounts <han-console hide-metrics>, so this
+         group stays available to standalone/specimen consoles without
+         exposing the expensive whole-page controls on the landing page. -->
+    <section class="ControlGroup" data-console-metrics>
       <header>{{ pgMetricsLabel }}</header>
 
 

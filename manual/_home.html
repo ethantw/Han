@@ -299,7 +299,7 @@
       <span data-icon="close" aria-hidden="true"></span>
     </button>
   </header>
-<han-console lang="{{ htmlLang }}" target="main" form="side">
+<han-console lang="{{ htmlLang }}" target="main" form="side" hide-metrics>
   <div class="ConsoleLoading" role="status" aria-label="工具欄載入中">
     <svg class="ConsoleLoaderMark" viewBox="0 0 100 100" width="46" height="46" aria-hidden="true">
       <circle class="d1" cx="20" cy="28" r="6.5" />
@@ -340,7 +340,7 @@
     if (Array.isArray(vars)) {
       for (const [k, v] of vars) root.style.setProperty(k, v)
       const m = config.metrics
-      if (m) {
+      if (m && !document.querySelector('han-console[hide-metrics]')) {
         if (m.size && m.size !== 16) body.style.setProperty('--console-metric-size', `${m.size}px`)
         if (m.leading && m.leading !== 1.75) body.style.setProperty('--console-metric-leading', String(m.leading))
         if (m.weight && m.weight !== 400) body.style.setProperty('--console-metric-weight', String(m.weight))

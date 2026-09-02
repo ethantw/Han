@@ -16,10 +16,9 @@ import { test, expect, type Page } from '@playwright/test'
  * merged Web字體來源 pair webfontDelivery + webfontCdnSource under 字體,
  * Request B — replacing the old zianoDelivery/zianoCdnSource and the
  * per-group 啟用 rows) in an accordion of `details.ControlGroup` (only
- * the 字體 group ships open; 語意／長文／行調整／JavaScript closed; 度量
- * and 模組 are flat non-collapsible sections), three metric sliders (the 直排/橫排 switch is
- * page chrome now — a floating pill, writing-switch.js)
- * (`[data-pg-sliders]`), each control row with its own ↺ default button. A separate
+ * the 字體 group ships open; 語意／長文／行調整／JavaScript closed; 模組 is
+ * a flat non-collapsible section). The component still owns its metric sliders,
+ * but the homepage temporarily mounts it with `hide-metrics`. A separate
  * `[data-demo-lang]` chip row (top-right of `<main>`) switches which
  * language the specimen copy demonstrates, independent of the page's
  * own UI locale.
@@ -140,7 +139,6 @@ test.describe('per-group 使用預設値 buttons', () => {
   // 細項), visible only while any control in the group deviates.
   test('deviating shows the group button; clicking restores that group only', async ({ page }) => {
     await page.goto('/')
-    const main = page.locator('main')
     const linesDefault = page.locator(
       'details.ControlGroup:has([data-cfg-key="squeeze"]) > summary .RestoreDefaults',
     )
@@ -154,34 +152,31 @@ test.describe('per-group 使用預設値 buttons', () => {
 
     // an unrelated deviation in another group so we can prove the
     // restore is group-scoped
-    const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
-    await sizeSlider.fill('22')
-    await sizeSlider.dispatchEvent('input')
-    await expect(main).toHaveCSS('font-size', '22px')
+    const proseModule = page.locator('[data-cfg-key="prose"]')
+    await proseModule.uncheck()
 
     await linesDefault.click()
     await expect.poll(() => refinementOnRoot(page)).toBe('')
     await expect(linesDefault).toBeHidden()
     // the accordion must not have been toggled shut by the click
     await expect(page.locator('[data-cfg-key="squeeze"]')).toBeVisible()
-    await expect(main).toHaveCSS('font-size', '22px') // other group untouched
+    await expect(proseModule).not.toBeChecked() // other group untouched
   })
 
-  test('metrics group button restores all three sliders', async ({ page }) => {
+  test('homepage hides metrics and ignores a previously saved deviation', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('han-console-config', JSON.stringify({
+        config: { metrics: { size: 22, leading: 2, weight: 700 } },
+        vars: [],
+      }))
+    })
     await page.goto('/')
-    const main = page.locator('main')
-    const metricsDefault = page.locator('.ControlGroup:has([data-pg-sliders]) > header .RestoreDefaults')
-    const sizeSlider = page.locator('[data-pg-sliders] [data-metric="size"] input[type="range"]')
-
-    await expect(metricsDefault).toBeHidden()
-    await sizeSlider.fill('22')
-    await sizeSlider.dispatchEvent('input')
-    await expect(metricsDefault).toBeVisible()
-
-    await metricsDefault.click()
-    await expect(sizeSlider).toHaveValue('16')
-    await expect(main).toHaveCSS('font-size', '16px')
-    await expect(metricsDefault).toBeHidden()
+    await expect(page.locator('han-console')).toHaveAttribute('hide-metrics', '')
+    await expect(page.locator('[data-console-metrics]')).toBeHidden()
+    await expect.poll(() => page.locator('han-console').evaluate((element) =>
+      (element as HTMLElement & { config: { metrics: unknown } }).config?.metrics,
+    )).toEqual({ size: 16, leading: 1.75, weight: 400 })
+    await expect(page.locator('main')).toHaveCSS('font-size', '16px')
   })
 })
 
@@ -213,20 +208,6 @@ test.describe('the narrow form is a panel, not a drawer', () => {
 
 // demo-lang chips（.DemoLangSwitch）已在首頁改版移除（e1c32a0 § Step 10）
 // ——樣張語言不再有頁面級切換，對應測試一併退役。
-
-test.describe('metrics — weight slider', () => {
-  test('字重 slider fill 700 → main font-weight 700', async ({ page }) => {
-    await page.goto('/')
-    const main = page.locator('main')
-    const weightSlider = page.locator('[data-pg-sliders] [data-metric="weight"] input[type="range"]')
-    await weightSlider.fill('700')
-    await weightSlider.dispatchEvent('input')
-    await expect(main).toHaveCSS('font-weight', '700')
-  })
-
-  // 直排 pill（[data-writing-switch]）已退役——首頁不再提供整頁直排預覽
-  // （直排示範歸 bare.html 的示例開關），對應測試刪除。
-})
 
 test.describe('fallbacks — JS layer', () => {
   test('checking fallbacks installs h-char on main; unchecking removes them', async ({ page }) => {

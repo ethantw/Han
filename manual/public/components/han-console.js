@@ -14,7 +14,8 @@
  *           localStorage load+save — demo pages) · target (CSS selector,
  *           default `main` — the scope han.js's JS fallbacks are installed
  *           on; the CSS side does NOT ride it, see below) · form
- *           (side|top, pure-CSS in the shadow)
+ *           (side|top, pure-CSS in the shadow) · hide-metrics (hide the
+ *           whole-page metric group and force its runtime values to defaults)
  *           (page-level collapse is NOT component API — the page's
  *           page chrome + its `:has()` state bit own it; see home.css
  *           § han-console.)
@@ -261,8 +262,11 @@ class HanConsole extends HTMLElement {
     // mountConsoleConfig falls back to DEFAULTS.
     // `stateless` attr（specimen.html 之類的 demo 頁）：不讀不寫 localStorage——
     // 每次進頁都是出廠 DEFAULTS，也不污染 home 存檔（同 origin 共用鍵）。
-    const initial = this.#config?.config
+    const restored = this.#config?.config
       ?? (this.hasAttribute('stateless') ? undefined : readStored())
+    const initial = this.hasAttribute('hide-metrics')
+      ? { ...(restored ?? DEFAULTS), metrics: { ...DEFAULTS.metrics } }
+      : restored
     const locale = resolveLocale(this)
     const tpl = TEMPLATES[locale] ?? TEMPLATES.hant
     this.shadowRoot.replaceChildren(

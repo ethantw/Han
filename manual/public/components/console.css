@@ -52,6 +52,14 @@
   display: none;
 }
 
+/* Homepage performance hold: keep the component capability for specimen and
+   standalone consumers, but let a mounting page suppress the whole-page
+   metric controls explicitly. The DOM remains so config/event shape does not
+   fork while the UI is temporarily unavailable. */
+:host([hide-metrics]) [data-console-metrics] {
+  display: none;
+}
+
 :host([form="top"]) {
   border-inline-end: 0;
   border-block-end: 1px solid var(--_rule);

@@ -454,6 +454,14 @@ export const initLeadForme = ($root = document, config = {}) => {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let busy = false;
   const $slugs = () => [...$svg.querySelectorAll('.Slug')];
+  const entranceInFlight = () => {
+    if (reduced || $forme.hasAttribute('data-settled')) return false;
+    if (!$forme.hasAttribute('data-revealed')) return true;
+    return [$svg, ...$slugs()].some(($el) =>
+      $el.getAnimations().some((animation) =>
+        ['lf-drop', 'lf-forme-in'].includes(animation.animationName)
+        && animation.playState !== 'finished'));
+  };
 
 
   const reslot = async (pick, swap) => {
@@ -482,6 +490,19 @@ export const initLeadForme = ($root = document, config = {}) => {
     if (!punct) return;
     check('lf-punct', punct);
     if (punct === $forme.dataset.punct) return;
+    /* The console upgrades asynchronously after the font gate. A returning
+       reader can therefore replay a saved punctuation choice while the
+       forme's first stagger is already running. Treat that as initial data:
+       rebuild every slug under the still-live entrance selector instead of
+       marking the forme settled and cancelling the ceremony. On desktop the
+       replacement slugs restart their stagger; on the narrow branch the SVG
+       itself keeps flying as one object. Later user changes still take the
+       selective reslot path below. */
+    if (entranceInFlight()) {
+      $forme.dataset.punct = punct;
+      render();
+      return;
+    }
     const moved = reset(
       built.cells,
       buildForme(punct, $forme.dataset.orient || 'v', spin, data()).cells,
