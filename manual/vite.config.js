@@ -423,13 +423,13 @@ async function renderHomeExcerptFields(slug, edition, fields) {
   }))
 }
 
-/** Render a disclosed homepage rewrite, never silently as a verbatim quote. */
+/** Render a homepage rewrite whose editorial status remains machine-readable. */
 async function renderEditorialHomeExcerpt(slug, edition) {
   const { meta, excerptFile } = await readHomeExcerpt(slug, edition)
   if (unquoteMeta(meta.excerpt_type) !== 'editorial_summary' || unquoteMeta(meta.verbatim) !== 'false')
-    throw new Error(`[home_excerpt] editorial disclosure missing: ${excerptFile}`)
+    throw new Error(`[home_excerpt] editorial metadata missing: ${excerptFile}`)
   return Object.fromEntries([
-    'disclosure', 'summary_lead', 'attribution', 'summary_claim',
+    'summary_lead', 'attribution', 'summary_claim',
   ].map(field => {
     const source = unquoteMeta(meta[field])
     if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
@@ -1011,7 +1011,7 @@ async function renderHomepage() {
     ]),
   ))
   const standardGlyphExcerpts = Object.fromEntries(await Promise.all(
-    ['hant', 'hans'].map(async edition => [
+    Object.keys(ARTICLE_LANG_DIR).map(async edition => [
       edition,
       await renderEditorialHomeExcerpt('standard-glyph-revival', edition),
     ]),
@@ -1075,17 +1075,14 @@ async function renderHomepage() {
       // is rendered from the same taisol-owned fields as the full articles.
       arDemoLine: locale === 'en' ? t.arDemoLine : arkExcerpts[locale].line_sample,
       arDemoEmphasis: locale === 'en' ? t.arDemoEmphasis : arkExcerpts[locale].emphasis_sample,
-      // Only Hant and Hans have this report. Their homepage rewrite is owned
-      // by taisol and machine-labelled as non-verbatim; the remaining three
-      // locales retain explicit homepage translations of that same summary.
-      arDemoQuoteLabel: standardGlyphExcerpts[locale]?.disclosure ?? t.arDemoQuoteLabel,
+      // The four CJK homepage rewrites are owned by taisol and explicitly
+      // recorded as non-verbatim editorial summaries.
       arDemoQuoteCry: standardGlyphExcerpts[locale]?.summary_lead ?? t.arDemoQuoteCry,
       arDemoQuoteBy: standardGlyphExcerpts[locale]?.attribution ?? t.arDemoQuoteBy,
       arDemoQuoteClaim: standardGlyphExcerpts[locale]?.summary_claim ?? t.arDemoQuoteClaim,
-      // This report has Hant and Hans editions only. Hans readers get their
-      // own article; the other homepage translations intentionally fall back
-      // to the source-language Hant edition.
-      standardGlyphEdition: locale === 'hans' ? 'hans' : 'hant',
+      // English has no taisol edition and therefore opens the source-language
+      // report; every CJK homepage opens its matching full article.
+      standardGlyphEdition: locale === 'en' ? 'hant' : locale,
       hyperloopFacesLine1: hyperloopFaces.faces_line_1,
       hyperloopFacesLine2: hyperloopFaces.faces_line_2,
       hyperloopFacesLang: {
