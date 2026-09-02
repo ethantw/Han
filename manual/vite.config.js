@@ -352,6 +352,155 @@ const HOME_ARTICLES = [
   'soviet-koi8-nuke',
 ]
 const ARTICLE_LANG_DIR = { hant: 'zh', hans: 'hans', ja: 'ja', ko: 'ko' }
+const HOME_EXCERPT_UI = {
+  hant: { label: '閱讀全文' },
+  hans: { label: '阅读全文' },
+  ja:   { label: '全文を読む' },
+  ko:   { label: '전문 읽기' },
+}
+
+const unquoteMeta = value => String(value ?? '').replace(/^(['"])([\s\S]*)\1$/, '$2')
+
+/** Resolve the canonical homepage excerpt named by an article frontmatter. */
+async function readHomeExcerpt(slug, edition) {
+  const langDir = ARTICLE_LANG_DIR[edition]
+  const articleFile = path.join(TAISOL_DIR, langDir, `${slug}.md`)
+  const articleRaw = await fs.readFile(articleFile, 'utf-8')
+  const { meta: articleMeta } = splitFrontmatter(articleRaw)
+  const excerptRef = unquoteMeta(articleMeta.home_excerpt)
+  if (!excerptRef) throw new Error(`[home_excerpt] ${articleFile} has no home_excerpt field`)
+
+  const excerptFile = path.resolve(path.dirname(articleFile), excerptRef)
+  if (!excerptFile.startsWith(TAISOL_DIR + path.sep))
+    throw new Error(`[home_excerpt] path escapes taisol: ${excerptRef}`)
+
+  const excerptRaw = await fs.readFile(excerptFile, 'utf-8')
+  const { meta, body } = splitFrontmatter(excerptRaw)
+  return { meta, body, excerptFile }
+}
+
+/**
+ * Render a canonical newspaper-card excerpt. Editorial copy remains in
+ * taisol; the homepage template owns only its chrome and reader interaction.
+ */
+async function renderHomeExcerpt(slug, edition) {
+  const { meta, body, excerptFile } = await readHomeExcerpt(slug, edition)
+  const title = unquoteMeta(meta.title)
+  const byline = unquoteMeta(meta.byline)
+  const teaser = unquoteMeta(meta.teaser)
+  if (!title || !byline || !teaser || !body.trim())
+    throw new Error(`[home_excerpt] incomplete excerpt: ${excerptFile}`)
+
+  const ui = HOME_EXCERPT_UI[edition]
+  const jump = `<a class="PaperJump" href="/articles/${slug}/${edition}.html" data-article="${slug}" data-edition="${edition}" title="${escapeAttr(ui.label)}">${escapeHtml(ui.label)}</a>`
+  const rendered = md.render(body.trim())
+  const withJump = rendered.replace(/<\/p>\s*$/, ` ${jump}</p>`)
+  if (withJump === rendered)
+    throw new Error(`[home_excerpt] excerpt must end in a paragraph: ${excerptFile}`)
+
+  return {
+    teaser,
+    html: `<h3>${md.renderInline(title)}</h3>\n<p class="author">${md.renderInline(byline)}</p>\n${withJump}`,
+  }
+}
+
+/** Render a one-paragraph specimen without introducing a wrapper element. */
+async function renderInlineHomeExcerpt(slug, edition) {
+  const { body, excerptFile } = await readHomeExcerpt(slug, edition)
+  const source = body.trim()
+  if (!source || /\n\s*\n/.test(source))
+    throw new Error(`[home_excerpt] inline excerpt must be one paragraph: ${excerptFile}`)
+  return md.renderInline(source)
+}
+
+/** Render named one-line fields from an excerpt's simple frontmatter. */
+async function renderHomeExcerptFields(slug, edition, fields) {
+  const { meta, excerptFile } = await readHomeExcerpt(slug, edition)
+  return Object.fromEntries(fields.map(field => {
+    const source = unquoteMeta(meta[field])
+    if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+    return [field, md.renderInline(source)]
+  }))
+}
+
+/** Render a disclosed homepage rewrite, never silently as a verbatim quote. */
+async function renderEditorialHomeExcerpt(slug, edition) {
+  const { meta, excerptFile } = await readHomeExcerpt(slug, edition)
+  if (unquoteMeta(meta.excerpt_type) !== 'editorial_summary' || unquoteMeta(meta.verbatim) !== 'false')
+    throw new Error(`[home_excerpt] editorial disclosure missing: ${excerptFile}`)
+  return Object.fromEntries([
+    'disclosure', 'summary_lead', 'attribution', 'summary_claim',
+  ].map(field => {
+    const source = unquoteMeta(meta[field])
+    if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+    return [field, md.renderInline(source)]
+  }))
+}
+
+/** Render the two typography specimens and retain their editorial status. */
+async function renderHyperloopHomeExcerpt(edition) {
+  const { meta, excerptFile } = await readHomeExcerpt('hyperloop-12sec', edition)
+  const fields = [
+    'faces_type', 'faces_verbatim', 'faces_line_1', 'faces_line_2',
+    'forme_type', 'forme_verbatim', 'forme_sample',
+  ]
+  const values = Object.fromEntries(fields.map(field => {
+    const source = unquoteMeta(meta[field])
+    if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+    return [field, source]
+  }))
+  const expected = edition === 'hant'
+    ? ['source_excerpt', 'true', 'source_excerpt', 'true']
+    : edition === 'hans'
+      ? ['orthographic_adaptation', 'false', 'source_excerpt', 'true']
+      : ['translation', 'false', 'typographic_adaptation', 'false']
+  const actual = [
+    values.faces_type, values.faces_verbatim,
+    values.forme_type, values.forme_verbatim,
+  ]
+  if (actual.some((value, index) => value !== expected[index]))
+    throw new Error(`[home_excerpt] incorrect excerpt disclosure: ${excerptFile}`)
+  const expectedFormeLength = edition === 'ko' ? 33 : 32
+  if ([...values.forme_sample].length !== expectedFormeLength)
+    throw new Error(`[home_excerpt] forme_sample must be ${expectedFormeLength} glyphs: ${excerptFile}`)
+  return {
+    ...values,
+    faces_line_1: md.renderInline(values.faces_line_1),
+    faces_line_2: md.renderInline(values.faces_line_2),
+    forme_sample: md.renderInline(values.forme_sample),
+  }
+}
+
+/** Render the source-owned punctuation card and its paired dash specimen. */
+async function renderTelepathyHomeExcerpt(edition) {
+  const { meta, body, excerptFile } = await readHomeExcerpt('telepathy-speech-rehab', edition)
+  const source = body.trim()
+  if (!source || /\n\s*\n/.test(source))
+    throw new Error(`[home_excerpt] punctuation excerpt must be one paragraph: ${excerptFile}`)
+
+  const fields = [
+    'punct_type', 'punct_verbatim', 'dash_type', 'dash_verbatim',
+    'dash_lang', 'dash_lead', 'dash_middle', 'dash_copy_cells', 'dash_punct_cell',
+  ]
+  const values = Object.fromEntries(fields.map(field => {
+    const value = unquoteMeta(meta[field])
+    if (!value) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+    return [field, value]
+  }))
+  const expectedDash = ['hant', 'hans'].includes(edition)
+    ? ['source_excerpt', 'true']
+    : ['typographic_adaptation', 'false']
+  if (values.punct_type !== 'source_excerpt' || values.punct_verbatim !== 'true'
+      || values.dash_type !== expectedDash[0] || values.dash_verbatim !== expectedDash[1])
+    throw new Error(`[home_excerpt] incorrect excerpt disclosure: ${excerptFile}`)
+
+  return {
+    ...values,
+    punct_sample: md.renderInline(source),
+    dash_lead: md.renderInline(values.dash_lead),
+    dash_middle: md.renderInline(values.dash_middle),
+  }
+}
 
 async function renderArticleFragment(slug, edition) {
   if (!HOME_ARTICLES.includes(slug) || !Object.hasOwn(ARTICLE_LANG_DIR, edition)) return null
@@ -831,6 +980,54 @@ async function renderHomepage() {
     )),
   )
   const ledger = await computeModuleLedger()
+  const koi8Excerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition =>
+      [edition, await renderHomeExcerpt('soviet-koi8-nuke', edition)]),
+  ))
+  const koi8ExcerptCtx = Object.fromEntries(
+    Object.entries(koi8Excerpts).map(([edition, excerpt]) => [
+      `koi8Excerpt${edition[0].toUpperCase()}${edition.slice(1)}`,
+      excerpt.html,
+    ]),
+  )
+  const passportExcerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition =>
+      [edition, await renderInlineHomeExcerpt('passport-museum', edition)]),
+  ))
+  const hypersleepExcerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition => [
+      edition,
+      await renderHomeExcerptFields('hypersleep-drunk', edition, [
+        'heading', 'heading_note', 'cite_sample',
+      ]),
+    ]),
+  ))
+  const arkExcerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition => [
+      edition,
+      await renderHomeExcerptFields('ark-europa-customs', edition, [
+        'line_sample', 'emphasis_sample',
+      ]),
+    ]),
+  ))
+  const standardGlyphExcerpts = Object.fromEntries(await Promise.all(
+    ['hant', 'hans'].map(async edition => [
+      edition,
+      await renderEditorialHomeExcerpt('standard-glyph-revival', edition),
+    ]),
+  ))
+  const hyperloopExcerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition => [
+      edition,
+      await renderHyperloopHomeExcerpt(edition),
+    ]),
+  ))
+  const telepathyExcerpts = Object.fromEntries(await Promise.all(
+    Object.keys(ARTICLE_LANG_DIR).map(async edition => [
+      edition,
+      await renderTelepathyHomeExcerpt(edition),
+    ]),
+  ))
 
   for (const locale of HOME_LOCALE_SLUGS) {
     // Per-file keys are partitioned (no cross-file sharing), so merging
@@ -851,10 +1048,77 @@ async function renderHomepage() {
       : locale
     const docsUrl = urlFor('index', docsLocale)
     const installUrl = urlFor('install', docsLocale)
+    // English has no taisol edition; this explicitly CJK type specimen keeps
+    // the source-language Hant copy on the English homepage.
+    const hyperloopLocale = locale === 'en' ? 'hant' : locale
+    const hyperloopFaces = hyperloopExcerpts[hyperloopLocale]
+    const telepathyLocale = locale === 'en' ? 'hant' : locale
+    const telepathyDash = telepathyExcerpts[telepathyLocale]
 
     const ctx = {
       ...t,
       ...ledger,
+      ...koi8ExcerptCtx,
+      // English has no taisol article edition; the four CJK homepage locales
+      // use the teaser stored beside their canonical excerpt.
+      semanticsSpecimen: locale === 'en' ? t.semanticsSpecimen : koi8Excerpts[locale].teaser,
+      // Passport has no English edition; its English homepage specimen is
+      // intentionally the canonical source-language (zh-Hant) paragraph.
+      breathingLinesSample: passportExcerpts[locale === 'en' ? 'hant' : locale],
+      // English keeps its explanatory translation in the homepage i18n;
+      // every edition that has a taisol article reads these three fields from
+      // that article's canonical excerpt.
+      arDemoHeading: locale === 'en' ? t.arDemoHeading : hypersleepExcerpts[locale].heading,
+      arDemoHeadingNote: locale === 'en' ? t.arDemoHeadingNote : hypersleepExcerpts[locale].heading_note,
+      arDemoCite: locale === 'en' ? t.arDemoCite : hypersleepExcerpts[locale].cite_sample,
+      // The Ark specimens carry meaningful inline markup, so their CJK copy
+      // is rendered from the same taisol-owned fields as the full articles.
+      arDemoLine: locale === 'en' ? t.arDemoLine : arkExcerpts[locale].line_sample,
+      arDemoEmphasis: locale === 'en' ? t.arDemoEmphasis : arkExcerpts[locale].emphasis_sample,
+      // Only Hant and Hans have this report. Their homepage rewrite is owned
+      // by taisol and machine-labelled as non-verbatim; the remaining three
+      // locales retain explicit homepage translations of that same summary.
+      arDemoQuoteLabel: standardGlyphExcerpts[locale]?.disclosure ?? t.arDemoQuoteLabel,
+      arDemoQuoteCry: standardGlyphExcerpts[locale]?.summary_lead ?? t.arDemoQuoteCry,
+      arDemoQuoteBy: standardGlyphExcerpts[locale]?.attribution ?? t.arDemoQuoteBy,
+      arDemoQuoteClaim: standardGlyphExcerpts[locale]?.summary_claim ?? t.arDemoQuoteClaim,
+      // This report has Hant and Hans editions only. Hans readers get their
+      // own article; the other homepage translations intentionally fall back
+      // to the source-language Hant edition.
+      standardGlyphEdition: locale === 'hans' ? 'hans' : 'hant',
+      hyperloopFacesLine1: hyperloopFaces.faces_line_1,
+      hyperloopFacesLine2: hyperloopFaces.faces_line_2,
+      hyperloopFacesLang: {
+        hant: 'zh-Hant', hans: 'zh-Hans', ja: 'ja', ko: 'ko-Kore',
+      }[hyperloopLocale],
+      // The Japanese and Korean reports tell only the Tokyo-line half of the
+      // story, so their translated Taipei faces specimen links to its Hant
+      // source. Hans has the complete localized report and opens that edition.
+      hyperloopFacesEdition: locale === 'hans' ? 'hans' : 'hant',
+      hyperloopFormeEdition: hyperloopLocale,
+      hyperloopFormeHant: hyperloopExcerpts.hant.forme_sample,
+      hyperloopFormeHans: hyperloopExcerpts.hans.forme_sample,
+      hyperloopFormeJa: hyperloopExcerpts.ja.forme_sample,
+      hyperloopFormeKo: hyperloopExcerpts.ko.forme_sample,
+      hyperloopFormeTypeHant: hyperloopExcerpts.hant.forme_type,
+      hyperloopFormeTypeHans: hyperloopExcerpts.hans.forme_type,
+      hyperloopFormeTypeJa: hyperloopExcerpts.ja.forme_type,
+      hyperloopFormeTypeKo: hyperloopExcerpts.ko.forme_type,
+      hyperloopFormeVerbatimHant: hyperloopExcerpts.hant.forme_verbatim,
+      hyperloopFormeVerbatimHans: hyperloopExcerpts.hans.forme_verbatim,
+      hyperloopFormeVerbatimJa: hyperloopExcerpts.ja.forme_verbatim,
+      hyperloopFormeVerbatimKo: hyperloopExcerpts.ko.forme_verbatim,
+      telepathyPunctHant: telepathyExcerpts.hant.punct_sample,
+      telepathyPunctHans: telepathyExcerpts.hans.punct_sample,
+      telepathyPunctJa: telepathyExcerpts.ja.punct_sample,
+      telepathyPunctKo: telepathyExcerpts.ko.punct_sample,
+      telepathyDashType: telepathyDash.dash_type,
+      telepathyDashVerbatim: telepathyDash.dash_verbatim,
+      stDashLang: telepathyDash.dash_lang,
+      stDashLead: telepathyDash.dash_lead,
+      stDashMiddle: telepathyDash.dash_middle,
+      stDashCells: telepathyDash.dash_copy_cells,
+      stDashPunctCell: telepathyDash.dash_punct_cell,
       htmlLang: HOME_HTML_LANG[locale] ?? locale,
       // 子集在場才掛（見 syncSubsets 的檔頭）。`data-han-webfont` 讓讀者在
       // 主控台關掉 webfont 時，這三份跟 CDN 那幾份一起停用。
@@ -1363,6 +1627,12 @@ function hanManualPlugin() {
         if (file === HOME_LAYOUT || file.startsWith(HOME_DIR)) {
           await renderHomepage()
           console.log(`[han-manual] ${path.basename(file)} → homepage re-rendered (refresh browser)`)
+          return
+        }
+
+        if (file.startsWith(TAISOL_DIR)) {
+          await renderHomepage()
+          console.log(`[han-manual] ${path.basename(file)} → homepage excerpts re-rendered (refresh browser)`)
           return
         }
 

@@ -64,14 +64,14 @@
   ltLangKo: {
     hant: '韓', hans: '韩', en: '<abbr class="acronym">KO</abbr>', ja: '韓', ko: '韓',
   },
-  /* 各語言首頁的鉛字預設：自己語言的句子、自己的標點公約（owner：繁 KLR、
+  /* 各語言首頁的鉛字預設：自己語言的句子、自己的標點公約（繁 MOE、
      簡 GB、日 JIS、韓 KLR；en 頁跟繁）。值進 figure 的 data-*，藥丸的
      checked 由 lead-forme.js 開機時對著 data-* 補上。 */
   lfHomeLang: {
     hant: 'hant', hans: 'hans', en: 'hant', ja: 'ja', ko: 'ko',
   },
   lfHomePunct: {
-    hant: 'klr', hans: 'gb', en: 'klr', ja: 'jis', ko: 'klr',
+    hant: 'moe', hans: 'gb', en: 'moe', ja: 'jis', ko: 'klr',
   },
   ltOrientLegend: {
     hant: '行向', hans: '行向', en: 'Direction', ja: '行方向',
@@ -136,28 +136,6 @@
     ja: '——版本と活字が培った骨格、筆意、節度を受け継ぎ、Google Fontsと同系統のWoff2分割技術とCDNのミリ秒配信によって、システム書体を大きく凌ぐ漢字品質をあらゆる画面へ届ける。',
     ko: '——刊本과 活字의 骨格、筆意、節度를 이어받고、Google Fonts와 같은 Woff2 切片 技術 및 CDN의 밀리초 傳送으로 시스템 글꼴을 훨씬 뛰어넘는 漢字 品質을 모든 畵面에 전한다。',
   },
-  /* 破折號柱是特效文案，與下方四語報紙樣張的原文分開維護。
-     中段保留量測錨點的 markup；日韓語序中 NoteEnd 在 Release 之前。 */
-  stDashLang: {
-    hant: 'zh-Hant', ja: 'ja', ko: 'ko-Kore',
-  },
-  stDashLead: {
-    hant: '他沉默了四點七秒',
-    ja: '彼は四点七秒沈黙した',
-    ko: '그는 四點七秒 동안 沈默했다',
-  },
-  stDashMiddle: {
-    hant: '這個時間足夠三體人<span class="Release">交換</span>一部《三體通史十萬<span class="NoteEnd">年》</span>體量的知識',
-    ja: 'この時間で三体人が『三体通史十万<span class="NoteEnd">年』</span>の知識<span class="Release">交換</span>に足りる',
-    ko: '이 時間이면 三體人이 『三體通史十萬<span class="NoteEnd">年』</span>의 知識<span class="Release">交換</span>에 充分하다',
-  },
-  /* 韓文混排的垂直字幅不是單純一字一格；下列 em 值來自實際字幅。 */
-  stDashPunctCell: {
-    hant: '32', ja: '30', ko: '33.554',
-  },
-  stDashCells: {
-    hant: '39', ja: '41', ko: '46.072',
-  },
   stTwoEmDashesP: {
     hant: '中間斷開的破折號、落在基線上的刪節號、尺寸太小的間隔號，皆起自Unicode共用碼位的歷史問題，透過漢.css提供的Diantenjeom標點字體與CSS複合字體技術，精準為讀者拂偏歸正。',
     hans: '中间断开的破折号、落在基线上的删节号、尺寸太小的间隔号，皆起自Unicode共用码位的历史问题，通过汉.css提供的Diantenjeom标点字体与CSS复合字体技术，精准为读者拂偏归正。',
@@ -190,23 +168,23 @@
   <p>{{ stLede }}</p>
 
   <figure class="Illust" data-variant="faces">
-    <ul class="Faces" lang="zh-Hant">
+    <ul class="Faces" lang="{{ hyperloopFacesLang }}">
       <li data-face="sans">
-        超迴路運行廿載，即將增停台北，<br />萬戶爭睹雲軌美景
+        {{ hyperloopFacesLine1 }}<br />{{ hyperloopFacesLine2 }}
         <small>黑</small>
       </li>
       <li data-face="serif">
-        超迴路運行廿載，即將增停台北，<br />萬戶爭睹雲軌美景
+        {{ hyperloopFacesLine1 }}<br />{{ hyperloopFacesLine2 }}
         <small>明</small>
       </li>
       <li data-face="cursive">
-        超迴路運行廿載，即將增停台北，<br />萬戶爭睹雲軌美景
+        {{ hyperloopFacesLine1 }}<br />{{ hyperloopFacesLine2 }}
         <small>楷</small>
       </li>
     </ul>
     <figcaption>
       <h3>{{ stHeritageH3 }}</h3>
-      <p>{{ stHeritageP }} <a class="PaperJump" href="/articles/hyperloop-12sec/hant.html" data-article="hyperloop-12sec" title="閱讀完整報導">閱讀完整報導</a>
+      <p>{{ stHeritageP }} <a class="PaperJump" href="/articles/hyperloop-12sec/{{ hyperloopFacesEdition }}.html" data-article="hyperloop-12sec" data-edition="{{ hyperloopFacesEdition }}" title="閱讀完整報導">閱讀完整報導</a>
     </figcaption>
   </figure>
 
@@ -229,7 +207,13 @@
         代價是 .Faces 那行（超迴路增停台北）與這句（乘客抱怨同一條超迴路）的
         報導↔民眾反應對仗被隔開一段——stHeritageP 只有一句，梗接得住。 -->
   <div class="FormeRail" data-strip="forme" tabindex="0" aria-label="{{ ltRailLabel }}">
-  <figure class="LeadForme" data-face="m" data-lang="{{ lfHomeLang }}" data-punct="{{ lfHomePunct }}" data-orient="v" data-reveal-at="0.6">
+  <figure class="LeadForme" data-face="m" data-lang="{{ lfHomeLang }}" data-punct="{{ lfHomePunct }}" data-orient="v" data-reveal-at="0.6"
+    data-copy-hant="{{ hyperloopFormeHant }}" data-copy-hans="{{ hyperloopFormeHans }}"
+    data-copy-ja="{{ hyperloopFormeJa }}" data-copy-ko="{{ hyperloopFormeKo }}"
+    data-forme-type-hant="{{ hyperloopFormeTypeHant }}" data-forme-type-hans="{{ hyperloopFormeTypeHans }}"
+    data-forme-type-ja="{{ hyperloopFormeTypeJa }}" data-forme-type-ko="{{ hyperloopFormeTypeKo }}"
+    data-forme-verbatim-hant="{{ hyperloopFormeVerbatimHant }}" data-forme-verbatim-hans="{{ hyperloopFormeVerbatimHans }}"
+    data-forme-verbatim-ja="{{ hyperloopFormeVerbatimJa }}" data-forme-verbatim-ko="{{ hyperloopFormeVerbatimKo }}">
     <svg role="img" aria-hidden="true"></svg>
     <form class="Controls" aria-label="{{ ltControls }}">
       <fieldset aria-labelledby="lf-lg-face">
@@ -246,7 +230,6 @@
         <label><input type="radio" name="lf-punct" value="moe" /><abbr class="acronym">MOE</abbr></label>
         <label><input type="radio" name="lf-punct" value="gb" /><abbr class="acronym">GB</abbr></label>
         <label><input type="radio" name="lf-punct" value="klr" /><abbr class="acronym">KLR</abbr></label>
-        <label><input type="radio" name="lf-punct" value="off" /><abbr class="acronym">off</abbr></label>
       </fieldset>
       <fieldset aria-labelledby="lf-lg-lang">
         <span class="PillHead" id="lf-lg-lang">{{ ltLangLegend }}</span>
@@ -261,7 +244,7 @@
         <label><input type="radio" name="lf-orient" value="h" /> {{ ltOrientH }}</label>
       </fieldset>
     </form>
-    <figcaption>{{ stTrayNote }} <a class="PaperJump" href="/articles/hyperloop-12sec/hant.html" data-article="hyperloop-12sec" title="閱讀完整報導">閱讀完整報導</a></figcaption>
+    <figcaption>{{ stTrayNote }} <a class="PaperJump" href="/articles/hyperloop-12sec/{{ hyperloopFormeEdition }}.html" data-article="hyperloop-12sec" data-edition="{{ hyperloopFormeEdition }}" data-forme-paper-jump title="閱讀完整報導">閱讀完整報導</a></figcaption>
   </figure>
   </div>
   <!-- 站①站④同一支模組、同一個角落。只在窄站台出現——寬螢幕的字盤整座都在
@@ -298,7 +281,7 @@
        不能省掉這個屬性——reveal.js 的目標選擇器是
        `.Manifesto, [data-station], [data-reveal-at]`，拿掉它本欄就不再是
        reveal 目標，data-revealed 永遠不會蓋，柱的首播也就跟著卡死。 -->
-  <div class="TwoEmDashes" data-reveal-at="0.15" style="--df-copy-cells: {{ stDashCells }}; --df-punct-cell: {{ stDashPunctCell }}">
+  <div class="TwoEmDashes" data-reveal-at="0.15" data-excerpt-type="{{ telepathyDashType }}" data-verbatim="{{ telepathyDashVerbatim }}" style="--df-copy-cells: {{ stDashCells }}; --df-punct-cell: {{ stDashPunctCell }}">
     <!-- 底圖那一柱：一句直排的話，中間一個破折號。
 
          **句子是 HTML，只有破折號那兩格是 SVG**（2026-08-15 改）。原本整柱都在
@@ -375,7 +358,7 @@
     <figure class="PunctLang Rail">
       <ul>
         <li lang="zh-Hant">
-          <p>輪到富察・福慶發言。作為地球移民後代、出生在三體定居區的他，三歲即植入神經共振晶片，去年首次踏上地球。起身後，他沉默了四點七秒——這個時間足夠三體人交換一部《三體通史十萬年》體量的知識——然後說：「我想說的是……不，『說』這個詞本身就太慢了……你們、你們地球人真的還在用嘴巴？」 <a class="PaperJump" href="/articles/telepathy-speech-rehab/hant.html" data-article="telepathy-speech-rehab" data-edition="hant" title="閱讀完整報導">閱讀完整報導</a></p>
+          <p>{{ telepathyPunctHant }} <a class="PaperJump" href="/articles/telepathy-speech-rehab/hant.html" data-article="telepathy-speech-rehab" data-edition="hant" title="閱讀完整報導">閱讀完整報導</a></p>
           <label>繁<select>
             <option value="JIS">JIS</option>
             <option value="MOE" selected>MOE</option>
@@ -385,7 +368,7 @@
           </select></label>
         </li>
         <li lang="zh-Hans">
-          <p>轮到富察・福庆发言。作为地球移民后代、出生在三体定居区的他，三岁即植入神经共振晶片，去年首次踏上地球。起身后，他沉默了四点七秒——这个时间足够三体人交换一部《三体通史十万年》体量的知识——然后说：「我想说的是……不，『说』这个词本身就太慢了……你们、你们地球人真的还在用嘴巴？」 <a class="PaperJump" href="/articles/telepathy-speech-rehab/hans.html" data-article="telepathy-speech-rehab" data-edition="hans" title="阅读全文">阅读全文</a></p>
+          <p>{{ telepathyPunctHans }} <a class="PaperJump" href="/articles/telepathy-speech-rehab/hans.html" data-article="telepathy-speech-rehab" data-edition="hans" title="阅读全文">阅读全文</a></p>
           <label>簡<select>
             <option value="JIS">JIS</option>
             <option value="MOE">MOE</option>
@@ -395,7 +378,7 @@
           </select></label>
         </li>
         <li lang="ja">
-          <p><ruby>富察<rt>ふさつ</rt></ruby>・<ruby>福慶<rt>ふくけい</rt></ruby>の番になった。地球移民の裔として三体移住区に生まれた彼は、三歳で神経共振チップを入れ、地球の土を踏んだのは昨年が初めてである。立ち上がって、四・七秒沈黙する——この時間は、三体人が『三体通史十万年』一部ぶんの知識をやり取りするに足りる——そして言った。「言いたいのは……いや、『言う』という言葉そのものが、もう遅すぎる……君たち、君たち地球人は本当にまだ口を使っているのか？」 <a class="PaperJump" href="/articles/telepathy-speech-rehab/ja.html" data-article="telepathy-speech-rehab" data-edition="ja" title="全文を読む">全文を読む</a></p>
+          <p>{{ telepathyPunctJa }} <a class="PaperJump" href="/articles/telepathy-speech-rehab/ja.html" data-article="telepathy-speech-rehab" data-edition="ja" title="全文を読む">全文を読む</a></p>
           <label>日<select>
             <option value="JIS" selected>JIS</option>
             <option value="MOE">MOE</option>
@@ -405,7 +388,7 @@
           </select></label>
         </li>
         <li lang="ko-Kore">
-          <p><ruby>富察<rt>부찰</rt></ruby>·<ruby>福慶<rt>복경</rt></ruby>의 <ruby>次例<rt>차례</rt></ruby>가 됐다。<ruby>地球<rt>지구</rt></ruby> <ruby>移民<rt>이민</rt></ruby>의 <ruby>後裔<rt>후예</rt></ruby>로 <ruby>三體<rt>삼체</rt></ruby> <ruby>移住區<rt>이주구</rt></ruby>에서 태어난 그는 세 살에 <ruby>神經<rt>신경</rt></ruby> <ruby>共振<rt>공진</rt></ruby> 칩을 넣었고，<ruby>地球<rt>지구</rt></ruby> 땅을 밟은 것은 지난해가 처음이다。일어나서 4.7<ruby>秒<rt>초</rt></ruby>를 <ruby>沈默<rt>침묵</rt></ruby>한다——이 <ruby>時間<rt>시간</rt></ruby>이면 <ruby>三體人<rt>삼체인</rt></ruby>이 『<ruby>三體通史<rt>삼체통사</rt></ruby> <ruby>十萬年<rt>십만년</rt></ruby>』한 <ruby>部<rt>부</rt></ruby> <ruby>分量<rt>분량</rt></ruby>의 <ruby>知識<rt>지식</rt></ruby>을 주고받기에 <ruby>充分<rt>충분</rt></ruby>하다——그러고는 말했다。「말하고 싶은 건……아니，『말한다』는 <ruby>單語<rt>단어</rt></ruby> <ruby>自體<rt>자체</rt></ruby>가 이미 너무 느려요……여러분，여러분 <ruby>地球人<rt>지구인</rt></ruby>은 정말 아직도 입을 쓰나요？」 <a class="PaperJump" href="/articles/telepathy-speech-rehab/ko.html" data-article="telepathy-speech-rehab" data-edition="ko" title="전문 읽기">전문 읽기</a></p>
+          <p>{{ telepathyPunctKo }} <a class="PaperJump" href="/articles/telepathy-speech-rehab/ko.html" data-article="telepathy-speech-rehab" data-edition="ko" title="전문 읽기">전문 읽기</a></p>
           <label>韓<select>
             <option value="JIS">JIS</option>
             <option value="MOE">MOE</option>

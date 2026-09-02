@@ -57,10 +57,25 @@ const COLS_KO = [
 
 /** Maps each specimen language to its forme, default punctuation and SVG language. */
 export const FORME_LANGS = {
-  hant: { cols: COLS, punct: 'klr', tag: 'zh-Hant' },
+  hant: { cols: COLS, punct: 'moe', tag: 'zh-Hant' },
   hans: { cols: COLS_HANS, punct: 'gb', tag: 'zh-Hans' },
   ja: { cols: COLS_JA, punct: 'jis', tag: 'ja' },
   ko: { cols: COLS_KO, punct: 'klr', tag: 'ko-Kore' },
+};
+
+/* The homepage owns the physical 4×10 case, while taisol owns its words.
+ * Column one reserves its first quad for paragraph indentation; the final
+ * column is padded with blank quads. This reproduces the original hand-cut
+ * arrays exactly while allowing their copy to come from `home_excerpt`. */
+const columnsFromText = (source) => {
+  const glyphs = [...source];
+  const pad = (items) => [...items, ...Array(Math.max(0, 10 - items.length)).fill('')];
+  return [
+    pad(['', ...glyphs.slice(0, 9)]),
+    pad(glyphs.slice(9, 19)),
+    pad(glyphs.slice(19, 29)),
+    pad(glyphs.slice(29, 39)),
+  ];
 };
 
 const normalizePunct = (value) => typeof value === 'string' ? value.toLowerCase() : null;
@@ -376,10 +391,25 @@ export const initLeadForme = ($root = document, config = {}) => {
   const $console = document.querySelector('han-console');
 
   const slice = config.slice ? { ...SLICE, ...config.slice } : SLICE;
+  const colsFor = (lang) => {
+    const source = $forme.getAttribute(`data-copy-${lang}`);
+    return source ? columnsFromText(source) : FORME_LANGS[lang]?.cols ?? COLS;
+  };
   const data = () => ({
-    cols: config.cols ?? FORME_LANGS[$forme.dataset.lang]?.cols ?? COLS,
+    cols: config.cols ?? colsFor($forme.dataset.lang),
     slice,
   });
+  const syncExcerpt = (lang) => {
+    const type = $forme.getAttribute(`data-forme-type-${lang}`);
+    const verbatim = $forme.getAttribute(`data-forme-verbatim-${lang}`);
+    if (type) $forme.dataset.excerptType = type;
+    if (verbatim) $forme.dataset.verbatim = verbatim;
+    const $jump = $forme.querySelector('[data-forme-paper-jump]');
+    if ($jump && FORME_LANGS[lang]) {
+      $jump.dataset.edition = lang;
+      $jump.href = `/articles/hyperloop-12sec/${lang}.html`;
+    }
+  };
 
   const check = (name, value) => {
     $forme.querySelectorAll(`input[name="${name}"]`).forEach(($radio) => {
@@ -390,6 +420,7 @@ export const initLeadForme = ($root = document, config = {}) => {
     normalizePunct(punct?.[lang]) ?? FORME_LANGS[lang]?.punct;
   check('lf-punct', $forme.dataset.punct);
   check('lf-lang', $forme.dataset.lang);
+  syncExcerpt($forme.dataset.lang);
   const $svg = $forme.querySelector('svg');
 
   let spin = false;
@@ -516,6 +547,7 @@ export const initLeadForme = ($root = document, config = {}) => {
     el.addEventListener('change', () => recompose(() => {
       const lang = picked('lf-lang');
       $forme.dataset.lang = lang;
+      syncExcerpt(lang);
       const punct = punctFor(lang);
       if (punct) {
         $forme.dataset.punct = punct;
