@@ -23,6 +23,10 @@
       "types": "./dist/types/han.d.ts",
       "default": "./dist/han.js"
     },
+    "./zhuyin-calibration": {
+      "types": "./dist/types/han.zhuyin-calibration.d.ts",
+      "default": "./dist/han.zhuyin-calibration.js"
+    },
     "./styles": "./dist/han.css",
     "./styles/semantics": "./dist/han.semantics.css",
     "./styles/lines": "./dist/han.lines.css",
@@ -57,7 +61,8 @@
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include='src/ts/**' --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 'src/ts/**/*.test.ts'",
     "serve": "node build/serve.js",
     "pretest:e2e": "node build/library && pnpm --filter han-manual build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:ruby-webkit": "playwright test --config=playwright.ruby-webkit.config.ts"
   },
   "engines": {
     "node": ">=22",

@@ -5,32 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>《太陽中文報》全文注音排版</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css" data-dtj>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-lxgw-wenkai-tc@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="/han/han.css">
+<link rel="stylesheet" href="/common/variables.css">
+<link rel="stylesheet" href="/common/icons.css">
+<link rel="stylesheet" href="/common/select.css">
+<link rel="stylesheet" href="/common/brand.css">
+<link rel="stylesheet" href="/common/field.css">
+<link rel="stylesheet" href="/common/panel.css">
+<link rel="stylesheet" href="/common/demo-console.css">
+<link rel="stylesheet" href="/common/demo-specimen.css">
 <style>
   :root {
     color-scheme: light dark;
     --demo-type-size: 16px;
     --demo-type-weight: 400;
-    --console-width: 18rem;
-    --palette-paper: #f4efe4;
-    --palette-ink: #25221d;
-    --palette-rule: #cfc5b3;
-    --palette-accent: #9e2f26;
-    --ui-paper: light-dark(var(--palette-paper), #1d1b18);
-    --ui-panel: light-dark(#fbf8f1, #25221e);
-    --ui-ink: light-dark(var(--palette-ink), #e9e1d3);
-    --ui-muted: light-dark(#70685c, #aaa092);
-    --ui-rule: light-dark(var(--palette-rule), #4d473f);
-    --ui-accent: light-dark(var(--palette-accent), #e07c70);
     --guide-baseline: #dd342e;
     --guide-ideographic-ink: #db861c;
     --guide-rt-baseline: #1688c8;
     --guide-ruby: #16885d;
     --guide-rt: #9347ce;
-    background: var(--ui-paper);
-    color: var(--ui-ink);
+    /* Public calibration is expressed in rt-em. The guide lives on the base
+     * ruby, so JS resolves that value to base-em before drawing the seat. */
+    --demo-ideographic-ink-seat-shift: 0em;
+    background: var(--ui-bg);
+    color: var(--ui-text);
   }
 
   * { box-sizing: border-box; }
@@ -40,11 +42,11 @@
   body {
     min-block-size: 100dvb;
     margin: 0;
-    padding-inline-start: var(--console-width);
-    background:
-      linear-gradient(90deg, transparent 49.9%, color-mix(in srgb, var(--ui-rule) 35%, transparent) 50%, transparent 50.1%) 0 0 / 2rem 2rem,
-      var(--ui-paper)
-    ;
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    font-family: var(--han-font-default);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   button,
@@ -52,106 +54,127 @@
   select,
   output { font: inherit; }
 
-  .page-header {
-    max-inline-size: 76rem;
+  .page-header,
+  .page-guide,
+  main {
+    inline-size: min(84rem, 100%);
     margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 4vw, 3rem) 1.25rem;
   }
 
-  h1 {
-    margin: 0;
-    font-family: var(--han-serif);
-    font-size: clamp(1.65rem, 4vw, 3.25rem);
-    font-weight: 700;
-    letter-spacing: .04em;
+  .page-header {
+    --demo-hero-mark: 'ㄅㄆ';
+    --demo-hero-mark-block: -3.5rem;
+    --demo-hero-mark-font: 'Han Zhuyin Serif', var(--han-serif);
+    --demo-hero-mark-opacity: 7%;
+    --demo-hero-mark-spacing: -.25em;
+    padding-inline: var(--gutter);
   }
 
-  .page-header p {
-    max-inline-size: 46rem;
-    margin: .65rem 0 0;
-    color: var(--ui-muted);
-    line-height: 1.65;
+  .page-guide {
+    padding-inline: var(--gutter);
   }
 
   .controls {
-    position: fixed;
-    z-index: 10;
-    inset: 0 auto 0 0;
+    --_text: var(--ui-text);
+    --_rule: var(--ui-rule);
+    --_panel: var(--ui-panel);
+    --_bg: var(--ui-bg);
+    --_accent: var(--ui-accent);
+    --_supplement-text: var(--ui-supplement-text);
+    --_font-mono: var(--han-monospace);
+    --_fs-compact: .8125rem;
+    --_fs-micro: .625rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    inline-size: var(--console-width);
-    block-size: 100dvb;
     padding: 1.25rem 1rem 2rem;
     overflow-x: hidden;
     overflow-y: auto;
-    border-inline-end: 1px solid var(--ui-rule);
-    background: var(--ui-panel);
+    background: var(--ui-console);
+  }
+
+  .console-dialog-head strong {
+    font-weight: 650;
+    letter-spacing: .02em;
   }
 
   .console-heading {
     display: flex;
     gap: .75rem;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--ui-rule);
   }
 
   .console-heading strong {
     font-family: var(--han-sans);
-    font-size: .95rem;
+    font-size: .875rem;
+    font-weight: 650;
   }
 
   .restore-defaults {
-    padding: .35rem .5rem;
-    border: 1px solid var(--ui-rule);
-    border-radius: .35rem;
-    color: var(--ui-muted);
+    padding: 0 2px;
+    border: 0;
+    color: var(--ui-accent);
     background: transparent;
     cursor: pointer;
-    font-size: .7rem;
+    font-size: .75rem;
+    font-weight: 500;
+  }
+
+  .restore-defaults:hover { color: color-mix(in srgb, var(--ui-accent) 70%, var(--ui-text)); }
+
+  .restore-defaults:focus-visible,
+  .copy-css:focus-visible,
+  .calibrate-font:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
   }
 
   .control-section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .875rem;
+    margin-block-start: 1.5rem;
   }
 
   .control-section > h2 {
     margin: 0;
-    padding-block-end: .65rem;
-    border-block-end: 1px solid var(--ui-rule);
-    color: var(--ui-muted);
-    font: 600 .65rem/1 var(--han-sans);
-    letter-spacing: .08em;
+    color: var(--ui-supplement-text);
+    font: 500 .625rem/1 var(--han-monospace);
+    letter-spacing: .06em;
     text-transform: uppercase;
   }
 
-  .switches {
+  .console-fields {
     display: flex;
     flex-direction: column;
-    gap: .6rem;
+    gap: .375rem;
   }
+
+  .console-field { color: var(--ui-text); }
 
   .parameter-control {
     display: grid;
-    grid-template-columns: minmax(6rem, auto) 1fr;
-    gap: .25rem .75rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .375rem .75rem;
     align-items: center;
-    font-size: .8125rem;
+    min-inline-size: 0;
   }
 
   .parameter-control > span {
     min-inline-size: 0;
-    color: var(--ui-ink);
+    color: var(--ui-text);
+    font-size: .8125rem;
+    font-weight: 500;
   }
 
   .parameter-control > span::after {
     content: attr(data-variable);
     display: block;
-    margin-block-start: .15rem;
-    color: var(--ui-muted);
-    font: .58rem/1.3 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    margin-block-start: .125rem;
+    color: var(--ui-supplement-text);
+    font: .625rem/1.3 var(--han-monospace);
     overflow-wrap: anywhere;
   }
 
@@ -165,13 +188,15 @@
     cursor: pointer;
   }
 
+  .parameter-control input[type='range']:focus { outline: none; }
+
   .parameter-control input[type='range']::-webkit-slider-runnable-track {
     block-size: 4px;
     border-radius: 4px;
     background:
       linear-gradient(to right,
         transparent calc(var(--metric-default) - 1px),
-        var(--ui-ink) calc(var(--metric-default) - 1px) calc(var(--metric-default) + 1px),
+        var(--ui-supplement-text) calc(var(--metric-default) - 1px) calc(var(--metric-default) + 1px),
         transparent calc(var(--metric-default) + 1px)),
       linear-gradient(to right,
         var(--ui-accent) 0 var(--metric-fill),
@@ -184,7 +209,7 @@
     background:
       linear-gradient(to right,
         transparent calc(var(--metric-default) - 1px),
-        var(--ui-ink) calc(var(--metric-default) - 1px) calc(var(--metric-default) + 1px),
+        var(--ui-supplement-text) calc(var(--metric-default) - 1px) calc(var(--metric-default) + 1px),
         transparent calc(var(--metric-default) + 1px)),
       linear-gradient(to right,
         var(--ui-accent) 0 var(--metric-fill),
@@ -192,136 +217,161 @@
   }
 
   .parameter-control input[type='range']::-webkit-slider-thumb {
-    inline-size: 16px;
-    block-size: 16px;
-    margin-block-start: -6px;
+    inline-size: 18px;
+    block-size: 18px;
+    margin-block-start: -7px;
     border: 2px solid var(--ui-accent);
     border-radius: 50%;
-    background: var(--ui-panel);
+    background: var(--ui-bg);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-shadow-ink) 15%, transparent);
     appearance: none;
   }
 
   .parameter-control input[type='range']::-moz-range-thumb {
-    inline-size: 16px;
-    block-size: 16px;
+    inline-size: 18px;
+    block-size: 18px;
     border: 2px solid var(--ui-accent);
     border-radius: 50%;
-    background: var(--ui-panel);
+    background: var(--ui-bg);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-shadow-ink) 15%, transparent);
   }
 
   .parameter-control::after {
     content: attr(data-range);
     grid-column: 1 / -1;
-    color: var(--ui-muted);
-    font: .58rem/1.3 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color: var(--ui-supplement-text);
+    font: .625rem/1.3 var(--han-monospace);
     word-spacing: -.12em;
   }
 
   .parameter-control output {
     justify-self: end;
-    min-inline-size: 8.75em;
-    color: var(--ui-accent);
+    min-inline-size: 7.5em;
+    color: var(--ui-text);
     text-align: end;
-    font-size: .75rem;
+    font: 500 .6875rem/1.35 var(--han-monospace);
   }
 
   output {
-    color: var(--ui-muted);
+    color: var(--ui-supplement-text);
     font-variant-numeric: tabular-nums;
   }
 
-  fieldset {
-    display: flex;
-    inline-size: 100%;
-    gap: .2rem;
-    margin: 0;
-    padding: .2rem;
-    border: 1px solid var(--ui-rule);
-    border-radius: .45rem;
-  }
-
-  fieldset > span {
-    align-self: center;
-    padding-inline: .45rem .25rem;
-    color: var(--ui-muted);
-    font-size: .8rem;
-  }
-
-  fieldset label,
   .check-toggle {
-    position: relative;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    inline-size: 100%;
     min-block-size: 2rem;
-    padding-inline: .65rem;
-    border-radius: .3rem;
+    padding: .375rem .25rem;
+    color: var(--ui-text);
     cursor: pointer;
-    font-size: .85rem;
-    white-space: nowrap;
+    font-size: .8125rem;
+    user-select: none;
   }
 
-  fieldset input,
   .check-toggle input {
-    position: absolute;
-    inline-size: 1px;
-    block-size: 1px;
-    opacity: 0;
+    appearance: none;
+    flex: none;
+    display: grid;
+    place-content: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    margin: 0;
+    border: 1px solid var(--ui-rule);
+    border-radius: 2px;
+    background: var(--ui-bg);
+    cursor: pointer;
+    transition: background-color 120ms ease, border-color 120ms ease;
   }
 
-  fieldset label:has(input:checked),
-  .check-toggle:has(input:checked) {
-    background: var(--ui-ink);
-    color: var(--ui-paper);
+  .check-toggle input::before {
+    content: '';
+    inline-size: .625rem;
+    block-size: .625rem;
+    background: var(--ui-bg);
+    clip-path: polygon(14% 48%, 0 63%, 39% 100%, 100% 20%, 84% 7%, 37% 70%);
+    scale: 0;
+    transition: scale 120ms ease;
   }
 
-  fieldset label:has(input:focus-visible),
-  .check-toggle:has(input:focus-visible) {
+  .check-toggle input:checked {
+    border-color: var(--ui-accent);
+    background: var(--ui-accent);
+  }
+
+  .check-toggle input:checked::before { scale: 1; }
+
+  .check-toggle input:focus-visible {
     outline: 2px solid var(--ui-accent);
     outline-offset: 2px;
   }
 
-  .check-toggle {
-    border: 1px solid var(--ui-rule);
+  .guide-disclosure {
+    margin-block-start: .25rem;
+    border-block-start: 1px solid var(--ui-rule);
   }
 
-  .select-control {
+  .guide-disclosure summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-block-size: 2rem;
-    padding-inline: .65rem .4rem;
-    border: 1px solid var(--ui-rule);
-    border-radius: .3rem;
-    font-size: .85rem;
+    padding-block: .75rem .5rem;
+    color: var(--ui-supplement-text);
+    cursor: pointer;
+    font-size: .75rem;
+    list-style: none;
   }
 
-  .select-control select {
-    min-block-size: 1.55rem;
-    padding-inline: .3rem;
-    border: 0;
-    border-radius: .2rem;
-    color: var(--ui-ink);
-    background: transparent;
-    cursor: pointer;
+  .guide-disclosure summary::-webkit-details-marker { display: none; }
+
+  .guide-disclosure summary::after {
+    content: '＋';
+    font-family: var(--han-monospace);
+  }
+
+  .guide-disclosure[open] summary::after { content: '−'; }
+
+  .metric-group {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .metric-group + .metric-group {
+    margin-block-start: .375rem;
+    padding-block-start: 1.125rem;
+    border-block-start: 1px solid var(--ui-rule);
+  }
+
+  .metric-group h3 {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    margin: 0;
+    color: var(--ui-supplement-text);
+    font: 500 .625rem/1 var(--han-monospace);
+    letter-spacing: .06em;
+  }
+
+  .metric-group h3::after {
+    content: '';
+    flex: 1;
+    block-size: 1px;
+    background: color-mix(in srgb, var(--ui-rule) 55%, transparent);
   }
 
   .guide-switches {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: .4rem;
-  }
-
-  .guide-switches .check-toggle {
-    justify-content: center;
-    min-inline-size: 0;
-    padding-inline: .35rem;
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
   }
 
   .codegen-note,
   .codegen-empty {
     margin: 0;
-    color: var(--ui-muted);
-    font: .7rem/1.6 var(--han-sans);
+    color: var(--ui-supplement-text);
+    font: .6875rem/1.65 var(--han-sans);
   }
 
   .codegen-result {
@@ -333,7 +383,7 @@
     margin: 0;
     padding: .75rem;
     overflow: auto;
-    border-radius: .45rem;
+    border-radius: var(--r-2);
     color: #eee9df;
     background: #171716;
     font: .68rem/1.6 ui-monospace, 'SFMono-Regular', Menlo, monospace;
@@ -343,26 +393,69 @@
 
   .copy-css {
     justify-self: end;
-    padding: .35rem .55rem;
+    padding: .35rem .6rem;
     border: 1px solid var(--ui-rule);
-    border-radius: .35rem;
-    color: var(--ui-ink);
+    border-radius: var(--r-1);
+    color: var(--ui-text);
     background: transparent;
     cursor: pointer;
-    font-size: .7rem;
+    font-size: .6875rem;
+  }
+
+  .calibration-tool {
+    display: grid;
+    gap: .625rem;
+    padding-block-end: .875rem;
+    border-block-end: 1px solid var(--ui-rule);
+  }
+
+  .calibrate-font,
+  .font-file-label,
+  .clear-font {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 2rem;
+    justify-self: start;
+    padding: .4rem .625rem;
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-1);
+    color: var(--ui-text);
+    background: var(--ui-bg);
+    cursor: pointer;
+    font-size: .6875rem;
+  }
+
+  .calibrate-font:disabled { cursor: wait; opacity: .6; }
+
+  .font-upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+  }
+
+  .font-file-label input { display: none; }
+
+  .font-file-label:hover,
+  .clear-font:hover,
+  .calibrate-font:hover,
+  .copy-css:hover { border-color: var(--ui-supplement-text); }
+
+  .calibration-status,
+  .font-status {
+    display: block;
+    min-block-size: 1.4em;
+    color: var(--ui-supplement-text);
+    font: .625rem/1.55 var(--han-monospace);
   }
 
   main {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 4rem);
+    gap: clamp(2rem, 4vw, 3rem);
     inline-size: 100%;
     min-inline-size: 0;
-    max-inline-size: 76rem;
-    margin-inline: auto;
-    min-block-size: calc(100dvb - 14rem);
-    padding: clamp(1.5rem, 5vw, 4.5rem) clamp(1rem, 5vw, 4rem);
-    overflow: auto;
+    padding: clamp(3.5rem, 7vw, 6rem) var(--gutter) clamp(4rem, 8vw, 7rem);
   }
 
   .copy {
@@ -378,38 +471,39 @@
     text-justify: inter-ideograph;
   }
 
-  article.copy {
-    inline-size: min(34em, 100%);
-    place-self: center;
-  }
-
-  .inspection {
+  .tool-panel {
     inline-size: 100%;
     min-inline-size: 0;
   }
 
-  .inspection h2 {
+  .panel-heading {
+    display: grid;
+    gap: .35rem;
+    padding: 1rem 1.25rem;
+    border-block-end: 1px solid var(--ui-rule);
+  }
+
+  .panel-heading h2 {
     margin: 0;
     font-family: var(--han-sans);
-    font-size: 1rem;
+    font-size: .9375rem;
+    font-weight: 650;
   }
 
   .inspection-note {
-    margin: .35rem 0 1rem;
-    color: var(--ui-muted);
+    max-inline-size: 70em;
+    margin: 0;
+    color: var(--ui-supplement-text);
     font-family: var(--han-sans);
-    font-size: .8125rem;
-    line-height: 1.6;
+    font-size: .75rem;
+    line-height: 1.65;
   }
 
   .inspection-panel {
     inline-size: 100%;
     min-inline-size: 0;
-    padding: clamp(1.25rem, 4vw, 2.5rem);
+    padding: clamp(1rem, 3vw, 1.75rem);
     overflow: clip;
-    border: 1px solid var(--ui-rule);
-    border-radius: .75rem;
-    background: var(--ui-panel);
   }
 
   .diagnostic-copy {
@@ -425,72 +519,76 @@
 
   .size-comparison {
     display: grid;
-    gap: 1.25rem;
   }
 
   .size-sample {
     display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr);
-    gap: 1rem;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: .875rem;
     align-items: baseline;
     margin: 0;
+    padding-block: 1rem;
+    border-block-end: 1px solid var(--ui-rule);
   }
 
+  .size-sample:first-child { padding-block-start: .25rem; }
+
   .size-sample figcaption {
-    color: var(--ui-muted);
-    font: .68rem/1.4 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    color: var(--ui-supplement-text);
+    font: .625rem/1.4 var(--han-monospace);
   }
 
   .size-sample[data-size='min'] .diagnostic-copy { font-size: 12px; }
   .size-sample[data-size='max'] .diagnostic-copy { font-size: 60px; }
 
-  /* The ruby fallback already owns an empty anchored baseline fragment.
-   * Reuse it for the guides.  A separate inline marker looked harmless, but
-   * its baseline participation changed Chrome's anchor resolution for every
-   * following ruby in this diagnostic line. */
-  .diagnostic-copy ruby:first-of-type::after {
+  /* A ruby-contained anchor resolves from the annotation area in Safari,
+   * not the base text's alphabetic baseline. JS briefly inserts a zero-size
+   * inline probe, records the real line baseline on this container, then
+   * removes the probe before paint so it cannot perturb ruby layout. */
+  .diagnostic-copy::after {
     content: '';
     position: absolute;
     z-index: 4;
-    position-anchor: --han-ruby-baseline;
-    inset-block-start: calc(
-      anchor(--han-ruby-baseline top)
-      - .075em
-    );
+    inset-block-start: var(--demo-base-baseline-offset, 0px);
     inset-inline-start: 0;
     inline-size: 20em;
     block-size: 0;
     pointer-events: none;
   }
 
-  :root[data-base-baseline] .diagnostic-copy ruby:first-of-type::after {
+  :root[data-base-baseline] .diagnostic-copy::after {
     border-block-start: 1px solid var(--guide-baseline);
     opacity: .78;
   }
 
-  /* The internal ink seat scales at 12/current/60px but not with the
-   * annotation font-size. */
-  :root[data-ideographic-ink] .diagnostic-copy ruby:first-of-type::after {
-    box-shadow: 0 .075em 0 var(--guide-ideographic-ink);
+  /* The default seat is .075 base-em below the alphabetic baseline. A
+   * positive public shift moves rt upward, so the matching visual seat moves
+   * upward too (the physical shadow offset therefore subtracts the shift).
+   * Keeping the resolved correction in base-em lets this one guide scale at
+   * 12/current/60px without depending on the annotation box itself. */
+  :root[data-ideographic-ink] .diagnostic-copy::after {
+    box-shadow: 0 calc(
+      .075em - var(--demo-ideographic-ink-seat-shift)
+    ) 0 var(--guide-ideographic-ink);
   }
 
-  /* Zhuyin is vertical-rl in horizontal text, so its central baseline is a
-   * vertical logical baseline. The pseudo-element is absolute and cannot
-   * change the annotation's symbol flow or centring. */
-  .diagnostic-copy rt::after {
-    content: '';
-    position: absolute;
-    z-index: 5;
-    inset-inline: -.45em;
-    inset-block-start: 50%;
-    block-size: 0;
-    border-block-start: 1px solid var(--guide-rt-baseline);
-    pointer-events: none;
+  /* Zhuyin is vertical in horizontal text, so its central baseline is a
+   * physical vertical line. Use a background guide: production native ruby
+   * reserves rt::before/::after for bidirectional optical calibration. */
+  :root[data-rt-baseline] .diagnostic-copy rt {
+    background-image: linear-gradient(
+      to right,
+      transparent calc(50% - .5px),
+      var(--guide-rt-baseline) calc(50% - .5px) calc(50% + .5px),
+      transparent calc(50% + .5px)
+    );
+    background-repeat: no-repeat;
   }
 
-  :root:not([data-rt-baseline]) .diagnostic-copy rt::after { display: none; }
-  :root:has(#ruby-over:checked) .diagnostic-copy rt::after,
-  :root:has(#writing-vertical:checked) .diagnostic-copy rt::after { display: none; }
+  :root[data-ruby-position='over'] .diagnostic-copy rt,
+  :root[data-writing='vertical'] .diagnostic-copy rt {
+    background-image: none;
+  }
 
   :root[data-ruby-outline] .diagnostic-copy ruby {
     outline: 1px solid var(--guide-ruby);
@@ -506,8 +604,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: .5rem 1rem;
-    margin-block-start: 1rem;
-    color: var(--ui-muted);
+    margin-block-start: .875rem;
+    color: var(--ui-supplement-text);
     font-family: var(--han-sans);
     font-size: .75rem;
   }
@@ -539,14 +637,14 @@
 
   .metrics {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1px;
     margin: 1rem 0 0;
     overflow: hidden;
     border: 1px solid var(--ui-rule);
-    border-radius: .5rem;
+    border-radius: var(--r-2);
     background: var(--ui-rule);
-    font: .75rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font: .6875rem/1.5 var(--han-monospace);
   }
 
   .metrics div {
@@ -554,12 +652,134 @@
     grid-template-columns: 1fr auto;
     gap: .75rem;
     padding: .65rem .75rem;
-    background: var(--ui-panel);
+    background: var(--ui-bg);
     min-inline-size: 0;
   }
 
-  .metrics dt { color: var(--ui-muted); }
+  .metrics dt { color: var(--ui-supplement-text); }
   .metrics dd { margin: 0; color: var(--ui-accent); }
+
+  .content-workbench .panel-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .editor-reset {
+    padding: .35rem .6rem;
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-1);
+    color: var(--ui-supplement-text);
+    background: var(--ui-bg);
+    cursor: pointer;
+    font-size: .6875rem;
+  }
+
+  .editor-reset:hover { color: var(--ui-text); border-color: var(--ui-supplement-text); }
+
+  .workbench-grid {
+    display: grid;
+    grid-template-columns: minmax(20rem, .85fr) minmax(0, 1.15fr);
+    min-block-size: 42rem;
+  }
+
+  .editor-pane,
+  .preview-pane {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-inline-size: 0;
+  }
+
+  .editor-pane { grid-template-rows: auto minmax(18rem, 1fr) auto; }
+
+  .editor-pane { border-inline-end: 1px solid var(--ui-rule); }
+
+  .pane-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 2.5rem;
+    padding-inline: .875rem;
+    border-block-end: 1px solid var(--ui-rule);
+    color: var(--ui-supplement-text);
+    font: .625rem/1 var(--han-monospace);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .html-source {
+    inline-size: 100%;
+    min-block-size: 22rem;
+    margin: 0;
+    padding: 1rem;
+    resize: none;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    color: #e8e8e3;
+    background: #151515;
+    caret-color: var(--palette-green-bright);
+    font: .75rem/1.65 var(--han-monospace);
+    tab-size: 2;
+  }
+
+  .html-source:focus-visible { box-shadow: inset 0 0 0 2px var(--ui-accent); }
+
+  .font-lab {
+    display: grid;
+    gap: .75rem;
+    padding: 1rem;
+    border-block-start: 1px solid var(--ui-rule);
+    background: color-mix(in srgb, var(--ui-panel) 84%, var(--ui-bg));
+  }
+
+  .font-lab header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .font-lab h3 {
+    margin: 0;
+    font-family: var(--han-sans);
+    font-size: .8125rem;
+    font-weight: 650;
+  }
+
+  .font-lab header span {
+    color: var(--ui-accent);
+    font: 600 .5625rem/1 var(--han-monospace);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .font-lab p {
+    margin: 0;
+    color: var(--ui-supplement-text);
+    font-size: .6875rem;
+    line-height: 1.65;
+  }
+
+  .font-lab-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .font-lab .calibrate-font { margin-inline-start: auto; }
+
+  .article-stage {
+    min-inline-size: 0;
+    overflow: auto;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: var(--ui-bg);
+  }
+
+  .article-stage article.copy {
+    inline-size: min(34em, 100%);
+    margin-inline: auto;
+  }
 
   .source {
     display: block;
@@ -577,29 +797,34 @@
     --han-use-heritage-glyphs-for-hant: webfont;
   }
 
-  :root:has(#font-source-system-ja:checked) main {
+  :root[data-font-source='system-ja'] main {
     --han-use-heritage-glyphs-for-hant: system-ja;
   }
 
-  :root:has(#font-source-off:checked) main {
+  :root[data-font-source='off'] main {
     --han-use-heritage-glyphs-for-hant: off;
   }
 
-  /* Keep the baseline strut independently switchable from the CJK glyph
-   * source. The library's registered control selects the no-op metrics slot
-   * when off, leaving the same real glyph faces underneath. */
-  :root:has(#han-metrics:not(:checked)) main {
-    --han-use-metrics: off;
+  :root[data-font='sans'] .copy { font-family: var(--han-sans); }
+  :root[data-font='cursive'][data-font-source='ziano'] .copy {
+    font-family: 'LXGW WenKai TC', cursive;
+  }
+  :root[data-font='cursive'][data-font-source='system-ja'] .copy {
+    font-family: 'Klee One', Klee, cursive;
+  }
+  :root[data-font='cursive'][data-font-source='off'] .copy {
+    font-family: cursive;
   }
 
-  :root:has(#font-sans:checked) .copy { font-family: var(--han-sans); }
-  :root:has(#font-kai:checked) .copy { font-family: var(--han-cursive); }
+  :root[data-custom-font] .copy {
+    font-family: var(--demo-custom-font-family), sans-serif;
+  }
 
-  :root:has(#ruby-over:checked) .copy {
+  :root[data-ruby-position='over'] .copy {
     --han-zhuyin-ruby-position: over;
   }
 
-  :root:has(#writing-vertical:checked) .copy {
+  :root[data-writing='vertical'] .copy {
     writing-mode: vertical-rl;
     --han-writing-mode: vertical-rl;
     inline-size: min(30em, 66dvb);
@@ -616,35 +841,39 @@
     display: none;
   }
 
-  @media (max-width: 51.9375rem) {
-    body { padding-inline-start: 0; }
+  @media (min-width: 52rem) and (max-width: 64rem) {
+    .controls { padding-inline: .75rem; }
+    .console-field { gap: .375rem; }
+    .console-field select { inline-size: 9em; }
+    .parameter-control { gap-inline: .375rem; }
+    .parameter-control output { min-inline-size: 5.5em; }
+  }
 
+  @media (max-width: 51.9375rem) {
     .controls {
-      position: static;
-      inline-size: 100%;
-      block-size: auto;
-      max-block-size: none;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-      border-inline-end: 0;
-      border-block: 1px solid var(--ui-rule);
+      padding-block-start: .875rem;
+      background: var(--ui-console);
     }
 
-    .console-heading { grid-column: 1 / -1; }
+    .console-heading {
+      justify-content: flex-end;
+      padding-block-end: .875rem;
+    }
 
-    .switches { align-items: stretch; }
+    .console-heading strong { display: none; }
 
-    fieldset,
-    .check-toggle { flex: 1 1 auto; }
+    .console-fields { align-items: stretch; }
 
-    fieldset { justify-content: center; }
+    .page-header {
+      padding-block-start: 5.5rem;
+    }
 
-    :root:has(#writing-vertical:checked) .copy {
+    :root[data-writing='vertical'] .copy {
       inline-size: min(26em, 62dvb);
       max-inline-size: none;
     }
 
-    :root:has(#writing-vertical:checked) article.copy {
+    :root[data-writing='vertical'] article.copy {
       inline-size: min(26em, 62dvb);
     }
 
@@ -652,15 +881,39 @@
       grid-template-columns: minmax(0, 1fr);
       gap: .25rem;
     }
+
+    .workbench-grid { grid-template-columns: minmax(0, 1fr); }
+    .editor-pane { border-inline-end: 0; border-block-end: 1px solid var(--ui-rule); }
+    .html-source { min-block-size: 18rem; resize: vertical; }
+    .font-lab .calibrate-font { margin-inline-start: 0; }
+  }
+
+  @media (max-width: 36rem) {
+    .metrics { grid-template-columns: minmax(0, 1fr); }
+    .content-workbench .panel-heading { grid-template-columns: minmax(0, 1fr); }
+    .editor-reset { justify-self: start; }
   }
 </style>
+<script type="module" src="/common/demo-console.js"></script>
+<script type="module" src="/common/demo-brand.js"></script>
 <script type="module">
+  const {
+    calibrateZhuyinRuby,
+    clearZhuyinRubyCalibration,
+  } = await import(/* @vite-ignore */ '/han/han.zhuyin-calibration.js')
+  const { default: DOMPurify } = await import(/* @vite-ignore */ '/vendor/purify.esm.js')
+
   const root = document.documentElement
   const form = document.querySelector('#controls')
   // Keep the original namespace so bookmarks upgraded to the renamed page
   // retain the user's saved calibration.
   const storageKey = 'han:taisol-ruby:controls:v3'
   const legacyStorageKey = 'han:taisol-ruby:controls:v2'
+  const htmlStorageKey = 'han:ruby-zhuyin-config:html:v1'
+  const maxFontBytes = 20 * 1024 * 1024
+  let uploadedFont = null
+  let uploadEpoch = 0
+  let baselineBeforeUpload = '0'
 
   function restoreControls() {
     try {
@@ -669,20 +922,26 @@
       const saved = JSON.parse(current ?? legacy)
       if (!saved || typeof saved !== 'object') return
 
+      let migrated = Boolean(legacy)
       for (const control of form.elements) {
         if (!control.name || !(control.name in saved)) continue
         // v2 measured this control down from the ruby box top. v3 measures
         // upward from the real baseline, so the old number is not portable.
         if (legacy && control.name === 'zhuyin-baseline') continue
+        let savedValue = saved[control.name]
+        if (control.name === 'font-source' && savedValue === 'shanggu') {
+          savedValue = 'ziano'
+          migrated = true
+        }
         if (control.type === 'radio') {
-          control.checked = control.value === saved[control.name]
+          control.checked = control.value === savedValue
         } else if (control.type === 'checkbox') {
-          control.checked = Boolean(saved[control.name])
+          control.checked = Boolean(savedValue)
         } else {
-          control.value = saved[control.name]
+          control.value = savedValue
         }
       }
-      if (legacy) saveControls()
+      if (migrated) saveControls()
     } catch {
       // Storage can be unavailable or contain obsolete hand-edited data.
     }
@@ -698,7 +957,9 @@
       } else if (control.type === 'checkbox') {
         state[control.name] = control.checked
       } else {
-        state[control.name] = control.value
+        state[control.name] = uploadedFont && control.name === 'zhuyin-baseline'
+          ? control.defaultValue
+          : control.value
       }
     }
 
@@ -733,6 +994,75 @@
 
   const cssNumber = (value) => String(Number(value)).replace(/^(-?)0\./, '$1.')
 
+  const htmlSource = document.querySelector('[data-html-source]')
+  const htmlPreview = document.querySelector('[data-html-preview]')
+  const editorStatus = document.querySelector('[data-editor-status]')
+  const editorReset = document.querySelector('[data-editor-reset]')
+  const defaultHtml = htmlPreview.innerHTML.trim()
+  let editorTimer = 0
+  let resetUndo = null
+
+  const sanitizeHtml = (dirty) => DOMPurify.sanitize(dirty, {
+    ADD_TAGS: ['ruby', 'rt', 'rp', 'rb'],
+    ADD_ATTR: ['lang', 'class'],
+    ALLOW_DATA_ATTR: true,
+    FORBID_TAGS: [
+      'script', 'style', 'iframe', 'object', 'embed', 'svg', 'math',
+      'form', 'input', 'button', 'link', 'meta', 'img', 'video', 'audio',
+      'source',
+    ],
+    FORBID_ATTR: ['style'],
+  })
+
+  const saveHtml = (value) => {
+    try {
+      if (value.trim()) localStorage.setItem(htmlStorageKey, value)
+      else localStorage.removeItem(htmlStorageKey)
+    } catch {
+      // Editing and preview remain available when storage is unavailable.
+    }
+  }
+
+  const renderHtml = (value, message = '已同步') => {
+    htmlPreview.innerHTML = sanitizeHtml(value)
+    editorStatus.textContent = message
+    saveHtml(value)
+  }
+
+  try {
+    const savedHtml = localStorage.getItem(htmlStorageKey)
+    htmlSource.value = savedHtml?.trim() ? savedHtml : defaultHtml
+  } catch {
+    htmlSource.value = defaultHtml
+  }
+  renderHtml(htmlSource.value)
+
+  htmlSource.addEventListener('input', () => {
+    resetUndo = null
+    editorReset.textContent = '重設範例'
+    editorStatus.textContent = '輸入中…'
+    clearTimeout(editorTimer)
+    editorTimer = setTimeout(() => renderHtml(htmlSource.value), 160)
+  })
+
+  editorReset.addEventListener('click', () => {
+    clearTimeout(editorTimer)
+    if (resetUndo !== null) {
+      htmlSource.value = resetUndo
+      resetUndo = null
+      editorReset.textContent = '重設範例'
+      renderHtml(htmlSource.value, '已復原')
+      htmlSource.focus()
+      return
+    }
+
+    resetUndo = htmlSource.value
+    htmlSource.value = defaultHtml
+    editorReset.textContent = '復原內容'
+    renderHtml(defaultHtml, '已重設')
+    htmlSource.focus()
+  })
+
   function updateCodegen() {
     const declarations = rubyVariables.flatMap(([controlName, property, unit]) => {
       const input = form.elements[controlName]
@@ -764,6 +1094,33 @@
   }
 
   function measure() {
+    for (const copy of document.querySelectorAll('.diagnostic-copy')) {
+      const probe = document.createElement('i')
+      Object.assign(
+        probe.style,
+        {
+          display: 'inline-block',
+          width: '0',
+          height: '0',
+          margin: '0',
+          padding: '0',
+          border: '0',
+          verticalAlign: 'baseline',
+        },
+      )
+      copy.prepend(probe)
+      const copyBox = copy.getBoundingClientRect()
+      const probeBox = probe.getBoundingClientRect()
+      const writingMode = getComputedStyle(copy).writingMode
+      const offset = writingMode === 'vertical-rl'
+        ? copyBox.right - probeBox.right
+        : writingMode === 'vertical-lr'
+          ? probeBox.left - copyBox.left
+          : probeBox.top - copyBox.top
+      probe.remove()
+      copy.style.setProperty('--demo-base-baseline-offset', `${offset}px`)
+    }
+
     const ruby = document.querySelector('[data-measure-ruby]')
     const rt = ruby.querySelector('rt')
     const rubyBox = ruby.getBoundingClientRect()
@@ -798,10 +1155,19 @@
     const rtLetterSpacing = Number(form.elements['rt-letter-spacing'].value)
     const punctuationHant = form.elements['punctuation-hant'].value
 
+    root.dataset.fontSource = form.elements['font-source'].value
+    root.dataset.font = form.elements.font.value
+    root.dataset.rubyPosition = form.elements['ruby-position'].value
+    root.dataset.writing = form.elements.writing.value
+
     root.style.setProperty('--demo-type-size', `${typeSize}px`)
     root.style.setProperty('--demo-type-weight', typeWeight)
     root.style.setProperty('--han-ruby-zhuyin-font-size', `${zhuyinSize}em`)
     root.style.setProperty('--han-ruby-zhuyin-baseline-shift', `${baseline}em`)
+    root.style.setProperty(
+      '--demo-ideographic-ink-seat-shift',
+      `${baseline * zhuyinSize}em`,
+    )
     root.style.setProperty('--han-ruby-zhuyin-over-gap', `${overGap}em`)
     root.style.setProperty('--han-ruby-zhuyin-letter-spacing', `${rtLetterSpacing}em`)
     root.style.setProperty('--han-punctuation-hant', punctuationHant)
@@ -822,8 +1188,94 @@
     syncRangeMetadata()
     updateCodegen()
 
-    requestAnimationFrame(measure)
+    measure()
   }
+
+  const fontFileInput = document.querySelector('[data-font-file]')
+  const fontStatus = document.querySelector('[data-font-status]')
+  const clearFontButton = document.querySelector('[data-font-clear]')
+  const calibrationButtons = [...document.querySelectorAll('[data-calibrate-font]')]
+  const calibrationStatuses = [...document.querySelectorAll('[data-calibration-status]')]
+  const allowedFontExtensions = new Set(['woff2', 'woff', 'ttf', 'otf'])
+  const allowedFontSignatures = new Set([
+    0x774f4632, // wOF2
+    0x774f4646, // wOFF
+    0x4f54544f, // OTTO
+    0x00010000, // TrueType 1.0
+    0x74727565, // true
+  ])
+
+  const resetBaselineForFont = (value = '0') => {
+    form.elements['zhuyin-baseline'].value = value
+    for (const status of calibrationStatuses) status.textContent = ''
+    update()
+    saveControls()
+  }
+
+  const validateFontFile = (file, bytes) => {
+    const extension = file.name.split('.').pop()?.toLowerCase() ?? ''
+    if (!allowedFontExtensions.has(extension)) {
+      throw new Error('只接受 WOFF2、WOFF、TTF 或 OTF。')
+    }
+    if (file.size > maxFontBytes) throw new Error('字體超過 20 MiB 上限。')
+    if (bytes.byteLength < 4) throw new Error('檔案太短，不是有效字體。')
+    const signature = new DataView(bytes).getUint32(0, false)
+    if (!allowedFontSignatures.has(signature)) {
+      throw new Error('字體簽名無法辨識，或是目前不支援的 TTC／OTC collection。')
+    }
+  }
+
+  fontFileInput.addEventListener('change', async () => {
+    const file = fontFileInput.files?.[0]
+    if (!file) return
+    const epoch = ++uploadEpoch
+    fontStatus.textContent = `正在載入 ${file.name}…`
+
+    try {
+      const bytes = await file.arrayBuffer()
+      validateFontFile(file, bytes)
+      const suffix = typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${epoch}`
+      const family = `Han Ruby Upload ${suffix}`
+      const face = new FontFace(family, bytes)
+      await face.load()
+      if (epoch !== uploadEpoch) return
+
+      document.fonts.add(face)
+      await document.fonts.load(`1000px ${JSON.stringify(family)}`, '永')
+      if (epoch !== uploadEpoch) {
+        document.fonts.delete(face)
+        return
+      }
+
+      const previous = uploadedFont
+      if (!previous) baselineBeforeUpload = form.elements['zhuyin-baseline'].value
+      uploadedFont = { face, family, name: file.name }
+      root.style.setProperty('--demo-custom-font-family', JSON.stringify(family))
+      root.toggleAttribute('data-custom-font', true)
+      if (previous) document.fonts.delete(previous.face)
+
+      clearFontButton.hidden = false
+      fontStatus.textContent = `已在本機套用 ${file.name}（${(file.size / 1024).toFixed(1)} KiB）；尚未校正。`
+      resetBaselineForFont()
+    } catch (error) {
+      fontStatus.textContent = `無法載入：${error instanceof Error ? error.message : String(error)}`
+    } finally {
+      fontFileInput.value = ''
+    }
+  })
+
+  clearFontButton.addEventListener('click', () => {
+    ++uploadEpoch
+    if (uploadedFont) document.fonts.delete(uploadedFont.face)
+    uploadedFont = null
+    root.style.removeProperty('--demo-custom-font-family')
+    root.removeAttribute('data-custom-font')
+    clearFontButton.hidden = true
+    fontStatus.textContent = '已移除自訂字體，回到上方選擇的正文體。'
+    resetBaselineForFont(baselineBeforeUpload)
+  })
 
   form.addEventListener('input', () => {
     update()
@@ -841,18 +1293,89 @@
     event.currentTarget.textContent = '已複製'
     setTimeout(() => { event.currentTarget.textContent = '複製 CSS' }, 1200)
   })
+  const setCalibrationStatus = (message) => {
+    for (const status of calibrationStatuses) status.textContent = message
+  }
+
+  const runCalibration = async () => {
+    const scope = document.querySelector('.size-sample[data-size="current"] .diagnostic-copy')
+    for (const button of calibrationButtons) button.disabled = true
+    setCalibrationStatus('正在載入並量測「永」……')
+
+    try {
+      const result = await calibrateZhuyinRuby(scope, { refresh: true })
+      const values = [...new Set(result.items.map(item => item.cssValue))]
+      clearZhuyinRubyCalibration(scope)
+
+      if (values.length !== 1) {
+        setCalibrationStatus(values.length
+          ? `目前範圍包含 ${values.length} 組位移，請分開校正字體。`
+          : '目前模式不是橫排字間注，沒有可校正的 ruby。')
+        return
+      }
+
+      const shift = Number.parseFloat(values[0])
+      const input = form.elements['zhuyin-baseline']
+      if (shift < Number(input.min) || shift > Number(input.max)) {
+        setCalibrationStatus(`量得 ${values[0]}，超出工作台可調範圍；請直接寫入 CSS。`)
+        return
+      }
+
+      input.value = String(shift)
+      update()
+      saveControls()
+      setCalibrationStatus(shift === 0
+        ? '目前字體落在預設 ink seat，不需要生成校正變量。'
+        : `已套用 ${values[0]}；下方 CSS variables 可直接複製。`)
+    } catch (error) {
+      setCalibrationStatus(`量測失敗：${error instanceof Error ? error.message : String(error)}`)
+    } finally {
+      for (const button of calibrationButtons) button.disabled = false
+    }
+  }
+
+  for (const button of calibrationButtons) button.addEventListener('click', runCalibration)
   document.fonts.ready.then(update)
   window.addEventListener('resize', measure)
   update()
 </script>
 </head>
 <body>
-<header class="page-header">
-  <h1>全文注音排版</h1>
-  <p>同一段《太陽中文報》文字，以han.css切換字間注與行間注、橫排與直排，以及明體、黑體、楷體三種字體角色。明、黑體可另選尚古、系統日文字體或關閉字形指定；楷體維持既有楷體槽。</p>
+<header class="page-header DemoHero">
+  <!-- @han:demo-brand 注音字體樣張 -->
+  <h1>全文注音<br>排版工作台</h1>
+  <p class="page-lede DemoLede">用同一段《太陽中文報》文字，切換字間注與行間注、橫排與直排，以及明體、黑體、楷體三種字體角色；也可以直接編輯內容、載入自己的字體並取得注文定位校正值。</p>
 </header>
 
-<form class="controls" id="controls">
+<section class="page-guide DemoGuide" aria-label="工作台使用方法">
+  <div class="guide-item DemoGuideItem">
+    <span class="guide-number DemoGuideNo">01 / Geometry</span>
+    <b>先檢查幾何</b>
+    <p>以三種字級比對主字 baseline、校正後 ink seat 與 rt box。</p>
+  </div>
+  <div class="guide-item DemoGuideItem">
+    <span class="guide-number DemoGuideNo">02 / Content</span>
+    <b>再換成自己的內容</b>
+    <p>編輯安全化 HTML，立即比較橫直排與字間、行間注文。</p>
+  </div>
+  <div class="guide-item DemoGuideItem">
+    <span class="guide-number DemoGuideNo">03 / Font</span>
+    <b>最後校正字體</b>
+    <p>本機載入字體、量測「永」，只輸出偏離預設值的 CSS 變量。</p>
+  </div>
+</section>
+
+<button class="console-open" type="button" aria-controls="ruby-console" aria-expanded="false" data-demo-console-open>
+  <span data-icon="console" aria-hidden="true"></span>
+  <span>排版設定</span>
+</button>
+
+<dialog class="console-dialog" id="ruby-console" open data-demo-console aria-label="注音 ruby 工作台">
+  <header class="console-dialog-head">
+    <strong>注音 ruby 工作台</strong>
+    <button type="button" aria-label="關閉排版設定" data-demo-console-close><span data-icon="close" aria-hidden="true"></span></button>
+  </header>
+<form class="controls" id="controls" data-demo-console-body>
   <header class="console-heading">
     <strong>注音 ruby 工作台</strong>
     <button class="restore-defaults" type="button" data-restore-defaults>↺ 使用預設值</button>
@@ -860,16 +1383,31 @@
 
   <section class="control-section">
     <h2>預覽</h2>
-    <div class="switches">
-      <fieldset aria-labelledby="font-source-label">
-        <span id="font-source-label">明黑來源</span>
-        <label><input id="font-source-shanggu" type="radio" name="font-source" value="shanggu" checked>尚古</label>
-        <label><input id="font-source-system-ja" type="radio" name="font-source" value="system-ja">系統日字</label>
-        <label><input id="font-source-off" type="radio" name="font-source" value="off">off</label>
-      </fieldset>
+    <div class="console-fields" data-preview-controls>
+      <label class="console-field Field"><span>來源</span>
+        <select id="font-source" name="font-source">
+          <option value="ziano" selected>Ziano</option>
+          <option value="system-ja">系統日字</option>
+          <option value="off">off</option>
+        </select>
+      </label>
 
-      <label class="check-toggle"><input id="han-metrics" name="han-metrics" type="checkbox" checked>Han Metrics</label>
-      <label class="select-control">DTJ（繁中）
+      <label class="console-field Field"><span>字體</span>
+        <select id="font" name="font">
+          <option value="serif" selected>明體</option>
+          <option value="sans">黑體</option>
+          <option value="cursive">楷體</option>
+        </select>
+      </label>
+
+      <label class="console-field Field"><span>注音</span>
+        <select id="ruby-position" name="ruby-position">
+          <option value="inter-character" selected>字間注</option>
+          <option value="over">行間注</option>
+        </select>
+      </label>
+
+      <label class="console-field Field"><span>標點</span>
         <select id="punctuation-hant" name="punctuation-hant">
           <option value="JIS">JIS</option>
           <option value="MOE" selected>MOE</option>
@@ -879,77 +1417,79 @@
         </select>
       </label>
 
-      <fieldset aria-labelledby="font-label">
-        <span id="font-label">字體</span>
-        <label><input id="font-serif" type="radio" name="font" value="serif" checked>明體</label>
-        <label><input id="font-sans" type="radio" name="font" value="sans">黑體</label>
-        <label><input id="font-kai" type="radio" name="font" value="cursive">楷體</label>
-      </fieldset>
+      <label class="console-field Field"><span>行向</span>
+        <select id="writing" name="writing">
+          <option value="horizontal" selected>橫排</option>
+          <option value="vertical">直排</option>
+        </select>
+      </label>
 
-      <fieldset aria-labelledby="ruby-position-label">
-        <span id="ruby-position-label">注音</span>
-        <label><input id="ruby-inter-character" type="radio" name="ruby-position" value="inter-character" checked>字間注</label>
-        <label><input id="ruby-over" type="radio" name="ruby-position" value="over">行間注</label>
-      </fieldset>
-
-      <fieldset aria-labelledby="writing-label">
-        <span id="writing-label">排向</span>
-        <label><input id="writing-horizontal" type="radio" name="writing" value="horizontal" checked>橫排</label>
-        <label><input id="writing-vertical" type="radio" name="writing" value="vertical">直排</label>
-      </fieldset>
-
-      <label class="check-toggle"><input id="ruby-visibility" name="ruby-visibility" type="checkbox" checked>顯示注音</label>
-      <div class="guide-switches">
-        <label class="check-toggle"><input name="base-baseline" type="checkbox" checked>主字 baseline</label>
-        <label class="check-toggle"><input name="ideographic-ink" type="checkbox" checked>合成 ink seat</label>
-        <label class="check-toggle"><input name="rt-baseline" type="checkbox" checked>注音 baseline</label>
-        <label class="check-toggle"><input name="ruby-outline" type="checkbox" checked>ruby outline</label>
-        <label class="check-toggle"><input name="rt-outline" type="checkbox" checked>rt outline</label>
-      </div>
+      <label class="check-toggle"><span>顯示注音</span><input id="ruby-visibility" name="ruby-visibility" type="checkbox" checked></label>
+      <details class="guide-disclosure" open>
+        <summary>檢查線</summary>
+        <div class="guide-switches">
+          <label class="check-toggle"><span>主字 baseline</span><input name="base-baseline" type="checkbox" checked></label>
+          <label class="check-toggle"><span>校正後 ink seat</span><input name="ideographic-ink" type="checkbox" checked></label>
+          <label class="check-toggle"><span>注音 baseline</span><input name="rt-baseline" type="checkbox" checked></label>
+          <label class="check-toggle"><span>ruby outline</span><input name="ruby-outline" type="checkbox" checked></label>
+          <label class="check-toggle"><span>rt outline</span><input name="rt-outline" type="checkbox" checked></label>
+        </div>
+      </details>
     </div>
   </section>
 
   <section class="control-section parameters">
     <h2>度量</h2>
-    <label class="parameter-control">
-      <span data-variable="font-size">正文字級</span>
-      <output for="type-size" data-output="type-size">16px</output>
-      <input id="type-size" name="type-size" type="range" min="12" max="60" step="1" value="16" data-unit="px">
-    </label>
+    <div class="metric-group" data-metric-group="base">
+      <h3>正文</h3>
+      <label class="parameter-control">
+        <span data-variable="font-size">正文字級</span>
+        <output for="type-size" data-output="type-size">16px</output>
+        <input id="type-size" name="type-size" type="range" min="12" max="60" step="1" value="16" data-unit="px">
+      </label>
 
-    <label class="parameter-control">
-      <span data-variable="font-weight">字重</span>
-      <output for="type-weight" data-output="type-weight">400</output>
-      <input id="type-weight" name="type-weight" type="range" min="250" max="900" step="25" value="400">
-    </label>
+      <label class="parameter-control">
+        <span data-variable="font-weight">字重</span>
+        <output for="type-weight" data-output="type-weight">400</output>
+        <input id="type-weight" name="type-weight" type="range" min="250" max="900" step="25" value="400">
+      </label>
+    </div>
 
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-font-size">注音字級</span>
-      <output for="zhuyin-size" data-output="zhuyin-size"></output>
-      <input id="zhuyin-size" name="zhuyin-size" type="range" min=".2" max=".6" step=".000001" value=".3" data-unit="em">
-    </label>
+    <div class="metric-group" data-metric-group="annotation">
+      <h3>注文</h3>
+      <label class="parameter-control">
+        <span data-variable="--han-ruby-zhuyin-font-size">注音字級</span>
+        <output for="zhuyin-size" data-output="zhuyin-size"></output>
+        <input id="zhuyin-size" name="zhuyin-size" type="range" min=".2" max=".6" step=".000001" value=".3" data-unit="em">
+      </label>
 
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-baseline-shift">注音 baseline</span>
-      <output for="zhuyin-baseline" data-output="zhuyin-baseline"></output>
-      <input id="zhuyin-baseline" name="zhuyin-baseline" type="range" min="-.5" max=".5" step=".025" value="0" data-unit="rt-em">
-    </label>
+      <label class="parameter-control">
+        <span data-variable="--han-ruby-zhuyin-baseline-shift">注音 baseline</span>
+        <output for="zhuyin-baseline" data-output="zhuyin-baseline"></output>
+        <input id="zhuyin-baseline" name="zhuyin-baseline" type="range" min="-.5" max=".5" step="any" value="0" data-unit="rt-em">
+      </label>
 
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-over-gap">行間注留白</span>
-      <output for="over-gap" data-output="over-gap"></output>
-      <input id="over-gap" name="over-gap" type="range" min="0" max="1.5" step=".05" value=".25" data-unit="rt-em">
-    </label>
+      <label class="parameter-control">
+        <span data-variable="--han-ruby-zhuyin-over-gap">直排行間注留白</span>
+        <output for="over-gap" data-output="over-gap"></output>
+        <input id="over-gap" name="over-gap" type="range" min="0" max="1.5" step=".05" value=".25" data-unit="rt-em">
+      </label>
 
-    <label class="parameter-control">
-      <span data-variable="--han-ruby-zhuyin-letter-spacing">rt letter spacing</span>
-      <output for="rt-letter-spacing" data-output="rt-letter-spacing"></output>
-      <input id="rt-letter-spacing" name="rt-letter-spacing" type="range" min="-.375" max=".025" step=".0125" value="-.05" data-unit="em">
-    </label>
+      <label class="parameter-control">
+        <span data-variable="--han-ruby-zhuyin-letter-spacing">rt letter spacing</span>
+        <output for="rt-letter-spacing" data-output="rt-letter-spacing"></output>
+        <input id="rt-letter-spacing" name="rt-letter-spacing" type="range" min="-.375" max=".025" step=".0125" value="-.05" data-unit="em">
+      </label>
+    </div>
   </section>
 
   <section class="control-section codegen">
-    <h2>CSS variables</h2>
+    <h2>注文定位校正</h2>
+    <div class="calibration-tool" data-calibration>
+      <p class="codegen-note">量測目前預覽使用的正文體，並將結果寫入注文 baseline。若要測自己的字體，請在內容遊樂場下方載入。</p>
+      <button class="calibrate-font" type="button" data-calibrate-font data-calibrate-font-console>校正目前正文體</button>
+      <output class="calibration-status" data-calibration-status aria-live="polite"></output>
+    </div>
     <p class="codegen-note">只輸出偏離 Han.css 預設值的 ruby 變量；正文字級、字重與預覽開關不進生成碼。</p>
     <p class="codegen-empty" data-css-empty>目前全為預設值，不需要生成 CSS。</p>
     <div class="codegen-result" data-css-panel hidden>
@@ -958,11 +1498,14 @@
     </div>
   </section>
 </form>
+</dialog>
 
 <main>
-  <section class="inspection" aria-labelledby="inspection-heading">
-    <h2 id="inspection-heading">字間注幾何</h2>
-    <p class="inspection-note">紅線落在主字的 alphabetic baseline；橙線是依「永」校準的合成 ideographic ink seat，作為 rt 柱底的預設落點，不代表目前字體每個字的實際墨跡下緣；藍線是直排注音的中央 baseline。同一組變量同步套用到 12px、目前字級與 60px。</p>
+  <section class="inspection tool-panel Preview Playground" aria-labelledby="inspection-heading">
+    <header class="panel-heading">
+      <h2 id="inspection-heading">字間注幾何</h2>
+      <p class="inspection-note">紅線落在主字的 alphabetic baseline；橙線是依「永」校準的 ideographic ink seat，會跟隨注文 baseline 或字體校正結果移動；藍線是直排注音的中央 baseline。三列共用同一組設定。</p>
+    </header>
     <div class="inspection-panel">
       <div class="size-comparison">
         <figure class="size-sample" data-size="min">
@@ -980,7 +1523,7 @@
       </div>
       <div class="legend" aria-label="參考線圖例">
         <span data-key="base">主字 CSS baseline</span>
-        <span data-key="ideographic-ink">合成 ideographic ink seat</span>
+        <span data-key="ideographic-ink">校正後 ideographic ink seat</span>
         <span data-key="rt-baseline">注音中央 baseline</span>
         <span data-key="ruby">ruby box</span>
         <span data-key="rt">rt box</span>
@@ -994,10 +1537,46 @@
     </div>
   </section>
 
-  <article class="copy" lang="zh-Hant">
+  <section class="content-workbench tool-panel Preview Playground" aria-labelledby="content-heading">
+    <header class="panel-heading">
+      <div>
+        <h2 id="content-heading">內容遊樂場</h2>
+        <p class="inspection-note">編輯 HTML 即時查看自己的 ruby 內容；危險標籤與事件屬性會在預覽前移除。</p>
+      </div>
+      <button class="editor-reset" type="button" data-editor-reset>重設範例</button>
+    </header>
+    <div class="workbench-grid">
+      <section class="editor-pane" aria-labelledby="editor-heading">
+        <header class="pane-heading"><span id="editor-heading">HTML</span><output data-editor-status aria-live="polite">已同步</output></header>
+        <textarea class="html-source" data-html-source spellcheck="false" aria-label="HTML 原始碼"></textarea>
+        <section class="font-lab" aria-labelledby="font-lab-heading">
+          <header>
+            <h3 id="font-lab-heading">載入自己的字體</h3>
+            <span>local only</span>
+          </header>
+          <p>接受 WOFF2、WOFF、TTF 或 OTF（上限 20 MiB，推薦 WOFF2）。檔案只留在此頁，校正樣字為「永」。</p>
+          <div class="font-lab-actions">
+            <label class="font-file-label">選擇字體
+              <input type="file" accept=".woff2,.woff,.ttf,.otf,font/woff2,font/woff,font/ttf,font/otf" data-font-file>
+            </label>
+            <button class="clear-font" type="button" data-font-clear hidden>移除字體</button>
+            <button class="calibrate-font" type="button" data-calibrate-font data-calibrate-font-main>校正這個字體</button>
+          </div>
+          <output class="font-status" data-font-status aria-live="polite">目前使用控制台選擇的正文體。</output>
+          <output class="calibration-status" data-calibration-status aria-live="polite"></output>
+        </section>
+      </section>
+      <section class="preview-pane" aria-labelledby="preview-heading">
+        <header class="pane-heading"><span id="preview-heading">預覽</span><span>local only</span></header>
+        <div class="article-stage">
+  <article class="copy" data-html-preview lang="zh-Hant">
     <small class="source">《太陽中文報》・〈百年前字體掀復古風〉</small>
     <p><ruby class="zhuyin">研<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">究<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">院<rt>ㄩㄢˋ</rt></ruby><ruby class="zhuyin">認<rt>ㄖㄣˋ</rt></ruby><ruby class="zhuyin">知<rt>ㄓ</rt></ruby><ruby class="zhuyin">心<rt>ㄒㄧㄣ</rt></ruby><ruby class="zhuyin">理<rt>ㄌㄧˇ</rt></ruby><ruby class="zhuyin">學<rt>ㄒㄩㄝˊ</rt></ruby><ruby class="zhuyin">家<rt>ㄐㄧㄚ</rt></ruby><ruby class="zhuyin">陳<rt>ㄔㄣˊ</rt></ruby><ruby class="zhuyin">師<rt>ㄕ</rt></ruby><ruby class="zhuyin">俊<rt>ㄐㄩㄣˋ</rt></ruby><ruby class="zhuyin">指<rt>ㄓˇ</rt></ruby><ruby class="zhuyin">出<rt>ㄔㄨ</rt></ruby>，<ruby class="zhuyin">三<rt>ㄙㄢ</rt></ruby><ruby class="zhuyin">套<rt>ㄊㄠˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">雖<rt>ㄙㄨㄟ</rt></ruby><ruby class="zhuyin">分<rt>ㄈㄣ</rt></ruby><ruby class="zhuyin">屬<rt>ㄕㄨˇ</rt></ruby><ruby class="zhuyin">宋<rt>ㄙㄨㄥˋ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">與<rt>ㄩˇ</rt></ruby><ruby class="zhuyin">黑<rt>ㄏㄟ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby>，<ruby class="zhuyin">問<rt>ㄨㄣˋ</rt></ruby><ruby class="zhuyin">題<rt>ㄊㄧˊ</rt></ruby><ruby class="zhuyin">卻<rt>ㄑㄩㄝˋ</rt></ruby><ruby class="zhuyin">寫<rt>ㄒㄧㄝˇ</rt></ruby><ruby class="zhuyin">在<rt>ㄗㄞˋ</rt></ruby><ruby class="zhuyin">同<rt>ㄊㄨㄥˊ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">批<rt>ㄆㄧ</rt></ruby><ruby class="zhuyin">筆<rt>ㄅㄧˇ</rt></ruby><ruby class="zhuyin">畫<rt>ㄏㄨㄚˋ</rt></ruby><ruby class="zhuyin">裡<rt>ㄌㄧˇ</rt></ruby>。<ruby class="zhuyin">其<rt>ㄑㄧˊ</rt></ruby>「<ruby class="zhuyin">肉<rt>ㄖㄡˋ</rt></ruby>」<ruby class="zhuyin">部<rt>ㄅㄨˋ</rt></ruby><ruby class="zhuyin">件<rt>ㄐㄧㄢˋ</rt></ruby><ruby class="zhuyin">不<rt>ㄅㄨˋ</rt></ruby><ruby class="zhuyin">沿<rt>ㄧㄢˊ</rt></ruby><ruby class="zhuyin">用<rt>ㄩㄥˋ</rt></ruby><ruby class="zhuyin">印<rt>ㄧㄣˋ</rt></ruby><ruby class="zhuyin">刷<rt>ㄕㄨㄚ</rt></ruby><ruby class="zhuyin">體<rt>ㄊㄧˇ</rt></ruby><ruby class="zhuyin">中<rt>ㄓㄨㄥ</rt></ruby><ruby class="zhuyin">勻<rt>ㄩㄣˊ</rt></ruby><ruby class="zhuyin">稱<rt>ㄔㄥˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">兩<rt>ㄌㄧㄤˇ</rt></ruby><ruby class="zhuyin">橫<rt>ㄏㄥˊ</rt></ruby>，<ruby class="zhuyin">而<rt>ㄦˊ</rt></ruby><ruby class="zhuyin">改<rt>ㄍㄞˇ</rt></ruby><ruby class="zhuyin">作<rt>ㄗㄨㄛˋ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">點<rt>ㄉㄧㄢˇ</rt></ruby><ruby class="zhuyin">一<rt>ㄧ</rt></ruby><ruby class="zhuyin">挑<rt>ㄊㄧㄠˇ</rt></ruby>，<ruby class="zhuyin">使<rt>ㄕˇ</rt></ruby><ruby class="zhuyin">方<rt>ㄈㄤ</rt></ruby><ruby class="zhuyin">整<rt>ㄓㄥˇ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">面<rt>ㄇㄧㄢˋ</rt></ruby><ruby class="zhuyin">內<rt>ㄋㄟˋ</rt></ruby><ruby class="zhuyin">部<rt>ㄅㄨˋ</rt></ruby><ruby class="zhuyin">忽<rt>ㄏㄨ</rt></ruby><ruby class="zhuyin">然<rt>ㄖㄢˊ</rt></ruby><ruby class="zhuyin">出<rt>ㄔㄨ</rt></ruby><ruby class="zhuyin">現<rt>ㄒㄧㄢˋ</rt></ruby><ruby class="zhuyin">兩<rt>ㄌㄧㄤˇ</rt></ruby><ruby class="zhuyin">塊<rt>ㄎㄨㄞˋ</rt></ruby><ruby class="zhuyin">大<rt>ㄉㄚˋ</rt></ruby><ruby class="zhuyin">小<rt>ㄒㄧㄠˇ</rt></ruby>、<ruby class="zhuyin">方<rt>ㄈㄤ</rt></ruby><ruby class="zhuyin">向<rt>ㄒㄧㄤˋ</rt></ruby><ruby class="zhuyin">皆<rt>ㄐㄧㄝ</rt></ruby><ruby class="zhuyin">不<rt>ㄅㄨˋ</rt></ruby><ruby class="zhuyin">相<rt>ㄒㄧㄤ</rt></ruby><ruby class="zhuyin">同<rt>ㄊㄨㄥˊ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">空<rt>ㄎㄨㄥ</rt></ruby><ruby class="zhuyin">白<rt>ㄅㄞˊ</rt></ruby>；「<ruby class="zhuyin">央<rt>ㄧㄤ</rt></ruby>」、「<ruby class="zhuyin">美<rt>ㄇㄟˇ</rt></ruby>」<ruby class="zhuyin">等<rt>ㄉㄥˇ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">末<rt>ㄇㄛˋ</rt></ruby><ruby class="zhuyin">筆<rt>ㄅㄧˇ</rt></ruby><ruby class="zhuyin">又<rt>ㄧㄡˋ</rt></ruby><ruby class="zhuyin">依<rt>ㄧ</rt></ruby><ruby class="zhuyin">手<rt>ㄕㄡˇ</rt></ruby><ruby class="zhuyin">寫<rt>ㄒㄧㄝˇ</rt></ruby><ruby class="zhuyin">偏<rt>ㄆㄧㄢ</rt></ruby><ruby class="zhuyin">旁<rt>ㄆㄤˊ</rt></ruby><ruby class="zhuyin">規<rt>ㄍㄨㄟ</rt></ruby><ruby class="zhuyin">則<rt>ㄗㄜˊ</rt></ruby><ruby class="zhuyin">收<rt>ㄕㄡ</rt></ruby><ruby class="zhuyin">成<rt>ㄔㄥˊ</rt></ruby><ruby class="zhuyin">頓<rt>ㄉㄨㄣˋ</rt></ruby><ruby class="zhuyin">點<rt>ㄉㄧㄢˇ</rt></ruby>，<ruby class="zhuyin">令<rt>ㄌㄧㄥˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">面<rt>ㄇㄧㄢˋ</rt></ruby><ruby class="zhuyin">右<rt>ㄧㄡˋ</rt></ruby><ruby class="zhuyin">下<rt>ㄒㄧㄚˋ</rt></ruby><ruby class="zhuyin">方<rt>ㄈㄤ</rt></ruby><ruby class="zhuyin">失<rt>ㄕ</rt></ruby><ruby class="zhuyin">去<rt>ㄑㄩˋ</rt></ruby><ruby class="zhuyin">原<rt>ㄩㄢˊ</rt></ruby><ruby class="zhuyin">有<rt>ㄧㄡˇ</rt></ruby><ruby class="zhuyin">重<rt>ㄓㄨㄥˋ</rt></ruby><ruby class="zhuyin">量<rt>ㄌㄧㄤˋ</rt></ruby>。<ruby class="zhuyin">至<rt>ㄓˋ</rt></ruby><ruby class="zhuyin">於<rt>ㄩˊ</rt></ruby>「<ruby class="zhuyin">黃<rt>ㄏㄨㄤˊ</rt></ruby>」，<ruby class="zhuyin">則<rt>ㄗㄜˊ</rt></ruby><ruby class="zhuyin">為<rt>ㄨㄟˋ</rt></ruby><ruby class="zhuyin">遷<rt>ㄑㄧㄢ</rt></ruby><ruby class="zhuyin">就<rt>ㄐㄧㄡˋ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">源<rt>ㄩㄢˊ</rt></ruby><ruby class="zhuyin">解<rt>ㄐㄧㄝˇ</rt></ruby><ruby class="zhuyin">釋<rt>ㄕˋ</rt></ruby><ruby class="zhuyin">重<rt>ㄔㄨㄥˊ</rt></ruby><ruby class="zhuyin">新<rt>ㄒㄧㄣ</rt></ruby><ruby class="zhuyin">安<rt>ㄢ</rt></ruby><ruby class="zhuyin">排<rt>ㄆㄞˊ</rt></ruby><ruby class="zhuyin">頂<rt>ㄉㄧㄥˇ</rt></ruby><ruby class="zhuyin">部<rt>ㄅㄨˋ</rt></ruby><ruby class="zhuyin">與<rt>ㄩˇ</rt></ruby><ruby class="zhuyin">中<rt>ㄓㄨㄥ</rt></ruby><ruby class="zhuyin">段<rt>ㄉㄨㄢˋ</rt></ruby><ruby class="zhuyin">結<rt>ㄐㄧㄝˊ</rt></ruby><ruby class="zhuyin">構<rt>ㄍㄡˋ</rt></ruby>，<ruby class="zhuyin">與<rt>ㄩˇ</rt></ruby><ruby class="zhuyin">長<rt>ㄔㄤˊ</rt></ruby><ruby class="zhuyin">期<rt>ㄑㄧˊ</rt></ruby><ruby class="zhuyin">通<rt>ㄊㄨㄥ</rt></ruby><ruby class="zhuyin">行<rt>ㄒㄧㄥˊ</rt></ruby><ruby class="zhuyin">的<rt>˙ㄉㄜ</rt></ruby><ruby class="zhuyin">楷<rt>ㄎㄞˇ</rt></ruby><ruby class="zhuyin">書<rt>ㄕㄨ</rt></ruby><ruby class="zhuyin">及<rt>ㄐㄧˊ</rt></ruby><ruby class="zhuyin">印<rt>ㄧㄣˋ</rt></ruby><ruby class="zhuyin">刷<rt>ㄕㄨㄚ</rt></ruby><ruby class="zhuyin">字<rt>ㄗˋ</rt></ruby><ruby class="zhuyin">形<rt>ㄒㄧㄥˊ</rt></ruby><ruby class="zhuyin">皆<rt>ㄐㄧㄝ</rt></ruby><ruby class="zhuyin">有<rt>ㄧㄡˇ</rt></ruby><ruby class="zhuyin">距<rt>ㄐㄩˋ</rt></ruby><ruby class="zhuyin">離<rt>ㄌㄧˊ</rt></ruby>。</p>
   </article>
+        </div>
+      </section>
+    </div>
+  </section>
 </main>
 </body>
 </html>

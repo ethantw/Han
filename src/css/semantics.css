@@ -238,12 +238,11 @@
    * these same four vars again, per-element, and wins on every element but
    * `:root` itself (only `:where(*)` matches non-root elements at all) —
    * that's the version that actually resolves the per-lang webfont slots. */
-  --han-font-metrics: 'Han Metrics';
-  --han-system-ui: var(--han-font-metrics), system-ui, sans-serif;
-  --han-sans: var(--han-font-metrics), sans-serif;
-  --han-serif: var(--han-font-metrics), serif;
-  --han-cursive: var(--han-font-metrics), cursive, serif;
-  --han-monospace: var(--han-font-metrics), ui-monospace, monospace;
+  --han-system-ui: system-ui, sans-serif;
+  --han-sans: sans-serif;
+  --han-serif: serif;
+  --han-cursive: cursive, serif;
+  --han-monospace: ui-monospace, monospace;
 
   --han-font-default: var(--han-system-ui);
   --han-font-alternative: var(--han-serif);
@@ -701,9 +700,23 @@
     font-size: var(--han-ruby-zhuyin-font-size);
     letter-spacing: var(--han-ruby-zhuyin-letter-spacing);
     line-height: 1;
-    margin-block-end: var(--han-ruby-zhuyin-over-gap);
     ruby-align: center;
     text-orientation: upright;
+  }
+
+  /* Native horizontal over ruby already supplies the expected separation.
+   * In vertical writing, however, common engines place the annotation column
+   * flush against the base column. Logical block-end is the facing edge for
+   * both vertical-rl and vertical-lr, so keep the optical gap vertical-only. */
+  @container style(--han-writing-mode: vertical-rl) {
+    :where(& > rt) {
+      margin-block-end: var(--han-ruby-zhuyin-over-gap);
+    }
+  }
+  @container style(--han-writing-mode: vertical-lr) {
+    :where(& > rt) {
+      margin-block-end: var(--han-ruby-zhuyin-over-gap);
+    }
   }
 
   @container style(--han-zhuyin-ruby-position: over) and style(--han-writing-mode: horizontal-tb) {
@@ -721,6 +734,30 @@
   @container style(--han-zhuyin-ruby-position: inter-character) and style(--han-writing-mode: horizontal-tb) {
     & {
       ruby-position: inter-character;
+    }
+    @supports (ruby-position: inter-character) {
+      /* Native ruby-text boxes do not reliably accept transforms, and
+       * padding on the rt itself only displaces its glyphs in one direction.
+       * Empty inline pseudos extend the annotation content on the opposite
+       * side; native ruby-align:center then moves the real glyph run by half
+       * that extension. Hence a 2× logical spacer produces the requested 1×
+       * optical shift while leaving the ruby column reservation unchanged. */
+      :where(& > rt)::before,
+      :where(& > rt)::after {
+        content: '';
+      }
+      :where(& > rt)::before {
+        padding-inline-start: max(
+          0em,
+          calc(-2 * var(--han-ruby-zhuyin-baseline-shift))
+        );
+      }
+      :where(& > rt)::after {
+        padding-inline-start: max(
+          0em,
+          calc(2 * var(--han-ruby-zhuyin-baseline-shift))
+        );
+      }
     }
     @supports not (ruby-position: inter-character) {
       & {
@@ -748,10 +785,8 @@
        * its inline baseline. An empty, zero-size pseudo creates the required
        * inline anchor fragment without injecting a Unicode character into
        * line-breaking/shaping; U+2060 looked invisible but changed both the
-       * ruby's geometry and CJK avoidance at line edges. Han Metrics is
-       * first in all Han composite stacks, so this baseline now comes from
-       * its fixed CJK strut rather than DTJ or the particular fallback that
-       * paints the base glyph. Scope the repeated anchor name to each ruby,
+       * ruby's geometry and CJK avoidance at line edges. Scope the repeated
+       * anchor name to each ruby,
        * then resolve the annotation's inline-end (its physical bottom in
        * vertical-rl) from the marker, then descend to the synthesized CJK ink
        * edge. Anchor positioning is the baseline path; no legacy top-based

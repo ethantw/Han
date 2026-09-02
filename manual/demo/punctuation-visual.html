@@ -3,81 +3,233 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>標點擠壓與懸掛——實際排版樣張</title>
+<meta name="description" content="用實際中文排版比較 Han.css 的標點擠壓、行首修整、行尾懸掛與 Node.js 預處理結果。">
+<title>標點擠壓與懸掛｜Han.css 排版樣張</title>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-sans@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/webfonts-shanggu-serif@%VITE_ZIANO_VERSION%/swap.css" data-han-webfont>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@hanzi.pro/diantenjeom@%VITE_DIANTENJEOM_VERSION%/dist/diantenjeom.css" data-dtj>
 <link rel="stylesheet" href="/han/han.css">
+<link rel="stylesheet" href="/common/variables.css">
+<link rel="stylesheet" href="/common/icons.css">
+<link rel="stylesheet" href="/common/select.css">
+<link rel="stylesheet" href="/common/brand.css">
+<link rel="stylesheet" href="/common/demo-console.css">
+<link rel="stylesheet" href="/common/demo-specimen.css">
 <style>
   :root {
     color-scheme: light dark;
-    --paper: light-dark(#f7f4ed, #181817);
-    --ink: light-dark(#24211d, #ebe7de);
-    --dim: light-dark(#6e675d, #aaa398);
-    --rule: light-dark(#29241c24, #fff3d426);
-    --panel: light-dark(#fffdf8, #222220);
-    --accent: light-dark(#aa2947, #ff829b);
     --measure: 10em;
+    --demo-dtj-family: 'Diantenjeom Sans JIS';
     --han-punctuation-hant: JIS;
     --han-use-heritage-glyphs-for-hant: system-ja;
     --han-q-quotes: on;
     --han-cite-title-marks: bracket;
     --han-semantics: on;
+    background: var(--ui-bg);
+    color: var(--ui-text);
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
 
   body {
+    min-block-size: 100dvb;
     margin: 0;
-    background: var(--paper);
-    color: var(--ink);
+    color: var(--ui-text);
+    background: var(--ui-bg);
     font-family: var(--han-font-default);
     line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
-  main {
-    inline-size: min(86rem, calc(100% - 2rem));
+  button,
+  input,
+  select,
+  output { font: inherit; }
+
+  code,
+  pre,
+  output,
+  .Kicker { font-family: var(--han-monospace); }
+
+  a { color: inherit; }
+
+  .Controls {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem 1rem 1.5rem;
+    overflow-y: auto;
+    background: var(--ui-console);
+  }
+
+  .ConsoleHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .75rem;
+    padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--ui-rule);
+  }
+
+  .ConsoleHead strong {
+    font-family: var(--han-sans);
+    font-size: .875rem;
+    font-weight: 650;
+  }
+
+  .ConsoleHead a {
+    color: var(--ui-accent);
+    font-size: .75rem;
+    text-decoration: none;
+  }
+
+  .ControlSection {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-block-start: 1.5rem;
+  }
+
+  .ControlSection > h2 {
+    margin: 0 0 .375rem;
+    color: var(--ui-supplement-text);
+    font: 500 .625rem/1 var(--han-monospace);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  .ControlField,
+  .Switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    inline-size: 100%;
+    min-block-size: 2.25rem;
+    padding: .25rem;
+    font-size: .8125rem;
+  }
+
+  .ControlField select {
+    inline-size: 8.75rem;
+    min-block-size: 2rem;
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-1);
+    color: var(--ui-text);
+    background-color: var(--ui-bg);
+  }
+
+  .Switch { cursor: pointer; }
+
+  .Switch input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    opacity: 0;
+  }
+
+  .SwitchTrack {
+    position: relative;
+    flex: none;
+    inline-size: 2.25rem;
+    block-size: 1.25rem;
+    border-radius: 999px;
+    background: var(--ui-rule);
+    transition: background .18s ease;
+  }
+
+  .SwitchTrack::after {
+    content: '';
+    position: absolute;
+    inset: .1875rem auto auto .1875rem;
+    inline-size: .875rem;
+    block-size: .875rem;
+    border-radius: 50%;
+    background: var(--ui-bg);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ui-shadow-ink) 22%, transparent);
+    transition: translate .18s ease;
+  }
+
+  .Switch input:checked + .SwitchTrack { background: var(--ui-accent); }
+  .Switch input:checked + .SwitchTrack::after { translate: 1rem 0; }
+  .Switch input:focus-visible + .SwitchTrack { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+
+  .StatusCard {
+    margin-block-start: auto;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--ui-rule);
+  }
+
+  .StatusCard h2 {
+    margin: 0 0 .625rem;
+    font: 500 .625rem/1 var(--han-monospace);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  #engine {
+    display: block;
+    color: var(--ui-supplement-text);
+    font-size: .625rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+
+  #engine::before {
+    content: '';
+    display: inline-block;
+    inline-size: .5rem;
+    block-size: .5rem;
+    margin-inline-end: .4rem;
+    border-radius: 50%;
+    background: var(--ui-accent);
+  }
+
+  #engine[data-font-failed] { color: var(--ui-proof); }
+  #engine[data-font-failed]::before { background: var(--ui-proof); }
+
+  .Page {
+    inline-size: min(90rem, 100%);
     margin-inline: auto;
-    padding-block: clamp(2.5rem, 7vw, 6rem) 8rem;
+    padding: 0 var(--gutter) 6rem;
   }
 
-  h1 {
-    margin: 0;
-    font-family: var(--han-font-alternative);
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 500;
+  .Hero {
+    --demo-hero-mark: '，。';
+    --demo-hero-mark-block: 1rem;
+  }
+
+  .Showcase {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .SectionHead {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-block-end: 2rem;
+  }
+
+  .SectionHead h2 {
+    margin: .25rem 0 0;
+    font-family: var(--han-sans);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 650;
+    letter-spacing: -.03em;
     line-height: 1.15;
   }
 
-  .Lede {
-    max-inline-size: 48rem;
-    margin-block: .8rem 2rem;
-    color: var(--dim);
+  .SectionHead > p:last-child {
+    max-inline-size: 32rem;
+    margin: 0;
+    color: var(--ui-supplement-text);
+    font-size: .8125rem;
   }
-
-  code, output, select, button {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
-  .Toolbar {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: .75rem 1.5rem;
-    align-items: center;
-    margin-block: 0 2rem;
-    padding-block: .75rem;
-    border-block: 1px solid var(--rule);
-    background: color-mix(in oklab, var(--paper) 90%, transparent);
-    backdrop-filter: blur(10px);
-    font-size: .8rem;
-  }
-
-  .Toolbar label { display: flex; gap: .45rem; align-items: center; }
-  .Toolbar select { font: inherit; }
-  #engine { margin-inline-start: auto; color: var(--dim); }
-  #engine[data-font-failed] { color: var(--accent); font-weight: 700; }
 
   .Modes {
     display: grid;
@@ -88,82 +240,120 @@
 
   .Mode {
     min-inline-size: 0;
-    padding: clamp(1rem, 2.5vw, 1.75rem);
-    border: 1px solid var(--rule);
-    border-radius: .4rem;
-    background: var(--panel);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    background: var(--ui-panel);
+    box-shadow: 0 1.25rem 2.5rem color-mix(in srgb, var(--ui-shadow-ink) 4%, transparent);
+    overflow: clip;
   }
 
   .Mode > header {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: baseline;
-    margin-block-end: 1.5rem;
-    padding-block-end: .75rem;
-    border-block-end: 1px solid var(--rule);
+    min-block-size: 10rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-block-end: 1px solid var(--ui-rule);
+    background: color-mix(in srgb, var(--ui-panel) 82%, var(--ui-bg));
   }
 
-  .Mode h2 { margin: 0; font-size: 1rem; }
-  .Mode output { color: var(--dim); font-size: .67rem; }
+  .ModeIndex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin: 0 0 1rem;
+    color: var(--ui-accent);
+    font: 600 .625rem/1 var(--han-monospace);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .Mode h3 {
+    margin: 0;
+    font-family: var(--han-sans);
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+
+  .ModeDesc {
+    margin: .375rem 0 0;
+    color: var(--ui-supplement-text);
+    font-size: .75rem;
+    line-height: 1.6;
+  }
+
+  .Mode > header output {
+    color: var(--ui-supplement-text);
+    font-size: .5625rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .Specimen { padding: 1.5rem; }
 
   .Case + .Case {
-    margin-block-start: 2.25rem;
-    padding-block-start: 1.5rem;
-    border-block-start: 1px solid var(--rule);
+    margin-block-start: 2.5rem;
+    padding-block-start: 1.75rem;
+    border-block-start: 1px solid var(--ui-rule);
   }
 
-  .Case h3 {
-    margin: 0 0 .7rem;
-    color: var(--dim);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: .7rem;
-    font-weight: 500;
-    letter-spacing: .06em;
+  .Case > h3 {
+    margin: 0 0 1rem;
+    color: var(--ui-supplement-text);
+    font: 500 .6875rem/1.6 var(--han-monospace);
+    letter-spacing: .02em;
   }
 
-  .Specimen {
-    /* Explicit on this diagnostic specimen: DTJ must really own punctuation;
-       its unicode-range lets Han glyphs continue into the system stack. */
+  .Typeset {
     font-family:
-      'Diantenjeom Sans JIS',
-      'Avenir Next', 'Segoe UI Variable', 'Segoe UI', Roboto,
+      var(--demo-dtj-family),
+      var(--han-sans),
       'Hiragino Sans', 'Hiragino Sans GB', 'Yu Gothic',
       'Noto Sans CJK JP', system-ui, sans-serif;
-    font-size: clamp(1.25rem, 2.15vw, 1.7rem);
+    font-size: clamp(1.25rem, 2vw, 1.625rem);
     line-height: 1.8;
   }
 
   .Measure {
     inline-size: var(--measure);
     margin: 0;
-    border-inline-end: 2px solid var(--accent);
+    border-inline-end: 2px solid var(--ui-proof);
     text-align: start;
   }
 
-  .Measure + .Measure { margin-block-start: .9rem; }
-
+  .Measure + .Measure { margin-block-start: 1rem; }
   .ForcedLine { display: block; }
 
-  .PairMatrix {
-    display: grid;
-    gap: 1.1rem;
+  .PairMatrix { display: grid; gap: 1.25rem; }
+
+  .PairGroup {
+    padding: .125rem;
+    border-radius: var(--r-2);
+  }
+
+  .PairGroup[data-regional] {
+    margin-inline: -.625rem;
+    padding: .75rem .625rem;
+    border: 1px solid color-mix(in srgb, var(--ui-accent) 22%, transparent);
+    background: var(--ui-accent-bg);
   }
 
   .PairGroup h4 {
-    margin: 0 0 .35rem;
-    color: var(--dim);
-    font-size: .64rem;
-    font-weight: 500;
+    margin: 0 0 .5rem;
+    color: var(--ui-supplement-text);
+    font-family: var(--han-sans);
+    font-size: .6875rem;
+    font-weight: 600;
   }
+
+  .PairGroup[data-regional] h4 { color: var(--ui-accent-deep); }
 
   .PairSet {
     display: flex;
     flex-wrap: wrap;
-    gap: .45em .75em;
+    gap: .625em .875em;
     align-items: start;
     margin: 0;
-    font-size: 1.25em;
+    font-size: 1.1875em;
   }
 
   .PairSet span {
@@ -172,142 +362,399 @@
     background-image: repeating-linear-gradient(
       to right,
       transparent 0 calc(1em - 1px),
-      var(--rule) calc(1em - 1px) 1em
+      var(--ui-row-rule) calc(1em - 1px) 1em
     );
-    box-shadow: inset 0 -1px var(--rule);
+    box-shadow: inset 0 -1px var(--ui-row-rule);
   }
 
   .Prose { margin: 0; text-align: justify; }
   .Prose + .Prose { margin-block-start: .75rem; }
 
   html[data-writing="vertical"] .Measure,
-  html[data-writing="vertical"] .PairSet span {
-    writing-mode: vertical-rl;
-  }
+  html[data-writing="vertical"] .PairSet span { writing-mode: vertical-rl; }
 
-  html[data-writing="vertical"] .Case .Measure {
-    block-size: 5.5em;
-  }
+  html[data-writing="vertical"] .Case .Measure { block-size: 5.5em; }
 
   html[data-writing="vertical"] .PairSet span {
     background-image: repeating-linear-gradient(
       to bottom,
       transparent 0 calc(1em - 1px),
-      var(--rule) calc(1em - 1px) 1em
+      var(--ui-row-rule) calc(1em - 1px) 1em
     );
   }
 
   html[data-reveal] h-char[data-punct] {
-    outline: 1px dotted color-mix(in oklab, var(--accent) 65%, transparent);
+    outline: 1px dotted color-mix(in srgb, var(--ui-proof) 65%, transparent);
   }
 
   html[data-reveal] h-char[data-punct~="hangable"] h-layer {
-    color: var(--accent);
-    text-shadow: 0 0 .01px var(--accent);
+    color: var(--ui-proof);
+    text-shadow: 0 0 .01px var(--ui-proof);
   }
 
-  .Legend {
+  .NodeSection {
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    border-block-start: 1px solid var(--ui-rule);
+  }
+
+  .NodeGrid {
+    display: grid;
+    grid-template-columns: minmax(18rem, .82fr) minmax(0, 1.18fr);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    overflow: clip;
+    box-shadow: 0 1.25rem 3rem color-mix(in srgb, var(--ui-shadow-ink) 5%, transparent);
+  }
+
+  .NodePane { min-inline-size: 0; background: var(--ui-panel); }
+  .NodePane + .NodePane { border-inline-start: 1px solid var(--ui-rule); }
+
+  .PaneHead {
     display: flex;
-    flex-wrap: wrap;
-    gap: .5rem 1.25rem;
-    margin-block: 1.5rem 0;
-    color: var(--dim);
-    font-size: .76rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-block-size: 3rem;
+    padding: .75rem 1rem;
+    border-block-end: 1px solid var(--ui-rule);
+    color: var(--ui-supplement-text);
+    font: 500 .625rem/1 var(--han-monospace);
+    letter-spacing: .05em;
+    text-transform: uppercase;
   }
 
-  .Legend i {
-    display: inline-block;
-    block-size: 1em;
-    border-inline-end: 2px solid var(--accent);
+  .NodeBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    color: var(--ui-accent);
   }
 
-  @media (max-width: 62rem) {
+  .NodeBadge::before {
+    content: '';
+    inline-size: .45rem;
+    block-size: .45rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .SsrRendered {
+    min-block-size: 24rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background:
+      linear-gradient(var(--ui-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ui-grid) 1px, transparent 1px),
+      var(--ui-panel);
+    background-size: 1.75rem 1.75rem;
+  }
+
+  .SsrProse {
+    max-inline-size: 19em;
+    margin: 0 auto;
+    padding: 1.5rem;
+    border: 1px solid var(--ui-rule);
+    background: color-mix(in srgb, var(--ui-bg) 92%, transparent);
+    font-family: var(--demo-dtj-family), var(--han-serif);
+    font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+    line-height: 2;
+    text-align: justify;
+  }
+
+  .SsrProse p { margin: 0; }
+  .SsrProse p + p { margin-block-start: 1em; }
+
+  html[data-writing="vertical"] .SsrRendered { display: grid; place-items: center; }
+
+  html[data-writing="vertical"] .SsrProse {
+    inline-size: auto;
+    block-size: 18rem;
+    margin: 0;
+    writing-mode: vertical-rl;
+  }
+
+  .CodePane { background: var(--code-bg); }
+  .CodePane .PaneHead { border-color: var(--code-rule); color: var(--code-comment); }
+
+  .CopyButton {
+    padding: .25rem .5rem;
+    border: 1px solid var(--code-rule);
+    border-radius: var(--r-1);
+    color: var(--code-fg);
+    background: transparent;
+    cursor: pointer;
+    font: 500 .625rem/1.2 var(--han-monospace);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .CopyButton:hover { border-color: var(--ui-accent); color: var(--ui-accent); }
+  .CopyButton:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+
+  .CodeScroll {
+    block-size: 24rem;
+    margin: 0;
+    padding: 1.25rem;
+    overflow: auto;
+    color: var(--code-fg);
+    background: var(--code-bg);
+    font-size: .75rem;
+    line-height: 1.7;
+    tab-size: 2;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .NodeNote {
+    max-inline-size: 50rem;
+    margin: 1rem 0 0;
+    color: var(--ui-supplement-text);
+    font-size: .75rem;
+  }
+
+  .PageFooter {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem;
+    border-block-start: 1px solid var(--ui-rule);
+    color: var(--ui-supplement-text);
+    font-size: .75rem;
+  }
+
+  .PageFooter a { color: var(--ui-accent); text-underline-offset: .25em; }
+
+  @media (max-width: 72rem) {
     .Modes { grid-template-columns: 1fr; }
-    #engine { inline-size: 100%; margin-inline-start: 0; }
+    .Mode > header { min-block-size: 0; }
+    .PairMatrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 51.9375rem) {
+    .ConsoleHead { justify-content: flex-end; padding-block-end: 1rem; }
+    .ConsoleHead strong { display: none; }
+    .ControlSection { margin-block-start: 1rem; }
+    .StatusCard { margin-block-start: 1rem; padding-block-start: 1rem; }
+    .NodeGrid { grid-template-columns: 1fr; }
+    .NodePane + .NodePane { border-inline-start: 0; border-block-start: 1px solid var(--ui-rule); }
+  }
+
+  @media (max-width: 40rem) {
+    .Page { padding-inline: 0; }
+    .Hero, .Showcase, .NodeSection, .PageFooter { padding-inline: var(--gutter); }
+    .Hero { padding-block-start: 3rem; }
+    .GuideItem { padding-inline: var(--gutter); }
+    .SectionHead { display: block; }
+    .SectionHead > p:last-child { margin-block-start: 1rem; }
+    .PairMatrix { grid-template-columns: 1fr; }
+    .NodeGrid { border-inline: 0; border-radius: 0; }
+    .PageFooter { display: block; }
+    .PageFooter span { display: block; margin-block-start: .5rem; }
   }
 </style>
+<script type="module" src="/common/demo-console.js"></script>
+<script type="module" src="/common/demo-brand.js"></script>
 </head>
 <body>
-<main>
-  <h1>標點擠壓與懸掛</h1>
-  <p class="Lede">
-    這是看實際排版的樣張，不是數字測試。三欄文字完全相同；比較相鄰標點占幾格，
-    再看逗號、句號是否越過紅色行尾。<code>q</code>／<code>cite</code> 的括號由
-    <code>::before</code>／<code>::after</code> 生成，也放在正文裡一起看。
-  </p>
+<button type="button" aria-controls="punctuation-console" aria-expanded="false" data-demo-console-open>
+  <span data-icon="console" aria-hidden="true"></span>
+  <span>排版設定</span>
+</button>
 
-  <form class="Toolbar" id="toolbar">
-    <label>欄寬
-      <select name="measure">
-        <option value="8">8em</option>
-        <option value="10" selected>10em</option>
-        <option value="12">12em</option>
-      </select>
-    </label>
-    <label><input type="checkbox" name="vertical">直排</label>
-    <label><input type="checkbox" name="reveal">顯示 JS wrapper／hangable</label>
-    <output id="engine">檢查引擎與 DTJ…</output>
+<dialog id="punctuation-console" open data-demo-console aria-label="標點排版工作台">
+  <header>
+    <strong>標點排版工作台</strong>
+    <button type="button" aria-label="關閉排版設定" data-demo-console-close><span data-icon="close" aria-hidden="true"></span></button>
+  </header>
+<aside class="Controls" aria-label="排版控制台" data-demo-console-body>
+  <div class="ConsoleHead">
+    <strong>標點排版工作台</strong>
+    <a href="/">回 Han.css</a>
+  </div>
+
+  <form id="toolbar">
+    <section class="ControlSection" aria-labelledby="typesetting-controls">
+      <h2 id="typesetting-controls">排版設定</h2>
+      <label class="ControlField">標點
+        <select name="convention">
+          <option value="MOE">MOE</option>
+          <option value="JIS" selected>JIS</option>
+          <option value="GB">GB</option>
+          <option value="KLR">KLR</option>
+        </select>
+      </label>
+      <label class="ControlField">欄寬
+        <select name="measure">
+          <option value="8">8 em</option>
+          <option value="10" selected>10 em</option>
+          <option value="12">12 em</option>
+        </select>
+      </label>
+      <label class="Switch">
+        <span>直排</span>
+        <input type="checkbox" name="vertical">
+        <span class="SwitchTrack" aria-hidden="true"></span>
+      </label>
+      <label class="Switch">
+        <span>顯示 JS 標記</span>
+        <input type="checkbox" name="reveal">
+        <span class="SwitchTrack" aria-hidden="true"></span>
+      </label>
+    </section>
   </form>
 
-  <p class="Legend"><span><i></i> 紅線＝行尾</span><span>紅色標點＝JS 判定為 hangable（開啟顯示後）</span></p>
+  <section class="StatusCard" aria-labelledby="engine-heading">
+    <h2 id="engine-heading">Runtime</h2>
+    <output id="engine" aria-live="polite">檢查排版引擎與 DTJ 字體⋯</output>
+  </section>
+</aside>
+</dialog>
 
-  <div class="Modes">
-    <article class="Mode" data-mode="none">
-      <header><h2>none</h2><output></output></header>
-      <div class="Specimen"></div>
-    </article>
-    <article class="Mode" data-mode="compress">
-      <header><h2>compress</h2><output></output></header>
-      <div class="Specimen"></div>
-    </article>
-    <article class="Mode" data-mode="auto">
-      <header><h2>auto</h2><output></output></header>
-      <div class="Specimen"></div>
-    </article>
-  </div>
+<main class="Page">
+  <header class="Hero DemoHero">
+    <!-- @han:demo-brand 標點字體樣張 -->
+    <h1>標點擠壓<br>與懸掛</h1>
+    <p class="Lede DemoLede">
+      中文標點不是一格又一格互不相干的方塊。Han.css 依相鄰關係收緊空白、修整行首，
+      並讓句讀懸出行尾；這份樣張把原始排版、擠壓與完整自動模式放在同一頁比較。
+    </p>
+  </header>
+
+  <section class="Guide DemoGuide" aria-label="閱讀樣張的方法">
+    <div class="GuideItem DemoGuideItem">
+      <span class="GuideNo DemoGuideNo">01 / GRID</span>
+      <b>一條淡線，就是一個全形字格</b>
+      <p>觀察兩枚標點合計占一格、一道半，或維持完整兩格。</p>
+    </div>
+    <div class="GuideItem DemoGuideItem">
+      <span class="GuideNo DemoGuideNo">02 / EDGE</span>
+      <b>紅線標示實際欄尾</b>
+      <p>開括號貼齊行首；可懸掛的逗號、句號則越過欄尾。</p>
+    </div>
+    <div class="GuideItem DemoGuideItem">
+      <span class="GuideNo DemoGuideNo">03 / FONT</span>
+      <b>DTJ 提供四套標點</b>
+      <p>切換 MOE、JIS、GB、KLR，橫排與直排都使用真正的標點字形。</p>
+    </div>
+  </section>
+
+  <section class="Showcase" aria-labelledby="comparison-title">
+    <header class="SectionHead">
+      <div>
+        <p class="Kicker DemoKicker">Browser / live comparison</p>
+        <h2 id="comparison-title">三種處理，逐格對照</h2>
+      </div>
+      <p>左欄保留瀏覽器原貌，中欄只處理相鄰標點，右欄再加入行首修整與行尾懸掛。控制台會同步切換三欄。</p>
+    </header>
+
+    <div class="Modes">
+      <article class="Mode" data-refinement-mode="none">
+        <header>
+          <p class="ModeIndex"><span>01 / none</span><output></output></p>
+          <h3>原始排版</h3>
+          <p class="ModeDesc">不建立標點 wrapper，保留瀏覽器與字體本身的配置。</p>
+        </header>
+        <div class="Specimen Typeset"></div>
+      </article>
+      <article class="Mode" data-refinement-mode="compress">
+        <header>
+          <p class="ModeIndex"><span>02 / compress</span><output></output></p>
+          <h3>標點擠壓</h3>
+          <p class="ModeDesc">依標點組合縮減字格，不啟用句讀的行尾懸掛。</p>
+        </header>
+        <div class="Specimen Typeset"></div>
+      </article>
+      <article class="Mode" data-refinement-mode="auto">
+        <header>
+          <p class="ModeIndex"><span>03 / auto</span><output></output></p>
+          <h3>完整自動模式</h3>
+          <p class="ModeDesc">偵測原生能力，補齊擠壓、行首修整與行尾懸掛。</p>
+        </header>
+        <div class="Specimen Typeset"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="NodeSection" aria-labelledby="node-title">
+    <header class="SectionHead">
+      <div>
+        <p class="Kicker">Node.js / SSR-preprocessed HTML</p>
+        <h2 id="node-title">先排好，再交給瀏覽器</h2>
+      </div>
+      <p>同一套 Han.js 也能在 Node.js 執行。這一段在產生頁面時已經處理完成，瀏覽器端不會再次改寫它。</p>
+    </header>
+
+    <div class="NodeGrid">
+      <section class="NodePane" aria-labelledby="node-preview-heading">
+        <header class="PaneHead">
+          <span id="node-preview-heading">排版結果</span>
+          <span class="NodeBadge">Node rendered</span>
+        </header>
+        <div class="SsrRendered Typeset" data-node-rendered>
+          <!-- @han:ssr-preview -->
+        </div>
+      </section>
+      <section class="NodePane CodePane" aria-labelledby="node-code-heading">
+        <header class="PaneHead">
+          <span id="node-code-heading">傳給瀏覽器的 HTML</span>
+          <button class="CopyButton" type="button" data-copy-ssr>複製 HTML</button>
+        </header>
+        <pre class="CodeScroll"><code data-ssr-code><!-- @han:ssr-code --></code></pre>
+      </section>
+    </div>
+    <p class="NodeNote">這不是模擬輸出：開發伺服器與正式 build 都會由 Node.js 呼叫 <code>installFallbacks()</code>，把右側標記直接寫進本頁。</p>
+  </section>
+
+  <footer class="PageFooter">
+    <a href="/">Han.css・像素間的活字美學</a>
+    <span>標點 × 橫直排 × Browser / Node</span>
+  </footer>
 </main>
 
 <template id="specimen-source">
   <section class="Case">
-    <h3>相鄰標點：每條淡線是一個 em；最後一組是不可擠壓的負例</h3>
+    <h3>相鄰標點｜淡線為一個 em；最後一組是不可擠壓的負例</h3>
     <div class="PairMatrix">
       <div class="PairGroup">
         <h4>開 → 開</h4>
-        <p class="PairSet"><span>「『</span><span>『「</span><span>《〈</span><span>〈《</span><span>（「</span><span>【《</span></p>
+        <p class="PairSet"><span>「『</span> <span>『「</span> <span>《〈</span> <span>〈《</span> <span>（「</span> <span>【《</span></p>
       </div>
       <div class="PairGroup">
         <h4>閉 → 開</h4>
-        <p class="PairSet"><span>」「</span><span>》《</span><span>〉〈</span><span>）「</span><span>】《</span><span>』『</span></p>
+        <p class="PairSet"><span>」「</span> <span>》《</span> <span>〉〈</span> <span>）「</span> <span>】《</span> <span>』『</span></p>
       </div>
       <div class="PairGroup">
         <h4>閉 → 閉</h4>
-        <p class="PairSet"><span>」』</span><span>』」</span><span>》〉</span><span>〉》</span><span>）」</span><span>】》</span></p>
+        <p class="PairSet"><span>」』</span> <span>』」</span> <span>》〉</span> <span>〉》</span> <span>）」</span> <span>】》</span></p>
       </div>
       <div class="PairGroup">
         <h4>句讀 → 開</h4>
-        <p class="PairSet"><span>。「</span><span>，『</span><span>、《</span><span>？「</span><span>！《</span><span>：〈</span></p>
+        <p class="PairSet"><span>。「</span> <span>，『</span> <span>、《</span> <span>？「</span> <span>！《</span> <span>：〈</span></p>
+      </div>
+      <div class="PairGroup" data-regional>
+        <h4>分隔符 → 閉｜MOE・JIS・KLR 與 GB 規則不同</h4>
+        <p class="PairSet"><span>：」</span> <span>；」</span> <span>？》</span> <span>！》</span> <span>！〉</span></p>
       </div>
       <div class="PairGroup">
         <h4>句讀 → 閉</h4>
-        <p class="PairSet"><span>。」</span><span>，』</span><span>、》</span><span>？》</span><span>！〉</span><span>；」</span></p>
+        <p class="PairSet"><span>。」</span> <span>，』</span> <span>、》</span> <span>》，</span> <span>。，</span></p>
       </div>
       <div class="PairGroup">
-        <h4>句讀 → 句讀（含 atomic hang seam）</h4>
-        <p class="PairSet"><span>》，</span><span>？，</span><span>。，</span><span>，。</span><span>、，</span><span>？！</span><span>！？</span><span>：；</span><span>；：</span><span>．，</span></p>
+        <h4>句讀 → 句讀｜含 atomic hang seam</h4>
+        <p class="PairSet"><span>？，</span> <span>，。</span> <span>、，</span> <span>？！</span> <span>！？</span> <span>：；</span> <span>；：</span> <span>．，</span></p>
       </div>
       <div class="PairGroup">
         <h4>中點接縫</h4>
-        <p class="PairSet"><span>。・</span><span>，·</span><span>・「</span><span>》・</span><span>·《</span><span>！·</span></p>
+        <p class="PairSet"><span>。・</span> <span>，·</span> <span>・「</span> <span>》・</span> <span>·《</span> <span>！·</span></p>
       </div>
       <div class="PairGroup">
-        <h4>不可擠壓：全形符號／長音</h4>
-        <p class="PairSet"><span>。／</span><span>、－</span><span>，＼</span><span>。ー</span><span>，＆</span><span>。＿</span><span>、゠</span></p>
+        <h4>不可擠壓｜全形符號與長音</h4>
+        <p class="PairSet"><span>。／</span> <span>、－</span> <span>，＼</span> <span>。ー</span> <span>，＆</span> <span>。＿</span> <span>、゠</span></p>
       </div>
     </div>
   </section>
 
   <section class="Case">
-    <h3>行首 trim：比較開括號後的字從哪裡開始</h3>
+    <h3>行首修整｜比較開括號後的第一個字從哪裡開始</h3>
     <div class="Measure">
       <span class="ForcedLine">「天地玄黃，宇宙洪荒。</span>
       <span class="ForcedLine">《日月盈昃，辰宿列張》</span>
@@ -315,13 +762,13 @@
   </section>
 
   <section class="Case">
-    <h3>行尾 hanging：欄尾的逗號／句號應伸過紅線</h3>
+    <h3>行尾懸掛｜欄尾的逗號與句號應伸過紅線</h3>
     <p class="Measure">天地玄黃宇宙洪荒日，月盈昃辰宿列張。</p>
     <p class="Measure">寒來暑往秋收冬藏閏，餘成歲律呂調陽。</p>
   </section>
 
   <section class="Case">
-    <h3>實際正文與生成括號</h3>
+    <h3>實際正文｜包含 q、cite 以 pseudo-element 生成的括號</h3>
     <div class="Measure">
       <p class="Prose">她說<q>今日讀了<cite>太陽中文報</cite>，甚好。</q>，隨後又寫下：「標點應當呼吸，卻不該鬆散。」</p>
       <p class="Prose">編者按、<q>這一段前後都有標點。</q>，也包含<q><cite>巢狀書名</cite></q>與《實體書名號》。</p>

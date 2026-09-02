@@ -13,6 +13,8 @@ import { specificity, splitTopLevel } from './_specificity.js'
 import { headings, renderPageToc } from './_md-headings.js'
 import { ssrSpecimen } from './ssr-specimen.js'
 import { renderPunctuationSqueezePage } from './punctuation-squeeze-page.js'
+import { renderPunctuationVisualPage } from './punctuation-visual-page.js'
+import { renderDemoBrandPage } from './demo-brand-page.js'
 import {
   DEFAULT_LOCALE as HOME_DEFAULT_LOCALE,
   ALL_LOCALES as HOME_LOCALE_SLUGS,
@@ -315,13 +317,15 @@ const HOME_SECTIONS = [
 // `<name>Section` one derived from the HOME_SECTIONS list.
 const HOME_CONSOLE = path.resolve(HOME_DIR, 'console.html')
 // 示例頁。`specimen.html` 是 shipped 的樣張（renderSpecimenPages 由它生出
-// /specimen.html 與 /specimen.ssr.html 兩份）；`ruby-zhuyin-config.html` 是 shipped
-// 的注音 ruby 配置器。其餘 .html 是 dev-only 工作台頁。
+// /specimen.html 與 /specimen.ssr.html 兩份）；`ruby-zhuyin-config.html` 與
+// `punctuation-visual.html` 是 shipped 的公開工作台。其餘 .html 是 dev-only 頁面。
 // （2026-08-08：原本還有一頁 `/demo`——`index.html` ＋ 十八個 `.md` 分節拼成的
 // 對照表。刪了：太醜、示例意義不大，樣張頁承擔得了同一件事，owner 拍板。）
 const DEMO_DIR = path.resolve(here, 'demo')
 const SPECIMEN_FILE = 'specimen.html'
 const PUNCTUATION_SQUEEZE_FILE = 'punctuation-squeeze.html'
+const PUNCTUATION_VISUAL_FILE = 'punctuation-visual.html'
+const PUNCTUATION_VISUAL_SCRIPT = 'punctuation-visual.js'
 const RUBY_ZHUYIN_CONFIG_FILE = 'ruby-zhuyin-config.html'
 const RUBY_READINGS_FILE = 'ruby-readings.html'
 const RUBY_READINGS_ASSETS = ['ruby-readings.css', 'ruby-readings.js']
@@ -368,11 +372,11 @@ const FRAMEWORK_ASSETS = [
   'han.fonts.css', 'han.fonts.min.css',
   'han.zhuyin.css', 'han.zhuyin.min.css',
   'han.js', 'han.min.js', 'han.auto.js', 'han.auto.min.js',
+  'han.zhuyin-calibration.js', 'han.zhuyin-calibration.min.js',
   // The addition ledger's measured figures — read at runtime by
   // home/ledger.js as the console's switches move (build/pass-sizes.js).
   'pass-sizes.json',
   'em-space.woff2',
-  'metrics.woff2',
   'zhuyin.serif.woff2',
 ]
 
@@ -504,8 +508,8 @@ async function bundleHomeCss() {
  * dead weight — drop every `.css` under `common/` and `home/` except the
  * ones something still fetches by URL:
  *
- *   • the four `common/*` control-family sheets — dual-homed; `<han-console>`
- *     fetches each into its shadow root in the same order as `home.css`.
+ *   • reusable `common/*` component sheets that a standalone demo or
+ *     `<han-console>` still fetches directly by URL.
  *   • `common/icons.css` — dual-homed for the same reason: the console's
  *     ↺ 使用預設值 buttons and control-group.css's ＋/－ read `--icon-*` and the
  *     `[data-icon]` primitive from it.
@@ -516,11 +520,21 @@ async function bundleHomeCss() {
  * waterfall on first paint.
  */
 const KEEP_STANDALONE = new Set([
+  // Standalone demos consume the design tokens directly rather than loading
+  // the homepage bundle. The punctuation specimen also renders the shared
+  // wordmark, so both URLs remain part of the public component surface.
+  'common/variables.css',
+  'common/brand.css',
   'common/control-group.css',
   'common/toggle.css',
   'common/metric-slider.css',
   'common/field.css',
   'common/icons.css',
+  // Standalone demos compose these light-DOM primitives without loading the
+  // homepage bundle. Keep their stable URLs beside the shadow-DOM family.
+  'common/panel.css',
+  'common/demo-console.css',
+  'common/demo-specimen.css',
   // `common/select.css` — 同樣 dual-homed：<han-console> 要 fetch 它進 shadow，
   // 而 `specimen.html` 也直接 <link> 它（那一頁不載 home.css，沒有 inline 的那份）。
   'common/select.css',
@@ -588,8 +602,8 @@ async function hashLinkedSheets() {
     const src = path.join(MANUAL_DIST, rel)
     if (!existsSync(src)) continue
     // A copied sheet resolves its relative url() against ITS OWN URL — moved
-    // under /assets/, `url("./metrics.woff2")` starts asking for
-    // /assets/metrics.woff2, a file that must not exist there (the
+    // under /assets/, `url("./zhuyin.serif.woff2")` starts asking for
+    // /assets/zhuyin.serif.woff2, a file that must not exist there (the
     // /assets/ prefix is immutable-cached and content-hashed ONLY). Anchor
     // every relative url() to the sheet's original directory instead; the
     // fonts stay single copies at their plain, must-revalidate paths.
@@ -1014,11 +1028,15 @@ async function renderPunctuationSqueezeFixture() {
 async function renderShippedDemoPages() {
   const outDir = path.join(HTML_ROOT, 'demo')
   await fs.mkdir(outDir, { recursive: true })
+  const [rubyZhuyin, punctuationVisual] = await Promise.all([
+    fs.readFile(path.join(DEMO_DIR, RUBY_ZHUYIN_CONFIG_FILE), 'utf-8'),
+    fs.readFile(path.join(DEMO_DIR, PUNCTUATION_VISUAL_FILE), 'utf-8'),
+  ])
+  await fs.writeFile(
+    path.join(outDir, RUBY_ZHUYIN_CONFIG_FILE),
+    renderDemoBrandPage(rubyZhuyin),
+  )
   await Promise.all([
-    fs.copyFile(
-      path.join(DEMO_DIR, RUBY_ZHUYIN_CONFIG_FILE),
-      path.join(outDir, RUBY_ZHUYIN_CONFIG_FILE),
-    ),
     fs.copyFile(
       path.join(DEMO_DIR, RUBY_READINGS_FILE),
       path.join(outDir, RUBY_READINGS_FILE),
@@ -1027,6 +1045,14 @@ async function renderShippedDemoPages() {
       path.join(DEMO_DIR, file),
       path.join(outDir, file),
     )),
+    fs.writeFile(
+      path.join(outDir, PUNCTUATION_VISUAL_FILE),
+      renderPunctuationVisualPage(punctuationVisual),
+    ),
+    fs.copyFile(
+      path.join(DEMO_DIR, PUNCTUATION_VISUAL_SCRIPT),
+      path.join(outDir, PUNCTUATION_VISUAL_SCRIPT),
+    ),
   ])
 }
 
@@ -1261,6 +1287,10 @@ function hanManualPlugin() {
         let body = await fs.readFile(file, 'utf-8')
         if (pathname === `/demo/${PUNCTUATION_SQUEEZE_FILE}`)
           body = await renderPunctuationSqueezePage(body)
+        if (pathname === `/demo/${PUNCTUATION_VISUAL_FILE}`)
+          body = renderPunctuationVisualPage(body)
+        if (pathname === `/demo/${RUBY_ZHUYIN_CONFIG_FILE}`)
+          body = renderDemoBrandPage(body)
         res.setHeader('content-type', type)
         res.setHeader('cache-control', 'no-store')
         res.end(type.startsWith('text/html') ? substituteEnv(body) : body)

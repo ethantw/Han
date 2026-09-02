@@ -92,114 +92,6 @@ test('ideographic ink seat is independent of the base font metrics', async ({ pa
   for (const delta of deltas) expect(delta).toBeCloseTo(.075, 3)
 })
 
-test('Han composite stacks use Han Metrics before DTJ or fallback glyph fonts', async ({ page }) => {
-  const geometry = await page.evaluate(async () => {
-    await document.fonts.ready
-    const host = document.createElement('section')
-    host.lang = 'zh-Hant'
-    host.style.cssText = [
-      'font-size:60px',
-      'line-height:1',
-      '--han-zhuyin-ruby-position:inter-character',
-    ].join(';')
-    const variants = {
-      songti: "--han-font-punctuation-serif:HanNone;--han-font-cjk-serif:'Songti TC'",
-      dtjSongti: "--han-font-punctuation-serif:'Diantenjeom Serif MOE';--han-font-cjk-serif:'Songti TC'",
-      shanggu: "--han-font-punctuation-serif:'Diantenjeom Serif MOE';--han-font-cjk-serif:'Shanggu Serif'",
-      pingfang: "--han-font-punctuation-serif:HanNone;--han-font-cjk-serif:'PingFang TC'",
-    }
-    host.innerHTML = Object.entries(variants).map(([name, style]) => `
-      <div data-font="${name}" style="font-family:var(--han-serif);${style}">
-        <span>知</span><ruby class="zhuyin">鈽<rt>ㄅㄨˋ</rt></ruby>
-        <i style="display:inline-block;inline-size:0;block-size:0;vertical-align:baseline"></i>
-      </div>
-    `).join('')
-    document.body.append(host)
-    const result = [...host.children].map((line) => {
-      const copy = line.querySelector('span') as HTMLElement
-      const ruby = line.querySelector('ruby') as HTMLElement
-      const rt = line.querySelector('rt') as HTMLElement
-      const probe = line.querySelector('i') as HTMLElement
-      const baseline = probe.getBoundingClientRect().top
-      return {
-        family: getComputedStyle(line).fontFamily,
-        copyHeight: copy.getBoundingClientRect().height,
-        rubyHeight: ruby.getBoundingClientRect().height,
-        rtBottom: (rt.getBoundingClientRect().bottom - baseline) / 60,
-      }
-    })
-    host.remove()
-    return result
-  })
-
-  expect(geometry).toHaveLength(4)
-  const [reference] = geometry
-  for (const line of geometry) {
-    expect(line.family).toMatch(/^"Han Metrics"/)
-    // Metric overrides land on device pixels; exact used height may be 60 or
-    // 61px at a 60px font size, but MUST be identical across fallback stacks.
-    expect(line.copyHeight).toBe(reference.copyHeight)
-    expect(line.rubyHeight).toBe(reference.rubyHeight)
-    expect(line.rtBottom).toBeCloseTo(.075, 3)
-  }
-})
-
-test('Han Metrics can be disabled with the public metrics mode', async ({ page }) => {
-  const result = await page.evaluate(() => {
-    const host = document.createElement('section')
-    host.lang = 'zh-Hant'
-    host.innerHTML = `
-      <span data-mode="default" style="font-family:var(--han-serif)">知</span>
-      <section style="--han-use-metrics:off">
-        <span data-mode="off" style="font-family:var(--han-serif)">知</span>
-      </section>
-    `
-    document.body.append(host)
-    const family = (mode: string) => getComputedStyle(
-      host.querySelector(`[data-mode="${mode}"]`) as HTMLElement,
-    ).fontFamily
-    const result = {
-      default: family('default'),
-      off: family('off'),
-      modes: getComputedStyle(host).getPropertyValue('--han-use-metrics').trim(),
-    }
-    host.remove()
-    return result
-  })
-
-  expect(result.modes).toBe('on')
-  expect(result.default).toMatch(/^"Han Metrics"/)
-  expect(result.off).toMatch(/^HanNone/)
-})
-
-test('Han Metrics supplies only the strut and never paints Latin or digits', async ({ page }) => {
-  const result = await page.evaluate(async () => {
-    const host = document.createElement('div')
-    host.lang = 'zh-Hant'
-    host.style.cssText = 'position:fixed;visibility:hidden;font:60px/1 var(--han-serif)'
-    document.body.append(host)
-
-    const composite = getComputedStyle(host).fontFamily
-    const withoutMetrics = composite.replace(/^"Han Metrics",\s*/, '')
-    const makeSample = (family: string) => {
-      const span = document.createElement('span')
-      span.style.cssText = `display:inline-block;font-family:${family}`
-      span.textContent = '30ABCxyz'
-      host.append(span)
-      return span
-    }
-    const withMetrics = makeSample(composite)
-    const without = makeSample(withoutMetrics)
-    await document.fonts.ready
-    const widths = [withMetrics, without].map(($el) => $el.getBoundingClientRect().width)
-    host.remove()
-    return { composite, widths }
-  })
-
-  expect(result.composite).toMatch(/^"Han Metrics"/)
-  expect(result.widths[0]).toBeCloseTo(result.widths[1], 4)
-})
-
 test('ideographic ink seat stays in base-em when the rt font-size changes', async ({ page }) => {
   const target = page.locator('#zhuyin-target')
   const positions: number[] = []
@@ -342,21 +234,19 @@ test('shared zhuyin rt variables apply to over ruby in horizontal and vertical w
     expect(style.fontSize / 32).toBeCloseTo(.4, 4)
     expect(style.lineHeight).toBeCloseTo(1, 3)
     expect(style.letterSpacing).toBeCloseTo(.125, 3)
-    expect(style.marginBlockEnd).toBeCloseTo(.25, 3)
     expect(style.rubyAlign).toBe('center')
   }
+  expect(styles[0].marginBlockEnd).toBe(0)
+  expect(styles[1].marginBlockEnd).toBeCloseTo(.25, 3)
 })
 
-test('zhuyin rt applies the configured block-end margin in every ruby mode', async ({ page }) => {
-  const margins = await page.locator([
-    '#zhuyin-target rt',
-    '#zhuyin-over-horizontal rt',
-    '#zhuyin-over-vertical rt',
-  ].join(', ')).evaluateAll((annotations: HTMLElement[]) => annotations.map((rt) => {
+test('zhuyin rt adds block-end separation only in vertical writing', async ({ page }) => {
+  const readMargin = (selector: string) => page.locator(selector).first().evaluate((rt) => {
     const style = getComputedStyle(rt)
     return Number.parseFloat(style.marginBlockEnd) / Number.parseFloat(style.fontSize)
-  }))
+  })
 
-  expect(margins).toHaveLength(5)
-  for (const margin of margins) expect(margin).toBeCloseTo(.25, 3)
+  expect(await readMargin('#zhuyin-target rt')).toBe(0)
+  expect(await readMargin('#zhuyin-over-horizontal rt')).toBe(0)
+  expect(await readMargin('#zhuyin-over-vertical rt')).toBeCloseTo(.25, 3)
 })

@@ -126,12 +126,13 @@ system fonts.
 
 | File | Contents |
 |------|----------|
-| `han.css` | The full set — four modules + JS-companion styles + bundled font assets (em-space, metrics, zhuyin faces) |
+| `han.css` | The full set — four modules + JS-companion styles + bundled font assets (em-space, zhuyin faces) |
 | `han.{semantics,lines,prose,fonts}.css` | Per-module bundles, each in its own cascade layer; the four sum to the full set |
-| `han.basic.css` | Slim — semantics + lines + prose; no fonts module or JS-companion styles; does not load the Zhuyin face |
+| `han.basic.css` | Slim — semantics + lines + prose; no fonts module, JS-companion styles, or font files |
 | `han.zhuyin.css` | Optional bundled Zhuyin `@font-face` for use with `han.basic.css` |
 | `han.js` | JS entry (ESM), named exports only, no auto-run |
 | `han.auto.js` | Auto-install entry; re-exports the main API |
+| `han.zhuyin-calibration.js` | Optional custom-font zhuyin optical calibration entry |
 
 Every file ships a `.min` variant and a source map.
 

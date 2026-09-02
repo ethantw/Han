@@ -243,6 +243,13 @@
     color: var(--ui-text);
   }
 
+  /* Public demo mastheads use the same inline heritage outline as the
+     homepage. Keep the real character selectable, but let the SVG paint. */
+  .Mark:has(.Glyph) {
+    font-family: 'Brand Metrics', var(--han-font-alternative);
+    color: transparent;
+  }
+
   .Dot {
     /* no `padding-inline` here, unlike the base rule — the docs lockup
        is tighter and its 漢 is plain text, not an SVG overlay. */

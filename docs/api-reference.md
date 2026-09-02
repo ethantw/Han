@@ -169,13 +169,13 @@ files):
 
 | File | Contents | gzip (KiB) | Brotli (KiB) |
 |---|---|---:|---:|
-| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, metrics, zhuyin font) | 4.3 | 3.9 |
-| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.7 | 1.4 |
-| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.5 | 1.3 |
-| `han.prose.css` | Prose module | 0.5 | 0.4 |
-| `han.fonts.css` | Fonts module + font assets | 1.6 | 1.4 |
-| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module or JS-companion styles; includes the metrics asset but not the Zhuyin face | 2.0 | 1.8 |
-| `han.zhuyin.css` | Optional `Han Zhuyin Serif` face for Zhuyin ruby in `han.basic.css` | 0.2 | 0.2 |
+| `han.css` | All four modules + JS-companion styles + built-in font assets (em-space, zhuyin font) | 4.3 KB | 3.9 KB |
+| `han.semantics.css` | Semantics module (incl. JS-companion styles) | 1.7 KB | 1.5 KB |
+| `han.lines.css` | Lines module (incl. JS-companion styles) | 1.5 KB | 1.3 KB |
+| `han.prose.css` | Prose module | 0.5 KB | 0.4 KB |
+| `han.fonts.css` | Fonts module + font assets | 1.5 KB | 1.4 KB |
+| `han.basic.css` | Lean bundle: semantics + lines + prose, no fonts module, JS-companion styles, or font files | 2.0 KB | 1.8 KB |
+| `han.zhuyin.css` | Optional `Han Zhuyin Serif` face for Zhuyin ruby in `han.basic.css` | 0.2 KB | 0.2 KB |
 
 Sum of the four single-module bundles ≡ `han.css`.
 
@@ -185,11 +185,11 @@ has no `browser` condition, whenever a bundler processes server-side code):
 
 | File | Contents | min+gzip (KiB) |
 |---|---|---|
-| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 12.3 full, less shaken |
-| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.3 |
+| `han.js` | Main entry: named exports only, nothing runs on import; tree-shakable (`sideEffects` declared) | 12.3 KB full, less shaken |
+| `han.auto.js` | Superset of `han.js`; also runs `installFallbacks(document.documentElement)` on `DOMContentLoaded` as an import side effect; SSR-safe no-op | 12.3 KB |
+| `han.zhuyin-calibration.js` | Optional browser helper for measuring an unverified base font and generating its zhuyin optical shift; not included by either entry above | 2.0 KB |
 
-Assets shipped alongside: `em-space.woff2` (420 B), `metrics.woff2` (408 B),
-`zhuyin.serif.woff2`.
+Assets shipped alongside: `em-space.woff2` (420 B) and `zhuyin.serif.woff2`.
 `han.zhuyin.css` contains the Zhuyin `@font-face`; the full `han.css` and
 `han.fonts.css` already include it. These stylesheets reference assets by
 relative URL — keep the `dist/` file layout when self-hosting.
@@ -271,8 +271,8 @@ lives in `--han-state-hanging-punctuation` (internal — read-only).
 | `--han-writing-mode` | `horizontal-tb \| vertical-rl \| vertical-lr` | `horizontal-tb` | Mirror `writing-mode` on a vertical subtree when it contains Zhuyin ruby or uses GB punctuation compression (including default `zh-Hans`). Other vertical text does not need it. Retires when style queries can read the computed `writing-mode` property |
 | `--han-zhuyin-ruby-position` | `over \| inter-character` | `over` | `ruby.zhuyin`/`ruby.mps`: `over` = interlinear; `inter-character` = side-run bopomofo (Taiwan textbook, recommended for horizontal). Tone-mark form is automatic per combination (`salt` in horizontal `over`, font `vert` chain elsewhere); in a mirrored vertical subtree `inter-character` stands down to `over` on all engines. Requires the `--han-writing-mode` mirror on vertical subtrees |
 | `--han-ruby-zhuyin-font-size` | `<length>` | `.3em` | 注音字級；`em` 在 `<rt>` 上解析 |
-| `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對合成的 ideographic ink seat 的光學微調；正值向上、負值向下，以 rt-em 表示。此 seat 是 Han Metrics 校準的基準，非目前字體每個 glyph 的實際墨跡下緣。 |
-| `--han-ruby-zhuyin-over-gap` | `<length>` | `.25em` | 行間注與基文的 block-end 留白，以 rt-em 表示 |
+| `--han-ruby-zhuyin-baseline-shift` | `<length>` | `0em` | 相對合成的 ideographic ink seat 的光學微調；正值向上、負值向下，以 rt-em 表示。此 seat 是跨常見 CJK face 的合成參考線，非目前字體每個 glyph 的實際墨跡下緣。 |
+| `--han-ruby-zhuyin-over-gap` | `<length>` | `.25em` | 直排行間注與基文之間的 block-end 留白，以 rt-em 表示；橫排行間注交由原生 Ruby Layout 決定間距 |
 | `--han-ruby-zhuyin-letter-spacing` | `<length>` | `-.05em` | 注音 `<rt>` 本身的 letter-spacing |
 | `--han-underline-offset` | `<length>` | `.125em` | all underlined elements |
 | `--han-text-decoration-inset` | `<length> \| auto` | `auto` | adjacent decoration lines; native path where supported |
@@ -318,7 +318,6 @@ the start-only sites and silently drops those declarations.
 | `--han-use-heritage-glyphs-for-ko` | `webfont \| off` | `off` | `:lang(ko)` |
 | `--han-webfont-heritage-family` | `shanggu \| genki` | `shanggu` | global; use `shanggu` whenever Korean is present (genki hangul: 2350 KS X 1001 only, no Jamo) |
 | `--han-use-cursive` | `webfont \| system \| off` | `webfont` | Kaiti layer of `--han-font-accent` |
-| `--han-use-metrics` | `on \| off` | `on` | All Han composite stacks. `on` places the metrics-only Han Metrics U+0020 strut before DTJ and glyph faces, stabilising the CJK inline box; `off` is a compatibility/diagnostic opt-out that retains the native font metrics. |
 
 Punctuation conventions are decoupled from locale — any convention is legal
 for any language (JIS = sentence-end marks trailing-edge; MOE = all centered;
@@ -359,13 +358,6 @@ layer → Latin layer → CJK layer → generic):
 | `--han-serif` | `serif` |
 | `--han-cursive` | `cursive, serif` |
 | `--han-monospace` | `monospace` |
-
-Every composite begins with the U+0020-only `Han Metrics` face. Its strut
-fixes the inline CJK baseline at `.075em` below the
-alphabetic baseline before Diantenjeom or a system fallback is considered;
-this keeps inline and ruby geometry stable across font fallback. Because the
-face covers no letters, digits, punctuation, CJK, or phonetic symbols, it can
-never paint visible text. Its outline-free space advances one quarter em.
 
 `--han-monospace` deliberately has **no punctuation layer** (code must show
 characters verbatim — punctuation-face glyph swaps would tamper with the
@@ -482,8 +474,9 @@ content needs its own call.
 entries run in Node against a string/DOM source and return a `Hype` (from
 `hyperly`) that serializes back to HTML. In SSR, those transforms run
 unconditionally (browser CSS decides at delivery time which wrappers become
-load-bearing). The browser build stubs the DOM dependency —
-bundle size stays JS-only.
+load-bearing). Browser-only utilities such as Zhuyin optical calibration are
+documented separately and are not part of this contract. The browser build
+stubs the DOM dependency — bundle size stays JS-only.
 
 Import from **`@hanzi.pro/han.css/ssr`** in anything a bundler processes. The
 main entry carries a `browser` condition, and tools that bundle "for the
@@ -534,6 +527,53 @@ multi-`<rt>`) into the interop nested form engines render today. **Not**
 called by `installFallbacks` — call it yourself (once at SSR/build time, or
 after load). Idempotent. Throws on structural mismatches (rbspan overflow,
 rt/base count mismatch) so authoring errors surface.
+
+```ts
+import {
+  calibrateZhuyinRuby,
+  clearZhuyinRubyCalibration,
+  clearZhuyinRubyCalibrationCache,
+} from '@hanzi.pro/han.css/zhuyin-calibration'
+
+calibrateZhuyinRuby(
+  scope: Element,
+  options?: {
+    selector?: string
+    sample?: string                 // default: 永
+    targetInkDescent?: number       // base-em; default: .075
+    refresh?: boolean
+    fontSizeSensitive?: boolean
+  },
+): Promise<ZhuyinCalibrationResult>
+
+clearZhuyinRubyCalibration(scope: Element): number
+clearZhuyinRubyCalibrationCache(): void
+```
+
+This optional entry is kept out of the main `han.js` bundle. It is a
+browser-only optical calibration tool for an unverified body font. It waits
+for `document.fonts.ready`, groups horizontal inter-character zhuyin by its
+computed font conditions, measures the representative glyph's
+`actualBoundingBoxDescent` once per group, and writes the resulting
+`--han-ruby-zhuyin-baseline-shift` directly on each matching `<ruby>`.
+Horizontal `over`, vertical ruby and non-zhuyin ruby are left untouched.
+
+The returned items include the rt-em `cssValue` and a ready-to-copy
+`cssDeclaration`; the declaration is empty when the correction is zero. For a
+stable webfont, calibrate once during development and commit that declaration
+to the site's CSS rather than running the helper for every reader.
+
+Static outlines are measured at a high-resolution, size-independent 1000px and
+reuse one normalized cache value across body sizes. Set
+`fontSizeSensitive: true` for a variable font whose optical-size axis changes
+the outline; the used body size then becomes part of the cache key. Canvas can
+select the standard family/style/weight/stretch axes, but cannot portably apply
+arbitrary custom variation axes; fonts depending on those axes need a fixed
+instance or a separately verified constant.
+
+`clearZhuyinRubyCalibration` restores the inline value and priority that
+preceded the first calibration and returns the number of restored rubies.
+Clearing the measurement cache does not remove already-applied CSS values.
 
 ### Per-pass (tree-shakable)
 

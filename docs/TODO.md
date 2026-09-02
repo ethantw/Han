@@ -124,10 +124,19 @@
 - [x] **Zhuyin `<rt>` baseline anchor。** 2026-08-31 完工：空、零尺寸
   pseudo-element ＋ CSS Anchor Positioning 取得基文 baseline，再下降至合成的
   `ideographic-ink-under`；不注入 U+2060，故 ruby formatting context 與標點避頭尾
-  均保持正常。`Han Metrics` 的 U+0020 strut 固定所有 Han composite stack 在
-  DTJ／系統 fallback 之前的基線度量。
+  均保持正常。空 marker 不依賴特定字體的 U+0020 strut；anchor 只標示瀏覽器
+  所給的 inline baseline。
+- [ ] **自訂字體的注音 ruby 光學校正。** CSS 預設以尚古／Hiragino／蘋方及
+  Diantenjeom 的漢字下緣收斂。顯式校正 API、開發期 CSS codegen、固定 outline
+  fixtures、Chromium Anchor fallback 與 Playwright WebKit native 雙向位移回歸已
+  完成；工具會等待／主動載入字型、按完整條件分組快取，並可清除還原，不會在
+  讀者端自動執行。Safari native inter-character 以 `rt` 空 pseudo 的 logical
+  spacer 對應同一變量；直排行間注不套用。尚餘 macOS／iOS 實機 Safari，以及
+  尚古／Hiragino／蘋方／Diantenjeom／低 ink-under 字體的人工光學驗收。完整設計與
+  實作清單見
+  [`docs/notes/2026-08-31-zhuyin-ruby-optical-calibration.md`](notes/2026-08-31-zhuyin-ruby-optical-calibration.md)。
 - **CSS Inline `text-box-edge: ideographic-ink` 跟進。** 現行字間注的
-  `.075em` 是 Han Metrics 校準的合成 ink seat；CSS Inline 3 若落地並由主流引擎
+  `.075em` 是以尚古／Hiragino／蘋方的實測 ink under 收斂出的合成 ink seat；CSS Inline 3 若落地並由主流引擎
   實作，可評估以字體級 ideographic-ink under baseline 取代此常數。規格目前仍是
   early draft，不可出貨依賴；即使可用，也只會是 font-level reference，無法取得
   宋體-繁等每一個 glyph 的真實 outline ink-under，故仍需保留

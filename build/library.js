@@ -53,8 +53,7 @@ const CSS_FILES = [
 
 /**
  * Per-module bundle entries (semantics/lines/prose/fonts). `han.fonts.css`
- * emits the same `em-space.woff2` / `metrics.woff2` /
- * `zhuyin.serif.woff2` assets as
+ * emits the same `em-space.woff2` / `zhuyin.serif.woff2` assets as
  * `han.css` — both use `assetNames: '[name]'`, so building them in the
  * same esbuild call collides on those output paths. Kept as a separate
  * `CSS_BUNDLE_CONFIG`-shaped build/context so each call's asset graph
@@ -97,6 +96,7 @@ const TS_BUNDLE_CONFIG = {
   entryPoints: [
     { in: 'src/han.ts', out: 'han' },
     { in: 'src/han.auto.ts', out: 'han.auto' },
+    { in: 'src/han.zhuyin-calibration.ts', out: 'han.zhuyin-calibration' },
   ],
 
   bundle: true,

@@ -1,0 +1,125 @@
+@charset "UTF-8";
+
+/**
+ * Editorial heading and three-step guide shared by public specimen demos.
+ *
+ * Pages own their max width and their subject-specific decoration text. The
+ * shared primitive owns only the rhythm, type hierarchy and guide dividers.
+ */
+
+.DemoHero {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(3.5rem, 8vw, 7rem) clamp(3rem, 6vw, 5rem);
+  overflow: hidden;
+  border-block-end: 1px solid var(--ui-rule);
+}
+
+.DemoHero::after {
+  content: var(--demo-hero-mark, '');
+  position: absolute;
+  z-index: -1;
+  inset: auto var(--demo-hero-mark-inline, clamp(-1.5rem, 1vw, 1rem))
+    var(--demo-hero-mark-block, -4.5rem) auto;
+  color: color-mix(in srgb, var(--ui-accent) var(--demo-hero-mark-opacity, 8%), transparent);
+  font-family: var(--demo-hero-mark-font, var(--han-serif));
+  font-size: clamp(12rem, 25vw, 24rem);
+  font-weight: 700;
+  letter-spacing: var(--demo-hero-mark-spacing, -.3em);
+  line-height: .8;
+  white-space: nowrap;
+}
+
+.DemoKicker,
+.DemoGuideNo {
+  color: var(--ui-accent);
+  font-family: var(--han-monospace);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.DemoKicker {
+  margin: 0 0 1.25rem;
+  font-size: .75rem;
+}
+
+.DemoHero h1 {
+  max-inline-size: 11em;
+  margin: 0;
+  font-family: var(--han-serif);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 500;
+  letter-spacing: -.055em;
+  line-height: .98;
+}
+
+.DemoHeroBrand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem;
+  margin-block-end: 1.75rem;
+}
+
+.DemoHeroBrand .Brand { animation: none; }
+
+.DemoHeroBrandTitle {
+  padding-inline-start: .75rem;
+  border-inline-start: 1px solid var(--ui-rule);
+  color: var(--ui-supplement-text);
+  font-family: var(--han-sans);
+  font-size: .75rem;
+  letter-spacing: .08em;
+}
+
+.DemoLede {
+  max-inline-size: 46rem;
+  margin: 1.75rem 0 0;
+  color: var(--ui-supplement-text);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.DemoGuide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block-end: 1px solid var(--ui-rule);
+}
+
+.DemoGuideItem {
+  padding: 1.5rem clamp(1rem, 2vw, 2rem) 1.75rem;
+}
+
+.DemoGuideItem + .DemoGuideItem { border-inline-start: 1px solid var(--ui-rule); }
+
+.DemoGuideItem b {
+  display: block;
+  margin-block-end: .375rem;
+  font-family: var(--han-sans);
+  font-size: .875rem;
+  font-weight: 650;
+}
+
+.DemoGuideItem p {
+  margin: 0;
+  color: var(--ui-supplement-text);
+  font-size: .75rem;
+  line-height: 1.65;
+}
+
+.DemoGuideNo {
+  display: block;
+  margin-block-end: .75rem;
+  font-size: .625rem;
+  line-height: 1;
+}
+
+@media (max-width: 51.9375rem) {
+  .DemoGuide { grid-template-columns: minmax(0, 1fr); }
+
+  .DemoGuideItem + .DemoGuideItem {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--ui-rule);
+  }
+}

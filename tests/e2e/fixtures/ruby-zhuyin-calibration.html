@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Han.css — zhuyin optical calibration fixture</title>
+<link rel="stylesheet" href="/dist/han.css">
+<style>
+  @font-face {
+    font-family: 'Han Test Zhuyin Ink Reference';
+    src: url('/tests/e2e/fixtures/fonts/zhuyin-ink-reference.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    unicode-range: U+6C38;
+  }
+  @font-face {
+    font-family: 'Han Test Zhuyin Ink Low';
+    src: url('/tests/e2e/fixtures/fonts/zhuyin-ink-low.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    unicode-range: U+6C38;
+  }
+  body { margin: 2rem; }
+  #scope {
+    --han-zhuyin-ruby-position: inter-character;
+    line-height: 2;
+  }
+  .row { display: block; }
+  .probe {
+    display: inline-block;
+    inline-size: 0;
+    block-size: 0;
+    vertical-align: baseline;
+  }
+  .reference {
+    font-family: 'Han Test Zhuyin Ink Reference';
+    font-optical-sizing: none;
+  }
+  .low {
+    font-family: 'Han Test Zhuyin Ink Low';
+    font-optical-sizing: none;
+  }
+  [data-size='12'] { font-size: 12px; }
+  [data-size='16'] { font-size: 16px; }
+  [data-size='60'] { font-size: 60px; }
+</style>
+</head>
+<body>
+<main id="scope">
+  <span class="row" data-size="16"><i class="probe"></i><ruby id="reference" class="zhuyin reference">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="12"><i class="probe"></i><ruby class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="16"><i class="probe"></i><ruby class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="60"><i class="probe"></i><ruby class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="16" style="--han-zhuyin-ruby-position:over"><ruby id="over" class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="16" style="writing-mode:vertical-rl;--han-writing-mode:vertical-rl"><ruby id="vertical" class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby></span>
+  <span class="row" data-size="16"><ruby id="plain" class="low">永<rt>ㄩㄥˇ</rt></ruby></span>
+</main>
+<ruby id="outside" class="zhuyin low">永<rt>ㄩㄥˇ</rt></ruby>
+<script type="module">
+  import {
+    calibrateZhuyinRuby,
+    clearZhuyinRubyCalibration,
+    clearZhuyinRubyCalibrationCache,
+  } from '/dist/han.zhuyin-calibration.js'
+
+  await Promise.all([
+    document.fonts.load('1000px "Han Test Zhuyin Ink Reference"', '永'),
+    document.fonts.load('1000px "Han Test Zhuyin Ink Low"', '永'),
+  ])
+  await document.fonts.ready
+  window.zhuyinCalibration = {
+    calibrateZhuyinRuby,
+    clearZhuyinRubyCalibration,
+    clearZhuyinRubyCalibrationCache,
+  }
+  document.body.dataset.ready = 'true'
+</script>
+</body>
+</html>

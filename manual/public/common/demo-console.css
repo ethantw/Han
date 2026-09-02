@@ -1,0 +1,139 @@
+@charset "UTF-8";
+
+/**
+ * Responsive light-DOM console shell for standalone demos.
+ *
+ * The controls themselves belong to each demo; this file owns only their
+ * placement: 280px side column, 240px compact side column, then a non-modal
+ * floating <dialog> below 52rem. Homepage <han-console> uses the same layout
+ * contract, but its shadow-DOM internals remain independent.
+ */
+
+:root { --demo-console-width: 17.5rem; }
+
+body:has(> [data-demo-console]) {
+  padding-inline-start: var(--demo-console-width);
+}
+
+[data-demo-console] {
+  display: contents;
+}
+
+[data-demo-console] > header,
+[data-demo-console-open] {
+  display: none;
+}
+
+[data-demo-console-body] {
+  position: fixed;
+  z-index: 50;
+  inset: 0 auto 0 0;
+  inline-size: var(--demo-console-width);
+  block-size: 100dvb;
+  border-inline-end: 1px solid var(--ui-rule);
+}
+
+@media (min-width: 52rem) and (max-width: 64rem) {
+  :root { --demo-console-width: 15rem; }
+}
+
+@media (max-width: 51.9375rem) {
+  :root { --demo-console-width: 0px; }
+
+  body:has(> [data-demo-console]) {
+    padding-inline-start: 0;
+  }
+
+  [data-demo-console] {
+    position: fixed;
+    z-index: 60;
+    inset-block-start: .75rem;
+    inset-inline-start: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    inline-size: min(21rem, calc(100dvi - 2 * var(--gutter)));
+    max-block-size: min(82dvb, 46rem);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: var(--ui-text);
+    background: var(--ui-panel);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-3);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--ui-shadow-ink) 18%, transparent);
+  }
+
+  [data-demo-console]:not([data-open]) {
+    display: none;
+  }
+
+  [data-demo-console] > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    padding: .625rem .875rem;
+    border-block-end: 1px solid var(--ui-rule);
+    font-family: var(--han-sans);
+    font-size: .75rem;
+  }
+
+  [data-demo-console-close] {
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin-inline-end: -.25rem;
+    padding: 0;
+    color: var(--ui-supplement-text);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  [data-demo-console-close]:hover { color: var(--ui-accent); }
+
+  [data-demo-console-body] {
+    position: static;
+    flex: 1 1 auto;
+    inline-size: 100%;
+    block-size: auto;
+    min-block-size: 0;
+    border-inline-end: 0;
+  }
+
+  [data-demo-console-open] {
+    position: fixed;
+    z-index: 55;
+    inset-block-start: .75rem;
+    inset-inline-start: var(--gutter);
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-block-size: 2.25rem;
+    padding: .45rem .7rem;
+    color: var(--ui-text);
+    background: color-mix(in srgb, var(--ui-bg) 92%, transparent);
+    border: 1px solid var(--ui-rule);
+    border-radius: var(--r-2);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--ui-shadow-ink) 12%, transparent);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-family: var(--han-sans);
+    font-size: .75rem;
+  }
+
+  [data-demo-console-open] [data-icon] {
+    inline-size: 1.125rem;
+    block-size: 1.5rem;
+  }
+
+  [data-demo-console-open]:hover { color: var(--ui-accent); }
+
+  [data-demo-console-open][aria-expanded='true'] { visibility: hidden; }
+}
+
+:where([data-demo-console-open], [data-demo-console-close]):focus-visible {
+  outline: 2px solid var(--ui-accent);
+  outline-offset: 2px;
+}

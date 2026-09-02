@@ -1,5 +1,5 @@
 Font assets bundled with Han.css (`dist/zhuyin.serif.woff2`,
-`dist/em-space.woff2`, `dist/metrics.woff2`) are licensed separately from
+`dist/em-space.woff2`) are licensed separately from
 the Han.css code (which is MIT, see LICENSE):
 
 1. `zhuyin.serif.woff2` — the 'Han Zhuyin Serif' @font-face — is a
@@ -18,11 +18,6 @@ the Han.css code (which is MIT, see LICENSE):
    and a single 1em space glyph; it contains no copyrightable glyph
    data from any source font) and is covered by the Han.css MIT
    license.
-
-3. `metrics.woff2` — the 'Han Metrics' @font-face — is built from
-   scratch by this repository's `build/metrics-font.py` (a `.notdef` box
-   and a single outline-free U+0020 space glyph; it contains no
-   copyrightable glyph data) and is covered by the Han.css MIT license.
 
 Heritage-glyph webfonts (尚古 / Shanggu families and friends) are NOT
 bundled — they are delivered separately (e.g. via the ziano CDN
