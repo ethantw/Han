@@ -631,6 +631,7 @@
       flex: 1;
       margin-block: 0;
       font-size: .75rem;
+      text-align: end;
       color: var(--ui-supplement-text);
     }
 
@@ -681,8 +682,8 @@
     }
 
     /* Whose rule this is — the slot a devtools pane spends on the source
-       file, which is not a thing this page can point at. It rides the LAYER
-       band's row (`.Head`), right-aligned: two one-word labels that used
+       file, which is not a thing this page can point at. It leads the LAYER
+       band's row (`.Head`), left-aligned: two one-word labels that used
        to cost two lines each now cost one, ten times over.
        Still not absolutely positioned — the old note about that stands, only
        the collision moved: in a narrow pane the row simply wraps and the
@@ -696,7 +697,7 @@
         margin-block: 0;
         font-size: .875rem;
         color: var(--ui-supplement-text);
-        text-align: end;
+        text-align: start;
       }
 
       [data-author-toggle] {
