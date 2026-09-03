@@ -426,25 +426,49 @@ async function renderHomeExcerptFields(slug, edition, fields) {
   }))
 }
 
+/** Read a two-line type specimen and verify whether it is quoted or adapted. */
+function renderFacesMeta(meta, excerptFile, edition) {
+  const fields = ['faces_type', 'faces_verbatim', 'faces_line_1', 'faces_line_2']
+  const values = Object.fromEntries(fields.map(field => {
+    const source = unquoteMeta(meta[field])
+    if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+    return [field, source]
+  }))
+  const expected = edition === 'hant'
+    ? ['typographic_adaptation', 'false']
+    : edition === 'hans'
+      ? ['orthographic_adaptation', 'false']
+      : ['translation', 'false']
+  if (values.faces_type !== expected[0] || values.faces_verbatim !== expected[1])
+    throw new Error(`[home_excerpt] incorrect faces disclosure: ${excerptFile}`)
+  return {
+    ...values,
+    faces_line_1: md.renderInline(values.faces_line_1),
+    faces_line_2: md.renderInline(values.faces_line_2),
+  }
+}
+
 /** Render a homepage rewrite whose editorial status remains machine-readable. */
 async function renderEditorialHomeExcerpt(slug, edition) {
   const { meta, excerptFile } = await readHomeExcerpt(slug, edition)
   if (unquoteMeta(meta.excerpt_type) !== 'editorial_summary' || unquoteMeta(meta.verbatim) !== 'false')
     throw new Error(`[home_excerpt] editorial metadata missing: ${excerptFile}`)
-  return Object.fromEntries([
-    'summary_lead', 'attribution', 'summary_claim',
-  ].map(field => {
-    const source = unquoteMeta(meta[field])
-    if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
-    return [field, md.renderInline(source)]
-  }))
+  return {
+    ...Object.fromEntries([
+      'summary_lead', 'attribution', 'summary_claim',
+    ].map(field => {
+      const source = unquoteMeta(meta[field])
+      if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
+      return [field, md.renderInline(source)]
+    })),
+    ...renderFacesMeta(meta, excerptFile, edition),
+  }
 }
 
 /** Render the two typography specimens and retain their editorial status. */
 async function renderHyperloopHomeExcerpt(edition) {
   const { meta, excerptFile } = await readHomeExcerpt('hyperloop-12sec', edition)
   const fields = [
-    'faces_type', 'faces_verbatim', 'faces_line_1', 'faces_line_2',
     'forme_type', 'forme_verbatim', 'forme_sample',
   ]
   const values = Object.fromEntries(fields.map(field => {
@@ -452,24 +476,17 @@ async function renderHyperloopHomeExcerpt(edition) {
     if (!source) throw new Error(`[home_excerpt] missing ${field}: ${excerptFile}`)
     return [field, source]
   }))
-  const expected = edition === 'hant'
-    ? ['source_excerpt', 'true', 'source_excerpt', 'true']
-    : edition === 'hans'
-      ? ['orthographic_adaptation', 'false', 'source_excerpt', 'true']
-      : ['translation', 'false', 'typographic_adaptation', 'false']
-  const actual = [
-    values.faces_type, values.faces_verbatim,
-    values.forme_type, values.forme_verbatim,
-  ]
-  if (actual.some((value, index) => value !== expected[index]))
+  const expected = ['hant', 'hans'].includes(edition)
+    ? ['source_excerpt', 'true']
+    : ['typographic_adaptation', 'false']
+  if (values.forme_type !== expected[0] || values.forme_verbatim !== expected[1])
     throw new Error(`[home_excerpt] incorrect excerpt disclosure: ${excerptFile}`)
   const expectedFormeLength = edition === 'ko' ? 33 : 32
   if ([...values.forme_sample].length !== expectedFormeLength)
     throw new Error(`[home_excerpt] forme_sample must be ${expectedFormeLength} glyphs: ${excerptFile}`)
   return {
+    ...renderFacesMeta(meta, excerptFile, edition),
     ...values,
-    faces_line_1: md.renderInline(values.faces_line_1),
-    faces_line_2: md.renderInline(values.faces_line_2),
     forme_sample: md.renderInline(values.forme_sample),
   }
 }
@@ -498,6 +515,7 @@ async function renderTelepathyHomeExcerpt(edition) {
     throw new Error(`[home_excerpt] incorrect excerpt disclosure: ${excerptFile}`)
 
   return {
+    ...renderFacesMeta(meta, excerptFile, edition),
     ...values,
     punct_sample: md.renderInline(source),
     dash_lead: md.renderInline(values.dash_lead),
@@ -569,6 +587,8 @@ const PUBLIC_SUBSET = path.resolve(here, 'public', 'subset')
 const SUBSET_IDS = [
   'shanggu-serif-han-home',
   'shanggu-sans-han-home',
+  'genki-serif-yue-han-home',
+  'genki-sans-yue-han-home',
   'lxgw-wenkai-tc-han-home',
 ]
 
@@ -1055,7 +1075,9 @@ async function renderHomepage() {
     // the source-language Hant copy on the English homepage.
     const hyperloopLocale = locale === 'en' ? 'hant' : locale
     const hyperloopFaces = hyperloopExcerpts[hyperloopLocale]
+    const standardGlyphFaces = standardGlyphExcerpts[hyperloopLocale]
     const telepathyLocale = locale === 'en' ? 'hant' : locale
+    const telepathyFaces = telepathyExcerpts[telepathyLocale]
     const telepathyDash = telepathyExcerpts[telepathyLocale]
 
     const ctx = {
@@ -1088,6 +1110,10 @@ async function renderHomepage() {
       standardGlyphEdition: locale === 'en' ? 'hant' : locale,
       hyperloopFacesLine1: hyperloopFaces.faces_line_1,
       hyperloopFacesLine2: hyperloopFaces.faces_line_2,
+      standardGlyphFacesLine1: standardGlyphFaces.faces_line_1,
+      standardGlyphFacesLine2: standardGlyphFaces.faces_line_2,
+      telepathyFacesLine1: telepathyFaces.faces_line_1,
+      telepathyFacesLine2: telepathyFaces.faces_line_2,
       hyperloopFacesLang: {
         hant: 'zh-Hant', hans: 'zh-Hans', ja: 'ja', ko: 'ko-Kore',
       }[hyperloopLocale],
@@ -1095,6 +1121,7 @@ async function renderHomepage() {
       // story, so their translated Taipei faces specimen links to its Hant
       // source. Hans has the complete localized report and opens that edition.
       hyperloopFacesEdition: locale === 'hans' ? 'hans' : 'hant',
+      telepathyFacesEdition: telepathyLocale,
       hyperloopFormeEdition: hyperloopLocale,
       hyperloopFormeHant: hyperloopExcerpts.hant.forme_sample,
       hyperloopFormeHans: hyperloopExcerpts.hans.forme_sample,
@@ -1121,7 +1148,7 @@ async function renderHomepage() {
       stDashPunctCell: telepathyDash.dash_punct_cell,
       htmlLang: HOME_HTML_LANG[locale] ?? locale,
       // 子集在場才掛（見 syncSubsets 的檔頭）。`data-han-webfont` 讓讀者在
-      // 主控台關掉 webfont 時，這三份跟 CDN 那幾份一起停用。
+      // 主控台關掉 webfont 時，這五份跟 CDN 那幾份一起停用。
       subsetFonts: subsetsBuilt()
         ? SUBSET_IDS.map(id =>
           `<link rel="stylesheet" href="/subset/${id}/swap.css" data-han-webfont>`).join('\n')

@@ -27,6 +27,34 @@ const box = (page: Page, selector: string) =>
   })
 
 test.describe('Task B — collapsible side console', () => {
+  test('inline prose controls open the console or flash its visible border', async ({ page }) => {
+    await page.goto('/')
+
+    const prompts = page.locator('[data-console-prompt]')
+    const toggle = page.locator('.ConsoleToggle')
+    const checkbox = page.locator('#console-collapsed')
+    const sideConsole = page.locator('body > .ConsolePanel han-console')
+    await expect(prompts).toHaveCount(2)
+
+    // The desktop console starts open. An inline request therefore points to
+    // the already-visible surface instead of changing the layout again.
+    const [animationName] = await Promise.all([
+      sideConsole.evaluate(($surface) => new Promise<string>((resolve) => {
+        $surface.addEventListener('animationstart', (event) => {
+          resolve((event as AnimationEvent).animationName)
+        }, { once: true })
+      })),
+      prompts.first().click(),
+    ])
+    expect(animationName).toBe('console-border-flash')
+
+    await toggle.click()
+    await expect(checkbox).toBeChecked()
+    await prompts.nth(1).click()
+    await expect(checkbox).not.toBeChecked()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  })
+
   test('handle closes the aside column; main shifts half while only header left chrome shifts a full column', async ({ page }) => {
     await page.goto('/')
 
@@ -102,6 +130,17 @@ test.describe('Task B — collapsible side console', () => {
 })
 
 test.describe('the floating panel form (<52rem)', () => {
+  test('inline prose control opens the floating panel', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const prompt = page.locator('[data-console-prompt]').first()
+    const panel = page.locator('body > .ConsolePanel')
+    await expect(panel).toBeHidden()
+    await prompt.click()
+    await expect(panel).toBeVisible()
+  })
+
   test('costs the layout nothing, opens from the same handle, closes on Escape', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/')

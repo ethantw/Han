@@ -17,6 +17,7 @@ let readerTrim = { width: 0, height: 0 }
 let reapplyFallbacks
 let loadGeneration = 0
 let closePromise
+let editionSwitchPromise
 
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve))
 const wait = (duration) => new Promise((resolve) => setTimeout(resolve, duration))
@@ -298,7 +299,7 @@ const shell = () => {
   setWriting(storedWriting(), { persist: false, fit: false })
   dialog.addEventListener('click', (event) => {
     const control = event.target.closest?.('.Edition, .Writing, .Console')
-    if (control?.matches('.Edition')) return show(current.slug, control.dataset.edition)
+    if (control?.matches('.Edition')) return switchEdition(control.dataset.edition)
     if (control?.matches('.Writing')) return setWriting(dialog.dataset.writing !== 'vertical')
     if (control?.matches('.Console')) {
       const panel = ensureReaderConsole()
@@ -388,6 +389,26 @@ const setEditionState = (edition) => {
   })
 }
 
+/* Changing editions is a full paper hand-off: the old sheet leaves before its
+ * language/edition attributes or DOM are touched, then the new fetch gets its
+ * own entrance. This keeps Safari from reflowing a live multicolumn sheet while
+ * it is still on screen. */
+const switchEdition = (edition) => {
+  if (!dialog?.open || !EDITIONS.includes(edition) || edition === current.edition) {
+    return Promise.resolve()
+  }
+  const generation = ++loadGeneration
+  editionSwitchPromise = (async () => {
+    dialog.removeAttribute('data-stage-visible')
+    await waitForTransition(dialog.querySelector('.Stage'))
+    if (generation !== loadGeneration || !dialog.open) return
+    await show(current.slug, edition)
+  })().finally(() => {
+    editionSwitchPromise = null
+  })
+  return editionSwitchPromise
+}
+
 const show = async (slug, edition) => {
   const generation = ++loadGeneration
   shell()
@@ -439,5 +460,14 @@ const show = async (slug, edition) => {
 export const openPaperReader = ($link, applyFallbacks) => {
   const slug = $link?.dataset.article
   if (applyFallbacks) reapplyFallbacks = applyFallbacks
-  if (slug) show(slug, editionFrom($link))
+  if (slug) {
+    /* The reader is an explicit request for copy now. Never let the homepage's
+       decorative font ceremony make a successfully downloaded article
+       transparent; its outline pass is sheet-owned and may finish after the
+       gate opens. */
+    if (document.documentElement.dataset.fontsGate === 'loading') {
+      document.documentElement.dataset.fontsGate = 'ready'
+    }
+    show(slug, editionFrom($link))
+  }
 }

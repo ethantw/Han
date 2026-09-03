@@ -21,12 +21,10 @@
  *   `node manual/scripts/collect-chars.mjs`          → 寫出字表
  *   `node manual/scripts/collect-chars.mjs --check`  → 只比對，落後就 exit 1
  *
- * **五種語言各走一趟，字表取聯集**，逐族一份。逐語言各切一份看起來更省，
- * 但實測非繁的四種語言收到的字**完全相同、而且是繁體那份的子集**：那四頁
- * 的內文預設不用傳承字形（han.css 的語言閘），點名這三族的只剩樣張，而樣張
- * 的字是中文、與介面語言無關。於是「逐語言」只會產出兩種不同的字表，代價是
- * 五套套件與 head 裡的一個條件。聯集多付的是非繁讀者的 333 字（明體約
- * 155 KB），換掉整條分歧，值得。
+ * **五種語言各走一趟，字表取聯集**，逐族一份。字體樣張本身有繁、簡、日、韓
+ * 四套選文，主控台與介面字也隨語言改變，任何單一頁都不是完整字集。逐語言切
+ * 套件雖可少放少量字，卻會把五組條件與連結塞進 head；一份聯集讓所有語版共用
+ * 同一組可快取資產，而瀏覽器仍只下載實際命中的字體與字重。
  *
  * 起點是本機的 dev server（`pnpm --filter han-manual dev`）；`--base` 可改。
  *
@@ -55,6 +53,10 @@ const urlFor = (locale) => `${BASE}/${locale === DEFAULT_LOCALE ? '' : `${locale
    而遊樂場切回完整切片、或這一支在還沒接子集的環境跑時，寫的是 ziano 的
    名字。兩者對同一份字表。 */
 const FAMILIES = {
+  'Han Home Genki Serif': 'genki-serif-yue',
+  'Genki Serif Yue': 'genki-serif-yue',
+  'Han Home Genki Sans': 'genki-sans-yue',
+  'Genki Sans Yue': 'genki-sans-yue',
   'Shanggu Serif': 'shanggu-serif',
   'Han Home Serif': 'shanggu-serif',
   'Shanggu Sans': 'shanggu-sans',
@@ -182,14 +184,30 @@ const collect = async (url) => {
   }, { FAMILIES, wantedSrc: wanted.toString() })
 
   const result = await readBags()
-  for (const face of faces) {
-    await page.evaluate((f) => { document.querySelector('.LeadForme').dataset.face = f }, face)
-    await page.waitForTimeout(300)
-    const more = await readBags()
+  const mergeBags = (more) => {
     for (const [id, bag] of Object.entries(more)) {
       const merged = new Set([...result[id].chars, ...bag.chars])
       result[id].chars = [...merged].sort((a, c) => a.codePointAt(0) - c.codePointAt(0)).join('')
     }
+  }
+
+  /* The family pill is another font axis. Its non-default branch is still in
+     the DOM but does not own a computed Genki stack until the radio is picked,
+     so walk that state explicitly just as the lead forme walks its three
+     faces below. */
+  await page.evaluate(() => {
+    const $input = document.querySelector('input[name="faces-family"][value="genki"]')
+    if (!$input) return
+    $input.checked = true
+    $input.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  await page.waitForTimeout(300)
+  mergeBags(await readBags())
+
+  for (const face of faces) {
+    await page.evaluate((f) => { document.querySelector('.LeadForme').dataset.face = f }, face)
+    await page.waitForTimeout(300)
+    mergeBags(await readBags())
   }
 
   await browser.close()

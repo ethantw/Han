@@ -793,6 +793,19 @@
 
 
 
+    /* WebKit repaints the diagram for each inherited --settle tick. Keep the
+       same cue, but shorten the one-shot choreography so fewer rows overlap
+       while the page is being scrolled. */
+    @supports (font: -apple-system-body) {
+      @media (prefers-reduced-motion: no-preference) {
+        #station-semantics[data-revealed] [data-mark],
+        #station-semantics[data-revealed] [data-annotation],
+        #station-semantics[data-revealed] [data-clock] {
+          animation-duration: 240ms;
+        }
+      }
+    }
+
     :root[data-han-module-semantics='off'] #station-semantics & {
       article {
         animation: none;

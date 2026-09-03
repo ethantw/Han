@@ -33,6 +33,36 @@ test('foreign-language subtrees do not inherit the TC heritage stack', async ({ 
   expect(await page.evaluate(slot('ko', '--han-font-cjk-cursive'))).toBe('HanNone')
 })
 
+test('current computer-text elements share the Han-aware monospace stack', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/lang-slots.html')
+  await page.locator('body').evaluate(($body) => {
+    for (const tag of ['code', 'kbd', 'samp', 'pre']) {
+      const element = document.createElement(tag)
+      element.id = `computer-${tag}`
+      element.textContent = '漢A'
+      $body.append(element)
+    }
+    const variable = document.createElement('var')
+    variable.id = 'computer-var'
+    variable.textContent = '漢A'
+    $body.append(variable)
+  })
+
+  for (const tag of ['code', 'kbd', 'samp', 'pre']) {
+    await expect(page.locator(`#computer-${tag}`)).toHaveCSS(
+      'font-family',
+      /ui-monospace.*Shanggu Sans/,
+    )
+  }
+
+  // `<var>` is mathematical/variable semantics, not computer output. Its
+  // existing accent role must not be flattened into the literal-text group.
+  await expect(page.locator('#computer-var')).not.toHaveCSS(
+    'font-family',
+    /ui-monospace/,
+  )
+})
+
 test('font roles declared on a lang boundary rebuild with that boundary locale', async ({ page }) => {
   await page.goto('/tests/e2e/fixtures/lang-slots.html')
 

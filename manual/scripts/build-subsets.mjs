@@ -28,6 +28,8 @@ const OUT = path.resolve('manual/.fonts')
 const SUBSETS = [
   { base: 'shanggu-serif', family: 'Han Home Serif', zh: '首頁明體' },
   { base: 'shanggu-sans', family: 'Han Home Sans', zh: '首頁黑體' },
+  { base: 'genki-serif-yue', family: 'Han Home Genki Serif', zh: '首頁源起明體' },
+  { base: 'genki-sans-yue', family: 'Han Home Genki Sans', zh: '首頁源起黑體' },
   { base: 'lxgw-wenkai-tc', family: 'Han Home Kai', zh: '首頁楷體' },
 ]
 

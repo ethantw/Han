@@ -500,6 +500,22 @@
 
 @container style(--han-semantics: on) {
   /**
+   * Give every current HTML computer-text element the same explicit stack.
+   * Browsers already default these four to the generic `monospace`, but that
+   * generic has no CJK face of its own: on macOS a Han run can consequently
+   * fall through to PingFang instead of the configured Han.css sans slot.
+   * `--han-monospace` keeps Latin genuinely monospaced and deliberately
+   * borrows that configured CJK slot for Han glyphs.
+   *
+   * Obsolete monospace elements (`tt`, `listing`, `xmp`, `plaintext`) stay
+   * out of the public contract. `textarea` stays out too: it is a form
+   * control, and its UA font is not consistently monospace across engines.
+   */
+  :where(code, kbd, samp, pre) {
+    font-family: var(--han-monospace);
+  }
+
+  /**
    * Keep underlines slightly apart from the annotated text.
    *
    * On `:where(*)` — anything can be underlined, an enumerated tag list

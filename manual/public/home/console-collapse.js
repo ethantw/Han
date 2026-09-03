@@ -41,9 +41,25 @@ export const initConsoleCollapse = () => {
 
   const $panel = document.querySelector('.ConsolePanel')
   const $close = $panel?.querySelector('.Close')
+  const $prompts = document.querySelectorAll('[data-console-prompt]')
   const side = matchMedia(SIDE_FORM)
   const keyNow = () => (side.matches ? KEY.side : KEY.panel)
   const isOpen = () => (side.matches ? !$box.checked : $box.checked)
+  let flashTimer
+
+  const flash = () => {
+    const $surface = side.matches ? $panel?.querySelector('han-console') : $panel
+    if (!$surface) return
+
+    clearTimeout(flashTimer)
+    $surface.removeAttribute('data-console-flash')
+    requestAnimationFrame(() => {
+      $surface.setAttribute('data-console-flash', '')
+      flashTimer = setTimeout(() => {
+        $surface.removeAttribute('data-console-flash')
+      }, 720)
+    })
+  }
 
   const sync = ({ discover = false } = {}) => {
     const open = isOpen()
@@ -78,6 +94,18 @@ export const initConsoleCollapse = () => {
   $toggle.addEventListener('click', () => {
     $box.checked = !$box.checked
     $box.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+
+  $prompts.forEach(($prompt) => {
+    $prompt.addEventListener('click', () => {
+      if (isOpen()) {
+        flash()
+        return
+      }
+
+      $box.checked = !side.matches
+      $box.dispatchEvent(new Event('change', { bubbles: true }))
+    })
   })
 
   $close?.addEventListener('click', () => {

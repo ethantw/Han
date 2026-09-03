@@ -88,9 +88,9 @@
         font-weight: 600;
         line-height: 1.4;
         text-decoration-line: underline;
-        text-decoration-thickness: 0.08em;
-        text-underline-offset: 0.3em;
-        text-decoration-color: var(--ui-supplement-text);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.25em;
+        /* text-decoration-color: var(--ui-supplement-text); */
         color: var(--ui-text);
         background: transparent;
         border: 0;

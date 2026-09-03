@@ -31,17 +31,29 @@
     pointer-events: none;
   }
 
+  .FormePlate,
   & svg {
     display: block;
     inline-size: 100%;
+  }
+
+  & svg {
     block-size: auto;
     overflow: visible;
   }
 
   .Slug,
+  .FormePaperJump,
   .Controls,
-  figcaption {
+  .FormeCaptionCopy {
     pointer-events: auto;
+  }
+
+  figcaption {
+    /* The wide-layout caption's triangular shape overlaps the forme as a
+       rectangular hit box. Let only its actual inline copy receive pointer
+       events, so the exposed faces beneath remain clickable. */
+    pointer-events: none;
   }
 
 
@@ -111,7 +123,8 @@
 
 
 :where(.LeadForme) text.lbl-num,
-:where(.LeadForme) text.lbl-var {
+:where(.LeadForme) text.lbl-var,
+:where(.LeadForme) text.lbl-press {
   font-family: ui-monospace, 'SF Mono', monospace;
   fill: var(--forme-spec);
 }
@@ -146,9 +159,41 @@
   --slug-o: 1;
   opacity: 1;
 }
+
+/* The reader control occupies the first blank quad after the final line. It
+   is an SVG link, not the ordinary inline `.PaperJump`, because its visible
+   mark belongs to the projected, mirrored type surface. */
+:where(.LeadForme) .FormePaperJump {
+  cursor: pointer;
+}
+:where(.LeadForme) .FormePaperJump .PaperHit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+:where(.LeadForme) .FormePaperJump .PaperMark,
+:where(.LeadForme) .FormePaperJump .PaperMount {
+  pointer-events: none;
+}
+:where(.LeadForme) .FormePaperJump .PaperSlugHit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+:where(.LeadForme) .FormePaperJump:is(:hover, :focus-visible) .SlugLift {
+  transform: translateY(-46px);
+}
+:where(.LeadForme) .FormePaperJump:focus-visible {
+  outline: none;
+}
+:where(.LeadForme) .FormePaperJump:focus-visible .PaperSlugHit {
+  stroke: var(--ui-text);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
 @media (prefers-reduced-motion: no-preference) {
 
-  :where(.LeadForme:not([data-revealed]):not([data-settled])) svg,
+  :where(.LeadForme:not([data-revealed]):not([data-settled])) .FormePlate,
   :where(.LeadForme:not([data-revealed]):not([data-settled])) figcaption,
   :where(.LeadForme:not([data-revealed]):not([data-settled])) .Controls fieldset {
     opacity: 0;
@@ -196,12 +241,36 @@
     animation: none;
   }
 
-  :where(.LeadForme[data-revealed]:not([data-settled])) svg {
+  :where(.LeadForme[data-revealed]:not([data-settled])) .FormePlate {
     animation: lf-forme-in 0.72s cubic-bezier(0.22, 0.9, 0.3, 1) both;
   }
 
   :where(.LeadForme[data-revealed]:not([data-settled])) figcaption {
     animation: lf-chrome-in 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) 0.12s both;
+  }
+}
+
+/* WebKit supports its system body font keyword while Chromium and Gecko do
+   not. It also repaints the complete SVG for every transform on each of the 43
+   Slug groups: ~1,730 descendants turn the desktop stagger into a 30–40fps
+   sequence, while promoting those groups makes it worse. On that rendering
+   path, animate the HTML plate as one layer. This is the same choreography as the
+   narrow rail; other engines retain the composing ceremony above 640px. */
+@supports (font: -apple-system-body) {
+  @media (prefers-reduced-motion: no-preference) and (width > 40rem) {
+    :where(.LeadForme[data-revealed]:not([data-settled])) .Slug {
+      animation: none;
+    }
+
+    :where(.LeadForme[data-revealed]:not([data-settled])) .FormePlate {
+      animation: lf-forme-in 0.72s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+    }
+
+    :where(.LeadForme[data-revealed]:not([data-settled])) figcaption,
+    :where(.LeadForme[data-revealed]:not([data-settled])) .Controls fieldset {
+      animation: lf-chrome-in 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+      animation-delay: calc(0.72s + var(--lf-pill, 0s));
+    }
   }
 }
 
@@ -222,11 +291,11 @@
 @keyframes lf-forme-in {
   from {
     opacity: 0;
-    translate: 0 2.5rem;
+    transform: translate3d(0, 2.5rem, 0);
   }
   to {
     opacity: 1;
-    translate: none;
+    transform: none;
   }
 }
 
@@ -248,7 +317,7 @@
 :where(.LeadForme) .SlugLift {
   transform-box: view-box;
 }
-:where(.LeadForme) .Slug:hover .SlugLift {
+:where(.LeadForme) .Slug:not(.PaperSlug):hover .SlugLift {
   transform: translateY(-46px);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -435,7 +504,7 @@ body:has(#console-collapsed:checked)
     column-gap: 1rem;
   }
 
-  svg {
+  .FormePlate {
     grid-area: 1 / 1 / 2 / 4;
   }
 
@@ -524,7 +593,12 @@ body:has(#console-collapsed:checked)
 
     > * { direction: ltr; }
 
-    svg {
+    /* Safari's one-layer entrance animation added `.FormePlate` around the
+       SVG. The wrapper is now the grid item: placing the nested SVG here
+       leaves the wrapper in row 1 and pushes the vertical colophon into a
+       second, phantom plate-height row. Keep the original narrow-strip
+       composition by assigning the wrapper and caption to the same row. */
+    .FormePlate {
       grid-area: 2 / 1 / 3 / 4;
       max-inline-size: none;
       inline-size: var(--lf-c);

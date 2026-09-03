@@ -50,6 +50,7 @@ import { highlightAll } from '/home/highlight.js'
 import { initReveal } from '/home/reveal.js'
 import { initSettle } from '/home/settle.js'
 import { initBreath } from '/home/breath.js'
+import { initFacesSpecimen } from '/home/faces-specimen.js'
 import { gateOpened } from '/home/fonts-gate.js'
 
 // Only PLAYGROUND is deferred past the fonts gate (dynamic import
@@ -77,6 +78,14 @@ const initInstallChips = () => {
   })
 }
 
+/* WebKit spends ~230ms building the off-screen lead forme and ~560ms
+   decorating the readings station. Running both in the DCL callback starves
+   the hero's first animation frames. Give the opening one quiet beat, then
+   distribute that below-the-fold work across separate later turns. */
+const deferBelowFold = (init, delay) => {
+  setTimeout(() => init(), delay)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initLangSwitcher()
   initTheme()
@@ -101,9 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
     await $console?.reapplyFallbacks($target)
   }
   initSnippet()
+  // The first station② specimen is pure CSS when page-scoped subsets exist;
+  // this hook only lazy-loads Genki's published slices in a no-subset dev/CI
+  // checkout when the reader actually chooses that family.
+  initFacesSpecimen()
   // station②'s isometric lead-type forme (builds its SVG + wires its face／
   // punctuation form). Settled is the CSS default; the drop plays on reveal.
-  initLeadForme()
+  deferBelowFold(initLeadForme, 700)
   // station②'s 破折號 column — one measured number (where the specimen card
   // above it ends) so CSS can clip it there; the fusing itself is scroll-driven
   // CSS with no JS at all (dash-fuse.css).
@@ -119,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStationMap()
   // station①'s four-edition datelines — 民國 era, today + 100 years
   initPapersDateline()
-  initStationReadings()
+  deferBelowFold(initStationReadings, 1600)
   /* 閱讀器與七篇正文都不進首屏：第一枚報紙 icon 被按下才 import 行為模組，
      模組再依 slug／語版抓取建置好的 HTML fragment。 */
   document.addEventListener('click', async (event) => {
@@ -141,9 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initCarousel()
   // 四條長帶的左右箭頭（站①四版、站②鉛字盤、站③兩篇、站肆工作區），外加
   // 站③那條的起始位置：兩篇都朝著中間那道縫讀出去，所以停在縫上而不是頭上
-  // （strip-nav.js § data-strip-start）。掛在 DCL 而不是 gate 後：縫的位置是
-  // 版面的一部分，讀者滾到那一站之前就該對好。
-  initStripNav()
+  // （strip-nav.js § data-strip-start）。由 DCL 排進稍後的獨立回合，不等 gate：
+  // 縫的位置是版面的一部分，讀者滾到那一站之前就該對好。
+  deferBelowFold(initStripNav, 2400)
   /* Shift+M：把放大鏡與四條長帶送回開場位置（開發用，見 home/dev-reset.js）。
      掛在這裡而不是各模組自己聽鍵盤：一個手勢只該有一處定義。 */
   initDevReset()

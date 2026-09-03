@@ -26,7 +26,7 @@ const seen = (page: Page) =>
     return {
       revealed: $f.hasAttribute('data-revealed'),
       ratio: visible / Math.min(r.height, innerHeight),
-      svgOpacity: getComputedStyle($f.querySelector('svg')!).opacity,
+      plateOpacity: getComputedStyle($f.querySelector('.FormePlate')!).opacity,
     }
   })
 
@@ -53,15 +53,15 @@ for (const [width, height, label] of [
     // built, on the page, and deliberately not shown yet
     const before = await seen(page)
     expect(before.revealed).toBe(false)
-    expect(before.svgOpacity).toBe('0')
+    expect(before.plateOpacity).toBe('0')
 
     const at = await scrollUntilRevealed(page)
-    expect(at.svgOpacity).toBe('1')
     // ≥ AT because it fired, and not far past it: the slack is one scroll
     // step, not a station's worth of scrolling. A regression to the station's
     // own cue would fire at a ratio near 0.
     expect(at.ratio).toBeGreaterThanOrEqual(AT - 0.01)
     expect(at.ratio).toBeLessThan(AT + 0.1)
+    await expect(page.locator('.LeadForme .FormePlate')).toHaveCSS('opacity', '1')
   })
 }
 
@@ -79,7 +79,8 @@ test('a 640px window flies the whole forme in without staggered slugs', async ({
       return {
         punct: $f.getAttribute('data-punct'),
         settled: $f.hasAttribute('data-settled'),
-        svg: getComputedStyle($f.querySelector('svg')!).animationName,
+        webkitFallback: CSS.supports('font: -apple-system-body'),
+        plate: getComputedStyle($f.querySelector('.FormePlate')!).animationName,
         slug: getComputedStyle($f.querySelector('.Slug')!).animationName,
         captionDelay: getComputedStyle($f.querySelector('figcaption')!).animationDelay,
       }
@@ -89,18 +90,24 @@ test('a 640px window flies the whole forme in without staggered slugs', async ({
   const narrow = await entranceNames(640)
   expect(narrow.punct).toBe('jis')
   expect(narrow.settled).toBe(false)
-  expect(narrow.svg).toBe('lf-forme-in')
+  expect(narrow.plate).toBe('lf-forme-in')
   expect(narrow.slug).toBe('none')
   expect(narrow.captionDelay).toBe('0.12s')
 
   const wide = await entranceNames(641)
   expect(wide.punct).toBe('jis')
   expect(wide.settled).toBe(false)
-  expect(wide.svg).toBe('none')
-  expect(wide.slug).toBe('lf-drop')
+  if (wide.webkitFallback) {
+    expect(wide.plate).toBe('lf-forme-in')
+    expect(wide.slug).toBe('none')
+    expect(wide.captionDelay).toBe('0.72s')
+  } else {
+    expect(wide.plate).toBe('none')
+    expect(wide.slug).toBe('lf-drop')
+  }
 })
 
-test('a saved punctuation sync cannot cancel the desktop composing ceremony', async ({ page }) => {
+test('a saved punctuation sync cannot cancel the active entrance', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 1000 })
   await page.goto('/')
   const forme = page.locator('.LeadForme')
@@ -115,15 +122,23 @@ test('a saved punctuation sync cannot cancel the desktop composing ceremony', as
     return {
       punct: $f.getAttribute('data-punct'),
       settled: $f.hasAttribute('data-settled'),
+      webkitFallback: CSS.supports('font: -apple-system-body'),
       names: slugs.map(($slug) => getComputedStyle($slug).animationName),
+      plate: getComputedStyle($f.querySelector('.FormePlate')!).animationName,
       delays: new Set(slugs.map(($slug) => getComputedStyle($slug).animationDelay)).size,
     }
   })
 
   expect(entrance.punct).toBe('jis')
   expect(entrance.settled).toBe(false)
-  expect(entrance.names.every((name) => name === 'lf-drop')).toBe(true)
-  expect(entrance.delays).toBeGreaterThan(10)
+  if (entrance.webkitFallback) {
+    expect(entrance.plate).toBe('lf-forme-in')
+    expect(entrance.names.every((name) => name === 'none')).toBe(true)
+  } else {
+    expect(entrance.plate).toBe('none')
+    expect(entrance.names.every((name) => name === 'lf-drop')).toBe(true)
+    expect(entrance.delays).toBeGreaterThan(10)
+  }
 })
 
 test('the pills and the note wait out the whole drop, then fly in', async ({ page }) => {

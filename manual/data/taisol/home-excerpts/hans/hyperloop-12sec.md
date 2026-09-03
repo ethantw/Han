@@ -1,7 +1,7 @@
 ---
 faces_type: "orthographic_adaptation"
 faces_verbatim: false
-faces_line_1: "超迴路运行廿载，即将增停台北，"
+faces_line_1: "超迴路运行廿载　即将增停台北"
 faces_line_2: "万户争睹云轨美景"
 forme_type: "source_excerpt"
 forme_verbatim: true

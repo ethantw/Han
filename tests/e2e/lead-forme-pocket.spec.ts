@@ -196,3 +196,32 @@ test('the forme pills stay hidden through the 640px breakpoint', async ({ page }
   await page.setViewportSize({ width: 641, height: 900 })
   await expect(page.locator('.LeadForme .Controls')).toBeVisible()
 })
+
+test('phone strip keeps its vertical colophon on the plate and nav below it', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.locator('.LeadForme .Slug').first().waitFor()
+
+  const geo = await page.locator('.LeadForme').evaluate(($f) => {
+    const rect = (selector: string) => {
+      const r = document.querySelector<HTMLElement>(selector)!.getBoundingClientRect()
+      return { top: r.top, bottom: r.bottom, height: r.height }
+    }
+    return {
+      figure: rect('.LeadForme'),
+      plate: rect('.LeadForme .FormePlate'),
+      caption: rect('.LeadForme figcaption'),
+      nav: rect('.FormeNav'),
+      writingMode: getComputedStyle($f.querySelector('figcaption')!).writingMode,
+    }
+  })
+
+  // `.FormePlate` is the grid item. If the nested SVG is placed instead,
+  // the wrapper remains in row 1 and the caption creates a phantom row 2,
+  // almost doubling the figure and dropping the nav into later copy.
+  expect(Math.abs(geo.figure.height - geo.plate.height)).toBeLessThan(2)
+  expect(geo.writingMode).toBe('vertical-rl')
+  expect(geo.caption.top).toBeGreaterThanOrEqual(geo.plate.top)
+  expect(geo.caption.bottom).toBeLessThanOrEqual(geo.plate.bottom)
+  expect(geo.nav.top).toBeGreaterThanOrEqual(geo.caption.bottom)
+})

@@ -6,10 +6,10 @@
 
    `data-fonts-gate` on :root is stamped 'loading' pre-paint
    (_home.html) and flipped to 'ready' by home/fonts-gate.js once the
-   webfonts have settled AND the watermark has finished ≥1 full stroke
-   pass (~1.34s) — deliberately also on cache hits: a font swap always
-   flashes once, a fixed ceremony never does. no-JS never stamps, so
-   every rule here is inert and the settled base applies.
+   webfonts have settled. The watermark continues on its own sheet in engines
+   that draw it stroke by stroke; WebKit composites one complete outline
+   instead. no-JS never stamps, so every rule here is inert and the settled
+   base applies.
 
    While loading, copy hides via color:transparent — NOT visibility —
    so the page skeleton (borders, grounds, tray metal faces) stays put
@@ -44,10 +44,41 @@
     color: var(--ui-accent) !important;
   }
 }
+
 :root[data-fonts-gate='loading'] .Brand .Ext {
   &,
   &::first-line {
     color: var(--ui-text) !important;
+  }
+}
+
+/* WebKit cannot keep the giant dash-offset outline on its compositor, and
+   pathLength="1" may leave the final contour incomplete. The builder stamps
+   this state only after all twelve paths exist: show their complete geometry
+   and introduce the HTML host as one raster layer. Chromium retains the two
+   hand-drawn passes. */
+@supports (font: -apple-system-body) {
+  @media (prefers-reduced-motion: no-preference) {
+    .Manifesto .Outline[data-layered-outline] {
+      animation: wm-layer-in 0.62s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+    }
+
+    .Manifesto .Outline[data-layered-outline] .Stroke {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      animation: none;
+    }
+  }
+}
+
+@keyframes wm-layer-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.5rem, 0) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

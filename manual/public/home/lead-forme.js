@@ -97,7 +97,7 @@ const faces3 = (O, sx, sy, bodyH = GEO.H) => {
 };
 
 const spacer = (O, sx, sy, d, solid) =>
-  `<g class="Slug${solid ? ' solid' : ''}"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
+  `<g class="Slug${solid ? ' solid' : ''}" aria-hidden="true"${d != null ? ` style="--d:${d.toFixed(2)}s"` : ''}><g class="SlugLift">${faces3(O, sx, sy)}</g></g>`;
 
 
 const SQUEEZE = {
@@ -197,7 +197,59 @@ const block = ({ O, char, d, sy = GEO.S, half, orient, spin, punct, slice = SLIC
     `<g transform="matrix(${tx[0].toFixed(4)} ${tx[1].toFixed(4)} 0 1 ${anchor[0].toFixed(2)} ${(anchor[1] + H * 0.3).toFixed(2)})">${spec}</g>`;
   const label = (half ? '' : faceLabel(mid(c1, c2), [COS, -SIN])) + faceLabel(mid(c3, c2), [COS, SIN]);
 
-  return `<g class="Slug has-glyph" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
+  return `<g class="Slug has-glyph" aria-hidden="true" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces}${relief}${label}</g></g>`;
+};
+
+
+const escapeXml = (value) => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('"', '&quot;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;');
+
+/** A colour newspaper control laid on the first blank quad. The same
+ * negative-determinant matrix used by the glyph slugs keeps its top-face
+ * projection mirrored, but the mark deliberately stays flat UI rather than
+ * pretending to be another piece of relief type. */
+const paperBlock = ({ O, d, sy = GEO.S, orient, paper }) => {
+  const { S, H, r, sw } = GEO;
+  const c0 = O;
+  const c1 = add(O, e1, S);
+  const c2 = add(c1, e2, sy);
+  const c3 = add(O, e2, sy);
+  const down = (p) => [p[0], p[1] + H];
+  const cc = add(add(O, e1, S / 2), e2, sy / 2);
+  const m = orient === 'h'
+    ? `matrix(${-COS} ${SIN} ${COS} ${SIN} ${cc[0].toFixed(2)} ${cc[1].toFixed(2)})`
+    : `matrix(${-COS} ${-SIN} ${-COS} ${SIN} ${cc[0].toFixed(2)} ${cc[1].toFixed(2)})`;
+  const mountLayer = (fill, stroke, gsw, dy) => `
+    <g transform="translate(0 ${-dy})"><rect class="PaperMount"
+      x="-31" y="-38" width="62" height="76" rx="4" transform="${m}"
+      fill="${fill}" stroke="${stroke}" stroke-width="${gsw}" /></g>`;
+  let mount = mountLayer(WALL, INK, sw * 0.7, 0);
+  for (let k = 1; k < r; k++) mount += mountLayer(WALL, 'none', 0, k);
+  mount += mountLayer(RELIEF, INK, sw, r);
+  const mark = `<g transform="translate(0 ${-r})">
+    <rect class="PaperHit" x="-29" y="-36" width="58" height="72" rx="3" transform="${m}" />
+    <image class="PaperMark" href="/home/paper-open.svg"
+      x="-27" y="-34" width="54" height="68" preserveAspectRatio="xMidYMid meet"
+      transform="${m}" />
+  </g>`;
+
+  const press = escapeXml(paper.press);
+  const pressSpec = `<text class="lbl-press" x="0" y="4" font-size="13"
+    text-anchor="middle">${press}</text>`;
+  const pressLabel = (anchor, tx) =>
+    `<g transform="matrix(${tx[0].toFixed(4)} ${tx[1].toFixed(4)} 0 1 ${anchor[0].toFixed(2)} ${(anchor[1] + H * 0.3).toFixed(2)})">${pressSpec}</g>`;
+  const sideLabels = pressLabel(mid(c1, c2), [COS, -SIN])
+    + pressLabel(mid(c3, c2), [COS, SIN]);
+
+  const label = escapeXml(paper.label);
+  const article = escapeXml(paper.article);
+  const edition = escapeXml(paper.edition);
+  const href = escapeXml(`/articles/${paper.article}/${paper.edition}.html`);
+  const bodyHit = `<polygon class="PaperSlugHit" points="${pts(c0, c1, down(c1), down(c2), down(c3), c3)}" />`;
+  return `<a class="FormePaperJump" href="${href}" data-article="${article}" data-edition="${edition}" data-forme-paper-jump aria-label="${label}"><title>${label}</title>${bodyHit}<g class="Slug has-glyph PaperSlug" style="--d:${d.toFixed(2)}s"><g class="SlugLift">${faces3(O, S, sy)}${mount}${mark}${sideLabels}</g></g></a>`;
 };
 
 
@@ -216,14 +268,21 @@ export const buildForme = (punct, orient, spin, data = {}) => {
   const colStep = S * (1 + leadEm);
   const cells = [];
   let read = 0;
+  let paperPlaced = false;
   cols.forEach((col, b) => {
     const bx = b * colStep;
     lineLayout(col, punct, orient).forEach((it) => {
       const O = add(add([0, 0], e2, it.aStart * cell), e1, bx);
       if (it.space)
         cells.push({ kind: 'space', line: b, O, sx: S, sy: it.size * cell, d: read++ * STAGGER, solid: true });
-      else if (!it.char.trim())
-        cells.push({ kind: 'space', line: b, O, sx: S, sy: S, d: read++ * STAGGER, solid: false });
+      else if (!it.char.trim()) {
+        const isPaper = data.paper && !paperPlaced && b === cols.length - 1;
+        cells.push({
+          kind: isPaper ? 'paper' : 'space', line: b, O, sx: S, sy: S,
+          d: read++ * STAGGER, solid: false,
+        });
+        if (isPaper) paperPlaced = true;
+      }
       else
         cells.push({ kind: 'char', line: b, O, char: it.char, sy: it.size * S, d: read++ * STAGGER, half: it.size < 1 });
     });
@@ -246,7 +305,7 @@ export const buildForme = (punct, orient, spin, data = {}) => {
     for (const p of [c.O, c1, c2, c3]) {
       xs.push(p[0]);
       ys.push(p[1] - r, p[1] + H);
-      inkTop = Math.min(inkTop, p[1] - (c.kind === 'char' ? r : 0));
+      inkTop = Math.min(inkTop, p[1] - (['char', 'paper'].includes(c.kind) ? r : 0));
       if (p[0] > footX + 1e-6) {
         footX = p[0];
         footY = p[1] + H;
@@ -279,6 +338,8 @@ export const buildForme = (punct, orient, spin, data = {}) => {
   const markup = cells
     .map((c) => (c.kind === 'char'
       ? block({ O: c.O, char: c.char, sy: c.sy, d: c.d, half: c.half, orient, spin, punct, slice })
+      : c.kind === 'paper'
+        ? paperBlock({ O: c.O, sy: c.sy, d: c.d, orient, paper: data.paper })
       : spacer(c.O, c.sx, c.sy, c.d, c.solid)))
     .join('');
   return {
@@ -398,17 +459,20 @@ export const initLeadForme = ($root = document, config = {}) => {
   const data = () => ({
     cols: config.cols ?? colsFor($forme.dataset.lang),
     slice,
+    paper: $forme.dataset.formePaperLabel
+      ? {
+          article: 'hyperloop-12sec',
+          edition: $forme.dataset.lang,
+          label: $forme.dataset.formePaperLabel,
+          press: $forme.dataset.formePaperPress,
+        }
+      : null,
   });
   const syncExcerpt = (lang) => {
     const type = $forme.getAttribute(`data-forme-type-${lang}`);
     const verbatim = $forme.getAttribute(`data-forme-verbatim-${lang}`);
     if (type) $forme.dataset.excerptType = type;
     if (verbatim) $forme.dataset.verbatim = verbatim;
-    const $jump = $forme.querySelector('[data-forme-paper-jump]');
-    if ($jump && FORME_LANGS[lang]) {
-      $jump.dataset.edition = lang;
-      $jump.href = `/articles/hyperloop-12sec/${lang}.html`;
-    }
   };
 
   const check = (name, value) => {
@@ -422,6 +486,7 @@ export const initLeadForme = ($root = document, config = {}) => {
   check('lf-lang', $forme.dataset.lang);
   syncExcerpt($forme.dataset.lang);
   const $svg = $forme.querySelector('svg');
+  const $plate = $forme.querySelector('.FormePlate');
 
   let spin = false;
   let built;
@@ -448,6 +513,12 @@ export const initLeadForme = ($root = document, config = {}) => {
   // Assume fallback fonts lack vertical forms until the live probe completes.
   spin = true;
   render();
+  // The forme is initialized on a deferred turn. If its reveal observer fired
+  // during that gap, settle.js may already have seen the empty shell; restart
+  // the explicit plate entrance now that the SVG exists.
+  if ($forme.hasAttribute('data-revealed')) {
+    $forme.removeAttribute('data-settled');
+  }
   resurvey();
   document.fonts?.ready.then(resurvey);
 
@@ -457,7 +528,7 @@ export const initLeadForme = ($root = document, config = {}) => {
   const entranceInFlight = () => {
     if (reduced || $forme.hasAttribute('data-settled')) return false;
     if (!$forme.hasAttribute('data-revealed')) return true;
-    return [$svg, ...$slugs()].some(($el) =>
+    return [$plate, ...$slugs()].some(($el) =>
       $el.getAnimations().some((animation) =>
         ['lf-drop', 'lf-forme-in'].includes(animation.animationName)
         && animation.playState !== 'finished'));
@@ -495,8 +566,8 @@ export const initLeadForme = ($root = document, config = {}) => {
        forme's first stagger is already running. Treat that as initial data:
        rebuild every slug under the still-live entrance selector instead of
        marking the forme settled and cancelling the ceremony. On desktop the
-       replacement slugs restart their stagger; on the narrow branch the SVG
-       itself keeps flying as one object. Later user changes still take the
+       replacement slugs restart their stagger; on the narrow branch the HTML
+       plate keeps flying as one object. Later user changes still take the
        selective reslot path below. */
     if (entranceInFlight()) {
       $forme.dataset.punct = punct;

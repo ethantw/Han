@@ -1,5 +1,39 @@
 @charset "UTF-8";
 
+@keyframes console-border-flash {
+  0%, 100% { border-color: var(--ui-rule); }
+  35%, 70% { border-color: var(--ui-accent); }
+}
+
+.ConsolePrompt {
+  & {
+    appearance: none;
+    margin: 0;
+    padding: 0 0.125em;
+    font: inherit;
+    font-weight: 600;
+    line-height: inherit;
+    vertical-align: baseline;
+    color: var(--ui-accent);
+    background: transparent;
+    border: 0;
+    border-block-end: 1px solid currentColor;
+    border-radius: 0;
+    cursor: pointer;
+  }
+
+  &:hover { color: var(--ui-text); }
+
+  &:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 2px;
+  }
+}
+
+[data-console-flash] {
+  animation: console-border-flash 0.72s ease-in-out;
+}
+
 
 body:has(han-console) {
   & {

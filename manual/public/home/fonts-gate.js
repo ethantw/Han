@@ -18,12 +18,9 @@
  *     to its end — the copy comes up on a whole 漢 and the dark ink fades
  *     out as it rises.
  *
- * Either way the ceremony is TWO passes, always — even on a cache hit,
- * because a font swap always flashes once and a fixed opening ceremony
- * never does. Where the second one lands is all that moves: as the
- * indicator above, or (when the fonts beat the ink) as a flourish that
- * waits for the pale sheet to land AND the copy to finish arriving, then
- * writes the 漢 once in dark ink and fades back to the pale outline.
+ * Where SVG dash painting is reliable the ceremony is TWO passes, even on a
+ * cache hit. WebKit takes the bounded fallback: a complete outline arrives as
+ * one composited HTML layer, with no per-path animation or encore.
  *
  * The watermark itself is BUILT here, by cloning the brand logo's
  * stroke paths (`.Glyph`, the single source in `_shared.html`'s
@@ -57,6 +54,10 @@
 const FONTS_TIMEOUT_MS = 8_000
 const HARD_CAP_MS = 14_000
 const SVGNS = 'http://www.w3.org/2000/svg'
+/* Safari repaints giant animated SVG strokes on the main thread, and its
+   pathLength-normalised dash can stop short. Let CSS composite the completed
+   outline as one HTML layer on that engine instead. */
+const LAYER_SVG = CSS.supports('font: -apple-system-body')
 
 /* First pass, sequential — one hand writing one 漢. Each stroke's
    duration comes from its real measured length, and it starts where the
@@ -112,6 +113,12 @@ const buildWatermark = () => {
   })
   $outline.append($svg)
 
+  if (LAYER_SVG) {
+    $strokes.forEach(($stroke) => $stroke.removeAttribute('data-pass'))
+    $outline.dataset.layeredOutline = ''
+    return
+  }
+
   // getTotalLength() needs the path in the document — measure after the
   // append, and hand the timing to CSS as per-stroke custom properties
   // (gate.css reads them, with the flat stagger still as its fallback
@@ -166,7 +173,7 @@ const firstPass = () =>
     )
     const $finalStroke = $strokes.at(-1)
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!$finalStroke || reduced) return resolve(null)
+    if (!$finalStroke || reduced || LAYER_SVG) return resolve(null)
     const done = () => resolve($strokes)
     if ($finalStroke.getAnimations().some((a) => a.playState === 'finished')) {
       done()

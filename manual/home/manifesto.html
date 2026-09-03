@@ -69,12 +69,18 @@
     ja: '繁簡中・日・韓、それぞれに適う組版を。横組みも縦組みも、同じ一組の規則で。',
     ko: '<ruby>繁簡中<rt>번간중</rt></ruby>・<ruby>日<rt>일</rt></ruby>・<ruby>韓<rt>한</rt></ruby>、저마다 알맞게；가로쓰기와 세로쓰기 모두、하나의 <ruby>規則<rt>규칙</rt></ruby>으로。',
   },
-  dogfood: {
-    hant: '本頁即範文——面板隨手一撥，效果與代碼實時改寫。',
-    hans: '本页即范文——面板随手一拨，效果与代码实时改写。',
-    en: 'This page is the specimen — tweak the panel, watch the whole page respond.',
-    ja: 'このページ自体が見本である——パネルをひと撥ねすれば、表示もコードも即座に書き換わる。',
-    ko: '이 페이지가 곧 본보기다——패널을 슬쩍 건드리면 <ruby>畵面<rt>화면</rt></ruby>도 코드도 곧바로 바뀐다。',
+  dogfoodLead: {
+    hant: '本頁即範文——', hans: '本页即范文——', en: 'This page is the specimen — ',
+    ja: 'このページ自体が見本である——', ko: '이 페이지가 곧 본보기다——',
+  },
+  dogfoodAction: {
+    hant: '面板隨手一撥', hans: '面板随手一拨', en: 'tweak the panel',
+    ja: 'パネルをひと撥ねすれば', ko: '패널을 슬쩍 건드리면',
+  },
+  dogfoodTail: {
+    hant: '，效果與代碼實時改寫。', hans: '，效果与代码实时改写。',
+    en: ', watch the whole page respond.', ja: '、表示もコードも即座に書き換わる。',
+    ko: ' <ruby>畵面<rt>화면</rt></ruby>도 코드도 곧바로 바뀐다。',
   },
 }
 </script>
@@ -106,7 +112,8 @@
 
   <p class="Lede">{{ lede }}</p>
   <p class="WritingModes">{{ writingModes }}</p>
-  <p class="dogfood">{{ dogfood }}</p>
+  <p class="dogfood">{{ dogfoodLead }}<button type="button" class="ConsolePrompt"
+    data-console-prompt>{{ dogfoodAction }}</button>{{ dogfoodTail }}</p>
 
   <dialog class="QuickstartDialog" data-quickstart-dialog aria-labelledby="quickstart-title">
     <section class="Panel">

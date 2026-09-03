@@ -14,6 +14,18 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
 
+test('opening downloaded article releases the homepage font gate so copy is visible', async ({ page }) => {
+  await page.evaluate(() => { document.documentElement.dataset.fontsGate = 'loading' })
+  const dialog = await openArticle(page)
+  const body = dialog.locator('.Body')
+
+  await expect(page.locator('html')).toHaveAttribute('data-fonts-gate', 'ready')
+  await expect(body.locator('h1')).toBeVisible()
+  expect((await body.innerText()).length).toBeGreaterThan(500)
+  expect(await body.evaluate((element) => getComputedStyle(element).color))
+    .not.toBe('rgba(0, 0, 0, 0)')
+})
+
 test('every newspaper jump follows the text on one shared inline baseline', async ({ page }) => {
   const audit = await page.locator('a.PaperJump').evaluateAll((jumps) =>
     jumps.map((jump) => {

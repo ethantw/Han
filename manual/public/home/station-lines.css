@@ -518,6 +518,22 @@
     }
   }
 
+  /* WebKit reshapes the entire document whenever the inherited variable-font
+     weight changes.  The mask still breathes on its own, but holding the
+     decorative glyph weight removes that full-page reflow from Safari's
+     scroll path. */
+  @supports (font: -apple-system-body) {
+    @media (prefers-reduced-motion: no-preference) {
+      div[role="presentation"] {
+        animation: none !important;
+      }
+
+      div[role="presentation"][data-breath-idle]::before {
+        animation: none !important;
+      }
+    }
+  }
+
   /* 屏息 — console 的「行的調整」關掉（或站內那顆分身撥掉）時的樣子。
      模組一走，句讀就縮回版口內，懸掛區空了出來。與其讓它空著仍染綠——
      那等於替一件沒發生的事上色——不如把整條帶子連同版口線一起褪成中性
