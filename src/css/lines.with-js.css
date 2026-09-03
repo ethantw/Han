@@ -365,8 +365,40 @@
   @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-q-quotes: on) {
     /* DOM punctuation → q pseudo (both the opening and the closing boundary). */
     h-char[data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="hangable"]),
-    h-char[data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)) {
+    h-char[data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="dividing"]) {
       letter-spacing: -.5em;
+    }
+
+    /* `：；？！` + a closing bracket is convention-sensitive: only GB
+     * compresses it, and only in horizontal composition. The ordinary seam
+     * rule above must therefore stay off for generated q closing marks too,
+     * just as it does for a real closing bracket in the DOM. */
+    h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
+      letter-spacing: normal;
+    }
+
+    @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hant: GB) {
+      h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(zh):not(:lang(zh-Hans)) {
+        letter-spacing: -.5em;
+      }
+    }
+
+    @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hans: GB) {
+      h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(zh-Hans) {
+        letter-spacing: -.5em;
+      }
+    }
+
+    @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ja: GB) {
+      h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(ja) {
+        letter-spacing: -.5em;
+      }
+    }
+
+    @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ko: GB) {
+      h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(ko-Kore) {
+        letter-spacing: -.5em;
+      }
     }
 
     /* q closing/opening pseudo → wrapped DOM punctuation. */

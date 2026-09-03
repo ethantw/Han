@@ -66,14 +66,15 @@ test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ p
   test.skip(nativeTrim, 'the regional JS fallback matrix applies only without native trim')
 
   await page.locator('body').evaluate(async (body) => {
-    const { refinePunctuationWithMode } = await import('/han/han.js')
+    const { refinePunctuationWithMode, markQuoteBoundaries } = await import('/han/han.js')
     const host = document.createElement('div')
     host.id = 'dividing-close-matrix'
     host.lang = 'zh-Hant'
-    host.innerHTML = '<span>：」</span><span>；」</span><span>？》</span><span>！》</span>'
+    host.innerHTML = '<span>：」</span><span>；」</span><span>？》</span><span>！》</span><span id="generated-close-q"><q>？</q></span>'
     body.append(host)
     for (const pair of host.querySelectorAll('span'))
       refinePunctuationWithMode('compress')(pair)
+    markQuoteBoundaries(host)
   })
 
   const cases = [
@@ -109,5 +110,18 @@ test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ p
       else
         expect(letterSpacing, `${convention} ${writingMode}`).toBe('normal')
     }
+
+    const generatedCloseQ = await page.locator('#generated-close-q h-char').evaluate((char) => {
+      const style = getComputedStyle(char)
+      return {
+        letterSpacing: style.letterSpacing,
+        fontSize: Number.parseFloat(style.fontSize),
+      }
+    })
+    if (squeezes)
+      expect(Number.parseFloat(generatedCloseQ.letterSpacing) / generatedCloseQ.fontSize)
+        .toBeCloseTo(-.5)
+    else
+      expect(generatedCloseQ.letterSpacing).toBe('normal')
   }
 })
