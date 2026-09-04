@@ -135,6 +135,7 @@
     :is(h1, h2, h3, h4, h5, h6) {
       & {
         line-height: 1.25;
+        break-after: avoid-column;
       }
 
       &:first-child { margin-block-start: 0; }
@@ -146,6 +147,15 @@
     :is(h1, h2) { font-size: 1.25em; }
     h3 { font-size: 1.125em; }
     :is(h4, h5, h6) { font-size: 1em; }
+
+    p {
+      & {
+        margin: 0;
+      }
+      &:not(:first-of-type) {
+        text-indent: 1em;
+      }
+    }
 
     /* No rule, no padding: han's prose layer already indents a blockquote
        by `--han-prose-indent` and swaps it to the cursive face, and this
@@ -553,6 +563,8 @@
   /* 報導的首題是整個版面的主標，先橫跨當前欄列再讓正文入欄；只取第一個 h1，
      使用者在後文另下的一級標題仍留在正文流裡。 */
   .Galley > h1:first-of-type {
+    font-size: 1.875em;
+    margin-block-end: .125em;
     column-span: all;
   }
 
