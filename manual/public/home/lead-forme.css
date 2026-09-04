@@ -186,11 +186,6 @@
 :where(.LeadForme) .FormePaperJump:focus-visible {
   outline: none;
 }
-:where(.LeadForme) .FormePaperJump:focus-visible .PaperSlugHit {
-  stroke: var(--ui-text);
-  stroke-width: 2;
-  stroke-dasharray: 6 5;
-}
 @media (prefers-reduced-motion: no-preference) {
 
   :where(.LeadForme:not([data-revealed]):not([data-settled])) .FormePlate,

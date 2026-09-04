@@ -457,6 +457,8 @@
     .Sheet {
       writing-mode: vertical-rl;
       --han-writing-mode: vertical-rl;
+      /* 直排的 block-end 在紙張左側；保留一點收尾，避免最後一欄貼住紙邊。 */
+      padding-block-end: 1.25rem;
       /* 紙就是文章那麼寬，**不封頂**：直排的文章往左長，封了寬度紙就停在那裡、
          文字照樣往左走，於是整段跑到紙外（owner 2026-08-28 的截圖）。裝不下不是
          紙的問題，是畫面的問題——交給燈箱那層捲。 */

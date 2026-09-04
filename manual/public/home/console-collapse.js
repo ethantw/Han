@@ -61,6 +61,34 @@ export const initConsoleCollapse = () => {
     })
   }
 
+  /* A prompt is allowed to open the console and then acknowledge itself, but
+     the acknowledgement must begin on the visible surface.  In the side form
+     that means waiting for the slide-in transition; the compact panel has no
+     transition, so two frames give its display change one paint before the
+     flash starts.  The timeout is the reduced-motion / interrupted-transition
+     escape hatch. */
+  const flashAfterOpen = () => {
+    if (!side.matches) {
+      requestAnimationFrame(() => requestAnimationFrame(flash))
+      return
+    }
+
+    const $surface = $panel?.querySelector('han-console')
+    if (!$surface) return
+    let timer
+    const done = () => {
+      clearTimeout(timer)
+      $surface.removeEventListener('transitionend', onTransitionEnd)
+      flash()
+    }
+    const onTransitionEnd = (event) => {
+      if (event.target === $surface && event.propertyName === 'translate') done()
+    }
+
+    $surface.addEventListener('transitionend', onTransitionEnd)
+    timer = setTimeout(done, 340)
+  }
+
   const sync = ({ discover = false } = {}) => {
     const open = isOpen()
     const label = open ? $toggle.dataset.labelClose : $toggle.dataset.labelOpen
@@ -105,6 +133,7 @@ export const initConsoleCollapse = () => {
 
       $box.checked = !side.matches
       $box.dispatchEvent(new Event('change', { bubbles: true }))
+      flashAfterOpen()
     })
   })
 

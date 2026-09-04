@@ -68,6 +68,7 @@
   > figure {
     flex: none;
   }
+
   figure {
     & {
       position: relative;
@@ -100,13 +101,9 @@
         margin: 0;
         padding: 0;
 
-        --han-punctuation-refinement: auto;
-        --han-text-autospace: normal;
-
-        --han-punctuation-hant: JIS;
-        --han-punctuation-hans: GB;
-        --han-punctuation-ja: JIS;
-        --han-punctuation-ko: KLR;
+        /* Let line refinement inherit the site-wide console setting.  This
+           specimen only needs its Hant punctuation face pinned to KLR. */
+        --han-punctuation-hant: KLR;
       }
       p {
         margin: 0;
@@ -214,14 +211,43 @@
        那個歸開關管。 */
     > small {
       display: block;
+      max-inline-size: 30em;
       /* 縮到與標籤同一條左緣（見上）。不然這一欄的文字有兩個左緣——標籤
          被開關推進去、注貼著開關的邊——整塊看起來就是歪的。 */
       /* 提示行與這條注同級同色，靠太近會讀成同一段話。 */
       margin-block-start: 1rem;
+      margin-inline: 1em;
       font-size: 0.875rem;
       line-height: 1.5;
       color: var(--ui-supplement-text-3q);
     }
+  }
+
+  /* On a narrow station, module-state.js moves the same control immediately
+     after the station lede. It needs the light-DOM colour tokens that the
+     side-note version normally receives from the rule above. */
+  > .Toggle.for-lines {
+    --_rule: var(--ui-rule);
+    --_bg: var(--ui-bg);
+    --_accent: var(--ui-accent);
+    --_supplement-text: var(--ui-supplement-text);
+    --_fs-compact: 1rem;
+    display: flex;
+    gap: 0.625rem;
+    inline-size: 100%;
+    flex: 0 0 100%;
+    margin-block: 1rem;
+
+    span {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-inline-size: 0;
+    }
+  }
+
+  > aside[data-control-relocated] > small {
+    padding-inline-start: 0;
   }
 
   /* 巨型背景樣張 — 把前景 figure 的論點放大一遍：行末的句讀越過版口懸
@@ -313,6 +339,7 @@
          （anchor positioning 尚未 Baseline：Chromium 125／Safari 26 起支援。認不
          得的引擎吃上面那條退路常數，位置與 2026-08-26 之前相同。） */
       inset-inline-start: -16.75em;
+      user-select: none;
 
       @supports (inset-inline-start: anchor(--lines-card center)) {
         /* 窄站台上鏡射點會落到站台右緣之外，懸掛出去的句讀——這一段唯一的
@@ -346,16 +373,13 @@
       padding-inline-end: var(--_wm-hang);
       font-size: var(--fs-bg-text);
 
-      --han-punctuation-refinement: auto;
-      --han-text-autospace: normal;
-
-      --han-punctuation-hant: JIS;
-      --han-punctuation-hans: GB;
-      --han-punctuation-ja: JIS;
-      --han-punctuation-ko: KLR;
+      /* Let line refinement inherit the site-wide console setting.  This
+         specimen only needs its Hant punctuation face pinned to KLR. */
+      --han-punctuation-hant: KLR;
 
       color: var(--_wm-text);
       user-select: none;
+      pointer-events: none;
 
       /* 段尾硬切在站台邊界上很難看——尾端淡出，收成印刷的殘影。帶子與
          線是這個元素的子孫，一起吃這張遮罩，不必各自再淡一次。

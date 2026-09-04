@@ -125,3 +125,59 @@ test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ p
       expect(generatedCloseQ.letterSpacing).toBe('normal')
   }
 })
+
+test('fallback treats GB fullwidth curly quotes like corner brackets only in GB', async ({ page }) => {
+  const nativeTrim = await page.evaluate(() =>
+    CSS.supports('text-spacing-trim', 'trim-start'),
+  )
+  test.skip(nativeTrim, 'the regional JS fallback matrix applies only without native trim')
+
+  await page.locator('body').evaluate(async (body) => {
+    const { refinePunctuationWithMode } = await import('/han/han.js')
+    const host = document.createElement('div')
+    host.id = 'gb-curly-quote-matrix'
+    host.lang = 'zh-Hant'
+    host.innerHTML = '<span>“‘</span><span>’”</span><span>。“</span>'
+    body.append(host)
+    for (const pair of host.querySelectorAll('span'))
+      refinePunctuationWithMode('compress')(pair)
+  })
+
+  for (const convention of ['MOE', 'GB', 'JIS', 'KLR'] as const) {
+    await page.locator('#gb-curly-quote-matrix').evaluate((host, value) => {
+      host.style.setProperty('--han-punctuation-hant', value)
+    }, convention)
+
+    const chars = page.locator('#gb-curly-quote-matrix span > h-char:first-child')
+    for (const { letterSpacing, fontSize } of await chars.evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const style = getComputedStyle(node)
+        return {
+          letterSpacing: style.letterSpacing,
+          fontSize: Number.parseFloat(style.fontSize),
+        }
+      }),
+    )) {
+      if (convention === 'GB') {
+        expect(Number.parseFloat(letterSpacing) / fontSize, convention).toBeCloseTo(-.5)
+      } else {
+        expect(letterSpacing, convention).toBe('normal')
+      }
+    }
+
+    const outerQuotes = await page.locator('#gb-curly-quote-matrix span:nth-child(1) > h-char:first-child, #gb-curly-quote-matrix span:nth-child(2) > h-char:last-child').evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const style = getComputedStyle(node)
+        const fontSize = Number.parseFloat(style.fontSize)
+        return [
+          Number.parseFloat(style.marginInlineStart) / fontSize,
+          Number.parseFloat(style.marginInlineEnd) / fontSize,
+        ]
+      }),
+    )
+    if (convention === 'GB')
+      expect(outerQuotes.flat(), convention).toContain(-.5)
+    else
+      expect(outerQuotes.flat(), convention).toEqual([0, 0, 0, 0])
+  }
+})

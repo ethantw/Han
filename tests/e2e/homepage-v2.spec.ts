@@ -21,6 +21,35 @@ test('the stations and closing carry no watermark data', async ({ page }) => {
   await expect(page.locator('main [data-wm]')).toHaveCount(0)
 })
 
+test('station 叁・行的呼吸 inherits the site-wide hanging setting', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForFunction(() => document.querySelector('han-console')?.shadowRoot != null)
+
+  const set = (key: string, value: string | boolean) =>
+    page.evaluate(([k, v]) => {
+      const control = document.querySelector('han-console')!.shadowRoot!
+        .querySelector<HTMLInputElement>(`[data-cfg-key="${k}"]`)!
+      if (typeof v === 'boolean') control.checked = v
+      else control.value = v as string
+      control.dispatchEvent(new Event('input', { bubbles: true }))
+    }, [key, value] as const)
+  const station = page.locator('#station-lines')
+  const specimens = station.locator('blockquote, div[role="presentation"]')
+  const cssVar = (name: string) => specimens.evaluateAll((els, property) =>
+    els.map((el) => getComputedStyle(el).getPropertyValue(property).trim()), name)
+
+  // Disabling hanging changes both specimens through the console.  Neither
+  // specimen may pin `--han-punctuation-refinement` locally.
+  await set('hang', false)
+  await expect.poll(() => cssVar('--han-punctuation-refinement'))
+    .toEqual(['compress', 'compress'])
+
+  // The one intentional local exception is the Traditional-Chinese KLR face.
+  await set('punct.hant', 'MOE')
+  await expect.poll(() => cssVar('--han-punctuation-hant'))
+    .toEqual(['KLR', 'KLR'])
+})
+
 test('station 捌・引用碼 returns to the shared neutral ground and follows the page theme', async ({ page }) => {
   await page.goto('/')
 

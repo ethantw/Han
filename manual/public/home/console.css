@@ -5,6 +5,21 @@
   35%, 70% { border-color: var(--ui-accent); }
 }
 
+@keyframes console-surface-flash {
+  0%, 100% { background-color: var(--_console-flash-base); }
+  /* The border carries the accent.  The surface merely blinks toward the
+     neutral hairline, so it acknowledges a remote control without washing
+     the entire console green. */
+  32% {
+    background-color:
+      color-mix(in srgb, var(--_console-flash-base) 20%, var(--ui-rule));
+  }
+  68% {
+    background-color:
+      color-mix(in srgb, var(--_console-flash-base) 65%, var(--ui-rule));
+  }
+}
+
 .ConsolePrompt {
   & {
     appearance: none;
@@ -31,7 +46,9 @@
 }
 
 [data-console-flash] {
-  animation: console-border-flash 0.72s ease-in-out;
+  animation:
+    console-border-flash 0.72s ease-in-out,
+    console-surface-flash 0.72s ease-out;
 }
 
 
@@ -43,6 +60,9 @@ body:has(han-console) {
   }
   han-console {
     & {
+      /* The side form's actual surface is the host (its shadow inherits this
+         value), while the compact form below paints its wrapper instead. */
+      --_console-flash-base: var(--ui-console);
       position: fixed;
       inset: 0 auto auto 0;
       inline-size: var(--w-console);
@@ -308,6 +328,7 @@ body:has(han-console) {
 
   .ConsolePanel {
     & {
+      --_console-flash-base: var(--ui-panel);
       position: fixed;
       /* Anchored under its own control. The specimen page hangs this panel
          off a floating button in the opposite corner, which works because

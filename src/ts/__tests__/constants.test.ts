@@ -5,6 +5,8 @@ import {
   HANGABLE_PUNCT,
   PUNCT_DIVIDING_CHARS,
   PUNCT_END_EXTRA,
+  PUNCT_GB_CLOSE_CHARS,
+  PUNCT_GB_OPEN_CHARS,
   classifyPunctuation,
 } from '../line-adjustments/punctuation.ts'
 
@@ -20,6 +22,13 @@ test('classifyPunctuation: closing brackets get close + end', () => {
   for (const ch of '」』》〉）〕］｝】〗') {
     assert.deepEqual(classifyPunctuation(ch), ['close', 'end'], `mis-classified "${ch}"`)
   }
+})
+
+test('classifyPunctuation: curly quotes retain their GB-only subtype', () => {
+  for (const ch of PUNCT_GB_OPEN_CHARS)
+    assert.deepEqual(classifyPunctuation(ch), ['gb-open'], `mis-classified "${ch}"`)
+  for (const ch of PUNCT_GB_CLOSE_CHARS)
+    assert.deepEqual(classifyPunctuation(ch), ['gb-close'], `mis-classified "${ch}"`)
 })
 
 test('classifyPunctuation: sentence-ending punctuation gets end only', () => {
@@ -77,6 +86,10 @@ test('CJK_PUNCT_RUN handles full-width nested quotes as runs', () => {
   const matches = '他說：『「快跑！」』這樣。'.match(CJK_PUNCT_RUN)
   // ：『「 is one continuous run, ！」』 is another run, 。 is the final run.
   assert.deepEqual(matches, ['：『「', '！」』', '。'])
+})
+
+test('CJK_PUNCT_RUN includes GB fullwidth curly quotes in the same run', () => {
+  assert.deepEqual('“‘字’”'.match(CJK_PUNCT_RUN), ['“‘', '’”'])
 })
 
 test('CJK_PUNCT_RUN survives stateful regex re-use (sticky lastIndex)', () => {

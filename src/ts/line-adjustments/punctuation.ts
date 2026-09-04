@@ -10,7 +10,12 @@ import { isCodeLike } from '../helpers/skip.ts'
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 /** Subtype tokens emitted into `data-punct`. Combine with `consecutive`
  *  and `hangable` (added by the wrapper logic) for the full value set. */
-export type PunctSubtype = 'open' | 'close' | 'end' | 'middle' | 'dividing'
+export type PunctSubtype =
+  | 'open' | 'close' | 'end' | 'middle' | 'dividing'
+  // GB makes these Unicode curly quotes full-width; keep their classification
+  // distinct so the JS fallback never trims proportional quotes in other
+  // punctuation conventions.
+  | 'gb-open' | 'gb-close'
 export type RefineMode = 'auto' | 'compress' | 'hang' | 'none'
 
 export const isValidMode = (mode: any): mode is RefineMode =>
@@ -22,6 +27,9 @@ export const isValidMode = (mode: any): mode is RefineMode =>
 export const PUNCT_OPEN_CHARS   = '「『《〈（〔［｛【〖'
 /** CJK closing brackets (閉括號). */
 export const PUNCT_CLOSE_CHARS  = '」』》〉）〕］｝】〗'
+/** GB-only fullwidth curly quotation marks. */
+export const PUNCT_GB_OPEN_CHARS = '‘“'
+export const PUNCT_GB_CLOSE_CHARS = '’”'
 /** Sentence-ending marks that are not closing brackets (句末點號). */
 export const PUNCT_END_EXTRA    = '︰．、，。：；？！ー'
 /** Dividing marks whose spacing before a close bracket is convention- and
@@ -48,11 +56,16 @@ export const PUNCT_INTERPUNCT_CHARS = '·・'
 export const PUNCT_PAIR_CHARS =
   PUNCT_OPEN_CHARS
   + PUNCT_CLOSE_CHARS
+  + PUNCT_GB_OPEN_CHARS
+  + PUNCT_GB_CLOSE_CHARS
   + PUNCT_END_EXTRA.replace('ー', '')
   + PUNCT_INTERPUNCT_CHARS
 
 /** Every character the punctuation passes classify. */
-export const ALL_PUNCT = PUNCT_OPEN_CHARS + PUNCT_CLOSE_CHARS + PUNCT_END_EXTRA + PUNCT_MIDDLE_CHARS
+export const ALL_PUNCT =
+  PUNCT_OPEN_CHARS + PUNCT_CLOSE_CHARS
+  + PUNCT_GB_OPEN_CHARS + PUNCT_GB_CLOSE_CHARS
+  + PUNCT_END_EXTRA + PUNCT_MIDDLE_CHARS
 
 /** Matches one or more consecutive CJK punctuation characters. */
 export const CJK_PUNCT_RUN = new RegExp(`[${ALL_PUNCT}]+`, 'g')
@@ -132,6 +145,13 @@ export const SQUEEZE_NEXT = 'data-squeeze-next'
 
 export type PairFollowerSubtype = PunctSubtype | 'hangable'
 
+/** A seam involving a GB curly quote must not affect proportional quotes. */
+const isGbCurlyQuotePair = (current: string, next: string): boolean =>
+  PUNCT_GB_OPEN_CHARS.includes(current)
+  || PUNCT_GB_CLOSE_CHARS.includes(current)
+  || PUNCT_GB_OPEN_CHARS.includes(next)
+  || PUNCT_GB_CLOSE_CHARS.includes(next)
+
 /** Whether the boundary between two literal punctuation characters squeezes. */
 export const isCompressiblePair = (current: string, next: string): boolean =>
   !!current
@@ -157,7 +177,9 @@ const squeezeNextAttr = (
 ): string => {
   if (!isCompressiblePair(current, next)) return ''
   const subtype = pairFollowerSubtype(next, nextIsHangable)
-  return subtype ? ` ${SQUEEZE_NEXT}="${subtype}"` : ''
+  return subtype
+    ? ` ${SQUEEZE_NEXT}="${isGbCurlyQuotePair(current, next) ? `gb-${subtype.replace(/^gb-/, '')}` : subtype}"`
+    : ''
 }
 
 /**
@@ -175,7 +197,7 @@ const squeezeNextAttr = (
  * squeeze the following mark against a glyph that has left the inline run.
  * See `src/css/lines.with-js.css` § 標點懸掛.
  */
-export const followerSubtype = (next: string): '' | 'open' | 'middle' =>
+export const followerSubtype = (next: string): '' | 'open' | 'gb-open' | 'middle' =>
   // `''` first: `'…'.includes('')` is TRUE, so an empty follower (end of text)
   // would otherwise report as `open`. Same guard `classifyPunctuation` opens
   // with, for the same reason.
@@ -184,6 +206,9 @@ export const followerSubtype = (next: string): '' | 'open' | 'middle' =>
 
   : PUNCT_OPEN_CHARS.includes(next)
   ? 'open'
+
+  : PUNCT_GB_OPEN_CHARS.includes(next)
+  ? 'gb-open'
 
   // 中点類 only, not the whole middle bucket — the fullwidth symbols in it
   // don't compress against a preceding mark, so there is nothing to repair
@@ -215,6 +240,12 @@ export const classifyPunctuation = (ch: string): readonly PunctSubtype[] =>
 
   : PUNCT_CLOSE_CHARS.includes(ch)
   ? ['close', 'end']
+
+  : PUNCT_GB_OPEN_CHARS.includes(ch)
+  ? ['gb-open']
+
+  : PUNCT_GB_CLOSE_CHARS.includes(ch)
+  ? ['gb-close']
 
   : PUNCT_DIVIDING_CHARS.includes(ch)
   ? ['end', 'dividing']
@@ -371,7 +402,7 @@ const wrapHangablePairs =
             + `<h-layer>${ch}</h-layer></h-char>`
         if (SQUEEZE_BEFORE_HANGABLE.includes(ch) && isHangableAt(i + 1))
           return `<h-char data-punct="${classifyPunctuation(ch).join(' ')}"`
-            + ` ${FOLLOWED_BY}="hangable">${ch}</h-char>`
+            + ` ${FOLLOWED_BY}="${PUNCT_GB_OPEN_CHARS.includes(ch) || PUNCT_GB_CLOSE_CHARS.includes(ch) ? 'gb-hangable' : 'hangable'}">${ch}</h-char>`
         return ch
       }).join('')
     })

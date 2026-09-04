@@ -136,14 +136,6 @@
     text-align: start;
   }
 
-  .WritingModes {
-    margin: 0 0 0.375rem;
-    max-inline-size: 38em;
-    font-family: var(--han-font-alternative);
-    font-size: 1rem;
-    color: var(--ui-accent);
-  }
-
   .dogfood {
     margin: 0 0 2rem;
     max-inline-size: 38em;
@@ -384,7 +376,6 @@
     .ProductDefinition,
     .HeroActions,
     .Lede,
-    .WritingModes,
     .dogfood {
       animation: manifesto-rise .6s ease-out 1s both;
     }
@@ -392,8 +383,7 @@
     .ProductDefinition { animation-delay: 0.16s; }
     .HeroActions       { animation-delay: 0.24s; }
     .Lede              { animation-delay: 0.32s; }
-    .WritingModes      { animation-delay: 0.40s; }
-    .dogfood           { animation-delay: 0.48s; }
+    .dogfood           { animation-delay: 0.40s; }
 
     /* no-JS fallback; fonts-gate.js overrides this with measured per-stroke
        timing whenever it builds the loading ceremony. */

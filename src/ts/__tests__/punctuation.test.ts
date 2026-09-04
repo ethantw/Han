@@ -69,10 +69,23 @@ test('mode "compress" matches the legacy compressPunctuation shape', () => {
 })
 
 test('pair classifier includes CJK marks/interpuncts and excludes fullwidth symbols', () => {
-  for (const pair of ['》《', '。」', '。？', '》，', '，「', '。・', '，·'])
+  for (const pair of ['》《', '。」', '。？', '》，', '，「', '。・', '，·', '“‘', '’”', '。“'])
     assert.equal(isCompressiblePair(...[...pair] as [string, string]), true, pair)
   for (const pair of ['。／', '、－', '，＼', '。ー', '。漢'])
     assert.equal(isCompressiblePair(...[...pair] as [string, string]), false, pair)
+})
+
+test('compress: GB curly quotes get distinct wrappers and GB-only seam markers', () => {
+  assert.equal(
+    refine('compress')('<p>“‘字’”</p>'),
+    '<p>'
+      + '<h-char data-punct="gb-open consecutive" data-consecutive-pos="start" data-squeeze-next="gb-open">“</h-char>'
+      + '<h-char data-punct="gb-open consecutive" data-consecutive-pos="end">‘</h-char>'
+      + '字'
+      + '<h-char data-punct="gb-close consecutive" data-consecutive-pos="start" data-squeeze-next="gb-close">’</h-char>'
+      + '<h-char data-punct="gb-close consecutive" data-consecutive-pos="end">”</h-char>'
+      + '</p>',
+  )
 })
 
 test('colon, semicolon, question and exclamation marks carry the regional dividing subtype', () => {

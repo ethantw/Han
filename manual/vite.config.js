@@ -1117,10 +1117,9 @@ async function renderHomepage() {
       hyperloopFacesLang: {
         hant: 'zh-Hant', hans: 'zh-Hans', ja: 'ja', ko: 'ko-Kore',
       }[hyperloopLocale],
-      // The Japanese and Korean reports tell only the Tokyo-line half of the
-      // story, so their translated Taipei faces specimen links to its Hant
-      // source. Hans has the complete localized report and opens that edition.
-      hyperloopFacesEdition: locale === 'hans' ? 'hans' : 'hant',
+      // Every CJK edition now has the complete Taipei-opening report; only
+      // English uses the Hant source-language specimen.
+      hyperloopFacesEdition: locale === 'en' ? 'hant' : locale,
       telepathyFacesEdition: telepathyLocale,
       hyperloopFormeEdition: hyperloopLocale,
       hyperloopFormeHant: hyperloopExcerpts.hant.forme_sample,

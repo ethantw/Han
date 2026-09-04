@@ -36,6 +36,40 @@ const consoleControl = (name) =>
   document.querySelector('han-console')?.shadowRoot
     ?.querySelector(`[data-cfg-key="${name}"]`) ?? null
 
+/* Station ③ has room to hang its line-control beside the specimen only while
+ * its 24em card, the 3rem gap, and the aside's 300px readable minimum fit on
+ * one line. When they do not, keep the *same* control with the explanation it
+ * changes: immediately after the station's squeeze/hang lede, rather than
+ * marooned beneath the full card. Moving the node preserves its console
+ * binding and current checked state. */
+const initLinesControlPlacement = () => {
+  const $station = document.querySelector('#station-lines')
+  const $aside = $station?.querySelector(':scope > aside.Breath')
+  const $toggle = $aside?.querySelector(':scope > .Toggle.for-lines')
+  const $lede = $station?.querySelector(':scope > p')
+  if (!$station || !$aside || !$toggle || !$lede) return
+
+  const compactAt = () => 51.75 * parseFloat(getComputedStyle(document.documentElement).fontSize)
+  let queued = false
+  const place = () => {
+    queued = false
+    if ($station.clientWidth < compactAt()) {
+      $lede.after($toggle)
+      $aside.dataset.controlRelocated = ''
+    } else {
+      $aside.prepend($toggle)
+      delete $aside.dataset.controlRelocated
+    }
+  }
+  const schedule = () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(place)
+  }
+  new ResizeObserver(schedule).observe($station)
+  schedule()
+}
+
 /**
  * Subscribed on `document` because the console's event is `composed` and
  * bubbles out of the shadow root — the same route `punct-lang.js` and
@@ -75,4 +109,6 @@ export const initModuleState = () => {
       press()
     })
   })
+
+  initLinesControlPlacement()
 }

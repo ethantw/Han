@@ -13,7 +13,7 @@ title: "<ruby>謎底<rt>미저</rt></ruby>는 한 줄의 <ruby>亂碼<rt>난마<
 
 【본지 <ruby>月球<rt>월구</rt></ruby> <ruby>特派員<rt>특파원</rt></ruby>　錢福興　<ruby>專電<rt>전전</rt></ruby>】
 
-<ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby> <ruby>締結<rt>체결</rt></ruby> <ruby>十五週年<rt>십오주년</rt></ruby>이 되었건만、<ruby>人類<rt>인류</rt></ruby>가 <ruby>核兵器<rt>핵무기</rt></ruby> <ruby>完全<rt>완전</rt></ruby> <ruby>廢絕<rt>폐절</rt></ruby>의 <ruby>終點<rt>종점</rt></ruby>에 이르기까지는 아직도 마지막 몇 기의 녹슨 <ruby>老物件<rt>노물건</rt></ruby>이 남아 있다。
+<cite><ruby>地球<rt>지구</rt></ruby> <ruby>非核<rt>비핵</rt></ruby> <ruby>協定<rt>협정</rt></ruby></cite> <ruby>締結<rt>체결</rt></ruby> <ruby>十五年<rt>십오년</rt></ruby>째다。한때 <ruby>核武器<rt>핵무기</rt></ruby>를 <ruby>保有<rt>보유</rt></ruby>했던 각국은 이미 <ruby>核燃料<rt>핵연료</rt></ruby>를 <ruby>硏究機關<rt>연구기관</rt></ruby>에 <ruby>移管<rt>이관</rt></ruby>해 <ruby>深宇宙<rt>심우주</rt></ruby> <ruby>推進<rt>추진</rt></ruby>、<ruby>原子爐<rt>원자로</rt></ruby> <ruby>硏究<rt>연구</rt></ruby>、<ruby>放射線<rt>방사선</rt></ruby> <ruby>醫學<rt>의학</rt></ruby>에 쓰고 있다。<ruby>人類<rt>인류</rt></ruby>가 <ruby>核武器<rt>핵무기</rt></ruby>를 완전히 없애기까지는、녹슨 낡은 물건 몇 개만 남았다。
 
 <ruby>問題<rt>문제</rt></ruby>는 <ruby>政治<rt>정치</rt></ruby>에도、<ruby>意志<rt>의지</rt></ruby>에도 있지 않다。아무도 읽어낼 수 없는 <ruby>磁氣<rt>자기</rt></ruby> 디스크 한 묶음에 있다。
 

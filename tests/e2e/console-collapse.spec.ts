@@ -27,7 +27,7 @@ const box = (page: Page, selector: string) =>
   })
 
 test.describe('Task B — collapsible side console', () => {
-  test('inline prose controls open the console or flash its visible border', async ({ page }) => {
+  test('inline prose controls open the console, then flash its visible surface', async ({ page }) => {
     await page.goto('/')
 
     const prompts = page.locator('[data-console-prompt]')
@@ -38,21 +38,42 @@ test.describe('Task B — collapsible side console', () => {
 
     // The desktop console starts open. An inline request therefore points to
     // the already-visible surface instead of changing the layout again.
-    const [animationName] = await Promise.all([
-      sideConsole.evaluate(($surface) => new Promise<string>((resolve) => {
-        $surface.addEventListener('animationstart', (event) => {
-          resolve((event as AnimationEvent).animationName)
-        }, { once: true })
-      })),
+    const animationNames = async () => sideConsole.evaluate(($surface) => new Promise<string[]>((resolve) => {
+      const names = new Set<string>()
+      const onStart = (event: AnimationEvent) => {
+        names.add(event.animationName)
+        if (names.size === 2) {
+          clearTimeout(timeout)
+          $surface.removeEventListener('animationstart', onStart)
+          resolve([...names])
+        }
+      }
+      const timeout = setTimeout(() => {
+        $surface.removeEventListener('animationstart', onStart)
+        resolve([...names])
+      }, 1000)
+      $surface.addEventListener('animationstart', onStart)
+    }))
+
+    const firstFlash = await Promise.all([
+      animationNames(),
       prompts.first().click(),
     ])
-    expect(animationName).toBe('console-border-flash')
+    expect(firstFlash[0]).toEqual(expect.arrayContaining([
+      'console-border-flash', 'console-surface-flash',
+    ]))
 
     await toggle.click()
     await expect(checkbox).toBeChecked()
-    await prompts.nth(1).click()
+    const openedFlash = await Promise.all([
+      animationNames(),
+      prompts.nth(1).click(),
+    ])
     await expect(checkbox).not.toBeChecked()
     await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(openedFlash[0]).toEqual(expect.arrayContaining([
+      'console-border-flash', 'console-surface-flash',
+    ]))
   })
 
   test('handle closes the aside column; main shifts half while only header left chrome shifts a full column', async ({ page }) => {
