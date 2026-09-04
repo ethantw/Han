@@ -236,7 +236,7 @@
     gap: 0.625rem;
     inline-size: 100%;
     flex: 0 0 100%;
-    margin-block: 1rem;
+    margin-block: 0 1.5rem;
 
     span {
       display: flex;
@@ -244,6 +244,13 @@
       gap: 0.125rem;
       min-inline-size: 0;
     }
+  }
+
+  /* The shared lede normally leaves 2.75rem for a following specimen. Once
+     the control sits here, that full reserve would separate a setting from
+     the sentence it explains. */
+  > hgroup ~ p:has(+ .Toggle.for-lines) {
+    margin-block-end: 1.5rem;
   }
 
   > aside[data-control-relocated] > small {
