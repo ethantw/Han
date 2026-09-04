@@ -20,6 +20,28 @@
   }
 }
 
+@keyframes console-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-0.875rem) scale(.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes console-panel-leave {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.875rem) scale(.8);
+  }
+}
+
 .ConsolePrompt {
   & {
     appearance: none;
@@ -82,7 +104,11 @@ body:has(han-console) {
       transition: translate .28s cubic-bezier(.4, 0, .2, 1);
     }
   }
-  &:has(#console-collapsed:checked) han-console {
+  /* Only the page's side console follows the collapse bit.  The reader owns
+     a nested mirror console; a descendant selector here used to translate
+     that mirror off the left edge as well, leaving Chrome with an apparently
+     empty reader panel whenever the outer console was collapsed. */
+  &:has(#console-collapsed:checked) > .ConsolePanel > han-console {
     translate: -100% 0;
   }
 
@@ -364,6 +390,25 @@ body:has(han-console) {
       display: none;
     }
 
+    /* The compact form does not slide in from an off-screen resting place;
+       it appears.  Give that appearance a tiny top-down unfurl instead of a
+       bare display flip.  JS removes this one-shot marker on animation end,
+       so the later acknowledgement flash has the animation lane to itself. */
+    &[data-console-opening] {
+      transform-origin: center top;
+      animation: console-panel-enter .24s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    &[data-console-closing] {
+      transform-origin: center top;
+      animation: console-panel-leave .18s cubic-bezier(.4, 0, 1, 1) forwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &[data-console-opening],
+      &[data-console-closing] { animation: none; }
+    }
+
     > header {
       display: flex;
       align-items: center;
@@ -473,12 +518,38 @@ body:has(han-console) {
   }
 }
 
+/* The reader owns a separately cloned console.  It opens through `hidden`,
+   rather than the page panel's checkbox, but gets the same compact unfurl. */
+.Reader > .ConsolePanel[data-console-opening] {
+  transform-origin: center top;
+  animation: console-panel-enter .24s cubic-bezier(.16, 1, .3, 1);
+}
+
+.Reader > .ConsolePanel[data-console-closing] {
+  transform-origin: center top;
+  animation: console-panel-leave .18s cubic-bezier(.4, 0, 1, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Reader > .ConsolePanel[data-console-opening],
+  .Reader > .ConsolePanel[data-console-closing] { animation: none; }
+}
+
 /* In the narrow page form an unchecked state normally hides the panel. The
    reader entry has its own explicit state, independent of that remembered
    page bit, so it must remain visible even when the side entry was closed. */
 body:has(#console-collapsed:not(:checked))
   .Reader > .ConsolePanel {
   display: flex;
+}
+
+/* The page panel normally disappears as soon as its checkbox closes.  Keep
+   it painted only for its short exit, then JS removes the marker. */
+@media (max-width: 51.9375rem) {
+  body:has(#console-collapsed:not(:checked))
+    .ConsolePanel[data-console-closing] {
+    display: flex;
+  }
 }
 
 /* Author display rules beat the UA's `[hidden]`; keep the reader copy truly

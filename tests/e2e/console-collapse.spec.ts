@@ -151,15 +151,25 @@ test.describe('Task B — collapsible side console', () => {
 })
 
 test.describe('the floating panel form (<52rem)', () => {
-  test('inline prose control opens the floating panel', async ({ page }) => {
+  test('the header handle opens the floating panel with a top-down unfurl', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/')
 
-    const prompt = page.locator('[data-console-prompt]').first()
+    const opener = page.locator('.ConsoleToggle')
     const panel = page.locator('body > .ConsolePanel')
     await expect(panel).toBeHidden()
-    await prompt.click()
+    const [animationName] = await Promise.all([
+      panel.evaluate(($panel) => new Promise<string>((resolve) => {
+        $panel.addEventListener('animationstart', (event) => {
+          if ((event as AnimationEvent).animationName === 'console-panel-enter') {
+            resolve((event as AnimationEvent).animationName)
+          }
+        }, { once: true })
+      })),
+      opener.click(),
+    ])
     await expect(panel).toBeVisible()
+    expect(animationName).toBe('console-panel-enter')
   })
 
   test('costs the layout nothing, opens from the same handle, closes on Escape', async ({ page }) => {

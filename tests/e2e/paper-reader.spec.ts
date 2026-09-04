@@ -443,8 +443,18 @@ test('the reader toolbar opens a left-anchored console copy sharing the side con
   await expect(sideConsole).toHaveCount(1)
 
   // The toolbar trigger itself toggles the panel both ways.
-  await toggle.click()
+  const [entryAnimation] = await Promise.all([
+    panel.evaluate(($panel) => new Promise<string>((resolve) => {
+      $panel.addEventListener('animationstart', (event) => {
+        if ((event as AnimationEvent).animationName === 'console-panel-enter') {
+          resolve((event as AnimationEvent).animationName)
+        }
+      }, { once: true })
+    })),
+    toggle.click(),
+  ])
   await expect(panel).toBeVisible()
+  expect(entryAnimation).toBe('console-panel-enter')
   await toggle.click()
   await expect(panel).toBeHidden()
 

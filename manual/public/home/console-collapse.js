@@ -69,7 +69,22 @@ export const initConsoleCollapse = () => {
      escape hatch. */
   const flashAfterOpen = () => {
     if (!side.matches) {
-      requestAnimationFrame(() => requestAnimationFrame(flash))
+      const $surface = $panel
+      if (!$surface) return
+      let timer
+      const done = () => {
+        clearTimeout(timer)
+        $surface.removeEventListener('animationend', onAnimationEnd)
+        flash()
+      }
+      const onAnimationEnd = (event) => {
+        if (event.target === $surface && event.animationName === 'console-panel-enter') done()
+      }
+
+      $surface.addEventListener('animationend', onAnimationEnd)
+      // Reduced motion skips the entry animation; a frame still puts the
+      // panel on stage before the acknowledgement begins.
+      timer = setTimeout(done, 280)
       return
     }
 
@@ -87,6 +102,36 @@ export const initConsoleCollapse = () => {
 
     $surface.addEventListener('transitionend', onTransitionEnd)
     timer = setTimeout(done, 340)
+  }
+
+  const markPanelOpening = () => {
+    if (side.matches || !$panel) return
+    let timer
+    const clear = (event) => {
+      if (event && (event.target !== $panel || event.animationName !== 'console-panel-enter')) return
+      clearTimeout(timer)
+      $panel.removeEventListener('animationend', clear)
+      $panel.removeAttribute('data-console-opening')
+    }
+
+    $panel.setAttribute('data-console-opening', '')
+    $panel.addEventListener('animationend', clear)
+    timer = setTimeout(clear, 280)
+  }
+
+  const markPanelClosing = () => {
+    if (side.matches || !$panel) return
+    let timer
+    const clear = (event) => {
+      if (event && (event.target !== $panel || event.animationName !== 'console-panel-leave')) return
+      clearTimeout(timer)
+      $panel.removeEventListener('animationend', clear)
+      $panel.removeAttribute('data-console-closing')
+    }
+
+    $panel.setAttribute('data-console-closing', '')
+    $panel.addEventListener('animationend', clear)
+    timer = setTimeout(clear, 220)
   }
 
   const sync = ({ discover = false } = {}) => {
@@ -115,6 +160,11 @@ export const initConsoleCollapse = () => {
   }
 
   $box.addEventListener('change', () => {
+    // Opening the compact panel can come from its header handle or from an
+    // inline prompt.  Key the entrance to the state change itself so both
+    // routes receive the same motion.
+    if (isOpen()) markPanelOpening()
+    else markPanelClosing()
     write(keyNow(), $box.checked)
     sync({ discover: true })
   })

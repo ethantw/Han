@@ -218,7 +218,33 @@ const setReaderConsole = (open, { restoreFocus = false } = {}) => {
   const trigger = dialog?.querySelector('.Console')
   if (!panel || !trigger) return false
   const wasOpen = !panel.hidden
-  panel.hidden = !open
+  if (open && !wasOpen) {
+    let timer
+    const clear = (event) => {
+      if (event && (event.target !== panel || event.animationName !== 'console-panel-enter')) return
+      clearTimeout(timer)
+      panel.removeEventListener('animationend', clear)
+      panel.removeAttribute('data-console-opening')
+    }
+    panel.setAttribute('data-console-opening', '')
+    panel.addEventListener('animationend', clear)
+    timer = setTimeout(clear, 280)
+  }
+  if (!open && wasOpen) {
+    let timer
+    const clear = (event) => {
+      if (event && (event.target !== panel || event.animationName !== 'console-panel-leave')) return
+      clearTimeout(timer)
+      panel.removeEventListener('animationend', clear)
+      panel.removeAttribute('data-console-closing')
+      panel.hidden = true
+    }
+    panel.setAttribute('data-console-closing', '')
+    panel.addEventListener('animationend', clear)
+    timer = setTimeout(clear, 220)
+  } else if (open || !wasOpen) {
+    panel.hidden = !open
+  }
   panel.toggleAttribute('inert', !open)
   panel.setAttribute('aria-hidden', String(!open))
   trigger.setAttribute('aria-expanded', String(open))
@@ -236,12 +262,30 @@ const cloneConsoleForReader = () => {
   if (!source) return null
   const panel = source.cloneNode(true)
   panel.id = 'typesetting-console-reader'
+  panel.removeAttribute('data-console-flash')
+  panel.removeAttribute('data-console-opening')
+  panel.removeAttribute('data-console-closing')
   panel.hidden = true
   panel.setAttribute('inert', '')
   panel.setAttribute('aria-hidden', 'true')
-  const console = panel.querySelector('han-console')
-  console?.setAttribute('mirror', '')
-  console?.removeAttribute('data-ready')
+
+  /* Shadow roots are not cloned.  Chromium can nevertheless retain enough
+     lifecycle state from a cloned, already-upgraded custom element that its
+     connected callback declines to render — leaving this panel's chrome with
+     an empty body.  Build a new host instead, copying only its public
+     attributes and light-DOM loader, so every engine takes the same clean
+     custom-element upgrade path. */
+  const sourceConsole = source.querySelector('han-console')
+  const clonedConsole = panel.querySelector('han-console')
+  if (sourceConsole && clonedConsole) {
+    const console = document.createElement('han-console')
+    for (const { name, value } of sourceConsole.attributes) {
+      if (name !== 'data-ready') console.setAttribute(name, value)
+    }
+    for (const child of sourceConsole.childNodes) console.append(child.cloneNode(true))
+    console.setAttribute('mirror', '')
+    clonedConsole.replaceWith(console)
+  }
   return panel
 }
 
