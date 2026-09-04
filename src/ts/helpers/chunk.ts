@@ -76,7 +76,12 @@ export const forEachChunk = (root: Element, fn: (el: Element) => void): void => 
   while (queue.length > 0) {
     const el = queue.shift()!
     if (isCodeLike(el)) continue
-    if (countNodes(el, CHUNK_NODE_LIMIT) < CHUNK_NODE_LIMIT || !childrenAllElements(el)) {
+    const safelyDivisible = childrenAllElements(el)
+    // `template.content` is not a normal child subtree. Hyperly's walk can
+    // enter it and fail to resume the host's following live siblings. Split
+    // only at block-safe levels so inline punctuation lookahead stays whole.
+    const hasTemplateBoundary = safelyDivisible && el.querySelector('template') !== null
+    if ((!hasTemplateBoundary && countNodes(el, CHUNK_NODE_LIMIT) < CHUNK_NODE_LIMIT) || !safelyDivisible) {
       fn(el)
       continue
     }

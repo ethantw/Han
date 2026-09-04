@@ -399,6 +399,13 @@ test('code-like elements are skipped — no <h-char> inside code/pre/kbd/samp', 
   }
 })
 
+test('template contents are skipped without blocking following live siblings', () => {
+  assert.equal(
+    refine('compress')('<div><article>甲。</article><template>乙。</template><article>丙。</article></div>'),
+    '<div><article>甲<h-char data-punct="end">。</h-char></article><template>乙。</template><article>丙<h-char data-punct="end">。</h-char></article></div>',
+  )
+})
+
 /* ────────────────────────────────────────────────────────── */
 /* data-followed-by — what sits after a hangable mark          */
 /*                                                             */

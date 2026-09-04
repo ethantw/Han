@@ -193,6 +193,28 @@
     h-char[data-squeeze-next^="gb-"]:lang(ko-Kore):not([data-punct~="hangable"]) { letter-spacing: -.5em }
   }
 
+  /* The GB exception for `：；？！` applies to either kind of full-width
+   * quote, but only in horizontal composition. Override the general GB seam
+   * first; the four matching language slots opt the horizontal cell back in. */
+  @container style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress) {
+    h-char[data-punct~="dividing"][data-squeeze-next^="gb-"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not([data-punct~="hangable"]) {
+      letter-spacing: normal;
+    }
+  }
+
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hant: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next^="gb-"]:lang(zh):not(:lang(zh-Hans)) { letter-spacing: -.5em }
+  }
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hans: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next^="gb-"]:lang(zh-Hans) { letter-spacing: -.5em }
+  }
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ja: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next^="gb-"]:lang(ja) { letter-spacing: -.5em }
+  }
+  @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ko: GB) {
+    h-char[data-punct~="dividing"][data-squeeze-next^="gb-"]:lang(ko-Kore) { letter-spacing: -.5em }
+  }
+
   /* A hanging layer is atomic, so it needs the same GB-only seam repair as
    * an ordinary inline pair. Off uses letter-spacing; on swaps its filler. */
   @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-state-hanging-punctuation: off) and style(--han-punctuation-hant: GB) { h-char[data-punct~="hangable"][data-squeeze-next^="gb-"]:lang(zh):not(:lang(zh-Hans)) { letter-spacing: -.5em } }
@@ -410,7 +432,7 @@
 @supports not (text-spacing-trim: trim-start) {
   @container (style(--han-punctuation-refinement: auto) or style(--han-punctuation-refinement: compress)) and style(--han-q-quotes: on) {
     /* DOM punctuation → q pseudo (both the opening and the closing boundary). */
-    h-char[data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="hangable"]),
+    h-char[data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="hangable"]):not([data-punct~="dividing"]),
     h-char[data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)):not(:lang(zh-Hans)):not([data-punct~="dividing"]) {
       letter-spacing: -.5em;
     }
@@ -422,9 +444,15 @@
     h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
       letter-spacing: normal;
     }
+    h-char[data-punct~="dividing"][data-followed-by-quote~="open-q"]:is(:lang(zh), :lang(ja), :lang(ko-Kore)) {
+      letter-spacing: normal;
+    }
 
     @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-hant: GB) {
       h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(zh):not(:lang(zh-Hans)) {
+        letter-spacing: -.5em;
+      }
+      h-char[data-punct~="dividing"][data-followed-by-quote~="open-q"]:lang(zh):not(:lang(zh-Hans)) {
         letter-spacing: -.5em;
       }
     }
@@ -433,16 +461,25 @@
       h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(zh-Hans) {
         letter-spacing: -.5em;
       }
+      h-char[data-punct~="dividing"][data-followed-by-quote~="open-q"]:lang(zh-Hans) {
+        letter-spacing: -.5em;
+      }
     }
 
     @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ja: GB) {
       h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(ja) {
         letter-spacing: -.5em;
       }
+      h-char[data-punct~="dividing"][data-followed-by-quote~="open-q"]:lang(ja) {
+        letter-spacing: -.5em;
+      }
     }
 
     @container style(--han-writing-mode: horizontal-tb) and style(--han-punctuation-ko: GB) {
       h-char[data-punct~="dividing"][data-followed-by-quote~="close-q"]:lang(ko-Kore) {
+        letter-spacing: -.5em;
+      }
+      h-char[data-punct~="dividing"][data-followed-by-quote~="open-q"]:lang(ko-Kore) {
         letter-spacing: -.5em;
       }
     }

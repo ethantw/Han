@@ -70,7 +70,7 @@ test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ p
     const host = document.createElement('div')
     host.id = 'dividing-close-matrix'
     host.lang = 'zh-Hant'
-    host.innerHTML = '<span>：」</span><span>；」</span><span>？》</span><span>！》</span><span id="generated-close-q"><q>？</q></span>'
+    host.innerHTML = '<span>：」</span><span>；」</span><span>？》</span><span>！》</span><span id="generated-close-q"><q>？</q></span><span id="generated-open-q">：<q>甲</q></span>'
     body.append(host)
     for (const pair of host.querySelectorAll('span'))
       refinePunctuationWithMode('compress')(pair)
@@ -123,6 +123,19 @@ test('fallback squeezes dividing-mark + close only in horizontal GB', async ({ p
         .toBeCloseTo(-.5)
     else
       expect(generatedCloseQ.letterSpacing).toBe('normal')
+
+    const generatedOpenQ = await page.locator('#generated-open-q h-char').evaluate((char) => {
+      const style = getComputedStyle(char)
+      return {
+        letterSpacing: style.letterSpacing,
+        fontSize: Number.parseFloat(style.fontSize),
+      }
+    })
+    if (squeezes)
+      expect(Number.parseFloat(generatedOpenQ.letterSpacing) / generatedOpenQ.fontSize)
+        .toBeCloseTo(-.5)
+    else
+      expect(generatedOpenQ.letterSpacing).toBe('normal')
   }
 })
 

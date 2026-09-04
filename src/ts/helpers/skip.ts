@@ -20,6 +20,10 @@
  */
 const SKIP_TAGS = new Set([
   'CODE', 'PRE', 'KBD', 'SAMP', 'TEXTAREA',
+  // Template contents are inert source for a future DOM, not live text. More
+  // importantly, a walker that enters template.content can stop before the
+  // template's following siblings; process the clone when it is inserted.
+  'TEMPLATE',
   'math', 'MATH', 'svg', 'SVG',
 ])
 

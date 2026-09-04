@@ -65,6 +65,20 @@ test('small tree: processed whole, as a single chunk rooted at root', () => {
   assert.ok(seen[0] === el)
 })
 
+test('template boundary: every live sibling is processed below the size limit', () => {
+  // This is the shape of the paper-edition previews: a template inside one
+  // article must not prevent the next live article from being transformed.
+  const out = html(installFallbacks(
+    '<figure>'
+      + '<article lang="zh-Hant"><p>甲。</p><template><p>模板。</p></template></article>'
+      + '<article lang="zh-Hans"><p>乙：<q>引文</q>。</p><template><p>模板。</p></template></article>'
+      + '</figure>',
+  ))
+  assert.match(out, /甲<h-char data-punct="end hangable"><h-layer>。<\/h-layer><\/h-char>/)
+  assert.match(out, /乙<h-char data-punct="end dividing"[^>]*>：<\/h-char><q data-followed-by="hangable">引文<\/q>/)
+  assert.doesNotMatch(out, /模板<h-char/)
+})
+
 test('mixed inline layer is never split, even when over the limit', () => {
   // 一個混有文字節點的層＝行內流，整層一塊——寧可整塊冒險也不切錯。
   // （element() 會把片段掛回 host body，root 是 body：下探穿過全元素的
