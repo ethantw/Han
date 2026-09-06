@@ -70,6 +70,40 @@ const initLinesControlPlacement = () => {
   schedule()
 }
 
+/* Station ①'s semantics switch belongs to the figure caption on a wide
+ * plate, where it explains the specimen. On a compact plate the figure's
+ * diagram and vertical poem make that caption too far away from the control;
+ * keep the same node (and therefore its console binding) between the lede and
+ * the poem instead. */
+const initSemanticsControlPlacement = () => {
+  const $station = document.querySelector('#station-semantics')
+  const $figure = $station?.querySelector(':scope > figure.semantic-elements')
+  const $caption = $figure?.querySelector(':scope > figcaption')
+  const $toggle = $caption?.querySelector(':scope > .Toggle.for-semantics')
+  const $lede = $station?.querySelector(':scope > p')
+  if (!$station || !$figure || !$caption || !$toggle || !$lede) return
+
+  const compactAt = () => 52 * parseFloat(getComputedStyle(document.documentElement).fontSize)
+  let queued = false
+  const place = () => {
+    queued = false
+    if ($station.clientWidth < compactAt()) {
+      $lede.after($toggle)
+      $station.dataset.semanticsControlRelocated = ''
+    } else {
+      $caption.append($toggle)
+      delete $station.dataset.semanticsControlRelocated
+    }
+  }
+  const schedule = () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(place)
+  }
+  new ResizeObserver(schedule).observe($station)
+  schedule()
+}
+
 /**
  * Subscribed on `document` because the console's event is `composed` and
  * bubbles out of the shadow root — the same route `punct-lang.js` and
@@ -111,4 +145,5 @@ export const initModuleState = () => {
   })
 
   initLinesControlPlacement()
+  initSemanticsControlPlacement()
 }

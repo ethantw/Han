@@ -113,12 +113,52 @@
   }
 }
 
+/* JS fallback is an installation choice, not a fifth CSS module.  Keep it
+ * close to the module switches but give the four-module run a deliberate end. */
+.JsComplement {
+  display: grid;
+  gap: 0.375rem;
+  margin-block-start: 0.875rem;
+  padding-block-start: 0.875rem;
+  border-block-start: 1px solid color-mix(in srgb, var(--_rule) 50%, transparent);
+}
 
-/* ─── Default — per-GROUP 「使用預設値」 restore button ─────────────
+.JsComplement .SubRules {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0.5rem 0;
+  border: 0;
+
+  legend {
+    padding: 0;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    color: var(--_supplement-text);
+  }
+
+  .SubNote {
+    margin-block: 0.375rem 0;
+    font-size: 0.625rem;
+    line-height: 1.7;
+    color: var(--_supplement-text);
+  }
+}
+
+/* 手選函式僅在選擇自選安裝時出現；JS 補全關閉時仍保留讀數，但淡化。 */
+.JsComplement:not(:has(select[data-cfg-key="jsMode"] option[value="manual"]:checked)) .SubRules {
+  display: none;
+}
+.JsComplement:has(> .Toggle input[data-cfg-key="fallbacks"]:not(:checked)) .SubRules {
+  opacity: 0.45;
+}
+
+
+/* ─── Default — per-GROUP 「改回預設」 restore button ───────────────
  * JS-injected (console-config.js / console-metrics.js) into each
- * ControlGroup's head (每個 details 群組一顆，owner call); visible only
+ * ControlGroup's head (每個群組一顆，owner call); visible only
  * while any control in the group deviates, so it doubles as the "this
- * group was touched" marker. Accent-coloured 「↺ 使用預設値」 with a
+ * group was touched" marker. Accent-coloured 「↺ 改回預設」 with a
  * visible text label (JS reads it from data-label-default; title kept). */
 
 .ControlGroup .RestoreDefaults {

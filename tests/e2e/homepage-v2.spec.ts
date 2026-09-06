@@ -398,23 +398,11 @@ test('station 陸・工法: the addition follows the console, auto ⇄ manual', 
   ]
   expect(await total()).toBeCloseTo(parts.reduce((a, b) => a + b, 0), 5)
 
-  // Unticking a pass must make the build smaller — the claim the whole
-  // manual mode exists to support.
-  const manualAll = await total()
-  await set('fn.punctuation', false)
-  await expect(table.locator('tr[data-pass="punctuation"][data-off]')).toHaveCount(1)
-  expect(await total()).toBeLessThan(manualAll)
-
-  // …and the plate's OWN box does the same thing, because it drives the
-  // console's control rather than setting config behind its back. Ticking it
-  // here must move the switch in the left column, not just the row.
-  await table.locator('tr[data-pass="punctuation"] input[data-toggle]').check()
-  await expect(table.locator('tr[data-pass="punctuation"][data-off]')).toHaveCount(0)
-  expect(await total()).toBeCloseTo(manualAll, 5)
-  expect(await page.evaluate(() =>
-    document.querySelector('han-console')!.shadowRoot!
-      .querySelector<HTMLInputElement>('[data-cfg-key="fn.punctuation"]')!.checked,
-  )).toBe(true)
+  // The console deliberately keeps only the delivery choice; named-pass
+  // picking is no longer a public control. Switching back remains a complete
+  // round trip and restores the single auto row.
+  await set('jsMode', 'auto')
+  await expect(table.locator('tr[data-js-row="auto"]')).toBeVisible()
 })
 
 test('station 陸・工法: the plate\u2019s own boxes drive the console', async ({ page }) => {

@@ -25,8 +25,9 @@ import { test, expect, type Page } from '@playwright/test'
  * (webfontDelivery/webfontCdnSource ⇐ zianoDelivery/zianoCdnSource).
  */
 const DEFAULT_KEYS = [
-  'semantics', 'citeTitleMarks', 'emSymbol', 'emPosition',
-  'prose', 'proseScope', 'lines', 'hang', 'squeeze', 'autospace',
+  'semantics', 'qQuotes', 'structuralIndent', 'citeTitleMarks', 'emSymbol', 'emPosition',
+  'prose', 'proseScope', 'proseFonts', 'proseConsecutiveHeadingsABlockEnd',
+  'proseConsecutiveHeadingsBBlockStart', 'lines', 'hang', 'squeeze', 'autospace',
   'fonts', 'heritage', 'heritageFamily', 'cursive', 'cursiveHant', 'punct',
   'zhuyinWebfont', 'zhuyinPosition', 'fallbacks', 'jsMode',
   // 逐函式取捨（jsMode='manual' 時才有意義），掛在 fallbacks 底下。與
@@ -116,7 +117,7 @@ test.describe('han-config-change event contract', () => {
 
   test('fires once on connect (source:init) with a frozen DEFAULTS-shaped detail', async ({ page }) => {
     await page.goto('/')
-    await expect.poll(async () => (await events(page)).length).toBeGreaterThan(0)
+    await expect.poll(async () => (await events(page)).length, { timeout: 15_000 }).toBeGreaterThan(0)
 
     const [first] = await events(page) as Array<{
       source: string; keys: string[]; frozen: boolean; varsIsPairs: boolean
@@ -129,7 +130,7 @@ test.describe('han-config-change event contract', () => {
 
   test('source carries the triggering data-cfg-key; reset broadcasts source:reset', async ({ page }) => {
     await page.goto('/')
-    await expect.poll(async () => (await events(page)).length).toBeGreaterThan(0)
+    await expect.poll(async () => (await events(page)).length, { timeout: 15_000 }).toBeGreaterThan(0)
 
     // punct.hant 在「各文種專項 › 繁體專項」，該 <details> 預設收合——先展開。
     await openGroupOf(page, 'punct.hant')

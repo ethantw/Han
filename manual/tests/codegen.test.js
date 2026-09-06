@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  DEFAULTS, MODULES, cssVars, PASSES, selectedPasses, passMask,
+  DEFAULTS, MODULES, cssVars, semanticLocaleCSS, PASSES, selectedPasses, passMask,
   packages, renderCDN, renderBundler, renderInline,
 } from '../public/home/codegen.js'
 
@@ -36,19 +36,18 @@ test('semantics off → 兩分頁任何 pane 皆無 --han-semantics 殘留', () 
     assert.ok(!p.code.includes('--han-semantics'))
 })
 
-test('語意細項：書名號/著重號輸出；semantics off 時被 gate 掉', () => {
-  assert.deepEqual(
-    cssVars(cfg({ citeTitleMarks: 'bracket', emSymbol: 'sesame', emPosition: 'over' })),
-    [
-      ['--han-cite-title-marks', 'bracket'],
-      ['--han-em-symbol', 'sesame'],
-      ['--han-em-dot-position', 'over right'],
-    ],
-  )
-  assert.deepEqual(
-    cssVars(cfg({ semantics: false, citeTitleMarks: 'bracket' })),
-    [],
-  )
+test('語意細項：書名號/著重號按文種輸出；semantics off 時被 gate 掉', () => {
+  const c = cfg({
+    citeTitleMarks: { ...DEFAULTS.citeTitleMarks, hant: 'bracket' },
+    emSymbol: { ...DEFAULTS.emSymbol, hant: 'sesame' },
+    emPosition: { ...DEFAULTS.emPosition, hant: 'over' },
+  })
+  const css = semanticLocaleCSS(c)
+  assert.ok(css.includes(':lang(zh-Hant)'))
+  assert.ok(css.includes('--han-cite-title-marks: bracket;'))
+  assert.ok(css.includes('--han-em-symbol: sesame;'))
+  assert.ok(css.includes('--han-em-dot-position: over right;'))
+  assert.equal(semanticLocaleCSS({ ...c, semantics: false }), '')
 })
 
 test('掛✓擠✗ → refinement: hang；掛✗擠✗ → none', () => {
@@ -136,6 +135,26 @@ test('prose 自訂作用選擇器 → cdn css pane 含額外規則；prose off �
   assert.deepEqual(cssVars(cfg({ prose: false })), [])
 })
 
+test('語意與段落子設定只在偏離預設時輸出', () => {
+  assert.deepEqual(
+    cssVars(cfg({
+      qQuotes: false,
+      structuralIndent: '3em',
+      proseFonts: false,
+      proseConsecutiveHeadingsABlockEnd: '0.5em',
+      proseConsecutiveHeadingsBBlockStart: '1em',
+    })),
+    [
+      ['--han-q-quotes', 'off'],
+      ['--han-structural-indent', '3em'],
+      ['--han-prose-fonts', 'off'],
+      ['--han-prose-consecutive-headings-a-block-end', '0.5em'],
+      ['--han-prose-consecutive-headings-b-block-start', '1em'],
+    ],
+  )
+  assert.deepEqual(cssVars(cfg({ prose: false, proseFonts: false })), [])
+})
+
 test('CDN：auto → han.auto script；勾 legacyRuby → 另一段 module script 呼叫', () => {
   const withFallbacks = paneCode(renderCDN(cfg({ fallbacks: true })), 'html')
   assert.ok(withFallbacks.includes('han.auto.min.js'))
@@ -187,11 +206,12 @@ test('公約與文種解耦：繁體可選 KLR、韓文可選 MOE', () => {
   )
 })
 
-test('emPosition under → under right', () => {
-  assert.deepEqual(
-    cssVars(cfg({ emPosition: 'under' })),
-    [['--han-em-dot-position', 'under right']],
-  )
+test('emPosition over → language-scoped over right', () => {
+  const css = semanticLocaleCSS(cfg({
+    emPosition: { ...DEFAULTS.emPosition, ja: 'over' },
+  }))
+  assert.ok(css.includes(':lang(ja)'))
+  assert.ok(css.includes('--han-em-dot-position: over right;'))
 })
 
 test('proseScope 消毒：<>{}; 剔除後進選擇器；剩空白不產規則', () => {

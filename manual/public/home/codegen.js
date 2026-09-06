@@ -46,6 +46,17 @@ export const HERITAGE = {
 /** Locales supported by the heritage-glyph configuration. */
 export const HERITAGE_LOCALES = ['hant', 'hans', 'ja', 'ko']
 const HERITAGE_DEFAULT = { hant: 'webfont', hans: 'off', ja: 'off', ko: 'off' }
+const SEMANTIC_LOCALE_DEFAULT = Object.freeze({ hant: 'none', hans: 'none', ja: 'none', ko: 'none' })
+const EMPHASIS_SYMBOL_DEFAULT = Object.freeze({ hant: 'circle', hans: 'circle', ja: 'circle', ko: 'circle' })
+// CSS's native Han default is under/right.  Keep the UI's default explicit as
+// `under` rather than offering a third, opaque “auto” state.
+const EMPHASIS_POSITION_DEFAULT = Object.freeze({ hant: 'under', hans: 'under', ja: 'under', ko: 'under' })
+const SEMANTIC_LOCALE_SELECTOR = Object.freeze({
+  hant: ':where(:lang(zh-Hant), :lang(zh-TW), :lang(zh-HK))',
+  hans: ':where(:lang(zh-Hans), :lang(zh-CN), :lang(zh-SG))',
+  ja: ':where(:lang(ja))',
+  ko: ':where(:lang(ko))',
+})
 const anyHeritageWebfont = (c) => HERITAGE_LOCALES.some((loc) => c.heritage[loc] === 'webfont')
 
 
@@ -66,12 +77,17 @@ export const DEFAULTS = {
 
   metrics: { size: 16, leading: 1.75, weight: 400 },
   semantics: true,
-  citeTitleMarks: 'none',
-  emSymbol: 'circle',
-  emPosition: 'auto',
+  qQuotes: true,
+  structuralIndent: '2em',
+  citeTitleMarks: { ...SEMANTIC_LOCALE_DEFAULT },
+  emSymbol: { ...EMPHASIS_SYMBOL_DEFAULT },
+  emPosition: { ...EMPHASIS_POSITION_DEFAULT },
   zhuyinPosition: 'over',
   prose: true,
   proseScope: 'article',
+  proseFonts: true,
+  proseConsecutiveHeadingsABlockEnd: '0',
+  proseConsecutiveHeadingsBBlockStart: '0',
   lines: true,
   hang: true,
   squeeze: true,
@@ -152,6 +168,9 @@ export const passMask = (c) =>
 const refinement = ({ hang, squeeze }) =>
   hang && squeeze ? 'auto' : hang ? 'hang' : squeeze ? 'compress' : 'none'
 
+/* Custom-property values may be ordinary CSS lengths, calc(), or var(), but
+ * never get to terminate their declaration or start another rule. */
+const cssValue = (value) => String(value ?? '').replace(/[;{}<>]/g, '').trim()
 
 
 
@@ -159,10 +178,16 @@ const refinement = ({ hang, squeeze }) =>
 export const cssVars = (c) => {
   const out = []
   if (c.semantics) {
-    if (c.citeTitleMarks !== 'none') out.push(['--han-cite-title-marks', c.citeTitleMarks])
-    if (c.emSymbol !== 'circle') out.push(['--han-em-symbol', c.emSymbol])
-    if (c.emPosition !== 'auto') out.push(['--han-em-dot-position', `${c.emPosition} right`])
+    if (!c.qQuotes) out.push(['--han-q-quotes', 'off'])
+    if (c.structuralIndent !== '2em') out.push(['--han-structural-indent', cssValue(c.structuralIndent)])
     if (c.zhuyinPosition !== 'over') out.push(['--han-zhuyin-ruby-position', c.zhuyinPosition])
+  }
+  if (c.prose) {
+    if (!c.proseFonts) out.push(['--han-prose-fonts', 'off'])
+    if (c.proseConsecutiveHeadingsABlockEnd !== '0')
+      out.push(['--han-prose-consecutive-headings-a-block-end', cssValue(c.proseConsecutiveHeadingsABlockEnd)])
+    if (c.proseConsecutiveHeadingsBBlockStart !== '0')
+      out.push(['--han-prose-consecutive-headings-b-block-start', cssValue(c.proseConsecutiveHeadingsBBlockStart)])
   }
   if (c.lines) {
     const refine = refinement(c)
@@ -190,9 +215,39 @@ export const cssVars = (c) => {
   return out
 }
 
+/** CSS declarations that apply only to one writing language.  These cannot
+ * live on :root: a Japanese emphasis choice must not replace a Chinese one. */
+export const semanticLocaleCSS = (c, indent = '  ') => {
+  if (!c.semantics) return ''
+  return HERITAGE_LOCALES.flatMap((loc) => {
+    // Keep codegen tolerant of the pre-v4 scalar shape for callers that have
+    // not yet refreshed a persisted config.
+    const title = typeof c.citeTitleMarks === 'string'
+      ? c.citeTitleMarks : c.citeTitleMarks?.[loc] ?? SEMANTIC_LOCALE_DEFAULT[loc]
+    const symbol = typeof c.emSymbol === 'string'
+      ? c.emSymbol : c.emSymbol?.[loc] ?? EMPHASIS_SYMBOL_DEFAULT[loc]
+    const rawPosition = typeof c.emPosition === 'string'
+      ? c.emPosition : c.emPosition?.[loc] ?? EMPHASIS_POSITION_DEFAULT[loc]
+    // v3 persisted `auto`; it meant the same CSS default as `under`.
+    const position = rawPosition === 'auto' ? 'under' : rawPosition
+    const declarations = [
+      ...(title !== SEMANTIC_LOCALE_DEFAULT[loc]
+        ? [`--han-cite-title-marks: ${title};`] : []),
+      ...(symbol !== EMPHASIS_SYMBOL_DEFAULT[loc]
+        ? [`--han-em-symbol: ${symbol};`] : []),
+      ...(position !== EMPHASIS_POSITION_DEFAULT[loc]
+        ? [`--han-em-dot-position: ${position} right;`] : []),
+    ]
+    return declarations.length
+      ? [`${SEMANTIC_LOCALE_SELECTOR[loc]} {\n${declarations.map((d) => `${indent}${d}`).join('\n')}\n}`]
+      : []
+  }).join('\n')
+}
+
 
 const configCSS = (c, indent = '  ') => {
   const vars = cssVars(c)
+  const localeRules = semanticLocaleCSS(c, indent)
   const scope = c.proseScope.replace(/[<>{};/]/g, '').trim()
 
 
@@ -217,6 +272,7 @@ const configCSS = (c, indent = '  ') => {
     ...(vars.length
       ? [`:root {\n${vars.map(([k, v]) => `${indent}${k}: ${v};`).join('\n')}\n}`]
       : []),
+    ...(localeRules ? [localeRules] : []),
     ...(c.prose && scope && scope !== 'article' ? [`${scope} { --han-prose: on; }`] : []),
     ...bodyRule,
   ]

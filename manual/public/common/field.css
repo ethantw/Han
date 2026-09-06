@@ -37,6 +37,14 @@
     inline-size: 9.5em;
   }
 
+  /* Checkbox-backed fields use the same control column as selects. Without
+   * an explicit width the toggle shrinks to its track and drifts beside the
+   * label instead of lining up with the other fields' right edge. */
+  > .Toggle {
+    inline-size: 9.5em;
+    justify-content: flex-end;
+  }
+
   & input[type="text"] {
     inline-size: 9.5em;
     padding-block: 0.2em;

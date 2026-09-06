@@ -38,7 +38,12 @@ import {
 
 
 
-const readControl = ($el) => ($el.type === "checkbox" ? $el.checked : $el.value)
+const readControl = ($el) => {
+  if ($el.type !== 'checkbox') return $el.value
+  const on = $el.dataset.cfgValueOn
+  const off = $el.dataset.cfgValueOff
+  return on ? ($el.checked ? on : (off ?? 'none')) : $el.checked
+}
 
 /** Mounts the configuration console and applies its state to the target document. */
 export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveInit = false }) => {
@@ -155,8 +160,9 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveIni
     root.querySelectorAll('[data-cfg-key^="punct."] option').forEach(($opt) => {
       if ($opt.value !== 'off') $opt.disabled = noWebfont
     })
-    root.querySelector('[data-cfg-advanced]')
-      ?.toggleAttribute('hidden', !c.fallbacks)
+    // Advanced mixed-script modes remain supported in saved/generated config,
+    // but are deliberately not exposed in this console pass.
+    root.querySelector('[data-cfg-advanced]')?.setAttribute('hidden', '')
   }
 
   const sync = (source, { applyRuntime = true } = {}) => {
@@ -255,7 +261,9 @@ export const mountConsoleConfig = ({ root, target, dispatch, initial, passiveIni
       if (key === 'autospaceOn') { $el.checked = config.autospace !== 'off'; return }
       if (key === 'autospaceMode') { $el.value = config.autospace === 'off' ? 'normal' : config.autospace; return }
       const v = getConfigPath(config, key)
-      if ($el.type === 'checkbox') $el.checked = v
+      if ($el.type === 'checkbox') {
+        $el.checked = $el.dataset.cfgValueOn ? v === $el.dataset.cfgValueOn : v
+      }
       else $el.value = v
     })
   }

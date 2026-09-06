@@ -2,7 +2,7 @@ import { cssVars } from '../home/codegen.js'
 
 /** Custom properties whose stale values must be cleared on first application. */
 export const ALL_CONFIG_VARS = [
-  '--han-semantics', '--han-prose', '--han-punctuation-refinement',
+  '--han-semantics', '--han-prose', '--han-prose-fonts', '--han-punctuation-refinement',
   '--han-text-autospace',
   '--han-use-heritage-glyphs-for-hant', '--han-use-heritage-glyphs-for-hans',
   '--han-use-heritage-glyphs-for-ja', '--han-use-heritage-glyphs-for-ko',
@@ -12,6 +12,11 @@ export const ALL_CONFIG_VARS = [
   '--han-punctuation-ja', '--han-punctuation-ko',
   '--han-font-zhuyin-serif',
   '--han-zhuyin-ruby-position',
+  '--han-q-quotes', '--han-structural-indent',
+  '--han-prose-consecutive-headings-a-block-end',
+  '--han-prose-consecutive-headings-b-block-start',
+  // v3 wrote these globally. v4 writes per-language rules, but clears an
+  // old inline root value before the scoped sheet takes over.
   '--han-cite-title-marks', '--han-em-symbol', '--han-em-dot-position',
 ]
 

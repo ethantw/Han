@@ -183,6 +183,78 @@
     position: relative;
   }
 
+  /* The homepage light DOM does not adopt common/toggle.css (that sheet is
+   * also used inside han-console's shadow root), so this proxy owns the same
+   * compact track/thumb treatment locally. */
+  > .Toggle.for-semantics,
+  figure.semantic-elements .Toggle.for-semantics {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ui-supplement-text);
+    cursor: pointer;
+    user-select: none;
+
+    input[type='checkbox'] {
+      appearance: none;
+      flex-shrink: 0;
+      inline-size: 2.25rem;
+      block-size: 1.25rem;
+      margin: 0;
+      background: var(--ui-rule);
+      border: 1px solid var(--ui-rule);
+      border-radius: 1rem;
+      position: relative;
+      cursor: pointer;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset-block: 0.125rem;
+        inset-inline-start: 0.125rem;
+        inline-size: 1rem;
+        background: var(--ui-bg);
+        border-radius: 50%;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 18%);
+      }
+
+      &:checked {
+        background: var(--ui-accent);
+        border-color: var(--ui-accent);
+      }
+
+      &:checked::before {
+        inset-inline-start: calc(100% - 1rem - 0.125rem);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--ui-accent);
+        outline-offset: 2px;
+      }
+    }
+
+    &:has(input:checked) { color: var(--ui-accent); }
+  }
+
+  /* On compact plates module-state.js places the proxy between the lede and
+   * the poem. Override the shared station-copy margins so both sides of that
+   * control are exactly one reading-unit apart, and let the figure follow it
+   * without retaining its wide-layout top margin. */
+  &[data-semantics-control-relocated] {
+    > hgroup + p {
+      margin-block: -2rem 1.5rem;
+    }
+
+    > .Toggle.for-semantics {
+      display: inline-flex;
+      margin: 0 0 1.5rem;
+    }
+
+    > figure.semantic-elements {
+      margin-block-start: 0;
+    }
+  }
+
   figure.semantic-elements {
     & {
       margin: 2.5rem 0 3.5rem;
@@ -810,6 +882,17 @@
       article {
         animation: none;
         --han-semantics: off;
+      }
+
+      /* The article itself carries the off flag. A style query cannot use
+       * that element as its own ancestor container, so keep the visible
+       * browser-default reset explicit at the page root as well. */
+      article em {
+        text-emphasis: none;
+      }
+
+      article :where([style*='wavy']) cite {
+        text-decoration: none;
       }
 
 

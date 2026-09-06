@@ -251,17 +251,17 @@ test.describe('Task A — 各文種專項 group', () => {
     }
   }
 
-  test('per-script sub-sections group each script’s heritage + punct; 注音 is its own section', async ({ page }) => {
+  test('per-script sub-sections group each script’s heritage + punct; 注音 lives under semantics', async ({ page }) => {
     await page.goto('/')
     await openScriptSpecifics(page)
 
     // 繁體專項 <section> holds hant heritage + punct together.
     const hant = page.locator('section.ControlGroup:has([data-cfg-key="heritage.hant"])')
     await expect(hant.locator('[data-cfg-key="punct.hant"]')).toHaveCount(1)
-    // 注音ruby專項 is a SEPARATE section — the zhuyin toggle is no longer
-    // inside the 繁體 section.
+    // 注音 is no longer a fifth script section.
     await expect(hant.locator('[data-cfg-key="zhuyinWebfont"]')).toHaveCount(0)
-    await expect(page.locator('[data-cfg-key="zhuyinWebfont"]')).toBeVisible()
+    const semantics = page.locator('details.ControlGroup:has([data-cfg-key="qQuotes"])')
+    await expect(semantics.locator('[data-cfg-key="zhuyinWebfont"]')).toHaveCount(1)
   })
 
   test('簡日韓 each get a sub-section pairing heritage + punct, brand credit intact', async ({ page }) => {

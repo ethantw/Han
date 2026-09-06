@@ -1,4 +1,4 @@
-import { packages, selectedPasses, zianoUrl } from '../home/codegen.js'
+import { packages, selectedPasses, semanticLocaleCSS, zianoUrl } from '../home/codegen.js'
 import {
   ALL_CONFIG_VARS,
   FALLBACK_SYNCED_VARS,
@@ -7,6 +7,22 @@ import {
 } from './console-config-state.js'
 
 const loadedFonts = new Set()
+const SCOPED_CONFIG_STYLE_ID = 'han-console-semantic-locale-config'
+
+const applyScopedSemanticConfig = (config) => {
+  let $style = document.getElementById(SCOPED_CONFIG_STYLE_ID)
+  const css = semanticLocaleCSS(config)
+  if (!css) {
+    $style?.remove()
+    return
+  }
+  if (!$style) {
+    $style = document.createElement('style')
+    $style.id = SCOPED_CONFIG_STYLE_ID
+    document.head.append($style)
+  }
+  if ($style.textContent !== css) $style.textContent = css
+}
 const ensureFont = (id, source) => {
   const key = `${id}:${source}`
   if (loadedFonts.has(key)) return
@@ -40,6 +56,7 @@ export const applyConfigTarget = (config, state) => {
     if (previous?.get(property) !== value) $root.style.setProperty(property, value)
   }
   state.vars = next
+  applyScopedSemanticConfig(config)
 
   packages(config).ziano.forEach((id) => ensureFont(id, config.webfontCdnSource))
 }

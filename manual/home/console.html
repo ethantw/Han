@@ -84,6 +84,21 @@
     ja: '生成コードにのみ影響',
     ko: '<ruby>生成<rt>생성</rt></ruby> 코드에만 <ruby>影響<rt>영향</rt></ruby>',
   },
+  pgProseFonts: {
+    hant: '引用字體', hans: '引用字体', en: 'Blockquote font', ja: '引用書体', ko: '<ruby>引用<rt>인용</rt></ruby> <ruby>書體<rt>서체</rt></ruby>',
+  },
+  pgProseHeadingAEnd: {
+    hant: '連續標題後間距', hans: '连续标题后间距', en: 'After consecutive headings', ja: '連続見出しの後', ko: '연속 제목 뒤 간격',
+  },
+  pgProseHeadingBStart: {
+    hant: '標題後首段前間距', hans: '标题后首段前间距', en: 'Before first body block', ja: '見出し後の本文前', ko: '제목 뒤 본문 앞 간격',
+  },
+  pgQQuotes: {
+    hant: '引號', hans: '引号', en: 'Quotation marks', ja: '引用符', ko: '<ruby>引用符<rt>인용부호</rt></ruby>',
+  },
+  pgStructuralIndent: {
+    hant: '結構縮排', hans: '结构缩进', en: 'Structural indent', ja: '構造インデント', ko: '<ruby>構造<rt>구조</rt></ruby> 들여쓰기',
+  },
   pgCiteMarks: {
     hant: '書名號',
     hans: '书名号',
@@ -535,11 +550,11 @@
     ko: 'JavaScript',
   },
   pgFldJsMode: {
-    hant: '送法',
-    hans: '送法',
-    en: 'Delivery',
-    ja: '読み込み方',
-    ko: '<ruby>方式<rt>방식</rt></ruby>',
+    hant: '安裝方式',
+    hans: '安装方式',
+    en: 'Installation',
+    ja: '導入方法',
+    ko: '<ruby>設置<rt>설치</rt></ruby> <ruby>方式<rt>방식</rt></ruby>',
   },
   pgOptJsAuto: {
     hant: '載入即安裝',
@@ -577,10 +592,6 @@
   pgTogFbRuby: {
     hant: '注音ruby轉寫', hans: '注音ruby转写', en: 'Zhuyin ruby transpile',
     ja: '注音ルビの変換', ko: '<ruby>注音<rt>주음</rt></ruby> ruby <ruby>變換<rt>변환</rt></ruby>',
-  },
-  pgTogFbUninstall: {
-    hant: '還原', hans: '还原', en: 'Undo',
-    ja: '巻き戻し', ko: '<ruby>復元<rt>복원</rt></ruby>',
   },
   pgNoteFns: {
     hant: '勾了才匯入，沒勾的由你的打包器搖掉。站陸的加法式即時算出這套組合有多大。',
@@ -632,11 +643,11 @@
     ko: '<ruby>設定<rt>설정</rt></ruby> 패널——스위치를 젖히면 온 페이지가 다시 쓰인다',
   },
   pgUseDefault: {
-    hant: '使用預設值',
-    hans: '使用预设值',
-    en: 'Use default',
-    ja: '既定値を使う',
-    ko: '<ruby>基本<rt>기본</rt></ruby>값 사용',
+    hant: '改回預設',
+    hans: '改回预设',
+    en: 'Reset',
+    ja: '既定に戻す',
+    ko: '기본값으로',
   },
 }
 </script>
@@ -662,7 +673,7 @@
 <label class="Grip" for="console-sheet" data-console-grip>{{ consoleHeader }}</label>
 
 <!-- data-label-default: the visible text label (＋ title) for the
-     JS-injected per-GROUP 「↺ 使用預設値」 buttons (one per ControlGroup
+     JS-injected per-GROUP 「↺ 改回預設」 buttons (one per ControlGroup
      head; console-config.js / console-metrics.js read it back — the DOM carries
      the locale string, JS stays copy-free). -->
 <div class="Controls" data-label-default="{{ pgUseDefault }}">
@@ -772,41 +783,77 @@
           <span>{{ pgGrpFonts }}</span>
           <input type="checkbox" data-cfg-key="fonts" checked>
         </label>
+        <!-- JS 補全不是第五個 CSS 模組，卻是整體安裝方式的一部分：與四個
+             模組隔一段後放在同一組，先選「要不要補全」與送法，再到下方細選。 -->
+        <div class="JsComplement">
+          <label class="Toggle">
+            <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
+            <input type="checkbox" data-cfg-key="fallbacks" checked>
+          </label>
+          <label class="Field">
+            <span>{{ pgFldJsMode }}</span>
+            <select data-cfg-key="jsMode">
+              <option value="auto" selected>{{ pgOptJsAuto }}</option>
+              <option value="manual">{{ pgOptJsManual }}</option>
+            </select>
+          </label>
+          <fieldset class="SubRules" data-js-manual>
+            <legend>{{ pgGrpFns }}</legend>
+            <label class="Toggle">
+              <span>{{ pgTogFbPunct }} <small>refinePunctuation</small></span>
+              <input type="checkbox" data-cfg-key="fn.punctuation" checked>
+            </label>
+            <label class="Toggle">
+              <span>{{ pgTogFbIss }} <small>applyISSWithProbe</small></span>
+              <input type="checkbox" data-cfg-key="fn.iss" checked>
+            </label>
+            <label class="Toggle">
+              <span>{{ pgTogFbAdjacent }} <small>markAdjacentLines</small></span>
+              <input type="checkbox" data-cfg-key="fn.adjacentLines" checked>
+            </label>
+            <p class="SubNote">{{ pgNoteFns }}</p>
+          </fieldset>
+        </div>
       </fieldset>
     </section>
 
 
-    <!-- 語意樣式標準化 — layer 開關＋其細項自成一組 -->
+    <!-- 語意樣式標準化 — 共通語意與注音 ruby。書名號／著重號各隨文種，
+         放在下方的繁簡日韓專項，避免一組全域值偷改另一種文字。 -->
     <details class="ControlGroup" data-module="semantics">
       <summary>{{ pgGrpSemantics }}</summary>
       <fieldset class="PlaygroundRules" data-cfg>
         <legend class="sr-only">{{ pgGrpSemantics }}</legend>
-        <label class="Field">
-          <span>{{ pgCiteMarks }} <small>cite</small></span>
-          <select data-cfg-key="citeTitleMarks">
-            <option value="none" selected>{{ pgModeOff }}</option>
-            <option value="bracket">{{ pgCiteBracket }}</option>
-            <option value="wavy">{{ pgCiteWavy }}</option>
-          </select>
+        <label class="Toggle">
+          <span>{{ pgQQuotes }} <small>q</small></span>
+          <input type="checkbox" data-cfg-key="qQuotes" checked>
         </label>
         <label class="Field">
-          <span>{{ pgEmSymbol }} <small>em</small></span>
-          <select data-cfg-key="emSymbol">
-            <option value="circle" selected>{{ pgEmCircle }}</option>
-            <option value="dot">{{ pgEmDot }}</option>
-            <option value="sesame">{{ pgEmSesame }}</option>
-            <option value="triangle">{{ pgEmTriangle }}</option>
-          </select>
+          <span>{{ pgStructuralIndent }}</span>
+          <input type="text" data-cfg-key="structuralIndent" value="2em" spellcheck="false">
         </label>
-        <label class="Field">
-          <span>{{ pgEmPosition }}</span>
-          <select data-cfg-key="emPosition">
-            <option value="auto" selected>{{ pgEmPosAuto }}</option>
-            <option value="under">{{ pgEmPosUnder }}</option>
-            <option value="over">{{ pgEmPosOver }}</option>
-          </select>
+        <label class="Toggle">
+          <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>
+          <input type="checkbox" data-cfg-key="legacyRuby">
         </label>
       </fieldset>
+      <section class="ControlGroup">
+        <header>{{ pgGrpZhuyin }}</header>
+        <fieldset class="PlaygroundRules" data-cfg>
+          <legend class="sr-only">{{ pgGrpZhuyin }}</legend>
+          <label class="Toggle">
+            <span>{{ pgTogZhuyin }}</span>
+            <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+          </label>
+          <label class="Field">
+            <span>{{ pgZhuyinPosition }} <small>ruby</small></span>
+            <select data-cfg-key="zhuyinPosition">
+              <option value="over" selected>{{ pgZhuyinPosOver }}</option>
+              <option value="inter-character">{{ pgZhuyinPosIC }}</option>
+            </select>
+          </label>
+        </fieldset>
+      </section>
     </details>
 
     <!-- 長文段落優化 — layer 開關＋作用選擇器自成一組 -->
@@ -818,6 +865,18 @@
         <label class="Field">
           <span>{{ pgProseScope }} <small>{{ pgProseScopeHint }}</small></span>
           <input type="text" data-cfg-key="proseScope" value="article" placeholder="article, .docs main" spellcheck="false">
+        </label>
+        <label class="Toggle">
+          <span>{{ pgProseFonts }} <small>--han-prose-fonts</small></span>
+          <input type="checkbox" data-cfg-key="proseFonts" checked>
+        </label>
+        <label class="Field">
+          <span>{{ pgProseHeadingAEnd }}</span>
+          <input type="text" data-cfg-key="proseConsecutiveHeadingsABlockEnd" value="0" spellcheck="false">
+        </label>
+        <label class="Field">
+          <span>{{ pgProseHeadingBStart }}</span>
+          <input type="text" data-cfg-key="proseConsecutiveHeadingsBBlockStart" value="0" spellcheck="false">
         </label>
       </fieldset>
     </details>
@@ -906,7 +965,7 @@
          <details> 不掛 data-module，因日後將加入非字體的文種專項。每個 <section>
          各自帶 ↺（injectDefaultButtons 依 .ControlScope 掛），外層 <details> 的
          ↺ 覆蓋全體。 -->
-    <details class="ControlGroup" open>
+    <details class="ControlGroup ScriptSpecifics" open>
       <summary>{{ pgGrpScriptSpecifics }}</summary>
 
       <!-- 繁體專項：傳承字形＋標點＋繁體楷體家族 -->
@@ -938,6 +997,30 @@
             <select data-cfg-key="cursiveHant">
               <option value="lxgw" selected>{{ pgFamLxgw }}</option>
               <option value="iansui">{{ pgFamIansui }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgCiteMarks }} <small>cite</small></span>
+            <select data-cfg-key="citeTitleMarks.hant">
+              <option value="none" selected>{{ pgModeOff }}</option>
+              <option value="bracket">{{ pgCiteBracket }}</option>
+              <option value="wavy">{{ pgCiteWavy }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgEmSymbol }} <small>em</small></span>
+            <select data-cfg-key="emSymbol.hant">
+              <option value="circle" selected>{{ pgEmCircle }}</option>
+              <option value="dot">{{ pgEmDot }}</option>
+              <option value="sesame">{{ pgEmSesame }}</option>
+              <option value="triangle">{{ pgEmTriangle }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgEmPosition }}</span>
+            <select data-cfg-key="emPosition.hant">
+              <option value="under" selected>{{ pgEmPosUnder }}</option>
+              <option value="over">{{ pgEmPosOver }}</option>
             </select>
           </label>
         </fieldset>
@@ -975,6 +1058,30 @@
               <option selected>{{ pgFamLxgwSc }}</option>
             </select>
           </label>
+          <label class="Field">
+            <span>{{ pgCiteMarks }} <small>cite</small></span>
+            <select data-cfg-key="citeTitleMarks.hans">
+              <option value="none" selected>{{ pgModeOff }}</option>
+              <option value="bracket">{{ pgCiteBracket }}</option>
+              <option value="wavy">{{ pgCiteWavy }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgEmSymbol }} <small>em</small></span>
+            <select data-cfg-key="emSymbol.hans">
+              <option value="circle" selected>{{ pgEmCircle }}</option>
+              <option value="dot">{{ pgEmDot }}</option>
+              <option value="sesame">{{ pgEmSesame }}</option>
+              <option value="triangle">{{ pgEmTriangle }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgEmPosition }}</span>
+            <select data-cfg-key="emPosition.hans">
+              <option value="under" selected>{{ pgEmPosUnder }}</option>
+              <option value="over">{{ pgEmPosOver }}</option>
+            </select>
+          </label>
         </fieldset>
       </section>
 
@@ -1007,6 +1114,28 @@
               <option selected>{{ pgFamKlee }}</option>
             </select>
           </label>
+          <div class="Field">
+            <span>{{ pgCiteMarks }} <small>cite</small></span>
+            <label class="Toggle">
+              <input type="checkbox" data-cfg-key="citeTitleMarks.ja" data-cfg-value-on="bracket" data-cfg-value-off="none">
+            </label>
+          </div>
+          <label class="Field">
+            <span>{{ pgEmSymbol }} <small>em</small></span>
+            <select data-cfg-key="emSymbol.ja">
+              <option value="circle" selected>{{ pgEmCircle }}</option>
+              <option value="dot">{{ pgEmDot }}</option>
+              <option value="sesame">{{ pgEmSesame }}</option>
+              <option value="triangle">{{ pgEmTriangle }}</option>
+            </select>
+          </label>
+          <label class="Field">
+            <span>{{ pgEmPosition }}</span>
+            <select data-cfg-key="emPosition.ja">
+              <option value="under" selected>{{ pgEmPosUnder }}</option>
+              <option value="over">{{ pgEmPosOver }}</option>
+            </select>
+          </label>
         </fieldset>
       </section>
 
@@ -1033,85 +1162,30 @@
               <option value="off">{{ pgModeOff }}</option>
             </select>
           </label>
-        </fieldset>
-      </section>
-
-      <!-- 注音ruby專項：注音Web字體（ㄅㄆㄇ） -->
-      <section class="ControlGroup">
-        <header>{{ pgGrpZhuyin }}</header>
-        <fieldset class="PlaygroundRules" data-cfg>
-          <legend class="sr-only">{{ pgGrpZhuyin }}</legend>
-          <label class="Toggle">
-            <span>{{ pgTogZhuyin }}</span>
-            <input type="checkbox" data-cfg-key="zhuyinWebfont" checked>
+          <div class="Field">
+            <span>{{ pgCiteMarks }} <small>cite</small></span>
+            <label class="Toggle">
+              <input type="checkbox" data-cfg-key="citeTitleMarks.ko" data-cfg-value-on="bracket" data-cfg-value-off="none">
+            </label>
+          </div>
+          <label class="Field">
+            <span>{{ pgEmSymbol }} <small>em</small></span>
+            <select data-cfg-key="emSymbol.ko">
+              <option value="circle" selected>{{ pgEmCircle }}</option>
+              <option value="dot">{{ pgEmDot }}</option>
+              <option value="sesame">{{ pgEmSesame }}</option>
+              <option value="triangle">{{ pgEmTriangle }}</option>
+            </select>
           </label>
           <label class="Field">
-            <span>{{ pgZhuyinPosition }} <small>ruby</small></span>
-            <select data-cfg-key="zhuyinPosition">
-              <option value="over" selected>{{ pgZhuyinPosOver }}</option>
-              <option value="inter-character">{{ pgZhuyinPosIC }}</option>
+            <span>{{ pgEmPosition }}</span>
+            <select data-cfg-key="emPosition.ko">
+              <option value="under" selected>{{ pgEmPosUnder }}</option>
+              <option value="over">{{ pgEmPosOver }}</option>
             </select>
           </label>
         </fieldset>
       </section>
     </details>
 
-    <!-- JavaScript -->
-    <details class="ControlGroup">
-      <summary>{{ pgGrpJs }}</summary>
-      <fieldset class="PlaygroundRules" data-cfg>
-        <legend class="sr-only">{{ pgGrpJs }}</legend>
-        <label class="Toggle">
-          <span>{{ pgTogFallbacks }} <small>{{ pgTogFallbacksEn }}</small></span>
-          <input type="checkbox" data-cfg-key="fallbacks" checked>
-        </label>
-        <!-- 伺服器端樣張專屬（`<han-console no-fallbacks>`）。平時 display: none，
-             由 console.css 的 `:host([no-fallbacks])` 打開——不由 JS 加減節點：
-             模板是一份，狀態歸屬性所有。 -->
-        <p class="SubNote" data-ssr-note>{{ pgNoteSsr }}</p>
-        <!-- 送法：auto ＝ 一行匯入、載入即全套安裝；manual ＝ 自己具名匯入
-             要用的那幾支，打包器把其餘搖掉。這對**體積**是有差的，站陸的
-             加法式即時把差額算給讀者看。 -->
-        <label class="Field">
-          <span>{{ pgFldJsMode }}</span>
-          <select data-cfg-key="jsMode">
-            <option value="auto" selected>{{ pgOptJsAuto }}</option>
-            <option value="manual">{{ pgOptJsManual }}</option>
-          </select>
-        </label>
-        <!-- 逐函式取捨。只在 manual 模式下有意義；CSS 用 `:has()` 收合，
-             不由 JS 設 disabled——控件狀態歸 config 層所有，JS 再寫一次
-             就是兩個 writer 互搶。 -->
-        <fieldset class="SubRules" data-js-manual>
-          <legend>{{ pgGrpFns }}</legend>
-          <label class="Toggle">
-            <span>{{ pgTogFbPunct }} <small>refinePunctuation</small></span>
-            <input type="checkbox" data-cfg-key="fn.punctuation" checked>
-          </label>
-          <label class="Toggle">
-            <span>{{ pgTogFbIss }} <small>applyISSWithProbe</small></span>
-            <input type="checkbox" data-cfg-key="fn.iss" checked>
-          </label>
-          <label class="Toggle">
-            <span>{{ pgTogFbAdjacent }} <small>markAdjacentLines</small></span>
-            <input type="checkbox" data-cfg-key="fn.adjacentLines" checked>
-          </label>
-          <label class="Toggle">
-            <span>{{ pgTogFbRuby }} <small>transpileRuby</small></span>
-            <input type="checkbox" data-cfg-key="fn.ruby">
-          </label>
-          <label class="Toggle">
-            <span>{{ pgTogFbUninstall }} <small>uninstallFallbacks</small></span>
-            <input type="checkbox" data-cfg-key="fn.uninstall">
-          </label>
-          <p class="SubNote">{{ pgNoteFns }}</p>
-        </fieldset>
-        <!-- auto 模式專屬：auto 不跑 transpileRuby，要就得自己補一支。
-             manual 模式下這件事由上面的 fn.ruby 表達，故隱藏。 -->
-        <label class="Toggle" data-js-auto>
-          <span>{{ pgTogLegacyRuby }} <small>{{ pgTogLegacyRubyEn }}</small></span>
-          <input type="checkbox" data-cfg-key="legacyRuby">
-        </label>
-      </fieldset>
-    </details>
 </div>

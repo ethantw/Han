@@ -44,7 +44,34 @@ const LOCALES = ['hant', 'hans', 'en', 'ja', 'ko']
 // store { config, vars }: `vars` is the precomputed cssVars() output the
 // inline script stamps without any codegen logic.
 const STORAGE_KEY = 'han-console-config'
+const GROUPS_STORAGE_KEY = 'han-console-groups'
 const connectedConsoles = new Set()
+
+const readGroupState = () => {
+  try {
+    const value = JSON.parse(localStorage.getItem(GROUPS_STORAGE_KEY) || '{}')
+    return value && typeof value === 'object' ? value : {}
+  } catch {
+    return {}
+  }
+}
+
+const initGroupState = (root) => {
+  const saved = readGroupState()
+  const groups = [...root.querySelectorAll('details.ControlGroup')]
+  groups.forEach(($group, index) => {
+    const id = $group.dataset.module || `group-${index}`
+    if (typeof saved[id] === 'boolean') $group.open = saved[id]
+    $group.addEventListener('toggle', () => {
+      try {
+        const next = { ...readGroupState(), [id]: $group.open }
+        localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(next))
+      } catch {
+        /* storage disabled / quota — the live disclosure still works */
+      }
+    })
+  })
+}
 
 /** Migrate `config.heritage` across the scalar → per-locale schema change.
  *  Pre-expansion it was a string (`webfont|system|off`) applying to hant only;
@@ -57,6 +84,19 @@ const migrateHeritage = (stored) => {
   if (stored && typeof stored === 'object')
     return { ...DEFAULTS.heritage, ...stored }
   return { ...DEFAULTS.heritage }
+}
+
+/** Semantic controls became per-language in v4.  A saved scalar was formerly
+ * global, so retain that meaning by copying it to every CJK locale. */
+const migrateSemanticLocale = (stored, key) => {
+  const fallback = DEFAULTS[key]
+  const value = stored?.[key]
+  const normalize = (v) => key === 'emPosition' && v === 'auto' ? 'under' : v
+  if (typeof value === 'string')
+    return Object.fromEntries(Object.keys(fallback).map((loc) => [loc, normalize(value)]))
+  if (value && typeof value === 'object')
+    return Object.fromEntries(Object.keys(fallback).map((loc) => [loc, normalize(value[loc] ?? fallback[loc])]))
+  return { ...fallback }
 }
 
 /** Read the saved config, deep-merged OVER DEFAULTS so a config written by an
@@ -80,6 +120,9 @@ const readStored = () => {
       ...stored,
       heritage: migrateHeritage(stored.heritage),
       punct: { ...DEFAULTS.punct, ...stored.punct },
+      citeTitleMarks: migrateSemanticLocale(stored, 'citeTitleMarks'),
+      emSymbol: migrateSemanticLocale(stored, 'emSymbol'),
+      emPosition: migrateSemanticLocale(stored, 'emPosition'),
       metrics: { ...DEFAULTS.metrics, ...stored.metrics },
     }
   } catch {
@@ -189,7 +232,14 @@ class HanConsole extends HTMLElement {
   // subscribers can't mutate our state; `vars` is the [name,value][].
   #dispatch = (config, source) => {
     const detail = {
-      config: Object.freeze({ ...config, punct: { ...config.punct }, metrics: { ...config.metrics } }),
+      config: Object.freeze({
+        ...config,
+        punct: { ...config.punct },
+        citeTitleMarks: { ...config.citeTitleMarks },
+        emSymbol: { ...config.emSymbol },
+        emPosition: { ...config.emPosition },
+        metrics: { ...config.metrics },
+      }),
       vars: cssVars(config),
       source,
     }
@@ -272,6 +322,7 @@ class HanConsole extends HTMLElement {
     this.shadowRoot.replaceChildren(
       document.createRange().createContextualFragment(tpl),
     )
+    initGroupState(this.shadowRoot)
 
     this.#resolveTarget()
     this.#config = mountConsoleConfig(
@@ -352,7 +403,7 @@ class HanConsole extends HTMLElement {
   }
 
   // ── public API ──
-  // No UI button anymore (per-control 「使用預設値」 buttons replaced the
+  // No UI button anymore (per-control 「改回預設」 buttons replaced the
   // global reset — owner call); the method stays public API.
   reset() {
     // metrics 先 reset：其 onChange → setMetrics → 廣播 source:'metrics'。再

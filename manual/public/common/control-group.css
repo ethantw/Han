@@ -10,7 +10,10 @@
     & {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      /* Center the large disclosure labels and their ＋/－ marker on the
+       * rule-to-rule row. Baseline alignment leaves the glyph visibly high
+       * because the marker is an icon box rather than text. */
+      align-items: center;
       gap: 8px;
       font-family: var(--_font-mono);
       font-size: var(--_fs-micro);
@@ -23,7 +26,7 @@
       color: var(--_supplement-text);
       margin-block-end: 14px;
 
-      /* the group's ↺ 使用預設値 (JS-injected) — the auto margin absorbs
+      /* the group's ↺ 改回預設 (JS-injected) — the auto margin absorbs
          the free space, parking ↺ against the ＋/－ (or the row end);
          when hidden, space-between takes back over. */
     }
@@ -41,10 +44,10 @@
       font-size: var(--_fs-compact);
       text-transform: none;
       color: var(--_text);
-      padding-block: 0.8rem;
-      /* 上一組的最後一列與這條分界線原本是**貼著**的（實測 0px），線於是像
-         黏在前一顆控件的下緣，而不是兩組之間的界（owner 2026-08-07：太擠）。
-         補一段外距在線之上——線上 10px、線下 12.8px，讀起來才是「隔開」。 */
+      /* Keep the rule spacing unchanged while giving the glyph a little more
+         room below the upper rule; the icon and label then sit optically at
+         the row's vertical center. */
+      padding-block: 1.1rem 0.5rem;
       margin-block-start: 0.625rem;
       margin-block-end: 0;
       border-block-start: 1px solid var(--_rule);
@@ -70,15 +73,9 @@
     &::after { mask-image: var(--icon-minus); }
   }
 
-  /* 子組（字體底下的繁體專項）。標頭恢復字母大小寫並降去追蹤感，讀作外組的
-     從屬而非並列。<section>＋<header> 平鋪（owner call：子組不收合）。
-
-     分界靠**標頭自己拖一條髮線到欄緣**，不是左邊那道縱向欄線（owner
-     2026-08-07：「太醜」）。縱線的毛病有二：它把子組往右推一級，控件的右緣
-     就跟外層的對不齊；而且五個子組疊起來是五條斷斷續續的短豎，讀成一堆殘
-     邊。改成橫的之後，欄寬回到與外層齊平，標頭與線是同一行——這是本站站台
-     眉標用了一輪的作法（home/frame.css § hgroup 的 `p:first-child`），
-     主控台跟著用同一支筆。 */
+  /* 子組（各文種／注音專項）。標頭恢復字母大小寫並降去追蹤感，讀作外組的
+     從屬而非並列。分界另佔一行，避免髮線像是從標題文字後面伸出去；標題與
+     「改回預設」則是下一行的兩端，按鈕永遠靠右。 */
   .ControlGroup {
     & {
       margin-block-start: 18px;
@@ -91,21 +88,34 @@
 
     > header {
       & {
-        display: flex;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: 0.625rem;
       }
 
-      &::after {
+      &::before {
         content: '';
-        flex: 1;
+        grid-column: 1 / -1;
         block-size: 1px;
-        /* 比其他髮線再淡一半：子組的分界不該與組間的分界同重，否則五個子組
-           讀起來跟五個獨立的組一樣（owner call）。 */
         background: color-mix(in srgb, var(--_rule) 50%, transparent);
       }
+
+      &::after { display: none; }
+
+      > .RestoreDefaults { margin-inline-start: 0; }
     }
   }
+
+}
+
+/* 「各文種專項」的第一個繁體組緊接外層標題，無須再插一條線，也不保留
+   子組慣例的起始外距；簡、日、韓之間的分隔照常保留。 */
+details.ScriptSpecifics > section.ControlGroup:first-of-type {
+  margin-block-start: 0;
+}
+details.ScriptSpecifics > section.ControlGroup:first-of-type > header::before {
+  display: none;
 }
 
 

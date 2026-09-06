@@ -683,7 +683,7 @@ async function bundleHomeCss() {
  *   • reusable `common/*` component sheets that a standalone demo or
  *     `<han-console>` still fetches directly by URL.
  *   • `common/icons.css` — dual-homed for the same reason: the console's
- *     ↺ 使用預設值 buttons and control-group.css's ＋/－ read `--icon-*` and the
+ *     ↺ 改回預設 buttons and control-group.css's ＋/－ read `--icon-*` and the
  *     `[data-icon]` primitive from it.
  *
  * Its bytes therefore ship twice: inlined here for the light DOM's

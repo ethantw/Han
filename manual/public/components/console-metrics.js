@@ -66,7 +66,7 @@ export const mountConsoleMetrics = ({ root, target, initial, onChange, passiveIn
     target.style.setProperty('--console-metric-weight', String(weight))
   }
 
-  // 度量群組的「使用預設値」——群組標頭一顆（owner call：每個群組，
+  // 度量群組的「改回預設」——群組標頭一顆（owner call：每個群組，
   // 不是每支 slider），任一 metric 偏離即現身，按下三支全回預設。
   // 文案讀模板的 data-label-default。
   const $groupDefault = document.createElement('button')

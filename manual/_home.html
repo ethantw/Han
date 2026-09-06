@@ -346,6 +346,36 @@
         if (m.weight && m.weight !== 400) body.style.setProperty('--console-metric-weight', String(m.weight))
       }
     }
+    // v4 semantic choices are per language, so they cannot be represented in
+    // the root-only `vars` payload above. Rehydrate their tiny scoped sheet
+    // before first paint; console-config-runtime replaces this exact node once
+    // the component upgrades.
+    if (config.semantics !== false) {
+      const locales = {
+        hant: ':where(:lang(zh-Hant), :lang(zh-TW), :lang(zh-HK))',
+        hans: ':where(:lang(zh-Hans), :lang(zh-CN), :lang(zh-SG))',
+        ja: ':where(:lang(ja))', ko: ':where(:lang(ko))',
+      }
+      const value = (key, loc, fallback) =>
+        typeof config[key] === 'string' ? config[key] : config[key]?.[loc] ?? fallback
+      const scoped = Object.entries(locales).flatMap(([loc, selector]) => {
+        const title = value('citeTitleMarks', loc, 'none')
+        const symbol = value('emSymbol', loc, 'circle')
+        const position = value('emPosition', loc, 'auto')
+        const declarations = [
+          ...(title !== 'none' ? [`--han-cite-title-marks:${title}`] : []),
+          ...(symbol !== 'circle' ? [`--han-em-symbol:${symbol}`] : []),
+          ...(position !== 'auto' ? [`--han-em-dot-position:${position} right`] : []),
+        ]
+        return declarations.length ? [`${selector}{${declarations.join(';')}}`] : []
+      }).join('')
+      if (scoped) {
+        const style = document.createElement('style')
+        style.id = 'han-console-semantic-locale-config'
+        style.textContent = scoped
+        document.head.append(style)
+      }
+    }
     // Modules, in the SAME shape as console-config.js § MODULE_MECHANISM —
     // three ride han.css's own flags, only `fonts` unloads its stylesheet.
     // Kept in sync by hand: this script is pre-paint and inline, so it can't
